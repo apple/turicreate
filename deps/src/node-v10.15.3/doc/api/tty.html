@@ -1,0 +1,340 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>TTY | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/tty.html">
+</head>
+<body class="alt apidoc" id="api-section-tty">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty active">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="tty" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="tty.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/tty.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/tty.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/tty.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/tty.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/tty.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/tty.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/tty.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/tty.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/tty.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/tty.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/tty.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#tty_tty">TTY</a></span></p>
+<ul>
+<li>
+<p><a href="#tty_class_tty_readstream">Class: tty.ReadStream</a></p>
+<ul>
+<li><a href="#tty_readstream_israw">readStream.isRaw</a></li>
+<li><a href="#tty_readstream_istty">readStream.isTTY</a></li>
+<li><a href="#tty_readstream_setrawmode_mode">readStream.setRawMode(mode)</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#tty_class_tty_writestream">Class: tty.WriteStream</a></p>
+<ul>
+<li><a href="#tty_event_resize">Event: 'resize'</a></li>
+<li><a href="#tty_writestream_clearline_dir">writeStream.clearLine(dir)</a></li>
+<li><a href="#tty_writestream_clearscreendown">writeStream.clearScreenDown()</a></li>
+<li><a href="#tty_writestream_columns">writeStream.columns</a></li>
+<li><a href="#tty_writestream_cursorto_x_y">writeStream.cursorTo(x, y)</a></li>
+<li><a href="#tty_writestream_getcolordepth_env">writeStream.getColorDepth([env])</a></li>
+<li><a href="#tty_writestream_getwindowsize">writeStream.getWindowSize()</a></li>
+<li><a href="#tty_writestream_istty">writeStream.isTTY</a></li>
+<li><a href="#tty_writestream_movecursor_dx_dy">writeStream.moveCursor(dx, dy)</a></li>
+<li><a href="#tty_writestream_rows">writeStream.rows</a></li>
+</ul>
+</li>
+<li><a href="#tty_tty_isatty_fd">tty.isatty(fd)</a></li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>TTY<span><a class="mark" href="#tty_tty" id="tty_tty">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+<p>The <code>tty</code> module provides the <code>tty.ReadStream</code> and <code>tty.WriteStream</code> classes.
+In most cases, it will not be necessary or possible to use this module directly.
+However, it can be accessed using:</p>
+<pre><code class="language-js">const tty = require('tty');
+</code></pre>
+<p>When Node.js detects that it is being run with a text terminal ("TTY")
+attached, <a href="process.html#process_process_stdin"><code>process.stdin</code></a> will, by default, be initialized as an instance of
+<code>tty.ReadStream</code> and both <a href="process.html#process_process_stdout"><code>process.stdout</code></a> and <a href="process.html#process_process_stderr"><code>process.stderr</code></a> will, by
+default be instances of <code>tty.WriteStream</code>. The preferred method of determining
+whether Node.js is being run within a TTY context is to check that the value of
+the <code>process.stdout.isTTY</code> property is <code>true</code>:</p>
+<pre><code class="language-sh">$ node -p -e "Boolean(process.stdout.isTTY)"
+true
+$ node -p -e "Boolean(process.stdout.isTTY)" | cat
+false
+</code></pre>
+<p>In most cases, there should be little to no reason for an application to
+manually create instances of the <code>tty.ReadStream</code> and <code>tty.WriteStream</code>
+classes.</p>
+<h2>Class: tty.ReadStream<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/tty.js#L38">[src]</a><span><a class="mark" href="#tty_class_tty_readstream" id="tty_class_tty_readstream">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.5.8</span>
+</div>
+<p>The <code>tty.ReadStream</code> class is a subclass of <a href="net.html#net_class_net_socket"><code>net.Socket</code></a> that represents the
+readable side of a TTY. In normal circumstances <a href="process.html#process_process_stdin"><code>process.stdin</code></a> will be the
+only <code>tty.ReadStream</code> instance in a Node.js process and there should be no
+reason to create additional instances.</p>
+<h3>readStream.isRaw<span><a class="mark" href="#tty_readstream_israw" id="tty_readstream_israw">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<p>A <code>boolean</code> that is <code>true</code> if the TTY is currently configured to operate as a
+raw device. Defaults to <code>false</code>.</p>
+<h3>readStream.isTTY<span><a class="mark" href="#tty_readstream_istty" id="tty_readstream_istty">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.8</span>
+</div>
+<p>A <code>boolean</code> that is always <code>true</code> for <code>tty.ReadStream</code> instances.</p>
+<h3>readStream.setRawMode(mode)<span><a class="mark" href="#tty_readstream_setrawmode_mode" id="tty_readstream_setrawmode_mode">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<ul>
+<li><code>mode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, configures the <code>tty.ReadStream</code> to operate as a
+raw device. If <code>false</code>, configures the <code>tty.ReadStream</code> to operate in its
+default mode. The <code>readStream.isRaw</code> property will be set to the resulting
+mode.</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/this" class="type">&#x3C;this></a> - the read stream instance.</li>
+</ul>
+<p>Allows configuration of <code>tty.ReadStream</code> so that it operates as a raw device.</p>
+<p>When in raw mode, input is always available character-by-character, not
+including modifiers. Additionally, all special processing of characters by the
+terminal is disabled, including echoing input characters.
+Note that <code>CTRL</code>+<code>C</code> will no longer cause a <code>SIGINT</code> when in this mode.</p>
+<h2>Class: tty.WriteStream<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/tty.js#L75">[src]</a><span><a class="mark" href="#tty_class_tty_writestream" id="tty_class_tty_writestream">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.5.8</span>
+</div>
+<p>The <code>tty.WriteStream</code> class is a subclass of <a href="net.html#net_class_net_socket"><code>net.Socket</code></a> that represents
+the writable side of a TTY. In normal circumstances, <a href="process.html#process_process_stdout"><code>process.stdout</code></a> and
+<a href="process.html#process_process_stderr"><code>process.stderr</code></a> will be the only <code>tty.WriteStream</code> instances created for a
+Node.js process and there should be no reason to create additional instances.</p>
+<h3>Event: 'resize'<span><a class="mark" href="#tty_event_resize" id="tty_event_resize">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<p>The <code>'resize'</code> event is emitted whenever either of the <code>writeStream.columns</code>
+or <code>writeStream.rows</code> properties have changed. No arguments are passed to the
+listener callback when called.</p>
+<pre><code class="language-js">process.stdout.on('resize', () => {
+  console.log('screen size has changed!');
+  console.log(`${process.stdout.columns}x${process.stdout.rows}`);
+});
+</code></pre>
+<h3>writeStream.clearLine(dir)<span><a class="mark" href="#tty_writestream_clearline_dir" id="tty_writestream_clearline_dir">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<ul>
+<li>
+<p><code>dir</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></p>
+<ul>
+<li><code>-1</code> - to the left from cursor</li>
+<li><code>1</code> - to the right from cursor</li>
+<li><code>0</code> - the entire line</li>
+</ul>
+</li>
+</ul>
+<p><code>writeStream.clearLine()</code> clears the current line of this <code>WriteStream</code> in a
+direction identified by <code>dir</code>.</p>
+<h3>writeStream.clearScreenDown()<span><a class="mark" href="#tty_writestream_clearscreendown" id="tty_writestream_clearscreendown">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<p><code>writeStream.clearScreenDown()</code> clears this <code>WriteStream</code> from the current
+cursor down.</p>
+<h3>writeStream.columns<span><a class="mark" href="#tty_writestream_columns" id="tty_writestream_columns">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<p>A <code>number</code> specifying the number of columns the TTY currently has. This property
+is updated whenever the <code>'resize'</code> event is emitted.</p>
+<h3>writeStream.cursorTo(x, y)<span><a class="mark" href="#tty_writestream_cursorto_x_y" id="tty_writestream_cursorto_x_y">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<ul>
+<li><code>x</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li><code>y</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p><code>writeStream.cursorTo()</code> moves this <code>WriteStream</code>'s cursor to the specified
+position.</p>
+<h3>writeStream.getColorDepth([env])<span><a class="mark" href="#tty_writestream_getcolordepth_env" id="tty_writestream_getcolordepth_env">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v9.9.0</span>
+</div>
+<ul>
+<li><code>env</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> An object containing the environment variables to check.
+<strong>Default:</strong> <code>process.env</code>.</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p>Returns:</p>
+<ul>
+<li><code>1</code> for 2,</li>
+<li><code>4</code> for 16,</li>
+<li><code>8</code> for 256,</li>
+<li><code>24</code> for 16,777,216
+colors supported.</li>
+</ul>
+<p>Use this to determine what colors the terminal supports. Due to the nature of
+colors in terminals it is possible to either have false positives or false
+negatives. It depends on process information and the environment variables that
+may lie about what terminal is used.
+To enforce a specific behavior without relying on <code>process.env</code> it is possible
+to pass in an object with different settings.</p>
+<p>Use the <code>NODE_DISABLE_COLORS</code> environment variable to enforce this function to
+always return 1.</p>
+<h3>writeStream.getWindowSize()<span><a class="mark" href="#tty_writestream_getwindowsize" id="tty_writestream_getwindowsize">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<ul>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number[]></a></li>
+</ul>
+<p><code>writeStream.getWindowSize()</code> returns the size of the <a href="tty.html">TTY</a>
+corresponding to this <code>WriteStream</code>. The array is of the type
+<code>[numColumns, numRows]</code> where <code>numColumns</code> and <code>numRows</code> represent the number
+of columns and rows in the corresponding <a href="tty.html">TTY</a>.</p>
+<h3>writeStream.isTTY<span><a class="mark" href="#tty_writestream_istty" id="tty_writestream_istty">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.8</span>
+</div>
+<p>A <code>boolean</code> that is always <code>true</code>.</p>
+<h3>writeStream.moveCursor(dx, dy)<span><a class="mark" href="#tty_writestream_movecursor_dx_dy" id="tty_writestream_movecursor_dx_dy">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<ul>
+<li><code>dx</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+<li><code>dy</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a></li>
+</ul>
+<p><code>writeStream.moveCursor()</code> moves this <code>WriteStream</code>'s cursor <em>relative</em> to its
+current position.</p>
+<h3>writeStream.rows<span><a class="mark" href="#tty_writestream_rows" id="tty_writestream_rows">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<p>A <code>number</code> specifying the number of rows the TTY currently has. This property
+is updated whenever the <code>'resize'</code> event is emitted.</p>
+<h2>tty.isatty(fd)<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/tty.js#L34">[src]</a><span><a class="mark" href="#tty_tty_isatty_fd" id="tty_tty_isatty_fd">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.5.8</span>
+</div>
+<ul>
+<li><code>fd</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> A numeric file descriptor</li>
+</ul>
+<p>The <code>tty.isatty()</code> method returns <code>true</code> if the given <code>fd</code> is associated with
+a TTY and <code>false</code> if it is not, including whenever <code>fd</code> is not a non-negative
+integer.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

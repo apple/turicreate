@@ -1,0 +1,1771 @@
+{
+  "type": "module",
+  "source": "doc/api/stream.md",
+  "modules": [
+    {
+      "textRaw": "Stream",
+      "name": "stream",
+      "introduced_in": "v0.10.0",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>A stream is an abstract interface for working with streaming data in Node.js.\nThe <code>stream</code> module provides a base API that makes it easy to build objects\nthat implement the stream interface.</p>\n<p>There are many stream objects provided by Node.js. For instance, a\n<a href=\"http.html#http_class_http_incomingmessage\">request to an HTTP server</a> and <a href=\"process.html#process_process_stdout\"><code>process.stdout</code></a>\nare both stream instances.</p>\n<p>Streams can be readable, writable, or both. All streams are instances of\n<a href=\"events.html#events_class_eventemitter\"><code>EventEmitter</code></a>.</p>\n<p>The <code>stream</code> module can be accessed using:</p>\n<pre><code class=\"language-js\">const stream = require('stream');\n</code></pre>\n<p>While it is important to understand how streams work, the <code>stream</code> module itself\nis most useful for developers that are creating new types of stream instances.\nDevelopers who are primarily <em>consuming</em> stream objects will rarely need to use\nthe <code>stream</code> module directly.</p>",
+      "modules": [
+        {
+          "textRaw": "Organization of this Document",
+          "name": "organization_of_this_document",
+          "desc": "<p>This document is divided into two primary sections with a third section for\nadditional notes. The first section explains the elements of the stream API that\nare required to <em>use</em> streams within an application. The second section explains\nthe elements of the API that are required to <em>implement</em> new types of streams.</p>",
+          "type": "module",
+          "displayName": "Organization of this Document"
+        },
+        {
+          "textRaw": "Types of Streams",
+          "name": "types_of_streams",
+          "desc": "<p>There are four fundamental stream types within Node.js:</p>\n<ul>\n<li><a href=\"#stream_class_stream_writable\"><code>Writable</code></a> - streams to which data can be written (for example,\n<a href=\"fs.html#fs_fs_createwritestream_path_options\"><code>fs.createWriteStream()</code></a>).</li>\n<li><a href=\"#stream_class_stream_readable\"><code>Readable</code></a> - streams from which data can be read (for example,\n<a href=\"fs.html#fs_fs_createreadstream_path_options\"><code>fs.createReadStream()</code></a>).</li>\n<li><a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> - streams that are both <code>Readable</code> and <code>Writable</code> (for example,\n<a href=\"net.html#net_class_net_socket\"><code>net.Socket</code></a>).</li>\n<li><a href=\"#stream_class_stream_transform\"><code>Transform</code></a> - <code>Duplex</code> streams that can modify or transform the data as it\nis written and read (for example, <a href=\"zlib.html#zlib_zlib_createdeflate_options\"><code>zlib.createDeflate()</code></a>).</li>\n</ul>\n<p>Additionally, this module includes the utility functions <a href=\"#stream_stream_pipeline_streams_callback\">pipeline</a> and\n<a href=\"#stream_stream_finished_stream_callback\">finished</a>.</p>",
+          "modules": [
+            {
+              "textRaw": "Object Mode",
+              "name": "object_mode",
+              "desc": "<p>All streams created by Node.js APIs operate exclusively on strings and <code>Buffer</code>\n(or <code>Uint8Array</code>) objects. It is possible, however, for stream implementations\nto work with other types of JavaScript values (with the exception of <code>null</code>,\nwhich serves a special purpose within streams). Such streams are considered to\noperate in \"object mode\".</p>\n<p>Stream instances are switched into object mode using the <code>objectMode</code> option\nwhen the stream is created. Attempting to switch an existing stream into\nobject mode is not safe.</p>",
+              "type": "module",
+              "displayName": "Object Mode"
+            }
+          ],
+          "miscs": [
+            {
+              "textRaw": "Buffering",
+              "name": "Buffering",
+              "type": "misc",
+              "desc": "<p>Both <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> and <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> streams will store data in an internal\nbuffer that can be retrieved using <code>writable.writableBuffer</code> or\n<code>readable.readableBuffer</code>, respectively.</p>\n<p>The amount of data potentially buffered depends on the <code>highWaterMark</code> option\npassed into the stream's constructor. For normal streams, the <code>highWaterMark</code>\noption specifies a <a href=\"#stream_highwatermark_discrepancy_after_calling_readable_setencoding\">total number of bytes</a>. For streams operating\nin object mode, the <code>highWaterMark</code> specifies a total number of objects.</p>\n<p>Data is buffered in <code>Readable</code> streams when the implementation calls\n<a href=\"#stream_readable_push_chunk_encoding\"><code>stream.push(chunk)</code></a>. If the consumer of the Stream does not\ncall <a href=\"#stream_readable_read_size\"><code>stream.read()</code></a>, the data will sit in the internal\nqueue until it is consumed.</p>\n<p>Once the total size of the internal read buffer reaches the threshold specified\nby <code>highWaterMark</code>, the stream will temporarily stop reading data from the\nunderlying resource until the data currently buffered can be consumed (that is,\nthe stream will stop calling the internal <code>readable._read()</code> method that is\nused to fill the read buffer).</p>\n<p>Data is buffered in <code>Writable</code> streams when the\n<a href=\"#stream_writable_write_chunk_encoding_callback\"><code>writable.write(chunk)</code></a> method is called repeatedly. While the\ntotal size of the internal write buffer is below the threshold set by\n<code>highWaterMark</code>, calls to <code>writable.write()</code> will return <code>true</code>. Once\nthe size of the internal buffer reaches or exceeds the <code>highWaterMark</code>, <code>false</code>\nwill be returned.</p>\n<p>A key goal of the <code>stream</code> API, particularly the <a href=\"#stream_readable_pipe_destination_options\"><code>stream.pipe()</code></a> method,\nis to limit the buffering of data to acceptable levels such that sources and\ndestinations of differing speeds will not overwhelm the available memory.</p>\n<p>Because <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> and <a href=\"#stream_class_stream_transform\"><code>Transform</code></a> streams are both <code>Readable</code> and\n<code>Writable</code>, each maintains <em>two</em> separate internal buffers used for reading and\nwriting, allowing each side to operate independently of the other while\nmaintaining an appropriate and efficient flow of data. For example,\n<a href=\"net.html#net_class_net_socket\"><code>net.Socket</code></a> instances are <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> streams whose <code>Readable</code> side allows\nconsumption of data received <em>from</em> the socket and whose <code>Writable</code> side allows\nwriting data <em>to</em> the socket. Because data may be written to the socket at a\nfaster or slower rate than data is received, it is important for each side to\noperate (and buffer) independently of the other.</p>"
+            }
+          ],
+          "type": "module",
+          "displayName": "Types of Streams"
+        }
+      ],
+      "methods": [
+        {
+          "textRaw": "stream.finished(stream, callback)",
+          "type": "method",
+          "name": "finished",
+          "meta": {
+            "added": [
+              "v10.0.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`stream` {Stream} A readable and/or writable stream.",
+                  "name": "stream",
+                  "type": "Stream",
+                  "desc": "A readable and/or writable stream."
+                },
+                {
+                  "textRaw": "`callback` {Function} A callback function that takes an optional error argument.",
+                  "name": "callback",
+                  "type": "Function",
+                  "desc": "A callback function that takes an optional error argument."
+                }
+              ]
+            }
+          ],
+          "desc": "<p>A function to get notified when a stream is no longer readable, writable\nor has experienced an error or a premature close event.</p>\n<pre><code class=\"language-js\">const { finished } = require('stream');\n\nconst rs = fs.createReadStream('archive.tar');\n\nfinished(rs, (err) => {\n  if (err) {\n    console.error('Stream failed.', err);\n  } else {\n    console.log('Stream is done reading.');\n  }\n});\n\nrs.resume(); // drain the stream\n</code></pre>\n<p>Especially useful in error handling scenarios where a stream is destroyed\nprematurely (like an aborted HTTP request), and will not emit <code>'end'</code>\nor <code>'finish'</code>.</p>\n<p>The <code>finished</code> API is promisify-able as well;</p>\n<pre><code class=\"language-js\">const finished = util.promisify(stream.finished);\n\nconst rs = fs.createReadStream('archive.tar');\n\nasync function run() {\n  await finished(rs);\n  console.log('Stream is done reading.');\n}\n\nrun().catch(console.error);\nrs.resume(); // drain the stream\n</code></pre>"
+        },
+        {
+          "textRaw": "stream.pipeline(...streams[, callback])",
+          "type": "method",
+          "name": "pipeline",
+          "meta": {
+            "added": [
+              "v10.0.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`...streams` {Stream} Two or more streams to pipe between.",
+                  "name": "...streams",
+                  "type": "Stream",
+                  "desc": "Two or more streams to pipe between."
+                },
+                {
+                  "textRaw": "`callback` {Function} A callback function that takes an optional error argument.",
+                  "name": "callback",
+                  "type": "Function",
+                  "desc": "A callback function that takes an optional error argument.",
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>A module method to pipe between streams forwarding errors and properly cleaning\nup and provide a callback when the pipeline is complete.</p>\n<pre><code class=\"language-js\">const { pipeline } = require('stream');\nconst fs = require('fs');\nconst zlib = require('zlib');\n\n// Use the pipeline API to easily pipe a series of streams\n// together and get notified when the pipeline is fully done.\n\n// A pipeline to gzip a potentially huge tar file efficiently:\n\npipeline(\n  fs.createReadStream('archive.tar'),\n  zlib.createGzip(),\n  fs.createWriteStream('archive.tar.gz'),\n  (err) => {\n    if (err) {\n      console.error('Pipeline failed.', err);\n    } else {\n      console.log('Pipeline succeeded.');\n    }\n  }\n);\n</code></pre>\n<p>The <code>pipeline</code> API is promisify-able as well:</p>\n<pre><code class=\"language-js\">const pipeline = util.promisify(stream.pipeline);\n\nasync function run() {\n  await pipeline(\n    fs.createReadStream('archive.tar'),\n    zlib.createGzip(),\n    fs.createWriteStream('archive.tar.gz')\n  );\n  console.log('Pipeline succeeded.');\n}\n\nrun().catch(console.error);\n</code></pre>"
+        }
+      ],
+      "miscs": [
+        {
+          "textRaw": "API for Stream Consumers",
+          "name": "API for Stream Consumers",
+          "type": "misc",
+          "desc": "<p>Almost all Node.js applications, no matter how simple, use streams in some\nmanner. The following is an example of using streams in a Node.js application\nthat implements an HTTP server:</p>\n<pre><code class=\"language-js\">const http = require('http');\n\nconst server = http.createServer((req, res) => {\n  // req is an http.IncomingMessage, which is a Readable Stream\n  // res is an http.ServerResponse, which is a Writable Stream\n\n  let body = '';\n  // Get the data as utf8 strings.\n  // If an encoding is not set, Buffer objects will be received.\n  req.setEncoding('utf8');\n\n  // Readable streams emit 'data' events once a listener is added\n  req.on('data', (chunk) => {\n    body += chunk;\n  });\n\n  // the 'end' event indicates that the entire body has been received\n  req.on('end', () => {\n    try {\n      const data = JSON.parse(body);\n      // write back something interesting to the user:\n      res.write(typeof data);\n      res.end();\n    } catch (er) {\n      // uh oh! bad json!\n      res.statusCode = 400;\n      return res.end(`error: ${er.message}`);\n    }\n  });\n});\n\nserver.listen(1337);\n\n// $ curl localhost:1337 -d \"{}\"\n// object\n// $ curl localhost:1337 -d \"\\\"foo\\\"\"\n// string\n// $ curl localhost:1337 -d \"not json\"\n// error: Unexpected token o in JSON at position 1\n</code></pre>\n<p><a href=\"#stream_class_stream_writable\"><code>Writable</code></a> streams (such as <code>res</code> in the example) expose methods such as\n<code>write()</code> and <code>end()</code> that are used to write data onto the stream.</p>\n<p><a href=\"#stream_class_stream_readable\"><code>Readable</code></a> streams use the <a href=\"events.html#events_class_eventemitter\"><code>EventEmitter</code></a> API for notifying application\ncode when data is available to be read off the stream. That available data can\nbe read from the stream in multiple ways.</p>\n<p>Both <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> and <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> streams use the <a href=\"events.html#events_class_eventemitter\"><code>EventEmitter</code></a> API in\nvarious ways to communicate the current state of the stream.</p>\n<p><a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> and <a href=\"#stream_class_stream_transform\"><code>Transform</code></a> streams are both <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> and\n<a href=\"#stream_class_stream_readable\"><code>Readable</code></a>.</p>\n<p>Applications that are either writing data to or consuming data from a stream\nare not required to implement the stream interfaces directly and will generally\nhave no reason to call <code>require('stream')</code>.</p>\n<p>Developers wishing to implement new types of streams should refer to the\nsection <a href=\"#stream_api_for_stream_implementers\">API for Stream Implementers</a>.</p>",
+          "miscs": [
+            {
+              "textRaw": "Writable Streams",
+              "name": "writable_streams",
+              "desc": "<p>Writable streams are an abstraction for a <em>destination</em> to which data is\nwritten.</p>\n<p>Examples of <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> streams include:</p>\n<ul>\n<li><a href=\"http.html#http_class_http_clientrequest\">HTTP requests, on the client</a></li>\n<li><a href=\"http.html#http_class_http_serverresponse\">HTTP responses, on the server</a></li>\n<li><a href=\"fs.html#fs_class_fs_writestream\">fs write streams</a></li>\n<li><a href=\"zlib.html\">zlib streams</a></li>\n<li><a href=\"crypto.html\">crypto streams</a></li>\n<li><a href=\"net.html#net_class_net_socket\">TCP sockets</a></li>\n<li><a href=\"child_process.html#child_process_subprocess_stdin\">child process stdin</a></li>\n<li><a href=\"process.html#process_process_stdout\"><code>process.stdout</code></a>, <a href=\"process.html#process_process_stderr\"><code>process.stderr</code></a></li>\n</ul>\n<p>Some of these examples are actually <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> streams that implement the\n<a href=\"#stream_class_stream_writable\"><code>Writable</code></a> interface.</p>\n<p>All <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> streams implement the interface defined by the\n<code>stream.Writable</code> class.</p>\n<p>While specific instances of <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> streams may differ in various ways,\nall <code>Writable</code> streams follow the same fundamental usage pattern as illustrated\nin the example below:</p>\n<pre><code class=\"language-js\">const myStream = getWritableStreamSomehow();\nmyStream.write('some data');\nmyStream.write('some more data');\nmyStream.end('done writing data');\n</code></pre>",
+              "classes": [
+                {
+                  "textRaw": "Class: stream.Writable",
+                  "type": "class",
+                  "name": "stream.Writable",
+                  "meta": {
+                    "added": [
+                      "v0.9.4"
+                    ],
+                    "changes": []
+                  },
+                  "events": [
+                    {
+                      "textRaw": "Event: 'close'",
+                      "type": "event",
+                      "name": "close",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [],
+                      "desc": "<p>The <code>'close'</code> event is emitted when the stream and any of its underlying\nresources (a file descriptor, for example) have been closed. The event indicates\nthat no more events will be emitted, and no further computation will occur.</p>\n<p>Not all <code>Writable</code> streams will emit the <code>'close'</code> event.</p>"
+                    },
+                    {
+                      "textRaw": "Event: 'drain'",
+                      "type": "event",
+                      "name": "drain",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [],
+                      "desc": "<p>If a call to <a href=\"#stream_writable_write_chunk_encoding_callback\"><code>stream.write(chunk)</code></a> returns <code>false</code>, the\n<code>'drain'</code> event will be emitted when it is appropriate to resume writing data\nto the stream.</p>\n<pre><code class=\"language-js\">// Write the data to the supplied writable stream one million times.\n// Be attentive to back-pressure.\nfunction writeOneMillionTimes(writer, data, encoding, callback) {\n  let i = 1000000;\n  write();\n  function write() {\n    let ok = true;\n    do {\n      i--;\n      if (i === 0) {\n        // last time!\n        writer.write(data, encoding, callback);\n      } else {\n        // see if we should continue, or wait\n        // don't pass the callback, because we're not done yet.\n        ok = writer.write(data, encoding);\n      }\n    } while (i > 0 &#x26;&#x26; ok);\n    if (i > 0) {\n      // had to stop early!\n      // write some more once it drains\n      writer.once('drain', write);\n    }\n  }\n}\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "Event: 'error'",
+                      "type": "event",
+                      "name": "error",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [
+                        {
+                          "textRaw": "{Error}",
+                          "type": "Error"
+                        }
+                      ],
+                      "desc": "<p>The <code>'error'</code> event is emitted if an error occurred while writing or piping\ndata. The listener callback is passed a single <code>Error</code> argument when called.</p>\n<p>The stream is not closed when the <code>'error'</code> event is emitted.</p>"
+                    },
+                    {
+                      "textRaw": "Event: 'finish'",
+                      "type": "event",
+                      "name": "finish",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [],
+                      "desc": "<p>The <code>'finish'</code> event is emitted after the <a href=\"#stream_writable_end_chunk_encoding_callback\"><code>stream.end()</code></a> method\nhas been called, and all data has been flushed to the underlying system.</p>\n<pre><code class=\"language-js\">const writer = getWritableStreamSomehow();\nfor (let i = 0; i &#x3C; 100; i++) {\n  writer.write(`hello, #${i}!\\n`);\n}\nwriter.end('This is the end\\n');\nwriter.on('finish', () => {\n  console.log('All writes are now complete.');\n});\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "Event: 'pipe'",
+                      "type": "event",
+                      "name": "pipe",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [
+                        {
+                          "textRaw": "`src` {stream.Readable} source stream that is piping to this writable",
+                          "name": "src",
+                          "type": "stream.Readable",
+                          "desc": "source stream that is piping to this writable"
+                        }
+                      ],
+                      "desc": "<p>The <code>'pipe'</code> event is emitted when the <a href=\"#stream_readable_pipe_destination_options\"><code>stream.pipe()</code></a> method is called on\na readable stream, adding this writable to its set of destinations.</p>\n<pre><code class=\"language-js\">const writer = getWritableStreamSomehow();\nconst reader = getReadableStreamSomehow();\nwriter.on('pipe', (src) => {\n  console.log('Something is piping into the writer.');\n  assert.equal(src, reader);\n});\nreader.pipe(writer);\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "Event: 'unpipe'",
+                      "type": "event",
+                      "name": "unpipe",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [
+                        {
+                          "textRaw": "`src` {stream.Readable} The source stream that [unpiped][`stream.unpipe()`] this writable",
+                          "name": "src",
+                          "type": "stream.Readable",
+                          "desc": "The source stream that [unpiped][`stream.unpipe()`] this writable"
+                        }
+                      ],
+                      "desc": "<p>The <code>'unpipe'</code> event is emitted when the <a href=\"#stream_readable_unpipe_destination\"><code>stream.unpipe()</code></a> method is called\non a <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> stream, removing this <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> from its set of\ndestinations.</p>\n<p>This is also emitted in case this <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> stream emits an error when a\n<a href=\"#stream_class_stream_readable\"><code>Readable</code></a> stream pipes into it.</p>\n<pre><code class=\"language-js\">const writer = getWritableStreamSomehow();\nconst reader = getReadableStreamSomehow();\nwriter.on('unpipe', (src) => {\n  console.log('Something has stopped piping into the writer.');\n  assert.equal(src, reader);\n});\nreader.pipe(writer);\nreader.unpipe(writer);\n</code></pre>"
+                    }
+                  ],
+                  "methods": [
+                    {
+                      "textRaw": "writable.cork()",
+                      "type": "method",
+                      "name": "cork",
+                      "meta": {
+                        "added": [
+                          "v0.11.2"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "params": []
+                        }
+                      ],
+                      "desc": "<p>The <code>writable.cork()</code> method forces all written data to be buffered in memory.\nThe buffered data will be flushed when either the <a href=\"#stream_writable_uncork\"><code>stream.uncork()</code></a> or\n<a href=\"#stream_writable_end_chunk_encoding_callback\"><code>stream.end()</code></a> methods are called.</p>\n<p>The primary intent of <code>writable.cork()</code> is to avoid a situation where writing\nmany small chunks of data to a stream do not cause a backup in the internal\nbuffer that would have an adverse impact on performance. In such situations,\nimplementations that implement the <code>writable._writev()</code> method can perform\nbuffered writes in a more optimized manner.</p>\n<p>See also: <a href=\"#stream_writable_uncork\"><code>writable.uncork()</code></a>.</p>"
+                    },
+                    {
+                      "textRaw": "writable.destroy([error])",
+                      "type": "method",
+                      "name": "destroy",
+                      "meta": {
+                        "added": [
+                          "v8.0.0"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`error` {Error}",
+                              "name": "error",
+                              "type": "Error",
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Destroy the stream, and emit the passed <code>'error'</code> and a <code>'close'</code> event.\nAfter this call, the writable stream has ended and subsequent calls\nto <code>write()</code> or <code>end()</code> will result in an <code>ERR_STREAM_DESTROYED</code> error.\nImplementors should not override this method,\nbut instead implement <a href=\"#stream_writable_destroy_err_callback\"><code>writable._destroy()</code></a>.</p>"
+                    },
+                    {
+                      "textRaw": "writable.end([chunk][, encoding][, callback])",
+                      "type": "method",
+                      "name": "end",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": [
+                          {
+                            "version": "v10.0.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/18780",
+                            "description": "This method now returns a reference to `writable`."
+                          },
+                          {
+                            "version": "v8.0.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/11608",
+                            "description": "The `chunk` argument can now be a `Uint8Array` instance."
+                          }
+                        ]
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`chunk` {string|Buffer|Uint8Array|any} Optional data to write. For streams not operating in object mode, `chunk` must be a string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value other than `null`.",
+                              "name": "chunk",
+                              "type": "string|Buffer|Uint8Array|any",
+                              "desc": "Optional data to write. For streams not operating in object mode, `chunk` must be a string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value other than `null`.",
+                              "optional": true
+                            },
+                            {
+                              "textRaw": "`encoding` {string} The encoding if `chunk` is a string",
+                              "name": "encoding",
+                              "type": "string",
+                              "desc": "The encoding if `chunk` is a string",
+                              "optional": true
+                            },
+                            {
+                              "textRaw": "`callback` {Function} Optional callback for when the stream is finished",
+                              "name": "callback",
+                              "type": "Function",
+                              "desc": "Optional callback for when the stream is finished",
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Calling the <code>writable.end()</code> method signals that no more data will be written\nto the <a href=\"#stream_class_stream_writable\"><code>Writable</code></a>. The optional <code>chunk</code> and <code>encoding</code> arguments allow one\nfinal additional chunk of data to be written immediately before closing the\nstream. If provided, the optional <code>callback</code> function is attached as a listener\nfor the <a href=\"#stream_event_finish\"><code>'finish'</code></a> event.</p>\n<p>Calling the <a href=\"#stream_writable_write_chunk_encoding_callback\"><code>stream.write()</code></a> method after calling\n<a href=\"#stream_writable_end_chunk_encoding_callback\"><code>stream.end()</code></a> will raise an error.</p>\n<pre><code class=\"language-js\">// write 'hello, ' and then end with 'world!'\nconst fs = require('fs');\nconst file = fs.createWriteStream('example.txt');\nfile.write('hello, ');\nfile.end('world!');\n// writing more now is not allowed!\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "writable.setDefaultEncoding(encoding)",
+                      "type": "method",
+                      "name": "setDefaultEncoding",
+                      "meta": {
+                        "added": [
+                          "v0.11.15"
+                        ],
+                        "changes": [
+                          {
+                            "version": "v6.1.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/5040",
+                            "description": "This method now returns a reference to `writable`."
+                          }
+                        ]
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`encoding` {string} The new default encoding",
+                              "name": "encoding",
+                              "type": "string",
+                              "desc": "The new default encoding"
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>The <code>writable.setDefaultEncoding()</code> method sets the default <code>encoding</code> for a\n<a href=\"#stream_class_stream_writable\"><code>Writable</code></a> stream.</p>"
+                    },
+                    {
+                      "textRaw": "writable.uncork()",
+                      "type": "method",
+                      "name": "uncork",
+                      "meta": {
+                        "added": [
+                          "v0.11.2"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "params": []
+                        }
+                      ],
+                      "desc": "<p>The <code>writable.uncork()</code> method flushes all data buffered since\n<a href=\"#stream_writable_cork\"><code>stream.cork()</code></a> was called.</p>\n<p>When using <a href=\"#stream_writable_cork\"><code>writable.cork()</code></a> and <code>writable.uncork()</code> to manage the buffering\nof writes to a stream, it is recommended that calls to <code>writable.uncork()</code> be\ndeferred using <code>process.nextTick()</code>. Doing so allows batching of all\n<code>writable.write()</code> calls that occur within a given Node.js event loop phase.</p>\n<pre><code class=\"language-js\">stream.cork();\nstream.write('some ');\nstream.write('data ');\nprocess.nextTick(() => stream.uncork());\n</code></pre>\n<p>If the <a href=\"#stream_writable_cork\"><code>writable.cork()</code></a> method is called multiple times on a stream, the\nsame number of calls to <code>writable.uncork()</code> must be called to flush the buffered\ndata.</p>\n<pre><code class=\"language-js\">stream.cork();\nstream.write('some ');\nstream.cork();\nstream.write('data ');\nprocess.nextTick(() => {\n  stream.uncork();\n  // The data will not be flushed until uncork() is called a second time.\n  stream.uncork();\n});\n</code></pre>\n<p>See also: <a href=\"#stream_writable_cork\"><code>writable.cork()</code></a>.</p>"
+                    },
+                    {
+                      "textRaw": "writable.write(chunk[, encoding][, callback])",
+                      "type": "method",
+                      "name": "write",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": [
+                          {
+                            "version": "v8.0.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/11608",
+                            "description": "The `chunk` argument can now be a `Uint8Array` instance."
+                          },
+                          {
+                            "version": "v6.0.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/6170",
+                            "description": "Passing `null` as the `chunk` parameter will always be considered invalid now, even in object mode."
+                          }
+                        ]
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {boolean} `false` if the stream wishes for the calling code to wait for the `'drain'` event to be emitted before continuing to write additional data; otherwise `true`.",
+                            "name": "return",
+                            "type": "boolean",
+                            "desc": "`false` if the stream wishes for the calling code to wait for the `'drain'` event to be emitted before continuing to write additional data; otherwise `true`."
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`chunk` {string|Buffer|Uint8Array|any} Optional data to write. For streams not operating in object mode, `chunk` must be a string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value other than `null`.",
+                              "name": "chunk",
+                              "type": "string|Buffer|Uint8Array|any",
+                              "desc": "Optional data to write. For streams not operating in object mode, `chunk` must be a string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value other than `null`."
+                            },
+                            {
+                              "textRaw": "`encoding` {string} The encoding, if `chunk` is a string",
+                              "name": "encoding",
+                              "type": "string",
+                              "desc": "The encoding, if `chunk` is a string",
+                              "optional": true
+                            },
+                            {
+                              "textRaw": "`callback` {Function} Callback for when this chunk of data is flushed",
+                              "name": "callback",
+                              "type": "Function",
+                              "desc": "Callback for when this chunk of data is flushed",
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>The <code>writable.write()</code> method writes some data to the stream, and calls the\nsupplied <code>callback</code> once the data has been fully handled. If an error\noccurs, the <code>callback</code> <em>may or may not</em> be called with the error as its\nfirst argument. To reliably detect write errors, add a listener for the\n<code>'error'</code> event.</p>\n<p>The return value is <code>true</code> if the internal buffer is less than the\n<code>highWaterMark</code> configured when the stream was created after admitting <code>chunk</code>.\nIf <code>false</code> is returned, further attempts to write data to the stream should\nstop until the <a href=\"#stream_event_drain\"><code>'drain'</code></a> event is emitted.</p>\n<p>While a stream is not draining, calls to <code>write()</code> will buffer <code>chunk</code>, and\nreturn false. Once all currently buffered chunks are drained (accepted for\ndelivery by the operating system), the <code>'drain'</code> event will be emitted.\nIt is recommended that once <code>write()</code> returns false, no more chunks be written\nuntil the <code>'drain'</code> event is emitted. While calling <code>write()</code> on a stream that\nis not draining is allowed, Node.js will buffer all written chunks until\nmaximum memory usage occurs, at which point it will abort unconditionally.\nEven before it aborts, high memory usage will cause poor garbage collector\nperformance and high RSS (which is not typically released back to the system,\neven after the memory is no longer required). Since TCP sockets may never\ndrain if the remote peer does not read the data, writing a socket that is\nnot draining may lead to a remotely exploitable vulnerability.</p>\n<p>Writing data while the stream is not draining is particularly\nproblematic for a <a href=\"#stream_class_stream_transform\"><code>Transform</code></a>, because the <code>Transform</code> streams are paused\nby default until they are piped or a <code>'data'</code> or <code>'readable'</code> event handler\nis added.</p>\n<p>If the data to be written can be generated or fetched on demand, it is\nrecommended to encapsulate the logic into a <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> and use\n<a href=\"#stream_readable_pipe_destination_options\"><code>stream.pipe()</code></a>. However, if calling <code>write()</code> is preferred, it is\npossible to respect backpressure and avoid memory issues using the\n<a href=\"#stream_event_drain\"><code>'drain'</code></a> event:</p>\n<pre><code class=\"language-js\">function write(data, cb) {\n  if (!stream.write(data)) {\n    stream.once('drain', cb);\n  } else {\n    process.nextTick(cb);\n  }\n}\n\n// Wait for cb to be called before doing any other write.\nwrite('hello', () => {\n  console.log('Write completed, do more writes now.');\n});\n</code></pre>\n<p>A <code>Writable</code> stream in object mode will always ignore the <code>encoding</code> argument.</p>"
+                    }
+                  ],
+                  "properties": [
+                    {
+                      "textRaw": "`writable` {boolean}",
+                      "type": "boolean",
+                      "name": "writable",
+                      "meta": {
+                        "added": [
+                          "v0.8.0"
+                        ],
+                        "changes": []
+                      },
+                      "desc": "<p>Is <code>true</code> if it is safe to call <a href=\"\"><code>writable.write()</code></a>.</p>"
+                    },
+                    {
+                      "textRaw": "`writableHighWaterMark` {number}",
+                      "type": "number",
+                      "name": "writableHighWaterMark",
+                      "meta": {
+                        "added": [
+                          "v9.3.0"
+                        ],
+                        "changes": []
+                      },
+                      "desc": "<p>Return the value of <code>highWaterMark</code> passed when constructing this\n<code>Writable</code>.</p>"
+                    },
+                    {
+                      "textRaw": "writable.writableLength",
+                      "name": "writableLength",
+                      "meta": {
+                        "added": [
+                          "v9.4.0"
+                        ],
+                        "changes": []
+                      },
+                      "desc": "<p>This property contains the number of bytes (or objects) in the queue\nready to be written. The value provides introspection data regarding\nthe status of the <code>highWaterMark</code>.</p>"
+                    }
+                  ]
+                }
+              ],
+              "type": "misc",
+              "displayName": "Writable Streams"
+            },
+            {
+              "textRaw": "Readable Streams",
+              "name": "readable_streams",
+              "desc": "<p>Readable streams are an abstraction for a <em>source</em> from which data is\nconsumed.</p>\n<p>Examples of <code>Readable</code> streams include:</p>\n<ul>\n<li><a href=\"http.html#http_class_http_incomingmessage\">HTTP responses, on the client</a></li>\n<li><a href=\"http.html#http_class_http_incomingmessage\">HTTP requests, on the server</a></li>\n<li><a href=\"fs.html#fs_class_fs_readstream\">fs read streams</a></li>\n<li><a href=\"zlib.html\">zlib streams</a></li>\n<li><a href=\"crypto.html\">crypto streams</a></li>\n<li><a href=\"net.html#net_class_net_socket\">TCP sockets</a></li>\n<li><a href=\"child_process.html#child_process_subprocess_stdout\">child process stdout and stderr</a></li>\n<li><a href=\"process.html#process_process_stdin\"><code>process.stdin</code></a></li>\n</ul>\n<p>All <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> streams implement the interface defined by the\n<code>stream.Readable</code> class.</p>",
+              "modules": [
+                {
+                  "textRaw": "Two Reading Modes",
+                  "name": "two_reading_modes",
+                  "desc": "<p><code>Readable</code> streams effectively operate in one of two modes: flowing and\npaused. These modes are separate from <a href=\"#stream_object_mode\">object mode</a>.\nA <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> stream can be in object mode or not, regardless of whether\nit is in flowing mode or paused mode.</p>\n<ul>\n<li>\n<p>In flowing mode, data is read from the underlying system automatically\nand provided to an application as quickly as possible using events via the\n<a href=\"events.html#events_class_eventemitter\"><code>EventEmitter</code></a> interface.</p>\n</li>\n<li>\n<p>In paused mode, the <a href=\"#stream_readable_read_size\"><code>stream.read()</code></a> method must be called\nexplicitly to read chunks of data from the stream.</p>\n</li>\n</ul>\n<p>All <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> streams begin in paused mode but can be switched to flowing\nmode in one of the following ways:</p>\n<ul>\n<li>Adding a <a href=\"#stream_event_data\"><code>'data'</code></a> event handler.</li>\n<li>Calling the <a href=\"#stream_readable_resume\"><code>stream.resume()</code></a> method.</li>\n<li>Calling the <a href=\"#stream_readable_pipe_destination_options\"><code>stream.pipe()</code></a> method to send the data to a <a href=\"#stream_class_stream_writable\"><code>Writable</code></a>.</li>\n</ul>\n<p>The <code>Readable</code> can switch back to paused mode using one of the following:</p>\n<ul>\n<li>If there are no pipe destinations, by calling the\n<a href=\"#stream_readable_pause\"><code>stream.pause()</code></a> method.</li>\n<li>If there are pipe destinations, by removing all pipe destinations.\nMultiple pipe destinations may be removed by calling the\n<a href=\"#stream_readable_unpipe_destination\"><code>stream.unpipe()</code></a> method.</li>\n</ul>\n<p>The important concept to remember is that a <code>Readable</code> will not generate data\nuntil a mechanism for either consuming or ignoring that data is provided. If\nthe consuming mechanism is disabled or taken away, the <code>Readable</code> will <em>attempt</em>\nto stop generating the data.</p>\n<p>For backward compatibility reasons, removing <a href=\"#stream_event_data\"><code>'data'</code></a> event handlers will\n<strong>not</strong> automatically pause the stream. Also, if there are piped destinations,\nthen calling <a href=\"#stream_readable_pause\"><code>stream.pause()</code></a> will not guarantee that the\nstream will <em>remain</em> paused once those destinations drain and ask for more data.</p>\n<p>If a <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> is switched into flowing mode and there are no consumers\navailable to handle the data, that data will be lost. This can occur, for\ninstance, when the <code>readable.resume()</code> method is called without a listener\nattached to the <code>'data'</code> event, or when a <code>'data'</code> event handler is removed\nfrom the stream.</p>\n<p>Adding a <a href=\"#stream_event_readable\"><code>'readable'</code></a> event handler automatically make the stream to\nstop flowing, and the data to be consumed via\n<a href=\"#stream_readable_read_size\"><code>readable.read()</code></a>. If the <a href=\"#stream_event_readable\"><code>'readable'</code></a> event handler is\nremoved, then the stream will start flowing again if there is a\n<a href=\"#stream_event_data\"><code>'data'</code></a> event handler.</p>",
+                  "type": "module",
+                  "displayName": "Two Reading Modes"
+                },
+                {
+                  "textRaw": "Three States",
+                  "name": "three_states",
+                  "desc": "<p>The \"two modes\" of operation for a <code>Readable</code> stream are a simplified\nabstraction for the more complicated internal state management that is happening\nwithin the <code>Readable</code> stream implementation.</p>\n<p>Specifically, at any given point in time, every <code>Readable</code> is in one of three\npossible states:</p>\n<ul>\n<li><code>readable.readableFlowing === null</code></li>\n<li><code>readable.readableFlowing === false</code></li>\n<li><code>readable.readableFlowing === true</code></li>\n</ul>\n<p>When <code>readable.readableFlowing</code> is <code>null</code>, no mechanism for consuming the\nstream's data is provided. Therefore, the stream will not generate data.\nWhile in this state, attaching a listener for the <code>'data'</code> event, calling the\n<code>readable.pipe()</code> method, or calling the <code>readable.resume()</code> method will switch\n<code>readable.readableFlowing</code> to <code>true</code>, causing the <code>Readable</code> to begin actively\nemitting events as data is generated.</p>\n<p>Calling <code>readable.pause()</code>, <code>readable.unpipe()</code>, or receiving backpressure\nwill cause the <code>readable.readableFlowing</code> to be set as <code>false</code>,\ntemporarily halting the flowing of events but <em>not</em> halting the generation of\ndata. While in this state, attaching a listener for the <code>'data'</code> event\nwill not switch <code>readable.readableFlowing</code> to <code>true</code>.</p>\n<pre><code class=\"language-js\">const { PassThrough, Writable } = require('stream');\nconst pass = new PassThrough();\nconst writable = new Writable();\n\npass.pipe(writable);\npass.unpipe(writable);\n// readableFlowing is now false\n\npass.on('data', (chunk) => { console.log(chunk.toString()); });\npass.write('ok');  // will not emit 'data'\npass.resume();     // must be called to make stream emit 'data'\n</code></pre>\n<p>While <code>readable.readableFlowing</code> is <code>false</code>, data may be accumulating\nwithin the stream's internal buffer.</p>",
+                  "type": "module",
+                  "displayName": "Three States"
+                },
+                {
+                  "textRaw": "Choose One API Style",
+                  "name": "choose_one_api_style",
+                  "desc": "<p>The <code>Readable</code> stream API evolved across multiple Node.js versions and provides\nmultiple methods of consuming stream data. In general, developers should choose\n<em>one</em> of the methods of consuming data and <em>should never</em> use multiple methods\nto consume data from a single stream. Specifically, using a combination\nof <code>on('data')</code>, <code>on('readable')</code>, <code>pipe()</code>, or async iterators could\nlead to unintuitive behavior.</p>\n<p>Use of the <code>readable.pipe()</code> method is recommended for most users as it has been\nimplemented to provide the easiest way of consuming stream data. Developers that\nrequire more fine-grained control over the transfer and generation of data can\nuse the <a href=\"events.html#events_class_eventemitter\"><code>EventEmitter</code></a> and <code>readable.on('readable')</code>/<code>readable.read()</code>\nor the <code>readable.pause()</code>/<code>readable.resume()</code> APIs.</p>",
+                  "type": "module",
+                  "displayName": "Choose One API Style"
+                }
+              ],
+              "classes": [
+                {
+                  "textRaw": "Class: stream.Readable",
+                  "type": "class",
+                  "name": "stream.Readable",
+                  "meta": {
+                    "added": [
+                      "v0.9.4"
+                    ],
+                    "changes": []
+                  },
+                  "events": [
+                    {
+                      "textRaw": "Event: 'close'",
+                      "type": "event",
+                      "name": "close",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [],
+                      "desc": "<p>The <code>'close'</code> event is emitted when the stream and any of its underlying\nresources (a file descriptor, for example) have been closed. The event indicates\nthat no more events will be emitted, and no further computation will occur.</p>\n<p>Not all <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> streams will emit the <code>'close'</code> event.</p>"
+                    },
+                    {
+                      "textRaw": "Event: 'data'",
+                      "type": "event",
+                      "name": "data",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [
+                        {
+                          "textRaw": "`chunk` {Buffer|string|any} The chunk of data. For streams that are not operating in object mode, the chunk will be either a string or `Buffer`. For streams that are in object mode, the chunk can be any JavaScript value other than `null`.",
+                          "name": "chunk",
+                          "type": "Buffer|string|any",
+                          "desc": "The chunk of data. For streams that are not operating in object mode, the chunk will be either a string or `Buffer`. For streams that are in object mode, the chunk can be any JavaScript value other than `null`."
+                        }
+                      ],
+                      "desc": "<p>The <code>'data'</code> event is emitted whenever the stream is relinquishing ownership of\na chunk of data to a consumer. This may occur whenever the stream is switched\nin flowing mode by calling <code>readable.pipe()</code>, <code>readable.resume()</code>, or by\nattaching a listener callback to the <code>'data'</code> event. The <code>'data'</code> event will\nalso be emitted whenever the <code>readable.read()</code> method is called and a chunk of\ndata is available to be returned.</p>\n<p>Attaching a <code>'data'</code> event listener to a stream that has not been explicitly\npaused will switch the stream into flowing mode. Data will then be passed as\nsoon as it is available.</p>\n<p>The listener callback will be passed the chunk of data as a string if a default\nencoding has been specified for the stream using the\n<code>readable.setEncoding()</code> method; otherwise the data will be passed as a\n<code>Buffer</code>.</p>\n<pre><code class=\"language-js\">const readable = getReadableStreamSomehow();\nreadable.on('data', (chunk) => {\n  console.log(`Received ${chunk.length} bytes of data.`);\n});\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "Event: 'end'",
+                      "type": "event",
+                      "name": "end",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [],
+                      "desc": "<p>The <code>'end'</code> event is emitted when there is no more data to be consumed from\nthe stream.</p>\n<p>The <code>'end'</code> event <strong>will not be emitted</strong> unless the data is completely\nconsumed. This can be accomplished by switching the stream into flowing mode,\nor by calling <a href=\"#stream_readable_read_size\"><code>stream.read()</code></a> repeatedly until all data has been\nconsumed.</p>\n<pre><code class=\"language-js\">const readable = getReadableStreamSomehow();\nreadable.on('data', (chunk) => {\n  console.log(`Received ${chunk.length} bytes of data.`);\n});\nreadable.on('end', () => {\n  console.log('There will be no more data.');\n});\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "Event: 'error'",
+                      "type": "event",
+                      "name": "error",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "params": [
+                        {
+                          "textRaw": "{Error}",
+                          "type": "Error"
+                        }
+                      ],
+                      "desc": "<p>The <code>'error'</code> event may be emitted by a <code>Readable</code> implementation at any time.\nTypically, this may occur if the underlying stream is unable to generate data\ndue to an underlying internal failure, or when a stream implementation attempts\nto push an invalid chunk of data.</p>\n<p>The listener callback will be passed a single <code>Error</code> object.</p>"
+                    },
+                    {
+                      "textRaw": "Event: 'readable'",
+                      "type": "event",
+                      "name": "readable",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": [
+                          {
+                            "version": "v10.0.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/17979",
+                            "description": "The `'readable'` is always emitted in the next tick after `.push()` is called\n"
+                          },
+                          {
+                            "version": "v10.0.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/18994",
+                            "description": "Using `'readable'` requires calling `.read()`."
+                          }
+                        ]
+                      },
+                      "params": [],
+                      "desc": "<p>The <code>'readable'</code> event is emitted when there is data available to be read from\nthe stream. In some cases, attaching a listener for the <code>'readable'</code> event will\ncause some amount of data to be read into an internal buffer.</p>\n<pre><code class=\"language-javascript\">const readable = getReadableStreamSomehow();\nreadable.on('readable', function() {\n  // there is some data to read now\n  let data;\n\n  while (data = this.read()) {\n    console.log(data);\n  }\n});\n</code></pre>\n<p>The <code>'readable'</code> event will also be emitted once the end of the stream data\nhas been reached but before the <code>'end'</code> event is emitted.</p>\n<p>Effectively, the <code>'readable'</code> event indicates that the stream has new\ninformation: either new data is available or the end of the stream has been\nreached. In the former case, <a href=\"#stream_readable_read_size\"><code>stream.read()</code></a> will return the\navailable data. In the latter case, <a href=\"#stream_readable_read_size\"><code>stream.read()</code></a> will return\n<code>null</code>. For instance, in the following example, <code>foo.txt</code> is an empty file:</p>\n<pre><code class=\"language-js\">const fs = require('fs');\nconst rr = fs.createReadStream('foo.txt');\nrr.on('readable', () => {\n  console.log(`readable: ${rr.read()}`);\n});\nrr.on('end', () => {\n  console.log('end');\n});\n</code></pre>\n<p>The output of running this script is:</p>\n<pre><code class=\"language-txt\">$ node test.js\nreadable: null\nend\n</code></pre>\n<p>In general, the <code>readable.pipe()</code> and <code>'data'</code> event mechanisms are easier to\nunderstand than the <code>'readable'</code> event. However, handling <code>'readable'</code> might\nresult in increased throughput.</p>\n<p>If both <code>'readable'</code> and <a href=\"#stream_event_data\"><code>'data'</code></a> are used at the same time, <code>'readable'</code>\ntakes precedence in controlling the flow, i.e. <code>'data'</code> will be emitted\nonly when <a href=\"#stream_readable_read_size\"><code>stream.read()</code></a> is called. The\n<code>readableFlowing</code> property would become <code>false</code>.\nIf there are <code>'data'</code> listeners when <code>'readable'</code> is removed, the stream\nwill start flowing, i.e. <code>'data'</code> events will be emitted without calling\n<code>.resume()</code>.</p>"
+                    }
+                  ],
+                  "methods": [
+                    {
+                      "textRaw": "readable.destroy([error])",
+                      "type": "method",
+                      "name": "destroy",
+                      "meta": {
+                        "added": [
+                          "v8.0.0"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`error` {Error} Error which will be passed as payload in `'error'` event",
+                              "name": "error",
+                              "type": "Error",
+                              "desc": "Error which will be passed as payload in `'error'` event",
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Destroy the stream, and emit <code>'error'</code> and <code>'close'</code>. After this call, the\nreadable stream will release any internal resources and subsequent calls\nto <code>push()</code> will be ignored.\nImplementors should not override this method, but instead implement\n<a href=\"#stream_readable_destroy_err_callback\"><code>readable._destroy()</code></a>.</p>"
+                    },
+                    {
+                      "textRaw": "readable.isPaused()",
+                      "type": "method",
+                      "name": "isPaused",
+                      "meta": {
+                        "added": [
+                          "v0.11.14"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {boolean}",
+                            "name": "return",
+                            "type": "boolean"
+                          },
+                          "params": []
+                        }
+                      ],
+                      "desc": "<p>The <code>readable.isPaused()</code> method returns the current operating state of the\n<code>Readable</code>. This is used primarily by the mechanism that underlies the\n<code>readable.pipe()</code> method. In most typical cases, there will be no reason to\nuse this method directly.</p>\n<pre><code class=\"language-js\">const readable = new stream.Readable();\n\nreadable.isPaused(); // === false\nreadable.pause();\nreadable.isPaused(); // === true\nreadable.resume();\nreadable.isPaused(); // === false\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "readable.pause()",
+                      "type": "method",
+                      "name": "pause",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": []
+                        }
+                      ],
+                      "desc": "<p>The <code>readable.pause()</code> method will cause a stream in flowing mode to stop\nemitting <a href=\"#stream_event_data\"><code>'data'</code></a> events, switching out of flowing mode. Any data that\nbecomes available will remain in the internal buffer.</p>\n<pre><code class=\"language-js\">const readable = getReadableStreamSomehow();\nreadable.on('data', (chunk) => {\n  console.log(`Received ${chunk.length} bytes of data.`);\n  readable.pause();\n  console.log('There will be no additional data for 1 second.');\n  setTimeout(() => {\n    console.log('Now data will start flowing again.');\n    readable.resume();\n  }, 1000);\n});\n</code></pre>\n<p>The <code>readable.pause()</code> method has no effect if there is a <code>'readable'</code>\nevent listener.</p>"
+                    },
+                    {
+                      "textRaw": "readable.pipe(destination[, options])",
+                      "type": "method",
+                      "name": "pipe",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {stream.Writable} The *destination*, allowing for a chain of pipes if it is a [`Duplex`][] or a [`Transform`][] stream",
+                            "name": "return",
+                            "type": "stream.Writable",
+                            "desc": "The *destination*, allowing for a chain of pipes if it is a [`Duplex`][] or a [`Transform`][] stream"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`destination` {stream.Writable} The destination for writing data",
+                              "name": "destination",
+                              "type": "stream.Writable",
+                              "desc": "The destination for writing data"
+                            },
+                            {
+                              "textRaw": "`options` {Object} Pipe options",
+                              "name": "options",
+                              "type": "Object",
+                              "desc": "Pipe options",
+                              "options": [
+                                {
+                                  "textRaw": "`end` {boolean} End the writer when the reader ends. **Default:** `true`.",
+                                  "name": "end",
+                                  "type": "boolean",
+                                  "default": "`true`",
+                                  "desc": "End the writer when the reader ends."
+                                }
+                              ],
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>The <code>readable.pipe()</code> method attaches a <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> stream to the <code>readable</code>,\ncausing it to switch automatically into flowing mode and push all of its data\nto the attached <a href=\"#stream_class_stream_writable\"><code>Writable</code></a>. The flow of data will be automatically managed\nso that the destination <code>Writable</code> stream is not overwhelmed by a faster\n<code>Readable</code> stream.</p>\n<p>The following example pipes all of the data from the <code>readable</code> into a file\nnamed <code>file.txt</code>:</p>\n<pre><code class=\"language-js\">const fs = require('fs');\nconst readable = getReadableStreamSomehow();\nconst writable = fs.createWriteStream('file.txt');\n// All the data from readable goes into 'file.txt'\nreadable.pipe(writable);\n</code></pre>\n<p>It is possible to attach multiple <code>Writable</code> streams to a single <code>Readable</code>\nstream.</p>\n<p>The <code>readable.pipe()</code> method returns a reference to the <em>destination</em> stream\nmaking it possible to set up chains of piped streams:</p>\n<pre><code class=\"language-js\">const fs = require('fs');\nconst r = fs.createReadStream('file.txt');\nconst z = zlib.createGzip();\nconst w = fs.createWriteStream('file.txt.gz');\nr.pipe(z).pipe(w);\n</code></pre>\n<p>By default, <a href=\"#stream_writable_end_chunk_encoding_callback\"><code>stream.end()</code></a> is called on the destination <code>Writable</code>\nstream when the source <code>Readable</code> stream emits <a href=\"#stream_event_end\"><code>'end'</code></a>, so that the\ndestination is no longer writable. To disable this default behavior, the <code>end</code>\noption can be passed as <code>false</code>, causing the destination stream to remain open:</p>\n<pre><code class=\"language-js\">reader.pipe(writer, { end: false });\nreader.on('end', () => {\n  writer.end('Goodbye\\n');\n});\n</code></pre>\n<p>One important caveat is that if the <code>Readable</code> stream emits an error during\nprocessing, the <code>Writable</code> destination <em>is not closed</em> automatically. If an\nerror occurs, it will be necessary to <em>manually</em> close each stream in order\nto prevent memory leaks.</p>\n<p>The <a href=\"process.html#process_process_stderr\"><code>process.stderr</code></a> and <a href=\"process.html#process_process_stdout\"><code>process.stdout</code></a> <code>Writable</code> streams are never\nclosed until the Node.js process exits, regardless of the specified options.</p>"
+                    },
+                    {
+                      "textRaw": "readable.read([size])",
+                      "type": "method",
+                      "name": "read",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {string|Buffer|null|any}",
+                            "name": "return",
+                            "type": "string|Buffer|null|any"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`size` {number} Optional argument to specify how much data to read.",
+                              "name": "size",
+                              "type": "number",
+                              "desc": "Optional argument to specify how much data to read.",
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>The <code>readable.read()</code> method pulls some data out of the internal buffer and\nreturns it. If no data available to be read, <code>null</code> is returned. By default,\nthe data will be returned as a <code>Buffer</code> object unless an encoding has been\nspecified using the <code>readable.setEncoding()</code> method or the stream is operating\nin object mode.</p>\n<p>The optional <code>size</code> argument specifies a specific number of bytes to read. If\n<code>size</code> bytes are not available to be read, <code>null</code> will be returned <em>unless</em>\nthe stream has ended, in which case all of the data remaining in the internal\nbuffer will be returned.</p>\n<p>If the <code>size</code> argument is not specified, all of the data contained in the\ninternal buffer will be returned.</p>\n<p>The <code>readable.read()</code> method should only be called on <code>Readable</code> streams\noperating in paused mode. In flowing mode, <code>readable.read()</code> is called\nautomatically until the internal buffer is fully drained.</p>\n<pre><code class=\"language-js\">const readable = getReadableStreamSomehow();\nreadable.on('readable', () => {\n  let chunk;\n  while (null !== (chunk = readable.read())) {\n    console.log(`Received ${chunk.length} bytes of data.`);\n  }\n});\n</code></pre>\n<p>A <code>Readable</code> stream in object mode will always return a single item from\na call to <a href=\"#stream_readable_read_size\"><code>readable.read(size)</code></a>, regardless of the value of the\n<code>size</code> argument.</p>\n<p>If the <code>readable.read()</code> method returns a chunk of data, a <code>'data'</code> event will\nalso be emitted.</p>\n<p>Calling <a href=\"#stream_readable_read_size\"><code>stream.read([size])</code></a> after the <a href=\"#stream_event_end\"><code>'end'</code></a> event has\nbeen emitted will return <code>null</code>. No runtime error will be raised.</p>"
+                    },
+                    {
+                      "textRaw": "readable.resume()",
+                      "type": "method",
+                      "name": "resume",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": [
+                          {
+                            "version": "v10.0.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/18994",
+                            "description": "The `resume()` has no effect if there is a `'readable'` event listening."
+                          }
+                        ]
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": []
+                        }
+                      ],
+                      "desc": "<p>The <code>readable.resume()</code> method causes an explicitly paused <code>Readable</code> stream to\nresume emitting <a href=\"#stream_event_data\"><code>'data'</code></a> events, switching the stream into flowing mode.</p>\n<p>The <code>readable.resume()</code> method can be used to fully consume the data from a\nstream without actually processing any of that data:</p>\n<pre><code class=\"language-js\">getReadableStreamSomehow()\n  .resume()\n  .on('end', () => {\n    console.log('Reached the end, but did not read anything.');\n  });\n</code></pre>\n<p>The <code>readable.resume()</code> method has no effect if there is a <code>'readable'</code>\nevent listener.</p>"
+                    },
+                    {
+                      "textRaw": "readable.setEncoding(encoding)",
+                      "type": "method",
+                      "name": "setEncoding",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`encoding` {string} The encoding to use.",
+                              "name": "encoding",
+                              "type": "string",
+                              "desc": "The encoding to use."
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>The <code>readable.setEncoding()</code> method sets the character encoding for\ndata read from the <code>Readable</code> stream.</p>\n<p>By default, no encoding is assigned and stream data will be returned as\n<code>Buffer</code> objects. Setting an encoding causes the stream data\nto be returned as strings of the specified encoding rather than as <code>Buffer</code>\nobjects. For instance, calling <code>readable.setEncoding('utf8')</code> will cause the\noutput data to be interpreted as UTF-8 data, and passed as strings. Calling\n<code>readable.setEncoding('hex')</code> will cause the data to be encoded in hexadecimal\nstring format.</p>\n<p>The <code>Readable</code> stream will properly handle multi-byte characters delivered\nthrough the stream that would otherwise become improperly decoded if simply\npulled from the stream as <code>Buffer</code> objects.</p>\n<pre><code class=\"language-js\">const readable = getReadableStreamSomehow();\nreadable.setEncoding('utf8');\nreadable.on('data', (chunk) => {\n  assert.equal(typeof chunk, 'string');\n  console.log('Got %d characters of string data:', chunk.length);\n});\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "readable.unpipe([destination])",
+                      "type": "method",
+                      "name": "unpipe",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`destination` {stream.Writable} Optional specific stream to unpipe",
+                              "name": "destination",
+                              "type": "stream.Writable",
+                              "desc": "Optional specific stream to unpipe",
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>The <code>readable.unpipe()</code> method detaches a <code>Writable</code> stream previously attached\nusing the <a href=\"#stream_readable_pipe_destination_options\"><code>stream.pipe()</code></a> method.</p>\n<p>If the <code>destination</code> is not specified, then <em>all</em> pipes are detached.</p>\n<p>If the <code>destination</code> is specified, but no pipe is set up for it, then\nthe method does nothing.</p>\n<pre><code class=\"language-js\">const fs = require('fs');\nconst readable = getReadableStreamSomehow();\nconst writable = fs.createWriteStream('file.txt');\n// All the data from readable goes into 'file.txt',\n// but only for the first second\nreadable.pipe(writable);\nsetTimeout(() => {\n  console.log('Stop writing to file.txt.');\n  readable.unpipe(writable);\n  console.log('Manually close the file stream.');\n  writable.end();\n}, 1000);\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "readable.unshift(chunk)",
+                      "type": "method",
+                      "name": "unshift",
+                      "meta": {
+                        "added": [
+                          "v0.9.11"
+                        ],
+                        "changes": [
+                          {
+                            "version": "v8.0.0",
+                            "pr-url": "https://github.com/nodejs/node/pull/11608",
+                            "description": "The `chunk` argument can now be a `Uint8Array` instance."
+                          }
+                        ]
+                      },
+                      "signatures": [
+                        {
+                          "params": [
+                            {
+                              "textRaw": "`chunk` {Buffer|Uint8Array|string|any} Chunk of data to unshift onto the read queue. For streams not operating in object mode, `chunk` must be a string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value other than `null`.",
+                              "name": "chunk",
+                              "type": "Buffer|Uint8Array|string|any",
+                              "desc": "Chunk of data to unshift onto the read queue. For streams not operating in object mode, `chunk` must be a string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value other than `null`."
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>The <code>readable.unshift()</code> method pushes a chunk of data back into the internal\nbuffer. This is useful in certain situations where a stream is being consumed by\ncode that needs to \"un-consume\" some amount of data that it has optimistically\npulled out of the source, so that the data can be passed on to some other party.</p>\n<p>The <code>stream.unshift(chunk)</code> method cannot be called after the <a href=\"#stream_event_end\"><code>'end'</code></a> event\nhas been emitted or a runtime error will be thrown.</p>\n<p>Developers using <code>stream.unshift()</code> often should consider switching to\nuse of a <a href=\"#stream_class_stream_transform\"><code>Transform</code></a> stream instead. See the <a href=\"#stream_api_for_stream_implementers\">API for Stream Implementers</a>\nsection for more information.</p>\n<pre><code class=\"language-js\">// Pull off a header delimited by \\n\\n\n// use unshift() if we get too much\n// Call the callback with (error, header, stream)\nconst { StringDecoder } = require('string_decoder');\nfunction parseHeader(stream, callback) {\n  stream.on('error', callback);\n  stream.on('readable', onReadable);\n  const decoder = new StringDecoder('utf8');\n  let header = '';\n  function onReadable() {\n    let chunk;\n    while (null !== (chunk = stream.read())) {\n      const str = decoder.write(chunk);\n      if (str.match(/\\n\\n/)) {\n        // found the header boundary\n        const split = str.split(/\\n\\n/);\n        header += split.shift();\n        const remaining = split.join('\\n\\n');\n        const buf = Buffer.from(remaining, 'utf8');\n        stream.removeListener('error', callback);\n        // remove the 'readable' listener before unshifting\n        stream.removeListener('readable', onReadable);\n        if (buf.length)\n          stream.unshift(buf);\n        // now the body of the message can be read from the stream.\n        callback(null, header, stream);\n      } else {\n        // still reading the header.\n        header += str;\n      }\n    }\n  }\n}\n</code></pre>\n<p>Unlike <a href=\"#stream_readable_push_chunk_encoding\"><code>stream.push(chunk)</code></a>, <code>stream.unshift(chunk)</code> will not\nend the reading process by resetting the internal reading state of the stream.\nThis can cause unexpected results if <code>readable.unshift()</code> is called during a\nread (i.e. from within a <a href=\"#stream_readable_read_size_1\"><code>stream._read()</code></a> implementation on a\ncustom stream). Following the call to <code>readable.unshift()</code> with an immediate\n<a href=\"#stream_readable_push_chunk_encoding\"><code>stream.push('')</code></a> will reset the reading state appropriately,\nhowever it is best to simply avoid calling <code>readable.unshift()</code> while in the\nprocess of performing a read.</p>"
+                    },
+                    {
+                      "textRaw": "readable.wrap(stream)",
+                      "type": "method",
+                      "name": "wrap",
+                      "meta": {
+                        "added": [
+                          "v0.9.4"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {this}",
+                            "name": "return",
+                            "type": "this"
+                          },
+                          "params": [
+                            {
+                              "textRaw": "`stream` {Stream} An \"old style\" readable stream",
+                              "name": "stream",
+                              "type": "Stream",
+                              "desc": "An \"old style\" readable stream"
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Prior to Node.js 0.10, streams did not implement the entire <code>stream</code> module API\nas it is currently defined. (See <a href=\"#stream_compatibility_with_older_node_js_versions\">Compatibility</a> for more information.)</p>\n<p>When using an older Node.js library that emits <a href=\"#stream_event_data\"><code>'data'</code></a> events and has a\n<a href=\"#stream_readable_pause\"><code>stream.pause()</code></a> method that is advisory only, the\n<code>readable.wrap()</code> method can be used to create a <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> stream that uses\nthe old stream as its data source.</p>\n<p>It will rarely be necessary to use <code>readable.wrap()</code> but the method has been\nprovided as a convenience for interacting with older Node.js applications and\nlibraries.</p>\n<pre><code class=\"language-js\">const { OldReader } = require('./old-api-module.js');\nconst { Readable } = require('stream');\nconst oreader = new OldReader();\nconst myReader = new Readable().wrap(oreader);\n\nmyReader.on('readable', () => {\n  myReader.read(); // etc.\n});\n</code></pre>"
+                    },
+                    {
+                      "textRaw": "readable[Symbol.asyncIterator]()",
+                      "type": "method",
+                      "name": "[Symbol.asyncIterator]",
+                      "meta": {
+                        "added": [
+                          "v10.0.0"
+                        ],
+                        "changes": []
+                      },
+                      "stability": 1,
+                      "stabilityText": "Experimental",
+                      "signatures": [
+                        {
+                          "return": {
+                            "textRaw": "Returns: {AsyncIterator} to fully consume the stream.",
+                            "name": "return",
+                            "type": "AsyncIterator",
+                            "desc": "to fully consume the stream."
+                          },
+                          "params": []
+                        }
+                      ],
+                      "desc": "<pre><code class=\"language-js\">const fs = require('fs');\n\nasync function print(readable) {\n  readable.setEncoding('utf8');\n  let data = '';\n  for await (const k of readable) {\n    data += k;\n  }\n  console.log(data);\n}\n\nprint(fs.createReadStream('file')).catch(console.log);\n</code></pre>\n<p>If the loop terminates with a <code>break</code> or a <code>throw</code>, the stream will be\ndestroyed. In other terms, iterating over a stream will consume the stream\nfully. The stream will be read in chunks of size equal to the <code>highWaterMark</code>\noption. In the code example above, data will be in a single chunk if the file\nhas less then 64kb of data because no <code>highWaterMark</code> option is provided to\n<a href=\"fs.html#fs_fs_createreadstream_path_options\"><code>fs.createReadStream()</code></a>.</p>"
+                    }
+                  ],
+                  "properties": [
+                    {
+                      "textRaw": "`readable` {boolean}",
+                      "type": "boolean",
+                      "name": "readable",
+                      "meta": {
+                        "added": [
+                          "v0.8.0"
+                        ],
+                        "changes": []
+                      },
+                      "desc": "<p>Is <code>true</code> if it is safe to call <a href=\"\"><code>readable.read()</code></a>.</p>"
+                    },
+                    {
+                      "textRaw": "`readableHighWaterMark` {number}",
+                      "type": "number",
+                      "name": "readableHighWaterMark",
+                      "meta": {
+                        "added": [
+                          "v9.3.0"
+                        ],
+                        "changes": []
+                      },
+                      "desc": "<p>Returns the value of <code>highWaterMark</code> passed when constructing this\n<code>Readable</code>.</p>"
+                    },
+                    {
+                      "textRaw": "`readableLength` {number}",
+                      "type": "number",
+                      "name": "readableLength",
+                      "meta": {
+                        "added": [
+                          "v9.4.0"
+                        ],
+                        "changes": []
+                      },
+                      "desc": "<p>This property contains the number of bytes (or objects) in the queue\nready to be read. The value provides introspection data regarding\nthe status of the <code>highWaterMark</code>.</p>"
+                    }
+                  ]
+                }
+              ],
+              "type": "misc",
+              "displayName": "Readable Streams"
+            },
+            {
+              "textRaw": "Duplex and Transform Streams",
+              "name": "duplex_and_transform_streams",
+              "classes": [
+                {
+                  "textRaw": "Class: stream.Duplex",
+                  "type": "class",
+                  "name": "stream.Duplex",
+                  "meta": {
+                    "added": [
+                      "v0.9.4"
+                    ],
+                    "changes": [
+                      {
+                        "version": "v6.8.0",
+                        "pr-url": "https://github.com/nodejs/node/pull/8834",
+                        "description": "Instances of `Duplex` now return `true` when checking `instanceof stream.Writable`."
+                      }
+                    ]
+                  },
+                  "desc": "<p>Duplex streams are streams that implement both the <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> and\n<a href=\"#stream_class_stream_writable\"><code>Writable</code></a> interfaces.</p>\n<p>Examples of <code>Duplex</code> streams include:</p>\n<ul>\n<li><a href=\"net.html#net_class_net_socket\">TCP sockets</a></li>\n<li><a href=\"zlib.html\">zlib streams</a></li>\n<li><a href=\"crypto.html\">crypto streams</a></li>\n</ul>"
+                },
+                {
+                  "textRaw": "Class: stream.Transform",
+                  "type": "class",
+                  "name": "stream.Transform",
+                  "meta": {
+                    "added": [
+                      "v0.9.4"
+                    ],
+                    "changes": []
+                  },
+                  "desc": "<p>Transform streams are <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> streams where the output is in some way\nrelated to the input. Like all <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> streams, <code>Transform</code> streams\nimplement both the <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> and <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> interfaces.</p>\n<p>Examples of <code>Transform</code> streams include:</p>\n<ul>\n<li><a href=\"zlib.html\">zlib streams</a></li>\n<li><a href=\"crypto.html\">crypto streams</a></li>\n</ul>",
+                  "methods": [
+                    {
+                      "textRaw": "transform.destroy([error])",
+                      "type": "method",
+                      "name": "destroy",
+                      "meta": {
+                        "added": [
+                          "v8.0.0"
+                        ],
+                        "changes": []
+                      },
+                      "signatures": [
+                        {
+                          "params": [
+                            {
+                              "textRaw": "`error` {Error}",
+                              "name": "error",
+                              "type": "Error",
+                              "optional": true
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Destroy the stream, and emit <code>'error'</code>. After this call, the\ntransform stream would release any internal resources.\nImplementors should not override this method, but instead implement\n<a href=\"#stream_readable_destroy_err_callback\"><code>readable._destroy()</code></a>.\nThe default implementation of <code>_destroy()</code> for <code>Transform</code> also emit <code>'close'</code>.</p>"
+                    }
+                  ]
+                }
+              ],
+              "type": "misc",
+              "displayName": "Duplex and Transform Streams"
+            }
+          ],
+          "methods": [
+            {
+              "textRaw": "stream.finished(stream, callback)",
+              "type": "method",
+              "name": "finished",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`stream` {Stream} A readable and/or writable stream.",
+                      "name": "stream",
+                      "type": "Stream",
+                      "desc": "A readable and/or writable stream."
+                    },
+                    {
+                      "textRaw": "`callback` {Function} A callback function that takes an optional error argument.",
+                      "name": "callback",
+                      "type": "Function",
+                      "desc": "A callback function that takes an optional error argument."
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>A function to get notified when a stream is no longer readable, writable\nor has experienced an error or a premature close event.</p>\n<pre><code class=\"language-js\">const { finished } = require('stream');\n\nconst rs = fs.createReadStream('archive.tar');\n\nfinished(rs, (err) => {\n  if (err) {\n    console.error('Stream failed.', err);\n  } else {\n    console.log('Stream is done reading.');\n  }\n});\n\nrs.resume(); // drain the stream\n</code></pre>\n<p>Especially useful in error handling scenarios where a stream is destroyed\nprematurely (like an aborted HTTP request), and will not emit <code>'end'</code>\nor <code>'finish'</code>.</p>\n<p>The <code>finished</code> API is promisify-able as well;</p>\n<pre><code class=\"language-js\">const finished = util.promisify(stream.finished);\n\nconst rs = fs.createReadStream('archive.tar');\n\nasync function run() {\n  await finished(rs);\n  console.log('Stream is done reading.');\n}\n\nrun().catch(console.error);\nrs.resume(); // drain the stream\n</code></pre>"
+            },
+            {
+              "textRaw": "stream.pipeline(...streams[, callback])",
+              "type": "method",
+              "name": "pipeline",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`...streams` {Stream} Two or more streams to pipe between.",
+                      "name": "...streams",
+                      "type": "Stream",
+                      "desc": "Two or more streams to pipe between."
+                    },
+                    {
+                      "textRaw": "`callback` {Function} A callback function that takes an optional error argument.",
+                      "name": "callback",
+                      "type": "Function",
+                      "desc": "A callback function that takes an optional error argument.",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>A module method to pipe between streams forwarding errors and properly cleaning\nup and provide a callback when the pipeline is complete.</p>\n<pre><code class=\"language-js\">const { pipeline } = require('stream');\nconst fs = require('fs');\nconst zlib = require('zlib');\n\n// Use the pipeline API to easily pipe a series of streams\n// together and get notified when the pipeline is fully done.\n\n// A pipeline to gzip a potentially huge tar file efficiently:\n\npipeline(\n  fs.createReadStream('archive.tar'),\n  zlib.createGzip(),\n  fs.createWriteStream('archive.tar.gz'),\n  (err) => {\n    if (err) {\n      console.error('Pipeline failed.', err);\n    } else {\n      console.log('Pipeline succeeded.');\n    }\n  }\n);\n</code></pre>\n<p>The <code>pipeline</code> API is promisify-able as well:</p>\n<pre><code class=\"language-js\">const pipeline = util.promisify(stream.pipeline);\n\nasync function run() {\n  await pipeline(\n    fs.createReadStream('archive.tar'),\n    zlib.createGzip(),\n    fs.createWriteStream('archive.tar.gz')\n  );\n  console.log('Pipeline succeeded.');\n}\n\nrun().catch(console.error);\n</code></pre>"
+            }
+          ]
+        },
+        {
+          "textRaw": "API for Stream Implementers",
+          "name": "API for Stream Implementers",
+          "type": "misc",
+          "desc": "<p>The <code>stream</code> module API has been designed to make it possible to easily\nimplement streams using JavaScript's prototypal inheritance model.</p>\n<p>First, a stream developer would declare a new JavaScript class that extends one\nof the four basic stream classes (<code>stream.Writable</code>, <code>stream.Readable</code>,\n<code>stream.Duplex</code>, or <code>stream.Transform</code>), making sure they call the appropriate\nparent class constructor:</p>\n<!-- eslint-disable no-useless-constructor -->\n<pre><code class=\"language-js\">const { Writable } = require('stream');\n\nclass MyWritable extends Writable {\n  constructor(options) {\n    super(options);\n    // ...\n  }\n}\n</code></pre>\n<p>The new stream class must then implement one or more specific methods, depending\non the type of stream being created, as detailed in the chart below:</p>\n<table>\n<thead>\n<tr>\n<th>Use-case</th>\n<th>Class</th>\n<th>Method(s) to implement</th>\n</tr>\n</thead>\n<tbody>\n<tr>\n<td>Reading only</td>\n<td><a href=\"#stream_class_stream_readable\"><code>Readable</code></a></td>\n<td><code><a href=\"#stream_readable_read_size_1\">_read</a></code></td>\n</tr>\n<tr>\n<td>Writing only</td>\n<td><a href=\"#stream_class_stream_writable\"><code>Writable</code></a></td>\n<td><code><a href=\"#stream_writable_write_chunk_encoding_callback_1\">_write</a></code>, <code><a href=\"#stream_writable_writev_chunks_callback\">_writev</a></code>, <code><a href=\"#stream_writable_final_callback\">_final</a></code></td>\n</tr>\n<tr>\n<td>Reading and writing</td>\n<td><a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a></td>\n<td><code><a href=\"#stream_readable_read_size_1\">_read</a></code>, <code><a href=\"#stream_writable_write_chunk_encoding_callback_1\">_write</a></code>, <code><a href=\"#stream_writable_writev_chunks_callback\">_writev</a></code>, <code><a href=\"#stream_writable_final_callback\">_final</a></code></td>\n</tr>\n<tr>\n<td>Operate on written data, then read the result</td>\n<td><a href=\"#stream_class_stream_transform\"><code>Transform</code></a></td>\n<td><code><a href=\"#stream_transform_transform_chunk_encoding_callback\">_transform</a></code>, <code><a href=\"#stream_transform_flush_callback\">_flush</a></code>, <code><a href=\"#stream_writable_final_callback\">_final</a></code></td>\n</tr>\n</tbody>\n</table>\n<p>The implementation code for a stream should <em>never</em> call the \"public\" methods\nof a stream that are intended for use by consumers (as described in the\n<a href=\"#stream_api_for_stream_consumers\">API for Stream Consumers</a> section). Doing so may lead to adverse side effects\nin application code consuming the stream.</p>",
+          "miscs": [
+            {
+              "textRaw": "Simplified Construction",
+              "name": "simplified_construction",
+              "meta": {
+                "added": [
+                  "v1.2.0"
+                ],
+                "changes": []
+              },
+              "desc": "<p>For many simple cases, it is possible to construct a stream without relying on\ninheritance. This can be accomplished by directly creating instances of the\n<code>stream.Writable</code>, <code>stream.Readable</code>, <code>stream.Duplex</code> or <code>stream.Transform</code>\nobjects and passing appropriate methods as constructor options.</p>\n<pre><code class=\"language-js\">const { Writable } = require('stream');\n\nconst myWritable = new Writable({\n  write(chunk, encoding, callback) {\n    // ...\n  }\n});\n</code></pre>",
+              "type": "misc",
+              "displayName": "Simplified Construction"
+            },
+            {
+              "textRaw": "Implementing a Writable Stream",
+              "name": "implementing_a_writable_stream",
+              "desc": "<p>The <code>stream.Writable</code> class is extended to implement a <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> stream.</p>\n<p>Custom <code>Writable</code> streams <em>must</em> call the <code>new stream.Writable([options])</code>\nconstructor and implement the <code>writable._write()</code> method. The\n<code>writable._writev()</code> method <em>may</em> also be implemented.</p>",
+              "ctors": [
+                {
+                  "textRaw": "Constructor: new stream.Writable([options])",
+                  "type": "ctor",
+                  "name": "stream.Writable",
+                  "meta": {
+                    "changes": [
+                      {
+                        "version": "v10.0.0",
+                        "pr-url": "https://github.com/nodejs/node/pull/18438",
+                        "description": "Add `emitClose` option to specify if `'close'` is emitted on destroy\n"
+                      }
+                    ]
+                  },
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`options` {Object}",
+                          "name": "options",
+                          "type": "Object",
+                          "options": [
+                            {
+                              "textRaw": "`highWaterMark` {number} Buffer level when [`stream.write()`][stream-write] starts returning `false`. **Default:** `16384` (16kb), or `16` for `objectMode` streams.",
+                              "name": "highWaterMark",
+                              "type": "number",
+                              "default": "`16384` (16kb), or `16` for `objectMode` streams",
+                              "desc": "Buffer level when [`stream.write()`][stream-write] starts returning `false`."
+                            },
+                            {
+                              "textRaw": "`decodeStrings` {boolean} Whether or not to encode strings as `Buffer`s before passing them to [`stream._write()`][stream-_write], using the encoding specified in the [`stream.write()`][stream-write] call. **Default:** `true`.",
+                              "name": "decodeStrings",
+                              "type": "boolean",
+                              "default": "`true`",
+                              "desc": "Whether or not to encode strings as `Buffer`s before passing them to [`stream._write()`][stream-_write], using the encoding specified in the [`stream.write()`][stream-write] call."
+                            },
+                            {
+                              "textRaw": "`defaultEncoding` {string} The default encoding that is used when no encoding is specified as an argument to [`stream.write()`][stream-write]. **Default:** `'utf8'`.",
+                              "name": "defaultEncoding",
+                              "type": "string",
+                              "default": "`'utf8'`",
+                              "desc": "The default encoding that is used when no encoding is specified as an argument to [`stream.write()`][stream-write]."
+                            },
+                            {
+                              "textRaw": "`objectMode` {boolean} Whether or not the [`stream.write(anyObj)`][stream-write] is a valid operation. When set, it becomes possible to write JavaScript values other than string, `Buffer` or `Uint8Array` if supported by the stream implementation. **Default:** `false`.",
+                              "name": "objectMode",
+                              "type": "boolean",
+                              "default": "`false`",
+                              "desc": "Whether or not the [`stream.write(anyObj)`][stream-write] is a valid operation. When set, it becomes possible to write JavaScript values other than string, `Buffer` or `Uint8Array` if supported by the stream implementation."
+                            },
+                            {
+                              "textRaw": "`emitClose` {boolean} Whether or not the stream should emit `'close'` after it has been destroyed. **Default:** `true`.",
+                              "name": "emitClose",
+                              "type": "boolean",
+                              "default": "`true`",
+                              "desc": "Whether or not the stream should emit `'close'` after it has been destroyed."
+                            },
+                            {
+                              "textRaw": "`write` {Function} Implementation for the [`stream._write()`][stream-_write] method.",
+                              "name": "write",
+                              "type": "Function",
+                              "desc": "Implementation for the [`stream._write()`][stream-_write] method."
+                            },
+                            {
+                              "textRaw": "`writev` {Function} Implementation for the [`stream._writev()`][stream-_writev] method.",
+                              "name": "writev",
+                              "type": "Function",
+                              "desc": "Implementation for the [`stream._writev()`][stream-_writev] method."
+                            },
+                            {
+                              "textRaw": "`destroy` {Function} Implementation for the [`stream._destroy()`][writable-_destroy] method.",
+                              "name": "destroy",
+                              "type": "Function",
+                              "desc": "Implementation for the [`stream._destroy()`][writable-_destroy] method."
+                            },
+                            {
+                              "textRaw": "`final` {Function} Implementation for the [`stream._final()`][stream-_final] method.",
+                              "name": "final",
+                              "type": "Function",
+                              "desc": "Implementation for the [`stream._final()`][stream-_final] method."
+                            }
+                          ],
+                          "optional": true
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<!-- eslint-disable no-useless-constructor -->\n<pre><code class=\"language-js\">const { Writable } = require('stream');\n\nclass MyWritable extends Writable {\n  constructor(options) {\n    // Calls the stream.Writable() constructor\n    super(options);\n    // ...\n  }\n}\n</code></pre>\n<p>Or, when using pre-ES6 style constructors:</p>\n<pre><code class=\"language-js\">const { Writable } = require('stream');\nconst util = require('util');\n\nfunction MyWritable(options) {\n  if (!(this instanceof MyWritable))\n    return new MyWritable(options);\n  Writable.call(this, options);\n}\nutil.inherits(MyWritable, Writable);\n</code></pre>\n<p>Or, using the Simplified Constructor approach:</p>\n<pre><code class=\"language-js\">const { Writable } = require('stream');\n\nconst myWritable = new Writable({\n  write(chunk, encoding, callback) {\n    // ...\n  },\n  writev(chunks, callback) {\n    // ...\n  }\n});\n</code></pre>"
+                }
+              ],
+              "methods": [
+                {
+                  "textRaw": "writable._write(chunk, encoding, callback)",
+                  "type": "method",
+                  "name": "_write",
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`chunk` {Buffer|string|any} The chunk to be written. Will **always** be a buffer unless the `decodeStrings` option was set to `false` or the stream is operating in object mode.",
+                          "name": "chunk",
+                          "type": "Buffer|string|any",
+                          "desc": "The chunk to be written. Will **always** be a buffer unless the `decodeStrings` option was set to `false` or the stream is operating in object mode."
+                        },
+                        {
+                          "textRaw": "`encoding` {string} If the chunk is a string, then `encoding` is the character encoding of that string. If chunk is a `Buffer`, or if the stream is operating in object mode, `encoding` may be ignored.",
+                          "name": "encoding",
+                          "type": "string",
+                          "desc": "If the chunk is a string, then `encoding` is the character encoding of that string. If chunk is a `Buffer`, or if the stream is operating in object mode, `encoding` may be ignored."
+                        },
+                        {
+                          "textRaw": "`callback` {Function} Call this function (optionally with an error argument) when processing is complete for the supplied chunk.",
+                          "name": "callback",
+                          "type": "Function",
+                          "desc": "Call this function (optionally with an error argument) when processing is complete for the supplied chunk."
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>All <code>Writable</code> stream implementations must provide a\n<a href=\"#stream_writable_write_chunk_encoding_callback_1\"><code>writable._write()</code></a> method to send data to the underlying\nresource.</p>\n<p><a href=\"#stream_class_stream_transform\"><code>Transform</code></a> streams provide their own implementation of the\n<a href=\"#stream_writable_write_chunk_encoding_callback_1\"><code>writable._write()</code></a>.</p>\n<p>This function MUST NOT be called by application code directly. It should be\nimplemented by child classes, and called by the internal <code>Writable</code> class\nmethods only.</p>\n<p>The <code>callback</code> method must be called to signal either that the write completed\nsuccessfully or failed with an error. The first argument passed to the\n<code>callback</code> must be the <code>Error</code> object if the call failed or <code>null</code> if the\nwrite succeeded.</p>\n<p>All calls to <code>writable.write()</code> that occur between the time <code>writable._write()</code>\nis called and the <code>callback</code> is called will cause the written data to be\nbuffered. When the <code>callback</code> is invoked, the stream might emit a <a href=\"#stream_event_drain\"><code>'drain'</code></a>\nevent. If a stream implementation is capable of processing multiple chunks of\ndata at once, the <code>writable._writev()</code> method should be implemented.</p>\n<p>If the <code>decodeStrings</code> property is explicitly set to <code>false</code> in the constructor\noptions, then <code>chunk</code> will remain the same object that is passed to <code>.write()</code>,\nand may be a string rather than a <code>Buffer</code>. This is to support implementations\nthat have an optimized handling for certain string data encodings. In that case,\nthe <code>encoding</code> argument will indicate the character encoding of the string.\nOtherwise, the <code>encoding</code> argument can be safely ignored.</p>\n<p>The <code>writable._write()</code> method is prefixed with an underscore because it is\ninternal to the class that defines it, and should never be called directly by\nuser programs.</p>"
+                },
+                {
+                  "textRaw": "writable._writev(chunks, callback)",
+                  "type": "method",
+                  "name": "_writev",
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`chunks` {Object[]} The chunks to be written. Each chunk has following format: `{ chunk: ..., encoding: ... }`.",
+                          "name": "chunks",
+                          "type": "Object[]",
+                          "desc": "The chunks to be written. Each chunk has following format: `{ chunk: ..., encoding: ... }`."
+                        },
+                        {
+                          "textRaw": "`callback` {Function} A callback function (optionally with an error argument) to be invoked when processing is complete for the supplied chunks.",
+                          "name": "callback",
+                          "type": "Function",
+                          "desc": "A callback function (optionally with an error argument) to be invoked when processing is complete for the supplied chunks."
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>This function MUST NOT be called by application code directly. It should be\nimplemented by child classes, and called by the internal <code>Writable</code> class\nmethods only.</p>\n<p>The <code>writable._writev()</code> method may be implemented in addition to\n<code>writable._write()</code> in stream implementations that are capable of processing\nmultiple chunks of data at once. If implemented, the method will be called with\nall chunks of data currently buffered in the write queue.</p>\n<p>The <code>writable._writev()</code> method is prefixed with an underscore because it is\ninternal to the class that defines it, and should never be called directly by\nuser programs.</p>"
+                },
+                {
+                  "textRaw": "writable._destroy(err, callback)",
+                  "type": "method",
+                  "name": "_destroy",
+                  "meta": {
+                    "added": [
+                      "v8.0.0"
+                    ],
+                    "changes": []
+                  },
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`err` {Error} A possible error.",
+                          "name": "err",
+                          "type": "Error",
+                          "desc": "A possible error."
+                        },
+                        {
+                          "textRaw": "`callback` {Function} A callback function that takes an optional error argument.",
+                          "name": "callback",
+                          "type": "Function",
+                          "desc": "A callback function that takes an optional error argument."
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>The <code>_destroy()</code> method is called by <a href=\"#stream_writable_destroy_error\"><code>writable.destroy()</code></a>.\nIt can be overridden by child classes but it <strong>must not</strong> be called directly.</p>"
+                },
+                {
+                  "textRaw": "writable._final(callback)",
+                  "type": "method",
+                  "name": "_final",
+                  "meta": {
+                    "added": [
+                      "v8.0.0"
+                    ],
+                    "changes": []
+                  },
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`callback` {Function} Call this function (optionally with an error argument) when finished writing any remaining data.",
+                          "name": "callback",
+                          "type": "Function",
+                          "desc": "Call this function (optionally with an error argument) when finished writing any remaining data."
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>The <code>_final()</code> method <strong>must not</strong> be called directly. It may be implemented\nby child classes, and if so, will be called by the internal <code>Writable</code>\nclass methods only.</p>\n<p>This optional function will be called before the stream closes, delaying the\n<code>'finish'</code> event until <code>callback</code> is called. This is useful to close resources\nor write buffered data before a stream ends.</p>"
+                }
+              ],
+              "modules": [
+                {
+                  "textRaw": "Errors While Writing",
+                  "name": "errors_while_writing",
+                  "desc": "<p>It is recommended that errors occurring during the processing of the\n<code>writable._write()</code> and <code>writable._writev()</code> methods are reported by invoking\nthe callback and passing the error as the first argument. This will cause an\n<code>'error'</code> event to be emitted by the <code>Writable</code>. Throwing an <code>Error</code> from within\n<code>writable._write()</code> can result in unexpected and inconsistent behavior depending\non how the stream is being used. Using the callback ensures consistent and\npredictable handling of errors.</p>\n<p>If a <code>Readable</code> stream pipes into a <code>Writable</code> stream when <code>Writable</code> emits an\nerror, the <code>Readable</code> stream will be unpiped.</p>\n<pre><code class=\"language-js\">const { Writable } = require('stream');\n\nconst myWritable = new Writable({\n  write(chunk, encoding, callback) {\n    if (chunk.toString().indexOf('a') >= 0) {\n      callback(new Error('chunk is invalid'));\n    } else {\n      callback();\n    }\n  }\n});\n</code></pre>",
+                  "type": "module",
+                  "displayName": "Errors While Writing"
+                },
+                {
+                  "textRaw": "An Example Writable Stream",
+                  "name": "an_example_writable_stream",
+                  "desc": "<p>The following illustrates a rather simplistic (and somewhat pointless) custom\n<code>Writable</code> stream implementation. While this specific <code>Writable</code> stream instance\nis not of any real particular usefulness, the example illustrates each of the\nrequired elements of a custom <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> stream instance:</p>\n<pre><code class=\"language-js\">const { Writable } = require('stream');\n\nclass MyWritable extends Writable {\n  _write(chunk, encoding, callback) {\n    if (chunk.toString().indexOf('a') >= 0) {\n      callback(new Error('chunk is invalid'));\n    } else {\n      callback();\n    }\n  }\n}\n</code></pre>",
+                  "type": "module",
+                  "displayName": "An Example Writable Stream"
+                },
+                {
+                  "textRaw": "Decoding buffers in a Writable Stream",
+                  "name": "decoding_buffers_in_a_writable_stream",
+                  "desc": "<p>Decoding buffers is a common task, for instance, when using transformers whose\ninput is a string. This is not a trivial process when using multi-byte\ncharacters encoding, such as UTF-8. The following example shows how to decode\nmulti-byte strings using <code>StringDecoder</code> and <a href=\"#stream_class_stream_writable\"><code>Writable</code></a>.</p>\n<pre><code class=\"language-js\">const { Writable } = require('stream');\nconst { StringDecoder } = require('string_decoder');\n\nclass StringWritable extends Writable {\n  constructor(options) {\n    super(options);\n    this._decoder = new StringDecoder(options &#x26;&#x26; options.defaultEncoding);\n    this.data = '';\n  }\n  _write(chunk, encoding, callback) {\n    if (encoding === 'buffer') {\n      chunk = this._decoder.write(chunk);\n    }\n    this.data += chunk;\n    callback();\n  }\n  _final(callback) {\n    this.data += this._decoder.end();\n    callback();\n  }\n}\n\nconst euro = [[0xE2, 0x82], [0xAC]].map(Buffer.from);\nconst w = new StringWritable();\n\nw.write('currency: ');\nw.write(euro[0]);\nw.end(euro[1]);\n\nconsole.log(w.data); // currency: €\n</code></pre>",
+                  "type": "module",
+                  "displayName": "Decoding buffers in a Writable Stream"
+                }
+              ],
+              "type": "misc",
+              "displayName": "Implementing a Writable Stream"
+            },
+            {
+              "textRaw": "Implementing a Readable Stream",
+              "name": "implementing_a_readable_stream",
+              "desc": "<p>The <code>stream.Readable</code> class is extended to implement a <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> stream.</p>\n<p>Custom <code>Readable</code> streams <em>must</em> call the <code>new stream.Readable([options])</code>\nconstructor and implement the <code>readable._read()</code> method.</p>",
+              "ctors": [
+                {
+                  "textRaw": "new stream.Readable([options])",
+                  "type": "ctor",
+                  "name": "stream.Readable",
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`options` {Object}",
+                          "name": "options",
+                          "type": "Object",
+                          "options": [
+                            {
+                              "textRaw": "`highWaterMark` {number} The maximum [number of bytes][hwm-gotcha] to store in the internal buffer before ceasing to read from the underlying resource. **Default:** `16384` (16kb), or `16` for `objectMode` streams.",
+                              "name": "highWaterMark",
+                              "type": "number",
+                              "default": "`16384` (16kb), or `16` for `objectMode` streams",
+                              "desc": "The maximum [number of bytes][hwm-gotcha] to store in the internal buffer before ceasing to read from the underlying resource."
+                            },
+                            {
+                              "textRaw": "`encoding` {string} If specified, then buffers will be decoded to strings using the specified encoding. **Default:** `null`.",
+                              "name": "encoding",
+                              "type": "string",
+                              "default": "`null`",
+                              "desc": "If specified, then buffers will be decoded to strings using the specified encoding."
+                            },
+                            {
+                              "textRaw": "`objectMode` {boolean} Whether this stream should behave as a stream of objects. Meaning that [`stream.read(n)`][stream-read] returns a single value instead of a `Buffer` of size `n`. **Default:** `false`.",
+                              "name": "objectMode",
+                              "type": "boolean",
+                              "default": "`false`",
+                              "desc": "Whether this stream should behave as a stream of objects. Meaning that [`stream.read(n)`][stream-read] returns a single value instead of a `Buffer` of size `n`."
+                            },
+                            {
+                              "textRaw": "`read` {Function} Implementation for the [`stream._read()`][stream-_read] method.",
+                              "name": "read",
+                              "type": "Function",
+                              "desc": "Implementation for the [`stream._read()`][stream-_read] method."
+                            },
+                            {
+                              "textRaw": "`destroy` {Function} Implementation for the [`stream._destroy()`][readable-_destroy] method.",
+                              "name": "destroy",
+                              "type": "Function",
+                              "desc": "Implementation for the [`stream._destroy()`][readable-_destroy] method."
+                            }
+                          ],
+                          "optional": true
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<!-- eslint-disable no-useless-constructor -->\n<pre><code class=\"language-js\">const { Readable } = require('stream');\n\nclass MyReadable extends Readable {\n  constructor(options) {\n    // Calls the stream.Readable(options) constructor\n    super(options);\n    // ...\n  }\n}\n</code></pre>\n<p>Or, when using pre-ES6 style constructors:</p>\n<pre><code class=\"language-js\">const { Readable } = require('stream');\nconst util = require('util');\n\nfunction MyReadable(options) {\n  if (!(this instanceof MyReadable))\n    return new MyReadable(options);\n  Readable.call(this, options);\n}\nutil.inherits(MyReadable, Readable);\n</code></pre>\n<p>Or, using the Simplified Constructor approach:</p>\n<pre><code class=\"language-js\">const { Readable } = require('stream');\n\nconst myReadable = new Readable({\n  read(size) {\n    // ...\n  }\n});\n</code></pre>"
+                }
+              ],
+              "methods": [
+                {
+                  "textRaw": "readable._read(size)",
+                  "type": "method",
+                  "name": "_read",
+                  "meta": {
+                    "added": [
+                      "v0.9.4"
+                    ],
+                    "changes": [
+                      {
+                        "version": "v10.0.0",
+                        "pr-url": "https://github.com/nodejs/node/pull/17979",
+                        "description": "call `_read()` only once per microtick"
+                      }
+                    ]
+                  },
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`size` {number} Number of bytes to read asynchronously",
+                          "name": "size",
+                          "type": "number",
+                          "desc": "Number of bytes to read asynchronously"
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>This function MUST NOT be called by application code directly. It should be\nimplemented by child classes, and called by the internal <code>Readable</code> class\nmethods only.</p>\n<p>All <code>Readable</code> stream implementations must provide an implementation of the\n<code>readable._read()</code> method to fetch data from the underlying resource.</p>\n<p>When <code>readable._read()</code> is called, if data is available from the resource, the\nimplementation should begin pushing that data into the read queue using the\n<a href=\"#stream_readable_push_chunk_encoding\"><code>this.push(dataChunk)</code></a> method. <code>_read()</code> should continue reading\nfrom the resource and pushing data until <code>readable.push()</code> returns <code>false</code>. Only\nwhen <code>_read()</code> is called again after it has stopped should it resume pushing\nadditional data onto the queue.</p>\n<p>Once the <code>readable._read()</code> method has been called, it will not be called again\nuntil the <a href=\"#stream_readable_push_chunk_encoding\"><code>readable.push()</code></a> method is called. <code>readable._read()</code>\nis guaranteed to be called only once within a synchronous execution, i.e. a\nmicrotick.</p>\n<p>The <code>size</code> argument is advisory. For implementations where a \"read\" is a\nsingle operation that returns data can use the <code>size</code> argument to determine how\nmuch data to fetch. Other implementations may ignore this argument and simply\nprovide data whenever it becomes available. There is no need to \"wait\" until\n<code>size</code> bytes are available before calling <a href=\"#stream_readable_push_chunk_encoding\"><code>stream.push(chunk)</code></a>.</p>\n<p>The <code>readable._read()</code> method is prefixed with an underscore because it is\ninternal to the class that defines it, and should never be called directly by\nuser programs.</p>"
+                },
+                {
+                  "textRaw": "readable._destroy(err, callback)",
+                  "type": "method",
+                  "name": "_destroy",
+                  "meta": {
+                    "added": [
+                      "v8.0.0"
+                    ],
+                    "changes": []
+                  },
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`err` {Error} A possible error.",
+                          "name": "err",
+                          "type": "Error",
+                          "desc": "A possible error."
+                        },
+                        {
+                          "textRaw": "`callback` {Function} A callback function that takes an optional error argument.",
+                          "name": "callback",
+                          "type": "Function",
+                          "desc": "A callback function that takes an optional error argument."
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>The <code>_destroy()</code> method is called by <a href=\"#stream_readable_destroy_error\"><code>readable.destroy()</code></a>.\nIt can be overridden by child classes but it <strong>must not</strong> be called directly.</p>"
+                },
+                {
+                  "textRaw": "readable.push(chunk[, encoding])",
+                  "type": "method",
+                  "name": "push",
+                  "meta": {
+                    "changes": [
+                      {
+                        "version": "v8.0.0",
+                        "pr-url": "https://github.com/nodejs/node/pull/11608",
+                        "description": "The `chunk` argument can now be a `Uint8Array` instance."
+                      }
+                    ]
+                  },
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {boolean} `true` if additional chunks of data may continue to be pushed; `false` otherwise.",
+                        "name": "return",
+                        "type": "boolean",
+                        "desc": "`true` if additional chunks of data may continue to be pushed; `false` otherwise."
+                      },
+                      "params": [
+                        {
+                          "textRaw": "`chunk` {Buffer|Uint8Array|string|null|any} Chunk of data to push into the read queue. For streams not operating in object mode, `chunk` must be a string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value.",
+                          "name": "chunk",
+                          "type": "Buffer|Uint8Array|string|null|any",
+                          "desc": "Chunk of data to push into the read queue. For streams not operating in object mode, `chunk` must be a string, `Buffer` or `Uint8Array`. For object mode streams, `chunk` may be any JavaScript value."
+                        },
+                        {
+                          "textRaw": "`encoding` {string} Encoding of string chunks. Must be a valid `Buffer` encoding, such as `'utf8'` or `'ascii'`.",
+                          "name": "encoding",
+                          "type": "string",
+                          "desc": "Encoding of string chunks. Must be a valid `Buffer` encoding, such as `'utf8'` or `'ascii'`.",
+                          "optional": true
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>When <code>chunk</code> is a <code>Buffer</code>, <code>Uint8Array</code> or <code>string</code>, the <code>chunk</code> of data will\nbe added to the internal queue for users of the stream to consume.\nPassing <code>chunk</code> as <code>null</code> signals the end of the stream (EOF), after which no\nmore data can be written.</p>\n<p>When the <code>Readable</code> is operating in paused mode, the data added with\n<code>readable.push()</code> can be read out by calling the\n<a href=\"#stream_readable_read_size\"><code>readable.read()</code></a> method when the <a href=\"#stream_event_readable\"><code>'readable'</code></a> event is\nemitted.</p>\n<p>When the <code>Readable</code> is operating in flowing mode, the data added with\n<code>readable.push()</code> will be delivered by emitting a <code>'data'</code> event.</p>\n<p>The <code>readable.push()</code> method is designed to be as flexible as possible. For\nexample, when wrapping a lower-level source that provides some form of\npause/resume mechanism, and a data callback, the low-level source can be wrapped\nby the custom <code>Readable</code> instance:</p>\n<pre><code class=\"language-js\">// source is an object with readStop() and readStart() methods,\n// and an `ondata` member that gets called when it has data, and\n// an `onend` member that gets called when the data is over.\n\nclass SourceWrapper extends Readable {\n  constructor(options) {\n    super(options);\n\n    this._source = getLowlevelSourceObject();\n\n    // Every time there's data, push it into the internal buffer.\n    this._source.ondata = (chunk) => {\n      // if push() returns false, then stop reading from source\n      if (!this.push(chunk))\n        this._source.readStop();\n    };\n\n    // When the source ends, push the EOF-signaling `null` chunk\n    this._source.onend = () => {\n      this.push(null);\n    };\n  }\n  // _read will be called when the stream wants to pull more data in\n  // the advisory size argument is ignored in this case.\n  _read(size) {\n    this._source.readStart();\n  }\n}\n</code></pre>\n<p>The <code>readable.push()</code> method is intended be called only by <code>Readable</code>\nimplementers, and only from within the <code>readable._read()</code> method.</p>\n<p>For streams not operating in object mode, if the <code>chunk</code> parameter of\n<code>readable.push()</code> is <code>undefined</code>, it will be treated as empty string or\nbuffer. See <a href=\"#stream_readable_push\"><code>readable.push('')</code></a> for more information.</p>"
+                }
+              ],
+              "modules": [
+                {
+                  "textRaw": "Errors While Reading",
+                  "name": "errors_while_reading",
+                  "desc": "<p>It is recommended that errors occurring during the processing of the\n<code>readable._read()</code> method are emitted using the <code>'error'</code> event rather than\nbeing thrown. Throwing an <code>Error</code> from within <code>readable._read()</code> can result in\nunexpected and inconsistent behavior depending on whether the stream is\noperating in flowing or paused mode. Using the <code>'error'</code> event ensures\nconsistent and predictable handling of errors.</p>\n<!-- eslint-disable no-useless-return -->\n<pre><code class=\"language-js\">const { Readable } = require('stream');\n\nconst myReadable = new Readable({\n  read(size) {\n    if (checkSomeErrorCondition()) {\n      process.nextTick(() => this.emit('error', err));\n      return;\n    }\n    // do some work\n  }\n});\n</code></pre>",
+                  "type": "module",
+                  "displayName": "Errors While Reading"
+                }
+              ],
+              "examples": [
+                {
+                  "textRaw": "An Example Counting Stream",
+                  "name": "An Example Counting Stream",
+                  "type": "example",
+                  "desc": "<p>The following is a basic example of a <code>Readable</code> stream that emits the numerals\nfrom 1 to 1,000,000 in ascending order, and then ends.</p>\n<pre><code class=\"language-js\">const { Readable } = require('stream');\n\nclass Counter extends Readable {\n  constructor(opt) {\n    super(opt);\n    this._max = 1000000;\n    this._index = 1;\n  }\n\n  _read() {\n    const i = this._index++;\n    if (i > this._max)\n      this.push(null);\n    else {\n      const str = String(i);\n      const buf = Buffer.from(str, 'ascii');\n      this.push(buf);\n    }\n  }\n}\n</code></pre>"
+                }
+              ],
+              "type": "misc",
+              "displayName": "Implementing a Readable Stream"
+            },
+            {
+              "textRaw": "Implementing a Duplex Stream",
+              "name": "implementing_a_duplex_stream",
+              "desc": "<p>A <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> stream is one that implements both <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> and\n<a href=\"#stream_class_stream_writable\"><code>Writable</code></a>, such as a TCP socket connection.</p>\n<p>Because JavaScript does not have support for multiple inheritance, the\n<code>stream.Duplex</code> class is extended to implement a <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> stream (as opposed\nto extending the <code>stream.Readable</code> <em>and</em> <code>stream.Writable</code> classes).</p>\n<p>The <code>stream.Duplex</code> class prototypically inherits from <code>stream.Readable</code> and\nparasitically from <code>stream.Writable</code>, but <code>instanceof</code> will work properly for\nboth base classes due to overriding <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance\"><code>Symbol.hasInstance</code></a> on\n<code>stream.Writable</code>.</p>\n<p>Custom <code>Duplex</code> streams <em>must</em> call the <code>new stream.Duplex([options])</code>\nconstructor and implement <em>both</em> the <code>readable._read()</code> and\n<code>writable._write()</code> methods.</p>",
+              "ctors": [
+                {
+                  "textRaw": "new stream.Duplex(options)",
+                  "type": "ctor",
+                  "name": "stream.Duplex",
+                  "meta": {
+                    "changes": [
+                      {
+                        "version": "v8.4.0",
+                        "pr-url": "https://github.com/nodejs/node/pull/14636",
+                        "description": "The `readableHighWaterMark` and `writableHighWaterMark` options are supported now."
+                      }
+                    ]
+                  },
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`options` {Object} Passed to both `Writable` and `Readable` constructors. Also has the following fields:",
+                          "name": "options",
+                          "type": "Object",
+                          "desc": "Passed to both `Writable` and `Readable` constructors. Also has the following fields:",
+                          "options": [
+                            {
+                              "textRaw": "`allowHalfOpen` {boolean} If set to `false`, then the stream will automatically end the writable side when the readable side ends. **Default:** `true`.",
+                              "name": "allowHalfOpen",
+                              "type": "boolean",
+                              "default": "`true`",
+                              "desc": "If set to `false`, then the stream will automatically end the writable side when the readable side ends."
+                            },
+                            {
+                              "textRaw": "`readableObjectMode` {boolean} Sets `objectMode` for readable side of the stream. Has no effect if `objectMode` is `true`. **Default:** `false`.",
+                              "name": "readableObjectMode",
+                              "type": "boolean",
+                              "default": "`false`",
+                              "desc": "Sets `objectMode` for readable side of the stream. Has no effect if `objectMode` is `true`."
+                            },
+                            {
+                              "textRaw": "`writableObjectMode` {boolean} Sets `objectMode` for writable side of the stream. Has no effect if `objectMode` is `true`. **Default:** `false`.",
+                              "name": "writableObjectMode",
+                              "type": "boolean",
+                              "default": "`false`",
+                              "desc": "Sets `objectMode` for writable side of the stream. Has no effect if `objectMode` is `true`."
+                            },
+                            {
+                              "textRaw": "`readableHighWaterMark` {number} Sets `highWaterMark` for the readable side of the stream. Has no effect if `highWaterMark` is provided.",
+                              "name": "readableHighWaterMark",
+                              "type": "number",
+                              "desc": "Sets `highWaterMark` for the readable side of the stream. Has no effect if `highWaterMark` is provided."
+                            },
+                            {
+                              "textRaw": "`writableHighWaterMark` {number} Sets `highWaterMark` for the writable side of the stream. Has no effect if `highWaterMark` is provided.",
+                              "name": "writableHighWaterMark",
+                              "type": "number",
+                              "desc": "Sets `highWaterMark` for the writable side of the stream. Has no effect if `highWaterMark` is provided."
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<!-- eslint-disable no-useless-constructor -->\n<pre><code class=\"language-js\">const { Duplex } = require('stream');\n\nclass MyDuplex extends Duplex {\n  constructor(options) {\n    super(options);\n    // ...\n  }\n}\n</code></pre>\n<p>Or, when using pre-ES6 style constructors:</p>\n<pre><code class=\"language-js\">const { Duplex } = require('stream');\nconst util = require('util');\n\nfunction MyDuplex(options) {\n  if (!(this instanceof MyDuplex))\n    return new MyDuplex(options);\n  Duplex.call(this, options);\n}\nutil.inherits(MyDuplex, Duplex);\n</code></pre>\n<p>Or, using the Simplified Constructor approach:</p>\n<pre><code class=\"language-js\">const { Duplex } = require('stream');\n\nconst myDuplex = new Duplex({\n  read(size) {\n    // ...\n  },\n  write(chunk, encoding, callback) {\n    // ...\n  }\n});\n</code></pre>"
+                }
+              ],
+              "modules": [
+                {
+                  "textRaw": "An Example Duplex Stream",
+                  "name": "an_example_duplex_stream",
+                  "desc": "<p>The following illustrates a simple example of a <code>Duplex</code> stream that wraps a\nhypothetical lower-level source object to which data can be written, and\nfrom which data can be read, albeit using an API that is not compatible with\nNode.js streams.\nThe following illustrates a simple example of a <code>Duplex</code> stream that buffers\nincoming written data via the <a href=\"#stream_class_stream_writable\"><code>Writable</code></a> interface that is read back out\nvia the <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> interface.</p>\n<pre><code class=\"language-js\">const { Duplex } = require('stream');\nconst kSource = Symbol('source');\n\nclass MyDuplex extends Duplex {\n  constructor(source, options) {\n    super(options);\n    this[kSource] = source;\n  }\n\n  _write(chunk, encoding, callback) {\n    // The underlying source only deals with strings\n    if (Buffer.isBuffer(chunk))\n      chunk = chunk.toString();\n    this[kSource].writeSomeData(chunk);\n    callback();\n  }\n\n  _read(size) {\n    this[kSource].fetchSomeData(size, (data, encoding) => {\n      this.push(Buffer.from(data, encoding));\n    });\n  }\n}\n</code></pre>\n<p>The most important aspect of a <code>Duplex</code> stream is that the <code>Readable</code> and\n<code>Writable</code> sides operate independently of one another despite co-existing within\na single object instance.</p>",
+                  "type": "module",
+                  "displayName": "An Example Duplex Stream"
+                },
+                {
+                  "textRaw": "Object Mode Duplex Streams",
+                  "name": "object_mode_duplex_streams",
+                  "desc": "<p>For <code>Duplex</code> streams, <code>objectMode</code> can be set exclusively for either the\n<code>Readable</code> or <code>Writable</code> side using the <code>readableObjectMode</code> and\n<code>writableObjectMode</code> options respectively.</p>\n<p>In the following example, for instance, a new <code>Transform</code> stream (which is a\ntype of <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> stream) is created that has an object mode <code>Writable</code> side\nthat accepts JavaScript numbers that are converted to hexadecimal strings on\nthe <code>Readable</code> side.</p>\n<pre><code class=\"language-js\">const { Transform } = require('stream');\n\n// All Transform streams are also Duplex Streams\nconst myTransform = new Transform({\n  writableObjectMode: true,\n\n  transform(chunk, encoding, callback) {\n    // Coerce the chunk to a number if necessary\n    chunk |= 0;\n\n    // Transform the chunk into something else.\n    const data = chunk.toString(16);\n\n    // Push the data onto the readable queue.\n    callback(null, '0'.repeat(data.length % 2) + data);\n  }\n});\n\nmyTransform.setEncoding('ascii');\nmyTransform.on('data', (chunk) => console.log(chunk));\n\nmyTransform.write(1);\n// Prints: 01\nmyTransform.write(10);\n// Prints: 0a\nmyTransform.write(100);\n// Prints: 64\n</code></pre>",
+                  "type": "module",
+                  "displayName": "Object Mode Duplex Streams"
+                }
+              ],
+              "type": "misc",
+              "displayName": "Implementing a Duplex Stream"
+            },
+            {
+              "textRaw": "Implementing a Transform Stream",
+              "name": "implementing_a_transform_stream",
+              "desc": "<p>A <a href=\"#stream_class_stream_transform\"><code>Transform</code></a> stream is a <a href=\"#stream_class_stream_duplex\"><code>Duplex</code></a> stream where the output is computed\nin some way from the input. Examples include <a href=\"zlib.html\">zlib</a> streams or <a href=\"crypto.html\">crypto</a>\nstreams that compress, encrypt, or decrypt data.</p>\n<p>There is no requirement that the output be the same size as the input, the same\nnumber of chunks, or arrive at the same time. For example, a <code>Hash</code> stream will\nonly ever have a single chunk of output which is provided when the input is\nended. A <code>zlib</code> stream will produce output that is either much smaller or much\nlarger than its input.</p>\n<p>The <code>stream.Transform</code> class is extended to implement a <a href=\"#stream_class_stream_transform\"><code>Transform</code></a> stream.</p>\n<p>The <code>stream.Transform</code> class prototypically inherits from <code>stream.Duplex</code> and\nimplements its own versions of the <code>writable._write()</code> and <code>readable._read()</code>\nmethods. Custom <code>Transform</code> implementations <em>must</em> implement the\n<a href=\"#stream_transform_transform_chunk_encoding_callback\"><code>transform._transform()</code></a> method and <em>may</em> also implement\nthe <a href=\"#stream_transform_flush_callback\"><code>transform._flush()</code></a> method.</p>\n<p>Care must be taken when using <code>Transform</code> streams in that data written to the\nstream can cause the <code>Writable</code> side of the stream to become paused if the\noutput on the <code>Readable</code> side is not consumed.</p>",
+              "ctors": [
+                {
+                  "textRaw": "new stream.Transform([options])",
+                  "type": "ctor",
+                  "name": "stream.Transform",
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`options` {Object} Passed to both `Writable` and `Readable` constructors. Also has the following fields:",
+                          "name": "options",
+                          "type": "Object",
+                          "desc": "Passed to both `Writable` and `Readable` constructors. Also has the following fields:",
+                          "options": [
+                            {
+                              "textRaw": "`transform` {Function} Implementation for the [`stream._transform()`][stream-_transform] method.",
+                              "name": "transform",
+                              "type": "Function",
+                              "desc": "Implementation for the [`stream._transform()`][stream-_transform] method."
+                            },
+                            {
+                              "textRaw": "`flush` {Function} Implementation for the [`stream._flush()`][stream-_flush] method.",
+                              "name": "flush",
+                              "type": "Function",
+                              "desc": "Implementation for the [`stream._flush()`][stream-_flush] method."
+                            }
+                          ],
+                          "optional": true
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<!-- eslint-disable no-useless-constructor -->\n<pre><code class=\"language-js\">const { Transform } = require('stream');\n\nclass MyTransform extends Transform {\n  constructor(options) {\n    super(options);\n    // ...\n  }\n}\n</code></pre>\n<p>Or, when using pre-ES6 style constructors:</p>\n<pre><code class=\"language-js\">const { Transform } = require('stream');\nconst util = require('util');\n\nfunction MyTransform(options) {\n  if (!(this instanceof MyTransform))\n    return new MyTransform(options);\n  Transform.call(this, options);\n}\nutil.inherits(MyTransform, Transform);\n</code></pre>\n<p>Or, using the Simplified Constructor approach:</p>\n<pre><code class=\"language-js\">const { Transform } = require('stream');\n\nconst myTransform = new Transform({\n  transform(chunk, encoding, callback) {\n    // ...\n  }\n});\n</code></pre>"
+                }
+              ],
+              "modules": [
+                {
+                  "textRaw": "Events: 'finish' and 'end'",
+                  "name": "events:_'finish'_and_'end'",
+                  "desc": "<p>The <a href=\"#stream_event_finish\"><code>'finish'</code></a> and <a href=\"#stream_event_end\"><code>'end'</code></a> events are from the <code>stream.Writable</code>\nand <code>stream.Readable</code> classes, respectively. The <code>'finish'</code> event is emitted\nafter <a href=\"#stream_writable_end_chunk_encoding_callback\"><code>stream.end()</code></a> is called and all chunks have been processed\nby <a href=\"#stream_transform_transform_chunk_encoding_callback\"><code>stream._transform()</code></a>. The <code>'end'</code> event is emitted\nafter all data has been output, which occurs after the callback in\n<a href=\"#stream_transform_flush_callback\"><code>transform._flush()</code></a> has been called.</p>",
+                  "type": "module",
+                  "displayName": "Events: 'finish' and 'end'"
+                }
+              ],
+              "methods": [
+                {
+                  "textRaw": "transform._flush(callback)",
+                  "type": "method",
+                  "name": "_flush",
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`callback` {Function} A callback function (optionally with an error argument and data) to be called when remaining data has been flushed.",
+                          "name": "callback",
+                          "type": "Function",
+                          "desc": "A callback function (optionally with an error argument and data) to be called when remaining data has been flushed."
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>This function MUST NOT be called by application code directly. It should be\nimplemented by child classes, and called by the internal <code>Readable</code> class\nmethods only.</p>\n<p>In some cases, a transform operation may need to emit an additional bit of\ndata at the end of the stream. For example, a <code>zlib</code> compression stream will\nstore an amount of internal state used to optimally compress the output. When\nthe stream ends, however, that additional data needs to be flushed so that the\ncompressed data will be complete.</p>\n<p>Custom <a href=\"#stream_class_stream_transform\"><code>Transform</code></a> implementations <em>may</em> implement the <code>transform._flush()</code>\nmethod. This will be called when there is no more written data to be consumed,\nbut before the <a href=\"#stream_event_end\"><code>'end'</code></a> event is emitted signaling the end of the\n<a href=\"#stream_class_stream_readable\"><code>Readable</code></a> stream.</p>\n<p>Within the <code>transform._flush()</code> implementation, the <code>readable.push()</code> method\nmay be called zero or more times, as appropriate. The <code>callback</code> function must\nbe called when the flush operation is complete.</p>\n<p>The <code>transform._flush()</code> method is prefixed with an underscore because it is\ninternal to the class that defines it, and should never be called directly by\nuser programs.</p>"
+                },
+                {
+                  "textRaw": "transform._transform(chunk, encoding, callback)",
+                  "type": "method",
+                  "name": "_transform",
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`chunk` {Buffer|string|any} The chunk to be transformed. Will **always** be a buffer unless the `decodeStrings` option was set to `false` or the stream is operating in object mode.",
+                          "name": "chunk",
+                          "type": "Buffer|string|any",
+                          "desc": "The chunk to be transformed. Will **always** be a buffer unless the `decodeStrings` option was set to `false` or the stream is operating in object mode."
+                        },
+                        {
+                          "textRaw": "`encoding` {string} If the chunk is a string, then this is the encoding type. If chunk is a buffer, then this is the special value - 'buffer', ignore it in this case.",
+                          "name": "encoding",
+                          "type": "string",
+                          "desc": "If the chunk is a string, then this is the encoding type. If chunk is a buffer, then this is the special value - 'buffer', ignore it in this case."
+                        },
+                        {
+                          "textRaw": "`callback` {Function} A callback function (optionally with an error argument and data) to be called after the supplied `chunk` has been processed.",
+                          "name": "callback",
+                          "type": "Function",
+                          "desc": "A callback function (optionally with an error argument and data) to be called after the supplied `chunk` has been processed."
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>This function MUST NOT be called by application code directly. It should be\nimplemented by child classes, and called by the internal <code>Readable</code> class\nmethods only.</p>\n<p>All <code>Transform</code> stream implementations must provide a <code>_transform()</code>\nmethod to accept input and produce output. The <code>transform._transform()</code>\nimplementation handles the bytes being written, computes an output, then passes\nthat output off to the readable portion using the <code>readable.push()</code> method.</p>\n<p>The <code>transform.push()</code> method may be called zero or more times to generate\noutput from a single input chunk, depending on how much is to be output\nas a result of the chunk.</p>\n<p>It is possible that no output is generated from any given chunk of input data.</p>\n<p>The <code>callback</code> function must be called only when the current chunk is completely\nconsumed. The first argument passed to the <code>callback</code> must be an <code>Error</code> object\nif an error occurred while processing the input or <code>null</code> otherwise. If a second\nargument is passed to the <code>callback</code>, it will be forwarded on to the\n<code>readable.push()</code> method. In other words, the following are equivalent:</p>\n<pre><code class=\"language-js\">transform.prototype._transform = function(data, encoding, callback) {\n  this.push(data);\n  callback();\n};\n\ntransform.prototype._transform = function(data, encoding, callback) {\n  callback(null, data);\n};\n</code></pre>\n<p>The <code>transform._transform()</code> method is prefixed with an underscore because it\nis internal to the class that defines it, and should never be called directly by\nuser programs.</p>\n<p><code>transform._transform()</code> is never called in parallel; streams implement a\nqueue mechanism, and to receive the next chunk, <code>callback</code> must be\ncalled, either synchronously or asynchronously.</p>"
+                }
+              ],
+              "classes": [
+                {
+                  "textRaw": "Class: stream.PassThrough",
+                  "type": "class",
+                  "name": "stream.PassThrough",
+                  "desc": "<p>The <code>stream.PassThrough</code> class is a trivial implementation of a <a href=\"#stream_class_stream_transform\"><code>Transform</code></a>\nstream that simply passes the input bytes across to the output. Its purpose is\nprimarily for examples and testing, but there are some use cases where\n<code>stream.PassThrough</code> is useful as a building block for novel sorts of streams.</p>"
+                }
+              ],
+              "type": "misc",
+              "displayName": "Implementing a Transform Stream"
+            }
+          ]
+        },
+        {
+          "textRaw": "Additional Notes",
+          "name": "Additional Notes",
+          "type": "misc",
+          "miscs": [
+            {
+              "textRaw": "Compatibility with Older Node.js Versions",
+              "name": "Compatibility with Older Node.js Versions",
+              "type": "misc",
+              "desc": "<p>Prior to Node.js 0.10, the <code>Readable</code> stream interface was simpler, but also\nless powerful and less useful.</p>\n<ul>\n<li>Rather than waiting for calls to the <a href=\"#stream_readable_read_size\"><code>stream.read()</code></a> method,\n<a href=\"#stream_event_data\"><code>'data'</code></a> events would begin emitting immediately. Applications that\nwould need to perform some amount of work to decide how to handle data\nwere required to store read data into buffers so the data would not be lost.</li>\n<li>The <a href=\"#stream_readable_pause\"><code>stream.pause()</code></a> method was advisory, rather than\nguaranteed. This meant that it was still necessary to be prepared to receive\n<a href=\"#stream_event_data\"><code>'data'</code></a> events <em>even when the stream was in a paused state</em>.</li>\n</ul>\n<p>In Node.js 0.10, the <a href=\"#stream_class_stream_readable\"><code>Readable</code></a> class was added. For backward\ncompatibility with older Node.js programs, <code>Readable</code> streams switch into\n\"flowing mode\" when a <a href=\"#stream_event_data\"><code>'data'</code></a> event handler is added, or when the\n<a href=\"#stream_readable_resume\"><code>stream.resume()</code></a> method is called. The effect is that, even\nwhen not using the new <a href=\"#stream_readable_read_size\"><code>stream.read()</code></a> method and\n<a href=\"#stream_event_readable\"><code>'readable'</code></a> event, it is no longer necessary to worry about losing\n<a href=\"#stream_event_data\"><code>'data'</code></a> chunks.</p>\n<p>While most applications will continue to function normally, this introduces an\nedge case in the following conditions:</p>\n<ul>\n<li>No <a href=\"#stream_event_data\"><code>'data'</code></a> event listener is added.</li>\n<li>The <a href=\"#stream_readable_resume\"><code>stream.resume()</code></a> method is never called.</li>\n<li>The stream is not piped to any writable destination.</li>\n</ul>\n<p>For example, consider the following code:</p>\n<pre><code class=\"language-js\">// WARNING!  BROKEN!\nnet.createServer((socket) => {\n\n  // we add an 'end' listener, but never consume the data\n  socket.on('end', () => {\n    // It will never get here.\n    socket.end('The message was received but was not processed.\\n');\n  });\n\n}).listen(1337);\n</code></pre>\n<p>Prior to Node.js 0.10, the incoming message data would be simply discarded.\nHowever, in Node.js 0.10 and beyond, the socket remains paused forever.</p>\n<p>The workaround in this situation is to call the\n<a href=\"#stream_readable_resume\"><code>stream.resume()</code></a> method to begin the flow of data:</p>\n<pre><code class=\"language-js\">// Workaround\nnet.createServer((socket) => {\n  socket.on('end', () => {\n    socket.end('The message was received but was not processed.\\n');\n  });\n\n  // start the flow of data, discarding it.\n  socket.resume();\n}).listen(1337);\n</code></pre>\n<p>In addition to new <code>Readable</code> streams switching into flowing mode,\npre-0.10 style streams can be wrapped in a <code>Readable</code> class using the\n<a href=\"#stream_readable_wrap_stream\"><code>readable.wrap()</code></a> method.</p>"
+            },
+            {
+              "textRaw": "`readable.read(0)`",
+              "name": "`readable.read(0)`",
+              "desc": "<p>There are some cases where it is necessary to trigger a refresh of the\nunderlying readable stream mechanisms, without actually consuming any\ndata. In such cases, it is possible to call <code>readable.read(0)</code>, which will\nalways return <code>null</code>.</p>\n<p>If the internal read buffer is below the <code>highWaterMark</code>, and the\nstream is not currently reading, then calling <code>stream.read(0)</code> will trigger\na low-level <a href=\"#stream_readable_read_size_1\"><code>stream._read()</code></a> call.</p>\n<p>While most applications will almost never need to do this, there are\nsituations within Node.js where this is done, particularly in the\n<code>Readable</code> stream class internals.</p>",
+              "type": "misc",
+              "displayName": "`readable.read(0)`"
+            },
+            {
+              "textRaw": "`readable.push('')`",
+              "name": "`readable.push('')`",
+              "desc": "<p>Use of <code>readable.push('')</code> is not recommended.</p>\n<p>Pushing a zero-byte string, <code>Buffer</code> or <code>Uint8Array</code> to a stream that is not in\nobject mode has an interesting side effect. Because it <em>is</em> a call to\n<a href=\"#stream_readable_push_chunk_encoding\"><code>readable.push()</code></a>, the call will end the reading process.\nHowever, because the argument is an empty string, no data is added to the\nreadable buffer so there is nothing for a user to consume.</p>",
+              "type": "misc",
+              "displayName": "`readable.push('')`"
+            },
+            {
+              "textRaw": "`highWaterMark` discrepancy after calling `readable.setEncoding()`",
+              "name": "`highwatermark`_discrepancy_after_calling_`readable.setencoding()`",
+              "desc": "<p>The use of <code>readable.setEncoding()</code> will change the behavior of how the\n<code>highWaterMark</code> operates in non-object mode.</p>\n<p>Typically, the size of the current buffer is measured against the\n<code>highWaterMark</code> in <em>bytes</em>. However, after <code>setEncoding()</code> is called, the\ncomparison function will begin to measure the buffer's size in <em>characters</em>.</p>\n<p>This is not a problem in common cases with <code>latin1</code> or <code>ascii</code>. But it is\nadvised to be mindful about this behavior when working with strings that could\ncontain multi-byte characters.</p>",
+              "type": "misc",
+              "displayName": "`highWaterMark` discrepancy after calling `readable.setEncoding()`"
+            }
+          ]
+        }
+      ],
+      "type": "module",
+      "displayName": "Stream"
+    }
+  ]
+}

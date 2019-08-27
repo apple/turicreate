@@ -77,6 +77,10 @@ def plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
 
     """
     title = _get_title(title)
+    if not(isinstance(x, tc.SArray)):
+      raise ValueError("The X axis data should be an SArray.")
+    if not(isinstance(y, tc.SArray)):
+      raise ValueError("The Y axis data should be an SArray.")
     plt_ref = tc.extensions.plot(x, y, xlabel, ylabel, title)
     return Plot(_proxy=plt_ref)
 

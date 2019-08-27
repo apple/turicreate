@@ -1,0 +1,719 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Events | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/events.html">
+</head>
+<body class="alt apidoc" id="api-section-events">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events active">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="events" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="events.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/events.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/events.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/events.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/events.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/events.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/events.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/events.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/events.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/events.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/events.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/events.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#events_events">Events</a></span></p>
+<ul>
+<li><a href="#events_passing_arguments_and_this_to_listeners">Passing arguments and <code>this</code> to listeners</a></li>
+<li><a href="#events_asynchronous_vs_synchronous">Asynchronous vs. Synchronous</a></li>
+<li><a href="#events_handling_events_only_once">Handling events only once</a></li>
+<li><a href="#events_error_events">Error events</a></li>
+<li>
+<p><a href="#events_class_eventemitter">Class: EventEmitter</a></p>
+<ul>
+<li><a href="#events_event_newlistener">Event: 'newListener'</a></li>
+<li><a href="#events_event_removelistener">Event: 'removeListener'</a></li>
+<li><span class="stability_0"><a href="#events_eventemitter_listenercount_emitter_eventname">EventEmitter.listenerCount(emitter, eventName)</a></span></li>
+<li><a href="#events_eventemitter_defaultmaxlisteners">EventEmitter.defaultMaxListeners</a></li>
+<li><a href="#events_emitter_addlistener_eventname_listener">emitter.addListener(eventName, listener)</a></li>
+<li><a href="#events_emitter_emit_eventname_args">emitter.emit(eventName[, ...args])</a></li>
+<li><a href="#events_emitter_eventnames">emitter.eventNames()</a></li>
+<li><a href="#events_emitter_getmaxlisteners">emitter.getMaxListeners()</a></li>
+<li><a href="#events_emitter_listenercount_eventname">emitter.listenerCount(eventName)</a></li>
+<li><a href="#events_emitter_listeners_eventname">emitter.listeners(eventName)</a></li>
+<li><a href="#events_emitter_off_eventname_listener">emitter.off(eventName, listener)</a></li>
+<li><a href="#events_emitter_on_eventname_listener">emitter.on(eventName, listener)</a></li>
+<li><a href="#events_emitter_once_eventname_listener">emitter.once(eventName, listener)</a></li>
+<li><a href="#events_emitter_prependlistener_eventname_listener">emitter.prependListener(eventName, listener)</a></li>
+<li><a href="#events_emitter_prependoncelistener_eventname_listener">emitter.prependOnceListener(eventName, listener)</a></li>
+<li><a href="#events_emitter_removealllisteners_eventname">emitter.removeAllListeners([eventName])</a></li>
+<li><a href="#events_emitter_removelistener_eventname_listener">emitter.removeListener(eventName, listener)</a></li>
+<li><a href="#events_emitter_setmaxlisteners_n">emitter.setMaxListeners(n)</a></li>
+<li><a href="#events_emitter_rawlisteners_eventname">emitter.rawListeners(eventName)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Events<span><a class="mark" href="#events_events" id="events_events">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+
+<p>Much of the Node.js core API is built around an idiomatic asynchronous
+event-driven architecture in which certain kinds of objects (called "emitters")
+emit named events that cause <code>Function</code> objects ("listeners") to be called.</p>
+<p>For instance: a <a href="net.html#net_class_net_server"><code>net.Server</code></a> object emits an event each time a peer
+connects to it; a <a href="fs.html#fs_class_fs_readstream"><code>fs.ReadStream</code></a> emits an event when the file is opened;
+a <a href="stream.html">stream</a> emits an event whenever data is available to be read.</p>
+<p>All objects that emit events are instances of the <code>EventEmitter</code> class. These
+objects expose an <code>eventEmitter.on()</code> function that allows one or more
+functions to be attached to named events emitted by the object. Typically,
+event names are camel-cased strings but any valid JavaScript property key
+can be used.</p>
+<p>When the <code>EventEmitter</code> object emits an event, all of the functions attached
+to that specific event are called <em>synchronously</em>. Any values returned by the
+called listeners are <em>ignored</em> and will be discarded.</p>
+<p>The following example shows a simple <code>EventEmitter</code> instance with a single
+listener. The <code>eventEmitter.on()</code> method is used to register listeners, while
+the <code>eventEmitter.emit()</code> method is used to trigger the event.</p>
+<pre><code class="language-js">const EventEmitter = require('events');
+
+class MyEmitter extends EventEmitter {}
+
+const myEmitter = new MyEmitter();
+myEmitter.on('event', () => {
+  console.log('an event occurred!');
+});
+myEmitter.emit('event');
+</code></pre>
+<h2>Passing arguments and `this` to listeners<span><a class="mark" href="#events_passing_arguments_and_this_to_listeners" id="events_passing_arguments_and_this_to_listeners">#</a></span></h2>
+<p>The <code>eventEmitter.emit()</code> method allows an arbitrary set of arguments to be
+passed to the listener functions. It is important to keep in mind that when
+an ordinary listener function is called, the standard <code>this</code> keyword
+is intentionally set to reference the <code>EventEmitter</code> instance to which the
+listener is attached.</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+myEmitter.on('event', function(a, b) {
+  console.log(a, b, this, this === myEmitter);
+  // Prints:
+  //   a b MyEmitter {
+  //     domain: null,
+  //     _events: { event: [Function] },
+  //     _eventsCount: 1,
+  //     _maxListeners: undefined } true
+});
+myEmitter.emit('event', 'a', 'b');
+</code></pre>
+<p>It is possible to use ES6 Arrow Functions as listeners, however, when doing so,
+the <code>this</code> keyword will no longer reference the <code>EventEmitter</code> instance:</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+myEmitter.on('event', (a, b) => {
+  console.log(a, b, this);
+  // Prints: a b {}
+});
+myEmitter.emit('event', 'a', 'b');
+</code></pre>
+<h2>Asynchronous vs. Synchronous<span><a class="mark" href="#events_asynchronous_vs_synchronous" id="events_asynchronous_vs_synchronous">#</a></span></h2>
+<p>The <code>EventEmitter</code> calls all listeners synchronously in the order in which
+they were registered. This is important to ensure the proper sequencing of
+events and to avoid race conditions or logic errors. When appropriate,
+listener functions can switch to an asynchronous mode of operation using
+the <code>setImmediate()</code> or <code>process.nextTick()</code> methods:</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+myEmitter.on('event', (a, b) => {
+  setImmediate(() => {
+    console.log('this happens asynchronously');
+  });
+});
+myEmitter.emit('event', 'a', 'b');
+</code></pre>
+<h2>Handling events only once<span><a class="mark" href="#events_handling_events_only_once" id="events_handling_events_only_once">#</a></span></h2>
+<p>When a listener is registered using the <code>eventEmitter.on()</code> method, that
+listener will be invoked <em>every time</em> the named event is emitted.</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+let m = 0;
+myEmitter.on('event', () => {
+  console.log(++m);
+});
+myEmitter.emit('event');
+// Prints: 1
+myEmitter.emit('event');
+// Prints: 2
+</code></pre>
+<p>Using the <code>eventEmitter.once()</code> method, it is possible to register a listener
+that is called at most once for a particular event. Once the event is emitted,
+the listener is unregistered and <em>then</em> called.</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+let m = 0;
+myEmitter.once('event', () => {
+  console.log(++m);
+});
+myEmitter.emit('event');
+// Prints: 1
+myEmitter.emit('event');
+// Ignored
+</code></pre>
+<h2>Error events<span><a class="mark" href="#events_error_events" id="events_error_events">#</a></span></h2>
+<p>When an error occurs within an <code>EventEmitter</code> instance, the typical action is
+for an <code>'error'</code> event to be emitted. These are treated as special cases
+within Node.js.</p>
+<p>If an <code>EventEmitter</code> does <em>not</em> have at least one listener registered for the
+<code>'error'</code> event, and an <code>'error'</code> event is emitted, the error is thrown, a
+stack trace is printed, and the Node.js process exits.</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+myEmitter.emit('error', new Error('whoops!'));
+// Throws and crashes Node.js
+</code></pre>
+<p>To guard against crashing the Node.js process the <a href="domain.html"><code>domain</code></a> module can be
+used. (Note, however, that the <code>domain</code> module is deprecated.)</p>
+<p>As a best practice, listeners should always be added for the <code>'error'</code> events.</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+myEmitter.on('error', (err) => {
+  console.error('whoops! there was an error');
+});
+myEmitter.emit('error', new Error('whoops!'));
+// Prints: whoops! there was an error
+</code></pre>
+<h2>Class: EventEmitter<span><a class="mark" href="#events_class_eventemitter" id="events_class_eventemitter">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.26</span>
+</div>
+<p>The <code>EventEmitter</code> class is defined and exposed by the <code>events</code> module:</p>
+<pre><code class="language-js">const EventEmitter = require('events');
+</code></pre>
+<p>All <code>EventEmitter</code>s emit the event <code>'newListener'</code> when new listeners are
+added and <code>'removeListener'</code> when existing listeners are removed.</p>
+<h3>Event: 'newListener'<span><a class="mark" href="#events_event_newlistener" id="events_event_newlistener">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.26</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> The name of the event being listened for</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The event handler function</li>
+</ul>
+<p>The <code>EventEmitter</code> instance will emit its own <code>'newListener'</code> event <em>before</em>
+a listener is added to its internal array of listeners.</p>
+<p>Listeners registered for the <code>'newListener'</code> event will be passed the event
+name and a reference to the listener being added.</p>
+<p>The fact that the event is triggered before adding the listener has a subtle
+but important side effect: any <em>additional</em> listeners registered to the same
+<code>name</code> <em>within</em> the <code>'newListener'</code> callback will be inserted <em>before</em> the
+listener that is in the process of being added.</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+// Only do this once so we don't loop forever
+myEmitter.once('newListener', (event, listener) => {
+  if (event === 'event') {
+    // Insert a new listener in front
+    myEmitter.on('event', () => {
+      console.log('B');
+    });
+  }
+});
+myEmitter.on('event', () => {
+  console.log('A');
+});
+myEmitter.emit('event');
+// Prints:
+//   B
+//   A
+</code></pre>
+<h3>Event: 'removeListener'<span><a class="mark" href="#events_event_removelistener" id="events_event_removelistener">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v6.1.0, v4.7.0</td>
+<td><p>For listeners attached using <code>.once()</code>, the <code>listener</code> argument now yields the original listener function.</p></td></tr>
+<tr><td>v0.9.3</td>
+<td><p><span>Added in: v0.9.3</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> The event name</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The event handler function</li>
+</ul>
+<p>The <code>'removeListener'</code> event is emitted <em>after</em> the <code>listener</code> is removed.</p>
+<h3>EventEmitter.listenerCount(emitter, eventName)<span><a class="mark" href="#events_eventemitter_listenercount_emitter_eventname" id="events_eventemitter_listenercount_emitter_eventname">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.9.12</span><span>Deprecated since: v4.0.0</span>
+</div>
+<ul>
+<li><code>emitter</code> <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a> The emitter to query</li>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> The event name</li>
+</ul>
+<p></p><div class="api_stability api_stability_0"><a href="documentation.html#documentation_stability_index">Stability: 0</a> - Deprecated: Use <a href="#events_emitter_listenercount_eventname"><code>emitter.listenerCount()</code></a> instead.</div><p></p>
+<p>A class method that returns the number of listeners for the given <code>eventName</code>
+registered on the given <code>emitter</code>.</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+myEmitter.on('event', () => {});
+myEmitter.on('event', () => {});
+console.log(EventEmitter.listenerCount(myEmitter, 'event'));
+// Prints: 2
+</code></pre>
+<h3>EventEmitter.defaultMaxListeners<span><a class="mark" href="#events_eventemitter_defaultmaxlisteners" id="events_eventemitter_defaultmaxlisteners">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.2</span>
+</div>
+<p>By default, a maximum of <code>10</code> listeners can be registered for any single
+event. This limit can be changed for individual <code>EventEmitter</code> instances
+using the <a href="#events_emitter_setmaxlisteners_n"><code>emitter.setMaxListeners(n)</code></a> method. To change the default
+for <em>all</em> <code>EventEmitter</code> instances, the <code>EventEmitter.defaultMaxListeners</code>
+property can be used. If this value is not a positive number, a <code>TypeError</code>
+will be thrown.</p>
+<p>Take caution when setting the <code>EventEmitter.defaultMaxListeners</code> because the
+change affects <em>all</em> <code>EventEmitter</code> instances, including those created before
+the change is made. However, calling <a href="#events_emitter_setmaxlisteners_n"><code>emitter.setMaxListeners(n)</code></a> still has
+precedence over <code>EventEmitter.defaultMaxListeners</code>.</p>
+<p>Note that this is not a hard limit. The <code>EventEmitter</code> instance will allow
+more listeners to be added but will output a trace warning to stderr indicating
+that a "possible EventEmitter memory leak" has been detected. For any single
+<code>EventEmitter</code>, the <code>emitter.getMaxListeners()</code> and <code>emitter.setMaxListeners()</code>
+methods can be used to temporarily avoid this warning:</p>
+<pre><code class="language-js">emitter.setMaxListeners(emitter.getMaxListeners() + 1);
+emitter.once('event', () => {
+  // do stuff
+  emitter.setMaxListeners(Math.max(emitter.getMaxListeners() - 1, 0));
+});
+</code></pre>
+<p>The <a href="cli.html#cli_trace_warnings"><code>--trace-warnings</code></a> command line flag can be used to display the
+stack trace for such warnings.</p>
+<p>The emitted warning can be inspected with <a href="process.html#process_event_warning"><code>process.on('warning')</code></a> and will
+have the additional <code>emitter</code>, <code>type</code> and <code>count</code> properties, referring to
+the event emitter instance, the event’s name and the number of attached
+listeners, respectively.
+Its <code>name</code> property is set to <code>'MaxListenersExceededWarning'</code>.</p>
+<h3>emitter.addListener(eventName, listener)<span><a class="mark" href="#events_emitter_addlistener_eventname_listener" id="events_emitter_addlistener_eventname_listener">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.26</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a></li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+</ul>
+<p>Alias for <code>emitter.on(eventName, listener)</code>.</p>
+<h3>emitter.emit(eventName[, ...args])<span><a class="mark" href="#events_emitter_emit_eventname_args" id="events_emitter_emit_eventname_args">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.26</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a></li>
+</ul>
+<ul>
+<li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<ul>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>Synchronously calls each of the listeners registered for the event named
+<code>eventName</code>, in the order they were registered, passing the supplied arguments
+to each.</p>
+<p>Returns <code>true</code> if the event had listeners, <code>false</code> otherwise.</p>
+<h3>emitter.eventNames()<span><a class="mark" href="#events_emitter_eventnames" id="events_emitter_eventnames">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.0.0</span>
+</div>
+<ul>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array" class="type">&#x3C;Array></a></li>
+</ul>
+<p>Returns an array listing the events for which the emitter has registered
+listeners. The values in the array will be strings or <code>Symbol</code>s.</p>
+<pre><code class="language-js">const EventEmitter = require('events');
+const myEE = new EventEmitter();
+myEE.on('foo', () => {});
+myEE.on('bar', () => {});
+
+const sym = Symbol('symbol');
+myEE.on(sym, () => {});
+
+console.log(myEE.eventNames());
+// Prints: [ 'foo', 'bar', Symbol(symbol) ]
+</code></pre>
+<h3>emitter.getMaxListeners()<span><a class="mark" href="#events_emitter_getmaxlisteners" id="events_emitter_getmaxlisteners">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v1.0.0</span>
+</div>
+<ul>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+</ul>
+<p>Returns the current max listener value for the <code>EventEmitter</code> which is either
+set by <a href="#events_emitter_setmaxlisteners_n"><code>emitter.setMaxListeners(n)</code></a> or defaults to
+<a href="#events_eventemitter_defaultmaxlisteners"><code>EventEmitter.defaultMaxListeners</code></a>.</p>
+<h3>emitter.listenerCount(eventName)<span><a class="mark" href="#events_emitter_listenercount_eventname" id="events_emitter_listenercount_eventname">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v3.2.0</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> The name of the event being listened for</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+</ul>
+<p>Returns the number of listeners listening to the event named <code>eventName</code>.</p>
+<h3>emitter.listeners(eventName)<span><a class="mark" href="#events_emitter_listeners_eventname" id="events_emitter_listeners_eventname">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v7.0.0</td>
+<td><p>For listeners attached using <code>.once()</code> this returns the original listeners instead of wrapper functions now.</p></td></tr>
+<tr><td>v0.1.26</td>
+<td><p><span>Added in: v0.1.26</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function[]></a></li>
+</ul>
+<p>Returns a copy of the array of listeners for the event named <code>eventName</code>.</p>
+<pre><code class="language-js">server.on('connection', (stream) => {
+  console.log('someone connected!');
+});
+console.log(util.inspect(server.listeners('connection')));
+// Prints: [ [Function] ]
+</code></pre>
+<h3>emitter.off(eventName, listener)<span><a class="mark" href="#events_emitter_off_eventname_listener" id="events_emitter_off_eventname_listener">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.0.0</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a></li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>Alias for <a href="#events_emitter_removelistener_eventname_listener"><code>emitter.removeListener()</code></a>.</p>
+<h3>emitter.on(eventName, listener)<span><a class="mark" href="#events_emitter_on_eventname_listener" id="events_emitter_on_eventname_listener">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.101</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> The name of the event.</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The callback function</li>
+<li>Returns: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>Adds the <code>listener</code> function to the end of the listeners array for the
+event named <code>eventName</code>. No checks are made to see if the <code>listener</code> has
+already been added. Multiple calls passing the same combination of <code>eventName</code>
+and <code>listener</code> will result in the <code>listener</code> being added, and called, multiple
+times.</p>
+<pre><code class="language-js">server.on('connection', (stream) => {
+  console.log('someone connected!');
+});
+</code></pre>
+<p>Returns a reference to the <code>EventEmitter</code>, so that calls can be chained.</p>
+<p>By default, event listeners are invoked in the order they are added. The
+<code>emitter.prependListener()</code> method can be used as an alternative to add the
+event listener to the beginning of the listeners array.</p>
+<pre><code class="language-js">const myEE = new EventEmitter();
+myEE.on('foo', () => console.log('a'));
+myEE.prependListener('foo', () => console.log('b'));
+myEE.emit('foo');
+// Prints:
+//   b
+//   a
+</code></pre>
+<h3>emitter.once(eventName, listener)<span><a class="mark" href="#events_emitter_once_eventname_listener" id="events_emitter_once_eventname_listener">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> The name of the event.</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The callback function</li>
+<li>Returns: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>Adds a <strong>one-time</strong> <code>listener</code> function for the event named <code>eventName</code>. The
+next time <code>eventName</code> is triggered, this listener is removed and then invoked.</p>
+<pre><code class="language-js">server.once('connection', (stream) => {
+  console.log('Ah, we have our first user!');
+});
+</code></pre>
+<p>Returns a reference to the <code>EventEmitter</code>, so that calls can be chained.</p>
+<p>By default, event listeners are invoked in the order they are added. The
+<code>emitter.prependOnceListener()</code> method can be used as an alternative to add the
+event listener to the beginning of the listeners array.</p>
+<pre><code class="language-js">const myEE = new EventEmitter();
+myEE.once('foo', () => console.log('a'));
+myEE.prependOnceListener('foo', () => console.log('b'));
+myEE.emit('foo');
+// Prints:
+//   b
+//   a
+</code></pre>
+<h3>emitter.prependListener(eventName, listener)<span><a class="mark" href="#events_emitter_prependlistener_eventname_listener" id="events_emitter_prependlistener_eventname_listener">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.0.0</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> The name of the event.</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The callback function</li>
+<li>Returns: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>Adds the <code>listener</code> function to the <em>beginning</em> of the listeners array for the
+event named <code>eventName</code>. No checks are made to see if the <code>listener</code> has
+already been added. Multiple calls passing the same combination of <code>eventName</code>
+and <code>listener</code> will result in the <code>listener</code> being added, and called, multiple
+times.</p>
+<pre><code class="language-js">server.prependListener('connection', (stream) => {
+  console.log('someone connected!');
+});
+</code></pre>
+<p>Returns a reference to the <code>EventEmitter</code>, so that calls can be chained.</p>
+<h3>emitter.prependOnceListener(eventName, listener)<span><a class="mark" href="#events_emitter_prependoncelistener_eventname_listener" id="events_emitter_prependoncelistener_eventname_listener">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.0.0</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a> The name of the event.</li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The callback function</li>
+<li>Returns: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>Adds a <strong>one-time</strong> <code>listener</code> function for the event named <code>eventName</code> to the
+<em>beginning</em> of the listeners array. The next time <code>eventName</code> is triggered, this
+listener is removed, and then invoked.</p>
+<pre><code class="language-js">server.prependOnceListener('connection', (stream) => {
+  console.log('Ah, we have our first user!');
+});
+</code></pre>
+<p>Returns a reference to the <code>EventEmitter</code>, so that calls can be chained.</p>
+<h3>emitter.removeAllListeners([eventName])<span><a class="mark" href="#events_emitter_removealllisteners_eventname" id="events_emitter_removealllisteners_eventname">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.26</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a></li>
+<li>Returns: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>Removes all listeners, or those of the specified <code>eventName</code>.</p>
+<p>Note that it is bad practice to remove listeners added elsewhere in the code,
+particularly when the <code>EventEmitter</code> instance was created by some other
+component or module (e.g. sockets or file streams).</p>
+<p>Returns a reference to the <code>EventEmitter</code>, so that calls can be chained.</p>
+<h3>emitter.removeListener(eventName, listener)<span><a class="mark" href="#events_emitter_removelistener_eventname_listener" id="events_emitter_removelistener_eventname_listener">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.26</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a></li>
+<li><code>listener</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+<li>Returns: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>Removes the specified <code>listener</code> from the listener array for the event named
+<code>eventName</code>.</p>
+<pre><code class="language-js">const callback = (stream) => {
+  console.log('someone connected!');
+};
+server.on('connection', callback);
+// ...
+server.removeListener('connection', callback);
+</code></pre>
+<p><code>removeListener()</code> will remove, at most, one instance of a listener from the
+listener array. If any single listener has been added multiple times to the
+listener array for the specified <code>eventName</code>, then <code>removeListener()</code> must be
+called multiple times to remove each instance.</p>
+<p>Note that once an event has been emitted, all listeners attached to it at the
+time of emitting will be called in order. This implies that any
+<code>removeListener()</code> or <code>removeAllListeners()</code> calls <em>after</em> emitting and
+<em>before</em> the last listener finishes execution will not remove them from
+<code>emit()</code> in progress. Subsequent events will behave as expected.</p>
+<pre><code class="language-js">const myEmitter = new MyEmitter();
+
+const callbackA = () => {
+  console.log('A');
+  myEmitter.removeListener('event', callbackB);
+};
+
+const callbackB = () => {
+  console.log('B');
+};
+
+myEmitter.on('event', callbackA);
+
+myEmitter.on('event', callbackB);
+
+// callbackA removes listener callbackB but it will still be called.
+// Internal listener array at time of emit [callbackA, callbackB]
+myEmitter.emit('event');
+// Prints:
+//   A
+//   B
+
+// callbackB is now removed.
+// Internal listener array [callbackA]
+myEmitter.emit('event');
+// Prints:
+//   A
+</code></pre>
+<p>Because listeners are managed using an internal array, calling this will
+change the position indices of any listener registered <em>after</em> the listener
+being removed. This will not impact the order in which listeners are called,
+but it means that any copies of the listener array as returned by
+the <code>emitter.listeners()</code> method will need to be recreated.</p>
+<p>When a single function has been added as a handler multiple times for a single
+event (as in the example below), <code>removeListener()</code> will remove the most
+recently added instance. In the example the <code>once('ping')</code>
+listener is removed:</p>
+<pre><code class="language-js">const ee = new EventEmitter();
+
+function pong() {
+  console.log('pong');
+}
+
+ee.on('ping', pong);
+ee.once('ping', pong);
+ee.removeListener('ping', pong);
+
+ee.emit('ping');
+ee.emit('ping');
+</code></pre>
+<p>Returns a reference to the <code>EventEmitter</code>, so that calls can be chained.</p>
+<h3>emitter.setMaxListeners(n)<span><a class="mark" href="#events_emitter_setmaxlisteners_n" id="events_emitter_setmaxlisteners_n">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.5</span>
+</div>
+<ul>
+<li><code>n</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+<li>Returns: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>By default <code>EventEmitter</code>s will print a warning if more than <code>10</code> listeners are
+added for a particular event. This is a useful default that helps finding
+memory leaks. Obviously, not all events should be limited to just 10 listeners.
+The <code>emitter.setMaxListeners()</code> method allows the limit to be modified for this
+specific <code>EventEmitter</code> instance. The value can be set to <code>Infinity</code> (or <code>0</code>)
+to indicate an unlimited number of listeners.</p>
+<p>Returns a reference to the <code>EventEmitter</code>, so that calls can be chained.</p>
+<h3>emitter.rawListeners(eventName)<span><a class="mark" href="#events_emitter_rawlisteners_eventname" id="events_emitter_rawlisteners_eventname">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v9.4.0</span>
+</div>
+<ul>
+<li><code>eventName</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Symbol_type" class="type">&#x3C;symbol></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function[]></a></li>
+</ul>
+<p>Returns a copy of the array of listeners for the event named <code>eventName</code>,
+including any wrappers (such as those created by <code>.once()</code>).</p>
+<pre><code class="language-js">const emitter = new EventEmitter();
+emitter.once('log', () => console.log('log once'));
+
+// Returns a new Array with a function `onceWrapper` which has a property
+// `listener` which contains the original listener bound above
+const listeners = emitter.rawListeners('log');
+const logFnWrapper = listeners[0];
+
+// logs "log once" to the console and does not unbind the `once` event
+logFnWrapper.listener();
+
+// logs "log once" to the console and removes the listener
+logFnWrapper();
+
+emitter.on('log', () => console.log('log persistently'));
+// will return a new Array with a single function bound by `.on()` above
+const newListeners = emitter.rawListeners('log');
+
+// logs "log persistently" twice
+newListeners[0]();
+emitter.emit('log');
+</code></pre>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

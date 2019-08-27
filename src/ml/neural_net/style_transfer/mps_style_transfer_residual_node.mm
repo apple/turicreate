@@ -29,8 +29,10 @@
                          descriptor:(TCMPSResidualDescriptor *)descriptor
                         initWeights:(NSDictionary<NSString *, NSData *> *) weights {
   self = [super init];
-  
+
   if (self) {
+    // No bias
+    NSMutableData* zeroedConv1Biases = [NSMutableData dataWithLength:descriptor.conv1.outputFeatureChannels*sizeof(float)];
     _conv1 = [MPSCNNConvolutionNode createConvolutional:inputNode
                                             kernelWidth:descriptor.conv1.kernelWidth
                                            kernelHeight:descriptor.conv1.kernelHeight
@@ -41,7 +43,7 @@
                                            paddingWidth:descriptor.conv1.paddingWidth
                                           paddingHeight:descriptor.conv1.paddingHeight
                                                 weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_bias"]]
+                                                 biases:zeroedConv1Biases
                                                   label:descriptor.conv1.label
                                           updateWeights:descriptor.conv1.updateWeights
                                                  device:dev
@@ -58,6 +60,8 @@
 
     _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource:[_instNorm1 resultImage]];
 
+    // No bias
+    NSMutableData* zeroedConv2Biases = [NSMutableData dataWithLength:descriptor.conv2.outputFeatureChannels*sizeof(float)];
     _conv2 = [MPSCNNConvolutionNode createConvolutional:[_relu1 resultImage]
                                             kernelWidth:descriptor.conv2.kernelWidth
                                            kernelHeight:descriptor.conv2.kernelHeight
@@ -68,7 +72,7 @@
                                            paddingWidth:descriptor.conv2.paddingWidth
                                           paddingHeight:descriptor.conv2.paddingHeight
                                                 weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_bias"]]
+                                                 biases:zeroedConv2Biases
                                                   label:descriptor.conv2.label
                                           updateWeights:descriptor.conv2.updateWeights
                                                  device:dev
@@ -103,39 +107,39 @@
 }
 
 - (void) setLearningRate:(float)lr {
-  [[_conv1 weights] setLearningRate:lr];
-  [[_instNorm1 weights] setLearningRate:lr];
-  [[_conv2 weights] setLearningRate:lr];
-  [[_instNorm2 weights] setLearningRate:lr];
+  [_conv1.tc_weightsData setLearningRate:lr];
+  [_instNorm1.tc_weightsData setLearningRate:lr];
+  [_conv2.tc_weightsData setLearningRate:lr];
+  [_instNorm2.tc_weightsData setLearningRate:lr];
 }
 
 - (NSDictionary<NSString *, NSData *> *)exportWeights:(NSString *)prefix {
   NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];;
 
   NSString* conv1Keys = [NSString stringWithFormat:@"%@%@", prefix, @"conv_1_weights"];
-  NSUInteger conv1WeightSize = (NSUInteger)([[_conv1 weights] weightSize] * sizeof(float));
+  NSUInteger conv1WeightSize = (NSUInteger)([_conv1.tc_weightsData weightSize] * sizeof(float));
   NSMutableData* conv1DataWeight = [NSMutableData dataWithLength:conv1WeightSize];
-  memcpy(conv1DataWeight.mutableBytes, [[_conv1 weights] weights], conv1WeightSize);
+  memcpy(conv1DataWeight.mutableBytes, [_conv1.tc_weightsData weights], conv1WeightSize);
 
   weights[conv1Keys] = conv1DataWeight;
 
   NSString* conv2Keys = [NSString stringWithFormat:@"%@%@", prefix, @"conv_2_weights"];
-  NSUInteger conv2WeightSize = (NSUInteger)([[_conv2 weights] weightSize] * sizeof(float));
+  NSUInteger conv2WeightSize = (NSUInteger)([_conv2.tc_weightsData weightSize] * sizeof(float));
   NSMutableData* conv2DataWeight = [NSMutableData dataWithLength:conv2WeightSize];
-  memcpy(conv2DataWeight.mutableBytes, [[_conv2 weights] weights], conv2WeightSize);
+  memcpy(conv2DataWeight.mutableBytes, [_conv2.tc_weightsData weights], conv2WeightSize);
 
   weights[conv2Keys] = conv2DataWeight;
 
   NSString* instNorm1GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_gamma"];
   NSString* instNorm1BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_beta"];
 
-  NSUInteger instNorm1Size = (NSUInteger)([[_instNorm1 weights] numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNorm1Size = (NSUInteger)([_instNorm1.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   
   NSMutableData* instNorm1DataGamma = [NSMutableData dataWithLength:instNorm1Size];
   NSMutableData* instNorm1DataBeta = [NSMutableData dataWithLength:instNorm1Size];
   
-  memcpy(instNorm1DataGamma.mutableBytes, [[_instNorm1 weights] gamma], instNorm1Size);
-  memcpy(instNorm1DataBeta.mutableBytes, [[_instNorm1 weights] beta], instNorm1Size);
+  memcpy(instNorm1DataGamma.mutableBytes, [_instNorm1.tc_weightsData gamma], instNorm1Size);
+  memcpy(instNorm1DataBeta.mutableBytes, [_instNorm1.tc_weightsData beta], instNorm1Size);
 
   weights[instNorm1GammaKeys] = instNorm1DataGamma;
   weights[instNorm1BetaKeys] = instNorm1DataBeta;
@@ -143,13 +147,13 @@
   NSString* instNorm2GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_gamma"];
   NSString* instNorm2BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_beta"];
 
-  NSUInteger instNorm2Size = (NSUInteger)([[_instNorm2 weights] numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNorm2Size = (NSUInteger)([_instNorm2.tc_weightsData numberOfFeatureChannels] * sizeof(float));
 
   NSMutableData* instNorm2DataGamma = [NSMutableData dataWithLength:instNorm2Size];
   NSMutableData* instNorm2DataBeta = [NSMutableData dataWithLength:instNorm2Size];
 
-  memcpy(instNorm2DataGamma.mutableBytes, [[_instNorm2 weights] gamma], instNorm2Size);
-  memcpy(instNorm2DataBeta.mutableBytes, [[_instNorm2 weights] beta], instNorm2Size);
+  memcpy(instNorm2DataGamma.mutableBytes, [_instNorm2.tc_weightsData gamma], instNorm2Size);
+  memcpy(instNorm2DataBeta.mutableBytes, [_instNorm2.tc_weightsData beta], instNorm2Size);
 
   weights[instNorm2GammaKeys] = instNorm2DataGamma;
   weights[instNorm2BetaKeys] = instNorm2DataBeta;

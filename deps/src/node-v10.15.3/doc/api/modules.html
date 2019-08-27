@@ -1,0 +1,929 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Modules | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/modules.html">
+</head>
+<body class="alt apidoc" id="api-section-modules">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules active">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="modules" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="modules.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/modules.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/modules.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/modules.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/modules.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/modules.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/modules.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/modules.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/modules.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/modules.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/modules.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/modules.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#modules_modules">Modules</a></span></p>
+<ul>
+<li><a href="#modules_accessing_the_main_module">Accessing the main module</a></li>
+<li><a href="#modules_addenda_package_manager_tips">Addenda: Package Manager Tips</a></li>
+<li><a href="#modules_all_together">All Together...</a></li>
+<li>
+<p><a href="#modules_caching">Caching</a></p>
+<ul>
+<li><a href="#modules_module_caching_caveats">Module Caching Caveats</a></li>
+</ul>
+</li>
+<li><a href="#modules_core_modules">Core Modules</a></li>
+<li><a href="#modules_cycles">Cycles</a></li>
+<li><a href="#modules_file_modules">File Modules</a></li>
+<li><a href="#modules_folders_as_modules">Folders as Modules</a></li>
+<li><a href="#modules_loading_from_node_modules_folders">Loading from <code>node_modules</code> Folders</a></li>
+<li><a href="#modules_loading_from_the_global_folders">Loading from the global folders</a></li>
+<li><a href="#modules_the_module_wrapper">The module wrapper</a></li>
+<li>
+<p><a href="#modules_the_module_scope">The module scope</a></p>
+<ul>
+<li><a href="#modules_dirname">__dirname</a></li>
+<li><a href="#modules_filename">__filename</a></li>
+<li><a href="#modules_exports">exports</a></li>
+<li><a href="#modules_module">module</a></li>
+<li>
+<p><a href="#modules_require">require()</a></p>
+<ul>
+<li><a href="#modules_require_cache">require.cache</a></li>
+<li><span class="stability_0"><a href="#modules_require_extensions">require.extensions</a></span></li>
+<li><a href="#modules_require_main">require.main</a></li>
+<li><a href="#modules_require_resolve_request_options">require.resolve(request[, options])</a></li>
+<li><a href="#modules_require_resolve_paths_request">require.resolve.paths(request)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><a href="#modules_the_module_object">The <code>module</code> Object</a></p>
+<ul>
+<li><a href="#modules_module_children">module.children</a></li>
+<li>
+<p><a href="#modules_module_exports">module.exports</a></p>
+<ul>
+<li><a href="#modules_exports_shortcut">exports shortcut</a></li>
+</ul>
+</li>
+<li><a href="#modules_module_filename">module.filename</a></li>
+<li><a href="#modules_module_id">module.id</a></li>
+<li><a href="#modules_module_loaded">module.loaded</a></li>
+<li><a href="#modules_module_parent">module.parent</a></li>
+<li><a href="#modules_module_paths">module.paths</a></li>
+<li><a href="#modules_module_require_id">module.require(id)</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#modules_the_module_object_1">The <code>Module</code> Object</a></p>
+<ul>
+<li><a href="#modules_module_builtinmodules">module.builtinModules</a></li>
+<li><a href="#modules_module_createrequirefrompath_filename">module.createRequireFromPath(filename)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Modules<span><a class="mark" href="#modules_modules" id="modules_modules">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+
+<p>In the Node.js module system, each file is treated as a separate module. For
+example, consider a file named <code>foo.js</code>:</p>
+<pre><code class="language-js">const circle = require('./circle.js');
+console.log(`The area of a circle of radius 4 is ${circle.area(4)}`);
+</code></pre>
+<p>On the first line, <code>foo.js</code> loads the module <code>circle.js</code> that is in the same
+directory as <code>foo.js</code>.</p>
+<p>Here are the contents of <code>circle.js</code>:</p>
+<pre><code class="language-js">const { PI } = Math;
+
+exports.area = (r) => PI * r ** 2;
+
+exports.circumference = (r) => 2 * PI * r;
+</code></pre>
+<p>The module <code>circle.js</code> has exported the functions <code>area()</code> and
+<code>circumference()</code>. Functions and objects are added to the root of a module
+by specifying additional properties on the special <code>exports</code> object.</p>
+<p>Variables local to the module will be private, because the module is wrapped
+in a function by Node.js (see <a href="#modules_the_module_wrapper">module wrapper</a>).
+In this example, the variable <code>PI</code> is private to <code>circle.js</code>.</p>
+<p>The <code>module.exports</code> property can be assigned a new value (such as a function
+or object).</p>
+<p>Below, <code>bar.js</code> makes use of the <code>square</code> module, which exports a Square class:</p>
+<pre><code class="language-js">const Square = require('./square.js');
+const mySquare = new Square(2);
+console.log(`The area of mySquare is ${mySquare.area()}`);
+</code></pre>
+<p>The <code>square</code> module is defined in <code>square.js</code>:</p>
+<pre><code class="language-js">// assigning to exports will not modify module, must use module.exports
+module.exports = class Square {
+  constructor(width) {
+    this.width = width;
+  }
+
+  area() {
+    return this.width ** 2;
+  }
+};
+</code></pre>
+<p>The module system is implemented in the <code>require('module')</code> module.</p>
+<h2>Accessing the main module<span><a class="mark" href="#modules_accessing_the_main_module" id="modules_accessing_the_main_module">#</a></span></h2>
+
+<p>When a file is run directly from Node.js, <code>require.main</code> is set to its
+<code>module</code>. That means that it is possible to determine whether a file has been
+run directly by testing <code>require.main === module</code>.</p>
+<p>For a file <code>foo.js</code>, this will be <code>true</code> if run via <code>node foo.js</code>, but
+<code>false</code> if run by <code>require('./foo')</code>.</p>
+<p>Because <code>module</code> provides a <code>filename</code> property (normally equivalent to
+<code>__filename</code>), the entry point of the current application can be obtained
+by checking <code>require.main.filename</code>.</p>
+<h2>Addenda: Package Manager Tips<span><a class="mark" href="#modules_addenda_package_manager_tips" id="modules_addenda_package_manager_tips">#</a></span></h2>
+
+<p>The semantics of Node.js's <code>require()</code> function were designed to be general
+enough to support a number of reasonable directory structures. Package manager
+programs such as <code>dpkg</code>, <code>rpm</code>, and <code>npm</code> will hopefully find it possible to
+build native packages from Node.js modules without modification.</p>
+<p>Below we give a suggested directory structure that could work:</p>
+<p>Let's say that we wanted to have the folder at
+<code>/usr/lib/node/&#x3C;some-package>/&#x3C;some-version></code> hold the contents of a
+specific version of a package.</p>
+<p>Packages can depend on one another. In order to install package <code>foo</code>, it
+may be necessary to install a specific version of package <code>bar</code>. The <code>bar</code>
+package may itself have dependencies, and in some cases, these may even collide
+or form cyclic dependencies.</p>
+<p>Since Node.js looks up the <code>realpath</code> of any modules it loads (that is,
+resolves symlinks), and then looks for their dependencies in the <code>node_modules</code>
+folders as described <a href="#modules_loading_from_node_modules_folders">here</a>, this
+situation is very simple to resolve with the following architecture:</p>
+<ul>
+<li><code>/usr/lib/node/foo/1.2.3/</code> - Contents of the <code>foo</code> package, version 1.2.3.</li>
+<li><code>/usr/lib/node/bar/4.3.2/</code> - Contents of the <code>bar</code> package that <code>foo</code>
+depends on.</li>
+<li><code>/usr/lib/node/foo/1.2.3/node_modules/bar</code> - Symbolic link to
+<code>/usr/lib/node/bar/4.3.2/</code>.</li>
+<li><code>/usr/lib/node/bar/4.3.2/node_modules/*</code> - Symbolic links to the packages
+that <code>bar</code> depends on.</li>
+</ul>
+<p>Thus, even if a cycle is encountered, or if there are dependency
+conflicts, every module will be able to get a version of its dependency
+that it can use.</p>
+<p>When the code in the <code>foo</code> package does <code>require('bar')</code>, it will get the
+version that is symlinked into <code>/usr/lib/node/foo/1.2.3/node_modules/bar</code>.
+Then, when the code in the <code>bar</code> package calls <code>require('quux')</code>, it'll get
+the version that is symlinked into
+<code>/usr/lib/node/bar/4.3.2/node_modules/quux</code>.</p>
+<p>Furthermore, to make the module lookup process even more optimal, rather
+than putting packages directly in <code>/usr/lib/node</code>, we could put them in
+<code>/usr/lib/node_modules/&#x3C;name>/&#x3C;version></code>. Then Node.js will not bother
+looking for missing dependencies in <code>/usr/node_modules</code> or <code>/node_modules</code>.</p>
+<p>In order to make modules available to the Node.js REPL, it might be useful to
+also add the <code>/usr/lib/node_modules</code> folder to the <code>$NODE_PATH</code> environment
+variable. Since the module lookups using <code>node_modules</code> folders are all
+relative, and based on the real path of the files making the calls to
+<code>require()</code>, the packages themselves can be anywhere.</p>
+<h2>All Together...<span><a class="mark" href="#modules_all_together" id="modules_all_together">#</a></span></h2>
+
+<p>To get the exact filename that will be loaded when <code>require()</code> is called, use
+the <code>require.resolve()</code> function.</p>
+<p>Putting together all of the above, here is the high-level algorithm
+in pseudocode of what <code>require.resolve()</code> does:</p>
+<pre><code class="language-txt">require(X) from module at path Y
+1. If X is a core module,
+   a. return the core module
+   b. STOP
+2. If X begins with '/'
+   a. set Y to be the filesystem root
+3. If X begins with './' or '/' or '../'
+   a. LOAD_AS_FILE(Y + X)
+   b. LOAD_AS_DIRECTORY(Y + X)
+4. LOAD_NODE_MODULES(X, dirname(Y))
+5. THROW "not found"
+
+LOAD_AS_FILE(X)
+1. If X is a file, load X as JavaScript text.  STOP
+2. If X.js is a file, load X.js as JavaScript text.  STOP
+3. If X.json is a file, parse X.json to a JavaScript Object.  STOP
+4. If X.node is a file, load X.node as binary addon.  STOP
+
+LOAD_INDEX(X)
+1. If X/index.js is a file, load X/index.js as JavaScript text.  STOP
+2. If X/index.json is a file, parse X/index.json to a JavaScript object. STOP
+3. If X/index.node is a file, load X/index.node as binary addon.  STOP
+
+LOAD_AS_DIRECTORY(X)
+1. If X/package.json is a file,
+   a. Parse X/package.json, and look for "main" field.
+   b. let M = X + (json main field)
+   c. LOAD_AS_FILE(M)
+   d. LOAD_INDEX(M)
+2. LOAD_INDEX(X)
+
+LOAD_NODE_MODULES(X, START)
+1. let DIRS = NODE_MODULES_PATHS(START)
+2. for each DIR in DIRS:
+   a. LOAD_AS_FILE(DIR/X)
+   b. LOAD_AS_DIRECTORY(DIR/X)
+
+NODE_MODULES_PATHS(START)
+1. let PARTS = path split(START)
+2. let I = count of PARTS - 1
+3. let DIRS = [GLOBAL_FOLDERS]
+4. while I >= 0,
+   a. if PARTS[I] = "node_modules" CONTINUE
+   b. DIR = path join(PARTS[0 .. I] + "node_modules")
+   c. DIRS = DIRS + DIR
+   d. let I = I - 1
+5. return DIRS
+</code></pre>
+<h2>Caching<span><a class="mark" href="#modules_caching" id="modules_caching">#</a></span></h2>
+
+<p>Modules are cached after the first time they are loaded. This means
+(among other things) that every call to <code>require('foo')</code> will get
+exactly the same object returned, if it would resolve to the same file.</p>
+<p>Provided <code>require.cache</code> is not modified, multiple calls to
+<code>require('foo')</code> will not cause the module code to be executed multiple times.
+This is an important feature. With it, "partially done" objects can be returned,
+thus allowing transitive dependencies to be loaded even when they would cause
+cycles.</p>
+<p>To have a module execute code multiple times, export a function, and call
+that function.</p>
+<h3>Module Caching Caveats<span><a class="mark" href="#modules_module_caching_caveats" id="modules_module_caching_caveats">#</a></span></h3>
+
+<p>Modules are cached based on their resolved filename. Since modules may
+resolve to a different filename based on the location of the calling
+module (loading from <code>node_modules</code> folders), it is not a <em>guarantee</em>
+that <code>require('foo')</code> will always return the exact same object, if it
+would resolve to different files.</p>
+<p>Additionally, on case-insensitive file systems or operating systems, different
+resolved filenames can point to the same file, but the cache will still treat
+them as different modules and will reload the file multiple times. For example,
+<code>require('./foo')</code> and <code>require('./FOO')</code> return two different objects,
+irrespective of whether or not <code>./foo</code> and <code>./FOO</code> are the same file.</p>
+<h2>Core Modules<span><a class="mark" href="#modules_core_modules" id="modules_core_modules">#</a></span></h2>
+
+<p>Node.js has several modules compiled into the binary. These modules are
+described in greater detail elsewhere in this documentation.</p>
+<p>The core modules are defined within Node.js's source and are located in the
+<code>lib/</code> folder.</p>
+<p>Core modules are always preferentially loaded if their identifier is
+passed to <code>require()</code>. For instance, <code>require('http')</code> will always
+return the built in HTTP module, even if there is a file by that name.</p>
+<h2>Cycles<span><a class="mark" href="#modules_cycles" id="modules_cycles">#</a></span></h2>
+
+<p>When there are circular <code>require()</code> calls, a module might not have finished
+executing when it is returned.</p>
+<p>Consider this situation:</p>
+<p><code>a.js</code>:</p>
+<pre><code class="language-js">console.log('a starting');
+exports.done = false;
+const b = require('./b.js');
+console.log('in a, b.done = %j', b.done);
+exports.done = true;
+console.log('a done');
+</code></pre>
+<p><code>b.js</code>:</p>
+<pre><code class="language-js">console.log('b starting');
+exports.done = false;
+const a = require('./a.js');
+console.log('in b, a.done = %j', a.done);
+exports.done = true;
+console.log('b done');
+</code></pre>
+<p><code>main.js</code>:</p>
+<pre><code class="language-js">console.log('main starting');
+const a = require('./a.js');
+const b = require('./b.js');
+console.log('in main, a.done = %j, b.done = %j', a.done, b.done);
+</code></pre>
+<p>When <code>main.js</code> loads <code>a.js</code>, then <code>a.js</code> in turn loads <code>b.js</code>. At that
+point, <code>b.js</code> tries to load <code>a.js</code>. In order to prevent an infinite
+loop, an <strong>unfinished copy</strong> of the <code>a.js</code> exports object is returned to the
+<code>b.js</code> module. <code>b.js</code> then finishes loading, and its <code>exports</code> object is
+provided to the <code>a.js</code> module.</p>
+<p>By the time <code>main.js</code> has loaded both modules, they're both finished.
+The output of this program would thus be:</p>
+<pre><code class="language-txt">$ node main.js
+main starting
+a starting
+b starting
+in b, a.done = false
+b done
+in a, b.done = true
+a done
+in main, a.done = true, b.done = true
+</code></pre>
+<p>Careful planning is required to allow cyclic module dependencies to work
+correctly within an application.</p>
+<h2>File Modules<span><a class="mark" href="#modules_file_modules" id="modules_file_modules">#</a></span></h2>
+
+<p>If the exact filename is not found, then Node.js will attempt to load the
+required filename with the added extensions: <code>.js</code>, <code>.json</code>, and finally
+<code>.node</code>.</p>
+<p><code>.js</code> files are interpreted as JavaScript text files, and <code>.json</code> files are
+parsed as JSON text files. <code>.node</code> files are interpreted as compiled addon
+modules loaded with <code>dlopen</code>.</p>
+<p>A required module prefixed with <code>'/'</code> is an absolute path to the file. For
+example, <code>require('/home/marco/foo.js')</code> will load the file at
+<code>/home/marco/foo.js</code>.</p>
+<p>A required module prefixed with <code>'./'</code> is relative to the file calling
+<code>require()</code>. That is, <code>circle.js</code> must be in the same directory as <code>foo.js</code> for
+<code>require('./circle')</code> to find it.</p>
+<p>Without a leading <code>'/'</code>, <code>'./'</code>, or <code>'../'</code> to indicate a file, the module must
+either be a core module or is loaded from a <code>node_modules</code> folder.</p>
+<p>If the given path does not exist, <code>require()</code> will throw an <a href="errors.html#errors_class_error"><code>Error</code></a> with its
+<code>code</code> property set to <code>'MODULE_NOT_FOUND'</code>.</p>
+<h2>Folders as Modules<span><a class="mark" href="#modules_folders_as_modules" id="modules_folders_as_modules">#</a></span></h2>
+
+<p>It is convenient to organize programs and libraries into self-contained
+directories, and then provide a single entry point to that library.
+There are three ways in which a folder may be passed to <code>require()</code> as
+an argument.</p>
+<p>The first is to create a <code>package.json</code> file in the root of the folder,
+which specifies a <code>main</code> module. An example <code>package.json</code> file might
+look like this:</p>
+<pre><code class="language-json">{ "name" : "some-library",
+  "main" : "./lib/some-library.js" }
+</code></pre>
+<p>If this was in a folder at <code>./some-library</code>, then
+<code>require('./some-library')</code> would attempt to load
+<code>./some-library/lib/some-library.js</code>.</p>
+<p>This is the extent of Node.js's awareness of <code>package.json</code> files.</p>
+<p>If there is no <code>package.json</code> file present in the directory, or if the
+<code>'main'</code> entry is missing or cannot be resolved, then Node.js
+will attempt to load an <code>index.js</code> or <code>index.node</code> file out of that
+directory. For example, if there was no <code>package.json</code> file in the above
+example, then <code>require('./some-library')</code> would attempt to load:</p>
+<ul>
+<li><code>./some-library/index.js</code></li>
+<li><code>./some-library/index.node</code></li>
+</ul>
+<p>If these attempts fail, then Node.js will report the entire module as missing
+with the default error:</p>
+<pre><code class="language-txt">Error: Cannot find module 'some-library'
+</code></pre>
+<h2>Loading from `node_modules` Folders<span><a class="mark" href="#modules_loading_from_node_modules_folders" id="modules_loading_from_node_modules_folders">#</a></span></h2>
+
+<p>If the module identifier passed to <code>require()</code> is not a
+<a href="#modules_core_modules">core</a> module, and does not begin with <code>'/'</code>, <code>'../'</code>, or
+<code>'./'</code>, then Node.js starts at the parent directory of the current module, and
+adds <code>/node_modules</code>, and attempts to load the module from that location.
+Node.js will not append <code>node_modules</code> to a path already ending in
+<code>node_modules</code>.</p>
+<p>If it is not found there, then it moves to the parent directory, and so
+on, until the root of the file system is reached.</p>
+<p>For example, if the file at <code>'/home/ry/projects/foo.js'</code> called
+<code>require('bar.js')</code>, then Node.js would look in the following locations, in
+this order:</p>
+<ul>
+<li><code>/home/ry/projects/node_modules/bar.js</code></li>
+<li><code>/home/ry/node_modules/bar.js</code></li>
+<li><code>/home/node_modules/bar.js</code></li>
+<li><code>/node_modules/bar.js</code></li>
+</ul>
+<p>This allows programs to localize their dependencies, so that they do not
+clash.</p>
+<p>It is possible to require specific files or sub modules distributed with a
+module by including a path suffix after the module name. For instance
+<code>require('example-module/path/to/file')</code> would resolve <code>path/to/file</code>
+relative to where <code>example-module</code> is located. The suffixed path follows the
+same module resolution semantics.</p>
+<h2>Loading from the global folders<span><a class="mark" href="#modules_loading_from_the_global_folders" id="modules_loading_from_the_global_folders">#</a></span></h2>
+
+<p>If the <code>NODE_PATH</code> environment variable is set to a colon-delimited list
+of absolute paths, then Node.js will search those paths for modules if they
+are not found elsewhere.</p>
+<p>On Windows, <code>NODE_PATH</code> is delimited by semicolons (<code>;</code>) instead of colons.</p>
+<p><code>NODE_PATH</code> was originally created to support loading modules from
+varying paths before the current <a href="#modules_all_together">module resolution</a> algorithm was frozen.</p>
+<p><code>NODE_PATH</code> is still supported, but is less necessary now that the Node.js
+ecosystem has settled on a convention for locating dependent modules.
+Sometimes deployments that rely on <code>NODE_PATH</code> show surprising behavior
+when people are unaware that <code>NODE_PATH</code> must be set. Sometimes a
+module's dependencies change, causing a different version (or even a
+different module) to be loaded as the <code>NODE_PATH</code> is searched.</p>
+<p>Additionally, Node.js will search in the following list of GLOBAL_FOLDERS:</p>
+<ul>
+<li>1: <code>$HOME/.node_modules</code></li>
+<li>2: <code>$HOME/.node_libraries</code></li>
+<li>3: <code>$PREFIX/lib/node</code></li>
+</ul>
+<p>Where <code>$HOME</code> is the user's home directory, and <code>$PREFIX</code> is Node.js's
+configured <code>node_prefix</code>.</p>
+<p>These are mostly for historic reasons.</p>
+<p>It is strongly encouraged to place dependencies in the local <code>node_modules</code>
+folder. These will be loaded faster, and more reliably.</p>
+<h2>The module wrapper<span><a class="mark" href="#modules_the_module_wrapper" id="modules_the_module_wrapper">#</a></span></h2>
+
+<p>Before a module's code is executed, Node.js will wrap it with a function
+wrapper that looks like the following:</p>
+<pre><code class="language-js">(function(exports, require, module, __filename, __dirname) {
+// Module code actually lives in here
+});
+</code></pre>
+<p>By doing this, Node.js achieves a few things:</p>
+<ul>
+<li>It keeps top-level variables (defined with <code>var</code>, <code>const</code> or <code>let</code>) scoped to
+the module rather than the global object.</li>
+<li>
+<p>It helps to provide some global-looking variables that are actually specific
+to the module, such as:</p>
+<ul>
+<li>The <code>module</code> and <code>exports</code> objects that the implementor can use to export
+values from the module.</li>
+<li>The convenience variables <code>__filename</code> and <code>__dirname</code>, containing the
+module's absolute filename and directory path.</li>
+</ul>
+</li>
+</ul>
+<h2>The module scope<span><a class="mark" href="#modules_the_module_scope" id="modules_the_module_scope">#</a></span></h2>
+<h3>__dirname<span><a class="mark" href="#modules_dirname" id="modules_dirname">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.27</span>
+</div>
+
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>The directory name of the current module. This is the same as the
+<a href="path.html#path_path_dirname_path"><code>path.dirname()</code></a> of the <a href="#modules_filename"><code>__filename</code></a>.</p>
+<p>Example: running <code>node example.js</code> from <code>/Users/mjr</code></p>
+<pre><code class="language-js">console.log(__dirname);
+// Prints: /Users/mjr
+console.log(path.dirname(__filename));
+// Prints: /Users/mjr
+</code></pre>
+<h3>__filename<span><a class="mark" href="#modules_filename" id="modules_filename">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.0.1</span>
+</div>
+
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>The file name of the current module. This is the current module file's absolute
+path with symlinks resolved.</p>
+<p>For a main program this is not necessarily the same as the file name used in the
+command line.</p>
+<p>See <a href="#modules_dirname"><code>__dirname</code></a> for the directory name of the current module.</p>
+<p>Examples:</p>
+<p>Running <code>node example.js</code> from <code>/Users/mjr</code></p>
+<pre><code class="language-js">console.log(__filename);
+// Prints: /Users/mjr/example.js
+console.log(__dirname);
+// Prints: /Users/mjr
+</code></pre>
+<p>Given two modules: <code>a</code> and <code>b</code>, where <code>b</code> is a dependency of
+<code>a</code> and there is a directory structure of:</p>
+<ul>
+<li><code>/Users/mjr/app/a.js</code></li>
+<li><code>/Users/mjr/app/node_modules/b/b.js</code></li>
+</ul>
+<p>References to <code>__filename</code> within <code>b.js</code> will return
+<code>/Users/mjr/app/node_modules/b/b.js</code> while references to <code>__filename</code> within
+<code>a.js</code> will return <code>/Users/mjr/app/a.js</code>.</p>
+<h3>exports<span><a class="mark" href="#modules_exports" id="modules_exports">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.12</span>
+</div>
+
+<p>A reference to the <code>module.exports</code> that is shorter to type.
+See the section about the <a href="#modules_exports_shortcut">exports shortcut</a> for details on when to use
+<code>exports</code> and when to use <code>module.exports</code>.</p>
+<h3>module<span><a class="mark" href="#modules_module" id="modules_module">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>A reference to the current module, see the section about the
+<a href="#modules_the_module_object"><code>module</code> object</a>. In particular, <code>module.exports</code> is used for defining what
+a module exports and makes available through <code>require()</code>.</p>
+<h3>require()<span><a class="mark" href="#modules_require" id="modules_require">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.13</span>
+</div>
+
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></li>
+</ul>
+<p>Used to import modules, <code>JSON</code>, and local files. Modules can be imported
+from <code>node_modules</code>. Local modules and JSON files can be imported using
+a relative path (e.g. <code>./</code>, <code>./foo</code>, <code>./bar/baz</code>, <code>../foo</code>) that will be
+resolved against the directory named by <a href="#modules_dirname"><code>__dirname</code></a> (if defined) or
+the current working directory.</p>
+<pre><code class="language-js">// Importing a local module:
+const myLocalModule = require('./path/myLocalModule');
+
+// Importing a JSON file:
+const jsonData = require('./path/filename.json');
+
+// Importing a module from node_modules or Node.js built-in module:
+const crypto = require('crypto');
+</code></pre>
+<h4>require.cache<span><a class="mark" href="#modules_require_cache" id="modules_require_cache">#</a></span></h4>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>Modules are cached in this object when they are required. By deleting a key
+value from this object, the next <code>require</code> will reload the module. Note that
+this does not apply to <a href="addons.html">native addons</a>, for which reloading will result in an
+error.</p>
+<h4>require.extensions<span><a class="mark" href="#modules_require_extensions" id="modules_require_extensions">#</a></span></h4>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span><span>Deprecated since: v0.10.6</span>
+</div>
+<p></p><div class="api_stability api_stability_0"><a href="documentation.html#documentation_stability_index">Stability: 0</a> - Deprecated</div><p></p>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>Instruct <code>require</code> on how to handle certain file extensions.</p>
+<p>Process files with the extension <code>.sjs</code> as <code>.js</code>:</p>
+<pre><code class="language-js">require.extensions['.sjs'] = require.extensions['.js'];
+</code></pre>
+<p><strong>Deprecated</strong> In the past, this list has been used to load
+non-JavaScript modules into Node.js by compiling them on-demand.
+However, in practice, there are much better ways to do this, such as
+loading modules via some other Node.js program, or compiling them to
+JavaScript ahead of time.</p>
+<p>Since the module system is locked, this feature will probably never go
+away. However, it may have subtle bugs and complexities that are best
+left untouched.</p>
+<p>Note that the number of file system operations that the module system
+has to perform in order to resolve a <code>require(...)</code> statement to a
+filename scales linearly with the number of registered extensions.</p>
+<p>In other words, adding extensions slows down the module loader and
+should be discouraged.</p>
+<h4>require.main<span><a class="mark" href="#modules_require_main" id="modules_require_main">#</a></span></h4>
+<div class="api_metadata">
+<span>Added in: v0.1.17</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>The <code>Module</code> object representing the entry script loaded when the Node.js
+process launched.
+See <a href="#modules_accessing_the_main_module">"Accessing the main module"</a>.</p>
+<p>In <code>entry.js</code> script:</p>
+<pre><code class="language-js">console.log(require.main);
+</code></pre>
+<pre><code class="language-sh">node entry.js
+</code></pre>
+<!-- eslint-skip -->
+<pre><code class="language-js">Module {
+  id: '.',
+  exports: {},
+  parent: null,
+  filename: '/absolute/path/to/entry.js',
+  loaded: false,
+  children: [],
+  paths:
+   [ '/absolute/path/to/node_modules',
+     '/absolute/path/node_modules',
+     '/absolute/node_modules',
+     '/node_modules' ] }
+</code></pre>
+<h4>require.resolve(request[, options])<span><a class="mark" href="#modules_require_resolve_request_options" id="modules_require_resolve_request_options">#</a></span></h4>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v8.9.0</td>
+<td><p>The <code>paths</code> option is now supported.</p></td></tr>
+<tr><td>v0.3.0</td>
+<td><p><span>Added in: v0.3.0</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>request</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The module path to resolve.</li>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></p>
+<ul>
+<li><code>paths</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a> Paths to resolve module location from. If present, these
+paths are used instead of the default resolution paths, with the exception
+of <a href="#modules_loading_from_the_global_folders">GLOBAL_FOLDERS</a> like <code>$HOME/.node_modules</code>, which are always
+included. Note that each of these paths is used as a starting point for
+the module resolution algorithm, meaning that the <code>node_modules</code> hierarchy
+is checked from this location.</li>
+</ul>
+</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>Use the internal <code>require()</code> machinery to look up the location of a module,
+but rather than loading the module, just return the resolved filename.</p>
+<h4>require.resolve.paths(request)<span><a class="mark" href="#modules_require_resolve_paths_request" id="modules_require_resolve_paths_request">#</a></span></h4>
+<div class="api_metadata">
+<span>Added in: v8.9.0</span>
+</div>
+<ul>
+<li><code>request</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The module path whose lookup paths are being retrieved.</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type" class="type">&#x3C;null></a></li>
+</ul>
+<p>Returns an array containing the paths searched during resolution of <code>request</code> or
+<code>null</code> if the <code>request</code> string references a core module, for example <code>http</code> or
+<code>fs</code>.</p>
+<h2>The `module` Object<span><a class="mark" href="#modules_the_module_object" id="modules_the_module_object">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+
+
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>In each module, the <code>module</code> free variable is a reference to the object
+representing the current module. For convenience, <code>module.exports</code> is
+also accessible via the <code>exports</code> module-global. <code>module</code> is not actually
+a global but rather local to each module.</p>
+<h3>module.children<span><a class="mark" href="#modules_module_children" id="modules_module_children">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+<ul>
+<li><a href="modules.html#modules_the_module_object" class="type">&#x3C;module[]></a></li>
+</ul>
+<p>The module objects required for the first time by this one.</p>
+<h3>module.exports<span><a class="mark" href="#modules_module_exports" id="modules_module_exports">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>The <code>module.exports</code> object is created by the <code>Module</code> system. Sometimes this is
+not acceptable; many want their module to be an instance of some class. To do
+this, assign the desired export object to <code>module.exports</code>. Note that assigning
+the desired object to <code>exports</code> will simply rebind the local <code>exports</code> variable,
+which is probably not what is desired.</p>
+<p>For example, suppose we were making a module called <code>a.js</code>:</p>
+<pre><code class="language-js">const EventEmitter = require('events');
+
+module.exports = new EventEmitter();
+
+// Do some work, and after some time emit
+// the 'ready' event from the module itself.
+setTimeout(() => {
+  module.exports.emit('ready');
+}, 1000);
+</code></pre>
+<p>Then in another file we could do:</p>
+<pre><code class="language-js">const a = require('./a');
+a.on('ready', () => {
+  console.log('module "a" is ready');
+});
+</code></pre>
+<p>Note that assignment to <code>module.exports</code> must be done immediately. It cannot be
+done in any callbacks. This does not work:</p>
+<p><code>x.js</code>:</p>
+<pre><code class="language-js">setTimeout(() => {
+  module.exports = { a: 'hello' };
+}, 0);
+</code></pre>
+<p><code>y.js</code>:</p>
+<pre><code class="language-js">const x = require('./x');
+console.log(x.a);
+</code></pre>
+<h4>exports shortcut<span><a class="mark" href="#modules_exports_shortcut" id="modules_exports_shortcut">#</a></span></h4>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+<p>The <code>exports</code> variable is available within a module's file-level scope, and is
+assigned the value of <code>module.exports</code> before the module is evaluated.</p>
+<p>It allows a shortcut, so that <code>module.exports.f = ...</code> can be written more
+succinctly as <code>exports.f = ...</code>. However, be aware that like any variable, if a
+new value is assigned to <code>exports</code>, it is no longer bound to <code>module.exports</code>:</p>
+<pre><code class="language-js">module.exports.hello = true; // Exported from require of module
+exports = { hello: false };  // Not exported, only available in the module
+</code></pre>
+<p>When the <code>module.exports</code> property is being completely replaced by a new
+object, it is common to also reassign <code>exports</code>:</p>
+<!-- eslint-disable func-name-matching -->
+<pre><code class="language-js">module.exports = exports = function Constructor() {
+  // ... etc.
+};
+</code></pre>
+<p>To illustrate the behavior, imagine this hypothetical implementation of
+<code>require()</code>, which is quite similar to what is actually done by <code>require()</code>:</p>
+<pre><code class="language-js">function require(/* ... */) {
+  const module = { exports: {} };
+  ((module, exports) => {
+    // Module code here. In this example, define a function.
+    function someFunc() {}
+    exports = someFunc;
+    // At this point, exports is no longer a shortcut to module.exports, and
+    // this module will still export an empty default object.
+    module.exports = someFunc;
+    // At this point, the module will now export someFunc, instead of the
+    // default object.
+  })(module, module.exports);
+  return module.exports;
+}
+</code></pre>
+<h3>module.filename<span><a class="mark" href="#modules_module_filename" id="modules_module_filename">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>The fully resolved filename to the module.</p>
+<h3>module.id<span><a class="mark" href="#modules_module_id" id="modules_module_id">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>The identifier for the module. Typically this is the fully resolved
+filename.</p>
+<h3>module.loaded<span><a class="mark" href="#modules_module_loaded" id="modules_module_loaded">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>Whether or not the module is done loading, or is in the process of
+loading.</p>
+<h3>module.parent<span><a class="mark" href="#modules_module_parent" id="modules_module_parent">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.16</span>
+</div>
+<ul>
+<li><a href="modules.html#modules_the_module_object" class="type">&#x3C;module></a></li>
+</ul>
+<p>The module that first required this one.</p>
+<h3>module.paths<span><a class="mark" href="#modules_module_paths" id="modules_module_paths">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.4.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+</ul>
+<p>The search paths for the module.</p>
+<h3>module.require(id)<span><a class="mark" href="#modules_module_require_id" id="modules_module_require_id">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.5.1</span>
+</div>
+<ul>
+<li><code>id</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> <code>module.exports</code> from the resolved module</li>
+</ul>
+<p>The <code>module.require</code> method provides a way to load a module as if
+<code>require()</code> was called from the original module.</p>
+<p>In order to do this, it is necessary to get a reference to the <code>module</code> object.
+Since <code>require()</code> returns the <code>module.exports</code>, and the <code>module</code> is typically
+<em>only</em> available within a specific module's code, it must be explicitly exported
+in order to be used.</p>
+<h2>The `Module` Object<span><a class="mark" href="#modules_the_module_object_1" id="modules_the_module_object_1">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.3.7</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></li>
+</ul>
+<p>Provides general utility methods when interacting with instances of
+<code>Module</code> — the <code>module</code> variable often seen in file modules. Accessed
+via <code>require('module')</code>.</p>
+<h3>module.builtinModules<span><a class="mark" href="#modules_module_builtinmodules" id="modules_module_builtinmodules">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v9.3.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a></li>
+</ul>
+<p>A list of the names of all modules provided by Node.js. Can be used to verify
+if a module is maintained by a third party or not.</p>
+<p>Note that <code>module</code> in this context isn't the same object that's provided
+by the <a href="#modules_the_module_wrapper">module wrapper</a>. To access it, require the <code>Module</code> module:</p>
+<pre><code class="language-js">const builtin = require('module').builtinModules;
+</code></pre>
+<h3>module.createRequireFromPath(filename)<span><a class="mark" href="#modules_module_createrequirefrompath_filename" id="modules_module_createrequirefrompath_filename">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.12.0</span>
+</div>
+<ul>
+<li><code>filename</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Filename to be used to construct the relative require
+function.</li>
+<li>Returns: {<a href="#modules_require"><code>require</code></a>} Require function</li>
+</ul>
+<pre><code class="language-js">const { createRequireFromPath } = require('module');
+const requireUtil = createRequireFromPath('../src/utils');
+
+// require `../src/utils/some-tool`
+requireUtil('./some-tool');
+</code></pre>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

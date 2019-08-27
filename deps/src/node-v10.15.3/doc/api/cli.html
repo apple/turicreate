@@ -1,0 +1,812 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Command Line Options | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/cli.html">
+</head>
+<body class="alt apidoc" id="api-section-cli">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli active">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="cli" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="cli.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/cli.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/cli.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/cli.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/cli.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/cli.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/cli.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/cli.html">5.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/cli.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><a href="#cli_command_line_options">Command Line Options</a></p>
+<ul>
+<li><a href="#cli_synopsis">Synopsis</a></li>
+<li>
+<p><a href="#cli_options">Options</a></p>
+<ul>
+<li><a href="#cli"><code>-</code></a></li>
+<li><a href="#cli_1"><code>--</code></a></li>
+<li><a href="#cli_abort_on_uncaught_exception"><code>--abort-on-uncaught-exception</code></a></li>
+<li><a href="#cli_completion_bash"><code>--completion-bash</code></a></li>
+<li><a href="#cli_enable_fips"><code>--enable-fips</code></a></li>
+<li><a href="#cli_experimental_modules"><code>--experimental-modules</code></a></li>
+<li><a href="#cli_experimental_repl_await"><code>--experimental-repl-await</code></a></li>
+<li><a href="#cli_experimental_vm_modules"><code>--experimental-vm-modules</code></a></li>
+<li><a href="#cli_experimental_worker"><code>--experimental-worker</code></a></li>
+<li><a href="#cli_force_fips"><code>--force-fips</code></a></li>
+<li><a href="#cli_icu_data_dir_file"><code>--icu-data-dir=file</code></a></li>
+<li><a href="#cli_inspect_brk_host_port"><code>--inspect-brk[=[host:]port]</code></a></li>
+<li><a href="#cli_inspect_port_host_port"><code>--inspect-port=[host:]port</code></a></li>
+<li>
+<p><a href="#cli_inspect_host_port"><code>--inspect[=[host:]port]</code></a></p>
+<ul>
+<li><a href="#cli_warning_binding_inspector_to_a_public_ip_port_combination_is_insecure">Warning: binding inspector to a public IP:port combination is insecure</a></li>
+</ul>
+</li>
+<li><a href="#cli_loader_file"><code>--loader=file</code></a></li>
+<li><a href="#cli_max_http_header_size_size"><code>--max-http-header-size=size</code></a></li>
+<li><a href="#cli_napi_modules"><code>--napi-modules</code></a></li>
+<li><a href="#cli_no_deprecation"><code>--no-deprecation</code></a></li>
+<li><a href="#cli_no_force_async_hooks_checks"><code>--no-force-async-hooks-checks</code></a></li>
+<li><a href="#cli_no_warnings"><code>--no-warnings</code></a></li>
+<li><a href="#cli_openssl_config_file"><code>--openssl-config=file</code></a></li>
+<li><a href="#cli_pending_deprecation"><code>--pending-deprecation</code></a></li>
+<li><a href="#cli_preserve_symlinks"><code>--preserve-symlinks</code></a></li>
+<li><a href="#cli_preserve_symlinks_main"><code>--preserve-symlinks-main</code></a></li>
+<li><a href="#cli_prof"><code>--prof</code></a></li>
+<li><a href="#cli_prof_process"><code>--prof-process</code></a></li>
+<li><a href="#cli_redirect_warnings_file"><code>--redirect-warnings=file</code></a></li>
+<li><a href="#cli_throw_deprecation"><code>--throw-deprecation</code></a></li>
+<li><a href="#cli_title_title"><code>--title=title</code></a></li>
+<li><a href="#cli_tls_cipher_list_list"><code>--tls-cipher-list=list</code></a></li>
+<li><a href="#cli_trace_deprecation"><code>--trace-deprecation</code></a></li>
+<li><a href="#cli_trace_event_categories"><code>--trace-event-categories</code></a></li>
+<li><a href="#cli_trace_event_file_pattern"><code>--trace-event-file-pattern</code></a></li>
+<li><a href="#cli_trace_events_enabled"><code>--trace-events-enabled</code></a></li>
+<li><a href="#cli_trace_sync_io"><code>--trace-sync-io</code></a></li>
+<li><a href="#cli_trace_warnings"><code>--trace-warnings</code></a></li>
+<li><a href="#cli_track_heap_objects"><code>--track-heap-objects</code></a></li>
+<li><a href="#cli_use_bundled_ca_use_openssl_ca"><code>--use-bundled-ca</code>, <code>--use-openssl-ca</code></a></li>
+<li><a href="#cli_v8_options"><code>--v8-options</code></a></li>
+<li><a href="#cli_v8_pool_size_num"><code>--v8-pool-size=num</code></a></li>
+<li><a href="#cli_zero_fill_buffers"><code>--zero-fill-buffers</code></a></li>
+<li><a href="#cli_c_check"><code>-c</code>, <code>--check</code></a></li>
+<li><a href="#cli_e_eval_script"><code>-e</code>, <code>--eval "script"</code></a></li>
+<li><a href="#cli_h_help"><code>-h</code>, <code>--help</code></a></li>
+<li><a href="#cli_i_interactive"><code>-i</code>, <code>--interactive</code></a></li>
+<li><a href="#cli_p_print_script"><code>-p</code>, <code>--print "script"</code></a></li>
+<li><a href="#cli_r_require_module"><code>-r</code>, <code>--require module</code></a></li>
+<li><a href="#cli_v_version"><code>-v</code>, <code>--version</code></a></li>
+</ul>
+</li>
+<li>
+<p><a href="#cli_environment_variables">Environment Variables</a></p>
+<ul>
+<li><a href="#cli_node_debug_module"><code>NODE_DEBUG=module[,…]</code></a></li>
+<li><a href="#cli_node_debug_native_module"><code>NODE_DEBUG_NATIVE=module[,…]</code></a></li>
+<li><a href="#cli_node_disable_colors_1"><code>NODE_DISABLE_COLORS=1</code></a></li>
+<li><a href="#cli_node_extra_ca_certs_file"><code>NODE_EXTRA_CA_CERTS=file</code></a></li>
+<li><a href="#cli_node_icu_data_file"><code>NODE_ICU_DATA=file</code></a></li>
+<li><a href="#cli_node_no_warnings_1"><code>NODE_NO_WARNINGS=1</code></a></li>
+<li><a href="#cli_node_options_options"><code>NODE_OPTIONS=options...</code></a></li>
+<li><a href="#cli_node_path_path"><code>NODE_PATH=path[:…]</code></a></li>
+<li><a href="#cli_node_pending_deprecation_1"><code>NODE_PENDING_DEPRECATION=1</code></a></li>
+<li><a href="#cli_node_preserve_symlinks_1"><code>NODE_PRESERVE_SYMLINKS=1</code></a></li>
+<li><a href="#cli_node_redirect_warnings_file"><code>NODE_REDIRECT_WARNINGS=file</code></a></li>
+<li><a href="#cli_node_repl_history_file"><code>NODE_REPL_HISTORY=file</code></a></li>
+<li><a href="#cli_node_tls_reject_unauthorized_value"><code>NODE_TLS_REJECT_UNAUTHORIZED=value</code></a></li>
+<li><a href="#cli_node_v8_coverage_dir"><code>NODE_V8_COVERAGE=dir</code></a></li>
+<li><a href="#cli_openssl_conf_file"><code>OPENSSL_CONF=file</code></a></li>
+<li><a href="#cli_ssl_cert_dir_dir"><code>SSL_CERT_DIR=dir</code></a></li>
+<li><a href="#cli_ssl_cert_file_file"><code>SSL_CERT_FILE=file</code></a></li>
+<li><a href="#cli_uv_threadpool_size_size"><code>UV_THREADPOOL_SIZE=size</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Command Line Options<span><a class="mark" href="#cli_command_line_options" id="cli_command_line_options">#</a></span></h1>
+
+
+<p>Node.js comes with a variety of CLI options. These options expose built-in
+debugging, multiple ways to execute scripts, and other helpful runtime options.</p>
+<p>To view this documentation as a manual page in a terminal, run <code>man node</code>.</p>
+<h2>Synopsis<span><a class="mark" href="#cli_synopsis" id="cli_synopsis">#</a></span></h2>
+<p><code>node [options] [V8 options] [script.js | -e "script" | -] [--] [arguments]</code></p>
+<p><code>node inspect [script.js | -e "script" | &#x3C;host>:&#x3C;port>] …</code></p>
+<p><code>node --v8-options</code></p>
+<p>Execute without arguments to start the <a href="repl.html">REPL</a>.</p>
+<p><em>For more info about <code>node inspect</code>, please see the <a href="debugger.html">debugger</a> documentation.</em></p>
+<h2>Options<span><a class="mark" href="#cli_options" id="cli_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.12.0</td>
+<td><p>Underscores instead of dashes are now allowed for Node.js options as well, in addition to V8 options.</p></td></tr>
+</tbody></table>
+</details>
+</div>
+<p>All options, including V8 options, allow words to be separated by both
+dashes (<code>-</code>) or underscores (<code>_</code>).</p>
+<p>For example, <code>--pending-deprecation</code> is equivalent to <code>--pending_deprecation</code>.</p>
+<h3><code>-</code><span><a class="mark" href="#cli" id="cli">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>Alias for stdin, analogous to the use of - in other command line utilities,
+meaning that the script will be read from stdin, and the rest of the options
+are passed to that script.</p>
+<h3><code>--</code><span><a class="mark" href="#cli_1" id="cli_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.11.0</span>
+</div>
+<p>Indicate the end of node options. Pass the rest of the arguments to the script.
+If no script filename or eval/print script is supplied prior to this, then
+the next argument will be used as a script filename.</p>
+<h3><code>--abort-on-uncaught-exception</code><span><a class="mark" href="#cli_abort_on_uncaught_exception" id="cli_abort_on_uncaught_exception">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.10</span>
+</div>
+<p>Aborting instead of exiting causes a core file to be generated for post-mortem
+analysis using a debugger (such as <code>lldb</code>, <code>gdb</code>, and <code>mdb</code>).</p>
+<p>If this flag is passed, the behavior can still be set to not abort through
+<a href="process.html#process_process_setuncaughtexceptioncapturecallback_fn"><code>process.setUncaughtExceptionCaptureCallback()</code></a> (and through usage of the
+<code>domain</code> module that uses it).</p>
+<h3><code>--completion-bash</code><span><a class="mark" href="#cli_completion_bash" id="cli_completion_bash">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.12.0</span>
+</div>
+<p>Print source-able bash completion script for Node.js.</p>
+<pre><code class="language-console">$ node --completion-bash > node_bash_completion
+$ source node_bash_completion
+</code></pre>
+<h3><code>--enable-fips</code><span><a class="mark" href="#cli_enable_fips" id="cli_enable_fips">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.0.0</span>
+</div>
+<p>Enable FIPS-compliant crypto at startup. (Requires Node.js to be built with
+<code>./configure --openssl-fips</code>.)</p>
+<h3><code>--experimental-modules</code><span><a class="mark" href="#cli_experimental_modules" id="cli_experimental_modules">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.5.0</span>
+</div>
+<p>Enable experimental ES module support and caching modules.</p>
+<h3><code>--experimental-repl-await</code><span><a class="mark" href="#cli_experimental_repl_await" id="cli_experimental_repl_await">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.0.0</span>
+</div>
+<p>Enable experimental top-level <code>await</code> keyword support in REPL.</p>
+<h3><code>--experimental-vm-modules</code><span><a class="mark" href="#cli_experimental_vm_modules" id="cli_experimental_vm_modules">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v9.6.0</span>
+</div>
+<p>Enable experimental ES Module support in the <code>vm</code> module.</p>
+<h3><code>--experimental-worker</code><span><a class="mark" href="#cli_experimental_worker" id="cli_experimental_worker">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>Enable experimental worker threads using the <code>worker_threads</code> module.</p>
+<h3><code>--force-fips</code><span><a class="mark" href="#cli_force_fips" id="cli_force_fips">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.0.0</span>
+</div>
+<p>Force FIPS-compliant crypto on startup. (Cannot be disabled from script code.)
+(Same requirements as <code>--enable-fips</code>.)</p>
+<h3><code>--icu-data-dir=file</code><span><a class="mark" href="#cli_icu_data_dir_file" id="cli_icu_data_dir_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.15</span>
+</div>
+<p>Specify ICU data load path. (Overrides <code>NODE_ICU_DATA</code>.)</p>
+<h3><code>--inspect-brk[=[host:]port]</code><span><a class="mark" href="#cli_inspect_brk_host_port" id="cli_inspect_brk_host_port">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.6.0</span>
+</div>
+<p>Activate inspector on <code>host:port</code> and break at start of user script.
+Default <code>host:port</code> is <code>127.0.0.1:9229</code>.</p>
+<h3><code>--inspect-port=[host:]port</code><span><a class="mark" href="#cli_inspect_port_host_port" id="cli_inspect_port_host_port">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.6.0</span>
+</div>
+<p>Set the <code>host:port</code> to be used when the inspector is activated.
+Useful when activating the inspector by sending the <code>SIGUSR1</code> signal.</p>
+<p>Default host is <code>127.0.0.1</code>.</p>
+<p>See the <a href="#inspector_security">security warning</a> below regarding the <code>host</code>
+parameter usage.</p>
+<h3><code>--inspect[=[host:]port]</code><span><a class="mark" href="#cli_inspect_host_port" id="cli_inspect_host_port">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.3.0</span>
+</div>
+<p>Activate inspector on <code>host:port</code>. Default is <code>127.0.0.1:9229</code>.</p>
+<p>V8 inspector integration allows tools such as Chrome DevTools and IDEs to debug
+and profile Node.js instances. The tools attach to Node.js instances via a
+tcp port and communicate using the <a href="https://chromedevtools.github.io/devtools-protocol/">Chrome DevTools Protocol</a>.</p>
+<p><a id="inspector_security"></a></p>
+<h4>Warning: binding inspector to a public IP:port combination is insecure<span><a class="mark" href="#cli_warning_binding_inspector_to_a_public_ip_port_combination_is_insecure" id="cli_warning_binding_inspector_to_a_public_ip_port_combination_is_insecure">#</a></span></h4>
+<p>Binding the inspector to a public IP (including <code>0.0.0.0</code>) with an open port is
+insecure, as it allows external hosts to connect to the inspector and perform
+a <a href="https://www.owasp.org/index.php/Code_Injection">remote code execution</a> attack.</p>
+<p>If you specify a host, make sure that at least one of the following is true:
+either the host is not public, or the port is properly firewalled to disallow
+unwanted connections.</p>
+<p><strong>More specifically, <code>--inspect=0.0.0.0</code> is insecure if the port (<code>9229</code> by
+default) is not firewall-protected.</strong></p>
+<p>See the <a href="https://nodejs.org/en/docs/guides/debugging-getting-started/#security-implications">debugging security implications</a> section for more information.</p>
+<h3><code>--loader=file</code><span><a class="mark" href="#cli_loader_file" id="cli_loader_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v9.0.0</span>
+</div>
+<p>Specify the <code>file</code> of the custom <a href="esm.html#esm_loader_hooks">experimental ECMAScript Module</a> loader.</p>
+<h3><code>--max-http-header-size=size</code><span><a class="mark" href="#cli_max_http_header_size_size" id="cli_max_http_header_size_size">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.15.0</span>
+</div>
+<p>Specify the maximum size, in bytes, of HTTP headers. Defaults to 8KB.</p>
+<h3><code>--napi-modules</code><span><a class="mark" href="#cli_napi_modules" id="cli_napi_modules">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.10.0</span>
+</div>
+<p>This option is a no-op. It is kept for compatibility.</p>
+<h3><code>--no-deprecation</code><span><a class="mark" href="#cli_no_deprecation" id="cli_no_deprecation">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.8.0</span>
+</div>
+<p>Silence deprecation warnings.</p>
+<h3><code>--no-force-async-hooks-checks</code><span><a class="mark" href="#cli_no_force_async_hooks_checks" id="cli_no_force_async_hooks_checks">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v9.0.0</span>
+</div>
+<p>Disables runtime checks for <code>async_hooks</code>. These will still be enabled
+dynamically when <code>async_hooks</code> is enabled.</p>
+<h3><code>--no-warnings</code><span><a class="mark" href="#cli_no_warnings" id="cli_no_warnings">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.0.0</span>
+</div>
+<p>Silence all process warnings (including deprecations).</p>
+<h3><code>--openssl-config=file</code><span><a class="mark" href="#cli_openssl_config_file" id="cli_openssl_config_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.9.0</span>
+</div>
+<p>Load an OpenSSL configuration file on startup. Among other uses, this can be
+used to enable FIPS-compliant crypto if Node.js is built with
+<code>./configure --openssl-fips</code>.</p>
+<h3><code>--pending-deprecation</code><span><a class="mark" href="#cli_pending_deprecation" id="cli_pending_deprecation">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>Emit pending deprecation warnings.</p>
+<p>Pending deprecations are generally identical to a runtime deprecation with the
+notable exception that they are turned <em>off</em> by default and will not be emitted
+unless either the <code>--pending-deprecation</code> command line flag, or the
+<code>NODE_PENDING_DEPRECATION=1</code> environment variable, is set. Pending deprecations
+are used to provide a kind of selective "early warning" mechanism that
+developers may leverage to detect deprecated API usage.</p>
+<h3><code>--preserve-symlinks</code><span><a class="mark" href="#cli_preserve_symlinks" id="cli_preserve_symlinks">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.3.0</span>
+</div>
+<p>Instructs the module loader to preserve symbolic links when resolving and
+caching modules.</p>
+<p>By default, when Node.js loads a module from a path that is symbolically linked
+to a different on-disk location, Node.js will dereference the link and use the
+actual on-disk "real path" of the module as both an identifier and as a root
+path to locate other dependency modules. In most cases, this default behavior
+is acceptable. However, when using symbolically linked peer dependencies, as
+illustrated in the example below, the default behavior causes an exception to
+be thrown if <code>moduleA</code> attempts to require <code>moduleB</code> as a peer dependency:</p>
+<pre><code class="language-text">{appDir}
+ ├── app
+ │   ├── index.js
+ │   └── node_modules
+ │       ├── moduleA -> {appDir}/moduleA
+ │       └── moduleB
+ │           ├── index.js
+ │           └── package.json
+ └── moduleA
+     ├── index.js
+     └── package.json
+</code></pre>
+<p>The <code>--preserve-symlinks</code> command line flag instructs Node.js to use the
+symlink path for modules as opposed to the real path, allowing symbolically
+linked peer dependencies to be found.</p>
+<p>Note, however, that using <code>--preserve-symlinks</code> can have other side effects.
+Specifically, symbolically linked <em>native</em> modules can fail to load if those
+are linked from more than one location in the dependency tree (Node.js would
+see those as two separate modules and would attempt to load the module multiple
+times, causing an exception to be thrown).</p>
+<p>The <code>--preserve-symlinks</code> flag does not apply to the main module, which allows
+<code>node --preserve-symlinks node_module/.bin/&#x3C;foo></code> to work.  To apply the same
+behavior for the main module, also use <code>--preserve-symlinks-main</code>.</p>
+<h3><code>--preserve-symlinks-main</code><span><a class="mark" href="#cli_preserve_symlinks_main" id="cli_preserve_symlinks_main">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.2.0</span>
+</div>
+<p>Instructs the module loader to preserve symbolic links when resolving and
+caching the main module (<code>require.main</code>).</p>
+<p>This flag exists so that the main module can be opted-in to the same behavior
+that <code>--preserve-symlinks</code> gives to all other imports; they are separate flags,
+however, for backward compatibility with older Node.js versions.</p>
+<p>Note that <code>--preserve-symlinks-main</code> does not imply <code>--preserve-symlinks</code>; it
+is expected that <code>--preserve-symlinks-main</code> will be used in addition to
+<code>--preserve-symlinks</code> when it is not desirable to follow symlinks before
+resolving relative paths.</p>
+<p>See <code>--preserve-symlinks</code> for more information.</p>
+<h3><code>--prof</code><span><a class="mark" href="#cli_prof" id="cli_prof">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v2.0.0</span>
+</div>
+<p>Generate V8 profiler output.</p>
+<h3><code>--prof-process</code><span><a class="mark" href="#cli_prof_process" id="cli_prof_process">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v5.2.0</span>
+</div>
+<p>Process V8 profiler output generated using the V8 option <code>--prof</code>.</p>
+<h3><code>--redirect-warnings=file</code><span><a class="mark" href="#cli_redirect_warnings_file" id="cli_redirect_warnings_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>Write process warnings to the given file instead of printing to stderr. The
+file will be created if it does not exist, and will be appended to if it does.
+If an error occurs while attempting to write the warning to the file, the
+warning will be written to stderr instead.</p>
+<h3><code>--throw-deprecation</code><span><a class="mark" href="#cli_throw_deprecation" id="cli_throw_deprecation">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.14</span>
+</div>
+<p>Throw errors for deprecations.</p>
+<h3><code>--title=title</code><span><a class="mark" href="#cli_title_title" id="cli_title_title">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.7.0</span>
+</div>
+<p>Set <code>process.title</code> on startup.</p>
+<h3><code>--tls-cipher-list=list</code><span><a class="mark" href="#cli_tls_cipher_list_list" id="cli_tls_cipher_list_list">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v4.0.0</span>
+</div>
+<p>Specify an alternative default TLS cipher list. Requires Node.js to be built
+with crypto support (default).</p>
+<h3><code>--trace-deprecation</code><span><a class="mark" href="#cli_trace_deprecation" id="cli_trace_deprecation">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.8.0</span>
+</div>
+<p>Print stack traces for deprecations.</p>
+<h3><code>--trace-event-categories</code><span><a class="mark" href="#cli_trace_event_categories" id="cli_trace_event_categories">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.7.0</span>
+</div>
+<p>A comma separated list of categories that should be traced when trace event
+tracing is enabled using <code>--trace-events-enabled</code>.</p>
+<h3><code>--trace-event-file-pattern</code><span><a class="mark" href="#cli_trace_event_file_pattern" id="cli_trace_event_file_pattern">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v9.8.0</span>
+</div>
+<p>Template string specifying the filepath for the trace event data, it
+supports <code>${rotation}</code> and <code>${pid}</code>.</p>
+<h3><code>--trace-events-enabled</code><span><a class="mark" href="#cli_trace_events_enabled" id="cli_trace_events_enabled">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.7.0</span>
+</div>
+<p>Enables the collection of trace event tracing information.</p>
+<h3><code>--trace-sync-io</code><span><a class="mark" href="#cli_trace_sync_io" id="cli_trace_sync_io">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v2.1.0</span>
+</div>
+<p>Prints a stack trace whenever synchronous I/O is detected after the first turn
+of the event loop.</p>
+<h3><code>--trace-warnings</code><span><a class="mark" href="#cli_trace_warnings" id="cli_trace_warnings">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.0.0</span>
+</div>
+<p>Print stack traces for process warnings (including deprecations).</p>
+<h3><code>--track-heap-objects</code><span><a class="mark" href="#cli_track_heap_objects" id="cli_track_heap_objects">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v2.4.0</span>
+</div>
+<p>Track heap object allocations for heap snapshots.</p>
+<h3>`--use-bundled-ca`, `--use-openssl-ca`<span><a class="mark" href="#cli_use_bundled_ca_use_openssl_ca" id="cli_use_bundled_ca_use_openssl_ca">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.11.0</span>
+</div>
+<p>Use bundled Mozilla CA store as supplied by current Node.js version
+or use OpenSSL's default CA store. The default store is selectable
+at build-time.</p>
+<p>The bundled CA store, as supplied by Node.js, is a snapshot of Mozilla CA store
+that is fixed at release time. It is identical on all supported platforms.</p>
+<p>Using OpenSSL store allows for external modifications of the store. For most
+Linux and BSD distributions, this store is maintained by the distribution
+maintainers and system administrators. OpenSSL CA store location is dependent on
+configuration of the OpenSSL library but this can be altered at runtime using
+environment variables.</p>
+<p>See <code>SSL_CERT_DIR</code> and <code>SSL_CERT_FILE</code>.</p>
+<h3><code>--v8-options</code><span><a class="mark" href="#cli_v8_options" id="cli_v8_options">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.3</span>
+</div>
+<p>Print V8 command line options.</p>
+<h3><code>--v8-pool-size=num</code><span><a class="mark" href="#cli_v8_pool_size_num" id="cli_v8_pool_size_num">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v5.10.0</span>
+</div>
+<p>Set V8's thread pool size which will be used to allocate background jobs.</p>
+<p>If set to <code>0</code> then V8 will choose an appropriate size of the thread pool based
+on the number of online processors.</p>
+<p>If the value provided is larger than V8's maximum, then the largest value
+will be chosen.</p>
+<h3><code>--zero-fill-buffers</code><span><a class="mark" href="#cli_zero_fill_buffers" id="cli_zero_fill_buffers">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.0.0</span>
+</div>
+<p>Automatically zero-fills all newly allocated <a href="buffer.html#buffer_class_buffer"><code>Buffer</code></a> and <a href="buffer.html#buffer_class_slowbuffer"><code>SlowBuffer</code></a>
+instances.</p>
+<h3>`-c`, `--check`<span><a class="mark" href="#cli_c_check" id="cli_c_check">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.0.0</td>
+<td><p>The <code>--require</code> option is now supported when checking a file.</p></td></tr>
+<tr><td>v5.0.0, v4.2.0</td>
+<td><p><span>Added in: v5.0.0, v4.2.0</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<p>Syntax check the script without executing.</p>
+<h3>`-e`, `--eval "script"`<span><a class="mark" href="#cli_e_eval_script" id="cli_e_eval_script">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v5.11.0</td>
+<td><p>Built-in libraries are now available as predefined variables.</p></td></tr>
+<tr><td>v0.5.2</td>
+<td><p><span>Added in: v0.5.2</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<p>Evaluate the following argument as JavaScript. The modules which are
+predefined in the REPL can also be used in <code>script</code>.</p>
+<p>On Windows, using <code>cmd.exe</code> a single quote will not work correctly because it
+only recognizes double <code>"</code> for quoting. In Powershell or Git bash, both <code>'</code>
+and <code>"</code> are usable.</p>
+<h3>`-h`, `--help`<span><a class="mark" href="#cli_h_help" id="cli_h_help">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.3</span>
+</div>
+<p>Print node command line options.
+The output of this option is less detailed than this document.</p>
+<h3>`-i`, `--interactive`<span><a class="mark" href="#cli_i_interactive" id="cli_i_interactive">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.7.7</span>
+</div>
+<p>Opens the REPL even if stdin does not appear to be a terminal.</p>
+<h3>`-p`, `--print "script"`<span><a class="mark" href="#cli_p_print_script" id="cli_p_print_script">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v5.11.0</td>
+<td><p>Built-in libraries are now available as predefined variables.</p></td></tr>
+<tr><td>v0.6.4</td>
+<td><p><span>Added in: v0.6.4</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<p>Identical to <code>-e</code> but prints the result.</p>
+<h3>`-r`, `--require module`<span><a class="mark" href="#cli_r_require_module" id="cli_r_require_module">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v1.6.0</span>
+</div>
+<p>Preload the specified module at startup.</p>
+<p>Follows <code>require()</code>'s module resolution
+rules. <code>module</code> may be either a path to a file, or a node module name.</p>
+<h3>`-v`, `--version`<span><a class="mark" href="#cli_v_version" id="cli_v_version">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.3</span>
+</div>
+<p>Print node's version.</p>
+<h2>Environment Variables<span><a class="mark" href="#cli_environment_variables" id="cli_environment_variables">#</a></span></h2>
+<h3><code>NODE_DEBUG=module[,…]</code><span><a class="mark" href="#cli_node_debug_module" id="cli_node_debug_module">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.32</span>
+</div>
+<p><code>','</code>-separated list of core modules that should print debug information.</p>
+<h3><code>NODE_DEBUG_NATIVE=module[,…]</code><span><a class="mark" href="#cli_node_debug_native_module" id="cli_node_debug_native_module">#</a></span></h3>
+<p><code>','</code>-separated list of core C++ modules that should print debug information.</p>
+<h3><code>NODE_DISABLE_COLORS=1</code><span><a class="mark" href="#cli_node_disable_colors_1" id="cli_node_disable_colors_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.3.0</span>
+</div>
+<p>When set to <code>1</code> colors will not be used in the REPL.</p>
+<h3><code>NODE_EXTRA_CA_CERTS=file</code><span><a class="mark" href="#cli_node_extra_ca_certs_file" id="cli_node_extra_ca_certs_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.3.0</span>
+</div>
+<p>When set, the well known "root" CAs (like VeriSign) will be extended with the
+extra certificates in <code>file</code>. The file should consist of one or more trusted
+certificates in PEM format. A message will be emitted (once) with
+<a href="process.html#process_process_emitwarning_warning_type_code_ctor"><code>process.emitWarning()</code></a> if the file is missing or
+malformed, but any errors are otherwise ignored.</p>
+<p>Note that neither the well known nor extra certificates are used when the <code>ca</code>
+options property is explicitly specified for a TLS or HTTPS client or server.</p>
+<p>This environment variable is ignored when <code>node</code> runs as setuid root or
+has Linux file capabilities set.</p>
+<h3><code>NODE_ICU_DATA=file</code><span><a class="mark" href="#cli_node_icu_data_file" id="cli_node_icu_data_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.11.15</span>
+</div>
+<p>Data path for ICU (<code>Intl</code> object) data. Will extend linked-in data when compiled
+with small-icu support.</p>
+<h3><code>NODE_NO_WARNINGS=1</code><span><a class="mark" href="#cli_node_no_warnings_1" id="cli_node_no_warnings_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.11.0</span>
+</div>
+<p>When set to <code>1</code>, process warnings are silenced.</p>
+<h3><code>NODE_OPTIONS=options...</code><span><a class="mark" href="#cli_node_options_options" id="cli_node_options_options">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>A space-separated list of command line options. <code>options...</code> are interpreted as
+if they had been specified on the command line before the actual command line
+(so they can be overridden). Node.js will exit with an error if an option
+that is not allowed in the environment is used, such as <code>-p</code> or a script file.</p>
+<p>Node.js options that are allowed are:</p>
+<ul>
+<li><code>--enable-fips</code></li>
+<li><code>--experimental-modules</code></li>
+<li><code>--experimental-repl-await</code></li>
+<li><code>--experimental-vm-modules</code></li>
+<li><code>--experimental-worker</code></li>
+<li><code>--force-fips</code></li>
+<li><code>--icu-data-dir</code></li>
+<li><code>--inspect</code></li>
+<li><code>--inspect-brk</code></li>
+<li><code>--inspect-port</code></li>
+<li><code>--loader</code></li>
+<li><code>--max-http-header-size</code></li>
+<li><code>--napi-modules</code></li>
+<li><code>--no-deprecation</code></li>
+<li><code>--no-force-async-hooks-checks</code></li>
+<li><code>--no-warnings</code></li>
+<li><code>--openssl-config</code></li>
+<li><code>--pending-deprecation</code></li>
+<li><code>--redirect-warnings</code></li>
+<li><code>--require</code>, <code>-r</code></li>
+<li><code>--throw-deprecation</code></li>
+<li><code>--title</code></li>
+<li><code>--tls-cipher-list</code></li>
+<li><code>--trace-deprecation</code></li>
+<li><code>--trace-event-categories</code></li>
+<li><code>--trace-event-file-pattern</code></li>
+<li><code>--trace-events-enabled</code></li>
+<li><code>--trace-sync-io</code></li>
+<li><code>--trace-warnings</code></li>
+<li><code>--track-heap-objects</code></li>
+<li><code>--use-bundled-ca</code></li>
+<li><code>--use-openssl-ca</code></li>
+<li><code>--v8-pool-size</code></li>
+<li><code>--zero-fill-buffers</code></li>
+</ul>
+<p>V8 options that are allowed are:</p>
+<ul>
+<li><code>--abort-on-uncaught-exception</code></li>
+<li><code>--max-old-space-size</code></li>
+<li><code>--perf-basic-prof</code></li>
+<li><code>--perf-prof</code></li>
+<li><code>--stack-trace-limit</code></li>
+</ul>
+<h3><code>NODE_PATH=path[:…]</code><span><a class="mark" href="#cli_node_path_path" id="cli_node_path_path">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.32</span>
+</div>
+<p><code>':'</code>-separated list of directories prefixed to the module search path.</p>
+<p>On Windows, this is a <code>';'</code>-separated list instead.</p>
+<h3><code>NODE_PENDING_DEPRECATION=1</code><span><a class="mark" href="#cli_node_pending_deprecation_1" id="cli_node_pending_deprecation_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>When set to <code>1</code>, emit pending deprecation warnings.</p>
+<p>Pending deprecations are generally identical to a runtime deprecation with the
+notable exception that they are turned <em>off</em> by default and will not be emitted
+unless either the <code>--pending-deprecation</code> command line flag, or the
+<code>NODE_PENDING_DEPRECATION=1</code> environment variable, is set. Pending deprecations
+are used to provide a kind of selective "early warning" mechanism that
+developers may leverage to detect deprecated API usage.</p>
+<h3><code>NODE_PRESERVE_SYMLINKS=1</code><span><a class="mark" href="#cli_node_preserve_symlinks_1" id="cli_node_preserve_symlinks_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.1.0</span>
+</div>
+<p>When set to <code>1</code>, instructs the module loader to preserve symbolic links when
+resolving and caching modules.</p>
+<h3><code>NODE_REDIRECT_WARNINGS=file</code><span><a class="mark" href="#cli_node_redirect_warnings_file" id="cli_node_redirect_warnings_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<p>When set, process warnings will be emitted to the given file instead of
+printing to stderr. The file will be created if it does not exist, and will be
+appended to if it does. If an error occurs while attempting to write the
+warning to the file, the warning will be written to stderr instead. This is
+equivalent to using the <code>--redirect-warnings=file</code> command-line flag.</p>
+<h3><code>NODE_REPL_HISTORY=file</code><span><a class="mark" href="#cli_node_repl_history_file" id="cli_node_repl_history_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v3.0.0</span>
+</div>
+<p>Path to the file used to store the persistent REPL history. The default path is
+<code>~/.node_repl_history</code>, which is overridden by this variable. Setting the value
+to an empty string (<code>''</code> or <code>' '</code>) disables persistent REPL history.</p>
+<h3><code>NODE_TLS_REJECT_UNAUTHORIZED=value</code><span><a class="mark" href="#cli_node_tls_reject_unauthorized_value" id="cli_node_tls_reject_unauthorized_value">#</a></span></h3>
+<p>If <code>value</code> equals <code>'0'</code>, certificate validation is disabled for TLS connections.
+This makes TLS, and HTTPS by extension, insecure. The use of this environment
+variable is strongly discouraged.</p>
+<h3><code>NODE_V8_COVERAGE=dir</code><span><a class="mark" href="#cli_node_v8_coverage_dir" id="cli_node_v8_coverage_dir">#</a></span></h3>
+<p>When set, Node.js will begin outputting <a href="https://v8project.blogspot.com/2017/12/javascript-code-coverage.html">V8 JavaScript code coverage</a> to the
+directory provided as an argument. Coverage is output as an array of
+<a href="https://chromedevtools.github.io/devtools-protocol/tot/Profiler#type-ScriptCoverage">ScriptCoverage</a> objects:</p>
+<pre><code class="language-json">{
+  "result": [
+    {
+      "scriptId": "67",
+      "url": "internal/tty.js",
+      "functions": []
+    }
+  ]
+}
+</code></pre>
+<p><code>NODE_V8_COVERAGE</code> will automatically propagate to subprocesses, making it
+easier to instrument applications that call the <code>child_process.spawn()</code> family
+of functions. <code>NODE_V8_COVERAGE</code> can be set to an empty string, to prevent
+propagation.</p>
+<p>At this time coverage is only collected in the main thread and will not be
+output for code executed by worker threads.</p>
+<h3><code>OPENSSL_CONF=file</code><span><a class="mark" href="#cli_openssl_conf_file" id="cli_openssl_conf_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v6.11.0</span>
+</div>
+<p>Load an OpenSSL configuration file on startup. Among other uses, this can be
+used to enable FIPS-compliant crypto if Node.js is built with <code>./configure --openssl-fips</code>.</p>
+<p>If the <a href="#cli_openssl_config_file"><code>--openssl-config</code></a> command line option is used, the environment
+variable is ignored.</p>
+<h3><code>SSL_CERT_DIR=dir</code><span><a class="mark" href="#cli_ssl_cert_dir_dir" id="cli_ssl_cert_dir_dir">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.7.0</span>
+</div>
+<p>If <code>--use-openssl-ca</code> is enabled, this overrides and sets OpenSSL's directory
+containing trusted certificates.</p>
+<p>Be aware that unless the child environment is explicitly set, this environment
+variable will be inherited by any child processes, and if they use OpenSSL, it
+may cause them to trust the same CAs as node.</p>
+<h3><code>SSL_CERT_FILE=file</code><span><a class="mark" href="#cli_ssl_cert_file_file" id="cli_ssl_cert_file_file">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v7.7.0</span>
+</div>
+<p>If <code>--use-openssl-ca</code> is enabled, this overrides and sets OpenSSL's file
+containing trusted certificates.</p>
+<p>Be aware that unless the child environment is explicitly set, this environment
+variable will be inherited by any child processes, and if they use OpenSSL, it
+may cause them to trust the same CAs as node.</p>
+<h3><code>UV_THREADPOOL_SIZE=size</code><span><a class="mark" href="#cli_uv_threadpool_size_size" id="cli_uv_threadpool_size_size">#</a></span></h3>
+<p>Set the number of threads used in libuv's threadpool to <code>size</code> threads.</p>
+<p>Asynchronous system APIs are used by Node.js whenever possible, but where they
+do not exist, libuv's threadpool is used to create asynchronous node APIs based
+on synchronous system APIs. Node.js APIs that use the threadpool are:</p>
+<ul>
+<li>all <code>fs</code> APIs, other than the file watcher APIs and those that are explicitly
+synchronous</li>
+<li><code>crypto.pbkdf2()</code></li>
+<li><code>crypto.randomBytes()</code>, unless it is used without a callback</li>
+<li><code>crypto.randomFill()</code></li>
+<li><code>dns.lookup()</code></li>
+<li>all <code>zlib</code> APIs, other than those that are explicitly synchronous</li>
+</ul>
+<p>Because libuv's threadpool has a fixed size, it means that if for whatever
+reason any of these APIs takes a long time, other (seemingly unrelated) APIs
+that run in libuv's threadpool will experience degraded performance. In order to
+mitigate this issue, one potential solution is to increase the size of libuv's
+threadpool by setting the <code>'UV_THREADPOOL_SIZE'</code> environment variable to a value
+greater than <code>4</code> (its current default value). For more information, see the
+<a href="http://docs.libuv.org/en/latest/threadpool.html">libuv threadpool documentation</a>.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

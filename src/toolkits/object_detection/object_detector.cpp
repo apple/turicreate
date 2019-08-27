@@ -379,35 +379,86 @@ void object_detector::train(gl_sframe data,
 }
 
 variant_map_type object_detector::evaluate(
-    gl_sframe data, std::string metric,
-    std::map<std::string, flexible_type> opts) {
-  return perform_evaluation(std::move(data), std::move(metric));
-}
+    gl_sframe data, std::string metric) {
 
-// TODO: Should accept model_backend as an optional argument to avoid
-// instantiating a new backend during training. Or just check to see if an
-// existing backend is available?
-variant_map_type object_detector::perform_evaluation(gl_sframe data,
-                                                     std::string metric) {
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
   static constexpr char AP50[] = "average_precision_50";
   static constexpr char MAP50[] = "mean_average_precision_50";
-  std::vector<std::string> all_metrics = {AP,MAP,AP50,MAP50};
-  if (std::find(all_metrics.begin(), all_metrics.end(), metric) != all_metrics.end()) {
+  std::vector<std::string> all_metrics = {AP, MAP, AP50, MAP50};
+  if (std::find(all_metrics.begin(), all_metrics.end(), metric) !=
+      all_metrics.end()) {
     metrics = {metric};
-  }
-  else if (metric == "auto") {
-    metrics = {AP50,MAP50};
-  }
-  else if (metric == "all" || metric == "report") {
+  } else if (metric == "auto") {
+    metrics = {AP50, MAP50};
+  } else if (metric == "all" || metric == "report") {
     metrics = all_metrics;
-  }
-  else {
+  } else {
     log_and_throw("Metric " + metric + " not supported");
   }
 
+  flex_list class_labels = read_state<flex_list>("classes");
+
+  // Initialize the metric calculator
+  average_precision_calculator calculator(class_labels);
+
+  auto consumer = [&](const std::vector<image_annotation>& predicted_row,
+                      const std::vector<image_annotation>& groundtruth_row) {
+    calculator.add_row(predicted_row, groundtruth_row);
+  };
+
+  perform_predict(data, consumer);
+
+  // Compute the average precision (area under the precision-recall curve) for
+  // each combination of IOU threshold and class label.
+  variant_map_type result_map = calculator.evaluate();
+
+  // Trim undesired metrics from the final result. (For consistency with other
+  // toolkits. In this case, almost all of the work is shared across metrics.)
+  if (std::find(metrics.begin(), metrics.end(), AP) == metrics.end()) {
+    result_map.erase(AP);
+  }
+  if (std::find(metrics.begin(), metrics.end(), AP50) == metrics.end()) {
+    result_map.erase(AP50);
+  }
+  if (std::find(metrics.begin(), metrics.end(), MAP50) == metrics.end()) {
+    result_map.erase(MAP50);
+  }
+  if (std::find(metrics.begin(), metrics.end(), MAP) == metrics.end()) {
+    result_map.erase(MAP);
+  }
+
+  return result_map;
+}
+
+gl_sarray object_detector::predict(gl_sframe data) {
+  gl_sarray_writer result(flex_type_enum::LIST, 1);
+
+  auto consumer = [&](const std::vector<image_annotation>& predicted_row,
+                      const std::vector<image_annotation>& groundtruth_row) {
+    // Convert predicted_row to flex_type list to call gl_sarray_writer
+    flex_list predicted_row_ft;
+    for (const image_annotation& each_row : predicted_row) {
+      flex_dict bb_dict = {{"x", each_row.bounding_box.x}, {"y", each_row.bounding_box.y},
+                      {"width", each_row.bounding_box.width},
+                      {"height", each_row.bounding_box.height}};
+      flex_dict each_annotation = {{"confidence", each_row.confidence},
+                                   {"bounding_box", std::move(bb_dict)},
+                                   {"identifier", each_row.identifier}};
+      predicted_row_ft.push_back(std::move(each_annotation));
+    }
+    result.write(predicted_row_ft, 0);
+  };
+
+  perform_predict(data, consumer);
+
+  return result.close();
+}
+
+void object_detector::perform_predict(gl_sframe data,
+    std::function<void(const std::vector<image_annotation>&,
+    const std::vector<image_annotation>&)> consumer) {
 
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
@@ -453,23 +504,17 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
       /* config  */ get_prediction_config(),
       /* weights */ get_model_params());
 
-  // Initialize the metric calculator
-  average_precision_calculator calculator(class_labels);
-
   // To support double buffering, use a queue of pending inference results.
   std::queue<image_augmenter::result> pending_batches;
 
   // Helper function to process results until the queue reaches a given size.
   auto pop_until_size = [&](size_t remaining) {
-
     while (pending_batches.size() > remaining) {
-
       // Pop one batch from the queue.
       image_augmenter::result batch = pending_batches.front();
       pending_batches.pop();
 
       for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
-
         // For this row (corresponding to one image), extract the prediction.
         shared_float_array raw_prediction = batch.image_batch[i];
 
@@ -482,8 +527,7 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
         predicted_annotations = apply_non_maximum_suppression(
             std::move(predicted_annotations), iou_threshold);
 
-        // Tally the predictions and ground truth labels.
-        calculator.add_row(predicted_annotations, batch.annotations_batch[i]);
+        consumer(predicted_annotations, batch.annotations_batch[i]);
       }
     }
   };
@@ -491,7 +535,6 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
   // Iterate through the data once.
   std::vector<labeled_image> input_batch = data_iter->next_batch(batch_size);
   while (!input_batch.empty()) {
-
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
@@ -522,27 +565,23 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
 
   // Process all remaining batches.
   pop_until_size(0);
+}
 
-  // Compute the average precision (area under the precision-recall curve) for
-  // each combination of IOU threshold and class label.
-  variant_map_type result_map = calculator.evaluate();
+// TODO: Should accept model_backend as an optional argument to avoid
+// instantiating a new backend during training. Or just check to see if an
+// existing backend is available?
+variant_map_type object_detector::perform_evaluation(gl_sframe data,
+                                                     std::string metric) {
+  return evaluate(data, metric);
+}
 
-  // Trim undesired metrics from the final result. (For consistency with other
-  // toolkits. In this case, almost all of the work is shared across metrics.)
-  if (std::find(metrics.begin(), metrics.end(), AP) == metrics.end()) {
-    result_map.erase(AP);
-  }
-  if (std::find(metrics.begin(), metrics.end(), AP50) == metrics.end()) {
-    result_map.erase(AP50);
-  }
-  if (std::find(metrics.begin(), metrics.end(), MAP50) == metrics.end()) {
-    result_map.erase(MAP50);
-  }
-  if (std::find(metrics.begin(), metrics.end(), MAP) == metrics.end()) {
-    result_map.erase(MAP);
-  }
-
-  return result_map;
+std::vector<neural_net::image_annotation>
+object_detector::convert_yolo_to_annotations(
+    const neural_net::float_array& yolo_map,
+    const std::vector<std::pair<float, float>>& anchor_boxes,
+    float min_confidence) {
+  return turi::object_detection::convert_yolo_to_annotations(
+      yolo_map, anchor_boxes, min_confidence);
 }
 
 std::unique_ptr<model_spec> object_detector::init_model(

@@ -1,0 +1,680 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Console | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/console.html">
+</head>
+<body class="alt apidoc" id="api-section-console">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console active">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="console" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="console.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/console.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/console.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/console.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/console.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/console.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/console.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/console.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/console.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/console.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/console.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/console.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#console_console">Console</a></span></p>
+<ul>
+<li>
+<p><a href="#console_class_console">Class: Console</a></p>
+<ul>
+<li><a href="#console_new_console_stdout_stderr_ignoreerrors">new Console(stdout[, stderr][, ignoreErrors])</a></li>
+<li><a href="#console_new_console_options">new Console(options)</a></li>
+<li><a href="#console_console_assert_value_message">console.assert(value[, ...message])</a></li>
+<li><a href="#console_console_clear">console.clear()</a></li>
+<li><a href="#console_console_count_label">console.count([label])</a></li>
+<li><a href="#console_console_countreset_label">console.countReset([label])</a></li>
+<li><a href="#console_console_debug_data_args">console.debug(data[, ...args])</a></li>
+<li><a href="#console_console_dir_obj_options">console.dir(obj[, options])</a></li>
+<li><a href="#console_console_dirxml_data">console.dirxml(...data)</a></li>
+<li><a href="#console_console_error_data_args">console.error([data][, ...args])</a></li>
+<li><a href="#console_console_group_label">console.group([...label])</a></li>
+<li><a href="#console_console_groupcollapsed">console.groupCollapsed()</a></li>
+<li><a href="#console_console_groupend">console.groupEnd()</a></li>
+<li><a href="#console_console_info_data_args">console.info([data][, ...args])</a></li>
+<li><a href="#console_console_log_data_args">console.log([data][, ...args])</a></li>
+<li><a href="#console_console_table_tabulardata_properties">console.table(tabularData[, properties])</a></li>
+<li><a href="#console_console_time_label">console.time([label])</a></li>
+<li><a href="#console_console_timeend_label">console.timeEnd([label])</a></li>
+<li><a href="#console_console_timelog_label_data">console.timeLog([label][, ...data])</a></li>
+<li><a href="#console_console_trace_message_args">console.trace([message][, ...args])</a></li>
+<li><a href="#console_console_warn_data_args">console.warn([data][, ...args])</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#console_inspector_only_methods">Inspector only methods</a></p>
+<ul>
+<li><a href="#console_console_marktimeline_label">console.markTimeline([label])</a></li>
+<li><a href="#console_console_profile_label">console.profile([label])</a></li>
+<li><a href="#console_console_profileend_label">console.profileEnd([label])</a></li>
+<li><a href="#console_console_timestamp_label">console.timeStamp([label])</a></li>
+<li><a href="#console_console_timeline_label">console.timeline([label])</a></li>
+<li><a href="#console_console_timelineend_label">console.timelineEnd([label])</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Console<span><a class="mark" href="#console_console" id="console_console">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+<p>The <code>console</code> module provides a simple debugging console that is similar to the
+JavaScript console mechanism provided by web browsers.</p>
+<p>The module exports two specific components:</p>
+<ul>
+<li>A <code>Console</code> class with methods such as <code>console.log()</code>, <code>console.error()</code> and
+<code>console.warn()</code> that can be used to write to any Node.js stream.</li>
+<li>A global <code>console</code> instance configured to write to <a href="process.html#process_process_stdout"><code>process.stdout</code></a> and
+<a href="process.html#process_process_stderr"><code>process.stderr</code></a>. The global <code>console</code> can be used without calling
+<code>require('console')</code>.</li>
+</ul>
+<p><strong><em>Warning</em></strong>: The global console object's methods are neither consistently
+synchronous like the browser APIs they resemble, nor are they consistently
+asynchronous like all other Node.js streams. See the <a href="process.html#process_a_note_on_process_i_o">note on process I/O</a> for
+more information.</p>
+<p>Example using the global <code>console</code>:</p>
+<pre><code class="language-js">console.log('hello world');
+// Prints: hello world, to stdout
+console.log('hello %s', 'world');
+// Prints: hello world, to stdout
+console.error(new Error('Whoops, something bad happened'));
+// Prints: [Error: Whoops, something bad happened], to stderr
+
+const name = 'Will Robinson';
+console.warn(`Danger ${name}! Danger!`);
+// Prints: Danger Will Robinson! Danger!, to stderr
+</code></pre>
+<p>Example using the <code>Console</code> class:</p>
+<pre><code class="language-js">const out = getStreamSomehow();
+const err = getStreamSomehow();
+const myConsole = new console.Console(out, err);
+
+myConsole.log('hello world');
+// Prints: hello world, to out
+myConsole.log('hello %s', 'world');
+// Prints: hello world, to out
+myConsole.error(new Error('Whoops, something bad happened'));
+// Prints: [Error: Whoops, something bad happened], to err
+
+const name = 'Will Robinson';
+myConsole.warn(`Danger ${name}! Danger!`);
+// Prints: Danger Will Robinson! Danger!, to err
+</code></pre>
+<h2>Class: Console<span><a class="mark" href="#console_class_console" id="console_class_console">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>Errors that occur while writing to the underlying streams will now be ignored by default.</p></td></tr>
+</tbody></table>
+</details>
+</div>
+
+<p>The <code>Console</code> class can be used to create a simple logger with configurable
+output streams and can be accessed using either <code>require('console').Console</code>
+or <code>console.Console</code> (or their destructured counterparts):</p>
+<pre><code class="language-js">const { Console } = require('console');
+</code></pre>
+<pre><code class="language-js">const { Console } = console;
+</code></pre>
+<h3>new Console(stdout[, stderr][, ignoreErrors])<span><a class="mark" href="#console_new_console_stdout_stderr_ignoreerrors" id="console_new_console_stdout_stderr_ignoreerrors">#</a></span></h3>
+<h3>new Console(options)<span><a class="mark" href="#console_new_console_options" id="console_new_console_options">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.0.0</td>
+<td><p>The <code>Console</code> constructor now supports an <code>options</code> argument, and the <code>colorMode</code> option was introduced.</p></td></tr>
+<tr><td>v8.0.0</td>
+<td><p>The <code>ignoreErrors</code> option was introduced.</p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></p>
+<ul>
+<li><code>stdout</code> <a href="stream.html#stream_class_stream_writable" class="type">&#x3C;stream.Writable></a></li>
+<li><code>stderr</code> <a href="stream.html#stream_class_stream_writable" class="type">&#x3C;stream.Writable></a></li>
+<li><code>ignoreErrors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> Ignore errors when writing to the underlying
+streams. <strong>Default:</strong> <code>true</code>.</li>
+<li><code>colorMode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> Set color support for this <code>Console</code> instance.
+Setting to <code>true</code> enables coloring while inspecting values, setting to
+<code>'auto'</code> will make color support depend on the value of the <code>isTTY</code> property
+and the value returned by <code>getColorDepth()</code> on the respective stream.
+<strong>Default:</strong> <code>'auto'</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Creates a new <code>Console</code> with one or two writable stream instances. <code>stdout</code> is a
+writable stream to print log or info output. <code>stderr</code> is used for warning or
+error output. If <code>stderr</code> is not provided, <code>stdout</code> is used for <code>stderr</code>.</p>
+<pre><code class="language-js">const output = fs.createWriteStream('./stdout.log');
+const errorOutput = fs.createWriteStream('./stderr.log');
+// custom simple logger
+const logger = new Console({ stdout: output, stderr: errorOutput });
+// use it like console
+const count = 5;
+logger.log('count: %d', count);
+// in stdout.log: count 5
+</code></pre>
+<p>The global <code>console</code> is a special <code>Console</code> whose output is sent to
+<a href="process.html#process_process_stdout"><code>process.stdout</code></a> and <a href="process.html#process_process_stderr"><code>process.stderr</code></a>. It is equivalent to calling:</p>
+<pre><code class="language-js">new Console({ stdout: process.stdout, stderr: process.stderr });
+</code></pre>
+<h3>console.assert(value[, ...message])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L277">[src]</a><span><a class="mark" href="#console_console_assert_value_message" id="console_console_assert_value_message">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v10.0.0</td>
+<td><p>The implementation is now spec compliant and does not throw anymore.</p></td></tr>
+<tr><td>v0.1.101</td>
+<td><p><span>Added in: v0.1.101</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> The value tested for being truthy.</li>
+<li><code>...message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> All arguments besides <code>value</code> are used as error message.</li>
+</ul>
+<p>A simple assertion test that verifies whether <code>value</code> is truthy. If it is not,
+<code>Assertion failed</code> is logged. If provided, the error <code>message</code> is formatted
+using <a href="util.html#util_util_format_format_args"><code>util.format()</code></a> by passing along all message arguments. The output is
+used as the error message.</p>
+<pre><code class="language-js">console.assert(true, 'does nothing');
+// OK
+console.assert(false, 'Whoops %s work', 'didn\'t');
+// Assertion failed: Whoops didn't work
+</code></pre>
+<p>Calling <code>console.assert()</code> with a falsy assertion will only cause the <code>message</code>
+to be printed to the console without interrupting execution of subsequent code.</p>
+<h3>console.clear()<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L285">[src]</a><span><a class="mark" href="#console_console_clear" id="console_console_clear">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.3.0</span>
+</div>
+<p>When <code>stdout</code> is a TTY, calling <code>console.clear()</code> will attempt to clear the
+TTY. When <code>stdout</code> is not a TTY, this method does nothing.</p>
+<p>The specific operation of <code>console.clear()</code> can vary across operating systems
+and terminal types. For most Linux operating systems, <code>console.clear()</code>
+operates similarly to the <code>clear</code> shell command. On Windows, <code>console.clear()</code>
+will clear only the output in the current terminal viewport for the Node.js
+binary.</p>
+<h3>console.count([label])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L298">[src]</a><span><a class="mark" href="#console_console_count_label" id="console_console_count_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.3.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The display label for the counter. <strong>Default:</strong> <code>'default'</code>.</li>
+</ul>
+<p>Maintains an internal counter specific to <code>label</code> and outputs to <code>stdout</code> the
+number of times <code>console.count()</code> has been called with the given <code>label</code>.</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">> console.count()
+default: 1
+undefined
+> console.count('default')
+default: 2
+undefined
+> console.count('abc')
+abc: 1
+undefined
+> console.count('xyz')
+xyz: 1
+undefined
+> console.count('abc')
+abc: 2
+undefined
+> console.count()
+default: 3
+undefined
+>
+</code></pre>
+<h3>console.countReset([label])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L316">[src]</a><span><a class="mark" href="#console_console_countreset_label" id="console_console_countreset_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.3.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The display label for the counter. <strong>Default:</strong> <code>'default'</code>.</li>
+</ul>
+<p>Resets the internal counter specific to <code>label</code>.</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">> console.count('abc');
+abc: 1
+undefined
+> console.countReset('abc');
+undefined
+> console.count('abc');
+abc: 1
+undefined
+>
+</code></pre>
+<h3>console.debug(data[, ...args])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L206">[src]</a><span><a class="mark" href="#console_console_debug_data_args" id="console_console_debug_data_args">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v9.3.0</td>
+<td><p><code>console.debug</code> is now an alias for <code>console.log</code>.</p></td></tr>
+<tr><td>v8.0.0</td>
+<td><p><span>Added in: v8.0.0</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>The <code>console.debug()</code> function is an alias for <a href="#console_console_log_data_args"><code>console.log()</code></a>.</p>
+<h3>console.dir(obj[, options])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L219">[src]</a><span><a class="mark" href="#console_console_dir_obj_options" id="console_console_dir_obj_options">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.101</span>
+</div>
+<ul>
+<li><code>obj</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></p>
+<ul>
+<li><code>showHidden</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code> then the object's non-enumerable and symbol
+properties will be shown too. <strong>Default:</strong> <code>false</code>.</li>
+<li><code>depth</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Tells <a href="util.html#util_util_inspect_object_options"><code>util.inspect()</code></a> how many times to recurse while
+formatting the object. This is useful for inspecting large complicated
+objects. To make it recurse indefinitely, pass <code>null</code>. <strong>Default:</strong> <code>2</code>.</li>
+<li><code>colors</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, then the output will be styled with ANSI color
+codes. Colors are customizable;
+see <a href="util.html#util_customizing_util_inspect_colors">customizing <code>util.inspect()</code> colors</a>. <strong>Default:</strong> <code>false</code>.</li>
+</ul>
+</li>
+</ul>
+<p>Uses <a href="util.html#util_util_inspect_object_options"><code>util.inspect()</code></a> on <code>obj</code> and prints the resulting string to <code>stdout</code>.
+This function bypasses any custom <code>inspect()</code> function defined on <code>obj</code>.</p>
+<h3>console.dirxml(...data)<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L208">[src]</a><span><a class="mark" href="#console_console_dirxml_data" id="console_console_dirxml_data">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v9.3.0</td>
+<td><p><code>console.dirxml</code> now calls <code>console.log</code> for its arguments.</p></td></tr>
+<tr><td>v8.0.0</td>
+<td><p><span>Added in: v8.0.0</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>...data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>This method calls <code>console.log()</code> passing it the arguments received.
+Please note that this method does not produce any XML formatting.</p>
+<h3>console.error([data][, ...args])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L217">[src]</a><span><a class="mark" href="#console_console_error_data_args" id="console_console_error_data_args">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.100</span>
+</div>
+<ul>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>Prints to <code>stderr</code> with newline. Multiple arguments can be passed, with the
+first used as the primary message and all additional used as substitution
+values similar to <a href="http://man7.org/linux/man-pages/man3/printf.3.html"><code>printf(3)</code></a> (the arguments are all passed to
+<a href="util.html#util_util_format_format_args"><code>util.format()</code></a>).</p>
+<pre><code class="language-js">const code = 5;
+console.error('error #%d', code);
+// Prints: error #5, to stderr
+console.error('error', code);
+// Prints: error 5, to stderr
+</code></pre>
+<p>If formatting elements (e.g. <code>%d</code>) are not found in the first string then
+<a href="util.html#util_util_inspect_object_options"><code>util.inspect()</code></a> is called on each argument and the resulting string
+values are concatenated. See <a href="util.html#util_util_format_format_args"><code>util.format()</code></a> for more information.</p>
+<h3>console.group([...label])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L321">[src]</a><span><a class="mark" href="#console_console_group_label" id="console_console_group_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.5.0</span>
+</div>
+<ul>
+<li><code>...label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>Increases indentation of subsequent lines by two spaces.</p>
+<p>If one or more <code>label</code>s are provided, those are printed first without the
+additional indentation.</p>
+<h3>console.groupCollapsed()<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L327">[src]</a><span><a class="mark" href="#console_console_groupcollapsed" id="console_console_groupcollapsed">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.5.0</span>
+</div>
+<p>An alias for <a href="#console_console_group_label"><code>console.group()</code></a>.</p>
+<h3>console.groupEnd()<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L329">[src]</a><span><a class="mark" href="#console_console_groupend" id="console_console_groupend">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.5.0</span>
+</div>
+<p>Decreases indentation of subsequent lines by two spaces.</p>
+<h3>console.info([data][, ...args])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L207">[src]</a><span><a class="mark" href="#console_console_info_data_args" id="console_console_info_data_args">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.100</span>
+</div>
+<ul>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>The <code>console.info()</code> function is an alias for <a href="#console_console_log_data_args"><code>console.log()</code></a>.</p>
+<h3>console.log([data][, ...args])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L199">[src]</a><span><a class="mark" href="#console_console_log_data_args" id="console_console_log_data_args">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.100</span>
+</div>
+<ul>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>Prints to <code>stdout</code> with newline. Multiple arguments can be passed, with the
+first used as the primary message and all additional used as substitution
+values similar to <a href="http://man7.org/linux/man-pages/man3/printf.3.html"><code>printf(3)</code></a> (the arguments are all passed to
+<a href="util.html#util_util_format_format_args"><code>util.format()</code></a>).</p>
+<pre><code class="language-js">const count = 5;
+console.log('count: %d', count);
+// Prints: count: 5, to stdout
+console.log('count:', count);
+// Prints: count: 5, to stdout
+</code></pre>
+<p>See <a href="util.html#util_util_format_format_args"><code>util.format()</code></a> for more information.</p>
+<h3>console.table(tabularData[, properties])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L343">[src]</a><span><a class="mark" href="#console_console_table_tabulardata_properties" id="console_console_table_tabulardata_properties">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.0.0</span>
+</div>
+<ul>
+<li><code>tabularData</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>properties</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a> Alternate properties for constructing the table.</li>
+</ul>
+<p>Try to construct a table with the columns of the properties of <code>tabularData</code>
+(or use <code>properties</code>) and rows of <code>tabularData</code> and log it. Falls back to just
+logging the argument if it can’t be parsed as tabular.</p>
+<pre><code class="language-js">// These can't be parsed as tabular data
+console.table(Symbol());
+// Symbol()
+
+console.table(undefined);
+// undefined
+
+console.table([{ a: 1, b: 'Y' }, { a: 'Z', b: 2 }]);
+// ┌─────────┬─────┬─────┐
+// │ (index) │  a  │  b  │
+// ├─────────┼─────┼─────┤
+// │    0    │  1  │ 'Y' │
+// │    1    │ 'Z' │  2  │
+// └─────────┴─────┴─────┘
+
+console.table([{ a: 1, b: 'Y' }, { a: 'Z', b: 2 }], ['a']);
+// ┌─────────┬─────┐
+// │ (index) │  a  │
+// ├─────────┼─────┤
+// │    0    │  1  │
+// │    1    │ 'Z' │
+// └─────────┴─────┘
+</code></pre>
+<h3>console.time([label])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L230">[src]</a><span><a class="mark" href="#console_console_time_label" id="console_console_time_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.104</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+</ul>
+<p>Starts a timer that can be used to compute the duration of an operation. Timers
+are identified by a unique <code>label</code>. Use the same <code>label</code> when calling
+<a href="#console_console_timeend_label"><code>console.timeEnd()</code></a> to stop the timer and output the elapsed time in
+milliseconds to <code>stdout</code>. Timer durations are accurate to the sub-millisecond.</p>
+<h3>console.timeEnd([label])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L236">[src]</a><span><a class="mark" href="#console_console_timeend_label" id="console_console_timeend_label">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v6.0.0</td>
+<td><p>This method no longer supports multiple calls that don’t map to individual <code>console.time()</code> calls; see below for details.</p></td></tr>
+<tr><td>v0.1.104</td>
+<td><p><span>Added in: v0.1.104</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+</ul>
+<p>Stops a timer that was previously started by calling <a href="#console_console_time_label"><code>console.time()</code></a> and
+prints the result to <code>stdout</code>:</p>
+<pre><code class="language-js">console.time('100-elements');
+for (let i = 0; i &#x3C; 100; i++) {}
+console.timeEnd('100-elements');
+// prints 100-elements: 225.438ms
+</code></pre>
+<h3>console.timeLog([label][, ...data])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L245">[src]</a><span><a class="mark" href="#console_console_timelog_label_data" id="console_console_timelog_label_data">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.7.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+<li><code>...data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>For a timer that was previously started by calling <a href="#console_console_time_label"><code>console.time()</code></a>, prints
+the elapsed time and other <code>data</code> arguments to <code>stdout</code>:</p>
+<pre><code class="language-js">console.time('process');
+const value = expensiveProcess1(); // Returns 42
+console.timeLog('process', value);
+// Prints "process: 365.227ms 42".
+doExpensiveProcess2(value);
+console.timeEnd('process');
+</code></pre>
+<h3>console.trace([message][, ...args])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L268">[src]</a><span><a class="mark" href="#console_console_trace_message_args" id="console_console_trace_message_args">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.104</span>
+</div>
+<ul>
+<li><code>message</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>Prints to <code>stderr</code> the string <code>'Trace: '</code>, followed by the <a href="util.html#util_util_format_format_args"><code>util.format()</code></a>
+formatted message and stack trace to the current position in the code.</p>
+<pre><code class="language-js">console.trace('Show me');
+// Prints: (stack trace will vary based on where trace is called)
+//  Trace: Show me
+//    at repl:2:9
+//    at REPLServer.defaultEval (repl.js:248:27)
+//    at bound (domain.js:287:14)
+//    at REPLServer.runBound [as eval] (domain.js:300:12)
+//    at REPLServer.&#x3C;anonymous> (repl.js:412:12)
+//    at emitOne (events.js:82:20)
+//    at REPLServer.emit (events.js:169:7)
+//    at REPLServer.Interface._onLine (readline.js:210:10)
+//    at REPLServer.Interface._line (readline.js:549:8)
+//    at REPLServer.Interface._ttyWrite (readline.js:826:14)
+</code></pre>
+<h3>console.warn([data][, ...args])<a class="srclink" href="https://github.com/nodejs/node/blob/1a96d83a223ff9f05f7d942fb84440d323f7b596/lib/console.js#L210">[src]</a><span><a class="mark" href="#console_console_warn_data_args" id="console_console_warn_data_args">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.100</span>
+</div>
+<ul>
+<li><code>data</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>...args</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+</ul>
+<p>The <code>console.warn()</code> function is an alias for <a href="#console_console_error_data_args"><code>console.error()</code></a>.</p>
+<h2>Inspector only methods<span><a class="mark" href="#console_inspector_only_methods" id="console_inspector_only_methods">#</a></span></h2>
+<p>The following methods are exposed by the V8 engine in the general API but do
+not display anything unless used in conjunction with the <a href="debugger.html">inspector</a>
+(<code>--inspect</code> flag).</p>
+<h3>console.markTimeline([label])<span><a class="mark" href="#console_console_marktimeline_label" id="console_console_marktimeline_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+</ul>
+<p>This method does not display anything unless used in the inspector. The
+<code>console.markTimeline()</code> method is the deprecated form of
+<a href="#console_console_timestamp_label"><code>console.timeStamp()</code></a>.</p>
+<h3>console.profile([label])<span><a class="mark" href="#console_console_profile_label" id="console_console_profile_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>This method does not display anything unless used in the inspector. The
+<code>console.profile()</code> method starts a JavaScript CPU profile with an optional
+label until <a href="#console_console_profileend_label"><code>console.profileEnd()</code></a> is called. The profile is then added to
+the <strong>Profile</strong> panel of the inspector.</p>
+<pre><code class="language-js">console.profile('MyLabel');
+// Some code
+console.profileEnd('MyLabel');
+// Adds the profile 'MyLabel' to the Profiles panel of the inspector.
+</code></pre>
+<h3>console.profileEnd([label])<span><a class="mark" href="#console_console_profileend_label" id="console_console_profileend_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>This method does not display anything unless used in the inspector. Stops the
+current JavaScript CPU profiling session if one has been started and prints
+the report to the <strong>Profiles</strong> panel of the inspector. See
+<a href="#console_console_profile_label"><code>console.profile()</code></a> for an example.</p>
+<p>If this method is called without a label, the most recently started profile is
+stopped.</p>
+<h3>console.timeStamp([label])<span><a class="mark" href="#console_console_timestamp_label" id="console_console_timestamp_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>This method does not display anything unless used in the inspector. The
+<code>console.timeStamp()</code> method adds an event with the label <code>'label'</code> to the
+<strong>Timeline</strong> panel of the inspector.</p>
+<h3>console.timeline([label])<span><a class="mark" href="#console_console_timeline_label" id="console_console_timeline_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+</ul>
+<p>This method does not display anything unless used in the inspector. The
+<code>console.timeline()</code> method is the deprecated form of <a href="#console_console_time_label"><code>console.time()</code></a>.</p>
+<h3>console.timelineEnd([label])<span><a class="mark" href="#console_console_timelineend_label" id="console_console_timelineend_label">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v8.0.0</span>
+</div>
+<ul>
+<li><code>label</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> <strong>Default:</strong> <code>'default'</code></li>
+</ul>
+<p>This method does not display anything unless used in the inspector. The
+<code>console.timelineEnd()</code> method is the deprecated form of
+<a href="#console_console_timeend_label"><code>console.timeEnd()</code></a>.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

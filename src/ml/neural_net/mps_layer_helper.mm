@@ -9,8 +9,21 @@
 #import <ml/neural_net/mps_layer_instance_norm_data_loader.h>
 #import <ml/neural_net/mps_weight.h>
 
+#import <objc/runtime.h>
+
+static char kWeightsKey;
+
 @implementation MPSCNNFullyConnectedNode (TCMPSLayerHelper)
-@dynamic weights;
+@dynamic tc_weightsData;
+
+- (void)setTc_weightsData:(TCMPSConvolutionWeights *)tc_weightsData {
+  objc_setAssociatedObject(self, &kWeightsKey, tc_weightsData, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)tc_weightsData {
+  return objc_getAssociatedObject(self, &kWeightsKey);
+}
+
 + (MPSCNNFullyConnectedNode *) createFullyConnected:(MPSNNImageNode *)inputNode
                                inputFeatureChannels:(NSUInteger)inputFeatureChannels
                               outputFeatureChannels:(NSUInteger)outputFeatureChannels
@@ -46,14 +59,23 @@
     [MPSCNNFullyConnectedNode nodeWithSource:inputNode
                                      weights:fullyConnectedDataLoad];
 
-  fullyConnectedNode.weights = fullyConnectedDataLoad;
+  fullyConnectedNode.tc_weightsData = fullyConnectedDataLoad;
   
   return fullyConnectedNode;
 }
 @end
 
 @implementation MPSCNNConvolutionNode (TCMPSLayerHelper)
-@dynamic weights;
+@dynamic tc_weightsData;
+
+- (void)setTc_weightsData:(TCMPSConvolutionWeights *)tc_weightsData {
+  objc_setAssociatedObject(self, &kWeightsKey, tc_weightsData, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)tc_weightsData {
+  return objc_getAssociatedObject(self, &kWeightsKey);
+}
+
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
                                     kernelWidth:(NSUInteger)kernelWidth
                                    kernelHeight:(NSUInteger)kernelHeight
@@ -101,14 +123,23 @@
 
   convNode.paddingPolicy = padding;
 
-  convNode.weights = convDataLoad;
+  convNode.tc_weightsData = convDataLoad;
   
-	return convNode;
+  return convNode;
 }
 @end
 
 @implementation MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
-@dynamic weights;
+@dynamic tc_weightsData;
+
+- (void)setTc_weightsData:(TCMPSInstanceNormDataLoader *)tc_weightsData {
+  objc_setAssociatedObject(self, &kWeightsKey, tc_weightsData, OBJC_ASSOCIATION_RETAIN);
+}
+
+- (NSString *)tc_weightsData {
+  return objc_getAssociatedObject(self, &kWeightsKey);
+}
+
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
@@ -129,7 +160,7 @@
   MPSCNNInstanceNormalizationNode *instNormNode =  [MPSCNNInstanceNormalizationNode nodeWithSource:inputNode
                                                                                         dataSource:instNormDataLoad];
 
-  instNormNode.weights = instNormDataLoad;
+  instNormNode.tc_weightsData = instNormDataLoad;
 
   return instNormNode;
 }

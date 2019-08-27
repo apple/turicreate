@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { StickyTable, Row, Cell } from './sticky-table'
+import { StickyTable, Row, Cell } from './sticky-table';
+import { fetch } from '../../../client';
 import './index.css';
 
 import FontAwesomeIcon from '@fortawesome/react-fontawesome'
@@ -92,7 +93,6 @@ class TcTable extends Component {
   constructor(props){
     super(props);
     this.image_array = [];
-    this.image_dictionary = {};
     this.data = undefined;
     this.step_size = (this.props.step_size)?this.props.step_size:50;
     this.test_this = "element";
@@ -121,7 +121,7 @@ class TcTable extends Component {
 
     window.addEventListener('resize', this.handleResize.bind(this));
 
-    if(window.navigator.platform === 'MacIntel'){
+    if(window.navigator.platform === 'MacIntel' && !window.tcvizBrowserMode){
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
     }
 
@@ -257,7 +257,9 @@ class TcTable extends Component {
   }
 
   getRows(start_index, end_index) {
-    if(window.navigator.platform == 'MacIntel'){
+    if(window.tcvizBrowserMode) {
+      fetch(`/data/table/${this.table_spec.table_id}`, {type: 'rows', start: start_index, end: end_index}).then(window.handleInput);
+    }else if(window.navigator.platform == 'MacIntel'){
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getRows', start: start_index, end: end_index});
     }else{
       window.postMessageToNativeClient('{"method":"get_rows", "start":' + start_index + ', "end": ' + end_index + '}');
@@ -281,6 +283,7 @@ class TcTable extends Component {
 
   hoverImage(result){
     var $this = this;
+
     return function(e) {
       if(result == "image"){
         $this.image_source_container.style.display = "block";
@@ -292,121 +295,38 @@ class TcTable extends Component {
           var imageRow = e.target.getElementsByTagName("img")[0].getAttribute("data-image-row");
           var imageColumn = e.target.getElementsByTagName("img")[0].getAttribute("data-image-column");
 
-          if($this.image_dictionary[String(imageRow)]){
-            if($this.image_dictionary[String(imageRow)][String(imageColumn)]){
-              var src_values = "data:image/" + $this.image_dictionary[String(imageRow)][String(imageColumn)]["format"] + ";base64," + $this.image_dictionary[String(imageRow)][String(imageColumn)]["image"];
-              $this.image_source_container.src = src_values;
-              $this.arrow_left.style.top = bound_height + "px";
+          // Load image directly from server over HTTP
+          $this.image_source_container.src = `${$this.table_spec.base_url}/data/table/${$this.table_spec.table_id}/image/${imageRow}/${imageColumn}`;
+          $this.arrow_left.style.top = bound_height + "px";
 
-              var image_bounding = $this.image_source_container.getBoundingClientRect();
-              var image_bound_height = parseInt(((element_bounding.height/2 - image_bounding.height/2) + (element_bounding.y)), 10);
+          var image_bounding = $this.image_source_container.getBoundingClientRect();
+          var image_bound_height = parseInt(((element_bounding.height/2 - image_bounding.height/2) + (element_bounding.y)), 10);
 
-              var header_positon = document.getElementsByClassName("header")[0].getBoundingClientRect();
-              var header_top = header_positon.y + header_positon.height;
+          var header_positon = document.getElementsByClassName("header")[0].getBoundingClientRect();
+          var header_top = header_positon.y + header_positon.height;
 
-              var footer_position = document.getElementsByClassName("BottomTable")[0].getBoundingClientRect();
-              var footer_top = footer_position.y;
+          var footer_position = document.getElementsByClassName("BottomTable")[0].getBoundingClientRect();
+          var footer_top = footer_position.y;
 
-              if(header_top > image_bound_height){
-                image_bound_height = header_top;
-              }
-
-              if((image_bound_height+image_bounding.height) > footer_top){
-                image_bound_height = footer_top - image_bounding.height;
-              }
-
-              $this.image_source_container.style.top = image_bound_height + "px";
-
-              var right_value = (element_bounding.width + element_bounding.left);
-              var right_image = (element_bounding.width + element_bounding.left + 10);
-
-              $this.arrow_left.style.left = right_value + "px";
-              $this.image_source_container.style.left = right_image +"px";
-            }
-          }else{
-              $this.image_source_container.style.display = "none";
-              $this.image_loading_container.style.display = "block";
-
-              $this.arrow_left.style.top = bound_height + "px";
-
-              var image_bounding = $this.image_loading_container.getBoundingClientRect();
-              var image_bound_height = parseInt(((element_bounding.height/2 - image_bounding.height/2) + (element_bounding.y)), 10);
-
-              var header_positon = document.getElementsByClassName("header")[0].getBoundingClientRect();
-              var header_top = header_positon.y + header_positon.height;
-
-              var footer_position = document.getElementsByClassName("BottomTable")[0].getBoundingClientRect();
-              var footer_top = footer_position.y;
-
-              if(header_top > image_bound_height){
-                image_bound_height = header_top;
-              }
-
-              if((image_bound_height+image_bounding.height) > footer_top){
-                image_bound_height = footer_top - image_bounding.height;
-              }
-
-              $this.image_loading_container.style.top = image_bound_height + "px";
-
-              var right_value = (element_bounding.width + element_bounding.left);
-              var right_image = (element_bounding.width + element_bounding.left + 10);
-
-              $this.arrow_left.style.left = right_value + "px";
-              $this.image_loading_container.style.left = right_image +"px";
-
-              var target = e.target;
-              $this.loading_image_timer = setInterval(function(imageRow, imageColumn, target){
-                                                             if($this.image_dictionary[String(imageRow)]){
-                                                                 if($this.image_dictionary[String(imageRow)][String(imageColumn)]){
-
-                                                                    $this.image_source_container.style.display = "block";
-                                                                    $this.image_loading_container.style.display = "none";
-
-                                                                    var element_bounding = target.getBoundingClientRect();
-
-
-                                                                    var arrow_bounding = $this.arrow_left.getBoundingClientRect();
-                                                                    var bound_height = parseInt(((element_bounding.height/2 - arrow_bounding.height/2) + (element_bounding.y)), 10);
-
-                                                                    var imageRow = target.getElementsByTagName("img")[0].getAttribute("data-image-row");
-                                                                    var imageColumn = target.getElementsByTagName("img")[0].getAttribute("data-image-column");
-
-                                                                    var src_values = "data:image/" + $this.image_dictionary[String(imageRow)][String(imageColumn)]["format"] + ";base64," + $this.image_dictionary[String(imageRow)][String(imageColumn)]["image"];
-
-                                                                    $this.image_source_container.src = src_values;
-                                                                    $this.arrow_left.style.top = bound_height + "px";
-
-                                                                    var image_bounding = $this.image_source_container.getBoundingClientRect();
-                                                                    var image_bound_height = parseInt(((element_bounding.height/2 - image_bounding.height/2) + (element_bounding.y)), 10);
-
-                                                                    var header_positon = document.getElementsByClassName("header")[0].getBoundingClientRect();
-                                                                    var header_top = header_positon.y + header_positon.height;
-
-                                                                    var footer_position = document.getElementsByClassName("BottomTable")[0].getBoundingClientRect();
-                                                                    var footer_top = footer_position.y;
-
-                                                                    if(header_top > image_bound_height){
-                                                                        image_bound_height = header_top;
-                                                                    }
-
-                                                                    if((image_bound_height+image_bounding.height) > footer_top){
-                                                                        image_bound_height = footer_top - image_bounding.height;
-                                                                    }
-
-                                                                    $this.image_source_container.style.top = image_bound_height + "px";
-
-                                                                    var right_value = (element_bounding.width + element_bounding.left);
-                                                                    var right_image = (element_bounding.width + element_bounding.left + 10);
-
-                                                                    $this.arrow_left.style.left = right_value + "px";
-                                                                    $this.image_source_container.style.left = right_image +"px";
-
-                                                                    clearInterval($this.loading_image_timer);
-
-                                                                 }
-                                                             }
-                                                         }, 300, imageRow, imageColumn, target);
+          if(header_top > image_bound_height){
+            image_bound_height = header_top;
           }
+
+          if((image_bound_height+image_bounding.height) > footer_top){
+            image_bound_height = footer_top - image_bounding.height;
+          }
+
+          $this.image_source_container.style.top = image_bound_height + "px";
+
+          var right_value = (element_bounding.width + element_bounding.left);
+          var right_image = (element_bounding.width + element_bounding.left + 10);
+
+          $this.arrow_left.style.left = right_value + "px";
+          $this.image_source_container.style.left = right_image +"px";
+
+          // Swap out loading spinner for real image
+          $this.image_source_container.style.display = "block";
+          $this.image_loading_container.style.display = "none";
         }
       }
     }
@@ -658,7 +578,9 @@ class TcTable extends Component {
 
             var element_index = String(parseInt(y, 10) - 1);
 
-            if(window.navigator.platform == 'MacIntel'){
+            if (window.tcvizBrowserMode) {
+                fetch(`/data/table/${this.table_spec.table_id}`, {type: 'accordion', column: column_name_str, index: element_index}).then(window.handleInput);
+            }else if(window.navigator.platform == 'MacIntel'){
                 window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getAccordion', column: column_name_str, index: element_index});
             }else{
                 window.postMessageToNativeClient('{"method":"get_accordion", "column": "' + column_name_str + '", "index": ' + element_index + '}');
@@ -684,32 +606,6 @@ class TcTable extends Component {
     }
 
     this.drawTable()
-  }
-
-  cleanImageDictionary(){
-    for (var key in this.image_dictionary){
-      if(parseInt(key, 10) < this.set_lower*this.step_size || parseInt(key, 10) > this.set_higher*this.step_size){
-        delete this.image_dictionary[key];
-      }
-    }
-  }
-
-  setImageData(value){
-    this.cleanImageDictionary();
-    if(value.data){
-      if(value.data.data){
-        for(var x = 0; x < value.data.data.length; x++){
-          if (!this.image_dictionary[String(value.data.data[x]["idx"])]) {
-            this.image_dictionary[String(value.data.data[x]["idx"])] = {};
-          }
-          if (!this.image_dictionary[String(value.data.data[x]["idx"])][value.data.data[x]["column"]]) {
-            this.image_dictionary[String(value.data.data[x]["idx"])][value.data.data[x]["column"]] = {};
-          }
-          this.image_dictionary[String(value.data.data[x]["idx"])][value.data.data[x]["column"]]["image"] = value.data.data[x]["image"];
-          this.image_dictionary[String(value.data.data[x]["idx"])][value.data.data[x]["column"]]["format"] = value.data.data[x]["format"];
-        }
-      }
-    }
   }
 
   render() {

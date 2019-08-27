@@ -29,6 +29,14 @@ def _get_client_app_path():
     if _sys.platform == 'linux2' or _sys.platform == 'linux':
         return _os.path.join(tcviz_dir, 'Turi Create Visualization', 'visualization_client')
 
+def _ensure_web_server():
+    import turicreate as tc
+    if (tc.config.get_runtime_config()['TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY'] == ''):
+        path_to_client = _get_client_app_path()
+        tc.config.set_runtime_config('TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY',
+            _os.path.abspath(_os.path.join(_os.path.dirname(path_to_client), '..', 'Resources', 'build'))
+        )
+
 def _run_cmdline(command):
     # runs a shell command
     p = _Popen(args=command, stdout=_PIPE, stderr=_PIPE, shell=True)
@@ -123,6 +131,18 @@ class Plot(object):
         if _target == 'none':
             return
 
+        # If browser target is set, launch in web browser
+        if _target == 'browser':
+            # First, make sure TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY is set
+            _ensure_web_server()
+
+            # Launch this plot's URL using Python built-in webbrowser module
+            import webbrowser
+            url = self.get_url()
+            webbrowser.open_new_tab(url)
+            return
+
+        # If auto target is set, try to show inline in Jupyter Notebook
         try:
             if _target == 'auto' and \
                get_ipython().__class__.__name__ == "ZMQInteractiveShell":
@@ -132,19 +152,6 @@ class Plot(object):
             pass
 
         path_to_client = _get_client_app_path()
-
-        if _target == 'browser':
-            # First, make sure TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY is set
-            import turicreate as tc
-            if (tc.config.get_runtime_config()['TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY'] == ''):
-                tc.config.set_runtime_config('TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY',
-                    _os.path.abspath(_os.path.join(_os.path.dirname(path_to_client), '..', 'Resources', 'build'))
-                )
-
-            import webbrowser
-            url = self.get_url()
-            webbrowser.open_new_tab(url)
-            return
 
         # _target can only be one of ['auto', 'browser', 'gui', 'none'].
         # We have already returned early for auto (in Jupyter Notebook) and
@@ -360,7 +367,7 @@ def display_table_in_notebook(sf):
     def image_formatter(im):
         image_buffer = BytesIO()
         im.save(image_buffer, format='PNG')
-        return "<img src=\"data:image/png;base64," + base64.b64encode(image_buffer.getvalue()) + "\"/>"
+        return "<img src=\"data:image/png;base64," + base64.b64encode(image_buffer.getvalue()).decode() + "\"/>"
 
     import pandas as pd
     maximum_rows = 100

@@ -21,7 +21,8 @@ def create(data,
            max_iterations=0,
            verbose=True):
     """
-    Create a :class:`OneShotObjectDetector` model.
+    Create a :class:`OneShotObjectDetector` model. Note: The One Shot Object Detector
+    is currently in beta.
 
     Parameters
     ----------

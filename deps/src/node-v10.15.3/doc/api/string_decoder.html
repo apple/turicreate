@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>String Decoder | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/string_decoder.html">
+</head>
+<body class="alt apidoc" id="api-section-string_decoder">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder active">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="string_decoder" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="string_decoder.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/string_decoder.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/string_decoder.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/string_decoder.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/string_decoder.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/string_decoder.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/string_decoder.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/string_decoder.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/string_decoder.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/string_decoder.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/string_decoder.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/string_decoder.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#string_decoder_string_decoder">String Decoder</a></span></p>
+<ul>
+<li>
+<p><a href="#string_decoder_class_stringdecoder">Class: StringDecoder</a></p>
+<ul>
+<li><a href="#string_decoder_new_stringdecoder_encoding">new StringDecoder([encoding])</a></li>
+<li><a href="#string_decoder_stringdecoder_end_buffer">stringDecoder.end([buffer])</a></li>
+<li><a href="#string_decoder_stringdecoder_write_buffer">stringDecoder.write(buffer)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>String Decoder<span><a class="mark" href="#string_decoder_string_decoder" id="string_decoder_string_decoder">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+<p>The <code>string_decoder</code> module provides an API for decoding <code>Buffer</code> objects into
+strings in a manner that preserves encoded multi-byte UTF-8 and UTF-16
+characters. It can be accessed using:</p>
+<pre><code class="language-js">const { StringDecoder } = require('string_decoder');
+</code></pre>
+<p>The following example shows the basic use of the <code>StringDecoder</code> class.</p>
+<pre><code class="language-js">const { StringDecoder } = require('string_decoder');
+const decoder = new StringDecoder('utf8');
+
+const cent = Buffer.from([0xC2, 0xA2]);
+console.log(decoder.write(cent));
+
+const euro = Buffer.from([0xE2, 0x82, 0xAC]);
+console.log(decoder.write(euro));
+</code></pre>
+<p>When a <code>Buffer</code> instance is written to the <code>StringDecoder</code> instance, an
+internal buffer is used to ensure that the decoded string does not contain
+any incomplete multibyte characters. These are held in the buffer until the
+next call to <code>stringDecoder.write()</code> or until <code>stringDecoder.end()</code> is called.</p>
+<p>In the following example, the three UTF-8 encoded bytes of the European Euro
+symbol (<code>€</code>) are written over three separate operations:</p>
+<pre><code class="language-js">const { StringDecoder } = require('string_decoder');
+const decoder = new StringDecoder('utf8');
+
+decoder.write(Buffer.from([0xE2]));
+decoder.write(Buffer.from([0x82]));
+console.log(decoder.end(Buffer.from([0xAC])));
+</code></pre>
+<h2>Class: StringDecoder<span><a class="mark" href="#string_decoder_class_stringdecoder" id="string_decoder_class_stringdecoder">#</a></span></h2>
+<h3>new StringDecoder([encoding])<span><a class="mark" href="#string_decoder_new_stringdecoder_encoding" id="string_decoder_new_stringdecoder_encoding">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.1.99</span>
+</div>
+<ul>
+<li><code>encoding</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The character encoding the <code>StringDecoder</code> will use.
+<strong>Default:</strong> <code>'utf8'</code>.</li>
+</ul>
+<p>Creates a new <code>StringDecoder</code> instance.</p>
+<h3>stringDecoder.end([buffer])<span><a class="mark" href="#string_decoder_stringdecoder_end_buffer" id="string_decoder_stringdecoder_end_buffer">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v0.9.3</span>
+</div>
+<ul>
+<li><code>buffer</code> <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray" class="type">&#x3C;TypedArray></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView" class="type">&#x3C;DataView></a> A <code>Buffer</code>, or <code>TypedArray</code>, or
+<code>DataView</code> containing the bytes to decode.</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>Returns any remaining input stored in the internal buffer as a string. Bytes
+representing incomplete UTF-8 and UTF-16 characters will be replaced with
+substitution characters appropriate for the character encoding.</p>
+<p>If the <code>buffer</code> argument is provided, one final call to <code>stringDecoder.write()</code>
+is performed before returning the remaining input.</p>
+<h3>stringDecoder.write(buffer)<span><a class="mark" href="#string_decoder_stringdecoder_write_buffer" id="string_decoder_stringdecoder_write_buffer">#</a></span></h3>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>Each invalid character is now replaced by a single replacement character instead of one for each individual byte.</p></td></tr>
+<tr><td>v0.1.99</td>
+<td><p><span>Added in: v0.1.99</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>buffer</code> <a href="buffer.html#buffer_class_buffer" class="type">&#x3C;Buffer></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/TypedArray" class="type">&#x3C;TypedArray></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DataView" class="type">&#x3C;DataView></a> A <code>Buffer</code>, or <code>TypedArray</code>, or
+<code>DataView</code> containing the bytes to decode.</li>
+<li>Returns: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>Returns a decoded string, ensuring that any incomplete multibyte characters at
+the end of the <code>Buffer</code>, or <code>TypedArray</code>, or <code>DataView</code> are omitted from the
+returned string and stored in an internal buffer for the next call to
+<code>stringDecoder.write()</code> or <code>stringDecoder.end()</code>.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

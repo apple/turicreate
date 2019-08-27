@@ -206,17 +206,22 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems
                                  16.f / IMAGE_HEIGHT
                                  ));
 
-  // Case 2 | Input: ('bottom_left', 'pixel', 'bottom_left') → Output: ('top_left', 'normalized', 'top_left')
-  const labeled_image& case2_example = create_data_opts("bottom_left", "pixel", "bottom_left", 20, 38, 16, 16);
-  TS_ASSERT_EQUALS(case2_example.annotations[0].bounding_box,
-                      image_box(static_cast<float>(20) / IMAGE_WIDTH,
-                                 static_cast<float>(10) / IMAGE_HEIGHT,
-                                 16.f / IMAGE_WIDTH,
-                                 16.f / IMAGE_HEIGHT
-                                 ));
+  // Case 2 | Input: ('bottom_left', 'pixel', 'center') → Output: ('top_left',
+  // 'normalized', 'top_left')
+  const labeled_image& case2_example =
+      create_data_opts("bottom_left", "pixel", "center", 28, 18, 16, 16);
+  // A 16x16 box 10 pixels from the bottom edge begins (has its top edge at) 26
+  // pixels from the bottom edge.
+  TS_ASSERT_EQUALS(
+      case2_example.annotations[0].bounding_box,
+      image_box(static_cast<float>(20) / IMAGE_WIDTH,
+                static_cast<float>(IMAGE_HEIGHT - 10 - 16) / IMAGE_HEIGHT,
+                16.f / IMAGE_WIDTH, 16.f / IMAGE_HEIGHT));
 
-  // Case 3 | Input: ('bottom_left', 'normalized', 'bottom_left') → Output: ('top_left', 'normalized', 'top_left')
-  const labeled_image& case3_example = create_data_opts("bottom_left", "normalized", "bottom_left", 20./IMAGE_WIDTH, 38./IMAGE_HEIGHT, 16./IMAGE_WIDTH, 16./IMAGE_HEIGHT);
+  // Case 3 | Input: ('bottom_left', 'pixel', 'bottom_left') → Output:
+  // ('top_left', 'normalized', 'top_left')
+  const labeled_image& case3_example =
+      create_data_opts("bottom_left", "pixel", "bottom_left", 20, 38, 16, 16);
   TS_ASSERT_EQUALS(case3_example.annotations[0].bounding_box,
                       image_box(static_cast<float>(20) / IMAGE_WIDTH,
                                  static_cast<float>(10) / IMAGE_HEIGHT,
@@ -224,8 +229,11 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems
                                  16.f / IMAGE_HEIGHT
                                  ));
 
-  // Case 4 | Input: ('top_left', 'pixel', 'top_left') → Output: ('top_left', 'normalized', 'top_left')
-  const labeled_image& case4_example = create_data_opts("top_left", "pixel", "top_left", 20, 10, 16, 16);
+  // Case 4 | Input: ('bottom_left', 'normalized', 'bottom_left') → Output:
+  // ('top_left', 'normalized', 'top_left')
+  const labeled_image& case4_example = create_data_opts(
+      "bottom_left", "normalized", "bottom_left", 20. / IMAGE_WIDTH,
+      38. / IMAGE_HEIGHT, 16. / IMAGE_WIDTH, 16. / IMAGE_HEIGHT);
   TS_ASSERT_EQUALS(case4_example.annotations[0].bounding_box,
                       image_box(static_cast<float>(20) / IMAGE_WIDTH,
                                  static_cast<float>(10) / IMAGE_HEIGHT,
@@ -233,6 +241,14 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_different_coordinate_systems
                                  16.f / IMAGE_HEIGHT
                                  ));
 
+  // Case 5 | Input: ('top_left', 'pixel', 'top_left') → Output: ('top_left',
+  // 'normalized', 'top_left')
+  const labeled_image& case5_example =
+      create_data_opts("top_left", "pixel", "top_left", 20, 10, 16, 16);
+  TS_ASSERT_EQUALS(case5_example.annotations[0].bounding_box,
+                   image_box(static_cast<float>(20) / IMAGE_WIDTH,
+                             static_cast<float>(10) / IMAGE_HEIGHT,
+                             16.f / IMAGE_WIDTH, 16.f / IMAGE_HEIGHT));
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_classes) {

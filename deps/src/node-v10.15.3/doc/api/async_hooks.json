@@ -1,0 +1,523 @@
+{
+  "type": "module",
+  "source": "doc/api/async_hooks.md",
+  "modules": [
+    {
+      "textRaw": "Async Hooks",
+      "name": "async_hooks",
+      "introduced_in": "v8.1.0",
+      "stability": 1,
+      "stabilityText": "Experimental",
+      "desc": "<p>The <code>async_hooks</code> module provides an API to register callbacks tracking the\nlifetime of asynchronous resources created inside a Node.js application.\nIt can be accessed using:</p>\n<pre><code class=\"language-js\">const async_hooks = require('async_hooks');\n</code></pre>",
+      "modules": [
+        {
+          "textRaw": "Terminology",
+          "name": "terminology",
+          "desc": "<p>An asynchronous resource represents an object with an associated callback.\nThis callback may be called multiple times, for example, the <code>'connection'</code>\nevent in <code>net.createServer()</code>, or just a single time like in <code>fs.open()</code>.\nA resource can also be closed before the callback is called. <code>AsyncHook</code> does\nnot explicitly distinguish between these different cases but will represent them\nas the abstract concept that is a resource.</p>\n<p>If <a href=\"worker_threads.html#worker_threads_class_worker\"><code>Worker</code></a>s are used, each thread has an independent <code>async_hooks</code>\ninterface, and each thread will use a new set of async IDs.</p>",
+          "type": "module",
+          "displayName": "Terminology"
+        },
+        {
+          "textRaw": "Public API",
+          "name": "public_api",
+          "modules": [
+            {
+              "textRaw": "Overview",
+              "name": "overview",
+              "desc": "<p>Following is a simple overview of the public API.</p>\n<pre><code class=\"language-js\">const async_hooks = require('async_hooks');\n\n// Return the ID of the current execution context.\nconst eid = async_hooks.executionAsyncId();\n\n// Return the ID of the handle responsible for triggering the callback of the\n// current execution scope to call.\nconst tid = async_hooks.triggerAsyncId();\n\n// Create a new AsyncHook instance. All of these callbacks are optional.\nconst asyncHook =\n    async_hooks.createHook({ init, before, after, destroy, promiseResolve });\n\n// Allow callbacks of this AsyncHook instance to call. This is not an implicit\n// action after running the constructor, and must be explicitly run to begin\n// executing callbacks.\nasyncHook.enable();\n\n// Disable listening for new asynchronous events.\nasyncHook.disable();\n\n//\n// The following are the callbacks that can be passed to createHook().\n//\n\n// init is called during object construction. The resource may not have\n// completed construction when this callback runs, therefore all fields of the\n// resource referenced by \"asyncId\" may not have been populated.\nfunction init(asyncId, type, triggerAsyncId, resource) { }\n\n// before is called just before the resource's callback is called. It can be\n// called 0-N times for handles (e.g. TCPWrap), and will be called exactly 1\n// time for requests (e.g. FSReqWrap).\nfunction before(asyncId) { }\n\n// after is called just after the resource's callback has finished.\nfunction after(asyncId) { }\n\n// destroy is called when an AsyncWrap instance is destroyed.\nfunction destroy(asyncId) { }\n\n// promiseResolve is called only for promise resources, when the\n// `resolve` function passed to the `Promise` constructor is invoked\n// (either directly or through other means of resolving a promise).\nfunction promiseResolve(asyncId) { }\n</code></pre>",
+              "methods": [
+                {
+                  "textRaw": "async_hooks.createHook(callbacks)",
+                  "type": "method",
+                  "name": "createHook",
+                  "meta": {
+                    "added": [
+                      "v8.1.0"
+                    ],
+                    "changes": []
+                  },
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {AsyncHook} Instance used for disabling and enabling hooks",
+                        "name": "return",
+                        "type": "AsyncHook",
+                        "desc": "Instance used for disabling and enabling hooks"
+                      },
+                      "params": [
+                        {
+                          "textRaw": "`callbacks` {Object} The [Hook Callbacks][] to register",
+                          "name": "callbacks",
+                          "type": "Object",
+                          "desc": "The [Hook Callbacks][] to register",
+                          "options": [
+                            {
+                              "textRaw": "`init` {Function} The [`init` callback][].",
+                              "name": "init",
+                              "type": "Function",
+                              "desc": "The [`init` callback][]."
+                            },
+                            {
+                              "textRaw": "`before` {Function} The [`before` callback][].",
+                              "name": "before",
+                              "type": "Function",
+                              "desc": "The [`before` callback][]."
+                            },
+                            {
+                              "textRaw": "`after` {Function} The [`after` callback][].",
+                              "name": "after",
+                              "type": "Function",
+                              "desc": "The [`after` callback][]."
+                            },
+                            {
+                              "textRaw": "`destroy` {Function} The [`destroy` callback][].",
+                              "name": "destroy",
+                              "type": "Function",
+                              "desc": "The [`destroy` callback][]."
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>Registers functions to be called for different lifetime events of each async\noperation.</p>\n<p>The callbacks <code>init()</code>/<code>before()</code>/<code>after()</code>/<code>destroy()</code> are called for the\nrespective asynchronous event during a resource's lifetime.</p>\n<p>All callbacks are optional. For example, if only resource cleanup needs to\nbe tracked, then only the <code>destroy</code> callback needs to be passed. The\nspecifics of all functions that can be passed to <code>callbacks</code> is in the\n<a href=\"#async_hooks_hook_callbacks\">Hook Callbacks</a> section.</p>\n<pre><code class=\"language-js\">const async_hooks = require('async_hooks');\n\nconst asyncHook = async_hooks.createHook({\n  init(asyncId, type, triggerAsyncId, resource) { },\n  destroy(asyncId) { }\n});\n</code></pre>\n<p>Note that the callbacks will be inherited via the prototype chain:</p>\n<pre><code class=\"language-js\">class MyAsyncCallbacks {\n  init(asyncId, type, triggerAsyncId, resource) { }\n  destroy(asyncId) {}\n}\n\nclass MyAddedCallbacks extends MyAsyncCallbacks {\n  before(asyncId) { }\n  after(asyncId) { }\n}\n\nconst asyncHook = async_hooks.createHook(new MyAddedCallbacks());\n</code></pre>",
+                  "modules": [
+                    {
+                      "textRaw": "Error Handling",
+                      "name": "error_handling",
+                      "desc": "<p>If any <code>AsyncHook</code> callbacks throw, the application will print the stack trace\nand exit. The exit path does follow that of an uncaught exception, but\nall <code>'uncaughtException'</code> listeners are removed, thus forcing the process to\nexit. The <code>'exit'</code> callbacks will still be called unless the application is run\nwith <code>--abort-on-uncaught-exception</code>, in which case a stack trace will be\nprinted and the application exits, leaving a core file.</p>\n<p>The reason for this error handling behavior is that these callbacks are running\nat potentially volatile points in an object's lifetime, for example during\nclass construction and destruction. Because of this, it is deemed necessary to\nbring down the process quickly in order to prevent an unintentional abort in the\nfuture. This is subject to change in the future if a comprehensive analysis is\nperformed to ensure an exception can follow the normal control flow without\nunintentional side effects.</p>",
+                      "type": "module",
+                      "displayName": "Error Handling"
+                    },
+                    {
+                      "textRaw": "Printing in AsyncHooks callbacks",
+                      "name": "printing_in_asynchooks_callbacks",
+                      "desc": "<p>Because printing to the console is an asynchronous operation, <code>console.log()</code>\nwill cause the AsyncHooks callbacks to be called. Using <code>console.log()</code> or\nsimilar asynchronous operations inside an AsyncHooks callback function will thus\ncause an infinite recursion. An easy solution to this when debugging is to use a\nsynchronous logging operation such as <code>fs.writeFileSync(file, msg, flag)</code>.\nThis will print to the file and will not invoke AsyncHooks recursively because\nit is synchronous.</p>\n<pre><code class=\"language-js\">const fs = require('fs');\nconst util = require('util');\n\nfunction debug(...args) {\n  // use a function like this one when debugging inside an AsyncHooks callback\n  fs.writeFileSync('log.out', `${util.format(...args)}\\n`, { flag: 'a' });\n}\n</code></pre>\n<p>If an asynchronous operation is needed for logging, it is possible to keep\ntrack of what caused the asynchronous operation using the information\nprovided by AsyncHooks itself. The logging should then be skipped when\nit was the logging itself that caused AsyncHooks callback to call. By\ndoing this the otherwise infinite recursion is broken.</p>",
+                      "type": "module",
+                      "displayName": "Printing in AsyncHooks callbacks"
+                    }
+                  ]
+                },
+                {
+                  "textRaw": "asyncHook.enable()",
+                  "type": "method",
+                  "name": "enable",
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {AsyncHook} A reference to `asyncHook`.",
+                        "name": "return",
+                        "type": "AsyncHook",
+                        "desc": "A reference to `asyncHook`."
+                      },
+                      "params": []
+                    }
+                  ],
+                  "desc": "<p>Enable the callbacks for a given <code>AsyncHook</code> instance. If no callbacks are\nprovided enabling is a noop.</p>\n<p>The <code>AsyncHook</code> instance is disabled by default. If the <code>AsyncHook</code> instance\nshould be enabled immediately after creation, the following pattern can be used.</p>\n<pre><code class=\"language-js\">const async_hooks = require('async_hooks');\n\nconst hook = async_hooks.createHook(callbacks).enable();\n</code></pre>"
+                },
+                {
+                  "textRaw": "asyncHook.disable()",
+                  "type": "method",
+                  "name": "disable",
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {AsyncHook} A reference to `asyncHook`.",
+                        "name": "return",
+                        "type": "AsyncHook",
+                        "desc": "A reference to `asyncHook`."
+                      },
+                      "params": []
+                    }
+                  ],
+                  "desc": "<p>Disable the callbacks for a given <code>AsyncHook</code> instance from the global pool of\n<code>AsyncHook</code> callbacks to be executed. Once a hook has been disabled it will not\nbe called again until enabled.</p>\n<p>For API consistency <code>disable()</code> also returns the <code>AsyncHook</code> instance.</p>"
+                },
+                {
+                  "textRaw": "async_hooks.executionAsyncId()",
+                  "type": "method",
+                  "name": "executionAsyncId",
+                  "meta": {
+                    "added": [
+                      "v8.1.0"
+                    ],
+                    "changes": [
+                      {
+                        "version": "v8.2.0",
+                        "pr-url": "https://github.com/nodejs/node/pull/13490",
+                        "description": "Renamed from `currentId`"
+                      }
+                    ]
+                  },
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {number} The `asyncId` of the current execution context. Useful to track when something calls.",
+                        "name": "return",
+                        "type": "number",
+                        "desc": "The `asyncId` of the current execution context. Useful to track when something calls."
+                      },
+                      "params": []
+                    }
+                  ],
+                  "desc": "<pre><code class=\"language-js\">const async_hooks = require('async_hooks');\n\nconsole.log(async_hooks.executionAsyncId());  // 1 - bootstrap\nfs.open(path, 'r', (err, fd) => {\n  console.log(async_hooks.executionAsyncId());  // 6 - open()\n});\n</code></pre>\n<p>The ID returned from <code>executionAsyncId()</code> is related to execution timing, not\ncausality (which is covered by <code>triggerAsyncId()</code>):</p>\n<pre><code class=\"language-js\">const server = net.createServer((conn) => {\n  // Returns the ID of the server, not of the new connection, because the\n  // callback runs in the execution scope of the server's MakeCallback().\n  async_hooks.executionAsyncId();\n\n}).listen(port, () => {\n  // Returns the ID of a TickObject (i.e. process.nextTick()) because all\n  // callbacks passed to .listen() are wrapped in a nextTick().\n  async_hooks.executionAsyncId();\n});\n</code></pre>\n<p>Note that promise contexts may not get precise <code>executionAsyncIds</code> by default.\nSee the section on <a href=\"#async_hooks_promise_execution_tracking\">promise execution tracking</a>.</p>"
+                },
+                {
+                  "textRaw": "async_hooks.triggerAsyncId()",
+                  "type": "method",
+                  "name": "triggerAsyncId",
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {number} The ID of the resource responsible for calling the callback that is currently being executed.",
+                        "name": "return",
+                        "type": "number",
+                        "desc": "The ID of the resource responsible for calling the callback that is currently being executed."
+                      },
+                      "params": []
+                    }
+                  ],
+                  "desc": "<pre><code class=\"language-js\">const server = net.createServer((conn) => {\n  // The resource that caused (or triggered) this callback to be called\n  // was that of the new connection. Thus the return value of triggerAsyncId()\n  // is the asyncId of \"conn\".\n  async_hooks.triggerAsyncId();\n\n}).listen(port, () => {\n  // Even though all callbacks passed to .listen() are wrapped in a nextTick()\n  // the callback itself exists because the call to the server's .listen()\n  // was made. So the return value would be the ID of the server.\n  async_hooks.triggerAsyncId();\n});\n</code></pre>\n<p>Note that promise contexts may not get valid <code>triggerAsyncId</code>s by default. See\nthe section on <a href=\"#async_hooks_promise_execution_tracking\">promise execution tracking</a>.</p>"
+                }
+              ],
+              "modules": [
+                {
+                  "textRaw": "Hook Callbacks",
+                  "name": "hook_callbacks",
+                  "desc": "<p>Key events in the lifetime of asynchronous events have been categorized into\nfour areas: instantiation, before/after the callback is called, and when the\ninstance is destroyed.</p>",
+                  "methods": [
+                    {
+                      "textRaw": "init(asyncId, type, triggerAsyncId, resource)",
+                      "type": "method",
+                      "name": "init",
+                      "signatures": [
+                        {
+                          "params": [
+                            {
+                              "textRaw": "`asyncId` {number} A unique ID for the async resource.",
+                              "name": "asyncId",
+                              "type": "number",
+                              "desc": "A unique ID for the async resource."
+                            },
+                            {
+                              "textRaw": "`type` {string} The type of the async resource.",
+                              "name": "type",
+                              "type": "string",
+                              "desc": "The type of the async resource."
+                            },
+                            {
+                              "textRaw": "`triggerAsyncId` {number} The unique ID of the async resource in whose execution context this async resource was created.",
+                              "name": "triggerAsyncId",
+                              "type": "number",
+                              "desc": "The unique ID of the async resource in whose execution context this async resource was created."
+                            },
+                            {
+                              "textRaw": "`resource` {Object} Reference to the resource representing the async operation, needs to be released during _destroy_.",
+                              "name": "resource",
+                              "type": "Object",
+                              "desc": "Reference to the resource representing the async operation, needs to be released during _destroy_."
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Called when a class is constructed that has the <em>possibility</em> to emit an\nasynchronous event. This <em>does not</em> mean the instance must call\n<code>before</code>/<code>after</code> before <code>destroy</code> is called, only that the possibility\nexists.</p>\n<p>This behavior can be observed by doing something like opening a resource then\nclosing it before the resource can be used. The following snippet demonstrates\nthis.</p>\n<pre><code class=\"language-js\">require('net').createServer().listen(function() { this.close(); });\n// OR\nclearTimeout(setTimeout(() => {}, 10));\n</code></pre>\n<p>Every new resource is assigned an ID that is unique within the scope of the\ncurrent Node.js instance.</p>",
+                      "modules": [
+                        {
+                          "textRaw": "`type`",
+                          "name": "`type`",
+                          "desc": "<p>The <code>type</code> is a string identifying the type of resource that caused\n<code>init</code> to be called. Generally, it will correspond to the name of the\nresource's constructor.</p>\n<pre><code class=\"language-text\">FSEVENTWRAP, FSREQWRAP, GETADDRINFOREQWRAP, GETNAMEINFOREQWRAP, HTTPPARSER,\nJSSTREAM, PIPECONNECTWRAP, PIPEWRAP, PROCESSWRAP, QUERYWRAP, SHUTDOWNWRAP,\nSIGNALWRAP, STATWATCHER, TCPCONNECTWRAP, TCPSERVERWRAP, TCPWRAP, TIMERWRAP,\nTTYWRAP, UDPSENDWRAP, UDPWRAP, WRITEWRAP, ZLIB, SSLCONNECTION, PBKDF2REQUEST,\nRANDOMBYTESREQUEST, TLSWRAP, Timeout, Immediate, TickObject\n</code></pre>\n<p>There is also the <code>PROMISE</code> resource type, which is used to track <code>Promise</code>\ninstances and asynchronous work scheduled by them.</p>\n<p>Users are able to define their own <code>type</code> when using the public embedder API.</p>\n<p>It is possible to have type name collisions. Embedders are encouraged to use\nunique prefixes, such as the npm package name, to prevent collisions when\nlistening to the hooks.</p>",
+                          "type": "module",
+                          "displayName": "`type`"
+                        },
+                        {
+                          "textRaw": "`triggerAsyncId`",
+                          "name": "`triggerasyncid`",
+                          "desc": "<p><code>triggerAsyncId</code> is the <code>asyncId</code> of the resource that caused (or \"triggered\")\nthe new resource to initialize and that caused <code>init</code> to call. This is different\nfrom <code>async_hooks.executionAsyncId()</code> that only shows <em>when</em> a resource was\ncreated, while <code>triggerAsyncId</code> shows <em>why</em> a resource was created.</p>\n<p>The following is a simple demonstration of <code>triggerAsyncId</code>:</p>\n<pre><code class=\"language-js\">async_hooks.createHook({\n  init(asyncId, type, triggerAsyncId) {\n    const eid = async_hooks.executionAsyncId();\n    fs.writeSync(\n      1, `${type}(${asyncId}): trigger: ${triggerAsyncId} execution: ${eid}\\n`);\n  }\n}).enable();\n\nrequire('net').createServer((conn) => {}).listen(8080);\n</code></pre>\n<p>Output when hitting the server with <code>nc localhost 8080</code>:</p>\n<pre><code class=\"language-console\">TCPSERVERWRAP(5): trigger: 1 execution: 1\nTCPWRAP(7): trigger: 5 execution: 0\n</code></pre>\n<p>The <code>TCPSERVERWRAP</code> is the server which receives the connections.</p>\n<p>The <code>TCPWRAP</code> is the new connection from the client. When a new\nconnection is made, the <code>TCPWrap</code> instance is immediately constructed. This\nhappens outside of any JavaScript stack. (An <code>executionAsyncId()</code> of <code>0</code> means\nthat it is being executed from C++ with no JavaScript stack above it.) With only\nthat information, it would be impossible to link resources together in\nterms of what caused them to be created, so <code>triggerAsyncId</code> is given the task\nof propagating what resource is responsible for the new resource's existence.</p>",
+                          "type": "module",
+                          "displayName": "`triggerAsyncId`"
+                        },
+                        {
+                          "textRaw": "`resource`",
+                          "name": "`resource`",
+                          "desc": "<p><code>resource</code> is an object that represents the actual async resource that has\nbeen initialized. This can contain useful information that can vary based on\nthe value of <code>type</code>. For instance, for the <code>GETADDRINFOREQWRAP</code> resource type,\n<code>resource</code> provides the hostname used when looking up the IP address for the\nhost in <code>net.Server.listen()</code>. The API for accessing this information is\ncurrently not considered public, but using the Embedder API, users can provide\nand document their own resource objects. For example, such a resource object\ncould contain the SQL query being executed.</p>\n<p>In the case of Promises, the <code>resource</code> object will have <code>promise</code> property\nthat refers to the <code>Promise</code> that is being initialized, and an\n<code>isChainedPromise</code> property, set to <code>true</code> if the promise has a parent promise,\nand <code>false</code> otherwise. For example, in the case of <code>b = a.then(handler)</code>, <code>a</code> is\nconsidered a parent <code>Promise</code> of <code>b</code>. Here, <code>b</code> is considered a chained promise.</p>\n<p>In some cases the resource object is reused for performance reasons, it is\nthus not safe to use it as a key in a <code>WeakMap</code> or add properties to it.</p>",
+                          "type": "module",
+                          "displayName": "`resource`"
+                        },
+                        {
+                          "textRaw": "Asynchronous context example",
+                          "name": "asynchronous_context_example",
+                          "desc": "<p>The following is an example with additional information about the calls to\n<code>init</code> between the <code>before</code> and <code>after</code> calls, specifically what the\ncallback to <code>listen()</code> will look like. The output formatting is slightly more\nelaborate to make calling context easier to see.</p>\n<pre><code class=\"language-js\">let indent = 0;\nasync_hooks.createHook({\n  init(asyncId, type, triggerAsyncId) {\n    const eid = async_hooks.executionAsyncId();\n    const indentStr = ' '.repeat(indent);\n    fs.writeSync(\n      1,\n      `${indentStr}${type}(${asyncId}):` +\n      ` trigger: ${triggerAsyncId} execution: ${eid}\\n`);\n  },\n  before(asyncId) {\n    const indentStr = ' '.repeat(indent);\n    fs.writeFileSync('log.out',\n                     `${indentStr}before:  ${asyncId}\\n`, { flag: 'a' });\n    indent += 2;\n  },\n  after(asyncId) {\n    indent -= 2;\n    const indentStr = ' '.repeat(indent);\n    fs.writeFileSync('log.out',\n                     `${indentStr}after:  ${asyncId}\\n`, { flag: 'a' });\n  },\n  destroy(asyncId) {\n    const indentStr = ' '.repeat(indent);\n    fs.writeFileSync('log.out',\n                     `${indentStr}destroy:  ${asyncId}\\n`, { flag: 'a' });\n  },\n}).enable();\n\nrequire('net').createServer(() => {}).listen(8080, () => {\n  // Let's wait 10ms before logging the server started.\n  setTimeout(() => {\n    console.log('>>>', async_hooks.executionAsyncId());\n  }, 10);\n});\n</code></pre>\n<p>Output from only starting the server:</p>\n<pre><code class=\"language-console\">TCPSERVERWRAP(5): trigger: 1 execution: 1\nTickObject(6): trigger: 5 execution: 1\nbefore:  6\n  Timeout(7): trigger: 6 execution: 6\nafter:   6\ndestroy: 6\nbefore:  7\n>>> 7\n  TickObject(8): trigger: 7 execution: 7\nafter:   7\nbefore:  8\nafter:   8\n</code></pre>\n<p>As illustrated in the example, <code>executionAsyncId()</code> and <code>execution</code> each specify\nthe value of the current execution context; which is delineated by calls to\n<code>before</code> and <code>after</code>.</p>\n<p>Only using <code>execution</code> to graph resource allocation results in the following:</p>\n<pre><code class=\"language-console\">Timeout(7) -> TickObject(6) -> root(1)\n</code></pre>\n<p>The <code>TCPSERVERWRAP</code> is not part of this graph, even though it was the reason for\n<code>console.log()</code> being called. This is because binding to a port without a\nhostname is a <em>synchronous</em> operation, but to maintain a completely asynchronous\nAPI the user's callback is placed in a <code>process.nextTick()</code>.</p>\n<p>The graph only shows <em>when</em> a resource was created, not <em>why</em>, so to track\nthe <em>why</em> use <code>triggerAsyncId</code>.</p>",
+                          "type": "module",
+                          "displayName": "Asynchronous context example"
+                        }
+                      ]
+                    },
+                    {
+                      "textRaw": "before(asyncId)",
+                      "type": "method",
+                      "name": "before",
+                      "signatures": [
+                        {
+                          "params": [
+                            {
+                              "textRaw": "`asyncId` {number}",
+                              "name": "asyncId",
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>When an asynchronous operation is initiated (such as a TCP server receiving a\nnew connection) or completes (such as writing data to disk) a callback is\ncalled to notify the user. The <code>before</code> callback is called just before said\ncallback is executed. <code>asyncId</code> is the unique identifier assigned to the\nresource about to execute the callback.</p>\n<p>The <code>before</code> callback will be called 0 to N times. The <code>before</code> callback\nwill typically be called 0 times if the asynchronous operation was cancelled\nor, for example, if no connections are received by a TCP server. Persistent\nasynchronous resources like a TCP server will typically call the <code>before</code>\ncallback multiple times, while other operations like <code>fs.open()</code> will call\nit only once.</p>"
+                    },
+                    {
+                      "textRaw": "after(asyncId)",
+                      "type": "method",
+                      "name": "after",
+                      "signatures": [
+                        {
+                          "params": [
+                            {
+                              "textRaw": "`asyncId` {number}",
+                              "name": "asyncId",
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Called immediately after the callback specified in <code>before</code> is completed.</p>\n<p>If an uncaught exception occurs during execution of the callback, then <code>after</code>\nwill run <em>after</em> the <code>'uncaughtException'</code> event is emitted or a <code>domain</code>'s\nhandler runs.</p>"
+                    },
+                    {
+                      "textRaw": "destroy(asyncId)",
+                      "type": "method",
+                      "name": "destroy",
+                      "signatures": [
+                        {
+                          "params": [
+                            {
+                              "textRaw": "`asyncId` {number}",
+                              "name": "asyncId",
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Called after the resource corresponding to <code>asyncId</code> is destroyed. It is also\ncalled asynchronously from the embedder API <code>emitDestroy()</code>.</p>\n<p>Some resources depend on garbage collection for cleanup, so if a reference is\nmade to the <code>resource</code> object passed to <code>init</code> it is possible that <code>destroy</code>\nwill never be called, causing a memory leak in the application. If the resource\ndoes not depend on garbage collection, then this will not be an issue.</p>"
+                    },
+                    {
+                      "textRaw": "promiseResolve(asyncId)",
+                      "type": "method",
+                      "name": "promiseResolve",
+                      "signatures": [
+                        {
+                          "params": [
+                            {
+                              "textRaw": "`asyncId` {number}",
+                              "name": "asyncId",
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      ],
+                      "desc": "<p>Called when the <code>resolve</code> function passed to the <code>Promise</code> constructor is\ninvoked (either directly or through other means of resolving a promise).</p>\n<p>Note that <code>resolve()</code> does not do any observable synchronous work.</p>\n<p>The <code>Promise</code> is not necessarily fulfilled or rejected at this point if the\n<code>Promise</code> was resolved by assuming the state of another <code>Promise</code>.</p>\n<pre><code class=\"language-js\">new Promise((resolve) => resolve(true)).then((a) => {});\n</code></pre>\n<p>calls the following callbacks:</p>\n<pre><code class=\"language-text\">init for PROMISE with id 5, trigger id: 1\n  promise resolve 5      # corresponds to resolve(true)\ninit for PROMISE with id 6, trigger id: 5  # the Promise returned by then()\n  before 6               # the then() callback is entered\n  promise resolve 6      # the then() callback resolves the promise by returning\n  after 6\n</code></pre>"
+                    }
+                  ],
+                  "type": "module",
+                  "displayName": "Hook Callbacks"
+                }
+              ],
+              "type": "module",
+              "displayName": "Overview"
+            }
+          ],
+          "type": "module",
+          "displayName": "Public API"
+        },
+        {
+          "textRaw": "Promise execution tracking",
+          "name": "promise_execution_tracking",
+          "desc": "<p>By default, promise executions are not assigned <code>asyncId</code>s due to the relatively\nexpensive nature of the <a href=\"https://docs.google.com/document/d/1rda3yKGHimKIhg5YeoAmCOtyURgsbTH_qaYR79FELlk/edit\">promise introspection API</a> provided by\nV8. This means that programs using promises or <code>async</code>/<code>await</code> will not get\ncorrect execution and trigger ids for promise callback contexts by default.</p>\n<pre><code class=\"language-js\">const ah = require('async_hooks');\nPromise.resolve(1729).then(() => {\n  console.log(`eid ${ah.executionAsyncId()} tid ${ah.triggerAsyncId()}`);\n});\n// produces:\n// eid 1 tid 0\n</code></pre>\n<p>Observe that the <code>then()</code> callback claims to have executed in the context of the\nouter scope even though there was an asynchronous hop involved. Also note that\nthe <code>triggerAsyncId</code> value is <code>0</code>, which means that we are missing context about\nthe resource that caused (triggered) the <code>then()</code> callback to be executed.</p>\n<p>Installing async hooks via <code>async_hooks.createHook</code> enables promise execution\ntracking:</p>\n<pre><code class=\"language-js\">const ah = require('async_hooks');\nah.createHook({ init() {} }).enable(); // forces PromiseHooks to be enabled.\nPromise.resolve(1729).then(() => {\n  console.log(`eid ${ah.executionAsyncId()} tid ${ah.triggerAsyncId()}`);\n});\n// produces:\n// eid 7 tid 6\n</code></pre>\n<p>In this example, adding any actual hook function enabled the tracking of\npromises. There are two promises in the example above; the promise created by\n<code>Promise.resolve()</code> and the promise returned by the call to <code>then()</code>. In the\nexample above, the first promise got the <code>asyncId</code> <code>6</code> and the latter got\n<code>asyncId</code> <code>7</code>. During the execution of the <code>then()</code> callback, we are executing\nin the context of promise with <code>asyncId</code> <code>7</code>. This promise was triggered by\nasync resource <code>6</code>.</p>\n<p>Another subtlety with promises is that <code>before</code> and <code>after</code> callbacks are run\nonly on chained promises. That means promises not created by <code>then()</code>/<code>catch()</code>\nwill not have the <code>before</code> and <code>after</code> callbacks fired on them. For more details\nsee the details of the V8 <a href=\"https://docs.google.com/document/d/1rda3yKGHimKIhg5YeoAmCOtyURgsbTH_qaYR79FELlk/edit\">PromiseHooks</a> API.</p>",
+          "type": "module",
+          "displayName": "Promise execution tracking"
+        },
+        {
+          "textRaw": "JavaScript Embedder API",
+          "name": "javascript_embedder_api",
+          "desc": "<p>Library developers that handle their own asynchronous resources performing tasks\nlike I/O, connection pooling, or managing callback queues may use the\n<code>AsyncWrap</code> JavaScript API so that all the appropriate callbacks are called.</p>",
+          "classes": [
+            {
+              "textRaw": "Class: AsyncResource",
+              "type": "class",
+              "name": "AsyncResource",
+              "desc": "<p>The class <code>AsyncResource</code> is designed to be extended by the embedder's async\nresources. Using this, users can easily trigger the lifetime events of their\nown resources.</p>\n<p>The <code>init</code> hook will trigger when an <code>AsyncResource</code> is instantiated.</p>\n<p>The following is an overview of the <code>AsyncResource</code> API.</p>\n<pre><code class=\"language-js\">const { AsyncResource, executionAsyncId } = require('async_hooks');\n\n// AsyncResource() is meant to be extended. Instantiating a\n// new AsyncResource() also triggers init. If triggerAsyncId is omitted then\n// async_hook.executionAsyncId() is used.\nconst asyncResource = new AsyncResource(\n  type, { triggerAsyncId: executionAsyncId(), requireManualDestroy: false }\n);\n\n// Run a function in the execution context of the resource. This will\n// * establish the context of the resource\n// * trigger the AsyncHooks before callbacks\n// * call the provided function `fn` with the supplied arguments\n// * trigger the AsyncHooks after callbacks\n// * restore the original execution context\nasyncResource.runInAsyncScope(fn, thisArg, ...args);\n\n// Call AsyncHooks destroy callbacks.\nasyncResource.emitDestroy();\n\n// Return the unique ID assigned to the AsyncResource instance.\nasyncResource.asyncId();\n\n// Return the trigger ID for the AsyncResource instance.\nasyncResource.triggerAsyncId();\n</code></pre>",
+              "methods": [
+                {
+                  "textRaw": "asyncResource.runInAsyncScope(fn[, thisArg, ...args])",
+                  "type": "method",
+                  "name": "runInAsyncScope",
+                  "meta": {
+                    "added": [
+                      "v9.6.0"
+                    ],
+                    "changes": []
+                  },
+                  "signatures": [
+                    {
+                      "params": [
+                        {
+                          "textRaw": "`fn` {Function} The function to call in the execution context of this async resource.",
+                          "name": "fn",
+                          "type": "Function",
+                          "desc": "The function to call in the execution context of this async resource."
+                        },
+                        {
+                          "textRaw": "`thisArg` {any} The receiver to be used for the function call.",
+                          "name": "thisArg",
+                          "type": "any",
+                          "desc": "The receiver to be used for the function call.",
+                          "optional": true
+                        },
+                        {
+                          "textRaw": "`...args` {any} Optional arguments to pass to the function.",
+                          "name": "...args",
+                          "type": "any",
+                          "desc": "Optional arguments to pass to the function.",
+                          "optional": true
+                        }
+                      ]
+                    }
+                  ],
+                  "desc": "<p>Call the provided function with the provided arguments in the execution context\nof the async resource. This will establish the context, trigger the AsyncHooks\nbefore callbacks, call the function, trigger the AsyncHooks after callbacks, and\nthen restore the original execution context.</p>"
+                },
+                {
+                  "textRaw": "asyncResource.emitBefore()",
+                  "type": "method",
+                  "name": "emitBefore",
+                  "meta": {
+                    "deprecated": [
+                      "v9.6.0"
+                    ],
+                    "changes": []
+                  },
+                  "stability": 0,
+                  "stabilityText": "Deprecated: Use [`asyncResource.runInAsyncScope()`][] instead.",
+                  "signatures": [
+                    {
+                      "params": []
+                    }
+                  ],
+                  "desc": "<p>Call all <code>before</code> callbacks to notify that a new asynchronous execution context\nis being entered. If nested calls to <code>emitBefore()</code> are made, the stack of\n<code>asyncId</code>s will be tracked and properly unwound.</p>\n<p><code>before</code> and <code>after</code> calls must be unwound in the same order that they\nare called. Otherwise, an unrecoverable exception will occur and the process\nwill abort. For this reason, the <code>emitBefore</code> and <code>emitAfter</code> APIs are\nconsidered deprecated. Please use <code>runInAsyncScope</code>, as it provides a much safer\nalternative.</p>"
+                },
+                {
+                  "textRaw": "asyncResource.emitAfter()",
+                  "type": "method",
+                  "name": "emitAfter",
+                  "meta": {
+                    "deprecated": [
+                      "v9.6.0"
+                    ],
+                    "changes": []
+                  },
+                  "stability": 0,
+                  "stabilityText": "Deprecated: Use [`asyncResource.runInAsyncScope()`][] instead.",
+                  "signatures": [
+                    {
+                      "params": []
+                    }
+                  ],
+                  "desc": "<p>Call all <code>after</code> callbacks. If nested calls to <code>emitBefore()</code> were made, then\nmake sure the stack is unwound properly. Otherwise an error will be thrown.</p>\n<p>If the user's callback throws an exception, <code>emitAfter()</code> will automatically be\ncalled for all <code>asyncId</code>s on the stack if the error is handled by a domain or\n<code>'uncaughtException'</code> handler.</p>\n<p><code>before</code> and <code>after</code> calls must be unwound in the same order that they\nare called. Otherwise, an unrecoverable exception will occur and the process\nwill abort. For this reason, the <code>emitBefore</code> and <code>emitAfter</code> APIs are\nconsidered deprecated. Please use <code>runInAsyncScope</code>, as it provides a much safer\nalternative.</p>"
+                },
+                {
+                  "textRaw": "asyncResource.emitDestroy()",
+                  "type": "method",
+                  "name": "emitDestroy",
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {AsyncResource} A reference to `asyncResource`.",
+                        "name": "return",
+                        "type": "AsyncResource",
+                        "desc": "A reference to `asyncResource`."
+                      },
+                      "params": []
+                    }
+                  ],
+                  "desc": "<p>Call all <code>destroy</code> hooks. This should only ever be called once. An error will\nbe thrown if it is called more than once. This <strong>must</strong> be manually called. If\nthe resource is left to be collected by the GC then the <code>destroy</code> hooks will\nnever be called.</p>"
+                },
+                {
+                  "textRaw": "asyncResource.asyncId()",
+                  "type": "method",
+                  "name": "asyncId",
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {number} The unique `asyncId` assigned to the resource.",
+                        "name": "return",
+                        "type": "number",
+                        "desc": "The unique `asyncId` assigned to the resource."
+                      },
+                      "params": []
+                    }
+                  ]
+                },
+                {
+                  "textRaw": "asyncResource.triggerAsyncId()",
+                  "type": "method",
+                  "name": "triggerAsyncId",
+                  "signatures": [
+                    {
+                      "return": {
+                        "textRaw": "Returns: {number} The same `triggerAsyncId` that is passed to the `AsyncResource` constructor.",
+                        "name": "return",
+                        "type": "number",
+                        "desc": "The same `triggerAsyncId` that is passed to the `AsyncResource` constructor."
+                      },
+                      "params": []
+                    }
+                  ]
+                }
+              ],
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`type` {string} The type of async event.",
+                      "name": "type",
+                      "type": "string",
+                      "desc": "The type of async event."
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`triggerAsyncId` {number} The ID of the execution context that created this async event. **Default:** `executionAsyncId()`.",
+                          "name": "triggerAsyncId",
+                          "type": "number",
+                          "default": "`executionAsyncId()`",
+                          "desc": "The ID of the execution context that created this async event."
+                        },
+                        {
+                          "textRaw": "`requireManualDestroy` {boolean} Disables automatic `emitDestroy` when the object is garbage collected. This usually does not need to be set (even if `emitDestroy` is called manually), unless the resource's `asyncId` is retrieved and the sensitive API's `emitDestroy` is called with it. **Default:** `false`.",
+                          "name": "requireManualDestroy",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "Disables automatic `emitDestroy` when the object is garbage collected. This usually does not need to be set (even if `emitDestroy` is called manually), unless the resource's `asyncId` is retrieved and the sensitive API's `emitDestroy` is called with it."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ],
+                  "desc": "<p>Example usage:</p>\n<pre><code class=\"language-js\">class DBQuery extends AsyncResource {\n  constructor(db) {\n    super('DBQuery');\n    this.db = db;\n  }\n\n  getInfo(query, callback) {\n    this.db.get(query, (err, data) => {\n      this.runInAsyncScope(callback, null, err, data);\n    });\n  }\n\n  close() {\n    this.db = null;\n    this.emitDestroy();\n  }\n}\n</code></pre>"
+                }
+              ]
+            }
+          ],
+          "type": "module",
+          "displayName": "JavaScript Embedder API"
+        }
+      ],
+      "type": "module",
+      "displayName": "Async Hooks"
+    }
+  ]
+}

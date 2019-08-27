@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @class TCMPSInstanceNormDataLoader;
 
 @interface MPSCNNFullyConnectedNode (TCMPSLayerHelper)
-@property (nonatomic) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
+@property (nonatomic, strong) TCMPSConvolutionWeights *tc_weightsData API_AVAILABLE(macosx(10.14));
 + (TCMPSConvolutionWeights *) createFullyConnected:(MPSNNImageNode *)inputNode
                               inputFeatureChannels:(NSUInteger)inputFeatureChannels
                              outputFeatureChannels:(NSUInteger)outputFeatureChannels
@@ -31,7 +31,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface MPSCNNConvolutionNode (TCMPSLayerHelper)
-@property (nonatomic) TCMPSConvolutionWeights *weights API_AVAILABLE(macosx(10.14));
+@property (nonatomic, strong) TCMPSConvolutionWeights *tc_weightsData API_AVAILABLE(macosx(10.14));
 + (MPSCNNConvolutionNode *) createConvolutional:(MPSNNImageNode *)inputNode
                                     kernelWidth:(NSUInteger)kernelWidth
                                    kernelHeight:(NSUInteger)kernelHeight
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 @interface MPSCNNInstanceNormalizationNode (TCMPSLayerHelper)
-@property (nonatomic) TCMPSInstanceNormDataLoader *weights API_AVAILABLE(macosx(10.14));
+@property (nonatomic, strong) TCMPSInstanceNormDataLoader *tc_weightsData API_AVAILABLE(macosx(10.14));
 + (MPSCNNInstanceNormalizationNode *) createInstanceNormalization:(MPSNNImageNode *)inputNode
                                                          channels:(NSUInteger)channels
                                                            styles:(NSUInteger)styles
