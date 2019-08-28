@@ -293,6 +293,32 @@ def define_vgg_pre_processing(tf_input):
     
     return sub_scalar
 
+def define_gram_matrix(tf_input):
+    """ 
+    This function defines the gram_matrix computation the tensorflow nn api.
+  
+    Parameters
+    ----------
+
+    tf_input: tensorflow.Tensor
+        The input tensor to the network. The image is expected to be in RGB
+        format.
+
+    Returns
+    -------
+
+    out: tensorflow.Tensor
+        The gram matrix output of the network.
+
+    """
+    defined_shape= _tf.shape(tf_input)
+    reshaped_output = _tf.reshape(tf_input, [-1, defined_shape[1] * defined_shape[2], defined_shape[3]])
+    reshaped_output_transposed = _tf.transpose(reshaped_output, perm=[0, 2, 1])
+    multiplied_out = _tf.matmul(reshaped_output_transposed, reshaped_output)
+    normalized_out =  multiplied_out / _tf.cast(defined_shape[1] * defined_shape[2], dtype=_tf.float32)
+
+    return normalized_out
+
 # TODO: Extend from TensorFlowModel
 class StyleTransferTensorFlowModel():
     def __init__(self, net_params, batch_size, num_styles):
