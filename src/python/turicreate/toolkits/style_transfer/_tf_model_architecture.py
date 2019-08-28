@@ -263,6 +263,36 @@ def define_vgg16(tf_input, weights, prefix="vgg16_"):
     
     return relu_2, relu_4, relu_7, relu_10
 
+def define_vgg_pre_processing(tf_input):
+    """ 
+    This function defines the vgg_pre_processing network using the tensorflow nn
+    api.
+  
+    Parameters
+    ----------
+
+    tf_input: tensorflow.Tensor
+        The input tensor to the network. The image is expected to be in RGB
+        format.
+
+    Returns
+    -------
+
+    out: tensorflow.Tensor
+        The scaled output tensor of the network.
+
+    """
+    scaled_input = tf_input * 255.00
+    red_channel, green_channel, blue_channel = _tf.split(scaled_input, 3, axis=3)
+    
+    red_channel_scaled = red_channel - 123.68
+    green_channel_scaled = green_channel - 116.779
+    blue_channel_scaled = blue_channel - 103.939
+    
+    sub_scalar = _tf.concat([red_channel_scaled, green_channel_scaled, blue_channel_scaled], 3)
+    
+    return sub_scalar
+
 # TODO: Extend from TensorFlowModel
 class StyleTransferTensorFlowModel():
     def __init__(self, net_params, batch_size, num_styles):
