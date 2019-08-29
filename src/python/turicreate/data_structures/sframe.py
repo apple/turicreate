@@ -24,6 +24,7 @@ from ..visualization import _get_client_app_path
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
+from .._deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
 from .grouped_sframe import GroupedSFrame
 from ..visualization import Plot
 
@@ -719,9 +720,6 @@ class SFrame(object):
         Construct a new SFrame from a url or a pandas.DataFrame.
         """
         # emit metrics for num_rows, num_columns, and type (local://, s3, hdfs, http)
-
-        # lazy loading; must be used by member function
-        from .._deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
 
         if (_proxy):
             self.__proxy__ = _proxy
@@ -2020,7 +2018,6 @@ class SFrame(object):
                 headsf[col] = headsf[col].astype(list)
 
         def _value_to_str(value):
-            from ..dep import numpy
             if (type(value) is array.array):
                 return str(list(value))
             elif (type(value) is numpy.ndarray):
@@ -2391,7 +2388,6 @@ class SFrame(object):
         """
 
         from ..toolkits.image_classifier._evaluation import _image_resize
-        from .._deps import HAS_PANDAS, pandas
 
         assert HAS_PANDAS, 'pandas is not installed.'
         df = pandas.DataFrame()
@@ -2421,7 +2417,6 @@ class SFrame(object):
             A Numpy Array containing all the values of the SFrame
 
         """
-        from .._deps import numpy, HAS_NUMPY
         assert HAS_NUMPY, 'numpy is not installed.'
         return numpy.transpose(numpy.asarray([self[x] for x in self.column_names()]))
 
@@ -4086,7 +4081,6 @@ class SFrame(object):
         group_ops = []
 
         all_ops = [operations] + list(args)
-        from .._deps import numpy
         for op_entry in all_ops:
             # if it is not a dict, nor a list, it is just a single aggregator
             # element (probably COUNT). wrap it in a list so we can reuse the

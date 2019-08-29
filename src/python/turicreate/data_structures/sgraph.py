@@ -20,6 +20,8 @@ from .gframe import GFrame, VERTEX_GFRAME, EDGE_GFRAME
 from .._cython.cy_graph import UnityGraphProxy
 from .._cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
+from .._deps import pandas as pd
+from .._deps import HAS_PANDAS
 
 import inspect
 import copy
@@ -241,10 +243,6 @@ class SGraph(object):
         dst_field : str, optional
             The name of target id column in the `edges` SFrame.
         """
-        # loazy loading when used
-        from .._deps import pandas as pd
-        from .._deps import HAS_PANDAS
-
         if (_proxy is None):
             self.__proxy__ = UnityGraphProxy()
             if vertices is not None:
