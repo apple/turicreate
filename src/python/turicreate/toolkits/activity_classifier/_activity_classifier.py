@@ -140,7 +140,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
                               mps_device_name as _mps_device_name,
                               ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
     from ._tf_model_architecture import ActivityTensorFlowModel, _fit_model_tf
-    from .._mxnet import mxnet as _mx
+    
     
 
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
@@ -216,7 +216,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     # Decide whether to use MPS GPU, MXnet GPU or CPU
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=num_sessions)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 and not params['use_tensorflow']
+    use_mps = _use_mps() and num_mxnet_gpus == 0 and not(params['use_tensorflow'])
 
     if verbose:
         if use_mps:
@@ -234,7 +234,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     user_provided_batch_size = batch_size
     batch_size = max(batch_size, num_mxnet_gpus, 1)
 
-    use_mx_data_batch = not use_mps 
+    use_mx_data_batch = not (use_mps or params['use_tensorflow'])
     data_iter = _SFrameSequenceIter(chunked_data, len(features),
                                     prediction_window, predictions_in_chunk,
                                     batch_size, use_target=use_target, mx_output=use_mx_data_batch)
@@ -270,6 +270,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         log = _fit_model_mps(loss_model, data_iter, valid_iter, max_iterations, verbose)
     else:
+        from .._mxnet import mxnet as _mx
         # Initialize the weights in MXNet and then pass them in TensorFlow
         dummy_data_iter = _SFrameSequenceIter(chunked_data, len(features),
                                     prediction_window, predictions_in_chunk,
