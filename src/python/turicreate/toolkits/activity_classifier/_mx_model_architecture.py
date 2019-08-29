@@ -107,7 +107,6 @@ def _fit_model_mxnet(model, data_iter, valid_iter, max_iterations, num_gpus, ver
     model.init_optimizer(optimizer='adam',
                          optimizer_params={'learning_rate': 1e-3,
                                            'rescale_grad': 1.0})
-    arg_params, aux_params = model.get_params()
 
     if verbose:
         # Print progress table header
@@ -138,7 +137,6 @@ def _fit_model_mxnet(model, data_iter, valid_iter, max_iterations, num_gpus, ver
             log['train_loss'] += _mx.nd.sum(loss).asscalar() / train_batches
             log['train_acc'] += _mx.nd.sum(acc).asscalar() / train_batches
             model.update()
-        arg_params, aux_params = model.get_params()
 
         # Validation iteration
         if valid_iter is not None:

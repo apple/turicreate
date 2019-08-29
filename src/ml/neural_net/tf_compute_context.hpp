@@ -48,4 +48,3 @@ public:
 }  // namespace turi
 
 #endif  // UNITY_TOOLKITS_NEURAL_NET_TF_COMPUTE_CONTEXT_HPP_
-

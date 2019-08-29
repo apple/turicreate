@@ -141,7 +141,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
                               ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
     from ._tf_model_architecture import ActivityTensorFlowModel, _fit_model_tf
     from .._mxnet import mxnet as _mx
-    import tensorflow as _tf
+    
 
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
     if not isinstance(target, str):
@@ -183,7 +183,12 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         params.update(kwargs['_advanced_parameters'])
 
-    if not(params['show_deprecated_warnings']):
+    if params['use_tensorflow'] and not(params['show_deprecated_warnings']):
+
+        # Imports tensorflow 
+        import tensorflow as _tf
+
+        # Supresses verbosity to only errors
         _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
 
     if isinstance(validation_set, str) and validation_set == 'auto':
@@ -211,7 +216,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     # Decide whether to use MPS GPU, MXnet GPU or CPU
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=num_sessions)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 
+    use_mps = _use_mps() and num_mxnet_gpus == 0 and not params['use_tensorflow']
 
     if verbose:
         if use_mps:
@@ -229,7 +234,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     user_provided_batch_size = batch_size
     batch_size = max(batch_size, num_mxnet_gpus, 1)
 
-    use_mx_data_batch = not use_mps and not params['use_tensorflow']
+    use_mx_data_batch = not use_mps 
     data_iter = _SFrameSequenceIter(chunked_data, len(features),
                                     prediction_window, predictions_in_chunk,
                                     batch_size, use_target=use_target, mx_output=use_mx_data_batch)
@@ -294,14 +299,43 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     elif params['use_tensorflow']:
         # Copy the weights back in the MXNet format
-        aux_params, arg_params  = {}, {}
-        tf_export_params = ac_model.export_weights()
-        for k in tf_export_params.keys():
-            if k in net_params:
-                if k in ['bn_moving_mean', 'bn_moving_var']:
-                    aux_params[k] = _mx.nd.array(tf_export_params[k])
-                else:
-                    arg_params[k] = _mx.nd.array(tf_export_params[k])
+        arg_params = {}
+        tvars = _tf.trainable_variables()
+        tvars_vals = ac_model.sess.run(tvars)
+        for var, val in zip(tvars, tvars_vals):
+            if 'weight' in var.name:
+                if var.name.startswith('conv'):
+                    arg_params.update(
+                        {var.name.replace(":0", ""): _mx.nd.array(_np.transpose(val, (2,1,0)))})
+                elif var.name.startswith('dense'):
+                    arg_params.update(
+                        {var.name.replace(":0", ""): _mx.nd.array(_np.transpose(val))})
+            elif var.name.startswith('rnn/lstm_cell/kernel'):
+                lstm_i2h , lstm_h2h = _np.split(val, [64])
+                i2h_i, i2h_c, i2h_f, i2h_o = _np.split(lstm_i2h, 4, axis=1)
+                h2h_i, h2h_c, h2h_f, h2h_o = _np.split(lstm_h2h, 4, axis=1)
+                lstm_i2h = _np.concatenate((i2h_i, i2h_f, i2h_c, i2h_o), axis=1)
+                lstm_h2h = _np.concatenate((h2h_i, h2h_f, h2h_c, h2h_o), axis=1)
+                arg_params['lstm_i2h_weight'] =  _mx.nd.array(_np.transpose(lstm_i2h))
+                arg_params['lstm_h2h_weight'] =  _mx.nd.array(_np.transpose(lstm_h2h))
+            elif var.name.startswith('rnn/lstm_cell/bias'):
+                h2h_i, h2h_c, h2h_f, h2h_o = _np.split(val, 4)
+                val = _np.concatenate((h2h_i, h2h_f, h2h_c, h2h_o))
+                arg_params.update({var.name.replace('rnn/lstm_cell/bias:0','lstm_h2h_bias'): _mx.nd.array(val)})
+                arg_params.update({var.name.replace('rnn/lstm_cell/bias:0','lstm_i2h_bias'): _mx.nd.array(_np.zeros(val.shape))})
+            elif var.name.startswith('batch_normalization'):
+                arg_params['bn_'+var.name.split('/')[-1][0:-2]] = _mx.nd.array(val)
+            else:
+                arg_params.update({var.name.replace(":0", ""): _mx.nd.array(val)})
+
+        aux_params = {}
+        tvars = _tf.all_variables()
+        tvars_vals = ac_model.sess.run(tvars)
+        for var, val in zip(tvars, tvars_vals):
+            if 'moving_mean' in var.name:
+                aux_params['bn_moving_mean'] = _mx.nd.array(val)
+            if 'moving_variance' in var.name:
+                aux_params['bn_moving_var'] = _mx.nd.array(val)
 
     else:
         arg_params, aux_params = loss_model.get_params()
