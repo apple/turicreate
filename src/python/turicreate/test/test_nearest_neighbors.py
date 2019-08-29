@@ -336,17 +336,16 @@ class NearestNeighborsCreateTest(unittest.TestCase):
                                             method='brute_force',
                                             verbose=False)
             except ToolkitError as e:
-                self.assertEqual(str(e),
-                    "Cannot compute jaccard distances with column 'array_ftr'."+\
-                    " Jaccard distances currently can only be computed for"
-                    " dictionary and list features.\n")
+                self.assertTrue(str(e).startswith("Cannot compute jaccard distances with column 'array_ftr'."
+                                                  " Jaccard distances currently can only be computed for"
+                                                  " dictionary and list features.\n"))
 
             try:
                 tc.nearest_neighbors.create(self.refs, self.label, ['str_ftr'],
                                             distance=dist_name, verbose=False)
             except ToolkitError as e:
-                self.assertTrue(str(e).startswith("The only distance allowed for string " +
-                                                  "features is 'levenshtein'. Please try this distance, or use 'text_analytics.count_ngrams' " +
+                self.assertTrue(str(e).startswith("The only distance allowed for string features is 'levenshtein'. "
+                                                  "Please try this distance, or use 'text_analytics.count_ngrams' "
                                                   "to convert the strings to dictionaries, which permit more distance functions.\n"))
 
         ## Jacard distance throws TypeError on lists of non-strings
