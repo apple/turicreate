@@ -16,8 +16,11 @@ from __future__ import absolute_import as _
 __version__ = '{{VERSION_STRING}}'
 from turicreate.version_info import __version__
 
+from turicreate._deps import LazyModuleLoader
+
+SGraph = LazyModuleLoader('turicreate.data_structures.sgraph')
+
 from turicreate.data_structures.sgraph import Vertex, Edge
-from turicreate.data_structures.sgraph import SGraph
 from turicreate.data_structures.sarray import SArray
 from turicreate.data_structures.sframe import SFrame
 from turicreate.data_structures.sketch import Sketch
@@ -112,7 +115,7 @@ class _extensions_wrapper(object):
         return getattr(self._wrapped, name)
     except:
         pass
-    turicreate._connect.main.get_unity()
+    turicreate._connect.main.get_server()
     return getattr(self._wrapped, name)
 
 import sys as _sys
