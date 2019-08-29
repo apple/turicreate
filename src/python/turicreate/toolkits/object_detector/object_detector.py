@@ -39,7 +39,6 @@ from .._mps_utils import (use_mps as _use_mps,
 
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
-_USE_TENSORFLOW = False  # change flag to use TensorFlow instead of MXNet for traininf
 
 
 def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
@@ -482,7 +481,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # no thread hogs the global interpreter lock).
         mxnet_batch_queue = _Queue(1)
         numpy_batch_queue = _Queue(1)
-
         def sframe_worker():
             # Once a batch is loaded into NumPy, pass it immediately to the
             # numpy_worker so that we can start I/O and decoding for the next
@@ -490,7 +488,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             for batch in loader:
                 mxnet_batch_queue.put(batch)
             mxnet_batch_queue.put(None)
-
         def numpy_worker():
             while True:
                 batch = mxnet_batch_queue.get()
@@ -523,7 +520,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         numpy_worker_thread.start()
 
         batch_queue = []
-
         def wait_for_batch():
             pending_loss = batch_queue.pop(0)
             batch_loss = pending_loss.asnumpy()  # Waits for the batch to finish
@@ -568,156 +564,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         for k in keys:
             if k in net_params:
                 net_params[k].set_data(mps_net_params[k])
-
-    elif _USE_TENSORFLOW:
-        from ._tf_model_architecture import ODTensorFlowModel
-
-        # Force initialization of net_params
-        # TODO: Do not rely on MXNet to initialize MPS-based network
-        net.forward(_mx.nd.uniform(0, 1, (batch_size_each,) + input_image_shape))
-        tf_net_params = {}
-        # Store weights from MXNet into a dict for TF
-        keys = list(net_params)
-        for k in keys:
-            tf_net_params[k] = net_params[k].data().asnumpy()
-
-        tf_config = {
-            'mode': 'train',
-            'learning_rate': base_lr,
-            'gradient_clipping': params.get('clip_gradients', 0.0),
-            'weight_decay': params['weight_decay'],
-            'od_include_network': True,
-            'od_include_loss': True,
-            'num_classes': num_classes,
-            'grid_shape': grid_shape,
-            'anchors':anchors,
-            'output_size': output_size,
-            'batch_size': batch_size,
-            'box_per_cell': 15,
-            'lmb_coord_xy': params['lmb_coord_xy'],
-            'lmb_coord_wh': params['lmb_coord_wh'],
-            'lmb_obj': params['lmb_obj'],
-            'lmb_noobj': params['lmb_noobj'],
-            'lmb_class': params['lmb_class'],
-            'rescore': params['rescore'],
-            'od_max_iou_for_no_object': 0.3,
-            'od_min_iou_for_object': 0.7,
-            'num_iterations': num_iterations
-
-        }
-
-        od_model_train = ODTensorFlowModel(input_image_shape=input_image_shape,
-                                           batch_size=batch_size,
-                                           output_size=output_size,
-                                           init_weights=tf_net_params,
-                                           config=tf_config,
-                                           is_train=True)
-
-        # Use worker threads to isolate different points of synchronization
-        # and/or waiting for non-Python tasks to finish. The
-        # sframe_worker_thread will spend most of its time waiting for SFrame
-        # operations, largely image I/O and decoding, along with scheduling
-        # MXNet data augmentation. The numpy_worker_thread will spend most of
-        # its time waiting for MXNet data augmentation to complete, along with
-        # copying the results into NumPy arrays. Finally, the main thread will
-        # spend most of its time copying NumPy data into MPS and waiting for the
-        # results. Note that using three threads here only makes sense because
-        # each thread spends time waiting for non-Python code to finish (so that
-        # no thread hogs the global interpreter lock).
-        mxnet_batch_queue = _Queue(1)
-        numpy_batch_queue = _Queue(1)
-
-        def sframe_worker():
-            # Once a batch is loaded into NumPy, pass it immediately to the
-            # numpy_worker so that we can start I/O and decoding for the next
-            # batch.
-            for batch in loader:
-                mxnet_batch_queue.put(batch)
-            mxnet_batch_queue.put(None)
-
-        def numpy_worker():
-            while True:
-                batch = mxnet_batch_queue.get()
-                if batch is None:
-                    break
-
-                for x, y in zip(batch.data, batch.label):
-                    # Convert to NumPy arrays with required shapes. Note that
-                    # asnumpy waits for any pending MXNet operations to finish.
-                    # We use the same mxnet_to_mps function for mxnet to tensorflow
-                    input_data = _mxnet_to_mps(x.asnumpy()) # NCHW to NHWC
-                    label_data = y.asnumpy()
-
-                    # Convert to packed 32-bit arrays.
-                    input_data = input_data.astype(_np.float32)
-                    if not input_data.flags.c_contiguous:
-                        input_data = input_data.copy()
-                    label_data = label_data.astype(_np.float32)
-                    if not label_data.flags.c_contiguous:
-                        label_data = label_data.copy()
-
-                    # Push this batch to the main thread.
-                    numpy_batch_queue.put({'input': input_data,
-                                           'label': label_data,
-                                           'iteration': batch.iteration})
-            # Tell the main thread there's no more data.
-            numpy_batch_queue.put(None)
-
-        sframe_worker_thread = _Thread(target=sframe_worker)
-        sframe_worker_thread.start()
-        numpy_worker_thread = _Thread(target=numpy_worker)
-        numpy_worker_thread.start()
-
-        batch_queue = []
-
-        def wait_for_batch():
-            pending_loss = batch_queue.pop(0)
-            batch_loss = pending_loss # Waits for the batch to finish
-            return batch_loss.sum()
-        while True:
-            batch = numpy_batch_queue.get()
-            if batch is None:
-                break
-
-            # TODO: Adjust learning rate according to our schedule and send to set_learning_rate()
-            # if batch['iteration'] in steps:
-            #     ii = steps.index(batch['iteration']) + 1
-            #     new_lr = factors[ii] * base_lr
-            #     od_model_train.set_learning_rate(new_lr)
-
-            # Submit this match to TensorFlow
-            feed_dict = {'input': batch['input'],
-                         'label': batch['label'],
-                         'iteration': batch['iteration']}
-
-            batch_queue.append(od_model_train.train(feed_dict=feed_dict))
-
-            # If we have two batches in flight, wait for the first one.
-            if len(batch_queue) > 1:
-                cur_loss = wait_for_batch()
-
-                # If we just submitted the first batch of an iteration, update
-                # progress for the iteration completed by the last batch we just
-                # waited for.
-                if batch['iteration'] > iteration:
-                    update_progress(cur_loss, iteration)
-            iteration = batch['iteration']
-
-        # Wait for any pending batches and finalize our progress updates.
-        while len(batch_queue) > 0:
-            cur_loss = wait_for_batch()
-        update_progress(cur_loss, iteration)
-
-        sframe_worker_thread.join()
-        numpy_worker_thread.join()
-
-        # Load weights back into mxnet
-        tf_export_params = od_model_train.export_weights()
-
-        keys = tf_export_params.keys()
-        for k in keys:
-            if k in net_params:
-                net_params[k].set_data(_np.copy(tf_export_params[k]))
 
     else:  # Use MxNet
         net.hybridize()
