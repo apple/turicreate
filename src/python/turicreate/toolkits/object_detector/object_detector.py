@@ -39,8 +39,6 @@ from .._mps_utils import (use_mps as _use_mps,
 
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
-_USE_TENSORFLOW = False  # change flag to use TensorFlow instead of MXNet for traininf
-
 
 def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
                     config, weights={}):
@@ -261,6 +259,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # This large buffer size (8 batches) is an attempt to mitigate against
         # the SFrame shuffle operation that can occur after each epoch.
         'io_thread_buffer_size': 8,
+        'use_tensorflow': False
     }
 
     if '_advanced_parameters' in kwargs:
@@ -569,8 +568,11 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             if k in net_params:
                 net_params[k].set_data(mps_net_params[k])
 
-    elif _USE_TENSORFLOW:
+    elif params['use_tensorflow']:
         from ._tf_model_architecture import ODTensorFlowModel
+
+        if verbose:
+            print("Using TensorFlow")
 
         # Force initialization of net_params
         # TODO: Do not rely on MXNet to initialize MPS-based network
