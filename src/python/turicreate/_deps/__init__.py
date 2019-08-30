@@ -39,10 +39,17 @@ if six.PY2:
 else:
     from importlib._bootstrap import _ImportLockContext
 
-# called with in loack
 def default_init_func(name, *args):
-    _ret = sys.modules[name]
-    if not isinstance(_ret, LazyModuleLoader) or _ret.is_loaded(no_lock=True):
+    """
+    called within _ImportLockContext(); no import lock should be hold inside
+    """
+    _ret = sys.modules.get(name, None)
+
+    # already imported by others
+    if _ret is not None:
+        return _ret
+
+    if isinstance(_ret, LazyModuleLoader) and _ret.is_loaded(no_lock=True):
         return _ret
 
     if six.PY2:
@@ -59,7 +66,19 @@ def default_init_func(name, *args):
 
 class LazyModuleLoader(ModuleType):
     """ defer to load a module. If it's loaded, no exception but warning will be given. """
+    members_ = ['init_func_', 'loaded_', 'module_', 'members_', 'name_']
     def __init__(self, name, init_func = default_init_func):
+        """
+        Once write then read only. Reload is not supported.
+
+        LazyModuleLoader won't touch sys.modules[name] because:
+            1.
+
+        this class only supports syntax `import a.b [as c]`;
+        you need to translate `from a import b as c` to the form described above.
+
+        if sys.modules[name] is LazyMuduleLoader
+        """
         if init_func is None:
             raise ValueError("init function should not be None")
         if not isinstance(name, six.string_types):
@@ -91,15 +110,25 @@ class LazyModuleLoader(ModuleType):
         return getattr(self.module_, attr)
 
     def __str__(self):
+        if self.module_:
+            return self.module_.__str__()
         return "lazy loading of module %s" % self.name_
 
     def __repr__(self):
+        if self.module_:
+            return self.module_.__repr__()
         return "lazy loading of module %s" % self.name_
+
+    def __dir__(self):
+        # for interactive autocompletion
+        if self.module_:
+            return dir(self.module_)
+        return self.members_
 
     def __setattr__(self, attr, value):
         # whitelist for member variables
         # _logging.warn(attr + " to set with " + str(value))
-        if attr in ['name_', 'init_func_', 'module_', 'loaded_']:
+        if attr in self.members_:
             # workaround for the recursive setattr
             return super(LazyModuleLoader, self).__setattr__(attr, value)
         else:
@@ -107,6 +136,7 @@ class LazyModuleLoader(ModuleType):
             setattr(self.module_, attr, value)
 
     def is_loaded(self, no_lock=True):
+        return isinstance(self, LazyModuleLoader)
         if no_lock:
             return self.loaded_
         else:
@@ -120,10 +150,15 @@ class LazyModuleLoader(ModuleType):
             with _ImportLockContext():
                 # avoid concurrent loading
                 if not self.loaded_:
-                    self.module_ = self.init_func_(self.name_)
-                    sys.modules[self.name_] = self
-                    self.loaded_ = True
-
+                    # if it's imported by other pkg after __init__,
+                    # we don't bother to inject ourselves because
+                    # there's no need to lazy load if it's loaded explicitly.
+                    self.module_ = sys.modules.get(self.name_, None)
+                    if self.module_ is None:
+                        # release our hostage, commit our crime
+                        self.module_ = self.init_func_(self.name_)
+                        sys.modules[self.name_] = self.module_
+                        self = self.module_
 
 
 def __get_version(version):
