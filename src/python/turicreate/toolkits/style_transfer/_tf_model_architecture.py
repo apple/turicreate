@@ -244,72 +244,72 @@ def define_vgg16(tf_input, weights, prefix="vgg16_"):
 
     """
     # block 1
-    conv_1_filter = _tf.get_variable(prefix + 'conv_1_weights', initializer=weights["vgg16_conv0_weight"], trainable=False, dtype=_tf.float32)
+    conv_1_filter = _tf.get_variable(prefix + "conv0_weight", initializer=weights["vgg16_conv0_weight"], trainable=False, dtype=_tf.float32)
     conv_1 = __tf.nn.conv2d(tf_input, conv_1_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_1_bias = _tf.get_variable(prefix + 'conv_1_bias', initializer=weights["vgg16_conv0_bias"], trainable=False, dtype=_tf.float32)
+    conv_1_bias = _tf.get_variable(prefix + 'conv0_bias', initializer=weights["vgg16_conv0_bias"], trainable=False, dtype=_tf.float32)
     conv_1 = _tf.nn.bias_add(conv_1, conv_1_bias)
     relu_1 = _tf.nn.relu(conv_1)
     
-    conv_2_filter = _tf.get_variable(prefix + 'conv_2_weights', initializer=weights["vgg16_conv1_weight"], trainable=False, dtype=_tf.float32)
+    conv_2_filter = _tf.get_variable(prefix + "conv1_weight", initializer=weights["vgg16_conv1_weight"], trainable=False, dtype=_tf.float32)
     conv_2 = _tf.nn.conv2d(relu_1, conv_2_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_2_bias = _tf.get_variable(prefix + 'conv_2_bias', initializer=weights["vgg16_conv1_bias"], trainable=False, dtype=_tf.float32)
+    conv_2_bias = _tf.get_variable(prefix + "conv1_bias", initializer=weights["vgg16_conv1_bias"], trainable=False, dtype=_tf.float32)
     conv_2 = _tf.nn.bias_add(conv_2, conv_2_bias)
     relu_2 = _tf.nn.relu(conv_2)
     
     pool_1 = _tf.nn.avg_pool(relu_2, 2, 2, 'SAME')
     
     # block 2
-    conv_3_filter = _tf.get_variable(prefix + 'conv_3_weights', initializer=weights["vgg16_conv2_weight"], trainable=False, dtype=_tf.float32)
+    conv_3_filter = _tf.get_variable(prefix + "conv2_weight", initializer=weights["vgg16_conv2_weight"], trainable=False, dtype=_tf.float32)
     conv_3 = _tf.nn.conv2d(pool_1, conv_3_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_3_bias = _tf.get_variable(prefix + 'conv_3_bias', initializer=weights["vgg16_conv2_bias"], trainable=False, dtype=_tf.float32)
+    conv_3_bias = _tf.get_variable(prefix + "conv2_bias", initializer=weights["vgg16_conv2_bias"], trainable=False, dtype=_tf.float32)
     conv_3 = _tf.nn.bias_add(conv_3, conv_3_bias)
     relu_3 = _tf.nn.relu(conv_3)
     
-    conv_4_filter = _tf.get_variable(prefix + 'conv_4_weights', initializer=weights["vgg16_conv3_weight"], trainable=False, dtype=_tf.float32)
+    conv_4_filter = _tf.get_variable(prefix + "conv3_weight", initializer=weights["vgg16_conv3_weight"], trainable=False, dtype=_tf.float32)
     conv_4 = _tf.nn.conv2d(relu_3, conv_4_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_4_bias = _tf.get_variable(prefix + 'conv_4_bias', initializer=weights["vgg16_conv3_bias"], trainable=False, dtype=_tf.float32)
+    conv_4_bias = _tf.get_variable(prefix + "conv3_bias", initializer=weights["vgg16_conv3_bias"], trainable=False, dtype=_tf.float32)
     conv_4 = _tf.nn.bias_add(conv_4, conv_4_bias)
     relu_4 = _tf.nn.relu(conv_4)
     
     pool_2 = _tf.nn.avg_pool(relu_4, 2, 2, 'SAME')
     
     # block 3
-    conv_5_filter = _tf.get_variable(prefix + 'conv_5_weights', initializer=weights["vgg16_conv4_weight"], trainable=False, dtype=_tf.float32)
+    conv_5_filter = _tf.get_variable(prefix + "conv4_weight", initializer=weights["vgg16_conv4_weight"], trainable=False, dtype=_tf.float32)
     conv_5 = _tf.nn.conv2d(pool_2, conv_5_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_5_bias = _tf.get_variable(prefix + 'conv_5_bias', initializer=weights["vgg16_conv4_bias"], trainable=False, dtype=_tf.float32)
+    conv_5_bias = _tf.get_variable(prefix + "conv4_bias", initializer=weights["vgg16_conv4_bias"], trainable=False, dtype=_tf.float32)
     conv_5 = _tf.nn.bias_add(conv_5, conv_5_bias)
     relu_5 = _tf.nn.relu(conv_5)
     
-    conv_6_filter = _tf.get_variable(prefix + 'conv_6_weights', initializer=weights["vgg16_conv5_weight"], trainable=False, dtype=_tf.float32)
+    conv_6_filter = _tf.get_variable(prefix + "conv5_weight", initializer=weights["vgg16_conv5_weight"], trainable=False, dtype=_tf.float32)
     conv_6 = _tf.nn.conv2d(relu_5, conv_6_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_6_bias = _tf.get_variable(prefix + 'conv_6_bias', initializer=weights["vgg16_conv5_bias"], trainable=False, dtype=_tf.float32)
+    conv_6_bias = _tf.get_variable(prefix + "conv5_bias", initializer=weights["vgg16_conv5_bias"], trainable=False, dtype=_tf.float32)
     conv_6 = _tf.nn.bias_add(conv_6, conv_6_bias)
     relu_6 = _tf.nn.relu(conv_6)
     
-    conv_7_filter = _tf.get_variable(prefix + 'conv_7_weights', initializer=weights["vgg16_conv6_weight"], trainable=False, dtype=_tf.float32)
+    conv_7_filter = _tf.get_variable(prefix + "conv6_weight", initializer=weights["vgg16_conv6_weight"], trainable=False, dtype=_tf.float32)
     conv_7 = _tf.nn.conv2d(relu_6, conv_7_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_7_bias = _tf.get_variable(prefix + 'conv_7_bias', initializer=weights["vgg16_conv6_bias"], trainable=False, dtype=_tf.float32)
+    conv_7_bias = _tf.get_variable(prefix + "conv6_bias", initializer=weights["vgg16_conv6_bias"], trainable=False, dtype=_tf.float32)
     conv_7 = _tf.nn.bias_add(conv_7, conv_7_bias)
     relu_7 = _tf.nn.relu(conv_7)
     
     pool_3 = _tf.nn.avg_pool(relu_7, 2, 2, 'SAME')
     
     # block 4
-    conv_8_filter = _tf.get_variable(prefix + 'conv_8_weights', initializer=weights["vgg16_conv7_weight"], trainable=False, dtype=_tf.float32)
+    conv_8_filter = _tf.get_variable(prefix + "conv7_weight", initializer=weights["vgg16_conv7_weight"], trainable=False, dtype=_tf.float32)
     conv_8 = _tf.nn.conv2d(pool_3, conv_8_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_8_bias = _tf.get_variable(prefix + 'conv_8_bias', initializer=weights["vgg16_conv7_bias"], trainable=False, dtype=_tf.float32)
+    conv_8_bias = _tf.get_variable(prefix + "conv7_bias", initializer=weights["vgg16_conv7_bias"], trainable=False, dtype=_tf.float32)
     conv_8 = _tf.nn.bias_add(conv_8, conv_8_bias)
     relu_8 = _tf.nn.relu(conv_8)
     
-    conv_9_filter = _tf.get_variable(prefix + 'conv_9_weights', initializer=weights["vgg16_conv8_weight"], trainable=False, dtype=_tf.float32)
+    conv_9_filter = _tf.get_variable(prefix + "conv8_weight", initializer=weights["vgg16_conv8_weight"], trainable=False, dtype=_tf.float32)
     conv_9 = _tf.nn.conv2d(relu_8, conv_9_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_9_bias = _tf.get_variable(prefix + 'conv_9_bias', initializer=weights["vgg16_conv8_bias"], trainable=False, dtype=_tf.float32)
+    conv_9_bias = _tf.get_variable(prefix + "conv8_bias", initializer=weights["vgg16_conv8_bias"], trainable=False, dtype=_tf.float32)
     conv_9 = _tf.nn.bias_add(conv_9, conv_9_bias)
     relu_9 = _tf.nn.relu(conv_9)
     
-    conv_10_filter = _tf.get_variable(prefix + 'conv_10_weights', initializer=weights["vgg16_conv9_weight"], trainable=False, dtype=_tf.float32)
+    conv_10_filter = _tf.get_variable(prefix + "conv9_weight", initializer=weights["vgg16_conv9_weight"], trainable=False, dtype=_tf.float32)
     conv_10 = _tf.nn.conv2d(relu_9, conv_10_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_10_bias = _tf.get_variable(prefix + 'conv_10_bias', initializer=weights["vgg16_conv9_bias"], trainable=False, dtype=_tf.float32)
+    conv_10_bias = _tf.get_variable(prefix + "conv9_bias", initializer=weights["vgg16_conv9_bias"], trainable=False, dtype=_tf.float32)
     conv_10 = _tf.nn.bias_add(conv_10, conv_10_bias)
     relu_10 = _tf.nn.relu(conv_10)
     
@@ -371,10 +371,104 @@ def define_gram_matrix(tf_input):
 
     return normalized_out
 
+def define_style_transfer_network(content_image, tf_index, style_image, weight_dict, finetune_all_params=False, define_training_graph=False):
+    """ 
+    This function defines the style transfer network using the tensorflow nn api.
+  
+    Parameters
+    ----------
+
+    content_image: tensorflow.Tensor
+        The content image to the network. The image is expected to be in RGB
+        format.
+
+    tf_index: tensorflow.Tensor
+        The index tensor to the network.
+
+    style_image: tensorflow.Tensor
+        The content image to the network. The image is expected to be in RGB
+        format.
+
+    weights: dictionary
+        The dictionary of MxNet weights to the network. The naming convention
+        used is that from the CoreML export of the Style Transfer Network.
+    
+    
+    finetune_all_params: boolean
+        If `true` the network updates the convolutional layers as well as the
+        instance norm layers of the network. If `false` only the instance norm
+        layers of the network are updated.
+
+    define_training_graph: boolean
+        If `true` both the training graph and the inference graph are returned.
+        If `false` only the inference graph is returned.
+
+    Returns
+    -------
+
+    optimizer: tensorflow.Tensor | None
+        The training output tensor to the network.
+
+    total_loss: tensorflow.Tensor | None
+        The loss output tensor to the network.
+
+    content_output: tensorflow.Tensor
+        The content image output tensor to the network.
+
+    """
+
+    content_output = define_transformer(content_image, tf_index, weight_dict, finetune_all_params=finetune_all_params)
+    
+    optimizer = None
+    
+    if define_training_graph:
+        pre_processing_output = define_vgg_pre_processing(content_output, prefix="output_pre_processing_")
+        output_relu_1, output_relu_2, output_relu_3, output_relu_4 = define_vgg16(pre_processing_output, weight_dict, prefix="output_vgg_")
+
+        pre_processing_style = define_vgg_pre_processing(style_image, prefix="style_pre_processing")
+        style_relu_1, style_relu_2, style_relu_3, style_relu_4 = define_vgg16(pre_processing_style, weight_dict, prefix="style_vgg_")
+
+        pre_processing_content = define_vgg_pre_processing(content_image, prefix="content_pre_processing_")
+        _, _, content_relu_3, _ = define_vgg16(pre_processing_content, weight_dict, prefix="content_vgg_")
+
+        gram_output_relu_1 = define_gram_matrix(output_relu_1)
+        gram_output_relu_2 = define_gram_matrix(output_relu_2)
+        gram_output_relu_3 = define_gram_matrix(output_relu_3)
+        gram_output_relu_4 = define_gram_matrix(output_relu_4)
+
+        gram_style_relu_1 = define_gram_matrix(style_relu_1)
+        gram_style_relu_2 = define_gram_matrix(style_relu_2)
+        gram_style_relu_3 = define_gram_matrix(style_relu_3)
+        gram_style_relu_4 = define_gram_matrix(style_relu_4)
+
+        # L2 Loss Between the Nodes
+        style_loss_1 = tf.losses.mean_squared_error(gram_style_relu_1, gram_output_relu_1, weights=1e-4)
+        style_loss_2 = tf.losses.mean_squared_error(gram_style_relu_2, gram_output_relu_2, weights=1e-4)
+        style_loss_3 = tf.losses.mean_squared_error(gram_style_relu_3, gram_output_relu_3, weights=1e-4)
+        style_loss_4 = tf.losses.mean_squared_error(gram_style_relu_4, gram_output_relu_4, weights=1e-4)
+
+        content_loss = tf.losses.mean_squared_error(content_relu_3, output_relu_3)
+        style_loss = style_loss_1 + style_loss_2 + style_loss_3 + style_loss_4
+
+
+        total_loss = ((content_loss + style_loss)/10000.0) * 0.5
+        
+        optimizer = tf.train.AdamOptimizer().minimize(total_loss)
+    
+    return optimizer, total_loss, content_output
+
 # TODO: Extend from TensorFlowModel
 class StyleTransferTensorFlowModel():
     def __init__(self, net_params, batch_size, num_styles):
         _tf.reset_default_graph()
+
+        self.batch_size = batch_size
+
+        self.sess = _tf.compat.v1.Session()
+        init = _tf.compat.v1.global_variables_initializer()
+        self.sess.run(init)
+
+        
         # TODO: populate
         pass
     def train(self, feed_dict):
@@ -383,9 +477,16 @@ class StyleTransferTensorFlowModel():
     def predict(self, feed_dict):
         # TODO: populate
         pass
+
     def export_weights(self):
-        # TODO: populate
-        pass
+        tf_keys = _tf.trainable_variables()
+        tf_weights = self.sess.run(tf_keys)
+
+        weight_dictionary = dict()
+        for key, weight in zip(tf_keys, tf_weights):
+            weight_dictionary[key.name] = weight
+
+        return weight_dictionary
+
     def set_learning_rate(self, lr):
-        # TODO: populate
         pass
