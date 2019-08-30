@@ -114,7 +114,11 @@ def define_residual(tf_input, tf_index, weights, prefix, finetune_all_params=Tru
     
     return _tf.add(tf_input, inst_2)
 
-def define_resnet(tf_input, tf_index, weights, prefix="transformer_", finetune_all_params=True):
+def define_resnet(tf_input,
+                 tf_index,
+                 weights,
+                 prefix="transformer_",
+                 finetune_all_params=True):
     """ 
     This function defines the resnet network using the tensorflow nn api.
   
@@ -371,7 +375,12 @@ def define_gram_matrix(tf_input):
 
     return normalized_out
 
-def define_style_transfer_network(content_image, tf_index, style_image, weight_dict, finetune_all_params=False, define_training_graph=False):
+def define_style_transfer_network(content_image,
+                                  tf_index,
+                                  style_image,
+                                  weight_dict,
+                                  finetune_all_params=False,
+                                  define_training_graph=False):
     """ 
     This function defines the style transfer network using the tensorflow nn api.
   
@@ -464,19 +473,29 @@ class StyleTransferTensorFlowModel():
 
         self.batch_size = batch_size
 
+        # TODO: change to take any size input
+        self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
+        self.tf_style = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
+        self.tf_index = _tf.placeholder(dtype = _tf.float32, shape = [None, 1])
+
+        self.optimizer, self.loss, self.output = define_style_transfer_network(self.tf_input,
+                                                                               self.tf_index,
+                                                                               self.tf_style,
+                                                                               net_params,
+                                                                               finetune_all_params=False,
+                                                                               define_training_graph=False)
+        
         self.sess = _tf.compat.v1.Session()
         init = _tf.compat.v1.global_variables_initializer()
         self.sess.run(init)
 
-        
-        # TODO: populate
-        pass
     def train(self, feed_dict):
-        # TODO: populate
-        pass
+        _, loss_value = self.sess.run([self.optimizer, self.loss], feed_dict=feed_dict)
+        return { "loss": loss_value }
+
     def predict(self, feed_dict):
-        # TODO: populate
-        pass
+        stylized_image = self.sess.run([self.output], feed_dict=feed_dict)
+        return { "stylized_image": stylized_image }
 
     def export_weights(self):
         tf_keys = _tf.trainable_variables()
