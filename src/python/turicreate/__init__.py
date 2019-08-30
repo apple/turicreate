@@ -13,10 +13,15 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
+#### lazy importing all rarely used pkgs ###
+from turicreate._deps import LazyModuleLoader
+LazyModuleLoader('requests')
+LazyModuleLoader('glob')
+LazyModuleLoader('prettytable.PrettyTable')
+########### end of lazy import #############
+
 __version__ = '{{VERSION_STRING}}'
 from turicreate.version_info import __version__
-
-from turicreate._deps import LazyModuleLoader
 
 # well, imports are order dependent
 from turicreate.data_structures.sgraph import Vertex, Edge
@@ -30,10 +35,10 @@ Image = LazyModuleLoader('turicreate.data_structures.image')
 from turicreate.data_structures.sarray_builder import SArrayBuilder
 from turicreate.data_structures.sframe_builder import SFrameBuilder
 
-import turicreate.aggregate
-import turicreate.toolkits
-import turicreate.toolkits.clustering as clustering
-import turicreate.toolkits.distances as distances
+LazyModuleLoader('turicreate.aggregate')
+LazyModuleLoader('turicreate.toolkits')
+clustering = LazyModuleLoader('turicreate.toolkits.clustering')
+distances = LazyModuleLoader('turicreate.toolkits.distances')
 
 text_analytics = LazyModuleLoader('turicreate.toolkits.text_analytics')
 graph_analytics = LazyModuleLoader('turicreate.toolkits.graph_analytics')
@@ -68,27 +73,26 @@ from turicreate.toolkits.classifier import random_forest_classifier
 from turicreate.toolkits.classifier import decision_tree_classifier
 from turicreate.toolkits.classifier import nearest_neighbor_classifier
 
-
-import turicreate.toolkits.nearest_neighbors as nearest_neighbors
-from turicreate.toolkits.clustering import kmeans
-from turicreate.toolkits.clustering import dbscan
+nearest_neighbors = LazyModuleLoader('turicreate.toolkits.nearest_neighbors')
+kmeans = LazyModuleLoader('turicreate.toolkits.clustering.kmeans')
+dbscan = LazyModuleLoader('turicreate.toolkits.clustering.dbscan')
 topic_model = LazyModuleLoader('turicreate.toolkits.topic_model.topic_model')
 
-from turicreate.toolkits.image_analysis import image_analysis
 text_classifier = LazyModuleLoader('turicreate.toolkits.text_classifier')
 image_classifier = LazyModuleLoader('turicreate.toolkits.image_classifier')
-import turicreate.toolkits.image_similarity as image_similarity
-import turicreate.toolkits.object_detector as object_detector
-import turicreate.toolkits.one_shot_object_detector as one_shot_object_detector
-import turicreate.toolkits.style_transfer as style_transfer
-import turicreate.toolkits.sound_classifier.sound_classifier as sound_classifier
+image_similarity = LazyModuleLoader('turicreate.toolkits.image_similarity')
+object_detector = LazyModuleLoader('turicreate.toolkits.object_detector')
+one_shot_object_detector = LazyModuleLoader('turicreate.toolkits.one_shot_object_detector')
+style_transfer = LazyModuleLoader('turicreate.toolkits.style_transfer')
+sound_classifier = LazyModuleLoader('turicreate.toolkits.sound_classifier.sound_classifier')
 activity_classifier = LazyModuleLoader('turicreate.toolkits.activity_classifier')
-import turicreate.toolkits.drawing_classifier as drawing_classifier
+drawing_classifier = LazyModuleLoader('turicreate.toolkits.drawing_classifier')
 
+image_analysis = LazyModuleLoader('turicreate.toolkits.image_analysis')
 from turicreate.toolkits.image_analysis.image_analysis import load_images
 from turicreate.toolkits.audio_analysis.audio_analysis import load_audio
 
-from turicreate.toolkits import evaluation
+evaluation = LazyModuleLoader('turicreate.toolkits.evaluation')
 
 # internal util
 from turicreate._connect.main import launch as _launch

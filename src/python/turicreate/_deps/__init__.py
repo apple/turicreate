@@ -11,15 +11,40 @@ import logging as _logging
 import re as _re
 import sys
 import six
+from six.moves import reload_module
+from types import ModuleType
 
 if six.PY2:
     import imp
 else:
     import importlib
 
-from types import ModuleType
+def run_from_ipython():
+    # Taken from https://stackoverflow.com/questions/5376837
+    try:
+        __IPYTHON__
+        return True
+    except NameError:
+        return False
 
-def default_init_func(name):
+## builtin __import__(path, globals, locals, fromlist)
+# referenced from https://github.com/mnmelo/lazy_import/blob/master/lazy_import/__init__.py
+if six.PY2:
+    import imp
+    class _ImportLockContext:
+        def __enter__(self):
+            imp.acquire_lock()
+        def __exit__(self, exc_type, exc_value, exc_traceback):
+            imp.release_lock()
+else:
+    from importlib._bootstrap import _ImportLockContext
+
+# called with in loack
+def default_init_func(name, *args):
+    _ret = sys.modules[name]
+    if not isinstance(_ret, LazyModuleLoader) or _ret.is_loaded(no_lock=True):
+        return _ret
+
     if six.PY2:
         # if module is not found, it will raise ImportError
         fp, pathname, description = imp.find_module(name)
@@ -33,21 +58,36 @@ def default_init_func(name):
         return importlib.import_module(name)
 
 class LazyModuleLoader(ModuleType):
+    """ defer to load a module. If it's loaded, no exception but warning will be given. """
     def __init__(self, name, init_func = default_init_func):
-        self.loaded_ = False
-        self.name_ = name
-        self.module_ = None
-        self.init_func_ = init_func
         if init_func is None:
             raise ValueError("init function should not be None")
-        # never do this
-        # sys.modules[self.name_] = self which will override mod with None
+        if not isinstance(name, six.string_types):
+            raise ValueError("name must be str type")
+        if len(name) == 0:
+            raise ValueError("module name should not be empty")
+        if name.startswith('.'):
+            raise ValueError("only support absolute path import style")
+        # this will call setattr
+        self.name_ = name
+        self.init_func_ = init_func
+
+        with _ImportLockContext():
+            self.module_ = sys.modules.get(name, None)
+            self.loaded_ = self.module_ is not None
+            # print(name, self.module_, self.loaded_)
+            if self.loaded_ and not isinstance(self.module_, LazyModuleLoader):
+                _logging.debug("turicreate: {} is loaded and it cannot "
+                              " be lazily loaded. lazy load strategy fails by {}".format(name, self.__name__))
+
+            # never do this since it's hard to maintain this singleton during reloading
+            # you have to del sys.modules[name] first
+            # else:
+            #     sys.modules[name] = self
+
 
     def __getattr__(self, attr):
-        # call module.__init__ after import introspection is done
-        if not self.loaded_:
-            self.loaded_ = True
-            self.module_ = self.init_func_(self.name_)
+        self._load_module()
         return getattr(self.module_, attr)
 
     def __str__(self):
@@ -55,6 +95,36 @@ class LazyModuleLoader(ModuleType):
 
     def __repr__(self):
         return "lazy loading of module %s" % self.name_
+
+    def __setattr__(self, attr, value):
+        # whitelist for member variables
+        # _logging.warn(attr + " to set with " + str(value))
+        if attr in ['name_', 'init_func_', 'module_', 'loaded_']:
+            # workaround for the recursive setattr
+            return super(LazyModuleLoader, self).__setattr__(attr, value)
+        else:
+            self._load_module()
+            setattr(self.module_, attr, value)
+
+    def is_loaded(self, no_lock=True):
+        if no_lock:
+            return self.loaded_
+        else:
+            with _ImportLockContext():
+                return self.loaded_
+
+    # should this be locked ???
+    def _load_module(self):
+        # call module.__init__ after import introspection is done
+        if not self.loaded_:
+            with _ImportLockContext():
+                # avoid concurrent loading
+                if not self.loaded_:
+                    self.module_ = self.init_func_(self.name_)
+                    sys.modules[self.name_] = self
+                    self.loaded_ = True
+
+
 
 def __get_version(version):
     # matching 1.6.1, and 1.6.1rc, 1.6.1.dev
@@ -71,19 +141,21 @@ def __has_module(name):
 HAS_PANDAS = __has_module('pandas')
 PANDAS_MIN_VERSION = '0.13.0'
 
+# called within import lock; don't lock inside
 def _dynamic_load_pandas(name):
     global HAS_PANDAS
     if HAS_PANDAS:
-        import pandas
-        if __get_version(pandas.__version__) < _StrictVersion(PANDAS_MIN_VERSION):
+        _ret = sys.modules.get(name, None)
+        if _ret is None:
+            import pandas as _ret
+        if __get_version(_ret.__version__) < _StrictVersion(PANDAS_MIN_VERSION):
             HAS_PANDAS = False
             _logging.warn(('Pandas version %s is not supported. Minimum required version: %s. '
-                        'Pandas support will be disabled.')
-                        % (pandas.__version__, PANDAS_MIN_VERSION) )
+                           'Pandas support will be disabled.')
+                          % (pandas.__version__, PANDAS_MIN_VERSION))
     if not HAS_PANDAS:
-        from . import pandas_mock as pandas
-
-    return pandas
+        from . import pandas_mock as _ret
+    return _ret
 
 pandas = LazyModuleLoader('pandas', _dynamic_load_pandas)
 
@@ -93,12 +165,14 @@ NUMPY_MIN_VERSION = '1.8.0'
 def _dynamic_load_numpy(name):
     global HAS_NUMPY
     if HAS_NUMPY:
-        import numpy as _ret
+        _ret = sys.modules.get(name, None)
+        if _ret is None:
+            import numpy as _ret
         if __get_version(_ret.__version__) < _StrictVersion(NUMPY_MIN_VERSION):
             HAS_NUMPY = False
             _logging.warn(('Numpy version %s is not supported. Minimum required version: %s. '
-                        'Numpy support will be disabled.')
-                        % (numpy.__version__, NUMPY_MIN_VERSION) )
+                           'Numpy support will be disabled.')
+                          % (numpy.__version__, NUMPY_MIN_VERSION))
     if not HAS_NUMPY:
         from . import numpy_mock as _ret
     return _ret
@@ -117,14 +191,16 @@ def __get_sklearn_version(version):
 def _dynamic_load_sklean(name):
     global HAS_SKLEARN
     if HAS_SKLEARN:
-        import sklearn
-        if __get_sklearn_version(sklearn.__version__) < _StrictVersion(SKLEARN_MIN_VERSION):
+        _ret = sys.modules.get(name, None)
+        if _ret is None:
+            import sklearn as _ret
+        if __get_sklearn_version(_ret.__version__) < _StrictVersion(SKLEARN_MIN_VERSION):
             HAS_SKLEARN = False
             _logging.warn(('sklearn version %s is not supported. Minimum required version: %s. '
-                        'sklearn support will be disabled.')
-                        % (sklearn.__version__, SKLEARN_MIN_VERSION) )
+                           'sklearn support will be disabled.')
+                          % (sklearn.__version__, SKLEARN_MIN_VERSION))
     if not HAS_SKLEARN:
-        from . import sklearn_mock as sklearn
-    return sklearn
+        from . import sklearn_mock as _ret
+    return _ret
 
 sklearn = LazyModuleLoader("sklearn", _dynamic_load_sklean)
