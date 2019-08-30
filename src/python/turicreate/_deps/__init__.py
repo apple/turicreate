@@ -136,7 +136,6 @@ class LazyModuleLoader(ModuleType):
             setattr(self.module_, attr, value)
 
     def is_loaded(self, no_lock=True):
-        return isinstance(self, LazyModuleLoader)
         if no_lock:
             return self.loaded_
         else:
@@ -158,7 +157,9 @@ class LazyModuleLoader(ModuleType):
                         # release our hostage, commit our crime
                         self.module_ = self.init_func_(self.name_)
                         sys.modules[self.name_] = self.module_
-                        self = self.module_
+
+                    self.loaded_ = True
+
 
 
 def __get_version(version):
