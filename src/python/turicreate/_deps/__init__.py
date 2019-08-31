@@ -139,6 +139,11 @@ class LazyModuleLoader(ModuleType):
                     err_msg = "LazyModuleLoader '%s' is not a singleton T_T" % name
                     _logging.fatal(err_msg)
                     raise RuntimeError(err_msg)
+            else:
+                # consequently, `import numpy` will be hijacked;
+                # numpy import will be deferred
+                # hijact state: self.module_ is None; self.loaded_ is False
+                sys.modules[name] = self
 
     def __del__(self):
         with _ImportLockContext():
