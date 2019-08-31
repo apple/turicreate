@@ -139,11 +139,6 @@ class LazyModuleLoader(ModuleType):
                     err_msg = "LazyModuleLoader '%s' is not a singleton T_T" % name
                     _logging.fatal(err_msg)
                     raise RuntimeError(err_msg)
-            else:
-                # consequently, `import numpy` will be hijacked;
-                # numpy import will be deferred
-                # hijact state: self.module_ is None; self.loaded_ is False
-                sys.modules[name] = self
 
     def __del__(self):
         with _ImportLockContext():
@@ -162,10 +157,26 @@ class LazyModuleLoader(ModuleType):
                     # uninitialized LzyModuleLoader to be deleted.
                     #
                     # def baz():
-                    #   LazyModuleLoader('foo').bar -> force module foo to be loaded
+                    #   bar = LazyModuleLoader('foo')
                     #
-                    # baz() -> LzyModuleLoader is deleted
-                    assert sys.modules.get(self.name_, None) is None
+                    # baz() -> LazyModuleLoader is only referred by sys.modules
+                    # sys.modules.pop('foo') -> cuz last LazyModuleLoader to be deleted
+                    #
+                    # def baz():
+                    #   bar = LazyModuleLoader('foo')
+                    #   sys.modules.pop('foo')
+                    #   import foo
+                    #
+                    # assert sys.modules.get(self.name_) is None -> won't be true
+                    # so we should make sure
+                    # it cannot be None
+                    print(sys.modules)
+                    try:
+                        assert sys.modules[self.name_] is not None, ("if sys.modules[{name}] exists, it should not be None. "
+                                                                    "Only under one situation, it can be both existent and None: "
+                                                                    "user explicitly uses 'sys.modules[{name}] = None'").format(name=self.name_)
+                    except Exception as e:
+                        print(e, type(e))
             except KeyError:
                 pass
 
