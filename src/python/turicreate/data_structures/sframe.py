@@ -24,6 +24,7 @@ from ..visualization import _get_client_app_path
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
+# LazyModuleLoader version of pandas, numpy
 from .._deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
 from .grouped_sframe import GroupedSFrame
 from ..visualization import Plot
@@ -729,9 +730,7 @@ class SFrame(object):
             if six.PY2 and isinstance(data, unicode):
                 data = data.encode('utf-8')
             if (format == 'auto'):
-                if (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
-                    _format = 'dataframe'
-                elif (isinstance(data, str) or
+                if (isinstance(data, str) or
                       (sys.version_info.major < 3 and isinstance(data, unicode))):
 
                     if data.endswith(('.csv', '.csv.gz')):
@@ -757,6 +756,9 @@ class SFrame(object):
                     _format = 'array'
                 elif data is None:
                     _format = 'empty'
+                # defer importing pandas
+                if (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
+                    _format = 'dataframe'
                 else:
                     raise ValueError('Cannot infer input type for data ' + str(data))
             else:
