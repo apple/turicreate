@@ -16,7 +16,6 @@ from __future__ import absolute_import as _
 #### lazy importing all rarely used pkgs ###
 from turicreate._deps import LazyModuleLoader
 LazyModuleLoader('requests')
-LazyModuleLoader('glob')
 LazyModuleLoader('prettytable.PrettyTable')
 ########### end of lazy import #############
 
@@ -43,21 +42,21 @@ distances = LazyModuleLoader('turicreate.toolkits.distances')
 text_analytics = LazyModuleLoader('turicreate.toolkits.text_analytics')
 graph_analytics = LazyModuleLoader('turicreate.toolkits.graph_analytics')
 
-from turicreate.toolkits.graph_analytics import connected_components
-from turicreate.toolkits.graph_analytics import shortest_path
-from turicreate.toolkits.graph_analytics import kcore
-from turicreate.toolkits.graph_analytics import pagerank
-from turicreate.toolkits.graph_analytics import graph_coloring
-from turicreate.toolkits.graph_analytics import triangle_counting
-from turicreate.toolkits.graph_analytics import degree_counting
-from turicreate.toolkits.graph_analytics import label_propagation
+connected_components = LazyModuleLoader('turicreate.toolkits.graph_analytics.shortest_path')
+shortest_path = LazyModuleLoader('turicreate.toolkits.graph_analytics.shortest_path')
+kcore = LazyModuleLoader('turicreate.toolkits.graph_analytics.kcore')
+pagerank = LazyModuleLoader('turicreate.toolkits.graph_analytics.pagerank')
+graph_coloring = LazyModuleLoader('turicreate.toolkits.graph_analytics.graph_coloring')
+triangle_counting = LazyModuleLoader('tricreate.toolkits.graph_analytics.triangle_counting')
+degree_counting = LazyModuleLoader('turicreate.toolkits.graph_analytics.degree_counting')
+label_propagation = LazyModuleLoader('turicreate.toolkits.graph_analytics.label_propagation')
 
-import turicreate.toolkits.recommender as recommender
-from turicreate.toolkits.recommender import popularity_recommender
-from turicreate.toolkits.recommender import item_similarity_recommender
-from turicreate.toolkits.recommender import ranking_factorization_recommender
-from turicreate.toolkits.recommender import item_content_recommender
-from turicreate.toolkits.recommender import factorization_recommender
+recommender = LazyModuleLoader('turicreate.toolkits.recommender')
+popularity_recommender = LazyModuleLoader('turicreate.toolkits.recommender.popularity_recommender')
+item_similarity_recommender = LazyModuleLoader('turicreate.toolkits.recommender.item_similarity_recommender')
+ranking_factorization_recommender =  LazyModuleLoader('turicreate.toolkits.recommender.ranking_factorization_recommender')
+item_content_recommender = LazyModuleLoader('turicreate.toolkits.recommender.item_content_recommender')
+factorization_recommender = LazyModuleLoader('turicreate.toolkits.recommender.factorization_recommender')
 
 import turicreate.toolkits.regression as regression
 from turicreate.toolkits.regression import boosted_trees_regression
