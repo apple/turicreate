@@ -31,26 +31,27 @@ def run_from_ipython():
 # referenced from https://github.com/mnmelo/lazy_import/blob/master/lazy_import/__init__.py
 if six.PY2:
     import imp
+    # reentrant lock
+    # https://docs.python.org/2/library/imp.html#imp.acquire_lock
     class _ImportLockContext:
         def __enter__(self):
             imp.acquire_lock()
         def __exit__(self, exc_type, exc_value, exc_traceback):
             imp.release_lock()
 else:
+    # importlib uses _imp internally; check source you will know ;-)
     from importlib._bootstrap import _ImportLockContext
 
+# should always be guared by _ImportLockContext
 def default_init_func(name, *args):
     """
     called within _ImportLockContext(); no import lock should be hold inside
     """
     _ret = sys.modules.get(name, None)
-
-    # already imported by others
     if _ret is not None:
-        return _ret
-
-    if isinstance(_ret, LazyModuleLoader) and _ret.is_loaded(no_lock=True):
-        return _ret
+        assert isinstance(_ret, LazyModuleLoader)
+        sys.modules.pop(name)
+        # _ret -> self with ref cnt >= 1
 
     if six.PY2:
         # if module is not found, it will raise ImportError
@@ -66,18 +67,50 @@ def default_init_func(name, *args):
 
 class LazyModuleLoader(ModuleType):
     """ defer to load a module. If it's loaded, no exception but warning will be given. """
+    # read-only
     members_ = ['init_func_', 'loaded_', 'module_', 'members_', 'name_']
+    # ensure singleton; must be guarded by _ImportLockContext lock
+    registry_ = set()
     def __init__(self, name, init_func = default_init_func):
         """
-        Once write then read only. Reload is not supported.
+        Once write then read only. `reload` can reset the state.
+        Only singleton instance is allowed.
+        Context _ImportLockContext is reentrant.
 
-        LazyModuleLoader won't touch sys.modules[name] because:
-            1.
-
-        this class only supports syntax `import a.b [as c]`;
+        This Class only supports syntax `import a.b [as c]`;
         you need to translate `from a import b as c` to the form described above.
 
-        if sys.modules[name] is LazyMuduleLoader
+        LazyModuleLoader hijacks sys.modules[name] to defer the
+        use of the module if the module is not already loaded yet.
+
+        The load of module is deferred until LazyModuleLoader is called
+        by __getattr__ on `attr` other than `LazyModuleLoader.members_`.
+        The side effect is that sys.modules[name] will be set to real module object.
+
+        >>> np = LazyModuleLoader('numpy')
+        >>> import numpy # won't actually load
+        >>> np.ndarray # load the numpy module
+
+        If the module is loaded before LazyModuleLoader hijack,
+        then LzyModuleLoader won't do anything but just a thin wrapper
+        to the real module object.
+
+        >>> import numpy # load the numpy
+        >>> np = LazyModuleLoader('numpy') # no effect
+        >>> np.ndarray # works as the same as numpy.ndarray
+
+        This example is very nasty since it will actualy delete
+        the LazyModuleLoader object due to garbage collection:
+
+        >>> def baz():
+        ...     LazyModuleLoader('foo').bar
+        >>> baz()
+
+        Above code will load the module `foo`, which is same effcet
+        as `import foo` but no variable can refer it. To reuse the module,
+
+        >>> import foo
+
         """
         if init_func is None:
             raise ValueError("init function should not be None")
@@ -92,18 +125,49 @@ class LazyModuleLoader(ModuleType):
         self.init_func_ = init_func
 
         with _ImportLockContext():
+            if name in LazyModuleLoader.registry_:
+                raise RuntimeError("pkg {} is already taken by other LazyModuleLoader instance.".format(name))
+            LazyModuleLoader.registry_.add(name)
             self.module_ = sys.modules.get(name, None)
             self.loaded_ = self.module_ is not None
-            # print(name, self.module_, self.loaded_)
-            if self.loaded_ and not isinstance(self.module_, LazyModuleLoader):
-                _logging.debug("turicreate: {} is loaded and it cannot "
-                              " be lazily loaded. lazy load strategy fails by {}".format(name, self.__name__))
 
-            # never do this since it's hard to maintain this singleton during reloading
-            # you have to del sys.modules[name] first
-            # else:
-            #     sys.modules[name] = self
+            if self.loaded_:
+                if not isinstance(self.module_, LazyModuleLoader):
+                    _logging.debug("turicreate: {} is loaded ahead and it cannot be"
+                                   " be hijacked by LazyModuleLoader".format(name))
+                else:
+                    err_msg = "LazyModuleLoader '%s' is not a singleton T_T" % name
+                    _logging.fatal(err_msg)
+                    raise RuntimeError(err_msg)
+            else:
+                # consequently, `import numpy` will be hijacked;
+                # numpy import will be deferred
+                # hijact state: self.module_ is None; self.loaded_ is False
+                sys.modules[name] = self
 
+    def __del__(self):
+        with _ImportLockContext():
+            _logging.debug("turicreate LazyModuleLoader %s is deleted;"
+                           "force load if not load" % self.name_)
+            try:
+                LazyModuleLoader.registry_.remove(self.name_)
+                if not self.loaded_:
+                    # since at least one ref cnt should be from
+                    # sys.modules[self.name_]
+                    # the only situation is triggered is that
+                    # variable expired and self is poped from sys.modules:
+                    #
+                    # LazyModuleLoader('foo') -> expired
+                    # del sys.modules[self.name_] -> cause one
+                    # uninitialized LzyModuleLoader to be deleted.
+                    #
+                    # def baz():
+                    #   LazyModuleLoader('foo').bar -> force module foo to be loaded
+                    #
+                    # baz() -> LzyModuleLoader is deleted
+                    assert sys.modules.get(self.name_, None) is None
+            except KeyError:
+                pass
 
     def __getattr__(self, attr):
         self._load_module()
@@ -111,12 +175,12 @@ class LazyModuleLoader(ModuleType):
 
     def __str__(self):
         if self.module_:
-            return self.module_.__str__()
+            return "triggered LazyModuleLoader: {}".format(self.module_.__repr__())
         return "lazy loading of module %s" % self.name_
 
     def __repr__(self):
         if self.module_:
-            return self.module_.__repr__()
+            return "triggered LazyModuleLoader: {}".format(self.module_.__repr__())
         return "lazy loading of module %s" % self.name_
 
     def __dir__(self):
@@ -142,6 +206,13 @@ class LazyModuleLoader(ModuleType):
             with _ImportLockContext():
                 return self.loaded_
 
+    def reload(self):
+        # for dev purpose
+        with _ImportLockContext():
+            self.module_ = None
+            self.loaded_ = False
+            sys.modules[self.name_] = self
+
     # should this be locked ???
     def _load_module(self):
         # call module.__init__ after import introspection is done
@@ -152,12 +223,18 @@ class LazyModuleLoader(ModuleType):
                     # if it's imported by other pkg after __init__,
                     # we don't bother to inject ourselves because
                     # there's no need to lazy load if it's loaded explicitly.
-                    self.module_ = sys.modules.get(self.name_, None)
-                    if self.module_ is None:
+                    # e.g.
+                    # import numpy as np
+                    # np = LazyModuleLoader('numpy')
+                    self.module_ = sys.modules.get(self.name_)
+                    if self.module_ is self:
                         # release our hostage, commit our crime
+                        # may cause __del__ on self
+                        sys.modules.pop(self.name_)
                         self.module_ = self.init_func_(self.name_)
+                        # subsequent imports will use the real
+                        # module object since we are arrested
                         sys.modules[self.name_] = self.module_
-
                     self.loaded_ = True
 
 

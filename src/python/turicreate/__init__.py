@@ -16,7 +16,6 @@ from __future__ import absolute_import as _
 #### lazy importing all rarely used pkgs ###
 from turicreate._deps import LazyModuleLoader
 LazyModuleLoader('requests')
-LazyModuleLoader('prettytable.PrettyTable')
 ########### end of lazy import #############
 
 __version__ = '{{VERSION_STRING}}'
@@ -42,12 +41,12 @@ distances = LazyModuleLoader('turicreate.toolkits.distances')
 text_analytics = LazyModuleLoader('turicreate.toolkits.text_analytics')
 graph_analytics = LazyModuleLoader('turicreate.toolkits.graph_analytics')
 
-connected_components = LazyModuleLoader('turicreate.toolkits.graph_analytics.shortest_path')
+connected_components = LazyModuleLoader('turicreate.toolkits.graph_analytics.connected_components')
 shortest_path = LazyModuleLoader('turicreate.toolkits.graph_analytics.shortest_path')
 kcore = LazyModuleLoader('turicreate.toolkits.graph_analytics.kcore')
 pagerank = LazyModuleLoader('turicreate.toolkits.graph_analytics.pagerank')
 graph_coloring = LazyModuleLoader('turicreate.toolkits.graph_analytics.graph_coloring')
-triangle_counting = LazyModuleLoader('tricreate.toolkits.graph_analytics.triangle_counting')
+triangle_counting = LazyModuleLoader('turicreate.toolkits.graph_analytics.triangle_counting')
 degree_counting = LazyModuleLoader('turicreate.toolkits.graph_analytics.degree_counting')
 label_propagation = LazyModuleLoader('turicreate.toolkits.graph_analytics.label_propagation')
 
