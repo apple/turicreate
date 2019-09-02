@@ -12,7 +12,7 @@ import six as _six
 
 @_six.add_metaclass(_abc.ABCMeta)
 class TensorFlowModel(object):
-	__metaclass__ = _abc.ABCMeta
+	
 	"""
 	Base Class for neural networks written in tensorflow used to abstract across model
  	architectures. It defines the computational graph and initialize a session to run the graph.
@@ -37,13 +37,12 @@ class TensorFlowModel(object):
 	dense = tf.add(tf.matmul() + self.bias())
 	...
 
-
-    Make loss_op with the loss and train_op with the optimizer
-	loss_op =
+	Make loss_op with the loss and train_op with the optimizer
+	loss_op = 
 	train_op =
 
-    Define Session 
-    self.sess = tf.Session()
+	Define Session 
+	self.sess = tf.Session()
 	"""
 	@_abc.abstractmethod
 	def __init__(self):
@@ -57,15 +56,14 @@ class TensorFlowModel(object):
     It returns a dictionary of loss and output (probabilities)
     This matches model backend train
 
-    Argument : feed_dict (dictionary)
-    Returns : A dictionary of loss and probabilities 
+    Argument : A dictionary of input and true labels
+    Returns : A dictionary of expected output (toolkit specific)
 
     It will train a mini batch by running the optimizer in the session 
     Running the optimizer is thepart that does back propogation
     self.sess.run([train_op, loss_op, ..], feed_dict= {self.data = ..., self.target= ..})
 
 	"""
-	@_abc.abstractmethod
 	def train(self, feed_dict):
 		raise NotImplementedError
 
@@ -76,14 +74,13 @@ class TensorFlowModel(object):
     It also returns a dictionary of loss and output 
     This matches the model backend predict
 
-    Argument : feed_dict (dictionary)
-    Returns : A dictionary of loss and probabilities 
+    Argument : A dictionary of input and true labels
+    Returns : A dictionary of expected output (toolkit specific)
 
     It will calculate the specified outputs w
     self.sess.run([loss_op, ..], feed_dict= {self.data = ..., self.target= ..})
 
 	"""
-	@_abc.abstractmethod
 	def predict(self, feed_dict):
 		raise NotImplementedError
 
@@ -101,14 +98,12 @@ class TensorFlowModel(object):
 
 
 	"""
-	@_abc.abstractmethod
 	def export_weights(self):
 		raise NotImplementedError
 
 	"""
-	Sets the learning rate to be used for future calls to train.
+	Sets the optimizer to learn at the specified learning rate or using a learning rate scheduler.
 
 	"""
-	@_abc.abstractmethod
 	def set_learning_rate(self, learning_rate):
 		raise NotImplementedError

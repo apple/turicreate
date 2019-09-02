@@ -139,8 +139,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     from .._mps_utils import (use_mps as _use_mps,
                               mps_device_name as _mps_device_name,
                               ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
-    from ._tf_model_architecture import ActivityTensorFlowModel, _fit_model_tf
-    
     
 
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
@@ -187,6 +185,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         # Imports tensorflow 
         import tensorflow as _tf
+        from ._tf_model_architecture import ActivityTensorFlowModel, _fit_model_tf
 
         # Supresses verbosity to only errors
         _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
@@ -216,7 +215,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     # Decide whether to use MPS GPU, MXnet GPU or CPU
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=num_sessions)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 and not(params['use_tensorflow'])
+    use_mps = _use_mps() and num_mxnet_gpus == 0 and not(params['use_tensorflow']) and False
 
     if verbose:
         if use_mps:
@@ -226,7 +225,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         elif num_mxnet_gpus > 1:
             print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
         elif params['use_tensorflow']:
-            print('Using Tensorflow')
+            print('Using Tensorflow to create model')
         else:
             print('Using CPU to create model')
 
@@ -270,25 +269,15 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         log = _fit_model_mps(loss_model, data_iter, valid_iter, max_iterations, verbose)
     else:
-        from .._mxnet import mxnet as _mx
-        # Initialize the weights in MXNet and then pass them in TensorFlow
-        dummy_data_iter = _SFrameSequenceIter(chunked_data, len(features),
-                                    prediction_window, predictions_in_chunk,
-                                    batch_size, use_target=use_target, mx_output=True)
-        loss_model.bind(data_shapes=dummy_data_iter.provide_data, label_shapes=dummy_data_iter.provide_label)
-        loss_model.init_params(initializer=_mx.init.Xavier())
-        net_params, aux = loss_model.get_params()
-
-        # Dictionary with layer names as key and initialised value as value
-        net_params.update(aux)
 
         if params['use_tensorflow']:
+            net_params = _initialize_with_mxnet_weights(loss_model, chunked_data, features, prediction_window, predictions_in_chunk, batch_size, use_target)
             ac_model = ActivityTensorFlowModel(net_params, batch_size, len(features), len(target_map), prediction_window, predictions_in_chunk)
             # Train the model using Tensorflow
             log = _fit_model_tf(ac_model, net_params, data_iter, valid_iter, max_iterations, verbose, 1e-3)
         else:
             # Train the model using Mxnet
-            log = _fit_model_mxnet(loss_model, dummy_data_iter, valid_iter, max_iterations, num_mxnet_gpus, verbose)
+            log = _fit_model_mxnet(loss_model, data_iter, valid_iter, max_iterations, num_mxnet_gpus, verbose)
 
     # Set up prediction model
     pred_model.bind(data_shapes=data_iter.provide_data, label_shapes=None,
@@ -300,43 +289,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     elif params['use_tensorflow']:
         # Copy the weights back in the MXNet format
-        arg_params = {}
-        tvars = _tf.trainable_variables()
-        tvars_vals = ac_model.sess.run(tvars)
-        for var, val in zip(tvars, tvars_vals):
-            if 'weight' in var.name:
-                if var.name.startswith('conv'):
-                    arg_params.update(
-                        {var.name.replace(":0", ""): _mx.nd.array(_np.transpose(val, (2,1,0)))})
-                elif var.name.startswith('dense'):
-                    arg_params.update(
-                        {var.name.replace(":0", ""): _mx.nd.array(_np.transpose(val))})
-            elif var.name.startswith('rnn/lstm_cell/kernel'):
-                lstm_i2h , lstm_h2h = _np.split(val, [64])
-                i2h_i, i2h_c, i2h_f, i2h_o = _np.split(lstm_i2h, 4, axis=1)
-                h2h_i, h2h_c, h2h_f, h2h_o = _np.split(lstm_h2h, 4, axis=1)
-                lstm_i2h = _np.concatenate((i2h_i, i2h_f, i2h_c, i2h_o), axis=1)
-                lstm_h2h = _np.concatenate((h2h_i, h2h_f, h2h_c, h2h_o), axis=1)
-                arg_params['lstm_i2h_weight'] =  _mx.nd.array(_np.transpose(lstm_i2h))
-                arg_params['lstm_h2h_weight'] =  _mx.nd.array(_np.transpose(lstm_h2h))
-            elif var.name.startswith('rnn/lstm_cell/bias'):
-                h2h_i, h2h_c, h2h_f, h2h_o = _np.split(val, 4)
-                val = _np.concatenate((h2h_i, h2h_f, h2h_c, h2h_o))
-                arg_params.update({var.name.replace('rnn/lstm_cell/bias:0','lstm_h2h_bias'): _mx.nd.array(val)})
-                arg_params.update({var.name.replace('rnn/lstm_cell/bias:0','lstm_i2h_bias'): _mx.nd.array(_np.zeros(val.shape))})
-            elif var.name.startswith('batch_normalization'):
-                arg_params['bn_'+var.name.split('/')[-1][0:-2]] = _mx.nd.array(val)
-            else:
-                arg_params.update({var.name.replace(":0", ""): _mx.nd.array(val)})
-
-        aux_params = {}
-        tvars = _tf.all_variables()
-        tvars_vals = ac_model.sess.run(tvars)
-        for var, val in zip(tvars, tvars_vals):
-            if 'moving_mean' in var.name:
-                aux_params['bn_moving_mean'] = _mx.nd.array(val)
-            if 'moving_variance' in var.name:
-                aux_params['bn_moving_var'] = _mx.nd.array(val)
+        arg_params, aux_params = ac_model.get_weights()
 
     else:
         arg_params, aux_params = loss_model.get_params()
@@ -374,6 +327,20 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     model = ActivityClassifier(state)
     return model
 
+def _initialize_with_mxnet_weights(model, chunked_data, features, prediction_window, predictions_in_chunk, batch_size, use_target):
+    from ._sframe_sequence_iterator import SFrameSequenceIter as _SFrameSequenceIter
+    import mxnet as _mx
+
+    dummy_data_iter = _SFrameSequenceIter(chunked_data, len(features),
+                                    prediction_window, predictions_in_chunk,
+                                batch_size, use_target=use_target, mx_output=True)
+    model.bind(data_shapes=dummy_data_iter.provide_data, label_shapes=dummy_data_iter.provide_label)
+    model.init_params(initializer=_mx.init.Xavier())
+    net_params, aux = model.get_params()
+
+    # Dictionary with layer names as key and initialised value as value
+    net_params.update(aux)
+    return net_params
 
 def _encode_target(data, target, mapping=None):
     """ Encode targets to integers in [0, num_classes - 1] """

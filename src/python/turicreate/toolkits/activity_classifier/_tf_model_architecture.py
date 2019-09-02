@@ -187,6 +187,50 @@ class ActivityTensorFlowModel(TensorFlowModel):
     def set_learning_rate(self, lr):
         self.optimizer = _tf.train.AdamOptimizer(learning_rate=lr)
 
+    def get_weights(self):
+
+        import mxnet as _mx 
+
+        arg_params = {}
+        tvars = _tf.trainable_variables()
+        tvars_vals = self.sess.run(tvars)
+        for var, val in zip(tvars, tvars_vals):
+            if 'weight' in var.name:
+                if var.name.startswith('conv'):
+                    arg_params.update(
+                        {var.name.replace(":0", ""): _mx.nd.array(_np.transpose(val, (2,1,0)))})
+                elif var.name.startswith('dense'):
+                    arg_params.update(
+                        {var.name.replace(":0", ""): _mx.nd.array(_np.transpose(val))})
+            elif var.name.startswith('rnn/lstm_cell/kernel'):
+                lstm_i2h , lstm_h2h = _np.split(val, [64])
+                i2h_i, i2h_c, i2h_f, i2h_o = _np.split(lstm_i2h, 4, axis=1)
+                h2h_i, h2h_c, h2h_f, h2h_o = _np.split(lstm_h2h, 4, axis=1)
+                lstm_i2h = _np.concatenate((i2h_i, i2h_f, i2h_c, i2h_o), axis=1)
+                lstm_h2h = _np.concatenate((h2h_i, h2h_f, h2h_c, h2h_o), axis=1)
+                arg_params['lstm_i2h_weight'] =  _mx.nd.array(_np.transpose(lstm_i2h))
+                arg_params['lstm_h2h_weight'] =  _mx.nd.array(_np.transpose(lstm_h2h))
+            elif var.name.startswith('rnn/lstm_cell/bias'):
+                h2h_i, h2h_c, h2h_f, h2h_o = _np.split(val, 4)
+                val = _np.concatenate((h2h_i, h2h_f, h2h_c, h2h_o))
+                arg_params.update({var.name.replace('rnn/lstm_cell/bias:0','lstm_h2h_bias'): _mx.nd.array(val)})
+                arg_params.update({var.name.replace('rnn/lstm_cell/bias:0','lstm_i2h_bias'): _mx.nd.array(_np.zeros(val.shape))})
+            elif var.name.startswith('batch_normalization'):
+                arg_params['bn_'+var.name.split('/')[-1][0:-2]] = _mx.nd.array(val)
+            else:
+                arg_params.update({var.name.replace(":0", ""): _mx.nd.array(val)})
+
+        aux_params = {}
+        tvars = _tf.all_variables()
+        tvars_vals = self.sess.run(tvars)
+        for var, val in zip(tvars, tvars_vals):
+            if 'moving_mean' in var.name:
+                aux_params['bn_moving_mean'] = _mx.nd.array(val)
+            if 'moving_variance' in var.name:
+                aux_params['bn_moving_var'] = _mx.nd.array(val)
+        return arg_params, aux_params
+
+
 def _fit_model_tf(model, net_params, data_iter, valid_iter, max_iterations, verbose, lr):
     
     from time import time as _time
