@@ -22,6 +22,7 @@ import numpy as _np
 import math as _math
 import six as _six
 
+from ._tf_model_architecture import StyleTransferTensorFlowModel
 
 def _vgg16_data_prep(batch):
     """

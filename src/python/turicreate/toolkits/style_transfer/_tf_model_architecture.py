@@ -49,23 +49,23 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
     del moments_axes[reduction_axis]
     del moments_axes[0]
     
-    mean, variance = tf.nn.moments(tf_input, moments_axes, keep_dims=True)
+    mean, variance = _tf.nn.moments(tf_input, moments_axes, keep_dims=True)
+
+    gamma = _tf.compat.v1.get_variable(prefix + 'gamma', initializer=weights[prefix + "gamma"], dtype=_tf.float32)
+    beta = _tf.compat.v1.get_variable(prefix + 'beta', initializer=weights[prefix + "beta"], dtype=_tf.float32)
     
-    gamma = tf.get_variable(prefix + 'gamma', initializer=weights[prefix + "gamma"], dtype=tf.float32)
-    beta = tf.get_variable(prefix + 'beta', initializer=weights[prefix + "beta"], dtype=tf.float32)
-    
-    gamma_sliced = tf.split(gamma, gamma.shape[0], axis=0)
-    beta_sliced = tf.split(beta, beta.shape[0], axis=0)
+    gamma_sliced = _tf.split(gamma, gamma.shape[0], axis=0)
+    beta_sliced = _tf.split(beta, beta.shape[0], axis=0)
     
     batch_norm_array = []
     for b, g in zip(beta_sliced, gamma_sliced):
-        style_bn = tf.nn.batch_normalization(tf_input, mean, variance, b, g, epsilon)
-        style_bn = tf.expand_dims(style_bn, 0)
+        style_bn = _tf.nn.batch_normalization(tf_input, mean, variance, b, g, epsilon)
+        style_bn = _tf.expand_dims(style_bn, 0)
         batch_norm_array.append(style_bn)
         
-    batch_norm_concat = tf.concat(batch_norm_array, 0)
-    picked_index = tf.gather_nd(batch_norm_concat, tf_index)
-    picked_index = tf.reshape(picked_index, [-1] + picked_index.get_shape().as_list()[2:])
+    batch_norm_concat = _tf.concat(batch_norm_array, 0)
+    picked_index = _tf.gather_nd(batch_norm_concat, tf_index)
+    picked_index = _tf.reshape(picked_index, [-1] + picked_index.get_shape().as_list()[2:])
     
     return picked_index
 
@@ -105,12 +105,12 @@ def define_residual(tf_input, tf_index, weights, prefix, finetune_all_params=Tru
     # TODO: Refactor Instance Norm
     conv_1_filter = _tf.get_variable(prefix + 'conv0_weight', initializer=weights[prefix + "conv0_weight"], trainable=finetune_all_params, dtype=_tf.float32)
     conv_1 = _tf.nn.conv2d(tf_input, conv_1_filter, strides=[1, 1, 1, 1], padding=[[0, 0], [1, 1], [1, 1], [0, 0]])
-    inst_1 = define_instance_norm(conv_1, tf_index, prefix + "instancenorm0_", weights)
+    inst_1 = define_instance_norm(conv_1, tf_index, weights, prefix + "instancenorm0_")
     relu_1 = _tf.nn.relu(inst_1)
     
-    conv_2_filter = _tf.get_variable(prefix + 'conv1_weight', initializer=weights["conv1_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    conv_2_filter = _tf.get_variable(prefix + 'conv1_weight', initializer=weights[prefix + "conv1_weight"], trainable=finetune_all_params, dtype=_tf.float32)
     conv_2 = _tf.nn.conv2d(relu_1, conv_2_filter, strides=[1, 1, 1, 1], padding=[[0, 0], [1, 1], [1, 1], [0, 0]])
-    inst_2 = define_instance_norm(conv_2, tf_index, prefix + "instancenorm1_", weights)
+    inst_2 = define_instance_norm(conv_2, tf_index, weights, prefix + "instancenorm1_")
     
     return _tf.add(tf_input, inst_2)
 
