@@ -103,13 +103,17 @@ def define_residual(tf_input, tf_index, weights, prefix, finetune_all_params=Tru
 
     """
     # TODO: Refactor Instance Norm
+    conv_1_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
+    conv_1_pad = _tf.pad(tf_input, conv_1_paddings, "REFLECT")
     conv_1_filter = _tf.get_variable(prefix + 'conv0_weight', initializer=weights[prefix + "conv0_weight"], trainable=finetune_all_params, dtype=_tf.float32)
-    conv_1 = _tf.nn.conv2d(tf_input, conv_1_filter, strides=[1, 1, 1, 1], padding=[[0, 0], [1, 1], [1, 1], [0, 0]])
+    conv_1 = _tf.nn.conv2d(conv_1_pad, conv_1_filter, strides=[1, 1, 1, 1], padding="VALID")
     inst_1 = define_instance_norm(conv_1, tf_index, weights, prefix + "instancenorm0_")
     relu_1 = _tf.nn.relu(inst_1)
     
+    conv_2_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
+    conv_2_pad = _tf.pad(relu_1, conv_2_paddings, "REFLECT")
     conv_2_filter = _tf.get_variable(prefix + 'conv1_weight', initializer=weights[prefix + "conv1_weight"], trainable=finetune_all_params, dtype=_tf.float32)
-    conv_2 = _tf.nn.conv2d(relu_1, conv_2_filter, strides=[1, 1, 1, 1], padding=[[0, 0], [1, 1], [1, 1], [0, 0]])
+    conv_2 = _tf.nn.conv2d(conv_2_pad, conv_2_filter, strides=[1, 1, 1, 1], padding="VALID")
     inst_2 = define_instance_norm(conv_2, tf_index, weights, prefix + "instancenorm1_")
     
     return _tf.add(tf_input, inst_2)
@@ -154,20 +158,26 @@ def define_resnet(tf_input,
     """
 
     # encoding 1
+    conv_1_paddings = _tf.constant([[0, 0], [4, 4], [4, 4], [0, 0]])
+    conv_1_pad = _tf.pad(tf_input, conv_1_paddings, "REFLECT")
     conv_1_filter = _tf.get_variable(prefix + 'conv0_weight', initializer=weights[prefix + "conv0_weight"], trainable=finetune_all_params, dtype=_tf.float32)
-    conv_1 = _tf.nn.conv2d(tf_input, conv_1_filter, strides=[1, 1, 1, 1], padding='SAME')
+    conv_1 = _tf.nn.conv2d(conv_1_pad, conv_1_filter, strides=[1, 1, 1, 1], padding='VALID')
     inst_1 = define_instance_norm(conv_1, tf_index, weights, prefix + "instancenorm0_")
     relu_1 = _tf.nn.relu(inst_1)
     
     # encoding 2
+    conv_2_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
+    conv_2_pad = _tf.pad(relu_1, conv_2_paddings, "REFLECT")
     conv_2_filter = _tf.get_variable(prefix + 'conv1_weight', initializer=weights[prefix + "conv1_weight"], trainable=finetune_all_params, dtype=_tf.float32)
-    conv_2 = _tf.nn.conv2d(relu_1, conv_2_filter, strides=[1, 2, 2, 1], padding=[[0, 0], [1, 1], [1, 1], [0, 0]])
+    conv_2 = _tf.nn.conv2d(conv_2_pad, conv_2_filter, strides=[1, 2, 2, 1], padding='VALID')
     inst_2 = define_instance_norm(conv_2, tf_index, weights, prefix + "instancenorm1_")
     relu_2 = _tf.nn.relu(inst_2)
     
     # encoding 3
+    conv_3_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
+    conv_3_pad = _tf.pad(relu_2, conv_3_paddings, "REFLECT")
     conv_3_filter = _tf.get_variable(prefix + 'conv2_weight', initializer=weights[prefix + "conv2_weight"], trainable=finetune_all_params, dtype=_tf.float32)
-    conv_3 = _tf.nn.conv2d(relu_2, conv_3_filter, strides=[1, 2, 2, 1], padding=[[0, 0], [1, 1], [1, 1], [0, 0]])
+    conv_3 = _tf.nn.conv2d(conv_3_pad, conv_3_filter, strides=[1, 2, 2, 1], padding='VALID')
     inst_3 = define_instance_norm(conv_3, tf_index, weights, prefix + "instancenorm2_")
     relu_3 = _tf.nn.relu(inst_3)
     
@@ -179,33 +189,39 @@ def define_resnet(tf_input,
     residual_5 = define_residual(residual_4, tf_index, weights, prefix + "residualblock4_", finetune_all_params=finetune_all_params)
     
     # decode 1
-    decode_1_image_shape = _tf.shape(residual_5)
+    decode_1_image_shape = residual_5.get_shape()
     decode_1_new_height = decode_1_image_shape[1] * 2
     decode_1_new_width = decode_1_image_shape[2] * 2
     
     decoding_1_upsample_1 = _tf.image.resize_images(residual_5, [decode_1_new_height, decode_1_new_width], method=_tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+    decode_1_conv_1_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
+    decode_1_conv_1_pad = _tf.pad(decoding_1_upsample_1, decode_1_conv_1_paddings, "REFLECT")
     decode_1_conv_1_filter = _tf.get_variable(prefix + 'conv3_weight', initializer=weights[prefix + "conv3_weight"], trainable=finetune_all_params, dtype=_tf.float32)
-    decode_1_conv_1 = _tf.nn.conv2d(decoding_1_upsample_1, decode_1_conv_1_filter, strides=[1, 1, 1, 1], padding=[[0, 0], [1, 1], [1, 1], [0, 0]])
+    decode_1_conv_1 = _tf.nn.conv2d(decode_1_conv_1_pad, decode_1_conv_1_filter, strides=[1, 1, 1, 1], padding='VALID')
     decode_1_inst_1 = define_instance_norm(decode_1_conv_1, tf_index, weights, prefix + "instancenorm3_")
     decode_1_relu_1 = _tf.nn.relu(decode_1_inst_1)
-    
+
     # decode 2
-    decode_2_image_shape = _tf.shape(decode_1_relu_1)
+    decode_2_image_shape = decode_1_relu_1.get_shape()
     decode_2_new_height = decode_2_image_shape[1] * 2
     decode_2_new_width = decode_2_image_shape[2] * 2
     
     decoding_2_upsample_1 = _tf.image.resize_images(decode_1_relu_1, [decode_2_new_height, decode_2_new_width], method=_tf.image.ResizeMethod.NEAREST_NEIGHBOR)
+    decode_2_conv_1_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
+    decode_2_conv_1_pad = _tf.pad(decoding_2_upsample_1, decode_2_conv_1_paddings, "REFLECT")
     decode_2_conv_1_filter = _tf.get_variable(prefix + 'conv4_weight', initializer=weights[prefix + "conv4_weight"], trainable=finetune_all_params, dtype=_tf.float32)
-    decode_2_conv_1 = _tf.nn.conv2d(decoding_2_upsample_1, decode_2_conv_1_filter, strides=[1, 1, 1, 1], padding=[[0, 0], [1, 1], [1, 1], [0, 0]])
+    decode_2_conv_1 = _tf.nn.conv2d(decode_2_conv_1_pad, decode_2_conv_1_filter, strides=[1, 1, 1, 1], padding='VALID')
     decode_2_inst_1 = define_instance_norm(decode_2_conv_1, tf_index, weights, prefix + "instancenorm4_")
     decode_2_relu_1 = _tf.nn.relu(decode_2_inst_1)
     
     # decode 3
+    decode_3_conv_1_paddings = _tf.constant([[0, 0], [4, 4], [4, 4], [0, 0]])
+    decode_3_conv_1_pad = _tf.pad(decode_2_relu_1, decode_3_conv_1_paddings, "REFLECT")
     decode_3_conv_1_filter = _tf.get_variable(prefix + 'conv5_weight', initializer=weights[prefix + "conv5_weight"], trainable=finetune_all_params, dtype=_tf.float32)
-    decode_3_conv_1 = _tf.nn.conv2d(decode_2_relu_1, decode_3_conv_1_filter, strides=[1, 1, 1, 1], padding='SAME')    
+    decode_3_conv_1 = _tf.nn.conv2d(decode_3_conv_1_pad, decode_3_conv_1_filter, strides=[1, 1, 1, 1], padding='VALID')    
     decode_3_inst_1 = define_instance_norm(decode_3_conv_1, tf_index, weights, prefix + "instancenorm5_")
     decode_3_relu_1 = _tf.nn.sigmoid(decode_3_inst_1)
-    
+
     return decode_3_relu_1
 
 def define_vgg16(tf_input, weights, prefix="vgg16_"):
@@ -249,7 +265,7 @@ def define_vgg16(tf_input, weights, prefix="vgg16_"):
     """
     # block 1
     conv_1_filter = _tf.get_variable(prefix + "conv0_weight", initializer=weights["vgg16_conv0_weight"], trainable=False, dtype=_tf.float32)
-    conv_1 = __tf.nn.conv2d(tf_input, conv_1_filter, strides=[1, 1, 1, 1], padding='SAME')
+    conv_1 = _tf.nn.conv2d(tf_input, conv_1_filter, strides=[1, 1, 1, 1], padding='SAME')
     conv_1_bias = _tf.get_variable(prefix + 'conv0_bias', initializer=weights["vgg16_conv0_bias"], trainable=False, dtype=_tf.float32)
     conv_1 = _tf.nn.bias_add(conv_1, conv_1_bias)
     relu_1 = _tf.nn.relu(conv_1)

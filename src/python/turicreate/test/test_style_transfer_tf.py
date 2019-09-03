@@ -19,12 +19,17 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
 import coremltools
 
-from ..toolkits.style_transfer._tf_model_architecture import define_resnet as _define_resnet
 from ..toolkits.style_transfer._tf_model_architecture import define_instance_norm as _define_instance_norm
+from ..toolkits.style_transfer._tf_model_architecture import define_residual as _define_residual
+from ..toolkits.style_transfer._tf_model_architecture import define_resnet as _define_resnet
+from ..toolkits.style_transfer._tf_model_architecture import define_vgg16 as _define_vgg16
+from ..toolkits.style_transfer._tf_model_architecture import define_gram_matrix as _define_gram_matrix
 
 from ..toolkits.style_transfer._model import InstanceNorm as _InstanceNorm
 from ..toolkits.style_transfer._model import ResidualBlock as _ResidualBlock
 from ..toolkits.style_transfer._model import Transformer as _Transformer
+from ..toolkits.style_transfer._model import Vgg16 as _Vgg16
+from ..toolkits.style_transfer._model import gram_matrix as _gram_matrix
 
 import tensorflow as _tf
 import mxnet as _mx
@@ -34,19 +39,16 @@ import numpy as _np
 # TODO: Refactor back into test_style_transfer
 
 _NUM_STYLES = 4
+_MARGIN_OF_ERROR = 5e-3
 
 class StyleTransferTFTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.tf_style_image = np.random.random_sample((1, 256, 256, 3))
-        self.tf_content_image = np.ones((1, 256, 256, 3))
+        pass
 
-        self.mxnet_style_image = self.tf_style_image.transpose(0, 3, 1, 2)
-        self.mxnet_content_image = self.tf_content_image.transpose(0, 3, 1, 2)
+    def test_instance_norm_network(self):
+        _tf.reset_default_graph()
 
-        # self.tf_transformer = define_resnet()
-
-        # define instance norm model
         self.inst_norm_net = _InstanceNorm(128, 4, 1)
         self.inst_norm_net.collect_params().initialize()
 
@@ -61,42 +63,15 @@ class StyleTransferTFTest(unittest.TestCase):
 
         self.tf_instance_norm_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 4, 4, 128])
         self.tf_instance_norm_index = _tf.placeholder(dtype = _tf.int32, shape = [None, 1])
+
         self.tf_instance_norm_net = _define_instance_norm(self.tf_instance_norm_input, self.tf_instance_norm_index, inst_norm_weight_dict, "instancenorm0_")
 
-
-
-        '''
-        # define transformer model
-        self.mx_transformer = _Transformer(_NUM_STYLES, 1)
-        self.mx_transformer.collect_params().initialize()
-
-        self.transformer_weight_dict = dict()
-
-        param_keys = list(self.mx_transformer.collect_params())
-        for key in param_keys:
-            weight = self.mx_transformer.collect_params()[key].data().asnumpy()
-            if len(weight.shape) == 4:
-                self.transformer_weight_dict[key] = weight.transpose(2, 3, 1, 0) 
-            else:
-                self.transformer_weight_dict[key] = weight
-
-        # define inputs model
-        tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
-        tf_style = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
-        tf_index = _tf.placeholder(dtype = _tf.int32, shape = [None, 1])
-
-        # self.tf_transformer = define_resnet(tf_input, tf_index, self.transformer_weight_dict)
-
-        _InstanceNorm
-        '''
-
-        self.sess = _tf.Session()
-        self.sess.run(_tf.global_variables_initializer())
-
-    def test_instance_norm_network(self):
         tensorflow_input = np.random.random_sample((1, 4, 4, 128))
         mx_input = tensorflow_input.transpose(0, 3, 1, 2)
 
+        self.sess = _tf.compat.v1.Session()
+        init = _tf.compat.v1.global_variables_initializer()
+        self.sess.run(init)
 
         tf_instance_norm_out = self.sess.run(self.tf_instance_norm_net, feed_dict={self.tf_instance_norm_input: tensorflow_input, self.tf_instance_norm_index: _np.array([[0]])})
         mx_output = self.inst_norm_net(_mx.nd.array(mx_input), _mx.nd.array([0]))
@@ -110,21 +85,159 @@ class StyleTransferTFTest(unittest.TestCase):
         abs_diff = np.abs(diff)
         max_diff = np.max(abs_diff)
 
-        self.assertLessEqual(max_diff, 5e-3)
+        self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
 
-    '''
-    def test_transformer_network(self):
-        mx_transformer_out = self.mx_transformer(_mx.nd.array(self.mxnet_content_image), _mx.nd.array([0]))
-        tf_transformer_out = self.sess.run(self.tf_transformer, feed_dict={tf_input: self.tf_content_image, tf_index: _np.array([[0]])})
+    def test_residual_network(self):
+        _tf.reset_default_graph()
 
-        mx_transformer_out = mx_transformer_out.asnumpy().transpose(0, 2, 3, 1)
+        tensorflow_input = np.random.random_sample((1, 4, 4, 128))
+        mx_input = tensorflow_input.transpose(0, 3, 1, 2)
 
-        flattened_mxnet = mx_transformer_out.flatten()
+        self.residual_net = _ResidualBlock(4, 1)
+        self.residual_net.collect_params().initialize()
+
+        mxnet_out_tf = self.residual_net(_mx.nd.array(mx_input), _mx.nd.array([0]))
+
+        residual_weight_dict = dict()
+
+        param_keys = list(self.residual_net.collect_params())
+        for key in param_keys:
+            weight = self.residual_net.collect_params()[key].data().asnumpy()
+            if len(weight.shape) == 4:
+                residual_weight_dict[key] = weight.transpose(2, 3, 1, 0) 
+            else:
+                residual_weight_dict[key] = weight
+
+        self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 4, 4, 128])
+        self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [None, 1])
+
+        self.tf_residual_net = _define_residual(self.tf_input, self.tf_index, residual_weight_dict, "residualblock0_")
+
+        self.sess = _tf.compat.v1.Session()
+        init = _tf.compat.v1.global_variables_initializer()
+        self.sess.run(init)
+
+        tf_residual_out = self.sess.run(self.tf_residual_net, feed_dict={self.tf_input: tensorflow_input, self.tf_index: np.array([[0]])})
+
+        tf_mxnet_output = mxnet_out_tf.asnumpy().transpose(0, 2, 3, 1)
+
+        flattened_mxnet = tf_mxnet_output.flatten()
+        flattened_tf = tf_residual_out.flatten()
+
+        diff = flattened_mxnet - flattened_tf
+        abs_diff = np.abs(diff)
+        max_diff = np.max(abs_diff)
+
+        self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
+
+    def test_resnet_network(self):
+        _tf.reset_default_graph()
+
+        tensorflow_input = _np.random.random_sample((1, 256, 256, 3))
+        mx_input = tensorflow_input.transpose(0, 3, 1, 2)
+
+        self.transformer_net = _Transformer(4, 1)
+        self.transformer_net.collect_params().initialize()
+
+        mxnet_out_tf = self.transformer_net(_mx.nd.array(mx_input), _mx.nd.array([0]))
+
+        transformer_weight_dict = dict()
+
+        param_keys = list(self.transformer_net.collect_params())
+        for key in param_keys:
+            weight = self.transformer_net.collect_params()[key].data().asnumpy()
+            if len(weight.shape) == 4:
+                transformer_weight_dict[key] = weight.transpose(2, 3, 1, 0) 
+            else:
+                transformer_weight_dict[key] = weight
+
+        self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
+        self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [None, 1])
+
+        self.tf_transformer_net = _define_resnet(self.tf_input, self.tf_index, transformer_weight_dict, "transformer_")
+
+        self.sess = _tf.compat.v1.Session()
+        init = _tf.compat.v1.global_variables_initializer()
+        self.sess.run(init)
+
+        tf_transformer_out = self.sess.run(self.tf_transformer_net, feed_dict={self.tf_input: tensorflow_input, self.tf_index: np.array([[0]])})
+
+        tf_mxnet_output = mxnet_out_tf.asnumpy().transpose(0, 2, 3, 1)
+
+        flattened_mxnet = tf_mxnet_output.flatten()
         flattened_tf = tf_transformer_out.flatten()
 
         diff = flattened_mxnet - flattened_tf
-        abs_diff = _np.abs(diff)
-        max_diff = _np.max(abs_diff)
+        abs_diff = np.abs(diff)
+        max_diff = np.max(abs_diff)
 
-        
-    '''
+        self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
+
+    def test_vgg16_network(self):
+        _tf.reset_default_graph()
+
+        tensorflow_input = _np.random.random_sample((1, 256, 256, 3))
+        mx_input = tensorflow_input.transpose(0, 3, 1, 2)
+
+        self.vgg_16 = _Vgg16()
+        self.vgg_16.collect_params().initialize()
+
+        mx_output = self.vgg_16(_mx.nd.array(mx_input))
+
+        vgg16_weight_dict = dict()
+
+        param_keys = list(self.vgg_16.collect_params())
+        for key in param_keys:
+            weight = self.vgg_16.collect_params()[key].data().asnumpy()
+            if len(weight.shape) == 4:
+                vgg16_weight_dict[key] = weight.transpose(2, 3, 1, 0) 
+            else:
+                vgg16_weight_dict[key] = weight
+
+        self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
+
+        self.vgg16_net = _define_vgg16(self.tf_input, vgg16_weight_dict)
+
+        self.sess = _tf.compat.v1.Session()
+        init = _tf.compat.v1.global_variables_initializer()
+        self.sess.run(init)
+
+        tf_vgg16_out = self.sess.run(self.vgg16_net, feed_dict={self.tf_input: tensorflow_input})
+
+        for t, m in zip(tf_vgg16_out, mx_output):
+            tf_mxnet_output = m.asnumpy().transpose(0, 2, 3, 1)
+            
+            flattened_tf = t.flatten()
+            flattened_mxnet = tf_mxnet_output.flatten()
+
+            diff = flattened_mxnet - flattened_tf
+            abs_diff = np.abs(diff)
+            max_diff = np.max(abs_diff)
+            
+            self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
+
+    def test_gram_matrix_network(self):
+        tensorflow_input = np.random.random_sample((1, 256, 256, 3))
+        mx_input = tensorflow_input.transpose(0, 3, 1, 2)
+
+        mx_output = _gram_matrix(_mx.nd.array(mx_input))
+
+        tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
+        tensorflow_output = _define_gram_matrix(tf_input)
+
+        sess = _tf.compat.v1.Session()
+        init = _tf.compat.v1.global_variables_initializer()
+        sess.run(init)
+
+        tf_gram_matrix_out = sess.run(tensorflow_output, feed_dict={tf_input: tensorflow_input})
+
+        tf_mxnet_output = mx_output.asnumpy()
+
+        flattened_mxnet = tf_mxnet_output.flatten()
+        flattened_tf = tf_gram_matrix_out.flatten()
+
+        diff = flattened_mxnet - flattened_tf
+        abs_diff = np.abs(diff)
+        max_diff = np.max(abs_diff)
+
+        self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
