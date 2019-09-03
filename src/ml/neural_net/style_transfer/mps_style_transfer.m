@@ -59,7 +59,10 @@
     _batchSize = 6;
     _contentLossMultiplier = 1.0;
     _styleLossMultiplier = 1e-4;
-    _updateAllParams = NO;
+
+    // Divide loss by large number to get into a more legible range, the same behavior exists in the MxNet Implementation
+    _totalLossMultiplier = 1e-4;
+    _updateAllParams = YES;
     _imgWidth = 256;
     _imgHeight = 256;
 
@@ -137,12 +140,12 @@
     MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                          reductionType:MPSCNNReductionTypeMean];
 
-    styleDesc.weight = 0.5 * _styleLossMultiplier * 0.0001;
+    styleDesc.weight = 0.5 * _styleLossMultiplier * _totalLossMultiplier;
 
     MPSCNNLossDescriptor *contentDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                            reductionType:MPSCNNReductionTypeMean];
 
-    contentDesc.weight = 0.5 * _contentLossMultiplier * 0.0001;
+    contentDesc.weight = 0.5 * _contentLossMultiplier * _totalLossMultiplier;
 
     MPSNNGramMatrixCalculationNode *gramMatrixStyleLossFirstReLU
       = [MPSNNGramMatrixCalculationNode nodeWithSource:_styleVggLoss.reluOut1

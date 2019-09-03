@@ -96,7 +96,7 @@ style_transfer::style_transfer(const float_array_map &config,
   }
 }
 
-style_transfer::~style_transfer() {}
+style_transfer::~style_transfer() = default;
 
 float_array_map style_transfer::export_weights() const {
   if (@available(macOS 10.15, *)) {

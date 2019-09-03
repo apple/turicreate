@@ -184,7 +184,7 @@ NS_ASSUME_NONNULL_END
               kernelParamsBinaryName:kernelParamsBinaryName
                               device:dev
                            cmd_queue:cmd_q
-                       updateWeights:true
+                       updateWeights:YES
                      init_weight_ptr:w_ptr
                        init_bias_ptr:b_ptr
                     optimizerOptions:optimizerOptions];

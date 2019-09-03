@@ -441,7 +441,7 @@ class MpsGraphAPI(object):
 
         config_items, config_name, config_arr = _prepare_network_parameters(config)
         weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
-        self._LIB.TCMPSInitGraph(
+        self._LIB.TCMPSCreateGraphModule(
             _ctypes.byref(self.handle),
             self.network_id,
             _ctypes.c_int32(n),
@@ -693,7 +693,7 @@ class MpsStyleGraphAPI(object):
         self._cur_config = {}
 
     def __del__(self):
-        self._LIB.TCMPSDeleteGraphModule(self.handle, self.network_id)
+        self._LIB.TCMPSDeleteGraphModule(self.handle)
 
     def init(self, n, c_in, h_in, w_in, c_out, h_out, w_out, config=None, weights=None):
         if weights is None:
@@ -710,7 +710,7 @@ class MpsStyleGraphAPI(object):
         config_items, config_name, config_arr = _prepare_network_parameters(config)
         weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
 
-        self._LIB.TCMPSInitGraph(
+        self._LIB.TCMPSCreateGraphModule(
             _ctypes.byref(self.handle),
             self.network_id,
             _ctypes.c_int32(n),

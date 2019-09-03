@@ -51,22 +51,10 @@ int TCMPSMetalDeviceMemoryLimit(uint64_t *size) {
   API_END();
 }
 
-int TCMPSCreateGraphModule(MPSHandle *out) {
+int TCMPSDeleteGraphModule(MPSHandle handle) {
   API_BEGIN();
-  mps_graph_cnn_module *mps = new mps_graph_cnn_module();
-  *out = (void *)mps;
-  API_END();
-}
-
-int TCMPSDeleteGraphModule(MPSHandle handle, int network_id) {
-  API_BEGIN();
-  if (network_id != static_cast<int>(turi::neural_net::kSTGraphNet)) {
-    mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
-    delete obj;
-  } else {
-    turi::style_transfer::style_transfer *obj = (turi::style_transfer::style_transfer *)handle;
-    delete obj;
-  }
+  auto* obj = reinterpret_cast<model_backend *>(handle);
+  delete obj;
   API_END();
 }
 
@@ -114,18 +102,18 @@ int TCMPSTrainReturnGradGraph(
   API_END();
 }
 
-int TCMPSInitGraph(MPSHandle *handle, int network_id, int n, int c_in, int h_in, int w_in,
+int TCMPSCreateGraphModule(MPSHandle *handle, int network_id, int n, int c_in, int h_in, int w_in,
               int c_out, int h_out, int w_out,
               char **config_names, void **config_arrays, int config_len,
               char **weight_names, void **weight_arrays, int weight_len) {
   API_BEGIN();
+  float_array_map config =
+      make_array_map(config_names, config_arrays, config_len);
+  float_array_map weights =
+      make_array_map(weight_names, weight_arrays, weight_len);
+
   if (network_id != static_cast<int>(turi::neural_net::kSTGraphNet)) {
     mps_graph_cnn_module *mps = new mps_graph_cnn_module();
-
-    float_array_map config =
-        make_array_map(config_names, config_arrays, config_len);
-    float_array_map weights =
-        make_array_map(weight_names, weight_arrays, weight_len);
 
     mps->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,
               config, weights);
@@ -133,11 +121,6 @@ int TCMPSInitGraph(MPSHandle *handle, int network_id, int n, int c_in, int h_in,
     *handle = (void *)mps;
   } else {
     #ifdef HAS_MACOS_10_15
-      float_array_map config =
-          make_array_map(config_names, config_arrays, config_len);
-      float_array_map weights =
-          make_array_map(weight_names, weight_arrays, weight_len);
-
       turi::style_transfer::style_transfer* mps 
           = new turi::style_transfer::style_transfer(config, weights);
 
