@@ -49,9 +49,8 @@ def default_init_func(name, *args):
     """
     _ret = sys.modules.get(name, None)
     if _ret is not None:
-        assert isinstance(_ret, LazyModuleLoader)
-        sys.modules.pop(name)
-        # _ret -> self with ref cnt >= 1
+        assert name not in sys.modules.keys(), ("sys.modules[%s] cannot be None"
+                                                " during module loading" % name)
 
     if six.PY2:
         # if module is not found, it will raise ImportError
@@ -67,8 +66,9 @@ def default_init_func(name, *args):
 
 class LazyModuleLoader(ModuleType):
     """ defer to load a module. If it's loaded, no exception but warning will be given. """
-    # read-only
-    members_ = ['init_func_', 'loaded_', 'module_', 'members_', 'name_']
+    # read-only member list -> used by __setattr__; see below
+    _my_attrs_ = ['init_func_', 'loaded_', 'module_',
+                'name_', 'is_loaded', 'reload']
     # ensure singleton; must be guarded by _ImportLockContext lock
     registry_ = set()
     def __init__(self, name, init_func = default_init_func):
@@ -84,16 +84,17 @@ class LazyModuleLoader(ModuleType):
         use of the module if the module is not already loaded yet.
 
         The load of module is deferred until LazyModuleLoader is called
-        by __getattr__ on `attr` other than `LazyModuleLoader.members_`.
-        The side effect is that sys.modules[name] will be set to real module object.
+        by __getattr__, __setattr__, or __delattr__ on `attr` other than
+        `dir(LazyModuleLoader())` The side effect is that sys.modules[name]
+        will be set to real module object.
 
         >>> np = LazyModuleLoader('numpy')
         >>> import numpy # won't actually load
         >>> np.ndarray # load the numpy module
 
-        If the module is loaded before LazyModuleLoader hijack,
-        then LzyModuleLoader won't do anything but just a thin wrapper
-        to the real module object.
+        If the module is loaded before LazyModuleLoader loads the underlying module,
+        then LzyModuleLoader won't do anything but just a thin wrapper to forward
+        any requests to the real module object.
 
         >>> import numpy # load the numpy
         >>> np = LazyModuleLoader('numpy') # no effect
@@ -104,12 +105,7 @@ class LazyModuleLoader(ModuleType):
 
         >>> def baz():
         ...     LazyModuleLoader('foo').bar
-        >>> baz()
-
-        Above code will load the module `foo`, which is same effcet
-        as `import foo` but no variable can refer it. To reuse the module,
-
-        >>> import foo
+        >>> baz() # the actual module `foo` is loaded
 
         """
         if init_func is None:
@@ -134,60 +130,27 @@ class LazyModuleLoader(ModuleType):
             if self.loaded_:
                 if not isinstance(self.module_, LazyModuleLoader):
                     _logging.debug("turicreate: {} is loaded ahead and it cannot be"
-                                   " be hijacked by LazyModuleLoader".format(name))
+                                   " be deffered by LazyModuleLoader".format(name))
                 else:
                     err_msg = "LazyModuleLoader '%s' is not a singleton T_T" % name
                     _logging.fatal(err_msg)
                     raise RuntimeError(err_msg)
-            else:
-                # consequently, `import numpy` will be hijacked;
-                # numpy import will be deferred
-                # hijact state: self.module_ is None; self.loaded_ is False
-                sys.modules[name] = self
 
     def __del__(self):
-        with _ImportLockContext():
-            _logging.debug("turicreate LazyModuleLoader %s is deleted;"
-                           "force load if not load" % self.name_)
-            try:
-                LazyModuleLoader.registry_.remove(self.name_)
-                if not self.loaded_:
-                    # since at least one ref cnt should be from
-                    # sys.modules[self.name_]
-                    # the only situation is triggered is that
-                    # variable expired and self is poped from sys.modules:
-                    #
-                    # LazyModuleLoader('foo') -> expired
-                    # del sys.modules[self.name_] -> cause one
-                    # uninitialized LzyModuleLoader to be deleted.
-                    #
-                    # def baz():
-                    #   bar = LazyModuleLoader('foo')
-                    #
-                    # baz() -> LazyModuleLoader is only referred by sys.modules
-                    # sys.modules.pop('foo') -> cuz last LazyModuleLoader to be deleted
-                    #
-                    # def baz():
-                    #   bar = LazyModuleLoader('foo')
-                    #   sys.modules.pop('foo')
-                    #   import foo
-                    #
-                    # assert sys.modules.get(self.name_) is None -> won't be true
-                    # so we should make sure
-                    # it cannot be None
-                    print(sys.modules)
-                    try:
-                        assert sys.modules[self.name_] is not None, ("if sys.modules[{name}] exists, it should not be None. "
-                                                                    "Only under one situation, it can be both existent and None: "
-                                                                    "user explicitly uses 'sys.modules[{name}] = None'").format(name=self.name_)
-                    except Exception as e:
-                        print(e, type(e))
-            except KeyError:
+        try:
+            with _ImportLockContext():
+                try:
+                    LazyModuleLoader.registry_.remove(self.name_)
+                except Exception as e:
+                    _logging.fatal("error{}: {} removes {}".format(e, LazyModuleLoader.registry_, self.name_))
+        except TypeError as e:
+            # TypeError: 'NoneType' object is not callable
+            # happens when python exits and modules are all destructed
+            # even _logging is set to None
+            if "'NoneType' object is not callable" in str(e):
                 pass
-
-    def __getattr__(self, attr):
-        self._load_module()
-        return getattr(self.module_, attr)
+            else:
+                raise e
 
     def __str__(self):
         if self.module_:
@@ -203,12 +166,23 @@ class LazyModuleLoader(ModuleType):
         # for interactive autocompletion
         if self.module_:
             return dir(self.module_)
-        return self.members_
+        return self._my_attrs_ + super(LazyModuleLoader, self).__dir__()
+
+    def __getattr__(self, attr):
+        self._load_module()
+        return getattr(self.module_, attr)
+
+    def __delattr__(self, attr):
+        self._load_module()
+        return delattr(self.module_, attr)
 
     def __setattr__(self, attr, value):
-        # whitelist for member variables
-        # _logging.warn(attr + " to set with " + str(value))
-        if attr in self.members_:
+        """
+        must filter attr by self._my_attrs_ to register members for self
+        instead of the real module object;
+        """
+        # don't use is_loaded; it will trigger getattr
+        if attr in self._my_attrs_:
             # workaround for the recursive setattr
             return super(LazyModuleLoader, self).__setattr__(attr, value)
         else:
@@ -227,7 +201,7 @@ class LazyModuleLoader(ModuleType):
         with _ImportLockContext():
             self.module_ = None
             self.loaded_ = False
-            sys.modules[self.name_] = self
+            sys.modules.pop(self.name_, None)
 
     # should this be locked ???
     def _load_module(self):
@@ -242,14 +216,14 @@ class LazyModuleLoader(ModuleType):
                     # e.g.
                     # import numpy as np
                     # np = LazyModuleLoader('numpy')
-                    self.module_ = sys.modules.get(self.name_)
-                    if self.module_ is self:
-                        # release our hostage, commit our crime
-                        # may cause __del__ on self
-                        sys.modules.pop(self.name_)
+                    self.module_ = sys.modules.get(self.name_, None)
+                    if self.module_ is None:
+                        # make sure we clean it up
+                        sys.modules.pop(self.name_, None)
                         self.module_ = self.init_func_(self.name_)
-                        # subsequent imports will use the real
-                        # module object since we are arrested
+                        # subsequent imports will use the real object
+                        # import pandas from outside turicreate won't know
+                        # nothing inside
                         sys.modules[self.name_] = self.module_
                     self.loaded_ = True
 
@@ -276,6 +250,8 @@ def _dynamic_load_pandas(name):
     if HAS_PANDAS:
         _ret = sys.modules.get(name, None)
         if _ret is None:
+            assert name not in sys.modules.keys(), ("sys.modules[%s] cannot be None"
+                                                    " during moudle loading" % name)
             import pandas as _ret
         if __get_version(_ret.__version__) < _StrictVersion(PANDAS_MIN_VERSION):
             HAS_PANDAS = False
@@ -296,6 +272,8 @@ def _dynamic_load_numpy(name):
     if HAS_NUMPY:
         _ret = sys.modules.get(name, None)
         if _ret is None:
+            assert name not in sys.modules.keys(), ("sys.modules[%s] cannot be None"
+                                                    " during module loading" % name)
             import numpy as _ret
         if __get_version(_ret.__version__) < _StrictVersion(NUMPY_MIN_VERSION):
             HAS_NUMPY = False
@@ -322,6 +300,8 @@ def _dynamic_load_sklean(name):
     if HAS_SKLEARN:
         _ret = sys.modules.get(name, None)
         if _ret is None:
+            assert name not in sys.modules.keys(), ("sys.modules[%s] cannot be None"
+                                                    " during module loading" % name)
             import sklearn as _ret
         if __get_sklearn_version(_ret.__version__) < _StrictVersion(SKLEARN_MIN_VERSION):
             HAS_SKLEARN = False
