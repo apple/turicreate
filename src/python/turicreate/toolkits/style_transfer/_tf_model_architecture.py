@@ -9,6 +9,34 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import tensorflow as _tf
+_tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
+
+def extract_tensorflow_params(net):
+    """
+    This function extracts the weight parameters from an MxNet Graph and formats
+    them into the expected TF format.
+
+    Parameters
+    ----------
+    net: mxnet.gluon.HybridBlock
+        The input is an MxNet HybridBlock that's been initialized.
+    
+    Returns
+    -------
+
+    out: dict
+        The weight dictionary in TF Weight format.
+
+    """
+    weight_dict = dict()
+    param_keys = list(net.collect_params())
+    for key in param_keys:
+        weight = net.collect_params()[key].data().asnumpy()
+        if len(weight.shape) == 4:
+            weight_dict[key] = weight.transpose(2, 3, 1, 0) 
+        else:
+            weight_dict[key] = weight
+    return weight_dict
 
 def define_instance_norm(tf_input, tf_index, weights, prefix):
     """ 
@@ -442,18 +470,18 @@ def define_style_transfer_network(content_image,
 
     """
 
-    content_output = define_transformer(content_image, tf_index, weight_dict, finetune_all_params=finetune_all_params)
+    content_output = define_resnet(content_image, tf_index, weight_dict, finetune_all_params=finetune_all_params)
     
     optimizer = None
     
     if define_training_graph:
-        pre_processing_output = define_vgg_pre_processing(content_output, prefix="output_pre_processing_")
+        pre_processing_output = define_vgg_pre_processing(content_output)
         output_relu_1, output_relu_2, output_relu_3, output_relu_4 = define_vgg16(pre_processing_output, weight_dict, prefix="output_vgg_")
 
-        pre_processing_style = define_vgg_pre_processing(style_image, prefix="style_pre_processing")
+        pre_processing_style = define_vgg_pre_processing(style_image)
         style_relu_1, style_relu_2, style_relu_3, style_relu_4 = define_vgg16(pre_processing_style, weight_dict, prefix="style_vgg_")
 
-        pre_processing_content = define_vgg_pre_processing(content_image, prefix="content_pre_processing_")
+        pre_processing_content = define_vgg_pre_processing(content_image)
         _, _, content_relu_3, _ = define_vgg16(pre_processing_content, weight_dict, prefix="content_vgg_")
 
         gram_output_relu_1 = define_gram_matrix(output_relu_1)
@@ -467,24 +495,24 @@ def define_style_transfer_network(content_image,
         gram_style_relu_4 = define_gram_matrix(style_relu_4)
 
         # L2 Loss Between the Nodes
-        style_loss_1 = tf.losses.mean_squared_error(gram_style_relu_1, gram_output_relu_1, weights=1e-4)
-        style_loss_2 = tf.losses.mean_squared_error(gram_style_relu_2, gram_output_relu_2, weights=1e-4)
-        style_loss_3 = tf.losses.mean_squared_error(gram_style_relu_3, gram_output_relu_3, weights=1e-4)
-        style_loss_4 = tf.losses.mean_squared_error(gram_style_relu_4, gram_output_relu_4, weights=1e-4)
+        style_loss_1 = _tf.losses.mean_squared_error(gram_style_relu_1, gram_output_relu_1, weights=1e-4)
+        style_loss_2 = _tf.losses.mean_squared_error(gram_style_relu_2, gram_output_relu_2, weights=1e-4)
+        style_loss_3 = _tf.losses.mean_squared_error(gram_style_relu_3, gram_output_relu_3, weights=1e-4)
+        style_loss_4 = _tf.losses.mean_squared_error(gram_style_relu_4, gram_output_relu_4, weights=1e-4)
 
-        content_loss = tf.losses.mean_squared_error(content_relu_3, output_relu_3)
+        content_loss = _tf.losses.mean_squared_error(content_relu_3, output_relu_3)
         style_loss = style_loss_1 + style_loss_2 + style_loss_3 + style_loss_4
 
 
         total_loss = ((content_loss + style_loss)/10000.0) * 0.5
         
-        optimizer = tf.train.AdamOptimizer().minimize(total_loss)
+        optimizer = _tf.train.AdamOptimizer().minimize(total_loss)
     
     return optimizer, total_loss, content_output
 
 # TODO: Extend from TensorFlowModel
 class StyleTransferTensorFlowModel():
-    def __init__(self, net_params, batch_size, num_styles):
+    def __init__(self, net_params, batch_size, num_styles, finetune_all_params=True, define_training_graph=True):
         _tf.reset_default_graph()
 
         self.batch_size = batch_size
@@ -492,14 +520,14 @@ class StyleTransferTensorFlowModel():
         # TODO: change to take any size input
         self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
         self.tf_style = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
-        self.tf_index = _tf.placeholder(dtype = _tf.float32, shape = [None, 1])
+        self.tf_index = _tf.placeholder(dtype = _tf.int64, shape = [None, 1])
 
         self.optimizer, self.loss, self.output = define_style_transfer_network(self.tf_input,
                                                                                self.tf_index,
                                                                                self.tf_style,
                                                                                net_params,
-                                                                               finetune_all_params=False,
-                                                                               define_training_graph=False)
+                                                                               finetune_all_params=finetune_all_params,
+                                                                               define_training_graph=define_training_graph)
         
         self.sess = _tf.compat.v1.Session()
         init = _tf.compat.v1.global_variables_initializer()

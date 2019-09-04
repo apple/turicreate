@@ -22,8 +22,6 @@ import numpy as _np
 import math as _math
 import six as _six
 
-from ._tf_model_architecture import StyleTransferTensorFlowModel
-
 def _vgg16_data_prep(batch):
     """
     Takes images scaled to [0, 1] and returns them appropriately scaled and
@@ -163,7 +161,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         'aug_inter_method': 2,
         'checkpoint': False,
         'checkpoint_prefix': 'style_transfer',
-        'checkpoint_increment': 1000
+        'checkpoint_increment': 1000,
+        'use_tensorflow': True # TODO: Change to False
     }
 
     if '_advanced_parameters' in kwargs:
@@ -196,10 +195,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     else:
         content_loader_type = params['training_content_loader_type']
 
-    content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
-                                  feature_column=content_feature, input_shape=input_shape,
-                                  loader_type=content_loader_type, aug_params=params,
-                                  sequential=params['sequential_image_processing'])
     ctx = _mxnet_utils.get_mxnet_context(max_devices=params['batch_size'])
 
     num_styles = len(style_dataset)
@@ -243,17 +238,145 @@ def create(style_dataset, content_dataset, style_feature=None,
     cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=params['batch_size'])
     num_mxnet_gpus = len(cuda_gpus)
 
+    style_sa = style_dataset[style_feature]
+    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
+    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
+
     if verbose:
         # Estimate memory usage (based on experiments)
         cuda_mem_req = 260 + batch_size_each * 880 + num_styles * 1.4
 
         _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
                                             cuda_mem_req=cuda_mem_req, has_mps_impl=False)
+
+    ## TODO: add TF Style Transfer Implementation
+    use_tf = params['finetune_all_params']
+    rs = _np.random.RandomState(1234)
+    if use_tf:
+        from ._tf_model_architecture import StyleTransferTensorFlowModel
+        from ._tf_model_architecture import extract_tensorflow_params
+
+        tf_weights = extract_tensorflow_params(transformer)
+        tf_weights_vgg = extract_tensorflow_params(vgg_model)
+
+        tf_weights.update(tf_weights_vgg)
+
+        tf_finetune_all_params = params['finetune_all_params']
+
+        tf_model = StyleTransferTensorFlowModel(tf_weights, batch_size, num_styles, tf_finetune_all_params)
+
+        tf_key_input = tf_model.tf_input
+        tf_key_style = tf_model.tf_style
+        tf_key_index = tf_model.tf_index
+
+        # TODO: change batch size for training
+        content_images_loader = _SFrameSTIter(content_dataset, 1, shuffle=True,
+                                  feature_column=content_feature, input_shape=input_shape,
+                                  loader_type=content_loader_type, aug_params=params,
+                                  sequential=params['sequential_image_processing'])
+
+        style_images_loader = _SFrameSTIter(style_dataset, 1, shuffle=False, num_epochs=1,
+                                        feature_column=style_feature, input_shape=input_shape,
+                                        loader_type='stretch',
+                                        sequential=params['sequential_image_processing'])
+
+        style_images = []
+        for s_batch in style_images_loader:
+            s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
+            for s in s_data:
+                style_images.append(s.asnumpy().transpose(0, 2, 3, 1))
+        
+        style_images =  _np.array(style_images)
+        style_images = style_images.reshape(style_images.shape[0:1] + style_images.shape[2:])
+
+        while iterations < max_iterations:
+            content_images_loader.reset()
+            for c_batch in content_images_loader:
+                c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
+                Ls = []
+                for c in c_data:
+                    indices = rs.randint(num_styles, size=batch_size_each)
+                    tf_indicies = indices.reshape((len(indices), 1))
+
+                    tf_content_input = c.asnumpy().transpose(0, 2, 3, 1)
+                    tf_style_input = style_images[[0]]
+
+                    tf_input = {tf_key_input: tf_content_input, tf_key_style: tf_style_input, tf_key_index: tf_indicies}
+
+                    Ls.append(tf_model.train(tf_input)["loss"])
+
+                cur_loss = _np.mean(_np.array(Ls))
+
+                if smoothed_loss is None:
+                    smoothed_loss = cur_loss
+                else:
+                    smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
+                iterations += 1
+
+                if verbose and iterations == 1:
+                    # Print progress table header
+                    column_names = ['Iteration', 'Loss', 'Elapsed Time']
+                    num_columns = len(column_names)
+                    column_width = max(map(lambda x: len(x), column_names)) + 2
+                    hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+                    print(hr)
+                    print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+                    print(hr)
+
+                cur_time = _time.time()
+                if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
+                    elapsed_time = cur_time - start_time
+                    print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                        cur_iter = iterations, loss = smoothed_loss,
+                        time = elapsed_time , width = column_width-1))
+                    last_time = cur_time
+                if iterations == max_iterations:
+                    print(hr)
+                    break
+
+        # TODO: Test weight update
+        weight_dict = tf_model.export_weights()
+        transformer_param_keys = list(transformer.collect_params())
+        for key in transformer_param_keys:
+            weight = transformer.collect_params()[key].data()
+            if len(weight_dict[key + ":0"].shape) == 4:
+                weight = _mx.nd.array(weight_dict[key + ":0"].transpose(3, 2, 0, 1))
+            else:
+                weight = _mx.nd.array(weight_dict[key + ":0"])
+
+        training_time = _time.time() - start_time
+
+        state = {
+            '_model': transformer,
+            '_training_time_as_string': _seconds_as_string(training_time),
+            'batch_size': batch_size,
+            'num_styles': num_styles,
+            'model': model,
+            'input_image_shape': input_shape,
+            'styles': style_sframe,
+            'num_content_images': len(content_dataset),
+            'training_time': training_time,
+            'max_iterations': max_iterations,
+            'training_iterations': iterations,
+            'training_epochs': content_images_loader.cur_epoch,
+            'style_feature': style_feature,
+            'content_feature': content_feature,
+            "_index_column": "style",
+            'training_loss': smoothed_loss,
+        }
+
+        return StyleTransfer(state)
+
     #
     # Pre-compute gram matrices for style images
     #
     if verbose:
         print('Analyzing visual features of the style images')
+
+    content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
+                                  feature_column=content_feature, input_shape=input_shape,
+                                  loader_type=content_loader_type, aug_params=params,
+                                  sequential=params['sequential_image_processing'])
 
     style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
                                         feature_column=style_feature, input_shape=input_shape,
@@ -288,16 +411,11 @@ def create(style_dataset, content_dataset, style_feature=None,
         for ctx0 in ctx:
             ctx_grams[ctx0] = [gram.as_in_context(ctx0) for gram in grams]
 
-    style_sa = style_dataset[style_feature]
-    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
-    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
-
     #
     # Training loop
     #
 
     vgg_content_loss_layer = params['vgg16_content_loss_layer']
-    rs = _np.random.RandomState(1234)
     while iterations < max_iterations:
         content_images_loader.reset()
         for c_batch in content_images_loader:
