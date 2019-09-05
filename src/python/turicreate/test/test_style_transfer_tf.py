@@ -19,35 +19,32 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
 import coremltools
 
-from ..toolkits.style_transfer._tf_model_architecture import define_instance_norm as _define_instance_norm
-from ..toolkits.style_transfer._tf_model_architecture import define_residual as _define_residual
-from ..toolkits.style_transfer._tf_model_architecture import define_resnet as _define_resnet
-from ..toolkits.style_transfer._tf_model_architecture import define_vgg16 as _define_vgg16
-from ..toolkits.style_transfer._tf_model_architecture import define_gram_matrix as _define_gram_matrix
-from ..toolkits.style_transfer._tf_model_architecture import define_tensorflow_variables as _define_tensorflow_variables
-
-from ..toolkits.style_transfer._model import InstanceNorm as _InstanceNorm
-from ..toolkits.style_transfer._model import ResidualBlock as _ResidualBlock
-from ..toolkits.style_transfer._model import Transformer as _Transformer
-from ..toolkits.style_transfer._model import Vgg16 as _Vgg16
-from ..toolkits.style_transfer._model import gram_matrix as _gram_matrix
-
-import tensorflow as _tf
-import mxnet as _mx
-import numpy as _np
-
-
-# TODO: Refactor back into test_style_transfer
-
 _NUM_STYLES = 4
 _MARGIN_OF_ERROR = 5e-3
 
+def check_for_tensorflow():
+    try:
+        import tensorflow  
+        return False
+    except ImportError:
+        return True
+
+@unittest.skipIf(check_for_tensorflow(), 'Requires Tensorflow to be Installed')
 class StyleTransferTFTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         pass
 
     def test_instance_norm_network(self):
+        import tensorflow as _tf
+        import mxnet as _mx
+        import numpy as _np
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_instance_norm as _define_instance_norm
+        from ..toolkits.style_transfer._model import InstanceNorm as _InstanceNorm
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_tensorflow_variables as _define_tensorflow_variables
+
         _tf.reset_default_graph()
 
         self.inst_norm_net = _InstanceNorm(128, 4, 1)
@@ -90,6 +87,15 @@ class StyleTransferTFTest(unittest.TestCase):
         self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
 
     def test_residual_network(self):
+        import tensorflow as _tf
+        import mxnet as _mx
+        import numpy as _np
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_residual as _define_residual
+        from ..toolkits.style_transfer._model import ResidualBlock as _ResidualBlock
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_tensorflow_variables as _define_tensorflow_variables
+
         _tf.reset_default_graph()
 
         tensorflow_input = np.random.random_sample((1, 4, 4, 128))
@@ -134,6 +140,15 @@ class StyleTransferTFTest(unittest.TestCase):
         self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
 
     def test_resnet_network(self):
+        import tensorflow as _tf
+        import mxnet as _mx
+        import numpy as _np
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_resnet as _define_resnet
+        from ..toolkits.style_transfer._model import Transformer as _Transformer
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_tensorflow_variables as _define_tensorflow_variables
+
         _tf.reset_default_graph()
 
         tensorflow_input = _np.random.random_sample((1, 256, 256, 3))
@@ -178,6 +193,15 @@ class StyleTransferTFTest(unittest.TestCase):
         self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
 
     def test_vgg16_network(self):
+        import tensorflow as _tf
+        import mxnet as _mx
+        import numpy as _np
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_vgg16 as _define_vgg16
+        from ..toolkits.style_transfer._model import Vgg16 as _Vgg16
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_tensorflow_variables as _define_tensorflow_variables
+
         _tf.reset_default_graph()
 
         tensorflow_input = _np.random.random_sample((1, 256, 256, 3))
@@ -222,6 +246,15 @@ class StyleTransferTFTest(unittest.TestCase):
             self.assertLessEqual(max_diff, _MARGIN_OF_ERROR)
 
     def test_gram_matrix_network(self):
+        import tensorflow as _tf
+        import mxnet as _mx
+        import numpy as _np
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_gram_matrix as _define_gram_matrix
+        from ..toolkits.style_transfer._model import gram_matrix as _gram_matrix
+
+        from ..toolkits.style_transfer._tf_model_architecture import define_tensorflow_variables as _define_tensorflow_variables
+
         tensorflow_input = np.random.random_sample((1, 256, 256, 3))
         mx_input = tensorflow_input.transpose(0, 3, 1, 2)
 
