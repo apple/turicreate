@@ -11,6 +11,34 @@ from __future__ import absolute_import as _
 import tensorflow as _tf
 _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
 
+def define_tensorflow_variables(net_params, trainable, prefix):
+    """
+    This function defines TF Variables from the MxNet Params.
+    
+    Parameters
+    ----------
+    trainable: boolean
+        If `true` the network updates the convolutional layers as well as the
+        instance norm layers of the network. If `false` only the instance norm
+        layers of the network are updated.
+
+    Returns
+    -------
+    out: dict
+        The TF Variable dictionary.
+
+    """
+    tensorflow_variables = dict()
+
+    for key, value in net_params.items():
+        if prefix in key:
+            if "instancenorm" in key:
+                tensorflow_variables[key] = _tf.get_variable(key, initializer=value, trainable=True, dtype=_tf.float32)
+            else:
+                tensorflow_variables[key] = _tf.get_variable(key, initializer=value, trainable=trainable, dtype=_tf.float32)
+
+    return tensorflow_variables
+
 def extract_tensorflow_params(net):
     """
     This function extracts the weight parameters from an MxNet Graph and formats
@@ -66,38 +94,43 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
     out: tensorflow.Tensor
         The instance norm output tensor to the network.
     """
-    inputs_shape = tf_input.shape
-    inputs_rank = tf_input.shape.ndims
     epsilon=1e-5
     
-    reduction_axis = inputs_rank - 1
-    params_shape = inputs_shape[reduction_axis:reduction_axis + 1]
+    gamma = weights[prefix + "gamma"]
+    beta = weights[prefix + "beta"]
     
-    moments_axes = list(range(inputs_rank))
-    del moments_axes[reduction_axis]
-    del moments_axes[0]
-    
-    mean, variance = _tf.nn.moments(tf_input, moments_axes, keep_dims=True)
-
-    gamma = _tf.compat.v1.get_variable(prefix + 'gamma', initializer=weights[prefix + "gamma"], dtype=_tf.float32)
-    beta = _tf.compat.v1.get_variable(prefix + 'beta', initializer=weights[prefix + "beta"], dtype=_tf.float32)
+    tf_input_shape = tf_index.get_shape()
     
     gamma_sliced = _tf.split(gamma, gamma.shape[0], axis=0)
+    gamma_index = _tf.gather(gamma_sliced, tf_index)
+    gamma_split = _tf.split(gamma_index, tf_input_shape[0], axis=0)
+    
     beta_sliced = _tf.split(beta, beta.shape[0], axis=0)
+    beta_index = _tf.gather(beta_sliced, tf_index)
+    beta_split = _tf.split(beta_index, tf_input_shape[0], axis=0)
+    
+    input_split = _tf.split(tf_input, tf_input_shape[0], axis=0)
     
     batch_norm_array = []
-    for b, g in zip(beta_sliced, gamma_sliced):
-        style_bn = _tf.nn.batch_normalization(tf_input, mean, variance, b, g, epsilon)
-        style_bn = _tf.expand_dims(style_bn, 0)
-        batch_norm_array.append(style_bn)
+    for g, b, i in zip(gamma_split, beta_split, input_split):
+        inputs_shape = i.shape
+        inputs_rank = i.shape.ndims
         
-    batch_norm_concat = _tf.concat(batch_norm_array, 0)
-    picked_index = _tf.gather_nd(batch_norm_concat, tf_index)
-    picked_index = _tf.reshape(picked_index, [-1] + picked_index.get_shape().as_list()[2:])
-    
-    return picked_index
+        reduction_axis = inputs_rank - 1
+        params_shape = inputs_shape[reduction_axis:reduction_axis + 1]
 
-def define_residual(tf_input, tf_index, weights, prefix, finetune_all_params=True):
+        moments_axes = list(range(inputs_rank))
+        del moments_axes[reduction_axis]
+        del moments_axes[0]
+
+        mean, variance = _tf.nn.moments(i, moments_axes, keep_dims=True)
+        style_bn = _tf.nn.batch_normalization(i, mean, variance, b, g, epsilon)
+        batch_norm_array.append(style_bn)
+    batch_norm_concat = _tf.concat(batch_norm_array, 0)
+    
+    return batch_norm_concat
+
+def define_residual(tf_input, tf_index, weights, prefix):
     """ 
     This function defines the residual network using the tensorflow nn api.
   
@@ -118,11 +151,6 @@ def define_residual(tf_input, tf_index, weights, prefix, finetune_all_params=Tru
         The prefix column is used to prefix the variables of the network for
         weight export.
 
-    finetune_all_params: boolean
-        If `true` the network updates the convolutional layers as well as the
-        instance norm layers of the network. If `false` only the instance norm
-        layers of the network are updated.
-
     Returns
     -------
 
@@ -133,14 +161,14 @@ def define_residual(tf_input, tf_index, weights, prefix, finetune_all_params=Tru
     # TODO: Refactor Instance Norm
     conv_1_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
     conv_1_pad = _tf.pad(tf_input, conv_1_paddings, "REFLECT")
-    conv_1_filter = _tf.get_variable(prefix + 'conv0_weight', initializer=weights[prefix + "conv0_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    conv_1_filter = weights[prefix + "conv0_weight"]
     conv_1 = _tf.nn.conv2d(conv_1_pad, conv_1_filter, strides=[1, 1, 1, 1], padding="VALID")
     inst_1 = define_instance_norm(conv_1, tf_index, weights, prefix + "instancenorm0_")
     relu_1 = _tf.nn.relu(inst_1)
     
     conv_2_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
     conv_2_pad = _tf.pad(relu_1, conv_2_paddings, "REFLECT")
-    conv_2_filter = _tf.get_variable(prefix + 'conv1_weight', initializer=weights[prefix + "conv1_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    conv_2_filter = weights[prefix + "conv1_weight"]
     conv_2 = _tf.nn.conv2d(conv_2_pad, conv_2_filter, strides=[1, 1, 1, 1], padding="VALID")
     inst_2 = define_instance_norm(conv_2, tf_index, weights, prefix + "instancenorm1_")
     
@@ -149,8 +177,7 @@ def define_residual(tf_input, tf_index, weights, prefix, finetune_all_params=Tru
 def define_resnet(tf_input,
                  tf_index,
                  weights,
-                 prefix="transformer_",
-                 finetune_all_params=True):
+                 prefix="transformer_"):
     """ 
     This function defines the resnet network using the tensorflow nn api.
   
@@ -172,11 +199,6 @@ def define_resnet(tf_input,
         The prefix column is used to prefix the variables of the network for
         weight export.
 
-    finetune_all_params: boolean
-        If `true` the network updates the convolutional layers as well as the
-        instance norm layers of the network. If `false` only the instance norm
-        layers of the network are updated.
-
     Returns
     -------
 
@@ -188,7 +210,7 @@ def define_resnet(tf_input,
     # encoding 1
     conv_1_paddings = _tf.constant([[0, 0], [4, 4], [4, 4], [0, 0]])
     conv_1_pad = _tf.pad(tf_input, conv_1_paddings, "REFLECT")
-    conv_1_filter = _tf.get_variable(prefix + 'conv0_weight', initializer=weights[prefix + "conv0_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    conv_1_filter = weights[prefix + "conv0_weight"]
     conv_1 = _tf.nn.conv2d(conv_1_pad, conv_1_filter, strides=[1, 1, 1, 1], padding='VALID')
     inst_1 = define_instance_norm(conv_1, tf_index, weights, prefix + "instancenorm0_")
     relu_1 = _tf.nn.relu(inst_1)
@@ -196,7 +218,7 @@ def define_resnet(tf_input,
     # encoding 2
     conv_2_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
     conv_2_pad = _tf.pad(relu_1, conv_2_paddings, "REFLECT")
-    conv_2_filter = _tf.get_variable(prefix + 'conv1_weight', initializer=weights[prefix + "conv1_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    conv_2_filter = weights[prefix + "conv1_weight"]
     conv_2 = _tf.nn.conv2d(conv_2_pad, conv_2_filter, strides=[1, 2, 2, 1], padding='VALID')
     inst_2 = define_instance_norm(conv_2, tf_index, weights, prefix + "instancenorm1_")
     relu_2 = _tf.nn.relu(inst_2)
@@ -204,17 +226,17 @@ def define_resnet(tf_input,
     # encoding 3
     conv_3_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
     conv_3_pad = _tf.pad(relu_2, conv_3_paddings, "REFLECT")
-    conv_3_filter = _tf.get_variable(prefix + 'conv2_weight', initializer=weights[prefix + "conv2_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    conv_3_filter = weights[prefix + "conv2_weight"]
     conv_3 = _tf.nn.conv2d(conv_3_pad, conv_3_filter, strides=[1, 2, 2, 1], padding='VALID')
     inst_3 = define_instance_norm(conv_3, tf_index, weights, prefix + "instancenorm2_")
     relu_3 = _tf.nn.relu(inst_3)
     
     # Residual Blocks
-    residual_1 = define_residual(relu_3, tf_index, weights, prefix + "residualblock0_", finetune_all_params=finetune_all_params)
-    residual_2 = define_residual(residual_1, tf_index, weights, prefix + "residualblock1_", finetune_all_params=finetune_all_params)
-    residual_3 = define_residual(residual_2, tf_index, weights, prefix + "residualblock2_", finetune_all_params=finetune_all_params)
-    residual_4 = define_residual(residual_3, tf_index, weights, prefix + "residualblock3_", finetune_all_params=finetune_all_params)
-    residual_5 = define_residual(residual_4, tf_index, weights, prefix + "residualblock4_", finetune_all_params=finetune_all_params)
+    residual_1 = define_residual(relu_3, tf_index, weights, prefix + "residualblock0_")
+    residual_2 = define_residual(residual_1, tf_index, weights, prefix + "residualblock1_")
+    residual_3 = define_residual(residual_2, tf_index, weights, prefix + "residualblock2_")
+    residual_4 = define_residual(residual_3, tf_index, weights, prefix + "residualblock3_")
+    residual_5 = define_residual(residual_4, tf_index, weights, prefix + "residualblock4_")
     
     # decode 1
     decode_1_image_shape = residual_5.get_shape()
@@ -224,7 +246,7 @@ def define_resnet(tf_input,
     decoding_1_upsample_1 = _tf.image.resize_images(residual_5, [decode_1_new_height, decode_1_new_width], method=_tf.image.ResizeMethod.NEAREST_NEIGHBOR)
     decode_1_conv_1_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
     decode_1_conv_1_pad = _tf.pad(decoding_1_upsample_1, decode_1_conv_1_paddings, "REFLECT")
-    decode_1_conv_1_filter = _tf.get_variable(prefix + 'conv3_weight', initializer=weights[prefix + "conv3_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    decode_1_conv_1_filter = weights[prefix + "conv3_weight"]
     decode_1_conv_1 = _tf.nn.conv2d(decode_1_conv_1_pad, decode_1_conv_1_filter, strides=[1, 1, 1, 1], padding='VALID')
     decode_1_inst_1 = define_instance_norm(decode_1_conv_1, tf_index, weights, prefix + "instancenorm3_")
     decode_1_relu_1 = _tf.nn.relu(decode_1_inst_1)
@@ -237,7 +259,7 @@ def define_resnet(tf_input,
     decoding_2_upsample_1 = _tf.image.resize_images(decode_1_relu_1, [decode_2_new_height, decode_2_new_width], method=_tf.image.ResizeMethod.NEAREST_NEIGHBOR)
     decode_2_conv_1_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
     decode_2_conv_1_pad = _tf.pad(decoding_2_upsample_1, decode_2_conv_1_paddings, "REFLECT")
-    decode_2_conv_1_filter = _tf.get_variable(prefix + 'conv4_weight', initializer=weights[prefix + "conv4_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    decode_2_conv_1_filter = weights[prefix + "conv4_weight"]
     decode_2_conv_1 = _tf.nn.conv2d(decode_2_conv_1_pad, decode_2_conv_1_filter, strides=[1, 1, 1, 1], padding='VALID')
     decode_2_inst_1 = define_instance_norm(decode_2_conv_1, tf_index, weights, prefix + "instancenorm4_")
     decode_2_relu_1 = _tf.nn.relu(decode_2_inst_1)
@@ -245,7 +267,7 @@ def define_resnet(tf_input,
     # decode 3
     decode_3_conv_1_paddings = _tf.constant([[0, 0], [4, 4], [4, 4], [0, 0]])
     decode_3_conv_1_pad = _tf.pad(decode_2_relu_1, decode_3_conv_1_paddings, "REFLECT")
-    decode_3_conv_1_filter = _tf.get_variable(prefix + 'conv5_weight', initializer=weights[prefix + "conv5_weight"], trainable=finetune_all_params, dtype=_tf.float32)
+    decode_3_conv_1_filter = weights[prefix + "conv5_weight"]
     decode_3_conv_1 = _tf.nn.conv2d(decode_3_conv_1_pad, decode_3_conv_1_filter, strides=[1, 1, 1, 1], padding='VALID')    
     decode_3_inst_1 = define_instance_norm(decode_3_conv_1, tf_index, weights, prefix + "instancenorm5_")
     decode_3_relu_1 = _tf.nn.sigmoid(decode_3_inst_1)
@@ -292,72 +314,72 @@ def define_vgg16(tf_input, weights, prefix="vgg16_"):
 
     """
     # block 1
-    conv_1_filter = _tf.get_variable(prefix + "conv0_weight", initializer=weights["vgg16_conv0_weight"], trainable=False, dtype=_tf.float32)
+    conv_1_filter = weights[prefix + 'conv0_weight']
     conv_1 = _tf.nn.conv2d(tf_input, conv_1_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_1_bias = _tf.get_variable(prefix + 'conv0_bias', initializer=weights["vgg16_conv0_bias"], trainable=False, dtype=_tf.float32)
+    conv_1_bias = weights[prefix + 'conv0_bias']
     conv_1 = _tf.nn.bias_add(conv_1, conv_1_bias)
     relu_1 = _tf.nn.relu(conv_1)
     
-    conv_2_filter = _tf.get_variable(prefix + "conv1_weight", initializer=weights["vgg16_conv1_weight"], trainable=False, dtype=_tf.float32)
+    conv_2_filter = weights[prefix + 'conv1_weight']
     conv_2 = _tf.nn.conv2d(relu_1, conv_2_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_2_bias = _tf.get_variable(prefix + "conv1_bias", initializer=weights["vgg16_conv1_bias"], trainable=False, dtype=_tf.float32)
+    conv_2_bias = weights[prefix + 'conv1_bias']
     conv_2 = _tf.nn.bias_add(conv_2, conv_2_bias)
     relu_2 = _tf.nn.relu(conv_2)
     
     pool_1 = _tf.nn.avg_pool(relu_2, 2, 2, 'SAME')
     
     # block 2
-    conv_3_filter = _tf.get_variable(prefix + "conv2_weight", initializer=weights["vgg16_conv2_weight"], trainable=False, dtype=_tf.float32)
+    conv_3_filter = weights[prefix + 'conv2_weight']
     conv_3 = _tf.nn.conv2d(pool_1, conv_3_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_3_bias = _tf.get_variable(prefix + "conv2_bias", initializer=weights["vgg16_conv2_bias"], trainable=False, dtype=_tf.float32)
+    conv_3_bias = weights[prefix + 'conv2_bias']
     conv_3 = _tf.nn.bias_add(conv_3, conv_3_bias)
     relu_3 = _tf.nn.relu(conv_3)
     
-    conv_4_filter = _tf.get_variable(prefix + "conv3_weight", initializer=weights["vgg16_conv3_weight"], trainable=False, dtype=_tf.float32)
+    conv_4_filter = weights[prefix + 'conv3_weight']
     conv_4 = _tf.nn.conv2d(relu_3, conv_4_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_4_bias = _tf.get_variable(prefix + "conv3_bias", initializer=weights["vgg16_conv3_bias"], trainable=False, dtype=_tf.float32)
+    conv_4_bias = weights[prefix + 'conv3_bias']
     conv_4 = _tf.nn.bias_add(conv_4, conv_4_bias)
     relu_4 = _tf.nn.relu(conv_4)
     
     pool_2 = _tf.nn.avg_pool(relu_4, 2, 2, 'SAME')
     
     # block 3
-    conv_5_filter = _tf.get_variable(prefix + "conv4_weight", initializer=weights["vgg16_conv4_weight"], trainable=False, dtype=_tf.float32)
+    conv_5_filter = weights[prefix + 'conv4_weight']
     conv_5 = _tf.nn.conv2d(pool_2, conv_5_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_5_bias = _tf.get_variable(prefix + "conv4_bias", initializer=weights["vgg16_conv4_bias"], trainable=False, dtype=_tf.float32)
+    conv_5_bias = weights[prefix + 'conv4_bias']
     conv_5 = _tf.nn.bias_add(conv_5, conv_5_bias)
     relu_5 = _tf.nn.relu(conv_5)
     
-    conv_6_filter = _tf.get_variable(prefix + "conv5_weight", initializer=weights["vgg16_conv5_weight"], trainable=False, dtype=_tf.float32)
+    conv_6_filter = weights[prefix + 'conv5_weight']
     conv_6 = _tf.nn.conv2d(relu_5, conv_6_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_6_bias = _tf.get_variable(prefix + "conv5_bias", initializer=weights["vgg16_conv5_bias"], trainable=False, dtype=_tf.float32)
+    conv_6_bias = weights[prefix + 'conv5_bias']
     conv_6 = _tf.nn.bias_add(conv_6, conv_6_bias)
     relu_6 = _tf.nn.relu(conv_6)
     
-    conv_7_filter = _tf.get_variable(prefix + "conv6_weight", initializer=weights["vgg16_conv6_weight"], trainable=False, dtype=_tf.float32)
+    conv_7_filter = weights[prefix + 'conv6_weight']
     conv_7 = _tf.nn.conv2d(relu_6, conv_7_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_7_bias = _tf.get_variable(prefix + "conv6_bias", initializer=weights["vgg16_conv6_bias"], trainable=False, dtype=_tf.float32)
+    conv_7_bias = weights[prefix + 'conv6_bias']
     conv_7 = _tf.nn.bias_add(conv_7, conv_7_bias)
     relu_7 = _tf.nn.relu(conv_7)
     
     pool_3 = _tf.nn.avg_pool(relu_7, 2, 2, 'SAME')
     
     # block 4
-    conv_8_filter = _tf.get_variable(prefix + "conv7_weight", initializer=weights["vgg16_conv7_weight"], trainable=False, dtype=_tf.float32)
+    conv_8_filter = weights[prefix + 'conv7_weight']
     conv_8 = _tf.nn.conv2d(pool_3, conv_8_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_8_bias = _tf.get_variable(prefix + "conv7_bias", initializer=weights["vgg16_conv7_bias"], trainable=False, dtype=_tf.float32)
+    conv_8_bias = weights[prefix + 'conv7_bias']
     conv_8 = _tf.nn.bias_add(conv_8, conv_8_bias)
     relu_8 = _tf.nn.relu(conv_8)
     
-    conv_9_filter = _tf.get_variable(prefix + "conv8_weight", initializer=weights["vgg16_conv8_weight"], trainable=False, dtype=_tf.float32)
+    conv_9_filter = weights[prefix + 'conv8_weight']
     conv_9 = _tf.nn.conv2d(relu_8, conv_9_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_9_bias = _tf.get_variable(prefix + "conv8_bias", initializer=weights["vgg16_conv8_bias"], trainable=False, dtype=_tf.float32)
+    conv_9_bias = weights[prefix + 'conv8_bias']
     conv_9 = _tf.nn.bias_add(conv_9, conv_9_bias)
     relu_9 = _tf.nn.relu(conv_9)
     
-    conv_10_filter = _tf.get_variable(prefix + "conv9_weight", initializer=weights["vgg16_conv9_weight"], trainable=False, dtype=_tf.float32)
+    conv_10_filter = weights[prefix + 'conv9_weight']
     conv_10 = _tf.nn.conv2d(relu_9, conv_10_filter, strides=[1, 1, 1, 1], padding='SAME')
-    conv_10_bias = _tf.get_variable(prefix + "conv9_bias", initializer=weights["vgg16_conv9_bias"], trainable=False, dtype=_tf.float32)
+    conv_10_bias = weights[prefix + 'conv9_bias']
     conv_10 = _tf.nn.bias_add(conv_10, conv_10_bias)
     relu_10 = _tf.nn.relu(conv_10)
     
@@ -423,7 +445,6 @@ def define_style_transfer_network(content_image,
                                   tf_index,
                                   style_image,
                                   weight_dict,
-                                  finetune_all_params=False,
                                   define_training_graph=False):
     """ 
     This function defines the style transfer network using the tensorflow nn api.
@@ -445,12 +466,6 @@ def define_style_transfer_network(content_image,
     weights: dictionary
         The dictionary of MxNet weights to the network. The naming convention
         used is that from the CoreML export of the Style Transfer Network.
-    
-    
-    finetune_all_params: boolean
-        If `true` the network updates the convolutional layers as well as the
-        instance norm layers of the network. If `false` only the instance norm
-        layers of the network are updated.
 
     define_training_graph: boolean
         If `true` both the training graph and the inference graph are returned.
@@ -470,19 +485,19 @@ def define_style_transfer_network(content_image,
 
     """
 
-    content_output = define_resnet(content_image, tf_index, weight_dict, finetune_all_params=finetune_all_params)
+    content_output = define_resnet(content_image, tf_index, weight_dict)
     
     optimizer = None
     
     if define_training_graph:
         pre_processing_output = define_vgg_pre_processing(content_output)
-        output_relu_1, output_relu_2, output_relu_3, output_relu_4 = define_vgg16(pre_processing_output, weight_dict, prefix="output_vgg_")
+        output_relu_1, output_relu_2, output_relu_3, output_relu_4 = define_vgg16(pre_processing_output, weight_dict)
 
         pre_processing_style = define_vgg_pre_processing(style_image)
-        style_relu_1, style_relu_2, style_relu_3, style_relu_4 = define_vgg16(pre_processing_style, weight_dict, prefix="style_vgg_")
+        style_relu_1, style_relu_2, style_relu_3, style_relu_4 = define_vgg16(pre_processing_style, weight_dict)
 
         pre_processing_content = define_vgg_pre_processing(content_image)
-        _, _, content_relu_3, _ = define_vgg16(pre_processing_content, weight_dict, prefix="content_vgg_")
+        _, _, content_relu_3, _ = define_vgg16(pre_processing_content, weight_dict)
 
         gram_output_relu_1 = define_gram_matrix(output_relu_1)
         gram_output_relu_2 = define_gram_matrix(output_relu_2)
@@ -515,23 +530,40 @@ class StyleTransferTensorFlowModel():
     def __init__(self, net_params, batch_size, num_styles, finetune_all_params=True, define_training_graph=True):
         _tf.reset_default_graph()
 
-        self.batch_size = batch_size
+        self._batch_size = batch_size
+        self._finetune_all_params = finetune_all_params
+        self._define_training_graph = define_training_graph
 
-        # TODO: change to take any size input
+        self._tf_variables = define_tensorflow_variables(net_params, finetune_all_params, prefix="transformer_")
+        vgg_variables = define_tensorflow_variables(net_params, False, prefix="vgg16_")
+        self._tf_variables.update(vgg_variables)
+
+        # TODO: take care of batch size
         self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
         self.tf_style = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
-        self.tf_index = _tf.placeholder(dtype = _tf.int64, shape = [None, 1])
+        self.tf_index = _tf.placeholder(dtype = _tf.int64, shape = [batch_size])
 
-        self.optimizer, self.loss, self.output = define_style_transfer_network(self.tf_input,
-                                                                               self.tf_index,
-                                                                               self.tf_style,
-                                                                               net_params,
-                                                                               finetune_all_params=finetune_all_params,
-                                                                               define_training_graph=define_training_graph)
+        self.__define_graph();
         
         self.sess = _tf.compat.v1.Session()
         init = _tf.compat.v1.global_variables_initializer()
         self.sess.run(init)
+
+    def __define_graph(self):
+        self.optimizer, self.loss, self.output = define_style_transfer_network(self.tf_input,
+                                                                               self.tf_index,
+                                                                               self.tf_style,
+                                                                               self._tf_variables,
+                                                                               self._define_training_graph)
+    @property
+    def batch_size(self):
+        return self._batch_size
+
+    @batch_size.setter
+    def batch_size(self, batch_size):
+        self._batch_size = batch_size
+        self.tf_index = _tf.placeholder(dtype = _tf.int64, shape = [batch_size])
+        self.__define_graph()
 
     def train(self, feed_dict):
         _, loss_value = self.sess.run([self.optimizer, self.loss], feed_dict=feed_dict)

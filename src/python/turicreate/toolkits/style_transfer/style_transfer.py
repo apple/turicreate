@@ -162,7 +162,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         'checkpoint': False,
         'checkpoint_prefix': 'style_transfer',
         'checkpoint_increment': 1000,
-        'use_tensorflow': True # TODO: Change to False
+        'use_tensorflow': False
     }
 
     if '_advanced_parameters' in kwargs:
@@ -249,8 +249,12 @@ def create(style_dataset, content_dataset, style_feature=None,
         _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
                                             cuda_mem_req=cuda_mem_req, has_mps_impl=False)
 
-    ## TODO: add TF Style Transfer Implementation
-    use_tf = params['finetune_all_params']
+    content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
+                                  feature_column=content_feature, input_shape=input_shape,
+                                  loader_type=content_loader_type, aug_params=params,
+                                  sequential=params['sequential_image_processing'])
+
+    use_tf = params['use_tensorflow']
     rs = _np.random.RandomState(1234)
     if use_tf:
         from ._tf_model_architecture import StyleTransferTensorFlowModel
@@ -262,18 +266,11 @@ def create(style_dataset, content_dataset, style_feature=None,
         tf_weights.update(tf_weights_vgg)
 
         tf_finetune_all_params = params['finetune_all_params']
-
         tf_model = StyleTransferTensorFlowModel(tf_weights, batch_size, num_styles, tf_finetune_all_params)
 
         tf_key_input = tf_model.tf_input
         tf_key_style = tf_model.tf_style
         tf_key_index = tf_model.tf_index
-
-        # TODO: change batch size for training
-        content_images_loader = _SFrameSTIter(content_dataset, 1, shuffle=True,
-                                  feature_column=content_feature, input_shape=input_shape,
-                                  loader_type=content_loader_type, aug_params=params,
-                                  sequential=params['sequential_image_processing'])
 
         style_images_loader = _SFrameSTIter(style_dataset, 1, shuffle=False, num_epochs=1,
                                         feature_column=style_feature, input_shape=input_shape,
@@ -295,15 +292,15 @@ def create(style_dataset, content_dataset, style_feature=None,
                 c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
                 Ls = []
                 for c in c_data:
-                    indices = rs.randint(num_styles, size=batch_size_each)
-                    tf_indicies = indices.reshape((len(indices), 1))
+                    tf_indicies = rs.randint(num_styles, size=batch_size_each)
 
                     tf_content_input = c.asnumpy().transpose(0, 2, 3, 1)
-                    tf_style_input = style_images[[0]]
+                    tf_style_input = style_images[tf_indicies]
 
                     tf_input = {tf_key_input: tf_content_input, tf_key_style: tf_style_input, tf_key_index: tf_indicies}
+                    loss_value = tf_model.train(tf_input)["loss"]
 
-                    Ls.append(tf_model.train(tf_input)["loss"])
+                    Ls.append(loss_value)
 
                 cur_loss = _np.mean(_np.array(Ls))
 
@@ -339,6 +336,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         transformer_param_keys = list(transformer.collect_params())
         for key in transformer_param_keys:
             weight = transformer.collect_params()[key].data()
+            # TODO: remove the :0
             if len(weight_dict[key + ":0"].shape) == 4:
                 weight = _mx.nd.array(weight_dict[key + ":0"].transpose(3, 2, 0, 1))
             else:
@@ -372,11 +370,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     #
     if verbose:
         print('Analyzing visual features of the style images')
-
-    content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
-                                  feature_column=content_feature, input_shape=input_shape,
-                                  loader_type=content_loader_type, aug_params=params,
-                                  sequential=params['sequential_image_processing'])
 
     style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
                                         feature_column=style_feature, input_shape=input_shape,

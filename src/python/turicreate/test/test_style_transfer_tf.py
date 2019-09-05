@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright © 2017 Apple Inc. All rights reserved.
+# Copyright © 2019 Apple Inc. All rights reserved.
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -24,6 +24,7 @@ from ..toolkits.style_transfer._tf_model_architecture import define_residual as 
 from ..toolkits.style_transfer._tf_model_architecture import define_resnet as _define_resnet
 from ..toolkits.style_transfer._tf_model_architecture import define_vgg16 as _define_vgg16
 from ..toolkits.style_transfer._tf_model_architecture import define_gram_matrix as _define_gram_matrix
+from ..toolkits.style_transfer._tf_model_architecture import define_tensorflow_variables as _define_tensorflow_variables
 
 from ..toolkits.style_transfer._model import InstanceNorm as _InstanceNorm
 from ..toolkits.style_transfer._model import ResidualBlock as _ResidualBlock
@@ -62,9 +63,10 @@ class StyleTransferTFTest(unittest.TestCase):
                 inst_norm_weight_dict[key] = weight
 
         self.tf_instance_norm_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 4, 4, 128])
-        self.tf_instance_norm_index = _tf.placeholder(dtype = _tf.int32, shape = [None, 1])
+        self.tf_instance_norm_index = _tf.placeholder(dtype = _tf.int32, shape = [1])
 
-        self.tf_instance_norm_net = _define_instance_norm(self.tf_instance_norm_input, self.tf_instance_norm_index, inst_norm_weight_dict, "instancenorm0_")
+        tf_variables = _define_tensorflow_variables(inst_norm_weight_dict, False, "instancenorm0_")
+        self.tf_instance_norm_net = _define_instance_norm(self.tf_instance_norm_input, self.tf_instance_norm_index, tf_variables, "instancenorm0_")
 
         tensorflow_input = np.random.random_sample((1, 4, 4, 128))
         mx_input = tensorflow_input.transpose(0, 3, 1, 2)
@@ -73,7 +75,7 @@ class StyleTransferTFTest(unittest.TestCase):
         init = _tf.compat.v1.global_variables_initializer()
         self.sess.run(init)
 
-        tf_instance_norm_out = self.sess.run(self.tf_instance_norm_net, feed_dict={self.tf_instance_norm_input: tensorflow_input, self.tf_instance_norm_index: _np.array([[0]])})
+        tf_instance_norm_out = self.sess.run(self.tf_instance_norm_net, feed_dict={self.tf_instance_norm_input: tensorflow_input, self.tf_instance_norm_index: _np.array([0])})
         mx_output = self.inst_norm_net(_mx.nd.array(mx_input), _mx.nd.array([0]))
 
         tf_mxnet_output = mx_output.asnumpy().transpose(0, 2, 3, 1)
@@ -109,15 +111,16 @@ class StyleTransferTFTest(unittest.TestCase):
                 residual_weight_dict[key] = weight
 
         self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 4, 4, 128])
-        self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [None, 1])
+        self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [1])
 
-        self.tf_residual_net = _define_residual(self.tf_input, self.tf_index, residual_weight_dict, "residualblock0_")
+        tf_variables = _define_tensorflow_variables(residual_weight_dict, False, "residualblock0_")
+        self.tf_residual_net = _define_residual(self.tf_input, self.tf_index, tf_variables, "residualblock0_")
 
         self.sess = _tf.compat.v1.Session()
         init = _tf.compat.v1.global_variables_initializer()
         self.sess.run(init)
 
-        tf_residual_out = self.sess.run(self.tf_residual_net, feed_dict={self.tf_input: tensorflow_input, self.tf_index: np.array([[0]])})
+        tf_residual_out = self.sess.run(self.tf_residual_net, feed_dict={self.tf_input: tensorflow_input, self.tf_index: np.array([0])})
 
         tf_mxnet_output = mxnet_out_tf.asnumpy().transpose(0, 2, 3, 1)
 
@@ -152,15 +155,16 @@ class StyleTransferTFTest(unittest.TestCase):
                 transformer_weight_dict[key] = weight
 
         self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
-        self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [None, 1])
+        self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [1])
 
-        self.tf_transformer_net = _define_resnet(self.tf_input, self.tf_index, transformer_weight_dict, "transformer_")
+        tf_variables = _define_tensorflow_variables(transformer_weight_dict, False, "transformer_")
+        self.tf_transformer_net = _define_resnet(self.tf_input, self.tf_index, tf_variables, "transformer_")
 
         self.sess = _tf.compat.v1.Session()
         init = _tf.compat.v1.global_variables_initializer()
         self.sess.run(init)
 
-        tf_transformer_out = self.sess.run(self.tf_transformer_net, feed_dict={self.tf_input: tensorflow_input, self.tf_index: np.array([[0]])})
+        tf_transformer_out = self.sess.run(self.tf_transformer_net, feed_dict={self.tf_input: tensorflow_input, self.tf_index: np.array([0])})
 
         tf_mxnet_output = mxnet_out_tf.asnumpy().transpose(0, 2, 3, 1)
 
@@ -196,7 +200,8 @@ class StyleTransferTFTest(unittest.TestCase):
 
         self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = [None, 256, 256, 3])
 
-        self.vgg16_net = _define_vgg16(self.tf_input, vgg16_weight_dict)
+        tf_variables = _define_tensorflow_variables(vgg16_weight_dict, False, "vgg16_")
+        self.vgg16_net = _define_vgg16(self.tf_input, tf_variables, "vgg16_")
 
         self.sess = _tf.compat.v1.Session()
         init = _tf.compat.v1.global_variables_initializer()
