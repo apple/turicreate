@@ -16,3 +16,4 @@ _mod_par = 'turicreate.toolkits.'
 
 # okay, this is a hack
 _feature_engineering = _LazyModuleLoader(_mod_par + '_feature_engineering')
+evaluation = _LazyModuleLoader(_mod_par + 'evaluation')
