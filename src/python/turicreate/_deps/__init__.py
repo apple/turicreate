@@ -64,14 +64,15 @@ def default_init_func(name, *args, **kwargs):
     else:
         return importlib.import_module(name)
 
-class LazyModuleLoader(ModuleType):
+class LazyModuleLoader(ModuleType, object):
     """ defer to load a module. If it's loaded, no exception but warning will be given. """
     # read-only member list -> used by __setattr__; see below
     _my_attrs_ = ['is_loaded', 'reload', 'get_module',
                   '_name', '_init_func', '_module', '_loaded']
     # ensure singleton; must be guarded by _ImportLockContext lock
     registry_ = set()
-    def __init__(self, name, init_func = default_init_func):
+
+    def __init__(self, name, init_func=default_init_func, is_lambda=False):
         """
         Once write then read only. `reload` can reset the state.
         Only singleton instance is allowed.
@@ -116,13 +117,14 @@ class LazyModuleLoader(ModuleType):
             raise ValueError("module name should not be empty")
         if name.startswith('.'):
             raise ValueError("only support absolute path import style")
-        # this will call setattr
+        # must set first to avoid recursion
         self._name = name
         self._init_func = init_func
 
         with _ImportLockContext():
-            if name in LazyModuleLoader.registry_:
+            if name in LazyModuleLoader.registry_ and not is_lambda:
                 raise RuntimeError("pkg {} is already taken by other LazyModuleLoader instance.".format(name))
+
             LazyModuleLoader.registry_.add(name)
             self._module = sys.modules.get(name, None)
             self._loaded = self._module is not None
@@ -236,16 +238,11 @@ class LazyModuleLoader(ModuleType):
                         sys.modules[self._name] = self._module
                     self._loaded = True
 
-    def save(self):
-        with _ImportLockContext():
-            self._load_module()
-            return (self._module.__class__, self._module.__dict__)
-
-    def load(cls, attributes):
-        obj = cls.__new__(cls)
-        obj.__dict__.update(attributes)
-        return obj
-
+    # pickle
+    def __reduce__(self):
+        def _init(*args, **kwargs):
+            return LazyModuleLoader(*args, **kwargs)
+        return (_init, (self._name, self._init_func, True))
 
 class LazyCallable(object):
     def __init__(self, lmod, func_name):
