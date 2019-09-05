@@ -13,56 +13,63 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-#### lazy importing all rarely used pkgs ###
-from turicreate._deps import LazyModuleLoader
-LazyModuleLoader('requests')
-########### end of lazy import #############
+from ._deps import LazyModuleLoader as _LazyModuleLoader
+from ._deps import LazyCallable as _LazyCallable
 
 __version__ = '{{VERSION_STRING}}'
 from turicreate.version_info import __version__
 
-# well, imports are order dependent
-from turicreate.data_structures.sgraph import Vertex, Edge
-from turicreate.data_structures.sgraph import load_sgraph
-SGraph = LazyModuleLoader('turicreate.data_structures.sgraph')
+import turicreate.toolkits
+from turicreate.toolkits import evaluation
+import turicreate.aggregate
 
+# must load
+from turicreate.data_structures.sgraph import Vertex, Edge
+from turicreate.data_structures.sgraph import SGraph
 from turicreate.data_structures.sarray import SArray
 from turicreate.data_structures.sframe import SFrame
-Sketch = LazyModuleLoader('turicreate.data_structures.sketch')
-Image = LazyModuleLoader('turicreate.data_structures.image')
-from turicreate.data_structures.sarray_builder import SArrayBuilder
-from turicreate.data_structures.sframe_builder import SFrameBuilder
+from turicreate.data_structures.sketch import Sketch
+from turicreate.data_structures.image import Image
+from .data_structures.sarray_builder import SArrayBuilder
+from .data_structures.sframe_builder import SFrameBuilder
 
-LazyModuleLoader('turicreate.aggregate')
-LazyModuleLoader('turicreate.toolkits')
-clustering = LazyModuleLoader('turicreate.toolkits.clustering')
-distances = LazyModuleLoader('turicreate.toolkits.distances')
+## bring load functions to the top level
+from turicreate.data_structures.sgraph import load_sgraph
+from turicreate.data_structures.sframe import load_sframe
+from turicreate.data_structures.sarray import load_sarray
 
-text_analytics = LazyModuleLoader('turicreate.toolkits.text_analytics')
-graph_analytics = LazyModuleLoader('turicreate.toolkits.graph_analytics')
+# lazy import under leaf module level
+import turicreate.toolkits.clustering as clustering
+from turicreate.toolkits.clustering import kmeans
+from turicreate.toolkits.clustering import dbscan
 
-connected_components = LazyModuleLoader('turicreate.toolkits.graph_analytics.connected_components')
-shortest_path = LazyModuleLoader('turicreate.toolkits.graph_analytics.shortest_path')
-kcore = LazyModuleLoader('turicreate.toolkits.graph_analytics.kcore')
-pagerank = LazyModuleLoader('turicreate.toolkits.graph_analytics.pagerank')
-graph_coloring = LazyModuleLoader('turicreate.toolkits.graph_analytics.graph_coloring')
-triangle_counting = LazyModuleLoader('turicreate.toolkits.graph_analytics.triangle_counting')
-degree_counting = LazyModuleLoader('turicreate.toolkits.graph_analytics.degree_counting')
-label_propagation = LazyModuleLoader('turicreate.toolkits.graph_analytics.label_propagation')
+# lazy import under leaf module level
+import turicreate.toolkits.graph_analytics as graph_analytics
+from turicreate.toolkits.graph_analytics import connected_components
+from turicreate.toolkits.graph_analytics import shortest_path
+from turicreate.toolkits.graph_analytics import kcore
+from turicreate.toolkits.graph_analytics import pagerank
+from turicreate.toolkits.graph_analytics import graph_coloring
+from turicreate.toolkits.graph_analytics import triangle_counting
+from turicreate.toolkits.graph_analytics import degree_counting
+from turicreate.toolkits.graph_analytics import label_propagation
 
-recommender = LazyModuleLoader('turicreate.toolkits.recommender')
-popularity_recommender = LazyModuleLoader('turicreate.toolkits.recommender.popularity_recommender')
-item_similarity_recommender = LazyModuleLoader('turicreate.toolkits.recommender.item_similarity_recommender')
-ranking_factorization_recommender =  LazyModuleLoader('turicreate.toolkits.recommender.ranking_factorization_recommender')
-item_content_recommender = LazyModuleLoader('turicreate.toolkits.recommender.item_content_recommender')
-factorization_recommender = LazyModuleLoader('turicreate.toolkits.recommender.factorization_recommender')
+# lazy import under leaf module level
+import turicreate.toolkits.recommender as recommender
+from turicreate.toolkits.recommender import popularity_recommender
+from turicreate.toolkits.recommender import item_similarity_recommender
+from turicreate.toolkits.recommender import ranking_factorization_recommender
+from turicreate.toolkits.recommender import item_content_recommender
+from turicreate.toolkits.recommender import factorization_recommender
 
+# lazy load under leaf node level
 import turicreate.toolkits.regression as regression
 from turicreate.toolkits.regression import boosted_trees_regression
 from turicreate.toolkits.regression import random_forest_regression
 from turicreate.toolkits.regression import decision_tree_regression
 from turicreate.toolkits.regression import linear_regression
 
+# lazy load under leaf node level
 import turicreate.toolkits.classifier as classifier
 from turicreate.toolkits.classifier import svm_classifier
 from turicreate.toolkits.classifier import logistic_classifier
@@ -71,34 +78,33 @@ from turicreate.toolkits.classifier import random_forest_classifier
 from turicreate.toolkits.classifier import decision_tree_classifier
 from turicreate.toolkits.classifier import nearest_neighbor_classifier
 
-nearest_neighbors = LazyModuleLoader('turicreate.toolkits.nearest_neighbors')
-kmeans = LazyModuleLoader('turicreate.toolkits.clustering.kmeans')
-dbscan = LazyModuleLoader('turicreate.toolkits.clustering.dbscan')
-topic_model = LazyModuleLoader('turicreate.toolkits.topic_model.topic_model')
+# lazy load under leaf node level
+from turicreate.toolkits.image_analysis import image_analysis
 
-text_classifier = LazyModuleLoader('turicreate.toolkits.text_classifier')
-image_classifier = LazyModuleLoader('turicreate.toolkits.image_classifier')
-image_similarity = LazyModuleLoader('turicreate.toolkits.image_similarity')
-object_detector = LazyModuleLoader('turicreate.toolkits.object_detector')
-one_shot_object_detector = LazyModuleLoader('turicreate.toolkits.one_shot_object_detector')
-style_transfer = LazyModuleLoader('turicreate.toolkits.style_transfer')
-sound_classifier = LazyModuleLoader('turicreate.toolkits.sound_classifier.sound_classifier')
-activity_classifier = LazyModuleLoader('turicreate.toolkits.activity_classifier')
-drawing_classifier = LazyModuleLoader('turicreate.toolkits.drawing_classifier')
+# self-encaps modules without from import statements
+# we can use top-level lazy import for them
+distances = _LazyModuleLoader('turicreate.toolkits.distances')
+nearest_neighbors = _LazyModuleLoader('turicreate.toolkits.nearest_neighbors')
+topci_model = _LazyModuleLoader('turicreate.toolkits.topci_model')
+text_analytics = _LazyModuleLoader('turicreate.toolkits.text_analytics')
+text_classifier = _LazyModuleLoader('turicreate.toolkits.text_classifier')
+image_classifier = _LazyModuleLoader('turicreate.toolkits.image_classifier')
+image_similarity = _LazyModuleLoader('turicreate.toolkits.image_similarity')
+object_detector = _LazyModuleLoader('turicreate.toolkits.object_detector')
+one_shot_object_detector = _LazyModuleLoader('turicreate.toolkits.one_shot_object_detector')
+style_transfer = _LazyModuleLoader('turicreate.toolkits.style_transfer')
+activity_classifier = _LazyModuleLoader('turicreate.toolkits.activity_classifier')
+drawing_classifier = _LazyModuleLoader('turicreate.toolkits.drawing_classifier')
 
-image_analysis = LazyModuleLoader('turicreate.toolkits.image_analysis')
-from turicreate.toolkits.image_analysis.image_analysis import load_images
-from turicreate.toolkits.audio_analysis.audio_analysis import load_audio
+# modules that don't expose attributes from __init__.py
+sound_classifier = _LazyModuleLoader('turicreate.toolkits.sound_classifier.sound_classifier')
+audio_analysis = _LazyModuleLoader('turicreate.toolkits.audio_analysis.audio_analysis')
+# lazy callable
+load_images = _LazyCallable(image_analysis, 'load_images')
+load_audio = _LazyCallable(audio_analysis, 'load_audio')
 
-evaluation = LazyModuleLoader('turicreate.toolkits.evaluation')
-
-# internal util
-from turicreate._connect.main import launch as _launch
-
-## bring load functions to the top level
-from turicreate.data_structures.sframe import load_sframe
-from turicreate.data_structures.sarray import load_sarray
-from turicreate.toolkits._model import load_model
+load_model = _LazyCallable(_LazyModuleLoader(
+    'turicreate.toolkits._model'), 'load_model')
 
 ################### Extension Importing ########################
 import turicreate.extensions
@@ -117,7 +123,7 @@ class _extensions_wrapper(object):
         return getattr(self._wrapped, name)
     except:
         pass
-    turicreate._connect.main.get_server()
+    turicreate._connect.main.get_unity()
     return getattr(self._wrapped, name)
 
 import sys as _sys
@@ -125,6 +131,8 @@ _sys.modules["turicreate.extensions"] = _extensions_wrapper(_sys.modules["turicr
 # rewrite the import
 extensions = _sys.modules["turicreate.extensions"]
 
-from turicreate.visualization import plot, show
+from .visualization import plot, show
 
+# internal util
+from turicreate._connect.main import launch as _launch
 _launch()

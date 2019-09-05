@@ -171,7 +171,7 @@ def _validate_composite_distance(distance):
 
         if isinstance(dist, str):
             try:
-                _tc.distances.__dict__[dist]
+                hasattr(_tc.distances, dist)
             except:
                 raise ValueError("Distance '{}' not recognized".format(dist))
 
@@ -214,7 +214,7 @@ def _convert_distance_names_to_functions(distance):
         _, dist, _ = d
         if isinstance(dist, str):
             try:
-                dist_out[i][1] = _tc.distances.__dict__[dist]
+                dist_out[i][1] = getattr(_tc.distances, dist)
             except:
                 raise ValueError("Distance '{}' not recognized.".format(dist))
 

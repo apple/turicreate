@@ -453,7 +453,6 @@ class SArray(object):
                         dtype = infer_type_of_sequence(data.values)
                 else:
                     dtype = None
-
             if (isinstance(data, str) or (sys.version_info.major <= 2 and isinstance(data, unicode))):
                 internal_url = _make_internal_url(data)
                 with cython_context():

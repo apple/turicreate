@@ -240,7 +240,14 @@ class CloudPickler(Pickler):
     def dump(self, obj):
         self.inject_addons()
         try:
-            return Pickler.dump(self, obj)
+            from turicreate._deps import LazyModuleLoader, LazyCallable
+            if isinstance(obj, LazyModuleLoader):
+                return Pickler.dump(self, obj.get_module())
+            elif isinstance(obj, LazyCallable):
+                return Pickler.dump(self, obj.get_function())
+            else:
+                print(obj)
+                return Pickler.dump(self, obj)
         except RuntimeError as e:
             if 'recursion' in e.args[0]:
                 msg = """Could not pickle object as excessively deep recursion required."""

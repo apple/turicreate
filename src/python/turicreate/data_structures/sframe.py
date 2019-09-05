@@ -39,6 +39,8 @@ import numbers
 import sys
 import six
 import csv
+import collections
+import array
 from collections import Iterable as _Iterable
 
 __all__ = ['SFrame']
@@ -752,13 +754,20 @@ class SFrame(object):
                 elif isinstance(data, dict):
                     _format = 'dict'
 
-                elif _is_non_string_iterable(data):
+                elif isinstance(data, (collections.Sequence, array.array)):
                     _format = 'array'
+
                 elif data is None:
                     _format = 'empty'
                 # defer importing pandas
-                if (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
+                elif (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
                     _format = 'dataframe'
+
+                # pandas.dataframe also is iterable
+                # so this check should be called after pandas check
+                # probably numpy.ndarray
+                elif _is_non_string_iterable(data):
+                    _format = 'array'
                 else:
                     raise ValueError('Cannot infer input type for data ' + str(data))
             else:

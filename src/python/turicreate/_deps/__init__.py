@@ -43,7 +43,7 @@ else:
     from importlib._bootstrap import _ImportLockContext
 
 # should always be guared by _ImportLockContext
-def default_init_func(name, *args):
+def default_init_func(name, *args, **kwargs):
     """
     called within _ImportLockContext(); no import lock should be hold inside
     """
@@ -67,8 +67,8 @@ def default_init_func(name, *args):
 class LazyModuleLoader(ModuleType):
     """ defer to load a module. If it's loaded, no exception but warning will be given. """
     # read-only member list -> used by __setattr__; see below
-    _my_attrs_ = ['init_func_', 'loaded_', 'module_',
-                'name_', 'is_loaded', 'reload']
+    _my_attrs_ = ['is_loaded', 'reload', 'get_module',
+                  '_name', '_init_func', '_module', '_loaded']
     # ensure singleton; must be guarded by _ImportLockContext lock
     registry_ = set()
     def __init__(self, name, init_func = default_init_func):
@@ -117,18 +117,18 @@ class LazyModuleLoader(ModuleType):
         if name.startswith('.'):
             raise ValueError("only support absolute path import style")
         # this will call setattr
-        self.name_ = name
-        self.init_func_ = init_func
+        self._name = name
+        self._init_func = init_func
 
         with _ImportLockContext():
             if name in LazyModuleLoader.registry_:
                 raise RuntimeError("pkg {} is already taken by other LazyModuleLoader instance.".format(name))
             LazyModuleLoader.registry_.add(name)
-            self.module_ = sys.modules.get(name, None)
-            self.loaded_ = self.module_ is not None
+            self._module = sys.modules.get(name, None)
+            self._loaded = self._module is not None
 
-            if self.loaded_:
-                if not isinstance(self.module_, LazyModuleLoader):
+            if self._loaded:
+                if not isinstance(self._module, LazyModuleLoader):
                     _logging.debug("turicreate: {} is loaded ahead and it cannot be"
                                    " be deffered by LazyModuleLoader".format(name))
                 else:
@@ -140,41 +140,41 @@ class LazyModuleLoader(ModuleType):
         try:
             with _ImportLockContext():
                 try:
-                    LazyModuleLoader.registry_.remove(self.name_)
+                    LazyModuleLoader.registry_.remove(self._name)
                 except Exception as e:
-                    _logging.fatal("error{}: {} removes {}".format(e, LazyModuleLoader.registry_, self.name_))
-        except TypeError as e:
+                    _logging.fatal("error{}: {} removes {}".format(e, LazyModuleLoader.registry_, self._name))
+        except Exception as e:
             # TypeError: 'NoneType' object is not callable
             # happens when python exits and modules are all destructed
             # even _logging is set to None
-            if "'NoneType' object is not callable" in str(e):
+            if "'NoneType'" in str(e):
                 pass
             else:
                 raise e
 
     def __str__(self):
-        if self.module_:
-            return "triggered LazyModuleLoader: {}".format(self.module_.__repr__())
-        return "lazy loading of module %s" % self.name_
+        if self._module:
+            return "triggered LazyModuleLoader: {}".format(self._module.__repr__())
+        return "lazy loading of module %s" % self._name
 
     def __repr__(self):
-        if self.module_:
-            return "triggered LazyModuleLoader: {}".format(self.module_.__repr__())
-        return "lazy loading of module %s" % self.name_
+        if self._module:
+            return "triggered LazyModuleLoader: {}".format(self._module.__repr__())
+        return "lazy loading of module %s" % self._name
 
     def __dir__(self):
         # for interactive autocompletion
-        if self.module_:
-            return dir(self.module_)
+        if self._module:
+            return dir(self._module)
         return self._my_attrs_ + super(LazyModuleLoader, self).__dir__()
 
     def __getattr__(self, attr):
         self._load_module()
-        return getattr(self.module_, attr)
+        return getattr(self._module, attr)
 
     def __delattr__(self, attr):
         self._load_module()
-        return delattr(self.module_, attr)
+        return delattr(self._module, attr)
 
     def __setattr__(self, attr, value):
         """
@@ -182,52 +182,93 @@ class LazyModuleLoader(ModuleType):
         instead of the real module object;
         """
         # don't use is_loaded; it will trigger getattr
+        # avoid infinite recursion by self._load_module()
+        # when self._load is not set first
         if attr in self._my_attrs_:
             # workaround for the recursive setattr
             return super(LazyModuleLoader, self).__setattr__(attr, value)
         else:
             self._load_module()
-            setattr(self.module_, attr, value)
+            setattr(self._module, attr, value)
 
     def is_loaded(self, no_lock=True):
         if no_lock:
-            return self.loaded_
+            return self._loaded
         else:
             with _ImportLockContext():
-                return self.loaded_
+                return self._loaded
 
     def reload(self):
         # for dev purpose
         with _ImportLockContext():
-            self.module_ = None
-            self.loaded_ = False
-            sys.modules.pop(self.name_, None)
+            self._module = None
+            self._loaded = False
+            sys.modules.pop(self._name, None)
+
+    # for pickle purpose
+    # I like Chinese pickle; let's make some pickles
+    def get_module(self):
+        with _ImportLockContext():
+            self._load_module()
+            return self._module
 
     # should this be locked ???
     def _load_module(self):
         # call module.__init__ after import introspection is done
-        if not self.loaded_:
+        if not self._loaded:
             with _ImportLockContext():
                 # avoid concurrent loading
-                if not self.loaded_:
+                if not self._loaded:
                     # if it's imported by other pkg after __init__,
                     # we don't bother to inject ourselves because
                     # there's no need to lazy load if it's loaded explicitly.
                     # e.g.
                     # import numpy as np
                     # np = LazyModuleLoader('numpy')
-                    self.module_ = sys.modules.get(self.name_, None)
-                    if self.module_ is None:
+                    self._module = sys.modules.get(self._name, None)
+                    if self._module is None:
                         # make sure we clean it up
-                        sys.modules.pop(self.name_, None)
-                        self.module_ = self.init_func_(self.name_)
+                        sys.modules.pop(self._name, None)
+                        self._module = self._init_func(self._name)
                         # subsequent imports will use the real object
                         # import pandas from outside turicreate won't know
                         # nothing inside
-                        sys.modules[self.name_] = self.module_
-                    self.loaded_ = True
+                        sys.modules[self._name] = self._module
+                    self._loaded = True
+
+    def save(self):
+        with _ImportLockContext():
+            self._load_module()
+            return (self._module.__class__, self._module.__dict__)
+
+    def load(cls, attributes):
+        obj = cls.__new__(cls)
+        obj.__dict__.update(attributes)
+        return obj
 
 
+class LazyCallable(object):
+    def __init__(self, lmod, func_name):
+        if not isinstance(lmod, ModuleType):
+            raise TypeError("lmod must be a ModuleType")
+        self._lmod = lmod
+        if not isinstance(func_name, six.string_types):
+            raise TypeError("func_name must be a string")
+        self._func_name = func_name
+
+    def __call__(self, *args, **kwargs):
+        return getattr(self._lmod, self._func_name)(*args, **kwargs)
+
+    # for pickle purpose
+    # I like korean pickle too; so let's make some pickle
+    def get_callable(self, *args, **kwargs):
+        return getattr(self._lmod, self._func_name)(*args, **kwargs)
+
+    def __str__(self):
+        return "LazyCallable of function '%s'" % self._func_name
+
+    def __repr__(self):
+        return repr(getattr(self._lmod, self._func_name))
 
 def __get_version(version):
     # matching 1.6.1, and 1.6.1rc, 1.6.1.dev
