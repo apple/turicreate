@@ -3,14 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#import "JSCanvas.h"
-#import "LogProxy.h"
-#import "colors.h"
+#import "TCVegaJSCanvas.h"
+#import "TCVegaLogger.h"
+#import "TCVegaLogProxy.h"
+#import "TCVegaCGColorMap.h"
+#import "TCVegaPortabilityTypes.h"
 
-#import <AppKit/AppKit.h>
 #import <CoreText/CoreText.h>
 
-@implementation VegaCGLinearGradient
+@implementation TCVegaCGLinearGradient
 {
     double _x0;
     double _y0;
@@ -27,14 +28,30 @@
     _colorStops = [[NSMutableArray alloc] init];
     return self;
 }
+
+- (instancetype)initWithDictionary:(NSDictionary*)values {
+    double x0 = [(NSNumber*) values[@"x1"] doubleValue];
+    double y0 = [(NSNumber*) values[@"y1"] doubleValue];
+    double x1 = [(NSNumber*) values[@"x2"] doubleValue];
+    double y1 = [(NSNumber*) values[@"y2"] doubleValue];
+    
+    self = [self initWithX0:x0 y0:y0 x1:x1 y1:y1];
+    
+    for(NSDictionary* stop in values[@"stops"]) {
+        double offset = [(NSNumber*) stop[@"offset"] doubleValue];
+        [self addColorStopWithOffset:offset color:stop[@"color"]];
+    }
+    return self;
+}
+
 - (void)addColorStopWithOffset:(double)offset color:(NSString *)color {
-    CGColorRef cgcolor = [VegaCGContext newColorFromString:color];
+    CGColorRef cgcolor = [TCVegaCGContext newColorFromString:color];
     [_colorStops addObject:@[@(offset), (__bridge_transfer id)cgcolor]];
 }
 - (void)fillWithContext:(CGContextRef)context {
     CGContextSaveGState(context);
     CGColorSpaceRef colorSpace = CGColorSpaceCreateDeviceRGB();
-    CFMutableArrayRef colors = CFArrayCreateMutable(NULL, _colorStops.count, NULL);
+    CFMutableArrayRef colors = CFArrayCreateMutable(NULL, (CFIndex)_colorStops.count, NULL);
     CGFloat offsets[_colorStops.count];
     for (size_t i=0; i<_colorStops.count; i++) {
         NSArray *values = _colorStops[i];
@@ -60,16 +77,25 @@
 }
 @end
 
-@implementation VegaCGFontProperties
+@implementation TCVegaCGFontProperties
+
+@synthesize cssFontString;
+@synthesize fontFamily;
+@synthesize fontSize;
+@synthesize fontVariant;
+@synthesize fontWeight;
+@synthesize fontStyle;
+@synthesize lineHeight;
+
 - (instancetype)initWithString:(NSString*)fontStr {
     self = [super init];
-    _cssFontString = fontStr;
-    _fontFamily = nil;
-    _fontSize = nil;
-    _fontVariant = nil;
-    _fontWeight = nil;
-    _fontStyle = nil;
-    _lineHeight = nil;
+    self.cssFontString = fontStr;
+    self.fontFamily = nil;
+    self.fontSize = nil;
+    self.fontVariant = nil;
+    self.fontWeight = nil;
+    self.fontStyle = nil;
+    self.lineHeight = nil;
 
     NSArray<NSString *> *elements = [fontStr componentsSeparatedByCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     for (size_t i=0; i<elements.count; i++) {
@@ -79,11 +105,11 @@
         }
         if ([element isEqualToString:@"italic"] ||
             [element isEqualToString:@"oblique"]) {
-            _fontStyle = element;
+            self.fontStyle = element;
             continue;
         }
         if ([element isEqualToString:@"small-caps"]) {
-            _fontVariant = element;
+            self.fontVariant = element;
             continue;
         }
         if ([element isEqualToString:@"bold"] ||
@@ -98,46 +124,44 @@
             [element isEqualToString:@"700"] ||
             [element isEqualToString:@"800"] ||
             [element isEqualToString:@"900"]) {
-            _fontWeight = element;
+            self.fontWeight = element;
             continue;
         }
-        if (_fontSize == nil) {
+        if (self.fontSize == nil) {
             NSArray<NSString *> *parts = [element componentsSeparatedByString:@"/"];
-            _fontSize = parts[0];
+            self.fontSize = parts[0];
             if (parts.count > 1) {
-                _lineHeight = parts[1];
+                self.lineHeight = parts[1];
                 assert(parts.count == 2);
             }
             continue;
         }
-        _fontFamily = element;
+        self.fontFamily = element;
         if (i < elements.count - 1) {
             NSArray<NSString *> *remainingElements = [elements subarrayWithRange:NSMakeRange(i+1, elements.count-(i+1))];
-            _fontFamily = [_fontFamily stringByAppendingString:[@" " stringByAppendingString:[remainingElements componentsJoinedByString:@" "]]];
+            self.fontFamily = [self.fontFamily stringByAppendingString:[@" " stringByAppendingString:[remainingElements componentsJoinedByString:@" "]]];
         }
         break;
     }
 
-    if ([_fontFamily isEqualToString:@"sans-serif"]) {
-        _fontFamily = @"Helvetica";
+    if ([self.fontFamily isEqualToString:@"sans-serif"]) {
+        self.fontFamily = @"Helvetica";
     }
 
     return self;
 }
 @end
 
-@implementation VegaCGImage
+@implementation TCVegaCGImage
 @end
 
-@implementation VegaCGTextMetrics
+@implementation TCVegaCGTextMetrics
 @synthesize width;
 @end
 
-@implementation VegaCGContext
+@implementation TCVegaCGContext
 {
     // MUST only use these from property setter/getters
-    CGLayerRef _layer;
-
     JSValue * _fillStyle;
     double _globalAlpha;
     NSString * _lineCap;
@@ -149,22 +173,13 @@
     CGAffineTransform _currentTransform;
     double _lineDashOffset;
     NSString *_font;
-    NSFont *_nsFont;
-    CGContextRef _parentContext;
-}
-
-- (void)setLayer:(CGLayerRef)layer {
-    CFRetain(layer);
-    CGLayerRelease(_layer);
-    _layer = layer;
-}
-
-- (CGLayerRef)layer {
-    return _layer;
+    TCVegaRendererNativeFont *_nsFont;
+    CGContextRef _bitmapContext;
 }
 
 - (CGContextRef)context {
-    return CGLayerGetContext(self.layer);
+    assert(_bitmapContext != nil);
+    return _bitmapContext;
 }
 
 + (CGAffineTransform)flipYAxisWithHeight:(double)height {
@@ -180,18 +195,28 @@
     width = MAX(1, width);
     height = MAX(1, height);
 
-    // Because we are about to create a new layer, set up other relevant
+    // Because we are about to create a new context, set up other relevant
     // instance properties so they are in the right state.
-    _currentTransform = CGAffineTransformIdentity;
     assert(self != nil);
-    CGLayerRef layer = CGLayerCreateWithContext(_parentContext, CGSizeMake(width, height), nil);
-    self.layer = layer;
-    CGLayerRelease(layer);
+    _currentTransform = CGAffineTransformIdentity;
+    
+    const size_t BITS_PER_COMPONENT = 8;
+    const size_t BYTES_PER_ROW = 0; // setting to zero results in automatic calculation
+    CGColorSpaceRef colorspace = CGColorSpaceCreateDeviceRGB();
+    
+    _bitmapContext = CGBitmapContextCreate(nil, (size_t)width, (size_t)height, BITS_PER_COMPONENT, BYTES_PER_ROW, colorspace, kCGImageAlphaPremultipliedLast);
+    
+    CGColorSpaceRelease(colorspace);
+#if TARGET_OS_OSX
     CGContextConcatCTM(self.context, [self.class flipYAxisWithHeight:height]);
+#endif
 }
 
 - (double)width {
-    return CGLayerGetSize(self.layer).width;
+    if(_bitmapContext == nil) {
+        return 1;
+    }
+    return CGBitmapContextGetWidth(_bitmapContext);
 }
 
 - (void)setWidth:(double)width {
@@ -199,23 +224,23 @@
 }
 
 - (double)height {
-    return CGLayerGetSize(self.layer).height;
+    if(_bitmapContext == nil) {
+        return 1;
+    }
+    return CGBitmapContextGetHeight(_bitmapContext);
 }
 
 - (void)setHeight:(double)height {
     [self resizeWithWidth:self.width height:height];
 }
 
-- (instancetype)initWithContext:(CGContextRef)parentContext {
+- (instancetype)init {
     self = [super init];
-    _layer = nil;
-    _parentContext = parentContext;
     return self;
 }
 
 - (void)dealloc {
-    CGLayerRelease(_layer);
-    _layer = nil;
+    CGContextRelease(_bitmapContext);
 }
 
 // properties
@@ -224,10 +249,11 @@
     return _fillStyle;
 }
 - (void)setFillStyle:(JSValue *)fillStyle {
-    _fillStyle = [LogProxy tryUnwrap:fillStyle];
-    if (!_fillStyle.isString) {
-        assert(_fillStyle.isObject);
-        assert([_fillStyle.toObject isKindOfClass:VegaCGLinearGradient.class]);
+    _fillStyle = fillStyle;
+    if ([_fillStyle isObject] && [_fillStyle.toObject isKindOfClass:NSDictionary.class]) {
+        _fillStyle = [JSValue valueWithObject:[[TCVegaCGLinearGradient alloc] initWithDictionary:fillStyle.toObject] inContext:fillStyle.context];
+    } else if (![_fillStyle isString]) {
+        assert([_fillStyle isObject] && [_fillStyle.toObject isKindOfClass:TCVegaCGLinearGradient.class]);
     }
 }
 
@@ -241,7 +267,7 @@
         color = [self.class newColorFromString:_fillStyle.toString];
     }
     assert(color != nil);
-    NSColor *nsColor = [NSColor colorWithCGColor:color];
+    TCVegaRendererNativeColor *nsColor = [TCVegaRendererNativeColor colorWithCGColor:color];
     CGColorRelease(color);
     return @{
              NSFontAttributeName: _nsFont,
@@ -250,7 +276,7 @@
 }
 
 - (void)setFont:(NSString *)fontStr {
-    VegaCGFontProperties *fontProperties = [[VegaCGFontProperties alloc] initWithString:fontStr];
+    TCVegaCGFontProperties *fontProperties = [[TCVegaCGFontProperties alloc] initWithString:fontStr];
 
     // TODO - allow other font properties
     // for now, make sure we don't need to handle them
@@ -268,61 +294,75 @@
 
     assert(fontSize > 0 && fontSize < 1000);
 
-    NSFont *newFont;
+    TCVegaRendererNativeFont *newFont;
     if (fontProperties.fontFamily == nil) {
-        newFont = [NSFont systemFontOfSize:fontSize];
+        newFont = [TCVegaRendererNativeFont systemFontOfSize:fontSize];
     } else {
+#if TARGET_OS_OSX
         NSFontManager *fontManager = [NSFontManager sharedFontManager];
+#endif
         NSArray<NSString *> *possibleFontFamilies = [fontProperties.fontFamily componentsSeparatedByString:@","];
         for (NSString * __strong possibleFontFamily in possibleFontFamilies) {
             possibleFontFamily = [possibleFontFamily stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
-            newFont = [NSFont fontWithName:possibleFontFamily size:fontSize];
+            newFont = [TCVegaRendererNativeFont fontWithName:possibleFontFamily size:fontSize];
             if (newFont != nil && fontProperties.fontWeight != nil) {
                 if ([fontProperties.fontWeight isEqualToString:@"bold"]) {
+#if TARGET_OS_OSX
                     newFont = [fontManager convertFont:newFont toHaveTrait:NSBoldFontMask];
+#else
+                    UIFontDescriptor *descriptor = [[newFont fontDescriptor] fontDescriptorWithSymbolicTraits:UIFontDescriptorTraitBold];
+                    newFont = [TCVegaRendererNativeFont fontWithDescriptor:descriptor size:newFont.pointSize];
+#endif
                     assert(newFont != nil);
                 } else if (fontProperties.fontWeight.length == 3 &&
                            [[fontProperties.fontWeight substringFromIndex:1] isEqualToString:@"00"]) {
                     NSString *weightString = [fontProperties.fontWeight substringToIndex:1];
                     NSInteger weightInt = weightString.intValue;
-                    NSFontWeight weight = NSFontWeightRegular;
+                    NSInteger weight = -1;
+                    // Convert fonts from a scale from 100 - 900, to
+                    // a scale from 0 to 15. We only look at the first digit,
+                    // which is why we switch on 1 through 9.
                     switch (weightInt) {
                         case 1:
-                            weight = NSFontWeightUltraLight;
+                            weight = 1;
                             break;
                         case 2:
-                            weight = NSFontWeightThin;
+                            weight = 3;
                             break;
                         case 3:
-                            weight = NSFontWeightLight;
+                            weight = 4;
                             break;
                         case 4:
-                            weight = NSFontWeightRegular;
+                            weight = 5;
                             break;
                         case 5:
-                            weight = NSFontWeightMedium;
+                            weight = 6;
                             break;
                         case 6:
-                            weight = NSFontWeightSemibold;
+                            weight = 8;
                             break;
                         case 7:
-                            weight = NSFontWeightBold;
+                            weight = 9;
                             break;
                         case 8:
-                            weight = NSFontWeightHeavy;
+                            weight = 10;
                             break;
                         case 9:
-                            weight = NSFontWeightBlack;
+                            weight = 12;
                             break;
                         default:
-                            NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
+                            os_log_debug(TCVegaLogger.instance, "Encountered unexpected font weight %s", fontProperties.fontWeight.UTF8String);
                             assert(false);
                     }
+#if TARGET_OS_OSX
                     newFont = [fontManager fontWithFamily:newFont.familyName traits:[fontManager traitsOfFont:newFont] weight:weight size:newFont.pointSize];
+#else
+                    // TODO apply font weights in non-macOS
+#endif
                     assert(newFont != nil);
                 } else {
                     // unexpected font weight
-                    NSLog(@"Encountered unexpected font weight %@", fontProperties.fontWeight);
+                    os_log_debug(TCVegaLogger.instance, "Encountered unexpected font weight %s", fontProperties.fontWeight.UTF8String);
                     assert(false);
                 }
             }
@@ -333,9 +373,9 @@
     }
 
     if(newFont == nil) {
-        newFont = [NSFont systemFontOfSize:fontSize];
+        newFont = [TCVegaRendererNativeFont systemFontOfSize:fontSize];
         // TODO should we be updating _font to reflect the system font we've fallen back to?
-        NSLog(@"The specified font: '%@' is unavailable. Falling back to '%@'.", fontStr, [newFont displayName]);
+        os_log_debug(TCVegaLogger.instance, "The specified font: '%s' is unavailable. Falling back to '%s'.", fontStr.UTF8String, newFont.displayName.UTF8String);
     } else {
         _font = fontStr;
     }
@@ -405,19 +445,23 @@
     CGContextSetMiterLimit(self.context, _miterLimit);
 }
 
-- (double)pixelRatio {
-    return 1;
-}
-
-- (void)setPixelRatio:(double)pixelRatio {
-    (void)pixelRatio;
-    assert(pixelRatio == 1);
-    // TODO: not sure what to do with this...
-    // but let's assume we don't have to do anything if it's 1.0.
-}
-
 - (NSString *)strokeStyle {
     return _strokeStyle;
+}
+
+- (BOOL)isPointInPathWithX:(double)x y:(double)y {
+#if TARGET_OS_OSX
+    CGAffineTransform transform = CGContextGetCTM(self.context);
+    CGAffineTransform flipYAxis = [self.class flipYAxisWithHeight:self.height];
+    CGContextConcatCTM(self.context, CGAffineTransformInvert(transform));
+    CGContextConcatCTM(self.context, flipYAxis);
+#endif
+    BOOL inPath = CGContextPathContainsPoint(self.context, CGPointMake(x, y), kCGPathFillStroke);
+#if TARGET_OS_OSX
+    CGContextConcatCTM(self.context, CGAffineTransformInvert(flipYAxis));
+    CGContextConcatCTM(self.context, transform);
+#endif
+    return inPath;
 }
 
 + (CGColorRef) newColorFromR:(unsigned int) r
@@ -476,7 +520,7 @@
         [[NSScanner scannerWithString:bs] scanHexInt:&b];
         [[NSScanner scannerWithString:as] scanHexInt:&a];
         return [self.class newColorFromR:r G:g B:b A:a];
-    } else if ([[str substringToIndex:4] isEqualToString:@"rgb("]) {
+    } else if ([str length] >= 4 && [[str substringToIndex:4] isEqualToString:@"rgb("]) {
         // parse as RGB integers like rgb(r,g,b)
         str = [str stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
         int r,g,b;
@@ -486,8 +530,8 @@
         [[NSScanner scannerWithString:components[0]] scanInt:&r];
         [[NSScanner scannerWithString:components[1]] scanInt:&g];
         [[NSScanner scannerWithString:components[2]] scanInt:&b];
-        return [self.class newColorFromR:r G:g B:b A:255];
-    } else if ([[str substringToIndex:5] isEqualToString:@"rgba("]) {
+        return [self.class newColorFromR:(unsigned int)r G:(unsigned int)g B:(unsigned int)b A:255];
+    } else if ([str length] >= 5 && [[str substringToIndex:5] isEqualToString:@"rgba("]) {
         // parse as RGBA integers like rgb(r,g,b,a)
         str = [str stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
         int r,g,b;
@@ -499,9 +543,9 @@
         [[NSScanner scannerWithString:components[1]] scanInt:&g];
         [[NSScanner scannerWithString:components[2]] scanInt:&b];
         [[NSScanner scannerWithString:components[3]] scanDouble:&a];
-        return [self.class newColorFromR:r G:g B:b A:(a*255.0)];
+        return [self.class newColorFromR:(unsigned int)r G:(unsigned int)g B:(unsigned int)b A:(unsigned int)(a*255.0)];
     } else {
-        return [self.class newColorFromString:[[VegaCGColorMap map] objectForKey:str]];
+        return [self.class newColorFromString:[[TCVegaCGColorMap map] objectForKey:str]];
     }
 }
 
@@ -525,7 +569,7 @@
 
 - (JSValue *)measureText:(NSString *)text {
     NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:text attributes:self.textAttributes];
-    VegaCGTextMetrics *ret = [[VegaCGTextMetrics alloc] init];
+    TCVegaCGTextMetrics *ret = [[TCVegaCGTextMetrics alloc] init];
     ret.width = attrStr.size.width;
     return [LogProxy wrapObject:ret];
 }
@@ -606,20 +650,34 @@
     CGPathRelease(currentPath);
 }
 
+- (void)strokeTextWithString:(NSString *)string x:(double)x y:(double)y {
+    [self textWithString:string x:x y:y drawingMode:kCGTextStroke];
+}
+
 - (void)fillTextWithString:(NSString *)string x:(double)x y:(double)y {
+    [self textWithString:string x:x y:y drawingMode:kCGTextFill];
+}
+
+- (void)textWithString:(NSString *)string x:(double)x y:(double)y drawingMode:(CGTextDrawingMode)mode {
     // Get rid of the transformations on the context
     CGContextSaveGState(self.context);
+#if TARGET_OS_OSX
     CGAffineTransform flipYAxis = [self.class flipYAxisWithHeight:self.height];
     CGContextConcatCTM(self.context, CGAffineTransformInvert(flipYAxis));
-
+#endif
+    
     // Reapply the transformations, but only on the coordinates,
     // so we don't flip the text upside down
+#if TARGET_OS_OSX
     CGPoint coords = CGPointApplyAffineTransform(CGPointMake(x, y), flipYAxis);
+#else
+    CGPoint coords = CGPointMake(x, y);
+#endif
     NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:string attributes:self.textAttributes];
     CTLineRef line = CTLineCreateWithAttributedString((__bridge CFAttributedStringRef)attrStr);
     assert(line != nil);
     double width = attrStr.size.width;
-
+    
     if ([_textAlign isEqualToString:@"right"]) {
         coords.x -= width;
     } else if ([_textAlign isEqualToString:@"center"]) {
@@ -628,13 +686,13 @@
         // TODO implement other alignments
         assert(_textAlign == nil || [_textAlign isEqualToString:@"left"]);
     }
-
+    
     CGContextSetTextPosition(self.context, coords.x, coords.y);
-    CGContextSetTextDrawingMode(self.context, kCGTextFill);
-
+    CGContextSetTextDrawingMode(self.context, mode);
+    
     CTLineDraw(line, self.context);
     CGContextRestoreGState(self.context);
-
+    
     CFRelease(line);
 }
 
@@ -681,8 +739,8 @@
         CGContextFillPath(self.context);
     } else {
         assert(_fillStyle.isObject);
-        assert([_fillStyle.toObject isKindOfClass:VegaCGLinearGradient.class]);
-        VegaCGLinearGradient *gradient = _fillStyle.toObject;
+        assert([_fillStyle.toObject isKindOfClass:TCVegaCGLinearGradient.class]);
+        TCVegaCGLinearGradient *gradient = _fillStyle.toObject;
         [gradient fillWithContext:self.context];
     }
     CGContextAddPath(self.context, currentPath);
@@ -690,23 +748,30 @@
 }
 
 - (JSValue *)createLinearGradientWithX0:(double)x0 y0:(double)y0 x1:(double)x1 y1:(double)y1 {
-    VegaCGLinearGradient *ret = [[VegaCGLinearGradient alloc] initWithX0:x0 y0:y0 x1:x1 y1:y1];
-    return [LogProxy wrapObject:ret];
+    TCVegaCGLinearGradient *ret = [[TCVegaCGLinearGradient alloc] initWithX0:x0 y0:y0 x1:x1 y1:y1];
+    assert(JSContext.currentContext != nil);
+    return [JSValue valueWithObject:ret inContext:JSContext.currentContext];
 }
+
+
+
+@synthesize pixelRatio;
 
 @end
 
-@implementation VegaCGCanvas
+@implementation TCVegaCGCanvas
 
-- (instancetype)initWithContext:(CGContextRef)parentContext {
+@synthesize context;
+
+- (instancetype)init {
     self = [super initWithTagName:@"canvas"];
     if(self) {
-        self.context = [[VegaCGContext alloc] initWithContext:parentContext];
+        self.context = [[TCVegaCGContext alloc] init];
     }
     return self;
 }
 
-- (VegaCGContext *)getContext:(NSString *)type {
+- (TCVegaCGContext *)getContext:(NSString *)type {
     assert([type isEqualToString:@"2d"]); // no other types handled
     return self.context;
 }
