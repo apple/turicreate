@@ -267,6 +267,10 @@ class LazyCallable(object):
     def __repr__(self):
         return repr(getattr(self._lmod, self._func_name))
 
+    def __reduce__(self):
+        _init = lambda x : x
+        return (_init, getattr(self._lmod, self._func_name))
+
 def __get_version(version):
     # matching 1.6.1, and 1.6.1rc, 1.6.1.dev
     version_regex = '^\d+\.\d+\.\d+'
