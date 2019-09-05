@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-# Copyright © 2017 Apple Inc. All rights reserved.
+# Copyright © 2019 Apple Inc. All rights reserved.
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -14,13 +14,12 @@ import numpy as _np
 class ODTensorFlowModel(object):
 
     def __init__(self, input_image_shape, batch_size, output_size, init_weights, config, is_train=True):
-        _tf.compat.v1.get_default_graph()
+        #_tf.compat.v1.get_default_graph()
 
         self.config = config
         self.batch_size = batch_size
         self.input_image_shape = input_image_shape
         self.grid_shape = config['grid_shape']
-        self.box_per_cell = config['box_per_cell']
         self.num_classes = config['num_classes']
         self.anchors = config['anchors']
         self.num_anchors = len(self.anchors)
@@ -32,7 +31,7 @@ class ODTensorFlowModel(object):
                                                               self.input_image_shape[2], 3], name='images')
         self.labels = _tf.compat.v1.placeholder(_tf.float32,
                                 [self.batch_size, self.grid_shape[0], self.grid_shape[1],
-                                 self.box_per_cell, self.num_classes + 5],
+                                 self.num_anchors, self.num_classes + 5],
                                 name='labels')
 
         self.init_weights = init_weights
@@ -56,11 +55,9 @@ class ODTensorFlowModel(object):
         self.opt = _tf.compat.v1.train.MomentumOptimizer(self.lr, momentum=0.9)
 
         self.clip_value = self.config.get('gradient_clipping')
-
-        if self.clip_value is not None:
-            grads_and_vars = self.opt.compute_gradients(self.loss)
-            clipped_gradients = [(self.ClipIfNotNone(g, self.clip_value), v) for g, v in grads_and_vars]
-            self.train_op = self.opt.apply_gradients(clipped_gradients, global_step=self.global_step)
+        grads_and_vars = self.opt.compute_gradients(self.loss)
+        clipped_gradients = [(self.ClipIfNotNone(g, self.clip_value), v) for g, v in grads_and_vars]
+        self.train_op = self.opt.apply_gradients(clipped_gradients, global_step=self.global_step)
 
         self.sess = _tf.compat.v1.Session()
         self.sess.run(_tf.compat.v1.global_variables_initializer())
@@ -71,11 +68,12 @@ class ODTensorFlowModel(object):
     def load_weights(self, tf_net_params):
         """
         Function to load MXNet weights into TensorFlow
-        :param tf_net_params: Dictionary
+
+        Parameters
+        ----------
+        tf_net_params: Dictionary
             Dict with MXNet weights and names
 
-        :return:
-            Does not return a value
         """
 
         for keys in tf_net_params:
@@ -83,6 +81,8 @@ class ODTensorFlowModel(object):
                 self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(keys+":0"),
                                                    tf_net_params[keys]))
             elif tf_net_params[keys].ndim == 4:
+                # Converting from [output_channels, input_channels, filter_height, filter_width] to
+                # [filter_height, filter_width, input_channels, output_channels]
                 self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(keys+":0"),
                                                    tf_net_params[keys].transpose(2, 3, 1, 0)))
             else:
@@ -102,7 +102,28 @@ class ODTensorFlowModel(object):
                            is_training=True,
                            epsilon=1e-05,
                            decay=0.9):
+        """
+        Layer to handle batch norm training and inference
 
+        Parameters
+        ----------
+        inputs: TensorFlow Tensor
+            4d tensor of NHWC format
+        batch_name: string
+            Name for the batch norm layer
+        is_training: bool
+            True if training and False if running validation; updates based on is_train from params
+        epsilon: float
+            Small, non-zero value added to variance to avoid divide-by-zero error
+        decay: float
+            Decay for the moving average
+
+
+        Returns
+        -------
+        return: TensorFlow Tensor
+            Result of batch norm layer
+        """
         dim_of_x = inputs.get_shape()[-1]
 
         shadow_mean = _tf.Variable(_tf.zeros(shape=[dim_of_x], dtype='float32'),
@@ -135,16 +156,22 @@ class ODTensorFlowModel(object):
         """
         Defines conv layer, batch norm and leaky ReLU
 
-        :param shape: TensorFlow Tensor
+        Parameters
+        ----------
+        inputs: TensorFlow Tensor
+            4d tensor of NHWC format
+        shape: TensorFlow Tensor
             Shape of the conv layer
-        :param batch_norm: Bool
+        batch_norm: Bool
             (True or False) to add batch norm layer. This is used to add batch norm to all conv layers but the last.
-        :param name: string
+        name: string
             Name for the conv layer
-        :param batch_name: string
+        batch_name: string
             Name for the batch norm layer
 
-        :return: TensorFlow Tensor
+        Returns
+        -------
+        conv: TensorFlow Tensor
             Return result from combining conv, batch norm and leaky ReLU or conv and bias as needed
         """
         weight = _tf.Variable(_tf.random.truncated_normal(shape, stddev=0.1), trainable=True, name=name + 'weight')
@@ -168,16 +195,20 @@ class ODTensorFlowModel(object):
         """
         Define pooling layer
 
-        :param inputs: TensorFlow Tensor
-            4d tensor of either NHWC format
-        :param pool_size: List of ints
+        Parameters
+        ----------
+        inputs: TensorFlow Tensor
+            4d tensor of NHWC format
+        pool_size: List of ints
             Size of window for each dimension of input tensor
-        :param strides: List of ints
+        strides: List of ints
             Stride of sliding window for each dimension of input tensor
-        :param name: string
+        name: string
             Name of the pooling layer
 
-        :return: TensorFlow Tensor
+        Returns
+        -------
+        pool: TensorFlow Tensor
             Return pooling layer
         """
 
@@ -188,13 +219,17 @@ class ODTensorFlowModel(object):
         """
         Building the Tiny yolov2 network
 
-        :param inputs: TensorFlow Tensor
+        Parameters
+        ----------
+        inputs: TensorFlow Tensor
             Images sent as input for the network.
             This is an input tensor of shape [batch, in_height, in_width, in_channels]
-        :param output_size: int
+        output_size: int
             Result of (num_classes + 5) * num_boxes
 
-        :return: TensorFlow Tensor
+        Returns
+        -------
+        net: TensorFlow Tensor
             output of the TinyYOLOv2 network stored in net
         """
 
@@ -227,12 +262,16 @@ class ODTensorFlowModel(object):
         """
         Define loss layer
 
-        :param predict: TensorFlow Tensor
+        Parameters
+        ----------
+        predict: TensorFlow Tensor
             The predicted values for the batch of data
-        :param labels: TensorFlow Tensor
+        labels: TensorFlow Tensor
             Ground truth labels for the batch of data
 
-        :return: TensorFlow Tensor
+        Returns
+        -------
+        loss: TensorFlow Tensor
             Loss (combination of regression and classification losses)
         """
 
@@ -314,7 +353,7 @@ class ODTensorFlowModel(object):
         loss_conf = s * _tf.reduce_sum(
             obj_w * _tf.nn.sigmoid_cross_entropy_with_logits(labels=obj_gt_conf, logits=raw_conf))
 
-        # TODO: tf.nn.softmax_cross_entropy_with_logits_v2 instead of #tf.nn.softmax_cross_entropy_with_logits
+        # TODO: tf.nn.softmax_cross_entropy_with_logits_v2 instead of tf.nn.softmax_cross_entropy_with_logits
         loss_cls = lmb_class * _tf.reduce_sum(
             kr_obj_ij * _tf.nn.softmax_cross_entropy_with_logits(labels=gt_class, logits=class_scores)) / (
                            count + 0.01)
@@ -328,10 +367,15 @@ class ODTensorFlowModel(object):
         """
         Run session for training with new batch of data(Input and Label)
 
-        :param feed_dict: Dictionary
+        Parameters
+        ----------
+        feed_dict: Dictionary
             Dictionary to store a batch of input data, corresponding labels and iteration number. This is currently
             passed from the object_detector.py file when a new batch of data is sent.
-        :return: TensorFlow Tensor
+
+        Returns
+        -------
+        loss_batch: TensorFlow Tensor
             Loss per batch
         """
 
@@ -344,20 +388,28 @@ class ODTensorFlowModel(object):
         """
         Run session for predicting with new batch of data(Input)
 
-        :param feed_dict: Dictionary
+        Parameters
+        ----------
+        feed_dict: Dictionary
             Dictionary to store a batch of input data
-        :return: TensorFlow Tensor
+
+        Returns
+        -------
+        output: TensorFlow Tensor
             Feature map from building the network. This will be used in MXNet for further processing
         """
 
-        output = self.sess.run([self.tf_model], feed_dict={self.images: feed_dict['input']}) #self.labels: feed_dict['label']
+        output = self.sess.run([self.tf_model], feed_dict={self.images: feed_dict['input']})
+        # TODO: Include self.labels: feed_dict['label'] to handle labels from validation set
         return output
 
     def export_weights(self):
         """
         Function to store TensorFlow weights back to into a dict for use with MXNet
 
-        :return: Dictionary
+        Returns
+        -------
+        tf_export_params: Dictionary
             Dictionary of weights from TensorFlow stored as {weight_name: weight_value}
         """
 
@@ -372,6 +424,8 @@ class ODTensorFlowModel(object):
                 tf_export_params.update(
                     {var.name.replace(":0", ""): val})
             elif val.ndim == 4:
+                # Converting from [filter_height, filter_width, input_channels, output_channels] to
+                # [output_channels, input_channels, filter_height, filter_width]
                 tf_export_params.update(
                     {var.name.replace(":0", ""): val.transpose(3,2,0,1)})
 
@@ -381,10 +435,14 @@ class ODTensorFlowModel(object):
         """
         Function to update learning rate
 
-        :param lr: float32
+        Parameters
+        ----------
+        lr: float32
             Old learning rate
 
-        :return: float32
+        Returns
+        -------
+        lr: float32
             New learning rate
         """
         return lr
