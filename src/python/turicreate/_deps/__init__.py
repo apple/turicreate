@@ -53,7 +53,8 @@ def default_init_func(name, *args, **kwargs):
                                                 " during module loading" % name)
     if six.PY2:
         # imp importing submodule is too tricky
-        if not all([x.isalnum() or x == '.' for x in name]):
+        # moulde and pkg naming should follow pep8
+        if not all([x.isalnum() or x in '._' for x in name]):
             raise ValueError('invalid module name')
         exec("import %s as _py2_ret" % name)
         return _py2_ret
