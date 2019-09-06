@@ -84,9 +84,17 @@ Optionally, set an environment variable named `VIRTUALENV` if you want to use a 
     # /usr/local/bin/virtualenv is using Python 2.7
     export VIRTUALENV=/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv
 
+If you use `pyenv`, you can just set your local pyenv python version under the same directory as `.config` file lives in to set right python version to compile with:
+    # using python2
+    # when built from source, turicreate will link over python2 C headers and dynamic libraries
+    pyenv local 2.7.16
+    # if virtualenv is not installed; pip3 for python3
+    pip2 install virtualenv
+
 Then, run `./configure` (optionally with command line arguments to control what is built):
 
     ./configure
+    # for more help, you can run ./configure --help
 
 Running `./configure` will create two sub-directories, `release/` and
 `debug/` . cd into `src/` under either of these directories and running make will build the
@@ -103,6 +111,10 @@ If `Ninja` is chosen as the generator in the previous step, you should use comma
     cd debug/
     # check ninja -h for more info
     ninja
+
+If you want to switch existing build from different python versions, you should use command listed below first before you restart the build from scratch:
+
+    ./configure --cleanup
 
 will perform up to 4 build tasks in parallel. When building in release mode,
 Turi Create does require a large amount of memory to compile with the
