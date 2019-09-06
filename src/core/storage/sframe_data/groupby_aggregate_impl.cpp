@@ -372,8 +372,7 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
 
   auto& segments = tss_.segments_;
   if (segments[segmentid].elements_.size() == 0) return;
-  // what is cpu_relax
-  // while(segements_[segmentid].refctr.value > 0) cpu_relax();
+
   decltype(segments[segmentid].elements_) local;
   local.swap(segments[segmentid].elements_);
 
@@ -419,15 +418,15 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
 
     auto outiter = local_buffer.sa_buffer_ptr_->get_output_iterator(segmentid);
 
-    std::vector<char> buf_;
-    oarchive oarc(buf_);
+    std::vector<char> buffer;
     for (auto& item : local_sorted) {
-      oarc << item;
-      // write into the iterator
-      *(outiter) = std::string(oarc.buf, oarc.off);
+      buffer.clear();
+      oarchive out(buffer);
+      out << item;
+      *(outiter) = std::string(buffer.data(), buffer.size());
       ++(outiter);
-      oarc.off = 0;
     }
+
     local_buffer.sa_seg_chunks_[segmentid].push_back(local_sorted.size());
   }
   local_buffer.refctr_--;
