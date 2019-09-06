@@ -237,7 +237,7 @@ group_aggregate_container::group_aggregate_container(size_t max_buffer_size,
   }
 
   size_t num_local_buffers =
-      (fs_util::get_file_handle_limit() >> 1) / num_segments;
+      fs_util::get_file_handle_limit() / num_segments / 2;
 
   logstream(LOG_INFO) << "num_local_buffers: " << num_local_buffers << std::endl;
 
@@ -263,9 +263,9 @@ void group_aggregate_container::define_group(
 }
 
 void group_aggregate_container::init_tls() {
-  if (UNLIKELY(num_segments == 0)) log_and_throw("num_segments cannot be 0");
+  ASSERT_MSG(num_segments > 0, "num_segments cannot be 0");
 
-  if (tss_.init_) log_and_throw("double init is not allowed");
+  ASSERT_MSG(UNLIKELY(!tss_.init_), "double init is not allowed");
 
   tss_.segments_.resize(num_segments);
   for (size_t ii = 0; ii < num_segments; ++ii) {
@@ -293,6 +293,7 @@ void group_aggregate_container::flush_tls() {
 void group_aggregate_container::add(const std::vector<flexible_type>& val,
                                     size_t num_keys) {
   throw_if_not_initialized();
+
   size_t hash = groupby_element::hash_key(val, num_keys);
   size_t target_segment = hash % num_segments;
   // acquire lock on the segment
@@ -329,6 +330,7 @@ void group_aggregate_container::add(const std::vector<flexible_type>& val,
 void group_aggregate_container::add(const sframe_rows::row& val,
                                     size_t num_keys) {
   throw_if_not_initialized();
+
   size_t hash = groupby_element::hash_key(val, num_keys);
   size_t target_segment = hash % num_segments;
 
@@ -412,7 +414,8 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
         local_buffer.sa_seg_locks_[segmentid]);
 
     logstream(LOG_INFO) << "flush buffer from task_id: " << tss_.id_
-                            << ", segment_id: "<< segmentid << ", on buffer: " << round_robin << std::endl;
+                        << ", segment_id: " << segmentid
+                        << ", on buffer: " << round_robin << std::endl;
 
     auto outiter = local_buffer.sa_buffer_ptr_->get_output_iterator(segmentid);
     oarchive oarc;
@@ -423,7 +426,6 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
       ++(outiter);
       oarc.off = 0;
     }
-
     free(oarc.buf);
     local_buffer.sa_seg_chunks_[segmentid].push_back(local_sorted.size());
   }
@@ -431,8 +433,9 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
 }
 
 void group_aggregate_container::merge_local_buffer_set() {
-  if (gl_buffer_.is_opened_for_write())
-    log_and_throw("intermediate_buffer is should be closed before stealing local_buffer.");
+  ASSERT_MSG(
+      UNLIKELY(!gl_buffer_.is_opened_for_write()),
+      "intermediate_buffer shall be closed before stealing local_buffer.");
 
   turi::timer ti;
   logstream(LOG_INFO) << "Merging local buffer set " << std::endl;
@@ -476,9 +479,12 @@ void group_aggregate_container::merge_local_buffer_set() {
       auto outiter = buffer_to_merge->get_output_iterator(segment_id);
       auto begin = reader->begin(segment_id);
       auto end = reader->end(segment_id);
-      // logprogress_stream << "segment_id: " << segment_id << ", segment_length: "
-      //                    << reader->segment_length(segment_id)
-      //                    << ", buffer: " << ii << std::endl;
+
+      logstream(LOG_DEBUG) << "segment_id: " << segment_id
+                           << ", segment_length: "
+                           << reader->segment_length(segment_id)
+                           << ", buffer: " << ii << std::endl;
+
       // sequential write of from other sarray
       while (begin != end) {
         *outiter = *begin;
@@ -505,8 +511,8 @@ void group_aggregate_container::merge_local_buffer_set() {
 }
 
 void group_aggregate_container::group_and_write(sframe& out) {
-  if (UNLIKELY(tss_.init_))
-    log_and_throw("call flush_tls fisrt before write out result");
+  ASSERT_MSG(UNLIKELY(!tss_.init_),
+             "call flush_tls fisrt before write out groupby result");
 
   merge_local_buffer_set();
 
