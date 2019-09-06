@@ -51,16 +51,12 @@ def default_init_func(name, *args, **kwargs):
     if _ret is not None:
         assert name not in sys.modules.keys(), ("sys.modules[%s] cannot be None"
                                                 " during module loading" % name)
-
     if six.PY2:
-        # if module is not found, it will raise ImportError
-        fp, pathname, description = imp.find_module(name)
-        try:
-            return imp.load_module(name, fp, pathname, description)
-        finally:
-            # Since we may exit via an exception, close fp explicitly.
-            if fp:
-                fp.close()
+        # imp importing submodule is too tricky
+        if not all([x.isalnum() or x == '.' for x in name]):
+            raise ValueError('invalid module name')
+        exec("import %s as _py2_ret" % name)
+        return _py2_ret
     else:
         return importlib.import_module(name)
 
