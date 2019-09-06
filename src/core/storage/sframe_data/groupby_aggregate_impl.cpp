@@ -418,7 +418,9 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
                         << ", on buffer: " << round_robin << std::endl;
 
     auto outiter = local_buffer.sa_buffer_ptr_->get_output_iterator(segmentid);
-    oarchive oarc;
+
+    std::vector<char> buf_;
+    oarchive oarc(buf_);
     for (auto& item : local_sorted) {
       oarc << item;
       // write into the iterator
@@ -426,7 +428,6 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
       ++(outiter);
       oarc.off = 0;
     }
-    free(oarc.buf);
     local_buffer.sa_seg_chunks_[segmentid].push_back(local_sorted.size());
   }
   local_buffer.refctr_--;
