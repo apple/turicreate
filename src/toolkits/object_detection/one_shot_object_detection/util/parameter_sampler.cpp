@@ -31,11 +31,11 @@ double deg_to_rad(double angle) { return angle * M_PI / 180.0; }
  * transform: The transformation matrix built from the above parameters
  * warped_corners: The four corners of the object in the warped image
  */
-double ParameterSampler::get_theta() { return deg_to_rad(theta_); }
+double ParameterSampler::get_theta() { return theta_; }
 
-double ParameterSampler::get_phi() { return deg_to_rad(phi_); }
+double ParameterSampler::get_phi() { return phi_; }
 
-double ParameterSampler::get_gamma() { return deg_to_rad(gamma_); }
+double ParameterSampler::get_gamma() { return gamma_; }
 
 size_t ParameterSampler::get_dz() { return dz_; }
 
