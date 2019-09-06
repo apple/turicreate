@@ -49,6 +49,9 @@ develop-eggs
 # Installer logs
 pip-log.txt
 
+.python-version
+.python-history
+
 # Unit test / coverage reports
 .coverage
 .tox
