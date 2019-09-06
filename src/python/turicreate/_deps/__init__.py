@@ -61,8 +61,7 @@ def default_init_func(name, *args, **kwargs):
     else:
         return importlib.import_module(name)
 
-class LazyModuleLoader(ModuleType, object):
-    """ defer to load a module. If it's loaded, no exception but warning will be given. """
+class LazyModuleLoader(ModuleType):
     # read-only member list -> used by __setattr__; see below
     _my_attrs_ = ['is_loaded', 'reload', 'get_module',
                   '_name', '_init_func', '_module', '_loaded']
@@ -87,11 +86,11 @@ class LazyModuleLoader(ModuleType, object):
         will be set to real module object.
 
         >>> np = LazyModuleLoader('numpy')
-        >>> import numpy # won't actually load
-        >>> np.ndarray # load the numpy module
+        >>> import numpy # will load numpy eagerly
+        >>> np.ndarray # won't load but reuse the already loaded numpy module
 
         If the module is loaded before LazyModuleLoader loads the underlying module,
-        then LzyModuleLoader won't do anything but just a thin wrapper to forward
+        then LazyModuleLoader won't do anything but just a thin wrapper to forward
         any requests to the real module object.
 
         >>> import numpy # load the numpy
@@ -129,7 +128,7 @@ class LazyModuleLoader(ModuleType, object):
             if self._loaded:
                 if not isinstance(self._module, LazyModuleLoader):
                     _logging.debug("turicreate: {} is loaded ahead and it cannot be"
-                                   " be deffered by LazyModuleLoader".format(name))
+                                   " be deferred by LazyModuleLoader".format(name))
                 else:
                     err_msg = "LazyModuleLoader '%s' is not a singleton T_T" % name
                     _logging.fatal(err_msg)
