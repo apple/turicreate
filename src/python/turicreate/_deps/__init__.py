@@ -323,31 +323,3 @@ def _dynamic_load_numpy(name):
     return _ret
 
 numpy = LazyModuleLoader('numpy', _dynamic_load_numpy)
-
-HAS_SKLEARN = __has_module('sklearn')
-SKLEARN_MIN_VERSION = '0.15'
-
-def __get_sklearn_version(version):
-    # matching 0.15b, 0.16bf, etc
-    version_regex = '^\d+\.\d+'
-    version = _re.search(version_regex, str(version)).group(0)
-    return _StrictVersion(version)
-
-def _dynamic_load_sklean(name):
-    global HAS_SKLEARN
-    if HAS_SKLEARN:
-        _ret = sys.modules.get(name, None)
-        if _ret is None:
-            assert name not in sys.modules.keys(), ("sys.modules[%s] cannot be None"
-                                                    " during module loading" % name)
-            import sklearn as _ret
-        if __get_sklearn_version(_ret.__version__) < _StrictVersion(SKLEARN_MIN_VERSION):
-            HAS_SKLEARN = False
-            _logging.warn(('sklearn version %s is not supported. Minimum required version: %s. '
-                           'sklearn support will be disabled.')
-                          % (sklearn.__version__, SKLEARN_MIN_VERSION))
-    if not HAS_SKLEARN:
-        from . import sklearn_mock as _ret
-    return _ret
-
-sklearn = LazyModuleLoader("sklearn", _dynamic_load_sklean)
