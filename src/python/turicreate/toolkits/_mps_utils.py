@@ -423,7 +423,7 @@ class MpsGraphAPI(object):
         self._cur_learning_rate = None
 
     def __del__(self):
-        self._LIB.TCMPSDeleteGraphModule(self.handle, self.network_id)
+        self._LIB.TCMPSDeleteGraphModule(self.handle)
 
     def init(self, n, c_in, h_in, w_in, c_out, h_out, w_out, config=None, weights=None):
         if weights is None:
@@ -734,9 +734,15 @@ class MpsStyleGraphAPI(object):
         status_code = self._LIB.TCMPSTrainGraph(
             self.handle, input_array.handle, label_array.handle,
             _ctypes.byref(result_handle))
-        
-        assert status_code == 0, "Error calling TCMPSTrainGraph"
-        assert result_handle, "TCMPSTrainGraph unexpectedly returned NULL pointer"
+
+        '''
+        status_code = self._LIB.TCMPSTrainStyleTransferGraph(
+            self.handle, _ctypes.c_int32(index), input_array.handle, label_array.handle,
+            _ctypes.byref(result_handle))
+        '''
+
+        assert status_code == 0, "Error calling TCMPSTrainStyleTransferGraph"
+        assert result_handle, "TCMPSTrainStyleTransferGraph unexpectedly returned NULL pointer"
 
         result = MpsFloatArray(result_handle)
         

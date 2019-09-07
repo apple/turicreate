@@ -70,6 +70,10 @@
   return [convGrad resultImage];
 }
 
+- (void) updateIndex:(NSUInteger)index {
+  [_instNorm.tc_weightsData updateIndex:index];
+}
+
 - (void) setLearningRate:(float)lr {
   [_conv.tc_weightsData setLearningRate:lr];
   [_instNorm.tc_weightsData setLearningRate:lr];
@@ -86,7 +90,7 @@
 
   weights[convWeight] = convDataWeight;
 
-  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData styles] * [_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
   NSMutableData* instNormDataBeta = [NSMutableData dataWithLength:instNormSize];
 

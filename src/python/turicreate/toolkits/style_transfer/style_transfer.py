@@ -469,7 +469,11 @@ def create(style_dataset, content_dataset, style_feature=None,
 
             mps_weights = mps_net.export()
 
+            print(mps_weights["transformer_encode_1_inst_beta"])
+
+
             # TODO: Refactor code to be less unwrappy
+            '''
             transformer.collect_params()[mps_mxnet_key_map["transformer_encode_1_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_1_inst_beta"]))
             transformer.collect_params()[mps_mxnet_key_map["transformer_encode_1_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_1_inst_gamma"]))
             transformer.collect_params()[mps_mxnet_key_map["transformer_encode_2_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_2_inst_beta"]))
@@ -502,6 +506,7 @@ def create(style_dataset, content_dataset, style_feature=None,
             transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_1_gamma"]))
             transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_2_beta"]))
             transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_2_gamma"]))
+            '''
 
             if idx == (num_styles - 1):
                 print(hr)

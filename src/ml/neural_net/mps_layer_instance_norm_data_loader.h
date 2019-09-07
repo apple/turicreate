@@ -49,6 +49,7 @@ API_AVAILABLE(macos(10.14))
 
 @property (nonatomic) NSUInteger numberOfFeatureChannels;
 @property (nonatomic) NSUInteger currentStyle;
+@property (nonatomic) NSUInteger styles;
 
 - (instancetype) initWithParams:(NSString *)name
                    gammaWeights:(float *)gammaWeights
@@ -58,8 +59,7 @@ API_AVAILABLE(macos(10.14))
                          device:(id<MTLDevice>)dev
                       cmd_queue:(id<MTLCommandQueue>) cmd_q;
 
-- (void) updateCurrentStyle:(NSUInteger)style;
-
+- (void) updateIndex:(NSUInteger)style;
 - (void) setLearningRate:(float)lr;
 
 - (void) loadBeta:(float *)beta;

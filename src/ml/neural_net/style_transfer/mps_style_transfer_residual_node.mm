@@ -95,6 +95,11 @@
   return self;
 }
 
+- (void) updateIndex:(NSUInteger)index {
+  [_instNorm1.tc_weightsData updateIndex:index];
+  [_instNorm2.tc_weightsData updateIndex:index];
+}
+
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode {
   NSArray<MPSNNGradientFilterNode *>* addGrad = [_add gradientFiltersWithSources: @[inputNode]];
   MPSNNGradientFilterNode* inst2Grad = [_instNorm2 gradientFilterWithSource: [addGrad[0] resultImage]];
@@ -133,7 +138,7 @@
   NSString* instNorm1GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_gamma"];
   NSString* instNorm1BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_beta"];
 
-  NSUInteger instNorm1Size = (NSUInteger)([_instNorm1.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNorm1Size = (NSUInteger)([_instNorm1.tc_weightsData styles] * [_instNorm1.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   
   NSMutableData* instNorm1DataGamma = [NSMutableData dataWithLength:instNorm1Size];
   NSMutableData* instNorm1DataBeta = [NSMutableData dataWithLength:instNorm1Size];
@@ -147,7 +152,7 @@
   NSString* instNorm2GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_gamma"];
   NSString* instNorm2BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_beta"];
 
-  NSUInteger instNorm2Size = (NSUInteger)([_instNorm2.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNorm2Size = (NSUInteger)([_instNorm2.tc_weightsData styles] * [_instNorm2.tc_weightsData numberOfFeatureChannels] * sizeof(float));
 
   NSMutableData* instNorm2DataGamma = [NSMutableData dataWithLength:instNorm2Size];
   NSMutableData* instNorm2DataBeta = [NSMutableData dataWithLength:instNorm2Size];

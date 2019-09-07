@@ -34,8 +34,6 @@ API_AVAILABLE(macos(10.14))
   NSMutableData *_beta_weights;
   
   NSString *_name;
-  NSUInteger _styles;
-
   NSMutableArray<TCMPSInstanceNormDataLoaderProps *> *style_props;
 
   MPSVectorDescriptor *_vDesc;
@@ -159,26 +157,47 @@ API_AVAILABLE(macos(10.14))
   [_adamBeta setLearningRate:lr];
 }
 
-- (void) updateCurrentStyle:(NSUInteger)style {
+- (void) updateIndex:(NSUInteger)style {
   _currentStyle = style;
 }
 
 - (void) loadBeta:(float *)beta {
-  memcpy(_beta_weights.mutableBytes, beta, _numberOfFeatureChannels * _styles * sizeof(float));
+  float* betaWeights = (float *) [[[[style_props objectAtIndex: _currentStyle] betaVector] data] contents];
+  memcpy(betaWeights, beta, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
 - (float *) beta {
-  [self checkpointWithCommandQueue:_cq];
-  return (float *) [[[[style_props objectAtIndex: _currentStyle] betaVector] data] contents];
+  NSUInteger previousStyle = _currentStyle;
+  NSMutableData * betaPlaceHolder = [NSMutableData data];
+  for (NSUInteger index = 0; index < _styles; index++) {
+    _currentStyle = index;
+    [self checkpointWithCommandQueue:_cq];
+    float* betaWeights = (float *) [[[[style_props objectAtIndex: _currentStyle] betaVector] data] contents];
+    [betaPlaceHolder appendBytes:betaWeights length:sizeof(float)*_numberOfFeatureChannels];
+  }
+  _currentStyle = previousStyle;
+
+  return (float *) (betaPlaceHolder.bytes);
 }
 
 - (void) loadGamma:(float *)gamma {
-  memcpy(_gamma_weights.mutableBytes, gamma, _numberOfFeatureChannels * _styles * sizeof(float));
+  float* gammaWeights = (float*) [[[[style_props objectAtIndex: _currentStyle] gammaVector] data] contents];
+  memcpy(gammaWeights, gamma, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
+// TODO: refactor for multiple indicies
 - (float *) gamma {
-  [self checkpointWithCommandQueue:_cq];
-  return (float*) [[[[style_props objectAtIndex: _currentStyle] gammaVector] data] contents];
+  NSUInteger previousStyle = _currentStyle;
+  NSMutableData * gammaPlaceHolder = [NSMutableData data];
+  for (NSUInteger index = 0; index < _styles; index++) { 
+    _currentStyle = index; 
+    [self checkpointWithCommandQueue:_cq];
+    float* gammaWeights = (float *) [[[[style_props objectAtIndex: _currentStyle] gammaVector] data] contents];
+    [gammaPlaceHolder appendBytes:gammaWeights length:sizeof(float)*_numberOfFeatureChannels];
+  }
+  _currentStyle = previousStyle;
+
+  return (float *) (gammaPlaceHolder.bytes);
 }
 
 - (MPSCNNNormalizationGammaAndBetaState *)updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer 

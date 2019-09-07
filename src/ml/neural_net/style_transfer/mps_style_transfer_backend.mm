@@ -80,7 +80,7 @@ style_transfer::style_transfer(const float_array_map &config,
       id <MTLCommandQueue> cmdQueue = [dev newCommandQueue];
 
       NSUInteger numStyles 
-          = (NSUInteger) get_array_map_scalar(config, "num_styles", 1);
+          = (NSUInteger) get_array_map_scalar(config, "st_num_styles", 1);
 
       NSDictionary<NSString *, NSData *> *styleTransferWeights
           = [TCMPSStyleTransferHelpers toNSDictionary: weights];

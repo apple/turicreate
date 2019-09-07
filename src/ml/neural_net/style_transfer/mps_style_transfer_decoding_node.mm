@@ -67,6 +67,10 @@
   return self;
 }
 
+- (void) updateIndex:(NSUInteger)index {
+  [_instNorm.tc_weightsData updateIndex:index];
+}
+
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode {
   MPSNNGradientFilterNode* reluGrad = [_relu gradientFilterWithSource: inputNode];
   MPSNNGradientFilterNode* instNormGrad = [_instNorm gradientFilterWithSource: [reluGrad resultImage]];
@@ -92,7 +96,7 @@
 
   weights[convWeight] = convDataWeight;
 
-  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData styles] * [_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
   NSMutableData* instNormDataBeta = [NSMutableData dataWithLength:instNormSize];
 

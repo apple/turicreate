@@ -323,6 +323,9 @@
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
   _batchSize = 1;
 
+  // Use Label to identify the index currently being trained.
+  // [_model updateIndex:2];
+
   NSUInteger imageSize = _imgWidth * _imgHeight * 3;
 
   NSMutableData* mean = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * imageSize];
@@ -353,6 +356,7 @@
     NSString* contentKey = @"input";
     NSString* styleKey = @"labels";
 
+    // TODO: add multiple batch sizes
     MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
     [contentImage writeBytes:inputs[contentKey].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     [contentImageArray addObject:contentImage];
@@ -365,6 +369,7 @@
     [contentMultiplication writeBytes:multiplication.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0]; 
     [contentMultiplicationArray addObject:contentMultiplication];
 
+    // TODO: add multiple batch sizes
     MPSImage *syleImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
     [syleImage writeBytes:inputs[styleKey].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     [styleImageArray addObject:syleImage];

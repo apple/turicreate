@@ -170,6 +170,20 @@
   return encoding1Grad;
 }
 
+- (void) updateIndex:(NSUInteger)index {
+  [_encoding1 updateIndex:index];
+  [_encoding2 updateIndex:index];
+  [_encoding3 updateIndex:index];
+  [_residual1 updateIndex:index];
+  [_residual2 updateIndex:index];
+  [_residual3 updateIndex:index];
+  [_residual4 updateIndex:index];
+  [_residual5 updateIndex:index];
+  [_decoding1 updateIndex:index];
+  [_decoding2 updateIndex:index];
+  [_instNorm.tc_weightsData updateIndex:index];
+}
+
 - (void) setLearningRate:(float)lr {
   [_encoding1 setLearningRate:lr];
   [_encoding2 setLearningRate:lr];
@@ -236,9 +250,11 @@
 
   weights[conv5Weight] = convDataWeight;
 
+  NSLog(@"%lu", [_instNorm.tc_weightsData styles]);
+
   NSString* instNorm5Gamma = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_gamma"];
   NSString* instNorm5Beta = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_beta"];
-  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData styles] * [_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
   NSMutableData* instNormDataBeta = [NSMutableData dataWithLength:instNormSize];
 
