@@ -685,12 +685,41 @@ class MpsLowLevelAPI(object):
         return output
 
 class MpsStyleGraphAPI(object):
-    def __init__(self, network_id):
+    def __init__(self, n, c_in, h_in, w_in, c_out, h_out, w_out, config=None, weights=None):
         self.handle = _ctypes.c_void_p()
         self._LIB = _load_tcmps_lib()
         assert self._LIB is not None, "Cannot use MpsGraphAPI without libtcmps.dylib"
-        self.network_id = network_id
+        
+        self.network_id = MpsGraphNetworkType.kSTGraphNet
         self._cur_config = {}
+        if weights is None:
+            weights = {}
+        
+        if config is None:
+            config = {
+                'learning_rate': 1e-3,
+                'gradient_clipping': 0.025,
+                'weight_decay': 0.00005,
+                'momentum': 0.9,
+            }
+
+        config_items, config_name, config_arr = _prepare_network_parameters(config)
+        weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
+
+        self._LIB.TCMPSCreateGraphModule(
+            _ctypes.byref(self.handle),
+            self.network_id,
+            _ctypes.c_int32(n),
+            _ctypes.c_int32(c_in),
+            _ctypes.c_int32(h_in),
+            _ctypes.c_int32(w_in),
+            _ctypes.c_int32(c_out),
+            _ctypes.c_int32(h_out),
+            _ctypes.c_int32(w_out),
+            config_name, config_arr, _ctypes.c_int32(len(config_items)),
+            weights_name, weights_arr, _ctypes.c_int32(len(weights_items)),
+        )
+        self._cur_config = _deepcopy(config)
 
     def __del__(self):
         self._LIB.TCMPSDeleteGraphModule(self.handle)
@@ -771,36 +800,6 @@ class MpsStyleGraphAPI(object):
     @staticmethod  
     def mps_mxnet_weight_dict():
         return dict([reversed(i) for i in MpsStyleGraphAPI.mxnet_mps_weight_dict().items()])
-
-    def init(self, n, c_in, h_in, w_in, c_out, h_out, w_out, config=None, weights=None):
-        if weights is None:
-            weights = {}
-        
-        if config is None:
-            config = {
-                'learning_rate': 1e-3,
-                'gradient_clipping': 0.025,
-                'weight_decay': 0.00005,
-                'momentum': 0.9,
-            }
-
-        config_items, config_name, config_arr = _prepare_network_parameters(config)
-        weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
-
-        self._LIB.TCMPSCreateGraphModule(
-            _ctypes.byref(self.handle),
-            self.network_id,
-            _ctypes.c_int32(n),
-            _ctypes.c_int32(c_in),
-            _ctypes.c_int32(h_in),
-            _ctypes.c_int32(w_in),
-            _ctypes.c_int32(c_out),
-            _ctypes.c_int32(h_out),
-            _ctypes.c_int32(w_out),
-            config_name, config_arr, _ctypes.c_int32(len(config_items)),
-            weights_name, weights_arr, _ctypes.c_int32(len(weights_items)),
-        )
-        self._cur_config = _deepcopy(config)
 
     def train(self, input, label, index):
         input_array = MpsFloatArray(input)

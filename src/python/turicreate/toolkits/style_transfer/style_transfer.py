@@ -35,8 +35,6 @@ def _get_mps_st_net(input_image_shape, batch_size, output_size,
     """
     Initializes an MpsGraphAPI for style transfer.
     """
-    network = _MpsStyleGraphAPI(network_id=_MpsGraphNetworkType.kSTGraphNet)
-
     c_in, h_in, w_in =  input_image_shape
 
     c_out = output_size[0]
@@ -47,8 +45,8 @@ def _get_mps_st_net(input_image_shape, batch_size, output_size,
     h_view = h_in
     w_view = w_in
 
-    network.init(batch_size, c_in, h_in, w_in, c_out, h_out, w_out,
-                 weights=weights, config=config)
+    network = _MpsStyleGraphAPI(batch_size, c_in, h_in, w_in, c_out, h_out,
+                                w_out, weights=weights, config=config)
     return network
 
 def _vgg16_data_prep(batch):
