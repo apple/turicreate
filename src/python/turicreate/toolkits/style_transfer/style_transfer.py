@@ -306,84 +306,12 @@ def create(style_dataset, content_dataset, style_feature=None,
     rs = _np.random.RandomState(1234)
 
     if use_mps:
-        # TODO: refactor somehow
-        mxnet_mps_key_map = {
-           "transformer_conv0_weight": "transformer_encode_1_conv_weights",
-           "transformer_conv1_weight": "transformer_encode_2_conv_weights",
-           "transformer_conv2_weight": "transformer_encode_3_conv_weights",
-           "transformer_conv3_weight": "transformer_decoding_1_conv_weights",
-           "transformer_conv4_weight": "transformer_decoding_2_conv_weights",
-           "transformer_conv5_weight": "transformer_conv5_weight",
-           "transformer_instancenorm0_beta": "transformer_encode_1_inst_beta",
-           "transformer_instancenorm0_gamma": "transformer_encode_1_inst_gamma",
-           "transformer_instancenorm1_beta": "transformer_encode_2_inst_beta",
-           "transformer_instancenorm1_gamma": "transformer_encode_2_inst_gamma",
-           "transformer_instancenorm2_beta": "transformer_encode_3_inst_beta",
-           "transformer_instancenorm2_gamma": "transformer_encode_3_inst_gamma",
-           "transformer_instancenorm3_beta": "transformer_decoding_1_inst_beta",
-           "transformer_instancenorm3_gamma": "transformer_decoding_1_inst_gamma",
-           "transformer_instancenorm4_beta": "transformer_decoding_2_inst_beta",
-           "transformer_instancenorm4_gamma": "transformer_decoding_2_inst_gamma",
-           "transformer_instancenorm5_beta": "transformer_instancenorm5_beta",
-           "transformer_instancenorm5_gamma": "transformer_instancenorm5_gamma",
-           "transformer_residualblock0_conv0_weight": "transformer_residual_1_conv_1_weights",
-           "transformer_residualblock0_conv1_weight": "transformer_residual_1_conv_2_weights",
-           "transformer_residualblock0_instancenorm0_beta": "transformer_residual_1_inst_1_beta",
-           "transformer_residualblock0_instancenorm0_gamma": "transformer_residual_1_inst_1_gamma",
-           "transformer_residualblock0_instancenorm1_beta": "transformer_residual_1_inst_2_beta",
-           "transformer_residualblock0_instancenorm1_gamma": "transformer_residual_1_inst_2_gamma",
-           "transformer_residualblock1_conv0_weight": "transformer_residual_2_conv_1_weights",
-           "transformer_residualblock1_conv1_weight": "transformer_residual_2_conv_2_weights",
-           "transformer_residualblock1_instancenorm0_beta": "transformer_residual_2_inst_1_beta",
-           "transformer_residualblock1_instancenorm0_gamma": "transformer_residual_2_inst_1_gamma",
-           "transformer_residualblock1_instancenorm1_beta": "transformer_residual_2_inst_2_beta",
-           "transformer_residualblock1_instancenorm1_gamma": "transformer_residual_2_inst_2_gamma",
-           "transformer_residualblock2_conv0_weight": "transformer_residual_3_conv_1_weights",
-           "transformer_residualblock2_conv1_weight": "transformer_residual_3_conv_2_weights",
-           "transformer_residualblock2_instancenorm0_beta": "transformer_residual_3_inst_1_beta",
-           "transformer_residualblock2_instancenorm0_gamma": "transformer_residual_3_inst_1_gamma",
-           "transformer_residualblock2_instancenorm1_beta": "transformer_residual_3_inst_2_beta",
-           "transformer_residualblock2_instancenorm1_gamma": "transformer_residual_3_inst_2_gamma",
-           "transformer_residualblock3_conv0_weight": "transformer_residual_4_conv_1_weights",
-           "transformer_residualblock3_conv1_weight": "transformer_residual_4_conv_2_weights",
-           "transformer_residualblock3_instancenorm0_beta": "transformer_residual_4_inst_1_beta",
-           "transformer_residualblock3_instancenorm0_gamma": "transformer_residual_4_inst_1_gamma",
-           "transformer_residualblock3_instancenorm1_beta": "transformer_residual_4_inst_2_beta",
-           "transformer_residualblock3_instancenorm1_gamma": "transformer_residual_4_inst_2_gamma",
-           "transformer_residualblock4_conv0_weight": "transformer_residual_5_conv_1_weights",
-           "transformer_residualblock4_conv1_weight": "transformer_residual_5_conv_2_weights",
-           "transformer_residualblock4_instancenorm0_beta": "transformer_residual_5_inst_1_beta",
-           "transformer_residualblock4_instancenorm0_gamma": "transformer_residual_5_inst_1_gamma",
-           "transformer_residualblock4_instancenorm1_beta": "transformer_residual_5_inst_2_beta",
-           "transformer_residualblock4_instancenorm1_gamma": "transformer_residual_5_inst_2_gamma",
-           "vgg16_conv0_weight": "vgg_block_1_conv_1_weights",
-           "vgg16_conv0_bias": "vgg_block_1_conv_1_biases",
-           "vgg16_conv1_weight": "vgg_block_1_conv_2_weights",
-           "vgg16_conv1_bias": "vgg_block_1_conv_2_biases",
-           "vgg16_conv2_weight": "vgg_block_2_conv_1_weights",
-           "vgg16_conv2_bias": "vgg_block_2_conv_1_biases",
-           "vgg16_conv3_weight": "vgg_block_2_conv_2_weights",
-           "vgg16_conv3_bias": "vgg_block_2_conv_2_biases",
-           "vgg16_conv4_weight": "vgg_block_3_conv_1_weights",
-           "vgg16_conv4_bias": "vgg_block_3_conv_1_biases",
-           "vgg16_conv5_weight": "vgg_block_3_conv_2_weights",
-           "vgg16_conv5_bias": "vgg_block_3_conv_2_biases",
-           "vgg16_conv6_weight": "vgg_block_3_conv_3_weights",
-           "vgg16_conv6_bias": "vgg_block_3_conv_3_biases",
-           "vgg16_conv7_weight": "vgg_block_4_conv_1_weights",
-           "vgg16_conv7_bias": "vgg_block_4_conv_1_biases",
-           "vgg16_conv8_weight": "vgg_block_4_conv_2_weights",
-           "vgg16_conv8_bias": "vgg_block_4_conv_2_biases",
-           "vgg16_conv9_weight": "vgg_block_4_conv_3_weights",
-           "vgg16_conv9_bias": "vgg_block_4_conv_3_biases"
-        }
+        mxnet_mps_key_map = _MpsStyleGraphAPI.mxnet_mps_weight_dict()
 
-        mps_mxnet_key_map = dict([reversed(i) for i in mxnet_mps_key_map.items()])
+        # By passing in dummy values to the network this causes MXNet to trigger
+        # initialization for both the Transformer and VGG16 networks.
 
-
-        
-
-        transformer.batch_size = 1 # TODO: Train MPS with multiple batch sizes
+        transformer.batch_size = 1
         test_input = _mx.nd.uniform(0, 1, (1, 3) + input_shape)
 
         transformer_output = transformer.forward(test_input, _mx.nd.array([0]))
@@ -482,44 +410,13 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         mps_weights = mps_net.export()
 
-        print(mps_weights["transformer_encode_1_inst_beta"])
+        mps_mxnet_key_map = _MpsStyleGraphAPI.mps_mxnet_weight_dict()
 
-
-        # TODO: Refactor code to be less unwrappy
-        '''
-        transformer.collect_params()[mps_mxnet_key_map["transformer_encode_1_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_1_inst_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_encode_1_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_1_inst_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_encode_2_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_2_inst_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_encode_2_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_2_inst_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_encode_3_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_3_inst_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_encode_3_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_encode_3_inst_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_decoding_1_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_decoding_1_inst_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_decoding_1_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_decoding_1_inst_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_decoding_2_inst_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_decoding_2_inst_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_decoding_2_inst_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_decoding_2_inst_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_instancenorm5_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_instancenorm5_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_instancenorm5_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_instancenorm5_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_1_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_1_inst_1_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_1_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_1_inst_1_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_1_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_1_inst_2_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_1_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_1_inst_2_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_2_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_2_inst_1_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_2_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_2_inst_1_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_2_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_2_inst_2_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_2_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_2_inst_2_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_3_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_3_inst_1_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_3_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_3_inst_1_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_3_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_3_inst_2_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_3_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_3_inst_2_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_4_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_4_inst_1_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_4_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_4_inst_1_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_4_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_4_inst_2_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_4_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_4_inst_2_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_1_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_1_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_1_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_1_gamma"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_2_beta"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_2_beta"]))
-        transformer.collect_params()[mps_mxnet_key_map["transformer_residual_5_inst_2_gamma"]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights["transformer_residual_5_inst_2_gamma"]))
-        '''
+        for key in mps_weights:
+            if "transformer" in key and "conv" in key:
+                transformer.collect_params()[mps_mxnet_key_map[key]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights[key]))
+            if "transformer" in key and "inst" in key:
+                pass
 
         training_time = _time.time() - start_time
 
