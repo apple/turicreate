@@ -209,11 +209,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     num_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
     use_mps = _use_mps() and num_gpus == 0
     batch_size_each = params['batch_size'] // max(num_gpus, 1)
-    
-    if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
-        # Reduce batch size for GPUs with less than 4GB RAM
-        if batch_size_each > 16:
-            batch_size_each = 16
 
     batch_size = max(num_gpus, 1) * batch_size_each
     input_shape = params['input_shape']
@@ -414,9 +409,11 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         for key in mps_weights:
             if "transformer" in key and "conv" in key:
-                transformer.collect_params()[mps_mxnet_key_map[key]].data()[idx] = _mx.nd.array(_mps_to_mxnet(mps_weights[key]))
+                weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
+                weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]))
             if "transformer" in key and "inst" in key:
-                pass
+                weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
+                weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape))
 
         training_time = _time.time() - start_time
 
