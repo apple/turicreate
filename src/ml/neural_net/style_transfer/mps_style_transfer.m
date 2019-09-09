@@ -323,8 +323,12 @@
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
   _batchSize = 1;
 
-  // Use Label to identify the index currently being trained.
-  // [_model updateIndex:2];
+  NSString* indexKey = @"index";
+
+  float styleIndex;
+  [inputs[indexKey] getBytes:&styleIndex length:sizeof(float)];
+
+  [_model updateIndex:styleIndex];
 
   NSUInteger imageSize = _imgWidth * _imgHeight * 3;
 

@@ -25,9 +25,9 @@ EXPORT int TCMPSTrainGraph(MPSHandle handle,
                            TCMPSFloatArrayRef* loss_out);
 
 
-// EXPORT int TCMPSTrainStyleTransferGraph(MPSHandle handle, int index,
-//                                        TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
-//                                        TCMPSFloatArrayRef* loss_out);
+EXPORT int TCMPSTrainStyleTransferGraph(MPSHandle handle, int index,
+                                       TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef labels,
+                                       TCMPSFloatArrayRef* loss_out);
 
 EXPORT int TCMPSPredictGraph(
     MPSHandle handle, TCMPSFloatArrayRef inputs, TCMPSFloatArrayRef* outputs);

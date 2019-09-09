@@ -725,21 +725,15 @@ class MpsStyleGraphAPI(object):
         )
         self._cur_config = _deepcopy(config)
 
-    def train(self, input, label):
+    def train(self, input, label, index):
         input_array = MpsFloatArray(input)
         label_array = MpsFloatArray(label)
 
         result_handle = _ctypes.c_void_p()
         
-        status_code = self._LIB.TCMPSTrainGraph(
-            self.handle, input_array.handle, label_array.handle,
-            _ctypes.byref(result_handle))
-
-        '''
         status_code = self._LIB.TCMPSTrainStyleTransferGraph(
             self.handle, _ctypes.c_int32(index), input_array.handle, label_array.handle,
             _ctypes.byref(result_handle))
-        '''
 
         assert status_code == 0, "Error calling TCMPSTrainStyleTransferGraph"
         assert result_handle, "TCMPSTrainStyleTransferGraph unexpectedly returned NULL pointer"

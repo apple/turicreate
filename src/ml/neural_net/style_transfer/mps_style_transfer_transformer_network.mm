@@ -250,8 +250,6 @@
 
   weights[conv5Weight] = convDataWeight;
 
-  NSLog(@"%lu", [_instNorm.tc_weightsData styles]);
-
   NSString* instNorm5Gamma = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_gamma"];
   NSString* instNorm5Beta = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_beta"];
   NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData styles] * [_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
