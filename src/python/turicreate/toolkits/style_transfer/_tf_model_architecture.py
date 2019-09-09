@@ -85,7 +85,7 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
         node for weight export.
 
     weights: dictionary
-        The dictionary of MxNet weights to the network. The naming convention
+        The dictionary of weights to the network. The naming convention
         used is that from the CoreML export of the Style Transfer Network.
 
     Returns
@@ -144,7 +144,7 @@ def define_residual(tf_input, tf_index, weights, prefix):
         The index tensor to the residual network.
 
     weights: dictionary
-        The dictionary of MxNet weights to the network. The naming convention
+        The dictionary of weights to the network. The naming convention
         used is that from the CoreML export of the Style Transfer Network.
     
     prefix: string
@@ -192,7 +192,7 @@ def define_resnet(tf_input,
         The index tensor to the network.
 
     weights: dictionary
-        The dictionary of MxNet weights to the network. The naming convention
+        The dictionary of weights to the network. The naming convention
         used is that from the CoreML export of the Style Transfer Network.
     
     prefix: string
@@ -286,7 +286,7 @@ def define_vgg16(tf_input, weights, prefix="vgg16_"):
         format
 
     weights: dictionary
-        The dictionary of MxNet weights to the network. The naming convention
+        The dictionary of weights to the network. The naming convention
         used is that from the CoreML export of the Style Transfer Network.
     
     prefix: string
@@ -464,7 +464,7 @@ def define_style_transfer_network(content_image,
         format.
 
     weights: dictionary
-        The dictionary of MxNet weights to the network. The naming convention
+        The dictionary of weights to the network. The naming convention
         used is that from the CoreML export of the Style Transfer Network.
 
     define_training_graph: boolean
