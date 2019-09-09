@@ -7,8 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from .._deps import numpy as _np
-
 _JPG = "JPG"
 _PNG = "PNG"
 _RAW = "RAW"
@@ -159,6 +157,7 @@ class Image(object):
         >>> image_array = img.pixel_data
         """
 
+        from .._deps import numpy as _np
         from .. import extensions as _extensions
         data = _np.zeros((self.height, self.width, self.channels), dtype=_np.uint8)
         _extensions.image_load_to_numpy(self, data.ctypes.data, data.strides)

@@ -147,13 +147,29 @@ the User Guide
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+from turicreate._deps import LazyModuleLoader as _LazyModuleLoader
 
 
-from . import pagerank
-from . import triangle_counting
-from . import connected_components
-from . import kcore
-from . import graph_coloring
-from . import shortest_path
-from . import degree_counting
-from . import label_propagation
+# from . import pagerank
+# from . import triangle_counting
+# from . import connected_components
+# from . import kcore
+# from . import graph_coloring
+# from . import shortest_path
+# from . import degree_counting
+# from . import label_propagation
+
+__all__ = ['pagerank', 'triangle_counting', 'connected_components',
+           'kcore', 'degree_counting', 'label_propagation']
+
+# lazy import
+_mod_par = 'turicreate.toolkits.graph_analytics.'
+
+pagerank = _LazyModuleLoader(_mod_par + 'pagerank')
+triangle_counting = _LazyModuleLoader(_mod_par + 'triangle_counting')
+connected_components = _LazyModuleLoader(_mod_par + 'connected_components')
+kcore = _LazyModuleLoader(_mod_par + 'kcore')
+graph_coloring = _LazyModuleLoader(_mod_par + 'graph_coloring')
+shortest_path = _LazyModuleLoader(_mod_par + 'shortest_path')
+degree_counting = _LazyModuleLoader(_mod_par + 'degree_counting')
+label_propagation = _LazyModuleLoader(_mod_par + 'label_propagation')
