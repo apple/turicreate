@@ -4,11 +4,14 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unordered_set>
+#include <memory>
 #include <queue>
+#include <thread>
 #include <core/storage/sframe_data/groupby_aggregate_impl.hpp>
 #include <core/storage/sframe_data/sarray_reader_buffer.hpp>
 #include <core/parallel/lambda_omp.hpp>
 #include <core/util/cityhash_tc.hpp>
+#include <core/util/fs_util.hpp>
 #include <core/storage/sframe_data/groupby_aggregate.hpp>
 
 namespace turi {
@@ -217,128 +220,174 @@ size_t groupby_element::hash() const {
 /*                         group_aggregate_container                        */
 /*                                                                          */
 /****************************************************************************/
+
+/* static thread_local member initialization */
+thread_local group_aggregate_container::tls_segment_set
+    group_aggregate_container::tss_{};
+
 group_aggregate_container::group_aggregate_container(size_t max_buffer_size,
-                                                     size_t num_segments):
-    max_buffer_size(max_buffer_size), segments(num_segments) {
-  intermediate_buffer.open_for_write(num_segments);
-  for (size_t i = 0;i < segments.size(); ++i) {
-    segments[i].outiter = intermediate_buffer.get_output_iterator(i);
+                                                     size_t num_segments)
+    : max_buffer_size(max_buffer_size),
+      num_segments(num_segments),
+      task_id_(0),
+      gl_lock_pool_(num_segments),
+      gl_chunk_size_set_(num_segments) {
+  if (num_segments == 0) {
+    log_and_throw("num_segments is not allowed to be 0");
+  }
+
+  size_t num_local_buffers =
+      fs_util::get_file_handle_limit() / num_segments / 2;
+
+  logstream(LOG_INFO) << "num_local_buffers: " << num_local_buffers << std::endl;
+
+  num_local_buffers =
+      num_local_buffers == 0
+          ? 1
+          : std::min<size_t>(num_local_buffers, thread_pool::get_instance().size());
+
+  // construct local buffers
+  for (size_t ii = 0; ii < num_local_buffers; ++ii) {
+    local_buffer_set_.emplace_back(num_segments);
+    local_buffer_set_.back().sa_buffer_ptr_->open_for_write(num_segments);
   }
 }
 
-void group_aggregate_container::define_group(std::vector<size_t> column_numbers,
-                                             std::shared_ptr<group_aggregate_value> aggregator) {
+void group_aggregate_container::define_group(
+    std::vector<size_t> column_numbers,
+    std::shared_ptr<group_aggregate_value> aggregator) {
   group_descriptor desc;
   desc.column_numbers = column_numbers;
   desc.aggregator = aggregator;
   group_descriptors.push_back(desc);
 }
 
-void group_aggregate_container::add(const std::vector<flexible_type>& val,
-                                    size_t num_keys) {
-  size_t hash = groupby_element::hash_key(val, num_keys);
-  size_t target_segment = hash % segments.size();
-  // acquire lock on the segment
-  std::unique_lock<turi::simple_spinlock> lock(segments[target_segment].in_memory_group_lock);
-  // look for the id in the group_keys structure
-  auto& groupby_element_vec_ptr = segments[target_segment].elements[hash];
-  if (groupby_element_vec_ptr == NULL) groupby_element_vec_ptr = new std::vector<groupby_element>;
-  // note. not auto&. This needs to take a real value (pointer) and not a
-  // reference since the auto& will make it really a reference to a pointer to
-  // a vector<groupby_element> which will make it not robust to array resizes.
-  auto groupby_element_vec = groupby_element_vec_ptr;
-  segments[target_segment].refctr.inc();
-  lock.unlock();
-  segments[target_segment].fine_grain_locks[hash % 128].lock();
-  bool found = false;
-  for (size_t i = 0;i < groupby_element_vec->size(); ++i) {
-    if (flexible_type_vector_equality((*groupby_element_vec)[i].key,
-                                      (*groupby_element_vec)[i].key.size(),
-                                      val,
-                                      num_keys)) {
-      (*groupby_element_vec)[i].add_element(val, group_descriptors);
-      found = true;
-      break;
-    }
+void group_aggregate_container::init_tls() {
+  ASSERT_MSG(num_segments > 0, "num_segments cannot be 0");
+
+  ASSERT_MSG(UNLIKELY(!tss_.init_), "double init is not allowed");
+
+  tss_.segments_.resize(num_segments);
+  for (size_t ii = 0; ii < num_segments; ++ii) {
+    tss_.segments_[ii].segment_id_ = ii;
   }
-  if (!found) {
-    groupby_element_vec->push_back(groupby_element{
-                                  std::vector<flexible_type>(val.begin(), val.begin() + num_keys),
-                                  group_descriptors});
-    (*groupby_element_vec)[groupby_element_vec->size() - 1].add_element(val, group_descriptors);
+
+  {
+    std::lock_guard<turi::simple_spinlock> lock(gl_buffer_lock_);
+    tss_.id_ = ++task_id_;
   }
-  segments[target_segment].fine_grain_locks[hash % 128].unlock();
-  segments[target_segment].refctr.dec();
-  // element not found
-  if (segments[target_segment].elements.size() >= max_buffer_size) {
-    flush_segment(target_segment);
-  }
+
+  tss_.init_ = true;
 }
 
+void group_aggregate_container::flush_tls() {
+  throw_if_not_initialized();
 
-void group_aggregate_container::add(const sframe_rows::row& val,
+  // MUST flush and delete raw pointer elements
+  for (size_t ii = 0; ii < num_segments; ++ii) flush_segment(ii);
+
+  tss_.init_ = false;
+  tss_.segments_.clear();
+}
+
+void group_aggregate_container::add(const std::vector<flexible_type>& val,
                                     size_t num_keys) {
+  throw_if_not_initialized();
+
   size_t hash = groupby_element::hash_key(val, num_keys);
-  size_t target_segment = hash % segments.size();
+  size_t target_segment = hash % num_segments;
   // acquire lock on the segment
-  std::unique_lock<turi::simple_spinlock> lock(segments[target_segment].in_memory_group_lock);
   // look for the id in the group_keys structure
-  auto& groupby_element_vec_ptr = segments[target_segment].elements[hash];
-  if (groupby_element_vec_ptr == NULL) groupby_element_vec_ptr = new std::vector<groupby_element>;
+  auto& segments = tss_.segments_;
+  auto& groupby_element_vec_ptr = segments[target_segment].elements_[hash];
+  if (groupby_element_vec_ptr == NULL)
+    groupby_element_vec_ptr = new std::vector<groupby_element>;
   // note. not auto&. This needs to take a real value (pointer) and not a
   // reference since the auto& will make it really a reference to a pointer to
   // a vector<groupby_element> which will make it not robust to array resizes.
   auto groupby_element_vec = groupby_element_vec_ptr;
-  segments[target_segment].refctr.inc();
-  lock.unlock();
-  segments[target_segment].fine_grain_locks[hash % 128].lock();
-  bool found = false;
-  for (size_t i = 0;i < groupby_element_vec->size(); ++i) {
+  for (size_t i = 0; i < groupby_element_vec->size(); ++i) {
     if (flexible_type_vector_equality((*groupby_element_vec)[i].key,
-                                      (*groupby_element_vec)[i].key.size(),
-                                      val,
+                                      (*groupby_element_vec)[i].key.size(), val,
                                       num_keys)) {
       (*groupby_element_vec)[i].add_element(val, group_descriptors);
-      found = true;
-      break;
+      if (segments[target_segment].elements_.size() >= max_buffer_size) {
+        flush_segment(target_segment);
+      }
+      return;
     }
   }
-  if (!found) {
-    std::vector<flexible_type> keys; keys.reserve(num_keys);
-    for (size_t i = 0;i < num_keys; ++i) keys.push_back(val[i]);
 
-    groupby_element_vec->push_back(groupby_element{
-                                     std::move(keys),
-                                     group_descriptors});
-    (*groupby_element_vec)[groupby_element_vec->size() - 1].add_element(val, group_descriptors);
-  }
-  segments[target_segment].fine_grain_locks[hash % 128].unlock();
-  segments[target_segment].refctr.dec();
   // element not found
-  if (segments[target_segment].elements.size() >= max_buffer_size) {
-    flush_segment(target_segment);
+  groupby_element_vec->push_back(groupby_element{
+      std::vector<flexible_type>(val.begin(), val.begin() + num_keys),
+      group_descriptors});
+  (*groupby_element_vec)[groupby_element_vec->size() - 1].add_element(
+      val, group_descriptors);
+}
+
+/* using thread_local for optimization */
+void group_aggregate_container::add(const sframe_rows::row& val,
+                                    size_t num_keys) {
+  throw_if_not_initialized();
+
+  size_t hash = groupby_element::hash_key(val, num_keys);
+  size_t target_segment = hash % num_segments;
+
+  auto& segments = tss_.segments_;
+  auto& groupby_element_vec_ptr = segments[target_segment].elements_[hash];
+  if (groupby_element_vec_ptr == NULL)
+    groupby_element_vec_ptr = new std::vector<groupby_element>;
+  // note. not auto&. This needs to take a real value (pointer) and not a
+  // reference since the auto& will make it really a reference to a pointer to
+  // a vector<groupby_element> which will make it not robust to array resizes.
+  auto groupby_element_vec = groupby_element_vec_ptr;
+
+  for (size_t i = 0; i < groupby_element_vec->size(); ++i) {
+    if (flexible_type_vector_equality((*groupby_element_vec)[i].key,
+                                      (*groupby_element_vec)[i].key.size(), val,
+                                      num_keys)) {
+      (*groupby_element_vec)[i].add_element(val, group_descriptors);
+      if (segments[target_segment].elements_.size() >= max_buffer_size) {
+        flush_segment(target_segment);
+      }
+      return;
+    }
   }
+
+  std::vector<flexible_type> keys;
+  keys.reserve(num_keys);
+  for (size_t i = 0; i < num_keys; ++i) keys.push_back(val[i]);
+
+  groupby_element_vec->push_back(
+      groupby_element{std::move(keys), group_descriptors});
+
+  (*groupby_element_vec)[groupby_element_vec->size() - 1].add_element(
+      val, group_descriptors);
 }
 
 void group_aggregate_container::flush_segment(size_t segmentid) {
-  // unlock and swap out the segment.
-  std::unique_lock<turi::simple_spinlock> lock(segments[segmentid].in_memory_group_lock);
-  if (segments[segmentid].elements.size() == 0) return;
-  while(segments[segmentid].refctr.value > 0) cpu_relax();
-  decltype(segments[segmentid].elements) local;
-  local.swap(segments[segmentid].elements);
-  lock.unlock();
+  logstream(LOG_DEBUG) << "flush buffer from task_id: " << tss_.id_
+                       << ", segment_id" << segmentid << std::endl;
+
+  auto& segments = tss_.segments_;
+  if (segments[segmentid].elements_.size() == 0) return;
+
+  decltype(segments[segmentid].elements_) local;
+  local.swap(segments[segmentid].elements_);
+
   if (local.size() == 0) return;
 
   // sort the buckets by hash key
-  std::vector<std::pair<size_t, std::vector<groupby_element>*> > local_ordered_by_hash;
+  std::vector<std::pair<size_t, std::vector<groupby_element>*> >
+      local_ordered_by_hash;
   local_ordered_by_hash.reserve(local.size());
   std::move(local.begin(), local.end(),
             std::inserter(local_ordered_by_hash, local_ordered_by_hash.end()));
   std::sort(local_ordered_by_hash.begin(), local_ordered_by_hash.end());
 
   std::vector<groupby_element> local_sorted;
-  for(const auto& hash_entries: local_ordered_by_hash) {
+  for (const auto& hash_entries : local_ordered_by_hash) {
     if (hash_entries.second->size() > 1) {
       std::sort(hash_entries.second->begin(), hash_entries.second->end());
     }
@@ -347,46 +396,145 @@ void group_aggregate_container::flush_segment(size_t segmentid) {
     delete hash_entries.second;
   }
 
-  for (auto& item: local_sorted) {
-    for (auto& value: item.values) {
+  for (auto& item : local_sorted) {
+    for (auto& value : item.values) {
       value->partial_finalize();
     }
   }
   // ok. now we can write! lock the file
-  std::unique_lock<turi::mutex> filelock(segments[segmentid].file_lock);
-  oarchive oarc;
-  for (auto& item: local_sorted) {
-    oarc << item;
-    // write into the iterator
-    *(segments[segmentid].outiter) = std::string(oarc.buf, oarc.off);
-    ++(segments[segmentid].outiter);
-    oarc.off = 0;
+  size_t round_robin = (++merry_go_round_) % local_buffer_set_.size();
+
+  auto& local_buffer = local_buffer_set_[round_robin];
+
+  local_buffer.refctr_++;
+  /// lock the segmeent from local_buffer before using it
+  {
+    std::lock_guard<turi::simple_spinlock> slk(
+        local_buffer.sa_seg_locks_[segmentid]);
+
+    logstream(LOG_INFO) << "flush buffer from task_id: " << tss_.id_
+                        << ", segment_id: " << segmentid
+                        << ", on buffer: " << round_robin << std::endl;
+
+    auto outiter = local_buffer.sa_buffer_ptr_->get_output_iterator(segmentid);
+
+    std::vector<char> buffer;
+    for (auto& item : local_sorted) {
+      buffer.clear();
+      oarchive out(buffer);
+      out << item;
+      *(outiter) = std::string(buffer.data(), buffer.size());
+      ++(outiter);
+    }
+
+    local_buffer.sa_seg_chunks_[segmentid].push_back(local_sorted.size());
   }
-  free(oarc.buf);
-  segments[segmentid].chunk_size.push_back(local_sorted.size());
+  local_buffer.refctr_--;
+}
+
+void group_aggregate_container::merge_local_buffer_set() {
+  ASSERT_MSG(
+      UNLIKELY(!gl_buffer_.is_opened_for_write()),
+      "intermediate_buffer shall be closed before stealing local_buffer.");
+
+  turi::timer ti;
+  logstream(LOG_INFO) << "Merging local buffer set " << std::endl;
+
+  // merge all other local buffers to first local buffer
+  std::unique_ptr<sarray<std::string>> buffer_to_merge =
+      std::move(local_buffer_set_[0].sa_buffer_ptr_);
+
+  auto& chunk_to_merge = local_buffer_set_[0].sa_seg_chunks_;
+
+  for (auto& chunk : chunk_to_merge) {
+    chunk.reserve(chunk.size() * local_buffer_set_.size());
+  }
+
+  // skip empty segments
+  std::vector<size_t> non_empty_segment;
+  non_empty_segment.reserve(num_segments);
+
+  for (size_t ii = 1; ii < local_buffer_set_.size(); ++ii) {
+    auto& local_buffer = local_buffer_set_[ii];
+    while (local_buffer.refctr_ > 0) cpu_relax();
+    // no writers now, close it
+    local_buffer.sa_buffer_ptr_->close();
+
+    non_empty_segment.clear();
+    auto reader = local_buffer.sa_buffer_ptr_->get_reader();
+    DASSERT_EQ(reader->num_segments(), num_segments);
+
+    for (size_t ii = 0; ii < num_segments; ii++) {
+      if (reader->segment_length(ii)) {
+        non_empty_segment.push_back(ii);
+      }
+    };
+
+    parallel_for(0, non_empty_segment.size(), [&](size_t ii) {
+      size_t segment_id = non_empty_segment[ii];
+
+      auto reader = local_buffer.sa_buffer_ptr_->get_reader();
+      DASSERT_EQ(reader->num_segments(), num_segments);
+
+      auto outiter = buffer_to_merge->get_output_iterator(segment_id);
+      auto begin = reader->begin(segment_id);
+      auto end = reader->end(segment_id);
+
+      logstream(LOG_DEBUG) << "segment_id: " << segment_id
+                           << ", segment_length: "
+                           << reader->segment_length(segment_id)
+                           << ", buffer: " << ii << std::endl;
+
+      // sequential write of from other sarray
+      while (begin != end) {
+        *outiter = *begin;
+        ++begin;
+        ++outiter;
+      }
+      // merge chunk size
+      chunk_to_merge[segment_id].insert(
+          std::end(chunk_to_merge[segment_id]),
+          local_buffer.sa_seg_chunks_[segment_id].begin(),
+          local_buffer.sa_seg_chunks_[segment_id].end());
+    });
+
+  }
+
+  // steal the first local buffer
+  while (local_buffer_set_.front().refctr_ > 0) cpu_relax();
+  buffer_to_merge->close();
+  gl_buffer_ = std::move(*buffer_to_merge);
+  gl_chunk_size_set_ = std::move(chunk_to_merge);
+
+  logstream(LOG_INFO) << "Merging finished in " << ti.current_time_millis()
+                          << " ms." << std::endl;
 }
 
 void group_aggregate_container::group_and_write(sframe& out) {
-  for (size_t i = 0 ;i < segments.size(); ++i) flush_segment(i);
+  ASSERT_MSG(UNLIKELY(!tss_.init_),
+             "call flush_tls fisrt before write out groupby result");
 
-  intermediate_buffer.close();
-  std::shared_ptr<sarray<std::string>::reader_type> reader = intermediate_buffer.get_reader();
+  merge_local_buffer_set();
+
+  if (gl_buffer_.is_opened_for_write()) gl_buffer_.close();
+
+  std::shared_ptr<sarray<std::string>::reader_type> reader =
+      gl_buffer_.get_reader();
 
   logstream(LOG_INFO) << "Groupby output segment balance: ";
-  for (size_t i = 0; i < reader->num_segments() ; ++i) {
+  for (size_t i = 0; i < reader->num_segments(); ++i) {
     logstream(LOG_INFO) << reader->segment_length(i) << " ";
   }
   logstream(LOG_INFO) << std::endl;
 
-  parallel_for(0, reader->num_segments(),
-               [&](size_t i) {
-                this->group_and_write_segment(out, reader, i);
-               });
+  parallel_for(0, reader->num_segments(), [&](size_t i) {
+    this->group_and_write_segment(out, reader, i);
+  });
 }
 
-void group_aggregate_container::group_and_write_segment(sframe& out,
-                                                        std::shared_ptr<sarray<std::string>::reader_type> reader,
-                                                        size_t segmentid) {
+void group_aggregate_container::group_and_write_segment(
+    sframe& out, std::shared_ptr<sarray<std::string>::reader_type> reader,
+    size_t segmentid) {
 
   // prepare the begin row and end row for each chunk.
   size_t segment_start = 0;
@@ -399,18 +547,16 @@ void group_aggregate_container::group_and_write_segment(sframe& out,
   std::vector<sarray_reader_buffer<std::string> > chunks;
 
   size_t prev_row_start = segment_start;
-  for (size_t i = 0; i < segments[segmentid].chunk_size.size(); ++i) {
+  for (size_t i = 0; i < gl_chunk_size_set_[segmentid].size(); ++i) {
     size_t row_start = prev_row_start;
-    size_t row_end = row_start + segments[segmentid].chunk_size[i];
+    size_t row_end = row_start + gl_chunk_size_set_[segmentid][i];
     prev_row_start = row_end;
-    chunks.push_back(sarray_reader_buffer<std::string>(reader, row_start, row_end));
+    chunks.push_back(
+        sarray_reader_buffer<std::string>(reader, row_start, row_end));
   }
 
   // here is where we are going to write to
   auto outiter = out.get_output_iterator(segmentid);
-
-  // id of the chunks that still have elements.
-  std::unordered_set<size_t> remaining_chunks;
 
   // merge the chunks and write to the out iterator
   typedef std::pair<groupby_element, size_t> pq_value_type;
@@ -466,8 +612,8 @@ void group_aggregate_container::group_and_write_segment(sframe& out,
 
     // emit
     emission_vector.resize(cur.key.size() + cur.values.size());
-    for (size_t i = 0;i < cur.key.size(); ++i) emission_vector[i] = cur.key[i];
-    for (size_t i = 0;i < cur.values.size(); ++i) {
+    for (size_t i = 0; i < cur.key.size(); ++i) emission_vector[i] = cur.key[i];
+    for (size_t i = 0; i < cur.values.size(); ++i) {
       emission_vector[i + cur.key.size()] = cur.values[i]->emit();
     }
     *outiter = emission_vector;
@@ -475,5 +621,5 @@ void group_aggregate_container::group_and_write_segment(sframe& out,
   }
 }
 
-} // namespace groupby_aggregate_impl
-} // namespace turi
+}  // namespace groupby_aggregate_impl
+}  // namespace turi
