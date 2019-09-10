@@ -27,6 +27,8 @@
   self = [super init];
   
   if (self) {
+    // No bias
+    NSMutableData* zeroedConvBiases = [NSMutableData dataWithLength:descriptor.conv.outputFeatureChannels*sizeof(float)];
     _conv = [MPSCNNConvolutionNode createConvolutional:inputNode
                                            kernelWidth:descriptor.conv.kernelWidth
                                           kernelHeight:descriptor.conv.kernelHeight
@@ -37,7 +39,7 @@
                                           paddingWidth:descriptor.conv.paddingWidth
                                          paddingHeight:descriptor.conv.paddingHeight
                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_weights"]]
-                                                biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_biases"]]
+                                                biases:zeroedConvBiases
                                                  label:descriptor.conv.label
                                          updateWeights:descriptor.conv.updateWeights
                                                 device:dev
@@ -69,27 +71,27 @@
 }
 
 - (void) setLearningRate:(float)lr {
-  [[_conv weights] setLearningRate:lr];
-  [[_instNorm weights] setLearningRate:lr];
+  [_conv.tc_weightsData setLearningRate:lr];
+  [_instNorm.tc_weightsData setLearningRate:lr];
 }
 
 - (NSDictionary<NSString *, NSData *> *)exportWeights:(NSString *)prefix {
   NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];
 
-  NSUInteger convWeightSize = (NSUInteger)([[_conv weights] weightSize] * sizeof(float));
+  NSUInteger convWeightSize = (NSUInteger)([_conv.tc_weightsData weightSize] * sizeof(float));
   NSMutableData* convDataWeight = [NSMutableData dataWithLength:convWeightSize];
-  memcpy(convDataWeight.mutableBytes, [[_conv weights] weights], convWeightSize);
+  memcpy(convDataWeight.mutableBytes, [_conv.tc_weightsData weights], convWeightSize);
 
   NSString* convWeight = [NSString stringWithFormat:@"%@%@", prefix, @"conv_weights"];
 
   weights[convWeight] = convDataWeight;
 
-  NSUInteger instNormSize = (NSUInteger)([[_instNorm weights] numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
   NSMutableData* instNormDataBeta = [NSMutableData dataWithLength:instNormSize];
 
-  memcpy(instNormDataGamma.mutableBytes, [[_instNorm weights] gamma], instNormSize);
-  memcpy(instNormDataBeta.mutableBytes, [[_instNorm weights] beta], instNormSize);
+  memcpy(instNormDataGamma.mutableBytes, [_instNorm.tc_weightsData gamma], instNormSize);
+  memcpy(instNormDataBeta.mutableBytes, [_instNorm.tc_weightsData beta], instNormSize);
 
   NSString* instNormGamma = [NSString stringWithFormat:@"%@%@", prefix, @"inst_gamma"];
   NSString* instNormBeta = [NSString stringWithFormat:@"%@%@", prefix, @"inst_beta"];

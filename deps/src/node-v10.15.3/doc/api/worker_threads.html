@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Worker Threads | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/worker_threads.html">
+</head>
+<body class="alt apidoc" id="api-section-worker_threads">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads active">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="worker_threads" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="worker_threads.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/worker_threads.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/worker_threads.html">10.x <b>LTS</b></a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/worker_threads.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_1"><a href="#worker_threads_worker_threads">Worker Threads</a></span></p>
+<ul>
+<li><a href="#worker_threads_worker_ismainthread">worker.isMainThread</a></li>
+<li><a href="#worker_threads_worker_parentport">worker.parentPort</a></li>
+<li><a href="#worker_threads_worker_threadid">worker.threadId</a></li>
+<li><a href="#worker_threads_worker_workerdata">worker.workerData</a></li>
+<li><a href="#worker_threads_class_messagechannel">Class: MessageChannel</a></li>
+<li>
+<p><a href="#worker_threads_class_messageport">Class: MessagePort</a></p>
+<ul>
+<li><a href="#worker_threads_event_close">Event: 'close'</a></li>
+<li><a href="#worker_threads_event_message">Event: 'message'</a></li>
+<li><a href="#worker_threads_port_close">port.close()</a></li>
+<li><a href="#worker_threads_port_postmessage_value_transferlist">port.postMessage(value[, transferList])</a></li>
+<li><a href="#worker_threads_port_ref">port.ref()</a></li>
+<li><a href="#worker_threads_port_start">port.start()</a></li>
+<li><a href="#worker_threads_port_unref">port.unref()</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#worker_threads_class_worker">Class: Worker</a></p>
+<ul>
+<li><a href="#worker_threads_new_worker_filename_options">new Worker(filename[, options])</a></li>
+<li><a href="#worker_threads_event_error">Event: 'error'</a></li>
+<li><a href="#worker_threads_event_exit">Event: 'exit'</a></li>
+<li><a href="#worker_threads_event_message_1">Event: 'message'</a></li>
+<li><a href="#worker_threads_event_online">Event: 'online'</a></li>
+<li><a href="#worker_threads_worker_postmessage_value_transferlist">worker.postMessage(value[, transferList])</a></li>
+<li><a href="#worker_threads_worker_ref">worker.ref()</a></li>
+<li><a href="#worker_threads_worker_stderr">worker.stderr</a></li>
+<li><a href="#worker_threads_worker_stdin">worker.stdin</a></li>
+<li><a href="#worker_threads_worker_stdout">worker.stdout</a></li>
+<li><a href="#worker_threads_worker_terminate_callback">worker.terminate([callback])</a></li>
+<li><a href="#worker_threads_worker_threadid_1">worker.threadId</a></li>
+<li><a href="#worker_threads_worker_unref">worker.unref()</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Worker Threads<span><a class="mark" href="#worker_threads_worker_threads" id="worker_threads_worker_threads">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_1"><a href="documentation.html#documentation_stability_index">Stability: 1</a> - Experimental</div><p></p>
+<p>The <code>worker</code> module provides a way to create multiple environments running
+on independent threads, and to create message channels between them. It
+can be accessed using the <code>--experimental-worker</code> flag and:</p>
+<pre><code class="language-js">const worker = require('worker_threads');
+</code></pre>
+<p>Workers are useful for performing CPU-intensive JavaScript operations; do not
+use them for I/O, since Node.js’s built-in mechanisms for performing operations
+asynchronously already treat it more efficiently than Worker threads can.</p>
+<p>Workers, unlike child processes or when using the <code>cluster</code> module, can also
+share memory efficiently by transferring <code>ArrayBuffer</code> instances or sharing
+<code>SharedArrayBuffer</code> instances between them.</p>
+<pre><code class="language-js">const {
+  Worker, isMainThread, parentPort, workerData
+} = require('worker_threads');
+
+if (isMainThread) {
+  module.exports = async function parseJSAsync(script) {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker(__filename, {
+        workerData: script
+      });
+      worker.on('message', resolve);
+      worker.on('error', reject);
+      worker.on('exit', (code) => {
+        if (code !== 0)
+          reject(new Error(`Worker stopped with exit code ${code}`));
+      });
+    });
+  };
+} else {
+  const { parse } = require('some-js-parsing-library');
+  const script = workerData;
+  parentPort.postMessage(parse(script));
+}
+</code></pre>
+<p>Note that this example spawns a Worker thread for each <code>parse</code> call.
+In practice, it is strongly recommended to use a pool of Workers for these
+kinds of tasks, since the overhead of creating Workers would likely exceed the
+benefit of handing the work off to it.</p>
+<h2>worker.isMainThread<span><a class="mark" href="#worker_threads_worker_ismainthread" id="worker_threads_worker_ismainthread">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a></li>
+</ul>
+<p>Is <code>true</code> if this code is not running inside of a <a href="#worker_threads_class_worker"><code>Worker</code></a> thread.</p>
+<h2>worker.parentPort<span><a class="mark" href="#worker_threads_worker_parentport" id="worker_threads_worker_parentport">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type" class="type">&#x3C;null></a> | <a href="worker_threads.html#worker_threads_class_messageport" class="type">&#x3C;MessagePort></a></li>
+</ul>
+<p>If this thread was spawned as a <a href="#worker_threads_class_worker"><code>Worker</code></a>, this will be a <a href="#worker_threads_class_messageport"><code>MessagePort</code></a>
+allowing communication with the parent thread. Messages sent using
+<code>parentPort.postMessage()</code> will be available in the parent thread
+using <code>worker.on('message')</code>, and messages sent from the parent thread
+using <code>worker.postMessage()</code> will be available in this thread using
+<code>parentPort.on('message')</code>.</p>
+<h2>worker.threadId<span><a class="mark" href="#worker_threads_worker_threadid" id="worker_threads_worker_threadid">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+</ul>
+<p>An integer identifier for the current thread. On the corresponding worker object
+(if there is any), it is available as <a href="#worker_threads_worker_threadid_1"><code>worker.threadId</code></a>.</p>
+<h2>worker.workerData<span><a class="mark" href="#worker_threads_worker_workerdata" id="worker_threads_worker_workerdata">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>An arbitrary JavaScript value that contains a clone of the data passed
+to this thread’s <code>Worker</code> constructor.</p>
+<h2>Class: MessageChannel<span><a class="mark" href="#worker_threads_class_messagechannel" id="worker_threads_class_messagechannel">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>Instances of the <code>worker.MessageChannel</code> class represent an asynchronous,
+two-way communications channel.
+The <code>MessageChannel</code> has no methods of its own. <code>new MessageChannel()</code>
+yields an object with <code>port1</code> and <code>port2</code> properties, which refer to linked
+<a href="#worker_threads_class_messageport"><code>MessagePort</code></a> instances.</p>
+<pre><code class="language-js">const { MessageChannel } = require('worker_threads');
+
+const { port1, port2 } = new MessageChannel();
+port1.on('message', (message) => console.log('received', message));
+port2.postMessage({ foo: 'bar' });
+// prints: received { foo: 'bar' } from the `port1.on('message')` listener
+</code></pre>
+<h2>Class: MessagePort<span><a class="mark" href="#worker_threads_class_messageport" id="worker_threads_class_messageport">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li>Extends: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>Instances of the <code>worker.MessagePort</code> class represent one end of an
+asynchronous, two-way communications channel. It can be used to transfer
+structured data, memory regions and other <code>MessagePort</code>s between different
+<a href="#worker_threads_class_worker"><code>Worker</code></a>s.</p>
+<p>With the exception of <code>MessagePort</code>s being <a href="events.html"><code>EventEmitter</code></a>s rather
+than <a href="https://developer.mozilla.org/en-US/docs/Web/API/EventTarget"><code>EventTarget</code></a>s, this implementation matches <a href="https://developer.mozilla.org/en-US/docs/Web/API/MessagePort">browser <code>MessagePort</code></a>s.</p>
+<h3>Event: 'close'<span><a class="mark" href="#worker_threads_event_close" id="worker_threads_event_close">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>The <code>'close'</code> event is emitted once either side of the channel has been
+disconnected.</p>
+<h3>Event: 'message'<span><a class="mark" href="#worker_threads_event_message" id="worker_threads_event_message">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> The transmitted value</li>
+</ul>
+<p>The <code>'message'</code> event is emitted for any incoming message, containing the cloned
+input of <a href="#worker_threads_port_postmessage_value_transferlist"><code>port.postMessage()</code></a>.</p>
+<p>Listeners on this event will receive a clone of the <code>value</code> parameter as passed
+to <code>postMessage()</code> and no further arguments.</p>
+<h3>port.close()<span><a class="mark" href="#worker_threads_port_close" id="worker_threads_port_close">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>Disables further sending of messages on either side of the connection.
+This method can be called when no further communication will happen over this
+<code>MessagePort</code>.</p>
+<h3>port.postMessage(value[, transferList])<span><a class="mark" href="#worker_threads_port_postmessage_value_transferlist" id="worker_threads_port_postmessage_value_transferlist">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>transferList</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object[]></a></li>
+</ul>
+<p>Sends a JavaScript value to the receiving side of this channel.
+<code>value</code> will be transferred in a way which is compatible with
+the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm">HTML structured clone algorithm</a>. In particular, it may contain circular
+references and objects like typed arrays that the <code>JSON</code> API is not able
+to stringify.</p>
+<p><code>transferList</code> may be a list of <code>ArrayBuffer</code> and <code>MessagePort</code> objects.
+After transferring, they will not be usable on the sending side of the channel
+anymore (even if they are not contained in <code>value</code>). Unlike with
+<a href="child_process.html">child processes</a>, transferring handles such as network sockets is currently
+not supported.</p>
+<p>If <code>value</code> contains <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/SharedArrayBuffer"><code>SharedArrayBuffer</code></a> instances, those will be accessible
+from either thread. They cannot be listed in <code>transferList</code>.</p>
+<p><code>value</code> may still contain <code>ArrayBuffer</code> instances that are not in
+<code>transferList</code>; in that case, the underlying memory is copied rather than moved.</p>
+<p>Because the object cloning uses the structured clone algorithm,
+non-enumerable properties, property accessors, and object prototypes are
+not preserved. In particular, <a href="buffer.html"><code>Buffer</code></a> objects will be read as
+plain <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array"><code>Uint8Array</code></a>s on the receiving side.</p>
+<p>The message object will be cloned immediately, and can be modified after
+posting without having side effects.</p>
+<p>For more information on the serialization and deserialization mechanisms
+behind this API, see the <a href="v8.html#v8_serialization_api">serialization API of the <code>v8</code> module</a>.</p>
+<h3>port.ref()<span><a class="mark" href="#worker_threads_port_ref" id="worker_threads_port_ref">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>Opposite of <code>unref()</code>. Calling <code>ref()</code> on a previously <code>unref()</code>ed port will
+<em>not</em> let the program exit if it's the only active handle left (the default
+behavior). If the port is <code>ref()</code>ed, calling <code>ref()</code> again will have no effect.</p>
+<p>If listeners are attached or removed using <code>.on('message')</code>, the port will
+be <code>ref()</code>ed and <code>unref()</code>ed automatically depending on whether
+listeners for the event exist.</p>
+<h3>port.start()<span><a class="mark" href="#worker_threads_port_start" id="worker_threads_port_start">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>Starts receiving messages on this <code>MessagePort</code>. When using this port
+as an event emitter, this will be called automatically once <code>'message'</code>
+listeners are attached.</p>
+<h3>port.unref()<span><a class="mark" href="#worker_threads_port_unref" id="worker_threads_port_unref">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>Calling <code>unref()</code> on a port will allow the thread to exit if this is the only
+active handle in the event system. If the port is already <code>unref()</code>ed calling
+<code>unref()</code> again will have no effect.</p>
+<p>If listeners are attached or removed using <code>.on('message')</code>, the port will
+be <code>ref()</code>ed and <code>unref()</code>ed automatically depending on whether
+listeners for the event exist.</p>
+<h2>Class: Worker<span><a class="mark" href="#worker_threads_class_worker" id="worker_threads_class_worker">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li>Extends: <a href="events.html#events_class_eventemitter" class="type">&#x3C;EventEmitter></a></li>
+</ul>
+<p>The <code>Worker</code> class represents an independent JavaScript execution thread.
+Most Node.js APIs are available inside of it.</p>
+<p>Notable differences inside a Worker environment are:</p>
+<ul>
+<li>The <a href="process.html#process_process_stdin"><code>process.stdin</code></a>, <a href="process.html#process_process_stdout"><code>process.stdout</code></a> and <a href="process.html#process_process_stderr"><code>process.stderr</code></a>
+may be redirected by the parent thread.</li>
+<li>The <a href="#worker_threads_worker_ismainthread"><code>require('worker_threads').isMainThread</code></a> property is set to <code>false</code>.</li>
+<li>The <a href="#worker_threads_worker_parentport"><code>require('worker_threads').parentPort</code></a> message port is available,</li>
+<li><a href="process.html#process_process_exit_code"><code>process.exit()</code></a> does not stop the whole program, just the single thread,
+and <a href="process.html#process_process_abort"><code>process.abort()</code></a> is not available.</li>
+<li><a href="process.html#process_process_chdir_directory"><code>process.chdir()</code></a> and <code>process</code> methods that set group or user ids
+are not available.</li>
+<li><a href="process.html#process_process_env"><code>process.env</code></a> is a read-only reference to the environment variables.</li>
+<li><a href="process.html#process_process_title"><code>process.title</code></a> cannot be modified.</li>
+<li>Signals will not be delivered through <a href="process.html#process_signal_events"><code>process.on('...')</code></a>.</li>
+<li>Execution may stop at any point as a result of <a href="#worker_threads_worker_terminate_callback"><code>worker.terminate()</code></a>
+being invoked.</li>
+<li>IPC channels from parent processes are not accessible.</li>
+</ul>
+<p>Currently, the following differences also exist until they are addressed:</p>
+<ul>
+<li>The <a href="inspector.html"><code>inspector</code></a> module is not available yet.</li>
+<li>Native addons are not supported yet.</li>
+</ul>
+<p>Creating <code>Worker</code> instances inside of other <code>Worker</code>s is possible.</p>
+<p>Like <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API">Web Workers</a> and the <a href="cluster.html"><code>cluster</code> module</a>, two-way communication can be
+achieved through inter-thread message passing. Internally, a <code>Worker</code> has a
+built-in pair of <a href="#worker_threads_class_messageport"><code>MessagePort</code></a>s that are already associated with each other
+when the <code>Worker</code> is created. While the <code>MessagePort</code> object on the parent side
+is not directly exposed, its functionalities are exposed through
+<a href="#worker_threads_worker_postmessage_value_transferlist"><code>worker.postMessage()</code></a> and the <a href="#worker_threads_event_message_1"><code>worker.on('message')</code></a> event
+on the <code>Worker</code> object for the parent thread.</p>
+<p>To create custom messaging channels (which is encouraged over using the default
+global channel because it facilitates separation of concerns), users can create
+a <code>MessageChannel</code> object on either thread and pass one of the
+<code>MessagePort</code>s on that <code>MessageChannel</code> to the other thread through a
+pre-existing channel, such as the global one.</p>
+<p>See <a href="#worker_threads_port_postmessage_value_transferlist"><code>port.postMessage()</code></a> for more information on how messages are passed,
+and what kind of JavaScript values can be successfully transported through
+the thread barrier.</p>
+<pre><code class="language-js">const assert = require('assert');
+const {
+  Worker, MessageChannel, MessagePort, isMainThread, parentPort
+} = require('worker_threads');
+if (isMainThread) {
+  const worker = new Worker(__filename);
+  const subChannel = new MessageChannel();
+  worker.postMessage({ hereIsYourPort: subChannel.port1 }, [subChannel.port1]);
+  subChannel.port2.on('message', (value) => {
+    console.log('received:', value);
+  });
+} else {
+  parentPort.once('message', (value) => {
+    assert(value.hereIsYourPort instanceof MessagePort);
+    value.hereIsYourPort.postMessage('the worker is sending this');
+    value.hereIsYourPort.close();
+  });
+}
+</code></pre>
+<h3>new Worker(filename[, options])<span><a class="mark" href="#worker_threads_new_worker_filename_options" id="worker_threads_new_worker_filename_options">#</a></span></h3>
+<ul>
+<li><code>filename</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The path to the Worker’s main script. Must be
+either an absolute path or a relative path (i.e. relative to the
+current working directory) starting with <code>./</code> or <code>../</code>.
+If <code>options.eval</code> is <code>true</code>, this is a string containing JavaScript code
+rather than a path.</li>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></p>
+<ul>
+<li><code>eval</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If <code>true</code>, interpret the first argument to the constructor
+as a script that is executed once the worker is online.</li>
+<li><code>workerData</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> Any JavaScript value that will be cloned and made
+available as <a href="#worker_threads_worker_workerdata"><code>require('worker_threads').workerData</code></a>. The cloning will
+occur as described in the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API/Structured_clone_algorithm">HTML structured clone algorithm</a>, and an error
+will be thrown if the object cannot be cloned (e.g. because it contains
+<code>function</code>s).</li>
+<li>stdin <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If this is set to <code>true</code>, then <code>worker.stdin</code> will
+provide a writable stream whose contents will appear as <code>process.stdin</code>
+inside the Worker. By default, no data is provided.</li>
+<li>stdout <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If this is set to <code>true</code>, then <code>worker.stdout</code> will
+not automatically be piped through to <code>process.stdout</code> in the parent.</li>
+<li>stderr <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> If this is set to <code>true</code>, then <code>worker.stderr</code> will
+not automatically be piped through to <code>process.stderr</code> in the parent.</li>
+</ul>
+</li>
+</ul>
+<h3>Event: 'error'<span><a class="mark" href="#worker_threads_event_error" id="worker_threads_event_error">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><code>err</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+</ul>
+<p>The <code>'error'</code> event is emitted if the worker thread throws an uncaught
+exception. In that case, the worker will be terminated.</p>
+<h3>Event: 'exit'<span><a class="mark" href="#worker_threads_event_exit" id="worker_threads_event_exit">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><code>exitCode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+</ul>
+<p>The <code>'exit'</code> event is emitted once the worker has stopped. If the worker
+exited by calling <a href="process.html#process_process_exit_code"><code>process.exit()</code></a>, the <code>exitCode</code> parameter will be the
+passed exit code. If the worker was terminated, the <code>exitCode</code> parameter will
+be <code>1</code>.</p>
+<h3>Event: 'message'<span><a class="mark" href="#worker_threads_event_message_1" id="worker_threads_event_message_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a> The transmitted value</li>
+</ul>
+<p>The <code>'message'</code> event is emitted when the worker thread has invoked
+<a href="#worker_threads_worker_postmessage_value_transferlist"><code>require('worker_threads').postMessage()</code></a>. See the <a href="#worker_threads_event_message"><code>port.on('message')</code></a>
+event for more details.</p>
+<h3>Event: 'online'<span><a class="mark" href="#worker_threads_event_online" id="worker_threads_event_online">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>The <code>'online'</code> event is emitted when the worker thread has started executing
+JavaScript code.</p>
+<h3>worker.postMessage(value[, transferList])<span><a class="mark" href="#worker_threads_worker_postmessage_value_transferlist" id="worker_threads_worker_postmessage_value_transferlist">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><code>value</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Data_types" class="type">&#x3C;any></a></li>
+<li><code>transferList</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object[]></a></li>
+</ul>
+<p>Send a message to the worker that will be received via
+<a href="#worker_threads_event_message"><code>require('worker_threads').parentPort.on('message')</code></a>.
+See <a href="#worker_threads_port_postmessage_value_transferlist"><code>port.postMessage()</code></a> for more details.</p>
+<h3>worker.ref()<span><a class="mark" href="#worker_threads_worker_ref" id="worker_threads_worker_ref">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>Opposite of <code>unref()</code>, calling <code>ref()</code> on a previously <code>unref()</code>ed worker will
+<em>not</em> let the program exit if it's the only active handle left (the default
+behavior). If the worker is <code>ref()</code>ed, calling <code>ref()</code> again will have
+no effect.</p>
+<h3>worker.stderr<span><a class="mark" href="#worker_threads_worker_stderr" id="worker_threads_worker_stderr">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><a href="stream.html#stream_class_stream_readable" class="type">&#x3C;stream.Readable></a></li>
+</ul>
+<p>This is a readable stream which contains data written to <a href="process.html#process_process_stderr"><code>process.stderr</code></a>
+inside the worker thread. If <code>stderr: true</code> was not passed to the
+<a href="#worker_threads_class_worker"><code>Worker</code></a> constructor, then data will be piped to the parent thread's
+<a href="process.html#process_process_stderr"><code>process.stderr</code></a> stream.</p>
+<h3>worker.stdin<span><a class="mark" href="#worker_threads_worker_stdin" id="worker_threads_worker_stdin">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Null_type" class="type">&#x3C;null></a> | <a href="stream.html#stream_class_stream_writable" class="type">&#x3C;stream.Writable></a></li>
+</ul>
+<p>If <code>stdin: true</code> was passed to the <a href="#worker_threads_class_worker"><code>Worker</code></a> constructor, this is a
+writable stream. The data written to this stream will be made available in
+the worker thread as <a href="process.html#process_process_stdin"><code>process.stdin</code></a>.</p>
+<h3>worker.stdout<span><a class="mark" href="#worker_threads_worker_stdout" id="worker_threads_worker_stdout">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><a href="stream.html#stream_class_stream_readable" class="type">&#x3C;stream.Readable></a></li>
+</ul>
+<p>This is a readable stream which contains data written to <a href="process.html#process_process_stdout"><code>process.stdout</code></a>
+inside the worker thread. If <code>stdout: true</code> was not passed to the
+<a href="#worker_threads_class_worker"><code>Worker</code></a> constructor, then data will be piped to the parent thread's
+<a href="process.html#process_process_stdout"><code>process.stdout</code></a> stream.</p>
+<h3>worker.terminate([callback])<span><a class="mark" href="#worker_threads_worker_terminate_callback" id="worker_threads_worker_terminate_callback">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li>
+<p><code>callback</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a></p>
+<ul>
+<li><code>err</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Error" class="type">&#x3C;Error></a></li>
+<li><code>exitCode</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+</ul>
+</li>
+</ul>
+<p>Stop all JavaScript execution in the worker thread as soon as possible.
+<code>callback</code> is an optional function that is invoked once this operation is known
+to have completed.</p>
+<p><strong>Warning</strong>: Currently, not all code in the internals of Node.js is prepared to
+expect termination at arbitrary points in time and may crash if it encounters
+that condition. Consequently, only call <code>.terminate()</code> if it is known that the
+Worker thread is not accessing Node.js core modules other than what is exposed
+in the <code>worker</code> module.</p>
+<h3>worker.threadId<span><a class="mark" href="#worker_threads_worker_threadid_1" id="worker_threads_worker_threadid_1">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<ul>
+<li><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;integer></a></li>
+</ul>
+<p>An integer identifier for the referenced thread. Inside the worker thread,
+it is available as <a href="#worker_threads_worker_threadid"><code>require('worker_threads').threadId</code></a>.</p>
+<h3>worker.unref()<span><a class="mark" href="#worker_threads_worker_unref" id="worker_threads_worker_unref">#</a></span></h3>
+<div class="api_metadata">
+<span>Added in: v10.5.0</span>
+</div>
+<p>Calling <code>unref()</code> on a worker will allow the thread to exit if this is the only
+active handle in the event system. If the worker is already <code>unref()</code>ed calling
+<code>unref()</code> again will have no effect.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

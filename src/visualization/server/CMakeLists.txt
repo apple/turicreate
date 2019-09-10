@@ -28,6 +28,7 @@ make_library(visualization OBJECT
     server.cpp
     show.cpp
     summary_view.cpp
+    table.cpp
     thread.cpp
     transformation.cpp
     vega_data.cpp

@@ -32,6 +32,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       mps_device_manager.m
       mps_descriptor_utils.m
       style_transfer/mps_style_transfer.m
+      style_transfer/mps_style_transfer_backend.mm
       style_transfer/mps_style_transfer_utils.m
       style_transfer/mps_style_transfer_encoding_node.mm
       style_transfer/mps_style_transfer_residual_node.mm
@@ -55,7 +56,11 @@ else()
   set(additional_unity_neural_net_requirements "")
 endif()
 
-# TODO: a backend wrapping MXNet.
+make_library(tctensorflow SHARED
+  SOURCES
+  tf_compute_context.cpp
+)
+set_target_properties(tctensorflow PROPERTIES SUFFIX ".so")
 
 make_library(unity_neural_net OBJECT
   SOURCES

@@ -162,6 +162,9 @@ def create(item_data, item_id,
 
     # Pass it through a feature transformer.
     if item_data_transform == 'auto':
+        # _feature_engineering used to be included by text_analytics pkg
+        # need to explicitly import due to lazy import change;
+        import turicreate.toolkits._feature_engineering
         item_data_transform = _turicreate.toolkits._feature_engineering.AutoVectorizer(excluded_features = [item_id])
 
     if not isinstance(item_data_transform, _turicreate.toolkits._feature_engineering.TransformerBase):

@@ -22,7 +22,7 @@ AnnotationBase::AnnotationBase(const std::shared_ptr<unity_sframe> &data,
   /* Copy as so not to mutate the sframe passed into the function */
   m_data = std::static_pointer_cast<unity_sframe>(
       m_data->copy_range(0, 1, m_data->size()));
-  this->_addIndexColumn();
+  _addIndexColumn();
 }
 
 void AnnotationBase::annotate(const std::string &path_to_client) {
@@ -58,11 +58,30 @@ void AnnotationBase::_sendProgress(double value) {
 
 std::shared_ptr<unity_sframe>
 AnnotationBase::returnAnnotations(bool drop_null) {
-  this->cast_annotations();
+  cast_annotations();
 
-  std::shared_ptr<unity_sframe> copy_data =
-      std::static_pointer_cast<unity_sframe>(
+  std::shared_ptr<unity_sframe> copy_data;
+  {
+    // append undefined values
+    if (m_data_na && m_data_na->size()) {
+      auto cast_type = m_data->select_column(m_annotation_column)->dtype();
+      auto na_type = m_data_na->select_column(m_annotation_column)->dtype();
+      if (cast_type != na_type) {
+        auto data_sarray = std::static_pointer_cast<unity_sarray>(
+            m_data_na->select_column(m_annotation_column));
+        auto integer_annotations =
+            data_sarray->astype(cast_type, true);
+        m_data_na->remove_column(m_data_na->column_index(m_annotation_column));
+        m_data_na->add_column(integer_annotations, m_annotation_column);
+      }
+      // temporary solution using sort to reconstruct
+      copy_data = std::static_pointer_cast<unity_sframe>(
+          m_data->append(m_data_na)->sort({"__idx"}, {true}));
+    } else {
+      copy_data = std::static_pointer_cast<unity_sframe>(
           m_data->copy_range(0, 1, m_data->size()));
+    }
+  }
 
   size_t id_column = copy_data->column_index("__idx");
   copy_data->remove_column(id_column);
@@ -73,18 +92,19 @@ AnnotationBase::returnAnnotations(bool drop_null) {
   if (!drop_null) {
     annotation_global->annotation_sframe = copy_data;
     return copy_data;
-  }
+    }
 
-  std::vector<std::string> annotation_column_name = {m_annotation_column};
-  std::list<std::shared_ptr<unity_sframe_base>> dropped_missing =
-      copy_data->drop_missing_values(annotation_column_name, false, false, false);
+    std::vector<std::string> annotation_column_name = {m_annotation_column};
+    std::list<std::shared_ptr<unity_sframe_base>> dropped_missing =
+        copy_data->drop_missing_values(annotation_column_name, false, false,
+                                       false);
 
-  std::shared_ptr<unity_sframe> final_sf =
-      std::static_pointer_cast<unity_sframe>(dropped_missing.front());
+    std::shared_ptr<unity_sframe> final_sf =
+        std::static_pointer_cast<unity_sframe>(dropped_missing.front());
 
-  annotation_global->annotation_sframe = final_sf;
+    annotation_global->annotation_sframe = final_sf;
 
-  return final_sf;
+    return final_sf;
 }
 
 std::shared_ptr<annotation_global> AnnotationBase::get_annotation_registry() {
@@ -95,20 +115,18 @@ std::shared_ptr<annotation_global> AnnotationBase::get_annotation_registry() {
 
 size_t AnnotationBase::size() { return m_data->size(); }
 
+/* must be called after _addIndexColumn */
+void AnnotationBase::_splitUndefined(const std::string& column_names, bool how, bool recursive) {
+  DASSERT_TRUE(m_data->contains_column("__idx"));
+  const auto &image_column_name = m_data_columns.at(0);
+  auto split_data_set =
+      m_data->drop_missing_values({image_column_name}, how, true, recursive);
+  m_data = std::static_pointer_cast<unity_sframe>(split_data_set.front());
+  m_data_na = std::static_pointer_cast<unity_sframe>(split_data_set.back());
+}
+
 void AnnotationBase::_addIndexColumn() {
-  std::vector<flexible_type> indicies;
-
-  for (size_t x = 0; x < m_data->size(); x++) {
-    indicies.push_back(x);
-  }
-
-  std::shared_ptr<unity_sarray> empty_annotation_sarray =
-      std::make_shared<unity_sarray>();
-
-  empty_annotation_sarray->construct_from_vector(indicies,
-                                                 flex_type_enum::INTEGER);
-
-  m_data->add_column(empty_annotation_sarray, "__idx");
+  m_data->add_column(unity_sarray::create_sequential_sarray(m_data->size(), 0, false), "__idx");
 }
 
 void AnnotationBase::_reshapeIndicies(size_t &start, size_t &end) {

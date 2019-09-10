@@ -24,12 +24,12 @@ from ..visualization import _get_client_app_path
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
+# LazyModuleLoader version of pandas, numpy
 from .._deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
 from .grouped_sframe import GroupedSFrame
 from ..visualization import Plot
 
 import array
-from prettytable import PrettyTable
 from textwrap import wrap
 import datetime
 import time
@@ -39,6 +39,8 @@ import numbers
 import sys
 import six
 import csv
+import collections
+import array
 from collections import Iterable as _Iterable
 
 __all__ = ['SFrame']
@@ -730,9 +732,7 @@ class SFrame(object):
             if six.PY2 and isinstance(data, unicode):
                 data = data.encode('utf-8')
             if (format == 'auto'):
-                if (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
-                    _format = 'dataframe'
-                elif (isinstance(data, str) or
+                if (isinstance(data, str) or
                       (sys.version_info.major < 3 and isinstance(data, unicode))):
 
                     if data.endswith(('.csv', '.csv.gz')):
@@ -754,10 +754,20 @@ class SFrame(object):
                 elif isinstance(data, dict):
                     _format = 'dict'
 
-                elif _is_non_string_iterable(data):
+                elif isinstance(data, (collections.Sequence, array.array)):
                     _format = 'array'
+
                 elif data is None:
                     _format = 'empty'
+                # defer importing pandas
+                elif (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
+                    _format = 'dataframe'
+
+                # pandas.dataframe also is iterable
+                # so this check should be called after pandas check
+                # probably numpy.ndarray
+                elif _is_non_string_iterable(data):
+                    _format = 'array'
                 else:
                     raise ValueError('Cannot infer input type for data ' + str(data))
             else:
@@ -2002,6 +2012,8 @@ class SFrame(object):
         -------
         out : list[PrettyTable]
         """
+        from prettytable import PrettyTable
+
         if (len(self) <= max_rows_to_display):
             headsf = self.__copy__()
         else:
@@ -2417,7 +2429,6 @@ class SFrame(object):
 
         """
         assert HAS_NUMPY, 'numpy is not installed.'
-        import numpy
         return numpy.transpose(numpy.asarray([self[x] for x in self.column_names()]))
 
     def tail(self, n=10):
@@ -3781,48 +3792,8 @@ class SFrame(object):
         if type(other) is not SFrame:
             raise RuntimeError("SFrame append can only work with SFrame")
 
-        left_empty = len(self.column_names()) == 0
-        right_empty = len(other.column_names()) == 0
-
-        if (left_empty and right_empty):
-            return SFrame()
-
-        if (left_empty or right_empty):
-            non_empty_sframe = self if right_empty else other
-            return non_empty_sframe.__copy__()
-
-        my_column_names = self.column_names()
-        my_column_types = self.column_types()
-        other_column_names = other.column_names()
-        if (len(my_column_names) != len(other_column_names)):
-            raise RuntimeError("Two SFrames have to have the same number of columns")
-
-        # check if the order of column name is the same
-        column_name_order_match = True
-        for i in range(len(my_column_names)):
-            if other_column_names[i] != my_column_names[i]:
-                column_name_order_match = False
-                break
-
-        processed_other_frame = other
-        if not column_name_order_match:
-            # we allow name order of two sframes to be different, so we create a new sframe from
-            # "other" sframe to make it has exactly the same shape
-            processed_other_frame = SFrame()
-            for i in range(len(my_column_names)):
-                col_name = my_column_names[i]
-                if(col_name not in other_column_names):
-                    raise RuntimeError("Column " + my_column_names[i] + " does not exist in second SFrame")
-
-                other_column = other.select_column(col_name)
-                processed_other_frame.add_column(other_column, col_name, inplace=True)
-
-                # check column type
-                if my_column_types[i] != other_column.dtype:
-                    raise RuntimeError("Column " + my_column_names[i] + " type is not the same in two SFrames, one is " + str(my_column_types[i]) + ", the other is " + str(other_column.dtype))
-
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.append(processed_other_frame.__proxy__))
+            return SFrame(_proxy=self.__proxy__.append(other.__proxy__))
 
     def groupby(self, key_column_names, operations, *args):
         """
@@ -4560,11 +4531,27 @@ class SFrame(object):
         if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
 
-
         # Suppress visualization output if 'none' target is set
-        from ..visualization._plot import _target, display_table_in_notebook
+        from ..visualization._plot import _target, display_table_in_notebook, _ensure_web_server
         if _target == 'none':
             return
+
+        if title is None:
+            title = ""
+
+        # If browser target is set, launch in web browser
+        if _target == 'browser':
+            # First, make sure TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY is set
+            _ensure_web_server()
+
+            # Launch localhost URL using Python built-in webbrowser module
+            import webbrowser
+            import turicreate as tc
+            url = tc.extensions.get_url_for_table(self, title)
+            webbrowser.open_new_tab(url)
+            return
+
+        # If auto target is set, try to show inline in Jupyter Notebook
         try:
             if _target == 'auto' and \
                 get_ipython().__class__.__name__ == "ZMQInteractiveShell":
@@ -4576,8 +4563,6 @@ class SFrame(object):
         # Launch interactive GUI window
         path_to_client = _get_client_app_path()
 
-        if title is None:
-            title = ""
         self.__proxy__.explore(path_to_client, title)
 
     def show(self):

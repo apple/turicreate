@@ -1,0 +1,802 @@
+{
+  "type": "module",
+  "source": "doc/api/console.md",
+  "modules": [
+    {
+      "textRaw": "Console",
+      "name": "console",
+      "introduced_in": "v0.10.13",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>The <code>console</code> module provides a simple debugging console that is similar to the\nJavaScript console mechanism provided by web browsers.</p>\n<p>The module exports two specific components:</p>\n<ul>\n<li>A <code>Console</code> class with methods such as <code>console.log()</code>, <code>console.error()</code> and\n<code>console.warn()</code> that can be used to write to any Node.js stream.</li>\n<li>A global <code>console</code> instance configured to write to <a href=\"process.html#process_process_stdout\"><code>process.stdout</code></a> and\n<a href=\"process.html#process_process_stderr\"><code>process.stderr</code></a>. The global <code>console</code> can be used without calling\n<code>require('console')</code>.</li>\n</ul>\n<p><strong><em>Warning</em></strong>: The global console object's methods are neither consistently\nsynchronous like the browser APIs they resemble, nor are they consistently\nasynchronous like all other Node.js streams. See the <a href=\"process.html#process_a_note_on_process_i_o\">note on process I/O</a> for\nmore information.</p>\n<p>Example using the global <code>console</code>:</p>\n<pre><code class=\"language-js\">console.log('hello world');\n// Prints: hello world, to stdout\nconsole.log('hello %s', 'world');\n// Prints: hello world, to stdout\nconsole.error(new Error('Whoops, something bad happened'));\n// Prints: [Error: Whoops, something bad happened], to stderr\n\nconst name = 'Will Robinson';\nconsole.warn(`Danger ${name}! Danger!`);\n// Prints: Danger Will Robinson! Danger!, to stderr\n</code></pre>\n<p>Example using the <code>Console</code> class:</p>\n<pre><code class=\"language-js\">const out = getStreamSomehow();\nconst err = getStreamSomehow();\nconst myConsole = new console.Console(out, err);\n\nmyConsole.log('hello world');\n// Prints: hello world, to out\nmyConsole.log('hello %s', 'world');\n// Prints: hello world, to out\nmyConsole.error(new Error('Whoops, something bad happened'));\n// Prints: [Error: Whoops, something bad happened], to err\n\nconst name = 'Will Robinson';\nmyConsole.warn(`Danger ${name}! Danger!`);\n// Prints: Danger Will Robinson! Danger!, to err\n</code></pre>",
+      "classes": [
+        {
+          "textRaw": "Class: Console",
+          "type": "class",
+          "name": "Console",
+          "meta": {
+            "changes": [
+              {
+                "version": "v8.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/9744",
+                "description": "Errors that occur while writing to the underlying streams will now be ignored by default."
+              }
+            ]
+          },
+          "desc": "<p>The <code>Console</code> class can be used to create a simple logger with configurable\noutput streams and can be accessed using either <code>require('console').Console</code>\nor <code>console.Console</code> (or their destructured counterparts):</p>\n<pre><code class=\"language-js\">const { Console } = require('console');\n</code></pre>\n<pre><code class=\"language-js\">const { Console } = console;\n</code></pre>",
+          "methods": [
+            {
+              "textRaw": "console.assert(value[, ...message])",
+              "type": "method",
+              "name": "assert",
+              "meta": {
+                "added": [
+                  "v0.1.101"
+                ],
+                "changes": [
+                  {
+                    "version": "v10.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/17706",
+                    "description": "The implementation is now spec compliant and does not throw anymore."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`value` {any} The value tested for being truthy.",
+                      "name": "value",
+                      "type": "any",
+                      "desc": "The value tested for being truthy."
+                    },
+                    {
+                      "textRaw": "`...message` {any} All arguments besides `value` are used as error message.",
+                      "name": "...message",
+                      "type": "any",
+                      "desc": "All arguments besides `value` are used as error message.",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>A simple assertion test that verifies whether <code>value</code> is truthy. If it is not,\n<code>Assertion failed</code> is logged. If provided, the error <code>message</code> is formatted\nusing <a href=\"util.html#util_util_format_format_args\"><code>util.format()</code></a> by passing along all message arguments. The output is\nused as the error message.</p>\n<pre><code class=\"language-js\">console.assert(true, 'does nothing');\n// OK\nconsole.assert(false, 'Whoops %s work', 'didn\\'t');\n// Assertion failed: Whoops didn't work\n</code></pre>\n<p>Calling <code>console.assert()</code> with a falsy assertion will only cause the <code>message</code>\nto be printed to the console without interrupting execution of subsequent code.</p>"
+            },
+            {
+              "textRaw": "console.clear()",
+              "type": "method",
+              "name": "clear",
+              "meta": {
+                "added": [
+                  "v8.3.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>When <code>stdout</code> is a TTY, calling <code>console.clear()</code> will attempt to clear the\nTTY. When <code>stdout</code> is not a TTY, this method does nothing.</p>\n<p>The specific operation of <code>console.clear()</code> can vary across operating systems\nand terminal types. For most Linux operating systems, <code>console.clear()</code>\noperates similarly to the <code>clear</code> shell command. On Windows, <code>console.clear()</code>\nwill clear only the output in the current terminal viewport for the Node.js\nbinary.</p>"
+            },
+            {
+              "textRaw": "console.count([label])",
+              "type": "method",
+              "name": "count",
+              "meta": {
+                "added": [
+                  "v8.3.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string} The display label for the counter. **Default:** `'default'`.",
+                      "name": "label",
+                      "type": "string",
+                      "default": "`'default'`",
+                      "desc": "The display label for the counter.",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Maintains an internal counter specific to <code>label</code> and outputs to <code>stdout</code> the\nnumber of times <code>console.count()</code> has been called with the given <code>label</code>.</p>\n<!-- eslint-skip -->\n<pre><code class=\"language-js\">> console.count()\ndefault: 1\nundefined\n> console.count('default')\ndefault: 2\nundefined\n> console.count('abc')\nabc: 1\nundefined\n> console.count('xyz')\nxyz: 1\nundefined\n> console.count('abc')\nabc: 2\nundefined\n> console.count()\ndefault: 3\nundefined\n>\n</code></pre>"
+            },
+            {
+              "textRaw": "console.countReset([label])",
+              "type": "method",
+              "name": "countReset",
+              "meta": {
+                "added": [
+                  "v8.3.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string} The display label for the counter. **Default:** `'default'`.",
+                      "name": "label",
+                      "type": "string",
+                      "default": "`'default'`",
+                      "desc": "The display label for the counter.",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Resets the internal counter specific to <code>label</code>.</p>\n<!-- eslint-skip -->\n<pre><code class=\"language-js\">> console.count('abc');\nabc: 1\nundefined\n> console.countReset('abc');\nundefined\n> console.count('abc');\nabc: 1\nundefined\n>\n</code></pre>"
+            },
+            {
+              "textRaw": "console.debug(data[, ...args])",
+              "type": "method",
+              "name": "debug",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": [
+                  {
+                    "version": "v9.3.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/17033",
+                    "description": "`console.debug` is now an alias for `console.log`."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`data` {any}",
+                      "name": "data",
+                      "type": "any"
+                    },
+                    {
+                      "textRaw": "`...args` {any}",
+                      "name": "...args",
+                      "type": "any",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>console.debug()</code> function is an alias for <a href=\"#console_console_log_data_args\"><code>console.log()</code></a>.</p>"
+            },
+            {
+              "textRaw": "console.dir(obj[, options])",
+              "type": "method",
+              "name": "dir",
+              "meta": {
+                "added": [
+                  "v0.1.101"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`obj` {any}",
+                      "name": "obj",
+                      "type": "any"
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`showHidden` {boolean} If `true` then the object's non-enumerable and symbol properties will be shown too. **Default:** `false`.",
+                          "name": "showHidden",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "If `true` then the object's non-enumerable and symbol properties will be shown too."
+                        },
+                        {
+                          "textRaw": "`depth` {number} Tells [`util.inspect()`][] how many times to recurse while formatting the object. This is useful for inspecting large complicated objects. To make it recurse indefinitely, pass `null`. **Default:** `2`.",
+                          "name": "depth",
+                          "type": "number",
+                          "default": "`2`",
+                          "desc": "Tells [`util.inspect()`][] how many times to recurse while formatting the object. This is useful for inspecting large complicated objects. To make it recurse indefinitely, pass `null`."
+                        },
+                        {
+                          "textRaw": "`colors` {boolean} If `true`, then the output will be styled with ANSI color codes. Colors are customizable; see [customizing `util.inspect()` colors][]. **Default:** `false`.",
+                          "name": "colors",
+                          "type": "boolean",
+                          "default": "`false`",
+                          "desc": "If `true`, then the output will be styled with ANSI color codes. Colors are customizable; see [customizing `util.inspect()` colors][]."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Uses <a href=\"util.html#util_util_inspect_object_options\"><code>util.inspect()</code></a> on <code>obj</code> and prints the resulting string to <code>stdout</code>.\nThis function bypasses any custom <code>inspect()</code> function defined on <code>obj</code>.</p>"
+            },
+            {
+              "textRaw": "console.dirxml(...data)",
+              "type": "method",
+              "name": "dirxml",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": [
+                  {
+                    "version": "v9.3.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/17152",
+                    "description": "`console.dirxml` now calls `console.log` for its arguments."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`...data` {any}",
+                      "name": "...data",
+                      "type": "any"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This method calls <code>console.log()</code> passing it the arguments received.\nPlease note that this method does not produce any XML formatting.</p>"
+            },
+            {
+              "textRaw": "console.error([data][, ...args])",
+              "type": "method",
+              "name": "error",
+              "meta": {
+                "added": [
+                  "v0.1.100"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`data` {any}",
+                      "name": "data",
+                      "type": "any",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`...args` {any}",
+                      "name": "...args",
+                      "type": "any",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Prints to <code>stderr</code> with newline. Multiple arguments can be passed, with the\nfirst used as the primary message and all additional used as substitution\nvalues similar to <a href=\"http://man7.org/linux/man-pages/man3/printf.3.html\"><code>printf(3)</code></a> (the arguments are all passed to\n<a href=\"util.html#util_util_format_format_args\"><code>util.format()</code></a>).</p>\n<pre><code class=\"language-js\">const code = 5;\nconsole.error('error #%d', code);\n// Prints: error #5, to stderr\nconsole.error('error', code);\n// Prints: error 5, to stderr\n</code></pre>\n<p>If formatting elements (e.g. <code>%d</code>) are not found in the first string then\n<a href=\"util.html#util_util_inspect_object_options\"><code>util.inspect()</code></a> is called on each argument and the resulting string\nvalues are concatenated. See <a href=\"util.html#util_util_format_format_args\"><code>util.format()</code></a> for more information.</p>"
+            },
+            {
+              "textRaw": "console.group([...label])",
+              "type": "method",
+              "name": "group",
+              "meta": {
+                "added": [
+                  "v8.5.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`...label` {any}",
+                      "name": "...label",
+                      "type": "any",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Increases indentation of subsequent lines by two spaces.</p>\n<p>If one or more <code>label</code>s are provided, those are printed first without the\nadditional indentation.</p>"
+            },
+            {
+              "textRaw": "console.groupCollapsed()",
+              "type": "method",
+              "name": "groupCollapsed",
+              "meta": {
+                "added": [
+                  "v8.5.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>An alias for <a href=\"#console_console_group_label\"><code>console.group()</code></a>.</p>"
+            },
+            {
+              "textRaw": "console.groupEnd()",
+              "type": "method",
+              "name": "groupEnd",
+              "meta": {
+                "added": [
+                  "v8.5.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>Decreases indentation of subsequent lines by two spaces.</p>"
+            },
+            {
+              "textRaw": "console.info([data][, ...args])",
+              "type": "method",
+              "name": "info",
+              "meta": {
+                "added": [
+                  "v0.1.100"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`data` {any}",
+                      "name": "data",
+                      "type": "any",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`...args` {any}",
+                      "name": "...args",
+                      "type": "any",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>console.info()</code> function is an alias for <a href=\"#console_console_log_data_args\"><code>console.log()</code></a>.</p>"
+            },
+            {
+              "textRaw": "console.log([data][, ...args])",
+              "type": "method",
+              "name": "log",
+              "meta": {
+                "added": [
+                  "v0.1.100"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`data` {any}",
+                      "name": "data",
+                      "type": "any",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`...args` {any}",
+                      "name": "...args",
+                      "type": "any",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Prints to <code>stdout</code> with newline. Multiple arguments can be passed, with the\nfirst used as the primary message and all additional used as substitution\nvalues similar to <a href=\"http://man7.org/linux/man-pages/man3/printf.3.html\"><code>printf(3)</code></a> (the arguments are all passed to\n<a href=\"util.html#util_util_format_format_args\"><code>util.format()</code></a>).</p>\n<pre><code class=\"language-js\">const count = 5;\nconsole.log('count: %d', count);\n// Prints: count: 5, to stdout\nconsole.log('count:', count);\n// Prints: count: 5, to stdout\n</code></pre>\n<p>See <a href=\"util.html#util_util_format_format_args\"><code>util.format()</code></a> for more information.</p>"
+            },
+            {
+              "textRaw": "console.table(tabularData[, properties])",
+              "type": "method",
+              "name": "table",
+              "meta": {
+                "added": [
+                  "v10.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`tabularData` {any}",
+                      "name": "tabularData",
+                      "type": "any"
+                    },
+                    {
+                      "textRaw": "`properties` {string[]} Alternate properties for constructing the table.",
+                      "name": "properties",
+                      "type": "string[]",
+                      "desc": "Alternate properties for constructing the table.",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Try to construct a table with the columns of the properties of <code>tabularData</code>\n(or use <code>properties</code>) and rows of <code>tabularData</code> and log it. Falls back to just\nlogging the argument if it can’t be parsed as tabular.</p>\n<pre><code class=\"language-js\">// These can't be parsed as tabular data\nconsole.table(Symbol());\n// Symbol()\n\nconsole.table(undefined);\n// undefined\n\nconsole.table([{ a: 1, b: 'Y' }, { a: 'Z', b: 2 }]);\n// ┌─────────┬─────┬─────┐\n// │ (index) │  a  │  b  │\n// ├─────────┼─────┼─────┤\n// │    0    │  1  │ 'Y' │\n// │    1    │ 'Z' │  2  │\n// └─────────┴─────┴─────┘\n\nconsole.table([{ a: 1, b: 'Y' }, { a: 'Z', b: 2 }], ['a']);\n// ┌─────────┬─────┐\n// │ (index) │  a  │\n// ├─────────┼─────┤\n// │    0    │  1  │\n// │    1    │ 'Z' │\n// └─────────┴─────┘\n</code></pre>"
+            },
+            {
+              "textRaw": "console.time([label])",
+              "type": "method",
+              "name": "time",
+              "meta": {
+                "added": [
+                  "v0.1.104"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string} **Default:** `'default'`",
+                      "name": "label",
+                      "type": "string",
+                      "default": "`'default'`",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Starts a timer that can be used to compute the duration of an operation. Timers\nare identified by a unique <code>label</code>. Use the same <code>label</code> when calling\n<a href=\"#console_console_timeend_label\"><code>console.timeEnd()</code></a> to stop the timer and output the elapsed time in\nmilliseconds to <code>stdout</code>. Timer durations are accurate to the sub-millisecond.</p>"
+            },
+            {
+              "textRaw": "console.timeEnd([label])",
+              "type": "method",
+              "name": "timeEnd",
+              "meta": {
+                "added": [
+                  "v0.1.104"
+                ],
+                "changes": [
+                  {
+                    "version": "v6.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/5901",
+                    "description": "This method no longer supports multiple calls that don’t map to individual `console.time()` calls; see below for details."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string} **Default:** `'default'`",
+                      "name": "label",
+                      "type": "string",
+                      "default": "`'default'`",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Stops a timer that was previously started by calling <a href=\"#console_console_time_label\"><code>console.time()</code></a> and\nprints the result to <code>stdout</code>:</p>\n<pre><code class=\"language-js\">console.time('100-elements');\nfor (let i = 0; i &#x3C; 100; i++) {}\nconsole.timeEnd('100-elements');\n// prints 100-elements: 225.438ms\n</code></pre>"
+            },
+            {
+              "textRaw": "console.timeLog([label][, ...data])",
+              "type": "method",
+              "name": "timeLog",
+              "meta": {
+                "added": [
+                  "v10.7.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string} **Default:** `'default'`",
+                      "name": "label",
+                      "type": "string",
+                      "default": "`'default'`",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`...data` {any}",
+                      "name": "...data",
+                      "type": "any",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>For a timer that was previously started by calling <a href=\"#console_console_time_label\"><code>console.time()</code></a>, prints\nthe elapsed time and other <code>data</code> arguments to <code>stdout</code>:</p>\n<pre><code class=\"language-js\">console.time('process');\nconst value = expensiveProcess1(); // Returns 42\nconsole.timeLog('process', value);\n// Prints \"process: 365.227ms 42\".\ndoExpensiveProcess2(value);\nconsole.timeEnd('process');\n</code></pre>"
+            },
+            {
+              "textRaw": "console.trace([message][, ...args])",
+              "type": "method",
+              "name": "trace",
+              "meta": {
+                "added": [
+                  "v0.1.104"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`message` {any}",
+                      "name": "message",
+                      "type": "any",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`...args` {any}",
+                      "name": "...args",
+                      "type": "any",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Prints to <code>stderr</code> the string <code>'Trace: '</code>, followed by the <a href=\"util.html#util_util_format_format_args\"><code>util.format()</code></a>\nformatted message and stack trace to the current position in the code.</p>\n<pre><code class=\"language-js\">console.trace('Show me');\n// Prints: (stack trace will vary based on where trace is called)\n//  Trace: Show me\n//    at repl:2:9\n//    at REPLServer.defaultEval (repl.js:248:27)\n//    at bound (domain.js:287:14)\n//    at REPLServer.runBound [as eval] (domain.js:300:12)\n//    at REPLServer.&#x3C;anonymous> (repl.js:412:12)\n//    at emitOne (events.js:82:20)\n//    at REPLServer.emit (events.js:169:7)\n//    at REPLServer.Interface._onLine (readline.js:210:10)\n//    at REPLServer.Interface._line (readline.js:549:8)\n//    at REPLServer.Interface._ttyWrite (readline.js:826:14)\n</code></pre>"
+            },
+            {
+              "textRaw": "console.warn([data][, ...args])",
+              "type": "method",
+              "name": "warn",
+              "meta": {
+                "added": [
+                  "v0.1.100"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`data` {any}",
+                      "name": "data",
+                      "type": "any",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`...args` {any}",
+                      "name": "...args",
+                      "type": "any",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>The <code>console.warn()</code> function is an alias for <a href=\"#console_console_error_data_args\"><code>console.error()</code></a>.</p>"
+            }
+          ],
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`stdout` {stream.Writable}",
+                  "name": "stdout",
+                  "type": "stream.Writable"
+                },
+                {
+                  "textRaw": "`stderr` {stream.Writable}",
+                  "name": "stderr",
+                  "type": "stream.Writable",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`ignoreErrors` {boolean} Ignore errors when writing to the underlying streams. **Default:** `true`.",
+                  "name": "ignoreErrors",
+                  "type": "boolean",
+                  "default": "`true`",
+                  "desc": "Ignore errors when writing to the underlying streams.",
+                  "optional": true
+                }
+              ],
+              "desc": "<p>Creates a new <code>Console</code> with one or two writable stream instances. <code>stdout</code> is a\nwritable stream to print log or info output. <code>stderr</code> is used for warning or\nerror output. If <code>stderr</code> is not provided, <code>stdout</code> is used for <code>stderr</code>.</p>\n<pre><code class=\"language-js\">const output = fs.createWriteStream('./stdout.log');\nconst errorOutput = fs.createWriteStream('./stderr.log');\n// custom simple logger\nconst logger = new Console({ stdout: output, stderr: errorOutput });\n// use it like console\nconst count = 5;\nlogger.log('count: %d', count);\n// in stdout.log: count 5\n</code></pre>\n<p>The global <code>console</code> is a special <code>Console</code> whose output is sent to\n<a href=\"process.html#process_process_stdout\"><code>process.stdout</code></a> and <a href=\"process.html#process_process_stderr\"><code>process.stderr</code></a>. It is equivalent to calling:</p>\n<pre><code class=\"language-js\">new Console({ stdout: process.stdout, stderr: process.stderr });\n</code></pre>"
+            },
+            {
+              "params": [
+                {
+                  "textRaw": "`options` {Object}",
+                  "name": "options",
+                  "type": "Object",
+                  "options": [
+                    {
+                      "textRaw": "`stdout` {stream.Writable}",
+                      "name": "stdout",
+                      "type": "stream.Writable"
+                    },
+                    {
+                      "textRaw": "`stderr` {stream.Writable}",
+                      "name": "stderr",
+                      "type": "stream.Writable"
+                    },
+                    {
+                      "textRaw": "`ignoreErrors` {boolean} Ignore errors when writing to the underlying streams. **Default:** `true`.",
+                      "name": "ignoreErrors",
+                      "type": "boolean",
+                      "default": "`true`",
+                      "desc": "Ignore errors when writing to the underlying streams."
+                    },
+                    {
+                      "textRaw": "`colorMode` {boolean|string} Set color support for this `Console` instance. Setting to `true` enables coloring while inspecting values, setting to `'auto'` will make color support depend on the value of the `isTTY` property and the value returned by `getColorDepth()` on the respective stream. **Default:** `'auto'`.",
+                      "name": "colorMode",
+                      "type": "boolean|string",
+                      "default": "`'auto'`",
+                      "desc": "Set color support for this `Console` instance. Setting to `true` enables coloring while inspecting values, setting to `'auto'` will make color support depend on the value of the `isTTY` property and the value returned by `getColorDepth()` on the respective stream."
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Creates a new <code>Console</code> with one or two writable stream instances. <code>stdout</code> is a\nwritable stream to print log or info output. <code>stderr</code> is used for warning or\nerror output. If <code>stderr</code> is not provided, <code>stdout</code> is used for <code>stderr</code>.</p>\n<pre><code class=\"language-js\">const output = fs.createWriteStream('./stdout.log');\nconst errorOutput = fs.createWriteStream('./stderr.log');\n// custom simple logger\nconst logger = new Console({ stdout: output, stderr: errorOutput });\n// use it like console\nconst count = 5;\nlogger.log('count: %d', count);\n// in stdout.log: count 5\n</code></pre>\n<p>The global <code>console</code> is a special <code>Console</code> whose output is sent to\n<a href=\"process.html#process_process_stdout\"><code>process.stdout</code></a> and <a href=\"process.html#process_process_stderr\"><code>process.stderr</code></a>. It is equivalent to calling:</p>\n<pre><code class=\"language-js\">new Console({ stdout: process.stdout, stderr: process.stderr });\n</code></pre>"
+            }
+          ]
+        }
+      ],
+      "modules": [
+        {
+          "textRaw": "Inspector only methods",
+          "name": "inspector_only_methods",
+          "desc": "<p>The following methods are exposed by the V8 engine in the general API but do\nnot display anything unless used in conjunction with the <a href=\"debugger.html\">inspector</a>\n(<code>--inspect</code> flag).</p>",
+          "methods": [
+            {
+              "textRaw": "console.markTimeline([label])",
+              "type": "method",
+              "name": "markTimeline",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string} **Default:** `'default'`",
+                      "name": "label",
+                      "type": "string",
+                      "default": "`'default'`",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This method does not display anything unless used in the inspector. The\n<code>console.markTimeline()</code> method is the deprecated form of\n<a href=\"#console_console_timestamp_label\"><code>console.timeStamp()</code></a>.</p>"
+            },
+            {
+              "textRaw": "console.profile([label])",
+              "type": "method",
+              "name": "profile",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string}",
+                      "name": "label",
+                      "type": "string",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This method does not display anything unless used in the inspector. The\n<code>console.profile()</code> method starts a JavaScript CPU profile with an optional\nlabel until <a href=\"#console_console_profileend_label\"><code>console.profileEnd()</code></a> is called. The profile is then added to\nthe <strong>Profile</strong> panel of the inspector.</p>\n<pre><code class=\"language-js\">console.profile('MyLabel');\n// Some code\nconsole.profileEnd('MyLabel');\n// Adds the profile 'MyLabel' to the Profiles panel of the inspector.\n</code></pre>"
+            },
+            {
+              "textRaw": "console.profileEnd([label])",
+              "type": "method",
+              "name": "profileEnd",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string}",
+                      "name": "label",
+                      "type": "string",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This method does not display anything unless used in the inspector. Stops the\ncurrent JavaScript CPU profiling session if one has been started and prints\nthe report to the <strong>Profiles</strong> panel of the inspector. See\n<a href=\"#console_console_profile_label\"><code>console.profile()</code></a> for an example.</p>\n<p>If this method is called without a label, the most recently started profile is\nstopped.</p>"
+            },
+            {
+              "textRaw": "console.timeStamp([label])",
+              "type": "method",
+              "name": "timeStamp",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string}",
+                      "name": "label",
+                      "type": "string",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This method does not display anything unless used in the inspector. The\n<code>console.timeStamp()</code> method adds an event with the label <code>'label'</code> to the\n<strong>Timeline</strong> panel of the inspector.</p>"
+            },
+            {
+              "textRaw": "console.timeline([label])",
+              "type": "method",
+              "name": "timeline",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string} **Default:** `'default'`",
+                      "name": "label",
+                      "type": "string",
+                      "default": "`'default'`",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This method does not display anything unless used in the inspector. The\n<code>console.timeline()</code> method is the deprecated form of <a href=\"#console_console_time_label\"><code>console.time()</code></a>.</p>"
+            },
+            {
+              "textRaw": "console.timelineEnd([label])",
+              "type": "method",
+              "name": "timelineEnd",
+              "meta": {
+                "added": [
+                  "v8.0.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`label` {string} **Default:** `'default'`",
+                      "name": "label",
+                      "type": "string",
+                      "default": "`'default'`",
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>This method does not display anything unless used in the inspector. The\n<code>console.timelineEnd()</code> method is the deprecated form of\n<a href=\"#console_console_timeend_label\"><code>console.timeEnd()</code></a>.</p>"
+            }
+          ],
+          "type": "module",
+          "displayName": "Inspector only methods"
+        }
+      ],
+      "type": "module",
+      "displayName": "Console"
+    }
+  ]
+}

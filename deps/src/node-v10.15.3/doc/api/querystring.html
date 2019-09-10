@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Query String | Node.js v10.15.3 Documentation</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic">
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="assets/sh.css">
+  <link rel="canonical" href="https://nodejs.org/api/querystring.html">
+</head>
+<body class="alt apidoc" id="api-section-querystring">
+  <div id="content" class="clearfix">
+    <div id="column2" class="interior">
+      <div id="intro" class="interior">
+        <a href="/" title="Go back to the home page">
+          Node.js
+        </a>
+      </div>
+      <ul>
+<li><a href="documentation.html" class="nav-documentation">About these Docs</a></li>
+<li><a href="synopsis.html" class="nav-synopsis">Usage &#x26; Example</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="assert.html" class="nav-assert">Assertion Testing</a></li>
+<li><a href="async_hooks.html" class="nav-async_hooks">Async Hooks</a></li>
+<li><a href="buffer.html" class="nav-buffer">Buffer</a></li>
+<li><a href="addons.html" class="nav-addons">C++ Addons</a></li>
+<li><a href="n-api.html" class="nav-n-api">C/C++ Addons - N-API</a></li>
+<li><a href="child_process.html" class="nav-child_process">Child Processes</a></li>
+<li><a href="cluster.html" class="nav-cluster">Cluster</a></li>
+<li><a href="cli.html" class="nav-cli">Command Line Options</a></li>
+<li><a href="console.html" class="nav-console">Console</a></li>
+<li><a href="crypto.html" class="nav-crypto">Crypto</a></li>
+<li><a href="debugger.html" class="nav-debugger">Debugger</a></li>
+<li><a href="deprecations.html" class="nav-deprecations">Deprecated APIs</a></li>
+<li><a href="dns.html" class="nav-dns">DNS</a></li>
+<li><a href="domain.html" class="nav-domain">Domain</a></li>
+<li><a href="esm.html" class="nav-esm">ECMAScript Modules</a></li>
+<li><a href="errors.html" class="nav-errors">Errors</a></li>
+<li><a href="events.html" class="nav-events">Events</a></li>
+<li><a href="fs.html" class="nav-fs">File System</a></li>
+<li><a href="globals.html" class="nav-globals">Globals</a></li>
+<li><a href="http.html" class="nav-http">HTTP</a></li>
+<li><a href="http2.html" class="nav-http2">HTTP/2</a></li>
+<li><a href="https.html" class="nav-https">HTTPS</a></li>
+<li><a href="inspector.html" class="nav-inspector">Inspector</a></li>
+<li><a href="intl.html" class="nav-intl">Internationalization</a></li>
+<li><a href="modules.html" class="nav-modules">Modules</a></li>
+<li><a href="net.html" class="nav-net">Net</a></li>
+<li><a href="os.html" class="nav-os">OS</a></li>
+<li><a href="path.html" class="nav-path">Path</a></li>
+<li><a href="perf_hooks.html" class="nav-perf_hooks">Performance Hooks</a></li>
+<li><a href="process.html" class="nav-process">Process</a></li>
+<li><a href="punycode.html" class="nav-punycode">Punycode</a></li>
+<li><a href="querystring.html" class="nav-querystring active">Query Strings</a></li>
+<li><a href="readline.html" class="nav-readline">Readline</a></li>
+<li><a href="repl.html" class="nav-repl">REPL</a></li>
+<li><a href="stream.html" class="nav-stream">Stream</a></li>
+<li><a href="string_decoder.html" class="nav-string_decoder">String Decoder</a></li>
+<li><a href="timers.html" class="nav-timers">Timers</a></li>
+<li><a href="tls.html" class="nav-tls">TLS/SSL</a></li>
+<li><a href="tracing.html" class="nav-tracing">Trace Events</a></li>
+<li><a href="tty.html" class="nav-tty">TTY</a></li>
+<li><a href="dgram.html" class="nav-dgram">UDP/Datagram</a></li>
+<li><a href="url.html" class="nav-url">URL</a></li>
+<li><a href="util.html" class="nav-util">Utilities</a></li>
+<li><a href="v8.html" class="nav-v8">V8</a></li>
+<li><a href="vm.html" class="nav-vm">VM</a></li>
+<li><a href="worker_threads.html" class="nav-worker_threads">Worker Threads</a></li>
+<li><a href="zlib.html" class="nav-zlib">ZLIB</a></li>
+</ul>
+<div class="line"></div>
+<ul>
+<li><a href="https://github.com/nodejs/node" class="nav-https-github-com-nodejs-node">GitHub Repo &#x26; Issue Tracker</a></li>
+</ul>
+    </div>
+
+    <div id="column1" data-id="querystring" class="interior">
+      <header>
+        <h1>Node.js v10.15.3 Documentation</h1>
+        <div id="gtoc">
+          <ul>
+            <li>
+              <a href="index.html" name="toc">Index</a>
+            </li>
+            <li>
+              <a href="all.html">View on single page</a>
+            </li>
+            <li>
+              <a href="querystring.json">View as JSON</a>
+            </li>
+            
+    <li class="version-picker">
+      <a href="#">View another version <span>&#x25bc;</span></a>
+      <ol class="version-picker"><li><a href="https://nodejs.org/docs/latest-v11.x/api/querystring.html">11.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v10.x/api/querystring.html">10.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v9.x/api/querystring.html">9.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v8.x/api/querystring.html">8.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v7.x/api/querystring.html">7.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v6.x/api/querystring.html">6.x <b>LTS</b></a></li>
+<li><a href="https://nodejs.org/docs/latest-v5.x/api/querystring.html">5.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v4.x/api/querystring.html">4.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.12.x/api/querystring.html">0.12.x</a></li>
+<li><a href="https://nodejs.org/docs/latest-v0.10.x/api/querystring.html">0.10.x</a></li></ol>
+    </li>
+  
+            <li class="edit_on_github"><a href="https://github.com/nodejs/node/edit/master/doc/api/querystring.md"><span class="github_icon"><svg height="16" width="16" viewBox="0 0 16.1 16.1" fill="currentColor"><path d="M8 0a8 8 0 0 0-2.5 15.6c.4 0 .5-.2.5-.4v-1.5c-2 .4-2.5-.5-2.7-1 0-.1-.5-.9-.8-1-.3-.2-.7-.6 0-.6.6 0 1 .6 1.2.8.7 1.2 1.9 1 2.4.7 0-.5.2-.9.5-1-1.8-.3-3.7-1-3.7-4 0-.9.3-1.6.8-2.2 0-.2-.3-1 .1-2 0 0 .7-.3 2.2.7a7.4 7.4 0 0 1 4 0c1.5-1 2.2-.8 2.2-.8.5 1.1.2 2 .1 2.1.5.6.8 1.3.8 2.2 0 3-1.9 3.7-3.6 4 .3.2.5.7.5 1.4v2.2c0 .2.1.5.5.4A8 8 0 0 0 16 8a8 8 0 0 0-8-8z"/></svg></span>Edit on GitHub</a></li>
+          </ul>
+        </div>
+        <hr>
+      </header>
+
+      <div id="toc">
+        <h2>Table of Contents</h2>
+        <ul>
+<li>
+<p><span class="stability_2"><a href="#querystring_query_string">Query String</a></span></p>
+<ul>
+<li><a href="#querystring_querystring_escape_str">querystring.escape(str)</a></li>
+<li><a href="#querystring_querystring_parse_str_sep_eq_options">querystring.parse(str[, sep[, eq[, options]]])</a></li>
+<li><a href="#querystring_querystring_stringify_obj_sep_eq_options">querystring.stringify(obj[, sep[, eq[, options]]])</a></li>
+<li><a href="#querystring_querystring_unescape_str">querystring.unescape(str)</a></li>
+</ul>
+</li>
+</ul>
+      </div>
+
+      <div id="apicontent">
+        <h1>Query String<span><a class="mark" href="#querystring_query_string" id="querystring_query_string">#</a></span></h1>
+
+<p></p><div class="api_stability api_stability_2"><a href="documentation.html#documentation_stability_index">Stability: 2</a> - Stable</div><p></p>
+
+<p>The <code>querystring</code> module provides utilities for parsing and formatting URL
+query strings. It can be accessed using:</p>
+<pre><code class="language-js">const querystring = require('querystring');
+</code></pre>
+<h2>querystring.escape(str)<span><a class="mark" href="#querystring_querystring_escape_str" id="querystring_querystring_escape_str">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.25</span>
+</div>
+<ul>
+<li><code>str</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>The <code>querystring.escape()</code> method performs URL percent-encoding on the given
+<code>str</code> in a manner that is optimized for the specific requirements of URL
+query strings.</p>
+<p>The <code>querystring.escape()</code> method is used by <code>querystring.stringify()</code> and is
+generally not expected to be used directly. It is exported primarily to allow
+application code to provide a replacement percent-encoding implementation if
+necessary by assigning <code>querystring.escape</code> to an alternative function.</p>
+<h2>querystring.parse(str[, sep[, eq[, options]]])<span><a class="mark" href="#querystring_querystring_parse_str_sep_eq_options" id="querystring_querystring_parse_str_sep_eq_options">#</a></span></h2>
+<div class="api_metadata">
+<details class="changelog"><summary>History</summary>
+<table>
+<tbody><tr><th>Version</th><th>Changes</th></tr>
+<tr><td>v8.0.0</td>
+<td><p>Multiple empty entries are now parsed correctly (e.g. <code>&#x26;=&#x26;=</code>).</p></td></tr>
+<tr><td>v6.0.0</td>
+<td><p>The returned object no longer inherits from <code>Object.prototype</code>.</p></td></tr>
+<tr><td>v6.0.0, v4.2.4</td>
+<td><p>The <code>eq</code> parameter may now have a length of more than <code>1</code>.</p></td></tr>
+<tr><td>v0.1.25</td>
+<td><p><span>Added in: v0.1.25</span></p></td></tr>
+</tbody></table>
+</details>
+</div>
+<ul>
+<li><code>str</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The URL query string to parse</li>
+<li><code>sep</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The substring used to delimit key and value pairs in the
+query string. <strong>Default:</strong> <code>'&#x26;'</code>.</li>
+<li><code>eq</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a>. The substring used to delimit keys and values in the
+query string. <strong>Default:</strong> <code>'='</code>.</li>
+<li>
+<p><code>options</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a></p>
+<ul>
+<li><code>decodeURIComponent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The function to use when decoding
+percent-encoded characters in the query string. <strong>Default:</strong>
+<code>querystring.unescape()</code>.</li>
+<li><code>maxKeys</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> Specifies the maximum number of keys to parse.
+Specify <code>0</code> to remove key counting limitations. <strong>Default:</strong> <code>1000</code>.</li>
+</ul>
+</li>
+</ul>
+<p>The <code>querystring.parse()</code> method parses a URL query string (<code>str</code>) into a
+collection of key and value pairs.</p>
+<p>For example, the query string <code>'foo=bar&#x26;abc=xyz&#x26;abc=123'</code> is parsed into:</p>
+<!-- eslint-skip -->
+<pre><code class="language-js">{
+  foo: 'bar',
+  abc: ['xyz', '123']
+}
+</code></pre>
+<p>The object returned by the <code>querystring.parse()</code> method <em>does not</em>
+prototypically inherit from the JavaScript <code>Object</code>. This means that typical
+<code>Object</code> methods such as <code>obj.toString()</code>, <code>obj.hasOwnProperty()</code>, and others
+are not defined and <em>will not work</em>.</p>
+<p>By default, percent-encoded characters within the query string will be assumed
+to use UTF-8 encoding. If an alternative character encoding is used, then an
+alternative <code>decodeURIComponent</code> option will need to be specified:</p>
+<pre><code class="language-js">// Assuming gbkDecodeURIComponent function already exists...
+
+querystring.parse('w=%D6%D0%CE%C4&#x26;foo=bar', null, null,
+                  { decodeURIComponent: gbkDecodeURIComponent });
+</code></pre>
+<h2>querystring.stringify(obj[, sep[, eq[, options]]])<span><a class="mark" href="#querystring_querystring_stringify_obj_sep_eq_options" id="querystring_querystring_stringify_obj_sep_eq_options">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.25</span>
+</div>
+<ul>
+<li><code>obj</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="type">&#x3C;Object></a> The object to serialize into a URL query string</li>
+<li><code>sep</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> The substring used to delimit key and value pairs in the
+query string. <strong>Default:</strong> <code>'&#x26;'</code>.</li>
+<li><code>eq</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a>. The substring used to delimit keys and values in the
+query string. <strong>Default:</strong> <code>'='</code>.</li>
+<li>
+<p><code>options</code></p>
+<ul>
+<li><code>encodeURIComponent</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function" class="type">&#x3C;Function></a> The function to use when converting
+URL-unsafe characters to percent-encoding in the query string. <strong>Default:</strong>
+<code>querystring.escape()</code>.</li>
+</ul>
+</li>
+</ul>
+<p>The <code>querystring.stringify()</code> method produces a URL query string from a
+given <code>obj</code> by iterating through the object's "own properties".</p>
+<p>It serializes the following types of values passed in <code>obj</code>:
+<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string[]></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Number_type" class="type">&#x3C;number[]></a> | <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#Boolean_type" class="type">&#x3C;boolean[]></a>
+Any other input values will be coerced to empty strings.</p>
+<pre><code class="language-js">querystring.stringify({ foo: 'bar', baz: ['qux', 'quux'], corge: '' });
+// returns 'foo=bar&#x26;baz=qux&#x26;baz=quux&#x26;corge='
+
+querystring.stringify({ foo: 'bar', baz: 'qux' }, ';', ':');
+// returns 'foo:bar;baz:qux'
+</code></pre>
+<p>By default, characters requiring percent-encoding within the query string will
+be encoded as UTF-8. If an alternative encoding is required, then an alternative
+<code>encodeURIComponent</code> option will need to be specified:</p>
+<pre><code class="language-js">// Assuming gbkEncodeURIComponent function already exists,
+
+querystring.stringify({ w: '中文', foo: 'bar' }, null, null,
+                      { encodeURIComponent: gbkEncodeURIComponent });
+</code></pre>
+<h2>querystring.unescape(str)<span><a class="mark" href="#querystring_querystring_unescape_str" id="querystring_querystring_unescape_str">#</a></span></h2>
+<div class="api_metadata">
+<span>Added in: v0.1.25</span>
+</div>
+<ul>
+<li><code>str</code> <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Data_structures#String_type" class="type">&#x3C;string></a></li>
+</ul>
+<p>The <code>querystring.unescape()</code> method performs decoding of URL percent-encoded
+characters on the given <code>str</code>.</p>
+<p>The <code>querystring.unescape()</code> method is used by <code>querystring.parse()</code> and is
+generally not expected to be used directly. It is exported primarily to allow
+application code to provide a replacement decoding implementation if
+necessary by assigning <code>querystring.unescape</code> to an alternative function.</p>
+<p>By default, the <code>querystring.unescape()</code> method will attempt to use the
+JavaScript built-in <code>decodeURIComponent()</code> method to decode. If that fails,
+a safer equivalent that does not throw on malformed URLs will be used.</p>
+      </div>
+    </div>
+  </div>
+  <script src="assets/sh_main.js"></script>
+  <script src="assets/sh_javascript.min.js"></script>
+  <script>highlight(undefined, undefined, 'pre');</script>
+</body>
+</html>

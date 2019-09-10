@@ -17,6 +17,8 @@ six==1.12.0
 statsmodels==0.9.0
 wheel==0.29.0
 mxnet==1.1.0; sys_platform != 'darwin'
+mxnet==1.1.0; sys_platform == 'darwin' and python_version != '3.7'
+mxnet==1.5.0; sys_platform == 'darwin' and python_version == '3.7'
 UISoup==2.5.7
 pyobjc==5.2; sys_platform == 'darwin'
 future==0.17.1

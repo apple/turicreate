@@ -1,0 +1,940 @@
+{
+  "type": "module",
+  "source": "doc/api/vm.md",
+  "modules": [
+    {
+      "textRaw": "VM (Executing JavaScript)",
+      "name": "vm",
+      "introduced_in": "v0.10.0",
+      "stability": 2,
+      "stabilityText": "Stable",
+      "desc": "<p>The <code>vm</code> module provides APIs for compiling and running code within V8 Virtual\nMachine contexts. <strong>The <code>vm</code> module is not a security mechanism. Do\nnot use it to run untrusted code</strong>. The term \"sandbox\" is used throughout these\ndocs simply to refer to a separate context, and does not confer any security\nguarantees.</p>\n<p>JavaScript code can be compiled and run immediately or\ncompiled, saved, and run later.</p>\n<p>A common use case is to run the code in a sandboxed environment.\nThe sandboxed code uses a different V8 Context, meaning that\nit has a different global object than the rest of the code.</p>\n<p>One can provide the context by <a href=\"#vm_what_does_it_mean_to_contextify_an_object\">\"contextifying\"</a> a sandbox\nobject. The sandboxed code treats any property in the sandbox like a\nglobal variable. Any changes to global variables caused by the sandboxed\ncode are reflected in the sandbox object.</p>\n<pre><code class=\"language-js\">const vm = require('vm');\n\nconst x = 1;\n\nconst sandbox = { x: 2 };\nvm.createContext(sandbox); // Contextify the sandbox.\n\nconst code = 'x += 40; var y = 17;';\n// x and y are global variables in the sandboxed environment.\n// Initially, x has the value 2 because that is the value of sandbox.x.\nvm.runInContext(code, sandbox);\n\nconsole.log(sandbox.x); // 42\nconsole.log(sandbox.y); // 17\n\nconsole.log(x); // 1; y is not defined.\n</code></pre>",
+      "classes": [
+        {
+          "textRaw": "Class: vm.SourceTextModule",
+          "type": "class",
+          "name": "vm.SourceTextModule",
+          "meta": {
+            "added": [
+              "v9.6.0"
+            ],
+            "changes": []
+          },
+          "stability": 1,
+          "stabilityText": "Experimental",
+          "desc": "<p><em>This feature is only available with the <code>--experimental-vm-modules</code> command\nflag enabled.</em></p>\n<p>The <code>vm.SourceTextModule</code> class provides a low-level interface for using\nECMAScript modules in VM contexts. It is the counterpart of the <code>vm.Script</code>\nclass that closely mirrors <a href=\"https://tc39.github.io/ecma262/#sec-source-text-module-records\">Source Text Module Record</a>s as defined in the\nECMAScript specification.</p>\n<p>Unlike <code>vm.Script</code> however, every <code>vm.SourceTextModule</code> object is bound to a\ncontext from its creation. Operations on <code>vm.SourceTextModule</code> objects are\nintrinsically asynchronous, in contrast with the synchronous nature of\n<code>vm.Script</code> objects. With the help of async functions, however, manipulating\n<code>vm.SourceTextModule</code> objects is fairly straightforward.</p>\n<p>Using a <code>vm.SourceTextModule</code> object requires four distinct steps:\ncreation/parsing, linking, instantiation, and evaluation. These four steps are\nillustrated in the following example.</p>\n<p>This implementation lies at a lower level than the <a href=\"esm.html#esm_ecmascript_modules\">ECMAScript Module\nloader</a>. There is also currently no way to interact with the Loader, though\nsupport is planned.</p>\n<pre><code class=\"language-js\">const vm = require('vm');\n\nconst contextifiedSandbox = vm.createContext({ secret: 42 });\n\n(async () => {\n  // Step 1\n  //\n  // Create a Module by constructing a new `vm.SourceTextModule` object. This\n  // parses the provided source text, throwing a `SyntaxError` if anything goes\n  // wrong. By default, a Module is created in the top context. But here, we\n  // specify `contextifiedSandbox` as the context this Module belongs to.\n  //\n  // Here, we attempt to obtain the default export from the module \"foo\", and\n  // put it into local binding \"secret\".\n\n  const bar = new vm.SourceTextModule(`\n    import s from 'foo';\n    s;\n  `, { context: contextifiedSandbox });\n\n  // Step 2\n  //\n  // \"Link\" the imported dependencies of this Module to it.\n  //\n  // The provided linking callback (the \"linker\") accepts two arguments: the\n  // parent module (`bar` in this case) and the string that is the specifier of\n  // the imported module. The callback is expected to return a Module that\n  // corresponds to the provided specifier, with certain requirements documented\n  // in `module.link()`.\n  //\n  // If linking has not started for the returned Module, the same linker\n  // callback will be called on the returned Module.\n  //\n  // Even top-level Modules without dependencies must be explicitly linked. The\n  // callback provided would never be called, however.\n  //\n  // The link() method returns a Promise that will be resolved when all the\n  // Promises returned by the linker resolve.\n  //\n  // Note: This is a contrived example in that the linker function creates a new\n  // \"foo\" module every time it is called. In a full-fledged module system, a\n  // cache would probably be used to avoid duplicated modules.\n\n  async function linker(specifier, referencingModule) {\n    if (specifier === 'foo') {\n      return new vm.SourceTextModule(`\n        // The \"secret\" variable refers to the global variable we added to\n        // \"contextifiedSandbox\" when creating the context.\n        export default secret;\n      `, { context: referencingModule.context });\n\n      // Using `contextifiedSandbox` instead of `referencingModule.context`\n      // here would work as well.\n    }\n    throw new Error(`Unable to resolve dependency: ${specifier}`);\n  }\n  await bar.link(linker);\n\n  // Step 3\n  //\n  // Instantiate the top-level Module.\n  //\n  // Only the top-level Module needs to be explicitly instantiated; its\n  // dependencies will be recursively instantiated by instantiate().\n\n  bar.instantiate();\n\n  // Step 4\n  //\n  // Evaluate the Module. The evaluate() method returns a Promise with a single\n  // property \"result\" that contains the result of the very last statement\n  // executed in the Module. In the case of `bar`, it is `s;`, which refers to\n  // the default export of the `foo` module, the `secret` we set in the\n  // beginning to 42.\n\n  const { result } = await bar.evaluate();\n\n  console.log(result);\n  // Prints 42.\n})();\n</code></pre>",
+          "properties": [
+            {
+              "textRaw": "`dependencySpecifiers` {string[]}",
+              "type": "string[]",
+              "name": "dependencySpecifiers",
+              "desc": "<p>The specifiers of all dependencies of this module. The returned array is frozen\nto disallow any changes to it.</p>\n<p>Corresponds to the <code>[[RequestedModules]]</code> field of\n<a href=\"https://tc39.github.io/ecma262/#sec-source-text-module-records\">Source Text Module Record</a>s in the ECMAScript specification.</p>"
+            },
+            {
+              "textRaw": "`error` {any}",
+              "type": "any",
+              "name": "error",
+              "desc": "<p>If the <code>module.status</code> is <code>'errored'</code>, this property contains the exception\nthrown by the module during evaluation. If the status is anything else,\naccessing this property will result in a thrown exception.</p>\n<p>The value <code>undefined</code> cannot be used for cases where there is not a thrown\nexception due to possible ambiguity with <code>throw undefined;</code>.</p>\n<p>Corresponds to the <code>[[EvaluationError]]</code> field of <a href=\"https://tc39.github.io/ecma262/#sec-source-text-module-records\">Source Text Module Record</a>s\nin the ECMAScript specification.</p>"
+            },
+            {
+              "textRaw": "`linkingStatus` {string}",
+              "type": "string",
+              "name": "linkingStatus",
+              "desc": "<p>The current linking status of <code>module</code>. It will be one of the following values:</p>\n<ul>\n<li><code>'unlinked'</code>: <code>module.link()</code> has not yet been called.</li>\n<li><code>'linking'</code>: <code>module.link()</code> has been called, but not all Promises returned by\nthe linker function have been resolved yet.</li>\n<li><code>'linked'</code>: <code>module.link()</code> has been called, and all its dependencies have\nbeen successfully linked.</li>\n<li><code>'errored'</code>: <code>module.link()</code> has been called, but at least one of its\ndependencies failed to link, either because the callback returned a <code>Promise</code>\nthat is rejected, or because the <code>Module</code> the callback returned is invalid.</li>\n</ul>"
+            },
+            {
+              "textRaw": "`namespace` {Object}",
+              "type": "Object",
+              "name": "namespace",
+              "desc": "<p>The namespace object of the module. This is only available after instantiation\n(<code>module.instantiate()</code>) has completed.</p>\n<p>Corresponds to the <a href=\"https://tc39.github.io/ecma262/#sec-getmodulenamespace\">GetModuleNamespace</a> abstract operation in the ECMAScript\nspecification.</p>"
+            },
+            {
+              "textRaw": "`status` {string}",
+              "type": "string",
+              "name": "status",
+              "desc": "<p>The current status of the module. Will be one of:</p>\n<ul>\n<li>\n<p><code>'uninstantiated'</code>: The module is not instantiated. It may because of any of\nthe following reasons:</p>\n<ul>\n<li>The module was just created.</li>\n<li><code>module.instantiate()</code> has been called on this module, but it failed for\nsome reason.</li>\n</ul>\n<p>This status does not convey any information regarding if <code>module.link()</code> has\nbeen called. See <code>module.linkingStatus</code> for that.</p>\n</li>\n<li>\n<p><code>'instantiating'</code>: The module is currently being instantiated through a\n<code>module.instantiate()</code> call on itself or a parent module.</p>\n</li>\n<li>\n<p><code>'instantiated'</code>: The module has been instantiated successfully, but\n<code>module.evaluate()</code> has not yet been called.</p>\n</li>\n<li>\n<p><code>'evaluating'</code>: The module is being evaluated through a <code>module.evaluate()</code> on\nitself or a parent module.</p>\n</li>\n<li>\n<p><code>'evaluated'</code>: The module has been successfully evaluated.</p>\n</li>\n<li>\n<p><code>'errored'</code>: The module has been evaluated, but an exception was thrown.</p>\n</li>\n</ul>\n<p>Other than <code>'errored'</code>, this status string corresponds to the specification's\n<a href=\"https://tc39.github.io/ecma262/#sec-source-text-module-records\">Source Text Module Record</a>'s <code>[[Status]]</code> field. <code>'errored'</code> corresponds to\n<code>'evaluated'</code> in the specification, but with <code>[[EvaluationError]]</code> set to a\nvalue that is not <code>undefined</code>.</p>"
+            },
+            {
+              "textRaw": "`url` {string}",
+              "type": "string",
+              "name": "url",
+              "desc": "<p>The URL of the current module, as set in the constructor.</p>"
+            }
+          ],
+          "methods": [
+            {
+              "textRaw": "module.evaluate([options])",
+              "type": "method",
+              "name": "evaluate",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {Promise}",
+                    "name": "return",
+                    "type": "Promise"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`timeout` {integer} Specifies the number of milliseconds to evaluate before terminating execution. If execution is interrupted, an [`Error`][] will be thrown. This value must be a strictly positive integer.",
+                          "name": "timeout",
+                          "type": "integer",
+                          "desc": "Specifies the number of milliseconds to evaluate before terminating execution. If execution is interrupted, an [`Error`][] will be thrown. This value must be a strictly positive integer."
+                        },
+                        {
+                          "textRaw": "`breakOnSigint` {boolean} If `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received. Existing handlers for the event that have been attached via `process.on('SIGINT')` will be disabled during script execution, but will continue to work after that. If execution is interrupted, an [`Error`][] will be thrown.",
+                          "name": "breakOnSigint",
+                          "type": "boolean",
+                          "desc": "If `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received. Existing handlers for the event that have been attached via `process.on('SIGINT')` will be disabled during script execution, but will continue to work after that. If execution is interrupted, an [`Error`][] will be thrown."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Evaluate the module.</p>\n<p>This must be called after the module has been instantiated; otherwise it will\nthrow an error. It could be called also when the module has already been\nevaluated, in which case it will do one of the following two things:</p>\n<ul>\n<li>return <code>undefined</code> if the initial evaluation ended in success (<code>module.status</code>\nis <code>'evaluated'</code>)</li>\n<li>rethrow the same exception the initial evaluation threw if the initial\nevaluation ended in an error (<code>module.status</code> is <code>'errored'</code>)</li>\n</ul>\n<p>This method cannot be called while the module is being evaluated\n(<code>module.status</code> is <code>'evaluating'</code>) to prevent infinite recursion.</p>\n<p>Corresponds to the <a href=\"https://tc39.github.io/ecma262/#sec-moduleevaluation\">Evaluate() concrete method</a> field of <a href=\"https://tc39.github.io/ecma262/#sec-source-text-module-records\">Source Text Module\nRecord</a>s in the ECMAScript specification.</p>"
+            },
+            {
+              "textRaw": "module.instantiate()",
+              "type": "method",
+              "name": "instantiate",
+              "signatures": [
+                {
+                  "params": []
+                }
+              ],
+              "desc": "<p>Instantiate the module. This must be called after linking has completed\n(<code>linkingStatus</code> is <code>'linked'</code>); otherwise it will throw an error. It may also\nthrow an exception if one of the dependencies does not provide an export the\nparent module requires.</p>\n<p>However, if this function succeeded, further calls to this function after the\ninitial instantiation will be no-ops, to be consistent with the ECMAScript\nspecification.</p>\n<p>Unlike other methods operating on <code>Module</code>, this function completes\nsynchronously and returns nothing.</p>\n<p>Corresponds to the <a href=\"https://tc39.github.io/ecma262/#sec-moduledeclarationinstantiation\">Instantiate() concrete method</a> field of <a href=\"https://tc39.github.io/ecma262/#sec-source-text-module-records\">Source Text\nModule Record</a>s in the ECMAScript specification.</p>"
+            },
+            {
+              "textRaw": "module.link(linker)",
+              "type": "method",
+              "name": "link",
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {Promise}",
+                    "name": "return",
+                    "type": "Promise"
+                  },
+                  "params": [
+                    {
+                      "textRaw": "`linker` {Function}",
+                      "name": "linker",
+                      "type": "Function"
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Link module dependencies. This method must be called before instantiation, and\ncan only be called once per module.</p>\n<p>Two parameters will be passed to the <code>linker</code> function:</p>\n<ul>\n<li>\n<p><code>specifier</code> The specifier of the requested module:</p>\n<!-- eslint-skip -->\n<pre><code class=\"language-js\">import foo from 'foo';\n//              ^^^^^ the module specifier\n</code></pre>\n</li>\n<li><code>referencingModule</code> The <code>Module</code> object <code>link()</code> is called on.</li>\n</ul>\n<p>The function is expected to return a <code>Module</code> object or a <code>Promise</code> that\neventually resolves to a <code>Module</code> object. The returned <code>Module</code> must satisfy the\nfollowing two invariants:</p>\n<ul>\n<li>It must belong to the same context as the parent <code>Module</code>.</li>\n<li>Its <code>linkingStatus</code> must not be <code>'errored'</code>.</li>\n</ul>\n<p>If the returned <code>Module</code>'s <code>linkingStatus</code> is <code>'unlinked'</code>, this method will be\nrecursively called on the returned <code>Module</code> with the same provided <code>linker</code>\nfunction.</p>\n<p><code>link()</code> returns a <code>Promise</code> that will either get resolved when all linking\ninstances resolve to a valid <code>Module</code>, or rejected if the linker function either\nthrows an exception or returns an invalid <code>Module</code>.</p>\n<p>The linker function roughly corresponds to the implementation-defined\n<a href=\"https://tc39.github.io/ecma262/#sec-hostresolveimportedmodule\">HostResolveImportedModule</a> abstract operation in the ECMAScript\nspecification, with a few key differences:</p>\n<ul>\n<li>The linker function is allowed to be asynchronous while\n<a href=\"https://tc39.github.io/ecma262/#sec-hostresolveimportedmodule\">HostResolveImportedModule</a> is synchronous.</li>\n<li>The linker function is executed during linking, a Node.js-specific stage\nbefore instantiation, while <a href=\"https://tc39.github.io/ecma262/#sec-hostresolveimportedmodule\">HostResolveImportedModule</a> is called during\ninstantiation.</li>\n</ul>\n<p>The actual <a href=\"https://tc39.github.io/ecma262/#sec-hostresolveimportedmodule\">HostResolveImportedModule</a> implementation used during module\ninstantiation is one that returns the modules linked during linking. Since at\nthat point all modules would have been fully linked already, the\n<a href=\"https://tc39.github.io/ecma262/#sec-hostresolveimportedmodule\">HostResolveImportedModule</a> implementation is fully synchronous per\nspecification.</p>"
+            }
+          ],
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`code` {string} JavaScript Module code to parse",
+                  "name": "code",
+                  "type": "string",
+                  "desc": "JavaScript Module code to parse"
+                },
+                {
+                  "textRaw": "`options`",
+                  "name": "options",
+                  "options": [
+                    {
+                      "textRaw": "`url` {string} URL used in module resolution and stack traces. **Default:** `'vm:module(i)'` where `i` is a context-specific ascending index.",
+                      "name": "url",
+                      "type": "string",
+                      "default": "`'vm:module(i)'` where `i` is a context-specific ascending index",
+                      "desc": "URL used in module resolution and stack traces."
+                    },
+                    {
+                      "textRaw": "`context` {Object} The [contextified][] object as returned by the `vm.createContext()` method, to compile and evaluate this `Module` in.",
+                      "name": "context",
+                      "type": "Object",
+                      "desc": "The [contextified][] object as returned by the `vm.createContext()` method, to compile and evaluate this `Module` in."
+                    },
+                    {
+                      "textRaw": "`lineOffset` {integer} Specifies the line number offset that is displayed in stack traces produced by this `Module`.",
+                      "name": "lineOffset",
+                      "type": "integer",
+                      "desc": "Specifies the line number offset that is displayed in stack traces produced by this `Module`."
+                    },
+                    {
+                      "textRaw": "`columnOffset` {integer} Specifies the column number offset that is displayed in stack traces produced by this `Module`.",
+                      "name": "columnOffset",
+                      "type": "integer",
+                      "desc": "Specifies the column number offset that is displayed in stack traces produced by this `Module`."
+                    },
+                    {
+                      "textRaw": "`initializeImportMeta` {Function} Called during evaluation of this `Module` to initialize the `import.meta`. This function has the signature `(meta, module)`, where `meta` is the `import.meta` object in the `Module`, and `module` is this `vm.SourceTextModule` object.",
+                      "name": "initializeImportMeta",
+                      "type": "Function",
+                      "desc": "Called during evaluation of this `Module` to initialize the `import.meta`. This function has the signature `(meta, module)`, where `meta` is the `import.meta` object in the `Module`, and `module` is this `vm.SourceTextModule` object."
+                    },
+                    {
+                      "textRaw": "`importModuleDynamically` {Function} Called during evaluation of this module when `import()` is called. This function has the signature `(specifier, module)` where `specifier` is the specifier passed to `import()` and `module` is this `vm.SourceTextModule`. If this option is not specified, calls to `import()` will reject with [`ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`][]. This method can return a [Module Namespace Object][], but returning a `vm.SourceTextModule` is recommended in order to take advantage of error tracking, and to avoid issues with namespaces that contain `then` function exports.",
+                      "name": "importModuleDynamically",
+                      "type": "Function",
+                      "desc": "Called during evaluation of this module when `import()` is called. This function has the signature `(specifier, module)` where `specifier` is the specifier passed to `import()` and `module` is this `vm.SourceTextModule`. If this option is not specified, calls to `import()` will reject with [`ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`][]. This method can return a [Module Namespace Object][], but returning a `vm.SourceTextModule` is recommended in order to take advantage of error tracking, and to avoid issues with namespaces that contain `then` function exports."
+                    }
+                  ],
+                  "optional": true
+                }
+              ],
+              "desc": "<p>Creates a new ES <code>Module</code> object.</p>\n<p>Properties assigned to the <code>import.meta</code> object that are objects may\nallow the <code>Module</code> to access information outside the specified <code>context</code>, if the\nobject is created in the top level context. Use <code>vm.runInContext()</code> to create\nobjects in a specific context.</p>\n<pre><code class=\"language-js\">const vm = require('vm');\n\nconst contextifiedSandbox = vm.createContext({ secret: 42 });\n\n(async () => {\n  const module = new vm.SourceTextModule(\n    'Object.getPrototypeOf(import.meta.prop).secret = secret;',\n    {\n      initializeImportMeta(meta) {\n        // Note: this object is created in the top context. As such,\n        // Object.getPrototypeOf(import.meta.prop) points to the\n        // Object.prototype in the top context rather than that in\n        // the sandbox.\n        meta.prop = {};\n      }\n    });\n  // Since module has no dependencies, the linker function will never be called.\n  await module.link(() => {});\n  module.instantiate();\n  await module.evaluate();\n\n  // Now, Object.prototype.secret will be equal to 42.\n  //\n  // To fix this problem, replace\n  //     meta.prop = {};\n  // above with\n  //     meta.prop = vm.runInContext('{}', contextifiedSandbox);\n})();\n</code></pre>"
+            }
+          ]
+        },
+        {
+          "textRaw": "Class: vm.Script",
+          "type": "class",
+          "name": "vm.Script",
+          "meta": {
+            "added": [
+              "v0.3.1"
+            ],
+            "changes": []
+          },
+          "desc": "<p>Instances of the <code>vm.Script</code> class contain precompiled scripts that can be\nexecuted in specific sandboxes (or \"contexts\").</p>",
+          "methods": [
+            {
+              "textRaw": "script.createCachedData()",
+              "type": "method",
+              "name": "createCachedData",
+              "meta": {
+                "added": [
+                  "v10.6.0"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "return": {
+                    "textRaw": "Returns: {Buffer}",
+                    "name": "return",
+                    "type": "Buffer"
+                  },
+                  "params": []
+                }
+              ],
+              "desc": "<p>Creates a code cache that can be used with the Script constructor's\n<code>cachedData</code> option. Returns a Buffer. This method may be called at any\ntime and any number of times.</p>\n<pre><code class=\"language-js\">const script = new vm.Script(`\nfunction add(a, b) {\n  return a + b;\n}\n\nconst x = add(1, 2);\n`);\n\nconst cacheWithoutX = script.createCachedData();\n\nscript.runInThisContext();\n\nconst cacheWithX = script.createCachedData();\n</code></pre>"
+            },
+            {
+              "textRaw": "script.runInContext(contextifiedSandbox[, options])",
+              "type": "method",
+              "name": "runInContext",
+              "meta": {
+                "added": [
+                  "v0.3.1"
+                ],
+                "changes": [
+                  {
+                    "version": "v6.3.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/6635",
+                    "description": "The `breakOnSigint` option is supported now."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`contextifiedSandbox` {Object} A [contextified][] object as returned by the `vm.createContext()` method.",
+                      "name": "contextifiedSandbox",
+                      "type": "Object",
+                      "desc": "A [contextified][] object as returned by the `vm.createContext()` method."
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`filename` {string} Specifies the filename used in stack traces produced by this script.",
+                          "name": "filename",
+                          "type": "string",
+                          "desc": "Specifies the filename used in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`lineOffset` {number} Specifies the line number offset that is displayed in stack traces produced by this script.",
+                          "name": "lineOffset",
+                          "type": "number",
+                          "desc": "Specifies the line number offset that is displayed in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`columnOffset` {number} Specifies the column number offset that is displayed in stack traces produced by this script.",
+                          "name": "columnOffset",
+                          "type": "number",
+                          "desc": "Specifies the column number offset that is displayed in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`displayErrors` {boolean} When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace.",
+                          "name": "displayErrors",
+                          "type": "boolean",
+                          "desc": "When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace."
+                        },
+                        {
+                          "textRaw": "`timeout` {integer} Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer.",
+                          "name": "timeout",
+                          "type": "integer",
+                          "desc": "Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer."
+                        },
+                        {
+                          "textRaw": "`breakOnSigint`: if `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received. Existing handlers for the event that have been attached via `process.on('SIGINT')` will be disabled during script execution, but will continue to work after that. If execution is terminated, an [`Error`][] will be thrown.",
+                          "name": "breakOnSigint",
+                          "desc": "if `true`, the execution will be terminated when `SIGINT` (Ctrl+C) is received. Existing handlers for the event that have been attached via `process.on('SIGINT')` will be disabled during script execution, but will continue to work after that. If execution is terminated, an [`Error`][] will be thrown."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Runs the compiled code contained by the <code>vm.Script</code> object within the given\n<code>contextifiedSandbox</code> and returns the result. Running code does not have access\nto local scope.</p>\n<p>The following example compiles code that increments a global variable, sets\nthe value of another global variable, then execute the code multiple times.\nThe globals are contained in the <code>sandbox</code> object.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst vm = require('vm');\n\nconst sandbox = {\n  animal: 'cat',\n  count: 2\n};\n\nconst script = new vm.Script('count += 1; name = \"kitty\";');\n\nconst context = vm.createContext(sandbox);\nfor (let i = 0; i &#x3C; 10; ++i) {\n  script.runInContext(context);\n}\n\nconsole.log(util.inspect(sandbox));\n\n// { animal: 'cat', count: 12, name: 'kitty' }\n</code></pre>\n<p>Using the <code>timeout</code> or <code>breakOnSigint</code> options will result in new event loops\nand corresponding threads being started, which have a non-zero performance\noverhead.</p>"
+            },
+            {
+              "textRaw": "script.runInNewContext([sandbox[, options]])",
+              "type": "method",
+              "name": "runInNewContext",
+              "meta": {
+                "added": [
+                  "v0.3.1"
+                ],
+                "changes": [
+                  {
+                    "version": "v10.0.0",
+                    "pr-url": "https://github.com/nodejs/node/pull/19016",
+                    "description": "The `contextCodeGeneration` option is supported now."
+                  }
+                ]
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`sandbox` {Object} An object that will be [contextified][]. If `undefined`, a new object will be created.",
+                      "name": "sandbox",
+                      "type": "Object",
+                      "desc": "An object that will be [contextified][]. If `undefined`, a new object will be created.",
+                      "optional": true
+                    },
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`filename` {string} Specifies the filename used in stack traces produced by this script.",
+                          "name": "filename",
+                          "type": "string",
+                          "desc": "Specifies the filename used in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`lineOffset` {number} Specifies the line number offset that is displayed in stack traces produced by this script.",
+                          "name": "lineOffset",
+                          "type": "number",
+                          "desc": "Specifies the line number offset that is displayed in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`columnOffset` {number} Specifies the column number offset that is displayed in stack traces produced by this script.",
+                          "name": "columnOffset",
+                          "type": "number",
+                          "desc": "Specifies the column number offset that is displayed in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`displayErrors` {boolean} When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace.",
+                          "name": "displayErrors",
+                          "type": "boolean",
+                          "desc": "When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace."
+                        },
+                        {
+                          "textRaw": "`timeout` {integer} Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer.",
+                          "name": "timeout",
+                          "type": "integer",
+                          "desc": "Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer."
+                        },
+                        {
+                          "textRaw": "`contextName` {string} Human-readable name of the newly created context. **Default:** `'VM Context i'`, where `i` is an ascending numerical index of the created context.",
+                          "name": "contextName",
+                          "type": "string",
+                          "default": "`'VM Context i'`, where `i` is an ascending numerical index of the created context",
+                          "desc": "Human-readable name of the newly created context."
+                        },
+                        {
+                          "textRaw": "`contextOrigin` {string} [Origin][origin] corresponding to the newly created context for display purposes. The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary), like the value of the [`url.origin`][] property of a [`URL`][] object. Most notably, this string should omit the trailing slash, as that denotes a path. **Default:** `''`.",
+                          "name": "contextOrigin",
+                          "type": "string",
+                          "default": "`''`",
+                          "desc": "[Origin][origin] corresponding to the newly created context for display purposes. The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary), like the value of the [`url.origin`][] property of a [`URL`][] object. Most notably, this string should omit the trailing slash, as that denotes a path."
+                        },
+                        {
+                          "textRaw": "`contextCodeGeneration` {Object}",
+                          "name": "contextCodeGeneration",
+                          "type": "Object",
+                          "options": [
+                            {
+                              "textRaw": "`strings` {boolean} If set to false any calls to `eval` or function constructors (`Function`, `GeneratorFunction`, etc) will throw an `EvalError`. **Default:** `true`.",
+                              "name": "strings",
+                              "type": "boolean",
+                              "default": "`true`",
+                              "desc": "If set to false any calls to `eval` or function constructors (`Function`, `GeneratorFunction`, etc) will throw an `EvalError`."
+                            },
+                            {
+                              "textRaw": "`wasm` {boolean} If set to false any attempt to compile a WebAssembly module will throw a `WebAssembly.CompileError`. **Default:** `true`.",
+                              "name": "wasm",
+                              "type": "boolean",
+                              "default": "`true`",
+                              "desc": "If set to false any attempt to compile a WebAssembly module will throw a `WebAssembly.CompileError`."
+                            }
+                          ]
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>First contextifies the given <code>sandbox</code>, runs the compiled code contained by\nthe <code>vm.Script</code> object within the created sandbox, and returns the result.\nRunning code does not have access to local scope.</p>\n<p>The following example compiles code that sets a global variable, then executes\nthe code multiple times in different contexts. The globals are set on and\ncontained within each individual <code>sandbox</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst vm = require('vm');\n\nconst script = new vm.Script('globalVar = \"set\"');\n\nconst sandboxes = [{}, {}, {}];\nsandboxes.forEach((sandbox) => {\n  script.runInNewContext(sandbox);\n});\n\nconsole.log(util.inspect(sandboxes));\n\n// [{ globalVar: 'set' }, { globalVar: 'set' }, { globalVar: 'set' }]\n</code></pre>"
+            },
+            {
+              "textRaw": "script.runInThisContext([options])",
+              "type": "method",
+              "name": "runInThisContext",
+              "meta": {
+                "added": [
+                  "v0.3.1"
+                ],
+                "changes": []
+              },
+              "signatures": [
+                {
+                  "params": [
+                    {
+                      "textRaw": "`options` {Object}",
+                      "name": "options",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`filename` {string} Specifies the filename used in stack traces produced by this script.",
+                          "name": "filename",
+                          "type": "string",
+                          "desc": "Specifies the filename used in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`lineOffset` {number} Specifies the line number offset that is displayed in stack traces produced by this script.",
+                          "name": "lineOffset",
+                          "type": "number",
+                          "desc": "Specifies the line number offset that is displayed in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`columnOffset` {number} Specifies the column number offset that is displayed in stack traces produced by this script.",
+                          "name": "columnOffset",
+                          "type": "number",
+                          "desc": "Specifies the column number offset that is displayed in stack traces produced by this script."
+                        },
+                        {
+                          "textRaw": "`displayErrors` {boolean} When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace.",
+                          "name": "displayErrors",
+                          "type": "boolean",
+                          "desc": "When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace."
+                        },
+                        {
+                          "textRaw": "`timeout` {integer} Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer.",
+                          "name": "timeout",
+                          "type": "integer",
+                          "desc": "Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer."
+                        }
+                      ],
+                      "optional": true
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Runs the compiled code contained by the <code>vm.Script</code> within the context of the\ncurrent <code>global</code> object. Running code does not have access to local scope, but\n<em>does</em> have access to the current <code>global</code> object.</p>\n<p>The following example compiles code that increments a <code>global</code> variable then\nexecutes that code multiple times:</p>\n<pre><code class=\"language-js\">const vm = require('vm');\n\nglobal.globalVar = 0;\n\nconst script = new vm.Script('globalVar += 1', { filename: 'myfile.vm' });\n\nfor (let i = 0; i &#x3C; 1000; ++i) {\n  script.runInThisContext();\n}\n\nconsole.log(globalVar);\n\n// 1000\n</code></pre>"
+            }
+          ],
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`code` {string} The JavaScript code to compile.",
+                  "name": "code",
+                  "type": "string",
+                  "desc": "The JavaScript code to compile."
+                },
+                {
+                  "textRaw": "`options`",
+                  "name": "options",
+                  "options": [
+                    {
+                      "textRaw": "`filename` {string} Specifies the filename used in stack traces produced by this script.",
+                      "name": "filename",
+                      "type": "string",
+                      "desc": "Specifies the filename used in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`lineOffset` {number} Specifies the line number offset that is displayed in stack traces produced by this script.",
+                      "name": "lineOffset",
+                      "type": "number",
+                      "desc": "Specifies the line number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`columnOffset` {number} Specifies the column number offset that is displayed in stack traces produced by this script.",
+                      "name": "columnOffset",
+                      "type": "number",
+                      "desc": "Specifies the column number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`cachedData` {Buffer} Provides an optional `Buffer` with V8's code cache data for the supplied source. When supplied, the `cachedDataRejected` value will be set to either `true` or `false` depending on acceptance of the data by V8.",
+                      "name": "cachedData",
+                      "type": "Buffer",
+                      "desc": "Provides an optional `Buffer` with V8's code cache data for the supplied source. When supplied, the `cachedDataRejected` value will be set to either `true` or `false` depending on acceptance of the data by V8."
+                    },
+                    {
+                      "textRaw": "`produceCachedData` {boolean} When `true` and no `cachedData` is present, V8 will attempt to produce code cache data for `code`. Upon success, a `Buffer` with V8's code cache data will be produced and stored in the `cachedData` property of the returned `vm.Script` instance. The `cachedDataProduced` value will be set to either `true` or `false` depending on whether code cache data is produced successfully. This option is deprecated in favor of `script.createCachedData()`.",
+                      "name": "produceCachedData",
+                      "type": "boolean",
+                      "desc": "When `true` and no `cachedData` is present, V8 will attempt to produce code cache data for `code`. Upon success, a `Buffer` with V8's code cache data will be produced and stored in the `cachedData` property of the returned `vm.Script` instance. The `cachedDataProduced` value will be set to either `true` or `false` depending on whether code cache data is produced successfully. This option is deprecated in favor of `script.createCachedData()`."
+                    },
+                    {
+                      "textRaw": "`importModuleDynamically` {Function} Called during evaluation of this module when `import()` is called. This function has the signature `(specifier, module)` where `specifier` is the specifier passed to `import()` and `module` is this `vm.SourceTextModule`. If this option is not specified, calls to `import()` will reject with [`ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`][]. This method can return a [Module Namespace Object][], but returning a `vm.SourceTextModule` is recommended in order to take advantage of error tracking, and to avoid issues with namespaces that contain `then` function exports.",
+                      "name": "importModuleDynamically",
+                      "type": "Function",
+                      "desc": "Called during evaluation of this module when `import()` is called. This function has the signature `(specifier, module)` where `specifier` is the specifier passed to `import()` and `module` is this `vm.SourceTextModule`. If this option is not specified, calls to `import()` will reject with [`ERR_VM_DYNAMIC_IMPORT_CALLBACK_MISSING`][]. This method can return a [Module Namespace Object][], but returning a `vm.SourceTextModule` is recommended in order to take advantage of error tracking, and to avoid issues with namespaces that contain `then` function exports."
+                    }
+                  ]
+                }
+              ],
+              "desc": "<p>Creating a new <code>vm.Script</code> object compiles <code>code</code> but does not run it. The\ncompiled <code>vm.Script</code> can be run later multiple times. The <code>code</code> is not bound to\nany global object; rather, it is bound before each run, just for that run.</p>"
+            }
+          ]
+        }
+      ],
+      "methods": [
+        {
+          "textRaw": "vm.compileFunction(code[, params[, options]])",
+          "type": "method",
+          "name": "compileFunction",
+          "meta": {
+            "added": [
+              "v10.10.0"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`code` {string} The body of the function to compile.",
+                  "name": "code",
+                  "type": "string",
+                  "desc": "The body of the function to compile."
+                },
+                {
+                  "textRaw": "`params` {string[]} An array of strings containing all parameters for the function.",
+                  "name": "params",
+                  "type": "string[]",
+                  "desc": "An array of strings containing all parameters for the function.",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`options` {Object}",
+                  "name": "options",
+                  "type": "Object",
+                  "options": [
+                    {
+                      "textRaw": "`filename` {string} Specifies the filename used in stack traces produced by this script. **Default:** `''`.",
+                      "name": "filename",
+                      "type": "string",
+                      "default": "`''`",
+                      "desc": "Specifies the filename used in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`lineOffset` {number} Specifies the line number offset that is displayed in stack traces produced by this script. **Default:** `0`.",
+                      "name": "lineOffset",
+                      "type": "number",
+                      "default": "`0`",
+                      "desc": "Specifies the line number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`columnOffset` {number} Specifies the column number offset that is displayed in stack traces produced by this script. **Default:** `0`.",
+                      "name": "columnOffset",
+                      "type": "number",
+                      "default": "`0`",
+                      "desc": "Specifies the column number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`cachedData` {Buffer} Provides an optional `Buffer` with V8's code cache data for the supplied source.",
+                      "name": "cachedData",
+                      "type": "Buffer",
+                      "desc": "Provides an optional `Buffer` with V8's code cache data for the supplied source."
+                    },
+                    {
+                      "textRaw": "`produceCachedData` {boolean} Specifies whether to produce new cache data. **Default:** `false`.",
+                      "name": "produceCachedData",
+                      "type": "boolean",
+                      "default": "`false`",
+                      "desc": "Specifies whether to produce new cache data."
+                    },
+                    {
+                      "textRaw": "`parsingContext` {Object} The [contextified][] sandbox in which the said function should be compiled in.",
+                      "name": "parsingContext",
+                      "type": "Object",
+                      "desc": "The [contextified][] sandbox in which the said function should be compiled in."
+                    },
+                    {
+                      "textRaw": "`contextExtensions` {Object[]} An array containing a collection of context extensions (objects wrapping the current scope) to be applied while compiling. **Default:** `[]`.",
+                      "name": "contextExtensions",
+                      "type": "Object[]",
+                      "default": "`[]`",
+                      "desc": "An array containing a collection of context extensions (objects wrapping the current scope) to be applied while compiling."
+                    }
+                  ],
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>Compiles the given code into the provided context/sandbox (if no context is\nsupplied, the current context is used), and returns it wrapped inside a\nfunction with the given <code>params</code>.</p>"
+        },
+        {
+          "textRaw": "vm.createContext([sandbox[, options]])",
+          "type": "method",
+          "name": "createContext",
+          "meta": {
+            "added": [
+              "v0.3.1"
+            ],
+            "changes": [
+              {
+                "version": "v10.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/19398",
+                "description": "The `sandbox` option can no longer be a function."
+              },
+              {
+                "version": "v10.0.0",
+                "pr-url": "https://github.com/nodejs/node/pull/19016",
+                "description": "The `codeGeneration` option is supported now."
+              }
+            ]
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`sandbox` {Object}",
+                  "name": "sandbox",
+                  "type": "Object",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`options` {Object}",
+                  "name": "options",
+                  "type": "Object",
+                  "options": [
+                    {
+                      "textRaw": "`name` {string} Human-readable name of the newly created context. **Default:** `'VM Context i'`, where `i` is an ascending numerical index of the created context.",
+                      "name": "name",
+                      "type": "string",
+                      "default": "`'VM Context i'`, where `i` is an ascending numerical index of the created context",
+                      "desc": "Human-readable name of the newly created context."
+                    },
+                    {
+                      "textRaw": "`origin` {string} [Origin][origin] corresponding to the newly created context for display purposes. The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary), like the value of the [`url.origin`][] property of a [`URL`][] object. Most notably, this string should omit the trailing slash, as that denotes a path. **Default:** `''`.",
+                      "name": "origin",
+                      "type": "string",
+                      "default": "`''`",
+                      "desc": "[Origin][origin] corresponding to the newly created context for display purposes. The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary), like the value of the [`url.origin`][] property of a [`URL`][] object. Most notably, this string should omit the trailing slash, as that denotes a path."
+                    },
+                    {
+                      "textRaw": "`codeGeneration` {Object}",
+                      "name": "codeGeneration",
+                      "type": "Object",
+                      "options": [
+                        {
+                          "textRaw": "`strings` {boolean} If set to false any calls to `eval` or function constructors (`Function`, `GeneratorFunction`, etc) will throw an `EvalError`. **Default:** `true`.",
+                          "name": "strings",
+                          "type": "boolean",
+                          "default": "`true`",
+                          "desc": "If set to false any calls to `eval` or function constructors (`Function`, `GeneratorFunction`, etc) will throw an `EvalError`."
+                        },
+                        {
+                          "textRaw": "`wasm` {boolean} If set to false any attempt to compile a WebAssembly module will throw a `WebAssembly.CompileError`. **Default:** `true`.",
+                          "name": "wasm",
+                          "type": "boolean",
+                          "default": "`true`",
+                          "desc": "If set to false any attempt to compile a WebAssembly module will throw a `WebAssembly.CompileError`."
+                        }
+                      ]
+                    }
+                  ],
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>If given a <code>sandbox</code> object, the <code>vm.createContext()</code> method will <a href=\"#vm_what_does_it_mean_to_contextify_an_object\">prepare\nthat sandbox</a> so that it can be used in calls to\n<a href=\"#vm_vm_runincontext_code_contextifiedsandbox_options\"><code>vm.runInContext()</code></a> or <a href=\"#vm_script_runincontext_contextifiedsandbox_options\"><code>script.runInContext()</code></a>. Inside such scripts,\nthe <code>sandbox</code> object will be the global object, retaining all of its existing\nproperties but also having the built-in objects and functions any standard\n<a href=\"https://es5.github.io/#x15.1\">global object</a> has. Outside of scripts run by the vm module, global variables\nwill remain unchanged.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst vm = require('vm');\n\nglobal.globalVar = 3;\n\nconst sandbox = { globalVar: 1 };\nvm.createContext(sandbox);\n\nvm.runInContext('globalVar *= 2;', sandbox);\n\nconsole.log(util.inspect(sandbox)); // { globalVar: 2 }\n\nconsole.log(util.inspect(globalVar)); // 3\n</code></pre>\n<p>If <code>sandbox</code> is omitted (or passed explicitly as <code>undefined</code>), a new, empty\n<a href=\"#vm_what_does_it_mean_to_contextify_an_object\">contextified</a> sandbox object will be returned.</p>\n<p>The <code>vm.createContext()</code> method is primarily useful for creating a single\nsandbox that can be used to run multiple scripts. For instance, if emulating a\nweb browser, the method can be used to create a single sandbox representing a\nwindow's global object, then run all <code>&#x3C;script></code> tags together within the context\nof that sandbox.</p>\n<p>The provided <code>name</code> and <code>origin</code> of the context are made visible through the\nInspector API.</p>"
+        },
+        {
+          "textRaw": "vm.isContext(sandbox)",
+          "type": "method",
+          "name": "isContext",
+          "meta": {
+            "added": [
+              "v0.11.7"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "return": {
+                "textRaw": "Returns: {boolean}",
+                "name": "return",
+                "type": "boolean"
+              },
+              "params": [
+                {
+                  "textRaw": "`sandbox` {Object}",
+                  "name": "sandbox",
+                  "type": "Object"
+                }
+              ]
+            }
+          ],
+          "desc": "<p>Returns <code>true</code> if the given <code>sandbox</code> object has been <a href=\"#vm_what_does_it_mean_to_contextify_an_object\">contextified</a> using\n<a href=\"#vm_vm_createcontext_sandbox_options\"><code>vm.createContext()</code></a>.</p>"
+        },
+        {
+          "textRaw": "vm.runInContext(code, contextifiedSandbox[, options])",
+          "type": "method",
+          "name": "runInContext",
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`code` {string} The JavaScript code to compile and run.",
+                  "name": "code",
+                  "type": "string",
+                  "desc": "The JavaScript code to compile and run."
+                },
+                {
+                  "textRaw": "`contextifiedSandbox` {Object} The [contextified][] object that will be used as the `global` when the `code` is compiled and run.",
+                  "name": "contextifiedSandbox",
+                  "type": "Object",
+                  "desc": "The [contextified][] object that will be used as the `global` when the `code` is compiled and run."
+                },
+                {
+                  "textRaw": "`options` {Object|string}",
+                  "name": "options",
+                  "type": "Object|string",
+                  "options": [
+                    {
+                      "textRaw": "`filename` {string} Specifies the filename used in stack traces produced by this script.",
+                      "name": "filename",
+                      "type": "string",
+                      "desc": "Specifies the filename used in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`lineOffset` {number} Specifies the line number offset that is displayed in stack traces produced by this script.",
+                      "name": "lineOffset",
+                      "type": "number",
+                      "desc": "Specifies the line number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`columnOffset` {number} Specifies the column number offset that is displayed in stack traces produced by this script.",
+                      "name": "columnOffset",
+                      "type": "number",
+                      "desc": "Specifies the column number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`displayErrors` {boolean} When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace.",
+                      "name": "displayErrors",
+                      "type": "boolean",
+                      "desc": "When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace."
+                    },
+                    {
+                      "textRaw": "`timeout` {integer} Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer.",
+                      "name": "timeout",
+                      "type": "integer",
+                      "desc": "Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer."
+                    }
+                  ],
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>vm.runInContext()</code> method compiles <code>code</code>, runs it within the context of\nthe <code>contextifiedSandbox</code>, then returns the result. Running code does not have\naccess to the local scope. The <code>contextifiedSandbox</code> object <em>must</em> have been\npreviously <a href=\"#vm_what_does_it_mean_to_contextify_an_object\">contextified</a> using the <a href=\"#vm_vm_createcontext_sandbox_options\"><code>vm.createContext()</code></a> method.</p>\n<p>If <code>options</code> is a string, then it specifies the filename.</p>\n<p>The following example compiles and executes different scripts using a single\n<a href=\"#vm_what_does_it_mean_to_contextify_an_object\">contextified</a> object:</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst vm = require('vm');\n\nconst sandbox = { globalVar: 1 };\nvm.createContext(sandbox);\n\nfor (let i = 0; i &#x3C; 10; ++i) {\n  vm.runInContext('globalVar *= 2;', sandbox);\n}\nconsole.log(util.inspect(sandbox));\n\n// { globalVar: 1024 }\n</code></pre>"
+        },
+        {
+          "textRaw": "vm.runInNewContext(code[, sandbox[, options]])",
+          "type": "method",
+          "name": "runInNewContext",
+          "meta": {
+            "added": [
+              "v0.3.1"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`code` {string} The JavaScript code to compile and run.",
+                  "name": "code",
+                  "type": "string",
+                  "desc": "The JavaScript code to compile and run."
+                },
+                {
+                  "textRaw": "`sandbox` {Object} An object that will be [contextified][]. If `undefined`, a new object will be created.",
+                  "name": "sandbox",
+                  "type": "Object",
+                  "desc": "An object that will be [contextified][]. If `undefined`, a new object will be created.",
+                  "optional": true
+                },
+                {
+                  "textRaw": "`options` {Object|string}",
+                  "name": "options",
+                  "type": "Object|string",
+                  "options": [
+                    {
+                      "textRaw": "`filename` {string} Specifies the filename used in stack traces produced by this script.",
+                      "name": "filename",
+                      "type": "string",
+                      "desc": "Specifies the filename used in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`lineOffset` {number} Specifies the line number offset that is displayed in stack traces produced by this script.",
+                      "name": "lineOffset",
+                      "type": "number",
+                      "desc": "Specifies the line number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`columnOffset` {number} Specifies the column number offset that is displayed in stack traces produced by this script.",
+                      "name": "columnOffset",
+                      "type": "number",
+                      "desc": "Specifies the column number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`displayErrors` {boolean} When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace.",
+                      "name": "displayErrors",
+                      "type": "boolean",
+                      "desc": "When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace."
+                    },
+                    {
+                      "textRaw": "`timeout` {integer} Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer.",
+                      "name": "timeout",
+                      "type": "integer",
+                      "desc": "Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer."
+                    },
+                    {
+                      "textRaw": "`contextName` {string} Human-readable name of the newly created context. **Default:** `'VM Context i'`, where `i` is an ascending numerical index of the created context.",
+                      "name": "contextName",
+                      "type": "string",
+                      "default": "`'VM Context i'`, where `i` is an ascending numerical index of the created context",
+                      "desc": "Human-readable name of the newly created context."
+                    },
+                    {
+                      "textRaw": "`contextOrigin` {string} [Origin][origin] corresponding to the newly created context for display purposes. The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary), like the value of the [`url.origin`][] property of a [`URL`][] object. Most notably, this string should omit the trailing slash, as that denotes a path. **Default:** `''`.",
+                      "name": "contextOrigin",
+                      "type": "string",
+                      "default": "`''`",
+                      "desc": "[Origin][origin] corresponding to the newly created context for display purposes. The origin should be formatted like a URL, but with only the scheme, host, and port (if necessary), like the value of the [`url.origin`][] property of a [`URL`][] object. Most notably, this string should omit the trailing slash, as that denotes a path."
+                    }
+                  ],
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p>The <code>vm.runInNewContext()</code> first contextifies the given <code>sandbox</code> object (or\ncreates a new <code>sandbox</code> if passed as <code>undefined</code>), compiles the <code>code</code>, runs it\nwithin the context of the created context, then returns the result. Running code\ndoes not have access to the local scope.</p>\n<p>If <code>options</code> is a string, then it specifies the filename.</p>\n<p>The following example compiles and executes code that increments a global\nvariable and sets a new one. These globals are contained in the <code>sandbox</code>.</p>\n<pre><code class=\"language-js\">const util = require('util');\nconst vm = require('vm');\n\nconst sandbox = {\n  animal: 'cat',\n  count: 2\n};\n\nvm.runInNewContext('count += 1; name = \"kitty\"', sandbox);\nconsole.log(util.inspect(sandbox));\n\n// { animal: 'cat', count: 3, name: 'kitty' }\n</code></pre>"
+        },
+        {
+          "textRaw": "vm.runInThisContext(code[, options])",
+          "type": "method",
+          "name": "runInThisContext",
+          "meta": {
+            "added": [
+              "v0.3.1"
+            ],
+            "changes": []
+          },
+          "signatures": [
+            {
+              "params": [
+                {
+                  "textRaw": "`code` {string} The JavaScript code to compile and run.",
+                  "name": "code",
+                  "type": "string",
+                  "desc": "The JavaScript code to compile and run."
+                },
+                {
+                  "textRaw": "`options` {Object|string}",
+                  "name": "options",
+                  "type": "Object|string",
+                  "options": [
+                    {
+                      "textRaw": "`filename` {string} Specifies the filename used in stack traces produced by this script.",
+                      "name": "filename",
+                      "type": "string",
+                      "desc": "Specifies the filename used in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`lineOffset` {number} Specifies the line number offset that is displayed in stack traces produced by this script.",
+                      "name": "lineOffset",
+                      "type": "number",
+                      "desc": "Specifies the line number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`columnOffset` {number} Specifies the column number offset that is displayed in stack traces produced by this script.",
+                      "name": "columnOffset",
+                      "type": "number",
+                      "desc": "Specifies the column number offset that is displayed in stack traces produced by this script."
+                    },
+                    {
+                      "textRaw": "`displayErrors` {boolean} When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace.",
+                      "name": "displayErrors",
+                      "type": "boolean",
+                      "desc": "When `true`, if an [`Error`][] error occurs while compiling the `code`, the line of code causing the error is attached to the stack trace."
+                    },
+                    {
+                      "textRaw": "`timeout` {integer} Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer.",
+                      "name": "timeout",
+                      "type": "integer",
+                      "desc": "Specifies the number of milliseconds to execute `code` before terminating execution. If execution is terminated, an [`Error`][] will be thrown. This value must be a strictly positive integer."
+                    }
+                  ],
+                  "optional": true
+                }
+              ]
+            }
+          ],
+          "desc": "<p><code>vm.runInThisContext()</code> compiles <code>code</code>, runs it within the context of the\ncurrent <code>global</code> and returns the result. Running code does not have access to\nlocal scope, but does have access to the current <code>global</code> object.</p>\n<p>If <code>options</code> is a string, then it specifies the filename.</p>\n<p>The following example illustrates using both <code>vm.runInThisContext()</code> and\nthe JavaScript <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval\"><code>eval()</code></a> function to run the same code:</p>\n<!-- eslint-disable prefer-const -->\n<pre><code class=\"language-js\">const vm = require('vm');\nlet localVar = 'initial value';\n\nconst vmResult = vm.runInThisContext('localVar = \"vm\";');\nconsole.log('vmResult:', vmResult);\nconsole.log('localVar:', localVar);\n\nconst evalResult = eval('localVar = \"eval\";');\nconsole.log('evalResult:', evalResult);\nconsole.log('localVar:', localVar);\n\n// vmResult: 'vm', localVar: 'initial value'\n// evalResult: 'eval', localVar: 'eval'\n</code></pre>\n<p>Because <code>vm.runInThisContext()</code> does not have access to the local scope,\n<code>localVar</code> is unchanged. In contrast, <a href=\"https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/eval\"><code>eval()</code></a> <em>does</em> have access to the\nlocal scope, so the value <code>localVar</code> is changed. In this way\n<code>vm.runInThisContext()</code> is much like an <a href=\"https://es5.github.io/#x10.4.2\">indirect <code>eval()</code> call</a>, e.g.\n<code>(0,eval)('code')</code>.</p>\n<h2>Example: Running an HTTP Server within a VM</h2>\n<p>When using either <a href=\"#vm_script_runinthiscontext_options\"><code>script.runInThisContext()</code></a> or\n<a href=\"#vm_vm_runinthiscontext_code_options\"><code>vm.runInThisContext()</code></a>, the code is executed within the current V8 global\ncontext. The code passed to this VM context will have its own isolated scope.</p>\n<p>In order to run a simple web server using the <code>http</code> module the code passed to\nthe context must either call <code>require('http')</code> on its own, or have a reference\nto the <code>http</code> module passed to it. For instance:</p>\n<pre><code class=\"language-js\">'use strict';\nconst vm = require('vm');\n\nconst code = `\n((require) => {\n  const http = require('http');\n\n  http.createServer((request, response) => {\n    response.writeHead(200, { 'Content-Type': 'text/plain' });\n    response.end('Hello World\\\\n');\n  }).listen(8124);\n\n  console.log('Server running at http://127.0.0.1:8124/');\n})`;\n\nvm.runInThisContext(code)(require);\n</code></pre>\n<p>The <code>require()</code> in the above case shares the state with the context it is\npassed from. This may introduce risks when untrusted code is executed, e.g.\naltering objects in the context in unwanted ways.</p>"
+        }
+      ],
+      "modules": [
+        {
+          "textRaw": "What does it mean to \"contextify\" an object?",
+          "name": "what_does_it_mean_to_\"contextify\"_an_object?",
+          "desc": "<p>All JavaScript executed within Node.js runs within the scope of a \"context\".\nAccording to the <a href=\"https://github.com/v8/v8/wiki/Embedder&#x27;s%20Guide#contexts\">V8 Embedder's Guide</a>:</p>\n<blockquote>\n<p>In V8, a context is an execution environment that allows separate, unrelated,\nJavaScript applications to run in a single instance of V8. You must explicitly\nspecify the context in which you want any JavaScript code to be run.</p>\n</blockquote>\n<p>When the method <code>vm.createContext()</code> is called, the <code>sandbox</code> object that is\npassed in (or a newly created object if <code>sandbox</code> is <code>undefined</code>) is associated\ninternally with a new instance of a V8 Context. This V8 Context provides the\n<code>code</code> run using the <code>vm</code> module's methods with an isolated global environment\nwithin which it can operate. The process of creating the V8 Context and\nassociating it with the <code>sandbox</code> object is what this document refers to as\n\"contextifying\" the <code>sandbox</code>.</p>",
+          "type": "module",
+          "displayName": "What does it mean to \"contextify\" an object?"
+        },
+        {
+          "textRaw": "Timeout limitations when using process.nextTick(), and Promises",
+          "name": "timeout_limitations_when_using_process.nexttick(),_and_promises",
+          "desc": "<p>Because of the internal mechanics of how the <code>process.nextTick()</code> queue and\nthe microtask queue that underlies Promises are implemented within V8 and\nNode.js, it is possible for code running within a context to \"escape\" the\n<code>timeout</code> set using <code>vm.runInContext()</code>, <code>vm.runInNewContext()</code>, and\n<code>vm.runInThisContext()</code>.</p>\n<p>For example, the following code executed by <code>vm.runInNewContext()</code> with a\ntimeout of 5 milliseconds schedules an infinite loop to run after a promise\nresolves. The scheduled loop is never interrupted by the timeout:</p>\n<pre><code class=\"language-js\">const vm = require('vm');\n\nfunction loop() {\n  while (1) console.log(Date.now());\n}\n\nvm.runInNewContext(\n  'Promise.resolve().then(loop);',\n  { loop, console },\n  { timeout: 5 }\n);\n</code></pre>\n<p>This issue also occurs when the <code>loop()</code> call is scheduled using\nthe <code>process.nextTick()</code> function.</p>\n<p>This issue occurs because all contexts share the same microtask and nextTick\nqueues.</p>",
+          "type": "module",
+          "displayName": "Timeout limitations when using process.nextTick(), and Promises"
+        }
+      ],
+      "type": "module",
+      "displayName": "vm"
+    }
+  ]
+}

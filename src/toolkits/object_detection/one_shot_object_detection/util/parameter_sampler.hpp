@@ -1,7 +1,8 @@
 /* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 
 #ifndef TURI_PARAMETER_SAMPLER_H_
@@ -13,8 +14,8 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
-#include <vector>
 #include <random>
+#include <vector>
 
 namespace turi {
 namespace one_shot_object_detection {
@@ -24,7 +25,7 @@ namespace one_shot_object_detection {
  * create image projections.
  */
 class ParameterSampler {
-public:
+ public:
   ParameterSampler(size_t width, size_t height, size_t dx, size_t dy);
 
   /* Getters for all the parameters:
@@ -55,15 +56,14 @@ public:
    */
   void sample(long seed);
 
-private:
-
+ private:
   size_t width_;
   size_t height_;
   size_t max_depth_ = 13000;
   double angle_stdev_ = 20.0;
   double focal_stdev_ = 40.0;
   std::vector<double> theta_means_ = {-180.0, 0.0, 180.0};
-  std::vector<double> phi_means_   = {-180.0, 0.0, 180.0};
+  std::vector<double> phi_means_ = {-180.0, 0.0, 180.0};
   std::vector<double> gamma_means_ = {-180.0, -90.0, 0.0, 90.0, 180.0};
   std::default_random_engine theta_generator_;
   std::default_random_engine phi_generator_;
@@ -79,10 +79,9 @@ private:
   double focal_;
   Eigen::Matrix<float, 3, 3> transform_;
   std::vector<Eigen::Vector3f> warped_corners_;
-
 };
 
-} // one_shot_object_detection
-} // turi
+}  // namespace one_shot_object_detection
+}  // namespace turi
 
-#endif // TURI_PARAMETER_SAMPLER_H_
+#endif  // TURI_PARAMETER_SAMPLER_H_

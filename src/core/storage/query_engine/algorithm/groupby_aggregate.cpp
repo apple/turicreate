@@ -206,10 +206,12 @@ std::shared_ptr<sframe>
   planner().materialize(frame_with_relevant_cols,
                         [&](size_t segmentid,
                             const std::shared_ptr<sframe_rows>& rows)->bool {
+                          container.init_tls();
                           if (rows == nullptr) return true;
                           for (auto& row: *rows) {
                             container.add(row, num_keys);
                           }
+                          container.flush_tls();
                           return false;
                         },
                         thread::cpu_count());

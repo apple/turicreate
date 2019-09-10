@@ -91,7 +91,7 @@ def create(dataset, target, feature, max_iterations=10,
         Name of the column containing the target variable. The values in this
         column must be of string or integer type.
 
-    feature : string, optional
+    feature : string
         Name of the column containing the feature column. This column must
         contain audio data or deep audio features.
         Audio data is represented as dicts with key 'data' and 'sample_rate',

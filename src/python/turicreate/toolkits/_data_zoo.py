@@ -8,7 +8,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import os as _os
 import sys as _sys
-import requests as _requests
 import turicreate as _tc
 import hashlib as _hashlib
 from six.moves.urllib import parse as _urlparse
