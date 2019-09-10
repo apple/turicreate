@@ -10,9 +10,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from .._cython.cy_sframe_builder import UnitySFrameBuilderProxy
 from .sframe import SFrame
-from ..util import _make_internal_url
 import logging as _logging
 
 __LOGGER__ = _logging.getLogger(__name__)
@@ -84,6 +82,7 @@ class SFrameBuilder(object):
         if save_location is None:
             self._save_location = ""
         else:
+            from ..util import _make_internal_url
             self._save_location = _make_internal_url(save_location)
 
         if column_names is not None and column_types is not None:
@@ -94,6 +93,7 @@ class SFrameBuilder(object):
         else:
             raise AssertionError("Column types must be defined!")
 
+        from .._cython.cy_sframe_builder import UnitySFrameBuilderProxy
         self._builder = UnitySFrameBuilderProxy()
         self._builder.init(self._column_types,
                            self._column_names,

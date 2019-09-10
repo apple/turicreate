@@ -667,6 +667,8 @@ class ImageClassifier(_CustomModel):
 
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
+        if self.target not in dataset.column_names():
+            raise _ToolkitError("Target column '%s' does not exist" % self.target)
 
         extracted_features = self._extract_features(dataset, verbose=verbose, batch_size=batch_size)
         extracted_features[self.target] = dataset[self.target]

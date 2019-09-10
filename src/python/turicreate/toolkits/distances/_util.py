@@ -169,12 +169,8 @@ def _validate_composite_distance(distance):
             raise ValueError("Standard distances must be the name of a distance " +
                              "function (string) or a distance function handle")
 
-        if isinstance(dist, str):
-            try:
-                _tc.distances.__dict__[dist]
-            except:
-                raise ValueError("Distance '{}' not recognized".format(dist))
-
+        if isinstance(dist, str) and not hasattr(_tc.distances, dist):
+            raise ValueError("Distance '{}' not recognized".format(dist))
 
         ## Validate weight
         if not isinstance(weight, (int, float)):
@@ -214,7 +210,7 @@ def _convert_distance_names_to_functions(distance):
         _, dist, _ = d
         if isinstance(dist, str):
             try:
-                dist_out[i][1] = _tc.distances.__dict__[dist]
+                dist_out[i][1] = getattr(_tc.distances, dist)
             except:
                 raise ValueError("Distance '{}' not recognized.".format(dist))
 

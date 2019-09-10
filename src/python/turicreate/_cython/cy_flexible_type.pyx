@@ -287,16 +287,10 @@ timedelta_type = datetime.timedelta
 cdef object _image_type
 cdef bint have_imagetype
 
-cdef bint HAS_NUMPY = True
-cdef bint HAS_PANDAS = False
+from .._deps import numpy as np, pandas as pd, HAS_PANDAS as _HAS_NUMPY, HAS_PANDAS as _HAS_PANDAS
 
-import numpy as np
-
-try:
-    import pandas as pd
-    HAS_PANDAS = True
-except ImportError:
-    HAS_PANDAS = False
+cdef bint HAS_NUMPY = _HAS_NUMPY
+cdef bint HAS_PANDAS = _HAS_PANDAS
 
 cdef type np_ndarray
 cdef type np_matrix

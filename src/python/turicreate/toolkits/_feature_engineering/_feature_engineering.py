@@ -108,7 +108,7 @@ class TransformerBase(object):
 
     def _get_summary_struct(self):
         model_fields = []
-        for attr in self.__dict__:
+        for attr in dir(self):
             if not attr.startswith('_'):
                 model_fields.append((attr, _precomputed_field(getattr(self, attr))))
 
