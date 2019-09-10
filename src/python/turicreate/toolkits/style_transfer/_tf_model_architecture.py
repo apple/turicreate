@@ -11,6 +11,8 @@ from __future__ import absolute_import as _
 import tensorflow as _tf
 _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
 
+from .._tf_model import TensorFlowModel
+
 def define_tensorflow_variables(net_params, trainable, prefix):
     """
     This function defines TF Variables from the MxNet Params.
@@ -525,8 +527,7 @@ def define_style_transfer_network(content_image,
     
     return optimizer, total_loss, content_output
 
-# TODO: Extend from TensorFlowModel
-class StyleTransferTensorFlowModel():
+class StyleTransferTensorFlowModel(TensorFlowModel):
     def __init__(self, net_params, batch_size, num_styles, finetune_all_params=True, define_training_graph=True):
         _tf.reset_default_graph()
 
