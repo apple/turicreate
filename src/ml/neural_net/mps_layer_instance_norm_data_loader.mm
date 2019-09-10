@@ -38,6 +38,9 @@ API_AVAILABLE(macos(10.14))
 
   NSUInteger _styleIndex;
 
+  NSMutableData * _gammaPlaceHolder;
+  NSMutableData * _betaPlaceHolder;
+
   MPSVectorDescriptor *_vDesc;
 
   id<MTLCommandQueue> _cq;
@@ -64,6 +67,10 @@ API_AVAILABLE(macos(10.14))
     _styles = styles;
     
     _styleIndex = 0;  
+    
+    _gammaPlaceHolder = [NSMutableData data];
+    _betaPlaceHolder = [NSMutableData data];
+
     
     _gamma_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
     _beta_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
@@ -174,16 +181,15 @@ API_AVAILABLE(macos(10.14))
 
 - (float *) beta {
   NSUInteger previousStyle = _styleIndex;
-  NSMutableData * betaPlaceHolder = [NSMutableData data];
   for (NSUInteger index = 0; index < _styles; index++) {
     _styleIndex = index;
     [self checkpointWithCommandQueue:_cq];
     float* betaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] betaVector] data] contents];
-    [betaPlaceHolder appendBytes:betaWeights length:sizeof(float)*_numberOfFeatureChannels];
+    [_betaPlaceHolder appendBytes:betaWeights length:sizeof(float)*_numberOfFeatureChannels];
   }
   _styleIndex = previousStyle;
 
-  return (float *) (betaPlaceHolder.bytes);
+  return (float *) (_betaPlaceHolder.bytes);
 }
 
 - (void) loadGamma:(float *)gamma {
@@ -194,16 +200,15 @@ API_AVAILABLE(macos(10.14))
 // TODO: refactor for multiple indicies
 - (float *) gamma {
   NSUInteger previousStyle = _styleIndex;
-  NSMutableData * gammaPlaceHolder = [NSMutableData data];
   for (NSUInteger index = 0; index < _styles; index++) { 
     _styleIndex = index; 
     [self checkpointWithCommandQueue:_cq];
     float* gammaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] gammaVector] data] contents];
-    [gammaPlaceHolder appendBytes:gammaWeights length:sizeof(float)*_numberOfFeatureChannels];
+    [_gammaPlaceHolder appendBytes:gammaWeights length:sizeof(float)*_numberOfFeatureChannels];
   }
   _styleIndex = previousStyle;
 
-  return (float *) (gammaPlaceHolder.bytes);
+  return (float *) (_gammaPlaceHolder.bytes);
 }
 
 - (MPSCNNNormalizationGammaAndBetaState *)updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer 
