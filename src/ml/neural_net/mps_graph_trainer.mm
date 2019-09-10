@@ -13,12 +13,13 @@
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::external_float_array;
 using turi::neural_net::float_array;
-using turi::neural_net::float_scalar;
 using turi::neural_net::float_array_map;
 using turi::neural_net::float_array_map_iterator;
+using turi::neural_net::float_scalar;
 using turi::neural_net::make_array_map;
 using turi::neural_net::mps_graph_cnn_module;
 using turi::neural_net::shared_float_array;
+using turi::style_transfer::style_transfer;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
   API_BEGIN();
@@ -62,17 +63,17 @@ int TCMPSDeleteGraphModule(MPSHandle handle) {
 EXPORT int TCMPSTrainStyleTransferGraph(MPSHandle handle, int index, TCMPSFloatArrayRef inputs,
                                         TCMPSFloatArrayRef labels, TCMPSFloatArrayRef* loss_out) {
   API_BEGIN();
-  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
+
+  style_transfer *obj = reinterpret_cast<style_transfer *>(handle);
   float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
   float_array* labels_ptr = reinterpret_cast<float_array*>(labels);
-  float_scalar* index_ptr = new float_scalar(index);
 
   shared_float_array inputs_array(
       std::make_shared<external_float_array>(*inputs_ptr));
   shared_float_array labels_array(
       std::make_shared<external_float_array>(*labels_ptr));
   shared_float_array index_array(
-      std::make_shared<external_float_array>(*index_ptr));
+      std::make_shared<external_float_array>(float_scalar(index)));
 
   auto outputs = obj->train({ { "input",  inputs_array },
                               { "labels", labels_array },
@@ -145,8 +146,7 @@ int TCMPSCreateGraphModule(MPSHandle *handle, int network_id, int n, int c_in, i
     *handle = (void *)mps;
   } else {
     #ifdef HAS_MACOS_10_15
-      turi::style_transfer::style_transfer* mps 
-          = new turi::style_transfer::style_transfer(config, weights);
+      style_transfer* mps = new style_transfer(config, weights);
 
       *handle = (void *)mps;
     #else

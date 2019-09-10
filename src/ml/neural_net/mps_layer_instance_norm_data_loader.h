@@ -48,7 +48,7 @@ API_AVAILABLE(macos(10.14))
 @interface TCMPSInstanceNormDataLoader: NSObject <MPSCNNInstanceNormalizationDataSource>
 
 @property (nonatomic) NSUInteger numberOfFeatureChannels;
-@property (nonatomic) NSUInteger currentStyle;
+@property (nonatomic) NSUInteger styleIndex;
 @property (nonatomic) NSUInteger styles;
 
 - (instancetype) initWithParams:(NSString *)name
@@ -59,7 +59,9 @@ API_AVAILABLE(macos(10.14))
                          device:(id<MTLDevice>)dev
                       cmd_queue:(id<MTLCommandQueue>) cmd_q;
 
-- (void) updateIndex:(NSUInteger)style;
+- (NSUInteger) styleIndex;
+- (void) setStyleIndex:(NSUInteger)styleIndex;
+
 - (void) setLearningRate:(float)lr;
 
 - (void) loadBeta:(float *)beta;

@@ -95,9 +95,9 @@
   return self;
 }
 
-- (void) updateIndex:(NSUInteger)index {
-  [_instNorm1.tc_weightsData updateIndex:index];
-  [_instNorm2.tc_weightsData updateIndex:index];
+- (void) setStyleIndex:(NSUInteger)styleIndex {
+  _instNorm1.tc_weightsData.styleIndex = styleIndex;
+  _instNorm2.tc_weightsData.styleIndex = styleIndex;
 }
 
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode {

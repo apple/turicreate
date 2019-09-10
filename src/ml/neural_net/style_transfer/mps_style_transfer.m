@@ -328,7 +328,7 @@
   float styleIndex;
   [inputs[indexKey] getBytes:&styleIndex length:sizeof(float)];
 
-  [_model updateIndex:styleIndex];
+  _model.styleIndex = styleIndex;
 
   NSUInteger imageSize = _imgWidth * _imgHeight * 3;
 

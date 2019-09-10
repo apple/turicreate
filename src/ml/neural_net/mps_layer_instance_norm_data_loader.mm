@@ -34,7 +34,9 @@ API_AVAILABLE(macos(10.14))
   NSMutableData *_beta_weights;
   
   NSString *_name;
-  NSMutableArray<TCMPSInstanceNormDataLoaderProps *> *style_props;
+  NSMutableArray<TCMPSInstanceNormDataLoaderProps *> *_style_props;
+
+  NSUInteger _styleIndex;
 
   MPSVectorDescriptor *_vDesc;
 
@@ -61,7 +63,7 @@ API_AVAILABLE(macos(10.14))
 
     _styles = styles;
     
-    _currentStyle = 0;  
+    _styleIndex = 0;  
     
     _gamma_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
     _beta_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
@@ -85,7 +87,7 @@ API_AVAILABLE(macos(10.14))
     _vDesc = [MPSVectorDescriptor vectorDescriptorWithLength:_numberOfFeatureChannels
                                                    dataType:(MPSDataTypeFloat32)];
 
-    style_props = [[NSMutableArray alloc] init];
+    _style_props = [[NSMutableArray alloc] init];
 
     for (NSUInteger index = 0; index < styles; index ++) {
       TCMPSInstanceNormDataLoaderProps *style_property = [[TCMPSInstanceNormDataLoaderProps alloc] init];
@@ -143,7 +145,7 @@ API_AVAILABLE(macos(10.14))
       style_property.state = [[MPSCNNNormalizationGammaAndBetaState alloc] initWithGamma:gammaBuffer
                                                                                     beta:betaBuffer];
 
-      [style_props addObject:style_property];
+      [_style_props addObject:style_property];
     }
     
     free(zeros_ptr);
@@ -157,45 +159,49 @@ API_AVAILABLE(macos(10.14))
   [_adamBeta setLearningRate:lr];
 }
 
-- (void) updateIndex:(NSUInteger)style {
-  _currentStyle = style;
+- (NSUInteger) styleIndex {
+  return _styleIndex;
+}
+
+- (void) setStyleIndex:(NSUInteger)styleIndex {
+  _styleIndex = styleIndex;
 }
 
 - (void) loadBeta:(float *)beta {
-  float* betaWeights = (float *) [[[[style_props objectAtIndex: _currentStyle] betaVector] data] contents];
+  float* betaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] betaVector] data] contents];
   memcpy(betaWeights, beta, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
 - (float *) beta {
-  NSUInteger previousStyle = _currentStyle;
+  NSUInteger previousStyle = _styleIndex;
   NSMutableData * betaPlaceHolder = [NSMutableData data];
   for (NSUInteger index = 0; index < _styles; index++) {
-    _currentStyle = index;
+    _styleIndex = index;
     [self checkpointWithCommandQueue:_cq];
-    float* betaWeights = (float *) [[[[style_props objectAtIndex: _currentStyle] betaVector] data] contents];
+    float* betaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] betaVector] data] contents];
     [betaPlaceHolder appendBytes:betaWeights length:sizeof(float)*_numberOfFeatureChannels];
   }
-  _currentStyle = previousStyle;
+  _styleIndex = previousStyle;
 
   return (float *) (betaPlaceHolder.bytes);
 }
 
 - (void) loadGamma:(float *)gamma {
-  float* gammaWeights = (float*) [[[[style_props objectAtIndex: _currentStyle] gammaVector] data] contents];
+  float* gammaWeights = (float*) [[[[_style_props objectAtIndex: _styleIndex] gammaVector] data] contents];
   memcpy(gammaWeights, gamma, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
 // TODO: refactor for multiple indicies
 - (float *) gamma {
-  NSUInteger previousStyle = _currentStyle;
+  NSUInteger previousStyle = _styleIndex;
   NSMutableData * gammaPlaceHolder = [NSMutableData data];
   for (NSUInteger index = 0; index < _styles; index++) { 
-    _currentStyle = index; 
+    _styleIndex = index; 
     [self checkpointWithCommandQueue:_cq];
-    float* gammaWeights = (float *) [[[[style_props objectAtIndex: _currentStyle] gammaVector] data] contents];
+    float* gammaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] gammaVector] data] contents];
     [gammaPlaceHolder appendBytes:gammaWeights length:sizeof(float)*_numberOfFeatureChannels];
   }
-  _currentStyle = previousStyle;
+  _styleIndex = previousStyle;
 
   return (float *) (gammaPlaceHolder.bytes);
 }
@@ -215,9 +221,9 @@ API_AVAILABLE(macos(10.14))
       [_adamGamma encodeToCommandBuffer:commandBuffer
                     inputGradientVector:gradientWeightsVector
                       inputValuesVector:inputWeightsVector
-                    inputMomentumVector:[[style_props objectAtIndex: _currentStyle] gammaMomentumVector]
-                    inputVelocityVector:[[style_props objectAtIndex: _currentStyle] gammaVelocityVector]
-                     resultValuesVector:[[style_props objectAtIndex: _currentStyle] gammaVector]];
+                    inputMomentumVector:[[_style_props objectAtIndex: _styleIndex] gammaMomentumVector]
+                    inputVelocityVector:[[_style_props objectAtIndex: _styleIndex] gammaVelocityVector]
+                     resultValuesVector:[[_style_props objectAtIndex: _styleIndex] gammaVector]];
 
       MPSVector *gradientBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForBeta)
                                                                descriptor:_vDesc];
@@ -228,13 +234,13 @@ API_AVAILABLE(macos(10.14))
       [_adamBeta encodeToCommandBuffer:commandBuffer
                    inputGradientVector:gradientBiasesVector
                      inputValuesVector:inputBiasesVector
-                   inputMomentumVector:[[style_props objectAtIndex: _currentStyle] betaMomentumVector] 
-                   inputVelocityVector:[[style_props objectAtIndex: _currentStyle] betaVelocityVector]
-                    resultValuesVector:[[style_props objectAtIndex: _currentStyle] betaVector]];
+                   inputMomentumVector:[[_style_props objectAtIndex: _styleIndex] betaMomentumVector] 
+                   inputVelocityVector:[[_style_props objectAtIndex: _styleIndex] betaVelocityVector]
+                    resultValuesVector:[[_style_props objectAtIndex: _styleIndex] betaVector]];
 
   }
 
-    return [[style_props objectAtIndex: _currentStyle] state];
+    return [[_style_props objectAtIndex: _styleIndex] state];
 }
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue {
@@ -242,7 +248,7 @@ API_AVAILABLE(macos(10.14))
   id<MTLBlitCommandEncoder> blit = commandBuffer.blitCommandEncoder;
 
   for (size_t index = 0; index < _styles; index ++) {
-    TCMPSInstanceNormDataLoaderProps *style_property = [style_props objectAtIndex: index];
+    TCMPSInstanceNormDataLoaderProps *style_property = [_style_props objectAtIndex: index];
 
     [blit synchronizeResource:[style_property betaMomentumBuffer]];
     [blit synchronizeResource:[style_property betaVelocityBuffer]];

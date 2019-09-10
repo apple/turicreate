@@ -70,8 +70,8 @@
   return [convGrad resultImage];
 }
 
-- (void) updateIndex:(NSUInteger)index {
-  [_instNorm.tc_weightsData updateIndex:index];
+- (void) setStyleIndex:(NSUInteger)styleIndex {
+  _instNorm.tc_weightsData.styleIndex = styleIndex;
 }
 
 - (void) setLearningRate:(float)lr {

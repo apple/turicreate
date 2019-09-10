@@ -170,18 +170,18 @@
   return encoding1Grad;
 }
 
-- (void) updateIndex:(NSUInteger)index {
-  [_encoding1 updateIndex:index];
-  [_encoding2 updateIndex:index];
-  [_encoding3 updateIndex:index];
-  [_residual1 updateIndex:index];
-  [_residual2 updateIndex:index];
-  [_residual3 updateIndex:index];
-  [_residual4 updateIndex:index];
-  [_residual5 updateIndex:index];
-  [_decoding1 updateIndex:index];
-  [_decoding2 updateIndex:index];
-  [_instNorm.tc_weightsData updateIndex:index];
+- (void) setStyleIndex:(NSUInteger)styleIndex {
+  _encoding1.styleIndex = styleIndex;
+  _encoding2.styleIndex = styleIndex;
+  _encoding3.styleIndex = styleIndex;
+  _residual1.styleIndex = styleIndex;
+  _residual2.styleIndex = styleIndex;
+  _residual3.styleIndex = styleIndex;
+  _residual4.styleIndex = styleIndex;
+  _residual5.styleIndex = styleIndex;
+  _decoding1.styleIndex = styleIndex;
+  _decoding2.styleIndex = styleIndex;
+  _instNorm.tc_weightsData.styleIndex = styleIndex;
 }
 
 - (void) setLearningRate:(float)lr {
