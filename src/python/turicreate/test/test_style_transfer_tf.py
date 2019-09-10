@@ -29,6 +29,12 @@ def check_for_tensorflow():
     except ImportError:
         return True
 
+'''
+    TODO
+    
+    When refactoring MxNet out of the tests, create a golden set to test against.
+'''
+
 @unittest.skipIf(check_for_tensorflow(), 'Requires Tensorflow to be Installed')
 class StyleTransferTFTest(unittest.TestCase):
     @classmethod
