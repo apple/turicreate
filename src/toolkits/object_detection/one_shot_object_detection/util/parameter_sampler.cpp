@@ -6,6 +6,7 @@
  */
 
 #include <core/data/image/numeric_extension/perspective_projection.hpp>
+#include <limits>
 
 #include <toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
 
@@ -16,9 +17,9 @@
 namespace turi {
 namespace one_shot_object_detection {
 
-ParameterSampler::ParameterSampler(size_t width, size_t height, size_t dx,
-                                   size_t dy)
-    : width_(width), height_(height), dx_(dx), dy_(dy) {}
+ParameterSampler::ParameterSampler(size_t starter_width, size_t starter_height,
+                                   size_t dx, size_t dy)
+    : starter_width_(starter_width), starter_height_(starter_height), dx_(dx), dy_(dy) {}
 
 double deg_to_rad(double angle) { return angle * M_PI / 180.0; }
 
@@ -64,33 +65,31 @@ void ParameterSampler::set_warped_corners(
 /* Function to sample all the parameters needed to build a transform, and
  * then also build the transform.
  */
-void ParameterSampler::sample(long seed) {
+void ParameterSampler::sample(size_t background_width, size_t background_height,
+                              size_t seed, size_t row_number) {
   double theta_mean, phi_mean, gamma_mean;
-  std::srand(seed);
-  theta_mean = theta_means_[std::rand() % theta_means_.size()];
-  std::srand(seed + 1);
-  phi_mean = phi_means_[std::rand() % phi_means_.size()];
-  std::srand(seed + 2);
-  gamma_mean = gamma_means_[std::rand() % gamma_means_.size()];
+  std::seed_seq seed_seq = {static_cast<int>(seed), static_cast<int>(row_number)};
+  std::mt19937 engine(seed_seq);
+  
+  std::uniform_int_distribution<int> index_distribution(0, INT_MAX);
+  theta_mean = theta_means_[index_distribution(engine) % theta_means_.size()];
+  phi_mean = phi_means_[index_distribution(engine) % phi_means_.size()];
+  gamma_mean = gamma_means_[index_distribution(engine) % gamma_means_.size()];
+  
   std::normal_distribution<double> theta_distribution(theta_mean, angle_stdev_);
   std::normal_distribution<double> phi_distribution(phi_mean, angle_stdev_);
   std::normal_distribution<double> gamma_distribution(gamma_mean, angle_stdev_);
-  std::normal_distribution<double> focal_distribution((double)width_,
+  std::normal_distribution<double> focal_distribution((double)background_width,
                                                       focal_stdev_);
-  theta_generator_.seed(seed + 3);
-  theta_ = theta_distribution(theta_generator_);
-  phi_generator_.seed(seed + 4);
-  phi_ = phi_distribution(phi_generator_);
-  gamma_generator_.seed(seed + 5);
-  gamma_ = gamma_distribution(gamma_generator_);
-  focal_generator_.seed(seed + 6);
-  focal_ = focal_distribution(focal_generator_);
-  std::uniform_int_distribution<int> dz_distribution(std::max(width_, height_),
+  theta_ = theta_distribution(engine);
+  phi_ = phi_distribution(engine);
+  gamma_ = gamma_distribution(engine);
+  focal_ = focal_distribution(engine);
+  std::uniform_int_distribution<int> dz_distribution(std::max(background_width, background_height),
                                                      max_depth_);
-  dz_generator_.seed(seed + 7);
-  dz_ = focal_ + dz_distribution(dz_generator_);
+  dz_ = focal_ + dz_distribution(engine);
   transform_ = warp_perspective::get_transformation_matrix(
-      width_, height_, theta_, phi_, gamma_, dx_, dy_, dz_, focal_);
+      starter_width_, starter_height_, theta_, phi_, gamma_, dx_, dy_, dz_, focal_);
   warped_corners_.reserve(4);
 }
 
