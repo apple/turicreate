@@ -19,9 +19,11 @@ from ._deps import LazyCallable as _LazyCallable
 __version__ = '{{VERSION_STRING}}'
 from turicreate.version_info import __version__
 
-import turicreate.toolkits
 from turicreate.toolkits import evaluation
-import turicreate.aggregate
+# expose name aggregate as global variable
+# this won't interfere with import turicreate.aggregate as agg
+aggregate = _LazyModuleLoader('turicreate.aggregate')
+toolkits =  _LazyModuleLoader('turicreate.toolkits')
 
 # must load
 from turicreate.data_structures.sgraph import Vertex, Edge
