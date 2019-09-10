@@ -10,11 +10,16 @@
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
+#include <ml/neural_net/tf_activity_classifier_backend.hpp>
+#include <ml/neural_net/model_backend.hpp>
 
 namespace turi {
 namespace neural_net {
-namespace py = pybind11;
+
 namespace {
+
+namespace py = pybind11;
+
 
 std::unique_ptr<compute_context> create_tf_compute_context() {
   return std::unique_ptr<compute_context>(new tf_compute_context);
@@ -23,12 +28,14 @@ std::unique_ptr<compute_context> create_tf_compute_context() {
 // At static-init time, register create_tf_compute_context().
 // TODO: Codify priority levels?
 static auto* tf_registration = new compute_context::registration(
-    /* priority */ 1, &create_tf_compute_context);
+    /* priority */ 0, &create_tf_compute_context);
 
 }  // namespace
 
 tf_compute_context::tf_compute_context()
-{}
+{
+  
+}
 
 
 tf_compute_context::~tf_compute_context() = default;
@@ -53,10 +60,12 @@ std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
   return std::unique_ptr<model_backend>();
 }
 
+
 std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
     const float_array_map& config, const float_array_map& weights) {
-  return std::unique_ptr<model_backend>();
+
+  return std::unique_ptr<tf_activity_classifier_backend>(new tf_activity_classifier_backend(n, c_in, c_out, w_out, config, weights));
 }
 
 }  // namespace neural_net
