@@ -108,7 +108,5 @@ ranking_factorization_recommender = _LazyModuleLoader(_mod_par + 'ranking_factor
 item_similarity_recommender = _LazyModuleLoader(_mod_par + 'item_similarity_recommender')
 item_content_recommender = _LazyModuleLoader(_mod_par + 'item_content_recommender')
 
-# from . import util
-# from .util import _create as create
 util = _LazyModuleLoader(_mod_par + 'util')
 create = _LazyCallable(util, '_create')
