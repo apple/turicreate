@@ -30,6 +30,7 @@ subdirs(
         network
         process
         vega_renderer
+        neural_net
   )
 if(${TC_BUILD_CAPI})
   message("Building C API Tests.")
