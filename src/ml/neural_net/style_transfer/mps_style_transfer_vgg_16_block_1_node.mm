@@ -11,9 +11,9 @@
 
 @interface TCMPSVgg16Block1 ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
-@property (nonatomic) MPSCNNNeuronReLUNNode *relu1;
+@property (nonatomic) MPSCNNNeuronReLUNode *relu1;
 @property (nonatomic) MPSCNNConvolutionNode *conv2;
-@property (nonatomic) MPSCNNNeuronReLUNNode *relu2;
+@property (nonatomic) MPSCNNNeuronReLUNode *relu2;
 @property (nonatomic) MPSCNNPoolingAverageNode *pooling;
 @end
 
@@ -43,7 +43,7 @@
                                                  device:dev
                                                cmdQueue:cmdQ];
 
-    _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource: [_conv1 resultImage]];
+    _relu1 = [MPSCNNNeuronReLUNode nodeWithSource: [_conv1 resultImage]];
 
     _conv2 = [MPSCNNConvolutionNode createConvolutional:[_relu1 resultImage]
                                             kernelWidth:descriptor.conv2.kernelWidth
@@ -61,7 +61,7 @@
                                                  device:dev
                                                cmdQueue:cmdQ];
 
-    _relu2 = [MPSCNNNeuronReLUNNode nodeWithSource: [_conv2 resultImage]];
+    _relu2 = [MPSCNNNeuronReLUNode nodeWithSource: [_conv2 resultImage]];
 
     _pooling = [[MPSCNNPoolingAverageNode alloc] initWithSource:[_relu2 resultImage]
                                                     kernelWidth:descriptor.pooling.kernelSize
