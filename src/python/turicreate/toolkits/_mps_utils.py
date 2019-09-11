@@ -24,6 +24,7 @@ class MpsGraphNetworkType(object):
     kSingleBNGraphNet   = 2
     kSingleMPGraphNet   = 3
     kODGraphNet         = 4
+    kSTGraphNet         = 5
 
 
 class MpsGraphMode(object):
@@ -61,6 +62,8 @@ def _decode_bytes_to_native_string(s):
 def mps_to_mxnet(weight):
     if weight.ndim == 1:
         return weight
+    elif weight.ndim == 2:
+        return weight
     elif weight.ndim == 4:
         return weight.transpose(0, 3, 1, 2)
     else:
@@ -69,6 +72,8 @@ def mps_to_mxnet(weight):
 
 def mxnet_to_mps(weight):
     if weight.ndim == 1:
+        return weight
+    elif weight.ndim == 2:
         return weight
     elif weight.ndim == 4:
         return weight.transpose(0, 2, 3, 1)
@@ -408,7 +413,6 @@ class MpsGraphAPI(object):
         self.handle = _ctypes.c_void_p()
         self._LIB = _load_tcmps_lib()
         assert self._LIB is not None, "Cannot use MpsGraphAPI without libtcmps.dylib"
-        self._LIB.TCMPSCreateGraphModule(_ctypes.byref(self.handle))
         self._buf_out_fp16 = None
         self._buf_loss = None
         self._ishape = None
@@ -437,8 +441,8 @@ class MpsGraphAPI(object):
 
         config_items, config_name, config_arr = _prepare_network_parameters(config)
         weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
-        self._LIB.TCMPSInitGraph(
-            self.handle,
+        self._LIB.TCMPSCreateGraphModule(
+            _ctypes.byref(self.handle),
             self.network_id,
             _ctypes.c_int32(n),
             _ctypes.c_int32(c_in),
@@ -679,3 +683,164 @@ class MpsLowLevelAPI(object):
         assert output.shape() == self._oshape
 
         return output
+
+class MpsStyleGraphAPI(object):
+    def __init__(self, n, c_in, h_in, w_in, c_out, h_out, w_out, config=None, weights=None):
+        self.handle = _ctypes.c_void_p()
+        self._LIB = _load_tcmps_lib()
+        assert self._LIB is not None, "Cannot use MpsGraphAPI without libtcmps.dylib"
+        
+        self.network_id = MpsGraphNetworkType.kSTGraphNet
+        self._cur_config = {}
+        if weights is None:
+            weights = {}
+        
+        if config is None:
+            config = {
+                'learning_rate': 1e-3,
+                'gradient_clipping': 0.025,
+                'weight_decay': 0.00005,
+                'momentum': 0.9,
+            }
+
+        config_items, config_name, config_arr = _prepare_network_parameters(config)
+        weights_items, weights_name, weights_arr = _prepare_network_parameters(weights)
+
+        self._LIB.TCMPSCreateGraphModule(
+            _ctypes.byref(self.handle),
+            self.network_id,
+            _ctypes.c_int32(n),
+            _ctypes.c_int32(c_in),
+            _ctypes.c_int32(h_in),
+            _ctypes.c_int32(w_in),
+            _ctypes.c_int32(c_out),
+            _ctypes.c_int32(h_out),
+            _ctypes.c_int32(w_out),
+            config_name, config_arr, _ctypes.c_int32(len(config_items)),
+            weights_name, weights_arr, _ctypes.c_int32(len(weights_items)),
+        )
+        self._cur_config = _deepcopy(config)
+
+    def __del__(self):
+        self._LIB.TCMPSDeleteGraphModule(self.handle)
+
+    @staticmethod
+    def mxnet_mps_weight_dict():
+        return {
+           "transformer_conv0_weight": "transformer_encode_1_conv_weights",
+           "transformer_conv1_weight": "transformer_encode_2_conv_weights",
+           "transformer_conv2_weight": "transformer_encode_3_conv_weights",
+           "transformer_conv3_weight": "transformer_decoding_1_conv_weights",
+           "transformer_conv4_weight": "transformer_decoding_2_conv_weights",
+           "transformer_conv5_weight": "transformer_conv5_weight",
+           "transformer_instancenorm0_beta": "transformer_encode_1_inst_beta",
+           "transformer_instancenorm0_gamma": "transformer_encode_1_inst_gamma",
+           "transformer_instancenorm1_beta": "transformer_encode_2_inst_beta",
+           "transformer_instancenorm1_gamma": "transformer_encode_2_inst_gamma",
+           "transformer_instancenorm2_beta": "transformer_encode_3_inst_beta",
+           "transformer_instancenorm2_gamma": "transformer_encode_3_inst_gamma",
+           "transformer_instancenorm3_beta": "transformer_decoding_1_inst_beta",
+           "transformer_instancenorm3_gamma": "transformer_decoding_1_inst_gamma",
+           "transformer_instancenorm4_beta": "transformer_decoding_2_inst_beta",
+           "transformer_instancenorm4_gamma": "transformer_decoding_2_inst_gamma",
+           "transformer_instancenorm5_beta": "transformer_instancenorm5_beta",
+           "transformer_instancenorm5_gamma": "transformer_instancenorm5_gamma",
+           "transformer_residualblock0_conv0_weight": "transformer_residual_1_conv_1_weights",
+           "transformer_residualblock0_conv1_weight": "transformer_residual_1_conv_2_weights",
+           "transformer_residualblock0_instancenorm0_beta": "transformer_residual_1_inst_1_beta",
+           "transformer_residualblock0_instancenorm0_gamma": "transformer_residual_1_inst_1_gamma",
+           "transformer_residualblock0_instancenorm1_beta": "transformer_residual_1_inst_2_beta",
+           "transformer_residualblock0_instancenorm1_gamma": "transformer_residual_1_inst_2_gamma",
+           "transformer_residualblock1_conv0_weight": "transformer_residual_2_conv_1_weights",
+           "transformer_residualblock1_conv1_weight": "transformer_residual_2_conv_2_weights",
+           "transformer_residualblock1_instancenorm0_beta": "transformer_residual_2_inst_1_beta",
+           "transformer_residualblock1_instancenorm0_gamma": "transformer_residual_2_inst_1_gamma",
+           "transformer_residualblock1_instancenorm1_beta": "transformer_residual_2_inst_2_beta",
+           "transformer_residualblock1_instancenorm1_gamma": "transformer_residual_2_inst_2_gamma",
+           "transformer_residualblock2_conv0_weight": "transformer_residual_3_conv_1_weights",
+           "transformer_residualblock2_conv1_weight": "transformer_residual_3_conv_2_weights",
+           "transformer_residualblock2_instancenorm0_beta": "transformer_residual_3_inst_1_beta",
+           "transformer_residualblock2_instancenorm0_gamma": "transformer_residual_3_inst_1_gamma",
+           "transformer_residualblock2_instancenorm1_beta": "transformer_residual_3_inst_2_beta",
+           "transformer_residualblock2_instancenorm1_gamma": "transformer_residual_3_inst_2_gamma",
+           "transformer_residualblock3_conv0_weight": "transformer_residual_4_conv_1_weights",
+           "transformer_residualblock3_conv1_weight": "transformer_residual_4_conv_2_weights",
+           "transformer_residualblock3_instancenorm0_beta": "transformer_residual_4_inst_1_beta",
+           "transformer_residualblock3_instancenorm0_gamma": "transformer_residual_4_inst_1_gamma",
+           "transformer_residualblock3_instancenorm1_beta": "transformer_residual_4_inst_2_beta",
+           "transformer_residualblock3_instancenorm1_gamma": "transformer_residual_4_inst_2_gamma",
+           "transformer_residualblock4_conv0_weight": "transformer_residual_5_conv_1_weights",
+           "transformer_residualblock4_conv1_weight": "transformer_residual_5_conv_2_weights",
+           "transformer_residualblock4_instancenorm0_beta": "transformer_residual_5_inst_1_beta",
+           "transformer_residualblock4_instancenorm0_gamma": "transformer_residual_5_inst_1_gamma",
+           "transformer_residualblock4_instancenorm1_beta": "transformer_residual_5_inst_2_beta",
+           "transformer_residualblock4_instancenorm1_gamma": "transformer_residual_5_inst_2_gamma",
+           "vgg16_conv0_weight": "vgg_block_1_conv_1_weights",
+           "vgg16_conv0_bias": "vgg_block_1_conv_1_biases",
+           "vgg16_conv1_weight": "vgg_block_1_conv_2_weights",
+           "vgg16_conv1_bias": "vgg_block_1_conv_2_biases",
+           "vgg16_conv2_weight": "vgg_block_2_conv_1_weights",
+           "vgg16_conv2_bias": "vgg_block_2_conv_1_biases",
+           "vgg16_conv3_weight": "vgg_block_2_conv_2_weights",
+           "vgg16_conv3_bias": "vgg_block_2_conv_2_biases",
+           "vgg16_conv4_weight": "vgg_block_3_conv_1_weights",
+           "vgg16_conv4_bias": "vgg_block_3_conv_1_biases",
+           "vgg16_conv5_weight": "vgg_block_3_conv_2_weights",
+           "vgg16_conv5_bias": "vgg_block_3_conv_2_biases",
+           "vgg16_conv6_weight": "vgg_block_3_conv_3_weights",
+           "vgg16_conv6_bias": "vgg_block_3_conv_3_biases",
+           "vgg16_conv7_weight": "vgg_block_4_conv_1_weights",
+           "vgg16_conv7_bias": "vgg_block_4_conv_1_biases",
+           "vgg16_conv8_weight": "vgg_block_4_conv_2_weights",
+           "vgg16_conv8_bias": "vgg_block_4_conv_2_biases",
+           "vgg16_conv9_weight": "vgg_block_4_conv_3_weights",
+           "vgg16_conv9_bias": "vgg_block_4_conv_3_biases"
+        }
+
+    @staticmethod  
+    def mps_mxnet_weight_dict():
+        return dict([reversed(i) for i in MpsStyleGraphAPI.mxnet_mps_weight_dict().items()])
+
+    def train(self, input, label, index):
+        input_array = MpsFloatArray(input)
+        label_array = MpsFloatArray(label)
+
+        result_handle = _ctypes.c_void_p()
+        
+        status_code = self._LIB.TCMPSTrainStyleTransferGraph(
+            self.handle, _ctypes.c_int32(index), input_array.handle, label_array.handle,
+            _ctypes.byref(result_handle))
+
+        assert status_code == 0, "Error calling TCMPSTrainStyleTransferGraph"
+        assert result_handle, "TCMPSTrainStyleTransferGraph unexpectedly returned NULL pointer"
+
+        result = MpsFloatArray(result_handle)
+        
+        return result
+
+    def predict(self, input):
+        input_array = MpsFloatArray(input)
+        result_handle = _ctypes.c_void_p()
+
+        status_code = self._LIB.TCMPSPredictGraph(
+            self.handle, input_array.handle, _ctypes.byref(result_handle))
+
+        assert status_code == 0, "Error calling TCMPSPredictGraph"
+        assert result_handle, "TCMPSPredictGraph unexpectedly returned NULL pointer"
+
+        result = MpsFloatArray(result_handle)
+
+        return result
+        
+    def train_return_grad(self, input, grad):
+        pass
+    def set_learning_rate(self, new_lr):
+        pass
+    def load(self, weights):
+        pass
+    def export(self):
+        iter_handle = _ctypes.c_void_p()
+        status_code = self._LIB.TCMPSExportGraph(self.handle,
+                                                 _ctypes.byref(iter_handle))
+        assert status_code == 0
+        return dict(MpsFloatArrayIterator(iter_handle))

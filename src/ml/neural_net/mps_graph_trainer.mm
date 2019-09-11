@@ -7,14 +7,19 @@
 #import "mps_device_manager.h"
 #import "mps_graph_cnnmodule.h"
 
+#include "mps_graph_networks.h"
+#include "style_transfer/mps_style_transfer_backend.hpp"
+
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::external_float_array;
 using turi::neural_net::float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::float_array_map_iterator;
+using turi::neural_net::float_scalar;
 using turi::neural_net::make_array_map;
 using turi::neural_net::mps_graph_cnn_module;
 using turi::neural_net::shared_float_array;
+using turi::style_transfer::style_transfer;
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
   API_BEGIN();
@@ -48,17 +53,33 @@ int TCMPSMetalDeviceMemoryLimit(uint64_t *size) {
   API_END();
 }
 
-int TCMPSCreateGraphModule(MPSHandle *out) {
+int TCMPSDeleteGraphModule(MPSHandle handle) {
   API_BEGIN();
-  mps_graph_cnn_module *mps = new mps_graph_cnn_module();
-  *out = (void *)mps;
+  auto* obj = reinterpret_cast<turi::neural_net::model_backend *>(handle);
+  delete obj;
   API_END();
 }
 
-int TCMPSDeleteGraphModule(MPSHandle handle) {
+EXPORT int TCMPSTrainStyleTransferGraph(MPSHandle handle, int index, TCMPSFloatArrayRef inputs,
+                                        TCMPSFloatArrayRef labels, TCMPSFloatArrayRef* loss_out) {
   API_BEGIN();
-  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
-  delete obj;
+
+  style_transfer *obj = reinterpret_cast<style_transfer *>(handle);
+  float_array* inputs_ptr = reinterpret_cast<float_array*>(inputs);
+  float_array* labels_ptr = reinterpret_cast<float_array*>(labels);
+
+  shared_float_array inputs_array(
+      std::make_shared<external_float_array>(*inputs_ptr));
+  shared_float_array labels_array(
+      std::make_shared<external_float_array>(*labels_ptr));
+  shared_float_array index_array(
+      std::make_shared<float_scalar>(index));
+
+  auto outputs = obj->train({ { "input",  inputs_array },
+                              { "labels", labels_array },
+                              { "index",  index_array  } });
+  shared_float_array* loss = new shared_float_array(outputs.at("loss"));
+  *loss_out = reinterpret_cast<TCMPSFloatArrayRef>(loss);
   API_END();
 }
 
@@ -106,20 +127,33 @@ int TCMPSTrainReturnGradGraph(
   API_END();
 }
 
-int TCMPSInitGraph(MPSHandle handle, int network_id, int n, int c_in, int h_in, int w_in,
+int TCMPSCreateGraphModule(MPSHandle *handle, int network_id, int n, int c_in, int h_in, int w_in,
               int c_out, int h_out, int w_out,
               char **config_names, void **config_arrays, int config_len,
               char **weight_names, void **weight_arrays, int weight_len) {
   API_BEGIN();
-
   float_array_map config =
       make_array_map(config_names, config_arrays, config_len);
   float_array_map weights =
       make_array_map(weight_names, weight_arrays, weight_len);
 
-  mps_graph_cnn_module *obj = (mps_graph_cnn_module *)handle;
-  obj->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,
-            config, weights);
+  if (network_id != static_cast<int>(turi::neural_net::kSTGraphNet)) {
+    mps_graph_cnn_module *mps = new mps_graph_cnn_module();
+
+    mps->init(network_id, n, c_in, h_in, w_in, c_out, h_out, w_out,
+              config, weights);
+
+    *handle = (void *)mps;
+  } else {
+    #ifdef HAS_MACOS_10_15
+      style_transfer* mps = new style_transfer(config, weights);
+
+      *handle = (void *)mps;
+    #else
+      log_and_throw("Can't construct GPU Style Transfer Network for MacOS \
+                     platform lower than 10.15");
+    #endif
+  }
   API_END();
 }
 
