@@ -166,14 +166,6 @@ API_AVAILABLE(macos(10.14))
   [_adamBeta setLearningRate:lr];
 }
 
-- (NSUInteger) styleIndex {
-  return _styleIndex;
-}
-
-- (void) setStyleIndex:(NSUInteger)styleIndex {
-  _styleIndex = styleIndex;
-}
-
 - (void) loadBeta:(float *)beta {
   float* betaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] betaVector] data] contents];
   memcpy(betaWeights, beta, _numberOfFeatureChannels * _styles * sizeof(float));

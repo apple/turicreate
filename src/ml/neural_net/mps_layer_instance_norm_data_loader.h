@@ -59,9 +59,6 @@ API_AVAILABLE(macos(10.14))
                          device:(id<MTLDevice>)dev
                       cmd_queue:(id<MTLCommandQueue>) cmd_q;
 
-- (NSUInteger) styleIndex;
-- (void) setStyleIndex:(NSUInteger)styleIndex;
-
 - (void) setLearningRate:(float)lr;
 
 - (void) loadBeta:(float *)beta;

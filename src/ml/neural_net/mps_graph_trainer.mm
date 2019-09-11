@@ -73,7 +73,7 @@ EXPORT int TCMPSTrainStyleTransferGraph(MPSHandle handle, int index, TCMPSFloatA
   shared_float_array labels_array(
       std::make_shared<external_float_array>(*labels_ptr));
   shared_float_array index_array(
-      std::make_shared<external_float_array>(float_scalar(index)));
+      std::make_shared<float_scalar>(index));
 
   auto outputs = obj->train({ { "input",  inputs_array },
                               { "labels", labels_array },
