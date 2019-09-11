@@ -2,7 +2,9 @@
 
 ---
 
-## raitionale
+## rationale
+
+The import time (wall time) is more than 2 seconds, which is extremely slower than state-of-the-art tools' import speed. At the time of this writing, the import wall time of sklearn is around 108 ms.
 
 Most times, people tend to perform only one task at one time. There's no need to eagerly import all toolkits when `import turicreate`. When needed, the toolkit will be loaded in runtime
 
@@ -12,9 +14,9 @@ Most times, people tend to perform only one task at one time. There's no need to
 
 ### design of LazyModuleLoader
 
-`LazyModuleLoader` is a thin wrapper delegate the requests to real module object. Instead of loading module directly, the `LazyModuleLoader` will defer the load until `__getattr__`, `__setattr__` or `__delattr__` is called on attributes not from `LazyModuleLoader` itself.
+`LazyModuleLoader` is a thin wrapper delegate the requests to the real module object. Instead of loading module directly, the `LazyModuleLoader` will defer the load until `__getattr__`, `__setattr__` or `__delattr__` is called on attributes not from `LazyModuleLoader` itself.
 
-For debug purpose, people often use `reload` to reload python source. `reload` is not directly suported. You need to call `reload` member method of `LazyModuleLoader`. Other than that, it works as the same as `reload` builtin function call.
+For debug purposes, people often use `reload` to reload python source. `reload` is not directly supported. You need to call `reload` member method of `LazyModuleLoader`. Other than that, it works as the same as `reload` builtin function call.
 
 ```python
 # won't load numpy
@@ -23,11 +25,11 @@ numpy = LazyModuleLoader(numpy)
 numpy.ndarray
 ```
 
-`LazyModuleLoader` supports customized moudle initialization function. By default, the initialization function will do exacly same thing as `import` declarative.
+`LazyModuleLoader` supports customized module initialization function. By default, the initialization function will do exactly the same thing as `import` declarative.
 
 ### design of LazyCallable
 
-`LazyModuleLoader` cannot defer a `from ... import ...` clause, even though it's an variant of `import` clause. Often the case, you want to bind function to current namespace or module scope, e.g.,
+`LazyModuleLoader` cannot defer a `from ... import ...` clause, even though it's a variant of `import` clause. Often the case, you want to bind the function to a current namespace or module scope, e.g.,
 
 ```python
 # lazy load image_analysis module
@@ -37,15 +39,15 @@ image_analysis = LazyModuleLoader(turicreate.toolkits.image_analysis)
 from turicreate.toolkits.image_analysis import load_image
 ```
 
-This will actually eagerly load the module `image_analysis`, which we want to defer.
+This will eagerly load the module `image_analysis`, which we want to defer.
 
 `LazyCallable` is a thin wrapper to `LazyModuleLoader` or any `ModuleTypes` to defer the load of module by calling `__getattr__(function_name)` on `LazyModuleLoader` when it's called by `__call__`.
 
 ---
 
-## how to orgranize the module with lazy import
+## how to organize the module with lazy import
 
-At top package level `turicreate/__init__.py`, lazy module is exposed as package level global variables to be backwards-compatible with submodule invokation.
+At top package level `turicreate/__init__.py`, lazy module is exposed as package level global variables to be backward-compatible with submodule invokation.
 
 ```python
 # defineed turicreate/__init__.py
@@ -56,7 +58,7 @@ import turicreate
 turicreate.distances
 ```
 
-Usually the sub-package (toolkit suite) is located under directory `turicreate/toolkits`.
+Usually, the sub-package (toolkit suite) is located under directory `turicreate/toolkits`.
 
 ```bash
 ├── activity_classifier
@@ -91,7 +93,7 @@ No need to modify the `__init__.py` of the submodule.
 
 ### submodule with more than one functional unit
 
-Usually a package consists of many different functional units and it works as a hub to aggregate all of funtional units sharing similar traits. `audio_analytics` and `sound_classifier` are outliers. For example,
+Usually, a package consists of many different functional units and it works as a hub to aggregate all of functional units sharing similar traits. `audio_analytics` and `sound_classifier` are outliers. For example,
 
 ```bash
 # recommender category layout
@@ -104,9 +106,9 @@ Usually a package consists of many different functional units and it works as a 
 ├── ranking_factorization_recommender.py
 ```
 
-Recommder tookit contains 4 different recommender functional units and they are exposed through `__init__.py` at sub-package level or through `.py` submodule level.
+Recommender toolkit contains 4 different recommender functional units and they are exposed through `__init__.py` at the sub-package level or through `.py` submodule level.
 
-In this case, we need to do extra work to bind all member funtional units (toolkits) to global package namespace `turicreate/__init__.py`. We need to make each unit lazily imported under local sub-package level, i.e., `turicreate/toolkits/recommender/__init__/py`.
+In this case, we need to do extra work to bind all member functional units (toolkits) to global package namespace `turicreate/__init__.py`. We need to make each unit lazily imported under local sub-package level, i.e., `turicreate/toolkits/recommender/__init__/py`.
 
 ```python
 # turicreate/toolkits/recommender/__init__/py
