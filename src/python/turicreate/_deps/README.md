@@ -4,7 +4,7 @@
 
 ## Rationale
 
-The import time (wall time) is more than 2 seconds, which is extremely slower than state-of-the-art tools' import speed. At the time of this writing, the import wall time of sklearn is around 108 ms.
+The elapsed import time of turicreate 5.7 is more than 2 seconds (wall time more than 1.21 seconds) on a commodity laptop, which is extremely slower than state-of-the-art tools' import speed. At the time of this writing, the elapsed import time of sklearn is around 560 ms (wall time around 110 ms) on a commodity laptop.
 
 Most times, people tend to perform only one task at one time. There's no need to eagerly import all toolkits when `import turicreate`. When needed, the toolkit will be loaded in runtime
 
