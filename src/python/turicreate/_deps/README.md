@@ -2,7 +2,7 @@
 
 ---
 
-## rationale
+## Rationale
 
 The import time (wall time) is more than 2 seconds, which is extremely slower than state-of-the-art tools' import speed. At the time of this writing, the import wall time of sklearn is around 108 ms.
 
@@ -10,9 +10,9 @@ Most times, people tend to perform only one task at one time. There's no need to
 
 ---
 
-## code design
+## Code design
 
-### design of LazyModuleLoader
+### Design of LazyModuleLoader
 
 `LazyModuleLoader` is a thin wrapper delegate the requests to the real module object. Instead of loading module directly, the `LazyModuleLoader` will defer the load until `__getattr__`, `__setattr__` or `__delattr__` is called on attributes not from `LazyModuleLoader` itself.
 
@@ -27,7 +27,7 @@ numpy.ndarray
 
 `LazyModuleLoader` supports customized module initialization function. By default, the initialization function will do exactly the same thing as `import` declarative.
 
-### design of LazyCallable
+### Design of LazyCallable
 
 `LazyModuleLoader` cannot defer a `from ... import ...` clause, even though it's a variant of `import` clause. Often the case, you want to bind the function to a current namespace or module scope, e.g.,
 
@@ -45,7 +45,7 @@ This will eagerly load the module `image_analysis`, which we want to defer.
 
 ---
 
-## how to organize the module with lazy import
+## How to organize the module with lazy import
 
 At top package level `turicreate/__init__.py`, lazy module is exposed as package level global variables to be backward-compatible with submodule invokation.
 
@@ -79,7 +79,7 @@ Usually, the sub-package (toolkit suite) is located under directory `turicreate/
 └── topic_model
 ```
 
-### standalone submodule lazy import
+### Standalone submodule lazy import
 
 For a package containing exactly one standalone functional unit (tookit), it's easy to make it as a lazy module by only editing the `turicreate/__init__.py`. Take `style_transfer` as an example:
 
@@ -91,7 +91,7 @@ style_transfer = _LazyModuleLoader('turicreate.toolkits.style_transfer'
 
 No need to modify the `__init__.py` of the submodule.
 
-### submodule with more than one functional unit
+### Submodule with more than one functional unit
 
 Usually, a package consists of many different functional units and it works as a hub to aggregate all of functional units sharing similar traits. `audio_analytics` and `sound_classifier` are outliers. For example,
 
