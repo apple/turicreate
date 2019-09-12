@@ -3,7 +3,9 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-
+from __future__ import print_function as _
+from __future__ import division as _
+from __future__ import absolute_import as _
 import turicreate as _tc
 import numpy as _np
 import time as _time
@@ -133,7 +135,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
     from .._mxnet import _mxnet_utils
 
-    start_time = _time.time()
+    
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
 
     params = {
@@ -258,23 +260,31 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             ctx=ctx,
             allow_missing=True)
 
-    ## To get weights: for warmstart Dense1 needs one forward pass to be initialised
+    # To get weights: for warmstart Dense1 needs one forward pass to be initialised
     test_input = _mx.nd.uniform(0, 1, (1,3) + (1,28,28))
     model_output = model.forward(test_input[0])
-    net_params = model.collect_params()
 
     if params['use_tensorflow']:
         ## TensorFlow implementation
         if verbose:
             print("Using TensorFlow")
         from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel
-        tf_model = DrawingClassifierTensorFlowModel(train_loader, validation_loader, validation_set, net_params, batch_size, len(classes), verbose)
+        
+        # Define the TF Model
+        tf_model = DrawingClassifierTensorFlowModel(validation_set, model_params, batch_size, len(classes), verbose)
+        # Train
         final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = tf_model.tf_train_model(train_loader, validation_loader, validation_set, verbose)
+        
+        # Transfer weights from TF to MXNET model
+        net_params = tf_model.get_weights()
+        for k in net_params.keys():
+            model_params[k].set_data(net_params[k])
 
     else:    
         ## MXNET implementation
         if verbose:
             print("Using MXNET")
+        start_time = _time.time()
         softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
         model.hybridize()
         trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
@@ -355,7 +365,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         final_val_accuracy = validation_accuracy.get()[1] if validation_set else None
         final_train_loss = train_loss
         total_train_time = _time.time() - start_time
-
+        
     state = {
         '_model': model,
         '_class_to_index': class_to_index,
@@ -372,7 +382,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         'feature': feature,
         'num_examples': len(input_dataset)
     }
+    
     return DrawingClassifier(state)
+
 
 class DrawingClassifier(_CustomModel):
     """

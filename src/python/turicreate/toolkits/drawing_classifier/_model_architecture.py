@@ -13,7 +13,7 @@ class Model(_HybridBlock):
         super(Model, self).__init__(**kwargs)
         with self.name_scope():
             # layers created in name_scope will inherit name space
-            # from parent layer.
+            # from parent layer.2d
             self.conv1 = _nn.Conv2D(channels=16, kernel_size=(3,3),
                                     padding=(1,1), activation='relu')
             self.pool1 = _nn.MaxPool2D(pool_size=(2,2))
@@ -35,3 +35,4 @@ class Model(_HybridBlock):
         x = self.fc1(x)
         x = self.fc2(x)
         return F.softmax(x)
+
