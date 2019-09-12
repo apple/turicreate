@@ -265,56 +265,61 @@
 
 #else
 
-#define logger(lvl,fmt,...)                 \
-    (log_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__))
+#define logger(lvl, fmt, ...)                                                  \
+  (log_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl, __FILE__, __func__, __LINE__, \
+                                            fmt, ##__VA_ARGS__))
 
+#define logbuf(lvl, buf, len)                                                  \
+  (log_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl, __FILE__, __func__, __LINE__, \
+                                            buf, len))
 
-#define logbuf(lvl,buf,len)                 \
-    (log_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl,__FILE__,     \
-                        __func__ ,__LINE__,buf,len))
+#define logstream(lvl)                                                      \
+  if (lvl >= global_logger().get_log_level())                               \
+  (log_stream_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl, __FILE__, __func__, \
+                                                   __LINE__))
 
-#define logstream(lvl)                      \
-    if(lvl >= global_logger().get_log_level()) (log_stream_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl,__FILE__, __func__ ,__LINE__) )
+#define logger_once(lvl, fmt, ...)                                 \
+  {                                                                \
+    static bool __printed__ = false;                               \
+    if (!__printed__) {                                            \
+      __printed__ = true;                                          \
+      (log_dispatch<(lvl >= OUTPUTLEVEL)>::exec(                   \
+          lvl, __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)); \
+    }                                                              \
+  }
 
-#define logger_once(lvl,fmt,...)                 \
-{    \
-  static bool __printed__ = false;    \
-  if (!__printed__) {                 \
-    __printed__ = true;               \
-    (log_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__)); \
-  }  \
-}
+#define logstream_once(lvl)                                     \
+  (*({                                                          \
+    static bool __printed__ = false;                            \
+    bool __prev_printed__ = __printed__;                        \
+    if (!__printed__) __printed__ = true;                       \
+    &(log_stream_dispatch<(lvl >= OUTPUTLEVEL)>::exec(          \
+        lvl, __FILE__, __func__, __LINE__, !__prev_printed__)); \
+  }))
 
-#define logstream_once(lvl)                      \
-(*({    \
-  static bool __printed__ = false;    \
-  bool __prev_printed__ = __printed__; \
-  if (!__printed__) __printed__ = true;  \
-  &(log_stream_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl,__FILE__, __func__ ,__LINE__, !__prev_printed__) ); \
-}))
+#define logger_ontick(sec, lvl, fmt, ...)                          \
+  {                                                                \
+    static float last_print = -sec - 1;                            \
+    float curtime = turi::timer::approx_time_seconds();            \
+    if (last_print + sec <= curtime) {                             \
+      last_print = curtime;                                        \
+      (log_dispatch<(lvl >= OUTPUTLEVEL)>::exec(                   \
+          lvl, __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)); \
+    }                                                              \
+  }
 
-#define logger_ontick(sec,lvl,fmt,...)                 \
-{    \
-  static float last_print = -sec - 1;        \
-  float curtime = turi::timer::approx_time_seconds(); \
-  if (last_print + sec <= curtime) {                 \
-    last_print = curtime;                     \
-    (log_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__)); \
-  }  \
-}
-
-#define logstream_ontick(sec,lvl)                      \
-(*({    \
-  static float last_print = -sec - 1;        \
-  float curtime = turi::timer::approx_time_seconds();        \
-  bool print_now = false;             \
-  if (last_print + sec <= curtime) {                 \
-    last_print = curtime;                 \
-    print_now = true;                \
-  }                    \
-  &(log_stream_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl,__FILE__, __func__ ,__LINE__, print_now) ); \
-}))
-
+#define logstream_ontick(sec, lvl)                                             \
+  (*({                                                                         \
+    static float last_print = -sec - 1;                                        \
+    float curtime = turi::timer::approx_time_seconds();                        \
+    bool print_now = false;                                                    \
+    if (last_print + sec <= curtime) {                                         \
+      last_print = curtime;                                                    \
+      print_now = true;                                                        \
+    }                                                                          \
+    &(log_stream_dispatch<(lvl >= OUTPUTLEVEL)>::exec(lvl, __FILE__, __func__, \
+                                                      __LINE__, print_now));   \
+  }))
 
 #define logprogress(fmt,...) logger(LOG_PROGRESS, fmt, ##__VA_ARGS__)
 #define logprogress_stream logstream(LOG_PROGRESS)
@@ -324,14 +329,16 @@
 
 #endif
 
-#define log_and_throw(message)                                      \
-  do {                                                              \
-    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {  \
-      logstream(LOG_ERROR) << (message) << std::endl;               \
-      throw(std::string(message));                                  \
-    };                                                              \
-    throw_error();                                                  \
-  } while(0)
+#ifdef NDEBUG
+
+#define log_and_throw(message)                        \
+  do {                                                \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR { \
+      logstream(LOG_ERROR) << (message) << std::endl; \
+      throw(std::string(message));                    \
+    };                                                \
+    throw_error();                                    \
+  } while (0)
 
 #define std_log_and_throw(key_type, message)          \
   do {                                                \
@@ -343,42 +350,96 @@
   } while (0)
 
 #ifdef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
-#define log_and_throw_io_failure(message)                             \
-  do {                                                                \
-    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {    \
-      logstream(LOG_ERROR) << (message) << std::endl;                 \
-      throw(turi::error::io_error(message, std::error_code()));      \
-    };                                                                \
-    throw_error();                                                    \
-  } while(0)
+#define log_and_throw_io_failure(message)                       \
+  do {                                                          \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {           \
+      logstream(LOG_ERROR) << (message) << std::endl;           \
+      throw(turi::error::io_error(message, std::error_code())); \
+    };                                                          \
+    throw_error();                                              \
+  } while (0)
 #else
-#define log_and_throw_io_failure(message)                             \
-  do {                                                                \
-    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {    \
-      logstream(LOG_ERROR) << (message) << std::endl;                 \
-      throw(turi::error::io_error(message));                         \
-    };                                                                \
-    throw_error();                                                    \
-  } while(0)
+#define log_and_throw_io_failure(message)             \
+  do {                                                \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR { \
+      logstream(LOG_ERROR) << (message) << std::endl; \
+      throw(turi::error::io_error(message));          \
+    };                                                \
+    throw_error();                                    \
+  } while (0)
 #endif
 
-#define log_and_throw_current_io_failure()                            \
-  do {                                                                \
-    auto error_code = errno;                                          \
-    std::string error_message = std::strerror(error_code);            \
-    errno = 0; /* clear errno */                                      \
-    log_and_throw_io_failure(error_message);                          \
-  } while(0)
+#else // debug mode
 
-#define log_func_entry()                                       \
-  do {                                                         \
-    logstream(LOG_INFO) << "Function entry" << std::endl;      \
-  } while(0)
+#define log_and_throw(message)                                          \
+  do {                                                                  \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {                   \
+      std::stringstream _turi_ss;                                       \
+      _turi_ss << (message) << ". " << __func__ << " from " << __FILE__ \
+               << " at " << __LINE__ << std::endl;                      \
+      logstream(LOG_ERROR) << message << std::endl;                     \
+      throw(_turi_ss.str());                                            \
+    };                                                                  \
+    throw_error();                                                      \
+  } while (0)
 
-#define Dlog_func_entry()                                       \
-  do {                                                         \
-    logstream(LOG_DEBUG) << "Function entry" << std::endl;      \
-  } while(0)
+#define std_log_and_throw(key_type, message)                            \
+  do {                                                                  \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {                   \
+      std::stringstream _turi_ss;                                       \
+      _turi_ss << (message) << ". " << __func__ << " from " << __FILE__ \
+               << " at " << __LINE__ << std::endl;                      \
+      logstream(LOG_ERROR) << message << std::endl;                     \
+      throw(key_type(_turi_ss.str()));                                  \
+    };                                                                  \
+    throw_error();                                                      \
+  } while (0)
+
+#ifdef COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE
+#define log_and_throw_io_failure(message)                               \
+  do {                                                                  \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {                   \
+      std::stringstream _turi_ss;                                       \
+      _turi_ss << (message) << ". " << __func__ << " from " << __FILE__ \
+               << " at " << __LINE__ << std::endl;                      \
+      logstream(LOG_ERROR) << message << std::endl;                     \
+      throw(turi::error::io_error(__turi_ss.str(), std::error_code())); \
+    };                                                                  \
+    throw_error();                                                      \
+  } while (0)
+#else
+#define log_and_throw_io_failure(message)                               \
+  do {                                                                  \
+    auto throw_error = [&]() GL_COLD_NOINLINE_ERROR {                   \
+      std::stringstream _turi_ss;                                       \
+      _turi_ss << (message) << ". " << __func__ << " from " << __FILE__ \
+               << " at " << __LINE__ << std::endl;                      \
+      logstream(LOG_ERROR) << message << std::endl;                     \
+      throw(turi::error::io_error(_turi_ss.str()));                     \
+    };                                                                  \
+    throw_error();                                                      \
+  } while (0)
+#endif
+
+#endif // end of NDEBUG
+
+#define log_and_throw_current_io_failure()                 \
+  do {                                                     \
+    auto error_code = errno;                               \
+    std::string error_message = std::strerror(error_code); \
+    errno = 0; /* clear errno */                           \
+    log_and_throw_io_failure(error_message);               \
+  } while (0)
+
+#define log_func_entry()                                  \
+  do {                                                    \
+    logstream(LOG_INFO) << "Function entry" << std::endl; \
+  } while (0)
+
+#define Dlog_func_entry()                                  \
+  do {                                                     \
+    logstream(LOG_DEBUG) << "Function entry" << std::endl; \
+  } while (0)
 
 namespace logger_impl {
 struct streambuff_tls_entry {
