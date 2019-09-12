@@ -58,18 +58,18 @@ class DrawingClassifierTensorFlowModel(object):
 		fc1 = _tf.reshape(pool_3, (-1, 576))
 
 		fc1 = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense0_weight"],
-												biases=biases["drawing_dense0_bias"])
+			biases=biases["drawing_dense0_bias"])
 		fc1 = _tf.nn.relu(fc1)
 
 		out = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"],
-												biases=biases["drawing_dense1_bias"])
+			biases=biases["drawing_dense1_bias"])
 		out = _tf.nn.softmax(out)
 
 		self.predictions = out
 
 		# Loss
 		self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
-																				labels=self.y))
+			labels=self.y))
 
 		# Optimizer
 		self.optimizer = _tf.compat.v1.train.AdamOptimizer(learning_rate=0.001).minimize(self.cost)
@@ -83,8 +83,9 @@ class DrawingClassifierTensorFlowModel(object):
 
 		# Assign the initialised weights from MXNet to tensorflow
 		layers = ['drawing_conv0_weight', 'drawing_conv0_bias', 'drawing_conv1_weight', 'drawing_conv1_bias',
-					'drawing_conv2_weight', 'drawing_conv2_bias', 'drawing_dense0_weight', 'drawing_dense0_bias',
-					'drawing_dense1_weight', 'drawing_dense1_bias']
+		'drawing_conv2_weight', 'drawing_conv2_bias', 'drawing_dense0_weight', 'drawing_dense0_bias',
+		'drawing_dense1_weight', 'drawing_dense1_bias']
+
 		for key in layers:
 			if 'bias' in key:
 				self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
