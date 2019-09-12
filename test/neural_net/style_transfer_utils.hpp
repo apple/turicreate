@@ -55,8 +55,37 @@ private:
 
 struct ResidualTest {
 public:
-  ResidualTest(boost::property_tree::ptree config);
+  ResidualTest(boost::property_tree::ptree config,
+               boost::property_tree::ptree weights);
   ~ResidualTest();
+
+  /**
+    Checks the residual prediction by using an input dictionary with three keys
+    present:
+    
+      - content
+      - height
+      - width
+    
+    The output from the TCMPS inference is then checked against the output
+    dictionary with one key:
+
+      - output
+
+    If there is an element-wise diff greater than an epsilon value of 5e-3 the
+    method returns false.
+
+    @param input  - a `boost::property_tree::ptree` containing three keys
+    @param output - a `boost::property_tree::ptree` containing the expected
+                    output
+
+    @return - a boolean of whether the element-wise diff between the TCMPS
+              inference and the expected inference exceeds an epsilon of 5e-3.
+              If this epsilon is exceeded, the method returns `false`. If the
+              element diff is within this epsilon the method returns `true`.
+  */
+  bool check_predict(boost::property_tree::ptree input,
+                     boost::property_tree::ptree output);
 private:
   struct impl;
   std::unique_ptr<impl> m_impl;

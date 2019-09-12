@@ -35,10 +35,17 @@
 #include <data/encode/test_1/outputs.h>
 #include <data/encode/test_1/weights.h>
 
+#include <data/residual/test_1/config.h>
+#include <data/residual/test_1/inputs.h>
+#include <data/residual/test_1/outputs.h>
+#include <data/residual/test_1/weights.h>
+
 using boost::lexical_cast;
 using boost::property_tree::ptree;
 using boost::property_tree::read_json;
+
 using neural_net_test::style_transfer::EncodingTest;
+using neural_net_test::style_transfer::ResidualTest;
 
 /**
   Parses the char array for json and puts it into a `boost::property::ptree`
@@ -66,8 +73,9 @@ public:
   /**
     Test Encoding
     
-    This test checks whether the Style Transfer Encoding layer present in TCMPS
-    is performing as intended by comparing it to the golden set.
+    This correctness test checks whether the Style Transfer Encoding layer 
+    present in TCMPS is performing as intended by comparing it to the golden
+    set.
    */
   void test_encoding() {
     ptree config_json = extract_json(data_encode_test_1_config_json, data_encode_test_1_config_json_len);
@@ -80,9 +88,21 @@ public:
     TS_ASSERT(encoding_test.check_predict(inputs_json, outputs_json));
   }
 
-  // TODO: write the test
+  /**
+    Test Residual
+    
+    This correctness test checks whether the Style Transfer Residual layer
+    present in TCMPS is performing as intended by comparing it to the golden
+    set.
+   */
   void test_residual() {
-    TS_ASSERT(true);
+    ptree config_json = extract_json(data_residual_test_1_config_json, data_residual_test_1_config_json_len);
+    ptree inputs_json = extract_json(data_residual_test_1_inputs_json, data_residual_test_1_inputs_json_len);
+    ptree outputs_json = extract_json(data_residual_test_1_outputs_json, data_residual_test_1_outputs_json_len);
+    ptree weights_json = extract_json(data_residual_test_1_weights_json, data_residual_test_1_weights_json_len);
+
+    ResidualTest residual_test(config_json, weights_json);
+    TS_ASSERT(residual_test.check_predict(inputs_json, outputs_json));
   }
 
   // TODO: write the test

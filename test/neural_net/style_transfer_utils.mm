@@ -68,8 +68,7 @@ EncodingTest::EncodingTest(ptree config, ptree weights) : m_impl(new EncodingTes
 
 EncodingTest::~EncodingTest() = default;
 
-bool EncodingTest::check_predict(boost::property_tree::ptree input,
-                                 boost::property_tree::ptree output) {
+bool EncodingTest::check_predict(ptree input, ptree output) {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {
       MPSImageBatch *imageBatch = define_input(input, m_impl->dev);
@@ -107,14 +106,80 @@ bool EncodingTest::check_predict(boost::property_tree::ptree input,
 }
 
 struct ResidualTest::impl {
+  API_AVAILABLE(macos(10.15)) id <MTLDevice> dev = nil; 
+  API_AVAILABLE(macos(10.15)) id <MTLCommandQueue> cmdQueue = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* inputNode = nil;
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferResidualNode *definition = nil;
+  API_AVAILABLE(macos(10.15)) TCMPSResidualDescriptor* descriptor = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNGraph* model = nil;
+  API_AVAILABLE(macos(10.15)) NSDictionary<NSString *, NSData *> *weights = nil;
 };
 
-ResidualTest::ResidualTest(ptree config) : m_impl(new ResidualTest::impl()) {
-  // TODO: load residual weights
+ResidualTest::ResidualTest(ptree config, ptree weights) : m_impl(new ResidualTest::impl()) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      m_impl->dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+      m_impl->cmdQueue = [m_impl->dev newCommandQueue];
+      
+      m_impl->inputNode = [MPSNNImageNode nodeWithHandle:[[TCMPSGraphNodeHandle alloc] initWithLabel:@"inputImage"]];
+
+      m_impl->weights = define_residual_weights(weights);
+      m_impl->descriptor = define_resiudal_descriptor(config);
+
+      m_impl->definition = [[TCMPSStyleTransferResidualNode alloc] initWithParameters:@"residual_"
+                                                                            inputNode:m_impl->inputNode
+                                                                               device:m_impl->dev
+                                                                             cmdQueue:m_impl->cmdQueue
+                                                                           descriptor:m_impl->descriptor
+                                                                          initWeights:m_impl->weights];
+
+      m_impl->model = [MPSNNGraph graphWithDevice:m_impl->dev
+                                      resultImage:m_impl->definition.output
+                              resultImageIsNeeded:YES];
+
+      m_impl->model.format = MPSImageFeatureChannelFormatFloat32;
+    }
+  }
 }
 
 ResidualTest::~ResidualTest() = default;
+
+bool ResidualTest::check_predict(ptree input, ptree output) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      MPSImageBatch *imageBatch = define_input(input, m_impl->dev);
+
+      id<MTLCommandBuffer> cb = [m_impl->cmdQueue commandBuffer];
+
+      NSMutableArray *intermediateImages = [[NSMutableArray alloc] init];
+      NSMutableArray *destinationStates = [[NSMutableArray alloc] init];
+      
+      MPSImageBatch *outputBatch =  [m_impl->model encodeBatchToCommandBuffer:cb
+                                                                 sourceImages:@[imageBatch]
+                                                                 sourceStates:nil
+                                                           intermediateImages:intermediateImages
+                                                            destinationStates:destinationStates];
+
+      for (MPSImage *image in outputBatch) {
+        [image synchronizeOnCommandBuffer:cb];  
+      }
+
+      [cb commit];
+      [cb waitUntilCompleted];
+
+      NSData* correctOutput = define_output(output);
+      NSMutableData* dataOutput = [NSMutableData dataWithLength:correctOutput.length];
+
+      [[outputBatch objectAtIndex:0] readBytes:dataOutput.mutableBytes
+                                    dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                                    imageIndex:0];
+
+      return check_data(correctOutput, dataOutput, 5e-3);
+    } else {
+      return true;
+    }
+  }
+}
 
 struct DecodingTest::impl {
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferDecodingNode *definition = nil;
