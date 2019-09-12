@@ -171,7 +171,71 @@ NSDictionary<NSString *, NSData *>* define_residual_weights(boost::property_tree
       weights_dict[@"residual_inst_1_beta"] = inst1Beta;
       weights_dict[@"residual_inst_2_gamma"] = inst2Gamma;
       weights_dict[@"residual_inst_2_beta"] = inst2Beta;
+
+      return weights_dict;
+    } else {
+      throw "Need to be on MacOS 10.15 to use this function";
+    }
+  }
+}
+
+TCMPSDecodingDescriptor* define_decoding_descriptor(ptree config) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      TCMPSDecodingDescriptor *descriptor = [[TCMPSDecodingDescriptor alloc] init];
       
+      descriptor.conv.kernelWidth           = config.get<NSUInteger>("conv.kernel_width");
+      descriptor.conv.kernelHeight          = config.get<NSUInteger>("conv.kernel_height");
+      descriptor.conv.inputFeatureChannels  = config.get<NSUInteger>("conv.input_feature_channels");
+      descriptor.conv.outputFeatureChannels = config.get<NSUInteger>("conv.output_feature_channels");
+      descriptor.conv.strideWidth           = config.get<NSUInteger>("conv.stride_width");
+      descriptor.conv.strideHeight          = config.get<NSUInteger>("conv.stride_height");
+      descriptor.conv.paddingWidth          = config.get<NSUInteger>("conv.padding_width");
+      descriptor.conv.paddingHeight         = config.get<NSUInteger>("conv.padding_height");
+      descriptor.conv.updateWeights         = config.get<bool>("conv.update_weights");
+      descriptor.conv.label = @"decode_conv";
+
+      descriptor.inst.channels = config.get<NSUInteger>("inst.channels");
+      descriptor.inst.styles   = config.get<NSUInteger>("inst.styles");
+      descriptor.inst.label = @"decode_inst";
+
+      descriptor.upsample.scale = config.get<NSUInteger>("upsample.scale");
+
+      return descriptor;
+    } else {
+      throw "Need to be on MacOS 10.15 to use this function";
+    }
+  }
+}
+
+NSDictionary<NSString *, NSData *>* define_decoding_weights(ptree weights) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      NSMutableDictionary<NSString *, NSData *>* weights_dict = [[NSMutableDictionary alloc] init];
+      
+      NSMutableData * convWeights = [NSMutableData data];
+      NSMutableData * instGamma = [NSMutableData data];
+      NSMutableData * instBeta = [NSMutableData data];
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("decode_conv_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [convWeights appendBytes:&element length:sizeof(float)];
+      }
+      
+      BOOST_FOREACH(const ptree::value_type &v, weights.get_child("decode_inst_beta")) {
+        float element = lexical_cast<float>(v.second.data());
+        [instBeta appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type &v, weights.get_child("decode_inst_gamma")) {
+        float element = lexical_cast<float>(v.second.data());
+        [instGamma appendBytes:&element length:sizeof(float)];
+      }
+
+      weights_dict[@"decode_conv_weights"] = convWeights;
+      weights_dict[@"decode_inst_gamma"] = instGamma;
+      weights_dict[@"decode_inst_beta"] = instBeta;
+
       return weights_dict;
     } else {
       throw "Need to be on MacOS 10.15 to use this function";

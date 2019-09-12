@@ -40,12 +40,18 @@
 #include <data/residual/test_1/outputs.h>
 #include <data/residual/test_1/weights.h>
 
+#include <data/decode/test_1/config.h>
+#include <data/decode/test_1/inputs.h>
+#include <data/decode/test_1/outputs.h>
+#include <data/decode/test_1/weights.h>
+
 using boost::lexical_cast;
 using boost::property_tree::ptree;
 using boost::property_tree::read_json;
 
 using neural_net_test::style_transfer::EncodingTest;
 using neural_net_test::style_transfer::ResidualTest;
+using neural_net_test::style_transfer::DecodingTest;
 
 /**
   Parses the char array for json and puts it into a `boost::property::ptree`
@@ -105,9 +111,21 @@ public:
     TS_ASSERT(residual_test.check_predict(inputs_json, outputs_json));
   }
 
-  // TODO: write the test
+  /**
+    Test Decoding
+    
+    This correctness test checks whether the Style Transfer Decoding layer
+    present in TCMPS is performing as intended by comparing it to the golden
+    set.
+   */
   void test_decode() {
-    TS_ASSERT(true);
+    ptree config_json = extract_json(data_decode_test_1_config_json, data_decode_test_1_config_json_len);
+    ptree inputs_json = extract_json(data_decode_test_1_inputs_json, data_decode_test_1_inputs_json_len);
+    ptree outputs_json = extract_json(data_decode_test_1_outputs_json, data_decode_test_1_outputs_json_len);
+    ptree weights_json = extract_json(data_decode_test_1_weights_json, data_decode_test_1_weights_json_len);
+
+    DecodingTest decoding_test(config_json, weights_json);
+    TS_ASSERT(decoding_test.check_predict(inputs_json, outputs_json));
   }
 
   // TODO: write the test

@@ -27,17 +27,24 @@ if(APPLE AND
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/encode/test_1)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/residual)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/residual/test_1)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/decode)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/decode/test_1)
 
   set(GOLDEN_SET_TESTING
     data/encode/test_1/config.json
     data/encode/test_1/inputs.json
     data/encode/test_1/outputs.json
     data/encode/test_1/weights.json
-    
+
     data/residual/test_1/config.json
     data/residual/test_1/inputs.json
     data/residual/test_1/outputs.json
     data/residual/test_1/weights.json
+
+    data/decode/test_1/config.json
+    data/decode/test_1/inputs.json
+    data/decode/test_1/outputs.json
+    data/decode/test_1/weights.json
   )
   
   foreach(SOURCE_FILE ${GOLDEN_SET_TESTING})
