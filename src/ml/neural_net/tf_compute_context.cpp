@@ -8,11 +8,11 @@
 #include <iostream>
 #include <vector>
 
-#include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
-#include <ml/neural_net/tf_model_backend.hpp>
-#include <ml/neural_net/model_backend.hpp>
+#include <pybind11/pybind11.h>
 #include <core/util/try_finally.hpp>
+#include <ml/neural_net/model_backend.hpp>
+#include <ml/neural_net/tf_model_backend.hpp>
 
 namespace turi {
 namespace neural_net {
@@ -20,7 +20,7 @@ namespace neural_net {
 namespace {
 
 template <typename CallFunc>
-auto call_pybind_function(const CallFunc&& func)->decltype(func()) {
+auto call_pybind_function(const CallFunc&& func) -> decltype(func()) {
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
 
@@ -33,7 +33,6 @@ auto call_pybind_function(const CallFunc&& func)->decltype(func()) {
     log_and_throw("An error occurred!");
   }
 }
-
 
 std::unique_ptr<compute_context> create_tf_compute_context() {
   return std::unique_ptr<compute_context>(new tf_compute_context);
@@ -81,9 +80,11 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
         "turicreate.toolkits.activity_classifier._tf_model_architecture");
 
     // Make an instance of python object
-    activity_classifier = tf_ac_backend.attr("ActivityTensorFlowModel")(weights, n, c_in, c_out, pw, w_out);
+    activity_classifier = tf_ac_backend.attr("ActivityTensorFlowModel")(
+        weights, n, c_in, c_out, pw, w_out);
   });
-  return std::unique_ptr<tf_model_backend>(new tf_model_backend(activity_classifier));
+  return std::unique_ptr<tf_model_backend>(
+      new tf_model_backend(activity_classifier));
 }
 
 }  // namespace neural_net

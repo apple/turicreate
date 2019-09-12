@@ -10,14 +10,14 @@
 #include <iostream>
 #include <vector>
 
+#include <core/util/try_finally.hpp>
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/tf_compute_context.hpp>
-#include <core/util/try_finally.hpp>
 
+#include <pybind11/eval.h>
+#include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <pybind11/numpy.h>
-#include <pybind11/eval.h>
 
 namespace turi {
 namespace neural_net {
@@ -26,9 +26,8 @@ using turi::neural_net::float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::shared_float_array;
 
-
 template <typename CallFunc>
-auto call_pybind_function(const CallFunc&& func)->decltype(func()) {
+auto call_pybind_function(const CallFunc&& func) -> decltype(func()) {
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
 
@@ -90,12 +89,9 @@ PYBIND11_MODULE(libtctensorflow, m) {
       });
 }
 
-tf_model_backend::tf_model_backend(pybind11::object model) {
-  model_ = model;
-}
+tf_model_backend::tf_model_backend(pybind11::object model) { model_ = model; }
 
-float_array_map tf_model_backend::train(
-    const float_array_map& inputs) {
+float_array_map tf_model_backend::train(const float_array_map& inputs) {
   // Call train method on ActivityTensorflowModel
   float_array_map result;
 
@@ -118,8 +114,7 @@ float_array_map tf_model_backend::train(
   return result;
 }
 
-float_array_map tf_model_backend::predict(
-    const float_array_map& inputs) const {
+float_array_map tf_model_backend::predict(const float_array_map& inputs) const {
   float_array_map result;
 
   // Call predict method on ActivityTensorFlowModel
@@ -145,8 +140,7 @@ float_array_map tf_model_backend::export_weights() const {
   float_array_map result;
   call_pybind_function([&]() {
     // Call export_weights method on ActivityTensorFLowModel
-    pybind11::object exported_weights =
-        model_.attr("export_weights")();
+    pybind11::object exported_weights = model_.attr("export_weights")();
     std::map<std::string, pybind11::buffer> buf_output =
         exported_weights.cast<std::map<std::string, pybind11::buffer>>();
 
@@ -167,8 +161,7 @@ void tf_model_backend::set_learning_rate(float lr) {
   float_array_map result;
 
   // Call set_learning_rate method on ActivityTensorFLowModel
-  call_pybind_function(
-      [&]() { model_.attr("set_learning_rate")(lr); });
+  call_pybind_function([&]() { model_.attr("set_learning_rate")(lr); });
 }
 
 tf_model_backend::~tf_model_backend() {
@@ -177,4 +170,3 @@ tf_model_backend::~tf_model_backend() {
 
 }  // namespace neural_net
 }  // namespace turi
-
