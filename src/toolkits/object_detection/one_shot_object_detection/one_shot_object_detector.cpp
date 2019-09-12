@@ -32,7 +32,7 @@ namespace one_shot_object_detection {
 namespace data_augmentation {
 
 flex_dict build_annotation(ParameterSampler &parameter_sampler,
-                           std::string label, 
+                           const std::string &label,
                            size_t object_width, size_t object_height,
                            size_t background_width, size_t background_height,
                            size_t seed, size_t row_number) {
@@ -150,7 +150,7 @@ create_synthetic_image_from_background_and_starter(ParameterSampler &parameter_s
                        reinterpret_cast<const boost::gil::rgba8_pixel_t *>(
                            rgba_flex_image.get_image_data()),
                        rgba_flex_image.m_channels *
-                           rgba_flex_image.m_width // row length in bytes
+                           rgba_flex_image.m_width  // row length in bytes
       );
 
   boost::gil::rgb8_image_t::const_view_t background_view = interleaved_view(
@@ -210,7 +210,7 @@ gl_sframe augment_data(const gl_sframe &data,
    * Replacing the `for` with a `parallel_for` fails the export_coreml unit test
    * with an EXC_BAD_ACCESS in the function call to boost::gil::resample_pixels
    */
-  for (const auto &row : decompressed_data.range_iterator()) {
+  for (const sframe_rows::row &row : decompressed_data.range_iterator()) {
     // go through all the starter images and create augmented images for
     // all starter images and the respective chunk of background images
     const flex_image &object = row[image_column_index].get<flex_image>();
@@ -222,7 +222,7 @@ gl_sframe augment_data(const gl_sframe &data,
       size_t segment_start = (segment_id * backgrounds.size()) / nsegments;
       size_t segment_end = ((segment_id + 1) * backgrounds.size()) / nsegments;
       size_t row_number = segment_start;
-      for (const auto &background_ft :
+      for (const flexible_type &background_ft :
           backgrounds.range_iterator(segment_start, segment_end)) {
         row_number++;
         flex_image flex_background =
