@@ -3,8 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 */
-#ifndef UNITY_TOOLKITS_NEURAL_NET_TF_AC_MODEL_HPP_
-#define UNITY_TOOLKITS_NEURAL_NET_TF_AC_MODEL_HPP_
+#ifndef UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_HPP_
+#define UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_HPP_
 
 #include <ml/neural_net/model_backend.hpp>
 
@@ -14,15 +14,12 @@
 namespace turi {
 namespace neural_net {
 
-namespace py = pybind11;
-
-class tf_activity_classifier_backend: public model_backend {
+class tf_model_backend: public model_backend {
 public:
 
-  tf_activity_classifier_backend(int batch_size, int num_features, 
-	int num_classes, int predictions_in_chunk, const float_array_map& net_params, const float_array_map& config);
+  tf_model_backend(pybind11::object model);
 
-  ~tf_activity_classifier_backend();
+  ~tf_model_backend();
 
   // model_backend interface
   float_array_map train(const float_array_map& inputs) override;
@@ -33,9 +30,9 @@ public:
 
 
 private:
-	py::object activity_classifier_;
+	pybind11::object model_;
 };
 } //neural_net
 } // turi
 
-#endif  // UNITY_TOOLKITS_NEURAL_NET_TF_AC_MODEL_HPP_
+#endif  // UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_HPP_
