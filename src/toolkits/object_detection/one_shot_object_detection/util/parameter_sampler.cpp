@@ -6,6 +6,7 @@
  */
 
 #include <core/data/image/numeric_extension/perspective_projection.hpp>
+#include <core/logging/assertions.hpp>
 #include <limits>
 
 #include <toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
@@ -63,7 +64,8 @@ void ParameterSampler::set_warped_corners(
 }
 
 int generate_random_index(std::mt19937 engine, int range) {
-  std::uniform_int_distribution<int> index_distribution(0, range);
+  DASSERT_GT(range, 0);
+  std::uniform_int_distribution<int> index_distribution(0, range-1);
   return index_distribution(engine);
 }
 
