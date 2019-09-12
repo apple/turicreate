@@ -7,14 +7,14 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from turicreate.util import _ProgressTablePrinter
-import tensorflow as _tf 
+import tensorflow as _tf
 import numpy as _np
 import time as _time
 
 class DrawingClassifierTensorFlowModel(object):
 
 	def __init__(self, validation_set, net_params, batch_size, num_classes, verbose):
-		
+
 		self.num_classes = num_classes
 		self.batch_size = batch_size
 
@@ -42,12 +42,12 @@ class DrawingClassifierTensorFlowModel(object):
 		conv_1 = _tf.nn.conv2d(self.x, weights["drawing_conv0_weight"], strides=1, padding='SAME')
 		conv_1 = _tf.nn.bias_add(conv_1, biases["drawing_conv0_bias"])
 		relu_1 = _tf.nn.relu(conv_1)
-		pool_1 = _tf.nn.max_pool2d(relu_1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], 'SAME')
+		pool_1 = _tf.nn.max_pool2d(relu_1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 		conv_2 = _tf.nn.conv2d(pool_1, weights["drawing_conv1_weight"], strides=1, padding='SAME')
 		conv_2 = _tf.nn.bias_add(conv_2, biases["drawing_conv1_bias"])
 		relu_2 = _tf.nn.relu(conv_2)
-		pool_2 = _tf.nn.max_pool2d(relu_2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], 'SAME')
+		pool_2 = _tf.nn.max_pool2d(relu_2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
 		conv_3 = _tf.nn.conv2d(pool_2, weights["drawing_conv2_weight"], strides=1, padding='SAME')
 		conv_3 = _tf.nn.bias_add(conv_3, biases["drawing_conv2_bias"])
@@ -63,7 +63,7 @@ class DrawingClassifierTensorFlowModel(object):
 		out = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"], biases=biases["drawing_dense1_bias"])
 		out = _tf.nn.softmax(out)
 
-		self.predictions = out 
+		self.predictions = out
 
 		# Loss
 		self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions, labels=self.y))
@@ -78,27 +78,33 @@ class DrawingClassifierTensorFlowModel(object):
 		self.sess = _tf.compat.v1.Session()
 		self.sess.run(_tf.compat.v1.global_variables_initializer())
 
-		# Assign the initialised weights from MXNet to tensorflow 
-		layers = ['drawing_conv0_weight', 'drawing_conv0_bias', 'drawing_conv1_weight', 'drawing_conv1_bias', 'drawing_conv2_weight', 'drawing_conv2_bias', 'drawing_dense0_weight', 'drawing_dense0_bias', 'drawing_dense1_weight', 'drawing_dense1_bias']
+		# Assign the initialised weights from MXNet to tensorflow
+		layers = ['drawing_conv0_weight', 'drawing_conv0_bias', 'drawing_conv1_weight', 'drawing_conv1_bias',
+					'drawing_conv2_weight', 'drawing_conv2_bias', 'drawing_dense0_weight', 'drawing_dense0_bias',
+					'drawing_dense1_weight', 'drawing_dense1_bias']
 		for key in layers:
 			if 'bias' in key:
-				self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"), net_params[key].data().asnumpy()))
+				self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
+					net_params[key].data().asnumpy()))
 			else:
 			    if 'dense' in key:
 			        if 'drawing_dense0_weight' in key:
-			        	'''
-			        	To make output of MXNET pool3 (NCHW) compatible with TF (NHWC).
-			        	Decompose FC weights to NCHW. Transpose to NHWC. Reshape back to FC.
-			        	'''
-			        	mxnet_128_576 = net_params[key].data().asnumpy()
-			        	mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 64, 3, 3))
-			        	mxnet_128_576 = mxnet_128_576.transpose(0, 2, 3, 1)
-			        	mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 576))
-			        	self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"), mxnet_128_576.transpose(1,0)))
+						'''
+						To make output of MXNET pool3 (NCHW) compatible with TF (NHWC).
+						Decompose FC weights to NCHW. Transpose to NHWC. Reshape back to FC.
+						'''
+						mxnet_128_576 = net_params[key].data().asnumpy()
+						mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 64, 3, 3))
+						mxnet_128_576 = mxnet_128_576.transpose(0, 2, 3, 1)
+						mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 576))
+						self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
+										mxnet_128_576.transpose(1,0)))
 			        else:
-			        	self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"), net_params[key].data().asnumpy().transpose(1, 0)))
+						self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
+										net_params[key].data().asnumpy().transpose(1, 0)))
 			    else:
-			        self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"), net_params[key].data().asnumpy().transpose(2, 3, 1, 0)))
+			        self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
+										net_params[key].data().asnumpy().transpose(2, 3, 1, 0)))
 
 
 	def tf_train_model(self, train_loader, validation_loader, validation_set, verbose):
@@ -124,20 +130,20 @@ class DrawingClassifierTensorFlowModel(object):
 		start_time = _time.time()
 		for train_batch in train_loader:
 			batch_x, batch_y = process_data(train_batch)
-			_, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy], 
+			_, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
 			                feed_dict={
-			                    self.x: batch_x, 
+			                    self.x: batch_x,
 			                    self.y: batch_y
 			                })
 			for val_batch in validation_loader:
 				val_x, val_y = process_data(val_batch)
-				val_acc = self.sess.run(self.accuracy, 
+				val_acc = self.sess.run(self.accuracy,
 			                feed_dict={
-			                    self.x: val_x, 
+			                    self.x: val_x,
 			                    self.y: val_y
 			                })
 			validation_loader.reset()
-			
+
 			num_iter+=1
 			if verbose:
 				kwargs = {  "iteration": num_iter,
@@ -166,9 +172,9 @@ class DrawingClassifierTensorFlowModel(object):
 				if 'dense' in var.name:
 					if 'drawing_dense0_weight' in var.name:
 						'''
-			        	To make output of TF pool3 (NHWC) compatible with MXNET (NCHW).
-			        	Decompose FC weights to NHWC. Transpose to NCHW. Reshape back to FC.
-			        	'''
+						To make output of TF pool3 (NHWC) compatible with MXNET (NCHW).
+						Decompose FC weights to NHWC. Transpose to NCHW. Reshape back to FC.
+						'''
 						tf_576_128 = val
 						tf_576_128 = _np.reshape(tf_576_128, (3, 3, 64, 128))
 						tf_576_128 = tf_576_128.transpose(2, 0, 1, 3)

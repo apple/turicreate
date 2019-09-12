@@ -3,6 +3,7 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -135,7 +136,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
     from .._mxnet import _mxnet_utils
 
-    
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
 
     params = {
@@ -269,18 +269,19 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         if verbose:
             print("Using TensorFlow")
         from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel
-        
+
         # Define the TF Model
         tf_model = DrawingClassifierTensorFlowModel(validation_set, model_params, batch_size, len(classes), verbose)
         # Train
-        final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = tf_model.tf_train_model(train_loader, validation_loader, validation_set, verbose)
-        
+        final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = tf_model.tf_train_model(
+                                                            train_loader, validation_loader, validation_set, verbose)
+
         # Transfer weights from TF to MXNET model
         net_params = tf_model.get_weights()
         for k in net_params.keys():
             model_params[k].set_data(net_params[k])
 
-    else:    
+    else:
         ## MXNET implementation
         if verbose:
             print("Using MXNET")
@@ -288,7 +289,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
         model.hybridize()
         trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
-        
+
         if verbose and iteration == -1:
             column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
             column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
@@ -297,7 +298,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 column_titles.insert(3, 'Validation Accuracy')
             table_printer = _tc.util._ProgressTablePrinter(
                 column_names, column_titles)
-        
 
         train_accuracy = _mx.metric.Accuracy()
         validation_accuracy = _mx.metric.Accuracy()
@@ -365,7 +365,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         final_val_accuracy = validation_accuracy.get()[1] if validation_set else None
         final_train_loss = train_loss
         total_train_time = _time.time() - start_time
-        
+
     state = {
         '_model': model,
         '_class_to_index': class_to_index,
@@ -382,9 +382,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         'feature': feature,
         'num_examples': len(input_dataset)
     }
-    
-    return DrawingClassifier(state)
 
+    return DrawingClassifier(state)
 
 class DrawingClassifier(_CustomModel):
     """
