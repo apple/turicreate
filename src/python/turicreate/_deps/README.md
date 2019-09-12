@@ -83,6 +83,8 @@ Usually, the sub-package (toolkit suite) is located under directory `turicreate/
 
 #### Whole package is a standalone functional unit
 
+A quick take-away: if a simple `import` clause is sufficient to load the functional unit, you should consider this pattern.
+
 For a package containing exactly one standalone functional unit (tookit), it's easy to make it as a lazy module by only editing the `turicreate/__init__.py`. Take `style_transfer` as an example:
 
 ```python
@@ -94,6 +96,8 @@ style_transfer = _LazyModuleLoader('turicreate.toolkits.style_transfer'
 No need to modify the `__init__.py` of the submodule.
 
 #### Package contains multiple submodules
+
+A quick take-away: if `from ... import ...` is needed to bring each functional unit to top-level init file, you should use this path.
 
 Usually, a package consists of many different functional units and it works as a hub to aggregate all of functional units sharing similar traits. `audio_analytics` and `sound_classifier` are outliers. For example,
 
