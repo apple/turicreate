@@ -93,7 +93,7 @@ style_transfer = _LazyModuleLoader('turicreate.toolkits.style_transfer'
 
 No need to modify the `__init__.py` of the submodule.
 
-### Package contains multiple submodules
+#### Package contains multiple submodules
 
 Usually, a package consists of many different functional units and it works as a hub to aggregate all of functional units sharing similar traits. `audio_analytics` and `sound_classifier` are outliers. For example,
 
@@ -184,3 +184,5 @@ class YourCode():
     def __init__(self):
         pd.DataFrame({})
 ```
+
+__caveat__: `import turicreate._deps.pandas as pd` won't work since `pandas` is not a module anymore but a global variable under package `turicreate._deps`'s namespace.
