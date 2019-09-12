@@ -124,16 +124,16 @@ class DrawingClassifierTensorFlowModel(object):
 		-------
 
 		final_train_accuracy : numpy.float32
-								Training accuracy of the last iteration.
+			Training accuracy of the last iteration.
 
 		final_val_accuracy : numpy.float32
-							Validation accuracy of the last iteration.
+			Validation accuracy of the last iteration.
 
 		final_train_loss : numpy.float32
-							The final loss recorded in training.
+			The final loss recorded in training.
 
 		total_train_time : float
-							Time taken to complete the training
+			Time taken to complete the training
 		"""
 
 		def process_data(batch_data):
@@ -196,9 +196,9 @@ class DrawingClassifierTensorFlowModel(object):
 		Returns
 		-------
 		net_params : dict
-				   Dictionary of weights, where the key is the name of the
-				   layer (e.g. `drawing_conv0_weight`) and the value is the
-				   respective weight of type `numpy.ndarray` in MXNET format.
+			Dictionary of weights, where the key is the name of the
+			layer (e.g. `drawing_conv0_weight`) and the value is the
+			respective weight of type `numpy.ndarray` in MXNET format.
 		"""
 
 		net_params = {}
