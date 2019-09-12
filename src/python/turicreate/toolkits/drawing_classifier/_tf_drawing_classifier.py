@@ -27,7 +27,7 @@ class DrawingClassifierTensorFlowModel(object):
 		'drawing_conv1_weight' : _tf.Variable(_tf.zeros([3, 3, 16, 32]), name='drawing_conv1_weight'),
 		'drawing_conv2_weight' : _tf.Variable(_tf.zeros([3, 3, 32, 64]), name='drawing_conv2_weight'),
 		'drawing_dense0_weight': _tf.Variable(_tf.zeros([576, 128]), name='drawing_dense0_weight'),
-		'drawing_dense1_weight'  : _tf.Variable(_tf.zeros([128, self.num_classes]), name='drawing_dense1_weight')
+		'drawing_dense1_weight': _tf.Variable(_tf.zeros([128, self.num_classes]), name='drawing_dense1_weight')
 		}
 
 		# Biases
@@ -36,7 +36,7 @@ class DrawingClassifierTensorFlowModel(object):
 		'drawing_conv1_bias' : _tf.Variable(_tf.zeros([32]), name='drawing_conv1_bias'),
 		'drawing_conv2_bias' : _tf.Variable(_tf.zeros([64]), name='drawing_conv2_bias'),
 		'drawing_dense0_bias': _tf.Variable(_tf.zeros([128]), name='drawing_dense0_bias'),
-		'drawing_dense1_bias'  : _tf.Variable(_tf.zeros([self.num_classes]), name='drawing_dense1_bias')
+		'drawing_dense1_bias': _tf.Variable(_tf.zeros([self.num_classes]), name='drawing_dense1_bias')
 		}
 
 		conv_1 = _tf.nn.conv2d(self.x, weights["drawing_conv0_weight"], strides=1, padding='SAME')
@@ -57,16 +57,19 @@ class DrawingClassifierTensorFlowModel(object):
 		# Flatten the data to a 1-D vector for the fully connected layer
 		fc1 = _tf.reshape(pool_3, (-1, 576))
 
-		fc1 = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense0_weight"], biases=biases["drawing_dense0_bias"])
+		fc1 = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense0_weight"],
+												biases=biases["drawing_dense0_bias"])
 		fc1 = _tf.nn.relu(fc1)
 
-		out = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"], biases=biases["drawing_dense1_bias"])
+		out = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"],
+												biases=biases["drawing_dense1_bias"])
 		out = _tf.nn.softmax(out)
 
 		self.predictions = out
 
 		# Loss
-		self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions, labels=self.y))
+		self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
+																				labels=self.y))
 
 		# Optimizer
 		self.optimizer = _tf.compat.v1.train.AdamOptimizer(learning_rate=0.001).minimize(self.cost)
@@ -112,7 +115,8 @@ class DrawingClassifierTensorFlowModel(object):
 		def process_data(batch_data):
 			if batch_data.pad is not None:
 				batch_x = batch_data.data[0].asnumpy().transpose(0, 2, 3, 1)[0:self.batch_size-batch_data.pad]
-				batch_y = _tf.keras.utils.to_categorical(batch_data.label[0].asnumpy()[0:self.batch_size-batch_data.pad], self.num_classes)
+				batch_y = _tf.keras.utils.to_categorical(batch_data.label[0].asnumpy()[0:self.batch_size-batch_data.pad],
+															self.num_classes)
 			else:
 				batch_x = batch_data.data[0].asnumpy().transpose(0, 2, 3, 1)
 				batch_y = _tf.keras.utils.to_categorical(batch_data.label[0].asnumpy(), self.num_classes)
