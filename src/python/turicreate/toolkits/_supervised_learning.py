@@ -185,12 +185,6 @@ class SupervisedLearningModel(Model):
         """
         return self.__proxy__.get_value(field)
 
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'predict': {}}
-
 
 class Classifier(SupervisedLearningModel):
     """
@@ -243,14 +237,6 @@ class Classifier(SupervisedLearningModel):
 
         _raise_error_if_not_sframe(dataset, "dataset")
         return self.__proxy__.classify(dataset, missing_value_action)
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'predict': {},
-                'predict_topk': {},
-                'classify': {}}
 
 
 def print_validation_track_notification():
