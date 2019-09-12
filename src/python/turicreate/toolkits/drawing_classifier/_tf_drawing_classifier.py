@@ -14,6 +14,11 @@ import time as _time
 class DrawingClassifierTensorFlowModel(object):
 
 	def __init__(self, validation_set, net_params, batch_size, num_classes, verbose):
+		"""
+		Defines the TensorFlow model, loss, optimisation and accuracy. Then
+		loads the MXNET weights into the model.
+
+		"""
 
 		self.num_classes = num_classes
 		self.batch_size = batch_size
@@ -112,6 +117,24 @@ class DrawingClassifierTensorFlowModel(object):
 
 
 	def tf_train_model(self, train_loader, validation_loader, validation_set, verbose):
+		"""
+		Trains the TensorFlow model.
+
+		Returns
+		-------
+
+		final_train_accuracy : numpy.float32
+								Training accuracy of the last iteration.
+
+		final_val_accuracy : numpy.float32
+							Validation accuracy of the last iteration.
+
+		final_train_loss : numpy.float32
+							The final loss recorded in training.
+
+		total_train_time : float
+							Time taken to complete the training
+		"""
 
 		def process_data(batch_data):
 			if batch_data.pad is not None:
@@ -165,7 +188,18 @@ class DrawingClassifierTensorFlowModel(object):
 		return final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time
 
 
-	def get_weights(self):
+	def get_weights_from_TF(self):
+		"""
+		Retrieve weights from the TF model, convert to the format MXNET
+		expects and store in a dictionary.
+
+		Returns
+		-------
+		net_params : dict
+				   Dictionary of weights, where the key is the name of the
+				   layer (e.g. `drawing_conv0_weight`) and the value is the
+				   respective weight of type `numpy.ndarray` in MXNET format.
+		"""
 
 		net_params = {}
 		tvars = _tf.compat.v1.trainable_variables()

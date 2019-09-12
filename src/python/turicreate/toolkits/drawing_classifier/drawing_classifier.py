@@ -277,7 +277,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                                                             train_loader, validation_loader, validation_set, verbose)
 
         # Transfer weights from TF to MXNET model
-        net_params = tf_model.get_weights()
+        net_params = tf_model.get_weights_from_TF()
         for k in net_params.keys():
             model_params[k].set_data(net_params[k])
 
