@@ -520,25 +520,6 @@ class _Recommender(_Model):
         return None
 
 
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'predict': {
-                    'dataset': 'sframe',
-                    'new_observation_data': 'sframe',
-                    'new_user_data': 'sframe',
-                    'new_item_data': 'sframe'
-                },
-                'recommend': {
-                    'users': ['sframe', 'sarray'],
-                    'items': ['sframe', 'sarray'],
-                    'new_observation_data': 'sframe',
-                    'new_user_data': 'sframe',
-                    'new_item_data': 'sframe',
-                    'exclude': 'sframe'}
-                }
-
 
     def _list_fields(self):
         """

@@ -1059,9 +1059,3 @@ class NearestNeighborsModel(_Model):
                          dst_field='reference_label')
             return sg
 
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'query':{'dataset':'sframe'}}
