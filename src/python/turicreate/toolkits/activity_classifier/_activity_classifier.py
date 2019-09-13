@@ -14,6 +14,7 @@ import numpy as _np
 import time as _time
 import six as _six
 
+import turicreate as _turicreate
 from turicreate import SArray as _SArray, SFrame as _SFrame
 from turicreate import aggregate as _agg
 
@@ -24,6 +25,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits import evaluation as _evaluation
 
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 from .util import random_split_by_session as _random_split_by_session
@@ -165,7 +167,32 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     dataset = _tkutl._toolkits_select_columns(dataset, features + [session_id, target])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
+    params = {
+        'use_tensorflow': False
+        }
 
+    if '_advanced_parameters' in kwargs:
+        # Make sure no additional parameters are provided
+        new_keys = set(kwargs['_advanced_parameters'].keys())
+        set_keys = set(params.keys())
+        unsupported = new_keys - set_keys
+        if unsupported:
+            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
+    params.update(kwargs['_advanced_parameters'])
+
+    if params['use_tensorflow'] :
+        # Imports tensorflow
+        import tensorflow as _tf
+        from ._tf_model_architecture import ActivityTensorFlowModel
+
+        model = _turicreate.extensions.activity_classifier()
+        options = {}
+        options['prediction_window'] = prediction_window
+        options['batch_size'] = batch_size
+        options['max_iterations'] = max_iterations
+
+        model.train(dataset, target, session_id, validation_set, options)
+        return ActivityClassifier_beta(model)
 
     if isinstance(validation_set, str) and validation_set == 'auto':
         # Computing the number of unique sessions in this way is relatively
@@ -313,6 +340,247 @@ def _encode_target(data, target, mapping=None):
 
     data[target] = data[target].apply(lambda t: mapping[t])
     return data, mapping
+
+class ActivityClassifier_beta(_Model):
+    """
+    A trained model using C++ implementation that is ready to use for classification or export to
+    CoreML.
+
+    This model should not be constructed directly.
+    """
+    _CPP_ACTIVITY_CLASSIFIER_VERSION = 1
+
+    def __init__(self, model_proxy):
+        self.__proxy__ = model_proxy
+
+    def _get_native_state(self):
+        pass
+
+    @classmethod
+    def _load_version(cls, state, version):
+        pass
+
+    @classmethod
+    def _native_name(cls):
+        return "activity_classifier"
+
+    def _get_version(self):
+        return self._CPP_ACTIVITY_CLASSIFIER_VERSION
+
+    def export_coreml(self, filename):
+        """
+        Export the model in Core ML format.
+
+        Parameters
+        ----------
+        filename: str
+          A valid filename where the model can be saved.
+
+        Examples
+        --------
+        >>> model.export_coreml("MyModel.mlmodel")
+        """
+        return self.__proxy__.export_to_coreml(filename)
+
+
+    def predict(self, dataset, output_type='class', output_frequency='per_row'):
+        """
+        Return predictions for ``dataset``, using the trained activity classifier.
+        Predictions can be generated as class labels, or as a probability
+        vector with probabilities for each class.
+
+        The activity classifier generates a single prediction for each
+        ``prediction_window`` rows in ``dataset``, per ``session_id``. The number
+        of these predictions is smaller than the length of ``dataset``. By default,
+        when ``output_frequency='per_row'``, each prediction is repeated ``prediction_window`` to return
+        a prediction for each row of ``dataset``. Use ``output_frequency=per_window`` to
+        get the unreplicated predictions.
+
+        Parameters
+        ----------
+        dataset : SFrame
+            Dataset of new observations. Must include columns with the same
+            names as the features used for model training, but does not require
+            a target column. Additional columns are ignored.
+
+        output_type : {'class', 'probability_vector'}, optional
+            Form of each prediction which is one of:
+
+            - 'probability_vector': Prediction probability associated with each
+              class as a vector. The probability of the first class (sorted
+              alphanumerically by name of the class in the training set) is in
+              position 0 of the vector, the second in position 1 and so on.
+            - 'class': Class prediction. This returns the class with maximum
+              probability.
+
+        output_frequency : {'per_row', 'per_window'}, optional
+            The frequency of the predictions which is one of:
+
+            - 'per_window': Return a single prediction for each
+              ``prediction_window`` rows in ``dataset`` per ``session_id``.
+            - 'per_row': Convenience option to make sure the number of
+              predictions match the number of rows in the dataset. Each
+              prediction from the model is repeated ``prediction_window``
+              times during that window.
+
+        Returns
+        -------
+        out : SArray | SFrame
+            If ``output_frequency`` is 'per_row' return an SArray with predictions
+            for each row in ``dataset``.
+            If ``output_frequency`` is 'per_window' return an SFrame with
+            predictions for ``prediction_window`` rows in ``dataset``.
+
+        See Also
+        ----------
+        create, evaluate, classify
+
+        Examples
+        --------
+
+        .. sourcecode:: python
+
+            # One prediction per row
+            >>> probability_predictions = model.predict(
+            ...     data, output_type='probability_vector', output_frequency='per_row')[:4]
+            >>> probability_predictions
+
+            dtype: array
+            Rows: 4
+            [array('d', [0.01857384294271469, 0.0348394550383091, 0.026018327102065086]),
+             array('d', [0.01857384294271469, 0.0348394550383091, 0.026018327102065086]),
+             array('d', [0.01857384294271469, 0.0348394550383091, 0.026018327102065086]),
+             array('d', [0.01857384294271469, 0.0348394550383091, 0.026018327102065086])]
+
+            # One prediction per window
+            >>> class_predictions = model.predict(
+            ...     data, output_type='class', output_frequency='per_window')
+            >>> class_predictions
+
+            +---------------+------------+-----+
+            | prediction_id | session_id |class|
+            +---------------+------------+-----+
+            |       0       |     3      |  5  |
+            |       1       |     3      |  5  |
+            |       2       |     3      |  5  |
+            |       3       |     3      |  5  |
+            |       4       |     3      |  5  |
+            |       5       |     3      |  5  |
+            |       6       |     3      |  5  |
+            |       7       |     3      |  4  |
+            |       8       |     3      |  4  |
+            |       9       |     3      |  4  |
+            |      ...      |    ...     | ... |
+            +---------------+------------+-----+
+        """
+        if output_frequency == 'per_row':
+            return self.__proxy__.predict(dataset, output_type)
+        elif output_frequency == 'per_window':
+            return self.__proxy__.predict_per_window(dataset, output_type)
+
+
+    def evaluate(self, dataset, metric='auto'):
+        """
+        Evaluate the model by making predictions of target values and comparing
+        these to actual values.
+
+        Parameters
+        ----------
+        dataset : SFrame
+            Dataset of new observations. Must include columns with the same
+            names as the session_id, target and features used for model training.
+            Additional columns are ignored.
+
+        metric : str, optional
+            Name of the evaluation metric.  Possible values are:
+
+            - 'auto'             : Returns all available metrics.
+            - 'accuracy'         : Classification accuracy (micro average).
+            - 'auc'              : Area under the ROC curve (macro average)
+            - 'precision'        : Precision score (macro average)
+            - 'recall'           : Recall score (macro average)
+            - 'f1_score'         : F1 score (macro average)
+            - 'log_loss'         : Log loss
+            - 'confusion_matrix' : An SFrame with counts of possible
+                                   prediction/true label combinations.
+            - 'roc_curve'        : An SFrame containing information needed for an
+                                   ROC curve
+
+        Returns
+        -------
+        out : dict
+            Dictionary of evaluation results where the key is the name of the
+            evaluation metric (e.g. `accuracy`) and the value is the evaluation
+            score.
+
+        See Also
+        ----------
+        create, predict
+
+        Examples
+        ----------
+        .. sourcecode:: python
+
+          >>> results = model.evaluate(data)
+          >>> print results['accuracy']
+        """
+        return self.__proxy__.evaluate(dataset, metric)
+
+    # def classify(self, dataset, output_frequency='per_row'):
+
+    # def predict_topk(self, dataset, output_type='probability', k=3, output_frequency='per_row'):
+
+    def __str__(self):
+        """
+        Return a string description of the model to the ``print`` method.
+
+        Returns
+        -------
+        out : string
+            A description of the ActivityClassifier.
+        """
+        return self.__repr__()
+
+    def __repr__(self):
+        """
+        Print a string description of the model when the model name is entered
+        in the terminal.
+        """
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
+
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Number of examples', 'num_examples'),
+            ('Number of sessions', 'num_sessions'),
+            ('Number of classes', 'num_classes'),
+            ('Number of feature columns', 'num_features'),
+            ('Prediction window', 'prediction_window'),
+        ]
+        training_fields = [
+            ('Log-likelihood', 'training_log_loss'),
+            ('Training time (sec)', 'training_time'),
+        ]
+
 
 class ActivityClassifier(_CustomModel):
     """
