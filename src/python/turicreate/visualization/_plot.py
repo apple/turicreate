@@ -355,7 +355,7 @@ class Plot(object):
                 </body> \
             </html>'));
 
-def display_table_in_notebook(sf):
+def display_table_in_notebook(sf, title=None):
     from IPython.core.display import display
     from PIL import Image
 
@@ -450,6 +450,7 @@ def display_table_in_notebook(sf):
                             </style>                               \
                           </head>                                  \
                           <body>                                   \
+                            <h1> '+ title +' </h1>                 \
                             '+df.to_html(formatters=image_column_formatter, escape=False, classes='sframe')+'\
                           </body>                                  \
                         </html>'
