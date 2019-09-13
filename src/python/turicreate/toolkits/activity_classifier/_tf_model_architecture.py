@@ -9,6 +9,7 @@ from __future__ import absolute_import as _
 
 import tensorflow as _tf 
 from .._tf_model import TensorFlowModel
+import .._tf_utils as _tf_utils
 import numpy as _np
 
 # Constant parameters for the neural network
@@ -24,7 +25,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
 
         for key in net_params.keys():
-            net_params[key] = _np.array(net_params[key], copy=False)
+            net_params[key] = _tf_util.convert_shared_float_array_to_numpy(net_params[key])
 
         _tf.reset_default_graph()
 
@@ -74,11 +75,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
         h2h_f = net_params['lstm_h2h_f_weight']
         h2h_c = net_params['lstm_h2h_c_weight']
         h2h_o = net_params['lstm_h2h_o_weight']
-        i2h = _np.concatenate((i2h_i, i2h_c, i2h_f, i2h_o), axis=0)
-        h2h = _np.concatenate((h2h_i, h2h_c, h2h_f, h2h_o), axis=0)
-        lstm = _np.concatenate((i2h, h2h), axis=1)
+        lstm = _tf_utils.convert_lstm_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o)
         cells = _tf.nn.rnn_cell.LSTMCell(num_units=LSTM_H, reuse=_tf.AUTO_REUSE, forget_bias=0.0, 
-            initializer=_tf.initializers.constant(_np.transpose(lstm), verify_shape=True))
+            initializer=_tf.initializers.constant(lstm, verify_shape=True))
         init_state = cells.zero_state(batch_size, _tf.float32)
         rnn_outputs, final_state = _tf.nn.dynamic_rnn(cells, dropout, initial_state=init_state)
 
@@ -112,11 +111,6 @@ class ActivityTensorFlowModel(TensorFlowModel):
         train_op = self.optimizer.minimize(self.loss_op)
         self.train_op = _tf.group([train_op, update_ops])
         
-        # Predictions
-        correct_pred = _tf.reduce_sum(_tf.cast(_tf.equal(_tf.argmax(self.probs, 2), _tf.argmax(one_hot_target, 2)), dtype=_tf.float32) * reshaped_weight, axis=1)
-        acc_per_seq = correct_pred / (seq_sum_weights + 1e-5)
-        self.acc = _tf.reduce_sum(acc_per_seq) / (binary_seq_sum_weights + 1e-5)
-
         # Session 
         self.sess = _tf.compat.v1.Session()
 
@@ -128,10 +122,11 @@ class ActivityTensorFlowModel(TensorFlowModel):
         for key in net_params.keys():
             if key in weights.keys():
                 if key.startswith('conv'):
-                    net_params[key] = _np.reshape(_np.transpose(net_params[key], (3, 1, 0, 2)), (prediction_window, self.num_features, CONV_H))
+                    net_params[key] = _tf_utils.convert_conv1d_coreml_to_tf(net_params[key])
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"), net_params[key]))
                 elif key.startswith('dense'):
                     net_params[key] =  _np.reshape(_np.transpose(net_params[key], (1, 0, 2, 3)), (net_params[key].shape[1], net_params[key].shape[0]))
+                    net_params[key] = _tf_utils.convert_dense_coreml_to_tf(net_params[key])
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"), net_params[key] ))
             if key in biases.keys():
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"), net_params[key]))
@@ -140,7 +135,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
     def train(self, feed_dict):
 
         for key in feed_dict.keys():
-            feed_dict[key] = _np.array(feed_dict[key], copy=False)
+            feed_dict[key] = _tf_util.convert_shared_float_array_to_numpy(feed_dict[key])
             feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[2], feed_dict[key].shape[3]))
         _, loss, probs = self.sess.run([self.train_op, self.loss_op, self.probs], 
             feed_dict={self.data : feed_dict['input'], self.target : feed_dict['labels'], self.weight : feed_dict['weights'], self.is_training : True})
@@ -155,7 +150,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
     def predict(self, feed_dict):
 
         for key in feed_dict.keys():
-            feed_dict[key] = _np.array(feed_dict[key], copy=False)
+            feed_dict[key] = _tf_util.convert_shared_float_array_to_numpy(feed_dict[key])
             feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[2], feed_dict[key].shape[3]))
 
         if len(feed_dict.keys()) == 1 :
@@ -186,41 +181,38 @@ class ActivityTensorFlowModel(TensorFlowModel):
             
             if 'weight' in var.name:
                 if var.name.startswith('conv'):
-                    tf_export_params[var.name.split(':')[0]] = _np.reshape(_np.transpose(val, (2,1,0)), (val.shape[2], val.shape[1], 1, val.shape[0]))
+                    tf_export_params[var.name.split(':')[0]] = _tf_utils.convert_conv1d_tf_to_coreml(val)
                 elif var.name.startswith('dense'):
-                    tf_export_params[var.name.split(':')[0]] =  _np.reshape(_np.transpose(val), (val.shape[1], val.shape[0], 1, 1))
+                    tf_export_params[var.name.split(':')[0]] =  _tf_utils.convert_dense_tf_to_coreml(val)
 
             elif var.name.startswith('rnn/lstm_cell/kernel'):
-                lstm_i2h , lstm_h2h = _np.split(val, [CONV_H])
-                i2h_i, i2h_c, i2h_f, i2h_o = _np.split(lstm_i2h, 4, axis=1)
-                h2h_i, h2h_c, h2h_f, h2h_o = _np.split(lstm_h2h, 4, axis=1)
-                tf_export_params['lstm_i2h_i_weight'] = _np.transpose(i2h_i)
-                tf_export_params['lstm_i2h_c_weight'] = _np.transpose(i2h_c)
-                tf_export_params['lstm_i2h_f_weight'] = _np.transpose(i2h_f)
-                tf_export_params['lstm_i2h_o_weight'] = _np.transpose(i2h_o)
-                tf_export_params['lstm_h2h_i_weight'] = _np.transpose(h2h_i)
-                tf_export_params['lstm_h2h_c_weight'] = _np.transpose(h2h_c)
-                tf_export_params['lstm_h2h_f_weight'] = _np.transpose(h2h_f)
-                tf_export_params['lstm_h2h_o_weight'] = _np.transpose(h2h_o)
+                i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o = _tf_utils.convert_lstm_weight_tf_to_coreml(val, CONV_H)
+                tf_export_params['lstm_i2h_i_weight'] = i2h_i
+                tf_export_params['lstm_i2h_c_weight'] = i2h_c
+                tf_export_params['lstm_i2h_f_weight'] = i2h_f
+                tf_export_params['lstm_i2h_o_weight'] = i2h_o
+                tf_export_params['lstm_h2h_i_weight'] = h2h_i
+                tf_export_params['lstm_h2h_c_weight'] = h2h_c
+                tf_export_params['lstm_h2h_f_weight'] = h2h_f
+                tf_export_params['lstm_h2h_o_weight'] = h2h_o
             elif var.name.startswith('rnn/lstm_cell/bias'):
-                h2h_i, h2h_c, h2h_f, h2h_o = _np.split(val, 4)
-                val = _np.concatenate((h2h_i, h2h_f, h2h_c, h2h_o))
-                tf_export_params['lstm_h2h_i_bias'] = _np.transpose(h2h_i)
-                tf_export_params['lstm_h2h_c_bias'] = _np.transpose(h2h_c)
-                tf_export_params['lstm_h2h_f_bias'] = _np.transpose(h2h_f)
-                tf_export_params['lstm_h2h_o_bias'] = _np.transpose(h2h_o)
+                h2h_i, h2h_c, h2h_f, h2h_o = _tf_utils.convert_lstm_bias_tf_to_coreml(val)
+                tf_export_params['lstm_h2h_i_bias'] = h2h_i
+                tf_export_params['lstm_h2h_c_bias'] = h2h_c
+                tf_export_params['lstm_h2h_f_bias'] = h2h_f
+                tf_export_params['lstm_h2h_o_bias'] = h2h_o
             elif var.name.startswith('batch_normalization'):
-                tf_export_params['bn_'+var.name.split('/')[-1][0:-2]] = _np.array(val)
+                tf_export_params['bn_'+var.name.split('/')[-1][0:-2]] = val
             else:
-                tf_export_params[var.name.split(':')[0]] = _np.array(val)
+                tf_export_params[var.name.split(':')[0]] = val
             
         tvars = _tf.all_variables()
         tvars_vals = self.sess.run(tvars)
         for var, val in zip(tvars, tvars_vals):
             if 'moving_mean' in var.name:
-                tf_export_params['bn_running_mean'] = _np.array(val)
+                tf_export_params['bn_running_mean'] = val
             if 'moving_variance' in var.name:
-                tf_export_params['bn_running_var'] = _np.array(val)
+                tf_export_params['bn_running_var'] = val
         return tf_export_params
 
     def set_learning_rate(self, lr):
