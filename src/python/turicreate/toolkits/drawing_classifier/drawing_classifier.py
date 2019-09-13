@@ -268,16 +268,17 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         ## TensorFlow implementation
         if verbose:
             print("Using TensorFlow")
-        from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel
+        from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel, _tf_train_model
 
         # Define the TF Model
         tf_model = DrawingClassifierTensorFlowModel(validation_set, model_params, batch_size, len(classes), verbose)
         # Train
-        final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = tf_model.tf_train_model(
-                                                            train_loader, validation_loader, validation_set, verbose)
+        final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = _tf_train_model(
+                                                            tf_model, train_loader, validation_loader,
+                                                            validation_set, batch_size, len(classes), verbose)
 
         # Transfer weights from TF to MXNET model
-        net_params = tf_model.get_weights_from_TF()
+        net_params = tf_model.export_weights()
         for k in net_params.keys():
             model_params[k].set_data(net_params[k])
 
