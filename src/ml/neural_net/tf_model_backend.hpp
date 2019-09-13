@@ -17,7 +17,7 @@ namespace turi {
 namespace neural_net {
 
 template <typename CallFunc>
-auto call_pybind_function(const CallFunc&& func) -> decltype(func()) {
+void call_pybind_function(const CallFunc& func) {
   PyGILState_STATE gstate;
   gstate = PyGILState_Ensure();
 

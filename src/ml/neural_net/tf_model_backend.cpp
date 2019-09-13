@@ -34,12 +34,9 @@ static std::vector<size_t> get_shape(const float_array& num) {
 static std::vector<size_t> get_strides(const float_array& num) {
   std::vector<size_t> result(num.dim());
   const size_t* shape = num.shape();
-  for (size_t i = num.dim() - 1; i > 0; i--) {
-    if (i == num.dim() - 1) {
-      result[i] = sizeof(float);
-    } else {
-      result[i] = result[i + 1] * shape[i + 1];
-    }
+  result[num.dim() - 1] = sizeof(float);
+  for (size_t i = num.dim() - 1; i > 0; --i) {
+    result[i - 1] = result[i] * shape[i];
   }
   return result;
 }
