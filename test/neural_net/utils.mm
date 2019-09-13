@@ -442,7 +442,7 @@ TCMPSTransformerDescriptor* define_transformer_descriptor(ptree config) {
       descriptor.residual5.inst2.channels = config.get<NSUInteger>("residual5.inst2.channels");
       descriptor.residual5.inst2.styles   = config.get<NSUInteger>("residual5.inst2.styles");
       descriptor.residual5.inst2.label = @"transformer_residual_5_inst_2";
-
+      
       descriptor.decode1.conv.kernelWidth           = config.get<NSUInteger>("decode1.conv.kernel_width");
       descriptor.decode1.conv.kernelHeight          = config.get<NSUInteger>("decode1.conv.kernel_height");
       descriptor.decode1.conv.inputFeatureChannels  = config.get<NSUInteger>("decode1.conv.input_feature_channels");
@@ -550,7 +550,6 @@ NSDictionary<NSString *, NSData *>* define_transformer_weights(ptree weights) {
       NSMutableData * residual5Inst1Beta = [NSMutableData data];
       NSMutableData * residual5Inst2Gamma = [NSMutableData data];
       NSMutableData * residual5Inst2Beta = [NSMutableData data];
-
 
       NSMutableData * decode1Conv = [NSMutableData data];
       NSMutableData * decode1InstGamma = [NSMutableData data];
@@ -807,48 +806,58 @@ NSDictionary<NSString *, NSData *>* define_transformer_weights(ptree weights) {
       weights_dict[@"transformer_encode_1_conv_weights"] = encode1Conv;
       weights_dict[@"transformer_encode_1_inst_gamma"] = encode1InstGamma;
       weights_dict[@"transformer_encode_1_inst_beta"] = encode1InstBeta;
+      
       weights_dict[@"transformer_encode_2_conv_weights"] = encode2Conv;
       weights_dict[@"transformer_encode_2_inst_gamma"] = encode2InstGamma;
       weights_dict[@"transformer_encode_2_inst_beta"] = encode2InstBeta;
+
       weights_dict[@"transformer_encode_3_conv_weights"] = encode3Conv;
       weights_dict[@"transformer_encode_3_inst_gamma"] = encode3InstGamma;
       weights_dict[@"transformer_encode_3_inst_beta"] = encode3InstBeta;
+      
       weights_dict[@"transformer_residual_1_conv_1_weights"] = residual1Conv1;
       weights_dict[@"transformer_residual_1_conv_2_weights"] = residual1Conv2;
       weights_dict[@"transformer_residual_1_inst_1_gamma"] = residual1Inst1Gamma;
       weights_dict[@"transformer_residual_1_inst_1_beta"] = residual1Inst1Beta;
       weights_dict[@"transformer_residual_1_inst_2_gamma"] = residual1Inst2Gamma;
       weights_dict[@"transformer_residual_1_inst_2_beta"] = residual1Inst2Beta;
+      
       weights_dict[@"transformer_residual_2_conv_1_weights"] = residual2Conv1;
       weights_dict[@"transformer_residual_2_conv_2_weights"] = residual2Conv2;
       weights_dict[@"transformer_residual_2_inst_1_gamma"] = residual2Inst1Gamma;
       weights_dict[@"transformer_residual_2_inst_1_beta"] = residual2Inst1Beta;
       weights_dict[@"transformer_residual_2_inst_2_gamma"] = residual2Inst2Gamma;
       weights_dict[@"transformer_residual_2_inst_2_beta"] = residual2Inst2Beta;
+
       weights_dict[@"transformer_residual_3_conv_1_weights"] = residual3Conv1;
       weights_dict[@"transformer_residual_3_conv_2_weights"] = residual3Conv2;
       weights_dict[@"transformer_residual_3_inst_1_gamma"] = residual3Inst1Gamma;
       weights_dict[@"transformer_residual_3_inst_1_beta"] = residual3Inst1Beta;
       weights_dict[@"transformer_residual_3_inst_2_gamma"] = residual3Inst2Gamma;
       weights_dict[@"transformer_residual_3_inst_2_beta"] = residual3Inst2Beta;
+      
       weights_dict[@"transformer_residual_4_conv_1_weights"] = residual4Conv1;
       weights_dict[@"transformer_residual_4_conv_2_weights"] = residual4Conv2;
       weights_dict[@"transformer_residual_4_inst_1_gamma"] = residual4Inst1Gamma;
       weights_dict[@"transformer_residual_4_inst_1_beta"] = residual4Inst1Beta;
       weights_dict[@"transformer_residual_4_inst_2_gamma"] = residual4Inst2Gamma;
       weights_dict[@"transformer_residual_4_inst_2_beta"] = residual4Inst2Beta;
+      
       weights_dict[@"transformer_residual_5_conv_1_weights"] = residual5Conv1;
       weights_dict[@"transformer_residual_5_conv_2_weights"] = residual5Conv2;
       weights_dict[@"transformer_residual_5_inst_1_gamma"] = residual5Inst1Gamma;
       weights_dict[@"transformer_residual_5_inst_1_beta"] = residual5Inst1Beta;
       weights_dict[@"transformer_residual_5_inst_2_gamma"] = residual5Inst2Gamma;
       weights_dict[@"transformer_residual_5_inst_2_beta"] = residual5Inst2Beta;
+      
       weights_dict[@"transformer_decoding_1_conv_weights"] = decode1Conv;
       weights_dict[@"transformer_decoding_1_inst_gamma"] = decode1InstGamma;
       weights_dict[@"transformer_decoding_1_inst_beta"] = decode1InstBeta;
+
       weights_dict[@"transformer_decoding_2_conv_weights"] = decode2Conv;
       weights_dict[@"transformer_decoding_2_inst_gamma"] = decode2InstGamma;
       weights_dict[@"transformer_decoding_2_inst_beta"] = decode2InstBeta;
+      
       weights_dict[@"transformer_conv5_weight"] = decode3Conv;
       weights_dict[@"transformer_instancenorm5_gamma"] = decode3InstGamma;
       weights_dict[@"transformer_instancenorm5_beta"] = decode3InstBeta;

@@ -326,8 +326,8 @@ bool ResnetTest::check_predict(ptree input, ptree output) {
       [[outputBatch objectAtIndex:0] readBytes:dataOutput.mutableBytes
                                     dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
                                     imageIndex:0];
-
-      return check_data(correctOutput, dataOutput, 5e-1);
+      
+      return check_data(correctOutput, dataOutput, 5e-2);
     } else {
       return true;
     }
