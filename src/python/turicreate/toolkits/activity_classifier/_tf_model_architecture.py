@@ -11,20 +11,17 @@ import tensorflow as _tf
 from .._tf_model import TensorFlowModel
 import numpy as _np
 
-
+# Constant parameters for the neural network
+CONV_H = 64
+LSTM_H = 200
+DENSE_H = 128
+        
 class ActivityTensorFlowModel(TensorFlowModel):
     
     def __init__(self, net_params, batch_size, num_features, num_classes, prediction_window, seq_len):
 
-        # Supresses verbosity to only errors
+        # Suppresses verbosity to only errors
         _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
-
-
-        _net_params = {
-        'conv_h': 64,
-        'lstm_h': 200,
-        'dense_h': 128
-        }
 
         for key in net_params.keys():
             net_params[key] = _np.array(net_params[key], copy=False)
@@ -50,15 +47,15 @@ class ActivityTensorFlowModel(TensorFlowModel):
         
         # Weights 
         weights = {
-        'conv_weight' : _tf.Variable(_tf.zeros([prediction_window, num_features, _net_params['conv_h']]), name='conv_weight'),
-        'dense0_weight': _tf.Variable(_tf.zeros([_net_params['lstm_h'], _net_params['dense_h']]), name='dense0_weight'),
-        'dense1_weight'  : _tf.Variable(_tf.zeros([_net_params['dense_h'], self.num_classes]), name='dense1_weight')
+        'conv_weight' : _tf.Variable(_tf.zeros([prediction_window, num_features, CONV_H]), name='conv_weight'),
+        'dense0_weight': _tf.Variable(_tf.zeros([LSTM_H, DENSE_H]), name='dense0_weight'),
+        'dense1_weight'  : _tf.Variable(_tf.zeros([DENSE_H, self.num_classes]), name='dense1_weight')
         }
 
         # Biases
         biases = {
-        'conv_bias' : _tf.Variable(_tf.zeros([_net_params['conv_h']]), name='conv_bias'),
-        'dense0_bias': _tf.Variable(_tf.zeros([_net_params['dense_h']]), name='dense0_bias'),
+        'conv_bias' : _tf.Variable(_tf.zeros([CONV_H]), name='conv_bias'),
+        'dense0_bias': _tf.Variable(_tf.zeros([DENSE_H]), name='dense0_bias'),
         'dense1_bias'  : _tf.Variable(_tf.zeros([num_classes]), name='dense1_bias')
         }
 
@@ -80,14 +77,14 @@ class ActivityTensorFlowModel(TensorFlowModel):
         i2h = _np.concatenate((i2h_i, i2h_c, i2h_f, i2h_o), axis=0)
         h2h = _np.concatenate((h2h_i, h2h_c, h2h_f, h2h_o), axis=0)
         lstm = _np.concatenate((i2h, h2h), axis=1)
-        cells = _tf.nn.rnn_cell.LSTMCell(num_units=_net_params['lstm_h'], reuse=_tf.AUTO_REUSE, forget_bias=0.0, 
+        cells = _tf.nn.rnn_cell.LSTMCell(num_units=LSTM_H, reuse=_tf.AUTO_REUSE, forget_bias=0.0, 
             initializer=_tf.initializers.constant(_np.transpose(lstm), verify_shape=True))
         init_state = cells.zero_state(batch_size, _tf.float32)
         rnn_outputs, final_state = _tf.nn.dynamic_rnn(cells, dropout, initial_state=init_state)
 
         
         # Dense
-        dense = _tf.reshape(rnn_outputs, (-1, _net_params['lstm_h']))
+        dense = _tf.reshape(rnn_outputs, (-1, LSTM_H))
         dense = _tf.add(_tf.matmul(dense, weights['dense0_weight']), biases['dense0_bias'])
         dense = _tf.layers.batch_normalization(inputs=dense, 
             beta_initializer=_tf.initializers.constant(net_params['bn_beta'], verify_shape=True), 
@@ -127,11 +124,11 @@ class ActivityTensorFlowModel(TensorFlowModel):
         init = _tf.compat.v1.global_variables_initializer()
         self.sess.run(init)
         
-        # Assign the initialised weights from MXNet to tensorflow 
+        # Assign the initialised weights from the C++ implementation to tensorflow 
         for key in net_params.keys():
             if key in weights.keys():
                 if key.startswith('conv'):
-                    net_params[key] = _np.reshape(_np.transpose(net_params[key], (3, 1, 0, 2)), (prediction_window, self.num_features, _net_params['conv_h']))
+                    net_params[key] = _np.reshape(_np.transpose(net_params[key], (3, 1, 0, 2)), (prediction_window, self.num_features, CONV_H))
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"), net_params[key]))
                 elif key.startswith('dense'):
                     net_params[key] =  _np.reshape(_np.transpose(net_params[key], (1, 0, 2, 3)), (net_params[key].shape[1], net_params[key].shape[0]))
@@ -156,8 +153,6 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
 
     def predict(self, feed_dict):
-
-
 
         for key in feed_dict.keys():
             feed_dict[key] = _np.array(feed_dict[key], copy=False)
@@ -196,7 +191,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
                     tf_export_params[var.name.split(':')[0]] =  _np.reshape(_np.transpose(val), (val.shape[1], val.shape[0], 1, 1))
 
             elif var.name.startswith('rnn/lstm_cell/kernel'):
-                lstm_i2h , lstm_h2h = _np.split(val, [64])
+                lstm_i2h , lstm_h2h = _np.split(val, [CONV_H])
                 i2h_i, i2h_c, i2h_f, i2h_o = _np.split(lstm_i2h, 4, axis=1)
                 h2h_i, h2h_c, h2h_f, h2h_o = _np.split(lstm_h2h, 4, axis=1)
                 tf_export_params['lstm_i2h_i_weight'] = _np.transpose(i2h_i)
