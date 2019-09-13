@@ -181,6 +181,9 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     params.update(kwargs['_advanced_parameters'])
 
     if params['use_tensorflow'] :
+
+        name = 'activity_classifier'
+
         # Imports tensorflow
         import tensorflow as _tf
         from ._tf_model_architecture import ActivityTensorFlowModel
@@ -192,7 +195,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         options['max_iterations'] = max_iterations
 
         model.train(dataset, target, session_id, validation_set, options)
-        return ActivityClassifier_beta(model)
+        return ActivityClassifier_beta(model_proxy=model, name=name)
 
     if isinstance(validation_set, str) and validation_set == 'auto':
         # Computing the number of unique sessions in this way is relatively
@@ -350,19 +353,37 @@ class ActivityClassifier_beta(_Model):
     """
     _CPP_ACTIVITY_CLASSIFIER_VERSION = 1
 
-    def __init__(self, model_proxy):
+    def __init__(self, model_proxy=None, name=None):
         self.__proxy__ = model_proxy
-
-    def _get_native_state(self):
-        pass
-
-    @classmethod
-    def _load_version(cls, state, version):
-        pass
+        self.__name__ = name
 
     @classmethod
     def _native_name(cls):
-        return "activity_classifier"
+        return None
+
+    def __str__(self):
+        """
+        Return a string description of the model to the ``print`` method.
+
+        Returns
+        -------
+        out : string
+            A description of the model.
+        """
+        return self.__class__.__name__
+
+    def __repr__(self):
+        """
+        Returns a string description of the model, including (where relevant)
+        the schema of the training data, description of the training data,
+        training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        out : string
+            A description of the model.
+        """
+        return self.__class__.__name__
 
     def _get_version(self):
         return self._CPP_ACTIVITY_CLASSIFIER_VERSION
@@ -525,61 +546,6 @@ class ActivityClassifier_beta(_Model):
           >>> print results['accuracy']
         """
         return self.__proxy__.evaluate(dataset, metric)
-
-    # def classify(self, dataset, output_frequency='per_row'):
-
-    # def predict_topk(self, dataset, output_type='probability', k=3, output_frequency='per_row'):
-
-    def __str__(self):
-        """
-        Return a string description of the model to the ``print`` method.
-
-        Returns
-        -------
-        out : string
-            A description of the ActivityClassifier.
-        """
-        return self.__repr__()
-
-    def __repr__(self):
-        """
-        Print a string description of the model when the model name is entered
-        in the terminal.
-        """
-        width = 40
-        sections, section_titles = self._get_summary_struct()
-        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
-                                         width=width)
-        return out
-
-    def _get_summary_struct(self):
-        """
-        Returns a structured description of the model, including (where
-        relevant) the schema of the training data, description of the training
-        data, training statistics, and model hyperparameters.
-
-        Returns
-        -------
-        sections : list (of list of tuples)
-            A list of summary sections.
-              Each section is a list.
-                Each item in a section list is a tuple of the form:
-                  ('<label>','<field>')
-        section_titles: list
-            A list of section titles.
-              The order matches that of the 'sections' object.
-        """
-        model_fields = [
-            ('Number of examples', 'num_examples'),
-            ('Number of sessions', 'num_sessions'),
-            ('Number of classes', 'num_classes'),
-            ('Number of feature columns', 'num_features'),
-            ('Prediction window', 'prediction_window'),
-        ]
-        training_fields = [
-            ('Log-likelihood', 'training_log_loss'),
-            ('Training time (sec)', 'training_time'),
-        ]
 
 
 class ActivityClassifier(_CustomModel):
