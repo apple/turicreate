@@ -7,6 +7,7 @@
 #ifndef UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_HPP_
 #define UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_HPP_
 
+#include <core/util/try_finally.hpp>
 #include <ml/neural_net/model_backend.hpp>
 
 #include <pybind11/numpy.h>
@@ -14,6 +15,21 @@
 
 namespace turi {
 namespace neural_net {
+
+template <typename CallFunc>
+auto call_pybind_function(const CallFunc&& func) -> decltype(func()) {
+  PyGILState_STATE gstate;
+  gstate = PyGILState_Ensure();
+
+  turi::scoped_finally gstate_restore([&]() { PyGILState_Release(gstate); });
+
+  try {
+    func();
+  } catch (...) {
+    // TODO: Do better error logging
+    log_and_throw("An error occurred!");
+  }
+}
 
 class tf_model_backend : public model_backend {
  public:

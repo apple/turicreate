@@ -19,21 +19,6 @@ namespace neural_net {
 
 namespace {
 
-template <typename CallFunc>
-auto call_pybind_function(const CallFunc&& func) -> decltype(func()) {
-  PyGILState_STATE gstate;
-  gstate = PyGILState_Ensure();
-
-  turi::scoped_finally gstate_restore([&]() { PyGILState_Release(gstate); });
-
-  try {
-    func();
-  } catch (...) {
-    // TODO: Do better error logging
-    log_and_throw("An error occurred!");
-  }
-}
-
 std::unique_ptr<compute_context> create_tf_compute_context() {
   return std::unique_ptr<compute_context>(new tf_compute_context);
 }
