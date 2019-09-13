@@ -45,6 +45,11 @@
 #include <data/decode/test_1/outputs.h>
 #include <data/decode/test_1/weights.h>
 
+#include <data/resnet/test_1/config.h>
+#include <data/resnet/test_1/inputs.h>
+#include <data/resnet/test_1/outputs.h>
+#include <data/resnet/test_1/weights.h>
+
 using boost::lexical_cast;
 using boost::property_tree::ptree;
 using boost::property_tree::read_json;
@@ -52,6 +57,7 @@ using boost::property_tree::read_json;
 using neural_net_test::style_transfer::EncodingTest;
 using neural_net_test::style_transfer::ResidualTest;
 using neural_net_test::style_transfer::DecodingTest;
+using neural_net_test::style_transfer::ResnetTest;
 
 /**
   Parses the char array for json and puts it into a `boost::property::ptree`
@@ -128,9 +134,21 @@ public:
     TS_ASSERT(decoding_test.check_predict(inputs_json, outputs_json));
   }
 
-  // TODO: write the test
+  /**
+    Test Resnet
+    
+    This correctness test checks whether the Style Transfer Transformer network
+    present in TCMPS is performing as intended by comparing it to the golden
+    set.
+   */
   void test_resnet() {
-    TS_ASSERT(true);
+    ptree config_json = extract_json(data_resnet_test_1_config_json, data_resnet_test_1_config_json_len);
+    ptree inputs_json = extract_json(data_resnet_test_1_inputs_json, data_resnet_test_1_inputs_json_len);
+    ptree outputs_json = extract_json(data_resnet_test_1_outputs_json, data_resnet_test_1_outputs_json_len);
+    ptree weights_json = extract_json(data_resnet_test_1_weights_json, data_resnet_test_1_weights_json_len);
+
+    ResnetTest resnet_test(config_json, weights_json);
+    TS_ASSERT(resnet_test.check_predict(inputs_json, outputs_json));
   }
 
   // TODO: write the test

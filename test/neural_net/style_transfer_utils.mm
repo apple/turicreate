@@ -258,17 +258,81 @@ bool DecodingTest::check_predict(ptree input, ptree output) {
   }
 }
 
-
 struct ResnetTest::impl {
+  API_AVAILABLE(macos(10.15)) id <MTLDevice> dev = nil;
+  API_AVAILABLE(macos(10.15)) id <MTLCommandQueue> cmdQueue = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* inputNode = nil;
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferTransformerNetwork *definition = nil;
+  API_AVAILABLE(macos(10.15)) TCMPSTransformerDescriptor* descriptor = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNGraph* model = nil;
+  API_AVAILABLE(macos(10.15)) NSDictionary<NSString *, NSData *> *weights = nil;
 };
 
-ResnetTest::ResnetTest(ptree config) : m_impl(new ResnetTest::impl()) {
-  // TODO: load resnet weights
+ResnetTest::ResnetTest(ptree config, ptree weights) : m_impl(new ResnetTest::impl()) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      m_impl->dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+      m_impl->cmdQueue = [m_impl->dev newCommandQueue];
+      
+      m_impl->inputNode = [MPSNNImageNode nodeWithHandle:[[TCMPSGraphNodeHandle alloc] initWithLabel:@"inputImage"]];
+
+      m_impl->weights = define_transformer_weights(weights);
+      m_impl->descriptor = define_transformer_descriptor(config);
+
+      m_impl->definition = [[TCMPSStyleTransferTransformerNetwork alloc] initWithParameters:@"transformer_"
+                                                                                  inputNode:m_impl->inputNode
+                                                                                     device:m_impl->dev
+                                                                                   cmdQueue:m_impl->cmdQueue
+                                                                                 descriptor:m_impl->descriptor
+                                                                                initWeights:m_impl->weights];
+
+      m_impl->model = [MPSNNGraph graphWithDevice:m_impl->dev
+                                      resultImage:m_impl->definition.forwardPass
+                              resultImageIsNeeded:YES];
+
+      m_impl->model.format = MPSImageFeatureChannelFormatFloat32;
+    }
+  }
 }
 
 ResnetTest::~ResnetTest() = default;
 
+bool ResnetTest::check_predict(ptree input, ptree output) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      MPSImageBatch *imageBatch = define_input(input, m_impl->dev);
+
+      id<MTLCommandBuffer> cb = [m_impl->cmdQueue commandBuffer];
+
+      NSMutableArray *intermediateImages = [[NSMutableArray alloc] init];
+      NSMutableArray *destinationStates = [[NSMutableArray alloc] init];
+      
+      MPSImageBatch *outputBatch =  [m_impl->model encodeBatchToCommandBuffer:cb
+                                                                 sourceImages:@[imageBatch]
+                                                                 sourceStates:nil
+                                                           intermediateImages:intermediateImages
+                                                            destinationStates:destinationStates];
+
+      for (MPSImage *image in outputBatch) {
+        [image synchronizeOnCommandBuffer:cb];  
+      }
+
+      [cb commit];
+      [cb waitUntilCompleted];
+
+      NSData* correctOutput = define_output(output);
+      NSMutableData* dataOutput = [NSMutableData dataWithLength:correctOutput.length];
+
+      [[outputBatch objectAtIndex:0] readBytes:dataOutput.mutableBytes
+                                    dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                                    imageIndex:0];
+
+      return check_data(correctOutput, dataOutput, 5e-1);
+    } else {
+      return true;
+    }
+  }
+}
 
 struct Block1Test::impl {
   API_AVAILABLE(macos(10.15)) TCMPSVgg16Block1 *definition = nil;

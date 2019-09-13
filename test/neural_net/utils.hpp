@@ -25,6 +25,9 @@ NSDictionary<NSString *, NSData *>* define_residual_weights(boost::property_tree
 TCMPSDecodingDescriptor*  define_decoding_descriptor(boost::property_tree::ptree config);
 NSDictionary<NSString *, NSData *>* define_decoding_weights(boost::property_tree::ptree weights);
 
+TCMPSTransformerDescriptor* define_transformer_descriptor(boost::property_tree::ptree config);
+NSDictionary<NSString *, NSData *>* define_transformer_weights(boost::property_tree::ptree weights);
+
 MPSImageBatch* define_input(boost::property_tree::ptree input, id <MTLDevice> dev);
 NSData* define_output(boost::property_tree::ptree output);
 bool check_data(NSData* expected, NSData* actual, float epsilon=5e-3);
