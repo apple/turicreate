@@ -63,7 +63,7 @@ void ParameterSampler::set_warped_corners(
   warped_corners_[3] = warped_corners[2];
 }
 
-int generate_random_index(std::mt19937 engine, int range) {
+int generate_random_index(std::mt19937 &engine, int range) {
   DASSERT_GT(range, 0);
   std::uniform_int_distribution<int> index_distribution(0, range-1);
   return index_distribution(engine);
