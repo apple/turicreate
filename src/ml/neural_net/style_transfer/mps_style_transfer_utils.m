@@ -328,8 +328,8 @@
   transformerDesc.conv.outputFeatureChannels = 3;
   transformerDesc.conv.strideWidth = 1;
   transformerDesc.conv.strideHeight = 1;
-  transformerDesc.conv.paddingWidth = 1;
-  transformerDesc.conv.paddingHeight = 1;
+  transformerDesc.conv.paddingWidth = 4;
+  transformerDesc.conv.paddingHeight = 4;
   transformerDesc.conv.label = @"transformer_decode_3_conv";
   transformerDesc.conv.updateWeights = tuneAllWeights;
 

@@ -730,12 +730,6 @@ class TopicModel(_Model):
                                        topics['vocabulary'])
         return ret
 
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'predict':{'dataset':'sarray'}}
-
 
 def perplexity(test_data, predictions, topics, vocabulary):
     """

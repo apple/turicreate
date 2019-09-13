@@ -21,6 +21,7 @@ API_AVAILABLE(macos(10.15))
 @property (nonatomic) NSUInteger batchSize;
 @property (nonatomic) float contentLossMultiplier;
 @property (nonatomic) float styleLossMultiplier;
+@property (nonatomic) float totalLossMultiplier;
 @property (nonatomic) BOOL updateAllParams;
 @property (nonatomic) NSUInteger imgWidth;
 @property (nonatomic) NSUInteger imgHeight;
