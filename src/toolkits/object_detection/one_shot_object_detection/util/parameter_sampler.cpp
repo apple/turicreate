@@ -63,10 +63,10 @@ void ParameterSampler::set_warped_corners(
   warped_corners_[3] = warped_corners[2];
 }
 
-int generate_random_index(std::mt19937 &engine, int range) {
+int generate_random_index(std::mt19937 *engine_pointer, int range) {
   DASSERT_GT(range, 0);
   std::uniform_int_distribution<int> index_distribution(0, range-1);
-  return index_distribution(engine);
+  return index_distribution(*engine_pointer);
 }
 
 /* Function to sample all the parameters needed to build a transform, and
@@ -78,9 +78,9 @@ void ParameterSampler::sample(size_t background_width, size_t background_height,
   std::seed_seq seed_seq = {static_cast<int>(seed), static_cast<int>(row_number)};
   std::mt19937 engine(seed_seq);
   
-  theta_mean = theta_means_[generate_random_index(engine, theta_means_.size())];
-  phi_mean = phi_means_[generate_random_index(engine, phi_means_.size())];
-  gamma_mean = gamma_means_[generate_random_index(engine, gamma_means_.size())];
+  theta_mean = theta_means_[generate_random_index(&engine, theta_means_.size())];
+  phi_mean = phi_means_[generate_random_index(&engine, phi_means_.size())];
+  gamma_mean = gamma_means_[generate_random_index(&engine, gamma_means_.size())];
   
   std::normal_distribution<double> theta_distribution(theta_mean, angle_stdev_);
   std::normal_distribution<double> phi_distribution(phi_mean, angle_stdev_);
