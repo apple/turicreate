@@ -32,6 +32,9 @@ static std::vector<size_t> get_shape(const float_array& num) {
 }
 
 static std::vector<size_t> get_strides(const float_array& num) {
+  if (num.dim() == 0) {
+    return {};
+  }
   std::vector<size_t> result(num.dim());
   const size_t* shape = num.shape();
   result[num.dim() - 1] = sizeof(float);
