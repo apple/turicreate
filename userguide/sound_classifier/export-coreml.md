@@ -44,7 +44,8 @@ The input to this model is an `MLMultiArray` of length 15,600 this is
 975ms of data at a sample rate of 16K per second (.975 * 16,000 = 15,600).
 The input must also only be one channel (i.e. mono not stereo). It is
 important that the input to the model be 15,600 elements of one channel
-data at a 16k sample rate.
+data at a 16k sample rate.  In the case we have less than one window of data or
+have some remainder we pad with silence.
 
 In order get predictions from your model, you will need to chuck your
 data into the correct size. You will also need to import both `CoreML`
@@ -83,20 +84,63 @@ guard let audioData = try? MLMultiArray(shape:[windowSize as NSNumber],
    fatalError("Can not create MLMultiArray")
 }
 
-// Ignore any partial window at the end.
-var results = [Dictionary<String, Double>]()
-let windowNumber = wavFile.length / Int64(windowSize)
-for windowIndex in 0..<Int(windowNumber) {
-   let offset = windowIndex * windowSize
-   for i in 0...windowSize {
-      audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
-   }
-   let modelInput = my_sound_classifierInput(audio: audioData)
 
-   guard let modelOutput = try? model.prediction(input: modelInput) else {
-      fatalError("Error calling predict")
-   }
-   results.append(modelOutput.categoryProbability)
+let frameLength = Int64(buffer.frameLength)
+var windowNumber = 0
+var offset = 0
+var startIndex = 0
+var results = [Dictionary<String, Double>]()
+
+// Main data provider loop for items larger than 1 window
+while ((windowNumber + 1) * windowSize) <= frameLength {
+    offset = windowNumber * windowSize
+    for i in startIndex...windowSize {
+        audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
+    }
+    startIndex = 1
+    
+    let modelInput = my_sound_classifierInput(audio: audioData)
+    
+    guard let modelOutput = try? model.prediction(input: modelInput) else {
+        fatalError("Error calling predict")
+    }
+    results.append(modelOutput.categoryProbability)
+    windowNumber += 1
+}
+
+if windowNumber > 0 {
+    offset = offset + windowSize
+}
+
+// Main data provider was less than 1 window of data or we have some remainder
+if offset < frameLength {
+    var needsLastWindow = false
+    
+    // If the last window is all silence we can skip it
+    for i in startIndex...windowSize {
+        if offset + i < frameLength {
+            if bufferData[0][offset + i] != 0.0 {
+                needsLastWindow = true
+                break
+            }
+        }
+    }
+    if needsLastWindow {
+        for i in startIndex...windowSize {
+            if offset + i < frameLength {
+                audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
+            } else {
+                audioData[i] = NSNumber.init(value:0)
+            }
+        }
+        
+        let modelInput = my_sound_classifierInput(audio: audioData)
+        
+        guard let modelOutput = try? model.prediction(input: modelInput) else {
+            fatalError("Error calling predict")
+        }
+        results.append(modelOutput.categoryProbability)
+    }
 }
 ```
 
