@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at
  * https://opensource.org/licenses/BSD-3-Clause
  */
-#ifndef UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_HPP_
-#define UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_HPP_
+#ifndef UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_BACKEND_HPP_
+#define UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_BACKEND_HPP_
 
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/model_backend.hpp>
@@ -31,9 +31,12 @@ void call_pybind_function(const CallFunc& func) {
   }
 }
 
+
+
 class tf_model_backend : public model_backend {
  public:
-  tf_model_backend(pybind11::object model);
+  tf_model_backend(int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+    const float_array_map& config, const float_array_map& weights, std::string model_name);
 
   ~tf_model_backend();
 
@@ -49,4 +52,4 @@ class tf_model_backend : public model_backend {
 }  // namespace neural_net
 }  // namespace turi
 
-#endif  // UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_HPP_
+#endif  // UNITY_TOOLKITS_NEURAL_NET_TF_MODEL_BACKEND_HPP_

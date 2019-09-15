@@ -27,7 +27,7 @@ public:
    */
   tf_compute_context();
 
-  ~tf_compute_context();
+  
 
   std::vector<std::string> gpu_names() const override;
   size_t memory_budget() const override;
@@ -42,6 +42,9 @@ public:
 
   std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options &opts) override;
+
+  ~tf_compute_context();
+  
 };
 
 }  // namespace neural_net

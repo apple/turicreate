@@ -10,6 +10,9 @@ from __future__ import absolute_import as _
 import numpy as np
 import tensorflow as tf
 
+def hey():
+	print("hey")
+	
 def convert_shared_float_array_to_numpy(array):
 	"""
 	The initialization from C++ implementation is mapped to SharedFloatArray 

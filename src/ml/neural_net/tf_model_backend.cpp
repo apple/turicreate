@@ -50,9 +50,8 @@ PYBIND11_MODULE(libtctensorflow, m) {
         return pybind11::buffer_info(
             const_cast<float*>(m.data()), /* Pointer to buffer */
             sizeof(float),                /* Size of one scalar */
-            pybind11::format_descriptor<
-                float>::format(), /* Python struct-style format descriptor */
-            m.dim(),              /* Number of dimensions */
+            pybind11::format_descriptor<float>::format(),  /* Python struct-style format descriptor */
+            m.dim(),              /* Number of dimensions  */
             get_shape(m),         /* Buffer dimensions */
             get_strides(m)        /* Strides (in bytes) for each index */
 
@@ -64,8 +63,7 @@ PYBIND11_MODULE(libtctensorflow, m) {
         return pybind11::buffer_info(
             const_cast<float*>(m.data()), /* Pointer to buffer */
             sizeof(float),                /* Size of one scalar */
-            pybind11::format_descriptor<
-                float>::format(), /* Python struct-style format descriptor */
+            pybind11::format_descriptor<float>::format(), /* Python struct-style format descriptor */
             m.dim(),              /* Number of dimensions */
             get_shape(m),         /* Buffer dimensions */
             get_strides(m)        /* Strides (in bytes) for each index */
@@ -74,7 +72,32 @@ PYBIND11_MODULE(libtctensorflow, m) {
       });
 }
 
-tf_model_backend::tf_model_backend(pybind11::object model): model_(model) {}
+
+tf_model_backend::tf_model_backend(int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+    const float_array_map& config, const float_array_map& weights, std::string model_name) {
+
+  if (model_name == "activity_classifier") {
+    std::cout << "1";
+    shared_float_array prediction_window = config.at("ac_pred_window");
+    std::cout << "1.1";
+    const float* pred_window = prediction_window.data();
+    int pw = static_cast<int>(*pred_window);
+    std::cout << "1.2";
+    call_pybind_function([&]() {
+      pybind11::module tf_ac_backend = pybind11::module::import(
+          "turicreate.toolkits.activity_classifier._tf_model_architecture");
+      std::cout << "1.3";
+      // Make an instance of python object
+      model_ = tf_ac_backend.attr("ActivityTensorFlowModel")(
+          weights, n, c_in, c_out, pw, w_out);
+      std::cout << "2";
+    
+    });
+  }
+
+
+ 
+}
 
 float_array_map tf_model_backend::train(const float_array_map& inputs) {
 

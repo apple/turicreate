@@ -62,7 +62,13 @@ make_library(tctensorflow SHARED
   tf_model_backend.cpp
 )
 
-set_target_properties(tctensorflow PROPERTIES SUFFIX ".so")
+set(TF_BUILD_DIR ${CMAKE_BINARY_DIR}/src/python/turicreate/toolkits)
+
+set_target_properties(tctensorflow 
+  PROPERTIES
+    SUFFIX ".so"
+    LIBRARY_OUTPUT_DIRECTORY ${TF_BUILD_DIR}
+)
 
 make_library(unity_neural_net OBJECT
   SOURCES

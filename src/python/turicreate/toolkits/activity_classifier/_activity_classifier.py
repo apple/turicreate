@@ -29,7 +29,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .util import random_split_by_session as _random_split_by_session
 from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
-
+import turicreate.toolkits.libtctensorflow
 
 def create(dataset, session_id, target, features=None, prediction_window=100,
            validation_set='auto', max_iterations=10, batch_size=32, verbose=True, **kwargs):
