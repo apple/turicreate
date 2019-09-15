@@ -119,9 +119,10 @@ class ActivityTensorFlowModel(TensorFlowModel):
         # Weights
         seq_sum_weights = _tf.reduce_sum(reshaped_weight, axis=1)
         binary_seq_sum_weights = _tf.reduce_sum(_tf.cast(seq_sum_weights > 0, dtype=_tf.float32))
-        print("k")
         # Loss
-        self.loss_op = _tf.losses.softmax_cross_entropy(logits=out, onehot_labels=one_hot_target, weights=reshaped_weight)
+        loss = _tf.losses.softmax_cross_entropy(logits=out, onehot_labels=one_hot_target, weights=reshaped_weight, reduction=_tf.losses.Reduction.NONE)
+        self.loss_per_seq = _tf.reduce_sum(loss, axis=1) / (seq_sum_weights + 1e-5)
+        self.loss_op = _tf.reduce_sum(self.loss_per_seq) / (binary_seq_sum_weights + 1e-5)
         print("l")
         # Optimizer 
         update_ops = _tf.get_collection(_tf.GraphKeys.UPDATE_OPS)
@@ -156,7 +157,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
             feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[2], feed_dict[key].shape[3]))
-        _, loss, probs = self.sess.run([self.train_op, self.loss_op, self.probs], 
+        _, loss, probs = self.sess.run([self.train_op, self.loss_per_seq, self.probs], 
             feed_dict={self.data : feed_dict['input'], self.target : feed_dict['labels'], self.weight : feed_dict['weights'], self.is_training : True})
         
         prob = _np.array(probs)
@@ -180,7 +181,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             result  = { 'output' :  probabilities}
             
         else:
-            loss,  probs= self.sess.run([self.loss_op,  self.probs], 
+            loss,  probs= self.sess.run([self.loss_per_seq,  self.probs], 
                 feed_dict={self.data : feed_dict['input'], self.target : feed_dict['labels'], self.weight : feed_dict['weights'], self.is_training: False})
             prob = _np.array(probs)
             probabilities = _np.reshape(prob, (prob.shape[0], prob.shape[1]*prob.shape[2]))
