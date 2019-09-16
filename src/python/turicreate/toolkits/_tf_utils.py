@@ -91,6 +91,10 @@ def convert_lstm_bias_tf_to_coreml(lstm_bias):
 
 	"""
 	h2h_i, h2h_c, h2h_f, h2h_o = np.split(lstm_bias, 4)
+	h2h_i = np.transpose(h2h_i)
+	h2h_c = np.transpose(h2h_c)
+	h2h_f = np.transpose(h2h_f)
+	h2h_o = np.transpose(h2h_o)
 	return h2h_i, h2h_c, h2h_f, h2h_o
 
 def convert_dense_tf_to_coreml(dense_weights):

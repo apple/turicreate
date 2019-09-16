@@ -28,7 +28,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
          # Suppresses verbosity to only errors
         _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
-
+        
         _tf.reset_default_graph()
 
         self.num_classes = num_classes
@@ -205,17 +205,17 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 tf_export_params['lstm_h2h_f_bias'] = h2h_f
                 tf_export_params['lstm_h2h_o_bias'] = h2h_o
             elif var.name.startswith('batch_normalization'):
-                tf_export_params['bn_'+var.name.split('/')[-1][0:-2]] = val
+                tf_export_params['bn_'+var.name.split('/')[-1][0:-2]] = _np.array(val)
             else:
-                tf_export_params[var.name.split(':')[0]] = val
+                tf_export_params[var.name.split(':')[0]] = _np.array(val)
             
         tvars = _tf.all_variables()
         tvars_vals = self.sess.run(tvars)
         for var, val in zip(tvars, tvars_vals):
             if 'moving_mean' in var.name:
-                tf_export_params['bn_running_mean'] = val
+                tf_export_params['bn_running_mean'] = _np.array(val)
             if 'moving_variance' in var.name:
-                tf_export_params['bn_running_var'] = val
+                tf_export_params['bn_running_var'] = _np.array(val)
         return tf_export_params
 
     def set_learning_rate(self, lr):
