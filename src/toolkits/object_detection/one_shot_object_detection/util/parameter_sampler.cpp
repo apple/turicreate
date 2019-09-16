@@ -24,6 +24,14 @@ ParameterSampler::ParameterSampler(size_t starter_width, size_t starter_height,
 
 double deg_to_rad(double angle) { return angle * M_PI / 180.0; }
 
+std::vector<double> vector_deg_to_rad(std::vector<double> means_in_degrees) {
+  std::vector<double> means_in_radians;
+  for (double mean : means_in_degrees) {
+    means_in_radians.push_back(deg_to_rad(mean));
+  }
+  return means_in_radians;
+}
+
 /* Getters for all the parameters:
  * theta: rotation around the x axis.
  * phi: rotation around the y axis.
@@ -38,6 +46,18 @@ double ParameterSampler::get_theta() { return theta_; }
 double ParameterSampler::get_phi() { return phi_; }
 
 double ParameterSampler::get_gamma() { return gamma_; }
+
+std::vector<double> ParameterSampler::get_theta_means() { return vector_deg_to_rad(theta_means_); }
+
+std::vector<double> ParameterSampler::get_phi_means() { return vector_deg_to_rad(phi_means_); }
+
+std::vector<double> ParameterSampler::get_gamma_means() { return vector_deg_to_rad(gamma_means_); }
+
+double ParameterSampler::get_theta_stdev() { return deg_to_rad(angle_stdev_); }
+
+double ParameterSampler::get_phi_stdev() { return deg_to_rad(angle_stdev_); }
+
+double ParameterSampler::get_gamma_stdev() { return deg_to_rad(angle_stdev_); }
 
 size_t ParameterSampler::get_dz() { return dz_; }
 

@@ -40,6 +40,12 @@ class ParameterSampler {
   double get_theta();
   double get_phi();
   double get_gamma();
+  std::vector<double> get_theta_means();
+  std::vector<double> get_phi_means();
+  std::vector<double> get_gamma_means();
+  double get_theta_stdev();
+  double get_phi_stdev();
+  double get_gamma_stdev();
   size_t get_dz();
   double get_focal();
   Eigen::Matrix<float, 3, 3> get_transform();
