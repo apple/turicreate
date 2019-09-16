@@ -185,8 +185,9 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         name = 'activity_classifier'
 
         # Imports tensorflow
-        import tensorflow as _tf
+        import turicreate.toolkits.libtctensorflow
         from ._tf_model_architecture import ActivityTensorFlowModel
+
 
         model = _turicreate.extensions.activity_classifier()
         options = {}
