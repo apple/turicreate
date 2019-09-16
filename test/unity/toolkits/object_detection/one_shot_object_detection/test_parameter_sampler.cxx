@@ -6,11 +6,12 @@
 
 #define BOOST_TEST_MODULE test_parameter_sampler
 
-#include <toolkits/object_detection/one_shot_object_detection/parameter_sampler.hpp>
+#include <toolkits/object_detection/one_shot_object_detection/util/parameter_sampler.hpp>
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
-#include <experimental/random>
+
+#include <unordered_map>
 
 static constexpr int max_dimension = 6000;
 static constexpr int num_rows = 1000;
@@ -19,11 +20,10 @@ namespace turi {
 namespace one_shot_object_detection {
 namespace {
 
-ParameterSampler create_parameter_sampler(int seed) {
+ParameterSampler create_parameter_sampler(std::default_random_engine &engine) {
 
   std::uniform_int_distribution<int> dist(0, max_dimension);
-  std::mt19337 engine(seed);
-
+  
   size_t starter_width = dist(engine);
   size_t starter_height = dist(engine);
   size_t dx = 0;
@@ -53,26 +53,49 @@ std::unordered_map<std::string, std::vector<double> > get_all_angles(
   return all_angles;
 }
 
+int count_in_range(std::vector<double> samples, double lower, double upper) {
+  int count = 0;
+  for (double sample : samples) {
+    if (sample >= lower && sample <= upper) {
+      count += 1;
+    }
+  }
+  return count;
+}
+
 bool angles_match_distribution(std::vector<double> angles,
     std::vector<double> angle_means, double angle_stdev) {
-  // for every mean, assert that the count of angles in [mean-stdev, mean+stdev] is
-  // greater than the count of angles in [mean-2*stdev, mean-stdev] U [mean+stdev, mean+2*stdev]
+  // for every mean, assert that the count of angles in 
+  // [mean-stdev, mean+stdev] is greater than the count of angles in 
+  // [mean-2*stdev, mean-stdev] U [mean+stdev, mean+2*stdev]
+  int first_stdev_count;
+  int second_stdev_count;
   for (double mean : angle_means) {
-    range_count()
+    first_stdev_count = count_in_range(angles, mean-angle_stdev, mean+angle_stdev);
+    second_stdev_count = (
+      count_in_range(angles, mean-2*angle_stdev, mean-angle_stdev) +
+      count_in_range(angles, mean+angle_stdev, mean+2*angle_stdev));
+    TS_ASSERT_LESS_THAN_EQUALS(second_stdev_count, first_stdev_count);
   }
+  return true;
 }
 
 BOOST_AUTO_TEST_CASE(test_parameter_distributions) {
-  int seed = std::experimental::randint(0, 1000);
-  ParameterSampler sampler = create_parameter_sampler(seed);
+  std::default_random_engine engine;
+  int seed = 500;
+  engine.seed(seed);
+  ParameterSampler sampler = create_parameter_sampler(engine);
   std::unordered_map<std::string, std::vector<double> > all_angles = get_all_angles(
     sampler, seed);
   std::vector<double> thetas = all_angles["theta"];
   std::vector<double> phis = all_angles["phi"];
   std::vector<double> gammas = all_angles["gamma"];
-  TS_ASSERT(angles_match_distribution(thetas, sampler.get_theta_means(), sampler.get_theta_stdev()));
-  TS_ASSERT(angles_match_distribution(phis, sampler.get_phi_means(), sampler.get_phi_stdev()));
-  TS_ASSERT(angles_match_distribution(gammas, sampler.get_gamma_means(), sampler.get_gamma_stdev()));
+  TS_ASSERT(angles_match_distribution(thetas,
+    sampler.get_theta_means(), sampler.get_theta_stdev()));
+  TS_ASSERT(angles_match_distribution(phis,
+    sampler.get_phi_means(), sampler.get_phi_stdev()));
+  TS_ASSERT(angles_match_distribution(gammas,
+    sampler.get_gamma_means(), sampler.get_gamma_stdev()));
 }
 
 
