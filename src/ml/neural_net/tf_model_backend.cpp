@@ -77,21 +77,19 @@ tf_model_backend::tf_model_backend(int n, int c_in, int h_in, int w_in, int c_ou
     const float_array_map& config, const float_array_map& weights, std::string model_name) {
 
   if (model_name == "activity_classifier") {
-    std::cout << "1";
+
     shared_float_array prediction_window = config.at("ac_pred_window");
-    std::cout << "1.1";
     const float* pred_window = prediction_window.data();
     int pw = static_cast<int>(*pred_window);
-    std::cout << "1.2";
+
     call_pybind_function([&]() {
       pybind11::module tf_ac_backend = pybind11::module::import(
           "turicreate.toolkits.activity_classifier._tf_model_architecture");
-      std::cout << "1.3";
+
       // Make an instance of python object
       model_ = tf_ac_backend.attr("ActivityTensorFlowModel")(
           weights, n, c_in, c_out, pw, w_out);
-      std::cout << "2";
-    
+
     });
   }
 
