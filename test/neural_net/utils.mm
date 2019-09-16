@@ -869,6 +869,88 @@ NSDictionary<NSString *, NSData *>* define_transformer_weights(ptree weights) {
   }
 }
 
+
+TCMPSVgg16Block1Descriptor* define_block_1_descriptor(boost::property_tree::ptree config) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      TCMPSVgg16Block1Descriptor *descriptor = [[TCMPSVgg16Block1Descriptor alloc] init];
+
+      descriptor.conv1.kernelWidth           = config.get<NSUInteger>("conv_1.kernel_width");
+      descriptor.conv1.kernelHeight          = config.get<NSUInteger>("conv_1.kernel_height");
+      descriptor.conv1.inputFeatureChannels  = config.get<NSUInteger>("conv_1.input_feature_channels");
+      descriptor.conv1.outputFeatureChannels = config.get<NSUInteger>("conv_1.output_feature_channels");
+      descriptor.conv1.strideWidth           = config.get<NSUInteger>("conv_1.stride_width");
+      descriptor.conv1.strideHeight          = config.get<NSUInteger>("conv_1.stride_height");
+      descriptor.conv1.paddingWidth          = config.get<NSUInteger>("conv_1.padding_width");
+      descriptor.conv1.paddingHeight         = config.get<NSUInteger>("conv_1.padding_height");
+      descriptor.conv1.updateWeights         = config.get<bool>("conv_1.update_weights");
+      descriptor.conv1.label = @"vgg16_block_1_conv_1";
+
+      descriptor.conv2.kernelWidth           = config.get<NSUInteger>("conv_2.kernel_width");
+      descriptor.conv2.kernelHeight          = config.get<NSUInteger>("conv_2.kernel_height");
+      descriptor.conv2.inputFeatureChannels  = config.get<NSUInteger>("conv_2.input_feature_channels");
+      descriptor.conv2.outputFeatureChannels = config.get<NSUInteger>("conv_2.output_feature_channels");
+      descriptor.conv2.strideWidth           = config.get<NSUInteger>("conv_2.stride_width");
+      descriptor.conv2.strideHeight          = config.get<NSUInteger>("conv_2.stride_height");
+      descriptor.conv2.paddingWidth          = config.get<NSUInteger>("conv_2.padding_width");
+      descriptor.conv2.paddingHeight         = config.get<NSUInteger>("conv_2.padding_height");
+      descriptor.conv2.updateWeights         = config.get<bool>("conv_2.update_weights");
+      descriptor.conv2.label = @"vgg16_block_1_conv_2";
+      
+      descriptor.pooling.kernelSize = config.get<NSUInteger>("pooling.kernel");
+      descriptor.pooling.strideSize = config.get<NSUInteger>("pooling.stride");
+
+      return descriptor;
+    } else {
+      throw "Need to be on MacOS 10.15 to use this function";
+    }
+  }
+}
+
+NSDictionary<NSString *, NSData *>* define_block_1_weights(boost::property_tree::ptree weights) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      NSMutableDictionary<NSString *, NSData *>* weights_dict = [[NSMutableDictionary alloc] init];\
+
+      NSMutableData * block1Conv1Weights = [NSMutableData data];
+      NSMutableData * block1Conv1Bias = [NSMutableData data];
+
+      NSMutableData * block1Conv2Weights = [NSMutableData data];
+      NSMutableData * block1Conv2Bias = [NSMutableData data];
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("block1_conv_1_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [block1Conv1Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("block1_conv_1_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [block1Conv1Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("block1_conv_2_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [block1Conv2Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("block1_conv_2_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [block1Conv2Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      weights_dict[@"block1_conv_1_weights"] = block1Conv1Weights;
+      weights_dict[@"block1_conv_1_biases"] = block1Conv1Bias;
+
+      weights_dict[@"block1_conv_2_weights"] = block1Conv2Weights;
+      weights_dict[@"block1_conv_2_biases"] = block1Conv2Bias;
+
+      return weights_dict;
+    } else {
+      throw "Need to be on MacOS 10.15 to use this function";
+    }
+  }
+}
+
 MPSImageBatch* define_input(ptree input, id <MTLDevice> dev) {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {

@@ -50,6 +50,11 @@
 #include <data/resnet/test_1/outputs.h>
 #include <data/resnet/test_1/weights.h>
 
+#include <data/block1/test_1/config.h>
+#include <data/block1/test_1/inputs.h>
+#include <data/block1/test_1/outputs.h>
+#include <data/block1/test_1/weights.h>
+
 using boost::lexical_cast;
 using boost::property_tree::ptree;
 using boost::property_tree::read_json;
@@ -58,6 +63,7 @@ using neural_net_test::style_transfer::EncodingTest;
 using neural_net_test::style_transfer::ResidualTest;
 using neural_net_test::style_transfer::DecodingTest;
 using neural_net_test::style_transfer::ResnetTest;
+using neural_net_test::style_transfer::Block1Test;
 
 /**
   Parses the char array for json and puts it into a `boost::property::ptree`
@@ -151,9 +157,20 @@ public:
     TS_ASSERT(resnet_test.check_predict(inputs_json, outputs_json));
   }
 
-  // TODO: write the test
+  /**
+    Test Block 1
+    
+    This correctness test checks whether the VGG Block 1 Layer present in TCMPS
+    is performing as intended by comparing it to the golden set.
+   */
   void test_block_1() {
-    TS_ASSERT(true);
+    ptree config_json = extract_json(data_block1_test_1_config_json, data_block1_test_1_config_json_len);
+    ptree inputs_json = extract_json(data_block1_test_1_inputs_json, data_block1_test_1_inputs_json_len);
+    ptree outputs_json = extract_json(data_block1_test_1_outputs_json, data_block1_test_1_outputs_json_len);
+    ptree weights_json = extract_json(data_block1_test_1_weights_json, data_block1_test_1_weights_json_len);
+
+    Block1Test block_1_test(config_json, weights_json);
+    TS_ASSERT(block_1_test.check_predict(inputs_json, outputs_json));
   }
 
   // TODO: write the test
