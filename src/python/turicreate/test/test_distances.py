@@ -75,7 +75,7 @@ class StandardDistancesTest(unittest.TestCase):
                  'levenshtein']
 
         for d in dists:
-            dist_fn = tc.distances.__dict__[d]
+            dist_fn = getattr(tc.distances, d)
 
             with self.assertRaises(ToolkitError):
                 dist_fn([1.0], {'a': 1.0})

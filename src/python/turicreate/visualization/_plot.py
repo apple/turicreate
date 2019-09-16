@@ -369,13 +369,13 @@ def display_table_in_notebook(sf):
         im.save(image_buffer, format='PNG')
         return "<img src=\"data:image/png;base64," + base64.b64encode(image_buffer.getvalue()).decode() + "\"/>"
 
-    import pandas as pd
+    from turicreate._deps import pandas as pd
     maximum_rows = 100
     if len(sf) > maximum_rows:
         import warnings
         warnings.warn('Displaying only the first {} rows.'.format(maximum_rows))
         sf = sf[:maximum_rows]
-    
+
     check_image_column = [_Image == x for x in sf.column_types()]
     zipped_image_columns = zip(sf.column_names(), check_image_column)
     image_columns = filter(lambda a: a[1], zipped_image_columns)

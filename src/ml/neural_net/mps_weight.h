@@ -83,6 +83,23 @@ API_AVAILABLE(macos(10.14))
                               init_bias_ptr:(float* __nullable) b_ptr
                            optimizerOptions:(turi::neural_net::OptimizerOptions)optimizerOptions;
 
+- (nonnull instancetype)initWithKernelWidth:(NSUInteger)kernelWidth
+                               kernelHeight:(NSUInteger)kernelHeight
+                       inputFeatureChannels:(NSUInteger)inputFeatureChannels
+                      outputFeatureChannels:(NSUInteger)outputFeatureChannels
+                                 neuronType:(MPSCNNNeuronType)neuronType
+                                    strideX:(NSUInteger)stride_x
+                                    strideY:(NSUInteger)stride_y
+                                    neuronA:(float)neuronA
+                                    neuronB:(float)neuronB
+                     kernelParamsBinaryName:(const char *__nonnull)kernelParamsBinaryName
+                                     device:(id<MTLDevice> _Nonnull ) dev
+                                  cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q
+                              updateWeights:(BOOL)updateWeights
+                            init_weight_ptr:(float* __nullable) w_ptr
+                              init_bias_ptr:(float* __nullable) b_ptr
+                           optimizerOptions:(turi::neural_net::OptimizerOptions)optimizerOptions;
+
 @property (nonatomic, readonly, nonnull) MPSCNNConvolutionWeightsAndBiasesState *state;
 
 - (MPSDataType)dataType;

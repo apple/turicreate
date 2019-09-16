@@ -185,12 +185,6 @@ class SupervisedLearningModel(Model):
         """
         return self.__proxy__.get_value(field)
 
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'predict': {}}
-
 
 class Classifier(SupervisedLearningModel):
     """
@@ -243,14 +237,6 @@ class Classifier(SupervisedLearningModel):
 
         _raise_error_if_not_sframe(dataset, "dataset")
         return self.__proxy__.classify(dataset, missing_value_action)
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'predict': {},
-                'predict_topk': {},
-                'classify': {}}
 
 
 def print_validation_track_notification():
@@ -327,7 +313,7 @@ def create(dataset, target, model_name, features=None,
     options = {k.lower(): kwargs[k] for k in kwargs}
 
     # Create a model instance and train it
-    model = _turicreate.extensions.__dict__[model_name]()
+    model = getattr(_turicreate.extensions, model_name)()
     with QuietProgress(verbose):
         model.train(dataset, target, validation_set, options)
 

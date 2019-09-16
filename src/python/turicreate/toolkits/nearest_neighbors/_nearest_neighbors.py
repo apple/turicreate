@@ -475,7 +475,7 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
     ## Raise an error if any distances are used with non-lists
     list_features_to_check = []
     sparse_distances = ['jaccard', 'weighted_jaccard', 'cosine', 'dot_product', 'transformed_dot_product']
-    sparse_distances = [_turicreate.distances.__dict__[k] for k in sparse_distances]
+    sparse_distances = [getattr(_turicreate.distances, k) for k in sparse_distances]
     for d in distance:
         feature_names, dist, _ = d
         list_features = [f for f in feature_names if _dataset[f].dtype == list]
@@ -1059,9 +1059,3 @@ class NearestNeighborsModel(_Model):
                          dst_field='reference_label')
             return sg
 
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'query':{'dataset':'sframe'}}

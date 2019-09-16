@@ -108,7 +108,7 @@ class TransformerBase(object):
 
     def _get_summary_struct(self):
         model_fields = []
-        for attr in self.__dict__:
+        for attr in dir(self):
             if not attr.startswith('_'):
                 model_fields.append((attr, _precomputed_field(getattr(self, attr))))
 
@@ -209,10 +209,6 @@ class TransformerBase(object):
         """
         self.fit(data)
         return self.transform(data)
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        return {'transform': {}}
 
     def _get_instance_and_data(self):
         raise NotImplementedError
@@ -370,10 +366,6 @@ class Transformer(TransformerBase):
         contain elements that are written using Python + Turi objects.
         """
         return False
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        return {'transform': {'data': 'sframe'}}
 
 class _SampleTransformer(Transformer):
 

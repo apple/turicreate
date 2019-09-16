@@ -33,11 +33,11 @@ double deg_to_rad(double angle) { return angle * M_PI / 180.0; }
  * transform: The transformation matrix built from the above parameters
  * warped_corners: The four corners of the object in the warped image
  */
-double ParameterSampler::get_theta() { return deg_to_rad(theta_); }
+double ParameterSampler::get_theta() { return theta_; }
 
-double ParameterSampler::get_phi() { return deg_to_rad(phi_); }
+double ParameterSampler::get_phi() { return phi_; }
 
-double ParameterSampler::get_gamma() { return deg_to_rad(gamma_); }
+double ParameterSampler::get_gamma() { return gamma_; }
 
 size_t ParameterSampler::get_dz() { return dz_; }
 
@@ -87,9 +87,10 @@ void ParameterSampler::sample(size_t background_width, size_t background_height,
   std::normal_distribution<double> gamma_distribution(gamma_mean, angle_stdev_);
   std::normal_distribution<double> focal_distribution(static_cast<double>(background_width),
                                                       focal_stdev_);
-  theta_ = theta_distribution(engine);
-  phi_ = phi_distribution(engine);
-  gamma_ = gamma_distribution(engine);
+
+  theta_ = deg_to_rad(theta_distribution(engine));
+  phi_ = deg_to_rad(phi_distribution(engine));
+  gamma_ = deg_to_rad(gamma_distribution(engine));
   focal_ = focal_distribution(engine);
   std::uniform_int_distribution<int> dz_distribution(std::max(background_width, background_height),
                                                      max_depth_);

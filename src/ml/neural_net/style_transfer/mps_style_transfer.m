@@ -59,6 +59,9 @@
     _batchSize = 6;
     _contentLossMultiplier = 1.0;
     _styleLossMultiplier = 1e-4;
+
+    // Divide loss by large number to get into a more legible range, the same behavior exists in the MxNet Implementation
+    _totalLossMultiplier = 1e-4;
     _updateAllParams = YES;
     _imgWidth = 256;
     _imgHeight = 256;
@@ -83,6 +86,12 @@
                                                                      cmdQueue:_commandQueue
                                                                    descriptor:transformerDesc
                                                                   initWeights:weights];
+
+    // Not Sure why this works. If this isn't defined the backward pass doesn't work properly
+    _model.forwardPass.handle = [[TCMPSGraphNodeHandle alloc] initWithLabel:@"TransformerForwardPass"];
+    _model.forwardPass.exportFromGraph = YES;
+    _model.forwardPass.synchronizeResource = YES;
+    _model.forwardPass.imageAllocator = [MPSImage defaultAllocator];
 
     _contentPreProcess = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Content_Pre_Processing"
                                                                            inputNode:_model.forwardPass
@@ -131,12 +140,12 @@
     MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                          reductionType:MPSCNNReductionTypeMean];
 
-    styleDesc.weight = 0.5 * _styleLossMultiplier;
+    styleDesc.weight = 0.5 * _styleLossMultiplier * _totalLossMultiplier;
 
     MPSCNNLossDescriptor *contentDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
                                                                            reductionType:MPSCNNReductionTypeMean];
 
-    contentDesc.weight = 0.5 * _contentLossMultiplier;
+    contentDesc.weight = 0.5 * _contentLossMultiplier * _totalLossMultiplier;
 
     MPSNNGramMatrixCalculationNode *gramMatrixStyleLossFirstReLU
       = [MPSNNGramMatrixCalculationNode nodeWithSource:_styleVggLoss.reluOut1
@@ -208,8 +217,8 @@
                                              addLossStyle3Style4.resultImage]];
 
     MPSNNAdditionNode* totalLoss
-      = [MPSNNAdditionNode nodeWithSources:@[addTotalStyleLoss.resultImage,
-                                             contentLossNode.resultImage]];
+      = [MPSNNAdditionNode nodeWithSources:@[contentLossNode.resultImage,
+                                             addTotalStyleLoss.resultImage]];
 
     totalLoss.resultImage.handle = [[TCMPSGraphNodeHandle alloc] initWithLabel:@"totalLossValue"];
     totalLoss.resultImage.exportFromGraph = YES;
@@ -244,6 +253,9 @@
 }
 
 - (NSDictionary<NSString *, NSData *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs {
+  // TODO: Change for testing
+  _batchSize = 1;
+
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
                                width:_imgWidth
@@ -254,8 +266,12 @@
 
   NSMutableArray<MPSImage *> *contentImageArray = [[NSMutableArray alloc] init];
 
+  /**
+  * TODO: write what needs to be done for batching
+  **/
   for (NSUInteger index = 0; index < _batchSize; index++) {
-    NSString* key = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
+    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"input", index];
+    NSString* key = @"input";
     MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
     [contentImage writeBytes:inputs[key].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     [contentImageArray addObject:contentImage];
@@ -283,10 +299,14 @@
 
   NSMutableDictionary<NSString *, NSData *> *imagesOut = [[NSMutableDictionary alloc] init];;
 
+  /**
+  * TODO: write what needs to be done for batching
+  **/
   for (MPSImage *image in stylizedImages) {
+    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
+    NSString* key = @"output";
     NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 3];
     [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-    NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
     imagesOut[key] = styleData;
   }
 
@@ -301,6 +321,15 @@
 }
 
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
+  _batchSize = 1;
+
+  NSString* indexKey = @"index";
+
+  float styleIndex;
+  [inputs[indexKey] getBytes:&styleIndex length:sizeof(float)];
+
+  _model.styleIndex = styleIndex;
+
   NSUInteger imageSize = _imgWidth * _imgHeight * 3;
 
   NSMutableData* mean = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * imageSize];
@@ -326,9 +355,12 @@
   NSMutableArray<MPSImage *> *styleMultiplicationArray = [[NSMutableArray alloc] init];
 
   for (NSUInteger index = 0; index < _batchSize; index++) {
-    NSString* contentKey = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
-    NSString* styleKey = [NSString stringWithFormat:@"%@%lu", @"styleImage", index];
-    
+    // NSString* contentKey = [NSString stringWithFormat:@"%@%lu", @"contentImage", index];
+    // NSString* styleKey = [NSString stringWithFormat:@"%@%lu", @"styleImage", index];
+    NSString* contentKey = @"input";
+    NSString* styleKey = @"labels";
+
+    // TODO: add multiple batch sizes
     MPSImage *contentImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
     [contentImage writeBytes:inputs[contentKey].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     [contentImageArray addObject:contentImage];
@@ -341,6 +373,7 @@
     [contentMultiplication writeBytes:multiplication.bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0]; 
     [contentMultiplicationArray addObject:contentMultiplication];
 
+    // TODO: add multiple batch sizes
     MPSImage *syleImage = [[MPSImage alloc] initWithDevice:_dev imageDescriptor:imgDesc];
     [syleImage writeBytes:inputs[styleKey].bytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
     [styleImageArray addObject:syleImage];

@@ -21,5 +21,10 @@ from __future__ import absolute_import as _
 
 __all__ = ['kmeans', 'dbscan']
 
-from . import kmeans
-from . import dbscan
+from turicreate._deps import LazyModuleLoader as _LazyModuleLoader
+_mod_par = 'turicreate.toolkits.clustering.'
+
+# from . import kmeans
+# from . import dbscan
+kmeans = _LazyModuleLoader(_mod_par + 'kmeans')
+dbscan = _LazyModuleLoader(_mod_par + 'dbscan')

@@ -10,7 +10,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from .._cython.cy_sarray_builder import UnitySArrayBuilderProxy
 from .sarray import SArray
 
 class SArrayBuilder(object):
@@ -51,6 +50,8 @@ class SArrayBuilder(object):
     [1, 2, 3]
     """
     def __init__(self, dtype, num_segments=1, history_size=10):
+        # lazy import
+        from .._cython.cy_sarray_builder import UnitySArrayBuilderProxy
         self._builder = UnitySArrayBuilderProxy()
         self._builder.init(num_segments, history_size, dtype)
         self._block_size = 1024
