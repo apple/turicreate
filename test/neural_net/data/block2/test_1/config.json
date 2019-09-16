@@ -1,0 +1,39 @@
+{
+  "conv_1": {
+    "kernel_width": 3,
+    "kernel_height": 3,
+    "input_feature_channels": 128,
+    "output_feature_channels": 256,
+    "stride_width": 1,
+    "stride_height": 1,
+    "padding_width": 1,
+    "padding_height": 1,
+    "update_weights": true
+  },
+  "conv_2": {
+    "kernel_width": 3,
+    "kernel_height": 3,
+    "input_feature_channels": 256,
+    "output_feature_channels": 256,
+    "stride_width": 1,
+    "stride_height": 1,
+    "padding_width": 1,
+    "padding_height": 1,
+    "update_weights": true
+  },
+  "conv_3": {
+    "kernel_width": 3,
+    "kernel_height": 3,
+    "input_feature_channels": 256,
+    "output_feature_channels": 256,
+    "stride_width": 1,
+    "stride_height": 1,
+    "padding_width": 1,
+    "padding_height": 1,
+    "update_weights": true
+  },
+  "pooling": {
+    "kernel": 2,
+    "stride": 2
+  }
+}

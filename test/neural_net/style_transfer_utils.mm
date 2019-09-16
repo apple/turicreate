@@ -412,14 +412,53 @@ bool Block1Test::check_predict(ptree input, ptree output) {
 }
 
 struct Block2Test::impl {
+  API_AVAILABLE(macos(10.15)) id <MTLDevice> dev = nil;
+  API_AVAILABLE(macos(10.15)) id <MTLCommandQueue> cmdQueue = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* inputNode = nil;
   API_AVAILABLE(macos(10.15)) TCMPSVgg16Block2 *definition = nil;
+  API_AVAILABLE(macos(10.15)) TCMPSVgg16Block2Descriptor* descriptor = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNGraph* model = nil;
+  API_AVAILABLE(macos(10.15)) NSDictionary<NSString *, NSData *> *weights = nil;
 };
 
-Block2Test::Block2Test(ptree config) : m_impl(new Block2Test::impl()) {
-  // TODO: load block 2 weights
+Block2Test::Block2Test(ptree config, ptree weights) : m_impl(new Block2Test::impl()) {
+  if (@available(macOS 10.15, *)) {
+      m_impl->dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+      m_impl->cmdQueue = [m_impl->dev newCommandQueue];
+      
+      m_impl->inputNode = [MPSNNImageNode nodeWithHandle:[[TCMPSGraphNodeHandle alloc] initWithLabel:@"inputImage"]];
+
+      m_impl->weights = define_block_2_weights(weights);
+      m_impl->descriptor = define_block_2_descriptor(config);
+
+      m_impl->definition = [[TCMPSVgg16Block2 alloc] initWithParameters:@"block2_"
+                                                              inputNode:m_impl->inputNode
+                                                                 device:m_impl->dev
+                                                               cmdQueue:m_impl->cmdQueue
+                                                             descriptor:m_impl->descriptor
+                                                            initWeights:m_impl->weights];
+
+      m_impl->model = [MPSNNGraph graphWithDevice:m_impl->dev
+                                      resultImage:m_impl->definition.output
+                              resultImageIsNeeded:YES];
+
+      m_impl->model.format = MPSImageFeatureChannelFormatFloat32;
+
+    }
 }
 
 Block2Test::~Block2Test() = default;
+
+
+bool Block2Test::check_predict(ptree input, ptree output) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      return true;
+    } else {
+      return true;
+    }
+  }
+}
 
 struct Vgg16Test::impl {
   API_AVAILABLE(macos(10.15)) TCMPSVgg16Network *definition = nil;

@@ -39,17 +39,20 @@ if(APPLE AND
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/block1)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/block1/test_1)
 
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/block2)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/block2/test_1)
+
   set(GOLDEN_SET_TESTING
     data/encode/test_1/config.json
     data/encode/test_1/inputs.json
     data/encode/test_1/outputs.json
     data/encode/test_1/weights.json
-    
+
     data/residual/test_1/config.json
     data/residual/test_1/inputs.json
     data/residual/test_1/outputs.json
     data/residual/test_1/weights.json
-
+    
     data/decode/test_1/config.json
     data/decode/test_1/inputs.json
     data/decode/test_1/outputs.json
@@ -64,6 +67,11 @@ if(APPLE AND
     data/block1/test_1/inputs.json
     data/block1/test_1/outputs.json
     data/block1/test_1/weights.json
+
+    data/block2/test_1/config.json
+    data/block2/test_1/inputs.json
+    data/block2/test_1/outputs.json
+    data/block2/test_1/weights.json
   )
   
   foreach(SOURCE_FILE ${GOLDEN_SET_TESTING})
