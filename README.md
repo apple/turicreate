@@ -164,4 +164,3 @@ not provide any contributions unless you agree with the terms and conditions
 set forth in [CONTRIBUTING.md](CONTRIBUTING.md).
 
 We want the Turi Create community to be as welcoming and inclusive as possible, and have adopted a [Code of Conduct](CODE_OF_CONDUCT.md) that we expect all community members, including contributors, to read and observe.
-
