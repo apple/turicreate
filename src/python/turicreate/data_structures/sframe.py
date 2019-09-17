@@ -2478,6 +2478,9 @@ class SFrame(object):
             data type.
 
         seed : int, optional
+            ..WARNING:: This parameter is deprecated, It will be removed in the next
+            major release.
+
             Used as the seed if a random number generator is included in `fn`.
 
         Returns
@@ -2505,7 +2508,9 @@ class SFrame(object):
 
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
-
+        else:
+            print("[WARNING] Passing a \"seed\" parameter to SFrame.apply is deprecated. This functionality")
+            print("\twill be removed in the next major release.")
 
         nativefn = None
         try:

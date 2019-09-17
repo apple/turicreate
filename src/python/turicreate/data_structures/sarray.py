@@ -1895,6 +1895,9 @@ class SArray(object):
             If True, will not apply ``fn`` to any undefined values.
 
         seed : int, optional
+            ..WARNING:: This parameter is deprecated, It will be removed in the next
+            major release.
+
             Used as the seed if a random number generator is included in ``fn``.
 
         Returns
@@ -1948,8 +1951,9 @@ class SArray(object):
             dtype = infer_type_of_list(dryrun)
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
-
-        # log metric
+        else:
+            print("[WARNING] Passing a \"seed\" parameter to SArray.apply is deprecated. This functionality")
+            print("\twill be removed in the next major release.")
 
         # First phase test if it is a toolkit function
         nativefn = None
