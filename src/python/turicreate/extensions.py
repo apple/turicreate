@@ -500,6 +500,9 @@ def _add_meta_path():
 
 def ext_import(soname, module_subpath=""):
     """
+    ..WARNING:: This function is deprecated, It will be removed in the next
+    major release.
+
     Loads a turicreate toolkit module (a shared library) into the
     tc.extensions namespace.
 
@@ -570,6 +573,8 @@ def ext_import(soname, module_subpath=""):
     >>> example1.square_root(9)
     3.0
     """
+    print("[WARNING] turicreate.ext_import is deprecated. It will be removed in the next major release.")
+
     unity = _get_unity()
     import os
     if os.path.exists(soname):
