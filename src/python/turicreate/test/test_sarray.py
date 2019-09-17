@@ -1307,9 +1307,9 @@ class SArrayTest(unittest.TestCase):
 
         # I can hash other stuff too
         # does not throw
-        a.astype(str).hash().__materialize__()
+        a.astype(str).hash().materialize()
 
-        a.apply(lambda x: [x], list).hash().__materialize__()
+        a.apply(lambda x: [x], list).hash().materialize()
 
         # Nones hash too!
         a = SArray([None, None, None], int).hash()

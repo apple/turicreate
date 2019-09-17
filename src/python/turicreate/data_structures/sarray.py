@@ -1345,15 +1345,21 @@ class SArray(object):
         For a SArray that is lazily evaluated, force persist this sarray
         to disk, committing all lazy evaluated operations.
         """
-        return self.__materialize__()
+        with cython_context():
+            self.__proxy__.materialize()
 
     def __materialize__(self):
         """
         For a SArray that is lazily evaluated, force persist this sarray
         to disk, committing all lazy evaluated operations.
+
+        ..WARNING:: This function is deprecated, It will be removed in the next
+        major release. Use SArray.materialize instead.
         """
-        with cython_context():
-            self.__proxy__.materialize()
+        print("[WARNING] SArray.__materialize__ is deprecated. It will be removed in the next major release.")
+        print("\tUse SArray.materialize instead.")
+
+        self.materialize()
 
     def is_materialized(self):
         """
