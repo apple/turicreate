@@ -28,7 +28,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
          # Suppresses verbosity to only errors
         _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
-
+        
         _tf.reset_default_graph()
 
         self.num_classes = num_classes
@@ -63,8 +63,8 @@ class ActivityTensorFlowModel(TensorFlowModel):
         }
 
         # Convolution 
-        conv = _tf.nn.conv1d(self.data, weights['conv_weight'], stride=prediction_window, padding='SAME')
-        conv = _tf.nn.bias_add(conv, biases['conv_bias'])
+        conv = _tf.nn.conv1d(self.data, self.weights['conv_weight'], stride=prediction_window, padding='SAME')
+        conv = _tf.nn.bias_add(conv, self.biases['conv_bias'])
         conv = _tf.nn.relu(conv)
 
         dropout = _tf.layers.dropout(conv, rate=0.2, training=self.is_training)
@@ -78,7 +78,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
         # Dense
         dense = _tf.reshape(rnn_outputs, (-1, LSTM_H))
-        dense = _tf.add(_tf.matmul(dense, weights['dense0_weight']), biases['dense0_bias'])
+        dense = _tf.add(_tf.matmul(dense, self.weights['dense0_weight']), self.biases['dense0_bias'])
         dense = _tf.layers.batch_normalization(inputs=dense, 
             beta_initializer=_tf.initializers.constant(net_params['bn_beta'], verify_shape=True), 
             gamma_initializer=_tf.initializers.constant(net_params['bn_gamma'], verify_shape=True),
@@ -88,8 +88,8 @@ class ActivityTensorFlowModel(TensorFlowModel):
         dense = _tf.layers.dropout(dense, rate=0.5, training=self.is_training)
         
         # Output
-        self.out = _tf.add(_tf.matmul(dense, weights['dense1_weight']), biases['dense1_bias'])
-        out = _tf.reshape(self.out, (-1, self.seq_len, self.num_classes))
+        out = _tf.add(_tf.matmul(dense, self.weights['dense1_weight']), self.biases['dense1_bias'])
+        out = _tf.reshape(out, (-1, self.seq_len, self.num_classes))
         self.probs = _tf.nn.softmax(out)
         
         # Weights 
@@ -117,8 +117,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.load_weights(net_params)
 
     def load_lstm_weights_params(self, net_params):
-
-         """
+        """
         Function to load lstm weights from the C++ implementation into TensorFlow
 
         Parameters
@@ -131,7 +130,6 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
         lstm: lstm weights in Tensorflow Format
         """
-
         i2h_i = net_params['lstm_i2h_i_weight']
         i2h_f = net_params['lstm_i2h_f_weight']
         i2h_c = net_params['lstm_i2h_c_weight']
@@ -276,17 +274,17 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 tf_export_params['lstm_h2h_f_bias'] = h2h_f_bias
                 tf_export_params['lstm_h2h_o_bias'] = h2h_o_bias
             elif var.name.startswith('batch_normalization'):
-                tf_export_params['bn_'+var.name.split('/')[-1][0:-2]] = val
+                tf_export_params['bn_'+var.name.split('/')[-1][0:-2]] = _np.array(val)
             else:
-                tf_export_params[var.name.split(':')[0]] = val
+                tf_export_params[var.name.split(':')[0]] = _np.array(val)
             
         tvars = _tf.all_variables()
         tvars_vals = self.sess.run(tvars)
         for var, val in zip(tvars, tvars_vals):
             if 'moving_mean' in var.name:
-                tf_export_params['bn_running_mean'] = val
+                tf_export_params['bn_running_mean'] = _np.array(val)
             if 'moving_variance' in var.name:
-                tf_export_params['bn_running_var'] = val
+                tf_export_params['bn_running_var'] = _np.array(val)
         return tf_export_params
 
 
@@ -301,4 +299,4 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
         """
         self.optimizer = _tf.train.AdamOptimizer(learning_rate=lr)
-
+        
