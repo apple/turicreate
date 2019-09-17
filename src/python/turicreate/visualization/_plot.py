@@ -360,6 +360,8 @@ def display_table_in_notebook(sf, title=None):
     from PIL import Image
 
     import base64
+    import cgi
+    import html
     from io import BytesIO
     from IPython.display import HTML
     from ..data_structures.image import Image as _Image
@@ -383,6 +385,11 @@ def display_table_in_notebook(sf, title=None):
     image_column_formatter = dict.fromkeys(image_key , image_formatter)
 
     with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.max_colwidth', -1):
+        if _sys.version_info.major < 3:
+            title = cgi.escape(title,quote = True)
+        else:
+            title = html.escape(title,quote = True)
+
         df = sf.to_dataframe()
         html_string =  '<html lang="en">                           \
                           <head>                                   \
