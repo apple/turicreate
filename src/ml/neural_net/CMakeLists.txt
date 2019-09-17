@@ -59,7 +59,6 @@ endif()
 make_library(tctensorflow SHARED
   SOURCES
   tf_compute_context.cpp
-  tf_model_backend.cpp
 )
 
 set(TF_BUILD_DIR ${CMAKE_BINARY_DIR}/src/python/turicreate/toolkits)

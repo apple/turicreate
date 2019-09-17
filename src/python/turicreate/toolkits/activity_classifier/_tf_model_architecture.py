@@ -49,14 +49,14 @@ class ActivityTensorFlowModel(TensorFlowModel):
         one_hot_target = _tf.one_hot(reshaped_target, depth=self.num_classes, axis=-1)
         
         # Weights 
-        weights = {
+        self.weights = {
         'conv_weight' : _tf.Variable(_tf.zeros([prediction_window, num_features, CONV_H]), name='conv_weight'),
         'dense0_weight': _tf.Variable(_tf.zeros([LSTM_H, DENSE_H]), name='dense0_weight'),
         'dense1_weight'  : _tf.Variable(_tf.zeros([DENSE_H, self.num_classes]), name='dense1_weight')
         }
 
         # Biases
-        biases = {
+        self.biases = {
         'conv_bias' : _tf.Variable(_tf.zeros([CONV_H]), name='conv_bias'),
         'dense0_bias': _tf.Variable(_tf.zeros([DENSE_H]), name='dense0_bias'),
         'dense1_bias'  : _tf.Variable(_tf.zeros([num_classes]), name='dense1_bias')
@@ -66,18 +66,11 @@ class ActivityTensorFlowModel(TensorFlowModel):
         conv = _tf.nn.conv1d(self.data, weights['conv_weight'], stride=prediction_window, padding='SAME')
         conv = _tf.nn.bias_add(conv, biases['conv_bias'])
         conv = _tf.nn.relu(conv)
+
         dropout = _tf.layers.dropout(conv, rate=0.2, training=self.is_training)
 
         # Long Stem Term Memory
-        i2h_i = net_params['lstm_i2h_i_weight']
-        i2h_f = net_params['lstm_i2h_f_weight']
-        i2h_c = net_params['lstm_i2h_c_weight']
-        i2h_o = net_params['lstm_i2h_o_weight']
-        h2h_i = net_params['lstm_h2h_i_weight']
-        h2h_f = net_params['lstm_h2h_f_weight']
-        h2h_c = net_params['lstm_h2h_c_weight']
-        h2h_o = net_params['lstm_h2h_o_weight']
-        lstm = _utils.convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o)
+        lstm = self.load_lstm_weights_params(net_params)
         cells = _tf.nn.rnn_cell.LSTMCell(num_units=LSTM_H, reuse=_tf.AUTO_REUSE, forget_bias=0.0, 
             initializer=_tf.initializers.constant(lstm, verify_shape=True))
         init_state = cells.zero_state(batch_size, _tf.float32)
@@ -95,8 +88,8 @@ class ActivityTensorFlowModel(TensorFlowModel):
         dense = _tf.layers.dropout(dense, rate=0.5, training=self.is_training)
         
         # Output
-        out = _tf.add(_tf.matmul(dense, weights['dense1_weight']), biases['dense1_bias'])
-        out = _tf.reshape(out, (-1, self.seq_len, self.num_classes))
+        self.out = _tf.add(_tf.matmul(dense, weights['dense1_weight']), biases['dense1_bias'])
+        out = _tf.reshape(self.out, (-1, self.seq_len, self.num_classes))
         self.probs = _tf.nn.softmax(out)
         
         # Weights 
@@ -118,76 +111,154 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.sess = _tf.compat.v1.Session()
 
         # Initialize all variables
-        init = _tf.compat.v1.global_variables_initializer()
-        self.sess.run(init)
+        self.sess.run(_tf.compat.v1.global_variables_initializer())
+        self.sess.run(_tf.compat.v1.local_variables_initializer())
+        
+        self.load_weights(net_params)
 
-        # Assign the initialised weights from the C++ implementation to tensorflow 
+    def load_lstm_weights_params(self, net_params):
+
+         """
+        Function to load lstm weights from the C++ implementation into TensorFlow
+
+        Parameters
+        ----------
+        net_params: Dictionary
+            Dict with weights from the C++ implementation and  its names
+
+        Returns
+        -------
+
+        lstm: lstm weights in Tensorflow Format
+        """
+
+        i2h_i = net_params['lstm_i2h_i_weight']
+        i2h_f = net_params['lstm_i2h_f_weight']
+        i2h_c = net_params['lstm_i2h_c_weight']
+        i2h_o = net_params['lstm_i2h_o_weight']
+        h2h_i = net_params['lstm_h2h_i_weight']
+        h2h_f = net_params['lstm_h2h_f_weight']
+        h2h_c = net_params['lstm_h2h_c_weight']
+        h2h_o = net_params['lstm_h2h_o_weight']
+        lstm = _utils.convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o)
+        return lstm
+
+
+    def load_weights(self, net_params):
+        """
+        Function to load weights from the C++ implementation into TensorFlow
+
+        Parameters
+        ----------
+        net_params: Dictionary
+            Dict with weights from the C++ implementation and  its names
+
+        """
         for key in net_params.keys():
-            if key in weights.keys():
+            if key in self.weights.keys():
                 if key.startswith('conv'):
                     net_params[key] = _utils.convert_conv1d_coreml_to_tf(net_params[key])
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"), net_params[key]))
                 elif key.startswith('dense'):
-                    # net_params[key] =  _np.reshape(_np.transpose(net_params[key], (1, 0, 2, 3)), (net_params[key].shape[1], net_params[key].shape[0]))
                     net_params[key] = _utils.convert_dense_coreml_to_tf(net_params[key])
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"), net_params[key] ))
-            if key in biases.keys():
+            elif key in self.biases.keys():
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"), net_params[key]))
 
+        h2h_i_bias = net_params['lstm_h2h_i_bias'] 
+        h2h_c_bias = net_params['lstm_h2h_c_bias'] 
+        h2h_f_bias = net_params['lstm_h2h_f_bias'] 
+        h2h_o_bias = net_params['lstm_h2h_o_bias']
+        lstm_bias = _utils.convert_lstm_bias_coreml_to_tf(h2h_i_bias, h2h_c_bias, h2h_f_bias, h2h_o_bias)
+        self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name('rnn/lstm_cell/bias:0'), lstm_bias))     
 
     def train(self, feed_dict):
+        """
+        Run session for training with new batch of data (inputs, labels and weights)
 
+        Parameters
+        ----------
+        feed_dict: Dictionary
+            Dictionary to store a batch of input data, corresponding labels and weights. This is currently
+            passed from the ac_data_iterator.cpp file when a new batch of data is sent.
+
+        Returns
+        -------
+        result: Dictionary
+            Loss per batch and probabilities
+        """
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
-            feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[2], feed_dict[key].shape[3]))
+            feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
+            feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[1], feed_dict[key].shape[2]))
+
         _, loss, probs = self.sess.run([self.train_op, self.loss_per_seq, self.probs], 
             feed_dict={self.data : feed_dict['input'], self.target : feed_dict['labels'], self.weight : feed_dict['weights'], self.is_training : True})
         
         prob = _np.array(probs)
         probabilities = _np.reshape(prob, (prob.shape[0], prob.shape[1]*prob.shape[2]))
         result = {'loss' : _np.array(loss), 'output': probabilities }
-
         return result
-
 
     def predict(self, feed_dict):
 
+        """
+        Run session for predicting with new batch of validation data (inputs, labels and weights) as well as test data (inputs)
+
+        Parameters
+        ----------
+        feed_dict: Dictionary
+            Dictionary to store a batch of input data, corresponding labels and weights. This is currently
+            passed from the ac_data_iterator.cpp file when a new batch of data is sent.
+
+        Returns
+        -------
+        result: Dictionary
+            Loss per batch and probabilities (in case of validation data)
+            Probabilities (in case only inputs are provided)
+        """
+
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
-            feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[2], feed_dict[key].shape[3]))
+            feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
+            feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[1], feed_dict[key].shape[2]))
 
-        if len(feed_dict.keys()) == 1 :
+        if len(feed_dict.keys()) == 1:
             probs = self.sess.run(self.probs, 
                 feed_dict={self.data : feed_dict['input'], self.is_training: False})
             prob = _np.array(probs)
             probabilities = _np.reshape(prob, (prob.shape[0], prob.shape[1]*prob.shape[2]))
-            result  = { 'output' :  probabilities}
-            
+            result  = { 'output' :  probabilities}    
         else:
             loss,  probs= self.sess.run([self.loss_per_seq,  self.probs], 
                 feed_dict={self.data : feed_dict['input'], self.target : feed_dict['labels'], self.weight : feed_dict['weights'], self.is_training: False})
             prob = _np.array(probs)
             probabilities = _np.reshape(prob, (prob.shape[0], prob.shape[1]*prob.shape[2]))
-            result = {'loss' : _np.array(loss),  'output': probabilities }
-        
+            result = {'loss' : _np.array(loss),  'output': probabilities } 
         return result
 
 
     def export_weights(self):
+        """
+        Function to store TensorFlow weights back to into a dict in CoreML format to be used 
+        by the C++ implementation
 
-        # Export weights in Core ML Specifications 
+        Returns
+        -------
+        tf_export_params: Dictionary
+            Dictionary of weights from TensorFlow stored as {weight_name: weight_value}
+        """
         tf_export_params = {}
         tvars = _tf.trainable_variables()
         tvars_vals = self.sess.run(tvars)
 
         for var, val in zip(tvars, tvars_vals):
-            
             if 'weight' in var.name:
                 if var.name.startswith('conv'):
+                    
                     tf_export_params[var.name.split(':')[0]] = _utils.convert_conv1d_tf_to_coreml(val)
                 elif var.name.startswith('dense'):
                     tf_export_params[var.name.split(':')[0]] =  _utils.convert_dense_tf_to_coreml(val)
-
             elif var.name.startswith('rnn/lstm_cell/kernel'):
                 i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o = _utils.convert_lstm_weight_tf_to_coreml(val, CONV_H)
                 tf_export_params['lstm_i2h_i_weight'] = i2h_i
@@ -199,11 +270,11 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 tf_export_params['lstm_h2h_f_weight'] = h2h_f
                 tf_export_params['lstm_h2h_o_weight'] = h2h_o
             elif var.name.startswith('rnn/lstm_cell/bias'):
-                h2h_i, h2h_c, h2h_f, h2h_o = _utils.convert_lstm_bias_tf_to_coreml(val)
-                tf_export_params['lstm_h2h_i_bias'] = h2h_i
-                tf_export_params['lstm_h2h_c_bias'] = h2h_c
-                tf_export_params['lstm_h2h_f_bias'] = h2h_f
-                tf_export_params['lstm_h2h_o_bias'] = h2h_o
+                h2h_i_bias, h2h_c_bias, h2h_f_bias, h2h_o_bias = _utils.convert_lstm_bias_tf_to_coreml(val)
+                tf_export_params['lstm_h2h_i_bias'] = h2h_i_bias
+                tf_export_params['lstm_h2h_c_bias'] = h2h_c_bias
+                tf_export_params['lstm_h2h_f_bias'] = h2h_f_bias
+                tf_export_params['lstm_h2h_o_bias'] = h2h_o_bias
             elif var.name.startswith('batch_normalization'):
                 tf_export_params['bn_'+var.name.split('/')[-1][0:-2]] = val
             else:
@@ -218,8 +289,16 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 tf_export_params['bn_running_var'] = val
         return tf_export_params
 
-    def set_learning_rate(self, lr):
 
-        # Set the learning rate
+    def set_learning_rate(self, lr):
+        """
+        Set the learning rate
+
+        Parameters
+        ----------
+        lr: float32
+            Learning rate
+
+        """
         self.optimizer = _tf.train.AdamOptimizer(learning_rate=lr)
 
