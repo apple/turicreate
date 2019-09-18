@@ -571,7 +571,7 @@
     NSAttributedString *attrStr = [[NSAttributedString alloc] initWithString:text attributes:self.textAttributes];
     TCVegaCGTextMetrics *ret = [[TCVegaCGTextMetrics alloc] init];
     ret.width = attrStr.size.width;
-    return [LogProxy wrapObject:ret];
+    return [TCVegaLogProxy wrapObject:ret];
 }
 
 - (void)rotateWithAngle:(double)angle {
