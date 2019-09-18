@@ -21,8 +21,9 @@ namespace {
 size_t thread_size_beg = 2;
 bool sframe_debug_print = false;
 
+// ---------------------- benchmark test framework -------------------------
+
 /*
- * test framework.
  *
  * It can only test one operator at one time. In this way,
  * ouput name is unique.
@@ -66,7 +67,7 @@ void _bench_test_aggreate_runner(const sframe& sf, size_t reps, Runner runner,
  * \param op_keys: columns to operate on
  *
  * */
-void _bench_test_aggreate_with_pool(size_t nthreads, const sframe& in_sf,
+sframe _bench_test_aggreate_with_pool(size_t nthreads, const sframe& in_sf,
                                     std::shared_ptr<group_aggregate_value> op,
                                     const std::vector<std::string>& keys,
                                     const std::vector<std::string>& op_keys,
@@ -97,12 +98,135 @@ void _bench_test_aggreate_with_pool(size_t nthreads, const sframe& in_sf,
   if (need_to_set_thread_size) pool.resize(old_pl_sz);
 
   if (debug_print) out_sf.debug_print();
+
+  return out_sf;
 }
+
+// --------------------------- data generation helper functions -----------------------------
+
+/*
+ * generate sframe data of type T, whose values ranges
+ * from [start, end) with a uniform distribution.
+ *
+ * \param nrows: number of rows.
+ * \param start: the minimum value, inclusive.
+ * \param end: the maximum value, exclusive.
+ * \param keys: column names.
+ *
+ * */
+template <typename T>
+sframe _generate_range_data(size_t nrows, int start, int end,
+                            const std::vector<std::string> keys) {
+  ASSERT_MSG(start < end, "start should be less than end");
+  ASSERT_MSG(keys.size(), "at least one key is required");
+
+  std::default_random_engine gen;
+  std::uniform_int_distribution<int> dist(start, end);
+  size_t ncols = keys.size();
+
+  // muttable due to the change of internal state of random engine.
+  auto range_seq_gen = [=](size_t ii) mutable -> std::vector<flexible_type> {
+    std::vector<flexible_type> ret;
+    ret.reserve(ncols);
+    for (size_t ii = 0; ii < ncols; ++ii) {
+      ret.emplace_back(static_cast<T>(dist(gen)));
+    }
+    return ret;
+  };
+
+  sframe sf = make_testing_sframe(keys, {flexible_type(T()).get_type()}, nrows,
+                                  range_seq_gen);
+  return sf;
+}
+
+/*
+ * generate sframe data of type T, whose values ranges
+ * from [start, end) with a customized histogram distribution.
+ *
+ * this data generator is intended to benchmark the multithreading
+ * performance of aggregation when there are heavy contentions caused
+ * by majority samples.
+ *
+ * \param nrows: number of rows.
+ * \param start: the minimum value, inclusive.
+ * \param end: the maximum value, exclusive.
+ * \param keys: column names.
+ * \param percentages: <percentage of a value : value>, e.g.,
+ * <10, 15> means value 15 will have 10% probability to show up
+ * in results. The rest 90% will generate from range [start, end).
+ * if value 15 is in range [start, end), then it may have over 10%
+ * probability to show up in final results.
+ *
+ * */
+template <typename T>
+sframe _generate_weighted_data(size_t nrows, T start, T end,
+                               const std::vector<std::string>& keys,
+                               const std::map<size_t, T>& percentages) {
+  ASSERT_MSG(keys.size(), "at least one key is required");
+  ASSERT_MSG(start < end, "start should be less than end");
+
+  std::vector<size_t> samples;
+  std::vector<T> values;
+  samples.reserve(percentages.size());
+
+  {
+    std::set<T> val_exclue;
+    for (const auto& entry : percentages) {
+      ASSERT_MSG(entry.second >= start && entry.second < end,
+                "value not in range [start, end)");
+      ASSERT_MSG(val_exclue.count(entry.second) == 0,
+                "no duplicate value is allowed in 'percentages'");
+      val_exclue.insert(entry.second);
+
+      if (samples.empty()) {
+        samples.emplace_back(entry.first);
+        values.emplace_back(entry.second);
+      } else {
+        samples.emplace_back(samples.back() + entry.first);
+        values.emplace_back(entry.second);
+      }
+    }
+  }
+
+  if (samples.size())
+    ASSERT_MSG(samples.back() <= 100,
+               "the sum of percentages should be less than 100");
+
+  std::default_random_engine gen;
+  std::uniform_int_distribution<int> dist_sam(0, 100);
+  std::uniform_int_distribution<T> dist_dat(start, end);
+
+  size_t ncols = keys.size();
+  // muttable due to the change of internal state of random engine.
+  auto range_seq_gen = [=](size_t ii) mutable -> std::vector<flexible_type> {
+    std::vector<flexible_type> ret;
+    ret.reserve(ncols);
+
+    for (size_t ii = 0; ii < ncols; ++ii) {
+      int sample = dist_sam(gen);
+      auto itr = std::upper_bound(samples.begin(), samples.end(), sample);
+
+      if (itr != samples.end()) {
+        ret.emplace_back(values[itr - samples.begin()]);
+      } else {
+        ret.emplace_back(dist_dat(gen));
+      }
+    }
+
+    return ret;
+  };
+
+  sframe sf = make_testing_sframe(keys, {flexible_type(T()).get_type()}, nrows,
+                                  range_seq_gen);
+  return sf;
+}
+
+// -------------------test suites using the framework ---------------------
 
 /*
  * Testing count operation. This is a sample code.
  *
- * it should initialize the right operator for _bench_test_aggreate_with_pool
+ * it should initialize the aggregation operator for _bench_test_aggreate_with_pool
  * to run with.
  *
  * It's client's responsibility to make sure key and op_keys correct
@@ -161,26 +285,18 @@ void bench_test_aggreate_summary_count_bin(size_t nrows, size_t reps) {
             << std::endl;
 }
 
-/* testing min operation */
-template <typename T>
-sframe _generate_range_sframe_one_col(size_t nrows, int start, int end,
-                                     const std::vector<std::string> key) {
-  ASSERT_MSG(start < end, "start should be less than end");
 
-  ASSERT_EQ(key.size(), 1);
-
-  std::default_random_engine gen;
-  std::uniform_int_distribution<int> dist(start, end);
-
-  auto range_seq_gen = [=](size_t ii) mutable -> std::vector<flexible_type> {
-    return {flexible_type(static_cast<T>(dist(gen)))};
-  };
-
-  sframe sf = make_testing_sframe(key, {flexible_type(T()).get_type()}, nrows,
-                                  range_seq_gen);
-  return sf;
-}
-
+/*
+ * Testing min operation.
+ *
+ * It's client's responsibility to make sure key and op_keys correct
+ *
+ * \param sf: input sframe
+ * \param nthreads: thread pool control
+ * \param op: group-by aggregation operator
+ * \param keys: compsite keys to group by
+ * \param op_keys: columns to operate on
+ * */
 void bench_test_aggreate_min_fn(const sframe& sf, size_t nthreads, size_t reps,
                                 const std::vector<std::string>& keys,
                                 const std::vector<std::string>& op_keys) {
@@ -201,7 +317,19 @@ void bench_test_aggreate_min_fn(const sframe& sf, size_t nthreads, size_t reps,
             << std::endl;
 }
 
-void bench_test_aggreate_summary_min(size_t nrows, size_t nusers, size_t reps,
+
+/*
+ * control the output of a benchmark test case.
+ *
+ * the output is suggested to contain:
+ * 1. nrows
+ * 2. reps
+ * 3. number of unique keys except count operator
+ *
+ * the generated sframe will be reused for different
+ * sized thread pool settings.
+ * */
+void bench_test_aggreate_summary_min(size_t nrows, size_t reps, size_t nusers,
                                      int start, int end) {
   std::cout << "=========== bench_test_aggreate_min summary ============"
             << std::endl << std::endl;
@@ -210,21 +338,57 @@ void bench_test_aggreate_summary_min(size_t nrows, size_t nusers, size_t reps,
   std::cout << "reps: " << reps << std::endl;
   std::cout << "users: " << nusers << std::endl;
 
-  auto sf =
-      _generate_range_sframe_one_col<flex_int>(nrows, 0, nusers, {"user_id"});
-  auto sf_val =
-      _generate_range_sframe_one_col<flex_int>(nrows, start, end, {"my_min"});
+  auto sf_val = _generate_range_data<flex_int>(nrows, start, end, {"my_min"});
 
-  sf = sf.add_column(sf_val.select_column(0), "my_min");
+  {
+    std::cout << "============= uniform distribution start ==============="
+              << std::endl
+              << std::endl;
 
-  _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_min_fn,
-                              {"user_id"}, {"my_min"});
+    auto sf = _generate_range_data<flex_int>(nrows, 0, nusers, {"user_id"});
+    sf = sf.add_column(sf_val.select_column(0), "my_min");
 
-  std::cout << "========================== END ==========================="
-            << std::endl << std::endl;
+    _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_min_fn,
+                                {"user_id"}, {"my_min"});
+
+    std::cout << "=============== uniform distribution end ================"
+              << std::endl
+              << std::endl;
+  }
+
+  {
+    std::cout << "============== skewed distribution start ================"
+              << std::endl
+              << std::endl;
+
+    std::cout << "user_id '27' has " << 85 << " percentage of appearance" << std::endl;
+
+    auto sf = _generate_weighted_data<flex_int>(nrows, 0, nusers, {"user_id"}, {{85, 27}});
+    auto sf_val = _generate_range_data<flex_int>(nrows, start, end, {"my_min"});
+
+    sf = sf.add_column(sf_val.select_column(0), "my_min");
+
+    _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_min_fn,
+                                {"user_id"}, {"my_min"});
+
+    std::cout << "================ skewed distribution end ================="
+              << std::endl
+              << std::endl;
+  }
 }
 
-/* testing avg operation */
+
+/*
+ * Testing average operation.
+ *
+ * It's client's responsibility to make sure key and op_keys correct
+ *
+ * \param sf: input sframe
+ * \param nthreads: thread pool control
+ * \param op: group-by aggregation operator
+ * \param keys: compsite keys to group by
+ * \param op_keys: columns to operate on
+ * */
 void bench_test_aggreate_avg_fn(const sframe& sf, size_t nthreads, size_t reps,
                                 const std::vector<std::string>& keys,
                                 const std::vector<std::string>& op_keys) {
@@ -238,27 +402,24 @@ void bench_test_aggreate_avg_fn(const sframe& sf, size_t nthreads, size_t reps,
 
   auto elapsed = ti.current_time_millis();
 
-  std::cout << "avg time to run w/ " << std::setw(2)
-            << nthreads << " threads: " << elapsed / reps << " ms."
-            << std::endl;
+  std::cout << "avg time to run w/ " << std::setw(2) << nthreads
+            << " threads: " << elapsed / reps << " ms." << std::endl;
 }
 
-void bench_test_aggreate_summary_avg(size_t nrows, size_t nusers, size_t reps,
+void bench_test_aggreate_summary_avg(size_t nrows, size_t reps, size_t nusers,
                                      int start, int end) {
   ASSERT_MSG(reps > 0, "reps shouldn't be 0");
 
-
   std::cout << "=========== bench_test_aggreate_avg summary ============"
-            << std::endl << std::endl;
+            << std::endl
+            << std::endl;
 
   std::cout << "nrows: " << nrows << std::endl;
   std::cout << "reps: " << reps << std::endl;
   std::cout << "users: " << nusers << std::endl;
 
-  auto sf =
-      _generate_range_sframe_one_col<flex_int>(nrows, 0, nusers, {"user_id"});
-  auto sf_val =
-      _generate_range_sframe_one_col<flex_int>(nrows, start, end, {"my_avg"});
+  auto sf = _generate_range_data<flex_int>(nrows, 0, nusers, {"user_id"});
+  auto sf_val = _generate_range_data<flex_int>(nrows, start, end, {"my_avg"});
 
   sf = sf.add_column(sf_val.select_column(0), "my_avg");
 
@@ -266,11 +427,12 @@ void bench_test_aggreate_summary_avg(size_t nrows, size_t nusers, size_t reps,
                               {"user_id"}, {"my_avg"});
 
   std::cout << "========================== END ==========================="
-            << std::endl << std::endl;
+            << std::endl
+            << std::endl;
 }
 
-};  // namespace turi
 };  // namespace
+};  // namespace turi
 
 int main(int argc, char** argv) {
   global_logger().set_log_level(LOG_PROGRESS);
@@ -293,12 +455,17 @@ int main(int argc, char** argv) {
     if (argc > 5)
       turi::sframe_debug_print = std::strlen(argv[5]) > 0 && argv[5][0] == 'T';
 
+    /* use global var to control debug print a result sframe */
+    turi::sframe_debug_print = true;
+
     /* actual benchmark runners */
     turi::bench_test_aggreate_summary_count_bin(nrows, reps);
 
-    turi::bench_test_aggreate_summary_min(nrows, nusers, reps, start, end);
+    turi::sframe_debug_print = false;
 
-    turi::bench_test_aggreate_summary_avg(nrows, nusers, reps, start, end);
+    turi::bench_test_aggreate_summary_min(nrows, reps, nusers, start, end);
+
+    turi::bench_test_aggreate_summary_avg(nrows, reps, nusers, start, end);
 
   } catch (...) {
     logstream(LOG_ERROR) << "bench_test_aggreate_count failed. pls check log"
