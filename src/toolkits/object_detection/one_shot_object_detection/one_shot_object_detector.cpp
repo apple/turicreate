@@ -36,58 +36,9 @@ flex_dict build_annotation(ParameterSampler &parameter_sampler,
                            size_t object_width, size_t object_height,
                            size_t background_width, size_t background_height,
                            size_t seed, size_t row_number) {
+  
   parameter_sampler.sample(background_width, background_height, seed, row_number);
-
-  size_t original_top_left_x = 0;
-  size_t original_top_left_y = 0;
-  size_t original_top_right_x = object_width;
-  size_t original_top_right_y = 0;
-  size_t original_bottom_left_x = 0;
-  size_t original_bottom_left_y = object_height;
-  size_t original_bottom_right_x = object_width;
-  size_t original_bottom_right_y = object_height;
-
-  Eigen::Vector3f top_left_corner(3), top_right_corner(3);
-  Eigen::Vector3f bottom_left_corner(3), bottom_right_corner(3);
-  top_left_corner << original_top_left_x, original_top_left_y, 1;
-  top_right_corner << original_top_right_x, original_top_right_y, 1;
-  bottom_left_corner << original_bottom_left_x, original_bottom_left_y, 1;
-  bottom_right_corner << original_bottom_right_x, original_bottom_right_y, 1;
-
-  auto normalize = [](Eigen::Vector3f corner) {
-    corner[0] /= corner[2];
-    corner[1] /= corner[2];
-    corner[2] = 1.0;
-    return corner;
-  };
-
-  Eigen::Matrix<float, 3, 3> mat = parameter_sampler.get_transform();
-
-  const std::vector<Eigen::Vector3f> warped_corners = {
-      normalize(mat * top_left_corner), normalize(mat * top_right_corner),
-      normalize(mat * bottom_left_corner),
-      normalize(mat * bottom_right_corner)};
-  parameter_sampler.set_warped_corners(warped_corners);
-
-  float min_x = std::numeric_limits<float>::max();
-  float max_x = std::numeric_limits<float>::min();
-  float min_y = std::numeric_limits<float>::max();
-  float max_y = std::numeric_limits<float>::min();
-  for (const auto &corner : warped_corners) {
-    min_x = std::min(min_x, corner[0]);
-    max_x = std::max(max_x, corner[0]);
-    min_y = std::min(min_y, corner[1]);
-    max_y = std::max(max_y, corner[1]);
-  }
-  float center_x = (min_x + max_x) / 2;
-  float center_y = (min_y + max_y) / 2;
-  float bounding_box_width = max_x - min_x;
-  float bounding_box_height = max_y - min_y;
-
-  flex_dict coordinates = {std::make_pair("x", center_x),
-                           std::make_pair("y", center_y),
-                           std::make_pair("width", bounding_box_width),
-                           std::make_pair("height", bounding_box_height)};
+  flex_dict coordinates = parameter_sampler.get_coordinates();
   flex_dict annotation = {std::make_pair("coordinates", coordinates),
                           std::make_pair("label", label)};
   return annotation;
@@ -216,7 +167,7 @@ gl_sframe augment_data(const gl_sframe &data,
     const flex_image &object = row[image_column_index].get<flex_image>();
     std::string label = row[target_column_index].to<flex_string>();
     ParameterSampler parameter_sampler = ParameterSampler(
-      object.m_width, object.m_height, 0, 0);
+      object.m_width, object.m_height);
 
     for (size_t segment_id = 0; segment_id < nsegments; segment_id++) {
       size_t segment_start = (segment_id * backgrounds.size()) / nsegments;

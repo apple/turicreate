@@ -17,6 +17,8 @@
 #include <random>
 #include <vector>
 
+#include <core/data/flexible_type/flexible_type.hpp>
+
 namespace turi {
 namespace one_shot_object_detection {
 
@@ -26,7 +28,7 @@ namespace one_shot_object_detection {
  */
 class ParameterSampler {
  public:
-  ParameterSampler(size_t starter_width, size_t starter_height, size_t dx, size_t dy);
+  ParameterSampler(size_t starter_width, size_t starter_height);
 
   /* Getters for all the parameters:
    * theta: rotation around the x axis.
@@ -34,22 +36,16 @@ class ParameterSampler {
    * gamma: rotation around the z axis.
    * dz: distance of the object from the camera.
    * focal: focal length of the camera used.
+   * coordinates: coordinates in the annotation.
    * transform: The transformation matrix built from the above parameters.
-   * warped_corners: The four corners of the object in the warped image.
    */
   double get_theta();
   double get_phi();
   double get_gamma();
   size_t get_dz();
   double get_focal();
+  flex_dict get_coordinates();
   Eigen::Matrix<float, 3, 3> get_transform();
-  std::vector<Eigen::Vector3f> get_warped_corners();
-
-  /* Setter for warped_corners, built after applying the transformation
-   * matrix on the corners of the starter image.
-   * Order of warped_corners is top_left, top_right, bottom_left, bottom_right
-   */
-  void set_warped_corners(const std::vector<Eigen::Vector3f> &warped_corners);
 
   /* Function to sample all the parameters needed to build a transform, and
    * then also build the transform.
@@ -69,12 +65,28 @@ class ParameterSampler {
   double theta_;
   double phi_;
   double gamma_;
-  size_t dx_;
-  size_t dy_;
+  size_t dx_ = 0;
+  size_t dy_ = 0;
   size_t dz_;
   double focal_;
+  float center_x_;
+  float center_y_;
+  float bounding_box_width_;
+  float bounding_box_height_;
   Eigen::Matrix<float, 3, 3> transform_;
   std::vector<Eigen::Vector3f> warped_corners_;
+
+  /* Getters for some private parameters:
+   * warped_corners: The four corners of the object in the warped image.
+   */
+  std::vector<Eigen::Vector3f> get_warped_corners();
+  
+  /* Setter for warped_corners, built after applying the transformation
+   * matrix on the corners of the starter image.
+   * Order of warped_corners is top_left, top_right, bottom_left, bottom_right
+   */
+  void set_warped_corners(const std::vector<Eigen::Vector3f> &warped_corners);
+  void set_annotation_without_planar_translation();
 };
 
 }  // namespace one_shot_object_detection
