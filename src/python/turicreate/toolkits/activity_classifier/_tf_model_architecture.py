@@ -285,6 +285,8 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 tf_export_params['bn_running_mean'] = _np.array(val)
             if 'moving_variance' in var.name:
                 tf_export_params['bn_running_var'] = _np.array(val)
+        for layer_name in tf_export_params.keys():
+            tf_export_params[layer_name] = _np.ascontiguousarray(tf_export_params[layer_name])
         return tf_export_params
 
 
