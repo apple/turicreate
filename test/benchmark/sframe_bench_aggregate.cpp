@@ -26,7 +26,7 @@ bool sframe_debug_print = false;
 /*
  *
  * It can only test one operator at one time. In this way,
- * ouput name is unique.
+ * ouput name is unique and not required from client since it's disposable.
  *
  * You only need to define two functions, one for defining
  * the operator run, and one for collecting the summary.
@@ -105,8 +105,8 @@ sframe _bench_test_aggreate_with_pool(size_t nthreads, const sframe& in_sf,
 // --------------------------- data generation helper functions -----------------------------
 
 /*
- * generate sframe data of type T, whose values ranges
- * from [start, end) with a uniform distribution.
+ * generate sframe data of type T, whose value ranges
+ * from [start, end) obeying a uniform distribution.
  *
  * \param nrows: number of rows.
  * \param start: the minimum value, inclusive.
@@ -140,7 +140,7 @@ sframe _generate_range_data(size_t nrows, int start, int end,
 }
 
 /*
- * generate sframe data of type T, whose values ranges
+ * generate sframe data of type T, whose value ranges
  * from [start, end) with a customized histogram distribution.
  *
  * this data generator is intended to benchmark the multithreading
@@ -193,7 +193,7 @@ sframe _generate_weighted_data(size_t nrows, T start, T end,
                "the sum of percentages should be less than 100");
 
   std::default_random_engine gen;
-  std::uniform_int_distribution<int> dist_sam(0, 100);
+  std::uniform_int_distribution<int> dist_sam(0, 99);
   std::uniform_int_distribution<T> dist_dat(start, end);
 
   size_t ncols = keys.size();
@@ -324,7 +324,7 @@ void bench_test_aggreate_min_fn(const sframe& sf, size_t nthreads, size_t reps,
  * the output is suggested to contain:
  * 1. nrows
  * 2. reps
- * 3. number of unique keys except count operator
+ * 3. number of unique keys except for count operator
  *
  * the generated sframe will be reused for different
  * sized thread pool settings.
@@ -361,9 +361,18 @@ void bench_test_aggreate_summary_min(size_t nrows, size_t reps, size_t nusers,
               << std::endl
               << std::endl;
 
-    std::cout << "user_id '27' has " << 85 << " percentage of appearance" << std::endl;
+    std::cout << "user_id '27' has " << 85 << " percentage of appearance"
+              << std::endl;
+    std::cout << "user_id '35' has " << std::setw(2) << 7
+              << " percentage of appearance" << std::endl;
+    std::cout << "user_id '53' has " << std::setw(2) << 5
+              << " percentage of appearance" << std::endl;
+    std::cout << "user_id '08' has " << std::setw(2) << 3
+              << " percentage of appearance" << std::endl;
 
-    auto sf = _generate_weighted_data<flex_int>(nrows, 0, nusers, {"user_id"}, {{85, 27}});
+    auto sf = _generate_weighted_data<flex_int>(
+        nrows, 0, nusers, {"user_id"}, {{85, 27}, {7, 35}, {5, 53}, {3, 8}});
+
     auto sf_val = _generate_range_data<flex_int>(nrows, start, end, {"my_min"});
 
     sf = sf.add_column(sf_val.select_column(0), "my_min");
@@ -431,8 +440,8 @@ void bench_test_aggreate_summary_avg(size_t nrows, size_t reps, size_t nusers,
             << std::endl;
 }
 
-};  // namespace
 };  // namespace turi
+};  // namespace
 
 int main(int argc, char** argv) {
   global_logger().set_log_level(LOG_PROGRESS);
@@ -456,12 +465,9 @@ int main(int argc, char** argv) {
       turi::sframe_debug_print = std::strlen(argv[5]) > 0 && argv[5][0] == 'T';
 
     /* use global var to control debug print a result sframe */
-    turi::sframe_debug_print = true;
 
     /* actual benchmark runners */
     turi::bench_test_aggreate_summary_count_bin(nrows, reps);
-
-    turi::sframe_debug_print = false;
 
     turi::bench_test_aggreate_summary_min(nrows, reps, nusers, start, end);
 
