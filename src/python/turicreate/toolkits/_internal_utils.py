@@ -101,7 +101,6 @@ def _find_only_column_of_type(sframe, target_type, type_name, col_name):
     if image_column_name is None:
         raise ToolkitError('No "{col_name}" column specified and no column with expected type "{type_name}" is found.'.format(col_name=col_name, type_name=type_name)
             + ' "datasets" consists of columns with types: '+ ', '.join([x.__name__ for x in sframe.column_types()])+'.')
-        #raise ToolkitError('No %s column in "dataset". test test' % type_name)
     return image_column_name
 
 def _find_only_image_column(sframe):
