@@ -1590,6 +1590,8 @@ class SArray(object):
         [{'quick': 1, 'brown': 1, 'jumps': 1, 'fox': 1, 'the': 1},
          {'word': 2, 'word,': 1, 'word!!!word': 1}]
             """
+        print("[WARNING] SArray._count_words is deprecated. It will removed in the next major release.")
+        print("\tUse text_analytics.count_words.")
 
         if (self.dtype != str):
             raise TypeError("Only SArray of string type is supported for counting bag of words")
@@ -1615,6 +1617,9 @@ class SArray(object):
         versions of Turi Create. Please use the `text_analytics.count_words`
         function instead.
         """
+        print("[WARNING] SArray._count_ngrams is deprecated. It will removed in the next major release.")
+        print("\tUse text_analytics.count_words.")
+
         if (self.dtype != str):
             raise TypeError("Only SArray of string type is supported for counting n-grams")
 

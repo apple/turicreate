@@ -173,6 +173,8 @@ def create(dataset, features=None, distance=None, radius=1.,
     logger = _logging.getLogger(__name__)
     start_time = _time.time()
 
+    if distance == 'dot_product':
+        print("[WARNING] Using a \"dot_product\" distance is deprecated. This functionality will be removed in the next major release.")
 
     ## Validate the input dataset
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")

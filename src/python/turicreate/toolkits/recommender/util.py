@@ -1457,8 +1457,7 @@ class _Recommender(_Model):
         Get information about model creation, e.g. time elapsed during
         model fitting, data loading, and more.
 
-        Note: This method will be *deprecated* soon. Please use m.summary()
-        instead.
+        ..WARNING:: This method is *deprecated*. Please use m.summary() instead.
 
         Returns
         -------
@@ -1467,7 +1466,7 @@ class _Recommender(_Model):
 
         """
 
-        _logging.warning("This method will be deprecated soon. Please use m.summary().")
+        _logging.warning("This method is deprecated. Please use m.summary().")
         response = self.__proxy__.get_train_stats()
         return response
 
