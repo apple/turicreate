@@ -401,6 +401,21 @@ class SArrayTest(unittest.TestCase):
 
             read_sarray = SArray.read_json(filename)
             self.__test_equal(read_sarray, data, data_type)
+            self._remove_single_file(filename)
+
+    def test_read_json_infer_type(self):
+        data = [None, 1, 2, None, 3.0, 4, 5.0, 6, None]
+        converted_data = [float(i) if i is not None else i for i in data]
+        filename = 'read_json_infer_type.json'
+        self._remove_single_file(filename)
+
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+
+        read_sarray = SArray.read_json(filename)
+        self.__test_equal(read_sarray, converted_data, float)
+        self._remove_single_file(filename)
+
 
     def _remove_single_file(self, filename):
         try:

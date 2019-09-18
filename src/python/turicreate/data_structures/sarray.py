@@ -35,6 +35,7 @@ import warnings
 import numbers
 import six
 import types
+import json
 
 __all__ = ['SArray']
 
@@ -609,8 +610,9 @@ class SArray(object):
     def read_json(cls, filename):
         """
         Construct an SArray from a json file or glob of json files.
-        The json file must contain a list of elements with identical type. 
-        The returned SArray type will be of inferred from the element type
+        The json file must contain a list. Every element in the list 
+        must also have the same type. The returned SArray type will be 
+        inferred from the elements type.
 
         Parameters
         ----------
