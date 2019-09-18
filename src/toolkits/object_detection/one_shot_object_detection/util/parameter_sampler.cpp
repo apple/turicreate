@@ -5,6 +5,8 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <boost/gil/extension/numeric/affine.hpp>
+
 #include <core/data/image/numeric_extension/perspective_projection.hpp>
 #include <core/logging/assertions.hpp>
 #include <limits>
@@ -29,30 +31,89 @@ double deg_to_rad(double angle) { return angle * M_PI / 180.0; }
  * theta: rotation around the x axis.
  * phi: rotation around the y axis.
  * gamma: rotation around the z axis.
+ * dx: translation along x axis.
+ * dy: translation along y axis.  
  * dz: distance of the object from the camera.
  * focal: focal length of the camera used.
- * transform: The transformation matrix built from the above parameters
- * warped_corners: The four corners of the object in the warped image
+ * coordinates: coordinates in the annotation.
+ * perspective_transform: The perspective transformation matrix built from the
+ *                        above parameters.
+ * affine_transform: The affine transformation matrix built from the
+ *                   dx and dy translations.
+ * warped_corners: The four corners of the object in the warped image.
  */
 double ParameterSampler::get_theta() { return theta_; }
-
 double ParameterSampler::get_phi() { return phi_; }
-
 double ParameterSampler::get_gamma() { return gamma_; }
 
+int ParameterSampler::get_dx() { return dx_; }
+int ParameterSampler::get_dy() { return dy_; }
 size_t ParameterSampler::get_dz() { return dz_; }
 
 double ParameterSampler::get_focal() { return focal_; }
 
-Eigen::Matrix<float, 3, 3> ParameterSampler::get_transform() {
-  return transform_;
+Eigen::Matrix<float, 3, 3> ParameterSampler::get_perspective_transform() {
+  return perspective_transform_;
+}
+
+Eigen::Matrix<float, 3, 3> ParameterSampler::get_affine_transform() {
+  return affine_transform_;
 }
 
 std::vector<Eigen::Vector3f> ParameterSampler::get_warped_corners() {
   return warped_corners_;
 }
 
+void ParameterSampler::compute_coordinates_from_warped_corners() {
+  float min_x = std::numeric_limits<float>::max();
+  float max_x = std::numeric_limits<float>::min();
+  float min_y = std::numeric_limits<float>::max();
+  float max_y = std::numeric_limits<float>::min();
+  for (const auto &corner : warped_corners_) {
+    min_x = std::min(min_x, corner[0]);
+    max_x = std::max(max_x, corner[0]);
+    min_y = std::min(min_y, corner[1]);
+    max_y = std::max(max_y, corner[1]);
+  }
+  center_x_ = (min_x + max_x) / 2;
+  center_y_ = (min_y + max_y) / 2;
+  bounding_box_width_ = max_x - min_x;
+  bounding_box_height_ = max_y - min_y;
+}
+
+void ParameterSampler::perform_x_y_translation(size_t background_width,
+    size_t background_height, std::mt19937 *engine_pointer) {
+  int x_margin = static_cast<int>(bounding_box_width_/2);
+  int y_margin = static_cast<int>(bounding_box_height_/2);
+  std::uniform_int_distribution<int> final_center_x_distribution(
+    x_margin, background_width - x_margin);
+  std::uniform_int_distribution<int> final_center_y_distribution(
+    y_margin, background_height - y_margin);
+  int new_center_x = final_center_x_distribution(*engine_pointer);
+  int new_center_y = final_center_y_distribution(*engine_pointer);
+  dx_ = new_center_x - static_cast<int>(center_x_);
+  dy_ = new_center_y - static_cast<int>(center_y_);
+  
+  boost::gil::matrix3x2<double> affine = boost::gil::matrix3x2<double>::get_translate(
+    boost::gil::point2<double>(dx_, dy_));
+  affine_transform_ << affine.a, affine.c, affine.e,
+                       affine.b, affine.d, affine.f,
+                              0,        0,        1;
+  
+  std::transform(warped_corners_.begin(), warped_corners_.end(),
+    warped_corners_.begin(), 
+    [&affine](Eigen::Vector3f corner) -> Eigen::Vector3f {
+      boost::gil::point2<double> corner_2d(corner(0), corner(1));
+      boost::gil::point2<double> translated_corner = corner_2d * affine;
+      Eigen::Vector3f answer(translated_corner.x, translated_corner.y, 1.0);
+      return answer;
+  });
+
+  compute_coordinates_from_warped_corners();
+}
+
 flex_dict ParameterSampler::get_coordinates() {
+  
   flex_dict coordinates = {std::make_pair("x", center_x_),
                            std::make_pair("y", center_y_),
                            std::make_pair("width", bounding_box_width_),
@@ -61,25 +122,13 @@ flex_dict ParameterSampler::get_coordinates() {
   
 }
 
-/* Setter for warped_corners, built after applying the transformation
- * matrix on the corners of the starter image.
- * Order of warped_corners is top_left, top_right, bottom_left, bottom_right
- */
-void ParameterSampler::set_warped_corners(
-    const std::vector<Eigen::Vector3f> &warped_corners) {
-  warped_corners_ = warped_corners;
-  // swap last two entries to make the corners cyclic.
-  warped_corners_[2] = warped_corners[3];
-  warped_corners_[3] = warped_corners[2];
-}
-
 int generate_random_index(std::mt19937 *engine_pointer, int range) {
   DASSERT_GT(range, 0);
   std::uniform_int_distribution<int> index_distribution(0, range-1);
   return index_distribution(*engine_pointer);
 }
 
-void ParameterSampler::set_annotation_without_planar_translation() {
+void ParameterSampler::perform_perspective_transform() {
   size_t original_top_left_x = 0;
   size_t original_top_left_y = 0;
   size_t original_top_right_x = starter_width_;
@@ -102,30 +151,18 @@ void ParameterSampler::set_annotation_without_planar_translation() {
     corner[2] = 1.0;
     return corner;
   };
+  
+  perspective_transform_ = warp_perspective::get_transformation_matrix(
+      starter_width_, starter_height_, theta_, phi_, gamma_, 0, 0, dz_, focal_);
+  
+  warped_corners_ = {
+      normalize(perspective_transform_ * top_left_corner),
+      normalize(perspective_transform_ * top_right_corner),
+      normalize(perspective_transform_ * bottom_left_corner),
+      normalize(perspective_transform_ * bottom_right_corner)
+  };
 
-  Eigen::Matrix<float, 3, 3> mat = warp_perspective::get_transformation_matrix(
-      starter_width_, starter_height_, theta_, phi_, gamma_, dx_, dy_, dz_, focal_);
-
-  const std::vector<Eigen::Vector3f> warped_corners = {
-      normalize(mat * top_left_corner), normalize(mat * top_right_corner),
-      normalize(mat * bottom_left_corner),
-      normalize(mat * bottom_right_corner)};
-  set_warped_corners(warped_corners);
-
-  float min_x = std::numeric_limits<float>::max();
-  float max_x = std::numeric_limits<float>::min();
-  float min_y = std::numeric_limits<float>::max();
-  float max_y = std::numeric_limits<float>::min();
-  for (const auto &corner : warped_corners) {
-    min_x = std::min(min_x, corner[0]);
-    max_x = std::max(max_x, corner[0]);
-    min_y = std::min(min_y, corner[1]);
-    max_y = std::max(max_y, corner[1]);
-  }
-  center_x_ = (min_x + max_x) / 2;
-  center_y_ = (min_y + max_y) / 2;
-  bounding_box_width_ = max_x - min_x;
-  bounding_box_height_ = max_y - min_y;
+  compute_coordinates_from_warped_corners();
 }
 
 /* Function to sample all the parameters needed to build a transform, and
@@ -154,17 +191,8 @@ void ParameterSampler::sample(size_t background_width, size_t background_height,
   std::uniform_int_distribution<int> dz_distribution(std::max(background_width, background_height),
                                                      max_depth_);
   dz_ = focal_ + dz_distribution(engine);
-  set_annotation_without_planar_translation();
-  std::uniform_int_distribution<int> final_center_x_distribution(bounding_box_width_, background_width - bounding_box_width_);
-  std::uniform_int_distribution<int> final_center_y_distribution(bounding_box_height_, background_height - bounding_box_height_);
-  int new_center_x = final_center_x_distribution(engine);
-  int new_center_y = final_center_y_distribution(engine);
-  dx_ = new_center_x - center_x_;
-  dy_ = new_center_y - center_y_;
-  center_x_ = new_center_x;
-  center_y_ = new_center_y;
-  transform_ = warp_perspective::get_transformation_matrix(
-      starter_width_, starter_height_, theta_, phi_, gamma_, dx_, dy_, dz_, focal_);
+  perform_perspective_transform();
+  perform_x_y_translation(background_width, background_height, &engine);
 }
 
 }  // namespace one_shot_object_detection

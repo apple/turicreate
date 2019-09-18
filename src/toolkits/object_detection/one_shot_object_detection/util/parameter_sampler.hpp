@@ -34,18 +34,27 @@ class ParameterSampler {
    * theta: rotation around the x axis.
    * phi: rotation around the y axis.
    * gamma: rotation around the z axis.
+   * dx: translation along x axis.
+   * dy: translation along y axis.
    * dz: distance of the object from the camera.
    * focal: focal length of the camera used.
    * coordinates: coordinates in the annotation.
-   * transform: The transformation matrix built from the above parameters.
+   * perspective_transform: The perspective transformation matrix built from the
+   *                        above parameters.
+   * affine_transform: The affine transformation matrix built from the
+   *                   dx and dy translations.
+   * warped_corners: The four corners of the object in the warped image.
    */
   double get_theta();
   double get_phi();
   double get_gamma();
+  int get_dx();
+  int get_dy();
   size_t get_dz();
   double get_focal();
   flex_dict get_coordinates();
-  Eigen::Matrix<float, 3, 3> get_transform();
+  Eigen::Matrix<float, 3, 3> get_perspective_transform();
+  Eigen::Matrix<float, 3, 3> get_affine_transform();
 
   /* Function to sample all the parameters needed to build a transform, and
    * then also build the transform.
@@ -65,15 +74,17 @@ class ParameterSampler {
   double theta_;
   double phi_;
   double gamma_;
-  size_t dx_ = 0;
-  size_t dy_ = 0;
+  int dx_ = 0;
+  int dy_ = 0;
   size_t dz_;
   double focal_;
   float center_x_;
   float center_y_;
   float bounding_box_width_;
   float bounding_box_height_;
-  Eigen::Matrix<float, 3, 3> transform_;
+
+  Eigen::Matrix<float, 3, 3> affine_transform_;
+  Eigen::Matrix<float, 3, 3> perspective_transform_;
   std::vector<Eigen::Vector3f> warped_corners_;
 
   /* Getters for some private parameters:
@@ -81,12 +92,9 @@ class ParameterSampler {
    */
   std::vector<Eigen::Vector3f> get_warped_corners();
   
-  /* Setter for warped_corners, built after applying the transformation
-   * matrix on the corners of the starter image.
-   * Order of warped_corners is top_left, top_right, bottom_left, bottom_right
-   */
-  void set_warped_corners(const std::vector<Eigen::Vector3f> &warped_corners);
-  void set_annotation_without_planar_translation();
+  void compute_coordinates_from_warped_corners();
+  void perform_x_y_translation(size_t background_width, size_t background_height, std::mt19937 *engine_pointer);
+  void perform_perspective_transform();
 };
 
 }  // namespace one_shot_object_detection

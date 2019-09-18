@@ -5,8 +5,11 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <boost/gil/extension/numeric/affine.hpp>
 #include <boost/gil/extension/numeric/resample.hpp>
 #include <boost/gil/extension/numeric/sampler.hpp>
+
+#include <iostream>
 
 #include <toolkits/object_detection/one_shot_object_detection/util/mapping_function.hpp>
 #include <toolkits/object_detection/one_shot_object_detection/util/superposition.hpp>
@@ -53,13 +56,19 @@ flex_image create_synthetic_image(
   boost::gil::rgba8_image_t transformed(
       boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
   fill_pixels(view(transformed), RGBA_WHITE);
+  boost::gil::rgba8_image_t translated(
+      boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
+  fill_pixels(view(translated), RGBA_WHITE);
   boost::gil::rgb8_image_t superimposed(
       boost::gil::rgba8_image_t::point_t(background_view.dimensions()));
   fill_pixels(view(superimposed), RGB_WHITE);
-  Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_transform().inverse();
+  Eigen::Matrix<float, 3, 3> M = parameter_sampler.get_perspective_transform().inverse();
   resample_pixels(starter_image_view, view(transformed), M,
                   boost::gil::nearest_neighbor_sampler());
-  superimpose_image(view(superimposed), view(transformed),
+  Eigen::Matrix<float, 3, 3> Tr = parameter_sampler.get_affine_transform().inverse();
+  resample_pixels(view(transformed), view(translated), Tr,
+                  boost::gil::nearest_neighbor_sampler());
+  superimpose_image(view(superimposed), view(translated),
                     view(background_rgba));
   return flex_image(superimposed);
 }
