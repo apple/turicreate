@@ -609,8 +609,8 @@ class SArray(object):
     def read_json(cls, filename):
         """
         Construct an SArray from a json file or glob of json files.
-        The json file must contain a list of dictionaries. The returned
-        SArray type will be of dict type
+        The json file must contain a list of elements with identical type. 
+        The returned SArray type will be of inferred from the element type
 
         Parameters
         ----------
