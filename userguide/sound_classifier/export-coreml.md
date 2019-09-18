@@ -85,63 +85,40 @@ guard let audioData = try? MLMultiArray(shape:[windowSize as NSNumber],
 }
 
 
-let frameLength = Int64(buffer.frameLength)
-var windowNumber = 0
-var offset = 0
-var startIndex = 0
+
 var results = [Dictionary<String, Double>]()
+let frameLength = Int(buffer.frameLength)
+var audioDataIndex = 0
 
-// Main data provider loop for items larger than 1 window
-while ((windowNumber + 1) * windowSize) <= frameLength {
-    offset = windowNumber * windowSize
-    for i in startIndex...windowSize {
-        audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
-    }
-    startIndex = 1
-    
-    let modelInput = my_sound_classifierInput(audio: audioData)
-    
-    guard let modelOutput = try? model.prediction(input: modelInput) else {
-        fatalError("Error calling predict")
-    }
-    results.append(modelOutput.categoryProbability)
-    windowNumber += 1
-}
-
-if windowNumber > 0 {
-    offset = offset + windowSize
-}
-
-// Main data provider was less than 1 window of data or we have some remainder
-if offset < frameLength {
-    var needsLastWindow = false
-    
-    // If the last window is all silence we can skip it
-    for i in startIndex...windowSize {
-        if offset + i < frameLength {
-            if bufferData[0][offset + i] != 0.0 {
-                needsLastWindow = true
-                break
-            }
-        }
-    }
-    if needsLastWindow {
-        for i in startIndex...windowSize {
-            if offset + i < frameLength {
-                audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
-            } else {
-                audioData[i] = NSNumber.init(value:0)
-            }
-        }
-        
+// Iterate over all the samples, chunking calls to analyze every 15600
+for i in 0..<frameLength {
+    audioData[audioDataIndex] = NSNumber.init(value: bufferData[0][i])
+    if audioDataIndex >= windowSize {
         let modelInput = my_sound_classifierInput(audio: audioData)
         
         guard let modelOutput = try? model.prediction(input: modelInput) else {
             fatalError("Error calling predict")
         }
         results.append(modelOutput.categoryProbability)
+        audioDataIndex = 0
+    } else {
+        audioDataIndex += 1
     }
 }
+
+// Handle remainder by passing with zero
+if audioDataIndex > 0 {
+    for audioDataIndex in audioDataIndex...windowSize {
+        audioData[audioDataIndex] = 0
+    }
+    let modelInput = my_sound_classifierInput(audio: audioData)
+    
+    guard let modelOutput = try? model.prediction(input: modelInput) else {
+        fatalError("Error calling predict")
+    }
+    results.append(modelOutput.categoryProbability)
+}
+
 ```
 
 Once all window predictions are saved, to generate the overall
