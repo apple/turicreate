@@ -235,6 +235,8 @@ def create(dataset, target, feature=None, model = 'resnet-50',
     _tkutl._check_categorical_option_type('model', model, allowed_models)
 
     # Check dataset parameter
+    if not isinstance(dataset, _tc.SFrame):
+        raise _ToolkitError("Unrecognized value for 'dataset'. An SFrame is expected.")
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
     if (feature is not None) and (feature not in dataset.column_names()):
