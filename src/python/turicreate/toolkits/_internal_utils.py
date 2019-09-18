@@ -90,6 +90,7 @@ def _find_only_column_of_type(sframe, target_type, type_name, col_name):
     raised. The name and type of the target column should be provided as
     strings for the purpose of error feedback.
     """
+    _raise_error_if_not_sframe(sframe,"dataset")
     image_column_name = None
     if type(target_type) != list:
         target_type = [target_type]
