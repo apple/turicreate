@@ -57,6 +57,7 @@ void _bench_test_aggreate_runner(const sframe& sf, size_t reps, Runner runner,
   runner(sf, max_hardware_mp, reps, keys, op_keys);
 }
 
+
 /*
  * helper function to run aggregate with controlled thread pool size.
  *
@@ -102,7 +103,9 @@ sframe _bench_test_aggreate_with_pool(size_t nthreads, const sframe& in_sf,
   return out_sf;
 }
 
+
 // --------------------------- data generation helper functions -----------------------------
+
 
 /*
  * generate sframe data of type T, whose value ranges
@@ -138,6 +141,7 @@ sframe _generate_range_data(size_t nrows, int start, int end,
                                   range_seq_gen);
   return sf;
 }
+
 
 /*
  * generate sframe data of type T, whose value ranges
@@ -221,13 +225,40 @@ sframe _generate_weighted_data(size_t nrows, T start, T end,
   return sf;
 }
 
+
+/*
+ * Testing min operation.
+ *
+ * it should initialize the aggregation operator for _bench_test_aggreate_with_pool
+ * to run with.
+ *
+ * It's client's responsibility to make sure key and op_keys correct
+ *
+ * \param sf: input sframe
+ * \param nthreads: thread pool control
+ * \param op: group-by aggregation operator
+ * \param keys: compsite keys to group by
+ * \param op_keys: columns to operate on
+ * */
+#define DEFINE_RUNNER(op_name, op)                                       \
+  void bench_test_aggreate_fn_##op_name(                                 \
+      const sframe& sf, size_t nthreads, size_t reps,                    \
+      const std::vector<std::string>& keys,                              \
+      const std::vector<std::string>& op_keys) {                         \
+    ASSERT_MSG(reps > 0, "reps shouldn't be 0");                         \
+    turi::timer ti;                                                      \
+    for (size_t ii = 0; ii < reps; ii++) {                               \
+      _bench_test_aggreate_with_pool(nthreads, sf, (op), keys, op_keys); \
+    }                                                                    \
+    auto elapsed = ti.current_time_millis();                             \
+    std::cout << "avg time to run w/ " << std::setw(2) << nthreads       \
+              << " threads: " << elapsed / reps << " ms." << std::endl;  \
+  }
+
 // -------------------test suites using the framework ---------------------
 
 /*
  * Testing count operation. This is a sample code.
- *
- * it should initialize the aggregation operator for _bench_test_aggreate_with_pool
- * to run with.
  *
  * It's client's responsibility to make sure key and op_keys correct
  *
@@ -236,22 +267,7 @@ sframe _generate_weighted_data(size_t nrows, T start, T end,
  * \param keys: compsite keys to group by
  * \param op_keys: columns to operate on
  * */
-void bench_test_aggreate_count_fn(const sframe& sf, size_t nthreads, size_t reps,
-                                  const std::vector<std::string>& keys,
-                                  const std::vector<std::string>& op_keys) {
-  turi::timer ti;
-
-  for (size_t ii = 0; ii < reps; ii++)
-    _bench_test_aggreate_with_pool(nthreads, sf,
-                                   std::make_shared<groupby_operators::count>(),
-                                   keys, op_keys);
-
-  auto elapsed = ti.current_time_millis();
-
-  std::cout << "avg time to run w/ " << std::setw(2)
-            << nthreads << " threads: " << elapsed / reps << " ms."
-            << std::endl;
-}
+DEFINE_RUNNER(count, std::make_shared<groupby_operators::count>());
 
 /*
  * control the output of a benchmark test case.
@@ -277,7 +293,7 @@ void bench_test_aggreate_summary_count_bin(size_t nrows, size_t reps) {
   std::cout << "nrows: " << nrows << std::endl;
   std::cout << "reps: " << reps << std::endl;
 
-  _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_count_fn,
+  _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_fn_count,
                               sf.column_names(), {});
 
   std::cout << "========================== END ==========================="
@@ -285,38 +301,17 @@ void bench_test_aggreate_summary_count_bin(size_t nrows, size_t reps) {
             << std::endl;
 }
 
-
 /*
- * Testing min operation.
+ * Testing min operation. This is a sample code.
  *
  * It's client's responsibility to make sure key and op_keys correct
  *
  * \param sf: input sframe
- * \param nthreads: thread pool control
  * \param op: group-by aggregation operator
  * \param keys: compsite keys to group by
  * \param op_keys: columns to operate on
  * */
-void bench_test_aggreate_min_fn(const sframe& sf, size_t nthreads, size_t reps,
-                                const std::vector<std::string>& keys,
-                                const std::vector<std::string>& op_keys) {
-  ASSERT_MSG(reps > 0, "reps shouldn't be 0");
-
-  turi::timer ti;
-
-  for (size_t ii = 0; ii < reps; ii++) {
-    _bench_test_aggreate_with_pool(nthreads, sf,
-                                   std::make_shared<groupby_operators::min>(),
-                                   keys, op_keys);
-  }
-
-  auto elapsed = ti.current_time_millis();
-
-  std::cout << "avg time to run w/ " << std::setw(2)
-            << nthreads << " threads: " << elapsed / reps << " ms."
-            << std::endl;
-}
-
+DEFINE_RUNNER(min, std::make_shared<groupby_operators::min>());
 
 /*
  * control the output of a benchmark test case.
@@ -332,7 +327,8 @@ void bench_test_aggreate_min_fn(const sframe& sf, size_t nthreads, size_t reps,
 void bench_test_aggreate_summary_min(size_t nrows, size_t reps, size_t nusers,
                                      int start, int end) {
   std::cout << "=========== bench_test_aggreate_min summary ============"
-            << std::endl << std::endl;
+            << std::endl
+            << std::endl;
 
   std::cout << "nrows: " << nrows << std::endl;
   std::cout << "reps: " << reps << std::endl;
@@ -348,7 +344,7 @@ void bench_test_aggreate_summary_min(size_t nrows, size_t reps, size_t nusers,
     auto sf = _generate_range_data<flex_int>(nrows, 0, nusers, {"user_id"});
     sf = sf.add_column(sf_val.select_column(0), "my_min");
 
-    _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_min_fn,
+    _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_fn_min,
                                 {"user_id"}, {"my_min"});
 
     std::cout << "=============== uniform distribution end ================"
@@ -361,14 +357,15 @@ void bench_test_aggreate_summary_min(size_t nrows, size_t reps, size_t nusers,
               << std::endl
               << std::endl;
 
-    std::cout << "user_id '27' has " << 85 << " percentage of appearance"
-              << std::endl;
+    std::cout << "user_id '27' has " << std::setw(2) << 85
+              << " percentage of appearance" << std::endl;
     std::cout << "user_id '35' has " << std::setw(2) << 7
               << " percentage of appearance" << std::endl;
     std::cout << "user_id '53' has " << std::setw(2) << 5
               << " percentage of appearance" << std::endl;
     std::cout << "user_id '08' has " << std::setw(2) << 3
-              << " percentage of appearance" << std::endl;
+              << " percentage of appearance" << std::endl
+              << std::endl;
 
     auto sf = _generate_weighted_data<flex_int>(
         nrows, 0, nusers, {"user_id"}, {{85, 27}, {7, 35}, {5, 53}, {3, 8}});
@@ -377,7 +374,7 @@ void bench_test_aggreate_summary_min(size_t nrows, size_t reps, size_t nusers,
 
     sf = sf.add_column(sf_val.select_column(0), "my_min");
 
-    _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_min_fn,
+    _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_fn_min,
                                 {"user_id"}, {"my_min"});
 
     std::cout << "================ skewed distribution end ================="
@@ -385,7 +382,6 @@ void bench_test_aggreate_summary_min(size_t nrows, size_t reps, size_t nusers,
               << std::endl;
   }
 }
-
 
 /*
  * Testing average operation.
@@ -398,22 +394,7 @@ void bench_test_aggreate_summary_min(size_t nrows, size_t reps, size_t nusers,
  * \param keys: compsite keys to group by
  * \param op_keys: columns to operate on
  * */
-void bench_test_aggreate_avg_fn(const sframe& sf, size_t nthreads, size_t reps,
-                                const std::vector<std::string>& keys,
-                                const std::vector<std::string>& op_keys) {
-  turi::timer ti;
-
-  for (size_t ii = 0; ii < reps; ii++) {
-    _bench_test_aggreate_with_pool(
-        nthreads, sf, std::make_shared<groupby_operators::average>(), keys,
-        op_keys);
-  }
-
-  auto elapsed = ti.current_time_millis();
-
-  std::cout << "avg time to run w/ " << std::setw(2) << nthreads
-            << " threads: " << elapsed / reps << " ms." << std::endl;
-}
+DEFINE_RUNNER(avg, std::make_shared<groupby_operators::average>());
 
 void bench_test_aggreate_summary_avg(size_t nrows, size_t reps, size_t nusers,
                                      int start, int end) {
@@ -432,7 +413,7 @@ void bench_test_aggreate_summary_avg(size_t nrows, size_t reps, size_t nusers,
 
   sf = sf.add_column(sf_val.select_column(0), "my_avg");
 
-  _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_avg_fn,
+  _bench_test_aggreate_runner(sf, reps, &bench_test_aggreate_fn_avg,
                               {"user_id"}, {"my_avg"});
 
   std::cout << "========================== END ==========================="
@@ -440,8 +421,8 @@ void bench_test_aggreate_summary_avg(size_t nrows, size_t reps, size_t nusers,
             << std::endl;
 }
 
-};  // namespace turi
 };  // namespace
+};  // namespace turi
 
 int main(int argc, char** argv) {
   global_logger().set_log_level(LOG_PROGRESS);
