@@ -447,7 +447,7 @@
 
   vgg16Desc.block4.conv2.kernelWidth = 3;
   vgg16Desc.block4.conv2.kernelHeight = 3;
-  vgg16Desc.block4.conv2.inputFeatureChannels = 256;
+  vgg16Desc.block4.conv2.inputFeatureChannels = 512;
   vgg16Desc.block4.conv2.outputFeatureChannels = 512;
   vgg16Desc.block4.conv2.strideWidth = 1;
   vgg16Desc.block4.conv2.strideHeight = 1;
@@ -458,7 +458,7 @@
 
   vgg16Desc.block4.conv3.kernelWidth = 3;
   vgg16Desc.block4.conv3.kernelHeight = 3;
-  vgg16Desc.block4.conv3.inputFeatureChannels = 256;
+  vgg16Desc.block4.conv3.inputFeatureChannels = 512;
   vgg16Desc.block4.conv3.outputFeatureChannels = 512;
   vgg16Desc.block4.conv3.strideWidth = 1;
   vgg16Desc.block4.conv3.strideHeight = 1;
