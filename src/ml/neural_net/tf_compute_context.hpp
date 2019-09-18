@@ -13,6 +13,7 @@ namespace turi {
 namespace neural_net {
 
 
+
 /**
  * A compute_context implementation backed by TensorFlow
  * for neural network computation and for data
@@ -20,7 +21,6 @@ namespace neural_net {
  */
 class tf_compute_context: public compute_context {
 public:
-
 
   /**
    * Constructs a context wrapping devices.
@@ -42,6 +42,7 @@ public:
 
   std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options &opts) override;
+  
 };
 
 }  // namespace neural_net
