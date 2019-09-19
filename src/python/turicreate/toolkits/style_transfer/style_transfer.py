@@ -130,6 +130,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         >>> stylized_images.explore()
 
     """
+    if not isinstance(style_dataset, _tc.SFrame):
+        raise TypeError('"style_dataset" must be of type SFrame.')
+    if not isinstance(content_dataset, _tc.SFrame):
+        raise TypeError('"content_dataset" must be of type SFrame.')
     if len(style_dataset) == 0:
         raise _ToolkitError("style_dataset SFrame cannot be empty")
     if len(content_dataset) == 0:
