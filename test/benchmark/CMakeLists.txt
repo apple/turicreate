@@ -1,0 +1,4 @@
+project(benchmark)
+
+make_executable(sframe_bench SOURCES sframe_bench.cpp REQUIRES unity_shared_for_testing)
+make_executable(sframe_bench_aggregate SOURCES sframe_bench_aggregate.cpp REQUIRES unity_shared_for_testing)
