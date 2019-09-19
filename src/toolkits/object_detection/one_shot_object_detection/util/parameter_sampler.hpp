@@ -63,9 +63,9 @@ class ParameterSampler {
   size_t max_depth_ = 13000;
   double angle_stdev_ = 20.0;
   double focal_stdev_ = 40.0;
-  std::vector<double> theta_means_ = {-180.0, 0.0, 180.0};
-  std::vector<double> phi_means_ = {-180.0, 0.0, 180.0};
-  std::vector<double> gamma_means_ = {-180.0, -90.0, 0.0, 90.0, 180.0};
+  std::vector<double> theta_means_ = {0.0};
+  std::vector<double> phi_means_ = {0.0};
+  std::vector<double> gamma_means_ = {0.0};
   double theta_;
   double phi_;
   double gamma_;
