@@ -422,7 +422,8 @@ struct Block2Test::impl {
 };
 
 Block2Test::Block2Test(ptree config, ptree weights) : m_impl(new Block2Test::impl()) {
-  if (@available(macOS 10.15, *)) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
       m_impl->dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
       m_impl->cmdQueue = [m_impl->dev newCommandQueue];
       
@@ -445,6 +446,7 @@ Block2Test::Block2Test(ptree config, ptree weights) : m_impl(new Block2Test::imp
       m_impl->model.format = MPSImageFeatureChannelFormatFloat32;
 
     }
+  }
 }
 
 Block2Test::~Block2Test() = default;
@@ -453,7 +455,34 @@ Block2Test::~Block2Test() = default;
 bool Block2Test::check_predict(ptree input, ptree output) {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {
-      return true;
+      MPSImageBatch *imageBatch = define_input(input, m_impl->dev);
+
+      id<MTLCommandBuffer> cb = [m_impl->cmdQueue commandBuffer];
+
+      NSMutableArray *intermediateImages = [[NSMutableArray alloc] init];
+      NSMutableArray *destinationStates = [[NSMutableArray alloc] init];
+      
+      MPSImageBatch *outputBatch =  [m_impl->model encodeBatchToCommandBuffer:cb
+                                                                 sourceImages:@[imageBatch]
+                                                                 sourceStates:nil
+                                                           intermediateImages:intermediateImages
+                                                            destinationStates:destinationStates];
+
+      for (MPSImage *image in outputBatch) {
+        [image synchronizeOnCommandBuffer:cb];  
+      }
+
+      [cb commit];
+      [cb waitUntilCompleted];
+
+      NSData* correctOutput = define_output(output);
+      NSMutableData* dataOutput = [NSMutableData dataWithLength:correctOutput.length];
+
+      [[outputBatch objectAtIndex:0] readBytes:dataOutput.mutableBytes
+                                    dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                                    imageIndex:0];
+
+      return check_data(correctOutput, dataOutput, 5e-3);
     } else {
       return true;
     }
@@ -461,14 +490,172 @@ bool Block2Test::check_predict(ptree input, ptree output) {
 }
 
 struct Vgg16Test::impl {
+  API_AVAILABLE(macos(10.15)) id <MTLDevice> dev = nil;
+  API_AVAILABLE(macos(10.15)) id <MTLCommandQueue> cmdQueue = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* inputNode = nil;
   API_AVAILABLE(macos(10.15)) TCMPSVgg16Network *definition = nil;
+  API_AVAILABLE(macos(10.15)) TCMPSVgg16Descriptor* descriptor = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNGraph* model_1 = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNGraph* model_2 = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNGraph* model_3 = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNGraph* model_4 = nil;
+  API_AVAILABLE(macos(10.15)) NSDictionary<NSString *, NSData *> *weights = nil;
 };
 
-Vgg16Test::Vgg16Test(ptree config) : m_impl(new Vgg16Test::impl()) {
-  // TODO: load vgg16 weights
+Vgg16Test::Vgg16Test(ptree config, ptree weights) : m_impl(new Vgg16Test::impl()) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      m_impl->dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+      m_impl->cmdQueue = [m_impl->dev newCommandQueue];
+      
+      m_impl->inputNode = [MPSNNImageNode nodeWithHandle:[[TCMPSGraphNodeHandle alloc] initWithLabel:@"inputImage"]];
+
+      m_impl->weights = define_vgg_weights(weights);
+      m_impl->descriptor = define_vgg_descriptor(config);
+
+      m_impl->definition = [[TCMPSVgg16Network alloc] initWithParameters:@"vgg_"
+                                                              inputNode:m_impl->inputNode
+                                                                 device:m_impl->dev
+                                                               cmdQueue:m_impl->cmdQueue
+                                                             descriptor:m_impl->descriptor
+                                                            initWeights:m_impl->weights];
+
+      m_impl->model_1 = [MPSNNGraph graphWithDevice:m_impl->dev
+                                        resultImage:m_impl->definition.reluOut1
+                                resultImageIsNeeded:YES];
+
+      m_impl->model_2 = [MPSNNGraph graphWithDevice:m_impl->dev
+                                        resultImage:m_impl->definition.reluOut2
+                                resultImageIsNeeded:YES];
+
+      m_impl->model_3 = [MPSNNGraph graphWithDevice:m_impl->dev
+                                        resultImage:m_impl->definition.reluOut3
+                                resultImageIsNeeded:YES];
+
+      m_impl->model_4 = [MPSNNGraph graphWithDevice:m_impl->dev
+                                        resultImage:m_impl->definition.reluOut4
+                                resultImageIsNeeded:YES];
+
+      m_impl->model_1.format = MPSImageFeatureChannelFormatFloat32;
+      m_impl->model_2.format = MPSImageFeatureChannelFormatFloat32;
+      m_impl->model_3.format = MPSImageFeatureChannelFormatFloat32;
+      m_impl->model_4.format = MPSImageFeatureChannelFormatFloat32;
+
+    }
+  }
 }
 
 Vgg16Test::~Vgg16Test() = default;
+
+bool Vgg16Test::check_predict(ptree input, ptree output) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      MPSImageBatch *imageBatch = define_input(input, m_impl->dev);
+
+      id<MTLCommandBuffer> cb1 = [m_impl->cmdQueue commandBuffer];
+
+      NSMutableArray *intermediateImagesModel1 = [[NSMutableArray alloc] init];
+      NSMutableArray *destinationStatesModel1 = [[NSMutableArray alloc] init];
+      
+      MPSImageBatch *outputBatchModel1 =  [m_impl->model_1 encodeBatchToCommandBuffer:cb1
+                                                                         sourceImages:@[imageBatch]
+                                                                         sourceStates:nil
+                                                                   intermediateImages:intermediateImagesModel1
+                                                                    destinationStates:destinationStatesModel1];
+
+      for (MPSImage *image in outputBatchModel1) {
+        [image synchronizeOnCommandBuffer:cb1];  
+      }
+
+      [cb1 commit];
+      [cb1 waitUntilCompleted];
+
+      id<MTLCommandBuffer> cb2 = [m_impl->cmdQueue commandBuffer];
+
+      NSMutableArray *intermediateImagesModel2 = [[NSMutableArray alloc] init];
+      NSMutableArray *destinationStatesModel2 = [[NSMutableArray alloc] init];
+      
+      MPSImageBatch *outputBatchModel2 =  [m_impl->model_2 encodeBatchToCommandBuffer:cb2
+                                                                         sourceImages:@[imageBatch]
+                                                                         sourceStates:nil
+                                                                   intermediateImages:intermediateImagesModel2
+                                                                    destinationStates:destinationStatesModel2];
+
+      for (MPSImage *image in outputBatchModel2) {
+        [image synchronizeOnCommandBuffer:cb2];  
+      }
+
+      [cb2 commit];
+      [cb2 waitUntilCompleted];
+
+      id<MTLCommandBuffer> cb3 = [m_impl->cmdQueue commandBuffer];
+
+      NSMutableArray *intermediateImagesModel3 = [[NSMutableArray alloc] init];
+      NSMutableArray *destinationStatesModel3 = [[NSMutableArray alloc] init];
+      
+      MPSImageBatch *outputBatchModel3 =  [m_impl->model_3 encodeBatchToCommandBuffer:cb3
+                                                                         sourceImages:@[imageBatch]
+                                                                         sourceStates:nil
+                                                                   intermediateImages:intermediateImagesModel3
+                                                                    destinationStates:destinationStatesModel3];
+
+      for (MPSImage *image in outputBatchModel3) {
+        [image synchronizeOnCommandBuffer:cb3];  
+      }
+
+      [cb3 commit];
+      [cb3 waitUntilCompleted];
+
+      id<MTLCommandBuffer> cb4 = [m_impl->cmdQueue commandBuffer];
+
+      NSMutableArray *intermediateImagesModel4 = [[NSMutableArray alloc] init];
+      NSMutableArray *destinationStatesModel4 = [[NSMutableArray alloc] init];
+      
+      MPSImageBatch *outputBatchModel4 =  [m_impl->model_4 encodeBatchToCommandBuffer:cb4
+                                                                         sourceImages:@[imageBatch]
+                                                                         sourceStates:nil
+                                                                   intermediateImages:intermediateImagesModel4
+                                                                    destinationStates:destinationStatesModel4];
+
+      for (MPSImage *image in outputBatchModel4) {
+        [image synchronizeOnCommandBuffer:cb4];  
+      }
+
+      [cb4 commit];
+      [cb4 waitUntilCompleted];
+
+      NSDictionary<NSString *, NSData *>* correctOutput = define_vgg_output(output);
+
+      NSMutableData* dataOutput1 = [NSMutableData dataWithLength:correctOutput[@"output_1"].length];
+      NSMutableData* dataOutput2 = [NSMutableData dataWithLength:correctOutput[@"output_2"].length];
+      NSMutableData* dataOutput3 = [NSMutableData dataWithLength:correctOutput[@"output_3"].length];
+      NSMutableData* dataOutput4 = [NSMutableData dataWithLength:correctOutput[@"output_4"].length];
+
+      [[outputBatchModel1 objectAtIndex:0] readBytes:dataOutput1.mutableBytes
+                                          dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                                          imageIndex:0];
+
+      [[outputBatchModel2 objectAtIndex:0] readBytes:dataOutput2.mutableBytes
+                                          dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                                          imageIndex:0];
+
+      [[outputBatchModel3 objectAtIndex:0] readBytes:dataOutput3.mutableBytes
+                                          dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                                          imageIndex:0];
+
+      [[outputBatchModel4 objectAtIndex:0] readBytes:dataOutput4.mutableBytes
+                                          dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                                          imageIndex:0];
+            
+      return check_data(correctOutput[@"output_1"], dataOutput1, 5e-3)
+          && check_data(correctOutput[@"output_2"], dataOutput2, 5e-3)
+          && check_data(correctOutput[@"output_3"], dataOutput3, 5e-3)
+          && check_data(correctOutput[@"output_4"], dataOutput4, 5e-3);
+    } else {
+      return true;
+    }
+  }
+}
 
 struct LossTest::impl {
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferPreProcessing *contentPreProcess = nil;

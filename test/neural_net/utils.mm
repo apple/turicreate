@@ -955,8 +955,8 @@ TCMPSVgg16Block2Descriptor* define_block_2_descriptor(boost::property_tree::ptre
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {
       TCMPSVgg16Block2Descriptor *descriptor = [[TCMPSVgg16Block2Descriptor alloc] init];
+
       descriptor.conv1.kernelWidth           = config.get<NSUInteger>("conv_1.kernel_width");
-      
       descriptor.conv1.kernelHeight          = config.get<NSUInteger>("conv_1.kernel_height");
       descriptor.conv1.inputFeatureChannels  = config.get<NSUInteger>("conv_1.input_feature_channels");
       descriptor.conv1.outputFeatureChannels = config.get<NSUInteger>("conv_1.output_feature_channels");
@@ -1059,6 +1059,300 @@ NSDictionary<NSString *, NSData *>*  define_block_2_weights(boost::property_tree
   }
 }
 
+TCMPSVgg16Descriptor* define_vgg_descriptor(boost::property_tree::ptree config) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      TCMPSVgg16Descriptor *descriptor = [[TCMPSVgg16Descriptor alloc] init];
+      
+      descriptor.block1.conv1.kernelWidth           = config.get<NSUInteger>("block1.conv_1.kernel_width");
+      descriptor.block1.conv1.kernelHeight          = config.get<NSUInteger>("block1.conv_1.kernel_height");
+      descriptor.block1.conv1.inputFeatureChannels  = config.get<NSUInteger>("block1.conv_1.input_feature_channels");
+      descriptor.block1.conv1.outputFeatureChannels = config.get<NSUInteger>("block1.conv_1.output_feature_channels");
+      descriptor.block1.conv1.strideWidth           = config.get<NSUInteger>("block1.conv_1.stride_width");
+      descriptor.block1.conv1.strideHeight          = config.get<NSUInteger>("block1.conv_1.stride_height");
+      descriptor.block1.conv1.paddingWidth          = config.get<NSUInteger>("block1.conv_1.padding_width");
+      descriptor.block1.conv1.paddingHeight         = config.get<NSUInteger>("block1.conv_1.padding_height");
+      descriptor.block1.conv1.updateWeights         = config.get<bool>("block1.conv_1.update_weights");
+      descriptor.block1.conv1.label = @"vgg16_block_1_conv_1";
+
+      descriptor.block1.conv2.kernelWidth           = config.get<NSUInteger>("block1.conv_2.kernel_width");
+      descriptor.block1.conv2.kernelHeight          = config.get<NSUInteger>("block1.conv_2.kernel_height");
+      descriptor.block1.conv2.inputFeatureChannels  = config.get<NSUInteger>("block1.conv_2.input_feature_channels");
+      descriptor.block1.conv2.outputFeatureChannels = config.get<NSUInteger>("block1.conv_2.output_feature_channels");
+      descriptor.block1.conv2.strideWidth           = config.get<NSUInteger>("block1.conv_2.stride_width");
+      descriptor.block1.conv2.strideHeight          = config.get<NSUInteger>("block1.conv_2.stride_height");
+      descriptor.block1.conv2.paddingWidth          = config.get<NSUInteger>("block1.conv_2.padding_width");
+      descriptor.block1.conv2.paddingHeight         = config.get<NSUInteger>("block1.conv_2.padding_height");
+      descriptor.block1.conv2.updateWeights         = config.get<bool>("block1.conv_2.update_weights");
+      descriptor.block1.conv2.label = @"vgg16_block_1_conv_2";
+
+      descriptor.block1.pooling.kernelSize = config.get<NSUInteger>("block1.pooling.kernel");
+      descriptor.block1.pooling.strideSize = config.get<NSUInteger>("block1.pooling.stride");
+
+      descriptor.block2.conv1.kernelWidth           = config.get<NSUInteger>("block2.conv_1.kernel_width");
+      descriptor.block2.conv1.kernelHeight          = config.get<NSUInteger>("block2.conv_1.kernel_height");
+      descriptor.block2.conv1.inputFeatureChannels  = config.get<NSUInteger>("block2.conv_1.input_feature_channels");
+      descriptor.block2.conv1.outputFeatureChannels = config.get<NSUInteger>("block2.conv_1.output_feature_channels");
+      descriptor.block2.conv1.strideWidth           = config.get<NSUInteger>("block2.conv_1.stride_width");
+      descriptor.block2.conv1.strideHeight          = config.get<NSUInteger>("block2.conv_1.stride_height");
+      descriptor.block2.conv1.paddingWidth          = config.get<NSUInteger>("block2.conv_1.padding_width");
+      descriptor.block2.conv1.paddingHeight         = config.get<NSUInteger>("block2.conv_1.padding_height");
+      descriptor.block2.conv1.updateWeights         = config.get<bool>("block2.conv_1.update_weights");
+      descriptor.block2.conv1.label = @"vgg16_block_2_conv_1";
+
+      descriptor.block2.conv2.kernelWidth           = config.get<NSUInteger>("block2.conv_2.kernel_width");
+      descriptor.block2.conv2.kernelHeight          = config.get<NSUInteger>("block2.conv_2.kernel_height");
+      descriptor.block2.conv2.inputFeatureChannels  = config.get<NSUInteger>("block2.conv_2.input_feature_channels");
+      descriptor.block2.conv2.outputFeatureChannels = config.get<NSUInteger>("block2.conv_2.output_feature_channels");
+      descriptor.block2.conv2.strideWidth           = config.get<NSUInteger>("block2.conv_2.stride_width");
+      descriptor.block2.conv2.strideHeight          = config.get<NSUInteger>("block2.conv_2.stride_height");
+      descriptor.block2.conv2.paddingWidth          = config.get<NSUInteger>("block2.conv_2.padding_width");
+      descriptor.block2.conv2.paddingHeight         = config.get<NSUInteger>("block2.conv_2.padding_height");
+      descriptor.block2.conv2.updateWeights         = config.get<bool>("block2.conv_2.update_weights");
+      descriptor.block2.conv2.label = @"vgg16_block_2_conv_2";
+
+      descriptor.block2.pooling.kernelSize = config.get<NSUInteger>("block2.pooling.kernel");
+      descriptor.block2.pooling.strideSize = config.get<NSUInteger>("block2.pooling.stride");
+
+      descriptor.block3.conv1.kernelWidth           = config.get<NSUInteger>("block3.conv_1.kernel_width");
+      descriptor.block3.conv1.kernelHeight          = config.get<NSUInteger>("block3.conv_1.kernel_height");
+      descriptor.block3.conv1.inputFeatureChannels  = config.get<NSUInteger>("block3.conv_1.input_feature_channels");
+      descriptor.block3.conv1.outputFeatureChannels = config.get<NSUInteger>("block3.conv_1.output_feature_channels");
+      descriptor.block3.conv1.strideWidth           = config.get<NSUInteger>("block3.conv_1.stride_width");
+      descriptor.block3.conv1.strideHeight          = config.get<NSUInteger>("block3.conv_1.stride_height");
+      descriptor.block3.conv1.paddingWidth          = config.get<NSUInteger>("block3.conv_1.padding_width");
+      descriptor.block3.conv1.paddingHeight         = config.get<NSUInteger>("block3.conv_1.padding_height");
+      descriptor.block3.conv1.updateWeights         = config.get<bool>("block3.conv_1.update_weights");
+      descriptor.block3.conv1.label = @"vgg16_block_3_conv_1";
+
+      descriptor.block3.conv2.kernelWidth           = config.get<NSUInteger>("block3.conv_2.kernel_width");
+      descriptor.block3.conv2.kernelHeight          = config.get<NSUInteger>("block3.conv_2.kernel_height");
+      descriptor.block3.conv2.inputFeatureChannels  = config.get<NSUInteger>("block3.conv_2.input_feature_channels");
+      descriptor.block3.conv2.outputFeatureChannels = config.get<NSUInteger>("block3.conv_2.output_feature_channels");
+      descriptor.block3.conv2.strideWidth           = config.get<NSUInteger>("block3.conv_2.stride_width");
+      descriptor.block3.conv2.strideHeight          = config.get<NSUInteger>("block3.conv_2.stride_height");
+      descriptor.block3.conv2.paddingWidth          = config.get<NSUInteger>("block3.conv_2.padding_width");
+      descriptor.block3.conv2.paddingHeight         = config.get<NSUInteger>("block3.conv_2.padding_height");
+      descriptor.block3.conv2.updateWeights         = config.get<bool>("block3.conv_2.update_weights");
+      descriptor.block3.conv2.label = @"vgg16_block_3_conv_2";
+
+      descriptor.block3.conv3.kernelWidth           = config.get<NSUInteger>("block3.conv_3.kernel_width");
+      descriptor.block3.conv3.kernelHeight          = config.get<NSUInteger>("block3.conv_3.kernel_height");
+      descriptor.block3.conv3.inputFeatureChannels  = config.get<NSUInteger>("block3.conv_3.input_feature_channels");
+      descriptor.block3.conv3.outputFeatureChannels = config.get<NSUInteger>("block3.conv_3.output_feature_channels");
+      descriptor.block3.conv3.strideWidth           = config.get<NSUInteger>("block3.conv_3.stride_width");
+      descriptor.block3.conv3.strideHeight          = config.get<NSUInteger>("block3.conv_3.stride_height");
+      descriptor.block3.conv3.paddingWidth          = config.get<NSUInteger>("block3.conv_3.padding_width");
+      descriptor.block3.conv3.paddingHeight         = config.get<NSUInteger>("block3.conv_3.padding_height");
+      descriptor.block3.conv3.updateWeights         = config.get<bool>("block3.conv_3.update_weights");
+      descriptor.block3.conv3.label = @"vgg16_block_3_conv_3";
+
+      descriptor.block3.pooling.kernelSize = config.get<NSUInteger>("block3.pooling.kernel");
+      descriptor.block3.pooling.strideSize = config.get<NSUInteger>("block3.pooling.stride");
+
+      descriptor.block4.conv1.kernelWidth           = config.get<NSUInteger>("block4.conv_1.kernel_width");
+      descriptor.block4.conv1.kernelHeight          = config.get<NSUInteger>("block4.conv_1.kernel_height");
+      descriptor.block4.conv1.inputFeatureChannels  = config.get<NSUInteger>("block4.conv_1.input_feature_channels");
+      descriptor.block4.conv1.outputFeatureChannels = config.get<NSUInteger>("block4.conv_1.output_feature_channels");
+      descriptor.block4.conv1.strideWidth           = config.get<NSUInteger>("block4.conv_1.stride_width");
+      descriptor.block4.conv1.strideHeight          = config.get<NSUInteger>("block4.conv_1.stride_height");
+      descriptor.block4.conv1.paddingWidth          = config.get<NSUInteger>("block4.conv_1.padding_width");
+      descriptor.block4.conv1.paddingHeight         = config.get<NSUInteger>("block4.conv_1.padding_height");
+      descriptor.block4.conv1.updateWeights         = config.get<bool>("block4.conv_1.update_weights");
+      descriptor.block4.conv1.label = @"vgg16_block_4_conv_1";
+
+      descriptor.block4.conv2.kernelWidth           = config.get<NSUInteger>("block4.conv_2.kernel_width");
+      descriptor.block4.conv2.kernelHeight          = config.get<NSUInteger>("block4.conv_2.kernel_height");
+      descriptor.block4.conv2.inputFeatureChannels  = config.get<NSUInteger>("block4.conv_2.input_feature_channels");
+      descriptor.block4.conv2.outputFeatureChannels = config.get<NSUInteger>("block4.conv_2.output_feature_channels");
+      descriptor.block4.conv2.strideWidth           = config.get<NSUInteger>("block4.conv_2.stride_width");
+      descriptor.block4.conv2.strideHeight          = config.get<NSUInteger>("block4.conv_2.stride_height");
+      descriptor.block4.conv2.paddingWidth          = config.get<NSUInteger>("block4.conv_2.padding_width");
+      descriptor.block4.conv2.paddingHeight         = config.get<NSUInteger>("block4.conv_2.padding_height");
+      descriptor.block4.conv2.updateWeights         = config.get<bool>("block4.conv_2.update_weights");
+      descriptor.block4.conv2.label = @"vgg16_block_4_conv_2";
+
+      descriptor.block4.conv3.kernelWidth           = config.get<NSUInteger>("block4.conv_3.kernel_width");
+      descriptor.block4.conv3.kernelHeight          = config.get<NSUInteger>("block4.conv_3.kernel_height");
+      descriptor.block4.conv3.inputFeatureChannels  = config.get<NSUInteger>("block4.conv_3.input_feature_channels");
+      descriptor.block4.conv3.outputFeatureChannels = config.get<NSUInteger>("block4.conv_3.output_feature_channels");
+      descriptor.block4.conv3.strideWidth           = config.get<NSUInteger>("block4.conv_3.stride_width");
+      descriptor.block4.conv3.strideHeight          = config.get<NSUInteger>("block4.conv_3.stride_height");
+      descriptor.block4.conv3.paddingWidth          = config.get<NSUInteger>("block4.conv_3.padding_width");
+      descriptor.block4.conv3.paddingHeight         = config.get<NSUInteger>("block4.conv_3.padding_height");
+      descriptor.block4.conv3.updateWeights         = config.get<bool>("block4.conv_3.update_weights");
+      descriptor.block4.conv3.label = @"vgg16_block_4_conv_3";
+
+      descriptor.block4.pooling.kernelSize = config.get<NSUInteger>("block4.pooling.kernel");
+      descriptor.block4.pooling.strideSize = config.get<NSUInteger>("block4.pooling.stride");
+
+      return descriptor;
+    } else {
+      throw "Need to be on MacOS 10.15 to use this function";
+    }
+  }
+}
+
+NSDictionary<NSString *, NSData *>* define_vgg_weights(boost::property_tree::ptree weights) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      NSMutableDictionary<NSString *, NSData *>* weights_dict = [[NSMutableDictionary alloc] init];
+
+      NSMutableData * vggBlock1Conv1Weights = [NSMutableData data];
+      NSMutableData * vggBlock1Conv1Bias = [NSMutableData data];
+      NSMutableData * vggBlock1Conv2Weights = [NSMutableData data];
+      NSMutableData * vggBlock1Conv2Bias = [NSMutableData data];
+
+      NSMutableData * vggBlock2Conv1Weights = [NSMutableData data];
+      NSMutableData * vggBlock2Conv1Bias = [NSMutableData data];
+      NSMutableData * vggBlock2Conv2Weights = [NSMutableData data];
+      NSMutableData * vggBlock2Conv2Bias = [NSMutableData data];
+
+      NSMutableData * vggBlock3Conv1Weights = [NSMutableData data];
+      NSMutableData * vggBlock3Conv1Bias = [NSMutableData data];
+      NSMutableData * vggBlock3Conv2Weights = [NSMutableData data];
+      NSMutableData * vggBlock3Conv2Bias = [NSMutableData data];
+      NSMutableData * vggBlock3Conv3Weights = [NSMutableData data];
+      NSMutableData * vggBlock3Conv3Bias = [NSMutableData data];
+
+      NSMutableData * vggBlock4Conv1Weights = [NSMutableData data];
+      NSMutableData * vggBlock4Conv1Bias = [NSMutableData data];
+      NSMutableData * vggBlock4Conv2Weights = [NSMutableData data];
+      NSMutableData * vggBlock4Conv2Bias = [NSMutableData data];
+      NSMutableData * vggBlock4Conv3Weights = [NSMutableData data];
+      NSMutableData * vggBlock4Conv3Bias = [NSMutableData data];
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_1_conv_1_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock1Conv1Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_1_conv_1_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock1Conv1Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_1_conv_2_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock1Conv2Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_1_conv_2_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock1Conv2Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_2_conv_1_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock2Conv1Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_2_conv_1_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock2Conv1Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_2_conv_2_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock2Conv2Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_2_conv_2_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock2Conv2Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_3_conv_1_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock3Conv1Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_3_conv_1_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock3Conv1Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_3_conv_2_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock3Conv2Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_3_conv_2_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock3Conv2Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_3_conv_3_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock3Conv3Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_3_conv_3_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock3Conv3Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_4_conv_1_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock4Conv1Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_4_conv_1_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock4Conv1Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_4_conv_2_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock4Conv2Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_4_conv_2_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock4Conv2Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_4_conv_3_weights")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock4Conv3Weights appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, weights.get_child("vgg_block_4_conv_3_biases")) {
+        float element = lexical_cast<float>(v.second.data());
+        [vggBlock4Conv3Bias appendBytes:&element length:sizeof(float)];
+      }
+
+      weights_dict[@"vgg_block_1_conv_1_weights"] = vggBlock1Conv1Weights;
+      weights_dict[@"vgg_block_1_conv_1_biases"] = vggBlock1Conv1Bias;
+      weights_dict[@"vgg_block_1_conv_2_weights"] = vggBlock1Conv2Weights;
+      weights_dict[@"vgg_block_1_conv_2_biases"] = vggBlock1Conv2Bias;
+
+      weights_dict[@"vgg_block_2_conv_1_weights"] = vggBlock2Conv1Weights;
+      weights_dict[@"vgg_block_2_conv_1_biases"] = vggBlock2Conv1Bias;
+      weights_dict[@"vgg_block_2_conv_2_weights"] = vggBlock2Conv2Weights;
+      weights_dict[@"vgg_block_2_conv_2_biases"] = vggBlock2Conv2Bias;
+
+      weights_dict[@"vgg_block_3_conv_1_weights"] = vggBlock3Conv1Weights;
+      weights_dict[@"vgg_block_3_conv_1_biases"] = vggBlock3Conv1Bias;
+      weights_dict[@"vgg_block_3_conv_2_weights"] = vggBlock3Conv2Weights;
+      weights_dict[@"vgg_block_3_conv_2_biases"] = vggBlock3Conv2Bias;
+      weights_dict[@"vgg_block_3_conv_3_weights"] = vggBlock3Conv3Weights;
+      weights_dict[@"vgg_block_3_conv_3_biases"] = vggBlock3Conv3Bias;
+
+      weights_dict[@"vgg_block_4_conv_1_weights"] = vggBlock4Conv1Weights;
+      weights_dict[@"vgg_block_4_conv_1_biases"] = vggBlock4Conv1Bias;
+      weights_dict[@"vgg_block_4_conv_2_weights"] = vggBlock4Conv2Weights;
+      weights_dict[@"vgg_block_4_conv_2_biases"] = vggBlock4Conv2Bias;
+      weights_dict[@"vgg_block_4_conv_3_weights"] = vggBlock4Conv3Weights;
+      weights_dict[@"vgg_block_4_conv_3_biases"] = vggBlock4Conv3Bias;
+
+      return weights_dict;
+    } else {
+      throw "Need to be on MacOS 10.15 to use this function";
+    }
+  }
+}
+
 MPSImageBatch* define_input(ptree input, id <MTLDevice> dev) {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {
@@ -1110,6 +1404,48 @@ NSData* define_output(ptree output) {
       }
       
       return outputArray;
+    } else {
+      throw "Need to be on MacOS 10.15 to use this function";
+    }
+  }
+}
+
+NSDictionary<NSString *, NSData *>* define_vgg_output(ptree output) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      NSMutableDictionary<NSString *, NSData *>* output_dict = [[NSMutableDictionary alloc] init];
+
+      NSMutableData * output1Array = [NSMutableData data];
+      NSMutableData * output2Array = [NSMutableData data];
+      NSMutableData * output3Array = [NSMutableData data];
+      NSMutableData * output4Array = [NSMutableData data];
+
+      BOOST_FOREACH(const ptree::value_type v, output.get_child("output_1")) {
+        float element = lexical_cast<float>(v.second.data());
+        [output1Array appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, output.get_child("output_2")) {
+        float element = lexical_cast<float>(v.second.data());
+        [output2Array appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, output.get_child("output_3")) {
+        float element = lexical_cast<float>(v.second.data());
+        [output3Array appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, output.get_child("output_4")) {
+        float element = lexical_cast<float>(v.second.data());
+        [output4Array appendBytes:&element length:sizeof(float)];
+      }
+
+      output_dict[@"output_1"] = output1Array;
+      output_dict[@"output_2"] = output2Array;
+      output_dict[@"output_3"] = output3Array;
+      output_dict[@"output_4"] = output4Array;
+      
+      return output_dict;
     } else {
       throw "Need to be on MacOS 10.15 to use this function";
     }

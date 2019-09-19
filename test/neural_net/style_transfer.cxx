@@ -60,6 +60,11 @@
 #include <data/block2/test_1/outputs.h>
 #include <data/block2/test_1/weights.h>
 
+#include <data/vgg16/test_1/config.h>
+#include <data/vgg16/test_1/inputs.h>
+#include <data/vgg16/test_1/outputs.h>
+#include <data/vgg16/test_1/weights.h>
+
 using boost::lexical_cast;
 using boost::property_tree::ptree;
 using boost::property_tree::read_json;
@@ -70,6 +75,7 @@ using neural_net_test::style_transfer::DecodingTest;
 using neural_net_test::style_transfer::ResnetTest;
 using neural_net_test::style_transfer::Block1Test;
 using neural_net_test::style_transfer::Block2Test;
+using neural_net_test::style_transfer::Vgg16Test;
 
 /**
   Parses the char array for json and puts it into a `boost::property::ptree`
@@ -197,17 +203,23 @@ public:
 
   // TODO: write the test
   void test_vgg16() {
-    TS_ASSERT(true); 
+    ptree config_json = extract_json(data_vgg16_test_1_config_json, data_vgg16_test_1_config_json_len);
+    ptree inputs_json = extract_json(data_vgg16_test_1_inputs_json, data_vgg16_test_1_inputs_json_len);
+    ptree outputs_json = extract_json(data_vgg16_test_1_outputs_json, data_vgg16_test_1_outputs_json_len);
+    ptree weights_json = extract_json(data_vgg16_test_1_weights_json, data_vgg16_test_1_weights_json_len);
+
+    Vgg16Test vgg_16_test(config_json, weights_json);
+    TS_ASSERT(vgg_16_test.check_predict(inputs_json, outputs_json));
   }
 
   // TODO: write the test
   void test_loss() {
-    TS_ASSERT(true); 
+    TS_ASSERT(true);
   }
 
   // TODO: write the test
   void test_weight_update() {
-    TS_ASSERT(true); 
+    TS_ASSERT(true);
   }
 };
 
