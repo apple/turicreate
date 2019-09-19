@@ -83,20 +83,20 @@ void ParameterSampler::compute_coordinates_from_warped_corners() {
 
 void ParameterSampler::perform_x_y_translation(size_t background_width,
     size_t background_height, std::mt19937 *engine_pointer) {
-  int x_margin = static_cast<int>(bounding_box_width_/2);
-  int y_margin = static_cast<int>(bounding_box_height_/2);
+  size_t x_margin = static_cast<size_t>(bounding_box_width_/2);
+  size_t y_margin = static_cast<size_t>(bounding_box_height_/2);
   if (background_width < x_margin || background_height < y_margin) {
     dx_ = 0;
     dy_ = 0;
   } else {
-    std::uniform_int_distribution<int> final_center_x_distribution(
+    std::uniform_int_distribution<size_t> final_center_x_distribution(
       x_margin, background_width - x_margin);
-    std::uniform_int_distribution<int> final_center_y_distribution(
+    std::uniform_int_distribution<size_t> final_center_y_distribution(
       y_margin, background_height - y_margin);
-    int new_center_x = final_center_x_distribution(*engine_pointer);
-    int new_center_y = final_center_y_distribution(*engine_pointer);
-    dx_ = new_center_x - static_cast<int>(center_x_);
-    dy_ = new_center_y - static_cast<int>(center_y_);
+    size_t new_center_x = final_center_x_distribution(*engine_pointer);
+    size_t new_center_y = final_center_y_distribution(*engine_pointer);
+    dx_ = new_center_x - static_cast<size_t>(center_x_);
+    dy_ = new_center_y - static_cast<size_t>(center_y_);
   }
   
   boost::gil::matrix3x2<double> affine = boost::gil::matrix3x2<double>::get_translate(
