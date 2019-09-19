@@ -1610,6 +1610,8 @@ class SFrame(object):
         """
         if orient == "records":
             g = SArray.read_json(url)
+            if g['X1'].dtype != dict:
+                raise RuntimeError("Invalid JSON format. A list of dictionaries is expected.")
             if len(g) == 0:
                 return SFrame()
             g = SFrame({'X1':g})

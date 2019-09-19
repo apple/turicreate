@@ -35,7 +35,6 @@ import warnings
 import numbers
 import six
 import types
-import json
 
 __all__ = ['SArray']
 
