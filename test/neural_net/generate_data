@@ -1,0 +1,11 @@
+#!/bin/bash
+
+python python/create_directories.py
+
+python python/block1.py
+python python/block2.py
+python python/decoding.py
+python python/encoding.py
+python python/residual.py
+python python/resnet.py
+python python/vgg.py

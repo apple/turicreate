@@ -104,3 +104,6 @@ deps/build
 # CCache within Docker
 /.docker_ccache/
 /.docker_images/
+
+
+test/neural_net/data
