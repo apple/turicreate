@@ -79,6 +79,24 @@ for key in param_keys:
     else:
         transformer_weight_dict[key] = weight
 
+json_config = {
+  "conv": {
+    "kernel_width": 9,
+    "kernel_height": 9,
+    "input_feature_channels": 3,
+    "output_feature_channels": 32,
+    "stride_width": 1,
+    "stride_height": 1,
+    "padding_width": 4,
+    "padding_height": 4,
+    "update_weights": True
+  },
+  "inst": {
+    "channels": 32,
+    "styles": 8
+  }
+}
+
 json_weights = {
     "encode_conv_weights": transformer_weight_dict["encoding_conv0_weight"].flatten().tolist(),
     "encode_inst_beta": transformer_weight_dict["encoding_instancenorm0_beta"].flatten().tolist(),
@@ -95,6 +113,9 @@ json_inputs = {
 json_outputs = {
     "output": output.asnumpy().transpose(0, 2, 3, 1).flatten().tolist()
 }
+
+with open('data/encode/test_1/config.json', 'w') as fp:
+    json.dump(json_config, fp)
 
 with open('data/encode/test_1/weights.json', 'w') as fp:
     json.dump(json_weights, fp)

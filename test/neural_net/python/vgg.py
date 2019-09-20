@@ -69,6 +69,143 @@ output_2 = output[1]
 output_3 = output[2]
 output_4 = output[3]
 
+json_config = {
+    "block1": {
+        "conv_1":{
+            "kernel_width":9,
+            "kernel_height":9,
+            "input_feature_channels":32,
+            "output_feature_channels":3,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":4,
+            "padding_height":4,
+            "update_weights":False
+        },
+        "conv_2":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":64,
+            "output_feature_channels":64,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "pooling":{
+            "kernel": 2,
+        "stride": 2
+        }
+    },
+    "block2": {
+        "conv_1":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":64,
+            "output_feature_channels":128,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "conv_2":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":128,
+            "output_feature_channels":128,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "pooling":{
+            "kernel": 2,
+        "stride": 2
+        }
+    },
+    "block3": {
+        "conv_1":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":128,
+            "output_feature_channels":256,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "conv_2":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":256,
+            "output_feature_channels":256,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "conv_3":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":256,
+            "output_feature_channels":256,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "pooling":{
+            "kernel": 2,
+        "stride": 2
+        }
+    },
+    "block4": {
+        "conv_1":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":256,
+            "output_feature_channels":512,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "conv_2":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":512,
+            "output_feature_channels":512,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "conv_3":{
+            "kernel_width":3,
+            "kernel_height":3,
+            "input_feature_channels":512,
+            "output_feature_channels":512,
+            "stride_width":1,
+            "stride_height":1,
+            "padding_width":1,
+            "padding_height":1,
+            "update_weights":False
+        },
+        "pooling":{
+            "kernel": 2,
+        "stride": 2
+        }
+    }
+}
+
 json_weights = {
     "vgg_block_1_conv_1_weights": vgg_weight_dict["vgg16_conv0_weight"].flatten().tolist(),
     "vgg_block_1_conv_1_biases": vgg_weight_dict["vgg16_conv0_bias"].flatten().tolist(),
@@ -105,6 +242,9 @@ json_outputs = {
     "output_3": output_3.asnumpy().transpose(0, 2, 3, 1).flatten().tolist(),
     "output_4": output_4.asnumpy().transpose(0, 2, 3, 1).flatten().tolist()
 }
+
+with open('data/vgg16/test_1/config.json', 'w') as fp:
+    json.dump(json_config, fp)
 
 with open('data/vgg16/test_1/weights.json', 'w') as fp:
     json.dump(json_weights, fp)

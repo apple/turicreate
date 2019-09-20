@@ -80,6 +80,27 @@ for key in param_keys:
     else:
         decoding_weight_dict[key] = weight
 
+json_config = {
+  "conv": {
+    "kernel_width": 3,
+    "kernel_height": 3,
+    "input_feature_channels": 128,
+    "output_feature_channels": 64,
+    "stride_width": 1,
+    "stride_height": 1,
+    "padding_width": 1,
+    "padding_height": 1,
+    "update_weights": True
+  },
+  "inst": {
+    "channels": 64,
+    "styles": 8
+  },
+  "upsample": {
+    "scale": 2
+  }
+}
+
 json_weights = {
     "decode_conv_weights" : decoding_weight_dict["decoding_conv0_weight"].flatten().tolist(),
     "decode_inst_beta" : decoding_weight_dict["decoding_instancenorm0_beta"].flatten().tolist(),
@@ -96,6 +117,9 @@ json_inputs = {
 json_outputs = {
     "output": output.asnumpy().transpose(0, 2, 3, 1).flatten().tolist()
 }
+
+with open('data/decode/test_1/config.json', 'w') as fp:
+    json.dump(json_config, fp)
 
 with open('data/decode/test_1/weights.json', 'w') as fp:
     json.dump(json_weights, fp)

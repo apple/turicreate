@@ -188,7 +188,276 @@ for key in param_keys:
     else:
         transformer_weight_dict[key] = weight
 
-json_weights= {
+json_config = {
+  "encode1": {
+    "conv": {
+      "kernel_width": 9,
+      "kernel_height": 9,
+      "input_feature_channels": 3,
+      "output_feature_channels": 32,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 4,
+      "padding_height": 4,
+      "update_weights": True
+    },
+    "inst": {
+      "channels": 32,
+      "styles": 8
+    }
+  },
+  "encode2": {
+    "conv": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 32,
+      "output_feature_channels": 64,
+      "stride_width": 2,
+      "stride_height": 2,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst": {
+      "channels": 64,
+      "styles": 8
+    }
+  },
+  "encode3": {
+    "conv": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 64,
+      "output_feature_channels": 128,
+      "stride_width": 2,
+      "stride_height": 2,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst": {
+      "channels": 128,
+      "styles": 8
+    }
+  },
+  "residual1": {
+    "conv1": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "conv2": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst1": {
+      "channels": 128,
+      "styles": 8
+    },
+    "inst2": {
+      "channels": 128,
+      "styles": 8
+    }
+  },
+  "residual2": {
+    "conv1": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "conv2": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst1": {
+      "channels": 128,
+      "styles": 8
+    },
+    "inst2": {
+      "channels": 128,
+      "styles": 8
+    }
+  },
+  "residual3": {
+    "conv1": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "conv2": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst1": {
+      "channels": 128,
+      "styles": 8
+    },
+    "inst2": {
+      "channels": 128,
+      "styles": 8
+    }
+  },
+  "residual4": {
+    "conv1": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "conv2": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst1": {
+      "channels": 128,
+      "styles": 8
+    },
+    "inst2": {
+      "channels": 128,
+      "styles": 8
+    }
+  },
+  "residual5": {
+    "conv1": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "conv2": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 128,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst1": {
+      "channels": 128,
+      "styles": 8
+    },
+    "inst2": {
+      "channels": 128,
+      "styles": 8
+    }
+  },
+  "decode1": {
+    "conv": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 128,
+      "output_feature_channels": 64,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst": {
+      "channels": 64,
+      "styles": 8
+    },
+    "upsample": {
+      "scale": 2
+    }
+  },
+  "decode2": {
+    "conv": {
+      "kernel_width": 3,
+      "kernel_height": 3,
+      "input_feature_channels": 64,
+      "output_feature_channels": 32,
+      "stride_width": 1,
+      "stride_height": 1,
+      "padding_width": 1,
+      "padding_height": 1,
+      "update_weights": True
+    },
+    "inst": {
+      "channels": 32,
+      "styles": 8
+    },
+    "upsample": {
+      "scale": 2
+    }
+  },
+  "conv": {
+    "kernel_width": 9,
+    "kernel_height": 9,
+    "input_feature_channels": 32,
+    "output_feature_channels": 3,
+    "stride_width": 1,
+    "stride_height": 1,
+    "padding_width": 4,
+    "padding_height": 4,
+    "update_weights": True
+  }, 
+  "inst": {
+    "channels": 3,
+    "styles": 8
+  }
+}
+
+json_weights = {
     "transformer_encode_1_conv_weights": transformer_weight_dict["transformer_conv0_weight"].flatten().tolist(),
     "transformer_encode_1_inst_beta": transformer_weight_dict["transformer_instancenorm0_beta"].flatten().tolist(),
     "transformer_encode_1_inst_gamma": transformer_weight_dict["transformer_instancenorm0_gamma"].flatten().tolist(),
@@ -249,6 +518,9 @@ json_inputs = {
 json_outputs = {
 	"output": output.asnumpy().transpose(0, 2, 3, 1).flatten().tolist()
 }
+
+with open('data/resnet/test_1/config.json', 'w') as fp:
+    json.dump(json_config, fp)
 
 with open('data/resnet/test_1/weights.json', 'w') as fp:
     json.dump(json_weights, fp)

@@ -93,6 +93,40 @@ for key in param_keys:
     else:
         residual_weight_dict[key] = weight
 
+
+json_config = {
+  "conv_1": {
+    "kernel_width": 3,
+    "kernel_height": 3,
+    "input_feature_channels": 128,
+    "output_feature_channels": 128,
+    "stride_width": 1,
+    "stride_height": 1,
+    "padding_width": 1,
+    "padding_height": 1,
+    "update_weights": True
+  },
+  "conv_2": {
+    "kernel_width": 3,
+    "kernel_height": 3,
+    "input_feature_channels": 128,
+    "output_feature_channels": 128,
+    "stride_width": 1,
+    "stride_height": 1,
+    "padding_width": 1,
+    "padding_height": 1,
+    "update_weights": True
+  },
+  "inst_1": {
+    "channels": 128,
+    "styles": 8
+  },
+  "inst_2": {
+    "channels": 128,
+    "styles": 8
+  }
+}
+
 json_weights = {
     "residual_conv_1_weights" : residual_weight_dict["residualblock0_conv0_weight"].flatten().tolist(),
     "residual_conv_2_weights" : residual_weight_dict["residualblock0_conv1_weight"].flatten().tolist(),
@@ -112,6 +146,10 @@ json_inputs = {
 json_outputs = {
     "output": output.asnumpy().transpose(0, 2, 3, 1).flatten().tolist()
 }
+
+
+with open('data/residual/test_1/config.json', 'w') as fp:
+    json.dump(json_config, fp)
 
 with open('data/residual/test_1/weights.json', 'w') as fp:
     json.dump(json_weights, fp)
