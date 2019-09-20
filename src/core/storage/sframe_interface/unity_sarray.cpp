@@ -277,11 +277,11 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
             size_t num_elems_parsed = 0;
             auto elements = parse_result.first.get<flex_list>();
             if (!elements.empty()) {
-              auto sarray_type = elements.front().get_type();
+              const auto& sarray_type = elements.front().get_type();
               sarray_ptr->set_type(sarray_type);
               for (auto it = elements.begin(); it != elements.end(); it++) {
                 auto element = *it;
-                auto element_type = element.get_type();
+                const auto& element_type = element.get_type();
                 // convert the array type to float if one of the element is float
                 if (element_type != flex_type_enum::UNDEFINED && 
                     sarray_type == flex_type_enum::UNDEFINED) {
