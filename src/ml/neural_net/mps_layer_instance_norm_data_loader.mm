@@ -95,15 +95,19 @@ API_AVAILABLE(macos(10.14))
                                                    dataType:(MPSDataTypeFloat32)];
 
     _style_props = [[NSMutableArray alloc] init];
-    
+
     for (NSUInteger index = 0; index < styles; index ++) {
       TCMPSInstanceNormDataLoaderProps *style_property = [[TCMPSInstanceNormDataLoaderProps alloc] init];
 
-      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:_gamma_weights.bytes + (index * _numberOfFeatureChannels * sizeof(float))
+      size_t gammaBufferOffset = _gamma_weights.bytes + (index * _numberOfFeatureChannels * sizeof(float));
+
+      size_t betaBufferOffset = _beta_weights.bytes + (index * _numberOfFeatureChannels * sizeof(float))
+
+      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:gammaBufferOffset
                                                    length:sizeof(float) * _numberOfFeatureChannels
                                                   options:MTLResourceStorageModeManaged];
 
-      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:_beta_weights.bytes + (index * _numberOfFeatureChannels * sizeof(float))
+      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:betaBufferOffset
                                                   length:sizeof(float) * _numberOfFeatureChannels
                                                  options:MTLResourceStorageModeManaged];
 
