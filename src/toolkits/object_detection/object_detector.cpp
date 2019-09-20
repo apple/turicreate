@@ -493,6 +493,22 @@ void object_detector::perform_predict(gl_sframe data,
   // For each anchor box, we have 4 bbox coords + 1 conf + one-hot class labels
   int num_outputs_per_anchor = 5 + static_cast<int>(class_labels.size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
+
+  float_array_map pred_config = get_prediction_config();
+  pred_config["num_classes"] =
+      shared_float_array::wrap(data_iter->class_labels().size());
+  pred_config["lmb_noobj"] = shared_float_array::wrap(5.0);
+  pred_config["lmb_obj"] = shared_float_array::wrap(100.0);
+  pred_config["lmb_coord_xy"] = shared_float_array::wrap(10.0);
+  pred_config["lmb_coord_wh"] = shared_float_array::wrap(10.0);
+  pred_config["lmb_class"] = shared_float_array::wrap(2.0);
+  pred_config["learning_rate"] = shared_float_array::wrap(BASE_LEARNING_RATE);
+  pred_config["gradient_clipping"] =
+      shared_float_array::wrap(0.025f * MPS_LOSS_MULTIPLIER);
+  pred_config["od_rescore"] = shared_float_array::wrap(1.0);  // True
+  pred_config["num_iterations"] =
+      shared_float_array::wrap(get_max_iterations());
+
   std::unique_ptr<model_backend> model = ctx->create_object_detector(
       /* n       */ read_state<int>("batch_size"),
       /* c_in    */ NUM_INPUT_CHANNELS,
@@ -501,7 +517,7 @@ void object_detector::perform_predict(gl_sframe data,
       /* c_out   */ num_output_channels,
       /* h_out   */ grid_height,
       /* w_out   */ grid_width,
-      /* config  */ get_prediction_config(),
+      /* config  */ pred_config,
       /* weights */ get_model_params());
 
   // To support double buffering, use a queue of pending inference results.
@@ -510,10 +526,10 @@ void object_detector::perform_predict(gl_sframe data,
   // Helper function to process results until the queue reaches a given size.
   auto pop_until_size = [&](size_t remaining) {
     while (pending_batches.size() > remaining) {
+
       // Pop one batch from the queue.
       image_augmenter::result batch = pending_batches.front();
       pending_batches.pop();
-
       for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
         // For this row (corresponding to one image), extract the prediction.
         shared_float_array raw_prediction = batch.image_batch[i];
@@ -554,8 +570,10 @@ void object_detector::perform_predict(gl_sframe data,
     // submit them to the neural net.
     image_augmenter::result prepared_input_batch =
         augmenter->prepare_images(std::move(input_batch));
+
     std::map<std::string, shared_float_array> prediction_results =
         model->predict({{"input", prepared_input_batch.image_batch}});
+
     result_batch.image_batch = prediction_results.at("output");
 
     // Add the pending result to our queue and move on to the next input batch.
@@ -863,7 +881,6 @@ void object_detector::init_train(
   // initialized randomly using the random seed above, using the number of
   // classes observed by the training_data_iterator_ above.
   nn_spec_ = init_model(mlmodel_path);
-
   // Set additional model fields.
   flex_int grid_height = read_state<flex_int>("grid_height");
   flex_int grid_width = read_state<flex_int>("grid_width");
@@ -893,6 +910,19 @@ void object_detector::init_train(
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
+
+  float_array_map train_config = get_training_config();
+  train_config["num_classes"] =
+      shared_float_array::wrap(training_data_iterator_->class_labels().size());
+  train_config["lmb_noobj"] = shared_float_array::wrap(5.0);
+  train_config["lmb_obj"] = shared_float_array::wrap(100.0);
+  train_config["lmb_coord_xy"] = shared_float_array::wrap(10.0);
+  train_config["lmb_coord_wh"] = shared_float_array::wrap(10.0);
+  train_config["lmb_class"] = shared_float_array::wrap(2.0);
+  train_config["rescore"] = shared_float_array::wrap(1.0);  // True
+  train_config["num_iterations"] =
+      shared_float_array::wrap(get_max_iterations());
+
   training_model_ = training_compute_context_->create_object_detector(
       /* n       */ read_state<int>("batch_size"),
       /* c_in    */ NUM_INPUT_CHANNELS,
@@ -901,7 +931,7 @@ void object_detector::init_train(
       /* c_out   */ num_output_channels,
       /* h_out   */ grid_height,
       /* w_out   */ grid_width,
-      /* config  */ get_training_config(),
+      /* config  */ train_config,
       /* weights */ get_model_params());
 
   // Print the header last, after any logging triggered by initialization above.
@@ -924,6 +954,7 @@ void object_detector::perform_training_iteration() {
   // TODO: Abstract out the learning rate schedule.
   flex_int iteration_idx = get_training_iterations();
   flex_int max_iterations = get_max_iterations();
+
   if (iteration_idx == max_iterations / 2) {
 
     training_model_->set_learning_rate(BASE_LEARNING_RATE / 10.f);
