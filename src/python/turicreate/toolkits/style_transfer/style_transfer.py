@@ -20,7 +20,6 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 import turicreate as _tc
 import numpy as _np
 import math as _math
-import platform as _platform
 import six as _six
 from .._mps_utils import (use_mps as _use_mps,
                           mps_device_memory_limit as _mps_device_memory_limit,
@@ -210,7 +209,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     _style_loss_mult = params['style_loss_mult']
 
     num_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
-    use_mps = _use_mps() and num_gpus == 0 and (float(_platform.mac_ver()[0]) >= 10.15)
+    use_mps = _use_mps() and num_gpus == 0 and _tkutl._mac_ver() >= (10, 15)
     batch_size_each = params['batch_size'] // max(num_gpus, 1)
 
     batch_size = max(num_gpus, 1) * batch_size_each
