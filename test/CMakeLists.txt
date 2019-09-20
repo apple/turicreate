@@ -31,7 +31,9 @@ subdirs(
         process
         vega_renderer
         neural_net
-  )
+        benchmark
+)
+
 if(${TC_BUILD_CAPI})
   message("Building C API Tests.")
   subdirs(capi)

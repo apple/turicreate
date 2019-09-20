@@ -4555,7 +4555,7 @@ class SFrame(object):
         try:
             if _target == 'auto' and \
                 get_ipython().__class__.__name__ == "ZMQInteractiveShell":
-                display_table_in_notebook(self)
+                display_table_in_notebook(self, title)
                 return
         except NameError:
             pass

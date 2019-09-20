@@ -405,13 +405,6 @@ class RandomForestClassifier(_Classifier, _TreeModelMixin):
         return super(RandomForestClassifier, self).classify(dataset,
                                                             missing_value_action=missing_value_action)
 
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        methods = _Classifier._get_queryable_methods()
-        methods['extract_features'] = {'dataset': 'sframe'}
-        return methods
 
     def export_coreml(self, filename):
         """

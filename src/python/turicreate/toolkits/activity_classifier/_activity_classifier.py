@@ -29,8 +29,6 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .util import random_split_by_session as _random_split_by_session
 from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
-
-
 def create(dataset, session_id, target, features=None, prediction_window=100,
            validation_set='auto', max_iterations=10, batch_size=32, verbose=True, **kwargs):
     """
@@ -166,29 +164,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
 
-    params = {
-        'use_tensorflow': False,
-        'show_deprecated_warnings' : False
-    }
-
-    if '_advanced_parameters' in kwargs:
-        # Make sure no additional parameters are provided
-        new_keys = set(kwargs['_advanced_parameters'].keys())
-        set_keys = set(params.keys())
-        unsupported = new_keys - set_keys
-        if unsupported:
-            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
-
-        params.update(kwargs['_advanced_parameters'])
-
-    if params['use_tensorflow'] and not(params['show_deprecated_warnings']):
-
-        # Imports tensorflow 
-        import tensorflow as _tf
-        from ._tf_model_architecture import ActivityTensorFlowModel, _fit_model_tf
-
-        # Supresses verbosity to only errors
-        _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
 
     if isinstance(validation_set, str) and validation_set == 'auto':
         # Computing the number of unique sessions in this way is relatively
@@ -215,7 +190,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     # Decide whether to use MPS GPU, MXnet GPU or CPU
     num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=num_sessions)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 and not(params['use_tensorflow'])
+    use_mps = _use_mps() and num_mxnet_gpus == 0 
 
     if verbose:
         if use_mps:
@@ -224,8 +199,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
             print('Using GPU to create model (CUDA)')
         elif num_mxnet_gpus > 1:
             print('Using {} GPUs to create model (CUDA)'.format(num_mxnet_gpus))
-        elif params['use_tensorflow']:
-            print('Using Tensorflow to create model')
         else:
             print('Using CPU to create model')
 
@@ -233,7 +206,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     user_provided_batch_size = batch_size
     batch_size = max(batch_size, num_mxnet_gpus, 1)
 
-    use_mx_data_batch = not (use_mps or params['use_tensorflow'])
+    use_mx_data_batch = not use_mps
     data_iter = _SFrameSequenceIter(chunked_data, len(features),
                                     prediction_window, predictions_in_chunk,
                                     batch_size, use_target=use_target, mx_output=use_mx_data_batch)
@@ -269,15 +242,8 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         log = _fit_model_mps(loss_model, data_iter, valid_iter, max_iterations, verbose)
     else:
-
-        if params['use_tensorflow']:
-            net_params = _initialize_with_mxnet_weights(loss_model, chunked_data, features, prediction_window, predictions_in_chunk, batch_size, use_target)
-            ac_model = ActivityTensorFlowModel(net_params, batch_size, len(features), len(target_map), prediction_window, predictions_in_chunk)
-            # Train the model using Tensorflow
-            log = _fit_model_tf(ac_model, net_params, data_iter, valid_iter, max_iterations, verbose, 1e-3)
-        else:
-            # Train the model using Mxnet
-            log = _fit_model_mxnet(loss_model, data_iter, valid_iter, max_iterations, num_mxnet_gpus, verbose)
+        # Train the model using Mxnet
+        log = _fit_model_mxnet(loss_model, data_iter, valid_iter, max_iterations, num_mxnet_gpus, verbose)
 
     # Set up prediction model
     pred_model.bind(data_shapes=data_iter.provide_data, label_shapes=None,
@@ -286,10 +252,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     if use_mps:
         mps_params = loss_model.export()
         arg_params, aux_params = _ac_weights_mps_to_mxnet(mps_params, _net_params['lstm_h'])
-
-    elif params['use_tensorflow']:
-        # Copy the weights back in the MXNet format
-        arg_params, aux_params = ac_model.get_weights()
 
     else:
         arg_params, aux_params = loss_model.get_params()

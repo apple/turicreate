@@ -17,32 +17,32 @@
 #ifndef Canvas_h
 #define Canvas_h
 
-#import "VegaHTMLElement.h"
+#import "TCVegaHTMLElement.h"
 
 #import <CoreGraphics/CoreGraphics.h>
 #import <Foundation/Foundation.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@interface VegaCGFontProperties : NSObject
-@property NSString *cssFontString;
-@property NSString *fontFamily;
-@property NSString *fontSize;
-@property NSString *fontStyle;
-@property NSString *fontWeight;
-@property NSString *fontVariant;
-@property NSString *lineHeight;
+@interface TCVegaCGFontProperties : NSObject
+@property (nonatomic, strong) NSString *cssFontString;
+@property (nonatomic, strong) NSString *fontFamily;
+@property (nonatomic, strong) NSString *fontSize;
+@property (nonatomic, strong) NSString *fontStyle;
+@property (nonatomic, strong) NSString *fontWeight;
+@property (nonatomic, strong) NSString *fontVariant;
+@property (nonatomic, strong) NSString *lineHeight;
 
 - (instancetype)initWithString:(NSString*)font;
 @end
 
-@protocol VegaCGGradientInterface<JSExport>
+@protocol TCVegaCGGradientInterface<JSExport>
 JSExportAs(addColorStop,
            - (void)addColorStopWithOffset:(double)offset
            color:(NSString *)color
            );
 @end
 
-@interface VegaCGLinearGradient : NSObject<VegaCGGradientInterface>
+@interface TCVegaCGLinearGradient : NSObject<TCVegaCGGradientInterface>
 - (instancetype)initWithX0:(double)x0
                         y0:(double)y0
                         x1:(double)x1
@@ -50,32 +50,32 @@ JSExportAs(addColorStop,
 - (void)fillWithContext:(CGContextRef)context;
 @end
 
-@protocol VegaCGImageInterface<JSExport>
+@protocol TCVegaCGImageInterface<JSExport>
 @end
 
-@interface VegaCGImage : NSObject<VegaCGImageInterface>
+@interface TCVegaCGImage : NSObject<TCVegaCGImageInterface>
 @end
 
-@protocol VegaCGTextMetricsInterface<JSExport>
-@property double width;
+@protocol TCVegaCGTextMetricsInterface<JSExport>
+@property (nonatomic) double width;
 @end
 
-@interface VegaCGTextMetrics : NSObject<VegaCGTextMetricsInterface>
+@interface TCVegaCGTextMetrics : NSObject<TCVegaCGTextMetricsInterface>
 @end
 
-@protocol VegaCGContextInterface <JSExport>
+@protocol TCVegaCGContextInterface <JSExport>
 
 // properties
-@property JSValue * fillStyle;
+@property (strong) JSValue * fillStyle;
 @property double globalAlpha;
-@property NSString * lineCap;
-@property NSString * lineJoin;
+@property (strong) NSString * lineCap;
+@property (strong) NSString * lineJoin;
 @property double lineWidth;
 @property double miterLimit;
-@property double pixelRatio;
-@property NSString * strokeStyle;
-@property NSString * textAlign;
-@property NSString * font;
+@property (nonatomic) double pixelRatio;
+@property (strong) NSString * strokeStyle;
+@property (strong) NSString * textAlign;
+@property (strong) NSString * font;
 @property double lineDashOffset;
 
 // utilities
@@ -144,6 +144,10 @@ JSExportAs(rect,
            width:(double)width
            height:(double)height
            );
+JSExportAs(strokeText,
+           - (void)strokeTextWithString:(NSString*)string
+           x:(double)x
+           y:(double)y);
 JSExportAs(setLineDash,
            - (void)setLineDashWithSegments:(NSArray<NSNumber *> *)segments
            );
@@ -167,29 +171,33 @@ JSExportAs(translate,
            y:(double)y
            );
 
+JSExportAs(isPointInPath,
+           - (BOOL)isPointInPathWithX:(double)x
+           y:(double)y
+           );
+
 @end
 
-@interface VegaCGContext : NSObject<VegaCGContextInterface>
+@interface TCVegaCGContext : NSObject<TCVegaCGContextInterface>
 @property (readonly) CGContextRef context;
-@property CGLayerRef layer;
 @property double width;
 @property double height;
-- (instancetype)initWithContext:(CGContextRef)parentContext;
+- (instancetype)init;
 - (void)dealloc;
 - (NSDictionary<NSAttributedStringKey, id> *)textAttributes;
 + (CGAffineTransform)flipYAxisWithHeight:(double)height;
 + (CGColorRef)newColorFromString:(NSString *)string;
 @end
 
-@protocol VegaCGCanvasInterface <JSExport>
-- (VegaCGContext *)getContext:(NSString *)type;
+@protocol TCVegaCGCanvasInterface <JSExport>
+- (TCVegaCGContext *)getContext:(NSString *)type;
 @property double width;
 @property double height;
 @end
 
-@interface VegaCGCanvas : VegaHTMLElement<VegaCGCanvasInterface>
-@property VegaCGContext *context;
-- (instancetype)initWithContext:(CGContextRef)parentContext;
+@interface TCVegaCGCanvas : TCVegaHTMLElement<TCVegaCGCanvasInterface>
+@property (nonatomic, strong) TCVegaCGContext *context;
+- (instancetype)init;
 @end
 
 
