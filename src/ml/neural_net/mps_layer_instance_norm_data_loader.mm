@@ -99,11 +99,13 @@ API_AVAILABLE(macos(10.14))
     for (NSUInteger index = 0; index < styles; index ++) {
       TCMPSInstanceNormDataLoaderProps *style_property = [[TCMPSInstanceNormDataLoaderProps alloc] init];
 
-      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:_gamma_weights.mutableBytes
+      size_t offset = index * _numberOfFeatureChannels * sizeof(float);
+
+      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:(char *) _gamma_weights.bytes + offset
                                                    length:sizeof(float) * _numberOfFeatureChannels
                                                   options:MTLResourceStorageModeManaged];
 
-      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:_beta_weights.mutableBytes
+      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:(char *) _beta_weights.bytes + offset
                                                   length:sizeof(float) * _numberOfFeatureChannels
                                                  options:MTLResourceStorageModeManaged];
 
