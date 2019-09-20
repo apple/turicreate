@@ -154,6 +154,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     # @TODO: Should be able to automatically choose number of iterations
     # based on data size: Tracked in Github Issue #1576
+    if not isinstance(input_dataset, _tc.SFrame):
+        raise TypeError('"input_dataset" must be of type SFrame.')
 
     # automatically infer feature column
     if feature is None:
