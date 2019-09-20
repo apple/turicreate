@@ -37,7 +37,7 @@ For more details on the integration with Core ML and a sample app to get
 you started, please look at the the article on
 [Recognizing Objects in Live Capture](https://developer.apple.com/documentation/vision/recognizing_objects_in_live_capture).
 
-**Note:** The bounding box object `VNRecognizedObjectObservation.boundingBox` has a different definition from the one used for Turi Create. First, the location of the bounding box is defined by the upper-left corner of the rectangle instead of the center. Secondly, the location, width, and height for the bounding box are all normalized between [0,1] by the dimensions of the images.
+**Note:** The bounding box object `VNRecognizedObjectObservation.boundingBox` has a different definition from the one used for Turi Create. First, the location is defined by the lower-left corner of the bounding box instead of the center. Secondly, the coordinate space has origin located in the lower-left corner of image. Third, the location, width, and height for the bounding box are all normalized between [0,1] by the dimensions of the images.
 
 **Note:** Only models that were exported with *non-maximum suppression* (the default
 behavior in Turi Create 5.0+) will work with this example app. Older models
