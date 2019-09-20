@@ -2660,7 +2660,6 @@ class SFrame(object):
         if (fraction > 1 or fraction < 0):
             raise ValueError('Invalid sampling rate: ' + str(fraction))
 
-
         if (self.num_rows() == 0 or self.num_columns() == 0):
             return self
         else:
