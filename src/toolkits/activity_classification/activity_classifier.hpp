@@ -14,6 +14,7 @@
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/model_spec.hpp>
+#include <ml/neural_net/tf_compute_context.hpp>
 
 namespace turi {
 namespace activity_classification {
@@ -197,7 +198,7 @@ class EXPORT activity_classifier: public ml_model_base {
       bool use_data_augmentation) const;
 
   // Factory for compute_context
-  virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
+  virtual std::unique_ptr<neural_net::compute_context> create_compute_context(bool use_tensorflow)
       const;
 
   // Returns the initial neural network to train

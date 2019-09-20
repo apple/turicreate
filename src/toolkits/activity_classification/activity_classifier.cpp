@@ -31,6 +31,7 @@ using neural_net::model_backend;
 using neural_net::model_spec;
 using neural_net::lstm_weight_initializers;
 using neural_net::shared_float_array;
+using neural_net::tf_compute_context;
 using neural_net::xavier_weight_initializer;
 using neural_net::zero_weight_initializer;
 
@@ -177,6 +178,10 @@ void activity_classifier::init_options(
       "Data augmentation helps use prediction window started with random "
       "offset."
       " If set to True, the trained model uses augmented data.",
+      false);
+  options.create_boolean_option(
+      "use_tensorflow",
+      "If set to True, model training will be done using TensorFlow.",
       false);
   options.create_integer_option(
       "random_seed",
@@ -637,9 +642,14 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
 }
 
 std::unique_ptr<compute_context>
-activity_classifier::create_compute_context() const
+activity_classifier::create_compute_context(bool use_tensorflow) const
 {
-  return compute_context::create();
+  if (use_tensorflow) {
+    return tf_compute_context::create();
+  }
+  else {
+    return compute_context::create();
+  }
 }
 
 std::unique_ptr<model_spec> activity_classifier::init_model() const
@@ -812,8 +822,10 @@ void activity_classifier::init_train(
   } else {
     validation_data_iterator_ = nullptr;
   }
+
+  bool use_tensorflow = read_state<bool>("use_tensorflow");
   // Instantiate the compute context.
-  training_compute_context_ = create_compute_context();
+  training_compute_context_ = create_compute_context(use_tensorflow);
   if (training_compute_context_ == nullptr) {
     log_and_throw("No neural network compute context provided");
   }
@@ -990,9 +1002,10 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
 
   // Allocate a buffer into which to write the class probabilities.
   flex_vec preds(num_classes);
+  bool use_tensorflow = read_state<bool>("use_tensorflow");
 
   // Initialize the NN backend.
-  std::unique_ptr<compute_context> ctx = create_compute_context();
+  std::unique_ptr<compute_context> ctx = create_compute_context(use_tensorflow);
   std::unique_ptr<model_backend> backend = ctx->create_activity_classifier(
       /* n */     read_state<flex_int>("batch_size"),
       /* c_in */  read_state<flex_int>("num_features"),
