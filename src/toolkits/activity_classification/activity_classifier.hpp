@@ -198,7 +198,7 @@ class EXPORT activity_classifier: public ml_model_base {
       bool use_data_augmentation) const;
 
   // Factory for compute_context
-  virtual std::unique_ptr<neural_net::compute_context> create_compute_context(bool use_tensorflow)
+  virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
       const;
 
   // Returns the initial neural network to train

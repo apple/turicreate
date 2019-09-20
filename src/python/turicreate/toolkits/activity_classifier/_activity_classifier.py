@@ -14,7 +14,6 @@ import numpy as _np
 import time as _time
 import six as _six
 
-import turicreate as _turicreate
 from turicreate import SArray as _SArray, SFrame as _SFrame
 from turicreate import aggregate as _agg
 
@@ -181,6 +180,8 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     if params['use_tensorflow'] :
 
         name = 'activity_classifier'
+
+        import turicreate as _turicreate
 
         # Imports tensorflow
         import turicreate.toolkits.libtctensorflow
