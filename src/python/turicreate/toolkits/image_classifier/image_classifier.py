@@ -220,6 +220,8 @@ def create(dataset, target, feature=None, model = 'resnet-50',
     ImageClassifier
     """
     start_time = _time.time()
+    if not isinstance(dataset, _tc.SFrame):
+        raise TypeError('"dataset" must be of type SFrame.')
 
     # Check model parameter
     allowed_models = list(_pre_trained_models.MODELS.keys())
