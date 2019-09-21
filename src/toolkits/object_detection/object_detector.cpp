@@ -116,18 +116,32 @@ const std::vector<std::pair<float, float>>& anchor_boxes() {
 // into TCMPS.
 // TODO: These should be exposed in a way that facilitates experimentation.
 // TODO: A struct instead of a map would be nice, too.
-float_array_map get_training_config() {
+
+float_array_map get_base_config() {
   float_array_map config;
-  config["gradient_clipping"]        =
-      shared_float_array::wrap(0.025f * MPS_LOSS_MULTIPLIER);
   config["learning_rate"]            =
       shared_float_array::wrap(BASE_LEARNING_RATE);
+  config["gradient_clipping"]        =
+      shared_float_array::wrap(0.025f * MPS_LOSS_MULTIPLIER);
+  // TODO: Have MPS path use these parameters, instead
+  // of the values hardcoded in the MPS code.
+  config["od_rescore"]               = shared_float_array::wrap(1.0f);
+  config["lmb_noobj"]                = shared_float_array::wrap(5.0);
+  config["lmb_obj"]                  = shared_float_array::wrap(100.0);
+  config["lmb_coord_xy"]             = shared_float_array::wrap(10.0);
+  config["lmb_coord_wh"]             = shared_float_array::wrap(10.0);
+  config["lmb_class"]                = shared_float_array::wrap(2.0);
+  return config;
+}
+
+float_array_map get_training_config() {
+  float_array_map config = get_base_config();
   config["mode"]                     = shared_float_array::wrap(0.f);
   config["od_include_loss"]          = shared_float_array::wrap(1.0f);
   config["od_include_network"]       = shared_float_array::wrap(1.0f);
   config["od_max_iou_for_no_object"] = shared_float_array::wrap(0.3f);
   config["od_min_iou_for_object"]    = shared_float_array::wrap(0.7f);
-  config["od_rescore"]               = shared_float_array::wrap(1.0f);
+  config["rescore"]                  = shared_float_array::wrap(1.0f);
   config["od_scale_class"]           =
       shared_float_array::wrap(2.0f * MPS_LOSS_MULTIPLIER);
   config["od_scale_no_object"]       =
@@ -144,7 +158,7 @@ float_array_map get_training_config() {
 }
 
 float_array_map get_prediction_config() {
-  float_array_map config;
+  float_array_map config = get_base_config();
   config["mode"]                     = shared_float_array::wrap(2.0f);
   config["od_include_loss"]          = shared_float_array::wrap(0.0f);
   config["od_include_network"]       = shared_float_array::wrap(1.0f);
@@ -495,19 +509,10 @@ void object_detector::perform_predict(gl_sframe data,
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
 
   float_array_map pred_config = get_prediction_config();
-  pred_config["num_classes"] =
-      shared_float_array::wrap(data_iter->class_labels().size());
-  pred_config["lmb_noobj"] = shared_float_array::wrap(5.0);
-  pred_config["lmb_obj"] = shared_float_array::wrap(100.0);
-  pred_config["lmb_coord_xy"] = shared_float_array::wrap(10.0);
-  pred_config["lmb_coord_wh"] = shared_float_array::wrap(10.0);
-  pred_config["lmb_class"] = shared_float_array::wrap(2.0);
-  pred_config["learning_rate"] = shared_float_array::wrap(BASE_LEARNING_RATE);
-  pred_config["gradient_clipping"] =
-      shared_float_array::wrap(0.025f * MPS_LOSS_MULTIPLIER);
-  pred_config["od_rescore"] = shared_float_array::wrap(1.0);  // True
   pred_config["num_iterations"] =
       shared_float_array::wrap(get_max_iterations());
+  pred_config["num_classes"] =
+      shared_float_array::wrap(get_num_classes());
 
   std::unique_ptr<model_backend> model = ctx->create_object_detector(
       /* n       */ read_state<int>("batch_size"),
@@ -912,16 +917,10 @@ void object_detector::init_train(
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
 
   float_array_map train_config = get_training_config();
-  train_config["num_classes"] =
-      shared_float_array::wrap(training_data_iterator_->class_labels().size());
-  train_config["lmb_noobj"] = shared_float_array::wrap(5.0);
-  train_config["lmb_obj"] = shared_float_array::wrap(100.0);
-  train_config["lmb_coord_xy"] = shared_float_array::wrap(10.0);
-  train_config["lmb_coord_wh"] = shared_float_array::wrap(10.0);
-  train_config["lmb_class"] = shared_float_array::wrap(2.0);
-  train_config["rescore"] = shared_float_array::wrap(1.0);  // True
   train_config["num_iterations"] =
       shared_float_array::wrap(get_max_iterations());
+  train_config["num_classes"] =
+      shared_float_array::wrap(get_num_classes());
 
   training_model_ = training_compute_context_->create_object_detector(
       /* n       */ read_state<int>("batch_size"),
@@ -1060,6 +1059,10 @@ flex_int object_detector::get_max_iterations() const {
 
 flex_int object_detector::get_training_iterations() const {
   return read_state<flex_int>("training_iterations");
+}
+
+flex_int object_detector::get_num_classes() const {
+  return read_state<flex_int>("num_classes");
 }
 
 void object_detector::wait_for_training_batches(size_t max_pending) {
