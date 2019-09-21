@@ -14,6 +14,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
+#include <ml/neural_net/mps_compute_context.hpp>
 
 namespace turi {
 namespace neural_net {
@@ -128,14 +129,23 @@ std::vector<std::string> tf_compute_context::gpu_names() const {
 
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
-  return std::unique_ptr<image_augmenter>();
+  return mps_compute_context().create_image_augmenter(opts);
 }
-
 
 std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
     const float_array_map& config, const float_array_map& weights) {
-  return std::unique_ptr<model_backend>();
+
+  pybind11::object object_detector;
+  call_pybind_function([&]() {
+      pybind11::module tf_od_backend = pybind11::module::import(
+          "turicreate.toolkits.object_detector._tf_model_architecture");
+
+      // Make an instance of python object
+      object_detector = tf_od_backend.attr("ODTensorFlowModel")(h_in, w_in, n, c_out, weights, config);
+    });
+  return std::unique_ptr<tf_model_backend>(
+      new tf_model_backend(object_detector));
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(

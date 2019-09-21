@@ -9,55 +9,62 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import tensorflow as _tf
 import numpy as _np
-
+import turicreate.toolkits._tf_utils as _utils
 
 class ODTensorFlowModel(object):
 
-    def __init__(self, input_image_shape, batch_size, output_size, init_weights, config, is_train=True):
+    def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
+
         #_tf.compat.v1.get_default_graph()
+
+        # Converting incoming weights from shared_float_array to numpy
+        for key in init_weights.keys():
+            init_weights[key] = _utils.convert_shared_float_array_to_numpy(init_weights[key])
 
         self.config = config
         self.batch_size = batch_size
-        self.input_image_shape = input_image_shape
-        self.grid_shape = config['grid_shape']
-        self.num_classes = config['num_classes']
-        self.anchors = config['anchors']
+        self.grid_shape = [13,13]
+        self.num_classes = int(_utils.convert_shared_float_array_to_numpy(config['num_classes']))
+        self.anchors = [
+            (1.0, 2.0), (1.0, 1.0), (2.0, 1.0),
+            (2.0, 4.0), (2.0, 2.0), (4.0, 2.0),
+            (4.0, 8.0), (4.0, 4.0), (8.0, 4.0),
+            (8.0, 16.0), (8.0, 8.0), (16.0, 8.0),
+            (16.0, 32.0), (16.0, 16.0), (32.0, 16.0),
+        ]
         self.num_anchors = len(self.anchors)
         self.output_size = output_size
         self.is_train = is_train  # Set flag for training or val
 
         # Create placeholders for image and labels
-        self.images = _tf.compat.v1.placeholder(_tf.float32, [self.batch_size, self.input_image_shape[1],
-                                                              self.input_image_shape[2], 3], name='images')
+        self.images = _tf.compat.v1.placeholder(_tf.float32, [self.batch_size, input_h,
+                                                              input_w, 3], name='images')
         self.labels = _tf.compat.v1.placeholder(_tf.float32,
                                 [self.batch_size, self.grid_shape[0], self.grid_shape[1],
                                  self.num_anchors, self.num_classes + 5],
                                 name='labels')
-
         self.init_weights = init_weights
         self.tf_model = self.tiny_yolo(inputs=self.images, output_size=self.output_size)
-
         self.global_step = _tf.Variable(0, trainable=False,
                                         name="global_step")
 
         self.loss = self.loss_layer(self.tf_model, self.labels)
-
-        self.base_lr = config['learning_rate']
-        self.num_iterations = config['num_iterations']
-
+        self.base_lr = _utils.convert_shared_float_array_to_numpy(config['learning_rate'])
+        self.num_iterations = int(_utils.convert_shared_float_array_to_numpy(config['num_iterations']))
         self.init_steps = [self.num_iterations // 2, 3 * self.num_iterations // 4, self.num_iterations]
         self.lrs = [_np.float32(self.base_lr * 10 ** (-i)) for i, step in enumerate(self.init_steps)]
         self.steps_tf = self.init_steps[:-1]
-
         self.lr = _tf.compat.v1.train.piecewise_constant(self.global_step, self.steps_tf, self.lrs)
         # TODO: Evaluate method to update lr in set_learning_rate()
 
         self.opt = _tf.compat.v1.train.MomentumOptimizer(self.lr, momentum=0.9)
 
-        self.clip_value = self.config.get('gradient_clipping')
+        self.clip_value = _utils.convert_shared_float_array_to_numpy(self.config.get('gradient_clipping'))
+
         grads_and_vars = self.opt.compute_gradients(self.loss)
         clipped_gradients = [(self.ClipIfNotNone(g, self.clip_value), v) for g, v in grads_and_vars]
         self.train_op = self.opt.apply_gradients(clipped_gradients, global_step=self.global_step)
+
 
         self.sess = _tf.compat.v1.Session()
         self.sess.run(_tf.compat.v1.global_variables_initializer())
@@ -75,7 +82,6 @@ class ODTensorFlowModel(object):
             Dict with MXNet weights and names
 
         """
-
         for keys in tf_net_params:
             if tf_net_params[keys].ndim == 1:
                 self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(keys+":0"),
@@ -274,13 +280,12 @@ class ODTensorFlowModel(object):
         loss: TensorFlow Tensor
             Loss (combination of regression and classification losses)
         """
-
-        rescore = self.config.get('rescore')
-        lmb_coord_xy = self.config.get('lmb_coord_xy')
-        lmb_coord_wh = self.config.get('lmb_coord_wh')
-        lmb_obj = self.config.get('lmb_obj')
-        lmb_noobj = self.config.get('lmb_noobj')
-        lmb_class = self.config.get('lmb_class')
+        rescore = int(_utils.convert_shared_float_array_to_numpy(self.config.get('od_rescore')))
+        lmb_coord_xy = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_coord_xy'))
+        lmb_coord_wh = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_coord_wh'))
+        lmb_obj = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_obj'))
+        lmb_noobj = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_noobj'))
+        lmb_class = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_class'))
 
         # Prediction values from model on the images
         ypred = _tf.reshape(predict, [-1] + list(self.grid_shape) + [self.num_anchors, 5 + self.num_classes])
@@ -319,47 +324,38 @@ class ODTensorFlowModel(object):
         area = wh[..., 0] * wh[..., 1]
         inter_area = inter[..., 0] * inter[..., 1]
         iou = inter_area / (area + gt_area - inter_area)
-
         active_iou = c_iou
 
         max_iou = _tf.reduce_max(active_iou, 3, keepdims=True)
         resp_box = _tf.cast(_tf.equal(active_iou, max_iou), dtype=_tf.float32)
-
         count = _tf.reduce_sum(gt_conf0)
 
         kr_obj_ij = _tf.stop_gradient(resp_box * gt_conf)
 
         kr_noobj_ij = 1 - kr_obj_ij
-
         s = 1 / (self.batch_size * self.grid_shape[0] * self.grid_shape[1])
-
         kr_obj_ij_plus1 = _tf.expand_dims(kr_obj_ij, -1)
 
         if rescore:
             obj_gt_conf = kr_obj_ij * _tf.stop_gradient(iou)
         else:
             obj_gt_conf = kr_obj_ij
-
         kr_box = kr_obj_ij_plus1
-
         obj_w = (kr_obj_ij * lmb_obj + kr_noobj_ij * lmb_noobj)
 
         loss_xy = lmb_coord_xy * _tf.reduce_sum(kr_box * _tf.square(gt_xy - xy)) / (count + 0.01)
 
         loss_wh = _tf.compat.v1.losses.huber_loss (labels=gt_raw_wh, predictions=raw_wh, weights=lmb_coord_wh * kr_box,
                                                    delta= 1.0)
-
         # Confidence loss
         loss_conf = s * _tf.reduce_sum(
             obj_w * _tf.nn.sigmoid_cross_entropy_with_logits(labels=obj_gt_conf, logits=raw_conf))
 
         # TODO: tf.nn.softmax_cross_entropy_with_logits_v2 instead of tf.nn.softmax_cross_entropy_with_logits
         loss_cls = lmb_class * _tf.reduce_sum(
-            kr_obj_ij * _tf.nn.softmax_cross_entropy_with_logits(labels=gt_class, logits=class_scores)) / (
+            kr_obj_ij * _tf.nn.softmax_cross_entropy_with_logits_v2(labels=gt_class, logits=class_scores)) / (
                            count + 0.01)
-
         losses = [loss_xy, loss_wh, loss_conf, loss_cls]
-
         loss = _tf.add_n(losses)
         return loss
 
@@ -378,11 +374,15 @@ class ODTensorFlowModel(object):
         loss_batch: TensorFlow Tensor
             Loss per batch
         """
+        for key in feed_dict.keys():
+            feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
+        feed_dict['labels'] = feed_dict['labels'].reshape(self.batch_size, self.grid_shape[0], self.grid_shape[1],self.num_anchors, self.num_classes + 5)
 
         _, loss_batch = self.sess.run([self.train_op, self.loss], feed_dict={self.images: feed_dict['input'],
-                                                                             self.labels: feed_dict['label']})
-
-        return loss_batch
+                                                                             self.labels: feed_dict['labels']})
+        result = {}
+        result['loss'] = _np.array([loss_batch])
+        return result
 
     def predict(self, feed_dict):
         """
@@ -398,10 +398,15 @@ class ODTensorFlowModel(object):
         output: TensorFlow Tensor
             Feature map from building the network. This will be used in MXNet for further processing
         """
+        for key in feed_dict.keys():
+            feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
 
         output = self.sess.run([self.tf_model], feed_dict={self.images: feed_dict['input']})
+
         # TODO: Include self.labels: feed_dict['label'] to handle labels from validation set
-        return output
+        result = {}
+        result['output'] = _np.array(output[0])
+        return result
 
     def export_weights(self):
         """
@@ -412,13 +417,11 @@ class ODTensorFlowModel(object):
         tf_export_params: Dictionary
             Dictionary of weights from TensorFlow stored as {weight_name: weight_value}
         """
-
         tf_export_params = {}
 
         # collect all TF variables to include running_mean and running_variance
-        tvars = _tf.global_variables()
+        tvars = _tf.compat.v1.global_variables()
         tvars_vals = self.sess.run(tvars)
-
         for var, val in zip(tvars, tvars_vals):
             if val.ndim == 1:
                 tf_export_params.update(

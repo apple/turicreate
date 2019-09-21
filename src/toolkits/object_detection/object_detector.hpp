@@ -163,6 +163,7 @@ class EXPORT object_detector: public ml_model_base {
       const;
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;
+  flex_int get_num_classes() const;
 
   // Sets certain user options heuristically (from the data).
   void infer_derived_options();
