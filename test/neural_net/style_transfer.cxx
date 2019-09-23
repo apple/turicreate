@@ -99,12 +99,12 @@ struct style_transfer_test {
   }
 
   /**
-    Weight Update
+    Backwards
 
     This test checks whether the Weight Update in the total graph defined in
     TCMPS is performing as intended by comparing it to the golden set.
    */
-  void test_weight_update() {
+  void test_backwards() {
     TS_ASSERT(true);  // TODO
   }
 };
@@ -131,9 +131,7 @@ BOOST_AUTO_TEST_CASE(test_vgg16) { style_transfer_test::test_vgg16(); }
 
 BOOST_AUTO_TEST_CASE(test_loss) { style_transfer_test::test_loss(); }
 
-BOOST_AUTO_TEST_CASE(test_weight_update) {
-  style_transfer_test::test_weight_update();
-}
+BOOST_AUTO_TEST_CASE(test_backwards) { style_transfer_test::test_backwards(); }
 
 #endif
 
