@@ -51,7 +51,7 @@ class compute_context {
    private:
     int priority_;
     factory factory_fn_;
-    tf_factory tf_factory_fn_;
+    factory tf_factory_fn_;
   };
 
   /**
