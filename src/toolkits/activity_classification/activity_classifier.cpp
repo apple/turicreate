@@ -178,6 +178,10 @@ void activity_classifier::init_options(
       "offset."
       " If set to True, the trained model uses augmented data.",
       false);
+  options.create_boolean_option(
+      "use_tensorflow",
+      "If set to True, model training will be done using TensorFlow.",
+      false);
   options.create_integer_option(
       "random_seed",
       "Seed for random weight initialization and sampling during training",
@@ -636,10 +640,15 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
   return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));
 }
 
-std::unique_ptr<compute_context>
-activity_classifier::create_compute_context() const
-{
-  return compute_context::create();
+std::unique_ptr<compute_context> activity_classifier::create_compute_context()
+    const {
+  bool use_tensorflow = read_state<bool>("use_tensorflow");
+  if (use_tensorflow) {
+    return compute_context::create_tf();
+  }
+  else {
+    return compute_context::create();
+  }
 }
 
 std::unique_ptr<model_spec> activity_classifier::init_model() const
@@ -812,6 +821,7 @@ void activity_classifier::init_train(
   } else {
     validation_data_iterator_ = nullptr;
   }
+
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
   if (training_compute_context_ == nullptr) {
