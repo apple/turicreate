@@ -279,6 +279,10 @@ void object_detector::init_options(
       /* default_value     */ "center",
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
+      options.create_boolean_option(
+       /* name             */ "use_tensorflow",
+       /* description      */ "If set to True, model training will be done using TensorFlow.",
+       false);
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -826,7 +830,13 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
 
 std::unique_ptr<compute_context> object_detector::create_compute_context() const
 {
-  return compute_context::create();
+  bool use_tensorflow = read_state<bool>("use_tensorflow");
+  if (use_tensorflow) {
+    return compute_context::create_tf();
+  }
+  else {
+    return compute_context::create();
+  }
 }
 
 void object_detector::init_train(
@@ -886,6 +896,7 @@ void object_detector::init_train(
   // initialized randomly using the random seed above, using the number of
   // classes observed by the training_data_iterator_ above.
   nn_spec_ = init_model(mlmodel_path);
+
   // Set additional model fields.
   flex_int grid_height = read_state<flex_int>("grid_height");
   flex_int grid_width = read_state<flex_int>("grid_width");
