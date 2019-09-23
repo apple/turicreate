@@ -7,6 +7,7 @@
 #define TURI_IMAGE_IMAGE_TYPE_HPP
 
 #include <string>
+#include <string.h>
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/gil/typedefs.hpp>
@@ -66,6 +67,8 @@ public:
   void load(iarchive& iarc);
   /// Returns a char* pointer to the raw image data
   const unsigned char* get_image_data() const;
+  /// Equality comparator, two images are equal when every property is identical
+  bool operator==(const image_type& other) const;
 };
 
 
