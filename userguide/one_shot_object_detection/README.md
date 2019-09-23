@@ -90,7 +90,7 @@ def pil_to_tc(pil_image):
                     _image_data_size=image.size)
 
 import turicreate as tc
-image_path = ... set image path here ...
+image_path = # set image path here
 rotated_0 = tc.Image(image_path)
 pil_image = Image.open(image_path)
 rotated_90 = pil_to_tc(pil_image.rotate(90, expand=True))
