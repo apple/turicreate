@@ -494,6 +494,10 @@ std::shared_ptr<unity_sframe_base> unity_sframe::select_columns(
   return ret;
 }
 
+std::shared_ptr<unity_sframe_base> unity_sframe::copy(){
+  return select_columns(column_names());
+}
+
 void unity_sframe::add_column(std::shared_ptr<unity_sarray_base> data,
                               const std::string& column_name) {
   Dlog_func_entry();
@@ -1156,8 +1160,12 @@ std::shared_ptr<unity_sframe_base> unity_sframe::sample(float percent,
                                                         int random_seed,
                                                         bool exact) {
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
+  if (percent == 1.0){
+    return copy();
+  }
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
     unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
+  
   return logical_filter(logical_filter_array);
 }
 
