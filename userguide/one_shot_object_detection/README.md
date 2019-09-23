@@ -1,41 +1,40 @@
 # One-Shot Object Detection
 
-*Note: The One Shot Object Detector is currently in beta.*
-
-One-Shot object detection (OSOD) is the task of detecting an object from as few as **one** example per category. Unlike the [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection) which requires many varied examples of objects in the real world, the One-Shot detector only requires a single canonical example of an object to train the classifier on and perform predictions for that category in the wild. It is best suited for 2D objects or when there isn't much expected variance in the examples, such as playing cards, logos, road signs, and clapperboards. One-Shot detector is not suitable for 3D objects such as faces, animals, and cars which is a task better suited for the regular [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection). 
-
-
+One-Shot object detection (OSOD) is the task of detecting an object from as little as **one** example per category. Unlike the [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection) which requires many varied examples of objects in the real world, the One-Shot Object Detector requires a very small (sometimes even just one) canonical example of the object. The One-shot Object Detector is best suited for two-dimensional objects that have some regularity in the wild. Examples include road signs, logos, playing cards, and clapperboards. The One-Shot Object Detector is not suitable for three-dimensional objects like faces, animals, and cars -- such objects are better suited for the classical [Object Detector](https://apple.github.io/turicreate/docs/userguide/object_detection). 
 
 ## Introductory Example
 
 In this example, our goal is to **localize** instances of **stop signs** in images. To train a model for this application, we supply a single image of a stop sign as a starter image.
 
-Given a starter image (*left*), a one-shot detector trained on this starter image will produce instance predictions on a test image (*right*) which may look like this:
+Given a starter image (*left*), a one-shot object detector trained on this starter image will produce instance predictions on a test image (*right*) which may look like this:
 
 ![Stop Sign vector and prediction images](images/stop_sign_sample.jpg) 
 
+Download the starter image to get started from [here](images/stop_sign_starter.png).
+
+Download the two test images from [here](images/stop_sign_test1.jpg) and [here](images/stop_sign_test2.jpg)
 
 ```python
 import turicreate as tc
 
 # Load the starter images
-starter_images = tc.SFrame({'image':[tc.Image('stop_sign.png')],
+starter_images = tc.SFrame({'image':[tc.Image('stop_sign_starter.png')],
                    'label':['stop_sign']})
 
 # Load test images
-test_data = tc.SFrame({'image':[tc.Image('stop_sign_photo1.png'), 
-                                tc.Image('stop_sign_photo2.png')],
-                        'label':['stop_sign', 'stop_sign']})
+test_images = tc.SFrame({'image':[tc.Image('stop_sign_test1.jpg'), 
+                                  tc.Image('stop_sign_test2.jpg')]})
 
-# Create a model. This step may take several hours                                      
+# Create a model. This step may take several hours
 model = tc.one_shot_object_detector.create(starter_images, 'label')
 
 # Save predictions on the test set
 test_data['predictions'] = model.predict(test_data)
 
 # Draw prediction bounding boxes on the test images
-test_data['image_with_predictions'] = \
-	tc.one_shot_object_detector.util.draw_bounding_boxes(test_data['image'], test_data['predictions']) 
+test_data['annotated_predictions'] = \
+    tc.one_shot_object_detector.util.draw_bounding_boxes(test_data['image'],
+        test_data['predictions']) 
 
 # To visualize the predictions made on the test set
 test_data.explore()
@@ -84,16 +83,16 @@ You can preview the synthetic images the toolkit generates by calling the `previ
 
 ```python
 synthetic_images = \
-tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label')
+tc.one_shot_object_detector.util._augmentation.preview_synthetic_training_data(starter_images, 'label')
 
 synthetic_images.explore()
 ```
 
-![Explore synthetic images](images/synthetic_images_explore.jpg)
+![Explore synthetic images](images/synthetic_images_explore.png)
 
 Some examples of synthetic training data:
 
-![Sample synthetic images](images/synthetic_images_collage.jpg)
+![Sample synthetic images](images/synthetic_images_collage.png)
 
 
 *Note: In order to view the exact synthetic images used to train the model, the same seed should be used which was used to train the model.*
@@ -112,5 +111,5 @@ To preview the synthetic images generated with your custom background images:
 
 ```python
 synthetic_images = \
-tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images, 'label', my_backgrounds)
+tc.one_shot_object_detector.util._augmentation.preview_synthetic_training_data(starter_images, 'label', my_backgrounds)
 ```
