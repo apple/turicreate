@@ -175,7 +175,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         unsupported = new_keys - set_keys
         if unsupported:
             raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
-    params.update(kwargs['_advanced_parameters'])
+        params.update(kwargs['_advanced_parameters'])
 
     if params['use_tensorflow'] :
 
@@ -185,8 +185,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         # Imports tensorflow
         import turicreate.toolkits.libtctensorflow
-        from ._tf_model_architecture import ActivityTensorFlowModel
-
 
         model = _turicreate.extensions.activity_classifier()
         options = {}

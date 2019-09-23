@@ -14,7 +14,6 @@
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/model_spec.hpp>
-#include <ml/neural_net/tf_compute_context.hpp>
 
 namespace turi {
 namespace activity_classification {

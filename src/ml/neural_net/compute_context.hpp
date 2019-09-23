@@ -21,14 +21,9 @@ namespace neural_net {
  * hardware resources.
  */
 class compute_context {
-public:
-
+ public:
   /** Function that yields a compute context. */
   using factory = std::function<std::unique_ptr<compute_context>()>;
-
-  /** Function that yields a compute context (made to return
-   * tf_compute_context). */
-  using tf_factory = std::function<std::unique_ptr<compute_context>()>;
 
   /**
    * To solve for layering/dependency issues, we allow compute_context::factory
@@ -36,16 +31,16 @@ public:
    * static init time, adjusts the behavior of the create() function below.
    */
   class registration {
-  public:
+   public:
     // Registers `factory_fn` at the given priority.
-   registration(int priority, factory factory_fn, tf_factory tf_factory_fn_);
+    registration(int priority, factory factory_fn, factory tf_factory_fn_);
 
-   // Removes the registration. In practice, simplest just not to deallocate...
-   ~registration();
+    // Removes the registration. In practice, simplest just not to deallocate...
+    ~registration();
 
-   int priority() const { return priority_; }
-   std::unique_ptr<compute_context> create_context() const {
-     return factory_fn_();
+    int priority() const { return priority_; }
+    std::unique_ptr<compute_context> create_context() const {
+      return factory_fn_();
     }
 
     std::unique_ptr<compute_context> create_tensorflow_context() const {
@@ -53,7 +48,7 @@ public:
       ;
     }
 
-  private:
+   private:
     int priority_;
     factory factory_fn_;
     tf_factory tf_factory_fn_;

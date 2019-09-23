@@ -23,7 +23,7 @@ std::multimap<int, compute_context::registration*> &get_registry() {
 }  // namespace
 
 compute_context::registration::registration(int priority, factory factory_fn,
-                                            tf_factory tf_factory_fn)
+                                            factory tf_factory_fn)
     : priority_(priority),
       factory_fn_(std::move(factory_fn)),
       tf_factory_fn_(std::move(tf_factory_fn)) {
