@@ -74,6 +74,34 @@ To learn about the training implementation details, refer to the [Object Detecto
 
 ## Troubleshooting
 
+##### My starter image can appear upside down as well as rotated 90 degrees in the wild. Is there anything I can do to improve the quality of the model?
+
+To ensure a higher quality model, instead of providing *one* starter image, feel free to provide *more than one* starter images. As of Turi Create 5.8, for every starter image, we rotate the starter image by up to 20 degrees. As a result, to detect both inverted and erect projections of the same starter image, you can provide *2* starter images with the same label. Here is an example to rotate a Stop Sign starter image by 90 degrees, 180 degrees, and 270 degrees, and construct an SFrame with four starter images:
+
+```python
+def pil_to_tc(pil_image):
+    image = np.array(pil_img)
+    FORMAT_RAW = 2
+    return tc.Image(_image_data=image.tobytes(),
+                    _width=image.shape[1],
+                    _height=image.shape[0],
+                    _channels=image.shape[2],
+                    _format_enum=FORMAT_RAW,
+                    _image_data_size=image.size)
+
+import turicreate as tc
+image_path = ... set image path here ...
+rotated_0 = tc.Image(image_path)
+pil_image = Image.open(image_path)
+rotated_90 = pil_to_tc(pil_image.rotate(90, expand=True))
+rotated_180 = pil_to_tc(pil_image.rotate(180, expand=True))
+rotated_270 = pil_to_tc(pil_image.rotate(270, expand=True))
+starter_images = tc.SFrame({
+    'image': [rotated_0, rotated_90, rotated_180, rotated_270],
+    'label': ['stop_sign', 'stop_sign', 'stop_sign', 'stop_sign']
+    })
+```
+
 ##### While training with the default backgrounds, my starter image does not appear in most of the images in the synthetic data.
 
 This is a known issue that we're trying to fix. As a workaround, please try resizing your starter image (while preserving the aspect ratio of the starter image) to get it as close to `500x500` as possible. You can leverage the following API provided by `turicreate.Image`:
@@ -83,7 +111,7 @@ image = turicreate.Image('starter.png')
 turicreate.image_analysis.resize(image, width=image.width/2, height=image.height/2, channels=image.channels)
 ```
 
-##### Starter image has the same (x,y) coordinates for the center in the augmented dataset.
+##### Starter image has the same (x,y) coordinates for the center of the starter image in the augmented dataset.
 
 We're working on this. Stay tuned for updates!
 
