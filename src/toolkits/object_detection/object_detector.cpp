@@ -279,10 +279,10 @@ void object_detector::init_options(
       /* default_value     */ "center",
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
-      options.create_boolean_option(
-       /* name             */ "use_tensorflow",
-       /* description      */ "If set to True, model training will be done using TensorFlow.",
-       false);
+  options.create_boolean_option(
+      /* name             */ "use_tensorflow",
+      /* description      */
+      "If set to True, model training will be done using TensorFlow.", false);
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -833,8 +833,7 @@ std::unique_ptr<compute_context> object_detector::create_compute_context() const
   bool use_tensorflow = read_state<bool>("use_tensorflow");
   if (use_tensorflow) {
     return compute_context::create_tf();
-  }
-  else {
+  } else {
     return compute_context::create();
   }
 }
