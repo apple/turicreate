@@ -1608,12 +1608,15 @@ class SFrame(object):
         +-----------+
         [3 rows x 1 columns]
         """
+        if orient != "records" and orient != "lines":
+            raise ValueError("Invalid value for orient parameter (" + str(orient) + ")")
+
         if orient == "records":
             g = SArray.read_json(url)
-            if g['X1'].dtype != dict:
-                raise RuntimeError("Invalid JSON format. A list of dictionaries is expected.")
             if len(g) == 0:
                 return SFrame()
+            if g.dtype != dict:
+                raise RuntimeError("Invalid input JSON format. Expected list of dictionaries")
             g = SFrame({'X1':g})
             return g.unpack('X1','')
         elif orient == "lines":
@@ -1630,6 +1633,7 @@ class SFrame(object):
         else:
             raise ValueError("Invalid value for orient parameter (" + str(orient) + ")")
 
+        
 
     @classmethod
     def from_sql(cls, conn, sql_statement, params=None, type_inference_rows=100,
