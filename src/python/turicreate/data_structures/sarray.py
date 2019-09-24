@@ -1617,7 +1617,7 @@ class SArray(object):
         versions of Turi Create. Please use the `text_analytics.count_words`
         function instead.
         """
-        warings.warn("SArray._count_ngrams is deprecated. It will removed in the next major release."
+        warnings.warn("SArray._count_ngrams is deprecated. It will removed in the next major release."
                      + " Use text_analytics.count_words.")
 
         if (self.dtype != str):
