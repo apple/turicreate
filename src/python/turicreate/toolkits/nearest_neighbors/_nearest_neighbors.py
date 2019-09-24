@@ -362,8 +362,10 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
     ...
     >>> model = turicreate.nearest_neighbors.create(sf, distance=my_dist)
     """
+    import warnings
+
     if distance == 'dot_product':
-        print("[WARNING] Using a \"dot_product\" distance is deprecated. This functionality will be removed in the next major release.")
+        warnings.warn("Using a \"dot_product\" distance is deprecated. This functionality will be removed in the next major release.")
 
     ## Validate the 'dataset' input
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")

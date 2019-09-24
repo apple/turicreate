@@ -404,8 +404,9 @@ class Sketch(object):
         out : int
             The number of missing values in the SArray.
         """
-        print("[WARNING] Sketch.num_na is deprecated. It will be removed in the next major release.")
-        print("\tUse Sketch.num_missing instead.")
+        import warnings
+        warnings.warn("Sketch.num_na is deprecated. It will be removed in the next major release."
+                      + " Use Sketch.num_missing instead.")
 
         return self.num_missing()
 

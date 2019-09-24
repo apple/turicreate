@@ -42,6 +42,7 @@ import csv
 import collections
 import array
 from collections import Iterable as _Iterable
+import warnings
 
 __all__ = ['SFrame']
 __LOGGER__ = _logging.getLogger(__name__)
@@ -2509,8 +2510,8 @@ class SFrame(object):
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
         else:
-            print("[WARNING] Passing a \"seed\" parameter to SFrame.apply is deprecated. This functionality")
-            print("\twill be removed in the next major release.")
+            warnings.warn("Passing a \"seed\" parameter to SFrame.apply is deprecated. This functionality"
+                          + " will be removed in the next major release.")
 
         nativefn = None
         try:
@@ -3717,8 +3718,8 @@ class SFrame(object):
         ..WARNING:: This function is deprecated, It will be removed in the next
         major release. Use SFrame.materialize instead.
         """
-        print("[WARNING] SFrame.__materialize__ is deprecated. It will be removed in the next major release.")
-        print("\tUse SFrame.materialize instead.")
+        warnings.warn("SFrame.__materialize__ is deprecated. It will be removed in the next major release."
+                      + " Use SFrame.materialize instead.")
 
         self.materialize()
 

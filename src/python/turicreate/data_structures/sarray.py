@@ -1356,8 +1356,8 @@ class SArray(object):
         ..WARNING:: This function is deprecated, It will be removed in the next
         major release. Use SArray.materialize instead.
         """
-        print("[WARNING] SArray.__materialize__ is deprecated. It will be removed in the next major release.")
-        print("\tUse SArray.materialize instead.")
+        warnings.warn("SArray.__materialize__ is deprecated. It will be removed in the next major release."
+                      + " Use SArray.materialize instead.")
 
         self.materialize()
 
@@ -1590,8 +1590,8 @@ class SArray(object):
         [{'quick': 1, 'brown': 1, 'jumps': 1, 'fox': 1, 'the': 1},
          {'word': 2, 'word,': 1, 'word!!!word': 1}]
             """
-        print("[WARNING] SArray._count_words is deprecated. It will removed in the next major release.")
-        print("\tUse text_analytics.count_words.")
+        warnings.warn("SArray._count_words is deprecated. It will removed in the next major release."
+                      + " Use text_analytics.count_words.")
 
         if (self.dtype != str):
             raise TypeError("Only SArray of string type is supported for counting bag of words")
@@ -1617,8 +1617,8 @@ class SArray(object):
         versions of Turi Create. Please use the `text_analytics.count_words`
         function instead.
         """
-        print("[WARNING] SArray._count_ngrams is deprecated. It will removed in the next major release.")
-        print("\tUse text_analytics.count_words.")
+        warings.warn("SArray._count_ngrams is deprecated. It will removed in the next major release."
+                     + " Use text_analytics.count_words.")
 
         if (self.dtype != str):
             raise TypeError("Only SArray of string type is supported for counting n-grams")
@@ -1957,8 +1957,8 @@ class SArray(object):
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
         else:
-            print("[WARNING] Passing a \"seed\" parameter to SArray.apply is deprecated. This functionality")
-            print("\twill be removed in the next major release.")
+            warnings.warn("Passing a \"seed\" parameter to SArray.apply is deprecated. This functionality"
+                          + " will be removed in the next major release.")
 
         # First phase test if it is a toolkit function
         nativefn = None

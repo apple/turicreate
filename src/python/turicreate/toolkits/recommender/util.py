@@ -1465,8 +1465,9 @@ class _Recommender(_Model):
             Statistics about model training, e.g. runtime.
 
         """
+        import warnings
 
-        _logging.warning("This method is deprecated. Please use m.summary().")
+        warnings.warn("This method is deprecated. Please use m.summary().")
         response = self.__proxy__.get_train_stats()
         return response
 

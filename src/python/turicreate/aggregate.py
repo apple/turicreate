@@ -85,9 +85,11 @@ def COUNT(*args):
 
   """
   # arguments if any are ignored
+  import warnings
+
   if len(args) == 0:
-    print('[WARNING] Passing parameter(s) to COUNT is deprecated. This functionality will be removed in '
-    print('\tthe next major release. Any passed parameters are ignored.')
+    warnings.warn('Passing parameter(s) to COUNT is deprecated. This functionality will be removed in '
+                  + 'the next major release. Any passed parameters are ignored.')
 
   return ("__builtin__count__", [""])
 

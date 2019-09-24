@@ -573,7 +573,8 @@ def ext_import(soname, module_subpath=""):
     >>> example1.square_root(9)
     3.0
     """
-    print("[WARNING] turicreate.ext_import is deprecated. It will be removed in the next major release.")
+    import warnings
+    warnings.warn("turicreate.ext_import is deprecated. It will be removed in the next major release.")
 
     unity = _get_unity()
     import os
