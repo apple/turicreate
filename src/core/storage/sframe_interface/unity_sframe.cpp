@@ -495,7 +495,10 @@ std::shared_ptr<unity_sframe_base> unity_sframe::select_columns(
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::copy(){
-  return select_columns(column_names());
+  auto ret = std::make_shared<unity_sframe>();
+  auto new_planner_node = std::make_shared<planner_node>(*(this->get_planner_node()));
+  ret->construct_from_planner_node(new_planner_node, this->column_names());
+  return ret;
 }
 
 void unity_sframe::add_column(std::shared_ptr<unity_sarray_base> data,
@@ -920,10 +923,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::append(
   if (this->num_columns() == 0) {
     return other;
   } else if (other_sframe->num_columns() == 0) {
-    auto ret = std::make_shared<unity_sframe>();
-    auto new_planner_node = std::make_shared<planner_node>(*(this->get_planner_node()));
-    ret->construct_from_planner_node(new_planner_node, this->column_names());
-    return ret;
+    return copy();
   }
 
   // Error checking and reorder other sframe if necessary
