@@ -1542,7 +1542,7 @@ class SArrayTest(unittest.TestCase):
         with warnings.catch_warnings(record=True) as context:
             warnings.simplefilter("always")
             sa_word._count_ngrams(10)
-            assert len(context) == 1
+            assert len(context) == 2
 
 
 
