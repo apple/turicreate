@@ -84,7 +84,7 @@ To ensure a higher quality model, instead of providing *one* starter image, feel
 import turicreate as tc
 
 def pil_to_tc(pil_image):
-    pixel_data = np.array(pil_img)
+    pixel_data = np.array(pil_image)
     FORMAT_RAW = 2
     return tc.Image(_image_data=pixel_data.tobytes(),
                     _width=pixel_data.shape[1],
