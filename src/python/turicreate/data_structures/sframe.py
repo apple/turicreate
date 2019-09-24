@@ -1608,9 +1608,6 @@ class SFrame(object):
         +-----------+
         [3 rows x 1 columns]
         """
-        if orient != "records" and orient != "lines":
-            raise ValueError("Invalid value for orient parameter (" + str(orient) + ")")
-
         if orient == "records":
             g = SArray.read_json(url)
             if len(g) == 0:
