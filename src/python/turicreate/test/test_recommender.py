@@ -1353,6 +1353,14 @@ U1103,135104,0'''
             self._test_coreml_export(m4, ['135085','135038'])
         '''
 
+    def test_recommend_from_interactions(self):
+        data=tc.SFrame({'userId':[1,1,1,2,2,2,3,3,3],'movieId':[10,11,12,10,13,14,10,11,14]})
+        exclude_pairs=tc.SFrame({'movieId':[14]})
+        observed_data=tc.SFrame({'movieId':[10]})
+        data_set=tc.item_similarity_recommender.create(data,user_id='userId',item_id='movieId')
+        observed_data=data_set.recommend_from_interactions(observed_items=observed_data,exclude=exclude_pairs)
+        assert data['movieId'][8] not in observed_data['movieId']
+
     def test_compare_models(self):
         from turicreate.toolkits.recommender.util import compare_models
 
