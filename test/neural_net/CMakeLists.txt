@@ -45,6 +45,9 @@ if(APPLE AND
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/vgg16)
   file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/vgg16/test_1)
 
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/loss)
+  file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/data/loss/test_1)
+
   set(GOLDEN_SET_TESTING
     data/encode/test_1/config.json
     data/encode/test_1/inputs.json
@@ -80,6 +83,10 @@ if(APPLE AND
     data/vgg16/test_1/inputs.json
     data/vgg16/test_1/outputs.json
     data/vgg16/test_1/weights.json
+    
+    data/loss/test_1/inputs.json
+    data/loss/test_1/outputs.json
+    data/loss/test_1/weights.json
   )
   
   foreach(SOURCE_FILE ${GOLDEN_SET_TESTING})

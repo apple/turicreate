@@ -9,3 +9,5 @@ python python/encoding.py
 python python/residual.py
 python python/resnet.py
 python python/vgg.py
+
+#python python/forward_loss.py

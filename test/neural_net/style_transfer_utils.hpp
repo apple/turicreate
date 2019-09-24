@@ -289,7 +289,10 @@ private:
 
 struct LossTest {
 public: 
-  LossTest(boost::property_tree::ptree config);
+  LossTest(boost::property_tree::ptree resnet_config,
+           boost::property_tree::ptree vgg_config,
+           boost::property_tree::ptree weights);
+  
   ~LossTest();
 private:
   struct impl;

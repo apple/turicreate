@@ -658,20 +658,213 @@ bool Vgg16Test::check_predict(ptree input, ptree output) {
 }
 
 struct LossTest::impl {
+  API_AVAILABLE(macos(10.15)) id <MTLDevice> dev = nil;
+  API_AVAILABLE(macos(10.15)) id <MTLCommandQueue> cmdQueue = nil;
+
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* contentNode = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* contentScaleNode = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* contentMeanNode = nil;
+  
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* styleNode = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* styleScaleNode = nil;
+  API_AVAILABLE(macos(10.15)) MPSNNImageNode* styleMeanNode = nil;
+
+  API_AVAILABLE(macos(10.15)) TCMPSVgg16Descriptor* vggDescriptor = nil;
+  API_AVAILABLE(macos(10.15)) TCMPSTransformerDescriptor* resnetDescriptor = nil;
+
+  API_AVAILABLE(macos(10.15)) NSDictionary<NSString *, NSData *> *vggWeights = nil;
+  API_AVAILABLE(macos(10.15)) NSDictionary<NSString *, NSData *> *resnetWeights = nil;
+
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferPreProcessing *contentPreProcess = nil;
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferPreProcessing *stylePreProcess = nil;
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferPreProcessing *transformerPreProcess = nil;
+
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferTransformerNetwork *transformer = nil;
+  
   API_AVAILABLE(macos(10.15)) TCMPSVgg16Network *contentVGG = nil;
   API_AVAILABLE(macos(10.15)) TCMPSVgg16Network *styleVGG = nil;
   API_AVAILABLE(macos(10.15)) TCMPSVgg16Network *transformerVGG = nil;
+
+  API_AVAILABLE(macos(10.15)) MPSNNGraph* model = nil;
 };
 
-LossTest::LossTest(ptree config) : m_impl(new LossTest::impl()) {
-  // TODO: load transformer and vgg16 weights
+LossTest::LossTest(ptree resnet_config, ptree vgg_config, ptree weights) : m_impl(new LossTest::impl()) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      float contentLossMultiplier = 1.0;
+      float styleLossMultiplier = 1e-4;
+      float totalLossMultiplier = 1e-4;
+
+      m_impl->dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+      m_impl->cmdQueue = [m_impl->dev newCommandQueue];
+
+      m_impl->contentNode = [MPSNNImageNode nodeWithHandle:[[TCMPSGraphNodeHandle alloc] initWithLabel:@"contentImage"]];
+      m_impl->contentScaleNode = [MPSNNImageNode nodeWithHandle:[[TCMPSGraphNodeHandle alloc] initWithLabel:@"contentImage"]];
+      m_impl->contentMeanNode = [MPSNNImageNode nodeWithHandle:[[TCMPSGraphNodeHandle alloc] initWithLabel:@"contentImage"]];
+
+      m_impl->styleNode = [MPSNNImageNode nodeWithHandle:[[TCMPSGraphNodeHandle alloc] initWithLabel:@"styleImage"]];
+      m_impl->styleScaleNode = [MPSNNImageNode nodeWithHandle: [[TCMPSGraphNodeHandle alloc] initWithLabel:@"styleScaleImage"]];
+      m_impl->styleMeanNode = [MPSNNImageNode nodeWithHandle: [[TCMPSGraphNodeHandle alloc] initWithLabel:@"styleMeanImage"]];
+
+      m_impl->vggWeights = define_vgg_weights(weights);
+      m_impl->resnetWeights = define_transformer_weights(weights);
+
+      m_impl->vggDescriptor = define_vgg_descriptor(vgg_config);
+      m_impl->resnetDescriptor = define_transformer_descriptor(resnet_config);
+
+
+
+      m_impl->transformer = [[TCMPSStyleTransferTransformerNetwork alloc] initWithParameters:@"Transformer"
+                                                                                   inputNode:m_impl->contentNode
+                                                                                      device:m_impl->dev
+                                                                                    cmdQueue:m_impl->cmdQueue
+                                                                                  descriptor:m_impl->resnetDescriptor
+                                                                                 initWeights:m_impl->resnetWeights];
+
+      m_impl->transformerPreProcess = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Content_Pre_Processing"
+                                                                                        inputNode:m_impl->transformer.forwardPass
+                                                                                        scaleNode:m_impl->contentScaleNode
+                                                                                         meanNode:m_impl->contentMeanNode];
+
+      m_impl->transformerVGG = [[TCMPSVgg16Network alloc] initWithParameters:@"Content_VGG_16"
+                                                                   inputNode:m_impl->transformerPreProcess.output
+                                                                      device:m_impl->dev
+                                                                    cmdQueue:m_impl->cmdQueue
+                                                                  descriptor:m_impl->vggDescriptor
+                                                                 initWeights:m_impl->vggWeights];
+
+      m_impl->stylePreProcess = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Style_Pre_Processing"
+                                                                                  inputNode:m_impl->styleNode
+                                                                                  scaleNode:m_impl->styleScaleNode
+                                                                                   meanNode:m_impl->styleMeanNode];
+
+      m_impl->styleVGG = [[TCMPSVgg16Network alloc] initWithParameters:@"Style_VGG_16"
+                                                             inputNode:m_impl->stylePreProcess.output
+                                                                device:m_impl->dev
+                                                              cmdQueue:m_impl->cmdQueue
+                                                            descriptor:m_impl->vggDescriptor
+                                                           initWeights:m_impl->vggWeights];
+
+      m_impl->contentPreProcess = [[TCMPSStyleTransferPreProcessing alloc] initWithParameters:@"Content_Loss_Pre_Processing"
+                                                                                 inputNode:m_impl->contentNode
+                                                                                 scaleNode:m_impl->contentScaleNode
+                                                                                  meanNode:m_impl->contentMeanNode];
+
+      m_impl->contentVGG = [[TCMPSVgg16Network alloc] initWithParameters:@"Content_VGG_16"
+                                                               inputNode:m_impl->contentPreProcess.output
+                                                                  device:m_impl->dev
+                                                                cmdQueue:m_impl->cmdQueue
+                                                              descriptor:m_impl->vggDescriptor
+                                                             initWeights:m_impl->vggWeights];
+
+      NSUInteger DEFAULT_IMAGE_SIZE = 256;
+
+      NSUInteger gramScaling1 = (DEFAULT_IMAGE_SIZE * DEFAULT_IMAGE_SIZE);
+      NSUInteger gramScaling2 = ((DEFAULT_IMAGE_SIZE/2) * (DEFAULT_IMAGE_SIZE/2));
+      NSUInteger gramScaling3 = ((DEFAULT_IMAGE_SIZE/4) * (DEFAULT_IMAGE_SIZE/4));
+      NSUInteger gramScaling4 = ((DEFAULT_IMAGE_SIZE/8) * (DEFAULT_IMAGE_SIZE/8));
+
+      MPSCNNLossDescriptor *styleDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
+                                                                          reductionType:MPSCNNReductionTypeMean];
+
+      styleDesc.weight = 0.5 * styleLossMultiplier * totalLossMultiplier;
+
+      MPSCNNLossDescriptor *contentDesc = [MPSCNNLossDescriptor cnnLossDescriptorWithType:MPSCNNLossTypeMeanSquaredError
+                                                                           reductionType:MPSCNNReductionTypeMean];
+
+      contentDesc.weight = 0.5 * contentLossMultiplier * totalLossMultiplier;
+
+      MPSNNGramMatrixCalculationNode *gramMatrixStyleLossFirstReLU
+          = [MPSNNGramMatrixCalculationNode nodeWithSource:m_impl->styleVGG.reluOut1
+                                                     alpha:(1.0/gramScaling1)];
+
+      MPSNNGramMatrixCalculationNode *gramMatrixContentVggFirstReLU
+          = [MPSNNGramMatrixCalculationNode nodeWithSource:m_impl->transformerVGG.reluOut1
+                                                     alpha:(1.0/gramScaling1)];
+
+      MPSNNForwardLossNode *styleLossNode1 
+          = [MPSNNForwardLossNode nodeWithSource:gramMatrixContentVggFirstReLU.resultImage
+                                          labels:gramMatrixStyleLossFirstReLU.resultImage
+                                  lossDescriptor:styleDesc];
+
+      MPSNNGramMatrixCalculationNode *gramMatrixStyleLossSecondReLU
+          = [MPSNNGramMatrixCalculationNode nodeWithSource:m_impl->styleVGG.reluOut2
+                                                     alpha:(1.0/gramScaling2)];
+
+      MPSNNGramMatrixCalculationNode *gramMatrixContentVggSecondReLU
+          = [MPSNNGramMatrixCalculationNode nodeWithSource:m_impl->transformerVGG.reluOut2
+                                                     alpha:(1.0/gramScaling2)];
+
+      MPSNNForwardLossNode *styleLossNode2
+          = [MPSNNForwardLossNode nodeWithSource:gramMatrixContentVggSecondReLU.resultImage
+                                          labels:gramMatrixStyleLossSecondReLU.resultImage
+                                  lossDescriptor:styleDesc];
+
+      MPSNNGramMatrixCalculationNode *gramMatrixStyleLossThirdReLU
+          = [MPSNNGramMatrixCalculationNode nodeWithSource:m_impl->styleVGG.reluOut3
+                                                     alpha:(1.0/gramScaling3)];
+
+      MPSNNGramMatrixCalculationNode *gramMatrixContentVggThirdReLU
+          = [MPSNNGramMatrixCalculationNode nodeWithSource:m_impl->transformerVGG.reluOut3
+                                                     alpha:(1.0/gramScaling3)];
+
+      MPSNNForwardLossNode *styleLossNode3
+          = [MPSNNForwardLossNode nodeWithSource:gramMatrixContentVggThirdReLU.resultImage
+                                          labels:gramMatrixStyleLossThirdReLU.resultImage
+                                  lossDescriptor:styleDesc];
+
+      MPSNNGramMatrixCalculationNode *gramMatrixStyleLossFourthReLU
+          = [MPSNNGramMatrixCalculationNode nodeWithSource:m_impl->styleVGG.reluOut4
+                                                     alpha:(1.0/gramScaling4)];
+
+      MPSNNGramMatrixCalculationNode *gramMatrixContentVggFourthReLU
+          = [MPSNNGramMatrixCalculationNode nodeWithSource:m_impl->transformerVGG.reluOut4
+                                                     alpha:(1.0/gramScaling4)];
+
+      MPSNNForwardLossNode *styleLossNode4 
+          = [MPSNNForwardLossNode nodeWithSource:gramMatrixContentVggFourthReLU.resultImage
+                                          labels:gramMatrixStyleLossFourthReLU.resultImage
+                                  lossDescriptor:styleDesc];
+
+      MPSNNForwardLossNode *contentLossNode
+          = [MPSNNForwardLossNode nodeWithSource:m_impl->transformerVGG.reluOut3
+                                          labels:m_impl->contentVGG.reluOut3
+                                  lossDescriptor:contentDesc];
+
+      MPSNNAdditionNode* addLossStyle1Style2
+          = [MPSNNAdditionNode nodeWithSources:@[styleLossNode1.resultImage,
+                                                 styleLossNode2.resultImage]];
+
+      MPSNNAdditionNode* addLossStyle3Style4
+          = [MPSNNAdditionNode nodeWithSources:@[styleLossNode3.resultImage,
+                                                 styleLossNode4.resultImage]];
+
+      MPSNNAdditionNode* addTotalStyleLoss 
+          = [MPSNNAdditionNode nodeWithSources:@[addLossStyle1Style2.resultImage,
+                                                 addLossStyle3Style4.resultImage]];
+
+      MPSNNAdditionNode* totalLoss
+          = [MPSNNAdditionNode nodeWithSources:@[contentLossNode.resultImage,
+                                                 addTotalStyleLoss.resultImage]];
+
+      m_impl->model = [MPSNNGraph graphWithDevice:m_impl->dev
+                                      resultImage:totalLoss.resultImage
+                              resultImageIsNeeded:YES];
+
+      m_impl->model.format = MPSImageFeatureChannelFormatFloat32;
+    }
+  }
 }
 
 LossTest::~LossTest() = default;
+
+bool LossTest::check_predict(ptree input, ptree output) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      
+    }
+  }
+}
 
 struct WeightUpdateTest::impl {
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransferPreProcessing *contentPreProcess = nil;
