@@ -130,11 +130,11 @@ tc.one_shot_object_detector.util.preview_synthetic_training_data(starter_images,
 synthetic_images.explore()
 ```
 
-![Explore synthetic images](images/synthetic_images_explore.png)
+![Explore synthetic images](images/synthetic_images_explore.jpg)
 
 Some examples of synthetic training data:
 
-![Sample synthetic images](images/synthetic_images_collage.png)
+![Sample synthetic images](images/synthetic_images_collage.jpg)
 
 
 *Note: In order to view the exact synthetic images used to train the model, the same seed should be used which was used to train the model.*
