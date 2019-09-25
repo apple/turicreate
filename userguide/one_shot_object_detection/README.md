@@ -27,15 +27,15 @@ test_images = tc.SFrame({'image':[tc.Image('stop_sign_test1.jpg'),
 model = tc.one_shot_object_detector.create(starter_images, 'label')
 
 # Save predictions on the test set
-test_data['predictions'] = model.predict(test_data)
+test_images['predictions'] = model.predict(test_images)
 
 # Draw prediction bounding boxes on the test images
-test_data['annotated_predictions'] = \
-    tc.one_shot_object_detector.util.draw_bounding_boxes(test_data['image'],
-        test_data['predictions']) 
+test_images['annotated_predictions'] = \
+    tc.one_shot_object_detector.util.draw_bounding_boxes(test_images['image'],
+        test_images['predictions']) 
 
 # To visualize the predictions made on the test set
-test_data.explore()
+test_images.explore()
 
 # Save the model for later use in TuriCreate
 model.save('mymodel.model')
