@@ -10,26 +10,22 @@ import unittest
 import turicreate
 import inspect
 
-MODULES = ['aws', 'clustering', 'data_structures', 'graph_analytics',
-           'data_matching', 'recommender']
+MODULES = ['clustering', 'data_structures', 'graph_analytics', 'recommender']
 CLUSTER = ['kmeans', 'dbscan']
 RECOMMENDERS = ['popularity_recommender',
                 'item_similarity_recommender',
                 'factorization_recommender',
                 'ranking_factorization_recommender',
                 'item_content_recommender']
-ANOMALY_DETECTION = ['local_outlier_factor', 'moving_zscore', 'bayesian_changepoints']
-DATA_MATCHING = ['autotagger', 'deduplication', 'nearest_neighbor_deduplication',
-                 'nearest_neighbor_autotagger', 'record_linker', 'similarity_search']
-DATA_STRUCTURES = ['SFrame', 'SArray', 'Graph', 'Vertex', 'Edge']
+DATA_STRUCTURES = ['SFrame', 'SArray', 'SGraph', 'Vertex', 'Edge']
 GRAPH_ANALYTICS = ['connected_components', 'graph_coloring', 'kcore', 'load_sgraph', 'pagerank',
                    'triangle_counting',  'shortest_path']
-GENERAL = ['load_model', 'load_sframe', 'load_sarray', 'Model', 'CustomModel']
+GENERAL = ['load_model', 'load_sframe', 'load_sarray']
 
 class TuriTests(unittest.TestCase):
     def test_top_level(self):
         for x in (MODULES + CLUSTER + DATA_STRUCTURES + GRAPH_ANALYTICS +
-                  GENERAL + RECOMMENDERS + ANOMALY_DETECTION + DATA_MATCHING):
+                  GENERAL + RECOMMENDERS):
             self.assertTrue(x in dir(turicreate))
 
         # TODO Test whether or not things are NOT visible
