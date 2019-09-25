@@ -409,13 +409,12 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         mps_mxnet_key_map = _MpsStyleGraphAPI.mps_mxnet_weight_dict()
 
+
         for key in mps_weights:
-            if "transformer" in key and "conv" in key:
+            if "transformer" in key and ("inst" in key or "conv" in key):
                 weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]))
-            if "transformer" in key and "inst" in key:
-                weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape))
+                mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape))
+                transformer.collect_params()[mps_mxnet_key_map[key]].set_data(mxnet_weight)
 
         training_time = _time.time() - start_time
 
