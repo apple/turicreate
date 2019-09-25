@@ -30,7 +30,7 @@ class TuriTests(unittest.TestCase):
 
         # TODO Test whether or not things are NOT visible
 
-def load_lazy_modules():
+def lazy_modules_force_load():
     turicreate.recommender.factorization_recommender.get_module()
     turicreate.recommender.ranking_factorization_recommender.get_module()
     turicreate.recommender.item_similarity_recommender.get_module()
@@ -158,7 +158,7 @@ class TabCompleteVisibilityTests(unittest.TestCase):
 class ModuleVisibilityTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        load_lazy_modules()
+        lazy_modules_force_load()
 
     def test_Image_type(self):
         expected = ["Image"]
@@ -269,23 +269,28 @@ class ModuleVisibilityTests(unittest.TestCase):
     def test_toolkits(self):
         actual = get_visible_items(turicreate.toolkits)
 
-        ## TODO: LazyModule has hidden some of these imports for us. We need to
-        ##       fix this somehow. Works perfectly in the Repel.
-        
         expected = [
-                    "classifier",
                     "clustering",
-                    "distances",
-                    "evaluation",
+                    "classifier",
                     "graph_analytics",
-                    "image_analysis",
-                    "nearest_neighbors",
                     "recommender",
                     "regression",
+                    "image_analysis",
+                    "distances",
+                    "nearest_neighbors",
+                    "topic_model",
                     "text_analytics",
-                    "topic_model"
+                    "text_classifier",
+                    "image_classifier",
+                    "image_similarity",
+                    "object_detector",
+                    "one_shot_object_detector",
+                    "style_transfer",
+                    "activity_classifier",
+                    "drawing_classifier",
+                    "sound_classifier",
+                    "evaluation"
                     ]
-        
         check_visible_modules(actual, expected)
 
     def test_models_with_hyper_parameters(self):
