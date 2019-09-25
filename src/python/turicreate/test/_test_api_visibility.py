@@ -216,26 +216,29 @@ class ModuleVisibilityTests(unittest.TestCase):
 
     def test_topic_model(self):
         actual = get_visible_items(turicreate.topic_model)
-        expected = ['TopicModel',
+        expected = ['topic_model',
                     'create',
                     'perplexity']
         check_visible_modules(actual, expected)
 
     def test_text_analytics(self):
-        actual = get_visible_items(turicreate.text_analytics)
+
+        ## TODO: could be concerning that get_module has to be called here.
+        ##       In a repel it works perfectly. Does it work perfectly in a
+        ##       Python file?
+
+        actual = get_visible_items(turicreate.text_analytics.get_module())
         expected = ['tf_idf',
                     'bm25',
-                    'stopwords',
+                    'stop_words',
                     'count_words',
                     'count_ngrams',
                     'random_split',
                     'parse_sparse',
                     'parse_docword',
                     'tokenize',
-                    'trim_rare_words',
-                    'split_by_sentence',
-                    'extract_parts_of_speech',
-                    'PartOfSpeech']
+                    'drop_words']
+
         check_visible_modules(actual, expected)
 
     def test_classifier(self):
@@ -419,4 +422,3 @@ class ModuleVisibilityTests(unittest.TestCase):
         
         self.assertTrue(len(expected) == len(tc_keys))
         self.assertTrue(tc_keys == expected)
-    '''
