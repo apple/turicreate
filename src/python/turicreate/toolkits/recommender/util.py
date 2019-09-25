@@ -1437,6 +1437,7 @@ class _Recommender(_Model):
         recommendations = self.recommend(
             users                = users,
             new_observation_data = observed_items,
+	    exclude		= exclude,
             k                    = k,
             items                = items,
             new_user_data        = new_user_data,
