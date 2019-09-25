@@ -52,26 +52,29 @@ class TabCompleteVisibilityTests(unittest.TestCase):
             'cluster_id',
             'cluster_info',
             'features',
-            'get',
-            '_list_fields',
-            '_list_fields',
             'max_iterations',
             'method',
-            'name',
             'num_clusters',
             'num_examples',
             'num_features',
             'num_unpacked_features',
             'save',
-            'show',
             'summary',
             'training_iterations',
             'training_time',
             'unpacked_features',
-            'verbose',
             'predict']
 
         actual = [x for x in dir(m) if not x.startswith('_')]
+        
+        for x in actual:
+            print(x)
+        
+        print("\n")
+
+        for x in expected:
+            print(x)
+
         check_visible_modules(actual, expected)
 
     def test_supervised(self):
