@@ -412,10 +412,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         for key in mps_weights:
             if "transformer" in key and "conv" in key:
                 weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]))
+                transformer.collect_params()[mps_mxnet_key_map[key]].set_data(_mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape)))
             if "transformer" in key and "inst" in key:
                 weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape))
+                transformer.collect_params()[mps_mxnet_key_map[key]].set_data(_mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape)))
 
         training_time = _time.time() - start_time
 
