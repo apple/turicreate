@@ -149,36 +149,6 @@ class TabCompleteVisibilityTests(unittest.TestCase):
         actual = [x for x in dir(m) if not x.startswith('_')]
         check_visible_modules(actual, expected)
 
-    def test_local_outlier_factor(self):
-        # Testing a class that inherits from CustomModel and ExposeAttributesFromProxy
-        expected = [
-                'distance',
-                'features',
-                'get',
-                '_list_fields',
-                'nearest_neighbors_model',
-                'num_distance_components',
-                'num_examples',
-                'num_features',
-                'num_neighbors',
-                'num_unpacked_features',
-                'predict',
-                'row_label_name',
-                'save',
-                'scores',
-                'show',
-                'summary',
-                'threshold_distances',
-                'training_time',
-                'unpacked_features',
-                'verbose']
-        sf = turicreate.SFrame({'x0': [0., 1., 1., 0., 1., 0., 5.],
-                              'x1': [2., 1., 0., 1., 2., 1.5, 2.5]})
-        m = turicreate.local_outlier_factor.create(sf, num_neighbors=3)
-
-        actual = [x for x in dir(m) if not x.startswith('_')]
-        check_visible_modules(actual, expected)
-
     def test_search(self):
         # Testing an instantiated class that inherits from SDKModel
         sf = turicreate.SFrame({'text': ['Hello my friend',
@@ -521,4 +491,3 @@ class ModuleVisibilityTests(unittest.TestCase):
         
         self.assertTrue(len(expected) == len(tc_keys))
         self.assertTrue(tc_keys == expected);
-
