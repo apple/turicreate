@@ -25,6 +25,9 @@ from turicreate.toolkits import evaluation
 aggregate = _LazyModuleLoader('turicreate.aggregate')
 toolkits =  _LazyModuleLoader('turicreate.toolkits')
 
+# expose name config as a global variable
+config =  _LazyModuleLoader('turicreate.config')
+
 # must load
 from turicreate.data_structures.sgraph import Vertex, Edge
 from turicreate.data_structures.sgraph import SGraph
