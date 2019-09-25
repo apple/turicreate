@@ -5,6 +5,7 @@
  */
 #include <core/data/image/image_type.hpp>
 #include <boost/gil/gil_all.hpp>
+#include <algorithm>
 
 namespace turi{
 
@@ -86,7 +87,9 @@ bool image_type::operator==(const image_type& other) const {
       m_image_data_size == other.m_image_data_size &&
       m_version == other.m_version &&
       m_format == other.m_format &&
-      strcmp(m_image_data.get(), other.m_image_data.get()) == 0;
+      std::equal(m_image_data.get(),
+                 m_image_data.get() + m_image_data_size,
+                 other.m_image_data.get());
 }
 
 }

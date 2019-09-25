@@ -11,7 +11,7 @@ from __future__ import absolute_import as _
 from ..data_structures.sarray import SArray
 from ..data_structures.sframe import SFrame
 from ..data_structures.sarray import load_sarray
-from ..toolkits.image_analysis import image_analysis
+from ..toolkits.image_analysis.image_analysis import load_images
 from .._cython.cy_flexible_type import GMT
 from . import util
 
@@ -1213,8 +1213,8 @@ class SArrayTest(unittest.TestCase):
         current_file_dir = os.path.dirname(os.path.realpath(__file__))
         image_url_1 = current_file_dir + '/images/sample.png'
         image_url_2 = current_file_dir + '/images/sample.jpg'
-        i = image_analysis.load_images(image_url_1)['image']
-        j = image_analysis.load_images(image_url_2)['image']
+        i = load_images(image_url_1)['image']
+        j = load_images(image_url_2)['image']
 
         self.__test_equal(i == i, [x == y for (x,y) in zip(i, i)], int)
         self.__test_equal(j == j, [x == y for (x,y) in zip(j, j)], int)
