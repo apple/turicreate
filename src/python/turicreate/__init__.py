@@ -90,7 +90,7 @@ from turicreate.toolkits.image_analysis import image_analysis
 # we can use top-level lazy import for them
 distances = _LazyModuleLoader('turicreate.toolkits.distances')
 nearest_neighbors = _LazyModuleLoader('turicreate.toolkits.nearest_neighbors')
-topci_model = _LazyModuleLoader('turicreate.toolkits.topci_model')
+topic_model = _LazyModuleLoader('turicreate.toolkits.topic_model')
 text_analytics = _LazyModuleLoader('turicreate.toolkits.text_analytics')
 text_classifier = _LazyModuleLoader('turicreate.toolkits.text_classifier')
 image_classifier = _LazyModuleLoader('turicreate.toolkits.image_classifier')

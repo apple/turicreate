@@ -8,6 +8,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate
+import inspect
 
 MODULES = ['aws', 'clustering', 'data_structures', 'graph_analytics',
            'data_matching', 'recommender']
@@ -544,3 +545,37 @@ class ModuleVisibilityTests(unittest.TestCase):
                     'create']
 
         check_visible_modules(actual, expected)
+    
+    def test_module(self):
+        expected = [
+            '_connect', '_cython', '_deps', '_scripts', '_sys', '_sys_util',
+            'activity_classifier', 'aggregate', 'audio_analysis',
+            'boosted_trees_classifier', 'boosted_trees_regression',
+            'classifier', 'clustering', 'config', 'connected_components',
+            'data_structures', 'dbscan', 'decision_tree_classifier',
+            'decision_tree_regression', 'degree_counting', 'distances',
+            'drawing_classifier', 'evaluation', 'factorization_recommender',
+            'graph_analytics', 'graph_coloring', 'image_analysis',
+            'image_classifier', 'image_similarity', 'item_content_recommender',
+            'item_similarity_recommender', 'kcore', 'kmeans',
+            'label_propagation', 'linear_regression', 'logistic_classifier', 
+            'nearest_neighbor_classifier', 'nearest_neighbors',
+            'object_detector', 'one_shot_object_detector', 'pagerank',
+            'popularity_recommender', 'random_forest_classifier',
+            'random_forest_regression', 'ranking_factorization_recommender', 
+            'recommender', 'regression', 'shortest_path',  'sound_classifier',
+            'style_transfer', 'svm_classifier', 'text_analytics',
+            'text_classifier', 'toolkits', 'topic_model', 'test',
+            'triangle_counting', 'turicreate', 'util', 'version_info',
+            'visualization'
+        ]
+
+        tc_modules = inspect.getmembers(turicreate, inspect.ismodule)
+        tc_keys = [x[0] for x in tc_modules]
+        
+        tc_keys.sort()
+        expected.sort()
+        
+        self.assertTrue(len(expected) == len(tc_keys))
+        self.assertTrue(tc_keys == expected);
+
