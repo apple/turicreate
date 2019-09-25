@@ -1393,6 +1393,78 @@ MPSImageBatch* define_input(ptree input, id <MTLDevice> dev) {
   }
 }
 
+
+NSDictionary<NSString *, MPSImageBatch *>* define_loss_input(ptree input, id <MTLDevice> dev) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      NSMutableDictionary<NSString *, MPSImageBatch *>* input_dict = [[NSMutableDictionary alloc] init];
+
+      NSMutableData * contentArray = [NSMutableData data];
+      NSMutableData * styleArray = [NSMutableData data];
+
+      NSUInteger contentImageWidth  = input.get<NSUInteger>("content_height");
+      NSUInteger contentImageHeight = input.get<NSUInteger>("content_width");
+      NSUInteger contentImageChannels = input.get<NSUInteger>("content_channels");
+
+      NSUInteger styleImageWidth  = input.get<NSUInteger>("style_height");
+      NSUInteger styleImageHeight = input.get<NSUInteger>("style_width");
+      NSUInteger styleImageChannels = input.get<NSUInteger>("style_channels");
+
+      BOOST_FOREACH(const ptree::value_type v, input.get_child("content")) {
+        float element = lexical_cast<float>(v.second.data());
+        [contentArray appendBytes:&element length:sizeof(float)];
+      }
+
+      BOOST_FOREACH(const ptree::value_type v, input.get_child("style")) {
+        float element = lexical_cast<float>(v.second.data());
+        [styleArray appendBytes:&element length:sizeof(float)];
+      }
+
+      MPSImageDescriptor *contentDesc = [MPSImageDescriptor
+          imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                     width:contentImageWidth
+                                    height:contentImageHeight
+                           featureChannels:contentImageChannels
+                            numberOfImages:1
+                                     usage:MTLTextureUsageShaderWrite | MTLTextureUsageShaderRead];
+
+      MPSImageDescriptor *styleDesc = [MPSImageDescriptor
+          imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
+                                     width:styleImageWidth
+                                    height:styleImageHeight
+                           featureChannels:styleImageChannels
+                            numberOfImages:1
+                                     usage:MTLTextureUsageShaderWrite | MTLTextureUsageShaderRead];
+
+      NSMutableArray<MPSImage *> *contentBatch = [[NSMutableArray alloc] init];
+      MPSImage *contentImage = [[MPSImage alloc] initWithDevice:dev
+                                                imageDescriptor:styleDesc];
+
+      [contentImage writeBytes:contentArray.bytes
+                    dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                    imageIndex:0];
+
+      NSMutableArray<MPSImage *> *styleBatch = [[NSMutableArray alloc] init];
+      MPSImage *styleImage = [[MPSImage alloc] initWithDevice:dev
+                                              imageDescriptor:contentDesc];
+
+      [styleImage writeBytes:styleArray.bytes
+                  dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                  imageIndex:0];
+
+      [styleBatch addObject:styleImage];
+      [contentBatch addObject:contentImage];
+
+      input_dict[@"style"] = styleBatch;
+      input_dict[@"content"] = contentBatch;
+
+      return input_dict;
+    } else {
+      throw "Need to be on MacOS 10.15 to use this function";
+    }
+  }
+}
+
 NSData* define_output(ptree output) {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {

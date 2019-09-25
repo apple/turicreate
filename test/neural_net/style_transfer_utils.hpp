@@ -294,6 +294,9 @@ public:
            boost::property_tree::ptree weights);
   
   ~LossTest();
+
+  bool check_predict(boost::property_tree::ptree input,
+                     boost::property_tree::ptree output);
 private:
   struct impl;
   std::unique_ptr<impl> m_impl; 

@@ -38,6 +38,7 @@ TCMPSVgg16Descriptor* define_vgg_descriptor(boost::property_tree::ptree config);
 NSDictionary<NSString *, NSData *>* define_vgg_weights(boost::property_tree::ptree weights);
 
 MPSImageBatch* define_input(boost::property_tree::ptree input, id <MTLDevice> dev);
+NSDictionary<NSString *, MPSImageBatch *>* define_loss_input(boost::property_tree::ptree input, id <MTLDevice> dev);
 NSData* define_output(boost::property_tree::ptree output);
 NSDictionary<NSString *, NSData *>* define_vgg_output(boost::property_tree::ptree output);
 
