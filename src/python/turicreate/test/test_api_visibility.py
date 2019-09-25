@@ -41,7 +41,6 @@ def lazy_modules_force_load():
     turicreate.logistic_classifier.get_module()
     turicreate.toolkits.classifier.boosted_trees_classifier.get_module()
     turicreate.toolkits.classifier.random_forest_classifier.get_module()
-    
     turicreate.toolkits.object_detector.get_module()
     turicreate.toolkits.one_shot_object_detector.get_module()
     turicreate.toolkits.image_similarity.get_module()
