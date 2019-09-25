@@ -25,7 +25,7 @@ from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
 # LazyModuleLoader version of pandas, numpy
-from .._deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
+from .._deps import pandas, numpy, HAS_PANDAS
 from .grouped_sframe import GroupedSFrame
 from ..visualization import Plot
 
@@ -2431,7 +2431,6 @@ class SFrame(object):
             A Numpy Array containing all the values of the SFrame
 
         """
-        assert HAS_NUMPY, 'numpy is not installed.'
         return numpy.transpose(numpy.asarray([self[x] for x in self.column_names()]))
 
     def tail(self, n=10):
