@@ -214,15 +214,6 @@ class ModuleVisibilityTests(unittest.TestCase):
         expected = ['NearestNeighborDeduplication', 'create']
         check_visible_modules(actual, expected)
 
-    def test_lead_scoring(self):
-        expected = ['LeadScoringModel', 'create']
-
-        actual = get_visible_items(turicreate.lead_scoring)
-        check_visible_modules(actual, expected)
-
-        actual = get_visible_items(turicreate.toolkits.lead_scoring)
-        check_visible_modules(actual, expected)
-
     def test_topic_model(self):
         actual = get_visible_items(turicreate.topic_model)
         expected = ['TopicModel',
