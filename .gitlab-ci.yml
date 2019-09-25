@@ -80,9 +80,9 @@ build_wheel_linux_python36:
     paths:
       - target/
 
-build_wheel_mac_10_14_python27:
+build_wheel_mac_10_15_python27:
   tags:
-    - macos10.14
+    - macos10.15
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
@@ -96,9 +96,9 @@ build_wheel_mac_10_14_python27:
     paths:
       - target/
 
-build_wheel_mac_10_14_python35:
+build_wheel_mac_10_15_python35:
   tags:
-    - macos10.14
+    - macos10.15
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
@@ -112,9 +112,9 @@ build_wheel_mac_10_14_python35:
     paths:
       - target/
 
-build_wheel_mac_10_14_python36:
+build_wheel_mac_10_15_python36:
   tags:
-    - macos10.14
+    - macos10.15
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
@@ -128,9 +128,9 @@ build_wheel_mac_10_14_python36:
     paths:
       - target/
 
-build_wheel_mac_10_14_python37:
+build_wheel_mac_10_15_python37:
   tags:
-    - macos10.14
+    - macos10.15
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
@@ -205,7 +205,7 @@ test_cpp_mac_10_13:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
-    - build_wheel_mac_10_14_python27
+    - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - (test -d debug && test -d release) || ./configure --no-python
@@ -224,7 +224,7 @@ test_cpp_mac_10_14:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
-    - build_wheel_mac_10_14_python27
+    - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - (test -d debug && test -d release) || ./configure --no-python
@@ -309,7 +309,7 @@ test_python_linux_python36:
 #      - $TC_HAS_MACOS_RUNNERS == "1"
 #  stage: test
 #  dependencies:
-#    - build_wheel_mac_10_14_python27
+#    - build_wheel_mac_10_15_python27
 #  script:
 #    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
 #    - bash scripts/test_wheel.sh
@@ -327,7 +327,7 @@ test_python_mac_python27_10_14:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
-    - build_wheel_mac_10_14_python27
+    - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - bash scripts/test_wheel.sh
@@ -345,7 +345,7 @@ test_python_mac_python35_10_14:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
-    - build_wheel_mac_10_14_python35
+    - build_wheel_mac_10_15_python35
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv"
     - bash scripts/test_wheel.sh
@@ -363,7 +363,7 @@ test_python_mac_python36_10_14:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
-    - build_wheel_mac_10_14_python36
+    - build_wheel_mac_10_15_python36
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
     - bash scripts/test_wheel.sh
@@ -381,7 +381,7 @@ test_python_mac_python37_10_14:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
-    - build_wheel_mac_10_14_python37
+    - build_wheel_mac_10_15_python37
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenv"
     - bash scripts/test_wheel.sh
@@ -452,7 +452,7 @@ scenario_tests_linux_python36:
 #      - $TC_HAS_MACOS_RUNNERS == "1"
 #  stage: test
 #  dependencies:
-#    - build_wheel_mac_10_14_python27
+#    - build_wheel_mac_10_15_python27
 #  script:
 #    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
 #    - cd scenario-tests
@@ -466,7 +466,7 @@ scenario_tests_mac_python27_10_14:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   dependencies:
-    - build_wheel_mac_10_14_python27
+    - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
@@ -485,10 +485,10 @@ collect_artifacts:
     - build_wheel_linux_python27
     - build_wheel_linux_python35
     - build_wheel_linux_python36
-    - build_wheel_mac_10_14_python27
-    - build_wheel_mac_10_14_python35
-    - build_wheel_mac_10_14_python36
-    - build_wheel_mac_10_14_python37
+    - build_wheel_mac_10_15_python27
+    - build_wheel_mac_10_15_python35
+    - build_wheel_mac_10_15_python36
+    - build_wheel_mac_10_15_python37
   script:
     - mv release/src/deployment/*.dylib target/
     - rmdir -p release || find release
