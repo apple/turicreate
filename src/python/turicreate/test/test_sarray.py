@@ -11,6 +11,7 @@ from __future__ import absolute_import as _
 from ..data_structures.sarray import SArray
 from ..data_structures.sframe import SFrame
 from ..data_structures.sarray import load_sarray
+from ..toolkits.image_analysis import image_analysis
 from .._cython.cy_flexible_type import GMT
 from . import util
 
@@ -1207,6 +1208,17 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(len((t + t2).dropna()), 7)
         self.assertEqual(len((t - t2).dropna()), 7)
         self.assertEqual(len((t * t2).dropna()), 7)
+
+    def test_sarray_image_equality(self):
+        current_file_dir = os.path.dirname(os.path.realpath(__file__))
+        image_url_1 = current_file_dir + '/images/sample.png'
+        image_url_2 = current_file_dir + '/images/sample.jpg'
+        i = image_analysis.load_images(image_url_1)['image']
+        j = image_analysis.load_images(image_url_2)['image']
+
+        self.__test_equal(i == i, [x == y for (x,y) in zip(i, i)], int)
+        self.__test_equal(j == j, [x == y for (x,y) in zip(j, j)], int)
+        self.__test_equal(i == j, [x == y for (x,y) in zip(i, j)], int)
 
     def test_dropna(self):
         no_nas = ['strings', 'yeah', 'nan', 'NaN', 'NA', 'None']
