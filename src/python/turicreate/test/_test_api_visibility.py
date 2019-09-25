@@ -158,33 +158,45 @@ class ModuleVisibilityTests(unittest.TestCase):
                         'item_content_recommender',
                         'item_similarity_recommender']
         other = ['util', 'create']
+        lazy_module = ['_mod_par',
+                       '_',
+                       '_LazyModuleLoader',
+                       '_LazyCallable']
 
         # Check visibility in turicreate.recommender
         actual = [x for x in dir(turicreate.recommender) if '__' not in x]
-        expected = (recommenders + other)
+        expected = (recommenders + other + lazy_module)
         check_visible_modules(actual, expected)
 
         # For each module, check that there is a create() method.
         expected = ['create']
 
-        actual = get_visible_items(turicreate.recommender.factorization_recommender)
+        ## TODO: could be concerning that get_module has to be called here.
+        ##       In a repel it works perfectly. Does it work perfectly in a
+        ##       Python file?
+
+        actual = get_visible_items(turicreate.recommender.factorization_recommender.get_module())
         assert set(actual) == set(expected + ['FactorizationRecommender'])
 
-        actual = get_visible_items(turicreate.recommender.ranking_factorization_recommender)
+        actual = get_visible_items(turicreate.recommender.ranking_factorization_recommender.get_module())
         assert set(actual) == set(expected + ['RankingFactorizationRecommender'])
 
-        actual = get_visible_items(turicreate.recommender.item_similarity_recommender)
+        actual = get_visible_items(turicreate.recommender.item_similarity_recommender.get_module())
         assert set(actual) == set(expected + ['ItemSimilarityRecommender'])
 
-        actual = get_visible_items(turicreate.recommender.item_content_recommender)
+        actual = get_visible_items(turicreate.recommender.item_content_recommender.get_module())
         assert set(actual) == set(expected + ['ItemContentRecommender'])
 
-        actual = get_visible_items(turicreate.recommender.popularity_recommender)
+        actual = get_visible_items(turicreate.recommender.popularity_recommender.get_module())
         assert set(actual) == set(expected + ['PopularityRecommender'])
 
         actual = get_visible_items(turicreate.recommender.util)
-        expected = ['random_split_by_user', 'RecommenderViews', \
-                    'precision_recall_by_user', 'compare_models']
+        expected = [
+            'random_split_by_user',
+            'precision_recall_by_user',
+            'compare_models'
+        ]
+
         check_visible_modules(actual, expected)
 
     def test_nearest_neighbors(self):
