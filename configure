@@ -55,10 +55,17 @@ function print_help {
   echo
   echo "  -D var=value                      Specify CFLAGS definitions to be passed on to cmake."
   echo
+  echo "Relevant environment variables: "
+  echo
+  echo "  CMAKE                             Path to CMake executable."
+  echo "  CC                                Path to C compiler."
+  echo "  CXX                               Path to C++ compiler."
+  echo
   echo "Example: ./configure"
   echo
   echo "Cleanup all build directories"
   echo "Example: ./configure --cleanup"
+  echo
   echo
   exit 1
 } # end of print help
@@ -111,7 +118,6 @@ default_yes=0
 
 with_python=1
 
-with_system_cmake=1
 with_ccache=1
 
 with_capi=1
@@ -140,9 +146,6 @@ while [ $# -gt 0 ]
     --release-opt-for-size) release_opt_for_size=1;;
     --debug-opt-for-size)   debug_opt_for_size=1;;
     --target-ios)           with_ios=1; with_python=0; with_capi=1; release_opt_for_size=1;;
-
-    --with-system-cmake)    with_system_cmake=1;;
-    --no-system-cmake)      with_system_cmake=0;;
 
     --with-ccache)          with_ccache=1;;
     --no-ccache)            with_ccache=0;;
