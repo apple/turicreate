@@ -10,9 +10,7 @@ Given a starter image (*left*), a one-shot object detector trained on this start
 
 ![Stop Sign vector and prediction images](images/stop_sign_sample.jpg) 
 
-Download the starter image to get started from [here](images/stop_sign_starter.png).
-
-Download the two test images from [here](images/stop_sign_test1.jpg) and [here](images/stop_sign_test2.jpg)
+Download the [stop_sign_starter.png](images/stop_sign_starter.png) image. Also Download [stop_sign_test1.jpg](images/stop_sign_test1.jpg) and [stop_sing_test2.jpg](images/stop_sign_test2.jpg)
 
 ```python
 import turicreate as tc
@@ -25,7 +23,7 @@ starter_images = tc.SFrame({'image':[tc.Image('stop_sign_starter.png')],
 test_images = tc.SFrame({'image':[tc.Image('stop_sign_test1.jpg'), 
                                   tc.Image('stop_sign_test2.jpg')]})
 
-# Create a model. This step will take about an hour
+# Create a model. This step will take a few hours on CPU and about an hour on GPU
 model = tc.one_shot_object_detector.create(starter_images, 'label')
 
 # Save predictions on the test set
@@ -61,7 +59,7 @@ To learn more about deploying One-Shot to CoreML details, refer to the [Object D
 
 ## How it works
 
-In this section, we will go into detail on what happens under the hood of the `create` method. A One-Shot Object Detector model is trained in two steps: First, we use the starter images to generate synthetic data and annotations, and second, we train a model on the generated synthetic data.
+In this section, we will go into detail on what happens under the hood of the `create` method. A One-Shot Object Detector model is trained in two steps. First, the starter image(s) is used to generate synthetic data and annotations. Second, we train an object detector model on the generated synthetic data.
 
 **Stage 1: Automatic synthetic data generation**
 
@@ -103,7 +101,7 @@ for rotation_angle in [90, 180, 270]:
 
 starter_images = tc.SFrame({
     'image': images,
-    'label': ['stop_sign', 'stop_sign', 'stop_sign', 'stop_sign']
+    'label': ['my_label'] * 4
 })
 ```
 
@@ -113,7 +111,7 @@ This is a known issue ([#2341](https://github.com/apple/turicreate/issues/2341))
 
 ```python
 image = turicreate.Image('starter.png')
-turicreate.image_analysis.resize(image, width=image.width/2, height=image.height/2, channels=image.channels)
+turicreate.image_analysis.resize(image, width=image.width//2, height=image.height//2, channels=image.channels)
 ```
 
 ## Advanced Usage
