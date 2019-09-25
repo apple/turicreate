@@ -164,7 +164,7 @@ class LazyModuleLoader(ModuleType):
         # for interactive autocompletion
         if self._module:
             return dir(self._module)
-        return self._my_attrs_ + super(LazyModuleLoader, self).__dir__()
+        return LazyModuleLoader._my_attrs_ + super(LazyModuleLoader, self).__dir__()
 
     def __getattr__(self, attr):
         self._load_module()
@@ -182,7 +182,7 @@ class LazyModuleLoader(ModuleType):
         # don't use is_loaded; it will trigger getattr
         # avoid infinite recursion by self._load_module()
         # when self._load is not set first
-        if attr in self._my_attrs_:
+        if attr in LazyModuleLoader._my_attrs_:
             # workaround for the recursive setattr
             return super(LazyModuleLoader, self).__setattr__(attr, value)
         else:
@@ -275,7 +275,12 @@ def __get_version(version):
 
 def __has_module(name):
     if six.PY2:
-        return imp.find_module(name) is not None
+        try:
+            spec = imp.find_module(name)[0]
+            # file or module path
+            return not (spec[0] is None and spec[1] is None)
+        except ImportError:
+            return False
     else:
         return importlib.util.find_spec(name) is not None
 
