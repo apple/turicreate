@@ -117,62 +117,6 @@ class TabCompleteVisibilityTests(unittest.TestCase):
         actual = [x for x in dir(m) if not x.startswith('_')]
         check_visible_modules(actual, expected)
 
-    def test_churn_predictor(self):
-        # Arrange
-        time = [1453845953 + 20000 * x for x in range(500)]
-        user = [1,2,3,4,5] * 20 + [1,2,3,4] * 25 + [1,2,3] * 100
-        actions = turicreate.SFrame({
-            'user_id': user,
-            'timestamp': time,
-            'action': [1,2,3,4,5] * 100,
-        })
-        def _unix_timestamp_to_datetime(x):
-            import datetime
-            return datetime.datetime.fromtimestamp(x)
-        actions['timestamp'] = actions['timestamp'].apply(
-                                  _unix_timestamp_to_datetime)
-        actions = turicreate.TimeSeries(actions, 'timestamp')
-
-        # Act
-        m = turicreate.churn_predictor.create(actions)
-        actual = [x for x in dir(m) if not x.startswith('_')]
-
-        # Assert.
-        expected = ['categorical_features',
-                    'evaluate',
-                    'extract_features',
-                    'get_feature_importance',
-                    'churn_period',
-                    'grace_period',
-                    'features',
-                    'get',
-                    'is_data_aggregated',
-                    '_list_fields',
-                    '_list_fields',
-                    'lookback_periods',
-                    'model_options',
-                    'name',
-                    'num_features',
-                    'num_observations',
-                    'num_users',
-                    'numerical_features',
-                    'predict',
-                    'explain',
-                    'processed_training_data',
-                    'save',
-                    'show',
-                    'summary',
-                    'time_boundaries',
-                    'time_period',
-                    'trained_model',
-                    'trained_explanation_model',
-                    'get_churn_report',
-                    'get_activity_baseline',
-                    'views',
-                    'use_advanced_features',
-                    'user_id']
-        check_visible_modules(actual, expected)
-
     def test_topic_model(self):
         sa = turicreate.SArray([{'a':5, 'b':3}, {'a':1, 'b':5, 'c':3}])
         m = turicreate.topic_model.create(sa)
