@@ -867,24 +867,26 @@ bool LossTest::check_predict(ptree input, ptree output) {
       id<MTLCommandBuffer> cb = [m_impl->cmdQueue commandBuffer];
       
       MPSImageBatch* contentBatch = input_dict[@"content"];
+      MPSImageBatch* contentMeanBatch = input_dict[@"content_mean"];
+      MPSImageBatch* contentMultiplicationBatch = input_dict[@"content_multiplication"];
+
       MPSImageBatch* styleBatch = input_dict[@"style"];
-
-      NSMutableArray<MPSImage *> *contentMeanArray = [[NSMutableArray alloc] init];
-      NSMutableArray<MPSImage *> *contentMultiplicationArray = [[NSMutableArray alloc] init];
-
-      NSMutableArray<MPSImage *> *styleMeanArray = [[NSMutableArray alloc] init];
-      NSMutableArray<MPSImage *> *styleMultiplicationArray = [[NSMutableArray alloc] init];
+      MPSImageBatch* styleMeanBatch = input_dict[@"style_mean"];
+      MPSImageBatch* styleMultiplicationBatch = input_dict[@"style_multiplication"];
       
       NSMutableArray *intermediateImages = [[NSMutableArray alloc] init];
       NSMutableArray *destinationStates = [[NSMutableArray alloc] init];
       
       MPSImageBatch *outputBatch =  [m_impl->model encodeBatchToCommandBuffer:cb
-                                                                 sourceImages:@[imageBatch]
+                                                                 sourceImages:@[contentBatch,
+                                                                                contentMultiplicationBatch,
+                                                                                contentMeanBatch,
+                                                                                styleBatch,
+                                                                                styleMultiplicationBatch,
+                                                                                styleMeanBatch]
                                                                  sourceStates:nil
                                                            intermediateImages:intermediateImages
                                                             destinationStates:destinationStates];
-
-
 
       /*
       for (MPSImage *image in outputBatch) {

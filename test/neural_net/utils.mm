@@ -1399,16 +1399,26 @@ NSDictionary<NSString *, MPSImageBatch *>* define_loss_input(ptree input, id <MT
     if (@available(macOS 10.15, *)) {
       NSMutableDictionary<NSString *, MPSImageBatch *>* input_dict = [[NSMutableDictionary alloc] init];
 
-      NSMutableData * contentArray = [NSMutableData data];
-      NSMutableData * styleArray = [NSMutableData data];
-
       NSUInteger contentImageWidth  = input.get<NSUInteger>("content_height");
       NSUInteger contentImageHeight = input.get<NSUInteger>("content_width");
       NSUInteger contentImageChannels = input.get<NSUInteger>("content_channels");
 
+      NSUInteger contentImageSize = contentImageWidth * contentImageHeight * contentImageChannels;
+
       NSUInteger styleImageWidth  = input.get<NSUInteger>("style_height");
       NSUInteger styleImageHeight = input.get<NSUInteger>("style_width");
       NSUInteger styleImageChannels = input.get<NSUInteger>("style_channels");
+
+      NSUInteger styleImageSize = styleImageWidth * styleImageHeight * styleImageChannels;
+
+      NSMutableData * contentArray = [NSMutableData data];
+      NSMutableData * styleArray = [NSMutableData data];
+
+      NSMutableData* meanArray = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * contentImageSize];
+      NSMutableData* multiplicationArray = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * contentImageSize];
+
+      [TCMPSStyleTransfer populateMean:meanArray];
+      [TCMPSStyleTransfer populateMultiplication:multiplicationArray];
 
       BOOST_FOREACH(const ptree::value_type v, input.get_child("content")) {
         float element = lexical_cast<float>(v.second.data());
@@ -1438,25 +1448,71 @@ NSDictionary<NSString *, MPSImageBatch *>* define_loss_input(ptree input, id <MT
 
       NSMutableArray<MPSImage *> *contentBatch = [[NSMutableArray alloc] init];
       MPSImage *contentImage = [[MPSImage alloc] initWithDevice:dev
-                                                imageDescriptor:styleDesc];
+                                                imageDescriptor:contentDesc];
 
       [contentImage writeBytes:contentArray.bytes
                     dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
                     imageIndex:0];
 
+      [contentBatch addObject:contentImage];
+
+      NSMutableArray<MPSImage *> *contentMeanBatch = [[NSMutableArray alloc] init];
+      MPSImage *contentMean = [[MPSImage alloc] initWithDevice:dev
+                                               imageDescriptor:contentDesc];
+
+      [contentMean writeBytes:meanArray.bytes
+                   dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                   imageIndex:0];
+
+      [contentMeanBatch addObject:contentMean];
+
+      NSMutableArray<MPSImage *> *contentMultiplicationBatch = [[NSMutableArray alloc] init];
+      MPSImage *contentMultiplication = [[MPSImage alloc] initWithDevice:dev
+                                                         imageDescriptor:contentDesc];
+
+      [contentMultiplication writeBytes:multiplicationArray.bytes
+                             dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                             imageIndex:0];
+
+      [contentMultiplicationBatch addObject:contentMean];
+
       NSMutableArray<MPSImage *> *styleBatch = [[NSMutableArray alloc] init];
       MPSImage *styleImage = [[MPSImage alloc] initWithDevice:dev
-                                              imageDescriptor:contentDesc];
+                                              imageDescriptor:styleDesc];
 
       [styleImage writeBytes:styleArray.bytes
                   dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
                   imageIndex:0];
 
       [styleBatch addObject:styleImage];
-      [contentBatch addObject:contentImage];
+
+      NSMutableArray<MPSImage *> *styleMeanBatch = [[NSMutableArray alloc] init];
+      MPSImage *styleMean = [[MPSImage alloc] initWithDevice:dev
+                                             imageDescriptor:styleDesc];
+
+      [styleMean writeBytes:meanArray.bytes
+                 dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                 imageIndex:0];
+
+      [styleMeanBatch addObject:styleMean];
+
+      NSMutableArray<MPSImage *> *styleMultiplicationBatch = [[NSMutableArray alloc] init];
+      MPSImage *styleMultiplication = [[MPSImage alloc] initWithDevice:dev
+                                                       imageDescriptor:styleDesc];
+
+      [styleMultiplication writeBytes:multiplicationArray.bytes
+                           dataLayout:MPSDataLayoutHeightxWidthxFeatureChannels
+                           imageIndex:0];
+
+      [styleMultiplicationBatch addObject:styleMean];
 
       input_dict[@"style"] = styleBatch;
+      input_dict[@"style_mean"] = styleMeanBatch;
+      input_dict[@"style_multiplication"] = styleMultiplicationBatch;
+
       input_dict[@"content"] = contentBatch;
+      input_dict[@"content_mean"] = contentMeanBatch;
+      input_dict[@"content_multiplication"] = contentMultiplicationBatch;
 
       return input_dict;
     } else {
