@@ -214,25 +214,6 @@ class ModuleVisibilityTests(unittest.TestCase):
         expected = ['NearestNeighborDeduplication', 'create']
         check_visible_modules(actual, expected)
 
-    def test_anomaly_detection(self):
-        actual = get_visible_items(turicreate.anomaly_detection)
-        expected = ['local_outlier_factor', 'moving_zscore', 'create', 'bayesian_changepoints']
-        check_visible_modules(actual, expected)
-
-        actual = get_visible_items(turicreate.toolkits.anomaly_detection)
-        expected = ['local_outlier_factor', 'moving_zscore', 'create', 'bayesian_changepoints']
-        check_visible_modules(actual, expected)
-
-        actual = get_visible_items(
-            turicreate.anomaly_detection.local_outlier_factor)
-        expected = ['LocalOutlierFactorModel', 'create']
-        check_visible_modules(actual, expected)
-
-        actual = get_visible_items(
-            turicreate.anomaly_detection.moving_zscore)
-        expected = ['MovingZScoreModel', 'create']
-        check_visible_modules(actual, expected)
-
     def test_lead_scoring(self):
         expected = ['LeadScoringModel', 'create']
 
