@@ -200,30 +200,18 @@ class ModuleVisibilityTests(unittest.TestCase):
         check_visible_modules(actual, expected)
 
     def test_nearest_neighbors(self):
-        actual = get_visible_items(turicreate.nearest_neighbors)
+        
+        ## TODO: could be concerning that get_module has to be called here.
+        ##       In a repel it works perfectly. Does it work perfectly in a
+        ##       Python file?
+
+        actual = get_visible_items(turicreate.nearest_neighbors.get_module())
         expected = ['NearestNeighborsModel', 'create']
         check_visible_modules(actual, expected)
 
     def test_clustering(self):
         actual = get_visible_items(turicreate.clustering)
         expected = ['kmeans', 'dbscan']
-        check_visible_modules(actual, expected)
-
-    def test_data_matching(self):
-        actual = get_visible_items(turicreate.data_matching)
-        expected = DATA_MATCHING
-        check_visible_modules(actual, expected)
-
-        actual = get_visible_items(turicreate.autotagger)
-        expected = ['create']
-        check_visible_modules(actual, expected)
-
-        actual = get_visible_items(turicreate.deduplication)
-        expected = ['create']
-        check_visible_modules(actual, expected)
-
-        actual = get_visible_items(turicreate.nearest_neighbor_deduplication)
-        expected = ['NearestNeighborDeduplication', 'create']
         check_visible_modules(actual, expected)
 
     def test_topic_model(self):
@@ -431,3 +419,4 @@ class ModuleVisibilityTests(unittest.TestCase):
         
         self.assertTrue(len(expected) == len(tc_keys))
         self.assertTrue(tc_keys == expected)
+    '''
