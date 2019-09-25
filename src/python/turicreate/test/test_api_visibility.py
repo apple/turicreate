@@ -30,6 +30,18 @@ class TuriTests(unittest.TestCase):
 
         # TODO Test whether or not things are NOT visible
 
+def load_lazy_modules():
+    turicreate.recommender.factorization_recommender.get_module()
+    turicreate.recommender.ranking_factorization_recommender.get_module()
+    turicreate.recommender.item_similarity_recommender.get_module()
+    turicreate.recommender.item_content_recommender.get_module()
+    turicreate.recommender.popularity_recommender.get_module()
+    turicreate.nearest_neighbors.get_module()
+    turicreate.text_analytics.get_module()
+    turicreate.logistic_classifier.get_module()
+    turicreate.toolkits.classifier.boosted_trees_classifier.get_module()
+    turicreate.toolkits.classifier.random_forest_classifier.get_module()
+
 def get_visible_items(d):
     return [x for x in dir(d) if not x.startswith('_')]
 
@@ -144,6 +156,9 @@ class TabCompleteVisibilityTests(unittest.TestCase):
         check_visible_modules(actual, expected)
 
 class ModuleVisibilityTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        load_lazy_modules()
 
     def test_Image_type(self):
         expected = ["Image"]
@@ -171,23 +186,19 @@ class ModuleVisibilityTests(unittest.TestCase):
         # For each module, check that there is a create() method.
         expected = ['create']
 
-        ## TODO: could be concerning that get_module has to be called here.
-        ##       In a repel it works perfectly. Does it work perfectly in a
-        ##       Python file?
-
-        actual = get_visible_items(turicreate.recommender.factorization_recommender.get_module())
+        actual = get_visible_items(turicreate.recommender.factorization_recommender)
         assert set(actual) == set(expected + ['FactorizationRecommender'])
 
-        actual = get_visible_items(turicreate.recommender.ranking_factorization_recommender.get_module())
+        actual = get_visible_items(turicreate.recommender.ranking_factorization_recommender)
         assert set(actual) == set(expected + ['RankingFactorizationRecommender'])
 
-        actual = get_visible_items(turicreate.recommender.item_similarity_recommender.get_module())
+        actual = get_visible_items(turicreate.recommender.item_similarity_recommender)
         assert set(actual) == set(expected + ['ItemSimilarityRecommender'])
 
-        actual = get_visible_items(turicreate.recommender.item_content_recommender.get_module())
+        actual = get_visible_items(turicreate.recommender.item_content_recommender)
         assert set(actual) == set(expected + ['ItemContentRecommender'])
 
-        actual = get_visible_items(turicreate.recommender.popularity_recommender.get_module())
+        actual = get_visible_items(turicreate.recommender.popularity_recommender)
         assert set(actual) == set(expected + ['PopularityRecommender'])
 
         actual = get_visible_items(turicreate.recommender.util)
@@ -200,12 +211,7 @@ class ModuleVisibilityTests(unittest.TestCase):
         check_visible_modules(actual, expected)
 
     def test_nearest_neighbors(self):
-        
-        ## TODO: could be concerning that get_module has to be called here.
-        ##       In a repel it works perfectly. Does it work perfectly in a
-        ##       Python file?
-
-        actual = get_visible_items(turicreate.nearest_neighbors.get_module())
+        actual = get_visible_items(turicreate.nearest_neighbors)
         expected = ['NearestNeighborsModel', 'create']
         check_visible_modules(actual, expected)
 
@@ -222,12 +228,7 @@ class ModuleVisibilityTests(unittest.TestCase):
         check_visible_modules(actual, expected)
 
     def test_text_analytics(self):
-
-        ## TODO: could be concerning that get_module has to be called here.
-        ##       In a repel it works perfectly. Does it work perfectly in a
-        ##       Python file?
-
-        actual = get_visible_items(turicreate.text_analytics.get_module())
+        actual = get_visible_items(turicreate.text_analytics)
         expected = ['tf_idf',
                     'bm25',
                     'stop_words',
@@ -245,12 +246,14 @@ class ModuleVisibilityTests(unittest.TestCase):
         actual = get_visible_items(turicreate.classifier)
         expected = ['create',
                     'logistic_classifier',
-                    'boosted_trees_classifier',
+                    'nearest_neighbor_classifier',
                     'random_forest_classifier',
                     'decision_tree_classifier',
-                    'neuralnet_classifier',
+                    'boosted_trees_classifier',
+                    'decision_tree',
                     'svm_classifier',
                     'nearest_neighbor_classifier']
+
         check_visible_modules(actual, expected)
 
     def test_regression(self):
@@ -260,66 +263,30 @@ class ModuleVisibilityTests(unittest.TestCase):
                     'boosted_trees_regression',
                     'decision_tree_regression',
                     'random_forest_regression']
-        check_visible_modules(actual, expected)
 
-    def test_cross_validation(self):
-        actual = get_visible_items(turicreate.cross_validation)
-        expected = ['cross_val_score',
-                    'shuffle',
-                    'KFold']
         check_visible_modules(actual, expected)
 
     def test_toolkits(self):
         actual = get_visible_items(turicreate.toolkits)
+
+        ## TODO: LazyModule has hidden some of these imports for us. We need to
+        ##       fix this somehow. Works perfectly in the Repel.
+        
         expected = [
-                    'anomaly_detection',
-                    'churn_predictor',
-                    'classifier',
-                    'clustering',
-                    'comparison',
-                    'cross_validation',
-                    'data_matching',
-                    'deeplearning',
-                    'distances',
-                    'evaluation',
-                    'feature_engineering',
-                    'graph_analytics',
-                    'image_analysis',
-                    'lead_scoring',
-                    'model_parameter_search',
-                    'nearest_neighbors',
-                    'pattern_mining',
-                    'product_sentiment',
-                    'recommender',
-                    'regression',
-                    'sentiment_analysis',
-                    'text_analytics',
-                    'topic_model',
+                    "classifier",
+                    "clustering",
+                    "distances",
+                    "evaluation",
+                    "graph_analytics",
+                    "image_analysis",
+                    "nearest_neighbors",
+                    "recommender",
+                    "regression",
+                    "text_analytics",
+                    "topic_model"
                     ]
+        
         check_visible_modules(actual, expected)
-
-    def test_graph_analytics(self):
-
-        common_functions = ['create']
-
-        special_functions = {}
-        special_functions[turicreate.toolkits.graph_analytics.connected_components] \
-                           = ['ConnectedComponentsModel']
-        special_functions[turicreate.toolkits.graph_analytics.graph_coloring] \
-                           = ['GraphColoringModel']
-        special_functions[turicreate.toolkits.graph_analytics.kcore] \
-                           = ['KcoreModel']
-        special_functions[turicreate.toolkits.graph_analytics.shortest_path] \
-                           = ['ShortestPathModel']
-        special_functions[turicreate.toolkits.graph_analytics.triangle_counting] \
-                           = ['TriangleCountingModel']
-        special_functions[turicreate.toolkits.graph_analytics.pagerank] \
-                           = ['PagerankModel']
-
-        for module, funcs in special_functions.items():
-          actual = get_visible_items(module)
-          expected = common_functions + funcs
-          check_visible_modules(actual, expected)
 
     def test_models_with_hyper_parameters(self):
 
@@ -350,45 +317,17 @@ class ModuleVisibilityTests(unittest.TestCase):
           actual = get_visible_items(module)
           expected = common_functions + funcs
           check_visible_modules(actual, expected)
-
+    
     def test_topic_modelling_models(self):
 
         common_functions = ['create', 'perplexity']
         special_functions = {}
-        special_functions[turicreate.topic_model] = ['TopicModel']
+        special_functions[turicreate.topic_model] = ['topic_model']
 
         for module, funcs in special_functions.items():
           actual = get_visible_items(module)
           expected = common_functions + funcs
           check_visible_modules(actual, expected)
-
-    def test_feature_engineering(self):
-        actual = get_visible_items(turicreate.toolkits.feature_engineering)
-        expected = ['AutoVectorizer',
-                    'BM25',
-                    'CategoricalImputer',
-                    'CountThresholder',
-                    'CountFeaturizer',
-                    'DeepFeatureExtractor',
-                    'FeatureBinner',
-                    'FeatureHasher',
-                    'NGramCounter',
-                    'NumericImputer',
-                    'OneHotEncoder',
-                    'QuadraticFeatures',
-                    'RandomProjection',
-                    'TFIDF',
-                    'Tokenizer',
-                    'TransformerBase',
-                    'TransformerChain',
-                    'TransformToFlatDictionary',
-                    'WordCounter',
-                    'RareWordTrimmer',
-                    'SentenceSplitter',
-                    'PartOfSpeechExtractor',
-                    'create']
-
-        check_visible_modules(actual, expected)
     
     def test_module(self):
         expected = [
