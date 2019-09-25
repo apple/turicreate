@@ -41,6 +41,16 @@ def lazy_modules_force_load():
     turicreate.logistic_classifier.get_module()
     turicreate.toolkits.classifier.boosted_trees_classifier.get_module()
     turicreate.toolkits.classifier.random_forest_classifier.get_module()
+    
+    turicreate.toolkits.object_detector.get_module()
+    turicreate.toolkits.one_shot_object_detector.get_module()
+    turicreate.toolkits.image_similarity.get_module()
+    turicreate.toolkits.image_classifier.get_module()
+    turicreate.toolkits.text_classifier.get_module()
+    turicreate.toolkits.sound_classifier.get_module()
+    turicreate.toolkits.style_transfer.get_module()
+    turicreate.toolkits.activity_classifier.get_module()
+    turicreate.toolkits.drawing_classifier.get_module()
 
 def get_visible_items(d):
     return [x for x in dir(d) if not x.startswith('_')]
@@ -289,8 +299,10 @@ class ModuleVisibilityTests(unittest.TestCase):
                     "activity_classifier",
                     "drawing_classifier",
                     "sound_classifier",
-                    "evaluation"
+                    "evaluation",
+                    "audio_analysis"
                     ]
+            
         check_visible_modules(actual, expected)
 
     def test_models_with_hyper_parameters(self):

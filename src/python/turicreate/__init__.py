@@ -86,24 +86,23 @@ from turicreate.toolkits.classifier import nearest_neighbor_classifier
 # lazy load under leaf node level
 from turicreate.toolkits.image_analysis import image_analysis
 
-# self-encaps modules without from import statements
-# we can use top-level lazy import for them
-distances = _LazyModuleLoader('turicreate.toolkits.distances')
-nearest_neighbors = _LazyModuleLoader('turicreate.toolkits.nearest_neighbors')
-topic_model = _LazyModuleLoader('turicreate.toolkits.topic_model')
-text_analytics = _LazyModuleLoader('turicreate.toolkits.text_analytics')
-text_classifier = _LazyModuleLoader('turicreate.toolkits.text_classifier')
-image_classifier = _LazyModuleLoader('turicreate.toolkits.image_classifier')
-image_similarity = _LazyModuleLoader('turicreate.toolkits.image_similarity')
-object_detector = _LazyModuleLoader('turicreate.toolkits.object_detector')
-one_shot_object_detector = _LazyModuleLoader('turicreate.toolkits.one_shot_object_detector')
-style_transfer = _LazyModuleLoader('turicreate.toolkits.style_transfer')
-activity_classifier = _LazyModuleLoader('turicreate.toolkits.activity_classifier')
-drawing_classifier = _LazyModuleLoader('turicreate.toolkits.drawing_classifier')
+from turicreate.toolkits import distances
+from turicreate.toolkits import nearest_neighbors
+from turicreate.toolkits import topic_model
+from turicreate.toolkits import text_analytics
+from turicreate.toolkits import text_classifier
+from turicreate.toolkits import image_classifier
+from turicreate.toolkits import image_similarity
+from turicreate.toolkits import object_detector
+from turicreate.toolkits import one_shot_object_detector
+from turicreate.toolkits import style_transfer
+from turicreate.toolkits import activity_classifier
+from turicreate.toolkits import drawing_classifier
+
+from turicreate.toolkits import sound_classifier
+from turicreate.toolkits import audio_analysis
 
 # modules that don't expose attributes from __init__.py
-sound_classifier = _LazyModuleLoader('turicreate.toolkits.sound_classifier.sound_classifier')
-audio_analysis = _LazyModuleLoader('turicreate.toolkits.audio_analysis.audio_analysis')
 # lazy callable
 load_images = _LazyCallable(image_analysis, 'load_images')
 load_audio = _LazyCallable(audio_analysis, 'load_audio')
