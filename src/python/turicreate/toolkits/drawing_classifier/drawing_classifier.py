@@ -262,15 +262,16 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             ctx=ctx,
             allow_missing=True)
 
-    # To get weights: for warmstart Dense1 needs one forward pass to be initialised
-    test_input = _mx.nd.uniform(0, 1, (1,3) + (1,28,28))
-    model_output = model.forward(test_input[0])
 
     if params['use_tensorflow']:
         ## TensorFlow implementation
         if verbose:
             print("Using TensorFlow")
         from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel, _tf_train_model
+
+        # To get weights: for warmstart Dense1 needs one forward pass to be initialised
+        test_input = _mx.nd.uniform(0, 1, (1,3) + (1,28,28))
+        model_output = model.forward(test_input[0])
 
         # Define the TF Model
         tf_model = DrawingClassifierTensorFlowModel(validation_set, model_params, batch_size, len(classes), verbose)
