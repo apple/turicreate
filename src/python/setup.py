@@ -173,7 +173,7 @@ if __name__ == '__main__':
         package_data={
             'turicreate': [
                 '_cython/*.so', '_cython/*.pyd',
-                '*.so', '*.dylib',
+                '*.so', '*.dylib', 'toolkits/*.so',
 
                 # macOS visualization
                 'Turi Create Visualization.app/Contents/*',
