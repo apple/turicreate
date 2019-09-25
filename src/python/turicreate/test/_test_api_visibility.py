@@ -143,38 +143,6 @@ class TabCompleteVisibilityTests(unittest.TestCase):
         actual = [x for x in dir(m) if not x.startswith('_')]
         check_visible_modules(actual, expected)
 
-    def test_search(self):
-        # Testing an instantiated class that inherits from SDKModel
-        sf = turicreate.SFrame({'text': ['Hello my friend',
-                                       'I love this burrito']})
-        m = turicreate._internal.search.create(sf)
-
-        expected = [
-            'average_document_length',
-            'bm25_b',
-            'bm25_k1',
-            'data',
-            'elapsed_indexing',
-            'elapsed_processing',
-            'features',
-            'get',
-            '_list_fields',
-            'name',
-            'num_documents',
-            'num_tokens',
-            'packed_sarrays',
-            'query',
-            'save',
-            'show',
-            'summary',
-            'tfidf_threshold',
-            'verbose',
-            'vocabulary']
-
-        actual = [x for x in dir(m) if not x.startswith('_')]
-        check_visible_modules(actual, expected)
-
-
 class ModuleVisibilityTests(unittest.TestCase):
 
     def test_Image_type(self):
@@ -485,4 +453,3 @@ class ModuleVisibilityTests(unittest.TestCase):
         
         self.assertTrue(len(expected) == len(tc_keys))
         self.assertTrue(tc_keys == expected)
-
