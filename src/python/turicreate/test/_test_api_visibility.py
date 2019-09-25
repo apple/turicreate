@@ -116,17 +116,8 @@ class TabCompleteVisibilityTests(unittest.TestCase):
             'validation_data']
 
         actual = [x for x in dir(m) if not x.startswith('_')]
-        
-        for x in actual:
-            print(x)
-        
-        print("\n")
-
-        for x in expected:
-            print(x)
-
         check_visible_modules(actual, expected)
-    '''
+
     def test_topic_model(self):
         sa = turicreate.SArray([{'a':5, 'b':3}, {'a':1, 'b':5, 'c':3}])
         m = turicreate.topic_model.create(sa)
@@ -134,17 +125,13 @@ class TabCompleteVisibilityTests(unittest.TestCase):
         expected = ['alpha',
             'beta',
             'evaluate',
-            'get',
             'get_topics',
-            '_list_fields',
-            'name',
             'num_burnin',
             'num_iterations',
             'num_topics',
             'predict',
             'print_interval',
             'save',
-            'show',
             'summary',
             'topics',
             'training_iterations',
@@ -497,5 +484,5 @@ class ModuleVisibilityTests(unittest.TestCase):
         expected.sort()
         
         self.assertTrue(len(expected) == len(tc_keys))
-        self.assertTrue(tc_keys == expected);
-    '''
+        self.assertTrue(tc_keys == expected)
+
