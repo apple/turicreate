@@ -230,13 +230,6 @@ class ModuleVisibilityTests(unittest.TestCase):
                     'perplexity']
         check_visible_modules(actual, expected)
 
-    def test_churn_predictor(self):
-        actual = get_visible_items(turicreate.churn_predictor)
-        expected = ['ChurnPredictor',
-                    'create',
-                    'random_split']
-        check_visible_modules(actual, expected)
-
     def test_text_analytics(self):
         actual = get_visible_items(turicreate.text_analytics)
         expected = ['tf_idf',
