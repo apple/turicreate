@@ -1,4 +1,0 @@
-^CMake Error at MATH-DivideByZero.cmake:1 \(math\):
-  math cannot evaluate the expression: "100/0": divide by zero.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

@@ -1,5 +1,0 @@
-CMake Error at NoCompilerC-IDE.cmake:2 \(enable_language\):
-  No CMAKE_C_COMPILER could be found.
-
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

@@ -1,6 +1,0 @@
-CMake Error in CMakeLists.txt:
-  No known features for CXX compiler
-
-  "[^"]*"
-
-  version *[.0-9]+\.

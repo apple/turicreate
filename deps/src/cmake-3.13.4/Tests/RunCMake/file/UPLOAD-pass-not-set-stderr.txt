@@ -1,4 +1,0 @@
-^CMake Error at UPLOAD-pass-not-set.cmake:[0-9]+ \(file\):
-  file UPLOAD missing string for USERPWD.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)$

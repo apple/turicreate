@@ -1,1 +1,0 @@
--- INTERFACE_LINK_LIBRARIES='foo::@<[Xx0-9A-Fa-f]+>'

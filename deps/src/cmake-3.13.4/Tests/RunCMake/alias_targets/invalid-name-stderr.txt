@@ -1,4 +1,0 @@
-CMake Error at invalid-name.cmake:6 \(add_library\):
-  add_library Invalid name for ALIAS: invalid\$name
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

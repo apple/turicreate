@@ -1,5 +1,0 @@
-CMake Error at .*/Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
-  A prefix must be specified
-Call Stack \(most recent call first\):
-  EmptyPrefix.cmake:[0-9]+ \(write_compiler_detection_header\)
-  CMakeLists.txt:[0-9]+ \(include\)

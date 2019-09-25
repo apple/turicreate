@@ -1,4 +1,0 @@
-^CMake Error at SORT-DuplicateOrderOption.cmake:2 \(list\):
-  list sub-command SORT option "ORDER" has been specified multiple times.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

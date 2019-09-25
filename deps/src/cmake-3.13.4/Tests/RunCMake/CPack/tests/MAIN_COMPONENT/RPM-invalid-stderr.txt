@@ -1,1 +1,0 @@
-CPACK_RPM_MAIN_COMPONENT set to non existing component.

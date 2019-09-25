@@ -1,6 +1,0 @@
-67% tests passed, 1 tests failed out of 3
-+
-Label Time Summary:
-NotASubproject += +[0-9.]+ sec\*proc \(1 test\)
-+
-Total Test time \(real\) = +[0-9.]+ sec

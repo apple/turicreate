@@ -1,2 +1,0 @@
-^CMake Error: -E tar --files-from='.*/Tests/RunCMake/CommandLineTar/bad-from3.txt' file invalid line:
--add-file=option-typo$

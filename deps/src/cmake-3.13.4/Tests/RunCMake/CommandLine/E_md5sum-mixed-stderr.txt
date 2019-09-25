@@ -1,2 +1,0 @@
-Error: . is a directory
-nonexisting: No such file or directory

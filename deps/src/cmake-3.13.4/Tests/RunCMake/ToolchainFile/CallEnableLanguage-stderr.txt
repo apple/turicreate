@@ -1,5 +1,0 @@
-^CMake Error at CallEnableLanguage-toolchain.cmake:[0-9]+ \(enable_language\):
-  Language 'NONE' is currently being enabled.  Recursive call not allowed.
-Call Stack \(most recent call first\):
-  .*/Modules/CMakeDetermineSystem.cmake:[0-9]+ \(include\)
-  CMakeLists.txt:[0-9]+ \(project\)$

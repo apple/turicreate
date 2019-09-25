@@ -1,1 +1,0 @@
--- CMAKE_C_COMPILER is ".*/Tests/RunCMake/CompilerChange/cc2.sh"

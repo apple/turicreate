@@ -1,1 +1,0 @@
-set(CTEST_PROJECT_NAME "CTestTestWorkingDir.@CASE_NAME@")
