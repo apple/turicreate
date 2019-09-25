@@ -9,6 +9,7 @@
 
 #include <memory>
 
+#include <core/export.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
 
@@ -20,7 +21,7 @@ namespace neural_net {
  * network module instances, used to abstract across backend implementations and
  * hardware resources.
  */
-class compute_context {
+EXPORT class compute_context {
  public:
   /** Function that yields a compute context. */
   using factory = std::function<std::unique_ptr<compute_context>()>;
