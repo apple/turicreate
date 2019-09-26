@@ -276,9 +276,8 @@ def __get_version(version):
 def __has_module(name):
     if six.PY2:
         try:
-            spec = imp.find_module(name)
-            # file or module path
-            return not (spec[0] is None and spec[1] is None)
+            (file, pathname, _) = imp.find_module(name)
+            return not (file is None and pathname is None)
         except ImportError:
             return False
     else:
