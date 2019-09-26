@@ -26,7 +26,7 @@ let objectRecognition = VNCoreMLRequest(model: visionModel,
         let bestLabel = foundObject.labels.first! // Label with highest confidence
         let objectBounds = foundObject.boundingBox
         let confidence = foundObject.confidence // Confidence for the predicted class
-        // bestLabel.confidence is the normalized scroe across all classes, which might be misleading.
+        // bestLabel.confidence is the normalized score across all classes, which might be misleading.
 
         // Use the computed values.
         print(bestLabel.identifier, confidence, objectBounds)
@@ -36,7 +36,7 @@ objectRecognition.imageCropAndScaleOption = .scaleFill
 ```
 For more details on the integration with Core ML and a sample app to get
 you started, please look at the the article on
-[Recognizing Objects in Live Capture](https://developer.apple.com/documentation/vision/recognizing_objects_in_live_capture). Please note that the demo in the above link uses a *normalized* confidence which enfores the score across all classes sum to 1.
+[Recognizing Objects in Live Capture](https://developer.apple.com/documentation/vision/recognizing_objects_in_live_capture). Please note that the demo in the above link uses a *normalized* confidence which enfores that the score across all classes sum to 1.
 
 **Note:** Only models that were exported with *non-maximum suppression* (the default
 behavior in Turi Create 5.0+) will work with this example app. Older models
