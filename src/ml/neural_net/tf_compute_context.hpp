@@ -28,7 +28,7 @@ public:
    */
   tf_compute_context();
 
-  ~tf_compute_context();
+  virtual ~tf_compute_context();
 
   std::vector<std::string> gpu_names() const override;
   size_t memory_budget() const override;
