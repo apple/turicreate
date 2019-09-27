@@ -24,8 +24,9 @@ ParameterSampler::ParameterSampler(size_t starter_width, size_t starter_height,
 
 double deg_to_rad(double angle) { return angle * M_PI / 180.0; }
 
-std::vector<double> vector_deg_to_rad(std::vector<double> means_in_degrees) {
+std::vector<double> vector_deg_to_rad(const std::vector<double> &means_in_degrees) {
   std::vector<double> means_in_radians;
+  means_in_radians.reserve(means_in_degrees.size());
   for (double mean : means_in_degrees) {
     means_in_radians.push_back(deg_to_rad(mean));
   }

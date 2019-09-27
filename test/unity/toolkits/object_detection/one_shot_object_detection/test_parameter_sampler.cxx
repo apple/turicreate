@@ -13,8 +13,8 @@
 
 #include <unordered_map>
 
-static constexpr int max_dimension = 6000;
-static constexpr int num_rows = 1000;
+static constexpr int kMaxDimension = 6000;
+static constexpr int kNumRows = 1000;
 
 namespace turi {
 namespace one_shot_object_detection {
@@ -22,7 +22,7 @@ namespace {
 
 ParameterSampler create_parameter_sampler(std::default_random_engine &engine) {
 
-  std::uniform_int_distribution<int> dist(0, max_dimension);
+  std::uniform_int_distribution<int> dist(0, kMaxDimension);
   
   size_t starter_width = dist(engine);
   size_t starter_height = dist(engine);
@@ -32,13 +32,13 @@ ParameterSampler create_parameter_sampler(std::default_random_engine &engine) {
   return sampler;
 }
 
-std::unordered_map<std::string, std::vector<double> > get_all_angles(
+std::unordered_map<std::string, std::vector<double> > constuct_angle_samples_map(
     ParameterSampler &sampler, int seed) {
-  std::unordered_map<std::string, std::vector<double> > all_angles;
+  std::unordered_map<std::string, std::vector<double> > angle_samples_map;
   std::vector<double> thetas;
   std::vector<double> phis;
   std::vector<double> gammas;
-  for (int i=0; i<num_rows; i++) {
+  for (int i=0; i<kNumRows; i++) {
     sampler.sample(seed+i);
     double theta = sampler.get_theta();
     double phi = sampler.get_phi();
@@ -47,10 +47,10 @@ std::unordered_map<std::string, std::vector<double> > get_all_angles(
     phis.push_back(phi);
     gammas.push_back(gamma);
   }
-  all_angles["theta"] = thetas;
-  all_angles["phi"] = phis;
-  all_angles["gamma"] = gammas;
-  return all_angles;
+  angle_samples_map["theta"] = thetas;
+  angle_samples_map["phi"] = phis;
+  angle_samples_map["gamma"] = gammas;
+  return angle_samples_map;
 }
 
 int count_in_range(std::vector<double> samples, double lower, double upper) {
@@ -63,8 +63,8 @@ int count_in_range(std::vector<double> samples, double lower, double upper) {
   return count;
 }
 
-bool angles_match_distribution(std::vector<double> angles,
-    std::vector<double> angle_means, double angle_stdev) {
+bool angles_match_distribution(const std::vector<double> &angles,
+    const std::vector<double> &angle_means, double angle_stdev) {
   // for every mean, assert that the count of angles in 
   // [mean-stdev, mean+stdev] is greater than the count of angles in 
   // [mean-2*stdev, mean-stdev] U [mean+stdev, mean+2*stdev]
@@ -85,7 +85,7 @@ BOOST_AUTO_TEST_CASE(test_parameter_distributions) {
   int seed = 500;
   engine.seed(seed);
   ParameterSampler sampler = create_parameter_sampler(engine);
-  std::unordered_map<std::string, std::vector<double> > all_angles = get_all_angles(
+  std::unordered_map<std::string, std::vector<double> > all_angles = constuct_angle_samples_map(
     sampler, seed);
   std::vector<double> thetas = all_angles["theta"];
   std::vector<double> phis = all_angles["phi"];
