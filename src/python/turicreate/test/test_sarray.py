@@ -1539,14 +1539,6 @@ class SArrayTest(unittest.TestCase):
             sa_word._count_ngrams(0)
 
 
-        with warnings.catch_warnings(record=True) as context:
-            warnings.simplefilter("always")
-            sa_word._count_ngrams(10)
-            sys.stderr.flush()
-            assert len(context) == 2
-
-
-
     def test_dict_keys(self):
         # self.dict_data =  [{str(i): i, i : float(i)} for i in self.int_data]
         sa = SArray(self.dict_data)
