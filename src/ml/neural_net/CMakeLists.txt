@@ -56,18 +56,7 @@ else()
   set(additional_unity_neural_net_requirements "")
 endif()
 
-make_library(tctensorflow SHARED
-  SOURCES
-  tf_compute_context.cpp
-)
-
 set(TF_BUILD_DIR ${CMAKE_BINARY_DIR}/src/python/turicreate/toolkits)
-
-set_target_properties(tctensorflow 
-  PROPERTIES
-    SUFFIX ".so"
-    LIBRARY_OUTPUT_DIRECTORY ${TF_BUILD_DIR}
-)
 
 make_library(unity_neural_net OBJECT
   SOURCES
@@ -82,4 +71,17 @@ make_library(unity_neural_net OBJECT
     unity_core
     unity_coreml_model_export
     ${additional_unity_neural_net_requirements}
+)
+
+make_library(tctensorflow SHARED
+  SOURCES
+  tf_compute_context.cpp
+  REQUIRES
+  unity_shared
+)
+
+set_target_properties(tctensorflow 
+  PROPERTIES
+    SUFFIX ".so"
+    LIBRARY_OUTPUT_DIRECTORY ${TF_BUILD_DIR}
 )
