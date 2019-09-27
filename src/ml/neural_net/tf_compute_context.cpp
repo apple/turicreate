@@ -14,7 +14,10 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
+
+#ifdef __APPLE__
 #include <ml/neural_net/mps_compute_context.hpp>
+#endif
 
 namespace turi {
 namespace neural_net {
@@ -129,7 +132,11 @@ std::vector<std::string> tf_compute_context::gpu_names() const {
 
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
-  return mps_compute_context().create_image_augmenter(opts);
+  #ifdef __APPLE__
+    return mps_compute_context().create_image_augmenter(opts);
+  #else
+    return nullptr;
+  #endif
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
