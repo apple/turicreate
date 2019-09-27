@@ -66,10 +66,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         column must be of string or integer type.
 
     feature : string optional
-        Name of the column containing the input drawings. 'None' (the default)
-        indicates the column in `dataset` named "drawing" should be used as the
-        feature.
-        The feature column can contain both bitmap-based drawings as well as
+        Name of the column containing the input drawings.
+        The feature column can contain either bitmap-based drawings or
         stroke-based drawings. Bitmap-based drawing input can be a grayscale
         tc.Image of any size.
         Stroke-based drawing input must be in the following format:
@@ -135,6 +133,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     from ._model_architecture import Model as _Model
     from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
     from .._mxnet import _mxnet_utils
+    import warnings
 
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
 
@@ -159,6 +158,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     # automatically infer feature column
     if feature is None:
+        warnings.warn("Not specifying a feature column is deprecate. This functionality will be removed"
+                      + " in the next major release. Please specify a \"feature\" value to"
+                      + " turicreate.drawing_classifier.create.")
         feature = _tkutl._find_only_drawing_column(input_dataset)
 
     _raise_error_if_not_drawing_classifier_input_sframe(
