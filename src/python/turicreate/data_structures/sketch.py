@@ -48,7 +48,7 @@ class Sketch(object):
     For numeric columns, the following information is provided exactly:
 
      - length (:func:`~turicreate.Sketch.size`)
-     - number of missing Values (:func:`~turicreate.Sketch.num_na`)
+     - number of missing Values (:func:`~turicreate.Sketch.num_missing`)
      - minimum  value (:func:`~turicreate.Sketch.min`)
      - maximum value (:func:`~turicreate.Sketch.max`)
      - mean (:func:`~turicreate.Sketch.mean`)
@@ -65,7 +65,7 @@ class Sketch(object):
     For non-numeric columns(str), the following information is provided exactly:
 
      - length (:func:`~turicreate.Sketch.size`)
-     - number of missing values (:func:`~turicreate.Sketch.num_na`)
+     - number of missing values (:func:`~turicreate.Sketch.num_missing`)
 
     And the following information is provided approximately:
 
@@ -181,7 +181,7 @@ class Sketch(object):
         ['sum',            'Sum' ,          'Yes'],
         ['var',            'Variance' ,     'Yes'],
         ['std',            'Standard Deviation' , 'Yes'],
-        ['num_na',         '# Missing Values' , 'Yes',],
+        ['num_missing',         '# Missing Values' , 'Yes',],
         ['num_unique',     '# unique values',  'No' ]
       ]
 
@@ -378,10 +378,10 @@ class Sketch(object):
         with cython_context():
             return self.__proxy__.var()
 
-    def num_na(self):
+    def num_missing(self):
         """
-        Returns the the number of undefined elements in the SArray. Return 0
-        on an empty SArray.
+        Returns the the number of missing (i.e. None) values in the SArray.
+        Return 0 on an empty SArray.
 
         Returns
         -------
@@ -390,6 +390,25 @@ class Sketch(object):
         """
         with cython_context():
             return int(self.__proxy__.num_undefined())
+
+    def num_na(self):
+        """
+        ..WARNING:: This function is deprecated, It will be removed in the next
+        major release. Use Sketch.num_missing instead.
+
+        Returns the the number of missing (i.e. None) values in the SArray.
+        Return 0 on an empty SArray.
+
+        Returns
+        -------
+        out : int
+            The number of missing values in the SArray.
+        """
+        import warnings
+        warnings.warn("Sketch.num_na is deprecated. It will be removed in the next major release."
+                      + " Use Sketch.num_missing instead.")
+
+        return self.num_missing()
 
     def num_unique(self):
         """

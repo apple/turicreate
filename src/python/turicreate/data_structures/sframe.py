@@ -42,6 +42,7 @@ import csv
 import collections
 import array
 from collections import Iterable as _Iterable
+import warnings
 
 __all__ = ['SFrame']
 __LOGGER__ = _logging.getLogger(__name__)
@@ -2478,6 +2479,9 @@ class SFrame(object):
             data type.
 
         seed : int, optional
+            ..WARNING:: This parameter is deprecated, It will be removed in the next
+            major release.
+
             Used as the seed if a random number generator is included in `fn`.
 
         Returns
@@ -2505,7 +2509,9 @@ class SFrame(object):
 
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
-
+        else:
+            warnings.warn("Passing a \"seed\" parameter to SFrame.apply is deprecated. This functionality"
+                          + " will be removed in the next major release.")
 
         nativefn = None
         try:
@@ -3701,15 +3707,21 @@ class SFrame(object):
         For an SFrame that is lazily evaluated, force the persistence of the
         SFrame to disk, committing all lazy evaluated operations.
         """
-        return self.__materialize__()
+        with cython_context():
+            self.__proxy__.materialize()
 
     def __materialize__(self):
         """
         For an SFrame that is lazily evaluated, force the persistence of the
         SFrame to disk, committing all lazy evaluated operations.
+
+        ..WARNING:: This function is deprecated, It will be removed in the next
+        major release. Use SFrame.materialize instead.
         """
-        with cython_context():
-            self.__proxy__.materialize()
+        warnings.warn("SFrame.__materialize__ is deprecated. It will be removed in the next major release."
+                      + " Use SFrame.materialize instead.")
+
+        self.materialize()
 
     def is_materialized(self):
         """

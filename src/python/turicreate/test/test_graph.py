@@ -335,5 +335,5 @@ class GraphTests(unittest.TestCase):
 
         lazy_sf = g.get_edges()
         materialized_sf = g.get_edges()
-        materialized_sf.__materialize__()
+        materialized_sf.materialize()
         assert_frame_equal(lazy_sf[lazy_sf['__dst_id'] == n].to_dataframe(), materialized_sf[materialized_sf['__dst_id'] == n].to_dataframe())
