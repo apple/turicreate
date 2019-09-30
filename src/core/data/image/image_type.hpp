@@ -66,6 +66,8 @@ public:
   void load(iarchive& iarc);
   /// Returns a char* pointer to the raw image data
   const unsigned char* get_image_data() const;
+  /// Equality comparator, two images are equal when every property is identical
+  bool operator==(const image_type& other) const;
 };
 
 

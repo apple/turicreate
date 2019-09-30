@@ -5,6 +5,7 @@
  */
 #include <core/data/image/image_type.hpp>
 #include <boost/gil/gil_all.hpp>
+#include <algorithm>
 
 namespace turi{
 
@@ -73,6 +74,22 @@ const unsigned char* image_type::get_image_data() const {
   } else{
     return NULL;
   }
+}
+
+// The equality behavior is currently mirrored from python implementation 
+// where every property is compared directly, but we might want to later
+// support comparing two images with different lossless types.
+bool image_type::operator==(const image_type& other) const {
+  return
+      m_height == other.m_height &&
+      m_width == other.m_width &&
+      m_channels == other.m_channels && 
+      m_image_data_size == other.m_image_data_size &&
+      m_version == other.m_version &&
+      m_format == other.m_format &&
+      std::equal(m_image_data.get(),
+                 m_image_data.get() + m_image_data_size,
+                 other.m_image_data.get());
 }
 
 }
