@@ -9,6 +9,7 @@
 
 #include <memory>
 
+#include <core/export.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
 
@@ -20,9 +21,8 @@ namespace neural_net {
  * network module instances, used to abstract across backend implementations and
  * hardware resources.
  */
-class compute_context {
-public:
-
+EXPORT class compute_context {
+ public:
   /** Function that yields a compute context. */
   using factory = std::function<std::unique_ptr<compute_context>()>;
 
@@ -32,9 +32,9 @@ public:
    * static init time, adjusts the behavior of the create() function below.
    */
   class registration {
-  public:
+   public:
     // Registers `factory_fn` at the given priority.
-    registration(int priority, factory factory_fn);
+    registration(int priority, factory factory_fn, factory tf_factory_fn_);
 
     // Removes the registration. In practice, simplest just not to deallocate...
     ~registration();
@@ -44,9 +44,15 @@ public:
       return factory_fn_();
     }
 
-  private:
+    std::unique_ptr<compute_context> create_tensorflow_context() const {
+      return tf_factory_fn_ ? tf_factory_fn_() : nullptr;
+      ;
+    }
+
+   private:
     int priority_;
     factory factory_fn_;
+    factory tf_factory_fn_;
   };
 
   /**
@@ -56,6 +62,8 @@ public:
    * the current platform and hardware.
    */
   static std::unique_ptr<compute_context> create();
+
+  static std::unique_ptr<compute_context> create_tf();
 
   virtual ~compute_context();
 

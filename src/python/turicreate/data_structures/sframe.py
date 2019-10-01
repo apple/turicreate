@@ -42,6 +42,7 @@ import csv
 import collections
 import array
 from collections import Iterable as _Iterable
+import warnings
 
 __all__ = ['SFrame']
 __LOGGER__ = _logging.getLogger(__name__)
@@ -1612,6 +1613,8 @@ class SFrame(object):
             g = SArray.read_json(url)
             if len(g) == 0:
                 return SFrame()
+            if g.dtype != dict:
+                raise RuntimeError("Invalid input JSON format. Expected list of dictionaries")
             g = SFrame({'X1':g})
             return g.unpack('X1','')
         elif orient == "lines":
@@ -1628,6 +1631,7 @@ class SFrame(object):
         else:
             raise ValueError("Invalid value for orient parameter (" + str(orient) + ")")
 
+        
 
     @classmethod
     def from_sql(cls, conn, sql_statement, params=None, type_inference_rows=100,
@@ -2475,6 +2479,9 @@ class SFrame(object):
             data type.
 
         seed : int, optional
+            ..WARNING:: This parameter is deprecated, It will be removed in the next
+            major release.
+
             Used as the seed if a random number generator is included in `fn`.
 
         Returns
@@ -2502,7 +2509,9 @@ class SFrame(object):
 
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
-
+        else:
+            warnings.warn("Passing a \"seed\" parameter to SFrame.apply is deprecated. This functionality"
+                          + " will be removed in the next major release.")
 
         nativefn = None
         try:
@@ -2660,7 +2669,6 @@ class SFrame(object):
         if (fraction > 1 or fraction < 0):
             raise ValueError('Invalid sampling rate: ' + str(fraction))
 
-
         if (self.num_rows() == 0 or self.num_columns() == 0):
             return self
         else:
@@ -2709,6 +2717,7 @@ class SFrame(object):
         """
         if (fraction > 1 or fraction < 0):
             raise ValueError('Invalid sampling rate: ' + str(fraction))
+        
         if (self.num_rows() == 0 or self.num_columns() == 0):
             return (SFrame(), SFrame())
 
@@ -3698,15 +3707,21 @@ class SFrame(object):
         For an SFrame that is lazily evaluated, force the persistence of the
         SFrame to disk, committing all lazy evaluated operations.
         """
-        return self.__materialize__()
+        with cython_context():
+            self.__proxy__.materialize()
 
     def __materialize__(self):
         """
         For an SFrame that is lazily evaluated, force the persistence of the
         SFrame to disk, committing all lazy evaluated operations.
+
+        ..WARNING:: This function is deprecated, It will be removed in the next
+        major release. Use SFrame.materialize instead.
         """
-        with cython_context():
-            self.__proxy__.materialize()
+        warnings.warn("SFrame.__materialize__ is deprecated. It will be removed in the next major release."
+                      + " Use SFrame.materialize instead.")
+
+        self.materialize()
 
     def is_materialized(self):
         """
@@ -4555,7 +4570,7 @@ class SFrame(object):
         try:
             if _target == 'auto' and \
                 get_ipython().__class__.__name__ == "ZMQInteractiveShell":
-                display_table_in_notebook(self)
+                display_table_in_notebook(self, title)
                 return
         except NameError:
             pass

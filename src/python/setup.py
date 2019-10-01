@@ -14,7 +14,7 @@ from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='5.7'#{{VERSION_STRING}}
+VERSION='5.8'#{{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -173,7 +173,7 @@ if __name__ == '__main__':
         package_data={
             'turicreate': [
                 '_cython/*.so', '_cython/*.pyd',
-                '*.so', '*.dylib',
+                '*.so', '*.dylib', 'toolkits/*.so',
 
                 # macOS visualization
                 'Turi Create Visualization.app/Contents/*',

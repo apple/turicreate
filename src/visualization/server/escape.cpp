@@ -255,6 +255,7 @@ std::string extra_label_escape(const std::string& str, bool include_quotes){
   escaped_string = replace_all(escaped_string, std::string("\\t"), std::string("\\\\t"));
   escaped_string = replace_all(escaped_string, std::string("\\b"), std::string("\\\\b"));
   escaped_string = replace_all(escaped_string, std::string("\\r"), std::string("\\\\r"));
+  escaped_string = replace_all(escaped_string, std::string("\\x"), std::string("\\\\x"));
 
   return escaped_string;
 }

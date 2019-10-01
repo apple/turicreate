@@ -85,8 +85,13 @@ def COUNT(*args):
 
   """
   # arguments if any are ignored
-  return ("__builtin__count__", [""])
+  import warnings
 
+  if len(args) == 0:
+    warnings.warn('Passing parameter(s) to COUNT is deprecated. This functionality will be removed in '
+                  + 'the next major release. Any passed parameters are ignored.')
+
+  return ("__builtin__count__", [""])
 
 
 def AVG(src_column):
