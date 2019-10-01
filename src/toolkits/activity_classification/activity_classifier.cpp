@@ -859,10 +859,14 @@ void activity_classifier::init_train(
     for (size_t i = 1; i < gpu_names.size(); ++i) {
       gpu_names_string += ", " + gpu_names[i];
     }
-    logprogress_stream << "Using "
-                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                       << " to create model ("
-                       << gpu_names_string << ")";
+    if (gpu_names_string.find("AMD") != std::string::npos) {
+      logprogress_stream << "Using " << (gpu_names.size() > 1 ? "GPUs" : "GPU")
+                         << " to create model (" << gpu_names_string << ")";
+    } else {
+      logprogress_stream << "Using " << gpu_names.size()
+                         << (gpu_names.size() > 1 ? " GPUs" : " GPU")
+                         << " to create model (CUDA)";
+    }
   }
 
   // Set additional model fields.
