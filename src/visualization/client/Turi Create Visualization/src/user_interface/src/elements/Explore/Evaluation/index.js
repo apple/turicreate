@@ -33,21 +33,20 @@ class TCEvaluation extends Component {
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getCorrects'});
 
-      this.props.spec.labels.map((value, index) => {
+      this.props.spec.labels.forEach((value, index) => {
         if(this.state.incorrect_classification[value] == null){
           const previous_incorrect_dict = this.state.incorrect_classification
           previous_incorrect_dict[value] = "loading"
           this.setState({"incorrect_classification": previous_incorrect_dict})
-          if (window.navigator.platform == 'MacIntel') {
+          if (window.navigator.platform === 'MacIntel') {
             window.webkit.messageHandlers["scriptHandler"].postMessage({
               "status": 'getIncorrects',
               "label": value + ""
             });
           }
         }
+	return null;
       });
-
-      this.loadIncorrect()
     }
   }
 
@@ -70,7 +69,7 @@ class TCEvaluation extends Component {
         const previous_incorrect_dict = this.state.incorrect_classification
         previous_incorrect_dict[this.state.selected_label] = "loading"
         this.setState({"incorrect_classification": previous_incorrect_dict})
-        if (window.navigator.platform == 'MacIntel') {
+        if (window.navigator.platform === 'MacIntel') {
           window.webkit.messageHandlers["scriptHandler"].postMessage({
             "status": 'getIncorrects',
             "label": this.state.selected_label + ""
@@ -123,7 +122,7 @@ class TCEvaluation extends Component {
 
         var correct_data = []
         for(var x = 0; x < this.state.correct_classification.length; x++){
-          if(this.state.correct_classification[x]["target"] == data.label){
+          if(this.state.correct_classification[x]["target"] === data.label){
             correct_data = this.state.correct_classification[x]["images"]
           }
         }
@@ -171,7 +170,7 @@ class TCEvaluation extends Component {
 
     for(var k = 0; k < incorrect_keys.length; k++){
       const current_val = this.state.incorrect_classification[incorrect_keys[k]]
-      if(current_val != null && current_val != "loading"){
+      if(current_val !== null && current_val !== "loading"){
         for(var x = 0; x < current_val.length; x++){
           considerations_array.push(
             {

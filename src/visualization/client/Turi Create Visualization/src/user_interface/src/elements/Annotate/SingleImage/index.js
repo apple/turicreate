@@ -48,13 +48,13 @@ class SingleImage extends Component {
         <div className={style.SingleImageContainer}>
             <div className={style.LeftArrow}
                  onClick={this.decrementIndex.bind(this)}>
-                <img src={leftArrow} />
+                <img src={leftArrow} alt="Browse Left Thumbnail" />
             </div>
             <ImageLabeler src={this.props.src}
                           similarImages={this.props.similarImages}/>
             <div className={style.RightArrow}
                  onClick={this.incrementIndex.bind(this)}  >
-                <img src={rightArrow} />
+                <img src={rightArrow} alt="Browse Right Thumbnail" />
             </div>
         </div>
       </div>

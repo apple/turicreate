@@ -85,7 +85,7 @@ class StickyTable extends PureComponent {
     var element = document.getElementsByClassName("header_element");
 
     for(var x = 0; x < element.length; x++){
-        if(element[x].innerText == this.scrollVal || element[x].innerText == this.props.scrollVal){
+        if(element[x].innerText === this.scrollVal || element[x].innerText === this.props.scrollVal){
             this.yScrollbar.scrollTop = element[x].offsetTop - element[x].offsetHeight - 6;
             this.scrollVal = -1;
             this.props.scrollVal = -1;
@@ -175,11 +175,11 @@ class StickyTable extends PureComponent {
     var scroll_down = this.getScrollBottom();
     var scroll_up = this.getScrollTop();
 
-    if(scroll_down == 1){
+    if(scroll_down === 1){
       this.updateScrollDown();
     }
 
-    if(scroll_up == 0){
+    if(scroll_up === 0){
       this.updateScrollUp();
     }
   }
@@ -245,7 +245,7 @@ class StickyTable extends PureComponent {
     var scrollPadding = '0px 0px ' + this.xScrollSize + 'px 0px';
     this.table.style.padding = scrollPadding;
 
-    var scrollPadding = '0px ' + this.yScrollSize + 'px 0px 0px';
+    scrollPadding = '0px ' + this.yScrollSize + 'px 0px 0px';
     this.xWrapper.firstChild.style.padding = scrollPadding;
   }
 
@@ -301,9 +301,9 @@ class StickyTable extends PureComponent {
   }
 
   setRowHeights() {
-    var r, c, cellToCopy, height;
+    var r, cellToCopy, height;
 
-    var row_value = (this.props.y != undefined)?this.props.y:-1;
+    var row_value = (this.props.y !== undefined)?this.props.y:-1;
     var column_offset_top = 0;
 
     if (this.props.stickyColumnCount) {
@@ -315,12 +315,12 @@ class StickyTable extends PureComponent {
           height = this.getSize(cellToCopy).height;
           this.stickyColumn.firstChild.childNodes[r].firstChild.style.height = height + 'px';
 
-          if (r == 0 && this.stickyCorner.firstChild.childNodes[r]) {
+          if (r === 0 && this.stickyCorner.firstChild.childNodes[r]) {
             this.stickyCorner.firstChild.firstChild.firstChild.style.height = height + 'px';
           }
         }
 
-        if(row_value == r){
+        if(row_value === r){
             column_offset_top  = this.stickyColumn.firstChild.childNodes[r].offsetTop;
         }
       }
@@ -338,7 +338,7 @@ class StickyTable extends PureComponent {
   }
 
   setColumnWidths() {
-    var c, cellToCopy, cellStyle, width, cell, stickyWidth;
+    var c, cellToCopy, width, cell, stickyWidth;
 
     if (this.stickyHeaderCount) {
       stickyWidth = 0;
@@ -377,10 +377,10 @@ class StickyTable extends PureComponent {
     const columnsCount = this.props.stickyColumnCount;
     var cells;
     var stickyRows = [];
-    var row_value = (this.props.y != undefined)?parseInt(this.props.y, 10):-1;
+    var row_value = (this.props.y !== undefined)?parseInt(this.props.y, 10):-1;
 
 
-    if(this.props.scrollVal != -1){
+    if(this.props.scrollVal !== -1){
       this.scroll = false;
     }
 
@@ -389,7 +389,7 @@ class StickyTable extends PureComponent {
       if(row.props.accordion && row_value > 0) {
         if(this.props.data){
           var one_indexed = this.props.data.index  + 1;
-          if(one_indexed == parseInt(this.props.y, 10) && this.props.data.column == this.props.column_name && this.props.column_name != undefined){
+          if(one_indexed === parseInt(this.props.y, 10) && this.props.data.column === this.props.column_name && this.props.column_name !== undefined){
             var data_entries = [];
             switch (this.props.data.type) {
               case window.flex_type_enum.string:

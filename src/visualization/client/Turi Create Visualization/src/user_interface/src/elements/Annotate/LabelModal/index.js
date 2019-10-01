@@ -13,7 +13,7 @@ class LabelModal extends Component {
 
   renderError = () => {
     if(this.props.error){
-      return this .props.error;
+      return this.props.error;
     }else{
       return '\xa0';
     }

@@ -12,7 +12,7 @@ class TCEvaluationTable extends Component {
 
   sortingColumns = (a,b) => {
     // class sort
-    if(this.props.sort_by == "class" && this.props.sort_direction){
+    if(this.props.sort_by === "class" && this.props.sort_direction){
       if(a.name > b.name){
         return -1;
       }else{
@@ -20,7 +20,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "class" && !this.props.sort_direction){
+    if(this.props.sort_by === "class" && !this.props.sort_direction){
       if(a.name < b.name){
         return -1;
       }else{
@@ -28,7 +28,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "accuracy" && this.props.sort_direction){
+    if(this.props.sort_by === "accuracy" && this.props.sort_direction){
       if((a.correct/a.incorrect) < (b.correct/b.incorrect)){
         return -1;
       }else{
@@ -36,7 +36,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "accuracy" && !this.props.sort_direction){
+    if(this.props.sort_by === "accuracy" && !this.props.sort_direction){
       if((a.correct/a.incorrect) > (b.correct/b.incorrect)){
         return -1;
       }else{
@@ -44,7 +44,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "precision" && this.props.sort_direction){
+    if(this.props.sort_by === "precision" && this.props.sort_direction){
       if((a.precision) < (b.precision)){
         return -1;
       }else{
@@ -52,7 +52,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "precision" && !this.props.sort_direction){
+    if(this.props.sort_by === "precision" && !this.props.sort_direction){
       if((a.precision) > (b.precision)){
         return -1;
       }else{
@@ -60,7 +60,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "f1_score" && this.props.sort_direction){
+    if(this.props.sort_by === "f1_score" && this.props.sort_direction){
       if((a.f1_score) < (b.f1_score)){
         return -1;
       }else{
@@ -68,7 +68,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "f1_score" && !this.props.sort_direction){
+    if(this.props.sort_by === "f1_score" && !this.props.sort_direction){
       if((a.f1_score) > (b.f1_score)){
         return -1;
       }else{
@@ -76,7 +76,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "recall" && this.props.sort_direction){
+    if(this.props.sort_by === "recall" && this.props.sort_direction){
       if((a.recall) < (b.recall)){
         return -1;
       }else{
@@ -84,7 +84,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "recall" && !this.props.sort_direction){
+    if(this.props.sort_by === "recall" && !this.props.sort_direction){
       if((a.recall) > (b.recall)){
         return -1;
       }else{
@@ -92,7 +92,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "train" && this.props.sort_direction){
+    if(this.props.sort_by === "train" && this.props.sort_direction){
       if((a.num_examples) < (b.num_examples)){
         return -1;
       }else{
@@ -100,7 +100,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "train" && !this.props.sort_direction){
+    if(this.props.sort_by === "train" && !this.props.sort_direction){
       if((a.num_examples) > (b.num_examples)){
         return -1;
       }else{
@@ -108,7 +108,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "test" && this.props.sort_direction){
+    if(this.props.sort_by === "test" && this.props.sort_direction){
       if((a.num_examples) < (b.num_examples)){
         return -1;
       }else{
@@ -116,7 +116,7 @@ class TCEvaluationTable extends Component {
       }
     }
 
-    if(this.props.sort_by == "test" && !this.props.sort_direction){
+    if(this.props.sort_by === "test" && !this.props.sort_direction){
       if((a.num_examples) > (b.num_examples)){
         return -1;
       }else{
@@ -155,7 +155,7 @@ class TCEvaluationTable extends Component {
                                      f1_score_visible={this.props.f1_score_visible}
                                      recall_visible={this.props.recall_visible}
                                      max_value={max_test}
-                                     selected={(this.props.filter_confusion == data.name)}
+                                     selected={(this.props.filter_confusion === data.name)}
                                      onclick={this.props.row_click.bind(this)} />)
           })}
       </div>
