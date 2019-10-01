@@ -1,0 +1,13 @@
+set(t4_name "\"@CMAKE_CURRENT_BINARY_DIR@${CFG_DIR}/t4\"")
+exec_program("${t4_name}" RETURN_VALUE "t4_var")
+message("T4 ${t4_name} resulted ${t4_var}")
+
+set(t9_name "\"@CMAKE_CURRENT_BINARY_DIR@${CFG_DIR}/t9\"")
+exec_program("${t9_name}" RETURN_VALUE "t9_var")
+message("T9 ${t9_name} resulted ${t9_var}")
+
+if ( "${t4_var}" EQUAL "0" AND "${t9_var}" EQUAL "0" )
+  message("Everything is good, Yoshimi won...")
+else ()
+  message(FATAL_ERROR "Yoshimi lost... The evil pink robots will take over the world")
+endif ()

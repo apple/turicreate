@@ -1,0 +1,2 @@
+Memory checking results:
+left shift of negative value -256 - 1

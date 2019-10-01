@@ -1,0 +1,6 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Series option ":" not allowed with associated files.
+Call Stack \(most recent call first\):
+  .*
+  BadSeries3.cmake:2 \(ExternalData_Expand_Arguments\)
+  CMakeLists.txt:3 \(include\)

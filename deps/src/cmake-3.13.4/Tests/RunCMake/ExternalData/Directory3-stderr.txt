@@ -1,0 +1,15 @@
+CMake Warning \(dev\) at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Data file referenced by argument
+
+    DATA{Directory3/\*}
+
+  corresponds to source tree path
+
+    Directory3/.
+
+  that does not exist as a file \(with or without an extension\)!
+Call Stack \(most recent call first\):
+  .*
+  Directory3.cmake:3 \(ExternalData_Add_Test\)
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

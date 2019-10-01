@@ -1,0 +1,448 @@
+{
+  "instrumentation": "node-jscoverage",
+  "sloc": 29,
+  "hits": 28,
+  "misses": 1,
+  "coverage": 96.55172413793103,
+  "files": [
+    {
+      "filename": "${CMake_BINARY_DIR}/Testing/JavascriptCoverage/test.js",
+      "coverage": 96.55172413793103,
+      "hits": 28,
+      "misses": 1,
+      "sloc": 29,
+      "source": {
+        "1": {
+          "source": "var assert = require(\"assert\")",
+          "coverage": 1
+        },
+        "2": {
+          "source": "var test  = {",
+          "coverage": 1
+        },
+        "3": {
+          "source": "  version: \"1.0.0\"",
+          "coverage": ""
+        },
+        "4": {
+          "source": "}",
+          "coverage": ""
+        },
+        "5": {
+          "source": "function covTest(p1,p2) {",
+          "coverage": 1
+        },
+        "6": {
+          "source": "  if (p1 > 3) {",
+          "coverage": 2
+        },
+        "7": {
+          "source": "    return 1;",
+          "coverage": 1
+        },
+        "8": {
+          "source": "  }",
+          "coverage": ""
+        },
+        "9": {
+          "source": "  else {",
+          "coverage": ""
+        },
+        "10": {
+          "source": "    return p1 + p2;",
+          "coverage": 1
+        },
+        "11": {
+          "source": "  }",
+          "coverage": ""
+        },
+        "12": {
+          "source": "}",
+          "coverage": ""
+        },
+        "13": {
+          "source": "",
+          "coverage": ""
+        },
+        "14": {
+          "source": "function covTest2(p1,p2) {",
+          "coverage": 1
+        },
+        "15": {
+          "source": "  return 0;",
+          "coverage": 0
+        },
+        "16": {
+          "source": "}",
+          "coverage": ""
+        },
+        "17": {
+          "source": "",
+          "coverage": ""
+        },
+        "18": {
+          "source": "function covTest3(p1) {",
+          "coverage": 1
+        },
+        "19": {
+          "source": "  for(i=0;i < p1;i++){",
+          "coverage": 1
+        },
+        "20": {
+          "source": "  }",
+          "coverage": ""
+        },
+        "21": {
+          "source": "  return i;",
+          "coverage": 1
+        },
+        "22": {
+          "source": "}",
+          "coverage": ""
+        },
+        "23": {
+          "source": "function covTest4(p1) {",
+          "coverage": 1
+        },
+        "24": {
+          "source": "  i=0;",
+          "coverage": 1
+        },
+        "25": {
+          "source": "  while(i < p1){",
+          "coverage": 1
+        },
+        "26": {
+          "source": "  i++;",
+          "coverage": 5
+        },
+        "27": {
+          "source": "  }",
+          "coverage": ""
+        },
+        "28": {
+          "source": "  return i;",
+          "coverage": 1
+        },
+        "29": {
+          "source": "}",
+          "coverage": ""
+        },
+        "30": {
+          "source": "",
+          "coverage": ""
+        },
+        "31": {
+          "source": "describe('Array', function(){",
+          "coverage": 1
+        },
+        "32": {
+          "source": "  describe('CovTest', function(){",
+          "coverage": 1
+        },
+        "33": {
+          "source": "    it('should return when the value is not present', function(){",
+          "coverage": 1
+        },
+        "34": {
+          "source": "      assert.equal(4,covTest(2,2));",
+          "coverage": 1
+        },
+        "35": {
+          "source": "    })",
+          "coverage": ""
+        },
+        "36": {
+          "source": "  })",
+          "coverage": ""
+        },
+        "37": {
+          "source": "  ",
+          "coverage": ""
+        },
+        "38": {
+          "source": "  describe('CovTest>3', function(){",
+          "coverage": 1
+        },
+        "39": {
+          "source": "    it('should return when the value is not present', function(){",
+          "coverage": 1
+        },
+        "40": {
+          "source": "      assert.equal(1,covTest(4,2));",
+          "coverage": 1
+        },
+        "41": {
+          "source": "    })",
+          "coverage": ""
+        },
+        "42": {
+          "source": "  })",
+          "coverage": ""
+        },
+        "43": {
+          "source": "  describe('covTest4', function(){",
+          "coverage": 1
+        },
+        "44": {
+          "source": "    it('should return when the value is not present', function(){",
+          "coverage": 1
+        },
+        "45": {
+          "source": "      assert.equal(5,covTest4(5));",
+          "coverage": 1
+        },
+        "46": {
+          "source": "    })",
+          "coverage": ""
+        },
+        "47": {
+          "source": "  })",
+          "coverage": ""
+        },
+        "48": {
+          "source": "  describe('covTest3', function(){",
+          "coverage": 1
+        },
+        "49": {
+          "source": "    it('should return when the value is not present', function(){",
+          "coverage": 1
+        },
+        "50": {
+          "source": "      assert.equal(5,covTest3(5));",
+          "coverage": 1
+        },
+        "51": {
+          "source": "    })",
+          "coverage": ""
+        },
+        "52": {
+          "source": "  })",
+          "coverage": ""
+        },
+        "53": {
+          "source": "})",
+          "coverage": ""
+        },
+        "54": {
+          "source": "",
+          "coverage": ""
+        }
+      }
+      "filename": "${CMake_BINARY_DIR}/Testing/JavascriptCoverage/test3.js",
+      "coverage": 55.00000000000001,
+      "hits": 11,
+      "misses": 9,
+      "sloc": 20,
+      "source": {
+        "1": {
+          "source": "var assert = require(\"assert\")",
+          "coverage": 1
+        },
+        "2": {
+          "source": "var test  = {",
+          "coverage": 1
+        },
+        "3": {
+          "source": "  version: \"1.0.0\"",
+          "coverage": ""
+        },
+        "4": {
+          "source": "}",
+          "coverage": ""
+        },
+        "5": {
+          "source": "function covTest(p1,p2) {",
+          "coverage": 1
+        },
+        "6": {
+          "source": "  if (p1 > 3) {",
+          "coverage": 0
+        },
+        "7": {
+          "source": "    return 1;",
+          "coverage": 0
+        },
+        "8": {
+          "source": "  }",
+          "coverage": ""
+        },
+        "9": {
+          "source": "  else {",
+          "coverage": ""
+        },
+        "10": {
+          "source": "    return p1 + p2;",
+          "coverage": 0
+        },
+        "11": {
+          "source": "  }",
+          "coverage": ""
+        },
+        "12": {
+          "source": "}",
+          "coverage": ""
+        },
+        "13": {
+          "source": "",
+          "coverage": ""
+        },
+        "14": {
+          "source": "function covTest2(p1,p2) {",
+          "coverage": 1
+        },
+        "15": {
+          "source": "  return 0;",
+          "coverage": 1
+        },
+        "16": {
+          "source": "}",
+          "coverage": ""
+        },
+        "17": {
+          "source": "",
+          "coverage": ""
+        },
+        "18": {
+          "source": "function covTest3(p1) {",
+          "coverage": 1
+        },
+        "19": {
+          "source": "  for(i=0;i < p1;i++){",
+          "coverage": 0
+        },
+        "20": {
+          "source": "  }",
+          "coverage": ""
+        },
+        "21": {
+          "source": "  return i;",
+          "coverage": 0
+        },
+        "22": {
+          "source": "}",
+          "coverage": ""
+        },
+        "23": {
+          "source": "function covTest4(p1) {",
+          "coverage": 1
+        },
+        "24": {
+          "source": "  i=0;",
+          "coverage": 0
+        },
+        "25": {
+          "source": "  while(i < p1){",
+          "coverage": 0
+        },
+        "26": {
+          "source": "  i++;",
+          "coverage": 0
+        },
+        "27": {
+          "source": "  }",
+          "coverage": ""
+        },
+        "28": {
+          "source": "  return i;",
+          "coverage": 0
+        },
+        "29": {
+          "source": "}",
+          "coverage": ""
+        },
+        "30": {
+          "source": "",
+          "coverage": ""
+        },
+        "31": {
+          "source": "describe('Array', function(){",
+          "coverage": 1
+        },
+        "32": {
+          "source": "  describe('CovTest2', function(){",
+          "coverage": 1
+        },
+        "33": {
+          "source": "    it('should return when the value is not present', function(){",
+          "coverage": 1
+        },
+        "34": {
+          "source": "      assert.equal(0,covTest2(2,2));",
+          "coverage": 1
+        },
+        "35": {
+          "source": "    })",
+          "coverage": ""
+        },
+        "36": {
+          "source": "  })",
+          "coverage": ""
+        },
+        "37": {
+          "source": "})",
+          "coverage": ""
+        },
+        "38": {
+          "source": "",
+          "coverage": ""
+        }
+      }
+    }
+  ],
+  "stats": {
+    "suites": 5,
+    "tests": 4,
+    "passes": 4,
+    "pending": 0,
+    "failures": 0,
+    "start": "2014-10-23T17:56:02.339Z",
+    "end": "2014-10-23T17:56:02.344Z",
+    "duration": 5
+  },
+  "tests": [
+    {
+      "title": "should return when the value is not present",
+      "fullTitle": "Array CovTest should return when the value is not present",
+      "duration": 0
+    },
+    {
+      "title": "should return when the value is not present",
+      "fullTitle": "Array CovTest>3 should return when the value is not present",
+      "duration": 0
+    },
+    {
+      "title": "should return when the value is not present",
+      "fullTitle": "Array covTest4 should return when the value is not present",
+      "duration": 0
+    },
+    {
+      "title": "should return when the value is not present",
+      "fullTitle": "Array covTest3 should return when the value is not present",
+      "duration": 0
+    }
+  ],
+  "failures": [],
+  "passes": [
+    {
+      "title": "should return when the value is not present",
+      "fullTitle": "Array CovTest should return when the value is not present",
+      "duration": 0
+    },
+    {
+      "title": "should return when the value is not present",
+      "fullTitle": "Array CovTest>3 should return when the value is not present",
+      "duration": 0
+    },
+    {
+      "title": "should return when the value is not present",
+      "fullTitle": "Array covTest4 should return when the value is not present",
+      "duration": 0
+    },
+    {
+      "title": "should return when the value is not present",
+      "fullTitle": "Array covTest3 should return when the value is not present",
+      "duration": 0
+    }
+  ]
+}

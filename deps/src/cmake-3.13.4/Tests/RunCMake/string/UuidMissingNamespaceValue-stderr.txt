@@ -1,0 +1,4 @@
+CMake Error at UuidMissingNamespaceValue.cmake:3 \(string\):
+  string UUID sub-command, NAMESPACE requires a value.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

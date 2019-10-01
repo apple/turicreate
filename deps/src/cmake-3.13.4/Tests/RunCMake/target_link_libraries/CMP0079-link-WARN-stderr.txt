@@ -1,0 +1,5 @@
+^CMake Error at CMP0079-link/CMakeLists.txt:[0-9]+ \(target_link_libraries\):
+  Attempt to add link library "foo" to target "top" which is not built in
+  this directory.
+
+  This is allowed only when policy CMP0079 is set to NEW.$

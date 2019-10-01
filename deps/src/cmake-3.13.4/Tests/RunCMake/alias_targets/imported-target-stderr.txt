@@ -1,0 +1,15 @@
+^CMake Error at imported-target.cmake:[0-9]+ \(add_executable\):
+  add_executable cannot create ALIAS target \"alias-test-exe\" because target
+  \"test-exe\" is imported but not globally visible.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+'alias-test-exe' does not exist![?]
+*
+CMake Error at imported-target.cmake:[0-9]+ \(add_library\):
+  add_library cannot create ALIAS target "alias-test-lib" because target
+  "test-lib" is imported but not globally visible.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+'alias-test-lib' does not exist![?]$

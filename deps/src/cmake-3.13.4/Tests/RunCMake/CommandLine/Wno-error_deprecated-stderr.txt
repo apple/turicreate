@@ -1,0 +1,4 @@
+^CMake Deprecation Warning at Wno-error_deprecated.cmake:2 \(message\):
+  Some deprecated warning
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

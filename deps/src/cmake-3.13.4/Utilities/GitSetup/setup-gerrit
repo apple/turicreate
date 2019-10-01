@@ -1,0 +1,147 @@
+#!/usr/bin/env bash
+#=============================================================================
+# Copyright 2010-2012 Kitware, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
+
+# Run this script to set up the local Git repository to push to
+# a Gerrit Code Review instance for this project.
+
+# Project configuration instructions:
+#
+# - Run a Gerrit Code Review server
+#
+# - Populate adjacent "config" file with:
+#    gerrit.site = Top Gerrit URL (not project-specific)
+#    gerrit.project = Name of project in Gerrit
+#    gerrit.pushurl = Review site push URL with "$username" placeholder
+#    gerrit.remote = Gerrit remote name, if not "gerrit"
+#    gerrit.url = Gerrit project URL, if not "$site/p/$project"
+#                 optionally with "$username" placeholder
+
+die() {
+	echo 1>&2 "$@" ; exit 1
+}
+
+# Make sure we are inside the repository.
+cd "${BASH_SOURCE%/*}" &&
+
+# Load the project configuration.
+site=$(git config -f config --get gerrit.site) &&
+project=$(git config -f config --get gerrit.project) &&
+remote=$(git config -f config --get gerrit.remote ||
+	 echo "gerrit") &&
+fetchurl_=$(git config -f config --get gerrit.url ||
+	    echo "$site/p/$project") &&
+pushurl_=$(git config -f config --get gerrit.pushurl ||
+	   git config -f config --get gerrit.url) ||
+die 'This project is not configured to use Gerrit.'
+
+# Get current gerrit push URL.
+pushurl=$(git config --get remote."$remote".pushurl ||
+	  git config --get remote."$remote".url || echo '') &&
+
+# Tell user about current configuration.
+if test -n "$pushurl"; then
+	echo 'Remote "'"$remote"'" is currently configured to push to
+
+  '"$pushurl"'
+' &&
+	read -ep 'Reconfigure Gerrit? [y/N]: ' ans &&
+	if [ "$ans" == "y" ] || [ "$ans" == "Y" ]; then
+		setup=1
+	else
+		setup=''
+	fi
+else
+	echo 'Remote "'"$remote"'" is not yet configured.
+
+'"$project"' changes must be pushed to our Gerrit Code Review site:
+
+  '"$site/p/$project"'
+
+Register a Gerrit account and select a username (used below).
+You will need an OpenID:
+
+  http://openid.net/get-an-openid/
+' &&
+	read -ep 'Configure Gerrit? [Y/n]: ' ans &&
+	if [ "$ans" == "n" ] || [ "$ans" == "N" ]; then
+		exit 0
+	else
+		setup=1
+	fi
+fi &&
+
+# Perform setup if necessary.
+if test -n "$setup"; then
+	echo 'Sign-in to Gerrit to get/set your username at
+
+  '"$site"'/#/settings
+
+Add your SSH public keys at
+
+  '"$site"'/#/settings/ssh-keys
+' &&
+	read -ep "Gerrit username? [$USER]: " gu &&
+	if test -z "$gu"; then
+		gu="$USER"
+	fi &&
+	fetchurl="${fetchurl_/\$username/$gu}" &&
+	if test -z "$pushurl"; then
+		git remote add "$remote" "$fetchurl"
+	else
+		git config remote."$remote".url "$fetchurl"
+	fi &&
+	pushurl="${pushurl_/\$username/$gu}" &&
+	if test "$pushurl" != "$fetchurl"; then
+		git config remote."$remote".pushurl "$pushurl"
+	fi &&
+	echo 'Remote "'"$remote"'" is now configured to push to
+
+  '"$pushurl"'
+'
+fi &&
+
+# Optionally test Gerrit access.
+if test -n "$pushurl"; then
+	read -ep 'Test access to Gerrit (SSH)? [y/N]: ' ans &&
+	if [ "$ans" == "y" ] || [ "$ans" == "Y" ]; then
+		echo -n 'Testing Gerrit access by SSH...'
+		if git ls-remote --heads "$pushurl" >/dev/null; then
+			echo 'passed.'
+		else
+			echo 'failed.' &&
+			die 'Could not access Gerrit.  Add your SSH public keys at
+
+  '"$site"'/#/settings/ssh-keys
+'
+		fi
+	fi
+fi &&
+
+# Set up GerritId hook.
+hook=$(git config --get hooks.GerritId || echo '') &&
+if test -z "$hook"; then
+	echo '
+Enabling GerritId hook to add a "Change-Id" footer to commit
+messages for interaction with Gerrit.  Run
+
+  git config hooks.GerritId false
+
+to disable this feature (but you will be on your own).' &&
+	git config hooks.GerritId true
+else
+	echo 'GerritId hook already configured to "'"$hook"'".'
+fi

@@ -1,0 +1,6 @@
+---
+# We want to disable all checks for generated code.  However, clang-tidy will
+# assume we did not configure it correctly.  Just add one check that will never
+# be found.
+Checks: '-*,llvm-twine-local'
+...

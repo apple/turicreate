@@ -1,0 +1,4 @@
+CMake Error at EmptyRemoveAt0.cmake:2 \(list\):
+  list REMOVE_AT given empty list
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

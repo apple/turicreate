@@ -1,0 +1,2 @@
+Unable to find executable: no_tests_defined_NOT_BUILT
+Errors while running CTest

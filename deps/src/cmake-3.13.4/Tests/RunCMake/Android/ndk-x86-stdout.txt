@@ -1,0 +1,2 @@
+-- Android: Targeting API '[0-9]+' with architecture 'x86', ABI 'x86', and processor 'i686'
+-- Android: Selected (Clang toolchain '[^']+' with )?GCC toolchain '[^']+'

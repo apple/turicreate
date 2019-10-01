@@ -1,0 +1,5 @@
+^CMake Error at DoesNotExist.cmake:1 \(add_subdirectory\):
+  add_subdirectory given source "DoesNotExist" which is not an existing
+  directory.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

@@ -1,0 +1,12 @@
+CMake Error at ParenInVarName0.cmake:4 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/ParenInVarName0.cmake:4
+
+  when parsing string
+
+    -->\${e\(x\)}<--
+
+  Invalid character \('\('\) in a variable name: 'e'
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

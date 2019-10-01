@@ -1,0 +1,4 @@
+CMake Error at CMP0048-OLD-VERSION.cmake:1 \(project\):
+  VERSION not allowed unless CMP0048 is set to NEW
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

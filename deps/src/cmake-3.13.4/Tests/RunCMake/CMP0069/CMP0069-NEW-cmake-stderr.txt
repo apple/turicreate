@@ -1,0 +1,4 @@
+^CMake Error at CMP0069-NEW-cmake\.cmake:[0-9]+ \(add_executable\):
+  CMake doesn't support IPO for current compiler
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)$

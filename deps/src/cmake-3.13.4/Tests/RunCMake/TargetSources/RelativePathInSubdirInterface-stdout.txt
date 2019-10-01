@@ -1,0 +1,1 @@
+-- iface: .*Tests/RunCMake/TargetSources/RelativePathInSubdirInterface/subdir_empty_1.cpp;.*Tests/RunCMake/TargetSources/RelativePathInSubdirInterface/subdir_empty_2.cpp;.*Tests/RunCMake/TargetSources/RelativePathInSubdirInterface/../empty_1.cpp;.*Tests/RunCMake/TargetSources/RelativePathInSubdirInterface/../empty_2.cpp

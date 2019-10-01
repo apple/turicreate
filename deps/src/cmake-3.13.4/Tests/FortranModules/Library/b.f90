@@ -1,0 +1,2 @@
+MODULE libraryModuleB
+END MODULE

@@ -1,0 +1,8 @@
+Memory check project .*/DummyValgrindTwoTargets-build
+.*
+ *Start 1: RunCMake
+(.*
+)?Memory check command: .* \"--log-file=.*/DummyValgrindTwoTargets-build/Testing/Temporary/MemoryChecker.1.log\" \"-q\".*
+ *Start 2: RunCMakeAgain
+(.*
+)?Memory check command: .* \"--log-file=.*/DummyValgrindTwoTargets-build/Testing/Temporary/MemoryChecker.2.log\" \"-q\".*

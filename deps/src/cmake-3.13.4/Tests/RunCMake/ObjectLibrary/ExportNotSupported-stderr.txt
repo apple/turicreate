@@ -1,0 +1,5 @@
+CMake Error at ExportNotSupported.cmake:[0-9]+ \(export\):
+  export given OBJECT library "A" which may not be exported under Xcode with
+  multiple architectures.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

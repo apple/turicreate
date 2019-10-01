@@ -1,0 +1,87 @@
+Kitware Local Git Setup Scripts
+
+
+Introduction
+------------
+
+This is a collection of local Git development setup scripts meant for
+inclusion in project source trees to aid their development workflow.
+Project-specific information needed by the scripts may be configured
+in a "config" file added next to them in the project.
+
+
+Import
+------
+
+A project may import these scripts into their source tree by
+initializing a subtree merge.  Bring up a Git prompt and set the
+current working directory inside a clone of the target project.
+Fetch the "setup" branch from the GitSetup repository:
+
+ $ git fetch ../GitSetup setup:setup
+
+Prepare to merge the branch but place the content in a subdirectory.
+Any prefix (with trailing '/') may be chosen so long as it is used
+consistently within a project through the rest of these instructions:
+
+ $ git merge -s ours --no-commit setup
+ $ git read-tree -u --prefix=Utilities/GitSetup/ setup
+
+Commit the merge with an informative message:
+
+ $ git commit
+ ------------------------------------------------------------------------
+ Merge branch 'setup'
+
+ Add Utilities/GitSetup/ directory using subtree merge from
+ the general GitSetup repository "setup" branch.
+ ------------------------------------------------------------------------
+
+Optionally add to the project ".gitattributes" file the line
+
+ /Utilities/GitSetup export-ignore
+
+to exclude the GitSetup directory from inclusion by "git archive"
+since it does not make sense in source tarballs.
+
+
+Configuration
+-------------
+
+Read the "Project configuration instructions" comment in each script.
+Add a "config" file next to the scripts with desired configuration
+(optionally copy and modify "config.sample").  For example, to
+configure the "setup-hooks" script:
+
+ $ git config -f Utilities/GitSetup/config hooks.url "$url"
+
+where "$url" is the project repository publishing the "hooks" branch.
+When finished, add and commit the configuration file:
+
+ $ git add Utilities/GitSetup/config
+ $ git commit
+
+
+Update
+------
+
+A project may update these scripts from the GitSetup repository.
+Bring up a Git prompt and set the current working directory inside a
+clone of the target project.  Fetch the "setup" branch from the
+GitSetup repository:
+
+ $ git fetch ../GitSetup setup:setup
+
+Merge the "setup" branch into the subtree:
+
+ $ git merge -X subtree=Utilities/GitSetup setup
+
+where "Utilities/GitSetup" is the same prefix used during the import
+setup, but without a trailing '/'.
+
+
+License
+-------
+
+Distributed under the Apache License 2.0.
+See LICENSE and NOTICE for details.

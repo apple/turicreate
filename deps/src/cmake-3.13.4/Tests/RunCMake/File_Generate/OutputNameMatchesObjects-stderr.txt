@@ -1,0 +1,8 @@
+CMake Error at OutputNameMatchesObjects.cmake:[0-9]+ \(file\):
+  Error evaluating generator expression:
+
+    \$<TARGET_OBJECTS:foo>
+
+  Objects of target "foo" referenced but is not an OBJECT library.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)

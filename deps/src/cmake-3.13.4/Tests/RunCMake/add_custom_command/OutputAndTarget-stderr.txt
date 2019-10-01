@@ -1,0 +1,5 @@
+CMake Error at OutputAndTarget.cmake:1 \(add_custom_command\):
+  add_custom_command Wrong syntax.  A TARGET and OUTPUT can not both be
+  specified.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

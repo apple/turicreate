@@ -1,0 +1,35 @@
+CMake Error at BadCONFIG.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<CONFIG:.>
+
+  Expression syntax not recognized.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadCONFIG.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<CONFIG:Foo,Bar>
+
+  \$<CONFIG> expression requires one or zero parameters.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadCONFIG.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<CONFIG:Foo-Bar>
+
+  Expression syntax not recognized.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadCONFIG.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<CONFIG:Foo-Nested>
+
+  Expression syntax not recognized.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

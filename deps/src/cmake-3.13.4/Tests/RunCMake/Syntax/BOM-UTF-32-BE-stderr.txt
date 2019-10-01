@@ -1,0 +1,4 @@
+CMake Error in BOM-UTF-32-BE.cmake:
+  File starts with a Byte-Order-Mark that is not UTF-8.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

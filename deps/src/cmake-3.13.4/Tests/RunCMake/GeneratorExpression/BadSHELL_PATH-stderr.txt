@@ -1,0 +1,17 @@
+CMake Error at BadSHELL_PATH.cmake:[0-9]+ \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<SHELL_PATH:>
+
+  "" is not an absolute path.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadSHELL_PATH.cmake:[0-9]+ \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<SHELL_PATH:Relative/Path>
+
+  "Relative/Path" is not an absolute path.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

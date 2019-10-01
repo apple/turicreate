@@ -1,0 +1,4 @@
+CMake Error at BadArgument.cmake:1 \(add_custom_command\):
+  add_custom_command Wrong syntax.  Unknown type of argument.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

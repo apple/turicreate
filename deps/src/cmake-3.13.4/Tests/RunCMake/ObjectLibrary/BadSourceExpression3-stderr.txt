@@ -1,0 +1,8 @@
+CMake Error at BadSourceExpression3.cmake:2 \(add_library\):
+  Error evaluating generator expression:
+
+    \$<TARGET_OBJECTS:NotObjLib>
+
+  Objects of target "NotObjLib" referenced but is not an OBJECT library.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,4 @@
+CMake Error at NoSources.cmake:1 \(try_compile\):
+  SOURCES must be followed by at least one source file
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

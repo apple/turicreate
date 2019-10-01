@@ -1,0 +1,8 @@
+CMake Error at IncludeDirectories.cmake:5 \(target_include_directories\):
+  Error evaluating generator expression:
+
+    \$<COMPILE_LANGUAGE:CXX>
+
+  \$<COMPILE_LANGUAGE:...> may not be used with Visual Studio generators.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,25 @@
+CMake Warning \(dev\) at CMP0026-WARN.cmake:5 \(get_target_property\):
+  Policy CMP0026 is not set: Disallow use of the LOCATION target property.
+  Run "cmake --help-policy CMP0026" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  The LOCATION property should not be read from target "somelib".  Use the
+  target name directly with add_custom_command, or use the generator
+  expression \$<TARGET_FILE>, as appropriate.
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
++
+CMake Warning \(dev\) at CMP0026-WARN.cmake:8 \(get_target_property\):
+  Policy CMP0026 is not set: Disallow use of the LOCATION target property.
+  Run "cmake --help-policy CMP0026" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  The LOCATION property should not be read from target "otherlib".  Use the
+  target name directly with add_custom_command, or use the generator
+  expression \$<TARGET_FILE>, as appropriate.
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

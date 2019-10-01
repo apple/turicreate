@@ -1,0 +1,9 @@
+CMake Error at NonValidTarget1.cmake:[0-9]+ \(add_custom_command\):
+  Error evaluating generator expression:
+
+    \$<COMPILE_FEATURES:cxx_final>
+
+  \$<COMPILE_FEATURE> may only be used with binary targets.  It may not be
+  used with add_custom_command or add_custom_target.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

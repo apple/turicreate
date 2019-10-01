@@ -1,0 +1,2 @@
+-- Install configuration: .*
+-- Installing: .*/ios_install/lib/libfoo.a

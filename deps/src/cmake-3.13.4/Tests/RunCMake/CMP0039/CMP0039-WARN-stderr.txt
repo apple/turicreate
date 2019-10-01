@@ -1,0 +1,10 @@
+CMake Warning \(dev\) at CMP0039-WARN.cmake:5 \(target_link_libraries\):
+  Policy CMP0039 is not set: Utility targets may not have link dependencies.
+  Run "cmake --help-policy CMP0039" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  Utility target "utility" should not be used as the target of a
+  target_link_libraries call.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.

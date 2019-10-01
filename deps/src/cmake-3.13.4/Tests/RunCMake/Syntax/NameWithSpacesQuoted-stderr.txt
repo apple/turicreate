@@ -1,0 +1,12 @@
+^CMake Error at NameWithSpacesQuoted.cmake:1 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/NameWithSpacesQuoted.cmake:1
+
+  when parsing string
+
+    \${var with space}
+
+  syntax error, unexpected cal_SYMBOL, expecting } \(17\)
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

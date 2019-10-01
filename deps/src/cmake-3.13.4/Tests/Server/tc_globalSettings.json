@@ -1,0 +1,140 @@
+[
+{ "message": "Testing globalSettings" },
+
+{ "handshake": {"major": 1} },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+
+
+{ "message": "Change settings:" },
+
+{ "send": { "type": "setGlobalSettings", "warnUnused": true } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": true, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "warnUnused": false } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "debugOutput": true } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": true, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "debugOutput": false } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "warnUninitialized": true } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": true, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "warnUninitialized": false } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "traceExpand": true } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": true, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "traceExpand": false } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+
+
+{ "send": { "type": "setGlobalSettings", "trace": true } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": true, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "trace": false } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "warnUnusedCli": false } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": false, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "warnUnusedCli": true } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "checkSystemVars": true } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": true } },
+
+{ "send": { "type": "setGlobalSettings", "checkSystemVars": false } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": false, "debugOutput": false, "warnUninitialized": false, "traceExpand": false, "trace": false, "warnUnusedCli": true, "checkSystemVars": false } },
+
+{ "send": { "type": "setGlobalSettings", "warnUnused": true, "debugOutput": true, "warnUninitialized": true, "traceExpand": true, "trace": true, "warnUnusedCli": false, "checkSystemVars": true } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": true, "debugOutput": true, "warnUninitialized": true, "traceExpand": true, "trace": true, "warnUnusedCli": false, "checkSystemVars": true } },
+
+{ "message": "Ignore unknown/readonly" },
+
+{ "send": { "type": "setGlobalSettings", "unknownKey": "unknownValue", "extraGenerator": "XXX", "generator": "YYY", "sourceDirectory": "/tmp/source", "buildDirectory": "/tmp/build" } },
+{ "reply": { "type": "setGlobalSettings" } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": true, "debugOutput": true, "warnUninitialized": true, "traceExpand": true, "trace": true, "warnUnusedCli": false, "checkSystemVars": true } },
+
+{ "message": "Error paths:" },
+
+{ "send": { "type": "setGlobalSettings", "debugOutput": true, "warnUnused": 1 } },
+{ "error": { "type": "setGlobalSettings", "message": "\"warnUnused\" must be unset or a bool value." } },
+
+{ "send": { "type": "setGlobalSettings", "warnUnused": true, "debugOutput": 1 } },
+{ "error": { "type": "setGlobalSettings", "message": "\"debugOutput\" must be unset or a bool value." } },
+
+{ "send": { "type": "setGlobalSettings", "warnUninitialized": 1, "warnUnused": true, "debugOutput": true } },
+{ "error": { "type": "setGlobalSettings", "message": "\"warnUninitialized\" must be unset or a bool value." } },
+
+{ "send": { "type": "setGlobalSettings", "warnUnused": true, "debugOutput": true, "traceExpand": 1 } },
+{ "error": { "type": "setGlobalSettings", "message": "\"traceExpand\" must be unset or a bool value." } },
+
+{ "send": { "type": "setGlobalSettings", "debugOutput": true, "trace": 1, "warnUnused": true } },
+{ "error": { "type": "setGlobalSettings", "message": "\"trace\" must be unset or a bool value." } },
+
+{ "send": { "type": "setGlobalSettings", "warnUnused": true, "debugOutput": true, "warnUnusedCli": 1.0 } },
+{ "error": { "type": "setGlobalSettings", "message": "\"warnUnusedCli\" must be unset or a bool value." } },
+
+{ "send": { "type": "setGlobalSettings", "warnUnused": true, "debugOutput": true, "checkSystemVars": "some string" } },
+{ "error": { "type": "setGlobalSettings", "message": "\"checkSystemVars\" must be unset or a bool value." } },
+
+{ "send": { "type": "globalSettings"} },
+{ "validateGlobalSettings": { "warnUnused": true, "debugOutput": true, "warnUninitialized": true, "traceExpand": true, "trace": true, "warnUnusedCli": false, "checkSystemVars": true } },
+
+{ "message": "Everything ok." }
+]

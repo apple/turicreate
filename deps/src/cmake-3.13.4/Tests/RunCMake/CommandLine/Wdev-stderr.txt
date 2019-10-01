@@ -1,0 +1,11 @@
+^CMake Warning \(dev\) at Wdev.cmake:1 \(message\):
+  Some author warning
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning \(dev\) at Wdev.cmake:6 \(include\):
+  include\(\) given empty file name \(ignored\).
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

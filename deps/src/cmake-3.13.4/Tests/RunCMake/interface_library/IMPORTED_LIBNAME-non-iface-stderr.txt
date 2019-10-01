@@ -1,0 +1,45 @@
+^CMake Error at IMPORTED_LIBNAME-non-iface.cmake:[0-9]+ \(set_property\):
+  IMPORTED_LIBNAME property may be set only on imported INTERFACE library
+  targets.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at IMPORTED_LIBNAME-non-iface.cmake:[0-9]+ \(set_property\):
+  IMPORTED_LIBNAME property may not be APPENDed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at IMPORTED_LIBNAME-non-iface.cmake:[0-9]+ \(set_property\):
+  IMPORTED_LIBNAME_DEBUG property may be set only on imported INTERFACE
+  library targets.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at IMPORTED_LIBNAME-non-iface.cmake:[0-9]+ \(set_property\):
+  IMPORTED_LIBNAME_DEBUG property may not be APPENDed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at IMPORTED_LIBNAME-non-iface.cmake:[0-9]+ \(set_property\):
+  IMPORTED_LIBNAME property may be set only on imported INTERFACE library
+  targets.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at IMPORTED_LIBNAME-non-iface.cmake:[0-9]+ \(set_property\):
+  IMPORTED_LIBNAME property may be set only on imported INTERFACE library
+  targets.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at IMPORTED_LIBNAME-non-iface.cmake:[0-9]+ \(set_property\):
+  IMPORTED_LIBNAME property may be set only on imported INTERFACE library
+  targets.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
++
+CMake Error at IMPORTED_LIBNAME-non-iface.cmake:[0-9]+ \(set_property\):
+  IMPORTED_LIBNAME property may be set only on imported INTERFACE library
+  targets.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

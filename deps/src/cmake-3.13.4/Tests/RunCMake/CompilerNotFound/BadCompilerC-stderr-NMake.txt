@@ -1,0 +1,17 @@
+CMake Error at BadCompilerC.cmake:2 \(enable_language\):
+  The CMAKE_C_COMPILER:
+
+    no-C-compiler
+
+  is not a full path and was not found in the PATH.
+
+  To use the NMake generator with Visual C\+\+, cmake must be run from a shell
+  that can use the compiler cl from the command line.  This environment is
+  unable to invoke the cl compiler.  To fix this problem, run cmake from the
+  Visual Studio Command Prompt \(vcvarsall.bat\).
+
+  Tell CMake where to find the compiler by setting either the environment
+  variable "CC" or the CMake cache entry CMAKE_C_COMPILER to the full path to
+  the compiler, or to the compiler name if it is in the PATH.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

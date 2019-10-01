@@ -1,0 +1,11 @@
+^CMake Error \(dev\) at Werror_dev.cmake:4 \(include\):
+  include\(\) given empty file name \(ignored\).
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This error is for project developers. Use -Wno-error=dev to suppress it.
+
+CMake Error \(dev\) at Werror_dev.cmake:7 \(message\):
+  Some author warning
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This error is for project developers. Use -Wno-error=dev to suppress it.$

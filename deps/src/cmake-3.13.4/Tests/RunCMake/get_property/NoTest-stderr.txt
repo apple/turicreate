@@ -1,0 +1,4 @@
+^CMake Error at NoTest.cmake:1 \(get_property\):
+  get_property not given name for TEST scope.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

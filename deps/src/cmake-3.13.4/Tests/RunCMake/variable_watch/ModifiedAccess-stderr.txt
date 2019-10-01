@@ -1,0 +1,4 @@
+CMake Debug Log at ModifiedAccess.cmake:3 \(set\):
+  Variable "b" was accessed using MODIFIED_ACCESS with value "b".
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

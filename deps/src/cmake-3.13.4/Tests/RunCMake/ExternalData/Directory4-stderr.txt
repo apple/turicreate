@@ -1,0 +1,6 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Series option ":" not allowed with directories.
+Call Stack \(most recent call first\):
+  .*
+  Directory4.cmake:3 \(ExternalData_Add_Test\)
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,5 @@
+^CMake Error at BadTarget.cmake:1 \(get_property\):
+  get_property could not find TARGET FOO.  Perhaps it has not yet been
+  created.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

@@ -1,0 +1,2 @@
+-- Target LINK_OPTIONS is 'a;b;c;d;;e'
+-- Directory LINK_OPTIONS is 'a;b;c;d;;e'

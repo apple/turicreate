@@ -1,0 +1,31 @@
+CMake Warning \(dev\) at CMP0051-WARN.cmake:6 \(get_target_property\):
+  Policy CMP0051 is not set: List TARGET_OBJECTS in SOURCES target property.
+  Run "cmake --help-policy CMP0051" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  Target "empty" contains \$<TARGET_OBJECTS> generator expression in its
+  sources list.  This content was not previously part of the SOURCES property
+  when that property was read at configure time.  Code reading that property
+  needs to be adapted to ignore the generator expression using the
+  string\(GENEX_STRIP\) command.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+Sources: "empty.cpp"
+*
+CMake Warning \(dev\) at CMP0051-WARN.cmake:12 \(get_target_property\):
+  Policy CMP0051 is not set: List TARGET_OBJECTS in SOURCES target property.
+  Run "cmake --help-policy CMP0051" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  Target "empty2" contains \$<TARGET_OBJECTS> generator expression in its
+  sources list.  This content was not previously part of the SOURCES property
+  when that property was read at configure time.  Code reading that property
+  needs to be adapted to ignore the generator expression using the
+  string\(GENEX_STRIP\) command.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+Sources: "../empty.cpp"$

@@ -1,0 +1,4 @@
+CMake Error at BadArg.cmake:[0-9]+ \(configure_file\):
+  configure_file called with incorrect number of arguments, expected 2
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,6 @@
+.gitattributes   export-ignore
+
+*.sln           -crlf
+*.vcproj        -crlf
+
+*               -whitespace

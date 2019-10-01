@@ -1,0 +1,20 @@
+CMake Warning \(dev\) in CMakeLists.txt:
+  Policy CMP0052 is not set: Reject source and build dirs in installed
+  INTERFACE_INCLUDE_DIRECTORIES.  Run "cmake --help-policy CMP0052" for
+  policy details.  Use the cmake_policy command to set the policy and
+  suppress this warning.
+
+  Directory:
+
+      ".*Tests/RunCMake/IfacePaths_INCLUDE_DIRECTORIES/prefix/BinInInstallPrefix-CMP0052-WARN-build/foo"
+
+  in INTERFACE_INCLUDE_DIRECTORIES of target "testTarget" is a subdirectory
+  of the install directory:
+
+      ".*Tests/RunCMake/IfacePaths_INCLUDE_DIRECTORIES/prefix"
+
+  however it is also a subdirectory of the build tree:
+
+      ".*Tests/RunCMake/IfacePaths_INCLUDE_DIRECTORIES/prefix/BinInInstallPrefix-CMP0052-WARN-build"
+
+This warning is for project developers.  Use -Wno-dev to suppress it.

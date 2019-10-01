@@ -1,0 +1,4 @@
+^CMake Error at NEW-cond-package.cmake:4 \(add_custom_target\):
+  The target name "package" is reserved when CPack packaging is enabled.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

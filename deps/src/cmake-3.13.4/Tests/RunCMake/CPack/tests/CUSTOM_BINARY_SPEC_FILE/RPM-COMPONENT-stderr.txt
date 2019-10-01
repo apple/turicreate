@@ -1,0 +1,2 @@
+^CPackRPM: Will use USER specified spec file: (/[^/]*)*/CUSTOM_BINARY_SPEC_FILE/custom\.spec\.in
+CPackRPM: Will use GENERATED spec file:.*/Tests/RunCMake/RPM/CPack/CUSTOM_BINARY_SPEC_FILE-build/_CPack_Packages/.*/RPM/SPECS/custom_binary_spec_file-test2\.spec$

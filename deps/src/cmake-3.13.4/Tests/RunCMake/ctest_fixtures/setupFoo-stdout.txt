@@ -1,0 +1,7 @@
+Test project .*/Tests/RunCMake/ctest_fixtures/setupFoo-build
+    Start 3: setupFoo
+1/1 Test #3: setupFoo +\.+ +Passed +[0-9.]+ sec
++
+100% tests passed, 0 tests failed out of 1
++
+Total Test time \(real\) = +[0-9.]+ sec$

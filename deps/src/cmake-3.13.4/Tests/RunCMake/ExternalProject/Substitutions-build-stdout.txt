@@ -1,0 +1,7 @@
+.*Download dir  = .*/xxxx_dwn
+.*Download file = .*/zzzz_tmp.txt
+.*Source dir    = .*/xxxx_src
+.*Source subdir = /yyyy_subdir
+.*Binary dir    = .*/xxxx_bin
+.*Install dir   = .*/xxxx_install
+.*Tmp dir       = .*/xxxx_tmp

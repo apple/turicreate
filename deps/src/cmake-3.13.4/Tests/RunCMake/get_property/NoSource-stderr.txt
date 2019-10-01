@@ -1,0 +1,4 @@
+^CMake Error at NoSource.cmake:1 \(get_property\):
+  get_property not given name for SOURCE scope.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

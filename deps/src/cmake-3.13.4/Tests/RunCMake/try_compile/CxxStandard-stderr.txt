@@ -1,0 +1,7 @@
+^CMake Error at .*/Tests/RunCMake/try_compile/CxxStandard-build/CMakeFiles/CMakeTmp/CMakeLists.txt:[0-9]+ \(add_executable\):
+  CXX_STANDARD is set to invalid value '3'
++
+CMake Error at CxxStandard.cmake:[0-9]+ \(try_compile\):
+  Failed to generate test project build system.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

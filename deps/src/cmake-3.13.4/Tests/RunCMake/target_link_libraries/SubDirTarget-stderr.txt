@@ -1,0 +1,5 @@
+^CMake Error at SubDirTarget.cmake:[0-9]+ \(target_link_libraries\):
+  Attempt to add link library "m" to target "subexe" which is not built in
+  this directory.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

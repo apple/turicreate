@@ -1,0 +1,4 @@
+CMake Error at imported.cmake:2 \(add_library\):
+  add_library IMPORTED with ALIAS is not allowed.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,8 @@
+^(([^B]|B[^u]|Bu[^i]|Bui[^l]|Buil[^t]|Built[^ ])[^
+]*
+)*Scanning dependencies of target CustomTarget(
+([^B]|B[^u]|Bu[^i]|Bui[^l]|Buil[^t]|Built[^ ])[^
+]*)*
+Built target CustomTarget(
+([^B]|B[^u]|Bu[^i]|Bui[^l]|Buil[^t]|Built[^ ])[^
+]*)*$

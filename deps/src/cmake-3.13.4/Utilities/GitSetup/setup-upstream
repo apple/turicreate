@@ -1,0 +1,104 @@
+#!/usr/bin/env bash
+#=============================================================================
+# Copyright 2010-2015 Kitware, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
+
+# Run this script to set up the local Git repository to use the
+# preferred upstream repository URLs.
+
+# Project configuration instructions:
+#
+# - Populate adjacent "config" file with:
+#    upstream.url = Preferred fetch url for upstream remote
+#    upstream.remote = Preferred name for upstream remote, if not "origin"
+
+die() {
+	echo 1>&2 "$@" ; exit 1
+}
+
+# Make sure we are inside the repository.
+cd "${BASH_SOURCE%/*}" &&
+
+# Load the project configuration.
+url=$(git config -f config --get upstream.url) &&
+remote=$(git config -f config --get upstream.remote ||
+	 echo 'origin') ||
+die 'This project is not configured to use a preferred upstream repository.'
+
+# Get current upstream URLs.
+fetchurl=$(git config --get remote."$remote".url || echo '') &&
+pushurl=$(git config --get remote."$remote".pushurl || echo '') &&
+
+if test "$fetchurl" = "$url"; then
+	echo 'Remote "'"$remote"'" already uses recommended upstream repository.'
+	exit 0
+fi
+
+upstream_recommend='
+We recommended configuring the "'"$remote"'" remote to fetch from upstream at
+
+  '"$url"'
+'
+
+# Tell user about current configuration.
+if test -n "$fetchurl"; then
+	echo 'Remote "'"$remote"'" is currently configured to fetch from
+
+  '"$fetchurl"'
+' &&
+	if test -n "$pushurl"; then
+		echo 'and push to
+
+  '"$pushurl"
+	fi &&
+	echo "$upstream_recommend" &&
+	if test -n "$pushurl"; then
+		echo 'and to never push to it directly.
+'
+	fi &&
+
+	read -ep 'Reconfigure "'"$remote"'" remote as recommended? [y/N]: ' ans &&
+	if [ "$ans" == "y" ] || [ "$ans" == "Y" ]; then
+		setup=1
+	else
+		setup=''
+	fi
+else
+	echo 'Remote "'"$remote"'" is not yet configured.' &&
+	echo "$upstream_recommend" &&
+	read -ep 'Configure "'"$remote"'" remote as recommended? [Y/n]: ' ans &&
+	if [ "$ans" == "n" ] || [ "$ans" == "N" ]; then
+		exit 0
+	else
+		setup=1
+	fi
+fi &&
+
+# Perform setup if necessary.
+if test -n "$setup"; then
+	if test -z "$fetchurl"; then
+		git remote add "$remote" "$url"
+	else
+		git config remote."$remote".url "$url" &&
+		if old=$(git config --get remote."$remote".pushurl); then
+			git config --unset remote."$remote".pushurl ||
+			echo 'Warning: failed to unset remote.'"$remote"'.pushurl'
+		fi
+	fi &&
+	echo 'Remote "'"$remote"'" is now configured to fetch from
+
+  '"$url"'
+'
+fi

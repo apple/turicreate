@@ -1,0 +1,14 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Data file referenced by argument
+
+    DATA{Directory1}
+
+  corresponds to source tree path
+
+    Directory1
+
+  that is directory instead of a file!
+Call Stack \(most recent call first\):
+  .*
+  Directory1.cmake:3 \(ExternalData_Add_Test\)
+  CMakeLists.txt:3 \(include\)

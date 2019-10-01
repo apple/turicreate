@@ -1,0 +1,5 @@
+CMake Error at CMP0039-NEW.cmake:7 \(target_link_libraries\):
+  Utility target "utility" must not be used as the target of a
+  target_link_libraries call.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

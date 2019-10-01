@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  IgnorableNamespaces="uap mp">
+
+  <Identity Name="@PACKAGE_GUID@" Publisher="CN=mgong" Version="1.1.0.0" />
+  <mp:PhoneIdentity PhoneProductId="@PACKAGE_GUID@" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
+  <Properties>
+    <DisplayName>@SHORT_NAME@</DisplayName>
+    <PublisherDisplayName>mgong</PublisherDisplayName>
+    <Logo>Assets/StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.65535.65535" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="@SHORT_NAME@.App">
+      <uap:VisualElements
+        DisplayName="@SHORT_NAME@"
+        Description="@SHORT_NAME@"
+        BackgroundColor="#336699"
+        Square150x150Logo="Assets/Logo.png"
+        Square44x44Logo="Assets/SmallLogo44x44.png">
+        <uap:SplashScreen Image="Assets/SplashScreen.png" />
+      </uap:VisualElements>
+    </Application>
+  </Applications>
+</Package>

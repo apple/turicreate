@@ -1,0 +1,1 @@
+^.*/trace-only-this-file.cmake\(1\):  message\(STATUS trace particular file test passed \)$

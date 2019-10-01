@@ -1,0 +1,4 @@
+^CMake Error at OBJECTwithNoSources.cmake:[0-9]+ \(add_library\):
+  No SOURCES given to target: TestObjectLibWithoutSources
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

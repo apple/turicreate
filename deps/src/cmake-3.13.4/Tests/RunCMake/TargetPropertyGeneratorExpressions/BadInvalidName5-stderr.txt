@@ -1,0 +1,9 @@
+CMake Error at BadInvalidName5.cmake:7 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:,>
+
+  \$<TARGET_PROPERTY:tgt,prop> expression requires a non-empty target name and
+  property name.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:8 \(include\)$

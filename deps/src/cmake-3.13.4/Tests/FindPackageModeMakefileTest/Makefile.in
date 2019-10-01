@@ -1,0 +1,32 @@
+
+include cmakeExecutable.mk
+
+CMAKE_CURRENT_BINARY_DIR = "@CMAKE_CURRENT_BINARY_DIR@"
+CMAKE_CXX_COMPILER = "@CMAKE_CXX_COMPILER@"
+CMAKE_CXX_COMPILER_ID = "@CMAKE_CXX_COMPILER_ID@"
+CMAKE_CXX_FLAGS = @CMAKE_CXX_FLAGS@
+
+CMAKE_FOO = $(CMAKE) --find-package -DCMAKE_MODULE_PATH=$(CMAKE_CURRENT_BINARY_DIR) -DNAME=Foo -DLANGUAGE=CXX -DCOMPILER_ID=$(CMAKE_CXX_COMPILER_ID)
+
+tmp = tmp.txt
+
+all: pngtest
+
+main.o: clean main.cpp
+	@$(CMAKE_FOO) -DMODE=COMPILE >$(tmp)
+	@foo="`cat $(tmp)`"; \
+	 printf '"%s" %s %s -c main.cpp\n' $(CMAKE_CXX_COMPILER) "$(CMAKE_CXX_FLAGS)" "$$foo" >$(tmp)
+	@cat $(tmp)
+	@sh $(tmp)
+	@rm -f $(tmp)
+
+pngtest: main.o
+	@$(CMAKE_FOO) -DMODE=LINK >$(tmp)
+	@foo="`cat $(tmp)`"; \
+	 printf '"%s" %s %s -o pngtest main.o %s\n' $(CMAKE_CXX_COMPILER) "$(CMAKE_CXX_FLAGS)" "$(LDFLAGS)" "$$foo" >$(tmp)
+	@cat $(tmp)
+	@sh $(tmp)
+	@rm -f $(tmp)
+
+clean:
+	rm -f $(tmp) *.o pngtest

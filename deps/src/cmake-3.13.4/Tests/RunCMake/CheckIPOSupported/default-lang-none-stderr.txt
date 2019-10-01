@@ -1,0 +1,7 @@
+^CMake Error at .*/Modules/CheckIPOSupported\.cmake:[0-9]+ \(message\):
+  IPO is not supported \(no C/CXX/Fortran languages found in ENABLED_LANGUAGES
+  global property\)\.
+Call Stack \(most recent call first\):
+  .*/Modules/CheckIPOSupported\.cmake:[0-9]+ \(_ipo_not_supported\)
+  default-lang-none\.cmake:[0-9]+ \(check_ipo_supported\)
+  CMakeLists\.txt:[0-9]+ \(include\)$

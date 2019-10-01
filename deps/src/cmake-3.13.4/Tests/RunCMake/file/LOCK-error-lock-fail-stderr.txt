@@ -1,0 +1,6 @@
+CMake Error at LOCK-error-lock-fail.cmake:[0-9]+ \(file\):
+  directory
+
+    ".*"
+
+  creation failed \(check permissions\)\.

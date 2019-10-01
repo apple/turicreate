@@ -1,0 +1,4 @@
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - failed.*
+-- Configuring done
+-- Generating done

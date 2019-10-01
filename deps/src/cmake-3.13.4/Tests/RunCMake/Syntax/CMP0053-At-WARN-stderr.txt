@@ -1,0 +1,21 @@
+^CMake Warning \(dev\) at CMP0053-At-WARN.cmake:4 \(set\):
+  Policy CMP0053 is not set: Simplify variable reference and escape sequence
+  evaluation.  Run "cmake --help-policy CMP0053" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  For input:
+
+    '@var@'
+
+  the old evaluation rules produce:
+
+    '\${right}'
+
+  but the new evaluation rules produce:
+
+    '@var@'
+
+  Using the old result for compatibility since the policy is not set.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

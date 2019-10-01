@@ -1,0 +1,1 @@
+Tests[/\]RunCMake[/\]Cpplint[/\]main\.c:0:  message  \[category/category\] \[0\]

@@ -1,0 +1,1 @@
+#define testLibAbs1a

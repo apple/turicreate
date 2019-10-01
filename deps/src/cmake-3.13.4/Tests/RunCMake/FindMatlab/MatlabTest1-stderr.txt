@@ -1,0 +1,2 @@
+CMake Error at .*FindMatlab.cmake:[0-9]+ \(message\):
+  \[MATLAB\] This functionality needs the MAIN_PROGRAM component \(not default\)

@@ -1,0 +1,1 @@
+Test project .*/Tests/RunCMake/ctest_fixtures/cyclicCleanup-build$

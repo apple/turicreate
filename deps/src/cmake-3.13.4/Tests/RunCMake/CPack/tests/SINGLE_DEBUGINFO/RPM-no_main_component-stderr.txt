@@ -1,0 +1,1 @@
+CPack Error: CPACK_RPM_MAIN_COMPONENT not set but it is mandatory with CPACK_RPM_DEBUGINFO_SINGLE_PACKAGE being set.

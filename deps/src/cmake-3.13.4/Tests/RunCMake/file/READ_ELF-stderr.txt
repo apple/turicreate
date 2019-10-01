@@ -1,0 +1,2 @@
+.*file READ_ELF must be called with at least three additional arguments\.
+.*file READ_ELF given FILE "XXX" that does not exist\.

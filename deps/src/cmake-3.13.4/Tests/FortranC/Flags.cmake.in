@@ -1,0 +1,36 @@
+set(src "@CMAKE_CURRENT_SOURCE_DIR@/FortranC")
+set(bld "@CMAKE_CURRENT_BINARY_DIR@/FortranC/Flags")
+
+# Create wrapper scripts for the compilers that check for expected
+# flags, remove them, and invoke the real compiler.
+set(ID "CC")
+set(COMMAND "@CMAKE_C_COMPILER@")
+configure_file("${src}/test_opt.sh.in" "${bld}/cc.sh" @ONLY)
+set(ID "FC")
+set(COMMAND "@CMAKE_Fortran_COMPILER@")
+configure_file("${src}/test_opt.sh.in" "${bld}/fc.sh" @ONLY)
+set(ID)
+set(COMMAND)
+
+set(make_program "@CMake_TEST_EXPLICIT_MAKE_PROGRAM@")
+if(make_program)
+  set(maybe_make_program "-DCMAKE_MAKE_PROGRAM=${make_program}")
+endif()
+
+execute_process(
+  WORKING_DIRECTORY "${bld}"
+  COMMAND ${CMAKE_COMMAND} "${src}" -G "@CMAKE_GENERATOR@"
+                           -A "@CMAKE_GENERATOR_PLATFORM@"
+                           -T "@CMAKE_GENERATOR_TOOLSET@"
+                           ${maybe_make_program}
+                           "-DFortranC_TEST_FLAGS=1"
+                           "-DCMAKE_C_COMPILER=${bld}/cc.sh"
+                           "-DCMAKE_C_FLAGS:STRING=@CMAKE_C_FLAGS@"
+                           "-DCMAKE_Fortran_COMPILER=${bld}/fc.sh"
+                           "-DCMAKE_Fortran_FLAGS:STRING=@CMAKE_Fortran_FLAGS@"
+  RESULT_VARIABLE result
+  )
+
+if(NOT "${result}" STREQUAL "0")
+  message(FATAL_ERROR "Configuration failed: ${result}")
+endif()

@@ -1,0 +1,6 @@
+CMake Error at .*/Modules/FeatureSummary\.cmake:[0-9]+. \(message\):
+  The WHAT argument of FEATURE_SUMMARY\(\) contains ALL, which cannot be
+  combined with other values\.
+Call Stack \(most recent call first\):
+  FeatureSummaryWhatListAll\.cmake:[0-9]+ \(feature_summary\)
+  CMakeLists.txt:[0-9]+ \(include\)

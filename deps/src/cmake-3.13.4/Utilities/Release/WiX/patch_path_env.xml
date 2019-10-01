@@ -1,0 +1,26 @@
+<CPackWiXPatch>
+  <CPackWiXFragment Id="CM_DP_bin">
+    <Component Id="CMakeSystemPathEntryCMP" KeyPath="yes" Guid="0E782367-5D68-4539-81D1-B9757AE496A1">
+
+      <Condition>ADD_CMAKE_TO_PATH = "System"</Condition>
+
+      <Environment Id="CMakeSystemPathEntryENV" Action="set" Part="last"
+        Name="PATH" Value="[INSTALL_ROOT]bin"
+        System="yes"/>
+    </Component>
+
+    <Component Id="CMakeUserPathEntryCMP" KeyPath="yes" Guid="392E524D-D5BF-4F16-A7AF-A82B07482CB9">
+
+      <Condition>ADD_CMAKE_TO_PATH = "User"</Condition>
+
+      <Environment Id="CMakeUserPathEntryENV" Action="set" Part="last"
+        Name="PATH" Value="[INSTALL_ROOT]bin"
+        System="no"/>
+    </Component>
+  </CPackWiXFragment>
+
+  <CPackWiXFragment Id="#PRODUCTFEATURE">
+    <ComponentRef Id="CMakeSystemPathEntryCMP"/>
+    <ComponentRef Id="CMakeUserPathEntryCMP"/>
+  </CPackWiXFragment>
+</CPackWiXPatch>

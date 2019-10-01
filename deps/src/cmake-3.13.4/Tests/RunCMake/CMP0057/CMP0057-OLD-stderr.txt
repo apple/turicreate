@@ -1,0 +1,8 @@
+CMake Error at CMP0057-OLD.cmake:5 \(if\):
+  if given arguments:
+
+    "foo" "IN_LIST" "MY_LIST"
+
+  Unknown arguments specified
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

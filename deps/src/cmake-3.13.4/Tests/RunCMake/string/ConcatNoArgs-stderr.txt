@@ -1,0 +1,4 @@
+CMake Error at ConcatNoArgs.cmake:1 \(string\):
+  string sub-command CONCAT requires at least one argument.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

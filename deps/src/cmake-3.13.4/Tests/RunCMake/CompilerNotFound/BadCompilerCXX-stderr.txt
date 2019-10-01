@@ -1,0 +1,12 @@
+CMake Error at BadCompilerCXX.cmake:2 \(enable_language\):
+  The CMAKE_CXX_COMPILER:
+
+    no-CXX-compiler
+
+  is not a full path and was not found in the PATH.
+
+  Tell CMake where to find the compiler by setting either the environment
+  variable "CXX" or the CMake cache entry CMAKE_CXX_COMPILER to the full path
+  to the compiler, or to the compiler name if it is in the PATH.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

@@ -1,0 +1,74 @@
+#!/usr/bin/env bash
+#=============================================================================
+# Copyright 2010-2015 Kitware, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
+
+USAGE="[<remote>] [--no-topic] [--dry-run] [--]"
+OPTIONS_SPEC=
+SUBDIRECTORY_OK=Yes
+. "$(git --exec-path)/git-sh-setup"
+
+#-----------------------------------------------------------------------------
+
+remote=''
+refspecs=''
+no_topic=''
+dry_run=''
+
+# Parse the command line options.
+while test $# != 0; do
+	case "$1" in
+		--no-topic) no_topic=1 ;;
+		--dry-run)  dry_run=--dry-run ;;
+		--) shift; break ;;
+		-*) usage ;;
+		*) test -z "$remote" || usage ; remote="$1" ;;
+	esac
+	shift
+done
+test $# = 0 || usage
+
+# Default remote.
+test -n "$remote" || remote="gerrit"
+
+if test -z "$no_topic"; then
+	# Identify and validate the topic branch name.
+	head="$(git symbolic-ref HEAD)" && topic="${head#refs/heads/}" || topic=''
+	if test -z "$topic" -o "$topic" = "master"; then
+		die 'Please name your topic:
+		git checkout -b descriptive-name'
+	fi
+	# The topic branch will be pushed by name.
+	refspecs="HEAD:refs/for/master/$topic $refspecs"
+fi
+
+# Fetch the current upstream master branch head.
+# This helps computation of a minimal pack to push.
+echo "Fetching $remote master"
+fetch_out=$(git fetch "$remote" master 2>&1) || die "$fetch_out"
+
+# Exit early if we have nothing to push.
+if test -z "$refspecs"; then
+	echo 'Nothing to push!'
+	exit 0
+fi
+
+# Push.  Save output and exit code.
+echo "Pushing to $remote"
+push_stdout=$(git push --porcelain $dry_run "$remote" $refspecs); push_exit=$?
+echo "$push_stdout"
+
+# Reproduce the push exit code.
+exit $push_exit

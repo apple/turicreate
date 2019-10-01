@@ -1,0 +1,4 @@
+CMake Error at install-export.cmake:8 \(install\):
+  install TARGETS given target "alias" which is an alias.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

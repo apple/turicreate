@@ -1,0 +1,10 @@
+CMake Warning \(dev\) in CMakeLists.txt:
+  Policy CMP0065 is not set: Do not add flags to export symbols from
+  executables without the ENABLE_EXPORTS target property.  Run "cmake
+  --help-policy CMP0065" for policy details.  Use the cmake_policy command to
+  set the policy and suppress this warning.
+
+  For compatibility with older versions of CMake, additional flags may be
+  added to export symbols on all executables regardless of their
+  ENABLE_EXPORTS property.
+This warning is for project developers.  Use -Wno-dev to suppress it.

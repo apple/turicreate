@@ -1,0 +1,12 @@
+cmake_minimum_required(VERSION 2.8.10)
+
+set(CTEST_SOURCE_DIRECTORY "@CMake_SOURCE_DIR@/Tests/VSProjectInSubdir")
+set(CTEST_BINARY_DIRECTORY "@CMake_BINARY_DIR@/Tests/CTestBuildCommandProjectInSubdir/Nested")
+set(CTEST_CMAKE_GENERATOR "@CMAKE_GENERATOR@")
+set(CTEST_PROJECT_NAME "VSProjectInSubdir")
+set(CTEST_BUILD_CONFIGURATION "@CTestTest_CONFIG@")
+
+ctest_empty_binary_directory(${CTEST_BINARY_DIRECTORY})
+ctest_start(Experimental)
+ctest_configure(OPTIONS "@ctest_configure_options@")
+ctest_build(TARGET test)

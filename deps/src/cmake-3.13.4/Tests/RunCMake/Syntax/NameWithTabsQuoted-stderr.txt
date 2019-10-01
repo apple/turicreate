@@ -1,0 +1,12 @@
+^CMake Error at NameWithTabsQuoted.cmake:1 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/NameWithTabsQuoted.cmake:1
+
+  when parsing string
+
+    \${var	with	tab}
+
+  syntax error, unexpected cal_SYMBOL, expecting } \(15\)
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

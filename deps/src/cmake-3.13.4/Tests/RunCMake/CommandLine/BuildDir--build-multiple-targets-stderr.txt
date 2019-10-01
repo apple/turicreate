@@ -1,0 +1,3 @@
+^'--target' may not be specified more than once\.
++
+Usage: cmake --build <dir> \[options\] \[-- \[native-options\]\]

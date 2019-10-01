@@ -1,0 +1,6 @@
+CMake Error at PolicyBefore24.cmake:2 \(cmake_policy\):
+  Compatibility with CMake < 2.4 is not supported by CMake >= 3.0.  For
+  compatibility with older versions please use any CMake 2.8.x release or
+  lower.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

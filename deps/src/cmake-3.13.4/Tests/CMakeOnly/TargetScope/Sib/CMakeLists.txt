@@ -1,0 +1,6 @@
+if(TARGET SubLibLocal)
+  message(FATAL_ERROR "SubLibLocal visible in sibling directory")
+endif()
+if(NOT TARGET SubLibGlobal)
+  message(FATAL_ERROR "SubLibGlobal not visible in sibling directory")
+endif()

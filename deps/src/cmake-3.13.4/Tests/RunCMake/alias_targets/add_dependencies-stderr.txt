@@ -1,0 +1,5 @@
+CMake Error at add_dependencies.cmake:9 \(add_dependencies\):
+  Cannot add target-level dependencies to alias target "alias".
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

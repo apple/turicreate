@@ -1,0 +1,10 @@
+^-- Output on stdout
+Output on stderr
+-- Output on stdout
+Output on stderr
+-- Output on stdout
+Output on stderr
+-- Output on stdout
+Output on stderr
+-- Output on stdout
+Output on stderr$

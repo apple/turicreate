@@ -1,0 +1,8 @@
+CMake Error at ImportedTarget-TARGET_PDB_FILE.cmake:2 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PDB_FILE:empty>
+
+  TARGET_PDB_FILE not allowed for IMPORTED targets.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

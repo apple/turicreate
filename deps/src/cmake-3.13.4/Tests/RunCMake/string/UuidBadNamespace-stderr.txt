@@ -1,0 +1,4 @@
+CMake Error at UuidBadNamespace.cmake:3 \(string\):
+  string UUID sub-command, malformed NAMESPACE UUID.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

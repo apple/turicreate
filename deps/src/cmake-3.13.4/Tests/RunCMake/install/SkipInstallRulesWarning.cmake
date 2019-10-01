@@ -1,0 +1,2 @@
+set(CMAKE_SKIP_INSTALL_RULES ON)
+install(FILES CMakeLists.txt DESTINATION src)

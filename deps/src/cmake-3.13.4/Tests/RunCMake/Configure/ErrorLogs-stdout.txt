@@ -1,0 +1,3 @@
+-- Configuring incomplete, errors occurred!
+See also ".*/Tests/RunCMake/Configure/ErrorLogs-build/CMakeFiles/CMakeOutput\.log"\.
+See also ".*/Tests/RunCMake/Configure/ErrorLogs-build/CMakeFiles/CMakeError\.log"\.

@@ -1,0 +1,4 @@
+^CMake Error at BadArgvN3.cmake:[0-9]+ \(cmake_parse_arguments\):
+  PARSE_ARGV called with ARGC='' that is not an unsigned integer
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

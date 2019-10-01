@@ -1,0 +1,15 @@
+before try_compile with CMP0066 WARN-default
+after try_compile with CMP0066 WARN-default
+*
+CMake Warning \(dev\) at CMP0066.cmake:[0-9]+ \(try_compile\):
+  Policy CMP0066 is not set: Honor per-config flags in try_compile\(\)
+  source-file signature.  Run "cmake --help-policy CMP0066" for policy
+  details.  Use the cmake_policy command to set the policy and suppress this
+  warning.
+
+  For compatibility with older versions of CMake, try_compile is not honoring
+  caller config-specific compiler flags \(e.g.  CMAKE_C_FLAGS_DEBUG\) in the
+  test project.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

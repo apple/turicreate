@@ -1,0 +1,15 @@
+.*Cyclic recursion detected while globbing for.*
+.*/test/depth1/depth2/depth3.*
+.*/test/depth1/depth2/depth3/recursion.*
+content: 4[ ]
+.*/test/abc;.*/test/depth1/depth2/depth3/file_symlink;.*/test/depth1/depth2/depth3/recursion/abc;.*/test/depth1/depth2/depth3/recursion/depth1/depth2/depth3/file_symlink
+.*Cyclic recursion detected while globbing for.*
+.*/test/depth1/depth2/depth3.*
+.*/test/depth1/depth2/depth3/recursion.*
+content: 4[ ]
+.*/test/abc;.*/test/depth1/depth2/depth3/file_symlink;.*/test/depth1/depth2/depth3/recursion/abc;.*/test/depth1/depth2/depth3/recursion/depth1/depth2/depth3/file_symlink
+.*Cyclic recursion detected while globbing for.*
+.*/test/depth1/depth2/depth3.*
+.*/test/depth1/depth2/depth3/recursion.*
+content: 11[ ]
+.*/test/abc;.*/test/depth1;.*/test/depth1/depth2;.*/test/depth1/depth2/depth3;.*/test/depth1/depth2/depth3/file_symlink;.*/test/depth1/depth2/depth3/recursion;.*/test/depth1/depth2/depth3/recursion/abc;.*/test/depth1/depth2/depth3/recursion/depth1;.*/test/depth1/depth2/depth3/recursion/depth1/depth2;.*/test/depth1/depth2/depth3/recursion/depth1/depth2/depth3;.*/test/depth1/depth2/depth3/recursion/depth1/depth2/depth3/file_symlink

@@ -1,0 +1,4 @@
+CMake Error at DIRECTORY-PATTERN-MESSAGE_NEVER.cmake:[0-9]+ \(install\):
+  install DIRECTORY does not allow "MESSAGE_NEVER" after PATTERN or REGEX.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,4 @@
+CMake Error at LanguagesTwice.cmake:1 \(project\):
+  LANGUAGES may be specified at most once.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

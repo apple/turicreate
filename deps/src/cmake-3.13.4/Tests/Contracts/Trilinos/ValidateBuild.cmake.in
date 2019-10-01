@@ -1,0 +1,39 @@
+#
+# This code validates that the Trilinos build was "successful enough" (since it
+# is difficult to detect this from the caller of the experimental_build_test
+# dashboard script...)
+#
+set(binary_dir "@binary_dir@")
+message("binary_dir='${binary_dir}'")
+
+
+# Count *.exe files:
+#
+file(GLOB_RECURSE exes "${binary_dir}/*.exe")
+message(STATUS "exes='${exes}'")
+list(LENGTH exes len)
+if(len LESS 47)
+  message(FATAL_ERROR "len='${len}' is less than minimum expected='47' (count of executables)")
+endif()
+message(STATUS "Found len='${len}' *.exe files")
+
+
+# Try to find the Teuchos unit tests executable:
+#
+file(GLOB_RECURSE exe "${binary_dir}/TeuchosCore_UnitTest_UnitTests.exe")
+list(LENGTH exe len)
+if(NOT len EQUAL 1)
+  message(FATAL_ERROR "len='${len}' is not the expected='1' (count of TeuchosCore_UnitTest_UnitTests.exe)")
+endif()
+message(STATUS "Found exe='${exe}'")
+
+
+# Try to run it:
+execute_process(COMMAND ${exe} RESULT_VARIABLE rv)
+if(NOT "${rv}" STREQUAL "0")
+  message(FATAL_ERROR "rv='${rv}' is not the expected='0' (result of running TeuchosCore_UnitTest_UnitTests.exe)")
+endif()
+message(STATUS "Ran exe='${exe}' rv='${rv}'")
+
+
+message(STATUS "All Trilinos build validation tests pass.")

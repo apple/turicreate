@@ -1,0 +1,17 @@
+Test project .*/Tests/RunCMake/ctest_fixtures/three-build
+    Start 3: setupFoo
+1/6 Test #3: setupFoo +\.+ +Passed +[0-9.]+ sec
+    Start 2: setupBoth
+2/6 Test #2: setupBoth +\.+ +Passed +[0-9.]+ sec
+    Start 4: setupMeta
+3/6 Test #4: setupMeta +\.+ +Passed +[0-9.]+ sec
+    Start 5: cleanupFoo
+4/6 Test #5: cleanupFoo +\.+ +Passed +[0-9.]+ sec
+    Start 8: three
+5/6 Test #8: three +\.+ +Passed +[0-9.]+ sec
+    Start 7: cleanupBar
+6/6 Test #7: cleanupBar +\.+ +Passed +[0-9.]+ sec
++
+100% tests passed, 0 tests failed out of 6
++
+Total Test time \(real\) = +[0-9.]+ sec$

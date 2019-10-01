@@ -1,0 +1,3 @@
+CMake Warning in CMakeLists.txt:
+  CMAKE_SKIP_INSTALL_RULES was enabled even though installation rules have
+  been specified

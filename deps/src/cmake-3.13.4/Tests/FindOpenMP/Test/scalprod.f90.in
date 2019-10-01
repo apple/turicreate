@@ -1,0 +1,19 @@
+subroutine scalprod(n, x_p, y_p, res) bind(c)
+    use iso_c_binding
+    implicit none
+    integer(c_int), intent(in), value :: n
+    type(c_ptr), intent(in), value :: x_p, y_p
+    real(c_double), pointer :: x(:), y(:)
+    integer :: i
+
+    real(c_double) :: res
+    real(c_double) :: scalpt = 0
+    call c_f_pointer(x_p, x, shape=[n])
+    call c_f_pointer(y_p, y, shape=[n])
+    res = 0
+!$omp parallel do private(scalpt), reduction(+:res)
+    do i=1,n
+        scalpt = y(i) * x(i)
+        res = res + scalpt
+    end do
+end subroutine scalprod

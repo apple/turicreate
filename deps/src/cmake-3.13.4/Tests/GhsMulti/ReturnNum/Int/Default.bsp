@@ -1,0 +1,35 @@
+# Target description File for the Integrate utility for use with the
+# INTEGRITY real-time operating system by Green Hills Software.
+# Before editing this file, refer to your Integrate documentation.
+# default.bsp is appropriate for INTEGRITY applications which are
+# fully linked with the kernel (for RAM or ROM) or dynamically downloaded.
+#
+# MinimumAddress must match the value of .ramend in the linker directives
+# file used for the KernelSpace program - see default.ld for more info.
+# The MaximumAddress used here allows memory mappings to be specified
+# for up to the 16 MB mark in RAM.   Intex will not permit programs
+# that require more memory for its mappings.    If the board has less
+# memory,  this number can be reduced by the user.
+
+Target
+	MinimumAddress				.ramend
+	MaximumAddress				.ramlimit
+	Clock					StandardTick
+	EndClock
+        Clock                                   HighResTimer
+        EndClock
+	IODevice				"SerialDev0"
+	InitialKernelObjects 			200
+	DefaultStartIt				false
+	DefaultMaxPriority			255
+	DefaultPriority				127
+	DefaultWeight				1
+	DefaultMaxWeight			255
+	DefaultHeapSize				0x10000
+	LastVirtualAddress			0x3fffffff
+	PageSize				0x1000
+	ArchitectedPageSize			0x1000
+	ArchitectedPageSize			0x10000
+	ArchitectedPageSize			0x100000
+	DefaultMemoryRegionSize			0x20000
+EndTarget

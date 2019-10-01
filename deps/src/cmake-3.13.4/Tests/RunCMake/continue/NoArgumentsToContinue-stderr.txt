@@ -1,0 +1,4 @@
+CMake Error at NoArgumentsToContinue.cmake:2 \(continue\):
+  The CONTINUE command does not accept any arguments.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,6 @@
+CMake Error at LinkObjRHS1.cmake:3 \(target_link_libraries\):
+  Target "AnObjLib" of type OBJECT_LIBRARY may not be linked into another
+  target.  One may link only to STATIC or SHARED libraries, or to executables
+  with the ENABLE_EXPORTS property set.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

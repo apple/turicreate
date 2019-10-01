@@ -1,0 +1,20 @@
+CMake Error at CMP0037-NEW-colon.cmake:4 \(add_library\):
+  The target name "lib:colon" is reserved or not valid for certain CMake
+  features, such as generator expressions, and may result in undefined
+  behavior.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at CMP0037-NEW-colon.cmake:5 \(add_executable\):
+  The target name "exe:colon" is reserved or not valid for certain CMake
+  features, such as generator expressions, and may result in undefined
+  behavior.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at CMP0037-NEW-colon.cmake:6 \(add_custom_target\):
+  The target name "custom:colon" is reserved or not valid for certain CMake
+  features, such as generator expressions, and may result in undefined
+  behavior.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

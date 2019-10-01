@@ -1,0 +1,5 @@
+CMake Error at .*/Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
+  The prefix must be a valid C identifier.
+Call Stack \(most recent call first\):
+  InvalidPrefix.cmake:[0-9]+ \(write_compiler_detection_header\)
+  CMakeLists.txt:[0-9]+ \(include\)

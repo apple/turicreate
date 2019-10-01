@@ -1,0 +1,4 @@
+CMake Error in CMakeLists.txt:
+  Target "testTarget" INTERFACE_SOURCES property contains relative path:
+
+    "empty.cpp"

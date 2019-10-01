@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.7)
+project(@CASE_NAME@ NONE)
+include(CTest)
+
+add_test(NAME SuccessfulTest COMMAND "${CMAKE_COMMAND}" --version)
+@CASE_CMAKELISTS_SUFFIX_CODE@

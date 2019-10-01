@@ -1,0 +1,6 @@
+CMake Error at BracketNoSpace0.cmake:1:
+  Syntax Error in cmake code at column 27
+
+  Argument not separated from preceding token by whitespace.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

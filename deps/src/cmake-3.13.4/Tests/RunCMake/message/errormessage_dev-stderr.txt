@@ -1,0 +1,5 @@
+^CMake Error \(dev\) at errormessage_dev.cmake:3 \(message\):
+  This is a author error
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This error is for project developers. Use -Wno-error=dev to suppress it.$

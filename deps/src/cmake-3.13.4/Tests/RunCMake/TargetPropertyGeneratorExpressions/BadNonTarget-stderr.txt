@@ -1,0 +1,8 @@
+CMake Error at BadNonTarget.cmake:7 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:NonExistent,INCLUDE_DIRECTORIES>
+
+  Target "NonExistent" not found.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:8 \(include\)$

@@ -1,0 +1,4 @@
+^CMake Error at DOWNLOAD-pass-not-set.cmake:[0-9]+ \(file\):
+  file DOWNLOAD missing string for USERPWD.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

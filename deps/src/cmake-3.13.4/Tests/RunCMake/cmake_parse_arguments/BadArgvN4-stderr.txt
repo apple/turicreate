@@ -1,0 +1,4 @@
+^CMake Error at BadArgvN4.cmake:[0-9]+ \(cmake_parse_arguments\):
+  PARSE_ARGV called with ARGV0 not set
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

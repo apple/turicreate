@@ -1,0 +1,4 @@
+^CMake Error at FILTER-REGEX-InvalidMode.cmake:2 \(list\):
+  list sub-command FILTER does not recognize mode NOOP
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

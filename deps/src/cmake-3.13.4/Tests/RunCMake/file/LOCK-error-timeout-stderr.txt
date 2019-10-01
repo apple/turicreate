@@ -1,0 +1,12 @@
+Output:[ ]*
+Error: CMake Error at .*.timeout-script\.cmake:[0-9]+ \(file\):
+  error locking file
+
+    ".*"
+
+  Timeout reached\.
++
+CMake Error at LOCK-error-timeout\.cmake:[0-9]+ \(message\):
+  Result: 1
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)

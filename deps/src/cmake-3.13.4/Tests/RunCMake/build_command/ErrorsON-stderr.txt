@@ -1,0 +1,21 @@
+CMake Error at ErrorsCommon.cmake:[0-9]+ \(build_command\):
+  build_command requires at least one argument naming a CMake variable
+Call Stack \(most recent call first\):
+  ErrorsON.cmake:[0-9]+ \(include\)
+  CMakeLists.txt:[0-9]+ \(include\)
+
++
+1. cmd='initial'
+CMake Error at ErrorsCommon.cmake:[0-9]+ \(build_command\):
+  build_command unknown argument "BOGUS"
+Call Stack \(most recent call first\):
+  ErrorsON.cmake:[0-9]+ \(include\)
+  CMakeLists.txt:[0-9]+ \(include\)
+
++
+2. cmd='initial'
+CMake Error at ErrorsCommon.cmake:[0-9]+ \(build_command\):
+  build_command unknown argument "STUFF"
+Call Stack \(most recent call first\):
+  ErrorsON.cmake:[0-9]+ \(include\)
+  CMakeLists.txt:[0-9]+ \(include\)

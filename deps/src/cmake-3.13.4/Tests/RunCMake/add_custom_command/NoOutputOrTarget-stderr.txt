@@ -1,0 +1,4 @@
+CMake Error at NoOutputOrTarget.cmake:1 \(add_custom_command\):
+  add_custom_command Wrong syntax.  A TARGET or OUTPUT must be specified.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

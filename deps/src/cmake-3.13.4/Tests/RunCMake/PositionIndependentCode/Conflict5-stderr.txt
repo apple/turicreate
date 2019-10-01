@@ -1,0 +1,3 @@
+CMake Error: The INTERFACE_POSITION_INDEPENDENT_CODE property of "picoff" does
+not agree with the value of POSITION_INDEPENDENT_CODE already determined
+for "conflict".

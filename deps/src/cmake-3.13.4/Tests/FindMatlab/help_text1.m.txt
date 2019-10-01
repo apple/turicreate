@@ -1,0 +1,2 @@
+% Dummy matlab extension in cmake
+function ret = cmake_matlab_mex1(X)

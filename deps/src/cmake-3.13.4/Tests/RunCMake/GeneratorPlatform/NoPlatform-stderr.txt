@@ -1,0 +1,4 @@
+CMake Error at NoPlatform.cmake:2 \(message\):
+  CMAKE_GENERATOR_PLATFORM is empty as expected.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

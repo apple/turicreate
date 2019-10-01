@@ -1,0 +1,2 @@
+Test project .*/Tests/RunCMake/ctest_test/TestLoadFail-build
+\*\*\*\*\* WAITING, System Load: 5, Max Allowed Load: 2, Smallest test RunCMakeVersion requires 1\*\*\*\*\*$

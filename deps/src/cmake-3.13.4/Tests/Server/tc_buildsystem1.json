@@ -1,0 +1,27 @@
+[
+{ "message": "Testing globalSettings" },
+
+{ "handshake": {"major": 1, "sourceDirectory":"buildsystem1","buildDirectory":"buildsystem1"} },
+
+{ "message": "Configure:" },
+{ "send": { "type": "configure", "cookie":"CONFIG" } },
+{ "reply": { "type": "configure", "cookie":"CONFIG", "skipProgress":true } },
+
+{ "message": "Compute:" },
+{ "send": { "type": "compute", "cookie":"COMPUTE" } },
+{ "reply": { "type": "compute", "cookie":"COMPUTE", "skipProgress":true } },
+
+{ "message": "Codemodel:" },
+{ "send": { "type": "codemodel", "cookie":"CODEMODEL" } },
+{ "reply": { "type": "codemodel", "cookie":"CODEMODEL" } },
+
+{ "message": "CMake Inputs:"},
+{ "send": { "type": "cmakeInputs", "cookie":"INPUTS" } },
+{ "reply": { "type": "cmakeInputs", "cookie":"INPUTS" } },
+
+{ "message": "Cache:"},
+{ "send": { "type": "cache", "cookie":"CACHE" } },
+{ "reply": { "type": "cache", "cookie":"CACHE" } },
+
+{ "message": "Everything ok." }
+]

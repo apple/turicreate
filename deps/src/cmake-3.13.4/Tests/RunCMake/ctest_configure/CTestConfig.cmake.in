@@ -1,0 +1,1 @@
+set(CTEST_PROJECT_NAME "CTestConfigure@CASE_NAME@")

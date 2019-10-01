@@ -1,0 +1,112 @@
+<?xml version="1.0"?>
+<!DOCTYPE coverage SYSTEM "http://cobertura.sourceforge.net/xml/coverage-04.dtd">
+
+<coverage line-rate="0.7222222222222222" branch-rate="0.875" lines-covered="13" lines-valid="18" branches-covered="7" branches-valid="8" complexity="0.0" version="1.9.4.1" timestamp="1401890139281">
+	<sources>
+		<source>${CMake_BINARY_DIR}/Testing/CoberturaCoverage/src/main/java/</source>
+	</sources>
+	<packages>
+		<package name="org.cmake.Coverage" line-rate="0.7222222222222222" branch-rate="0.875" complexity="0.0">
+			<classes>
+				<class name="org.cmake.Coverage.CoverageTest" filename="org/cmake/CoverageTest.java" line-rate="0.7222222222222222" branch-rate="0.875" complexity="0.0">
+					<methods>
+						<method name="&lt;clinit&gt;" signature="()V" line-rate="1.0" branch-rate="1.0">
+							<lines>
+								<line number="10" hits="2" branch="false"/>
+								<line number="11" hits="2" branch="false"/>
+							</lines>
+						</method>
+						<method name="&lt;init&gt;" signature="()V" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="8" hits="0" branch="false"/>
+								<line number="12" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="equalsVarOne" signature="(Ljava/lang/String;)Ljava/lang/Boolean;" line-rate="0.6666666666666666" branch-rate="0.5">
+							<lines>
+								<line number="16" hits="2" branch="true" condition-coverage="50% (1/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="50%"/>
+									</conditions>
+								</line>
+								<line number="17" hits="2" branch="false"/>
+								<line number="20" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="equalsVarTwo" signature="(Ljava/lang/String;)Z" line-rate="1.0" branch-rate="1.0">
+							<lines>
+								<line number="26" hits="4" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="27" hits="2" branch="false"/>
+								<line number="30" hits="2" branch="false"/>
+							</lines>
+						</method>
+						<method name="timesIntOne" signature="(Ljava/lang/Integer;)Ljava/lang/Integer;" line-rate="0.0" branch-rate="1.0">
+							<lines>
+								<line number="35" hits="0" branch="false"/>
+								<line number="36" hits="0" branch="false"/>
+							</lines>
+						</method>
+						<method name="whileLoop" signature="(Ljava/lang/Integer;)Z" line-rate="1.0" branch-rate="1.0">
+							<lines>
+								<line number="41" hits="2" branch="false"/>
+								<line number="42" hits="10" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="43" hits="8" branch="false"/>
+								<line number="45" hits="2" branch="true" condition-coverage="100% (2/2)">
+									<conditions>
+										<condition number="0" type="jump" coverage="100%"/>
+									</conditions>
+								</line>
+								<line number="46" hits="1" branch="false"/>
+								<line number="49" hits="1" branch="false"/>
+							</lines>
+						</method>
+					</methods>
+					<lines>
+						<line number="8" hits="0" branch="false"/>
+						<line number="10" hits="2" branch="false"/>
+						<line number="11" hits="2" branch="false"/>
+						<line number="12" hits="0" branch="false"/>
+						<line number="16" hits="2" branch="true" condition-coverage="50% (1/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="50%"/>
+							</conditions>
+						</line>
+						<line number="17" hits="2" branch="false"/>
+						<line number="20" hits="0" branch="false"/>
+						<line number="26" hits="4" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="27" hits="2" branch="false"/>
+						<line number="30" hits="2" branch="false"/>
+						<line number="35" hits="0" branch="false"/>
+						<line number="36" hits="0" branch="false"/>
+						<line number="41" hits="2" branch="false"/>
+						<line number="42" hits="10" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="43" hits="8" branch="false"/>
+						<line number="45" hits="2" branch="true" condition-coverage="100% (2/2)">
+							<conditions>
+								<condition number="0" type="jump" coverage="100%"/>
+							</conditions>
+						</line>
+						<line number="46" hits="1" branch="false"/>
+						<line number="49" hits="1" branch="false"/>
+					</lines>
+				</class>
+			</classes>
+		</package>
+	</packages>
+</coverage>

@@ -1,0 +1,2 @@
+^CMake Error: -U must be followed with VAR.
+CMake Error: Problem processing arguments. Aborting.$

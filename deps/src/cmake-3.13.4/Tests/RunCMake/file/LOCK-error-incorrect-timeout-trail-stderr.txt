@@ -1,0 +1,4 @@
+CMake Error at LOCK-error-incorrect-timeout-trail\.cmake:[0-9]+ \(file\):
+  TIMEOUT value "123xyz" is not an unsigned integer\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)

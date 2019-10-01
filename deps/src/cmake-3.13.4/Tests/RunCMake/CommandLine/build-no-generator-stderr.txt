@@ -1,0 +1,1 @@
+^Error: could not find CMAKE_GENERATOR in Cache$

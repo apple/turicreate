@@ -1,0 +1,9 @@
+CMake Error at IncludeDirectories.cmake:5 \(target_include_directories\):
+  Error evaluating generator expression:
+
+    \$<COMPILE_LANGUAGE:CXX>
+
+  \$<COMPILE_LANGUAGE:...> may only be used with COMPILE_OPTIONS with the
+  Xcode generator.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

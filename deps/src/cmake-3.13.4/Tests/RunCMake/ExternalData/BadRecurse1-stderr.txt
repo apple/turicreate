@@ -1,0 +1,6 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Recurse option "RECURSE:" allowed only with directories.
+Call Stack \(most recent call first\):
+  .*
+  BadRecurse1.cmake:2 \(ExternalData_Expand_Arguments\)
+  CMakeLists.txt:3 \(include\)

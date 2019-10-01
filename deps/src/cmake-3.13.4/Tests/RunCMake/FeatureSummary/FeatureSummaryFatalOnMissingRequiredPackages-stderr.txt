@@ -1,0 +1,6 @@
+CMake Error at .*/Modules/FeatureSummary\.cmake:[0-9]+. \(message\):
+  feature_summary\(\) Error: REQUIRED package\(s\) are missing, aborting CMake
+  run.
+Call Stack \(most recent call first\):
+  FeatureSummaryFatalOnMissingRequiredPackages.cmake:[0-9]+ \(feature_summary\)
+  CMakeLists.txt:[0-9]+ \(include\)

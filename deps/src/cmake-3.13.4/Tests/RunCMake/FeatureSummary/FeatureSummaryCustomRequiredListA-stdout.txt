@@ -1,0 +1,17 @@
+-- The following TYPE2 packages have been found:
+
+ \* Foo, The Foo package, <https://foo.example/>
+
+-- The following TYPE1 packages have not been found:
+
+ \* Bar
+
+-- The following TYPE2 packages have been found:
+
+ \* Foo, The Foo package, <https://foo.example/>
+
+-- The following TYPE2 packages have not been found:
+
+ \* Bar
+
+-- Configuring incomplete, errors occurred!

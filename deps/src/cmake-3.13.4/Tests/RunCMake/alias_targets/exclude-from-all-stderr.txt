@@ -1,0 +1,4 @@
+CMake Error at exclude-from-all.cmake:6 \(add_library\):
+  add_library EXCLUDE_FROM_ALL with ALIAS makes no sense.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

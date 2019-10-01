@@ -1,0 +1,1 @@
+#define HAVE_PROPERTIES2_H

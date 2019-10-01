@@ -1,0 +1,5 @@
+^CMake Error at EndAlone.cmake:1 \(endwhile\):
+  endwhile An ENDWHILE command was found outside of a proper WHILE ENDWHILE
+  structure.  Or its arguments did not match the opening WHILE command.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

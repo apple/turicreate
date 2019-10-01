@@ -1,0 +1,22 @@
+To pass options to the linker tool, each compiler driver has is own syntax.
+The ``LINKER:`` prefix can be used to specify, in a portable way, options
+to pass to the linker tool. The ``LINKER:`` prefix is replaced by the required
+driver option and the rest of the option string defines linker arguments using
+``,`` as separator. These arguments will be formatted according to the
+:variable:`CMAKE_<LANG>_LINKER_WRAPPER_FLAG` and
+:variable:`CMAKE_<LANG>_LINKER_WRAPPER_FLAG_SEP` variables.
+
+For example, ``"LINKER:-z,defs"`` becomes ``-Xlinker -z -Xlinker defs`` for
+``Clang`` and ``-Wl,-z,defs`` for ``GNU GCC``.
+
+The ``LINKER:`` prefix can be specified as part of a ``SHELL:`` prefix
+expression.
+
+The ``LINKER:`` prefix supports, as alternate syntax, specification of
+arguments using ``SHELL:`` prefix and space as separator. Previous example
+becomes ``"LINKER:SHELL:-z defs"``.
+
+.. note::
+
+  Specifying ``SHELL:`` prefix elsewhere than at the beginning of the
+  ``LINKER:`` prefix is not supported.

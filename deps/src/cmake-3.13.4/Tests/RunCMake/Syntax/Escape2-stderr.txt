@@ -1,0 +1,13 @@
+CMake Error at Escape2.cmake:4 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/Escape2.cmake:4
+
+  when parsing string
+
+    \\
+
+  Invalid character escape '\\' \(at end of input\).
+Call Stack \(most recent call first\):
+  Escape2.cmake:7 \(escape\)
+  CMakeLists.txt:3 \(include\)

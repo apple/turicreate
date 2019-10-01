@@ -1,0 +1,1 @@
+list(SORT mylist ORDER BAD_ODER_OPTION)

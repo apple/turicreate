@@ -1,0 +1,126 @@
+/* Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+   file Copyright.txt or https://cmake.org/licensing#kwsys for details.  */
+#ifndef @KWSYS_NAMESPACE@_IOStream_hxx
+#define @KWSYS_NAMESPACE@_IOStream_hxx
+
+#include <iosfwd>
+
+/* Define these macros temporarily to keep the code readable.  */
+#if !defined(KWSYS_NAMESPACE) && !@KWSYS_NAMESPACE@_NAME_IS_KWSYS
+#  define kwsysEXPORT @KWSYS_NAMESPACE@_EXPORT
+#endif
+
+/* Whether istream supports long long.  */
+#define @KWSYS_NAMESPACE@_IOS_HAS_ISTREAM_LONG_LONG                           \
+  @KWSYS_IOS_HAS_ISTREAM_LONG_LONG@
+
+/* Whether ostream supports long long.  */
+#define @KWSYS_NAMESPACE@_IOS_HAS_OSTREAM_LONG_LONG                           \
+  @KWSYS_IOS_HAS_OSTREAM_LONG_LONG@
+
+/* Determine whether we need to define the streaming operators for
+   long long or __int64.  */
+#if @KWSYS_USE_LONG_LONG@
+#  if !@KWSYS_NAMESPACE@_IOS_HAS_ISTREAM_LONG_LONG ||                         \
+    !@KWSYS_NAMESPACE@_IOS_HAS_OSTREAM_LONG_LONG
+#    define @KWSYS_NAMESPACE@_IOS_NEED_OPERATORS_LL 1
+namespace @KWSYS_NAMESPACE@ {
+typedef long long IOStreamSLL;
+typedef unsigned long long IOStreamULL;
+}
+#  endif
+#elif defined(_MSC_VER) && _MSC_VER < 1300
+#  define @KWSYS_NAMESPACE@_IOS_NEED_OPERATORS_LL 1
+namespace @KWSYS_NAMESPACE@ {
+typedef __int64 IOStreamSLL;
+typedef unsigned __int64 IOStreamULL;
+}
+#endif
+#if !defined(@KWSYS_NAMESPACE@_IOS_NEED_OPERATORS_LL)
+#  define @KWSYS_NAMESPACE@_IOS_NEED_OPERATORS_LL 0
+#endif
+
+#if @KWSYS_NAMESPACE@_IOS_NEED_OPERATORS_LL
+#  if !@KWSYS_NAMESPACE@_IOS_HAS_ISTREAM_LONG_LONG
+
+/* Input stream operator implementation functions.  */
+namespace @KWSYS_NAMESPACE@ {
+kwsysEXPORT std::istream& IOStreamScan(std::istream&, IOStreamSLL&);
+kwsysEXPORT std::istream& IOStreamScan(std::istream&, IOStreamULL&);
+}
+
+/* Provide input stream operator for long long.  */
+#    if !defined(@KWSYS_NAMESPACE@_IOS_NO_ISTREAM_LONG_LONG) &&               \
+      !defined(KWSYS_IOS_ISTREAM_LONG_LONG_DEFINED)
+#      define KWSYS_IOS_ISTREAM_LONG_LONG_DEFINED
+#      define @KWSYS_NAMESPACE@_IOS_ISTREAM_LONG_LONG_DEFINED
+inline std::istream& operator>>(std::istream& is,
+                                @KWSYS_NAMESPACE@::IOStreamSLL& value)
+{
+  return @KWSYS_NAMESPACE@::IOStreamScan(is, value);
+}
+#    endif
+
+/* Provide input stream operator for unsigned long long.  */
+#    if !defined(@KWSYS_NAMESPACE@_IOS_NO_ISTREAM_UNSIGNED_LONG_LONG) &&      \
+      !defined(KWSYS_IOS_ISTREAM_UNSIGNED_LONG_LONG_DEFINED)
+#      define KWSYS_IOS_ISTREAM_UNSIGNED_LONG_LONG_DEFINED
+#      define @KWSYS_NAMESPACE@_IOS_ISTREAM_UNSIGNED_LONG_LONG_DEFINED
+inline std::istream& operator>>(std::istream& is,
+                                @KWSYS_NAMESPACE@::IOStreamULL& value)
+{
+  return @KWSYS_NAMESPACE@::IOStreamScan(is, value);
+}
+#    endif
+#  endif /* !@KWSYS_NAMESPACE@_IOS_HAS_ISTREAM_LONG_LONG */
+
+#  if !@KWSYS_NAMESPACE@_IOS_HAS_OSTREAM_LONG_LONG
+
+/* Output stream operator implementation functions.  */
+namespace @KWSYS_NAMESPACE@ {
+kwsysEXPORT std::ostream& IOStreamPrint(std::ostream&, IOStreamSLL);
+kwsysEXPORT std::ostream& IOStreamPrint(std::ostream&, IOStreamULL);
+}
+
+/* Provide output stream operator for long long.  */
+#    if !defined(@KWSYS_NAMESPACE@_IOS_NO_OSTREAM_LONG_LONG) &&               \
+      !defined(KWSYS_IOS_OSTREAM_LONG_LONG_DEFINED)
+#      define KWSYS_IOS_OSTREAM_LONG_LONG_DEFINED
+#      define @KWSYS_NAMESPACE@_IOS_OSTREAM_LONG_LONG_DEFINED
+inline std::ostream& operator<<(std::ostream& os,
+                                @KWSYS_NAMESPACE@::IOStreamSLL value)
+{
+  return @KWSYS_NAMESPACE@::IOStreamPrint(os, value);
+}
+#    endif
+
+/* Provide output stream operator for unsigned long long.  */
+#    if !defined(@KWSYS_NAMESPACE@_IOS_NO_OSTREAM_UNSIGNED_LONG_LONG) &&      \
+      !defined(KWSYS_IOS_OSTREAM_UNSIGNED_LONG_LONG_DEFINED)
+#      define KWSYS_IOS_OSTREAM_UNSIGNED_LONG_LONG_DEFINED
+#      define @KWSYS_NAMESPACE@_IOS_OSTREAM_UNSIGNED_LONG_LONG_DEFINED
+inline std::ostream& operator<<(std::ostream& os,
+                                @KWSYS_NAMESPACE@::IOStreamULL value)
+{
+  return @KWSYS_NAMESPACE@::IOStreamPrint(os, value);
+}
+#    endif
+#  endif /* !@KWSYS_NAMESPACE@_IOS_HAS_OSTREAM_LONG_LONG */
+#endif   /* @KWSYS_NAMESPACE@_IOS_NEED_OPERATORS_LL */
+
+/* Undefine temporary macros.  */
+#if !defined(KWSYS_NAMESPACE) && !@KWSYS_NAMESPACE@_NAME_IS_KWSYS
+#  undef kwsysEXPORT
+#endif
+
+/* If building a C++ file in kwsys itself, give the source file
+   access to the macros without a configured namespace.  */
+#if defined(KWSYS_NAMESPACE)
+#  define KWSYS_IOS_HAS_ISTREAM_LONG_LONG                                     \
+    @KWSYS_NAMESPACE@_IOS_HAS_ISTREAM_LONG_LONG
+#  define KWSYS_IOS_HAS_OSTREAM_LONG_LONG                                     \
+    @KWSYS_NAMESPACE@_IOS_HAS_OSTREAM_LONG_LONG
+#  define KWSYS_IOS_NEED_OPERATORS_LL @KWSYS_NAMESPACE@_IOS_NEED_OPERATORS_LL
+#endif
+
+#endif

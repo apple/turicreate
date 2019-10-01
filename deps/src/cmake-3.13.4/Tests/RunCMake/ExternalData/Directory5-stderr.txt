@@ -1,0 +1,14 @@
+CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
+  Data directory referenced by argument
+
+    DATA{Directory5/}
+
+  corresponds to source tree path
+
+    Directory5
+
+  that does not exist as a directory!
+Call Stack \(most recent call first\):
+  .*
+  Directory5.cmake:3 \(ExternalData_Add_Test\)
+  CMakeLists.txt:3 \(include\)

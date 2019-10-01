@@ -1,0 +1,4 @@
+CMake Error at LOCK-error-negative-timeout\.cmake:[0-9]+ \(file\):
+  TIMEOUT value "-2" is not an unsigned integer\.
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)

@@ -1,0 +1,4 @@
+^CMake Error at REMOVE_DUPLICATES-TooManyArguments.cmake:1 \(list\):
+  list sub-command REMOVE_DUPLICATES only takes one argument.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

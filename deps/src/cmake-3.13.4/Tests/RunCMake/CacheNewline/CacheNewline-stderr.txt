@@ -1,0 +1,2 @@
+CMake Warning:
+  Value of NEWLINE_VARIABLE contained a newline; truncating

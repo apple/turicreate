@@ -1,0 +1,10 @@
+-- var='1' before my_add_subdirectory
+-- var='2' in my_add_subdirectory before add_subdirectory
+-- var='2' in subdirectory before set
+-- var='3' in subdirectory after set
+-- var_sub='' in subdirectory after set PARENT_SCOPE
+-- var='2' in my_add_subdirectory after add_subdirectory
+-- var_sub='sub' in my_add_subdirectory after add_subdirectory
+-- var='1' after my_add_subdirectory
+-- var_sub='' after my_add_subdirectory
+-- var='3' taken from subdirectory

@@ -1,0 +1,1 @@
+-- Android: Targeting API '[0-9]+' with architecture '[a-z0-9_-]+', ABI '[a-z0-9_-]+', and processor '[a-z0-9_-]+'

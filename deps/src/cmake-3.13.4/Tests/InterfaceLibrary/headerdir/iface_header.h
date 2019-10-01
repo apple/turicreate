@@ -1,0 +1,1 @@
+#define IFACE_HEADER_SRCDIR

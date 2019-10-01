@@ -1,0 +1,4 @@
+CMake Error at TargetNotFound.cmake:1 \(export\):
+  export given target "nonexistenttarget" which is not built by this project.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

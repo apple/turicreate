@@ -1,0 +1,11 @@
+CMake Error at NoCompilerCandCXX-IDE.cmake:3 \(project\):
+  No CMAKE_C_COMPILER could be found.
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at NoCompilerCandCXX-IDE.cmake:3 \(project\):
+  No CMAKE_CXX_COMPILER could be found.
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

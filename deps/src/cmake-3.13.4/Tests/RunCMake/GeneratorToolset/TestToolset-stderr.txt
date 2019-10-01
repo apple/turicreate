@@ -1,0 +1,4 @@
+CMake Error at TestToolset.cmake:2 \(message\):
+  CMAKE_GENERATOR_TOOLSET is "Test Toolset" as expected.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

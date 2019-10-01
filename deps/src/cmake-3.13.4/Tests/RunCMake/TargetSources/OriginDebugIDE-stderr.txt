@@ -1,0 +1,40 @@
+CMake Debug Log at OriginDebug.cmake:13 \(add_library\):
+  Used sources for target OriginDebug:
+
+   \* .*Tests/RunCMake/TargetSources/empty_2.cpp
+
+Call Stack \(most recent call first\):
+  OriginDebugIDE.cmake:4 \(include\)
+  CMakeLists.txt:3 \(include\)
++
+CMake Debug Log at OriginDebug.cmake:16 \(set_property\):
+  Used sources for target OriginDebug:
+
+   \* .*Tests/RunCMake/TargetSources/empty_3.cpp
+
+Call Stack \(most recent call first\):
+  OriginDebugIDE.cmake:4 \(include\)
+  CMakeLists.txt:3 \(include\)
++
+CMake Debug Log at OriginDebug.cmake:20 \(target_sources\):
+  Used sources for target OriginDebug:
+
+   \* .*Tests/RunCMake/TargetSources/empty_4.cpp
+
+Call Stack \(most recent call first\):
+  OriginDebugIDE.cmake:4 \(include\)
+  CMakeLists.txt:3 \(include\)
++
+CMake Debug Log in CMakeLists.txt:
+  Used sources for target OriginDebug:
+
+   * .*CMakeLists.txt
++
+CMake Debug Log at OriginDebug.cmake:14 \(target_link_libraries\):
+  Used sources for target OriginDebug:
+
+   \* .*Tests/RunCMake/TargetSources/empty_1.cpp
+
+Call Stack \(most recent call first\):
+  OriginDebugIDE.cmake:4 \(include\)
+  CMakeLists.txt:3 \(include\)

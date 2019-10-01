@@ -1,0 +1,14 @@
+Test project .*/Tests/RunCMake/ctest_fixtures/wontRun-build
+    Start  9: setupFails
+1/2 Test  #9: setupFails +\.+\*\*\*Failed +[0-9.]+ sec
+    Start 10: wontRun
+Failed test dependencies: setupFails
+2/2 Test #10: wontRun +\.+\*\*\*Not Run +[0-9.]+ sec
++
+0% tests passed, 2 tests failed out of 2
++
+Total Test time \(real\) = +[0-9.]+ sec
++
+The following tests FAILED:
+.* +9 - setupFails \(Failed\)
+.* +10 - wontRun \(Not Run\)$

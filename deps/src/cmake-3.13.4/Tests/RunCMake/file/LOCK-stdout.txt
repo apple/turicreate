@@ -1,0 +1,11 @@
+-- Simple lock
+-- Directory lock
+-- Release
+-- Lock function scope
+-- Lock file scope
+-- Lock in subdirectory
+-- Lock process scope
+-- Error double lock
+-- Ok
+-- Timeout 0
+-- Timeout not 0

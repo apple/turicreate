@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+#=============================================================================
+# Copyright 2010-2015 Kitware, Inc.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#=============================================================================
+
+USAGE='[<remote>] [<options>...] [--]
+
+OPTIONS
+
+--dry-run
+    Show what would be pushed without actually updating the destination
+
+-f,--force
+    Force-push the topic HEAD to rewrite the destination branch
+
+--no-default
+    Do not push the default branch (e.g. master)
+
+--no-topic
+    Do not push the topic HEAD.
+'
+OPTIONS_SPEC=
+SUBDIRECTORY_OK=Yes
+. "$(git --exec-path)/git-sh-setup"
+
+egrep-q() {
+	egrep "$@" >/dev/null 2>/dev/null
+}
+
+# Load the project configuration.
+gitlab_upstream='' &&
+gitlab_configured='' &&
+config="${BASH_SOURCE%/*}/config" &&
+protocol=$(git config -f "$config" --get gitlab.protocol ||
+	   echo "https") &&
+host=$(git config -f "$config" --get gitlab.host) &&
+site=$(git config -f "$config" --get gitlab.site ||
+       echo "$protocol://$host") &&
+group_path=$(git config -f "$config" --get gitlab.group-path) &&
+project_path=$(git config -f "$config" --get gitlab.project-path) &&
+gitlab_upstream="$site/$group_path/$project_path.git" &&
+gitlab_pushurl=$(git config --get remote.gitlab.pushurl ||
+		 git config --get remote.gitlab.url) &&
+gitlab_configured=1
+
+#-----------------------------------------------------------------------------
+
+remote=''
+refspecs=''
+force=''
+lease=false
+lease_flag=''
+no_topic=''
+no_default=''
+dry_run=''
+
+# Parse the command line options.
+while test $# != 0; do
+	case "$1" in
+		-f|--force)   force='+'; lease=true ;;
+		--no-topic)   no_topic=1 ;;
+		--dry-run)    dry_run=--dry-run ;;
+		--no-default) no_default=1 ;;
+		--) shift; break ;;
+		-*) usage ;;
+		*) test -z "$remote" || usage ; remote="$1" ;;
+	esac
+	shift
+done
+test $# = 0 || usage
+
+# Default remote.
+test -n "$remote" || remote="gitlab"
+
+if test -z "$no_topic"; then
+	# Identify and validate the topic branch name.
+	head="$(git symbolic-ref HEAD)" && topic="${head#refs/heads/}" || topic=''
+	if test -z "$topic" -o "$topic" = "master"; then
+		die 'Please name your topic:
+		git checkout -b descriptive-name'
+	fi
+
+	if $lease; then
+		have_ref=false
+		remoteref="refs/remotes/$remote/$topic"
+		if git rev-parse --verify -q "$remoteref"; then
+			have_ref=true
+		else
+			die "It seems that a local ref for the branch is
+missing; forcing a push is dangerous and may overwrite
+previous work.  Fetch from the $remote remote first or
+push without '-f' or '--force'."
+		fi
+
+		have_lease_flag=false
+		if git push -h | egrep-q -e '--force-with-lease'; then
+			have_lease_flag=true
+		fi
+
+		if $have_lease_flag && $have_ref; then
+			# Set the lease flag.
+			lease_flag="--force-with-lease=$topic:$remoteref"
+			# Clear the force string.
+			force=''
+		fi
+	fi
+
+	# The topic branch will be pushed by name.
+	refspecs="${force}HEAD:refs/heads/$topic $refspecs"
+fi
+
+# Fetch the current remote master branch head.
+# This helps computation of a minimal pack to push.
+echo "Fetching $remote master"
+fetch_out=$(git fetch "$remote" master 2>&1) || die "$fetch_out"
+gitlab_head=$(git rev-parse FETCH_HEAD) || exit
+
+# Fetch the current upstream master branch head.
+if origin_fetchurl=$(git config --get remote.origin.url) &&
+   test "$origin_fetchurl" = "$gitlab_upstream"; then
+	upstream_remote='origin'
+else
+	upstream_remote="$gitlab_upstream"
+fi
+echo "Fetching $upstream_remote master"
+fetch_out=$(git fetch "$upstream_remote" master 2>&1) || die "$fetch_out"
+upstream_head=$(git rev-parse FETCH_HEAD) || exit
+
+# Add a refspec to keep the remote master up to date if possible.
+if test -z "$no_default" &&
+   base=$(git merge-base "$gitlab_head" "$upstream_head") &&
+   test "$base" = "$gitlab_head"; then
+	refspecs="$upstream_head:refs/heads/master $refspecs"
+fi
+
+# Exit early if we have nothing to push.
+if test -z "$refspecs"; then
+	echo 'Nothing to push!'
+	exit 0
+fi
+
+# Push.  Save output and exit code.
+echo "Pushing to $remote"
+push_config='-c advice.pushUpdateRejected=false'
+push_stdout=$(git $push_config push $lease_flag --porcelain $dry_run "$remote" $refspecs); push_exit=$?
+echo "$push_stdout"
+
+if test "$push_exit" -ne 0 && test -z "$force"; then
+	# Advise the user to fetch if needed.
+	if echo "$push_stdout" | egrep-q 'stale info'; then
+		echo "
+You have pushed to your branch from another machine; you may be overwriting
+commits unintentionally.  Fetch from the $remote remote and check that you are
+not pushing an outdated branch."
+	fi
+
+	# Advise the user to force-push if needed.
+	if echo "$push_stdout" | egrep-q 'non-fast-forward'; then
+		echo '
+Add "-f" or "--force" to push a rewritten topic.'
+	fi
+fi
+
+# Reproduce the push exit code.
+exit $push_exit

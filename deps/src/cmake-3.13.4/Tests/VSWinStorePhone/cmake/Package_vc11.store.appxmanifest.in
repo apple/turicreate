@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/2010/manifest">
+  <Identity Name="@PACKAGE_GUID@" Publisher="CN=mgong" Version="1.0.0.0" />
+  <Properties>
+    <DisplayName>@SHORT_NAME@</DisplayName>
+    <PublisherDisplayName>mgong</PublisherDisplayName>
+    <Logo>Assets/StoreLogo.png</Logo>
+  </Properties>
+  <Prerequisites>
+    <OSMinVersion>6.2.1</OSMinVersion>
+    <OSMaxVersionTested>6.2.1</OSMaxVersionTested>
+  </Prerequisites>
+  <Resources>
+    <Resource Language="x-generate" />
+  </Resources>
+  <Applications>
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="@SHORT_NAME@.App">
+      <VisualElements DisplayName="@SHORT_NAME@" Description="@SHORT_NAME@" BackgroundColor="#336699" ForegroundText="light" Logo="Assets/Logo.png" SmallLogo="Assets/SmallLogo.png">
+        <DefaultTile ShowName="allLogos" ShortName="@SHORT_NAME@" />
+        <SplashScreen Image="Assets/SplashScreen.png" />
+      </VisualElements>
+    </Application>
+  </Applications>
+</Package>

@@ -1,0 +1,10 @@
+Test project .*/Tests/RunCMake/WorkingDirectory/dirNotExist-build
+.* +Start 1: dirNotExist
+1/1 Test #1: dirNotExist +\.+\*\*\*Not Run +[0-9.]+ sec
++
+0% tests passed, 1 tests failed out of 1
++
+Total Test time \(real\) = +[0-9.]+ sec
++
+The following tests FAILED:
+.* +1 - dirNotExist \(Not Run\)$

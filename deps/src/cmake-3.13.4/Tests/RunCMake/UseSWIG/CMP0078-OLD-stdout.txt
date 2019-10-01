@@ -1,0 +1,2 @@
+-- PREFIX=''
+-- TARGET NAME='_example'

@@ -1,0 +1,1 @@
+-- Android: Targeting API '[0-9][0-9]' with architecture 'arm', ABI 'armeabi', and processor 'armv5te'

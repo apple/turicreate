@@ -1,0 +1,4 @@
+CMake Error at LOCK-error-no-guard\.cmake:[0-9]+ \(file\):
+  expected FUNCTION, FILE or PROCESS after GUARD
+Call Stack \(most recent call first\):
+  CMakeLists\.txt:[0-9]+ \(include\)

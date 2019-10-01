@@ -1,0 +1,4 @@
+CMake Error at not_enough_args.cmake:[0-9]+ \(target_compile_features\):
+  target_compile_features called with incorrect number of arguments
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

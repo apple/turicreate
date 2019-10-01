@@ -1,0 +1,12 @@
+^CMake Error at CMP0053-NameWithTabsQuoted.cmake:2 \(message\):
+  Syntax error in cmake code at
+
+    .*/Tests/RunCMake/Syntax/CMP0053-NameWithTabsQuoted.cmake:2
+
+  when parsing string
+
+    \${var	with	tab}
+
+  Invalid character \('	'\) in a variable name: 'var'
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

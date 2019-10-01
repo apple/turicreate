@@ -1,0 +1,3 @@
+Memory checking results:
+Direct leak - 2
+Indirect leak - 1

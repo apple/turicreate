@@ -1,0 +1,8 @@
+CMake Error at LINK_ONLY-not-linking.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<LINK_ONLY:something>
+
+  \$<LINK_ONLY:...> may only be used for linking
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

@@ -1,0 +1,1 @@
+Only http and https are supported for CDASH_UPLOAD

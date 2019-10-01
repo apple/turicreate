@@ -1,0 +1,4 @@
+CMake Error at CMP0046-NEW-missing-dependency.cmake:4 \(add_dependencies\):
+  The dependency target "bar" of target "foo" does not exist.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

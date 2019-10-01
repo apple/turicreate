@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+# file Copyright.txt or https://cmake.org/licensing for details.
+
+# This is a placeholder for future prepare-commit-msg hooks.
+exit 0

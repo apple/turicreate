@@ -1,0 +1,4 @@
+CMake Error at misplaced-elseif.cmake:[0-9]+ \(elseif\):
+  An ELSEIF command was found after an ELSE command.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

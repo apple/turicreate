@@ -1,0 +1,4 @@
+^CMake Error at SORT-DuplicateCaseOption.cmake:2 \(list\):
+  list sub-command SORT option "CASE" has been specified multiple times.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.1)
+@CASE_CMAKELISTS_PREFIX_CODE@
+project(CTestBuild@CASE_NAME@ NONE)
+include(CTest)
+add_test(NAME RunCMakeVersion COMMAND "${CMAKE_COMMAND}" --version)
+@CASE_CMAKELISTS_SUFFIX_CODE@

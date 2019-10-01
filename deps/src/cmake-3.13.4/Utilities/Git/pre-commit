@@ -1,0 +1,69 @@
+#!/usr/bin/env bash
+# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
+# file Copyright.txt or https://cmake.org/licensing for details.
+
+die() {
+  echo 'pre-commit hook failure' 1>&2
+  echo '-----------------------' 1>&2
+  echo '' 1>&2
+  echo "$@" 1>&2
+  exit 1
+}
+
+#-------------------------------------------------------------------------------
+line_too_long=80
+bad=$(regex=".{$line_too_long}" &&
+git diff-index --cached HEAD --name-only --diff-filter=AM \
+    --pickaxe-regex -S"$regex" -- 'Source/*.h' 'Source/*.cxx' |
+while read file; do
+  lines_too_long=$(git diff-index -p --cached HEAD \
+                   --pickaxe-regex -S"$regex" -- "$file")
+  if echo "$lines_too_long" | egrep -q '^\+'"$regex"; then
+    echo "$lines_too_long"
+  fi
+done)
+test -z "$bad" ||
+die 'The following changes add lines too long for our C++ style:
+
+'"$bad"'
+
+Use lines strictly less than '"$line_too_long"' characters in C++ code.'
+
+#-----------------------------------------------------------------------------
+
+# Check that development setup is up-to-date.
+lastSetupForDevelopment=$(git config --get hooks.SetupForDevelopment || echo 0)
+eval $(grep '^SetupForDevelopment_VERSION=' "${BASH_SOURCE%/*}/../SetupForDevelopment.sh")
+test -n "$SetupForDevelopment_VERSION" || SetupForDevelopment_VERSION=0
+if test $lastSetupForDevelopment -lt $SetupForDevelopment_VERSION; then
+  die 'Developer setup in this work tree is out of date.  Please re-run
+
+  Utilities/SetupForDevelopment.sh
+'
+fi
+
+#-------------------------------------------------------------------------------
+if test -z "$HOOKS_ALLOW_KWSYS"; then
+  # Disallow changes to KWSys
+  files=$(git diff-index --name-only --cached HEAD -- Source/kwsys) &&
+  if test -n "$files"; then
+    die 'Changes to KWSys files
+
+'"$(echo "$files" | sed 's/^/  /')"'
+
+should not be made directly in CMake.  KWSys is kept in its own Git
+repository and shared by several projects.  Please visit
+
+  https://gitlab.kitware.com/utils/kwsys
+
+to contribute changes directly to KWSys.  Run
+
+  git reset HEAD -- Source/kwsys
+
+to unstage these changes.  Alternatively, set environment variable
+
+  HOOKS_ALLOW_KWSYS=1
+
+to disable this check and commit the changes locally.'
+  fi
+fi

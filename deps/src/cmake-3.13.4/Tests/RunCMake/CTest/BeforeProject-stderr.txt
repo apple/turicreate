@@ -1,0 +1,6 @@
+CMake Error at .*/Modules/CTestTargets.cmake:[0-9]+ \(message\):
+  Do not include\(CTest\) before calling project\(\).
+Call Stack \(most recent call first\):
+  .*/Modules/CTest.cmake:[0-9]+ \(include\)
+  BeforeProject.cmake:[0-9]+ \(include\)
+  CMakeLists.txt:[0-9]+ \(include\)

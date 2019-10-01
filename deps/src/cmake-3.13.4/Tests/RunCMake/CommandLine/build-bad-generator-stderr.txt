@@ -1,0 +1,1 @@
+^Error: could create CMAKE_GENERATOR "Bad Generator"$

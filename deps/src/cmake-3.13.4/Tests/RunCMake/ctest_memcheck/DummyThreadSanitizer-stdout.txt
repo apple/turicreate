@@ -1,0 +1,13 @@
+Memory checking results:
+data race - 1
+data race on vptr \(ctor/dtor vs virtual call\) - 1
+heap-use-after-free - 1
+thread leak - 1
+destroy of a locked mutex - 1
+double lock of a mutex - 1
+unlock of an unlocked mutex \(or by a wrong thread\) - 1
+read lock of a write locked mutex - 1
+read unlock of a write locked mutex - 1
+signal-unsafe call inside of a signal - 1
+signal handler spoils errno - 1
+lock-order-inversion \(potential deadlock\) - 1

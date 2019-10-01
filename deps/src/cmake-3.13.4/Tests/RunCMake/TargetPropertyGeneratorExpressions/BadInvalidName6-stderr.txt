@@ -1,0 +1,8 @@
+CMake Error at BadInvalidName6.cmake:7 \(include_directories\):
+  Error evaluating generator expression:
+
+    \$<TARGET_PROPERTY:,ValidProperty>
+
+  \$<TARGET_PROPERTY:tgt,prop> expression requires a non-empty target name.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:8 \(include\)$

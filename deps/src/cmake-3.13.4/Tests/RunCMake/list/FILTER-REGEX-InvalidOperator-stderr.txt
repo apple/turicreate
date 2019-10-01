@@ -1,0 +1,4 @@
+^CMake Error at FILTER-REGEX-InvalidOperator.cmake:2 \(list\):
+  list sub-command FILTER does not recognize operator RM
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

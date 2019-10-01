@@ -1,0 +1,1 @@
+MANUALLY_ADDED_DEPENDENCIES property is read-only

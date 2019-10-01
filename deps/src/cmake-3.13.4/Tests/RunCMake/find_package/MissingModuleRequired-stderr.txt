@@ -1,0 +1,21 @@
+CMake Error at MissingModuleRequired.cmake:1 \(find_package\):
+  No "FindNotHere.cmake" found in CMAKE_MODULE_PATH.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+
+
+CMake Warning \(dev\) at MissingModuleRequired.cmake:1 \(find_package\):
+  FindNotHere.cmake must either be part of this project itself, in this case
+  adjust CMAKE_MODULE_PATH so that it points to the correct location inside
+  its source tree.
+
+  Or it must be installed by a package which has already been found via
+  find_package\(\).  In this case make sure that package has indeed been found
+  and adjust CMAKE_MODULE_PATH to contain the location where that package has
+  installed FindNotHere.cmake.  This must be a location provided by that
+  package.  This error in general means that the buildsystem of this project
+  is relying on a Find-module without ensuring that it is actually available.
+
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
+This warning is for project developers.  Use -Wno-dev to suppress it.$

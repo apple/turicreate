@@ -1,0 +1,7 @@
+^CMake Error at .*/Tests/RunCMake/try_compile/CudaStandard-build/CMakeFiles/CMakeTmp/CMakeLists.txt:[0-9]+ \(add_executable\):
+  CUDA_STANDARD is set to invalid value '3'
++
+CMake Error at CudaStandard.cmake:[0-9]+ \(try_compile\):
+  Failed to generate test project build system.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)$

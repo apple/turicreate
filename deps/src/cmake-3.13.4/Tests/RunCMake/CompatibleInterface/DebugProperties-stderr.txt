@@ -1,0 +1,101 @@
+CMake Debug Log:
+  Boolean compatibility of property "BOOL_PROP1" for target
+  "CompatibleInterface" \(result: "TRUE"\):
+
+   \* Target "CompatibleInterface" property not set.
+   \* Target "iface1" property value "TRUE" \(Interface set\)
++
+CMake Debug Log:
+  Boolean compatibility of property "BOOL_PROP2" for target
+  "CompatibleInterface" \(result: "TRUE"\):
+
+   \* Target "CompatibleInterface" has property content "TRUE"
+   \* Target "iface1" property value "TRUE" \(Agree\)
++
+CMake Debug Log:
+  Boolean compatibility of property "BOOL_PROP3" for target
+  "CompatibleInterface" \(result: "TRUE"\):
+
+   \* Target "CompatibleInterface" has property content "TRUE"
++
+CMake Debug Log:
+  Boolean compatibility of property "BOOL_PROP4" for target
+  "CompatibleInterface" \(result: "FALSE"\):
+
+   \* Target "CompatibleInterface" property not set.
++
+CMake Debug Log:
+  Boolean compatibility of property "BOOL_PROP5" for target
+  "CompatibleInterface" \(result: "FALSE"\):
+
+   \* Target "CompatibleInterface" property not set.
+   \* Target "iface1" property value "FALSE" \(Interface set\)
++
+CMake Debug Log:
+  Boolean compatibility of property "BOOL_PROP6" for target
+  "CompatibleInterface" \(result: "FALSE"\):
+
+   \* Target "CompatibleInterface" property not set.
+   \* Target "iface1" property value "FALSE" \(Interface set\)
+   \* Target "iface2" property value "FALSE" \(Agree\)
++
+CMake Debug Log:
+  Boolean compatibility of property "BOOL_PROP7" for target
+  "CompatibleInterface" \(result: "FALSE"\):
+
+   \* Target "CompatibleInterface" property is implied by use.
+   \* Target "iface1" property value "FALSE" \(Agree\)
++
+CMake Debug Log:
+  String compatibility of property "STRING_PROP1" for target
+  "CompatibleInterface" \(result: "prop1"\):
+
+   \* Target "CompatibleInterface" property not set.
+   \* Target "iface1" property value "prop1" \(Interface set\)
++
+CMake Debug Log:
+  String compatibility of property "STRING_PROP2" for target
+  "CompatibleInterface" \(result: "prop2"\):
+
+   \* Target "CompatibleInterface" has property content "prop2"
+   \* Target "iface1" property value "prop2" \(Agree\)
++
+CMake Debug Log:
+  String compatibility of property "STRING_PROP3" for target
+  "CompatibleInterface" \(result: "prop3"\):
+
+   \* Target "CompatibleInterface" has property content "prop3"
++
+CMake Debug Log:
+  String compatibility of property "STRING_PROP4" for target
+  "CompatibleInterface" \(result: "\(unset\)"\):
+
+   \* Target "CompatibleInterface" property not set.
++
+CMake Debug Log:
+  Numeric minimum compatibility of property "NUMBER_MIN_PROP1" for target
+  "CompatibleInterface" \(result: "50"\):
+
+   \* Target "CompatibleInterface" has property content "50"
+   \* Target "iface1" property value "100" \(Ignored\)
++
+CMake Debug Log:
+  Numeric minimum compatibility of property "NUMBER_MIN_PROP2" for target
+  "CompatibleInterface" \(result: "200"\):
+
+   \* Target "CompatibleInterface" has property content "250"
+   \* Target "iface1" property value "200" \(Dominant\)
++
+CMake Debug Log:
+  Numeric maximum compatibility of property "NUMBER_MAX_PROP1" for target
+  "CompatibleInterface" \(result: "100"\):
+
+   \* Target "CompatibleInterface" has property content "50"
+   \* Target "iface1" property value "100" \(Dominant\)
++
+CMake Debug Log:
+  Numeric maximum compatibility of property "NUMBER_MAX_PROP2" for target
+  "CompatibleInterface" \(result: "250"\):
+
+   \* Target "CompatibleInterface" has property content "250"
+   \* Target "iface1" property value "200" \(Ignored\)

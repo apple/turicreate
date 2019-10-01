@@ -1,0 +1,4 @@
+CMake Error at VersionInvalid.cmake:2 \(project\):
+  VERSION "NONE" format invalid.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

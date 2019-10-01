@@ -1,0 +1,76 @@
+# This "ctest -S" script may be configured to drive a nightly dashboard on any
+# Linux machine.
+#
+set(CTEST_BINARY_DIRECTORY "@binary_dir@")
+set(CTEST_BUILD_NAME "@BUILDNAME@")
+set(CTEST_SITE "@SITE@")
+set(CTEST_SOURCE_DIRECTORY "@source_dir@")
+set(PROCESSOR_COUNT "@PROCESSOR_COUNT@")
+
+# Assume a Linux build, with a make that supports -j. Modify this script if
+# assumption is ever invalid.
+#
+if(PROCESSOR_COUNT)
+  set(CTEST_BUILD_FLAGS "-j${PROCESSOR_COUNT}")
+endif()
+
+set(CTEST_CMAKE_GENERATOR "Unix Makefiles")
+set(CTEST_NOTES_FILES "${CTEST_SCRIPT_DIRECTORY}/${CTEST_SCRIPT_NAME}")
+
+message("Cleaning binary dir '${CTEST_BINARY_DIRECTORY}'")
+ctest_empty_binary_directory("${CTEST_BINARY_DIRECTORY}")
+
+# Intentionally no ctest_update step in this script. This script is run as a
+# "Contract" test on a CMake dashboard submission using the just-built ctest
+# as the driver. The download step in the Contract CMakeLists file takes care
+# of setting up the source tree before calling this ctest -S script. The idea
+# is that the source tree will be the same every day, so there should not be
+# an "update" step for this build.
+
+message("Configuring CSE in binary dir '${CTEST_BINARY_DIRECTORY}'")
+set_property(GLOBAL PROPERTY SubProject "CSE-toplevel")
+set_property(GLOBAL PROPERTY Label "CSE-toplevel")
+
+ctest_start("Experimental")
+
+set(CSE_TOPLEVEL_OPTIONS
+  -DEXTERNAL_PROJECT_DASHBOARD_BUILD:BOOL=ON
+  -DEXTERNAL_PROJECT_TESTS:BOOL=ON
+  -DCSE_INSTALL_PREFIX:PATH=${CTEST_BINARY_DIRECTORY}/built
+  -DCSE_SUBSET:STRING=ALL
+  -DCTEST_SITE:STRING=${CTEST_SITE}
+)
+
+ctest_configure(OPTIONS "${CSE_TOPLEVEL_OPTIONS}")
+
+# The configure step produces a file listing the CSE packages and dependencies.
+# This file also generates Project.xml and stores it in ${PROJECT_XML}.
+#
+set(subprojects "")
+if(EXISTS "${CTEST_BINARY_DIRECTORY}/CSEBuildtimeDepends.cmake")
+  message("Including CSEBuildtimeDepends.cmake")
+  include("${CTEST_BINARY_DIRECTORY}/CSEBuildtimeDepends.cmake")
+  set(subprojects ${CSE_ALL_SORTED})
+  message("Submitting Project.xml")
+  ctest_submit(FILES ${PROJECT_XML})
+endif()
+
+message("Submitting CSE configure results")
+ctest_submit()
+
+if(subprojects)
+  message("Building by looping over subprojects...")
+  foreach(subproject ${subprojects})
+    message("##########  ${subproject}  ##########")
+    set_property(GLOBAL PROPERTY SubProject "${subproject}")
+    set_property(GLOBAL PROPERTY Label "${subproject}")
+    ctest_build(TARGET "${subproject}" APPEND)
+    message("Submitting ${subproject} build results")
+    ctest_submit(PARTS build)
+  endforeach()
+else()
+  message("Building all...")
+  ctest_build(APPEND)
+  message("Submitting build results")
+  ctest_submit(PARTS build)
+endif()

@@ -1,0 +1,4 @@
+CMake Error at UnknownComponent.cmake:1 \(get_filename_component\):
+  get_filename_component unknown component BOGUS
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)

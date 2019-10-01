@@ -1,0 +1,11 @@
+CMake Error at InvalidArgs.cmake:4 \(write_compiler_detection_header\):
+  write_compiler_detection_header Function invoked with incorrect arguments
+  for function named: write_compiler_detection_header
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at InvalidArgs.cmake:6 \(write_compiler_detection_header\):
+  write_compiler_detection_header Function invoked with incorrect arguments
+  for function named: write_compiler_detection_header
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

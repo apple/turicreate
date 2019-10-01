@@ -1,0 +1,4 @@
+-- PrefixInPATH_LIBRARY='PrefixInPATH_LIBRARY-NOTFOUND'
+-- PrefixInPATH_LIBRARY='.*/Tests/RunCMake/find_library/lib/libPrefixInPATH.a'
+-- PrefixInPATH_LIBRARY='.*/Tests/RunCMake/find_library/lib/libPrefixInPATH.a'
+-- PrefixInPATH_LIBRARY='.*/Tests/RunCMake/find_library/lib/libPrefixInPATH.a'

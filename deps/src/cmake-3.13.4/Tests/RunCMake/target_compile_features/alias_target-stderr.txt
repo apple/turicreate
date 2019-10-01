@@ -1,0 +1,4 @@
+CMake Error at alias_target.cmake:[0-9]+ \(target_compile_features\):
+  target_compile_features can not be used on an ALIAS target.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

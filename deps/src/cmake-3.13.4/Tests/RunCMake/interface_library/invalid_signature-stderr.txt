@@ -1,0 +1,89 @@
+CMake Error at invalid_signature.cmake:2 \(add_library\):
+  add_library INTERFACE library requires no source arguments.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:3 \(add_library\):
+  add_library INTERFACE library specified with conflicting/multiple types.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:4 \(add_library\):
+  add_library INTERFACE library specified with conflicting/multiple types.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:5 \(add_library\):
+  add_library INTERFACE library specified with conflicting/multiple types.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:6 \(add_library\):
+  add_library INTERFACE library specified with conflicting/multiple types.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:7 \(add_library\):
+  add_library INTERFACE library specified with conflicting/multiple types.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:8 \(add_library\):
+  add_library INTERFACE library specified with conflicting/multiple types.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:9 \(add_library\):
+  add_library INTERFACE library specified with conflicting STATIC type.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:10 \(add_library\):
+  add_library INTERFACE library specified with conflicting SHARED type.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:11 \(add_library\):
+  add_library INTERFACE library specified with conflicting MODULE type.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:12 \(add_library\):
+  add_library INTERFACE library specified with conflicting OBJECT type.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:13 \(add_library\):
+  add_library INTERFACE library specified with conflicting UNKNOWN type.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:14 \(add_library\):
+  add_library INTERFACE library specified with conflicting ALIAS type.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:15 \(add_library\):
+  add_library INTERFACE library specified with conflicting ALIAS type.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:16 \(add_library\):
+  add_library INTERFACE library specified with conflicting/multiple types.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:17 \(add_library\):
+  add_library INTERFACE library may not be used with EXCLUDE_FROM_ALL.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:18 \(add_library\):
+  add_library INTERFACE library may not be used with EXCLUDE_FROM_ALL.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at invalid_signature.cmake:20 \(add_library\):
+  add_library GLOBAL option may only be used with IMPORTED libraries.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

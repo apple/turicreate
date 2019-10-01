@@ -1,0 +1,6 @@
+CMake Error at LOCK-error-guard-incorrect\.cmake:[0-9]+ \(file\):
+  expected FUNCTION, FILE or PROCESS after GUARD, but got:
+
+    "FUNCTIO"\.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)

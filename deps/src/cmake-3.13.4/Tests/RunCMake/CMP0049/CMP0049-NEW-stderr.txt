@@ -1,0 +1,6 @@
+CMake Error at CMP0049-NEW.cmake:5 \(add_library\):
+  Legacy variable expansion in source file "\${tgt_srcs}" expanded to
+  "empty.cpp" in target "tgt".  This behavior will be removed in a future
+  version of CMake.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

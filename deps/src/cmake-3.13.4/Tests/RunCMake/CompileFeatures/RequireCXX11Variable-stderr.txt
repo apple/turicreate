@@ -1,0 +1,3 @@
+CMake Error in CMakeLists.txt:
+  Target "foo" requires the language dialect "CXX11" , but CMake does not
+  know the compile flags to use to enable it.

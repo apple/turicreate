@@ -1,0 +1,2 @@
+.*Unexpected architecture `i386` detected.*
+.*Unexpected architecture `arm64` detected.*

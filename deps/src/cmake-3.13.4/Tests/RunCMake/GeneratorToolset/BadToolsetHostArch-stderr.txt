@@ -1,0 +1,10 @@
+CMake Error at CMakeLists.txt:[0-9]+ \(project\):
+  Generator
+
+    .*
+
+  given toolset specification
+
+    Test Toolset,host=x6[45]
+
+  that contains invalid field 'host=x6[45]'\.$

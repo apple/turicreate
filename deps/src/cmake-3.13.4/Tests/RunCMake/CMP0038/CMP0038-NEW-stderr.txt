@@ -1,0 +1,4 @@
+CMake Error at CMP0038-NEW.cmake:3 \(add_library\):
+  Target "self_link" links to itself.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

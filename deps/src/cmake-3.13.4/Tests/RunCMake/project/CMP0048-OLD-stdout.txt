@@ -1,0 +1,2 @@
+-- PROJECT_VERSION='1'
+-- MyProject_VERSION_TWEAK='0'

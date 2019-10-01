@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/Texts2">
+        <file>res2/input.txt</file>
+        <file alias="Added">res2/inputAdded.txt</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,17 @@
+^CMake Warning \(dev\) in CMakeLists.txt:
+  Policy CMP0022 is not set: INTERFACE_LINK_LIBRARIES defines the link
+  interface.  Run "cmake --help-policy CMP0022" for policy details.  Use the
+  cmake_policy command to set the policy and suppress this warning.
+
+  Target "bar" has an INTERFACE_LINK_LIBRARIES property which differs from
+  its LINK_INTERFACE_LIBRARIES properties.
+
+  INTERFACE_LINK_LIBRARIES:
+
+    foo
+
+  LINK_INTERFACE_LIBRARIES:
+
+    bat
+
+This warning is for project developers.  Use -Wno-dev to suppress it.$

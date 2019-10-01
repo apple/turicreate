@@ -1,0 +1,1 @@
+ninja: error: 'byproduct1a', needed by 'output2', missing and no known rule to make it

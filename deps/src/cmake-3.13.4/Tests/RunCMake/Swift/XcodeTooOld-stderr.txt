@@ -1,0 +1,5 @@
+^CMake Error at .*/Modules/CMakeDetermineSwiftCompiler.cmake:[0-9]+ \(message\):
+  Swift language not supported by Xcode [0-9.]+
+Call Stack \(most recent call first\):
+  XcodeTooOld.cmake:[0-9]+ \(enable_language\)
+  CMakeLists.txt:[0-9]+ \(include\)

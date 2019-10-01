@@ -1,0 +1,4 @@
+CMake Error at TID-bad-target.cmake:6 \(target_include_directories\):
+  target_include_directories called with non-compilable target type
+Call Stack \(most recent call first\):
+  CMakeLists.txt:[0-9]+ \(include\)

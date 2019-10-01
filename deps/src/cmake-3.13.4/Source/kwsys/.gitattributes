@@ -1,0 +1,13 @@
+.git*            export-ignore
+
+*.c              kwsys-c-style
+*.c.in           kwsys-c-style
+*.cxx            kwsys-c-style
+*.h              kwsys-c-style
+*.h.in           kwsys-c-style
+*.hxx            kwsys-c-style
+*.hxx.in         kwsys-c-style
+
+*.cmake          whitespace=tab-in-indent
+*.rst            whitespace=tab-in-indent conflict-marker-size=79
+*.txt            whitespace=tab-in-indent

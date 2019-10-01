@@ -1,0 +1,43 @@
+----------
+Foo_ROOT      :
+ENV{Foo_ROOT} :
+
+find_package\(Foo\)
+FOO_TEST_FILE_FOO :FOO_TEST_FILE_FOO-NOTFOUND
+FOO_TEST_FILE_ZOT :FOO_TEST_FILE_ZOT-NOTFOUND
+FOO_TEST_PATH_FOO :FOO_TEST_PATH_FOO-NOTFOUND
+FOO_TEST_PATH_ZOT :FOO_TEST_PATH_ZOT-NOTFOUND
+FOO_TEST_PROG_FOO :FOO_TEST_PROG_FOO-NOTFOUND
+
+----------
+Foo_ROOT      :<base>/foo/cmake_root
+ENV{Foo_ROOT} :
+
+find_package\(Foo\)
+FOO_TEST_FILE_FOO :<base>/foo/cmake_root/include/foo.h
+FOO_TEST_FILE_ZOT :<base>/foo/cmake_root/include/zot/zot.h
+FOO_TEST_PATH_FOO :<base>/foo/cmake_root/include
+FOO_TEST_PATH_ZOT :<base>/foo/cmake_root/include/zot
+FOO_TEST_PROG_FOO :<base>/foo/cmake_root/bin/foo.exe
+
+----------
+Foo_ROOT      :
+ENV{Foo_ROOT} :<base>/foo/env_root
+
+find_package\(Foo\)
+FOO_TEST_FILE_FOO :<base>/foo/env_root/include/foo.h
+FOO_TEST_FILE_ZOT :<base>/foo/env_root/include/zot/zot.h
+FOO_TEST_PATH_FOO :<base>/foo/env_root/include
+FOO_TEST_PATH_ZOT :<base>/foo/env_root/include/zot
+FOO_TEST_PROG_FOO :<base>/foo/env_root/bin/foo.exe
+
+----------
+Foo_ROOT      :<base>/foo/cmake_root
+ENV{Foo_ROOT} :<base>/foo/env_root
+
+find_package\(Foo\)
+FOO_TEST_FILE_FOO :<base>/foo/cmake_root/include/foo.h
+FOO_TEST_FILE_ZOT :<base>/foo/cmake_root/include/zot/zot.h
+FOO_TEST_PATH_FOO :<base>/foo/cmake_root/include
+FOO_TEST_PATH_ZOT :<base>/foo/cmake_root/include/zot
+FOO_TEST_PROG_FOO :<base>/foo/cmake_root/bin/foo.exe

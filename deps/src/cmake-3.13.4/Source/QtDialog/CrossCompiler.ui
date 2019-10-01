@@ -1,0 +1,213 @@
+<ui version="4.0" >
+ <class>CrossCompiler</class>
+ <widget class="QWidget" name="CrossCompiler" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>433</width>
+    <height>319</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>CrossCompiler</string>
+  </property>
+  <layout class="QGridLayout" >
+   <item row="0" column="0" >
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string>Target System</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_6" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Operating System</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QLineEdit" name="systemName" />
+      </item>
+      <item row="0" column="2" colspan="2" >
+       <spacer>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" >
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_10" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Version</string>
+        </property>
+        <property name="wordWrap" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLineEdit" name="systemVersion" />
+      </item>
+      <item row="1" column="2" >
+       <widget class="QLabel" name="label_11" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Processor</string>
+        </property>
+        <property name="wordWrap" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QLineEdit" name="systemProcessor" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="2" column="0" >
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="sizePolicy" >
+      <sizepolicy vsizetype="Preferred" hsizetype="Preferred" >
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="title" >
+      <string>Find Program/Library/Include</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_9" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Target Root</string>
+        </property>
+        <property name="wordWrap" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QCMakePathEditor" name="crossFindRoot" />
+      </item>
+      <item row="0" column="2" >
+       <widget class="QLabel" name="label_12" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Program Mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="3" >
+       <widget class="QComboBox" name="crossProgramMode" />
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_13" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Library Mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QComboBox" name="crossLibraryMode" />
+      </item>
+      <item row="1" column="2" >
+       <widget class="QLabel" name="label_14" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="Preferred" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text" >
+         <string>Include Mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3" >
+       <widget class="QComboBox" name="crossIncludeMode" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="0" >
+    <widget class="Compilers" native="1" name="CrossCompilers" >
+     <property name="focusPolicy" >
+      <enum>Qt::TabFocus</enum>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QCMakePathEditor</class>
+   <extends>QLineEdit</extends>
+   <header>QCMakeWidgets.h</header>
+  </customwidget>
+  <customwidget>
+   <class>Compilers</class>
+   <extends>QWidget</extends>
+   <header>Compilers.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <tabstops>
+  <tabstop>systemVersion</tabstop>
+  <tabstop>systemProcessor</tabstop>
+  <tabstop>CrossCompilers</tabstop>
+  <tabstop>crossFindRoot</tabstop>
+  <tabstop>crossProgramMode</tabstop>
+  <tabstop>crossLibraryMode</tabstop>
+  <tabstop>crossIncludeMode</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

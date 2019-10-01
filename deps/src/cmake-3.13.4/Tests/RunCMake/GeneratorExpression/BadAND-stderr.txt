@@ -1,0 +1,53 @@
+CMake Error at BadAND.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<AND>
+
+  \$<AND> expression requires at least one parameter.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadAND.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<AND:>
+
+  Parameters to \$<AND> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadAND.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<AND:,>
+
+  Parameters to \$<AND> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadAND.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<AND:01>
+
+  Parameters to \$<AND> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadAND.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<AND:nothing>
+
+  Parameters to \$<AND> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at BadAND.cmake:1 \(add_custom_target\):
+  Error evaluating generator expression:
+
+    \$<AND:1,nothing>
+
+  Parameters to \$<AND> must resolve to either '0' or '1'.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)$

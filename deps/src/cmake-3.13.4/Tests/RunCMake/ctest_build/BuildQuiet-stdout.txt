@@ -1,0 +1,12 @@
+Run dashboard with model Experimental
+   Source directory: .*/Tests/RunCMake/ctest_build/BuildQuiet
+   Build directory: .*/Tests/RunCMake/ctest_build/BuildQuiet-build
+   Reading ctest configuration file: .*/Tests/RunCMake/ctest_build/BuildQuiet/CTestConfig.cmake
+   Site: test-site
+   Build name: test-build-name
+   Use Experimental tag: [0-9-]+
+Configure project
+   Each . represents 1024 bytes of output
+    . Size of output: 0K
+   0 Compiler errors
+   0 Compiler warnings

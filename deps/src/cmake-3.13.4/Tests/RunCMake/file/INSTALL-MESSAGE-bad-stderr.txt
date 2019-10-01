@@ -1,0 +1,32 @@
+CMake Error at INSTALL-MESSAGE-bad.cmake:1 \(file\):
+  file INSTALL options MESSAGE_ALWAYS, MESSAGE_LAZY, and MESSAGE_NEVER are
+  mutually exclusive.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at INSTALL-MESSAGE-bad.cmake:2 \(file\):
+  file INSTALL options MESSAGE_ALWAYS, MESSAGE_LAZY, and MESSAGE_NEVER are
+  mutually exclusive.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at INSTALL-MESSAGE-bad.cmake:3 \(file\):
+  file INSTALL options MESSAGE_ALWAYS, MESSAGE_LAZY, and MESSAGE_NEVER are
+  mutually exclusive.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at INSTALL-MESSAGE-bad.cmake:4 \(file\):
+  file option MESSAGE_ALWAYS may not appear after PATTERN or REGEX.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at INSTALL-MESSAGE-bad.cmake:5 \(file\):
+  file option MESSAGE_LAZY may not appear after PATTERN or REGEX.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
++
+CMake Error at INSTALL-MESSAGE-bad.cmake:6 \(file\):
+  file option MESSAGE_NEVER may not appear after PATTERN or REGEX.
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

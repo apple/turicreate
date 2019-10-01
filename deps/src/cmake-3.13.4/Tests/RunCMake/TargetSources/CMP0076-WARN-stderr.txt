@@ -1,0 +1,21 @@
+CMake Warning \(dev\) at CMP0076-WARN/CMakeLists.txt:2 \(target_sources\):
+  Policy CMP0076 is not set: target_sources\(\) command converts relative paths
+  to absolute.  Run "cmake --help-policy CMP0076" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  An interface source of target "publiclib" has a relative path.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Warning \(dev\) at CMP0076-WARN/CMakeLists.txt:2 \(target_sources\):
+  Policy CMP0076 is not set: target_sources\(\) command converts relative paths
+  to absolute.  Run "cmake --help-policy CMP0076" for policy details.  Use
+  the cmake_policy command to set the policy and suppress this warning.
+
+  A private source from a directory other than that of target "publiclib" has
+  a relative path.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+CMake Error in CMakeLists.txt:
+  Target "publiclib" contains relative path in its INTERFACE_SOURCES:
+
+    "CMP0076-WARN/subdir_empty_1.cpp"

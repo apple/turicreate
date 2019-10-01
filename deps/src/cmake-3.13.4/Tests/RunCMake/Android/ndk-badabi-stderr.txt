@@ -1,0 +1,5 @@
+^CMake Error at .*/Modules/Platform/Android-Determine.cmake:[0-9]+ \(message\):
+  Android: Unknown ABI CMAKE_ANDROID_ARCH_ABI='badabi'.
+Call Stack \(most recent call first\):
+  .*/Modules/CMakeDetermineSystem.cmake:[0-9]+ \(include\)
+  CMakeLists.txt:[0-9]+ \(project\)$

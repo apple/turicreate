@@ -1,0 +1,4 @@
+CMake Error at NonSourceCompileDefinitions.cmake:1 \(try_compile\):
+  COMPILE_DEFINITIONS specified on a srcdir type TRY_COMPILE
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

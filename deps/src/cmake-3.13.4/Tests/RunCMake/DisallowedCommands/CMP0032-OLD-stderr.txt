@@ -1,0 +1,4 @@
+CMake Error at CMP0032-OLD.cmake:2 \(output_required_files\):
+  output_required_files called with incorrect number of arguments
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)

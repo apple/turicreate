@@ -1,0 +1,6 @@
+CMake Error at FileOpenFailRead.cmake:[0-9]+ \(file\):
+  file failed to open for reading \(.*\):
+
+    .*/Tests/RunCMake/file/does_not_exist/file.txt
+Call Stack \(most recent call first\):
+  CMakeLists.txt:3 \(include\)
