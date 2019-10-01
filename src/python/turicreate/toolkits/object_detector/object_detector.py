@@ -466,7 +466,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             'num_iterations': num_iterations
         }
 
-        od_model_train = ODTensorFlowModel(input_image_shape=input_image_shape,
+        od_model_train = ODTensorFlowModel(input_h= input_image_shape[1],
+                                           input_w = input_image_shape[2],
                                            batch_size=batch_size,
                                            output_size=output_size,
                                            init_weights=tf_net_params,
@@ -547,9 +548,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
             # Submit this match to TensorFlow
             feed_dict = {'input': batch['input'],
-                         'label': batch['label'],
+                         'labels': batch['label'],
                          'iteration': batch['iteration']}
-
             batch_queue.append(od_model_train.train(feed_dict=feed_dict))
 
             # If we have two batches in flight, wait for the first one.

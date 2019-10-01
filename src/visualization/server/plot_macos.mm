@@ -5,7 +5,7 @@
  */
 
 #include "plot.hpp"
-#import <visualization/vega_renderer/VegaRenderer.h>
+#import <visualization/vega_renderer/TCVegaRenderer.h>
 #import <Foundation/Foundation.h>
 
 namespace turi {
@@ -18,8 +18,8 @@ namespace turi {
 
     void Plot::render(const std::string& vega_spec, CGContextRef context) {
       NSString *spec = [NSString stringWithUTF8String:vega_spec.c_str()];
-      VegaRenderer *renderer = [[VegaRenderer alloc] initWithSpec:spec];
-      CGContextDrawLayerAtPoint(context, CGPointMake(0, 0), renderer.CGLayer);
+      TCVegaRenderer *renderer = [[TCVegaRenderer alloc] initWithSpec:spec];
+      CGContextDrawImage(context, CGRectMake(0, 0, renderer.width, renderer.height), renderer.CGImage);
     }
   }
 }

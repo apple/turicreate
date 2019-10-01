@@ -73,6 +73,9 @@ def annotate(data, image_column=None, annotation_column='annotations'):
 
     """
     # Check Value of Column Variables
+    if not isinstance(data, __tc.SFrame):
+        raise TypeError('"data" must be of type SFrame.')
+
     if image_column == None:
         image_column = _tkutl._find_only_image_column(data)
 

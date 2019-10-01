@@ -130,6 +130,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         >>> stylized_images.explore()
 
     """
+    if not isinstance(style_dataset, _tc.SFrame):
+        raise TypeError('"style_dataset" must be of type SFrame.')
+    if not isinstance(content_dataset, _tc.SFrame):
+        raise TypeError('"content_dataset" must be of type SFrame.')
     if len(style_dataset) == 0:
         raise _ToolkitError("style_dataset SFrame cannot be empty")
     if len(content_dataset) == 0:
@@ -205,7 +209,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     _style_loss_mult = params['style_loss_mult']
 
     num_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
-    use_mps = _use_mps() and num_gpus == 0
+    use_mps = _use_mps() and num_gpus == 0 and _tkutl._mac_ver() >= (10, 15)
     batch_size_each = params['batch_size'] // max(num_gpus, 1)
 
     batch_size = max(num_gpus, 1) * batch_size_each
@@ -405,13 +409,12 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         mps_mxnet_key_map = _MpsStyleGraphAPI.mps_mxnet_weight_dict()
 
+
         for key in mps_weights:
-            if "transformer" in key and "conv" in key:
+            if "transformer" in key and ("inst" in key or "conv" in key):
                 weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]))
-            if "transformer" in key and "inst" in key:
-                weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape))
+                mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape))
+                transformer.collect_params()[mps_mxnet_key_map[key]].set_data(mxnet_weight)
 
         training_time = _time.time() - start_time
 

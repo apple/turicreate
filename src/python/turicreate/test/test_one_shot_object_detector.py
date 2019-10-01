@@ -110,6 +110,16 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         }
         self.fields_ans = self.get_ans.keys()
 
+    def test_synthesis_with_single_image(self):
+        image = self.train[0][self.feature]
+        data = tc.one_shot_object_detector.util.preview_synthetic_training_data(
+            image, 'custom_logo', backgrounds=self.backgrounds)
+
+    def test_create_with_single_image(self):
+        image = self.train[0][self.feature]
+        model = tc.one_shot_object_detector.create(
+            image, 'custom_logo', backgrounds=self.backgrounds)
+
     def test_create_with_missing_value(self):
         sf = self.train.append(tc.SFrame({self.feature: tc.SArray([None], dtype=tc.Image), self.target: [self.train[self.target][0]]}))
         with self.assertRaises(_ToolkitError):

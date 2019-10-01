@@ -355,7 +355,7 @@ class Plot(object):
                 </body> \
             </html>'));
 
-def display_table_in_notebook(sf):
+def display_table_in_notebook(sf, title=None):
     from IPython.core.display import display
     from PIL import Image
 
@@ -383,6 +383,13 @@ def display_table_in_notebook(sf):
     image_column_formatter = dict.fromkeys(image_key , image_formatter)
 
     with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.max_colwidth', -1):
+        if _sys.version_info.major < 3:
+            import cgi
+            title = cgi.escape(title,quote = True)
+        else:
+            import html
+            title = html.escape(title,quote = True)
+
         df = sf.to_dataframe()
         html_string =  '<html lang="en">                           \
                           <head>                                   \
@@ -450,6 +457,7 @@ def display_table_in_notebook(sf):
                             </style>                               \
                           </head>                                  \
                           <body>                                   \
+                            <h1> '+ title +' </h1>                 \
                             '+df.to_html(formatters=image_column_formatter, escape=False, classes='sframe')+'\
                           </body>                                  \
                         </html>'
