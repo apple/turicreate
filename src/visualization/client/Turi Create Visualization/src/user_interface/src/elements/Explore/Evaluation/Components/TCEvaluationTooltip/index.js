@@ -14,7 +14,7 @@ class TCEvaluationTooltip extends Component {
           <img src={carret}
                height={9}
                className="TCEvaluationCarretIcon"
-	       alt="Can't Find"/>
+	       alt=""/>
         </div>
       </div>
     );

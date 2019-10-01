@@ -13,14 +13,14 @@ class TCEvaluationConfusionHeaderCell extends Component {
           <div className="TCEvaluationConfusionHeaderCellDropDown"
                style={{"transform": "rotate(180deg)"}}>
             <img src={caret_down}
-		 alt="Can't Find"/>
+		 alt=""/>
           </div>
         )
       }else{
         return (
           <div className="TCEvaluationConfusionHeaderCellDropDown">
             <img src={caret_down}
-		 alt="Can't Find"/>
+		 alt=""/>
           </div>
         )
       }
@@ -28,7 +28,7 @@ class TCEvaluationConfusionHeaderCell extends Component {
       return (
         <div className="TCEvaluationConfusionHeaderCellDropDown">
           <img src={down}
-	       alt="Can't Find"/>
+	       alt=""/>
         </div>
       )
     }

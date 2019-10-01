@@ -18,7 +18,7 @@ class StatusBar extends Component {
             <img src={swap}
                  className={style.SwapButton}
                  onClick={this.swapInfiniteScroll.bind(this)}
-	         alt="Can't Find"/>
+	         alt="Switch between single icon view and scrollable multi-icon view"/>
             <div className={style.SwapButtonHelperText}>
                 Hide Annotated image
             </div>

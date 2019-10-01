@@ -13,7 +13,7 @@ class ErrorBar extends Component {
   render() {
     return (
       <div className={style.ErrorBar}>
-        <img src={error} className={style.ErrorIcon} alt="Can't Find"/>
+        <img src={error} className={style.ErrorIcon} alt=""/>
         <div className={style.ErrorMessage}>
           {this.props.message}
         </div>

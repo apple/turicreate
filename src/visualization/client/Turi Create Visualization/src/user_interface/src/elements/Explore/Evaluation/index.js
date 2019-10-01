@@ -33,7 +33,7 @@ class TCEvaluation extends Component {
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'ready'});
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'getCorrects'});
 
-      this.props.spec.labels.map((value, index) => {
+      this.props.spec.labels.forEach((value, index) => {
         if(this.state.incorrect_classification[value] == null){
           const previous_incorrect_dict = this.state.incorrect_classification
           previous_incorrect_dict[value] = "loading"
@@ -47,8 +47,6 @@ class TCEvaluation extends Component {
         }
 	return null;
       });
-
-      this.loadIncorrect()
     }
   }
 

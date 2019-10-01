@@ -7,7 +7,7 @@ class TCEvaluationImageCellsHover extends Component {
       <div className="TCEvaluationImageCellsHover">
         <img width={200}
              src={this.props.src} 
-	     alt="Can't Find" />
+	     alt="" />
       </div>
     );
   }

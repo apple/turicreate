@@ -46,7 +46,7 @@ class ImageContainer extends Component {
           <img src={this.props.src.src}
              className={`${style.ImageContainerSource} ${style.ImageContainerSourceSelected}`}
              style={this.resizeImage(this.props.src.width, this.props.src.height)}
-	     alt="Can't Find"/>
+	     alt=""/>
           {this.renderAnnotation()}
         </div>
       );

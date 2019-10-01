@@ -41,7 +41,7 @@ class TCEvaluationSettings extends Component {
           <img src={filter}
                height={20}
                width={20}
-	       alt="Can't Find"/>
+	       alt="Toggle Filters"/>
         </div>
         {this.renderSettings()}
       </div>

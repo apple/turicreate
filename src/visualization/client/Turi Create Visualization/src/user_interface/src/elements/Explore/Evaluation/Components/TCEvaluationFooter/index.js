@@ -66,7 +66,7 @@ class TCEvaluationFooter extends Component {
         &nbsp;
         <img src={cancel}
          onClick={this.resetFilter.bind(this)}
-         alt="Can't Find"/>
+         alt="Reset Filter"/>
         </div>
     )
   }
@@ -82,7 +82,7 @@ class TCEvaluationFooter extends Component {
         &nbsp;
         <img src={cancel}
          onClick={this.props.selectRowConfusions.bind(this, null, null)}
-	 alt="Can't Find"/>
+	 alt="Select Row"/>
         </div>
     )
   }
@@ -126,7 +126,7 @@ class TCEvaluationFooter extends Component {
             <img src={down_arrow}
                  className="TCEvaluationFooterCarretImage"
                  style={this.cssOpenStyleIcon()}
-	         alt="Can't Find"/>
+	         alt="Toggle Footer"/>
           </div>
         </div>
         {this.render_table()}

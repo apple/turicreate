@@ -35,7 +35,7 @@ class TCEvaluationImageCells extends Component {
         <div className="TCEvaluationImageCells">
           <img width={30}
                src={"data:image/"+this.props.value.format+";base64,"+this.props.value.data} 
-	       alt="Can't Find" />
+	       alt="" />
         </div>
         {this.renderImage()}
       </div>

@@ -60,7 +60,7 @@ class TCEvaluationCells extends Component {
     if(this.props.value <= 0.2){
       return (
         <div className="TCEvaluationCellsPercentShadedWarning">
-          <img src={warning} height={16} alt="Can't Find"/>
+          <img src={warning} height={16} alt="Warning"/>
         </div>
       );
     }

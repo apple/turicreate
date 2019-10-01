@@ -7,7 +7,7 @@ import TCEvaluation from './elements/Explore/Evaluation/index.js';
 
 import messageFormat from './format/message';
 
-import Root from 'protobufjs';
+import { Root } from 'protobufjs';
 
 import TCAnnotate from './elements/Annotate';
 import { initBrowserClient } from './client';

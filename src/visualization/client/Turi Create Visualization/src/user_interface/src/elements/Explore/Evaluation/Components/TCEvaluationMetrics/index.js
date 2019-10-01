@@ -14,7 +14,7 @@ class TCEvaluationMetrics extends Component {
           <img src={info}
                height={10}
                width={10}
-	       alt="Can't Find"/>
+	       alt="Info"/>
         </div>
       );
     }

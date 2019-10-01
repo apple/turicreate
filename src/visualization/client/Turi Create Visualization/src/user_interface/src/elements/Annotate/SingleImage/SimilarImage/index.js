@@ -19,7 +19,7 @@ class SimilarImage extends Component {
           <img src={this.props.src.src}
                className={style.SingleImageIndex}
                style={this.resizeImage(this.props.src.width, this.props.src.height)} 
-	       alt="Can't Find" />
+	       alt="" />
         </div>
       );
     }else{
@@ -29,7 +29,7 @@ class SimilarImage extends Component {
           <img src={this.props.src.src}
                className={style.SingleImageIndex}
                style={this.resizeImage(this.props.src.width, this.props.src.height)} 
-	       alt="Can't Find" />
+	       alt="" />
         </div>
       );
     }
