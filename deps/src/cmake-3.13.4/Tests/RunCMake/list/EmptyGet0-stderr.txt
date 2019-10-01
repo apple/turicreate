@@ -1,4 +1,0 @@
-CMake Error at EmptyGet0.cmake:2 \(list\):
-  list GET given empty list
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

@@ -1,6 +1,0 @@
-CMake Error at ExportExportInclude.cmake:6 \(include\):
-  include could not find load file:
-
-    .*/Tests/RunCMake/include/ExportExportInclude-build/theTargets.cmake
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

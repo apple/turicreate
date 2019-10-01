@@ -1,2 +1,0 @@
-^Running CMake on RerunCMake
-TRUE$

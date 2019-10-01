@@ -1,5 +1,0 @@
-^CMake Error at .*/Modules/CMakeDetermineSwiftCompiler.cmake:[0-9]+ \(message\):
-  Swift language not supported by "[^"]*" generator
-Call Stack \(most recent call first\):
-  NotSupported.cmake:[0-9]+ \(enable_language\)
-  CMakeLists.txt:[0-9]+ \(include\)

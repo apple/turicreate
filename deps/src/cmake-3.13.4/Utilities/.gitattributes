@@ -1,8 +1,0 @@
-/Git                    export-ignore
-/GitSetup               export-ignore
-SetupForDevelopment.sh  export-ignore
-
-# Do not format third-party sources.
-/KWIML/**       -format.clang-format-6.0
-/cm*/**         -format.clang-format-6.0
-/cmcurl/curltest.c format.clang-format-6.0

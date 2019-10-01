@@ -1,3 +1,0 @@
-CMake Error: Property SOMEPROP on target "user" does
-not match the INTERFACE_SOMEPROP property requirement
-of dependency "foo".

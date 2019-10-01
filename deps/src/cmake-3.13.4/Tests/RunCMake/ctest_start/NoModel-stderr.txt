@@ -1,3 +1,0 @@
-^CMake Error at .*/Tests/RunCMake/ctest_start/NoModel/test\.cmake:[0-9]+ \(ctest_start\):
-  ctest_start no test model specified and APPEND not specified.  Specify
-  either a test model or the APPEND argument$

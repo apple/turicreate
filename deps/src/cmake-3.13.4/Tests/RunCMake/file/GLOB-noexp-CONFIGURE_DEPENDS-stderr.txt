@@ -1,4 +1,0 @@
-^CMake Error at GLOB-noexp-CONFIGURE_DEPENDS\.cmake:[0-9]+ \(file\):
-  file GLOB requires a glob expression after CONFIGURE_DEPENDS\.
-Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)$

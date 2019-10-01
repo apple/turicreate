@@ -1,5 +1,0 @@
-CMake Warning \(dev\) at EmptyString.cmake:1 \(include\):
-  include\(\) given empty file name \(ignored\).
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)
-This warning is for project developers.  Use -Wno-dev to suppress it.

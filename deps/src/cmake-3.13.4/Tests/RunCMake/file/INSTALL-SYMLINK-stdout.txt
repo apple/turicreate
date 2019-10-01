@@ -1,3 +1,0 @@
--- Before Installing
--- Installing: .*/Tests/RunCMake/file/INSTALL-SYMLINK-build/dst/current_dir_symlink
--- After Installing

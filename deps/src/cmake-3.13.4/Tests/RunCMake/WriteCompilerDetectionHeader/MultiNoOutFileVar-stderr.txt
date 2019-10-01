@@ -1,5 +1,0 @@
-CMake Error at .*Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
-  If OUTPUT_DIR is specified, then OUTPUT_FILES_VAR must also be specified.
-Call Stack \(most recent call first\):
-  MultiNoOutFileVar.cmake:4 \(write_compiler_detection_header\)
-  CMakeLists.txt:3 \(include\)

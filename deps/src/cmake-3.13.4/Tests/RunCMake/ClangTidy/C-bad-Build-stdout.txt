@@ -1,2 +1,0 @@
-stdout from bad command line arg '-bad'
-stderr from bad command line arg '-bad'

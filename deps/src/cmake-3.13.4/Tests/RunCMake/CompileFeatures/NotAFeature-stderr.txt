@@ -1,2 +1,0 @@
-CMake Error in CMakeLists.txt:
-  Specified unknown feature "not_a_feature" for target "somelib".

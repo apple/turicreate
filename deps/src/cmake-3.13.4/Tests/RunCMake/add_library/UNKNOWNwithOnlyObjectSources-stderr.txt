@@ -1,4 +1,0 @@
-^CMake Error at UNKNOWNwithOnlyObjectSources.cmake:[0-9]+ \(target_sources\):
-  target_sources called with non-compilable target type
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)$

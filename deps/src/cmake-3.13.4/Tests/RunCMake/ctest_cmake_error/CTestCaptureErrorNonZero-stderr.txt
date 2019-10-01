@@ -1,4 +1,0 @@
-.*ctest_configure called with unknown argument "junk".*
-.*ctest_build called with unknown argument "junk".*
-.*ctest_test called with unknown argument "junk".*
-.*ctest_coverage called with unknown argument "junk".*

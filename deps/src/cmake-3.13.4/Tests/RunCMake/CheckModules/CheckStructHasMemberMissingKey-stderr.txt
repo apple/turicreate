@@ -1,8 +1,0 @@
-CMake Error at .*/Modules/CheckStructHasMember.cmake:[0-9]+. \(message\):
-  Unknown arguments:
-
-    C
-
-Call Stack \(most recent call first\):
-  CheckStructHasMemberMissingKey.cmake:[0-9]+ \(check_struct_has_member\)
-  CMakeLists.txt:[0-9]+ \(include\)

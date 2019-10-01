@@ -1,2 +1,0 @@
-
-#define RELATIVE_DIR_DEFINE

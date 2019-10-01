@@ -1,1 +1,0 @@
-get_property(FOO VARIABLE FOO PROPERTY FOO)

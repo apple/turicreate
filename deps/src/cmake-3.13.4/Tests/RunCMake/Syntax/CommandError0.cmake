@@ -1,2 +1,0 @@
-message
-  ("Example Message")

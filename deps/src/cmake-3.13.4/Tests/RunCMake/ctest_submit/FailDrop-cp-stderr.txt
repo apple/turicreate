@@ -1,3 +1,0 @@
-Missing arguments for submit via cp:
-.*
-   Problems when submitting via CP
