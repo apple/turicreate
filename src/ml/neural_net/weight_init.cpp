@@ -61,7 +61,29 @@ xavier_weight_initializer::xavier_weight_initializer(
   result.output_gate_bias_fn = zero_weight_initializer();
 
   return result;
-}
+  }
+
+  lstm_weight_initializers lstm_weight_initializers::create_with_zero()
+  {
+  lstm_weight_initializers result;
+
+  result.input_gate_weight_fn = zero_weight_initializer();
+  result.forget_gate_weight_fn = zero_weight_initializer();
+  result.block_input_weight_fn = zero_weight_initializer();
+  result.output_gate_weight_fn = zero_weight_initializer();
+
+  result.input_gate_recursion_fn = zero_weight_initializer();
+  result.forget_gate_recursion_fn = zero_weight_initializer();
+  result.block_input_recursion_fn = zero_weight_initializer();
+  result.output_gate_recursion_fn = zero_weight_initializer();
+
+  result.input_gate_bias_fn = zero_weight_initializer();
+  result.forget_gate_bias_fn = zero_weight_initializer();
+  result.block_input_bias_fn = zero_weight_initializer();
+  result.output_gate_bias_fn = zero_weight_initializer();
+
+  return result;
+  }
 
 }  // neural_net
 }  // turi
