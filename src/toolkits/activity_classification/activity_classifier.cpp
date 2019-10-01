@@ -524,9 +524,15 @@ void activity_classifier::import_from_custom_model(
   flex_dict pred_model = variant_get_value<flex_dict>(it->second);
   model_data.erase(it);
 
+  //generate a random seed for the model
+  std::random_device random_device;
+  int random_seed = static_cast<int>(random_device());
+  model_data["random_seed"] = random_seed;
+
   // The remaining model data should be interpreted as model attributes (state).
   state.clear();
   state.insert(model_data.begin(), model_data.end());
+
 
   // Migrate the MXNet weights from pred_model, which is a nested dictionary
   // with three layers. The weights we want are spread among two top-level keys:
@@ -991,6 +997,7 @@ void activity_classifier::perform_training_iteration() {
 
 gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   // Open a new SFrame for writing.
+
   gl_sframe_writer writer({"session_id", "preds", "num_samples"},
                           {data->session_id_type(), flex_type_enum::VECTOR,
                            flex_type_enum::INTEGER},
@@ -998,6 +1005,7 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
 
   size_t prediction_window = read_state<size_t>("prediction_window");
   size_t num_classes = read_state<size_t>("num_classes");
+
 
   // Allocate a buffer into which to write the class probabilities.
   flex_vec preds(num_classes);
