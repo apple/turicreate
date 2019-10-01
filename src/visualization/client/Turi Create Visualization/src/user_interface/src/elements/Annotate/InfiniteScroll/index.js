@@ -4,7 +4,6 @@ import style from './index.module.scss';
 import ImageContainer from './ImageContainer';
 
 import imgProperties from './ImageContainer/index.module.scss';
-import { of } from 'rxjs';
 
 // has to be a multiple of 3 to work properly
 const CELL_PADDING = 3;

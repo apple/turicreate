@@ -2,9 +2,6 @@ import React, { Component } from 'react';
 import style from './index.module.scss';
 
 class SimilarImage extends Component {
-  constructor(props) {
-    super(props)
-  }
 
   resizeImage(width, height) {
     if((width/height) > 1) {
@@ -21,7 +18,8 @@ class SimilarImage extends Component {
              onClick={this.props.onClick.bind(this, this.props.src.index)}>
           <img src={this.props.src.src}
                className={style.SingleImageIndex}
-               style={this.resizeImage(this.props.src.width, this.props.src.height)} />
+               style={this.resizeImage(this.props.src.width, this.props.src.height)} 
+	       alt="" />
         </div>
       );
     }else{
@@ -30,7 +28,8 @@ class SimilarImage extends Component {
              onClick={this.props.onClick.bind(this, this.props.src.index)}>
           <img src={this.props.src.src}
                className={style.SingleImageIndex}
-               style={this.resizeImage(this.props.src.width, this.props.src.height)} />
+               style={this.resizeImage(this.props.src.width, this.props.src.height)} 
+	       alt="" />
         </div>
       );
     }

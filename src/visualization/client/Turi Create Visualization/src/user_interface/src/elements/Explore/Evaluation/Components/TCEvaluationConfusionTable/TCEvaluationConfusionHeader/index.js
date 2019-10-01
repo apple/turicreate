@@ -22,16 +22,16 @@ class TCEvaluationConfusionHeader extends Component {
       <div className="TCEvaluationConfusionHeader">
         <TCEvaluationConfusionHeaderCell name="ACTUAL CLASS"
                                          onclick={this.clickActual.bind(this)}
-                                         enabled={(this.props.sort_by_confusions == "actual")}
+                                         enabled={(this.props.sort_by_confusions === "actual")}
                                          direction={!this.props.sort_direction_confusions} />
         <TCEvaluationConfusionHeaderCell name="PREDICTED CLASS"
                                          onclick={this.clickPredicted.bind(this)}
-                                         enabled={(this.props.sort_by_confusions == "predicted")}
+                                         enabled={(this.props.sort_by_confusions === "predicted")}
                                          direction={!this.props.sort_direction_confusions}/>
         <TCEvaluationConfusionHeaderCell name="NUMBER INCORRECT"
                                          type="percent"
                                          onclick={this.clickCount.bind(this)}
-                                         enabled={(this.props.sort_by_confusions == "count")}
+                                         enabled={(this.props.sort_by_confusions === "count")}
                                          direction={!this.props.sort_direction_confusions}/>
         <TCEvaluationConfusionHeaderCell name="INCORRECT CLASSIFICATIONS"
                                          type="images"/>

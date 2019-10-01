@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import './index.scss';
 
-import right_arrow from './assets/right.svg';
-
 import TCEvaluationImageComponent from '../TCEvaluationImageComponent';
 
 class TCEvaluationImageViewerContainer extends Component {
