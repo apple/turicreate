@@ -17,8 +17,6 @@
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
 #include <core/util/string_util.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
-
 
 namespace turi {
 namespace activity_classification {
