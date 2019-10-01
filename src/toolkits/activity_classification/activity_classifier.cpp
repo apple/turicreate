@@ -533,7 +533,6 @@ void activity_classifier::import_from_custom_model(
   state.clear();
   state.insert(model_data.begin(), model_data.end());
 
-
   // Migrate the MXNet weights from pred_model, which is a nested dictionary
   // with three layers. The weights we want are spread among two top-level keys:
   // "arg_params" and "aux_params". The mid-level keys are "data" and "shapes".
@@ -731,6 +730,7 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_zero_init) 
       /* num_input_channels */  FULLY_CONNECTED_HIDDEN_SIZE,
       /* weight_init_fn */ initializer);
   result->add_softmax(target + "Probability", "dense1");
+
   return result;
 }
 
@@ -997,7 +997,6 @@ void activity_classifier::perform_training_iteration() {
 
 gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   // Open a new SFrame for writing.
-
   gl_sframe_writer writer({"session_id", "preds", "num_samples"},
                           {data->session_id_type(), flex_type_enum::VECTOR,
                            flex_type_enum::INTEGER},
@@ -1005,7 +1004,6 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
 
   size_t prediction_window = read_state<size_t>("prediction_window");
   size_t num_classes = read_state<size_t>("num_classes");
-
 
   // Allocate a buffer into which to write the class probabilities.
   flex_vec preds(num_classes);
