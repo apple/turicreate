@@ -493,6 +493,8 @@ class ActivityClassifier_beta(_Model):
             |      ...      |    ...     | ... |
             +---------------+------------+-----+
         """
+        _tkutl._check_categorical_option_type(
+            'output_frequency', output_frequency, ['per_window', 'per_row'])
         if output_frequency == 'per_row':
             return self.__proxy__.predict(dataset, output_type)
         elif output_frequency == 'per_window':
