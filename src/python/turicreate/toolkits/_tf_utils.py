@@ -8,6 +8,16 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as np
+
+
+def get_gpu_names():
+	"""
+	Gets the available GPU names.
+	"""
+	from tensorflow.python.client import device_lib
+	local_device_protos = device_lib.list_local_devices()
+    gpu_names = [x.name for x in local_device_protos if x.device_type == 'GPU']
+    return gpu_names if not None else []
 	
 def convert_shared_float_array_to_numpy(array):
 	"""

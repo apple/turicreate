@@ -129,7 +129,18 @@ size_t tf_compute_context::memory_budget() const {
 }
 
 std::vector<std::string> tf_compute_context::gpu_names() const {
-  return std::vector<std::string>();
+  pybind11::object gpu_devices;
+  std::vector<std::string> gpu_device_names;
+  call_pybind_function([&]() {
+    pybind11::module tf_gpu_devices =
+        pybind11::module::import("turicreate.toolkits._tf_utils");
+
+    // Get the names from tf utilities function
+    gpu_devices = tf_gpu_devices.attr("get_gpu_names")();
+    gpu_device_names = gpu_devices.cast<std::vector<std::string>>();
+  });
+
+  return gpu_device_names;
 }
 
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
