@@ -252,6 +252,7 @@
 }
 
 - (NSDictionary<NSString *, NSData *> *) exportWeights {
+  [self checkpoint];
   return [_model exportWeights:@"transformer_"];
 }
 
@@ -435,6 +436,14 @@
   lossDict[@"loss"] = [NSData dataWithData:lossData];
 
   return [lossDict copy];
+}
+
+- (void) checkpoint {
+  _inferenceGraph = [MPSNNGraph graphWithDevice:_dev
+                                    resultImage:_model.forwardPass
+                            resultImageIsNeeded:YES];
+  
+  _inferenceGraph.format = MPSImageFeatureChannelFormatFloat32;
 }
 
 @end
