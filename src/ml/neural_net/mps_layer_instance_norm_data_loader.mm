@@ -104,12 +104,12 @@ API_AVAILABLE(macos(10.14))
       size_t offset = index * _numberOfFeatureChannels * sizeof(float);
 
       style_property.gammaBuffer = [dev newBufferWithBytes:(char *) _gamma_weights.bytes + offset
-                                                    length:sizeof(float) * _numberOfFeatureChannels
-                                                   options:MTLResourceStorageModeManaged];
-
-      style_property.betaBuffer = [dev newBufferWithBytes:(char *) _beta_weights.bytes + offset
                                                    length:sizeof(float) * _numberOfFeatureChannels
                                                   options:MTLResourceStorageModeManaged];
+
+      style_property.betaBuffer = [dev newBufferWithBytes:(char *) _beta_weights.bytes + offset
+                                                  length:sizeof(float) * _numberOfFeatureChannels
+                                                 options:MTLResourceStorageModeManaged];
 
       style_property.gammaMomentumBuffer = [dev newBufferWithBytes:zeros_ptr
                                                             length:sizeof(float) * _numberOfFeatureChannels
@@ -196,8 +196,8 @@ API_AVAILABLE(macos(10.14))
 
 // TODO: refactor for multiple indicies
 - (float *) gamma {
-  NSUInteger previousStyle = _styleIndex;
   _gammaPlaceHolder = [NSMutableData data];
+  NSUInteger previousStyle = _styleIndex;
   for (NSUInteger index = 0; index < _styles; index++) { 
     _styleIndex = index; 
     [self checkpointWithCommandQueue:_cq];
@@ -243,7 +243,7 @@ API_AVAILABLE(macos(10.14))
 
   }
 
-    return [[_style_props objectAtIndex: _styleIndex] state];
+  return [[_style_props objectAtIndex: _styleIndex] state];
 }
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue {
