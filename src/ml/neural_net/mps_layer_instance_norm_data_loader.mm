@@ -177,11 +177,11 @@ API_AVAILABLE(macos(10.14))
 
 - (float *) beta {
   NSUInteger previousStyle = _styleIndex;
-  _betaPlaceHolder = [NSMutableData data];
+  _betaPlaceHolder.length = 0;
   for (NSUInteger index = 0; index < _styles; index++) {
     _styleIndex = index;
     [self checkpointWithCommandQueue:_cq];
-    float* betaWeights = (float *) [[[_style_props objectAtIndex: _styleIndex] betaBuffer] contents];
+    float* betaWeights = (float *) [_style_props[_styleIndex].betaBuffer contents];
     [_betaPlaceHolder appendBytes:betaWeights length:sizeof(float)*_numberOfFeatureChannels];
   }
   _styleIndex = previousStyle;
@@ -196,12 +196,12 @@ API_AVAILABLE(macos(10.14))
 
 // TODO: refactor for multiple indicies
 - (float *) gamma {
-  _gammaPlaceHolder = [NSMutableData data];
   NSUInteger previousStyle = _styleIndex;
+  _gammaPlaceHolder.length = 0;
   for (NSUInteger index = 0; index < _styles; index++) { 
     _styleIndex = index; 
     [self checkpointWithCommandQueue:_cq];
-    float* gammaWeights = (float *) [[[_style_props objectAtIndex: _styleIndex] gammaBuffer] contents];
+    float* gammaWeights = (float *) [_style_props[_styleIndex].gammaBuffer contents];
     [_gammaPlaceHolder appendBytes:gammaWeights length:sizeof(float)*_numberOfFeatureChannels];
   }
   _styleIndex = previousStyle;
