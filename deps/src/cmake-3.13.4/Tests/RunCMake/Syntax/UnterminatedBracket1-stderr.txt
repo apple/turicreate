@@ -1,7 +1,0 @@
-CMake Error at UnterminatedBracket1.cmake:2:
-  Parse error.  Function missing ending "\)".  Instead found unterminated
-  bracket with text "]]\)
-
-  ".
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

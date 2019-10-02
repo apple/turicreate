@@ -1,9 +1,0 @@
-CMake Warning \(dev\) at CMP0050-WARN.cmake:3 \(add_custom_command\):
-  Policy CMP0050 is not set: Disallow add_custom_command SOURCE signatures.
-  Run "cmake --help-policy CMP0050" for policy details.  Use the cmake_policy
-  command to set the policy and suppress this warning.
-
-  The SOURCE signatures of add_custom_command are no longer supported.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)
-This warning is for project developers.  Use -Wno-dev to suppress it.

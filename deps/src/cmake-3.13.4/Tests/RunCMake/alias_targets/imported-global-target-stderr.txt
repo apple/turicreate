@@ -1,2 +1,0 @@
-^'alias-test-exe' is an alias for 'test-exe' and its name-property contains 'test-exe'.
-'alias-test-lib' is an alias for 'test-lib' and its name-property contains 'test-lib'.$

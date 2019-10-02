@@ -1,1 +1,0 @@
-project(Bad NONE)

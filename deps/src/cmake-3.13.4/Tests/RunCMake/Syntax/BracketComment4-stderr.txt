@@ -1,4 +1,0 @@
-CMake Error at BracketComment4.cmake:3:
-  Parse error.  Expected a newline, got identifier with text "message".
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

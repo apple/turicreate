@@ -1,8 +1,0 @@
-CMake Error at NonValidCompiler-TARGET_PDB_FILE.cmake:6 \(file\):
-  Error evaluating generator expression:
-
-    \$<TARGET_PDB_FILE:empty>
-
-  TARGET_PDB_FILE is not supported by the target linker.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

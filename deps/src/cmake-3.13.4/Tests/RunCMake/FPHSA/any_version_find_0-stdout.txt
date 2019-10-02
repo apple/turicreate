@@ -1,2 +1,0 @@
-Found Pseudo: [^
-]*\(found version "0\"\)

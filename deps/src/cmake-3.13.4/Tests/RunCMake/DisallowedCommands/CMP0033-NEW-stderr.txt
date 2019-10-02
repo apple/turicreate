@@ -1,4 +1,0 @@
-CMake Error at CMP0033-NEW.cmake:2 \(export_library_dependencies\):
-  The export_library_dependencies command should not be called; see CMP0033.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

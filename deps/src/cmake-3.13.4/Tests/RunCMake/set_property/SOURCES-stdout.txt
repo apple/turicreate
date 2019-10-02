@@ -1,1 +1,0 @@
--- Target SOURCES is 'a;b;c;d;e'

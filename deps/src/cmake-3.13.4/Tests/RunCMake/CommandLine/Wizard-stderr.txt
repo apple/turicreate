@@ -1,1 +1,0 @@
-^The "cmake -i" wizard mode is no longer supported\.

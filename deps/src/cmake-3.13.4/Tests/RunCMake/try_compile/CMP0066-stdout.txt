@@ -1,4 +1,0 @@
--- try_compile with CMP0066 WARN-default worked as expected
--- try_compile with CMP0066 WARN-enabled worked as expected
--- try_compile with CMP0066 OLD worked as expected
--- try_compile with CMP0066 NEW worked as expected

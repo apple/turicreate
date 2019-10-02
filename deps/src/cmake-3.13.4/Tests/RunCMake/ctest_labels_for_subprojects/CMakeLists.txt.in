@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.9)
-@CASE_CMAKELISTS_PREFIX_CODE@
-project(CTestLabelsForSubprojects@CASE_NAME@ NONE)
-include(CTest)
-@CASE_CMAKELISTS_SUFFIX_CODE@

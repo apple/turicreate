@@ -1,3 +1,0 @@
-void cpp_static()
-{
-}

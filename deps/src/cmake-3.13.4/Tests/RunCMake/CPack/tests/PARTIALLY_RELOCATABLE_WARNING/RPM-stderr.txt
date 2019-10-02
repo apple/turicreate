@@ -1,1 +1,0 @@
-CPackRPM:Warning: Path /not_relocatable/CMakeLists.txt is not on one of the.*relocatable paths! Package will be partially relocatable.
