@@ -438,6 +438,10 @@
   return [lossDict copy];
 }
 
+/**
+* HACK: this somehow checkpoints the model for weight exports and updating the
+*       data loaders. Following up internally for a proper fix to this issue.
+**/
 - (void) checkpoint {
   _inferenceGraph = [MPSNNGraph graphWithDevice:_dev
                                     resultImage:_model.forwardPass
