@@ -235,7 +235,10 @@
                                              nodeHandler: nil];
 
     _trainingGraph = [MPSNNGraph graphWithDevice:_dev
-                                    resultImages:@[lastNodes[0].resultImage, lastNodes[1].resultImage]
+                                    resultImages:@[lastNodes[0].resultImage,
+                                                   lastNodes[1].resultImage,
+                                                   lastNodes[2].resultImage,
+                                                   lastNodes[3].resultImage]
                                 resultsAreNeeded:&resultsAreNeeded[0]];
 
     _inferenceGraph = [MPSNNGraph graphWithDevice:_dev

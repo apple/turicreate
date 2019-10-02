@@ -237,7 +237,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     transformer = _Transformer(num_styles, batch_size_each)
     transformer.collect_params().initialize(ctx=ctx)
 
-    if params['pretrained_weights'] or use_mps:
+    if params['pretrained_weights']:
         transformer.load_params(transformer_model_path, ctx, allow_missing=True)
 
     # For some reason, the transformer fails to hybridize for training, so we
@@ -409,11 +409,13 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         mps_mxnet_key_map = _MpsStyleGraphAPI.mps_mxnet_weight_dict()
 
-
         for key in mps_weights:
-            if "transformer" in key and ("inst" in key or "conv" in key):
+            if "transformer" in key and "inst" in key:
                 weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape))
+                if inst in key:
+                    mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key].reshape((weight.shape))))
+                elif "conv" in key:
+                    mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key].reshape((weight.shape[0], weight.shape[2], weight.shape[3], weight.shape[1]))))
                 transformer.collect_params()[mps_mxnet_key_map[key]].set_data(mxnet_weight)
 
         training_time = _time.time() - start_time
