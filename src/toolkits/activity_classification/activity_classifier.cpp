@@ -395,7 +395,6 @@ gl_sarray activity_classifier::predict(gl_sframe data,
                       /* use_data_augmentation */ false);
 
   // Accumulate the class probabilities for each prediction window.
-
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
 
   // Assume output_frequency is "per_row". Duplicate each probability vector a
