@@ -73,6 +73,8 @@ make_library(unity_neural_net OBJECT
     ${additional_unity_neural_net_requirements}
 )
 
+if(TC_BUILD_PYTHON)
+
 make_library(tctensorflow SHARED
   SOURCES
   tf_compute_context.cpp
@@ -85,3 +87,5 @@ set_target_properties(tctensorflow
     SUFFIX ".so"
     LIBRARY_OUTPUT_DIRECTORY ${TF_BUILD_DIR}
 )
+
+endif()
