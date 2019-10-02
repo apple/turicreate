@@ -35,6 +35,7 @@ API_AVAILABLE(macos(10.15))
 - (NSDictionary<NSString *, NSData *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs;
 - (void) setLearningRate:(float)lr;
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs;
+- (void) checkpoint;
 
 @end
 

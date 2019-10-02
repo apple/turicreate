@@ -22,6 +22,8 @@ API_AVAILABLE(macos(10.14))
   @property (nonatomic) id<MTLBuffer> gammaVelocityBuffer;
   @property (nonatomic) id<MTLBuffer> betaMomentumBuffer;
   @property (nonatomic) id<MTLBuffer> betaVelocityBuffer;
+  @property (nonatomic) id<MTLBuffer> gammaBuffer;
+  @property (nonatomic) id<MTLBuffer> betaBuffer;
 
   @property (nonatomic) MPSCNNNormalizationGammaAndBetaState *state;
 @end
@@ -101,11 +103,11 @@ API_AVAILABLE(macos(10.14))
 
       size_t offset = index * _numberOfFeatureChannels * sizeof(float);
 
-      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:(char *) _gamma_weights.bytes + offset
+      style_property.gammaBuffer = [dev newBufferWithBytes:(char *) _gamma_weights.bytes + offset
                                                    length:sizeof(float) * _numberOfFeatureChannels
                                                   options:MTLResourceStorageModeManaged];
 
-      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:(char *) _beta_weights.bytes + offset
+      style_property.betaBuffer = [dev newBufferWithBytes:(char *) _beta_weights.bytes + offset
                                                   length:sizeof(float) * _numberOfFeatureChannels
                                                  options:MTLResourceStorageModeManaged];
 
@@ -133,7 +135,7 @@ API_AVAILABLE(macos(10.14))
                                                              length:sizeof(float) * _numberOfFeatureChannels
                                                             options:MTLResourceStorageModeManaged];
 
-      style_property.gammaVector = [[MPSVector alloc] initWithBuffer:gammaBuffer
+      style_property.gammaVector = [[MPSVector alloc] initWithBuffer:style_property.gammaBuffer
                                                           descriptor:_vDesc];
 
       style_property.gammaMomentumVector = [[MPSVector alloc] initWithBuffer:style_property.gammaMomentumBuffer
@@ -142,7 +144,7 @@ API_AVAILABLE(macos(10.14))
       style_property.gammaVelocityVector = [[MPSVector alloc] initWithBuffer:style_property.gammaVelocityBuffer
                                                                   descriptor:_vDesc];
 
-      style_property.betaVector = [[MPSVector alloc] initWithBuffer:betaBuffer
+      style_property.betaVector = [[MPSVector alloc] initWithBuffer:style_property.betaBuffer
                                                          descriptor:_vDesc];
 
       style_property.betaMomentumVector = [[MPSVector alloc] initWithBuffer:style_property.betaMomentumBuffer
@@ -151,8 +153,8 @@ API_AVAILABLE(macos(10.14))
       style_property.betaVelocityVector = [[MPSVector alloc] initWithBuffer:style_property.betaVelocityBuffer
                                                                  descriptor:_vDesc];
 
-      style_property.state = [[MPSCNNNormalizationGammaAndBetaState alloc] initWithGamma:gammaBuffer
-                                                                                    beta:betaBuffer];
+      style_property.state = [[MPSCNNNormalizationGammaAndBetaState alloc] initWithGamma:style_property.gammaBuffer
+                                                                                    beta:style_property.betaBuffer];
 
       [_style_props addObject:style_property];
     }
@@ -175,10 +177,11 @@ API_AVAILABLE(macos(10.14))
 
 - (float *) beta {
   NSUInteger previousStyle = _styleIndex;
+  _betaPlaceHolder.length = 0;
   for (NSUInteger index = 0; index < _styles; index++) {
     _styleIndex = index;
     [self checkpointWithCommandQueue:_cq];
-    float* betaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] betaVector] data] contents];
+    float* betaWeights = (float *) [_style_props[_styleIndex].betaBuffer contents];
     [_betaPlaceHolder appendBytes:betaWeights length:sizeof(float)*_numberOfFeatureChannels];
   }
   _styleIndex = previousStyle;
@@ -194,10 +197,11 @@ API_AVAILABLE(macos(10.14))
 // TODO: refactor for multiple indicies
 - (float *) gamma {
   NSUInteger previousStyle = _styleIndex;
+  _gammaPlaceHolder.length = 0;
   for (NSUInteger index = 0; index < _styles; index++) { 
     _styleIndex = index; 
     [self checkpointWithCommandQueue:_cq];
-    float* gammaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] gammaVector] data] contents];
+    float* gammaWeights = (float *) [_style_props[_styleIndex].gammaBuffer contents];
     [_gammaPlaceHolder appendBytes:gammaWeights length:sizeof(float)*_numberOfFeatureChannels];
   }
   _styleIndex = previousStyle;
@@ -239,7 +243,7 @@ API_AVAILABLE(macos(10.14))
 
   }
 
-    return [[_style_props objectAtIndex: _styleIndex] state];
+  return [[_style_props objectAtIndex: _styleIndex] state];
 }
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue {

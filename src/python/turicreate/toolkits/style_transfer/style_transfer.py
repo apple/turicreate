@@ -237,7 +237,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     transformer = _Transformer(num_styles, batch_size_each)
     transformer.collect_params().initialize(ctx=ctx)
 
-    if params['pretrained_weights'] or use_mps:
+    if params['pretrained_weights']:
         transformer.load_params(transformer_model_path, ctx, allow_missing=True)
 
     # For some reason, the transformer fails to hybridize for training, so we
@@ -409,11 +409,25 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         mps_mxnet_key_map = _MpsStyleGraphAPI.mps_mxnet_weight_dict()
 
-
+        # LOGIC
+        #
+        # The two layers we are concerned about are very different. The instance
+        # norm layer weights should have a dimensionality two. Wheras the 
+        # Convolutional Weights have a dimensionality of four. The Convolutional
+        # weights are in a different format in MxNet then they are in MPS. Since
+        # the arrays come back flattened in the MPS a reshape has to occur. But
+        # this reshape happens before the transpose therefore the shape itself
+        # has to be transposed. For the InstanceNorm Layer, however, the weights
+        # are passed back to MxNet in the correct format so just a simple
+        # reshape suffices.
+        #
         for key in mps_weights:
-            if "transformer" in key and ("inst" in key or "conv" in key):
+            if "transformer" in key:
                 weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key]).reshape(weight.shape))
+                if "inst" in key:
+                    mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key].reshape((weight.shape))))
+                elif "conv" in key:
+                    mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key].reshape((weight.shape[0], weight.shape[2], weight.shape[3], weight.shape[1]))))
                 transformer.collect_params()[mps_mxnet_key_map[key]].set_data(mxnet_weight)
 
         training_time = _time.time() - start_time

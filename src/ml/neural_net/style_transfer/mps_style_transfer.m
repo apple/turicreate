@@ -235,7 +235,10 @@
                                              nodeHandler: nil];
 
     _trainingGraph = [MPSNNGraph graphWithDevice:_dev
-                                    resultImages:@[lastNodes[0].resultImage, lastNodes[1].resultImage]
+                                    resultImages:@[lastNodes[0].resultImage,
+                                                   lastNodes[1].resultImage,
+                                                   lastNodes[2].resultImage,
+                                                   lastNodes[3].resultImage]
                                 resultsAreNeeded:&resultsAreNeeded[0]];
 
     _inferenceGraph = [MPSNNGraph graphWithDevice:_dev
@@ -249,6 +252,7 @@
 }
 
 - (NSDictionary<NSString *, NSData *> *) exportWeights {
+  [self checkpoint];
   return [_model exportWeights:@"transformer_"];
 }
 
@@ -432,6 +436,18 @@
   lossDict[@"loss"] = [NSData dataWithData:lossData];
 
   return [lossDict copy];
+}
+
+/**
+* HACK: this somehow checkpoints the model for weight exports and updating the
+*       data loaders. Following up internally for a proper fix to this issue.
+**/
+- (void) checkpoint {
+  _inferenceGraph = [MPSNNGraph graphWithDevice:_dev
+                                    resultImage:_model.forwardPass
+                            resultImageIsNeeded:YES];
+  
+  _inferenceGraph.format = MPSImageFeatureChannelFormatFloat32;
 }
 
 @end
