@@ -410,9 +410,9 @@ def create(style_dataset, content_dataset, style_feature=None,
         mps_mxnet_key_map = _MpsStyleGraphAPI.mps_mxnet_weight_dict()
 
         for key in mps_weights:
-            if "transformer" in key and "inst" in key:
+            if "transformer" in key:
                 weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
-                if inst in key:
+                if "inst" in key:
                     mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key].reshape((weight.shape))))
                 elif "conv" in key:
                     mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key].reshape((weight.shape[0], weight.shape[2], weight.shape[3], weight.shape[1]))))
