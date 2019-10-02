@@ -1,8 +1,0 @@
-CMake Error at ComponentRequiredAndOptional.cmake:1 \(find_package\):
-  find_package called with components that are both required and optional:
-
-    CompA
-    CompB
-
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

@@ -1,4 +1,0 @@
-CMake Error at SourceUsesTerminal.cmake:1 \(add_custom_command\):
-  add_custom_command USES_TERMINAL may not be used with SOURCE signatures
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

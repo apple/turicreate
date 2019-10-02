@@ -1,2 +1,0 @@
-^CMake Error: The source directory ".*/Tests/RunCMake/CommandLine/Dno-src-build" does not appear to contain CMakeLists.txt.
-Specify --help for usage, or press the help button on the CMake GUI.$

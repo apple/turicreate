@@ -1,4 +1,0 @@
-CMake Error at CMP0036-NEW.cmake:2 \(build_name\):
-  The build_name command should not be called; see CMP0036.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

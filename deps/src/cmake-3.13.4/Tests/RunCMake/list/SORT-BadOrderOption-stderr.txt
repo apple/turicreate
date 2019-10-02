@@ -1,5 +1,0 @@
-^CMake Error at SORT-BadOrderOption.cmake:1 \(list\):
-  list sub-command SORT value "BAD_ODER_OPTION" for option "ORDER" is
-  invalid.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

@@ -1,4 +1,0 @@
-^CMake Error at ProjectHomepage2.cmake:2 \(project\):
-  HOMEPAGE_URL may be specified at most once.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)$

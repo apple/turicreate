@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/Icons" >
-        <file>CMakeSetup128.png</file>
-        <file>CMakeSetup32.png</file>
-        <file>Delete16.png</file>
-        <file>Plus16.png</file>
-    </qresource>
-</RCC>

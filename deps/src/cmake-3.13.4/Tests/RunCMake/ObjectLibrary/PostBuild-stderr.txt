@@ -1,5 +1,0 @@
-CMake Error at PostBuild.cmake:2 \(add_custom_command\):
-  Target "A" is an OBJECT library that may not have PRE_BUILD, PRE_LINK, or
-  POST_BUILD commands.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

@@ -1,3 +1,0 @@
-^before PARENT_SCOPE blah=value2
-after PARENT_SCOPE blah=value2
-in parent scope, blah=value2$

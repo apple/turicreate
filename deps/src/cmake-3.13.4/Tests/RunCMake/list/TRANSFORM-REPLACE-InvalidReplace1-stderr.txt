@@ -1,5 +1,0 @@
-^CMake Error at TRANSFORM-REPLACE-InvalidReplace1.cmake:2 \(list\):
-  list sub-command TRANSFORM, action REPLACE: replace-expression ends in a
-  backslash.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

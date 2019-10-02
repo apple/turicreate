@@ -1,1 +1,0 @@
--- privatelib: .*Tests/RunCMake/TargetSources/RelativePathInSubdirPrivate/subdir_empty_1.cpp;.*Tests/RunCMake/TargetSources/RelativePathInSubdirPrivate/subdir_empty_2.cpp;.*Tests/RunCMake/TargetSources/RelativePathInSubdirPrivate/../empty_1.cpp;.*Tests/RunCMake/TargetSources/RelativePathInSubdirPrivate/../empty_2.cpp

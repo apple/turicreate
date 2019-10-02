@@ -1,9 +1,0 @@
-CMake Error at global-interface.cmake:2 \(add_library\):
-  Cannot find source file:
-
-    GLOBAL
-
-  Tried extensions( \.[A-Za-z+]+|
- )*
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

@@ -1,4 +1,0 @@
-^CMake Error at SORT-NoCaseOption.cmake:1 \(list\):
-  list sub-command SORT missing argument for option "CASE".
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

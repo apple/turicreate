@@ -1,2 +1,0 @@
-^\${x},\${ARGN},\${ARGC},\${ARGV},\${ARGV0},\${ARGV1},\${ARGV2}:a,n,2,a;n,a,n,
-\${x},\${ARGN},\${ARGC},\${ARGV},\${ARGV0},\${ARGV1},\${ARGV2}:b,n,2,b;n,b,n,$

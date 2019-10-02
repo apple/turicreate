@@ -1,2 +1,0 @@
-CREATED_LIBRARY='CREATED_LIBRARY-NOTFOUND'
-CREATED_LIBRARY='[^']*/Tests/RunCMake/find_library/Created-build/lib/libcreated.a'

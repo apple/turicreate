@@ -1,1 +1,0 @@
-Cannot find memory tester output file: .*/Tests/RunCMake/ctest_memcheck/DummyPurifyNoLogFile-build/Testing/Temporary/MemoryChecker.1.log

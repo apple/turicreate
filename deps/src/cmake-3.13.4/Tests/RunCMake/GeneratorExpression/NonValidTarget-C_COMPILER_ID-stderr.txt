@@ -1,9 +1,0 @@
-CMake Error at NonValidTarget-C_COMPILER_ID.cmake:1 \(add_custom_command\):
-  Error evaluating generator expression:
-
-    \$<C_COMPILER_ID>
-
-  \$<C_COMPILER_ID> may only be used with binary targets.  It may not be used
-  with add_custom_command or add_custom_target.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

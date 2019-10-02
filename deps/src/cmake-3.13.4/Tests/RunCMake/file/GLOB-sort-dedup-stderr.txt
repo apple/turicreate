@@ -1,2 +1,0 @@
-content: 7[ ]
-1aAb/\.hide;1aAb/1\.log;1aAb/1\.txt;1aAb/xkcd\.txt;a/1\.log;a/1\.txt;a/boot\.ini

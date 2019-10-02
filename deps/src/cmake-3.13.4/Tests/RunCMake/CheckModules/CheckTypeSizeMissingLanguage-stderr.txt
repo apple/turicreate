@@ -1,8 +1,0 @@
-CMake Error at .*/Modules/CheckTypeSize.cmake:[0-9]+ \(message\):
-  Missing argument:
-
-    LANGUAGE arguments requires a value
-
-Call Stack \(most recent call first\):
-  CheckTypeSizeMissingLanguage.cmake:[0-9]+ \(check_type_size\)
-  CMakeLists.txt:[0-9]+ \(include\)
