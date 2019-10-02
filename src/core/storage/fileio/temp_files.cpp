@@ -135,7 +135,7 @@ static std::string get_turicreate_temp_directory_prefix() {
   return turicreate_name;
 }
 
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
 static fs::path get_current_process_hdfs_temp_directory() {
   fs::path path;
   if (fileio::get_cache_file_hdfs_location() != "") {
@@ -311,7 +311,7 @@ EXPORT std::string get_temp_name(const std::string& prefix, bool _prefer_hdfs) {
   // Local system temp dir
   fs::path path(get_current_process_temp_directory(get_temp_info().temp_file_counter++));
 
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   // hdfs temp dir
   fs::path hdfs_path(get_current_process_hdfs_temp_directory());
   if (_prefer_hdfs && !hdfs_path.empty()) {

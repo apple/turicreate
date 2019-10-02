@@ -229,7 +229,7 @@ void global_teardown::perform_teardown() {
     MEMORY_RELEASE_THREAD->stop();
     delete MEMORY_RELEASE_THREAD;
     turi::fileio::fixed_size_cache_manager::get_instance().clear();
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
     turi::file_download_cache::get_instance().clear();
 #endif
     turi::block_cache::release_instance();

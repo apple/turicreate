@@ -5,6 +5,9 @@
  */
 #ifndef TURI_S3_UPLOADER_HPP
 #define TURI_S3_UPLOADER_HPP
+
+#ifndef TC_DISABLE_REMOTEFS
+
 #include <string>
 #include <fstream>
 #include <future>
@@ -243,5 +246,7 @@ std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
       << " in " << __FILE__ << " at " << __LINE__
 
 }  // namespace turi
+
+#endif // End ifndef TC_DISABLE_REMOTEFS
 
 #endif

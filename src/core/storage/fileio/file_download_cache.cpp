@@ -30,7 +30,7 @@ std::string file_download_cache::get_file(const std::string& url) {
   lock.lock();
   if (url_to_file.count(url)) {
     bool cache_dirty = false;
-#ifndef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
     if (boost::starts_with(url, "s3://")) {
       std::string last_modified = "";
       try {
@@ -60,11 +60,11 @@ std::string file_download_cache::get_file(const std::string& url) {
   int status; bool is_temp;
   std::tie(status, is_temp, localfile) = download_url(url);
   if (status) {
-#ifdef TC_ENABLE_REMOTEFS
-    log_and_throw_io_failure("Not implemented: compiled without support for http(s):// URLs.");
-#else
+#ifndef TC_DISABLE_REMOTEFS
     log_and_throw_io_failure("Fail to download from " + url +
                              ". " + get_curl_error_string(status));
+#else
+    log_and_throw_io_failure("Not implemented: compiled without support for http(s):// URLs.");
 #endif
   }
   if (is_temp) {

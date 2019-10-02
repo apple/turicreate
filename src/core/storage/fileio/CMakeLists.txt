@@ -6,7 +6,7 @@ else()
   SET(PLATFORM_DEPENDENCIES dl)
 endif()
 
-if(TC_ENABLE_REMOTEFS)
+if(${TC_BUILD_REMOTEFS})
   add_library(soft_hdfs INTERFACE )
   target_compile_definitions(soft_hdfs INTERFACE HAS_HDFS)
   target_compile_definitions(soft_hdfs INTERFACE HAS_HADOOP) # legacy

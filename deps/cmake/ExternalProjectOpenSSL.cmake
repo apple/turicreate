@@ -1,4 +1,4 @@
-if(TC_NO_CURL)
+if(NOT ${TC_BUILD_REMOTEFS})
   make_empty_library(openssl)
   return()
 endif()

@@ -8,14 +8,14 @@
 #include <core/logging/logger.hpp>
 #include <core/storage/fileio/sanitize_url.hpp>
 #include <core/export.hpp>
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
 #include <core/storage/fileio/s3_api.hpp>
 #endif
 
 namespace turi {
 
 EXPORT std::string sanitize_url(std::string url) {
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   if (boost::algorithm::starts_with(url, "s3://")) {
 #ifdef TC_BUILD_IOS
     log_and_throw_io_failure("Not implemented: compiled without support for s3:// URLs.");

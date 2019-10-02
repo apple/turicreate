@@ -7,7 +7,7 @@
 #include <core/storage/fileio/union_fstream.hpp>
 #include <core/storage/fileio/cache_stream.hpp>
 
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
 #include <core/storage/fileio/s3_fstream.hpp>
 #include <core/storage/fileio/curl_downloader.hpp>
 #include <core/storage/fileio/file_download_cache.hpp>
@@ -53,7 +53,7 @@ union_fstream::union_fstream(std::string url,
       m_file_size = (*cachestream)->file_size();
       original_input_stream_handle = std::static_pointer_cast<std::istream>(cachestream);
     }
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   } else if(boost::starts_with(url, "hdfs://")) {
     // HDFS file type
     type = HDFS;
@@ -104,7 +104,7 @@ union_fstream::union_fstream(std::string url,
         log_and_throw_current_io_failure();
       }
     } else {
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
       url = file_download_cache::get_instance().get_file(url);
       input_stream.reset(new std::ifstream(url, std::ifstream::binary));
       if (!input_stream->good()) {
@@ -121,7 +121,7 @@ union_fstream::union_fstream(std::string url,
         }
       }
 #else
-      log_and_throw_io_failure("Cannot open " + url + " for reading");
+      log_and_throw_io_failure("Cannot open " + url + " for reading; Remote FS support disabled.");
 #endif
     }
   }

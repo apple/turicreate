@@ -11,7 +11,7 @@ make_boost_test(general_fstream_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(parse_hdfs_url_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(block_cache_test.cxx REQUIRES unity_shared_for_testing)
 
-if (TC_ENABLE_REMOTEFS)
+if (${TC_BUILD_REMOTEFS})
   make_boost_test(s3api_test.cxx REQUIRES unity_shared_for_testing)
 endif()
 
