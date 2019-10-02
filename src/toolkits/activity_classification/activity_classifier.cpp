@@ -31,9 +31,9 @@ using neural_net::model_backend;
 using neural_net::model_spec;
 using neural_net::lstm_weight_initializers;
 using neural_net::shared_float_array;
+using neural_net::weight_initializer;
 using neural_net::xavier_weight_initializer;
 using neural_net::zero_weight_initializer;
-using neural_net::weight_initializer;
 
 using padding_type = model_spec::padding_type;
 
@@ -144,7 +144,8 @@ void activity_classifier::load_version(iarchive& iarc, size_t version) {
   // Load neural net weights.
   float_array_map nn_params;
   iarc >> nn_params;
-  nn_spec_ = init_model();
+  bool use_random_init = false;
+  nn_spec_ = init_model(use_random_init);
   nn_spec_->update_params(nn_params);
 }
 
@@ -394,6 +395,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
                       /* use_data_augmentation */ false);
 
   // Accumulate the class probabilities for each prediction window.
+
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
 
   // Assume output_frequency is "per_row". Duplicate each probability vector a
@@ -525,11 +527,6 @@ void activity_classifier::import_from_custom_model(
   flex_dict pred_model = variant_get_value<flex_dict>(it->second);
   model_data.erase(it);
 
-  //generate a random seed for the model
-  std::random_device random_device;
-  int random_seed = static_cast<int>(random_device());
-  model_data["random_seed"] = random_seed;
-
   // The remaining model data should be interpreted as model attributes (state).
   state.clear();
   state.insert(model_data.begin(), model_data.end());
@@ -613,8 +610,8 @@ void activity_classifier::import_from_custom_model(
   }
 
   // Load the migrated weights.
-  bool use_zero_init = true;
-  nn_spec_ = init_model(use_zero_init);
+  bool use_random_init = false;
+  nn_spec_ = init_model(use_random_init);
   nn_spec_->update_params(nn_params);
 }
 
@@ -639,7 +636,12 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
   data_params.prediction_window = read_state<flex_int>("prediction_window");
   data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
   data_params.use_data_augmentation = use_data_augmentation;
-  data_params.random_seed = read_state<int>("random_seed");
+  if (!use_data_augmentation){
+    data_params.random_seed = 0;
+  }
+  else{
+    data_params.random_seed = read_state<int>("random_seed");
+  }
   return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));
 }
 
@@ -649,7 +651,7 @@ activity_classifier::create_compute_context() const
   return compute_context::create();
 }
 
-std::unique_ptr<model_spec> activity_classifier::init_model(bool use_zero_init) const
+std::unique_ptr<model_spec> activity_classifier::init_model(bool use_random_init) const
 {
   std::unique_ptr<model_spec> result(new model_spec);
 
@@ -659,9 +661,9 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_zero_init) 
   size_t prediction_window = read_state<flex_int>("prediction_window");
   const flex_list &features_list = read_state<flex_list>("features");
 
-  //Only to create a random engine for weight initialization if use_zero_init = false
+  //Only to create a random engine for weight initialization if use_random_init = true
   std::mt19937 random_engine;
-  if (use_zero_init == false){
+  if (use_random_init){
     std::seed_seq seed_seq { read_state<int>("random_seed") };
     random_engine = std::mt19937(seed_seq);
   }
@@ -670,12 +672,15 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_zero_init) 
       std::vector<std::string>(features_list.begin(), features_list.end()));
   result->add_reshape("reshape", "features",
                       {{1, num_features, 1, prediction_window}});
-  weight_initializer initializer;
-  lstm_weight_initializers lstm_initializer;
-  initializer = (use_zero_init) ? (weight_initializer) zero_weight_initializer() :
-  (weight_initializer) xavier_weight_initializer(num_features * prediction_window,
+
+  weight_initializer initializer = zero_weight_initializer();
+  lstm_weight_initializers lstm_initializer = lstm_weight_initializers::create_with_zero();
+  
+  if (use_random_init){
+    initializer = xavier_weight_initializer(num_features * prediction_window,
                                 NUM_CONV_FILTERS * prediction_window,
                                 &random_engine);
+  }
   result->add_convolution(
       /* name */ "conv",
       /* input */ "reshape",
@@ -691,10 +696,11 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_zero_init) 
   result->add_relu("relu1", "conv");
   result->add_channel_slice("hiddenIn","stateIn",0,LSTM_HIDDEN_SIZE,1);
   result->add_channel_slice("cellIn","stateIn",LSTM_HIDDEN_SIZE,LSTM_HIDDEN_SIZE*2,1);
-  lstm_initializer = (use_zero_init) ? 
-  lstm_weight_initializers::create_with_zero() :
-  lstm_weight_initializers::create_with_xavier_method(
+
+  if (use_random_init){
+    lstm_initializer = lstm_weight_initializers::create_with_xavier_method(
           NUM_CONV_FILTERS, LSTM_HIDDEN_SIZE, &random_engine);
+  }
   result->add_lstm(
       /* name */                "lstm",
       /* input */               "relu1",
@@ -707,10 +713,12 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_zero_init) 
       /* cell_clip_threshold */ LSTM_CELL_CLIP_THRESHOLD,
       /* initializers */ lstm_initializer);
   result->add_channel_concat("stateOut",{"hiddenOut","cellOut"});
-  initializer = (use_zero_init) ? (weight_initializer) zero_weight_initializer() :
-  (weight_initializer) xavier_weight_initializer(LSTM_HIDDEN_SIZE,
+
+  if (use_random_init){
+    initializer = xavier_weight_initializer(LSTM_HIDDEN_SIZE,
                                 FULLY_CONNECTED_HIDDEN_SIZE,
                                 &random_engine);
+  }
   result->add_inner_product(
       /* name */ "dense0",
       /* input */ "lstm",
@@ -720,10 +728,12 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_zero_init) 
       /* bias_init_fn */ zero_weight_initializer());
   result->add_batchnorm("bn", "dense0", FULLY_CONNECTED_HIDDEN_SIZE, 0.001f);
   result->add_relu("relu6", "bn");
-  initializer = (use_zero_init) ? (weight_initializer) zero_weight_initializer() :
-  (weight_initializer) xavier_weight_initializer(FULLY_CONNECTED_HIDDEN_SIZE,
+
+  if (use_random_init){
+    initializer = xavier_weight_initializer(FULLY_CONNECTED_HIDDEN_SIZE,
                                 num_classes,
                                 &random_engine);
+  }
   result->add_inner_product(
       /* name */                "dense1",
       /* input */               "relu6",
@@ -861,7 +871,8 @@ void activity_classifier::init_train(
 
   // Initialize the neural net. Note that this depends on statistics computed by
   // the data iterator.
-  nn_spec_ = init_model();
+  bool use_random_init = true;
+  nn_spec_ = init_model(use_random_init);
 
   // Instantiate the NN backend.
   size_t samples_per_chunk =
