@@ -50,7 +50,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       ${METAL}
       ${METAL_PERFORMANCE_SHADERS}
   )
-  target_compile_options(tcmps PUBLIC "-fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar")
+  target_compile_options(tcmps PRIVATE -fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar)
   set(additional_unity_neural_net_requirements tcmps)
 else()
   set(additional_unity_neural_net_requirements "")
