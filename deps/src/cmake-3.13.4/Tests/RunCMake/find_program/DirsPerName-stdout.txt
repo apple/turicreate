@@ -1,2 +1,0 @@
--- PROG='[^']*/Tests/RunCMake/find_program/B/testB'
--- PROG_ABS='[^']*/Tests/RunCMake/find_program/A/testA'

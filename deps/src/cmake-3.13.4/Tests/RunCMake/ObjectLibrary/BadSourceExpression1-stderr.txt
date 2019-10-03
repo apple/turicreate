@@ -1,8 +1,0 @@
-CMake Error at BadSourceExpression1.cmake:1 \(add_library\):
-  Error evaluating generator expression:
-
-    \$<BAD_EXPRESSION>
-
-  Expression did not evaluate to a known generator expression
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

@@ -1,4 +1,0 @@
-^[^
-]* Generating output1
-[^
-]* Generating output2$

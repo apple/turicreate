@@ -1,3 +1,0 @@
-^TAG file does not contain model and no model specified in start command
-CMake Error at .*/Tests/RunCMake/ctest_start/AppendOldNoModel/test.cmake:[0-9]+ \(ctest_start\):
-  ctest_start unknown error.$

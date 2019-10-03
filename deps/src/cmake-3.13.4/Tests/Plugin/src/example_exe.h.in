@@ -1,6 +1,0 @@
-#ifndef example_exe_h
-#define example_exe_h
-
-#define EXAMPLE_EXE_PLUGIN_DIR "@CMAKE_LIBRARY_OUTPUT_DIRECTORY@"
-
-#endif

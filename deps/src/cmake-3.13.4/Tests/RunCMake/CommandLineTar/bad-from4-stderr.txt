@@ -1,2 +1,0 @@
-^CMake Error: archive_read_disk_entry_from_file 'does-not-exist':.*
-CMake Error: Problem creating tar: bad.tar$

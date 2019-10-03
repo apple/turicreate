@@ -1,5 +1,0 @@
-CMake Error at CommandError2.cmake:1:
-  Parse error.  Expected a command name, got bracket argument with text
-  "oops-not-a-comment".
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

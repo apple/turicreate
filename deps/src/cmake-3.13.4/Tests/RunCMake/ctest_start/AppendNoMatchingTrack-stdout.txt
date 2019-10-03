@@ -1,8 +1,0 @@
-Run dashboard with model Continuous
-   Source directory: .*/Tests/RunCMake/ctest_start/AppendNoMatchingTrack
-   Build directory: .*/Tests/RunCMake/ctest_start/AppendNoMatchingTrack-build
-   Reading ctest configuration file: .*/Tests/RunCMake/ctest_start/AppendNoMatchingTrack/CTestConfig.cmake
-   Site: test-site
-   Build name: test-build-name
-  Use existing tag: 19551112-2204 - SomeWeirdTrackName
-   Use SomeWeirdTrackName tag: [0-9-]+

@@ -1,4 +1,0 @@
-add_library(SubDirLinkBImported IMPORTED INTERFACE)
-target_compile_definitions(SubDirLinkBImported INTERFACE DEF_SubDirLinkBImportedForExport)
-
-target_link_libraries(SubDirLinkA PUBLIC SubDirLinkBImported)

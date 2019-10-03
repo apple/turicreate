@@ -1,9 +1,0 @@
-50% tests passed, 1 tests failed out of 2
-+
-Total Test time \(real\) = +[0-9.]+ sec
-+
-The following tests did not run:
-.*3 \- DisabledFailingTest \(Disabled\)
-+
-The following tests FAILED:
-.*2 \- FailingTest \(Failed\)

@@ -1,6 +1,0 @@
--- PROG_ABS='PROG_ABS-NOTFOUND'
--- PROG_ABS_NPD='PROG_ABS_NPD-NOTFOUND'
--- PROG_CWD='PROG_CWD-NOTFOUND'
--- PROG_CWD_NPD='PROG_CWD_NPD-NOTFOUND'
--- PROG_CWD_DOT='[^']*/Tests/RunCMake/find_program/testCWD'
--- PROG_CWD_DOT_NPD='[^']*/Tests/RunCMake/find_program/testCWD'

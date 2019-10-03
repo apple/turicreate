@@ -431,6 +431,8 @@ class ODTensorFlowModel(object):
                 # [output_channels, input_channels, filter_height, filter_width]
                 tf_export_params.update(
                     {var.name.replace(":0", ""): val.transpose(3,2,0,1)})
+        for layer_name in tf_export_params.keys():
+            tf_export_params[layer_name] = _np.ascontiguousarray(tf_export_params[layer_name])
 
         return tf_export_params
 

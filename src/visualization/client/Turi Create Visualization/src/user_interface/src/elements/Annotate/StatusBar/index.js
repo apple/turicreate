@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import style from './index.module.scss';
 
-import ToggleButton from './ToggleButton/index';
-
 import swap from './assets/swap.svg';
 
 class StatusBar extends Component {
@@ -19,7 +17,8 @@ class StatusBar extends Component {
         <div>
             <img src={swap}
                  className={style.SwapButton}
-                 onClick={this.swapInfiniteScroll.bind(this)}/>
+                 onClick={this.swapInfiniteScroll.bind(this)}
+	         alt="Switch between single icon view and scrollable multi-icon view"/>
             <div className={style.SwapButtonHelperText}>
                 Hide Annotated image
             </div>

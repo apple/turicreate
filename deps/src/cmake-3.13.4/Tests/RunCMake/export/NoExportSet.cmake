@@ -1,2 +1,0 @@
-
-export(EXPORT fooExport)

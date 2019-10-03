@@ -1,4 +1,0 @@
-CMake Error at SourceByproducts.cmake:1 \(add_custom_command\):
-  add_custom_command BYPRODUCTS may not be specified with SOURCE signatures
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

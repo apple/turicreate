@@ -1,4 +1,0 @@
-^CMake Error at SUBLIST-NoArguments.cmake:1 \(list\):
-  list sub-command SUBLIST requires four arguments \(1 found\).
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

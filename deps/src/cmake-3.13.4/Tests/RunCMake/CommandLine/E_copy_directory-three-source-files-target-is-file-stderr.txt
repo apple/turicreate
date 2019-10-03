@@ -1,3 +1,0 @@
-^Error copying directory from .* to .*file_for_test.txt\".*
-Error copying directory from .* to .*file_for_test.txt\".*
-Error copying directory from .* to .*file_for_test.txt\".$

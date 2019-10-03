@@ -1,3 +1,0 @@
- *Error when uploading file: .*/Configure.xml
- *Error message was: ([Cc]ould *n.t resolve host:? '?-no-site-'?.*|The requested URL returned error:.*)
- *Problems when submitting via HTTP

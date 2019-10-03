@@ -1,1 +1,0 @@
--- g_ir_scanner: .*/g-ir-scanner

@@ -1,2 +1,0 @@
-CMake Error in .*
-  Error while reading Byte-Order-Mark\.  File not seekable\?

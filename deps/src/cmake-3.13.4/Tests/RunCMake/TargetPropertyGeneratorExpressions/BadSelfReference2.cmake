@@ -1,9 +1,0 @@
-
-file(WRITE "${CMAKE_CURRENT_BINARY_DIR}/main.cpp"
-           "int main(int, char **) { return 0; }\n")
-
-add_executable(TargetPropertyGeneratorExpressions
-           "${CMAKE_CURRENT_BINARY_DIR}/main.cpp")
-set_property(TARGET TargetPropertyGeneratorExpressions PROPERTY
-  INCLUDE_DIRECTORIES "$<TARGET_PROPERTY:INCLUDE_DIRECTORIES>"
-)
