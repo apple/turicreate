@@ -637,8 +637,7 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
   data_params.use_data_augmentation = use_data_augmentation;
   if (!use_data_augmentation){
     data_params.random_seed = 0;
-  }
-  else{
+  } else {
     data_params.random_seed = read_state<int>("random_seed");
   }
   return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));

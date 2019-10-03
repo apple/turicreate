@@ -40,8 +40,10 @@ xavier_weight_initializer::xavier_weight_initializer(
   lstm_weight_initializers lstm_weight_initializers::create_with_xavier_method(
     size_t input_size, size_t state_size, std::mt19937* random_engine)
   {
-    xavier_weight_initializer i2h_init_fn(input_size, state_size, random_engine);
-    xavier_weight_initializer h2h_init_fn(state_size, state_size, random_engine);
+    xavier_weight_initializer i2h_init_fn(input_size, state_size,
+                                          random_engine);
+    xavier_weight_initializer h2h_init_fn(state_size, state_size,
+                                          random_engine);
 
     lstm_weight_initializers result;
 
