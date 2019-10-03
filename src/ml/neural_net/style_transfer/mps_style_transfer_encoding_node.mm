@@ -72,6 +72,7 @@
 
 - (void) setStyleIndex:(NSUInteger)styleIndex {
   _instNorm.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm.tc_weightsData checkpoint];
 }
 
 - (void) setLearningRate:(float)lr {

@@ -70,6 +70,7 @@ API_AVAILABLE(macos(10.14))
 - (MPSCNNNormalizationGammaAndBetaState *)updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer 
                                               instanceNormalizationStateBatch:(MPSCNNInstanceNormalizationGradientStateBatch *)instanceNormalizationStateBatch;
 
+- (void)checkpoint;
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue;
 
 - (NSString*__nullable) label;
