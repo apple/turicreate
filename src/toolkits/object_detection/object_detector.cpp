@@ -172,7 +172,7 @@ image_augmenter::options get_augmentation_options(flex_int batch_size,
   opts.crop_opts.min_eject_coverage = 0.5f;
 
   // Apply random padding.
-           opts.pad_prob = 0.9f;
+  opts.pad_prob = 0.9f;
   opts.pad_opts.min_aspect_ratio = 0.8f;
   opts.pad_opts.max_aspect_ratio = 1.25f;
   opts.pad_opts.min_area_fraction = 1.f;
