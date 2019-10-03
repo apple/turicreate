@@ -777,6 +777,13 @@ void object_detector::import_from_custom_model(variant_map_type model_data, size
   auto it = model_data.find("_model");
   flex_dict model = variant_get_value<flex_dict>(it->second);
   model_data.erase(it);
+  auto it2 = model_data.find("_grid_shape");
+  std::vector<size_t> shape = variant_get_value<std::vector<size_t>>(it2->second);
+  model_data.insert(std::pair<std::string,size_t>("grid_height",shape[0]));
+  model_data.insert(std::pair<std::string,size_t>("grid_width",shape[1]));
+  model_data.insert(std::pair<std::string,std::string>("annotation_scale","pixel"));
+  model_data.insert(std::pair<std::string,std::string>("annotation_origin","top_left"));
+  model_data.insert(std::pair<std::string,std::string>("annotation_position","center"));
   
   state.clear();
   state.insert(model_data.begin(), model_data.end());
@@ -804,17 +811,22 @@ void object_detector::import_from_custom_model(variant_map_type model_data, size
 
   for (size_t i = 0; i < mxnet_data_dict.size(); i++){
     std::string layer_name = mxnet_data_dict[i].first;
-    const std::vector<double>& model_weight = mxnet_data_dict[i].second.to<flex_nd_vec>().elements();
-    const std::vector<double>& model_shape = mxnet_shape_dict[i].second.to<flex_nd_vec>().elements();
-    std::vector<float> layer_weight(model_weight.begin(),model_weight.end());
-    std::vector<size_t> layer_shape(model_shape.begin(),model_shape.end());
+    flex_nd_vec mxnet_data_nd = mxnet_data_dict[i].second.to<flex_nd_vec>();
+    flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[i].second.to<flex_nd_vec>();
+    const std::vector<double>& model_weight = mxnet_data_nd.elements();
+    const std::vector<double>& model_shape = mxnet_shape_nd.elements();
+    std::vector<float> layer_weight(model_weight.begin(), model_weight.end());
+    std::vector<size_t> layer_shape(model_shape.begin(), model_shape.end());
     size_t index = layer_name.find('_');
     layer_name = layer_name.substr(0,index) + 
-    "_fwd_" + layer_name.substr(index+1,layer_name.length());
-    std::cout << layer_name << '\n';
+    "_fwd_" + layer_name.substr(index+1);
     nn_params[layer_name] = 
     shared_float_array::wrap(std::move(layer_weight), std::move(layer_shape));
   }
+  nn_spec_.reset(new model_spec);
+  init_darknet_yolo(*nn_spec_, variant_get_value<size_t>(state.at("num_classes")),
+                    anchor_boxes());
+  nn_spec_->update_params(nn_params);
   return;
 }
 

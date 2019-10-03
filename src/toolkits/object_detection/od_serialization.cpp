@@ -39,9 +39,6 @@ void _load_version(iarchive& iarc, size_t version,
   iarc >> nn_params;
   init_darknet_yolo(nn_spec, variant_get_value<size_t>(state.at("num_classes")),
                     anchor_boxes);
-  for(auto it = nn_params.begin();it!=nn_params.end();++it){
-    std::cout << it->first << '\n';
-  }
   nn_spec.update_params(nn_params);
 }
 
