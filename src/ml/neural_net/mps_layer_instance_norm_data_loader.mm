@@ -45,6 +45,8 @@ API_AVAILABLE(macos(10.14))
 
   MPSVectorDescriptor *_vDesc;
 
+  MPSCNNInstanceNormalization* _instanceNormFilter;
+
   id<MTLCommandQueue> _cq;
   MPSNNOptimizerAdam *_adamGamma;
   MPSNNOptimizerAdam *_adamBeta;
@@ -214,36 +216,42 @@ API_AVAILABLE(macos(10.14))
   NSUInteger t1 = [_adamGamma timeStep];
   NSUInteger t2 = [_adamBeta timeStep];
 
-    for (MPSCNNInstanceNormalizationGradientState *instanceNormalizationState in instanceNormalizationStateBatch) {
-      MPSVector *gradientWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForGamma)
-                                                                descriptor:_vDesc];
+  _instanceNormFilter = instanceNormalizationStateBatch[0].instanceNormalization;
 
-      MPSVector *inputWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gamma)
+  for (MPSCNNInstanceNormalizationGradientState *instanceNormalizationState in instanceNormalizationStateBatch) {
+    MPSVector *gradientWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForGamma)
+                                                              descriptor:_vDesc];
+    _adamGamma.timeStep = t1;
+    [_adamGamma encodeToCommandBuffer:commandBuffer
+                  inputGradientVector:gradientWeightsVector
+                    inputValuesVector:[[_style_props objectAtIndex: _styleIndex] gammaVector]
+                  inputMomentumVector:[[_style_props objectAtIndex: _styleIndex] gammaMomentumVector]
+                  inputVelocityVector:[[_style_props objectAtIndex: _styleIndex] gammaVelocityVector]
+                   resultValuesVector:[[_style_props objectAtIndex: _styleIndex] gammaVector]];
+
+    MPSVector *gradientBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForBeta)
                                                              descriptor:_vDesc];
-      _adamGamma.timeStep = t1;
-      [_adamGamma encodeToCommandBuffer:commandBuffer
-                    inputGradientVector:gradientWeightsVector
-                      inputValuesVector:inputWeightsVector
-                    inputMomentumVector:[[_style_props objectAtIndex: _styleIndex] gammaMomentumVector]
-                    inputVelocityVector:[[_style_props objectAtIndex: _styleIndex] gammaVelocityVector]
-                     resultValuesVector:[[_style_props objectAtIndex: _styleIndex] gammaVector]];
 
-      MPSVector *gradientBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForBeta)
-                                                               descriptor:_vDesc];
-
-      MPSVector *inputBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.beta)
-                                                            descriptor:_vDesc];
-      _adamBeta.timeStep = t2;
-      [_adamBeta encodeToCommandBuffer:commandBuffer
-                   inputGradientVector:gradientBiasesVector
-                     inputValuesVector:inputBiasesVector
-                   inputMomentumVector:[[_style_props objectAtIndex: _styleIndex] betaMomentumVector] 
-                   inputVelocityVector:[[_style_props objectAtIndex: _styleIndex] betaVelocityVector]
-                    resultValuesVector:[[_style_props objectAtIndex: _styleIndex] betaVector]];
+    _adamBeta.timeStep = t2;
+    [_adamBeta encodeToCommandBuffer:commandBuffer
+                 inputGradientVector:gradientBiasesVector
+                   inputValuesVector:[[_style_props objectAtIndex: _styleIndex] betaVector]
+                 inputMomentumVector:[[_style_props objectAtIndex: _styleIndex] betaMomentumVector] 
+                 inputVelocityVector:[[_style_props objectAtIndex: _styleIndex] betaVelocityVector]
+                  resultValuesVector:[[_style_props objectAtIndex: _styleIndex] betaVector]];
 
   }
 
   return [[_style_props objectAtIndex: _styleIndex] state];
+}
+
+- (void)checkpoint {
+  if (_instanceNormFilter) {
+    id <MTLCommandBuffer> cmdBuf = [_cq commandBuffer];
+    [_instanceNormFilter reloadGammaAndBetaWithCommandBuffer: cmdBuf
+                                           gammaAndBetaState: [[_style_props objectAtIndex: _styleIndex] state]];
+    [cmdBuf commit];
+  }
 }
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue {

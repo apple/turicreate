@@ -97,7 +97,9 @@
 
 - (void) setStyleIndex:(NSUInteger)styleIndex {
   _instNorm1.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm1.tc_weightsData checkpoint];
   _instNorm2.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm2.tc_weightsData checkpoint];
 }
 
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode {

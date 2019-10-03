@@ -182,6 +182,7 @@
   _decoding1.styleIndex = styleIndex;
   _decoding2.styleIndex = styleIndex;
   _instNorm.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm.tc_weightsData checkpoint];
 }
 
 - (void) setLearningRate:(float)lr {
