@@ -246,7 +246,7 @@ class Image(object):
             try:
                 # output into jupyter notebook if possible
                 if _target == 'auto' and \
-                    get_ipython().__class__.__name__ == "ZMQInteractiveShell":
+                    (get_ipython().__class__.__name__ == "ZMQInteractiveShell" or get_ipython().__class__.__name__ == "Shell"):
                     from io import BytesIO
                     from IPython import display
                     b = BytesIO()
