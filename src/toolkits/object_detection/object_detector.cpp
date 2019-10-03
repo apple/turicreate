@@ -779,7 +779,7 @@ void object_detector::import_from_custom_model(variant_map_type model_data, size
   model_data.erase(it);
   auto it2 = model_data.find("_grid_shape");
   std::vector<size_t> shape = variant_get_value<std::vector<size_t>>(it2->second);
-  model_data.insert(std::pair<std::string,size_t>("grid_height",shape[0]));
+  model_data.insert(std::pair<std::string, size_t>("grid_height", shape[0]));
   model_data.insert(std::pair<std::string,size_t>("grid_width",shape[1]));
   model_data.insert(std::pair<std::string,std::string>("annotation_scale","pixel"));
   model_data.insert(std::pair<std::string,std::string>("annotation_origin","top_left"));
