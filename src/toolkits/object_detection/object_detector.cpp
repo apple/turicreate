@@ -818,8 +818,7 @@ void object_detector::import_from_custom_model(variant_map_type model_data, size
     std::vector<float> layer_weight(model_weight.begin(), model_weight.end());
     std::vector<size_t> layer_shape(model_shape.begin(), model_shape.end());
     size_t index = layer_name.find('_');
-    layer_name = layer_name.substr(0,index) + 
-    "_fwd_" + layer_name.substr(index+1);
+    layer_name = layer_name.substr(0,index) + "_fwd_" + layer_name.substr(index+1);
     nn_params[layer_name] = 
     shared_float_array::wrap(std::move(layer_weight), std::move(layer_shape));
   }
