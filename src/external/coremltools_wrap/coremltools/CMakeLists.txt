@@ -4,6 +4,8 @@ set(CMAKE_OSX_ARCHITECTURES x86_64)
 
 project(coremltools)
 
+include(CheckCXXCompilerFlag)
+
 find_program(HAS_CCACHE ccache)
 if(HAS_CCACHE)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)

@@ -4,6 +4,8 @@ project(Turi)
 # install a compatible version when using the cmake lists,
 # if one is not already present.
 cmake_minimum_required(VERSION 3.12.0)
+include(CheckCXXCompilerFlag)
+
 
 # Libraries linked via full path no longer produce linker search paths.
 cmake_policy(SET CMP0003 NEW)
@@ -13,6 +15,7 @@ cmake_policy(SET CMP0005 NEW)
 cmake_policy(SET CMP0045 OLD)
 cmake_policy(SET CMP0046 OLD)
 cmake_policy(SET CMP0042 NEW)
+cmake_policy(SET CMP0077 NEW)
 
 # Generate a compilation database for use with automated tools like IDE/editor
 # plugins. See http://clang.llvm.org/docs/JSONCompilationDatabase.html
@@ -65,71 +68,6 @@ else()
   add_definitions(-DTC_PLATFORM_LINUX)
 endif()
 
-
-include(CheckLibraryExists)
-include(CheckFunctionExists)
-include(ExternalProject)
-include(CheckCXXSourceCompiles)
-include(CheckCXXCompilerFlag)
-
-if (${TC_HAS_LLVM})
-  find_package(LLVM REQUIRED PATHS ${TC_LLVM_PATH}/lib/cmake)
-
-  if (${LLVM_VERSION_MAJOR} EQUAL 6 AND ${LLVM_VERSION_MINOR} EQUAL 0)
-    message("Found LLVM.")
-    add_definitions(-DTC_HAS_LLVM)
-    FOREACH(DIR ${LLVM_INCLUDE_DIRS})
-      include_directories(SYSTEM ${DIR})
-    ENDFOREACH()
-    link_directories("${TC_LLVM_PATH}/lib")
-  else()
-    message("Found LLVM, but only version 6.0 is currently supported; skipping.")
-    set(TC_HAS_LLVM false)
-  endif()
-else()
-  message("LLVM not provided; skipping.")
-  set(TC_HAS_LLVM false)
-endif()
-
-set(TC_HAS_LIBUNWIND false)
-set(TC_HAS_LIBUNWIND_STANDALONE false)
-
-if (TC_PLATFORM_APPLE)
-  if (TC_HAS_LLVM)
-    message("Using libunwind from LLVM.")
-    set(TC_HAS_LIBUNWIND true)
-    set(TC_HAS_LIBUNWIND_STANDALONE false)
-    add_definitions(-DTC_HAS_LIBUNWIND)
-  else()
-    set(TC_HAS_LIBUNWIND false)
-    set(TC_HAS_LIBUNWIND_STANDALONE false)
-  endif()
-elseif (TC_PLATFORM_LINUX)
-  find_library(TC_LIBUNWIND unwind)
-  if (${TC_LIBUNWIND} STREQUAL "TC_LIBUNWIND-NOTFOUND")
-    message("Did not find libunwind; skipping.")
-    set(TC_HAS_LIBUNWIND false)
-  else()
-    message("Found libunwind.")
-    set(TC_HAS_LIBUNWIND true)
-    set(TC_HAS_LIBUNWIND_STANDALONE true)
-    add_definitions(-DTC_HAS_LIBUNWIND)
-  endif()
-endif()
-
-if (${TC_STACK_DISPLAY})
-  if (${TC_HAS_LIBUNWIND} AND ${TC_HAS_LLVM})
-    message("Enabling display of annotated stack traces.")
-    add_definitions(-DTC_STACK_DISPLAY)
-  else()
-    set(TC_STACK_DISPLAY false)
-  endif()
-else()
-  message("Disabling display of annotated stack traces.")
-endif()
-
-
-
 #**************************************************************************/
 #*                                                                        */
 #*                     Global Link and Include Flags                      */
@@ -137,6 +75,13 @@ endif()
 #**************************************************************************/
 include_directories(SYSTEM
  ${CMAKE_SOURCE_DIR}/deps/local/include)
+include_directories(SYSTEM
+ ${CMAKE_SOURCE_DIR}/src/external/boost/boost_1_68_0/)
+include_directories(SYSTEM
+ ${CMAKE_SOURCE_DIR}/src/external/libpng/libpng-1.6.37/)
+include_directories(SYSTEM
+ ${CMAKE_SOURCE_DIR}/src/external/libjpeg/jpeg-8d/)
+
 
 link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib)
 
@@ -302,15 +247,6 @@ add_definitions(-DEIGEN_MPL2_ONLY)
 #**************************************************************************/
 #*                                                                        */
 #*                      Force Disable OpenMP                              */
-
-if(NOT TC_COREMLTOOLS_DIR) 
-  set(TC_COREMLTOOLS_DIR ${CMAKE_SOURCE_DIR}/src/external/coremltools_wrap/coremltools/)
-else()
-  message("Using mlmodel interface in source directory ${TC_COREMLTOOLS_DIR}/mlmodel.")
-endif()
-
-include_directories(${TC_COREMLTOOLS_DIR})
-
 #*                                                                        */
 #**************************************************************************/
 add_library(openmp INTERFACE)
@@ -1161,6 +1097,7 @@ if(${TC_BUILD_REMOTEFS})
 endif()
 
 include_directories(SYSTEM src/external/google)
+include_directories(SYSTEM src/external/nanomsg/nanomsg-1.0.0/src)
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/extensions)
   include_directories(SYSTEM extensions)

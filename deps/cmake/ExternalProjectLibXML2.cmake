@@ -1,3 +1,10 @@
+
+# This library is only needed to parse s3 metadata.
+if(TC_DISABLE_REMOTEFS)
+  make_empty_library(libxml2)
+  return()
+endif()
+
 set(EXTRA_CONFIGURE_FLAGS "")
 if(WIN32 AND ${MSYS_MAKEFILES})
   set(EXTRA_CONFIGURE_FLAGS --build=x86_64-w64-mingw32)

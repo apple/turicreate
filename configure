@@ -35,13 +35,6 @@ function print_help {
   echo "  --with-visualization (default)    Build Turi Create visualization client."
   echo "  --no-visualization"
   echo
-  echo "  --with-extra-opt-flags (default)  Enable extra optimization flags (e.g. inlining)."
-  echo "  --no-extra-opt-flags"
-  echo
-  echo "  --with-stack-display              Display stack traces to stderr when possible."
-  echo "  --no-stack-display (default)      Only write stack traces to file, not to stderr."
-  echo "  --llvm-path                       Path to LLVM (required for stack trace display)."
-  echo
   echo "  --release-opt-for-size            Optimize for size."
   echo "  --debug-opt-for-size              Debug optimize for size."
   echo "  --target-ios                      Build for iOS (macOS only)"
@@ -131,8 +124,6 @@ with_stack_display=0
 release_opt_for_size=0
 debug_opt_for_size=0
 
-llvm_path=""
-
 ###############################################################################
 #
 # Parse command line configure flags ------------------------------------------
@@ -156,13 +147,6 @@ while [ $# -gt 0 ]
 
     --with-python)          with_python=1;;
     --no-python)            with_python=0;;
-
-    --with-extra-opt-flags) with_extra_opt_flags=1;;
-    --no-extra-opt-flags)   with_extra_opt_flags=0;;
-
-    --with-stack-display)   with_stack_display=1;;
-    --no-stack-display)     with_stack_display=0;;
-    --llvm-path)            shift; llvm_path="$1";;
 
     --with-visualization)   with_visualization=1;;
     --no-visualization)     with_visualization=0;;
@@ -204,21 +188,6 @@ if [[ $with_python == 1 ]]; then
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=1"
 else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS"
-fi
-
-if [[ $with_extra_opt_flags == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_EXTRA_OPTIMIZATION_FLAGS=1"
-fi
-
-if [[ $with_stack_display == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_STACK_DISPLAY=1"
-fi
-
-if [[ ! -z "${llvm_path}" ]]; then
-  llvm_libraries=$("${llvm_path}/bin/llvm-config" --link-static --libs | tr ' ' ';')
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_LLVM_PATH=${llvm_path}"
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_LLVM_LIBRARIES='${llvm_libraries}'"
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_HAS_LLVM=1"
 fi
 
 if [[ $release_opt_for_size == 1 ]]; then

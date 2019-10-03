@@ -6,4 +6,5 @@ make_library(unity_ml_model OBJECT
   REQUIRES
     unity_core
     optimization
+    boost
 )
