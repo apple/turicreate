@@ -55,7 +55,7 @@ void call_pybind_function(const CallFunc& func) {
   } catch (const pybind11::error_already_set& e) {
     log_and_throw(std::string("An error occurred: ") + e.what());
   } catch (...) {
-    log_and_throw("Unknown Error occurred");
+    log_and_throw("Unknown error occurred");
   }
 
 }
