@@ -26,7 +26,8 @@ namespace one_shot_object_detection {
  */
 class ParameterSampler {
  public:
-  ParameterSampler(size_t starter_width, size_t starter_height, size_t dx, size_t dy);
+  ParameterSampler(size_t starter_width, size_t starter_height, size_t dx,
+                   size_t dy);
 
   /* Getters for all the parameters:
    * theta: rotation around the x axis.
@@ -60,8 +61,8 @@ class ParameterSampler {
   /* Function to sample all the parameters needed to build a transform, and
    * then also build the transform.
    */
-  void sample(size_t background_width, size_t background_height,
-              size_t seed, size_t row_number);
+  void sample(size_t background_width, size_t background_height, size_t seed,
+              size_t row_number);
 
  private:
   size_t starter_width_;
