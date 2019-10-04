@@ -243,7 +243,7 @@ flexible_type word_trimmer_apply(const flexible_type& input,
                || run_mode == flex_type_enum::UNDEFINED
                || run_mode == flex_type_enum::DICT);
 
-  // do nothing; gigo
+  // do nothing; return input value
   if (run_mode == flex_type_enum::UNDEFINED) return input;
 
   const transform_utils::string_filter_list& string_filters = transform_utils::ptb_filters;

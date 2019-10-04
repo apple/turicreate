@@ -168,7 +168,7 @@ class TextClassifierCreateTests(unittest.TestCase):
         sf = tc.SFrame({'a': a, 'b': b})
         with self.assertRaises(ToolkitError):
             tc.text_classifier.create(sf, target='a', features=['b'], word_count_threshold=1)
-        # feature contains none, #2402
+        # feature contains none, Github #2402
         sf = tc.SFrame({'b': a, 'a': b})
         with self.assertRaises(ToolkitError):
             tc.text_classifier.create(sf, target='b', features=['a'], word_count_threshold=1)
