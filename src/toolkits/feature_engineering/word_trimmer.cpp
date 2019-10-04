@@ -132,10 +132,6 @@ void word_trimmer_topk_index_mapping(const gl_sarray& src,
     delimiter_list = delimiters.get<flex_list>();
   }
 
-
-  // Get the column mode from the dtype.
-  flex_type_enum run_mode = src.dtype();
-
   // Setup the indexer.
   indexer->initialize();
   size_t src_size = src.size();
@@ -148,7 +144,7 @@ void word_trimmer_topk_index_mapping(const gl_sarray& src,
     size_t end_idx = src_size * (thread_idx + 1) / num_threads;
 
     for (const auto& v: src.range_iterator(start_idx, end_idx)) {
-      switch(run_mode) {
+      switch(v.get_type()) {
         // Categorical cols.
         case flex_type_enum::STRING: {
           flex_list tokens_list;
@@ -204,6 +200,12 @@ void word_trimmer_topk_index_mapping(const gl_sarray& src,
           break;
         }
 
+        case flex_type_enum::UNDEFINED:
+          logstream(LOG_WARNING)
+              << "Skip undefined value in 'word_trimmer_topk_index_mapping'; "
+              << " please consider dropna on feature columns" << std::endl;
+          break;
+
         // Should not be here.
         default:
           DASSERT_TRUE(false);
@@ -241,6 +243,9 @@ flexible_type word_trimmer_apply(const flexible_type& input,
                || run_mode == flex_type_enum::UNDEFINED
                || run_mode == flex_type_enum::DICT);
 
+  // do nothing; gigo
+  if (run_mode == flex_type_enum::UNDEFINED) return input;
+
   const transform_utils::string_filter_list& string_filters = transform_utils::ptb_filters;
 
   const bool use_ptb_tokenizer = (delimiters.get_type() == flex_type_enum::UNDEFINED);
@@ -253,7 +258,6 @@ flexible_type word_trimmer_apply(const flexible_type& input,
     }
     delimiter_list = delimiters.get<flex_list>();
   }
-
 
   switch(run_mode) {
     // Strings

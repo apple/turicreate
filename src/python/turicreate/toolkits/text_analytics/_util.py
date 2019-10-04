@@ -400,11 +400,11 @@ def drop_words(text, threshold=2, to_lower=True, delimiters=DEFAULT_DELIMITERS,
     ## Compute word counts
     sf = _turicreate.SFrame({'docs': text})
     fe = _feature_engineering.RareWordTrimmer(features='docs',
-                                                 threshold=threshold,
-                                                 to_lower=to_lower,
-                                                 delimiters=delimiters,
-                                                 stopwords=stop_words,
-                                                 output_column_prefix=None)
+                                              threshold=threshold,
+                                              to_lower=to_lower,
+                                              delimiters=delimiters,
+                                              stopwords=stop_words,
+                                              output_column_prefix=None)
     tokens = fe.fit_transform(sf)
 
     return tokens['docs']
