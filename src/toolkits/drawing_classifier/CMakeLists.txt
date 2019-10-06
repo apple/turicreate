@@ -2,6 +2,8 @@ project(unity_toolkits)
 
 make_library(unity_drawing_classifier OBJECT
 SOURCES
+    drawing_classifier.cpp
+    dc_data_iterator.cpp
     data_preparation.cpp
     class_registrations.cpp
 REQUIRES
