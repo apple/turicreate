@@ -219,6 +219,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     base_model = model.split('-', 1)[0]
     ref_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS[base_model]()
 
+    pretrained_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS['darknet_mlmodel']()
+    pretrained_model_path = pretrained_model.get_model_path()
+
     params = {
         'anchors': [
             (1.0, 2.0), (1.0, 1.0), (2.0, 1.0),
@@ -262,7 +265,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'io_thread_buffer_size': 8,
         # TODO: Have the Python side download the Core ML version of the
         # pre-trained model from somewhere.
-        'mlmodel_path': None,
+        'mlmodel_path': pretrained_model_path,
         'use_tensorflow': False
     }
 
