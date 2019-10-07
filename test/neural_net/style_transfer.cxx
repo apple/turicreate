@@ -89,22 +89,138 @@ struct style_transfer_test {
   }
 
   /**
-    Loss
+    Pre Processing
 
-    This test checks whether the Loss out of the total graph defined in TCMPS is
-    performing as intended by comparing it to the golden set.
+    This correctness test checks whether the Pre Processing Node present in
+    TCMPS is performing as intended by comparing it to the golden set.
    */
-  void test_loss() {
+  void test_pre_processing() {
     TS_ASSERT(true);  // TODO
   }
 
   /**
-    Backwards
+    Gram Matrix
 
-    This test checks whether the Weight Update in the total graph defined in
-    TCMPS is performing as intended by comparing it to the golden set.
+    This test checks whether the Gram Matrix Node defined in TCMPS is
+    performing as intended by comparing it to the golden set.
    */
-  void test_backwards() {
+  void test_gram_matrix() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Content Loss
+
+    This test checks whether the Content Loss defined in TCMPS is
+    performing as intended by comparing it to the golden set.
+   */
+  void test_content_loss() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Style Loss
+
+    This test checks whether the Style Loss defined in TCMPS is
+    performing as intended by comparing it to the golden set.
+   */
+  void test_style_loss() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Total Loss
+
+    This test checks whether the Total Loss defined in TCMPS is
+    performing as intended by comparing it to the golden set.
+   */
+  void test_total_loss() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Weight Update
+
+    This test checks whether the Weight Update defined in Objective-C TCMPS is
+    performing as intended by comparing it to the golden set.
+   */
+  void test_weight_update() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Weight Update
+
+    This test checks whether the Weight Update defined in TCMPS is
+    performing as intended by comparing it to the golden set.
+   */
+  void test_tcmps_weight_update() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Loss Computation
+
+    This test checks whether the Loss defined in TCMPS is
+    performing as intended by comparing it to the golden set for a couple of
+    iterations.
+   */
+  void test_tcmps_style_tansfer() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Loss Computation
+
+    This test checks whether the Loss defined in the C++ wrapper of TCMPS is
+    performing as intended by comparing it to the golden set for a couple of
+    iterations.
+   */
+  void test_model_base_tcmps() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Weight Update
+
+    This test checks whether the Weight Update defined in the C++ wrapper of
+    TCMPS is performing as intended by comparing it to the golden set for a
+    couple of iterations.
+   */
+  void test_model_base_tcmps_weight_update() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Forward Inference
+
+    This test checks whether the forward inference defined in the C++ wrapper of
+    TCMPS is performing as intended by comparing it to the golden set for a
+    couple of iterations.
+   */
+  void test_model_base_tcmps_forward_inference() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Multiple Content Images
+
+    This test checks whether the training defined in the C++ wrapper of TCMPS is
+    performing as intended by comparing it to the golden set for a couple of
+    iterations. Only one style image tested.
+   */
+  void test_model_base_tcmps_multiple_content() {
+    TS_ASSERT(true);  // TODO
+  }
+
+  /**
+    Multiple Style Images
+
+    This test checks whether the training defined in the C++ wrapper of TCMPS is
+    performing as intended by comparing it to the golden set for a couple of
+    iterations. Multiple style images tested for training.
+   */
+  void test_model_base_tcmps_multiple_style() {
     TS_ASSERT(true);  // TODO
   }
 };
@@ -129,9 +245,57 @@ BOOST_AUTO_TEST_CASE(test_block_2) { style_transfer_test::test_block_2(); }
 
 BOOST_AUTO_TEST_CASE(test_vgg16) { style_transfer_test::test_vgg16(); }
 
-BOOST_AUTO_TEST_CASE(test_loss) { style_transfer_test::test_loss(); }
+BOOST_AUTO_TEST_CASE(test_pre_processing) {
+  style_transfer_test::test_pre_processing();
+}
 
-BOOST_AUTO_TEST_CASE(test_backwards) { style_transfer_test::test_backwards(); }
+BOOST_AUTO_TEST_CASE(test_gram_matrix) {
+  style_transfer_test::test_gram_matrix();
+}
+
+BOOST_AUTO_TEST_CASE(test_content_loss) {
+  style_transfer_test::test_content_loss();
+}
+
+BOOST_AUTO_TEST_CASE(test_style_loss) {
+  style_transfer_test::test_style_loss();
+}
+
+BOOST_AUTO_TEST_CASE(test_total_loss) {
+  style_transfer_test::test_total_loss();
+}
+
+BOOST_AUTO_TEST_CASE(test_weight_update) {
+  style_transfer_test::test_weight_update();
+}
+
+BOOST_AUTO_TEST_CASE(test_tcmps_weight_update) {
+  style_transfer_test::test_tcmps_weight_update();
+}
+
+BOOST_AUTO_TEST_CASE(test_tcmps_style_tansfer) {
+  style_transfer_test::test_tcmps_style_tansfer();
+}
+
+BOOST_AUTO_TEST_CASE(test_model_base_tcmps) {
+  style_transfer_test::test_model_base_tcmps();
+}
+
+BOOST_AUTO_TEST_CASE(test_model_base_tcmps_weight_update) {
+  style_transfer_test::test_model_base_tcmps_weight_update();
+}
+
+BOOST_AUTO_TEST_CASE(test_model_base_tcmps_forward_inference) {
+  style_transfer_test::test_model_base_tcmps_forward_inference();
+}
+
+BOOST_AUTO_TEST_CASE(test_model_base_tcmps_multiple_content) {
+  style_transfer_test::test_model_base_tcmps_multiple_content();
+}
+
+BOOST_AUTO_TEST_CASE(test_model_base_tcmps_multiple_style) {
+  style_transfer_test::test_model_base_tcmps_multiple_style();
+}
 
 #endif
 
