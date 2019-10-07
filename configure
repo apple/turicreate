@@ -203,7 +203,7 @@ if [[ $with_python == 1 ]]; then
   install_python_toolchain
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=1"
 else
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=0"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS"
 fi
 
 if [[ $with_extra_opt_flags == 1 ]]; then
