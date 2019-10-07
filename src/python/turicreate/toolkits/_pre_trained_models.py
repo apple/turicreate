@@ -181,7 +181,7 @@ class DarkNetObjectDetectorModel(ObjectDetectorBasePreTrainedModel):
     def __init__(self):
         self.name = 'darknet'
         self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'darknet.mlmodel')
-        self.source_md5 = '2fbe8725b8041c31467dd25cf9f65aed'
+        self.source_md5 = 'a06761976a0472cf0553b64ecc15b0fe'
 
     def get_model_path(self):
         model_path = _download_and_checksum_files(
