@@ -53,7 +53,7 @@ class BaseNetworkTest {
 
  protected:
   struct common_impl;
-  std::unique_ptr<common_impl> internal_impl;
+  std::unique_ptr<common_impl> m_internal_impl;
   float m_epsilon;
 };
 

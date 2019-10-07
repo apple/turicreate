@@ -19,7 +19,7 @@ if(APPLE AND
       "-fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar"
   )
   
-  make_boost_test(style_transfer.cxx
+  make_boost_test(test_style_transfer.cxx
     REQUIRES
       style_transfer_test_utils
   )

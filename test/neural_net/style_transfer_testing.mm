@@ -24,14 +24,14 @@ struct BaseNetworkTest::common_impl {
 };
 
 BaseNetworkTest::BaseNetworkTest(float epsilon)
-    : internal_impl(new BaseNetworkTest::common_impl()), m_epsilon(epsilon) {
+    : m_internal_impl(new BaseNetworkTest::common_impl()), m_epsilon(epsilon) {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {
-      internal_impl->dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
-      internal_impl->cmdQueue = [internal_impl->dev newCommandQueue];
+      m_internal_impl->dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+      m_internal_impl->cmdQueue = [m_internal_impl->dev newCommandQueue];
 
       TCMPSGraphNodeHandle *handle = [[TCMPSGraphNodeHandle alloc] initWithLabel:@"inputImage"];
-      internal_impl->inputNode = [MPSNNImageNode nodeWithHandle:handle];
+      m_internal_impl->inputNode = [MPSNNImageNode nodeWithHandle:handle];
     }
   }
 }
@@ -46,15 +46,15 @@ bool BaseNetworkTest::check_predict(std::string input, std::string output) {
                                encoding:[NSString defaultCStringEncoding]];
 
       MPSImageBatch *imageBatch = [NeuralNetStyleTransferUtils defineInput:inputPath
-                                                                       dev:internal_impl->dev];
+                                                                       dev:m_internal_impl->dev];
 
-      id<MTLCommandBuffer> cb = [internal_impl->cmdQueue commandBuffer];
+      id<MTLCommandBuffer> cb = [m_internal_impl->cmdQueue commandBuffer];
 
       NSMutableArray *intermediateImages = [[NSMutableArray alloc] init];
       NSMutableArray *destinationStates = [[NSMutableArray alloc] init];
 
       MPSImageBatch *outputBatch =
-          [internal_impl->model encodeBatchToCommandBuffer:cb
+          [m_internal_impl->model encodeBatchToCommandBuffer:cb
                                               sourceImages:@[ imageBatch ]
                                               sourceStates:nil
                                         intermediateImages:intermediateImages
