@@ -3,6 +3,7 @@ var searchData=
   ['table_5fprinter',['table_printer',['../classturi_1_1table__printer.html',1,'turi']]],
   ['table_5fprinter_5felement_3c_20t_2c_20typename_20std_3a_3aenable_5fif_3c_20std_3a_3ais_5ffloating_5fpoint_3c_20t_20_3e_3a_3avalue_20_3e_3a_3atype_20_3e',['table_printer_element&lt; T, typename std::enable_if&lt; std::is_floating_point&lt; T &gt;::value &gt;::type &gt;',['../structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if7fdffbb44a6020cc370a405248ab6a0f.html',1,'turi::table_internal']]],
   ['table_5fprinter_5felement_3c_20t_2c_20typename_20std_3a_3aenable_5fif_3c_20std_3a_3ais_5fsame_3c_20t_2c_20bool_20_3e_3a_3avalue_20_3e_3a_3atype_20_3e',['table_printer_element&lt; T, typename std::enable_if&lt; std::is_same&lt; T, bool &gt;::value &gt;::type &gt;',['../structturi_1_1table__internal_1_1table__printer__element_3_01T_00_01typename_01std_1_1enable__if6823353dbf51d860e701302035dbec75.html',1,'turi::table_internal']]],
+  ['tf_5fcompute_5fcontext',['tf_compute_context',['../classturi_1_1neural__net_1_1tf__compute__context.html',1,'turi::neural_net']]],
   ['thread',['thread',['../classturi_1_1thread.html',1,'turi']]],
   ['thread_5fgroup',['thread_group',['../classturi_1_1thread__group.html',1,'turi']]],
   ['thread_5fpool',['thread_pool',['../classturi_1_1thread__pool.html',1,'turi']]],

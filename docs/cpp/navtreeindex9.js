@@ -1,5 +1,16 @@
 var NAVTREEINDEX9 =
 {
+"classturi_1_1optimization_1_1second__order__opt__interface.html#ae75b08d4a918dd15b0647675921b25dc":[2,23,6,3,8],
+"classturi_1_1optimization_1_1second__order__opt__interface.html#af5aabe3bfc98f9c17652684e3c4c27b1":[2,23,6,3,10],
+"classturi_1_1optimization_1_1second__order__opt__interface.html#af6e60c704f64b3646c7d513fb8d09059":[2,23,6,3,9],
+"classturi_1_1optimization_1_1smooth__regularizer__interface.html":[2,23,7,1],
+"classturi_1_1optimization_1_1smooth__regularizer__interface.html#a233d1175e794b37ca4977843b8237612":[2,23,7,1,5],
+"classturi_1_1optimization_1_1smooth__regularizer__interface.html#a4e3c4cb1b768865f1a411a7a454b8d32":[2,23,7,1,3],
+"classturi_1_1optimization_1_1smooth__regularizer__interface.html#a5b21c4b1f4de96f03e28ba9139d8c026":[2,23,7,1,1],
+"classturi_1_1optimization_1_1smooth__regularizer__interface.html#a81f382175477d8babe2f88312ee3ee66":[2,23,7,1,0],
+"classturi_1_1optimization_1_1smooth__regularizer__interface.html#aba2327bb54db99816a40470da349f24b":[2,23,7,1,4],
+"classturi_1_1optimization_1_1smooth__regularizer__interface.html#ad33de8d07eff69d4d130f89108e71110":[2,23,7,1,2],
+"classturi_1_1option__manager.html":[2,27,1],
 "classturi_1_1option__manager.html#a06d3202872ca1066fb20b2702d6ae3f9":[2,27,1,8],
 "classturi_1_1option__manager.html#a0b345147bd265bfbdcc927207547e70c":[2,27,1,14],
 "classturi_1_1option__manager.html#a13d9edfaf1be6d5e4ad2143e856ec54d":[2,27,1,10],
@@ -238,16 +249,5 @@ var NAVTREEINDEX9 =
 "classturi_1_1query__eval_1_1opt__merge__projects.html":[4,0,3,24,25],
 "classturi_1_1query__eval_1_1opt__project__append__exchange.html":[4,0,3,24,26],
 "classturi_1_1query__eval_1_1opt__project__on__source.html":[4,0,3,24,27],
-"classturi_1_1query__eval_1_1opt__split__contractive__expansive__projection.html":[4,0,3,24,28],
-"classturi_1_1query__eval_1_1opt__transform.html":[4,0,3,24,29],
-"classturi_1_1query__eval_1_1opt__transform.html#a3bb0e133fe6eb30ce4cac169ccb2e3e7":[4,0,3,24,29,2],
-"classturi_1_1query__eval_1_1opt__transform.html#aa17f99d892a14ac6beb46035d1ad14f4":[4,0,3,24,29,1],
-"classturi_1_1query__eval_1_1opt__transform.html#aed4298057d0e87c4138d85440034aae4":[4,0,3,24,29,0],
-"classturi_1_1query__eval_1_1opt__union__on__source.html":[4,0,3,24,30],
-"classturi_1_1query__eval_1_1opt__union__project__exchange.html":[4,0,3,24,31],
-"classturi_1_1query__eval_1_1opt__union__project__merge.html":[4,0,3,24,32],
-"classturi_1_1query__eval_1_1optimization__engine.html":[2,6,3,1],
-"classturi_1_1query__eval_1_1optimization__engine.html#afb43963a69c3df55155bfe78b8acdbc2":[2,6,3,1,0],
-"classturi_1_1query__eval_1_1planner.html":[2,6,3,2],
-"classturi_1_1query__eval_1_1planner.html#a097627a2c0a9692ad69a0d71c3b7b0b1":[2,6,3,2,2]
+"classturi_1_1query__eval_1_1opt__split__contractive__expansive__projection.html":[4,0,3,24,28]
 };

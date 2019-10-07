@@ -1,5 +1,16 @@
 var NAVTREEINDEX17 =
 {
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac01a4939b9d23923210b9670493e0f75":[4,0,3,35,0,1,22],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac1fcbf6f4b850ff9eee2817eec833c4d":[4,0,3,35,0,1,28],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac3618ba3e97a78b936b1757f56c942eb":[4,0,3,35,0,1,50],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac3d2ee32fc69539990fcbb1234f2f173":[4,0,3,35,0,1,68],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac3f1e140dce279466a427f0bb8de3cc7":[4,0,3,35,0,1,4],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac80230851af5ab9e01bd61d113bbcffb":[4,0,3,35,0,1,36],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#aca1d7cccf562841ac8e24e7b9c532ca4":[4,0,3,35,0,1,17],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#acc33dcb80a41fd65e24c8fe4eb54e2e7":[4,0,3,35,0,1,70],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#acca5f3d025ba23f9c4cb8338519ce729":[4,0,3,35,0,1,38],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ad088ea4286e4aa12fb504c7357943b97":[4,0,3,35,0,1,46],
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ad0c33935135c211cb55739441703c676":[4,0,3,35,0,1,92],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ad357e557e3c57f8e0d770874a12a291b":[4,0,3,35,0,1,49],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ad51a44b7c739bc0c394b2ae900ef3d3b":[4,0,3,35,0,1,79],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ad90fc6c00808d3f8808d8c1186b00530":[4,0,3,35,0,1,53],
@@ -238,16 +249,5 @@ var NAVTREEINDEX17 =
 "classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a69f61933bd5f61a8b3408d88f8e241d9":[4,0,3,35,0,4,6],
 "classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a6c2cac79db527f3bb5060240d9b41bf9":[4,0,3,35,0,4,19],
 "classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a6f247683fa7362282797f5aebc780d70":[4,0,3,35,0,4,93],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a7053781383d66795c4773da6b7df8a74":[4,0,3,35,0,4,74],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a70eb3a622f5085e64b6e6de313a3d890":[4,0,3,35,0,4,23],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a737b0565bd8bf063a54892cb7697f086":[4,0,3,35,0,4,44],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a7471040841033b18a380f6720765a44c":[4,0,3,35,0,4,63],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a7523185dd820bc673a4629cae76a4dc6":[4,0,3,35,0,4,71],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a75b936dbce528749a7c7cb52eb38bd9e":[4,0,3,35,0,4,87],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a7849e923aae34e214b009d4956314185":[4,0,3,35,0,4,62],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a7a1393170560dede7cd9c8272a04426b":[4,0,3,35,0,4,33],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a7aa4b8045eb17263d17612ee46d00aac":[4,0,3,35,0,4,78],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a7ab5edf7d0d16040715c89d5f1004fb0":[4,0,3,35,0,4,15],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a85d0a2d57711499e63fa2db23d669c72":[4,0,3,35,0,4,85],
-"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a87cf90dc23bfef47d583bc954ade29ef":[4,0,3,35,0,4,5]
+"classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#a7053781383d66795c4773da6b7df8a74":[4,0,3,35,0,4,74]
 };

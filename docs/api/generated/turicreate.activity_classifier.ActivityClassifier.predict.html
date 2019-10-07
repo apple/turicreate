@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.activity_classifier.ActivityClassifier.predict &mdash; Turi Create API 5.6 documentation</title>
+  <title>turicreate.activity_classifier.ActivityClassifier.predict &mdash; Turi Create API 5.8 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.6 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -131,10 +131,10 @@
 Predictions can be generated as class labels, or as a probability
 vector with probabilities for each class.</p>
 <p>The activity classifier generates a single prediction for each
-<code class="docutils literal"><span class="pre">prediction_window</span></code> rows in <code class="docutils literal"><span class="pre">dataset</span></code>, per <code class="docutils literal"><span class="pre">session_id</span></code>. Thus the
-number of predictions is smaller than the length of <code class="docutils literal"><span class="pre">dataset</span></code>. By
-default each prediction is replicated by <code class="docutils literal"><span class="pre">prediction_window</span></code> to return
-a prediction for each row of <code class="docutils literal"><span class="pre">dataset</span></code>. Use <code class="docutils literal"><span class="pre">output_frequency</span></code> to
+<code class="docutils literal"><span class="pre">prediction_window</span></code> rows in <code class="docutils literal"><span class="pre">dataset</span></code>, per <code class="docutils literal"><span class="pre">session_id</span></code>. The number
+of these predictions is smaller than the length of <code class="docutils literal"><span class="pre">dataset</span></code>. By default,
+when <code class="docutils literal"><span class="pre">output_frequency='per_row'</span></code>, each prediction is repeated <code class="docutils literal"><span class="pre">prediction_window</span></code> to return
+a prediction for each row of <code class="docutils literal"><span class="pre">dataset</span></code>. Use <code class="docutils literal"><span class="pre">output_frequency=per_window</span></code> to
 get the unreplicated predictions.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -238,7 +238,7 @@ predictions for <code class="docutils literal"><span class="pre">prediction_wind
 
   <div role="contentinfo">
     <p>
-      Last updated on Aug 06, 2019.
+      Last updated on Oct 03, 2019.
     </p>
   </div>
 </footer>
@@ -255,7 +255,7 @@ predictions for <code class="docutils literal"><span class="pre">prediction_wind
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.6',
+            VERSION:'5.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

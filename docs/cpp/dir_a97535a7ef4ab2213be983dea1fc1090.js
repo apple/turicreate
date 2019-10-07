@@ -18,6 +18,7 @@ var dir_a97535a7ef4ab2213be983dea1fc1090 =
     [ "server.hpp", "server_8hpp_source.html", null ],
     [ "show.hpp", "show_8hpp_source.html", null ],
     [ "summary_view.hpp", "summary__view_8hpp_source.html", null ],
+    [ "table.hpp", "table_8hpp_source.html", null ],
     [ "thread.hpp", "thread_8hpp_source.html", null ],
     [ "transformation.hpp", "transformation_8hpp_source.html", null ],
     [ "vega_data.hpp", "vega__data_8hpp_source.html", null ],

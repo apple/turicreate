@@ -1,5 +1,16 @@
 var NAVTREEINDEX14 =
 {
+"classturi_1_1sketches_1_1countmin.html#a94ed2a99baa8a036a4e5a4f158ff8a0c":[2,24,0,2],
+"classturi_1_1sketches_1_1countmin.html#ac8cb1ec8b3ea742f7f85e848e656a501":[2,24,0,4],
+"classturi_1_1sketches_1_1countsketch.html":[2,24,1],
+"classturi_1_1sketches_1_1countsketch.html#a2683d585701b4305896591fbe666062e":[2,24,1,2],
+"classturi_1_1sketches_1_1countsketch.html#a5439b433a8591e70bde6445cdba05823":[2,24,1,1],
+"classturi_1_1sketches_1_1countsketch.html#a863f612c26bd03ad33f03900f58cfe52":[2,24,1,0],
+"classturi_1_1sketches_1_1countsketch.html#aa1b9bc00dadfd129a74b892bcf24d6be":[2,24,1,5],
+"classturi_1_1sketches_1_1countsketch.html#ac3eb7bbe97d8af02f6314c2f439901fb":[2,24,1,3],
+"classturi_1_1sketches_1_1countsketch.html#af0cf109f4f03a37d93ca322f4ee79a9c":[2,24,1,4],
+"classturi_1_1sketches_1_1hyperloglog.html":[2,24,2],
+"classturi_1_1sketches_1_1hyperloglog.html#a1e0ef76e9e38027e48a1860aa490a844":[2,24,2,4],
 "classturi_1_1sketches_1_1hyperloglog.html#a2cbe6b9a373af430cf560cf8a0f34a0e":[2,24,2,0],
 "classturi_1_1sketches_1_1hyperloglog.html#a51993d0f011b8079e9e06c47af525e53":[2,24,2,1],
 "classturi_1_1sketches_1_1hyperloglog.html#aed3eb9824016778d5fbe9a55cd983f7c":[2,24,2,3],
@@ -238,16 +249,5 @@ var NAVTREEINDEX14 =
 "classturi_1_1supervised_1_1linear__regression.html#afe2a01eeb13f71cd515a234bf10ba47a":[4,0,3,35,2,28],
 "classturi_1_1supervised_1_1linear__regression__opt__interface.html":[4,0,3,35,3],
 "classturi_1_1supervised_1_1linear__regression__opt__interface.html#a099e4b620a7857e56e22306ef46226f0":[4,0,3,35,3,16],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a0f2354ea20faf0aeb672a83e1c5944f7":[4,0,3,35,3,8],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a308be7d4adb1a769e207b2cc1f2eef41":[4,0,3,35,3,13],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a3c9b26a61adc6ed05ea564848c9ad48c":[4,0,3,35,3,21],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a4331e42c96881812529200454aa23732":[4,0,3,35,3,3],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a453d60fc53a7cfb7b717aa709005a1c8":[4,0,3,35,3,7],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a5667fe05e4f3bae4a117b4a931927eec":[4,0,3,35,3,1],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a607ff1f0bfb9f73ef8949ba04e47ef9d":[4,0,3,35,3,14],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a74798e2f15ad26bf9f3fed1907bdaeb0":[4,0,3,35,3,2],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a86fa7ac6867b5088b0260cfd532beb01":[4,0,3,35,3,19],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a892a2ad8c62f3d07d365009deeab4ddb":[4,0,3,35,3,17],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#aa292e1a527661cce4ac807f1d6ca9aeb":[4,0,3,35,3,20],
-"classturi_1_1supervised_1_1linear__regression__opt__interface.html#aacdf3e135293ebe02854b08c775123f7":[4,0,3,35,3,10]
+"classturi_1_1supervised_1_1linear__regression__opt__interface.html#a0f2354ea20faf0aeb672a83e1c5944f7":[4,0,3,35,3,8]
 };

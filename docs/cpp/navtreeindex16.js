@@ -1,5 +1,16 @@
 var NAVTREEINDEX16 =
 {
+"classturi_1_1supervised_1_1standardization__interface.html#ade84d9af5db073df2e928218118643b2":[4,0,3,35,8,0],
+"classturi_1_1supervised_1_1standardization__interface.html#afa8bcafa4cebe4ce9a9c2f5c33feff26":[4,0,3,35,8,8],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html":[4,0,3,35,9],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a00b40c53bb6287be9d12f5e73c82153a":[4,0,3,35,9,12],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a01a68e5f2ce277e23d19e8dd537765cd":[4,0,3,35,9,8],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a03f475849e5e98101ef72987ba76a9c4":[4,0,3,35,9,65],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a117f532ab06f1caa6747ff1c9d4a9c8f":[4,0,3,35,9,43],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a1428b2c43e0b8dd1d1ec971ff2ee80ad":[4,0,3,35,9,51],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a146ae3f704971892eee0be5f14b5e570":[4,0,3,35,9,33],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a18caa08be1751468356b2c360c8df641":[4,0,3,35,9,71],
+"classturi_1_1supervised_1_1supervised__learning__model__base.html#a1b64c0bb643593609796742ac28a006a":[4,0,3,35,9,66],
 "classturi_1_1supervised_1_1supervised__learning__model__base.html#a2711df44242ed4bcda4510a124feebee":[4,0,3,35,9,39],
 "classturi_1_1supervised_1_1supervised__learning__model__base.html#a2baa70f6e211f55a26ad1e9896b2713c":[4,0,3,35,9,70],
 "classturi_1_1supervised_1_1supervised__learning__model__base.html#a2c384abfb023c56436f9240413b2e098":[4,0,3,35,9,10],
@@ -238,16 +249,5 @@ var NAVTREEINDEX16 =
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ab8a41679dcd4c521c8e0614fe3ffe5a6":[4,0,3,35,0,1,57],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ab9aa2af3ccad97df27dada7c795a10a6":[4,0,3,35,0,1,8],
 "classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ab9c8df47303d3032fd80aa99a282d0b2":[4,0,3,35,0,1,91],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#abbc2ebab68ff9478dfca0654fe65c48e":[4,0,3,35,0,1,10],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac01a4939b9d23923210b9670493e0f75":[4,0,3,35,0,1,22],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac1fcbf6f4b850ff9eee2817eec833c4d":[4,0,3,35,0,1,28],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac3618ba3e97a78b936b1757f56c942eb":[4,0,3,35,0,1,50],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac3d2ee32fc69539990fcbb1234f2f173":[4,0,3,35,0,1,68],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac3f1e140dce279466a427f0bb8de3cc7":[4,0,3,35,0,1,4],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ac80230851af5ab9e01bd61d113bbcffb":[4,0,3,35,0,1,36],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#aca1d7cccf562841ac8e24e7b9c532ca4":[4,0,3,35,0,1,17],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#acc33dcb80a41fd65e24c8fe4eb54e2e7":[4,0,3,35,0,1,70],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#acca5f3d025ba23f9c4cb8338519ce729":[4,0,3,35,0,1,38],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ad088ea4286e4aa12fb504c7357943b97":[4,0,3,35,0,1,46],
-"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#ad0c33935135c211cb55739441703c676":[4,0,3,35,0,1,92]
+"classturi_1_1supervised_1_1xgboost_1_1boosted__trees__regression.html#abbc2ebab68ff9478dfca0654fe65c48e":[4,0,3,35,0,1,10]
 };

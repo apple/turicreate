@@ -166,7 +166,8 @@ var namespaceturi =
       [ "model_backend", "classturi_1_1neural__net_1_1model__backend.html", "classturi_1_1neural__net_1_1model__backend" ],
       [ "model_spec", "classturi_1_1neural__net_1_1model__spec.html", "classturi_1_1neural__net_1_1model__spec" ],
       [ "mps_compute_context", "classturi_1_1neural__net_1_1mps__compute__context.html", "classturi_1_1neural__net_1_1mps__compute__context" ],
-      [ "resize_only_image_augmenter", "classturi_1_1neural__net_1_1resize__only__image__augmenter.html", "classturi_1_1neural__net_1_1resize__only__image__augmenter" ]
+      [ "resize_only_image_augmenter", "classturi_1_1neural__net_1_1resize__only__image__augmenter.html", "classturi_1_1neural__net_1_1resize__only__image__augmenter" ],
+      [ "tf_compute_context", "classturi_1_1neural__net_1_1tf__compute__context.html", "classturi_1_1neural__net_1_1tf__compute__context" ]
     ] ],
     [ "object_detection", null, [
       [ "average_precision_calculator", "classturi_1_1object__detection_1_1average__precision__calculator.html", "classturi_1_1object__detection_1_1average__precision__calculator" ],

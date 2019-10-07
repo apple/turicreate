@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.one_shot_object_detector.util.preview_synthetic_training_data &mdash; Turi Create API 5.6 documentation</title>
+  <title>turicreate.one_shot_object_detector.util.preview_synthetic_training_data &mdash; Turi Create API 5.8 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.6 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/>
         <link rel="up" title="one_shot_object_detector" href="../turicreate.toolkits.one_shot_object_detector.html"/>
         <link rel="next" title="turicreate.one_shot_object_detector.util.draw_bounding_boxes" href="turicreate.one_shot_object_detector.util.draw_bounding_boxes.html"/>
         <link rel="prev" title="turicreate.one_shot_object_detector.OneShotObjectDetector" href="turicreate.one_shot_object_detector.OneShotObjectDetector.html"/> 
@@ -131,6 +131,42 @@
             
   <div class="section" id="turicreate-one-shot-object-detector-util-preview-synthetic-training-data">
 <h1>turicreate.one_shot_object_detector.util.preview_synthetic_training_data<a class="headerlink" href="#turicreate-one-shot-object-detector-util-preview-synthetic-training-data" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.one_shot_object_detector.util.preview_synthetic_training_data">
+<code class="descclassname">turicreate.one_shot_object_detector.util.</code><code class="descname">preview_synthetic_training_data</code><span class="sig-paren">(</span><em>data</em>, <em>target</em>, <em>backgrounds=None</em>, <em>verbose=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.one_shot_object_detector.util.preview_synthetic_training_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>A utility function to visualize the synthetically generated data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>data</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | tc.Image</span></dt>
+<dd><p class="first last">A single starter image or an SFrame that contains the starter images
+along with their corresponding labels.  These image(s) can be in either
+RGB or RGBA format. They should not be padded.</p>
+</dd>
+<dt><strong>target</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first last">Name of the target (when data is a single image) or the target column
+name (when data is an SFrame of images).</p>
+</dd>
+<dt><strong>backgrounds</strong> <span class="classifier-delimiter">:</span> <span class="classifier">optional SArray</span></dt>
+<dd><p class="first last">A list of backgrounds used for synthetic data generation. When set to
+None, a set of default backgrounds are downloaded and used.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame</span></dt>
+<dd><p class="first last">An SFrame of sythetically generated annotated training data.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 
 
@@ -151,7 +187,7 @@
 
   <div role="contentinfo">
     <p>
-      Last updated on Aug 06, 2019.
+      Last updated on Oct 03, 2019.
     </p>
   </div>
 </footer>
@@ -168,7 +204,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.6',
+            VERSION:'5.8',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

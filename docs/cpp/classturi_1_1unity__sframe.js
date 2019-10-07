@@ -17,6 +17,7 @@ var classturi_1_1unity__sframe =
     [ "construct_from_sframe", "classturi_1_1unity__sframe.html#a36535542e68005db87cbc35860ee7f7b", null ],
     [ "construct_from_sframe_index", "classturi_1_1unity__sframe.html#a1949dc9550aa764518a29825caf7afd2", null ],
     [ "contains_column", "classturi_1_1unity__sframe.html#a93850223f37ed71ffb1a5b5f14fb9a48", null ],
+    [ "copy", "classturi_1_1unity__sframe.html#aece005252df11a1d57f048fdf0837711", null ],
     [ "copy_range", "classturi_1_1unity__sframe.html#ab4890e792069361e3a6cddf235df5bba", null ],
     [ "drop_missing_values", "classturi_1_1unity__sframe.html#ad2ce30e580d260f4660074cf6553666b", null ],
     [ "dtype", "classturi_1_1unity__sframe.html#a065131c99efd3e9f26935f3731554527", null ],

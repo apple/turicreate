@@ -156,6 +156,18 @@ Functions</h2></td></tr>
 <tr class="separator:ga07bc65101adcabd391c546ea953531dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<p>A more flexible sframe creator.</p>
+<p>User can finely control the ratio of certain categories of data. For instance, 70% of 1s and 30% of 0s.</p>
+<p>One can achieve that goal by recording the count of already generated data for each category inside of the functors.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">column_names</td><td>column names </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">column_types</td><td>column types </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">nrows</td><td>number of rows.</td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">next_row</td><td>callable, equivalent to <code>std::function&lt;std::vector&lt;<a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>&gt;(size_t)&gt;</code>. if next_row is a function, it should be thread-safe. if next_row is a functor, it's not required to be thread-safe.</td></tr>
+  </table>
+  </dd>
+</dl>
 <p>Creates a random SFrame for testing purposes. The column_type_info gives the types of the column.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">

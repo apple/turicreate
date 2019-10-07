@@ -13,6 +13,7 @@ var searchData=
   ['target_5fvalue',['target_value',['../classturi_1_1ml__data__row__reference.html#ad1116f43d1b324119e9816f848d920d5',1,'turi::ml_data_row_reference::target_value()'],['../classturi_1_1v2_1_1ml__data__iterator__base.html#af722d725f636c7a108aedbb095f1d047',1,'turi::v2::ml_data_iterator_base::target_value()'],['../classturi_1_1v2_1_1ml__data__row__reference.html#aeacf1d8ab549660155651519fbb5241d',1,'turi::v2::ml_data_row_reference::target_value()']]],
   ['ternary_5foperator',['ternary_operator',['../classturi_1_1unity__sarray.html#a4dc77e6534d8d370374e4bae9f99fc1c',1,'turi::unity_sarray']]],
   ['test_5fequal_5flength',['test_equal_length',['../classturi_1_1query__eval_1_1planner.html#affb86b42cd37525d45c803977037eb36',1,'turi::query_eval::planner']]],
+  ['tf_5fcompute_5fcontext',['tf_compute_context',['../classturi_1_1neural__net_1_1tf__compute__context.html#ad1e35ccb0a76b88786e2d2360c5d6406',1,'turi::neural_net::tf_compute_context']]],
   ['thread',['thread',['../classturi_1_1thread.html#a1c7e38f82e2e0abe3c2fc120685e285e',1,'turi::thread']]],
   ['thread_5fgroup',['thread_group',['../classturi_1_1thread__group.html#ae2306234ec48edf402d913b3972cdf47',1,'turi::thread_group']]],
   ['thread_5fid',['thread_id',['../classturi_1_1thread.html#a91010fd5af6942bc79fddaea2a79302c',1,'turi::thread']]],

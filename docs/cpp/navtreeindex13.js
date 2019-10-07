@@ -1,5 +1,16 @@
 var NAVTREEINDEX13 =
 {
+"classturi_1_1sframe.html#aaf977faf06367575b7258e3b2dd0c638":[2,8,5,6,18],
+"classturi_1_1sframe.html#ab8fd151b3faf36fbb61bb26a82876e6e":[2,8,5,6,20],
+"classturi_1_1sframe.html#ac0326f469ce7d2d8d65e271e165ded75":[2,8,5,6,53],
+"classturi_1_1sframe.html#ac69503f6f197906bf584990118033ee5":[2,8,5,6,27],
+"classturi_1_1sframe.html#acf73cd84feb34eb5e8c92161c0892be4":[2,8,5,6,58],
+"classturi_1_1sframe.html#ad2e81bffd3e782ed2a560b9b46929d39":[2,8,5,6,36],
+"classturi_1_1sframe.html#ad7ea0ed7a4f5fc96614a606d2c16dde0":[2,8,5,6,39],
+"classturi_1_1sframe.html#ad8f4eae26003fac1ecd5026550b7181b":[2,8,5,6,50],
+"classturi_1_1sframe.html#add491107626a72b7e3bd1e7b951c6b83":[2,8,5,6,2],
+"classturi_1_1sframe.html#add4a7a265587909bffb1f56c988384f0":[2,8,5,6,52],
+"classturi_1_1sframe.html#ae0f72cf7934d9564ba590657360fb0c0":[2,8,5,6,37],
 "classturi_1_1sframe.html#ae46393d4d6bcd598510c6b13b208534b":[2,8,5,6,7],
 "classturi_1_1sframe.html#ae6b19605d355ff2abc919e100798c674":[2,8,5,6,34],
 "classturi_1_1sframe.html#ae76e42efe25be8b36bd768a77163c1bb":[2,8,5,6,14],
@@ -238,16 +249,5 @@ var NAVTREEINDEX13 =
 "classturi_1_1sketches_1_1countmin.html#a3c56f15ba8ea4c777c2cd26a1bcf36fb":[2,24,0,6],
 "classturi_1_1sketches_1_1countmin.html#a433effffde1a4b2d3f8d5a3d4ca9ffe7":[2,24,0,1],
 "classturi_1_1sketches_1_1countmin.html#a654c1513949701a5b207d61a006a32fb":[2,24,0,5],
-"classturi_1_1sketches_1_1countmin.html#a84dea6c46de84d5738dd4ed2a4e36381":[2,24,0,3],
-"classturi_1_1sketches_1_1countmin.html#a94ed2a99baa8a036a4e5a4f158ff8a0c":[2,24,0,2],
-"classturi_1_1sketches_1_1countmin.html#ac8cb1ec8b3ea742f7f85e848e656a501":[2,24,0,4],
-"classturi_1_1sketches_1_1countsketch.html":[2,24,1],
-"classturi_1_1sketches_1_1countsketch.html#a2683d585701b4305896591fbe666062e":[2,24,1,2],
-"classturi_1_1sketches_1_1countsketch.html#a5439b433a8591e70bde6445cdba05823":[2,24,1,1],
-"classturi_1_1sketches_1_1countsketch.html#a863f612c26bd03ad33f03900f58cfe52":[2,24,1,0],
-"classturi_1_1sketches_1_1countsketch.html#aa1b9bc00dadfd129a74b892bcf24d6be":[2,24,1,5],
-"classturi_1_1sketches_1_1countsketch.html#ac3eb7bbe97d8af02f6314c2f439901fb":[2,24,1,3],
-"classturi_1_1sketches_1_1countsketch.html#af0cf109f4f03a37d93ca322f4ee79a9c":[2,24,1,4],
-"classturi_1_1sketches_1_1hyperloglog.html":[2,24,2],
-"classturi_1_1sketches_1_1hyperloglog.html#a1e0ef76e9e38027e48a1860aa490a844":[2,24,2,4]
+"classturi_1_1sketches_1_1countmin.html#a84dea6c46de84d5738dd4ed2a4e36381":[2,24,0,3]
 };

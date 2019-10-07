@@ -113,31 +113,31 @@ $(document).ready(function(){initNavTree('group__Global.html','');});
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:gad1689d0dba626f659e7de21b78f61847"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gad1689d0dba626f659e7de21b78f61847">logger</a>(lvl,  fmt, ...)                              &#160;&#160;&#160;(<a class="el" href="structlog__dispatch.html">log_dispatch</a>&lt;(lvl &gt;= <a class="el" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__))</td></tr>
-<tr class="separator:gad1689d0dba626f659e7de21b78f61847"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gad8e53b57f8bea3f5387c97d5edc67d8f"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gad8e53b57f8bea3f5387c97d5edc67d8f">logstream</a>(lvl)                                        &#160;&#160;&#160;if(lvl &gt;= <a class="el" href="logger_8hpp.html#aef60a908dad24e76204c6225acb2fe85">global_logger</a>().get_log_level()) (log_stream_dispatch&lt;(lvl &gt;= <a class="el" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__) )</td></tr>
-<tr class="separator:gad8e53b57f8bea3f5387c97d5edc67d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga39d0e86a8bb293ed55c8103f81b6968e"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga39d0e86a8bb293ed55c8103f81b6968e">logger_once</a>(lvl,  fmt, ...)                              </td></tr>
-<tr class="separator:ga39d0e86a8bb293ed55c8103f81b6968e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga53f3e664a5044d67639a80b7b635baae"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga53f3e664a5044d67639a80b7b635baae">logstream_once</a>(lvl)                                        </td></tr>
-<tr class="separator:ga53f3e664a5044d67639a80b7b635baae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaa42b5fd1e0eec42feacf9d324c900faa"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gaa42b5fd1e0eec42feacf9d324c900faa">logger_ontick</a>(sec,  lvl,  fmt, ...)                              </td></tr>
-<tr class="separator:gaa42b5fd1e0eec42feacf9d324c900faa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gac8d2a028edd0737664bd8b3c746e47c8"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gac8d2a028edd0737664bd8b3c746e47c8">logstream_ontick</a>(sec,  lvl)                                        </td></tr>
-<tr class="separator:gac8d2a028edd0737664bd8b3c746e47c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gacf6952ce08a5907dd2a0a9e70a44dc7b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gacf6952ce08a5907dd2a0a9e70a44dc7b">logprogress</a>(fmt, ...)&#160;&#160;&#160;<a class="el" href="group__Global.html#gad1689d0dba626f659e7de21b78f61847">logger</a>(LOG_PROGRESS, fmt, ##__VA_ARGS__)</td></tr>
+<tr class="memitem:gafba576d2ba9a72639562d08784d53b49"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gafba576d2ba9a72639562d08784d53b49">logger</a>(lvl,  fmt, ...)                                                                                                </td></tr>
+<tr class="separator:gafba576d2ba9a72639562d08784d53b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga8de79aba06090529df91287f7b9797d7"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga8de79aba06090529df91287f7b9797d7">logstream</a>(lvl)                                                                                                        </td></tr>
+<tr class="separator:ga8de79aba06090529df91287f7b9797d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gabf83810ea2e8c39239622c3068d36eba"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gabf83810ea2e8c39239622c3068d36eba">logger_once</a>(lvl,  fmt, ...)                                                              </td></tr>
+<tr class="separator:gabf83810ea2e8c39239622c3068d36eba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga96554b66ea78fbc6cccdc91c90893e84"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga96554b66ea78fbc6cccdc91c90893e84">logstream_once</a>(lvl)                                                                      </td></tr>
+<tr class="separator:ga96554b66ea78fbc6cccdc91c90893e84"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacc34bd4aebb577461c7b368da26d5f44"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gacc34bd4aebb577461c7b368da26d5f44">logger_ontick</a>(sec,  lvl,  fmt, ...)                                                </td></tr>
+<tr class="separator:gacc34bd4aebb577461c7b368da26d5f44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga300a9f622e6099b4359a1bb394743183"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga300a9f622e6099b4359a1bb394743183">logstream_ontick</a>(sec,  lvl)                                                                                      </td></tr>
+<tr class="separator:ga300a9f622e6099b4359a1bb394743183"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gacf6952ce08a5907dd2a0a9e70a44dc7b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#gacf6952ce08a5907dd2a0a9e70a44dc7b">logprogress</a>(fmt, ...)&#160;&#160;&#160;<a class="el" href="group__Global.html#gafba576d2ba9a72639562d08784d53b49">logger</a>(LOG_PROGRESS, fmt, ##__VA_ARGS__)</td></tr>
 <tr class="separator:gacf6952ce08a5907dd2a0a9e70a44dc7b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga945d859cb605e9060bf158c6dbb0153d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga945d859cb605e9060bf158c6dbb0153d">logprogress_stream</a>&#160;&#160;&#160;<a class="el" href="group__Global.html#gad8e53b57f8bea3f5387c97d5edc67d8f">logstream</a>(LOG_PROGRESS)</td></tr>
+<tr class="memitem:ga945d859cb605e9060bf158c6dbb0153d"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga945d859cb605e9060bf158c6dbb0153d">logprogress_stream</a>&#160;&#160;&#160;<a class="el" href="group__Global.html#ga8de79aba06090529df91287f7b9797d7">logstream</a>(LOG_PROGRESS)</td></tr>
 <tr class="separator:ga945d859cb605e9060bf158c6dbb0153d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga711397f7a508bbfdd726eeb882e9debf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga711397f7a508bbfdd726eeb882e9debf">logprogress_ontick</a>(sec,  fmt, ...)&#160;&#160;&#160;<a class="el" href="group__Global.html#gaa42b5fd1e0eec42feacf9d324c900faa">logger_ontick</a>(sec, LOG_PROGRESS, fmt, ##__VA_ARGS__)</td></tr>
+<tr class="memitem:ga711397f7a508bbfdd726eeb882e9debf"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga711397f7a508bbfdd726eeb882e9debf">logprogress_ontick</a>(sec,  fmt, ...)&#160;&#160;&#160;<a class="el" href="group__Global.html#gacc34bd4aebb577461c7b368da26d5f44">logger_ontick</a>(sec, LOG_PROGRESS, fmt, ##__VA_ARGS__)</td></tr>
 <tr class="separator:ga711397f7a508bbfdd726eeb882e9debf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ga0ccbff6048e63d602f6c2272389f3e6b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga0ccbff6048e63d602f6c2272389f3e6b">logprogress_stream_ontick</a>(sec)&#160;&#160;&#160;<a class="el" href="group__Global.html#gac8d2a028edd0737664bd8b3c746e47c8">logstream_ontick</a>(sec, LOG_PROGRESS)</td></tr>
+<tr class="memitem:ga0ccbff6048e63d602f6c2272389f3e6b"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__Global.html#ga0ccbff6048e63d602f6c2272389f3e6b">logprogress_stream_ontick</a>(sec)&#160;&#160;&#160;<a class="el" href="group__Global.html#ga300a9f622e6099b4359a1bb394743183">logstream_ontick</a>(sec, LOG_PROGRESS)</td></tr>
 <tr class="separator:ga0ccbff6048e63d602f6c2272389f3e6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <p>Global Logging Statements. </p>
 <h2 class="groupheader">Macro Definition Documentation</h2>
-<a class="anchor" id="gad1689d0dba626f659e7de21b78f61847"></a>
+<a class="anchor" id="gafba576d2ba9a72639562d08784d53b49"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -162,17 +162,19 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;(<a class="el" href="structlog__dispatch.html">log_dispatch</a>&lt;(lvl &gt;= <a class="el" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__))</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Emits a log line output in printf format at a particular log level. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process.</p>
+<b>Value:</b><div class="fragment"><div class="line">(<a class="code" href="structlog__dispatch.html">log_dispatch&lt;(lvl &gt;</a>= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl, __FILE__, __func__, __LINE__, \</div><div class="line">                                            fmt, ##__VA_ARGS__))</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
+<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00705">logger.hpp:705</a></div></div>
+</div><!-- fragment --><p>Emits a log line output in printf format at a particular log level. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logger(LOG_INFO, &quot;hello world: %d&quot;, 10);</div></div><!-- fragment --> 
 <p>Definition at line <a class="el" href="logger_8hpp_source.html#l00268">268</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ga39d0e86a8bb293ed55c8103f81b6968e"></a>
+<a class="anchor" id="gabf83810ea2e8c39239622c3068d36eba"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -201,15 +203,15 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{    \</div><div class="line">  static <span class="keywordtype">bool</span> __printed__ = <span class="keyword">false</span>;    \</div><div class="line">  if (!__printed__) {                 \</div><div class="line">    __printed__ = <span class="keyword">true</span>;               \</div><div class="line">    (<a class="code" href="structlog__dispatch.html">log_dispatch&lt;(lvl &gt;</a>= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__)); \</div><div class="line">  }  \</div><div class="line">}</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
-<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00644">logger.hpp:644</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">{                                                                \</div><div class="line">    static <span class="keywordtype">bool</span> __printed__ = <span class="keyword">false</span>;                               \</div><div class="line">    if (!__printed__) {                                            \</div><div class="line">      __printed__ = <span class="keyword">true</span>;                                          \</div><div class="line">      (<a class="code" href="structlog__dispatch.html">log_dispatch&lt;(lvl &gt;</a>= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(                   \</div><div class="line">          lvl, __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)); \</div><div class="line">    }                                                              \</div><div class="line">  }</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
+<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00705">logger.hpp:705</a></div></div>
 </div><!-- fragment --><p>Emits a log line output in printf format at a particular log level, only the first time the line is encountered. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logger_once(LOG_INFO, &quot;Class %s constructed&quot;, str);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00279">279</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00281">281</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="gaa42b5fd1e0eec42feacf9d324c900faa"></a>
+<a class="anchor" id="gacc34bd4aebb577461c7b368da26d5f44"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -244,12 +246,12 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">{    \</div><div class="line">  static <span class="keywordtype">float</span> last_print = -sec - 1;        \</div><div class="line">  float curtime = <a class="code" href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a>(); \</div><div class="line">  if (last_print + sec &lt;= curtime) {                 \</div><div class="line">    last_print = curtime;                     \</div><div class="line">    (<a class="code" href="structlog__dispatch.html">log_dispatch&lt;(lvl &gt;</a>= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__,fmt,##__VA_ARGS__)); \</div><div class="line">  }  \</div><div class="line">}</div><div class="ttc" id="classturi_1_1timer_html_a6c57c6ce3fa05d78315158d237183543"><div class="ttname"><a href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a></div><div class="ttdeci">static float approx_time_seconds()</div><div class="ttdoc">Returns the time since program start. </div></div>
+<b>Value:</b><div class="fragment"><div class="line">{                                                                \</div><div class="line">    static <span class="keywordtype">float</span> last_print = -sec - 1;                            \</div><div class="line">    float curtime = <a class="code" href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a>();            \</div><div class="line">    if (last_print + sec &lt;= curtime) {                             \</div><div class="line">      last_print = curtime;                                        \</div><div class="line">      (<a class="code" href="structlog__dispatch.html">log_dispatch&lt;(lvl &gt;</a>= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(                   \</div><div class="line">          lvl, __FILE__, __func__, __LINE__, fmt, ##__VA_ARGS__)); \</div><div class="line">    }                                                              \</div><div class="line">  }</div><div class="ttc" id="classturi_1_1timer_html_a6c57c6ce3fa05d78315158d237183543"><div class="ttname"><a href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a></div><div class="ttdeci">static float approx_time_seconds()</div><div class="ttdoc">Returns the time since program start. </div></div>
 <div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
-<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00644">logger.hpp:644</a></div></div>
+<div class="ttc" id="structlog__dispatch_html"><div class="ttname"><a href="structlog__dispatch.html">log_dispatch</a></div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00705">logger.hpp:705</a></div></div>
 </div><!-- fragment --><p>Emits a log line output in printf format at a particular log level, but will only print approximately once every "sec" seconds. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;// only print once every 5 seconds</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;logger_ontick(5, LOG_INFO, &quot;Class %s constructed&quot;, str);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00296">296</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00300">300</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -272,13 +274,13 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__Global.html#gad1689d0dba626f659e7de21b78f61847">logger</a>(LOG_PROGRESS, fmt, ##__VA_ARGS__)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__Global.html#gafba576d2ba9a72639562d08784d53b49">logger</a>(LOG_PROGRESS, fmt, ##__VA_ARGS__)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Emits a progress message using printf format.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logprogress(&quot;hello world: %d&quot;, 10);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00319">319</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00324">324</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -307,12 +309,12 @@ Macros</h2></td></tr>
         <tr>
           <td></td>
           <td>)</td>
-          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__Global.html#gaa42b5fd1e0eec42feacf9d324c900faa">logger_ontick</a>(sec, LOG_PROGRESS, fmt, ##__VA_ARGS__)</td>
+          <td></td><td>&#160;&#160;&#160;<a class="el" href="group__Global.html#gacc34bd4aebb577461c7b368da26d5f44">logger_ontick</a>(sec, LOG_PROGRESS, fmt, ##__VA_ARGS__)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Emits a progress message using printf format, but will only print approximately once every "sec" seconds. Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;// only print once every 5 seconds</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;logprogress_ontick(5, &quot;Class %s constructed&quot;, str);</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00322">322</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00327">327</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -321,13 +323,13 @@ Macros</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define logprogress_stream&#160;&#160;&#160;<a class="el" href="group__Global.html#gad8e53b57f8bea3f5387c97d5edc67d8f">logstream</a>(LOG_PROGRESS)</td>
+          <td class="memname">#define logprogress_stream&#160;&#160;&#160;<a class="el" href="group__Global.html#ga8de79aba06090529df91287f7b9797d7">logstream</a>(LOG_PROGRESS)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Emits a progress message using a stream. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logprogress_stream &lt;&lt; &quot;hello world &quot; &lt;&lt; 10 &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00320">320</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00325">325</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
@@ -340,17 +342,17 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">sec</td><td>)</td>
-          <td>&#160;&#160;&#160;<a class="el" href="group__Global.html#gac8d2a028edd0737664bd8b3c746e47c8">logstream_ontick</a>(sec, LOG_PROGRESS)</td>
+          <td>&#160;&#160;&#160;<a class="el" href="group__Global.html#ga300a9f622e6099b4359a1bb394743183">logstream_ontick</a>(sec, LOG_PROGRESS)</td>
         </tr>
       </table>
 </div><div class="memdoc">
 <p>Emits a progress message using a stream. The stream must terminate with a "\n" or std::endl at the end of the message. This will only print approximately once every "sec" seconds. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logprogress_stream_ontick(5) &lt;&lt; &quot;Class &quot; &lt;&lt; str &lt;&lt; &quot; constructed&quot;</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                             &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00323">323</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00328">328</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="gad8e53b57f8bea3f5387c97d5edc67d8f"></a>
+<a class="anchor" id="ga8de79aba06090529df91287f7b9797d7"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -359,17 +361,19 @@ Macros</h2></td></tr>
           <td>(</td>
           <td class="paramtype">&#160;</td>
           <td class="paramname">lvl</td><td>)</td>
-          <td>&#160;&#160;&#160;if(lvl &gt;= <a class="el" href="logger_8hpp.html#aef60a908dad24e76204c6225acb2fe85">global_logger</a>().get_log_level()) (log_stream_dispatch&lt;(lvl &gt;= <a class="el" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__) )</td>
+          <td></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>An output stream for specified log level. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keywordflow">if</span> (lvl &gt;= <a class="code" href="logger_8hpp.html#aef60a908dad24e76204c6225acb2fe85">global_logger</a>().get_log_level())                               \</div><div class="line">  (log_stream_dispatch&lt;(lvl &gt;= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl, __FILE__, __func__, \</div><div class="line">                                                   __LINE__))</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
+<div class="ttc" id="logger_8hpp_html_aef60a908dad24e76204c6225acb2fe85"><div class="ttname"><a href="logger_8hpp.html#aef60a908dad24e76204c6225acb2fe85">global_logger</a></div><div class="ttdeci">file_logger &amp; global_logger()</div></div>
+</div><!-- fragment --><p>An output stream for specified log level. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logstream(LOG_INFO &lt;&lt; &quot;hello world: &quot; &lt;&lt; 10 &lt;&lt; std::endl;</div></div><!-- fragment --> 
 <p>Definition at line <a class="el" href="logger_8hpp_source.html#l00276">276</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="ga53f3e664a5044d67639a80b7b635baae"></a>
+<a class="anchor" id="ga96554b66ea78fbc6cccdc91c90893e84"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -382,14 +386,14 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">(*({    \</div><div class="line">  static <span class="keywordtype">bool</span> __printed__ = <span class="keyword">false</span>;    \</div><div class="line">  bool __prev_printed__ = __printed__; \</div><div class="line">  if (!__printed__) __printed__ = true;  \</div><div class="line">  &amp;(log_stream_dispatch&lt;(lvl &gt;= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__, !__prev_printed__) ); \</div><div class="line">}))</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
+<b>Value:</b><div class="fragment"><div class="line">(*({                                                          \</div><div class="line">    static <span class="keywordtype">bool</span> __printed__ = <span class="keyword">false</span>;                            \</div><div class="line">    bool __prev_printed__ = __printed__;                        \</div><div class="line">    if (!__printed__) __printed__ = true;                       \</div><div class="line">    &amp;(log_stream_dispatch&lt;(lvl &gt;= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(          \</div><div class="line">        lvl, __FILE__, __func__, __LINE__, !__prev_printed__)); \</div><div class="line">  }))</div><div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
 </div><!-- fragment --><p>An output stream for specified log level. This will only output the first time the line is encountered. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logstream_once(LOG_INFO) &lt;&lt; &quot;Class &quot; &lt;&lt; str &lt;&lt; &quot; constructed&quot; &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00288">288</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00291">291</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>
-<a class="anchor" id="gac8d2a028edd0737664bd8b3c746e47c8"></a>
+<a class="anchor" id="ga300a9f622e6099b4359a1bb394743183"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -412,11 +416,11 @@ Macros</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line">(*({    \</div><div class="line">  static <span class="keywordtype">float</span> last_print = -sec - 1;        \</div><div class="line">  float curtime = <a class="code" href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a>();        \</div><div class="line">  bool print_now = <span class="keyword">false</span>;             \</div><div class="line">  if (last_print + sec &lt;= curtime) {                 \</div><div class="line">    last_print = curtime;                 \</div><div class="line">    print_now = <span class="keyword">true</span>;                \</div><div class="line">  }                    \</div><div class="line">  &amp;(log_stream_dispatch&lt;(lvl &gt;= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl,__FILE__, __func__ ,__LINE__, print_now) ); \</div><div class="line">}))</div><div class="ttc" id="classturi_1_1timer_html_a6c57c6ce3fa05d78315158d237183543"><div class="ttname"><a href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a></div><div class="ttdeci">static float approx_time_seconds()</div><div class="ttdoc">Returns the time since program start. </div></div>
+<b>Value:</b><div class="fragment"><div class="line">(*({                                                                         \</div><div class="line">    static <span class="keywordtype">float</span> last_print = -sec - 1;                                        \</div><div class="line">    float curtime = <a class="code" href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a>();                        \</div><div class="line">    bool print_now = <span class="keyword">false</span>;                                                    \</div><div class="line">    if (last_print + sec &lt;= curtime) {                                         \</div><div class="line">      last_print = curtime;                                                    \</div><div class="line">      print_now = <span class="keyword">true</span>;                                                        \</div><div class="line">    }                                                                          \</div><div class="line">    &amp;(log_stream_dispatch&lt;(lvl &gt;= <a class="code" href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a>)&gt;::exec(lvl, __FILE__, __func__, \</div><div class="line">                                                      __LINE__, print_now));   \</div><div class="line">  }))</div><div class="ttc" id="classturi_1_1timer_html_a6c57c6ce3fa05d78315158d237183543"><div class="ttname"><a href="classturi_1_1timer.html#a6c57c6ce3fa05d78315158d237183543">turi::timer::approx_time_seconds</a></div><div class="ttdeci">static float approx_time_seconds()</div><div class="ttdoc">Returns the time since program start. </div></div>
 <div class="ttc" id="group__turilogger_html_ga3d18ed817dcda9f54a4f353ccf9b1b36"><div class="ttname"><a href="group__turilogger.html#ga3d18ed817dcda9f54a4f353ccf9b1b36">OUTPUTLEVEL</a></div><div class="ttdeci">#define OUTPUTLEVEL</div><div class="ttdef"><b>Definition:</b> <a href="logger_8hpp_source.html#l00113">logger.hpp:113</a></div></div>
 </div><!-- fragment --><p>An output stream for specified log level. This will only print approximately once every "sec" seconds. lvl must be one of the log levels from LOG_DEBUG to LOG_FATAL. Emitting a LOG_FATAL will kill the process. The stream must terminate with a "\n" or std::endl at the end of the message.</p>
 <p>Example: </p><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;logstream_ontick(5, LOG_INFO) &lt;&lt; &quot;Class &quot; &lt;&lt; str &lt;&lt; &quot; constructed&quot;</div><div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;                              &lt;&lt; std::endl;</div></div><!-- fragment --> 
-<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00306">306</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
+<p>Definition at line <a class="el" href="logger_8hpp_source.html#l00311">311</a> of file <a class="el" href="logger_8hpp_source.html">logger.hpp</a>.</p>
 
 </div>
 </div>

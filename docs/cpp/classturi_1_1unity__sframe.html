@@ -177,6 +177,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a8ec2e03f2adb399ea7a5b1195060d796"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a814ff0c9205a9ae32b4e146102b6f4d2"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a814ff0c9205a9ae32b4e146102b6f4d2">select_columns</a> (const std::vector&lt; size_t &gt; &amp;indices)</td></tr>
 <tr class="separator:a814ff0c9205a9ae32b4e146102b6f4d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aece005252df11a1d57f048fdf0837711"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aece005252df11a1d57f048fdf0837711">copy</a> ()</td></tr>
+<tr class="separator:aece005252df11a1d57f048fdf0837711"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7829006c17a6fd43be289de55c46a0e4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a7829006c17a6fd43be289de55c46a0e4">add_column</a> (std::shared_ptr&lt; unity_sarray_base &gt;data, const std::string &amp;name) override</td></tr>
 <tr class="separator:a7829006c17a6fd43be289de55c46a0e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a26071d2a0b5efa0c058d8b9d168a4504"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#a26071d2a0b5efa0c058d8b9d168a4504">add_columns</a> (std::list&lt; std::shared_ptr&lt; unity_sarray_base &gt;&gt; data_list, std::vector&lt; std::string &gt; name_vec) override</td></tr>
@@ -672,6 +674,22 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns true if the column is present in the sframe, and false otherwise. </p>
+
+</div>
+</div>
+<a class="anchor" id="aece005252df11a1d57f048fdf0837711"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::copy </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Returns an lazy sframe which a the copy of the current one </p>
 
 </div>
 </div>

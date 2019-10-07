@@ -1,5 +1,7 @@
 var NAVTREEINDEX8 =
 {
+"classturi_1_1model__proxy.html#a5cf40c6ddfcc9a6880e3fbc12887e674":[4,0,3,135,10],
+"classturi_1_1model__proxy.html#a64ee1de348f3fa3f1991120809c9bbe2":[4,0,3,135,8],
 "classturi_1_1model__proxy.html#a697bb86fbc190c92a89f9ccaced9736b":[4,0,3,135,7],
 "classturi_1_1model__proxy.html#a7053781383d66795c4773da6b7df8a74":[4,0,3,135,12],
 "classturi_1_1model__proxy.html#a7aa4b8045eb17263d17612ee46d00aac":[4,0,3,135,16],
@@ -153,6 +155,15 @@ var NAVTREEINDEX8 =
 "classturi_1_1neural__net_1_1resize__only__image__augmenter.html":[4,0,3,19,9],
 "classturi_1_1neural__net_1_1resize__only__image__augmenter.html#a35e1490ca9fe837cb5f21a02ef34cc76":[4,0,3,19,9,0],
 "classturi_1_1neural__net_1_1resize__only__image__augmenter.html#a534c91db3448ceeb02132a1cc4d925d1":[4,0,3,19,9,1],
+"classturi_1_1neural__net_1_1tf__compute__context.html":[4,0,3,19,10],
+"classturi_1_1neural__net_1_1tf__compute__context.html#a22bb0103b6d8c04e6bebee2110a230cd":[4,0,3,19,10,4],
+"classturi_1_1neural__net_1_1tf__compute__context.html#a381d4341845163a6fc6b09a6c2837f9e":[4,0,3,19,10,5],
+"classturi_1_1neural__net_1_1tf__compute__context.html#a7f55a84873df6d63922c697229987647":[4,0,3,19,10,3],
+"classturi_1_1neural__net_1_1tf__compute__context.html#abcfeff5cc1b622c74073e6a0ccbbe709":[4,0,3,19,10,0],
+"classturi_1_1neural__net_1_1tf__compute__context.html#ac047143e45b9ce5dc614c9eb3818aa78":[4,0,3,19,10,2],
+"classturi_1_1neural__net_1_1tf__compute__context.html#ac8187c76890b92c548ad3959fd4dc28d":[4,0,3,19,10,6],
+"classturi_1_1neural__net_1_1tf__compute__context.html#ad1e35ccb0a76b88786e2d2360c5d6406":[4,0,3,19,10,1],
+"classturi_1_1neural__net_1_1tf__compute__context.html#ae234752eda2a96e6cf61aa59bbebd801":[4,0,3,19,10,7],
 "classturi_1_1oarchive.html":[2,7,6],
 "classturi_1_1oarchive.html#a3dd3f50dc0e86c4032daef979296ff30":[2,7,6,0],
 "classturi_1_1oarchive.html#a66376b51921885478aeacc46bc700700":[2,7,6,1],
@@ -238,16 +249,5 @@ var NAVTREEINDEX8 =
 "classturi_1_1optimization_1_1second__order__opt__interface.html#a835bd64f3a7928937da4114b290db8e8":[2,23,6,3,7],
 "classturi_1_1optimization_1_1second__order__opt__interface.html#ab1feb4f5adfcef5b5e038220b59acd8d":[2,23,6,3,4],
 "classturi_1_1optimization_1_1second__order__opt__interface.html#ae10f793f512345a1f0be8a0b31525176":[2,23,6,3,3],
-"classturi_1_1optimization_1_1second__order__opt__interface.html#ae4859cd7fd9094eee11dccbf7e068287":[2,23,6,3,5],
-"classturi_1_1optimization_1_1second__order__opt__interface.html#ae75b08d4a918dd15b0647675921b25dc":[2,23,6,3,8],
-"classturi_1_1optimization_1_1second__order__opt__interface.html#af5aabe3bfc98f9c17652684e3c4c27b1":[2,23,6,3,10],
-"classturi_1_1optimization_1_1second__order__opt__interface.html#af6e60c704f64b3646c7d513fb8d09059":[2,23,6,3,9],
-"classturi_1_1optimization_1_1smooth__regularizer__interface.html":[2,23,7,1],
-"classturi_1_1optimization_1_1smooth__regularizer__interface.html#a233d1175e794b37ca4977843b8237612":[2,23,7,1,5],
-"classturi_1_1optimization_1_1smooth__regularizer__interface.html#a4e3c4cb1b768865f1a411a7a454b8d32":[2,23,7,1,3],
-"classturi_1_1optimization_1_1smooth__regularizer__interface.html#a5b21c4b1f4de96f03e28ba9139d8c026":[2,23,7,1,1],
-"classturi_1_1optimization_1_1smooth__regularizer__interface.html#a81f382175477d8babe2f88312ee3ee66":[2,23,7,1,0],
-"classturi_1_1optimization_1_1smooth__regularizer__interface.html#aba2327bb54db99816a40470da349f24b":[2,23,7,1,4],
-"classturi_1_1optimization_1_1smooth__regularizer__interface.html#ad33de8d07eff69d4d130f89108e71110":[2,23,7,1,2],
-"classturi_1_1option__manager.html":[2,27,1]
+"classturi_1_1optimization_1_1second__order__opt__interface.html#ae4859cd7fd9094eee11dccbf7e068287":[2,23,6,3,5]
 };
