@@ -362,6 +362,10 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
     ...
     >>> model = turicreate.nearest_neighbors.create(sf, distance=my_dist)
     """
+    import warnings
+
+    if distance == 'dot_product':
+        warnings.warn("Using a \"dot_product\" distance is deprecated. This functionality will be removed in the next major release.")
 
     ## Validate the 'dataset' input
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
@@ -1059,9 +1063,3 @@ class NearestNeighborsModel(_Model):
                          dst_field='reference_label')
             return sg
 
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'query':{'dataset':'sframe'}}

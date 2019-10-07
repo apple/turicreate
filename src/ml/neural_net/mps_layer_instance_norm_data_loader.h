@@ -48,7 +48,8 @@ API_AVAILABLE(macos(10.14))
 @interface TCMPSInstanceNormDataLoader: NSObject <MPSCNNInstanceNormalizationDataSource>
 
 @property (nonatomic) NSUInteger numberOfFeatureChannels;
-@property (nonatomic) NSUInteger currentStyle;
+@property (nonatomic) NSUInteger styleIndex;
+@property (nonatomic) NSUInteger styles;
 
 - (instancetype) initWithParams:(NSString *)name
                    gammaWeights:(float *)gammaWeights
@@ -57,8 +58,6 @@ API_AVAILABLE(macos(10.14))
                          styles:(NSUInteger)styles
                          device:(id<MTLDevice>)dev
                       cmd_queue:(id<MTLCommandQueue>) cmd_q;
-
-- (void) updateCurrentStyle:(NSUInteger)style;
 
 - (void) setLearningRate:(float)lr;
 
@@ -71,6 +70,7 @@ API_AVAILABLE(macos(10.14))
 - (MPSCNNNormalizationGammaAndBetaState *)updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer 
                                               instanceNormalizationStateBatch:(MPSCNNInstanceNormalizationGradientStateBatch *)instanceNormalizationStateBatch;
 
+- (void)checkpoint;
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue;
 
 - (NSString*__nullable) label;

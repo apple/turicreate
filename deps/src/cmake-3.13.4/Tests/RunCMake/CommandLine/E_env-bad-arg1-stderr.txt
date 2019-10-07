@@ -1,1 +1,0 @@
-^cmake -E env: unknown option '-bad-arg1'$

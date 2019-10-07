@@ -1,6 +1,0 @@
-if(NOT TARGET SubLibLocal)
-  message(FATAL_ERROR "SubLibLocal not visible in subdirectory")
-endif()
-if(NOT TARGET SubLibGlobal)
-  message(FATAL_ERROR "SubLibGlobal not visible in subdirectory")
-endif()

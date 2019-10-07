@@ -51,6 +51,7 @@ static char kWeightsKey;
                                   kernelParamsBinaryName:[label UTF8String]
                                                   device:dev
                                                cmd_queue:cmdQ
+                                           updateWeights:updateWeights
                                          init_weight_ptr:(float *)weights.bytes
                                            init_bias_ptr:(float *)biases.bytes
                                         optimizerOptions:optimizerOptions];
@@ -107,6 +108,7 @@ static char kWeightsKey;
                                   kernelParamsBinaryName:[label UTF8String]
                                                   device:dev
                                                cmd_queue:cmdQ
+                                           updateWeights:updateWeights
                                          init_weight_ptr:(float *)weights.bytes
                                            init_bias_ptr:(float *)biases.bytes
                                         optimizerOptions:optimizerOptions];

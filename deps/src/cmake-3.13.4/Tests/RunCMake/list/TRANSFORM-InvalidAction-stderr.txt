@@ -1,4 +1,0 @@
-^CMake Error at TRANSFORM-InvalidAction.cmake:2 \(list\):
-  list sub-command TRANSFORM, BAD_ACTION invalid action.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

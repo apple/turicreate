@@ -1,3 +1,0 @@
--- Boost 1\.12345 found\.
--- Found Boost components:
-   date_time

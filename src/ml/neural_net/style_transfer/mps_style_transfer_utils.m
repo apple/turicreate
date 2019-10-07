@@ -328,8 +328,8 @@
   transformerDesc.conv.outputFeatureChannels = 3;
   transformerDesc.conv.strideWidth = 1;
   transformerDesc.conv.strideHeight = 1;
-  transformerDesc.conv.paddingWidth = 1;
-  transformerDesc.conv.paddingHeight = 1;
+  transformerDesc.conv.paddingWidth = 4;
+  transformerDesc.conv.paddingHeight = 4;
   transformerDesc.conv.label = @"transformer_decode_3_conv";
   transformerDesc.conv.updateWeights = tuneAllWeights;
 
@@ -447,7 +447,7 @@
 
   vgg16Desc.block4.conv2.kernelWidth = 3;
   vgg16Desc.block4.conv2.kernelHeight = 3;
-  vgg16Desc.block4.conv2.inputFeatureChannels = 256;
+  vgg16Desc.block4.conv2.inputFeatureChannels = 512;
   vgg16Desc.block4.conv2.outputFeatureChannels = 512;
   vgg16Desc.block4.conv2.strideWidth = 1;
   vgg16Desc.block4.conv2.strideHeight = 1;
@@ -458,7 +458,7 @@
 
   vgg16Desc.block4.conv3.kernelWidth = 3;
   vgg16Desc.block4.conv3.kernelHeight = 3;
-  vgg16Desc.block4.conv3.inputFeatureChannels = 256;
+  vgg16Desc.block4.conv3.inputFeatureChannels = 512;
   vgg16Desc.block4.conv3.outputFeatureChannels = 512;
   vgg16Desc.block4.conv3.strideWidth = 1;
   vgg16Desc.block4.conv3.strideHeight = 1;

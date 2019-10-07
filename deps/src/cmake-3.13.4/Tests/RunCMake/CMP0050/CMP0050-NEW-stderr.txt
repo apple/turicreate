@@ -1,4 +1,0 @@
-CMake Error at CMP0050-NEW.cmake:5 \(add_custom_command\):
-  The SOURCE signatures of add_custom_command are no longer supported.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

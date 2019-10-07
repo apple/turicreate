@@ -49,6 +49,8 @@ API_AVAILABLE(macos(10.14))
 @property (nonatomic, readonly) MPSVector *biasMomentumVector;
 @property (nonatomic, readonly) MPSVector *biasVelocityVector;
 
+@property (nonatomic, readonly) BOOL updateWeights;
+
 @end
 
 // Class extension for TCMPSBatchNormWeights internal implementation
@@ -154,7 +156,6 @@ NS_ASSUME_NONNULL_END
                     optimizerOptions:optimizerOptions];
 }
 
-
 - (nonnull instancetype)initWithKernelWidth:(NSUInteger)kernelWidth
                                kernelHeight:(NSUInteger)kernelHeight
                        inputFeatureChannels:(NSUInteger)inputFeatureChannels
@@ -171,12 +172,49 @@ NS_ASSUME_NONNULL_END
                               init_bias_ptr:(float* __nullable) b_ptr
                            optimizerOptions:(OptimizerOptions)optimizerOptions
 {
+    return [self initWithKernelWidth:kernelWidth
+                        kernelHeight:kernelHeight
+                inputFeatureChannels:inputFeatureChannels
+               outputFeatureChannels:outputFeatureChannels
+                          neuronType:neuronType
+                             strideX:stride_x
+                             strideY:stride_y
+                             neuronA:neuronA
+                             neuronB:neuronB
+              kernelParamsBinaryName:kernelParamsBinaryName
+                              device:dev
+                           cmd_queue:cmd_q
+                       updateWeights:YES
+                     init_weight_ptr:w_ptr
+                       init_bias_ptr:b_ptr
+                    optimizerOptions:optimizerOptions];
+}
+
+- (nonnull instancetype)initWithKernelWidth:(NSUInteger)kernelWidth
+                               kernelHeight:(NSUInteger)kernelHeight
+                       inputFeatureChannels:(NSUInteger)inputFeatureChannels
+                      outputFeatureChannels:(NSUInteger)outputFeatureChannels
+                                 neuronType:(MPSCNNNeuronType)neuronType
+                                    strideX:(NSUInteger)stride_x
+                                    strideY:(NSUInteger)stride_y
+                                    neuronA:(float)neuronA
+                                    neuronB:(float)neuronB
+                     kernelParamsBinaryName:(const char *__nonnull)kernelParamsBinaryName
+                                     device:(id<MTLDevice> _Nonnull ) dev
+                                  cmd_queue:(id<MTLCommandQueue> _Nonnull) cmd_q
+                              updateWeights:(BOOL)updateWeights
+                            init_weight_ptr:(float* __nullable) w_ptr
+                              init_bias_ptr:(float* __nullable) b_ptr
+                           optimizerOptions:(turi::neural_net::OptimizerOptions)optimizerOptions
+{
   self = [super init];
   if (nil == self)
     return nil;
 
   cq = cmd_q;
   _optimizerOptions = optimizerOptions;
+
+  _updateWeights = updateWeights;
 
   _outputFeatureChannels = outputFeatureChannels;
   _inputFeatureChannels = inputFeatureChannels;
@@ -339,10 +377,11 @@ NS_ASSUME_NONNULL_END
 updateWithCommandBuffer:(__nonnull id<MTLCommandBuffer>)commandBuffer
           gradientState:
               (MPSCNNConvolutionGradientState *__nonnull)gradientState {
-
-  [self.optimizer encodeToCommandBuffer:commandBuffer
-               convolutionGradientState:gradientState
-                     convolutionWeights:self];
+  if (_updateWeights) {
+    [self.optimizer encodeToCommandBuffer:commandBuffer
+                 convolutionGradientState:gradientState
+                       convolutionWeights:self];
+  }
 
   return self.state;
 }

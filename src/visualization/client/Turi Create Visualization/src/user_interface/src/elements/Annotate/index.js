@@ -55,13 +55,13 @@ class Annotate extends Component {
       labeltype = LabelType.STRING;
     }
 
-    if (labeltype == LabelType.STRING) {
-      propLabels = propLabels.filter(label => label.stringLabel != "");
+    if (labeltype === LabelType.STRING) {
+      propLabels = propLabels.filter(label => label.stringLabel !== "");
     }
 
     const labels = propLabels.map((x) => {
       return {
-        name: (labeltype == LabelType.INTEGER)?x.intLabel:x.stringLabel,
+        name: (labeltype === LabelType.INTEGER)?x.intLabel:x.stringLabel,
         num_annotated: x.elementCount,
         num_expected: DEFAULT_NUM_EXPECTED
       }
@@ -90,9 +90,9 @@ class Annotate extends Component {
           imageData: imgData
         });
       }else{
-        var delete_keys = sorted_keys.slice((upper_bound - (end - start)), upper_bound);
+        delete_keys = sorted_keys.slice((upper_bound - (end - start)), upper_bound);
         const imgData = this.state.imageData;
-        for(var x = 0; x < delete_keys.length; x++){
+        for(x = 0; x < delete_keys.length; x++){
           delete imgData[delete_keys[x]];
         }
         this.setState({
@@ -134,14 +134,14 @@ class Annotate extends Component {
 
   setPercentage = (percent) => {
     this.setState({percent: percent});
-    if (percent == 2) {
+    if (percent === 2) {
       this.getHelper(this.state.incrementalCurrentIndex, 0, 2);
     }
   }
 
   getSimilar = (index) => {
-    if(this.state.similar_images[index] == undefined) {
-      if (this.state.percent == 2) {
+    if(this.state.similar_images[index] === undefined) {
+      if (this.state.percent === 2) {
         this.getHelper(index, 0, 2);
       }
     }
@@ -169,7 +169,7 @@ class Annotate extends Component {
     const buffer = ParcelMessage.encode(message).finish();
     const encoded = btoa(String.fromCharCode.apply(null, buffer));
 
-    if (window.navigator.platform == 'MacIntel') {
+    if (window.navigator.platform === 'MacIntel') {
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'writeProtoBuf', message: encoded});
     } else {
       window.postMessageToNativeClient(encoded);
@@ -179,9 +179,9 @@ class Annotate extends Component {
   setAnnotationData = (key, value) => {
     var previousAnnotationData = this.state.annotationData;
 
-    if (this.state.type == LabelType.STRING) {
+    if (this.state.type === LabelType.STRING) {
       previousAnnotationData[key] = value.stringLabel;
-    } else if(this.state.type == LabelType.INTEGER) {
+    } else if(this.state.type === LabelType.INTEGER) {
       previousAnnotationData[key] = value.intLabel;
     }
 
@@ -260,7 +260,7 @@ class Annotate extends Component {
   }
 
   createLabel = (label) => {
-    const notDuplicateLabel = this.state.labels.map(l => (l.name != label))
+    const notDuplicateLabel = this.state.labels.map(l => (l.name !== label))
                                             .reduce((acc, b) => (acc && b), true);
 
     if(!notDuplicateLabel){
@@ -322,32 +322,32 @@ class Annotate extends Component {
     var previousLabelData = this.state.labels;
     var previousLabel = previousAnnotationData[rowIndex];
 
-    if(previousLabel == labels){
+    if(previousLabel === labels){
       return;
     }
 
     for (var x = 0; x < previousLabelData.length; x++) {
       if(previousLabel != null){
-        if(this.state.labels[x].name == previousLabel) {
+        if(this.state.labels[x].name === previousLabel) {
           var tempLabel = previousLabelData[x];
           tempLabel.num_annotated -= 1;
           previousLabelData[x] = tempLabel;
         }
       }
-      if(this.state.labels[x].name == labels){
-        var tempLabel = previousLabelData[x];
+      if(this.state.labels[x].name === labels){
+        tempLabel = previousLabelData[x];
         tempLabel.num_annotated += 1;
         previousLabelData[x] = tempLabel;
       }
     }
 
-    for (var x = 0; x < previousLabelData.length; x++) {
+    for (x = 0; x < previousLabelData.length; x++) {
 
     }
 
-    if (this.state.type == LabelType.STRING) {
+    if (this.state.type === LabelType.STRING) {
       previousAnnotationData[rowIndex] = labels;
-    } else if(this.state.type == LabelType.INTEGER) {
+    } else if(this.state.type === LabelType.INTEGER) {
       previousAnnotationData[rowIndex] = parseInt(labels, 10);
     }
 
@@ -356,7 +356,7 @@ class Annotate extends Component {
 
     var payload;
 
-    if (this.state.type == LabelType.STRING) {
+    if (this.state.type === LabelType.STRING) {
       payload = {"annotations": {"annotation":[{"labels": [{"stringLabel": labels}], "rowIndex": [rowIndex]}]}};
     } else {
       payload = {"annotations": {"annotation":[{"labels": [{"intLabel": parseInt(labels, 10)}], "rowIndex": [rowIndex]}]}};
@@ -371,7 +371,7 @@ class Annotate extends Component {
     const buffer = ParcelMessage.encode(message).finish();
     const encoded = btoa(String.fromCharCode.apply(null, buffer));
 
-    if (window.navigator.platform == 'MacIntel') {
+    if (window.navigator.platform === 'MacIntel') {
       window.webkit.messageHandlers["scriptHandler"].postMessage({status: 'writeProtoBuf', message: encoded});
     } else {
       window.postMessageToNativeClient(encoded);
@@ -392,7 +392,7 @@ class Annotate extends Component {
         similarSelected:similarItems
       });
     } else {
-      var similarItems = this.state.similarSelected;
+      similarItems = this.state.similarSelected;
       similarItems.push(index);
       this.setState({
         similarSelected:similarItems

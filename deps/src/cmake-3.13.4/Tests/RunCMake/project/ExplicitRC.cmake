@@ -1,1 +1,0 @@
-project(ExplicitRC C RC)

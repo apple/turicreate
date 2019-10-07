@@ -1,6 +1,0 @@
-^__run_co_compile missing command to run. Looking for one or more of the following:
---cppcheck=
---cpplint=
---iwyu=
---lwyu=
---tidy=

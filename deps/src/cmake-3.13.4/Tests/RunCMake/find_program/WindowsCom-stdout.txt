@@ -1,1 +1,0 @@
--- PROG='[^']*/Tests/RunCMake/find_program/Win/testCom.com'

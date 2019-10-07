@@ -116,18 +116,32 @@ const std::vector<std::pair<float, float>>& anchor_boxes() {
 // into TCMPS.
 // TODO: These should be exposed in a way that facilitates experimentation.
 // TODO: A struct instead of a map would be nice, too.
-float_array_map get_training_config() {
+
+float_array_map get_base_config() {
   float_array_map config;
-  config["gradient_clipping"]        =
-      shared_float_array::wrap(0.025f * MPS_LOSS_MULTIPLIER);
   config["learning_rate"]            =
       shared_float_array::wrap(BASE_LEARNING_RATE);
+  config["gradient_clipping"]        =
+      shared_float_array::wrap(0.025f * MPS_LOSS_MULTIPLIER);
+  // TODO: Have MPS path use these parameters, instead
+  // of the values hardcoded in the MPS code.
+  config["od_rescore"]               = shared_float_array::wrap(1.0f);
+  config["lmb_noobj"]                = shared_float_array::wrap(5.0);
+  config["lmb_obj"]                  = shared_float_array::wrap(100.0);
+  config["lmb_coord_xy"]             = shared_float_array::wrap(10.0);
+  config["lmb_coord_wh"]             = shared_float_array::wrap(10.0);
+  config["lmb_class"]                = shared_float_array::wrap(2.0);
+  return config;
+}
+
+float_array_map get_training_config() {
+  float_array_map config = get_base_config();
   config["mode"]                     = shared_float_array::wrap(0.f);
   config["od_include_loss"]          = shared_float_array::wrap(1.0f);
   config["od_include_network"]       = shared_float_array::wrap(1.0f);
   config["od_max_iou_for_no_object"] = shared_float_array::wrap(0.3f);
   config["od_min_iou_for_object"]    = shared_float_array::wrap(0.7f);
-  config["od_rescore"]               = shared_float_array::wrap(1.0f);
+  config["rescore"]                  = shared_float_array::wrap(1.0f);
   config["od_scale_class"]           =
       shared_float_array::wrap(2.0f * MPS_LOSS_MULTIPLIER);
   config["od_scale_no_object"]       =
@@ -144,7 +158,7 @@ float_array_map get_training_config() {
 }
 
 float_array_map get_prediction_config() {
-  float_array_map config;
+  float_array_map config = get_base_config();
   config["mode"]                     = shared_float_array::wrap(2.0f);
   config["od_include_loss"]          = shared_float_array::wrap(0.0f);
   config["od_include_network"]       = shared_float_array::wrap(1.0f);
@@ -265,6 +279,10 @@ void object_detector::init_options(
       /* default_value     */ "center",
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
+  options.create_boolean_option(
+      /* name             */ "use_tensorflow",
+      /* description      */
+      "If set to True, model training will be done using TensorFlow.", false);
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -493,6 +511,13 @@ void object_detector::perform_predict(gl_sframe data,
   // For each anchor box, we have 4 bbox coords + 1 conf + one-hot class labels
   int num_outputs_per_anchor = 5 + static_cast<int>(class_labels.size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
+
+  float_array_map pred_config = get_prediction_config();
+  pred_config["num_iterations"] =
+      shared_float_array::wrap(get_max_iterations());
+  pred_config["num_classes"] =
+      shared_float_array::wrap(get_num_classes());
+
   std::unique_ptr<model_backend> model = ctx->create_object_detector(
       /* n       */ read_state<int>("batch_size"),
       /* c_in    */ NUM_INPUT_CHANNELS,
@@ -501,7 +526,7 @@ void object_detector::perform_predict(gl_sframe data,
       /* c_out   */ num_output_channels,
       /* h_out   */ grid_height,
       /* w_out   */ grid_width,
-      /* config  */ get_prediction_config(),
+      /* config  */ pred_config,
       /* weights */ get_model_params());
 
   // To support double buffering, use a queue of pending inference results.
@@ -510,10 +535,10 @@ void object_detector::perform_predict(gl_sframe data,
   // Helper function to process results until the queue reaches a given size.
   auto pop_until_size = [&](size_t remaining) {
     while (pending_batches.size() > remaining) {
+
       // Pop one batch from the queue.
       image_augmenter::result batch = pending_batches.front();
       pending_batches.pop();
-
       for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
         // For this row (corresponding to one image), extract the prediction.
         shared_float_array raw_prediction = batch.image_batch[i];
@@ -554,8 +579,10 @@ void object_detector::perform_predict(gl_sframe data,
     // submit them to the neural net.
     image_augmenter::result prepared_input_batch =
         augmenter->prepare_images(std::move(input_batch));
+
     std::map<std::string, shared_float_array> prediction_results =
         model->predict({{"input", prepared_input_batch.image_batch}});
+
     result_batch.image_batch = prediction_results.at("output");
 
     // Add the pending result to our queue and move on to the next input batch.
@@ -803,7 +830,12 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
 
 std::unique_ptr<compute_context> object_detector::create_compute_context() const
 {
-  return compute_context::create();
+  bool use_tensorflow = read_state<bool>("use_tensorflow");
+  if (use_tensorflow) {
+    return compute_context::create_tf();
+  } else {
+    return compute_context::create();
+  }
 }
 
 void object_detector::init_train(
@@ -893,6 +925,13 @@ void object_detector::init_train(
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
   int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
+
+  float_array_map train_config = get_training_config();
+  train_config["num_iterations"] =
+      shared_float_array::wrap(get_max_iterations());
+  train_config["num_classes"] =
+      shared_float_array::wrap(get_num_classes());
+
   training_model_ = training_compute_context_->create_object_detector(
       /* n       */ read_state<int>("batch_size"),
       /* c_in    */ NUM_INPUT_CHANNELS,
@@ -901,7 +940,7 @@ void object_detector::init_train(
       /* c_out   */ num_output_channels,
       /* h_out   */ grid_height,
       /* w_out   */ grid_width,
-      /* config  */ get_training_config(),
+      /* config  */ train_config,
       /* weights */ get_model_params());
 
   // Print the header last, after any logging triggered by initialization above.
@@ -924,6 +963,7 @@ void object_detector::perform_training_iteration() {
   // TODO: Abstract out the learning rate schedule.
   flex_int iteration_idx = get_training_iterations();
   flex_int max_iterations = get_max_iterations();
+
   if (iteration_idx == max_iterations / 2) {
 
     training_model_->set_learning_rate(BASE_LEARNING_RATE / 10.f);
@@ -1029,6 +1069,10 @@ flex_int object_detector::get_max_iterations() const {
 
 flex_int object_detector::get_training_iterations() const {
   return read_state<flex_int>("training_iterations");
+}
+
+flex_int object_detector::get_num_classes() const {
+  return read_state<flex_int>("num_classes");
 }
 
 void object_detector::wait_for_training_batches(size_t max_pending) {

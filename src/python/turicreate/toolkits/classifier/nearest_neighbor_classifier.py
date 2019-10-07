@@ -845,13 +845,3 @@ class NearestNeighborClassifier(_CustomModel):
                       _evaluation.roc_curve(targets=dataset[target],
                                                predictions=ystar_prob)
         return results
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        """
-        Return a list of method names that are queryable through Predictive
-        Service.
-        """
-        return {'predict':{'dataset':'sframe'},
-                'predict_topk':{'dataset':'sframe'},
-                'classify':{'dataset':'sframe'}}

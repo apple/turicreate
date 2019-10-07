@@ -13,7 +13,7 @@
 @interface TCMPSStyleTransferEncodingNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv;
 @property (nonatomic) MPSCNNInstanceNormalizationNode* instNorm;
-@property (nonatomic) MPSCNNNeuronReLUNNode* relu;
+@property (nonatomic) MPSCNNNeuronReLUNode* relu;
 @end
 
 @implementation TCMPSStyleTransferEncodingNode
@@ -44,7 +44,7 @@
                                          updateWeights:descriptor.conv.updateWeights
                                                 device:dev
                                               cmdQueue:cmdQ];
-    
+
     _instNorm = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv resultImage]
                                                                     channels:descriptor.inst.channels
                                                                       styles:descriptor.inst.styles
@@ -54,7 +54,7 @@
                                                                       device:dev
                                                                     cmdQueue:cmdQ];
 
-    _relu = [MPSCNNNeuronReLUNNode nodeWithSource: [_instNorm resultImage]];
+    _relu = [MPSCNNNeuronReLUNode nodeWithSource: [_instNorm resultImage]];
 
     _output = [_relu resultImage];
   }
@@ -68,6 +68,11 @@
   MPSNNGradientFilterNode* convGrad = [_conv gradientFilterWithSource: [instNormGrad resultImage]];
 
   return [convGrad resultImage];
+}
+
+- (void) setStyleIndex:(NSUInteger)styleIndex {
+  _instNorm.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm.tc_weightsData checkpoint];
 }
 
 - (void) setLearningRate:(float)lr {
@@ -86,7 +91,7 @@
 
   weights[convWeight] = convDataWeight;
 
-  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData styles] * [_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
   NSMutableData* instNormDataBeta = [NSMutableData dataWithLength:instNormSize];
 

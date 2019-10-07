@@ -13,7 +13,7 @@
 @interface TCMPSStyleTransferResidualNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
 @property (nonatomic) MPSCNNInstanceNormalizationNode *instNorm1;
-@property (nonatomic) MPSCNNNeuronReLUNNode *relu1;
+@property (nonatomic) MPSCNNNeuronReLUNode *relu1;
 
 @property (nonatomic) MPSCNNConvolutionNode *conv2;
 @property (nonatomic) MPSCNNInstanceNormalizationNode *instNorm2;
@@ -58,7 +58,7 @@
                                                                        device:dev
                                                                      cmdQueue:cmdQ];
 
-    _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource:[_instNorm1 resultImage]];
+    _relu1 = [MPSCNNNeuronReLUNode nodeWithSource:[_instNorm1 resultImage]];
 
     // No bias
     NSMutableData* zeroedConv2Biases = [NSMutableData dataWithLength:descriptor.conv2.outputFeatureChannels*sizeof(float)];
@@ -93,6 +93,13 @@
   }
 
   return self;
+}
+
+- (void) setStyleIndex:(NSUInteger)styleIndex {
+  _instNorm1.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm1.tc_weightsData checkpoint];
+  _instNorm2.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm2.tc_weightsData checkpoint];
 }
 
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode {
@@ -133,7 +140,7 @@
   NSString* instNorm1GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_gamma"];
   NSString* instNorm1BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_beta"];
 
-  NSUInteger instNorm1Size = (NSUInteger)([_instNorm1.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNorm1Size = (NSUInteger)([_instNorm1.tc_weightsData styles] * [_instNorm1.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   
   NSMutableData* instNorm1DataGamma = [NSMutableData dataWithLength:instNorm1Size];
   NSMutableData* instNorm1DataBeta = [NSMutableData dataWithLength:instNorm1Size];
@@ -147,7 +154,7 @@
   NSString* instNorm2GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_gamma"];
   NSString* instNorm2BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_beta"];
 
-  NSUInteger instNorm2Size = (NSUInteger)([_instNorm2.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNorm2Size = (NSUInteger)([_instNorm2.tc_weightsData styles] * [_instNorm2.tc_weightsData numberOfFeatureChannels] * sizeof(float));
 
   NSMutableData* instNorm2DataGamma = [NSMutableData dataWithLength:instNorm2Size];
   NSMutableData* instNorm2DataBeta = [NSMutableData dataWithLength:instNorm2Size];

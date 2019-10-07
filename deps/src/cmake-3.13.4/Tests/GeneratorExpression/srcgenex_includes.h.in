@@ -1,7 +1,0 @@
-
-#if !defined @TARGET_NAME@_H
-#define @TARGET_NAME@_H
-
-int @TARGET_NAME@(void);
-
-#endif

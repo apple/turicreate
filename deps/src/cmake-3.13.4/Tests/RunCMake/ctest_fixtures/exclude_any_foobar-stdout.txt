@@ -1,9 +1,0 @@
-Test project .*/Tests/RunCMake/ctest_fixtures/exclude_any_foobar-build
-    Start 1: one
-1/2 Test #1: one +\.+ +Passed +[0-9.]+ sec
-    Start 6: two
-2/2 Test #6: two +\.+ +Passed +[0-9.]+ sec
-+
-100% tests passed, 0 tests failed out of 2
-+
-Total Test time \(real\) = +[0-9.]+ sec$

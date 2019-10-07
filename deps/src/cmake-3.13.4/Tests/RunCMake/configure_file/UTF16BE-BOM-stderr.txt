@@ -1,6 +1,0 @@
-CMake Error at UTF16BE-BOM.cmake:2 \(configure_file\):
-  File starts with a Byte-Order-Mark that is not UTF-8:
-
-    .*/Tests/RunCMake/configure_file/UTF16BE-BOM.txt.in
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

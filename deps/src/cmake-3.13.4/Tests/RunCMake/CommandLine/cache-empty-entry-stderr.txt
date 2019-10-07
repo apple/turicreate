@@ -1,1 +1,0 @@
-^CMake Error: Parse error in cache file .*/Tests/RunCMake/CommandLine/cache-empty-entry/CMakeCache.txt on line 5. Offending entry:.*

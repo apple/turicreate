@@ -25,7 +25,7 @@ std::unique_ptr<compute_context> create_mps_compute_context() {
 // At static-init time, register create_mps_compute_context().
 // TODO: Codify priority levels?
 static auto* mps_registration = new compute_context::registration(
-    /* priority */ 0, &create_mps_compute_context);
+    /* priority */ 0, &create_mps_compute_context, nullptr);
 
 }  // namespace
 

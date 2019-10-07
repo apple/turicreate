@@ -1,5 +1,0 @@
-^CMake Error at NEW-cond-package_source.cmake:5 \(add_custom_target\):
-  The target name "package_source" is reserved when CPack source packaging is
-  enabled.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

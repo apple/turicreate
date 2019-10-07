@@ -1,4 +1,0 @@
-CMake Error at CMP0031-NEW.cmake:2 \(load_command\):
-  The load_command command should not be called; see CMP0031.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

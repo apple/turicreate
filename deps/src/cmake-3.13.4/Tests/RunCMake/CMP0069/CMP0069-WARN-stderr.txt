@@ -1,9 +1,0 @@
-^CMake Warning \(dev\) at CMP0069-WARN\.cmake:[0-9]+ \(add_executable\):
-  Policy CMP0069 is not set: INTERPROCEDURAL_OPTIMIZATION is enforced when
-  enabled.  Run "cmake --help-policy CMP0069" for policy details\.  Use the
-  cmake_policy command to set the policy and suppress this warning\.
-
-  INTERPROCEDURAL_OPTIMIZATION property will be ignored for target 'foo'\.
-Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)
-This warning is for project developers\.  Use -Wno-dev to suppress it\.$

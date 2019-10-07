@@ -1,4 +1,0 @@
--- PrefixInPATH_INCLUDE_DIR='PrefixInPATH_INCLUDE_DIR-NOTFOUND'
--- PrefixInPATH_INCLUDE_DIR='.*/Tests/RunCMake/find_path/include'
--- PrefixInPATH_INCLUDE_DIR='.*/Tests/RunCMake/find_path/include'
--- PrefixInPATH_INCLUDE_DIR='.*/Tests/RunCMake/find_path/include'

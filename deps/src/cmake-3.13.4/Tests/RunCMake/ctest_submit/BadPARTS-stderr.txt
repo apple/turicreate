@@ -1,2 +1,0 @@
-CMake Error at .*/Tests/RunCMake/ctest_submit/BadPARTS/test.cmake:[0-9]+ \(ctest_submit\):
-  Part name "bad-part" is invalid.

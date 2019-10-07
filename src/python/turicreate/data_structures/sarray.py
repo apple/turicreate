@@ -609,8 +609,9 @@ class SArray(object):
     def read_json(cls, filename):
         """
         Construct an SArray from a json file or glob of json files.
-        The json file must contain a list of dictionaries. The returned
-        SArray type will be of dict type
+        The json file must contain a list. Every element in the list 
+        must also have the same type. The returned SArray type will be 
+        inferred from the elements type.
 
         Parameters
         ----------
@@ -1344,15 +1345,21 @@ class SArray(object):
         For a SArray that is lazily evaluated, force persist this sarray
         to disk, committing all lazy evaluated operations.
         """
-        return self.__materialize__()
+        with cython_context():
+            self.__proxy__.materialize()
 
     def __materialize__(self):
         """
         For a SArray that is lazily evaluated, force persist this sarray
         to disk, committing all lazy evaluated operations.
+
+        ..WARNING:: This function is deprecated, It will be removed in the next
+        major release. Use SArray.materialize instead.
         """
-        with cython_context():
-            self.__proxy__.materialize()
+        warnings.warn("SArray.__materialize__ is deprecated. It will be removed in the next major release."
+                      + " Use SArray.materialize instead.")
+
+        self.materialize()
 
     def is_materialized(self):
         """
@@ -1583,6 +1590,8 @@ class SArray(object):
         [{'quick': 1, 'brown': 1, 'jumps': 1, 'fox': 1, 'the': 1},
          {'word': 2, 'word,': 1, 'word!!!word': 1}]
             """
+        warnings.warn("SArray._count_words is deprecated. It will removed in the next major release."
+                      + " Use text_analytics.count_words.")
 
         if (self.dtype != str):
             raise TypeError("Only SArray of string type is supported for counting bag of words")
@@ -1608,6 +1617,9 @@ class SArray(object):
         versions of Turi Create. Please use the `text_analytics.count_words`
         function instead.
         """
+        warnings.warn("SArray._count_ngrams is deprecated. It will removed in the next major release."
+                     + " Use text_analytics.count_words.")
+
         if (self.dtype != str):
             raise TypeError("Only SArray of string type is supported for counting n-grams")
 
@@ -1888,6 +1900,9 @@ class SArray(object):
             If True, will not apply ``fn`` to any undefined values.
 
         seed : int, optional
+            ..WARNING:: This parameter is deprecated, It will be removed in the next
+            major release.
+
             Used as the seed if a random number generator is included in ``fn``.
 
         Returns
@@ -1941,8 +1956,9 @@ class SArray(object):
             dtype = infer_type_of_list(dryrun)
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
-
-        # log metric
+        else:
+            warnings.warn("Passing a \"seed\" parameter to SArray.apply is deprecated. This functionality"
+                          + " will be removed in the next major release.")
 
         # First phase test if it is a toolkit function
         nativefn = None

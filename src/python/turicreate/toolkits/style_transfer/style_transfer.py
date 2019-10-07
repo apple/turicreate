@@ -21,6 +21,33 @@ import turicreate as _tc
 import numpy as _np
 import math as _math
 import six as _six
+from .._mps_utils import (use_mps as _use_mps,
+                          mps_device_memory_limit as _mps_device_memory_limit,
+                          MpsGraphAPI as _MpsGraphAPI,
+                          MpsStyleGraphAPI as _MpsStyleGraphAPI,
+                          MpsGraphNetworkType as _MpsGraphNetworkType,
+                          MpsGraphMode as _MpsGraphMode,
+                          mps_to_mxnet as _mps_to_mxnet,
+                          mxnet_to_mps as _mxnet_to_mps)
+
+def _get_mps_st_net(input_image_shape, batch_size, output_size,
+                    config, weights={}):
+    """
+    Initializes an MpsGraphAPI for style transfer.
+    """
+    c_in, h_in, w_in =  input_image_shape
+
+    c_out = output_size[0]
+    h_out = h_in
+    w_out = w_in
+
+    c_view = c_in
+    h_view = h_in
+    w_view = w_in
+
+    network = _MpsStyleGraphAPI(batch_size, c_in, h_in, w_in, c_out, h_out,
+                                w_out, weights=weights, config=config)
+    return network
 
 def _vgg16_data_prep(batch):
     """
@@ -103,6 +130,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         >>> stylized_images.explore()
 
     """
+    if not isinstance(style_dataset, _tc.SFrame):
+        raise TypeError('"style_dataset" must be of type SFrame.')
+    if not isinstance(content_dataset, _tc.SFrame):
+        raise TypeError('"content_dataset" must be of type SFrame.')
     if len(style_dataset) == 0:
         raise _ToolkitError("style_dataset SFrame cannot be empty")
     if len(content_dataset) == 0:
@@ -161,8 +192,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         'aug_inter_method': 2,
         'checkpoint': False,
         'checkpoint_prefix': 'style_transfer',
-        'checkpoint_increment': 1000,
-        'use_tensorflow': False
+        'checkpoint_increment': 1000
     }
 
     if '_advanced_parameters' in kwargs:
@@ -179,7 +209,9 @@ def create(style_dataset, content_dataset, style_feature=None,
     _style_loss_mult = params['style_loss_mult']
 
     num_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=params['batch_size'])
+    use_mps = _use_mps() and num_gpus == 0 and _tkutl._mac_ver() >= (10, 15)
     batch_size_each = params['batch_size'] // max(num_gpus, 1)
+
     batch_size = max(num_gpus, 1) * batch_size_each
     input_shape = params['input_shape']
 
@@ -238,109 +270,165 @@ def create(style_dataset, content_dataset, style_feature=None,
     cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=params['batch_size'])
     num_mxnet_gpus = len(cuda_gpus)
 
-    style_sa = style_dataset[style_feature]
-    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
-    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
-
     if verbose:
         # Estimate memory usage (based on experiments)
         cuda_mem_req = 260 + batch_size_each * 880 + num_styles * 1.4
 
-        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=False,
+        _tkutl._print_neural_compute_device(cuda_gpus=cuda_gpus, use_mps=use_mps,
                                             cuda_mem_req=cuda_mem_req, has_mps_impl=False)
+    #
+    # Pre-compute gram matrices for style images
+    #
+    if verbose:
+        print('Analyzing visual features of the style images')
 
+    
+    if use_mps:
+        batch_size = 1
+    
     content_images_loader = _SFrameSTIter(content_dataset, batch_size, shuffle=True,
                                   feature_column=content_feature, input_shape=input_shape,
                                   loader_type=content_loader_type, aug_params=params,
                                   sequential=params['sequential_image_processing'])
 
-    use_tf = params['use_tensorflow']
-    rs = _np.random.RandomState(1234)
-    if use_tf:
-        from ._tf_model_architecture import StyleTransferTensorFlowModel
-        from ._tf_model_architecture import extract_tensorflow_params
-
-        tf_weights = extract_tensorflow_params(transformer)
-        tf_weights_vgg = extract_tensorflow_params(vgg_model)
-
-        tf_weights.update(tf_weights_vgg)
-
-        tf_finetune_all_params = params['finetune_all_params']
-        tf_model = StyleTransferTensorFlowModel(tf_weights, batch_size, num_styles, tf_finetune_all_params)
-
-        tf_key_input = tf_model.tf_input
-        tf_key_style = tf_model.tf_style
-        tf_key_index = tf_model.tf_index
-
-        style_images_loader = _SFrameSTIter(style_dataset, 1, shuffle=False, num_epochs=1,
+    style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
                                         feature_column=style_feature, input_shape=input_shape,
                                         loader_type='stretch',
                                         sequential=params['sequential_image_processing'])
 
+    style_sa = style_dataset[style_feature]
+    idx_column = _tc.SArray(range(0, style_sa.shape[0]))
+    style_sframe = _tc.SFrame({"style": idx_column, style_feature: style_sa})
+
+    rs = _np.random.RandomState(1234)
+
+    if use_mps:
+        mxnet_mps_key_map = _MpsStyleGraphAPI.mxnet_mps_weight_dict()
+
+        # By passing in dummy values to the network this causes MXNet to trigger
+        # initialization for both the Transformer and VGG16 networks.
+
+        transformer.batch_size = 1
+        test_input = _mx.nd.uniform(0, 1, (1, 3) + input_shape)
+
+        transformer_output = transformer.forward(test_input, _mx.nd.array([0]))
+        vgg16_s = _vgg16_data_prep(transformer_output)
+        vgg_output = vgg_model.forward(vgg16_s)
+
+        vgg16_t = _vgg16_data_prep(test_input)
+        content_output = vgg_model.forward(vgg16_t)
+
+        net_params = transformer.collect_params()
+        vgg_params = vgg_model.collect_params()
+
+        mps_net_params = {}
+
+        keys = list(net_params)
+        vgg_keys = list(vgg_params)
+
+        for k in keys:
+            mps_net_params[mxnet_mps_key_map[k]] = _mxnet_to_mps(net_params[k].data().asnumpy())
+        
+        for k in vgg_keys:
+            mps_net_params[mxnet_mps_key_map[k]] = _mxnet_to_mps(vgg_params[k].data().asnumpy())
+        
+        mps_config = {
+            'mode': _MpsGraphMode.Train,
+            'use_sgd': True,
+            'st_include_network': True,
+            'st_include_loss': True,
+            'st_vgg16_content_loss_layer': params['vgg16_content_loss_layer'],
+            'st_lr': params['lr'],
+            'st_content_loss_mult': params['content_loss_mult'],
+            'st_style_loss_mult': params['style_loss_mult'],
+            'st_finetune_all_params': params['finetune_all_params'], # TODO: plumb through this usage
+            "st_num_styles": num_styles
+        }
+
+        # TODO: Plumb through Predict with multiple batches
+
+        # output = mps_net.predict(_mxnet_to_mps(test_input.asnumpy()))
+        # mps_z = output.asnumpy().reshape(1, 256, 256, 3)
+        # z = _mps_to_mxnet(mps_z)
+
+        mps_net = _get_mps_st_net(input_image_shape=(3, input_shape[0], input_shape[1]),
+                                  batch_size=batch_size,
+                                  output_size=(3, input_shape[0], input_shape[1]),
+                                  config=mps_config,
+                                  weights=mps_net_params)
+
         style_images = []
         for s_batch in style_images_loader:
             s_data = _gluon.utils.split_and_load(s_batch.data[0], ctx_list=ctx, batch_axis=0)
-            for s in s_data:
-                style_images.append(s.asnumpy().transpose(0, 2, 3, 1))
-        
-        style_images =  _np.array(style_images)
-        style_images = style_images.reshape(style_images.shape[0:1] + style_images.shape[2:])
+            style_images.append(s_data[0])
 
         while iterations < max_iterations:
-            content_images_loader.reset()
-            for c_batch in content_images_loader:
-                c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
-                Ls = []
-                for c in c_data:
-                    tf_indicies = rs.randint(num_styles, size=batch_size_each)
+            idx = rs.randint(num_styles, size=1)[0]
 
-                    tf_content_input = c.asnumpy().transpose(0, 2, 3, 1)
-                    tf_style_input = style_images[tf_indicies]
+            style_image = style_images[idx]
 
-                    tf_input = {tf_key_input: tf_content_input, tf_key_style: tf_style_input, tf_key_index: tf_indicies}
-                    loss_value = tf_model.train(tf_input)["loss"]
+            c_batch = content_images_loader.next()
+            c_data = _gluon.utils.split_and_load(c_batch.data[0], ctx_list=ctx, batch_axis=0)
+            content_image = c_data[0]
 
-                    Ls.append(loss_value)
+            loss = mps_net.train(_mxnet_to_mps(content_image.asnumpy()), _mxnet_to_mps(style_image.asnumpy()), idx)
+            cur_loss = loss.asnumpy()[0]
 
-                cur_loss = _np.mean(_np.array(Ls))
-
-                if smoothed_loss is None:
-                    smoothed_loss = cur_loss
-                else:
-                    smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
-                iterations += 1
-
-                if verbose and iterations == 1:
-                    # Print progress table header
-                    column_names = ['Iteration', 'Loss', 'Elapsed Time']
-                    num_columns = len(column_names)
-                    column_width = max(map(lambda x: len(x), column_names)) + 2
-                    hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
-                    print(hr)
-                    print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
-                    print(hr)
-
-                cur_time = _time.time()
-                if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
-                    elapsed_time = cur_time - start_time
-                    print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
-                        cur_iter = iterations, loss = smoothed_loss,
-                        time = elapsed_time , width = column_width-1))
-                    last_time = cur_time
-                if iterations == max_iterations:
-                    print(hr)
-                    break
-
-        # TODO: Test weight update
-        weight_dict = tf_model.export_weights()
-        transformer_param_keys = list(transformer.collect_params())
-        for key in transformer_param_keys:
-            weight = transformer.collect_params()[key].data()
-            # TODO: remove the :0
-            if len(weight_dict[key + ":0"].shape) == 4:
-                weight = _mx.nd.array(weight_dict[key + ":0"].transpose(3, 2, 0, 1))
+            if smoothed_loss is None:
+                smoothed_loss = cur_loss
             else:
-                weight = _mx.nd.array(weight_dict[key + ":0"])
+                smoothed_loss = 0.9 * smoothed_loss + 0.1 * cur_loss
+
+            if verbose and iterations == 0:
+                # Print progress table header
+                column_names = ['Iteration', 'Loss', 'Elapsed Time']
+                num_columns = len(column_names)
+                column_width = max(map(lambda x: len(x), column_names)) + 2
+                hr = '+' + '+'.join(['-' * column_width] * num_columns) + '+'
+                print(hr)
+                print(('| {:<{width}}' * num_columns + '|').format(*column_names, width=column_width-1))
+                print(hr)
+                    
+            cur_time = _time.time()
+
+            if verbose and (cur_time > last_time + 10 or iterations == max_iterations):
+                # Print progress table row
+                elapsed_time = cur_time - start_time
+                print("| {cur_iter:<{width}}| {loss:<{width}.3f}| {time:<{width}.1f}|".format(
+                    cur_iter = iterations, loss = smoothed_loss,
+                    time = elapsed_time , width = column_width-1))
+                last_time = cur_time
+
+            iterations = iterations + 1
+
+            if iterations == max_iterations:
+                print(hr)
+                break
+
+        mps_weights = mps_net.export()
+
+        mps_mxnet_key_map = _MpsStyleGraphAPI.mps_mxnet_weight_dict()
+
+        # LOGIC
+        #
+        # The two layers we are concerned about are very different. The instance
+        # norm layer weights should have a dimensionality two. Wheras the 
+        # Convolutional Weights have a dimensionality of four. The Convolutional
+        # weights are in a different format in MxNet then they are in MPS. Since
+        # the arrays come back flattened in the MPS a reshape has to occur. But
+        # this reshape happens before the transpose therefore the shape itself
+        # has to be transposed. For the InstanceNorm Layer, however, the weights
+        # are passed back to MxNet in the correct format so just a simple
+        # reshape suffices.
+        #
+        for key in mps_weights:
+            if "transformer" in key:
+                weight = transformer.collect_params()[mps_mxnet_key_map[key]].data()
+                if "inst" in key:
+                    mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key].reshape((weight.shape))))
+                elif "conv" in key:
+                    mxnet_weight = _mx.nd.array(_mps_to_mxnet(mps_weights[key].reshape((weight.shape[0], weight.shape[2], weight.shape[3], weight.shape[1]))))
+                transformer.collect_params()[mps_mxnet_key_map[key]].set_data(mxnet_weight)
 
         training_time = _time.time() - start_time
 
@@ -355,7 +443,7 @@ def create(style_dataset, content_dataset, style_feature=None,
             'num_content_images': len(content_dataset),
             'training_time': training_time,
             'max_iterations': max_iterations,
-            'training_iterations': iterations,
+            'training_iterations': max_iterations,
             'training_epochs': content_images_loader.cur_epoch,
             'style_feature': style_feature,
             'content_feature': content_feature,
@@ -365,16 +453,6 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         return StyleTransfer(state)
 
-    #
-    # Pre-compute gram matrices for style images
-    #
-    if verbose:
-        print('Analyzing visual features of the style images')
-
-    style_images_loader = _SFrameSTIter(style_dataset, batch_size, shuffle=False, num_epochs=1,
-                                        feature_column=style_feature, input_shape=input_shape,
-                                        loader_type='stretch',
-                                        sequential=params['sequential_image_processing'])
     num_layers = len(params['style_loss_mult'])
     gram_chunks = [[] for _ in range(num_layers)]
     for s_batch in style_images_loader:

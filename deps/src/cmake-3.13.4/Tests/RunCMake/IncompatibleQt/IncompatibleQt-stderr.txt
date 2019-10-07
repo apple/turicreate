@@ -1,3 +1,0 @@
-CMake Error: The INTERFACE_QT_MAJOR_VERSION property of "Qt5::Core" does
-not agree with the value of QT_MAJOR_VERSION already determined
-for "mainexe".

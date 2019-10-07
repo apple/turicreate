@@ -1,4 +1,0 @@
-^CMake Error at Unknown.cmake:1 \(cmake_minimum_required\):
-  cmake_minimum_required called with unknown argument "SOME_UNKNOWN_OPTION".
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)$

@@ -1,7 +1,0 @@
-^CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
-  No ExternalData_CUSTOM_SCRIPT_RelPathKey is not set to a full path:
-
-   RelPathScript.cmake
-Call Stack \(most recent call first\):
-  BadCustom4.cmake:[0-9]+ \(ExternalData_Add_Target\)
-  CMakeLists.txt:[0-9]+ \(include\)$

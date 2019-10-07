@@ -1,5 +1,0 @@
-CMake Error at .*Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
-  Unparsed arguments: GarbageArg
-Call Stack \(most recent call first\):
-  ExtraArgs.cmake:4 \(write_compiler_detection_header\)
-  CMakeLists.txt:3 \(include\)

@@ -134,7 +134,8 @@ def create(dataset, target, feature, max_iterations=10,
     from ._audio_feature_extractor import _get_feature_extractor
 
     start_time = time.time()
-
+    if not isinstance(dataset, _tc.SFrame):
+        raise TypeError('"dataset" must be of type SFrame.')
     # check parameters
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')

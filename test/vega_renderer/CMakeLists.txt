@@ -14,6 +14,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
     make_library(vega_renderer_test_utils OBJECT
         SOURCES
             base_fixture.mm
+            vega_js_test_fixture.mm
             vega_webkit_renderer.mm
         REQUIRES
             vega_renderer
@@ -21,6 +22,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
             ${XCTest_LIBRARIES}
     )
     target_compile_options(vega_renderer_test_utils PUBLIC "-fobjc-arc")
+    add_dependencies(vega_renderer_test_utils vega_renderer)
 
     set(source_deps
         $<TARGET_OBJECTS:vega_renderer>
@@ -28,6 +30,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
     )
 
     set(target_deps
+        vega_renderer
         ${WEBKIT}
         ${XCTest_LIBRARIES}
         ${FOUNDATION}
@@ -36,6 +39,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
         ${JAVASCRIPT_CORE}
     )
 
+    make_boost_test(vega_js_unit_tests.cxx ${source_deps} REQUIRES ${target_deps})
     make_boost_test(vega_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
     make_boost_test(vega_lite_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
     make_boost_test(turicreate_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
@@ -44,17 +48,20 @@ if(APPLE AND NOT TC_BUILD_IOS)
 
     # loop through files in turicreate
     file(GLOB_RECURSE VEGA_JSON_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.json)
+    file(GLOB_RECURSE VEGA_JS_TESTS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.js)
+    set(XXD_INPUT ${VEGA_JSON_FILES} ${VEGA_JS_TESTS})
 
+    file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/vega_js_tests)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/examples/turicreate)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/examples/vega)
     file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/examples/vega_lite)
 
     include_directories(${CMAKE_CURRENT_BINARY_DIR})
     
-    foreach(SOURCE_FILE ${VEGA_JSON_FILES})
+    foreach(SOURCE_FILE ${XXD_INPUT})
         string(
             REGEX REPLACE
-            ".json$"
+            "(.json|.js)$"
             ".h"
             GENERATED_FILE
             ${CMAKE_CURRENT_BINARY_DIR}/${SOURCE_FILE}
