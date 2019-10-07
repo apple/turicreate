@@ -52,10 +52,12 @@ void call_pybind_function(const CallFunc& func) {
 
   try {
     func();
+  } catch (const pybind11::error_already_set& e) {
+    log_and_throw(std::string("An error occurred: ") + e.what());
   } catch (...) {
-    // TODO: Do better error logging
-    log_and_throw("An error occurred!");
+    log_and_throw("Unknown error occurred");
   }
+
 }
 
 
