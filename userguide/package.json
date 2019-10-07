@@ -4,11 +4,12 @@
   "description": "userguide",
   "main": "index.js",
   "devDependencies": {
-    "mathjax-node": "1.2.1",
     "gitbook-cli": "2.3.2",
     "gitbook-plugin-anchors": "*",
     "gitbook-plugin-collapsible-menu": "*",
-    "gitbook-plugin-mathjax": "1.1.2"
+    "gitbook-plugin-mathjax": "1.1.2",
+    "mathjax": "2.7.6",
+    "mathjax-node": "1.2.1"
   },
   "scripts": {
     "gitbook-dep": "./node_modules/.bin/gitbook install ./",
