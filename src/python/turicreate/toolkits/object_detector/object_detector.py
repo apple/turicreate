@@ -263,8 +263,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # This large buffer size (8 batches) is an attempt to mitigate against
         # the SFrame shuffle operation that can occur after each epoch.
         'io_thread_buffer_size': 8,
-        # TODO: Have the Python side download the Core ML version of the
-        # pre-trained model from somewhere.
         'mlmodel_path': pretrained_model_path,
         'use_tensorflow': False
     }
