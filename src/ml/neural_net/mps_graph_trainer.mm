@@ -21,7 +21,7 @@ using turi::neural_net::mps_graph_cnn_module;
 using turi::neural_net::shared_float_array;
 
 #ifdef HAS_MACOS_10_15
-using turi::style_transfer::style_transfer;
+using turi::style_transfer::mps_style_transfer;
 #endif
 
 int TCMPSHasHighPowerMetalDevice(bool *has_device) {
@@ -67,7 +67,7 @@ EXPORT int TCMPSTrainStyleTransferGraph(MPSHandle handle, int index, TCMPSFloatA
                                         TCMPSFloatArrayRef labels, TCMPSFloatArrayRef *loss_out) {
   API_BEGIN();
 #ifdef HAS_MACOS_10_15
-  style_transfer *obj = reinterpret_cast<style_transfer *>(handle);
+  mps_style_transfer *obj = reinterpret_cast<mps_style_transfer *>(handle);
   float_array *inputs_ptr = reinterpret_cast<float_array *>(inputs);
   float_array *labels_ptr = reinterpret_cast<float_array *>(labels);
 
@@ -140,7 +140,7 @@ int TCMPSCreateGraphModule(MPSHandle *handle, int network_id, int n, int c_in, i
     *handle = (void *)mps;
   } else {
 #ifdef HAS_MACOS_10_15
-    style_transfer *mps = new style_transfer(config, weights);
+    mps_style_transfer *mps = new mps_style_transfer(config, weights);
 
     *handle = (void *)mps;
 #else

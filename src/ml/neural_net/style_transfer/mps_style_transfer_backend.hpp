@@ -5,8 +5,8 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TURI_STYLE_TRANSFER_STYLE_TRANSFER_H_
-#define TURI_STYLE_TRANSFER_STYLE_TRANSFER_H_
+#ifndef TURI_STYLE_TRANSFER_MPS_STYLE_TRANSFER_BACKEND_H_
+#define TURI_STYLE_TRANSFER_MPS_STYLE_TRANSFER_BACKEND_H_
 
 #include <functional>
 #include <map>
@@ -20,12 +20,12 @@
 namespace turi {
 namespace style_transfer {
 
-class EXPORT style_transfer : public turi::neural_net::model_backend {
+class EXPORT mps_style_transfer : public turi::neural_net::model_backend {
 public:
-  style_transfer(const turi::neural_net::float_array_map &config,
+  mps_style_transfer(const turi::neural_net::float_array_map &config,
                  const turi::neural_net::float_array_map &weights);
   
-  ~style_transfer();
+  ~mps_style_transfer();
 
   turi::neural_net::float_array_map export_weights() const override;
   turi::neural_net::float_array_map predict(const turi::neural_net::float_array_map& inputs) const override;
