@@ -68,12 +68,12 @@ using namespace turi::neural_net;
 namespace turi {
 namespace style_transfer {
 
-struct style_transfer::impl {
+struct mps_style_transfer::impl {
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransfer *model = nil;
 };
 
-style_transfer::style_transfer(const float_array_map &config,
-                               const float_array_map &weights) : m_impl(new style_transfer::impl()) {
+mps_style_transfer::mps_style_transfer(const float_array_map &config,
+                               const float_array_map &weights) : m_impl(new mps_style_transfer::impl()) {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {
       id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
@@ -96,9 +96,9 @@ style_transfer::style_transfer(const float_array_map &config,
   }
 }
 
-style_transfer::~style_transfer() = default;
+mps_style_transfer::~mps_style_transfer() = default;
 
-float_array_map style_transfer::export_weights() const {
+float_array_map mps_style_transfer::export_weights() const {
   if (@available(macOS 10.15, *)) {
     NSDictionary<NSString *, NSData *> *dictWeights
         = [m_impl->model exportWeights];
@@ -113,7 +113,7 @@ float_array_map style_transfer::export_weights() const {
   }
 }
 
-float_array_map style_transfer::predict(const float_array_map& inputs) const {
+float_array_map mps_style_transfer::predict(const float_array_map& inputs) const {
   if (@available(macOS 10.15, *)) {
     NSDictionary<NSString *, NSData *> *dictInputs
         = [TCMPSStyleTransferHelpers toNSDictionary: inputs];
@@ -131,7 +131,7 @@ float_array_map style_transfer::predict(const float_array_map& inputs) const {
   }
 }
 
-void style_transfer::set_learning_rate(float lr) {
+void mps_style_transfer::set_learning_rate(float lr) {
   if (@available(macOS 10.15, *)) {
     [m_impl->model setLearningRate:lr];
   } else {
@@ -140,7 +140,7 @@ void style_transfer::set_learning_rate(float lr) {
   }
 }
 
-float_array_map style_transfer::train(const float_array_map& inputs) {
+float_array_map mps_style_transfer::train(const float_array_map& inputs) {
   if (@available(macOS 10.15, *)) {
     NSDictionary<NSString *, NSData *> *dictInputs
         = [TCMPSStyleTransferHelpers toNSDictionary: inputs];
