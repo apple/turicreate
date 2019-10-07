@@ -5,7 +5,7 @@
  */
 
 #include "style_transfer_testing.hpp"
-#include "style_transfer_testing_utils.hpp"
+#import "style_transfer_testing_utils.hpp"
 
 #import <ml/neural_net/mps_device_manager.h>
 #import <ml/neural_net/mps_layer_helper.h>

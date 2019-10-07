@@ -1,11 +1,10 @@
 #include "style_transfer_testing_utils.hpp"
 
-#include <cmath>
-
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/property_tree/json_parser.hpp>
 
+#include <cmath>
 #include <iostream>
 #include <string>
 
