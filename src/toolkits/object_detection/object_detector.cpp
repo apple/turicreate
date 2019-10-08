@@ -356,7 +356,8 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
   flex_dict model = variant_get_value<flex_dict>(it->second);
   model_data.erase(it);
   auto it2 = model_data.find("_grid_shape");
-  std::vector<size_t> shape = variant_get_value<std::vector<size_t>>(it2->second);
+  std::vector<size_t> shape =
+      variant_get_value<std::vector<size_t>>(it2->second);
   size_t height = shape[0];
   size_t width = shape[1];
   model_data.erase(it2);
@@ -465,6 +466,7 @@ void object_detector::train(gl_sframe data,
 
 variant_map_type object_detector::evaluate(
     gl_sframe data, std::string metric) {
+
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -552,10 +554,12 @@ void object_detector::perform_predict(gl_sframe data,
   size_t grid_width = read_state<size_t>("grid_width");
   float iou_threshold =
       read_state<flex_float>("non_maximum_suppression_threshold");
+
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_iter = create_iterator(
       data, std::vector<std::string>(class_labels.begin(), class_labels.end()),
       /* repeat */ false);
+
   // Instantiate the compute context.
   std::unique_ptr<compute_context> ctx = create_compute_context();
   if (ctx == nullptr) {
@@ -581,6 +585,7 @@ void object_detector::perform_predict(gl_sframe data,
       shared_float_array::wrap(get_max_iterations());
   pred_config["num_classes"] =
       shared_float_array::wrap(get_num_classes());
+
   std::unique_ptr<model_backend> model = ctx->create_object_detector(
       /* n       */ read_state<int>("batch_size"),
       /* c_in    */ NUM_INPUT_CHANNELS,
@@ -591,6 +596,7 @@ void object_detector::perform_predict(gl_sframe data,
       /* w_out   */ grid_width,
       /* config  */ pred_config,
       /* weights */ get_model_params());
+    
   // To support double buffering, use a queue of pending inference results.
   std::queue<image_augmenter::result> pending_batches;
 
