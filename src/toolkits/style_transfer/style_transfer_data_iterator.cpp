@@ -10,6 +10,8 @@
 #include <core/data/image/io.hpp>
 #include <model_server/lib/image_util.hpp>
 
+#include <iostream>
+
 namespace turi {
 namespace style_transfer {
 
@@ -26,45 +28,33 @@ flex_image get_image(const flexible_type& image_feature) {
 }
 
 std::vector<flexible_type> get_style(const data_iterator::parameters& params) {
-  gl_sarray style_images = params.style[params.style_column_name];
+  gl_sarray style_images = params.style;
 
-  if (style_images.dtype() == flex_type_enum::IMAGE) {
-    style_images =
-        style_images.apply(image_util::encode_image, flex_type_enum::IMAGE);
-  }
-
-  gl_sframe result({{params.style_column_name, style_images}});
+  if (style_images.dtype() == flex_type_enum::IMAGE)
+    style_images = style_images.apply(image_util::encode_image, flex_type_enum::IMAGE);
 
   std::vector<flexible_type> style_batch;
-  style_batch.reserve(result.size());
+  style_batch.reserve(style_images.size());
 
-  for (const auto& i : result.range_iterator()) {
-    const flexible_type& style_image = i[0];
-    style_batch.emplace_back(style_image);
-  }
+  for (const auto& i : style_images.range_iterator())
+    style_batch.emplace_back(i);
 
   return style_batch;
 }
 
-gl_sframe get_content(const data_iterator::parameters& params) {
-  gl_sarray content_images = params.style[params.content_column_name];
+gl_sarray get_content(const data_iterator::parameters& params) {
+  gl_sarray content_images = params.content;
 
-  if (content_images.dtype() == flex_type_enum::IMAGE) {
-    content_images =
-        content_images.apply(image_util::encode_image, flex_type_enum::IMAGE);
-  }
+  if (content_images.dtype() == flex_type_enum::IMAGE)
+    content_images = content_images.apply(image_util::encode_image, flex_type_enum::IMAGE);
 
-  gl_sframe result({{params.content_column_name, content_images}});
-
-  return result;
+  return content_images;
 }
 
 style_transfer_data_iterator::style_transfer_data_iterator(
-    const parameters& params)
+    const data_iterator::parameters& params)
     : m_style_vector(get_style(params)),
       m_content(get_content(params)),
-      m_style_column_name(params.style_column_name),
-      m_content_column_name(params.content_column_name),
       m_repeat(params.repeat),
       m_shuffle(params.shuffle),
       m_content_range_iterator(m_content.range_iterator()),
@@ -73,19 +63,19 @@ style_transfer_data_iterator::style_transfer_data_iterator(
 
 std::vector<st_image> style_transfer_data_iterator::next_batch(
     size_t batch_size) {
+
   std::vector<std::tuple<flexible_type, flexible_type, flexible_type>>
       raw_batch;
   raw_batch.reserve(batch_size);
 
-  while (raw_batch.size() < batch_size &&
-         m_content_next_row != m_content_range_iterator.end()) {
-    const sframe_rows::row& content_row = *m_content_next_row;
+  while (raw_batch.size() < batch_size && m_content_next_row != m_content_range_iterator.end()) {
+    const turi::flexible_type& content_image = *m_content_next_row;
 
     std::uniform_int_distribution<size_t> dist(0, m_style_vector.size() - 1);
     size_t random_style_index = dist(m_random_engine);
     const flexible_type& style_image = m_style_vector.at(random_style_index);
 
-    raw_batch.emplace_back(content_row[0], style_image, random_style_index);
+    raw_batch.emplace_back(content_image, style_image, random_style_index);
 
     if (++m_content_next_row == m_content_range_iterator.end() && m_repeat) {
       if (m_shuffle) {
@@ -96,11 +86,14 @@ std::vector<st_image> style_transfer_data_iterator::next_batch(
           uint64_t masked_index = random_mask ^ x.to<uint64_t>();
           return flexible_type(hash64(masked_index));
         };
-        m_content.add_column(
+
+        gl_sframe temp_content({{"content", m_content}});
+        temp_content.add_column(
             indices.apply(randomize_indices, flex_type_enum::INTEGER, false),
             "_random_order");
-        m_content = m_content.sort("_random_order");
-        m_content.remove_column("_random_order");
+
+        temp_content = temp_content.sort("_random_order");
+        m_content = temp_content["content"];
       }
     }
   }

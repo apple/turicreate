@@ -5,8 +5,8 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef __TOOLKITS_STYLE_TRANSFER_H_
-#define __TOOLKITS_STYLE_TRANSFER_H_
+#ifndef __TOOLKITS_STYLE_TRANSFER_DATA_ITERATOR_H_
+#define __TOOLKITS_STYLE_TRANSFER_DATA_ITERATOR_H_
 
 #include <functional>
 #include <map>
@@ -32,21 +32,11 @@ struct st_image {
 class data_iterator {
  public:
   struct parameters {
-    /** The Style SFrame to traverse */
-    gl_sframe style;
+    /** The Style SArray to traverse */
+    gl_sarray style;
 
-    /** The Content SFrame to traverse */
-    gl_sframe content;
-
-    /**
-     * The name of the column containing the style images.
-     */
-    std::string style_column_name;
-
-    /**
-     * The name of the column containing the content images.
-     */
-    std::string content_column_name;
+    /** The Content SArray to traverse */
+    gl_sarray content;
 
     /**
      * Whether to traverse the data more than once.
@@ -66,7 +56,8 @@ class data_iterator {
 };
 
 class style_transfer_data_iterator : public data_iterator {
-  style_transfer_data_iterator(const parameters& params);
+ public:
+  style_transfer_data_iterator(const data_iterator::parameters& params);
 
   style_transfer_data_iterator(const style_transfer_data_iterator&) = delete;
   style_transfer_data_iterator& operator=(const style_transfer_data_iterator&) =
@@ -76,16 +67,13 @@ class style_transfer_data_iterator : public data_iterator {
 
  private:
   std::vector<flexible_type> m_style_vector;
-  gl_sframe m_content;
-
-  std::string m_style_column_name;
-  std::string m_content_column_name;
+  gl_sarray m_content;
 
   const bool m_repeat;
   const bool m_shuffle;
 
-  gl_sframe_range m_content_range_iterator;
-  gl_sframe_range::iterator m_content_next_row;
+  gl_sarray_range m_content_range_iterator;
+  gl_sarray_range::iterator m_content_next_row;
 
   std::default_random_engine m_random_engine;
 };
