@@ -12,7 +12,6 @@
 #include <core/export.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
-#include <model_server/lib/variant.hpp>
 
 namespace turi {
 namespace neural_net {

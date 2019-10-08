@@ -10,7 +10,6 @@
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/variant.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
-// #include <toolkits/drawing_classifier/dc_data_iterator.hpp>
 #include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>

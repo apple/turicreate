@@ -174,7 +174,6 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
       new tf_model_backend(activity_classifier));
   
 }
-
 tf_model_backend::tf_model_backend(pybind11::object model): model_(model) {}
 
 float_array_map tf_model_backend::train(const float_array_map& inputs) {

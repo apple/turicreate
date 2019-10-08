@@ -6,18 +6,12 @@
 
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
 
-// #include <algorithm>
-// #include <functional>
-// #include <numeric>
-// #include <random>
 #include <iostream>
 
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
-// #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
-// #include <core/util/string_util.hpp>
 
 
 namespace turi {
