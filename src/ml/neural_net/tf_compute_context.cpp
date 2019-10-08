@@ -9,15 +9,13 @@
 #include <vector>
 
 #include <core/util/try_finally.hpp>
+#include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
+#include <model_server/extensions/additional_sframe_utilities.hpp>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
-
-#ifdef __APPLE__
-#include <ml/neural_net/mps_compute_context.hpp>
-#endif
 
 namespace turi {
 namespace neural_net {
@@ -25,7 +23,8 @@ namespace neural_net {
 using turi::neural_net::float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::shared_float_array;
-
+// using turi::neural_net::result;
+using turi::neural_net::labeled_image;
 
 class tf_model_backend : public model_backend {
  public:
@@ -41,6 +40,20 @@ class tf_model_backend : public model_backend {
 
  private:
   pybind11::object model_;
+};
+
+class tf_image_augmenter : public image_augmenter {
+ public:
+  tf_image_augmenter(const options& opts);
+  ~tf_image_augmenter();
+
+  const options& get_options() const override { return opts_; }
+
+  image_augmenter::result prepare_images(
+      std::vector<labeled_image> source_batch) override;
+
+ private:
+  options opts_;
 };
 
 template <typename CallFunc>
@@ -104,6 +117,8 @@ PYBIND11_MODULE(libtctensorflow, m) {
 
         );
       });
+  pybind11::class_<image_box>(m, "ImageBox");
+  pybind11::class_<image_annotation>(m, "ImageAnnotation");
 }
 
 
@@ -130,15 +145,6 @@ size_t tf_compute_context::memory_budget() const {
 
 std::vector<std::string> tf_compute_context::gpu_names() const {
   return std::vector<std::string>();
-}
-
-std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
-    const image_augmenter::options& opts) {
-  #ifdef __APPLE__
-    return mps_compute_context().create_image_augmenter(opts);
-  #else
-    return nullptr;
-  #endif
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
@@ -176,6 +182,12 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
       new tf_model_backend(activity_classifier));
   
 }
+
+std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
+    const image_augmenter::options& opts) {
+  return std::unique_ptr<image_augmenter>(new tf_image_augmenter(opts));
+}
+
 tf_model_backend::tf_model_backend(pybind11::object model): model_(model) {}
 
 float_array_map tf_model_backend::train(const float_array_map& inputs) {
@@ -255,6 +267,64 @@ void tf_model_backend::set_learning_rate(float lr) {
 tf_model_backend::~tf_model_backend() {
   call_pybind_function([&]() { model_ = pybind11::object(); });
 }
+
+tf_image_augmenter::tf_image_augmenter(const options& opts) : opts_(opts) {}
+
+image_augmenter::result tf_image_augmenter::prepare_images(
+    std::vector<labeled_image> source_batch) {
+  const size_t n = opts_.batch_size;
+  const size_t h = opts_.output_height;
+  const size_t w = opts_.output_width;
+  constexpr size_t c = 3;
+
+  std::cout << n;
+
+  image_augmenter::result image_annotations;
+  call_pybind_function([&]() {
+    pybind11::module tf_aug = pybind11::module::import(
+        "turicreate.toolkits.object_detector._tf_image_augmenter");
+    std::vector<float> img_batch(n);
+    std::vector<std::vector<image_annotation>> ann_batch(n);
+    std::vector<std::vector<image_annotation>> pred_batch(n);
+
+    for (size_t i = 0; i < n; i++) {
+      // TODO: source_batch in the format needed to be passed to tf
+      float* output_ptr = new float(h * w * c);
+      image_load_to_numpy(
+          source_batch[i].image, *output_ptr,
+          {w * c * sizeof(float), c * sizeof(float), sizeof(float)});
+
+      img_batch.push_back(*output_ptr);
+      ann_batch.push_back(source_batch[i].annotations);
+      pred_batch.push_back(source_batch[i].predictions);
+    }
+
+    // Pass to tensorflow
+    pybind11::object augmentation_data =
+        tf_aug.attr("get_augmented_images")(img_batch, ann_batch, pred_batch);
+    std::tuple<std::vector<pybind11::buffer>, std::vector<std::vector<float>>>
+        augmented_data = augmentation_data.cast<std::tuple<
+            std::vector<pybind11::buffer>, std::vector<std::vector<float>>>>();
+
+    // Collect it back from tensorflow
+    for (size_t j = 0; j < n; j++) {
+      pybind11::buffer_info buf = std::get<0>(augmented_data)[j].request();
+      image_annotations.image_batch =
+          turi::neural_net::shared_float_array::copy(
+              static_cast<float*>(buf.ptr),
+              std::vector<size_t>(buf.shape.begin(), buf.shape.end()));
+      // ann = std::get<1>(augmented_data);
+
+      // image_annotations.
+    }
+
+    // image_annotations.annotations_batch =
+  });
+
+  return image_annotations;
+}
+
+tf_image_augmenter::~tf_image_augmenter() {}
 
 }  // namespace neural_net
 }  // namespace turi
