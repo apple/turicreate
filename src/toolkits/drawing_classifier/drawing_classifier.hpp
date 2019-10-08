@@ -8,8 +8,9 @@
 
 #include <core/logging/table_printer/table_printer.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
+#include <model_server/lib/variant.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
-#include <toolkits/drawing_classifier/dc_data_iterator.hpp>
+// #include <toolkits/drawing_classifier/dc_data_iterator.hpp>
 #include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
@@ -24,10 +25,10 @@ class EXPORT drawing_classifier: public ml_model_base {
   
   // ml_model_base interface
 
-  void init_options(const std::map<std::string, flexible_type>& opts) override;
-  size_t get_version() const override;
-  void save_impl(oarchive& oarc) const override;
-  void load_version(iarchive& iarc, size_t version) override;
+  // void init_options(const std::map<std::string, flexible_type>& opts) override;
+  // size_t get_version() const override;
+  // void save_impl(oarchive& oarc) const override;
+  // void load_version(iarchive& iarc, size_t version) override;
 
   // Interface exposed via Unity server
 
@@ -36,13 +37,13 @@ class EXPORT drawing_classifier: public ml_model_base {
              variant_type validation_data,
              std::map<std::string, flexible_type> opts);
   gl_sarray predict(gl_sframe data, std::string output_type);
-  gl_sframe predict_topk(gl_sframe data, std::string output_type,
-    size_t k, size_t batch_size);
-  variant_map_type evaluate(gl_sframe data, std::string metric,
-    size_t batch_size);
-  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename);
-  void load_pretrained_model(variant_map_type model_data, size_t version);
+  // gl_sframe predict_topk(gl_sframe data, std::string output_type,
+  //   size_t k);
+  // variant_map_type evaluate(gl_sframe data, std::string metric,
+  //   size_t batch_size);
+  // std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+  //     std::string filename);
+  // void load_pretrained_model(variant_map_type model_data, size_t version);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("drawing_classifier")
 
@@ -90,6 +91,10 @@ class EXPORT drawing_classifier: public ml_model_base {
       "    When set to 'auto', a validation set is automatically sampled from "
       "the\n"
       "    training data (if the training data has > 100 sessions).\n"
+      "options : dict\n"
+      "\n"
+      "Options\n"
+      "-------\n"
       "warm_start : string\n"
       "    A string to denote which pretrained model to use. Set to \"auto\"\n"
       "    by default which uses a model trained on 245 of the 345 classes\n"
@@ -102,10 +107,6 @@ class EXPORT drawing_classifier: public ml_model_base {
       "                          the 345 classes in the Quick, Draw! dataset.\n"
       "    None: No Warm Start\n"
       "\n"
-      "options : dict\n"
-      "\n"
-      "Options\n"
-      "-------\n"
       "max_iterations : int\n"
       "    Maximum number of iterations/epochs made over the data during the\n"
       "    training phase. The default is 10 iterations.\n"
@@ -138,110 +139,71 @@ class EXPORT drawing_classifier: public ml_model_base {
       "      probability.\n"
   );
 
-  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::predict_topk,
-                                 "data", "output_type");
-  register_defaults("predict_topk", {{"output_type", std::string("probability")}});
-  REGISTER_CLASS_MEMBER_DOCSTRING(
-      drawing_classifier::predict_topk,
-      "----------\n"
-      "data : SFrame\n"
-      "    Dataset of new observations.\n"
-      "    SFrame must include columns with the same\n"
-      "    names as the features used for model training, but does not\n"
-      "    require a target column. Additional columns are ignored."
-      "output_type : {\"probability\", \"rank\"}, optional\n"
-      "    Form of each prediction which is one of:\n"
-      "    - \"probability\": Probability associated with each label in the\n"
-      "      prediction\n"
-      "    - \"rank\": Rank associated with each label in the prediction.\n");
+  // REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::predict_topk,
+  //                                "data", "output_type");
+  // register_defaults("predict_topk", {{"output_type", std::string("probability")}});
+  // REGISTER_CLASS_MEMBER_DOCSTRING(
+  //     drawing_classifier::predict_topk,
+  //     "----------\n"
+  //     "data : SFrame\n"
+  //     "    Dataset of new observations.\n"
+  //     "    SFrame must include columns with the same\n"
+  //     "    names as the features used for model training, but does not\n"
+  //     "    require a target column. Additional columns are ignored."
+  //     "output_type : {\"probability\", \"rank\"}, optional\n"
+  //     "    Form of each prediction which is one of:\n"
+  //     "    - \"probability\": Probability associated with each label in the\n"
+  //     "      prediction\n"
+  //     "    - \"rank\": Rank associated with each label in the prediction.\n");
 
-  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::evaluate, "data",
-                                 "metric");
-  register_defaults("evaluate", {{"metric", std::string("auto")}});
-  REGISTER_CLASS_MEMBER_DOCSTRING(
-      drawing_classifier::evaluate,
-      "----------\n"
-      "data : SFrame\n"
-      "    Dataset of new observations. Must include columns with the same\n"
-      "    names as the features used for model training, but does not require\n"
-      "    a target column. Additional columns are ignored.\n"
-      "metric : str, optional\n"
-      "    Name of the evaluation metric.  Possible values are:\n"
-      "    - 'auto'             : Returns all available metrics\n"
-      "    - 'accuracy'         : Classification accuracy (micro average)\n"
-      "    - 'auc'              : Area under the ROC curve (macro average)\n"
-      "    - 'precision'        : Precision score (macro average)\n"
-      "    - 'recall'           : Recall score (macro average)\n"
-      "    - 'f1_score'         : F1 score (macro average)\n"
-      "    - 'log_loss'         : Log loss\n"
-      "    - 'confusion_matrix' : An SFrame with counts of possible\n"
-      "                           prediction/true label combinations.\n"
-      "    - 'roc_curve'        : An SFrame containing information needed for an\n"
-      "                           ROC curve\n"
-  );
-  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::export_to_coreml,
-                                 "filename");
+  // REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::evaluate, "data",
+  //                                "metric");
+  // register_defaults("evaluate", {{"metric", std::string("auto")}});
+  // REGISTER_CLASS_MEMBER_DOCSTRING(
+  //     drawing_classifier::evaluate,
+  //     "----------\n"
+  //     "data : SFrame\n"
+  //     "    Dataset of new observations. Must include columns with the same\n"
+  //     "    names as the features used for model training, but does not require\n"
+  //     "    a target column. Additional columns are ignored.\n"
+  //     "metric : str, optional\n"
+  //     "    Name of the evaluation metric.  Possible values are:\n"
+  //     "    - 'auto'             : Returns all available metrics\n"
+  //     "    - 'accuracy'         : Classification accuracy (micro average)\n"
+  //     "    - 'auc'              : Area under the ROC curve (macro average)\n"
+  //     "    - 'precision'        : Precision score (macro average)\n"
+  //     "    - 'recall'           : Recall score (macro average)\n"
+  //     "    - 'f1_score'         : F1 score (macro average)\n"
+  //     "    - 'log_loss'         : Log loss\n"
+  //     "    - 'confusion_matrix' : An SFrame with counts of possible\n"
+  //     "                           prediction/true label combinations.\n"
+  //     "    - 'roc_curve'        : An SFrame containing information needed for an\n"
+  //     "                           ROC curve\n"
+  // );
+  // REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::export_to_coreml,
+  //                                "filename");
 
-  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::load_pretrained_model,
-                                 "model_data", "version");
+  // REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::load_pretrained_model,
+  //                                "model_data", "version");
 
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
-  // Override points allowing subclasses to inject dependencies
-
-  // Factory for data_iterator
-  virtual std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, bool requires_labels, bool is_train,
-      bool use_data_augmentation) const;
 
   // Factory for compute_context
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
       const;
-
   // Returns the initial neural network to train
   virtual std::unique_ptr<neural_net::model_spec> init_model() const;
 
-  virtual std::tuple<gl_sframe, gl_sframe> init_data(
-      gl_sframe data, variant_type validation_data) const;
-
-  // Support for iterative training.
-  // TODO: Expose via forthcoming C-API checkpointing mechanism?
-  virtual void init_train(gl_sframe data, std::string target_column_name,
-                          variant_type validation_data,
-                          std::map<std::string, flexible_type> opts);
-  virtual void perform_training_iteration();
-
-  virtual std::tuple<float, float> compute_validation_metrics(
-      size_t num_classes, size_t batch_size);
-
-  virtual void init_table_printer(bool has_validation);
-
-  // Returns an SArray where each entry corresponds to one prediction.
-  virtual gl_sarray perform_inference(data_iterator* data) const;
-
-  // Utility code
-
-  template <typename T>
-  T read_state(const std::string& key) const {
-    return variant_get_value<T>(get_state().at(key));
-  }
 
  private:
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
-
-  // Primary dependencies for training. These should be nonnull while training
-  // is in progress.
-  gl_sframe training_data_;  // TODO: Avoid storing gl_sframe AND data_iterator.
-  gl_sframe validation_data_;
-  std::unique_ptr<data_iterator> training_data_iterator_;
-  std::unique_ptr<data_iterator> validation_data_iterator_;
-  std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<neural_net::model_backend> training_model_;
+  std::unique_ptr<neural_net::compute_context> training_compute_context_;
 
-  // Nonnull while training is in progress, if progress printing is enabled.
-  std::unique_ptr<table_printer> training_table_printer_;
+
 };
 
 }  // namespace drawing_classifier

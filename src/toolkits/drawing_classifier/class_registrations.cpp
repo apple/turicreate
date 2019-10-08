@@ -5,6 +5,7 @@
  */
 #include "class_registrations.hpp"
 #include "data_preparation.hpp"
+#include "drawing_classifier.hpp"
 
 #include <model_server/lib/toolkit_function_macros.hpp>
 
@@ -14,6 +15,11 @@ namespace drawing_classifier {
 BEGIN_FUNCTION_REGISTRATION
 REGISTER_FUNCTION(_drawing_classifier_prepare_data, "data", "feature")
 END_FUNCTION_REGISTRATION
+
+BEGIN_CLASS_REGISTRATION
+REGISTER_CLASS(drawing_classifier)
+END_CLASS_REGISTRATION
+
 
 }// drawing_classifier
 }// turi

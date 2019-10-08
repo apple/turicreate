@@ -41,6 +41,13 @@ public:
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config, const float_array_map& weights) override;
 
+  std::unique_ptr<model_backend> create_drawing_classifier(
+      const variant_type &validation_set, 
+      /* TODO: const float_array_map& weights
+       * Until the nn_spec in C++ isn't ready, do not pass in any weights. 
+       */
+      size_t batch_size, size_t num_classes, bool verbose) override;
+
   std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options &opts) override;
   
