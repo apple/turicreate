@@ -59,6 +59,7 @@ struct lstm_weight_initializers {
 
   static lstm_weight_initializers create_with_xavier_method(
       size_t input_size, size_t state_size, std::mt19937* random_engine);
+  static lstm_weight_initializers create_with_zero();
 
   // Initializers for matrices applied to sequence input
   weight_initializer input_gate_weight_fn;
