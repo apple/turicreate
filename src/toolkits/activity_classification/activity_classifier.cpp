@@ -639,7 +639,7 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
   data_params.prediction_window = read_state<flex_int>("prediction_window");
   data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
   data_params.use_data_augmentation = use_data_augmentation;
-  if (!use_data_augmentation){
+  if (!use_data_augmentation) {
     data_params.random_seed = 0;
   } else {
     data_params.random_seed = read_state<int>("random_seed");
@@ -658,8 +658,8 @@ std::unique_ptr<compute_context> activity_classifier::create_compute_context()
   }
 }
 
-std::unique_ptr<model_spec> activity_classifier::init_model(bool use_random_init) const
-{
+std::unique_ptr<model_spec> activity_classifier::init_model(
+    bool use_random_init) const {
   std::unique_ptr<model_spec> result(new model_spec);
 
   flex_string target = read_state<flex_string>("target");
@@ -668,10 +668,11 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_random_init
   size_t prediction_window = read_state<flex_int>("prediction_window");
   const flex_list &features_list = read_state<flex_list>("features");
 
-  //Only to create a random engine for weight initialization if use_random_init = true
+  // Only to create a random engine for weight initialization if use_random_init
+  // = true
   std::mt19937 random_engine;
-  if (use_random_init){
-    std::seed_seq seed_seq { read_state<int>("random_seed") };
+  if (use_random_init) {
+    std::seed_seq seed_seq{read_state<int>("random_seed")};
     random_engine = std::mt19937(seed_seq);
   }
   result->add_channel_concat(
@@ -681,12 +682,13 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_random_init
                       {{1, num_features, 1, prediction_window}});
 
   weight_initializer initializer = zero_weight_initializer();
-  lstm_weight_initializers lstm_initializer = lstm_weight_initializers::create_with_zero();
-  
-  if (use_random_init){
-    initializer = xavier_weight_initializer(num_features * prediction_window,
-                                NUM_CONV_FILTERS * prediction_window,
-                                &random_engine);
+  lstm_weight_initializers lstm_initializer =
+      lstm_weight_initializers::create_with_zero();
+
+  if (use_random_init) {
+    initializer = xavier_weight_initializer(
+        num_features * prediction_window, NUM_CONV_FILTERS * prediction_window,
+        &random_engine);
   }
   result->add_convolution(
       /* name */ "conv",
@@ -704,48 +706,46 @@ std::unique_ptr<model_spec> activity_classifier::init_model(bool use_random_init
   result->add_channel_slice("hiddenIn","stateIn",0,LSTM_HIDDEN_SIZE,1);
   result->add_channel_slice("cellIn","stateIn",LSTM_HIDDEN_SIZE,LSTM_HIDDEN_SIZE*2,1);
 
-  if (use_random_init){
+  if (use_random_init) {
     lstm_initializer = lstm_weight_initializers::create_with_xavier_method(
-          NUM_CONV_FILTERS, LSTM_HIDDEN_SIZE, &random_engine);
+        NUM_CONV_FILTERS, LSTM_HIDDEN_SIZE, &random_engine);
   }
   result->add_lstm(
-      /* name */                "lstm",
-      /* input */               "relu1",
-      /* hidden_input */        "hiddenIn",
-      /* cell_input */          "cellIn",
-      /* hidden_output */       "hiddenOut",
-      /* cell_output */         "cellOut",
-      /* input_vector_size */   NUM_CONV_FILTERS,
-      /* output_vector_size */  LSTM_HIDDEN_SIZE,
+      /* name */ "lstm",
+      /* input */ "relu1",
+      /* hidden_input */ "hiddenIn",
+      /* cell_input */ "cellIn",
+      /* hidden_output */ "hiddenOut",
+      /* cell_output */ "cellOut",
+      /* input_vector_size */ NUM_CONV_FILTERS,
+      /* output_vector_size */ LSTM_HIDDEN_SIZE,
       /* cell_clip_threshold */ LSTM_CELL_CLIP_THRESHOLD,
       /* initializers */ lstm_initializer);
   result->add_channel_concat("stateOut",{"hiddenOut","cellOut"});
 
-  if (use_random_init){
-    initializer = xavier_weight_initializer(LSTM_HIDDEN_SIZE,
-                                FULLY_CONNECTED_HIDDEN_SIZE,
-                                &random_engine);
+  if (use_random_init) {
+    initializer = xavier_weight_initializer(
+        LSTM_HIDDEN_SIZE, FULLY_CONNECTED_HIDDEN_SIZE, &random_engine);
   }
   result->add_inner_product(
       /* name */ "dense0",
       /* input */ "lstm",
       /* num_output_channels */ FULLY_CONNECTED_HIDDEN_SIZE,
       /* num_input_channels */ LSTM_HIDDEN_SIZE,
-      /* weight_init_fn */initializer,
+      /* weight_init_fn */ initializer,
       /* bias_init_fn */ zero_weight_initializer());
   result->add_batchnorm("bn", "dense0", FULLY_CONNECTED_HIDDEN_SIZE, 0.001f);
   result->add_relu("relu6", "bn");
 
-  if (use_random_init){
+  if (use_random_init) {
     initializer = xavier_weight_initializer(FULLY_CONNECTED_HIDDEN_SIZE,
-                                num_classes,
-                                &random_engine);
+                                            num_classes, &random_engine);
   }
   result->add_inner_product(
-      /* name */                "dense1",
-      /* input */               "relu6",
+      /* name */ "dense1",
+      /* input */ "relu6",
       /* num_output_channels */ num_classes,
-      /* num_input_channels */  FULLY_CONNECTED_HIDDEN_SIZE,
+      /* num_input_channels */ FULLY_CONNECTED_HIDDEN_SIZE,
       /* weight_init_fn */ initializer);
   result->add_softmax(target + "Probability", "dense1");
 

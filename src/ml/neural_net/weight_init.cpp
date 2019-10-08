@@ -65,8 +65,7 @@ xavier_weight_initializer::xavier_weight_initializer(
     return result;
   }
 
-  lstm_weight_initializers lstm_weight_initializers::create_with_zero()
-  {
+  lstm_weight_initializers lstm_weight_initializers::create_with_zero() {
     lstm_weight_initializers result;
 
     result.input_gate_weight_fn = zero_weight_initializer();
