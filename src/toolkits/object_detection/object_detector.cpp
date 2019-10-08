@@ -897,6 +897,10 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
 
 std::unique_ptr<compute_context> object_detector::create_compute_context() const
 {
+  //add this line to prevent evaluation for python model from crash
+  if (state.find("use_tensorflow") == state.end()){
+    return compute_context::create();
+  }
   bool use_tensorflow = read_state<bool>("use_tensorflow");
   if (use_tensorflow) {
     return compute_context::create_tf();
