@@ -350,6 +350,73 @@ void object_detector::load_version(iarchive& iarc, size_t version) {
   _load_version(iarc, version, *nn_spec_, state, anchor_boxes());
 }
 
+void object_detector::import_from_custom_model(variant_map_type model_data,
+                                               size_t version) {
+  auto it = model_data.find("_model");
+  flex_dict model = variant_get_value<flex_dict>(it->second);
+  model_data.erase(it);
+  auto it2 = model_data.find("_grid_shape");
+  std::vector<size_t> shape = variant_get_value<std::vector<size_t>>(it2->second);
+  size_t height = shape[0];
+  size_t width = shape[1];
+  model_data.erase(it2);
+  model_data.insert(std::pair<std::string, size_t>("grid_height", height));
+  model_data.insert(std::pair<std::string, size_t>("grid_width", width));
+
+  model_data.insert(
+      std::pair<std::string, std::string>("annotation_scale", "pixel"));
+  model_data.insert(
+      std::pair<std::string, std::string>("annotation_origin", "top_left"));
+  model_data.insert(
+      std::pair<std::string, std::string>("annotation_position", "center"));
+
+  state.clear();
+  state.insert(model_data.begin(), model_data.end());
+
+  flex_dict mxnet_data_dict;
+  flex_dict mxnet_shape_dict;
+
+  for (const auto& data : model) {
+    if (data.first == "data") {
+      mxnet_data_dict = data.second;
+    }
+    if (data.first == "shapes") {
+      mxnet_shape_dict = data.second;
+    }
+  }
+
+  auto cmp = [](flex_dict::value_type& a, flex_dict::value_type& b) {
+    return (a.first < b.first);
+  };
+
+  std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
+  std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
+
+  float_array_map nn_params;
+
+  for (size_t i = 0; i < mxnet_data_dict.size(); i++) {
+    std::string layer_name = mxnet_data_dict[i].first;
+    flex_nd_vec mxnet_data_nd = mxnet_data_dict[i].second.to<flex_nd_vec>();
+    flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[i].second.to<flex_nd_vec>();
+    const std::vector<double>& model_weight = mxnet_data_nd.elements();
+    const std::vector<double>& model_shape = mxnet_shape_nd.elements();
+    std::vector<float> layer_weight(model_weight.begin(), model_weight.end());
+    std::vector<size_t> layer_shape(model_shape.begin(), model_shape.end());
+    size_t index = layer_name.find('_');
+    layer_name =
+        layer_name.substr(0, index) + "_fwd_" + layer_name.substr(index + 1);
+    std::cout << layer_name << '\n';
+    nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
+                                                     std::move(layer_shape));
+  }
+  nn_spec_.reset(new model_spec);
+  init_darknet_yolo(*nn_spec_,
+                    variant_get_value<size_t>(state.at("num_classes")),
+                    anchor_boxes());
+  nn_spec_->update_params(nn_params);
+  return;
+}
+
 void object_detector::train(gl_sframe data,
                             std::string annotations_column_name,
                             std::string image_column_name,
@@ -398,7 +465,6 @@ void object_detector::train(gl_sframe data,
 
 variant_map_type object_detector::evaluate(
     gl_sframe data, std::string metric) {
-
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -486,12 +552,10 @@ void object_detector::perform_predict(gl_sframe data,
   size_t grid_width = read_state<size_t>("grid_width");
   float iou_threshold =
       read_state<flex_float>("non_maximum_suppression_threshold");
-
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_iter = create_iterator(
       data, std::vector<std::string>(class_labels.begin(), class_labels.end()),
       /* repeat */ false);
-
   // Instantiate the compute context.
   std::unique_ptr<compute_context> ctx = create_compute_context();
   if (ctx == nullptr) {
@@ -517,7 +581,6 @@ void object_detector::perform_predict(gl_sframe data,
       shared_float_array::wrap(get_max_iterations());
   pred_config["num_classes"] =
       shared_float_array::wrap(get_num_classes());
-
   std::unique_ptr<model_backend> model = ctx->create_object_detector(
       /* n       */ read_state<int>("batch_size"),
       /* c_in    */ NUM_INPUT_CHANNELS,
@@ -528,7 +591,6 @@ void object_detector::perform_predict(gl_sframe data,
       /* w_out   */ grid_width,
       /* config  */ pred_config,
       /* weights */ get_model_params());
-
   // To support double buffering, use a queue of pending inference results.
   std::queue<image_augmenter::result> pending_batches;
 

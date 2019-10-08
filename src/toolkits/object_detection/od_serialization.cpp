@@ -52,32 +52,25 @@ void init_darknet_yolo(
       {0, 16},  {1, 32},  {2, 64},   {3, 128},
       {4, 256}, {5, 512}, {6, 1024}, {7, 1024}};
   for (const auto& x : layer_num_to_channels) {
-    if (x.first == 7) {
-      // The conv7 weights have shape [1024, 1024, 3, 3], so fan in and fan out
-      // are both 1024*3*3.
-      nn_spec.add_convolution(/* name */ "conv7_fwd",
-                              /* input */ "leakyrelu6_fwd",
-                              /* num_output_channels */ 1024,
-                              /* num_kernel_channels */ 1024,
-                              /* kernel_height */ 3,
-                              /* kernel_width */ 3,
-                              /* stride_height */ 1,
-                              /* stride_width */ 1,
-                              /* padding */ padding_type::SAME,
-                              /* weight_init_fn */ zero_weight_initializer());
+    std::string input_name;
+    if (x.first == 0) {
+      input_name = "image";
+    } else if (x.first == 7) {
+      input_name = "leakyrelu6_fwd";
     } else {
-      nn_spec.add_convolution(
-          /* name */ "conv" + std::to_string(x.first) + "_fwd",
-          /* input */ "leakyrelu" + std::to_string(x.first - 1) + "_fwd",
-          /* num_output_channels */ x.second,
-          /* num_kernel_channels */ num_features,
-          /* kernel_height */ 3,
-          /* kernel_width */ 3,
-          /* stride_height */ 1,
-          /* stride_width */ 1,
-          /* padding */ padding_type::SAME,
-          /* weight_init_fn */ zero_weight_initializer());
+      input_name = "pool" + std::to_string(x.first - 1) + "_fwd";
     }
+    nn_spec.add_convolution(
+        /* name */ "conv" + std::to_string(x.first) + "_fwd",
+        /* input */ input_name,
+        /* num_output_channels */ x.second,
+        /* num_kernel_channels */ num_features,
+        /* kernel_height */ 3,
+        /* kernel_width */ 3,
+        /* stride_height */ 1,
+        /* stride_width */ 1,
+        /* padding */ padding_type::SAME,
+        /* weight_init_fn */ zero_weight_initializer());
 
     // Append batchnorm.
     nn_spec.add_batchnorm(
@@ -92,6 +85,20 @@ void init_darknet_yolo(
         /* input */ "batchnorm" + std::to_string(x.first) + "_fwd",
         /* alpha */ 0.1f);
 
+    // Append Pooling for 0~5 layer
+    if (x.first <= 5) {
+      size_t stride = 2;
+      padding_type pad_type = padding_type::VALID;
+      bool use_poolexcludepadding = false;
+      if (x.first == 5) {
+        stride = 1;
+        pad_type = padding_type::SAME;
+        use_poolexcludepadding = true;
+      }
+      nn_spec.add_pooling("pool" + std::to_string(x.first) + "_fwd",
+                          "leakyrelu" + std::to_string(x.first) + "_fwd", 2, 2,
+                          stride, stride, pad_type, use_poolexcludepadding);
+    }
     num_features = x.second;
   }
 
@@ -109,6 +116,11 @@ void init_darknet_yolo(
                           /* padding */ padding_type::SAME,
                           /* weight_init_fn */ zero_weight_initializer(),
                           /* bias_init_fn */ zero_weight_initializer());
+
+  // Add Preprocessing with image scale = 1.0
+  // In order to make the format exactly the same with
+  // object_detrector::init_model()
+  nn_spec.add_preprocessing("image", 1.0);
 }
 
 }  // namespace object_detection

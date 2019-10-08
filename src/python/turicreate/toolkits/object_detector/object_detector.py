@@ -507,6 +507,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'training_iterations': training_iterations,
         'max_iterations': max_iterations,
         'training_loss': progress['smoothed_loss'],
+        'use_tensorflow': params['use_tensorflow']
     }
     return ObjectDetector(state)
 
