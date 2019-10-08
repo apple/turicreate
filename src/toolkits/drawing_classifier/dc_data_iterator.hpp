@@ -1,0 +1,171 @@
+/* Copyright © 2019 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ */
+
+#ifndef TURI_DRAWING_CLASSIFICATION_DC_DATA_ITERATOR_HPP_
+#define TURI_DRAWING_CLASSIFICATION_DC_DATA_ITERATOR_HPP_
+
+#include <random>
+#include <string>
+#include <vector>
+
+#include <core/data/sframe/gl_sframe.hpp>
+#include <ml/neural_net/float_array.hpp>
+
+const int kDrawingHeight = 28;
+const int kDrawingWidth = 28;
+const int kDrawingChannels = 1;
+
+namespace turi {
+namespace drawing_classifier {
+
+/**
+ * Pure virtual interface for classes that produce batches of data
+ * (pre-augmentation) from a raw SFrame.
+ */
+class data_iterator {
+ 
+ public:
+
+  /**
+   * Defines the inputs to a data_iterator factory function.
+   */
+  struct parameters {
+
+    /** The SFrame to traverse */
+    gl_sframe data;
+
+    /**
+     * The name of the column containing the target variable.
+     *
+     * If empty, then the output will not contain labels or weights.
+     */
+    std::string target_column_name;
+
+    /** The name of the feature column. */
+    std::string feature_column_name;
+
+    /** The name of the predictions column. */
+    std::string predictions_column_name;
+
+    /**
+     * The expected class labels, indexed by identifier.
+     *
+     * If empty, then the labels will be inferred from the data. If non-empty,
+     * an exception will be thrown upon encountering an unexpected label.
+     *
+     * \TODO: This should be a flex_list to accomodate integer labels!
+     */
+    std::vector<std::string> class_labels;
+
+    /**
+     * Whether to traverse the data more than once.
+     */
+    bool repeat = true;
+
+    /** Whether to shuffle the data on subsequent traversals. */
+    bool shuffle = true;
+
+    /** Determines results of shuffle operations if enabled. */
+    int random_seed = 0;
+  };
+
+  /** Defines the output of a data_iterator. */
+  struct batch {
+
+    /**
+     * An array with shape: (requested_batch_size, 28, 28 1)
+     *
+     * Each row is an image.
+     */
+    neural_net::shared_float_array drawings;
+
+    /**
+     * An array with shape: (requested_batch_size, 1)
+     *
+     * Each row is the target.
+     */
+    neural_net::shared_float_array targets;
+
+    /**
+     * An array with shape: (requested_batch_size, 1)
+     *
+     * Each row is the target.
+     */
+    neural_net::shared_float_array predictions;
+  };
+
+  virtual ~data_iterator() = default;
+
+  /**
+   * Returns a vector whose size is equal to `batch_size`.
+   *
+   * If `repeat` was set in the parameters, then the iterator will cycle
+   * indefinitely through the SFrame over and over. Otherwise, the last
+   * non-empty batch may contain fewer than `batch_size` elements, and every
+   * batch after that will be empty.
+   *
+   */
+  virtual batch next_batch(size_t batch_size) = 0;
+
+  /**
+   * Returns a sorted list of the unique "label" values found in the
+   * target.
+   */
+  virtual const std::vector<std::string>& class_labels() const = 0;
+
+};
+
+/**
+ * Concrete data_iterator implementation that doesn't attempt any
+ * parallelization or background I/O.
+ *
+ * \todo This classs should become an abstract_data_iterator base class with
+ *       override points for dispatching work to other threads.
+ */
+class simple_data_iterator: public data_iterator {
+ public:
+
+  simple_data_iterator(const parameters& params);
+
+  // Not copyable or movable.
+  simple_data_iterator(const simple_data_iterator&) = delete;
+  simple_data_iterator& operator=(const simple_data_iterator&) = delete;
+
+  batch next_batch(size_t batch_size) override;
+
+  const std::vector<std::string>& class_labels() const override {
+    return target_properties_.classes;
+  }
+
+ private:
+  struct target_properties {
+    std::vector<std::string> classes;
+    std::unordered_map<std::string, int> class_to_index_map;
+  };
+
+  target_properties compute_properties(
+      const gl_sarray& targets,
+      std::vector<std::string> expected_class_labels);
+
+  gl_sframe data_;
+  const size_t target_index_;
+  const size_t predictions_index_;
+  const size_t feature_index_;
+  const bool repeat_;
+  const bool shuffle_;
+
+  const target_properties target_properties_;
+
+  gl_sframe_range range_iterator_;
+  gl_sframe_range::iterator next_row_;
+  std::default_random_engine random_engine_;
+};
+
+
+}  // namespace drawing_classifier
+}  // namespace turi
+
+#endif  // TURI_DRAWING_CLASSIFICATION_DC_DATA_ITERATOR_HPP_
