@@ -14,8 +14,6 @@
 
 #include <string>
 
-#include <iostream>
-
 #include "utils.hpp"
 
 using namespace style_transfer_testing;
@@ -38,7 +36,7 @@ BOOST_AUTO_TEST_CASE(test_initialization) {
   style_transfer_data_iterator iter(params);
 
   for (size_t x = 0; x < expected_batch_size; x++) {
-    std::vector<st_image> test_batch = iter.next_batch(test_batch_size);
+    std::vector<st_example> test_batch = iter.next_batch(test_batch_size);
     TS_ASSERT(test_batch.size() == expected_batch_array[x]);
   }
 }

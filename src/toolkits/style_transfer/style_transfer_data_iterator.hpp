@@ -8,25 +8,17 @@
 #ifndef __TOOLKITS_STYLE_TRANSFER_DATA_ITERATOR_H_
 #define __TOOLKITS_STYLE_TRANSFER_DATA_ITERATOR_H_
 
-#include <functional>
-#include <map>
-#include <memory>
+#include <random>
 
-#include <core/data/sframe/gl_sframe.hpp>
-#include <core/logging/table_printer/table_printer.hpp>
-#include <ml/neural_net/compute_context.hpp>
-#include <ml/neural_net/model_backend.hpp>
-#include <ml/neural_net/model_spec.hpp>
-#include <model_server/lib/extensions/ml_model.hpp>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <core/data/sframe/gl_sarray.hpp>
 
 namespace turi {
 namespace style_transfer {
 
-struct st_image {
-  image_type style;
-  image_type content;
-  size_t index;
+struct st_example {
+  image_type content_image;
+  image_type style_image;
+  size_t style_index;
 };
 
 class data_iterator {
@@ -52,7 +44,7 @@ class data_iterator {
 
   virtual ~data_iterator() = default;
 
-  virtual std::vector<st_image> next_batch(size_t batch_size) = 0;
+  virtual std::vector<st_example> next_batch(size_t batch_size) = 0;
 };
 
 class style_transfer_data_iterator : public data_iterator {
@@ -63,11 +55,11 @@ class style_transfer_data_iterator : public data_iterator {
   style_transfer_data_iterator& operator=(const style_transfer_data_iterator&) =
       delete;
 
-  std::vector<st_image> next_batch(size_t batch_size) override;
+  std::vector<st_example> next_batch(size_t batch_size) override;
 
  private:
-  std::vector<flexible_type> m_style_vector;
-  gl_sarray m_content;
+  gl_sarray m_style_images;
+  gl_sarray m_content_images;
 
   const bool m_repeat;
   const bool m_shuffle;
