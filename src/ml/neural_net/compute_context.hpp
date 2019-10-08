@@ -12,6 +12,7 @@
 #include <core/export.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
+#include <model_server/lib/variant.hpp>
 
 namespace turi {
 namespace neural_net {
@@ -115,6 +116,22 @@ EXPORT class compute_context {
    */
   virtual std::unique_ptr<model_backend> create_style_transfer(
       const float_array_map& config, const float_array_map& weights) = 0;
+
+  /**
+   * Creates a drawing classification network.
+   *
+   * \todo Define a drawing_classifier_config struct to encapsulate these
+   *       parameters in a more self-documenting and typesafe way.
+   * \todo Initialize the network directly from a model_spec, in lieu of passing
+   *       weights as a float_array_map.
+   * \todo what args here?
+   */
+  virtual std::unique_ptr<model_backend> create_drawing_classifier(
+      const variant_type &validation_set, 
+      /* TODO: const float_array_map& weights
+       * Until the nn_spec in C++ isn't ready, do not pass in any weights. 
+       */
+      size_t batch_size, size_t num_classes, bool verbose) = 0;
 
   /**
    * Creates an image augmenter.

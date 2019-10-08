@@ -12,6 +12,7 @@
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/variant.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
+#include <toolkits/drawing_classifier/dc_data_iterator.hpp>
 #include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
@@ -183,6 +184,10 @@ class EXPORT drawing_classifier: public ml_model_base {
   virtual std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, bool is_train) const;
 
+  // Factory for compute_context
+  virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
+      const;
+
   // Returns the initial neural network to train
   virtual std::unique_ptr<neural_net::model_spec> init_model(
       bool random_init) const;
@@ -213,15 +218,8 @@ class EXPORT drawing_classifier: public ml_model_base {
  private:
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
-
-  // Primary dependencies for training. These should be nonnull while training
-  // is in progress.
-  gl_sframe training_data_;  // TODO: Avoid storing gl_sframe AND data_iterator.
-  gl_sframe validation_data_;
-  std::unique_ptr<data_iterator> training_data_iterator_;
-  std::unique_ptr<data_iterator> validation_data_iterator_;
-  std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<neural_net::model_backend> training_model_;
+  std::unique_ptr<neural_net::compute_context> training_compute_context_;
 
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;

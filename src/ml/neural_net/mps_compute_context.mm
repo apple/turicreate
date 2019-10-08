@@ -119,6 +119,14 @@ std::unique_ptr<model_backend> mps_compute_context::create_style_transfer(
 #else
   return nullptr;
 #endif
+
+std::unique_ptr<model_backend> mps_compute_context::create_drawing_classifier(
+    const variant_type &validation_set,
+    /* TODO: const float_array_map& weights
+     * Until the nn_spec in C++ isn't ready, do not pass in any weights. 
+     */
+    size_t batch_size, size_t num_classes, bool verbose) {
+  return nullptr;
 }
 
 }  // namespace neural_net
