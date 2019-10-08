@@ -82,7 +82,7 @@ size_t count_correct_predictions(size_t num_classes, const shared_float_array& o
 
   const float* output_ptr = output_chunk.data();
   const float* truth_ptr = label_chunk.data();
-  
+
   size_t num_correct_predictions = 0;
 
   for (size_t i = 0; i < num_samples; i+=prediction_window) {
@@ -527,8 +527,7 @@ void activity_classifier::import_from_custom_model(
 
   // Extract the neural net weights from the model data.
   auto it = model_data.find("_pred_model");
-  flex_dict pred_model = variant_get_value<flex_dict>(it->second);
-  model_data.erase(it);
+  const flex_dict& pred_model = variant_get_value<flex_dict>(it->second);
 
   // The remaining model data should be interpreted as model attributes (state).
   state.clear();
@@ -616,6 +615,7 @@ void activity_classifier::import_from_custom_model(
   bool use_random_init = false;
   nn_spec_ = init_model(use_random_init);
   nn_spec_->update_params(nn_params);
+  model_data.erase(it);
 }
 
 std::unique_ptr<data_iterator> activity_classifier::create_iterator(
@@ -649,6 +649,9 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
 
 std::unique_ptr<compute_context> activity_classifier::create_compute_context()
     const {
+  if (state.find("use_tensorflow") == state.end()){
+    return compute_context::create();
+  }
   bool use_tensorflow = read_state<bool>("use_tensorflow");
   if (use_tensorflow) {
     return compute_context::create_tf();
