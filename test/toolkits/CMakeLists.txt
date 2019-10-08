@@ -1,2 +1,2 @@
-
+subdirs(style_transfer)
 
