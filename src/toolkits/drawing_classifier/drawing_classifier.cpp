@@ -16,7 +16,7 @@
 #include <core/logging/logger.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
 // #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
-// #include <toolkits/evaluation/metrics.hpp>
+#include <toolkits/evaluation/metrics.hpp>
 // #include <core/util/string_util.hpp>
 
 
@@ -33,11 +33,6 @@ using neural_net::shared_float_array;
 
 }  // namespace
 
-std::unique_ptr<compute_context> drawing_classifier::create_compute_context()
-    const {
-  return compute_context::create_tf();
-}
-
 std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   std::unique_ptr<model_spec> result(new model_spec);
   return result;
@@ -49,33 +44,34 @@ void drawing_classifier::train(gl_sframe data,
     variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
   nn_spec_ = init_model();
-  // Instantiate the compute context.
-  training_compute_context_ = create_compute_context();
-  if (training_compute_context_ == nullptr) {
-    log_and_throw("No neural network compute context provided");
-  }
-  // TODO: Do not hardcode values
-  training_model_ = training_compute_context_->create_drawing_classifier(
-    validation_data,
-    /* TODO: nn_spec_->export_params_view().
-     * Until the nn_spec in C++ isn't ready, do not pass in any weights. 
-     */
-    256,
-    2,
-    true
-  );
+  /* TODO: Add code to train! */
 }
 
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
-  if (output_type.empty()) {
-    output_type = "class";
-  }
-  if (output_type != "class" && output_type != "probability_vector") {
-    log_and_throw(output_type
-      + " is not a valid option for output_type. " 
-      + "Expected one of: probability_vector, class");
-  }
+  /* TODO: Add code to predict! */
   return gl_sarray();
+}
+
+gl_sframe drawing_classifier::predict_topk(gl_sframe data, 
+  std::string output_type, size_t k) {
+  /* TODO: Add code to predict_topk! */
+  return gl_sframe();
+}
+
+variant_map_type drawing_classifier::evaluate(gl_sframe data, std::string metric) {
+  // Perform prediction.
+  gl_sarray predictions = predict(data, "probability_vector");
+
+  /* TODO: This is just for the skeleton. Rewrite. */
+  return evaluation::compute_classifier_metrics(
+      data, "label", metric, predictions,
+      {{"classes", 2}});
+}
+
+std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
+    std::string filename) {
+  /* Add code for export_to_coreml */
+  return nullptr;
 }
 
 }  // namespace drawing_classifier
