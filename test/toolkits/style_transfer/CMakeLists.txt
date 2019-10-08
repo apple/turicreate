@@ -1,7 +1,5 @@
 project(neural_net_test)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-
 make_library(style_transfer_toolkit_test_utils
   SOURCES
     utils.cpp

@@ -8,7 +8,7 @@
 #define BOOST_TEST_MODULE
 
 #include <string>
-#include <utils.hpp>
+#include <toolkits/style_transfer/utils.hpp>
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
