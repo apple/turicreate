@@ -11,6 +11,10 @@
  */
 #ifndef DMLC_IO_S3_FILESYS_H_
 #define DMLC_IO_S3_FILESYS_H_
+
+#ifndef TC_DISABLE_REMOTEFS
+
+
 #include <string>
 #include <vector>
 #include "./io.h"
@@ -80,4 +84,6 @@ class S3FileSystem {
 };
 }  // namespace io
 }  // namespace dmlc
+#endif
+
 #endif

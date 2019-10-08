@@ -262,7 +262,7 @@ if(TC_BUILD_IOS)
   add_definitions(-DTC_BUILD_IOS)
 
   if(${TC_BUILD_REMOTEFS})
-    message(ERROR "RemoteFS must be disable for building iOS.")
+    message(ERROR, "RemoteFS must be disable for building iOS.")
   endif()
 
 endif()
@@ -1154,10 +1154,12 @@ endforeach()
 include_directories(src)
 include_directories(src/core/system/platform)
 include_directories(SYSTEM src/external)
+
 if(${TC_BUILD_REMOTEFS})
   include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-core/include)
   include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-s3/include)
 endif()
+
 include_directories(SYSTEM src/external/google)
 
 if(EXISTS ${CMAKE_SOURCE_DIR}/extensions)

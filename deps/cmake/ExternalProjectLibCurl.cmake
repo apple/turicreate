@@ -10,9 +10,6 @@ elseif(WIN32)
 else()
   SET(EXTRA_CONFIGURE_FLAGS LIBS=-ldl --with-ssl=<INSTALL_DIR>)
 endif()
-if(APPLE AND TC_BUILD_IOS)
-  set(EXTRA_CONFIGURE_FLAGS --host=arm-apple-darwin)
-endif()
 
 ExternalProject_Add(ex_libcurl
   PREFIX ${CMAKE_SOURCE_DIR}/deps/build/libcurl

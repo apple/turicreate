@@ -3,6 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#ifndef TC_DISABLE_REMOTEFS
+
 #ifndef _WIN32
 #include <arpa/inet.h>
 #else
@@ -28,6 +30,7 @@
 
 /* aws */
 #include <aws/core/Aws.h>
+#include <aws/s3/S3Client.h>
 #include <aws/s3/model/ListObjectsV2Request.h>
 #include <aws/s3/model/ListObjectsV2Result.h>
 #include <aws/s3/model/DeleteObjectRequest.h>
@@ -779,4 +782,7 @@ std::string get_s3_file_last_modified(const std::string& url){
   }
   return "";
 }
+
 }
+
+#endif

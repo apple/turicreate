@@ -255,3 +255,5 @@ target_optional_compile_flag(aws-sdk-cpp "-Wno-return-std-move")
 target_compile_definitions(aws-sdk-cpp PRIVATE -DENABLE_CURL_CLIENT)
 target_compile_definitions(aws-sdk-cpp PRIVATE -DENABLE_OPENSSL_ENCRYPTION)
 target_compile_definitions(aws-sdk-cpp PRIVATE -DJSON_USE_EXCEPTION=0)
+
+
