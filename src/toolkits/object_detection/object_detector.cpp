@@ -355,7 +355,7 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
   auto it = model_data.find("_model");
   const flex_dict& model = variant_get_value<flex_dict>(it->second);
   auto it2 = model_data.find("_grid_shape");
-  if (it2 == model_data.end()){
+  if (it2 == model_data.end()) {
     log_and_throw("The provided model must contain field '_grid_shape'!");
   }
   std::vector<size_t> shape =
