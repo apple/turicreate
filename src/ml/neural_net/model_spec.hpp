@@ -148,7 +148,7 @@ public:
   void add_sigmoid(const std::string& name, const std::string& input);
 
   /**
-   * Appends a pooliong layer.
+   * Appends a pooling layer.
    */
   void add_pooling(const std::string& name, const std::string& input,
                    size_t kernel_height, size_t kernel_width, size_t stride_h,
@@ -333,8 +333,8 @@ public:
   // this could be shared in some form with coremltools.
 
   /**
-   * Appends an preprocessing layer
-   * Now only support image scaleing preprocessing though.
+   * Appends a preprocessing layer
+   * Now only support image scaling preprocessing though.
    */
   void add_preprocessing(const std::string& feature_name,
                          const float image_scale);

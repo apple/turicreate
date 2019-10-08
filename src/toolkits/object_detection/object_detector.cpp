@@ -353,23 +353,22 @@ void object_detector::load_version(iarchive& iarc, size_t version) {
 void object_detector::import_from_custom_model(variant_map_type model_data,
                                                size_t version) {
   auto it = model_data.find("_model");
-  flex_dict model = variant_get_value<flex_dict>(it->second);
-  model_data.erase(it);
+  const flex_dict& model = variant_get_value<flex_dict>(it->second);
   auto it2 = model_data.find("_grid_shape");
+  if (it2 == model_data.end()){
+    log_and_throw("The provided model must contain field '_grid_shape'!");
+  }
   std::vector<size_t> shape =
       variant_get_value<std::vector<size_t>>(it2->second);
   size_t height = shape[0];
   size_t width = shape[1];
   model_data.erase(it2);
-  model_data.insert(std::pair<std::string, size_t>("grid_height", height));
-  model_data.insert(std::pair<std::string, size_t>("grid_width", width));
+  model_data.emplace("grid_height", height);
+  model_data.emplace("grid_width", width);
 
-  model_data.insert(
-      std::pair<std::string, std::string>("annotation_scale", "pixel"));
-  model_data.insert(
-      std::pair<std::string, std::string>("annotation_origin", "top_left"));
-  model_data.insert(
-      std::pair<std::string, std::string>("annotation_position", "center"));
+  model_data.emplace("annotation_scale", "pixel");
+  model_data.emplace("annotation_origin", "top_left");
+  model_data.emplace("annotation_position", "center");
 
   state.clear();
   state.insert(model_data.begin(), model_data.end());
@@ -406,7 +405,6 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
     size_t index = layer_name.find('_');
     layer_name =
         layer_name.substr(0, index) + "_fwd_" + layer_name.substr(index + 1);
-    std::cout << layer_name << '\n';
     nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
                                                      std::move(layer_shape));
   }
@@ -415,6 +413,7 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
                     variant_get_value<size_t>(state.at("num_classes")),
                     anchor_boxes());
   nn_spec_->update_params(nn_params);
+  model_data.erase(it);
   return;
 }
 
@@ -596,7 +595,7 @@ void object_detector::perform_predict(gl_sframe data,
       /* w_out   */ grid_width,
       /* config  */ pred_config,
       /* weights */ get_model_params());
-    
+
   // To support double buffering, use a queue of pending inference results.
   std::queue<image_augmenter::result> pending_batches;
 
