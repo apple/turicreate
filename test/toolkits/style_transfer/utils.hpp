@@ -17,13 +17,16 @@
 
 #include <string>
 
-namespace style_transfer_testing {
+
+namespace turi {
+namespace style_transfer {
 
 std::string generate_data(size_t data_size);
 turi::flex_image random_image();
 turi::gl_sarray random_image_sarray(size_t length);
 turi::gl_sframe random_sframe(size_t length, std::string image_column_name);
 
-} // namespace style_transfer_testing
+} // namespace style_transfer
+} // namespace turi
 
 #endif // __TC_TEST_TOOLKITS_STYLE_TRANSFER_UTILS

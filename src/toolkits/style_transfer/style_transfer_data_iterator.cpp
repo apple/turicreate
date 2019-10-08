@@ -25,30 +25,18 @@ flex_image get_image(const flexible_type& image_feature) {
   }
 }
 
-gl_sarray get_style(const data_iterator::parameters& params) {
-  gl_sarray style_images = params.style;
-
-  if (style_images.dtype() == flex_type_enum::IMAGE)
-    style_images = style_images.apply(image_util::encode_image, flex_type_enum::IMAGE);
-
-  return style_images;
-}
-
-gl_sarray get_content(const data_iterator::parameters& params) {
-  gl_sarray content_images = params.content;
-
-  if (content_images.dtype() == flex_type_enum::IMAGE)
-    content_images = content_images.apply(image_util::encode_image, flex_type_enum::IMAGE);
-
-  return content_images;
+gl_sarray ensure_encoded(const gl_sarray& sa) {
+  if (sa.dtype() == flex_type_enum::IMAGE)
+    return sa.apply(image_util::encode_image, flex_type_enum::IMAGE);
+  return sa;
 }
 
 }
 
 style_transfer_data_iterator::style_transfer_data_iterator(
     const data_iterator::parameters& params)
-    : m_style_images(get_style(params)),
-      m_content_images(get_content(params)),
+    : m_style_images(ensure_encoded(params.style)),
+      m_content_images(ensure_encoded(params.content)),
       m_repeat(params.repeat),
       m_shuffle(params.shuffle),
       m_content_range_iterator(m_content_images.range_iterator()),

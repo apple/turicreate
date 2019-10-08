@@ -5,9 +5,12 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include "utils.hpp"
+#include <utils.hpp>
 
-namespace style_transfer_testing {
+#include <model_server/lib/image_util.hpp>
+
+namespace turi {
+namespace style_transfer {
 
 std::string generate_data(size_t data_size) {
   std::string data_array;
@@ -42,7 +45,7 @@ turi::gl_sarray random_image_sarray(size_t length) {
   turi::gl_sarray sa;
   sa.construct_from_vector(image_column_data, turi::flex_type_enum::IMAGE);
 
-  return sa;
+  return sa.apply(turi::image_util::encode_image, turi::flex_type_enum::IMAGE);;
 }
 
 turi::gl_sframe random_sframe(size_t length, std::string image_column_name) {
@@ -53,4 +56,5 @@ turi::gl_sframe random_sframe(size_t length, std::string image_column_name) {
   return image_sf;
 }
 
-} // namespace style_transfer_testing
+} // namespace style_transfer
+} // namespace turi
