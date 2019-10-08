@@ -202,8 +202,8 @@ void word_trimmer_topk_index_mapping(const gl_sarray& src,
 
         case flex_type_enum::UNDEFINED:
           logstream(LOG_WARNING)
-              << "Skip undefined value in 'word_trimmer_topk_index_mapping'; "
-              << " please consider dropna on feature columns" << std::endl;
+              << "Skip undefined value. please consider calling "
+              << "dropna on feature columns" << std::endl;
           break;
 
         // Should not be here.
