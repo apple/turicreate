@@ -353,7 +353,7 @@ void object_detector::load_version(iarchive& iarc, size_t version) {
 void object_detector::import_from_custom_model(variant_map_type model_data,
                                                size_t version) {
   auto model_iter = model_data.find("_model");
-  if (model_iter == model_data.end()){
+  if (model_iter == model_data.end()) {
     log_and_throw("The loaded turicreate model must contain '_model'!\n");
   }
   const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
@@ -363,7 +363,8 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
     height = 13;
     width = 13;
   } else {
-    std::vector<size_t> shape = variant_get_value<std::vector<size_t>>(shape_iter->second);
+    std::vector<size_t> shape =
+        variant_get_value<std::vector<size_t>>(shape_iter->second);
     height = shape[0];
     width = shape[1];
   }
