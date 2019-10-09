@@ -639,10 +639,10 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
   data_params.prediction_window = read_state<flex_int>("prediction_window");
   data_params.predictions_in_chunk = NUM_PREDICTIONS_PER_CHUNK;
   data_params.use_data_augmentation = use_data_augmentation;
-  if (!use_data_augmentation) {
-    data_params.random_seed = 0;
-  } else {
+  if (use_data_augmentation) {
     data_params.random_seed = read_state<int>("random_seed");
+  } else {
+    data_params.random_seed = 0;
   }
   return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));
 }
