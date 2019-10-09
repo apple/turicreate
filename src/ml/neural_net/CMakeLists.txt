@@ -79,8 +79,8 @@ make_library(tctensorflow SHARED
   SOURCES
   tf_compute_context.cpp
   REQUIRES
-  unity_shared
   boost
+  unity_shared
 )
 
 set_target_properties(tctensorflow 
