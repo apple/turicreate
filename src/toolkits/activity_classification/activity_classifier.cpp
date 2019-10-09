@@ -180,10 +180,6 @@ void activity_classifier::init_options(
       "offset."
       " If set to True, the trained model uses augmented data.",
       false);
-  options.create_boolean_option(
-      "use_tensorflow",
-      "If set to True, model training will be done using TensorFlow.",
-      false);
   options.create_integer_option(
       "random_seed",
       "Seed for random weight initialization and sampling during training",
@@ -526,8 +522,13 @@ void activity_classifier::import_from_custom_model(
     variant_map_type model_data, size_t version) {
 
   // Extract the neural net weights from the model data.
-  auto it = model_data.find("_pred_model");
-  const flex_dict& pred_model = variant_get_value<flex_dict>(it->second);
+  auto model_iter = model_data.find("_pred_model");
+  if (model_iter == model_data.end()) {
+    log_and_throw(
+        "The loaded turicreate model must contain '_pred_model' field!");
+  }
+  const flex_dict& pred_model =
+      variant_get_value<flex_dict>(model_iter->second);
 
   // The remaining model data should be interpreted as model attributes (state).
   state.clear();
@@ -615,7 +616,7 @@ void activity_classifier::import_from_custom_model(
   bool use_random_init = false;
   nn_spec_ = init_model(use_random_init);
   nn_spec_->update_params(nn_params);
-  model_data.erase(it);
+  model_data.erase(model_iter);
 }
 
 std::unique_ptr<data_iterator> activity_classifier::create_iterator(
@@ -649,16 +650,7 @@ std::unique_ptr<data_iterator> activity_classifier::create_iterator(
 
 std::unique_ptr<compute_context> activity_classifier::create_compute_context()
     const {
-  if (state.find("use_tensorflow") == state.end()){
-    return compute_context::create();
-  }
-  bool use_tensorflow = read_state<bool>("use_tensorflow");
-  if (use_tensorflow) {
-    return compute_context::create_tf();
-  }
-  else {
-    return compute_context::create();
-  }
+  return compute_context::create();
 }
 
 std::unique_ptr<model_spec> activity_classifier::init_model(
