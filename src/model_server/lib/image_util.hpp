@@ -9,10 +9,7 @@
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_interface/unity_sframe.hpp>
 
-
-
 namespace turi{
-
 
 void copy_image_to_memory(const image_type& input, unsigned char* outptr,
                           const std::vector<size_t>& outstrides,
@@ -130,8 +127,6 @@ std::shared_ptr<unity_sarray>
 
 
 } // end of image_util
-
-
 
 } // end of turicreate
 

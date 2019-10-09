@@ -21,10 +21,10 @@
 namespace turi{
 
 template <typename T>
-void copy_image_to_memory_impl(const image_type& input, T *outptr,
-                          const std::vector<size_t>& outstrides,
-                          const std::vector<size_t>& outshape,
-                          bool channel_last) {
+void copy_image_to_memory_impl(const image_type& input, T* outptr,
+                               const std::vector<size_t>& outstrides,
+                               const std::vector<size_t>& outshape,
+                               bool channel_last) {
   ASSERT_EQ(outstrides.size(), 3);
   ASSERT_EQ(outshape.size(), 3);
   size_t stride_h, stride_w, stride_c;
@@ -49,7 +49,7 @@ void copy_image_to_memory_impl(const image_type& input, T *outptr,
 
   // Resize.
   flexible_type resized = image_util::resize_image(input, width, height,
-               channels, /* decode */ true);
+                                                   channels, /* decode */ true);
   const image_type& img = resized.get<flex_image>();
 
   // Copy.
@@ -58,8 +58,8 @@ void copy_image_to_memory_impl(const image_type& input, T *outptr,
   for (size_t i = 0; i < img.m_height; ++i) {
     for (size_t j = 0; j < img.m_width; ++j) {
       for (size_t k = 0; k < img.m_channels; ++k) {
-  outptr[i * stride_h + j * stride_w + k * stride_c] =
-      static_cast<T>(raw_data[cnt++]);
+        outptr[i * stride_h + j * stride_w + k * stride_c] =
+            static_cast<T>(raw_data[cnt++]);
       }
     }
   }
@@ -68,20 +68,19 @@ void copy_image_to_memory_impl(const image_type& input, T *outptr,
   // operation and the copy operation, removing an intermediate buffer.
 }
 
-void copy_image_to_memory(const image_type& input, float * outptr,
+void copy_image_to_memory(const image_type& input, float* outptr,
                           const std::vector<size_t>& outstrides,
                           const std::vector<size_t>& outshape,
                           bool channel_last) {
   copy_image_to_memory_impl(input, outptr, outstrides, outshape, channel_last);
 }
 
-void copy_image_to_memory(const image_type& input, unsigned char * outptr,
+void copy_image_to_memory(const image_type& input, unsigned char* outptr,
                           const std::vector<size_t>& outstrides,
                           const std::vector<size_t>& outshape,
                           bool channel_last) {
   copy_image_to_memory_impl(input, outptr, outstrides, outshape, channel_last);
 }
-
 
 namespace image_util{
 
