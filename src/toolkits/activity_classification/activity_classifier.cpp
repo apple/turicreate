@@ -694,17 +694,17 @@ std::unique_ptr<model_spec> activity_classifier::init_model(
         &random_engine);
   }
   result->add_convolution(
-      /* name */ "conv",
-      /* input */ "reshape",
+      /* name                */ "conv",
+      /* input               */ "reshape",
       /* num_output_channels */ NUM_CONV_FILTERS,
       /* num_kernel_channels */ num_features,
-      /* kernel_height */ 1,
-      /* kernel_width */ prediction_window,
-      /* stride_height */ 1,
-      /* stride_width */ prediction_window,
-      /* padding */ padding_type::VALID,
-      /* weight_init_fn */ initializer,
-      /* bias_init_fn */ zero_weight_initializer());
+      /* kernel_height       */ 1,
+      /* kernel_width        */ prediction_window,
+      /* stride_height       */ 1,
+      /* stride_width        */ prediction_window,
+      /* padding             */ padding_type::VALID,
+      /* weight_init_fn      */ initializer,
+      /* bias_init_fn        */ zero_weight_initializer());
   result->add_relu("relu1", "conv");
 
   result->add_channel_slice("hiddenIn","stateIn",0,LSTM_HIDDEN_SIZE,1);
@@ -715,16 +715,16 @@ std::unique_ptr<model_spec> activity_classifier::init_model(
         NUM_CONV_FILTERS, LSTM_HIDDEN_SIZE, &random_engine);
   }
   result->add_lstm(
-      /* name */ "lstm",
-      /* input */ "relu1",
-      /* hidden_input */ "hiddenIn",
-      /* cell_input */ "cellIn",
-      /* hidden_output */ "hiddenOut",
-      /* cell_output */ "cellOut",
-      /* input_vector_size */ NUM_CONV_FILTERS,
-      /* output_vector_size */ LSTM_HIDDEN_SIZE,
+      /* name                */ "lstm",
+      /* input               */ "relu1",
+      /* hidden_input        */ "hiddenIn",
+      /* cell_input          */ "cellIn",
+      /* hidden_output       */ "hiddenOut",
+      /* cell_output         */ "cellOut",
+      /* input_vector_size   */ NUM_CONV_FILTERS,
+      /* output_vector_size  */ LSTM_HIDDEN_SIZE,
       /* cell_clip_threshold */ LSTM_CELL_CLIP_THRESHOLD,
-      /* initializers */ lstm_initializer);
+      /* initializers        */ lstm_initializer);
   result->add_channel_concat("stateOut",{"hiddenOut","cellOut"});
 
   if (use_random_init) {
@@ -732,12 +732,12 @@ std::unique_ptr<model_spec> activity_classifier::init_model(
         LSTM_HIDDEN_SIZE, FULLY_CONNECTED_HIDDEN_SIZE, &random_engine);
   }
   result->add_inner_product(
-      /* name */ "dense0",
-      /* input */ "lstm",
+      /* name                */ "dense0",
+      /* input               */ "lstm",
       /* num_output_channels */ FULLY_CONNECTED_HIDDEN_SIZE,
-      /* num_input_channels */ LSTM_HIDDEN_SIZE,
-      /* weight_init_fn */ initializer,
-      /* bias_init_fn */ zero_weight_initializer());
+      /* num_input_channels  */ LSTM_HIDDEN_SIZE,
+      /* weight_init_fn      */ initializer,
+      /* bias_init_fn        */ zero_weight_initializer());
   result->add_batchnorm("bn", "dense0", FULLY_CONNECTED_HIDDEN_SIZE, 0.001f);
   result->add_relu("relu6", "bn");
 
@@ -746,11 +746,11 @@ std::unique_ptr<model_spec> activity_classifier::init_model(
                                             num_classes, &random_engine);
   }
   result->add_inner_product(
-      /* name */ "dense1",
-      /* input */ "relu6",
+      /* name                */ "dense1",
+      /* input               */ "relu6",
       /* num_output_channels */ num_classes,
-      /* num_input_channels */ FULLY_CONNECTED_HIDDEN_SIZE,
-      /* weight_init_fn */ initializer);
+      /* num_input_channels  */ FULLY_CONNECTED_HIDDEN_SIZE,
+      /* weight_init_fn      */ initializer);
   result->add_softmax(target + "Probability", "dense1");
 
   return result;
