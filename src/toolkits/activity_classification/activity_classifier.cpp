@@ -706,6 +706,7 @@ std::unique_ptr<model_spec> activity_classifier::init_model(
       /* weight_init_fn */ initializer,
       /* bias_init_fn */ zero_weight_initializer());
   result->add_relu("relu1", "conv");
+
   result->add_channel_slice("hiddenIn","stateIn",0,LSTM_HIDDEN_SIZE,1);
   result->add_channel_slice("cellIn","stateIn",LSTM_HIDDEN_SIZE,LSTM_HIDDEN_SIZE*2,1);
 
@@ -850,6 +851,7 @@ void activity_classifier::init_train(
   } else {
     validation_data_iterator_ = nullptr;
   }
+
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
   if (training_compute_context_ == nullptr) {
