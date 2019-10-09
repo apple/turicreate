@@ -14,6 +14,7 @@
 
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/model_backend.hpp>
+#include <ml/neural_net/mps_command_queue.hpp>
 
 #ifdef HAS_MACOS_10_15
 
@@ -23,7 +24,11 @@ namespace style_transfer {
 class EXPORT mps_style_transfer : public turi::neural_net::model_backend {
 public:
   mps_style_transfer(const turi::neural_net::float_array_map &config,
-                 const turi::neural_net::float_array_map &weights);
+                     const turi::neural_net::float_array_map &weights);
+
+  mps_style_transfer(const turi::neural_net::float_array_map &config,
+                     const turi::neural_net::float_array_map &weights,
+                     const turi::neural_net::mps_command_queue& command_queue);
   
   ~mps_style_transfer();
 
@@ -34,6 +39,10 @@ public:
 private:
   struct impl;
   std::unique_ptr<impl> m_impl;
+
+  void init(const turi::neural_net::float_array_map &config,
+            const turi::neural_net::float_array_map &weights,
+            const turi::neural_net::mps_command_queue& command_queue);
 };
 
 } // namespace style_transfer
