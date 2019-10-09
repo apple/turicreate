@@ -352,17 +352,21 @@ void object_detector::load_version(iarchive& iarc, size_t version) {
 
 void object_detector::import_from_custom_model(variant_map_type model_data,
                                                size_t version) {
-  auto it = model_data.find("_model");
-  const flex_dict& model = variant_get_value<flex_dict>(it->second);
-  auto it2 = model_data.find("_grid_shape");
-  if (it2 == model_data.end()) {
-    log_and_throw("The provided model must contain field '_grid_shape'!");
+  auto model_iter = model_data.find("_model");
+  if (model_iter == model_data.end()){
+    log_and_throw("The loaded turicreate model must contain '_model'!\n");
   }
-  std::vector<size_t> shape =
-      variant_get_value<std::vector<size_t>>(it2->second);
-  size_t height = shape[0];
-  size_t width = shape[1];
-  model_data.erase(it2);
+  const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
+  auto shape_iter = model_data.find("_grid_shape");
+  size_t height, width;
+  if (shape_iter == model_data.end()) {
+    height = 13;
+    width = 13;
+  } else {
+    std::vector<size_t> shape = variant_get_value<std::vector<size_t>>(shape_iter->second);
+    height = shape[0];
+    width = shape[1];
+  }
   model_data.emplace("grid_height", height);
   model_data.emplace("grid_width", width);
 
@@ -413,7 +417,7 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
                     variant_get_value<size_t>(state.at("num_classes")),
                     anchor_boxes());
   nn_spec_->update_params(nn_params);
-  model_data.erase(it);
+  model_data.erase(model_iter);
   return;
 }
 
