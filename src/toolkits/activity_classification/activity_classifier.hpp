@@ -201,7 +201,8 @@ class EXPORT activity_classifier: public ml_model_base {
       const;
 
   // Returns the initial neural network to train
-  virtual std::unique_ptr<neural_net::model_spec> init_model() const;
+  virtual std::unique_ptr<neural_net::model_spec> init_model(
+      bool use_random_init) const;
 
   virtual std::tuple<gl_sframe, gl_sframe> init_data(
       gl_sframe data, variant_type validation_data,
