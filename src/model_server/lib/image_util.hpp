@@ -8,7 +8,20 @@
 
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_interface/unity_sframe.hpp>
+
+
+
 namespace turi{
+
+template <typename T>
+void copy_image_to_memory(const image_type& input, T *outptr,
+                          const std::vector<size_t>& outstrides,
+                          const std::vector<size_t>& outshape,
+                          bool channel_last);
+void copy_to_memory(const sframe_rows::row& data,
+                    float* outptr,
+                    const std::vector<size_t>& outstrides,
+                    const std::vector<size_t>& outshape);
 
 namespace image_util{
 
