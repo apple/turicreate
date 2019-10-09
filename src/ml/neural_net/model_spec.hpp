@@ -148,6 +148,14 @@ public:
   void add_sigmoid(const std::string& name, const std::string& input);
 
   /**
+   * Appends a pooling layer.
+   */
+  void add_pooling(const std::string& name, const std::string& input,
+                   size_t kernel_height, size_t kernel_width, size_t stride_h,
+                   size_t stride_w, padding_type padding,
+                   bool use_poolexcludepadding);
+
+  /**
    * Appends a convolution layer.
    *
    * \param name The name of the layer and its output
@@ -324,8 +332,14 @@ public:
   // needed. If/when we support the full range of NeuralNetworkLayer values,
   // this could be shared in some form with coremltools.
 
-private:
+  /**
+   * Appends a preprocessing layer
+   * Now only support image scaling preprocessing though.
+   */
+  void add_preprocessing(const std::string& feature_name,
+                         const float image_scale);
 
+ private:
   std::unique_ptr<CoreML::Specification::NeuralNetwork> impl_;
 };
 

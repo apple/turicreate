@@ -25,7 +25,10 @@ using CoreML::Specification::ConvolutionLayerParams;
 using CoreML::Specification::InnerProductLayerParams;
 using CoreML::Specification::Model;
 using CoreML::Specification::NeuralNetwork;
+using CoreML::Specification::NeuralNetworkImageScaler;
 using CoreML::Specification::NeuralNetworkLayer;
+using CoreML::Specification::NeuralNetworkPreprocessing;
+using CoreML::Specification::PoolingLayerParams;
 using CoreML::Specification::SamePadding;
 using CoreML::Specification::UniDirectionalLSTMLayerParams;
 using CoreML::Specification::WeightParams;
@@ -551,6 +554,35 @@ void model_spec::add_sigmoid(const std::string& name,
   layer->mutable_activation()->mutable_sigmoid();
 }
 
+void model_spec::add_pooling(const std::string& name, const std::string& input,
+                             size_t kernel_height, size_t kernel_width,
+                             size_t stride_h, size_t stride_w,
+                             padding_type padding,
+                             bool use_poolexcludepadding) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  PoolingLayerParams* params = layer->mutable_pooling();
+  params->add_kernelsize(kernel_height);
+  params->add_kernelsize(kernel_width);
+  params->add_stride(stride_h);
+  params->add_stride(stride_w);
+  switch (padding) {
+    case padding_type::VALID:
+      params->mutable_valid()->mutable_paddingamounts()->add_borderamounts();
+      params->mutable_valid()->mutable_paddingamounts()->add_borderamounts();
+      break;
+    case padding_type::SAME:
+      params->mutable_same();
+      break;
+  }
+  if (use_poolexcludepadding) {
+    params->set_avgpoolexcludepadding(true);
+  }
+}
+
 void model_spec::add_convolution(
     const std::string& name, const std::string& input,
     size_t num_output_channels, size_t num_kernel_channels,
@@ -849,6 +881,14 @@ void model_spec::add_lstm(
                      output_vector_size, initializers.block_input_bias_fn);
   init_weight_params(lstm_weights->mutable_outputgatebiasvector(),
                      output_vector_size, initializers.output_gate_bias_fn);
+}
+
+void model_spec::add_preprocessing(const std::string& feature_name,
+                                   const float image_scale) {
+  NeuralNetworkPreprocessing* layer = impl_->add_preprocessing();
+  layer->set_featurename(feature_name);
+  NeuralNetworkImageScaler* image_scaler = layer->mutable_scaler();
+  image_scaler->set_channelscale(image_scale);
 }
 
 }  // neural_net
