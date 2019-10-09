@@ -8,11 +8,12 @@
 #define BOOST_TEST_MODULE
 
 #include <string>
-#include <toolkits/style_transfer/utils.hpp>
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <toolkits/style_transfer/style_transfer_data_iterator.hpp>
+
+#include "utils.hpp"
 
 using namespace turi::style_transfer;
 

@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <toolkits/style_transfer/utils.hpp>
+#include "utils.hpp"
 
 #include <model_server/lib/image_util.hpp>
 
