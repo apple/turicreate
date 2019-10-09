@@ -13,15 +13,16 @@
 
 namespace turi{
 
-template <typename T>
-void copy_image_to_memory(const image_type& input, T *outptr,
+
+void copy_image_to_memory(const image_type& input, unsigned char* outptr,
                           const std::vector<size_t>& outstrides,
                           const std::vector<size_t>& outshape,
                           bool channel_last);
-void copy_to_memory(const sframe_rows::row& data,
-                    float* outptr,
-                    const std::vector<size_t>& outstrides,
-                    const std::vector<size_t>& outshape);
+
+void copy_image_to_memory(const image_type& input, float* outptr,
+                          const std::vector<size_t>& outstrides,
+                          const std::vector<size_t>& outshape,
+                          bool channel_last);
 
 namespace image_util{
 
@@ -129,6 +130,9 @@ std::shared_ptr<unity_sarray>
 
 
 } // end of image_util
+
+
+
 } // end of turicreate
 
 #endif /* IMAGE_UTIL_HPP*/
