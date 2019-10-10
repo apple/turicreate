@@ -39,7 +39,9 @@ constuct_angle_samples_map(ParameterSampler &sampler, int seed) {
   std::vector<double> phis;
   std::vector<double> gammas;
   for (int i = 0; i < kNumRows; i++) {
-    sampler.sample(seed + i);
+    size_t background_width = 2500 + i;
+    size_t background_height = 2500 - i;
+    sampler.sample(background_width, background_height, seed, i);
     double theta = sampler.get_theta();
     double phi = sampler.get_phi();
     double gamma = sampler.get_gamma();
