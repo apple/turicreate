@@ -180,7 +180,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
 /**
 * TODO: Add model backend for the tensorflow implementation of style transfer
 */
-std::unique_ptr<model_backend> create_style_transfer(
+std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
       const float_array_map& config, const float_array_map& weights) {
 #ifdef __APPLE__
   return mps_compute_context().create_style_transfer(config, weights);
