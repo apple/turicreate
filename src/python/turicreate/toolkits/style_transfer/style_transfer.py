@@ -168,7 +168,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         'content_loss_mult': 1.0,
         'style_loss_mult': [1e-4, 1e-4, 1e-4, 1e-4],  # conv 1-4 layers
         'finetune_all_params': True,
-        'pretrained_weights': False,
+        'pretrained_weights': True,
         'print_loss_breakdown': False,
         'input_shape': (256, 256),
         'training_content_loader_type': 'stretch',
@@ -216,7 +216,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     input_shape = params['input_shape']
 
     iterations = 0
-    if max_iterations is None or max_iterations==0:
+    if max_iterations is None or max_iterations < 0:
         max_iterations = len(style_dataset) * 10000
         if verbose:
             print('Setting max_iterations to be {}'.format(max_iterations))
