@@ -106,6 +106,17 @@ EXPORT class compute_context {
       const float_array_map& config, const float_array_map& weights) = 0;
 
   /**
+   * Creates a style transfer network
+   *
+   * \todo Define an style_transfer_config struct to encapsulate these
+   *       parameters in a more self-documenting and typesafe way.
+   * \todo Initialize the network directly from a model_spec, in lieu of passing
+   *       weights as a float_array_map.
+   */
+  virtual std::unique_ptr<model_backend> create_style_transfer(
+      const float_array_map& config, const float_array_map& weights) = 0;
+
+  /**
    * Creates an image augmenter.
    */
   virtual std::unique_ptr<image_augmenter> create_image_augmenter(

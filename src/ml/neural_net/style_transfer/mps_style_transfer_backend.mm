@@ -72,21 +72,54 @@ struct mps_style_transfer::impl {
   API_AVAILABLE(macos(10.15)) TCMPSStyleTransfer *model = nil;
 };
 
-mps_style_transfer::mps_style_transfer(const float_array_map &config,
-                               const float_array_map &weights) : m_impl(new mps_style_transfer::impl()) {
+mps_style_transfer::mps_style_transfer(
+    const float_array_map &config,
+    const float_array_map &weights) 
+  : m_impl(new mps_style_transfer::impl())  {
   @autoreleasepool {
     if (@available(macOS 10.15, *)) {
-      id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
-      id <MTLCommandQueue> cmdQueue = [dev newCommandQueue];
+      mps_command_queue queue;
 
-      NSUInteger numStyles 
+      id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+      queue.impl = [dev newCommandQueue];
+      
+      init(config, weights, queue);
+    } else {
+      log_and_throw("Can't construct GPU Style Transfer Network for MacOS \
+                     platform lower than 10.15");
+    }
+  }
+}
+
+mps_style_transfer::mps_style_transfer(
+    const float_array_map &config,
+    const float_array_map &weights,
+    const mps_command_queue& command_queue) 
+  : m_impl(new mps_style_transfer::impl()) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      init(config, weights, command_queue);
+    } else {
+      log_and_throw("Can't construct GPU Style Transfer Network for MacOS \
+                     platform lower than 10.15");
+    }
+  }
+}
+
+void mps_style_transfer::init(
+    const float_array_map &config,
+    const float_array_map &weights,
+    const mps_command_queue& command_queue) {
+  @autoreleasepool {
+    if (@available(macOS 10.15, *)) {
+      NSUInteger numStyles
           = (NSUInteger) get_array_map_scalar(config, "st_num_styles", 1);
 
       NSDictionary<NSString *, NSData *> *styleTransferWeights
           = [TCMPSStyleTransferHelpers toNSDictionary: weights];
 
-      m_impl->model = [[TCMPSStyleTransfer alloc] initWithDev:dev
-                                                 commandQueue:cmdQueue
+      m_impl->model = [[TCMPSStyleTransfer alloc] initWithDev:command_queue.impl.device
+                                                 commandQueue:command_queue.impl
                                                       weights:styleTransferWeights
                                                     numStyles:numStyles];
     } else {
