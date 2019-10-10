@@ -12,3 +12,10 @@ make_boost_test(test_style_transfer_data_iterator.cxx
   REQUIRES
     style_transfer_toolkit_test_utils
 )
+
+make_boost_test(test_style_transfer_model_definition.cxx
+  REQUIRES
+    style_transfer_toolkit_test_utils
+)
+
+
