@@ -13,6 +13,7 @@
 #include <set>
 #include <string>
 
+#include <boost/asio.hpp>
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <ml/neural_net/float_array.hpp>
@@ -23,12 +24,12 @@
 using namespace turi::style_transfer;
 using namespace turi::neural_net;
 
+#define RESNET_MODEL "https://docs-assets.developer.apple.com/turicreate/models/transformer.mlmodel"
+#define VGG_16_MODEL "https://docs-assets.developer.apple.com/turicreate/models/vgg16.mlmodel"
+
 BOOST_AUTO_TEST_CASE(test_load_vgg_16) {
-  /**
-   * TODO: Delete this path once uploaded to https://developer.apple.com/
-   **/
-  std::string VGG_16_MODEL_PATH =
-      "/Users/abhishekpratapa/Desktop/mxnet_golden_set/vgg16.mlmodel";
+  download_ml_model(VGG_16_MODEL, "./");
+  std::string VGG_16_MODEL_PATH = "./vgg16.mlmodel";
 
   std::set<std::string> expected_keys{
       "vgg_block_1_conv_1_bias", "vgg_block_1_conv_1_weight",
@@ -50,11 +51,8 @@ BOOST_AUTO_TEST_CASE(test_load_vgg_16) {
 }
 
 BOOST_AUTO_TEST_CASE(test_load_resnet) {
-  /**
-   * TODO: Delete this path once uploaded to https://developer.apple.com/
-   **/
-  std::string RESNET_MODEL_PATH =
-      "/Users/abhishekpratapa/Desktop/mxnet_golden_set/transformer.mlmodel";
+  download_ml_model(RESNET_MODEL, "./");
+  std::string RESNET_MODEL_PATH = "./transformer.mlmodel";
 
   std::set<std::string> expected_keys{
       "transformer_conv5_weight",

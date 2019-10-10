@@ -7,7 +7,10 @@
 
 #include "utils.hpp"
 
+#import <Foundation/Foundation.h>
+
 #include <model_server/lib/image_util.hpp>
+#include <iostream>
 
 namespace turi {
 namespace style_transfer {
@@ -54,6 +57,30 @@ turi::gl_sframe random_sframe(size_t length, std::string image_column_name) {
   image_sf.add_column(image_sa, image_column_name);
 
   return image_sf;
+}
+
+void download_ml_model(std::string download_url, std::string download_directory) {
+  @autoreleasepool {
+    NSString *downloadURL = [NSString stringWithCString:download_url.c_str() 
+                                                 encoding:[NSString defaultCStringEncoding]];
+    NSString *downloadDirectory = [NSString stringWithCString:download_directory.c_str() 
+                                                       encoding:[NSString defaultCStringEncoding]];
+    
+    NSURL *directory = [NSURL URLWithString:downloadDirectory];
+
+    NSArray *fileArray = [downloadURL componentsSeparatedByString:@"/"];
+    NSString *fileName = fileArray[fileArray.count - 1];
+    NSURL *fileUrl = [directory URLByAppendingPathComponent:fileName];
+
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if (![fileManager fileExistsAtPath:fileUrl.absoluteString]) { 
+      NSURL *url = [NSURL URLWithString:downloadURL];
+      NSData *urlData = [NSData dataWithContentsOfURL:url];
+      if (urlData) {
+        [urlData writeToFile:fileUrl.absoluteString atomically:YES];
+      }
+    }
+  }
 }
 
 } // namespace style_transfer

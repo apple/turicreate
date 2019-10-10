@@ -2,7 +2,7 @@ project(neural_net_test)
 
 make_library(style_transfer_toolkit_test_utils
   SOURCES
-    utils.cpp
+    utils.mm 
   REQUIRES
   	unity_style_transfer
     unity_shared_for_testing
