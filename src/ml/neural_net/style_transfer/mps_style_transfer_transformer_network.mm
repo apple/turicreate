@@ -135,8 +135,8 @@
     _instNorm = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv resultImage]
                                                                     channels:descriptor.inst.channels
                                                                       styles:descriptor.inst.styles
-                                                                       gamma:weights[@"transformer_instancenorm5_gamma"]
-                                                                        beta:weights[@"transformer_instancenorm5_beta"]
+                                                                       gamma:weights[@"transformer_instancenorm5_gamma_weight"]
+                                                                        beta:weights[@"transformer_instancenorm5_beta_weight"]
                                                                        label:descriptor.inst.label
                                                                       device:dev
                                                                     cmdQueue:cmdQ];
@@ -251,8 +251,8 @@
 
   weights[conv5Weight] = convDataWeight;
 
-  NSString* instNorm5Gamma = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_gamma"];
-  NSString* instNorm5Beta = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_beta"];
+  NSString* instNorm5Gamma = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_gamma_weight"];
+  NSString* instNorm5Beta = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_beta_weight"];
   NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData styles] * [_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
   NSMutableData* instNormDataBeta = [NSMutableData dataWithLength:instNormSize];
