@@ -9,7 +9,6 @@
 
 #import <Foundation/Foundation.h>
 
-#include <iostream>
 #include <model_server/lib/image_util.hpp>
 
 namespace turi {

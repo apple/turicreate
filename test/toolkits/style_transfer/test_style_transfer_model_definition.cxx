@@ -7,7 +7,6 @@
 
 #define BOOST_TEST_MODULE
 
-#include <iostream>
 #include <map>
 #include <memory>
 #include <set>
