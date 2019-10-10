@@ -113,8 +113,12 @@ std::unique_ptr<model_backend> mps_compute_context::create_activity_classifier(
 
 std::unique_ptr<model_backend> mps_compute_context::create_style_transfer(
     const float_array_map& config, const float_array_map& weights) {
+#ifdef HAS_MACOS_10_15
   return std::unique_ptr<model_backend>(
       new style_transfer::mps_style_transfer(config, weights, *command_queue_));
+#else
+  return nullptr;
+#endif
 }
 
 }  // namespace neural_net
