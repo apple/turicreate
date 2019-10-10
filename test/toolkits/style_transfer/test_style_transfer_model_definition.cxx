@@ -18,8 +18,6 @@
 #include <ml/neural_net/float_array.hpp>
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
 
-#include <iostream>
-
 #include "utils.hpp"
 
 using namespace turi::style_transfer;
@@ -47,10 +45,8 @@ BOOST_AUTO_TEST_CASE(test_load_vgg_16) {
   std::unique_ptr<model_spec> nn_spec = init_vgg_16(VGG_16_MODEL_PATH);
   float_array_map weights = nn_spec->export_params_view();
 
-  for (const auto &weight : weights) {
-    std::cout << weight.first << std::endl;
+  for (const auto &weight : weights)
     TS_ASSERT(expected_keys.count(weight.first) != 0);
-  }
 }
 
 BOOST_AUTO_TEST_CASE(test_load_resnet) {
@@ -60,9 +56,91 @@ BOOST_AUTO_TEST_CASE(test_load_resnet) {
   std::string RESNET_MODEL_PATH =
       "/Users/abhishekpratapa/Desktop/mxnet_golden_set/transformer.mlmodel";
 
+  std::set<std::string> expected_keys{
+      "transformer_conv5_weight",
+      "transformer_decoding_1_conv_weight",
+      "transformer_decoding_1_inst_beta_weight",
+      "transformer_decoding_1_inst_gamma_weight",
+      "transformer_decoding_2_conv_weight",
+      "transformer_decoding_2_inst_beta_weight",
+      "transformer_decoding_2_inst_gamma_weight",
+      "transformer_encode_1_conv_weight",
+      "transformer_encode_1_inst_beta_weight",
+      "transformer_encode_1_inst_gamma_weight",
+      "transformer_encode_2_conv_weight",
+      "transformer_encode_2_inst_beta_weight",
+      "transformer_encode_2_inst_gamma_weight",
+      "transformer_encode_3_conv_weight",
+      "transformer_encode_3_inst_beta_weight",
+      "transformer_encode_3_inst_gamma_weight",
+      "transformer_instancenorm0__fwd_normalize_beta",
+      "transformer_instancenorm0__fwd_normalize_gamma",
+      "transformer_instancenorm1__fwd_normalize_beta",
+      "transformer_instancenorm1__fwd_normalize_gamma",
+      "transformer_instancenorm2__fwd_normalize_beta",
+      "transformer_instancenorm2__fwd_normalize_gamma",
+      "transformer_instancenorm3__fwd_normalize_beta",
+      "transformer_instancenorm3__fwd_normalize_gamma",
+      "transformer_instancenorm4__fwd_normalize_beta",
+      "transformer_instancenorm4__fwd_normalize_gamma",
+      "transformer_instancenorm5__fwd_normalize_beta",
+      "transformer_instancenorm5__fwd_normalize_gamma",
+      "transformer_instancenorm5_beta_weight",
+      "transformer_instancenorm5_gamma_weight",
+      "transformer_residual_1_conv_1_weight",
+      "transformer_residual_1_conv_2_weight",
+      "transformer_residual_1_inst_1_beta_weight",
+      "transformer_residual_1_inst_1_gamma_weight",
+      "transformer_residual_1_inst_2_beta_weight",
+      "transformer_residual_1_inst_2_gamma_weight",
+      "transformer_residual_2_conv_1_weight",
+      "transformer_residual_2_conv_2_weight",
+      "transformer_residual_2_inst_1_beta_weight",
+      "transformer_residual_2_inst_1_gamma_weight",
+      "transformer_residual_2_inst_2_beta_weight",
+      "transformer_residual_2_inst_2_gamma_weight",
+      "transformer_residual_3_conv_1_weight",
+      "transformer_residual_3_conv_2_weight",
+      "transformer_residual_3_inst_1_beta_weight",
+      "transformer_residual_3_inst_1_gamma_weight",
+      "transformer_residual_3_inst_2_beta_weight",
+      "transformer_residual_3_inst_2_gamma_weight",
+      "transformer_residual_4_conv_1_weight",
+      "transformer_residual_4_conv_2_weight",
+      "transformer_residual_4_inst_1_beta_weight",
+      "transformer_residual_4_inst_1_gamma_weight",
+      "transformer_residual_4_inst_2_beta_weight",
+      "transformer_residual_4_inst_2_gamma_weight",
+      "transformer_residual_5_conv_1_weight",
+      "transformer_residual_5_conv_2_weight",
+      "transformer_residual_5_inst_1_beta_weight",
+      "transformer_residual_5_inst_1_gamma_weight",
+      "transformer_residual_5_inst_2_beta_weight",
+      "transformer_residual_5_inst_2_gamma_weight",
+      "transformer_residualblock0_instancenorm0__fwd_normalize_beta",
+      "transformer_residualblock0_instancenorm0__fwd_normalize_gamma",
+      "transformer_residualblock0_instancenorm1__fwd_normalize_beta",
+      "transformer_residualblock0_instancenorm1__fwd_normalize_gamma",
+      "transformer_residualblock1_instancenorm0__fwd_normalize_beta",
+      "transformer_residualblock1_instancenorm0__fwd_normalize_gamma",
+      "transformer_residualblock1_instancenorm1__fwd_normalize_beta",
+      "transformer_residualblock1_instancenorm1__fwd_normalize_gamma",
+      "transformer_residualblock2_instancenorm0__fwd_normalize_beta",
+      "transformer_residualblock2_instancenorm0__fwd_normalize_gamma",
+      "transformer_residualblock2_instancenorm1__fwd_normalize_beta",
+      "transformer_residualblock2_instancenorm1__fwd_normalize_gamma",
+      "transformer_residualblock3_instancenorm0__fwd_normalize_beta",
+      "transformer_residualblock3_instancenorm0__fwd_normalize_gamma",
+      "transformer_residualblock3_instancenorm1__fwd_normalize_beta",
+      "transformer_residualblock3_instancenorm1__fwd_normalize_gamma",
+      "transformer_residualblock4_instancenorm0__fwd_normalize_beta",
+      "transformer_residualblock4_instancenorm0__fwd_normalize_gamma",
+      "transformer_residualblock4_instancenorm1__fwd_normalize_beta",
+      "transformer_residualblock4_instancenorm1__fwd_normalize_gamma"};
+
   std::unique_ptr<model_spec> nn_spec = init_resnet(RESNET_MODEL_PATH, 8);
   float_array_map weights = nn_spec->export_params_view();
 
   for (const auto &weight : weights)
-    std::cout << weight.first << std::endl;
+    TS_ASSERT(expected_keys.count(weight.first) != 0);
 }
