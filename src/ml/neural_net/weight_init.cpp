@@ -35,6 +35,13 @@ void xavier_weight_initializer::operator()(float* first_weight,
   }
 }
 
+void ones_weight_initializer::operator()(float* first_weight,
+                                         float* last_weight) {
+  for (float* w = first_weight; w != last_weight; ++w) {
+    *w = 1.0f;
+  }
+}
+
 // static
 lstm_weight_initializers lstm_weight_initializers::create_with_xavier_method(
     size_t input_size, size_t state_size, std::mt19937* random_engine) {

@@ -21,11 +21,15 @@
 namespace CoreML {
 namespace Specification {
 class NeuralNetwork;
+class WeightParams;
 }
 }
 
 namespace turi {
 namespace neural_net {
+
+void init_weight_params(CoreML::Specification::WeightParams* params, size_t size,
+                        const weight_initializer& weight_init_fn);
 
 /**
  * Representation for a neural-network model (structure and parameters),

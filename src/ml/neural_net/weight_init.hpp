@@ -48,6 +48,10 @@ private:
   std::mt19937& random_engine_;
 };
 
+struct ones_weight_initializer {
+  void operator()(float* first_weight, float* last_weight);
+};
+
 struct zero_weight_initializer {
 
   // No work is required, since we assume the buffer is zero-initialized.

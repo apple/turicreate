@@ -465,6 +465,8 @@ std::vector<char> load_file(const std::string& path) {
   return buffer;
 }
 
+}  // namespace
+
 void init_weight_params(WeightParams* params, size_t size,
                         const weight_initializer& weight_init_fn) {
 
@@ -472,8 +474,6 @@ void init_weight_params(WeightParams* params, size_t size,
   float* weights = params->mutable_floatvalue()->mutable_data();
   weight_init_fn(weights, weights + size);
 }
-
-}  // namespace
 
 model_spec::model_spec(): impl_(new NeuralNetwork) {}
 

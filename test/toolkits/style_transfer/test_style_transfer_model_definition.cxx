@@ -17,19 +17,26 @@
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <ml/neural_net/float_array.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
 
 #include "utils.hpp"
 
+using CoreML::Specification::InnerProductLayerParams;
+using CoreML::Specification::NeuralNetwork;
+using CoreML::Specification::NeuralNetworkLayer;
+
 using namespace turi::style_transfer;
 using namespace turi::neural_net;
 
-#define RESNET_MODEL "https://docs-assets.developer.apple.com/turicreate/models/transformer.mlmodel"
-#define VGG_16_MODEL "https://docs-assets.developer.apple.com/turicreate/models/vgg16.mlmodel"
+#define RESNET_MODEL                                           \
+  "https://docs-assets.developer.apple.com/turicreate/models/" \
+  "transformer.mlmodel"
+#define VGG_16_MODEL \
+  "https://docs-assets.developer.apple.com/turicreate/models/vgg16.mlmodel"
 
 BOOST_AUTO_TEST_CASE(test_load_vgg_16) {
-  download_ml_model(VGG_16_MODEL, "./");
-  std::string VGG_16_MODEL_PATH = "./vgg16.mlmodel";
+  std::string VGG_16_MODEL_PATH = download_ml_model(VGG_16_MODEL, "./");
 
   std::set<std::string> expected_keys{
       "vgg_block_1_conv_1_bias", "vgg_block_1_conv_1_weight",
@@ -46,13 +53,12 @@ BOOST_AUTO_TEST_CASE(test_load_vgg_16) {
   std::unique_ptr<model_spec> nn_spec = init_vgg_16(VGG_16_MODEL_PATH);
   float_array_map weights = nn_spec->export_params_view();
 
-  for (const auto &weight : weights)
+  for (const auto& weight : weights)
     TS_ASSERT(expected_keys.count(weight.first) != 0);
 }
 
 BOOST_AUTO_TEST_CASE(test_load_resnet) {
-  download_ml_model(RESNET_MODEL, "./");
-  std::string RESNET_MODEL_PATH = "./transformer.mlmodel";
+  std::string RESNET_MODEL_PATH = download_ml_model(RESNET_MODEL, "./");
 
   std::set<std::string> expected_keys{
       "transformer_conv5_weight",
@@ -136,9 +142,46 @@ BOOST_AUTO_TEST_CASE(test_load_resnet) {
       "transformer_residualblock4_instancenorm1__fwd_normalize_beta",
       "transformer_residualblock4_instancenorm1__fwd_normalize_gamma"};
 
-  std::unique_ptr<model_spec> nn_spec = init_resnet(RESNET_MODEL_PATH, 8);
+  std::unique_ptr<model_spec> nn_spec = init_resnet(RESNET_MODEL_PATH);
   float_array_map weights = nn_spec->export_params_view();
 
-  for (const auto &weight : weights)
+  for (const auto& weight : weights)
     TS_ASSERT(expected_keys.count(weight.first) != 0);
+}
+
+BOOST_AUTO_TEST_CASE(test_update_num_styles) {
+  std::string RESNET_MODEL_PATH = download_ml_model(RESNET_MODEL, "./");
+
+  size_t NUM_STYLES = 8;
+
+  std::unique_ptr<model_spec> nn_spec =
+      init_resnet(RESNET_MODEL_PATH, NUM_STYLES);
+
+  CoreML::Specification::NeuralNetwork neural_net = nn_spec->get_coreml_spec();
+
+  for (const NeuralNetworkLayer& layer : neural_net.layers()) {
+    if (layer.name().find("_inst_") != std::string::npos) {
+      const InnerProductLayerParams& params = layer.innerproduct();
+
+      // Checking if num styles matches
+      TS_ASSERT(params.inputchannels() == NUM_STYLES);
+
+      // Checking if the actual_size of the weights matches the expected values
+      const float* actual_weight_data = params.weights().floatvalue().data();
+      size_t actual_weight_size = params.weights().floatvalue().size();
+      size_t expected_weight_size =
+          params.inputchannels() * params.outputchannels();
+
+      TS_ASSERT(actual_weight_size == expected_weight_size);
+
+      // Checking if the weight initalization are the expected values
+      if (layer.name().find("gamma") != std::string::npos) {
+        for (size_t x = 0; x < actual_weight_size; x++)
+          TS_ASSERT(actual_weight_data[x] == 1.0f);
+      } else {
+        for (size_t x = 0; x < actual_weight_size; x++)
+          TS_ASSERT(actual_weight_data[x] == 0.0f);
+      }
+    }
+  }
 }

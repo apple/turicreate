@@ -9,8 +9,8 @@
 
 #import <Foundation/Foundation.h>
 
-#include <model_server/lib/image_util.hpp>
 #include <iostream>
+#include <model_server/lib/image_util.hpp>
 
 namespace turi {
 namespace style_transfer {
@@ -18,8 +18,7 @@ namespace style_transfer {
 std::string generate_data(size_t data_size) {
   std::string data_array;
   data_array.reserve(data_size);
-  for (size_t x = 0; x < data_size; x++)
-    data_array[x] = static_cast<char>((uint8_t)(rand() % 256));
+  for (size_t x = 0; x < data_size; x++) data_array[x] = static_cast<char>((uint8_t)(rand() % 256));
 
   return data_array;
 }
@@ -36,19 +35,19 @@ turi::flex_image random_image() {
 
   std::string img_data = generate_data(data_size);
 
-  return turi::image_type(img_data.c_str(), height, width, channels, data_size,
-                          image_type_version, format);
+  return turi::image_type(img_data.c_str(), height, width, channels, data_size, image_type_version,
+                          format);
 }
 
 turi::gl_sarray random_image_sarray(size_t length) {
   std::vector<turi::flexible_type> image_column_data;
-  for (size_t x = 0; x < length; x++)
-    image_column_data.push_back(random_image());
+  for (size_t x = 0; x < length; x++) image_column_data.push_back(random_image());
 
   turi::gl_sarray sa;
   sa.construct_from_vector(image_column_data, turi::flex_type_enum::IMAGE);
 
-  return sa.apply(turi::image_util::encode_image, turi::flex_type_enum::IMAGE);;
+  return sa.apply(turi::image_util::encode_image, turi::flex_type_enum::IMAGE);
+  ;
 }
 
 turi::gl_sframe random_sframe(size_t length, std::string image_column_name) {
@@ -59,13 +58,13 @@ turi::gl_sframe random_sframe(size_t length, std::string image_column_name) {
   return image_sf;
 }
 
-void download_ml_model(std::string download_url, std::string download_directory) {
+std::string download_ml_model(std::string download_url, std::string download_directory) {
   @autoreleasepool {
-    NSString *downloadURL = [NSString stringWithCString:download_url.c_str() 
-                                                 encoding:[NSString defaultCStringEncoding]];
-    NSString *downloadDirectory = [NSString stringWithCString:download_directory.c_str() 
-                                                       encoding:[NSString defaultCStringEncoding]];
-    
+    NSString *downloadURL = [NSString stringWithCString:download_url.c_str()
+                                               encoding:[NSString defaultCStringEncoding]];
+    NSString *downloadDirectory = [NSString stringWithCString:download_directory.c_str()
+                                                     encoding:[NSString defaultCStringEncoding]];
+
     NSURL *directory = [NSURL URLWithString:downloadDirectory];
 
     NSArray *fileArray = [downloadURL componentsSeparatedByString:@"/"];
@@ -73,15 +72,16 @@ void download_ml_model(std::string download_url, std::string download_directory)
     NSURL *fileUrl = [directory URLByAppendingPathComponent:fileName];
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (![fileManager fileExistsAtPath:fileUrl.absoluteString]) { 
+    if (![fileManager fileExistsAtPath:fileUrl.absoluteString]) {
       NSURL *url = [NSURL URLWithString:downloadURL];
       NSData *urlData = [NSData dataWithContentsOfURL:url];
       if (urlData) {
         [urlData writeToFile:fileUrl.absoluteString atomically:YES];
       }
     }
+    return fileUrl.fileSystemRepresentation;
   }
 }
 
-} // namespace style_transfer
-} // namespace turi
+}  // namespace style_transfer
+}  // namespace turi
