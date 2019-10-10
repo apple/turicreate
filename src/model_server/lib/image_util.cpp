@@ -82,6 +82,14 @@ void copy_image_to_memory(const image_type& input, unsigned char* outptr,
   copy_image_to_memory_impl(input, outptr, outstrides, outshape, channel_last);
 }
 
+// Loads image into row-major array with shape HWC (height, width, channel)
+void image_load_to_numpy(const image_type& img, float* output,
+                         const std::vector<size_t>& outstrides) {
+  
+  copy_image_to_memory(img, output, outstrides,
+                       {img.m_height, img.m_width, img.m_channels}, true);
+}
+
 namespace image_util{
 
   /**
