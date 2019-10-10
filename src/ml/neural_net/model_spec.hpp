@@ -148,6 +148,14 @@ public:
   void add_sigmoid(const std::string& name, const std::string& input);
 
   /**
+   * Appends a pooling layer.
+   */
+  void add_pooling(const std::string& name, const std::string& input,
+                   size_t kernel_height, size_t kernel_width, size_t stride_h,
+                   size_t stride_w, padding_type padding,
+                   bool use_poolexcludepadding);
+
+  /**
    * Appends a convolution layer.
    *
    * \param name The name of the layer and its output
@@ -195,6 +203,19 @@ public:
    */
   void add_batchnorm(const std::string& name, const std::string& input,
                      size_t num_channels, float epsilon);
+
+  /**
+   * Appends an instance norm layer.
+   *
+   * The beta is initialized to 0.f; the gamma is initialized to 1.f
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param num_channels The C dimension of the input and output
+   * \param epsilon Added to the variance for each input before normalizing
+   */
+  void add_instancenorm(const std::string& name, const std::string& input,
+                        size_t num_channels, float epsilon);
 
   /**
    * Appends a layer that concatenates its inputs along the channel axis.
@@ -324,8 +345,14 @@ public:
   // needed. If/when we support the full range of NeuralNetworkLayer values,
   // this could be shared in some form with coremltools.
 
-private:
+  /**
+   * Appends a preprocessing layer
+   * Now only support image scaling preprocessing though.
+   */
+  void add_preprocessing(const std::string& feature_name,
+                         const float image_scale);
 
+ private:
   std::unique_ptr<CoreML::Specification::NeuralNetwork> impl_;
 };
 

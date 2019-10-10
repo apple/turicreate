@@ -279,10 +279,6 @@ void object_detector::init_options(
       /* default_value     */ "center",
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
-  options.create_boolean_option(
-      /* name             */ "use_tensorflow",
-      /* description      */
-      "If set to True, model training will be done using TensorFlow.", false);
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -348,6 +344,78 @@ void object_detector::save_impl(oarchive& oarc) const {
 void object_detector::load_version(iarchive& iarc, size_t version) {
   nn_spec_.reset(new model_spec);
   _load_version(iarc, version, *nn_spec_, state, anchor_boxes());
+}
+
+void object_detector::import_from_custom_model(variant_map_type model_data,
+                                               size_t version) {
+  auto model_iter = model_data.find("_model");
+  if (model_iter == model_data.end()) {
+    log_and_throw("The loaded turicreate model must contain '_model'!\n");
+  }
+  const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
+  auto shape_iter = model_data.find("_grid_shape");
+  size_t height, width;
+  if (shape_iter == model_data.end()) {
+    height = 13;
+    width = 13;
+  } else {
+    std::vector<size_t> shape =
+        variant_get_value<std::vector<size_t>>(shape_iter->second);
+    height = shape[0];
+    width = shape[1];
+  }
+  model_data.emplace("grid_height", height);
+  model_data.emplace("grid_width", width);
+
+  model_data.emplace("annotation_scale", "pixel");
+  model_data.emplace("annotation_origin", "top_left");
+  model_data.emplace("annotation_position", "center");
+
+  state.clear();
+  state.insert(model_data.begin(), model_data.end());
+
+  flex_dict mxnet_data_dict;
+  flex_dict mxnet_shape_dict;
+
+  for (const auto& data : model) {
+    if (data.first == "data") {
+      mxnet_data_dict = data.second;
+    }
+    if (data.first == "shapes") {
+      mxnet_shape_dict = data.second;
+    }
+  }
+
+  auto cmp = [](flex_dict::value_type& a, flex_dict::value_type& b) {
+    return (a.first < b.first);
+  };
+
+  std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
+  std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
+
+  float_array_map nn_params;
+
+  for (size_t i = 0; i < mxnet_data_dict.size(); i++) {
+    std::string layer_name = mxnet_data_dict[i].first;
+    flex_nd_vec mxnet_data_nd = mxnet_data_dict[i].second.to<flex_nd_vec>();
+    flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[i].second.to<flex_nd_vec>();
+    const std::vector<double>& model_weight = mxnet_data_nd.elements();
+    const std::vector<double>& model_shape = mxnet_shape_nd.elements();
+    std::vector<float> layer_weight(model_weight.begin(), model_weight.end());
+    std::vector<size_t> layer_shape(model_shape.begin(), model_shape.end());
+    size_t index = layer_name.find('_');
+    layer_name =
+        layer_name.substr(0, index) + "_fwd_" + layer_name.substr(index + 1);
+    nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
+                                                     std::move(layer_shape));
+  }
+  nn_spec_.reset(new model_spec);
+  init_darknet_yolo(*nn_spec_,
+                    variant_get_value<size_t>(state.at("num_classes")),
+                    anchor_boxes());
+  nn_spec_->update_params(nn_params);
+  model_data.erase(model_iter);
+  return;
 }
 
 void object_detector::train(gl_sframe data,
@@ -830,12 +898,7 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
 
 std::unique_ptr<compute_context> object_detector::create_compute_context() const
 {
-  bool use_tensorflow = read_state<bool>("use_tensorflow");
-  if (use_tensorflow) {
-    return compute_context::create_tf();
-  } else {
-    return compute_context::create();
-  }
+  return compute_context::create();
 }
 
 void object_detector::init_train(
