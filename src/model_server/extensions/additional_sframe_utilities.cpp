@@ -32,7 +32,7 @@ void copy_to_memory(const sframe_rows::row& data,
   if (type == flex_type_enum::IMAGE) {
     ASSERT_MSG(data.size() == 1, "Image data only support one input field");
     const image_type& img = data[0].get<flex_image>();
-    copy_image_to_memory(img, outptr, outstrides, outshape, false);
+    image_util::copy_image_to_memory(img, outptr, outstrides, outshape, false);
     return;
   } else if (data.size() == 1 && (type == flex_type_enum::FLOAT || type == flex_type_enum::INTEGER)) {
     // Case 2: Single value type (should really get rid of this special case)
@@ -134,8 +134,9 @@ void sframe_load_to_numpy(turi::gl_sframe input, size_t outptr_addr,
 void image_load_to_numpy(const image_type& img, size_t outptr_addr,
                          const std::vector<size_t>& outstrides) {
   unsigned char *outptr = reinterpret_cast<unsigned char *>(outptr_addr);
-  copy_image_to_memory(img, outptr, outstrides,
-                       {img.m_height, img.m_width, img.m_channels}, true);
+  image_util::copy_image_to_memory(img, outptr, outstrides,
+                                   {img.m_height, img.m_width, img.m_channels},
+                                   true);
 }
 
 
