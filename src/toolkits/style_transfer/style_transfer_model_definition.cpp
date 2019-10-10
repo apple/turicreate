@@ -13,20 +13,27 @@ namespace style_transfer {
 using CoreML::Specification::NeuralNetwork;
 using turi::neural_net::model_spec;
 
-std::unique_ptr<model_spec> init_resnet(size_t num_styles) {
-  std::unique_ptr<model_spec> result(new model_spec);
-  return result;  // TODO: define model spec for resnet;
+namespace {
+
+void change_num_styles(std::unique_ptr<model_spec>& spec, size_t num_styles) {}
+
+}
+
+std::unique_ptr<model_spec> init_resnet(std::string& path) {
+  std::unique_ptr<model_spec> spec(new model_spec(path));
+  return spec;
 }
 
 std::unique_ptr<neural_net::model_spec> init_resnet(std::string& path,
                                                     size_t num_styles) {
-  std::unique_ptr<model_spec> result(new model_spec(path));
-  return result;
+  std::unique_ptr<model_spec> spec(new model_spec(path));
+  change_num_styles(spec, num_styles);
+  return spec;
 }
 
 std::unique_ptr<model_spec>  init_vgg_16(std::string& path) {
-  std::unique_ptr<model_spec> result(new model_spec(path));
-  return result;
+  std::unique_ptr<model_spec> spec(new model_spec(path));
+  return spec;
 }
 
 }  // namespace style_transfer

@@ -58,7 +58,7 @@ BOOST_AUTO_TEST_CASE(test_load_resnet) {
    * TODO: Delete this path once uploaded to https://developer.apple.com/
    **/
   std::string RESNET_MODEL_PATH =
-      "/Users/abhishekpratapa/Desktop/temp_turicreate/testing_coreml_5_0.mlmodel";
+      "/Users/abhishekpratapa/Desktop/mxnet_golden_set/transformer.mlmodel";
 
   std::unique_ptr<model_spec> nn_spec = init_resnet(RESNET_MODEL_PATH, 8);
   float_array_map weights = nn_spec->export_params_view();
