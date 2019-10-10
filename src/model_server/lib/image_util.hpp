@@ -11,6 +11,8 @@
 
 namespace turi{
 
+namespace image_util {
+
 void copy_image_to_memory(const image_type& input, unsigned char* outptr,
                           const std::vector<size_t>& outstrides,
                           const std::vector<size_t>& outshape,
@@ -23,8 +25,6 @@ void copy_image_to_memory(const image_type& input, float* outptr,
 
 void image_load_to_numpy(const image_type& img, float* output,
                          const std::vector<size_t>& outstrides);
-
-namespace image_util{
 
 /**
 * Return the head of passed sarray, but cast to string. Used for printing on python side.
@@ -127,9 +127,7 @@ std::shared_ptr<unity_sarray>
   vector_sarray_to_image_sarray(std::shared_ptr<unity_sarray> image_sarray,
       size_t width, size_t height, size_t channels, bool undefined_on_failure);
 
-
-
-} // end of image_util
+}  // namespace image_util
 
 } // end of turicreate
 

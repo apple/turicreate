@@ -20,6 +20,8 @@
 
 namespace turi{
 
+namespace image_util {
+
 template <typename T>
 void copy_image_to_memory_impl(const image_type& input, T* outptr,
                                const std::vector<size_t>& outstrides,
@@ -89,8 +91,6 @@ void image_load_to_numpy(const image_type& img, float* output,
   copy_image_to_memory(img, output, outstrides,
                        {img.m_height, img.m_width, img.m_channels}, true);
 }
-
-namespace image_util{
 
   /**
   * Return flex_vec flexible type that is sum of all images with data in vector form.
@@ -600,7 +600,5 @@ std::shared_ptr<unity_sarray> vector_sarray_to_image_sarray(
   return std::static_pointer_cast<unity_sarray>(ret);
 };
 
-
-
-} //namespace image_util
+}  // namespace image_util
 } //namespace turi
