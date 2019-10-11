@@ -14,17 +14,14 @@
 #include <core/data/sframe/gl_sframe.hpp>
 #include <ml/neural_net/float_array.hpp>
 
-
 namespace turi {
 namespace drawing_classifier {
-
-constexpr int kDrawingHeight = 28;
-constexpr int kDrawingWidth = 28;
-constexpr int kDrawingChannels = 1;
 
 /**
  * Pure virtual interface for classes that produce batches of data
  * (pre-augmentation) from a raw SFrame.
+ * \TODO Factor out the shared structure for data iterators 
+ *        with the other iterators!
  */
 class data_iterator {
  

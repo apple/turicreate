@@ -4,20 +4,40 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <model_server/extensions/additional_sframe_utilities.hpp>
 #include <toolkits/drawing_classifier/dc_data_iterator.hpp>
 
 #include <algorithm>
 #include <cmath>
 
-#include <core/data/image/io.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
+#include <core/data/image/io.hpp>
 #include <core/logging/logger.hpp>
+#include <model_server/lib/image_util.hpp>
 
 namespace turi {
 namespace drawing_classifier {
 
+constexpr int kDrawingHeight = 28;
+constexpr int kDrawingWidth = 28;
+constexpr int kDrawingChannels = 1;
+
+namespace {
+
 using neural_net::shared_float_array;
+
+void add_drawing_pixel_data_to_batch(
+    float *next_drawing_pointer, const flex_image &bitmap) {
+  image_util::copy_image_to_memory(
+    /* image input */    bitmap,
+    /* output pointer */ next_drawing_pointer, 
+    /* output strides */ { bitmap.m_width * bitmap.m_channels * sizeof(float),
+                           bitmap.m_channels * sizeof(float),
+                           sizeof(float) }, 
+    /* output shape */   { bitmap.m_height, bitmap.m_width, bitmap.m_channels },
+    /* channel_last */   true);
+}
+
+}  // namespace
 
 simple_data_iterator::target_properties
 simple_data_iterator::compute_properties(
@@ -85,17 +105,6 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
     random_engine_(params.random_seed)
 
 {}
-
-void add_drawing_pixel_data_to_batch(
-    float *next_drawing_pointer, const flex_image &bitmap) {
-  image_load_to_numpy(bitmap, (size_t)next_drawing_pointer, 
-    {
-      bitmap.m_width * bitmap.m_channels * sizeof(float),
-      bitmap.m_channels * sizeof(float),
-      sizeof(float)
-    });
-}
-
 
 data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
