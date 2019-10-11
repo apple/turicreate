@@ -300,23 +300,31 @@ image_augmenter::intermediate_result tf_image_augmenter::prepare_augmented_image
 
     // Get augmented images and annotations from tensorflow
     pybind11::object tf_augmentation = tf_aug.attr("DataAugmenter")(data_to_augment.images, data_to_augment.annotations, data_to_augment.predictions);
-
+    std::cout<<"15";
     pybind11::object augmented_img = tf_augmentation.attr("get_augmented_images")();
+    std::cout<<"16";
     pybind11::buffer aug_images = augmented_img.cast<pybind11::buffer>();
+    std::cout<<"17";
     pybind11::buffer_info buf_img = aug_images.request();
     image_annotations.images = 
           turi::neural_net::shared_float_array::copy(static_cast<float*>(buf_img.ptr),
               std::vector<size_t>(buf_img.shape.begin(), buf_img.shape.end()));
-
+    std::cout<<"18";
     pybind11::object augmented_ann = tf_augmentation.attr("get_augmented_annotations")();
+    std::cout<<"19";
     std::vector<pybind11::buffer> aug_annotations = augmented_ann.cast<std::vector<pybind11::buffer>>();
-    
+    std::cout<<"20";
     std::vector<turi::neural_net::shared_float_array> annotations_per_batch(n);
+    std::cout<<"21";
     for (size_t i=0; i< n; i++) {
       pybind11::buffer_info buf_ann = aug_annotations[i].request();
       annotations_per_batch.push_back(turi::neural_net::shared_float_array::copy(static_cast<float*>(buf_ann.ptr),
         std::vector<size_t>(buf_ann.shape.begin(), buf_ann.shape.end())));
     }
+    std::cout<<"22";
+
+    image_annotations.annotations = annotations_per_batch;
+    std::cout<<"23";
 
   });
 

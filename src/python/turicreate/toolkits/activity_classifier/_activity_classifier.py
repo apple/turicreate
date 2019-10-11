@@ -165,7 +165,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
     params = {
-        'use_tensorflow': False
+        'use_tensorflow': True
         }
 
     if '_advanced_parameters' in kwargs:

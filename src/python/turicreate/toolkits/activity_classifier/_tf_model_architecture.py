@@ -7,8 +7,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-
-import tensorflow as _tf 
+# import tensorflow as _tf
+import tensorflow.compat.v1 as _tf
+_tf.disable_v2_behavior()
 from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
 
@@ -27,7 +28,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
          # Suppresses verbosity to only errors
-        _tf.compat.v1.logging.set_verbosity(_tf.compat.v1.logging.ERROR)
+        _tf.logging.set_verbosity(_tf.logging.ERROR)
         
         _tf.reset_default_graph()
 
@@ -36,10 +37,10 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.seq_len = seq_len
         
         # Vars
-        self.data = _tf.compat.v1.placeholder(_tf.float32, [None, prediction_window*seq_len, num_features])
-        self.weight = _tf.compat.v1.placeholder(_tf.float32, [None, seq_len, 1])
-        self.target = _tf.compat.v1.placeholder(_tf.int32, [None, seq_len, 1])
-        self.is_training = _tf.compat.v1.placeholder(_tf.bool)
+        self.data = _tf.placeholder(_tf.float32, [None, prediction_window*seq_len, num_features])
+        self.weight = _tf.placeholder(_tf.float32, [None, seq_len, 1])
+        self.target = _tf.placeholder(_tf.int32, [None, seq_len, 1])
+        self.is_training = _tf.placeholder(_tf.bool)
         
         # Reshaping weights 
         reshaped_weight = _tf.reshape(self.weight, [self.batch_size, seq_len])
@@ -108,11 +109,11 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.train_op = _tf.group([train_op, update_ops])
 
         # Session 
-        self.sess = _tf.compat.v1.Session()
+        self.sess = _tf.Session()
 
         # Initialize all variables
-        self.sess.run(_tf.compat.v1.global_variables_initializer())
-        self.sess.run(_tf.compat.v1.local_variables_initializer())
+        self.sess.run(_tf.global_variables_initializer())
+        self.sess.run(_tf.local_variables_initializer())
         
         self.load_weights(net_params)
 
