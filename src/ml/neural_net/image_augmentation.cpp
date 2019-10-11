@@ -117,5 +117,95 @@ image_augmenter::result resize_only_image_augmenter::prepare_images(
   return res;
 }
 
+image_augmenter::result processed_image_augmenter::prepare_images(
+  std::vector<labeled_image> source_batch) {
+
+  result res;
+
+  const size_t n = opts_.batch_size;
+  constexpr size_t c = 3;
+
+  std::vector<turi::neural_net::shared_float_array> images_to_aug;
+  std::vector<turi::neural_net::shared_float_array> ann_batch;
+  std::vector<turi::neural_net::shared_float_array> pred_batch;
+
+  // Decode a batch of images to raw format 
+  for (size_t i = 0; i < n; i++) {
+
+    size_t input_height = source_batch[i].image.m_height;
+    size_t input_width = source_batch[i].image.m_width;
+    std::vector<float> img( input_height * input_width * c, 0.f);
+    image_util::copy_image_to_memory(source_batch[i].image, img.data(),
+        {input_width * c * sizeof(float), c * sizeof(float), sizeof(float)},
+        {input_height, input_width, c}, true);
+    shared_float_array image_to_aug = shared_float_array::wrap(img, {input_height, input_width, c});
+    images_to_aug.push_back(image_to_aug);
+
+    std::vector<float> annotation(source_batch[i].annotations.size() * 6);
+   
+    size_t x = 0;
+    for (size_t j=0; j<source_batch[i].annotations.size(); j++) {
+      annotation[x] = source_batch[i].annotations[j].identifier;
+      annotation[x+1] = source_batch[i].annotations[j].bounding_box.x;
+      annotation[x+2] = source_batch[i].annotations[j].bounding_box.y;
+      annotation[x+3] = source_batch[i].annotations[j].bounding_box.height;
+      annotation[x+4] = source_batch[i].annotations[j].bounding_box.width;
+      annotation[x+5] = source_batch[i].annotations[j].confidence;
+      x = (j + 1) * 6;
+    }
+
+    shared_float_array ann_to_aug = shared_float_array::wrap(annotation, {source_batch[i].annotations.size() * 6});
+    ann_batch.push_back(ann_to_aug);
+
+
+    std::vector<float> predictions(source_batch[i].predictions.size() * 6);
+    size_t y = 0;
+    for (size_t k=0; k<source_batch[i].annotations.size(); k++) {
+      
+      predictions[y] = source_batch[i].predictions[k].identifier;
+      predictions[y+1] = source_batch[i].predictions[k].bounding_box.x;
+      predictions[y+2] = source_batch[i].predictions[k].bounding_box.y;
+      predictions[y+3] = source_batch[i].predictions[k].bounding_box.height;
+      predictions[y+4] = source_batch[i].predictions[k].bounding_box.width;
+      predictions[y+5] = source_batch[i].predictions[k].confidence;
+      y = (k + 1) * 6;
+    }
+
+    turi::neural_net::shared_float_array pred_to_aug = shared_float_array::wrap(annotation, {source_batch[i].predictions.size() * 6});
+    pred_batch.push_back(pred_to_aug);
+
+  }
+  
+  intermediate_labeled_image input_to_tf_aug;
+  input_to_tf_aug.images = images_to_aug;
+  input_to_tf_aug.annotations = ann_batch;
+  input_to_tf_aug.predictions = pred_batch;
+
+  intermediate_result augmented_data = prepare_augmented_images(input_to_tf_aug);
+
+  res.image_batch = augmented_data.images;
+  
+  std::vector<std::vector<image_annotation>> annotations_per_batch;
+  for (size_t a= 0; a < n; a++) { 
+    std::vector<image_annotation> annotations_per_image;
+    
+    for ( size_t b=0; b < *augmented_data.annotations[a].shape() ; b++ ) {
+      image_annotation annotation;
+      image_box bbox; 
+      annotation.identifier = static_cast<int>(*augmented_data.annotations[a][b][0].data());
+      bbox.x = static_cast<float>(*augmented_data.annotations[a][b][1].data());
+      bbox.y = static_cast<float>(*augmented_data.annotations[a][b][2].data());
+      bbox.height = static_cast<float>(*augmented_data.annotations[a][b][3].data());
+      bbox.width = static_cast<float>(*augmented_data.annotations[a][b][4].data());
+      annotation.confidence = static_cast<float>(*augmented_data.annotations[a][b][5].data());
+      annotations_per_image.push_back(annotation);
+   }
+
+   annotations_per_batch.push_back(annotations_per_image);
+
+  }
+  return res;
+}
+
 }  // neural_net
 }  // turi

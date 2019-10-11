@@ -41,7 +41,7 @@ class tf_model_backend : public model_backend {
   pybind11::object model_;
 };
 
-class tf_image_augmenter : public image_augmenter {
+class tf_image_augmenter : public processed_image_augmenter {
  public:
   tf_image_augmenter(const options& opts);
   ~tf_image_augmenter();
@@ -50,6 +50,9 @@ class tf_image_augmenter : public image_augmenter {
 
   image_augmenter::result prepare_images(
       std::vector<labeled_image> source_batch) override;
+
+  image_augmenter::intermediate_result prepare_augmented_images(
+    image_augmenter::intermediate_labeled_image data_to_augment) override;
 
  private:
   options opts_;
@@ -277,35 +280,13 @@ tf_model_backend::~tf_model_backend() {
   call_pybind_function([&]() { model_ = pybind11::object(); });
 }
 
-tf_image_augmenter::tf_image_augmenter(const options& opts) : opts_(opts) {}
+tf_image_augmenter::tf_image_augmenter(const options& opts) : processed_image_augmenter(opts) {}
 
-image_augmenter::result tf_image_augmenter::prepare_images(
-    std::vector<labeled_image> source_batch) {
-
-  image_augmenter::result image_annotations;
+image_augmenter::intermediate_result tf_image_augmenter::prepare_augmented_images(
+    image_augmenter::intermediate_labeled_image data_to_augment) {
 
   const size_t n = opts_.batch_size;
-  constexpr size_t channel = 3;
-
-  std::vector<turi::neural_net::shared_float_array> images_to_aug;
-
-  // std::vector<float *> img_batch(n);
-  std::vector<std::vector<image_annotation>> ann_batch(n);
-  std::vector<std::vector<image_annotation>> pred_batch(n);
-
-  // // Decode a batch of images to raw format 
-  for (size_t i = 0; i < n; i++) {
-    size_t input_height = source_batch[i].image.m_height;
-    size_t input_width = source_batch[i].image.m_width;
-    std::vector<float> img( input_height * input_width * channel, 0.f);
-
-    image_load_to_numpy(source_batch[i].image, (size_t)img.data(),
-        {input_width * channel * sizeof(float), channel * sizeof(float), sizeof(float)});
-    turi::neural_net::shared_float_array image_to_aug = turi::neural_net::shared_float_array::wrap(img, {input_height, input_width, channel});
-    images_to_aug.push_back(image_to_aug);
-    ann_batch.push_back(source_batch[i].annotations);
-    pred_batch.push_back(source_batch[i].predictions);
-  }
+  image_augmenter::intermediate_result image_annotations;
 
   call_pybind_function([&]() {
 
@@ -314,68 +295,27 @@ image_augmenter::result tf_image_augmenter::prepare_images(
         "turicreate.toolkits.object_detector._tf_image_augmenter");
 
     // Get augmented images and annotations from tensorflow
-    pybind11::object tf_augmentation = tf_aug.attr("DataAugmenter")(images_to_aug, ann_batch, pred_batch);
-    std::cout << "0";
-    pybind11::object augmented_data = tf_augmentation.attr("get_augmented_data")();
-    std::cout << "0.1";
-    std::map<std::string, pybind11::buffer> aug_data = augmented_data.cast<std::map<std::string, pybind11::buffer>>();
-    std::cout << "0.2";
-    // pybind11::object augmneted_anns = tf_augmentation.attr("get_annotations")();
-    std::cout << "0.3";
-    // std::vector<std::vector<float>> aug_anns = augmneted_anns.cast<std::vector<std::vector<float>>>();
-    std::cout << "0.4";
+    pybind11::object tf_augmentation = tf_aug.attr("DataAugmenter")(data_to_augment.images, data_to_augment.annotations, data_to_augment.predictions);
 
-    std::cout << "1";
-    // pybind11::buffer_info buf = aug_img.request();
-    std::cout << "2";
-    // image_annotations.image_batch = turi::neural_net::shared_float_array::copy(
-    //           static_cast<float*>(buf.ptr),
-    //           std::vector<size_t>(buf.shape.begin(), buf.shape.end()));
-    std::cout << "3";
-    std::vector<std::vector<image_annotation>> ann_per_batch;
-    std::cout << "4";
-
-    pybind11::buffer_info buf_img = aug_data.at("image").request();
-    image_annotations.image_batch = 
+    pybind11::object augmented_img = tf_augmentation.attr("get_augmented_images")();
+    pybind11::buffer aug_images = augmented_img.cast<pybind11::buffer>();
+    pybind11::buffer_info buf_img = aug_images.request();
+    image_annotations.images = 
           turi::neural_net::shared_float_array::copy(static_cast<float*>(buf_img.ptr),
               std::vector<size_t>(buf_img.shape.begin(), buf_img.shape.end()));
-    pybind11::buffer_info buf_ann = aug_data.at("annotation").request();
 
+    pybind11::object augmented_ann = tf_augmentation.attr("get_augmented_annotations")();
+    std::vector<pybind11::buffer> aug_annotations = augmented_ann.cast<std::vector<pybind11::buffer>>();
+    
+    std::vector<turi::neural_net::shared_float_array> annotations_per_batch(n);
+    for (size_t i=0; i< n; i++) {
+      pybind11::buffer_info buf_ann = aug_annotations[i].request();
+      annotations_per_batch.push_back(turi::neural_net::shared_float_array::copy(static_cast<float*>(buf_ann.ptr),
+        std::vector<size_t>(buf_ann.shape.begin(), buf_ann.shape.end())));
+    }
 
-    // for (auto& kv : buf_output) {
-    //   pybind11::buffer_info buf = kv.second.request();
-
-    //   turi::neural_net::shared_float_array value =
-    //       turi::neural_net::shared_float_array::copy(static_cast<float*>(buf.ptr),
-    //           std::vector<size_t>(buf.shape.begin(), buf.shape.end()));
-    //   result[kv.first] = value;
-    // }
-
-    // Traversing through the batch to get augmented images and annotations 
-    // in the right format for training
-    // for (size_t j = 0; j < n; j++) {
-    //   std::vector<image_annotation> ann_per_img(aug_anns[j].size());
-    //   for (size_t k = 0 ; k < aug_anns[j].size() ; k++) {
-    //     std::cout << "5";
-    //     image_annotation ann;
-    //     ann.identifier = static_cast<int>(aug_anns[j][0]);
-    //     image_box bbox;
-    //     bbox.x = aug_anns[j][1];
-    //     bbox.y = aug_anns[j][2];
-    //     bbox.height = aug_anns[j][3];
-    //     bbox.width = aug_anns[j][4];
-    //     ann.bounding_box = bbox;
-    //     ann.confidence = aug_anns[j][5];
-    //     ann_per_img[j] = ann;
-    //   }
-    //   std::cout << "8";
-    //   ann_per_batch.push_back(ann_per_img);
-
-    // }
-    // std::cout << "9";
-    // image_annotations.annotations_batch = ann_per_batch;
   });
-  std::cout << "10";
+
   return image_annotations;
 }
 
