@@ -119,18 +119,6 @@ PYBIND11_MODULE(libtctensorflow, m) {
 
         );
       });
-  pybind11::class_<image_box>(m, "ImageBox")
-      .def_readwrite("x", &image_box::x)
-      .def_readwrite("y", &image_box::y)
-      .def_readwrite("height", &image_box::height)
-      .def_readwrite("width", &image_box::width);
-  pybind11::class_<image_annotation>(m, "ImageAnnotation")
-      .def_readwrite("identifier", &image_annotation::identifier)
-      .def_readwrite("bounding_box", &image_annotation::bounding_box)
-      .def_readwrite("confidence", &image_annotation::confidence);
-  // pybind11::class_<image_type>(m, "ImageType");
-  //   .def()
-  // pybind11::class_<labeled_image>(m, "LabeledImage");
 }
 
 
