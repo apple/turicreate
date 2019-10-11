@@ -135,21 +135,15 @@ image_augmenter::result processed_image_augmenter::prepare_images(
     size_t input_height = source_batch[i].image.m_height;
     size_t input_width = source_batch[i].image.m_width;
     std::vector<float> img( input_height * input_width * c, 0.f);
-    std::cout << "0";
     // unsigned char *outptr = reinterpret_cast<unsigned char *>(img.data());
     image_util::copy_image_to_memory(source_batch[i].image , img.data(),
         {input_width * c , c , 1},
         {input_height, input_width, c}, true);
-    std::cout<<"1";
 
     std::transform(img.begin(), img.end(), img.begin(), [](float pixel) -> float { return pixel/255; });
-    std::cout<<"2";
     shared_float_array image_to_aug = shared_float_array::wrap(img, {input_height, input_width, c});
-    std::cout<<"3";
     images_to_aug.push_back(image_to_aug);
-    std::cout<<"4";
     std::vector<float> annotation(source_batch[i].annotations.size() * 6);
-    std::cout<<"5";
     size_t x = 0;
     for (size_t j=0; j<source_batch[i].annotations.size(); j++) {
       annotation[x] = source_batch[i].annotations[j].identifier;
@@ -160,15 +154,9 @@ image_augmenter::result processed_image_augmenter::prepare_images(
       annotation[x+5] = source_batch[i].annotations[j].confidence;
       x = (j + 1) * 6;
     }
-    std::cout<<"6";
-
     shared_float_array ann_to_aug = shared_float_array::wrap(annotation, {source_batch[i].annotations.size() * 6});
-    std::cout<<"7";
     ann_batch.push_back(ann_to_aug);
-
-    std::cout<<"8";
     std::vector<float> predictions(source_batch[i].predictions.size() * 6);
-    std::cout<<"9";
     size_t y = 0;
     for (size_t k=0; k<source_batch[i].predictions.size(); k++) {
       
@@ -180,58 +168,41 @@ image_augmenter::result processed_image_augmenter::prepare_images(
       predictions[y+5] = source_batch[i].predictions[k].confidence;
       y = (k + 1) * 6;
     }
-    std::cout<<"10";
+
     turi::neural_net::shared_float_array pred_to_aug = shared_float_array::wrap(predictions, {source_batch[i].predictions.size() * 6});
-    std::cout<<"11";
+
     pred_batch.push_back(pred_to_aug);
-    std::cout<<"12";
 
   }
-  std::cout<<"13";
-  
   intermediate_labeled_image input_to_tf_aug;
   input_to_tf_aug.images = images_to_aug;
   input_to_tf_aug.annotations = ann_batch;
   input_to_tf_aug.predictions = pred_batch;
-  std::cout<<"14";
   intermediate_result augmented_data = prepare_augmented_images(input_to_tf_aug);
-  std::cout<<"24";
   res.image_batch = augmented_data.images;
-  std::cout<<"25";
   std::vector<std::vector<image_annotation>> annotations_per_batch;
   for (size_t a= 0; a < n; a++) { 
     std::vector<image_annotation> annotations_per_image;
-    std::cout<<"26";
-    // const size_t *sh = augmented_data.annotations[a].shape();
-    for ( size_t b=0; b < 2; b++ ) {
-      std::cout<<"27";
-      std::cout << augmented_data.annotations[a][b];
+    const size_t *sh = augmented_data.annotations[a].shape();
+
+    for ( size_t b=0; b < sh[0]; b++ ) {
       image_annotation annotation;
       image_box bbox; 
       std::cout << a << b;
       const float *ptr = augmented_data.annotations[a][b].data();
-      // int id = *((int *) (ptr+0));
-      // annotation.identxifier = id;
-      // std::cout<< annotation.identifier;
-      std::cout<<"28";
+      annotation.identifier = static_cast<int>(ptr[0]);
       bbox.x = static_cast<float>(ptr[1]);
-      std::cout<<"29";
       bbox.y = static_cast<float>(*augmented_data.annotations[a][b][2].data());
-      std::cout<<"30";
       bbox.height = static_cast<float>(*augmented_data.annotations[a][b][3].data());
-      std::cout<<"31";
       bbox.width = static_cast<float>(*augmented_data.annotations[a][b][4].data());
       annotation.bounding_box = bbox;
-      std::cout<<"32";
       annotation.confidence = static_cast<float>(*augmented_data.annotations[a][b][5].data());
-      std::cout<<"33";
       annotations_per_image.push_back(annotation);
    }
-   std::cout<<"34";
    annotations_per_batch.push_back(annotations_per_image);
 
   }
-  std::cout<<"35";
+  std::cout<<"done";
   res.annotations_batch = annotations_per_batch;
   return res;
 }

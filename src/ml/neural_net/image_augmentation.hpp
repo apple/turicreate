@@ -225,10 +225,13 @@ public:
     float hue_max_jitter = 0.f;
   };
 
-  /** The output sent to TensorFlow to augment the images. */
+  /** The output sent from TensorFlow after augmenting the images. */
   struct intermediate_result {
 
+    /** The images after augmenting sent from Tensorflow */
     shared_float_array images;
+
+    /** The annotations associated with augmented images sent from Tensorflow */ 
     std::vector<shared_float_array> annotations;
   };
 

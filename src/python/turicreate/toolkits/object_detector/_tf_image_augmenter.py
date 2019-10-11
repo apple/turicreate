@@ -10,7 +10,6 @@ class DataAugmenter(object):
 	def __init__(self, images, annotations, predictions):
 		for image in images:
 			image = _utils.convert_shared_float_array_to_numpy(image)
-			# print(image)
 		print("image done")
 		for ann in annotations:
 			ann = _utils.convert_shared_float_array_to_numpy(ann)
