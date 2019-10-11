@@ -34,7 +34,7 @@ using neural_net::weight_initializer;
 using neural_net::zero_weight_initializer;
 
 using padding_type = model_spec::padding_type;
-// annoymous helper sections
+// anoymous helper sections
 
 }  // namespace
 
@@ -114,6 +114,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
 
   input_name = std::move(output_name);
   output_name = prefix + "_flatten0_fwd";
+
   result->add_flatten(output_name, input_name);
 
   input_name = std::move(output_name);
@@ -122,8 +123,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   result->add_inner_product(
       /* name                */ output_name,
       /* input               */ input_name,
-      /* num_output_channels */ 64 * 3 * 3,
-      /* num_input_channels  */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels  */ 64 * 3 * 3,
       /* weight_init_fn      */ initializer);
 
   input_name = std::move(output_name);
@@ -132,11 +133,12 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   result->add_inner_product(
       /* name                */ output_name,
       /* input               */ input_name,
-      /* num_output_channels */ 128,
-      /* num_input_channels  */ num_classes,
+      /* num_output_channels */ num_classes,
+      /* num_input_channels  */ 128,
       /* weight_init_fn      */ initializer);
 
   input_name = std::move(output_name);
+
   result->add_softmax(target + "Probability", input_name);
 
   return result;
