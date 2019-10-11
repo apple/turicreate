@@ -153,7 +153,7 @@ build_dylib_macos_10_14:
   stage: build
   script:
     - source scripts/use_ccache.sh
-    - ./configure --no-visualization --no-python --release-opt-for-size
+    - ./configure --no-visualization --no-python --no-remotefs --release-opt-for-size
     - cd release/src/deployment
     - make -j8
   artifacts:
@@ -171,7 +171,7 @@ build_dylib_ios_12:
   stage: build
   script:
     - source scripts/use_ccache.sh
-    - ./configure --no-visualization --no-python --release-opt-for-size --target-ios
+    - ./configure --no-visualization --no-python --no-remotefs --release-opt-for-size --target-ios
     - cd release/src/deployment
     - make -j8
   artifacts:

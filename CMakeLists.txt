@@ -262,7 +262,7 @@ if(TC_BUILD_IOS)
   add_definitions(-DTC_BUILD_IOS)
 
   if(${TC_BUILD_REMOTEFS})
-    message(ERROR, "RemoteFS must be disable for building iOS.")
+    message(ERROR "RemoteFS must be disabled for building iOS.")
   endif()
 
 endif()
