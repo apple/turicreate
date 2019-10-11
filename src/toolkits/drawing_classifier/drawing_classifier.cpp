@@ -34,7 +34,7 @@ using neural_net::weight_initializer;
 using neural_net::zero_weight_initializer;
 
 using padding_type = model_spec::padding_type;
-// anoymous helper sections
+// anonymous helper sections
 
 }  // namespace
 
