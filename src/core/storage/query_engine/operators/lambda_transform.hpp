@@ -189,7 +189,10 @@ class operator_impl<planner_node_type::LAMBDA_TRANSFORM_NODE> : public query_ope
       res.soft_assign(val);
       return res;
     } else {
-      std::string message = "Cannot convert " + std::string(val) + " of type " + flex_type_enum_to_name(val.get_type()) + " to " + flex_type_enum_to_name(type) +  " which is the type of the SArray. If this is not the correct type try specifying it during creation";
+      std::string message = "Cannot convert " + std::string(val) + 
+	  " of type " + flex_type_enum_to_name(val.get_type()) + 
+	  " to " + flex_type_enum_to_name(type) +  " which is the type of the SArray." +
+	  " If this is not the correct type try specifying it during creation.";
       logstream(LOG_ERROR) <<  message << std::endl;
       throw(bad_cast(message));
     }
