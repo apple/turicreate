@@ -92,7 +92,7 @@ class data_iterator {
     /**
      * An array with shape: (requested_batch_size, 1)
      *
-     * Each row is the target.
+     * Each row is the prediction.
      */
     neural_net::shared_float_array predictions;
   };
@@ -115,6 +115,8 @@ class data_iterator {
    * target.
    */
   virtual const std::vector<std::string>& class_labels() const = 0;
+
+  virtual const std::unordered_map<std::string, int>& class_to_index_map() const = 0;
 
 };
 
@@ -140,6 +142,10 @@ class simple_data_iterator: public data_iterator {
     return target_properties_.classes;
   }
 
+  const std::unordered_map<std::string, int>& class_to_index_map() const override {
+    return target_properties_.class_to_index_map; 
+  }
+
  private:
   struct target_properties {
     std::vector<std::string> classes;
@@ -151,9 +157,9 @@ class simple_data_iterator: public data_iterator {
       std::vector<std::string> expected_class_labels);
 
   gl_sframe data_;
-  const size_t target_index_;
-  const size_t predictions_index_;
-  const size_t feature_index_;
+  const int target_index_;
+  const int predictions_index_;
+  const int feature_index_;
   const bool repeat_;
   const bool shuffle_;
 

@@ -11,6 +11,7 @@
 #include <cmath>
 
 #include <core/data/image/io.hpp>
+#include <core/data/flexible_type/flexible_type.hpp>
 #include <core/logging/logger.hpp>
 
 namespace turi {
@@ -93,17 +94,15 @@ void add_drawing_pixel_data_to_batch(
       bitmap.m_channels * sizeof(float),
       sizeof(float)
     });
-  next_drawing_pointer += (kDrawingHeight * kDrawingWidth * kDrawingChannels);
 }
 
 
 data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   size_t image_data_size = kDrawingHeight * kDrawingWidth * kDrawingChannels;
-  std::vector<float> batch_drawings;
+  std::vector<float> batch_drawings(batch_size * image_data_size, 0.f);
   std::vector<float> batch_targets;
   std::vector<float> batch_predictions;
-  batch_drawings.reserve(batch_size * image_data_size);
   batch_targets.reserve(batch_size);
   batch_predictions.reserve(batch_size);
   float *next_drawing_pointer = batch_drawings.data();
@@ -112,11 +111,19 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     const sframe_rows::row& row = *next_row_;
     float preds = -1;
     if (predictions_index_ >= 0) {
-      preds = row[predictions_index_].to<flex_float>();
+      preds = static_cast<float>(target_properties_.class_to_index_map.at(
+        row[predictions_index_].to<flex_string>())
+      );
     }
     add_drawing_pixel_data_to_batch(next_drawing_pointer,
       row[feature_index_].to<flex_image>());
-    batch_targets.emplace_back(row[target_index_].to<flex_float>());
+    next_drawing_pointer += image_data_size;
+    batch_targets.emplace_back(
+      static_cast<float>(target_properties_.class_to_index_map.at(
+        row[target_index_].to<flex_string>()
+        )
+      )
+    );
     batch_predictions.emplace_back(preds);
 
     if (++next_row_ == range_iterator_.end() && repeat_) {
@@ -152,7 +159,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   data_iterator::batch result;
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
-      { batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels, 1 });
+      { batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels });
   result.targets = shared_float_array::wrap(
       std::move(batch_targets), { batch_size, 1 });
   if (batch_predictions[0] != -1) {
