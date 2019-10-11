@@ -21,10 +21,11 @@ constexpr size_t IMAGE_WIDTH = 28;
 constexpr size_t IMAGE_HEIGHT = 28;
 const std::vector<std::string> unique_labels = {"foo", "bar", "baz"};
 
+/* Get the unique labels based on how much data was generated */
 std::vector<std::string> get_labels_based_on_num_rows(size_t num_rows) {
   std::vector<std::string> expected_class_labels;
   if (num_rows < unique_labels.size()) {
-    std::copy(unique_labels.begin(), unique_labels.begin()+num_rows,
+    std::copy(unique_labels.begin(), unique_labels.begin() + num_rows,
             std::back_inserter(expected_class_labels));
   } else {
     expected_class_labels = unique_labels;
@@ -32,7 +33,11 @@ std::vector<std::string> get_labels_based_on_num_rows(size_t num_rows) {
   return expected_class_labels;
 }
 
-// Returns an SFrame with columns "test_image" and "test_labels".
+/** Returns an SFrame with columns "test_image" and "test_targets".
+ *  Creates an SFrame with num_rows number of rows where each row has a drawing
+ *  and a corresponding target, which is the row index modulo 
+ *  unique_labels.size().
+ */
 data_iterator::parameters create_data(size_t num_rows) {
   data_iterator::parameters result;
 
@@ -50,7 +55,7 @@ data_iterator::parameters create_data(size_t num_rows) {
                            IMAGE_TYPE_CURRENT_VERSION,
                            static_cast<int>(Format::RAW_ARRAY));
 
-    // Each image has a label
+    // Each image has a label, which is the row index mod unique_labels.size().
     labels[i] = unique_labels[i % unique_labels.size()];
   }
 
@@ -66,16 +71,33 @@ data_iterator::parameters create_data(size_t num_rows) {
   return result;
 }
 
+/** Runs all standard tests for a simple_data_iterator
+ * 
+ * Parameters
+ * ----------
+ *
+ * params : data_iterator::parameters
+ *
+ * num_rows : size_t
+ *
+ * batch_size : size_t
+ *
+ * checked_class_labels : bool
+ * A flag to indicate whether expected_class_labels were passed in when params
+ * were generated. If true, class labels are assumed to have tested outside of
+ * this function. If false, class labels are tested in this function.
+ *
+ */
 void test_simple_data_iterator_with_num_rows_and_batch_size(
   data_iterator::parameters params, size_t num_rows, size_t batch_size,
-  bool expect_class_labels) {
+  bool checked_class_labels) {
   TS_ASSERT_EQUALS(params.data.size(), num_rows);
   /* Create a simple data iterator */
   simple_data_iterator data_source(params);
   std::vector<std::string> actual_class_labels = data_source.class_labels();
   std::unordered_map<std::string, int> class_to_index_map = data_source.class_to_index_map();
   /* Test class labels */
-  if (!expect_class_labels) {
+  if (!checked_class_labels) {
     /* expected_class_labels were not passed in to the params, so we need to 
      * make sure the inferred class labels are correct
      */
@@ -175,6 +197,8 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_unexpected_classes) {
   // labels.
   TS_ASSERT_THROWS_ANYTHING(simple_data_iterator unused_var(params));
 }
+
+/* TODO: Add a test to test multiple calls to next_batch on the same dataset */
 
 
 }  // namespace drawing_classifier
