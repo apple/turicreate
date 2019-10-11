@@ -23,9 +23,6 @@ void copy_image_to_memory(const image_type& input, float* outptr,
                           const std::vector<size_t>& outshape,
                           bool channel_last);
 
-void image_load_to_numpy(const image_type& img, float* output,
-                         const std::vector<size_t>& outstrides);
-
 /**
 * Return the head of passed sarray, but cast to string. Used for printing on python side.
 */
