@@ -186,9 +186,9 @@ void wrap_network_params(const std::string& name,
   params_out->emplace(name + "_beta", std::move(beta));
 
 
-  // The CoreML Spec uses the batchNorm layer to do instanceNormalization. This 
+  // The CoreML Spec uses the batchNorm layer to do instanceNormalization. This
   // can cause issues in CoreML imports because those layers in particular don't
-  // contain moving mean and moving variance values since the batch is 
+  // contain moving mean and moving variance values since the batch is
   // technically irrelevant in InstanceNorm. This check is in place to catch
   // these instances.
 
@@ -722,6 +722,16 @@ void model_spec::add_softmax(const std::string& name,
   layer->add_output(name);
 
   layer->mutable_softmax();
+}
+
+void model_spec::add_flatten(const std::string& name,
+                             const std::string& input) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  layer->mutable_flatten();
 }
 
 void model_spec::add_addition(const std::string& name,
