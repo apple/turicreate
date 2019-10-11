@@ -149,6 +149,11 @@ class FeatureEngineeringTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             tc.text_analytics.drop_words(sa)
 
+        sa = tc.SArray(["str", None])
+        # no throw, just give warning and skip
+        # avoid segfault
+        stop_words = tc.text_analytics.stop_words()
+        tc.text_analytics.drop_words(sa, stop_words=stop_words)
 
         ## Other languages
         expected = ["this is someurl http someurl this is someurl http someurl",
