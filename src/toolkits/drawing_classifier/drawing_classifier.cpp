@@ -130,8 +130,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   output_name = prefix + "_dense1_fwd";
 
   result->add_inner_product(
-      /* name                */ "dense_1",
-      /* input               */ "dense_0",
+      /* name                */ output_name,
+      /* input               */ input_name,
       /* num_output_channels */ 128,
       /* num_input_channels  */ num_classes,
       /* weight_init_fn      */ initializer);
