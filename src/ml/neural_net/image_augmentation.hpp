@@ -225,35 +225,6 @@ public:
     float hue_max_jitter = 0.f;
   };
 
-  /** The output sent from TensorFlow after augmenting the images. */
-  struct intermediate_result {
-
-    /** The images after augmenting sent from Tensorflow */
-    shared_float_array images;
-
-    /** The annotations associated with augmented images sent from Tensorflow */ 
-    std::vector<shared_float_array> annotations;
-  };
-
-  /** The output sent to TensorFlow to augment the images. */
-  struct intermediate_labeled_image {
-
-    /** The images to be augmented are raw images decoded 
-     * and send to tf_image_augmneter as vector of shared_float_array
-     */
-    std::vector<shared_float_array> images;
-
-    /** The annotations of the images to be augmented are raw images decoded 
-     * and send to tf_image_augmneter as vector of shared_float_array
-     */
-    std::vector<shared_float_array> annotations;
-
-    /** The predictions of the images to be augmented are raw images decoded 
-     * and send to tf_image_augmneter as vector of shared_float_array
-     */
-    std::vector<shared_float_array> predictions;
-  };
-
   /** The output of an image_augmenter. */
   struct result {
 
@@ -299,25 +270,56 @@ private:
 };
 
 /**
- * An image_augmenter implementation that converts input images, annotations 
- * and predictions to shared_float_arrays for tf_image_augmenter
+ * An abstract class that inherits from image_augmenter used to convert
+ * input images, annotations and predictions to shared_float_arrays for
+ * tf_image_augmenter.
+ * Subclass must be written for it if needed. The subclass must implement the
+ * pure virtaul method prepare_augmented_images.
  */
-class processed_image_augmenter: public image_augmenter {
-public:
-
-  processed_image_augmenter(const options& opts): opts_(opts) {}
+class float_array_image_augmenter : public image_augmenter {
+ public:
+  float_array_image_augmenter(const options& opts) : opts_(opts) {}
 
   const options& get_options() const override { return opts_; }
 
   result prepare_images(std::vector<labeled_image> source_batch) override;
 
-  virtual intermediate_result prepare_augmented_images(intermediate_labeled_image data_to_augment) = 0;
+ protected:
+  /** The output sent from TensorFlow after augmenting the images. */
+  struct intermediate_result {
+    /** The images after augmenting sent from Tensorflow */
+    shared_float_array images;
 
-private:
+    /** The annotations associated with augmented images sent from Tensorflow */
+    std::vector<shared_float_array> annotations;
+  };
+
+  /** The output sent to TensorFlow to augment the images. */
+  struct intermediate_labeled_image {
+    /** The images to be augmented are raw images decoded
+     * and send to tf_image_augmneter as vector of shared_float_array
+     */
+    std::vector<shared_float_array> images;
+
+    /** The annotations of the images to be augmented are raw images decoded
+     * and send to tf_image_augmneter as vector of shared_float_array
+     */
+    std::vector<shared_float_array> annotations;
+
+    /** The predictions of the images to be augmented are raw images decoded
+     * and send to tf_image_augmneter as vector of shared_float_array
+     */
+    std::vector<shared_float_array> predictions;
+  };
+
+  virtual intermediate_result prepare_augmented_images(
+      intermediate_labeled_image data_to_augment) = 0;
+
+ private:
   options opts_;
 };
 
 }  // neural_net
 }  // turi
 
-#endif 
+#endif  // TURI_NEURAL_NET_IMAGE_AUGMENTATION_HPP_
