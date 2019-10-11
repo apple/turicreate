@@ -45,6 +45,7 @@ public:
   enum class padding_type {
     VALID,
     SAME,
+    REFLECTIVE,
   };
 
   /**
@@ -177,6 +178,33 @@ public:
                        size_t stride_h, size_t stride_w, padding_type padding,
                        weight_initializer weight_initializer_fn,
                        weight_initializer bias_initializer_fn = nullptr);
+
+  /**
+   * Appends a padding layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param padding_top The padding on the top
+   * \param padding_bottom The padding on the bottom
+   * \param padding_left The padding to the left
+   * \param padding_right The padding to the right
+   * \param padding Sets the padding type default is SAME, REFLECTIVE exists,
+   *                VALID doesn't exist because this layer would be superfluous.
+   */
+  void add_padding(const std::string& name, const std::string& input,
+    size_t padding_top, size_t padding_bottom, size_t padding_left,
+    size_t padding_right, padding_type padding);
+
+  /**
+   * Appends an upsampling layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param scaling_x The upsample scale on the x axis
+   * \param scaling_y The upsample scale on the y axis
+   */
+  void add_upsampling(const std::string& name, const std::string& input,
+    size_t scaling_x, size_t scaling_y);
 
   /**
    * Appends an inner-product (dense, fully connected) layer.

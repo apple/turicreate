@@ -48,6 +48,20 @@ private:
   std::mt19937& random_engine_;
 };
 
+struct const_weight_initializer {
+  /**
+   * Creates a weight initializer that initializes all of the weights to a
+   * constanst scale value.
+   * 
+   * \param scale The scale value to initialize the weights to.
+   */
+  const_weight_initializer(float scale);
+  void operator()(float* first_weight, float* last_weight);
+
+ private:
+  float scale_;
+};
+
 struct ones_weight_initializer {
   void operator()(float* first_weight, float* last_weight);
 };

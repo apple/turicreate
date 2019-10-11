@@ -20,6 +20,7 @@ namespace neural_net {
 
 namespace {
 
+using CoreML::Specification::BorderAmounts_EdgeSizes;
 using CoreML::Specification::BatchnormLayerParams;
 using CoreML::Specification::ConvolutionLayerParams;
 using CoreML::Specification::InnerProductLayerParams;
@@ -29,8 +30,10 @@ using CoreML::Specification::NeuralNetworkImageScaler;
 using CoreML::Specification::NeuralNetworkLayer;
 using CoreML::Specification::NeuralNetworkPreprocessing;
 using CoreML::Specification::PoolingLayerParams;
+using CoreML::Specification::PaddingLayerParams;
 using CoreML::Specification::SamePadding;
 using CoreML::Specification::UniDirectionalLSTMLayerParams;
+using CoreML::Specification::UpsampleLayerParams;
 using CoreML::Specification::WeightParams;
 
 size_t multiply(size_t a, size_t b) { return a * b; }
@@ -636,6 +639,46 @@ void model_spec::add_convolution(
   }
 }
 
+void model_spec::add_padding(
+    const std::string& name, const std::string& input,
+    size_t padding_top, size_t padding_bottom, size_t padding_left,
+    size_t padding_right, padding_type padding) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  PaddingLayerParams* params = layer->mutable_padding();
+  BorderAmounts_EdgeSizes* top_bottom = params->mutable_paddingamounts()->add_borderamounts();
+  BorderAmounts_EdgeSizes* left_right = params->mutable_paddingamounts()->add_borderamounts();
+
+
+  top_bottom->set_startedgesize(padding_top);
+  top_bottom->set_endedgesize(padding_bottom);
+
+  left_right->set_startedgesize(padding_left);
+  left_right->set_endedgesize(padding_right);
+
+   switch (padding) {
+    case padding_type::REFLECTIVE:
+      params->set_has_reflection();
+      break;
+   }
+}
+
+void model_spec::add_upsampling(
+    const std::string& name, const std::string& input,
+    size_t scaling_x, size_t scaling_y) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  UpsampleLayerParams* params = layer->mutable_upsample();
+  params->add_scalingfactor(scaling_x);
+  params->add_scalingfactor(scaling_y);
+}
+
 void model_spec::add_inner_product(
     const std::string& name, const std::string& input,
     size_t num_output_channels, size_t num_input_channels,
@@ -694,6 +737,7 @@ void model_spec::add_instancenorm(
   params->set_channels(num_channels);
   params->set_epsilon(epsilon);
   params->set_instancenormalization(true);
+  params->set_computemeanvar(true);
 
   int size = static_cast<int>(num_channels);
   params->mutable_gamma()->mutable_floatvalue()->Resize(size, 1.f);
