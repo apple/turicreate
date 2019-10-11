@@ -282,6 +282,10 @@ tf_model_backend::~tf_model_backend() {
 
 tf_image_augmenter::tf_image_augmenter(const options& opts) : processed_image_augmenter(opts) {}
 
+image_augmenter::result tf_image_augmenter::prepare_images( std::vector<labeled_image> source_batch) {
+  return processed_image_augmenter::prepare_images(source_batch);
+}
+
 image_augmenter::intermediate_result tf_image_augmenter::prepare_augmented_images(
     image_augmenter::intermediate_labeled_image data_to_augment) {
 

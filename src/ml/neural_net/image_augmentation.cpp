@@ -135,9 +135,13 @@ image_augmenter::result processed_image_augmenter::prepare_images(
     size_t input_height = source_batch[i].image.m_height;
     size_t input_width = source_batch[i].image.m_width;
     std::vector<float> img( input_height * input_width * c, 0.f);
-    image_util::copy_image_to_memory(source_batch[i].image, img.data(),
+    std::cout << img.size();
+    unsigned char *outptr = reinterpret_cast<unsigned char *>(img.data());
+    image_util::copy_image_to_memory(source_batch[i].image , outptr,
         {input_width * c * sizeof(float), c * sizeof(float), sizeof(float)},
         {input_height, input_width, c}, true);
+    std::cout <<"works";
+    std::transform(img.begin(), img.end(), img.begin(), [](float pixel) -> float { return pixel/255; });
     shared_float_array image_to_aug = shared_float_array::wrap(img, {input_height, input_width, c});
     images_to_aug.push_back(image_to_aug);
 

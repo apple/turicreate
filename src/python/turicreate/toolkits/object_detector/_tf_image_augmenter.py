@@ -9,19 +9,25 @@ import numpy as _np
 class DataAugmenter(object):
 	def __init__(self, images, annotations, predictions):
 		for image in images:
-			image = _np.array(image, dtype=uint8, copy=False)
+			image = _utils.convert_shared_float_array_to_numpy(image)
 			print(image)
 		print("image done")
 		for ann in annotations:
-			if len(ann) > 1:
-				print(ann)
+			ann = _utils.convert_shared_float_array_to_numpy(ann)
+			print(ann)
+		print("annotation done")
+		for pred in predictions:
+			pred = _utils.convert_shared_float_array_to_numpy(pred)
+			print(pred)
+		print("predictions done")
 
 
-	def get_augmented_data(self):
+	def get_augmented_images(self):
 		image = _np.reshape(_np.arange(32*416*416*3),(32,416,416,3))
-		L = _np.reshape(_np.arange(32* 1* 6), (32, 1, 6))
-		result = {"images" : image, "annotations" : L}
-		return result
+		return image
 
+	def get_augmented_annotations(self):
+		L = _np.reshape(_np.arange(32* 1* 6), (32, 1, 6))
+		return L
 
 
