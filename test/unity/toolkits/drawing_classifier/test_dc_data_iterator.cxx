@@ -146,12 +146,11 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
       for (size_t col = 0; col < IMAGE_WIDTH; col++) {
         // Asserting that the (row, col) index of every drawing in the batch
         // matches the (row, col) index we have in the original SFrame.
-        const float *pixel_location = actual_drawing_data + (
-          index_in_batch * IMAGE_WIDTH * IMAGE_HEIGHT * 1
-          + row * IMAGE_WIDTH * 1
-          + col * 1);
         TS_ASSERT_EQUALS(
-          *((unsigned char *)(pixel_location)),
+          static_cast<unsigned char>(actual_drawing_data[
+            index_in_batch * IMAGE_WIDTH * IMAGE_HEIGHT * 1
+            + row * IMAGE_WIDTH * 1
+            + col * 1]),
           expected_drawing_data[row * IMAGE_WIDTH + col]
           );
       }
