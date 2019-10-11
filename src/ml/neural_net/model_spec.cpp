@@ -589,6 +589,8 @@ void model_spec::add_pooling(const std::string& name, const std::string& input,
     case padding_type::SAME:
       params->mutable_same();
       break;
+    case padding_type::REFLECTIVE:
+      break;
   }
   if (use_poolexcludepadding) {
     params->set_avgpoolexcludepadding(true);
@@ -625,6 +627,8 @@ void model_spec::add_convolution(
   case padding_type::SAME:
     params->mutable_same()->set_asymmetrymode(SamePadding::TOP_LEFT_HEAVY);
     break;
+  case padding_type::REFLECTIVE:
+      break;
   }
 
   size_t weights_size =
@@ -659,9 +663,13 @@ void model_spec::add_padding(
   left_right->set_startedgesize(padding_left);
   left_right->set_endedgesize(padding_right);
 
-   switch (padding) {
-    case padding_type::REFLECTIVE:
-      params->set_has_reflection();
+  switch (padding) {
+  case padding_type::VALID:
+    break;
+  case padding_type::SAME:
+    break;
+  case padding_type::REFLECTIVE:
+      params->reflection();
       break;
    }
 }
