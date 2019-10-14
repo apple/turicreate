@@ -152,7 +152,8 @@ tf_compute_context::tf_compute_context() = default;
 tf_compute_context::~tf_compute_context() = default;
 
 size_t tf_compute_context::memory_budget() const {
-  return 0;
+  // TODO: Return 4GB for now. Do something that makes more sense later.
+  return 4294967296;
 }
 
 std::vector<std::string> tf_compute_context::gpu_names() const {
