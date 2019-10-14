@@ -15,11 +15,8 @@ def get_gpu_names():
 	Gets the available GPU names.
 	"""
 	import turicreate.toolkits.libtctensorflow
-	from tensorflow.python.client import device_lib
-	local_device_protos = device_lib.list_local_devices()
-	gpu_names = [x.name for x in local_device_protos if x.device_type == 'GPU']
-	export CUDA_DEVICE_ORDER="PCI_BUS_ID"
-	export CUDA_VISIBLE_DEVICES= [str(name) for name in _np.arange(len(gpu_names))]
+	import tensorflow as tf
+	gpu_names = tf.config.experimental.list_physical_devices('GPU')
 	return gpu_names
 	
 def convert_shared_float_array_to_numpy(array):

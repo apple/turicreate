@@ -297,10 +297,15 @@ void object_detector::infer_derived_options() {
     for (size_t i = 1; i < gpu_names.size(); ++i) {
       gpu_names_string += ", " + gpu_names[i];
     }
-    logprogress_stream << "Using "
-                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                       << " to create model ("
-                       << gpu_names_string << ")";
+    if (gpu_names_string.find("/") != std::string::npos) {
+      logprogress_stream << "Using " << gpu_names.size()
+                         << (gpu_names.size() > 1 ? " GPUs" : " GPU")
+                         << " to create model (CUDA)";
+      
+    } else {
+      logprogress_stream << "Using " << (gpu_names.size() > 1 ? "GPUs" : "GPU")
+                         << " to create model (" << gpu_names_string << ")";
+    }
   }
 
   // Configure the batch size automatically if not set.
