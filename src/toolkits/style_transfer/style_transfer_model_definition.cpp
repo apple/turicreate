@@ -18,15 +18,15 @@ using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkLayer;
 
 using turi::neural_net::const_weight_initializer;
+using turi::neural_net::float_array_map;
 using turi::neural_net::model_spec;
 using turi::neural_net::ones_weight_initializer;
 using turi::neural_net::zero_weight_initializer;
 using padding_type = model_spec::padding_type;
 
-
 namespace {
 
-void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
+void define_resnet(std::unique_ptr<model_spec>& nn_spec, size_t num_styles) {
   nn_spec->add_padding(
       /* name */ "transformer_pad0",
       /* input */ "image",
@@ -37,7 +37,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_conv0_fwd",
+      /* name */ "transformer_encode_1_conv",
       /* input */ "transformer_pad0",
       /* num_output_channels */ 32,
       /* num_kernel_channels */ 3,
@@ -49,36 +49,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm0_embedding0",
+      /* name */ "transformer_encode_1_inst_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 32,
+      /* num_output_channels */ 32,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm0_embedding1",
+      /* name */ "transformer_encode_1_inst_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 32,
+      /* num_output_channels */ 32,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_instancenorm0__fwd_bn_",
-      /* input */ "transformer_conv0_fwd",
+      /* input */ "transformer_encode_1_conv",
       /* num_channels */ 32,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_instancenorm0__fwd_mult_gamma",
       /* inputs */ {"transformer_instancenorm0__fwd_bn_",
-                    "transformer_instancenorm0_embedding0"});
+                    "transformer_encode_1_inst_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_instancenorm0__fwd",
       /* inputs */ {"transformer_instancenorm0__fwd_mult_gamma",
-                    "transformer_instancenorm0_embedding1"});
+                    "transformer_encode_1_inst_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_activation0",
@@ -94,7 +94,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_conv1_fwd",
+      /* name */ "transformer_encode_2_conv",
       /* input */ "transformer_pad1",
       /* num_output_channels */ 64,
       /* num_kernel_channels */ 32,
@@ -106,36 +106,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm1_embedding0",
+      /* name */ "transformer_encode_2_inst_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 64,
+      /* num_output_channels */ 64,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm1_embedding1",
+      /* name */ "transformer_encode_2_inst_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 64,
+      /* num_output_channels */ 64,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_instancenorm1__fwd_bn_",
-      /* input */ "transformer_conv1_fwd",
+      /* input */ "transformer_encode_2_conv",
       /* num_channels */ 64,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_instancenorm1__fwd_mult_gamma",
       /* inputs */ {"transformer_instancenorm1__fwd_bn_",
-                    "transformer_instancenorm1_embedding0"});
+                    "transformer_encode_2_inst_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_instancenorm1__fwd",
       /* inputs */ {"transformer_instancenorm1__fwd_mult_gamma",
-                    "transformer_instancenorm1_embedding1"});
+                    "transformer_encode_2_inst_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_activation1",
@@ -151,7 +151,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_conv2_fwd",
+      /* name */ "transformer_encode_3_conv",
       /* input */ "transformer_pad2",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 64,
@@ -163,36 +163,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm2_embedding0",
+      /* name */ "transformer_encode_3_inst_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm2_embedding1",
+      /* name */ "transformer_encode_3_inst_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_instancenorm2__fwd_bn_",
-      /* input */ "transformer_conv2_fwd",
+      /* input */ "transformer_encode_3_conv",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_instancenorm2__fwd_mult_gamma",
       /* inputs */ {"transformer_instancenorm2__fwd_bn_",
-                    "transformer_instancenorm2_embedding0"});
+                    "transformer_encode_3_inst_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_instancenorm2__fwd",
       /* inputs */ {"transformer_instancenorm2__fwd_mult_gamma",
-                    "transformer_instancenorm2_embedding1"});
+                    "transformer_encode_3_inst_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_activation2",
@@ -208,7 +208,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock0_conv0_fwd",
+      /* name */ "transformer_residual_1_conv_1",
       /* input */ "transformer_residualblock0_pad0",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -220,36 +220,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock0_instancenorm0_embedding0",
+      /* name */ "transformer_residual_1_inst_1_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock0_instancenorm0_embedding1",
+      /* name */ "transformer_residual_1_inst_1_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock0_instancenorm0__fwd_bn_",
-      /* input */ "transformer_residualblock0_conv0_fwd",
+      /* input */ "transformer_residual_1_conv_1",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock0_instancenorm0__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock0_instancenorm0__fwd_bn_",
-                    "transformer_residualblock0_instancenorm0_embedding0"});
+                    "transformer_residual_1_inst_1_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock0_instancenorm0__fwd",
       /* inputs */ {"transformer_residualblock0_instancenorm0__fwd_mult_gamma",
-                    "transformer_residualblock0_instancenorm0_embedding1"});
+                    "transformer_residual_1_inst_1_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_residualblock0_activation0",
@@ -265,7 +265,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock0_conv1_fwd",
+      /* name */ "transformer_residual_1_conv_2",
       /* input */ "transformer_residualblock0_pad1",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -277,36 +277,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock0_instancenorm1_embedding0",
+      /* name */ "transformer_residual_1_inst_2_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock0_instancenorm1_embedding1",
+      /* name */ "transformer_residual_1_inst_2_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock0_instancenorm1__fwd_bn_",
-      /* input */ "transformer_residualblock0_conv1_fwd",
+      /* input */ "transformer_residual_1_conv_2",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock0_instancenorm1__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock0_instancenorm1__fwd_bn_",
-                    "transformer_residualblock0_instancenorm1_embedding0"});
+                    "transformer_residual_1_inst_2_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock0_instancenorm1__fwd",
       /* inputs */ {"transformer_residualblock0_instancenorm1__fwd_mult_gamma",
-                    "transformer_residualblock0_instancenorm1_embedding1"});
+                    "transformer_residual_1_inst_2_beta"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock0__plus0",
@@ -323,7 +323,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock1_conv0_fwd",
+      /* name */ "transformer_residual_2_conv_1",
       /* input */ "transformer_residualblock1_pad0",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -335,36 +335,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock1_instancenorm0_embedding0",
+      /* name */ "transformer_residual_2_inst_1_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock1_instancenorm0_embedding1",
+      /* name */ "transformer_residual_2_inst_1_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock1_instancenorm0__fwd_bn_",
-      /* input */ "transformer_residualblock1_conv0_fwd",
+      /* input */ "transformer_residual_2_conv_1",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock1_instancenorm0__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock1_instancenorm0__fwd_bn_",
-                    "transformer_residualblock1_instancenorm0_embedding0"});
+                    "transformer_residual_2_inst_1_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock1_instancenorm0__fwd",
       /* inputs */ {"transformer_residualblock1_instancenorm0__fwd_mult_gamma",
-                    "transformer_residualblock1_instancenorm0_embedding1"});
+                    "transformer_residual_2_inst_1_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_residualblock1_activation0",
@@ -380,7 +380,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock1_conv1_fwd",
+      /* name */ "transformer_residual_2_conv_2",
       /* input */ "transformer_residualblock1_pad1",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -392,36 +392,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock1_instancenorm1_embedding0",
+      /* name */ "transformer_residual_2_inst_2_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock1_instancenorm1_embedding1",
+      /* name */ "transformer_residual_2_inst_2_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock1_instancenorm1__fwd_bn_",
-      /* input */ "transformer_residualblock1_conv1_fwd",
+      /* input */ "transformer_residual_2_conv_2",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock1_instancenorm1__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock1_instancenorm1__fwd_bn_",
-                    "transformer_residualblock1_instancenorm1_embedding0"});
+                    "transformer_residual_2_inst_2_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock1_instancenorm1__fwd",
       /* inputs */ {"transformer_residualblock1_instancenorm1__fwd_mult_gamma",
-                    "transformer_residualblock1_instancenorm1_embedding1"});
+                    "transformer_residual_2_inst_2_beta"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock1__plus0",
@@ -438,7 +438,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock2_conv0_fwd",
+      /* name */ "transformer_residual_3_conv_1",
       /* input */ "transformer_residualblock2_pad0",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -450,36 +450,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock2_instancenorm0_embedding0",
+      /* name */ "transformer_residual_3_inst_1_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock2_instancenorm0_embedding1",
+      /* name */ "transformer_residual_3_inst_1_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock2_instancenorm0__fwd_bn_",
-      /* input */ "transformer_residualblock2_conv0_fwd",
+      /* input */ "transformer_residual_3_conv_1",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock2_instancenorm0__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock2_instancenorm0__fwd_bn_",
-                    "transformer_residualblock2_instancenorm0_embedding0"});
+                    "transformer_residual_3_inst_1_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock2_instancenorm0__fwd",
       /* inputs */ {"transformer_residualblock2_instancenorm0__fwd_mult_gamma",
-                    "transformer_residualblock2_instancenorm0_embedding1"});
+                    "transformer_residual_3_inst_1_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_residualblock2_activation0",
@@ -495,7 +495,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock2_conv1_fwd",
+      /* name */ "transformer_residual_3_conv_2",
       /* input */ "transformer_residualblock2_pad1",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -507,36 +507,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock2_instancenorm1_embedding0",
+      /* name */ "transformer_residual_3_inst_2_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock2_instancenorm1_embedding1",
+      /* name */ "transformer_residual_3_inst_2_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock2_instancenorm1__fwd_bn_",
-      /* input */ "transformer_residualblock2_conv1_fwd",
+      /* input */ "transformer_residual_3_conv_2",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock2_instancenorm1__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock2_instancenorm1__fwd_bn_",
-                    "transformer_residualblock2_instancenorm1_embedding0"});
+                    "transformer_residual_3_inst_2_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock2_instancenorm1__fwd",
       /* inputs */ {"transformer_residualblock2_instancenorm1__fwd_mult_gamma",
-                    "transformer_residualblock2_instancenorm1_embedding1"});
+                    "transformer_residual_3_inst_2_beta"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock2__plus0",
@@ -553,7 +553,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock3_conv0_fwd",
+      /* name */ "transformer_residual_4_conv_1",
       /* input */ "transformer_residualblock3_pad0",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -565,36 +565,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock3_instancenorm0_embedding0",
+      /* name */ "transformer_residual_4_inst_1_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock3_instancenorm0_embedding1",
+      /* name */ "transformer_residual_4_inst_1_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock3_instancenorm0__fwd_bn_",
-      /* input */ "transformer_residualblock3_conv0_fwd",
+      /* input */ "transformer_residual_4_conv_1",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock3_instancenorm0__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock3_instancenorm0__fwd_bn_",
-                    "transformer_residualblock3_instancenorm0_embedding0"});
+                    "transformer_residual_4_inst_1_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock3_instancenorm0__fwd",
       /* inputs */ {"transformer_residualblock3_instancenorm0__fwd_mult_gamma",
-                    "transformer_residualblock3_instancenorm0_embedding1"});
+                    "transformer_residual_4_inst_1_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_residualblock3_activation0",
@@ -610,7 +610,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock3_conv1_fwd",
+      /* name */ "transformer_residual_4_conv_2",
       /* input */ "transformer_residualblock3_pad1",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -622,36 +622,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock3_instancenorm1_embedding0",
+      /* name */ "transformer_residual_4_inst_2_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock3_instancenorm1_embedding1",
+      /* name */ "transformer_residual_4_inst_2_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock3_instancenorm1__fwd_bn_",
-      /* input */ "transformer_residualblock3_conv1_fwd",
+      /* input */ "transformer_residual_4_conv_2",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock3_instancenorm1__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock3_instancenorm1__fwd_bn_",
-                    "transformer_residualblock3_instancenorm1_embedding0"});
+                    "transformer_residual_4_inst_2_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock3_instancenorm1__fwd",
       /* inputs */ {"transformer_residualblock3_instancenorm1__fwd_mult_gamma",
-                    "transformer_residualblock3_instancenorm1_embedding1"});
+                    "transformer_residual_4_inst_2_beta"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock3__plus0",
@@ -668,7 +668,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock4_conv0_fwd",
+      /* name */ "transformer_residual_5_conv_1",
       /* input */ "transformer_residualblock4_pad0",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -680,36 +680,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock4_instancenorm0_embedding0",
+      /* name */ "transformer_residual_5_inst_1_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock4_instancenorm0_embedding1",
+      /* name */ "transformer_residual_5_inst_1_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock4_instancenorm0__fwd_bn_",
-      /* input */ "transformer_residualblock4_conv0_fwd",
+      /* input */ "transformer_residual_5_conv_1",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock4_instancenorm0__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock4_instancenorm0__fwd_bn_",
-                    "transformer_residualblock4_instancenorm0_embedding0"});
+                    "transformer_residual_5_inst_1_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock4_instancenorm0__fwd",
       /* inputs */ {"transformer_residualblock4_instancenorm0__fwd_mult_gamma",
-                    "transformer_residualblock4_instancenorm0_embedding1"});
+                    "transformer_residual_5_inst_1_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_residualblock4_activation0",
@@ -725,7 +725,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_residualblock4_conv1_fwd",
+      /* name */ "transformer_residual_5_conv_2",
       /* input */ "transformer_residualblock4_pad1",
       /* num_output_channels */ 128,
       /* num_kernel_channels */ 128,
@@ -737,36 +737,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock4_instancenorm1_embedding0",
+      /* name */ "transformer_residual_5_inst_2_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_residualblock4_instancenorm1_embedding1",
+      /* name */ "transformer_residual_5_inst_2_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 128,
+      /* num_output_channels */ 128,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_residualblock4_instancenorm1__fwd_bn_",
-      /* input */ "transformer_residualblock4_conv1_fwd",
+      /* input */ "transformer_residual_5_conv_2",
       /* num_channels */ 128,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_residualblock4_instancenorm1__fwd_mult_gamma",
       /* inputs */ {"transformer_residualblock4_instancenorm1__fwd_bn_",
-                    "transformer_residualblock4_instancenorm1_embedding0"});
+                    "transformer_residual_5_inst_2_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock4_instancenorm1__fwd",
       /* inputs */ {"transformer_residualblock4_instancenorm1__fwd_mult_gamma",
-                    "transformer_residualblock4_instancenorm1_embedding1"});
+                    "transformer_residual_5_inst_2_beta"});
 
   nn_spec->add_addition(
       /* name */ "transformer_residualblock4__plus0",
@@ -789,7 +789,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_conv3_fwd",
+      /* name */ "transformer_decoding_1_conv",
       /* input */ "transformer_pad3",
       /* num_output_channels */ 64,
       /* num_kernel_channels */ 128,
@@ -801,36 +801,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm3_embedding0",
+      /* name */ "transformer_decoding_1_inst_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 64,
+      /* num_output_channels */ 64,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm3_embedding1",
+      /* name */ "transformer_decoding_1_inst_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 64,
+      /* num_output_channels */ 64,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_instancenorm3__fwd_bn_",
-      /* input */ "transformer_conv3_fwd",
+      /* input */ "transformer_decoding_1_conv",
       /* num_channels */ 64,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_instancenorm3__fwd_mult_gamma",
       /* inputs */ {"transformer_instancenorm3__fwd_bn_",
-                    "transformer_instancenorm3_embedding0"});
+                    "transformer_decoding_1_inst_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_instancenorm3__fwd",
       /* inputs */ {"transformer_instancenorm3__fwd_mult_gamma",
-                    "transformer_instancenorm3_embedding1"});
+                    "transformer_decoding_1_inst_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_activation3",
@@ -852,7 +852,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_conv4_fwd",
+      /* name */ "transformer_decoding_2_conv",
       /* input */ "transformer_pad4",
       /* num_output_channels */ 32,
       /* num_kernel_channels */ 64,
@@ -864,36 +864,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm4_embedding0",
+      /* name */ "transformer_decoding_2_inst_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 32,
+      /* num_output_channels */ 32,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm4_embedding1",
+      /* name */ "transformer_decoding_2_inst_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 32,
+      /* num_output_channels */ 32,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_instancenorm4__fwd_bn_",
-      /* input */ "transformer_conv4_fwd",
+      /* input */ "transformer_decoding_2_conv",
       /* num_channels */ 32,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_instancenorm4__fwd_mult_gamma",
       /* inputs */ {"transformer_instancenorm4__fwd_bn_",
-                    "transformer_instancenorm4_embedding0"});
+                    "transformer_decoding_2_inst_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_instancenorm4__fwd",
       /* inputs */ {"transformer_instancenorm4__fwd_mult_gamma",
-                    "transformer_instancenorm4_embedding1"});
+                    "transformer_decoding_2_inst_beta"});
 
   nn_spec->add_relu(
       /* name */ "transformer_activation4",
@@ -909,7 +909,7 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* padding_right */ padding_type::REFLECTIVE);
 
   nn_spec->add_convolution(
-      /* name */ "transformer_conv5_fwd",
+      /* name */ "transformer_conv5",
       /* input */ "transformer_pad5",
       /* num_output_channels */ 3,
       /* num_kernel_channels */ 32,
@@ -921,36 +921,36 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
       /* weight_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm5_embedding0",
+      /* name */ "transformer_instancenorm5_gamma",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 3,
+      /* num_output_channels */ 3,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ ones_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_inner_product(
-      /* name */ "transformer_instancenorm5_embedding1",
+      /* name */ "transformer_instancenorm5_beta",
       /* input */ "index",
-      /* num_output_channels */ 1,
-      /* num_input_channels */ 3,
+      /* num_output_channels */ 3,
+      /* num_input_channels */ num_styles,
       /* weight_init_fn */ zero_weight_initializer(),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec->add_instancenorm(
       /* name */ "transformer_instancenorm5__fwd_bn_",
-      /* input */ "transformer_conv5_fwd",
+      /* input */ "transformer_conv5",
       /* num_channels */ 3,
-      /* epsilon */ 9.99999974738e-06);
+      /* epsilon */ 1e-5);
 
   nn_spec->add_multiplication(
       /* name */ "transformer_instancenorm5__fwd_mult_gamma",
       /* inputs */ {"transformer_instancenorm5__fwd_bn_",
-                    "transformer_instancenorm5_embedding0"});
+                    "transformer_instancenorm5_gamma"});
 
   nn_spec->add_addition(
       /* name */ "transformer_instancenorm5__fwd",
       /* inputs */ {"transformer_instancenorm5__fwd_mult_gamma",
-                    "transformer_instancenorm5_embedding1"});
+                    "transformer_instancenorm5_beta"});
 
   nn_spec->add_sigmoid(
       /* name */ "transformer_activation5",
@@ -964,10 +964,21 @@ void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
 }
 
 void load_weights(std::unique_ptr<model_spec>& nn_spec, std::string& path) {
-  // TODO: Going here
+  std::unique_ptr<model_spec> weight_spec(new model_spec(path));
+  float_array_map nn_params = weight_spec->export_params_view();
+
+  for (auto iter = nn_params.begin(); iter != nn_params.end();) {
+    if (iter->first.find("inst") != std::string::npos) {
+      nn_params.erase(iter++);
+      continue;
+    }
+    ++iter;
+  }
+
+  nn_spec->update_params(nn_params);
 }
 
-}
+}  // namespace
 
 std::unique_ptr<model_spec> init_resnet(std::string& path) {
   std::unique_ptr<model_spec> spec(new model_spec(path));
@@ -976,13 +987,14 @@ std::unique_ptr<model_spec> init_resnet(std::string& path) {
 
 std::unique_ptr<neural_net::model_spec> init_resnet(size_t num_styles) {
   std::unique_ptr<model_spec> nn_spec(new model_spec());
-  define_resnet(nn_spec);
+  define_resnet(nn_spec, num_styles);
   return nn_spec;
 }
 
-std::unique_ptr<neural_net::model_spec> init_resnet(std::string& path, size_t num_styles) {
+std::unique_ptr<neural_net::model_spec> init_resnet(std::string& path,
+                                                    size_t num_styles) {
   std::unique_ptr<model_spec> nn_spec(new model_spec());
-  define_resnet(nn_spec);
+  define_resnet(nn_spec, num_styles);
   load_weights(nn_spec, path);
   return nn_spec;
 }
