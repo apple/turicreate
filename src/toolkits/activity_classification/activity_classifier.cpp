@@ -1,7 +1,8 @@
 /* Copyright © 2017 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 
 #include <toolkits/activity_classification/activity_classifier.hpp>
@@ -468,8 +469,8 @@ gl_sframe activity_classifier::classify(gl_sframe data,
                                         std::string output_frequency) {
   if (output_frequency.empty()) {
     output_frequency = "per_row";
-  }
-  if (output_frequency != "per_row" && output_frequency != "per_window") {
+  } else if (output_frequency != "per_row" &&
+             output_frequency != "per_window") {
     log_and_throw(output_frequency +
                   " is not a valid option for output_frequency.  "
                   "Expected one of 'per_row' or 'per_window'.");

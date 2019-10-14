@@ -9,6 +9,7 @@ add_subdirectory(pattern_mining)
 add_subdirectory(neural_net)
 add_subdirectory(object_detection)
 add_subdirectory(coreml_export)
+add_subdirectory(activity_classifier)
 
 make_boost_test(kmeans_test.cxx
   REQUIRES unity_shared_for_testing
