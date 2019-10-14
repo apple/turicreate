@@ -3,7 +3,7 @@ project(TuriTest)
 enable_testing()
 
 subdirs(
-        annotation
+  # annotation
         toolkits
         ml_data
         optimization
@@ -29,7 +29,7 @@ subdirs(
         table_printer
         network
         process
-        vega_renderer
+        # vega_renderer
         neural_net
         benchmark
 )

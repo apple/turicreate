@@ -4,21 +4,20 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-
 #include <iostream>
-#include <random>
 #include <memory>
+#include <random>
 #include <sstream>
 
+#include <core/logging/assertions.hpp>
+#include <core/logging/logger.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/model_spec.hpp>
-#include <core/logging/assertions.hpp>
-#include <core/logging/logger.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/evaluation/metrics.hpp>
-#include <toolkits/drawing_classifier/drawing_classifier.hpp>
 
+#include <toolkits/drawing_classifier/drawing_classifier.hpp>
 
 namespace turi {
 namespace drawing_classifier {
@@ -31,6 +30,7 @@ using neural_net::model_backend;
 using neural_net::model_spec;
 using neural_net::shared_float_array;
 using neural_net::weight_initializer;
+using neural_net::xavier_weight_initializer;
 using neural_net::zero_weight_initializer;
 
 using padding_type = model_spec::padding_type;
@@ -52,9 +52,17 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       "features",
       std::vector<std::string>(features_list.begin(), features_list.end()));
 
+  std::mt19937 random_engine;
+  try {
+    std::seed_seq seed_seq{read_state<int>("random_seed")};
+    random_engine = std::mt19937(seed_seq);
+  } catch (const std::out_of_range &e) {
+  }
+
   weight_initializer initializer = zero_weight_initializer();
 
-  std::string prefix{"drawing"};
+  const std::string prefix{"drawing"};
+  const std::string _suffix{"_fwd"};
   std::string input_name{"features"};
   std::string output_name;
 
@@ -71,6 +79,10 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       ss.str("");
       ss << prefix << "_conv" << ii << "_fwd";
       output_name = ss.str();
+
+      initializer = xavier_weight_initializer(
+          /* #input_neurons   */ channels_kernel * 3 * 3,
+          /* #output_neurons  */ channels_filter * 3 * 3, &random_engine);
 
       result->add_convolution(
           /* name                */ output_name,
@@ -90,35 +102,38 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
 
       input_name = std::move(output_name);
       ss.str("");
-      ss << prefix << "_relu" << ii << "_fwd";
+      ss << prefix << "_relu" << ii << _suffix;
       output_name = ss.str();
 
       result->add_relu(output_name, input_name);
 
       input_name = std::move(output_name);
       ss.str("");
-      ss << prefix << "_pool" << ii << "_fwd";
+      ss << prefix << "_pool" << ii << _suffix;
       output_name = ss.str();
       result->add_pooling(
-        /* name                 */ output_name,
-        /* input                */ input_name,
-        /* kernel_height        */ 2,
-        /* kernel_width         */ 2,
-        /* stride_height        */ 2,
-        /* stride_width         */ 2,
-        /* padding              */ padding_type::VALID,
-        /* avg excluded padding */ false);
-
+          /* name                 */ output_name,
+          /* input                */ input_name,
+          /* kernel_height        */ 2,
+          /* kernel_width         */ 2,
+          /* stride_height        */ 2,
+          /* stride_width         */ 2,
+          /* padding              */ padding_type::VALID,
+          /* avg excluded padding */ false);
     }
   }
 
   input_name = std::move(output_name);
-  output_name = prefix + "_flatten0_fwd";
+  output_name = prefix + "_flatten0" + _suffix;
 
   result->add_flatten(output_name, input_name);
 
   input_name = std::move(output_name);
-  output_name = prefix + "_dense0_fwd";
+  output_name = prefix + "_dense0" + _suffix;
+
+  initializer = xavier_weight_initializer(
+      /* fan_in    */ 64 * 3 * 3,
+      /* fan_out   */ 128, &random_engine);
 
   result->add_inner_product(
       /* name                */ output_name,
@@ -128,7 +143,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* weight_init_fn      */ initializer);
 
   input_name = std::move(output_name);
-  output_name = prefix + "_dense1_fwd";
+  output_name = prefix + "_dense1" + _suffix;
+
+  initializer = xavier_weight_initializer(
+      /* fan_in    */ 128,
+      /* fan_out   */ num_classes, &random_engine);
 
   result->add_inner_product(
       /* name                */ output_name,
