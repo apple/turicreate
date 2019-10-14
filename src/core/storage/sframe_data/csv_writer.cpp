@@ -11,7 +11,7 @@ namespace turi {
 void csv_writer::write_verbatim(std::ostream& out,
                                 const std::vector<std::string>& row) {
   for (size_t i = 0;i < row.size(); ++i) {
-    out << row[i];
+    csv_print(out, row[i], row.size() > 1);
     // put a delimiter after every element except for the last element.
     if (i + 1 < row.size()) out << delimiter;
   }
