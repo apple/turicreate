@@ -38,8 +38,8 @@
                                            strideHeight:descriptor.conv1.strideHeight
                                            paddingWidth:descriptor.conv1.paddingWidth
                                           paddingHeight:descriptor.conv1.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_biases"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_weight"]]
+                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_bias"]]
                                                   label:descriptor.conv1.label
                                           updateWeights:descriptor.conv1.updateWeights
                                                  device:dev

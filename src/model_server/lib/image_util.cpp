@@ -20,7 +20,69 @@
 
 namespace turi{
 
-namespace image_util{
+namespace image_util {
+
+template <typename T>
+void copy_image_to_memory_impl(const image_type& input, T* outptr,
+                               const std::vector<size_t>& outstrides,
+                               const std::vector<size_t>& outshape,
+                               bool channel_last) {
+  ASSERT_EQ(outstrides.size(), 3);
+  ASSERT_EQ(outshape.size(), 3);
+  size_t stride_h, stride_w, stride_c;
+  size_t height, width, channels;
+  if (channel_last) {
+    // Format: HWC
+    stride_h = outstrides[0];
+    stride_w = outstrides[1];
+    stride_c = outstrides[2];
+    height = outshape[0];
+    width = outshape[1];
+    channels = outshape[2];
+  } else {
+    // Format: CHW
+    stride_c = outstrides[0];
+    stride_h = outstrides[1];
+    stride_w = outstrides[2];
+    channels = outshape[0];
+    height = outshape[1];
+    width = outshape[2];
+  }
+
+  // Resize.
+  flexible_type resized = image_util::resize_image(input, width, height,
+                                                   channels, /* decode */ true);
+  const image_type& img = resized.get<flex_image>();
+
+  // Copy.
+  size_t cnt = 0;
+  const unsigned char* raw_data = img.get_image_data();
+  for (size_t i = 0; i < img.m_height; ++i) {
+    for (size_t j = 0; j < img.m_width; ++j) {
+      for (size_t k = 0; k < img.m_channels; ++k) {
+        outptr[i * stride_h + j * stride_w + k * stride_c] =
+            static_cast<T>(raw_data[cnt++]);
+      }
+    }
+  }
+
+  // Further optimization is possible (but not trivial) by combining the resize
+  // operation and the copy operation, removing an intermediate buffer.
+}
+
+void copy_image_to_memory(const image_type& input, float* outptr,
+                          const std::vector<size_t>& outstrides,
+                          const std::vector<size_t>& outshape,
+                          bool channel_last) {
+  copy_image_to_memory_impl(input, outptr, outstrides, outshape, channel_last);
+}
+
+void copy_image_to_memory(const image_type& input, unsigned char* outptr,
+                          const std::vector<size_t>& outstrides,
+                          const std::vector<size_t>& outshape,
+                          bool channel_last) {
+  copy_image_to_memory_impl(input, outptr, outstrides, outshape, channel_last);
+}
 
   /**
   * Return flex_vec flexible type that is sum of all images with data in vector form.
@@ -530,7 +592,5 @@ std::shared_ptr<unity_sarray> vector_sarray_to_image_sarray(
   return std::static_pointer_cast<unity_sarray>(ret);
 };
 
-
-
-} //namespace image_util
+}  // namespace image_util
 } //namespace turi

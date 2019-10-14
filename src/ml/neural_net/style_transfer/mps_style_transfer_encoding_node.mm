@@ -38,7 +38,7 @@
                                           strideHeight:descriptor.conv.strideHeight
                                           paddingWidth:descriptor.conv.paddingWidth
                                          paddingHeight:descriptor.conv.paddingHeight
-                                               weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_weights"]]
+                                               weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_weight"]]
                                                 biases:zeroedConvBiases
                                                  label:descriptor.conv.label
                                          updateWeights:descriptor.conv.updateWeights
@@ -48,8 +48,8 @@
     _instNorm = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv resultImage]
                                                                     channels:descriptor.inst.channels
                                                                       styles:descriptor.inst.styles
-                                                                       gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_gamma"]]
-                                                                        beta:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_beta"]]
+                                                                       gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_gamma_weight"]]
+                                                                        beta:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_beta_weight"]]
                                                                        label:descriptor.inst.label
                                                                       device:dev
                                                                     cmdQueue:cmdQ];
@@ -87,7 +87,7 @@
   NSMutableData* convDataWeight = [NSMutableData dataWithLength:convWeightSize];
   memcpy(convDataWeight.mutableBytes, [_conv.tc_weightsData weights], convWeightSize);
 
-  NSString* convWeight = [NSString stringWithFormat:@"%@%@", prefix, @"conv_weights"];
+  NSString* convWeight = [NSString stringWithFormat:@"%@%@", prefix, @"conv_weight"];
 
   weights[convWeight] = convDataWeight;
 
@@ -98,8 +98,8 @@
   memcpy(instNormDataGamma.mutableBytes, [_instNorm.tc_weightsData gamma], instNormSize);
   memcpy(instNormDataBeta.mutableBytes, [_instNorm.tc_weightsData beta], instNormSize);
 
-  NSString* instNormGamma = [NSString stringWithFormat:@"%@%@", prefix, @"inst_gamma"];
-  NSString* instNormBeta = [NSString stringWithFormat:@"%@%@", prefix, @"inst_beta"];
+  NSString* instNormGamma = [NSString stringWithFormat:@"%@%@", prefix, @"inst_gamma_weight"];
+  NSString* instNormBeta = [NSString stringWithFormat:@"%@%@", prefix, @"inst_beta_weight"];
 
   weights[instNormGamma] = instNormDataGamma;
   weights[instNormBeta] = instNormDataBeta;

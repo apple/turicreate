@@ -202,6 +202,13 @@ public:
     return nullptr;
   }
 
+  std::unique_ptr<model_backend> create_style_transfer(
+      const float_array_map& config,
+      const float_array_map& weights) override
+  {
+    return nullptr;
+  }
+
   mutable std::deque<create_augmenter_call> create_augmenter_calls_;
   mutable std::deque<create_object_detector_call> create_object_detector_calls_;
 };
