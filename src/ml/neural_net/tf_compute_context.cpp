@@ -11,7 +11,6 @@
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
-#include <model_server/extensions/additional_sframe_utilities.hpp>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -44,12 +43,7 @@ class tf_model_backend : public model_backend {
 class tf_image_augmenter : public processed_image_augmenter {
  public:
   tf_image_augmenter(const options& opts);
-  ~tf_image_augmenter();
-
-  const options& get_options() const override { return opts_; }
-
-  image_augmenter::result prepare_images(
-      std::vector<labeled_image> source_batch) override;
+  ~tf_image_augmenter() override = default;
 
   image_augmenter::intermediate_result prepare_augmented_images(
       image_augmenter::intermediate_labeled_image data_to_augment) override;
@@ -305,22 +299,14 @@ tf_model_backend::~tf_model_backend() {
   call_pybind_function([&]() { model_ = pybind11::object(); });
 }
 
-tf_image_augmenter::tf_image_augmenter(const options& opts)
-    : processed_image_augmenter(opts) {}
-
-image_augmenter::result tf_image_augmenter::prepare_images(
-    std::vector<labeled_image> source_batch) {
-  return processed_image_augmenter::prepare_images(source_batch);
-}
-
 image_augmenter::intermediate_result
 tf_image_augmenter::prepare_augmented_images(
     image_augmenter::intermediate_labeled_image data_to_augment) {
-  // const size_t n = opts_.batch_size;
+  
   image_augmenter::intermediate_result image_annotations;
 
   call_pybind_function([&]() {
-    // Pass the required data to tensorflow
+    // Import the module from python that does data augmentation
     pybind11::module tf_aug = pybind11::module::import(
         "turicreate.toolkits.object_detector._tf_image_augmenter");
 
@@ -354,7 +340,7 @@ tf_image_augmenter::prepare_augmented_images(
   return image_annotations;
 }
 
-tf_image_augmenter::~tf_image_augmenter() {}
+~tf_image_augmenter() override = default;
 
 }  // namespace neural_net
 }  // namespace turi
