@@ -30,7 +30,7 @@ BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
   init_darknet_yolo(nn_spec, num_classes, anchor_boxes);
 
   const CoreML::Specification::NeuralNetwork& nn = nn_spec.get_coreml_spec();
-  TS_ASSERT_EQUALS(nn.layers_size(), 25);
+  TS_ASSERT_EQUALS(nn.layers_size(), 31);
 
   int layer_num = 0;
   int num_features = 3;
@@ -62,7 +62,29 @@ BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
                      "leakyrelu" + std::to_string(x.first) + "_fwd");
     TS_ASSERT_EQUALS(relulayer_.activation().leakyrelu().alpha(), 0.1f);
 
-    layer_num = layer_num + 3;
+    if (x.first <= 5){
+      const auto& poolinglayer_ = nn.layers(layer_num + 3);
+      TS_ASSERT(poolinglayer_.has_pooling());
+      TS_ASSERT_EQUALS(poolinglayer_.name(),
+        "pool" + std::to_string(x.first) + "_fwd");
+      TS_ASSERT_EQUALS(poolinglayer_.pooling().kernelsize(0),2);
+      TS_ASSERT_EQUALS(poolinglayer_.pooling().kernelsize(1),2);
+      if (x.first == 5){
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().stride(0),1);
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().stride(1),1);
+        TS_ASSERT(poolinglayer_.pooling().has_same());
+        TS_ASSERT(poolinglayer_.pooling().avgpoolexcludepadding());
+      } else {
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().stride(0),2);
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().stride(1),2);
+        TS_ASSERT(poolinglayer_.pooling().has_valid());
+        TS_ASSERT(poolinglayer_.pooling().valid().has_paddingamounts());
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().valid().paddingamounts().borderamounts_size(),2);
+      }
+      layer_num = layer_num + 4;
+    } else {
+      layer_num  = layer_num + 3;
+    }
     num_features = x.second;
   }
 }
