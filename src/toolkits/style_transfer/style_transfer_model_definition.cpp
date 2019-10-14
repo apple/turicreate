@@ -23,14 +23,10 @@ using turi::neural_net::ones_weight_initializer;
 using turi::neural_net::zero_weight_initializer;
 using padding_type = model_spec::padding_type;
 
-std::unique_ptr<model_spec> init_resnet(std::string& path) {
-  std::unique_ptr<model_spec> spec(new model_spec(path));
-  return spec;
-}
 
-std::unique_ptr<neural_net::model_spec> init_resnet(size_t num_styles) {
-  std::unique_ptr<model_spec> nn_spec(new model_spec());
+namespace {
 
+void define_resnet(std::unique_ptr<model_spec>& nn_spec) {
   nn_spec->add_padding(
       /* name */ "transformer_pad0",
       /* input */ "image",
@@ -965,7 +961,29 @@ std::unique_ptr<neural_net::model_spec> init_resnet(size_t num_styles) {
       /* input */ "transformer_activation5",
       /* shape_c_h_w */ {1},
       /* weight_init_fn */ const_weight_initializer(255.0));
+}
 
+void load_weights(std::unique_ptr<model_spec>& nn_spec, std::string& path) {
+  // TODO: Going here
+}
+
+}
+
+std::unique_ptr<model_spec> init_resnet(std::string& path) {
+  std::unique_ptr<model_spec> spec(new model_spec(path));
+  return spec;
+}
+
+std::unique_ptr<neural_net::model_spec> init_resnet(size_t num_styles) {
+  std::unique_ptr<model_spec> nn_spec(new model_spec());
+  define_resnet(nn_spec);
+  return nn_spec;
+}
+
+std::unique_ptr<neural_net::model_spec> init_resnet(std::string& path, size_t num_styles) {
+  std::unique_ptr<model_spec> nn_spec(new model_spec());
+  define_resnet(nn_spec);
+  load_weights(nn_spec, path);
   return nn_spec;
 }
 
