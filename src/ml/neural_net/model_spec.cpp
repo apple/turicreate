@@ -468,8 +468,6 @@ std::vector<char> load_file(const std::string& path) {
   return buffer;
 }
 
-}  // namespace
-
 void init_weight_params(WeightParams* params, size_t size,
                         const weight_initializer& weight_init_fn) {
 
@@ -477,6 +475,8 @@ void init_weight_params(WeightParams* params, size_t size,
   float* weights = params->mutable_floatvalue()->mutable_data();
   weight_init_fn(weights, weights + size);
 }
+
+}  // namespace
 
 model_spec::model_spec(): impl_(new NeuralNetwork) {}
 
@@ -589,8 +589,6 @@ void model_spec::add_pooling(const std::string& name, const std::string& input,
     case padding_type::SAME:
       params->mutable_same();
       break;
-    case padding_type::REFLECTIVE:
-      break;
   }
   if (use_poolexcludepadding) {
     params->set_avgpoolexcludepadding(true);
@@ -627,8 +625,6 @@ void model_spec::add_convolution(
   case padding_type::SAME:
     params->mutable_same()->set_asymmetrymode(SamePadding::TOP_LEFT_HEAVY);
     break;
-  case padding_type::REFLECTIVE:
-      break;
   }
 
   size_t weights_size =
@@ -646,7 +642,7 @@ void model_spec::add_convolution(
 void model_spec::add_padding(
     const std::string& name, const std::string& input,
     size_t padding_top, size_t padding_bottom, size_t padding_left,
-    size_t padding_right, padding_type padding) {
+    size_t padding_right) {
   NeuralNetworkLayer* layer = impl_->add_layers();
   layer->set_name(name);
   layer->add_input(input);
@@ -663,15 +659,12 @@ void model_spec::add_padding(
   left_right->set_startedgesize(padding_left);
   left_right->set_endedgesize(padding_right);
 
-  switch (padding) {
-  case padding_type::VALID:
-    break;
-  case padding_type::SAME:
-    break;
-  case padding_type::REFLECTIVE:
-      params->reflection();
-      break;
-   }
+  /**
+   * TODO: Currently we only handle reflective padding in our CoreMLmodels.
+   * If you need to support more type of padding in this particular layer
+   * please modify the code below to extent functionality.
+   */
+  params->mutable_reflection();
 }
 
 void model_spec::add_upsampling(
