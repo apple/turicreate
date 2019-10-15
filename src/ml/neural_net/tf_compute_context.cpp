@@ -178,8 +178,8 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
 }
 
 /**
-* TODO: Add model backend for the tensorflow implementation of style transfer
-*/
+ * TODO: Add model backend for the tensorflow implementation of style transfer
+ */
 std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
       const float_array_map& config, const float_array_map& weights) {
 #ifdef __APPLE__
@@ -188,6 +188,31 @@ std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
   return nullptr;
 #endif
 }
+
+/**
+ * TODO: Add proper arguments to create_drawing_classifier
+ */
+std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
+    /* TODO: const float_array_map& weights
+     * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+     */
+    size_t batch_size, size_t num_classes) {
+  pybind11::object drawing_classifier;
+  call_pybind_function([&]() {
+    pybind11::module tf_dc_backend = pybind11::module::import(
+        "turicreate.toolkits.drawing_classifier._tf_drawing_classifier");
+
+    // Make an instance of python object
+    drawing_classifier = tf_dc_backend.attr("DrawingClassifierTensorFlowModel")(
+        /* TODO: weights.
+         * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+         */
+        batch_size, num_classes);
+  });
+  return std::unique_ptr<tf_model_backend>(
+      new tf_model_backend(drawing_classifier));
+}
+
 
 tf_model_backend::tf_model_backend(pybind11::object model): model_(model) {}
 
