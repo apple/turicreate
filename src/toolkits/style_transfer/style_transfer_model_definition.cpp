@@ -21,6 +21,7 @@ using turi::neural_net::float_array_map;
 using turi::neural_net::model_spec;
 using turi::neural_net::scalar_weight_initializer;
 using turi::neural_net::zero_weight_initializer;
+
 using padding_type = model_spec::padding_type;
 
 namespace {
