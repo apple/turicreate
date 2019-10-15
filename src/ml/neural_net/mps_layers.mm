@@ -71,7 +71,14 @@ imageForCommandBuffer:(__nonnull id<MTLCommandBuffer>)cmdBuf
                          inputFeatureChannels:inputFeatureChannels
                         outputFeatureChannels:outputFeatureChannels];
 
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
   [_desc setNeuronType:neuronType parameterA:neuronA parameterB:neuronB];
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
   [_desc setStrideInPixelsX:strideInPixelsX];
   [_desc setStrideInPixelsY:strideInPixelsY];
   int w_size =
@@ -189,7 +196,14 @@ void ReLULayer::Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
   MPSNNNeuronDescriptor *desc =
       [MPSNNNeuronDescriptor cnnNeuronDescriptorWithType:MPSCNNNeuronTypeReLU
                                                        a:a];
+#ifdef __clang__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
   op_forward = [[MPSCNNNeuronReLU alloc] initWithDevice:device a:a];
+#ifdef __clang__
+#pragma clang diagnostic pop
+#endif
 
   if (is_output_layer || kLowLevelModeTest == net_mode){
       op_forward.destinationImageAllocator = [[TCMPSImageAllocator alloc] initWithFormat:MPSImageFeatureChannelFormatFloat32];
