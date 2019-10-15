@@ -1,3 +1,4 @@
+
 /* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
@@ -28,9 +29,6 @@ class WeightParams;
 namespace turi {
 namespace neural_net {
 
-void init_weight_params(CoreML::Specification::WeightParams* params, size_t size,
-                        const weight_initializer& weight_init_fn);
-
 /**
  * Representation for a neural-network model (structure and parameters),
  * optimized for convenient export to CoreML.
@@ -45,7 +43,6 @@ public:
   enum class padding_type {
     VALID,
     SAME,
-    REFLECTIVE,
   };
 
   /**
@@ -188,12 +185,10 @@ public:
    * \param padding_bottom The padding on the bottom
    * \param padding_left The padding to the left
    * \param padding_right The padding to the right
-   * \param padding Sets the padding type default is SAME, REFLECTIVE exists,
-   *                VALID doesn't exist because this layer would be superfluous.
    */
   void add_padding(const std::string& name, const std::string& input,
-    size_t padding_top, size_t padding_bottom, size_t padding_left,
-    size_t padding_right, padding_type padding);
+                   size_t padding_top, size_t padding_bottom,
+                   size_t padding_left, size_t padding_right);
 
   /**
    * Appends an upsampling layer.
@@ -204,7 +199,7 @@ public:
    * \param scaling_y The upsample scale on the y axis
    */
   void add_upsampling(const std::string& name, const std::string& input,
-    size_t scaling_x, size_t scaling_y);
+                      size_t scaling_x, size_t scaling_y);
 
   /**
    * Appends an inner-product (dense, fully connected) layer.

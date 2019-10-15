@@ -48,22 +48,18 @@ private:
   std::mt19937& random_engine_;
 };
 
-struct const_weight_initializer {
+struct scalar_weight_initializer {
   /**
    * Creates a weight initializer that initializes all of the weights to a
-   * constanst scale value.
+   * constant scalar value.
    * 
-   * \param scale The scale value to initialize the weights to.
+   * \param scalar The scalar value to initialize the weights to.
    */
-  const_weight_initializer(float scale);
+  scalar_weight_initializer(float scalar);
   void operator()(float* first_weight, float* last_weight);
 
  private:
-  float scale_;
-};
-
-struct ones_weight_initializer {
-  void operator()(float* first_weight, float* last_weight);
+  float scalar_;
 };
 
 struct zero_weight_initializer {
