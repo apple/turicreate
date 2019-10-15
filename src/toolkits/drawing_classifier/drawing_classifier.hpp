@@ -6,6 +6,8 @@
 #ifndef TURI_DRAWING_CLASSIFIER_H_
 #define TURI_DRAWING_CLASSIFIER_H_
 
+#include <toolkits/drawing_classifier/dc_data_iterator.hpp>
+
 #include <core/logging/table_printer/table_printer.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/variant.hpp>
@@ -25,7 +27,7 @@ class EXPORT drawing_classifier: public ml_model_base {
   // ml_model_base interface
 
   /* Commented out for the purpose of a skeleton. */
-  // void init_options(const std::map<std::string, flexible_type>& opts) override;
+  void init_options(const std::map<std::string, flexible_type>& opts) override;
   // size_t get_version() const override;
   // void save_impl(oarchive& oarc) const override;
   // void load_version(iarchive& iarc, size_t version) override;
@@ -94,11 +96,14 @@ class EXPORT drawing_classifier: public ml_model_base {
       "-------\n"
       "max_iterations : int\n"
       "    Maximum number of iterations/epochs made over the data during the\n"
-      "    training phase. The default is 10 iterations.\n"
+      "    training phase. The default is 500 iterations.\n"
       "batch_size : int\n"
       "    Number of sequence chunks used per training step. Must be greater "
       "than\n"
-      "    the number of GPUs in use. The default is 32.\n");
+      "    the number of GPUs in use. The default is 32.\n"
+      "random_seed : int\n"
+      "     The given seed is used for random weight initialization and\n"
+      "     sampling during training\n");
 
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::predict, "data",
                                  "output_type");
@@ -174,15 +179,52 @@ class EXPORT drawing_classifier: public ml_model_base {
 
  protected:
 
-  // Returns the initial neural network to train
-  virtual std::unique_ptr<neural_net::model_spec> init_model() const;
+  // Factory for data_iterator
+  virtual std::unique_ptr<data_iterator> create_iterator(
+      gl_sframe data, bool is_train) const;
 
+  // Returns the initial neural network to train
+  virtual std::unique_ptr<neural_net::model_spec> init_model(
+      bool random_init) const;
+
+  virtual std::tuple<gl_sframe, gl_sframe> init_data(
+      gl_sframe data, variant_type validation_data) const;
+
+  // Support for iterative training.
+  // TODO: Expose via forthcoming C-API checkpointing mechanism?
+  virtual void init_train(gl_sframe data, std::string target_column_name,
+                          std::string feature_column_name,
+                          variant_type validation_data,
+                          std::map<std::string, flexible_type> opts);
+
+  virtual void perform_training_iteration();
+
+  virtual std::tuple<float, float> compute_validation_metrics(
+      size_t num_classes, size_t batch_size);
+
+  virtual void init_table_printer(bool has_validation);
+
+  // Utility code
+  template <typename T>
+  T read_state(const std::string& key) const {
+    return variant_get_value<T>(get_state().at(key));
+  }
 
  private:
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
-  std::unique_ptr<neural_net::model_backend> training_model_;
+
+  // Primary dependencies for training. These should be nonnull while training
+  // is in progress.
+  gl_sframe training_data_;  // TODO: Avoid storing gl_sframe AND data_iterator.
+  gl_sframe validation_data_;
+  std::unique_ptr<data_iterator> training_data_iterator_;
+  std::unique_ptr<data_iterator> validation_data_iterator_;
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
+  std::unique_ptr<neural_net::model_backend> training_model_;
+
+  // Nonnull while training is in progress, if progress printing is enabled.
+  std::unique_ptr<table_printer> training_table_printer_;
 
 };
 

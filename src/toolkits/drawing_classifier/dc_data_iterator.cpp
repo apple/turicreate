@@ -106,6 +106,21 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
 {}
 
+bool simple_data_iterator::has_next_batch() const {
+  return (next_row_ != end_of_rows_);
+}
+
+void simple_data_iterator::reset() {
+
+  range_iterator_ = data_.range_iterator();
+  next_row_ = range_iterator_.begin();
+  end_of_rows_ = range_iterator_.end();
+
+  // TODO: If gl_sframe_range::end() were a const method, we wouldn't need to
+  // store end_of_rows_ separately.
+}
+
+
 data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   size_t image_data_size = kDrawingHeight * kDrawingWidth * kDrawingChannels;
@@ -164,8 +179,11 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     }
   }
 
+  DASSERT_EQ(batch_size, batch_targets.size());
+
   // Wrap the buffers as float_array values.
   data_iterator::batch result;
+  result.num_samples = batch_size;
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
       { batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels });

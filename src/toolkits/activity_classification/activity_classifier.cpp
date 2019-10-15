@@ -163,7 +163,7 @@ void activity_classifier::init_options(
       std::numeric_limits<int>::max());
   options.create_integer_option(
       "batch_size",
-      "Number of sequence chunks used per training setp",
+      "Number of sequence chunks used per training step",
       32,
       1,
       std::numeric_limits<int>::max());

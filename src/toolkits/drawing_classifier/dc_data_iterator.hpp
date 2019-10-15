@@ -58,9 +58,10 @@ class data_iterator {
      */
     std::vector<std::string> class_labels;
 
-    /**
-     * Whether to traverse the data more than once.
-     */
+    /** Whether this is training data or not. */
+    bool is_train = true;
+
+    /** Whether to traverse the data more than once. */
     bool repeat = true;
 
     /** Whether to shuffle the data on subsequent traversals. */
@@ -72,6 +73,9 @@ class data_iterator {
 
   /** Defines the output of a data_iterator. */
   struct batch {
+
+    /* Number of examples in batch */
+    size_t num_samples;
 
     /**
      * An array with shape: (requested_batch_size, 28, 28 1)
@@ -109,6 +113,15 @@ class data_iterator {
   virtual batch next_batch(size_t batch_size) = 0;
 
   /**
+   * Returns true if and only if the next call to `next_batch` will return a
+   * batch with size greater than 0.
+   */
+  virtual bool has_next_batch() const = 0;
+
+  /** Begins a fresh traversal of the dataset. */
+  virtual void reset() = 0;
+
+  /**
    * Returns a sorted list of the unique "label" values found in the
    * target.
    */
@@ -135,6 +148,10 @@ class simple_data_iterator: public data_iterator {
   simple_data_iterator& operator=(const simple_data_iterator&) = delete;
 
   batch next_batch(size_t batch_size) override;
+
+  bool has_next_batch() const override;
+
+  void reset() override;
 
   const std::vector<std::string>& class_labels() const override {
     return target_properties_.classes;
@@ -165,6 +182,8 @@ class simple_data_iterator: public data_iterator {
 
   gl_sframe_range range_iterator_;
   gl_sframe_range::iterator next_row_;
+  gl_sframe_range::iterator end_of_rows_;
+  
   std::default_random_engine random_engine_;
 };
 
