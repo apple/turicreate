@@ -209,7 +209,7 @@ build_cpp_linux_no_remotefs:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - apk add python2
+    - apk add g++
     - ./configure --no-remotefs --no-python
     - cd debug/test
     - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
