@@ -101,12 +101,12 @@ void unity_sframe::construct_from_sframe_index(std::string location) {
 
   auto status = fileio::get_file_status(location);
 
-  // web protocol is a bad name, it should mean read-only protocol
-  if (status.first == fileio::file_status::REGULAR_FILE &&
+  if ((status.first == fileio::file_status::REGULAR_FILE ||
+       status.first == fileio::file_status::FS_UNAVAILABLE ||
+       status.first == fileio::file_status::MISSING) &&
       fileio::is_web_protocol(fileio::get_protocol(location))) {
     // if it is a web protocol, we cannot be certain what type of file it is.
     // HEURISTIC:
-    //   assume it is a "directory" and try to load dir_archive.ini
     //   if we can open it, it is a regular file. Otherwise not.
     if (fileio::try_to_open_file(location + "/dir_archive.ini")) {
       status.first = fileio::file_status::DIRECTORY;
