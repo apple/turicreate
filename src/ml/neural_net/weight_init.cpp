@@ -35,20 +35,13 @@ void xavier_weight_initializer::operator()(float* first_weight,
   }
 }
 
-const_weight_initializer::const_weight_initializer(float scale) 
-    : scale_(scale) {}
+scalar_weight_initializer::scalar_weight_initializer(float scalar) 
+    : scalar_(scalar) {}
 
-void const_weight_initializer::operator()(float* first_weight,
-                                          float* last_weight) {
+void scalar_weight_initializer::operator()(float* first_weight,
+                                           float* last_weight) {
   for (float* w = first_weight; w != last_weight; ++w) {
-    *w = scale_;
-  }
-}
-
-void ones_weight_initializer::operator()(float* first_weight,
-                                         float* last_weight) {
-  for (float* w = first_weight; w != last_weight; ++w) {
-    *w = 1.0f;
+    *w = scalar_;
   }
 }
 

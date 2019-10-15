@@ -17,10 +17,9 @@ using CoreML::Specification::InnerProductLayerParams;
 using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkLayer;
 
-using turi::neural_net::const_weight_initializer;
 using turi::neural_net::float_array_map;
 using turi::neural_net::model_spec;
-using turi::neural_net::ones_weight_initializer;
+using turi::neural_net::scalar_weight_initializer;
 using turi::neural_net::zero_weight_initializer;
 using padding_type = model_spec::padding_type;
 
@@ -53,7 +52,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 32,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -109,7 +108,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 64,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -165,7 +164,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -221,7 +220,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -277,7 +276,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -334,7 +333,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -390,7 +389,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -447,7 +446,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -503,7 +502,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -560,7 +559,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -616,7 +615,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -673,7 +672,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -729,7 +728,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 128,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -792,7 +791,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 64,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -854,7 +853,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 32,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -910,7 +909,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* input */ "index",
       /* num_output_channels */ 3,
       /* num_input_channels */ num_styles,
-      /* weight_init_fn */ ones_weight_initializer(),
+      /* weight_init_fn */ scalar_weight_initializer(1.0f),
       /* bias_init_fn */ zero_weight_initializer());
 
   nn_spec.add_inner_product(
@@ -945,10 +944,10 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* name */ "stylizedImage",
       /* input */ "transformer_activation5",
       /* shape_c_h_w */ {1},
-      /* weight_init_fn */ const_weight_initializer(255.0));
+      /* weight_init_fn */ scalar_weight_initializer(255.0));
 }
 
-void load_weights(model_spec& nn_spec, std::string& path) {
+void load_weights(model_spec& nn_spec, const std::string& path) {
   model_spec weight_spec(path);
   float_array_map nn_params = weight_spec.export_params_view();
 
@@ -966,7 +965,7 @@ void load_weights(model_spec& nn_spec, std::string& path) {
 
 }  // namespace
 
-std::unique_ptr<model_spec> init_resnet(std::string& path) {
+std::unique_ptr<model_spec> init_resnet(const std::string& path) {
   std::unique_ptr<model_spec> spec(new model_spec(path));
   return spec;
 }
@@ -977,7 +976,7 @@ std::unique_ptr<neural_net::model_spec> init_resnet(size_t num_styles) {
   return nn_spec;
 }
 
-std::unique_ptr<neural_net::model_spec> init_resnet(std::string& path,
+std::unique_ptr<neural_net::model_spec> init_resnet(const std::string& path,
                                                     size_t num_styles) {
   std::unique_ptr<model_spec> nn_spec(new model_spec());
   define_resnet(*nn_spec, num_styles);
@@ -985,7 +984,7 @@ std::unique_ptr<neural_net::model_spec> init_resnet(std::string& path,
   return nn_spec;
 }
 
-std::unique_ptr<model_spec> init_vgg_16(std::string& path) {
+std::unique_ptr<model_spec> init_vgg_16(const std::string& path) {
   std::unique_ptr<model_spec> spec(new model_spec(path));
   return spec;
 }
