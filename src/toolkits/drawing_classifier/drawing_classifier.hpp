@@ -27,8 +27,8 @@ class EXPORT drawing_classifier: public ml_model_base {
   
   // ml_model_base interface
 
-  /* Commented out for the purpose of a skeleton. */
   void init_options(const std::map<std::string, flexible_type>& opts) override;
+  /* Commented out for the purpose of a skeleton. */
   // size_t get_version() const override;
   // void save_impl(oarchive& oarc) const override;
   // void load_version(iarchive& iarc, size_t version) override;

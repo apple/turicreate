@@ -378,7 +378,6 @@ void drawing_classifier::perform_training_iteration() {
   float average_val_loss;
 
   if (validation_data_iterator_) {
-
     std::tie(average_val_accuracy, average_val_loss) =
         compute_validation_metrics(num_classes, batch_size);
   }

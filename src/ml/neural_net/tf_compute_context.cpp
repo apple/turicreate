@@ -190,7 +190,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
 }
 
 /**
- * TODO: Add model backend for the tensorflow implementation of style transfer
+ * TODO: Add model backend for the tensorflow implementation of drawing classifier
  */
 std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
   const variant_type &validation_set,
