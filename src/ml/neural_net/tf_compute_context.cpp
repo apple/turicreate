@@ -125,7 +125,8 @@ tf_compute_context::tf_compute_context() = default;
 tf_compute_context::~tf_compute_context() = default;
 
 size_t tf_compute_context::memory_budget() const {
-  // TODO: Return 4GB for now. Do something that makes more sense later.
+  // TODO: Returns 4GB as that makes sure default batch size is used. 
+  // Do something that makes more sense like MPS later.
   return 4294967296;
 }
 
