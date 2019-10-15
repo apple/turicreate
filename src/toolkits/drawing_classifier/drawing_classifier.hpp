@@ -182,7 +182,8 @@ class EXPORT drawing_classifier: public ml_model_base {
 
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, bool is_train) const;
+      gl_sframe data, std::vector<std::string> class_labels,
+      bool is_train) const;
 
   // Factory for compute_context
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
@@ -218,8 +219,15 @@ class EXPORT drawing_classifier: public ml_model_base {
  private:
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
-  std::unique_ptr<neural_net::model_backend> training_model_;
+
+  // Primary dependencies for training. These should be nonnull while training
+  // is in progress.
+  gl_sframe training_data_;  // TODO: Avoid storing gl_sframe AND data_iterator.
+  gl_sframe validation_data_;
+  std::unique_ptr<data_iterator> training_data_iterator_;
+  std::unique_ptr<data_iterator> validation_data_iterator_;
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
+  std::unique_ptr<neural_net::model_backend> training_model_;
 
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;

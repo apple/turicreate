@@ -119,6 +119,7 @@ std::unique_ptr<model_backend> mps_compute_context::create_style_transfer(
 #else
   return nullptr;
 #endif
+}
 
 std::unique_ptr<model_backend> mps_compute_context::create_drawing_classifier(
     const variant_type &validation_set,

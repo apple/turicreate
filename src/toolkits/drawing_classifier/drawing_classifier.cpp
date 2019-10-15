@@ -127,19 +127,17 @@ std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
 }
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
-      gl_sframe data, bool is_train) const {
+      gl_sframe data, std::vector<std::string> class_labels, bool is_train) const {
   data_iterator::parameters data_params;
   data_params.data = std::move(data);
 
   if (!is_train) {
-    data_params.class_labels = read_state<flex_list>("classes");
+    data_params.class_labels = std::move(class_labels);
   }
 
   data_params.is_train = is_train;
-  if (requires_labels) {
-    data_params.target_column_name = read_state<flex_string>("target");
-  }
-  data_params.feature_column_name = read_state<flex_list>("feature");
+  data_params.target_column_name = read_state<flex_string>("target");
+  data_params.feature_column_name = read_state<flex_string>("feature");
   return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));
 }
 
@@ -170,16 +168,19 @@ void drawing_classifier::init_train(gl_sframe data,
   add_or_update_state({{"target", target_column_name},
                        {"feature", feature_column_name}});
 
+  const std::vector<std::string>& classes =
+      training_data_iterator_->class_labels();
+  add_or_update_state({{"classes", flex_list(classes.begin(), classes.end())}});
+
   // Bind the data to a data iterator.
   training_data_iterator_ =
-      create_iterator(training_data_, /* is_train */ true);
-
-  add_or_update_state({{"classes", training_data_iterator_->class_labels()}});
+      create_iterator(training_data_, /* class labels */ classes,
+        /* is_train */ true);
 
   // Bind the validation data to a data iterator.
   if (!validation_data_.empty()) {
-    validation_data_iterator_ = create_iterator(
-        validation_data_, /* is_train */ false);
+    validation_data_iterator_ = create_iterator(validation_data_, 
+      /* class labels */ classes, /* is_train */ false);
   } else {
     validation_data_iterator_ = nullptr;
   }
