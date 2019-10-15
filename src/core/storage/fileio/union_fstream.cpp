@@ -6,13 +6,10 @@
 #include <core/logging/logger.hpp>
 #include <core/storage/fileio/union_fstream.hpp>
 #include <core/storage/fileio/cache_stream.hpp>
-
-#ifndef TC_DISABLE_REMOTEFS
 #include <core/storage/fileio/s3_fstream.hpp>
 #include <core/storage/fileio/curl_downloader.hpp>
-#include <core/storage/fileio/file_download_cache.hpp>
 #include <core/storage/fileio/hdfs.hpp>
-#endif
+#include <core/storage/fileio/file_download_cache.hpp>
 #include <core/storage/fileio/sanitize_url.hpp>
 #include <boost/algorithm/string.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
