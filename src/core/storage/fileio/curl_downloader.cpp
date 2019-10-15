@@ -76,6 +76,7 @@ std::tuple<int, bool, std::string> download_url(std::string url) {
   }
 
   std::ifstream fin(url.c_str(), std::ifstream::binary);
+
   // now, check for the file:// protocol header and see if we can access
   // it as a local file
   if (boost::starts_with(url, "file://")) {
