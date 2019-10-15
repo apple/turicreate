@@ -29,7 +29,7 @@ shared_float_array convert_to_shared_float_array(
     ann[offset + 5] = annotation.confidence;
   }
   shared_float_array data_to_augment =
-      shared_float_array::wrap(std::move(ann), {annotation.size() * 6});
+      shared_float_array::wrap(std::move(ann), {annotations_per_image.size() * 6});
   return data_to_augment;
 }
 
@@ -182,7 +182,7 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
         /* outstrides */ {input_width * c, c, 1},
         /* outshapes */ {input_height, input_width, c}, /* channel_last*/ true);
 
-    // Dividing it by 255 gives us a float
+    // Dividing it by 255.0 to make the image as an array of floats
     std::transform(img.begin(), img.end(), img.begin(),
                    [](float pixel) -> float { return pixel / 255.0f; });
     input_to_tf_aug.images[i] = shared_float_array::wrap(
