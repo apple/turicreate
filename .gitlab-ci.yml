@@ -197,13 +197,13 @@ test_cpp_linux:
     - apk add python2
     - python2.7 scripts/run_cpp_tests.py -j 2 --docker
 
-test_cpp_linux_no_remotefs:
+build_cpp_linux_no_remotefs:
   tags:
     - docker
   services:
     - docker:18.09-dind
   image: docker:18.09
-  stage: test
+  stage: build
   variables:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
@@ -213,10 +213,28 @@ test_cpp_linux_no_remotefs:
     - ./configure --no-remotefs --no-python
     - cd debug/test
     - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - debug/ 
+
+test_cpp_linux_no_remotefs:
+  tags:
+    - docker
+  services:
+    - docker:18.09-dind
+  image: docker:18.09
+  stage: test
+  dependencies:
+    - build_cpp_linux_no_remotefs
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  script:
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
-    - python ../../scripts/run_cpp_tests.py -j 2
+    - python scripts/run_cpp_tests.py -j 2 --docker
 
 test_cpp_mac_10_13:
   tags:
