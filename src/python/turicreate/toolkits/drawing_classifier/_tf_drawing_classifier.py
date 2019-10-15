@@ -12,29 +12,38 @@ import numpy as _np
 import time as _time
 from .._tf_model import TensorFlowModel
 
+import tensorflow.compat.v1 as _tf
+_tf.disable_v2_behavior()
+
+
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
-    def __init__(self, validation_set, # net_params,
+    def __init__(self, # validation_set, # net_params,
         ########################################################################
         # TODO: Until the nn_spec in C++ isn't ready, ignore net_params. 
         #       When the nn_spec is ready, uncomment and edit the 
         #       following lines to use the weights coming from C++
         #       
         ########################################################################
-        batch_size, num_classes, verbose):
+        batch_size, num_classes): #, verbose):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy. Then
         loads the MXNET weights into the model.
 
         """
+        import pdb; pdb.set_trace()
         _tf.reset_default_graph()
 
         self.num_classes = num_classes
         self.batch_size = batch_size
 
-        self.x = _tf.compat.v1.placeholder("float", [None, 28, 28, 1])
-        self.y = _tf.compat.v1.placeholder("float", [None, self.num_classes])
+        import pdb; pdb.set_trace()
+
+        self.x = _tf.placeholder("float", [None, 28, 28, 1])
+        self.y = _tf.placeholder("float", [None, self.num_classes])
+
+        import pdb; pdb.set_trace()
 
         # Weights
         weights = {
@@ -45,6 +54,8 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         'drawing_dense1_weight': _tf.Variable(_tf.zeros([128, self.num_classes]), name='drawing_dense1_weight')
         }
 
+        import pdb; pdb.set_trace()
+
         # Biases
         biases = {
         'drawing_conv0_bias' : _tf.Variable(_tf.zeros([16]), name='drawing_conv0_bias'),
@@ -54,47 +65,77 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         'drawing_dense1_bias': _tf.Variable(_tf.zeros([self.num_classes]), name='drawing_dense1_bias')
         }
 
+        import pdb; pdb.set_trace()
+
         conv_1 = _tf.nn.conv2d(self.x, weights["drawing_conv0_weight"], strides=1, padding='SAME')
         conv_1 = _tf.nn.bias_add(conv_1, biases["drawing_conv0_bias"])
         relu_1 = _tf.nn.relu(conv_1)
         pool_1 = _tf.nn.max_pool2d(relu_1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
+
+        import pdb; pdb.set_trace()
 
         conv_2 = _tf.nn.conv2d(pool_1, weights["drawing_conv1_weight"], strides=1, padding='SAME')
         conv_2 = _tf.nn.bias_add(conv_2, biases["drawing_conv1_bias"])
         relu_2 = _tf.nn.relu(conv_2)
         pool_2 = _tf.nn.max_pool2d(relu_2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
+        import pdb; pdb.set_trace()
+
         conv_3 = _tf.nn.conv2d(pool_2, weights["drawing_conv2_weight"], strides=1, padding='SAME')
         conv_3 = _tf.nn.bias_add(conv_3, biases["drawing_conv2_bias"])
         relu_3 = _tf.nn.relu(conv_3)
+        import pdb; pdb.set_trace()
         pool_3 = _tf.nn.max_pool2d(relu_3, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID') 
+
+        import pdb; pdb.set_trace()
 
         # Flatten the data to a 1-D vector for the fully connected layer
         fc1 = _tf.reshape(pool_3, (-1, 576))
 
-        fc1 = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense0_weight"],
+        import pdb; pdb.set_trace()
+
+        fc1 = _tf.nn.xw_plus_b(fc1, weights=weights["drawing_dense0_weight"],
             biases=biases["drawing_dense0_bias"])
+
+        import pdb; pdb.set_trace()
+
         fc1 = _tf.nn.relu(fc1)
 
-        out = _tf.compat.v1.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"],
+        import pdb; pdb.set_trace()
+
+        out = _tf.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"],
             biases=biases["drawing_dense1_bias"])
+        import pdb; pdb.set_trace()
         out = _tf.nn.softmax(out)
+        import pdb; pdb.set_trace()
 
         self.predictions = out
+
+        import pdb; pdb.set_trace()
+
 
         # Loss
         self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
             labels=self.y))
 
+        import pdb; pdb.set_trace()
+
+
         # Optimizer
-        self.optimizer = _tf.compat.v1.train.AdamOptimizer(learning_rate=0.001).minimize(self.cost)
+        self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.001).minimize(self.cost)
+
+        import pdb; pdb.set_trace()
+
 
         # Predictions
         correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
         self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, "float"))
 
-        self.sess = _tf.compat.v1.Session()
-        self.sess.run(_tf.compat.v1.global_variables_initializer())
+        import pdb; pdb.set_trace()
+        
+        self.sess = _tf.Session()
+        import pdb; pdb.set_trace()
+        self.sess.run(_tf.global_variables_initializer())
 
         # Assign the initialised weights from MXNet to tensorflow
         layers = ['drawing_conv0_weight', 'drawing_conv0_bias', 'drawing_conv1_weight', 'drawing_conv1_bias',
@@ -109,7 +150,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         ########################################################################
         # for key in layers:
         #     if 'bias' in key:
-        #         self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
+        #         self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
         #             net_params[key].data().asnumpy()))
         #     else:
         #         if 'dense' in key:
@@ -122,13 +163,13 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         #                 mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 64, 3, 3))
         #                 mxnet_128_576 = mxnet_128_576.transpose(0, 2, 3, 1)
         #                 mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 576))
-        #                 self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
+        #                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
         #                                 mxnet_128_576.transpose(1,0)))
         #             else:
-        #                 self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
+        #                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
         #                                 net_params[key].data().asnumpy().transpose(1, 0)))
         #         else:
-        #             self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(key+":0"),
+        #             self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
         #                                 net_params[key].data().asnumpy().transpose(2, 3, 1, 0)))
 
 
@@ -165,7 +206,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         """
 
         net_params = {}
-        layer_names = _tf.compat.v1.trainable_variables()
+        layer_names = _tf.trainable_variables()
         layer_weights = self.sess.run(layer_names)
 
         for var, val in zip(layer_names, layer_weights):

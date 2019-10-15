@@ -182,8 +182,8 @@ class EXPORT drawing_classifier: public ml_model_base {
 
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, std::vector<std::string> class_labels,
-      bool is_train) const;
+      gl_sframe data, bool is_train,
+      std::vector<std::string> class_labels) const;
 
   // Factory for compute_context
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()

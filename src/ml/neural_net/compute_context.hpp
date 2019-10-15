@@ -127,11 +127,10 @@ EXPORT class compute_context {
    * \todo what args here?
    */
   virtual std::unique_ptr<model_backend> create_drawing_classifier(
-      const variant_type &validation_set, 
       /* TODO: const float_array_map& weights
-       * Until the nn_spec in C++ isn't ready, do not pass in any weights. 
+       * Until the nn_spec in C++ isn't ready, do not pass in any weights.
        */
-      size_t batch_size, size_t num_classes, bool verbose) = 0;
+      size_t batch_size, size_t num_classes) = 0;
 
   /**
    * Creates an image augmenter.

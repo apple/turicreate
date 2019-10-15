@@ -189,15 +189,11 @@ std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
 #endif
 }
 
-/**
- * TODO: Add model backend for the tensorflow implementation of drawing classifier
- */
 std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
-  const variant_type &validation_set,
-  /* TODO: const float_array_map& weights
-   * Until the nn_spec in C++ isn't ready, do not pass in any weights. 
-   */
-  size_t batch_size, size_t num_classes, bool verbose) {
+    /* TODO: const float_array_map& weights
+     * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+     */
+    size_t batch_size, size_t num_classes) {
   pybind11::object drawing_classifier;
   call_pybind_function([&]() {
     pybind11::module tf_dc_backend = pybind11::module::import(
@@ -205,11 +201,10 @@ std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
 
     // Make an instance of python object
     drawing_classifier = tf_dc_backend.attr("DrawingClassifierTensorFlowModel")(
-        validation_set, 
         /* TODO: weights.
-         * Until the nn_spec in C++ isn't ready, do not pass in any weights. 
+         * Until the nn_spec in C++ isn't ready, do not pass in any weights.
          */
-        batch_size, num_classes, verbose);
+        batch_size, num_classes);
   });
   return std::unique_ptr<tf_model_backend>(
       new tf_model_backend(drawing_classifier));
