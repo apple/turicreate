@@ -386,7 +386,7 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
     }
   }
 
-  auto cmp = [](flex_dict::value_type& a, flex_dict::value_type& b) {
+  auto cmp = [](const flex_dict::value_type& a, const flex_dict::value_type& b) {
     return (a.first < b.first);
   };
 

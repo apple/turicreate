@@ -205,6 +205,19 @@ public:
                      size_t num_channels, float epsilon);
 
   /**
+   * Appends an instance norm layer.
+   *
+   * The beta is initialized to 0.f; the gamma is initialized to 1.f
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param num_channels The C dimension of the input and output
+   * \param epsilon Added to the variance for each input before normalizing
+   */
+  void add_instancenorm(const std::string& name, const std::string& input,
+                        size_t num_channels, float epsilon);
+
+  /**
    * Appends a layer that concatenates its inputs along the channel axis.
    *
    * \param name The name of the layer and its output

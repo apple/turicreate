@@ -185,13 +185,22 @@ void wrap_network_params(const std::string& name,
       {n}, batch_norm.beta());
   params_out->emplace(name + "_beta", std::move(beta));
 
-  shared_float_array mean = weight_params_float_array::create_view(
-      {n}, batch_norm.mean());
-  params_out->emplace(name + "_running_mean", std::move(mean));
 
-  shared_float_array variance = weight_params_float_array::create_view(
-      {n}, batch_norm.variance());
-  params_out->emplace(name + "_running_var", std::move(variance));
+  // The CoreML Spec uses the batchNorm layer to do instanceNormalization. This 
+  // can cause issues in CoreML imports because those layers in particular don't
+  // contain moving mean and moving variance values since the batch is 
+  // technically irrelevant in InstanceNorm. This check is in place to catch
+  // these instances.
+
+  if (!batch_norm.instancenormalization()) {
+    shared_float_array mean = weight_params_float_array::create_view(
+        {n}, batch_norm.mean());
+    params_out->emplace(name + "_running_mean", std::move(mean));
+
+    shared_float_array variance = weight_params_float_array::create_view(
+        {n}, batch_norm.variance());
+    params_out->emplace(name + "_running_var", std::move(variance));
+  }
 }
 
 void update_network_params(const std::string& name,
@@ -670,6 +679,25 @@ void model_spec::add_batchnorm(
   params->mutable_beta()->mutable_floatvalue()->Resize(size, 0.f);
   params->mutable_mean()->mutable_floatvalue()->Resize(size, 0.f);
   params->mutable_variance()->mutable_floatvalue()->Resize(size, 1.f);
+}
+
+void model_spec::add_instancenorm(
+    const std::string& name, const std::string& input, size_t num_channels,
+    float epsilon) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  BatchnormLayerParams* params = layer->mutable_batchnorm();
+  params->set_channels(num_channels);
+  params->set_epsilon(epsilon);
+  params->set_instancenormalization(true);
+
+  int size = static_cast<int>(num_channels);
+  params->mutable_gamma()->mutable_floatvalue()->Resize(size, 1.f);
+  params->mutable_beta()->mutable_floatvalue()->Resize(size, 0.f);
 }
 
 void model_spec::add_channel_concat(const std::string& name,
