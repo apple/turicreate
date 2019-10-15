@@ -385,8 +385,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
                                        std::string output_type) {
   if (output_type.empty()) {
     output_type = "class";
-  }
-  if (output_type != "class" && output_type != "probability_vector") {
+  } else if (output_type != "class" && output_type != "probability_vector") {
     log_and_throw(output_type + " is not a valid option for output_type.  Expected one of: probability_vector, class");
   }
 
@@ -430,8 +429,7 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
 
   if (output_type.empty()) {
     output_type = "class";
-  }
-  if (output_type != "class" && output_type != "probability_vector") {
+  } else if (output_type != "class" && output_type != "probability_vector") {
     log_and_throw(output_type + " is not a valid option for output_type.  "
                                 "Expected one of: probability_vector, class");
   }
