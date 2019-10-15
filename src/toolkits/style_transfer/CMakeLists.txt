@@ -2,6 +2,7 @@ project(unity_toolkits)
 
 make_library(unity_style_transfer OBJECT
 SOURCES
+	style_transfer.cpp
     style_transfer_data_iterator.cpp
     style_transfer_model_definition.cpp
 REQUIRES
