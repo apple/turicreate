@@ -101,19 +101,15 @@ void unity_sframe::construct_from_sframe_index(std::string location) {
 
   auto status = fileio::get_file_status(location);
 
-  if ((status.first == fileio::file_status::FS_UNAVAILABLE ||
+  if ((status.first == fileio::file_status::REGULAR_FILE ||
+       status.first == fileio::file_status::FS_UNAVAILABLE ||
        status.first == fileio::file_status::MISSING) &&
       fileio::is_web_protocol(fileio::get_protocol(location))) {
     // if it is a web protocol, we cannot be certain what type of file it is.
     // HEURISTIC:
-    //   assume it is a "directory" and try to load dir_archive.ini
     //   if we can open it, it is a regular file. Otherwise not.
     if (fileio::try_to_open_file(location + "/dir_archive.ini")) {
       status.first = fileio::file_status::DIRECTORY;
-      status.second.clear();
-    }
-    else {
-      status.first = fileio::file_status::REGULAR_FILE;
       status.second.clear();
     }
   }
@@ -1165,7 +1161,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::sample(float percent,
   }
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
     unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
-  
+
   return logical_filter(logical_filter_array);
 }
 
