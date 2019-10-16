@@ -206,6 +206,8 @@ build_cpp_linux_no_remotefs:
   script:
     - apt-get -y update
     - apt-get -y install software-properties-common
+    - apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget
+    - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
     - apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
     - apt-get -y update
     - apt-get -y install cmake build-essential
