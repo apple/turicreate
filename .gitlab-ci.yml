@@ -206,7 +206,7 @@ build_cpp_linux_no_remotefs:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
-    - apt-get install build-essential
+    - apt-get install g++ gcc cmake autotools 
     - ./configure --no-remotefs --no-python
     - cd debug/test
     - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
