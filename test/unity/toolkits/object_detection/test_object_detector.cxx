@@ -209,6 +209,15 @@ public:
     return nullptr;
   }
 
+  std::unique_ptr<model_backend> create_drawing_classifier(
+      /* TODO: const float_array_map& weights
+       * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+       */
+      size_t batch_size, size_t num_classes) override
+  {
+    return nullptr;
+  }
+
   mutable std::deque<create_augmenter_call> create_augmenter_calls_;
   mutable std::deque<create_object_detector_call> create_object_detector_calls_;
 };
