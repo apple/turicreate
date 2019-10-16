@@ -205,11 +205,11 @@ build_cpp_linux_no_remotefs:
     DOCKER_DRIVER: overlay2
   script:
     - apt-get -y update
-    - apt-get install gnupg
+    - apt-get -y install gnupg
     - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
     - apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
     - apt-get -y update
-    - apt-get install cmake build-essential
+    - apt-get -y install cmake build-essential
     - ./configure --no-remotefs --no-python
     - cd debug/test
     - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
