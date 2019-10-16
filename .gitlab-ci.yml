@@ -200,18 +200,13 @@ test_cpp_linux:
 build_cpp_linux_no_remotefs:
   tags:
     - docker
-  services:
-    - docker:18.09-dind
-  image: docker:18.09
+  image: ubuntu:18.04
   stage: build
   variables:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
   script:
-    - apk add bash
-    - apk add g++ 
-    - apk add cmake
-    - apk add make
+    - apt-get install build-essential
     - ./configure --no-remotefs --no-python
     - cd debug/test
     - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
