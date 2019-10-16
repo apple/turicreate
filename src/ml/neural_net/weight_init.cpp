@@ -35,6 +35,16 @@ void xavier_weight_initializer::operator()(float* first_weight,
   }
 }
 
+scalar_weight_initializer::scalar_weight_initializer(float scalar) 
+    : scalar_(scalar) {}
+
+void scalar_weight_initializer::operator()(float* first_weight,
+                                           float* last_weight) {
+  for (float* w = first_weight; w != last_weight; ++w) {
+    *w = scalar_;
+  }
+}
+
 // static
 lstm_weight_initializers lstm_weight_initializers::create_with_xavier_method(
     size_t input_size, size_t state_size, std::mt19937* random_engine) {
