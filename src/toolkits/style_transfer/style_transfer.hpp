@@ -16,6 +16,7 @@
 #include <ml/neural_net/model_spec.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/style_transfer/style_transfer_data_iterator.hpp>
 
 namespace turi {
@@ -30,6 +31,9 @@ class EXPORT style_transfer : public ml_model_base {
 
   void train(gl_sarray style, gl_sarray content,
              std::map<std::string, flexible_type> opts);
+
+  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+      std::string filename, std::map<std::string, flexible_type> opts);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("style_transfer")
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);

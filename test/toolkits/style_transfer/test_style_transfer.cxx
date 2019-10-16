@@ -18,7 +18,7 @@
 
 using namespace turi::style_transfer;
 
-BOOST_AUTO_TEST_CASE(test_initialization) {
+BOOST_AUTO_TEST_CASE(test_train) {
   style_transfer model;
 
   const size_t NUM_STYLES = 8;
@@ -36,4 +36,8 @@ BOOST_AUTO_TEST_CASE(test_initialization) {
   };
 
   model.train(style_sarray, content_sarray, opts);
+}
+
+BOOST_AUTO_TEST_CASE(test_export_core_ml) {
+
 }

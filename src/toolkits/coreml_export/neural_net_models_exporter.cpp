@@ -15,8 +15,10 @@
 using CoreML::Specification::ArrayFeatureType;
 using CoreML::Specification::FeatureDescription;
 using CoreML::Specification::ImageFeatureType;
+using CoreML::Specification::ImageFeatureType_ImageSizeRange;
 using CoreML::Specification::ModelDescription;
 using CoreML::Specification::NeuralNetworkLayer;
+using CoreML::Specification::SizeRange;
 using turi::coreml::MLModelWrapper;
 
 
@@ -119,15 +121,32 @@ void set_threshold_feature(FeatureDescription* feature_desc, std::string feature
 }
 
 void set_image_feature(FeatureDescription* feature_desc, size_t image_width,
-    size_t image_height, bool include_description) {
+                       size_t image_height, bool include_description,
+                       bool use_flexible_shape=false, std::string description="") {
   feature_desc->set_name("image");
-  if (include_description)
+  if (include_description && description.empty()) {
     feature_desc->set_shortdescription("Input image");
+  } else if (include_description) {
+    feature_desc->set_shortdescription(description);
+  }
   ImageFeatureType* image_feature =
       feature_desc->mutable_type()->mutable_imagetype();
   image_feature->set_width(image_width);
   image_feature->set_height(image_height);
   image_feature->set_colorspace(ImageFeatureType::RGB);
+
+  if (use_flexible_shape) {
+    ImageFeatureType_ImageSizeRange* image_size_range = image_feature->mutable_imagesizerange();
+    
+    SizeRange* width_range = image_size_range->mutable_widthrange();
+    SizeRange* height_range = image_size_range->mutable_heightrange();
+
+    width_range->set_lowerbound(64);
+    width_range->set_upperbound(-1);
+
+    height_range->set_lowerbound(64);
+    height_range->set_upperbound(-1);
+  }
 }
 
 } //namespace
@@ -350,6 +369,33 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
 
   return std::make_shared<MLModelWrapper>(
       std::make_shared<CoreML::Model>(model));
+}
+
+std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
+    const neural_net::model_spec& nn_spec, size_t image_width,
+    size_t image_height, flex_dict user_defined_metadata) {
+  CoreML::Specification::Model model;
+  model.set_specificationversion(3);
+
+  ModelDescription* model_desc = model.mutable_description();
+
+  set_image_feature(model_desc->add_input(), image_width, image_height, true, true);
+
+  set_array_feature(
+      model_desc->add_input(), "index",
+      "Style index array (set index I to 1.0 to enable Ith style)", {1});
+
+  set_image_feature(model_desc->add_output(), image_width, image_height, true, true, "Stylized image");
+
+  model.mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
+
+  auto model_wrapper =
+      std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Model>(model));
+
+  model_wrapper->add_metadata(
+      {{"user_defined", std::move(user_defined_metadata)}});
+
+  return model_wrapper;
 }
 
 }  // namespace turi
