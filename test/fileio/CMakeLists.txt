@@ -6,13 +6,13 @@ make_executable(curl_dependency_test SOURCES curl_dependency_test.cpp REQUIRES u
 make_executable(fstream_bench SOURCES fstream_bench.cpp REQUIRES unity_shared_for_testing)
 make_boost_test(temp_file_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(fixed_size_cache_manager_test.cxx REQUIRES unity_shared_for_testing)
-make_boost_test(cache_stream_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(general_fstream_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(parse_hdfs_url_test.cxx REQUIRES unity_shared_for_testing)
-make_boost_test(block_cache_test.cxx REQUIRES unity_shared_for_testing)
 
 if (${TC_BUILD_REMOTEFS})
   make_boost_test(s3api_test.cxx REQUIRES unity_shared_for_testing)
+  make_boost_test(cache_stream_test.cxx REQUIRES unity_shared_for_testing)
+  make_boost_test(block_cache_test.cxx REQUIRES unity_shared_for_testing)
 endif()
 
 # this writes a big file
