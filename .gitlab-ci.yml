@@ -209,7 +209,7 @@ build_cpp_linux_no_remotefs:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - apk add g++
+    - apk add build-essential
     - apk add cmake
     - ./configure --no-remotefs --no-python
     - cd debug/test
