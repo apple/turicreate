@@ -1,4 +1,4 @@
-/* Copyright © 2018 Apple Inc. All rights reserved.
+/* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at
@@ -40,14 +40,16 @@ constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296;
 shared_float_array prepare_images(turi::image_type image, size_t width, size_t height) {
   constexpr size_t channels = 3;
 
-  std::vector<float> result_array(height * width * channels);
-  auto out_it = result_array.begin();
-
   image_type resized_image = image_util::resize_image(image, width, height, channels, true, 1);
   ASSERT_EQ(resized_image.m_image_data_size, height * width * channels);
 
   const unsigned char* src_ptr = resized_image.get_image_data();
-  auto out_end = out_it + height * width * channels;
+  
+  std::vector<float> result_array(height * width * channels);
+
+  std::vector<float>::iterator out_it = result_array.begin();
+  std::vector<float>::iterator out_end = out_it + height * width * channels;
+  
   while (out_it != out_end) {
     *out_it = *src_ptr / 255.f;
     ++src_ptr;
@@ -58,7 +60,7 @@ shared_float_array prepare_images(turi::image_type image, size_t width, size_t h
 }
 
 flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
-  return (int)(num_styles * 10000.0f / batch_size);
+  return static_cast<int>(num_styles * 10000.0f / batch_size);
 }
 
 }  // namespace
@@ -316,9 +318,8 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
   std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
     *m_resnet_spec, image_width, image_height, std::move(user_defined_metadata));
 
-  if (!filename.empty()) {
+  if (!filename.empty())
     model_wrapper->save(filename);
-  }
 
   return model_wrapper;
 }

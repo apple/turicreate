@@ -38,6 +38,12 @@ BOOST_AUTO_TEST_CASE(test_train) {
   model.train(style_sarray, content_sarray, opts);
 }
 
-BOOST_AUTO_TEST_CASE(test_export_core_ml) {
+// TODO: add more tests for predict
+BOOST_AUTO_TEST_CASE(test_predict) {
+  TS_ASSERT(true);
+}
 
+// TODO: add more tests for export_core_ml
+BOOST_AUTO_TEST_CASE(test_export_core_ml) {
+  TS_ASSERT(true);
 }
