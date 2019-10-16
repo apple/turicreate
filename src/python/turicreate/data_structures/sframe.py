@@ -1338,6 +1338,9 @@ class SFrame(object):
         verbose : bool, optional
             If True, print the progress.
 
+        nrows_to_infer : integer
+            The number of rows used to infer column types.
+
         Returns
         -------
         out : SFrame
