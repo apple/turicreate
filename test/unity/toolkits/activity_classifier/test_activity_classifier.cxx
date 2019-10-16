@@ -62,10 +62,10 @@ class test_activity_classifier : public activity_classifier {
   void set_model_label(flex_list labels) { state.emplace("classes", labels); }
 };
 
-BOOST_AUTO_TEST_CASE(test_activity_classifier_classify) {
+BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   static constexpr size_t test_num_examples = 25;
   static constexpr size_t session_num = 5;
-  const flex_list class_labels = {"a", "b", "c"};
+  const flex_list class_labels = {"a", "b", "c", "d", "e", "f", "g"};
   const std::vector<size_t> session_distribution = {1, 3, 5, 7, 9};
   TS_ASSERT_EQUALS(session_num, session_distribution.size());
   size_t check_sum = 0;
@@ -112,6 +112,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify) {
                                    predict_probability_array);
   classifier.set_model_label(class_labels);
 
+  // test for classify()
   // test for per_window
   gl_sframe predict_result = classifier.classify(gl_sframe(), "per_window");
 
@@ -185,6 +186,96 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify) {
   for (size_t i = 0; i < predict_result.size(); i++) {
     TS_ASSERT_EQUALS((float)gt_prob_per_row[i], (float)prob_array_per_row[i]);
     TS_ASSERT_EQUALS(gt_class_per_row[i], class_array_per_row[i]);
+  }
+
+  // test for predict()
+  // ouput_type = class
+  gl_sarray predict_class = classifier.predict(gl_sframe(), "class");
+  TS_ASSERT_EQUALS(predict_class.size(), test_num_examples);
+  for (size_t i = 0; i < predict_class.size(); i++) {
+    TS_ASSERT_EQUALS(predict_class[i], gt_class_per_row[i]);
+  }
+
+  // output_type = probability_vector
+  gl_sarray predict_probability_vector =
+      classifier.predict(gl_sframe(), "probability_vector");
+  TS_ASSERT_EQUALS(predict_probability_vector.size(), test_num_examples);
+  std::vector<flex_vec> gt_probability_vector;
+  for (size_t i = 0; i < num_samples.size(); i++) {
+    for (size_t j = 0; j < num_samples[i]; j++) {
+      gt_probability_vector.push_back(predict_probability[i]);
+    }
+  }
+  for (size_t i = 0; i < test_num_examples; i++) {
+    flex_vec prob_vec = predict_probability_vector[i].get<flex_vec>();
+    for (size_t j = 0; j < prob_vec.size(); j++) {
+      TS_ASSERT_EQUALS(gt_probability_vector[i][j],
+                       predict_probability_vector[i][j]);
+    }
+  }
+
+  // test for predict_per_window()
+  // output_type = class
+  gl_sframe predict_per_row_class =
+      classifier.predict_per_window(gl_sframe(), "class");
+  TS_ASSERT_EQUALS(predict_per_row_class.size(), num_samples.size());
+  std::vector<std::string> predict_per_row_column_names =
+      predict_per_row_class.column_names();
+  TS_ASSERT_EQUALS(predict_per_row_column_names.size(), 3);
+  TS_ASSERT_EQUALS(predict_per_row_column_names[0], "prediction_id");
+  TS_ASSERT_EQUALS(predict_per_row_column_names[1], "session_id");
+  TS_ASSERT_EQUALS(predict_per_row_column_names[2], "class");
+
+  // test for prediction_id
+  gl_sarray predict_prediction_id = predict_per_row_class["prediction_id"];
+  for (size_t i = 0; i < predict_prediction_id.size(); i++) {
+    TS_ASSERT_EQUALS(predict_prediction_id[i], i);
+  }
+
+  // test for session_id
+  gl_sarray predict_session_id = predict_per_row_class["session_id"];
+  for (size_t i = 0; i < predict_session_id.size(); i++) {
+    TS_ASSERT_EQUALS(predict_session_id[i], session_id[i]);
+  }
+
+  // test for class
+  gl_sarray predict_class_array = predict_per_row_class["class"];
+  TS_ASSERT_EQUALS(predict_class_array.size(), gt_class.size());
+  for (size_t i = 0; i < predict_class_array.size(); i++) {
+    TS_ASSERT_EQUALS(predict_class_array[i], gt_class[i]);
+  }
+
+  // output_type = probability_vector
+  gl_sframe predict_per_row_prob =
+      classifier.predict_per_window(gl_sframe(), "probability_vector");
+  TS_ASSERT_EQUALS(predict_per_row_prob.size(), num_samples.size());
+  std::vector<std::string> predict_per_row_column_names_prob =
+      predict_per_row_prob.column_names();
+  TS_ASSERT_EQUALS(predict_per_row_column_names_prob.size(), 3);
+  TS_ASSERT_EQUALS(predict_per_row_column_names_prob[0], "prediction_id");
+  TS_ASSERT_EQUALS(predict_per_row_column_names_prob[1], "session_id");
+  TS_ASSERT_EQUALS(predict_per_row_column_names_prob[2], "probability_vector");
+
+  // test for prediction_id
+  gl_sarray predict_prediction_id_prob = predict_per_row_prob["prediction_id"];
+  for (size_t i = 0; i < predict_prediction_id_prob.size(); i++) {
+    TS_ASSERT_EQUALS(predict_prediction_id_prob[i], i);
+  }
+
+  // test for session_id
+  gl_sarray predict_session_id_prob = predict_per_row_prob["session_id"];
+  for (size_t i = 0; i < predict_session_id_prob.size(); i++) {
+    TS_ASSERT_EQUALS(predict_session_id_prob[i], session_id[i]);
+  }
+
+  // test for probability_vector
+  gl_sarray predict_probability_vector_prob =
+      predict_per_row_prob["probability_vector"];
+  for (size_t i = 0; i < predict_probability_vector_prob.size(); i++) {
+    for (size_t j = 0; j < class_labels.size(); j++) {
+      TS_ASSERT_EQUALS(predict_probability_vector_prob[i][j],
+                       predict_probability[i][j]);
+    }
   }
 }
 
