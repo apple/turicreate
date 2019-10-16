@@ -5,11 +5,16 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/style_transfer/style_transfer.hpp>
+
+#include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/style_transfer/style_transfer_data_iterator.hpp>
+#include <toolkits/style_transfer/style_transfer_model_definition.hpp>
 
 namespace turi {
 namespace style_transfer {
+
+using turi::neural_net::float_array_map;
 
 namespace {
 
@@ -18,7 +23,47 @@ constexpr size_t STYLE_TRANSFER_VERSION = 1;
 }
 
 void style_transfer::init_options(
-    const std::map<std::string, flexible_type>& opts) {}
+    const std::map<std::string, flexible_type>& opts) {
+
+  options.create_integer_option(
+      "batch_size",
+      "The number of images to process for each training iteration",
+      FLEX_UNDEFINED,
+      1,
+      std::numeric_limits<int>::max());
+
+  options.create_integer_option(
+      "max_iterations",
+      "Maximum number of iterations to perform during training",
+      FLEX_UNDEFINED,
+      1,
+      std::numeric_limits<int>::max());
+
+  options.create_integer_option(
+      "random_seed",
+      "Seed for random weight initialization and sampling during training",
+      FLEX_UNDEFINED,
+      std::numeric_limits<int>::min(),
+      std::numeric_limits<int>::max());
+
+  options.create_integer_option(
+      "batch_size",
+      "The number of images to process for each training iteration",
+      FLEX_UNDEFINED,
+      1,
+      std::numeric_limits<int>::max());
+
+  options.create_integer_option(
+      "num_styles",
+      "The number of styles present in the model",
+      FLEX_UNDEFINED,
+      1,
+      std::numeric_limits<int>::max());
+
+  options.set_options(opts);
+
+  add_or_update_state(flexmap_to_varmap(options.current_option_values()));
+}
 
 size_t style_transfer::get_version() const { return STYLE_TRANSFER_VERSION; }
 
@@ -28,25 +73,15 @@ void style_transfer::save_impl(oarchive& oarc) const {
 }
 
 void style_transfer::load_version(iarchive& iarc, size_t version) {
-  // variant_deep_load(state, iarc);
+  variant_deep_load(state, iarc);
 
-  // float_array_map nn_params;
-  // iarc >> nn_params;
+  float_array_map nn_params;
+  iarc >> nn_params;
 
-  // init_resnet(m_transformer_spec,
-  // variant_get_value<size_t>(state.at("num_classes")));
-
-  // m_transformer_spec->update_params(nn_params);
+  m_transformer_spec = init_resnet(variant_get_value<size_t>(state.at("num_styles")));
+  m_transformer_spec->update_params(nn_params);
 }
 
-// TODO: define nn_spec
-// TODO: define state
-// TODO: figure out what anchor_boxes is
-// nn_spec_.reset(new model_spec);
-//
-// TODO: style_transfer serialization
-//
-// _load_version(iarc, version, *nn_spec_, state, anchor_boxes());
 
 // '_model': transformer,
 // '_training_time_as_string': _seconds_as_string(training_time),
