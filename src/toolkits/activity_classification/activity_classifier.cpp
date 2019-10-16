@@ -496,7 +496,7 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
     const flex_vec& prob_vec = ft.get<flex_vec>();
     std::vector<size_t> index_vec(prob_vec.size());
     std::iota(index_vec.begin(), index_vec.end(), 0);
-    auto compare = [&](size_t& i, size_t& j) {
+    auto compare = [&](const size_t& i, const size_t& j) {
       return prob_vec[i] > prob_vec[j];
     };
     std::sort(index_vec.begin(), index_vec.end(), compare);
@@ -526,7 +526,7 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
     auto get_probability = [=](const sframe_rows::row& row) {
       const flex_list& rank_list = row[rank_column_index];
       flex_list topk_prob;
-      for (auto i : rank_list) {
+      for (auto& i : rank_list) {
         topk_prob.push_back(row[prob_column_index][i]);
       }
       return topk_prob;
@@ -537,7 +537,7 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
 
   // repeat "class" and "rank" column num_samples times if output_frequency is
   // per_row
-  if (output_type == "per_row") {
+  if (output_frequency == "per_row") {
     size_t class_column_index = raw_preds_per_window.column_index("class");
     size_t num_samples_column_index =
         raw_preds_per_window.column_index("num_samples");
@@ -555,7 +555,19 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
 
   // construct the final result
   gl_sframe result = gl_sframe();
-  if (output_frequency == "per_window") {
+  if (output_frequency == "per_row") {
+    gl_sframe stacked_class =
+        gl_sframe({{"class", raw_preds_per_window["class"]}})
+            .stack("class", "class");
+    result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
+                      "row_id");
+    result.add_column(stacked_class["class"], "class");
+    result = result.stack("class", "class");
+    gl_sframe stacked_rank = gl_sframe({{"rank", raw_preds_per_window["rank"]}})
+                                 .stack("rank", "rank");
+    stacked_rank = stacked_rank.stack("rank", "rank");
+    result.add_column(stacked_rank["rank"], "rank");
+  } else {
     result.add_column(raw_preds_per_window["session_id"], "exp_id");
     result.add_column(gl_sarray::from_sequence(0, raw_preds_per_window.size()),
                       "prediction_id");
@@ -564,26 +576,6 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
     gl_sframe rank_per_row = gl_sframe({{"rank", raw_preds_per_window["rank"]}})
                                  .stack("rank", "rank");
     result.add_column(rank_per_row["rank"], "rank");
-  } else {
-    gl_sframe stacked_class =
-        gl_sframe({{"class", raw_preds_per_window["class"]}})
-            .stack("class", "class");
-    std::cout << "a\n";
-    result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
-                      "row_id");
-    std::cout << "b\n";
-    std::cout << result.size() << '\n';
-    return result;
-    result.add_column(stacked_class["class"], "class");
-    std::cout << "c\n";
-    result = result.stack("class", "class");
-    std::cout << "d\n";
-    gl_sframe stacked_rank = gl_sframe({{"rank", raw_preds_per_window["rank"]}})
-                                 .stack("rank", "rank");
-    std::cout << "e\n";
-    stacked_rank = stacked_rank.stack("rank", "rank");
-    std::cout << "f\n";
-    result.add_column(stacked_rank["rank"]);
   }
 
   // change the column name rank to probability according to the output_type
