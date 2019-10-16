@@ -18,7 +18,7 @@ namespace {
 
 class test_activity_classifier : public activity_classifier {
  public:
-  class useless_iterator : public data_iterator {
+  class mock_iterator : public data_iterator {
     flex_list class_labels_;
     flex_list feature_names_;
     void reset() override { return; }
@@ -44,7 +44,7 @@ class test_activity_classifier : public activity_classifier {
   std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, bool requires_labels, bool is_train,
       bool use_data_augmentation) const override {
-    return std::unique_ptr<useless_iterator>(new useless_iterator());
+    return std::unique_ptr<mock_iterator>(new mock_iterator());
   }
 
   gl_sframe perform_inference(data_iterator* data) const override {
