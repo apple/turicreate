@@ -1271,9 +1271,6 @@ class SFrame(object):
             continue parsing skipping lines which fail to parse correctly.
             A sample of the first 10 encountered bad lines will be printed.
 
-        nrows_to_infer: integer
-            Get the number of nrows_to_infer rows enabling the arguments as specified.
-
         comment_char : string, optional
             The character which denotes that the remainder of the line is a
             comment.
@@ -1340,6 +1337,9 @@ class SFrame(object):
 
         verbose : bool, optional
             If True, print the progress.
+
+        nrows_to_infer : integer
+            The number of rows used to infer column types.
 
         Returns
         -------
