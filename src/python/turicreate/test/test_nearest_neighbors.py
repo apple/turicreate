@@ -277,8 +277,9 @@ class NearestNeighborsCreateTest(unittest.TestCase):
                 tc.nearest_neighbors.create(self.refs, self.label, ['str_ftr'],
                                             distance=dist_name)
             except ToolkitError as e:
-                self.assertEqual(str(e),
-                    "The only distance allowed for string features is 'levenshtein'. Please try this distance, or use 'text_analytics.count_ngrams' to convert the strings to dictionaries, which permit more distance functions.\n")
+                self.assertTrue(str(e).startswith("The only distance allowed for string features is 'levenshtein'. "
+                                                  "Please try this distance, or use 'text_analytics.count_ngrams' to "
+                                                  "convert the strings to dictionaries, which permit more distance functions.\n"))
 
     def test_create_sparse_distances(self):
         """
@@ -335,16 +336,17 @@ class NearestNeighborsCreateTest(unittest.TestCase):
                                             method='brute_force',
                                             verbose=False)
             except ToolkitError as e:
-                self.assertEqual(str(e),
-                    "Cannot compute jaccard distances with column 'array_ftr'."+\
-                    " Jaccard distances currently can only be computed for"
-                    " dictionary and list features.\n")
+                self.assertTrue(str(e).startswith("Cannot compute jaccard distances with column 'array_ftr'."
+                                                  " Jaccard distances currently can only be computed for"
+                                                  " dictionary and list features.\n"))
 
             try:
                 tc.nearest_neighbors.create(self.refs, self.label, ['str_ftr'],
                                             distance=dist_name, verbose=False)
             except ToolkitError as e:
-                self.assertEqual(str(e), "The only distance allowed for string features is 'levenshtein'. Please try this distance, or use 'text_analytics.count_ngrams' to convert the strings to dictionaries, which permit more distance functions.\n")
+                self.assertTrue(str(e).startswith("The only distance allowed for string features is 'levenshtein'. "
+                                                  "Please try this distance, or use 'text_analytics.count_ngrams' "
+                                                  "to convert the strings to dictionaries, which permit more distance functions.\n"))
 
         ## Jacard distance throws TypeError on lists of non-strings
         refs = self.refs.__copy__()
@@ -402,9 +404,8 @@ class NearestNeighborsCreateTest(unittest.TestCase):
                                             distance=dist_name,
                                             method='brute_force', verbose=False)
             except ToolkitError as e:
-                self.assertEqual(str(e),
-                    "Cannot compute {} distance with column 'dict_ftr'.".format(dist_name) +\
-                    " {} distance can only computed for string features.\n".format(dist_name))
+                self.assertTrue(str(e).startswith("Cannot compute {} distance with column 'dict_ftr'.".format(dist_name) +
+                                                  " {} distance can only computed for string features.\n".format(dist_name)))
 
     def test_create_composite_distances(self):
         """

@@ -1,5 +1,0 @@
--- Enabled features:
- \* Foo, Foo\.
- \* Bar, Bar\.
-
--- Configuring done

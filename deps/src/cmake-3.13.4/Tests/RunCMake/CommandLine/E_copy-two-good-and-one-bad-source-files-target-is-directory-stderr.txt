@@ -1,1 +1,0 @@
-^Error copying file .*not_existing_file.bad\" to .*

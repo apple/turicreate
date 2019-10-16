@@ -1,9 +1,0 @@
-CMake Error at BadInstallPrefix.cmake:1 \(add_custom_target\):
-  Error evaluating generator expression:
-
-    \$<INSTALL_PREFIX>
-
-  INSTALL_PREFIX is a marker for install\(EXPORT\) only.  It should never be
-  evaluated.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

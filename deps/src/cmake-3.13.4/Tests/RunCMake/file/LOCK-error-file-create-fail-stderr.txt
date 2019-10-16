@@ -1,8 +1,0 @@
-CMake Error at LOCK-error-file-create-fail\.cmake:[0-9]+ \(file\):
-  file
-
-    ".*"
-
-  creation failed \(check permissions\)\.
-Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)

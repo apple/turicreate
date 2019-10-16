@@ -1,3 +1,0 @@
-void b(void)
-{
-}

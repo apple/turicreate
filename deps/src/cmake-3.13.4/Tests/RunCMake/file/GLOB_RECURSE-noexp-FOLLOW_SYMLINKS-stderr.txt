@@ -1,4 +1,0 @@
-^CMake Error at GLOB_RECURSE-noexp-FOLLOW_SYMLINKS\.cmake:[0-9]+ \(file\):
-  file GLOB_RECURSE requires a glob expression after FOLLOW_SYMLINKS\.
-Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)$

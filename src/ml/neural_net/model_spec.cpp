@@ -20,14 +20,20 @@ namespace neural_net {
 
 namespace {
 
+using CoreML::Specification::BorderAmounts_EdgeSizes;
 using CoreML::Specification::BatchnormLayerParams;
 using CoreML::Specification::ConvolutionLayerParams;
 using CoreML::Specification::InnerProductLayerParams;
 using CoreML::Specification::Model;
 using CoreML::Specification::NeuralNetwork;
+using CoreML::Specification::NeuralNetworkImageScaler;
 using CoreML::Specification::NeuralNetworkLayer;
+using CoreML::Specification::NeuralNetworkPreprocessing;
+using CoreML::Specification::PoolingLayerParams;
+using CoreML::Specification::PaddingLayerParams;
 using CoreML::Specification::SamePadding;
 using CoreML::Specification::UniDirectionalLSTMLayerParams;
+using CoreML::Specification::UpsampleLayerParams;
 using CoreML::Specification::WeightParams;
 
 size_t multiply(size_t a, size_t b) { return a * b; }
@@ -182,13 +188,22 @@ void wrap_network_params(const std::string& name,
       {n}, batch_norm.beta());
   params_out->emplace(name + "_beta", std::move(beta));
 
-  shared_float_array mean = weight_params_float_array::create_view(
-      {n}, batch_norm.mean());
-  params_out->emplace(name + "_running_mean", std::move(mean));
 
-  shared_float_array variance = weight_params_float_array::create_view(
-      {n}, batch_norm.variance());
-  params_out->emplace(name + "_running_var", std::move(variance));
+  // The CoreML Spec uses the batchNorm layer to do instanceNormalization. This 
+  // can cause issues in CoreML imports because those layers in particular don't
+  // contain moving mean and moving variance values since the batch is 
+  // technically irrelevant in InstanceNorm. This check is in place to catch
+  // these instances.
+
+  if (!batch_norm.instancenormalization()) {
+    shared_float_array mean = weight_params_float_array::create_view(
+        {n}, batch_norm.mean());
+    params_out->emplace(name + "_running_mean", std::move(mean));
+
+    shared_float_array variance = weight_params_float_array::create_view(
+        {n}, batch_norm.variance());
+    params_out->emplace(name + "_running_var", std::move(variance));
+  }
 }
 
 void update_network_params(const std::string& name,
@@ -551,6 +566,35 @@ void model_spec::add_sigmoid(const std::string& name,
   layer->mutable_activation()->mutable_sigmoid();
 }
 
+void model_spec::add_pooling(const std::string& name, const std::string& input,
+                             size_t kernel_height, size_t kernel_width,
+                             size_t stride_h, size_t stride_w,
+                             padding_type padding,
+                             bool use_poolexcludepadding) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  PoolingLayerParams* params = layer->mutable_pooling();
+  params->add_kernelsize(kernel_height);
+  params->add_kernelsize(kernel_width);
+  params->add_stride(stride_h);
+  params->add_stride(stride_w);
+  switch (padding) {
+    case padding_type::VALID:
+      params->mutable_valid()->mutable_paddingamounts()->add_borderamounts();
+      params->mutable_valid()->mutable_paddingamounts()->add_borderamounts();
+      break;
+    case padding_type::SAME:
+      params->mutable_same();
+      break;
+  }
+  if (use_poolexcludepadding) {
+    params->set_avgpoolexcludepadding(true);
+  }
+}
+
 void model_spec::add_convolution(
     const std::string& name, const std::string& input,
     size_t num_output_channels, size_t num_kernel_channels,
@@ -593,6 +637,47 @@ void model_spec::add_convolution(
     init_weight_params(params->mutable_bias(), num_output_channels,
                        bias_initializer_fn);
   }
+}
+
+void model_spec::add_padding(
+    const std::string& name, const std::string& input,
+    size_t padding_top, size_t padding_bottom, size_t padding_left,
+    size_t padding_right) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  PaddingLayerParams* params = layer->mutable_padding();
+  BorderAmounts_EdgeSizes* top_bottom = params->mutable_paddingamounts()->add_borderamounts();
+  BorderAmounts_EdgeSizes* left_right = params->mutable_paddingamounts()->add_borderamounts();
+
+
+  top_bottom->set_startedgesize(padding_top);
+  top_bottom->set_endedgesize(padding_bottom);
+
+  left_right->set_startedgesize(padding_left);
+  left_right->set_endedgesize(padding_right);
+
+  /**
+   * TODO: Currently we only handle reflective padding in our CoreMLmodels.
+   * If you need to support more type of padding in this particular layer
+   * please modify the code below to extent functionality.
+   */
+  params->mutable_reflection();
+}
+
+void model_spec::add_upsampling(
+    const std::string& name, const std::string& input,
+    size_t scaling_x, size_t scaling_y) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  UpsampleLayerParams* params = layer->mutable_upsample();
+  params->add_scalingfactor(scaling_x);
+  params->add_scalingfactor(scaling_y);
 }
 
 void model_spec::add_inner_product(
@@ -638,6 +723,26 @@ void model_spec::add_batchnorm(
   params->mutable_beta()->mutable_floatvalue()->Resize(size, 0.f);
   params->mutable_mean()->mutable_floatvalue()->Resize(size, 0.f);
   params->mutable_variance()->mutable_floatvalue()->Resize(size, 1.f);
+}
+
+void model_spec::add_instancenorm(
+    const std::string& name, const std::string& input, size_t num_channels,
+    float epsilon) {
+
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  BatchnormLayerParams* params = layer->mutable_batchnorm();
+  params->set_channels(num_channels);
+  params->set_epsilon(epsilon);
+  params->set_instancenormalization(true);
+  params->set_computemeanvar(true);
+
+  int size = static_cast<int>(num_channels);
+  params->mutable_gamma()->mutable_floatvalue()->Resize(size, 1.f);
+  params->mutable_beta()->mutable_floatvalue()->Resize(size, 0.f);
 }
 
 void model_spec::add_channel_concat(const std::string& name,
@@ -849,6 +954,14 @@ void model_spec::add_lstm(
                      output_vector_size, initializers.block_input_bias_fn);
   init_weight_params(lstm_weights->mutable_outputgatebiasvector(),
                      output_vector_size, initializers.output_gate_bias_fn);
+}
+
+void model_spec::add_preprocessing(const std::string& feature_name,
+                                   const float image_scale) {
+  NeuralNetworkPreprocessing* layer = impl_->add_preprocessing();
+  layer->set_featurename(feature_name);
+  NeuralNetworkImageScaler* image_scaler = layer->mutable_scaler();
+  image_scaler->set_channelscale(image_scale);
 }
 
 }  // neural_net

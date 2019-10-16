@@ -1,4 +1,0 @@
-^CMake Error at TargetImported.cmake:2 \(add_custom_command\):
-  TARGET 'TargetImported' is IMPORTED and does not build here.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

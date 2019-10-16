@@ -101,6 +101,8 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
         [500 rows x 4 columns]
     """
     start_time = _time.time()
+    if not isinstance(dataset, _tc.SFrame):
+        raise TypeError("'dataset' must be of type SFrame.")
 
     # Check parameters
     allowed_models = list(_pre_trained_models.MODELS.keys())

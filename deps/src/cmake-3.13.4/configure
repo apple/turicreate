@@ -1,3 +1,0 @@
-#!/bin/sh
-cmake_source_dir=`cd "\`dirname \"$0\"\`";pwd`
-exec "${cmake_source_dir}/bootstrap" "$@"

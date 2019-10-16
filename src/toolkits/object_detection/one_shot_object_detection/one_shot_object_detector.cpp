@@ -32,9 +32,11 @@ namespace one_shot_object_detection {
 namespace data_augmentation {
 
 flex_dict build_annotation(ParameterSampler &parameter_sampler,
-                           std::string label, size_t object_width,
-                           size_t object_height, long seed) {
-  parameter_sampler.sample(seed);
+                           const std::string &label,
+                           size_t object_width, size_t object_height,
+                           size_t background_width, size_t background_height,
+                           size_t seed, size_t row_number) {
+  parameter_sampler.sample(background_width, background_height, seed, row_number);
 
   size_t original_top_left_x = 0;
   size_t original_top_left_y = 0;
@@ -118,20 +120,19 @@ flex_image create_rgba_flex_image(const flex_image &object_input) {
 }
 
 std::pair<flex_image, flex_dict>
-create_synthetic_image_from_background_and_starter(const flex_image &starter,
+create_synthetic_image_from_background_and_starter(ParameterSampler &parameter_sampler,
+                                                   const flex_image &starter,
                                                    const flex_image &background,
                                                    std::string &label,
                                                    size_t seed,
                                                    size_t row_number) {
-  ParameterSampler parameter_sampler =
-      ParameterSampler(background.m_width, background.m_height,
-                       (background.m_width - starter.m_width) / 2,
-                       (background.m_height - starter.m_height) / 2);
 
   // construct annotation dictionary from parameters
   flex_dict annotation =
-      build_annotation(parameter_sampler, label, starter.m_width,
-                       starter.m_height, seed + row_number);
+      build_annotation(parameter_sampler, label, 
+                       starter.m_width, starter.m_height,
+                       background.m_width, background.m_height,
+                       seed, row_number);
 
   if (background.get_image_data() == nullptr) {
     log_and_throw("Background image has null image data.");
@@ -156,7 +157,7 @@ create_synthetic_image_from_background_and_starter(const flex_image &starter,
       background.m_width, background.m_height,
       reinterpret_cast<const boost::gil::rgb8_pixel_t *>(
           background.get_image_data()),
-      background.m_channels * background.m_width  // row length in bytes
+      background.m_channels * background.m_width // row length in bytes
   );
   flex_image synthetic_image = create_synthetic_image(
       starter_image_view, background_view, parameter_sampler);
@@ -209,23 +210,28 @@ gl_sframe augment_data(const gl_sframe &data,
    * Replacing the `for` with a `parallel_for` fails the export_coreml unit test
    * with an EXC_BAD_ACCESS in the function call to boost::gil::resample_pixels
    */
-  for (size_t segment_id = 0; segment_id < nsegments; segment_id++) {
-    size_t segment_start = (segment_id * backgrounds.size()) / nsegments;
-    size_t segment_end = ((segment_id + 1) * backgrounds.size()) / nsegments;
-    size_t row_number = segment_start;
-    for (const auto &background_ft :
-         backgrounds.range_iterator(segment_start, segment_end)) {
-      row_number++;
-      flex_image flex_background =
-          image_util::decode_image(background_ft.to<flex_image>());
-      for (const auto &row : decompressed_data.range_iterator()) {
-        // go through all the starter images and create augmented images for
-        // all starter images and the respective chunk of background images
-        const flex_image &object = row[image_column_index].get<flex_image>();
-        std::string label = row[target_column_index].to<flex_string>();
+  for (const sframe_rows::row &row : decompressed_data.range_iterator()) {
+    // go through all the starter images and create augmented images for
+    // all starter images and the respective chunk of background images
+    const flex_image &object = row[image_column_index].get<flex_image>();
+    std::string label = row[target_column_index].to<flex_string>();
+    ParameterSampler parameter_sampler = ParameterSampler(
+      object.m_width, object.m_height, 0, 0);
+
+    for (size_t segment_id = 0; segment_id < nsegments; segment_id++) {
+      size_t segment_start = (segment_id * backgrounds.size()) / nsegments;
+      size_t segment_end = ((segment_id + 1) * backgrounds.size()) / nsegments;
+      size_t row_number = segment_start;
+      for (const flexible_type &background_ft :
+          backgrounds.range_iterator(segment_start, segment_end)) {
+        row_number++;
+        flex_image flex_background =
+            image_util::decode_image(background_ft.to<flex_image>());
+        
         std::pair<flex_image, flex_dict> synthetic_row =
             create_synthetic_image_from_background_and_starter(
-                object, flex_background, label, seed, row_number);
+                parameter_sampler, object, flex_background,
+                label, seed, row_number);
         flex_image synthetic_image = synthetic_row.first;
         flex_dict annotation = synthetic_row.second;
         // write the synthetically generated image and the constructed

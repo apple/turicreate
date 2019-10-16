@@ -8,7 +8,7 @@ toolkits
 visualization)
 
 
-if(${TC_BUILD_PYTHON})
+if(TC_BUILD_PYTHON)
   subdirs(python)
 
   include_directories(${PYTHON_INCLUDE_DIRS})

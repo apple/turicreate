@@ -48,6 +48,20 @@ private:
   std::mt19937& random_engine_;
 };
 
+struct scalar_weight_initializer {
+  /**
+   * Creates a weight initializer that initializes all of the weights to a
+   * constant scalar value.
+   * 
+   * \param scalar The scalar value to initialize the weights to.
+   */
+  scalar_weight_initializer(float scalar);
+  void operator()(float* first_weight, float* last_weight);
+
+ private:
+  float scalar_;
+};
+
 struct zero_weight_initializer {
 
   // No work is required, since we assume the buffer is zero-initialized.
@@ -59,6 +73,7 @@ struct lstm_weight_initializers {
 
   static lstm_weight_initializers create_with_xavier_method(
       size_t input_size, size_t state_size, std::mt19937* random_engine);
+  static lstm_weight_initializers create_with_zero();
 
   // Initializers for matrices applied to sequence input
   weight_initializer input_gate_weight_fn;

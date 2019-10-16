@@ -1,6 +1,0 @@
-CMake Error at .*Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
-  The compiler-specific output directory must be within the same directory as
-  the main file.
-Call Stack \(most recent call first\):
-  MultiBadOutDir.cmake:4 \(write_compiler_detection_header\)
-  CMakeLists.txt:3 \(include\)

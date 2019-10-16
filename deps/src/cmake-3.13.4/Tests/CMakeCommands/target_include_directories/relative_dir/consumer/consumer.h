@@ -1,2 +1,0 @@
-
-#define CONSUMER_DEFINE

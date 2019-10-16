@@ -1,8 +1,8 @@
-var LabelType = {
+var LabelTypes = {
   INTEGER:0,
   STRING: 1,
 };
 
-Object.freeze(LabelType);
+Object.freeze(LabelTypes);
 
-export const LabelType = LabelType;
+export const LabelType = LabelTypes;

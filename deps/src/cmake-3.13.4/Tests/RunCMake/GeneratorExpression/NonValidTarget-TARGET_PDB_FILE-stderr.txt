@@ -1,8 +1,0 @@
-CMake Error at NonValidTarget-TARGET_PDB_FILE.cmake:6 \(file\):
-  Error evaluating generator expression:
-
-    \$<TARGET_PDB_FILE:empty>
-
-  TARGET_PDB_FILE is allowed only for targets with linker created artifacts.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

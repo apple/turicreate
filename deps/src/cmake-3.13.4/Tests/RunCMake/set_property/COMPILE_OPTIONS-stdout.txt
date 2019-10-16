@@ -1,2 +1,0 @@
--- Target COMPILE_OPTIONS is 'a;b;c;d;;e'
--- Directory COMPILE_OPTIONS is 'a;b;c;d;;e'

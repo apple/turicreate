@@ -1,4 +1,0 @@
-^CMake Error at SORT-WrongOption.cmake:1 \(list\):
-  list sub-command SORT option "one_too_many" is unknown.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

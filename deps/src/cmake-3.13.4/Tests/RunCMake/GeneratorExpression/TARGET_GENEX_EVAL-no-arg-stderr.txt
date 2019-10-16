@@ -1,9 +1,0 @@
-^CMake Error at TARGET_GENEX_EVAL-no-arg.cmake:4 \(add_custom_command\):
-  Error evaluating generator expression:
-
-    \$<TARGET_GENEX_EVAL:>
-
-  \$<TARGET_GENEX_EVAL> expression requires 2 comma separated parameters, but
-  got 1 instead.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

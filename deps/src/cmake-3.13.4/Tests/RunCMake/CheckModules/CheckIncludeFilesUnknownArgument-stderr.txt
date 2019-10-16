@@ -1,8 +1,0 @@
-CMake Error at .*/Modules/CheckIncludeFiles.cmake:[0-9]+. \(message\):
-  Unknown arguments:
-
-    FOOBAR
-
-Call Stack \(most recent call first\):
-  CheckIncludeFilesUnknownArgument.cmake:[0-9]+ \(check_include_files\)
-  CMakeLists.txt:[0-9]+ \(include\)

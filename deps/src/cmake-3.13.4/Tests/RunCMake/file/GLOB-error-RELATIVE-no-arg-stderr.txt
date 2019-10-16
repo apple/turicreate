@@ -1,4 +1,0 @@
-^CMake Error at GLOB-error-RELATIVE-no-arg\.cmake:[0-9]+ \(file\):
-  file GLOB requires a directory after the RELATIVE tag\.
-Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)$

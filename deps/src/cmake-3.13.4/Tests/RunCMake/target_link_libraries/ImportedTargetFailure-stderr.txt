@@ -1,5 +1,0 @@
-^CMake Error at ImportedTargetFailure.cmake:[0-9]+ \(target_link_libraries\):
-  IMPORTED library can only be used with the INTERFACE keyword of
-  target_link_libraries
-Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)$

@@ -1,4 +1,0 @@
-CMake Error at multiple-targets.cmake:7 \(add_library\):
-  add_library ALIAS requires exactly one target argument.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

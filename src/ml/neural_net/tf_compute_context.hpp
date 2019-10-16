@@ -7,10 +7,12 @@
 #ifndef UNITY_TOOLKITS_NEURAL_NET_TF_COMPUTE_CONTEXT_HPP_
 #define UNITY_TOOLKITS_NEURAL_NET_TF_COMPUTE_CONTEXT_HPP_
 
+#include <core/export.hpp>
 #include <ml/neural_net/compute_context.hpp>
 
 namespace turi {
 namespace neural_net {
+
 
 
 /**
@@ -18,16 +20,15 @@ namespace neural_net {
  * for neural network computation and for data
  * augmentation.
  */
-class tf_compute_context: public compute_context {
+EXPORT class tf_compute_context: public compute_context {
 public:
-
 
   /**
    * Constructs a context wrapping devices.
    */
   tf_compute_context();
 
-  ~tf_compute_context();
+  virtual ~tf_compute_context();
 
   std::vector<std::string> gpu_names() const override;
   size_t memory_budget() const override;
@@ -40,8 +41,12 @@ public:
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config, const float_array_map& weights) override;
 
+  std::unique_ptr<model_backend> create_style_transfer(
+      const float_array_map& config, const float_array_map& weights) override;
+
   std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options &opts) override;
+  
 };
 
 }  // namespace neural_net

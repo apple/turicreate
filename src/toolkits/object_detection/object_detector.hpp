@@ -43,6 +43,7 @@ class EXPORT object_detector: public ml_model_base {
   gl_sarray predict(gl_sframe data);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
+  void import_from_custom_model(variant_map_type model_data, size_t version);
 
   // Register with Unity server
 
@@ -99,6 +100,9 @@ class EXPORT object_detector: public ml_model_base {
       "    the confidence_threshold are eliminiated. If no value is specified,\n"
       "    a default value of 0.25 is used.\n"
   );
+
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::import_from_custom_model,
+                                 "model_data", "version");
 
   // TODO: Remainder of interface: predict, etc.
 
@@ -163,6 +167,7 @@ class EXPORT object_detector: public ml_model_base {
       const;
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;
+  flex_int get_num_classes() const;
 
   // Sets certain user options heuristically (from the data).
   void infer_derived_options();

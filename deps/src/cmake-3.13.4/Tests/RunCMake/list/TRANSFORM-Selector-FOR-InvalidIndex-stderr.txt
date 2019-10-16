@@ -1,4 +1,0 @@
-^CMake Error at TRANSFORM-Selector-FOR-InvalidIndex.cmake:2 \(list\):
-  list sub-command TRANSFORM, selector FOR, index: 6 out of range \(-3, 2\).
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

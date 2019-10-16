@@ -1,5 +1,0 @@
-^CMake Error at TRANSFORM-REPLACE-InvalidRegex.cmake:2 \(list\):
-  list sub-command TRANSFORM, action REPLACE: Failed to compile regex
-  "\^\(alpha\$".
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

@@ -34,7 +34,8 @@ class TCEvaluationImageCells extends Component {
            onMouseLeave={this.offHoverState.bind(this)}>
         <div className="TCEvaluationImageCells">
           <img width={30}
-               src={"data:image/"+this.props.value.format+";base64,"+this.props.value.data} />
+               src={"data:image/"+this.props.value.format+";base64,"+this.props.value.data} 
+	       alt="" />
         </div>
         {this.renderImage()}
       </div>

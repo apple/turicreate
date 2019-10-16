@@ -9,7 +9,7 @@ endif()
 set(CFLAGS "-fPIC -I${CMAKE_SOURCE_DIR}/deps/local/include -L${CMAKE_SOURCE_DIR}/deps/local/lib")
 ExternalProject_Add(ex_libpng
   PREFIX ${CMAKE_SOURCE_DIR}/deps/build/libpng
-  URL ${CMAKE_SOURCE_DIR}/deps/src/libpng-1.6.14/
+  URL ${CMAKE_SOURCE_DIR}/deps/src/libpng-1.6.37/
   INSTALL_DIR ${CMAKE_SOURCE_DIR}/deps/local
   CONFIGURE_COMMAND env "CFLAGS=${CFLAGS} ${ARCH_FLAG} ${C_REAL_COMPILER_FLAGS}" "CPPFLAGS=${CFLAGS} ${ARCH_FLAG} ${C_REAL_COMPILER_FLAGS}" <SOURCE_DIR>/configure --enable-shared=no --prefix=<INSTALL_DIR> ${EXTRA_CONFIGURE_FLAGS}
   INSTALL_COMMAND make install

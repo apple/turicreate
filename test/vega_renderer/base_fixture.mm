@@ -10,13 +10,10 @@
 #include <boost/algorithm/string/replace.hpp>
 #include <core/util/test_macros.hpp>
 
-#import <visualization/vega_renderer/VegaRenderer.h>
+#import <visualization/vega_renderer/TCVegaRenderer.h>
 #import "vega_webkit_renderer.hpp"
 
 using namespace vega_renderer::test_utils;
-
-#define Q(x) #x
-#define QUOTE(x) Q(x)
 
 std::string base_fixture::make_format_string(unsigned char *raw_format_str_ptr,
                                                     size_t raw_format_str_len) {
@@ -214,10 +211,10 @@ void base_fixture::expected_rendering(const std::string& spec,
         [[webConfig userContentController] addScriptMessageHandler:webRenderer name:@"error"];
         WKWebView *webView = [[WKWebView alloc] initWithFrame:CGRectZero configuration:webConfig];
         [webView loadHTMLString:@"" baseURL:nil];
-        [webView evaluateJavaScript:VegaRenderer.vegaJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
+        [webView evaluateJavaScript:TCVegaRenderer.vegaJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
             TS_ASSERT_EQUALS(error, nil);
             BOOST_TEST_MESSAGE("Finished loading vega.js.");
-            [webView evaluateJavaScript:VegaRenderer.vegaliteJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
+            [webView evaluateJavaScript:TCVegaRenderer.vegaliteJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
                 TS_ASSERT_EQUALS(error, nil);
                 BOOST_TEST_MESSAGE("Finished loading vega-lite.js.");
                 [webView evaluateJavaScript:vg2pngJS completionHandler:^(id _Nullable _, NSError * _Nullable error) {
@@ -259,7 +256,8 @@ void base_fixture::run_test_case_with_spec(const std::string& test_spec, const s
         BOOST_TEST_MESSAGE("Running test case with name: " + name);
         std::string spec = test_spec;
         spec = this->replace_urls_with_values_in_spec(spec);
-        VegaRenderer *view = [[VegaRenderer alloc] initWithSpec:[NSString stringWithUTF8String:spec.c_str()]];
+        // TODO: Should we be using the device's actual scale factor here?
+        TCVegaRenderer *view = [[TCVegaRenderer alloc] initWithSpec:[NSString stringWithUTF8String:spec.c_str()] config:nil scaleFactor:2];
         CGImageRef actual = view.CGImage;
         this->expected_rendering(spec, [this, &actual, &name, acceptable_diff](CGImageRef expected) {
             TS_ASSERT_DIFFERS(expected, nil);

@@ -220,6 +220,8 @@ def create(dataset, target, feature=None, model = 'resnet-50',
     ImageClassifier
     """
     start_time = _time.time()
+    if not isinstance(dataset, _tc.SFrame):
+        raise TypeError('"dataset" must be of type SFrame.')
 
     # Check model parameter
     allowed_models = list(_pre_trained_models.MODELS.keys())
@@ -235,6 +237,8 @@ def create(dataset, target, feature=None, model = 'resnet-50',
     _tkutl._check_categorical_option_type('model', model, allowed_models)
 
     # Check dataset parameter
+    if not isinstance(dataset, _tc.SFrame):
+        raise TypeError("Unrecognized type for 'dataset'. An SFrame is expected.")
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
     if (feature is not None) and (feature not in dataset.column_names()):
@@ -667,6 +671,8 @@ class ImageClassifier(_CustomModel):
 
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
+        if self.target not in dataset.column_names():
+            raise _ToolkitError("Target column '%s' does not exist" % self.target)
 
         extracted_features = self._extract_features(dataset, verbose=verbose, batch_size=batch_size)
         extracted_features[self.target] = dataset[self.target]

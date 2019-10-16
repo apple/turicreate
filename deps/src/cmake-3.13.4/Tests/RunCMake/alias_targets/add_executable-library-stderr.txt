@@ -1,5 +1,0 @@
-CMake Error at add_executable-library.cmake:6 \(add_executable\):
-  add_executable cannot create ALIAS target "alias" because target "foo" is
-  not an executable.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

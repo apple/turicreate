@@ -1,4 +1,0 @@
-CMake Error at LOCK-error-no-result-variable\.cmake:[0-9]+ \(file\):
-  expected variable name after RESULT_VARIABLE
-Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)

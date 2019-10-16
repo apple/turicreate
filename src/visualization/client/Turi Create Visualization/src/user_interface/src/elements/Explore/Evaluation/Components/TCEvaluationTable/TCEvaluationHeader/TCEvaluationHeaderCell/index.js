@@ -12,33 +12,36 @@ class TCEvaluationHeaderCell extends Component {
         return (
           <div className="TCEvaluationHeaderCellDropDown"
                style={{"transform": "rotate(180deg)"}}>
-            <img src={caret_down}/>
+            <img src={caret_down}
+		 alt=""/>
           </div>
         )
       }else{
         return (
           <div className="TCEvaluationHeaderCellDropDown">
-            <img src={caret_down}/>
+            <img src={caret_down}
+		 alt=""/>
           </div>
         )
       }
     }else{
       return (
         <div className="TCEvaluationHeaderCellDropDown">
-          <img src={down}/>
+          <img src={down}
+	       alt=""/>
         </div>
       )
     }
   }
 
   render() {
-    if(this.props.type == "images"){
+    if(this.props.type === "images"){
       return (
         <div className="TCEvaluationHeaderCellImages">
           {this.props.name}
         </div>
       );
-    }else if(this.props.type == "percent"){
+    }else if(this.props.type === "percent"){
       return (
         <div className="TCEvaluationHeaderCellPercent"
              onClick={this.props.onclick.bind(this)}>
@@ -46,7 +49,7 @@ class TCEvaluationHeaderCell extends Component {
           {this.renderCarret()}
         </div>
       );
-    }else if(this.props.type == "amount"){
+    }else if(this.props.type === "amount"){
       return (
         <div className="TCEvaluationHeaderCellAmount"
              onClick={this.props.onclick.bind(this)}>

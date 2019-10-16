@@ -1,7 +1,0 @@
--- The following features have been disabled:
-
- \* Bar, Bar\.
-
--- The following features have been enabled:
-
- \* Foo, Foo\.

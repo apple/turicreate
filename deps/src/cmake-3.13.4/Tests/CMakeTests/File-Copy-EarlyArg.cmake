@@ -1,1 +1,0 @@
-file(COPY FileTest.cmake DESTINATION tmp PERMISSIONS)

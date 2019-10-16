@@ -520,25 +520,6 @@ class _Recommender(_Model):
         return None
 
 
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'predict': {
-                    'dataset': 'sframe',
-                    'new_observation_data': 'sframe',
-                    'new_user_data': 'sframe',
-                    'new_item_data': 'sframe'
-                },
-                'recommend': {
-                    'users': ['sframe', 'sarray'],
-                    'items': ['sframe', 'sarray'],
-                    'new_observation_data': 'sframe',
-                    'new_user_data': 'sframe',
-                    'new_item_data': 'sframe',
-                    'exclude': 'sframe'}
-                }
-
 
     def _list_fields(self):
         """
@@ -1456,6 +1437,7 @@ class _Recommender(_Model):
         recommendations = self.recommend(
             users                = users,
             new_observation_data = observed_items,
+	    exclude		= exclude,
             k                    = k,
             items                = items,
             new_user_data        = new_user_data,
@@ -1475,8 +1457,7 @@ class _Recommender(_Model):
         Get information about model creation, e.g. time elapsed during
         model fitting, data loading, and more.
 
-        Note: This method will be *deprecated* soon. Please use m.summary()
-        instead.
+        ..WARNING:: This method is *deprecated*. Please use m.summary() instead.
 
         Returns
         -------
@@ -1484,8 +1465,9 @@ class _Recommender(_Model):
             Statistics about model training, e.g. runtime.
 
         """
+        import warnings
 
-        _logging.warning("This method will be deprecated soon. Please use m.summary().")
+        warnings.warn("This method is deprecated. Please use m.summary().")
         response = self.__proxy__.get_train_stats()
         return response
 

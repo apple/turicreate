@@ -1,2 +1,0 @@
-MODULE libraryModuleB
-END MODULE

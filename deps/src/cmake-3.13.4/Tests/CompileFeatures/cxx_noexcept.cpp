@@ -1,4 +1,0 @@
-
-void someFunc() noexcept
-{
-}

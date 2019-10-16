@@ -1,9 +1,0 @@
-CMake Warning \(dev\) at CMP0055-WARN-Out-of-Scope.cmake:2 \(break\):
-  Policy CMP0055 is not set: Strict checking for break\(\) command.  Run "cmake
-  --help-policy CMP0055" for policy details.  Use the cmake_policy command to
-  set the policy and suppress this warning.
-
-  A BREAK command was found outside of a proper FOREACH or WHILE loop scope.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)
-This warning is for project developers.  Use -Wno-dev to suppress it.

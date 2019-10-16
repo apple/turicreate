@@ -1,4 +1,0 @@
-^CMake Error at NoProperty.cmake:1 \(get_property\):
-  get_property not given a PROPERTY <name> argument.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

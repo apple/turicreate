@@ -252,6 +252,11 @@ class unity_sframe : public unity_sframe_base {
   std::shared_ptr<unity_sframe_base> select_columns(const std::vector<size_t>& indices);
 
   /**
+   * Returns an lazy sframe which a the copy of the current one
+  */
+  std::shared_ptr<unity_sframe_base> copy();
+
+  /**
    * Mutates the current SFrame by adding the given column.
    *
    * Throws an exception if:

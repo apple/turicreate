@@ -1,5 +1,0 @@
-CMake Error at NewLineStyle-NoArg.cmake:[0-9]+ \(configure_file\):
-  configure_file NEWLINE_STYLE must set a style: LF, CRLF, UNIX, DOS, or
-  WIN32
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

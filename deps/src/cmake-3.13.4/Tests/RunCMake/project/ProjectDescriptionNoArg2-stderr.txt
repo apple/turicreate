@@ -1,2 +1,0 @@
-  DESCRIPTION keyword not followed by a value or was followed by a value that
-  expanded to nothing.

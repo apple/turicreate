@@ -168,11 +168,14 @@ def create(dataset, features=None, distance=None, radius=1.,
     +--------+------------+----------+
     [14 rows x 3 columns]
     """
-
+    import warnings
+    
     ## Start the training time clock and instantiate an empty model
     logger = _logging.getLogger(__name__)
     start_time = _time.time()
 
+    if distance == 'dot_product':
+        warnings.warn("Using a \"dot_product\" distance is deprecated. This functionality will be removed in the next major release.")
 
     ## Validate the input dataset
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")

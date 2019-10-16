@@ -1,4 +1,0 @@
-^CMake Error at STATICwithNoSourcesButLinkObjects.cmake:[0-9]+ \(add_library\):
-  No SOURCES given to target: TestStaticLibWithoutSources
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)$

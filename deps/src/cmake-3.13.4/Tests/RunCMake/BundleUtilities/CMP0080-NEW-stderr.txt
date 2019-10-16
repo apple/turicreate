@@ -1,2 +1,0 @@
-CMake Error at .*/Modules/BundleUtilities\.cmake:[0-9]+ \(message\):
-  BundleUtilities cannot be included at configure time!

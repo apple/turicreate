@@ -1,1 +1,0 @@
-set(CMAKE_GENERATOR_INSTANCE "Bad Instance")

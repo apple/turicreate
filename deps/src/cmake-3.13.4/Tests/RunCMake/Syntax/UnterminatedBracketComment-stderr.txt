@@ -1,7 +1,0 @@
-CMake Error at UnterminatedBracketComment.cmake:3:
-  Parse error.  Expected a command name, got unterminated bracket with text
-  "#]]
-
-  ".
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

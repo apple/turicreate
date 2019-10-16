@@ -1,6 +1,0 @@
-^CMake Error at CMakeLists.txt:[0-9]+ \(project\):
-  Running
-
-   'ninja-tool-missing' '--version'
-
-  failed with:

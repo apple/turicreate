@@ -67,7 +67,7 @@ def generate_random_sframe(num_rows, column_codes, random_seed = 0):
     assert isinstance(random_seed, int)
 
     X = _generate_random_sframe(num_rows, column_codes, random_seed, False, 0)
-    X.__materialize__()
+    X.materialize()
     return X
 
 def generate_random_regression_sframe(num_rows, column_codes, random_seed = 0, target_noise_level = 0.25):
@@ -153,7 +153,7 @@ def generate_random_regression_sframe(num_rows, column_codes, random_seed = 0, t
     assert isinstance(random_seed, int)
 
     X = _generate_random_sframe(num_rows, column_codes, random_seed, True, target_noise_level)
-    X.__materialize__()
+    X.materialize()
     return X
 
 def generate_random_classification_sframe(num_rows, column_codes, num_classes,
@@ -251,5 +251,5 @@ def generate_random_classification_sframe(num_rows, column_codes, num_classes,
         num_rows, column_codes, random_seed,
         num_classes, num_extra_class_bins, misclassification_spread)
 
-    X.__materialize__()
+    X.materialize()
     return X

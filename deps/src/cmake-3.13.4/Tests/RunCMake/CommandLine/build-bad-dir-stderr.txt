@@ -1,2 +1,0 @@
-^Error: [^
-]+/Tests/RunCMake/CommandLine/build-bad-dir-build/dir-does-not-exist is not a directory$

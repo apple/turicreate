@@ -1,4 +1,0 @@
-^CMake Error at TRANSFORM-APPEND-NoArguments.cmake:2 \(list\):
-  list sub-command TRANSFORM, action APPEND expects 1 argument\(s\).
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

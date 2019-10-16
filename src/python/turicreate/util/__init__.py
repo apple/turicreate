@@ -310,8 +310,8 @@ def _assert_sframe_equal(sf1,
     if not check_column_order and not check_column_names:
         raise ValueError("Cannot ignore both column order and column names.")
 
-    sf1.__materialize__()
-    sf2.__materialize__()
+    sf1.materialize()
+    sf2.materialize()
 
     if sf1.num_columns() != sf2.num_columns():
         raise AssertionError("Number of columns mismatched: " +

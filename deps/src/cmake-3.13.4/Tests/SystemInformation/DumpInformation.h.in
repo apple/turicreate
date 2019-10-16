@@ -1,6 +1,0 @@
-#ifndef _DumpInformation_h
-#define _DumpInformation_h
-
-#define DumpInformation_BINARY_DIR "@SystemInformation_BINARY_DIR@"
-
-#endif

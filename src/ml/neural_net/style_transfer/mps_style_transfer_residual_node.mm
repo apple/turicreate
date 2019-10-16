@@ -13,7 +13,7 @@
 @interface TCMPSStyleTransferResidualNode ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
 @property (nonatomic) MPSCNNInstanceNormalizationNode *instNorm1;
-@property (nonatomic) MPSCNNNeuronReLUNNode *relu1;
+@property (nonatomic) MPSCNNNeuronReLUNode *relu1;
 
 @property (nonatomic) MPSCNNConvolutionNode *conv2;
 @property (nonatomic) MPSCNNInstanceNormalizationNode *instNorm2;
@@ -42,7 +42,7 @@
                                            strideHeight:descriptor.conv1.strideHeight
                                            paddingWidth:descriptor.conv1.paddingWidth
                                           paddingHeight:descriptor.conv1.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_weights"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_weight"]]
                                                  biases:zeroedConv1Biases
                                                   label:descriptor.conv1.label
                                           updateWeights:descriptor.conv1.updateWeights
@@ -52,13 +52,13 @@
     _instNorm1 = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv1 resultImage]
                                                                      channels:descriptor.inst1.channels
                                                                        styles:descriptor.inst1.styles
-                                                                        gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_1_gamma"]]
-                                                                         beta:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_1_beta"]]
+                                                                        gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_1_gamma_weight"]]
+                                                                         beta:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_1_beta_weight"]]
                                                                         label:descriptor.inst1.label
                                                                        device:dev
                                                                      cmdQueue:cmdQ];
 
-    _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource:[_instNorm1 resultImage]];
+    _relu1 = [MPSCNNNeuronReLUNode nodeWithSource:[_instNorm1 resultImage]];
 
     // No bias
     NSMutableData* zeroedConv2Biases = [NSMutableData dataWithLength:descriptor.conv2.outputFeatureChannels*sizeof(float)];
@@ -71,7 +71,7 @@
                                            strideHeight:descriptor.conv2.strideHeight
                                            paddingWidth:descriptor.conv2.paddingWidth
                                           paddingHeight:descriptor.conv2.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_weights"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_weight"]]
                                                  biases:zeroedConv2Biases
                                                   label:descriptor.conv2.label
                                           updateWeights:descriptor.conv2.updateWeights
@@ -81,8 +81,8 @@
     _instNorm2 = [MPSCNNInstanceNormalizationNode createInstanceNormalization:[_conv2 resultImage]
                                                                      channels:descriptor.inst2.channels
                                                                        styles:descriptor.inst2.styles
-                                                                        gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_2_gamma"]]
-                                                                         beta:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_2_beta"]]
+                                                                        gamma:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_2_gamma_weight"]]
+                                                                         beta:weights[[NSString stringWithFormat:@"%@%@", name, @"inst_2_beta_weight"]]
                                                                         label:descriptor.inst2.label
                                                                        device:dev
                                                                      cmdQueue:cmdQ]; 
@@ -93,6 +93,13 @@
   }
 
   return self;
+}
+
+- (void) setStyleIndex:(NSUInteger)styleIndex {
+  _instNorm1.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm1.tc_weightsData checkpoint];
+  _instNorm2.tc_weightsData.styleIndex = styleIndex;
+  [_instNorm2.tc_weightsData checkpoint];
 }
 
 - (MPSNNImageNode *) backwardPass:(MPSNNImageNode *) inputNode {
@@ -116,24 +123,24 @@
 - (NSDictionary<NSString *, NSData *> *)exportWeights:(NSString *)prefix {
   NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];;
 
-  NSString* conv1Keys = [NSString stringWithFormat:@"%@%@", prefix, @"conv_1_weights"];
+  NSString* conv1Keys = [NSString stringWithFormat:@"%@%@", prefix, @"conv_1_weight"];
   NSUInteger conv1WeightSize = (NSUInteger)([_conv1.tc_weightsData weightSize] * sizeof(float));
   NSMutableData* conv1DataWeight = [NSMutableData dataWithLength:conv1WeightSize];
   memcpy(conv1DataWeight.mutableBytes, [_conv1.tc_weightsData weights], conv1WeightSize);
 
   weights[conv1Keys] = conv1DataWeight;
 
-  NSString* conv2Keys = [NSString stringWithFormat:@"%@%@", prefix, @"conv_2_weights"];
+  NSString* conv2Keys = [NSString stringWithFormat:@"%@%@", prefix, @"conv_2_weight"];
   NSUInteger conv2WeightSize = (NSUInteger)([_conv2.tc_weightsData weightSize] * sizeof(float));
   NSMutableData* conv2DataWeight = [NSMutableData dataWithLength:conv2WeightSize];
   memcpy(conv2DataWeight.mutableBytes, [_conv2.tc_weightsData weights], conv2WeightSize);
 
   weights[conv2Keys] = conv2DataWeight;
 
-  NSString* instNorm1GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_gamma"];
-  NSString* instNorm1BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_beta"];
+  NSString* instNorm1GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_gamma_weight"];
+  NSString* instNorm1BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_beta_weight"];
 
-  NSUInteger instNorm1Size = (NSUInteger)([_instNorm1.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNorm1Size = (NSUInteger)([_instNorm1.tc_weightsData styles] * [_instNorm1.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   
   NSMutableData* instNorm1DataGamma = [NSMutableData dataWithLength:instNorm1Size];
   NSMutableData* instNorm1DataBeta = [NSMutableData dataWithLength:instNorm1Size];
@@ -144,10 +151,10 @@
   weights[instNorm1GammaKeys] = instNorm1DataGamma;
   weights[instNorm1BetaKeys] = instNorm1DataBeta;
 
-  NSString* instNorm2GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_gamma"];
-  NSString* instNorm2BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_beta"];
+  NSString* instNorm2GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_gamma_weight"];
+  NSString* instNorm2BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_beta_weight"];
 
-  NSUInteger instNorm2Size = (NSUInteger)([_instNorm2.tc_weightsData numberOfFeatureChannels] * sizeof(float));
+  NSUInteger instNorm2Size = (NSUInteger)([_instNorm2.tc_weightsData styles] * [_instNorm2.tc_weightsData numberOfFeatureChannels] * sizeof(float));
 
   NSMutableData* instNorm2DataGamma = [NSMutableData dataWithLength:instNorm2Size];
   NSMutableData* instNorm2DataBeta = [NSMutableData dataWithLength:instNorm2Size];

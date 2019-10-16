@@ -1,1 +1,0 @@
-project(Version LANGUAGES NONE VERSION 1.1.0)

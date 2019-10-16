@@ -13,6 +13,8 @@
 #include <ml/neural_net/mps_graph_cnnmodule.h>
 #include <ml/neural_net/mps_image_augmentation.hpp>
 
+#import <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
+
 namespace turi {
 namespace neural_net {
 
@@ -25,7 +27,7 @@ std::unique_ptr<compute_context> create_mps_compute_context() {
 // At static-init time, register create_mps_compute_context().
 // TODO: Codify priority levels?
 static auto* mps_registration = new compute_context::registration(
-    /* priority */ 0, &create_mps_compute_context);
+    /* priority */ 0, &create_mps_compute_context, nullptr);
 
 }  // namespace
 
@@ -107,6 +109,16 @@ std::unique_ptr<model_backend> mps_compute_context::create_activity_classifier(
   result->load(weights);
 
   return result;
+}
+
+std::unique_ptr<model_backend> mps_compute_context::create_style_transfer(
+    const float_array_map& config, const float_array_map& weights) {
+#ifdef HAS_MACOS_10_15
+  return std::unique_ptr<model_backend>(
+      new style_transfer::mps_style_transfer(config, weights, *command_queue_));
+#else
+  return nullptr;
+#endif
 }
 
 }  // namespace neural_net

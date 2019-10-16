@@ -1,3 +1,0 @@
-^get_property: --><--
-get_property: -->TRUE<--
-get_property: --><--$

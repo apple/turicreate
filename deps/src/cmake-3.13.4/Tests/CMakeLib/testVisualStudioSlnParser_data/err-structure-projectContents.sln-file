@@ -1,6 +1,0 @@
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Continuous", "Continuous.vcxproj", "{E5071092-DBFB-49E2-AF0F-E8B0FDEF6C89}"
-  Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Continuous2", "Continuous2.vcxproj", "{E5071091-DBFB-49E2-AF0F-E8B0FDEF6C89}"
-  EndProject
-EndProject

@@ -223,7 +223,6 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
   // create sarray and output iterator
   auto sarray_ptr = std::make_shared<sarray<flexible_type>>();
   sarray_ptr->open_for_write(1);
-  sarray_ptr->set_type(flex_type_enum::DICT);
   auto output = sarray_ptr->get_output_iterator(0);
 
   flexible_type_parser parser(",", true, '\\',
@@ -276,28 +275,50 @@ void unity_sarray::construct_from_json_record_files(std::string url) {
             }
 
             size_t num_elems_parsed = 0;
-            bool has_non_dict_elements = false;
-            for (const auto& element : parse_result.first.get<flex_list>()) {
-              if (element.get_type() == flex_type_enum::DICT ||
-                  element.get_type() == flex_type_enum::UNDEFINED) {
-                (*output) = element;
-                ++output;
-                ++num_elems_parsed;
-              } else {
-                has_non_dict_elements = true;
+            const auto& elements = parse_result.first.get<flex_list>();
+            if (!elements.empty()) {
+              flex_type_enum sarray_type = elements.front().get_type();
+              sarray_ptr->set_type(sarray_type);
+              for (auto it = elements.begin(); it != elements.end(); it++) {
+                const auto& element = *it;
+                flex_type_enum element_type = element.get_type();
+                // convert the array type to float if one of the element is float
+                if (element_type != flex_type_enum::UNDEFINED && 
+                    sarray_type == flex_type_enum::UNDEFINED) {
+                  sarray_type = element_type;
+                }
+                if (element_type == flex_type_enum::FLOAT &&
+                    sarray_type == flex_type_enum::INTEGER) {
+                  sarray_type = flex_type_enum::FLOAT;
+                }
+                // type cast the element
+                if ((element_type == flex_type_enum::INTEGER &&
+                    sarray_type == flex_type_enum::FLOAT) ||
+                    element_type == flex_type_enum::UNDEFINED) {
+                  element_type = sarray_type;
+                }
+                // throw an error if the type doesn't match
+                if (element_type != sarray_type) {
+                  std::stringstream error_msg;
+                  error_msg << "sequence item " << it - elements.begin() 
+                            << ": expected " << flex_type_enum_to_name(sarray_type)
+                            << ", but get " << flex_type_enum_to_name(element_type)
+                            << std::endl;
+                  sarray_ptr->close();
+                  log_and_throw(error_msg.str());
+                  return;
+                } else {
+                  (*output) = element;
+                  ++output;
+                  ++num_elems_parsed;
+                }
+                sarray_ptr->set_type(sarray_type);
               }
             }
-
+            
             logstream(LOG_PROGRESS)
                 << "Successfully parsed " << num_elems_parsed
                 << " elements from the JSON file " << sanitize_url(p.first);
-
-            if (has_non_dict_elements) {
-              logstream(LOG_PROGRESS)
-                  << sanitize_url(p.first)
-                  << " has non-dictionary elements which are ignored. "
-                  << std::endl;
-            }
           } else {
             logstream(LOG_PROGRESS)
                 << "Unable to read " << sanitize_url(p.first) << std::endl;

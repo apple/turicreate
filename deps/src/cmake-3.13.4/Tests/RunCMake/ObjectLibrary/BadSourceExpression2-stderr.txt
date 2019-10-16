@@ -1,8 +1,0 @@
-CMake Error at BadSourceExpression2.cmake:1 \(add_library\):
-  Error evaluating generator expression:
-
-    \$<TARGET_OBJECTS:DoesNotExist>
-
-  Objects of target "DoesNotExist" referenced but no such target exists.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

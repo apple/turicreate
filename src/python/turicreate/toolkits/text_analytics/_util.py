@@ -400,11 +400,11 @@ def drop_words(text, threshold=2, to_lower=True, delimiters=DEFAULT_DELIMITERS,
     ## Compute word counts
     sf = _turicreate.SFrame({'docs': text})
     fe = _feature_engineering.RareWordTrimmer(features='docs',
-                                                 threshold=threshold,
-                                                 to_lower=to_lower,
-                                                 delimiters=delimiters,
-                                                 stopwords=stop_words,
-                                                 output_column_prefix=None)
+                                              threshold=threshold,
+                                              to_lower=to_lower,
+                                              delimiters=delimiters,
+                                              stopwords=stop_words,
+                                              output_column_prefix=None)
     tokens = fe.fit_transform(sf)
 
     return tokens['docs']
@@ -769,7 +769,7 @@ def random_split(dataset, prob=.5):
                                 for key, value in six.iteritems(x)]))
 
     # Materialize the data set
-    data.__materialize__()
+    data.materialize()
 
     # Grab respective counts for each data set
     train = data.apply(lambda x: grab_values(x, train=True))

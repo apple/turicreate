@@ -1,4 +1,0 @@
-CMake Error at NoExportSet.cmake:2 \(export\):
-  export Export set "fooExport" not found.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

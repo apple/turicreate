@@ -1,6 +1,0 @@
-^CMake Error at .*/Modules/CheckIPOSupported\.cmake:[0-9]+ \(message\):
-  IPO is not supported \(language\(s\) 'UnknownLanguage' not supported\)\.
-Call Stack \(most recent call first\):
-  .*/Modules/CheckIPOSupported\.cmake:[0-9]+ \(_ipo_not_supported\)
-  user-lang-unknown\.cmake:[0-9]+ \(check_ipo_supported\)
-  CMakeLists\.txt:[0-9]+ \(include\)$

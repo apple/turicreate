@@ -1,4 +1,0 @@
-CMake Error at ByproductsNoCommand.cmake:1 \(add_custom_target\):
-  BYPRODUCTS may not be specified without any COMMAND
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

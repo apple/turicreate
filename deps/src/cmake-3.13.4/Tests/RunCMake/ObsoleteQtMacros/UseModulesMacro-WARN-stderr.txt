@@ -1,6 +1,0 @@
-CMake Deprecation Warning at .*/Modules/Qt4Macros.cmake:[^ ]+ \(message\):
-  The qt4_use_modules function is obsolete.  Use target_link_libraries with
-  IMPORTED targets instead.
-Call Stack \(most recent call first\):
-  UseModulesMacro-WARN.cmake:[^ ]+ \(qt4_use_modules\)
-  CMakeLists.txt:3 \(include\)

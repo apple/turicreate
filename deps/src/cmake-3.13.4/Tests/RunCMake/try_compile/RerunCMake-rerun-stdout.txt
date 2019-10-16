@@ -1,3 +1,0 @@
--- Configuring done
--- Generating done
--- Build files have been written to: .*/Tests/RunCMake/try_compile/RerunCMake-build

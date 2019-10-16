@@ -1,7 +1,0 @@
-CMake Error at .*/Modules/FindPackageHandleStandardArgs.cmake:[0-9]+ \(message\):
-  The argument for FOUND_VAR is "badfoundvar_FOUND", but only
-  "BadFoundVar_FOUND" and "BADFOUNDVAR_FOUND" are valid names.
-Call Stack \(most recent call first\):
-  FindBadFoundVar.cmake:5 \(find_package_handle_standard_args\)
-  BadFoundVar.cmake:3 \(find_package\)
-  CMakeLists.txt:3 \(include\)

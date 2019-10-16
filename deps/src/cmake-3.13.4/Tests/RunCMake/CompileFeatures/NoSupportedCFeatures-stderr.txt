@@ -1,8 +1,0 @@
-CMake Error at NoSupportedCFeatures.cmake:[0-9]+ \(target_compile_features\):
-  target_compile_features no known features for C compiler
-
-  "[^"]*"
-
-  version *[.0-9]+\.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

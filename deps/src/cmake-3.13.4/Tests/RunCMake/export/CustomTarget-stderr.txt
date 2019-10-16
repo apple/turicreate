@@ -1,4 +1,0 @@
-^CMake Error at CustomTarget.cmake:[0-9]+ \(export\):
-  export given custom target "CustomTarget" which may not be exported.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

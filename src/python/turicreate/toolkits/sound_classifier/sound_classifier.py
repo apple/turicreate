@@ -91,7 +91,7 @@ def create(dataset, target, feature, max_iterations=10,
         Name of the column containing the target variable. The values in this
         column must be of string or integer type.
 
-    feature : string, optional
+    feature : string
         Name of the column containing the feature column. This column must
         contain audio data or deep audio features.
         Audio data is represented as dicts with key 'data' and 'sample_rate',
@@ -134,7 +134,8 @@ def create(dataset, target, feature, max_iterations=10,
     from ._audio_feature_extractor import _get_feature_extractor
 
     start_time = time.time()
-
+    if not isinstance(dataset, _tc.SFrame):
+        raise TypeError('"dataset" must be of type SFrame.')
     # check parameters
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')

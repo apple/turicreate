@@ -1,2 +1,0 @@
-while(a)
-endwhile(b)

@@ -45,8 +45,8 @@ class ImageLabeler extends Component {
 
       return {"width": this.state.componentWidth, "height": "auto", "top": left_padding, "left": 0};
     } else {
-      var scaling_factor = (width/height)*this.state.componentHeight;
-      var left_padding = (parseInt(((this.state.componentWidth - scaling_factor)/2), 10));
+      scaling_factor = (width/height)*this.state.componentHeight;
+      left_padding = (parseInt(((this.state.componentWidth - scaling_factor)/2), 10));
 
       return {"width": "auto", "height": this.state.componentHeight, "top": 0, "left": left_padding};
     }
@@ -61,7 +61,8 @@ class ImageLabeler extends Component {
             <img src={this.props.src.src}
                  className={style.ImageSrc}
                  onLoad={this.handleImageLoaded.bind(this)}
-                 style={this.resizeImage(this.props.src.width, this.props.src.height)}/>
+                 style={this.resizeImage(this.props.src.width, this.props.src.height)}
+	         alt="Can't Find"/>
           </div>
         </div>
       );

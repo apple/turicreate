@@ -1,4 +1,0 @@
-^CMake Error at FILTER-REGEX-InvalidRegex.cmake:2 \(list\):
-  list sub-command FILTER, mode REGEX failed to compile regex "UHOH!\)\(".
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

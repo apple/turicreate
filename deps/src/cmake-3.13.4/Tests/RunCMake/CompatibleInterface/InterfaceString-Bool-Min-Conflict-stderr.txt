@@ -1,7 +1,0 @@
-CMake Error in CMakeLists.txt:
-  Property "OTHER" appears in both the COMPATIBLE_INTERFACE_BOOL,
-  COMPATIBLE_INTERFACE_NUMBER_MIN and the COMPATIBLE_INTERFACE_STRING
-  property in the dependencies of target "user".  This is not allowed.  A
-  property may only require compatibility in a boolean interpretation, a
-  numeric minimum, a numeric maximum or a string interpretation, but not a
-  mixture.

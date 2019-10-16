@@ -24,7 +24,7 @@ make_copy_target(python_source
   DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/turicreate
 )
-add_dependencies(python_source numpy_integration)
+add_dependencies(python_source numpy_integration tctensorflow)
 
 add_custom_target (clean_python)
 add_dependencies(clean_python clean_turicreate_binaries clean_cython)

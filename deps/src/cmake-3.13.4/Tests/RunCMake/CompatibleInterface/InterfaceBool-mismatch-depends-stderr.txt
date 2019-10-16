@@ -1,3 +1,0 @@
-CMake Error: The INTERFACE_SOMEPROP property of "bar" does
-not agree with the value of SOMEPROP already determined
-for "user".

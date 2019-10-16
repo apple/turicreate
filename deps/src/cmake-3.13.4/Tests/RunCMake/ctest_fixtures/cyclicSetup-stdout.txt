@@ -1,1 +1,0 @@
-Test project .*/Tests/RunCMake/ctest_fixtures/cyclicSetup-build$

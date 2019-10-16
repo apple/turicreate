@@ -1,4 +1,0 @@
-^CMake Error at NoSourcesButLinkObjects.cmake:[0-9]+ \(add_executable\):
-  No SOURCES given to target: TestExeWithoutSources
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)$

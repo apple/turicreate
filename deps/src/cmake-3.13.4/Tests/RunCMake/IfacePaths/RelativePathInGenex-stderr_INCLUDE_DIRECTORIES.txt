@@ -1,5 +1,0 @@
-CMake Error in CMakeLists.txt:
-  Target "testTarget" contains relative path in its
-  INTERFACE_INCLUDE_DIRECTORIES:
-
-    "foo"

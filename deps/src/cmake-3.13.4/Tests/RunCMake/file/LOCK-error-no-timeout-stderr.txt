@@ -1,4 +1,0 @@
-CMake Error at LOCK-error-no-timeout\.cmake:[0-9]+ \(file\):
-  expected timeout value after TIMEOUT
-Call Stack \(most recent call first\):
-  CMakeLists\.txt:[0-9]+ \(include\)

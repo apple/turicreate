@@ -1,5 +1,0 @@
-^CMake Warning at ProjectHomepageNoArg.cmake:2 \(project\):
-  HOMEPAGE_URL keyword not followed by a value or was followed by a value
-  that expanded to nothing.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)$

@@ -1,4 +1,0 @@
-^CMake Error at TRANSFORM-NoAction.cmake:2 \(list\):
-  list sub-command TRANSFORM requires an action to be specified.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

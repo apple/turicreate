@@ -55,7 +55,7 @@ class SArraySketchTest(unittest.TestCase):
                 sketch.quantile((0.5))
 
 
-        self.assertEqual(sketch.num_na(), sa.countna())
+        self.assertEqual(sketch.num_missing(), sa.countna())
         self.assertEqual(sketch.size(), len(sa))
         self.assertEqual(sketch.sketch_ready(), True)
         self.assertEqual(sketch.num_elements_processed(), sketch.size())
@@ -163,7 +163,7 @@ class SArraySketchTest(unittest.TestCase):
         self.__validate_sketch_result(s, expected)
 
         s = sa.summary(sub_sketch_keys ='Nonexist').element_sub_sketch('Nonexist')
-        self.assertEqual(s.num_na(), len(sa))
+        self.assertEqual(s.num_missing(), len(sa))
 
         # sub sketch with multiple keys
         keys = ['a', 'b']
@@ -208,7 +208,7 @@ class SArraySketchTest(unittest.TestCase):
         self.__validate_sketch_result(s, expected)
 
         s = sa.summary(sub_sketch_keys ='Nonexist').element_sub_sketch('Nonexist')
-        self.assertEqual(s.num_na(), len(sa))
+        self.assertEqual(s.num_missing(), len(sa))
 
         # sub sketch with multiple keys
         keys = ['a', 'b']
@@ -249,7 +249,7 @@ class SArraySketchTest(unittest.TestCase):
           sketch.std()
 
         self.assertAlmostEqual(sketch.num_unique(), 10, delta=3)
-        self.assertEqual(sketch.num_na(), 1)
+        self.assertEqual(sketch.num_missing(), 1)
         self.assertEqual(sketch.size(), len(str_data))
 
         with self.assertRaises(RuntimeError):
@@ -270,7 +270,7 @@ class SArraySketchTest(unittest.TestCase):
         self.assertEqual(sketch.var(), 0)
         self.assertEqual(sketch.std(), 0)
         self.assertEqual(sketch.num_unique(), 0)
-        self.assertEqual(sketch.num_na(),0)
+        self.assertEqual(sketch.num_missing(),0)
         self.assertEqual(sketch.size(), 0)
         with self.assertRaises(RuntimeError):
           sketch.quantile(0.5)
