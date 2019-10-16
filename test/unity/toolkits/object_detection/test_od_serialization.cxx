@@ -30,8 +30,12 @@ BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
   init_darknet_yolo(nn_spec, num_classes, anchor_boxes);
 
   const CoreML::Specification::NeuralNetwork& nn = nn_spec.get_coreml_spec();
-  TS_ASSERT_EQUALS(nn.layers_size(), 25);
-
+  TS_ASSERT_EQUALS(nn.layers_size(), 31);
+  /* we totally should have 9 conv layers
+   * (conv_0 -> conv_8), 8 batch normalization layer (batch_0 -> batch_7),
+   * 6 max pooling layers (pool_0 -> pool_5), and 8 relu layers (leakyrelu_0 ->
+   * leakyrelu_7) so totally 31 layers.
+   */
   int layer_num = 0;
   int num_features = 3;
   const std::map<int, int> layer_num_to_channels = {
@@ -48,6 +52,7 @@ BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
     TS_ASSERT_EQUALS(convlayer_.convolution().stride(1), 1);
     TS_ASSERT_EQUALS(convlayer_.convolution().kernelsize(0), 3);
     TS_ASSERT_EQUALS(convlayer_.convolution().kernelsize(1), 3);
+    TS_ASSERT(convlayer_.convolution().has_same());
 
     const auto& batchnormlayer_ = nn.layers(layer_num + 1);
     TS_ASSERT(batchnormlayer_.has_batchnorm());
@@ -62,9 +67,53 @@ BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
                      "leakyrelu" + std::to_string(x.first) + "_fwd");
     TS_ASSERT_EQUALS(relulayer_.activation().leakyrelu().alpha(), 0.1f);
 
-    layer_num = layer_num + 3;
+    // since the yolo model only has max pooling layers for layer 0 - 5
+    int num_max_pooling_layers_in_yolo = 5;
+    if (x.first <= num_max_pooling_layers_in_yolo) {
+      const auto& poolinglayer_ = nn.layers(layer_num + 3);
+      TS_ASSERT(poolinglayer_.has_pooling());
+      TS_ASSERT_EQUALS(poolinglayer_.name(),
+                       "pool" + std::to_string(x.first) + "_fwd");
+      TS_ASSERT_EQUALS(poolinglayer_.pooling().kernelsize(0), 2);
+      TS_ASSERT_EQUALS(poolinglayer_.pooling().kernelsize(1), 2);
+      if (x.first == num_max_pooling_layers_in_yolo) {
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().stride(0), 1);
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().stride(1), 1);
+        TS_ASSERT(poolinglayer_.pooling().has_same());
+        TS_ASSERT(poolinglayer_.pooling().avgpoolexcludepadding());
+      } else {
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().stride(0), 2);
+        TS_ASSERT_EQUALS(poolinglayer_.pooling().stride(1), 2);
+        TS_ASSERT(poolinglayer_.pooling().has_valid());
+        TS_ASSERT(poolinglayer_.pooling().valid().has_paddingamounts());
+        TS_ASSERT_EQUALS(poolinglayer_.pooling()
+                             .valid()
+                             .paddingamounts()
+                             .borderamounts_size(),
+                         2);
+      }
+      layer_num = layer_num + 4;
+    } else {
+      layer_num = layer_num + 3;
+    }
     num_features = x.second;
   }
+  // add check for the last layer
+  const auto& convlayer_ = nn.layers(layer_num);
+  TS_ASSERT(convlayer_.has_convolution());
+  TS_ASSERT_EQUALS(convlayer_.name(),
+                     "conv8_fwd");
+  const size_t num_predictions =
+      5 + num_classes;  // Per anchor box, including predict classes and
+                        // bounding box regression
+  const size_t conv8_c_out = anchor_boxes.size() * num_predictions;
+  TS_ASSERT_EQUALS(convlayer_.convolution().outputchannels(), conv8_c_out);
+  TS_ASSERT_EQUALS(convlayer_.convolution().kernelchannels(), num_features);
+  TS_ASSERT_EQUALS(convlayer_.convolution().stride(0), 1);
+  TS_ASSERT_EQUALS(convlayer_.convolution().stride(1), 1);
+  TS_ASSERT_EQUALS(convlayer_.convolution().kernelsize(0), 1);
+  TS_ASSERT_EQUALS(convlayer_.convolution().kernelsize(1), 1);
+  TS_ASSERT(convlayer_.convolution().has_same());
 }
 
 BOOST_AUTO_TEST_CASE(test_save_load) {

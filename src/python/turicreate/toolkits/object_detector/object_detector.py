@@ -440,8 +440,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             'grid_height': params['grid_shape'][0],
             'grid_width': params['grid_shape'][1],
             'max_iterations': num_iterations,
-            'mlmodel_path' : params['mlmodel_path'],
-            'use_tensorflow': params['use_tensorflow']
+            'mlmodel_path' : params['mlmodel_path']
 
         }
         model = _tc.extensions.object_detector()
