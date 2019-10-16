@@ -110,11 +110,13 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         }
         self.fields_ans = self.get_ans.keys()
 
+    @unittest.skip("Skipping until https://github.com/apple/turicreate/issues/2406 gets resolved")
     def test_synthesis_with_single_image(self):
         image = self.train[0][self.feature]
         data = tc.one_shot_object_detector.util.preview_synthetic_training_data(
             image, 'custom_logo', backgrounds=self.backgrounds)
 
+    @unittest.skip("Skipping until https://github.com/apple/turicreate/issues/2406 gets resolved")
     def test_create_with_single_image(self):
         image = self.train[0][self.feature]
         model = tc.one_shot_object_detector.create(

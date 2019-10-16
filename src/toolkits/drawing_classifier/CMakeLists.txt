@@ -2,9 +2,10 @@ project(unity_toolkits)
 
 make_library(unity_drawing_classifier OBJECT
 SOURCES
-    drawing_classifier.cpp
-    data_preparation.cpp
     class_registrations.cpp
+    data_preparation.cpp
+    dc_data_iterator.cpp
+    drawing_classifier.cpp
 REQUIRES
     unity_core
     unity_ml_model

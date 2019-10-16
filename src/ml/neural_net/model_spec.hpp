@@ -1,3 +1,4 @@
+
 /* Copyright © 2018 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
@@ -21,6 +22,7 @@
 namespace CoreML {
 namespace Specification {
 class NeuralNetwork;
+class WeightParams;
 }
 }
 
@@ -175,6 +177,31 @@ public:
                        weight_initializer bias_initializer_fn = nullptr);
 
   /**
+   * Appends a padding layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param padding_top The padding on the top
+   * \param padding_bottom The padding on the bottom
+   * \param padding_left The padding to the left
+   * \param padding_right The padding to the right
+   */
+  void add_padding(const std::string& name, const std::string& input,
+                   size_t padding_top, size_t padding_bottom,
+                   size_t padding_left, size_t padding_right);
+
+  /**
+   * Appends an upsampling layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param scaling_x The upsample scale on the x axis
+   * \param scaling_y The upsample scale on the y axis
+   */
+  void add_upsampling(const std::string& name, const std::string& input,
+                      size_t scaling_x, size_t scaling_y);
+
+  /**
    * Appends an inner-product (dense, fully connected) layer.
    *
    * \param name The name of the layer and its output
@@ -203,6 +230,19 @@ public:
    */
   void add_batchnorm(const std::string& name, const std::string& input,
                      size_t num_channels, float epsilon);
+
+  /**
+   * Appends an instance norm layer.
+   *
+   * The beta is initialized to 0.f; the gamma is initialized to 1.f
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param num_channels The C dimension of the input and output
+   * \param epsilon Added to the variance for each input before normalizing
+   */
+  void add_instancenorm(const std::string& name, const std::string& input,
+                        size_t num_channels, float epsilon);
 
   /**
    * Appends a layer that concatenates its inputs along the channel axis.

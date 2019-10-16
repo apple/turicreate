@@ -8,9 +8,20 @@
 
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_interface/unity_sframe.hpp>
+
 namespace turi{
 
-namespace image_util{
+namespace image_util {
+
+void copy_image_to_memory(const image_type& input, unsigned char* outptr,
+                          const std::vector<size_t>& outstrides,
+                          const std::vector<size_t>& outshape,
+                          bool channel_last);
+
+void copy_image_to_memory(const image_type& input, float* outptr,
+                          const std::vector<size_t>& outstrides,
+                          const std::vector<size_t>& outshape,
+                          bool channel_last);
 
 /**
 * Return the head of passed sarray, but cast to string. Used for printing on python side.
@@ -113,9 +124,8 @@ std::shared_ptr<unity_sarray>
   vector_sarray_to_image_sarray(std::shared_ptr<unity_sarray> image_sarray,
       size_t width, size_t height, size_t channels, bool undefined_on_failure);
 
+}  // namespace image_util
 
-
-} // end of image_util
 } // end of turicreate
 
 #endif /* IMAGE_UTIL_HPP*/
