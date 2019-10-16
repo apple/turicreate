@@ -77,6 +77,9 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(
         temp_content = temp_content.sort("_random_order");
         m_content_images = temp_content["content"];
       }
+
+      m_content_range_iterator = m_content_images.range_iterator();
+      m_content_next_row = m_content_range_iterator.begin();
     }
   }
 
