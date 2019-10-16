@@ -210,6 +210,7 @@ build_cpp_linux_no_remotefs:
   script:
     - apk add bash
     - apk add g++
+    - apk add cmake
     - ./configure --no-remotefs --no-python
     - cd debug/test
     - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
