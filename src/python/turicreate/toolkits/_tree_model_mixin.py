@@ -73,7 +73,7 @@ class TreeModelMixin(object):
         The returned feature vectors can be used as input to train another
         supervised learning model such as a
         :py:class:`~turicreate.logistic_classifier.LogisticClassifier`,
-        an :py:class:`~turicreate.svm_classifier.SVMClassifier`, or a
+        or a :py:class:`~turicreate.svm_classifier.SVMClassifier`.
 
         Parameters
         ----------

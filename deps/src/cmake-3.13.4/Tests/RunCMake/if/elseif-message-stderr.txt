@@ -1,8 +1,0 @@
-CMake Error at elseif-message.cmake:[0-9]+ \(elseif\):
-  given arguments:
-
-    "Unknown" "arguments"
-
-  Unknown arguments specified
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

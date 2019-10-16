@@ -1,1 +1,0 @@
-get_property(FOO TEST FOO PROPERTY FOO)

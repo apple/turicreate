@@ -1,2 +1,0 @@
-^CPack Error: Cannot recognize algorithm: invalid
-CPack Error: Error when generating package: package_checksum$

@@ -1,4 +1,0 @@
-CMake Warning at MissingConfig.cmake:2 \(message\):
-  This warning must be reachable.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

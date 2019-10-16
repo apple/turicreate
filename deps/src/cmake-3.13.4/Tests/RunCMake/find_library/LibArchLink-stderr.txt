@@ -1,2 +1,0 @@
-TOP_LIBRARY='[^']*/Tests/RunCMake/find_library/LibArchLink-build/lib/libtop.a'
-SUB_LIBRARY='[^']*/Tests/RunCMake/find_library/LibArchLink-build/lib/sub/libsub.a'

@@ -21,6 +21,31 @@
 #include <core/util/string_util.hpp>
 
 #include <sys/param.h>
+#ifndef _WIN32
+#include <sys/resource.h>
+#endif
+
+bool turi::fs_util::upgrade_file_handle_limit(size_t limit) {
+#ifndef _WIN32
+  struct rlimit rlim;
+  rlim.rlim_cur = limit;
+  rlim.rlim_max = limit;
+  return setrlimit(RLIMIT_NOFILE, &rlim) == 0;
+#else
+  return true;
+#endif
+}
+
+int turi::fs_util::get_file_handle_limit() {
+#ifndef _WIN32
+  struct rlimit rlim;
+  int ret = getrlimit(RLIMIT_NOFILE, &rlim);
+  if (ret != 0) return 0;
+  return int(rlim.rlim_cur);
+#else
+  return 4096;
+#endif
+}
 
 bool is_hidden(const std::string path) {
   if (path.length() && path[0] == '.') {

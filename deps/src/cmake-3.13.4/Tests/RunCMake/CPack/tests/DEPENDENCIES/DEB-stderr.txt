@@ -1,1 +1,0 @@
-^CPackDeb: ((- Generating dependency list)|(Using only user-provided dependencies because dpkg-shlibdeps is not found\.))$

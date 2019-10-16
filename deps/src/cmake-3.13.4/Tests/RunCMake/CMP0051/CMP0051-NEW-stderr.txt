@@ -1,1 +1,0 @@
-^Sources: "empty.cpp;\$<TARGET_OBJECTS:objects>"$

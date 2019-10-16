@@ -101,7 +101,7 @@ def _get_data_spec(filters, start, length, row_type, mat_type, sframe, evaluatio
     elif (row_type == "incorrects"):
       data_spec = { "data_spec": { "gallery": { "incorrects": { "data": list_test_data, "size": sf.num_rows() }}}}
 
-  return str(_json.dumps(data_spec))
+  return _json.dumps(data_spec) + "\n"
 
 def _reform_sframe(sf):
   sf_sending_data = sf.select_columns(["__idx", "path", "target_label", "predicted_label", "confidence", "relative_confidence", "entropy"])
@@ -153,7 +153,7 @@ def __get_incorrects(label, sf, evaluation):
     u_filt = filtered_sframe.filter_by([u], "predicted_label")
     data.append({"label": str(u), "images": list(u_filt[evaluation.data['feature']])})
 
-  return {"data_spec": { "incorrects": {"target": label, "data": data }}}
+  return _json.dumps({"data_spec": { "incorrects": {"target": label, "data": data }}}) + "\n"
 
 def __get_corrects(sf, evaluation):
   conf_metric = evaluation["confidence_metric_for_threshold"]
@@ -166,7 +166,7 @@ def __get_corrects(sf, evaluation):
   for u in unique_predictions:
     u_filt = sf.filter_by([u], "predicted_label")
     data.append({"target": u, "images": list(u_filt[evaluation.data['feature']])})
-  return {"data_spec": { "correct": data}}
+  return _json.dumps({"data_spec": { "correct": data}}) + "\n"
 
 def _process_value(value, extended_sframe, proc, evaluation):
   json_value = None
@@ -178,17 +178,21 @@ def _process_value(value, extended_sframe, proc, evaluation):
 
   if json_value != None:
     if(json_value['method'] == "get_rows_eval"):
-      proc.stdin.write(_get_data_spec(json_value['cells'], json_value['start'], json_value['length'], json_value['row_type'], json_value['mat_type'], extended_sframe, evaluation)+"\n")
+      proc.stdin.write(_get_data_spec(json_value['cells'], json_value['start'], json_value['length'], json_value['row_type'], json_value['mat_type'], extended_sframe, evaluation).encode('utf-8'))
+      proc.stdin.flush()
 
     if(json_value['method'] == "get_corrects"):
-      proc.stdin.write(str(_json.dumps(__get_corrects(extended_sframe, evaluation)))+"\n")
+      proc.stdin.write(__get_corrects(extended_sframe, evaluation).encode('utf-8'))
+      proc.stdin.flush()
 
     if(json_value['method'] == "get_incorrects"):
-      proc.stdin.write(str(_json.dumps(__get_incorrects(json_value['label'], extended_sframe, evaluation)))+"\n")
+      proc.stdin.write(__get_incorrects(json_value['label'], extended_sframe, evaluation).encode('utf-8'))
+      proc.stdin.flush()
 
 def _start_process(process_input, extended_sframe, evaluation):
   proc = __subprocess.Popen(_get_client_app_path(), stdout=__subprocess.PIPE, stdin=__subprocess.PIPE)
   proc.stdin.write(process_input.encode('utf-8'))
+  proc.stdin.flush()
 
   #https://docs.python.org/2/library/subprocess.html#subprocess.Popen.communicate
 

@@ -5,8 +5,8 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TURI_STYLE_TRANSFER_STYLE_TRANSFER_H_
-#define TURI_STYLE_TRANSFER_STYLE_TRANSFER_H_
+#ifndef TURI_STYLE_TRANSFER_MPS_STYLE_TRANSFER_BACKEND_H_
+#define TURI_STYLE_TRANSFER_MPS_STYLE_TRANSFER_BACKEND_H_
 
 #include <functional>
 #include <map>
@@ -14,18 +14,23 @@
 
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/model_backend.hpp>
+#include <ml/neural_net/mps_command_queue.hpp>
 
 #ifdef HAS_MACOS_10_15
 
 namespace turi {
 namespace style_transfer {
 
-class EXPORT style_transfer : public turi::neural_net::model_backend {
+class EXPORT mps_style_transfer : public turi::neural_net::model_backend {
 public:
-  style_transfer(const turi::neural_net::float_array_map &config,
-                 const turi::neural_net::float_array_map &weights);
+  mps_style_transfer(const turi::neural_net::float_array_map &config,
+                     const turi::neural_net::float_array_map &weights);
+
+  mps_style_transfer(const turi::neural_net::float_array_map &config,
+                     const turi::neural_net::float_array_map &weights,
+                     const turi::neural_net::mps_command_queue& command_queue);
   
-  ~style_transfer() = default;
+  ~mps_style_transfer();
 
   turi::neural_net::float_array_map export_weights() const override;
   turi::neural_net::float_array_map predict(const turi::neural_net::float_array_map& inputs) const override;
@@ -34,6 +39,10 @@ public:
 private:
   struct impl;
   std::unique_ptr<impl> m_impl;
+
+  void init(const turi::neural_net::float_array_map &config,
+            const turi::neural_net::float_array_map &weights,
+            const turi::neural_net::mps_command_queue& command_queue);
 };
 
 } // namespace style_transfer

@@ -1,3 +1,0 @@
-^CMake Error: cmake version .*
-Usage: .* -E <command> \[arguments\.\.\.\]
-Available commands:

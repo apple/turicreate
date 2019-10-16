@@ -1,6 +1,0 @@
-content: 6[ ]
-.*/test/dir 1/dir 1 file;.*/test/dir 1/empty_dir;.*/test/dir 1/non_empty_dir;.*/test/dir 2/dir 2 file;.*/test/dir 2/empty_dir;.*/test/dir 2/non_empty_dir
-content: 6[ ]
-.*/test/dir 1/dir 1 file;.*/test/dir 1/empty_dir;.*/test/dir 1/non_empty_dir;.*/test/dir 2/dir 2 file;.*/test/dir 2/empty_dir;.*/test/dir 2/non_empty_dir
-content: 2[ ]
-.*/test/dir 1/dir 1 file;.*/test/dir 2/dir 2 file

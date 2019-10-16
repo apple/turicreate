@@ -13,7 +13,8 @@ class TCEvaluationMetrics extends Component {
         <div className="TCEvaluationMetricsInfoIcon">
           <img src={info}
                height={10}
-               width={10}/>
+               width={10}
+	       alt="Info"/>
         </div>
       );
     }

@@ -22,6 +22,8 @@ API_AVAILABLE(macos(10.14))
   @property (nonatomic) id<MTLBuffer> gammaVelocityBuffer;
   @property (nonatomic) id<MTLBuffer> betaMomentumBuffer;
   @property (nonatomic) id<MTLBuffer> betaVelocityBuffer;
+  @property (nonatomic) id<MTLBuffer> gammaBuffer;
+  @property (nonatomic) id<MTLBuffer> betaBuffer;
 
   @property (nonatomic) MPSCNNNormalizationGammaAndBetaState *state;
 @end
@@ -34,11 +36,16 @@ API_AVAILABLE(macos(10.14))
   NSMutableData *_beta_weights;
   
   NSString *_name;
-  NSUInteger _styles;
+  NSMutableArray<TCMPSInstanceNormDataLoaderProps *> *_style_props;
 
-  NSMutableArray<TCMPSInstanceNormDataLoaderProps *> *style_props;
+  NSUInteger _styleIndex;
+
+  NSMutableData * _gammaPlaceHolder;
+  NSMutableData * _betaPlaceHolder;
 
   MPSVectorDescriptor *_vDesc;
+
+  MPSCNNInstanceNormalization* _instanceNormFilter;
 
   id<MTLCommandQueue> _cq;
   MPSNNOptimizerAdam *_adamGamma;
@@ -63,7 +70,11 @@ API_AVAILABLE(macos(10.14))
 
     _styles = styles;
     
-    _currentStyle = 0;  
+    _styleIndex = 0;  
+    
+    _gammaPlaceHolder = [NSMutableData data];
+    _betaPlaceHolder = [NSMutableData data];
+
     
     _gamma_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
     _beta_weights = [NSMutableData dataWithLength:numberFeatureChannels * styles * sizeof(float)];
@@ -87,16 +98,18 @@ API_AVAILABLE(macos(10.14))
     _vDesc = [MPSVectorDescriptor vectorDescriptorWithLength:_numberOfFeatureChannels
                                                    dataType:(MPSDataTypeFloat32)];
 
-    style_props = [[NSMutableArray alloc] init];
+    _style_props = [[NSMutableArray alloc] init];
 
     for (NSUInteger index = 0; index < styles; index ++) {
       TCMPSInstanceNormDataLoaderProps *style_property = [[TCMPSInstanceNormDataLoaderProps alloc] init];
 
-      id<MTLBuffer> gammaBuffer = [dev newBufferWithBytes:_gamma_weights.mutableBytes
+      size_t offset = index * _numberOfFeatureChannels * sizeof(float);
+
+      style_property.gammaBuffer = [dev newBufferWithBytes:(char *) _gamma_weights.bytes + offset
                                                    length:sizeof(float) * _numberOfFeatureChannels
                                                   options:MTLResourceStorageModeManaged];
 
-      id<MTLBuffer> betaBuffer = [dev newBufferWithBytes:_beta_weights.mutableBytes
+      style_property.betaBuffer = [dev newBufferWithBytes:(char *) _beta_weights.bytes + offset
                                                   length:sizeof(float) * _numberOfFeatureChannels
                                                  options:MTLResourceStorageModeManaged];
 
@@ -124,7 +137,7 @@ API_AVAILABLE(macos(10.14))
                                                              length:sizeof(float) * _numberOfFeatureChannels
                                                             options:MTLResourceStorageModeManaged];
 
-      style_property.gammaVector = [[MPSVector alloc] initWithBuffer:gammaBuffer
+      style_property.gammaVector = [[MPSVector alloc] initWithBuffer:style_property.gammaBuffer
                                                           descriptor:_vDesc];
 
       style_property.gammaMomentumVector = [[MPSVector alloc] initWithBuffer:style_property.gammaMomentumBuffer
@@ -133,7 +146,7 @@ API_AVAILABLE(macos(10.14))
       style_property.gammaVelocityVector = [[MPSVector alloc] initWithBuffer:style_property.gammaVelocityBuffer
                                                                   descriptor:_vDesc];
 
-      style_property.betaVector = [[MPSVector alloc] initWithBuffer:betaBuffer
+      style_property.betaVector = [[MPSVector alloc] initWithBuffer:style_property.betaBuffer
                                                          descriptor:_vDesc];
 
       style_property.betaMomentumVector = [[MPSVector alloc] initWithBuffer:style_property.betaMomentumBuffer
@@ -142,10 +155,10 @@ API_AVAILABLE(macos(10.14))
       style_property.betaVelocityVector = [[MPSVector alloc] initWithBuffer:style_property.betaVelocityBuffer
                                                                  descriptor:_vDesc];
 
-      style_property.state = [[MPSCNNNormalizationGammaAndBetaState alloc] initWithGamma:gammaBuffer
-                                                                                    beta:betaBuffer];
+      style_property.state = [[MPSCNNNormalizationGammaAndBetaState alloc] initWithGamma:style_property.gammaBuffer
+                                                                                    beta:style_property.betaBuffer];
 
-      [style_props addObject:style_property];
+      [_style_props addObject:style_property];
     }
     
     free(zeros_ptr);
@@ -159,64 +172,86 @@ API_AVAILABLE(macos(10.14))
   [_adamBeta setLearningRate:lr];
 }
 
-- (void) updateCurrentStyle:(NSUInteger)style {
-  _currentStyle = style;
-}
-
 - (void) loadBeta:(float *)beta {
-  memcpy(_beta_weights.mutableBytes, beta, _numberOfFeatureChannels * _styles * sizeof(float));
+  float* betaWeights = (float *) [[[[_style_props objectAtIndex: _styleIndex] betaVector] data] contents];
+  memcpy(betaWeights, beta, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
 - (float *) beta {
-  [self checkpointWithCommandQueue:_cq];
-  return (float *) [[[[style_props objectAtIndex: _currentStyle] betaVector] data] contents];
+  NSUInteger previousStyle = _styleIndex;
+  _betaPlaceHolder.length = 0;
+  for (NSUInteger index = 0; index < _styles; index++) {
+    _styleIndex = index;
+    [self checkpointWithCommandQueue:_cq];
+    float* betaWeights = (float *) [_style_props[_styleIndex].betaBuffer contents];
+    [_betaPlaceHolder appendBytes:betaWeights length:sizeof(float)*_numberOfFeatureChannels];
+  }
+  _styleIndex = previousStyle;
+
+  return (float *) (_betaPlaceHolder.bytes);
 }
 
 - (void) loadGamma:(float *)gamma {
-  memcpy(_gamma_weights.mutableBytes, gamma, _numberOfFeatureChannels * _styles * sizeof(float));
+  float* gammaWeights = (float*) [[[[_style_props objectAtIndex: _styleIndex] gammaVector] data] contents];
+  memcpy(gammaWeights, gamma, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
+// TODO: refactor for multiple indicies
 - (float *) gamma {
-  [self checkpointWithCommandQueue:_cq];
-  return (float*) [[[[style_props objectAtIndex: _currentStyle] gammaVector] data] contents];
+  NSUInteger previousStyle = _styleIndex;
+  _gammaPlaceHolder.length = 0;
+  for (NSUInteger index = 0; index < _styles; index++) { 
+    _styleIndex = index; 
+    [self checkpointWithCommandQueue:_cq];
+    float* gammaWeights = (float *) [_style_props[_styleIndex].gammaBuffer contents];
+    [_gammaPlaceHolder appendBytes:gammaWeights length:sizeof(float)*_numberOfFeatureChannels];
+  }
+  _styleIndex = previousStyle;
+
+  return (float *) (_gammaPlaceHolder.bytes);
 }
 
 - (MPSCNNNormalizationGammaAndBetaState *)updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer 
                                               instanceNormalizationStateBatch:(MPSCNNInstanceNormalizationGradientStateBatch *)instanceNormalizationStateBatch {
-    
   NSUInteger t1 = [_adamGamma timeStep];
   NSUInteger t2 = [_adamBeta timeStep];
 
-    for (MPSCNNInstanceNormalizationGradientState *instanceNormalizationState in instanceNormalizationStateBatch) {
-      MPSVector *gradientWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForGamma)
-                                                                descriptor:_vDesc];
+  _instanceNormFilter = instanceNormalizationStateBatch[0].instanceNormalization;
 
-      MPSVector *inputWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gamma)
+  for (MPSCNNInstanceNormalizationGradientState *instanceNormalizationState in instanceNormalizationStateBatch) {
+    MPSVector *gradientWeightsVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForGamma)
+                                                              descriptor:_vDesc];
+    _adamGamma.timeStep = t1;
+    [_adamGamma encodeToCommandBuffer:commandBuffer
+                  inputGradientVector:gradientWeightsVector
+                    inputValuesVector:[[_style_props objectAtIndex: _styleIndex] gammaVector]
+                  inputMomentumVector:[[_style_props objectAtIndex: _styleIndex] gammaMomentumVector]
+                  inputVelocityVector:[[_style_props objectAtIndex: _styleIndex] gammaVelocityVector]
+                   resultValuesVector:[[_style_props objectAtIndex: _styleIndex] gammaVector]];
+
+    MPSVector *gradientBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForBeta)
                                                              descriptor:_vDesc];
-      _adamGamma.timeStep = t1;
-      [_adamGamma encodeToCommandBuffer:commandBuffer
-                    inputGradientVector:gradientWeightsVector
-                      inputValuesVector:inputWeightsVector
-                    inputMomentumVector:[[style_props objectAtIndex: _currentStyle] gammaMomentumVector]
-                    inputVelocityVector:[[style_props objectAtIndex: _currentStyle] gammaVelocityVector]
-                     resultValuesVector:[[style_props objectAtIndex: _currentStyle] gammaVector]];
 
-      MPSVector *gradientBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.gradientForBeta)
-                                                               descriptor:_vDesc];
-
-      MPSVector *inputBiasesVector = [[MPSVector alloc] initWithBuffer:nonnull_cast(instanceNormalizationState.beta)
-                                                            descriptor:_vDesc];
-      _adamBeta.timeStep = t2;
-      [_adamBeta encodeToCommandBuffer:commandBuffer
-                   inputGradientVector:gradientBiasesVector
-                     inputValuesVector:inputBiasesVector
-                   inputMomentumVector:[[style_props objectAtIndex: _currentStyle] betaMomentumVector] 
-                   inputVelocityVector:[[style_props objectAtIndex: _currentStyle] betaVelocityVector]
-                    resultValuesVector:[[style_props objectAtIndex: _currentStyle] betaVector]];
+    _adamBeta.timeStep = t2;
+    [_adamBeta encodeToCommandBuffer:commandBuffer
+                 inputGradientVector:gradientBiasesVector
+                   inputValuesVector:[[_style_props objectAtIndex: _styleIndex] betaVector]
+                 inputMomentumVector:[[_style_props objectAtIndex: _styleIndex] betaMomentumVector] 
+                 inputVelocityVector:[[_style_props objectAtIndex: _styleIndex] betaVelocityVector]
+                  resultValuesVector:[[_style_props objectAtIndex: _styleIndex] betaVector]];
 
   }
 
-    return [[style_props objectAtIndex: _currentStyle] state];
+  return [[_style_props objectAtIndex: _styleIndex] state];
+}
+
+- (void)checkpoint {
+  if (_instanceNormFilter) {
+    id <MTLCommandBuffer> cmdBuf = [_cq commandBuffer];
+    [_instanceNormFilter reloadGammaAndBetaWithCommandBuffer: cmdBuf
+                                           gammaAndBetaState: [[_style_props objectAtIndex: _styleIndex] state]];
+    [cmdBuf commit];
+  }
 }
 
 - (void)checkpointWithCommandQueue:(nonnull id<MTLCommandQueue>)commandQueue {
@@ -224,7 +259,7 @@ API_AVAILABLE(macos(10.14))
   id<MTLBlitCommandEncoder> blit = commandBuffer.blitCommandEncoder;
 
   for (size_t index = 0; index < _styles; index ++) {
-    TCMPSInstanceNormDataLoaderProps *style_property = [style_props objectAtIndex: index];
+    TCMPSInstanceNormDataLoaderProps *style_property = [_style_props objectAtIndex: index];
 
     [blit synchronizeResource:[style_property betaMomentumBuffer]];
     [blit synchronizeResource:[style_property betaVelocityBuffer]];

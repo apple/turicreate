@@ -1,5 +1,0 @@
-^CMake Error at SORT-BadCompareOption.cmake:1 \(list\):
-  list sub-command SORT value "BAD_COMPARE_OPTION" for option "COMPARE" is
-  invalid.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

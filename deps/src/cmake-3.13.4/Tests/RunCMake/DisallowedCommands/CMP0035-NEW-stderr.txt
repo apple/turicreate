@@ -1,4 +1,0 @@
-CMake Error at CMP0035-NEW.cmake:2 \(variable_requires\):
-  The variable_requires command should not be called; see CMP0035.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

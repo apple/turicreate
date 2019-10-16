@@ -1,3 +1,0 @@
-Configure project
-   Each . represents 1024 bytes of output
-    . Size of output: 0K$

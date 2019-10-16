@@ -1,8 +1,0 @@
-CMake Error at ImportedTarget-TARGET_BUNDLE_CONTENT_DIR.cmake:[0-9]* \(add_custom_target\):
-  Error evaluating generator expression:
-
-    \$<TARGET_BUNDLE_CONTENT_DIR:empty>
-
-  TARGET_BUNDLE_CONTENT_DIR not allowed for IMPORTED targets.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]* \(include\)

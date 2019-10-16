@@ -1,5 +1,0 @@
-^CMake Error at PolicyPop/PolicyPopConfigVersion.cmake:3 \(cmake_policy\):
-  cmake_policy POP without matching PUSH
-Call Stack \(most recent call first\):
-  PolicyPop.cmake:1 \(find_package\)
-  CMakeLists.txt:3 \(include\)$

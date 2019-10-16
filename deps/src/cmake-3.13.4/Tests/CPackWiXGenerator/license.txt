@@ -1,9 +1,0 @@
-﻿hello world
-merhaba dünya
-ハローワールド
-привет мир
-مرحبا العالم
-你好世界
-
-4-Byte sequences:
-  Perch (Fish) 𩶘 Elevator 𨋢!

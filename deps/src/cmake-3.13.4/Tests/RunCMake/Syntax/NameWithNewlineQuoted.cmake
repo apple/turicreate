@@ -1,1 +1,0 @@
-message("${var\nwith\nnewline}")

@@ -22,9 +22,6 @@ function print_help {
   echo
   echo "  --install-python-toolchain        Install python in local virtualenv."
   echo
-  echo "  --with-system-cmake (default)     Use system cmake, if avaliable."
-  echo "  --no-system-cmake "
-  echo
   echo "  --with-ccache (default)           Use ccache, if available."
   echo "  --no-ccache "
   echo
@@ -58,10 +55,17 @@ function print_help {
   echo
   echo "  -D var=value                      Specify CFLAGS definitions to be passed on to cmake."
   echo
+  echo "Relevant environment variables: "
+  echo
+  echo "  CMAKE                             Path to CMake executable."
+  echo "  CC                                Path to C compiler."
+  echo "  CXX                               Path to C++ compiler."
+  echo
   echo "Example: ./configure"
   echo
   echo "Cleanup all build directories"
   echo "Example: ./configure --cleanup"
+  echo
   echo
   exit 1
 } # end of print help
@@ -114,7 +118,6 @@ default_yes=0
 
 with_python=1
 
-with_system_cmake=1
 with_ccache=1
 
 with_capi=1
@@ -143,9 +146,6 @@ while [ $# -gt 0 ]
     --release-opt-for-size) release_opt_for_size=1;;
     --debug-opt-for-size)   debug_opt_for_size=1;;
     --target-ios)           with_ios=1; with_python=0; with_capi=1; release_opt_for_size=1;;
-
-    --with-system-cmake)    with_system_cmake=1;;
-    --no-system-cmake)      with_system_cmake=0;;
 
     --with-ccache)          with_ccache=1;;
     --no-ccache)            with_ccache=0;;
@@ -203,7 +203,7 @@ if [[ $with_python == 1 ]]; then
   install_python_toolchain
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=1"
 else
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=0"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS"
 fi
 
 if [[ $with_extra_opt_flags == 1 ]]; then
@@ -270,192 +270,21 @@ echo "======================= BUILD CONFIGURATION ========================"
 echo "System Information: "
 uname -v
 
+echo "======================= FINDING COMPILERS ========================"
 
-if [[ $OSTYPE == darwin* ]]; then
-  CC=clang
-  CXX=clang++
-fi
+# Set up the compilers
+mkdir -p ${PWD}/deps/local/bin
+CCCMD=`./scripts/find_compiler.sh cc --ccache=$with_ccache --script-dir=${PWD}/deps/local/bin/`
+CXXCMD=`./scripts/find_compiler.sh cxx --ccache=$with_ccache --script-dir=${PWD}/deps/local/bin/`
 
-# all other cases
-# If not specified we assume gcc and g++ are the default c and c++
-# compilers
-if [[ -z $CC ]]; then
-  if [[ `which cc` ]]; then
-    CC=cc
-  elif [[ `which gcc` ]]; then
-    CC=gcc
-  elif [[ `which clang` ]]; then
-    CC=clang
-  else
-    echo "Compiler not in path with cc/gcc/clang; set manually with CC=<comp>"
-    exit 1
-  fi
-fi
+echo "Setting C compiler to $CCCMD."
+echo "Setting C++ compiler to $CXXCMD."
 
-if [[ -z $CXX ]]; then
-  if [[ `which cxx` ]]; then
-    CXX=cxx
-  elif [[ `which c++` ]]; then
-    CXX=c++
-  elif [[ `which g++` ]]; then
-    CXX=g++
-  elif [[ `which clang++` ]]; then
-    CXX=clang++
-  else
-    echo "Compiler not it path with cxx/c++/g++/clang++; set manually with CXX=<comp>"
-    exit 1
-  fi
-fi
+echo "======================= FINDING CMAKE ========================"
 
-CCCMD=`which $CC || echo ""`
-CXXCMD=`which $CXX || echo ""`
+# Set up the path to CMake
+CMAKE=`./scripts/find_cmake.sh`
 
-echo "CC = $CCCMD"
-echo "CXX = $CXXCMD"
-
-echo "Attempting to use C compiler $CCCMD."
-echo "Attempting to use C++ compiler $CXXCMD."
-
-# Test for ccache
-CCACHE=`which ccache || echo ""`
-CCSCR="$DEPS_PREFIX/bin/cc"
-CXXSCR="$DEPS_PREFIX/bin/cxx"
-
-mkdir -p $DEPS_PREFIX/bin
-rm -f $CCSCR
-rm -f $CXXSCR
-
-if [ $with_ccache -eq 1 ] && [ -f $CCACHE ]; then
-
-  echo "Using ccache from $CCACHE."
-
-  mkdir -p $DEPS_PREFIX/bin
-
-  echo "#!/bin/bash -e
-  $CCACHE $CCCMD \$@
-  exit \$?
-  " > $CCSCR && chmod a+x $CCSCR
-
-  echo "#!/bin/bash -e
-  $CCACHE $CXXCMD \$@
-  exit \$?
-  " > $CXXSCR && chmod a+x $CXXSCR
-
-else
-
-  echo "#!/bin/bash -e
-  $CCCMD \$@
-  exit \$?
-  " > $CCSCR && chmod a+x $CCSCR
-
-  echo "#!/bin/bash -e
-  $CXXCMD \$@
-  exit \$?
-  " > $CXXSCR && chmod a+x $CXXSCR
-
-  echo "Not using CCache."
-fi
-
-CCCMD=$CCSCR
-CXXCMD=$CXXSCR
-
-echo "Checking for CMake."
-
-## ============================================================================
-# Install Cmake if not present
-
-## Obtained from forum:
-# http://stackoverflow.com/questions/4023830/bash-how-compare-two-strings-in-version-format
-# Return  0 if version are equal
-# Returns 1 if version 1 is larger
-# Returns 2 if version 2 is larger
-function check_version {
-  if [[ $1 == $2 ]]
-  then
-      return 0
-  fi
-  local IFS=.
-  local i ver1=($1) ver2=($2)
-  # fill empty fields in ver1 with zeros
-  for ((i=${#ver1[@]}; i<${#ver2[@]}; i++))
-  do
-      ver1[i]=0
-  done
-  for ((i=0; i<${#ver1[@]}; i++))
-  do
-      if [[ -z ${ver2[i]} ]]
-      then
-          # fill empty fields in ver2 with zeros
-          ver2[i]=0
-      fi
-      if ((10#${ver1[i]} > 10#${ver2[i]}))
-      then
-          return 1
-      fi
-      if ((10#${ver1[i]} < 10#${ver2[i]}))
-      then
-          return 2
-      fi
-  done
-  return 0
-}
-
-function install_cmake {
-  echo "Running script to build bundled cmake version."
-  CC=$CCCMD CXX=$CXXCMD ./scripts/cmake_setup.sh ${PWD}/deps/src/cmake-3.13.4 ${PWD}/deps/local || exit 1
-  return $?
-}
-
-CMAKE=`which cmake || echo ""`
-if [[ ! -f ${CMAKE} ]] ; then
-  if [[ -f /Applications/CMake.app/Contents/bin/cmake ]] ; then
-    CMAKE=/Applications/CMake.app/Contents/bin/cmake
-  fi
-fi
-
-function check_cmake {
-
-  if [[ -f $CMAKE ]] ; then
-
-    if [[ $with_system_cmake == 0 ]]; then
-      echo "Forcing use of bundled cmake."
-      CMAKE=${PWD}/deps/local/bin/cmake
-
-      if [[ ! -f ${PWD}/deps/local/bin/cmake ]]; then
-        install_cmake
-        return $?
-      fi
-    fi
-
-    if [[ -f ${PWD}/deps/local/bin/cmake ]]; then
-      CMAKE=${PWD}/deps/local/bin/cmake
-    fi
-
-    #test cmake version
-    echo "Testing existing cmake version..."
-    currentversion=`$CMAKE --version | awk -F "patch" '{print $1;}' | tr -dc '[0-9].'`
-    echo "Detected ${currentversion}. Required 3.12.0"
-
-    check_version $currentversion "3.12.0"
-
-    if [ $? -ne 2 ]; then
-      echo "CMake version is good; using built-in version."
-    else
-      install_cmake
-      CMAKE=${PWD}/deps/local/bin/cmake
-      return $?
-    fi
-  else
-    install_cmake
-    CMAKE=${PWD}/deps/local/bin/cmake
-    return $?
-  fi
-}
-
-check_cmake || {
-  echo "Error 1: Error reported installing CMake."
-  exit 1
-}
 
 ########################################################
 # Prepare to build

@@ -36,9 +36,9 @@ class TextClassifierTest(unittest.TestCase):
         self.target = 'score'
         self.method = 'bow-logistic'
         self.model = tc.text_classifier.create(self.docs,
-                                                   target=self.target,
-                                                   features=self.features,
-                                                   method='auto')
+                                               target=self.target,
+                                               features=self.features,
+                                               method='auto')
 
         self.num_examples = 4
 
@@ -159,6 +159,20 @@ class TextClassifierCreateTests(unittest.TestCase):
         data_str['rating'] = data_str['rating'].astype(str)
         model = tc.text_classifier.create(data_str, target='rating')
         self.assertTrue(isinstance(model, tc.text_classifier.TextClassifier))
+
+    def test_invalid_data_set(self):
+        # infer dtype str
+        a = tc.SArray(['str', None])
+        b = tc.SArray(['str', 'str'])
+        # target contains none
+        sf = tc.SFrame({'a': a, 'b': b})
+        with self.assertRaises(ToolkitError):
+            tc.text_classifier.create(sf, target='a', features=['b'], word_count_threshold=1)
+        # feature contains none, Github #2402
+        sf = tc.SFrame({'b': a, 'a': b})
+        with self.assertRaises(ToolkitError):
+            tc.text_classifier.create(sf, target='b', features=['a'], word_count_threshold=1)
+
 
     def test_validation_set(self):
         train = self.data

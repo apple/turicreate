@@ -1,2 +1,0 @@
-Problem running command: .*memcheck_fail.*
-Problem executing pre-memcheck command\(s\).

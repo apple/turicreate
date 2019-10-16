@@ -1,3 +1,0 @@
-^CMake Error: Could not create named generator NoSuchGenerator
-
-Generators

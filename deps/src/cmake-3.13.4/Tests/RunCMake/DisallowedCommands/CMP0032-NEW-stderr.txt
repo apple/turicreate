@@ -1,4 +1,0 @@
-CMake Error at CMP0032-NEW.cmake:2 \(output_required_files\):
-  The output_required_files command should not be called; see CMP0032.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

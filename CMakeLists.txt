@@ -26,7 +26,7 @@ set(CMAKE_PREFIX_PATH ${CMAKE_SOURCE_DIR}/deps/local)
 set(ENV{PATH} "${CMAKE_SOURCE_DIR}/deps/local/bin:${CMAKE_SOURCE_DIR}/deps/env/bin:$ENV{PATH}")
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-if(${TC_BUILD_PYTHON})
+if(TC_BUILD_PYTHON)
   message("Building python libraries.")
 
   if(NOT EXISTS ${CMAKE_SOURCE_DIR}/deps/env/)

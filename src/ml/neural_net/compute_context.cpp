@@ -22,10 +22,11 @@ std::multimap<int, compute_context::registration*> &get_registry() {
 
 }  // namespace
 
-compute_context::registration::registration(int priority, factory factory_fn)
-  : priority_(priority),
-    factory_fn_(std::move(factory_fn))
-{
+compute_context::registration::registration(int priority, factory factory_fn,
+                                            factory tf_factory_fn)
+    : priority_(priority),
+      factory_fn_(std::move(factory_fn)),
+      tf_factory_fn_(std::move(tf_factory_fn)) {
   // No mutex is required if this is only used at static init time...
   get_registry().emplace(priority, this);
 }
@@ -38,6 +39,18 @@ compute_context::registration::~registration() {
   if (it != get_registry().end()) {
     get_registry().erase(it);
   }
+}
+
+// static
+std::unique_ptr<compute_context> compute_context::create_tf() {
+  // Return the tensorflow compute context only.
+  std::unique_ptr<compute_context> result;
+  auto it = get_registry().begin();
+  while (result == nullptr && it != get_registry().end()) {
+    result = it->second->create_tensorflow_context();
+    ++it;
+  }
+  return result;
 }
 
 // static

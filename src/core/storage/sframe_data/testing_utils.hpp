@@ -18,6 +18,83 @@ sframe make_testing_sframe(const std::vector<std::string>& names,
                            const std::vector<flex_type_enum>& types,
                            const std::vector<std::vector<flexible_type> >& data);
 
+
+using row_gen_func_t = std::function<std::vector<flexible_type>(size_t)>;
+
+/**
+ * \internal
+ * \ingroup sframe_physical
+ * \addtogroup sframe_internal SFrame Internal
+ *
+ * A more flexible sframe creator.
+ *
+ * User can finely control the ratio of certain categories
+ * of data. For instance, 70% of 1s and 30% of 0s.
+ *
+ * One can achieve that goal by recording the count of already
+ * generated data for each category inside of the functors.
+ *
+ * \param[in] column_names: column names
+ * \param[in] column_types: column types
+ * \param[in] nrows: number of rows.
+ *
+ * \param[in] next_row: callable, equivalent to
+ * `std::function<std::vector<flexible_type>(size_t)>`.
+ * if next_row is a function, it should be thread-safe.
+ * if next_row is a functor, it's not required to be thread-safe.
+ */
+
+template <typename Callable>
+sframe make_testing_sframe(const std::vector<std::string>& column_names,
+                           const std::vector<flex_type_enum>& column_types,
+                           size_t nrows, Callable next_row) {
+  ASSERT_MSG(column_types.size() == column_names.size(),
+             "column_types size mismatches with column_names size");
+
+  // calculate intervals
+  size_t nthreads = thread::cpu_count();
+  size_t interval = nrows / nthreads;
+  std::vector<std::pair<size_t, size_t>> write_intervals;
+  for (size_t ii = 0; ii < nthreads; ii++) {
+    if (ii) {
+      auto start = write_intervals.back().second;
+      write_intervals.emplace_back(start, start + interval);
+    } else {
+      write_intervals.emplace_back(0, interval);
+    }
+  }
+  write_intervals.back().second = nrows;
+
+  // consturct sframe
+  sframe out;
+  out.open_for_write(column_names, column_types, "", nthreads);
+
+  std::vector<turi::sframe_output_iterator> write_iters;
+  write_iters.resize(nthreads);
+  for (size_t ii = 0; ii < nthreads; ii++)
+    write_iters[ii] = out.get_output_iterator(ii);
+
+  parallel_for(0, write_iters.size(), [&](size_t ii) {
+    size_t start = write_intervals[ii].first;
+    size_t end = write_intervals[ii].second;
+    auto out_iter = write_iters[ii];
+    /* multithreading: functor may carry a state */
+    /* copy explicitly because next_row might be function pointer */
+    Callable func = next_row;
+    while (start < end) {
+      *out_iter = func(start);
+      start++;
+    }
+  });
+
+  // finish writing
+  out.close();
+
+  return out;
+}
+
+
+
 sframe make_testing_sframe(const std::vector<std::string>& names,
                            const std::vector<std::vector<flexible_type> >& data);
 

@@ -5,8 +5,8 @@
  */
 
 #import <JavaScriptCore/JavaScriptCore.h>
-#import <visualization/vega_renderer/LogProxy.h>
-#import <visualization/vega_renderer/JSConsole.h>
+#import <visualization/vega_renderer/TCVegaLogProxy.h>
+#import <visualization/vega_renderer/TCVegaJSConsole.h>
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
@@ -33,22 +33,22 @@
 
 void LogProxyTests::test_wrap_unwrap() {
     JSContext *context = [[JSContext alloc] init];
-    [JSConsole attachToJavaScriptContext:context];
+    [TCVegaJSConsole attachToJavaScriptContext:context];
     TestExport *original = [[TestExport alloc] init];
     JSValue *v = [JSValue valueWithObject:original inContext:context];
-    JSValue *wrapped = [LogProxy wrap:v];
+    JSValue *wrapped = [TCVegaLogProxy wrap:v];
     TS_ASSERT_DIFFERS(wrapped, nil);
 
-    JSValue *unwrapped = [LogProxy unwrap:wrapped];
+    JSValue *unwrapped = [TCVegaLogProxy unwrap:wrapped];
     TS_ASSERT([v isEqualToObject:unwrapped]);
 }
 
 void LogProxyTests::test_expected_property_access() {
     JSContext *context = [[JSContext alloc] init];
-    [JSConsole attachToJavaScriptContext:context];
+    [TCVegaJSConsole attachToJavaScriptContext:context];
     TestExport *original = [[TestExport alloc] init];
     JSValue *v = [JSValue valueWithObject:original inContext:context];
-    JSValue *wrapped = [LogProxy wrap:v];
+    JSValue *wrapped = [TCVegaLogProxy wrap:v];
     TS_ASSERT_DIFFERS(wrapped, nil);
 
     // Expect a defined property to give back the correct result through the wrapper
@@ -67,7 +67,7 @@ void LogProxyTests::test_expected_property_access() {
     TS_ASSERT_EQUALS(expected, actual);
 }
 
-@interface UnexpectedPropertyAccessLogger : NSObject<LogProxyHandling>
+@interface UnexpectedPropertyAccessLogger : NSObject<TCVegaLogProxyHandling>
 @end
 
 @implementation UnexpectedPropertyAccessLogger
@@ -87,12 +87,12 @@ void LogProxyTests::test_expected_property_access() {
 
 void LogProxyTests::test_unexpected_property_access() {
     JSContext *context = [[JSContext alloc] init];
-    [JSConsole attachToJavaScriptContext:context];
+    [TCVegaJSConsole attachToJavaScriptContext:context];
     TestExport *original = [[TestExport alloc] init];
     JSValue *v = [JSValue valueWithObject:original inContext:context];
 
     // Set up the wrapper to expect exactly what we are about to test
-    JSValue *wrapped = [LogProxy wrap:v withHandler:[[UnexpectedPropertyAccessLogger alloc] init]];
+    JSValue *wrapped = [TCVegaLogProxy wrap:v withHandler:[[UnexpectedPropertyAccessLogger alloc] init]];
     TS_ASSERT_DIFFERS(wrapped, nil);
 
     // Expect accessing a missing property to return undefined, but it will also

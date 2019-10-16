@@ -1,4 +1,0 @@
-^CMake Error at TargetNotInDir.cmake:2 \(add_custom_command\):
-  TARGET 'TargetNotInDir' was not created in this directory.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

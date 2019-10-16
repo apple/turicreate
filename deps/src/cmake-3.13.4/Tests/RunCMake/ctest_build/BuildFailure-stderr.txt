@@ -1,2 +1,0 @@
-^Error\(s\) when building project
-ctest_build returned non-zero$

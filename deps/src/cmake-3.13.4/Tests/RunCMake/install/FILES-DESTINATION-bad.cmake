@@ -1,1 +1,0 @@
-install(FILES empty.c DESTINATION $<NOTAGENEX>)

@@ -1,6 +1,0 @@
-syntax = "proto2";
-package example.msgs;
-
-message Example {
-  required int32 data = 1;
-}

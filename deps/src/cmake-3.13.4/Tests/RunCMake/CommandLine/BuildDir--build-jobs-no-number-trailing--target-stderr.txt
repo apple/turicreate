@@ -1,1 +1,0 @@
-(^$|^Warning: .* does not support parallel builds\. Ignoring parallel build command line option\.)

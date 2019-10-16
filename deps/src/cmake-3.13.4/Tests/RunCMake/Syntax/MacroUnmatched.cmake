@@ -1,2 +1,0 @@
-macro(m)
-#endmacro() # missing

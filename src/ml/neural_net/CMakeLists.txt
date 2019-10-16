@@ -50,17 +50,13 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       ${METAL}
       ${METAL_PERFORMANCE_SHADERS}
   )
-  target_compile_options(tcmps PUBLIC "-fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar")
+  target_compile_options(tcmps PRIVATE -fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar)
   set(additional_unity_neural_net_requirements tcmps)
 else()
   set(additional_unity_neural_net_requirements "")
 endif()
 
-make_library(tctensorflow SHARED
-  SOURCES
-  tf_compute_context.cpp
-)
-set_target_properties(tctensorflow PROPERTIES SUFFIX ".so")
+set(TF_BUILD_DIR ${CMAKE_BINARY_DIR}/src/python/turicreate/toolkits)
 
 make_library(unity_neural_net OBJECT
   SOURCES
@@ -76,3 +72,20 @@ make_library(unity_neural_net OBJECT
     unity_coreml_model_export
     ${additional_unity_neural_net_requirements}
 )
+
+if(TC_BUILD_PYTHON)
+
+make_library(tctensorflow SHARED
+  SOURCES
+  tf_compute_context.cpp
+  REQUIRES
+  unity_shared
+)
+
+set_target_properties(tctensorflow 
+  PROPERTIES
+    SUFFIX ".so"
+    LIBRARY_OUTPUT_DIRECTORY ${TF_BUILD_DIR}
+)
+
+endif()

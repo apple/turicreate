@@ -1,4 +1,0 @@
-CMake Error at CMP0031-OLD.cmake:2 \(load_command\):
-  load_command Attempt to load command failed from file.*bogus_command.*
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

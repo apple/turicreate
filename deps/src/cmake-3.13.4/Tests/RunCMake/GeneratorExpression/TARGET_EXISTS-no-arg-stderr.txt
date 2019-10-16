@@ -1,8 +1,0 @@
-CMake Error at TARGET_EXISTS-no-arg.cmake:2 \(file\):
-  Error evaluating generator expression:
-
-    \$<TARGET_EXISTS>
-
-  \$<TARGET_EXISTS> expression requires exactly one parameter.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)

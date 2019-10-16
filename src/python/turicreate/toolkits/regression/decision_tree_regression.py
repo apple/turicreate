@@ -298,14 +298,6 @@ class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
         return super(DecisionTreeRegression, self).predict(dataset, output_type='margin',
                                                            missing_value_action=missing_value_action)
 
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        methods = _SupervisedLearningModel._get_queryable_methods()
-        methods['extract_features'] = {'dataset': 'sframe'}
-        return methods
-
 
 def create(dataset, target,
            features=None,

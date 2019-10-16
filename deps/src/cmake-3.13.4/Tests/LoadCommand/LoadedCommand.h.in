@@ -1,3 +1,0 @@
-/* Check for size of types */
-#cmakedefine SIZEOF_CHAR      ${SIZEOF_CHAR}
-#cmakedefine SIZEOF_SHORT      ${SIZEOF_SHORT}

@@ -16,11 +16,11 @@ class LabelContainer extends Component {
 
   checkActive = (name) => {
     if (!this.props.infiniteScroll) {
-      return this.props.annotationData[this.props.incrementalCurrentIndex] == name;
+      return this.props.annotationData[this.props.incrementalCurrentIndex] === name;
     } else {
       var selected_objects = Object.keys(this.props.infiniteSelected);
       for (var x = 0; x < selected_objects.length; x++) {
-        if (this.props.annotationData[selected_objects[x]] == name) {
+        if (this.props.annotationData[selected_objects[x]] === name) {
           return true;
         }
       }

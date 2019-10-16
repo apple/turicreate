@@ -12,6 +12,7 @@ namespace turi {
 namespace drawing_classifier {
 
 std::vector<toolkit_function_specification> get_toolkit_function_registration();
+std::vector<toolkit_class_specification> get_toolkit_class_registration();
 
 }// drawing_recognition
 }// turicreate

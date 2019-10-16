@@ -1,4 +1,0 @@
-CMake Error at set_target_properties.cmake:8 \(set_target_properties\):
-  set_target_properties can not be used on an ALIAS target.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

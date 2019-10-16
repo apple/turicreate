@@ -1,4 +1,0 @@
-^CMake Error at TRANSFORM-Selector-AT-NoArguments.cmake:2 \(list\):
-  list sub-command TRANSFORM, selector AT expects at least one numeric value.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

@@ -20,6 +20,7 @@ from threading import Thread as _Thread
 from six.moves.queue import Queue as _Queue
 
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from turicreate.toolkits._model import Model as _Model
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
@@ -39,7 +40,6 @@ from .._mps_utils import (use_mps as _use_mps,
 
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
-
 
 def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
                     config, weights={}):
@@ -219,6 +219,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     base_model = model.split('-', 1)[0]
     ref_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS[base_model]()
 
+    pretrained_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS['darknet_mlmodel']()
+    pretrained_model_path = pretrained_model.get_model_path()
+
     params = {
         'anchors': [
             (1.0, 2.0), (1.0, 1.0), (2.0, 1.0),
@@ -260,6 +263,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # This large buffer size (8 batches) is an attempt to mitigate against
         # the SFrame shuffle operation that can occur after each epoch.
         'io_thread_buffer_size': 8,
+        'mlmodel_path': pretrained_model_path,
+        'use_tensorflow': False
     }
 
     if '_advanced_parameters' in kwargs:
@@ -279,7 +284,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         batch_size = 32  # Default if not user-specified
     cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
     num_mxnet_gpus = len(cuda_gpus)
-    use_mps = _use_mps() and num_mxnet_gpus == 0
+    use_mps = _use_mps() and num_mxnet_gpus == 0 and not params['use_tensorflow']
     batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
         # Reduce batch size for GPUs with less than 4GB RAM
@@ -427,145 +432,23 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
 
-    if use_mps:
-        # Force initialization of net_params
-        # TODO: Do not rely on MXNet to initialize MPS-based network
-        net.forward(_mx.nd.uniform(0, 1, (batch_size_each,) + input_image_shape))
-        mps_net_params = {}
-        keys = list(net_params)
-        for k in keys:
-            mps_net_params[k] = net_params[k].data().asnumpy()
+    if params['use_tensorflow']:
+        import turicreate.toolkits.libtctensorflow
 
-        # Multiplies the loss to move the fp16 gradients away from subnormals
-        # and gradual underflow. The learning rate is correspondingly divided
-        # by the same multiple to make training mathematically equivalent. The
-        # update is done in fp32, which is why this trick works. Does not
-        # affect how loss is presented to the user.
-        mps_loss_mult = params['mps_loss_mult']
+        tf_config = {
+            'batch_size' : batch_size,
+            'grid_height': params['grid_shape'][0],
+            'grid_width': params['grid_shape'][1],
+            'max_iterations': num_iterations,
+            'mlmodel_path' : params['mlmodel_path']
 
-        mps_config = {
-            'mode': _MpsGraphMode.Train,
-            'use_sgd': True,
-            'learning_rate': base_lr / params['mps_loss_mult'],
-            'gradient_clipping': params.get('clip_gradients', 0.0) * mps_loss_mult,
-            'weight_decay': params['weight_decay'],
-            'od_include_network': True,
-            'od_include_loss': True,
-            'od_scale_xy': params['lmb_coord_xy'] * mps_loss_mult,
-            'od_scale_wh': params['lmb_coord_wh'] * mps_loss_mult,
-            'od_scale_no_object': params['lmb_noobj'] * mps_loss_mult,
-            'od_scale_object': params['lmb_obj'] * mps_loss_mult,
-            'od_scale_class': params['lmb_class'] * mps_loss_mult,
-            'od_max_iou_for_no_object': 0.3,
-            'od_min_iou_for_object': 0.7,
-            'od_rescore': params['rescore'],
         }
-
-        mps_net = _get_mps_od_net(input_image_shape=input_image_shape,
-                                  batch_size=batch_size,
-                                  output_size=output_size,
-                                  anchors=anchors,
-                                  config=mps_config,
-                                  weights=mps_net_params)
-
-        # Use worker threads to isolate different points of synchronization
-        # and/or waiting for non-Python tasks to finish. The
-        # sframe_worker_thread will spend most of its time waiting for SFrame
-        # operations, largely image I/O and decoding, along with scheduling
-        # MXNet data augmentation. The numpy_worker_thread will spend most of
-        # its time waiting for MXNet data augmentation to complete, along with
-        # copying the results into NumPy arrays. Finally, the main thread will
-        # spend most of its time copying NumPy data into MPS and waiting for the
-        # results. Note that using three threads here only makes sense because
-        # each thread spends time waiting for non-Python code to finish (so that
-        # no thread hogs the global interpreter lock).
-        mxnet_batch_queue = _Queue(1)
-        numpy_batch_queue = _Queue(1)
-        def sframe_worker():
-            # Once a batch is loaded into NumPy, pass it immediately to the
-            # numpy_worker so that we can start I/O and decoding for the next
-            # batch.
-            for batch in loader:
-                mxnet_batch_queue.put(batch)
-            mxnet_batch_queue.put(None)
-        def numpy_worker():
-            while True:
-                batch = mxnet_batch_queue.get()
-                if batch is None:
-                    break
-
-                for x, y in zip(batch.data, batch.label):
-                    # Convert to NumPy arrays with required shapes. Note that
-                    # asnumpy waits for any pending MXNet operations to finish.
-                    input_data = _mxnet_to_mps(x.asnumpy())
-                    label_data = y.asnumpy().reshape(y.shape[:-2] + (-1,))
-
-                    # Convert to packed 32-bit arrays.
-                    input_data = input_data.astype(_np.float32)
-                    if not input_data.flags.c_contiguous:
-                        input_data = input_data.copy()
-                    label_data = label_data.astype(_np.float32)
-                    if not label_data.flags.c_contiguous:
-                        label_data = label_data.copy()
-
-                    # Push this batch to the main thread.
-                    numpy_batch_queue.put({'input'     : input_data,
-                                           'label'     : label_data,
-                                           'iteration' : batch.iteration})
-            # Tell the main thread there's no more data.
-            numpy_batch_queue.put(None)
-        sframe_worker_thread = _Thread(target=sframe_worker)
-        sframe_worker_thread.start()
-        numpy_worker_thread = _Thread(target=numpy_worker)
-        numpy_worker_thread.start()
-
-        batch_queue = []
-        def wait_for_batch():
-            pending_loss = batch_queue.pop(0)
-            batch_loss = pending_loss.asnumpy()  # Waits for the batch to finish
-            return batch_loss.sum() / mps_loss_mult
-
-        while True:
-            batch = numpy_batch_queue.get()
-            if batch is None:
-                break
-
-            # Adjust learning rate according to our schedule.
-            if batch['iteration'] in steps:
-                ii = steps.index(batch['iteration']) + 1
-                new_lr = factors[ii] * base_lr
-                mps_net.set_learning_rate(new_lr / mps_loss_mult)
-
-            # Submit this match to MPS.
-            batch_queue.append(mps_net.train(batch['input'], batch['label']))
-
-            # If we have two batches in flight, wait for the first one.
-            if len(batch_queue) > 1:
-                cur_loss = wait_for_batch()
-
-                # If we just submitted the first batch of an iteration, update
-                # progress for the iteration completed by the last batch we just
-                # waited for.
-                if batch['iteration'] > iteration:
-                    update_progress(cur_loss, iteration)
-            iteration = batch['iteration']
-
-        # Wait for any pending batches and finalize our progress updates.
-        while len(batch_queue) > 0:
-            cur_loss = wait_for_batch()
-        update_progress(cur_loss, iteration)
-
-        sframe_worker_thread.join()
-        numpy_worker_thread.join()
-
-        # Load back into mxnet
-        mps_net_params = mps_net.export()
-        keys = mps_net_params.keys()
-        for k in keys:
-            if k in net_params:
-                net_params[k].set_data(mps_net_params[k])
+        model = _tc.extensions.object_detector()
+        model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
+        return ObjectDetector_beta(model_proxy=model, name="object_detector")
 
     else:  # Use MxNet
+
         net.hybridize()
 
         options = {'learning_rate': base_lr, 'lr_scheduler': lr_scheduler,
@@ -1647,3 +1530,212 @@ class ObjectDetector(_CustomModel):
         model = self._create_coreml_model(include_non_maximum_suppression=include_non_maximum_suppression,
             iou_threshold=iou_threshold, confidence_threshold=confidence_threshold)
         _save_spec(model, filename)
+
+
+class ObjectDetector_beta(_Model):
+    """
+    A trained model using C++ implementation that is ready to use for classification
+    or export to CoreML.
+
+    This model should not be constructed directly.
+    """
+    _CPP_OBJECT_DETECTOR_VERSION = 1
+
+    def __init__(self, model_proxy=None, name=None):
+        self.__proxy__ = model_proxy
+        self.__name__ = name
+
+    @classmethod
+    def _native_name(cls):
+        return None
+
+    def __str__(self):
+        """
+        Return a string description of the model to the ``print`` method.
+        Returns
+        -------
+        out : string
+            A description of the model.
+        """
+        return self.__class__.__name__
+
+    def __repr__(self):
+        """
+        Returns a string description of the model, including (where relevant)
+        the schema of the training data, description of the training data,
+        training statistics, and model hyperparameters.
+        Returns
+        -------
+        out : string
+            A description of the model.
+        """
+        return self.__class__.__name__
+
+    def _get_version(self):
+        return self._CPP_OBJECT_DETECTOR_VERSION
+
+    def export_coreml(self, filename,
+            include_non_maximum_suppression = True,
+            iou_threshold = None,
+            confidence_threshold = None):
+        """
+        Save the model in Core ML format. The Core ML model takes an image of
+        fixed size as input and produces two output arrays: `confidence` and
+        `coordinates`.
+
+        The first one, `confidence` is an `N`-by-`C` array, where `N` is the
+        number of instances predicted and `C` is the number of classes. The
+        number `N` is fixed and will include many low-confidence predictions.
+        The instances are not sorted by confidence, so the first one will
+        generally not have the highest confidence (unlike in `predict`). Also
+        unlike the `predict` function, the instances have not undergone
+        what is called `non-maximum suppression`, which means there could be
+        several instances close in location and size that have all discovered
+        the same object instance. Confidences do not need to sum to 1 over the
+        classes; any remaining probability is implied as confidence there is no
+        object instance present at all at the given coordinates. The classes
+        appear in the array alphabetically sorted.
+
+        The second array `coordinates` is of size `N`-by-4, where the first
+        dimension `N` again represents instances and corresponds to the
+        `confidence` array. The second dimension represents `x`, `y`, `width`,
+        `height`, in that order.  The values are represented in relative
+        coordinates, so (0.5, 0.5) represents the center of the image and (1,
+        1) the bottom right corner. You will need to multiply the relative
+        values with the original image size before you resized it to the fixed
+        input size to get pixel-value coordinates similar to `predict`.
+
+        See Also
+        --------
+        save
+
+        Parameters
+        ----------
+        filename : string
+            The path of the file where we want to save the Core ML model.
+
+        include_non_maximum_suppression : bool
+            Non-maximum suppression is only available in iOS 12+.
+            A boolean parameter to indicate whether the Core ML model should be
+            saved with built-in non-maximum suppression or not.
+            This parameter is set to True by default.
+
+        iou_threshold : float
+            Threshold value for non-maximum suppression. Non-maximum suppression
+            prevents multiple bounding boxes appearing over a single object.
+            This threshold, set between 0 and 1, controls how aggressive this
+            suppression is. A value of 1 means no maximum suppression will
+            occur, while a value of 0 will maximally suppress neighboring
+            boxes around a prediction.
+
+        confidence_threshold : float
+            Only return predictions above this level of confidence. The
+            threshold can range from 0 to 1.
+
+        Examples
+        --------
+        >>> model.export_coreml('detector.mlmodel')
+        """
+        options = {}
+        options['include_non_maximum_suppression'] = include_non_maximum_suppression
+        options['confidence_threshold'] = confidence_threshold
+        options['iou_threshold'] = iou_threshold
+
+        return self.__proxy__.export_to_coreml(filename, options)
+
+
+    def predict(self, dataset):
+        """
+        Predict object instances in an SFrame of images.
+
+        Parameters
+        ----------
+        dataset : SFrame | SArray | turicreate.Image
+            The images on which to perform object detection.
+            If dataset is an SFrame, it must have a column with the same name
+            as the feature column during training. Additional columns are
+            ignored.
+
+        Returns
+        -------
+        out : SArray
+            An SArray with model predictions. Each element corresponds to
+            an image and contains a list of dictionaries. Each dictionary
+            describes an object instances that was found in the image. If
+            `dataset` is a single image, the return value will be a single
+            prediction.
+
+        See Also
+        --------
+        evaluate
+
+        Examples
+        --------
+        .. sourcecode:: python
+
+            # Make predictions
+            >>> pred = model.predict(data)
+
+            # Stack predictions, for a better overview
+            >>> turicreate.object_detector.util.stack_annotations(pred)
+            Data:
+            +--------+------------+-------+-------+-------+-------+--------+
+            | row_id | confidence | label |   x   |   y   | width | height |
+            +--------+------------+-------+-------+-------+-------+--------+
+            |   0    |    0.98    |  dog  | 123.0 | 128.0 |  80.0 | 182.0  |
+            |   0    |    0.67    |  cat  | 150.0 | 183.0 | 129.0 | 101.0  |
+            |   1    |    0.8     |  dog  |  50.0 | 432.0 |  65.0 |  98.0  |
+            +--------+------------+-------+-------+-------+-------+--------+
+            [3 rows x 7 columns]
+
+            # Visualize predictions by generating a new column of marked up images
+            >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
+        """
+        return self.__proxy__.predict(dataset)
+
+    def evaluate(self, dataset, metric='auto'):
+        """
+        Evaluate the model by making predictions and comparing these to ground
+        truth bounding box annotations.
+
+        Parameters
+        ----------
+        dataset : SFrame
+            Dataset of new observations. Must include columns with the same
+            names as the annotations and feature used for model training.
+            Additional columns are ignored.
+
+        metric : str or list, optional
+            Name of the evaluation metric or list of several names. The primary
+            metric is average precision, which is the area under the
+            precision/recall curve and reported as a value between 0 and 1 (1
+            being perfect). Possible values are:
+
+            - 'auto'                      : Returns all primary metrics.
+            - 'all'                       : Returns all available metrics.
+            - 'average_precision_50'      : Average precision per class with
+                                            intersection-over-union threshold at
+                                            50% (PASCAL VOC metric).
+            - 'average_precision'         : Average precision per class calculated over multiple
+                                            intersection-over-union thresholds
+                                            (at 50%, 55%, ..., 95%) and averaged.
+            - 'mean_average_precision_50' : Mean over all classes (for ``'average_precision_50'``).
+                                            This is the primary single-value metric.
+            - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
+
+        Returns
+        -------
+        out : dict / SFrame
+            Output type depends on the option `output_type`.
+
+        See Also
+        --------
+        create, predict
+
+        Examples
+        --------
+        >>> results = model.evaluate(data)
+        >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
+        mAP: 43.2%
+        """
+        return self.__proxy__.evaluate(dataset, metric)

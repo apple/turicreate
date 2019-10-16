@@ -1,8 +1,0 @@
-^CMake Warning \(dev\) at MATH-ToleratedExpression.cmake:1 \(math\):
-  Unexpected character in expression at position 1: '
-
-  Unexpected character in expression at position 7: '
-
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)
-This warning is for project developers.  Use -Wno-dev to suppress it.$

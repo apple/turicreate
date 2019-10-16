@@ -4,6 +4,9 @@
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
+from __future__ import print_function as _
+from __future__ import division as _
+from __future__ import absolute_import as _
 import turicreate as _tc
 import numpy as _np
 import time as _time
@@ -48,7 +51,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
 
 def create(input_dataset, target, feature=None, validation_set='auto',
             warm_start='auto', batch_size=256,
-            max_iterations=500, verbose=True):
+            max_iterations=500, verbose=True, **kwargs):
     """
     Create a :class:`DrawingClassifier` model.
 
@@ -63,10 +66,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         column must be of string or integer type.
 
     feature : string optional
-        Name of the column containing the input drawings. 'None' (the default)
-        indicates the column in `dataset` named "drawing" should be used as the
-        feature.
-        The feature column can contain both bitmap-based drawings as well as
+        Name of the column containing the input drawings.
+        The feature column can contain either bitmap-based drawings or
         stroke-based drawings. Bitmap-based drawing input can be a grayscale
         tc.Image of any size.
         Stroke-based drawing input must be in the following format:
@@ -132,15 +133,34 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     from ._model_architecture import Model as _Model
     from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
     from .._mxnet import _mxnet_utils
+    import warnings
 
-    start_time = _time.time()
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
+
+    params = {
+        'use_tensorflow': False,
+    }
+
+    if '_advanced_parameters' in kwargs:
+        # Make sure no additional parameters are provided
+        new_keys = set(kwargs['_advanced_parameters'].keys())
+        set_keys = set(params.keys())
+        unsupported = new_keys - set_keys
+        if unsupported:
+            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
+
+        params.update(kwargs['_advanced_parameters'])
 
     # @TODO: Should be able to automatically choose number of iterations
     # based on data size: Tracked in Github Issue #1576
+    if not isinstance(input_dataset, _tc.SFrame):
+        raise TypeError('"input_dataset" must be of type SFrame.')
 
     # automatically infer feature column
     if feature is None:
+        warnings.warn("Not specifying a feature column is deprecate. This functionality will be removed"
+                      + " in the next major release. Please specify a \"feature\" value to"
+                      + " turicreate.drawing_classifier.create.")
         feature = _tkutl._find_only_drawing_column(input_dataset)
 
     _raise_error_if_not_drawing_classifier_input_sframe(
@@ -223,7 +243,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                  shuffle=True,
                  iterations=1)
 
-
     ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
     model = _Model(num_classes = len(classes), prefix="drawing_")
     model_params = model.collect_params()
@@ -244,80 +263,114 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         model.load_params(pretrained_model_params_path,
             ctx=ctx,
             allow_missing=True)
-    softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
-    model.hybridize()
-    trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
 
-    if verbose and iteration == -1:
-        column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
-        column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
-        if validation_set is not None:
-            column_names.insert(3, 'validation_accuracy')
-            column_titles.insert(3, 'Validation Accuracy')
-        table_printer = _tc.util._ProgressTablePrinter(
-            column_names, column_titles)
 
-    train_accuracy = _mx.metric.Accuracy()
-    validation_accuracy = _mx.metric.Accuracy()
+    if params['use_tensorflow']:
+        ## TensorFlow implementation
+        if verbose:
+            print("Using TensorFlow")
+        from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel, _tf_train_model
 
-    def get_data_and_label_from_batch(batch):
-        if batch.pad is not None:
-            size = batch_size - batch.pad
-            sliced_data  = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
-            sliced_label = _mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)
-            num_devices = min(sliced_data.shape[0], len(ctx))
-            batch_data = _mx.gluon.utils.split_and_load(sliced_data, ctx_list=ctx[:num_devices], even_split=False)
-            batch_label = _mx.gluon.utils.split_and_load(sliced_label, ctx_list=ctx[:num_devices], even_split=False)
-        else:
-            batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
-            batch_label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
-        return batch_data, batch_label
+        # To get weights: for warmstart Dense1 needs one forward pass to be initialised
+        test_input = _mx.nd.uniform(0, 1, (1,3) + (1,28,28))
+        model_output = model.forward(test_input[0])
 
-    def compute_accuracy(accuracy_metric, batch_loader):
-        batch_loader.reset()
-        accuracy_metric.reset()
-        for batch in batch_loader:
-            batch_data, batch_label = get_data_and_label_from_batch(batch)
-            outputs = []
-            for x, y in zip(batch_data, batch_label):
-                if x is None or y is None: continue
-                z = model(x)
-                outputs.append(z)
-            accuracy_metric.update(batch_label, outputs)
+        # Define the TF Model
+        tf_model = DrawingClassifierTensorFlowModel(validation_set, model_params, batch_size, len(classes), verbose)
+        # Train
+        final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = _tf_train_model(
+                                                            tf_model, train_loader, validation_loader,
+                                                            validation_set, batch_size, len(classes), verbose)
 
-    for train_batch in train_loader:
-        train_batch_data, train_batch_label = get_data_and_label_from_batch(train_batch)
-        with _autograd.record():
-            # Inside training scope
-            for x, y in zip(train_batch_data, train_batch_label):
-                z = model(x)
-                # Computes softmax cross entropy loss.
-                loss = softmax_cross_entropy(z, y)
-                # Backpropagate the error for one iteration.
-                loss.backward()
+        # Transfer weights from TF to MXNET model
+        net_params = tf_model.export_weights()
+        for k in net_params.keys():
+            model_params[k].set_data(net_params[k])
 
-        # Make one step of parameter update. Trainer needs to know the
-        # batch size of data to normalize the gradient by 1/batch_size.
-        trainer.step(train_batch.data[0].shape[0], ignore_stale_grad=True)
-        # calculate training metrics
-        train_loss = loss.mean().asscalar()
+    else:
+        ## MXNET implementation
+        if verbose:
+            print("Using MXNET")
+        start_time = _time.time()
+        softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
+        model.hybridize()
+        trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
 
-        if train_batch.iteration > iteration:
-
-            # Compute training accuracy
-            compute_accuracy(train_accuracy, train_loader_to_compute_accuracy)
-            # Compute validation accuracy
+        if verbose and iteration == -1:
+            column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
+            column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
             if validation_set is not None:
-                compute_accuracy(validation_accuracy, validation_loader)
-            iteration = train_batch.iteration
-            if verbose:
-                kwargs = {  "iteration": iteration + 1,
-                            "train_loss": float(train_loss),
-                            "train_accuracy": train_accuracy.get()[1],
-                            "time": _time.time() - start_time}
+                column_names.insert(3, 'validation_accuracy')
+                column_titles.insert(3, 'Validation Accuracy')
+            table_printer = _tc.util._ProgressTablePrinter(
+                column_names, column_titles)
+
+        train_accuracy = _mx.metric.Accuracy()
+        validation_accuracy = _mx.metric.Accuracy()
+
+        def get_data_and_label_from_batch(batch):
+            if batch.pad is not None:
+                size = batch_size - batch.pad
+                sliced_data  = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
+                sliced_label = _mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)
+                num_devices = min(sliced_data.shape[0], len(ctx))
+                batch_data = _mx.gluon.utils.split_and_load(sliced_data, ctx_list=ctx[:num_devices], even_split=False)
+                batch_label = _mx.gluon.utils.split_and_load(sliced_label, ctx_list=ctx[:num_devices], even_split=False)
+            else:
+                batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
+                batch_label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
+            return batch_data, batch_label
+
+        def compute_accuracy(accuracy_metric, batch_loader):
+            batch_loader.reset()
+            accuracy_metric.reset()
+            for batch in batch_loader:
+                batch_data, batch_label = get_data_and_label_from_batch(batch)
+                outputs = []
+                for x, y in zip(batch_data, batch_label):
+                    if x is None or y is None: continue
+                    z = model(x)
+                    outputs.append(z)
+                accuracy_metric.update(batch_label, outputs)
+
+        for train_batch in train_loader:
+            train_batch_data, train_batch_label = get_data_and_label_from_batch(train_batch)
+            with _autograd.record():
+                # Inside training scope
+                for x, y in zip(train_batch_data, train_batch_label):
+                    z = model(x)
+                    # Computes softmax cross entropy loss.
+                    loss = softmax_cross_entropy(z, y)
+                    # Backpropagate the error for one iteration.
+                    loss.backward()
+
+            # Make one step of parameter update. Trainer needs to know the
+            # batch size of data to normalize the gradient by 1/batch_size.
+            trainer.step(train_batch.data[0].shape[0], ignore_stale_grad=True)
+            # calculate training metrics
+            train_loss = loss.mean().asscalar()
+
+            if train_batch.iteration > iteration:
+
+                # Compute training accuracy
+                compute_accuracy(train_accuracy, train_loader_to_compute_accuracy)
+                # Compute validation accuracy
                 if validation_set is not None:
-                    kwargs["validation_accuracy"] = validation_accuracy.get()[1]
-                table_printer.print_row(**kwargs)
+                    compute_accuracy(validation_accuracy, validation_loader)
+                iteration = train_batch.iteration
+                if verbose:
+                    kwargs = {  "iteration": iteration + 1,
+                                "train_loss": float(train_loss),
+                                "train_accuracy": train_accuracy.get()[1],
+                                "time": _time.time() - start_time}
+                    if validation_set is not None:
+                        kwargs["validation_accuracy"] = validation_accuracy.get()[1]
+                    table_printer.print_row(**kwargs)
+
+        final_train_accuracy = train_accuracy.get()[1]
+        final_val_accuracy = validation_accuracy.get()[1] if validation_set else None
+        final_train_loss = train_loss
+        total_train_time = _time.time() - start_time
 
     state = {
         '_model': model,
@@ -325,16 +378,17 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         'num_classes': len(classes),
         'classes': classes,
         'input_image_shape': (1, BITMAP_WIDTH, BITMAP_HEIGHT),
-        'training_loss': train_loss,
-        'training_accuracy': train_accuracy.get()[1],
-        'training_time': _time.time() - start_time,
-        'validation_accuracy': validation_accuracy.get()[1] if validation_set else None,
+        'training_loss': final_train_loss,
+        'training_accuracy': final_train_accuracy,
+        'training_time': total_train_time,
+        'validation_accuracy': final_val_accuracy,
         # None if validation_set=None
         'max_iterations': max_iterations,
         'target': target,
         'feature': feature,
         'num_examples': len(input_dataset)
     }
+
     return DrawingClassifier(state)
 
 class DrawingClassifier(_CustomModel):

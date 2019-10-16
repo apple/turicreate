@@ -1,7 +1,0 @@
-CMake Error in CMakeLists.txt:
-  Evaluation output file
-
-    ".*Tests/RunCMake/File_Generate/OutputNameMatchesSources-build/1somefile.cpp"
-
-  depends on the sources of a target it is used in.  This is a dependency
-  loop and is not allowed.

@@ -1,4 +1,0 @@
-^CMake Error at MATH-WrongArgument.cmake:1 \(math\):
-  math sub-command EXPR option "OUT" is unknown.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

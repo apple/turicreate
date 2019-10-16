@@ -1,9 +1,0 @@
-^CMake Error at .*/Modules/ExternalData.cmake:[0-9]+ \(message\):
-  Bad ExternalDataCustomScript key '0BadKey' in URL template:
-
-   ExternalDataCustomScript://0BadKey/%\(algo\)/%\(hash\)
-
-  The key must be a valid C identifier.
-Call Stack \(most recent call first\):
-  BadCustom1.cmake:[0-9]+ \(ExternalData_Add_Target\)
-  CMakeLists.txt:[0-9]+ \(include\)$

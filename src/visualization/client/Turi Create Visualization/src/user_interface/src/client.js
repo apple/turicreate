@@ -11,7 +11,7 @@ export async function fetch(url, body) {
   // Return it as a Promise
   return new Promise(function(resolve, reject) {
     req.addEventListener("load", function() {
-      if (req.status == 200) {
+      if (req.status === 200) {
         resolve(this.response);
       } else {
         reject("Got unexpected status " + req.status + " from server");
@@ -36,7 +36,7 @@ export async function fetch(url, body) {
 async function initVisualization(id, type) {
   let spec = await fetch(`/spec/${type}/${id}`);
   var body = undefined;
-  if (type == 'table') {
+  if (type === 'table') {
     // for table, fetch the first 100 rows by default
     body = {'type': 'rows', start: 0, end: 100};
   }
@@ -45,7 +45,7 @@ async function initVisualization(id, type) {
   window.setSpec(spec);
   window.handleInput(data);
 
-  if (type == 'plot') {
+  if (type === 'plot') {
     // Stream in the rest of the data, if necessary
     while (data.progress < 1.0) {
       data = await fetch(`/data/${type}/${id}`);

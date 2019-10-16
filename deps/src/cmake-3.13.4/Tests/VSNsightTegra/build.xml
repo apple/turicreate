@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project name="TwoLibs" default="help">
-  <import file="${sdk.dir}/tools/ant/build.xml" />
-</project>

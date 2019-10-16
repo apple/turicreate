@@ -1,5 +1,0 @@
-CMake Error at InstallNotSupported.cmake:[0-9]+ \(install\):
-  install TARGETS given OBJECT library "A" whose objects may not be installed
-  under Xcode with multiple architectures.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

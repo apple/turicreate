@@ -1,3 +1,0 @@
-CMake Error in CMakeLists.txt:
-  Evaluation file condition \"\$<1:Bad>\" did not evaluate to valid content.
-  Got \"Bad\".

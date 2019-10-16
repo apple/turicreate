@@ -1,9 +1,0 @@
-CMake Warning \(dev\) at .*/Modules/UseSWIG.cmake:[0-9]+ \(message\):
-  Policy CMP0078 is not set.  Run "cmake --help-policy CMP0078" for policy
-  details.  Use the cmake_policy command to set the policy and suppress this
-  warning.
-Call Stack \(most recent call first\):
-  CMP0078-common.cmake:6 \(swig_add_library\)
-  CMP0078-WARN.cmake:1 \(include\)
-  CMakeLists.txt:3 \(include\)
-This warning is for project developers.  Use -Wno-dev to suppress it.$

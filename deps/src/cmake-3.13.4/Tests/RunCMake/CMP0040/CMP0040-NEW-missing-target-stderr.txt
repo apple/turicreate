@@ -1,4 +1,0 @@
-CMake Error at CMP0040-NEW-missing-target.cmake:3 \(add_custom_command\):
-  No TARGET 'foobar' has been created in this directory.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

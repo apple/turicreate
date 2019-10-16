@@ -15,6 +15,7 @@
 #include <signal.h>
 #endif
 #include <Eigen/Core>
+#include <core/util/fs_util.hpp>
 #include <core/globals/globals.hpp>
 #include <core/globals/global_constants.hpp>
 #include <core/storage/sframe_data/sframe_constants.hpp>
@@ -45,37 +46,6 @@ memory_release_thread* MEMORY_RELEASE_THREAD;
 /*                             Helper functions                           */
 /*                                                                        */
 /**************************************************************************/
-/**
- * Attempts to increase the file handle limit.
- * Returns true on success, false on failure.
- */
-bool upgrade_file_handle_limit(size_t limit) {
-#ifndef _WIN32
-  struct rlimit rlim;
-  rlim.rlim_cur = limit;
-  rlim.rlim_max = limit;
-  return setrlimit(RLIMIT_NOFILE, &rlim) == 0;
-#else
-  return true;
-#endif
-}
-
-/**
- * Gets the current file handle limit.
- * Returns the current file handle limit on success,
- * -1 on infinity, and 0 on failure.
- */
-int get_file_handle_limit() {
-#ifndef _WIN32
-  struct rlimit rlim;
-  int ret = getrlimit(RLIMIT_NOFILE, &rlim);
-  if (ret != 0) return 0;
-  return int(rlim.rlim_cur);
-#else
-  return 4096;
-#endif
-}
-
 void install_sighandlers() {
 #ifdef _WIN32
   // Make sure dialog boxes don't come up for errors (apparently doesn't affect
@@ -136,8 +106,8 @@ void configure_global_environment(std::string argv0) {
   // reason is that on Mac, once a file descriptor has been used (even STDOUT),
   // the file handle limit increase will appear to work, but will in fact fail
   // silently.
-  upgrade_file_handle_limit(4096);
-  int file_handle_limit = get_file_handle_limit();
+  fs_util::upgrade_file_handle_limit(4096);
+  int file_handle_limit = fs_util::get_file_handle_limit();
   if (file_handle_limit < 4096) {
     logstream(LOG_WARNING)
         << "Unable to raise the file handle limit to 4096. "

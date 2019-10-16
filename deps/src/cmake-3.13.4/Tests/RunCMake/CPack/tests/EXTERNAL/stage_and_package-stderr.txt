@@ -1,1 +1,0 @@
-^This script could run an external packaging tool$

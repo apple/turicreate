@@ -1,3 +1,0 @@
-CMake Error: Property POSITION_INDEPENDENT_CODE on target "conflict" does
-not match the INTERFACE_POSITION_INDEPENDENT_CODE property requirement
-of dependency "piciface".

@@ -1,3 +1,0 @@
--- PROJECT_HOMEPAGE_URL=http://example.com
--- CMAKE_PROJECT_HOMEPAGE_URL=http://example.com
--- ProjectHomepageTest_HOMEPAGE_URL=http://example.com

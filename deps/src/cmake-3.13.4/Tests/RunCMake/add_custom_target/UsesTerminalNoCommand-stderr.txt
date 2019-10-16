@@ -1,4 +1,0 @@
-CMake Error at UsesTerminalNoCommand.cmake:1 \(add_custom_target\):
-  USES_TERMINAL may not be specified without any COMMAND
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

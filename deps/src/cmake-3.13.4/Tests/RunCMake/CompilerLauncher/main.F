@@ -1,2 +1,0 @@
-	PROGRAM MAIN
-	END

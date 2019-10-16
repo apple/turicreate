@@ -11,9 +11,9 @@
 
 @interface TCMPSVgg16Block1 ()
 @property (nonatomic) MPSCNNConvolutionNode *conv1;
-@property (nonatomic) MPSCNNNeuronReLUNNode *relu1;
+@property (nonatomic) MPSCNNNeuronReLUNode *relu1;
 @property (nonatomic) MPSCNNConvolutionNode *conv2;
-@property (nonatomic) MPSCNNNeuronReLUNNode *relu2;
+@property (nonatomic) MPSCNNNeuronReLUNode *relu2;
 @property (nonatomic) MPSCNNPoolingAverageNode *pooling;
 @end
 
@@ -36,14 +36,14 @@
                                            strideHeight:descriptor.conv1.strideHeight
                                            paddingWidth:descriptor.conv1.paddingWidth
                                           paddingHeight:descriptor.conv1.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_biases"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_weight"]]
+                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_1_bias"]]
                                                   label:descriptor.conv1.label
                                           updateWeights:descriptor.conv1.updateWeights
                                                  device:dev
                                                cmdQueue:cmdQ];
 
-    _relu1 = [MPSCNNNeuronReLUNNode nodeWithSource: [_conv1 resultImage]];
+    _relu1 = [MPSCNNNeuronReLUNode nodeWithSource: [_conv1 resultImage]];
 
     _conv2 = [MPSCNNConvolutionNode createConvolutional:[_relu1 resultImage]
                                             kernelWidth:descriptor.conv2.kernelWidth
@@ -54,14 +54,14 @@
                                            strideHeight:descriptor.conv2.strideHeight
                                            paddingWidth:descriptor.conv2.paddingWidth
                                           paddingHeight:descriptor.conv2.paddingHeight
-                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_weights"]]
-                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_biases"]]
+                                                weights:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_weight"]]
+                                                 biases:weights[[NSString stringWithFormat:@"%@%@", name, @"conv_2_bias"]]
                                                   label:descriptor.conv2.label
                                           updateWeights:descriptor.conv2.updateWeights
                                                  device:dev
                                                cmdQueue:cmdQ];
 
-    _relu2 = [MPSCNNNeuronReLUNNode nodeWithSource: [_conv2 resultImage]];
+    _relu2 = [MPSCNNNeuronReLUNode nodeWithSource: [_conv2 resultImage]];
 
     _pooling = [[MPSCNNPoolingAverageNode alloc] initWithSource:[_relu2 resultImage]
                                                     kernelWidth:descriptor.pooling.kernelSize

@@ -1,4 +1,0 @@
-^CMake Error at FILTER-REGEX-TooManyArguments.cmake:2 \(list\):
-  list sub-command FILTER, mode REGEX requires five arguments.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

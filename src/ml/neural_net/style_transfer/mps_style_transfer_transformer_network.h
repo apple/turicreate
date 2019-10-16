@@ -25,6 +25,7 @@ API_AVAILABLE(macos(10.14))
                          descriptor:(TCMPSTransformerDescriptor *)descriptor
                         initWeights:(NSDictionary<NSString *, NSData *> *) weights;
 
+- (void) setStyleIndex:(NSUInteger)styleIndex;
 - (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode *) inputNode;
 - (void) setLearningRate:(float)lr;
 - (NSDictionary<NSString *, NSData *> *) exportWeights:(NSString *) prefix;

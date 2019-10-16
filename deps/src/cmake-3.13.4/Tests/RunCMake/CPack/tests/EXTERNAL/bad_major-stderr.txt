@@ -1,6 +1,0 @@
-CMake Error at .*/Modules/Internal/CPack/CPackExternal\.cmake:[0-9]+ \(message\):
-  Could not find a suitable version in CPACK_EXTERNAL_REQUESTED_VERSIONS
-
-
-CPack Error: Error while executing CPackExternal\.cmake
-CPack Error: Cannot initialize the generator External

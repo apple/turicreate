@@ -197,6 +197,7 @@ struct equality_operator {
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_int t, const flex_int u) const { return t == u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_float t, const flex_float u) const { return t == u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_string& t, const flex_string& u) const { return t == u; }
+  inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_image& t, const flex_image& u) const { return t == u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_vec& t, const flex_vec& u) const {
     if (t.size() != u.size()) return false;
     for (size_t i = 0;i < t.size(); ++i) if (t[i] != u[i]) return false;
@@ -245,6 +246,7 @@ struct approx_equality_operator {
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_int t, const flex_float u) const { return t == u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_float t, const flex_int u) const { return t == u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_string& t, const flex_string& u) const { return t == u; }
+  inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_image& t, const flex_image& u) const { return t == u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN bool operator()(const flex_vec& t, const flex_vec& u) const {
     if (t.size() != u.size()) return false;
     for (size_t i = 0;i < t.size(); ++i) if (t[i] != u[i]) return false;

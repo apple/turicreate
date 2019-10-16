@@ -1,6 +1,0 @@
-CMake Error in CMakeLists.txt:
-  Evaluation file to be written multiple times with different content.  This
-  is generally caused by the content evaluating the configuration type,
-  language, or location of object files:
-
-  .*output.txt

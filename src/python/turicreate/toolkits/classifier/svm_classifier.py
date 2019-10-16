@@ -637,10 +637,3 @@ class SVMClassifier(_Classifier):
                                missing_value_action=missing_value_action,
                                metric=metric,
                                with_predictions=with_predictions)
-
-    @classmethod
-    def _get_queryable_methods(cls):
-        '''Returns a list of method names that are queryable through Predictive
-        Service'''
-        return {'predict':{},
-                'classify':{}}

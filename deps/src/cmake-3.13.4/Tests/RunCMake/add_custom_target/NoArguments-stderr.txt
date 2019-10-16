@@ -1,4 +1,0 @@
-CMake Error at NoArguments.cmake:1 \(add_custom_target\):
-  add_custom_target called with incorrect number of arguments
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

@@ -1,9 +1,0 @@
-CMake Error at TestToolsetToolchain.cmake:[0-9]+ \(message\):
-  CMAKE_GENERATOR_TOOLSET is "Test Toolset" as expected.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)
-+
-CMake Error at TestToolsetToolchain.cmake:[0-9]+ \(message\):
-  CMAKE_(VS|XCODE)_PLATFORM_TOOLSET is "Test Toolset" as expected.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

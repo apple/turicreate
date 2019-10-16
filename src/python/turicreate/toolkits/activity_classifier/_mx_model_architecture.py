@@ -107,6 +107,7 @@ def _fit_model_mxnet(model, data_iter, valid_iter, max_iterations, num_gpus, ver
     model.bind(data_shapes=data_iter.provide_data,
                label_shapes=data_iter.provide_label)
     model.init_params(initializer=_mx.init.Xavier())
+
     model.init_optimizer(optimizer='adam',
                          optimizer_params={'learning_rate': 1e-3,
                                            'rescale_grad': 1.0})

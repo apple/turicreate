@@ -1,7 +1,0 @@
-// This is valid
-VALID:BOOL=TRUE
-
-// This isn't
-
-// One final entry
-FINAL:BOOL=TRUE

@@ -23,13 +23,18 @@ sframe groupby_aggregate(const sframe& source,
   // first, sanity checks
   // check that group keys exist
   if (output_column_names.size() != groups.size()) {
-    log_and_throw("There must be as many output columns as there are groups");
+    log_and_throw("There must be as many output columns as the number groups");
   }
+
   {
     // check that output column names are all unique, and do not intersect with
     // keys. Since empty values will be automatically assigned, we will skip
     // those.
     std::set<std::string> all_output_columns(keys.begin(), keys.end());
+    if (all_output_columns.size() != keys.size()) {
+      log_and_throw("groupby keys are not unique");
+    }
+
     size_t named_column_count = 0;
     for (auto s: output_column_names) {
       if (!s.empty()) {
@@ -37,6 +42,8 @@ sframe groupby_aggregate(const sframe& source,
         ++named_column_count;
       }
     }
+
+    // valid if keys are unique
     if (all_output_columns.size() != keys.size() + named_column_count) {
       log_and_throw("Output columns names are not unique");
     }
@@ -53,7 +60,7 @@ sframe groupby_aggregate(const sframe& source,
   for (const auto& group: groups) {
     // check that the column name is valid
     if (group.first.size() > 0) {
-      for(size_t index = 0; index < group.first.size();index++) {
+      for (size_t index = 0; index < group.first.size(); index++) {
         auto& col_name = group.first[index];
         if (!source.contains_column(col_name)) {
           log_and_throw("SFrame does not contain column " + col_name);
@@ -72,16 +79,16 @@ sframe groupby_aggregate(const sframe& source,
   }
 
   // key should not have repeated columns
+  // checked at very beginning
   std::set<std::string> key_columns;
-  std::set<std::string> group_columns;
   for (const auto& key: keys) key_columns.insert(key);
+  DASSERT_TRUE(key_columns.size() == keys.size());
+
+  std::set<std::string> group_columns;
   for (const auto& group: groups) {
     for(auto& col_name : group.first) {
       group_columns.insert(col_name);
     }
-  }
-  if (key_columns.size() != keys.size()) {
-      log_and_throw("Group by key cannot have repeated column names");
   }
 
   // ok. select out just the columns I care about
@@ -184,6 +191,7 @@ sframe groupby_aggregate(const sframe& source,
   logstream(LOG_INFO) << "Filling group container: " << std::endl;
   parallel_for (0, input_reader->num_segments(),
                 [&](size_t i) {
+                  container.init_tls();
                   auto iter = input_reader->begin(i);
                   auto enditer = input_reader->end(i);
                   while(iter != enditer) {
@@ -191,6 +199,7 @@ sframe groupby_aggregate(const sframe& source,
                     container.add(row, num_keys);
                     ++iter;
                   }
+                  container.flush_tls();
                 });
 
   logstream(LOG_INFO) << "Group container filled in " << ti.current_time() << std::endl;

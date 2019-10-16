@@ -1,3 +1,0 @@
-^CMake Deprecation Warning in CMakeLists.txt:
-  The C# target "foo" is of type STATIC_LIBRARY.  This is discouraged \(and
-  may be disabled in future\).  Make it a SHARED library instead.$

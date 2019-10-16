@@ -1,5 +1,0 @@
-CMake Error at add_custom_command-TARGET.cmake:4 \(add_custom_command\):
-  Target "iface" is an INTERFACE library that may not have PRE_BUILD,
-  PRE_LINK, or POST_BUILD commands.
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

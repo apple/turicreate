@@ -1,4 +1,0 @@
-CMake Error at EmptyInsert-1.cmake:2 \(list\):
-  list index: -1 out of range \(0, 0\)
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)$

@@ -49,6 +49,13 @@ develop-eggs
 # Installer logs
 pip-log.txt
 
+## pyenv
+.python-version
+## ipython
+.python-history
+## pdb
+.backtrace.[0-9]
+
 # Unit test / coverage reports
 .coverage
 .tox

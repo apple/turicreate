@@ -61,7 +61,7 @@ class ThreadRowPageIterator: public utils::IIterator<RowBatch> {
 };
 
 /*! \brief data matrix using page */
-template<int TKMagic>
+template<uint32_t TKMagic>
 class DMatrixPageBase : public DataMatrix {
  public:
   DMatrixPageBase(void) : DataMatrix(kMagic) {

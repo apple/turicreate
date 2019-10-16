@@ -1,2 +1,0 @@
-  Target "foo" links to item " bar " which has leading or trailing
-  whitespace.  This is now an error according to policy CMP0004.

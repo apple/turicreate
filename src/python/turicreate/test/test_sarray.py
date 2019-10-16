@@ -11,6 +11,7 @@ from __future__ import absolute_import as _
 from ..data_structures.sarray import SArray
 from ..data_structures.sframe import SFrame
 from ..data_structures.sarray import load_sarray
+from ..toolkits.image_analysis.image_analysis import load_images
 from .._cython.cy_flexible_type import GMT
 from . import util
 
@@ -30,6 +31,7 @@ import functools
 import tempfile
 import sys
 import six
+import json
 
 
 class SArrayTest(unittest.TestCase):
@@ -48,6 +50,8 @@ class SArrayTest(unittest.TestCase):
         self.np_matrix_data = [np.matrix(x) for x in self.vec_data]
         self.list_data = [[i, str(i), i * 1.0] for i in self.int_data]
         self.dict_data =  [{str(i): i, i : float(i)} for i in self.int_data]
+        # json dict only allows string keys
+        self.dict_json_data =  [{str(i): i} for i in self.int_data]
         self.url = "http://s3-us-west-2.amazonaws.com/testdatasets/a_to_z.txt.gz"
 
     def __test_equal(self, _sarray, _data, _type):
@@ -383,6 +387,36 @@ class SArrayTest(unittest.TestCase):
         for i in range(len(sint)):
             self.assertEqual(int(lines[i]), sint[i])
         self._remove_single_file('txt_int_arr')
+    
+    def test_read_json(self):
+        # boolean type will be read in as int
+        data_pairs = [('int_data', int), ('bool_data', int), ('float_data', float), 
+                      ('string_data', str), ('list_data', list), ('dict_json_data', dict)]
+        for attr, data_type in data_pairs:
+            filename = attr + '.json'
+            self._remove_single_file(filename)
+            data = getattr(self, attr)
+
+            with open(filename, 'w') as f:
+                json.dump(data, f)
+
+            read_sarray = SArray.read_json(filename)
+            self.__test_equal(read_sarray, data, data_type)
+            self._remove_single_file(filename)
+
+    def test_read_json_infer_type(self):
+        data = [None, 1, 2, None, 3.0, 4, 5.0, 6, None]
+        converted_data = [float(i) if i is not None else i for i in data]
+        filename = 'read_json_infer_type.json'
+        self._remove_single_file(filename)
+
+        with open(filename, 'w') as f:
+            json.dump(data, f)
+
+        read_sarray = SArray.read_json(filename)
+        self.__test_equal(read_sarray, converted_data, float)
+        self._remove_single_file(filename)
+
 
     def _remove_single_file(self, filename):
         try:
@@ -1208,6 +1242,17 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(len((t - t2).dropna()), 7)
         self.assertEqual(len((t * t2).dropna()), 7)
 
+    def test_sarray_image_equality(self):
+        current_file_dir = os.path.dirname(os.path.realpath(__file__))
+        image_url_1 = current_file_dir + '/images/sample.png'
+        image_url_2 = current_file_dir + '/images/sample.jpg'
+        i = load_images(image_url_1)['image']
+        j = load_images(image_url_2)['image']
+
+        self.__test_equal(i == i, [x == y for (x,y) in zip(i, i)], int)
+        self.__test_equal(j == j, [x == y for (x,y) in zip(j, j)], int)
+        self.__test_equal(i == j, [x == y for (x,y) in zip(i, j)], int)
+
     def test_dropna(self):
         no_nas = ['strings', 'yeah', 'nan', 'NaN', 'NA', 'None']
         t = SArray(no_nas)
@@ -1274,9 +1319,9 @@ class SArrayTest(unittest.TestCase):
 
         # I can hash other stuff too
         # does not throw
-        a.astype(str).hash().__materialize__()
+        a.astype(str).hash().materialize()
 
-        a.apply(lambda x: [x], list).hash().__materialize__()
+        a.apply(lambda x: [x], list).hash().materialize()
 
         # Nones hash too!
         a = SArray([None, None, None], int).hash()
@@ -1504,13 +1549,6 @@ class SArrayTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             #should fail with n <0
             sa_word._count_ngrams(0)
-
-
-        with warnings.catch_warnings(record=True) as context:
-            warnings.simplefilter("always")
-            sa_word._count_ngrams(10)
-            assert len(context) == 1
-
 
 
     def test_dict_keys(self):

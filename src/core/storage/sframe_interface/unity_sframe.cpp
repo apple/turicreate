@@ -494,6 +494,13 @@ std::shared_ptr<unity_sframe_base> unity_sframe::select_columns(
   return ret;
 }
 
+std::shared_ptr<unity_sframe_base> unity_sframe::copy(){
+  auto ret = std::make_shared<unity_sframe>();
+  auto new_planner_node = std::make_shared<planner_node>(*(this->get_planner_node()));
+  ret->construct_from_planner_node(new_planner_node, this->column_names());
+  return ret;
+}
+
 void unity_sframe::add_column(std::shared_ptr<unity_sarray_base> data,
                               const std::string& column_name) {
   Dlog_func_entry();
@@ -916,10 +923,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::append(
   if (this->num_columns() == 0) {
     return other;
   } else if (other_sframe->num_columns() == 0) {
-    auto ret = std::make_shared<unity_sframe>();
-    auto new_planner_node = std::make_shared<planner_node>(*(this->get_planner_node()));
-    ret->construct_from_planner_node(new_planner_node, this->column_names());
-    return ret;
+    return copy();
   }
 
   // Error checking and reorder other sframe if necessary
@@ -1156,8 +1160,12 @@ std::shared_ptr<unity_sframe_base> unity_sframe::sample(float percent,
                                                         int random_seed,
                                                         bool exact) {
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
+  if (percent == 1.0){
+    return copy();
+  }
   auto logical_filter_array = std::static_pointer_cast<unity_sarray>(
     unity_sarray::make_uniform_boolean_array(size(), percent, random_seed, exact));
+  
   return logical_filter(logical_filter_array);
 }
 

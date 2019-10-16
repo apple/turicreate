@@ -44,7 +44,8 @@ The input to this model is an `MLMultiArray` of length 15,600 this is
 975ms of data at a sample rate of 16K per second (.975 * 16,000 = 15,600).
 The input must also only be one channel (i.e. mono not stereo). It is
 important that the input to the model be 15,600 elements of one channel
-data at a 16k sample rate.
+data at a 16k sample rate.  In the case we have less than one window of data or
+have some remainder we pad with silence.
 
 In order get predictions from your model, you will need to chuck your
 data into the correct size. You will also need to import both `CoreML`
@@ -83,21 +84,41 @@ guard let audioData = try? MLMultiArray(shape:[windowSize as NSNumber],
    fatalError("Can not create MLMultiArray")
 }
 
-// Ignore any partial window at the end.
-var results = [Dictionary<String, Double>]()
-let windowNumber = wavFile.length / Int64(windowSize)
-for windowIndex in 0..<Int(windowNumber) {
-   let offset = windowIndex * windowSize
-   for i in 0...windowSize {
-      audioData[i] = NSNumber.init(value: bufferData[0][offset + i])
-   }
-   let modelInput = my_sound_classifierInput(audio: audioData)
 
-   guard let modelOutput = try? model.prediction(input: modelInput) else {
-      fatalError("Error calling predict")
-   }
-   results.append(modelOutput.categoryProbability)
+
+var results = [Dictionary<String, Double>]()
+let frameLength = Int(buffer.frameLength)
+var audioDataIndex = 0
+
+// Iterate over all the samples, chunking calls to analyze every 15600
+for i in 0..<frameLength {
+    audioData[audioDataIndex] = NSNumber.init(value: bufferData[0][i])
+    if audioDataIndex >= windowSize {
+        let modelInput = my_sound_classifierInput(audio: audioData)
+        
+        guard let modelOutput = try? model.prediction(input: modelInput) else {
+            fatalError("Error calling predict")
+        }
+        results.append(modelOutput.categoryProbability)
+        audioDataIndex = 0
+    } else {
+        audioDataIndex += 1
+    }
 }
+
+// Handle remainder by passing with zero
+if audioDataIndex > 0 {
+    for audioDataIndex in audioDataIndex...windowSize {
+        audioData[audioDataIndex] = 0
+    }
+    let modelInput = my_sound_classifierInput(audio: audioData)
+    
+    guard let modelOutput = try? model.prediction(input: modelInput) else {
+        fatalError("Error calling predict")
+    }
+    results.append(modelOutput.categoryProbability)
+}
+
 ```
 
 Once all window predictions are saved, to generate the overall

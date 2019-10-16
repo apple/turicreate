@@ -1,2 +1,0 @@
-Memory checking results:
-use-of-uninitialized-value - 1

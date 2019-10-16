@@ -1,4 +1,0 @@
-^CMake Error at CTestTestfile.cmake:[0-9]+ \(subdirs\):
-  subdirs called with incorrect number of arguments
-+
-No tests were found!!!$

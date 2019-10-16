@@ -1,4 +1,0 @@
-CMake Error at NotAStandard.cmake:[0-9]+ \(add_library\):
-  CXX_STANDARD is set to invalid value 'bad'
-Call Stack \(most recent call first\):
-  CMakeLists.txt:[0-9]+ \(include\)

@@ -1,3 +1,0 @@
-cmake_minimum_required(VERSION 3.11)
-project(@CASE_NAME@ NONE)
-include("@RunCMake_SOURCE_DIR@/@CASE_NAME@.cmake")

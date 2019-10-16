@@ -1,4 +1,0 @@
-CMake Error at StringContinuation1.cmake:1 \(message\):
-  ab
-Call Stack \(most recent call first\):
-  CMakeLists.txt:3 \(include\)

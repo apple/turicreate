@@ -1,6 +1,5 @@
 project(sframe_test)
 
-make_executable(sframe_bench SOURCES sframe_bench.cpp REQUIRES unity_shared_for_testing)
 make_boost_test(sframe_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(shuffle_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(sarray_file_format_v2_test.cxx REQUIRES unity_shared_for_testing)

@@ -1,9 +1,0 @@
-Test project .*/Tests/RunCMake/ctest_fixtures/unused-build
-    Start 14: setupUnused
-1/2 Test #14: setupUnused +\.+ +Passed +[0-9.]+ sec
-    Start 13: cleanupUnused
-2/2 Test #13: cleanupUnused +\.+ +Passed +[0-9.]+ sec
-+
-100% tests passed, 0 tests failed out of 2
-+
-Total Test time \(real\) = +[0-9.]+ sec$

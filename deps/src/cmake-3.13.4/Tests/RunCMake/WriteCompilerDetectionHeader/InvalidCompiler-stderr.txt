@@ -1,5 +1,0 @@
-CMake Error at .*Modules/WriteCompilerDetectionHeader.cmake:[0-9]+ \(message\):
-  Unsupported compiler NOT_A_COMPILER.
-Call Stack \(most recent call first\):
-  InvalidCompiler.cmake:4 \(write_compiler_detection_header\)
-  CMakeLists.txt:3 \(include\)

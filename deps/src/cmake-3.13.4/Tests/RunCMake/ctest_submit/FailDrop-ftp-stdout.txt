@@ -1,3 +1,0 @@
-Submit files \(using ftp\)
-   Using FTP submit method
-   Drop site: ftp://
