@@ -205,7 +205,7 @@ build_cpp_linux_no_remotefs:
     DOCKER_DRIVER: overlay2
   script:
     - apt-get -y update
-    - apt-get -y software-properties-common
+    - apt-get -y install software-properties-common
     - apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
     - apt-get -y update
     - apt-get -y install cmake build-essential
