@@ -97,7 +97,8 @@ constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45f;
 
 // Predictions with confidence scores below this threshold will be discarded
 // before generation precision-recall curves.
-constexpr float EVAL_CONFIDENCE_THRESHOLD = 0.001f;
+
+//constexpr float EVAL_CONFIDENCE_THRESHOLD = 0.001f;
 
 // Each bounding box is evaluated relative to a list of pre-defined sizes.
 const std::vector<std::pair<float, float>>& anchor_boxes() {
@@ -535,7 +536,8 @@ variant_map_type object_detector::evaluate(
   return result_map;
 }
 
-gl_sarray object_detector::predict(gl_sframe data) {
+gl_sarray object_detector::predict(gl_sframe data, float confidence_threshold,
+  float iou_threshold) {
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
@@ -554,14 +556,15 @@ gl_sarray object_detector::predict(gl_sframe data) {
     result.write(predicted_row_ft, 0);
   };
 
-  perform_predict(data, consumer);
+  perform_predict(data, consumer, confidence_threshold, iou_threshold);
 
   return result.close();
 }
 
 void object_detector::perform_predict(gl_sframe data,
     std::function<void(const std::vector<image_annotation>&,
-    const std::vector<image_annotation>&)> consumer) {
+    const std::vector<image_annotation>&)> consumer, float confidence_threshold,
+    float iou_threshold) {
 
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
@@ -569,8 +572,8 @@ void object_detector::perform_predict(gl_sframe data,
   size_t batch_size = read_state<size_t>("batch_size");
   size_t grid_height = read_state<size_t>("grid_height");
   size_t grid_width = read_state<size_t>("grid_width");
-  float iou_threshold =
-      read_state<flex_float>("non_maximum_suppression_threshold");
+  //float iou_threshold =
+  //    read_state<flex_float>("non_maximum_suppression_threshold");
 
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_iter = create_iterator(
@@ -631,7 +634,7 @@ void object_detector::perform_predict(gl_sframe data,
         // Translate the raw output into predicted labels and bounding boxes.
         std::vector<image_annotation> predicted_annotations =
             convert_yolo_to_annotations(raw_prediction, anchor_boxes(),
-                                        EVAL_CONFIDENCE_THRESHOLD);
+                                        confidence_threshold);
 
         // Remove overlapping predictions.
         predicted_annotations = apply_non_maximum_suppression(

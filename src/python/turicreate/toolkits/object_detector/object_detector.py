@@ -1644,7 +1644,7 @@ class ObjectDetector_beta(_Model):
         return self.__proxy__.export_to_coreml(filename, options)
 
 
-    def predict(self, dataset):
+    def predict(self, dataset, confidence_threshold=0.45, iou_threshold=0.45):
         """
         Predict object instances in an SFrame of images.
 
@@ -1691,8 +1691,23 @@ class ObjectDetector_beta(_Model):
             # Visualize predictions by generating a new column of marked up images
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
         """
-        return self.__proxy__.predict(dataset)
-
+        dataset, unpack = self._canonize_input(dataset)
+        stacked_pred = self.__proxy__.predict(dataset, confidence_threshold, iou_threshold)
+        from . import util
+        return unpack(util.unstack_annotations(stacked_pred, num_rows=len(dataset)))
+    def _canonize_input(self, dataset):
+        """
+        Takes input and returns tuple of the input in canonical form (SFrame)
+        along with an unpack callback function that can be applied to
+        prediction results to "undo" the canonization.
+        """
+        unpack = lambda x: x
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
+        elif isinstance(dataset, _tc.Image):
+            dataset = _tc.SFrame({self.feature: [dataset]})
+            unpack = lambda x: x[0]
+        return dataset, unpack
     def evaluate(self, dataset, metric='auto'):
         """
         Evaluate the model by making predictions and comparing these to ground
