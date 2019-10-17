@@ -8,7 +8,6 @@
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
-#include <iostream>
 
 #include <toolkits/activity_classification/activity_classifier.hpp>
 
@@ -69,7 +68,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   const std::vector<size_t> session_distribution = {1, 3, 5, 7, 9};
   TS_ASSERT_EQUALS(session_num, session_distribution.size());
   size_t check_sum = 0;
-  for (auto& x : session_distribution) {
+  for (const size_t& x : session_distribution) {
     check_sum += x;
   }
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
@@ -79,7 +78,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
   flexible_type check_sum_samples = 0;
-  for (auto& x : num_samples) {
+  for (const size_t& x : num_samples) {
     check_sum_samples += x;
   }
   TS_ASSERT_EQUALS(check_sum, check_sum_samples);

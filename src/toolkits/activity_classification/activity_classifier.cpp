@@ -480,7 +480,7 @@ gl_sframe activity_classifier::classify(gl_sframe data,
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
 
   // lambda function for getting the max probability for each prediction
-  auto max_prob = [=](const flexible_type& ft) {
+  auto max_prob = [](const flexible_type& ft) {
     const flex_vec& prob_vec = ft.get<flex_vec>();
     auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
     return prob_vec[max_it - prob_vec.begin()];
