@@ -13,11 +13,11 @@
 
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
+#include <core/util/string_util.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
-#include <core/util/string_util.hpp>
-
+#include <toolkits/util/training_utils.hpp>
 
 namespace turi {
 namespace activity_classification {
@@ -852,23 +852,7 @@ void activity_classifier::init_train(
 
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  if (gpu_names.empty()) {
-    logprogress_stream << "Using CPU to create model";
-  } else {
-    std::string gpu_names_string = gpu_names[0];
-    for (size_t i = 1; i < gpu_names.size(); ++i) {
-      gpu_names_string += ", " + gpu_names[i];
-    }
-    if (gpu_names_string.find("/") != std::string::npos) {
-      logprogress_stream << "Using " << gpu_names.size()
-                         << (gpu_names.size() > 1 ? " GPUs" : " GPU")
-                         << " to create model (CUDA)";
-      
-    } else {
-      logprogress_stream << "Using " << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                         << " to create model (" << gpu_names_string << ")";
-    }
-  }
+  print_training_device(gpu_names);
 
   // Set additional model fields.
   add_or_update_state({
