@@ -7,14 +7,15 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import tensorflow.compat.v1 as _tf
-_tf.disable_v2_behavior()
+
 import numpy as _np
 import turicreate.toolkits._tf_utils as _utils
 
 class ODTensorFlowModel(object):
 
     def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
+        import tensorflow.compat.v1 as _tf
+        _tf.disable_v2_behavior()
 
         #_tf.compat.v1.get_default_graph()
 
