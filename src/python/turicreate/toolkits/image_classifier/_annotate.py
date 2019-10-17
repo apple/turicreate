@@ -72,6 +72,10 @@ def annotate(data, image_column=None, annotation_column='annotations'):
         [4 rows x 3 columns]
 
     """
+    # Check if Value is Empty
+    if __tc.SFrame.num_rows(data)== 0:
+        raise Exception('input data cannot be empty')
+
     # Check Value of Column Variables
     if not isinstance(data, __tc.SFrame):
         raise TypeError('"data" must be of type SFrame.')
