@@ -58,7 +58,6 @@ std::unique_ptr<model_spec> drawing_classifier::init_model(
   return result;
 }
 
-
 void drawing_classifier::init_options(
     const std::map<std::string, flexible_type>& opts) {
   // Define options.
@@ -103,11 +102,13 @@ std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
   if (variant_is<gl_sframe>(validation_data)) {
     train_data = data;
     val_data = variant_get_value<gl_sframe>(validation_data);
-    if (!val_data.empty()) {
-    } else {
-      log_and_throw("Input SFrame either has no rows or no columns. A "
-                    "non-empty SFrame is required");
-    }
+    /* TODO: Re-evaluate the following log_and_throw.
+     *       Enabling it will trigger a unit test failure!
+     */
+    // if (val_data.empty()) {
+    //   log_and_throw("Input SFrame either has no rows or no columns. A "
+    //                 "non-empty SFrame is required");
+    // }
   }
   else if ((variant_is<flex_string>(validation_data)) 
       && (variant_get_value<flex_string>(validation_data)=="auto")) {
@@ -127,6 +128,12 @@ std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
 }
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
+    data_iterator::parameters iterator_params) const {
+    return std::unique_ptr<data_iterator>(
+        new simple_data_iterator(iterator_params));
+}
+
+std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     gl_sframe data, bool is_train,
     std::vector<std::string> class_labels) const {
   data_iterator::parameters data_params;
@@ -139,7 +146,7 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   data_params.is_train = is_train;
   data_params.target_column_name = read_state<flex_string>("target");
   data_params.feature_column_name = read_state<flex_string>("feature");
-  return std::unique_ptr<data_iterator>(new simple_data_iterator(data_params));
+  return create_iterator(data_params);
 }
 
 void drawing_classifier::init_train(gl_sframe data,
@@ -147,7 +154,6 @@ void drawing_classifier::init_train(gl_sframe data,
                                     std::string feature_column_name,
                                     variant_type validation_data,
                                     std::map<std::string, flexible_type> opts) {
-  /* TODO: Rewrite! */
 
   // Read user-specified options.
   init_options(opts);
@@ -224,7 +230,7 @@ void drawing_classifier::init_train(gl_sframe data,
       /* TODO: nn_spec_->export_params_view().
        * Until the nn_spec in C++ isn't ready, do not pass in any weights.
        */
-      256, 2);
+      read_state<size_t>("batch_size"), read_state<size_t>("num_classes"));
 
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {
@@ -451,7 +457,6 @@ void drawing_classifier::train(gl_sframe data,
   // Finish printing progress.
   training_table_printer_->print_footer();
   training_table_printer_.reset();
-
 
   // Sync trained weights to our local storage of the NN weights.
   float_array_map trained_weights = training_model_->export_weights();

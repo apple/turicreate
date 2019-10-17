@@ -24,6 +24,8 @@ namespace drawing_classifier {
 class EXPORT drawing_classifier: public ml_model_base {
 
  public:
+
+  drawing_classifier() = default;
   
   // ml_model_base interface
 
@@ -44,6 +46,13 @@ class EXPORT drawing_classifier: public ml_model_base {
   variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
+  // Support for iterative training.
+  // TODO: Expose via forthcoming C-API checkpointing mechanism?
+  virtual void init_train(gl_sframe data, std::string target_column_name,
+                          std::string feature_column_name,
+                          variant_type validation_data,
+                          std::map<std::string, flexible_type> opts);
+
   
   BEGIN_CLASS_MEMBER_REGISTRATION("drawing_classifier")
 
@@ -176,12 +185,38 @@ class EXPORT drawing_classifier: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::export_to_coreml,
                                  "filename");
 
+  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::init_train, "data",
+                                  "target_column_name", "feature_column_name",
+                                  "validation_data", "options");
+  register_defaults("init_train",
+                    {{"validation_data", to_variant(gl_sframe())},
+                     {"options",
+                      to_variant(std::map<std::string, flexible_type>())}});
+
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
 
+  // Constructor allowing tests to set the initial state of this class and to
+  // inject dependencies.
+  drawing_classifier(
+      const std::map<std::string, variant_type>& initial_state,
+      std::unique_ptr<neural_net::model_spec> nn_spec,
+      std::unique_ptr<neural_net::compute_context> training_compute_context,
+      std::unique_ptr<data_iterator> training_data_iterator,
+      std::unique_ptr<neural_net::model_backend> training_model)
+      : nn_spec_(std::move(nn_spec)),
+        training_data_iterator_(std::move(training_data_iterator)),
+        training_compute_context_(std::move(training_compute_context)),
+        training_model_(std::move(training_model)) {
+    add_or_update_state(initial_state);
+  }
+
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
+      data_iterator::parameters iterator_params) const;
+
+  std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, bool is_train,
       std::vector<std::string> class_labels) const;
 
@@ -195,13 +230,6 @@ class EXPORT drawing_classifier: public ml_model_base {
 
   virtual std::tuple<gl_sframe, gl_sframe> init_data(
       gl_sframe data, variant_type validation_data) const;
-
-  // Support for iterative training.
-  // TODO: Expose via forthcoming C-API checkpointing mechanism?
-  virtual void init_train(gl_sframe data, std::string target_column_name,
-                          std::string feature_column_name,
-                          variant_type validation_data,
-                          std::map<std::string, flexible_type> opts);
 
   virtual void perform_training_iteration();
 
