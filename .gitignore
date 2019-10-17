@@ -98,6 +98,16 @@ deps/build
 # to the root of the project for most tooling to work. This ignores the symlink.
 /compile_commands.json
 
+# CMake builds
+## dir match
+**/cmake-build-debug
+**/cmake_install.cmake
+**/CMakeFiles
+**/CTestTestfile.cmake
+## file match from root
+CMakeCache.txt
+Makefile
+
 # Visual Studio Code files
 /.vscode/
 
