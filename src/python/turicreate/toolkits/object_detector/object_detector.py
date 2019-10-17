@@ -219,6 +219,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     base_model = model.split('-', 1)[0]
     ref_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS[base_model]()
 
+    pretrained_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS['darknet_mlmodel']()
+    pretrained_model_path = pretrained_model.get_model_path()
+
     params = {
         'anchors': [
             (1.0, 2.0), (1.0, 1.0), (2.0, 1.0),
@@ -260,9 +263,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # This large buffer size (8 batches) is an attempt to mitigate against
         # the SFrame shuffle operation that can occur after each epoch.
         'io_thread_buffer_size': 8,
-        # TODO: Have the Python side download the Core ML version of the
-        # pre-trained model from somewhere.
-        'mlmodel_path': None,
+        'mlmodel_path': pretrained_model_path,
         'use_tensorflow': False
     }
 
@@ -439,8 +440,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             'grid_height': params['grid_shape'][0],
             'grid_width': params['grid_shape'][1],
             'max_iterations': num_iterations,
-            'mlmodel_path' : params['mlmodel_path'],
-            'use_tensorflow': params['use_tensorflow']
+            'mlmodel_path' : params['mlmodel_path']
 
         }
         model = _tc.extensions.object_detector()

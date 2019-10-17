@@ -16,6 +16,8 @@
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 
+#include "../neural_net/neural_net_mocks.hpp"
+
 namespace turi {
 namespace object_detection {
 namespace {
@@ -28,6 +30,9 @@ using turi::neural_net::float_array_map;
 using turi::neural_net::image_annotation;
 using turi::neural_net::image_augmenter;
 using turi::neural_net::labeled_image;
+using turi::neural_net::mock_compute_context;
+using turi::neural_net::mock_image_augmenter;
+using turi::neural_net::mock_model_backend;
 using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
@@ -41,8 +46,6 @@ using turi::neural_net::shared_float_array;
 // TODO: Adopt a real mocking library. Or at least factor out the shared
 // boilerplate into some utility templates or macros. Yes, if necessary, create
 // our own simplistic mocking tools.
-
-// TODO: Move these mocks somewhere shared in case other tests want to use them.
 
 class mock_data_iterator: public data_iterator {
 public:
@@ -74,138 +77,6 @@ public:
   size_t num_instances_ = 0;
 };
 
-class mock_image_augmenter: public image_augmenter {
-public:
-  using prepare_images_call =
-      std::function<result(std::vector<labeled_image> source_batch)>;
-
-  ~mock_image_augmenter() {
-    TS_ASSERT(prepare_images_calls_.empty());
-  }
-
-  const options& get_options() const override { return options_; }
-
-  result prepare_images(std::vector<labeled_image> source_batch) override {
-    TS_ASSERT(!prepare_images_calls_.empty());
-    prepare_images_call expected_call =
-        std::move(prepare_images_calls_.front());
-    prepare_images_calls_.pop_front();
-    return expected_call(std::move(source_batch));
-  }
-
-  options options_;
-  std::deque<prepare_images_call> prepare_images_calls_;
-};
-
-class mock_model_backend: public model_backend {
-public:
-
-  using set_learning_rate_call = std::function<void(float lr)>;
-
-  using train_call =
-      std::function<float_array_map(const float_array_map& inputs)>;
-
-  using predict_call =
-      std::function<float_array_map(const float_array_map& inputs)>;
-
-  ~mock_model_backend() {
-    TS_ASSERT(train_calls_.empty());
-    TS_ASSERT(predict_calls_.empty());
-  }
-
-  void set_learning_rate(float lr) override {
-    TS_ASSERT(!set_learning_rate_calls_.empty());
-    set_learning_rate_call expected_call =
-        std::move(set_learning_rate_calls_.front());
-    set_learning_rate_calls_.pop_front();
-    expected_call(lr);
-  }
-
-  float_array_map train(const float_array_map& inputs) override {
-
-    TS_ASSERT(!train_calls_.empty());
-    train_call expected_call = std::move(train_calls_.front());
-    train_calls_.pop_front();
-    return expected_call(inputs);
-  }
-
-  float_array_map predict(const float_array_map& inputs) const override {
-
-    TS_ASSERT(!predict_calls_.empty());
-    predict_call expected_call = std::move(predict_calls_.front());
-    predict_calls_.pop_front();
-    return expected_call(inputs);
-  }
-
-  float_array_map export_weights() const override {
-    return export_weights_retval_;
-  }
-
-  std::deque<set_learning_rate_call> set_learning_rate_calls_;
-  std::deque<train_call> train_calls_;
-  mutable std::deque<predict_call> predict_calls_;
-  float_array_map export_weights_retval_;
-};
-
-class mock_compute_context: public compute_context {
-public:
-
-  using create_augmenter_call = std::function<std::unique_ptr<image_augmenter>(
-      const image_augmenter::options& opts)>;
-
-  using create_object_detector_call =
-      std::function<std::unique_ptr<model_backend>(
-          int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-          const float_array_map& config, const float_array_map& weights)>;
-
-  ~mock_compute_context() {
-    TS_ASSERT(create_augmenter_calls_.empty());
-    TS_ASSERT(create_object_detector_calls_.empty());
-  }
-
-  size_t memory_budget() const override {
-    return 0;
-  }
-
-  std::vector<std::string> gpu_names() const override {
-    return {};
-  }
-
-  std::unique_ptr<image_augmenter> create_image_augmenter(
-      const image_augmenter::options& opts) override {
-
-    TS_ASSERT(!create_augmenter_calls_.empty());
-    create_augmenter_call expected_call =
-        std::move(create_augmenter_calls_.front());
-    create_augmenter_calls_.pop_front();
-    return expected_call(opts);
-  }
-
-  std::unique_ptr<model_backend> create_object_detector(
-      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const float_array_map& config,
-      const float_array_map& weights) override {
-
-    TS_ASSERT(!create_object_detector_calls_.empty());
-    create_object_detector_call expected_call =
-        std::move(create_object_detector_calls_.front());
-    create_object_detector_calls_.pop_front();
-    return expected_call(n, c_in, h_in, w_in, c_out, h_out, w_out, config,
-                         weights);
-  }
-
-  std::unique_ptr<model_backend> create_activity_classifier(
-      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const float_array_map& config,
-      const float_array_map& weights) override
-  {
-    return nullptr;
-  }
-
-  mutable std::deque<create_augmenter_call> create_augmenter_calls_;
-  mutable std::deque<create_object_detector_call> create_object_detector_calls_;
-};
-
 // Subclass of object_detector that mocks out the methods that inject the
 // object_detector dependencies.
 class test_object_detector: public object_detector {
@@ -218,7 +89,7 @@ public:
       std::function<std::unique_ptr<compute_context>()>;
 
   using init_model_call = std::function<std::unique_ptr<model_spec>(
-      const std::string& pretrained_mlmodel_path)>;
+      const std::string& pretrained_mlmodel_path, size_t num_classes)>;
 
   using perform_evaluation_call =
       std::function<variant_map_type(gl_sframe data, std::string metric)>;
@@ -228,6 +99,20 @@ public:
           const neural_net::float_array& yolo_map,
           const std::vector<std::pair<float, float>>& anchor_boxes,
           float min_confidence)>;
+
+  test_object_detector() = default;
+  test_object_detector(
+      const std::map<std::string, variant_type>& initial_state,
+      std::unique_ptr<model_spec> nn_spec,
+      std::unique_ptr<compute_context> training_compute_context,
+      std::unique_ptr<data_iterator> training_data_iterator,
+      std::unique_ptr<image_augmenter> training_data_augmenter,
+      std::unique_ptr<model_backend> training_model)
+      : object_detector(initial_state, std::move(nn_spec),
+                        std::move(training_compute_context),
+                        std::move(training_data_iterator),
+                        std::move(training_data_augmenter),
+                        std::move(training_model)) {}
 
   ~test_object_detector() {
     TS_ASSERT(create_iterator_calls_.empty());
@@ -255,12 +140,12 @@ public:
   }
 
   std::unique_ptr<model_spec> init_model(
-      const std::string& pretrained_mlmodel_path) const override {
-
+      const std::string& pretrained_mlmodel_path,
+      size_t num_classes) const override {
     TS_ASSERT(!init_model_calls_.empty());
     init_model_call expected_call = std::move(init_model_calls_.front());
     init_model_calls_.pop_front();
-    return expected_call(pretrained_mlmodel_path);
+    return expected_call(pretrained_mlmodel_path, num_classes);
   }
 
   variant_map_type perform_evaluation(gl_sframe data,
@@ -296,29 +181,26 @@ public:
       convert_yolo_to_annotations_calls_;
 };
 
-BOOST_AUTO_TEST_CASE(test_object_detector_train) {
-
+BOOST_AUTO_TEST_CASE(test_object_detector_iterate_training) {
   // Most of this test body will be spent setting up the mock objects that we'll
   // inject into the object_detector implementation. These mock objects will
   // make assertions about their inputs along the way and provide the outputs
-  // that we manually pre-program. At the end will be a single call to
-  // object_detector::train that will trigger all the actual testing.
-  test_object_detector model;
+  // that we manually pre-program. At the end will be the calls to
+  // object_detector::iterate_training that will trigger all the actual testing.
 
   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
   // code attempts to instantiate these dependencies.
   std::unique_ptr<mock_data_iterator> mock_iterator(new mock_data_iterator);
   std::unique_ptr<mock_image_augmenter> mock_augmenter(
       new mock_image_augmenter);
-  std::unique_ptr<mock_model_backend> mock_nn_model(
-      new mock_model_backend);
+  std::unique_ptr<mock_model_backend> mock_nn_model(new mock_model_backend);
   std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
 
   // We'll request 4 training iterations, since the learning rate schedule
   // kicks in at the 50% and 75% points.
   static constexpr size_t test_max_iterations = 4;
   static constexpr size_t test_batch_size = 2;
-  const std::vector<std::string> test_class_labels = { "label1", "label2" };
+  const std::vector<std::string> test_class_labels = {"label1", "label2"};
   static constexpr size_t test_num_instances = 123;
   static constexpr size_t test_num_examples = 100;
   static constexpr float test_loss = 5.f;
@@ -328,19 +210,16 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
   auto num_iterations_submitted = std::make_shared<size_t>(0);
   for (size_t i = 0; i < test_max_iterations; ++i) {
-
     // Program the mock_iterator to return two arbitrary images, each with one
     // unique annotation. We'll store a copy of the annotations for later
     // comparison.
     auto test_annotations =
         std::make_shared<std::vector<std::vector<image_annotation>>>();
     auto next_batch_impl = [=](size_t batch_size) {
-
       TS_ASSERT_EQUALS(batch_size, test_batch_size);
 
       std::vector<labeled_image> result(test_batch_size);
       for (size_t j = 0; j < result.size(); ++j) {
-
         // The actual contents of the image and the annotations are irrelevant
         // for the purposes of this test. But encode the batch index and row
         // index into the bounding box so that we can verify this data is passed
@@ -361,7 +240,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     // pass through the annotations.
     auto test_image_batch = std::make_shared<shared_float_array>();
     auto prepare_images_impl = [=](std::vector<labeled_image> source_batch) {
-
       // The source batch should batch what we returned from the mock_iterator.
       TS_ASSERT_EQUALS(source_batch.size(), test_batch_size);
       for (size_t j = 0; j < source_batch.size(); ++j) {
@@ -384,7 +262,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     // The mock_model_backend should expect calls to set_learning_rate just at
     // the 50% and 75% marks.
     if (i == test_max_iterations / 2 || i == test_max_iterations * 3 / 4) {
-
       auto set_learning_rate_impl = [=](float lr) {
         TS_ASSERT_EQUALS(*num_iterations_submitted, i);
       };
@@ -393,7 +270,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
 
     // The mock_model_backend should expect `train` calls on every iteration.
     auto train_impl = [=](const float_array_map& inputs) {
-
       // The input_batch should just be whatever the image_augmenter returned.
       shared_float_array input_batch = inputs.at("input");
       TS_ASSERT_EQUALS(input_batch.data(), test_image_batch->data());
@@ -410,14 +286,66 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     mock_nn_model->train_calls_.push_back(train_impl);
   }
 
+  test_object_detector model(
+      {{"batch_size", test_batch_size},
+       {"grid_height", 13},
+       {"grid_width", 13},
+       {"max_iterations", 4},
+       {"num_examples", test_num_examples},
+       {"training_iterations", 0}},
+      nullptr, std::move(mock_context), std::move(mock_iterator),
+      std::move(mock_augmenter), std::move(mock_nn_model));
+
+  // Now, actually invoke object_detector::iterate_training. This will trigger
+  // all the assertions registered above.
+  for (size_t i = 0; i < test_max_iterations; ++i) {
+    model.iterate_training();
+  }
+
+  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"),
+                   test_max_iterations);
+  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_epochs"),
+                   test_max_iterations * test_batch_size / test_num_examples);
+
+  // Deconstructing `model` here will assert that every expected call to a
+  // mocked-out method has been called.
+}
+
+BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
+  // Most of this test body will be spent setting up the mock objects that we'll
+  // inject into the object_detector implementation. These mock objects will
+  // make assertions about their inputs along the way and provide the outputs
+  // that we manually pre-program. At the end will be a single call to
+  // object_detector::init_training that will trigger all the actual testing.
+  test_object_detector model;
+
+  // Allocate the mock dependencies. We'll transfer ownership when the toolkit
+  // code attempts to instantiate these dependencies.
+  std::unique_ptr<mock_data_iterator> mock_iterator(new mock_data_iterator);
+  std::unique_ptr<mock_image_augmenter> mock_augmenter(
+      new mock_image_augmenter);
+  std::unique_ptr<mock_model_backend> mock_nn_model(new mock_model_backend);
+  std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+
+  // We'll request 4 training iterations, since the learning rate schedule
+  // kicks in at the 50% and 75% points.
+  static constexpr size_t test_max_iterations = 4;
+  static constexpr size_t test_batch_size = 2;
+  const std::vector<std::string> test_class_labels = {"label1", "label2"};
+  static constexpr size_t test_num_instances = 123;
+  static constexpr size_t test_num_examples = 100;
+
+  mock_iterator->class_labels_ = test_class_labels;
+  mock_iterator->num_instances_ = test_num_instances;
+
   const std::string test_annotations_name = "test_annotations";
   const std::string test_image_name = "test_image";
 
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
-
-    TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data.
+    TS_ASSERT(iterator_params.class_labels
+                  .empty());  // Should infer class labels from data.
     TS_ASSERT(iterator_params.repeat);
 
     return std::move(mock_iterator);
@@ -426,7 +354,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   model.create_iterator_calls_.push_back(create_iterator_impl);
 
   auto create_augmenter_impl = [&](const image_augmenter::options& opts) {
-
     TS_ASSERT_EQUALS(opts.output_height, 416);
     TS_ASSERT_EQUALS(opts.output_width, 416);
     return std::move(mock_augmenter);
@@ -437,13 +364,15 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.init_model_calls_.emplace_back([=](const std::string& model_path) {
+  model.init_model_calls_.emplace_back([=](const std::string& model_path,
+                                           size_t num_classes) {
     TS_ASSERT_EQUALS(model_path, test_mlmodel_path);
+    TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
 
     std::unique_ptr<model_spec> nn_spec(new model_spec);
     nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
                              model_spec::padding_type::SAME,
-                             /* weight_init_fn */ [](float*w , float* w_end) {
+                             /* weight_init_fn */ [](float* w, float* w_end) {
                                for (int i = 0; i < w_end - w; ++i) {
                                  w[i] = static_cast<float>(i);
                                }
@@ -451,57 +380,49 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
     return nn_spec;
   });
 
-  auto create_object_detector_impl = [&](int n, int c_in, int h_in, int w_in,
-                                    int c_out, int h_out, int w_out,
-                                    const float_array_map& config,
-                                    const float_array_map& weights) {
+  auto create_object_detector_impl =
+      [&](int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+          const float_array_map& config, const float_array_map& weights) {
+        TS_ASSERT_EQUALS(n, test_batch_size);
+        TS_ASSERT_EQUALS(c_in, 3);
+        TS_ASSERT_EQUALS(h_in, 416);
+        TS_ASSERT_EQUALS(w_in, 416);
+        TS_ASSERT_EQUALS(c_out, 15 * (5 + test_class_labels.size()));
+        TS_ASSERT_EQUALS(h_out, 13);
+        TS_ASSERT_EQUALS(w_out, 13);
 
-    TS_ASSERT_EQUALS(n, test_batch_size);
-    TS_ASSERT_EQUALS(c_in, 3);
-    TS_ASSERT_EQUALS(h_in, 416);
-    TS_ASSERT_EQUALS(w_in, 416);
-    TS_ASSERT_EQUALS(c_out, 15 * (5 + test_class_labels.size()));
-    TS_ASSERT_EQUALS(h_out, 13);
-    TS_ASSERT_EQUALS(w_out, 13);
+        // weights should be what we returned from init_model, as copied by
+        // neural_net::wrap_network_params
+        TS_ASSERT_EQUALS(weights.size(), 1);
+        auto it = weights.find("test_layer_weight");
+        TS_ASSERT(it != weights.end());
+        for (size_t i = 0; i < it->second.size(); ++i) {
+          TS_ASSERT_EQUALS(it->second.data()[i], static_cast<float>(i));
+        }
 
-    // weights should be what we returned from init_model, as copied by
-    // neural_net::wrap_network_params
-    TS_ASSERT_EQUALS(weights.size(), 1);
-    auto it = weights.find("test_layer_weight");
-    TS_ASSERT(it != weights.end());
-    for (size_t i = 0; i < it->second.size(); ++i) {
-      TS_ASSERT_EQUALS(it->second.data()[i], static_cast<float>(i));
-    }
+        // TODO: Assert the config values?
 
-    // TODO: Assert the config values?
-
-    return std::move(mock_nn_model);
-  };
+        return std::move(mock_nn_model);
+      };
   mock_context->create_object_detector_calls_.push_back(
       create_object_detector_impl);
 
   auto create_compute_context_impl = [&] { return std::move(mock_context); };
   model.create_compute_context_calls_.push_back(create_compute_context_impl);
 
-  // Training will trigger a call to evaluation, to compute training metrics.
-  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric) {
-    std::map<std::string, variant_type> result;
-    result["mean_average_precision"] = 0.80f;
-    return result;
-  };
-  model.perform_evaluation_calls_.push_back(perform_evaluation_impl);
-
   // Create an arbitrary SFrame with test_num_examples rows, since
   // object_detector uses the number of rows to compute num_examples, which is
   // used as a normalizer.
   gl_sframe data({{"ignored", gl_sarray::from_sequence(0, test_num_examples)}});
 
-  // Now, actually invoke object_detector::train. This will trigger all the
-  // assertions registered above.
-  model.train(data, test_annotations_name, test_image_name, gl_sframe(),
-              { { "mlmodel_path",   test_mlmodel_path   },
-                { "batch_size",     test_batch_size     },
-                { "max_iterations", test_max_iterations }, });
+  // Now, actually invoke object_detector::init_training. This will trigger all
+  // the assertions registered above.
+  model.init_training(data, test_annotations_name, test_image_name, gl_sframe(),
+                      {
+                          {"mlmodel_path", test_mlmodel_path},
+                          {"batch_size", test_batch_size},
+                          {"max_iterations", test_max_iterations},
+                      });
 
   // Verify model fields.
   TS_ASSERT_EQUALS(model.get_field<flex_int>("batch_size"), test_batch_size);
@@ -517,17 +438,73 @@ BOOST_AUTO_TEST_CASE(test_object_detector_train) {
                    test_class_labels.size());
   TS_ASSERT_EQUALS(model.get_field<flex_int>("num_examples"),
                    test_num_examples);
-  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"),
-                   test_max_iterations);
-  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_epochs"),
-                   test_max_iterations * test_batch_size / test_num_examples);
+  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"), 0);
+  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_epochs"), 0);
+
+  // Deconstructing `model` here will assert that every expected call to a
+  // mocked-out method has been called.
+}
+
+BOOST_AUTO_TEST_CASE(test_object_detector_finalize_training) {
+  // Most of this test body will be spent setting up the mock objects that we'll
+  // inject into the object_detector implementation. These mock objects will
+  // make assertions about their inputs along the way and provide the outputs
+  // that we manually pre-program. At the end will be a single call to
+  // object_detector::finalize_training that will trigger the actual testing.
+
+  // Allocate the mock dependencies. We'll transfer ownership when the toolkit
+  // code attempts to instantiate these dependencies.
+  std::unique_ptr<mock_data_iterator> mock_iterator(new mock_data_iterator);
+  std::unique_ptr<mock_image_augmenter> mock_augmenter(
+      new mock_image_augmenter);
+  std::unique_ptr<mock_model_backend> mock_nn_model(new mock_model_backend);
+  std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+
+  // We'll request 4 training iterations, since the learning rate schedule
+  // kicks in at the 50% and 75% points.
+  static constexpr size_t test_batch_size = 2;
+  const std::vector<std::string> test_class_labels = {"label1", "label2"};
+  static constexpr size_t test_num_instances = 123;
+  static constexpr size_t test_num_examples = 100;
+
+  mock_iterator->class_labels_ = test_class_labels;
+  mock_iterator->num_instances_ = test_num_instances;
+
+  test_object_detector model({{"batch_size", test_batch_size},
+                              {"grid_height", 13},
+                              {"grid_width", 13},
+                              {"max_iterations", 4},
+                              {"num_examples", test_num_examples},
+                              {"training_iterations", 0}},
+                             std::unique_ptr<model_spec>(new model_spec),
+                             std::move(mock_context), std::move(mock_iterator),
+                             std::move(mock_augmenter),
+                             std::move(mock_nn_model));
+
+  // finalize_training will trigger a call to evaluation, to compute training
+  // metrics.
+  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric) {
+    std::map<std::string, variant_type> result;
+    result["mean_average_precision"] = 0.80f;
+    return result;
+  };
+  model.perform_evaluation_calls_.push_back(perform_evaluation_impl);
+
+  // Now, actually invoke object_detector::finalize_training. This will trigger
+  // all the assertions registered above.
+  model.finalize_training();
+
+  // Verify model fields.
   TS_ASSERT_EQUALS(
       model.get_field<flex_float>("training_mean_average_precision"), 0.8f);
 
   // Deconstructing `model` here will assert that every expected call to a
   // mocked-out method has been called.
 }
-  
+
+// TODO: Add a unit test for object_detector::train, in terms of the
+// checkpointing API.
+
 BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
 
   // Most of this test body will be spent setting up the mock objects that we'll
@@ -669,8 +646,10 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.init_model_calls_.emplace_back([=](const std::string& model_path) {
+  model.init_model_calls_.emplace_back([=](const std::string& model_path,
+                                           size_t num_classes) {
     TS_ASSERT_EQUALS(model_path, test_mlmodel_path);
+    TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
 
     std::unique_ptr<model_spec> nn_spec(new model_spec);
     nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
@@ -682,7 +661,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
                              });
     return nn_spec;
   });
-
 
   auto create_object_detector_impl = [&](int n, int c_in, int h_in, int w_in,
                                     int c_out, int h_out, int w_out,
@@ -884,7 +862,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.init_model_calls_.emplace_back([=](const std::string& model_path) {
+  model.init_model_calls_.emplace_back([=](const std::string& model_path,
+                                           size_t num_classes) {
     std::unique_ptr<model_spec> nn_spec(new model_spec);
     nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
                              model_spec::padding_type::SAME,

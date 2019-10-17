@@ -146,6 +146,9 @@ void register_models(toolkit_class_registry& registry) {
   // Activity Classification
   registry.register_toolkit_class(turi::activity_classification::get_toolkit_class_registration());
 
+  // Drawing Classification
+  registry.register_toolkit_class(turi::drawing_classifier::get_toolkit_class_registration());
+
   // Various prototypes
   registry.register_toolkit_class(turi::prototype::get_toolkit_class_registration());
 

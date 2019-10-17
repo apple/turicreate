@@ -7,7 +7,6 @@
 #include <vector>
 #include <core/parallel/lambda_omp.hpp>
 #include <core/parallel/pthread_tools.hpp>
-#include <core/data/sframe/gl_sarray.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <model_server/lib/image_util.hpp>
 #include <model_server/lib/toolkit_function_macros.hpp>
@@ -15,56 +14,8 @@
 #include <core/data/image/image_type.hpp>
 #include <core/data/image/io.hpp>
 #include "additional_sframe_utilities.hpp"
+
 using namespace turi;
-
-
-template <typename T>
-void copy_image_to_memory(const image_type& input, T *outptr,
-                          const std::vector<size_t>& outstrides,
-                          const std::vector<size_t>& outshape,
-                          bool channel_last) {
-  ASSERT_EQ(outstrides.size(), 3);
-  ASSERT_EQ(outshape.size(), 3);
-  size_t stride_h, stride_w, stride_c;
-  size_t height, width, channels;
-  if (channel_last) {
-    // Format: HWC
-    stride_h = outstrides[0];
-    stride_w = outstrides[1];
-    stride_c = outstrides[2];
-    height = outshape[0];
-    width = outshape[1];
-    channels = outshape[2];
-  } else {
-    // Format: CHW
-    stride_c = outstrides[0];
-    stride_h = outstrides[1];
-    stride_w = outstrides[2];
-    channels = outshape[0];
-    height = outshape[1];
-    width = outshape[2];
-  }
-
-  // Resize.
-  flexible_type resized = image_util::resize_image(input, width, height,
-						   channels, /* decode */ true);
-  const image_type& img = resized.get<flex_image>();
-
-  // Copy.
-  size_t cnt = 0;
-  const unsigned char* raw_data = img.get_image_data();
-  for (size_t i = 0; i < img.m_height; ++i) {
-    for (size_t j = 0; j < img.m_width; ++j) {
-      for (size_t k = 0; k < img.m_channels; ++k) {
-	outptr[i * stride_h + j * stride_w + k * stride_c] =
-	    static_cast<T>(raw_data[cnt++]);
-      }
-    }
-  }
-
-  // Further optimization is possible (but not trivial) by combining the resize
-  // operation and the copy operation, removing an intermediate buffer.
-}
 
 void copy_to_memory(const sframe_rows::row& data,
                     float* outptr,
@@ -81,7 +32,7 @@ void copy_to_memory(const sframe_rows::row& data,
   if (type == flex_type_enum::IMAGE) {
     ASSERT_MSG(data.size() == 1, "Image data only support one input field");
     const image_type& img = data[0].get<flex_image>();
-    copy_image_to_memory<float>(img, outptr, outstrides, outshape, false);
+    image_util::copy_image_to_memory(img, outptr, outstrides, outshape, false);
     return;
   } else if (data.size() == 1 && (type == flex_type_enum::FLOAT || type == flex_type_enum::INTEGER)) {
     // Case 2: Single value type (should really get rid of this special case)
@@ -142,6 +93,7 @@ void copy_to_memory(const sframe_rows::row& data,
   }
   return;
 }
+
 void sframe_load_to_numpy(turi::gl_sframe input, size_t outptr_addr,
 			  std::vector<size_t> outstrides,
 			  std::vector<size_t> outshape,
@@ -182,8 +134,9 @@ void sframe_load_to_numpy(turi::gl_sframe input, size_t outptr_addr,
 void image_load_to_numpy(const image_type& img, size_t outptr_addr,
                          const std::vector<size_t>& outstrides) {
   unsigned char *outptr = reinterpret_cast<unsigned char *>(outptr_addr);
-  copy_image_to_memory(img, outptr, outstrides,
-                       {img.m_height, img.m_width, img.m_channels}, true);
+  image_util::copy_image_to_memory(img, outptr, outstrides,
+                                   {img.m_height, img.m_width, img.m_channels},
+                                   true);
 }
 
 
