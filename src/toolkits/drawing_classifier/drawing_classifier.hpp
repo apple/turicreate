@@ -21,15 +21,15 @@ namespace drawing_classifier {
 
 class EXPORT drawing_classifier : public ml_model_base {
  public:
-  // ml_model_base interface
+  /* ml_model_base interface */
 
   /* Commented out for the purpose of a skeleton. */
-  // void init_options(const std::map<std::string, flexible_type>& opts)
-  // override; size_t get_version() const override; void save_impl(oarchive&
-  // oarc) const override; void load_version(iarchive& iarc, size_t version)
-  // override;
+  // void init_options(const std::map<std::string, flexible_type>& opts) override;
+  // size_t get_version() const override;
+  // void save_impl(oarchive& oarc) const override;
+  // void load_version(iarchive& iarc, size_t version) override;
 
-  // Interface exposed via Unity server
+  /* Interface exposed via Unity server */
 
   void train(gl_sframe data, std::string target_column_name,
              std::string feature_column_name, variant_type validation_data,
@@ -117,7 +117,7 @@ class EXPORT drawing_classifier : public ml_model_base {
       "    If dataset is an SFrame, it must have a column with the same name\n"
       "    as the feature column during training. Additional columns are\n"
       "    ignored.\n"
-      "    If the data is a single drawing, it can be either of type "
+      "    If the data is a single drawing, it can be either of type\n"
       "    tc.Image, in which case it is a bitmap-based drawing input,\n"
       "    or of type list, in which case it is a stroke-based drawing input.\n"
       "output_type : {\"class\", \"probability_vector\"}, optional\n"
