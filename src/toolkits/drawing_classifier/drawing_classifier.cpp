@@ -11,6 +11,7 @@
 
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
+#include <core/util/string_util.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/model_spec.hpp>
@@ -24,6 +25,7 @@ namespace drawing_classifier {
 
 namespace {
 
+using coreml::MLModelWrapper;
 using neural_net::compute_context;
 using neural_net::float_array_map;
 using neural_net::model_backend;
@@ -192,10 +194,37 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
                                                 predictions, {{"classes", 2}});
 }
 
+
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     std::string filename) {
   /* Add code for export_to_coreml */
-  return nullptr;
+  std::shared_ptr<MLModelWrapper> model_wrapper =
+      export_drawing_classifier_model(
+          *nn_spec_, read_state<flex_list>("features"),
+          read_state<flex_list>("classes"), read_state<flex_string>("target"));
+
+  const flex_list &features_list = read_state<flex_list>("features");
+  const flex_string features_string =
+      join(std::vector<std::string>(features_list.begin(), features_list.end()),
+           ",");
+
+  flex_dict user_defined_metadata = {
+      {"target", read_state<flex_string>("target")},
+      {"features", features_string},
+      {"max_iterations", read_state<flex_int>("max_iterations")},
+      {"warm_start", read_state<flex_int>("warm_start")},
+      {"type", "drawing_classifier"},
+      {"version", 2},
+  };
+
+  model_wrapper->add_metadata(
+      {{"user_defined", std::move(user_defined_metadata)}});
+
+  if (!filename.empty()) {
+    model_wrapper->save(filename);
+  }
+
+  return model_wrapper;
 }
 
 }  // namespace drawing_classifier

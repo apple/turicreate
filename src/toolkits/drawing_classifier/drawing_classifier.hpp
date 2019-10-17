@@ -14,6 +14,7 @@
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/variant.hpp>
 #include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 
 namespace turi {
 namespace drawing_classifier {

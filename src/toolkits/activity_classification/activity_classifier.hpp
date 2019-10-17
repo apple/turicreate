@@ -21,7 +21,6 @@ namespace activity_classification {
 class EXPORT activity_classifier: public ml_model_base {
 
  public:
-  
   static std::tuple<gl_sframe, gl_sframe> random_split_by_session(
       gl_sframe data, std::string session_id_column_name, float fraction,
       size_t seed);
