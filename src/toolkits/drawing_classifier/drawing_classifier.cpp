@@ -198,6 +198,12 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     std::string filename) {
   /* Add code for export_to_coreml */
+  if (!nn_spec_) {
+    // use empty nn spec if not initalized;
+    // avoid test bad memory access
+    nn_spec_ = std::unique_ptr<model_spec>(new model_spec);
+  }
+
   std::shared_ptr<MLModelWrapper> model_wrapper =
       export_drawing_classifier_model(
           *nn_spec_, read_state<flex_list>("features"),

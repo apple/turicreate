@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#define BOOST_TEST_MODULE test_od_serialization
+#define BOOST_TEST_MODULE test_dc_serialization
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
@@ -129,6 +129,48 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
     TS_ASSERT(softmax_layer.has_softmax());
     TS_ASSERT_EQUALS(softmax_layer.output(0), target + "Probability");
   }
+}
+
+BOOST_AUTO_TEST_CASE(test_export_coreml) {
+  // minimum startup code
+  const std::string target = "target";
+  const std::vector<std::string> features = {"0", "1"};
+  const std::vector<std::string> labels = {"0", "1"};
+
+  turi::drawing_classifier::drawing_classifier dc;
+  dc.add_or_update_state(
+      {{"target", target},
+       {"num_classes", labels.size()},
+       {"classes", flex_list(labels.begin(), labels.end())},
+       {"max_iterations", 300},
+       {"warm_start", false},
+       {"features", flex_list(features.begin(), features.end())}});
+
+  auto ml_model_wrapper = dc.export_to_coreml("");
+  // TS_ASSERT(ml_model_wrapper != nullptr);
+
+  const auto& my_model_spec = ml_model_wrapper->coreml_model()->getProto();
+  TS_ASSERT_EQUALS(my_model_spec.specificationversion(), 1);
+
+  auto& my_model_desc = my_model_spec.description();
+  TS_ASSERT_EQUALS(my_model_desc.input_size(), features.size());
+
+  // test input image type
+  TS_ASSERT_EQUALS(my_model_desc.input(0).name(), "image");
+  TS_ASSERT(my_model_desc.input(0).type().has_imagetype());
+
+  auto input_feature_type = my_model_desc.input(0).type().imagetype();
+  TS_ASSERT_EQUALS(input_feature_type.colorspace(),
+                   CoreML::Specification::ImageFeatureType::GRAYSCALE);
+  TS_ASSERT_EQUALS(input_feature_type.width(), 28);
+  TS_ASSERT_EQUALS(input_feature_type.height(), 28);
+
+  TS_ASSERT_EQUALS(my_model_desc.output_size(), 2);
+  TS_ASSERT_EQUALS(my_model_desc.output(0).name(), target + "Probability");
+  TS_ASSERT_EQUALS(my_model_desc.output(1).name(), target);
+
+  TS_ASSERT_EQUALS(my_model_desc.predictedfeaturename(), target);
+  TS_ASSERT_EQUALS(my_model_desc.predictedprobabilitiesname(), target + "Probability");
 }
 
 BOOST_AUTO_TEST_CASE(test_save_load) {
