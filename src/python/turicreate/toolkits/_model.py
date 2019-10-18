@@ -27,6 +27,16 @@ import six as _six
 
 MODEL_NAME_MAP = {}
 
+# Object detector use C++ codepath
+od_use_cpp = True
+if not os.environ.has_key('od_use_cpp') or os.environ.get('od_use_cpp')=="0":
+    od_use_cpp = False
+
+# Activity Classifier use C++ codepath
+ac_use_cpp = True
+if not os.environ.has_key('ac_use_cpp') or os.environ.get('ac_use_cpp')=="0":
+    ac_use_cpp = False
+
 def load_model(location):
     """
     Load any Turi Create model that was previously saved.
@@ -83,7 +93,6 @@ def load_model(location):
         name = saved_state['model_name'];
         if name in MODEL_NAME_MAP:
             cls = MODEL_NAME_MAP[name]
-
             if 'model' in saved_state:
                 # this is a native model
                 return cls(saved_state['model'])
@@ -92,6 +101,17 @@ def load_model(location):
                 model_data = saved_state['side_data']
                 model_version = model_data['model_version']
                 del model_data['model_version']
+
+                if name=='activity_classifier' and ac_use_cpp:
+                    model = _extensions.activity_classifier()
+                    model.import_from_custom_model(model_data, model_version)
+                    return cls(model)
+
+                if name=='object_detector' and od_use_cpp:
+                    model = _extensions.object_detector()
+                    model.import_from_custom_model(model_data, model_version)
+                    return cls(model)
+
                 return cls._load_version(model_data, model_version)
 
         elif hasattr(_extensions, name):
