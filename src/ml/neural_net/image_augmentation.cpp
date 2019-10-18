@@ -158,7 +158,7 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
     std::vector<labeled_image> source_batch) {
   const size_t n = opts_.batch_size;
   constexpr size_t c = 3;
-  intermediate_labeled_image input_to_tf_aug;
+  labeled_float_image input_to_tf_aug;
   result res;
 
   // Discard any source data in excess of the batch size.
@@ -195,8 +195,7 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
 
   // Call the virtual function to use the intermediate data structure and
   // process it
-  intermediate_result augmented_data =
-      prepare_augmented_images(input_to_tf_aug);
+  float_array_result augmented_data = prepare_augmented_images(input_to_tf_aug);
 
   // Convert augmented_data to the data structure needed
   res.image_batch = augmented_data.images;

@@ -286,7 +286,7 @@ class float_array_image_augmenter : public image_augmenter {
 
  protected:
   /** The output sent from TensorFlow after augmenting the images. */
-  struct intermediate_result {
+  struct float_array_result {
     /** The images after augmenting sent from Tensorflow */
     shared_float_array images;
 
@@ -295,7 +295,7 @@ class float_array_image_augmenter : public image_augmenter {
   };
 
   /** The output sent to TensorFlow to augment the images. */
-  struct intermediate_labeled_image {
+  struct labeled_float_image {
     /** The images to be augmented are raw images decoded
      * and send to tf_image_augmneter as vector of shared_float_array
      */
@@ -307,8 +307,8 @@ class float_array_image_augmenter : public image_augmenter {
     std::vector<shared_float_array> annotations;
   };
 
-  virtual intermediate_result prepare_augmented_images(
-      intermediate_labeled_image data_to_augment) = 0;
+  virtual float_array_result prepare_augmented_images(
+      labeled_float_image data_to_augment) = 0;
 
  private:
   options opts_;
