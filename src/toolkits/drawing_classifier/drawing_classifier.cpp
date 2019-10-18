@@ -196,12 +196,16 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
 
 
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
-    std::string filename) {
+    std::string filename, bool use_default_spec) {
   /* Add code for export_to_coreml */
   if (!nn_spec_) {
     // use empty nn spec if not initalized;
     // avoid test bad memory access
-    nn_spec_ = std::unique_ptr<model_spec>(new model_spec);
+    if (use_default_spec) {
+      nn_spec_ = std::unique_ptr<model_spec>(new model_spec);
+    } else {
+      log_and_throw("model is not initialized; please call train before export_coreml");
+    }
   }
 
   std::shared_ptr<MLModelWrapper> model_wrapper =

@@ -42,7 +42,7 @@ class EXPORT drawing_classifier : public ml_model_base {
   variant_map_type evaluate(gl_sframe data, std::string metric);
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename);
+      std::string filename, bool use_default_spec = false);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("drawing_classifier")
 
