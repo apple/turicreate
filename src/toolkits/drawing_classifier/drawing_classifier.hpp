@@ -52,6 +52,7 @@ class EXPORT drawing_classifier: public ml_model_base {
                           std::string feature_column_name,
                           variant_type validation_data,
                           std::map<std::string, flexible_type> opts);
+  virtual void perform_training_iteration();
 
   
   BEGIN_CLASS_MEMBER_REGISTRATION("drawing_classifier")
@@ -193,6 +194,8 @@ class EXPORT drawing_classifier: public ml_model_base {
                      {"options",
                       to_variant(std::map<std::string, flexible_type>())}});
 
+  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::perform_training_iteration);
+
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
@@ -230,8 +233,6 @@ class EXPORT drawing_classifier: public ml_model_base {
 
   virtual std::tuple<gl_sframe, gl_sframe> init_data(
       gl_sframe data, variant_type validation_data) const;
-
-  virtual void perform_training_iteration();
 
   virtual std::tuple<float, float> compute_validation_metrics(
       size_t num_classes, size_t batch_size);

@@ -23,12 +23,14 @@ namespace drawing_classifier {
 namespace {
 
 using turi::neural_net::compute_context;
+using turi::neural_net::float_array_map;
 using turi::neural_net::mock_compute_context;
 using turi::neural_net::mock_model_backend;
 using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
+using turi::neural_net::shared_float_array;
 
-// First, define mock implementations of the key object_detector dependencies.
+// First, define mock implementations of the key drawing_classifier dependencies.
 // These implementations allow the test to define a callback for each call to
 // these classes' method, to make assertions on the inputs and to provide
 // canned outputs. The production implementations should have their own
@@ -40,12 +42,15 @@ using turi::neural_net::model_spec;
 
 class mock_data_iterator: public data_iterator {
  public:
+  using has_next_batch_call = std::function<bool()>;
   using next_batch_call =
       std::function<data_iterator::batch(size_t batch_size)>;
   using reset_call = std::function<void()>;
 
   ~mock_data_iterator() {
+    TS_ASSERT(has_next_batch_calls_.empty());
     TS_ASSERT(next_batch_calls_.empty());
+    TS_ASSERT(reset_calls_.empty());
   }
 
   data_iterator::batch next_batch(size_t batch_size) override {
@@ -62,8 +67,11 @@ class mock_data_iterator: public data_iterator {
     return expected_call();
   }
 
-  bool has_next_batch() const override {
-    return true;
+  bool has_next_batch() override {
+    TS_ASSERT(!has_next_batch_calls_.empty());
+    has_next_batch_call expected_call = std::move(has_next_batch_calls_.front());
+    has_next_batch_calls_.pop_front();
+    return expected_call();
   }
 
   const std::unordered_map<std::string, int>& class_to_index_map() const override {
@@ -74,6 +82,7 @@ class mock_data_iterator: public data_iterator {
     return class_labels_;
   }
 
+  std::deque<has_next_batch_call> has_next_batch_calls_;
   std::deque<next_batch_call> next_batch_calls_;
   std::deque<reset_call> reset_calls_;
   std::vector<std::string> class_labels_;
@@ -151,10 +160,10 @@ class test_drawing_classifier: public drawing_classifier {
 
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_train) {
   // Most of this test body will be spent setting up the mock objects that we'll
-  // inject into the object_detector implementation. These mock objects will
+  // inject into the drawing_classifier implementation. These mock objects will
   // make assertions about their inputs along the way and provide the outputs
   // that we manually pre-program. At the end will be a single call to
-  // object_detector::init_training that will trigger all the actual testing.
+  // drawing_classifier::init_train that will trigger all the actual testing.
   test_drawing_classifier model;
 
   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
@@ -255,109 +264,108 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_train) {
   // mocked-out method has been called.
 }
 
-// BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_training_iteration) {
-//   // Most of this test body will be spent setting up the mock objects that we'll
-//   // inject into the object_detector implementation. These mock objects will
-//   // make assertions about their inputs along the way and provide the outputs
-//   // that we manually pre-program. At the end will be the calls to
-//   // object_detector::iterate_training that will trigger all the actual testing.
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_training_iteration) {
+  // Most of this test body will be spent setting up the mock objects that we'll
+  // inject into the drawing_classifier implementation. These mock objects will
+  // make assertions about their inputs along the way and provide the outputs
+  // that we manually pre-program. At the end will be the calls to
+  // drawing_classifier::perform_training_iteration that will trigger all the
+  // actual testing.
 
-//   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
-//   // code attempts to instantiate these dependencies.
-//   std::unique_ptr<mock_data_iterator> mock_iterator(new mock_data_iterator);
-//   std::unique_ptr<mock_image_augmenter> mock_augmenter(
-//       new mock_image_augmenter);
-//   std::unique_ptr<mock_model_backend> mock_nn_model(new mock_model_backend);
-//   std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+  // Allocate the mock dependencies. We'll transfer ownership when the toolkit
+  // code attempts to instantiate these dependencies.
+  std::unique_ptr<mock_data_iterator> mock_iterator(new mock_data_iterator);
+  std::unique_ptr<mock_model_backend> mock_nn_model(new mock_model_backend);
+  std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
 
-//   // We'll request 4 training iterations, since the learning rate schedule
-//   // kicks in at the 50% and 75% points.
-//   static constexpr size_t test_max_iterations = 4;
-//   static constexpr size_t test_batch_size = 2;
-//   const std::vector<std::string> test_class_labels = {"label1", "label2"};
-//   static constexpr size_t test_num_rows = 100;
-//   static constexpr float test_loss = 5.f;
+  // We'll request 4 training iterations, since the learning rate schedule
+  // kicks in at the 50% and 75% points.
+  static constexpr size_t test_max_iterations = 4;
+  static constexpr size_t test_batch_size = 2;
+  const std::vector<std::string> test_class_labels = {"label1", "label2"};
+  // static constexpr size_t test_num_rows = 100;
+  static constexpr float test_loss = 5.f;
 
-//   mock_iterator->class_labels_ = test_class_labels;
-  
-//   auto num_iterations_submitted = std::make_shared<size_t>(0);
-//   for (size_t i = 0; i < test_max_iterations; ++i) {
-//     // Program the mock_iterator to return two arbitrary images, each with one
-//     // unique annotation. We'll store a copy of the annotations for later
-//     // comparison.
-//     auto test_annotations =
-//         std::make_shared<std::vector<std::vector<image_annotation>>>();
-//     auto next_batch_impl = [=](size_t batch_size) {
-//       TS_ASSERT_EQUALS(batch_size, test_batch_size);
+  mock_iterator->class_labels_ = test_class_labels;
 
-//       std::vector<labeled_image> result(test_batch_size);
-//       for (size_t j = 0; j < result.size(); ++j) {
-//         // The actual contents of the image and the annotations are irrelevant
-//         // for the purposes of this test. But encode the batch index and row
-//         // index into the bounding box so that we can verify this data is passed
-//         // into the image augmenter.
-//         image_annotation annotation;
-//         annotation.bounding_box.x = i;
-//         annotation.bounding_box.y = j;
+  auto num_iterations_submitted = std::make_shared<size_t>(0);
+  for (size_t i = 0; i < test_max_iterations; ++i) {
+    // Program the mock_iterator to return nothing.
+    auto next_batch_impl = [=](size_t batch_size) {
+      TS_ASSERT_EQUALS(batch_size, test_batch_size);
+      data_iterator::batch result;
+      result.num_samples = batch_size;
+      return result;
+    };
+    mock_iterator->next_batch_calls_.push_back(next_batch_impl);
 
-//         result[j].annotations.push_back(annotation);
-//         test_annotations->push_back(result[j].annotations);
-//       }
+    // Since has_next_batch is the loop guard in perform_training_iteration,
+    // it will be called twice, and we need to push two implementations, 
+    // one that returns true, and one that returns false.
+    auto has_next_batch_true_impl = [=]() {
+      return true;
+    };
 
-//       return result;
-//     };
-//     mock_iterator->next_batch_calls_.push_back(next_batch_impl);
+    auto has_next_batch_false_impl = [=]() {
+      return false;
+    };
 
-//     // The mock_model_backend should expect calls to set_learning_rate just at
-//     // the 50% and 75% marks.
-//     if (i == test_max_iterations / 2 || i == test_max_iterations * 3 / 4) {
-//       auto set_learning_rate_impl = [=](float lr) {
-//         TS_ASSERT_EQUALS(*num_iterations_submitted, i);
-//       };
-//       mock_nn_model->set_learning_rate_calls_.push_back(set_learning_rate_impl);
-//     }
+    mock_iterator->has_next_batch_calls_.push_back(has_next_batch_true_impl);
+    mock_iterator->has_next_batch_calls_.push_back(has_next_batch_false_impl);
 
-//     // The mock_model_backend should expect `train` calls on every iteration.
-//     auto train_impl = [=](const float_array_map& inputs) {
-//       // The input_batch should just be whatever the image_augmenter returned.
-//       shared_float_array input_batch = inputs.at("input");
-//       TS_ASSERT_EQUALS(input_batch.data(), test_image_batch->data());
+    auto reset_impl = [=]() {
+      return;
+    };
+    mock_iterator->reset_calls_.push_back(reset_impl);
 
-//       // Track how many calls we've had.
-//       *num_iterations_submitted += 1;
+    // The mock_model_backend should expect calls to set_learning_rate just at
+    // the 50% and 75% marks.
+    if (i == test_max_iterations / 2 || i == test_max_iterations * 3 / 4) {
+      auto set_learning_rate_impl = [=](float lr) {
+        TS_ASSERT_EQUALS(*num_iterations_submitted, i);
+      };
+      mock_nn_model->set_learning_rate_calls_.push_back(set_learning_rate_impl);
+    }
 
-//       // Multiply loss by 8 to offset the "mps_loss_mult" factor currently
-//       // hardwired in to avoid fp16 underflow in MPS.
-//       std::map<std::string, shared_float_array> result;
-//       result["loss"] = shared_float_array::wrap(8 * test_loss);
-//       return result;
-//     };
-//     mock_nn_model->train_calls_.push_back(train_impl);
-//   }
+    // The mock_model_backend should expect `train` calls on every iteration.
+    auto train_impl = [=](const float_array_map& inputs) {
+      // shared_float_array input_batch = inputs.at("input");
+      // TS_ASSERT_EQUALS(input_batch.data(), test_image_batch->data());
 
-//   test_drawing_classifier model(
-//       {{"batch_size", test_batch_size},
-//        {"max_iterations", 4},
-//        {"num_examples", test_num_examples},
-//        {"training_iterations", 0}},
-//       nullptr, std::move(mock_context), std::move(mock_iterator),
-//       std::move(mock_augmenter), std::move(mock_nn_model));
+      // Track how many calls we've had.
+      *num_iterations_submitted += 1;
 
-//   // Now, actually invoke object_detector::iterate_training. This will trigger
-//   // all the assertions registered above.
-//   for (size_t i = 0; i < test_max_iterations; ++i) {
-//     model.perform_training_iteration();
-//   }
+      // Multiply loss by 8 to offset the "mps_loss_mult" factor currently
+      // hardwired in to avoid fp16 underflow in MPS.
+      std::map<std::string, shared_float_array> result;
+      result["loss"] = shared_float_array::wrap(8 * test_loss);
+      result["accuracy"] = shared_float_array::wrap(.5);
+      return result;
+    };
+    mock_nn_model->train_calls_.push_back(train_impl);
+  }
 
-//   TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"),
-//                    test_max_iterations);
-//   TS_ASSERT_EQUALS(model.get_field<flex_int>("training_epochs"),
-//                    test_max_iterations * test_batch_size / test_num_examples);
+  test_drawing_classifier model(
+      {{"batch_size", test_batch_size},
+       {"max_iterations", test_max_iterations},
+       {"num_classes", test_class_labels.size()},
+       {"training_iterations", 0}},
+      nullptr, std::move(mock_context), std::move(mock_iterator),
+      std::move(mock_nn_model));
 
-//   // Deconstructing `model` here will assert that every expected call to a
-//   // mocked-out method has been called.
+  // Now, actually invoke drawing_classifier::perform_training_iteration.
+  // This will trigger all the assertions registered above.
+  for (size_t i = 0; i < test_max_iterations; ++i) {
+    model.perform_training_iteration();
+  }
 
-// }
+  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"),
+                   test_max_iterations);
+
+  // Deconstructing `model` here will assert that every expected call to a
+  // mocked-out method has been called.
+
+}
 
 
 }  // namespace

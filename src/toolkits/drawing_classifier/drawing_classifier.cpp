@@ -28,27 +28,9 @@ using neural_net::shared_float_array;
 
 struct result {
   shared_float_array loss_info;
-  shared_float_array output_info;
+  shared_float_array accuracy_info;
   data_iterator::batch data_info;
 };
-
-size_t count_correct_predictions(size_t num_classes,
-                                 const shared_float_array& outputs,
-                                 const data_iterator::batch& batch) {
-  
-  size_t num_correct = 0;
-  const float* prediction_ptr = outputs.data();
-  const float* truth_ptr = batch.targets.data();
-
-  for (size_t i = 0; i < batch.num_samples; ++i) {
-    if (*prediction_ptr == *truth_ptr) {
-      num_correct++;
-    }
-    prediction_ptr++;
-    truth_ptr++;
-  }
-  return num_correct;
-}
 
 }  // namespace
 
@@ -261,15 +243,14 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
       pending_batches.pop();
 
       size_t batch_num_correct = 0;
-      batch_num_correct =
-          count_correct_predictions(num_classes, 
-                                    batch.output_info, batch.data_info);
+      batch_num_correct = static_cast<size_t>(
+        *(batch.accuracy_info.data()) * batch.data_info.num_samples);
       val_num_correct += batch_num_correct;
       val_num_samples += batch.data_info.num_samples;
-      float val_loss = std::accumulate(batch.loss_info.data(), batch.loss_info.data() + batch.loss_info.size(),
-                                     0.f, std::plus<float>());
+      float val_loss = std::accumulate(batch.loss_info.data(),
+                            batch.loss_info.data() + batch.loss_info.size(),
+                            0.f, std::plus<float>());
       cumulative_val_loss += val_loss;
-
     }
   };
 
@@ -289,7 +270,7 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
             {"labels", result_batch.data_info.targets}
         });
 
-    result_batch.output_info = results.at("output");
+    result_batch.accuracy_info = results.at("accuracy");
     result_batch.loss_info = results.at("loss");
     val_size += result_batch.data_info.num_samples;
 
@@ -334,9 +315,8 @@ void drawing_classifier::perform_training_iteration() {
       pending_batches.pop();
 
       size_t batch_num_correct = 0;
-      batch_num_correct = count_correct_predictions(num_classes,
-                                                    batch.output_info,
-                                                    batch.data_info);
+      batch_num_correct = static_cast<size_t>(
+        *(batch.accuracy_info.data()) * batch.data_info.num_samples);
       train_num_correct += batch_num_correct;
       train_num_samples += batch.data_info.num_samples;
 
@@ -365,7 +345,7 @@ void drawing_classifier::perform_training_iteration() {
           { "labels",  result_batch.data_info.targets   }
         });
     result_batch.loss_info = results.at("loss");
-    result_batch.output_info = results.at("output");
+    result_batch.accuracy_info = results.at("accuracy");
 
     ++num_batches;
 

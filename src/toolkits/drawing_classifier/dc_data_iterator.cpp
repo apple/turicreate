@@ -106,7 +106,7 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
 {}
 
-bool simple_data_iterator::has_next_batch() const {
+bool simple_data_iterator::has_next_batch() {
   return (next_row_ != end_of_rows_);
 }
 

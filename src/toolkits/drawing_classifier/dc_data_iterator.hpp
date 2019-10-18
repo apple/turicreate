@@ -116,7 +116,7 @@ class data_iterator {
    * Returns true if and only if the next call to `next_batch` will return a
    * batch with size greater than 0.
    */
-  virtual bool has_next_batch() const = 0;
+  virtual bool has_next_batch() = 0;
 
   /** Begins a fresh traversal of the dataset. */
   virtual void reset() = 0;
@@ -149,7 +149,7 @@ class simple_data_iterator: public data_iterator {
 
   batch next_batch(size_t batch_size) override;
 
-  bool has_next_batch() const override;
+  bool has_next_batch() override;
 
   void reset() override;
 
