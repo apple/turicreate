@@ -169,9 +169,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     dataset = _tkutl._toolkits_select_columns(dataset, features + [session_id, target])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
-    #params = {
-    #    'use_tensorflow': False
-    #    }
 
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -182,7 +179,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
             raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
         params.update(kwargs['_advanced_parameters'])
 
-    if use_cpp: #params['use_tensorflow'] :
+    if use_cpp:
 
         name = 'activity_classifier'
 

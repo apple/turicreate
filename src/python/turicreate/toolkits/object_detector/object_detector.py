@@ -269,7 +269,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # the SFrame shuffle operation that can occur after each epoch.
         'io_thread_buffer_size': 8,
         'mlmodel_path': pretrained_model_path,
-        #'use_tensorflow': False
     }
 
     if '_advanced_parameters' in kwargs:
@@ -289,7 +288,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         batch_size = 32  # Default if not user-specified
     cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
     num_mxnet_gpus = len(cuda_gpus)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 and not use_cpp #params['use_tensorflow']
+    use_mps = _use_mps() and num_mxnet_gpus == 0 and not use_cpp
     batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
         # Reduce batch size for GPUs with less than 4GB RAM
@@ -437,7 +436,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
 
-    if use_cpp: #params['use_tensorflow']:
+    if use_cpp:
         import turicreate.toolkits.libtctensorflow
 
         tf_config = {
