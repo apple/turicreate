@@ -13,6 +13,7 @@
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
+#include <toolkits/util/training_utils.hpp>
 
 
 namespace turi {
@@ -56,22 +57,9 @@ void drawing_classifier::init_options(
       500,
       1,
       std::numeric_limits<int>::max());
-  options.create_integer_option(
-      "random_seed",
-      "Seed for random weight initialization and sampling during training",
-      FLEX_UNDEFINED,
-      std::numeric_limits<int>::min(),
-      std::numeric_limits<int>::max());
-
+  
   // Validate user-provided options.
   options.set_options(opts);
-
-  // Choose a random seed if not set.
-  if (options.value("random_seed") == FLEX_UNDEFINED) {
-    std::random_device random_device;
-    int random_seed = static_cast<int>(random_device());
-    options.set_option("random_seed", random_seed);
-  }
 
   // Write model fields.
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -84,18 +72,13 @@ std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
   if (variant_is<gl_sframe>(validation_data)) {
     train_data = data;
     val_data = variant_get_value<gl_sframe>(validation_data);
-    /* TODO: Re-evaluate the following log_and_throw.
-     *       Enabling it will trigger a unit test failure!
+    /* TODO: Do we want to log_and_throw when the validation data is empty?
+     *       Having it will trigger a unit test failure!
      */
-    // if (val_data.empty()) {
-    //   log_and_throw("Input SFrame either has no rows or no columns. A "
-    //                 "non-empty SFrame is required");
-    // }
   }
   else if ((variant_is<flex_string>(validation_data)) 
       && (variant_get_value<flex_string>(validation_data)=="auto")) {
     size_t num_rows = data.size();
-    // size_t seed = read_state<size_t>("random_seed");
     if (num_rows >= 100) {
       std::tie(train_data, val_data) = data.random_split(.95);
     } else {
@@ -140,13 +123,6 @@ void drawing_classifier::init_train(gl_sframe data,
   // Read user-specified options.
   init_options(opts);
 
-  // Choose a random seed if not set.
-  if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
-    std::random_device random_device;
-    int random_seed = static_cast<int>(random_device());
-    add_or_update_state({{"random_seed", random_seed}});
-  }
-
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
 
@@ -183,18 +159,7 @@ void drawing_classifier::init_train(gl_sframe data,
 
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  if (gpu_names.empty()) {
-    logprogress_stream << "Using CPU to create model";
-  } else {
-    std::string gpu_names_string = gpu_names[0];
-    for (size_t i = 1; i < gpu_names.size(); ++i) {
-      gpu_names_string += ", " + gpu_names[i];
-    }
-    logprogress_stream << "Using "
-                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                       << " to create model ("
-                       << gpu_names_string << ")";
-  }
+  print_training_device(gpu_names);
 
   // Set additional model fields.
   add_or_update_state({
