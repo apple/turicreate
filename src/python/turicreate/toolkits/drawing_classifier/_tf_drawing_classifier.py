@@ -32,18 +32,13 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         loads the MXNET weights into the model.
 
         """
-        import pdb; pdb.set_trace()
         _tf.reset_default_graph()
 
         self.num_classes = num_classes
         self.batch_size = batch_size
 
-        import pdb; pdb.set_trace()
-
         self.x = _tf.placeholder("float", [None, 28, 28, 1])
         self.y = _tf.placeholder("float", [None, self.num_classes])
-
-        import pdb; pdb.set_trace()
 
         # Weights
         weights = {
@@ -54,8 +49,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         'drawing_dense1_weight': _tf.Variable(_tf.zeros([128, self.num_classes]), name='drawing_dense1_weight')
         }
 
-        import pdb; pdb.set_trace()
-
         # Biases
         biases = {
         'drawing_conv0_bias' : _tf.Variable(_tf.zeros([16]), name='drawing_conv0_bias'),
@@ -65,76 +58,47 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         'drawing_dense1_bias': _tf.Variable(_tf.zeros([self.num_classes]), name='drawing_dense1_bias')
         }
 
-        import pdb; pdb.set_trace()
-
         conv_1 = _tf.nn.conv2d(self.x, weights["drawing_conv0_weight"], strides=1, padding='SAME')
         conv_1 = _tf.nn.bias_add(conv_1, biases["drawing_conv0_bias"])
         relu_1 = _tf.nn.relu(conv_1)
         pool_1 = _tf.nn.max_pool2d(relu_1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
-
-        import pdb; pdb.set_trace()
 
         conv_2 = _tf.nn.conv2d(pool_1, weights["drawing_conv1_weight"], strides=1, padding='SAME')
         conv_2 = _tf.nn.bias_add(conv_2, biases["drawing_conv1_bias"])
         relu_2 = _tf.nn.relu(conv_2)
         pool_2 = _tf.nn.max_pool2d(relu_2, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
 
-        import pdb; pdb.set_trace()
-
         conv_3 = _tf.nn.conv2d(pool_2, weights["drawing_conv2_weight"], strides=1, padding='SAME')
         conv_3 = _tf.nn.bias_add(conv_3, biases["drawing_conv2_bias"])
         relu_3 = _tf.nn.relu(conv_3)
-        import pdb; pdb.set_trace()
         pool_3 = _tf.nn.max_pool2d(relu_3, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID') 
-
-        import pdb; pdb.set_trace()
 
         # Flatten the data to a 1-D vector for the fully connected layer
         fc1 = _tf.reshape(pool_3, (-1, 576))
 
-        import pdb; pdb.set_trace()
-
         fc1 = _tf.nn.xw_plus_b(fc1, weights=weights["drawing_dense0_weight"],
             biases=biases["drawing_dense0_bias"])
 
-        import pdb; pdb.set_trace()
-
         fc1 = _tf.nn.relu(fc1)
-
-        import pdb; pdb.set_trace()
 
         out = _tf.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"],
             biases=biases["drawing_dense1_bias"])
-        import pdb; pdb.set_trace()
         out = _tf.nn.softmax(out)
-        import pdb; pdb.set_trace()
-
+        
         self.predictions = out
-
-        import pdb; pdb.set_trace()
-
 
         # Loss
         self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
             labels=self.y))
 
-        import pdb; pdb.set_trace()
-
-
         # Optimizer
         self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.001).minimize(self.cost)
-
-        import pdb; pdb.set_trace()
-
 
         # Predictions
         correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
         self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, "float"))
-
-        import pdb; pdb.set_trace()
         
         self.sess = _tf.Session()
-        import pdb; pdb.set_trace()
         self.sess.run(_tf.global_variables_initializer())
 
         # Assign the initialised weights from MXNet to tensorflow
@@ -326,4 +290,3 @@ def process_data(batch_data, batch_size, num_classes):
         batch_x = batch_data.data[0].asnumpy().transpose(0, 2, 3, 1)
         batch_y = _tf.keras.utils.to_categorical(batch_data.label[0].asnumpy(), num_classes)
     return batch_x, batch_y
-

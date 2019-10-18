@@ -25,6 +25,7 @@
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <toolkits/util/training_utils.hpp>
 
 #ifdef __APPLE__
 
@@ -290,18 +291,7 @@ void object_detector::init_options(
 void object_detector::infer_derived_options() {
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  if (gpu_names.empty()) {
-    logprogress_stream << "Using CPU to create model";
-  } else {
-    std::string gpu_names_string = gpu_names[0];
-    for (size_t i = 1; i < gpu_names.size(); ++i) {
-      gpu_names_string += ", " + gpu_names[i];
-    }
-    logprogress_stream << "Using "
-                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                       << " to create model ("
-                       << gpu_names_string << ")";
-  }
+  print_training_device(gpu_names);
 
   // Configure the batch size automatically if not set.
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {

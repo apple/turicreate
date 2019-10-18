@@ -181,3 +181,10 @@ number of datatypes are supported:
 * `dict` (arbitrary dictionary of elements)
 * `datetime.datetime` (datetime with microsecond precision)
 * `image` (image)
+
+Random SFrames
+--------------
+
+`generate_random_sframe`: The option enables random sframe generation having the number
+of observations, seed used for determining the running, column types denoting each
+character having one type of column.

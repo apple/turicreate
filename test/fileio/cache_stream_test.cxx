@@ -9,6 +9,7 @@
 using namespace turi::fileio;
 using namespace turi::fileio_impl;
 
+#ifndef TC_DISABLE_REMOTEFS
 
 typedef boost::iostreams::stream<cache_stream_source> icache_stream;
 typedef boost::iostreams::stream<cache_stream_sink> ocache_stream;
@@ -109,3 +110,5 @@ BOOST_AUTO_TEST_CASE(test_seek) {
   cache_stream_test::test_seek();
 }
 BOOST_AUTO_TEST_SUITE_END()
+
+#endif
