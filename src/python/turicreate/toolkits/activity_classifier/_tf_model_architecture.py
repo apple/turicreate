@@ -28,6 +28,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
          # Suppresses verbosity to only errors
         _tf.logging.set_verbosity(_tf.logging.ERROR)
+        _tf.debugging.set_log_device_placement(False)
         
         _tf.reset_default_graph()
 
