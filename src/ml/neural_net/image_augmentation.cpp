@@ -16,11 +16,10 @@ namespace neural_net {
 
 shared_float_array convert_to_shared_float_array(
     std::vector<image_annotation> annotations_per_image) {
-  size_t offset = 0;
   std::vector<float> ann(annotations_per_image.size() * 6);
   for (size_t j = 0; j < annotations_per_image.size(); j++) {
-    offset = j * 6;
-    image_annotation annotation = annotations_per_image[j];
+    size_t offset = j * 6;
+    const image_annotation& annotation = annotations_per_image[j];
     ann[offset] = annotation.identifier;
     ann[offset + 1] = annotation.bounding_box.x;
     ann[offset + 2] = annotation.bounding_box.y;
@@ -29,23 +28,25 @@ shared_float_array convert_to_shared_float_array(
     ann[offset + 5] = annotation.confidence;
   }
   shared_float_array data_to_augment =
-      shared_float_array::wrap(std::move(ann), {annotations_per_image.size() * 6});
+      shared_float_array::wrap(ann, {annotations_per_image.size(), 6});
+  
   return data_to_augment;
 }
 
 std::vector<image_annotation> convert_to_image_annotation(
     shared_float_array augmented_annotation) {
   const size_t* shape = augmented_annotation.shape();
-  std::vector<image_annotation> augmented_ann;
-  for (size_t b = 0; b < shape[0]; b++) {
+  size_t num_annotations_per_image = shape[0];
+  std::vector<image_annotation> augmented_ann(num_annotations_per_image);
+  for (size_t b = 0; b < num_annotations_per_image; b++) {
     image_annotation annotation = augmented_ann[b];
     const float* ptr = augmented_annotation[b].data();
     annotation.identifier = static_cast<int>(ptr[0]);
-    annotation.bounding_box.x = static_cast<float>(ptr[1]);
-    annotation.bounding_box.y = static_cast<float>(ptr[2]);
-    annotation.bounding_box.height = static_cast<float>(ptr[3]);
-    annotation.bounding_box.width = static_cast<float>(ptr[4]);
-    annotation.confidence = static_cast<float>(ptr[5]);
+    annotation.bounding_box.x = ptr[1];
+    annotation.bounding_box.y = ptr[2];
+    annotation.bounding_box.height = ptr[3];
+    annotation.bounding_box.width = ptr[4];
+    annotation.confidence = ptr[5];
   }
   return augmented_ann;
 }
@@ -185,12 +186,11 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
     // Dividing it by 255.0 to make the image as an array of floats
     std::transform(img.begin(), img.end(), img.begin(),
                    [](float pixel) -> float { return pixel / 255.0f; });
-    input_to_tf_aug.images[i] = shared_float_array::wrap(
-        std::move(img), {input_height, input_width, c});
-    input_to_tf_aug.annotations[i] =
-        convert_to_shared_float_array(source.annotations);
-    input_to_tf_aug.predictions[i] =
-        convert_to_shared_float_array(source.predictions);
+
+    input_to_tf_aug.images.push_back(shared_float_array::wrap(
+        img, {input_height, input_width, c}));
+    input_to_tf_aug.annotations.push_back(convert_to_shared_float_array(source.annotations));
+
   }
 
   // Call the virtual function to use the intermediate data structure and
@@ -210,3 +210,4 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
 
 }  // neural_net
 }  // turi
+
