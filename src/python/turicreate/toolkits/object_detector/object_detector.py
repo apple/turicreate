@@ -41,6 +41,11 @@ from .._mps_utils import (use_mps as _use_mps,
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
 
+import os
+use_cpp = True
+if not os.environ.has_key('od_use_cpp') or os.environ.get('od_use_cpp')=="0":
+    use_cpp = False
+
 def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
                     config, weights={}):
     """
@@ -264,7 +269,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # the SFrame shuffle operation that can occur after each epoch.
         'io_thread_buffer_size': 8,
         'mlmodel_path': pretrained_model_path,
-        'use_tensorflow': False
+        #'use_tensorflow': False
     }
 
     if '_advanced_parameters' in kwargs:
@@ -284,7 +289,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         batch_size = 32  # Default if not user-specified
     cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
     num_mxnet_gpus = len(cuda_gpus)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 and not params['use_tensorflow']
+    use_mps = _use_mps() and num_mxnet_gpus == 0 and not use_cpp #params['use_tensorflow']
     batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
         # Reduce batch size for GPUs with less than 4GB RAM
@@ -432,7 +437,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
 
-    if params['use_tensorflow']:
+    if use_cpp: #params['use_tensorflow']:
         import turicreate.toolkits.libtctensorflow
 
         tf_config = {
@@ -445,7 +450,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         }
         model = _tc.extensions.object_detector()
         model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
-        return ObjectDetector_beta(model_proxy=model, name="object_detector")
+        return ObjectDetector(model_proxy=model, name="object_detector")
 
     else:  # Use MxNet
 
@@ -511,1231 +516,1232 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     return ObjectDetector(state)
 
 
-class ObjectDetector(_CustomModel):
-    """
-    An trained model that is ready to use for classification, exported to
-    Core ML, or for feature extraction.
-
-    This model should not be constructed directly.
-    """
-
-    _PYTHON_OBJECT_DETECTOR_VERSION = 1
-
-    def __init__(self, state):
-        self.__proxy__ = _PythonProxy(state)
-
-    @classmethod
-    def _native_name(cls):
-        return "object_detector"
-
-    def _get_native_state(self):
-        from .._mxnet import _mxnet_utils
-        state = self.__proxy__.get_state()
-        mxnet_params = state['_model'].collect_params()
-        state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
-        return state
-
-    def _get_version(self):
-        return self._PYTHON_OBJECT_DETECTOR_VERSION
-
-    @classmethod
-    def _load_version(cls, state, version):
-        _tkutl._model_version_check(version, cls._PYTHON_OBJECT_DETECTOR_VERSION)
-        from ._model import tiny_darknet as _tiny_darknet
-        from .._mxnet import _mxnet_utils
-
-        num_anchors = len(state['anchors'])
-        num_classes = state['num_classes']
-        output_size = (num_classes + 5) * num_anchors
-
-        net = _tiny_darknet(output_size=output_size)
-        ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
-
-        net_params = net.collect_params()
-        _mxnet_utils.load_net_params_from_state(net_params, state['_model'], ctx=ctx)
-        state['_model'] = net
-        state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
-        state['_grid_shape'] = tuple([int(i) for i in state['_grid_shape']])
-        return ObjectDetector(state)
-
-    def __str__(self):
+if not use_cpp:
+    class ObjectDetector(_CustomModel):
         """
-        Return a string description of the model to the ``print`` method.
+        An trained model that is ready to use for classification, exported to
+        Core ML, or for feature extraction.
 
-        Returns
-        -------
-        out : string
-            A description of the ObjectDetector.
-        """
-        return self.__repr__()
-
-    def __repr__(self):
-        """
-        Print a string description of the model when the model name is entered
-        in the terminal.
+        This model should not be constructed directly.
         """
 
-        width = 40
-        sections, section_titles = self._get_summary_struct()
-        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
-                                         width=width)
-        return out
+        _PYTHON_OBJECT_DETECTOR_VERSION = 1
 
-    def _get_summary_struct(self):
-        """
-        Returns a structured description of the model, including (where
-        relevant) the schema of the training data, description of the training
-        data, training statistics, and model hyperparameters.
+        def __init__(self, state):
+            self.__proxy__ = _PythonProxy(state)
 
-        Returns
-        -------
-        sections : list (of list of tuples)
-            A list of summary sections.
-              Each section is a list.
-                Each item in a section list is a tuple of the form:
-                  ('<label>','<field>')
-        section_titles: list
-            A list of section titles.
-              The order matches that of the 'sections' object.
-        """
-        model_fields = [
-            ('Model', 'model'),
-            ('Number of classes', 'num_classes'),
-            ('Non-maximum suppression threshold', 'non_maximum_suppression_threshold'),
-            ('Input image shape', 'input_image_shape'),
-        ]
-        training_fields = [
-            ('Training time', '_training_time_as_string'),
-            ('Training epochs', 'training_epochs'),
-            ('Training iterations', 'training_iterations'),
-            ('Number of examples (images)', 'num_examples'),
-            ('Number of bounding boxes (instances)', 'num_bounding_boxes'),
-            ('Final loss (specific to model)', 'training_loss'),
-        ]
+        @classmethod
+        def _native_name(cls):
+            return "object_detector"
 
-        section_titles = ['Schema', 'Training summary']
-        return([model_fields, training_fields], section_titles)
+        def _get_native_state(self):
+            from .._mxnet import _mxnet_utils
+            state = self.__proxy__.get_state()
+            mxnet_params = state['_model'].collect_params()
+            state['_model'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
+            return state
 
-    def _predict_with_options(self, dataset, with_ground_truth,
-                              postprocess=True, confidence_threshold=0.001,
-                              iou_threshold=None,
-                              verbose=True):
-        """
-        Predict with options for what kind of SFrame should be returned.
+        def _get_version(self):
+            return self._PYTHON_OBJECT_DETECTOR_VERSION
 
-        If postprocess is False, a single numpy array with raw unprocessed
-        results will be returned.
-        """
-        if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
-        _raise_error_if_not_detection_sframe(dataset, self.feature, self.annotations,
-                                             require_annotations=with_ground_truth)
-        from ._sframe_loader import SFrameDetectionIter as _SFrameDetectionIter
-        from ._detection import (yolo_map_to_bounding_boxes as _yolo_map_to_bounding_boxes,
-                                 non_maximum_suppression as _non_maximum_suppression,
-                                 bbox_to_ybox as _bbox_to_ybox)
+        @classmethod
+        def _load_version(cls, state, version):
+            _tkutl._model_version_check(version, cls._PYTHON_OBJECT_DETECTOR_VERSION)
+            from ._model import tiny_darknet as _tiny_darknet
+            from .._mxnet import _mxnet_utils
 
-        from .._mxnet import _mxnet_utils
-        import mxnet as _mx
-        loader = _SFrameDetectionIter(dataset,
-                                      batch_size=self.batch_size,
-                                      input_shape=self.input_image_shape[1:],
-                                      output_shape=self._grid_shape,
-                                      anchors=self.anchors,
-                                      class_to_index=self._class_to_index,
-                                      loader_type='stretched',
-                                      load_labels=with_ground_truth,
-                                      shuffle=False,
-                                      epochs=1,
-                                      feature_column=self.feature,
-                                      annotations_column=self.annotations)
+            num_anchors = len(state['anchors'])
+            num_classes = state['num_classes']
+            output_size = (num_classes + 5) * num_anchors
 
-        num_anchors = len(self.anchors)
-        preds_per_box = 5 + len(self.classes)
-        output_size = preds_per_box * num_anchors
+            net = _tiny_darknet(output_size=output_size)
+            ctx = _mxnet_utils.get_mxnet_context(max_devices=state['batch_size'])
 
-        # If prediction is done with ground truth, two sframes of the same
-        # structure are returned, the second one containing ground truth labels
-        num_returns = 2 if with_ground_truth else 1
+            net_params = net.collect_params()
+            _mxnet_utils.load_net_params_from_state(net_params, state['_model'], ctx=ctx)
+            state['_model'] = net
+            state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
+            state['_grid_shape'] = tuple([int(i) for i in state['_grid_shape']])
+            return ObjectDetector(state)
 
-        sf_builders = [
-            _tc.SFrameBuilder([int, str, float, float, float, float, float],
-                              column_names=['row_id', 'label', 'confidence',
-                                            'x', 'y', 'width', 'height'])
-            for _ in range(num_returns)
-        ]
+        def __str__(self):
+            """
+            Return a string description of the model to the ``print`` method.
 
-        num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=self.batch_size)
-        use_mps = _use_mps() and num_mxnet_gpus == 0
-        if use_mps:
-            if not hasattr(self, '_mps_inference_net') or self._mps_inference_net is None:
-                mxnet_params = self._model.collect_params()
-                mps_net_params = { k : mxnet_params[k].data().asnumpy()
-                                   for k in mxnet_params }
-                mps_config = {
-                    'mode': _MpsGraphMode.Inference,
-                    'od_include_network': True,
-                    'od_include_loss': False,
-                }
-                mps_net = _get_mps_od_net(input_image_shape=self.input_image_shape,
+            Returns
+            -------
+            out : string
+                A description of the ObjectDetector.
+            """
+            return self.__repr__()
+
+        def __repr__(self):
+            """
+            Print a string description of the model when the model name is entered
+            in the terminal.
+            """
+
+            width = 40
+            sections, section_titles = self._get_summary_struct()
+            out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                             width=width)
+            return out
+
+        def _get_summary_struct(self):
+            """
+            Returns a structured description of the model, including (where
+            relevant) the schema of the training data, description of the training
+            data, training statistics, and model hyperparameters.
+
+            Returns
+            -------
+            sections : list (of list of tuples)
+                A list of summary sections.
+                  Each section is a list.
+                    Each item in a section list is a tuple of the form:
+                      ('<label>','<field>')
+            section_titles: list
+                A list of section titles.
+                  The order matches that of the 'sections' object.
+            """
+            model_fields = [
+                ('Model', 'model'),
+                ('Number of classes', 'num_classes'),
+                ('Non-maximum suppression threshold', 'non_maximum_suppression_threshold'),
+                ('Input image shape', 'input_image_shape'),
+            ]
+            training_fields = [
+                ('Training time', '_training_time_as_string'),
+                ('Training epochs', 'training_epochs'),
+                ('Training iterations', 'training_iterations'),
+                ('Number of examples (images)', 'num_examples'),
+                ('Number of bounding boxes (instances)', 'num_bounding_boxes'),
+                ('Final loss (specific to model)', 'training_loss'),
+            ]
+
+            section_titles = ['Schema', 'Training summary']
+            return([model_fields, training_fields], section_titles)
+
+        def _predict_with_options(self, dataset, with_ground_truth,
+                                  postprocess=True, confidence_threshold=0.001,
+                                  iou_threshold=None,
+                                  verbose=True):
+            """
+            Predict with options for what kind of SFrame should be returned.
+
+            If postprocess is False, a single numpy array with raw unprocessed
+            results will be returned.
+            """
+            if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
+            _raise_error_if_not_detection_sframe(dataset, self.feature, self.annotations,
+                                                 require_annotations=with_ground_truth)
+            from ._sframe_loader import SFrameDetectionIter as _SFrameDetectionIter
+            from ._detection import (yolo_map_to_bounding_boxes as _yolo_map_to_bounding_boxes,
+                                     non_maximum_suppression as _non_maximum_suppression,
+                                     bbox_to_ybox as _bbox_to_ybox)
+
+            from .._mxnet import _mxnet_utils
+            import mxnet as _mx
+            loader = _SFrameDetectionIter(dataset,
                                           batch_size=self.batch_size,
-                                          output_size=output_size,
+                                          input_shape=self.input_image_shape[1:],
+                                          output_shape=self._grid_shape,
                                           anchors=self.anchors,
-                                          config=mps_config,
-                                          weights=mps_net_params)
-                self._mps_inference_net = mps_net
+                                          class_to_index=self._class_to_index,
+                                          loader_type='stretched',
+                                          load_labels=with_ground_truth,
+                                          shuffle=False,
+                                          epochs=1,
+                                          feature_column=self.feature,
+                                          annotations_column=self.annotations)
 
-        dataset_size = len(dataset)
-        ctx = _mxnet_utils.get_mxnet_context()
-        done = False
-        last_time = 0
-        raw_results = []
-        for batch in loader:
-            if batch.pad is not None:
-                size = self.batch_size - batch.pad
-                b_data = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
-                b_indices = _mx.nd.slice_axis(batch.label[1], axis=0, begin=0, end=size)
-                b_oshapes = _mx.nd.slice_axis(batch.label[2], axis=0, begin=0, end=size)
-            else:
-                b_data = batch.data[0]
-                b_indices = batch.label[1]
-                b_oshapes = batch.label[2]
-                size = self.batch_size
+            num_anchors = len(self.anchors)
+            preds_per_box = 5 + len(self.classes)
+            output_size = preds_per_box * num_anchors
 
-            if b_data.shape[0] < len(ctx):
-                ctx0 = ctx[:b_data.shape[0]]
-            else:
-                ctx0 = ctx
+            # If prediction is done with ground truth, two sframes of the same
+            # structure are returned, the second one containing ground truth labels
+            num_returns = 2 if with_ground_truth else 1
 
-            split_data = _mx.gluon.utils.split_and_load(b_data, ctx_list=ctx0, even_split=False)
-            split_indices = _mx.gluon.utils.split_data(b_indices, num_slice=len(ctx0), even_split=False)
-            split_oshapes = _mx.gluon.utils.split_data(b_oshapes, num_slice=len(ctx0), even_split=False)
+            sf_builders = [
+                _tc.SFrameBuilder([int, str, float, float, float, float, float],
+                                  column_names=['row_id', 'label', 'confidence',
+                                                'x', 'y', 'width', 'height'])
+                for _ in range(num_returns)
+            ]
 
-            for data, indices, oshapes in zip(split_data, split_indices, split_oshapes):
-                if use_mps:
-                    mps_data = _mxnet_to_mps(data.asnumpy())
-                    n_samples = mps_data.shape[0]
-                    if mps_data.shape[0] != self.batch_size:
-                        mps_data_padded = _np.zeros((self.batch_size,) + mps_data.shape[1:],
-                                                    dtype=mps_data.dtype)
-                        mps_data_padded[:mps_data.shape[0]] = mps_data
-                        mps_data = mps_data_padded
-                    mps_float_array = self._mps_inference_net.predict(mps_data)
-                    mps_z = mps_float_array.asnumpy()[:n_samples]
-                    z = _mps_to_mxnet(mps_z)
+            num_mxnet_gpus = _mxnet_utils.get_num_gpus_in_use(max_devices=self.batch_size)
+            use_mps = _use_mps() and num_mxnet_gpus == 0
+            if use_mps:
+                if not hasattr(self, '_mps_inference_net') or self._mps_inference_net is None:
+                    mxnet_params = self._model.collect_params()
+                    mps_net_params = { k : mxnet_params[k].data().asnumpy()
+                                       for k in mxnet_params }
+                    mps_config = {
+                        'mode': _MpsGraphMode.Inference,
+                        'od_include_network': True,
+                        'od_include_loss': False,
+                    }
+                    mps_net = _get_mps_od_net(input_image_shape=self.input_image_shape,
+                                              batch_size=self.batch_size,
+                                              output_size=output_size,
+                                              anchors=self.anchors,
+                                              config=mps_config,
+                                              weights=mps_net_params)
+                    self._mps_inference_net = mps_net
+
+            dataset_size = len(dataset)
+            ctx = _mxnet_utils.get_mxnet_context()
+            done = False
+            last_time = 0
+            raw_results = []
+            for batch in loader:
+                if batch.pad is not None:
+                    size = self.batch_size - batch.pad
+                    b_data = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
+                    b_indices = _mx.nd.slice_axis(batch.label[1], axis=0, begin=0, end=size)
+                    b_oshapes = _mx.nd.slice_axis(batch.label[2], axis=0, begin=0, end=size)
                 else:
-                    z = self._model(data).asnumpy()
-                if not postprocess:
-                    raw_results.append(z)
-                    continue
+                    b_data = batch.data[0]
+                    b_indices = batch.label[1]
+                    b_oshapes = batch.label[2]
+                    size = self.batch_size
 
-                ypred = z.transpose(0, 2, 3, 1)
-                ypred = ypred.reshape(ypred.shape[:-1] + (num_anchors, -1))
+                if b_data.shape[0] < len(ctx):
+                    ctx0 = ctx[:b_data.shape[0]]
+                else:
+                    ctx0 = ctx
 
-                zipped = zip(indices.asnumpy(), ypred, oshapes.asnumpy())
-                for index0, output0, oshape0 in zipped:
-                    index0 = int(index0)
-                    x_boxes, x_classes, x_scores = _yolo_map_to_bounding_boxes(
-                            output0[_np.newaxis], anchors=self.anchors,
-                            confidence_threshold=confidence_threshold,
-                            nms_thresh=None)
+                split_data = _mx.gluon.utils.split_and_load(b_data, ctx_list=ctx0, even_split=False)
+                split_indices = _mx.gluon.utils.split_data(b_indices, num_slice=len(ctx0), even_split=False)
+                split_oshapes = _mx.gluon.utils.split_data(b_oshapes, num_slice=len(ctx0), even_split=False)
 
-                    x_boxes0 = _np.array(x_boxes).reshape(-1, 4)
+                for data, indices, oshapes in zip(split_data, split_indices, split_oshapes):
+                    if use_mps:
+                        mps_data = _mxnet_to_mps(data.asnumpy())
+                        n_samples = mps_data.shape[0]
+                        if mps_data.shape[0] != self.batch_size:
+                            mps_data_padded = _np.zeros((self.batch_size,) + mps_data.shape[1:],
+                                                        dtype=mps_data.dtype)
+                            mps_data_padded[:mps_data.shape[0]] = mps_data
+                            mps_data = mps_data_padded
+                        mps_float_array = self._mps_inference_net.predict(mps_data)
+                        mps_z = mps_float_array.asnumpy()[:n_samples]
+                        z = _mps_to_mxnet(mps_z)
+                    else:
+                        z = self._model(data).asnumpy()
+                    if not postprocess:
+                        raw_results.append(z)
+                        continue
 
-                    # Normalize
-                    x_boxes0[:, 0::2] /= self.input_image_shape[1]
-                    x_boxes0[:, 1::2] /= self.input_image_shape[2]
+                    ypred = z.transpose(0, 2, 3, 1)
+                    ypred = ypred.reshape(ypred.shape[:-1] + (num_anchors, -1))
 
-                    # Re-shape to original input size
-                    x_boxes0[:, 0::2] *= oshape0[0]
-                    x_boxes0[:, 1::2] *= oshape0[1]
+                    zipped = zip(indices.asnumpy(), ypred, oshapes.asnumpy())
+                    for index0, output0, oshape0 in zipped:
+                        index0 = int(index0)
+                        x_boxes, x_classes, x_scores = _yolo_map_to_bounding_boxes(
+                                output0[_np.newaxis], anchors=self.anchors,
+                                confidence_threshold=confidence_threshold,
+                                nms_thresh=None)
 
-                    # Clip the boxes to the original sizes
-                    x_boxes0[:, 0::2] = _np.clip(x_boxes0[:, 0::2], 0, oshape0[0])
-                    x_boxes0[:, 1::2] = _np.clip(x_boxes0[:, 1::2], 0, oshape0[1])
+                        x_boxes0 = _np.array(x_boxes).reshape(-1, 4)
 
-                    # Non-maximum suppression (also limit to 100 detection per
-                    # image, inspired by the evaluation in COCO)
-                    x_boxes0, x_classes, x_scores = _non_maximum_suppression(
-                            x_boxes0, x_classes, x_scores,
-                            num_classes=self.num_classes, threshold=iou_threshold,
-                            limit=100)
+                        # Normalize
+                        x_boxes0[:, 0::2] /= self.input_image_shape[1]
+                        x_boxes0[:, 1::2] /= self.input_image_shape[2]
 
-                    for bbox, cls, s in zip(x_boxes0, x_classes, x_scores):
-                        cls = int(cls)
-                        values = [index0, self.classes[cls], s] + list(_bbox_to_ybox(bbox))
-                        sf_builders[0].append(values)
+                        # Re-shape to original input size
+                        x_boxes0[:, 0::2] *= oshape0[0]
+                        x_boxes0[:, 1::2] *= oshape0[1]
 
-                    if index0 == len(dataset) - 1:
-                        done = True
+                        # Clip the boxes to the original sizes
+                        x_boxes0[:, 0::2] = _np.clip(x_boxes0[:, 0::2], 0, oshape0[0])
+                        x_boxes0[:, 1::2] = _np.clip(x_boxes0[:, 1::2], 0, oshape0[1])
 
-                    cur_time = _time.time()
-                    # Do not print process if only a few samples are predicted
-                    if verbose and (dataset_size >= 5 and cur_time > last_time + 10 or done):
-                        print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
-                            cur_n=index0 + 1, max_n=dataset_size, width=len(str(dataset_size))))
-                        last_time = cur_time
+                        # Non-maximum suppression (also limit to 100 detection per
+                        # image, inspired by the evaluation in COCO)
+                        x_boxes0, x_classes, x_scores = _non_maximum_suppression(
+                                x_boxes0, x_classes, x_scores,
+                                num_classes=self.num_classes, threshold=iou_threshold,
+                                limit=100)
 
-                    if done:
-                        break
+                        for bbox, cls, s in zip(x_boxes0, x_classes, x_scores):
+                            cls = int(cls)
+                            values = [index0, self.classes[cls], s] + list(_bbox_to_ybox(bbox))
+                            sf_builders[0].append(values)
 
-            # Ground truth
-            if with_ground_truth:
-                zipped = _itertools.islice(zip(batch.label[1].asnumpy(), batch.raw_bboxes, batch.raw_classes), size)
-                for index0, bbox0, cls0 in zipped:
-                    index0 = int(index0)
-                    for bbox, cls in zip(bbox0, cls0):
-                        cls = int(cls)
-                        if cls == -1:
+                        if index0 == len(dataset) - 1:
+                            done = True
+
+                        cur_time = _time.time()
+                        # Do not print process if only a few samples are predicted
+                        if verbose and (dataset_size >= 5 and cur_time > last_time + 10 or done):
+                            print('Predicting {cur_n:{width}d}/{max_n:{width}d}'.format(
+                                cur_n=index0 + 1, max_n=dataset_size, width=len(str(dataset_size))))
+                            last_time = cur_time
+
+                        if done:
                             break
-                        values = [index0, self.classes[cls], 1.0] + list(bbox)
-                        sf_builders[1].append(values)
 
-                    if index0 == len(dataset) - 1:
-                        break
+                # Ground truth
+                if with_ground_truth:
+                    zipped = _itertools.islice(zip(batch.label[1].asnumpy(), batch.raw_bboxes, batch.raw_classes), size)
+                    for index0, bbox0, cls0 in zipped:
+                        index0 = int(index0)
+                        for bbox, cls in zip(bbox0, cls0):
+                            cls = int(cls)
+                            if cls == -1:
+                                break
+                            values = [index0, self.classes[cls], 1.0] + list(bbox)
+                            sf_builders[1].append(values)
 
-        if postprocess:
-            ret = tuple([sb.close() for sb in sf_builders])
-            if len(ret) == 1:
-                return ret[0]
+                        if index0 == len(dataset) - 1:
+                            break
+
+            if postprocess:
+                ret = tuple([sb.close() for sb in sf_builders])
+                if len(ret) == 1:
+                    return ret[0]
+                else:
+                    return ret
             else:
-                return ret
-        else:
-            return _np.concatenate(raw_results, axis=0)
+                return _np.concatenate(raw_results, axis=0)
 
-    def _raw_predict(self, dataset):
-        return self._predict_with_options(dataset, with_ground_truth=False,
-                                          postprocess=False)
+        def _raw_predict(self, dataset):
+            return self._predict_with_options(dataset, with_ground_truth=False,
+                                              postprocess=False)
 
-    def _canonize_input(self, dataset):
-        """
-        Takes input and returns tuple of the input in canonical form (SFrame)
-        along with an unpack callback function that can be applied to
-        prediction results to "undo" the canonization.
-        """
-        unpack = lambda x: x
-        if isinstance(dataset, _tc.SArray):
-            dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image):
-            dataset = _tc.SFrame({self.feature: [dataset]})
-            unpack = lambda x: x[0]
-        return dataset, unpack
+        def _canonize_input(self, dataset):
+            """
+            Takes input and returns tuple of the input in canonical form (SFrame)
+            along with an unpack callback function that can be applied to
+            prediction results to "undo" the canonization.
+            """
+            unpack = lambda x: x
+            if isinstance(dataset, _tc.SArray):
+                dataset = _tc.SFrame({self.feature: dataset})
+            elif isinstance(dataset, _tc.Image):
+                dataset = _tc.SFrame({self.feature: [dataset]})
+                unpack = lambda x: x[0]
+            return dataset, unpack
 
-    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=None, verbose=True):
-        """
-        Predict object instances in an SFrame of images.
+        def predict(self, dataset, confidence_threshold=0.25, iou_threshold=None, verbose=True):
+            """
+            Predict object instances in an SFrame of images.
 
-        Parameters
-        ----------
-        dataset : SFrame | SArray | turicreate.Image
-            The images on which to perform object detection.
-            If dataset is an SFrame, it must have a column with the same name
-            as the feature column during training. Additional columns are
-            ignored.
+            Parameters
+            ----------
+            dataset : SFrame | SArray | turicreate.Image
+                The images on which to perform object detection.
+                If dataset is an SFrame, it must have a column with the same name
+                as the feature column during training. Additional columns are
+                ignored.
 
-        confidence_threshold : float
-            Only return predictions above this level of confidence. The
-            threshold can range from 0 to 1.
+            confidence_threshold : float
+                Only return predictions above this level of confidence. The
+                threshold can range from 0 to 1.
 
-        iou_threshold : float
-            Threshold value for non-maximum suppression. Non-maximum suppression
-            prevents multiple bounding boxes appearing over a single object.
-            This threshold, set between 0 and 1, controls how aggressive this
-            suppression is. A value of 1 means no maximum suppression will
-            occur, while a value of 0 will maximally suppress neighboring
-            boxes around a prediction.
+            iou_threshold : float
+                Threshold value for non-maximum suppression. Non-maximum suppression
+                prevents multiple bounding boxes appearing over a single object.
+                This threshold, set between 0 and 1, controls how aggressive this
+                suppression is. A value of 1 means no maximum suppression will
+                occur, while a value of 0 will maximally suppress neighboring
+                boxes around a prediction.
 
-        verbose : bool
-            If True, prints prediction progress.
+            verbose : bool
+                If True, prints prediction progress.
 
-        Returns
-        -------
-        out : SArray
-            An SArray with model predictions. Each element corresponds to
-            an image and contains a list of dictionaries. Each dictionary
-            describes an object instances that was found in the image. If
-            `dataset` is a single image, the return value will be a single
-            prediction.
+            Returns
+            -------
+            out : SArray
+                An SArray with model predictions. Each element corresponds to
+                an image and contains a list of dictionaries. Each dictionary
+                describes an object instances that was found in the image. If
+                `dataset` is a single image, the return value will be a single
+                prediction.
 
-        See Also
-        --------
-        evaluate
+            See Also
+            --------
+            evaluate
 
-        Examples
-        --------
-        .. sourcecode:: python
+            Examples
+            --------
+            .. sourcecode:: python
 
-            # Make predictions
-            >>> pred = model.predict(data)
+                # Make predictions
+                >>> pred = model.predict(data)
 
-            # Stack predictions, for a better overview
-            >>> turicreate.object_detector.util.stack_annotations(pred)
-            Data:
-            +--------+------------+-------+-------+-------+-------+--------+
-            | row_id | confidence | label |   x   |   y   | width | height |
-            +--------+------------+-------+-------+-------+-------+--------+
-            |   0    |    0.98    |  dog  | 123.0 | 128.0 |  80.0 | 182.0  |
-            |   0    |    0.67    |  cat  | 150.0 | 183.0 | 129.0 | 101.0  |
-            |   1    |    0.8     |  dog  |  50.0 | 432.0 |  65.0 |  98.0  |
-            +--------+------------+-------+-------+-------+-------+--------+
-            [3 rows x 7 columns]
+                # Stack predictions, for a better overview
+                >>> turicreate.object_detector.util.stack_annotations(pred)
+                Data:
+                +--------+------------+-------+-------+-------+-------+--------+
+                | row_id | confidence | label |   x   |   y   | width | height |
+                +--------+------------+-------+-------+-------+-------+--------+
+                |   0    |    0.98    |  dog  | 123.0 | 128.0 |  80.0 | 182.0  |
+                |   0    |    0.67    |  cat  | 150.0 | 183.0 | 129.0 | 101.0  |
+                |   1    |    0.8     |  dog  |  50.0 | 432.0 |  65.0 |  98.0  |
+                +--------+------------+-------+-------+-------+-------+--------+
+                [3 rows x 7 columns]
 
-            # Visualize predictions by generating a new column of marked up images
-            >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
-        """
-        _numeric_param_check_range('confidence_threshold', confidence_threshold, 0.0, 1.0)
-        dataset, unpack = self._canonize_input(dataset)
-        stacked_pred = self._predict_with_options(dataset, with_ground_truth=False,
+                # Visualize predictions by generating a new column of marked up images
+                >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
+            """
+            _numeric_param_check_range('confidence_threshold', confidence_threshold, 0.0, 1.0)
+            dataset, unpack = self._canonize_input(dataset)
+            stacked_pred = self._predict_with_options(dataset, with_ground_truth=False,
+                                                      confidence_threshold=confidence_threshold,
+                                                      iou_threshold=iou_threshold,
+                                                      verbose=verbose)
+
+            from . import util
+            return unpack(util.unstack_annotations(stacked_pred, num_rows=len(dataset)))
+
+        def evaluate(self, dataset, metric='auto',
+                output_type='dict', iou_threshold=None,
+                confidence_threshold=None, verbose=True):
+            """
+            Evaluate the model by making predictions and comparing these to ground
+            truth bounding box annotations.
+
+            Parameters
+            ----------
+            dataset : SFrame
+                Dataset of new observations. Must include columns with the same
+                names as the annotations and feature used for model training.
+                Additional columns are ignored.
+
+            metric : str or list, optional
+                Name of the evaluation metric or list of several names. The primary
+                metric is average precision, which is the area under the
+                precision/recall curve and reported as a value between 0 and 1 (1
+                being perfect). Possible values are:
+
+                - 'auto'                      : Returns all primary metrics.
+                - 'all'                       : Returns all available metrics.
+                - 'average_precision_50'      : Average precision per class with
+                                                intersection-over-union threshold at
+                                                50% (PASCAL VOC metric).
+                - 'average_precision'         : Average precision per class calculated over multiple
+                                                intersection-over-union thresholds
+                                                (at 50%, 55%, ..., 95%) and averaged.
+                - 'mean_average_precision_50' : Mean over all classes (for ``'average_precision_50'``).
+                                                This is the primary single-value metric.
+                - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
+
+            output_type : str
+                Type of output:
+
+                - 'dict'      : You are given a dictionary where each key is a metric name and the
+                                value is another dictionary containing class-to-metric entries.
+                - 'sframe'    : All metrics are returned as a single `SFrame`, where each row is a
+                                class and each column is a metric. Metrics that are averaged over
+                                class cannot be returned and are ignored under this format.
+                                However, these are easily computed from the `SFrame` (e.g.
+                                ``results['average_precision'].mean()``).
+
+            iou_threshold : float
+                Threshold value for non-maximum suppression. Non-maximum suppression
+                prevents multiple bounding boxes appearing over a single object.
+                This threshold, set between 0 and 1, controls how aggressive this
+                suppression is. A value of 1 means no maximum suppression will
+                occur, while a value of 0 will maximally suppress neighboring
+                boxes around a prediction.
+
+            confidence_threshold : float
+                Only return predictions above this level of confidence. The
+                threshold can range from 0 to 1.
+
+            verbose : bool
+                If True, prints evaluation progress.
+
+            Returns
+            -------
+            out : dict / SFrame
+                Output type depends on the option `output_type`.
+
+            See Also
+            --------
+            create, predict
+
+            Examples
+            --------
+            >>> results = model.evaluate(data)
+            >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
+            mAP: 43.2%
+            """
+            if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
+            if confidence_threshold is None: confidence_threshold = 0.001
+
+            AP = 'average_precision'
+            MAP = 'mean_average_precision'
+            AP50 = 'average_precision_50'
+            MAP50 = 'mean_average_precision_50'
+            ALL_METRICS = {AP, MAP, AP50, MAP50}
+            if isinstance(metric, (list, tuple, set)):
+                metrics = metric
+            elif metric == 'all':
+                metrics = ALL_METRICS
+            elif metric == 'auto':
+                metrics = {AP50, MAP50}
+            elif metric in ALL_METRICS:
+                metrics = {metric}
+            else:
+                raise _ToolkitError("Metric '{}' not supported".format(metric))
+
+            pred, gt = self._predict_with_options(dataset, with_ground_truth=True,
                                                   confidence_threshold=confidence_threshold,
                                                   iou_threshold=iou_threshold,
                                                   verbose=verbose)
 
-        from . import util
-        return unpack(util.unstack_annotations(stacked_pred, num_rows=len(dataset)))
+            pred_df = pred.to_dataframe()
+            gt_df = gt.to_dataframe()
 
-    def evaluate(self, dataset, metric='auto',
-            output_type='dict', iou_threshold=None,
-            confidence_threshold=None, verbose=True):
-        """
-        Evaluate the model by making predictions and comparing these to ground
-        truth bounding box annotations.
+            thresholds = _np.arange(0.5, 1.0, 0.05)
+            all_th_aps = _average_precision(pred_df, gt_df,
+                                            class_to_index=self._class_to_index,
+                                            iou_thresholds=thresholds)
 
-        Parameters
-        ----------
-        dataset : SFrame
-            Dataset of new observations. Must include columns with the same
-            names as the annotations and feature used for model training.
-            Additional columns are ignored.
+            def class_dict(aps):
+                return {classname: aps[index]
+                        for classname, index in self._class_to_index.items()}
 
-        metric : str or list, optional
-            Name of the evaluation metric or list of several names. The primary
-            metric is average precision, which is the area under the
-            precision/recall curve and reported as a value between 0 and 1 (1
-            being perfect). Possible values are:
+            if output_type == 'dict':
+                ret = {}
+                if AP50 in metrics:
+                    ret[AP50] = class_dict(all_th_aps[0])
+                if AP in metrics:
+                    ret[AP] = class_dict(all_th_aps.mean(0))
+                if MAP50 in metrics:
+                    ret[MAP50] = all_th_aps[0].mean()
+                if MAP in metrics:
+                    ret[MAP] = all_th_aps.mean()
+            elif output_type == 'sframe':
+                ret = _tc.SFrame({'label': self.classes})
+                if AP50 in metrics:
+                    ret[AP50] = all_th_aps[0]
+                if AP in metrics:
+                    ret[AP] = all_th_aps.mean(0)
+            else:
+                raise _ToolkitError("Output type '{}' not supported".format(output_type))
 
-            - 'auto'                      : Returns all primary metrics.
-            - 'all'                       : Returns all available metrics.
-            - 'average_precision_50'      : Average precision per class with
-                                            intersection-over-union threshold at
-                                            50% (PASCAL VOC metric).
-            - 'average_precision'         : Average precision per class calculated over multiple
-                                            intersection-over-union thresholds
-                                            (at 50%, 55%, ..., 95%) and averaged.
-            - 'mean_average_precision_50' : Mean over all classes (for ``'average_precision_50'``).
-                                            This is the primary single-value metric.
-            - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
+            return ret
 
-        output_type : str
-            Type of output:
+        def _create_coreml_model(self, include_non_maximum_suppression,
+                iou_threshold, confidence_threshold):
+            import mxnet as _mx
+            from .._mxnet._mxnet_to_coreml import _mxnet_converter
+            import coremltools
+            from coremltools.models import datatypes, neural_network
 
-            - 'dict'      : You are given a dictionary where each key is a metric name and the
-                            value is another dictionary containing class-to-metric entries.
-            - 'sframe'    : All metrics are returned as a single `SFrame`, where each row is a
-                            class and each column is a metric. Metrics that are averaged over
-                            class cannot be returned and are ignored under this format.
-                            However, these are easily computed from the `SFrame` (e.g.
-                            ``results['average_precision'].mean()``).
+            if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
+            if confidence_threshold is None: confidence_threshold = 0.25
 
-        iou_threshold : float
-            Threshold value for non-maximum suppression. Non-maximum suppression
-            prevents multiple bounding boxes appearing over a single object.
-            This threshold, set between 0 and 1, controls how aggressive this
-            suppression is. A value of 1 means no maximum suppression will
-            occur, while a value of 0 will maximally suppress neighboring
-            boxes around a prediction.
+            preds_per_box = 5 + self.num_classes
+            num_anchors = len(self.anchors)
+            num_classes = self.num_classes
+            batch_size = 1
+            image_shape = (batch_size,) + tuple(self.input_image_shape)
+            s_image_uint8 = _mx.sym.Variable(self.feature, shape=image_shape, dtype=_np.float32)
+            s_image = s_image_uint8 / 255
 
-        confidence_threshold : float
-            Only return predictions above this level of confidence. The
-            threshold can range from 0 to 1.
+            # Swap a maxpool+slice in mxnet to a coreml natively supported layer
+            from copy import copy
+            net = copy(self._model)
+            net._children = copy(self._model._children)
+            from ._model import _SpecialDarknetMaxpoolBlock
+            op = _SpecialDarknetMaxpoolBlock(name='pool5')
+            # Make sure we are removing the right layers
+            assert (self._model[23].name == 'pool5' and
+                    self._model[24].name == 'specialcrop5')
 
-        verbose : bool
-            If True, prints evaluation progress.
+            try:
+                del net._children[24]
+                net._children[23] = op
+            except KeyError:
+                # Newer versions of MXNet use string keys
+                del net._children['24']
+                net._children['23'] = op
 
-        Returns
-        -------
-        out : dict / SFrame
-            Output type depends on the option `output_type`.
+            s_ymap = net(s_image)
+            mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=[self.feature])
+            mod.bind(for_training=False, data_shapes=[(self.feature, image_shape)])
 
-        See Also
-        --------
-        create, predict
+            # Copy over params from net
+            mod.init_params()
+            arg_params, aux_params = mod.get_params()
+            net_params = net.collect_params()
+            new_arg_params = {}
+            for k, param in arg_params.items():
+                new_arg_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
+            new_aux_params = {}
+            for k, param in aux_params.items():
+                new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
+            mod.set_params(new_arg_params, new_aux_params)
 
-        Examples
-        --------
-        >>> results = model.evaluate(data)
-        >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
-        mAP: 43.2%
-        """
-        if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
-        if confidence_threshold is None: confidence_threshold = 0.001
+            input_names = [self.feature]
+            input_dims = [list(self.input_image_shape)]
+            input_types = [datatypes.Array(*dim) for dim in input_dims]
+            input_features = list(zip(input_names, input_types))
 
-        AP = 'average_precision'
-        MAP = 'mean_average_precision'
-        AP50 = 'average_precision_50'
-        MAP50 = 'mean_average_precision_50'
-        ALL_METRICS = {AP, MAP, AP50, MAP50}
-        if isinstance(metric, (list, tuple, set)):
-            metrics = metric
-        elif metric == 'all':
-            metrics = ALL_METRICS
-        elif metric == 'auto':
-            metrics = {AP50, MAP50}
-        elif metric in ALL_METRICS:
-            metrics = {metric}
-        else:
-            raise _ToolkitError("Metric '{}' not supported".format(metric))
+            num_spatial = self._grid_shape[0] * self._grid_shape[1]
+            num_bounding_boxes = num_anchors * num_spatial
+            CONFIDENCE_STR = ("raw_confidence" if include_non_maximum_suppression
+                else "confidence")
+            COORDINATES_STR = ("raw_coordinates" if include_non_maximum_suppression
+                else "coordinates")
+            output_names = [
+                CONFIDENCE_STR,
+                COORDINATES_STR
+            ]
+            output_dims = [
+                (num_bounding_boxes, num_classes),
+                (num_bounding_boxes, 4),
+            ]
+            output_types = [datatypes.Array(*dim) for dim in output_dims]
+            output_features = list(zip(output_names, output_types))
+            mode = None
+            builder = neural_network.NeuralNetworkBuilder(input_features, output_features, mode)
+            _mxnet_converter.convert(mod, mode=None,
+                                     input_shape=[(self.feature, image_shape)],
+                                     builder=builder, verbose=False)
 
-        pred, gt = self._predict_with_options(dataset, with_ground_truth=True,
-                                              confidence_threshold=confidence_threshold,
-                                              iou_threshold=iou_threshold,
-                                              verbose=verbose)
+            prefix = '__tc__internal__'
 
-        pred_df = pred.to_dataframe()
-        gt_df = gt.to_dataframe()
+            # (1, B, C+5, S*S)
+            builder.add_reshape(name=prefix + 'ymap_sp_pre',
+                                target_shape=[batch_size, num_anchors, preds_per_box, num_spatial],
+                                mode=0,
+                                input_name='conv8_fwd_output',
+                                output_name=prefix + 'ymap_sp_pre')
 
-        thresholds = _np.arange(0.5, 1.0, 0.05)
-        all_th_aps = _average_precision(pred_df, gt_df,
-                                        class_to_index=self._class_to_index,
-                                        iou_thresholds=thresholds)
+            # (1, C+5, B, S*S)
+            builder.add_permute(name=prefix + 'ymap_sp',
+                                dim=[0, 2, 1, 3],
+                                input_name=prefix + 'ymap_sp_pre',
+                                output_name=prefix + 'ymap_sp')
 
-        def class_dict(aps):
-            return {classname: aps[index]
-                    for classname, index in self._class_to_index.items()}
+            # POSITION: X/Y
 
-        if output_type == 'dict':
-            ret = {}
-            if AP50 in metrics:
-                ret[AP50] = class_dict(all_th_aps[0])
-            if AP in metrics:
-                ret[AP] = class_dict(all_th_aps.mean(0))
-            if MAP50 in metrics:
-                ret[MAP50] = all_th_aps[0].mean()
-            if MAP in metrics:
-                ret[MAP] = all_th_aps.mean()
-        elif output_type == 'sframe':
-            ret = _tc.SFrame({'label': self.classes})
-            if AP50 in metrics:
-                ret[AP50] = all_th_aps[0]
-            if AP in metrics:
-                ret[AP] = all_th_aps.mean(0)
-        else:
-            raise _ToolkitError("Output type '{}' not supported".format(output_type))
+            # (1, 2, B, S*S)
+            builder.add_slice(name=prefix + 'raw_rel_xy_sp',
+                              axis='channel',
+                              start_index=0,
+                              end_index=2,
+                              stride=1,
+                              input_name=prefix + 'ymap_sp',
+                              output_name=prefix + 'raw_rel_xy_sp')
+            # (1, 2, B, S*S)
+            builder.add_activation(name=prefix + 'rel_xy_sp',
+                                   non_linearity='SIGMOID',
+                                   input_name=prefix + 'raw_rel_xy_sp',
+                                   output_name=prefix + 'rel_xy_sp')
 
-        return ret
+            # (1, 2, B*H*W, 1)
+            builder.add_reshape(name=prefix + 'rel_xy',
+                                target_shape=[batch_size, 2, num_bounding_boxes, 1],
+                                mode=0,
+                                input_name=prefix + 'rel_xy_sp',
+                                output_name=prefix + 'rel_xy')
 
-    def _create_coreml_model(self, include_non_maximum_suppression,
-            iou_threshold, confidence_threshold):
-        import mxnet as _mx
-        from .._mxnet._mxnet_to_coreml import _mxnet_converter
-        import coremltools
-        from coremltools.models import datatypes, neural_network
+            c_xy = _np.array(_np.meshgrid(_np.arange(self._grid_shape[1]),
+                                          _np.arange(self._grid_shape[0])), dtype=_np.float32)
 
-        if iou_threshold is None: iou_threshold = self.non_maximum_suppression_threshold
-        if confidence_threshold is None: confidence_threshold = 0.25
+            c_xy_reshaped = (_np.tile(c_xy[:, _np.newaxis], (num_anchors, 1, 1))
+                             .reshape(2, -1))[_np.newaxis, ..., _np.newaxis]
 
-        preds_per_box = 5 + self.num_classes
-        num_anchors = len(self.anchors)
-        num_classes = self.num_classes
-        batch_size = 1
-        image_shape = (batch_size,) + tuple(self.input_image_shape)
-        s_image_uint8 = _mx.sym.Variable(self.feature, shape=image_shape, dtype=_np.float32)
-        s_image = s_image_uint8 / 255
+            # (1, 2, B*H*W, 1)
+            builder.add_load_constant(prefix + 'constant_xy',
+                                      constant_value=c_xy_reshaped,
+                                      shape=c_xy_reshaped.shape[1:],
+                                      output_name=prefix + 'constant_xy')
 
-        # Swap a maxpool+slice in mxnet to a coreml natively supported layer
-        from copy import copy
-        net = copy(self._model)
-        net._children = copy(self._model._children)
-        from ._model import _SpecialDarknetMaxpoolBlock
-        op = _SpecialDarknetMaxpoolBlock(name='pool5')
-        # Make sure we are removing the right layers
-        assert (self._model[23].name == 'pool5' and
-                self._model[24].name == 'specialcrop5')
+            # (1, 2, B*H*W, 1)
+            builder.add_elementwise(name=prefix + 'xy',
+                                    mode='ADD',
+                                    input_names=[prefix + 'constant_xy', prefix + 'rel_xy'],
+                                    output_name=prefix + 'xy')
 
-        try:
-            del net._children[24]
-            net._children[23] = op
-        except KeyError:
-            # Newer versions of MXNet use string keys
-            del net._children['24']
-            net._children['23'] = op
+            # SHAPE: WIDTH/HEIGHT
 
-        s_ymap = net(s_image)
-        mod = _mx.mod.Module(symbol=s_ymap, label_names=None, data_names=[self.feature])
-        mod.bind(for_training=False, data_shapes=[(self.feature, image_shape)])
+            # (1, 2, B, S*S)
+            builder.add_slice(name=prefix + 'raw_rel_wh_sp',
+                              axis='channel',
+                              start_index=2,
+                              end_index=4,
+                              stride=1,
+                              input_name=prefix + 'ymap_sp',
+                              output_name=prefix + 'raw_rel_wh_sp')
 
-        # Copy over params from net
-        mod.init_params()
-        arg_params, aux_params = mod.get_params()
-        net_params = net.collect_params()
-        new_arg_params = {}
-        for k, param in arg_params.items():
-            new_arg_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
-        new_aux_params = {}
-        for k, param in aux_params.items():
-            new_aux_params[k] = net_params[k].data(net_params[k].list_ctx()[0])
-        mod.set_params(new_arg_params, new_aux_params)
+            # (1, 2, B, S*S)
+            builder.add_unary(name=prefix + 'rel_wh_sp',
+                              mode='exp',
+                              input_name=prefix + 'raw_rel_wh_sp',
+                              output_name=prefix + 'rel_wh_sp')
 
-        input_names = [self.feature]
-        input_dims = [list(self.input_image_shape)]
-        input_types = [datatypes.Array(*dim) for dim in input_dims]
-        input_features = list(zip(input_names, input_types))
+            # (1, 2*B, S, S)
+            builder.add_reshape(name=prefix + 'rel_wh',
+                                target_shape=[batch_size, 2 * num_anchors] + list(self._grid_shape),
+                                mode=0,
+                                input_name=prefix + 'rel_wh_sp',
+                                output_name=prefix + 'rel_wh')
 
-        num_spatial = self._grid_shape[0] * self._grid_shape[1]
-        num_bounding_boxes = num_anchors * num_spatial
-        CONFIDENCE_STR = ("raw_confidence" if include_non_maximum_suppression
-            else "confidence")
-        COORDINATES_STR = ("raw_coordinates" if include_non_maximum_suppression
-            else "coordinates")
-        output_names = [
-            CONFIDENCE_STR,
-            COORDINATES_STR
-        ]
-        output_dims = [
-            (num_bounding_boxes, num_classes),
-            (num_bounding_boxes, 4),
-        ]
-        output_types = [datatypes.Array(*dim) for dim in output_dims]
-        output_features = list(zip(output_names, output_types))
-        mode = None
-        builder = neural_network.NeuralNetworkBuilder(input_features, output_features, mode)
-        _mxnet_converter.convert(mod, mode=None,
-                                 input_shape=[(self.feature, image_shape)],
-                                 builder=builder, verbose=False)
+            np_anchors = _np.asarray(self.anchors, dtype=_np.float32).T
+            anchors_0 = _np.tile(np_anchors.reshape([2 * num_anchors, 1, 1]), self._grid_shape)
 
-        prefix = '__tc__internal__'
+            # (1, 2*B, S, S)
+            builder.add_load_constant(name=prefix + 'c_anchors',
+                                      constant_value=anchors_0,
+                                      shape=anchors_0.shape,
+                                      output_name=prefix + 'c_anchors')
 
-        # (1, B, C+5, S*S)
-        builder.add_reshape(name=prefix + 'ymap_sp_pre',
-                            target_shape=[batch_size, num_anchors, preds_per_box, num_spatial],
-                            mode=0,
-                            input_name='conv8_fwd_output',
-                            output_name=prefix + 'ymap_sp_pre')
+            # (1, 2*B, S, S)
+            builder.add_elementwise(name=prefix + 'wh_pre',
+                                    mode='MULTIPLY',
+                                    input_names=[prefix + 'c_anchors', prefix + 'rel_wh'],
+                                    output_name=prefix + 'wh_pre')
 
-        # (1, C+5, B, S*S)
-        builder.add_permute(name=prefix + 'ymap_sp',
-                            dim=[0, 2, 1, 3],
-                            input_name=prefix + 'ymap_sp_pre',
-                            output_name=prefix + 'ymap_sp')
+            # (1, 2, B*H*W, 1)
+            builder.add_reshape(name=prefix + 'wh',
+                                target_shape=[1, 2, num_bounding_boxes, 1],
+                                mode=0,
+                                input_name=prefix + 'wh_pre',
+                                output_name=prefix + 'wh')
 
-        # POSITION: X/Y
-
-        # (1, 2, B, S*S)
-        builder.add_slice(name=prefix + 'raw_rel_xy_sp',
-                          axis='channel',
-                          start_index=0,
-                          end_index=2,
-                          stride=1,
-                          input_name=prefix + 'ymap_sp',
-                          output_name=prefix + 'raw_rel_xy_sp')
-        # (1, 2, B, S*S)
-        builder.add_activation(name=prefix + 'rel_xy_sp',
-                               non_linearity='SIGMOID',
-                               input_name=prefix + 'raw_rel_xy_sp',
-                               output_name=prefix + 'rel_xy_sp')
-
-        # (1, 2, B*H*W, 1)
-        builder.add_reshape(name=prefix + 'rel_xy',
-                            target_shape=[batch_size, 2, num_bounding_boxes, 1],
-                            mode=0,
-                            input_name=prefix + 'rel_xy_sp',
-                            output_name=prefix + 'rel_xy')
-
-        c_xy = _np.array(_np.meshgrid(_np.arange(self._grid_shape[1]),
-                                      _np.arange(self._grid_shape[0])), dtype=_np.float32)
-
-        c_xy_reshaped = (_np.tile(c_xy[:, _np.newaxis], (num_anchors, 1, 1))
-                         .reshape(2, -1))[_np.newaxis, ..., _np.newaxis]
-
-        # (1, 2, B*H*W, 1)
-        builder.add_load_constant(prefix + 'constant_xy',
-                                  constant_value=c_xy_reshaped,
-                                  shape=c_xy_reshaped.shape[1:],
-                                  output_name=prefix + 'constant_xy')
-
-        # (1, 2, B*H*W, 1)
-        builder.add_elementwise(name=prefix + 'xy',
-                                mode='ADD',
-                                input_names=[prefix + 'constant_xy', prefix + 'rel_xy'],
-                                output_name=prefix + 'xy')
-
-        # SHAPE: WIDTH/HEIGHT
-
-        # (1, 2, B, S*S)
-        builder.add_slice(name=prefix + 'raw_rel_wh_sp',
-                          axis='channel',
-                          start_index=2,
-                          end_index=4,
-                          stride=1,
-                          input_name=prefix + 'ymap_sp',
-                          output_name=prefix + 'raw_rel_wh_sp')
-
-        # (1, 2, B, S*S)
-        builder.add_unary(name=prefix + 'rel_wh_sp',
-                          mode='exp',
-                          input_name=prefix + 'raw_rel_wh_sp',
-                          output_name=prefix + 'rel_wh_sp')
-
-        # (1, 2*B, S, S)
-        builder.add_reshape(name=prefix + 'rel_wh',
-                            target_shape=[batch_size, 2 * num_anchors] + list(self._grid_shape),
-                            mode=0,
-                            input_name=prefix + 'rel_wh_sp',
-                            output_name=prefix + 'rel_wh')
-
-        np_anchors = _np.asarray(self.anchors, dtype=_np.float32).T
-        anchors_0 = _np.tile(np_anchors.reshape([2 * num_anchors, 1, 1]), self._grid_shape)
-
-        # (1, 2*B, S, S)
-        builder.add_load_constant(name=prefix + 'c_anchors',
-                                  constant_value=anchors_0,
-                                  shape=anchors_0.shape,
-                                  output_name=prefix + 'c_anchors')
-
-        # (1, 2*B, S, S)
-        builder.add_elementwise(name=prefix + 'wh_pre',
-                                mode='MULTIPLY',
-                                input_names=[prefix + 'c_anchors', prefix + 'rel_wh'],
-                                output_name=prefix + 'wh_pre')
-
-        # (1, 2, B*H*W, 1)
-        builder.add_reshape(name=prefix + 'wh',
-                            target_shape=[1, 2, num_bounding_boxes, 1],
-                            mode=0,
-                            input_name=prefix + 'wh_pre',
-                            output_name=prefix + 'wh')
-
-        # (1, 4, B*H*W, 1)
-        builder.add_elementwise(name=prefix + 'boxes_out_transposed',
-                                mode='CONCAT',
-                                input_names=[prefix + 'xy', prefix + 'wh'],
-                                output_name=prefix + 'boxes_out_transposed')
-
-        # (1, B*H*W, 4, 1)
-        builder.add_permute(name=prefix + 'boxes_out',
-                            dim=[0, 2, 1, 3],
-                            input_name=prefix + 'boxes_out_transposed',
-                            output_name=prefix + 'boxes_out')
-
-        scale = _np.zeros((num_bounding_boxes, 4, 1))
-        scale[:, 0::2] = 1.0 / self._grid_shape[1]
-        scale[:, 1::2] = 1.0 / self._grid_shape[0]
-
-        # (1, B*H*W, 4, 1)
-        builder.add_scale(name=COORDINATES_STR,
-                          W=scale,
-                          b=0,
-                          has_bias=False,
-                          shape_scale=(num_bounding_boxes, 4, 1),
-                          input_name=prefix + 'boxes_out',
-                          output_name=COORDINATES_STR)
-
-        # CLASS PROBABILITIES AND OBJECT CONFIDENCE
-
-        # (1, C, B, H*W)
-        builder.add_slice(name=prefix + 'scores_sp',
-                          axis='channel',
-                          start_index=5,
-                          end_index=preds_per_box,
-                          stride=1,
-                          input_name=prefix + 'ymap_sp',
-                          output_name=prefix + 'scores_sp')
-
-        # (1, C, B, H*W)
-        builder.add_softmax(name=prefix + 'probs_sp',
-                            input_name=prefix + 'scores_sp',
-                            output_name=prefix + 'probs_sp')
-
-        # (1, 1, B, H*W)
-        builder.add_slice(name=prefix + 'logit_conf_sp',
-                          axis='channel',
-                          start_index=4,
-                          end_index=5,
-                          stride=1,
-                          input_name=prefix + 'ymap_sp',
-                          output_name=prefix + 'logit_conf_sp')
-
-        # (1, 1, B, H*W)
-        builder.add_activation(name=prefix + 'conf_sp',
-                               non_linearity='SIGMOID',
-                               input_name=prefix + 'logit_conf_sp',
-                               output_name=prefix + 'conf_sp')
-
-        # (1, C, B, H*W)
-        if num_classes > 1:
-            conf = prefix + 'conf_tiled_sp'
-            builder.add_elementwise(name=prefix + 'conf_tiled_sp',
+            # (1, 4, B*H*W, 1)
+            builder.add_elementwise(name=prefix + 'boxes_out_transposed',
                                     mode='CONCAT',
-                                    input_names=[prefix+'conf_sp']*num_classes,
-                                    output_name=conf)
-        else:
-            conf = prefix + 'conf_sp'
+                                    input_names=[prefix + 'xy', prefix + 'wh'],
+                                    output_name=prefix + 'boxes_out_transposed')
 
-        # (1, C, B, H*W)
-        builder.add_elementwise(name=prefix + 'confprobs_sp',
-                                mode='MULTIPLY',
-                                input_names=[conf, prefix + 'probs_sp'],
-                                output_name=prefix + 'confprobs_sp')
+            # (1, B*H*W, 4, 1)
+            builder.add_permute(name=prefix + 'boxes_out',
+                                dim=[0, 2, 1, 3],
+                                input_name=prefix + 'boxes_out_transposed',
+                                output_name=prefix + 'boxes_out')
 
-        # (1, C, B*H*W, 1)
-        builder.add_reshape(name=prefix + 'confprobs_transposed',
-                            target_shape=[1, num_classes, num_bounding_boxes, 1],
-                            mode=0,
-                            input_name=prefix + 'confprobs_sp',
-                            output_name=prefix + 'confprobs_transposed')
+            scale = _np.zeros((num_bounding_boxes, 4, 1))
+            scale[:, 0::2] = 1.0 / self._grid_shape[1]
+            scale[:, 1::2] = 1.0 / self._grid_shape[0]
 
-        # (1, B*H*W, C, 1)
-        builder.add_permute(name=CONFIDENCE_STR,
-                            dim=[0, 2, 1, 3],
-                            input_name=prefix + 'confprobs_transposed',
-                            output_name=CONFIDENCE_STR)
+            # (1, B*H*W, 4, 1)
+            builder.add_scale(name=COORDINATES_STR,
+                              W=scale,
+                              b=0,
+                              has_bias=False,
+                              shape_scale=(num_bounding_boxes, 4, 1),
+                              input_name=prefix + 'boxes_out',
+                              output_name=COORDINATES_STR)
 
-        _mxnet_converter._set_input_output_layers(
-            builder, input_names, output_names)
-        builder.set_input(input_names, input_dims)
-        builder.set_output(output_names, output_dims)
-        builder.set_pre_processing_parameters(image_input_names=self.feature)
-        model = builder.spec
+            # CLASS PROBABILITIES AND OBJECT CONFIDENCE
 
-        if include_non_maximum_suppression:
-            # Non-Maximum Suppression is a post-processing algorithm
-            # responsible for merging all detections that belong to the
-            # same object.
-            #  Core ML schematic
-            #                        +------------------------------------+
-            #                        | Pipeline                           |
-            #                        |                                    |
-            #                        |  +------------+   +-------------+  |
-            #                        |  | Neural     |   | Non-maximum |  |
-            #                        |  | network    +---> suppression +----->  confidences
-            #               Image  +---->            |   |             |  |
-            #                        |  |            +--->             +----->  coordinates
-            #                        |  |            |   |             |  |
-            # Optional inputs:       |  +------------+   +-^---^-------+  |
-            #                        |                     |   |          |
-            #    IOU threshold     +-----------------------+   |          |
-            #                        |                         |          |
-            # Confidence threshold +---------------------------+          |
-            #                        +------------------------------------+
+            # (1, C, B, H*W)
+            builder.add_slice(name=prefix + 'scores_sp',
+                              axis='channel',
+                              start_index=5,
+                              end_index=preds_per_box,
+                              stride=1,
+                              input_name=prefix + 'ymap_sp',
+                              output_name=prefix + 'scores_sp')
 
-            model_neural_network = model.neuralNetwork
-            model.specificationVersion = 3
-            model.pipeline.ParseFromString(b'')
-            model.pipeline.models.add()
-            model.pipeline.models[0].neuralNetwork.ParseFromString(b'')
-            model.pipeline.models.add()
-            model.pipeline.models[1].nonMaximumSuppression.ParseFromString(b'')
-            # begin: Neural network  model
-            nn_model = model.pipeline.models[0]
+            # (1, C, B, H*W)
+            builder.add_softmax(name=prefix + 'probs_sp',
+                                input_name=prefix + 'scores_sp',
+                                output_name=prefix + 'probs_sp')
 
-            nn_model.description.ParseFromString(b'')
-            input_image = model.description.input[0]
-            input_image.type.imageType.width = self.input_image_shape[1]
-            input_image.type.imageType.height = self.input_image_shape[2]
-            nn_model.description.input.add()
-            nn_model.description.input[0].ParseFromString(
-                input_image.SerializeToString())
+            # (1, 1, B, H*W)
+            builder.add_slice(name=prefix + 'logit_conf_sp',
+                              axis='channel',
+                              start_index=4,
+                              end_index=5,
+                              stride=1,
+                              input_name=prefix + 'ymap_sp',
+                              output_name=prefix + 'logit_conf_sp')
 
-            for i in range(2):
-                del model.description.output[i].type.multiArrayType.shape[:]
-            names = ["raw_confidence", "raw_coordinates"]
-            bounds = [self.num_classes, 4]
-            for i in range(2):
-                output_i = model.description.output[i]
-                output_i.name = names[i]
-                for j in range(2):
-                    ma_type = output_i.type.multiArrayType
-                    ma_type.shapeRange.sizeRanges.add()
-                    ma_type.shapeRange.sizeRanges[j].lowerBound = (
-                        bounds[i] if j == 1 else 0)
-                    ma_type.shapeRange.sizeRanges[j].upperBound = (
-                        bounds[i] if j == 1 else -1)
-                nn_model.description.output.add()
-                nn_model.description.output[i].ParseFromString(
-                    output_i.SerializeToString())
+            # (1, 1, B, H*W)
+            builder.add_activation(name=prefix + 'conf_sp',
+                                   non_linearity='SIGMOID',
+                                   input_name=prefix + 'logit_conf_sp',
+                                   output_name=prefix + 'conf_sp')
 
-                ma_type = nn_model.description.output[i].type.multiArrayType
-                ma_type.shape.append(num_bounding_boxes)
-                ma_type.shape.append(bounds[i])
+            # (1, C, B, H*W)
+            if num_classes > 1:
+                conf = prefix + 'conf_tiled_sp'
+                builder.add_elementwise(name=prefix + 'conf_tiled_sp',
+                                        mode='CONCAT',
+                                        input_names=[prefix+'conf_sp']*num_classes,
+                                        output_name=conf)
+            else:
+                conf = prefix + 'conf_sp'
 
-            # Think more about this line
-            nn_model.neuralNetwork.ParseFromString(
-                model_neural_network.SerializeToString())
-            nn_model.specificationVersion = model.specificationVersion
-            # end: Neural network  model
+            # (1, C, B, H*W)
+            builder.add_elementwise(name=prefix + 'confprobs_sp',
+                                    mode='MULTIPLY',
+                                    input_names=[conf, prefix + 'probs_sp'],
+                                    output_name=prefix + 'confprobs_sp')
 
-            # begin: Non maximum suppression model
-            nms_model = model.pipeline.models[1]
-            nms_model_nonMaxSup = nms_model.nonMaximumSuppression
+            # (1, C, B*H*W, 1)
+            builder.add_reshape(name=prefix + 'confprobs_transposed',
+                                target_shape=[1, num_classes, num_bounding_boxes, 1],
+                                mode=0,
+                                input_name=prefix + 'confprobs_sp',
+                                output_name=prefix + 'confprobs_transposed')
 
-            for i in range(2):
-                output_i = model.description.output[i]
-                nms_model.description.input.add()
-                nms_model.description.input[i].ParseFromString(
-                    output_i.SerializeToString())
+            # (1, B*H*W, C, 1)
+            builder.add_permute(name=CONFIDENCE_STR,
+                                dim=[0, 2, 1, 3],
+                                input_name=prefix + 'confprobs_transposed',
+                                output_name=CONFIDENCE_STR)
 
-                nms_model.description.output.add()
-                nms_model.description.output[i].ParseFromString(
-                    output_i.SerializeToString())
-                nms_model.description.output[i].name = (
-                    'confidence' if i==0 else 'coordinates')
-
-            nms_model_nonMaxSup.iouThreshold = iou_threshold
-            nms_model_nonMaxSup.confidenceThreshold = confidence_threshold
-            nms_model_nonMaxSup.confidenceInputFeatureName = 'raw_confidence'
-            nms_model_nonMaxSup.coordinatesInputFeatureName = 'raw_coordinates'
-            nms_model_nonMaxSup.confidenceOutputFeatureName = 'confidence'
-            nms_model_nonMaxSup.coordinatesOutputFeatureName = 'coordinates'
-            nms_model.specificationVersion = model.specificationVersion
-            nms_model_nonMaxSup.stringClassLabels.vector.extend(self.classes)
-
-            for i in range(2):
-                nms_model.description.input[i].ParseFromString(
-                    nn_model.description.output[i].SerializeToString()
-                )
+            _mxnet_converter._set_input_output_layers(
+                builder, input_names, output_names)
+            builder.set_input(input_names, input_dims)
+            builder.set_output(output_names, output_dims)
+            builder.set_pre_processing_parameters(image_input_names=self.feature)
+            model = builder.spec
 
             if include_non_maximum_suppression:
-                # Iou Threshold
-                IOU_THRESHOLD_STRING = 'iouThreshold'
-                model.description.input.add()
-                model.description.input[1].type.doubleType.ParseFromString(b'')
-                model.description.input[1].name = IOU_THRESHOLD_STRING
-                nms_model.description.input.add()
-                nms_model.description.input[2].ParseFromString(
-                    model.description.input[1].SerializeToString()
-                )
-                nms_model_nonMaxSup.iouThresholdInputFeatureName = IOU_THRESHOLD_STRING
+                # Non-Maximum Suppression is a post-processing algorithm
+                # responsible for merging all detections that belong to the
+                # same object.
+                #  Core ML schematic
+                #                        +------------------------------------+
+                #                        | Pipeline                           |
+                #                        |                                    |
+                #                        |  +------------+   +-------------+  |
+                #                        |  | Neural     |   | Non-maximum |  |
+                #                        |  | network    +---> suppression +----->  confidences
+                #               Image  +---->            |   |             |  |
+                #                        |  |            +--->             +----->  coordinates
+                #                        |  |            |   |             |  |
+                # Optional inputs:       |  +------------+   +-^---^-------+  |
+                #                        |                     |   |          |
+                #    IOU threshold     +-----------------------+   |          |
+                #                        |                         |          |
+                # Confidence threshold +---------------------------+          |
+                #                        +------------------------------------+
 
-                # Confidence Threshold
-                CONFIDENCE_THRESHOLD_STRING = 'confidenceThreshold'
-                model.description.input.add()
-                model.description.input[2].type.doubleType.ParseFromString(b'')
-                model.description.input[2].name = CONFIDENCE_THRESHOLD_STRING
+                model_neural_network = model.neuralNetwork
+                model.specificationVersion = 3
+                model.pipeline.ParseFromString(b'')
+                model.pipeline.models.add()
+                model.pipeline.models[0].neuralNetwork.ParseFromString(b'')
+                model.pipeline.models.add()
+                model.pipeline.models[1].nonMaximumSuppression.ParseFromString(b'')
+                # begin: Neural network  model
+                nn_model = model.pipeline.models[0]
 
-                nms_model.description.input.add()
-                nms_model.description.input[3].ParseFromString(
-                    model.description.input[2].SerializeToString())
+                nn_model.description.ParseFromString(b'')
+                input_image = model.description.input[0]
+                input_image.type.imageType.width = self.input_image_shape[1]
+                input_image.type.imageType.height = self.input_image_shape[2]
+                nn_model.description.input.add()
+                nn_model.description.input[0].ParseFromString(
+                    input_image.SerializeToString())
 
-                nms_model_nonMaxSup.confidenceThresholdInputFeatureName = \
-                    CONFIDENCE_THRESHOLD_STRING
+                for i in range(2):
+                    del model.description.output[i].type.multiArrayType.shape[:]
+                names = ["raw_confidence", "raw_coordinates"]
+                bounds = [self.num_classes, 4]
+                for i in range(2):
+                    output_i = model.description.output[i]
+                    output_i.name = names[i]
+                    for j in range(2):
+                        ma_type = output_i.type.multiArrayType
+                        ma_type.shapeRange.sizeRanges.add()
+                        ma_type.shapeRange.sizeRanges[j].lowerBound = (
+                            bounds[i] if j == 1 else 0)
+                        ma_type.shapeRange.sizeRanges[j].upperBound = (
+                            bounds[i] if j == 1 else -1)
+                    nn_model.description.output.add()
+                    nn_model.description.output[i].ParseFromString(
+                        output_i.SerializeToString())
 
-            # end: Non maximum suppression model
-            model.description.output[0].name = 'confidence'
-            model.description.output[1].name = 'coordinates'
+                    ma_type = nn_model.description.output[i].type.multiArrayType
+                    ma_type.shape.append(num_bounding_boxes)
+                    ma_type.shape.append(bounds[i])
 
-        iouThresholdString = '(optional) IOU Threshold override (default: {})'
-        confidenceThresholdString = ('(optional)' +
-            ' Confidence Threshold override (default: {})')
-        model_type = 'object detector (%s)' % self.model
-        if include_non_maximum_suppression:
-            model_type += ' with non-maximum suppression'
-        model.description.metadata.shortDescription = \
-            _coreml_utils._mlmodel_short_description(model_type)
-        model.description.input[0].shortDescription = 'Input image'
-        if include_non_maximum_suppression:
+                # Think more about this line
+                nn_model.neuralNetwork.ParseFromString(
+                    model_neural_network.SerializeToString())
+                nn_model.specificationVersion = model.specificationVersion
+                # end: Neural network  model
+
+                # begin: Non maximum suppression model
+                nms_model = model.pipeline.models[1]
+                nms_model_nonMaxSup = nms_model.nonMaximumSuppression
+
+                for i in range(2):
+                    output_i = model.description.output[i]
+                    nms_model.description.input.add()
+                    nms_model.description.input[i].ParseFromString(
+                        output_i.SerializeToString())
+
+                    nms_model.description.output.add()
+                    nms_model.description.output[i].ParseFromString(
+                        output_i.SerializeToString())
+                    nms_model.description.output[i].name = (
+                        'confidence' if i==0 else 'coordinates')
+
+                nms_model_nonMaxSup.iouThreshold = iou_threshold
+                nms_model_nonMaxSup.confidenceThreshold = confidence_threshold
+                nms_model_nonMaxSup.confidenceInputFeatureName = 'raw_confidence'
+                nms_model_nonMaxSup.coordinatesInputFeatureName = 'raw_coordinates'
+                nms_model_nonMaxSup.confidenceOutputFeatureName = 'confidence'
+                nms_model_nonMaxSup.coordinatesOutputFeatureName = 'coordinates'
+                nms_model.specificationVersion = model.specificationVersion
+                nms_model_nonMaxSup.stringClassLabels.vector.extend(self.classes)
+
+                for i in range(2):
+                    nms_model.description.input[i].ParseFromString(
+                        nn_model.description.output[i].SerializeToString()
+                    )
+
+                if include_non_maximum_suppression:
+                    # Iou Threshold
+                    IOU_THRESHOLD_STRING = 'iouThreshold'
+                    model.description.input.add()
+                    model.description.input[1].type.doubleType.ParseFromString(b'')
+                    model.description.input[1].name = IOU_THRESHOLD_STRING
+                    nms_model.description.input.add()
+                    nms_model.description.input[2].ParseFromString(
+                        model.description.input[1].SerializeToString()
+                    )
+                    nms_model_nonMaxSup.iouThresholdInputFeatureName = IOU_THRESHOLD_STRING
+
+                    # Confidence Threshold
+                    CONFIDENCE_THRESHOLD_STRING = 'confidenceThreshold'
+                    model.description.input.add()
+                    model.description.input[2].type.doubleType.ParseFromString(b'')
+                    model.description.input[2].name = CONFIDENCE_THRESHOLD_STRING
+
+                    nms_model.description.input.add()
+                    nms_model.description.input[3].ParseFromString(
+                        model.description.input[2].SerializeToString())
+
+                    nms_model_nonMaxSup.confidenceThresholdInputFeatureName = \
+                        CONFIDENCE_THRESHOLD_STRING
+
+                # end: Non maximum suppression model
+                model.description.output[0].name = 'confidence'
+                model.description.output[1].name = 'coordinates'
+
             iouThresholdString = '(optional) IOU Threshold override (default: {})'
-            model.description.input[1].shortDescription = \
-                iouThresholdString.format(iou_threshold)
             confidenceThresholdString = ('(optional)' +
                 ' Confidence Threshold override (default: {})')
-            model.description.input[2].shortDescription = \
-                confidenceThresholdString.format(confidence_threshold)
-        model.description.output[0].shortDescription = \
-            u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
-        model.description.output[1].shortDescription = \
-            u'Boxes \xd7 [x, y, width, height] (relative to image size)'
-        version = ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION
-        partial_user_defined_metadata = {
-            'model': self.model,
-            'max_iterations': str(self.max_iterations),
-            'training_iterations': str(self.training_iterations),
-            'include_non_maximum_suppression': str(
-                include_non_maximum_suppression),
-            'non_maximum_suppression_threshold': str(
-                iou_threshold),
-            'confidence_threshold': str(confidence_threshold),
-            'iou_threshold': str(iou_threshold),
-            'feature': self.feature,
-            'annotations': self.annotations,
-            'classes': ','.join(self.classes)
-        }
-        user_defined_metadata = _coreml_utils._get_model_metadata(
-            self.__class__.__name__,
-            partial_user_defined_metadata,
-            version)
-        model.description.metadata.userDefined.update(user_defined_metadata)
-        return model
+            model_type = 'object detector (%s)' % self.model
+            if include_non_maximum_suppression:
+                model_type += ' with non-maximum suppression'
+            model.description.metadata.shortDescription = \
+                _coreml_utils._mlmodel_short_description(model_type)
+            model.description.input[0].shortDescription = 'Input image'
+            if include_non_maximum_suppression:
+                iouThresholdString = '(optional) IOU Threshold override (default: {})'
+                model.description.input[1].shortDescription = \
+                    iouThresholdString.format(iou_threshold)
+                confidenceThresholdString = ('(optional)' +
+                    ' Confidence Threshold override (default: {})')
+                model.description.input[2].shortDescription = \
+                    confidenceThresholdString.format(confidence_threshold)
+            model.description.output[0].shortDescription = \
+                u'Boxes \xd7 Class confidence (see user-defined metadata "classes")'
+            model.description.output[1].shortDescription = \
+                u'Boxes \xd7 [x, y, width, height] (relative to image size)'
+            version = ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION
+            partial_user_defined_metadata = {
+                'model': self.model,
+                'max_iterations': str(self.max_iterations),
+                'training_iterations': str(self.training_iterations),
+                'include_non_maximum_suppression': str(
+                    include_non_maximum_suppression),
+                'non_maximum_suppression_threshold': str(
+                    iou_threshold),
+                'confidence_threshold': str(confidence_threshold),
+                'iou_threshold': str(iou_threshold),
+                'feature': self.feature,
+                'annotations': self.annotations,
+                'classes': ','.join(self.classes)
+            }
+            user_defined_metadata = _coreml_utils._get_model_metadata(
+                self.__class__.__name__,
+                partial_user_defined_metadata,
+                version)
+            model.description.metadata.userDefined.update(user_defined_metadata)
+            return model
 
-    def export_coreml(self, filename,
-            include_non_maximum_suppression = True,
-            iou_threshold = None,
-            confidence_threshold = None):
+        def export_coreml(self, filename,
+                include_non_maximum_suppression = True,
+                iou_threshold = None,
+                confidence_threshold = None):
+            """
+            Save the model in Core ML format. The Core ML model takes an image of
+            fixed size as input and produces two output arrays: `confidence` and
+            `coordinates`.
+
+            The first one, `confidence` is an `N`-by-`C` array, where `N` is the
+            number of instances predicted and `C` is the number of classes. The
+            number `N` is fixed and will include many low-confidence predictions.
+            The instances are not sorted by confidence, so the first one will
+            generally not have the highest confidence (unlike in `predict`). Also
+            unlike the `predict` function, the instances have not undergone
+            what is called `non-maximum suppression`, which means there could be
+            several instances close in location and size that have all discovered
+            the same object instance. Confidences do not need to sum to 1 over the
+            classes; any remaining probability is implied as confidence there is no
+            object instance present at all at the given coordinates. The classes
+            appear in the array alphabetically sorted.
+
+            The second array `coordinates` is of size `N`-by-4, where the first
+            dimension `N` again represents instances and corresponds to the
+            `confidence` array. The second dimension represents `x`, `y`, `width`,
+            `height`, in that order.  The values are represented in relative
+            coordinates, so (0.5, 0.5) represents the center of the image and (1,
+            1) the bottom right corner. You will need to multiply the relative
+            values with the original image size before you resized it to the fixed
+            input size to get pixel-value coordinates similar to `predict`.
+
+            See Also
+            --------
+            save
+
+            Parameters
+            ----------
+            filename : string
+                The path of the file where we want to save the Core ML model.
+
+            include_non_maximum_suppression : bool
+                Non-maximum suppression is only available in iOS 12+.
+                A boolean parameter to indicate whether the Core ML model should be
+                saved with built-in non-maximum suppression or not.
+                This parameter is set to True by default.
+
+            iou_threshold : float
+                Threshold value for non-maximum suppression. Non-maximum suppression
+                prevents multiple bounding boxes appearing over a single object.
+                This threshold, set between 0 and 1, controls how aggressive this
+                suppression is. A value of 1 means no maximum suppression will
+                occur, while a value of 0 will maximally suppress neighboring
+                boxes around a prediction.
+
+            confidence_threshold : float
+                Only return predictions above this level of confidence. The
+                threshold can range from 0 to 1.
+
+            Examples
+            --------
+            >>> model.export_coreml('detector.mlmodel')
+            """
+            from coremltools.models.utils import save_spec as _save_spec
+            model = self._create_coreml_model(include_non_maximum_suppression=include_non_maximum_suppression,
+                iou_threshold=iou_threshold, confidence_threshold=confidence_threshold)
+            _save_spec(model, filename)
+
+else:
+    class ObjectDetector(_Model):
         """
-        Save the model in Core ML format. The Core ML model takes an image of
-        fixed size as input and produces two output arrays: `confidence` and
-        `coordinates`.
+        A trained model using C++ implementation that is ready to use for classification
+        or export to CoreML.
 
-        The first one, `confidence` is an `N`-by-`C` array, where `N` is the
-        number of instances predicted and `C` is the number of classes. The
-        number `N` is fixed and will include many low-confidence predictions.
-        The instances are not sorted by confidence, so the first one will
-        generally not have the highest confidence (unlike in `predict`). Also
-        unlike the `predict` function, the instances have not undergone
-        what is called `non-maximum suppression`, which means there could be
-        several instances close in location and size that have all discovered
-        the same object instance. Confidences do not need to sum to 1 over the
-        classes; any remaining probability is implied as confidence there is no
-        object instance present at all at the given coordinates. The classes
-        appear in the array alphabetically sorted.
-
-        The second array `coordinates` is of size `N`-by-4, where the first
-        dimension `N` again represents instances and corresponds to the
-        `confidence` array. The second dimension represents `x`, `y`, `width`,
-        `height`, in that order.  The values are represented in relative
-        coordinates, so (0.5, 0.5) represents the center of the image and (1,
-        1) the bottom right corner. You will need to multiply the relative
-        values with the original image size before you resized it to the fixed
-        input size to get pixel-value coordinates similar to `predict`.
-
-        See Also
-        --------
-        save
-
-        Parameters
-        ----------
-        filename : string
-            The path of the file where we want to save the Core ML model.
-
-        include_non_maximum_suppression : bool
-            Non-maximum suppression is only available in iOS 12+.
-            A boolean parameter to indicate whether the Core ML model should be
-            saved with built-in non-maximum suppression or not.
-            This parameter is set to True by default.
-
-        iou_threshold : float
-            Threshold value for non-maximum suppression. Non-maximum suppression
-            prevents multiple bounding boxes appearing over a single object.
-            This threshold, set between 0 and 1, controls how aggressive this
-            suppression is. A value of 1 means no maximum suppression will
-            occur, while a value of 0 will maximally suppress neighboring
-            boxes around a prediction.
-
-        confidence_threshold : float
-            Only return predictions above this level of confidence. The
-            threshold can range from 0 to 1.
-
-        Examples
-        --------
-        >>> model.export_coreml('detector.mlmodel')
+        This model should not be constructed directly.
         """
-        from coremltools.models.utils import save_spec as _save_spec
-        model = self._create_coreml_model(include_non_maximum_suppression=include_non_maximum_suppression,
-            iou_threshold=iou_threshold, confidence_threshold=confidence_threshold)
-        _save_spec(model, filename)
+        _CPP_OBJECT_DETECTOR_VERSION = 1
+
+        def __init__(self, model_proxy=None, name=None):
+            self.__proxy__ = model_proxy
+            self.__name__ = name
+
+        @classmethod
+        def _native_name(cls):
+            return None
+
+        def __str__(self):
+            """
+            Return a string description of the model to the ``print`` method.
+            Returns
+            -------
+            out : string
+                A description of the model.
+            """
+            return self.__class__.__name__
+
+        def __repr__(self):
+            """
+            Returns a string description of the model, including (where relevant)
+            the schema of the training data, description of the training data,
+            training statistics, and model hyperparameters.
+            Returns
+            -------
+            out : string
+                A description of the model.
+            """
+            return self.__class__.__name__
+
+        def _get_version(self):
+            return self._CPP_OBJECT_DETECTOR_VERSION
+
+        def export_coreml(self, filename,
+                include_non_maximum_suppression = True,
+                iou_threshold = None,
+                confidence_threshold = None):
+            """
+            Save the model in Core ML format. The Core ML model takes an image of
+            fixed size as input and produces two output arrays: `confidence` and
+            `coordinates`.
+
+            The first one, `confidence` is an `N`-by-`C` array, where `N` is the
+            number of instances predicted and `C` is the number of classes. The
+            number `N` is fixed and will include many low-confidence predictions.
+            The instances are not sorted by confidence, so the first one will
+            generally not have the highest confidence (unlike in `predict`). Also
+            unlike the `predict` function, the instances have not undergone
+            what is called `non-maximum suppression`, which means there could be
+            several instances close in location and size that have all discovered
+            the same object instance. Confidences do not need to sum to 1 over the
+            classes; any remaining probability is implied as confidence there is no
+            object instance present at all at the given coordinates. The classes
+            appear in the array alphabetically sorted.
+
+            The second array `coordinates` is of size `N`-by-4, where the first
+            dimension `N` again represents instances and corresponds to the
+            `confidence` array. The second dimension represents `x`, `y`, `width`,
+            `height`, in that order.  The values are represented in relative
+            coordinates, so (0.5, 0.5) represents the center of the image and (1,
+            1) the bottom right corner. You will need to multiply the relative
+            values with the original image size before you resized it to the fixed
+            input size to get pixel-value coordinates similar to `predict`.
+
+            See Also
+            --------
+            save
+
+            Parameters
+            ----------
+            filename : string
+                The path of the file where we want to save the Core ML model.
+
+            include_non_maximum_suppression : bool
+                Non-maximum suppression is only available in iOS 12+.
+                A boolean parameter to indicate whether the Core ML model should be
+                saved with built-in non-maximum suppression or not.
+                This parameter is set to True by default.
+
+            iou_threshold : float
+                Threshold value for non-maximum suppression. Non-maximum suppression
+                prevents multiple bounding boxes appearing over a single object.
+                This threshold, set between 0 and 1, controls how aggressive this
+                suppression is. A value of 1 means no maximum suppression will
+                occur, while a value of 0 will maximally suppress neighboring
+                boxes around a prediction.
+
+            confidence_threshold : float
+                Only return predictions above this level of confidence. The
+                threshold can range from 0 to 1.
+
+            Examples
+            --------
+            >>> model.export_coreml('detector.mlmodel')
+            """
+            options = {}
+            options['include_non_maximum_suppression'] = include_non_maximum_suppression
+            options['confidence_threshold'] = confidence_threshold
+            options['iou_threshold'] = iou_threshold
+
+            return self.__proxy__.export_to_coreml(filename, options)
 
 
-class ObjectDetector_beta(_Model):
-    """
-    A trained model using C++ implementation that is ready to use for classification
-    or export to CoreML.
+        def predict(self, dataset):
+            """
+            Predict object instances in an SFrame of images.
 
-    This model should not be constructed directly.
-    """
-    _CPP_OBJECT_DETECTOR_VERSION = 1
+            Parameters
+            ----------
+            dataset : SFrame | SArray | turicreate.Image
+                The images on which to perform object detection.
+                If dataset is an SFrame, it must have a column with the same name
+                as the feature column during training. Additional columns are
+                ignored.
 
-    def __init__(self, model_proxy=None, name=None):
-        self.__proxy__ = model_proxy
-        self.__name__ = name
+            Returns
+            -------
+            out : SArray
+                An SArray with model predictions. Each element corresponds to
+                an image and contains a list of dictionaries. Each dictionary
+                describes an object instances that was found in the image. If
+                `dataset` is a single image, the return value will be a single
+                prediction.
 
-    @classmethod
-    def _native_name(cls):
-        return None
+            See Also
+            --------
+            evaluate
 
-    def __str__(self):
-        """
-        Return a string description of the model to the ``print`` method.
-        Returns
-        -------
-        out : string
-            A description of the model.
-        """
-        return self.__class__.__name__
+            Examples
+            --------
+            .. sourcecode:: python
 
-    def __repr__(self):
-        """
-        Returns a string description of the model, including (where relevant)
-        the schema of the training data, description of the training data,
-        training statistics, and model hyperparameters.
-        Returns
-        -------
-        out : string
-            A description of the model.
-        """
-        return self.__class__.__name__
+                # Make predictions
+                >>> pred = model.predict(data)
 
-    def _get_version(self):
-        return self._CPP_OBJECT_DETECTOR_VERSION
+                # Stack predictions, for a better overview
+                >>> turicreate.object_detector.util.stack_annotations(pred)
+                Data:
+                +--------+------------+-------+-------+-------+-------+--------+
+                | row_id | confidence | label |   x   |   y   | width | height |
+                +--------+------------+-------+-------+-------+-------+--------+
+                |   0    |    0.98    |  dog  | 123.0 | 128.0 |  80.0 | 182.0  |
+                |   0    |    0.67    |  cat  | 150.0 | 183.0 | 129.0 | 101.0  |
+                |   1    |    0.8     |  dog  |  50.0 | 432.0 |  65.0 |  98.0  |
+                +--------+------------+-------+-------+-------+-------+--------+
+                [3 rows x 7 columns]
 
-    def export_coreml(self, filename,
-            include_non_maximum_suppression = True,
-            iou_threshold = None,
-            confidence_threshold = None):
-        """
-        Save the model in Core ML format. The Core ML model takes an image of
-        fixed size as input and produces two output arrays: `confidence` and
-        `coordinates`.
+                # Visualize predictions by generating a new column of marked up images
+                >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
+            """
+            return self.__proxy__.predict(dataset)
 
-        The first one, `confidence` is an `N`-by-`C` array, where `N` is the
-        number of instances predicted and `C` is the number of classes. The
-        number `N` is fixed and will include many low-confidence predictions.
-        The instances are not sorted by confidence, so the first one will
-        generally not have the highest confidence (unlike in `predict`). Also
-        unlike the `predict` function, the instances have not undergone
-        what is called `non-maximum suppression`, which means there could be
-        several instances close in location and size that have all discovered
-        the same object instance. Confidences do not need to sum to 1 over the
-        classes; any remaining probability is implied as confidence there is no
-        object instance present at all at the given coordinates. The classes
-        appear in the array alphabetically sorted.
+        def evaluate(self, dataset, metric='auto'):
+            """
+            Evaluate the model by making predictions and comparing these to ground
+            truth bounding box annotations.
 
-        The second array `coordinates` is of size `N`-by-4, where the first
-        dimension `N` again represents instances and corresponds to the
-        `confidence` array. The second dimension represents `x`, `y`, `width`,
-        `height`, in that order.  The values are represented in relative
-        coordinates, so (0.5, 0.5) represents the center of the image and (1,
-        1) the bottom right corner. You will need to multiply the relative
-        values with the original image size before you resized it to the fixed
-        input size to get pixel-value coordinates similar to `predict`.
+            Parameters
+            ----------
+            dataset : SFrame
+                Dataset of new observations. Must include columns with the same
+                names as the annotations and feature used for model training.
+                Additional columns are ignored.
 
-        See Also
-        --------
-        save
+            metric : str or list, optional
+                Name of the evaluation metric or list of several names. The primary
+                metric is average precision, which is the area under the
+                precision/recall curve and reported as a value between 0 and 1 (1
+                being perfect). Possible values are:
 
-        Parameters
-        ----------
-        filename : string
-            The path of the file where we want to save the Core ML model.
+                - 'auto'                      : Returns all primary metrics.
+                - 'all'                       : Returns all available metrics.
+                - 'average_precision_50'      : Average precision per class with
+                                                intersection-over-union threshold at
+                                                50% (PASCAL VOC metric).
+                - 'average_precision'         : Average precision per class calculated over multiple
+                                                intersection-over-union thresholds
+                                                (at 50%, 55%, ..., 95%) and averaged.
+                - 'mean_average_precision_50' : Mean over all classes (for ``'average_precision_50'``).
+                                                This is the primary single-value metric.
+                - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
 
-        include_non_maximum_suppression : bool
-            Non-maximum suppression is only available in iOS 12+.
-            A boolean parameter to indicate whether the Core ML model should be
-            saved with built-in non-maximum suppression or not.
-            This parameter is set to True by default.
+            Returns
+            -------
+            out : dict / SFrame
+                Output type depends on the option `output_type`.
 
-        iou_threshold : float
-            Threshold value for non-maximum suppression. Non-maximum suppression
-            prevents multiple bounding boxes appearing over a single object.
-            This threshold, set between 0 and 1, controls how aggressive this
-            suppression is. A value of 1 means no maximum suppression will
-            occur, while a value of 0 will maximally suppress neighboring
-            boxes around a prediction.
+            See Also
+            --------
+            create, predict
 
-        confidence_threshold : float
-            Only return predictions above this level of confidence. The
-            threshold can range from 0 to 1.
-
-        Examples
-        --------
-        >>> model.export_coreml('detector.mlmodel')
-        """
-        options = {}
-        options['include_non_maximum_suppression'] = include_non_maximum_suppression
-        options['confidence_threshold'] = confidence_threshold
-        options['iou_threshold'] = iou_threshold
-
-        return self.__proxy__.export_to_coreml(filename, options)
-
-
-    def predict(self, dataset):
-        """
-        Predict object instances in an SFrame of images.
-
-        Parameters
-        ----------
-        dataset : SFrame | SArray | turicreate.Image
-            The images on which to perform object detection.
-            If dataset is an SFrame, it must have a column with the same name
-            as the feature column during training. Additional columns are
-            ignored.
-
-        Returns
-        -------
-        out : SArray
-            An SArray with model predictions. Each element corresponds to
-            an image and contains a list of dictionaries. Each dictionary
-            describes an object instances that was found in the image. If
-            `dataset` is a single image, the return value will be a single
-            prediction.
-
-        See Also
-        --------
-        evaluate
-
-        Examples
-        --------
-        .. sourcecode:: python
-
-            # Make predictions
-            >>> pred = model.predict(data)
-
-            # Stack predictions, for a better overview
-            >>> turicreate.object_detector.util.stack_annotations(pred)
-            Data:
-            +--------+------------+-------+-------+-------+-------+--------+
-            | row_id | confidence | label |   x   |   y   | width | height |
-            +--------+------------+-------+-------+-------+-------+--------+
-            |   0    |    0.98    |  dog  | 123.0 | 128.0 |  80.0 | 182.0  |
-            |   0    |    0.67    |  cat  | 150.0 | 183.0 | 129.0 | 101.0  |
-            |   1    |    0.8     |  dog  |  50.0 | 432.0 |  65.0 |  98.0  |
-            +--------+------------+-------+-------+-------+-------+--------+
-            [3 rows x 7 columns]
-
-            # Visualize predictions by generating a new column of marked up images
-            >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
-        """
-        return self.__proxy__.predict(dataset)
-
-    def evaluate(self, dataset, metric='auto'):
-        """
-        Evaluate the model by making predictions and comparing these to ground
-        truth bounding box annotations.
-
-        Parameters
-        ----------
-        dataset : SFrame
-            Dataset of new observations. Must include columns with the same
-            names as the annotations and feature used for model training.
-            Additional columns are ignored.
-
-        metric : str or list, optional
-            Name of the evaluation metric or list of several names. The primary
-            metric is average precision, which is the area under the
-            precision/recall curve and reported as a value between 0 and 1 (1
-            being perfect). Possible values are:
-
-            - 'auto'                      : Returns all primary metrics.
-            - 'all'                       : Returns all available metrics.
-            - 'average_precision_50'      : Average precision per class with
-                                            intersection-over-union threshold at
-                                            50% (PASCAL VOC metric).
-            - 'average_precision'         : Average precision per class calculated over multiple
-                                            intersection-over-union thresholds
-                                            (at 50%, 55%, ..., 95%) and averaged.
-            - 'mean_average_precision_50' : Mean over all classes (for ``'average_precision_50'``).
-                                            This is the primary single-value metric.
-            - 'mean_average_precision'    : Mean over all classes (for ``'average_precision'``)
-
-        Returns
-        -------
-        out : dict / SFrame
-            Output type depends on the option `output_type`.
-
-        See Also
-        --------
-        create, predict
-
-        Examples
-        --------
-        >>> results = model.evaluate(data)
-        >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
-        mAP: 43.2%
-        """
-        return self.__proxy__.evaluate(dataset, metric)
+            Examples
+            --------
+            >>> results = model.evaluate(data)
+            >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
+            mAP: 43.2%
+            """
+            return self.__proxy__.evaluate(dataset, metric)
