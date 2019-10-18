@@ -274,7 +274,7 @@ private:
  * input images, annotations and predictions to shared_float_arrays for
  * tf_image_augmenter.
  * Subclass must be written for it if needed. The subclass must implement the
- * pure virtaul method prepare_augmented_images.
+ * pure virtual method prepare_augmented_images.
  */
 class float_array_image_augmenter : public image_augmenter {
  public:
@@ -305,11 +305,6 @@ class float_array_image_augmenter : public image_augmenter {
      * and send to tf_image_augmneter as vector of shared_float_array
      */
     std::vector<shared_float_array> annotations;
-
-    /** The predictions of the images to be augmented are raw images decoded
-     * and send to tf_image_augmneter as vector of shared_float_array
-     */
-    std::vector<shared_float_array> predictions;
   };
 
   virtual intermediate_result prepare_augmented_images(
