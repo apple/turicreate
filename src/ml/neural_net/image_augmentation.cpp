@@ -29,7 +29,7 @@ shared_float_array convert_to_shared_float_array(
   }
   shared_float_array data_to_augment =
       shared_float_array::wrap(ann, {annotations_per_image.size(), 6});
-  
+
   return data_to_augment;
 }
 
@@ -187,10 +187,10 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
     std::transform(img.begin(), img.end(), img.begin(),
                    [](float pixel) -> float { return pixel / 255.0f; });
 
-    input_to_tf_aug.images.push_back(shared_float_array::wrap(
-        img, {input_height, input_width, c}));
-    input_to_tf_aug.annotations.push_back(convert_to_shared_float_array(source.annotations));
-
+    input_to_tf_aug.images.push_back(
+        shared_float_array::wrap(img, {input_height, input_width, c}));
+    input_to_tf_aug.annotations.push_back(
+        convert_to_shared_float_array(source.annotations));
   }
 
   // Call the virtual function to use the intermediate data structure and
@@ -210,4 +210,3 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
 
 }  // neural_net
 }  // turi
-
