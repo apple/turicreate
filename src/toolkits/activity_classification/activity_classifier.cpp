@@ -496,7 +496,6 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
     auto compare = [&](size_t i, size_t j) {
       return prob_vec[i] > prob_vec[j];
     };
-    // std::random_shuffle(index_vec.begin(), index_vec.end());
     std::nth_element(index_vec.begin(), index_vec.begin() + k, index_vec.end(),
                      compare);
     std::sort(index_vec.begin(), index_vec.begin() + k, compare);
