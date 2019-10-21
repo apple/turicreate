@@ -344,22 +344,6 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_training_iteration) {
 
     mock_nn_model->train_calls_.push_back(train_impl);
 
-    auto predict_impl = [=](const float_array_map& inputs) {
-      // shared_float_array input_batch = inputs.at("input");
-      // TS_ASSERT_EQUALS(input_batch.data(), test_image_batch->data());
-
-      // Track how many calls we've had.
-      *num_iterations_submitted += 1;
-
-      // Multiply loss by 8 to offset the "mps_loss_mult" factor currently
-      // hardwired in to avoid fp16 underflow in MPS.
-      std::map<std::string, shared_float_array> result;
-      result["predictions"] = shared_float_array::wrap(8 * test_loss);
-      result["accuracy"] = shared_float_array::wrap(.5);
-      return result;
-    };
-
-    mock_nn_model->predict_calls_.push_back(predict_impl);
   }
 
   test_drawing_classifier model(
