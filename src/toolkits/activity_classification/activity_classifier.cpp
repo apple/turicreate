@@ -464,6 +464,130 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
   return result;
 }
 
+gl_sframe activity_classifier::predict_topk(gl_sframe data,
+                                            std::string output_type, size_t k,
+                                            std::string output_frequency) {
+  // check valid input arguments
+  if (output_type != "probability" && output_type != "rank") {
+    log_and_throw(output_type +
+                  " is not a valid option for output_type.  "
+                  "Expected one of: probability, rank");
+  }
+  if (output_frequency != "per_row" && output_frequency != "per_window") {
+    log_and_throw(output_frequency +
+                  " is not a valid option for output_frequency.  "
+                  "Expected one of: per_row, per_window");
+  }
+
+  // data inference
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false,
+                      /* use_data_augmentation */ false);
+  gl_sframe raw_preds_per_window = perform_inference(data_it.get());
+
+  // argsort probability to get the index (rank) for top k class
+  // if k is greater than the class number, set it to be class number
+  flex_list class_labels = read_state<flex_list>("classes");
+  k = std::min(k, class_labels.size());
+  auto argsort_prob = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+    std::vector<size_t> index_vec(prob_vec.size());
+    std::iota(index_vec.begin(), index_vec.end(), 0);
+    auto compare = [&](size_t i, size_t j) {
+      return prob_vec[i] > prob_vec[j];
+    };
+    std::nth_element(index_vec.begin(), index_vec.begin() + k, index_vec.end(),
+                     compare);
+    std::sort(index_vec.begin(), index_vec.begin() + k, compare);
+    return flex_list(index_vec.begin(), index_vec.begin() + k);
+  };
+
+  // store the index in a column "rank"
+  raw_preds_per_window.add_column(
+      raw_preds_per_window["preds"].apply(argsort_prob, flex_type_enum::LIST),
+      "rank");
+
+  // get top k class name and store in a column "class"
+  size_t rank_column_index = raw_preds_per_window.column_index("rank");
+  auto get_class_name = [=](const sframe_rows::row& row) {
+    const flex_list& rank_list = row[rank_column_index];
+    flex_list topk_class;
+    for (const flexible_type i : rank_list) {
+      topk_class.push_back(class_labels[i]);
+    }
+    return topk_class;
+  };
+  raw_preds_per_window.add_column(
+      raw_preds_per_window.apply(get_class_name, flex_type_enum::LIST),
+      "class");
+
+  // if output_type is "probability" then change rank to probabilty
+  if (output_type == "probability") {
+    size_t prob_column_index = raw_preds_per_window.column_index("preds");
+    auto get_probability = [=](const sframe_rows::row& row) {
+      const flex_list& rank_list = row[rank_column_index];
+      flex_list topk_prob;
+      for (const flexible_type i : rank_list) {
+        topk_prob.push_back(row[prob_column_index][i]);
+      }
+      return topk_prob;
+    };
+    raw_preds_per_window["rank"] =
+        raw_preds_per_window.apply(get_probability, flex_type_enum::LIST);
+  }
+
+  // repeat "class" and "rank" column num_samples times if output_frequency is
+  // per_row
+  if (output_frequency == "per_row") {
+    size_t class_column_index = raw_preds_per_window.column_index("class");
+    size_t num_samples_column_index =
+        raw_preds_per_window.column_index("num_samples");
+    auto copy_per_row_class = [=](const sframe_rows::row& row) {
+      return flex_list(row[num_samples_column_index], row[class_column_index]);
+    };
+    auto copy_per_row_rank = [=](const sframe_rows::row& row) {
+      return flex_list(row[num_samples_column_index], row[rank_column_index]);
+    };
+    raw_preds_per_window["class"] =
+        raw_preds_per_window.apply(copy_per_row_class, flex_type_enum::LIST);
+    raw_preds_per_window["rank"] =
+        raw_preds_per_window.apply(copy_per_row_rank, flex_type_enum::LIST);
+  }
+
+  // construct the final result
+  gl_sframe result = gl_sframe();
+  if (output_frequency == "per_row") {
+    // stack data into a column with single element for each row
+    gl_sframe stacked_class =
+        gl_sframe({{"class", raw_preds_per_window["class"]}})
+            .stack("class", "class");
+    result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
+                      "row_id");
+    result.add_column(stacked_class["class"], "class");
+    result = result.stack("class", "class");
+    gl_sframe stacked_rank = gl_sframe({{"rank", raw_preds_per_window["rank"]}})
+                                 .stack("rank", "rank");
+    stacked_rank = stacked_rank.stack("rank", "rank");
+    result.add_column(stacked_rank["rank"], "rank");
+  } else {
+    // add "exp_id" and "prediction_id" if the output_frequency is per_window
+    result.add_column(raw_preds_per_window["session_id"], "exp_id");
+    result.add_column(gl_sarray::from_sequence(0, raw_preds_per_window.size()),
+                      "prediction_id");
+    result.add_column(raw_preds_per_window["class"], "class");
+    result = result.stack("class", "class");
+    gl_sframe rank_per_row = gl_sframe({{"rank", raw_preds_per_window["rank"]}})
+                                 .stack("rank", "rank");
+    result.add_column(rank_per_row["rank"], "rank");
+  }
+
+  // change the column name rank to probability according to the output_type
+  if (output_type == "probability") {
+    result.rename({{"rank", "probability"}});
+  }
+  return result;
+}
+
 variant_map_type activity_classifier::evaluate(gl_sframe data,
                                                std::string metric)
 {
