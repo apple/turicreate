@@ -46,11 +46,11 @@ class EXPORT drawing_classifier: public ml_model_base {
       std::string filename);
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
-  virtual void init_train(gl_sframe data, std::string target_column_name,
+  virtual void init_training(gl_sframe data, std::string target_column_name,
                           std::string feature_column_name,
                           variant_type validation_data,
                           std::map<std::string, flexible_type> opts);
-  virtual void perform_training_iteration();
+  virtual void iterate_training();
 
   
   BEGIN_CLASS_MEMBER_REGISTRATION("drawing_classifier")
@@ -184,15 +184,15 @@ class EXPORT drawing_classifier: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::export_to_coreml,
                                  "filename");
 
-  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::init_train, "data",
+  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::init_training, "data",
                                   "target_column_name", "feature_column_name",
                                   "validation_data", "options");
-  register_defaults("init_train",
+  register_defaults("init_training",
                     {{"validation_data", to_variant(gl_sframe())},
                      {"options",
                       to_variant(std::map<std::string, flexible_type>())}});
 
-  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::perform_training_iteration);
+  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::iterate_training);
 
   END_CLASS_MEMBER_REGISTRATION
 

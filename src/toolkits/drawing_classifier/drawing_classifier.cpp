@@ -13,6 +13,7 @@
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
+#include <toolkits/supervised_learning/automatic_model_creation.hpp>
 #include <toolkits/util/training_utils.hpp>
 
 
@@ -35,8 +36,7 @@ struct result {
 
 }  // namespace
 
-std::unique_ptr<model_spec> drawing_classifier::init_model(
-    bool use_random_init) const {
+std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   std::unique_ptr<model_spec> result(new model_spec);
   return result;
 }
@@ -69,26 +69,8 @@ std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
       gl_sframe data, variant_type validation_data) const {
   gl_sframe train_data;
   gl_sframe val_data;
-  if (variant_is<gl_sframe>(validation_data)) {
-    train_data = data;
-    val_data = variant_get_value<gl_sframe>(validation_data);
-    /* TODO: Do we want to log_and_throw when the validation data is empty?
-     *       Having it will trigger a unit test failure!
-     */
-  }
-  else if ((variant_is<flex_string>(validation_data)) 
-      && (variant_get_value<flex_string>(validation_data)=="auto")) {
-    size_t num_rows = data.size();
-    if (num_rows >= 100) {
-      std::tie(train_data, val_data) = data.random_split(.95);
-    } else {
-      train_data = data;
-      std::cout << "The dataset has less than the minimum of 100 rows required for train-validation split. "
-                       "Continuing without validation set.\n";
-    }
-  } else {
-    train_data = data;
-  }
+  std::tie(train_data, val_data) = turi::supervised::create_validation_data(
+      data, validation_data);
   return std::make_tuple(train_data, val_data);
 }
 
@@ -114,7 +96,7 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   return create_iterator(data_params);
 }
 
-void drawing_classifier::init_train(gl_sframe data,
+void drawing_classifier::init_training(gl_sframe data,
                                     std::string target_column_name,
                                     std::string feature_column_name,
                                     variant_type validation_data,
@@ -169,8 +151,7 @@ void drawing_classifier::init_train(gl_sframe data,
 
   // Initialize the neural net. Note that this depends on statistics computed by
   // the data iterator.
-  bool use_random_init = true;
-  nn_spec_ = init_model(use_random_init);
+  nn_spec_ = init_model();
 
   // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(
@@ -253,7 +234,7 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
 }
 
 
-void drawing_classifier::perform_training_iteration() {
+void drawing_classifier::iterate_training() {
 
   // Training must have been initialized.
   ASSERT_TRUE(training_data_iterator_ != nullptr);
@@ -390,13 +371,13 @@ void drawing_classifier::train(gl_sframe data,
                                std::map<std::string, flexible_type> opts) {
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
-  init_train(data, target_column_name, feature_column_name, validation_data,
+  init_training(data, target_column_name, feature_column_name, validation_data,
              opts);
 
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
   while (read_state<flex_int>("training_iterations") < max_iterations) {
-    perform_training_iteration();
+    iterate_training();
   }
 
   // Finish printing progress.

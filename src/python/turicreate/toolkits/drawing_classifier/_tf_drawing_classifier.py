@@ -84,7 +84,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         out = _tf.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"],
             biases=biases["drawing_dense1_bias"])
         out = _tf.nn.softmax(out)
-        
+
         self.predictions = out
 
         # Loss

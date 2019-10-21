@@ -130,25 +130,30 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   batch_targets.reserve(batch_size);
   batch_predictions.reserve(batch_size);
   float *next_drawing_pointer = batch_drawings.data();
+
   while (batch_targets.size() < batch_size
-      && next_row_ != range_iterator_.end()) {
+        && next_row_ != range_iterator_.end()) {
+
     const sframe_rows::row& row = *next_row_;
-    float preds = -1;
+    
     if (predictions_index_ >= 0) {
+      float preds = -1;
       preds = static_cast<float>(target_properties_.class_to_index_map.at(
         row[predictions_index_].to<flex_string>())
       );
+      batch_predictions.emplace_back(preds);
     }
+
     add_drawing_pixel_data_to_batch(next_drawing_pointer,
       row[feature_index_].to<flex_image>());
     next_drawing_pointer += image_data_size;
+    
     batch_targets.emplace_back(
       static_cast<float>(target_properties_.class_to_index_map.at(
         row[target_index_].to<flex_string>()
         )
       )
     );
-    batch_predictions.emplace_back(preds);
 
     if (++next_row_ == range_iterator_.end() && repeat_) {
 
@@ -187,9 +192,11 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
       { batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels });
+  
   result.targets = shared_float_array::wrap(
       std::move(batch_targets), { batch_size, 1 });
-  if (batch_predictions[0] != -1) {
+  
+  if (predictions_index_ >= 0) {
     result.predictions = shared_float_array::wrap(
         std::move(batch_predictions), { batch_size, 1 });
   }

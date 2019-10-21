@@ -35,18 +35,18 @@ class drawing_data_generator {
     flex_list labels(num_rows_);
     
     std::vector<unsigned char> buffer(IMAGE_WIDTH * IMAGE_HEIGHT * 1);
-    for (size_t i = 0; i < num_rows_; ++i) {
+    for (size_t ii = 0; ii < num_rows_; ++ii) {
 
       // Each pixel has pixel value equal to the row index (modulo 256).
       std::fill(buffer.begin(), buffer.end(),
-                static_cast<unsigned char>(1 % 256));
-      images[i] = flex_image(reinterpret_cast<char*>(buffer.data()),
+                static_cast<unsigned char>(ii % 256));
+      images[ii] = flex_image(reinterpret_cast<char*>(buffer.data()),
                              IMAGE_HEIGHT, IMAGE_WIDTH, 1, buffer.size(),
                              IMAGE_TYPE_CURRENT_VERSION,
                              static_cast<int>(Format::RAW_ARRAY));
 
       // Each image has a label, which is the row index mod unique_labels.size().
-      labels[i] = unique_labels_[i % unique_labels_.size()];
+      labels[ii] = unique_labels_[ii % unique_labels_.size()];
     }
 
     params_.target_column_name = "test_target";
@@ -64,15 +64,17 @@ class drawing_data_generator {
   std::vector<std::string> get_unique_labels() const {
     std::vector<std::string> expected_class_labels;
     if (num_rows_ < unique_labels_.size()) {
-      std::copy(unique_labels_.begin(), unique_labels_.begin() + num_rows_,
-              std::back_inserter(expected_class_labels));
+      expected_class_labels.insert(
+        expected_class_labels.end(),
+        unique_labels_.begin(),
+        unique_labels_.begin() + num_rows_);
     } else {
       expected_class_labels = unique_labels_;
     }
     return expected_class_labels;
   }
 
-  void set_class_labels(const std::vector<std::string> &class_labels) {
+  void set_class_labels(std::vector<std::string> class_labels) {
     params_.class_labels = std::move(class_labels);
   }
 
@@ -80,7 +82,7 @@ class drawing_data_generator {
     return params_;
   }
 
-  gl_sframe get_data() {
+  gl_sframe get_data() const {
     return params_.data;
   }
 

@@ -75,7 +75,7 @@ class data_iterator {
   struct batch {
 
     /* Number of examples in batch */
-    size_t num_samples;
+    size_t num_samples = 256;
 
     /**
      * An array with shape: (requested_batch_size, 28, 28 1)

@@ -30,15 +30,19 @@ using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
-// First, define mock implementations of the key drawing_classifier dependencies.
-// These implementations allow the test to define a callback for each call to
-// these classes' method, to make assertions on the inputs and to provide
-// canned outputs. The production implementations should have their own
-// separate unit tests.
+/**
+ * First, define mock implementations of the key drawing_classifier dependencies.
+ * These implementations allow the test to define a callback for each call to
+ * these classes' method, to make assertions on the inputs and to provide
+ * canned outputs. The production implementations should have their own
+ * separate unit tests.
+ */
 
-// TODO: Adopt a real mocking library. Or at least factor out the shared
-// boilerplate into some utility templates or macros. Yes, if necessary, create
-// our own simplistic mocking tools.
+/**
+ * TODO: Adopt a real mocking library. Or at least factor out the shared
+ * boilerplate into some utility templates or macros. Yes, if necessary, create
+ * our own simplistic mocking tools.
+ */
 
 class mock_data_iterator: public data_iterator {
  public:
@@ -100,8 +104,7 @@ class test_drawing_classifier: public drawing_classifier {
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
 
-  using init_model_call = std::function<std::unique_ptr<model_spec>(
-      bool use_random_init)>;
+  using init_model_call = std::function<std::unique_ptr<model_spec>()>;
 
   test_drawing_classifier() = default;
   test_drawing_classifier(
@@ -157,12 +160,12 @@ class test_drawing_classifier: public drawing_classifier {
   mutable std::deque<init_model_call> init_model_calls_;
 };
 
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_train) {
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   // Most of this test body will be spent setting up the mock objects that we'll
   // inject into the drawing_classifier implementation. These mock objects will
   // make assertions about their inputs along the way and provide the outputs
   // that we manually pre-program. At the end will be a single call to
-  // drawing_classifier::init_train that will trigger all the actual testing.
+  // drawing_classifier::init_training that will trigger all the actual testing.
   test_drawing_classifier model;
 
   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
@@ -240,9 +243,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_train) {
   drawing_data_generator data_generator(test_num_rows, test_class_labels);
   gl_sframe data = data_generator.get_data();
   
-  // Now, actually invoke drawing_classifier::init_train. This will trigger all
+  // Now, actually invoke drawing_classifier::init_training. This will trigger all
   // the assertions registered above.
-  model.init_train(data, test_target_name, test_image_name, gl_sframe(),
+  model.init_training(data, test_target_name, test_image_name, gl_sframe(),
                       {
                           {"batch_size", test_batch_size},
                           {"max_iterations", test_max_iterations},
@@ -263,12 +266,12 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_train) {
   // mocked-out method has been called.
 }
 
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_training_iteration) {
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
   // Most of this test body will be spent setting up the mock objects that we'll
   // inject into the drawing_classifier implementation. These mock objects will
   // make assertions about their inputs along the way and provide the outputs
   // that we manually pre-program. At the end will be the calls to
-  // drawing_classifier::perform_training_iteration that will trigger all the
+  // drawing_classifier::iterate_training that will trigger all the
   // actual testing.
 
   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
@@ -298,7 +301,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_training_iteration) {
     };
     mock_iterator->next_batch_calls_.push_back(next_batch_impl);
 
-    // Since has_next_batch is the loop guard in perform_training_iteration,
+    // Since has_next_batch is the loop guard in iterate_training,
     // it will be called twice, and we need to push two implementations, 
     // one that returns true, and one that returns false.
     auto has_next_batch_true_impl = [=]() {
@@ -354,10 +357,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_training_iteration) {
       nullptr, std::move(mock_context), std::move(mock_iterator),
       std::move(mock_nn_model));
 
-  // Now, actually invoke drawing_classifier::perform_training_iteration.
+  // Now, actually invoke drawing_classifier::iterate_training.
   // This will trigger all the assertions registered above.
   for (size_t i = 0; i < test_max_iterations; ++i) {
-    model.perform_training_iteration();
+    model.iterate_training();
   }
 
   TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"),
