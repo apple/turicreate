@@ -77,7 +77,8 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_row_rank) {
     check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  /** mock predict data
+  /**
+   * mock predict data
    * we assume the sliding window has size 3
    * num_samples indicates the number of samples in each sliding window,
    * which is betweem [1,3] in this case
@@ -216,7 +217,8 @@ BOOST_AUTO_TEST_CASE(
     check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  /** mock predict data
+  /**
+   * mock predict data
    * we assume the sliding window has size 3
    * num_samples indicates the number of samples in each sliding window,
    * which is betweem [1,3] in this case
@@ -361,7 +363,8 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_window_rank) {
     check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  /** mock predict data
+  /**
+   * mock predict data
    * we assume the sliding window has size 3
    * num_samples indicates the number of samples in each sliding window,
    * which is betweem [1,3] in this case
@@ -494,7 +497,8 @@ BOOST_AUTO_TEST_CASE(
     check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  /** mock predict data
+  /**
+   * mock predict data
    * we assume the sliding window has size 3
    * num_samples indicates the number of samples in each sliding window,
    * which is betweem [1,3] in this case
