@@ -125,7 +125,9 @@ tf_compute_context::tf_compute_context() = default;
 tf_compute_context::~tf_compute_context() = default;
 
 size_t tf_compute_context::memory_budget() const {
-  return 0;
+  // TODO: Returns 4GB as that makes sure default batch size is used. 
+  // Do something that makes more sense like MPS later.
+  return 4294967296lu;
 }
 
 std::vector<std::string> tf_compute_context::gpu_names() const {
