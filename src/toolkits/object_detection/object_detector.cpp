@@ -483,8 +483,8 @@ void object_detector::finalize_training() {
 }
 
 variant_map_type object_detector::evaluate(
-    gl_sframe data, std::string metric) {
-
+    gl_sframe data, std::string metric, float confidence_threshold,
+    float iou_threshold) {
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -512,7 +512,7 @@ variant_map_type object_detector::evaluate(
     calculator.add_row(predicted_row, groundtruth_row);
   };
 
-  perform_predict(data, consumer);
+  perform_predict(data, consumer, confidence_threshold, iou_threshold);
 
   // Compute the average precision (area under the precision-recall curve) for
   // each combination of IOU threshold and class label.
@@ -536,10 +536,9 @@ variant_map_type object_detector::evaluate(
   return result_map;
 }
 
-gl_sarray object_detector::predict(gl_sframe data, float confidence_threshold,
+gl_sarray object_detector::predict(variant_type data, float confidence_threshold,
   float iou_threshold) {
   gl_sarray_writer result(flex_type_enum::LIST, 1);
-
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
                       const std::vector<image_annotation>& groundtruth_row) {
     // Convert predicted_row to flex_type list to call gl_sarray_writer
@@ -548,16 +547,36 @@ gl_sarray object_detector::predict(gl_sframe data, float confidence_threshold,
       flex_dict bb_dict = {{"x", each_row.bounding_box.x}, {"y", each_row.bounding_box.y},
                       {"width", each_row.bounding_box.width},
                       {"height", each_row.bounding_box.height}};
-      flex_dict each_annotation = {{"confidence", each_row.confidence},
-                                   {"bounding_box", std::move(bb_dict)},
-                                   {"identifier", each_row.identifier}};
+      flex_dict each_annotation = {{"identifier", each_row.identifier},
+                                   {"type", "rectangle"},
+                                   {"coordinates", std::move(bb_dict)},
+                                   {"confidence", each_row.confidence}
+                                   };
       predicted_row_ft.push_back(std::move(each_annotation));
     }
     result.write(predicted_row_ft, 0);
   };
 
-  perform_predict(data, consumer, confidence_threshold, iou_threshold);
+  //check input type of data
+  //and convert them all to sframe.
+  gl_sframe sframe_data;
+  std::string image_column_name = read_state<flex_string>("feature");
+  if (variant_is<gl_sframe>(data)) {
+    sframe_data = variant_get_value<gl_sframe>(data);
+  } else if (variant_is<flexible_type>(data)) {
+    flexible_type image_data = variant_get_value<flexible_type>(data);
+    std::vector<flexible_type> image_vector {image_data};
+    std::map<std::string, std::vector<flexible_type>> image_map ={{image_column_name, image_vector}};
+    sframe_data = gl_sframe(image_map);
+  } else if (variant_is<gl_sarray>(data)){
+    gl_sarray sarray_data = variant_get_value<gl_sarray>(data);
+    std::map<std::string, gl_sarray> sarray_map = {{image_column_name, sarray_data}};
+    sframe_data = gl_sframe(sarray_map);
+  } else {
+    log_and_throw("Invalid data type for predict()! Expect Sframe, Sarray, or flexible_type!");
+  }
 
+  perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
   return result.close();
 }
 
@@ -565,7 +584,6 @@ void object_detector::perform_predict(gl_sframe data,
     std::function<void(const std::vector<image_annotation>&,
     const std::vector<image_annotation>&)> consumer, float confidence_threshold,
     float iou_threshold) {
-
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");

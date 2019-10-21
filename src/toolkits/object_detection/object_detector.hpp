@@ -40,8 +40,9 @@ class EXPORT object_detector: public ml_model_base {
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
-  variant_map_type evaluate(gl_sframe data, std::string metric);
-  gl_sarray predict(gl_sframe data, float confidence_threshold,
+  variant_map_type evaluate(gl_sframe data, std::string metric, float
+    confidence_threshold, float iou_threshold);
+  gl_sarray predict(variant_type data, float confidence_threshold,
    float iou_threshold);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
@@ -104,9 +105,11 @@ class EXPORT object_detector: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::synchronize_training);
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::finalize_training);
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric");
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
+    "confidence_threshold", "iou_threshold");
   register_defaults("evaluate",
-      {{"metric", std::string("auto")}});
+      {{"metric", std::string("auto")},{"confidence_threshold", 0.001},
+      {"iou_threshold", 0.45}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data",
    "confidence_threshold", "iou_threshold");

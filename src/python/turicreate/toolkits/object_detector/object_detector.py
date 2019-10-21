@@ -264,7 +264,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # the SFrame shuffle operation that can occur after each epoch.
         'io_thread_buffer_size': 8,
         'mlmodel_path': pretrained_model_path,
-        'use_tensorflow': False
+        'use_tensorflow': True
     }
 
     if '_advanced_parameters' in kwargs:
@@ -445,6 +445,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         }
         model = _tc.extensions.object_detector()
         model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
+        print(annotations)
         return ObjectDetector_beta(model_proxy=model, name="object_detector")
 
     else:  # Use MxNet
@@ -1691,23 +1692,9 @@ class ObjectDetector_beta(_Model):
             # Visualize predictions by generating a new column of marked up images
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
         """
-        dataset, unpack = self._canonize_input(dataset)
-        stacked_pred = self.__proxy__.predict(dataset, confidence_threshold, iou_threshold)
-        from . import util
-        return unpack(util.unstack_annotations(stacked_pred, num_rows=len(dataset)))
-    def _canonize_input(self, dataset):
-        """
-        Takes input and returns tuple of the input in canonical form (SFrame)
-        along with an unpack callback function that can be applied to
-        prediction results to "undo" the canonization.
-        """
-        unpack = lambda x: x
-        if isinstance(dataset, _tc.SArray):
-            dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image):
-            dataset = _tc.SFrame({self.feature: [dataset]})
-            unpack = lambda x: x[0]
-        return dataset, unpack
+        print("shit")
+        return  self.__proxy__.predict(dataset, confidence_threshold, iou_threshold)
+
     def evaluate(self, dataset, metric='auto'):
         """
         Evaluate the model by making predictions and comparing these to ground
@@ -1753,4 +1740,5 @@ class ObjectDetector_beta(_Model):
         >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
         mAP: 43.2%
         """
+        print("shit 2 ")
         return self.__proxy__.evaluate(dataset, metric)
