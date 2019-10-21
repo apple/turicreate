@@ -63,33 +63,53 @@ class test_activity_classifier : public activity_classifier {
 };
 
 BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_row_rank) {
-  static constexpr size_t test_num_examples = 25;
-  static constexpr size_t session_num = 5;
   const flex_list class_labels = {"a", "b", "c", "d", "e", "f", "g"};
+
+  // session id for each prediction
+  // in this case it is [1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,...]
+  constexpr size_t session_num = 5;
   const std::vector<size_t> session_distribution = {1, 3, 5, 7, 9};
   TS_ASSERT_EQUALS(session_num, session_distribution.size());
+
+  constexpr size_t test_num_examples = 25;
   size_t check_sum = 0;
-  for (auto& x : session_distribution) {
-    check_sum += x;
-  }
+  for (size_t num_per_session : session_distribution)
+    check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  // mock predict data
-  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  /** mock predict data
+   * we assume the sliding window has size 3
+   * num_samples indicates the number of samples in each sliding window,
+   * which is betweem [1,3] in this case
+   * for the first session, which has one example, will produce 1 prediction
+   * for the second session, which has three examples, will produce 1
+   * prediction. the third session, which has five examples, will produce 2
+   * predictions. session_id indicates the session id for each prediction
+   */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
+  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
+
   flexible_type check_sum_samples = 0;
-  for (auto& x : num_samples) {
-    check_sum_samples += x;
-  }
+  for (flexible_type x : num_samples) check_sum_samples += x;
   TS_ASSERT_EQUALS(check_sum, check_sum_samples);
+
+  // produce probability and make them different by using set
   std::vector<flexible_type> predict_probability;
   for (size_t i = 0; i < num_samples.size(); i++) {
     float sum = 0;
+    std::set<float> probability_set;
     flex_vec predict_score;
     for (size_t j = 0; j < class_labels.size(); j++) {
-      predict_score.push_back((double)(rand() % 10 + j * i));
-      sum += predict_score.back();
+      while (true) {
+        float probability = (float)(rand() % 10 + j * i);
+        if (probability_set.find(probability) == probability_set.end()) {
+          probability_set.insert(probability);
+          sum += probability;
+          predict_score.push_back(probability);
+          break;
+        }
+      }
     }
     for (size_t j = 0; j < class_labels.size(); j++) {
       predict_score[j] /= sum;
@@ -114,7 +134,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_row_rank) {
 
   // test for classify()
   // test for per_window
-  size_t topk = 5;
+  constexpr size_t topk = 5;
   gl_sframe predict_result =
       classifier.predict_topk(gl_sframe(), "rank", topk, "per_row");
   TS_ASSERT_EQUALS(predict_result.size(), test_num_examples * topk);
@@ -158,7 +178,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_row_rank) {
   std::vector<size_t> gt_rank;
   for (size_t i = 0; i < gt_probability_row.size(); i++) {
     std::vector<size_t> index_vec = argsort_prob(gt_probability_row[i]);
-    for (auto& x : index_vec) {
+    for (size_t x : index_vec) {
       gt_rank.push_back(x);
     }
   }
@@ -182,33 +202,53 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_row_rank) {
 
 BOOST_AUTO_TEST_CASE(
     test_activity_classifier_predict_topk_per_row_probability) {
-  static constexpr size_t test_num_examples = 25;
-  static constexpr size_t session_num = 5;
   const flex_list class_labels = {"a", "b", "c", "d", "e", "f", "g"};
+
+  // session id for each prediction
+  // in this case it is [1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,...]
+  constexpr size_t session_num = 5;
   const std::vector<size_t> session_distribution = {1, 3, 5, 7, 9};
   TS_ASSERT_EQUALS(session_num, session_distribution.size());
+
+  constexpr size_t test_num_examples = 25;
   size_t check_sum = 0;
-  for (auto& x : session_distribution) {
-    check_sum += x;
-  }
+  for (size_t num_per_session : session_distribution)
+    check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  // mock predict data
-  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  /** mock predict data
+   * we assume the sliding window has size 3
+   * num_samples indicates the number of samples in each sliding window,
+   * which is betweem [1,3] in this case
+   * for the first session, which has one example, will produce 1 prediction
+   * for the second session, which has three examples, will produce 1
+   * prediction. the third session, which has five examples, will produce 2
+   * predictions. session_id indicates the session id for each prediction
+   */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
+  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
+
   flexible_type check_sum_samples = 0;
-  for (auto& x : num_samples) {
-    check_sum_samples += x;
-  }
+  for (flexible_type x : num_samples) check_sum_samples += x;
   TS_ASSERT_EQUALS(check_sum, check_sum_samples);
+
+  // produce probability and make them different by using set
   std::vector<flexible_type> predict_probability;
   for (size_t i = 0; i < num_samples.size(); i++) {
     float sum = 0;
+    std::set<float> probability_set;
     flex_vec predict_score;
     for (size_t j = 0; j < class_labels.size(); j++) {
-      predict_score.push_back((double)(rand() % 10 + j * i));
-      sum += predict_score.back();
+      while (true) {
+        float probability = (float)(rand() % 10 + j * i);
+        if (probability_set.find(probability) == probability_set.end()) {
+          probability_set.insert(probability);
+          sum += probability;
+          predict_score.push_back(probability);
+          break;
+        }
+      }
     }
     for (size_t j = 0; j < class_labels.size(); j++) {
       predict_score[j] /= sum;
@@ -233,7 +273,7 @@ BOOST_AUTO_TEST_CASE(
 
   // test for classify()
   // test for per_window
-  size_t topk = 5;
+  constexpr size_t topk = 5;
   gl_sframe predict_result =
       classifier.predict_topk(gl_sframe(), "probability", topk, "per_row");
   TS_ASSERT_EQUALS(predict_result.size(), test_num_examples * topk);
@@ -264,6 +304,7 @@ BOOST_AUTO_TEST_CASE(
     }
   }
   TS_ASSERT_EQUALS(gt_probability_row.size(), test_num_examples);
+
   auto argsort_prob = [=](const flexible_type& ft) {
     const flex_vec& prob_vec = ft.get<flex_vec>();
     std::vector<size_t> index_vec(prob_vec.size());
@@ -274,11 +315,12 @@ BOOST_AUTO_TEST_CASE(
     std::sort(index_vec.begin(), index_vec.end(), compare);
     return std::vector<size_t>(index_vec.begin(), index_vec.begin() + topk);
   };
+
   std::vector<size_t> gt_rank;
   std::vector<float> gt_probability;
   for (size_t i = 0; i < gt_probability_row.size(); i++) {
     std::vector<size_t> index_vec = argsort_prob(gt_probability_row[i]);
-    for (auto& x : index_vec) {
+    for (size_t x : index_vec) {
       gt_rank.push_back(x);
       gt_probability.push_back(gt_probability_row[i][x]);
     }
@@ -296,6 +338,7 @@ BOOST_AUTO_TEST_CASE(
   for (size_t i = 0; i < gt_rank.size(); i++) {
     gt_class.push_back(class_labels[gt_rank[i]]);
   }
+
   gl_sarray class_array = predict_result["class"];
   TS_ASSERT_EQUALS(gt_class.size(), class_array.size());
   for (size_t i = 0; i < gt_class.size(); i++) {
@@ -304,33 +347,53 @@ BOOST_AUTO_TEST_CASE(
 }
 
 BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_window_rank) {
-  static constexpr size_t test_num_examples = 25;
-  static constexpr size_t session_num = 5;
   const flex_list class_labels = {"a", "b", "c", "d", "e", "f", "g"};
+
+  // session id for each prediction
+  // in this case it is [1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,...]
+  constexpr size_t session_num = 5;
   const std::vector<size_t> session_distribution = {1, 3, 5, 7, 9};
   TS_ASSERT_EQUALS(session_num, session_distribution.size());
+
+  constexpr size_t test_num_examples = 25;
   size_t check_sum = 0;
-  for (auto& x : session_distribution) {
-    check_sum += x;
-  }
+  for (size_t num_per_session : session_distribution)
+    check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  // mock predict data
-  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  /** mock predict data
+   * we assume the sliding window has size 3
+   * num_samples indicates the number of samples in each sliding window,
+   * which is betweem [1,3] in this case
+   * for the first session, which has one example, will produce 1 prediction
+   * for the second session, which has three examples, will produce 1
+   * prediction. the third session, which has five examples, will produce 2
+   * predictions. session_id indicates the session id for each prediction
+   */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
+  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
+
   flexible_type check_sum_samples = 0;
-  for (auto& x : num_samples) {
-    check_sum_samples += x;
-  }
+  for (flexible_type x : num_samples) check_sum_samples += x;
   TS_ASSERT_EQUALS(check_sum, check_sum_samples);
+
+  // produce probability and make them different by using set
   std::vector<flexible_type> predict_probability;
   for (size_t i = 0; i < num_samples.size(); i++) {
     float sum = 0;
+    std::set<float> probability_set;
     flex_vec predict_score;
     for (size_t j = 0; j < class_labels.size(); j++) {
-      predict_score.push_back((double)(rand() % 10 + j * i));
-      sum += predict_score.back();
+      while (true) {
+        float probability = (float)(rand() % 10 + j * i);
+        if (probability_set.find(probability) == probability_set.end()) {
+          probability_set.insert(probability);
+          sum += probability;
+          predict_score.push_back(probability);
+          break;
+        }
+      }
     }
     for (size_t j = 0; j < class_labels.size(); j++) {
       predict_score[j] /= sum;
@@ -355,7 +418,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_window_rank) {
 
   // test for classify()
   // test for per_window
-  size_t topk = 5;
+  constexpr size_t topk = 5;
   gl_sframe predict_result =
       classifier.predict_topk(gl_sframe(), "rank", topk, "per_window");
   TS_ASSERT_EQUALS(predict_result.size(), num_samples.size() * topk);
@@ -393,7 +456,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_window_rank) {
   std::vector<size_t> gt_rank;
   for (size_t i = 0; i < predict_probability.size(); i++) {
     std::vector<size_t> index_vec = argsort_prob(predict_probability[i]);
-    for (auto& x : index_vec) {
+    for (size_t x : index_vec) {
       gt_rank.push_back(x);
     }
   }
@@ -417,33 +480,53 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_window_rank) {
 
 BOOST_AUTO_TEST_CASE(
     test_activity_classifier_predict_topk_per_window_probability) {
-  static constexpr size_t test_num_examples = 25;
-  static constexpr size_t session_num = 5;
   const flex_list class_labels = {"a", "b", "c", "d", "e", "f", "g"};
+
+  // session id for each prediction
+  // in this case it is [1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,...]
+  constexpr size_t session_num = 5;
   const std::vector<size_t> session_distribution = {1, 3, 5, 7, 9};
   TS_ASSERT_EQUALS(session_num, session_distribution.size());
+
+  constexpr size_t test_num_examples = 25;
   size_t check_sum = 0;
-  for (auto& x : session_distribution) {
-    check_sum += x;
-  }
+  for (size_t num_per_session : session_distribution)
+    check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  // mock predict data
-  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  /** mock predict data
+   * we assume the sliding window has size 3
+   * num_samples indicates the number of samples in each sliding window,
+   * which is betweem [1,3] in this case
+   * for the first session, which has one example, will produce 1 prediction
+   * for the second session, which has three examples, will produce 1
+   * prediction. the third session, which has five examples, will produce 2
+   * predictions. session_id indicates the session id for each prediction
+   */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
+  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
+
   flexible_type check_sum_samples = 0;
-  for (auto& x : num_samples) {
-    check_sum_samples += x;
-  }
+  for (flexible_type x : num_samples) check_sum_samples += x;
   TS_ASSERT_EQUALS(check_sum, check_sum_samples);
+
+  // produce probability and make them different by using set
   std::vector<flexible_type> predict_probability;
   for (size_t i = 0; i < num_samples.size(); i++) {
     float sum = 0;
+    std::set<float> probability_set;
     flex_vec predict_score;
     for (size_t j = 0; j < class_labels.size(); j++) {
-      predict_score.push_back((double)(rand() % 10 + j * i));
-      sum += predict_score.back();
+      while (true) {
+        float probability = (float)(rand() % 10 + j * i);
+        if (probability_set.find(probability) == probability_set.end()) {
+          probability_set.insert(probability);
+          sum += probability;
+          predict_score.push_back(probability);
+          break;
+        }
+      }
     }
     for (size_t j = 0; j < class_labels.size(); j++) {
       predict_score[j] /= sum;
@@ -468,7 +551,7 @@ BOOST_AUTO_TEST_CASE(
 
   // test for classify()
   // test for per_window
-  size_t topk = 5;
+  constexpr size_t topk = 5;
   gl_sframe predict_result =
       classifier.predict_topk(gl_sframe(), "probability", topk, "per_window");
   TS_ASSERT_EQUALS(predict_result.size(), num_samples.size() * topk);
@@ -507,7 +590,7 @@ BOOST_AUTO_TEST_CASE(
   std::vector<size_t> gt_probability;
   for (size_t i = 0; i < predict_probability.size(); i++) {
     std::vector<size_t> index_vec = argsort_prob(predict_probability[i]);
-    for (auto& x : index_vec) {
+    for (size_t x : index_vec) {
       gt_rank.push_back(x);
       gt_probability.push_back(predict_probability[i][x]);
     }

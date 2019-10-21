@@ -468,17 +468,12 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
                                             std::string output_type, size_t k,
                                             std::string output_frequency) {
   // check valid input arguments
-  if (output_type.empty()) {
-    output_type = "probability";
-  } else if (output_type != "probability" && output_type != "rank") {
+  if (output_type != "probability" && output_type != "rank") {
     log_and_throw(output_type +
                   " is not a valid option for output_type.  "
                   "Expected one of: probability, rank");
   }
-  if (output_frequency.empty()) {
-    output_frequency = "per_row";
-  } else if (output_frequency != "per_row" &&
-             output_frequency != "per_window") {
+  if (output_frequency != "per_row" && output_frequency != "per_window") {
     log_and_throw(output_frequency +
                   " is not a valid option for output_frequency.  "
                   "Expected one of: per_row, per_window");
@@ -498,10 +493,13 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
     const flex_vec& prob_vec = ft.get<flex_vec>();
     std::vector<size_t> index_vec(prob_vec.size());
     std::iota(index_vec.begin(), index_vec.end(), 0);
-    auto compare = [&](const size_t& i, const size_t& j) {
+    auto compare = [&](size_t i, size_t j) {
       return prob_vec[i] > prob_vec[j];
     };
-    std::sort(index_vec.begin(), index_vec.end(), compare);
+    // std::random_shuffle(index_vec.begin(), index_vec.end());
+    std::nth_element(index_vec.begin(), index_vec.begin() + k, index_vec.end(),
+                     compare);
+    std::sort(index_vec.begin(), index_vec.begin() + k, compare);
     return flex_list(index_vec.begin(), index_vec.begin() + k);
   };
 
@@ -515,7 +513,7 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
   auto get_class_name = [=](const sframe_rows::row& row) {
     const flex_list& rank_list = row[rank_column_index];
     flex_list topk_class;
-    for (const flexible_type& i : rank_list) {
+    for (const flexible_type i : rank_list) {
       topk_class.push_back(class_labels[i]);
     }
     return topk_class;
@@ -530,7 +528,7 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
     auto get_probability = [=](const sframe_rows::row& row) {
       const flex_list& rank_list = row[rank_column_index];
       flex_list topk_prob;
-      for (const flexible_type& i : rank_list) {
+      for (const flexible_type i : rank_list) {
         topk_prob.push_back(row[prob_column_index][i]);
       }
       return topk_prob;

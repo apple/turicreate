@@ -159,9 +159,9 @@ class EXPORT activity_classifier: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::predict_topk, "data",
                                  "output_type", "k", "output_frequency");
-  register_defaults("predict_topk", {{"output_type", std::string("")},
+  register_defaults("predict_topk", {{"output_type", "probability"},
                                      {"k", 3},
-                                     {"output_frequency", std::string("")}});
+                                     {"output_frequency", "per_row"}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::evaluate, "data",
                                  "metric");
