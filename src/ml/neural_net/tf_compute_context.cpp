@@ -11,7 +11,6 @@
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
-#include <ml/neural_net/mps_compute_context.hpp>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -299,7 +298,6 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
   return std::unique_ptr<image_augmenter>(new tf_image_augmenter(opts));
-  // return mps_compute_context().create_image_augmenter(opts);
 }
 
 
