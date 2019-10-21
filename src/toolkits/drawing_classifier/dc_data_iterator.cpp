@@ -130,10 +130,12 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   batch_targets.reserve(batch_size);
   batch_predictions.reserve(batch_size);
   float *next_drawing_pointer = batch_drawings.data();
+  size_t real_batch_size = 0;
 
   while (batch_targets.size() < batch_size
         && next_row_ != range_iterator_.end()) {
 
+    real_batch_size++;
     const sframe_rows::row& row = *next_row_;
     
     if (predictions_index_ >= 0) {
@@ -184,21 +186,21 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     }
   }
 
-  DASSERT_EQ(batch_size, batch_targets.size());
+  DASSERT_EQ(real_batch_size, batch_targets.size());
 
   // Wrap the buffers as float_array values.
   data_iterator::batch result;
-  result.num_samples = batch_size;
+  result.num_samples = real_batch_size;
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
-      { batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels });
+      { real_batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels });
   
   result.targets = shared_float_array::wrap(
-      std::move(batch_targets), { batch_size, 1 });
+      std::move(batch_targets), { real_batch_size, 1 });
   
   if (predictions_index_ >= 0) {
     result.predictions = shared_float_array::wrap(
-        std::move(batch_predictions), { batch_size, 1 });
+        std::move(batch_predictions), { real_batch_size, 1 });
   }
 
   return result;
