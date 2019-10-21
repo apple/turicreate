@@ -17,7 +17,6 @@
 
 #include <string>
 
-
 namespace turi {
 namespace style_transfer {
 
@@ -25,8 +24,10 @@ std::string generate_data(size_t data_size);
 turi::flex_image random_image();
 turi::gl_sarray random_image_sarray(size_t length);
 turi::gl_sframe random_sframe(size_t length, std::string image_column_name);
+std::string get_vgg16_model();
+std::string get_resnet_model();
 
-} // namespace style_transfer
-} // namespace turi
+}  // namespace style_transfer
+}  // namespace turi
 
-#endif // __TC_TEST_TOOLKITS_STYLE_TRANSFER_UTILS
+#endif  // __TC_TEST_TOOLKITS_STYLE_TRANSFER_UTILS

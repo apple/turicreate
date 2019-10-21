@@ -13,7 +13,7 @@
 #include <core/storage/fileio/block_cache.hpp>
 #include <core/globals/globals.hpp>
 #include <core/random/random.hpp>
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
 #include <core/storage/fileio/hdfs.hpp>
 #endif
 #include <iostream>
@@ -91,7 +91,7 @@ static bool check_cache_file_location(std::string val) {
   return true;
 }
 
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
 static bool check_cache_file_hdfs_location(std::string val) {
   if (get_protocol(val) == "hdfs") {
 #ifdef TC_BUILD_IOS
@@ -154,7 +154,7 @@ REGISTER_GLOBAL_WITH_CHECKS(std::string,
                             check_cache_file_location);
 
 
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
 REGISTER_GLOBAL_WITH_CHECKS(std::string,
                             CACHE_FILE_HDFS_LOCATION,
                             true,

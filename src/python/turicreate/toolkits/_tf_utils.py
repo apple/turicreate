@@ -8,6 +8,16 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as np
+
+
+def get_gpu_names():
+	"""
+	Gets the available GPU names.
+	"""
+	import turicreate.toolkits.libtctensorflow
+	import tensorflow as tf
+	gpu_names = tf.config.experimental.list_physical_devices('GPU')
+	return gpu_names
 	
 def convert_shared_float_array_to_numpy(array):
 	"""

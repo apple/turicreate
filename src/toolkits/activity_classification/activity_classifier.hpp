@@ -41,6 +41,8 @@ class EXPORT activity_classifier: public ml_model_base {
   gl_sarray predict(gl_sframe data, std::string output_type);
   gl_sframe predict_per_window(gl_sframe data, std::string output_type);
   gl_sframe classify(gl_sframe data, std::string output_frequency);
+  gl_sframe predict_topk(gl_sframe data, std::string output_type, size_t k,
+                         std::string output_frequency);
   variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename);
@@ -157,9 +159,16 @@ class EXPORT activity_classifier: public ml_model_base {
       "    - 'class': Class prediction. This returns the class with maximum\n"
       "      probability per prediction_window.\n");
 
+
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::classify, "data",
                                  "output_frequency");
-  register_defaults("classify", {{"output_frequency", std::string("")}});
+  register_defaults("classify", {{"output_frequency", ""}});
+
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::predict_topk, "data",
+                                 "output_type", "k", "output_frequency");
+  register_defaults("predict_topk", {{"output_type", "probability"},
+                                     {"k", 3},
+                                     {"output_frequency", "per_row"}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::evaluate, "data",
                                  "metric");
