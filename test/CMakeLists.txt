@@ -3,7 +3,7 @@ project(TuriTest)
 enable_testing()
 
 subdirs(
-  # annotation
+        annotation
         toolkits
         ml_data
         optimization
