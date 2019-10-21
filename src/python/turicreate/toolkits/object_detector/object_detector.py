@@ -445,7 +445,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         }
         model = _tc.extensions.object_detector()
         model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
-        print(annotations)
         return ObjectDetector_beta(model_proxy=model, name="object_detector")
 
     else:  # Use MxNet
@@ -1645,7 +1644,7 @@ class ObjectDetector_beta(_Model):
         return self.__proxy__.export_to_coreml(filename, options)
 
 
-    def predict(self, dataset, confidence_threshold=0.45, iou_threshold=0.45):
+    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45):
         """
         Predict object instances in an SFrame of images.
 
@@ -1692,10 +1691,9 @@ class ObjectDetector_beta(_Model):
             # Visualize predictions by generating a new column of marked up images
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
         """
-        print("shit")
         return  self.__proxy__.predict(dataset, confidence_threshold, iou_threshold)
 
-    def evaluate(self, dataset, metric='auto'):
+    def evaluate(self, dataset, metric='auto', confidence_threshold = 0.001, iou_threshold = 0.45):
         """
         Evaluate the model by making predictions and comparing these to ground
         truth bounding box annotations.
@@ -1740,5 +1738,4 @@ class ObjectDetector_beta(_Model):
         >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
         mAP: 43.2%
         """
-        print("shit 2 ")
-        return self.__proxy__.evaluate(dataset, metric)
+        return self.__proxy__.evaluate(dataset, metric, confidence_threshold, iou_threshold)

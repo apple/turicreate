@@ -91,8 +91,8 @@ public:
   using init_model_call = std::function<std::unique_ptr<model_spec>(
       const std::string& pretrained_mlmodel_path, size_t num_classes)>;
 
-  using perform_evaluation_call =
-      std::function<variant_map_type(gl_sframe data, std::string metric)>;
+  using perform_evaluation_call = std::function<variant_map_type(
+      gl_sframe data, std::string metric, float, float)>;
 
   using convert_yolo_to_annotations_call =
       std::function<std::vector<image_annotation>(
@@ -148,13 +148,14 @@ public:
     return expected_call(pretrained_mlmodel_path, num_classes);
   }
 
-  variant_map_type perform_evaluation(gl_sframe data,
-                                      std::string metric) override {
+  variant_map_type perform_evaluation(gl_sframe data, std::string metric,
+                                      float confidence_threshold,
+                                      float iou_threshold) override {
     TS_ASSERT(!perform_evaluation_calls_.empty());
     perform_evaluation_call expected_call =
         std::move(perform_evaluation_calls_.front());
     perform_evaluation_calls_.pop_front();
-    return expected_call(data, metric);
+    return expected_call(data, metric, confidence_threshold, iou_threshold);
   }
 
   std::vector<neural_net::image_annotation> convert_yolo_to_annotations(
@@ -483,7 +484,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_finalize_training) {
 
   // finalize_training will trigger a call to evaluation, to compute training
   // metrics.
-  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric) {
+  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric,
+                                     float confidence_threshold,
+                                     float iou_threshold) {
     std::map<std::string, variant_type> result;
     result["mean_average_precision"] = 0.80f;
     return result;
@@ -695,7 +698,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   model.create_compute_context_calls_.push_back(create_compute_context_impl);
 
   // Training will trigger a call to evaluation, to compute training metrics.
-  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric) {
+  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric,
+                                     float confidence_threshold,
+                                     float iou_threshold) {
     std::map<std::string, variant_type> result;
     result["mean_average_precision"] = 0.80f;
     return result;
@@ -886,7 +891,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   model.create_compute_context_calls_.push_back(create_compute_context_impl);
 
   // Training will trigger a call to evaluation, to compute training metrics.
-  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric) {
+  auto perform_evaluation_impl = [&](gl_sframe data, std::string metric,
+                                     float confidence_threshold,
+                                     float iou_threshold) {
     std::map<std::string, variant_type> result;
     result["mean_average_precision"] = 0.80f;
     return result;
@@ -1082,7 +1089,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
     model.convert_yolo_to_annotations_calls_.push_back(convert_yolo_impl);
   }
 
-  gl_sarray result = model.predict(data);
+  gl_sarray result = model.predict(data, 0.25, 0.45);
   for (size_t j = 0; j < result.size(); ++j) {
     TS_ASSERT_EQUALS(result[j].size(), num_prediction_instances);
   }

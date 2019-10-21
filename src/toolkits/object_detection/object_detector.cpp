@@ -532,7 +532,10 @@ variant_map_type object_detector::evaluate(
   if (std::find(metrics.begin(), metrics.end(), MAP) == metrics.end()) {
     result_map.erase(MAP);
   }
-
+  for (auto& shit : result_map) {
+    std::cout << shit.first << '\n';
+  }
+  std::cout << "====\n";
   return result_map;
 }
 
@@ -592,6 +595,9 @@ void object_detector::perform_predict(gl_sframe data,
   size_t grid_width = read_state<size_t>("grid_width");
   //float iou_threshold =
   //    read_state<flex_float>("non_maximum_suppression_threshold");
+
+  // return if the data is empty
+  if (data.size() == 0) return;
 
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_iter = create_iterator(
@@ -704,8 +710,10 @@ void object_detector::perform_predict(gl_sframe data,
 // instantiating a new backend during training. Or just check to see if an
 // existing backend is available?
 variant_map_type object_detector::perform_evaluation(gl_sframe data,
-                                                     std::string metric) {
-  return evaluate(data, metric);
+                                                     std::string metric,
+                                                     float confidence_threshold,
+                                                     float iou_threshold) {
+  return evaluate(data, metric, confidence_threshold, iou_threshold);
 }
 
 std::vector<neural_net::image_annotation>
@@ -1252,15 +1260,14 @@ void object_detector::update_model_metrics(gl_sframe data,
   std::map<std::string, variant_type> metrics;
 
   // Compute training metrics.
-  variant_map_type training_metrics = perform_evaluation(data, "all");
+  variant_map_type training_metrics = evaluate(data, "all");
   for (const auto& kv : training_metrics) {
     metrics["training_" + kv.first] = kv.second;
   }
 
   // Compute validation metrics if necessary.
   if (!validation_data.empty()) {
-    variant_map_type validation_metrics = perform_evaluation(validation_data,
-                                                             "all");
+    variant_map_type validation_metrics = evaluate(validation_data, "all");
     for (const auto& kv : validation_metrics) {
       metrics["validation_" + kv.first] = kv.second;
     }
