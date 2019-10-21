@@ -11,6 +11,7 @@
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
+#include <ml/neural_net/mps_compute_context.hpp>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -23,6 +24,70 @@ using turi::neural_net::float_array;
 using turi::neural_net::float_array_map;
 using turi::neural_net::labeled_image;
 using turi::neural_net::shared_float_array;
+using turi::neural_net::float_array_image_augmenter;
+
+template <typename CallFunc>
+void call_pybind_function(const CallFunc& func) {
+  PyGILState_STATE gstate;
+  gstate = PyGILState_Ensure();
+
+  turi::scoped_finally gstate_restore([&]() { PyGILState_Release(gstate); });
+
+  try {
+    func();
+  } catch (const pybind11::error_already_set& e) {
+    log_and_throw(std::string("An error occurred: ") + e.what());
+  } catch (...) {
+    log_and_throw("Unknown error occurred");
+  }
+
+}
+
+static std::vector<size_t> get_shape(const float_array& num) {
+  return std::vector<size_t>(num.shape(), num.shape() + num.dim());
+}
+
+static std::vector<size_t> get_strides(const float_array& num) {
+  if (num.dim() == 0) {
+    return {};
+  }
+  std::vector<size_t> result(num.dim());
+  const size_t* shape = num.shape();
+  result[num.dim() - 1] = sizeof(float);
+  for (size_t i = num.dim() - 1; i > 0; --i) {
+    result[i - 1] = result[i] * shape[i];
+  }
+  return result;
+}
+
+PYBIND11_MODULE(libtctensorflow, m) {
+  pybind11::class_<float_array>(m, "FloatArray", pybind11::buffer_protocol())
+      .def_buffer([](float_array& m) -> pybind11::buffer_info {
+        return pybind11::buffer_info(
+            const_cast<float*>(m.data()), /* Pointer to buffer */
+            sizeof(float),                /* Size of one scalar */
+            pybind11::format_descriptor<float>::format(),  /* Python struct-style format descriptor */
+            m.dim(),              /* Number of dimensions  */
+            get_shape(m),         /* Buffer dimensions */
+            get_strides(m)        /* Strides (in bytes) for each index */
+
+        );
+      });
+  pybind11::class_<shared_float_array>(m, "SharedFloatArray",
+                                       pybind11::buffer_protocol())
+      .def_buffer([](shared_float_array& m) -> pybind11::buffer_info {
+        return pybind11::buffer_info(
+            const_cast<float*>(m.data()), /* Pointer to buffer */
+            sizeof(float),                /* Size of one scalar */
+            pybind11::format_descriptor<float>::format(), /* Python struct-style format descriptor */
+            m.dim(),              /* Number of dimensions */
+            get_shape(m),         /* Buffer dimensions */
+            get_strides(m)        /* Strides (in bytes) for each index */
+
+        );
+      });
+}
+
 
 class tf_model_backend : public model_backend {
  public:
@@ -119,22 +184,23 @@ tf_model_backend::~tf_model_backend() {
   call_pybind_function([&]() { model_ = pybind11::object(); });
 }
 
-class tf_image_augmenter : public processed_image_augmenter {
+class tf_image_augmenter : public float_array_image_augmenter {
  public:
   tf_image_augmenter(const options& opts);
   ~tf_image_augmenter() override = default;
 
-  image_augmenter::intermediate_result prepare_augmented_images(
-      image_augmenter::intermediate_labeled_image data_to_augment) override;
+  float_array_result prepare_augmented_images(
+      labeled_float_image data_to_augment) override;
 
  private:
   options opts_;
 };
 
-image_augmenter::intermediate_result
-tf_image_augmenter::prepare_augmented_images(
-    image_augmenter::intermediate_labeled_image data_to_augment) {
-  image_augmenter::intermediate_result image_annotations;
+tf_image_augmenter::tf_image_augmenter(const options& opts) : float_array_image_augmenter(opts) {}
+
+float_array_image_augmenter::float_array_result tf_image_augmenter::prepare_augmented_images(
+    float_array_image_augmenter::labeled_float_image data_to_augment) {
+  float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
     // Import the module from python that does data augmentation
@@ -142,21 +208,19 @@ tf_image_augmenter::prepare_augmented_images(
         "turicreate.toolkits.object_detector._tf_image_augmenter");
 
     // Get augmented images and annotations from tensorflow
-    pybind11::object tf_augmentation = tf_aug.attr("DataAugmenter")(
-        data_to_augment.images, data_to_augment.annotations,
-        data_to_augment.predictions);
-    pybind11::object augmented_img =
-        tf_augmentation.attr("get_augmented_images")();
-    pybind11::buffer aug_images = augmented_img.cast<pybind11::buffer>();
-    pybind11::buffer_info buf_img = aug_images.request();
+    pybind11::object augmented_data = tf_aug.attr("get_augmented_data")(
+        data_to_augment.images, data_to_augment.annotations);
+    std::pair<pybind11::buffer, std::vector<pybind11::buffer>> aug_data =
+        augmented_data
+            .cast<std::pair<pybind11::buffer, std::vector<pybind11::buffer>>>();
+
+    pybind11::buffer_info buf_img = std::get<0>(aug_data).request();
     image_annotations.images = turi::neural_net::shared_float_array::copy(
         static_cast<float*>(buf_img.ptr),
         std::vector<size_t>(buf_img.shape.begin(), buf_img.shape.end()));
-    pybind11::object augmented_ann =
-        tf_augmentation.attr("get_augmented_annotations")();
-    std::vector<pybind11::buffer> aug_annotations =
-        augmented_ann.cast<std::vector<pybind11::buffer>>();
     std::vector<turi::neural_net::shared_float_array> annotations_per_batch;
+    std::vector<pybind11::buffer> aug_annotations = std::get<1>(aug_data);
+
     for (size_t i = 0; i < aug_annotations.size(); i++) {
       pybind11::buffer_info buf_ann = aug_annotations[i].request();
       turi::neural_net::shared_float_array annotate =
@@ -170,70 +234,6 @@ tf_image_augmenter::prepare_augmented_images(
 
   return image_annotations;
 }
-
-template <typename CallFunc>
-void call_pybind_function(const CallFunc& func) {
-  PyGILState_STATE gstate;
-  gstate = PyGILState_Ensure();
-
-  turi::scoped_finally gstate_restore([&]() { PyGILState_Release(gstate); });
-
-  try {
-    func();
-  } catch (const pybind11::error_already_set& e) {
-    log_and_throw(std::string("An error occurred: ") + e.what());
-  } catch (...) {
-    log_and_throw("Unknown error occurred");
-  }
-
-}
-
-
-static std::vector<size_t> get_shape(const float_array& num) {
-  return std::vector<size_t>(num.shape(), num.shape() + num.dim());
-}
-
-static std::vector<size_t> get_strides(const float_array& num) {
-  if (num.dim() == 0) {
-    return {};
-  }
-  std::vector<size_t> result(num.dim());
-  const size_t* shape = num.shape();
-  result[num.dim() - 1] = sizeof(float);
-  for (size_t i = num.dim() - 1; i > 0; --i) {
-    result[i - 1] = result[i] * shape[i];
-  }
-  return result;
-}
-
-PYBIND11_MODULE(libtctensorflow, m) {
-  pybind11::class_<float_array>(m, "FloatArray", pybind11::buffer_protocol())
-      .def_buffer([](float_array& m) -> pybind11::buffer_info {
-        return pybind11::buffer_info(
-            const_cast<float*>(m.data()), /* Pointer to buffer */
-            sizeof(float),                /* Size of one scalar */
-            pybind11::format_descriptor<float>::format(),  /* Python struct-style format descriptor */
-            m.dim(),              /* Number of dimensions  */
-            get_shape(m),         /* Buffer dimensions */
-            get_strides(m)        /* Strides (in bytes) for each index */
-
-        );
-      });
-  pybind11::class_<shared_float_array>(m, "SharedFloatArray",
-                                       pybind11::buffer_protocol())
-      .def_buffer([](shared_float_array& m) -> pybind11::buffer_info {
-        return pybind11::buffer_info(
-            const_cast<float*>(m.data()), /* Pointer to buffer */
-            sizeof(float),                /* Size of one scalar */
-            pybind11::format_descriptor<float>::format(), /* Python struct-style format descriptor */
-            m.dim(),              /* Number of dimensions */
-            get_shape(m),         /* Buffer dimensions */
-            get_strides(m)        /* Strides (in bytes) for each index */
-
-        );
-      });
-}
-
 
 namespace {
 
@@ -257,19 +257,7 @@ size_t tf_compute_context::memory_budget() const {
 }
 
 std::vector<std::string> tf_compute_context::gpu_names() const {
-  pybind11::object gpu_devices;
-  std::vector<std::string> gpu_device_names;
-
-  call_pybind_function([&]() {
-    
-    pybind11::module tf_gpu_devices =
-        pybind11::module::import("turicreate.toolkits._tf_utils");
-    // Get the names from tf utilities function
-    gpu_devices = tf_gpu_devices.attr("get_gpu_names")();
-    gpu_device_names = gpu_devices.cast<std::vector<std::string>>();
-  });
-
-  return gpu_device_names;
+  return std::vector<std::string>();
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
@@ -311,155 +299,9 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
   return std::unique_ptr<image_augmenter>(new tf_image_augmenter(opts));
+  // return mps_compute_context().create_image_augmenter(opts);
 }
 
-/**
- * TODO: Add proper arguments to create_drawing_classifier
- */
-std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
-    /* TODO: const float_array_map& weights
-     * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-     */
-    size_t batch_size, size_t num_classes) {
-  pybind11::object drawing_classifier;
-  call_pybind_function([&]() {
-    pybind11::module tf_dc_backend = pybind11::module::import(
-        "turicreate.toolkits.drawing_classifier._tf_drawing_classifier");
-
-    // Make an instance of python object
-    drawing_classifier = tf_dc_backend.attr("DrawingClassifierTensorFlowModel")(
-        /* TODO: weights.
-         * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-         */
-        batch_size, num_classes);
-  });
-  return std::unique_ptr<tf_model_backend>(
-      new tf_model_backend(drawing_classifier));
-}
-
-
-tf_model_backend::tf_model_backend(pybind11::object model): model_(model) {}
-
-float_array_map tf_model_backend::train(const float_array_map& inputs) {
-
-  // Call train method on the TensorflowModel
-  float_array_map result;
-
-  call_pybind_function([&]() {
-    pybind11::object output = model_.attr("train")(inputs);
-
-    std::map<std::string, pybind11::buffer> buf_output =
-        output.cast<std::map<std::string, pybind11::buffer>>();
-
-    for (auto& kv : buf_output) {
-      pybind11::buffer_info buf = kv.second.request();
-      turi::neural_net::shared_float_array value =
-          turi::neural_net::shared_float_array::copy(
-              static_cast<float*>(buf.ptr),
-              std::vector<size_t>(buf.shape.begin(), buf.shape.end()));
-      result[kv.first] = value;
-    }
-  });
-
-  return result;
-}
-
-float_array_map tf_model_backend::predict(const float_array_map& inputs) const {
-  float_array_map result;
-
-  // Call predict method on the TensorFlowModel 
-  call_pybind_function([&]() {
-    pybind11::object output = model_.attr("predict")(inputs);
-    std::map<std::string, pybind11::buffer> buf_output =
-        output.cast<std::map<std::string, pybind11::buffer>>();
-
-    for (auto& kv : buf_output) {
-      pybind11::buffer_info buf = kv.second.request();
-      turi::neural_net::shared_float_array value =
-          turi::neural_net::shared_float_array::copy(
-              static_cast<float*>(buf.ptr),
-              std::vector<size_t>(buf.shape.begin(), buf.shape.end()));
-      result[kv.first] = value;
-    }
-  });
-
-  return result;
-}
-
-float_array_map tf_model_backend::export_weights() const {
-  float_array_map result;
-  call_pybind_function([&]() {
-
-    // Call export_weights method on the TensorFLowModel
-    pybind11::object exported_weights = model_.attr("export_weights")();
-    std::map<std::string, pybind11::buffer> buf_output =
-        exported_weights.cast<std::map<std::string, pybind11::buffer>>();
-
-    for (auto& kv : buf_output) {
-      pybind11::buffer_info buf = kv.second.request();
-      turi::neural_net::shared_float_array value =
-          turi::neural_net::shared_float_array::copy(static_cast<float*>(buf.ptr),
-              std::vector<size_t>(buf.shape.begin(), buf.shape.end()));
-      result[kv.first] = value;
-    }
-  });
-
-  return result;
-}
-
-void tf_model_backend::set_learning_rate(float lr) {
-  float_array_map result;
-
-  // Call set_learning_rate method on the TensorFLowModel
-  call_pybind_function([&]() { model_.attr("set_learning_rate")(lr); });
-}
-
-tf_model_backend::~tf_model_backend() {
-  call_pybind_function([&]() { model_ = pybind11::object(); });
-}
-
-image_augmenter::intermediate_result
-tf_image_augmenter::prepare_augmented_images(
-    image_augmenter::intermediate_labeled_image data_to_augment) {
-  
-  image_augmenter::intermediate_result image_annotations;
-
-  call_pybind_function([&]() {
-    // Import the module from python that does data augmentation
-    pybind11::module tf_aug = pybind11::module::import(
-        "turicreate.toolkits.object_detector._tf_image_augmenter");
-
-    // Get augmented images and annotations from tensorflow
-    pybind11::object tf_augmentation = tf_aug.attr("DataAugmenter")(
-        data_to_augment.images, data_to_augment.annotations,
-        data_to_augment.predictions);
-    pybind11::object augmented_img =
-        tf_augmentation.attr("get_augmented_images")();
-    pybind11::buffer aug_images = augmented_img.cast<pybind11::buffer>();
-    pybind11::buffer_info buf_img = aug_images.request();
-    image_annotations.images = turi::neural_net::shared_float_array::copy(
-        static_cast<float*>(buf_img.ptr),
-        std::vector<size_t>(buf_img.shape.begin(), buf_img.shape.end()));
-    pybind11::object augmented_ann =
-        tf_augmentation.attr("get_augmented_annotations")();
-    std::vector<pybind11::buffer> aug_annotations =
-        augmented_ann.cast<std::vector<pybind11::buffer>>();
-    std::vector<turi::neural_net::shared_float_array> annotations_per_batch;
-    for (size_t i = 0; i < aug_annotations.size(); i++) {
-      pybind11::buffer_info buf_ann = aug_annotations[i].request();
-      turi::neural_net::shared_float_array annotate =
-          turi::neural_net::shared_float_array::copy(
-              static_cast<float*>(buf_ann.ptr),
-              std::vector<size_t>(buf_ann.shape.begin(), buf_ann.shape.end()));
-      annotations_per_batch.push_back(annotate);
-    }
-    image_annotations.annotations = annotations_per_batch;
-  });
-
-  return image_annotations;
-}
-
-~tf_image_augmenter() override = default;
 
 }  // namespace neural_net
 }  // namespace turi
