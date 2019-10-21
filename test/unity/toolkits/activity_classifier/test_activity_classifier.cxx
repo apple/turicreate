@@ -8,11 +8,6 @@
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
-<<<<<<< HEAD
-=======
-#include <iostream>
->>>>>>> master
-
 #include <toolkits/activity_classification/activity_classifier.hpp>
 
 namespace turi {
@@ -857,7 +852,6 @@ BOOST_AUTO_TEST_CASE(
   for (size_t i = 0; i < class_array.size(); i++) {
     TS_ASSERT_EQUALS(class_array[i], gt_class[i]);
   }
->>>>>>> master
 }
 
 }  // namespace
