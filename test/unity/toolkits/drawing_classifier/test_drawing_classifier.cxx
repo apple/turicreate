@@ -140,12 +140,11 @@ class test_drawing_classifier: public drawing_classifier {
     return expected_call();
   }
 
-  std::unique_ptr<model_spec> init_model(
-      bool use_random_init) const override {
+  std::unique_ptr<model_spec> init_model() const override {
     TS_ASSERT(!init_model_calls_.empty());
     init_model_call expected_call = std::move(init_model_calls_.front());
     init_model_calls_.pop_front();
-    return expected_call(use_random_init);
+    return expected_call();
   }
 
   template <class T>
@@ -196,7 +195,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_train) {
 
   model.create_iterator_calls_.push_back(create_iterator_impl);
 
-  model.init_model_calls_.emplace_back([=](bool use_random_init) {
+  model.init_model_calls_.emplace_back([=]() {
 
     std::unique_ptr<model_spec> nn_spec(new model_spec);
     nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
@@ -342,7 +341,25 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_training_iteration) {
       result["accuracy"] = shared_float_array::wrap(.5);
       return result;
     };
+
     mock_nn_model->train_calls_.push_back(train_impl);
+
+    auto predict_impl = [=](const float_array_map& inputs) {
+      // shared_float_array input_batch = inputs.at("input");
+      // TS_ASSERT_EQUALS(input_batch.data(), test_image_batch->data());
+
+      // Track how many calls we've had.
+      *num_iterations_submitted += 1;
+
+      // Multiply loss by 8 to offset the "mps_loss_mult" factor currently
+      // hardwired in to avoid fp16 underflow in MPS.
+      std::map<std::string, shared_float_array> result;
+      result["predictions"] = shared_float_array::wrap(8 * test_loss);
+      result["accuracy"] = shared_float_array::wrap(.5);
+      return result;
+    };
+
+    mock_nn_model->predict_calls_.push_back(predict_impl);
   }
 
   test_drawing_classifier model(

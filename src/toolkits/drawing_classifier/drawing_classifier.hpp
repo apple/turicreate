@@ -6,8 +6,6 @@
 #ifndef TURI_DRAWING_CLASSIFIER_H_
 #define TURI_DRAWING_CLASSIFIER_H_
 
-#include <toolkits/drawing_classifier/dc_data_iterator.hpp>
-
 #include <core/logging/table_printer/table_printer.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/variant.hpp>
@@ -228,8 +226,7 @@ class EXPORT drawing_classifier: public ml_model_base {
       const;
 
   // Returns the initial neural network to train
-  virtual std::unique_ptr<neural_net::model_spec> init_model(
-      bool random_init) const;
+  virtual std::unique_ptr<neural_net::model_spec> init_model() const;
 
   virtual std::tuple<gl_sframe, gl_sframe> init_data(
       gl_sframe data, variant_type validation_data) const;
