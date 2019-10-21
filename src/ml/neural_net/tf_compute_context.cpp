@@ -16,6 +16,10 @@
 #include <pybind11/numpy.h>
 #include <pybind11/stl.h>
 
+#ifdef __APPLE__
+#include <ml/neural_net/mps_compute_context.hpp>
+#endif
+
 namespace turi {
 namespace neural_net {
 
@@ -252,12 +256,27 @@ tf_compute_context::tf_compute_context() = default;
 tf_compute_context::~tf_compute_context() = default;
 
 size_t tf_compute_context::memory_budget() const {
-  return 0;
+  // TODO: Returns 4GB as that makes sure default batch size is used. 
+  // Do something that makes more sense like MPS later.
+  return 4294967296lu;
 }
 
 std::vector<std::string> tf_compute_context::gpu_names() const {
-  return std::vector<std::string>();
+  pybind11::object gpu_devices;
+  std::vector<std::string> gpu_device_names;
+
+  call_pybind_function([&]() {
+    
+    pybind11::module tf_gpu_devices =
+        pybind11::module::import("turicreate.toolkits._tf_utils");
+    // Get the names from tf utilities function
+    gpu_devices = tf_gpu_devices.attr("get_gpu_names")();
+    gpu_device_names = gpu_devices.cast<std::vector<std::string>>();
+  });
+
+  return gpu_device_names;
 }
+
 
 std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
@@ -298,6 +317,42 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
   return std::unique_ptr<image_augmenter>(new tf_image_augmenter(opts));
+}
+
+/**
+ * TODO: Add model backend for the tensorflow implementation of style transfer
+ */
+std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
+      const float_array_map& config, const float_array_map& weights) {
+#ifdef __APPLE__
+  return mps_compute_context().create_style_transfer(config, weights);
+#else
+  return nullptr;
+#endif
+}
+
+/**
+ * TODO: Add proper arguments to create_drawing_classifier
+ */
+std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
+    /* TODO: const float_array_map& weights
+     * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+     */
+    size_t batch_size, size_t num_classes) {
+  pybind11::object drawing_classifier;
+  call_pybind_function([&]() {
+    pybind11::module tf_dc_backend = pybind11::module::import(
+        "turicreate.toolkits.drawing_classifier._tf_drawing_classifier");
+
+    // Make an instance of python object
+    drawing_classifier = tf_dc_backend.attr("DrawingClassifierTensorFlowModel")(
+        /* TODO: weights.
+         * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+         */
+        batch_size, num_classes);
+  });
+  return std::unique_ptr<tf_model_backend>(
+      new tf_model_backend(drawing_classifier));
 }
 
 
