@@ -62,33 +62,54 @@ class test_activity_classifier : public activity_classifier {
 };
 
 BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
-  static constexpr size_t test_num_examples = 25;
-  static constexpr size_t session_num = 5;
   const flex_list class_labels = {"a", "b", "c", "d", "e", "f", "g"};
+
+  // session id for each prediction
+  // in this case it is [1, 2, 2, 2, 3, 3, 3, 3, 3, 4, 4,...]
+  constexpr size_t session_num = 5;
   const std::vector<size_t> session_distribution = {1, 3, 5, 7, 9};
   TS_ASSERT_EQUALS(session_num, session_distribution.size());
+
+  constexpr size_t test_num_examples = 25;
   size_t check_sum = 0;
-  for (const size_t& x : session_distribution) {
-    check_sum += x;
-  }
+  for (size_t num_per_session : session_distribution)
+    check_sum += num_per_session;
   TS_ASSERT_EQUALS(check_sum, test_num_examples);
 
-  // mock predict data
-  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  /**
+   * mock predict data
+   * we assume the sliding window has size 3
+   * num_samples indicates the number of samples in each sliding window,
+   * which is betweem [1,3] in this case
+   * for the first session, which has one example, will produce 1 prediction
+   * for the second session, which has three examples, will produce 1
+   * prediction. the third session, which has five examples, will produce 2
+   * predictions. session_id indicates the session id for each prediction
+   */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
+  const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
+
   flexible_type check_sum_samples = 0;
-  for (const size_t& x : num_samples) {
-    check_sum_samples += x;
-  }
+  for (flexible_type x : num_samples) check_sum_samples += x;
   TS_ASSERT_EQUALS(check_sum, check_sum_samples);
+
+  // produce probability and make them different by using set
   std::vector<flexible_type> predict_probability;
   for (size_t i = 0; i < num_samples.size(); i++) {
     float sum = 0;
+    std::set<float> probability_set;
     flex_vec predict_score;
     for (size_t j = 0; j < class_labels.size(); j++) {
-      predict_score.push_back((double)(rand() % 10 + j * i));
-      sum += predict_score.back();
+      while (true) {
+        float probability = (float)(rand() % 10 + j * i);
+        if (probability_set.find(probability) == probability_set.end()) {
+          probability_set.insert(probability);
+          sum += probability;
+          predict_score.push_back(probability);
+          break;
+        }
+      }
     }
     for (size_t j = 0; j < class_labels.size(); j++) {
       predict_score[j] /= sum;
