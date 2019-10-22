@@ -9,7 +9,6 @@
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <toolkits/activity_classification/activity_classifier.hpp>
-#include <iostream>
 
 namespace turi {
 namespace activity_classification {
