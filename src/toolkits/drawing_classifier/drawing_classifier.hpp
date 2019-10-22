@@ -280,7 +280,9 @@ class EXPORT drawing_classifier : public ml_model_base {
 };
 
 /* minimum test suite friends */
-inline void init_dc_model_spec_for_test(drawing_classifier& dc) { dc.nn_spec_ = dc.init_model(); };
+inline void init_dc_model_spec_for_test(drawing_classifier& dc) {
+  dc.nn_spec_ = dc.init_model();
+};
 
 }  // namespace drawing_classifier
 }  // namespace turi
