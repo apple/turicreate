@@ -23,8 +23,8 @@ shared_float_array convert_to_shared_float_array(
     ann[offset] = annotation.identifier;
     ann[offset + 1] = annotation.bounding_box.x;
     ann[offset + 2] = annotation.bounding_box.y;
-    ann[offset + 3] = annotation.bounding_box.height;
-    ann[offset + 4] = annotation.bounding_box.width;
+    ann[offset + 3] = annotation.bounding_box.width;
+    ann[offset + 4] = annotation.bounding_box.height;
     ann[offset + 5] = annotation.confidence;
   }
   shared_float_array data_to_augment =
@@ -44,8 +44,8 @@ std::vector<image_annotation> convert_to_image_annotation(
     annotation.identifier = static_cast<int>(ptr[0]);
     annotation.bounding_box.x = ptr[1];
     annotation.bounding_box.y = ptr[2];
-    annotation.bounding_box.height = ptr[3];
-    annotation.bounding_box.width = ptr[4];
+    annotation.bounding_box.width = ptr[3];
+    annotation.bounding_box.height = ptr[4];
     annotation.confidence = ptr[5];
   }
   return augmented_ann;
