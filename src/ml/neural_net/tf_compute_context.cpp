@@ -335,7 +335,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
  * TODO: Add proper arguments to create_drawing_classifier
  */
 std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
-    /* TODO: const float_array_map& weights
+    /* TODO: const float_array_map& weights, const float_array_map& config
      * Until the nn_spec in C++ isn't ready, do not pass in any weights.
      */
     size_t batch_size, size_t num_classes) {
@@ -354,7 +354,6 @@ std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
   return std::unique_ptr<tf_model_backend>(
       new tf_model_backend(drawing_classifier));
 }
-
 
 }  // namespace neural_net
 }  // namespace turi

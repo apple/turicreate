@@ -151,11 +151,16 @@ public:
 
   /**
    * Appends a pooling layer.
+   * By default, it's a max pooling layer. And it can only be max pooling
+   * TODO: be able to set other pooling types
+   *
+   * \param use_poolexcludepadding padded values are excluded from the
+   * count (denominator) when computing average pooling.
    */
   void add_pooling(const std::string& name, const std::string& input,
                    size_t kernel_height, size_t kernel_width, size_t stride_h,
                    size_t stride_w, padding_type padding,
-                   bool use_poolexcludepadding);
+                   bool use_poolexcludepadding = false);
 
   /**
    * Appends a convolution layer.
@@ -260,6 +265,18 @@ public:
    * \param input The name of the layer's input
    */
   void add_softmax(const std::string& name, const std::string& input);
+
+  /**
+   * Appends a layer that performs flatten normalization (along channel axis).
+   *
+   * currently only supports channel first flattening, which means if the input order is
+   * ``[C, H, W]``, then output array will be ``[C * H * W, 1, 1]``, still `C-major`
+   * orderring. No underlying array storage will be changed.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   */
+  void add_flatten(const std::string& name, const std::string& input);
 
   /**
    * Appends a layer that performs elementwise addition.

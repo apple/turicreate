@@ -73,7 +73,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         relu_3 = _tf.nn.relu(conv_3)
         pool_3 = _tf.nn.max_pool2d(relu_3, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID') 
 
-
         # Flatten the data to a 1-D vector for the fully connected layer
         fc1 = _tf.reshape(pool_3, (-1, 576))
 
