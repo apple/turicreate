@@ -30,10 +30,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .util import random_split_by_session as _random_split_by_session
 from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
-import os as _os
-USE_CPP = True
-if not _os.environ.has_key('ac_use_cpp') or _os.environ.get('ac_use_cpp')=="0":
-    USE_CPP = False
+USE_CPP = _tkutl._read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 
 def create(dataset, session_id, target, features=None, prediction_window=100,
            validation_set='auto', max_iterations=10, batch_size=32, verbose=True, **kwargs):
