@@ -178,6 +178,7 @@ class mock_compute_context : public compute_context {
 
   mutable std::deque<create_augmenter_call> create_augmenter_calls_;
   mutable std::deque<create_object_detector_call> create_object_detector_calls_;
+  mutable std::deque<create_drawing_classifier_call> create_drawing_classifier_calls_;
 };
 
 }  // namespace neural_net
