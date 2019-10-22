@@ -482,10 +482,10 @@ void object_detector::finalize_training() {
   update_model_metrics(training_data_, validation_data_);
 }
 
-variant_map_type object_detector::evaluate(gl_sframe data, std::string metric,
-                                           std::string output_type,
-                                           float confidence_threshold,
-                                           float iou_threshold) {
+variant_type object_detector::evaluate(gl_sframe data, std::string metric,
+                                       std::string output_type,
+                                       float confidence_threshold,
+                                       float iou_threshold) {
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -534,13 +534,34 @@ variant_map_type object_detector::evaluate(gl_sframe data, std::string metric,
     result_map.erase(MAP);
   }
 
-  if (output_type != "dict" && output_type != "sframe") {
+  variant_type final_result;
+
+  if (output_type == "dict") {
+    final_result = to_variant(result_map);
+  } else if (output_type == "sframe") {
+    gl_sframe sframe_result = gl_sframe({{"label", class_labels}});
+    auto add_score_list = [=](gl_sframe& sframe_result,
+                              std::string metric_name) {
+      flex_list score_list;
+      auto it = result_map.find(metric_name);
+      if (it != result_map.end()) {
+        flex_dict dict = variant_get_value<flex_dict>(it->second);
+        for (auto& label_score_pair : dict) {
+          score_list.push_back(label_score_pair.second);
+        }
+        sframe_result.add_column(gl_sarray(score_list), metric_name);
+      }
+    };
+    add_score_list(sframe_result, AP);
+    add_score_list(sframe_result, AP50);
+    final_result = to_variant(sframe_result);
+  } else {
     log_and_throw(
         "Invalid 'output_type' argument! Only 'dict' and 'sframe' are "
         "accepted.");
   }
 
-  return result_map;
+  return final_result;
 }
 
 gl_sarray object_detector::predict(variant_type data, float confidence_threshold,
@@ -713,11 +734,11 @@ void object_detector::perform_predict(gl_sframe data,
 // TODO: Should accept model_backend as an optional argument to avoid
 // instantiating a new backend during training. Or just check to see if an
 // existing backend is available?
-variant_map_type object_detector::perform_evaluation(gl_sframe data,
-                                                     std::string metric,
-                                                     std::string output_type,
-                                                     float confidence_threshold,
-                                                     float iou_threshold) {
+variant_type object_detector::perform_evaluation(gl_sframe data,
+                                                 std::string metric,
+                                                 std::string output_type,
+                                                 float confidence_threshold,
+                                                 float iou_threshold) {
   return evaluate(data, metric, output_type, confidence_threshold,
                   iou_threshold);
 }
@@ -1266,14 +1287,19 @@ void object_detector::update_model_metrics(gl_sframe data,
   std::map<std::string, variant_type> metrics;
 
   // Compute training metrics.
-  variant_map_type training_metrics = evaluate(data, "all");
+  variant_type training_metrics_raw = evaluate(data, "all", "dict");
+  variant_map_type training_metrics =
+      variant_get_value<variant_map_type>(training_metrics_raw);
   for (const auto& kv : training_metrics) {
     metrics["training_" + kv.first] = kv.second;
   }
 
   // Compute validation metrics if necessary.
   if (!validation_data.empty()) {
-    variant_map_type validation_metrics = evaluate(validation_data, "all");
+    variant_type validation_metrics_raw =
+        evaluate(validation_data, "all", "dict");
+    variant_map_type validation_metrics =
+        variant_get_value<variant_map_type>(validation_metrics_raw);
     for (const auto& kv : validation_metrics) {
       metrics["validation_" + kv.first] = kv.second;
     }

@@ -40,10 +40,10 @@ class EXPORT object_detector: public ml_model_base {
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
-  variant_map_type evaluate(gl_sframe data, std::string metric,
-                            std::string output_type = "dict",
-                            float confidence_threshold = 0.001,
-                            float iou_threshold = 0.45);
+  variant_type evaluate(gl_sframe data, std::string metric,
+                        std::string output_type = "dict",
+                        float confidence_threshold = 0.001,
+                        float iou_threshold = 0.45);
   gl_sarray predict(variant_type data, float confidence_threshold,
    float iou_threshold);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
@@ -108,9 +108,10 @@ class EXPORT object_detector: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::finalize_training);
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
-    "confidence_threshold", "iou_threshold");
+                                 "output_type", "confidence_threshold",
+                                 "iou_threshold");
   register_defaults("evaluate", {{"metric", std::string("auto")},
-                                 {"output_type", "dict"},
+                                 {"output_type", std::string("dict")},
                                  {"confidence_threshold", 0.001},
                                  {"iou_threshold", 0.45}});
 
@@ -190,11 +191,10 @@ class EXPORT object_detector: public ml_model_base {
       const std::vector<std::pair<float, float>>& anchor_boxes,
       float min_confidence);
 
-  virtual variant_map_type perform_evaluation(gl_sframe data,
-                                              std::string metric,
-                                              std::string output_type,
-                                              float confidence_threshold,
-                                              float iou_threshold);
+  virtual variant_type perform_evaluation(gl_sframe data, std::string metric,
+                                          std::string output_type,
+                                          float confidence_threshold,
+                                          float iou_threshold);
 
   void perform_predict(
       gl_sframe data,

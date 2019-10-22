@@ -1738,4 +1738,4 @@ class ObjectDetector_beta(_Model):
         >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
         mAP: 43.2%
         """
-        return self.__proxy__.evaluate(dataset, metric, confidence_threshold, iou_threshold)
+        return self.__proxy__.evaluate(dataset, metric, output_type, confidence_threshold, iou_threshold)
