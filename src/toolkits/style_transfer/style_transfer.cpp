@@ -33,34 +33,86 @@ constexpr size_t DEFAULT_HEIGHT = 256;
 
 constexpr size_t DEFAULT_WIDTH = 256;
 
-constexpr int DEFAULT_BATCH_SIZE = 32;
+constexpr size_t DEFAULT_BATCH_SIZE = 1;
 
-constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296;
+constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296lu;
 
-shared_float_array prepare_images(turi::image_type image, size_t width, size_t height) {
+shared_float_array prepare_images(const turi::image_type& image, size_t width,
+                                  size_t height) {
   constexpr size_t channels = 3;
 
-  image_type resized_image = image_util::resize_image(image, width, height, channels, true, 1);
+  image_type resized_image =
+      image_util::resize_image(image, width, height, channels, true, 1);
   ASSERT_EQ(resized_image.m_image_data_size, height * width * channels);
 
   const unsigned char* src_ptr = resized_image.get_image_data();
-  
+
   std::vector<float> result_array(height * width * channels);
 
   std::vector<float>::iterator out_it = result_array.begin();
   std::vector<float>::iterator out_end = out_it + height * width * channels;
-  
+
   while (out_it != out_end) {
     *out_it = *src_ptr / 255.f;
     ++src_ptr;
     ++out_it;
   }
 
-  return shared_float_array::wrap(std::move(result_array), {height, width, channels});
+  return shared_float_array::wrap(std::move(result_array),
+                                  {height, width, channels});
+}
+
+float_array_map prepare_batch(std::vector<st_example>& batch, size_t width, size_t height) {
+  constexpr size_t channels = 3;
+  size_t batch = .size()
+
+  std::vector<float> content_array(height * width * channels * batch.size());
+  std::vector<float> style_array(height * width * channels * batch.size());
+  std::vector<float> index_array(batch.size());
+
+  for (auto element : batch) {
+    image_type content_image = element.content_image;
+    image_type style_image = element.style_image;
+    size_t style_index = element.style_index;
+
+    image_type resized_content = image_util::resize_image(content_image, width, height, channels, true, 1);
+    image_type resized_style = image_util::resize_image(content_image, width, height, channels, true, 1);
+    
+    std::vector<float>::iterator out_it = result_array.begin();
+    // TODO:
+    // TODO: 
+  }
+
+
+    size_t style_index = batch[y].style_index;
+
+    turi::image_type content_image = batch[y].content_image;
+    turi::image_type style_image = batch[y].style_image;
+
+    shared_float_array index_array(std::make_shared<float_scalar>(style_index));
+
+    shared_float_array input_images =
+    shared_float_array label_images =
+        
+
+    std::map<std::string, shared_float_array> results =
+        m_training_model->train({{"input", label_images},
+                                 {"labels", label_images},
+                                 {"index", index_array}});
+
+    add_or_update_state({
+        {"training_iterations", iteration_idx + 1},
+    });
+
+    shared_float_array loss_batch = results.at("loss");
+
+    // TODO: do something with the loss
+    // TODO: print table printer
+  }
 }
 
 flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
-  return static_cast<int>(num_styles * 10000.0f / batch_size);
+  return static_cast<flex_int>(num_styles * 10000.0f / batch_size);
 }
 
 }  // namespace
@@ -78,14 +130,12 @@ void style_transfer::init_options(
       1, std::numeric_limits<int>::max());
 
   options.create_integer_option(
-      "image_width",
-      "The width of the images passed into the network", FLEX_UNDEFINED,
-      1, std::numeric_limits<int>::max());
+      "image_width", "The width of the images passed into the network",
+      FLEX_UNDEFINED, 1, std::numeric_limits<int>::max());
 
   options.create_integer_option(
-      "image_height",
-      "The height of the images passed into the network", FLEX_UNDEFINED,
-      1, std::numeric_limits<int>::max());
+      "image_height", "The height of the images passed into the network",
+      FLEX_UNDEFINED, 1, std::numeric_limits<int>::max());
 
   options.create_integer_option(
       "random_seed",
@@ -106,7 +156,8 @@ size_t style_transfer::get_version() const { return STYLE_TRANSFER_VERSION; }
 
 void style_transfer::save_impl(oarchive& oarc) const {
   variant_deep_save(state, oarc);
-  oarc << m_resnet_spec->export_params_view();
+  oarc << m_resnet_spec->export_params_view()
+       << m_vgg_spec->export_params_view();
 }
 
 void style_transfer::load_version(iarchive& iarc, size_t version) {
@@ -118,6 +169,9 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
   m_resnet_spec =
       init_resnet(variant_get_value<size_t>(state.at("num_styles")));
   m_resnet_spec->update_params(nn_params);
+
+  m_vgg_spec = init_vgg_16();
+  m_vgg_spec->update_params(nn_params);
 }
 
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
@@ -145,14 +199,7 @@ std::unique_ptr<data_iterator> style_transfer::create_iterator(
 
 void style_transfer::infer_derived_options() {
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {
-    flex_int batch_size = DEFAULT_BATCH_SIZE;
-
-    size_t memory_budget = m_training_compute_context->memory_budget();
-    if (memory_budget < MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE) {
-      batch_size /= 2;
-    }
-
-    add_or_update_state({{"batch_size", batch_size}});
+    add_or_update_state({{"batch_size", DEFAULT_BATCH_SIZE}});
   }
 
   if (read_state<flexible_type>("max_iterations") == FLEX_UNDEFINED) {
@@ -212,9 +259,7 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
 
   infer_derived_options();
 
-  add_or_update_state({
-      { "model", "resnet-16" }
-  });
+  add_or_update_state({{"model", "resnet-16"}});
 
   m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);
   m_vgg_spec = init_vgg_16(vgg_mlmodel_path);
@@ -244,7 +289,7 @@ flex_int style_transfer::get_num_classes() const {
   return read_state<flex_int>("num_classes");
 }
 
-void style_transfer::perform_training_iteration() {
+void style_transfer::iterate_training() {
   ASSERT_TRUE(m_training_data_iterator != nullptr);
   ASSERT_TRUE(m_training_model != nullptr);
 
@@ -265,8 +310,10 @@ void style_transfer::perform_training_iteration() {
 
     shared_float_array index_array(std::make_shared<float_scalar>(style_index));
 
-    shared_float_array input_images = prepare_images(content_image, image_width, image_height);
-    shared_float_array label_images = prepare_images(style_image, image_width, image_height);
+    shared_float_array input_images =
+        prepare_images(content_image, image_width, image_height);
+    shared_float_array label_images =
+        prepare_images(style_image, image_width, image_height);
 
     std::map<std::string, shared_float_array> results =
         m_training_model->train({{"input", label_images},
@@ -284,23 +331,22 @@ void style_transfer::perform_training_iteration() {
   }
 }
 
-void style_transfer::train(gl_sarray style, gl_sarray content,
-                           std::map<std::string, flexible_type> opts) {
-  init_train(style, content, opts);
-
-  while (get_training_iterations() < get_max_iterations()) {
-    perform_training_iteration();
-  }
-
-  // TODO: print table printer
-
+void style_transfer::finalize_training() {
   float_array_map trained_weights = m_training_model->export_weights();
   m_resnet_spec->update_params(trained_weights);
 }
 
+void style_transfer::train(gl_sarray style, gl_sarray content,
+                           std::map<std::string, flexible_type> opts) {
+  init_train(style, content, opts);
+
+  while (get_training_iterations() < get_max_iterations()) iterate_training();
+
+  finalize_training();
+}
+
 std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
     std::string filename, std::map<std::string, flexible_type> opts) {
-
   flex_int image_width = read_state<flex_int>("image_width");
   flex_int image_height = read_state<flex_int>("image_height");
 
@@ -313,13 +359,13 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
       {"style_feature", "image"},
       {"num_styles", read_state<flex_string>("num_styles")},
       {"version", get_version()},
-    };
+  };
 
-  std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
-    *m_resnet_spec, image_width, image_height, std::move(user_defined_metadata));
+  std::shared_ptr<MLModelWrapper> model_wrapper =
+      export_style_transfer_model(*m_resnet_spec, image_width, image_height,
+                                  std::move(user_defined_metadata));
 
-  if (!filename.empty())
-    model_wrapper->save(filename);
+  if (!filename.empty()) model_wrapper->save(filename);
 
   return model_wrapper;
 }

@@ -29,14 +29,62 @@ class EXPORT style_transfer : public ml_model_base {
   void save_impl(oarchive& oarc) const override;
   void load_version(iarchive& iarc, size_t version) override;
 
-  void train(gl_sarray style, gl_sarray content,
-             std::map<std::string, flexible_type> opts);
-
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
 
+  void train(gl_sarray style, gl_sarray content,
+             std::map<std::string, flexible_type> opts);
+
+  virtual void init_train(gl_sarray style, gl_sarray content,
+                          std::map<std::string, flexible_type> opts);
+
+  virtual void iterate_training();
+  virtual void finalize_training();
+
   BEGIN_CLASS_MEMBER_REGISTRATION("style_transfer")
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
+
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::train, "style", "content",
+                                 "opts");
+
+  REGISTER_CLASS_MEMBER_DOCSTRING(
+      style_transfer::train,
+      "\n"
+      "Options\n"
+      "-------\n"
+      "resnet_mlmodel_path : string\n"
+      "    Path to the Resnet CoreML specification with the pre-trained model\n"
+      "    parameters.\n"
+      "vgg_mlmodel_path: string\n"
+      "    Path to the VGG16 CoreML specification with the pre-trained model\n"
+      "    parameters.\n"
+      "num_styles: int\n"
+      "    The defined number of styles for the style transfer model\n"
+      "batch_size : int\n"
+      "    The number of images per training iteration. If 0, then it will be\n"
+      "    automatically determined based on resource availability.\n"
+      "max_iterations : int\n"
+      "    The number of training iterations. If 0, then it will be "
+      "automatically\n"
+      "    be determined based on the amount of data you provide.\n"
+      "image_width : int\n"
+      "    The input image width to the model\n"
+      "image_height : int\n"
+      "    The input image height to the model\n");
+
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::init_train, "style", "content",
+                                 "opts");
+
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::iterate_training);
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::finalize_training);
+
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::export_to_coreml, "filename",
+                                 "options");
+
+  register_defaults("export_to_coreml",
+                    {{"options",
+                      to_variant(std::map<std::string, flexible_type>())}});
+
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
@@ -49,11 +97,6 @@ class EXPORT style_transfer : public ml_model_base {
 
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
       const;
-
-  virtual void init_train(gl_sarray style, gl_sarray content,
-                          std::map<std::string, flexible_type> opts);
-
-  virtual void perform_training_iteration();
 
   template <typename T>
   T read_state(const std::string& key) const {
