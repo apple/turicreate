@@ -40,7 +40,6 @@ from .._mps_utils import (use_mps as _use_mps,
 
 
 _MXNET_MODEL_FILENAME = "mxnet_model.params"
-
 USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
 def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
@@ -510,7 +509,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'training_loss': progress['smoothed_loss'],
     }
     return ObjectDetector(state)
-
 
 
 class ObjectDetector(_CustomModel):

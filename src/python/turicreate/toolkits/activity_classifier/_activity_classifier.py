@@ -341,7 +341,6 @@ def _encode_target(data, target, mapping=None):
     data[target] = data[target].apply(lambda t: mapping[t])
     return data, mapping
 
-
 class ActivityClassifier_beta(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification or export to

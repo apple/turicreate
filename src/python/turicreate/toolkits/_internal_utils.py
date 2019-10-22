@@ -31,7 +31,6 @@ _proxy_map = {UnitySFrameProxy: (lambda x: _SFrame(_proxy=x)),
               UnitySArrayProxy: (lambda x: _SArray(_proxy=x)),
               UnityGraphProxy: (lambda x: _SGraph(_proxy=x))}
 
-
 def _read_env_var_cpp(var_name):
     import os as _os
     if not _os.environ.has_key(var_name) or _os.environ.get(var_name)=="0":
