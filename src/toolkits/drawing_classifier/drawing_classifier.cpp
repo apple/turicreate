@@ -47,6 +47,11 @@ struct result {
   data_iterator::batch data_info;
 };
 
+// float_array_map get_training_config() {
+//   float_array_map config;
+//   return config;
+// }
+
 }  // namespace
 
 std::unique_ptr<model_spec> drawing_classifier::init_model() const {
@@ -200,11 +205,7 @@ void drawing_classifier::init_options(
 
 std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
       gl_sframe data, variant_type validation_data) const {
-  gl_sframe train_data;
-  gl_sframe val_data;
-  std::tie(train_data, val_data) = turi::supervised::create_validation_data(
-      data, validation_data);
-  return std::make_tuple(train_data, val_data);
+  return turi::supervised::create_validation_data(data, validation_data);
 }
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
@@ -285,13 +286,12 @@ void drawing_classifier::init_training(gl_sframe data,
   // Initialize the neural net. Note that this depends on statistics computed by
   // the data iterator.
   nn_spec_ = init_model();
-
+  
   // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(
-      /* TODO: nn_spec_->export_params_view().
-       * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-       */
-      read_state<size_t>("batch_size"), read_state<size_t>("num_classes"));
+      nn_spec_->export_params_view(),
+      read_state<size_t>("batch_size"),
+      read_state<size_t>("num_classes"));
 
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {
