@@ -1,7 +1,8 @@
 /* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 
 #define BOOST_TEST_MODULE test_drawing_classifier
@@ -11,8 +12,8 @@
 #include <algorithm>
 
 #include <boost/test/unit_test.hpp>
-#include <model_server/lib/image_util.hpp>
 #include <core/util/test_macros.hpp>
+#include <model_server/lib/image_util.hpp>
 
 #include "../neural_net/neural_net_mocks.hpp"
 #include "data_utils.hpp"
@@ -31,10 +32,10 @@ using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
 /**
- * First, define mock implementations of the key drawing_classifier dependencies.
- * These implementations allow the test to define a callback for each call to
- * these classes' method, to make assertions on the inputs and to provide
- * canned outputs. The production implementations should have their own
+ * First, define mock implementations of the key drawing_classifier
+ * dependencies. These implementations allow the test to define a callback for
+ * each call to these classes' method, to make assertions on the inputs and to
+ * provide canned outputs. The production implementations should have their own
  * separate unit tests.
  */
 
@@ -44,7 +45,7 @@ using turi::neural_net::shared_float_array;
  * our own simplistic mocking tools.
  */
 
-class mock_data_iterator: public data_iterator {
+class mock_data_iterator : public data_iterator {
  public:
   using has_next_batch_call = std::function<bool()>;
   using next_batch_call =
@@ -73,12 +74,14 @@ class mock_data_iterator: public data_iterator {
 
   bool has_next_batch() override {
     TS_ASSERT(!has_next_batch_calls_.empty());
-    has_next_batch_call expected_call = std::move(has_next_batch_calls_.front());
+    has_next_batch_call expected_call =
+        std::move(has_next_batch_calls_.front());
     has_next_batch_calls_.pop_front();
     return expected_call();
   }
 
-  const std::unordered_map<std::string, int>& class_to_index_map() const override {
+  const std::unordered_map<std::string, int>& class_to_index_map()
+      const override {
     return class_to_index_map_;
   }
 
@@ -95,11 +98,10 @@ class mock_data_iterator: public data_iterator {
 
 // Subclass of object_detector that mocks out the methods that inject the
 // object_detector dependencies.
-class test_drawing_classifier: public drawing_classifier {
+class test_drawing_classifier : public drawing_classifier {
  public:
-  using create_iterator_call =
-      std::function<std::unique_ptr<data_iterator>(
-        data_iterator::parameters iterator_params)>;
+  using create_iterator_call = std::function<std::unique_ptr<data_iterator>(
+      data_iterator::parameters iterator_params)>;
 
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
@@ -126,7 +128,6 @@ class test_drawing_classifier: public drawing_classifier {
 
   std::unique_ptr<data_iterator> create_iterator(
       data_iterator::parameters iterator_params) const override {
-
     TS_ASSERT(!create_iterator_calls_.empty());
     create_iterator_call expected_call =
         std::move(create_iterator_calls_.front());
@@ -135,7 +136,6 @@ class test_drawing_classifier: public drawing_classifier {
   }
 
   std::unique_ptr<compute_context> create_compute_context() const override {
-
     TS_ASSERT(!create_compute_context_calls_.empty());
     create_compute_context_call expected_call =
         std::move(create_compute_context_calls_.front());
@@ -182,7 +182,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   static constexpr size_t test_num_rows = 100;
 
   mock_iterator->class_labels_ = test_class_labels;
-  
+
   const std::string test_target_name = "test_target";
   const std::string test_image_name = "test_image";
 
@@ -199,7 +199,6 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   model.create_iterator_calls_.push_back(create_iterator_impl);
 
   model.init_model_calls_.emplace_back([=]() {
-
     std::unique_ptr<model_spec> nn_spec(new model_spec);
     nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
                              model_spec::padding_type::SAME,
@@ -211,26 +210,26 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
     return nn_spec;
   });
 
-  auto create_drawing_classifier_impl =
-      [&](const float_array_map& weights,
-          size_t batch_size, size_t num_classes) {
-        TS_ASSERT_EQUALS(batch_size, test_batch_size);
-        TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
-        
-        /* TODO: Uncomment when we start passing weights around */
-        // weights should be what we returned from init_model, as copied by
-        // neural_net::wrap_network_params
-        TS_ASSERT_EQUALS(weights.size(), 1);
-        auto it = weights.find("test_layer_weight");
-        TS_ASSERT(it != weights.end());
-        for (size_t i = 0; i < it->second.size(); ++i) {
-          TS_ASSERT_EQUALS(it->second.data()[i], static_cast<float>(i));
-        }
+  auto create_drawing_classifier_impl = [&](const float_array_map& weights,
+                                            size_t batch_size,
+                                            size_t num_classes) {
+    TS_ASSERT_EQUALS(batch_size, test_batch_size);
+    TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
 
-        // TODO: Assert the config values?
+    /* TODO: Uncomment when we start passing weights around */
+    // weights should be what we returned from init_model, as copied by
+    // neural_net::wrap_network_params
+    TS_ASSERT_EQUALS(weights.size(), 1);
+    auto it = weights.find("test_layer_weight");
+    TS_ASSERT(it != weights.end());
+    for (size_t i = 0; i < it->second.size(); ++i) {
+      TS_ASSERT_EQUALS(it->second.data()[i], static_cast<float>(i));
+    }
 
-        return std::move(mock_nn_model);
-      };
+    // TODO: Assert the config values?
+
+    return std::move(mock_nn_model);
+  };
   mock_context->create_drawing_classifier_calls_.push_back(
       create_drawing_classifier_impl);
 
@@ -240,9 +239,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   // Create an arbitrary SFrame with test_num_rows rows.
   drawing_data_generator data_generator(test_num_rows, test_class_labels);
   gl_sframe data = data_generator.get_data();
-  
-  // Now, actually invoke drawing_classifier::init_training. This will trigger all
-  // the assertions registered above.
+
+  // Now, actually invoke drawing_classifier::init_training. This will trigger
+  // all the assertions registered above.
   model.init_training(data, test_target_name, test_image_name, gl_sframe(),
                       {
                           {"batch_size", test_batch_size},
@@ -253,8 +252,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   TS_ASSERT_EQUALS(model.get_field<flex_int>("batch_size"), test_batch_size);
   TS_ASSERT_EQUALS(model.get_field<flex_int>("max_iterations"),
                    test_max_iterations);
-  TS_ASSERT_EQUALS(model.get_field<flex_string>("target"),
-                   test_target_name);
+  TS_ASSERT_EQUALS(model.get_field<flex_string>("target"), test_target_name);
   TS_ASSERT_EQUALS(model.get_field<flex_string>("feature"), test_image_name);
   TS_ASSERT_EQUALS(model.get_field<flex_int>("num_classes"),
                    test_class_labels.size());
@@ -300,22 +298,16 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
     mock_iterator->next_batch_calls_.push_back(next_batch_impl);
 
     // Since has_next_batch is the loop guard in iterate_training,
-    // it will be called twice, and we need to push two implementations, 
+    // it will be called twice, and we need to push two implementations,
     // one that returns true, and one that returns false.
-    auto has_next_batch_true_impl = [=]() {
-      return true;
-    };
+    auto has_next_batch_true_impl = [=]() { return true; };
 
-    auto has_next_batch_false_impl = [=]() {
-      return false;
-    };
+    auto has_next_batch_false_impl = [=]() { return false; };
 
     mock_iterator->has_next_batch_calls_.push_back(has_next_batch_true_impl);
     mock_iterator->has_next_batch_calls_.push_back(has_next_batch_false_impl);
 
-    auto reset_impl = [=]() {
-      return;
-    };
+    auto reset_impl = [=]() { return; };
     mock_iterator->reset_calls_.push_back(reset_impl);
 
     // The mock_model_backend should expect calls to set_learning_rate just at
@@ -344,16 +336,15 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
     };
 
     mock_nn_model->train_calls_.push_back(train_impl);
-
   }
 
-  test_drawing_classifier model(
-      {{"batch_size", test_batch_size},
-       {"max_iterations", test_max_iterations},
-       {"num_classes", test_class_labels.size()},
-       {"training_iterations", 0}},
-      nullptr, std::move(mock_context), std::move(mock_iterator),
-      std::move(mock_nn_model));
+  test_drawing_classifier model({{"batch_size", test_batch_size},
+                                 {"max_iterations", test_max_iterations},
+                                 {"num_classes", test_class_labels.size()},
+                                 {"training_iterations", 0}},
+                                nullptr, std::move(mock_context),
+                                std::move(mock_iterator),
+                                std::move(mock_nn_model));
 
   // Now, actually invoke drawing_classifier::iterate_training.
   // This will trigger all the assertions registered above.
@@ -366,10 +357,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
 
   // Deconstructing `model` here will assert that every expected call to a
   // mocked-out method has been called.
-
 }
 
-
 }  // namespace
-}  // drawing_classifier
-}  // turi
+}  // namespace drawing_classifier
+}  // namespace turi
