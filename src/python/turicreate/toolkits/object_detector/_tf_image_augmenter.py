@@ -45,7 +45,7 @@ def get_augmented_data(images, annotations, resize_only=False):
                 box[j][2] = (annotation[j][4]+annotation[j][2])*float(height)
                 box[j][3] = (annotation[j][3]+annotation[j][1])*float(width) 
             confidence = np.expand_dims(annotation[:, 5], axis=1)
-            bbox_out = apply_bounding_box_transformation(box, trans, (416, 416))
+            bbox_out = apply_bounding_box_transformation(box, trans, input_shape)
             bbox = np.zeros(bbox_out.shape)
             for k in range(len(bbox_out)):
               bbox[k][0] = bbox_out[k][1]/input_shape[1]
@@ -160,7 +160,6 @@ def pad_to_ensure_size(image, target_height, target_width, random=True):
     resized = pad_to_bounding_box(image, offset_pad_height, offset_pad_width,
                                            max_(target_height, height), max_(target_width, width))
 
-    # In theory all the checks below are redundant.
     if resized.get_shape().ndims is None:
         raise ValueError('resized contains no shape.')
 
