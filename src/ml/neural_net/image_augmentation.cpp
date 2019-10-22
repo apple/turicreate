@@ -39,7 +39,7 @@ std::vector<image_annotation> convert_to_image_annotation(
   size_t num_annotations_per_image = shape[0];
   std::vector<image_annotation> augmented_ann(num_annotations_per_image);
   for (size_t b = 0; b < num_annotations_per_image; b++) {
-    image_annotation annotation = augmented_ann[b];
+    image_annotation& annotation = augmented_ann[b];
     const float* ptr = augmented_annotation[b].data();
     annotation.identifier = static_cast<int>(ptr[0]);
     annotation.bounding_box.x = ptr[1];
