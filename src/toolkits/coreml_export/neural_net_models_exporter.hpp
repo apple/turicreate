@@ -40,6 +40,11 @@ std::shared_ptr<coreml::MLModelWrapper> export_activity_classifier_model(
     const flex_list& features, size_t lstm_hidden_layer_size,
     const flex_list& class_labels, const flex_string& target);
 
+/** Wraps a trained drawing classifier model_spec as a complete MLModel. */
+std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
+    const neural_net::model_spec& nn_spec, const flex_list& features,
+    const flex_list& class_labels, const flex_string& target);
+
 }  // namespace turi
 
 #endif  // UNITY_TOOLKITS_COREML_EXPORT_NEURAL_NETS_MODELS_EXPORTER_HPP_

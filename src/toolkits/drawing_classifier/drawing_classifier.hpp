@@ -6,26 +6,27 @@
 #ifndef TURI_DRAWING_CLASSIFIER_H_
 #define TURI_DRAWING_CLASSIFIER_H_
 
-#include <core/logging/table_printer/table_printer.hpp>
-#include <model_server/lib/extensions/ml_model.hpp>
-#include <model_server/lib/variant.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
-#include <toolkits/drawing_classifier/dc_data_iterator.hpp>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/model_spec.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <model_server/lib/variant.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <toolkits/drawing_classifier/dc_data_iterator.hpp>
 
 namespace turi {
 namespace drawing_classifier {
 
-class EXPORT drawing_classifier: public ml_model_base {
-
+class EXPORT drawing_classifier : public ml_model_base {
  public:
 
   drawing_classifier() = default;
   
   // ml_model_base interface
+
 
   void init_options(const std::map<std::string, flexible_type>& opts) override;
   /* Commented out for the purpose of a skeleton. */
@@ -33,26 +34,31 @@ class EXPORT drawing_classifier: public ml_model_base {
   // void save_impl(oarchive& oarc) const override;
   // void load_version(iarchive& iarc, size_t version) override;
 
-  // Interface exposed via Unity server
+  /* Interface exposed via Unity server */
 
-  void train(gl_sframe data,
-             std::string target_column_name, std::string feature_column_name,
-             variant_type validation_data,
+  void train(gl_sframe data, std::string target_column_name,
+             std::string feature_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
+
   gl_sarray predict(gl_sframe data, std::string output_type);
+
   gl_sframe predict_topk(gl_sframe data, std::string output_type, size_t k);
+
   variant_map_type evaluate(gl_sframe data, std::string metric);
+
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename);
+        std::string filename, bool use_default_spec = false);
+
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
   virtual void init_training(gl_sframe data, std::string target_column_name,
                           std::string feature_column_name,
                           variant_type validation_data,
                           std::map<std::string, flexible_type> opts);
+
   virtual void iterate_training();
 
-  
+
   BEGIN_CLASS_MEMBER_REGISTRATION("drawing_classifier")
 
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
@@ -60,10 +66,12 @@ class EXPORT drawing_classifier: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::train, "data",
                                  "target_column_name", "feature_column_name",
                                  "validation_data", "options");
+
   register_defaults("train",
                     {{"validation_data", to_variant(std::string("auto"))},
                      {"options",
                       to_variant(std::map<std::string, flexible_type>())}});
+
   REGISTER_CLASS_MEMBER_DOCSTRING(
       drawing_classifier::train,
       "----------\n"
@@ -116,7 +124,9 @@ class EXPORT drawing_classifier: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::predict, "data",
                                  "output_type");
+
   register_defaults("predict", {{"output_type", std::string("class")}});
+
   REGISTER_CLASS_MEMBER_DOCSTRING(
       drawing_classifier::predict,
       "----------\n"
@@ -125,8 +135,8 @@ class EXPORT drawing_classifier: public ml_model_base {
       "    If dataset is an SFrame, it must have a column with the same name\n"
       "    as the feature column during training. Additional columns are\n"
       "    ignored.\n"
-      "    If the data is a single drawing, it can be either of type tc.Image,\n"
-      "    in which case it is a bitmap-based drawing input,\n"
+      "    If the data is a single drawing, it can be either of type\n"
+      "    tc.Image, in which case it is a bitmap-based drawing input,\n"
       "    or of type list, in which case it is a stroke-based drawing input.\n"
       "output_type : {\"class\", \"probability_vector\"}, optional\n"
       "    Form of each prediction which is one of:\n"
@@ -135,12 +145,14 @@ class EXPORT drawing_classifier: public ml_model_base {
       "      alphanumerically by name of the class in the training set) is in\n"
       "      position 0 of the vector, the second in position 1 and so on.\n"
       "    - \"class\": Class prediction. This returns the class with maximum\n"
-      "      probability.\n"
-  );
+      "      probability.\n");
 
-  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::predict_topk,
-                                 "data", "output_type", "k");
-  register_defaults("predict_topk", {{"output_type", std::string("probability")}});
+  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::predict_topk, "data",
+                                 "output_type", "k");
+
+  register_defaults("predict_topk",
+                    {{"output_type", std::string("probability")}});
+
   REGISTER_CLASS_MEMBER_DOCSTRING(
       drawing_classifier::predict_topk,
       "----------\n"
@@ -159,14 +171,16 @@ class EXPORT drawing_classifier: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::evaluate, "data",
                                  "metric");
+
   register_defaults("evaluate", {{"metric", std::string("auto")}});
+
   REGISTER_CLASS_MEMBER_DOCSTRING(
       drawing_classifier::evaluate,
       "----------\n"
       "data : SFrame\n"
       "    Dataset of new observations. Must include columns with the same\n"
-      "    names as the features used for model training, but does not require\n"
-      "    a target column. Additional columns are ignored.\n"
+      "    names as the features used for model training, but does not\n"
+      "    require a target column. Additional columns are ignored.\n"
       "metric : str, optional\n"
       "    Name of the evaluation metric.  Possible values are:\n"
       "    - 'auto'             : Returns all available metrics\n"
@@ -178,9 +192,8 @@ class EXPORT drawing_classifier: public ml_model_base {
       "    - 'log_loss'         : Log loss\n"
       "    - 'confusion_matrix' : An SFrame with counts of possible\n"
       "                           prediction/true label combinations.\n"
-      "    - 'roc_curve'        : An SFrame containing information needed for an\n"
-      "                           ROC curve\n"
-  );
+      "    - 'roc_curve'        : An SFrame containing information needed for\n"
+      "                           an ROC curve\n");
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::export_to_coreml,
                                  "filename");
 
@@ -236,7 +249,6 @@ class EXPORT drawing_classifier: public ml_model_base {
 
   virtual void init_table_printer(bool has_validation);
 
-  // Utility code
   template <typename T>
   T read_state(const std::string& key) const {
     return variant_get_value<T>(get_state().at(key));
@@ -254,13 +266,11 @@ class EXPORT drawing_classifier: public ml_model_base {
   std::unique_ptr<data_iterator> validation_data_iterator_;
   std::unique_ptr<neural_net::compute_context> training_compute_context_;
   std::unique_ptr<neural_net::model_backend> training_model_;
-
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;
-
 };
 
 }  // namespace drawing_classifier
 }  // namespace turi
 
-#endif //TURI_DRAWING_CLASSIFIER_H_
+#endif  // TURI_DRAWING_CLASSIFIER_H_
