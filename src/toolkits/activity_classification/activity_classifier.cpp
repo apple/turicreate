@@ -441,11 +441,8 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
-  gl_sframe result = gl_sframe();
-  result.add_column(gl_sarray::from_sequence(0, raw_preds_per_window.size()),
-                    "prediction_id");
-  result.add_column(raw_preds_per_window["session_id"], "session_id");
-  result.add_column(raw_preds_per_window["preds"], "probability_vector");
+  gl_sframe result = gl_sframe({{"session_id", raw_preds_per_window["session_id"]},
+                  {"probability_vector", raw_preds_per_window["preds"]}});
 
   if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
@@ -505,11 +502,9 @@ gl_sframe activity_classifier::classify(gl_sframe data,
   // create the result
   gl_sframe result = gl_sframe();
   if (output_frequency == "per_window") {
-    result.add_column(gl_sarray::from_sequence(0, raw_preds_per_window.size()),
-                      "prediction_id");
-    result.add_column(raw_preds_per_window["session_id"], "exp_id");
-    result.add_column(raw_preds_per_window["class"], "class");
-    result.add_column(raw_preds_per_window["probability"], "probability");
+    result = gl_sframe({{"exp_id", raw_preds_per_window["session_id"]},
+                  {"class", raw_preds_per_window["class"]},
+                  {"probability", raw_preds_per_window["probability"]}});
   } else {
     size_t class_column_index = raw_preds_per_window.column_index("class");
     size_t prob_column_index = raw_preds_per_window.column_index("probability");

@@ -9,6 +9,7 @@
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <toolkits/activity_classification/activity_classifier.hpp>
+#include <iostream>
 
 namespace turi {
 namespace activity_classification {
@@ -142,17 +143,13 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   // some simple tests for shape, column names
   TS_ASSERT_EQUALS(predict_result.size(), session_id.size());
   std::vector<std::string> column_names = predict_result.column_names();
-  TS_ASSERT_EQUALS(column_names.size(), 4);
-  TS_ASSERT_EQUALS(column_names[0], "prediction_id");
-  TS_ASSERT_EQUALS(column_names[1], "exp_id");
-  TS_ASSERT_EQUALS(column_names[2], "class");
-  TS_ASSERT_EQUALS(column_names[3], "probability");
-
-  // test prediction_id
-  gl_sarray prediction_id_array = predict_result["prediction_id"];
-  for (size_t i = 0; i < prediction_id_array.size(); i++) {
-    TS_ASSERT_EQUALS(prediction_id_array[i], i);
-  }
+  TS_ASSERT_EQUALS(column_names.size(), 3);
+    TS_ASSERT(std::find(column_names.begin(), column_names.end(),
+    "exp_id") != column_names.end());
+  TS_ASSERT(std::find(column_names.begin(), column_names.end(),
+    "class") != column_names.end());
+    TS_ASSERT(std::find(column_names.begin(), column_names.end(),
+    "probability") != column_names.end());
 
   // test exp_id
   gl_sarray exp_id_array = predict_result["exp_id"];
@@ -189,8 +186,10 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   TS_ASSERT_EQUALS(predict_result.size(), test_num_examples);
   column_names = predict_result.column_names();
   TS_ASSERT_EQUALS(column_names.size(), 2);
-  TS_ASSERT_EQUALS(column_names[0], "class");
-  TS_ASSERT_EQUALS(column_names[1], "probability");
+  TS_ASSERT(std::find(column_names.begin(), column_names.end(),
+    "class") != column_names.end());
+  TS_ASSERT(std::find(column_names.begin(), column_names.end(),
+    "probability") != column_names.end());
 
   // ground truth class and probability for per_row
   std::vector<float> gt_prob_per_row;
@@ -244,16 +243,11 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   TS_ASSERT_EQUALS(predict_per_row_class.size(), num_samples.size());
   std::vector<std::string> predict_per_row_column_names =
       predict_per_row_class.column_names();
-  TS_ASSERT_EQUALS(predict_per_row_column_names.size(), 3);
-  TS_ASSERT_EQUALS(predict_per_row_column_names[0], "prediction_id");
-  TS_ASSERT_EQUALS(predict_per_row_column_names[1], "session_id");
-  TS_ASSERT_EQUALS(predict_per_row_column_names[2], "class");
-
-  // test for prediction_id
-  gl_sarray predict_prediction_id = predict_per_row_class["prediction_id"];
-  for (size_t i = 0; i < predict_prediction_id.size(); i++) {
-    TS_ASSERT_EQUALS(predict_prediction_id[i], i);
-  }
+  TS_ASSERT_EQUALS(predict_per_row_column_names.size(), 2);
+  TS_ASSERT(std::find(predict_per_row_column_names.begin(), predict_per_row_column_names.end(),
+    "session_id") != predict_per_row_column_names.end());
+  TS_ASSERT(std::find(predict_per_row_column_names.begin(), predict_per_row_column_names.end(),
+    "class") != predict_per_row_column_names.end());
 
   // test for session_id
   gl_sarray predict_session_id = predict_per_row_class["session_id"];
@@ -274,16 +268,12 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   TS_ASSERT_EQUALS(predict_per_row_prob.size(), num_samples.size());
   std::vector<std::string> predict_per_row_column_names_prob =
       predict_per_row_prob.column_names();
-  TS_ASSERT_EQUALS(predict_per_row_column_names_prob.size(), 3);
-  TS_ASSERT_EQUALS(predict_per_row_column_names_prob[0], "prediction_id");
-  TS_ASSERT_EQUALS(predict_per_row_column_names_prob[1], "session_id");
-  TS_ASSERT_EQUALS(predict_per_row_column_names_prob[2], "probability_vector");
+  TS_ASSERT_EQUALS(predict_per_row_column_names_prob.size(), 2);
+  TS_ASSERT(std::find(predict_per_row_column_names_prob.begin(), predict_per_row_column_names_prob.end(),
+    "session_id") != predict_per_row_column_names_prob.end());
+  TS_ASSERT(std::find(predict_per_row_column_names_prob.begin(), predict_per_row_column_names_prob.end(),
+    "probability_vector") != predict_per_row_column_names_prob.end());
 
-  // test for prediction_id
-  gl_sarray predict_prediction_id_prob = predict_per_row_prob["prediction_id"];
-  for (size_t i = 0; i < predict_prediction_id_prob.size(); i++) {
-    TS_ASSERT_EQUALS(predict_prediction_id_prob[i], i);
-  }
 
   // test for session_id
   gl_sarray predict_session_id_prob = predict_per_row_prob["session_id"];
