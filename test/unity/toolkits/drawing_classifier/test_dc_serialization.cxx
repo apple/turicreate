@@ -10,9 +10,12 @@
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <cstdio>
+#include <chrono>
 #include <ml/neural_net/model_spec.hpp>
 #include <toolkits/coreml_export/mlmodel_include.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
+#include <boost/uuid/detail/md5.hpp>
+#include <boost/algorithm/hex.hpp>
 
 namespace turi {
 namespace drawing_classifer {
@@ -21,9 +24,11 @@ namespace {
 class drawing_classifier_mock
     : public turi::drawing_classifier::drawing_classifier {
  public:
-  std::unique_ptr<neural_net::model_spec> my_init_model() {
+  std::unique_ptr<neural_net::model_spec> my_init_model() const {
     return init_model();
   }
+
+  void my_init_model_spec() { init_dc_model_spec_for_test(*this); };
 };
 
 BOOST_AUTO_TEST_CASE(test_dc_init_model) {
@@ -176,8 +181,140 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
                    target + "Probability");
 }
 
+BOOST_AUTO_TEST_CASE(test_load_version) {
+  turi::drawing_classifier::drawing_classifier dc;
+  TS_ASSERT_EQUALS(dc.get_version(), dc.DRAWING_CLASSIFIER_VERSION);
+}
+
+
 BOOST_AUTO_TEST_CASE(test_save_load) {
-  // TODO
+  auto remove_if_exist =
+      [](const char* fname) {
+        std::FILE* fp = nullptr;
+        if ((fp = std::fopen(fname, "r")) != NULL) {
+          if (std::fclose(fp) != 0) {
+            std::stringstream ss;
+            ss << "cannot close file: " << fname << std::endl;
+            throw(turi::error::io_error(ss.str()));
+          }
+
+          if (std::remove(fname) != 0) {
+            std::stringstream ss;
+            ss << "cannot remove file: " << fname << std::endl;
+            throw(turi::error::io_error(ss.str()));
+          }
+        }
+      };
+
+  /**
+   * This is a hack because nn_spec_ is a private member. Thus, I can't
+   * compare it directly after loading from file (load_version call).
+   *
+   * The solution is to call `load_version` first and write serialized
+   * `nn_spec_` to disk. In this way, I can indirectly verify the `nn_spec_`
+   * successively loads all params from the source model spec file.
+   */
+  auto load_save_compare = [&remove_if_exist](drawing_classifier_mock& dc,
+                              drawing_classifier_mock& dc_other) {
+    // random init; avoid segfault
+    dc.my_init_model_spec();
+    dc_other.my_init_model_spec();
+
+    constexpr auto my_file = "./test_dc_serialization.cxx.save.txt";
+    remove_if_exist(my_file);
+    std::stringstream ss;
+
+    // save impl from the first mock
+    {
+      std::fstream out_file(my_file, std::ios_base::out | std::ios_base::binary);
+      turi::oarchive oarch(out_file);
+      dc.save_impl(oarch);
+      out_file.close();
+    }
+
+    // load impl to other dc mock instance
+    {
+      std::fstream in_file(my_file, std::ios_base::in | std::ios_base::binary);
+      turi::iarchive iarch(in_file);
+      dc_other.load_version(iarch, dc_other.get_version());
+      in_file.close();
+    }
+
+    // loading params from model spec
+    // saved file will be used to compare with the model spec saved before
+    constexpr auto my_file_loaded = "./test_dc_serialization.cxx.load.txt";
+    remove_if_exist(my_file_loaded);
+
+    {
+      std::fstream out_file(my_file_loaded,
+                            std::ios_base::out | std::ios_base::binary);
+      turi::oarchive oarch(out_file);
+      dc_other.save_impl(oarch);
+      out_file.close();
+    }
+
+    // validation
+    std::ifstream file(my_file, std::ios::in | std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+      std::stringstream ss;
+      ss << "fail to open" << my_file << std::endl;
+      throw std::ios_base::failure(ss.str());
+    }
+    std::streamsize file_size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::vector<char> model_spec_src(file_size);
+    file.read(model_spec_src.data(), file_size);
+    file.close();
+
+    // open the loaded file version
+    file.open(my_file_loaded, std::ios::in | std::ios::binary | std::ios::ate);
+    if (!file.is_open()) {
+      std::stringstream ss;
+      ss << "fail to open" << my_file_loaded << std::endl;
+      throw std::ios_base::failure(ss.str());
+    }
+    TS_ASSERT_EQUALS(file_size, file.tellg());
+    file_size = file.tellg();
+    file.seekg(0, std::ios::beg);
+
+    std::vector<char> model_spec_loaded(file_size);
+    file.read(model_spec_loaded.data(), file_size);
+    file.close();
+
+    // compare
+    TS_ASSERT_EQUALS(std::strncmp(model_spec_loaded.data(),
+                                  model_spec_src.data(), file_size),
+                     0);
+
+    // clean myself
+    std::remove(my_file);
+    std::remove(my_file_loaded);
+  };
+
+  // states
+  constexpr unsigned int num_classes = 10;
+  const std::string target = "target";
+  const std::vector<std::string> features = {"0", "1"};
+
+  // init_model
+  drawing_classifier_mock dc;
+  dc.add_or_update_state(
+      {{"target", target},
+       {"num_classes", num_classes},
+       {"features", flex_list(features.begin(), features.end())}});
+
+  // idenetity check; or double load
+  load_save_compare(dc, dc);
+
+  drawing_classifier_mock dc_other;
+  dc_other.add_or_update_state(
+      {{"target", target},
+       {"num_classes", num_classes},
+       {"features", flex_list(features.begin(), features.end())}});
+
+  // load from a different instance
+  load_save_compare(dc, dc_other);
 }
 
 }  // anonymous namespace

@@ -29,9 +29,14 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   void init_options(const std::map<std::string, flexible_type>& opts) override;
   /* Commented out for the purpose of a skeleton. */
-  // size_t get_version() const override;
-  // void save_impl(oarchive& oarc) const override;
-  // void load_version(iarchive& iarc, size_t version) override;
+
+  // void init_options(const std::map<std::string, flexible_type>& opts) override;
+
+  size_t get_version() const override;
+
+  void save_impl(oarchive& oarc) const override;
+
+  void load_version(iarchive& iarc, size_t version) override;
 
   /* Interface exposed via Unity server */
 
@@ -207,6 +212,8 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   END_CLASS_MEMBER_REGISTRATION
 
+  static const size_t DRAWING_CLASSIFIER_VERSION;
+
  protected:
   // Constructor allowing tests to set the initial state of this class and to
   // inject dependencies.
@@ -251,7 +258,12 @@ class EXPORT drawing_classifier : public ml_model_base {
     return variant_get_value<T>(get_state().at(key));
   }
 
+  // for test svae & load purpose
+  // well, for some reason nn_spec_ should not be exposed to user
+  friend void init_dc_model_spec_for_test(drawing_classifier& dc);
+
  private:
+
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
 
@@ -266,6 +278,9 @@ class EXPORT drawing_classifier : public ml_model_base {
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;
 };
+
+/* minimum test suite friends */
+inline void init_dc_model_spec_for_test(drawing_classifier& dc) { dc.nn_spec_ = dc.init_model(); };
 
 }  // namespace drawing_classifier
 }  // namespace turi
