@@ -47,9 +47,10 @@ class EXPORT drawing_classifier : public ml_model_base {
              std::string feature_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
 
-  gl_sarray predict(gl_sframe data, std::string output_type);
+  gl_sarray predict(gl_sframe data, std::string output_type = "probability");
 
-  gl_sframe predict_topk(gl_sframe data, std::string output_type, size_t k);
+  gl_sframe predict_topk(gl_sframe data,
+                         std::string output_type = "probability", size_t k = 5);
 
   variant_map_type evaluate(gl_sframe data, std::string metric);
 
@@ -258,6 +259,8 @@ class EXPORT drawing_classifier : public ml_model_base {
   T read_state(const std::string& key) const {
     return variant_get_value<T>(get_state().at(key));
   }
+  // Factory for data_iterator
+  virtual std::unique_ptr<data_iterator> create_iterator(gl_sframe data) const;
 
   std::unique_ptr<neural_net::model_spec> clone_model_spec_for_test() const {
     if (nn_spec_) {

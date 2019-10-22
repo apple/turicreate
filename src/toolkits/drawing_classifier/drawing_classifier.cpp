@@ -558,8 +558,30 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
 }
 
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
-  /* TODO: Add code to predict! */
-  return gl_sarray();
+  // by default, it should be "probability" if the value is
+  // passed in through python client
+  if (output_type != "probability" || output_type != "rank") {
+    log_and_throw(output_type +
+                  " is not a valid option for output_type.  "
+                  "Expected one of: probability, rank");
+  }
+
+  auto data_itr = create_iterator(data);
+
+  gl_sframe predictions; // = perfrom_inference(data_itr.get());
+  size_t preds_column_index = predictions.column_index("preds");
+
+  gl_sarray result = predictions["preds"];
+  if (output_type == "class") {
+    flex_list class_labels = read_state<flex_list>("classes");
+    auto max_prob_label = [=](const flexible_type& ft) {
+      const flex_vec& prob_vec = ft.get<flex_vec>();
+      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+      return class_labels[max_it - prob_vec.begin()];
+    };
+    result = result.apply(max_prob_label, class_labels.front().get_type());
+  }
+  return result;
 }
 
 gl_sframe drawing_classifier::predict_topk(gl_sframe data,
