@@ -135,8 +135,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
 
 
 
-  // test for classify()
-  // test for per_window
+  // test for classify() with output_frequency = 'per_window'
   gl_sframe predict_result = classifier.classify(gl_sframe(), "per_window");
 
   // some simple tests for shape, column names
@@ -178,7 +177,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
     TS_ASSERT_EQUALS((float)gt_prob[i], (float)prob_array[i]);
   }
 
-  // test for per_row
+  // test classify() with output_frequency = "per_row"
   predict_result = classifier.classify(gl_sframe(), "per_row");
 
   // simple test for shape, column names
@@ -209,15 +208,14 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
     TS_ASSERT_EQUALS(gt_class_per_row[i], class_array_per_row[i]);
   }
 
-  // test for predict()
-  // ouput_type = class
+  // test for predict() with output_type = "class"
   gl_sarray predict_class = classifier.predict(gl_sframe(), "class");
   TS_ASSERT_EQUALS(predict_class.size(), test_num_examples);
   for (size_t i = 0; i < predict_class.size(); i++) {
     TS_ASSERT_EQUALS(predict_class[i], gt_class_per_row[i]);
   }
 
-  // output_type = probability_vector
+  // test for predict() with output_type = "probability_vector"
   gl_sarray predict_probability_vector =
       classifier.predict(gl_sframe(), "probability_vector");
   TS_ASSERT_EQUALS(predict_probability_vector.size(), test_num_examples);
@@ -235,8 +233,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
     }
   }
 
-  // test for predict_per_window()
-  // output_type = class
+  // test for predict_per_window() with output_type = "class"
   gl_sframe predict_per_row_class =
       classifier.predict_per_window(gl_sframe(), "class");
   TS_ASSERT_EQUALS(predict_per_row_class.size(), num_samples.size());
@@ -261,7 +258,7 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
     TS_ASSERT_EQUALS(predict_class_array[i], gt_class[i]);
   }
 
-  // output_type = probability_vector
+  // test for predict_per_window() with output_type = "probability_vector"
   gl_sframe predict_per_row_prob =
       classifier.predict_per_window(gl_sframe(), "probability_vector");
   TS_ASSERT_EQUALS(predict_per_row_prob.size(), num_samples.size());
