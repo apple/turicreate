@@ -473,7 +473,8 @@ gl_sframe activity_classifier::classify(gl_sframe data,
 
   // perform inference
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, false, false, false);
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false,
+                      /* use_data_augmentation */ false);
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
 
   // lambda function for getting the max probability for each prediction
