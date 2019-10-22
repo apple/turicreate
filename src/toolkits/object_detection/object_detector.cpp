@@ -482,9 +482,10 @@ void object_detector::finalize_training() {
   update_model_metrics(training_data_, validation_data_);
 }
 
-variant_map_type object_detector::evaluate(
-    gl_sframe data, std::string metric, std::string output_type, float confidence_threshold,
-    float iou_threshold) {
+variant_map_type object_detector::evaluate(gl_sframe data, std::string metric,
+                                           std::string output_type,
+                                           float confidence_threshold,
+                                           float iou_threshold) {
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -533,8 +534,10 @@ variant_map_type object_detector::evaluate(
     result_map.erase(MAP);
   }
 
-  if( output_type != "dict" && output_type != "sframe"){
-    log_and_throw("Invalid 'output_type' argument! Only 'dict' and 'sframe' are accepted.");
+  if (output_type != "dict" && output_type != "sframe") {
+    log_and_throw(
+        "Invalid 'output_type' argument! Only 'dict' and 'sframe' are "
+        "accepted.");
   }
 
   return result_map;
@@ -715,7 +718,8 @@ variant_map_type object_detector::perform_evaluation(gl_sframe data,
                                                      std::string output_type,
                                                      float confidence_threshold,
                                                      float iou_threshold) {
-  return evaluate(data, metric, output_type, confidence_threshold, iou_threshold);
+  return evaluate(data, metric, output_type, confidence_threshold,
+                  iou_threshold);
 }
 
 std::vector<neural_net::image_annotation>

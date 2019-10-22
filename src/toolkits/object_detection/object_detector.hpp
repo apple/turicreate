@@ -109,9 +109,10 @@ class EXPORT object_detector: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
     "confidence_threshold", "iou_threshold");
-  register_defaults("evaluate",
-      {{"metric", std::string("auto")},{"output_type","dict"},{"confidence_threshold", 0.001},
-      {"iou_threshold", 0.45}});
+  register_defaults("evaluate", {{"metric", std::string("auto")},
+                                 {"output_type", "dict"},
+                                 {"confidence_threshold", 0.001},
+                                 {"iou_threshold", 0.45}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data",
    "confidence_threshold", "iou_threshold");
