@@ -18,7 +18,8 @@ namespace turi {
 namespace drawing_classifer {
 namespace {
 
-class drawing_classifier_mock : public turi::drawing_classifier::drawing_classifier {
+class drawing_classifier_mock
+    : public turi::drawing_classifier::drawing_classifier {
  public:
   std::unique_ptr<neural_net::model_spec> my_init_model() {
     return init_model();
@@ -47,7 +48,6 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
    * in total: 14 layers
    */
   TS_ASSERT_EQUALS(nn.layers_size(), 14);
-
 
   /* layer 0: concat layer */
   {
@@ -147,7 +147,7 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
        {"features", flex_list(features.begin(), features.end())}});
 
   auto ml_model_wrapper = dc.export_to_coreml("", /* debug no throw */ true);
-  // TS_ASSERT(ml_model_wrapper != nullptr);
+  TS_ASSERT(ml_model_wrapper != nullptr);
 
   const auto& my_model_spec = ml_model_wrapper->coreml_model()->getProto();
   TS_ASSERT_EQUALS(my_model_spec.specificationversion(), 1);
@@ -170,13 +170,14 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
   TS_ASSERT_EQUALS(my_model_desc.output(1).name(), target);
 
   TS_ASSERT_EQUALS(my_model_desc.predictedfeaturename(), target);
-  TS_ASSERT_EQUALS(my_model_desc.predictedprobabilitiesname(), target + "Probability");
+  TS_ASSERT_EQUALS(my_model_desc.predictedprobabilitiesname(),
+                   target + "Probability");
 }
 
 BOOST_AUTO_TEST_CASE(test_save_load) {
-// TODO
+  // TODO
 }
 
 }  // anonymous namespace
-}  // namespace drawing_classifier
+}  // namespace drawing_classifer
 }  // namespace turi
