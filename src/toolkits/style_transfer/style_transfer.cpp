@@ -35,80 +35,61 @@ constexpr size_t DEFAULT_WIDTH = 256;
 
 constexpr size_t DEFAULT_BATCH_SIZE = 1;
 
-constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296lu;
+void populate_image(std::vector<float>::iterator& start_iter,
+                    std::vector<float>::iterator& end_iter,
+                    const unsigned char* src_ptr) {
+  while (start_iter != end_iter) {
+    *start_iter = *src_ptr / 255.f;
+    ++src_ptr;
+    ++start_iter;
+  }
+}
 
-shared_float_array prepare_images(const turi::image_type& image, size_t width,
-                                  size_t height) {
-  constexpr size_t channels = 3;
+void prepare_images(const image_type& image, std::vector<float>& array,
+                    size_t width, size_t height, size_t channels,
+                    size_t index) {
+  size_t image_size = height * width * channels;
+  size_t offset = index * image_size;
 
   image_type resized_image =
       image_util::resize_image(image, width, height, channels, true, 1);
-  ASSERT_EQ(resized_image.m_image_data_size, height * width * channels);
 
-  const unsigned char* src_ptr = resized_image.get_image_data();
+  const unsigned char* resized_image_ptr = resized_image.get_image_data();
 
-  std::vector<float> result_array(height * width * channels);
+  std::vector<float>::iterator start_iter = array.begin() + offset;
+  std::vector<float>::iterator end_iter = start_iter + image_size;
 
-  std::vector<float>::iterator out_it = result_array.begin();
-  std::vector<float>::iterator out_end = out_it + height * width * channels;
-
-  while (out_it != out_end) {
-    *out_it = *src_ptr / 255.f;
-    ++src_ptr;
-    ++out_it;
-  }
-
-  return shared_float_array::wrap(std::move(result_array),
-                                  {height, width, channels});
+  populate_image(start_iter, end_iter, resized_image_ptr);
 }
 
-float_array_map prepare_batch(std::vector<st_example>& batch, size_t width, size_t height) {
+float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
+                              size_t height) {
   constexpr size_t channels = 3;
-  size_t batch = .size()
+  const size_t batch_size = batch.size();
 
   std::vector<float> content_array(height * width * channels * batch.size());
   std::vector<float> style_array(height * width * channels * batch.size());
-  std::vector<float> index_array(batch.size());
+  std::vector<float> index_array(batch_size);
 
-  for (auto element : batch) {
-    image_type content_image = element.content_image;
-    image_type style_image = element.style_image;
-    size_t style_index = element.style_index;
+  for (size_t index = 0; index < batch_size; index++) {
+    prepare_images(batch[index].content_image, content_array, width, height,
+                   channels, index);
 
-    image_type resized_content = image_util::resize_image(content_image, width, height, channels, true, 1);
-    image_type resized_style = image_util::resize_image(content_image, width, height, channels, true, 1);
-    
-    std::vector<float>::iterator out_it = result_array.begin();
-    // TODO:
-    // TODO: 
+    prepare_images(batch[index].style_image, style_array, width, height,
+                   channels, index);
+
+    size_t style_index = batch[index].style_index;
+    index_array[index] = style_index;
   }
 
-
-    size_t style_index = batch[y].style_index;
-
-    turi::image_type content_image = batch[y].content_image;
-    turi::image_type style_image = batch[y].style_image;
-
-    shared_float_array index_array(std::make_shared<float_scalar>(style_index));
-
-    shared_float_array input_images =
-    shared_float_array label_images =
-        
-
-    std::map<std::string, shared_float_array> results =
-        m_training_model->train({{"input", label_images},
-                                 {"labels", label_images},
-                                 {"index", index_array}});
-
-    add_or_update_state({
-        {"training_iterations", iteration_idx + 1},
-    });
-
-    shared_float_array loss_batch = results.at("loss");
-
-    // TODO: do something with the loss
-    // TODO: print table printer
-  }
+  return {
+    {"input", shared_float_array::wrap(std::move(content_array),
+                                       {batch_size, height, width, channels})},
+    {"labels", shared_float_array::wrap(std::move(style_array),
+                                       {batch_size, height, width, channels})},
+    {"index", shared_float_array::wrap(std::move(index_array),
+                                       {batch_size})}
+  };
 }
 
 flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
@@ -302,32 +283,23 @@ void style_transfer::iterate_training() {
   std::vector<st_example> batch =
       m_training_data_iterator->next_batch(batch_size);
 
-  for (size_t y = 0; y < batch.size(); y++) {
-    size_t style_index = batch[y].style_index;
+  float_array_map prepared_batch = prepare_batch(batch, image_width, image_height);
 
-    turi::image_type content_image = batch[y].content_image;
-    turi::image_type style_image = batch[y].style_image;
+  std::map<std::string, shared_float_array> results =
+        m_training_model->train(prepared_batch);
 
-    shared_float_array index_array(std::make_shared<float_scalar>(style_index));
+  add_or_update_state({
+    {"training_iterations", iteration_idx + 1},
+  });
 
-    shared_float_array input_images =
-        prepare_images(content_image, image_width, image_height);
-    shared_float_array label_images =
-        prepare_images(style_image, image_width, image_height);
+  shared_float_array loss_batch = results.at("loss");
 
-    std::map<std::string, shared_float_array> results =
-        m_training_model->train({{"input", label_images},
-                                 {"labels", label_images},
-                                 {"index", index_array}});
 
-    add_or_update_state({
-        {"training_iterations", iteration_idx + 1},
-    });
+  float batch_loss = std::accumulate(loss_batch.data(), loss_batch.data() + loss_batch.size(), 0.f,
+        [&loss_batch](float a, float b) { return a + b / loss_batch.size(); });
 
-    shared_float_array loss_batch = results.at("loss");
-
-    // TODO: do something with the loss
-    // TODO: print table printer
+  if (training_table_printer_) {
+    training_table_printer_->print_progress_row(iteration_idx, iteration_idx + 1, batch_loss, progress_time());
   }
 }
 
@@ -338,11 +310,19 @@ void style_transfer::finalize_training() {
 
 void style_transfer::train(gl_sarray style, gl_sarray content,
                            std::map<std::string, flexible_type> opts) {
+
+  training_table_printer_.reset(new table_printer({{ "Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
+
   init_train(style, content, opts);
+
+  training_table_printer_->print_header();
 
   while (get_training_iterations() < get_max_iterations()) iterate_training();
 
   finalize_training();
+
+  training_table_printer_->print_footer();
+  training_table_printer_.reset();
 }
 
 std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(

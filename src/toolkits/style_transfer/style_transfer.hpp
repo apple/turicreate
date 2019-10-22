@@ -11,6 +11,7 @@
 #include <memory>
 
 #include <core/data/sframe/gl_sarray.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/model_spec.hpp>
@@ -110,6 +111,8 @@ class EXPORT style_transfer : public ml_model_base {
   std::unique_ptr<data_iterator> m_training_data_iterator;
   std::unique_ptr<neural_net::compute_context> m_training_compute_context;
   std::unique_ptr<neural_net::model_backend> m_training_model;
+
+  std::unique_ptr<table_printer> training_table_printer_;
 
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;
