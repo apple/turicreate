@@ -9,6 +9,8 @@
 
 using namespace turi;
 
+#ifndef TC_DISABLE_REMOTEFS
+
 
 struct block_cache_test {
 
@@ -107,3 +109,5 @@ BOOST_AUTO_TEST_CASE(test_block_cache_evict) {
   block_cache_test::test_block_cache_evict();
 }
 BOOST_AUTO_TEST_SUITE_END()
+
+#endif

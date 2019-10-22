@@ -14,7 +14,7 @@
 #include <core/system/cppipc/server/cancel_ops.hpp>
 #include <core/storage/fileio/set_curl_options.hpp>
 
-#ifndef TC_NO_CURL
+#ifndef TC_DISABLE_REMOTEFS
 extern "C" {
 #include <curl/curl.h>
 }
@@ -37,7 +37,7 @@ size_t download_callback(char *ptr, size_t size, size_t nmemb, void *userdata) {
 }
 
 int download_url(std::string url, std::string output_file) {
-#ifndef TC_NO_CURL
+#ifndef TC_DISABLE_REMOTEFS
   // source modified from libcurl code example
   CURL *curl = curl_easy_init();
   logprogress_stream << "Downloading " << url << " to " << output_file << "\n";
@@ -76,6 +76,7 @@ std::tuple<int, bool, std::string> download_url(std::string url) {
   }
 
   std::ifstream fin(url.c_str(), std::ifstream::binary);
+
   // now, check for the file:// protocol header and see if we can access
   // it as a local file
   if (boost::starts_with(url, "file://")) {
@@ -110,7 +111,7 @@ std::tuple<int, bool, std::string> download_url(std::string url) {
   // failed to download
   // delete the temporary file and return failure
   if (status != 0) {
-#ifndef TC_NO_CURL
+#ifndef TC_DISABLE_REMOTEFS
     delete_temp_file(tempname);
 #else
   log_and_throw("Remote FS disabled but functionality called.");
@@ -122,7 +123,7 @@ std::tuple<int, bool, std::string> download_url(std::string url) {
 }
 
 std::string get_curl_error_string(int status) {
-#ifndef TC_NO_CURL
+#ifndef TC_DISABLE_REMOTEFS
   return curl_easy_strerror(CURLcode(status));
 #else
   log_and_throw("Remote FS disabled but functionality called.");

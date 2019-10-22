@@ -106,6 +106,21 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
 {}
 
+bool simple_data_iterator::has_next_batch() {
+  return (next_row_ != end_of_rows_);
+}
+
+void simple_data_iterator::reset() {
+
+  range_iterator_ = data_.range_iterator();
+  next_row_ = range_iterator_.begin();
+  end_of_rows_ = range_iterator_.end();
+
+  // TODO: If gl_sframe_range::end() were a const method, we wouldn't need to
+  // store end_of_rows_ separately.
+}
+
+
 data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   size_t image_data_size = kDrawingHeight * kDrawingWidth * kDrawingChannels;
@@ -115,25 +130,32 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   batch_targets.reserve(batch_size);
   batch_predictions.reserve(batch_size);
   float *next_drawing_pointer = batch_drawings.data();
+  size_t real_batch_size = 0;
+
   while (batch_targets.size() < batch_size
-      && next_row_ != range_iterator_.end()) {
+        && next_row_ != range_iterator_.end()) {
+
+    real_batch_size++;
     const sframe_rows::row& row = *next_row_;
-    float preds = -1;
+    
     if (predictions_index_ >= 0) {
+      float preds = -1;
       preds = static_cast<float>(target_properties_.class_to_index_map.at(
         row[predictions_index_].to<flex_string>())
       );
+      batch_predictions.emplace_back(preds);
     }
+
     add_drawing_pixel_data_to_batch(next_drawing_pointer,
       row[feature_index_].to<flex_image>());
     next_drawing_pointer += image_data_size;
+    
     batch_targets.emplace_back(
       static_cast<float>(target_properties_.class_to_index_map.at(
         row[target_index_].to<flex_string>()
         )
       )
     );
-    batch_predictions.emplace_back(preds);
 
     if (++next_row_ == range_iterator_.end() && repeat_) {
 
@@ -164,16 +186,21 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     }
   }
 
+  DASSERT_EQ(real_batch_size, batch_targets.size());
+
   // Wrap the buffers as float_array values.
   data_iterator::batch result;
+  result.num_samples = real_batch_size;
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
-      { batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels });
+      { real_batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels });
+  
   result.targets = shared_float_array::wrap(
-      std::move(batch_targets), { batch_size, 1 });
-  if (batch_predictions[0] != -1) {
+      std::move(batch_targets), { real_batch_size, 1 });
+  
+  if (predictions_index_ >= 0) {
     result.predictions = shared_float_array::wrap(
-        std::move(batch_predictions), { batch_size, 1 });
+        std::move(batch_predictions), { real_batch_size, 1 });
   }
 
   return result;

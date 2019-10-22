@@ -7,13 +7,15 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import tensorflow as _tf
+
 import numpy as _np
 import turicreate.toolkits._tf_utils as _utils
 
 class ODTensorFlowModel(object):
 
     def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
+        import tensorflow.compat.v1 as _tf
+        _tf.disable_v2_behavior()
 
         #_tf.compat.v1.get_default_graph()
 
@@ -37,9 +39,9 @@ class ODTensorFlowModel(object):
         self.is_train = is_train  # Set flag for training or val
 
         # Create placeholders for image and labels
-        self.images = _tf.compat.v1.placeholder(_tf.float32, [self.batch_size, input_h,
+        self.images = _tf.placeholder(_tf.float32, [self.batch_size, input_h,
                                                               input_w, 3], name='images')
-        self.labels = _tf.compat.v1.placeholder(_tf.float32,
+        self.labels = _tf.placeholder(_tf.float32,
                                 [self.batch_size, self.grid_shape[0], self.grid_shape[1],
                                  self.num_anchors, self.num_classes + 5],
                                 name='labels')
@@ -54,10 +56,10 @@ class ODTensorFlowModel(object):
         self.init_steps = [self.num_iterations // 2, 3 * self.num_iterations // 4, self.num_iterations]
         self.lrs = [_np.float32(self.base_lr * 10 ** (-i)) for i, step in enumerate(self.init_steps)]
         self.steps_tf = self.init_steps[:-1]
-        self.lr = _tf.compat.v1.train.piecewise_constant(self.global_step, self.steps_tf, self.lrs)
+        self.lr = _tf.train.piecewise_constant(self.global_step, self.steps_tf, self.lrs)
         # TODO: Evaluate method to update lr in set_learning_rate()
 
-        self.opt = _tf.compat.v1.train.MomentumOptimizer(self.lr, momentum=0.9)
+        self.opt = _tf.train.MomentumOptimizer(self.lr, momentum=0.9)
 
         self.clip_value = _utils.convert_shared_float_array_to_numpy(self.config.get('gradient_clipping'))
 
@@ -66,9 +68,9 @@ class ODTensorFlowModel(object):
         self.train_op = self.opt.apply_gradients(clipped_gradients, global_step=self.global_step)
 
 
-        self.sess = _tf.compat.v1.Session()
-        self.sess.run(_tf.compat.v1.global_variables_initializer())
-        self.sess.run(_tf.compat.v1.local_variables_initializer())
+        self.sess = _tf.Session()
+        self.sess.run(_tf.global_variables_initializer())
+        self.sess.run(_tf.local_variables_initializer())
 
         self.load_weights(self.init_weights)
 
@@ -84,12 +86,12 @@ class ODTensorFlowModel(object):
         """
         for keys in tf_net_params:
             if tf_net_params[keys].ndim == 1:
-                self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(keys+":0"),
+                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(keys+":0"),
                                                    tf_net_params[keys]))
             elif tf_net_params[keys].ndim == 4:
                 # Converting from [output_channels, input_channels, filter_height, filter_width] to
                 # [filter_height, filter_width, input_channels, output_channels]
-                self.sess.run(_tf.compat.v1.assign(_tf.compat.v1.get_default_graph().get_tensor_by_name(keys+":0"),
+                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(keys+":0"),
                                                    tf_net_params[keys].transpose(2, 3, 1, 0)))
             else:
                 continue
@@ -143,9 +145,9 @@ class ODTensorFlowModel(object):
         batch_mean, batch_var = _tf.nn.moments(inputs, axes, name='moments')
 
         def mean_var_update():
-            with _tf.control_dependencies([_tf.compat.v1.assign(shadow_mean, _tf.multiply(shadow_mean, decay)
+            with _tf.control_dependencies([_tf.assign(shadow_mean, _tf.multiply(shadow_mean, decay)
                                                                              + _tf.multiply(batch_mean, 1. - decay)),
-                                           _tf.compat.v1.assign(shadow_var, _tf.multiply(shadow_var, decay)
+                                           _tf.assign(shadow_var, _tf.multiply(shadow_var, decay)
                                                                             + _tf.multiply(batch_var, 1. - decay))]):
                 return _tf.identity(batch_mean), _tf.identity(batch_var)
 
@@ -345,7 +347,7 @@ class ODTensorFlowModel(object):
 
         loss_xy = lmb_coord_xy * _tf.reduce_sum(kr_box * _tf.square(gt_xy - xy)) / (count + 0.01)
 
-        loss_wh = _tf.compat.v1.losses.huber_loss (labels=gt_raw_wh, predictions=raw_wh, weights=lmb_coord_wh * kr_box,
+        loss_wh = _tf.losses.huber_loss (labels=gt_raw_wh, predictions=raw_wh, weights=lmb_coord_wh * kr_box,
                                                    delta= 1.0)
         # Confidence loss
         loss_conf = s * _tf.reduce_sum(
@@ -420,7 +422,7 @@ class ODTensorFlowModel(object):
         tf_export_params = {}
 
         # collect all TF variables to include running_mean and running_variance
-        tvars = _tf.compat.v1.global_variables()
+        tvars = _tf.global_variables()
         tvars_vals = self.sess.run(tvars)
         for var, val in zip(tvars, tvars_vals):
             if val.ndim == 1:

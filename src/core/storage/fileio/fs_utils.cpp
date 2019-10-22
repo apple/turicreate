@@ -13,7 +13,11 @@
 #include <boost/filesystem.hpp>
 #include <core/storage/fileio/fixed_size_cache_manager.hpp>
 #include <core/storage/fileio/file_handle_pool.hpp>
+
+#ifndef TC_DISABLE_REMOTEFS
 #include <core/storage/fileio/s3_api.hpp>
+#endif
+
 #include <core/storage/fileio/sanitize_url.hpp>
 #include <core/export.hpp>
 
@@ -137,7 +141,7 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
     } catch (const std::exception& ex) {
       return std::make_pair(file_status::MISSING, std::string(ex.what()));
     }
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   } else if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -182,7 +186,7 @@ get_directory_listing(const std::string& path) {
     // this is a cache file. There is no filesystem.
     // it is only REGULAR or MISSING
     return ret;
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   } else if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -243,7 +247,7 @@ EXPORT bool create_directory(const std::string& path) {
   if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     return true;
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   } else if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -345,7 +349,7 @@ bool delete_path_impl(const std::string& path,
     } catch (...) {
       return false;
     }
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   } else if(boost::starts_with(path, "hdfs://")) {
     // hdfs only has a recursive deleter. we need to make this safe
     // if the current path is a non-empty directory, fail
@@ -392,7 +396,7 @@ EXPORT bool delete_path_recursive(const std::string& path) {
   if (boost::starts_with(path, fileio::get_cache_prefix())) {
     // recursive deletion not possible with cache
     return true;
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   } else if(boost::starts_with(path, "hdfs://")) {
     // hdfs
     std::string host, port, hdfspath;
@@ -420,7 +424,7 @@ EXPORT bool delete_path_recursive(const std::string& path) {
 }
 
 bool is_writable_protocol(std::string protocol) {
-#ifdef TC_ENABLE_REMOTEFS
+#ifndef TC_DISABLE_REMOTEFS
   return protocol == "hdfs" || protocol == "s3" ||
       protocol == "" || protocol == "file" || protocol == "cache";
 #else

@@ -153,7 +153,7 @@ build_dylib_macos_10_14:
   stage: build
   script:
     - source scripts/use_ccache.sh
-    - ./configure --no-visualization --no-python --release-opt-for-size
+    - ./configure --no-visualization --no-python --no-remotefs --release-opt-for-size
     - cd release/src/deployment
     - make -j8
   artifacts:
@@ -171,7 +171,7 @@ build_dylib_ios_12:
   stage: build
   script:
     - source scripts/use_ccache.sh
-    - ./configure --no-visualization --no-python --release-opt-for-size --target-ios
+    - ./configure --no-visualization --no-python --no-remotefs --release-opt-for-size --target-ios
     - cd release/src/deployment
     - make -j8
   artifacts:
@@ -197,6 +197,44 @@ test_cpp_linux:
     - apk add python2
     - python2.7 scripts/run_cpp_tests.py -j 2 --docker
 
+build_cpp_linux_no_remotefs:
+  image: ubuntu:18.04
+  stage: build
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  script:
+    - apt-get -y update
+    - apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget bzip2 build-essential xxd
+    - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
+    - apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
+    - apt-get -y update
+    - apt-get -y install cmake
+    - ./configure --no-remotefs --no-python
+    - cd debug/test
+    - bash -c -e "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access' "
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - debug/ 
+
+test_cpp_linux_no_remotefs:
+  tags:
+    - docker
+  services:
+    - docker:18.09-dind
+  image: docker:18.09
+  stage: test
+  dependencies:
+    - build_cpp_linux_no_remotefs
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  script:
+    - apk add bash
+    - apk add python2 
+    - python2.7 scripts/run_cpp_tests.py -j 2 --docker
+
 test_cpp_mac_10_13:
   tags:
     - macos10.13
@@ -210,7 +248,7 @@ test_cpp_mac_10_13:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - (test -d debug && test -d release) || ./configure --no-python
     - cd debug/test
-    - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
+    - bash -c -e "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
@@ -228,6 +266,22 @@ test_cpp_mac_10_14:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - (test -d debug && test -d release) || ./configure --no-python
+    - cd debug/test
+    - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
+    - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
+    - export PATH=`pwd`/deps/local/bin:$PATH
+    - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
+    - python ../../scripts/run_cpp_tests.py -j 2
+
+test_cpp_mac_no_remotefs:
+  tags:
+    - macos10.15
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
+  stage: test
+  script:
+    - ./configure --no-remotefs --no-python
     - cd debug/test
     - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
