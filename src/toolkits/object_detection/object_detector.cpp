@@ -532,10 +532,7 @@ variant_map_type object_detector::evaluate(
   if (std::find(metrics.begin(), metrics.end(), MAP) == metrics.end()) {
     result_map.erase(MAP);
   }
-  for (auto& shit : result_map) {
-    std::cout << shit.first << '\n';
-  }
-  std::cout << "====\n";
+
   return result_map;
 }
 
