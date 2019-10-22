@@ -174,7 +174,7 @@ class EXPORT ml_model_base: public model_base {
   /**
    * Append the key value store of the model.
    *
-   * \param[in] dict Options (Key-Valye pairs) to set
+   * \param[in] dict Options (Key-Value pairs) to set
    */
   void add_or_update_state(const std::map<std::string, variant_type>& dict);
 

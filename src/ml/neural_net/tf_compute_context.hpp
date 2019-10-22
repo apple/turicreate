@@ -45,7 +45,7 @@ public:
       const float_array_map& config, const float_array_map& weights) override;
 
   std::unique_ptr<model_backend> create_drawing_classifier(
-      /* TODO: const float_array_map& weights
+      /* TODO: const float_array_map& weights, const float_array_map& config
        * Until the nn_spec in C++ isn't ready, do not pass in any weights.
        */
       size_t batch_size, size_t num_classes) override;
