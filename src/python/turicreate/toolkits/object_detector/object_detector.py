@@ -1693,7 +1693,7 @@ class ObjectDetector_beta(_Model):
         """
         return  self.__proxy__.predict(dataset, confidence_threshold, iou_threshold)
 
-    def evaluate(self, dataset, metric='auto', confidence_threshold = 0.001, iou_threshold = 0.45):
+    def evaluate(self, dataset, metric='auto', output_type='dict', confidence_threshold = 0.001, iou_threshold = 0.45):
         """
         Evaluate the model by making predictions and comparing these to ground
         truth bounding box annotations.
