@@ -17,7 +17,7 @@ import turicreate._connect.main as glconnect
 from turicreate.data_structures.sframe import SFrame as _SFrame
 import turicreate.extensions as _extensions
 from turicreate.extensions import _wrap_function_return
-from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
+from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct, _read_env_var_cpp
 from turicreate.util import _make_internal_url
 from turicreate.toolkits._main import ToolkitError
 import turicreate.util._file_util as file_util
@@ -28,14 +28,10 @@ import six as _six
 MODEL_NAME_MAP = {}
 
 # Object detector use C++ codepath
-OD_USE_CPP = True
-if not os.environ.has_key('od_use_cpp') or os.environ.get('od_use_cpp')=="0":
-    OD_USE_CPP = False
+OD_USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
 # Activity Classifier use C++ codepath
-AC_USE_CPP = True
-if not os.environ.has_key('ac_use_cpp') or os.environ.get('ac_use_cpp')=="0":
-    AC_USE_CPP = False
+AC_USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 
 def load_model(location):
     """
