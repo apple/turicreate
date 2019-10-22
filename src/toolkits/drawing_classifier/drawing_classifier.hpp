@@ -25,7 +25,9 @@ class EXPORT drawing_classifier : public ml_model_base {
  public:
   drawing_classifier() = default;
 
-  // ml_model_base interface
+  /**
+   * ml_model_base interface
+   */
 
   void init_options(const std::map<std::string, flexible_type>& opts) override;
   /* Commented out for the purpose of a skeleton. */
@@ -38,7 +40,9 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   void load_version(iarchive& iarc, size_t version) override;
 
-  /* Interface exposed via Unity server */
+  /**
+   * Interface exposed via Unity server
+   */
 
   void train(gl_sframe data, std::string target_column_name,
              std::string feature_column_name, variant_type validation_data,
@@ -258,12 +262,13 @@ class EXPORT drawing_classifier : public ml_model_base {
     return variant_get_value<T>(get_state().at(key));
   }
 
-  // for test svae & load purpose
-  // well, for some reason nn_spec_ should not be exposed to user
+  /**
+   * for test svae & load purpose. well, nn_spec_ should not be exposed
+   * to user. I have to do this hack for test purpose
+   */
   friend void init_dc_model_spec_for_test(drawing_classifier& dc);
 
  private:
-
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
 
@@ -279,7 +284,9 @@ class EXPORT drawing_classifier : public ml_model_base {
   std::unique_ptr<table_printer> training_table_printer_;
 };
 
-/* minimum test suite friends */
+/**
+ * minimum test suite friends
+ */
 inline void init_dc_model_spec_for_test(drawing_classifier& dc) {
   dc.nn_spec_ = dc.init_model();
 };
