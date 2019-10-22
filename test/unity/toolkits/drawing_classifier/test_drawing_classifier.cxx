@@ -216,7 +216,6 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
     TS_ASSERT_EQUALS(batch_size, test_batch_size);
     TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
 
-    /* TODO: Uncomment when we start passing weights around */
     // weights should be what we returned from init_model, as copied by
     // neural_net::wrap_network_params
     TS_ASSERT_EQUALS(weights.size(), 1);
