@@ -218,6 +218,14 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   END_CLASS_MEMBER_REGISTRATION
 
+  inline std::unique_ptr<neural_net::model_spec> get_model_spec_copy() const {
+    if (nn_spec_) {
+      return nn_spec_->clone();
+    } else {
+      return nullptr;
+    }
+   }
+
  protected:
   // Constructor allowing tests to set the initial state of this class and to
   // inject dependencies.
@@ -262,16 +270,13 @@ class EXPORT drawing_classifier : public ml_model_base {
     return variant_get_value<T>(get_state().at(key));
   }
 
-  /* mock test only ; not intended for inheritance */
-  inline void init_model_spec() { nn_spec_ = init_model(); }
+  /* mock test only */
 
-  inline std::unique_ptr<neural_net::model_spec> get_model_spec_copy() const {
-    if (nn_spec_) {
-      return nn_spec_->clone();
-    } else {
-      return nullptr;
-    }
-   }
+  /**
+   * not intended for inheritance
+   * only initialize nn_spec_ for test convenience
+   **/
+  inline void init_model_spec() { nn_spec_ = init_model(); }
 
  private:
   // Primary representation for the trained model.

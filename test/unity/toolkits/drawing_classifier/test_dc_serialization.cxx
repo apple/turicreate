@@ -21,11 +21,11 @@ namespace {
 class drawing_classifier_mock
     : public turi::drawing_classifier::drawing_classifier {
  public:
-  std::unique_ptr<neural_net::model_spec> my_get_model_spec() const {
+  std::unique_ptr<neural_net::model_spec> get_model_spec() const {
     return init_model();
   }
 
-  std::unique_ptr<neural_net::model_spec> my_model_init_and_copy() {
+  std::unique_ptr<neural_net::model_spec> init_and_get_model_spec_copy() {
     init_model_spec();
     return get_model_spec_copy();
   }
@@ -45,7 +45,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
        {"num_classes", num_classes},
        {"features", flex_list(features.begin(), features.end())}});
 
-  auto nn_spec = dc.my_get_model_spec();
+  auto nn_spec = dc.get_model_spec();
 
   const CoreML::Specification::NeuralNetwork& nn = nn_spec->get_coreml_spec();
   /*
@@ -207,15 +207,22 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
 
   /**
    * The test calls `load_version` first and write serialized
-   * `nn_spec_` to disk. In this way, the `nn_spec_` can be verified if
-   * it successively loads all params from the source model spec file.
+   * `nn_spec_` to disk, let's say `file_1`.
+   *
+   * Then we load the previously stored spec file and update
+   * all params to the model spec. Then we store what's loaded
+   * to `file_2`.
+   *
+   * By comparing `file_1` and `file_2`, we can verify that the
+   * both model spec instances have the same content and same content
+   * is written to the disk during the serialization.
    */
   auto load_save_compare = [&remove_if_exist](
                                drawing_classifier_mock& dc,
                                drawing_classifier_mock& dc_other) {
     // random init; avoid segfault
-    dc.my_model_init_and_copy();
-    dc_other.my_model_init_and_copy();
+    dc.init_and_get_model_spec_copy();
+    dc_other.init_and_get_model_spec_copy();
 
     constexpr auto my_file = "./test_dc_serialization.cxx.save.txt";
     remove_if_exist(my_file);
