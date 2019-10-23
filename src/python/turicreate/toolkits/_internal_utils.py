@@ -31,6 +31,12 @@ _proxy_map = {UnitySFrameProxy: (lambda x: _SFrame(_proxy=x)),
               UnitySArrayProxy: (lambda x: _SArray(_proxy=x)),
               UnityGraphProxy: (lambda x: _SGraph(_proxy=x))}
 
+def _read_env_var_cpp(var_name):
+    import os as _os
+    if var_name not in _os.environ or _os.environ.get(var_name)=="0":
+        return False
+    return True
+
 def _toolkit_serialize_summary_struct(model, sections, section_titles):
     """
       Serialize model summary into a dict with ordered lists of sections and section titles

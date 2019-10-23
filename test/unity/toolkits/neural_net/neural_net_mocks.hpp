@@ -112,11 +112,12 @@ class mock_compute_context : public compute_context {
           const float_array_map& config, const float_array_map& weights)>;
 
   using create_drawing_classifier_call =
-      std::function<std::unique_ptr<model_backend>(
-          /* TODO: const float_array_map& weights
-           * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-           */
-          size_t batch_size, size_t num_classes)>;
+       std::function<std::unique_ptr<model_backend>(
+           /* TODO: const float_array_map& weights, 
+            *       const float_array_map& config.
+            * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+            */
+           size_t batch_size, size_t num_classes)>;
 
   ~mock_compute_context() {
     TS_ASSERT(create_augmenter_calls_.empty());
