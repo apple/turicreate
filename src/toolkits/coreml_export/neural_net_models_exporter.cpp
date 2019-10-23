@@ -121,14 +121,12 @@ void set_threshold_feature(FeatureDescription* feature_desc, std::string feature
 }
 
 void set_image_feature(FeatureDescription* feature_desc, size_t image_width,
-                       size_t image_height, bool include_description,
-                       bool use_flexible_shape=false, std::string description="", ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB) {
+                       size_t image_height,
+                       std::string description="", bool use_flexible_shape = false, ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB) {
   feature_desc->set_name("image");
-  if (include_description && description.empty()) {
-    feature_desc->set_shortdescription("Input image");
-  } else if (include_description) {
+  if (!description.empty())
     feature_desc->set_shortdescription(description);
-  }
+
   ImageFeatureType* image_feature =
       feature_desc->mutable_type()->mutable_imagetype();
   image_feature->set_width(image_width);
@@ -195,7 +193,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   ModelDescription* model_desc = model_nn->mutable_description();
 
   // Write FeatureDescription for the image input.
-  set_image_feature(model_desc->add_input(), image_width, image_height, false);
+  set_image_feature(model_desc->add_input(), image_width, image_height);
 
   if (!options["include_non_maximum_suppression"].to<bool>()){
 
@@ -278,7 +276,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   first_layer_nms->set_coordinatesoutputfeaturename("coordinates");
 
   // Write FeatureDescription for the image input.
-  set_image_feature(pipeline_desc->add_input(), image_width, image_height, true);
+  set_image_feature(pipeline_desc->add_input(), image_width, image_height, "Input image");
 
   // Write FeatureDescription for the IOU Threshold input.
   FeatureDescription* iou_threshold = pipeline_desc->add_input();
@@ -381,13 +379,13 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
 
   ModelDescription* model_desc = model.mutable_description();
 
-  set_image_feature(model_desc->add_input(), image_width, image_height, true, true);
+  set_image_feature(model_desc->add_input(), image_width, image_height, "Input image", true);
 
   set_array_feature(
       model_desc->add_input(), "index",
       "Style index array (set index I to 1.0 to enable Ith style)", {1});
 
-  set_image_feature(model_desc->add_output(), image_width, image_height, true, true, "Stylized image");
+  set_image_feature(model_desc->add_output(), image_width, image_height, "Stylized image", true);
 
   model.mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
 
@@ -412,8 +410,7 @@ std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
 
   // Write the primary input features.
   for (size_t i = 0; i < features.size(); i++) {
-    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28,
-                      /* include desc */ true, false, "", ImageFeatureType::GRAYSCALE);
+    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28, "Input image", false, ImageFeatureType::GRAYSCALE);
   }
 
   // Write the primary output features.

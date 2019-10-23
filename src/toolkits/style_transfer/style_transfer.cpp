@@ -137,8 +137,7 @@ size_t style_transfer::get_version() const { return STYLE_TRANSFER_VERSION; }
 
 void style_transfer::save_impl(oarchive& oarc) const {
   variant_deep_save(state, oarc);
-  oarc << m_resnet_spec->export_params_view()
-       << m_vgg_spec->export_params_view();
+  oarc << m_resnet_spec->export_params_view();
 }
 
 void style_transfer::load_version(iarchive& iarc, size_t version) {
@@ -150,9 +149,6 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
   m_resnet_spec =
       init_resnet(variant_get_value<size_t>(state.at("num_styles")));
   m_resnet_spec->update_params(nn_params);
-
-  m_vgg_spec = init_vgg_16();
-  m_vgg_spec->update_params(nn_params);
 }
 
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
