@@ -208,11 +208,8 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   };
 
   /**
-   * This is a hack because nn_spec_ is a private member. Thus, I can't
-   * compare it directly after loading from file (load_version call).
-   *
-   * The solution is to call `load_version` first and write serialized
-   * `nn_spec_` to disk. In this way, I can indirectly verify the `nn_spec_`
+   * The test calls `load_version` first and write serialized
+   * `nn_spec_` to disk. In this way, I can verify the `nn_spec_`
    * successively loads all params from the source model spec file.
    */
   auto load_save_compare = [&remove_if_exist](
