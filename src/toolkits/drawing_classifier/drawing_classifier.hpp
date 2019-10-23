@@ -262,11 +262,16 @@ class EXPORT drawing_classifier : public ml_model_base {
     return variant_get_value<T>(get_state().at(key));
   }
 
-  /**
-   * for test svae & load purpose. well, nn_spec_ should not be exposed
-   * to user. I have to do this hack for test purpose
-   */
-  friend void init_dc_model_spec_for_test(drawing_classifier& dc);
+  /* mock test only ; not intended for inheritance */
+  inline void init_model_spec() { nn_spec_ = init_model(); }
+
+  inline std::unique_ptr<neural_net::model_spec> get_model_spec_copy() const {
+    if (nn_spec_) {
+      return nn_spec_->clone();
+    } else {
+      return nullptr;
+    }
+   }
 
  private:
   // Primary representation for the trained model.
@@ -282,13 +287,6 @@ class EXPORT drawing_classifier : public ml_model_base {
   std::unique_ptr<neural_net::model_backend> training_model_;
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;
-};
-
-/**
- * minimum test suite friends
- */
-inline void init_dc_model_spec_for_test(drawing_classifier& dc) {
-  dc.nn_spec_ = dc.init_model();
 };
 
 }  // namespace drawing_classifier

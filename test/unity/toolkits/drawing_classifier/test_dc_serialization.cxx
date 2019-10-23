@@ -23,11 +23,15 @@ namespace {
 class drawing_classifier_mock
     : public turi::drawing_classifier::drawing_classifier {
  public:
-  std::unique_ptr<neural_net::model_spec> my_init_model() const {
+  std::unique_ptr<neural_net::model_spec> my_get_model_spec() const {
     return init_model();
   }
 
-  void my_init_model_spec() { init_dc_model_spec_for_test(*this); };
+  std::unique_ptr<neural_net::model_spec> my_model_init_and_copy() {
+    init_model_spec();
+    return get_model_spec_copy();
+  }
+
 };
 
 BOOST_AUTO_TEST_CASE(test_dc_init_model) {
@@ -43,7 +47,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
        {"num_classes", num_classes},
        {"features", flex_list(features.begin(), features.end())}});
 
-  auto nn_spec = dc.my_init_model();
+  auto nn_spec = dc.my_get_model_spec();
 
   const CoreML::Specification::NeuralNetwork& nn = nn_spec->get_coreml_spec();
   /*
@@ -215,8 +219,8 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
                                drawing_classifier_mock& dc,
                                drawing_classifier_mock& dc_other) {
     // random init; avoid segfault
-    dc.my_init_model_spec();
-    dc_other.my_init_model_spec();
+    dc.my_model_init_and_copy();
+    dc_other.my_model_init_and_copy();
 
     constexpr auto my_file = "./test_dc_serialization.cxx.save.txt";
     remove_if_exist(my_file);
@@ -267,7 +271,8 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
     file.read(model_spec_src.data(), file_size);
     file.close();
 
-    // open the loaded file version
+    // open the saved model file and seek the cursor to EOF
+    // in order to tell the size of the file
     file.open(my_file_loaded, std::ios::in | std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
       std::stringstream ss;
@@ -276,6 +281,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
     }
     TS_ASSERT_EQUALS(file_size, file.tellg());
     file_size = file.tellg();
+    // reset the cursor
     file.seekg(0, std::ios::beg);
 
     std::vector<char> model_spec_loaded(file_size);

@@ -72,6 +72,7 @@ void drawing_classifier::load_version(iarchive& iarc, size_t version) {
   if (!nn_spec_)
     log_and_throw(
         "model spec is not initalized, pls call `init_train` before loading model");
+
   // Load model attributes.
   variant_deep_load(state, iarc);
 
@@ -310,7 +311,7 @@ void drawing_classifier::init_training(
 
   // Initialize the neural net. Note that this depends on statistics computed by
   // the data iterator.
-  nn_spec_ = init_model();
+  init_model_spec();
 
   // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(
