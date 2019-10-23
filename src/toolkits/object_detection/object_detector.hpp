@@ -39,6 +39,7 @@ class EXPORT object_detector: public ml_model_base {
 
   void train(gl_sframe data, std::string annotations_column_name,
              std::string image_column_name, variant_type validation_data,
+             std::vector<std::string> class_labels,
              std::map<std::string, flexible_type> opts);
   variant_map_type evaluate(gl_sframe data, std::string metric);
   gl_sarray predict(gl_sframe data);
@@ -51,6 +52,7 @@ class EXPORT object_detector: public ml_model_base {
                              std::string annotations_column_name,
                              std::string image_column_name,
                              variant_type validation_data,
+                             std::vector<std::string> class_labels,
                              std::map<std::string, flexible_type> opts);
   virtual void resume_training(gl_sframe data, variant_type validation_data);
   virtual void iterate_training();
@@ -64,11 +66,11 @@ class EXPORT object_detector: public ml_model_base {
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::train, "data",
-                                 "annotations_column_name",
-                                 "image_column_name", "validation_data",
-                                 "options");
+                                 "annotations_column_name", "image_column_name",
+                                 "validation_data", "class_labels", "options");
   register_defaults("train",
                     {{"validation_data", to_variant(gl_sframe())},
+                     {"class_labels", to_variant(std::vector<std::string>())},
                      {"options",
                       to_variant(std::map<std::string, flexible_type>())}});
   REGISTER_CLASS_MEMBER_DOCSTRING(
@@ -88,9 +90,10 @@ class EXPORT object_detector: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::init_training, "data",
                                  "annotations_column_name", "image_column_name",
-                                 "validation_data", "options");
+                                 "validation_data", "class_labels", "options");
   register_defaults("init_training",
                     {{"validation_data", to_variant(gl_sframe())},
+                     {"class_labels", to_variant(std::vector<std::string>())},
                      {"options",
                       to_variant(std::map<std::string, flexible_type>())}});
 

@@ -444,7 +444,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
         }
         model = _tc.extensions.object_detector()
-        model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
+        model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, class_labels=classes, options=tf_config)
         return ObjectDetector_beta(model_proxy=model, name="object_detector")
 
     else:  # Use MxNet

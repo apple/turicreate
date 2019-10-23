@@ -412,16 +412,15 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
   return;
 }
 
-void object_detector::train(gl_sframe data,
-                            std::string annotations_column_name,
+void object_detector::train(gl_sframe data, std::string annotations_column_name,
                             std::string image_column_name,
                             variant_type validation_data,
-                            std::map<std::string, flexible_type> opts)
-{
+                            std::vector<std::string> class_labels,
+                            std::map<std::string, flexible_type> opts) {
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
   init_training(data, annotations_column_name, image_column_name,
-                validation_data, opts);
+                validation_data, class_labels, opts);
 
   // Perform all the iterations at once.
   while (get_training_iterations() < get_max_iterations()) {
@@ -915,6 +914,7 @@ void object_detector::init_training(gl_sframe data,
                                     std::string annotations_column_name,
                                     std::string image_column_name,
                                     variant_type validation_data,
+                                    std::vector<std::string> class_labels,
                                     std::map<std::string, flexible_type> opts) {
   // Extract 'mlmodel_path' from the options, to avoid storing it as a model
   // field.
@@ -951,9 +951,13 @@ void object_detector::init_training(gl_sframe data,
                                          read_state<int>("random_seed"));
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(
-      training_data_, /* expected class_labels */ {}, /* repeat */ true);
-
+  std::cout << "expect class labels:" << class_labels << '\n';
+  training_data_iterator_ =
+      create_iterator(training_data_, /* expected class_labels */ class_labels,
+                      /* repeat */ true);
+  std::cout << "finish.........\n";
+  std::cout << "returned class labels:"
+            << training_data_iterator_->class_labels() << '\n';
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
   // classes observed by the training_data_iterator_ above.
@@ -977,6 +981,7 @@ void object_detector::init_training(gl_sframe data,
       {{3, grid_height * SPATIAL_REDUCTION, grid_width * SPATIAL_REDUCTION}};
   const std::vector<std::string>& classes =
       training_data_iterator_->class_labels();
+
   add_or_update_state({
       {"classes", flex_list(classes.begin(), classes.end())},
       {"input_image_shape",
