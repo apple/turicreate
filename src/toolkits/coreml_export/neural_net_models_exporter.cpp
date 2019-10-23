@@ -120,12 +120,35 @@ void set_threshold_feature(FeatureDescription* feature_desc, std::string feature
   feature_desc->mutable_type()->mutable_doubletype();
 }
 
-void set_image_feature(FeatureDescription* feature_desc, size_t image_width,
-                       size_t image_height,
-                       std::string description="", bool use_flexible_shape = false, ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB) {
+/**
+ * Currently only style transfer uses this `image_feature_size_range` in the
+ * future many image to image toolkits may use this feature. The defaults are
+ * the ones that the style transfer network uses. -1 indicates no higher limit.
+ */
+void set_image_feature_size_range(ImageFeatureType* image_feature,
+                                  size_t width_lower = 64,
+                                  size_t width_higher = -1,
+                                  size_t height_lower = 64,
+                                  size_t height_higher = -1) {
+  ImageFeatureType_ImageSizeRange* image_size_range =
+      image_feature->mutable_imagesizerange();
+
+  SizeRange* width_range = image_size_range->mutable_widthrange();
+  SizeRange* height_range = image_size_range->mutable_heightrange();
+
+  width_range->set_lowerbound(width_lower);
+  width_range->set_upperbound(width_higher);
+
+  height_range->set_lowerbound(height_lower);
+  height_range->set_upperbound(height_higher);
+}
+
+void set_image_feature(
+    FeatureDescription* feature_desc, size_t image_width, size_t image_height,
+    std::string description = "", bool use_flexible_shape = false,
+    ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB) {
   feature_desc->set_name("image");
-  if (!description.empty())
-    feature_desc->set_shortdescription(description);
+  if (!description.empty()) feature_desc->set_shortdescription(description);
 
   ImageFeatureType* image_feature =
       feature_desc->mutable_type()->mutable_imagetype();
@@ -133,18 +156,7 @@ void set_image_feature(FeatureDescription* feature_desc, size_t image_width,
   image_feature->set_height(image_height);
   image_feature->set_colorspace(ImageFeatureType::RGB);
 
-  if (use_flexible_shape) {
-    ImageFeatureType_ImageSizeRange* image_size_range = image_feature->mutable_imagesizerange();
-    
-    SizeRange* width_range = image_size_range->mutable_widthrange();
-    SizeRange* height_range = image_size_range->mutable_heightrange();
-
-    width_range->set_lowerbound(64);
-    width_range->set_upperbound(-1);
-
-    height_range->set_lowerbound(64);
-    height_range->set_upperbound(-1);
-  }
+  if (use_flexible_shape) set_image_feature_size_range(image_feature);
 
   image_feature->set_colorspace(image_type);
 }
