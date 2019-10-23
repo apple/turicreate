@@ -120,16 +120,11 @@ void set_threshold_feature(FeatureDescription* feature_desc, std::string feature
   feature_desc->mutable_type()->mutable_doubletype();
 }
 
-/**
- * Currently only style transfer uses this `image_feature_size_range` in the
- * future many image to image toolkits may use this feature. The defaults are
- * the ones that the style transfer network uses. -1 indicates no higher limit.
- */
 void set_image_feature_size_range(ImageFeatureType* image_feature,
-                                  size_t width_lower = 64,
-                                  size_t width_higher = -1,
-                                  size_t height_lower = 64,
-                                  size_t height_higher = -1) {
+                                  int64_t width_lower,
+                                  int64_t width_higher,
+                                  int64_t height_lower,
+                                  int64_t height_higher) {
   ImageFeatureType_ImageSizeRange* image_size_range =
       image_feature->mutable_imagesizerange();
 
@@ -143,9 +138,9 @@ void set_image_feature_size_range(ImageFeatureType* image_feature,
   height_range->set_upperbound(height_higher);
 }
 
-void set_image_feature(
+ImageFeatureType* set_image_feature(
     FeatureDescription* feature_desc, size_t image_width, size_t image_height,
-    std::string description = "", bool use_flexible_shape = false,
+    std::string description = "",
     ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB) {
   feature_desc->set_name("image");
   if (!description.empty()) feature_desc->set_shortdescription(description);
@@ -154,11 +149,9 @@ void set_image_feature(
       feature_desc->mutable_type()->mutable_imagetype();
   image_feature->set_width(image_width);
   image_feature->set_height(image_height);
-  image_feature->set_colorspace(ImageFeatureType::RGB);
-
-  if (use_flexible_shape) set_image_feature_size_range(image_feature);
-
   image_feature->set_colorspace(image_type);
+
+  return image_feature;
 }
 
 } //namespace
@@ -391,13 +384,23 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
 
   ModelDescription* model_desc = model.mutable_description();
 
-  set_image_feature(model_desc->add_input(), image_width, image_height, "Input image", true);
+  ImageFeatureType* input_feat = set_image_feature(model_desc->add_input(), image_width, image_height, "Input image");
+
+  /**
+   * The -1 indicates no upper limits for the image size
+   */
+  set_image_feature_size_range(input_feat, 64, -1, 64, -1);
 
   set_array_feature(
       model_desc->add_input(), "index",
       "Style index array (set index I to 1.0 to enable Ith style)", {1});
 
-  set_image_feature(model_desc->add_output(), image_width, image_height, "Stylized image", true);
+  ImageFeatureType* style_feat = set_image_feature(model_desc->add_output(), image_width, image_height, "Stylized image");
+
+  /**
+   * The -1 indicates no upper limits for the image size
+   */
+  set_image_feature_size_range(style_feat, 64, -1, 64, -1);
 
   model.mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
 
@@ -422,7 +425,7 @@ std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
 
   // Write the primary input features.
   for (size_t i = 0; i < features.size(); i++) {
-    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28, "Input image", false, ImageFeatureType::GRAYSCALE);
+    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28, "Input image", ImageFeatureType::GRAYSCALE);
   }
 
   // Write the primary output features.

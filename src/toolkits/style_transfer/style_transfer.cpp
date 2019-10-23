@@ -285,7 +285,7 @@ void style_transfer::iterate_training() {
   size_t loss_batch_size = loss_batch.size();
   float batch_loss = std::accumulate(
       loss_batch.data(), loss_batch.data() + loss_batch_size, 0.f,
-      [&loss_batch_size](float a, float b) { return a + b / loss_batch_size; });
+      [loss_batch_size](float a, float b) { return a + b / loss_batch_size; });
 
   if (training_table_printer_) {
     training_table_printer_->print_progress_row(
