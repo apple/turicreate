@@ -35,31 +35,18 @@ constexpr size_t DEFAULT_WIDTH = 256;
 
 constexpr size_t DEFAULT_BATCH_SIZE = 1;
 
-void populate_image(std::vector<float>::iterator& start_iter,
-                    std::vector<float>::iterator& end_iter,
-                    const unsigned char* src_ptr) {
-  while (start_iter != end_iter) {
-    *start_iter = *src_ptr / 255.f;
-    ++src_ptr;
-    ++start_iter;
-  }
-}
-
-void prepare_images(const image_type& image, std::vector<float>& array,
+void prepare_images(const image_type& image, std::vector<float>::iterator start_iter,
                     size_t width, size_t height, size_t channels,
                     size_t index) {
   size_t image_size = height * width * channels;
-  size_t offset = index * image_size;
 
   image_type resized_image =
       image_util::resize_image(image, width, height, channels, true, 1);
 
   const unsigned char* resized_image_ptr = resized_image.get_image_data();
 
-  std::vector<float>::iterator start_iter = array.begin() + offset;
-  std::vector<float>::iterator end_iter = start_iter + image_size;
-
-  populate_image(start_iter, end_iter, resized_image_ptr);
+  std::transform(resized_image_ptr, resized_image_ptr + image_size, start_iter,
+    [](unsigned char val) { return val / 255.f; });
 }
 
 float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
@@ -72,10 +59,14 @@ float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
   std::vector<float> index_array(batch_size);
 
   for (size_t index = 0; index < batch_size; index++) {
-    prepare_images(batch[index].content_image, content_array, width, height,
+    size_t offset = index * height * width * channels;
+
+    std::vector<float>::iterator content_iter = content_array.begin() + offset;
+    prepare_images(batch[index].content_image, content_iter, width, height,
                    channels, index);
 
-    prepare_images(batch[index].style_image, style_array, width, height,
+    std::vector<float>::iterator style_iter = style_array.begin() + offset;
+    prepare_images(batch[index].style_image, style_iter, width, height,
                    channels, index);
 
     size_t style_index = batch[index].style_index;
@@ -290,9 +281,9 @@ void style_transfer::iterate_training() {
 
   shared_float_array loss_batch = results.at("loss");
 
-
-  float batch_loss = std::accumulate(loss_batch.data(), loss_batch.data() + loss_batch.size(), 0.f,
-        [&loss_batch](float a, float b) { return a + b / loss_batch.size(); });
+  size_t loss_batch_size = loss_batch.size();
+  float batch_loss = std::accumulate(loss_batch.data(), loss_batch.data() + loss_batch_size, 0.f,
+        [&loss_batch_size](float a, float b) { return a + b / loss_batch_size; });
 
   if (training_table_printer_) {
     training_table_printer_->print_progress_row(iteration_idx, iteration_idx + 1, batch_loss, progress_time());
