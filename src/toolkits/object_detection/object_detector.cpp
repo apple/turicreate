@@ -99,8 +99,6 @@ constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45f;
 // Predictions with confidence scores below this threshold will be discarded
 // before generation precision-recall curves.
 
-//constexpr float EVAL_CONFIDENCE_THRESHOLD = 0.001f;
-
 // Each bounding box is evaluated relative to a list of pre-defined sizes.
 const std::vector<std::pair<float, float>>& anchor_boxes() {
   static const std::vector<std::pair<float, float>>* const default_boxes =
@@ -607,8 +605,6 @@ void object_detector::perform_predict(gl_sframe data,
   size_t batch_size = read_state<size_t>("batch_size");
   size_t grid_height = read_state<size_t>("grid_height");
   size_t grid_width = read_state<size_t>("grid_width");
-  //float iou_threshold =
-  //    read_state<flex_float>("non_maximum_suppression_threshold");
 
   // return if the data is empty
   if (data.size() == 0) return;
