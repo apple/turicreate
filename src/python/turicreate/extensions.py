@@ -156,7 +156,7 @@ def _run_toolkit_function(fnname, arguments, args, kwargs):
     # handle errors
     if not ret[0]:
         if len(ret[1]) > 0:
-            raise _ToolkitError("at least one of the dictionary values could not be converted to a number.")
+            raise _ToolkitError(ret[1])
         else:
             raise _ToolkitError("Toolkit failed with unknown error")
 
