@@ -662,8 +662,99 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
 
 gl_sframe drawing_classifier::predict_topk(gl_sframe data,
                                            std::string output_type, size_t k) {
-  /* TODO: Add code to predict_topk! */
-  return gl_sframe();
+  // check valid input arguments
+  if (output_type != "probability" && output_type != "rank") {
+    log_and_throw(output_type +
+                  " is not a valid option for output_type.  "
+                  "Expected one of: probability, rank");
+  }
+
+  // data inference
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* is_train */ false, {});
+
+  gl_sframe dc_predictions = perform_inference(data_it.get());
+
+  // argsort probability to get the index (rank) for top k class
+  // if k is greater than the class number, set it to be class number
+  flex_list class_labels = read_state<flex_list>("classes");
+  k = std::min(k, class_labels.size());
+
+  auto argsort_prob = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+
+    std::vector<size_t> index_vec(prob_vec.size());
+    std::iota(index_vec.begin(), index_vec.end(), 0);
+
+    auto compare = [&](size_t i, size_t j) {
+      return prob_vec[i] > prob_vec[j];
+    };
+
+    std::nth_element(index_vec.begin(), index_vec.begin() + k, index_vec.end(),
+                     compare);
+
+    std::sort(index_vec.begin(), index_vec.begin() + k, compare);
+
+    return flex_list(index_vec.begin(), index_vec.begin() + k);
+  };
+
+  // store the index in a column "rank"
+  dc_predictions.add_column(
+      dc_predictions["preds"].apply(argsort_prob, flex_type_enum::LIST),
+      "rank");
+
+  // get top k class name and store in a column "class"
+  size_t rank_idx = dc_predictions.column_index("rank");
+  auto get_class_name = [=](const sframe_rows::row& row) {
+    const flex_list& rank_list = row[rank_idx];
+    flex_list topk_class;
+    for (flexible_type order : rank_list) {
+      topk_class.push_back(class_labels[order]);
+    }
+    return topk_class;
+  };
+
+  dc_predictions.add_column(
+      dc_predictions.apply(get_class_name, flex_type_enum::LIST), "class");
+
+  // if output_type is "probability" then change rank to probabilty
+  if (output_type == "probability") {
+    size_t prob_column_index = dc_predictions.column_index("preds");
+    auto get_probability = [=](const sframe_rows::row& row) {
+      const flex_list& rank_list = row[rank_idx];
+      flex_list topk_prob;
+      for (const flexible_type i : rank_list) {
+        topk_prob.push_back(row[prob_column_index][i]);
+      }
+      return topk_prob;
+    };
+
+    dc_predictions["rank"] =
+        dc_predictions.apply(get_probability, flex_type_enum::LIST);
+  }
+
+  // construct the final result
+  gl_sframe result = gl_sframe();
+  // stack data into a column with single element for each row
+  // stack the labels first
+  gl_sframe stacked_class =
+      gl_sframe({{"class", dc_predictions["class"]}}).stack("class", "class");
+  result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
+                    "row_id");
+  result.add_column(stacked_class["class"], "class");
+
+  // stack the rank column,
+  gl_sframe stacked_rank =
+      gl_sframe({{"rank", dc_predictions["rank"]}}).stack("rank", "rank");
+  ASSERT_EQ(stacked_rank.size(), stacked_class.size());
+  result.add_column(stacked_rank["rank"], "rank");
+
+  // change the column name rank to probability according to the output_type
+  if (output_type == "probability") {
+    result.rename({{"rank", "probability"}});
+  }
+
+  return result;
 }
 
 variant_map_type drawing_classifier::evaluate(gl_sframe data,
@@ -695,7 +786,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
           *nn_spec_, read_state<flex_list>("features"),
           read_state<flex_list>("classes"), read_state<flex_string>("target"));
 
-  const flex_list &features_list = read_state<flex_list>("features");
+  const flex_list& features_list = read_state<flex_list>("features");
   const flex_string features_string =
       join(std::vector<std::string>(features_list.begin(), features_list.end()),
            ",");
