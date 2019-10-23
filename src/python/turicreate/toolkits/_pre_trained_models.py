@@ -6,6 +6,7 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+from tensorflow import keras as _keras
 import os as _os
 import sys as _sys
 import requests as _requests
@@ -91,50 +92,48 @@ class ResNetImageClassifier(ImageClassifierPreTrainedModel):
 
     def __init__(self):
         self.name = 'resnet-50'
-        self.num_classes = 1000
-        self.feature_layer_size = 2048
-        self.data_layer = 'data'
-        self.output_layer = 'softmax_output'
-        self.label_layer = 'softmax_label'
-        self.feature_layer = 'flatten0_output'
-        self.is_feature_layer_final = False
-        epoch = 0
-        self.symbols_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-symbol.json' % self.name)
-        self.symbols_md5 = '2989c88d1d6629b777949a3ae695a42e'
-        self.params_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-%04d.params' % (self.name, epoch))
-        self.params_md5 = '246423771006aaf77acf68c99852f5b5'
-        path = _get_cache_dir()
+        self.input_is_BGR = False
+        
+        self.coreml_data_layer = 'data'
+        self.coreml_feature_layer = 'flatten0'
+
+        cache_path = _get_cache_dir()
+
+        # TODO: model downloading
+        '''
         _download_and_checksum_files([
-            (self.symbols_url, self.symbols_md5),
-            (self.params_url, self.params_md5),
-        ], path)
-        import mxnet as _mx
-        self.mxmodel = _mx.model.load_checkpoint(_os.path.join(path, self.name), epoch)
+            (self.coreml_model_url, self.coreml_model_md5),
+            (self.tensorflow_url, self.tensorflow_model_md5),
+        ], cache_path)
+        '''
+
+        model_path = _os.path.join(cache_path, self.name) + '.h5'
+        self.tf_model = _keras.models.load_model(model_path)
+
 
 class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
     input_image_shape = (3, 227, 227)
 
     def __init__(self):
         self.name = 'squeezenet_v1.1'
-        self.num_classes = 1000
-        self.feature_layer_size = 1000
-        self.is_feature_layer_final = True
-        self.data_layer = 'data'
-        self.output_layer = 'prob_output'
-        self.label_layer = 'prob_label'
-        self.feature_layer = 'flatten_output'
-        epoch = 0
-        self.symbols_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-symbol.json' % self.name)
-        self.symbols_md5 = 'bab4d80f45e9285cf9f4a3f01f07022e'
-        self.params_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-%04d.params' % (self.name, epoch))
-        self.params_md5 = '05b1eb6acabdaaee37c9c9ff666c1b51'
-        path = _get_cache_dir()
+        self.input_is_BGR = True
+
+        self.coreml_data_layer = 'data'
+        self.coreml_feature_layer = 'flatten'
+
+        cache_path = _get_cache_dir()
+
+        # TODO: model downloading
+        '''
         _download_and_checksum_files([
-            (self.symbols_url, self.symbols_md5),
-            (self.params_url, self.params_md5),
-        ], path)
-        import mxnet as _mx
-        self.mxmodel = _mx.model.load_checkpoint(_os.path.join(path, self.name), epoch)
+            (self.coreml_model_url, self.coreml_model_md5),
+            (self.tensorflow_url, self.tensorflow_model_md5),
+        ], cache_path)
+        '''
+
+        model_path = _os.path.join(cache_path, self.name) + '.h5'
+        self.tf_model = _keras.models.load_model(model_path)
+
 
 MODELS = {
     'resnet-50': ResNetImageClassifier,

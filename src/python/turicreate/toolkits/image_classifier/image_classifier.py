@@ -932,7 +932,7 @@ class ImageClassifier(_CustomModel):
         # main part of the export_coreml function
         if self.model in _pre_trained_models.MODELS:
             ptModel = _pre_trained_models.MODELS[self.model]()
-            feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
+            feature_extractor = _image_feature_extractor.TensorFlowFeatureExtractor(ptModel)
 
             coreml_model = feature_extractor.get_coreml_model()
             spec = coreml_model.get_spec()
