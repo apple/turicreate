@@ -193,7 +193,8 @@ class tf_image_augmenter : public float_array_image_augmenter {
   ~tf_image_augmenter() override = default;
 
   float_array_result prepare_augmented_images(
-      labeled_float_image data_to_augment) override;
+      labeled_float_image data_to_augment, size_t output_height,
+      size_t output_width, bool resize_only) override;
 
  private:
   options opts_;
@@ -201,8 +202,10 @@ class tf_image_augmenter : public float_array_image_augmenter {
 
 tf_image_augmenter::tf_image_augmenter(const options& opts) : float_array_image_augmenter(opts) {}
 
-float_array_image_augmenter::float_array_result tf_image_augmenter::prepare_augmented_images(
-    float_array_image_augmenter::labeled_float_image data_to_augment) {
+float_array_image_augmenter::float_array_result
+tf_image_augmenter::prepare_augmented_images(
+    float_array_image_augmenter::labeled_float_image data_to_augment,
+    size_t output_height, size_t output_width, bool resize_only) {
   float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
@@ -212,7 +215,8 @@ float_array_image_augmenter::float_array_result tf_image_augmenter::prepare_augm
 
     // Get augmented images and annotations from tensorflow
     pybind11::object augmented_data = tf_aug.attr("get_augmented_data")(
-        data_to_augment.images, data_to_augment.annotations);
+        data_to_augment.images, data_to_augment.annotations, output_height,
+        output_width, resize_only);
     std::pair<pybind11::buffer, std::vector<pybind11::buffer>> aug_data =
         augmented_data
             .cast<std::pair<pybind11::buffer, std::vector<pybind11::buffer>>>();

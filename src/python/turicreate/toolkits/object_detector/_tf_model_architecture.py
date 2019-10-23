@@ -9,15 +9,17 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import numpy as _np
+import tensorflow.compat.v1 as _tf
+_tf.disable_v2_behavior()
 import turicreate.toolkits._tf_utils as _utils
 
 class ODTensorFlowModel(object):
 
     def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
-        import tensorflow.compat.v1 as _tf
-        _tf.disable_v2_behavior()
 
-        #_tf.compat.v1.get_default_graph()
+        # Suppresses verbosity to only errors
+        _tf.logging.set_verbosity(_tf.logging.ERROR)
+        _tf.debugging.set_log_device_placement(False)
 
         # Converting incoming weights from shared_float_array to numpy
         for key in init_weights.keys():
@@ -51,7 +53,7 @@ class ODTensorFlowModel(object):
                                         name="global_step")
 
         self.loss = self.loss_layer(self.tf_model, self.labels)
-        self.base_lr = _utils.convert_shared_float_array_to_numpy(config['learning_rate'])
+        self.base_lr = _utils.convert_shared_float_array_to_numpy(config['learning_rate']) 
         self.num_iterations = int(_utils.convert_shared_float_array_to_numpy(config['num_iterations']))
         self.init_steps = [self.num_iterations // 2, 3 * self.num_iterations // 4, self.num_iterations]
         self.lrs = [_np.float32(self.base_lr * 10 ** (-i)) for i, step in enumerate(self.init_steps)]

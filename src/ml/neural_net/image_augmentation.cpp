@@ -157,6 +157,9 @@ image_augmenter::result resize_only_image_augmenter::prepare_images(
 image_augmenter::result float_array_image_augmenter::prepare_images(
     std::vector<labeled_image> source_batch) {
   const size_t n = opts_.batch_size;
+  const size_t output_height = opts_.output_height;
+  const size_t output_width = opts_.output_width;
+  const bool resize_only = opts_.resize_only;
   constexpr size_t c = 3;
   labeled_float_image input_to_tf_aug;
   result res;
@@ -195,7 +198,8 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
 
   // Call the virtual function to use the intermediate data structure and
   // process it
-  float_array_result augmented_data = prepare_augmented_images(input_to_tf_aug);
+  float_array_result augmented_data = prepare_augmented_images(
+      input_to_tf_aug, output_height, output_width, resize_only);
 
   // Convert augmented_data to the data structure needed
   res.image_batch = augmented_data.images;

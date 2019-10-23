@@ -223,6 +223,13 @@ public:
      * -0.05 * pi and 0.05 * pi.
      */
     float hue_max_jitter = 0.f;
+
+    /**
+     * When set to true, the images will only be resized in the output shape
+     * Used by the subclass of float_array_image_augmenter, to only resize
+     * images in case of prediction and evaluation.
+     */
+    bool resize_only = false;
   };
 
   /** The output of an image_augmenter. */
@@ -308,7 +315,8 @@ class float_array_image_augmenter : public image_augmenter {
   };
 
   virtual float_array_result prepare_augmented_images(
-      labeled_float_image data_to_augment) = 0;
+      labeled_float_image data_to_augment, size_t output_height,
+      size_t output_width, bool resize_only) = 0;
 
  private:
   options opts_;

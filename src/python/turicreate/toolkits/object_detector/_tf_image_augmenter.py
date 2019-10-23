@@ -6,10 +6,9 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as tf
-tf.disable_v2_behavior()
+
 import numpy as np
+import tensorflow.compat.v1 as tf
 from tensorflow.python.ops import array_ops
 from tensorflow.python.framework import ops
 from tensorflow.python.ops import control_flow_ops
@@ -19,15 +18,23 @@ from tensorflow.python.ops import math_ops
 from tensorflow.python.ops import random_ops
 from tensorflow.python.ops import logging_ops
 from tensorflow.python.ops import variables
+import turicreate.toolkits._tf_utils as _utils
+
+tf.disable_v2_behavior()
 
 def get_augmented_data(images, annotations, output_height, output_width, resize_only):
+
+    # Suppresses verbosity to only errors
+    tf.logging.set_verbosity(_tf.logging.ERROR)
+
     session = tf.Session()
     output_shape = (output_height, output_width)
+    
     if resize_only:
         images = get_resized_images(images, output_shape)
-        images = session.run(images)
-        resized = np.ascontiguousarray(np.array(images, dtype=np.float32))
-        return tuple((resized, batch_size*[np.zeros(6)]))
+        resized_images = session.run(images)
+        resized_images = np.array(resized_images, dtype=np.float32)
+        return tuple((resized_images, len(resized_images)*[np.zeros(6)]))
     else:
         imgs, transformations = get_augmented_images(images, output_shape)
         augmented_images, trans = session.run([imgs, transformations])
@@ -255,6 +262,7 @@ def _assert(cond, ex_type, msg):
 
 def get_augmented_images(images, output_shape):
 
+    # Store transformations and augmented_images for the input batch
     transformations = []
     augmented_images = []
 
@@ -303,6 +311,8 @@ def get_augmented_images(images, output_shape):
 
         ty = tf.to_float(pad_offset[0] - slice_offset[0] ) 
         tx = flip_sign * tf.to_float(pad_offset[1] - slice_offset[1] ) + tf.to_float(did_horiz_flip) * output_shape[1]
+
+        # Make the transformation matrix
         transformation = tf.reshape(tf.stack([
             scale_h, 0.0,                  ty,
             0.0,     flip_sign * scale_w,   tx,
