@@ -294,7 +294,7 @@ void drawing_classifier::init_training(
   // Bind the data to a data iterator.
   training_data_iterator_ =
       create_iterator(training_data_,
-                      /* is_train */ true, /* class labels */ {});
+                      /* is_train */ true, /* class labels */ classes);
 
   const std::vector<std::string> &classes =
       training_data_iterator_->class_labels();
