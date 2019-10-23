@@ -476,7 +476,6 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
                                        std::string output_type,
                                        float confidence_threshold,
                                        float iou_threshold) {
-  std::cout << "enter evaluate\n";
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -493,13 +492,8 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
   } else {
     log_and_throw("Metric " + metric + " not supported");
   }
-  std::cout << "try to read labels..\n";
-  for (auto& zz : state) {
-    std::cout << zz.first << '\n';
-  }
 
   flex_list class_labels = read_state<flex_list>("classes");
-  std::cout << "finish reading labels..\n";
   // Initialize the metric calculator
   average_precision_calculator calculator(class_labels);
 
@@ -507,7 +501,7 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
                       const std::vector<image_annotation>& groundtruth_row) {
     calculator.add_row(predicted_row, groundtruth_row);
   };
-  // std::cout << "fuck!\n";
+
   perform_predict(data, consumer, confidence_threshold, iou_threshold);
 
   // Compute the average precision (area under the precision-recall curve) for
@@ -1282,13 +1276,11 @@ void object_detector::update_model_metrics(gl_sframe data,
   std::map<std::string, variant_type> metrics;
 
   // Compute training metrics.
-  std::cout << data.size() << "gg\n";
-  variant_type training_metrics_raw = evaluate(data, "all", "dict");
-  std::cout << "finish evaluate!\n";
+  variant_type training_metrics_raw =
+      perform_evaluation(data, "all", "dict", 0.001, 0.45);
   variant_map_type training_metrics =
       variant_get_value<variant_map_type>(training_metrics_raw);
   for (const auto& kv : training_metrics) {
-    std::cout << kv.first << "zzzz\n";
     metrics["training_" + kv.first] = kv.second;
   }
 
