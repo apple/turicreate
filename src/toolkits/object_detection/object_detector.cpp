@@ -521,6 +521,11 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
     result_map.erase(MAP);
   }
 
+  // Handle different output types here
+  // If output_type = "dict", just return the result_map.
+  // If output_type = "sframe", construct a sframe,
+  // whose rows indicate class labels, and columns denote different metric
+  // scores. Note that the "sframe" output only shows AP or AP50.
   variant_type final_result;
 
   if (output_type == "dict") {
@@ -572,8 +577,9 @@ gl_sarray object_detector::predict(variant_type data, float confidence_threshold
     result.write(predicted_row_ft, 0);
   };
 
-  //check input type of data
-  //and convert them all to sframe.
+  // check input type of data
+  // and convert them all to sframe.
+  // "SFrame", "Sarray" and a single image "flexible_type" are accepted.
   gl_sframe sframe_data;
   std::string image_column_name = read_state<flex_string>("feature");
   if (variant_is<gl_sframe>(data)) {
