@@ -30,6 +30,8 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .util import random_split_by_session as _random_split_by_session
 from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
+USE_CPP = _tkutl._read_env_var_cpp('TURI_AC_USE_CPP_PATH')
+
 def create(dataset, session_id, target, features=None, prediction_window=100,
            validation_set='auto', max_iterations=10, batch_size=32, verbose=True, **kwargs):
     """
@@ -164,9 +166,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     dataset = _tkutl._toolkits_select_columns(dataset, features + [session_id, target])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
-    params = {
-        'use_tensorflow': False
-        }
 
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -177,7 +176,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
             raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
         params.update(kwargs['_advanced_parameters'])
 
-    if params['use_tensorflow'] :
+    if USE_CPP:
 
         name = 'activity_classifier'
 
@@ -546,7 +545,6 @@ class ActivityClassifier_beta(_Model):
           >>> print results['accuracy']
         """
         return self.__proxy__.evaluate(dataset, metric)
-
 
 class ActivityClassifier(_CustomModel):
     """
