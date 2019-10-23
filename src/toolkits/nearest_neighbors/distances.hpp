@@ -38,6 +38,9 @@ std::pair<sparse_vector, sparse_vector>
       value_to_index[kv.first] = current_index;
       current_index++;
     }
+    if (kv.second.get_type() == flex_type_enum::STRING)
+         log_and_throw("At least one of the dictionary values could not be converted to a number.");
+
     size_t index = value_to_index.at(kv.first);
     av.coeffRef(index) = kv.second;
   }
@@ -48,6 +51,9 @@ std::pair<sparse_vector, sparse_vector>
       value_to_index[kv.first] = current_index;
       current_index++;
     }
+    if (kv.second.get_type() == flex_type_enum::STRING)
+         log_and_throw("At least one of the dictionary values could not be converted to a number.");
+
     size_t index = value_to_index.at(kv.first);
     bv.coeffRef(index) = kv.second;
   }
