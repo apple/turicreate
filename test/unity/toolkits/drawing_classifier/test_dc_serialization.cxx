@@ -7,9 +7,7 @@
 
 #define BOOST_TEST_MODULE test_dc_serialization
 
-#include <boost/algorithm/hex.hpp>
 #include <boost/test/unit_test.hpp>
-#include <boost/uuid/detail/md5.hpp>
 #include <core/util/test_macros.hpp>
 #include <cstdio>
 #include <ml/neural_net/model_spec.hpp>
