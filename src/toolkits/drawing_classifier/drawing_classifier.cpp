@@ -1,7 +1,8 @@
 /* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 
 #include <iostream>
@@ -175,22 +176,17 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
 }
 
 void drawing_classifier::init_options(
-    const std::map<std::string, flexible_type>& opts) {
+    const std::map<std::string, flexible_type> &opts) {
   // Define options.
   options.create_integer_option(
-      "batch_size",
-      "Number of training examples used per training step",
-      256,
-      1,
-      std::numeric_limits<int>::max());
+      "batch_size", "Number of training examples used per training step", 256,
+      1, std::numeric_limits<int>::max());
   options.create_integer_option(
       "max_iterations",
       "Maximum number of iterations/epochs made over the data during the"
       " training phase",
-      500,
-      1,
-      std::numeric_limits<int>::max());
-  
+      500, 1, std::numeric_limits<int>::max());
+
   // Validate user-provided options.
   options.set_options(opts);
 
@@ -199,18 +195,14 @@ void drawing_classifier::init_options(
 }
 
 std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
-      gl_sframe data, variant_type validation_data) const {
-  gl_sframe train_data;
-  gl_sframe val_data;
-  std::tie(train_data, val_data) = turi::supervised::create_validation_data(
-      data, validation_data);
-  return std::make_tuple(train_data, val_data);
+    gl_sframe data, variant_type validation_data) const {
+  return turi::supervised::create_validation_data(data, validation_data);
 }
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     data_iterator::parameters iterator_params) const {
-    return std::unique_ptr<data_iterator>(
-        new simple_data_iterator(iterator_params));
+  return std::unique_ptr<data_iterator>(
+      new simple_data_iterator(iterator_params));
 }
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
@@ -229,12 +221,10 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   return create_iterator(data_params);
 }
 
-void drawing_classifier::init_training(gl_sframe data,
-                                    std::string target_column_name,
-                                    std::string feature_column_name,
-                                    variant_type validation_data,
-                                    std::map<std::string, flexible_type> opts) {
-
+void drawing_classifier::init_training(
+    gl_sframe data, std::string target_column_name,
+    std::string feature_column_name, variant_type validation_data,
+    std::map<std::string, flexible_type> opts) {
   // Read user-specified options.
   init_options(opts);
 
@@ -245,15 +235,15 @@ void drawing_classifier::init_training(gl_sframe data,
   // TODO: Make progress printing optional.
   init_table_printer(!validation_data_.empty());
 
-  add_or_update_state({{"target", target_column_name},
-                       {"feature", feature_column_name}});
+  add_or_update_state(
+      {{"target", target_column_name}, {"feature", feature_column_name}});
 
   // Bind the data to a data iterator.
   training_data_iterator_ =
       create_iterator(training_data_,
                       /* is_train */ true, /* class labels */ {});
 
-  const std::vector<std::string>& classes =
+  const std::vector<std::string> &classes =
       training_data_iterator_->class_labels();
   add_or_update_state({{"classes", flex_list(classes.begin(), classes.end())}});
 
@@ -288,10 +278,8 @@ void drawing_classifier::init_training(gl_sframe data,
 
   // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(
-      /* TODO: nn_spec_->export_params_view().
-       * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-       */
-      read_state<size_t>("batch_size"), read_state<size_t>("num_classes"));
+      nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
+      read_state<size_t>("num_classes"));
 
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {
@@ -299,11 +287,9 @@ void drawing_classifier::init_training(gl_sframe data,
   }
 }
 
-
 // Returns the validation accuracy and validation loss respectively as a tuple
 std::tuple<float, float> drawing_classifier::compute_validation_metrics(
     size_t num_classes, size_t batch_size) {
-
   float cumulative_val_loss = 0.f;
   size_t val_size = 0;
   size_t val_num_correct = 0;
@@ -314,27 +300,25 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
   std::queue<result> pending_batches;
 
   auto pop_until_size = [&](size_t remaining) {
-
     while (pending_batches.size() > remaining) {
-
       // Pop one batch from the queue.
       result batch = pending_batches.front();
       pending_batches.pop();
 
       size_t batch_num_correct = 0;
-      batch_num_correct = static_cast<size_t>(
-        *(batch.accuracy_info.data()) * batch.data_info.num_samples);
+      batch_num_correct = static_cast<size_t>(*(batch.accuracy_info.data()) *
+                                              batch.data_info.num_samples);
       val_num_correct += batch_num_correct;
       val_num_samples += batch.data_info.num_samples;
-      float val_loss = std::accumulate(batch.loss_info.data(),
-                            batch.loss_info.data() + batch.loss_info.size(),
-                            0.f, std::plus<float>());
+      float val_loss =
+          std::accumulate(batch.loss_info.data(),
+                          batch.loss_info.data() + batch.loss_info.size(), 0.f,
+                          std::plus<float>());
       cumulative_val_loss += val_loss;
     }
   };
 
   while (validation_data_iterator_->has_next_batch()) {
-
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
@@ -344,10 +328,8 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
 
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
-        training_model_->predict({
-            {"input", result_batch.data_info.drawings},
-            {"labels", result_batch.data_info.targets}
-        });
+        training_model_->predict({{"input", result_batch.data_info.drawings},
+                                  {"labels", result_batch.data_info.targets}});
 
     result_batch.accuracy_info = results.at("accuracy");
     result_batch.loss_info = results.at("loss");
@@ -355,7 +337,6 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
 
     // Add the pending result to our queue and move on to the next input batch.
     pending_batches.push(std::move(result_batch));
-
   }
   // Process all remaining batches.
   pop_until_size(0);
@@ -366,9 +347,7 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
   return std::make_tuple(average_val_accuracy, average_val_loss);
 }
 
-
 void drawing_classifier::iterate_training() {
-
   // Training must have been initialized.
   ASSERT_TRUE(training_data_iterator_ != nullptr);
   ASSERT_TRUE(training_model_ != nullptr);
@@ -386,31 +365,27 @@ void drawing_classifier::iterate_training() {
   std::queue<result> pending_batches;
 
   auto pop_until_size = [&](size_t remaining) {
-
     while (pending_batches.size() > remaining) {
-
       // Pop one batch from the queue.
       result batch = pending_batches.front();
       pending_batches.pop();
 
       size_t batch_num_correct = 0;
-      batch_num_correct = static_cast<size_t>(
-        *(batch.accuracy_info.data()) * batch.data_info.num_samples);
+      batch_num_correct = static_cast<size_t>(*(batch.accuracy_info.data()) *
+                                              batch.data_info.num_samples);
       train_num_correct += batch_num_correct;
       train_num_samples += batch.data_info.num_samples;
 
-      float batch_loss = std::accumulate(batch.loss_info.data(),
-                                         batch.loss_info.data() + batch.loss_info.size(),
-                                         0.f, std::plus<float>());
+      float batch_loss =
+          std::accumulate(batch.loss_info.data(),
+                          batch.loss_info.data() + batch.loss_info.size(), 0.f,
+                          std::plus<float>());
 
       cumulative_batch_loss += batch_loss / batch.data_info.num_samples;
-
     }
   };
 
-
   while (training_data_iterator_->has_next_batch()) {
-
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
@@ -419,10 +394,9 @@ void drawing_classifier::iterate_training() {
     result_batch.data_info = training_data_iterator_->next_batch(batch_size);
 
     // Submit the batch to the neural net model.
-    std::map<std::string, shared_float_array> results = training_model_->train(
-        { { "input",   result_batch.data_info.drawings },
-          { "labels",  result_batch.data_info.targets   }
-        });
+    std::map<std::string, shared_float_array> results =
+        training_model_->train({{"input", result_batch.data_info.drawings},
+                                {"labels", result_batch.data_info.targets}});
     result_batch.loss_info = results.at("loss");
     result_batch.accuracy_info = results.at("accuracy");
 
@@ -430,7 +404,6 @@ void drawing_classifier::iterate_training() {
 
     // Add the pending result to our queue and move on to the next input batch.
     pending_batches.push(std::move(result_batch));
-
   }
   // Process all remaining batches.
   pop_until_size(0);
@@ -478,7 +451,6 @@ std::unique_ptr<compute_context> drawing_classifier::create_compute_context()
   return compute_context::create_tf();
 }
 
-
 void drawing_classifier::init_table_printer(bool has_validation) {
   if (has_validation) {
     training_table_printer_.reset(
@@ -496,16 +468,14 @@ void drawing_classifier::init_table_printer(bool has_validation) {
   }
 }
 
-
-void drawing_classifier::train(gl_sframe data,
-                               std::string target_column_name,
+void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
   init_training(data, target_column_name, feature_column_name, validation_data,
-             opts);
+                opts);
 
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
@@ -571,7 +541,6 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
                                                 predictions, {{"classes", 2}});
 }
 
-
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     std::string filename, bool use_default_spec) {
   /* Add code for export_to_coreml */
@@ -581,7 +550,8 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     if (use_default_spec) {
       nn_spec_ = std::unique_ptr<model_spec>(new model_spec);
     } else {
-      log_and_throw("model is not initialized; please call train before export_coreml");
+      log_and_throw(
+          "model is not initialized; please call train before export_coreml");
     }
   }
 

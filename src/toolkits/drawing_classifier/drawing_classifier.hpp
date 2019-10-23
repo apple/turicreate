@@ -1,7 +1,8 @@
 /* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 #ifndef TURI_DRAWING_CLASSIFIER_H_
 #define TURI_DRAWING_CLASSIFIER_H_
@@ -22,11 +23,9 @@ namespace drawing_classifier {
 
 class EXPORT drawing_classifier : public ml_model_base {
  public:
-
   drawing_classifier() = default;
-  
-  // ml_model_base interface
 
+  // ml_model_base interface
 
   void init_options(const std::map<std::string, flexible_type>& opts) override;
   /* Commented out for the purpose of a skeleton. */
@@ -47,17 +46,16 @@ class EXPORT drawing_classifier : public ml_model_base {
   variant_map_type evaluate(gl_sframe data, std::string metric);
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-        std::string filename, bool use_default_spec = false);
+      std::string filename, bool use_default_spec = false);
 
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
   virtual void init_training(gl_sframe data, std::string target_column_name,
-                          std::string feature_column_name,
-                          variant_type validation_data,
-                          std::map<std::string, flexible_type> opts);
+                             std::string feature_column_name,
+                             variant_type validation_data,
+                             std::map<std::string, flexible_type> opts);
 
   virtual void iterate_training();
-
 
   BEGIN_CLASS_MEMBER_REGISTRATION("drawing_classifier")
 
@@ -198,8 +196,8 @@ class EXPORT drawing_classifier : public ml_model_base {
                                  "filename");
 
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::init_training, "data",
-                                  "target_column_name", "feature_column_name",
-                                  "validation_data", "options");
+                                 "target_column_name", "feature_column_name",
+                                 "validation_data", "options");
   register_defaults("init_training",
                     {{"validation_data", to_variant(gl_sframe())},
                      {"options",
@@ -210,7 +208,6 @@ class EXPORT drawing_classifier : public ml_model_base {
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
-
   // Constructor allowing tests to set the initial state of this class and to
   // inject dependencies.
   drawing_classifier(

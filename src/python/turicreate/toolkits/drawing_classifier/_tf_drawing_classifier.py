@@ -19,14 +19,7 @@ _tf.disable_v2_behavior()
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
-    def __init__(self, # validation_set, # net_params,
-        ########################################################################
-        # TODO: Until the nn_spec in C++ isn't ready, ignore net_params. 
-        #       When the nn_spec is ready, uncomment and edit the 
-        #       following lines to use the weights coming from C++
-        #       
-        ########################################################################
-        batch_size, num_classes): #, verbose):
+    def __init__(self, net_params, batch_size, num_classes):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy. Then
         loads the MXNET weights into the model.
@@ -106,35 +99,29 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         'drawing_conv2_weight', 'drawing_conv2_bias', 'drawing_dense0_weight', 'drawing_dense0_bias',
         'drawing_dense1_weight', 'drawing_dense1_bias']
 
-        ########################################################################
-        # TODO: Until the nn_spec in C++ isn't ready, ignore training with 
-        #       MXNet. When the nn_spec is ready, uncomment and edit the 
-        #       following lines to use the weights coming from C++
-        #       
-        ########################################################################
-        # for key in layers:
-        #     if 'bias' in key:
-        #         self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-        #             net_params[key].data().asnumpy()))
-        #     else:
-        #         if 'dense' in key:
-        #             if 'drawing_dense0_weight' in key:
-        #                 '''
-        #                 To make output of MXNET pool3 (NCHW) compatible with TF (NHWC).
-        #                 Decompose FC weights to NCHW. Transpose to NHWC. Reshape back to FC.
-        #                 '''
-        #                 mxnet_128_576 = net_params[key].data().asnumpy()
-        #                 mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 64, 3, 3))
-        #                 mxnet_128_576 = mxnet_128_576.transpose(0, 2, 3, 1)
-        #                 mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 576))
-        #                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-        #                                 mxnet_128_576.transpose(1,0)))
-        #             else:
-        #                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-        #                                 net_params[key].data().asnumpy().transpose(1, 0)))
-        #         else:
-        #             self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-        #                                 net_params[key].data().asnumpy().transpose(2, 3, 1, 0)))
+        for key in layers:
+            if 'bias' in key:
+                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
+                    net_params[key].data().asnumpy()))
+            else:
+                if 'dense' in key:
+                    if 'drawing_dense0_weight' in key:
+                        '''
+                        To make output of MXNET pool3 (NCHW) compatible with TF (NHWC).
+                        Decompose FC weights to NCHW. Transpose to NHWC. Reshape back to FC.
+                        '''
+                        mxnet_128_576 = net_params[key].data().asnumpy()
+                        mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 64, 3, 3))
+                        mxnet_128_576 = mxnet_128_576.transpose(0, 2, 3, 1)
+                        mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 576))
+                        self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
+                                        mxnet_128_576.transpose(1,0)))
+                    else:
+                        self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
+                                        net_params[key].data().asnumpy().transpose(1, 0)))
+                else:
+                    self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
+                                        net_params[key].data().asnumpy().transpose(2, 3, 1, 0)))
 
 
     def train(self, feed_dict):
