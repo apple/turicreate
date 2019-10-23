@@ -44,9 +44,12 @@ class mock_image_augmenter : public image_augmenter {
 
   result prepare_images(std::vector<labeled_image> source_batch) override {
     TS_ASSERT(!prepare_images_calls_.empty());
+
     prepare_images_call expected_call =
         std::move(prepare_images_calls_.front());
+
     prepare_images_calls_.pop_front();
+
     return expected_call(std::move(source_batch));
   }
 
@@ -111,13 +114,14 @@ class mock_compute_context : public compute_context {
           int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
           const float_array_map& config, const float_array_map& weights)>;
 
+ /**
+  * TODO: const float_array_map& weights,
+  *       const float_array_map& config.
+  * Until the nn_spec in C++ is ready, do not pass in any weights.
+  */
   using create_drawing_classifier_call =
-       std::function<std::unique_ptr<model_backend>(
-           /* TODO: const float_array_map& weights, 
-            *       const float_array_map& config.
-            * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-            */
-           size_t batch_size, size_t num_classes)>;
+      std::function<std::unique_ptr<model_backend>(size_t batch_size,
+                                                   size_t num_classes)>;
 
   ~mock_compute_context() {
     TS_ASSERT(create_augmenter_calls_.empty());
@@ -132,9 +136,12 @@ class mock_compute_context : public compute_context {
   std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options& opts) override {
     TS_ASSERT(!create_augmenter_calls_.empty());
+
     create_augmenter_call expected_call =
         std::move(create_augmenter_calls_.front());
+
     create_augmenter_calls_.pop_front();
+
     return expected_call(opts);
   }
 
@@ -142,59 +149,47 @@ class mock_compute_context : public compute_context {
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config, const float_array_map& weights) override {
     TS_ASSERT(!create_object_detector_calls_.empty());
+
     create_object_detector_call expected_call =
         std::move(create_object_detector_calls_.front());
+
     create_object_detector_calls_.pop_front();
+
     return expected_call(n, c_in, h_in, w_in, c_out, h_out, w_out, config,
                          weights);
   }
 
+  /**
+   * TODO: const float_array_map& weights, const float_array_map& config.
+   * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+   */
   std::unique_ptr<model_backend> create_drawing_classifier(
-      /* TODO: const float_array_map& weights, const float_array_map& config.
-       * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-       */
       size_t batch_size, size_t num_classes) override {
     TS_ASSERT(!create_drawing_classifier_calls_.empty());
+
     create_drawing_classifier_call expected_call =
         std::move(create_drawing_classifier_calls_.front());
+
     create_drawing_classifier_calls_.pop_front();
-    return expected_call(
-      /* TODO: const float_array_map& weights, const float_array_map& config.
-       * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-       */
-      batch_size, num_classes);
+
+    return expected_call(batch_size, num_classes);
   }
 
   std::unique_ptr<model_backend> create_activity_classifier(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config, const float_array_map& weights) override {
-    return nullptr;
-  }
-
-  std::unique_ptr<model_backend> create_drawing_classifier(
-       /* TODO: const float_array_map& weights, const float_array_map& config.
-        * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-        */
-       size_t batch_size, size_t num_classes) override {
-     TS_ASSERT(!create_drawing_classifier_calls_.empty());
-     create_drawing_classifier_call expected_call =
-         std::move(create_drawing_classifier_calls_.front());
-     create_drawing_classifier_calls_.pop_front();
-     return expected_call(
-       /* TODO: const float_array_map& weights, const float_array_map& config.
-        * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-        */
-       batch_size, num_classes);
+    throw std::runtime_error("create_activity_classifier not implemented");
   }
 
   std::unique_ptr<model_backend> create_style_transfer(
       const float_array_map& config, const float_array_map& weights) override {
-    return nullptr;
+    throw std::runtime_error("create_style_transfer not implemented");
   }
 
   mutable std::deque<create_augmenter_call> create_augmenter_calls_;
   mutable std::deque<create_object_detector_call> create_object_detector_calls_;
-  mutable std::deque<create_drawing_classifier_call> create_drawing_classifier_calls_;
+  mutable std::deque<create_drawing_classifier_call>
+      create_drawing_classifier_calls_;
 };
 
 }  // namespace neural_net
