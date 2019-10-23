@@ -265,6 +265,22 @@ void drawing_classifier::init_training(
   // Read user-specified options.
   init_options(opts);
 
+  // it should be passed from opts
+  if (state.count("training_iterations") == 0) {
+    add_or_update_state({
+        {"training_iterations", 500},
+    });
+  }
+
+  // use all data to find the finite set of labels
+  auto full_data_iterator = create_iterator(data, /* is_train */ false, {});
+  const std::vector<std::string> &classes = full_data_iterator->class_labels();
+
+  add_or_update_state({
+      {"classes", flex_list(classes.begin(), classes.end())},
+      {"num_classes", classes.size()},
+  });
+
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
 
@@ -303,11 +319,6 @@ void drawing_classifier::init_training(
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   print_training_device(gpu_names);
 
-  // Set additional model fields.
-  add_or_update_state({
-      {"num_classes", training_data_iterator_->class_labels().size()},
-      {"training_iterations", 0},
-  });
 
   // Initialize the neural net. Note that this depends on statistics computed by
   // the data iterator.
@@ -629,12 +640,13 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
                   "Expected one of: probability, rank");
   }
 
-  auto data_itr = create_iterator(data, /*is_train*/ false, read_state<flex_list>("class_labels"));
+  auto data_itr = create_iterator(data, /*is_train*/ true, {});
 
-  gl_sframe predictions; // = perfrom_inference(data_itr.get());
+  gl_sframe predictions = perform_inference(data_itr.get());
+
   size_t preds_column_index = predictions.column_index("preds");
-
   gl_sarray result = predictions["preds"];
+
   if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
     auto max_prob_label = [=](const flexible_type& ft) {
@@ -644,6 +656,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
     };
     result = result.apply(max_prob_label, class_labels.front().get_type());
   }
+
   return result;
 }
 
