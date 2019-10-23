@@ -1,4 +1,4 @@
-if(TC_NO_CURL)
+if(NOT ${TC_BUILD_REMOTEFS})
   make_empty_library(curl)
   return()
 endif()
@@ -9,9 +9,6 @@ elseif(WIN32)
   SET(EXTRA_CONFIGURE_FLAGS --with-winssl --enable-sspi --build=x86_64-w64-mingw32)
 else()
   SET(EXTRA_CONFIGURE_FLAGS LIBS=-ldl --with-ssl=<INSTALL_DIR>)
-endif()
-if(APPLE AND TC_BUILD_IOS)
-  set(EXTRA_CONFIGURE_FLAGS --host=arm-apple-darwin)
 endif()
 
 ExternalProject_Add(ex_libcurl

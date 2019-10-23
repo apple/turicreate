@@ -6,13 +6,10 @@
 #include <core/logging/logger.hpp>
 #include <core/storage/fileio/union_fstream.hpp>
 #include <core/storage/fileio/cache_stream.hpp>
-
-#ifdef TC_ENABLE_REMOTEFS
 #include <core/storage/fileio/s3_fstream.hpp>
 #include <core/storage/fileio/curl_downloader.hpp>
-#include <core/storage/fileio/file_download_cache.hpp>
 #include <core/storage/fileio/hdfs.hpp>
-#endif
+#include <core/storage/fileio/file_download_cache.hpp>
 #include <core/storage/fileio/sanitize_url.hpp>
 #include <boost/algorithm/string.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
@@ -53,8 +50,8 @@ union_fstream::union_fstream(std::string url,
       m_file_size = (*cachestream)->file_size();
       original_input_stream_handle = std::static_pointer_cast<std::istream>(cachestream);
     }
-#ifdef TC_ENABLE_REMOTEFS
   } else if(boost::starts_with(url, "hdfs://")) {
+#ifndef TC_DISABLE_REMOTEFS
     // HDFS file type
     type = HDFS;
     std::string host, port, path;
@@ -76,7 +73,11 @@ union_fstream::union_fstream(std::string url,
     } catch(...) {
       log_and_throw_io_failure("Unable to open " + url);
     }
+#else
+      log_and_throw_io_failure("Cannot open " + url + " for reading; Remote FS support disabled.");
+#endif
   } else if (boost::starts_with(url, "s3://")) {
+#ifndef TC_DISABLE_REMOTEFS
     // the S3 file type currently works by download/uploading a local file
     // i.e. the s3_stream simply remaps a local file stream
     type = STD;
@@ -89,6 +90,8 @@ union_fstream::union_fstream(std::string url,
       m_file_size = (*s3stream)->file_size();
       original_input_stream_handle = std::static_pointer_cast<std::istream>(s3stream);
     }
+#else
+      log_and_throw_io_failure("Cannot open " + url + " for reading; Remote FS support disabled.");
 #endif
   } else {
     // Remove the preceeding file:// if it's a local URL.
@@ -104,7 +107,6 @@ union_fstream::union_fstream(std::string url,
         log_and_throw_current_io_failure();
       }
     } else {
-#ifdef TC_ENABLE_REMOTEFS
       url = file_download_cache::get_instance().get_file(url);
       input_stream.reset(new std::ifstream(url, std::ifstream::binary));
       if (!input_stream->good()) {
@@ -120,9 +122,6 @@ union_fstream::union_fstream(std::string url,
           m_file_size = fin.tellg();
         }
       }
-#else
-      log_and_throw_io_failure("Cannot open " + url + " for reading");
-#endif
     }
   }
 

@@ -25,6 +25,7 @@
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <toolkits/util/training_utils.hpp>
 
 #ifdef __APPLE__
 
@@ -290,18 +291,7 @@ void object_detector::init_options(
 void object_detector::infer_derived_options() {
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  if (gpu_names.empty()) {
-    logprogress_stream << "Using CPU to create model";
-  } else {
-    std::string gpu_names_string = gpu_names[0];
-    for (size_t i = 1; i < gpu_names.size(); ++i) {
-      gpu_names_string += ", " + gpu_names[i];
-    }
-    logprogress_stream << "Using "
-                       << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                       << " to create model ("
-                       << gpu_names_string << ")";
-  }
+  print_training_device(gpu_names);
 
   // Configure the batch size automatically if not set.
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {
@@ -338,6 +328,10 @@ size_t object_detector::get_version() const {
 }
 
 void object_detector::save_impl(oarchive& oarc) const {
+  if (training_model_) {
+    // If checkpointing during training, first copy weights from the backend.
+    synchronize_model(nn_spec_.get());
+  }
   _save_impl(oarc, *nn_spec_, state);
 }
 
@@ -424,28 +418,21 @@ void object_detector::train(gl_sframe data,
                             variant_type validation_data,
                             std::map<std::string, flexible_type> opts)
 {
-  // Begin printing progress.
-  // TODO: Make progress printing optional.
-  training_table_printer_.reset(new table_printer(
-      {{ "Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
-
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
-  init_train(data, annotations_column_name, image_column_name, validation_data,
-             opts);
+  init_training(data, annotations_column_name, image_column_name,
+                validation_data, opts);
 
   // Perform all the iterations at once.
   while (get_training_iterations() < get_max_iterations()) {
-    perform_training_iteration();
+    iterate_training();
   }
 
   // Wait for any outstanding batches to finish.
-  wait_for_training_batches();
+  finalize_training();
+}
 
-  // Finish printing progress.
-  training_table_printer_->print_footer();
-  training_table_printer_.reset();
-
+void object_detector::synchronize_model(model_spec* nn_spec) const {
   // Sync trained weights to our local storage of the NN weights.
   float_array_map raw_trained_weights = training_model_->export_weights();
   float_array_map trained_weights;
@@ -458,7 +445,27 @@ void object_detector::train(gl_sframe data,
     key.insert(it, modifier.begin(), modifier.end());
     trained_weights[key] = kv.second;
   }
-  nn_spec_->update_params(trained_weights);
+  nn_spec->update_params(trained_weights);
+}
+
+void object_detector::finalize_training() {
+  // Wait for any outstanding batches.
+  synchronize_training();
+
+  // Finish printing progress.
+  if (training_table_printer_) {
+    training_table_printer_->print_footer();
+    training_table_printer_.reset();
+  }
+
+  // Copy out the trained mdoel.
+  synchronize_model(nn_spec_.get());
+
+  // Tear down the training backend.
+  training_model_.reset();
+  training_data_augmenter_.reset();
+  training_data_iterator_.reset();
+  training_compute_context_.reset();
 
   // Compute training and validation metrics.
   update_model_metrics(training_data_, validation_data_);
@@ -680,8 +687,7 @@ object_detector::convert_yolo_to_annotations(
 }
 
 std::unique_ptr<model_spec> object_detector::init_model(
-    const std::string& pretrained_mlmodel_path) const {
-
+    const std::string& pretrained_mlmodel_path, size_t num_classes) const {
   // All of this presumes that the pre-trained model is the darknet model from
   // our first object detector implementation....
 
@@ -729,7 +735,6 @@ std::unique_ptr<model_spec> object_detector::init_model(
 
   // Append conv8.
   static constexpr float CONV8_MAGNITUDE = 0.00005f;
-  const size_t num_classes = training_data_iterator_->class_labels().size();
   const size_t num_predictions = 5 + num_classes;  // Per anchor box
   const size_t conv8_c_out = anchor_boxes().size() * num_predictions;
   auto conv8_weight_init_fn = [&random_engine](float* w, float* w_end) {
@@ -766,6 +771,11 @@ std::unique_ptr<model_spec> object_detector::init_model(
 
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     std::string filename, std::map<std::string, flexible_type> opts) {
+  // If called during training, synchronize the model first.
+  if (training_model_) {
+    synchronize_training();
+    synchronize_model(nn_spec_.get());
+  }
 
   // Initialize the result with the learned layers from the model_backend.
   model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
@@ -901,11 +911,11 @@ std::unique_ptr<compute_context> object_detector::create_compute_context() const
   return compute_context::create();
 }
 
-void object_detector::init_train(
-    gl_sframe data, std::string annotations_column_name,
-    std::string image_column_name, variant_type validation_data,
-    std::map<std::string, flexible_type> opts)
-{
+void object_detector::init_training(gl_sframe data,
+                                    std::string annotations_column_name,
+                                    std::string image_column_name,
+                                    variant_type validation_data,
+                                    std::map<std::string, flexible_type> opts) {
   // Extract 'mlmodel_path' from the options, to avoid storing it as a model
   // field.
   auto mlmodel_path_iter = opts.find("mlmodel_path");
@@ -925,11 +935,6 @@ void object_detector::init_train(
     add_or_update_state({{"random_seed", random_seed}});
   }
 
-  // Perform random validation split if necessary.
-  std::tie(training_data_, validation_data_) =
-      supervised::create_validation_data(data, validation_data,
-                                         read_state<int>("random_seed"));
-
   // Record the relevant column names upfront, for use in create_iterator. Also
   // values fixed by this version of the toolkit.
   add_or_update_state({
@@ -940,9 +945,20 @@ void object_detector::init_train(
         DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD },
   });
 
+  // Perform random validation split if necessary.
+  std::tie(training_data_, validation_data_) =
+      supervised::create_validation_data(data, validation_data,
+                                         read_state<int>("random_seed"));
+
   // Bind the data to a data iterator.
   training_data_iterator_ = create_iterator(
       training_data_, /* expected class_labels */ {}, /* repeat */ true);
+
+  // Load the pre-trained model from the provided path. The final layers are
+  // initialized randomly using the random seed above, using the number of
+  // classes observed by the training_data_iterator_ above.
+  nn_spec_ =
+      init_model(mlmodel_path, training_data_iterator_->class_labels().size());
 
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
@@ -953,11 +969,6 @@ void object_detector::init_train(
   // Infer values for unspecified options. Note that this depends on training
   // data statistics and the compute context, initialized above.
   infer_derived_options();
-
-  // Load the pre-trained model from the provided path. The final layers are
-  // initialized randomly using the random seed above, using the number of
-  // classes observed by the training_data_iterator_ above.
-  nn_spec_ = init_model(mlmodel_path);
 
   // Set additional model fields.
   flex_int grid_height = read_state<flex_int>("grid_height");
@@ -972,14 +983,43 @@ void object_detector::init_train(
        flex_list(input_image_shape.begin(), input_image_shape.end())},
       {"num_bounding_boxes", training_data_iterator_->num_instances()},
       {"num_classes", training_data_iterator_->class_labels().size()},
-      {"num_examples", data.size()},
+      {"num_examples", training_data_.size()},
       {"training_epochs", 0},
       {"training_iterations", 0},
   });
   // TODO: The original Python implementation also exposed "anchors",
   // "non_maximum_suppression_threshold", and "training_time".
 
+  init_training_backend();
+}
+
+void object_detector::resume_training(gl_sframe data,
+                                      variant_type validation_data) {
+  // Perform random validation split if necessary.
+  std::tie(training_data_, validation_data_) =
+      supervised::create_validation_data(data, validation_data,
+                                         read_state<int>("random_seed"));
+
+  // Bind the data to a data iterator.
+  flex_list class_labels = read_state<flex_list>("classes");
+  training_data_iterator_ = create_iterator(
+      training_data_,
+      std::vector<std::string>(class_labels.begin(), class_labels.end()),
+      /* repeat */ true);
+
+  // Instantiate the compute context.
+  training_compute_context_ = create_compute_context();
+  if (training_compute_context_ == nullptr) {
+    log_and_throw("No neural network compute context provided");
+  }
+
+  init_training_backend();
+}
+
+void object_detector::init_training_backend() {
   // Instantiate the data augmenter.
+  flex_int grid_height = read_state<flex_int>("grid_height");
+  flex_int grid_width = read_state<flex_int>("grid_width");
   training_data_augmenter_ = training_compute_context_->create_image_augmenter(
       get_augmentation_options(read_state<flex_int>("batch_size"), grid_height,
                                grid_width));
@@ -1006,13 +1046,14 @@ void object_detector::init_train(
       /* config  */ train_config,
       /* weights */ get_model_params());
 
-  // Print the header last, after any logging triggered by initialization above.
-  if (training_table_printer_) {
-    training_table_printer_->print_header();
-  }
+  // Begin printing progress, after any logging triggered above.
+  // TODO: Make progress printing optional.
+  training_table_printer_.reset(new table_printer(
+      {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
+  training_table_printer_->print_header();
 }
 
-void object_detector::perform_training_iteration() {
+void object_detector::iterate_training() {
   // Training must have been initialized.
   ASSERT_TRUE(training_data_iterator_ != nullptr);
   ASSERT_TRUE(training_data_augmenter_ != nullptr);
@@ -1071,6 +1112,8 @@ void object_detector::perform_training_iteration() {
   // completion of this batch.
   pending_training_batches_.emplace(iteration_idx, std::move(loss_batch));
 }
+
+void object_detector::synchronize_training() { wait_for_training_batches(); }
 
 float_array_map object_detector::get_model_params() const {
 

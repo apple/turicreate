@@ -250,11 +250,11 @@ else
 fi
 
 
-# If we need to build python, we also need to install the python toolchain
+# Tell CMake whether we need to build the remote FS stuff.
 if [[ $with_remotefs == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_ENABLE_REMOTEFS=1"
-else
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_ENABLE_REMOTEFS=0 -DTC_NO_CURL=1"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_REMOTEFS=1"
+else 
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_REMOTEFS=0"
 fi
 
 

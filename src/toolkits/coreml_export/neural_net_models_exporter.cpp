@@ -122,7 +122,7 @@ void set_threshold_feature(FeatureDescription* feature_desc, std::string feature
 
 void set_image_feature(FeatureDescription* feature_desc, size_t image_width,
                        size_t image_height, bool include_description,
-                       bool use_flexible_shape=false, std::string description="") {
+                       bool use_flexible_shape=false, std::string description="", ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB) {
   feature_desc->set_name("image");
   if (include_description && description.empty()) {
     feature_desc->set_shortdescription("Input image");
@@ -147,6 +147,8 @@ void set_image_feature(FeatureDescription* feature_desc, size_t image_width,
     height_range->set_lowerbound(64);
     height_range->set_upperbound(-1);
   }
+
+  image_feature->set_colorspace(image_type);
 }
 
 } //namespace
@@ -396,6 +398,57 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
       {{"user_defined", std::move(user_defined_metadata)}});
 
   return model_wrapper;
+}
+
+std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
+    const neural_net::model_spec& nn_spec, const flex_list& features,
+    const flex_list& class_labels, const flex_string& target)
+{
+  CoreML::Specification::Model model;
+  model.set_specificationversion(1);
+
+  // Write the model description.
+  ModelDescription* model_desc = model.mutable_description();
+
+  // Write the primary input features.
+  for (size_t i = 0; i < features.size(); i++) {
+    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28,
+                      /* include desc */ true, false, "", ImageFeatureType::GRAYSCALE);
+  }
+
+  // Write the primary output features.
+  set_dictionary_string_feature(model_desc->add_output(),
+                                target + "Probability",
+                                "drawing classifier prediction probabilities");
+
+  set_string_feature(model_desc->add_output(), target,
+                     "drawing classifier class label of top prediction");
+
+  // Specify the prediction output names.
+  model_desc->set_predictedfeaturename(target);
+  model_desc->set_predictedprobabilitiesname(target + "Probability");
+
+  // Write the neural network.
+  CoreML::Specification::NeuralNetworkClassifier* nn_classifier =
+      model.mutable_neuralnetworkclassifier();
+
+  // Copy the layers and preprocessing from the provided spec.
+  nn_classifier->mutable_layers()->CopyFrom(nn_spec.get_coreml_spec().layers());
+  if (nn_spec.get_coreml_spec().preprocessing_size() > 0) {
+    nn_classifier->mutable_preprocessing()->CopyFrom(
+        nn_spec.get_coreml_spec().preprocessing());
+  }
+
+  // Add the classifier fields: class labels and probability output name.
+  for (const auto& class_label : class_labels) {
+    nn_classifier->mutable_stringclasslabels()->add_vector(
+        class_label.to<flex_string>());
+  }
+
+  nn_classifier->set_labelprobabilitylayername(target + "Probability");
+
+  return std::make_shared<MLModelWrapper>(
+      std::make_shared<CoreML::Model>(model));
 }
 
 }  // namespace turi

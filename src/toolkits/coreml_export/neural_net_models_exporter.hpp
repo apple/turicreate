@@ -47,6 +47,11 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
     size_t image_height, flex_dict user_defined_metadata);
 
+/** Wraps a trained drawing classifier model_spec as a complete MLModel. */
+std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
+    const neural_net::model_spec& nn_spec, const flex_list& features,
+    const flex_list& class_labels, const flex_string& target);
+
 }  // namespace turi
 
 #endif  // UNITY_TOOLKITS_COREML_EXPORT_NEURAL_NETS_MODELS_EXPORTER_HPP_
