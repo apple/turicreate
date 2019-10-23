@@ -505,7 +505,8 @@ void drawing_classifier::init_table_printer(bool has_validation) {
   }
 }
 
-void drawing_classifier::train(gl_sframe data, std::string target_column_name,
+void drawing_classifier::train(gl_sframe data,
+                               std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
@@ -557,16 +558,78 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
   add_or_update_state(state_update);
 }
 
+gl_sframe drawing_classifier::perform_inference(data_iterator *data) const {
+  // Open a new SFrame for writing.
+  gl_sframe_writer writer({"preds"}, {flex_type_enum::VECTOR}, /* num_segments */ 1);
+
+  const size_t num_classes = read_state<size_t>("num_classes");
+  const size_t batch_size = read_state<size_t>("batch_size");
+
+  // Initialize the NN backend.
+  std::unique_ptr<compute_context> ctx = create_compute_context();
+  std::unique_ptr<model_backend> backend =
+      ctx->create_drawing_classifier(batch_size, num_classes);
+
+  // To support double buffering, use a queue of pending inference results.
+  std::queue<result> pending_batches;
+
+  // Allocate a buffer into which to write the class probabilities.
+  flex_vec preds(num_classes);
+
+  auto pop_until_size = [&](size_t remaining) {
+
+    while (pending_batches.size() > remaining) {
+
+      // Pop one batch from the queue.
+      result batch = pending_batches.front();
+      pending_batches.pop();
+
+      size_t num_imgs = batch.data_info.num_samples;
+      ASSERT_EQ(num_imgs * num_classes, batch.data_info.predictions.size());
+
+      auto output_itr = batch.data_info.predictions.data();
+      for (size_t ii = 0; ii < num_imgs; ++ii) {
+        std::copy(output_itr, output_itr + num_classes, preds.begin());
+        output_itr += num_classes;
+        writer.write({preds}, 0);
+      }
+    }
+  };
+
+  while (data->has_next_batch()) {
+
+    // Wait until we have just one asynchronous batch outstanding. The work
+    // below should be concurrent with the neural net inference for that batch.
+    pop_until_size(1);
+
+    result result_batch;
+    result_batch.data_info = data->next_batch(batch_size);
+
+    // Send the inputs to the model.
+    std::map<std::string, shared_float_array> results =
+        backend->predict({{"input", result_batch.data_info.drawings}});
+
+    // Copy the (float) outputs to our (double) buffer and add to the SArray.
+    result_batch.data_info.predictions = results.at("output");
+
+    pending_batches.push(std::move(result_batch));
+  }
+
+  pop_until_size(0);
+
+  return writer.close();
+}
+
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   // by default, it should be "probability" if the value is
   // passed in through python client
   if (output_type != "probability" || output_type != "rank") {
     log_and_throw(output_type +
-                  " is not a valid option for output_type.  "
+                  " is not a valid option for output_type.  " +
                   "Expected one of: probability, rank");
   }
 
-  auto data_itr = create_iterator(data);
+  auto data_itr = create_iterator(data, /*is_train*/ false, read_state<flex_list>("class_labels"));
 
   gl_sframe predictions; // = perfrom_inference(data_itr.get());
   size_t preds_column_index = predictions.column_index("preds");

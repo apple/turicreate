@@ -272,6 +272,7 @@ class EXPORT drawing_classifier : public ml_model_base {
     }
   }
 
+  gl_sframe perform_inference(data_iterator* data) const;
 
  private:
   // Primary representation for the trained model.
