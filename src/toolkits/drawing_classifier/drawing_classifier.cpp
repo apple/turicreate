@@ -59,7 +59,7 @@ size_t drawing_classifier::get_version() const {
 void drawing_classifier::save_impl(oarchive& oarc) const {
   if (!nn_spec_)
     log_and_throw(
-        "model spec is not initalized, pls call `init_train` before saving model");
+        "model spec is not initalized, please call `init_train` before saving model");
 
   // Save model attributes.
   variant_deep_save(state, oarc);
@@ -71,7 +71,7 @@ void drawing_classifier::save_impl(oarchive& oarc) const {
 void drawing_classifier::load_version(iarchive& iarc, size_t version) {
   if (!nn_spec_)
     log_and_throw(
-        "model spec is not initalized, pls call `init_train` before loading model");
+        "model spec is not initalized, please call `init_train` before loading model");
 
   // Load model attributes.
   variant_deep_load(state, iarc);

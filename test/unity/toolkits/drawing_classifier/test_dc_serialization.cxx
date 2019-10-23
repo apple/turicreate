@@ -207,8 +207,8 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
 
   /**
    * The test calls `load_version` first and write serialized
-   * `nn_spec_` to disk. In this way, I can verify the `nn_spec_`
-   * successively loads all params from the source model spec file.
+   * `nn_spec_` to disk. In this way, the `nn_spec_` can be verified if
+   * it successively loads all params from the source model spec file.
    */
   auto load_save_compare = [&remove_if_exist](
                                drawing_classifier_mock& dc,
