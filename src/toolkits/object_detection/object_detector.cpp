@@ -25,6 +25,7 @@
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <toolkits/util/training_utils.hpp>
 
 #ifdef __APPLE__
 
