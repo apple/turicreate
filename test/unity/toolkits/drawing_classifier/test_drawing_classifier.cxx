@@ -190,7 +190,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
-  // Should infer class labels from data.
+    // Should infer class labels from data.
     TS_ASSERT(iterator_params.class_labels.empty());
     TS_ASSERT(iterator_params.repeat);
 
@@ -211,13 +211,13 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
     return nn_spec;
   });
 
+  /**
+   * TODO: const float_array_map& weights, const float_array_map&
+   * config. Until the nn_spec in C++ isn't ready, do not pass in any
+   * weights.
+   */
   auto create_drawing_classifier_impl =
-      [&](/* TODO: const float_array_map& weights, const float_array_map&
-           * config. Until the nn_spec in C++ isn't ready, do not pass in any
-           * weights.
-           */
-          size_t batch_size,
-          size_t num_classes) {
+          size_t batch_size, size_t num_classes) {
         TS_ASSERT_EQUALS(batch_size, test_batch_size);
         TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
 
