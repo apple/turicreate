@@ -223,7 +223,6 @@ void drawing_classifier::init_options(
       1,
       std::numeric_limits<int>::max());
 
-
   // Validate user-provided options.
   options.set_options(opts);
 

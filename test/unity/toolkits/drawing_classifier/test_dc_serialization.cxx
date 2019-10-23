@@ -7,15 +7,14 @@
 
 #define BOOST_TEST_MODULE test_dc_serialization
 
+#include <boost/algorithm/hex.hpp>
 #include <boost/test/unit_test.hpp>
+#include <boost/uuid/detail/md5.hpp>
 #include <core/util/test_macros.hpp>
 #include <cstdio>
-#include <chrono>
 #include <ml/neural_net/model_spec.hpp>
 #include <toolkits/coreml_export/mlmodel_include.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
-#include <boost/uuid/detail/md5.hpp>
-#include <boost/algorithm/hex.hpp>
 
 namespace turi {
 namespace drawing_classifer {
@@ -186,25 +185,23 @@ BOOST_AUTO_TEST_CASE(test_load_version) {
   TS_ASSERT_EQUALS(dc.get_version(), dc.DRAWING_CLASSIFIER_VERSION);
 }
 
-
 BOOST_AUTO_TEST_CASE(test_save_load) {
-  auto remove_if_exist =
-      [](const char* fname) {
-        std::FILE* fp = nullptr;
-        if ((fp = std::fopen(fname, "r")) != NULL) {
-          if (std::fclose(fp) != 0) {
-            std::stringstream ss;
-            ss << "cannot close file: " << fname << std::endl;
-            throw(turi::error::io_error(ss.str()));
-          }
+  auto remove_if_exist = [](const char* fname) {
+    std::FILE* fp = nullptr;
+    if ((fp = std::fopen(fname, "r")) != NULL) {
+      if (std::fclose(fp) != 0) {
+        std::stringstream ss;
+        ss << "cannot close file: " << fname << std::endl;
+        throw(turi::error::io_error(ss.str()));
+      }
 
-          if (std::remove(fname) != 0) {
-            std::stringstream ss;
-            ss << "cannot remove file: " << fname << std::endl;
-            throw(turi::error::io_error(ss.str()));
-          }
-        }
-      };
+      if (std::remove(fname) != 0) {
+        std::stringstream ss;
+        ss << "cannot remove file: " << fname << std::endl;
+        throw(turi::error::io_error(ss.str()));
+      }
+    }
+  };
 
   /**
    * This is a hack because nn_spec_ is a private member. Thus, I can't
@@ -214,8 +211,9 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
    * `nn_spec_` to disk. In this way, I can indirectly verify the `nn_spec_`
    * successively loads all params from the source model spec file.
    */
-  auto load_save_compare = [&remove_if_exist](drawing_classifier_mock& dc,
-                              drawing_classifier_mock& dc_other) {
+  auto load_save_compare = [&remove_if_exist](
+                               drawing_classifier_mock& dc,
+                               drawing_classifier_mock& dc_other) {
     // random init; avoid segfault
     dc.my_init_model_spec();
     dc_other.my_init_model_spec();
@@ -226,7 +224,8 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
 
     // save impl from the first mock
     {
-      std::fstream out_file(my_file, std::ios_base::out | std::ios_base::binary);
+      std::fstream out_file(my_file,
+                            std::ios_base::out | std::ios_base::binary);
       turi::oarchive oarch(out_file);
       dc.save_impl(oarch);
       out_file.close();
@@ -254,7 +253,8 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
     }
 
     // validation
-    std::ifstream file(my_file, std::ios::in | std::ios::binary | std::ios::ate);
+    std::ifstream file(my_file,
+                       std::ios::in | std::ios::binary | std::ios::ate);
     if (!file.is_open()) {
       std::stringstream ss;
       ss << "fail to open" << my_file << std::endl;
@@ -288,8 +288,16 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
                      0);
 
     // clean myself
-    std::remove(my_file);
-    std::remove(my_file_loaded);
+    if (std::remove(my_file)) {
+      std::stringstream ss;
+      ss << "fail to remove file:" << my_file << std::endl;
+      std::perror(ss.str().c_str());
+    }
+    if (std::remove(my_file_loaded)) {
+      std::stringstream ss;
+      ss << "fail to remove file:" << my_file_loaded << std::endl;
+      std::perror(ss.str().c_str());
+    }
   };
 
   // states
