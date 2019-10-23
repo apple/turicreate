@@ -4,6 +4,8 @@
 
 #import "mps_device_manager.h"
 
+constexpr float MPS_LOSS_MULTIPLIER = 8;
+
 NS_ASSUME_NONNULL_BEGIN
 
 // Represents one batch submitted to MPS.
@@ -163,7 +165,7 @@ float_array_map mps_graph_cnn_module::train(const float_array_map& inputs) {
       std::vector<float> loss(loss_size);
       auto loss_it = loss.begin();
       for (MPSCNNLossLabels *lossState in batch.lossState) {
-        *loss_it = sumImage([lossState lossImage]);
+        *loss_it = sumImage([lossState lossImage]) / MPS_LOSS_MULTIPLIER;
         ++loss_it;
       }
 

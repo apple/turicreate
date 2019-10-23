@@ -20,13 +20,12 @@ void print_training_device(std::vector<std::string> gpu_names) {
     }
     // TODO: Use a better condition to distinguish between hardware
     if (gpu_names_string.find("/") != std::string::npos) {
+      logprogress_stream << "Using " << (gpu_names.size() > 1 ? "GPUs" : "GPU")
+                         << " to create model (" << gpu_names_string << ")";
+    } else {
       logprogress_stream << "Using " << gpu_names.size()
                          << (gpu_names.size() > 1 ? " GPUs" : " GPU")
                          << " to create model (CUDA)";
-
-    } else {
-      logprogress_stream << "Using " << (gpu_names.size() > 1 ? "GPUs" : "GPU")
-                         << " to create model (" << gpu_names_string << ")";
     }
   }
 }

@@ -88,6 +88,24 @@ mps_compute_context::create_image_augmenter_for_testing(
 std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
     const float_array_map& config, const float_array_map& weights) {
+  float_array_map updated_config;
+  constexpr float MPS_LOSS_MULTIPLIER = 8;
+  updated_config["learning_rate"] =
+      shared_float_array::wrap(*config.at("learning_rate").data() / MPS_LOSS_MULTIPLIER);
+  updated_config["gradient_clipping"] =
+      shared_float_array::wrap(*config.at("gradient_clipping").data() * MPS_LOSS_MULTIPLIER);
+  updated_config["od_scale_class"] =
+      shared_float_array::wrap(*config.at("od_scale_class").data() * MPS_LOSS_MULTIPLIER);
+  updated_config["od_scale_no_object"] =
+      shared_float_array::wrap(*config.at("od_scale_no_object").data() * MPS_LOSS_MULTIPLIER);
+  updated_config["od_scale_object"] =
+      shared_float_array::wrap(*config.at("od_scale_object").data() * MPS_LOSS_MULTIPLIER);
+  updated_config["od_scale_wh"] =
+      shared_float_array::wrap(*config.at("od_scale_wh").data() * MPS_LOSS_MULTIPLIER);
+  updated_config["od_scale_xy"] =
+      shared_float_array::wrap(*config.at("od_scale_xy").data() * MPS_LOSS_MULTIPLIER);
+
+  std::cout << updated_config.at("learning_rate");
 
   std::unique_ptr<mps_graph_cnn_module> result(
       new mps_graph_cnn_module(*command_queue_));

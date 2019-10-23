@@ -84,15 +84,7 @@ constexpr int NUM_INPUT_CHANNELS = 3;
 // TODO: When we support alternative base models, we will have to generalize.
 constexpr int SPATIAL_REDUCTION = 32;
 
-// For the MPS implementation of the darknet-yolo model, the loss must be scaled
-// up to avoid underflow in the fp16 gradient images. The learning rate is
-// correspondingly divided by the same multiple to make training mathematically
-// equivalent. The update is done in fp32, which is why this trick works. The
-// loss presented to the user is presented in the original scale.
-// TODO: Only apply this for MPS, once this code also supports MXNet.
-constexpr float MPS_LOSS_MULTIPLIER = 8;
-
-constexpr float BASE_LEARNING_RATE = 0.001f / MPS_LOSS_MULTIPLIER;
+constexpr float BASE_LEARNING_RATE = 0.001f;
 
 constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45f;
 
@@ -122,8 +114,7 @@ float_array_map get_base_config() {
   float_array_map config;
   config["learning_rate"]            =
       shared_float_array::wrap(BASE_LEARNING_RATE);
-  config["gradient_clipping"]        =
-      shared_float_array::wrap(0.025f * MPS_LOSS_MULTIPLIER);
+  config["gradient_clipping"] = shared_float_array::wrap(0.025f);
   // TODO: Have MPS path use these parameters, instead
   // of the values hardcoded in the MPS code.
   config["od_rescore"]               = shared_float_array::wrap(1.0f);
@@ -143,16 +134,11 @@ float_array_map get_training_config() {
   config["od_max_iou_for_no_object"] = shared_float_array::wrap(0.3f);
   config["od_min_iou_for_object"]    = shared_float_array::wrap(0.7f);
   config["rescore"]                  = shared_float_array::wrap(1.0f);
-  config["od_scale_class"]           =
-      shared_float_array::wrap(2.0f * MPS_LOSS_MULTIPLIER);
-  config["od_scale_no_object"]       =
-      shared_float_array::wrap(5.0f * MPS_LOSS_MULTIPLIER);
-  config["od_scale_object"]          =
-      shared_float_array::wrap(100.0f * MPS_LOSS_MULTIPLIER);
-  config["od_scale_wh"]              =
-      shared_float_array::wrap(10.0f * MPS_LOSS_MULTIPLIER);
-  config["od_scale_xy"]              =
-      shared_float_array::wrap(10.0f * MPS_LOSS_MULTIPLIER);
+  config["od_scale_class"] = shared_float_array::wrap(2.0f);
+  config["od_scale_no_object"] = shared_float_array::wrap(5.0f);
+  config["od_scale_object"] = shared_float_array::wrap(100.0f);
+  config["od_scale_wh"] = shared_float_array::wrap(10.0f);
+  config["od_scale_xy"] = shared_float_array::wrap(10.0f);
   config["use_sgd"]                  = shared_float_array::wrap(1.0f);
   config["weight_decay"]             = shared_float_array::wrap(0.0005f);
   return config;
@@ -1195,7 +1181,6 @@ void object_detector::wait_for_training_batches(size_t max_pending) {
     float batch_loss = std::accumulate(
         loss_batch.data(), loss_batch.data() + loss_batch.size(), 0.f,
         [](float a, float b) { return a + b; });
-    batch_loss /= MPS_LOSS_MULTIPLIER;
 
     // Update our rolling average (smoothed) loss.
     auto loss_it = state.find("training_loss");
