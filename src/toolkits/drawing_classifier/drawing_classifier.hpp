@@ -23,6 +23,8 @@ namespace drawing_classifier {
 
 class EXPORT drawing_classifier : public ml_model_base {
  public:
+  static const size_t DRAWING_CLASSIFIER_VERSION;
+
   drawing_classifier() = default;
 
   /**
@@ -215,8 +217,6 @@ class EXPORT drawing_classifier : public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::iterate_training);
 
   END_CLASS_MEMBER_REGISTRATION
-
-  static const size_t DRAWING_CLASSIFIER_VERSION;
 
  protected:
   // Constructor allowing tests to set the initial state of this class and to
