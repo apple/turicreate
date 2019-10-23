@@ -35,9 +35,9 @@ constexpr size_t DEFAULT_WIDTH = 256;
 
 constexpr size_t DEFAULT_BATCH_SIZE = 1;
 
-void prepare_images(const image_type& image, std::vector<float>::iterator start_iter,
-                    size_t width, size_t height, size_t channels,
-                    size_t index) {
+void prepare_images(const image_type& image,
+                    std::vector<float>::iterator start_iter, size_t width,
+                    size_t height, size_t channels, size_t index) {
   size_t image_size = height * width * channels;
 
   image_type resized_image =
@@ -46,7 +46,7 @@ void prepare_images(const image_type& image, std::vector<float>::iterator start_
   const unsigned char* resized_image_ptr = resized_image.get_image_data();
 
   std::transform(resized_image_ptr, resized_image_ptr + image_size, start_iter,
-    [](unsigned char val) { return val / 255.f; });
+                 [](unsigned char val) { return val / 255.f; });
 }
 
 float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
@@ -73,14 +73,14 @@ float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
     index_array[index] = style_index;
   }
 
-  return {
-    {"input", shared_float_array::wrap(std::move(content_array),
-                                       {batch_size, height, width, channels})},
-    {"labels", shared_float_array::wrap(std::move(style_array),
-                                       {batch_size, height, width, channels})},
-    {"index", shared_float_array::wrap(std::move(index_array),
-                                       {batch_size})}
-  };
+  return {{"input",
+           shared_float_array::wrap(std::move(content_array),
+                                    {batch_size, height, width, channels})},
+          {"labels",
+           shared_float_array::wrap(std::move(style_array),
+                                    {batch_size, height, width, channels})},
+          {"index",
+           shared_float_array::wrap(std::move(index_array), {batch_size})}};
 }
 
 flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
@@ -270,23 +270,26 @@ void style_transfer::iterate_training() {
   std::vector<st_example> batch =
       m_training_data_iterator->next_batch(batch_size);
 
-  float_array_map prepared_batch = prepare_batch(batch, image_width, image_height);
+  float_array_map prepared_batch =
+      prepare_batch(batch, image_width, image_height);
 
   std::map<std::string, shared_float_array> results =
-        m_training_model->train(prepared_batch);
+      m_training_model->train(prepared_batch);
 
   add_or_update_state({
-    {"training_iterations", iteration_idx + 1},
+      {"training_iterations", iteration_idx + 1},
   });
 
   shared_float_array loss_batch = results.at("loss");
 
   size_t loss_batch_size = loss_batch.size();
-  float batch_loss = std::accumulate(loss_batch.data(), loss_batch.data() + loss_batch_size, 0.f,
-        [&loss_batch_size](float a, float b) { return a + b / loss_batch_size; });
+  float batch_loss = std::accumulate(
+      loss_batch.data(), loss_batch.data() + loss_batch_size, 0.f,
+      [&loss_batch_size](float a, float b) { return a + b / loss_batch_size; });
 
   if (training_table_printer_) {
-    training_table_printer_->print_progress_row(iteration_idx, iteration_idx + 1, batch_loss, progress_time());
+    training_table_printer_->print_progress_row(
+        iteration_idx, iteration_idx + 1, batch_loss, progress_time());
   }
 }
 
@@ -297,8 +300,8 @@ void style_transfer::finalize_training() {
 
 void style_transfer::train(gl_sarray style, gl_sarray content,
                            std::map<std::string, flexible_type> opts) {
-
-  training_table_printer_.reset(new table_printer({{ "Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
+  training_table_printer_.reset(new table_printer(
+      {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
 
   init_train(style, content, opts);
 
