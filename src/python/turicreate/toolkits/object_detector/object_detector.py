@@ -264,7 +264,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         # the SFrame shuffle operation that can occur after each epoch.
         'io_thread_buffer_size': 8,
         'mlmodel_path': pretrained_model_path,
-        'use_tensorflow': True
+        'use_tensorflow': False
     }
 
     if '_advanced_parameters' in kwargs:

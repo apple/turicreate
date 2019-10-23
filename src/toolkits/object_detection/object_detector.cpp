@@ -1287,7 +1287,7 @@ void object_detector::update_model_metrics(gl_sframe data,
   // Compute validation metrics if necessary.
   if (!validation_data.empty()) {
     variant_type validation_metrics_raw =
-        evaluate(validation_data, "all", "dict");
+        perform_evaluation(validation_data, "all", "dict", 0.001, 0.45);
     variant_map_type validation_metrics =
         variant_get_value<variant_map_type>(validation_metrics_raw);
     for (const auto& kv : validation_metrics) {
