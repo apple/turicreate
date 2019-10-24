@@ -53,7 +53,7 @@ class ODTensorFlowModel(object):
                                         name="global_step")
 
         self.loss = self.loss_layer(self.tf_model, self.labels)
-        self.base_lr = _utils.convert_shared_float_array_to_numpy(config['learning_rate']) 
+        self.base_lr = _utils.convert_shared_float_array_to_numpy(config['learning_rate'])
         self.num_iterations = int(_utils.convert_shared_float_array_to_numpy(config['num_iterations']))
         self.init_steps = [self.num_iterations // 2, 3 * self.num_iterations // 4, self.num_iterations]
         self.lrs = [_np.float32(self.base_lr * 10 ** (-i)) for i, step in enumerate(self.init_steps)]
