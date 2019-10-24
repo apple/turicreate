@@ -25,11 +25,10 @@ class drawing_classifier_mock
     return init_model();
   }
 
-  std::unique_ptr<neural_net::model_spec> init_and_get_model_spec_copy() {
-    init_model_spec();
-    return get_model_spec_copy();
-  }
+  drawing_classifier_mock() = default;
 
+  drawing_classifier_mock(std::unique_ptr<neural_net::model_spec> ms)
+      : drawing_classifier({}, std::move(ms), nullptr, nullptr, nullptr) {}
 };
 
 BOOST_AUTO_TEST_CASE(test_dc_init_model) {
@@ -220,10 +219,6 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   auto load_save_compare = [&remove_if_exist](
                                drawing_classifier_mock& dc,
                                drawing_classifier_mock& dc_other) {
-    // random init; avoid segfault
-    dc.init_and_get_model_spec_copy();
-    dc_other.init_and_get_model_spec_copy();
-
     constexpr auto my_file = "./test_dc_serialization.cxx.save.txt";
     remove_if_exist(my_file);
     std::stringstream ss;
@@ -306,6 +301,23 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
       ss << "fail to remove file:" << my_file_loaded << std::endl;
       std::perror(ss.str().c_str());
     }
+
+    // compare weights in memory
+    auto original_view = dc.get_model_spec_copy()->export_params_view();
+    auto loaded_view = dc_other.get_model_spec_copy()->export_params_view();
+    TS_ASSERT(original_view.size() > 1);
+    TS_ASSERT_EQUALS(original_view.size(), loaded_view.size());
+
+    for (const auto& entry : original_view) {
+      auto loaded_weights = loaded_view.at(entry.first);
+      auto& original_weights = entry.second;
+      TS_ASSERT(loaded_weights.size() > 0);
+      TS_ASSERT_EQUALS(original_weights.size(), loaded_weights.size());
+      TS_ASSERT_EQUALS(
+          std::memcmp(loaded_weights.data(), original_weights.data(),
+                       loaded_weights.size()),
+          0);
+    }
   };
 
   // states
@@ -313,21 +325,45 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   const std::string target = "target";
   const std::vector<std::string> features = {"0", "1"};
 
-  // init_model
-  drawing_classifier_mock dc;
-  dc.add_or_update_state(
+  // random init; avoid segfault
+
+  drawing_classifier_mock dummy;
+  dummy.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
+       {"random_seed", 1},
        {"features", flex_list(features.begin(), features.end())}});
+
+  // model spec should be different since all weights are random
+  // generated
+  auto spec1 = dummy.get_model_spec();
+
+  dummy.add_or_update_state({{"random_seed", 2}});
+  auto spec2 = dummy.get_model_spec();
+
+  auto view1 = spec1->export_params_view();
+  auto view2 = spec2->export_params_view();
+
+  std::vector<int> is_same;
+
+  for (const auto& entry : view1) {
+    auto weights2 = view2.at(entry.first);
+    auto& weights1 = entry.second;
+    TS_ASSERT(weights1.size() > 0);
+    TS_ASSERT_EQUALS(weights1.size(), weights2.size());
+    is_same.push_back(
+        std::memcmp(weights1.data(), weights2.data(), weights1.size()));
+  }
+
+  TS_ASSERT(!std::all_of(is_same.begin(), is_same.end(),
+                         [](int val) { std::cout << val << std::endl; return val == 0; }));
+
+  // start from 2 model spec with different weights view
+  drawing_classifier_mock dc(std::move(spec1));
+  drawing_classifier_mock dc_other(std::move(spec2));
 
   // idenetity check; or double load
   load_save_compare(dc, dc);
-
-  drawing_classifier_mock dc_other;
-  dc_other.add_or_update_state(
-      {{"target", target},
-       {"num_classes", num_classes},
-       {"features", flex_list(features.begin(), features.end())}});
 
   // load from a different instance
   load_save_compare(dc, dc_other);

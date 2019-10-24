@@ -311,7 +311,7 @@ void drawing_classifier::init_training(
 
   // Initialize the neural net. Note that this depends on statistics computed by
   // the data iterator.
-  init_model_spec();
+  nn_spec_ = init_model();
 
   // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(

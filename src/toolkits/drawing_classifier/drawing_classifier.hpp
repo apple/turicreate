@@ -270,14 +270,6 @@ class EXPORT drawing_classifier : public ml_model_base {
     return variant_get_value<T>(get_state().at(key));
   }
 
-  /* mock test only */
-
-  /**
-   * not intended for inheritance
-   * only initialize nn_spec_ for test convenience
-   **/
-  inline void init_model_spec() { nn_spec_ = init_model(); }
-
  private:
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
