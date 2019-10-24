@@ -112,12 +112,10 @@ class mock_compute_context : public compute_context {
           const float_array_map& config, const float_array_map& weights)>;
 
   using create_drawing_classifier_call =
-       std::function<std::unique_ptr<model_backend>(
-           /* TODO: const float_array_map& weights, 
-            *       const float_array_map& config.
-            * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-            */
-           size_t batch_size, size_t num_classes)>;
+      std::function<std::unique_ptr<model_backend>(
+          /* TODO: const float_array_map& config if needed */
+          const float_array_map& weights,
+          size_t batch_size, size_t num_classes)>;
 
   ~mock_compute_context() {
     TS_ASSERT(create_augmenter_calls_.empty());
@@ -150,41 +148,22 @@ class mock_compute_context : public compute_context {
   }
 
   std::unique_ptr<model_backend> create_drawing_classifier(
-      /* TODO: const float_array_map& weights, const float_array_map& config.
-       * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-       */
+      /* TODO: const float_array_map& config if needed */
+      const float_array_map& weights,
       size_t batch_size, size_t num_classes) override {
     TS_ASSERT(!create_drawing_classifier_calls_.empty());
     create_drawing_classifier_call expected_call =
         std::move(create_drawing_classifier_calls_.front());
     create_drawing_classifier_calls_.pop_front();
     return expected_call(
-      /* TODO: const float_array_map& weights, const float_array_map& config.
-       * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-       */
-      batch_size, num_classes);
+      /* TODO: const float_array_map& config if needed */
+      weights, batch_size, num_classes);
   }
 
   std::unique_ptr<model_backend> create_activity_classifier(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config, const float_array_map& weights) override {
     return nullptr;
-  }
-
-  std::unique_ptr<model_backend> create_drawing_classifier(
-       /* TODO: const float_array_map& weights, const float_array_map& config.
-        * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-        */
-       size_t batch_size, size_t num_classes) override {
-     TS_ASSERT(!create_drawing_classifier_calls_.empty());
-     create_drawing_classifier_call expected_call =
-         std::move(create_drawing_classifier_calls_.front());
-     create_drawing_classifier_calls_.pop_front();
-     return expected_call(
-       /* TODO: const float_array_map& weights, const float_array_map& config.
-        * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-        */
-       batch_size, num_classes);
   }
 
   std::unique_ptr<model_backend> create_style_transfer(
