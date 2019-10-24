@@ -18,6 +18,7 @@ make_boost_test(test_style_transfer_model_definition.cxx
     style_transfer_toolkit_test_utils
 )
 
+# TODO: Remove after mocking tests
 if(APPLE AND 
    NOT TC_BUILD_IOS AND 
    NOT TC_BASE_SDK_VERSION VERSION_LESS 10.15)
