@@ -206,7 +206,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   };
 
   /**
-   * The test calls `load_version` first and write serialized
+   * The test calls `save_impl` first and write serialized initial
    * `nn_spec_` to disk, let's say `file_1`.
    *
    * Then we load the previously stored spec file and update
