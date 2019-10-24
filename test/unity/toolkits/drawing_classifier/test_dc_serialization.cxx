@@ -49,6 +49,8 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
    */
   TS_ASSERT_EQUALS(nn.layers_size(), 14);
 
+  const std::string _suffix = "";
+
   /* layer 0: concat layer */
   {
     auto concat_layer = nn.layers(0);
@@ -69,7 +71,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
       const auto& convlayer = nn.layers(layer_index);
       TS_ASSERT(convlayer.has_convolution());
       TS_ASSERT_EQUALS(convlayer.name(),
-                       "drawing_conv" + std::to_string(x.first) + "_fwd");
+                       "drawing_conv" + std::to_string(x.first) + _suffix);
       TS_ASSERT_EQUALS(convlayer.convolution().outputchannels(), x.second);
       TS_ASSERT_EQUALS(convlayer.convolution().kernelchannels(),
                        x.first == 0 ? 1 : x.second / 2);
@@ -81,14 +83,14 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
 
       const auto& relu_layer = nn.layers(layer_index + 1);
       TS_ASSERT_EQUALS(relu_layer.name(),
-                       "drawing_relu" + std::to_string(x.first) + "_fwd");
+                       "drawing_relu" + std::to_string(x.first) + _suffix);
       TS_ASSERT(relu_layer.has_activation());
       TS_ASSERT(relu_layer.activation().has_relu());
 
       const auto& pool_layer = nn.layers(layer_index + 2);
       TS_ASSERT(pool_layer.has_pooling());
       TS_ASSERT_EQUALS(pool_layer.name(),
-                       "drawing_pool" + std::to_string(x.first) + "_fwd");
+                       "drawing_pool" + std::to_string(x.first) + _suffix);
       TS_ASSERT_EQUALS(pool_layer.pooling().kernelsize(0), 2);
       TS_ASSERT_EQUALS(pool_layer.pooling().kernelsize(1), 2);
       TS_ASSERT_EQUALS(pool_layer.pooling().stride(0), 2);
@@ -101,14 +103,14 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
   {
     const auto& flatten_layer = nn.layers(layer_index);
     TS_ASSERT(flatten_layer.has_flatten());
-    TS_ASSERT_EQUALS(flatten_layer.name(), "drawing_flatten0_fwd");
+    TS_ASSERT_EQUALS(flatten_layer.name(), "drawing_flatten0" + _suffix);
   }
 
   layer_index++;
   {
     const auto& dense_layer = nn.layers(layer_index);
     TS_ASSERT(dense_layer.has_innerproduct());
-    TS_ASSERT_EQUALS(dense_layer.name(), "drawing_dense0_fwd");
+    TS_ASSERT_EQUALS(dense_layer.name(), "drawing_dense0" + _suffix);
     TS_ASSERT_EQUALS(dense_layer.innerproduct().inputchannels(), 64 * 3 * 3);
     TS_ASSERT_EQUALS(dense_layer.innerproduct().outputchannels(), 128);
   }
@@ -116,7 +118,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
   layer_index++;
   {
     const auto& dense_layer = nn.layers(layer_index);
-    TS_ASSERT_EQUALS(dense_layer.name(), "drawing_dense1_fwd");
+    TS_ASSERT_EQUALS(dense_layer.name(), "drawing_dense1" + _suffix);
     TS_ASSERT(dense_layer.has_innerproduct());
     TS_ASSERT_EQUALS(dense_layer.innerproduct().inputchannels(), 128);
     TS_ASSERT_EQUALS(dense_layer.innerproduct().outputchannels(), num_classes);
