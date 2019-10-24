@@ -308,9 +308,11 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
 
     // compare weights in memory
     auto original_spec = dc.get_model_spec_copy();
+    TS_ASSERT(original_spec != nullptr);
     auto original_view = original_spec->export_params_view();
 
     auto loaded_spec = dc_other.get_model_spec_copy();
+    TS_ASSERT(loaded_spec != nullptr);
     auto loaded_view = loaded_spec->export_params_view();
 
     TS_ASSERT(original_view.size() > 1);
@@ -346,9 +348,11 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   // model spec should be different since all weights are random
   // generated
   auto spec1 = dummy.get_model_spec();
+  TS_ASSERT(spec1 != nullptr);
 
   dummy.add_or_update_state({{"random_seed", 2}});
   auto spec2 = dummy.get_model_spec();
+  TS_ASSERT(spec2 != nullptr);
 
   auto view1 = spec1->export_params_view();
   auto view2 = spec2->export_params_view();
