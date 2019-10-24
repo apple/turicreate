@@ -76,10 +76,6 @@ public:
     return *impl_;
   }
 
-  std::unique_ptr<model_spec> clone() const {
-    return std::unique_ptr<model_spec>(new model_spec(*impl_));
-  }
-
   /**
    * Transfer ownership of the underlying CoreML proto, invalidating the current
    * instance (leaving it in a "moved-from" state).

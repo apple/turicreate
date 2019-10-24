@@ -29,6 +29,10 @@ class drawing_classifier_mock
 
   drawing_classifier_mock(std::unique_ptr<neural_net::model_spec> ms)
       : drawing_classifier({}, std::move(ms), nullptr, nullptr, nullptr) {}
+
+  std::unique_ptr<neural_net::model_spec> get_model_spec_copy() const {
+    return clone_model_spec_for_test();
+  }
 };
 
 BOOST_AUTO_TEST_CASE(test_dc_init_model) {
@@ -303,18 +307,23 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
     }
 
     // compare weights in memory
-    auto original_view = dc.get_model_spec_copy()->export_params_view();
-    auto loaded_view = dc_other.get_model_spec_copy()->export_params_view();
+    auto original_spec = dc.get_model_spec_copy();
+    auto original_view = original_spec->export_params_view();
+
+    auto loaded_spec = dc_other.get_model_spec_copy();
+    auto loaded_view = loaded_spec->export_params_view();
+
     TS_ASSERT(original_view.size() > 1);
     TS_ASSERT_EQUALS(original_view.size(), loaded_view.size());
 
     for (const auto& entry : original_view) {
-      auto loaded_weights = loaded_view.at(entry.first);
+      // std::cout << entry.first << std::endl;
+      auto& loaded_weights = loaded_view.at(entry.first);
       auto& original_weights = entry.second;
       TS_ASSERT(loaded_weights.size() > 0);
       TS_ASSERT_EQUALS(original_weights.size(), loaded_weights.size());
       TS_ASSERT_EQUALS(
-          std::memcmp(loaded_weights.data(), original_weights.data(),
+       std::memcmp(loaded_weights.data(), original_weights.data(),
                        loaded_weights.size()),
           0);
     }
@@ -347,7 +356,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   std::vector<int> is_same;
 
   for (const auto& entry : view1) {
-    auto weights2 = view2.at(entry.first);
+    auto& weights2 = view2.at(entry.first);
     auto& weights1 = entry.second;
     TS_ASSERT(weights1.size() > 0);
     TS_ASSERT_EQUALS(weights1.size(), weights2.size());
@@ -355,17 +364,27 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
         std::memcmp(weights1.data(), weights2.data(), weights1.size()));
   }
 
+  // make sure 2 models params view are not same
   TS_ASSERT(!std::all_of(is_same.begin(), is_same.end(),
-                         [](int val) { std::cout << val << std::endl; return val == 0; }));
+                         [](int val) { return val == 0; }));
 
   // start from 2 model spec with different weights view
   drawing_classifier_mock dc(std::move(spec1));
   drawing_classifier_mock dc_other(std::move(spec2));
 
   // idenetity check; or double load
+  dc.add_or_update_state(
+      {{"target", target},
+       {"num_classes", num_classes},
+       {"features", flex_list(features.begin(), features.end())}});
   load_save_compare(dc, dc);
 
   // load from a different instance
+  dc_other.add_or_update_state(
+      {{"target", target},
+       {"num_classes", num_classes},
+       {"features", flex_list(features.begin(), features.end())}});
+
   load_save_compare(dc, dc_other);
 }
 
