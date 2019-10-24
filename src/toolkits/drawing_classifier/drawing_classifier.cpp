@@ -73,7 +73,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   weight_initializer initializer = zero_weight_initializer();
 
   const std::string prefix{"drawing"};
-  const std::string _suffix{"_fwd"};
+  // add suffix when needed.
+  const std::string _suffix{""};
   std::string input_name{"features"};
   std::string output_name;
 
@@ -88,7 +89,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       }
 
       ss.str("");
-      ss << prefix << "_conv" << ii << "_fwd";
+      ss << prefix << "_conv" << ii << _suffix;
       output_name = ss.str();
 
       initializer = xavier_weight_initializer(
@@ -190,7 +191,7 @@ void drawing_classifier::init_options(
       500,
       1,
       std::numeric_limits<int>::max());
-  
+
   // Validate user-provided options.
   options.set_options(opts);
 
