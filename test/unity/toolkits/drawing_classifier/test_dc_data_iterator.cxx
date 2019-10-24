@@ -14,7 +14,7 @@
 #include <model_server/lib/image_util.hpp>
 #include <core/util/test_macros.hpp>
 
-#include "data_utils.hpp"
+#include "dc_data_utils.hpp"
 
 namespace turi {
 namespace drawing_classifier {

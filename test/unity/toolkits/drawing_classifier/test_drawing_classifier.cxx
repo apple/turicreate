@@ -16,7 +16,8 @@
 #include <model_server/lib/image_util.hpp>
 
 #include "../neural_net/neural_net_mocks.hpp"
-#include "data_utils.hpp"
+#include "dc_data_utils.hpp"
+#include "dc_mock_interface.hpp"
 
 namespace turi {
 namespace drawing_classifier {
@@ -31,6 +32,7 @@ using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
+<<<<<<< HEAD
 /**
  * First, define mock implementations of the key drawing_classifier
  * dependencies. These implementations allow the test to define a callback for
@@ -160,6 +162,8 @@ class test_drawing_classifier : public drawing_classifier {
   mutable std::deque<init_model_call> init_model_calls_;
 };
 
+=======
+>>>>>>> 477597a75... put the interface together
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   // Most of this test body will be spent setting up the mock objects that we'll
   // inject into the drawing_classifier implementation. These mock objects will
@@ -210,6 +214,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
     return nn_spec;
   });
 
+<<<<<<< HEAD
   auto create_drawing_classifier_impl = [&](const float_array_map& weights,
                                             size_t batch_size,
                                             size_t num_classes) {
@@ -229,6 +234,30 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
 
     return std::move(mock_nn_model);
   };
+=======
+  auto create_drawing_classifier_impl =
+      [&](/* TODO: const float_array_map& weights, const float_array_map& config.
+           * Until the nn_spec in C++ isn't ready, do not pass in any weights.
+           */
+          size_t batch_size, size_t num_classes) {
+        TS_ASSERT_EQUALS(batch_size, test_batch_size);
+        TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
+
+        /* TODO: Uncomment when we start passing weights around */
+        // weights should be what we returned from init_model, as copied by
+        // neural_net::wrap_network_params
+        // TS_ASSERT_EQUALS(weights.size(), 1);
+        // auto it = weights.find("test_layer_weight");
+        // TS_ASSERT(it != weights.end());
+        // for (size_t i = 0; i < it->second.size(); ++i) {
+        //   TS_ASSERT_EQUALS(it->second.data()[i], static_cast<float>(i));
+        // }
+
+        // TODO: Assert the config values?
+
+        return std::move(mock_nn_model);
+      };
+>>>>>>> 477597a75... put the interface together
   mock_context->create_drawing_classifier_calls_.push_back(
       create_drawing_classifier_impl);
 
@@ -239,8 +268,13 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   drawing_data_generator data_generator(test_num_rows, test_class_labels);
   gl_sframe data = data_generator.get_data();
 
+<<<<<<< HEAD
   // Now, actually invoke drawing_classifier::init_training. This will trigger
   // all the assertions registered above.
+=======
+  // Now, actually invoke drawing_classifier::init_training. This will trigger all
+  // the assertions registered above.
+>>>>>>> 477597a75... put the interface together
   model.init_training(data, test_target_name, test_image_name, gl_sframe(),
                       {
                           {"batch_size", test_batch_size},
