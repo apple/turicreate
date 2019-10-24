@@ -18,7 +18,9 @@ namespace style_transfer {
 
 std::unique_ptr<neural_net::model_spec> init_resnet(const std::string& path);
 std::unique_ptr<neural_net::model_spec> init_resnet(size_t num_styles);
-std::unique_ptr<neural_net::model_spec> init_resnet(const std::string& path, size_t num_styles);
+std::unique_ptr<neural_net::model_spec> init_resnet(const std::string& path,
+                                                    size_t num_styles);
+std::unique_ptr<neural_net::model_spec> init_vgg_16();
 std::unique_ptr<neural_net::model_spec> init_vgg_16(const std::string& path);
 
 }  // namespace style_transfer

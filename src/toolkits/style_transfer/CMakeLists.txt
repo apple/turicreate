@@ -1,10 +1,11 @@
 project(unity_toolkits)
 
 make_library(unity_style_transfer OBJECT
-SOURCES
+  SOURCES
+    style_transfer.cpp
     style_transfer_data_iterator.cpp
     style_transfer_model_definition.cpp
-REQUIRES
+  REQUIRES
     unity_core
     unity_ml_model
     unity_neural_net
