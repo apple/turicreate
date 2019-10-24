@@ -112,9 +112,8 @@ const std::vector<std::pair<float, float>>& anchor_boxes() {
 
 float_array_map get_base_config() {
   float_array_map config;
-  config["learning_rate"]            =
-      shared_float_array::wrap(BASE_LEARNING_RATE);
-  config["gradient_clipping"] = shared_float_array::wrap(0.025f);
+  config["learning_rate"]            = shared_float_array::wrap(BASE_LEARNING_RATE);
+  config["gradient_clipping"]        = shared_float_array::wrap(0.025f);
   // TODO: Have MPS path use these parameters, instead
   // of the values hardcoded in the MPS code.
   config["od_rescore"]               = shared_float_array::wrap(1.0f);
@@ -134,11 +133,24 @@ float_array_map get_training_config() {
   config["od_max_iou_for_no_object"] = shared_float_array::wrap(0.3f);
   config["od_min_iou_for_object"]    = shared_float_array::wrap(0.7f);
   config["rescore"]                  = shared_float_array::wrap(1.0f);
+<<<<<<< HEAD
   config["od_scale_class"] = shared_float_array::wrap(2.0f);
   config["od_scale_no_object"] = shared_float_array::wrap(5.0f);
   config["od_scale_object"] = shared_float_array::wrap(100.0f);
   config["od_scale_wh"] = shared_float_array::wrap(10.0f);
   config["od_scale_xy"] = shared_float_array::wrap(10.0f);
+=======
+  config["od_scale_class"]           =
+      shared_float_array::wrap(2.0f);
+  config["od_scale_no_object"]       =
+      shared_float_array::wrap(5.0f);
+  config["od_scale_object"]          =
+      shared_float_array::wrap(100.0f);
+  config["od_scale_wh"]              =
+      shared_float_array::wrap(10.0f);
+  config["od_scale_xy"]              =
+      shared_float_array::wrap(10.0f);
+>>>>>>> move mps_loss_multiplier
   config["use_sgd"]                  = shared_float_array::wrap(1.0f);
   config["weight_decay"]             = shared_float_array::wrap(0.0005f);
   return config;

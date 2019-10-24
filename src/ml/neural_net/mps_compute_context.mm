@@ -88,6 +88,10 @@ mps_compute_context::create_image_augmenter_for_testing(
 std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
     const float_array_map& config, const float_array_map& weights) {
+<<<<<<< HEAD
+=======
+
+>>>>>>> move mps_loss_multiplier
   float_array_map updated_config;
   constexpr float MPS_LOSS_MULTIPLIER = 8;
   if (config.count("learning_rate") > 0){
@@ -123,7 +127,7 @@ std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
       updated_config[kv.first] = kv.second;
     }
   }
-  
+
   std::unique_ptr<mps_graph_cnn_module> result(
       new mps_graph_cnn_module(*command_queue_));
 
