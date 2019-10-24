@@ -115,6 +115,7 @@ float_array_map mps_graph_cnn_module::train(const float_array_map& inputs) {
 
   @autoreleasepool {
 
+  constexpr float MPS_LOSS_MULTIPLIER = 8;
   assert(mode_ == kGraphModeTrain);
 
   id<MTLCommandBuffer> cb = [cmd_queue_ commandBuffer];
@@ -163,7 +164,7 @@ float_array_map mps_graph_cnn_module::train(const float_array_map& inputs) {
       std::vector<float> loss(loss_size);
       auto loss_it = loss.begin();
       for (MPSCNNLossLabels *lossState in batch.lossState) {
-        *loss_it = sumImage([lossState lossImage]);
+        *loss_it = sumImage([lossState lossImage]) / MPS_LOSS_MULTIPLIER;
         ++loss_it;
       }
 
