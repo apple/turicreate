@@ -203,9 +203,6 @@ image_augmenter::options get_augmentation_options(flex_int batch_size,
   opts.saturation_max_jitter = 0.05f;
   opts.hue_max_jitter = 0.05f;
 
-  // Specify if the images need only resizing
-  opts.resize_only = false;
-
   return opts;
 }
 
@@ -582,7 +579,6 @@ void object_detector::perform_predict(gl_sframe data,
   augmenter_opts.batch_size = batch_size;
   augmenter_opts.output_height = grid_height * SPATIAL_REDUCTION;
   augmenter_opts.output_width = grid_width * SPATIAL_REDUCTION;
-  augmenter_opts.resize_only = true;
   std::unique_ptr<image_augmenter> augmenter =
       ctx->create_image_augmenter(augmenter_opts);
 
@@ -912,7 +908,7 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
 
 std::unique_ptr<compute_context> object_detector::create_compute_context() const
 {
-  return compute_context::create();
+  return compute_context::create_tf();
 }
 
 void object_detector::init_training(gl_sframe data,

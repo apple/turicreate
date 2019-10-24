@@ -193,8 +193,7 @@ class tf_image_augmenter : public float_array_image_augmenter {
   ~tf_image_augmenter() override = default;
 
   float_array_result prepare_augmented_images(
-      labeled_float_image data_to_augment, size_t output_height,
-      size_t output_width, bool resize_only) override;
+      labeled_float_image data_to_augment) override;
 
  private:
   options opts_;
@@ -204,14 +203,21 @@ tf_image_augmenter::tf_image_augmenter(const options& opts) : float_array_image_
 
 float_array_image_augmenter::float_array_result
 tf_image_augmenter::prepare_augmented_images(
-    float_array_image_augmenter::labeled_float_image data_to_augment,
-    size_t output_height, size_t output_width, bool resize_only) {
+    float_array_image_augmenter::labeled_float_image data_to_augment) {
+  opts_ = tf_image_augmenter::get_options();
   float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
     // Import the module from python that does data augmentation
     pybind11::module tf_aug = pybind11::module::import(
         "turicreate.toolkits.object_detector._tf_image_augmenter");
+
+    const size_t output_height = opts_.output_height;
+    const size_t output_width = opts_.output_width;
+    bool resize_only = false;
+    if (opts_.crop_prob == 0.f) {
+      resize_only = true;
+    }
 
     // Get augmented images and annotations from tensorflow
     pybind11::object augmented_data = tf_aug.attr("get_augmented_data")(

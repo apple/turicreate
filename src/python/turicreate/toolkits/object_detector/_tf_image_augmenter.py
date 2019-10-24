@@ -25,7 +25,7 @@ tf.disable_v2_behavior()
 def get_augmented_data(images, annotations, output_height, output_width, resize_only):
 
     # Suppresses verbosity to only errors
-    tf.logging.set_verbosity(_tf.logging.ERROR)
+    tf.logging.set_verbosity(tf.logging.ERROR)
 
     session = tf.Session()
     output_shape = (output_height, output_width)
