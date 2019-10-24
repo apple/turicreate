@@ -126,7 +126,7 @@ std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
       new mps_graph_cnn_module(*command_queue_));
 
   result->init(/* network_id */ kODGraphNet, n, c_in, h_in, w_in, c_out, h_out,
-               w_out, config, weights);
+               w_out, updated_config, weights);
 
   return result;
 }
