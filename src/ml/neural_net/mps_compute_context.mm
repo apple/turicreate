@@ -90,30 +90,45 @@ std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
     const float_array_map& config, const float_array_map& weights) {
   float_array_map updated_config;
   constexpr float MPS_LOSS_MULTIPLIER = 8;
-  updated_config["learning_rate"] =
+  if (config.count("learning_rate") > 0){
+    std::cout << 1;
+    updated_config["learning_rate"] =
       shared_float_array::wrap(*config.at("learning_rate").data() / MPS_LOSS_MULTIPLIER);
-  updated_config["gradient_clipping"] =
-      shared_float_array::wrap(*config.at("gradient_clipping").data() * MPS_LOSS_MULTIPLIER);
+  }
+  if (config.count("od_scale_class") > 0){
   updated_config["od_scale_class"] =
       shared_float_array::wrap(*config.at("od_scale_class").data() * MPS_LOSS_MULTIPLIER);
+  }
+  if (config.count("od_scale_no_object") > 0){
   updated_config["od_scale_no_object"] =
       shared_float_array::wrap(*config.at("od_scale_no_object").data() * MPS_LOSS_MULTIPLIER);
+  }
+  if (config.count("od_scale_object") > 0){
   updated_config["od_scale_object"] =
       shared_float_array::wrap(*config.at("od_scale_object").data() * MPS_LOSS_MULTIPLIER);
+  }
+  if (config.count("od_scale_wh") > 0){
   updated_config["od_scale_wh"] =
       shared_float_array::wrap(*config.at("od_scale_wh").data() * MPS_LOSS_MULTIPLIER);
+  }
+  if (config.count("od_scale_xy") > 0){
   updated_config["od_scale_xy"] =
       shared_float_array::wrap(*config.at("od_scale_xy").data() * MPS_LOSS_MULTIPLIER);
-
-  for (const auto& kv : config) {
-    std::cout << kv.first;
   }
-
+  updated_config["gradient_clipping"] =
+      shared_float_array::wrap(*config.at("gradient_clipping").data() * MPS_LOSS_MULTIPLIER);
+  
+  for (const auto& kv : config) {
+    if (updated_config.count(kv.first) == 0 ){
+      updated_config[kv.first] = kv.second;
+    }
+  }
+  
   std::unique_ptr<mps_graph_cnn_module> result(
       new mps_graph_cnn_module(*command_queue_));
 
   result->init(/* network_id */ kODGraphNet, n, c_in, h_in, w_in, c_out, h_out,
-               w_out, config, weights);
+               w_out, updated_config, weights);
 
   return result;
 }
