@@ -105,7 +105,9 @@ std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
   updated_config["od_scale_xy"] =
       shared_float_array::wrap(*config.at("od_scale_xy").data() * MPS_LOSS_MULTIPLIER);
 
-  std::cout << updated_config.at("learning_rate");
+  for (const auto& kv : config) {
+    std::cout << kv.first;
+  }
 
   std::unique_ptr<mps_graph_cnn_module> result(
       new mps_graph_cnn_module(*command_queue_));
