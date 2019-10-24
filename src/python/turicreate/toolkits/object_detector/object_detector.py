@@ -526,7 +526,9 @@ class ObjectDetector(_CustomModel):
 
     @classmethod
     def _native_name(cls):
-        return "object_detector"
+        if not USE_CPP:
+            return "object_detector"
+        return None
 
     def _get_native_state(self):
         from .._mxnet import _mxnet_utils
@@ -1547,6 +1549,8 @@ class ObjectDetector_beta(_Model):
 
     @classmethod
     def _native_name(cls):
+        if USE_CPP:
+            return "object_detector"
         return None
 
     def __str__(self):
