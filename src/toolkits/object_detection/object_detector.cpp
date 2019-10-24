@@ -951,13 +951,10 @@ void object_detector::init_training(gl_sframe data,
                                          read_state<int>("random_seed"));
 
   // Bind the data to a data iterator.
-  std::cout << "expect class labels:" << class_labels << '\n';
   training_data_iterator_ =
       create_iterator(training_data_, /* expected class_labels */ class_labels,
                       /* repeat */ true);
-  std::cout << "finish.........\n";
-  std::cout << "returned class labels:"
-            << training_data_iterator_->class_labels() << '\n';
+
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
   // classes observed by the training_data_iterator_ above.

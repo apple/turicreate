@@ -344,8 +344,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
-    TS_ASSERT(iterator_params.class_labels
-                  .empty());  // Should infer class labels from data.
+    TS_ASSERT(!iterator_params.class_labels
+                   .empty());  // We give the class_labels explicity here.
     TS_ASSERT(iterator_params.repeat);
 
     return std::move(mock_iterator);
@@ -418,6 +418,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
   // Now, actually invoke object_detector::init_training. This will trigger all
   // the assertions registered above.
   model.init_training(data, test_annotations_name, test_image_name, gl_sframe(),
+                      test_class_labels,
                       {
                           {"mlmodel_path", test_mlmodel_path},
                           {"batch_size", test_batch_size},
@@ -627,6 +628,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
     // The train data is smaller than the original dataset
     TS_ASSERT(test_num_examples > iterator_params.data.size());
+    std::cout << iterator_params.class_labels << '\n';
     TS_ASSERT(iterator_params.class_labels.empty());  // Should infer class labels from data.
     TS_ASSERT(iterator_params.repeat);
 
@@ -712,10 +714,12 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
 
   // Now, actually invoke object_detector::train. This will trigger all the
   // assertions registered above.
-  model.train(data, test_annotations_name, test_image_name, "auto",
-              { { "mlmodel_path",   test_mlmodel_path   },
-                { "batch_size",     test_batch_size     },
-                { "max_iterations", test_max_iterations }, });
+  model.train(data, test_annotations_name, test_image_name, "auto", {},
+              {
+                  {"mlmodel_path", test_mlmodel_path},
+                  {"batch_size", test_batch_size},
+                  {"max_iterations", test_max_iterations},
+              });
 
   // Verify model fields.
   TS_ASSERT_EQUALS(model.get_field<flex_int>("batch_size"), test_batch_size);
@@ -896,6 +900,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   // Now, actually invoke object_detector::train. This will trigger all the
   // assertions registered above.
   model.train(data, test_annotations_name, test_image_name, gl_sframe(),
+              test_class_labels,
               {
                   {"mlmodel_path", test_mlmodel_path},
                   {"batch_size", test_batch_size},

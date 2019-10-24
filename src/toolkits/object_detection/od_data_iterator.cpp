@@ -73,11 +73,14 @@ std::vector<image_annotation> parse_annotations(
       const flex_string& key = kv.first.get<flex_string>();
 
       if (key == "label") {
-
-        annotation.identifier =
-            class_to_index_map.at(kv.second.get<flex_string>());
-        has_label = true;
-
+        // If the label in invalid (not in class_to_index_map) then ignore it.
+        const flex_string& label = kv.second.get<flex_string>();
+        if (class_to_index_map.find(label) == class_to_index_map.end()) {
+          has_label = false;
+        } else {
+          annotation.identifier = class_to_index_map.at(label);
+          has_label = true;
+        }
       } else if (key == "coordinates") {
 
         // Scan through the nested "coordinates" keys, populating the bounding
@@ -231,10 +234,9 @@ simple_data_iterator::compute_properties(
                                { flex_type_enum::STRING },
                                /* na_value */ FLEX_UNDEFINED, { "label" });
 
-  // Determine the list of unique class labels,
-  gl_sarray classes = instances["label"].unique().sort();
-
   if (expected_class_labels.empty()) {
+    // Determine the list of unique class labels,
+    gl_sarray classes = instances["label"].unique().sort();
 
     // Infer the class-to-index map from the observed labels.
     result.classes.reserve(classes.size());
@@ -244,20 +246,19 @@ simple_data_iterator::compute_properties(
       result.class_to_index_map[label] = i++;
     }
   } else {
+    // Make sure the expected labels are unique and sorted.
+    std::sort(expected_class_labels.begin(), expected_class_labels.end());
+    std::vector<std::string>::iterator it;
+    it =
+        std::unique(expected_class_labels.begin(), expected_class_labels.end());
+    expected_class_labels.resize(
+        std::distance(expected_class_labels.begin(), it));
 
     // Construct the class-to-index map from the expected labels.
     result.classes = std::move(expected_class_labels);
     int i = 0;
     for (const std::string& label : result.classes) {
       result.class_to_index_map[label] = i++;
-    }
-
-    // Use the map to verify that we only encountered expected labels.
-    for (const flexible_type& ft : classes.range_iterator()) {
-      std::string label(ft);  // Ensures correct overload resolution below.
-      if (result.class_to_index_map.count(label) == 0) {
-        log_and_throw("Annotations contained unexpected class label " + label);
-      }
     }
   }
 
