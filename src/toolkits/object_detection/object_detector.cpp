@@ -470,9 +470,7 @@ void object_detector::finalize_training() {
   update_model_metrics(training_data_, validation_data_);
 }
 
-variant_map_type object_detector::evaluate(
-    gl_sframe data, std::string metric) {
-
+variant_map_type object_detector::evaluate(gl_sframe data, std::string metric) {
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -548,10 +546,10 @@ gl_sarray object_detector::predict(gl_sframe data) {
   return result.close();
 }
 
-void object_detector::perform_predict(gl_sframe data,
-    std::function<void(const std::vector<image_annotation>&,
-    const std::vector<image_annotation>&)> consumer) {
-
+void object_detector::perform_predict(
+    gl_sframe data, std::function<void(const std::vector<image_annotation>&,
+                                       const std::vector<image_annotation>&)>
+                        consumer) {
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
@@ -895,6 +893,18 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
       iterator_params.annotation_position = data_iterator::annotation_position_enum::BOTTOM_LEFT;
   }
 
+  // Append empty annotations if no annotations are found
+  if (!iterator_params.data.contains_column(
+          iterator_params.annotations_column_name)) {
+    std::vector<flexible_type> dummy;
+    for (size_t i = 0; i < iterator_params.data.size(); i++) {
+      dummy.push_back(flex_list());
+    }
+    gl_sarray empty_ann(dummy, flex_type_enum::LIST);
+    iterator_params.data.add_column(empty_ann,
+                                    iterator_params.annotations_column_name);
+    iterator_params.has_label = false;
+  }
   return create_iterator(iterator_params);
 }
 
@@ -1230,8 +1240,8 @@ void object_detector::update_model_metrics(gl_sframe data,
 
   // Compute validation metrics if necessary.
   if (!validation_data.empty()) {
-    variant_map_type validation_metrics = perform_evaluation(validation_data,
-                                                             "all");
+    variant_map_type validation_metrics =
+        perform_evaluation(validation_data, "all");
     for (const auto& kv : validation_metrics) {
       metrics["validation_" + kv.first] = kv.second;
     }

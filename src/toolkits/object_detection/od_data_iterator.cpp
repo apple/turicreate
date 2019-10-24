@@ -46,7 +46,6 @@ gl_sframe get_data(const data_iterator::parameters& params) {
     result[params.predictions_column_name] =
         params.data[params.predictions_column_name];
   }
-
   return result;
 }
 
@@ -230,12 +229,17 @@ simple_data_iterator::compute_properties(
   }
 
   // Extract the label for each bounding box.
-  instances = instances.unpack("bbox", /* column_name_prefix */ "",
-                               { flex_type_enum::STRING },
-                               /* na_value */ FLEX_UNDEFINED, { "label" });
+  // Only if the data has annotations.
+  if (has_label_) {
+    instances = instances.unpack("bbox", /* column_name_prefix */ "",
+                                 {flex_type_enum::STRING},
+                                 /* na_value */ FLEX_UNDEFINED, {"label"});
+  }
 
   if (expected_class_labels.empty()) {
     // Determine the list of unique class labels,
+    // expected_class is empty ONLY when has_label_ = true,
+    // we can make sure that the instances has "label" since.
     gl_sarray classes = instances["label"].unique().sort();
 
     // Infer the class-to-index map from the observed labels.
@@ -271,34 +275,35 @@ simple_data_iterator::compute_properties(
 simple_data_iterator::simple_data_iterator(const parameters& params)
 
     // Reduce SFrame to the two columns we care about.
-  : data_(get_data(params)),
+    : data_(get_data(params)),
 
-    // Determine which column is which within each (ordered) row.
-    annotations_index_(data_.column_index(params.annotations_column_name)),
-    predictions_index_(params.predictions_column_name.empty()
-                       ? -1
-                       : data_.column_index(params.predictions_column_name)),
-    image_index_(data_.column_index(params.image_column_name)),
+      // Determine which column is which within each (ordered) row.
+      annotations_index_(data_.column_index(params.annotations_column_name)),
+      predictions_index_(
+          params.predictions_column_name.empty()
+              ? -1
+              : data_.column_index(params.predictions_column_name)),
+      image_index_(data_.column_index(params.image_column_name)),
 
-    annotation_origin_(params.annotation_origin),
-    annotation_scale_(params.annotation_scale),
-    annotation_position_(params.annotation_position),
+      annotation_origin_(params.annotation_origin),
+      annotation_scale_(params.annotation_scale),
+      annotation_position_(params.annotation_position),
 
-    // Whether to traverse the SFrame more than once, and whether to shuffle.
-    repeat_(params.repeat),
-    shuffle_(params.shuffle),
+      // Whether to traverse the SFrame more than once, and whether to shuffle.
+      repeat_(params.repeat),
+      shuffle_(params.shuffle),
+      has_label_(params.has_label),
 
-    // Identify/verify the class labels and other annotation properties.
-    annotation_properties_(
-        compute_properties(data_[params.annotations_column_name],
-                           params.class_labels)),
+      // Identify/verify the class labels and other annotation properties.
+      annotation_properties_(compute_properties(
+          data_[params.annotations_column_name], params.class_labels)),
 
-    // Start an iteration through the entire SFrame.
-    range_iterator_(data_.range_iterator()),
-    next_row_(range_iterator_.begin()),
+      // Start an iteration through the entire SFrame.
+      range_iterator_(data_.range_iterator()),
+      next_row_(range_iterator_.begin()),
 
-    // Initialize random number generator.
-    random_engine_(params.random_seed)
+      // Initialize random number generator.
+      random_engine_(params.random_seed)
 
 {}
 

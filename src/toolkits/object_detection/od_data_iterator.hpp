@@ -104,6 +104,9 @@ public:
 
     /** Determines results of shuffle operations if enabled. */
     int random_seed = 0;
+
+    /** Determines dsata has ground truth labels. */
+    bool has_label = true;
   };
 
   virtual ~data_iterator() = default;
@@ -182,6 +185,7 @@ private:
 
   const bool repeat_;
   const bool shuffle_;
+  const bool has_label_;
 
   const annotation_properties annotation_properties_;
 
