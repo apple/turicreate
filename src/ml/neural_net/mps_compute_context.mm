@@ -20,6 +20,25 @@ namespace neural_net {
 
 namespace {
 
+float_array_map multiply_mps_od_loss_multiplier(float_array_map config,
+                                                std::vector<std::string> update_keys) {
+  for (std::vector<std::string>::const_iterator i = update_keys.begin(); i != update_keys.end();
+       ++i) {
+    auto config_iter = config.find(*i);
+    if (config_iter != config.end()) {
+      float old_value = config_iter->second.data()[0];
+      float new_value;
+      if (*i == "learning_rate") {
+        new_value = old_value / MPS_OD_LOSS_MULTIPLIER;
+      } else {
+        new_value = old_value * MPS_OD_LOSS_MULTIPLIER;
+      }
+      config_iter->second = shared_float_array::wrap(new_value);
+    }
+  }
+  return config;
+}
+
 std::unique_ptr<compute_context> create_mps_compute_context() {
   return std::unique_ptr<compute_context>(new mps_compute_context);
 }
@@ -89,39 +108,10 @@ std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
     const float_array_map& config, const float_array_map& weights) {
   float_array_map updated_config;
-  constexpr float MPS_LOSS_MULTIPLIER = 8;
-  if (config.count("learning_rate") > 0) {
-    updated_config["learning_rate"] =
-      shared_float_array::wrap(*config.at("learning_rate").data() / MPS_LOSS_MULTIPLIER);
-  }
-  if (config.count("od_scale_class") > 0) {
-  updated_config["od_scale_class"] =
-      shared_float_array::wrap(*config.at("od_scale_class").data() * MPS_LOSS_MULTIPLIER);
-  }
-  if (config.count("od_scale_no_object") > 0) {
-  updated_config["od_scale_no_object"] =
-      shared_float_array::wrap(*config.at("od_scale_no_object").data() * MPS_LOSS_MULTIPLIER);
-  }
-  if (config.count("od_scale_object") > 0) { 
-  updated_config["od_scale_object"] =
-      shared_float_array::wrap(*config.at("od_scale_object").data() * MPS_LOSS_MULTIPLIER);
-  }
-  if (config.count("od_scale_wh") > 0) {
-  updated_config["od_scale_wh"] =
-      shared_float_array::wrap(*config.at("od_scale_wh").data() * MPS_LOSS_MULTIPLIER);
-  }
-  if (config.count("od_scale_xy") > 0) {
-  updated_config["od_scale_xy"] =
-      shared_float_array::wrap(*config.at("od_scale_xy").data() * MPS_LOSS_MULTIPLIER);
-  }
-  updated_config["gradient_clipping"] =
-      shared_float_array::wrap(*config.at("gradient_clipping").data() * MPS_LOSS_MULTIPLIER);
-  
-  for (const auto& kv : config) {
-    if (updated_config.count(kv.first) == 0 ) {
-      updated_config[kv.first] = kv.second;
-    }
-  }
+  std::vector<std::string> update_keys = {
+      "learning_rate", "od_scale_class", "od_scale_no_object", "od_scale_object",
+      "od_scale_wh",   "od_scale_xy",    "gradient_clipping"};
+  updated_config = multiply_mps_od_loss_multiplier(config, update_keys);
   std::unique_ptr<mps_graph_cnn_module> result(
       new mps_graph_cnn_module(*command_queue_));
 
