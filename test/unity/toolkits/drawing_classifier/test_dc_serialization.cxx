@@ -286,20 +286,22 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   auto view1 = spec1->export_params_view();
   auto view2 = spec2->export_params_view();
 
-  std::vector<int> is_same;
+  bool is_same = true;
 
   for (const auto& entry : view1) {
     auto& weights2 = view2.at(entry.first);
     auto& weights1 = entry.second;
     TS_ASSERT(weights1.size() > 0);
     TS_ASSERT_EQUALS(weights1.size(), weights2.size());
-    is_same.push_back(
-        std::memcmp(weights1.data(), weights2.data(), weights1.size()));
+    if (std::memcmp(weights1.data(), weights2.data(), weights1.size())) {
+      is_same = false;
+      break;
+    }
   }
 
   // make sure 2 models params view are not same
-  TS_ASSERT(!std::all_of(is_same.begin(), is_same.end(),
-                         [](int val) { return val == 0; }));
+  // due to the fact that they use different seed!
+  TS_ASSERT(!is_same);
 
   // start from 2 model spec with different weights view
   drawing_classifier_mock dc(std::move(spec1));
