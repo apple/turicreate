@@ -12,10 +12,10 @@ public:
     timer ti;
     ti.start();
     double t = ti.current_time();
-    TS_ASSERT_DELTA(t, 0, 0.2);
+    BOOST_TEST(t == 0.0, boost::test_tools::tolerance(0.2));
     sleep(3);
     t = ti.current_time();
-    TS_ASSERT_DELTA(t, 3, 0.2);
+    BOOST_TEST(t == 3.0, boost::test_tools::tolerance(0.2));
   }
 
 
@@ -24,7 +24,7 @@ public:
     int t = timer::approx_time_seconds();
     sleep(3);
     int t2 = timer::approx_time_seconds();
-    TS_ASSERT_DELTA(double(t2 - t), 3.0, 2);
+    BOOST_TEST(double(t2 - t) == 3.0, boost::test_tools::tolerance(2.0));
   }
 
 
