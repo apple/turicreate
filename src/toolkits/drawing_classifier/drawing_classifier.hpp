@@ -23,17 +23,25 @@ namespace drawing_classifier {
 
 class EXPORT drawing_classifier : public ml_model_base {
  public:
+  static const size_t DRAWING_CLASSIFIER_VERSION;
+
   drawing_classifier() = default;
 
-  // ml_model_base interface
+  /**
+   * ml_model_base interface
+   */
 
   void init_options(const std::map<std::string, flexible_type>& opts) override;
-  /* Commented out for the purpose of a skeleton. */
-  // size_t get_version() const override;
-  // void save_impl(oarchive& oarc) const override;
-  // void load_version(iarchive& iarc, size_t version) override;
 
-  /* Interface exposed via Unity server */
+  size_t get_version() const override;
+
+  void save_impl(oarchive& oarc) const override;
+
+  void load_version(iarchive& iarc, size_t version) override;
+
+  /**
+   * Interface exposed via Unity server
+   */
 
   void train(gl_sframe data, std::string target_column_name,
              std::string feature_column_name, variant_type validation_data,
@@ -250,6 +258,17 @@ class EXPORT drawing_classifier : public ml_model_base {
   T read_state(const std::string& key) const {
     return variant_get_value<T>(get_state().at(key));
   }
+
+  std::unique_ptr<neural_net::model_spec> clone_model_spec_for_test() const {
+    if (nn_spec_) {
+      return std::unique_ptr<neural_net::model_spec>(
+          new neural_net::model_spec(nn_spec_->get_coreml_spec()));
+    }
+    else {
+      return nullptr;
+    }
+  }
+
 
  private:
   // Primary representation for the trained model.

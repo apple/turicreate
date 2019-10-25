@@ -50,6 +50,40 @@ struct result {
 
 }  // namespace
 
+const size_t drawing_classifier::DRAWING_CLASSIFIER_VERSION = 1;
+
+size_t drawing_classifier::get_version() const {
+  return DRAWING_CLASSIFIER_VERSION;
+}
+
+void drawing_classifier::save_impl(oarchive& oarc) const {
+  if (!nn_spec_)
+    log_and_throw(
+        "model spec is not initalized, please call `init_train` before saving model");
+
+  // Save model attributes.
+  variant_deep_save(state, oarc);
+
+  // Save neural net weights.
+  oarc << nn_spec_->export_params_view();
+}
+
+void drawing_classifier::load_version(iarchive& iarc, size_t version) {
+  if (!nn_spec_)
+    log_and_throw(
+        "model spec is not initalized, please call `init_train` before loading model");
+
+  // Load model attributes.
+  variant_deep_load(state, iarc);
+
+  // Load neural net weights.
+  float_array_map nn_params;
+  iarc >> nn_params;
+
+  nn_spec_ = init_model();
+  nn_spec_->update_params(nn_params);
+}
+
 std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   std::unique_ptr<model_spec> result(new model_spec);
 
@@ -189,7 +223,6 @@ void drawing_classifier::init_options(
       500,
       1,
       std::numeric_limits<int>::max());
-
 
   // Validate user-provided options.
   options.set_options(opts);
