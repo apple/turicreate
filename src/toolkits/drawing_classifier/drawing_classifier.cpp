@@ -272,30 +272,6 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   return create_iterator(data_params);
 }
 
-float_array_map drawing_classifier::get_model_params() const {
-
-  float_array_map raw_model_params = nn_spec_->export_params_view();
-
-  // Strip the substring "_fwd" from any parameter names, for compatibility with
-  // the compute backend. (We preserve the substring in nn_spec_ for inclusion
-  // in the final exported model.)
-  // TODO: Someday, this will all be an implementation detail of each
-  // model_backend implementation, once they actually take model_spec values as
-  // inputs. Or maybe we should just not use "_fwd" in the exported model?
-  float_array_map model_params;
-  for (const float_array_map::value_type& kv : raw_model_params) {
-    const std::string modifier = "_fwd";
-    std::string name = kv.first;
-    size_t pos = name.find(modifier);
-    if (pos != std::string::npos) {
-      name.erase(pos, modifier.size());
-    }
-    model_params[name] = kv.second;
-  }
-
-  return model_params;
-}
-
 void drawing_classifier::init_training(
     gl_sframe data, std::string target_column_name,
     std::string feature_column_name, variant_type validation_data,
@@ -362,7 +338,7 @@ void drawing_classifier::init_training(
 
   // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(
-      get_model_params(), read_state<size_t>("batch_size"),
+      nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
       read_state<size_t>("num_classes"));
 
   // Print the header last, after any logging triggered by initialization above.
