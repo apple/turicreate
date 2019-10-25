@@ -30,6 +30,7 @@ BOOST_AUTO_TEST_CASE(test_initialization) {
 
   params.style = style_sarray;
   params.content = content_sarray;
+  params.repeat = false;
 
   style_transfer_data_iterator iter(params);
 

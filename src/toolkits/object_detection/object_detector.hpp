@@ -41,8 +41,10 @@ class EXPORT object_detector: public ml_model_base {
              std::string image_column_name, variant_type validation_data,
              std::vector<std::string> class_labels,
              std::map<std::string, flexible_type> opts);
-  variant_map_type evaluate(gl_sframe data, std::string metric);
-  gl_sarray predict(gl_sframe data);
+  variant_type evaluate(gl_sframe data, std::string metric,
+                        std::string output_type,
+                        std::map<std::string, flexible_type> opts);
+  gl_sarray predict(variant_type data, std::map<std::string, flexible_type> opts);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
   void import_from_custom_model(variant_map_type model_data, size_t version);
@@ -106,11 +108,14 @@ class EXPORT object_detector: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::synchronize_training);
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::finalize_training);
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric");
-  register_defaults("evaluate",
-      {{"metric", std::string("auto")}});
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
+                                 "output_type", "options");
+  register_defaults("evaluate", {{"metric", std::string("auto")},
+                                 {"output_type", std::string("dict")},
+                                 });
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data");
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data", "options");
+  register_defaults("predict",{});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -183,14 +188,17 @@ class EXPORT object_detector: public ml_model_base {
       const std::vector<std::pair<float, float>>& anchor_boxes,
       float min_confidence);
 
-  virtual variant_map_type perform_evaluation(gl_sframe data,
-                                              std::string metric);
+  virtual variant_type perform_evaluation(gl_sframe data, std::string metric,
+                                          std::string output_type,
+                                          float confidence_threshold,
+                                          float iou_threshold);
 
   void perform_predict(
       gl_sframe data,
       std::function<void(const std::vector<neural_net::image_annotation>&,
                          const std::vector<neural_net::image_annotation>&)>
-          consumer);
+          consumer,
+      float confidence_threshold, float iou_threshold);
 
   // Utility code
 
@@ -210,6 +218,10 @@ class EXPORT object_detector: public ml_model_base {
   flex_int get_training_iterations() const;
   flex_int get_num_classes() const;
 
+  static variant_type convert_map_to_types(const variant_map_type& result_map,
+                                           const std::string& output_type);
+  static gl_sframe convert_types_to_sframe(const variant_type& data,
+                                           const std::string& column_name);
   // Sets certain user options heuristically (from the data).
   void infer_derived_options();
 

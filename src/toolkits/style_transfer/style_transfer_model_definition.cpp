@@ -948,6 +948,199 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
       /* weight_init_fn */ scalar_weight_initializer(255.0));
 }
 
+// TODO: refactor code to be more readable with loops
+void define_vgg(model_spec& nn_spec) {
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_1_conv_1",
+      /* input */ "image",
+      /* num_output_channels */ 64,
+      /* num_kernel_channels */ 3,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation0",
+      /* input */ "vgg_block_1_conv_1");
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_1_conv_2",
+      /* input */ "vgg16_activation0",
+      /* num_output_channels */ 64,
+      /* num_kernel_channels */ 64,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation1",
+      /* input */ "vgg_block_1_conv_2");
+
+  nn_spec.add_pooling(
+      /* name */ "vgg16_pooling0",
+      /* input */ "vgg16_activation1",
+      /* kernel_height */ 2,
+      /* kernel_width */ 2,
+      /* stride_h */ 2,
+      /* stride_w */ 2,
+      /* padding */ padding_type::VALID,
+      /* use_poolexcludepadding */ false);
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_2_conv_1",
+      /* input */ "vgg16_pooling0",
+      /* num_output_channels */ 128,
+      /* num_kernel_channels */ 64,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation2",
+      /* input */ "vgg_block_2_conv_1");
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_2_conv_2",
+      /* input */ "vgg16_activation2",
+      /* num_output_channels */ 128,
+      /* num_kernel_channels */ 128,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation3",
+      /* input */ "vgg_block_2_conv_2");
+
+  nn_spec.add_pooling(
+      /* name */ "vgg16_pooling1",
+      /* input */ "vgg16_activation3",
+      /* kernel_height */ 2,
+      /* kernel_width */ 2,
+      /* stride_h */ 2,
+      /* stride_w */ 2,
+      /* padding */ padding_type::VALID,
+      /* use_poolexcludepadding */ false);
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_3_conv_1",
+      /* input */ "vgg16_pooling1",
+      /* num_output_channels */ 256,
+      /* num_kernel_channels */ 128,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation4",
+      /* input */ "vgg_block_3_conv_1");
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_3_conv_2",
+      /* input */ "vgg16_activation4",
+      /* num_output_channels */ 256,
+      /* num_kernel_channels */ 256,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation5",
+      /* input */ "vgg_block_3_conv_2");
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_3_conv_3",
+      /* input */ "vgg16_activation5",
+      /* num_output_channels */ 256,
+      /* num_kernel_channels */ 256,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation6",
+      /* input */ "vgg_block_3_conv_3");
+
+  nn_spec.add_pooling(
+      /* name */ "vgg16_pooling2",
+      /* input */ "vgg16_activation6",
+      /* kernel_height */ 2,
+      /* kernel_width */ 2,
+      /* stride_h */ 2,
+      /* stride_w */ 2,
+      /* padding */ padding_type::VALID,
+      /* use_poolexcludepadding */ false);
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_4_conv_1",
+      /* input */ "vgg16_pooling2",
+      /* num_output_channels */ 512,
+      /* num_kernel_channels */ 256,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation7",
+      /* input */ "vgg_block_4_conv_1");
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_4_conv_2",
+      /* input */ "vgg16_activation7",
+      /* num_output_channels */ 512,
+      /* num_kernel_channels */ 512,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation8",
+      /* input */ "vgg_block_4_conv_2");
+
+  nn_spec.add_convolution(
+      /* name */ "vgg_block_4_conv_3",
+      /* input */ "vgg16_activation8",
+      /* num_output_channels */ 512,
+      /* num_kernel_channels */ 512,
+      /* kernel_height */ 3,
+      /* kernel_width */ 3,
+      /* stride_height */ 1,
+      /* stride_width */ 1,
+      /* padding */ padding_type::SAME,
+      /* weight_init_fn */ zero_weight_initializer());
+
+  nn_spec.add_relu(
+      /* name */ "vgg16_activation9_output",
+      /* input */ "vgg_block_4_conv_3");
+}
+
 void load_weights(model_spec& nn_spec, const std::string& path) {
   model_spec weight_spec(path);
   float_array_map nn_params = weight_spec.export_params_view();
@@ -985,9 +1178,15 @@ std::unique_ptr<neural_net::model_spec> init_resnet(const std::string& path,
   return nn_spec;
 }
 
+std::unique_ptr<model_spec> init_vgg_16() {
+  std::unique_ptr<model_spec> nn_spec(new model_spec());
+  define_vgg(*nn_spec);
+  return nn_spec;
+}
+
 std::unique_ptr<model_spec> init_vgg_16(const std::string& path) {
-  std::unique_ptr<model_spec> spec(new model_spec(path));
-  return spec;
+  std::unique_ptr<model_spec> nn_spec(new model_spec(path));
+  return nn_spec;
 }
 
 }  // namespace style_transfer

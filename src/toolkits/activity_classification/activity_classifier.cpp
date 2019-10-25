@@ -1,7 +1,8 @@
 /* Copyright © 2017 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 
 #include <toolkits/activity_classification/activity_classifier.hpp>
@@ -384,8 +385,7 @@ gl_sarray activity_classifier::predict(gl_sframe data,
                                        std::string output_type) {
   if (output_type.empty()) {
     output_type = "class";
-  }
-  if (output_type != "class" && output_type != "probability_vector") {
+  } else if (output_type != "class" && output_type != "probability_vector") {
     log_and_throw(output_type + " is not a valid option for output_type.  Expected one of: probability_vector, class");
   }
 
@@ -429,8 +429,7 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
 
   if (output_type.empty()) {
     output_type = "class";
-  }
-  if (output_type != "class" && output_type != "probability_vector") {
+  } else if (output_type != "class" && output_type != "probability_vector") {
     log_and_throw(output_type + " is not a valid option for output_type.  "
                                 "Expected one of: probability_vector, class");
   }
@@ -442,11 +441,9 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
-
   gl_sframe result =
       gl_sframe({{"session_id", raw_preds_per_window["session_id"]},
                  {"probability_vector", raw_preds_per_window["preds"]}});
-  result = result.add_row_number("prediction_id");
 
   if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
@@ -461,6 +458,79 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
     result.rename({{"probability_vector", "class"}});
   }
 
+  return result;
+}
+
+
+gl_sframe activity_classifier::classify(gl_sframe data,
+                                        std::string output_frequency) {
+  if (output_frequency != "per_row" &&
+             output_frequency != "per_window") {
+    log_and_throw(output_frequency +
+                  " is not a valid option for output_frequency.  "
+                  "Expected one of 'per_row' or 'per_window'.");
+  }
+
+  // perform inference
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* requires_labels */ false, /* is_train */ false,
+                      /* use_data_augmentation */ false);
+  gl_sframe raw_preds_per_window = perform_inference(data_it.get());
+
+  // lambda function for getting the max probability for each prediction
+  auto max_prob = [](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+    auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+    return prob_vec[max_it - prob_vec.begin()];
+  };
+
+  // lambda function for getting the class label with maximum probability for
+  // each prediction
+  flex_list class_labels = read_state<flex_list>("classes");
+  auto max_prob_label = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+    auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+    return class_labels[max_it - prob_vec.begin()];
+  };
+
+  // get sarray with predicted class label and probability
+  gl_sarray class_sarray = raw_preds_per_window["preds"].apply(
+      max_prob_label, class_labels.front().get_type());
+  gl_sarray prob_sarray =
+      raw_preds_per_window["preds"].apply(max_prob, flex_type_enum::FLOAT);
+  raw_preds_per_window.add_column(class_sarray, "class");
+  raw_preds_per_window.add_column(prob_sarray, "probability");
+
+  // create the result
+  gl_sframe result = gl_sframe();
+  if (output_frequency == "per_window") {
+    result = gl_sframe({{"exp_id", raw_preds_per_window["session_id"]},
+                        {"class", raw_preds_per_window["class"]},
+                        {"probability", raw_preds_per_window["probability"]}});
+  } else {
+    size_t class_column_index = raw_preds_per_window.column_index("class");
+    size_t prob_column_index = raw_preds_per_window.column_index("probability");
+    size_t num_samples_column_index =
+        raw_preds_per_window.column_index("num_samples");
+
+    auto copy_class_per_row = [=](const sframe_rows::row& row) {
+      return flex_list(row[num_samples_column_index], row[class_column_index]);
+    };
+    auto copy_prob_per_row = [=](const sframe_rows::row& row) {
+      return flex_list(row[num_samples_column_index], row[prob_column_index]);
+    };
+
+    gl_sarray duplicated_class_sarray =
+        raw_preds_per_window.apply(copy_class_per_row, flex_type_enum::LIST);
+    gl_sarray duplicated_prob_sarray =
+        raw_preds_per_window.apply(copy_prob_per_row, flex_type_enum::LIST);
+    gl_sframe class_per_row =
+        gl_sframe({{"temp", duplicated_class_sarray}}).stack("temp", "class");
+    gl_sframe prob_per_row = gl_sframe({{"temp", duplicated_prob_sarray}})
+                                 .stack("temp", "probability");
+    result.add_column(class_per_row["class"], "class");
+    result.add_column(prob_per_row["probability"], "probability");
+  }
   return result;
 }
 

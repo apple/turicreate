@@ -1,7 +1,8 @@
 /* Copyright © 2019 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 
 #ifndef TURI_DRAWING_CLASSIFICATION_DC_DATA_ITERATOR_HPP_
@@ -20,18 +21,15 @@ namespace drawing_classifier {
 /**
  * Pure virtual interface for classes that produce batches of data
  * (pre-augmentation) from a raw SFrame.
- * \TODO Factor out the shared structure for data iterators 
+ * \TODO Factor out the shared structure for data iterators
  *        with the other iterators!
  */
 class data_iterator {
- 
  public:
-
   /**
    * Defines the inputs to a data_iterator factory function.
    */
   struct parameters {
-
     /** The SFrame to traverse */
     gl_sframe data;
 
@@ -73,7 +71,6 @@ class data_iterator {
 
   /** Defines the output of a data_iterator. */
   struct batch {
-
     /* Number of examples in batch */
     size_t num_samples = 256;
 
@@ -127,8 +124,8 @@ class data_iterator {
    */
   virtual const std::vector<std::string>& class_labels() const = 0;
 
-  virtual const std::unordered_map<std::string, int>& class_to_index_map() const = 0;
-
+  virtual const std::unordered_map<std::string, int>& class_to_index_map()
+      const = 0;
 };
 
 /**
@@ -138,9 +135,8 @@ class data_iterator {
  * \todo This classs should become an abstract_data_iterator base class with
  *       override points for dispatching work to other threads.
  */
-class simple_data_iterator: public data_iterator {
+class simple_data_iterator : public data_iterator {
  public:
-
   simple_data_iterator(const parameters& params);
 
   // Not copyable or movable.
@@ -157,8 +153,9 @@ class simple_data_iterator: public data_iterator {
     return target_properties_.classes;
   }
 
-  const std::unordered_map<std::string, int>& class_to_index_map() const override {
-    return target_properties_.class_to_index_map; 
+  const std::unordered_map<std::string, int>& class_to_index_map()
+      const override {
+    return target_properties_.class_to_index_map;
   }
 
  private:
@@ -168,8 +165,7 @@ class simple_data_iterator: public data_iterator {
   };
 
   target_properties compute_properties(
-      const gl_sarray& targets,
-      std::vector<std::string> expected_class_labels);
+      const gl_sarray& targets, std::vector<std::string> expected_class_labels);
 
   gl_sframe data_;
   const int target_index_;
@@ -183,10 +179,9 @@ class simple_data_iterator: public data_iterator {
   gl_sframe_range range_iterator_;
   gl_sframe_range::iterator next_row_;
   gl_sframe_range::iterator end_of_rows_;
-  
+
   std::default_random_engine random_engine_;
 };
-
 
 }  // namespace drawing_classifier
 }  // namespace turi

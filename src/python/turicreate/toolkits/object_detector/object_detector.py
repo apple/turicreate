@@ -526,7 +526,9 @@ class ObjectDetector(_CustomModel):
 
     @classmethod
     def _native_name(cls):
-        return "object_detector"
+        if not USE_CPP:
+            return "object_detector"
+        return None
 
     def _get_native_state(self):
         from .._mxnet import _mxnet_utils
@@ -1547,6 +1549,8 @@ class ObjectDetector_beta(_Model):
 
     @classmethod
     def _native_name(cls):
+        if USE_CPP:
+            return "object_detector"
         return None
 
     def __str__(self):
@@ -1644,7 +1648,7 @@ class ObjectDetector_beta(_Model):
         return self.__proxy__.export_to_coreml(filename, options)
 
 
-    def predict(self, dataset):
+    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45):
         """
         Predict object instances in an SFrame of images.
 
@@ -1691,9 +1695,12 @@ class ObjectDetector_beta(_Model):
             # Visualize predictions by generating a new column of marked up images
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
         """
-        return self.__proxy__.predict(dataset)
+        options = {}
+        options["confidence_threshold"] = confidence_threshold
+        options["iou_threshold"] = iou_threshold
+        return  self.__proxy__.predict(dataset, options)
 
-    def evaluate(self, dataset, metric='auto'):
+    def evaluate(self, dataset, metric='auto', output_type='dict', confidence_threshold = 0.001, iou_threshold = 0.45):
         """
         Evaluate the model by making predictions and comparing these to ground
         truth bounding box annotations.
@@ -1738,4 +1745,7 @@ class ObjectDetector_beta(_Model):
         >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
         mAP: 43.2%
         """
-        return self.__proxy__.evaluate(dataset, metric)
+        options = {}
+        options["confidence_threshold"] = confidence_threshold
+        options["iou_threshold"] = iou_threshold
+        return self.__proxy__.evaluate(dataset, metric, output_type, options)

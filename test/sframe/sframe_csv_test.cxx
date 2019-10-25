@@ -758,6 +758,22 @@ csv_test tab_delimited_csv_with_list() {
   return ret;
 }
 
+csv_test wrapping_column_names(){
+  csv_test ret;
+  std::stringstream strm;
+  strm << R"({
+         "look,comma":["wow, amazing","wonderful"]
+          })";
+  ret.file = strm.str();
+  ret.tokenizer.delimiter = "";
+  ret.tokenizer.line_terminator = "";
+  ret.tokenizer.double_quote = true;
+  ret.header = false;
+  ret.values.push_back({flex_dict{{"look,comma",flex_list{"wow, amazing","wonderful"}}}});
+  ret.types = {{"X1", flex_type_enum::DICT}};
+  return ret;
+}
+
 struct test_equality_visitor {
   template <typename T, typename U>
   void operator()(T& t, const U& u) const { TS_FAIL("type mismatch"); }
@@ -994,6 +1010,7 @@ struct sframe_test  {
      evaluate(test_missing_tab_values());
      evaluate(tab_delimited_csv_with_list());
      evaluate(test_mismatched_square_brackets());
+     evaluate(wrapping_column_names());
    }
 
 
