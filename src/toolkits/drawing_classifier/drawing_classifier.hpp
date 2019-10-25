@@ -34,7 +34,7 @@ class EXPORT drawing_classifier : public ml_model_base {
   void init_options(const std::map<std::string, flexible_type>& opts) override;
   /* Commented out for the purpose of a skeleton. */
 
-  // void init_options(const std::map<std::string, flexible_type>& opts) override;
+  void init_options(const std::map<std::string, flexible_type>& opts) override;
 
   size_t get_version() const override;
 
