@@ -88,9 +88,11 @@ constexpr float BASE_LEARNING_RATE = 0.001f;
 
 constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45f;
 
-// Predictions with confidence scores below this threshold will be discarded
+constexpr float DEFAULT_CONFIDENCE_THRESHOLD_PREDICT = 0.25f;
+
+constexpr float DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE = 0.001f;
+
 // before generation precision-recall curves.
-constexpr float EVAL_CONFIDENCE_THRESHOLD = 0.001f;
 
 // Each bounding box is evaluated relative to a list of pre-defined sizes.
 const std::vector<std::pair<float, float>>& anchor_boxes() {
@@ -457,8 +459,23 @@ void object_detector::finalize_training() {
   update_model_metrics(training_data_, validation_data_);
 }
 
-variant_map_type object_detector::evaluate(
-    gl_sframe data, std::string metric) {
+variant_type object_detector::evaluate(gl_sframe data, std::string metric,
+                                       std::string output_type,
+                                       std::map<std::string, flexible_type> opts) {
+  //parse input opts
+  float confidence_threshold, iou_threshold;
+  auto it_confidence = opts.find("confidence_threshold");
+  if (it_confidence == opts.end()){
+    confidence_threshold = DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE;
+  } else {
+    confidence_threshold = opts["confidence_threshold"];
+  }
+  auto it_iou = opts.find("iou_threshold");
+  if (it_iou == opts.end()){
+    iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+  } else {
+    iou_threshold = opts["iou_threshold"];
+  }
 
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
@@ -478,7 +495,6 @@ variant_map_type object_detector::evaluate(
   }
 
   flex_list class_labels = read_state<flex_list>("classes");
-
   // Initialize the metric calculator
   average_precision_calculator calculator(class_labels);
 
@@ -487,7 +503,7 @@ variant_map_type object_detector::evaluate(
     calculator.add_row(predicted_row, groundtruth_row);
   };
 
-  perform_predict(data, consumer);
+  perform_predict(data, consumer, confidence_threshold, iou_threshold);
 
   // Compute the average precision (area under the precision-recall curve) for
   // each combination of IOU threshold and class label.
@@ -508,45 +524,132 @@ variant_map_type object_detector::evaluate(
     result_map.erase(MAP);
   }
 
-  return result_map;
+  return convert_map_to_types(result_map, output_type);
 }
 
-gl_sarray object_detector::predict(gl_sframe data) {
+variant_type object_detector::convert_map_to_types(
+    const variant_map_type& result_map, const std::string& output_type) {
+  // Handle different output types here
+  // If output_type = "dict", just return the result_map.
+  // If output_type = "sframe", construct a sframe,
+  // whose rows indicate class labels, and columns denote different metric
+  // scores. Note that the "sframe" output only shows AP or AP50.
+
+  variant_type final_result;
+  std::string AP = "average_precision";
+  std::string AP50 = "average_precision_50";
+
+  if (output_type == "dict") {
+    final_result = to_variant(result_map);
+  } else if (output_type == "sframe") {
+    gl_sframe sframe_result;
+    auto add_score_list = [&](std::string& metric_name) {
+      flex_list score_list;
+      flex_list label_list;
+      auto it = result_map.find(metric_name);
+      if (it != result_map.end()) {
+        const flex_dict& dict = variant_get_value<flex_dict>(it->second);
+        for (const auto& label_score_pair : dict) {
+          label_list.push_back(label_score_pair.first);
+          score_list.push_back(label_score_pair.second);
+        }
+        sframe_result.replace_add_column(gl_sarray(label_list), "label");
+        sframe_result.add_column(gl_sarray(score_list), metric_name);
+      }
+    };
+    add_score_list(AP);
+    add_score_list(AP50);
+    final_result = to_variant(sframe_result);
+  } else {
+    log_and_throw(
+        "Invalid 'output_type' argument! Only 'dict' and 'sframe' are "
+        "accepted.");
+  }
+
+  return final_result;
+}
+
+gl_sarray object_detector::predict(variant_type data, std::map<std::string, flexible_type> opts) {
+
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
                       const std::vector<image_annotation>& groundtruth_row) {
+
     // Convert predicted_row to flex_type list to call gl_sarray_writer
     flex_list predicted_row_ft;
     for (const image_annotation& each_row : predicted_row) {
       flex_dict bb_dict = {{"x", each_row.bounding_box.x}, {"y", each_row.bounding_box.y},
                       {"width", each_row.bounding_box.width},
                       {"height", each_row.bounding_box.height}};
-      flex_dict each_annotation = {{"confidence", each_row.confidence},
-                                   {"bounding_box", std::move(bb_dict)},
-                                   {"identifier", each_row.identifier}};
+      flex_dict each_annotation = {{"identifier", each_row.identifier},
+                                   {"type", "rectangle"},
+                                   {"coordinates", std::move(bb_dict)},
+                                   {"confidence", each_row.confidence}
+                                   };
       predicted_row_ft.push_back(std::move(each_annotation));
     }
     result.write(predicted_row_ft, 0);
   };
+  // Parse input options
+  float confidence_threshold, iou_threshold;
+  auto it_confidence = opts.find("confidence_threshold");
+  if (it_confidence == opts.end()){
+    confidence_threshold = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+  } else {
+    confidence_threshold = opts["confidence_threshold"];
+  }
+  auto it_iou = opts.find("iou_threshold");
+  if (it_iou == opts.end()){
+    iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+  } else {
+    iou_threshold = opts["iou_threshold"];
+  }
 
-  perform_predict(data, consumer);
+  // Convert dasta to SFrame
+  std::string image_column_name = read_state<flex_string>("feature");
+  gl_sframe sframe_data = convert_types_to_sframe(data, image_column_name);
 
+  perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
   return result.close();
+}
+
+gl_sframe object_detector::convert_types_to_sframe(
+    const variant_type& data, const std::string& column_name) {
+  // Data input can be either sframe, sarray, or a single image
+  // If they are sarray or image, create a sframe with a single column.
+  gl_sframe sframe_data;
+  if (variant_is<gl_sframe>(data)) {
+    sframe_data = variant_get_value<gl_sframe>(data);
+  } else if (variant_is<flexible_type>(data)) {
+    flexible_type image_data = variant_get_value<flexible_type>(data);
+    std::vector<flexible_type> image_vector {image_data};
+    std::map<std::string, std::vector<flexible_type>> image_map = {
+        {column_name, image_vector}};
+    sframe_data = gl_sframe(image_map);
+  } else if (variant_is<gl_sarray>(data)){
+    gl_sarray sarray_data = variant_get_value<gl_sarray>(data);
+    std::map<std::string, gl_sarray> sarray_map = {{column_name, sarray_data}};
+    sframe_data = gl_sframe(sarray_map);
+  } else {
+    log_and_throw("Invalid data type for predict()! Expect Sframe, Sarray, or flexible_type!");
+  }
+  return sframe_data;
 }
 
 void object_detector::perform_predict(gl_sframe data,
     std::function<void(const std::vector<image_annotation>&,
-    const std::vector<image_annotation>&)> consumer) {
-
+    const std::vector<image_annotation>&)> consumer, float confidence_threshold,
+    float iou_threshold) {
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
   size_t batch_size = read_state<size_t>("batch_size");
   size_t grid_height = read_state<size_t>("grid_height");
   size_t grid_width = read_state<size_t>("grid_width");
-  float iou_threshold =
-      read_state<flex_float>("non_maximum_suppression_threshold");
+
+  // return if the data is empty
+  if (data.size() == 0) return;
 
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_iter = create_iterator(
@@ -607,7 +710,7 @@ void object_detector::perform_predict(gl_sframe data,
         // Translate the raw output into predicted labels and bounding boxes.
         std::vector<image_annotation> predicted_annotations =
             convert_yolo_to_annotations(raw_prediction, anchor_boxes(),
-                                        EVAL_CONFIDENCE_THRESHOLD);
+                                        confidence_threshold);
 
         // Remove overlapping predictions.
         predicted_annotations = apply_non_maximum_suppression(
@@ -658,9 +761,14 @@ void object_detector::perform_predict(gl_sframe data,
 // TODO: Should accept model_backend as an optional argument to avoid
 // instantiating a new backend during training. Or just check to see if an
 // existing backend is available?
-variant_map_type object_detector::perform_evaluation(gl_sframe data,
-                                                     std::string metric) {
-  return evaluate(data, metric);
+variant_type object_detector::perform_evaluation(gl_sframe data,
+                                                 std::string metric,
+                                                 std::string output_type,
+                                                 float confidence_threshold,
+                                                 float iou_threshold) {
+  std::map<std::string, flexible_type> opts{{"confidence_threshold", confidence_threshold},
+{"iou_threshold", iou_threshold}};
+  return evaluate(data, metric, output_type, opts);
 }
 
 std::vector<neural_net::image_annotation>
@@ -782,10 +890,10 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     confidence_str = "raw_confidence";
     //Set default values if thresholds not provided.
     if (opts.find("iou_threshold") == opts.end()) {
-      opts["iou_threshold"] = 0.45;
+      opts["iou_threshold"] = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
     }
     if (opts.find("confidence_threshold") == opts.end()) {
-      opts["confidence_threshold"] = 0.25;
+      opts["confidence_threshold"] = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
     }
   }
 
@@ -1206,15 +1314,22 @@ void object_detector::update_model_metrics(gl_sframe data,
   std::map<std::string, variant_type> metrics;
 
   // Compute training metrics.
-  variant_map_type training_metrics = perform_evaluation(data, "all");
+  variant_type training_metrics_raw =
+      perform_evaluation(data, "all", "dict", DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE,
+        DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD);
+  variant_map_type training_metrics =
+      variant_get_value<variant_map_type>(training_metrics_raw);
   for (const auto& kv : training_metrics) {
     metrics["training_" + kv.first] = kv.second;
   }
 
   // Compute validation metrics if necessary.
   if (!validation_data.empty()) {
-    variant_map_type validation_metrics = perform_evaluation(validation_data,
-                                                             "all");
+    variant_type validation_metrics_raw =
+        perform_evaluation(validation_data, "all", "dict", DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE,
+         DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD);
+    variant_map_type validation_metrics =
+        variant_get_value<variant_map_type>(validation_metrics_raw);
     for (const auto& kv : validation_metrics) {
       metrics["validation_" + kv.first] = kv.second;
     }
