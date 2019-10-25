@@ -31,7 +31,7 @@ gl_sarray ensure_encoded(const gl_sarray& sa) {
   return sa;
 }
 
-}
+}  // namespace
 
 style_transfer_data_iterator::style_transfer_data_iterator(
     const data_iterator::parameters& params)
@@ -45,12 +45,12 @@ style_transfer_data_iterator::style_transfer_data_iterator(
 
 std::vector<st_example> style_transfer_data_iterator::next_batch(
     size_t batch_size) {
-
   std::vector<std::tuple<flexible_type, flexible_type, flexible_type>>
       raw_batch;
   raw_batch.reserve(batch_size);
 
-  while (raw_batch.size() < batch_size && m_content_next_row != m_content_range_iterator.end()) {
+  while (raw_batch.size() < batch_size &&
+         m_content_next_row != m_content_range_iterator.end()) {
     const turi::flexible_type& content_image = *m_content_next_row;
 
     std::uniform_int_distribution<size_t> dist(0, m_style_images.size() - 1);
@@ -61,7 +61,8 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(
 
     if (++m_content_next_row == m_content_range_iterator.end() && m_repeat) {
       if (m_shuffle) {
-        gl_sarray indices = gl_sarray::from_sequence(0, m_content_images.size());
+        gl_sarray indices =
+            gl_sarray::from_sequence(0, m_content_images.size());
         std::uniform_int_distribution<uint64_t> dist(0);
         uint64_t random_mask = dist(m_random_engine);
         auto randomize_indices = [random_mask](const flexible_type& x) {
@@ -77,6 +78,9 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(
         temp_content = temp_content.sort("_random_order");
         m_content_images = temp_content["content"];
       }
+
+      m_content_range_iterator = m_content_images.range_iterator();
+      m_content_next_row = m_content_range_iterator.begin();
     }
   }
 

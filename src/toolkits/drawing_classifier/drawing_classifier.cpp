@@ -50,6 +50,40 @@ struct result {
 
 }  // namespace
 
+const size_t drawing_classifier::DRAWING_CLASSIFIER_VERSION = 1;
+
+size_t drawing_classifier::get_version() const {
+  return DRAWING_CLASSIFIER_VERSION;
+}
+
+void drawing_classifier::save_impl(oarchive& oarc) const {
+  if (!nn_spec_)
+    log_and_throw(
+        "model spec is not initalized, please call `init_train` before saving model");
+
+  // Save model attributes.
+  variant_deep_save(state, oarc);
+
+  // Save neural net weights.
+  oarc << nn_spec_->export_params_view();
+}
+
+void drawing_classifier::load_version(iarchive& iarc, size_t version) {
+  if (!nn_spec_)
+    log_and_throw(
+        "model spec is not initalized, please call `init_train` before loading model");
+
+  // Load model attributes.
+  variant_deep_load(state, iarc);
+
+  // Load neural net weights.
+  float_array_map nn_params;
+  iarc >> nn_params;
+
+  nn_spec_ = init_model();
+  nn_spec_->update_params(nn_params);
+}
+
 std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   std::unique_ptr<model_spec> result(new model_spec);
 
@@ -74,7 +108,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   weight_initializer initializer = zero_weight_initializer();
 
   const std::string prefix{"drawing"};
-  const std::string _suffix{"_fwd"};
+  // add suffix when needed.
+  const std::string _suffix{""};
   std::string input_name{"features"};
   std::string output_name;
 
@@ -89,7 +124,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       }
 
       ss.str("");
-      ss << prefix << "_conv" << ii << "_fwd";
+      ss << prefix << "_conv" << ii << _suffix;
       output_name = ss.str();
 
       initializer = xavier_weight_initializer(
@@ -188,7 +223,9 @@ void drawing_classifier::init_options(
       "max_iterations",
       "Maximum number of iterations/epochs made over the data during the"
       " training phase",
-      500, 1, std::numeric_limits<int>::max());
+      500,
+      1,
+      std::numeric_limits<int>::max());
 
   options.create_integer_option(
       "random_seed",

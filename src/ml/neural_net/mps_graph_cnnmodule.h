@@ -23,6 +23,13 @@ NS_ASSUME_NONNULL_BEGIN
 namespace turi {
 namespace neural_net {
 
+// For the MPS implementation of the darknet-yolo model, the loss must be scaled
+// up to avoid underflow in the fp16 gradient images. The learning rate is
+// correspondingly divided by the same multiple to make training mathematically
+// equivalent. The update is done in fp32, which is why this trick works. The
+// loss presented to the user is presented in the original scale.
+static constexpr float MPS_OD_LOSS_MULTIPLIER = 8.f;
+
 class mps_graph_cnn_module: public model_backend {
 public:
 
