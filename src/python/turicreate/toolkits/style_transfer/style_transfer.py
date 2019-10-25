@@ -201,10 +201,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         'checkpoint': False,
         'checkpoint_prefix': 'style_transfer',
         'checkpoint_increment': 1000,
-        'resnet_mlmodel_path': '',
-        # pretrained_resnet_model_path,
-        'vgg_mlmodel_path': ''
-        # pretrained_vgg16_model_path
+        'resnet_mlmodel_path': pretrained_resnet_model_path,
+        'vgg_mlmodel_path':  pretrained_vgg16_model_path
     }
 
     if '_advanced_parameters' in kwargs:
