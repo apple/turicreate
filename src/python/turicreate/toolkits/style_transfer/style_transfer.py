@@ -15,6 +15,7 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 import turicreate as _tc
@@ -163,10 +164,10 @@ def create(style_dataset, content_dataset, style_feature=None,
     _tkutl._handle_missing_values(style_dataset, style_feature, 'style_dataset')
     _tkutl._handle_missing_values(content_dataset, content_feature, 'content_dataset')
 
-    pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet_mlmodel']()
-    pretrained_resnet_model_path = pretrained_resnet_model.get_model_path()
-    pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg16_mlmodel']()
-    pretrained_vgg16_model_path = pretrained_vgg16_model.get_model_path()
+    # pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet_mlmodel']()
+    # pretrained_resnet_model_path = pretrained_resnet_model.get_model_path()
+    # pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg16_mlmodel']()
+    # pretrained_vgg16_model_path = pretrained_vgg16_model.get_model_path()
         
     params = {
         'batch_size': batch_size,
@@ -200,8 +201,10 @@ def create(style_dataset, content_dataset, style_feature=None,
         'checkpoint': False,
         'checkpoint_prefix': 'style_transfer',
         'checkpoint_increment': 1000,
-        'resnet_mlmodel': pretrained_resnet_model_path,
-        'vgg16_mlmodel': pretrained_vgg16_model_path
+        'resnet_mlmodel_path': '',
+        # pretrained_resnet_model_path,
+        'vgg_mlmodel_path': ''
+        # pretrained_vgg16_model_path
     }
 
     if '_advanced_parameters' in kwargs:
@@ -225,8 +228,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         model = _turicreate.extensions.style_transfer()
         options = {}
         options['num_styles'] = len(style_dataset)
-        options['resnet_mlmodel_path'] = params['resnet_mlmodel']
-        options['vgg_mlmodel_path'] = params['vgg16_mlmodel']
+        options['resnet_mlmodel_path'] = params['resnet_mlmodel_path']
+        options['vgg_mlmodel_path'] = params['vgg_mlmodel_path']
 
         model.train(style_dataset[style_feature], content_dataset[content_feature], options)
         return StyleTransfer_beta(model_proxy=model, name=name)
