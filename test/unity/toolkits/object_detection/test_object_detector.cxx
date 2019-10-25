@@ -1091,8 +1091,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   for (size_t i = 0; i < 2 * test_batch_size; ++i) {
     model.convert_yolo_to_annotations_calls_.push_back(convert_yolo_impl);
   }
-
-  gl_sarray result = model.predict(data, 0.25, 0.45);
+  std::map<std::string, flexible_type> opts{{"confidence_threshold",0.25}, {"iou_threshold",0.45}};
+  gl_sarray result = model.predict(data, opts);
   for (size_t j = 0; j < result.size(); ++j) {
     TS_ASSERT_EQUALS(result[j].size(), num_prediction_instances);
   }

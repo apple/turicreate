@@ -41,11 +41,9 @@ class EXPORT object_detector: public ml_model_base {
              std::string image_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
   variant_type evaluate(gl_sframe data, std::string metric,
-                        std::string output_type = "dict",
-                        float confidence_threshold = 0.001,
-                        float iou_threshold = 0.45);
-  gl_sarray predict(variant_type data, float confidence_threshold,
-   float iou_threshold);
+                        std::string output_type,
+                        std::map<std::string, flexible_type> opts);
+  gl_sarray predict(variant_type data, std::map<std::string, flexible_type> opts);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::map<std::string, flexible_type> opts);
   void import_from_custom_model(variant_map_type model_data, size_t version);
@@ -108,17 +106,13 @@ class EXPORT object_detector: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::finalize_training);
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
-                                 "output_type", "confidence_threshold",
-                                 "iou_threshold");
+                                 "output_type", "options");
   register_defaults("evaluate", {{"metric", std::string("auto")},
                                  {"output_type", std::string("dict")},
-                                 {"confidence_threshold", 0.001},
-                                 {"iou_threshold", 0.45}});
+                                 });
 
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data",
-   "confidence_threshold", "iou_threshold");
-  register_defaults("predict",{{"confidence_threshold", 0.25},
-    {"iou_threshold", 0.45}});
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data", "options");
+  register_defaults("predict",{});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
     "options");
@@ -219,6 +213,8 @@ class EXPORT object_detector: public ml_model_base {
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;
   flex_int get_num_classes() const;
+
+  variant_type convert_map_to_types(variant_map_type& result_map, std::string output_type);
 
   // Sets certain user options heuristically (from the data).
   void infer_derived_options();
