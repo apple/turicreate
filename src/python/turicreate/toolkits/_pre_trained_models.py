@@ -224,10 +224,41 @@ class Vgg16():
     def get_model_path(self):
         return self.model_path
 
+class StyleTransferTransformerCoreML():
+
+    def __init__(self):
+        self.name = 'transformer'
+        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'transformer.mlmodel')
+        self.source_md5 = ''
+        self.model_path = _download_and_checksum_files([
+            (self.source_url, self.source_md5)
+        ], _get_cache_dir())[0]
+
+
+    def get_model_path(self):
+        return self.model_path
+
+
+class Vgg16CoreML():
+
+    def __init__(self):
+        self.name = 'vgg16'
+        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16.mlmodel')
+        self.source_md5 = ''
+        self.model_path = _download_and_checksum_files([
+            (self.source_url, self.source_md5)
+        ], _get_cache_dir())[0]
+
+
+    def get_model_path(self):
+        return self.model_path
+
 
 STYLE_TRANSFER_BASE_MODELS = {
     'resnet-16': StyleTransferTransformer,
-    'Vgg16': Vgg16
+    'Vgg16': Vgg16,
+    'resnet_mlmodel': StyleTransferTransformerCoreML,
+    'vgg_mlmodel': Vgg16CoreML
 }
 
 
