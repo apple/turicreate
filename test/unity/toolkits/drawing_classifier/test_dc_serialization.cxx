@@ -21,10 +21,6 @@ namespace {
 class drawing_classifier_mock
     : public turi::drawing_classifier::drawing_classifier {
  public:
-  std::unique_ptr<neural_net::model_spec> get_model_spec() const {
-    return init_model();
-  }
-
   drawing_classifier_mock() = default;
 
   drawing_classifier_mock(std::unique_ptr<neural_net::model_spec> ms)
@@ -33,6 +29,11 @@ class drawing_classifier_mock
   std::unique_ptr<neural_net::model_spec> get_model_spec_copy() const {
     return clone_model_spec_for_test();
   }
+
+  std::unique_ptr<neural_net::model_spec> get_model_spec() const {
+    return init_model();
+  }
+
 };
 
 BOOST_AUTO_TEST_CASE(test_dc_init_model) {
@@ -185,11 +186,6 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
                    target + "Probability");
 }
 
-BOOST_AUTO_TEST_CASE(test_load_version) {
-  turi::drawing_classifier::drawing_classifier dc;
-  TS_ASSERT_EQUALS(dc.get_version(), dc.DRAWING_CLASSIFIER_VERSION);
-}
-
 BOOST_AUTO_TEST_CASE(test_save_load) {
   auto remove_if_exist = [](const char* fname) {
     std::FILE* fp = nullptr;
@@ -208,18 +204,6 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
     }
   };
 
-  /**
-   * The test calls `save_impl` first and write serialized initial
-   * `nn_spec_` to disk, let's say `file_1`.
-   *
-   * Then we load the previously stored spec file and update
-   * all params to the model spec. Then we store what's loaded
-   * to `file_2`.
-   *
-   * By comparing `file_1` and `file_2`, we can verify that the
-   * both model spec instances have the same content and same content
-   * is written to the disk during the serialization.
-   */
   auto load_save_compare = [&remove_if_exist](
                                drawing_classifier_mock& dc,
                                drawing_classifier_mock& dc_other) {
@@ -244,65 +228,10 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
       in_file.close();
     }
 
-    // loading params from model spec
-    // saved file will be used to compare with the model spec saved before
-    constexpr auto my_file_loaded = "./test_dc_serialization.cxx.load.txt";
-    remove_if_exist(my_file_loaded);
-
-    {
-      std::fstream out_file(my_file_loaded,
-                            std::ios_base::out | std::ios_base::binary);
-      turi::oarchive oarch(out_file);
-      dc_other.save_impl(oarch);
-      out_file.close();
-    }
-
-    // validation
-    std::ifstream file(my_file,
-                       std::ios::in | std::ios::binary | std::ios::ate);
-    if (!file.is_open()) {
-      std::stringstream ss;
-      ss << "fail to open" << my_file << std::endl;
-      throw std::ios_base::failure(ss.str());
-    }
-    std::streamsize file_size = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector<char> model_spec_src(file_size);
-    file.read(model_spec_src.data(), file_size);
-    file.close();
-
-    // open the saved model file and seek the cursor to EOF
-    // in order to tell the size of the file
-    file.open(my_file_loaded, std::ios::in | std::ios::binary | std::ios::ate);
-    if (!file.is_open()) {
-      std::stringstream ss;
-      ss << "fail to open" << my_file_loaded << std::endl;
-      throw std::ios_base::failure(ss.str());
-    }
-    TS_ASSERT_EQUALS(file_size, file.tellg());
-    file_size = file.tellg();
-    // reset the cursor
-    file.seekg(0, std::ios::beg);
-
-    std::vector<char> model_spec_loaded(file_size);
-    file.read(model_spec_loaded.data(), file_size);
-    file.close();
-
-    // compare
-    TS_ASSERT_EQUALS(std::strncmp(model_spec_loaded.data(),
-                                  model_spec_src.data(), file_size),
-                     0);
-
     // clean myself
     if (std::remove(my_file)) {
       std::stringstream ss;
       ss << "fail to remove file:" << my_file << std::endl;
-      std::perror(ss.str().c_str());
-    }
-    if (std::remove(my_file_loaded)) {
-      std::stringstream ss;
-      ss << "fail to remove file:" << my_file_loaded << std::endl;
       std::perror(ss.str().c_str());
     }
 
@@ -374,16 +303,13 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
 
   // start from 2 model spec with different weights view
   drawing_classifier_mock dc(std::move(spec1));
-  drawing_classifier_mock dc_other(std::move(spec2));
-
-  // idenetity check; or double load
   dc.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
        {"features", flex_list(features.begin(), features.end())}});
-  load_save_compare(dc, dc);
 
   // load from a different instance
+  drawing_classifier_mock dc_other(std::move(spec2));
   dc_other.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
