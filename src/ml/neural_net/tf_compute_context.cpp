@@ -214,6 +214,8 @@ tf_image_augmenter::prepare_augmented_images(
 
     const size_t output_height = opts_.output_height;
     const size_t output_width = opts_.output_width;
+
+    // TODO: Remove resize_only by passing all the augmentation options
     bool resize_only = false;
     if (opts_.crop_prob == 0.f) {
       resize_only = true;
