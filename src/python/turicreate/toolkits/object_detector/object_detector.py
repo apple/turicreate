@@ -1644,7 +1644,7 @@ class ObjectDetector_beta(_Model):
         return self.__proxy__.export_to_coreml(filename, options)
 
 
-    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=None):
+    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45):
         """
         Predict object instances in an SFrame of images.
 
@@ -1693,11 +1693,10 @@ class ObjectDetector_beta(_Model):
         """
         options = {}
         options["confidence_threshold"] = confidence_threshold
-        if iou_threshold != None:
-            options["iou_threshold"] = iou_threshold
+        options["iou_threshold"] = iou_threshold
         return  self.__proxy__.predict(dataset, options)
 
-    def evaluate(self, dataset, metric='auto', output_type='dict', confidence_threshold = None, iou_threshold = None):
+    def evaluate(self, dataset, metric='auto', output_type='dict', confidence_threshold = 0.001, iou_threshold = 0.45):
         """
         Evaluate the model by making predictions and comparing these to ground
         truth bounding box annotations.
@@ -1743,8 +1742,6 @@ class ObjectDetector_beta(_Model):
         mAP: 43.2%
         """
         options = {}
-        if confidence_threshold != None:
-            options["confidence_threshold"] = confidence_threshold
-        if iou_threshold != None:
-            options["iou_threshold"] = iou_threshold
+        options["confidence_threshold"] = confidence_threshold
+        options["iou_threshold"] = iou_threshold
         return self.__proxy__.evaluate(dataset, metric, output_type, options)

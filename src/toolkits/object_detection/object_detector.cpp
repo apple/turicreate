@@ -541,8 +541,8 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
   return convert_map_to_types(result_map, output_type);
 }
 
-variant_type object_detector::convert_map_to_types(variant_map_type& result_map, std::string output_type){
-
+variant_type object_detector::convert_map_to_types(
+    const variant_map_type& result_map, const std::string& output_type) {
   // Handle different output types here
   // If output_type = "dict", just return the result_map.
   // If output_type = "sframe", construct a sframe,
@@ -550,22 +550,24 @@ variant_type object_detector::convert_map_to_types(variant_map_type& result_map,
   // scores. Note that the "sframe" output only shows AP or AP50.
 
   variant_type final_result;
-  flex_list class_labels = read_state<flex_list>("classes");
   std::string AP = "average_precision";
   std::string AP50 = "average_precision_50";
 
   if (output_type == "dict") {
     final_result = to_variant(result_map);
   } else if (output_type == "sframe") {
-    gl_sframe sframe_result = gl_sframe({{"label", class_labels}});
+    gl_sframe sframe_result;
     auto add_score_list = [&](std::string& metric_name) {
       flex_list score_list;
+      flex_list label_list;
       auto it = result_map.find(metric_name);
       if (it != result_map.end()) {
         const flex_dict& dict = variant_get_value<flex_dict>(it->second);
         for (const auto& label_score_pair : dict) {
+          label_list.push_back(label_score_pair.first);
           score_list.push_back(label_score_pair.second);
         }
+        sframe_result.replace_add_column(gl_sarray(label_list), "label");
         sframe_result.add_column(gl_sarray(score_list), metric_name);
       }
     };
@@ -618,28 +620,35 @@ gl_sarray object_detector::predict(variant_type data, std::map<std::string, flex
     iou_threshold = opts["iou_threshold"];
   }
 
-  // check input type of data
-  // and convert them all to sframe.
-  // "SFrame", "Sarray" and a single image "flexible_type" are accepted.
-  gl_sframe sframe_data;
+  // Convert dasta to SFrame
   std::string image_column_name = read_state<flex_string>("feature");
+  gl_sframe sframe_data = convert_types_to_sframe(data, image_column_name);
+
+  perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
+  return result.close();
+}
+
+gl_sframe object_detector::convert_types_to_sframe(
+    const variant_type& data, const std::string& column_name) {
+  // Data input can be either sframe, sarray, or a single image
+  // If they are sarray or image, create a sframe with a single column.
+  gl_sframe sframe_data;
   if (variant_is<gl_sframe>(data)) {
     sframe_data = variant_get_value<gl_sframe>(data);
   } else if (variant_is<flexible_type>(data)) {
     flexible_type image_data = variant_get_value<flexible_type>(data);
     std::vector<flexible_type> image_vector {image_data};
-    std::map<std::string, std::vector<flexible_type>> image_map ={{image_column_name, image_vector}};
+    std::map<std::string, std::vector<flexible_type>> image_map = {
+        {column_name, image_vector}};
     sframe_data = gl_sframe(image_map);
   } else if (variant_is<gl_sarray>(data)){
     gl_sarray sarray_data = variant_get_value<gl_sarray>(data);
-    std::map<std::string, gl_sarray> sarray_map = {{image_column_name, sarray_data}};
+    std::map<std::string, gl_sarray> sarray_map = {{column_name, sarray_data}};
     sframe_data = gl_sframe(sarray_map);
   } else {
     log_and_throw("Invalid data type for predict()! Expect Sframe, Sarray, or flexible_type!");
   }
-
-  perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
-  return result.close();
+  return sframe_data;
 }
 
 void object_detector::perform_predict(gl_sframe data,
@@ -895,10 +904,10 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     confidence_str = "raw_confidence";
     //Set default values if thresholds not provided.
     if (opts.find("iou_threshold") == opts.end()) {
-      opts["iou_threshold"] = 0.45;
+      opts["iou_threshold"] = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
     }
     if (opts.find("confidence_threshold") == opts.end()) {
-      opts["confidence_threshold"] = 0.25;
+      opts["confidence_threshold"] = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
     }
   }
 

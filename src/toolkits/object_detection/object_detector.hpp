@@ -194,7 +194,8 @@ class EXPORT object_detector: public ml_model_base {
       gl_sframe data,
       std::function<void(const std::vector<neural_net::image_annotation>&,
                          const std::vector<neural_net::image_annotation>&)>
-          consumer, float confidence_threshold = 0.001, float iou_threshold = 0.45);
+          consumer,
+      float confidence_threshold, float iou_threshold);
 
   // Utility code
 
@@ -214,8 +215,10 @@ class EXPORT object_detector: public ml_model_base {
   flex_int get_training_iterations() const;
   flex_int get_num_classes() const;
 
-  variant_type convert_map_to_types(variant_map_type& result_map, std::string output_type);
-
+  static variant_type convert_map_to_types(const variant_map_type& result_map,
+                                           const std::string& output_type);
+  static gl_sframe convert_types_to_sframe(const variant_type& data,
+                                           const std::string& column_name);
   // Sets certain user options heuristically (from the data).
   void infer_derived_options();
 
