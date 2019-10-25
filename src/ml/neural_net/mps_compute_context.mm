@@ -21,14 +21,13 @@ namespace neural_net {
 namespace {
 
 float_array_map multiply_mps_od_loss_multiplier(float_array_map config,
-                                                std::vector<std::string> update_keys) {
-  for (std::vector<std::string>::const_iterator i = update_keys.begin(); i != update_keys.end();
-       ++i) {
-    auto config_iter = config.find(*i);
+                                                const std::vector<std::string>& update_keys) {
+  for (const std::string& key : update_keys) {
+    auto config_iter = config.find(key);
     if (config_iter != config.end()) {
       float old_value = config_iter->second.data()[0];
       float new_value;
-      if (*i == "learning_rate") {
+      if (key == "learning_rate") {
         new_value = old_value / MPS_OD_LOSS_MULTIPLIER;
       } else {
         new_value = old_value * MPS_OD_LOSS_MULTIPLIER;
