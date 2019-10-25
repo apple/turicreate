@@ -5,6 +5,7 @@ make_library(unity_style_transfer OBJECT
     style_transfer.cpp
     style_transfer_data_iterator.cpp
     style_transfer_model_definition.cpp
+    class_registrations.cpp
   REQUIRES
     unity_core
     unity_ml_model

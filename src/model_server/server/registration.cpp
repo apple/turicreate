@@ -19,9 +19,10 @@
 #include <visualization/server/show.hpp>
 
 #include <toolkits/activity_classification/class_registrations.hpp>
+#include <toolkits/drawing_classifier/class_registrations.hpp>
 #include <toolkits/object_detection/class_registrations.hpp>
 #include <toolkits/object_detection/one_shot_object_detection/class_registrations.hpp>
-#include <toolkits/drawing_classifier/class_registrations.hpp>
+#include <toolkits/style_transfer/class_registrations.hpp>
 
 #include <toolkits/evaluation/metrics.hpp>
 #include <toolkits/evaluation/unity_evaluation.hpp>
@@ -148,6 +149,10 @@ void register_models(toolkit_class_registry& registry) {
 
   // Drawing Classification
   registry.register_toolkit_class(turi::drawing_classifier::get_toolkit_class_registration());
+
+  // Style Transfer
+  registry.register_toolkit_class(
+      turi::style_transfer::get_toolkit_class_registration());
 
   // Various prototypes
   registry.register_toolkit_class(turi::prototype::get_toolkit_class_registration());

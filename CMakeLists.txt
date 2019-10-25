@@ -1247,6 +1247,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:unity_recsys>"
   "$<TARGET_OBJECTS:unity_sgd>"
   "$<TARGET_OBJECTS:unity_sparse_similarity>"
+  "$<TARGET_OBJECTS:unity_style_transfer>"
   "$<TARGET_OBJECTS:unity_text>"
   "$<TARGET_OBJECTS:unity_util>"
   "$<TARGET_OBJECTS:util>"
