@@ -25,7 +25,7 @@ namespace drawing_classifier {
  *        with the other iterators!
  */
 class data_iterator {
-  public:
+ public:
   /**
    * Defines the inputs to a data_iterator factory function.
    */

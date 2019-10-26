@@ -29,12 +29,12 @@ using neural_net::shared_float_array;
 void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
                                      const flex_image& bitmap) {
   image_util::copy_image_to_memory(
-      /* image input    */ bitmap,
+      /* image input */ bitmap,
       /* output pointer */ next_drawing_pointer,
       /* output strides */
       {bitmap.m_width * bitmap.m_channels, bitmap.m_channels, 1},
-      /* output shape   */ {bitmap.m_height, bitmap.m_width, bitmap.m_channels},
-      /* channel_last   */ true);
+      /* output shape */ {bitmap.m_height, bitmap.m_width, bitmap.m_channels},
+      /* channel_last */ true);
 }
 
 }  // namespace
@@ -127,8 +127,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
 
-  while (batch_targets.size() < batch_size &&
-         next_row_ != range_iterator_.end()) {
+  while (batch_targets.size() < batch_size && next_row_ != end_of_rows_) {
     real_batch_size++;
     const sframe_rows::row& row = *next_row_;
 
@@ -169,8 +168,11 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         data_.remove_column("_random_order");
       }
 
-      // Reset iteration.
       reset();
+      /**
+       * avoid inf loop; since next_row_ and end_of_rows_ are updated;
+       * IMO, this is tricky; user should call `reset()` explicitly
+       */
       break;
     }
   }
