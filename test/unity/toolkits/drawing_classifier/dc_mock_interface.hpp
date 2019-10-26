@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <boost/test/unit_test.hpp>
+#include <model_server/lib/image_util.hpp>
 #include <core/util/test_macros.hpp>
 #include <toolkits/drawing_classifier/dc_data_iterator.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
