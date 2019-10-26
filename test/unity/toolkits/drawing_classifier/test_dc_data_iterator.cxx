@@ -19,7 +19,7 @@
 namespace turi {
 namespace drawing_classifier {
 
-const std::vector<std::string> unique_labels = {"foo", "bar", "baz"};
+const std::vector<std::string> UNIQUE_LABELS = {"foo", "bar", "baz"};
 
 /** Runs all standard tests for a simple_data_iterator
  *
@@ -123,7 +123,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
 
   for (size_t num_rows = 1; num_rows <= MAX_NUM_ROWS; num_rows++) {
     for (size_t batch_size = 1; batch_size <= MAX_BATCH_SIZE; batch_size++) {
-      drawing_data_generator data_generator(num_rows, unique_labels);
+      drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
       data_iterator::parameters params = data_generator.get_iterator_params();
 
       test_simple_data_iterator_with_num_rows_and_batch_size(data_generator, num_rows,
@@ -135,7 +135,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
   constexpr size_t NUM_ROWS = 1;
   constexpr size_t BATCH_SIZE = 10;
-  drawing_data_generator data_generator(NUM_ROWS, unique_labels);
+  drawing_data_generator data_generator(NUM_ROWS, UNIQUE_LABELS);
   std::vector<std::string> class_labels = { "bar", "foo" };
 
   // Purposely added an extraneous label here.
@@ -149,10 +149,77 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
     data_generator, NUM_ROWS, BATCH_SIZE, true);
 }
 
+BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
+  {
+    size_t num_rows = 0;
+    size_t batch_size = 0;
+
+    drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
+
+    // Purposely added an extraneous label here.
+    data_iterator::parameters params = data_generator.get_iterator_params();
+    {
+      params.repeat = false;
+      simple_data_iterator data_source(params);
+      TS_ASSERT_EQUALS(data_source.has_next_batch(), false);
+    }
+
+    {
+      params.repeat = true;
+      simple_data_iterator data_source(params);
+      TS_ASSERT_EQUALS(data_source.has_next_batch(), false);
+    }
+  }
+
+  {
+    size_t num_rows = 0;
+    size_t batch_size = 1;
+
+    drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
+
+    // Purposely added an extraneous label here.
+    data_iterator::parameters params = data_generator.get_iterator_params();
+    {
+      params.repeat = false;
+      simple_data_iterator data_source(params);
+      TS_ASSERT_EQUALS(data_source.has_next_batch(), false);
+    }
+
+    {
+      params.repeat = true;
+      simple_data_iterator data_source(params);
+      TS_ASSERT_EQUALS(data_source.has_next_batch(), false);
+    }
+  }
+
+  {
+    // as long as num_rows is not zero,
+    // the initial call of `has_next_batch` should return true
+    size_t num_rows = 1;
+    size_t batch_size = 1;
+
+    drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
+
+    // Purposely added an extraneous label here.
+    data_iterator::parameters params = data_generator.get_iterator_params();
+    {
+      params.repeat = false;
+      simple_data_iterator data_source(params);
+      TS_ASSERT_EQUALS(data_source.has_next_batch(), true);
+    }
+
+    {
+      params.repeat = true;
+      simple_data_iterator data_source(params);
+      TS_ASSERT_EQUALS(data_source.has_next_batch(), true);
+    }
+  }
+}
+
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_unexpected_classes) {
   constexpr size_t NUM_ROWS = 1;
 
-  drawing_data_generator data_generator(NUM_ROWS, unique_labels);
+  drawing_data_generator data_generator(NUM_ROWS, UNIQUE_LABELS);
   data_iterator::parameters params = data_generator.get_iterator_params();
 
   params.class_labels = { "bad_class" };
