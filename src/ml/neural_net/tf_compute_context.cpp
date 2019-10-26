@@ -201,7 +201,7 @@ tf_image_augmenter::tf_image_augmenter(const options& opts) : float_array_image_
 float_array_image_augmenter::float_array_result
 tf_image_augmenter::prepare_augmented_images(
     float_array_image_augmenter::labeled_float_image data_to_augment) {
-  options opts_ = get_options();
+  options opts = get_options();
   float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
@@ -209,12 +209,12 @@ tf_image_augmenter::prepare_augmented_images(
     pybind11::module tf_aug = pybind11::module::import(
         "turicreate.toolkits.object_detector._tf_image_augmenter");
 
-    const size_t output_height = opts_.output_height;
-    const size_t output_width = opts_.output_width;
+    const size_t output_height = opts.output_height;
+    const size_t output_width = opts.output_width;
 
     // TODO: Remove resize_only by passing all the augmentation options
     bool resize_only = false;
-    if (opts_.crop_prob == 0.f) {
+    if (opts.crop_prob == 0.f) {
       resize_only = true;
     }
 
