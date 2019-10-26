@@ -164,10 +164,10 @@ def create(style_dataset, content_dataset, style_feature=None,
     _tkutl._handle_missing_values(style_dataset, style_feature, 'style_dataset')
     _tkutl._handle_missing_values(content_dataset, content_feature, 'content_dataset')
 
-    # pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet_mlmodel']()
-    # pretrained_resnet_model_path = pretrained_resnet_model.get_model_path()
-    # pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg16_mlmodel']()
-    # pretrained_vgg16_model_path = pretrained_vgg16_model.get_model_path()
+    pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet_mlmodel']()
+    pretrained_resnet_model_path = pretrained_resnet_model.get_model_path()
+    pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg16_mlmodel']()
+    pretrained_vgg16_model_path = pretrained_vgg16_model.get_model_path()
         
     params = {
         'batch_size': batch_size,
