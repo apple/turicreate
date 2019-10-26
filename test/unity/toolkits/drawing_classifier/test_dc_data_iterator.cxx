@@ -22,7 +22,7 @@ namespace drawing_classifier {
 const std::vector<std::string> unique_labels = {"foo", "bar", "baz"};
 
 /** Runs all standard tests for a simple_data_iterator
- * 
+ *
  * Parameters
  * ----------
  *
@@ -43,13 +43,14 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   size_t num_rows, size_t batch_size, bool checked_class_labels) {
   data_iterator::parameters params = data_generator.get_iterator_params();
   TS_ASSERT_EQUALS(params.data.size(), num_rows);
+
   /* Create a simple data iterator */
   simple_data_iterator data_source(params);
   std::vector<std::string> actual_class_labels = data_source.class_labels();
   std::unordered_map<std::string, int> class_to_index_map = data_source.class_to_index_map();
   /* Test class labels */
   if (!checked_class_labels) {
-    /* expected_class_labels were not passed in to the params, so we need to 
+    /* expected_class_labels were not passed in to the params, so we need to
      * make sure the inferred class labels are correct
      */
     std::vector<std::string> expected_class_labels = data_generator.get_unique_labels();
@@ -58,12 +59,16 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
       TS_ASSERT_EQUALS(actual_class_labels[i], expected_class_labels[i]);
     }
   }
+
   /* Call next_batch */
   data_iterator::batch next_batch = data_source.next_batch(batch_size);
+
   /* Test drawing and target sizes */
   TS_ASSERT_EQUALS(next_batch.drawings.size(),
                    batch_size * IMAGE_WIDTH * IMAGE_HEIGHT * 1);
+
   TS_ASSERT_EQUALS(next_batch.targets.size(), batch_size);
+
   /* Test drawing shape */
   size_t actual_dim = next_batch.drawings.dim();
   size_t expected_dim = 4;
@@ -73,6 +78,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   for (size_t i=0; i<actual_dim; i++) {
     TS_ASSERT_EQUALS(actual_shape[i], expected_shape[i]);
   }
+
   gl_sframe data = params.data;
   size_t index_in_data = 0;
   /* Test target contents */
@@ -86,6 +92,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
     TS_ASSERT_EQUALS(expected_target, actual_target);
     index_in_data = (index_in_data + 1) % data.size();
   }
+
   /* Test drawing contents */
   index_in_data = 0;
   const float *actual_drawing_data = next_batch.drawings.data();
@@ -111,13 +118,14 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
-  static constexpr size_t MAX_NUM_ROWS = 4;
-  static constexpr size_t MAX_BATCH_SIZE = 8;
+  constexpr size_t MAX_NUM_ROWS = 4;
+  constexpr size_t MAX_BATCH_SIZE = 8;
+
   for (size_t num_rows = 1; num_rows <= MAX_NUM_ROWS; num_rows++) {
     for (size_t batch_size = 1; batch_size <= MAX_BATCH_SIZE; batch_size++) {
       drawing_data_generator data_generator(num_rows, unique_labels);
       data_iterator::parameters params = data_generator.get_iterator_params();
-  
+
       test_simple_data_iterator_with_num_rows_and_batch_size(data_generator, num_rows,
         batch_size, false);
     }
@@ -125,27 +133,28 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
-  static constexpr size_t NUM_ROWS = 1;
-  static constexpr size_t BATCH_SIZE = 10;
+  constexpr size_t NUM_ROWS = 1;
+  constexpr size_t BATCH_SIZE = 10;
   drawing_data_generator data_generator(NUM_ROWS, unique_labels);
-  std::vector<std::string> class_labels = { "bar", "foo" }; 
+  std::vector<std::string> class_labels = { "bar", "foo" };
+
   // Purposely added an extraneous label here.
   data_generator.set_class_labels(class_labels);
   data_iterator::parameters params = data_generator.get_iterator_params();
   simple_data_iterator data_source(params);
   TS_ASSERT_EQUALS(data_source.class_labels(), class_labels);
+
   // Confirm that the extraneous label appears in the data_source class_labels.
   test_simple_data_iterator_with_num_rows_and_batch_size(
     data_generator, NUM_ROWS, BATCH_SIZE, true);
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_unexpected_classes) {
-
-  static constexpr size_t NUM_ROWS = 1;
+  constexpr size_t NUM_ROWS = 1;
 
   drawing_data_generator data_generator(NUM_ROWS, unique_labels);
   data_iterator::parameters params = data_generator.get_iterator_params();
-  
+
   params.class_labels = { "bad_class" };
 
   // The data contains the label "foo", which is not among the expected class
