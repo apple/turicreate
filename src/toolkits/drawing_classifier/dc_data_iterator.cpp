@@ -123,11 +123,11 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   std::vector<float> batch_predictions;
   batch_targets.reserve(batch_size);
   batch_predictions.reserve(batch_size);
-  float *next_drawing_pointer = batch_drawings.data();
+
+  float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
 
-  while (batch_targets.size() < batch_size &&
-         next_row_ != range_iterator_.end()) {
+  while (batch_targets.size() < batch_size && next_row_ != end_of_rows_) {
     real_batch_size++;
     const sframe_rows::row& row = *next_row_;
 
@@ -168,8 +168,12 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         data_.remove_column("_random_order");
       }
 
-      // Reset iteration.
       reset();
+      /**
+       * avoid inf loop; since next_row_ and end_of_rows_ are updated;
+       * IMO, this is tricky; user should call `reset()` explicitly
+       */
+      break;
     }
   }
 
@@ -194,3 +198,4 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 }
 
 }  // namespace drawing_classifier
+}  // namespace turi
