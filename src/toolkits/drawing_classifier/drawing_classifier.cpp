@@ -287,15 +287,14 @@ void drawing_classifier::init_training(
       create_iterator(training_data_,
                       /* is_train */ true, /* class labels */ {});
 
-  const std::vector<std::string> &classes = training_data_iterator_->class_labels();
+  const std::vector<std::string>& classes =
+      training_data_iterator_->class_labels();
 
   add_or_update_state({
       {"classes", flex_list(classes.begin(), classes.end())},
       {"num_classes", classes.size()},
   });
 
-  const std::vector<std::string> &classes =
-      training_data_iterator_->class_labels();
   add_or_update_state({{"classes", flex_list(classes.begin(), classes.end())}});
 
   // Bind the validation data to a data iterator.
@@ -577,7 +576,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator *data) const {
   // Initialize the NN backend.
   std::unique_ptr<compute_context> ctx = create_compute_context();
   std::unique_ptr<model_backend> backend =
-      ctx->create_drawing_classifier(batch_size, num_classes);
+      ctx->create_drawing_classifier({}, batch_size, num_classes);
 
   // To support double buffering, use a queue of pending inference results.
   std::queue<result> pending_batches;

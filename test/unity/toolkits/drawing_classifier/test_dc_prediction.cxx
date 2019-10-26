@@ -151,10 +151,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
 
   std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
 
-  auto create_drawing_classifier_impl = [&mock_backend](size_t batch_size,
-                                                        size_t num_classes) {
-    return std::move(mock_backend);
-  };
+  auto create_drawing_classifier_impl =
+      [&mock_backend](const float_array_map&, size_t batch_size,
+                      size_t num_classes) { return std::move(mock_backend); };
 
   mock_context->create_drawing_classifier_calls_.push_back(
       create_drawing_classifier_impl);
