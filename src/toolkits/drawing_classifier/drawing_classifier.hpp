@@ -257,10 +257,15 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   template <typename T>
   T read_state(const std::string& key) const {
-    return variant_get_value<T>(get_state().at(key));
+    try {
+      return variant_get_value<T>(get_state().at(key));
+    } catch (const std::out_of_range& e) {
+      std::stringstream ss;
+      ss << e.what() << std::endl;
+      ss << "from read state for" << key << std::endl;
+      throw std::out_of_range(ss.str().c_str());
+    }
   }
-  // Factory for data_iterator
-  virtual std::unique_ptr<data_iterator> create_iterator(gl_sframe data) const;
 
   std::unique_ptr<neural_net::model_spec> clone_model_spec_for_test() const {
     if (nn_spec_) {

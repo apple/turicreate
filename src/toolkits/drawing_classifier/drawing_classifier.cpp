@@ -272,15 +272,6 @@ void drawing_classifier::init_training(
     });
   }
 
-  // use all data to find the finite set of labels
-  auto full_data_iterator = create_iterator(data, /* is_train */ false, {});
-  const std::vector<std::string> &classes = full_data_iterator->class_labels();
-
-  add_or_update_state({
-      {"classes", flex_list(classes.begin(), classes.end())},
-      {"num_classes", classes.size()},
-  });
-
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
 
@@ -294,7 +285,14 @@ void drawing_classifier::init_training(
   // Bind the data to a data iterator.
   training_data_iterator_ =
       create_iterator(training_data_,
-                      /* is_train */ true, /* class labels */ classes);
+                      /* is_train */ true, /* class labels */ {});
+
+  const std::vector<std::string> &classes = training_data_iterator_->class_labels();
+
+  add_or_update_state({
+      {"classes", flex_list(classes.begin(), classes.end())},
+      {"num_classes", classes.size()},
+  });
 
   const std::vector<std::string> &classes =
       training_data_iterator_->class_labels();
@@ -644,9 +642,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
 
   gl_sframe predictions = perform_inference(data_itr.get());
 
-  size_t preds_column_index = predictions.column_index("preds");
   gl_sarray result = predictions["preds"];
-
   if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
     auto max_prob_label = [=](const flexible_type& ft) {
@@ -654,6 +650,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
       auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
       return class_labels[max_it - prob_vec.begin()];
     };
+
     result = result.apply(max_prob_label, class_labels.front().get_type());
   }
 
