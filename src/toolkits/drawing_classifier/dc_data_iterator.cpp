@@ -31,8 +31,8 @@ void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
   image_util::copy_image_to_memory(
       /* image input    */ bitmap,
       /* output pointer */ next_drawing_pointer,
-      /* output strides */ {bitmap.m_width * bitmap.m_channels,
-                            bitmap.m_channels, 1},
+      /* output strides */
+      {bitmap.m_width * bitmap.m_channels, bitmap.m_channels, 1},
       /* output shape   */ {bitmap.m_height, bitmap.m_width, bitmap.m_channels},
       /* channel_last   */ true);
 }
@@ -124,7 +124,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   batch_targets.reserve(batch_size);
   batch_predictions.reserve(batch_size);
 
-  float *next_drawing_pointer = batch_drawings.data();
+  float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
 
   while (batch_targets.size() < batch_size &&
@@ -171,6 +171,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
       // Reset iteration.
       reset();
+      break;
     }
   }
 
