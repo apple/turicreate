@@ -96,6 +96,7 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
       // Start an iteration through the entire SFrame.
       range_iterator_(data_.range_iterator()),
       next_row_(range_iterator_.begin()),
+      end_of_rows_(range_iterator_.end()),
 
       // Initialize random number generator.
       random_engine_(params.random_seed)
@@ -122,7 +123,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   std::vector<float> batch_predictions;
   batch_targets.reserve(batch_size);
   batch_predictions.reserve(batch_size);
-  float* next_drawing_pointer = batch_drawings.data();
+  float *next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
 
   while (batch_targets.size() < batch_size &&
@@ -168,8 +169,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
       }
 
       // Reset iteration.
-      range_iterator_ = data_.range_iterator();
-      next_row_ = range_iterator_.begin();
+      reset();
     }
   }
 
@@ -194,4 +194,3 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 }
 
 }  // namespace drawing_classifier
-}  // namespace turi
