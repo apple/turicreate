@@ -82,28 +82,26 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
     return nn_spec;
   });
 
-  auto create_drawing_classifier_impl =
-      [&](/* TODO: const float_array_map& weights, const float_array_map& config.
-           * Until the nn_spec in C++ isn't ready, do not pass in any weights.
-           */
-          size_t batch_size, size_t num_classes) {
-        TS_ASSERT_EQUALS(batch_size, test_batch_size);
-        TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
+  auto create_drawing_classifier_impl = [&](const float_array_map& weights,
+                                            size_t batch_size,
+                                            size_t num_classes) {
+    TS_ASSERT_EQUALS(batch_size, test_batch_size);
+    TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
 
-        /* TODO: Uncomment when we start passing weights around */
-        // weights should be what we returned from init_model, as copied by
-        // neural_net::wrap_network_params
-        // TS_ASSERT_EQUALS(weights.size(), 1);
-        // auto it = weights.find("test_layer_weight");
-        // TS_ASSERT(it != weights.end());
-        // for (size_t i = 0; i < it->second.size(); ++i) {
-        //   TS_ASSERT_EQUALS(it->second.data()[i], static_cast<float>(i));
-        // }
+    // weights should be what we returned from init_model, as copied by
+    // neural_net::wrap_network_params
+    TS_ASSERT_EQUALS(weights.size(), 1);
+    auto it = weights.find("test_layer_weight");
+    TS_ASSERT(it != weights.end());
+    for (size_t i = 0; i < it->second.size(); ++i) {
+      TS_ASSERT_EQUALS(it->second.data()[i], static_cast<float>(i));
+    }
 
-        // TODO: Assert the config values?
+    // TODO: Assert the config values?
 
-        return std::move(mock_nn_model);
-      };
+    return std::move(mock_nn_model);
+  };
+
   mock_context->create_drawing_classifier_calls_.push_back(
       create_drawing_classifier_impl);
 
