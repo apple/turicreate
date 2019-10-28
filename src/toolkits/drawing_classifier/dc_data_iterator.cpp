@@ -167,12 +167,16 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         data_.remove_column("_random_order");
       }
 
-      reset();
       /**
-       * avoid inf loop; since next_row_ and end_of_rows_ are updated;
-       * IMO, this is tricky; user should call `reset()` explicitly
+       * avoid updating next_row_ and end_of_rows_
+       * reset() shouldn't be called neither
+       *
+       * otherwise,
+       * `has_next_batch()` will return `true` afterwards, which will
+       * cause infinite loop of iterating the data if the client
+       * relies on `while(ditr->has_next_batch())` to terminate reading
+       * data by batches.
        */
-      break;
     }
   }
 
