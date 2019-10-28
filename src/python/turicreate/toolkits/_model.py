@@ -392,23 +392,6 @@ class Model(ExposeAttributesFromProxy):
         def _native_name(cls):
             return ["nearest_neighbors_ball_tree", "nearest_neighbors_brute_force", "nearest_neighbors_lsh"]
     """
-    def list_fields(self):
-        return list(self._list_fields())
-
-    def name(self):
-        """
-        Returns the name of the model class.
-
-        Returns
-        -------
-        out : str
-            The name of the model class.
-
-        Examples
-        --------
-        >>> model_name = m._name()
-        """
-        return self.__class__.__name__
 
     def _name(self):
         """

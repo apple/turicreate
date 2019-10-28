@@ -16,10 +16,10 @@
 #include <core/logging/logger.hpp>
 #include <core/util/string_util.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
+#include <timer/timer.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
 #include <toolkits/util/training_utils.hpp>
-#include <timer/timer.hpp>
 
 namespace turi {
 namespace activity_classification {
@@ -192,13 +192,6 @@ void activity_classifier::init_options(
       "verbose",
       "If set to False, the progress table is hidden.",
       true,
-      true);
-  options.create_integer_option(
-      "num_examples",
-      "Number of examples in the dataset",
-      FLEX_UNDEFINED,
-      0, // should it be?
-      std::numeric_limits<int>::max(),
       true);
   options.create_integer_option(
       "num_sessions",
@@ -402,7 +395,7 @@ void activity_classifier::train(
 
   state_update["verbose"] = read_state<bool>("verbose");
   state_update["num_sessions"] = data[session_id_column_name].unique().size();
-  state_update["num_examples"] = read_state<flex_int>("num_examples");
+  state_update["num_examples"] = data.size();
   state_update["training_time"] = time_object.current_time();
 
   add_or_update_state(state_update);

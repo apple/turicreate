@@ -115,58 +115,48 @@ class ObjectDetectorTest(unittest.TestCase):
         ## Answers
         self.opts = self.def_opts.copy()
         self.opts['max_iterations'] = 1
+
+        self.get_ans = {
+           '_model': lambda x: True,
+           '_class_to_index': lambda x: isinstance(x, dict),
+           '_training_time_as_string': lambda x: isinstance(x, str),
+           '_grid_shape': lambda x: tuple(x) == (13, 13),
+           'model': lambda x: x == self.pre_trained_model,
+           'anchors': lambda x: (isinstance(x, (list, tuple, np.ndarray)) and
+                                  len(x) > 0 and len(x[0]) == 2),
+           'input_image_shape': lambda x: tuple(x) == (3, 416, 416),
+           'batch_size': lambda x: x == 2,
+           'classes': lambda x: x == sorted(_CLASSES),
+           'feature': lambda x: x == self.feature,
+           'max_iterations': lambda x: x >= 0,
+           'non_maximum_suppression_threshold': lambda x: 0 <= x <= 1,
+           'training_time': lambda x: x > 0,
+           'training_iterations': lambda x: x > 0,
+           'training_epochs': lambda x: x >= 0,
+           'num_bounding_boxes': lambda x: x > 0,
+           'num_examples': lambda x: x > 0,
+           'training_loss': lambda x: x > 0,
+           'annotations': lambda x: x == self.annotations,
+           'num_classes': lambda x: x == len(_CLASSES),
+        }
+
         if USE_CPP:
-            self.get_ans = {
-               'annotation_position': lambda x: isinstance(x, str),
-               'annotation_scale': lambda x: isinstance(x, str),
-               'annotation_origin': lambda x: isinstance(x, str),
-               'training_average_precision_50': lambda x: isinstance(x, dict),
-               'training_mean_average_precision_50': lambda x: True,
-               'grid_height': lambda x: x > 0, 
-               'grid_width': lambda x: x > 0,
-               'training_mean_average_precision': lambda x: True,
-               'random_seed': lambda x: True,
-               'training_average_precision': lambda x: x >= 0,
-               'model': lambda x: x == self.pre_trained_model,
-               'input_image_shape': lambda x: tuple(x) == (3, 416, 416),
-               'batch_size': lambda x: x == 2,
-               'classes': lambda x: x == sorted(_CLASSES),
-               'feature': lambda x: x == self.feature,
-               'max_iterations': lambda x: x >= 0,
-               'non_maximum_suppression_threshold': lambda x: 0 <= x <= 1,
-               'training_time': lambda x: x > 0,
-               'training_iterations': lambda x: x > 0,
-               'training_epochs': lambda x: x >= 0,
-               'num_bounding_boxes': lambda x: x > 0,
-               'num_examples': lambda x: x > 0,
-               'training_loss': lambda x: x > 0,
-               'annotations': lambda x: x == self.annotations,
-               'num_classes': lambda x: x == len(_CLASSES),
-            }
-        else:        
-            self.get_ans = {
-               '_model': lambda x: True,
-               '_class_to_index': lambda x: isinstance(x, dict),
-               '_training_time_as_string': lambda x: isinstance(x, str),
-               '_grid_shape': lambda x: tuple(x) == (13, 13),
-               'model': lambda x: x == self.pre_trained_model,
-               'anchors': lambda x: (isinstance(x, (list, tuple, np.ndarray)) and
-                                      len(x) > 0 and len(x[0]) == 2),
-               'input_image_shape': lambda x: tuple(x) == (3, 416, 416),
-               'batch_size': lambda x: x == 2,
-               'classes': lambda x: x == sorted(_CLASSES),
-               'feature': lambda x: x == self.feature,
-               'max_iterations': lambda x: x >= 0,
-               'non_maximum_suppression_threshold': lambda x: 0 <= x <= 1,
-               'training_time': lambda x: x > 0,
-               'training_iterations': lambda x: x > 0,
-               'training_epochs': lambda x: x >= 0,
-               'num_bounding_boxes': lambda x: x > 0,
-               'num_examples': lambda x: x > 0,
-               'training_loss': lambda x: x > 0,
-               'annotations': lambda x: x == self.annotations,
-               'num_classes': lambda x: x == len(_CLASSES),
-            }
+            self.get_ans['annotation_position'] = lambda x: isinstance(x, str)
+            self.get_ans['annotation_scale'] = lambda x: isinstance(x, str)
+            self.get_ans['annotation_origin'] = lambda x: isinstance(x, str)
+            self.get_ans['training_average_precision_50'] = lambda x: isinstance(x, dict)
+            self.get_ans['training_mean_average_precision_50'] = lambda x: True
+            self.get_ans['grid_height'] = lambda x: x > 0
+            self.get_ans['grid_width'] = lambda x: x > 0
+            self.get_ans['training_mean_average_precision'] = lambda x: True
+            self.get_ans['random_seed'] = lambda x: True
+            self.get_ans['training_average_precision'] = lambda x: x >= 0
+            del self.get_ans['_model']
+            del self.get_ans['_class_to_index']
+            del self.get_ans['_training_time_as_string']
+            del self.get_ans['_grid_shape']
+            del self.get_ans['anchors']
+
         self.fields_ans = self.get_ans.keys()
 
     def test_create_with_missing_value(self):
