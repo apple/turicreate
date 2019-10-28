@@ -67,19 +67,20 @@ void _assert_sframe_equals(gl_sframe sa, gl_sframe sb) {
   }
 }
 
-}  // namespace
+gl_sframe set_up_perform_inference(test_drawing_classifier& mock_model,
+                                  std::unique_ptr<mock_model_backend>& mock_backend,
+                                  std::unique_ptr<mock_compute_context>& mock_context,
+                                   size_t batch_size,
+                                   const size_t num_of_rows,
+                                   const size_t num_of_classes) {
+  ASSERT_MSG(num_of_rows > 0, "num_of_rows should be bigger than 0");
+  ASSERT_MSG(num_of_classes > 0, "num_of_classes should be bigger than 0");
+  ASSERT_MSG(batch_size > 0, "batch_size should be bigger than 0");
 
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
-  constexpr size_t batch_size = 2;
-  constexpr size_t num_of_rows = 6;
-  const std::vector<std::string> class_labels = {"0", "1"};
-  const size_t num_classes = class_labels.size();
-
-  std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
 
   gl_sframe expected_sf;
   {
-    std::vector<float> buffer(num_classes * batch_size);
+    std::vector<float> buffer(num_of_classes * batch_size);
 
     std::default_random_engine eng;
     std::uniform_int_distribution<float> distribution(0, 20);
@@ -97,8 +98,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
       ii += batch_size;
 
       for (size_t jj = 0; jj < repeat; ++jj) {
-        auto pbeg = buffer.begin() + jj * num_classes;
-        auto pend = pbeg + num_classes;
+        auto pbeg = buffer.begin() + jj * num_of_classes;
+        auto pend = pbeg + num_of_classes;
         std::generate(pbeg, pend, [&]() { return distribution(eng); });
         float my_sum = std::accumulate(pbeg, pend, 0.0f, std::plus<float>());
         std::transform(pbeg, pend, pbeg,
@@ -108,48 +109,26 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
       }
 
       auto to_return =
-          shared_float_array::copy(buffer.data(), {num_classes, repeat});
+          shared_float_array::copy(buffer.data(), {num_of_classes, repeat});
 
       mock_backend->predict_calls_.push_back([=](const float_array_map& input) {
         TS_ASSERT_EQUALS(input.at("input").size(), repeat * 28 * 28);
         return float_array_map({{"output", to_return}});
       });
     }
-
     // since we are using push front;
     expected_sf = writer.close();
   }
 
   TS_ASSERT_EQUALS(expected_sf.size(), num_of_rows);
-  std::cout << mock_backend->predict_calls_.size() << std::endl;
+
   TS_ASSERT_EQUALS(mock_backend->predict_calls_.size(),
                    num_of_rows % batch_size ? num_of_rows / batch_size + 1
                                             : num_of_rows / batch_size);
 
-  // Create an arbitrary SFrame with test_num_rows rows.
-  drawing_data_generator data_generator(num_of_rows, class_labels);
-  gl_sframe my_data = data_generator.get_data();
-
-  TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
-
-  data_iterator::parameters params;
-  params.data = my_data;
-  // this is buggy
-  params.repeat = false;
-  params.target_column_name = data_generator.get_target_column_name();
-  params.feature_column_name = data_generator.get_feature_column_name();
-
-  params.is_train = false;
-  auto data_itr =
-      std::unique_ptr<data_iterator>(new simple_data_iterator(params));
-
-  // mode the data iterator first
-  mock_perform_inference mock_model;
-
   mock_model.add_or_update_state(
-      {{"num_classes", num_classes}, {"batch_size", batch_size}});
+      {{"num_classes", num_of_classes}, {"batch_size", batch_size}});
 
-  std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
 
   auto create_drawing_classifier_impl =
       [&mock_backend](const float_array_map&, size_t batch_size,
@@ -163,10 +142,70 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
   auto create_compute_context_impl = [&] { return std::move(mock_context); };
   mock_model.create_compute_context_calls_.push_back(create_compute_context_impl);
 
-  // make sure the output is what expected
-  auto result = mock_model.get_inference_result(data_itr.get());
+  return expected_sf;
+}
 
-  _assert_sframe_equals(result, expected_sf);
+}  // namespace
+
+
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
+  /**
+   * batch_size, num_of_rows, num_of_classes
+   * 1. batch_size > num_of_rows
+   * 2. batch_size == num_of_rows
+   * 3. num_of_rows can divide batch_size
+   * 4. num_of_rows can not divide batch_size
+   **/
+  std::vector<std::tuple<unsigned, unsigned, unsigned>> test_cases = {
+      {2, 1, 1}, {2, 1, 2}, {2, 2, 2}, {2, 4, 2},
+      {2, 4, 3}, {2, 5, 2}, {2, 5, 3}};
+
+  for (auto& entry : test_cases) {
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
+
+    logprogress_stream << "batch_size=" << batch_size
+                       << "; num_of_rows=" << num_of_rows
+                       << "; num_of_classes=" << num_of_classes << std::endl;
+
+    // mode the data iterator first
+    mock_perform_inference mock_model;
+    std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
+    std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+
+    auto expected_sf =
+        set_up_perform_inference(mock_model, mock_backend, mock_context,
+                                 batch_size, num_of_rows, num_of_classes);
+
+    std::vector<std::string> class_labels;
+    class_labels.reserve(num_of_classes);
+    for (size_t ii = 0; ii < num_of_classes; ++ii) {
+      class_labels.push_back(std::to_string(ii));
+    }
+
+    // Create an arbitrary SFrame with test_num_rows rows.
+    drawing_data_generator data_generator(num_of_rows, class_labels);
+    gl_sframe my_data = data_generator.get_data();
+
+    TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
+
+    data_iterator::parameters params;
+    params.data = my_data;
+    // no repeat since it's not iterating training
+    params.repeat = false;
+    params.target_column_name = data_generator.get_target_column_name();
+    params.feature_column_name = data_generator.get_feature_column_name();
+
+    params.is_train = false;
+    auto data_itr =
+        std::unique_ptr<data_iterator>(new simple_data_iterator(params));
+
+    // make sure the output is what expected
+    auto result = mock_model.get_inference_result(data_itr.get());
+
+    _assert_sframe_equals(result, expected_sf);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict) {}
