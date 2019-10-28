@@ -16,7 +16,7 @@ import numpy as _np
 
 from .._tf_model import TensorFlowModel
 
-def define_tensorflow_variables(net_params):
+def define_tensorflow_variables(net_params, trainable=True):
     """
     This function defines TF Variables from the C++ initialization.
     
@@ -35,37 +35,12 @@ def define_tensorflow_variables(net_params):
     for key, value in net_params.items():
         if 'weight' in key:
             if 'conv' in key:
-                tensorflow_variables[key] = _tf.Variable(initial_value = _np.transpose(net_params[key], (2,3,1,0)), name=key)
+                tensorflow_variables[key] = _tf.Variable(initial_value = _np.transpose(net_params[key], (2,3,1,0)), name=key, trainable=trainable)
             else:
-                tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_dense_coreml_to_tf(net_params[key]), name=key)
+                tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_dense_coreml_to_tf(net_params[key]), name=key, trainable=trainable)
         else:
-            tensorflow_variables[key] = _tf.Variable(initial_value = net_params[key], name=key)
+            tensorflow_variables[key] = _tf.Variable(initial_value = net_params[key], name=key, trainable=trainable)
     return tensorflow_variables
-
-
-def extract_tensorflow_params(net):
-    """
-    This function extracts the weight parameters from an MxNet Graph and formats
-    them into the expected TF format.
-    Parameters
-    ----------
-    net: mxnet.gluon.HybridBlock
-        The input is an MxNet HybridBlock that's been initialized.
-    
-    Returns
-    -------
-    out: dict
-        The weight dictionary in TF Weight format.
-    """
-    weight_dict = dict()
-    param_keys = list(net.collect_params())
-    for key in param_keys:
-        weight = net.collect_params()[key].data().asnumpy()
-        if len(weight.shape) == 4:
-            weight_dict[key] = weight.transpose(2, 3, 1, 0) 
-        else:
-            weight_dict[key] = weight
-    return weight_dict
 
 def define_instance_norm(tf_input, tf_index, weights, prefix):
     """ 
