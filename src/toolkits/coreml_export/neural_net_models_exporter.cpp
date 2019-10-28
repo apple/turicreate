@@ -141,8 +141,9 @@ void set_image_feature_size_range(ImageFeatureType* image_feature,
 ImageFeatureType* set_image_feature(
     FeatureDescription* feature_desc, size_t image_width, size_t image_height,
     std::string description = "",
-    ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB) {
-  feature_desc->set_name("image");
+    ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB,
+    std::string input_name = "image") {
+  feature_desc->set_name(input_name);
   if (!description.empty()) feature_desc->set_shortdescription(description);
 
   ImageFeatureType* image_feature =
@@ -161,6 +162,13 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
     size_t image_height, size_t num_classes, size_t num_predictions,
     flex_dict user_defined_metadata, flex_list class_labels,
     std::map<std::string, flexible_type> options) {
+  // Get the name of image input
+  std::string input_name;
+  for (auto& it : user_defined_metadata) {
+    if (it.first == "feature") {
+      input_name = it.second.get<flex_string>();
+    }
+  }
 
   // Set up Pipeline
   CoreML::Specification::Model model_pipeline;
@@ -174,7 +182,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   NeuralNetworkLayer* first_layer =
       model_nn->mutable_neuralnetwork()->add_layers();
   first_layer->set_name("_divscalar0");
-  first_layer->add_input("image");
+  first_layer->add_input(input_name);
   first_layer->add_output("_divscalar0");
   first_layer->mutable_scale()->add_shapescale(1);
   first_layer->mutable_scale()->mutable_scale()->add_floatvalue(1 / 255.f);
@@ -191,14 +199,15 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   NeuralNetworkLayer* second_layer =
       model_nn->mutable_neuralnetwork()->mutable_layers(1);
   ASSERT_EQ(second_layer->input_size(), 1);
-  ASSERT_EQ(second_layer->input(0), "image");
+  ASSERT_EQ(second_layer->input(0), input_name);
   second_layer->set_input(0, "_divscalar0");
 
   // Write the ModelDescription.
   ModelDescription* model_desc = model_nn->mutable_description();
 
   // Write FeatureDescription for the image input.
-  set_image_feature(model_desc->add_input(), image_width, image_height);
+  set_image_feature(model_desc->add_input(), image_width, image_height, "",
+                    ImageFeatureType::RGB, input_name);
 
   if (!options["include_non_maximum_suppression"].to<bool>()){
 
@@ -281,7 +290,8 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   first_layer_nms->set_coordinatesoutputfeaturename("coordinates");
 
   // Write FeatureDescription for the image input.
-  set_image_feature(pipeline_desc->add_input(), image_width, image_height, "Input image");
+  set_image_feature(pipeline_desc->add_input(), image_width, image_height,
+                    "Input image", ImageFeatureType::RGB, input_name);
 
   // Write FeatureDescription for the IOU Threshold input.
   FeatureDescription* iou_threshold = pipeline_desc->add_input();

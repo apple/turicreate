@@ -395,6 +395,13 @@ public:
    */
   void add_preprocessing(const std::string& feature_name,
                          const float image_scale);
+  void change_preprocessing_name(const std::string& old_name,
+                                 const std::string& new_name);
+
+  /** Set input name for given layer
+   */
+  void set_layer_input(const std::string& layer_name,
+                       const std::string& input_name, const size_t index);
 
  private:
   std::unique_ptr<CoreML::Specification::NeuralNetwork> impl_;

@@ -396,6 +396,11 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
                     variant_get_value<size_t>(state.at("num_classes")),
                     anchor_boxes());
   nn_spec_->update_params(nn_params);
+
+  // Set correct name for the model input
+  nn_spec_->set_layer_input("conv0_fwd", read_state<flex_string>("feature"), 0);
+  nn_spec_->change_preprocessing_name("image",
+                                      read_state<flex_string>("feature"));
   model_data.erase(model_iter);
   return;
 }
@@ -461,6 +466,11 @@ void object_detector::finalize_training() {
 variant_type object_detector::evaluate(gl_sframe data, std::string metric,
                                        std::string output_type,
                                        std::map<std::string, flexible_type> opts) {
+  // check data has annotations
+  if (!data.contains_column(read_state<flex_string>("annotations"))) {
+    log_and_throw("No annotation is found in data for evaluate!!");
+  }
+
   //parse input opts
   float confidence_threshold, iou_threshold;
   auto it_confidence = opts.find("confidence_threshold");
@@ -1093,6 +1103,9 @@ void object_detector::init_training(gl_sframe data,
   nn_spec_ =
       init_model(mlmodel_path, training_data_iterator_->class_labels().size());
 
+  nn_spec_->set_layer_input("conv0_fwd", read_state<flex_string>("feature"), 0);
+  nn_spec_->change_preprocessing_name("image",
+                                      read_state<flex_string>("feature"));
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
   if (training_compute_context_ == nullptr) {

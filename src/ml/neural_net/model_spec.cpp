@@ -534,6 +534,17 @@ bool model_spec::has_layer_output(const std::string& layer_name) const {
   return false;
 }
 
+void model_spec::set_layer_input(const std::string& layer_name,
+                                 const std::string& input_name,
+                                 const size_t index) {
+  for (NeuralNetworkLayer& layer : *impl_->mutable_layers()) {
+    const std::string& name = layer.name();
+    if (name == layer_name) {
+      layer.set_input(index, input_name);
+    }
+  }
+}
+
 void model_spec::add_relu(const std::string& name, const std::string& input) {
 
   NeuralNetworkLayer* layer = impl_->add_layers();
@@ -972,6 +983,16 @@ void model_spec::add_preprocessing(const std::string& feature_name,
   layer->set_featurename(feature_name);
   NeuralNetworkImageScaler* image_scaler = layer->mutable_scaler();
   image_scaler->set_channelscale(image_scale);
+}
+
+void model_spec::change_preprocessing_name(const std::string& old_name,
+                                           const std::string& new_name) {
+  for (NeuralNetworkPreprocessing& layer : *impl_->mutable_preprocessing()) {
+    const std::string& name = layer.featurename();
+    if (name == old_name) {
+      layer.set_featurename(new_name);
+    }
+  }
 }
 
 }  // neural_net
