@@ -11,10 +11,10 @@ import tensorflow as _tf
 import numpy as _np
 import time as _time
 from .._tf_model import TensorFlowModel
+import turicreate.toolkits._tf_utils as _utils
 
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-
 
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
@@ -25,6 +25,9 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         loads the MXNET weights into the model.
 
         """
+        for key in net_params.keys():
+            net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
+
         _tf.reset_default_graph()
 
         self.num_classes = num_classes

@@ -212,10 +212,13 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
 
 void drawing_classifier::init_options(
     const std::map<std::string, flexible_type> &opts) {
+
   // Define options.
+
   options.create_integer_option(
       "batch_size", "Number of training examples used per training step", 256,
       1, std::numeric_limits<int>::max());
+
   options.create_integer_option(
       "max_iterations",
       "Maximum number of iterations/epochs made over the data during the"
@@ -223,6 +226,12 @@ void drawing_classifier::init_options(
       500,
       1,
       std::numeric_limits<int>::max());
+
+  options.create_integer_option(
+      "random_seed",
+      "Seed for random weight initialization and sampling during training",
+      FLEX_UNDEFINED,
+      std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -254,7 +263,12 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
 
   data_params.is_train = is_train;
   data_params.target_column_name = read_state<flex_string>("target");
-  data_params.feature_column_name = read_state<flex_string>("feature");
+  const flex_list &features_values = read_state<flex_list>("features");
+  DASSERT_GE(features_values.size(), 1);
+  data_params.feature_column_name = features_values[0].get<flex_string>();
+  /** Until there is only one feature column name, we will read the features
+   *  flex list and record the 0'th index as the feature column name.
+   */
   return create_iterator(data_params);
 }
 
@@ -265,6 +279,12 @@ void drawing_classifier::init_training(
   // Read user-specified options.
   init_options(opts);
 
+  if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
+    std::random_device random_device;
+    int random_seed = static_cast<int>(random_device());
+    add_or_update_state({{"random_seed", random_seed}});
+  }
+
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
 
@@ -272,8 +292,11 @@ void drawing_classifier::init_training(
   // TODO: Make progress printing optional.
   init_table_printer(!validation_data_.empty());
 
+  flex_list features_list;
+  features_list.push_back(feature_column_name);
+
   add_or_update_state(
-      {{"target", target_column_name}, {"feature", feature_column_name}});
+      {{"target", target_column_name}, {"features", features_list}});
 
   // Bind the data to a data iterator.
   training_data_iterator_ =
