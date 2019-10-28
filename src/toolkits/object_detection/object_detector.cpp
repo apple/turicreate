@@ -458,9 +458,6 @@ void object_detector::finalize_training() {
   update_model_metrics(training_data_, validation_data_);
 }
 
-<<<<<<< HEAD
-variant_map_type object_detector::evaluate(gl_sframe data, std::string metric) {
-=======
 variant_type object_detector::evaluate(gl_sframe data, std::string metric,
                                        std::string output_type,
                                        std::map<std::string, flexible_type> opts) {
@@ -479,7 +476,6 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
     iou_threshold = opts["iou_threshold"];
   }
 
->>>>>>> b148a490c6017ab906e9e454a2a995028fe42ebb
   std::vector<std::string> metrics;
   static constexpr char AP[] = "average_precision";
   static constexpr char MAP[] = "mean_average_precision";
@@ -617,12 +613,6 @@ gl_sarray object_detector::predict(variant_type data, std::map<std::string, flex
   return result.close();
 }
 
-<<<<<<< HEAD
-void object_detector::perform_predict(
-    gl_sframe data, std::function<void(const std::vector<image_annotation>&,
-                                       const std::vector<image_annotation>&)>
-                        consumer) {
-=======
 gl_sframe object_detector::convert_types_to_sframe(
     const variant_type& data, const std::string& column_name) {
   // Data input can be either sframe, sarray, or a single image
@@ -650,7 +640,6 @@ void object_detector::perform_predict(gl_sframe data,
     std::function<void(const std::vector<image_annotation>&,
     const std::vector<image_annotation>&)> consumer, float confidence_threshold,
     float iou_threshold) {
->>>>>>> b148a490c6017ab906e9e454a2a995028fe42ebb
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
@@ -961,6 +950,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
 {
+  // Add empty annotations column if data has no annotations
+
   data_iterator::parameters iterator_params;
   iterator_params.data = std::move(data);
   iterator_params.annotations_column_name =
@@ -1012,6 +1003,30 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
                                     iterator_params.annotations_column_name);
     iterator_params.has_label = false;
   }
+
+  // Check annotations type. If it is a single dictionary, put it into a list.
+  std::vector<flexible_type> list_type_annotations;
+  for (size_t i = 0; i < iterator_params.data.size(); i++) {
+    flexible_type annotation =
+        iterator_params.data[iterator_params.annotations_column_name][i];
+    if (annotation.get_type() == flex_type_enum::LIST) {
+      list_type_annotations.push_back(annotation);
+    } else if (annotation.get_type() == flex_type_enum::DICT) {
+      flex_list dummy{annotation};
+      list_type_annotations.push_back(dummy);
+    } else if (annotation.get_type() == flex_type_enum::UNDEFINED) {
+      // When the annotation is None
+      list_type_annotations.push_back(flex_list());
+    } else {
+      log_and_throw(
+          "Invalid annotation! Expect list of dictionary, a singel "
+          "dictionary!");
+    }
+  }
+  gl_sarray ann_sarray(list_type_annotations, flex_type_enum::LIST);
+  iterator_params.data.replace_add_column(
+      ann_sarray, iterator_params.annotations_column_name);
+
   return create_iterator(iterator_params);
 }
 
@@ -1350,16 +1365,11 @@ void object_detector::update_model_metrics(gl_sframe data,
 
   // Compute validation metrics if necessary.
   if (!validation_data.empty()) {
-<<<<<<< HEAD
-    variant_map_type validation_metrics =
-        perform_evaluation(validation_data, "all");
-=======
     variant_type validation_metrics_raw =
         perform_evaluation(validation_data, "all", "dict", DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE,
          DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD);
     variant_map_type validation_metrics =
         variant_get_value<variant_map_type>(validation_metrics_raw);
->>>>>>> b148a490c6017ab906e9e454a2a995028fe42ebb
     for (const auto& kv : validation_metrics) {
       metrics["validation_" + kv.first] = kv.second;
     }

@@ -1698,7 +1698,10 @@ class ObjectDetector_beta(_Model):
         options = {}
         options["confidence_threshold"] = confidence_threshold
         options["iou_threshold"] = iou_threshold
-        return  self.__proxy__.predict(dataset, options)
+        prediction = self.__proxy__.predict(dataset, options)
+        if isinstance(dataset, _tc.Image):
+            prediction = prediction[0]
+        return prediction
 
     def evaluate(self, dataset, metric='auto', output_type='dict', confidence_threshold = 0.001, iou_threshold = 0.45):
         """
