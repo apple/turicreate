@@ -228,7 +228,7 @@ simple_data_iterator::compute_properties(
 
   // Extract the label for each bounding box.
   // Only if the data has annotations.
-  if (has_label_) {
+  if (has_annotations_) {
     instances = instances.unpack("bbox", /* column_name_prefix */ "",
                                  {flex_type_enum::STRING},
                                  /* na_value */ FLEX_UNDEFINED, {"label"});
@@ -290,7 +290,7 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
       // Whether to traverse the SFrame more than once, and whether to shuffle.
       repeat_(params.repeat),
       shuffle_(params.shuffle),
-      has_label_(params.has_label),
+      has_annotations_(params.has_annotations),
 
       // Identify/verify the class labels and other annotation properties.
       annotation_properties_(compute_properties(

@@ -1011,7 +1011,7 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sarray empty_ann(dummy, flex_type_enum::LIST);
     iterator_params.data.add_column(empty_ann,
                                     iterator_params.annotations_column_name);
-    iterator_params.has_label = false;
+    iterator_params.has_annotations = false;
   }
 
   // Check annotations type. If it is a single dictionary, put it into a list.
