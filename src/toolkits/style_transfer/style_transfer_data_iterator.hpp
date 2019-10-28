@@ -44,7 +44,10 @@ class data_iterator {
 
   virtual ~data_iterator() = default;
 
-  virtual std::vector<st_example> next_batch(size_t batch_size) = 0;
+  virtual std::vector<st_example> next_batch(size_t batch_size,
+                                             bool train = true) = 0;
+
+  virtual void reset() = 0;
 };
 
 class style_transfer_data_iterator : public data_iterator {
@@ -55,7 +58,10 @@ class style_transfer_data_iterator : public data_iterator {
   style_transfer_data_iterator& operator=(const style_transfer_data_iterator&) =
       delete;
 
-  std::vector<st_example> next_batch(size_t batch_size) override;
+  std::vector<st_example> next_batch(size_t batch_size,
+                                     bool train = true) override;
+
+  void reset() override;
 
  private:
   gl_sarray m_style_images;
