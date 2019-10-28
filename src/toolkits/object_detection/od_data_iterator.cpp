@@ -74,9 +74,7 @@ std::vector<image_annotation> parse_annotations(
       if (key == "label") {
         // If the label in invalid (not in class_to_index_map) then ignore it.
         const flex_string& label = kv.second.get<flex_string>();
-        if (class_to_index_map.find(label) == class_to_index_map.end()) {
-          has_label = false;
-        } else {
+        if (class_to_index_map.find(label) != class_to_index_map.end()) {
           annotation.identifier = class_to_index_map.at(label);
           has_label = true;
         }
