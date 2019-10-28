@@ -26,6 +26,7 @@
 #include <toolkits/object_detection/od_yolo.hpp>
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
 #include <toolkits/util/training_utils.hpp>
+#include <timer/timer.hpp>
 
 #ifdef __APPLE__
 
@@ -422,14 +423,22 @@ void object_detector::train(gl_sframe data,
   // backend NN model.
   init_training(data, annotations_column_name, image_column_name,
                 validation_data, opts);
+  
+  turi::timer time_object;
+  time_object.start();
 
   // Perform all the iterations at once.
   while (get_training_iterations() < get_max_iterations()) {
     iterate_training();
   }
-
+  
   // Wait for any outstanding batches to finish.
   finalize_training();
+
+  add_or_update_state({
+      {"training_time", time_object.current_time()},
+  });
+  
 }
 
 void object_detector::synchronize_model(model_spec* nn_spec) const {
