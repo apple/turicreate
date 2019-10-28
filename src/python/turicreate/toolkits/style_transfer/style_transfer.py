@@ -707,16 +707,29 @@ class StyleTransfer_beta(_Model):
 
     def export_coreml(self, filename, image_shape=(256, 256), include_flexible_shape=True):
         """
-        Export the model in Core ML format.
+        Save the model in Core ML format. The Core ML model takes an image of
+        fixed size, and a style index inputs and produces an output
+        of an image of fixed size
 
         Parameters
         ----------
-        filename: str
-          A valid filename where the model can be saved.
+        path : string
+            A string to the path for saving the Core ML model.
+
+        image_shape: tuple
+            A tuple (defaults to (256, 256)) will bind the coreml model to a fixed shape.
+
+        include_flexible_shape: bool
+            Allows the size of the input image to be flexible. Any input image were the
+            height and width are at least 64 will be accepted by the Core ML Model.
+
+        See Also
+        --------
+        save
 
         Examples
         --------
-        >>> model.export_coreml("MyModel.mlmodel")
+        >>> model.export_coreml('StyleTransfer.mlmodel')
         """
         return self.__proxy__.export_to_coreml(filename, image_shape, include_flexible_shape)
 
@@ -795,7 +808,7 @@ class StyleTransfer_beta(_Model):
         [8 rows x 3 columns]
         """
 
-        return self.__proxy__.stylize(images, style=None, verbose=True, max_size=800, batch_size = 4)
+        return self.__proxy__.predict(images, style=None, verbose=True, max_size=800, batch_size = 4)
 
 class StyleTransfer(_CustomModel):
     """

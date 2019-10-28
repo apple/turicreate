@@ -229,7 +229,7 @@ class StyleTransferTransformerCoreML():
     def __init__(self):
         self.name = 'transformer'
         self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'transformer.mlmodel')
-        self.source_md5 = ''
+        self.source_md5 = 'e0f3adaa9952ecc7d96f5e4eefb0d690'
         self.model_path = _download_and_checksum_files([
             (self.source_url, self.source_md5)
         ], _get_cache_dir())[0]
@@ -244,7 +244,7 @@ class Vgg16CoreML():
     def __init__(self):
         self.name = 'vgg16'
         self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16.mlmodel')
-        self.source_md5 = ''
+        self.source_md5 = '9c9508a8256d9ca1c113ac94bc9f8c6f'
         self.model_path = _download_and_checksum_files([
             (self.source_url, self.source_md5)
         ], _get_cache_dir())[0]
