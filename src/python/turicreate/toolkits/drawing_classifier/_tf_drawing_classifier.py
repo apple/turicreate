@@ -28,13 +28,18 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
+        # import pdb; pdb.set_trace()
+
         _tf.reset_default_graph()
 
         self.num_classes = num_classes
         self.batch_size = batch_size
 
-        self.x = _tf.placeholder("float", [None, 28, 28, 1])
-        self.y = _tf.placeholder("float", [None, self.num_classes])
+        self.input = _tf.placeholder(_tf.float32, [None, 28, 28, 1])
+        self.labels = _tf.placeholder(_tf.int32, [None, 1])
+
+        reshaped_target = _tf.reshape(self.labels, [self.batch_size])
+        one_hot_target = _tf.one_hot(reshaped_target, depth=self.num_classes, axis=-1)
 
         # Weights
         weights = {
@@ -54,7 +59,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         'drawing_dense1_bias': _tf.Variable(_tf.zeros([self.num_classes]), name='drawing_dense1_bias')
         }
 
-        conv_1 = _tf.nn.conv2d(self.x, weights["drawing_conv0_weight"], strides=1, padding='SAME')
+        conv_1 = _tf.nn.conv2d(self.input, weights["drawing_conv0_weight"], strides=1, padding='SAME')
         conv_1 = _tf.nn.bias_add(conv_1, biases["drawing_conv0_bias"])
         relu_1 = _tf.nn.relu(conv_1)
         pool_1 = _tf.nn.max_pool2d(relu_1, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='SAME')
@@ -85,14 +90,14 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         # Loss
         self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
-            labels=self.y))
+            labels=one_hot_target))
 
         # Optimizer
         self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.001).minimize(self.cost)
 
         # Predictions
-        correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
-        self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, "float"))
+        correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(one_hot_target, 1))
+        self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, _tf.float32))
         
         self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
@@ -104,8 +109,9 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         for key in layers:
             if 'bias' in key:
+                # import pdb; pdb.set_trace()
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                    net_params[key].data().asnumpy()))
+                    net_params[key]))
             else:
                 if 'dense' in key:
                     if 'drawing_dense0_weight' in key:
@@ -113,34 +119,59 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                         To make output of MXNET pool3 (NCHW) compatible with TF (NHWC).
                         Decompose FC weights to NCHW. Transpose to NHWC. Reshape back to FC.
                         '''
-                        mxnet_128_576 = net_params[key].data().asnumpy()
+                        mxnet_128_576 = net_params[key]
                         mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 64, 3, 3))
-                        mxnet_128_576 = mxnet_128_576.transpose(0, 2, 3, 1)
+                        mxnet_128_576 = _np.transpose(mxnet_128_576, (0, 2, 3, 1))
                         mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 576))
                         self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                                        mxnet_128_576.transpose(1,0)))
+                                        _np.transpose(mxnet_128_576, (1,0))))
                     else:
+                        drawing_dense1_weights_for_tf = _np.reshape(net_params[key], (num_classes, 128))
+                        # Assert that the values are good after reshaping.
                         self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                                        net_params[key].data().asnumpy().transpose(1, 0)))
+                                        _np.transpose(drawing_dense1_weights_for_tf, (1,0))))
                 else:
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                                        net_params[key].data().asnumpy().transpose(2, 3, 1, 0)))
+                                        _np.transpose(net_params[key], (2, 3, 1, 0))))
 
 
     def train(self, feed_dict):
+
+        print("In train!!!!")
+
+        for key in feed_dict.keys():
+            # import pdb; pdb.set_trace()
+            feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
+            # if key == "labels":
+            #     squeezed_target = _np.squeeze(feed_dict[key], axis=1)
+            #     feed_dict[key] = _tf.one_hot(squeezed_target, depth=self.num_classes, axis=-1)
+            # feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
+            # feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[1], feed_dict[key].shape[2]))
+
         _, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
                             feed_dict={
-                                self.x: feed_dict['x'],
-                                self.y: feed_dict['y']
+                                self.input: feed_dict['input'],
+                                self.labels: feed_dict['labels']
                             })
         result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
+        print(result)
         return result
 
     def predict(self, feed_dict):
+        print("In predict!!!!")
+        for key in feed_dict.keys():
+            feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
+            # if key == "labels":
+            #     squeezed_target = _np.squeeze(feed_dict[key], axis=1)
+            #     feed_dict[key] = _tf.one_hot(squeezed_target, depth=self.num_classes, axis=-1)
+            # import pdb; pdb.set_trace()
+            # feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
+            # feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[1], feed_dict[key].shape[2]))
+
         pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
                             feed_dict={
-                                self.x: feed_dict['x'],
-                                self.y: feed_dict['y']
+                                self.input: feed_dict['input'],
+                                self.labels: feed_dict['labels']
                             })
         result = {'accuracy' : final_accuracy, 'predictions' : pred_probs}
         return result
@@ -175,99 +206,99 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                         '''
                         tf_576_128 = val
                         tf_576_128 = _np.reshape(tf_576_128, (3, 3, 64, 128))
-                        tf_576_128 = tf_576_128.transpose(2, 0, 1, 3)
+                        tf_576_128 = _np.transpose(tf_576_128, (2, 0, 1, 3))
                         tf_576_128 = _np.reshape(tf_576_128, (576, 128))
-                        net_params.update({var.name.replace(":0", ""): tf_576_128.transpose(1, 0)})
+                        net_params.update({var.name.replace(":0", ""): _np.transpose(tf_576_128, (1, 0))})
                     else:
-                        net_params.update({var.name.replace(":0", ""): val.transpose(1, 0)})
+                        net_params.update({var.name.replace(":0", ""): _np.transpose(val, (1, 0))})
                 else:
-                    net_params.update({var.name.replace(":0", ""): val.transpose(3, 2, 0, 1)})
+                    net_params.update({var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
         return net_params
 
 
-    def evaluate(self, train_loader):
-        total_acc = 0.0
-        count = 0
-        for train_batch in train_loader:
-            batch_x, batch_y = process_data(train_batch, self.batch_size, self.num_classes)
-            import itertools
-            for x_data, y_data in itertools.izip(batch_x, batch_y):
-                x_data = _np.asarray(x_data).reshape((1, 28, 28, 1))
-                y_data = _np.asarray(y_data).reshape((1, self.num_classes))
-                acc = self.sess.run(self.accuracy,
-                            feed_dict={
-                                self.x: x_data,
-                                self.y: y_data
-                            })
-                total_acc+= acc
-                count+=1
+    # def evaluate(self, train_loader):
+    #     total_acc = 0.0
+    #     count = 0
+    #     for train_batch in train_loader:
+    #         batch_x, batch_y = process_data(train_batch, self.batch_size, self.num_classes)
+    #         import itertools
+    #         for x_data, y_data in itertools.izip(batch_x, batch_y):
+    #             x_data = _np.asarray(x_data).reshape((1, 28, 28, 1))
+    #             y_data = _np.asarray(y_data).reshape((1, self.num_classes))
+    #             acc = self.sess.run(self.accuracy,
+    #                         feed_dict={
+    #                             self.input: x_data,
+    #                             self.labels: y_data
+    #                         })
+    #             total_acc+= acc
+    #             count+=1
 
-        final_accuracy = total_acc/count
-        return final_accuracy
+    #     final_accuracy = total_acc/count
+    #     return final_accuracy
 
 
-def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, batch_size, num_classes, verbose):
-    """
-    Trains the TensorFlow model.
+# def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, batch_size, num_classes, verbose):
+#     """
+#     Trains the TensorFlow model.
 
-    Returns
-    -------
+#     Returns
+#     -------
 
-    final_train_accuracy : numpy.float32
-        Training accuracy of the last iteration.
+#     final_train_accuracy : numpy.float32
+#         Training accuracy of the last iteration.
 
-    final_val_accuracy : numpy.float32
-        Validation accuracy of the last iteration.
+#     final_val_accuracy : numpy.float32
+#         Validation accuracy of the last iteration.
 
-    final_train_loss : numpy.float32
-        The final loss recorded in training.
+#     final_train_loss : numpy.float32
+#         The final loss recorded in training.
 
-    total_train_time : float
-        Time taken to complete the training
-    """
+#     total_train_time : float
+#         Time taken to complete the training
+#     """
 
-    if verbose:
-        column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
-        column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
-        if validation_set is not None:
-            column_names.insert(3, 'validation_accuracy')
-            column_titles.insert(3, 'Validation Accuracy')
-        table_printer = _ProgressTablePrinter(column_names, column_titles)
+#     if verbose:
+#         column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
+#         column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
+#         if validation_set is not None:
+#             column_names.insert(3, 'validation_accuracy')
+#             column_titles.insert(3, 'Validation Accuracy')
+#         table_printer = _ProgressTablePrinter(column_names, column_titles)
 
-    num_iter = 0
-    start_time = _time.time()
-    for train_batch in train_loader:
-        batch_x, batch_y = process_data(train_batch, batch_size, num_classes)
-        result = tf_model.train( feed_dict={
-                            'x': batch_x,
-                            'y': batch_y
-                        })
-        final_train_accuracy = result['accuracy']
-        final_train_loss = result['loss']
+#     num_iter = 0
+#     start_time = _time.time()
+#     for train_batch in train_loader:
+#         batch_x, batch_y = process_data(train_batch, batch_size, num_classes)
+#         result = tf_model.train( feed_dict={
+#                             'x': batch_x,
+#                             'y': batch_y
+#                         })
+#         final_train_accuracy = result['accuracy']
+#         final_train_loss = result['loss']
 
-        for val_batch in validation_loader:
-            val_x, val_y = process_data(val_batch)
-            result = tf_model.predict(feed_dict={
-                            'x': val_x,
-                            'y': val_y
-                        })
-            val_acc = result['accuracy']
-        validation_loader.reset()
+#         for val_batch in validation_loader:
+#             val_x, val_y = process_data(val_batch)
+#             result = tf_model.predict(feed_dict={
+#                             'x': val_x,
+#                             'y': val_y
+#                         })
+#             val_acc = result['accuracy']
+#         validation_loader.reset()
 
-        num_iter+=1
-        if verbose:
-            kwargs = {  "iteration": num_iter,
-                        "train_loss": "{:.3f}".format(final_train_loss),
-                        "train_accuracy": "{:.3f}".format(final_train_accuracy),
-                        "time": _time.time() - start_time}
-            if validation_set is not None:
-                kwargs["validation_accuracy"] = "{:.3f}".format(val_acc)
-            table_printer.print_row(**kwargs)
+#         num_iter+=1
+#         if verbose:
+#             kwargs = {  "iteration": num_iter,
+#                         "train_loss": "{:.3f}".format(final_train_loss),
+#                         "train_accuracy": "{:.3f}".format(final_train_accuracy),
+#                         "time": _time.time() - start_time}
+#             if validation_set is not None:
+#                 kwargs["validation_accuracy"] = "{:.3f}".format(val_acc)
+#             table_printer.print_row(**kwargs)
 
-    final_val_accuracy = val_acc if validation_set else None
-    total_train_time = _time.time() - start_time
+#     final_val_accuracy = val_acc if validation_set else None
+#     total_train_time = _time.time() - start_time
 
-    return final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time
+#     return final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time
 
 
 def process_data(batch_data, batch_size, num_classes):
