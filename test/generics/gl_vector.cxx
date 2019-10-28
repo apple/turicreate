@@ -21,6 +21,7 @@
 #include <core/util/testing_utils.hpp>
 
 using namespace turi;
+namespace tt = boost::test_tools;
 
 BOOST_TEST_DONT_PRINT_LOG_VALUE(gl_vector<int>)
 BOOST_TEST_DONT_PRINT_LOG_VALUE(gl_vector<gl_vector<int>>)
@@ -846,20 +847,20 @@ struct gl_vector_datatype_test  {
 
     TS_ASSERT_EQUALS(f.size(), 3);
 
-    TS_ASSERT_DELTA(f[0], 1.1, 1E-6);
-    TS_ASSERT_DELTA(f[1], 2.2, 1E-6);
-    TS_ASSERT_DELTA(f[2], 3.3, 1E-6);
+    BOOST_TEST(f[0] == 1.1, tt::tolerance(1E-6));
+    BOOST_TEST(f[1] == 2.2, tt::tolerance(1E-6));
+    BOOST_TEST(f[2] == 3.3, tt::tolerance(1E-6));
     f2 = f;
 
     TS_ASSERT_EQUALS(f.size(), 3);
-    TS_ASSERT_DELTA(f[0], 1.1, 1E-6);
-    TS_ASSERT_DELTA(f[1], 2.2, 1E-6);
-    TS_ASSERT_DELTA(f[2], 3.3, 1E-6);
+    BOOST_TEST(f[0] == 1.1, tt::tolerance(1E-6));
+    BOOST_TEST(f[1] == 2.2, tt::tolerance(1E-6));
+    BOOST_TEST(f[2] == 3.3, tt::tolerance(1E-6));
 
     TS_ASSERT_EQUALS(f2.size(), 3);
-    TS_ASSERT_DELTA(f2[0], 1.1, 1E-6);
-    TS_ASSERT_DELTA(f2[1], 2.2, 1E-6);
-    TS_ASSERT_DELTA(f2[2], 3.3, 1E-6);
+    BOOST_TEST(f[0] == 1.1, tt::tolerance(1E-6));
+    BOOST_TEST(f[1] == 2.2, tt::tolerance(1E-6));
+    BOOST_TEST(f[2] == 3.3, tt::tolerance(1E-6));
 
     verify_serialization(f);
     verify_consistency(f);

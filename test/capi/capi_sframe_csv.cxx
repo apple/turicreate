@@ -21,6 +21,7 @@
 #include "capi_utils.hpp"
 
 using namespace turi;
+namespace tt = boost::test_tools;
 
 struct csv_test {
   csv_line_tokenizer tokenizer;
@@ -601,7 +602,7 @@ struct test_equality_visitor {
   void operator()(flex_image t, flex_image u) const { TS_FAIL("Cannot compare images"); }
   void operator()(flex_undefined t, flex_undefined u) const { }
   void operator()(flex_int t, flex_int u) const { TS_ASSERT_EQUALS(t, u); }
-  void operator()(flex_float t, flex_float u) const { TS_ASSERT_DELTA(t, u, 1E-5); }
+  void operator()(flex_float t, flex_float u) const { BOOST_TEST(t == u, tt::tolerance(1E-5)); }
   void operator()(flex_string t, flex_string u) const { TS_ASSERT_EQUALS(t, u); }
   void operator()(flex_date_time t, flex_date_time u) const {
     TS_ASSERT_EQUALS(t.posix_timestamp(), u.posix_timestamp());
@@ -611,7 +612,7 @@ struct test_equality_visitor {
   void operator()(flex_vec t, flex_vec u) const {
     TS_ASSERT_EQUALS(t.size(), u.size());
     for (size_t i = 0;i < t.size(); ++i) {
-      TS_ASSERT_DELTA(t[i], u[i], 1E-5);
+      BOOST_TEST(t[i] == u[i], tt::tolerance(1E-5));
     }
   }
   void operator()(flex_list t, flex_list u) const {

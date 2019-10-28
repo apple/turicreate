@@ -36,6 +36,8 @@ class EXPORT style_transfer : public ml_model_base {
   void train(gl_sarray style, gl_sarray content,
              std::map<std::string, flexible_type> opts);
 
+  gl_sarray predict(variant_type data, std::map<std::string, flexible_type> opts);
+
   virtual void init_train(gl_sarray style, gl_sarray content,
                           std::map<std::string, flexible_type> opts);
 

@@ -3,7 +3,9 @@
 #include <core/util/test_macros.hpp>
 #include <timer/timer.hpp>
 #include <unistd.h>
+
 using namespace turi;
+namespace tt = boost::test_tools;
 
 struct timer_test {
 public:
@@ -12,10 +14,10 @@ public:
     timer ti;
     ti.start();
     double t = ti.current_time();
-    BOOST_TEST(t == 0.0, boost::test_tools::tolerance(0.2));
+    BOOST_TEST(t == 0.0, tt::tolerance(0.2));
     sleep(3);
     t = ti.current_time();
-    BOOST_TEST(t == 3.0, boost::test_tools::tolerance(0.2));
+    BOOST_TEST(t == 3.0, tt::tolerance(0.2));
   }
 
 
@@ -24,7 +26,7 @@ public:
     int t = timer::approx_time_seconds();
     sleep(3);
     int t2 = timer::approx_time_seconds();
-    BOOST_TEST(double(t2 - t) == 3.0, boost::test_tools::tolerance(2.0));
+    BOOST_TEST(double(t2 - t) == 3.0, tt::tolerance(0.2));
   }
 
 

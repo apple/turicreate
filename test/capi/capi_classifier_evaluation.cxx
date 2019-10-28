@@ -15,6 +15,7 @@
 #include "capi_utils.hpp"
 
 using namespace turi;
+namespace tt = boost::test_tools;
 
 BOOST_AUTO_TEST_CASE(test_confusion_matrix) {
 
@@ -85,9 +86,9 @@ BOOST_AUTO_TEST_CASE(test_prediction_report) {
   TS_ASSERT((out["predicted_correctly"] == gl_sarray({1, 2})).all());
   TS_ASSERT((out["predicted_this_incorrectly"] == gl_sarray({2, 1})).all());
   TS_ASSERT((out["missed_predicting_this"] == gl_sarray({1, 2})).all());
-  TS_ASSERT_DELTA(out["precision"][0], 0.3333, 0.01);
-  TS_ASSERT_DELTA(out["precision"][1], 0.6666, 0.01);
-  TS_ASSERT_DELTA(out["recall"][0], 0.5, 0.01);
-  TS_ASSERT_DELTA(out["recall"][1], 0.5, 0.01);
+  BOOST_TEST(out["precision"][0] == 0.3333, tt::tolerance(0.01));
+  BOOST_TEST(out["precision"][1] == 0.6666, tt::tolerance(0.01));
+  BOOST_TEST(out["recall"][0] == 0.5, tt::tolerance(0.01));
+  BOOST_TEST(out["recall"][1] == 0.5, tt::tolerance(0.01));
 
 }

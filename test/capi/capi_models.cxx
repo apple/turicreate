@@ -26,6 +26,9 @@
 #include <boost/filesystem.hpp>
 
 #include "capi_utils.hpp"
+
+namespace tt = boost::test_tools;
+
 BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
   for (const char* model_name :
        {"boosted_trees_regression", "decision_tree_regression",
@@ -173,7 +176,7 @@ BOOST_AUTO_TEST_CASE(test_boosted_trees_double) {
 
           // Make sure they are close -- on a tiny dataset like this the default
           // setting
-          TS_ASSERT_DELTA(v, target_values[i], 0.5);
+          BOOST_TEST(v == target_values[i], tt::tolerance(0.5));
         }
         tc_release(ret_2);
       }

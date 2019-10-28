@@ -15,6 +15,7 @@
 #include <core/data/flexible_type/flexible_type_converter.hpp>
 
 using namespace turi;
+namespace tt = boost::test_tools;
 
 
 struct legacy_flex_date_time {
@@ -386,8 +387,8 @@ struct flexible_datatype_test  {
     dt.set_posix_timestamp(441964800);
     dt.set_time_zone_offset(flex_date_time::EMPTY_TIMEZONE);
     dt.set_microsecond(500000);
-    TS_ASSERT_DELTA(dt.microsecond_res_timestamp(), (double)(441964800.5),
-                    flex_date_time::MICROSECOND_EPSILON);
+    BOOST_TEST(dt.microsecond_res_timestamp() == (double)(441964800.5),
+               tt::tolerance(flex_date_time::MICROSECOND_EPSILON));
     // out of limit microsecond values
     TS_ASSERT_THROWS_ANYTHING(dt.set_microsecond(-1));
     TS_ASSERT_THROWS_ANYTHING(dt.set_microsecond(1000001));
@@ -401,11 +402,11 @@ struct flexible_datatype_test  {
     TS_ASSERT(flex_date_time(441964800, 0, 1) == flex_date_time(441964800, 10, 1));
 
     dt.set_microsecond_res_timestamp(441964800.5);
-    TS_ASSERT_DELTA(dt.microsecond_res_timestamp(), 441964800.5,
-                    flex_date_time::MICROSECOND_EPSILON);
+    BOOST_TEST(dt.microsecond_res_timestamp() == 441964800.5,
+               tt::tolerance(flex_date_time::MICROSECOND_EPSILON));
     dt.set_microsecond_res_timestamp(-441964800.5);
-    TS_ASSERT_DELTA(dt.microsecond_res_timestamp(), -441964800.5,
-                    flex_date_time::MICROSECOND_EPSILON);
+    BOOST_TEST(dt.microsecond_res_timestamp() == -441964800.5,
+               tt::tolerance(flex_date_time::MICROSECOND_EPSILON));
     TS_ASSERT_EQUALS(dt.microsecond(), 500000);
 
     // make sure that limit values are stored correctly
@@ -443,8 +444,8 @@ struct flexible_datatype_test  {
     flexible_type x = 1.04566;
     for (size_t i = 0;i < 100000; ++i)  f += x;
     expected_val = dt.posix_timestamp() + 100000 * 1.04566;
-    TS_ASSERT_DELTA(f.get<flex_date_time>().microsecond_res_timestamp(),
-                    expected_val, 1E-5);
+    BOOST_TEST(f.get<flex_date_time>().microsecond_res_timestamp() == expected_val,
+               tt::tolerance(1E-5));
 
 
 
@@ -456,8 +457,8 @@ struct flexible_datatype_test  {
     x = 1.04566;
     for (size_t i = 0;i < 100000; ++i) f += x;
     expected_val = dt.posix_timestamp() + 100000 * 1.04566;
-    TS_ASSERT_DELTA(f.get<flex_date_time>().microsecond_res_timestamp(),
-                    expected_val, 1E-5);
+    BOOST_TEST(f.get<flex_date_time>().microsecond_res_timestamp() == expected_val,
+               tt::tolerance(1E-5));
 
 
     // test subtraction
@@ -467,8 +468,8 @@ struct flexible_datatype_test  {
     x = 1.04566;
     for (size_t i = 0;i < 100000; ++i)  f -= x;
     expected_val = dt.posix_timestamp() - 100000 * 1.04566;
-    TS_ASSERT_DELTA(f.get<flex_date_time>().microsecond_res_timestamp(),
-                    expected_val, 1E-5);
+    BOOST_TEST(f.get<flex_date_time>().microsecond_res_timestamp() == expected_val,
+               tt::tolerance(1E-5));
 
 
 
@@ -480,8 +481,8 @@ struct flexible_datatype_test  {
     x = 1.04566;
     for (size_t i = 0;i < 100000; ++i) f -= x;
     expected_val = dt.posix_timestamp() - 100000 * 1.04566;
-    TS_ASSERT_DELTA(f.get<flex_date_time>().microsecond_res_timestamp(),
-                    expected_val, 1E-5);
+    BOOST_TEST(f.get<flex_date_time>().microsecond_res_timestamp() == expected_val,
+               tt::tolerance(1E-5));
 
   }
 

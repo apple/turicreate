@@ -12,6 +12,8 @@
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/util/test_macros.hpp>
 
+namespace tt = boost::test_tools;
+
 BOOST_AUTO_TEST_CASE(test_tc_datetime_create_empty) {
   tc_error* error = nullptr;
   tc_datetime* dt = tc_datetime_create_empty(&error);
@@ -142,7 +144,7 @@ BOOST_AUTO_TEST_CASE(test_tc_datetime_set_highres_timestamp) {
   tc_datetime* dt = tc_datetime_create_empty(&error);
   tc_datetime_set_highres_timestamp(dt, TIMESTAMP, &error);
   TS_ASSERT_EQUALS(error, nullptr);
-  TS_ASSERT_DELTA(dt->value.microsecond_res_timestamp(), TIMESTAMP, 0.000002);
+  BOOST_TEST(dt->value.microsecond_res_timestamp() == TIMESTAMP, tt::tolerance(0.000002));
 }
 
 
@@ -154,7 +156,7 @@ BOOST_AUTO_TEST_CASE(test_tc_datetime_get_highres_timestamp) {
   dt->value.set_microsecond_res_timestamp(TIMESTAMP);
   double ts = tc_datetime_get_highres_timestamp(dt, &error);
   TS_ASSERT_EQUALS(error, nullptr);
-  TS_ASSERT_DELTA(ts, TIMESTAMP, 0.000002);
+  BOOST_TEST(ts == TIMESTAMP, tt::tolerance(0.000002));
 }
 
 BOOST_AUTO_TEST_CASE(test_tc_datetime_less_than) {

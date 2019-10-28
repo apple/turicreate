@@ -17,7 +17,10 @@
 
 BOOST_TEST_DONT_PRINT_LOG_VALUE(std::vector<double>)
 BOOST_TEST_DONT_PRINT_LOG_VALUE(std::vector<std::string>)
+
 using namespace turi;
+namespace tt = boost::test_tools;
+
 struct sframe_test  {
   std::string test_writer_prefix;
   std::string test_writer_dbl_prefix;
@@ -942,9 +945,9 @@ struct sframe_test  {
      TS_ASSERT_EQUALS(vals[1].size(), 6);
      TS_ASSERT_EQUALS(vals[2].size(), 6);
 
-     TS_ASSERT_DELTA(vals[0][0], 1.1, 1E-5);
-     TS_ASSERT_DELTA(vals[1][0], 2.2, 1E-5);
-     TS_ASSERT_DELTA(vals[2][0], 3.3, 1E-5);
+     BOOST_TEST(vals[0][0] == 1.1, tt::tolerance(1E-5));
+     BOOST_TEST(vals[1][0] == 2.2, tt::tolerance(1E-5));
+     BOOST_TEST(vals[2][0] == 3.3, tt::tolerance(1E-5));
 
      TS_ASSERT_EQUALS(vals[0][1], 1);
      TS_ASSERT_EQUALS(vals[1][1], 2);
@@ -1370,15 +1373,15 @@ struct sframe_test  {
      for(auto& row : ret) {
        std::string key = row[0];
        allkeys.insert(key);
-       TS_ASSERT_DELTA(double(group_results[0][key])*(NUM_GROUPS/double(NUM_ROWS)), double(row[1]), 1E-5);
-       TS_ASSERT_DELTA(double(group_results[1][key])*(NUM_GROUPS/double(NUM_ROWS)), double(row[2]), 1E-5);
-       TS_ASSERT_DELTA(double(group_results[2][key])*(NUM_GROUPS/double(NUM_ROWS)), double(row[3]), 1E-5);
-       TS_ASSERT_DELTA(double(group_results[2][key])*(NUM_GROUPS/double(NUM_ROWS)), double(row[4]), 1E-5);
+       BOOST_TEST(double(group_results[0][key])*(NUM_GROUPS/double(NUM_ROWS)) == double(row[1]), tt::tolerance(1E-5));
+       BOOST_TEST(double(group_results[1][key])*(NUM_GROUPS/double(NUM_ROWS)) == double(row[2]), tt::tolerance(1E-5));
+       BOOST_TEST(double(group_results[2][key])*(NUM_GROUPS/double(NUM_ROWS)) == double(row[3]), tt::tolerance(1E-5));
+       BOOST_TEST(double(group_results[2][key])*(NUM_GROUPS/double(NUM_ROWS)) == double(row[4]), tt::tolerance(1E-5));
        flex_vec fv1 = (group_results[3][key]*(NUM_GROUPS/double(NUM_ROWS))).get<flex_vec>();
        flex_vec fv2 = row[5].get<flex_vec>();
        TS_ASSERT_EQUALS(fv1.size(), fv2.size());
        for (size_t i = 0;i <fv1.size(); ++i) {
-         TS_ASSERT_DELTA(fv1[i], fv2[i] , 1E-5);
+         BOOST_TEST(fv1[i] == fv2[i], tt::tolerance(1E-5));
        }
      }
      TS_ASSERT_EQUALS(allkeys.size(), NUM_GROUPS);
@@ -1476,16 +1479,16 @@ struct sframe_test  {
      for(auto& row : ret) {
        std::string key = row[0] + row[1];
        allkeys.insert(key);
-       TS_ASSERT_DELTA(double(group_results[0][key])*(NUM_GROUPS/double(NUM_ROWS)), double(row[2]), 1E-5);
-       TS_ASSERT_DELTA(double(group_results[1][key])*(NUM_GROUPS/double(NUM_ROWS)), double(row[3]), 1E-5);
-       TS_ASSERT_DELTA(double(group_results[2][key])*(NUM_GROUPS/double(NUM_ROWS)), double(row[4]), 1E-5);
-       TS_ASSERT_DELTA(double(group_results[2][key])*(NUM_GROUPS/double(NUM_ROWS)), double(row[5]), 1E-5);
+       BOOST_TEST(double(group_results[0][key])*(NUM_GROUPS/double(NUM_ROWS)) == double(row[2]), tt::tolerance(1E-5));
+       BOOST_TEST(double(group_results[1][key])*(NUM_GROUPS/double(NUM_ROWS)) == double(row[3]), tt::tolerance(1E-5));
+       BOOST_TEST(double(group_results[2][key])*(NUM_GROUPS/double(NUM_ROWS)) == double(row[4]), tt::tolerance(1E-5));
+       BOOST_TEST(double(group_results[2][key])*(NUM_GROUPS/double(NUM_ROWS)) == double(row[5]), tt::tolerance(1E-5));
 
        flex_vec fv1 = (group_results[3][key]*(NUM_GROUPS/double(NUM_ROWS))).get<flex_vec>();
        flex_vec fv2 = row[6].get<flex_vec>();
        TS_ASSERT_EQUALS(fv1.size(), fv2.size());
        for (size_t i = 0;i <fv1.size(); ++i) {
-         TS_ASSERT_DELTA(fv1[i], fv2[i] , 1E-5);
+         BOOST_TEST(fv1[i] == fv2[i], tt::tolerance(1E-5));
        }
      }
      TS_ASSERT_EQUALS(allkeys.size(), NUM_GROUPS);

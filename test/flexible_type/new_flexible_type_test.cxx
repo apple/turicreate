@@ -17,6 +17,7 @@
 
 
 using namespace turi;
+namespace tt = boost::test_tools;
 
 
 struct new_flexible_type_test  {
@@ -38,11 +39,11 @@ struct new_flexible_type_test  {
       // test assignment from flex_float and copy of flex_float
       f = 1.1;
       TS_ASSERT_EQUALS(f.get_type(), flex_type_enum::FLOAT);
-      TS_ASSERT_DELTA(f.get<flex_float>(), 1.1, 1E-6);
+      BOOST_TEST(f.get<flex_float>() == 1.1, tt::tolerance(1E-6));
       f2 = f;
       TS_ASSERT_EQUALS(f2.get_type(), flex_type_enum::FLOAT);
-      TS_ASSERT_DELTA(f2.get<flex_float>(), 1.1, 1E-6);
-      TS_ASSERT_DELTA(f2[0], 1.1, 1E-6);
+      BOOST_TEST(f2.get<flex_float>() == 1.1, tt::tolerance(1E-6));
+      BOOST_TEST(f2[0] == 1.1, tt::tolerance(1E-6));
 
       // test assignment from char*
       f = "hello world";
@@ -61,15 +62,15 @@ struct new_flexible_type_test  {
       f = flex_vec{1.1, 2.2, 3.3};
       TS_ASSERT_EQUALS(f.get_type(), flex_type_enum::VECTOR);
       TS_ASSERT_EQUALS(f.size(), 3);
-      TS_ASSERT_DELTA(f[0], 1.1, 1E-6);
-      TS_ASSERT_DELTA(f[1], 2.2, 1E-6);
-      TS_ASSERT_DELTA(f[2], 3.3, 1E-6);
+      BOOST_TEST(f[0] == 1.1, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 2.2, tt::tolerance(1E-6));
+      BOOST_TEST(f[2] == 3.3, tt::tolerance(1E-6));
       f2 = f;
       TS_ASSERT_EQUALS(f2.get_type(), flex_type_enum::VECTOR);
       TS_ASSERT_EQUALS(f2.size(), 3);
-      TS_ASSERT_DELTA(f2[0], 1.1, 1E-6);
-      TS_ASSERT_DELTA(f2[1], 2.2, 1E-6);
-      TS_ASSERT_DELTA(f2[2], 3.3, 1E-6);
+      BOOST_TEST(f2[0] == 1.1, tt::tolerance(1E-6));
+      BOOST_TEST(f2[1] == 2.2, tt::tolerance(1E-6));
+      BOOST_TEST(f2[2] == 3.3, tt::tolerance(1E-6));
 
       // test release of vector back to integer
       f = 1;
@@ -122,10 +123,10 @@ struct new_flexible_type_test  {
       }
       std::vector<double> vvec;
       vvec = f;
-      TS_ASSERT_DELTA(f[0], 1.1, 1E-6);
-      TS_ASSERT_DELTA(f[1], 2.2, 1E-6);
-      TS_ASSERT_DELTA(vvec[0], 1.1, 1E-6);
-      TS_ASSERT_DELTA(vvec[1], 2.2, 1E-6);
+      BOOST_TEST(f[0] == 1.1, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 2.2, tt::tolerance(1E-6));
+      BOOST_TEST(vvec[0] == 1.1, tt::tolerance(1E-6));
+      BOOST_TEST(vvec[1] == 2.2, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], (i - 2));
         TS_ASSERT_EQUALS(vvec[i], (i - 2));
@@ -148,16 +149,16 @@ struct new_flexible_type_test  {
 #ifdef __clang__
 #pragma clang diagnostic pop
 #endif // __clang__
-      TS_ASSERT_DELTA(f[0], 1.1, 1E-6);
-      TS_ASSERT_DELTA(f[1], 2.2, 1E-6);
+      BOOST_TEST(f[0] == 1.1, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 2.2, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], (i - 2));
       }
 
       // vector addition
       f = f + f;
-      TS_ASSERT_DELTA(f[0], 2.2, 1E-6);
-      TS_ASSERT_DELTA(f[1], 4.4, 1E-6);
+      BOOST_TEST(f[0] == 2.2, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 4.4, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], 2 * (i - 2));
       }
@@ -165,8 +166,8 @@ struct new_flexible_type_test  {
 
       // vector scalar addition
       f = f + 1;
-      TS_ASSERT_DELTA(f[0], 3.2, 1E-6);
-      TS_ASSERT_DELTA(f[1], 5.4, 1E-6);
+      BOOST_TEST(f[0] == 3.2, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 5.4, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], 1 + 2 * (i - 2));
       }
@@ -175,8 +176,8 @@ struct new_flexible_type_test  {
 
       // vector scalar subtraction
       f = f - 1;
-      TS_ASSERT_DELTA(f[0], 2.2, 1E-6);
-      TS_ASSERT_DELTA(f[1], 4.4, 1E-6);
+      BOOST_TEST(f[0] == 2.2, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 4.4, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], 2 * (i - 2));
       }
@@ -184,8 +185,8 @@ struct new_flexible_type_test  {
 
       // vector scalar division
       f = f / 2;
-      TS_ASSERT_DELTA(f[0], 1.1, 1E-6);
-      TS_ASSERT_DELTA(f[1], 2.2, 1E-6);
+      BOOST_TEST(f[0] == 1.1, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 2.2, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], (i - 2));
       }
@@ -193,8 +194,8 @@ struct new_flexible_type_test  {
 
       // vector scalar multiplication
       f = 2 * f;
-      TS_ASSERT_DELTA(f[0], 2.2, 1E-6);
-      TS_ASSERT_DELTA(f[1], 4.4, 1E-6);
+      BOOST_TEST(f[0] == 2.2, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 4.4, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], 2 * (i - 2));
       }
@@ -202,8 +203,8 @@ struct new_flexible_type_test  {
 
       // vector scalar division
       f = f * 0.5;
-      TS_ASSERT_DELTA(f[0], 1.1, 1E-6);
-      TS_ASSERT_DELTA(f[1], 2.2, 1E-6);
+      BOOST_TEST(f[0] == 1.1, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == 2.2, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], (i - 2));
       }
@@ -211,8 +212,8 @@ struct new_flexible_type_test  {
 
       // vector scalar division
       f = -f;
-      TS_ASSERT_DELTA(f[0], -1.1, 1E-6);
-      TS_ASSERT_DELTA(f[1], -2.2, 1E-6);
+      BOOST_TEST(f[0] == -1.1, tt::tolerance(1E-6));
+      BOOST_TEST(f[1] == -2.2, tt::tolerance(1E-6));
       for (flexible_type i = 2;i < 12; ++i) {
         TS_ASSERT_EQUALS(f[i], -(i - 2));
       }
@@ -266,13 +267,13 @@ struct new_flexible_type_test  {
       f = 1.1;
       // product with integer on the left side
       f = 2 * f;
-      TS_ASSERT_DELTA(f, 2.2, 1E-6);
+      BOOST_TEST(f == 2.2, tt::tolerance(1E-6));
       // product with float on the left side
       f = 2.0 * f;
-      TS_ASSERT_DELTA(f, 4.4, 1E-6);
+      BOOST_TEST(f == 4.4, tt::tolerance(1E-6));
       // division with integer on the left side
       f = 8 / f;
-      TS_ASSERT_DELTA(f, 1.818181818, 1E-6);
+      BOOST_TEST((double)(f) == (double)(1.818181818), tt::tolerance(1E-6));
 
       // soemthing extremely fun
       f = {1.0, 2.0, 3.0};
