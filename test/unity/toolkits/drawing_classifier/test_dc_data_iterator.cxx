@@ -166,7 +166,6 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
   {
     size_t num_rows = 0;
-    size_t batch_size = 0;
 
     drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
 
@@ -187,7 +186,6 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
 
   {
     size_t num_rows = 0;
-    size_t batch_size = 1;
 
     drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
 
@@ -210,7 +208,6 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
     // as long as num_rows is not zero,
     // the initial call of `has_next_batch` should return true
     size_t num_rows = 1;
-    size_t batch_size = 1;
 
     drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
 
