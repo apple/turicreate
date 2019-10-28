@@ -29,12 +29,11 @@ using neural_net::shared_float_array;
 void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
                                      const flex_image& bitmap) {
   image_util::copy_image_to_memory(
-      /* image input */ bitmap,
+      /* image input    */ bitmap,
       /* output pointer */ next_drawing_pointer,
-      /* output strides */
-      {bitmap.m_width * bitmap.m_channels, bitmap.m_channels, 1},
-      /* output shape */ {bitmap.m_height, bitmap.m_width, bitmap.m_channels},
-      /* channel_last */ true);
+      /* output strides */ {bitmap.m_width * bitmap.m_channels, bitmap.m_channels, 1},
+      /* output shape   */ {bitmap.m_height, bitmap.m_width, bitmap.m_channels},
+      /* channel_last   */ true);
 }
 
 }  // namespace
