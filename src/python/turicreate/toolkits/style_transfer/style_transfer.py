@@ -166,7 +166,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet_mlmodel']()
     pretrained_resnet_model_path = pretrained_resnet_model.get_model_path()
-    pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg16_mlmodel']()
+    pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg_mlmodel']()
     pretrained_vgg16_model_path = pretrained_vgg16_model.get_model_path()
         
     params = {
