@@ -35,7 +35,7 @@ def define_tensorflow_variables(net_params, trainable=True):
     for key, value in net_params.items():
         if 'weight' in key:
             if 'conv' in key:
-                tensorflow_variables[key] = _tf.Variable(initial_value = _np.transpose(net_params[key], (2,3,1,0)), name=key, trainable=trainable)
+                tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_conv2d_tf_to_coreml(net_params[key]), name=key)x
             else:
                 tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_dense_coreml_to_tf(net_params[key]), name=key, trainable=trainable)
         else:
@@ -474,7 +474,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
 
         self._batch_size = 1
         self._finetune_all_params = True
-        self._define_training_graph = True
+        self._define_training_graph = bool(config['st_training'])
         self._tf_variables = define_tensorflow_variables(net_params)
 
         # TODO: take care of batch size
@@ -524,7 +524,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for var, val in zip(tvars, tvars_vals):
             if 'weight' in var.name:
                 if 'conv' in var.name:
-                    tf_export_params[var.name.split(':')[0]] = np.transpose(val, (3,2,0,1))
+                    tf_export_params[var.name.split(':')[0]] = _utils.convert_conv2d_coreml_to_tf(val)
                 else:
                     tf_export_params[var.name.split(':')[0]] =  _utils.convert_dense_tf_to_coreml(val)
             else:

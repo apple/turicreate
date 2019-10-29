@@ -58,6 +58,26 @@ def convert_conv1d_coreml_to_tf(conv_weights):
 	conv_weights = np.transpose(conv_weights, (3, 1, 0, 2))
 	return np.squeeze(conv_weights, axis=3)
 
+def convert_conv2d_coreml_to_tf(conv_weights):
+	
+	"""
+	The Convolutional weights in CoreML specification converted to 
+	the TensorFlow format for training in TensorFlow.
+
+	Parameters
+    ----------
+    conv_weights: 4d numpy array of shape 
+       [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
+
+    Returns
+    -------
+	return: 4d numpy array of shape
+	   [kernelWidth, kernelHeight, kernelChannels, outputChannels]
+
+	"""
+	conv_weights = np.transpose(conv_weights, (3, 2, 0, 1))
+	return conv_weights
+
 def convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o):
 	"""
 	The weights of four gates of LSTM - input, state, forget, output are 
@@ -150,6 +170,24 @@ def convert_conv1d_tf_to_coreml(conv_weights):
 	conv_weights = np.transpose(conv_weights, (3, 1, 2, 0))
 	return conv_weights
 
+def convert_conv2d_coreml_to_tf(conv_weights):
+	"""
+	Convolutional weights from TensorFlow in the format [kernelWidth, kernelChannels, outputChannels]
+	are converted back in CoreML specifications [outputChannels, kernelChannels, kernelHeight, kernelWidth].
+
+	Parameters
+    ----------
+    conv_weights: 3d numpy array of shape
+	   [kernelWidth, kernelHeight, kernelChannels, outputChannels]
+
+    Returns
+    -------
+	return: 4d numpy array of shape 
+       [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
+
+	"""
+	return conv_weights
+
 def convert_lstm_weight_tf_to_coreml(lstm_weight, split):
 	"""
 	The weights of four gates of LSTM - input, state, forget, output are 
@@ -222,5 +260,3 @@ def convert_dense_tf_to_coreml(dense_weights):
 	"""
 	dense_weights = np.transpose(dense_weights)
 	return np.reshape(dense_weights, (dense_weights.shape[0], dense_weights.shape[1], 1, 1))
-
-
