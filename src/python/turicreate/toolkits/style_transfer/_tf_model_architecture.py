@@ -35,7 +35,11 @@ def define_tensorflow_variables(net_params, trainable=True):
     for key, value in net_params.items():
         if 'weight' in key:
             if 'conv' in key:
+<<<<<<< HEAD
                 tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_conv2d_tf_to_coreml(net_params[key]), name=key)x
+=======
+                tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_conv2d_tf_to_coreml(net_params[key]), name=key)
+>>>>>>> 313f3c3a20... changes
             else:
                 tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_dense_coreml_to_tf(net_params[key]), name=key, trainable=trainable)
         else:

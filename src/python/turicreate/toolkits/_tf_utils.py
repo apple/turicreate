@@ -67,12 +67,12 @@ def convert_conv2d_coreml_to_tf(conv_weights):
 	Parameters
     ----------
     conv_weights: 4d numpy array of shape 
-       [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
+       [output_channels, input_channels, filter_height, filter_width]
 
     Returns
     -------
 	return: 4d numpy array of shape
-	   [kernelWidth, kernelHeight, kernelChannels, outputChannels]
+	   [filter_height, filter_width, input_channels, output_channels]
 
 	"""
 	conv_weights = np.transpose(conv_weights, (2, 3, 1, 0))
@@ -178,12 +178,11 @@ def convert_conv2d_tf_to_coreml(conv_weights):
 	Parameters
     ----------
     conv_weights: 4d numpy array of shape
-	   [kernelWidth, kernelHeight, kernelChannels, outputChannels]
-
+	   [filter_height, filter_width, input_channels, output_channels]
     Returns
     -------
 	return: 4d numpy array of shape 
-       [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
+       [output_channels, input_channels, filter_height, filter_width] 
 
 	"""
 	conv_weights = np.transpose(conv_weights, (3, 2, 0, 1))
