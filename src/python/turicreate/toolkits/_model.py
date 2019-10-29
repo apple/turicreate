@@ -17,7 +17,7 @@ import turicreate._connect.main as glconnect
 from turicreate.data_structures.sframe import SFrame as _SFrame
 import turicreate.extensions as _extensions
 from turicreate.extensions import _wrap_function_return
-from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
+from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct, _read_env_var_cpp
 from turicreate.util import _make_internal_url
 from turicreate.toolkits._main import ToolkitError
 import turicreate.util._file_util as file_util
@@ -26,6 +26,12 @@ from copy import copy as _copy
 import six as _six
 
 MODEL_NAME_MAP = {}
+
+# Object detector use C++ codepath
+OD_USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
+
+# Activity Classifier use C++ codepath
+AC_USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 
 def load_model(location):
     """
@@ -83,7 +89,6 @@ def load_model(location):
         name = saved_state['model_name'];
         if name in MODEL_NAME_MAP:
             cls = MODEL_NAME_MAP[name]
-
             if 'model' in saved_state:
                 # this is a native model
                 return cls(saved_state['model'])
@@ -92,6 +97,17 @@ def load_model(location):
                 model_data = saved_state['side_data']
                 model_version = model_data['model_version']
                 del model_data['model_version']
+
+                if name=='activity_classifier' and AC_USE_CPP:
+                    model = _extensions.activity_classifier()
+                    model.import_from_custom_model(model_data, model_version)
+                    return cls(model)
+
+                if name=='object_detector' and OD_USE_CPP:
+                    model = _extensions.object_detector()
+                    model.import_from_custom_model(model_data, model_version)
+                    return cls(model)
+
                 return cls._load_version(model_data, model_version)
 
         elif hasattr(_extensions, name):
