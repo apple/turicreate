@@ -577,8 +577,8 @@ variant_type object_detector::convert_map_to_types(
   return final_result;
 }
 
-gl_sarray object_detector::predict(variant_type data, std::map<std::string, flexible_type> opts) {
-
+variant_type object_detector::predict(
+    variant_type data, std::map<std::string, flexible_type> opts) {
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
@@ -614,12 +614,21 @@ gl_sarray object_detector::predict(variant_type data, std::map<std::string, flex
     iou_threshold = opts["iou_threshold"];
   }
 
-  // Convert dasta to SFrame
+  // Convert data to SFrame
   std::string image_column_name = read_state<flex_string>("feature");
   gl_sframe sframe_data = convert_types_to_sframe(data, image_column_name);
 
   perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
-  return result.close();
+
+  // Convert output to flex_list if data is a single image
+  gl_sarray result_sarray = result.close();
+  variant_type final_result;
+  if (variant_is<gl_sframe>(data) || variant_is<gl_sarray>(data)) {
+    final_result = to_variant(result_sarray);
+  } else {
+    final_result = to_variant(result_sarray[0]);
+  }
+  return final_result;
 }
 
 gl_sframe object_detector::convert_types_to_sframe(
