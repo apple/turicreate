@@ -517,5 +517,9 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
   return model_wrapper;
 }
 
+void style_transfer::import_from_custom_model(variant_map_type model_data, size_t version) {
+  std::cout << version << std::endl;
+}
+
 }  // namespace style_transfer
 }  // namespace turi
