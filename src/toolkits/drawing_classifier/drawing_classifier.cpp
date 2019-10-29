@@ -332,9 +332,23 @@ void drawing_classifier::init_training(
       {"training_iterations", 0},
   });
 
-  // Initialize the neural net. Note that this depends on statistics computed by
-  // the data iterator.
-  nn_spec_ = init_model();
+  if (opts.find("warm_start") != opts.end() ) { // TODO: add better handling e.g. sanitize input etc
+    // Extract 'mlmodel_path' from the options if warmstart enabled,
+    // to avoid storing it as a model field.
+    auto mlmodel_path_iter = opts.find("mlmodel_path");
+    if (mlmodel_path_iter == opts.end()) {
+      log_and_throw("Expected option \"mlmodel_path\" not found.");
+    }
+    const std::string mlmodel_path = mlmodel_path_iter->second;
+    opts.erase(mlmodel_path_iter);
+
+    std::unique_ptr<model_spec> nn_spec_(new model_spec(mlmodel_path)); //TODO: Check layers and add dense1 and onwards
+
+  } else {
+    // Initialize the neural net. Note that this depends on statistics computed by
+    // the data iterator.
+    nn_spec_ = init_model();
+  }
 
   // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(

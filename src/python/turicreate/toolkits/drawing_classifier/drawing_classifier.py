@@ -264,6 +264,10 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             ctx=ctx,
             allow_missing=True)
 
+        # TODO: Comment lines above
+        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedMLodel()
+        pretrained_model_path = pretrained_model.get_model_path()
+        params['mlmodel_path'] = pretrained_model_path
 
     if params['use_tensorflow']:
         ## TensorFlow implementation
