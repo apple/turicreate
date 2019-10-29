@@ -196,9 +196,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         'aug_inter_method': 2,
         'checkpoint': False,
         'checkpoint_prefix': 'style_transfer',
-        'checkpoint_increment': 1000,
-        'resnet_mlmodel_path': pretrained_resnet_model_path,
-        'vgg_mlmodel_path':  pretrained_vgg16_model_path
+        'checkpoint_increment': 1000
     }
 
     if '_advanced_parameters' in kwargs:
@@ -220,12 +218,12 @@ def create(style_dataset, content_dataset, style_feature=None,
         import turicreate.toolkits.libtctensorflow
 
         model = _turicreate.extensions.style_transfer()
-        pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet_mlmodel']()
-        pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg_mlmodel']()
+        pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet-16']()
+        pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']()
         options = {}
         options['num_styles'] = len(style_dataset)
-        options['resnet_mlmodel_path'] = pretrained_resnet_model.get_model_path()
-        options['vgg_mlmodel_path'] = pretrained_vgg16_model.get_model_path()
+        options['resnet_mlmodel_path'] = pretrained_resnet_model.get_model_path('coreml')
+        options['vgg_mlmodel_path'] = pretrained_vgg16_model.get_model_path('coreml')
 
         model.train(style_dataset[style_feature], content_dataset[content_feature], options)
         return StyleTransfer_beta(model_proxy=model, name=name)
@@ -258,7 +256,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     # TRANSFORMER MODEL
     from ._model import Transformer as _Transformer
-    transformer_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[model]().get_model_path()
+    transformer_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[model]().get_model_path('mxnet')
     transformer = _Transformer(num_styles, batch_size_each)
     transformer.collect_params().initialize(ctx=ctx)
 
@@ -271,7 +269,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     # VGG MODEL
     from ._model import Vgg16 as _Vgg16
-    vgg_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']().get_model_path()
+    vgg_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']().get_model_path('mxnet')
     vgg_model = _Vgg16()
     vgg_model.collect_params().initialize(ctx=ctx)
     vgg_model.load_params(vgg_model_path, ctx=ctx, ignore_extra=True)
@@ -675,7 +673,7 @@ class StyleTransfer_beta(_Model):
     @classmethod
     def _native_name(cls):
         if USE_CPP:
-            return self.__name__
+            return "style_transfer"
         return None
 
     def __str__(self):

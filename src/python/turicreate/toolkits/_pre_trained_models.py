@@ -203,12 +203,12 @@ class StyleTransferTransformer():
                             'coreml': 'e0f3adaa9952ecc7d96f5e4eefb0d690' }
 
 
-    def get_model_path(self):
+    def get_model_path(self, format):
         assert(format in ('coreml', 'mxnet'))
         if (format in 'coreml') :
-            source_url =  _urlparse.urljoin(MODELS_URL_ROOT, 'transformer.mlmodel')
+            url =  _urlparse.urljoin(MODELS_URL_ROOT, 'transformer.mlmodel')
         else:
-            source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'resnet-16.params')
+            url = _urlparse.urljoin(MODELS_URL_ROOT, 'resnet-16.params')
         checksum = self.source_md5[format]
         model_path = _download_and_checksum_files([(url, checksum)], _get_cache_dir())[0]
         return model_path
@@ -224,36 +224,20 @@ class Vgg16():
         }
 
 
-    def get_model_path(self):
+    def get_model_path(self, format):
         assert(format in ('coreml', 'mxnet'))
         if (format in 'coreml') :
-            source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16.mlmodel')
+            url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16.mlmodel')
         else:
-            source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16-conv1_1-4_3.params')
+            url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16-conv1_1-4_3.params')
         checksum = self.source_md5[format]
         model_path = _download_and_checksum_files([(url, checksum)], _get_cache_dir())[0]
         return model_path
 
-class StyleTransferTransformerCoreML():
-
-    def __init__(self):
-        self.name = 'transformer'
-        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'transformer.mlmodel')
-        self.source_md5 = 'e0f3adaa9952ecc7d96f5e4eefb0d690'
-        self.model_path = _download_and_checksum_files([
-            (self.source_url, self.source_md5)
-        ], _get_cache_dir())[0]
-
-
-    def get_model_path(self):
-        return self.model_path
-
 
 STYLE_TRANSFER_BASE_MODELS = {
     'resnet-16': StyleTransferTransformer,
-    'Vgg16': Vgg16,
-    'resnet_mlmodel': StyleTransferTransformerCoreML,
-    'vgg_mlmodel': Vgg16CoreML
+    'Vgg16': Vgg16
 }
 
 
