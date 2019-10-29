@@ -42,7 +42,7 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
 
     feature : string
         Name of the column containing the input images. 'None' (the default)
-        indicates that the SFrame has only column of Image type and that will
+        indicates that the SFrame has only one column of Image type and that will
         be used for similarity.
 
     model: string, optional
