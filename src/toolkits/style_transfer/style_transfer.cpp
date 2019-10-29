@@ -36,6 +36,10 @@ constexpr size_t DEFAULT_WIDTH = 256;
 
 constexpr size_t DEFAULT_BATCH_SIZE = 1;
 
+float clamp(float v, float low, float high) {
+  return (v < low) ? low : (high < v) ? high : v;
+}
+
 void prepare_images(const image_type& image,
                     std::vector<float>::iterator start_iter, size_t width,
                     size_t height, size_t channels, size_t index) {
@@ -60,7 +64,7 @@ std::vector<std::pair<flex_int, flex_image>> process_output(
 
   size_t image_size = height * width * channels;
 
-  ASSERT_TRUE(contents.size() == image_size * batch_size);
+  ASSERT_EQ(contents.size(), image_size * batch_size);
 
   const float* start_ptr = contents.data();
 
@@ -73,10 +77,10 @@ std::vector<std::pair<flex_int, flex_image>> process_output(
 
     std::transform(start_ptr + start_offset, start_ptr + end_offset,
                    std::back_inserter(image_data), [](float val) {
-                     return (uint8_t)(std::round(val * 255.f));
+                     return static_cast<uint8_t>(clamp(std::round(val * 255.f), 0.f, 255.f));
                    });
 
-    image_type img((char*)image_data.data(), height, width, channels,
+    image_type img(reinterpret_cast<char*>(image_data.data()), height, width, channels,
                    image_data.size(), IMAGE_TYPE_CURRENT_VERSION,
                    static_cast<int>(Format::RAW_ARRAY));
 
@@ -196,12 +200,14 @@ std::unique_ptr<compute_context> style_transfer::create_compute_context()
 }
 
 std::unique_ptr<data_iterator> style_transfer::create_iterator(
-    gl_sarray content, gl_sarray style, bool repeat, int random_seed) const {
+    gl_sarray content, gl_sarray style, bool repeat, bool training,
+    int random_seed) const {
   data_iterator::parameters iterator_params;
 
   iterator_params.style = std::move(style);
   iterator_params.content = std::move(content);
   iterator_params.repeat = repeat;
+  iterator_params.mode = (training) ? st_mode::TRAIN : st_mode::PREDICT;
   iterator_params.random_seed = random_seed;
 
   return create_iterator(iterator_params);
@@ -279,8 +285,9 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   flex_int image_height = read_state<flex_int>("image_height");
 
   // Since we aren't training the style_images are irrelevant
-  std::unique_ptr<data_iterator> data_iter = create_iterator(
-      data, /* style_sframe */ {}, /* repeat */ false, num_styles);
+  std::unique_ptr<data_iterator> data_iter =
+      create_iterator(data, /* style_sframe */ {}, /* repeat */ false,
+                      /* training */ false, num_styles);
 
   std::unique_ptr<compute_context> ctx = create_compute_context();
   if (ctx == nullptr) {
@@ -290,7 +297,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   float_array_map weight_params = m_resnet_spec->export_params_view();
 
   // A value of `0` to indicate prediction
-  shared_float_array st_train(std::make_shared<float_scalar>(0));
+  shared_float_array st_train = shared_float_array::wrap(0.f);
   shared_float_array st_num_styles(std::make_shared<float_scalar>(num_styles));
 
   std::unique_ptr<model_backend> model =
@@ -300,8 +307,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
   // looping through all of the style indicies
   for (size_t i : style_idx) {
-    std::vector<st_example> batch =
-        data_iter->next_batch(batch_size, /* train */ false);
+    std::vector<st_example> batch = data_iter->next_batch(batch_size);
     while (!batch.empty()) {
       // getting actual batch size
       size_t actual_batch_size = batch.size();
@@ -326,12 +332,12 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
                          image_width, image_height);
 
       // Write result to gl_sframe_writer
-      for (auto row : processed_batch) {
+      for (const auto& row : processed_batch) {
         result.write({row.first, row.second}, 1);
       }
 
       // get next batch
-      batch = data_iter->next_batch(batch_size, /* train */ false);
+      batch = data_iter->next_batch(batch_size);
     }
 
     data_iter.reset();
@@ -385,7 +391,8 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
     add_or_update_state({{"random_seed", random_seed}});
   }
 
-  m_training_data_iterator = create_iterator(content, style, true, num_styles);
+  m_training_data_iterator = create_iterator(content, style, /* repeat */ false,
+                                             /* training */ false, num_styles);
 
   m_training_compute_context = create_compute_context();
   if (m_training_compute_context == nullptr) {
@@ -405,7 +412,7 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
   weight_params.insert(vgg_params.begin(), vgg_params.end());
 
   // A value of `1` to indicate training
-  shared_float_array st_train(std::make_shared<float_scalar>(1));
+  shared_float_array st_train = shared_float_array::wrap(1.f);
   shared_float_array st_num_styles(std::make_shared<float_scalar>(num_styles));
 
   m_training_model = m_training_compute_context->create_style_transfer(

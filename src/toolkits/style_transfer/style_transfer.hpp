@@ -90,6 +90,8 @@ class EXPORT style_transfer : public ml_model_base {
                     {{"options",
                       to_variant(std::map<std::string, flexible_type>())}});
 
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::predict, "data", "options");
+
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
@@ -98,6 +100,7 @@ class EXPORT style_transfer : public ml_model_base {
 
   std::unique_ptr<data_iterator> create_iterator(gl_sarray content,
                                                  gl_sarray style, bool repeat,
+                                                 bool training,
                                                  int random_seed) const;
 
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
@@ -121,7 +124,7 @@ class EXPORT style_transfer : public ml_model_base {
 
   std::unique_ptr<table_printer> training_table_printer_;
 
-  gl_sarray convert_types_to_sarray(const variant_type& data);
+  static gl_sarray convert_types_to_sarray(const variant_type& data);
 
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;

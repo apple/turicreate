@@ -44,12 +44,12 @@ style_transfer_data_iterator::style_transfer_data_iterator(
       m_content_images(ensure_encoded(params.content)),
       m_repeat(params.repeat),
       m_shuffle(params.shuffle),
+      m_mode(params.mode),
       m_content_range_iterator(m_content_images.range_iterator()),
       m_content_next_row(m_content_range_iterator.begin()),
       m_random_engine(params.random_seed) {}
 
-std::vector<st_example> style_transfer_data_iterator::next_batch(
-    size_t batch_size, bool train) {
+std::vector<st_example> style_transfer_data_iterator::next_batch(size_t batch_size) {
 
   std::vector<std::tuple<flexible_type, flexible_type, flexible_type>>
       raw_batch;
@@ -59,7 +59,7 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(
          m_content_next_row != m_content_range_iterator.end()) {
     const turi::flexible_type& content_image = *m_content_next_row;
 
-    if (train) {
+    if (m_mode == st_mode::TRAIN) {
       std::uniform_int_distribution<size_t> dist(0, m_style_images.size() - 1);
       size_t random_style_index = dist(m_random_engine);
       const flexible_type& style_image = m_style_images[random_style_index];
@@ -99,7 +99,7 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(
     flexible_type content_image, style_image, style_index;
     std::tie(content_image, style_image, style_index) = raw_batch[i];
 
-    if (train) {
+    if (m_mode == st_mode::TRAIN) {
       result[i].style_image = get_image(style_image);
       result[i].style_index = style_index.get<flex_int>();
     }

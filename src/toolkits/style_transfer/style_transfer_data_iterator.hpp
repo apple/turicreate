@@ -21,6 +21,11 @@ struct st_example {
   size_t style_index;
 };
 
+enum st_mode {
+  TRAIN = 0,
+  PREDICT = 1
+};
+
 class data_iterator {
  public:
   struct parameters {
@@ -38,14 +43,16 @@ class data_iterator {
     /** Whether to shuffle the data on subsequent traversals. */
     bool shuffle = true;
 
+    /** Check whether in train or predict mode */
+    enum st_mode mode = st_mode::TRAIN;
+
     /** Determines results of shuffle operations if enabled. */
     int random_seed = 0;
   };
 
   virtual ~data_iterator() = default;
 
-  virtual std::vector<st_example> next_batch(size_t batch_size,
-                                             bool train = true) = 0;
+  virtual std::vector<st_example> next_batch(size_t batch_size) = 0;
 
   virtual void reset() = 0;
 };
@@ -58,8 +65,7 @@ class style_transfer_data_iterator : public data_iterator {
   style_transfer_data_iterator& operator=(const style_transfer_data_iterator&) =
       delete;
 
-  std::vector<st_example> next_batch(size_t batch_size,
-                                     bool train = true) override;
+  std::vector<st_example> next_batch(size_t batch_size) override;
 
   void reset() override;
 
@@ -69,6 +75,7 @@ class style_transfer_data_iterator : public data_iterator {
 
   const bool m_repeat;
   const bool m_shuffle;
+  const enum st_mode m_mode;
 
   gl_sarray_range m_content_range_iterator;
   gl_sarray_range::iterator m_content_next_row;
