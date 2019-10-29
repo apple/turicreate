@@ -3774,6 +3774,7 @@ class SFrameTest(unittest.TestCase):
 
      
     def test_filter_by_dict(self):
+        # Check for dict in filter_by
         sf = SFrame({'check':range(10)})
         d = {1:1}
 
