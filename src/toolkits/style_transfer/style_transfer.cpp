@@ -36,6 +36,95 @@ constexpr size_t DEFAULT_WIDTH = 256;
 
 constexpr size_t DEFAULT_BATCH_SIZE = 1;
 
+const std::map<std::string, std::string> CUSTOM_MODEL_NAMING_MAP = {
+    {"transformer_conv4_weight", "transformer_decoding_2_conv_weight"},
+    {"transformer_instancenorm2_gamma",
+     "transformer_encode_3_inst_gamma_weight"},
+    {"transformer_residualblock1_instancenorm1_gamma",
+     "transformer_residual_2_inst_2_gamma_weight"},
+    {"transformer_residualblock4_conv0_weight",
+     "transformer_residual_5_conv_1_weight"},
+    {"transformer_residualblock2_instancenorm1_gamma",
+     "transformer_residual_3_inst_2_gamma_weight"},
+    {"transformer_residualblock0_instancenorm0_beta",
+     "transformer_residual_1_inst_1_beta_weight"},
+    {"transformer_instancenorm0_gamma",
+     "transformer_encode_1_inst_gamma_weight"},
+    {"transformer_residualblock2_instancenorm0_gamma",
+     "transformer_residual_3_inst_1_gamma_weight"},
+    {"transformer_residualblock0_conv0_weight",
+     "transformer_residual_1_conv_1_weight"},
+    {"transformer_residualblock0_conv1_weight",
+     "transformer_residual_1_conv_2_weight"},
+    {"transformer_residualblock4_instancenorm1_beta",
+     "transformer_residual_5_inst_2_beta_weight"},
+    {"transformer_conv1_weight", "transformer_encode_2_conv_weight"},
+    {"transformer_residualblock3_instancenorm0_gamma",
+     "transformer_residual_4_inst_1_gamma_weight"},
+    {"transformer_residualblock2_conv1_weight",
+     "transformer_residual_3_conv_2_weight"},
+    {"transformer_residualblock3_instancenorm0_beta",
+     "transformer_residual_4_inst_1_beta_weight"},
+    {"transformer_residualblock3_instancenorm1_gamma",
+     "transformer_residual_4_inst_2_gamma_weight"},
+    {"transformer_residualblock0_instancenorm0_gamma",
+     "transformer_residual_1_inst_1_gamma_weight"},
+    {"transformer_residualblock1_instancenorm0_beta",
+     "transformer_residual_2_inst_1_beta_weight"},
+    {"transformer_residualblock1_conv1_weight",
+     "transformer_residual_2_conv_2_weight"},
+    {"transformer_instancenorm0_beta", "transformer_encode_1_inst_beta_weight"},
+    {"transformer_instancenorm4_beta",
+     "transformer_decoding_1_inst_beta_weight"},
+    {"transformer_conv0_weight", "transformer_encode_1_conv_weight"},
+    {"transformer_instancenorm1_gamma",
+     "transformer_encode_2_inst_gamma_weight"},
+    {"transformer_instancenorm3_beta",
+     "transformer_decoding_1_inst_beta_weight"},
+    {"transformer_conv5_weight", "transformer_conv5_weight"},
+    {"transformer_conv2_weight", "transformer_encode_3_conv_weight"},
+    {"transformer_instancenorm2_beta", "transformer_encode_3_inst_beta_weight"},
+    {"transformer_instancenorm3_gamma",
+     "transformer_decoding_1_inst_gamma_weight"},
+    {"transformer_residualblock3_instancenorm1_beta",
+     "transformer_residual_4_inst_2_beta_weight"},
+    {"transformer_residualblock0_instancenorm1_gamma",
+     "transformer_residual_1_inst_2_gamma_weight"},
+    {"transformer_residualblock4_instancenorm0_gamma",
+     "transformer_residual_5_inst_1_gamma_weight"},
+    {"transformer_residualblock2_instancenorm1_beta",
+     "transformer_residual_3_inst_2_beta_weight"},
+    {"transformer_residualblock1_conv0_weight",
+     "transformer_residual_2_conv_1_weight"},
+    {"transformer_instancenorm5_gamma",
+     "transformer_decoding_2_inst_gamma_weight"},
+    {"transformer_instancenorm1_beta", "transformer_encode_2_inst_beta_weight"},
+    {"transformer_residualblock3_conv0_weight",
+     "transformer_residual_4_conv_1_weight"},
+    {"transformer_residualblock4_instancenorm0_beta",
+     "transformer_residual_5_inst_1_beta_weight"},
+    {"transformer_residualblock1_instancenorm1_beta",
+     "transformer_residual_2_inst_2_beta_weight"},
+    {"transformer_residualblock0_instancenorm1_beta",
+     "transformer_residual_1_inst_2_beta_weight"},
+    {"transformer_conv3_weight", "transformer_decoding_1_conv_weight"},
+    {"transformer_instancenorm5_beta",
+     "transformer_decoding_2_inst_beta_weight"},
+    {"transformer_residualblock2_conv0_weight",
+     "transformer_residual_3_conv_1_weight"},
+    {"transformer_residualblock4_conv1_weight",
+     "transformer_residual_5_conv_2_weight"},
+    {"transformer_residualblock4_instancenorm1_gamma",
+     "transformer_residual_5_inst_2_gamma_weight"},
+    {"transformer_residualblock1_instancenorm0_gamma",
+     "transformer_residual_2_inst_1_gamma_weight"},
+    {"transformer_instancenorm4_gamma",
+     "transformer_decoding_1_inst_gamma_weight"},
+    {"transformer_residualblock2_instancenorm0_beta",
+     "transformer_residual_3_inst_1_beta_weight"},
+    {"transformer_residualblock3_conv1_weight",
+     "transformer_residual_4_conv_2_weight"}};
+
 float clamp(float v, float low, float high) {
   return (v < low) ? low : (high < v) ? high : v;
 }
@@ -77,11 +166,12 @@ std::vector<std::pair<flex_int, flex_image>> process_output(
 
     std::transform(start_ptr + start_offset, start_ptr + end_offset,
                    std::back_inserter(image_data), [](float val) {
-                     return static_cast<uint8_t>(clamp(std::round(val * 255.f), 0.f, 255.f));
+                     return static_cast<uint8_t>(
+                         clamp(std::round(val * 255.f), 0.f, 255.f));
                    });
 
-    image_type img(reinterpret_cast<char*>(image_data.data()), height, width, channels,
-                   image_data.size(), IMAGE_TYPE_CURRENT_VERSION,
+    image_type img(reinterpret_cast<char*>(image_data.data()), height, width,
+                   channels, image_data.size(), IMAGE_TYPE_CURRENT_VERSION,
                    static_cast<int>(Format::RAW_ARRAY));
 
     result.emplace_back(index, img);
@@ -517,8 +607,77 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
   return model_wrapper;
 }
 
-void style_transfer::import_from_custom_model(variant_map_type model_data, size_t version) {
-  std::cout << version << std::endl;
+void style_transfer::import_from_custom_model(variant_map_type model_data,
+                                              size_t version) {
+  auto model_iter = model_data.find("_model");
+  if (model_iter == model_data.end()) {
+    log_and_throw("The loaded turicreate model must contain '_model'!\n");
+  }
+  const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
+  model_data.erase(model_iter);
+
+  auto num_styles_iter = model_data.find("num_styles");
+  if (num_styles_iter == model_data.end()) {
+    log_and_throw("The loaded turicreate model must contain 'num_styles'!\n");
+  }
+  const size_t num_styles =
+      variant_get_value<flex_int>(num_styles_iter->second);
+  model_data.erase(num_styles_iter);
+
+  auto max_iterations_iter = model_data.find("max_iterations");
+  if (max_iterations_iter == model_data.end()) {
+    log_and_throw(
+        "The loaded turicreate model must contain 'max_iterations'!\n");
+  }
+  const size_t max_iterations =
+      variant_get_value<flex_int>(max_iterations_iter->second);
+  model_data.erase(max_iterations_iter);
+
+  auto model_type_iter = model_data.find("model");
+  if (model_type_iter == model_data.end()) {
+    log_and_throw("The loaded turicreate model must contain 'model_iter'!\n");
+  }
+  const std::string model_type =
+      variant_get_value<flex_string>(model_type_iter->second);
+  model_data.erase(model_type_iter);
+
+  add_or_update_state({{"model", model_type},
+                       {"num_styles", num_styles},
+                       {"max_iterations", max_iterations}});
+
+  flex_dict mxnet_data_dict;
+  flex_dict mxnet_shape_dict;
+
+  for (const auto& data : model) {
+    if (data.first == "data") {
+      mxnet_data_dict = data.second;
+    }
+    if (data.first == "shapes") {
+      mxnet_shape_dict = data.second;
+    }
+  }
+
+  auto cmp = [](const flex_dict::value_type& a,
+                const flex_dict::value_type& b) { return (a.first < b.first); };
+
+  std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
+  std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
+
+  float_array_map nn_params;
+  for (size_t i = 0; i < mxnet_data_dict.size(); i++) {
+    const std::string layer_name = CUSTOM_MODEL_NAMING_MAP.at(mxnet_data_dict[i].first);
+    flex_nd_vec mxnet_data_nd = mxnet_data_dict[i].second.to<flex_nd_vec>();
+    flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[i].second.to<flex_nd_vec>();
+    const std::vector<double>& model_weight = mxnet_data_nd.elements();
+    const std::vector<double>& model_shape = mxnet_shape_nd.elements();
+    std::vector<float> layer_weight(model_weight.begin(), model_weight.end());
+    std::vector<size_t> layer_shape(model_shape.begin(), model_shape.end());
+    nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
+                                                     std::move(layer_shape));
+  }
+
+  m_resnet_spec = init_resnet(variant_get_value<size_t>(num_styles));
+  m_resnet_spec->update_params(nn_params);
 }
 
 }  // namespace style_transfer

@@ -108,6 +108,11 @@ def load_model(location):
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
+                if name=='style_transfer':
+                    model = _extensions.style_transfer()
+                    model.import_from_custom_model(model_data, model_version)
+                    return None
+
                 return cls._load_version(model_data, model_version)
 
         elif hasattr(_extensions, name):
