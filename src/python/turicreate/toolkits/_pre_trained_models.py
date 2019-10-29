@@ -205,10 +205,11 @@ class StyleTransferTransformer():
 
     def get_model_path(self, format):
         assert(format in ('coreml', 'mxnet'))
-        if (format in 'coreml') :
-            url =  _urlparse.urljoin(MODELS_URL_ROOT, 'transformer.mlmodel')
+        if(format == 'coreml'):
+            filename = self.name + '.mlmodel'
         else:
-            url = _urlparse.urljoin(MODELS_URL_ROOT, 'resnet-16.params')
+            filename = self.name + '.params'
+        url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
         checksum = self.source_md5[format]
         model_path = _download_and_checksum_files([(url, checksum)], _get_cache_dir())[0]
         return model_path
@@ -227,9 +228,10 @@ class Vgg16():
     def get_model_path(self, format):
         assert(format in ('coreml', 'mxnet'))
         if (format in 'coreml') :
-            url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16.mlmodel')
+            filename = 'vgg16-conv1_1-4_3.mlmodel'
         else:
-            url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16-conv1_1-4_3.params')
+            filename = 'vgg16-conv1_1-4_3.params'
+        url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
         checksum = self.source_md5[format]
         model_path = _download_and_checksum_files([(url, checksum)], _get_cache_dir())[0]
         return model_path
