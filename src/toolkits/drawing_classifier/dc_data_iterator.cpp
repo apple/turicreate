@@ -145,7 +145,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         static_cast<float>(target_properties_.class_to_index_map.at(
             row[target_index_].to<flex_string>())));
 
-    if (++next_row_ == range_iterator_.end() && repeat_) {
+    if (++next_row_ == end_of_rows_ && repeat_) {
       if (shuffle_) {
         // Shuffle the data.
         // TODO: This heavyweight shuffle operation introduces spikes into the
