@@ -1354,5 +1354,31 @@ void object_detector::update_model_metrics(gl_sframe data,
   add_or_update_state(metrics);
 }
 
+void object_detector::change_annotations_type(
+    gl_sframe& data, const std::string& annotations_name) {
+  auto change_annotations_type = [=](const flexible_type& annotation) {
+    flex_list annotation_list = flex_list();
+    switch (annotation.get_type()) {
+      case flex_type_enum::LIST:
+        annotation_list = annotation.get<flex_list>();
+        break;
+      case flex_type_enum::DICT:
+        annotation_list.push_back(annotation);
+        break;
+      case flex_type_enum::UNDEFINED:
+        break;
+      default:
+        log_and_throw(
+            "Invalid annotation! Expect list of dictionary, a singel "
+            "dictionary!");
+        break;
+    }
+    return annotation_list;
+  };
+  data.replace_add_column(data[annotations_name].apply(change_annotations_type,
+                                                       flex_type_enum::LIST),
+                          annotations_name);
+}
+
 }  // object_detection
 }  // turi
