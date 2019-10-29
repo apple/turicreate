@@ -944,7 +944,6 @@ void define_resnet(model_spec& nn_spec, size_t num_styles) {
   nn_spec.add_scale(
       /* name */ "stylizedImage",
       /* input */ "transformer_activation5",
-      /* shape_c_h_w */ {1},
       /* weight_init_fn */ scalar_weight_initializer(255.0));
 }
 

@@ -817,6 +817,20 @@ void model_spec::add_exp(const std::string& name, const std::string& input) {
 }
 
 void model_spec::add_scale(const std::string& name, const std::string& input,
+                           weight_initializer scale_initializer_fn) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  CoreML::Specification::ScaleLayerParams* params = layer->mutable_scale();
+  params->add_shapescale(1);
+
+  init_weight_params(params->mutable_scale(), 1, scale_initializer_fn);
+}
+
+void model_spec::add_scale(const std::string& name, const std::string& input,
                            const std::array<size_t, 3>& shape_c_h_w,
                            weight_initializer scale_initializer_fn) {
 

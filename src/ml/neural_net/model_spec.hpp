@@ -306,6 +306,17 @@ public:
 
 
   /**
+   * Appends a layer that scales an entire batch with a single value
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param shape_c The shape of the channel
+   * \param weight_initializer_fn Callback used to initialize the weights
+   */
+  void add_scale(const std::string& name, const std::string& input,
+                 weight_initializer scale_initializer_fn);
+
+  /**
    * Appends a layer that performs elementwise multiplication between its input
    * and some fixed weights.
    *
