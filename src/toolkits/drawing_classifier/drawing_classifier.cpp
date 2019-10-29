@@ -446,7 +446,7 @@ void drawing_classifier::iterate_training() {
                           batch.loss_info.data() + batch.loss_info.size(), 0.f,
                           std::plus<float>());
 
-      cumulative_batch_loss += batch_loss;
+      cumulative_batch_loss += (batch.data_info.num_samples * batch_loss);
     }
   };
 
@@ -474,7 +474,7 @@ void drawing_classifier::iterate_training() {
   }
   // Process all remaining batches.
   pop_until_size(0);
-  float average_batch_loss = cumulative_batch_loss;
+  float average_batch_loss = cumulative_batch_loss / train_num_samples;
   float average_batch_accuracy =
       static_cast<float>(train_num_correct) / train_num_samples;
   float average_val_accuracy;
