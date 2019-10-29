@@ -170,7 +170,7 @@ def convert_conv1d_tf_to_coreml(conv_weights):
 	conv_weights = np.transpose(conv_weights, (3, 1, 2, 0))
 	return conv_weights
 
-def convert_conv2d_coreml_to_tf(conv_weights):
+def convert_conv2d_tf_to_coreml(conv_weights):
 	"""
 	Convolutional weights from TensorFlow in the format [kernelWidth, kernelChannels, outputChannels]
 	are converted back in CoreML specifications [outputChannels, kernelChannels, kernelHeight, kernelWidth].
