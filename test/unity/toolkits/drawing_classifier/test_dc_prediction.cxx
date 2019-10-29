@@ -145,6 +145,33 @@ gl_sframe set_up_perform_inference(test_drawing_classifier& mock_model,
   return expected_sf;
 }
 
+std::unique_ptr<data_iterator> prepare_data_for_prediction(
+    size_t num_of_rows, size_t num_of_classes) {
+  std::vector<std::string> class_labels;
+
+  class_labels.reserve(num_of_classes);
+  for (size_t ii = 0; ii < num_of_classes; ++ii) {
+    class_labels.push_back(std::to_string(ii));
+  }
+
+  // Create an arbitrary SFrame with test_num_rows rows.
+  drawing_data_generator data_generator(num_of_rows, class_labels);
+  gl_sframe my_data = data_generator.get_data();
+
+  TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
+
+  data_iterator::parameters params;
+  params.data = my_data;
+  // no repeat since it's not iterating training
+  params.repeat = false;
+  params.target_column_name = data_generator.get_target_column_name();
+  params.feature_column_name = data_generator.get_feature_column_name();
+
+  params.is_train = false;
+
+  return std::unique_ptr<data_iterator>(new simple_data_iterator(params));
+}
+
 }  // namespace
 
 
@@ -178,29 +205,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
         set_up_perform_inference(mock_model, mock_backend, mock_context,
                                  batch_size, num_of_rows, num_of_classes);
 
-    std::vector<std::string> class_labels;
-    class_labels.reserve(num_of_classes);
-    for (size_t ii = 0; ii < num_of_classes; ++ii) {
-      class_labels.push_back(std::to_string(ii));
-    }
-
-    // Create an arbitrary SFrame with test_num_rows rows.
-    drawing_data_generator data_generator(num_of_rows, class_labels);
-    gl_sframe my_data = data_generator.get_data();
-
-    TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
-
-    data_iterator::parameters params;
-    params.data = my_data;
-    // no repeat since it's not iterating training
-    params.repeat = false;
-    params.target_column_name = data_generator.get_target_column_name();
-    params.feature_column_name = data_generator.get_feature_column_name();
-
-    params.is_train = false;
-    auto data_itr =
-        std::unique_ptr<data_iterator>(new simple_data_iterator(params));
-
+    auto data_itr = prepare_data_for_prediction(num_of_rows, num_of_classes);
     // make sure the output is what expected
     auto result = mock_model.get_inference_result(data_itr.get());
 
@@ -208,7 +213,82 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict) {}
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_rank) {
+  /**
+   * batch_size, num_of_rows, num_of_classes
+   * 1. batch_size > num_of_rows
+   * 2. batch_size == num_of_rows
+   * 3. num_of_rows can divide batch_size
+   * 4. num_of_rows can not divide batch_size
+   **/
+  std::vector<std::tuple<unsigned, unsigned, unsigned>> test_cases = {
+      {2, 1, 1}, {2, 1, 2}, {2, 2, 2}, {2, 4, 2},
+      {2, 4, 3}, {2, 5, 2}, {2, 5, 3}};
+
+  logprogress_stream << ">>> test_drawing_classifier_predict_rank" << std::endl;
+  for (auto& entry : test_cases) {
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
+
+    logprogress_stream << "batch_size=" << batch_size
+                       << "; num_of_rows=" << num_of_rows
+                       << "; num_of_classes=" << num_of_classes << std::endl;
+
+    // mode the data iterator first
+    test_drawing_classifier mock_model;
+    std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
+    std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+
+    auto expected_sf =
+        set_up_perform_inference(mock_model, mock_backend, mock_context,
+                                 batch_size, num_of_rows, num_of_classes);
+
+    // make sure the output is what expected
+    std::vector<std::string> class_labels;
+    class_labels.reserve(num_of_classes);
+    for (size_t ii = 0; ii < num_of_classes; ++ii) {
+      class_labels.push_back(std::to_string(ii));
+    }
+
+    const std::string feature_name = "feature";
+    const std::string target_name = "target";
+
+    // name 'target', 'feature' are used by create_iterator
+    drawing_data_generator data_generator(num_of_rows, class_labels,
+                                          target_name, feature_name);
+
+    gl_sframe my_data = data_generator.get_data();
+    TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
+
+    mock_model.create_iterator_calls_v2_.push_back(
+        [=](gl_sframe data, bool is_train, std::vector<std::string>) {
+          data_iterator::parameters my_params;
+          my_params.data = my_data;
+          my_params.is_train = false;
+          my_params.feature_column_name = feature_name;
+          my_params.target_column_name = target_name;
+          return std::unique_ptr<data_iterator>(
+              new simple_data_iterator(my_params));
+        });
+
+    // specific for perdict
+    mock_model.add_or_update_state(
+        {{"classes", flex_list(class_labels.begin(), class_labels.end())}});
+
+    auto result_rank = mock_model.predict(my_data, "rank");
+
+    TS_ASSERT_EQUALS(result_rank.size(), expected_sf.size());
+
+    for (size_t ii = 0; ii < result_rank.size(); ++ii) {
+      flex_vec probs = expected_sf["preds"][ii];
+      size_t label_idx = std::stoi(result_rank[ii]);
+      auto expected_idx =
+          std::max_element(probs.begin(), probs.end()) - probs.begin();
+      TS_ASSERT_EQUALS(label_idx, expected_idx);
+    }
+  }
+}
 
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk) {}
 

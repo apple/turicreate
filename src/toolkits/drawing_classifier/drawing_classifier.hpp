@@ -236,7 +236,7 @@ class EXPORT drawing_classifier : public ml_model_base {
   virtual std::unique_ptr<data_iterator> create_iterator(
       data_iterator::parameters iterator_params) const;
 
-  std::unique_ptr<data_iterator> create_iterator(
+  virtual std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, bool is_train,
       std::vector<std::string> class_labels) const;
 
@@ -262,7 +262,7 @@ class EXPORT drawing_classifier : public ml_model_base {
     } catch (const std::out_of_range& e) {
       std::stringstream ss;
       ss << e.what() << std::endl;
-      ss << "from read state for" << key << std::endl;
+      ss << "from read state for '" << key << "'" << std::endl;
       throw std::out_of_range(ss.str().c_str());
     }
   }

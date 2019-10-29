@@ -631,13 +631,13 @@ gl_sframe drawing_classifier::perform_inference(data_iterator *data) const {
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   // by default, it should be "probability" if the value is
   // passed in through python client
-  if (output_type != "probability" || output_type != "rank") {
+  if (output_type != "probability" && output_type != "rank") {
     log_and_throw(output_type +
                   " is not a valid option for output_type.  " +
                   "Expected one of: probability, rank");
   }
 
-  auto data_itr = create_iterator(data, /*is_train*/ true, {});
+  auto data_itr = create_iterator(data, /*is_train*/ false, {});
 
   gl_sframe predictions = perform_inference(data_itr.get());
 
