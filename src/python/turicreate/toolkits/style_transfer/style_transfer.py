@@ -164,10 +164,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     _tkutl._handle_missing_values(style_dataset, style_feature, 'style_dataset')
     _tkutl._handle_missing_values(content_dataset, content_feature, 'content_dataset')
 
-    pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet_mlmodel']()
-    pretrained_resnet_model_path = pretrained_resnet_model.get_model_path()
-    pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg_mlmodel']()
-    pretrained_vgg16_model_path = pretrained_vgg16_model.get_model_path()
         
     params = {
         'batch_size': batch_size,
@@ -224,10 +220,12 @@ def create(style_dataset, content_dataset, style_feature=None,
         import turicreate.toolkits.libtctensorflow
 
         model = _turicreate.extensions.style_transfer()
+        pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet_mlmodel']()
+        pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['vgg_mlmodel']()
         options = {}
         options['num_styles'] = len(style_dataset)
-        options['resnet_mlmodel_path'] = params['resnet_mlmodel_path']
-        options['vgg_mlmodel_path'] = params['vgg_mlmodel_path']
+        options['resnet_mlmodel_path'] = pretrained_resnet_model.get_model_path()
+        options['vgg_mlmodel_path'] = pretrained_vgg16_model.get_model_path()
 
         model.train(style_dataset[style_feature], content_dataset[content_feature], options)
         return StyleTransfer_beta(model_proxy=model, name=name)
@@ -668,7 +666,7 @@ class StyleTransfer_beta(_Model):
 
     This model should not be constructed directly.
     """
-    _CPP_ACTIVITY_CLASSIFIER_VERSION = 1
+    _CPP_STYLE_TRANSFER_VERSION = 1
 
     def __init__(self, model_proxy=None, name=None):
         self.__proxy__ = model_proxy
@@ -676,6 +674,8 @@ class StyleTransfer_beta(_Model):
 
     @classmethod
     def _native_name(cls):
+        if USE_CPP:
+            return self.__name__
         return None
 
     def __str__(self):
@@ -731,10 +731,14 @@ class StyleTransfer_beta(_Model):
         --------
         >>> model.export_coreml('StyleTransfer.mlmodel')
         """
-        return self.__proxy__.export_to_coreml(filename, image_shape, include_flexible_shape)
+        options = {}
+        options['image_width'] = image_shape[1]
+        options['image_height'] = image_shape[0]
+
+        return self.__proxy__.export_to_coreml(filename, options)
 
 
-    def stylize(self, images, style=None, verbose=True, max_size=800, batch_size = 4):
+    def stylize(self, images, style):
         """
         Stylize an SFrame of Images given a style index or a list of
         styles.
@@ -807,8 +811,10 @@ class StyleTransfer_beta(_Model):
         +--------+-------+------------------------+
         [8 rows x 3 columns]
         """
+        options = {}
+        options['style_idx'] = style
 
-        return self.__proxy__.predict(images, style=None, verbose=True, max_size=800, batch_size = 4)
+        return self.__proxy__.predict(images, options)
 
 class StyleTransfer(_CustomModel):
     """
@@ -826,7 +832,9 @@ class StyleTransfer(_CustomModel):
 
     @classmethod
     def _native_name(cls):
-        return "style_transfer"
+        if not USE_CPP:
+            return "style_transfer"
+        return None
 
     def _get_native_state(self):
         from .._mxnet import _mxnet_utils
