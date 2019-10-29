@@ -258,7 +258,7 @@ class EXPORT drawing_classifier : public ml_model_base {
     } catch (const std::out_of_range& e) {
       std::stringstream ss;
       ss << e.what() << std::endl;
-      ss << "from read state for '" << key << "'" << std::endl;
+      ss << "from read_state for '" << key << "'" << std::endl;
       throw std::out_of_range(ss.str().c_str());
     }
   }
