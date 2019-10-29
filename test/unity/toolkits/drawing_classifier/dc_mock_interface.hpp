@@ -94,16 +94,16 @@ class test_drawing_classifier : public drawing_classifier {
  public:
   using create_iterator_call = std::function<std::unique_ptr<data_iterator>(
       data_iterator::parameters iterator_params)>;
-
-  using create_iterator_call_v2 = std::function<std::unique_ptr<data_iterator>(
-      gl_sframe, bool, std::vector<std::string>)>;
-
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
 
   using init_model_call = std::function<std::unique_ptr<model_spec>()>;
 
-  test_drawing_classifier() = default;
+  // init default model spec to bypass init_train
+  test_drawing_classifier()
+      : drawing_classifier({}, std::unique_ptr<model_spec>(new model_spec()),
+                           nullptr, nullptr, nullptr) {}
+
   test_drawing_classifier(
       const std::map<std::string, variant_type>& initial_state,
       std::unique_ptr<model_spec> nn_spec,
@@ -117,7 +117,6 @@ class test_drawing_classifier : public drawing_classifier {
 
   ~test_drawing_classifier() {
     TS_ASSERT(create_iterator_calls_.empty());
-    TS_ASSERT(create_iterator_calls_v2_.empty());
     TS_ASSERT(create_compute_context_calls_.empty());
     TS_ASSERT(init_model_calls_.empty());
   }
@@ -129,15 +128,6 @@ class test_drawing_classifier : public drawing_classifier {
         std::move(create_iterator_calls_.front());
     create_iterator_calls_.pop_front();
     return expected_call(iterator_params);
-  }
-
-  std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, bool is_train, std::vector<std::string> labels) const override {
-    TS_ASSERT(!create_iterator_calls_v2_.empty());
-    create_iterator_call_v2 expected_call =
-        std::move(create_iterator_calls_v2_.front());
-    create_iterator_calls_v2_.pop_front();
-    return expected_call(data, is_train, labels);
   }
 
   std::unique_ptr<compute_context> create_compute_context() const override {
@@ -161,7 +151,6 @@ class test_drawing_classifier : public drawing_classifier {
   }
 
   mutable std::deque<create_iterator_call> create_iterator_calls_;
-  mutable std::deque<create_iterator_call_v2> create_iterator_calls_v2_;
   mutable std::deque<create_compute_context_call> create_compute_context_calls_;
   mutable std::deque<init_model_call> init_model_calls_;
 };

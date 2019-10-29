@@ -227,9 +227,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
   gl_sframe my_data = data_generator.get_data();
   TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
 
-  mock_model.create_iterator_calls_v2_.push_back([=](gl_sframe data,
-                                                     bool is_train,
-                                                     std::vector<std::string>) {
+  mock_model.create_iterator_calls_.push_back([=](data_iterator::parameters) {
     data_iterator::parameters my_params;
     my_params.data = my_data;
     my_params.is_train = false;
@@ -240,7 +238,9 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
 
   // specific for perdict
   mock_model.add_or_update_state(
-      {{"classes", flex_list(class_labels.begin(), class_labels.end())}});
+      {{"target", target_name},
+       {"features", flex_list({feature_name})},
+       {"classes", flex_list(class_labels.begin(), class_labels.end())}});
 
   runner(mock_model, my_data, expected_sf);
 }

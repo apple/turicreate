@@ -592,8 +592,8 @@ gl_sframe drawing_classifier::perform_inference(data_iterator *data) const {
 
   // Initialize the NN backend.
   std::unique_ptr<compute_context> ctx = create_compute_context();
-  std::unique_ptr<model_backend> backend =
-      ctx->create_drawing_classifier({}, batch_size, num_classes);
+  std::unique_ptr<model_backend> backend = ctx->create_drawing_classifier(
+      nn_spec_->export_params_view(), batch_size, num_classes);
 
   // To support double buffering, use a queue of pending inference results.
   std::queue<result> pending_batches;
