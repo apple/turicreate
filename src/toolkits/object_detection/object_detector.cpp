@@ -470,6 +470,13 @@ void object_detector::finalize_training() {
 variant_type object_detector::evaluate(gl_sframe data, std::string metric,
                                        std::string output_type,
                                        std::map<std::string, flexible_type> opts) {
+  // check if data has ground truth annotation
+  std::string annotations_column_name = read_state<flex_string>("annotations");
+  if (!data.contains_column(annotations_column_name)) {
+    log_and_throw("Annotations column " + annotations_column_name +
+                  " does not exist");
+  }
+
   //parse input opts
   float confidence_threshold, iou_threshold;
   auto it_confidence = opts.find("confidence_threshold");
