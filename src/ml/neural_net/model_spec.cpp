@@ -817,7 +817,7 @@ void model_spec::add_exp(const std::string& name, const std::string& input) {
 }
 
 void model_spec::add_scale(const std::string& name, const std::string& input,
-                           const std::array<size_t, 3>& shape_c_h_w,
+                           const std::vector<size_t>& shape_c_h_w,
                            weight_initializer scale_initializer_fn) {
 
   NeuralNetworkLayer* layer = impl_->add_layers();
