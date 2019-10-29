@@ -959,6 +959,13 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
 {
+  // Check annotations type. If it is a single dictionary, put it into a list.
+  const std::string& annotations_column_name =
+      read_state<flex_string>("annotations");
+  if (data.contains_column(annotations_column_name)) {
+    change_annotations_type(data, annotations_column_name);
+  }
+
   data_iterator::parameters iterator_params;
   iterator_params.data = std::move(data);
   iterator_params.annotations_column_name =
