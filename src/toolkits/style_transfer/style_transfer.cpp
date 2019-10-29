@@ -166,12 +166,11 @@ std::vector<std::pair<flex_int, flex_image>> process_output(
 
     std::transform(start_ptr + start_offset, start_ptr + end_offset,
                    std::back_inserter(image_data), [](float val) {
-                     return static_cast<uint8_t>(
-                         clamp(std::round(val * 255.f), 0.f, 255.f));
+                     return static_cast<uint8_t>(clamp(std::round(val * 255.f), 0.f, 255.f));
                    });
 
-    image_type img(reinterpret_cast<char*>(image_data.data()), height, width,
-                   channels, image_data.size(), IMAGE_TYPE_CURRENT_VERSION,
+    image_type img(reinterpret_cast<char*>(image_data.data()), height, width, channels,
+                   image_data.size(), IMAGE_TYPE_CURRENT_VERSION,
                    static_cast<int>(Format::RAW_ARRAY));
 
     result.emplace_back(index, img);

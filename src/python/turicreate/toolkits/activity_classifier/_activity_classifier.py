@@ -190,6 +190,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         options['prediction_window'] = prediction_window
         options['batch_size'] = batch_size
         options['max_iterations'] = max_iterations
+        options['verbose'] = verbose
 
         model.train(dataset, target, session_id, validation_set, options)
         return ActivityClassifier_beta(model_proxy=model, name=name)
@@ -356,6 +357,8 @@ class ActivityClassifier_beta(_Model):
 
     @classmethod
     def _native_name(cls):
+        if USE_CPP:
+            return "activity_classifier"
         return None
 
     def __str__(self):
@@ -595,7 +598,9 @@ class ActivityClassifier(_CustomModel):
 
     @classmethod
     def _native_name(cls):
-        return "activity_classifier"
+        if not USE_CPP:
+            return "activity_classifier"
+        return None
 
     def _get_version(self):
         return self._PYTHON_ACTIVITY_CLASSIFIER_VERSION
