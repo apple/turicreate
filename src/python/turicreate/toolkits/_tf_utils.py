@@ -177,7 +177,7 @@ def convert_conv2d_tf_to_coreml(conv_weights):
 
 	Parameters
     ----------
-    conv_weights: 3d numpy array of shape
+    conv_weights: 4d numpy array of shape
 	   [kernelWidth, kernelHeight, kernelChannels, outputChannels]
 
     Returns
