@@ -11,6 +11,7 @@
 #include <memory>
 
 #include <core/data/sframe/gl_sarray.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 #include <core/logging/table_printer/table_printer.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
@@ -41,6 +42,9 @@ class EXPORT style_transfer : public ml_model_base {
 
   virtual void iterate_training();
   virtual void finalize_training();
+
+  gl_sframe predict(variant_type data,
+                    std::map<std::string, flexible_type> opts);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("style_transfer")
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
@@ -86,18 +90,24 @@ class EXPORT style_transfer : public ml_model_base {
                     {{"options",
                       to_variant(std::map<std::string, flexible_type>())}});
 
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::predict, "data", "options");
+
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
   virtual std::unique_ptr<data_iterator> create_iterator(
       data_iterator::parameters iterator_params) const;
 
-  std::unique_ptr<data_iterator> create_iterator(gl_sarray style,
-                                                 gl_sarray content, bool repeat,
+  std::unique_ptr<data_iterator> create_iterator(gl_sarray content,
+                                                 gl_sarray style, bool repeat,
+                                                 bool training,
                                                  int random_seed) const;
 
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
       const;
+
+  void perform_predict(gl_sarray images, gl_sframe_writer& result,
+                       const std::vector<double>& style_idx);
 
   template <typename T>
   T read_state(const std::string& key) const {
@@ -113,6 +123,8 @@ class EXPORT style_transfer : public ml_model_base {
   std::unique_ptr<neural_net::model_backend> m_training_model;
 
   std::unique_ptr<table_printer> training_table_printer_;
+
+  static gl_sarray convert_types_to_sarray(const variant_type& data);
 
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;
