@@ -36,10 +36,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         self.batch_size = batch_size
 
         self.input = _tf.placeholder(_tf.float32, [None, 28, 28, 1])
-        self.labels = _tf.placeholder(_tf.int32, [None, 1])
-
-        reshaped_target = _tf.reshape(self.labels, [self.batch_size])
-        one_hot_target = _tf.one_hot(reshaped_target, depth=self.num_classes, axis=-1)
+        self.one_hot_labels = _tf.placeholder(_tf.int32, [None, self.num_classes])
 
         # Weights
         weights = {
@@ -90,13 +87,13 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         # Loss
         self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
-            labels=one_hot_target))
+            labels=self.one_hot_labels))
 
         # Optimizer
         self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.001).minimize(self.cost)
 
         # Predictions
-        correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(one_hot_target, 1))
+        correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.one_hot_labels, 1))
         self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, _tf.float32))
         
         self.sess = _tf.Session()
@@ -137,41 +134,41 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
     def train(self, feed_dict):
 
-        print("In train!!!!")
-
         for key in feed_dict.keys():
-            # import pdb; pdb.set_trace()
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
-            # if key == "labels":
-            #     squeezed_target = _np.squeeze(feed_dict[key], axis=1)
-            #     feed_dict[key] = _tf.one_hot(squeezed_target, depth=self.num_classes, axis=-1)
-            # feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
-            # feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[1], feed_dict[key].shape[2]))
+
+        num_samples = float(feed_dict["num_samples"])
+        one_hot_labels = _np.zeros((int(num_samples), self.num_classes))
+
+        # convert to one hot
+        labels = feed_dict["labels"].astype("int32").T
+        one_hot_labels[_np.arange(int(num_samples)), labels] = 1
 
         _, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
                             feed_dict={
                                 self.input: feed_dict['input'],
-                                self.labels: feed_dict['labels']
+                                self.one_hot_labels: one_hot_labels
                             })
         result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
-        print(result)
         return result
 
+
     def predict(self, feed_dict):
-        print("In predict!!!!")
+
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
-            # if key == "labels":
-            #     squeezed_target = _np.squeeze(feed_dict[key], axis=1)
-            #     feed_dict[key] = _tf.one_hot(squeezed_target, depth=self.num_classes, axis=-1)
-            # import pdb; pdb.set_trace()
-            # feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
-            # feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[1], feed_dict[key].shape[2]))
+
+        num_samples = float(feed_dict["num_samples"])
+        one_hot_labels = np.zeros((int(num_samples), self.num_classes))
+
+        # convert to one hot
+        labels = feed_dict["labels"].astype("int32").T
+        one_hot_labels[_np.arange(num_samples), labels] = 1
 
         pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
                             feed_dict={
                                 self.input: feed_dict['input'],
-                                self.labels: feed_dict['labels']
+                                self.one_hot_labels: one_hot_labels
                             })
         result = {'accuracy' : final_accuracy, 'predictions' : pred_probs}
         return result

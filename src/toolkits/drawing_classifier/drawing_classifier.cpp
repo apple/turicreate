@@ -279,7 +279,6 @@ void drawing_classifier::init_training(
     std::string feature_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
 
-  std::cout << "Inside init_training!" << std::endl;
   // Read user-specified options.
   init_options(opts);
 
@@ -393,7 +392,9 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->predict({{"input", result_batch.data_info.drawings},
-                                  {"labels", result_batch.data_info.targets}});
+                                  {"labels", result_batch.data_info.targets},
+                                  {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                                });
 
     result_batch.accuracy_info = results.at("accuracy");
     result_batch.loss_info = results.at("loss");
@@ -416,11 +417,8 @@ void drawing_classifier::iterate_training() {
   ASSERT_TRUE(training_data_iterator_ != nullptr);
   ASSERT_TRUE(training_model_ != nullptr);
 
-  std::cout << "Inside iterate_training!" << std::endl;
-
   const size_t batch_size = read_state<flex_int>("batch_size");
   const size_t iteration_idx = read_state<flex_int>("training_iterations");
-  std::cout << "Iteration idx : " << iteration_idx << std::endl;
 
   float cumulative_batch_loss = 0.f;
   size_t num_batches = 0;
@@ -448,7 +446,7 @@ void drawing_classifier::iterate_training() {
                           batch.loss_info.data() + batch.loss_info.size(), 0.f,
                           std::plus<float>());
 
-      cumulative_batch_loss += batch_loss / batch.data_info.num_samples;
+      cumulative_batch_loss += batch_loss;
     }
   };
 
@@ -457,16 +455,15 @@ void drawing_classifier::iterate_training() {
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
 
-    std::cout << "has next batch" << std::endl;
-
     result result_batch;
     result_batch.data_info = training_data_iterator_->next_batch(batch_size);
 
     // Submit the batch to the neural net model.
-    std::cout << "About to call model backend train !!!" << std::endl;
     std::map<std::string, shared_float_array> results =
         training_model_->train({{"input", result_batch.data_info.drawings},
-                                {"labels", result_batch.data_info.targets}});
+                                {"labels", result_batch.data_info.targets},
+                                {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                              });
     result_batch.loss_info = results.at("loss");
     result_batch.accuracy_info = results.at("accuracy");
 
@@ -477,7 +474,7 @@ void drawing_classifier::iterate_training() {
   }
   // Process all remaining batches.
   pop_until_size(0);
-  float average_batch_loss = cumulative_batch_loss / num_batches;
+  float average_batch_loss = cumulative_batch_loss;
   float average_batch_accuracy =
       static_cast<float>(train_num_correct) / train_num_samples;
   float average_val_accuracy;
@@ -545,7 +542,6 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
 
-  std::cout << "Inside train!" << std::endl;
   init_training(data, target_column_name, feature_column_name, validation_data,
                 opts);
 
