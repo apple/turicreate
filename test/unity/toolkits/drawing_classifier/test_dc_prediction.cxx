@@ -246,6 +246,8 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
 }
 }  // namespace
 
+/* ========================= perform inference ===========================*/
+
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
   logprogress_stream << ">>> test_drawing_classifier_perform_inference <<<"
                      << std::endl;
@@ -276,6 +278,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
     _assert_sframe_equals(result, expected_sf);
   }
 }
+
+/* ============================= predict ================================*/
 
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_rank) {
   logprogress_stream << ">>> test_drawing_classifier_predict_rank <<<"
@@ -328,6 +332,68 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
   }
 }
 
+/* ========================= predict top k ============================*/
+
+namespace {
+
+void verify_topk_result(size_t kk, size_t num_of_classes, size_t num_of_rows,
+                        gl_sframe result, gl_sframe expected) {
+  bool test_rank = result.contains_column("rank");
+
+  std::vector<unsigned> idx_vec;
+  if (test_rank) idx_vec.resize(num_of_classes);
+  flex_vec output(kk);
+
+  for (size_t ii = 0; ii < num_of_rows; ++ii) {
+    flex_vec prob_vec = expected[PRED_NAME][ii];
+
+    size_t idx_beg = ii * kk;
+
+    if (test_rank) {
+      // reset for each iteration
+      std::iota(idx_vec.begin(), idx_vec.end(), 0);
+
+      auto compare = [&](size_t i, size_t j) {
+        return prob_vec[i] > prob_vec[j];
+      };
+
+      std::sort(idx_vec.begin(), idx_vec.end(), compare);
+
+      // using rank
+      for (size_t jj = 0; jj < kk; ++jj) {
+        output[jj] = prob_vec[result["rank"][idx_beg + jj]];
+      }
+    } else {
+      // test probability
+      for (size_t jj = 0; jj < kk; ++jj) {
+        output[jj] = result["probability"][idx_beg + jj];
+      }
+    }
+
+    auto prob_vec_sorted = prob_vec;
+    std::sort(prob_vec_sorted.begin(), prob_vec_sorted.end(),
+              std::greater<double>());
+
+    TS_ASSERT(std::equal(prob_vec_sorted.begin(), prob_vec_sorted.begin(),
+                         output.begin()));
+
+    // label is stringized sequence [0, num_of_classes)
+    auto get_index_of_label = [](const std::string& label) {
+      return std::stoi(label);
+    };
+
+    for (size_t jj = 0; jj < kk; ++jj) {
+      output[jj] = prob_vec[get_index_of_label(
+          result["class"][idx_beg + jj].get<flex_string>())];
+    }
+
+    TS_ASSERT(std::equal(prob_vec_sorted.begin(), prob_vec_sorted.begin(),
+                         output.begin()));
+  }
+};
+
+} // namespace
+
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_zero_k) {
   logprogress_stream
       << ">>> test_drawing_classifier_predict_topk_rank_zero_k <<<"
@@ -352,9 +418,79 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_zero_k) {
   prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
 }
 
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_normal_k) {
+  logprogress_stream
+      << ">>> test_drawing_classifier_predict_topk_rank_normal_k <<<"
+      << std::endl;
+
+  for (auto& entry : TEST_CASES) {
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
+
+    if (num_of_classes == 0) continue;
+
+    size_t kk = num_of_classes > 1 ? num_of_classes - 1 : 1;
+
+    auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
+                      gl_sframe expected) {
+      auto result_rank = mock_model.predict_topk(my_data, "rank", kk);
+
+      TS_ASSERT_EQUALS(result_rank.size(), num_of_rows * kk);
+      TS_ASSERT_EQUALS(result_rank["rank"].size() / kk,
+                       expected[PRED_NAME].size());
+      // label should be string type
+      TS_ASSERT_EQUALS(result_rank["rank"][0].get_type(),
+                       flex_type_enum::INTEGER);
+      TS_ASSERT_EQUALS(result_rank["class"][0].get_type(),
+                       flex_type_enum::STRING);
+
+      verify_topk_result(kk, num_of_classes, num_of_rows, result_rank,
+                         expected);
+    };
+
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_big_k) {
+  logprogress_stream
+      << ">>> test_drawing_classifier_predict_topk_rank_big_k <<<" << std::endl;
+
+  for (auto& entry : TEST_CASES) {
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
+
+    if (num_of_classes == 0) continue;
+
+    size_t kk = num_of_classes + 1;
+
+    auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
+                      gl_sframe expected) {
+      auto result_rank = mock_model.predict_topk(my_data, "rank", kk);
+
+      size_t realk = num_of_classes;
+      TS_ASSERT_EQUALS(result_rank.size(), num_of_rows * realk);
+      TS_ASSERT_EQUALS(result_rank["rank"].size() / realk,
+                       expected[PRED_NAME].size());
+      // label should be string type
+      TS_ASSERT_EQUALS(result_rank["rank"][0].get_type(),
+                       flex_type_enum::INTEGER);
+      TS_ASSERT_EQUALS(result_rank["class"][0].get_type(),
+                       flex_type_enum::STRING);
+
+      verify_topk_result(realk, num_of_classes, num_of_rows,
+                         result_rank, expected);
+    };
+
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+  }
+}
+
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_zero_k) {
   logprogress_stream
-      << ">>> test_drawing_classifier_predict_topk_rank_zero_k <<<"
+      << ">>> test_drawing_classifier_predict_topk_prob_zero_k <<<"
       << std::endl;
 
   size_t batch_size = 2;
@@ -375,6 +511,76 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_zero_k) {
   };
 
   prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+}
+
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_normal_k) {
+  logprogress_stream
+      << ">>> test_drawing_classifier_predict_topk_prob_normal_k <<<"
+      << std::endl;
+
+  for (auto& entry : TEST_CASES) {
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
+
+    if (num_of_classes == 0) continue;
+
+    size_t kk = num_of_classes > 1 ? num_of_classes - 1 : 1;
+
+    auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
+                      gl_sframe expected) {
+      auto result_rank = mock_model.predict_topk(my_data, "probability", kk);
+
+      TS_ASSERT_EQUALS(result_rank.size(), num_of_rows * kk);
+      TS_ASSERT_EQUALS(result_rank["probability"].size() / kk,
+                       expected[PRED_NAME].size());
+      // label should be string type
+      TS_ASSERT_EQUALS(result_rank["probability"][0].get_type(),
+                       flex_type_enum::FLOAT);
+      TS_ASSERT_EQUALS(result_rank["class"][0].get_type(),
+                       flex_type_enum::STRING);
+
+      verify_topk_result(kk, num_of_classes, num_of_rows, result_rank,
+                         expected);
+    };
+
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_big_k) {
+  logprogress_stream
+      << ">>> test_drawing_classifier_predict_topk_prob_big_k <<<" << std::endl;
+
+  for (auto& entry : TEST_CASES) {
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
+
+    if (num_of_classes == 0) continue;
+
+    size_t kk = num_of_classes + 1;
+
+    auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
+                      gl_sframe expected) {
+      auto result_rank = mock_model.predict_topk(my_data, "probability", kk);
+
+      size_t realk = num_of_classes;
+      TS_ASSERT_EQUALS(result_rank.size(), num_of_rows * realk);
+      TS_ASSERT_EQUALS(result_rank["probability"].size() / realk,
+                       expected[PRED_NAME].size());
+      // label should be string type
+      TS_ASSERT_EQUALS(result_rank["probability"][0].get_type(),
+                       flex_type_enum::FLOAT);
+      TS_ASSERT_EQUALS(result_rank["class"][0].get_type(),
+                       flex_type_enum::STRING);
+
+      verify_topk_result(realk, num_of_classes, num_of_rows,
+                         result_rank, expected);
+    };
+
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+  }
 }
 
 }  // namespace drawing_classifier
