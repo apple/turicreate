@@ -20,6 +20,7 @@
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <core/random/random.hpp>
+#include <timer/timer.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/object_detection/od_evaluation.hpp>
 #include <toolkits/object_detection/od_serialization.hpp>
@@ -411,6 +412,9 @@ void object_detector::train(gl_sframe data,
   init_training(data, annotations_column_name, image_column_name,
                 validation_data, opts);
 
+  turi::timer time_object;
+  time_object.start();
+
   // Perform all the iterations at once.
   while (get_training_iterations() < get_max_iterations()) {
     iterate_training();
@@ -418,6 +422,10 @@ void object_detector::train(gl_sframe data,
 
   // Wait for any outstanding batches to finish.
   finalize_training();
+
+  add_or_update_state({
+      {"training_time", time_object.current_time()},
+  });
 }
 
 void object_detector::synchronize_model(model_spec* nn_spec) const {

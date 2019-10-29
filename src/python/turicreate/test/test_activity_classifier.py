@@ -15,10 +15,11 @@ import numpy as np
 from numbers import Number
 from . import util as test_util
 import pytest
-from turicreate.toolkits._internal_utils import _mac_ver
+from turicreate.toolkits._internal_utils import _mac_ver, _read_env_var_cpp
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
+USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 
 def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
                randomize_num_sessions = True, num_labels = 9, prediction_window = 5,
@@ -257,9 +258,16 @@ class ActivityClassifierTest(unittest.TestCase):
             'classes': lambda x: sorted(x) == sorted(self.data[self.target].unique())
         }
         self.exposed_fields_ans = list(self.get_ans.keys())
-        self.fields_ans = self.exposed_fields_ans + ['_recalibrated_batch_size',
-                '_pred_model', '_id_target_map',
-                '_predictions_in_chunk', '_target_id_map']
+        if USE_CPP:
+            self.fields_ans = self.exposed_fields_ans + ['training_report_by_class',
+                'training_iterations', 'random_seed',
+                'training_precision', 'training_confusion_matrix',
+                'use_data_augmentation', 'training_f1_score',
+                'training_auc', 'training_roc_curve', 'training_recall']
+        else:
+            self.fields_ans = self.exposed_fields_ans + ['_recalibrated_batch_size',
+                    '_pred_model', '_id_target_map',
+                    '_predictions_in_chunk', '_target_id_map']
 
 
 
@@ -305,7 +313,10 @@ class ActivityClassifierTest(unittest.TestCase):
 
         if _mac_ver() >= (10, 13):
             w = self.prediction_window
-            labels = list(map(str, sorted(self.model._target_id_map.keys())))
+            if USE_CPP:
+                labels = list(map(str, sorted(self.model.classes)))
+            else:
+                labels = list(map(str, sorted(self.model._target_id_map.keys())))
 
             data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
             np_data = np.concatenate(data_list, 1)[np.newaxis]
