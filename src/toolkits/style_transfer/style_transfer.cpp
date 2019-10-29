@@ -609,6 +609,7 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
 
 void style_transfer::import_from_custom_model(variant_map_type model_data,
                                               size_t version) {
+  // Get relevant values from variant_map_type
   auto model_iter = model_data.find("_model");
   if (model_iter == model_data.end()) {
     log_and_throw("The loaded turicreate model must contain '_model'!\n");
@@ -645,6 +646,7 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
                        {"num_styles", num_styles},
                        {"max_iterations", max_iterations}});
 
+  // Extract the weights and shapes
   flex_dict mxnet_data_dict;
   flex_dict mxnet_shape_dict;
 
@@ -663,6 +665,7 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
   std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
   std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
 
+  // Create Map, converting the weight names from MxNet to CoreML
   float_array_map nn_params;
   for (size_t i = 0; i < mxnet_data_dict.size(); i++) {
     const std::string layer_name = CUSTOM_MODEL_NAMING_MAP.at(mxnet_data_dict[i].first);
@@ -676,6 +679,7 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
                                                      std::move(layer_shape));
   }
 
+  // Update resnet spec with imported weight map
   m_resnet_spec = init_resnet(variant_get_value<size_t>(num_styles));
   m_resnet_spec->update_params(nn_params);
 }
