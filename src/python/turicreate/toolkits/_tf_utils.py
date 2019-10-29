@@ -172,8 +172,8 @@ def convert_conv1d_tf_to_coreml(conv_weights):
 
 def convert_conv2d_tf_to_coreml(conv_weights):
 	"""
-	Convolutional weights from TensorFlow in the format [kernelWidth, kernelChannels, outputChannels]
-	are converted back in CoreML specifications [outputChannels, kernelChannels, kernelHeight, kernelWidth].
+	Convolutional weights from TensorFlow in the format [filter_height, filter_width, input_channels, output_channels]
+	are converted back in CoreML specifications output_channels, input_channels, filter_height, filter_width].
 
 	Parameters
     ----------
