@@ -75,7 +75,7 @@ def convert_conv2d_coreml_to_tf(conv_weights):
 	   [kernelWidth, kernelHeight, kernelChannels, outputChannels]
 
 	"""
-	conv_weights = np.transpose(conv_weights, (3, 2, 0, 1))
+	conv_weights = np.transpose(conv_weights, (2, 3, 1, 0))
 	return conv_weights
 
 def convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o):
@@ -186,6 +186,7 @@ def convert_conv2d_tf_to_coreml(conv_weights):
        [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
 
 	"""
+	conv_weights = np.transpose(conv_weights, (3, 2, 0, 1))
 	return conv_weights
 
 def convert_lstm_weight_tf_to_coreml(lstm_weight, split):
