@@ -168,12 +168,6 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         data_.remove_column("_random_order");
       }
 
-      reset();
-      /**
-       * avoid inf loop; since next_row_ and end_of_rows_ are updated;
-       * IMO, this is tricky; user should call `reset()` explicitly
-       */
-      break;
     }
   }
 

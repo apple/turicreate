@@ -33,13 +33,26 @@ using turi::neural_net::model_backend;
 using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
-struct mock_perform_inference : public test_drawing_classifier {
-  inline gl_sframe get_inference_result(data_iterator* data) {
-    return perform_inference(data);
-  }
-};
 
-// borrowed from gl_sframe.cxx
+/* ==================== global variables  ====================== */
+
+/**
+ * tuple of batch_size, num_of_rows, num_of_classes
+ *
+ * batch_size, num_of_rows, num_of_classes
+ * 1. batch_size > num_of_rows
+ * 2. batch_size == num_of_rows
+ * 3. num_of_rows can divide batch_size
+ * 4. num_of_rows can not divide batch_size
+ *
+ **/
+std::vector<std::tuple<unsigned, unsigned, unsigned>> TEST_CASES = {
+    {2, 1, 1}, {2, 1, 2}, {2, 2, 2}, {2, 4, 2},
+    {2, 4, 3}, {2, 5, 2}, {2, 5, 3}};
+
+constexpr auto PRED_NAME = "preds";
+
+/* ============== utils borrowed from gl_sframe.cxx ============= */
 // TODO: create a common util class
 void _assert_flexvec_equals(const std::vector<flexible_type>& sa,
                             const std::vector<flexible_type>& sb) {
@@ -67,16 +80,21 @@ void _assert_sframe_equals(gl_sframe sa, gl_sframe sb) {
   }
 }
 
-gl_sframe set_up_perform_inference(test_drawing_classifier& mock_model,
-                                  std::unique_ptr<mock_model_backend>& mock_backend,
-                                  std::unique_ptr<mock_compute_context>& mock_context,
-                                   size_t batch_size,
-                                   const size_t num_of_rows,
-                                   const size_t num_of_classes) {
+/* ========================= test drivers & utils ======================== */
+struct mock_perform_inference : public test_drawing_classifier {
+  inline gl_sframe get_inference_result(data_iterator* data) {
+    return perform_inference(data);
+  }
+};
+
+gl_sframe set_up_perform_inference(
+    test_drawing_classifier& mock_model,
+    std::unique_ptr<mock_model_backend>& mock_backend,
+    std::unique_ptr<mock_compute_context>& mock_context, size_t batch_size,
+    const size_t num_of_rows, const size_t num_of_classes) {
   ASSERT_MSG(num_of_rows > 0, "num_of_rows should be bigger than 0");
   ASSERT_MSG(num_of_classes > 0, "num_of_classes should be bigger than 0");
   ASSERT_MSG(batch_size > 0, "batch_size should be bigger than 0");
-
 
   gl_sframe expected_sf;
   {
@@ -85,7 +103,7 @@ gl_sframe set_up_perform_inference(test_drawing_classifier& mock_model,
     std::default_random_engine eng;
     std::uniform_int_distribution<float> distribution(0, 20);
 
-    gl_sframe_writer writer({"preds"}, {flex_type_enum::VECTOR},
+    gl_sframe_writer writer({PRED_NAME}, {flex_type_enum::VECTOR},
                             /* num_segments */ 1);
 
     size_t ii = 0;
@@ -129,7 +147,6 @@ gl_sframe set_up_perform_inference(test_drawing_classifier& mock_model,
   mock_model.add_or_update_state(
       {{"num_classes", num_of_classes}, {"batch_size", batch_size}});
 
-
   auto create_drawing_classifier_impl =
       [&mock_backend](const float_array_map&, size_t batch_size,
                       size_t num_classes) { return std::move(mock_backend); };
@@ -140,7 +157,8 @@ gl_sframe set_up_perform_inference(test_drawing_classifier& mock_model,
   // be extremely careful about reference a unique_ptr
   // never use mock_context after this line
   auto create_compute_context_impl = [&] { return std::move(mock_context); };
-  mock_model.create_compute_context_calls_.push_back(create_compute_context_impl);
+  mock_model.create_compute_context_calls_.push_back(
+      create_compute_context_impl);
 
   return expected_sf;
 }
@@ -172,22 +190,67 @@ std::unique_ptr<data_iterator> prepare_data_for_prediction(
   return std::unique_ptr<data_iterator>(new simple_data_iterator(params));
 }
 
+using test_runner_t =
+    std::function<void(test_drawing_classifier&, gl_sframe, gl_sframe)>;
+
+void prediction_test_driver(size_t batch_size, size_t num_of_rows,
+                            size_t num_of_classes, test_runner_t runner) {
+#ifndef NDEBUG
+  logprogress_stream << "batch_size=" << batch_size
+                     << "; num_of_rows=" << num_of_rows
+                     << "; num_of_classes=" << num_of_classes << std::endl;
+#endif
+
+  // mode the data iterator first
+  test_drawing_classifier mock_model;
+  std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
+  std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+
+  auto expected_sf =
+      set_up_perform_inference(mock_model, mock_backend, mock_context,
+                               batch_size, num_of_rows, num_of_classes);
+
+  // make sure the output is what expected
+  std::vector<std::string> class_labels;
+  class_labels.reserve(num_of_classes);
+  for (size_t ii = 0; ii < num_of_classes; ++ii) {
+    class_labels.push_back(std::to_string(ii));
+  }
+
+  const std::string feature_name = "feature";
+  const std::string target_name = "target";
+
+  // name 'target', 'feature' are used by create_iterator
+  drawing_data_generator data_generator(num_of_rows, class_labels, target_name,
+                                        feature_name);
+
+  gl_sframe my_data = data_generator.get_data();
+  TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
+
+  mock_model.create_iterator_calls_v2_.push_back([=](gl_sframe data,
+                                                     bool is_train,
+                                                     std::vector<std::string>) {
+    data_iterator::parameters my_params;
+    my_params.data = my_data;
+    my_params.is_train = false;
+    my_params.feature_column_name = feature_name;
+    my_params.target_column_name = target_name;
+    return std::unique_ptr<data_iterator>(new simple_data_iterator(my_params));
+  });
+
+  // specific for perdict
+  mock_model.add_or_update_state(
+      {{"classes", flex_list(class_labels.begin(), class_labels.end())}});
+
+  runner(mock_model, my_data, expected_sf);
+}
 }  // namespace
 
-
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
-  /**
-   * batch_size, num_of_rows, num_of_classes
-   * 1. batch_size > num_of_rows
-   * 2. batch_size == num_of_rows
-   * 3. num_of_rows can divide batch_size
-   * 4. num_of_rows can not divide batch_size
-   **/
-  std::vector<std::tuple<unsigned, unsigned, unsigned>> test_cases = {
-      {2, 1, 1}, {2, 1, 2}, {2, 2, 2}, {2, 4, 2},
-      {2, 4, 3}, {2, 5, 2}, {2, 5, 3}};
+  logprogress_stream << ">>> test_drawing_classifier_perform_inference <<<"
+                     << std::endl;
 
-  for (auto& entry : test_cases) {
+  for (auto& entry : TEST_CASES) {
     size_t batch_size = std::get<0>(entry);
     size_t num_of_rows = std::get<1>(entry);
     size_t num_of_classes = std::get<2>(entry);
@@ -199,7 +262,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
     // mode the data iterator first
     mock_perform_inference mock_model;
     std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
-    std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+    std::unique_ptr<mock_compute_context> mock_context(
+        new mock_compute_context);
 
     auto expected_sf =
         set_up_perform_inference(mock_model, mock_backend, mock_context,
@@ -214,83 +278,104 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
 }
 
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_rank) {
-  /**
-   * batch_size, num_of_rows, num_of_classes
-   * 1. batch_size > num_of_rows
-   * 2. batch_size == num_of_rows
-   * 3. num_of_rows can divide batch_size
-   * 4. num_of_rows can not divide batch_size
-   **/
-  std::vector<std::tuple<unsigned, unsigned, unsigned>> test_cases = {
-      {2, 1, 1}, {2, 1, 2}, {2, 2, 2}, {2, 4, 2},
-      {2, 4, 3}, {2, 5, 2}, {2, 5, 3}};
+  logprogress_stream << ">>> test_drawing_classifier_predict_rank <<<"
+                     << std::endl;
 
-  logprogress_stream << ">>> test_drawing_classifier_predict_rank" << std::endl;
-  for (auto& entry : test_cases) {
+  for (auto& entry : TEST_CASES) {
     size_t batch_size = std::get<0>(entry);
     size_t num_of_rows = std::get<1>(entry);
     size_t num_of_classes = std::get<2>(entry);
 
-    logprogress_stream << "batch_size=" << batch_size
-                       << "; num_of_rows=" << num_of_rows
-                       << "; num_of_classes=" << num_of_classes << std::endl;
+    auto runner = [](test_drawing_classifier& mock_model, gl_sframe my_data,
+                     gl_sframe expected) {
+      auto result_rank = mock_model.predict(my_data, "rank");
 
-    // mode the data iterator first
-    test_drawing_classifier mock_model;
-    std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
-    std::unique_ptr<mock_compute_context> mock_context(new mock_compute_context);
+      TS_ASSERT_EQUALS(result_rank.size(), expected.size());
 
-    auto expected_sf =
-        set_up_perform_inference(mock_model, mock_backend, mock_context,
-                                 batch_size, num_of_rows, num_of_classes);
+      for (size_t ii = 0; ii < result_rank.size(); ++ii) {
+        flex_vec probs = expected[PRED_NAME][ii];
+        TS_ASSERT_EQUALS(result_rank[ii].get_type(), flex_type_enum::STRING);
 
-    // make sure the output is what expected
-    std::vector<std::string> class_labels;
-    class_labels.reserve(num_of_classes);
-    for (size_t ii = 0; ii < num_of_classes; ++ii) {
-      class_labels.push_back(std::to_string(ii));
-    }
+        size_t label_idx = std::stoi(result_rank[ii].to<flex_string>());
+        auto expected_idx =
+            std::max_element(probs.begin(), probs.end()) - probs.begin();
+        TS_ASSERT_EQUALS(label_idx, expected_idx);
+      }
+    };
 
-    const std::string feature_name = "feature";
-    const std::string target_name = "target";
-
-    // name 'target', 'feature' are used by create_iterator
-    drawing_data_generator data_generator(num_of_rows, class_labels,
-                                          target_name, feature_name);
-
-    gl_sframe my_data = data_generator.get_data();
-    TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
-
-    mock_model.create_iterator_calls_v2_.push_back(
-        [=](gl_sframe data, bool is_train, std::vector<std::string>) {
-          data_iterator::parameters my_params;
-          my_params.data = my_data;
-          my_params.is_train = false;
-          my_params.feature_column_name = feature_name;
-          my_params.target_column_name = target_name;
-          return std::unique_ptr<data_iterator>(
-              new simple_data_iterator(my_params));
-        });
-
-    // specific for perdict
-    mock_model.add_or_update_state(
-        {{"classes", flex_list(class_labels.begin(), class_labels.end())}});
-
-    auto result_rank = mock_model.predict(my_data, "rank");
-
-    TS_ASSERT_EQUALS(result_rank.size(), expected_sf.size());
-
-    for (size_t ii = 0; ii < result_rank.size(); ++ii) {
-      flex_vec probs = expected_sf["preds"][ii];
-      size_t label_idx = std::stoi(result_rank[ii]);
-      auto expected_idx =
-          std::max_element(probs.begin(), probs.end()) - probs.begin();
-      TS_ASSERT_EQUALS(label_idx, expected_idx);
-    }
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
   }
 }
 
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk) {}
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
+  logprogress_stream << ">>> test_drawing_classifier_predict_prob <<<"
+                     << std::endl;
+
+  for (auto& entry : TEST_CASES) {
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
+
+    auto runner = [](test_drawing_classifier& mock_model, gl_sframe my_data,
+                     gl_sframe expected) {
+      auto result_rank = mock_model.predict(my_data, "probability");
+
+      TS_ASSERT_EQUALS(result_rank.size(), expected[PRED_NAME].size());
+      _assert_sframe_equals(gl_sframe({{PRED_NAME, result_rank}}), expected);
+    };
+
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+  }
+}
+
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_zero_k) {
+  logprogress_stream
+      << ">>> test_drawing_classifier_predict_topk_rank_zero_k <<<"
+      << std::endl;
+
+  size_t batch_size = 2;
+  size_t num_of_rows = 1;
+  size_t num_of_classes = 2;
+
+  size_t kk = 0;
+  auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
+                    gl_sframe expected) {
+    auto result_rank = mock_model.predict_topk(my_data, "rank", kk);
+
+    TS_ASSERT_EQUALS(result_rank.size(), num_of_rows);
+    TS_ASSERT_EQUALS(result_rank["rank"].size(), expected[PRED_NAME].size());
+    // stack empty list will return undefined value
+    TS_ASSERT_EQUALS(result_rank["rank"][0].get_type(),
+                     flex_type_enum::UNDEFINED);
+  };
+
+  prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+}
+
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_zero_k) {
+  logprogress_stream
+      << ">>> test_drawing_classifier_predict_topk_rank_zero_k <<<"
+      << std::endl;
+
+  size_t batch_size = 2;
+  size_t num_of_rows = 1;
+  size_t num_of_classes = 2;
+
+  size_t kk = 0;
+  auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
+                    gl_sframe expected) {
+    auto result_rank = mock_model.predict_topk(my_data, "probability", kk);
+
+    TS_ASSERT_EQUALS(result_rank.size(), num_of_rows);
+    TS_ASSERT_EQUALS(result_rank["probability"].size(),
+                     expected[PRED_NAME].size());
+    // stack empty list will return undefined value
+    TS_ASSERT_EQUALS(result_rank["probability"][0].get_type(),
+                     flex_type_enum::UNDEFINED);
+  };
+
+  prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+}
 
 }  // namespace drawing_classifier
 }  // namespace turi

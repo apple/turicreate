@@ -642,7 +642,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   gl_sframe predictions = perform_inference(data_itr.get());
 
   gl_sarray result = predictions["preds"];
-  if (output_type == "class") {
+  if (output_type == "rank") {
     flex_list class_labels = read_state<flex_list>("classes");
     auto max_prob_label = [=](const flexible_type& ft) {
       const flex_vec& prob_vec = ft.get<flex_vec>();
