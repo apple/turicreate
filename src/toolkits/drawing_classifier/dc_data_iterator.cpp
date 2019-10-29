@@ -31,8 +31,7 @@ void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
   image_util::copy_image_to_memory(
       /* image input    */ bitmap,
       /* output pointer */ next_drawing_pointer,
-      /* output strides */ {bitmap.m_width * bitmap.m_channels,
-                            bitmap.m_channels, 1},
+      /* output strides */ {bitmap.m_width * bitmap.m_channels, bitmap.m_channels, 1},
       /* output shape   */ {bitmap.m_height, bitmap.m_width, bitmap.m_channels},
       /* channel_last   */ true);
 }
@@ -146,7 +145,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         static_cast<float>(target_properties_.class_to_index_map.at(
             row[target_index_].to<flex_string>())));
 
-    if (++next_row_ == range_iterator_.end() && repeat_) {
+    if (++next_row_ == end_of_rows_ && repeat_) {
       if (shuffle_) {
         // Shuffle the data.
         // TODO: This heavyweight shuffle operation introduces spikes into the
@@ -168,6 +167,16 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         data_.remove_column("_random_order");
       }
 
+      /**
+       * avoid updating next_row_ and end_of_rows_
+       * reset() shouldn't be called neither
+       *
+       * otherwise,
+       * `has_next_batch()` will return `true` afterwards, which will
+       * cause infinite loop of iterating the data if the client
+       * relies on `while(ditr->has_next_batch())` to terminate reading
+       * data by batches.
+       */
     }
   }
 
