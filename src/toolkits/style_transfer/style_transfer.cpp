@@ -15,6 +15,7 @@
 #include <model_server/lib/image_util.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
+#include <toolkits/util/training_utils.hpp>
 
 namespace turi {
 namespace style_transfer {
@@ -317,6 +318,11 @@ std::unique_ptr<data_iterator> style_transfer::create_iterator(
 }
 
 void style_transfer::infer_derived_options() {
+
+  // Report to the user what GPU(s) is being used.
+  std::vector<std::string> gpu_names = m_training_compute_context->gpu_names();
+  print_training_device(gpu_names);
+
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {
     add_or_update_state({{"batch_size", DEFAULT_BATCH_SIZE}});
   }
