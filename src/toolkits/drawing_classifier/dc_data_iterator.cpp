@@ -185,11 +185,6 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   // Wrap the buffers as float_array values.
   data_iterator::batch result;
 
-  if (real_batch_size < batch_size) {
-     auto pend = std::begin(batch_drawings) + real_batch_size * image_data_size;
-     batch_drawings.erase(pend, batch_drawings.end());
-   }
-
   result.num_samples = real_batch_size;
 
   /**
