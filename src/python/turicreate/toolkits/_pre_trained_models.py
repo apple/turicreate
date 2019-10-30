@@ -247,16 +247,16 @@ class VGGish():
         self.name = 'VGGishFeatureEmbedding-v1'
         self.source_md5 = {
             'coreml': 'e8ae7d8cbcabb988b6ed6c0bf3f45571',
-            'mxnet': '13c040de982a51e4664705564be8ae8b'
+            'tensorflow': '1ae04d42492703e75fa79304873c642a'
         }
 
     def get_model_path(self, format):
-        assert(format in ('coreml', 'mxnet'))
+        assert(format in ('coreml', 'tensorflow'))
 
         if(format == 'coreml'):
             filename = self.name + '.mlmodel'
         else:
-            filename = self.name + '.params'
+            filename = self.name + '.h5'
         url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
 
         checksum = self.source_md5[format]
