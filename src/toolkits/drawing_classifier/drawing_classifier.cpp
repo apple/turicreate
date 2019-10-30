@@ -22,6 +22,7 @@
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
 #include <toolkits/util/training_utils.hpp>
 
+#include <toolkits/drawing_classifier/data_preparation.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
 
 namespace turi {
@@ -532,6 +533,11 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
+  // Convert stroke-based data, if needed
+  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name);
+  }
+
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
   init_training(data, target_column_name, feature_column_name, validation_data,

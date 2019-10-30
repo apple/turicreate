@@ -369,6 +369,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
   // mocked-out method has been called.
 }
 
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_stroke_based_conversion) {
+  
+}
+
 }  // namespace
 }  // namespace drawing_classifier
 }  // namespace turi
