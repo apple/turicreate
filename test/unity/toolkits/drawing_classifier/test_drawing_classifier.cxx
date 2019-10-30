@@ -96,8 +96,9 @@ class mock_data_iterator : public data_iterator {
   std::unordered_map<std::string, int> class_to_index_map_;
 };
 
-// Subclass of object_detector that mocks out the methods that inject the
-// object_detector dependencies.
+
+// Subclass of drawing classifier that mocks out the methods that inject the
+// drawing classifier dependencies.
 class test_drawing_classifier : public drawing_classifier {
  public:
   using create_iterator_call = std::function<std::unique_ptr<data_iterator>(
@@ -160,12 +161,14 @@ class test_drawing_classifier : public drawing_classifier {
   mutable std::deque<init_model_call> init_model_calls_;
 };
 
+/**
+ * Most of this test body will be spent setting up the mock objects that we'll
+ * inject into the drawing_classifier implementation. These mock objects will
+ * make assertions about their inputs along the way and provide the outputs
+ * that we manually pre-program. At the end will be a single call to
+ * drawing_classifier::init_training that will trigger all the actual testing.
+ */
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
-  // Most of this test body will be spent setting up the mock objects that we'll
-  // inject into the drawing_classifier implementation. These mock objects will
-  // make assertions about their inputs along the way and provide the outputs
-  // that we manually pre-program. At the end will be a single call to
-  // drawing_classifier::init_training that will trigger all the actual testing.
   test_drawing_classifier model;
 
   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
@@ -189,8 +192,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
-    TS_ASSERT(iterator_params.class_labels
-                  .empty());  // Should infer class labels from data.
+    // Should infer class labels from data.
+    TS_ASSERT(iterator_params.class_labels.empty());
     TS_ASSERT(iterator_params.repeat);
 
     return std::move(mock_iterator);
@@ -200,13 +203,13 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
 
   model.init_model_calls_.emplace_back([=]() {
     std::unique_ptr<model_spec> nn_spec(new model_spec);
+    auto weight_init_fn = [](float* w, float* w_end) {
+      for (int i = 0; i < w_end - w; ++i) {
+        w[i] = static_cast<float>(i);
+      }
+    };
     nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
-                             model_spec::padding_type::SAME,
-                             /* weight_init_fn */ [](float* w, float* w_end) {
-                               for (int i = 0; i < w_end - w; ++i) {
-                                 w[i] = static_cast<float>(i);
-                               }
-                             });
+                             model_spec::padding_type::SAME, weight_init_fn);
     return nn_spec;
   });
 
@@ -229,6 +232,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
 
     return std::move(mock_nn_model);
   };
+
   mock_context->create_drawing_classifier_calls_.push_back(
       create_drawing_classifier_impl);
 
@@ -252,7 +256,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   TS_ASSERT_EQUALS(model.get_field<flex_int>("max_iterations"),
                    test_max_iterations);
   TS_ASSERT_EQUALS(model.get_field<flex_string>("target"), test_target_name);
-  TS_ASSERT_EQUALS(model.get_field<flex_string>("feature"), test_image_name);
+  TS_ASSERT_EQUALS(model.get_field<flex_list>("features").size(), 1);
+  TS_ASSERT_EQUALS(
+      model.get_field<flex_list>("features")[0].get<flex_string>(),
+      test_image_name);
   TS_ASSERT_EQUALS(model.get_field<flex_int>("num_classes"),
                    test_class_labels.size());
   TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"), 0);
@@ -261,14 +268,14 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   // mocked-out method has been called.
 }
 
+/**
+ * Most of this test body will be spent setting up the mock objects that we'll
+ * inject into the drawing_classifier implementation. These mock objects will
+ * make assertions about their inputs along the way and provide the outputs
+ * that we manually pre-program. At the end will be a single call to
+ * drawing_classifier::init_training that will trigger all the actual testing.
+ */
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
-  // Most of this test body will be spent setting up the mock objects that we'll
-  // inject into the drawing_classifier implementation. These mock objects will
-  // make assertions about their inputs along the way and provide the outputs
-  // that we manually pre-program. At the end will be the calls to
-  // drawing_classifier::iterate_training that will trigger all the
-  // actual testing.
-
   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
   // code attempts to instantiate these dependencies.
   std::unique_ptr<mock_data_iterator> mock_iterator(new mock_data_iterator);
@@ -290,8 +297,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
     // Program the mock_iterator to return nothing.
     auto next_batch_impl = [=](size_t batch_size) {
       TS_ASSERT_EQUALS(batch_size, test_batch_size);
+
       data_iterator::batch result;
       result.num_samples = batch_size;
+
       return result;
     };
     mock_iterator->next_batch_calls_.push_back(next_batch_impl);
@@ -328,9 +337,11 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
 
       // Multiply loss by 8 to offset the "mps_loss_mult" factor currently
       // hardwired in to avoid fp16 underflow in MPS.
-      std::map<std::string, shared_float_array> result;
+      neural_net::float_array_map result;
+
       result["loss"] = shared_float_array::wrap(8 * test_loss);
       result["accuracy"] = shared_float_array::wrap(.5);
+
       return result;
     };
 
