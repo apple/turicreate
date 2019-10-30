@@ -16,7 +16,7 @@
 #include <model_server/lib/image_util.hpp>
 
 #include "../neural_net/neural_net_mocks.hpp"
-#include "data_utils.hpp"
+#include "dc_data_utils.hpp"
 
 namespace turi {
 namespace drawing_classifier {
@@ -240,7 +240,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   model.create_compute_context_calls_.push_back(create_compute_context_impl);
 
   // Create an arbitrary SFrame with test_num_rows rows.
-  drawing_data_generator data_generator(test_num_rows, test_class_labels);
+  drawing_data_generator data_generator(/* is_bitmap_based */ true,
+    /* num_rows */ test_num_rows, /* class_labels */ test_class_labels);
   gl_sframe data = data_generator.get_data();
 
   // Now, actually invoke drawing_classifier::init_training. This will trigger

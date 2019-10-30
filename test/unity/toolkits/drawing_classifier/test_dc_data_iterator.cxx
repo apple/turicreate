@@ -15,7 +15,7 @@
 #include <core/util/test_macros.hpp>
 #include <model_server/lib/image_util.hpp>
 
-#include "data_utils.hpp"
+#include "dc_data_utils.hpp"
 
 namespace turi {
 namespace drawing_classifier {
@@ -134,7 +134,8 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
 
   for (size_t num_rows = 1; num_rows <= MAX_NUM_ROWS; num_rows++) {
     for (size_t batch_size = 1; batch_size <= MAX_BATCH_SIZE; batch_size++) {
-      drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
+      drawing_data_generator data_generator(/* is_bitmap_based */ true,
+        num_rows, /* class_labels */ UNIQUE_LABELS);
       data_iterator::parameters params = data_generator.get_iterator_params();
 
       test_simple_data_iterator_with_num_rows_and_batch_size(
@@ -148,7 +149,8 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
   constexpr size_t NUM_ROWS = 1;
   constexpr size_t BATCH_SIZE = 10;
 
-  drawing_data_generator data_generator(NUM_ROWS, UNIQUE_LABELS);
+  drawing_data_generator data_generator(/* is_bitmap_based */ true,
+    NUM_ROWS, /* class_labels */ UNIQUE_LABELS);
   std::vector<std::string> class_labels = {"bar", "foo"};
 
   // Purposely added an extraneous label 'baz'.
@@ -167,7 +169,8 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
   {
     size_t num_rows = 0;
 
-    drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
+    drawing_data_generator data_generator(/* is_bitmap_based */ true,
+      num_rows, /* class_labels */ UNIQUE_LABELS);
 
     // Purposely added an extraneous label here.
     data_iterator::parameters params = data_generator.get_iterator_params();
@@ -187,7 +190,8 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
   {
     size_t num_rows = 0;
 
-    drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
+    drawing_data_generator data_generator(/* is_bitmap_based */ true,
+      num_rows, /* class_labels */ UNIQUE_LABELS);
 
     // Purposely added an extraneous label here.
     data_iterator::parameters params = data_generator.get_iterator_params();
@@ -209,7 +213,8 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
     // the initial call of `has_next_batch` should return true
     size_t num_rows = 1;
 
-    drawing_data_generator data_generator(num_rows, UNIQUE_LABELS);
+    drawing_data_generator data_generator(/* is_bitmap_based */ true,
+      num_rows, /* class_labels */ UNIQUE_LABELS);
 
     // Purposely added an extraneous label here.
     data_iterator::parameters params = data_generator.get_iterator_params();
@@ -230,7 +235,8 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_unexpected_classes) {
   constexpr size_t NUM_ROWS = 1;
 
-  drawing_data_generator data_generator(NUM_ROWS, UNIQUE_LABELS);
+  drawing_data_generator data_generator(/* is_bitmap_based */ true,
+    NUM_ROWS, /* class_labels */ UNIQUE_LABELS);
   data_iterator::parameters params = data_generator.get_iterator_params();
 
   params.class_labels = {"bad_class"};
