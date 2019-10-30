@@ -1069,8 +1069,18 @@ void object_detector::init_training(gl_sframe data,
                                          read_state<int>("random_seed"));
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(
-      training_data_, /* expected class_labels */ {}, /* repeat */ true);
+  std::vector<std::string> class_labels;
+  auto it_class_labels = opts.find("class_labels");
+  if (it_class_labels != opts.end()) {
+    flexible_type ft = it_class_labels->second;
+    flex_list flex_class_labels = ft.get<flex_list>();
+    for (auto& x : flex_class_labels) {
+      class_labels.push_back(x.get<flex_string>());
+    }
+  }
+  training_data_iterator_ =
+      create_iterator(training_data_, /* expected class_labels */ class_labels,
+                      /* repeat */ true);
 
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
