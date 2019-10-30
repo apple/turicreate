@@ -120,7 +120,7 @@ def create(dataset, target, feature, max_iterations=10,
         A dataset for monitoring the model's generalization performance. The
         format of this SFrame must be the same as the training dataset. By
         default, a validation set is automatically sampled. If `validation_set`
-        is set to None, no validataion is used. You can also pass a validation
+        is set to None, no validation is used. You can also pass a validation
         set you have constructed yourself.
 
     batch_size : int, optional
@@ -134,7 +134,7 @@ def create(dataset, target, feature, max_iterations=10,
     from ._audio_feature_extractor import _get_feature_extractor
 
     params = {
-        'use_tensorflow': False,
+     'use_tensorflow': False,
     }
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -145,6 +145,7 @@ def create(dataset, target, feature, max_iterations=10,
             raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
 
         params.update(kwargs['_advanced_parameters'])
+
 
     start_time = time.time()
     if not isinstance(dataset, _tc.SFrame):
@@ -173,8 +174,6 @@ def create(dataset, target, feature, max_iterations=10,
 
     classes = list(dataset[target].unique().sort())
     num_labels = len(classes)
-    print("***** num_labels", num_labels)
-    print("*****len(dataset)", len(dataset))
     if num_labels <= 1:
         raise ValueError('The number of classes must be greater than one.')
     feature_extractor_name = 'VGGish'
@@ -201,14 +200,18 @@ def create(dataset, target, feature, max_iterations=10,
     train_data = _tc.SFrame({'deep features': train_deep_features, 'labels': encoded_target})
     train_data = train_data.stack('deep features', new_column_name='deep features')
     train_data, missing_ids = train_data.dropna_split(columns=['deep features'])
-    print("*****len(train_data)", len(train_data))
+
+    training_batch_size = min(len(train_data), batch_size)
+    train_data = mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
+                                    label=train_data['labels'].to_numpy(),
+                                    batch_size=training_batch_size, shuffle=True)
 
     if len(missing_ids) > 0:
         _logging.warning("Dropping %d examples which are less than 975ms in length." % len(missing_ids))
 
     if validation_set is not None:
         if verbose:
-            print("Preparing validataion set")
+            print("Preparing validation set")
         validation_encoded_target = validation_set[target].apply(lambda x: class_label_to_id[x])
 
         if _is_deep_feature_sarray(validation_set[feature]):
@@ -224,11 +227,9 @@ def create(dataset, target, feature, max_iterations=10,
         validation_data = mx.io.NDArrayIter(validation_data['deep features'].to_numpy(),
                                              label=validation_data['labels'].to_numpy(),
                                              batch_size=validation_batch_size)
-
-        # from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
-        # write a SFrame loader? maybe
     else:
         validation_data = []
+
 
     if params['use_tensorflow']:
         if verbose:
@@ -236,95 +237,24 @@ def create(dataset, target, feature, max_iterations=10,
         from ._tf_sound_classifier import SoundClassifierTensorFlowModel, _tf_train_model
         # Define the TF Model
         tf_model = SoundClassifierTensorFlowModel(batch_size, num_labels)
-        final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = _tf_train_model(
-                                                            tf_model, train_data, validation_data,
-                                                            validation_set, batch_size, num_labels, verbose)
+        train_accuracy, validation_accuracy = _tf_train_model(
+                                                         tf_model, train_data, validation_data,
+                                                         validation_set, batch_size, num_labels, verbose)
+        custom_classifier = tf_model # TODO fix this
     else:
         if verbose:
             print("\nTraining a custom neural network -")
-
-        training_batch_size = min(len(train_data), batch_size)
-        train_data = mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
-                                        label=train_data['labels'].to_numpy(),
-                                        batch_size=training_batch_size, shuffle=True)
-        #print("*****len(train_data)", len(train_data))
-
-        custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels, custom_layer_sizes)
-        ctx = _mxnet_utils.get_mxnet_context()
-        custom_NN.initialize(mx.init.Xavier(), ctx=ctx)
-
-        print("custom_NN.collect_params()")
-        print(custom_NN.collect_params())
-        import pdb
-        pdb.set_trace()
-
-        trainer = mx.gluon.Trainer(custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
-
-        if verbose:
-            # Setup progress table
-            row_ids = ['iteration', 'train_accuracy', 'time']
-            row_display_names = ['Iteration', 'Training Accuracy', 'Elapsed Time']
-            if validation_data:
-                row_ids.insert(2, 'validation_accuracy')
-                row_display_names.insert(2, 'Validation Accuracy (%)')
-            table_printer = _tc.util._ProgressTablePrinter(row_ids, row_display_names)
-
-        train_metric = mx.metric.Accuracy()
-        if validation_data:
-            validation_metric = mx.metric.Accuracy()
-        softmax_cross_entropy_loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
-        for i in range(max_iterations):
-            # TODO: early stopping
-
-            for batch in train_data:
-                data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-                label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-
-                # Inside training scope
-                with mx.autograd.record():
-                    for x, y in zip(data, label):
-                        z = custom_NN(x)
-                        # Computes softmax cross entropy loss.
-                        loss = softmax_cross_entropy_loss(z, y)
-                        # Backpropagate the error for one iteration.
-                        loss.backward()
-                # Make one step of parameter update. Trainer needs to know the
-                # batch size of data to normalize the gradient by 1/batch_size.
-                trainer.step(batch.data[0].shape[0])
-            train_data.reset()
-
-            # Calculate training metric
-            for batch in train_data:
-                data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-                label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-                outputs = [custom_NN(x) for x in data]
-                train_metric.update(label, outputs)
-            train_data.reset()
-
-            # Calculate validataion metric
-            for batch in validation_data:
-                data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-                label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-                outputs = [custom_NN(x) for x in data]
-                validation_metric.update(label, outputs)
-
-            # Get metrics, print progress table
-            _, train_accuracy = train_metric.get()
-            train_metric.reset()
-            printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
-            if validation_data:
-                _, validataion_accuracy = validation_metric.get()
-                printed_row_values['validation_accuracy'] = validataion_accuracy
-                validation_metric.reset()
-                validation_data.reset()
-            if verbose:
-                printed_row_values['time'] = time.time()-start_time
-                table_printer.print_row(**printed_row_values)
+        from ._mx_sound_classifier import SoundClassifierMXNETModel
+        mxnet_model = SoundClassifierMXNETModel(feature_extractor, num_labels, custom_layer_sizes, verbose)
+        mxnet_model.train(train_data, validation_data, max_iterations, start_time)
+        train_accuracy = mxnet_model.train_accuracy
+        validation_accuracy = mxnet_model.validation_accuracy
+        custom_classifier = mxnet_model.custom_NN
 
 
     state = {
         '_class_label_to_id': class_label_to_id,
-        '_custom_classifier': custom_NN,
+        '_custom_classifier': custom_classifier, ##
         '_feature_extractor': feature_extractor,
         '_id_to_class_label': {v: k for k, v in class_label_to_id.items()},
         'classes': classes,
@@ -334,9 +264,9 @@ def create(dataset, target, feature, max_iterations=10,
         'num_classes': num_labels,
         'num_examples': len(dataset),
         'target': target,
-        'training_accuracy': train_accuracy,
+        'training_accuracy': train_accuracy, ##
         'training_time': time.time() - start_time,
-        'validation_accuracy': validataion_accuracy if validation_data else None,
+        'validation_accuracy': validation_accuracy if validation_data else None,
     }
     return SoundClassifier(state)
 

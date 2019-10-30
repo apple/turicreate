@@ -217,7 +217,7 @@ def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, b
     final_val_accuracy = val_acc if validation_set else None
     total_train_time = _time.time() - start_time
 
-    return final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time
+    return final_train_accuracy, final_val_accuracy
 
 '''
 def process_data(batch_data, batch_size, num_classes):
