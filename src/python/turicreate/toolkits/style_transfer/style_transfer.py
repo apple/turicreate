@@ -221,6 +221,8 @@ def create(style_dataset, content_dataset, style_feature=None,
         pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet-16']()
         pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']()
         options = {}
+        if max_iterations is not None:
+            options['max_iterations'] = max_iterations
         options['num_styles'] = len(style_dataset)
         options['resnet_mlmodel_path'] = pretrained_resnet_model.get_model_path('coreml')
         options['vgg_mlmodel_path'] = pretrained_vgg16_model.get_model_path('coreml')
