@@ -696,8 +696,8 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
     std::vector<size_t> index_vec(prob_vec.size());
     std::iota(index_vec.begin(), index_vec.end(), 0);
 
-    auto compare = [&](size_t i, size_t j) {
-      return prob_vec[i] > prob_vec[j];
+    auto compare = [&](size_t lhs, size_t rhs) {
+      return prob_vec[lhs] > prob_vec[rhs];
     };
 
     std::nth_element(index_vec.begin(), index_vec.begin() + k, index_vec.end(),
@@ -745,18 +745,21 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 
   // construct the final result
   gl_sframe result = gl_sframe();
+
   // stack data into a column with single element for each row
   // stack the labels first
   gl_sframe stacked_class =
       gl_sframe({{"class", dc_predictions["class"]}}).stack("class", "class");
+
+  result.add_column(stacked_class["class"], "class");
   result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
                     "row_id");
-  result.add_column(stacked_class["class"], "class");
 
   // stack the rank column,
   gl_sframe stacked_rank =
       gl_sframe({{"rank", dc_predictions["rank"]}}).stack("rank", "rank");
   ASSERT_EQ(stacked_rank.size(), stacked_class.size());
+
   result.add_column(stacked_rank["rank"], "rank");
 
   // change the column name rank to probability according to the output_type
