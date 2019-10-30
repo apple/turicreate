@@ -608,11 +608,11 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
       result batch = pending_batches.front();
       pending_batches.pop();
 
-      size_t num_imgs = batch.data_info.num_samples;
-      ASSERT_EQ(num_imgs * num_classes, batch.data_info.predictions.size());
+      size_t num_images = batch.data_info.num_samples;
+      ASSERT_EQ(num_images * num_classes, batch.data_info.predictions.size());
 
       auto output_itr = batch.data_info.predictions.data();
-      for (size_t ii = 0; ii < num_imgs; ++ii) {
+      for (size_t ii = 0; ii < num_images; ++ii) {
         std::copy(output_itr, output_itr + num_classes, preds.begin());
         output_itr += num_classes;
         writer.write({preds}, 0);
@@ -651,7 +651,8 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
                   "Expected one of: probability, rank");
   }
 
-  auto data_itr = create_iterator(data, /*is_train*/ false, {});
+  auto data_itr =
+      create_iterator(data, /* is_train */ false, /* class labels */ {});
 
   gl_sframe predictions = perform_inference(data_itr.get());
 
@@ -681,7 +682,7 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 
   // data inference
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, /* is_train */ false, {});
+      create_iterator(data, /* is_train */ false, /* class lables */ {});
 
   gl_sframe dc_predictions = perform_inference(data_it.get());
 
