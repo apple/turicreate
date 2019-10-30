@@ -219,8 +219,7 @@ class EXPORT object_detector: public ml_model_base {
                                            const std::string& output_type);
   static gl_sframe convert_types_to_sframe(const variant_type& data,
                                            const std::string& column_name);
-  static void change_annotations_type(gl_sframe& data,
-                                      const std::string& annotations_name);
+  static gl_sarray canonicalize_annotations(gl_sarray& data);
 
   // Sets certain user options heuristically (from the data).
   void infer_derived_options();

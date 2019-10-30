@@ -963,7 +963,9 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
   const std::string& annotations_column_name =
       read_state<flex_string>("annotations");
   if (data.contains_column(annotations_column_name)) {
-    change_annotations_type(data, annotations_column_name);
+    gl_sarray annotations = data[annotations_column_name];
+    data.replace_add_column(canonicalize_annotations(annotations),
+                            annotations_column_name);
   }
 
   data_iterator::parameters iterator_params;
@@ -1354,9 +1356,8 @@ void object_detector::update_model_metrics(gl_sframe data,
   add_or_update_state(metrics);
 }
 
-void object_detector::change_annotations_type(
-    gl_sframe& data, const std::string& annotations_name) {
-  auto change_annotations_type = [=](const flexible_type& annotation) {
+gl_sarray object_detector::canonicalize_annotations(gl_sarray& data) {
+  auto canonicalize_annotations = [](const flexible_type& annotation) {
     flex_list annotation_list = flex_list();
     switch (annotation.get_type()) {
       case flex_type_enum::LIST:
@@ -1368,16 +1369,12 @@ void object_detector::change_annotations_type(
       case flex_type_enum::UNDEFINED:
         break;
       default:
-        log_and_throw(
-            "Invalid annotation! Expect list of dictionary, a singel "
-            "dictionary!");
+        log_and_throw("Annotations column must be of type dict or list");
         break;
     }
     return annotation_list;
   };
-  data.replace_add_column(data[annotations_name].apply(change_annotations_type,
-                                                       flex_type_enum::LIST),
-                          annotations_name);
+  return data.apply(canonicalize_annotations, flex_type_enum::LIST);
 }
 
 }  // object_detection
