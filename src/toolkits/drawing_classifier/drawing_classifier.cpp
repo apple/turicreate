@@ -263,12 +263,15 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
 
   data_params.is_train = is_train;
   data_params.target_column_name = read_state<flex_string>("target");
-  const flex_list &features_values = read_state<flex_list>("features");
-  DASSERT_GE(features_values.size(), 1);
-  data_params.feature_column_name = features_values[0].get<flex_string>();
-  /** Until there is only one feature column name, we will read the features
+  const flex_list& features_values = read_state<flex_list>("features");
+
+  /**
+   * there is only one feature column name, we will read the features
    *  flex list and record the 0'th index as the feature column name.
    */
+  DASSERT_EQ(features_values.size(), 1);
+  data_params.feature_column_name = features_values[0].get<flex_string>();
+
   return create_iterator(data_params);
 }
 
@@ -279,11 +282,13 @@ void drawing_classifier::init_training(
   // Read user-specified options.
   init_options(opts);
 
-  // it should be passed from opts
-  if (state.count("training_iterations") == 0) {
-    add_or_update_state({
-        {"training_iterations", 500},
-    });
+  add_or_update_state({
+      {"training_iterations", 0},
+  });
+
+  if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
+    std::random_device rd;
+    add_or_update_state({{"random_seed", (int)rd()}});
   }
 
   // Perform validation split if necessary.
@@ -312,8 +317,6 @@ void drawing_classifier::init_training(
       {"num_classes", classes.size()},
   });
 
-  add_or_update_state({{"classes", flex_list(classes.begin(), classes.end())}});
-
   // Bind the validation data to a data iterator.
   if (!validation_data_.empty()) {
     validation_data_iterator_ =
@@ -333,17 +336,15 @@ void drawing_classifier::init_training(
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   print_training_device(gpu_names);
 
-
-  // Initialize the neural net. Note that this depends on statistics computed by
-  // the data iterator.
+  // Initialize the neural net. Note that this depends on statistics computed
+  // by the data iterator.
   nn_spec_ = init_model();
 
-  // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
       read_state<size_t>("num_classes"));
 
-  // Print the header last, after any logging triggered by initialization above.
+  // Print the header last, after any logging by initialization above
   if (training_table_printer_) {
     training_table_printer_->print_header();
   }
@@ -530,8 +531,7 @@ void drawing_classifier::init_table_printer(bool has_validation) {
   }
 }
 
-void drawing_classifier::train(gl_sframe data,
-                               std::string target_column_name,
+void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
@@ -563,7 +563,7 @@ void drawing_classifier::train(gl_sframe data,
       training_data_, target_column_name, "report", train_predictions,
       {{"classes", read_state<flex_list>("classes")}});
 
-  for (auto &p : train_metric) {
+  for (auto& p : train_metric) {
     state_update["training_" + p.first] = p.second;
   }
 
@@ -575,7 +575,7 @@ void drawing_classifier::train(gl_sframe data,
         validation_data_, target_column_name, "report", val_predictions,
         {{"classes", read_state<flex_list>("classes")}});
 
-    for (auto &p : val_metric) {
+    for (auto& p : val_metric) {
       state_update["validation_" + p.first] = p.second;
     }
   }
@@ -583,9 +583,10 @@ void drawing_classifier::train(gl_sframe data,
   add_or_update_state(state_update);
 }
 
-gl_sframe drawing_classifier::perform_inference(data_iterator *data) const {
+gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
   // Open a new SFrame for writing.
-  gl_sframe_writer writer({"preds"}, {flex_type_enum::VECTOR}, /* num_segments */ 1);
+  gl_sframe_writer writer({"preds"}, {flex_type_enum::VECTOR},
+                          /* num_segments */ 1);
 
   const size_t num_classes = read_state<size_t>("num_classes");
   const size_t batch_size = read_state<size_t>("batch_size");
@@ -602,9 +603,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator *data) const {
   flex_vec preds(num_classes);
 
   auto pop_until_size = [&](size_t remaining) {
-
     while (pending_batches.size() > remaining) {
-
       // Pop one batch from the queue.
       result batch = pending_batches.front();
       pending_batches.pop();
@@ -622,7 +621,6 @@ gl_sframe drawing_classifier::perform_inference(data_iterator *data) const {
   };
 
   while (data->has_next_batch()) {
-
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
@@ -649,8 +647,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   // by default, it should be "probability" if the value is
   // passed in through python client
   if (output_type != "probability" && output_type != "rank") {
-    log_and_throw(output_type +
-                  " is not a valid option for output_type.  " +
+    log_and_throw(output_type + " is not a valid option for output_type.  " +
                   "Expected one of: probability, rank");
   }
 
@@ -773,7 +770,7 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 variant_map_type drawing_classifier::evaluate(gl_sframe data,
                                               std::string metric) {
   // Perform prediction.
-  gl_sarray predictions = predict(data, "probability_vector");
+  gl_sarray predictions = predict(data, "probability");
 
   /* TODO: This is just for the skeleton. Rewrite. */
   return evaluation::compute_classifier_metrics(data, "label", metric,

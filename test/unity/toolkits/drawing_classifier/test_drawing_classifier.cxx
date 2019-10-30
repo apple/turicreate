@@ -131,7 +131,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
       test_image_name);
   TS_ASSERT_EQUALS(model.get_field<flex_int>("num_classes"),
                    test_class_labels.size());
-  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"), 500);
+  TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"), 0);
 
   // Deconstructing `model` here will assert that every expected call to a
   // mocked-out method has been called.
