@@ -24,7 +24,7 @@ public:
     int t = timer::approx_time_seconds();
     sleep(3);
     int t2 = timer::approx_time_seconds();
-    TS_ASSERT_DELTA(double(t2 - t), 3.0, 2);
+    TS_ASSERT_DELTA(double(t2 - t), 3.0, 2.0);
   }
 
 

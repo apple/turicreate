@@ -315,7 +315,7 @@ public:
    * \param weight_initializer_fn Callback used to initialize the weights
    */
   void add_scale(const std::string& name, const std::string& input,
-                 const std::array<size_t, 3>& shape_c_h_w,
+                 const std::vector<size_t>& shape_c_h_w,
                  weight_initializer scale_initializer_fn);
 
   /**
