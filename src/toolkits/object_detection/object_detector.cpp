@@ -635,7 +635,6 @@ variant_type object_detector::predict(
   } else {
     final_result = to_variant(result_sarray[0]);
   }
-
   return final_result;
 }
 

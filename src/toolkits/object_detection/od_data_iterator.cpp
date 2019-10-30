@@ -360,7 +360,6 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
   }
 
   std::vector<labeled_image> result(raw_batch.size());
-
   for (size_t i = 0; i < raw_batch.size(); ++i) {
     flexible_type raw_image, raw_annotations, raw_predictions;
     std::tie(raw_image, raw_annotations, raw_predictions) = raw_batch[i];
