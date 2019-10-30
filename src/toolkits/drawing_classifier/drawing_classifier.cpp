@@ -646,7 +646,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   // by default, it should be "probability" if the value is
   // passed in through python client
-  if (output_type != "probability" && output_type != "rank") {
+  if (output_type != "probability_vector" && output_type != "class") {
     log_and_throw(output_type + " is not a valid option for output_type.  " +
                   "Expected one of: probability, rank");
   }
@@ -656,7 +656,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   gl_sframe predictions = perform_inference(data_itr.get());
 
   gl_sarray result = predictions["preds"];
-  if (output_type == "rank") {
+  if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
     auto max_prob_label = [=](const flexible_type& ft) {
       const flex_vec& prob_vec = ft.get<flex_vec>();
@@ -770,7 +770,7 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 variant_map_type drawing_classifier::evaluate(gl_sframe data,
                                               std::string metric) {
   // Perform prediction.
-  gl_sarray predictions = predict(data, "probability");
+  gl_sarray predictions = predict(data, "probability_vector");
 
   /* TODO: This is just for the skeleton. Rewrite. */
   return evaluation::compute_classifier_metrics(data, "label", metric,
