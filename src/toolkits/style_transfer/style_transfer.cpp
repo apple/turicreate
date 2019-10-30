@@ -227,7 +227,7 @@ float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
   if (train) {
     shared_float_array style_wrap = shared_float_array::wrap(
         std::move(style_array), {batch_size, height, width, channels});
-    map.emplace("labels", index_wrap);
+    map.emplace("labels", style_wrap);
   }
 
   return map;
@@ -494,8 +494,8 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
     add_or_update_state({{"random_seed", random_seed}});
   }
 
-  m_training_data_iterator = create_iterator(content, style, /* repeat */ false,
-                                             /* training */ false, num_styles);
+  m_training_data_iterator = create_iterator(content, style, /* repeat */ true,
+                                             /* training */ true, num_styles);
 
   m_training_compute_context = create_compute_context();
   if (m_training_compute_context == nullptr) {
