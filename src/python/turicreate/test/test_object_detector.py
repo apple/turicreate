@@ -16,10 +16,11 @@ import platform
 import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver, _read_env_var_cpp
 import coremltools
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
+USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
 def _get_data(feature, annotations):
     from PIL import Image as _PIL_Image
@@ -138,6 +139,24 @@ class ObjectDetectorTest(unittest.TestCase):
            'annotations': lambda x: x == self.annotations,
            'num_classes': lambda x: x == len(_CLASSES),
         }
+
+        if USE_CPP:
+            self.get_ans['annotation_position'] = lambda x: isinstance(x, str)
+            self.get_ans['annotation_scale'] = lambda x: isinstance(x, str)
+            self.get_ans['annotation_origin'] = lambda x: isinstance(x, str)
+            self.get_ans['training_average_precision_50'] = lambda x: isinstance(x, dict)
+            self.get_ans['training_mean_average_precision_50'] = lambda x: True
+            self.get_ans['grid_height'] = lambda x: x > 0
+            self.get_ans['grid_width'] = lambda x: x > 0
+            self.get_ans['training_mean_average_precision'] = lambda x: True
+            self.get_ans['random_seed'] = lambda x: True
+            self.get_ans['training_average_precision'] = lambda x: x >= 0
+            del self.get_ans['_model']
+            del self.get_ans['_class_to_index']
+            del self.get_ans['_training_time_as_string']
+            del self.get_ans['_grid_shape']
+            del self.get_ans['anchors']
+
         self.fields_ans = self.get_ans.keys()
 
     def test_create_with_missing_value(self):

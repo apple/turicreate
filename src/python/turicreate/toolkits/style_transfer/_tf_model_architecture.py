@@ -35,7 +35,7 @@ def define_tensorflow_variables(net_params, trainable=True):
     for key, value in net_params.items():
         if 'weight' in key:
             if 'conv' in key:
-                tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_conv2d_tf_to_coreml(net_params[key]), name=key)
+                tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_conv2d_coreml_to_tf(net_params[key]), name=key, trainable=trainable)
             else:
                 tensorflow_variables[key] = _tf.Variable(initial_value = _utils.convert_dense_coreml_to_tf(net_params[key]), name=key, trainable=trainable)
         else:
@@ -508,7 +508,6 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
         _, loss_value = self.sess.run([self.optimizer, self.loss], feed_dict={self.tf_input : feed_dict['input'], self.tf_index: feed_dict['index'], self.tf_style: feed_dict['labels']})
-        print(loss_value)
         return { "loss": _np.array(loss_value) }
 
     def predict(self, feed_dict):
@@ -525,7 +524,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for var, val in zip(tvars, tvars_vals):
             if 'weight' in var.name:
                 if 'conv' in var.name:
-                    tf_export_params[var.name.split(':')[0]] = _utils.convert_conv2d_coreml_to_tf(val)
+                    tf_export_params[var.name.split(':')[0]] = _utils.convert_conv2d_tf_to_coreml(val)
                 else:
                     tf_export_params[var.name.split(':')[0]] =  _utils.convert_dense_tf_to_coreml(val)
             else:

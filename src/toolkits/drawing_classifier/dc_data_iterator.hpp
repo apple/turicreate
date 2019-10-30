@@ -38,10 +38,10 @@ class data_iterator {
      *
      * If empty, then the output will not contain labels or weights.
      */
-    std::string target_column_name;
+    std::string target_column_name{"target"};
 
     /** The name of the feature column. */
-    std::string feature_column_name;
+    std::string feature_column_name{"feature"};
 
     /** The name of the predictions column. */
     std::string predictions_column_name;

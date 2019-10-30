@@ -31,8 +31,7 @@ void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
   image_util::copy_image_to_memory(
       /* image input    */ bitmap,
       /* output pointer */ next_drawing_pointer,
-      /* output strides */ {bitmap.m_width * bitmap.m_channels,
-                            bitmap.m_channels, 1},
+      /* output strides */ {bitmap.m_width * bitmap.m_channels, bitmap.m_channels, 1},
       /* output shape   */ {bitmap.m_height, bitmap.m_width, bitmap.m_channels},
       /* channel_last   */ true);
 }
@@ -96,6 +95,7 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
       // Start an iteration through the entire SFrame.
       range_iterator_(data_.range_iterator()),
       next_row_(range_iterator_.begin()),
+      end_of_rows_(range_iterator_.end()),
 
       // Initialize random number generator.
       random_engine_(params.random_seed)
@@ -122,11 +122,11 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   std::vector<float> batch_predictions;
   batch_targets.reserve(batch_size);
   batch_predictions.reserve(batch_size);
+
   float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
 
-  while (batch_targets.size() < batch_size &&
-         next_row_ != range_iterator_.end()) {
+  while (batch_targets.size() < batch_size && next_row_ != end_of_rows_) {
     real_batch_size++;
     const sframe_rows::row& row = *next_row_;
 
@@ -145,7 +145,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         static_cast<float>(target_properties_.class_to_index_map.at(
             row[target_index_].to<flex_string>())));
 
-    if (++next_row_ == range_iterator_.end() && repeat_) {
+    if (++next_row_ == end_of_rows_ && repeat_) {
       if (shuffle_) {
         // Shuffle the data.
         // TODO: This heavyweight shuffle operation introduces spikes into the
@@ -167,9 +167,16 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         data_.remove_column("_random_order");
       }
 
-      // Reset iteration.
-      range_iterator_ = data_.range_iterator();
-      next_row_ = range_iterator_.begin();
+      /**
+       * avoid updating next_row_ and end_of_rows_
+       * reset() shouldn't be called neither
+       *
+       * otherwise,
+       * `has_next_batch()` will return `true` afterwards, which will
+       * cause infinite loop of iterating the data if the client
+       * relies on `while(ditr->has_next_batch())` to terminate reading
+       * data by batches.
+       */
     }
   }
 
@@ -178,6 +185,17 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   // Wrap the buffers as float_array values.
   data_iterator::batch result;
   result.num_samples = real_batch_size;
+
+  /**
+   * soft shrink to real size to avoid error from shared_float_array::wrap
+   * since it requires `batch_drawings` to have an accurate size as the
+   * shape indicates
+   **/
+  if (real_batch_size < batch_size) {
+    auto pend = std::begin(batch_drawings) + real_batch_size * image_data_size;
+    batch_drawings.erase(pend, batch_drawings.end());
+  }
+
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
       {real_batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels});

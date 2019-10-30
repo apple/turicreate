@@ -20,6 +20,7 @@
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <core/random/random.hpp>
+#include <timer/timer.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/object_detection/od_evaluation.hpp>
 #include <toolkits/object_detection/od_serialization.hpp>
@@ -411,6 +412,9 @@ void object_detector::train(gl_sframe data,
   init_training(data, annotations_column_name, image_column_name,
                 validation_data, opts);
 
+  turi::timer time_object;
+  time_object.start();
+
   // Perform all the iterations at once.
   while (get_training_iterations() < get_max_iterations()) {
     iterate_training();
@@ -418,6 +422,10 @@ void object_detector::train(gl_sframe data,
 
   // Wait for any outstanding batches to finish.
   finalize_training();
+
+  add_or_update_state({
+      {"training_time", time_object.current_time()},
+  });
 }
 
 void object_detector::synchronize_model(model_spec* nn_spec) const {
@@ -462,6 +470,13 @@ void object_detector::finalize_training() {
 variant_type object_detector::evaluate(gl_sframe data, std::string metric,
                                        std::string output_type,
                                        std::map<std::string, flexible_type> opts) {
+  // check if data has ground truth annotation
+  std::string annotations_column_name = read_state<flex_string>("annotations");
+  if (!data.contains_column(annotations_column_name)) {
+    log_and_throw("Annotations column " + annotations_column_name +
+                  " does not exist");
+  }
+
   //parse input opts
   float confidence_threshold, iou_threshold;
   auto it_confidence = opts.find("confidence_threshold");
@@ -569,8 +584,8 @@ variant_type object_detector::convert_map_to_types(
   return final_result;
 }
 
-gl_sarray object_detector::predict(variant_type data, std::map<std::string, flexible_type> opts) {
-
+variant_type object_detector::predict(
+    variant_type data, std::map<std::string, flexible_type> opts) {
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
@@ -606,12 +621,21 @@ gl_sarray object_detector::predict(variant_type data, std::map<std::string, flex
     iou_threshold = opts["iou_threshold"];
   }
 
-  // Convert dasta to SFrame
+  // Convert data to SFrame
   std::string image_column_name = read_state<flex_string>("feature");
   gl_sframe sframe_data = convert_types_to_sframe(data, image_column_name);
 
   perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
-  return result.close();
+
+  // Convert output to flex_list if data is a single image
+  gl_sarray result_sarray = result.close();
+  variant_type final_result;
+  if (variant_is<gl_sframe>(data) || variant_is<gl_sarray>(data)) {
+    final_result = to_variant(result_sarray);
+  } else {
+    final_result = to_variant(result_sarray[0]);
+  }
+  return final_result;
 }
 
 gl_sframe object_detector::convert_types_to_sframe(

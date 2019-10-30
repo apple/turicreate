@@ -271,6 +271,7 @@ class EXPORT drawing_classifier : public ml_model_base {
 
 
  private:
+
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
 
