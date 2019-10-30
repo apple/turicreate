@@ -66,7 +66,7 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(size_t batch_si
 
       raw_batch.emplace_back(content_image, style_image, random_style_index);
     } else {
-      raw_batch.emplace_back(content_image, nullptr, nullptr);
+      raw_batch.emplace_back(content_image, FLEX_UNDEFINED, FLEX_UNDEFINED);
     }
 
     if (++m_content_next_row == m_content_range_iterator.end() && m_repeat) {
