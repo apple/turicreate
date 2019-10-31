@@ -367,9 +367,20 @@ gl_sframe style_transfer::predict(variant_type data,
       case flex_type_enum::VECTOR:
         style_idx = std::move(flex_style_idx.get<flex_vec>());
         break;
+      case flex_type_enum::LIST:
+      {
+        auto list = flex_style_idx.get<flex_list>();
+        style_idx.resize(list.size());
+        std::transform(list.begin(), list.end(),
+                   std::back_inserter(style_idx), [](flexible_type val) {
+                     return static_cast<double>(val.get<flex_float>());
+                   });
+        break;
+
+      }
       default:
         log_and_throw(
-            "Option \"style_idx\" has to be of type `Integer` or `SArray`.");
+            "Option \"style_idx\" has to be of type `Integer` or `List`.");
     }
   }
 
