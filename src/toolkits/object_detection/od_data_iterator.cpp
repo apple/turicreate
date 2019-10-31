@@ -40,14 +40,14 @@ gl_sframe get_data(const data_iterator::parameters& params) {
 
   gl_sframe result({{params.image_column_name, images}});
 
-  if (!params.predictions_column_name.empty()) {
-    result[params.predictions_column_name] =
-        params.data[params.predictions_column_name];
-  }
-
   if (!params.annotations_column_name.empty()) {
     result[params.annotations_column_name] =
         params.data[params.annotations_column_name];
+  }
+
+  if (!params.predictions_column_name.empty()) {
+    result[params.predictions_column_name] =
+        params.data[params.predictions_column_name];
   }
 
   return result;
@@ -75,7 +75,7 @@ std::vector<image_annotation> parse_annotations(
       const flex_string& key = kv.first.get<flex_string>();
 
       if (key == "label") {
-        // If the label in invalid (not in class_to_index_map) then ignore it.
+        // If the label is invalid (not in class_to_index_map) then ignore it.
         const flex_string& label = kv.second.get<flex_string>();
         if (class_to_index_map.find(label) != class_to_index_map.end()) {
           annotation.identifier = class_to_index_map.at(label);
@@ -211,6 +211,38 @@ std::vector<image_annotation> parse_annotations(
   return result;
 }
 
+std::pair<gl_sarray, size_t> get_annotation_info(const gl_sarray& annotations) {
+  if (annotations.size() == 0) {
+    return std::make_pair(gl_sarray(), 0);
+  }
+
+  // Construct an SFrame with one row per bounding box.
+  gl_sframe instances;
+  gl_sarray classes;
+  size_t num_instances;
+
+  if (annotations.dtype() == flex_type_enum::LIST) {
+    gl_sframe unstacked_instances({{"annotations", annotations}});
+    instances = unstacked_instances.stack("annotations", "bbox",
+                                          /* drop_na */ true);
+  } else {
+    instances["bbox"] = annotations;
+  }
+
+  // Extract the label for each bounding box.
+  instances = instances.unpack("bbox", /* column_name_prefix */ "",
+                               {flex_type_enum::STRING},
+                               /* na_value */ FLEX_UNDEFINED, {"label"});
+
+  // Determine the list of unique class labels,
+  classes = instances["label"].unique().sort();
+
+  // Record the number of labeled bounding boxes.
+  num_instances = instances.size();
+
+  return std::make_pair(classes, num_instances);
+}
+
 }  // namespace
 
 simple_data_iterator::annotation_properties
@@ -220,28 +252,8 @@ simple_data_iterator::compute_properties(
 
   annotation_properties result;
   gl_sarray classes;
-  if (annotations.size() > 0) {
-    // Construct an SFrame with one row per bounding box.
-    gl_sframe instances;
-    if (annotations.dtype() == flex_type_enum::LIST) {
-      gl_sframe unstacked_instances({{"annotations", annotations}});
-      instances = unstacked_instances.stack("annotations", "bbox",
-                                            /* drop_na */ true);
-    } else {
-      instances["bbox"] = annotations;
-    }
 
-    // Extract the label for each bounding box.
-    instances = instances.unpack("bbox", /* column_name_prefix */ "",
-                                 {flex_type_enum::STRING},
-                                 /* na_value */ FLEX_UNDEFINED, {"label"});
-
-    // Determine the list of unique class labels,
-    classes = instances["label"].unique().sort();
-
-    // Record the number of labeled bounding boxes.
-    result.num_instances = instances.size();
-  }
+  std::tie(classes, result.num_instances) = get_annotation_info(annotations);
 
   if (expected_class_labels.empty()) {
 
@@ -323,11 +335,11 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
     const sframe_rows::row& row = *next_row_;
     flexible_type preds = FLEX_UNDEFINED;
     flexible_type annotations = FLEX_UNDEFINED;
-    if (predictions_index_ >= 0) {
-      preds = row[predictions_index_];
-    }
     if (annotations_index_ >= 0) {
       annotations = row[annotations_index_];
+    }
+    if (predictions_index_ >= 0) {
+      preds = row[predictions_index_];
     }
     raw_batch.emplace_back(row[image_index_], annotations, preds);
     if (++next_row_ == range_iterator_.end() && repeat_) {
