@@ -187,7 +187,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* input               */ input_name,
       /* num_output_channels */ 128,
       /* num_input_channels  */ 64 * 3 * 3,
-      /* weight_init_fn      */ initializer);
+      /* weight_init_fn      */ initializer,
+      /* bias_init_fn        */ zero_weight_initializer());
 
   input_name = std::move(output_name);
   output_name = prefix + "_dense1" + _suffix;
@@ -201,7 +202,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* input               */ input_name,
       /* num_output_channels */ num_classes,
       /* num_input_channels  */ 128,
-      /* weight_init_fn      */ initializer);
+      /* weight_init_fn      */ initializer,
+      /* bias_init_fn        */ zero_weight_initializer());
 
   input_name = std::move(output_name);
 
@@ -276,6 +278,7 @@ void drawing_classifier::init_training(
     gl_sframe data, std::string target_column_name,
     std::string feature_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
+
   // Read user-specified options.
   init_options(opts);
 
@@ -389,7 +392,9 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->predict({{"input", result_batch.data_info.drawings},
-                                  {"labels", result_batch.data_info.targets}});
+                                  {"labels", result_batch.data_info.targets},
+                                  {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                                });
 
     result_batch.accuracy_info = results.at("accuracy");
     result_batch.loss_info = results.at("loss");
@@ -441,7 +446,7 @@ void drawing_classifier::iterate_training() {
                           batch.loss_info.data() + batch.loss_info.size(), 0.f,
                           std::plus<float>());
 
-      cumulative_batch_loss += batch_loss / batch.data_info.num_samples;
+      cumulative_batch_loss += (batch.data_info.num_samples * batch_loss);
     }
   };
 
@@ -456,7 +461,9 @@ void drawing_classifier::iterate_training() {
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->train({{"input", result_batch.data_info.drawings},
-                                {"labels", result_batch.data_info.targets}});
+                                {"labels", result_batch.data_info.targets},
+                                {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                              });
     result_batch.loss_info = results.at("loss");
     result_batch.accuracy_info = results.at("accuracy");
 
@@ -467,7 +474,7 @@ void drawing_classifier::iterate_training() {
   }
   // Process all remaining batches.
   pop_until_size(0);
-  float average_batch_loss = cumulative_batch_loss / num_batches;
+  float average_batch_loss = cumulative_batch_loss / train_num_samples;
   float average_batch_accuracy =
       static_cast<float>(train_num_correct) / train_num_samples;
   float average_val_accuracy;
@@ -534,6 +541,7 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::map<std::string, flexible_type> opts) {
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
+
   init_training(data, target_column_name, feature_column_name, validation_data,
                 opts);
 
