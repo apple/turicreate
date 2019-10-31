@@ -47,9 +47,10 @@ class EXPORT drawing_classifier : public ml_model_base {
              std::string feature_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
 
-  gl_sarray predict(gl_sframe data, std::string output_type);
+  gl_sarray predict(gl_sframe data, std::string output_type = "probability");
 
-  gl_sframe predict_topk(gl_sframe data, std::string output_type, size_t k);
+  gl_sframe predict_topk(gl_sframe data,
+                         std::string output_type = "probability", size_t k = 5);
 
   variant_map_type evaluate(gl_sframe data, std::string metric);
 
@@ -235,10 +236,6 @@ class EXPORT drawing_classifier : public ml_model_base {
   virtual std::unique_ptr<data_iterator> create_iterator(
       data_iterator::parameters iterator_params) const;
 
-  std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, bool is_train,
-      std::vector<std::string> class_labels) const;
-
   // Factory for compute_context
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
       const;
@@ -256,7 +253,14 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   template <typename T>
   T read_state(const std::string& key) const {
-    return variant_get_value<T>(get_state().at(key));
+    try {
+      return variant_get_value<T>(get_state().at(key));
+    } catch (const std::out_of_range& e) {
+      std::stringstream ss;
+      ss << e.what() << std::endl;
+      ss << "from read_state for '" << key << "'" << std::endl;
+      throw std::out_of_range(ss.str().c_str());
+    }
   }
 
   std::unique_ptr<neural_net::model_spec> clone_model_spec_for_test() const {
@@ -269,8 +273,16 @@ class EXPORT drawing_classifier : public ml_model_base {
     }
   }
 
+  gl_sframe perform_inference(data_iterator* data) const;
 
  private:
+  /**
+   * by design, this is NOT virtual;
+   * this calls the virtual create_iterator(parameters) in the end.
+   **/
+   std::unique_ptr<data_iterator> create_iterator(
+      gl_sframe data, bool is_train,
+      std::vector<std::string> class_labels) const;
 
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;
