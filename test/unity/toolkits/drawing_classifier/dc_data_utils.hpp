@@ -148,7 +148,6 @@ class drawing_data_generator {
     
     for (size_t ii = 0; ii < num_rows_; ++ii) {
 
-
       /** Easy optimization here in case we want to reduce test time:
        *  Add (ii % 100) or something */
       drawings[ii] = create_stroke_based_drawing(ii);

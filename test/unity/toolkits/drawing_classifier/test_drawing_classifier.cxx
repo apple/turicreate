@@ -248,10 +248,13 @@ void test_init_training(bool with_bitmap_based_data) {
     /* feature_column_name */ test_feature_name);
   
   gl_sframe data = data_generator.get_data();
+  TS_ASSERT_EQUALS(data.size(), test_num_rows);
+
   std::string feature_column_name = data_generator.get_feature_column_name();
   std::string target_column_name = data_generator.get_target_column_name();
   TS_ASSERT_EQUALS(feature_column_name, test_feature_name);
   TS_ASSERT_EQUALS(target_column_name, test_target_name);
+
   
   if (!with_bitmap_based_data) {
     TS_ASSERT_EQUALS(data[feature_column_name].dtype(), flex_type_enum::LIST);
