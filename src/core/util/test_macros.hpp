@@ -14,7 +14,7 @@ static std::recursive_mutex __b_lock__;
 #define TS_ASSERT_DIFFERS(x,y)           do { _TS_ADD_LOCK_GUARD; BOOST_TEST((x) != (y)); } while(0)
 #define TS_ASSERT_LESS_THAN_EQUALS(x,y)  do { _TS_ADD_LOCK_GUARD; BOOST_TEST((x) <= (y)); } while(0)
 #define TS_ASSERT_LESS_THAN(x,y)         do { _TS_ADD_LOCK_GUARD; BOOST_TEST((x) < (y)); } while(0)
-#define TS_ASSERT_DELTA(x,y,e)           do { _TS_ADD_LOCK_GUARD; BOOST_TEST((x) == (y), boost::test_tools::tolerance(e)); } while(0)
+#define TS_ASSERT_DELTA(x,y,e)           do { _TS_ADD_LOCK_GUARD; BOOST_TEST(static_cast<double>(x) == static_cast<double>(y), boost::test_tools::tolerance(static_cast<double>(e))); } while(0)
 #define TS_ASSERT_THROWS_NOTHING(expr)   do { _TS_ADD_LOCK_GUARD; BOOST_CHECK_NO_THROW(expr); } while(0)
 #define TS_ASSERT_THROWS_ANYTHING(expr)  \
 do { \
