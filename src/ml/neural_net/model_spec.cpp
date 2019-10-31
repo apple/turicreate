@@ -827,7 +827,7 @@ void model_spec::add_scale(const std::string& name, const std::string& input,
 
   CoreML::Specification::ScaleLayerParams* params = layer->mutable_scale();
   size_t size = 1;
-  for (size_t i = 0; i < 3; ++i) {
+  for (size_t i = 0; i < shape_c_h_w.size(); ++i) {
     params->add_shapescale(shape_c_h_w[i]);
     size *= shape_c_h_w[i];
   }
