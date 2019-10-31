@@ -288,7 +288,8 @@ void drawing_classifier::init_training(
 
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
     std::random_device rd;
-    add_or_update_state({{"random_seed", (int)rd()}});
+    int random_seed = static_cast<int>(rd());
+    add_or_update_state({{"random_seed", random_seed}});
   }
 
   // Perform validation split if necessary.
