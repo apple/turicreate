@@ -150,7 +150,9 @@ class ObjectDetectorTest(unittest.TestCase):
             self.get_ans['grid_width'] = lambda x: x > 0
             self.get_ans['training_mean_average_precision'] = lambda x: True
             self.get_ans['random_seed'] = lambda x: True
-            self.get_ans['training_average_precision'] = lambda x: isinstance(x, dict)
+            self.get_ans['training_average_precision'] = lambda x: (isinstance(x, dict) and
+                set(x.keys()) == set(_CLASSES) and all([isinstance(y,float) for y in x.values()])
+            )
             del self.get_ans['_model']
             del self.get_ans['_class_to_index']
             del self.get_ans['_training_time_as_string']
