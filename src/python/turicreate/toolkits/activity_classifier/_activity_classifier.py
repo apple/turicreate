@@ -191,6 +191,27 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     for feature in features:
         _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
 
+    # C++ model
+
+    if USE_CPP:
+
+        name = 'activity_classifier'
+
+        import turicreate as _turicreate
+
+        # Imports tensorflow
+        import turicreate.toolkits.libtctensorflow
+
+        model = _turicreate.extensions.activity_classifier()
+        options = {}
+        options['prediction_window'] = prediction_window
+        options['batch_size'] = batch_size
+        options['max_iterations'] = max_iterations
+        options['verbose'] = verbose
+
+        model.train(dataset, target, session_id, validation_set, options)
+        return ActivityClassifier_beta(model_proxy=model, name=name)
+
     # Encode the target column to numerical values
     use_target = target is not None
     dataset, target_map = _encode_target(dataset, target)
@@ -239,27 +260,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
                                     batch_size, use_target=use_target, mx_output=use_mx_data_batch)
     else:
         valid_iter = None
-
-    # C++ model
-
-    if USE_CPP:
-
-        name = 'activity_classifier'
-
-        import turicreate as _turicreate
-
-        # Imports tensorflow
-        import turicreate.toolkits.libtctensorflow
-
-        model = _turicreate.extensions.activity_classifier()
-        options = {}
-        options['prediction_window'] = prediction_window
-        options['batch_size'] = batch_size
-        options['max_iterations'] = max_iterations
-        options['verbose'] = verbose
-
-        model.train(dataset, target, session_id, validation_set, options)
-        return ActivityClassifier_beta(model_proxy=model, name=name)
 
     # Define model architecture
     context = _mxnet_utils.get_mxnet_context(max_devices=num_sessions)
