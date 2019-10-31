@@ -233,8 +233,7 @@ def create(dataset, target, feature, max_iterations=10,
                                     batch_size=training_batch_size, shuffle=True)
 
     from ._mx_sound_classifier import SoundClassifierMXNetModel
-    ctx = _mxnet_utils.get_mxnet_context()
-    mxnet_model = SoundClassifierMXNetModel(feature_extractor, num_labels, custom_layer_sizes, verbose, ctx)
+    mxnet_model = SoundClassifierMXNetModel(feature_extractor, num_labels, custom_layer_sizes, verbose)
 
     if verbose:
         # Setup progress table
@@ -253,23 +252,19 @@ def create(dataset, target, feature, max_iterations=10,
         # TODO: early stopping
 
         for batch in train_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            mxnet_model.train(batch, data, label)
+            mxnet_model.train(batch)
         train_data.reset()
 
         # Calculate training metric
         for batch in train_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            data, label = mxnet_model.batch_process(batch)
             outputs = mxnet_model.predict(data)
             train_metric.update(label, outputs)
         train_data.reset()
 
         # Calculate validataion metric
         for batch in validation_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
+            data, label = mxnet_model.batch_process(batch)
             outputs = mxnet_model.predict(data)
             validation_metric.update(label, outputs)
 
