@@ -10,15 +10,14 @@ import time
 import turicreate as _tc
 
 
-class SoundClassifierMXNETModel():
+class SoundClassifierMXNetModel():
 
 
 	def __init__(self, feature_extractor, num_labels, custom_layer_sizes, verbose, ctx):
-		from .sound_classifier import SoundClassifier
 		from .._mxnet import _mxnet_utils
 		
 		self.verbose = verbose
-		self.custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels, custom_layer_sizes)
+		self.custom_NN = self._build_custom_neural_network(feature_extractor.output_length, num_labels, custom_layer_sizes)
 		self.custom_NN.initialize(mx.init.Xavier(), ctx=ctx)
 
 		self.trainer = mx.gluon.Trainer(self.custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
@@ -42,6 +41,25 @@ class SoundClassifierMXNETModel():
 	def predict(self, data):
 		outputs = [self.custom_NN(x) for x in data]
 		return outputs
+
+	@staticmethod
+	def _build_custom_neural_network(num_inputs, num_labels, layer_sizes):
+	    from mxnet.gluon import nn
+
+	    net = nn.Sequential(prefix='custom_')
+	    with net.name_scope():
+	        for i, cur_layer_size in enumerate(layer_sizes):
+	            prefix = "dense%d_" % i
+	            if i == 0:
+	                in_units = num_inputs
+	            else:
+	                in_units = layer_sizes[i-1]
+
+	            net.add(nn.Dense(cur_layer_size, in_units=in_units, activation='relu', prefix=prefix))
+
+	        prefix = 'dense%d_' % len(layer_sizes)
+	        net.add(nn.Dense(num_labels, prefix=prefix))
+	    return net
 
 '''
 	#def evaluate(self):

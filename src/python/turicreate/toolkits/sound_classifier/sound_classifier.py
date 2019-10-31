@@ -232,9 +232,9 @@ def create(dataset, target, feature, max_iterations=10,
                                     label=train_data['labels'].to_numpy(),
                                     batch_size=training_batch_size, shuffle=True)
 
-    from ._mx_sound_classifier import SoundClassifierMXNETModel
+    from ._mx_sound_classifier import SoundClassifierMXNetModel
     ctx = _mxnet_utils.get_mxnet_context()
-    mxnet_model = SoundClassifierMXNETModel(feature_extractor, num_labels, custom_layer_sizes, verbose, ctx)
+    mxnet_model = SoundClassifierMXNetModel(feature_extractor, num_labels, custom_layer_sizes, verbose, ctx)
 
     if verbose:
         # Setup progress table
@@ -318,25 +318,6 @@ class SoundClassifier(_CustomModel):
     """
     _PYTHON_SOUND_CLASSIFIER_VERSION = 1
 
-    @staticmethod
-    def _build_custom_neural_network(num_inputs, num_labels, layer_sizes):
-        from mxnet.gluon import nn
-
-        net = nn.Sequential(prefix='custom_')
-        with net.name_scope():
-            for i, cur_layer_size in enumerate(layer_sizes):
-                prefix = "dense%d_" % i
-                if i == 0:
-                    in_units = num_inputs
-                else:
-                    in_units = layer_sizes[i-1]
-
-                net.add(nn.Dense(cur_layer_size, in_units=in_units, activation='relu', prefix=prefix))
-
-            prefix = 'dense%d_' % len(layer_sizes)
-            net.add(nn.Dense(num_labels, prefix=prefix))
-        return net
-
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
 
@@ -382,7 +363,9 @@ class SoundClassifier(_CustomModel):
             # Default value, was not part of state for only Turi Create 5.4
             custom_layer_sizes = [100, 100]
         state['custom_layer_sizes'] = custom_layer_sizes
-        net = SoundClassifier._build_custom_neural_network(num_inputs, num_classes, custom_layer_sizes)
+
+        from ._mx_sound_classifier import SoundClassifierMXNetModel
+        net = SoundClassifierMXNetModel._build_custom_neural_network(num_inputs, num_classes, custom_layer_sizes)
         net_params = net.collect_params()
         ctx = _mxnet_utils.get_mxnet_context()
         _mxnet_utils.load_net_params_from_state(net_params, state['_custom_classifier'], ctx=ctx)
