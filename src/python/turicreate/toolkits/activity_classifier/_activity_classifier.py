@@ -176,25 +176,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
             raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
         params.update(kwargs['_advanced_parameters'])
 
-    if USE_CPP:
-
-        name = 'activity_classifier'
-
-        import turicreate as _turicreate
-
-        # Imports tensorflow
-        import turicreate.toolkits.libtctensorflow
-
-        model = _turicreate.extensions.activity_classifier()
-        options = {}
-        options['prediction_window'] = prediction_window
-        options['batch_size'] = batch_size
-        options['max_iterations'] = max_iterations
-        options['verbose'] = verbose
-
-        model.train(dataset, target, session_id, validation_set, options)
-        return ActivityClassifier_beta(model_proxy=model, name=name)
-
     if isinstance(validation_set, str) and validation_set == 'auto':
         # Computing the number of unique sessions in this way is relatively
         # expensive. Ideally we'd incorporate this logic into the C++ code that
@@ -258,6 +239,27 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
                                     batch_size, use_target=use_target, mx_output=use_mx_data_batch)
     else:
         valid_iter = None
+
+    # C++ model
+
+    if USE_CPP:
+
+        name = 'activity_classifier'
+
+        import turicreate as _turicreate
+
+        # Imports tensorflow
+        import turicreate.toolkits.libtctensorflow
+
+        model = _turicreate.extensions.activity_classifier()
+        options = {}
+        options['prediction_window'] = prediction_window
+        options['batch_size'] = batch_size
+        options['max_iterations'] = max_iterations
+        options['verbose'] = verbose
+
+        model.train(dataset, target, session_id, validation_set, options)
+        return ActivityClassifier_beta(model_proxy=model, name=name)
 
     # Define model architecture
     context = _mxnet_utils.get_mxnet_context(max_devices=num_sessions)
