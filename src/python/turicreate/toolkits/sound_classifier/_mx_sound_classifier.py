@@ -13,12 +13,12 @@ import turicreate as _tc
 class MultiLayerPerceptronMXNetModel():
 
 
-	def __init__(self, feature_extractor, num_labels, custom_layer_sizes, verbose):
+	def __init__(self, feature_output_length, num_labels, custom_layer_sizes, verbose):
 		from .._mxnet import _mxnet_utils
 		
 		self.ctx = _mxnet_utils.get_mxnet_context()
 		self.verbose = verbose
-		self.custom_NN = self._build_custom_neural_network(feature_extractor.output_length, num_labels, custom_layer_sizes)
+		self.custom_NN = self._build_custom_neural_network(feature_output_length, num_labels, custom_layer_sizes)
 		self.custom_NN.initialize(mx.init.Xavier(), ctx=self.ctx)
 
 		self.trainer = mx.gluon.Trainer(self.custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
@@ -27,8 +27,6 @@ class MultiLayerPerceptronMXNetModel():
 
 	def train(self, batch):
 		# Inside training scope
-		#data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=self.ctx, batch_axis=0, even_split=False)
-		#label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=self.ctx, batch_axis=0, even_split=False)
 		data, label = self.batch_process(batch)
 		with mx.autograd.record():
 		    for x, y in zip(data, label):

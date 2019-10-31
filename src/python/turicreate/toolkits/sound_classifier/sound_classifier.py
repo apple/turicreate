@@ -233,7 +233,7 @@ def create(dataset, target, feature, max_iterations=10,
                                     batch_size=training_batch_size, shuffle=True)
 
     from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-    mxnet_model = MultiLayerPerceptronMXNetModel(feature_extractor, num_labels, custom_layer_sizes, verbose)
+    sc_model = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
     if verbose:
         # Setup progress table
@@ -252,20 +252,20 @@ def create(dataset, target, feature, max_iterations=10,
         # TODO: early stopping
 
         for batch in train_data:
-            mxnet_model.train(batch)
+            sc_model.train(batch)
         train_data.reset()
 
         # Calculate training metric
         for batch in train_data:
-            data, label = mxnet_model.batch_process(batch)
-            outputs = mxnet_model.predict(data)
+            data, label = sc_model.batch_process(batch)
+            outputs = sc_model.predict(data)
             train_metric.update(label, outputs)
         train_data.reset()
 
         # Calculate validataion metric
         for batch in validation_data:
-            data, label = mxnet_model.batch_process(batch)
-            outputs = mxnet_model.predict(data)
+            data, label = sc_model.batch_process(batch)
+            outputs = sc_model.predict(data)
             validation_metric.update(label, outputs)
 
         # Get metrics, print progress table
@@ -284,7 +284,7 @@ def create(dataset, target, feature, max_iterations=10,
 
     state = {
         '_class_label_to_id': class_label_to_id,
-        '_custom_classifier': mxnet_model.custom_NN,
+        '_custom_classifier': sc_model.custom_NN,
         '_feature_extractor': feature_extractor,
         '_id_to_class_label': {v: k for k, v in class_label_to_id.items()},
         'classes': classes,
