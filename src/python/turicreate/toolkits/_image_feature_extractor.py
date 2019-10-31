@@ -14,13 +14,13 @@ def _create_feature_extractor(model_name):
     import os
     from platform import system
     from ._internal_utils import _mac_ver
-    from ._pre_trained_models import MODELS
+    from ._pre_trained_models import IMAGE_MODELS
     from turicreate.config import get_runtime_config
     from turicreate import extensions
 
     # If we don't have Core ML, use a TensorFlow model.
     if system() != 'Darwin' or _mac_ver() < (10, 13):
-        ptModel = MODELS[model_name]()
+        ptModel = IMAGE_MODELS[model_name]()
         return TensorFlowFeatureExtractor(ptModel)
 
     download_path = _get_cache_dir()
@@ -70,15 +70,20 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         ptModel: ImageClassifierPreTrainedModel
             An instance of a pre-trained model.
         """
-        self.ptModel = ptModel
-        self.input_shape = ptModel.input_image_shape
+        from tensorflow import keras
 
+        self.ptModel = ptModel
+
+        self.input_shape = ptModel.input_image_shape
         self.coreml_data_layer = ptModel.coreml_data_layer
         self.coreml_feature_layer = ptModel.coreml_feature_layer
 
+        model_path = ptModel.get_model_path('tensorflow')
+        self.model = keras.models.load_model(model_path)
+
     def extract_features(self, dataset, feature, batch_size=64, verbose=False):
-        import turicreate as tc
         from array import array
+        import turicreate as tc
 
         input_is_BGR = self.ptModel.input_is_BGR
 
@@ -99,15 +104,13 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         # TODO: use batching and an SArray builder
 
         images = images.to_numpy()
-        y = self.ptModel.tf_model.predict(images)
+        y = self.model.predict(images)
         y = [i[0][0] for i in y]
 
         return tc.SArray(y, dtype=array)
 
     def get_coreml_model(self):
         import coremltools
-        import os
 
-        cache_path = _get_cache_dir()
-        model_path = os.path.join(cache_path, self.ptModel.name) + '.mlmodel'
+        model_path = self.ptModel.get_model_path('coreml')
         return coremltools.models.MLModel(model_path)

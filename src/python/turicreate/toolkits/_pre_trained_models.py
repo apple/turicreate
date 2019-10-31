@@ -6,7 +6,6 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from tensorflow import keras as _keras
 import os as _os
 import sys as _sys
 import requests as _requests
@@ -86,6 +85,23 @@ class ImageClassifierPreTrainedModel(object):
     def _is_gl_pickle_safe(cls):
         return False
 
+    def get_model_path(self, format):
+        assert(format in ('coreml', 'tensorflow'))
+
+        filename = self.name + '-TuriCreate-6.0'
+        if(format == 'coreml'):
+            filename = filename + '.mlmodel'
+        else:
+            filename = filename + '.h5'
+
+        url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
+        checksum = self.source_md5[format]
+        model_path = _download_and_checksum_files(
+            [(url, checksum)], _get_cache_dir()
+            )[0]
+
+        return model_path
+
 
 class ResNetImageClassifier(ImageClassifierPreTrainedModel):
     input_image_shape = (3, 224, 224)
@@ -97,18 +113,10 @@ class ResNetImageClassifier(ImageClassifierPreTrainedModel):
         self.coreml_data_layer = 'data'
         self.coreml_feature_layer = 'flatten0'
 
-        cache_path = _get_cache_dir()
-
-        # TODO: model downloading
-        '''
-        _download_and_checksum_files([
-            (self.coreml_model_url, self.coreml_model_md5),
-            (self.tensorflow_url, self.tensorflow_model_md5),
-        ], cache_path)
-        '''
-
-        model_path = _os.path.join(cache_path, self.name) + '.h5'
-        self.tf_model = _keras.models.load_model(model_path)
+        self.source_md5 = {
+            'coreml': 'XXXX',
+            'tensorflow': 'XXXX'
+        }
 
 
 class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
@@ -121,21 +129,13 @@ class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
         self.coreml_data_layer = 'data'
         self.coreml_feature_layer = 'flatten'
 
-        cache_path = _get_cache_dir()
-
-        # TODO: model downloading
-        '''
-        _download_and_checksum_files([
-            (self.coreml_model_url, self.coreml_model_md5),
-            (self.tensorflow_url, self.tensorflow_model_md5),
-        ], cache_path)
-        '''
-
-        model_path = _os.path.join(cache_path, self.name) + '.h5'
-        self.tf_model = _keras.models.load_model(model_path)
+        self.source_md5 = {
+            'coreml': 'XXXX',
+            'tensorflow': 'XXXX'
+        }
 
 
-MODELS = {
+IMAGE_MODELS = {
     'resnet-50': ResNetImageClassifier,
     'squeezenet_v1.1': SqueezeNetImageClassifierV1_1
 }

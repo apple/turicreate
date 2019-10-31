@@ -105,7 +105,7 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
         raise TypeError("'dataset' must be of type SFrame.")
 
     # Check parameters
-    allowed_models = list(_pre_trained_models.MODELS.keys())
+    allowed_models = list(_pre_trained_models.IMAGE_MODELS.keys())
     if _mac_ver() >= (10,14):
         allowed_models.append('VisionFeaturePrint_Scene')
 
@@ -144,8 +144,8 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
             features = ['__image_features__'], verbose = verbose)
 
     # set input image shape
-    if model in _pre_trained_models.MODELS:
-        input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
+    if model in _pre_trained_models.IMAGE_MODELS:
+        input_image_shape = _pre_trained_models.IMAGE_MODELS[model].input_image_shape
     else:    # model == VisionFeaturePrint_Scene
         input_image_shape = (3, 299, 299)
 
@@ -522,15 +522,15 @@ class ImageSimilarityModel(_CustomModel):
         output_features = [(output_name, _datatypes.Array(num_examples))]
 
         if self.model != 'VisionFeaturePrint_Scene':
-            # Convert the MxNet model to Core ML
-            ptModel = _pre_trained_models.MODELS[self.model]()
+            # Get the Core ML spec for the feature extractor
+            ptModel = _pre_trained_models.IMAGE_MODELS[self.model]()
             feature_extractor = _image_feature_extractor.TensorFlowFeatureExtractor(ptModel)
+            feature_extractor_spec = feature_extractor.get_coreml_model().get_spec()
 
             input_name = feature_extractor.coreml_data_layer
             input_features = [(input_name, _datatypes.Array(*(self.input_image_shape)))]
 
             # Convert the neuralNetworkClassifier to a neuralNetwork
-            feature_extractor_spec = feature_extractor.get_coreml_model().get_spec()
             layers = deepcopy(feature_extractor_spec.neuralNetworkClassifier.layers)
             for l in layers:
                 feature_extractor_spec.neuralNetwork.layers.append(l)
