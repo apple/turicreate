@@ -597,7 +597,7 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
 
   return evaluation::compute_classifier_metrics(
       data, read_state<flex_string>("target"), metric, predictions,
-      {{"classes", read_state<flex_string>("classes")}});
+      {{"classes", read_state<flex_list>("classes")}});
 }
 
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
