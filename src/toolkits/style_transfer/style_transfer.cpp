@@ -283,7 +283,6 @@ void style_transfer::save_impl(oarchive& oarc) const {
 
 void style_transfer::load_version(iarchive& iarc, size_t version) {
   variant_deep_load(state, iarc);
-
   float_array_map nn_params;
   iarc >> nn_params;
 
@@ -355,7 +354,8 @@ gl_sframe style_transfer::predict(variant_type data,
   std::vector<double> style_idx;
   auto style_idx_iter = opts.find("style_idx");
   if (style_idx_iter == opts.end()) {
-    size_t num_styles = read_state<flexible_type>("num_styles");
+    int num_styles = read_state<flex_int>("num_styles");
+
     style_idx.resize(num_styles);
     std::iota(style_idx.begin(), style_idx.end(), 0);
   } else {
@@ -378,6 +378,12 @@ gl_sframe style_transfer::predict(variant_type data,
         break;
 
       }
+      case flex_type_enum::UNDEFINED: {
+        int num_styles = read_state<flex_int>("num_styles");
+        style_idx.resize(num_styles);
+        std::iota(style_idx.begin(), style_idx.end(), 0);
+        break;
+      }
       default:
         log_and_throw(
             "Option \"style_idx\" has to be of type `Integer` or `List`.");
@@ -393,10 +399,10 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
                                      const std::vector<double>& style_idx) {
   if (data.size() == 0) return;
 
-  flex_int batch_size = read_state<flex_int>("batch_size");
-  flex_int num_styles = read_state<flex_int>("num_styles");
-  flex_int image_width = read_state<flex_int>("image_width");
-  flex_int image_height = read_state<flex_int>("image_height");
+  int batch_size = read_state<flex_int>("batch_size");
+  int num_styles = read_state<flex_int>("num_styles");
+  int image_width = read_state<flex_int>("image_width");
+  int image_height = read_state<flex_int>("image_height");
 
   // Since we aren't training the style_images are irrelevant
   std::unique_ptr<data_iterator> data_iter =
@@ -414,10 +420,9 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   shared_float_array st_train = shared_float_array::wrap(0.f);
   shared_float_array st_num_styles(std::make_shared<float_scalar>(num_styles));
 
-  std::unique_ptr<model_backend> model =
-      m_training_compute_context->create_style_transfer(
-          {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
-          weight_params);
+  std::unique_ptr<model_backend> model = ctx->create_style_transfer(
+      {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
+      weight_params);
 
   // looping through all of the style indicies
   for (size_t i : style_idx) {
