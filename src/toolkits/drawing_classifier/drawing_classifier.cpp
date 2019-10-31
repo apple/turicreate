@@ -294,6 +294,10 @@ void drawing_classifier::init_training(
 
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
+  if (validation_data_[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    validation_data_ = _drawing_classifier_prepare_data(
+      validation_data_, feature_column_name);
+  }
 
   // Begin printing progress.
   // TODO: Make progress printing optional.
