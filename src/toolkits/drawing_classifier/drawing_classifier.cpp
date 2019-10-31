@@ -277,6 +277,12 @@ void drawing_classifier::init_training(
     gl_sframe data, std::string target_column_name,
     std::string feature_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
+
+  // Convert stroke-based data, if needed
+  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name);
+  }
+
   // Read user-specified options.
   init_options(opts);
 
@@ -533,10 +539,6 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
-  // Convert stroke-based data, if needed
-  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
-    data = _drawing_classifier_prepare_data(data, feature_column_name);
-  }
 
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.

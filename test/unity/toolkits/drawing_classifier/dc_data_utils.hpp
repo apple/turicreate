@@ -23,7 +23,7 @@ class drawing_data_generator {
   drawing_data_generator(bool is_bitmap_based, size_t num_rows,
       const std::vector<std::string> &unique_labels,
       const std::string& target_name = "test_target",
-      const std::string& feature_name = "test_image")
+      const std::string& feature_name = "test_feature")
       : is_bitmap_based_(is_bitmap_based),
         num_rows_(num_rows),
         unique_labels_(unique_labels),
@@ -151,7 +151,7 @@ class drawing_data_generator {
 
       /** Easy optimization here in case we want to reduce test time:
        *  Add (ii % 100) or something */
-      drawings.push_back(create_stroke_based_drawing(ii));
+      drawings[ii] = create_stroke_based_drawing(ii);
 
       // Each image has a label, which is the row index mod unique_labels.size().
       labels[ii] = unique_labels_[ii % unique_labels_.size()];
@@ -172,7 +172,7 @@ class drawing_data_generator {
   size_t num_rows_;
   std::vector<std::string> unique_labels_;
   std::string target_column_name_ = "test_target";
-  std::string feature_column_name_ = "test_image";
+  std::string feature_column_name_ = "test_feature";
 };
 
 }  // namespace drawing_classifier
