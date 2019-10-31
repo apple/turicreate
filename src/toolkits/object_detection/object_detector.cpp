@@ -270,7 +270,7 @@ void object_detector::init_options(
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
   options.create_flexible_type_option(
-      /* name              */ "class_labels",
+      /* name              */ "classes",
       /* description       */
       "Defines class labels.",
       /* default_value     */ flex_list(),
@@ -1075,18 +1075,8 @@ void object_detector::init_training(gl_sframe data,
                                          read_state<int>("random_seed"));
 
   // Bind the data to a data iterator.
-  std::vector<std::string> class_labels = read_state<std::vector<std::string>>("class_labels");
-  //std::vector<std::string> class_labels(flex_class_labels.begin(), flex_class_labels.end());
-  //flex_list
-  //auto it_class_labels = opts.find("class_labels");
-  //if (it_class_labels != opts.end()) {
-  //  flexible_type ft = it_class_labels->second;
-  //  flex_list flex_class_labels = ft.get<flex_list>();
-  //  for (auto& x : flex_class_labels) {
-  //    class_labels.push_back(x.get<flex_string>());
-  //  }
-  //}
-  std::cout << "zz\n";
+  std::vector<std::string> class_labels =
+      read_state<std::vector<std::string>>("classes");
   training_data_iterator_ =
       create_iterator(training_data_, /* expected class_labels */ class_labels,
                       /* repeat */ true);
