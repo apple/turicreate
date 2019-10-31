@@ -218,8 +218,6 @@ std::pair<gl_sarray, size_t> get_annotation_info(const gl_sarray& annotations) {
 
   // Construct an SFrame with one row per bounding box.
   gl_sframe instances;
-  gl_sarray classes;
-  size_t num_instances;
 
   if (annotations.dtype() == flex_type_enum::LIST) {
     gl_sframe unstacked_instances({{"annotations", annotations}});
@@ -234,13 +232,7 @@ std::pair<gl_sarray, size_t> get_annotation_info(const gl_sarray& annotations) {
                                {flex_type_enum::STRING},
                                /* na_value */ FLEX_UNDEFINED, {"label"});
 
-  // Determine the list of unique class labels,
-  classes = instances["label"].unique().sort();
-
-  // Record the number of labeled bounding boxes.
-  num_instances = instances.size();
-
-  return std::make_pair(classes, num_instances);
+  return std::make_pair(instances["label"].unique().sort(), instances.size());
 }
 
 }  // namespace
@@ -265,13 +257,6 @@ simple_data_iterator::compute_properties(
       result.class_to_index_map[label] = i++;
     }
   } else {
-    // Make sure the expected labels are unique and sorted.
-    std::sort(expected_class_labels.begin(), expected_class_labels.end());
-    std::vector<std::string>::iterator it;
-    it =
-        std::unique(expected_class_labels.begin(), expected_class_labels.end());
-    expected_class_labels.resize(
-        std::distance(expected_class_labels.begin(), it));
 
     // Construct the class-to-index map from the expected labels.
     result.classes = std::move(expected_class_labels);
