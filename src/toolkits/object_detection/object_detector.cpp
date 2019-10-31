@@ -980,8 +980,7 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
   // Check if data has annotations column
   std::string annotations_column_name = read_state<flex_string>("annotations");
   if (data.contains_column(annotations_column_name)) {
-    iterator_params.annotations_column_name =
-        read_state<flex_string>("annotations");
+    iterator_params.annotations_column_name = annotations_column_name;
   }
 
   iterator_params.data = std::move(data);
