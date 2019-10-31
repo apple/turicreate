@@ -809,10 +809,11 @@ class StyleTransfer_beta(_Model):
         +--------+-------+------------------------+
         [8 rows x 3 columns]
         """
+        image_feature = _tkutl._find_only_image_column(images)
         options = {}
         options['style_idx'] = style
 
-        return self.__proxy__.predict(images, options)
+        return self.__proxy__.predict(images[image_feature], options)
 
 class StyleTransfer(_CustomModel):
     """

@@ -436,7 +436,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
       // Write result to gl_sframe_writer
       for (const auto& row : processed_batch) {
-        result.write({row.first, row.second}, 1);
+        result.write({row.first, row.second}, 0);
       }
 
       // get next batch

@@ -459,7 +459,10 @@ def define_style_transfer_network(content_image,
         
         optimizer = _tf.train.AdamOptimizer().minimize(total_loss)
     
-    return optimizer, total_loss, content_output
+        return optimizer, total_loss, content_output
+    else:
+        return None, None, content_output
+
 
 class StyleTransferTensorFlowModel(TensorFlowModel):
     def __init__(self, config, net_params):
@@ -514,7 +517,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
         stylized_image = self.sess.run([self.output], feed_dict={self.tf_input : feed_dict['input'], self.tf_index: feed_dict['index']})
-        return { "stylized_image": _np.array(stylized_image) }
+        return { "output": _np.array(stylized_image) }
 
     def export_weights(self):
         tf_export_params = {}
