@@ -232,8 +232,8 @@ def create(dataset, target, feature, max_iterations=10,
                                     label=train_data['labels'].to_numpy(),
                                     batch_size=training_batch_size, shuffle=True)
 
-    from ._mx_sound_classifier import SoundClassifierMXNetModel
-    mxnet_model = SoundClassifierMXNetModel(feature_extractor, num_labels, custom_layer_sizes, verbose)
+    from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
+    mxnet_model = MultiLayerPerceptronMXNetModel(feature_extractor, num_labels, custom_layer_sizes, verbose)
 
     if verbose:
         # Setup progress table
@@ -359,8 +359,8 @@ class SoundClassifier(_CustomModel):
             custom_layer_sizes = [100, 100]
         state['custom_layer_sizes'] = custom_layer_sizes
 
-        from ._mx_sound_classifier import SoundClassifierMXNetModel
-        net = SoundClassifierMXNetModel._build_custom_neural_network(num_inputs, num_classes, custom_layer_sizes)
+        from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
+        net = MultiLayerPerceptronMXNetModel._build_custom_neural_network(num_inputs, num_classes, custom_layer_sizes)
         net_params = net.collect_params()
         ctx = _mxnet_utils.get_mxnet_context()
         _mxnet_utils.load_net_params_from_state(net_params, state['_custom_classifier'], ctx=ctx)

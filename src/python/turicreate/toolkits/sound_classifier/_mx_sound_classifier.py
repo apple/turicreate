@@ -10,7 +10,7 @@ import time
 import turicreate as _tc
 
 
-class SoundClassifierMXNetModel():
+class MultiLayerPerceptronMXNetModel():
 
 
 	def __init__(self, feature_extractor, num_labels, custom_layer_sizes, verbose):
