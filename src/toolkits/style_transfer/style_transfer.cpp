@@ -600,8 +600,8 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
       read_opts<flex_int>(opts, "image_width", /* delete item */ true);
   const flex_int image_height =
       read_opts<flex_int>(opts, "image_height", /* delete item */ true);
-  // const bool include_flexible_shape =
-  //     read_opts<bool>(opts, "include_flexible_shape", /* delete item */ true);
+  const flex_int include_flexible_shape =
+      read_opts<flex_int>(opts, "include_flexible_shape", /* delete item */ true);
 
   flex_dict user_defined_metadata = {
       {"model", read_state<flex_string>("model")},
@@ -615,7 +615,7 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
   };
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
-      *m_resnet_spec, image_width, image_height, true,
+      *m_resnet_spec, image_width, image_height, include_flexible_shape,
       std::move(user_defined_metadata));
 
   if (!filename.empty()) model_wrapper->save(filename);
