@@ -234,7 +234,7 @@ def create(dataset, target, feature, max_iterations=10,
     train_metric = mx.metric.Accuracy()
     if validation_data:
         validation_metric = mx.metric.Accuracy()
-    softmax_cross_entropy_loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+
     for i in range(max_iterations):
         # TODO: early stopping
 
