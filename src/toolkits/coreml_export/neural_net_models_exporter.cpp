@@ -189,7 +189,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   // Set the name of preprocessing layer to input_name as well.
   // Since in the test case somehow the model doesn't have a preprocessing
   // layer, so we need to check the size first...
-  if (model_nn->mutable_neuralnetwork()->mutable_preprocessing()->size() > 0) {
+  if (model_nn->neuralnetwork().preprocessing_size() == 1) {
     NeuralNetworkPreprocessing* preprocessing_layer =
         model_nn->mutable_neuralnetwork()->mutable_preprocessing(0);
     preprocessing_layer->set_featurename(input_name);
