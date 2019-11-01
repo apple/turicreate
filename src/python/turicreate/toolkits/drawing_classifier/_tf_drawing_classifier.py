@@ -150,15 +150,18 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         num_samples = float(feed_dict["num_samples"])
         one_hot_labels = np.zeros((int(num_samples), self.num_classes))
 
-        # convert to one hot
-        labels = feed_dict["labels"].astype("int32").T
-        one_hot_labels[_np.arange(num_samples), labels] = 1
+        if "labels" in feed_dict:
+            # convert to one hot
+            labels = feed_dict["labels"].astype("int32").T
+            one_hot_labels[_np.arange(num_samples), labels] = 1
+
+        feed_dict_for_session = { self.input: feed_dict["input"] }
+
+        if "labels" in feed_dict and "num_samples" in feed_dict:
+            feed_dict_for_session[self.one_hot_labels] = one_hot_labels
 
         pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
-                            feed_dict={
-                                self.input: feed_dict['input'],
-                                self.one_hot_labels: one_hot_labels
-                            })
+                            feed_dict=feed_dict_for_session)
         result = {'accuracy' : final_accuracy, 'predictions' : pred_probs}
         return result
 

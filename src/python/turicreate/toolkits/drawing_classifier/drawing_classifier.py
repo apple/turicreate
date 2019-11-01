@@ -10,7 +10,6 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 import numpy as _np
 import time as _time
-import turicreate.toolkits.libtctensorflow
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
@@ -268,6 +267,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     #         allow_missing=True)
 
     if USE_CPP:
+        import turicreate.toolkits.libtctensorflow
         if verbose:
             print("Using C++")
         model = _tc.extensions.drawing_classifier()

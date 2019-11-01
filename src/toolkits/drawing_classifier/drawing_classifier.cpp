@@ -345,9 +345,8 @@ void drawing_classifier::init_training(
   }
 
   // Report to the user what GPU(s) is being used.
-  ///////// Ignore until Segfault
-  // std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  // print_training_device(gpu_names);
+  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
+  print_training_device(gpu_names);
 
   // Initialize the neural net. Note that this depends on statistics computed
   // by the data iterator.
@@ -649,7 +648,9 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
 
     // Send the inputs to the model.
     std::map<std::string, shared_float_array> results =
-        backend->predict({{"input", result_batch.data_info.drawings}});
+        backend->predict({{"input", result_batch.data_info.drawings},
+                          {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                         });
 
     // Copy the (float) outputs to our (double) buffer and add to the SArray.
     result_batch.data_info.predictions = results.at("output");
