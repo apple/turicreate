@@ -114,8 +114,8 @@ class ResNetImageClassifier(ImageClassifierPreTrainedModel):
         self.coreml_feature_layer = 'flatten0'
 
         self.source_md5 = {
-            'coreml': 'XXXX',
-            'tensorflow': 'XXXX'
+            'coreml': '8503ef18f368b65ebaaa07ba5689b5f8',
+            'tensorflow': 'ac73d2cc03700035c6cd756742bd59d6'
         }
 
 
@@ -130,8 +130,8 @@ class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
         self.coreml_feature_layer = 'flatten'
 
         self.source_md5 = {
-            'coreml': 'XXXX',
-            'tensorflow': 'XXXX'
+            'coreml': '5d8a41bb9a48f71b779a98b345de0900',
+            'tensorflow': '60d5afff4c5bc535bc29655feac5571f'
         }
 
 
