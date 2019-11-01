@@ -661,6 +661,23 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
   return writer.close();
 }
 
+gl_sframe infer_feature_column_and_prepare_data(gl_sframe &data) {
+  std::string feature_column_name;
+
+  for (std::string column_name: data.column_names()) {
+    if (data[column_name].dtype() == flex_type_enum::LIST
+      || data[column_name].dtype() == flex_type_enum::IMAGE) {
+      feature_column_name = column_name;
+    }
+  }
+
+  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name);
+  }
+
+  return data;
+}
+
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   // by default, it should be "probability" if the value is
   // passed in through python client
@@ -669,6 +686,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
                   "Expected one of: probability, rank");
   }
 
+  data = infer_feature_column_and_prepare_data(data);
   auto data_itr =
       create_iterator(data, /* is_train */ false, /* class labels */ {});
 
@@ -697,6 +715,8 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
                   " is not a valid option for output_type.  "
                   "Expected one of: probability, rank");
   }
+
+  data = infer_feature_column_and_prepare_data(data);
 
   // data inference
   std::unique_ptr<data_iterator> data_it =
