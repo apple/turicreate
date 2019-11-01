@@ -792,7 +792,7 @@ class SoundClassifier(_CustomModel):
 
             for x in batch_data:
                 forward_output = self._custom_classifier.predict(x)
-                y += mx.nd.softmax(forward_output).asnumpy().tolist()
+                y += mx.nd.softmax(forward_output[0]).asnumpy().tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames
