@@ -64,7 +64,7 @@ class VGGishFeatureExtractor(object):
         vggish_model_file = VGGish()
 
         if _mac_ver() < (10, 14):
-	    # Use TensorFlow/Keras
+            # Use TensorFlow/Keras
             model_path = vggish_model_file.get_model_path(format='tensorflow')
             self.vggish_model = _keras.models.load_model(model_path)
         else:
