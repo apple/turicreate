@@ -33,6 +33,9 @@ OD_USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 # Activity Classifier use C++ codepath
 AC_USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 
+# Style Transfer use C++ codepath
+ST_USE_CPP = _read_env_var_cpp('TURI_ST_USE_CPP_PATH')
+
 def load_model(location):
     """
     Load any Turi Create model that was previously saved.
@@ -105,6 +108,11 @@ def load_model(location):
 
                 if name=='object_detector' and OD_USE_CPP:
                     model = _extensions.object_detector()
+                    model.import_from_custom_model(model_data, model_version)
+                    return cls(model)
+
+                if name=='style_transfer' and ST_USE_CPP:
+                    model = _extensions.style_transfer()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 

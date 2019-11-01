@@ -269,6 +269,12 @@ void object_detector::init_options(
       /* default_value     */ "center",
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
+  options.create_flexible_type_option(
+      /* name              */ "classes",
+      /* description       */
+      "Defines class labels.",
+      /* default_value     */ flex_list(),
+      /* allowed_overwrite */ false);
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -470,6 +476,13 @@ void object_detector::finalize_training() {
 variant_type object_detector::evaluate(gl_sframe data, std::string metric,
                                        std::string output_type,
                                        std::map<std::string, flexible_type> opts) {
+  // check if data has ground truth annotation
+  std::string annotations_column_name = read_state<flex_string>("annotations");
+  if (!data.contains_column(annotations_column_name)) {
+    log_and_throw("Annotations column " + annotations_column_name +
+                  " does not exist");
+  }
+
   //parse input opts
   float confidence_threshold, iou_threshold;
   auto it_confidence = opts.find("confidence_threshold");
@@ -577,8 +590,8 @@ variant_type object_detector::convert_map_to_types(
   return final_result;
 }
 
-gl_sarray object_detector::predict(variant_type data, std::map<std::string, flexible_type> opts) {
-
+variant_type object_detector::predict(
+    variant_type data, std::map<std::string, flexible_type> opts) {
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
@@ -614,12 +627,21 @@ gl_sarray object_detector::predict(variant_type data, std::map<std::string, flex
     iou_threshold = opts["iou_threshold"];
   }
 
-  // Convert dasta to SFrame
+  // Convert data to SFrame
   std::string image_column_name = read_state<flex_string>("feature");
   gl_sframe sframe_data = convert_types_to_sframe(data, image_column_name);
 
   perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
-  return result.close();
+
+  // Convert output to flex_list if data is a single image
+  gl_sarray result_sarray = result.close();
+  variant_type final_result;
+  if (variant_is<gl_sframe>(data) || variant_is<gl_sarray>(data)) {
+    final_result = to_variant(result_sarray);
+  } else {
+    final_result = to_variant(result_sarray[0]);
+  }
+  return final_result;
 }
 
 gl_sframe object_detector::convert_types_to_sframe(
@@ -1054,8 +1076,11 @@ void object_detector::init_training(gl_sframe data,
                                          read_state<int>("random_seed"));
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(
-      training_data_, /* expected class_labels */ {}, /* repeat */ true);
+  std::vector<std::string> class_labels =
+      read_state<std::vector<std::string>>("classes");
+  training_data_iterator_ =
+      create_iterator(training_data_, /* expected class_labels */ class_labels,
+                      /* repeat */ true);
 
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of

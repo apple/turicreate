@@ -199,30 +199,42 @@ class StyleTransferTransformer():
 
     def __init__(self):
         self.name = 'resnet-16'
-        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'resnet-16.params')
-        self.source_md5 = 'ac232afa6d0ead93a8c75b6c455f6dd3'
-        self.model_path = _download_and_checksum_files([
-            (self.source_url, self.source_md5)
-        ], _get_cache_dir())[0]
+        self.source_md5 = { 'mxnet' : 'ac232afa6d0ead93a8c75b6c455f6dd3',
+                            'coreml': 'e0f3adaa9952ecc7d96f5e4eefb0d690' }
 
 
-    def get_model_path(self):
-        return self.model_path
+    def get_model_path(self, format):
+        assert(format in ('coreml', 'mxnet'))
+        if(format == 'coreml'):
+            filename = self.name + '.mlmodel'
+        else:
+            filename = self.name + '.params'
+        url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
+        checksum = self.source_md5[format]
+        model_path = _download_and_checksum_files([(url, checksum)], _get_cache_dir())[0]
+        return model_path
 
 
 class Vgg16():
 
     def __init__(self):
         self.name = 'Vgg16-conv1_1-4_3'
-        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'vgg16-conv1_1-4_3.params')
-        self.source_md5 = '52e75e03160e64e5aa9cfbbc62a92345'
-        self.model_path = _download_and_checksum_files([
-            (self.source_url, self.source_md5)
-        ], _get_cache_dir())[0]
+        self.source_md5 = {
+            'mxnet': '52e75e03160e64e5aa9cfbbc62a92345',
+            'coreml':'9c9508a8256d9ca1c113ac94bc9f8c6f'
+        }
 
 
-    def get_model_path(self):
-        return self.model_path
+    def get_model_path(self, format):
+        assert(format in ('coreml', 'mxnet'))
+        if (format in 'coreml') :
+            filename = 'vgg16-conv1_1-4_3.mlmodel'
+        else:
+            filename = 'vgg16-conv1_1-4_3.params'
+        url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
+        checksum = self.source_md5[format]
+        model_path = _download_and_checksum_files([(url, checksum)], _get_cache_dir())[0]
+        return model_path
 
 
 STYLE_TRANSFER_BASE_MODELS = {
