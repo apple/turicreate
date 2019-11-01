@@ -127,6 +127,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   size_t real_batch_size = 0;
 
   while (batch_targets.size() < batch_size && next_row_ != end_of_rows_) {
+
     real_batch_size++;
     const sframe_rows::row& row = *next_row_;
 
@@ -166,7 +167,6 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         data_ = data_.sort("_random_order");
         data_.remove_column("_random_order");
       }
-
       /**
        * avoid updating next_row_ and end_of_rows_
        * reset() shouldn't be called neither
@@ -184,6 +184,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   // Wrap the buffers as float_array values.
   data_iterator::batch result;
+
   result.num_samples = real_batch_size;
 
   /**
