@@ -165,6 +165,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
       /* need NOT to check labels */ true);
 }
 
+
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
   {
     size_t num_rows = 0;

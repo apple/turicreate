@@ -18,14 +18,19 @@ constexpr size_t IMAGE_WIDTH = 28;
 constexpr size_t IMAGE_HEIGHT = 28;
 
 class drawing_data_generator {
- 
+
  public:
-  drawing_data_generator(bool is_bitmap_based, size_t num_rows,
+  /** Builds an SFrame with columns "test_image" and "test_targets".
+   *  Creates an SFrame with num_rows number of rows where each row has
+   *  a drawing (a grayscale 28x28 image)
+   *  and a corresponding target, which is the row index modulo
+   *  unique_labels.size().
+   */
+  drawing_data_generator(size_t num_rows,
       const std::vector<std::string> &unique_labels,
       const std::string& target_name = "test_target",
       const std::string& feature_name = "test_feature")
-      : is_bitmap_based_(is_bitmap_based),
-        num_rows_(num_rows),
+      : num_rows_(num_rows),
         unique_labels_(unique_labels),
         target_column_name_(target_name),
         feature_column_name_(feature_name) {
@@ -166,6 +171,7 @@ class drawing_data_generator {
     params_.class_labels = get_unique_labels();
   }
 
+ private:
   bool is_bitmap_based_;
   data_iterator::parameters params_;
   size_t num_rows_;
