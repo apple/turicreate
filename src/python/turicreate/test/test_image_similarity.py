@@ -211,7 +211,7 @@ class ImageSimilarityTest(unittest.TestCase):
             coreml_distances = np.array(coreml_ret['distance'])
             tc_distances = tc_ret.sort('reference_label')['distance'].to_numpy()
             psnr_value = get_psnr(coreml_distances, tc_distances)
-            self.assertTrue(psnr_value > 40)
+            self.assertTrue(psnr_value > 50)
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
