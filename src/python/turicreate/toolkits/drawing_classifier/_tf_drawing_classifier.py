@@ -103,18 +103,22 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         'drawing_dense1_weight', 'drawing_dense1_bias']
 
         for key in layers:
-            if 'bias' in key:
-                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                    net_params[key]))
-            else:
-                if 'dense' in key:
-                    dense_weights = _utils.convert_dense_coreml_to_tf(net_params[key])
+            try:
+                if 'bias' in key:
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                        dense_weights))
+                        net_params[key]))
                 else:
-                    # TODO: Call _utils.convert_conv2d_coreml_to_tf when #2513 is merged
-                    self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                                        _np.transpose(net_params[key], (2, 3, 1, 0))))
+                    if 'dense' in key:
+                        dense_weights = _utils.convert_dense_coreml_to_tf(net_params[key])
+                        self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
+                            dense_weights))
+                    else:
+                        # TODO: Call _utils.convert_conv2d_coreml_to_tf when #2513 is merged
+                        self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
+                                            _np.transpose(net_params[key], (2, 3, 1, 0))))
+            except:
+                print(key)
+                import pdb; pdb.set_trace()
 
 
     def train(self, feed_dict):

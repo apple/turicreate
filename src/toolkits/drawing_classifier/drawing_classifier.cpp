@@ -69,9 +69,9 @@ void drawing_classifier::save_impl(oarchive& oarc) const {
 }
 
 void drawing_classifier::load_version(iarchive& iarc, size_t version) {
-  if (!nn_spec_)
-    log_and_throw(
-        "model spec is not initalized, please call `init_train` before loading model");
+  // if (!nn_spec_)
+  //   log_and_throw(
+  //       "model spec is not initalized, please call `init_train` before loading model");
 
   // Load model attributes.
   variant_deep_load(state, iarc);
@@ -326,8 +326,9 @@ void drawing_classifier::init_training(
   }
 
   // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  print_training_device(gpu_names);
+  ///////// Ignore until Segfault
+  // std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
+  // print_training_device(gpu_names);
 
   // Set additional model fields.
   add_or_update_state({
@@ -563,14 +564,14 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
 
   // Update the state with recall, precision and confusion matrix for training
   // data
-  gl_sarray train_predictions = predict(training_data_, "probability_vector");
-  variant_map_type train_metric = evaluation::compute_classifier_metrics(
-      training_data_, target_column_name, "report", train_predictions,
-      {{"classes", read_state<flex_list>("classes")}});
+  // gl_sarray train_predictions = predict(training_data_, "probability_vector");
+  // variant_map_type train_metric = evaluation::compute_classifier_metrics(
+  //     training_data_, target_column_name, "report", train_predictions,
+  //     {{"classes", read_state<flex_list>("classes")}});
 
-  for (auto &p : train_metric) {
-    state_update["training_" + p.first] = p.second;
-  }
+  // for (auto &p : train_metric) {
+  //   state_update["training_" + p.first] = p.second;
+  // }
 
   // Update the state with recall, precision and confusion matrix for validation
   // data

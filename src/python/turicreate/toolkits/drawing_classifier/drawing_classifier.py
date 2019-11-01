@@ -10,7 +10,9 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 import numpy as _np
 import time as _time
+import turicreate.toolkits.libtctensorflow
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
@@ -23,6 +25,8 @@ from six.moves import reduce as _reduce
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
 TRAIN_VALIDATION_SPLIT = .95
+
+USE_CPP = _tkutl._read_env_var_cpp('TURI_DC_USE_CPP_PATH')
 
 def _raise_error_if_not_drawing_classifier_input_sframe(
     dataset, feature, target):
@@ -128,28 +132,24 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         # Make predictions on the training set and as column to the SFrame
         >>> data['predictions'] = model.predict(data)
     """
-    import mxnet as _mx
-    from mxnet import autograd as _autograd
-    from ._model_architecture import Model as _Model
-    from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
-    from .._mxnet import _mxnet_utils
+    # import mxnet as _mx
+    # from mxnet import autograd as _autograd
+    # from ._model_architecture import Model as _Model
+    # from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
+    # from .._mxnet import _mxnet_utils
     import warnings
 
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
 
-    params = {
-        'use_tensorflow': False,
-    }
+    # if '_advanced_parameters' in kwargs:
+    #     # Make sure no additional parameters are provided
+    #     new_keys = set(kwargs['_advanced_parameters'].keys())
+    #     set_keys = set(params.keys())
+    #     unsupported = new_keys - set_keys
+    #     if unsupported:
+    #         raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
 
-    if '_advanced_parameters' in kwargs:
-        # Make sure no additional parameters are provided
-        new_keys = set(kwargs['_advanced_parameters'].keys())
-        set_keys = set(params.keys())
-        unsupported = new_keys - set_keys
-        if unsupported:
-            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
-
-        params.update(kwargs['_advanced_parameters'])
+    #     params.update(kwargs['_advanced_parameters'])
 
     # @TODO: Should be able to automatically choose number of iterations
     # based on data size: Tracked in Github Issue #1576
@@ -175,117 +175,127 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     if max_iterations is not None and max_iterations < 1:
         raise ValueError("'max_iterations' must be >= 1")
 
-    is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
-    dataset = _extensions._drawing_classifier_prepare_data(
-        input_dataset, feature) if is_stroke_input else input_dataset
+    # is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
+    # dataset = _extensions._drawing_classifier_prepare_data(
+    #     input_dataset, feature) if is_stroke_input else input_dataset
 
-    iteration = -1
+    # iteration = -1
 
-    classes = dataset[target].unique()
-    classes = sorted(classes)
+    # classes = dataset[target].unique()
+    # classes = sorted(classes)
 
-    if len(classes) == 1:
-        _ToolkitError("The number of classes has to be greater than one")
+    # if len(classes) == 1:
+    #     _ToolkitError("The number of classes has to be greater than one")
 
-    class_to_index = {name: index for index, name in enumerate(classes)}
+    # class_to_index = {name: index for index, name in enumerate(classes)}
 
-    validation_set_corrective_string = ("'validation_set' parameter must be "
-        + "an SFrame, or None, or must be set to 'auto' for the toolkit to "
-        + "automatically create a validation set.")
-    if isinstance(validation_set, _tc.SFrame):
-        _raise_error_if_not_drawing_classifier_input_sframe(
-            validation_set, feature, target)
-        is_validation_stroke_input = (validation_set[feature].dtype != _tc.Image)
-        validation_dataset = _extensions._drawing_classifier_prepare_data(
-            validation_set, feature) if is_validation_stroke_input else validation_set
-    elif isinstance(validation_set, str):
-        if validation_set == 'auto':
-            if dataset.num_rows() >= 100:
-                if verbose:
-                    print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
-                            "          You can set ``validation_set=None`` to disable validation tracking.\n")
-                dataset, validation_dataset = dataset.random_split(TRAIN_VALIDATION_SPLIT, exact=True)
-            else:
-                validation_set = None
-                validation_dataset = _tc.SFrame()
-        else:
-            raise _ToolkitError("Unrecognized value for 'validation_set'. "
-                + validation_set_corrective_string)
-    elif validation_set is None:
-        validation_dataset = _tc.SFrame()
-    else:
-        raise TypeError("Unrecognized type for 'validation_set'."
-            + validation_set_corrective_string)
+    # validation_set_corrective_string = ("'validation_set' parameter must be "
+    #     + "an SFrame, or None, or must be set to 'auto' for the toolkit to "
+    #     + "automatically create a validation set.")
+    # if isinstance(validation_set, _tc.SFrame):
+    #     if validation_set.num_rows() != 0:
+    #         _raise_error_if_not_drawing_classifier_input_sframe(
+    #             validation_set, feature, target)
+    #         is_validation_stroke_input = (validation_set[feature].dtype != _tc.Image)
+    #         validation_dataset = _extensions._drawing_classifier_prepare_data(
+    #             validation_set, feature) if is_validation_stroke_input else validation_set
+    #     else:
+    #         validation_dataset = validation_set
+    # elif isinstance(validation_set, str):
+    #     if validation_set == 'auto':
+    #         if dataset.num_rows() >= 100:
+    #             if verbose:
+    #                 print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
+    #                         "          You can set ``validation_set=None`` to disable validation tracking.\n")
+    #             dataset, validation_dataset = dataset.random_split(TRAIN_VALIDATION_SPLIT, exact=True)
+    #         else:
+    #             validation_set = None
+    #             validation_dataset = _tc.SFrame()
+    #     else:
+    #         raise _ToolkitError("Unrecognized value for 'validation_set'. "
+    #             + validation_set_corrective_string)
+    # elif validation_set is None:
+    #     validation_dataset = _tc.SFrame()
+    # else:
+    #     raise TypeError("Unrecognized type for 'validation_set'."
+    #         + validation_set_corrective_string)
 
-    _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
-    if len(validation_dataset) > 0:
-        _tkutl._handle_missing_values(dataset, feature, 'validation_set')
+    # _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
+    # if len(validation_dataset) > 0:
+    #     _tkutl._handle_missing_values(dataset, feature, 'validation_set')
 
-    train_loader = _SFrameClassifierIter(dataset, batch_size,
-                 feature_column=feature,
-                 target_column=target,
-                 class_to_index=class_to_index,
-                 load_labels=True,
-                 shuffle=True,
-                 iterations=max_iterations)
-    train_loader_to_compute_accuracy = _SFrameClassifierIter(dataset, batch_size,
-                 feature_column=feature,
-                 target_column=target,
-                 class_to_index=class_to_index,
-                 load_labels=True,
-                 shuffle=True,
-                 iterations=1)
-    validation_loader = _SFrameClassifierIter(validation_dataset, batch_size,
-                 feature_column=feature,
-                 target_column=target,
-                 class_to_index=class_to_index,
-                 load_labels=True,
-                 shuffle=True,
-                 iterations=1)
+    # train_loader = _SFrameClassifierIter(dataset, batch_size,
+    #              feature_column=feature,
+    #              target_column=target,
+    #              class_to_index=class_to_index,
+    #              load_labels=True,
+    #              shuffle=True,
+    #              iterations=max_iterations)
+    # train_loader_to_compute_accuracy = _SFrameClassifierIter(dataset, batch_size,
+    #              feature_column=feature,
+    #              target_column=target,
+    #              class_to_index=class_to_index,
+    #              load_labels=True,
+    #              shuffle=True,
+    #              iterations=1)
+    # validation_loader = _SFrameClassifierIter(validation_dataset, batch_size,
+    #              feature_column=feature,
+    #              target_column=target,
+    #              class_to_index=class_to_index,
+    #              load_labels=True,
+    #              shuffle=True,
+    #              iterations=1)
 
-    ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
-    model = _Model(num_classes = len(classes), prefix="drawing_")
-    model_params = model.collect_params()
-    model_params.initialize(_mx.init.Xavier(), ctx=ctx)
+    # ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
+    # model = _Model(num_classes = len(classes), prefix="drawing_")
+    # model_params = model.collect_params()
+    # model_params.initialize(_mx.init.Xavier(), ctx=ctx)
 
-    if warm_start is not None:
-        if type(warm_start) is not str:
-            raise TypeError("'warm_start' must be a string or None. "
-                + "'warm_start' can take in the following values: "
-                + str(accepted_values_for_warm_start))
-        if warm_start not in accepted_values_for_warm_start:
-            raise _ToolkitError("Unrecognized value for 'warm_start': "
-                + warm_start + ". 'warm_start' can take in the following "
-                + "values: " + str(accepted_values_for_warm_start))
-        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
-            warm_start)
-        pretrained_model_params_path = pretrained_model.get_model_path()
-        model.load_params(pretrained_model_params_path,
-            ctx=ctx,
-            allow_missing=True)
+    # if warm_start is not None:
+    #     if type(warm_start) is not str:
+    #         raise TypeError("'warm_start' must be a string or None. "
+    #             + "'warm_start' can take in the following values: "
+    #             + str(accepted_values_for_warm_start))
+    #     if warm_start not in accepted_values_for_warm_start:
+    #         raise _ToolkitError("Unrecognized value for 'warm_start': "
+    #             + warm_start + ". 'warm_start' can take in the following "
+    #             + "values: " + str(accepted_values_for_warm_start))
+    #     pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
+    #         warm_start)
+    #     pretrained_model_params_path = pretrained_model.get_model_path()
+    #     model.load_params(pretrained_model_params_path,
+    #         ctx=ctx,
+    #         allow_missing=True)
 
-
-    if params['use_tensorflow']:
-        ## TensorFlow implementation
+    if USE_CPP:
         if verbose:
-            print("Using TensorFlow")
-        from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel, _tf_train_model
+            print("Using C++")
+        model = _tc.extensions.drawing_classifier()
+        options = dict()
+        options["batch_size"] = batch_size
+        options["max_iterations"] = max_iterations
+        # Enable the following line when #2524 is merged
+        # options["warm_start"] = warm_start
+        model.train(input_dataset, target, feature, validation_set, options)
+        return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
+        # ## TensorFlow implementation
+        # from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel, _tf_train_model
 
-        # To get weights: for warmstart Dense1 needs one forward pass to be initialised
-        test_input = _mx.nd.uniform(0, 1, (1,3) + (1,28,28))
-        model_output = model.forward(test_input[0])
+        # # To get weights: for warmstart Dense1 needs one forward pass to be initialised
+        # test_input = _mx.nd.uniform(0, 1, (1,3) + (1,28,28))
+        # model_output = model.forward(test_input[0])
 
-        # Define the TF Model
-        tf_model = DrawingClassifierTensorFlowModel(validation_set, model_params, batch_size, len(classes), verbose)
-        # Train
-        final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = _tf_train_model(
-                                                            tf_model, train_loader, validation_loader,
-                                                            validation_set, batch_size, len(classes), verbose)
+        # # Define the TF Model
+        # tf_model = DrawingClassifierTensorFlowModel(validation_set, model_params, batch_size, len(classes), verbose)
+        # # Train
+        # final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = _tf_train_model(
+        #                                                     tf_model, train_loader, validation_loader,
+        #                                                     validation_set, batch_size, len(classes), verbose)
 
-        # Transfer weights from TF to MXNET model
-        net_params = tf_model.export_weights()
-        for k in net_params.keys():
-            model_params[k].set_data(net_params[k])
+        # # Transfer weights from TF to MXNET model
+        # net_params = tf_model.export_weights()
+        # for k in net_params.keys():
+        #     model_params[k].set_data(net_params[k])
 
     else:
         ## MXNET implementation
@@ -1010,3 +1020,178 @@ class DrawingClassifier(_CustomModel):
         else:
             assert (output_type == "probability_vector")
             return predicted["probability"]
+
+
+class DrawingClassifier_beta(_Model):
+    """
+    A trained model using C++ implementation that is ready to use for classification or export to
+    CoreML.
+
+    This model should not be constructed directly.
+    """
+    _CPP_DRAWING_CLASSIFIER_VERSION = 1
+
+    def __init__(self, model_proxy=None, name=None):
+        self.__proxy__ = model_proxy
+        self.__name__ = name
+
+    @classmethod
+    def _native_name(cls):
+        if USE_CPP:
+            return "drawing_classifier"
+        return None
+
+    def __str__(self):
+        """
+        Return a string description of the model to the ``print`` method.
+
+        Returns
+        -------
+        out : string
+            A description of the model.
+        """
+        return self.__class__.__name__
+
+    def __repr__(self):
+        """
+        Returns a string description of the model, including (where relevant)
+        the schema of the training data, description of the training data,
+        training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        out : string
+            A description of the model.
+        """
+        return self.__class__.__name__
+
+    def _get_version(self):
+        return self._CPP_DRAWING_CLASSIFIER_VERSION
+
+    def export_coreml(self, filename):
+        """
+        Export the model in Core ML format.
+
+        Parameters
+        ----------
+        filename: str
+          A valid filename where the model can be saved.
+
+        Examples
+        --------
+        >>> model.export_coreml("MyModel.mlmodel")
+        """
+        return self.__proxy__.export_to_coreml(filename)
+
+
+    def predict(self, dataset, output_type='class'):
+        """
+        Predict on an SFrame or SArray of drawings, or on a single drawing.
+
+        Parameters
+        ----------
+        data : SFrame | SArray | tc.Image
+            The drawing(s) on which to perform drawing classification.
+            If dataset is an SFrame, it must have a column with the same name
+            as the feature column during training. Additional columns are
+            ignored.
+            If the data is a single drawing, it can be either of type tc.Image,
+            in which case it is a bitmap-based drawing input,
+            or of type list, in which case it is a stroke-based drawing input.
+
+        output_type : {'probability', 'class', 'probability_vector'}, optional
+            Form of the predictions which are one of:
+
+            - 'class': Class prediction. For multi-class classification, this
+              returns the class with maximum probability.
+            - 'probability': Prediction probability associated with the True
+              class (not applicable for multi-class classification)
+            - 'probability_vector': Prediction probability associated with each
+              class as a vector. Label ordering is dictated by the ``classes``
+              member variable.
+
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve
+            performance.
+
+        verbose : bool, optional
+            If True, prints prediction progress.
+
+        Returns
+        -------
+        out : SArray
+            An SArray with model predictions. Each element corresponds to
+            a drawing and contains a single value corresponding to the
+            predicted label. Each prediction will have type integer or string
+            depending on the type of the classes the model was trained on.
+            If `data` is a single drawing, the return value will be a single
+            prediction.
+
+        See Also
+        --------
+        evaluate
+
+        Examples
+        --------
+        .. sourcecode:: python
+
+            # Make predictions
+            >>> pred = model.predict(data)
+
+            # Print predictions, for a better overview
+            >>> print(pred)
+            dtype: int
+            Rows: 10
+            [3, 4, 3, 3, 4, 5, 8, 8, 8, 4]
+        """
+        return self.__proxy__.predict(dataset, output_type)
+
+
+    def evaluate(self, dataset, metric='auto'):
+        """
+        Evaluate the model by making predictions of target values and comparing
+        these to actual values.
+
+        Parameters
+        ----------
+        dataset : SFrame
+            Dataset of new observations. Must include columns with the same
+            names as the session_id, target and features used for model training.
+            Additional columns are ignored.
+
+        metric : str, optional
+            Name of the evaluation metric.  Possible values are:
+
+            - 'auto'             : Returns all available metrics.
+            - 'accuracy'         : Classification accuracy (micro average).
+            - 'auc'              : Area under the ROC curve (macro average)
+            - 'precision'        : Precision score (macro average)
+            - 'recall'           : Recall score (macro average)
+            - 'f1_score'         : F1 score (macro average)
+            - 'log_loss'         : Log loss
+            - 'confusion_matrix' : An SFrame with counts of possible
+                                   prediction/true label combinations.
+            - 'roc_curve'        : An SFrame containing information needed for an
+                                   ROC curve
+
+        Returns
+        -------
+        out : dict
+            Dictionary of evaluation results where the key is the name of the
+            evaluation metric (e.g. `accuracy`) and the value is the evaluation
+            score.
+
+        See Also
+        ----------
+        create, predict
+
+        Examples
+        ----------
+        .. sourcecode:: python
+
+          >>> results = model.evaluate(data)
+          >>> print results['accuracy']
+        """
+        return self.__proxy__.evaluate(dataset, metric)
+
