@@ -734,6 +734,7 @@ class StyleTransfer_beta(_Model):
         options = {}
         options['image_width'] = image_shape[1]
         options['image_height'] = image_shape[0]
+        options['include_flexible_shape'] = include_flexible_shape
 
         return self.__proxy__.export_to_coreml(filename, options)
 

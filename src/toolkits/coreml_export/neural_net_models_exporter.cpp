@@ -378,29 +378,32 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
 
 std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
-    size_t image_height, flex_dict user_defined_metadata) {
+    size_t image_height, bool include_flexible_shape,
+    flex_dict user_defined_metadata) {
   CoreML::Specification::Model model;
   model.set_specificationversion(3);
 
   ModelDescription* model_desc = model.mutable_description();
 
-  ImageFeatureType* input_feat = set_image_feature(model_desc->add_input(), image_width, image_height, "Input image");
-
-  /**
-   * The -1 indicates no upper limits for the image size
-   */
-  set_image_feature_size_range(input_feat, 64, -1, 64, -1);
+  FeatureDescription* model_input = model_desc->add_input();
+  ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, "Input image");
+  model_input->set_name("image");
 
   set_array_feature(
       model_desc->add_input(), "index",
       "Style index array (set index I to 1.0 to enable Ith style)", {1});
 
-  ImageFeatureType* style_feat = set_image_feature(model_desc->add_output(), image_width, image_height, "Stylized image");
+  FeatureDescription* model_output = model_desc->add_output();
+  ImageFeatureType* style_feat = set_image_feature(model_output, image_width, image_height, "Stylized image");
+  model_output->set_name("stylizedImage");
 
   /**
    * The -1 indicates no upper limits for the image size
    */
-  set_image_feature_size_range(style_feat, 64, -1, 64, -1);
+  if (include_flexible_shape) {
+    set_image_feature_size_range(input_feat, 64, -1, 64, -1);
+    set_image_feature_size_range(style_feat, 64, -1, 64, -1);
+  }
 
   model.mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
 

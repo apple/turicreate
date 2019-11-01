@@ -294,7 +294,7 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
 
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
     const {
-  return compute_context::create();
+  return compute_context::create_tf();
 }
 
 std::unique_ptr<data_iterator> style_transfer::create_iterator(
@@ -318,7 +318,6 @@ std::unique_ptr<data_iterator> style_transfer::create_iterator(
 }
 
 void style_transfer::infer_derived_options() {
-
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = m_training_compute_context->gpu_names();
   print_training_device(gpu_names);
@@ -597,23 +596,27 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
 
 std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
     std::string filename, std::map<std::string, flexible_type> opts) {
-  flex_int image_width = read_state<flex_int>("image_width");
-  flex_int image_height = read_state<flex_int>("image_height");
+  const flex_int image_width =
+      read_opts<flex_int>(opts, "image_width", /* delete item */ true);
+  const flex_int image_height =
+      read_opts<flex_int>(opts, "image_height", /* delete item */ true);
+  // const bool include_flexible_shape =
+  //     read_opts<bool>(opts, "include_flexible_shape", /* delete item */ true);
 
   flex_dict user_defined_metadata = {
       {"model", read_state<flex_string>("model")},
-      {"max_iterations", read_state<flex_int>("max_iterations")},
-      {"training_iterations", read_state<flex_int>("training_iterations")},
+      {"max_iterations", std::to_string(read_state<flex_int>("max_iterations"))},
+      {"training_iterations", std::to_string(read_state<flex_int>("training_iterations"))},
       {"type", "StyleTransfer"},
       {"content_feature", "image"},
       {"style_feature", "image"},
-      {"num_styles", read_state<flex_string>("num_styles")},
-      {"version", get_version()},
+      {"num_styles", std::to_string(read_state<flex_int>("num_styles"))},
+      {"version", std::to_string(get_version())},
   };
 
-  std::shared_ptr<MLModelWrapper> model_wrapper =
-      export_style_transfer_model(*m_resnet_spec, image_width, image_height,
-                                  std::move(user_defined_metadata));
+  std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
+      *m_resnet_spec, image_width, image_height, true,
+      std::move(user_defined_metadata));
 
   if (!filename.empty()) model_wrapper->save(filename);
 
@@ -623,37 +626,14 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
 void style_transfer::import_from_custom_model(variant_map_type model_data,
                                               size_t version) {
   // Get relevant values from variant_map_type
-  auto model_iter = model_data.find("_model");
-  if (model_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain '_model'!\n");
-  }
-  const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
-  model_data.erase(model_iter);
-
-  auto num_styles_iter = model_data.find("num_styles");
-  if (num_styles_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain 'num_styles'!\n");
-  }
-  const size_t num_styles =
-      variant_get_value<flex_int>(num_styles_iter->second);
-  model_data.erase(num_styles_iter);
-
-  auto max_iterations_iter = model_data.find("max_iterations");
-  if (max_iterations_iter == model_data.end()) {
-    log_and_throw(
-        "The loaded turicreate model must contain 'max_iterations'!\n");
-  }
-  const size_t max_iterations =
-      variant_get_value<flex_int>(max_iterations_iter->second);
-  model_data.erase(max_iterations_iter);
-
-  auto model_type_iter = model_data.find("model");
-  if (model_type_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain 'model_iter'!\n");
-  }
-  const std::string model_type =
-      variant_get_value<flex_string>(model_type_iter->second);
-  model_data.erase(model_type_iter);
+  const flex_dict& model =
+      read_opts<flex_dict>(model_data, "_model", /* delete item */ true);
+  const flex_int num_styles =
+      read_opts<flex_int>(model_data, "num_styles", /* delete item */ true);
+  const flex_int max_iterations =
+      read_opts<flex_int>(model_data, "max_iterations", /* delete item */ true);
+  const flex_string model_type =
+      read_opts<flex_string>(model_data, "model", /* delete item */ true);
 
   add_or_update_state({{"model", model_type},
                        {"num_styles", num_styles},
