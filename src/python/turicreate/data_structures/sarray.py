@@ -2902,6 +2902,12 @@ class SArray(object):
         Rows: 6
         [1, 2, 3, 4, 5, 6]
         """
+        if len(other) == 0:
+            other=other.astype(self.dtype)
+
+        if len(self) == 0:
+            self=self.astype(other.dtype)
+
         if type(other) is not SArray:
             raise RuntimeError("SArray append can only work with SArray")
 
