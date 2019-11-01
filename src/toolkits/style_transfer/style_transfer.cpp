@@ -357,7 +357,7 @@ gl_sframe style_transfer::predict(variant_type data,
   std::vector<double> style_idx;
   auto style_idx_iter = opts.find("style_idx");
   if (style_idx_iter == opts.end()) {
-    int num_styles = read_state<flex_int>("num_styles");
+    flex_int num_styles = read_state<flex_int>("num_styles");
 
     style_idx.resize(num_styles);
     std::iota(style_idx.begin(), style_idx.end(), 0);
