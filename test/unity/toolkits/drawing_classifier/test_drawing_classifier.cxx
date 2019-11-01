@@ -33,7 +33,7 @@ using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
 
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
+void test_init_training(bool with_bitmap_based_data) {
   test_drawing_classifier model;
 
   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
@@ -52,14 +52,21 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   mock_iterator->class_labels_ = test_class_labels;
 
   const std::string test_target_name = "test_target";
-  const std::string test_image_name = "test_image";
+  const std::string test_feature_name = "test_feature";
 
   // The following callbacks capture by reference so that they can transfer
   // ownership of the mocks created above.
+
   auto create_iterator_impl = [&](data_iterator::parameters iterator_params) {
     // Should infer class labels from data.
     TS_ASSERT(iterator_params.class_labels.empty());
     TS_ASSERT(iterator_params.repeat);
+    TS_ASSERT_EQUALS(iterator_params.feature_column_name, test_feature_name);
+
+    gl_sframe data = iterator_params.data;
+    TS_ASSERT(data.contains_column(iterator_params.feature_column_name));
+    TS_ASSERT_EQUALS(data[iterator_params.feature_column_name].dtype(),
+                     flex_type_enum::IMAGE);
 
     return std::move(mock_iterator);
   };
@@ -105,12 +112,29 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   model.create_compute_context_calls_.push_back(create_compute_context_impl);
 
   // Create an arbitrary SFrame with test_num_rows rows.
-  drawing_data_generator data_generator(test_num_rows, test_class_labels);
+  drawing_data_generator data_generator(
+    /* is_bitmap_based     */ with_bitmap_based_data,
+    /* num_rows            */ test_num_rows,
+    /* class_labels        */ test_class_labels,
+    /* target_column_name  */ test_target_name, 
+    /* feature_column_name */ test_feature_name);
+  
   gl_sframe data = data_generator.get_data();
+  TS_ASSERT_EQUALS(data.size(), test_num_rows);
+
+  std::string feature_column_name = data_generator.get_feature_column_name();
+  std::string target_column_name = data_generator.get_target_column_name();
+  TS_ASSERT_EQUALS(feature_column_name, test_feature_name);
+  TS_ASSERT_EQUALS(target_column_name, test_target_name);
+
+  
+  if (!with_bitmap_based_data) {
+    TS_ASSERT_EQUALS(data[feature_column_name].dtype(), flex_type_enum::LIST);
+  }
 
   // Now, actually invoke drawing_classifier::init_training. This will trigger
   // all the assertions registered above.
-  model.init_training(data, test_target_name, test_image_name, gl_sframe(),
+  model.init_training(data, test_target_name, test_feature_name, gl_sframe(),
                       {
                           {"batch_size", test_batch_size},
                           {"max_iterations", test_max_iterations},
@@ -124,13 +148,28 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
   TS_ASSERT_EQUALS(model.get_field<flex_list>("features").size(), 1);
   TS_ASSERT_EQUALS(
       model.get_field<flex_list>("features")[0].get<flex_string>(),
-      test_image_name);
+      test_feature_name);
   TS_ASSERT_EQUALS(model.get_field<flex_int>("num_classes"),
                    test_class_labels.size());
   TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"), 0);
 
   // Deconstructing `model` here will assert that every expected call to a
   // mocked-out method has been called.
+}
+
+/**
+ * Most of this test body will be spent setting up the mock objects that we'll
+ * inject into the drawing_classifier implementation. These mock objects will
+ * make assertions about their inputs along the way and provide the outputs
+ * that we manually pre-program. At the end will be a single call to
+ * drawing_classifier::init_training that will trigger all the actual testing.
+ */
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_init_training) {
+  test_init_training(/* with_bitmap_based_data */ true);
+}
+
+BOOST_AUTO_TEST_CASE(test_init_training_with_stroke_based_conversion) {
+  test_init_training(/* with_bitmap_based_data */ false);
 }
 
 /**
