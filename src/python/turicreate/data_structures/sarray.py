@@ -375,7 +375,7 @@ class SArray(object):
         # In Python 3, str implements '__iter__'.
         return (isinstance(obj, types.GeneratorType) or
                 (sys.version_info.major < 3 and isinstance(obj, six.moves.xrange)) or
-                sys.version_info.major >= 3 and isinstance(obj, (range, filter, map)))
+                sys.version_info.major >= 3 and isinstance(obj, (range, filter, map, collections.abc.KeysView, collections.abc.ValuesView)))
 
 
     def __init__(self, data=[], dtype=None, ignore_cast_failure=False, _proxy=None):
