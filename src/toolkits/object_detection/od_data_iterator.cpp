@@ -19,6 +19,27 @@ using annotation_origin_enum = data_iterator::annotation_origin_enum;
 using annotation_scale_enum = data_iterator::annotation_scale_enum;
 using annotation_position_enum = data_iterator::annotation_position_enum;
 
+gl_sarray canonicalize_annotations(gl_sarray data) {
+  auto canonicalize_annotations = [](const flexible_type& annotation) {
+    flex_list annotation_list = flex_list();
+    switch (annotation.get_type()) {
+      case flex_type_enum::LIST:
+        annotation_list = annotation.get<flex_list>();
+        break;
+      case flex_type_enum::DICT:
+        annotation_list.push_back(annotation);
+        break;
+      case flex_type_enum::UNDEFINED:
+        break;
+      default:
+        log_and_throw("Annotations column must be of type dict or list");
+        break;
+    }
+    return annotation_list;
+  };
+  return data.apply(canonicalize_annotations, flex_type_enum::LIST);
+}
+
 flex_image get_image(const flexible_type& image_feature) {
   if (image_feature.get_type() == flex_type_enum::STRING) {
     return read_image(image_feature, /* format_hint */ "");
@@ -27,7 +48,13 @@ flex_image get_image(const flexible_type& image_feature) {
   }
 }
 
-gl_sframe get_data(const data_iterator::parameters& params) {
+gl_sframe get_data(data_iterator::parameters params) {
+  // Check annotations type. If it is a single dictionary, put it into a list.
+  if (params.data.contains_column(params.annotations_column_name)) {
+    gl_sarray raw_annotations = params.data[params.annotations_column_name];
+    params.data.replace_add_column(canonicalize_annotations(raw_annotations),
+                                   params.annotations_column_name);
+  }
 
   gl_sarray annotations = params.data[params.annotations_column_name];
   gl_sarray images = params.data[params.image_column_name];

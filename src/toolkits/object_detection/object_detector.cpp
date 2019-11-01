@@ -959,14 +959,6 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
 {
-  // Check annotations type. If it is a single dictionary, put it into a list.
-  const std::string& annotations_column_name =
-      read_state<flex_string>("annotations");
-  if (data.contains_column(annotations_column_name)) {
-    gl_sarray annotations = data[annotations_column_name];
-    data.replace_add_column(canonicalize_annotations(annotations),
-                            annotations_column_name);
-  }
 
   data_iterator::parameters iterator_params;
   iterator_params.data = std::move(data);
@@ -1354,27 +1346,6 @@ void object_detector::update_model_metrics(gl_sframe data,
 
   // Add metrics to model state.
   add_or_update_state(metrics);
-}
-
-gl_sarray object_detector::canonicalize_annotations(gl_sarray& data) {
-  auto canonicalize_annotations = [](const flexible_type& annotation) {
-    flex_list annotation_list = flex_list();
-    switch (annotation.get_type()) {
-      case flex_type_enum::LIST:
-        annotation_list = annotation.get<flex_list>();
-        break;
-      case flex_type_enum::DICT:
-        annotation_list.push_back(annotation);
-        break;
-      case flex_type_enum::UNDEFINED:
-        break;
-      default:
-        log_and_throw("Annotations column must be of type dict or list");
-        break;
-    }
-    return annotation_list;
-  };
-  return data.apply(canonicalize_annotations, flex_type_enum::LIST);
 }
 
 }  // object_detection
