@@ -18,22 +18,26 @@ constexpr size_t IMAGE_WIDTH = 28;
 constexpr size_t IMAGE_HEIGHT = 28;
 
 class drawing_data_generator {
- 
+
  public:
   /** Builds an SFrame with columns "test_image" and "test_targets".
-   *  Creates an SFrame with num_rows number of rows where each row has 
+   *  Creates an SFrame with num_rows number of rows where each row has
    *  a drawing (a grayscale 28x28 image)
-   *  and a corresponding target, which is the row index modulo 
+   *  and a corresponding target, which is the row index modulo
    *  unique_labels.size().
    */
   drawing_data_generator(size_t num_rows,
-      const std::vector<std::string> &unique_labels)
+      const std::vector<std::string> &unique_labels,
+      const std::string& target_name = "test_target",
+      const std::string& feature_name = "test_image")
       : num_rows_(num_rows),
-        unique_labels_(unique_labels) {
+        unique_labels_(unique_labels),
+        target_column_name_(target_name),
+        feature_column_name_(feature_name) {
 
     flex_list images(num_rows_);
     flex_list labels(num_rows_);
-    
+
     std::vector<unsigned char> buffer(IMAGE_WIDTH * IMAGE_HEIGHT * 1);
     for (size_t ii = 0; ii < num_rows_; ++ii) {
 
@@ -49,16 +53,19 @@ class drawing_data_generator {
       labels[ii] = unique_labels_[ii % unique_labels_.size()];
     }
 
-    params_.target_column_name = "test_target";
-    params_.feature_column_name = "test_image";
+    params_.target_column_name = target_column_name_;
+    params_.feature_column_name = feature_column_name_;
     params_.data =  gl_sframe({
-        {"test_image", gl_sarray(images)},
-        {"test_target", gl_sarray(labels)},
+        {feature_column_name_, gl_sarray(images)},
+        {target_column_name_, gl_sarray(labels)},
     });
     params_.shuffle = false;
     params_.class_labels = get_unique_labels();
   }
 
+  std::string get_feature_column_name() const {return feature_column_name_; };
+
+  std::string get_target_column_name() const { return target_column_name_; };
 
   /* Get the unique labels based on the generated data */
   std::vector<std::string> get_unique_labels() const {
@@ -90,6 +97,8 @@ class drawing_data_generator {
   data_iterator::parameters params_;
   size_t num_rows_;
   std::vector<std::string> unique_labels_;
+  std::string target_column_name_ = "test_target";
+  std::string feature_column_name_ = "test_image";
 };
 
 }  // namespace drawing_classifier

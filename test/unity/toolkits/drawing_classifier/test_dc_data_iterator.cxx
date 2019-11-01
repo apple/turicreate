@@ -15,7 +15,7 @@
 #include <core/util/test_macros.hpp>
 #include <model_server/lib/image_util.hpp>
 
-#include "data_utils.hpp"
+#include "dc_data_utils.hpp"
 
 namespace turi {
 namespace drawing_classifier {
@@ -162,6 +162,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
       data_generator, NUM_ROWS, BATCH_SIZE,
       /* need NOT to check labels */ true);
 }
+
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_has_next_batch) {
   {
