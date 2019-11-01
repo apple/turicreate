@@ -372,17 +372,17 @@ gl_sframe style_transfer::predict(variant_type data,
         break;
       case flex_type_enum::LIST:
       {
-        auto list = flex_style_idx.get<flex_list>();
+        const auto& list = flex_style_idx.get<flex_list>();
         style_idx.resize(list.size());
-        std::transform(list.begin(), list.end(),
-                   std::back_inserter(style_idx), [](flexible_type val) {
-                     return static_cast<double>(val.get<flex_float>());
-                   });
+        std::transform(list.begin(), list.end(), style_idx.begin(),
+                       [](flexible_type val) {
+                         return static_cast<double>(val.get<flex_float>());
+                       });
         break;
 
       }
       case flex_type_enum::UNDEFINED: {
-        int num_styles = read_state<flex_int>("num_styles");
+        flex_int num_styles = read_state<flex_int>("num_styles");
         style_idx.resize(num_styles);
         std::iota(style_idx.begin(), style_idx.end(), 0);
         break;
@@ -402,10 +402,10 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
                                      const std::vector<double>& style_idx) {
   if (data.size() == 0) return;
 
-  int batch_size = read_state<flex_int>("batch_size");
-  int num_styles = read_state<flex_int>("num_styles");
-  int image_width = read_state<flex_int>("image_width");
-  int image_height = read_state<flex_int>("image_height");
+  flex_int batch_size = read_state<flex_int>("batch_size");
+  flex_int num_styles = read_state<flex_int>("num_styles");
+  flex_int image_width = read_state<flex_int>("image_width");
+  flex_int image_height = read_state<flex_int>("image_height");
 
   // Since we aren't training the style_images are irrelevant
   std::unique_ptr<data_iterator> data_iter =
