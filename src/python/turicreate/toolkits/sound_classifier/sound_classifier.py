@@ -791,7 +791,7 @@ class SoundClassifier(_CustomModel):
             batch_data = mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx, batch_axis=0, even_split=False)
 
             for x in batch_data:
-                forward_output = self._custom_classifier.forward(x)
+                forward_output = self._custom_classifier.predict(x)
                 y += mx.nd.softmax(forward_output).asnumpy().tolist()
         assert(len(y) == len(deep_features))
 
