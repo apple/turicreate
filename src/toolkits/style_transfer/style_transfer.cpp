@@ -268,7 +268,10 @@ void style_transfer::init_options(
   options.create_integer_option(
       "num_styles", "The number of styles present in the model", FLEX_UNDEFINED,
       1, std::numeric_limits<int>::max());
-
+  options.create_boolean_option(
+      "verbose", "When set to true, verbose is printed", true, true);
+  options.create_string_option("content_feature", "Name of the content column", "image", true);
+  options.create_string_option("style_feature", "Name of the style column", "image", true);
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -621,8 +624,8 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
       {"max_iterations", read_state<flex_int>("max_iterations")},
       {"training_iterations", read_state<flex_int>("training_iterations")},
       {"type", "StyleTransfer"},
-      {"content_feature", "image"},
-      {"style_feature", "image"},
+      {"content_feature", read_state<flex_string>("content_feature")},
+      {"style_feature", read_state<flex_string>("style_feature")},
       {"num_styles", read_state<flex_string>("num_styles")},
       {"version", get_version()},
   };
