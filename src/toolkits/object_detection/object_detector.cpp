@@ -269,6 +269,12 @@ void object_detector::init_options(
       /* default_value     */ "center",
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
+  options.create_flexible_type_option(
+      /* name              */ "classes",
+      /* description       */
+      "Defines class labels.",
+      /* default_value     */ flex_list(),
+      /* allowed_overwrite */ false);
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -1069,8 +1075,11 @@ void object_detector::init_training(gl_sframe data,
                                          read_state<int>("random_seed"));
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(
-      training_data_, /* expected class_labels */ {}, /* repeat */ true);
+  std::vector<std::string> class_labels =
+      read_state<std::vector<std::string>>("classes");
+  training_data_iterator_ =
+      create_iterator(training_data_, /* expected class_labels */ class_labels,
+                      /* repeat */ true);
 
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
