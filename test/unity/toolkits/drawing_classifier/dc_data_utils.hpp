@@ -85,7 +85,7 @@ class drawing_data_generator {
   void generate_bitmap_based_data() {
     flex_list images(num_rows_);
     flex_list labels(num_rows_);
-    
+
     std::vector<unsigned char> buffer(IMAGE_WIDTH * IMAGE_HEIGHT * 1);
     for (size_t ii = 0; ii < num_rows_; ++ii) {
 
