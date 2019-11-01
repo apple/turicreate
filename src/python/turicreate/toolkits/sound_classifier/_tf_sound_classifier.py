@@ -35,6 +35,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.x = _tf.placeholder("float", [None, 1, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
+        '''
         # Weights
         weights = {
         'sound_dense0_weight'  : _tf.Variable(_tf.random.uniform([12288, 100]), name='sound_dense0_weight'),
@@ -57,6 +58,16 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         out = _tf.nn.xw_plus_b(dense1, weights=weights["sound_dense2_weight"], biases=biases["sound_dense2_bias"])
         out = _tf.nn.softmax(out)
+        '''
+        model = Sequential()
+        model.add(Dense(100, input_shape=(12288,), activation='relu'))
+        model.add(Dense(100, activation='relu'))
+        model.add(Dense(self.num_classes, activation = 'softmax',activity_regularizer=keras.regularizers.l2()))
+        model.compile( loss='categorical_crossentropy',
+                        optimizer=keras.optimizers.SGD(),
+                        metrics=[keras.metrics.categorical_accuracy])
+        print(model.summary())
+        return model
 
         self.predictions = out
 
@@ -70,7 +81,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         # Predictions
         correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
         self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, "float"))
-        
+
         self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 

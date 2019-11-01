@@ -252,21 +252,23 @@ def create(dataset, target, feature, max_iterations=10,
         # TODO: early stopping
 
         for batch in train_data:
-            sc_model.train(batch)
+            data = batch.data[0].asnumpy()
+            label = batch.label[0].asnumpy()
+            sc_model.train(data, label)
         train_data.reset()
 
         # Calculate training metric
         for batch in train_data:
-            data, label = sc_model.batch_process(batch)
+            data = batch.data[0].asnumpy()
             outputs = sc_model.predict(data)
-            train_metric.update(label, outputs)
+            train_metric.update([batch.label[0]], mx.nd.array(outputs))
         train_data.reset()
 
         # Calculate validataion metric
         for batch in validation_data:
-            data, label = sc_model.batch_process(batch)
+            data = batch.data[0].asnumpy()
             outputs = sc_model.predict(data)
-            validation_metric.update(label, outputs)
+            validation_metric.update(batch.label[0], mx.nd.array(outputs))
 
         # Get metrics, print progress table
         _, train_accuracy = train_metric.get()
@@ -284,7 +286,7 @@ def create(dataset, target, feature, max_iterations=10,
 
     state = {
         '_class_label_to_id': class_label_to_id,
-        '_custom_classifier': sc_model.custom_NN,
+        '_custom_classifier': sc_model,
         '_feature_extractor': feature_extractor,
         '_id_to_class_label': {v: k for k, v in class_label_to_id.items()},
         'classes': classes,
@@ -330,11 +332,9 @@ class SoundClassifier(_CustomModel):
         """
         from .._mxnet import _mxnet_utils
         state = self.__proxy__.get_state()
-
         del state['_feature_extractor']
-
-        mxnet_params = state['_custom_classifier'].collect_params()
-        state['_custom_classifier'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
+        state['_custom_classifier'] = state['_custom_classifier'].get_weights()
+        print(state['_custom_classifier'])
 
         return state
 
@@ -360,11 +360,9 @@ class SoundClassifier(_CustomModel):
         state['custom_layer_sizes'] = custom_layer_sizes
 
         from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-        net = MultiLayerPerceptronMXNetModel._build_custom_neural_network(num_inputs, num_classes, custom_layer_sizes)
-        net_params = net.collect_params()
-        ctx = _mxnet_utils.get_mxnet_context()
-        _mxnet_utils.load_net_params_from_state(net_params, state['_custom_classifier'], ctx=ctx)
-        state['_custom_classifier'] = net
+        model_obj = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
+        model_obj.load_weights(state['_custom_classifier'])
+        state['_custom_classifier'] = model_obj
 
         return SoundClassifier(state)
 
@@ -608,12 +606,11 @@ class SoundClassifier(_CustomModel):
                                            [(prob_name, Dictionary(String))],
                                            'classifier')
 
-            ctx = _mxnet_utils.get_mxnet_context()[0]
             input_name, output_name = input_name, 0
-            for i, cur_layer in enumerate(self._custom_classifier):
-                W = cur_layer.weight.data(ctx).asnumpy()
+            for i, cur_layer in enumerate(self._custom_classifier.export_weights()):
+                W = cur_layer['weight']
                 nC, nB = W.shape
-                Wb = cur_layer.bias.data(ctx).asnumpy()
+                Wb = cur_layer['bias']
 
                 builder.add_inner_product(name="inner_product_"+str(i),
                                           W=W,
@@ -624,7 +621,7 @@ class SoundClassifier(_CustomModel):
                                           input_name=str(input_name),
                                           output_name='inner_product_'+str(output_name))
 
-                if cur_layer.act:
+                if cur_layer['act']:
                     builder.add_activation("activation"+str(i), 'RELU', 'inner_product_'+str(output_name), str(output_name))
 
                 input_name = i
@@ -806,8 +803,8 @@ class SoundClassifier(_CustomModel):
             batch_data = mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx, batch_axis=0, even_split=False)
 
             for x in batch_data:
-                forward_output = self._custom_classifier.forward(x)
-                y += mx.nd.softmax(forward_output).asnumpy().tolist()
+                forward_output = self._custom_classifier.predict(x)
+                y += mx.nd.softmax(forward_output[0]).asnumpy().tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames

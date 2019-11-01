@@ -9,13 +9,13 @@ import mxnet as mx
 import time
 import turicreate as _tc
 
+from .._mxnet import _mxnet_utils
 
 class MultiLayerPerceptronMXNetModel():
 
 
 	def __init__(self, feature_output_length, num_labels, custom_layer_sizes, verbose):
-		from .._mxnet import _mxnet_utils
-		
+
 		self.ctx = _mxnet_utils.get_mxnet_context()
 		self.verbose = verbose
 		self.custom_NN = self._build_custom_neural_network(feature_output_length, num_labels, custom_layer_sizes)
@@ -25,9 +25,11 @@ class MultiLayerPerceptronMXNetModel():
 		self.softmax_cross_entropy_loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
 
 
-	def train(self, batch):
+	def train(self, data, label):
 		# Inside training scope
-		data, label = self.batch_process(batch)
+		data_shape = data.shape[0]
+		data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
+		label = mx.gluon.utils.split_and_load(label, ctx_list=self.ctx, batch_axis=0, even_split=False)
 		with mx.autograd.record():
 		    for x, y in zip(data, label):
 		        z = self.custom_NN(x)
@@ -37,11 +39,12 @@ class MultiLayerPerceptronMXNetModel():
 		        loss.backward()
 		# Make one step of parameter update. Trainer needs to know the
 		# batch size of data to normalize the gradient by 1/batch_size.
-		self.trainer.step(batch.data[0].shape[0])
+		self.trainer.step(data_shape)
 
 
 	def predict(self, data):
-		outputs = [self.custom_NN(x) for x in data]
+		data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
+		outputs = [self.custom_NN(x).asnumpy() for x in data]
 		return outputs
 
 	@staticmethod
@@ -56,22 +59,26 @@ class MultiLayerPerceptronMXNetModel():
 	                in_units = num_inputs
 	            else:
 	                in_units = layer_sizes[i-1]
-
 	            net.add(nn.Dense(cur_layer_size, in_units=in_units, activation='relu', prefix=prefix))
 
 	        prefix = 'dense%d_' % len(layer_sizes)
 	        net.add(nn.Dense(num_labels, prefix=prefix))
 	    return net
 
-	def batch_process(self, batch):
-		data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=self.ctx, batch_axis=0, even_split=False)
-		label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=self.ctx, batch_axis=0, even_split=False)
-		return data, label
+	def get_weights(self):
+		return _mxnet_utils.get_gluon_net_params_state(self.custom_NN.collect_params())
 
+	def load_weights(self, weights):
+		net_params = self.custom_NN.collect_params()
+		_mxnet_utils.load_net_params_from_state(net_params, weights, ctx=self.ctx)
 
-'''
-	#def evaluate(self):
+	def export_weights(self):
+		layers = []
+		for i, cur_layer in enumerate(self.custom_NN):
+			layer ={}
+			layer['weight'] = cur_layer.weight.data(self.ctx[0]).asnumpy()
+			layer['bias'] = cur_layer.bias.data(self.ctx[0]).asnumpy()
+			layer['act'] = cur_layer.act
+			layers.append(layer)
+		return layers
 
-
-#def _mx_train_model():
-'''
