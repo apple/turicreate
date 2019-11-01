@@ -26,11 +26,12 @@ class drawing_data_generator {
    *  and a corresponding target, which is the row index modulo
    *  unique_labels.size().
    */
-  drawing_data_generator(size_t num_rows,
+  drawing_data_generator(bool is_bitmap_based, size_t num_rows,
       const std::vector<std::string> &unique_labels,
       const std::string& target_name = "test_target",
       const std::string& feature_name = "test_feature")
-      : num_rows_(num_rows),
+      : is_bitmap_based_(is_bitmap_based),
+        num_rows_(num_rows),
         unique_labels_(unique_labels),
         target_column_name_(target_name),
         feature_column_name_(feature_name) {
