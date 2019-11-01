@@ -221,6 +221,14 @@ def create(style_dataset, content_dataset, style_feature=None,
         pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet-16']()
         pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']()
         options = {}
+        options['image_height'] = params['input_shape'][0]
+        options['image_width'] = params['input_shape'][1]
+        options['content_feature'] = content_feature
+        options['style_feature'] = style_feature
+        if verbose is not None:
+            options['verbose'] = verbose
+        if batch_size is not None:
+            options['batch_size'] = batch_size
         if max_iterations is not None:
             options['max_iterations'] = max_iterations
         options['num_styles'] = len(style_dataset)
@@ -734,11 +742,12 @@ class StyleTransfer_beta(_Model):
         options = {}
         options['image_width'] = image_shape[1]
         options['image_height'] = image_shape[0]
+        options['include_flexible_shape'] = include_flexible_shape
 
         return self.__proxy__.export_to_coreml(filename, options)
 
 
-    def stylize(self, images, style):
+    def stylize(self, images, style=None, verbose=True, max_size=800, batch_size = 4):
         """
         Stylize an SFrame of Images given a style index or a list of
         styles.
@@ -813,8 +822,60 @@ class StyleTransfer_beta(_Model):
         """
         options = {}
         options['style_idx'] = style
+        options['verbose'] = verbose
+        options['max_size'] = max_size
+        options['batch_size'] = batch_size
 
-        return self.__proxy__.predict(images, options)
+        if isinstance(style, list):
+                return self.__proxy__.predict(images[image_feature], options)
+        else:
+            if isinstance(images, _tc.SFrame):
+                if len(images) == 0:
+                    raise _ToolkitError("SFrame cannot be empty")
+                image_feature = _tkutl._find_only_image_column(images)
+                return self.__proxy__.predict(images[image_feature], options)
+            elif isinstance(images, (_tc.Image)):
+                stylized_images = self.__proxy__.predict(images, options)
+                return stylized_images["stylized_image"][0]
+            elif isinstance(images, (_tc.SArray)):
+                stylized_images = self.__proxy__.predict(images, options)
+                return stylized_images["stylized_image"]
+
+    def get_styles(self, style=None):
+        """
+        Returns SFrame of style images used for training the model
+
+        Parameters
+        ----------
+        style: int or list, optional
+            The selected style or list of styles to return. If `None`, all
+            styles will be returned
+
+        See Also
+        --------
+        stylize
+
+        Examples
+        --------
+        >>>  model.get_styles()
+        Columns:
+            style   int
+            image   Image
+
+        Rows: 4
+
+        Data:
+        +-------+--------------------------+
+        | style |          image           |
+        +-------+--------------------------+
+        |  0    |  Height: 642 Width: 642  |
+        |  1    |  Height: 642 Width: 642  |
+        |  2    |  Height: 642 Width: 642  |
+        |  3    |  Height: 642 Width: 642  |
+        +-------+--------------------------+
+        """
+
+        return self.__proxy__.get_styles(style)
 
 class StyleTransfer(_CustomModel):
     """
