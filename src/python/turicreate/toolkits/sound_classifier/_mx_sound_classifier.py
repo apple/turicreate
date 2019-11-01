@@ -26,6 +26,14 @@ class MultiLayerPerceptronMXNetModel():
 
 
     def train(self, data, label):
+        """
+        Parameters
+        ----------
+        data : NumPy Array
+
+        label : NumPy Array
+        """
+
         # Inside training scope
         data_shape = data.shape[0]
         data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
@@ -43,6 +51,13 @@ class MultiLayerPerceptronMXNetModel():
 
 
     def predict(self, data):
+        """
+        Parameters
+        ----------
+        data : NumPy Array
+
+        """
+
         data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
         outputs = [self.custom_NN(x).asnumpy() for x in data]
         return outputs
@@ -69,6 +84,15 @@ class MultiLayerPerceptronMXNetModel():
         return _mxnet_utils.get_gluon_net_params_state(self.custom_NN.collect_params())
 
     def load_weights(self, weights):
+        """
+        Parameters
+        ----------
+        weights : dict
+                Containing model weights and shapes
+                {'data': weight data, 'shapes': weight shapes}
+
+        """
+
         net_params = self.custom_NN.collect_params()
         _mxnet_utils.load_net_params_from_state(net_params, weights, ctx=self.ctx)
 

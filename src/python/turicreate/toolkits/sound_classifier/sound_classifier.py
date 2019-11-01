@@ -788,11 +788,8 @@ class SoundClassifier(_CustomModel):
             if batch.pad != 0:
                 batch_data = batch_data[:-batch.pad]    # prevent batches looping back
 
-            batch_data = mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx, batch_axis=0, even_split=False)
-
-            for x in batch_data:
-                forward_output = self._custom_classifier.predict(x)
-                y += mx.nd.softmax(mx.nd.array(forward_output[0])).asnumpy().tolist()
+            forward_output = self._custom_classifier.predict(batch_data)
+            y += mx.nd.softmax(mx.nd.array(forward_output[0])).asnumpy().tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames
