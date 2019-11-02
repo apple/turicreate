@@ -49,6 +49,26 @@ struct result {
   data_iterator::batch data_info;
 };
 
+gl_sframe infer_feature_column_and_prepare_data(gl_sframe data) {
+  std::string feature_column_name;
+
+  gl_sframe bitmap_data = data;
+
+  for (std::string column_name: data.column_names()) {
+    if (data[column_name].dtype() == flex_type_enum::LIST
+      || data[column_name].dtype() == flex_type_enum::IMAGE) {
+      feature_column_name = column_name;
+    }
+  }
+
+  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    bitmap_data = _drawing_classifier_prepare_data(data, feature_column_name);
+  }
+
+  return bitmap_data;
+}
+
+
 }  // namespace
 
 const size_t drawing_classifier::DRAWING_CLASSIFIER_VERSION = 1;
@@ -659,23 +679,6 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
   pop_until_size(0);
 
   return writer.close();
-}
-
-gl_sframe infer_feature_column_and_prepare_data(gl_sframe &data) {
-  std::string feature_column_name;
-
-  for (std::string column_name: data.column_names()) {
-    if (data[column_name].dtype() == flex_type_enum::LIST
-      || data[column_name].dtype() == flex_type_enum::IMAGE) {
-      feature_column_name = column_name;
-    }
-  }
-
-  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
-    data = _drawing_classifier_prepare_data(data, feature_column_name);
-  }
-
-  return data;
 }
 
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
