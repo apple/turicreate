@@ -48,14 +48,7 @@ flex_image get_image(const flexible_type& image_feature) {
   }
 }
 
-gl_sframe get_data(data_iterator::parameters params) {
-  // Check annotations type. If it is a single dictionary, put it into a list.
-  if (params.data.contains_column(params.annotations_column_name)) {
-    gl_sarray raw_annotations = params.data[params.annotations_column_name];
-    params.data.replace_add_column(canonicalize_annotations(raw_annotations),
-                                   params.annotations_column_name);
-  }
-
+gl_sframe get_data(const data_iterator::parameters& params) {
   gl_sarray annotations = params.data[params.annotations_column_name];
   gl_sarray images = params.data[params.image_column_name];
 
@@ -68,6 +61,13 @@ gl_sframe get_data(data_iterator::parameters params) {
 
   gl_sframe result({ { params.annotations_column_name, annotations },
                      { params.image_column_name,       images      }  });
+
+  // Check annotations type. If it is a single dictionary, put it into a list.
+  if (params.data.contains_column(params.annotations_column_name)) {
+    gl_sarray raw_annotations = result[params.annotations_column_name];
+    result.replace_add_column(canonicalize_annotations(raw_annotations),
+                              params.annotations_column_name);
+  }
 
   if (!params.predictions_column_name.empty()) {
     result[params.predictions_column_name] =
