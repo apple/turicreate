@@ -160,7 +160,6 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         # Check the size of the auto validation set
         num_sessions = len(self.data[self.session_id].unique())
         valid_num_sessions = num_sessions - model.num_sessions
-        print(num_sessions,valid_num_sessions)
         valid_frac = float(valid_num_sessions / num_sessions)
         if USE_CPP:
             expected_frac = 0.0 if is_small else 1.0 - self._compute_expect_frac(num_sessions)
