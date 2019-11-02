@@ -19,6 +19,74 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
+USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
+
+class _Accuracy(object):
+    '''
+    Defines a common interface around MXNet/TensorFlow accuracy metrics.
+    '''
+
+    def __init__(self):
+        raise NotImplementedError
+
+    '''
+    Tallies the results from a single batch of predictions.
+
+    The predictions are expected to contain (possibly unnormalized) class
+    probabilities. Replacing the last axis of the predictions with the argmax
+    should yield a shape matching the ground truth.
+    '''
+    def update(self, ground_truth, predicted):
+        raise NotImplementedError
+
+    '''
+    Removes all tallied results so far.
+    '''
+    def reset(self):
+        raise NotImplementedError
+
+    '''
+    Computes the accuracy for all the results tallied so far.
+    '''
+    def get(self):
+        raise NotImplementedError
+
+class _MXNetAccuracy(_Accuracy):
+    def __init__(self):
+        import mxnet as mx
+        self.impl = mx.metric.Accuracy()
+
+    def update(self, ground_truth, predicted):
+        import mxnet as mx
+        self.impl.update(mx.nd.array(ground_truth), mx.nd.array(predicted))
+
+    def reset(self):
+        self.impl.reset()
+
+    def get(self):
+        _, result = self.impl.get()
+        return result
+
+class _TFAccuracy(_Accuracy):
+    def __init__(self):
+        import tensorflow.compat.v1 as tf
+        self.impl = tf.keras.metrics.Accuracy()
+
+    def update(self, ground_truth, predicted):
+        predicted = _np.argmax(predicted, axis=-1)
+        self.impl.update_state(ground_truth, predicted)
+
+    def reset(self):
+        self.impl.reset_states()
+
+    def get(self):
+        return self.impl.result()
+
+def _get_accuracy_metric():
+    if USE_TF:
+        return _TFAccuracy()
+    else:
+        return _MXNetAccuracy()
 
 def _is_deep_feature_sarray(sa):
     if not isinstance(sa, _tc.SArray):
@@ -234,9 +302,9 @@ def create(dataset, target, feature, max_iterations=10,
             row_display_names.insert(2, 'Validation Accuracy (%)')
         table_printer = _tc.util._ProgressTablePrinter(row_ids, row_display_names)
 
-    train_metric = mx.metric.Accuracy()
+    train_metric = _get_accuracy_metric()
     if validation_data:
-        validation_metric = mx.metric.Accuracy()
+        validation_metric = _get_accuracy_metric()
     softmax_cross_entropy_loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
     for i in range(max_iterations):
         # TODO: early stopping
@@ -263,6 +331,8 @@ def create(dataset, target, feature, max_iterations=10,
             data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
             outputs = [custom_NN(x) for x in data]
+            label = _np.array([x.asnumpy() for x in label])
+            outputs = _np.array([x.asnumpy() for x in outputs])
             train_metric.update(label, outputs)
         train_data.reset()
 
@@ -271,14 +341,16 @@ def create(dataset, target, feature, max_iterations=10,
             data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
             outputs = [custom_NN(x) for x in data]
+            label = _np.array([x.asnumpy() for x in label])
+            outputs = _np.array([x.asnumpy() for x in outputs])
             validation_metric.update(label, outputs)
 
         # Get metrics, print progress table
-        _, train_accuracy = train_metric.get()
+        train_accuracy = train_metric.get()
         train_metric.reset()
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
         if validation_data:
-            _, validataion_accuracy = validation_metric.get()
+            validataion_accuracy = validation_metric.get()
             printed_row_values['validation_accuracy'] = validataion_accuracy
             validation_metric.reset()
             validation_data.reset()
