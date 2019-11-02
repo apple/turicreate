@@ -167,6 +167,9 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
 
+    for feature in features:
+        _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
+
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
         new_keys = set(kwargs['_advanced_parameters'].keys())
@@ -208,9 +211,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
             validation_set = None
         else:
             dataset, validation_set = _random_split_by_session(dataset, session_id)
-
-    for feature in features:
-        _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
 
     # Encode the target column to numerical values
     use_target = target is not None
