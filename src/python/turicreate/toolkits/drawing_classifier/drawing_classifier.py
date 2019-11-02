@@ -131,24 +131,20 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         # Make predictions on the training set and as column to the SFrame
         >>> data['predictions'] = model.predict(data)
     """
-    # import mxnet as _mx
-    # from mxnet import autograd as _autograd
-    # from ._model_architecture import Model as _Model
-    # from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
-    # from .._mxnet import _mxnet_utils
+
     import warnings
 
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
 
-    # if '_advanced_parameters' in kwargs:
-    #     # Make sure no additional parameters are provided
-    #     new_keys = set(kwargs['_advanced_parameters'].keys())
-    #     set_keys = set(params.keys())
-    #     unsupported = new_keys - set_keys
-    #     if unsupported:
-    #         raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
+    if '_advanced_parameters' in kwargs:
+        # Make sure no additional parameters are provided
+        new_keys = set(kwargs['_advanced_parameters'].keys())
+        set_keys = set(params.keys())
+        unsupported = new_keys - set_keys
+        if unsupported:
+            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
 
-    #     params.update(kwargs['_advanced_parameters'])
+        params.update(kwargs['_advanced_parameters'])
 
     # @TODO: Should be able to automatically choose number of iterations
     # based on data size: Tracked in Github Issue #1576
@@ -174,98 +170,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     if max_iterations is not None and max_iterations < 1:
         raise ValueError("'max_iterations' must be >= 1")
 
-    # is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
-    # dataset = _extensions._drawing_classifier_prepare_data(
-    #     input_dataset, feature) if is_stroke_input else input_dataset
-
-    # iteration = -1
-
-    # classes = dataset[target].unique()
-    # classes = sorted(classes)
-
-    # if len(classes) == 1:
-    #     _ToolkitError("The number of classes has to be greater than one")
-
-    # class_to_index = {name: index for index, name in enumerate(classes)}
-
-    # validation_set_corrective_string = ("'validation_set' parameter must be "
-    #     + "an SFrame, or None, or must be set to 'auto' for the toolkit to "
-    #     + "automatically create a validation set.")
-    # if isinstance(validation_set, _tc.SFrame):
-    #     if validation_set.num_rows() != 0:
-    #         _raise_error_if_not_drawing_classifier_input_sframe(
-    #             validation_set, feature, target)
-    #         is_validation_stroke_input = (validation_set[feature].dtype != _tc.Image)
-    #         validation_dataset = _extensions._drawing_classifier_prepare_data(
-    #             validation_set, feature) if is_validation_stroke_input else validation_set
-    #     else:
-    #         validation_dataset = validation_set
-    # elif isinstance(validation_set, str):
-    #     if validation_set == 'auto':
-    #         if dataset.num_rows() >= 100:
-    #             if verbose:
-    #                 print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
-    #                         "          You can set ``validation_set=None`` to disable validation tracking.\n")
-    #             dataset, validation_dataset = dataset.random_split(TRAIN_VALIDATION_SPLIT, exact=True)
-    #         else:
-    #             validation_set = None
-    #             validation_dataset = _tc.SFrame()
-    #     else:
-    #         raise _ToolkitError("Unrecognized value for 'validation_set'. "
-    #             + validation_set_corrective_string)
-    # elif validation_set is None:
-    #     validation_dataset = _tc.SFrame()
-    # else:
-    #     raise TypeError("Unrecognized type for 'validation_set'."
-    #         + validation_set_corrective_string)
-
-    # _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
-    # if len(validation_dataset) > 0:
-    #     _tkutl._handle_missing_values(dataset, feature, 'validation_set')
-
-    # train_loader = _SFrameClassifierIter(dataset, batch_size,
-    #              feature_column=feature,
-    #              target_column=target,
-    #              class_to_index=class_to_index,
-    #              load_labels=True,
-    #              shuffle=True,
-    #              iterations=max_iterations)
-    # train_loader_to_compute_accuracy = _SFrameClassifierIter(dataset, batch_size,
-    #              feature_column=feature,
-    #              target_column=target,
-    #              class_to_index=class_to_index,
-    #              load_labels=True,
-    #              shuffle=True,
-    #              iterations=1)
-    # validation_loader = _SFrameClassifierIter(validation_dataset, batch_size,
-    #              feature_column=feature,
-    #              target_column=target,
-    #              class_to_index=class_to_index,
-    #              load_labels=True,
-    #              shuffle=True,
-    #              iterations=1)
-
-    # ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
-    # model = _Model(num_classes = len(classes), prefix="drawing_")
-    # model_params = model.collect_params()
-    # model_params.initialize(_mx.init.Xavier(), ctx=ctx)
-
-    # if warm_start is not None:
-    #     if type(warm_start) is not str:
-    #         raise TypeError("'warm_start' must be a string or None. "
-    #             + "'warm_start' can take in the following values: "
-    #             + str(accepted_values_for_warm_start))
-    #     if warm_start not in accepted_values_for_warm_start:
-    #         raise _ToolkitError("Unrecognized value for 'warm_start': "
-    #             + warm_start + ". 'warm_start' can take in the following "
-    #             + "values: " + str(accepted_values_for_warm_start))
-    #     pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
-    #         warm_start)
-    #     pretrained_model_params_path = pretrained_model.get_model_path()
-    #     model.load_params(pretrained_model_params_path,
-    #         ctx=ctx,
-    #         allow_missing=True)
-
     if USE_CPP:
         import turicreate.toolkits.libtctensorflow
         if verbose:
@@ -278,109 +182,190 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         # options["warm_start"] = warm_start
         model.train(input_dataset, target, feature, validation_set, options)
         return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
-        # ## TensorFlow implementation
-        # from ._tf_drawing_classifier import DrawingClassifierTensorFlowModel, _tf_train_model
 
-        # # To get weights: for warmstart Dense1 needs one forward pass to be initialised
-        # test_input = _mx.nd.uniform(0, 1, (1,3) + (1,28,28))
-        # model_output = model.forward(test_input[0])
+    # Old MXNet Implementation
 
-        # # Define the TF Model
-        # tf_model = DrawingClassifierTensorFlowModel(validation_set, model_params, batch_size, len(classes), verbose)
-        # # Train
-        # final_train_accuracy, final_val_accuracy, final_train_loss, total_train_time = _tf_train_model(
-        #                                                     tf_model, train_loader, validation_loader,
-        #                                                     validation_set, batch_size, len(classes), verbose)
+    import mxnet as _mx
+    from mxnet import autograd as _autograd
+    from ._model_architecture import Model as _Model
+    from ._sframe_loader import SFrameClassifierIter as _SFrameClassifierIter
+    from .._mxnet import _mxnet_utils
+    import warnings
 
-        # # Transfer weights from TF to MXNET model
-        # net_params = tf_model.export_weights()
-        # for k in net_params.keys():
-        #     model_params[k].set_data(net_params[k])
+    is_stroke_input = (input_dataset[feature].dtype != _tc.Image)
+    dataset = _extensions._drawing_classifier_prepare_data(
+        input_dataset, feature) if is_stroke_input else input_dataset
 
-    else:
-        ## MXNET implementation
-        if verbose:
-            print("Using MXNET")
-        start_time = _time.time()
-        softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
-        model.hybridize()
-        trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
+    iteration = -1
 
-        if verbose and iteration == -1:
-            column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
-            column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
-            if validation_set is not None:
-                column_names.insert(3, 'validation_accuracy')
-                column_titles.insert(3, 'Validation Accuracy')
-            table_printer = _tc.util._ProgressTablePrinter(
-                column_names, column_titles)
+    classes = dataset[target].unique()
+    classes = sorted(classes)
 
-        train_accuracy = _mx.metric.Accuracy()
-        validation_accuracy = _mx.metric.Accuracy()
+    if len(classes) == 1:
+        _ToolkitError("The number of classes has to be greater than one")
 
-        def get_data_and_label_from_batch(batch):
-            if batch.pad is not None:
-                size = batch_size - batch.pad
-                sliced_data  = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
-                sliced_label = _mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)
-                num_devices = min(sliced_data.shape[0], len(ctx))
-                batch_data = _mx.gluon.utils.split_and_load(sliced_data, ctx_list=ctx[:num_devices], even_split=False)
-                batch_label = _mx.gluon.utils.split_and_load(sliced_label, ctx_list=ctx[:num_devices], even_split=False)
-            else:
-                batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
-                batch_label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
-            return batch_data, batch_label
+    class_to_index = {name: index for index, name in enumerate(classes)}
 
-        def compute_accuracy(accuracy_metric, batch_loader):
-            batch_loader.reset()
-            accuracy_metric.reset()
-            for batch in batch_loader:
-                batch_data, batch_label = get_data_and_label_from_batch(batch)
-                outputs = []
-                for x, y in zip(batch_data, batch_label):
-                    if x is None or y is None: continue
-                    z = model(x)
-                    outputs.append(z)
-                accuracy_metric.update(batch_label, outputs)
-
-        for train_batch in train_loader:
-            train_batch_data, train_batch_label = get_data_and_label_from_batch(train_batch)
-            with _autograd.record():
-                # Inside training scope
-                for x, y in zip(train_batch_data, train_batch_label):
-                    z = model(x)
-                    # Computes softmax cross entropy loss.
-                    loss = softmax_cross_entropy(z, y)
-                    # Backpropagate the error for one iteration.
-                    loss.backward()
-
-            # Make one step of parameter update. Trainer needs to know the
-            # batch size of data to normalize the gradient by 1/batch_size.
-            trainer.step(train_batch.data[0].shape[0], ignore_stale_grad=True)
-            # calculate training metrics
-            train_loss = loss.mean().asscalar()
-
-            if train_batch.iteration > iteration:
-
-                # Compute training accuracy
-                compute_accuracy(train_accuracy, train_loader_to_compute_accuracy)
-                # Compute validation accuracy
-                if validation_set is not None:
-                    compute_accuracy(validation_accuracy, validation_loader)
-                iteration = train_batch.iteration
+    validation_set_corrective_string = ("'validation_set' parameter must be "
+        + "an SFrame, or None, or must be set to 'auto' for the toolkit to "
+        + "automatically create a validation set.")
+    if isinstance(validation_set, _tc.SFrame):
+        if validation_set.num_rows() != 0:
+            _raise_error_if_not_drawing_classifier_input_sframe(
+                validation_set, feature, target)
+            is_validation_stroke_input = (validation_set[feature].dtype != _tc.Image)
+            validation_dataset = _extensions._drawing_classifier_prepare_data(
+                validation_set, feature) if is_validation_stroke_input else validation_set
+        else:
+            validation_dataset = validation_set
+    elif isinstance(validation_set, str):
+        if validation_set == 'auto':
+            if dataset.num_rows() >= 100:
                 if verbose:
-                    kwargs = {  "iteration": iteration + 1,
-                                "train_loss": float(train_loss),
-                                "train_accuracy": train_accuracy.get()[1],
-                                "time": _time.time() - start_time}
-                    if validation_set is not None:
-                        kwargs["validation_accuracy"] = validation_accuracy.get()[1]
-                    table_printer.print_row(**kwargs)
+                    print ( "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
+                            "          You can set ``validation_set=None`` to disable validation tracking.\n")
+                dataset, validation_dataset = dataset.random_split(TRAIN_VALIDATION_SPLIT, exact=True)
+            else:
+                validation_set = None
+                validation_dataset = _tc.SFrame()
+        else:
+            raise _ToolkitError("Unrecognized value for 'validation_set'. "
+                + validation_set_corrective_string)
+    elif validation_set is None:
+        validation_dataset = _tc.SFrame()
+    else:
+        raise TypeError("Unrecognized type for 'validation_set'."
+            + validation_set_corrective_string)
 
-        final_train_accuracy = train_accuracy.get()[1]
-        final_val_accuracy = validation_accuracy.get()[1] if validation_set else None
-        final_train_loss = train_loss
-        total_train_time = _time.time() - start_time
+    _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
+    if len(validation_dataset) > 0:
+        _tkutl._handle_missing_values(dataset, feature, 'validation_set')
+
+    train_loader = _SFrameClassifierIter(dataset, batch_size,
+                 feature_column=feature,
+                 target_column=target,
+                 class_to_index=class_to_index,
+                 load_labels=True,
+                 shuffle=True,
+                 iterations=max_iterations)
+    train_loader_to_compute_accuracy = _SFrameClassifierIter(dataset, batch_size,
+                 feature_column=feature,
+                 target_column=target,
+                 class_to_index=class_to_index,
+                 load_labels=True,
+                 shuffle=True,
+                 iterations=1)
+    validation_loader = _SFrameClassifierIter(validation_dataset, batch_size,
+                 feature_column=feature,
+                 target_column=target,
+                 class_to_index=class_to_index,
+                 load_labels=True,
+                 shuffle=True,
+                 iterations=1)
+
+    ctx = _mxnet_utils.get_mxnet_context(max_devices=batch_size)
+    model = _Model(num_classes = len(classes), prefix="drawing_")
+    model_params = model.collect_params()
+    model_params.initialize(_mx.init.Xavier(), ctx=ctx)
+
+    if warm_start is not None:
+        if type(warm_start) is not str:
+            raise TypeError("'warm_start' must be a string or None. "
+                + "'warm_start' can take in the following values: "
+                + str(accepted_values_for_warm_start))
+        if warm_start not in accepted_values_for_warm_start:
+            raise _ToolkitError("Unrecognized value for 'warm_start': "
+                + warm_start + ". 'warm_start' can take in the following "
+                + "values: " + str(accepted_values_for_warm_start))
+        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
+            warm_start)
+        pretrained_model_params_path = pretrained_model.get_model_path()
+        model.load_params(pretrained_model_params_path,
+            ctx=ctx,
+            allow_missing=True)
+
+    if verbose:
+        print("Using MXNET")
+    start_time = _time.time()
+    softmax_cross_entropy = _mx.gluon.loss.SoftmaxCrossEntropyLoss()
+    model.hybridize()
+    trainer = _mx.gluon.Trainer(model.collect_params(), 'adam')
+
+    if verbose and iteration == -1:
+        column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
+        column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
+        if validation_set is not None:
+            column_names.insert(3, 'validation_accuracy')
+            column_titles.insert(3, 'Validation Accuracy')
+        table_printer = _tc.util._ProgressTablePrinter(
+            column_names, column_titles)
+
+    train_accuracy = _mx.metric.Accuracy()
+    validation_accuracy = _mx.metric.Accuracy()
+
+    def get_data_and_label_from_batch(batch):
+        if batch.pad is not None:
+            size = batch_size - batch.pad
+            sliced_data  = _mx.nd.slice_axis(batch.data[0], axis=0, begin=0, end=size)
+            sliced_label = _mx.nd.slice_axis(batch.label[0], axis=0, begin=0, end=size)
+            num_devices = min(sliced_data.shape[0], len(ctx))
+            batch_data = _mx.gluon.utils.split_and_load(sliced_data, ctx_list=ctx[:num_devices], even_split=False)
+            batch_label = _mx.gluon.utils.split_and_load(sliced_label, ctx_list=ctx[:num_devices], even_split=False)
+        else:
+            batch_data = _mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0)
+            batch_label = _mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0)
+        return batch_data, batch_label
+
+    def compute_accuracy(accuracy_metric, batch_loader):
+        batch_loader.reset()
+        accuracy_metric.reset()
+        for batch in batch_loader:
+            batch_data, batch_label = get_data_and_label_from_batch(batch)
+            outputs = []
+            for x, y in zip(batch_data, batch_label):
+                if x is None or y is None: continue
+                z = model(x)
+                outputs.append(z)
+            accuracy_metric.update(batch_label, outputs)
+
+    for train_batch in train_loader:
+        train_batch_data, train_batch_label = get_data_and_label_from_batch(train_batch)
+        with _autograd.record():
+            # Inside training scope
+            for x, y in zip(train_batch_data, train_batch_label):
+                z = model(x)
+                # Computes softmax cross entropy loss.
+                loss = softmax_cross_entropy(z, y)
+                # Backpropagate the error for one iteration.
+                loss.backward()
+
+        # Make one step of parameter update. Trainer needs to know the
+        # batch size of data to normalize the gradient by 1/batch_size.
+        trainer.step(train_batch.data[0].shape[0], ignore_stale_grad=True)
+        # calculate training metrics
+        train_loss = loss.mean().asscalar()
+
+        if train_batch.iteration > iteration:
+
+            # Compute training accuracy
+            compute_accuracy(train_accuracy, train_loader_to_compute_accuracy)
+            # Compute validation accuracy
+            if validation_set is not None:
+                compute_accuracy(validation_accuracy, validation_loader)
+            iteration = train_batch.iteration
+            if verbose:
+                kwargs = {  "iteration": iteration + 1,
+                            "train_loss": float(train_loss),
+                            "train_accuracy": train_accuracy.get()[1],
+                            "time": _time.time() - start_time}
+                if validation_set is not None:
+                    kwargs["validation_accuracy"] = validation_accuracy.get()[1]
+                table_printer.print_row(**kwargs)
+
+    final_train_accuracy = train_accuracy.get()[1]
+    final_val_accuracy = validation_accuracy.get()[1] if validation_set else None
+    final_train_loss = train_loss
+    total_train_time = _time.time() - start_time
 
     state = {
         '_model': model,
@@ -1145,8 +1130,71 @@ class DrawingClassifier_beta(_Model):
             Rows: 10
             [3, 4, 3, 3, 4, 5, 8, 8, 8, 4]
         """
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({'drawing': dataset})
         return self.__proxy__.predict(dataset, output_type)
 
+    def predict_topk(self, dataset, k=3, output_type='class'):
+        """
+        Return top-k predictions for the ``dataset``, using the trained model.
+        Predictions are returned as an SFrame with three columns: `id`,
+        `class`, and `probability` or `rank`, depending on the ``output_type``
+        parameter.
+
+        Parameters
+        ----------
+        dataset : SFrame | SArray | turicreate.Image
+            Drawings to be classified.
+            If dataset is an SFrame, it must include columns with the same
+            names as the features used for model training, but does not require
+            a target column. Additional columns are ignored.
+
+        output_type : {'probability', 'rank'}, optional
+            Choose the return type of the prediction:
+
+            - `probability`: Probability associated with each label in the
+                             prediction.
+            - `rank`       : Rank associated with each label in the prediction.
+
+        k : int, optional
+            Number of classes to return for each input example.
+
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve
+            performance.
+
+        Returns
+        -------
+        out : SFrame
+            An SFrame with model predictions.
+
+        See Also
+        --------
+        predict, evaluate
+
+        Examples
+        --------
+        >>> pred = m.predict_topk(validation_data, k=3)
+        >>> print(pred)
+        +----+-------+-------------------+
+        | id | class |   probability     |
+        +----+-------+-------------------+
+        | 0  |   4   |   0.995623886585  |
+        | 0  |   9   |  0.0038311756216  |
+        | 0  |   7   | 0.000301006948575 |
+        | 1  |   1   |   0.928708016872  |
+        | 1  |   3   |  0.0440889261663  |
+        | 1  |   2   |  0.0176190119237  |
+        | 2  |   3   |   0.996967732906  |
+        | 2  |   2   |  0.00151345680933 |
+        | 2  |   7   | 0.000637513934635 |
+        | 3  |   1   |   0.998070061207  |
+        | .. |  ...  |        ...        |
+        +----+-------+-------------------+
+        [35688 rows x 3 columns]
+        """
+        return self.__proxy__.predict_topk(dataset, output_type, k)
 
     def evaluate(self, dataset, metric='auto'):
         """

@@ -40,36 +40,42 @@ void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
 
 simple_data_iterator::target_properties
 simple_data_iterator::compute_properties(
-    const gl_sarray& targets, std::vector<std::string> expected_class_labels) {
+    const gl_sframe& data, std::string target_column_name,
+    std::vector<std::string> expected_class_labels) {
+
   target_properties result;
 
-  // Determine the list of unique class labels,
-  gl_sarray classes = targets.unique().sort();
+  if (data.contains_column(target_column_name)) {
+    const gl_sarray& targets = data[target_column_name];
+    // Determine the list of unique class labels,
+    gl_sarray classes = targets.unique().sort();
 
-  if (expected_class_labels.empty()) {
-    // Infer the class-to-index map from the observed labels.
-    result.classes.reserve(classes.size());
-    int i = 0;
-    for (const flexible_type& label : classes.range_iterator()) {
-      result.classes.push_back(label);
-      result.class_to_index_map[label] = i++;
-    }
-  } else {
-    // Construct the class-to-index map from the expected labels.
-    result.classes = std::move(expected_class_labels);
-    int i = 0;
-    for (const std::string& label : result.classes) {
-      result.class_to_index_map[label] = i++;
-    }
+    if (expected_class_labels.empty()) {
+      // Infer the class-to-index map from the observed labels.
+      result.classes.reserve(classes.size());
+      int i = 0;
+      for (const flexible_type& label : classes.range_iterator()) {
+        result.classes.push_back(label);
+        result.class_to_index_map[label] = i++;
+      }
+    } else {
+      // Construct the class-to-index map from the expected labels.
+      result.classes = std::move(expected_class_labels);
+      int i = 0;
+      for (const std::string& label : result.classes) {
+        result.class_to_index_map[label] = i++;
+      }
 
-    // Use the map to verify that we only encountered expected labels.
-    for (const flexible_type& ft : classes.range_iterator()) {
-      std::string label(ft);  // Ensures correct overload resolution below.
-      if (result.class_to_index_map.count(label) == 0) {
-        log_and_throw("Targets contained unexpected class label " + label);
+      // Use the map to verify that we only encountered expected labels.
+      for (const flexible_type& ft : classes.range_iterator()) {
+        std::string label(ft);  // Ensures correct overload resolution below.
+        if (result.class_to_index_map.count(label) == 0) {
+          log_and_throw("Targets contained unexpected class label " + label);
+        }
       }
     }
   }
+
   return result;
 }
 
@@ -77,7 +83,9 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
     : data_(params.data),
 
       // Determine which column is which within each (ordered) row.
-      target_index_(data_.column_index(params.target_column_name)),
+      target_index_(params.target_column_name.empty()
+              ? -1
+              : data_.column_index(params.target_column_name)),
       predictions_index_(
           params.predictions_column_name.empty()
               ? -1
@@ -89,7 +97,7 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
       shuffle_(params.shuffle),
 
       // Identify/verify the class labels and other target properties.
-      target_properties_(compute_properties(data_[params.target_column_name],
+      target_properties_(compute_properties(data_, params.target_column_name,
                                             params.class_labels)),
 
       // Start an iteration through the entire SFrame.
@@ -126,12 +134,12 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
 
-  while (batch_targets.size() < batch_size && next_row_ != end_of_rows_) {
+  while (real_batch_size < batch_size && next_row_ != end_of_rows_) {
 
     real_batch_size++;
     const sframe_rows::row& row = *next_row_;
 
-    if (predictions_index_ >= 0) {
+    if (predictions_index_ >= 0 && target_index_ >= 0) {
       float preds = -1;
       preds = static_cast<float>(target_properties_.class_to_index_map.at(
           row[predictions_index_].to<flex_string>()));
@@ -142,9 +150,11 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
                                     row[feature_index_].to<flex_image>());
     next_drawing_pointer += image_data_size;
 
-    batch_targets.emplace_back(
-        static_cast<float>(target_properties_.class_to_index_map.at(
-            row[target_index_].to<flex_string>())));
+    if (target_index_ >= 0) {
+      batch_targets.emplace_back(
+          static_cast<float>(target_properties_.class_to_index_map.at(
+              row[target_index_].to<flex_string>())));
+    }
 
     if (++next_row_ == end_of_rows_ && repeat_) {
       if (shuffle_) {
@@ -180,7 +190,9 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     }
   }
 
-  DASSERT_EQ(real_batch_size, batch_targets.size());
+  if (target_index_ >= 0) {
+    DASSERT_EQ(real_batch_size, batch_targets.size());
+  }
 
   // Wrap the buffers as float_array values.
   data_iterator::batch result;
@@ -201,8 +213,10 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
       std::move(batch_drawings),
       {real_batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels});
 
-  result.targets =
-      shared_float_array::wrap(std::move(batch_targets), {real_batch_size, 1});
+  if (target_index_ >= 0) {
+    result.targets =
+        shared_float_array::wrap(std::move(batch_targets), {real_batch_size, 1});
+  }
 
   if (predictions_index_ >= 0) {
     result.predictions = shared_float_array::wrap(std::move(batch_predictions),

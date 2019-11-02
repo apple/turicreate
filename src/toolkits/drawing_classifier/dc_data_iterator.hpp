@@ -36,9 +36,9 @@ class data_iterator {
     /**
      * The name of the column containing the target variable.
      *
-     * If empty, then the output will not contain labels or weights.
+     * If empty, then the output will not contain labels.
      */
-    std::string target_column_name{"target"};
+    std::string target_column_name;
 
     /** The name of the feature column. */
     std::string feature_column_name{"feature"};
@@ -165,7 +165,8 @@ class simple_data_iterator : public data_iterator {
   };
 
   target_properties compute_properties(
-      const gl_sarray& targets, std::vector<std::string> expected_class_labels);
+      const gl_sframe& data, std::string target_column_name,
+      std::vector<std::string> expected_class_labels);
 
   gl_sframe data_;
   const int target_index_;
