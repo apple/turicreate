@@ -21,8 +21,6 @@ from . import util as test_util
 import unittest
 import pytest
 
-import os; print(os.getpid())
-
 def _build_bitmap_data():
     '''
     Build an SFrame from 10 saved drawings.
@@ -196,7 +194,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 else:
                     assert (preds.dtype == _array)
                 assert (len(preds) == len(sf))
-    
 
     def test_predict_topk(self):
         k=2
