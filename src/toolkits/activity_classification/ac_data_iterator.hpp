@@ -86,7 +86,7 @@ public:
     };
 
     /**
-     * An array with shape: (requested_batch_size, 
+     * An array with shape: (requested_batch_size,
      * 1, prediction_window * predictions_in_chunk, num_feature_columns)
      *
      * Each row is a chunk of feature values from one session.
@@ -96,7 +96,7 @@ public:
     /**
      * An array with shape: (requested_batch_size, 1, predictions_in_chunk, 1)
      *
-     * Each row is the sequence of class label (indices) from one chunk 
+     * Each row is the sequence of class label (indices) from one chunk
      * (labels picked after majority voting).
      *
      * If no target was specified, then this value is default constructed.
@@ -113,12 +113,12 @@ public:
      */
     neural_net::shared_float_array weights;
 
-
     /**
-     * An array with shape: (requested_batch_size, 
+     * An array with shape: (requested_batch_size,
      * 1, prediction_window * predictions_in_chunk, 1)
      *
-     * Each row is the sequence of raw class labels (indices) for each individual sample.
+     * Each row is the sequence of raw class labels (indices) for each
+     * individual sample.
      */
     neural_net::shared_float_array labels_per_row;
 
@@ -135,6 +135,7 @@ public:
 
   virtual const flex_list& feature_names() const = 0;
   virtual const flex_list& class_labels() const = 0;
+  virtual const size_t num_sessions() const = 0;
   virtual flex_type_enum session_id_type() const = 0;
 
   /**
@@ -171,6 +172,7 @@ public:
 
   const flex_list& feature_names() const override;
   const flex_list& class_labels() const override;
+  const size_t num_sessions() const override;
   flex_type_enum session_id_type() const override;
   bool has_next_batch() const override;
   batch next_batch(size_t batch_size) override;
