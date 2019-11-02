@@ -969,7 +969,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
       grid_height * SPATIAL_REDUCTION, class_labels.size(),
       grid_height * grid_width * anchor_boxes().size(),
       std::move(user_defined_metadata), std::move(class_labels),
-      std::move(opts));
+      read_state<flex_string>("feature"), std::move(opts));
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
