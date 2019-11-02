@@ -282,8 +282,9 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_unexpected_classes) {
   params.class_labels = { "bar" };
 
   // The data contains the label "foo", which is not among the expected class
-  // labels.
-  TS_ASSERT_THROWS_ANYTHING(simple_data_iterator unused_var(params));
+  // labels. SHOULDN'T throw anything.
+  simple_data_iterator it_unexpected(params);
+  TS_ASSERT_EQUALS(it_unexpected.class_labels().size(), 1);
 }
 
 }  // namespace

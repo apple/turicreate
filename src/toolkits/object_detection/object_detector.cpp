@@ -982,9 +982,14 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
 {
   data_iterator::parameters iterator_params;
+
+  // Check if data has annotations column
+  std::string annotations_column_name = read_state<flex_string>("annotations");
+  if (data.contains_column(annotations_column_name)) {
+    iterator_params.annotations_column_name = annotations_column_name;
+  }
+
   iterator_params.data = std::move(data);
-  iterator_params.annotations_column_name =
-      read_state<flex_string>("annotations");
   iterator_params.image_column_name = read_state<flex_string>("feature");
   iterator_params.class_labels = std::move(class_labels);
   iterator_params.repeat = repeat;
