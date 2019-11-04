@@ -63,7 +63,7 @@ def _vgg16_data_prep(batch):
 
 def create(style_dataset, content_dataset, style_feature=None,
         content_feature=None, max_iterations=None, model='resnet-16',
-        verbose=True, batch_size = 6, **kwargs):
+        verbose=True, batch_size = 1, **kwargs):
     """
     Create a :class:`StyleTransfer` model.
 
@@ -826,14 +826,21 @@ class StyleTransfer_beta(_Model):
         options['max_size'] = max_size
         options['batch_size'] = batch_size
 
-        if isinstance(style, list):
-                return self.__proxy__.predict(images[image_feature], options)
+        if isinstance(style, list) or style is None:
+            if isinstance(images, _tc.SFrame):
+                image_feature = _tkutl._find_only_image_column(images)
+                stylized_images = self.__proxy__.predict(images[image_feature], options)
+                stylized_images = stylized_images.rename({'stylized_image' : 'stylized_' + str(image_feature)})
+                return stylized_images
+            return self.__proxy__.predict(images, options)
         else:
             if isinstance(images, _tc.SFrame):
                 if len(images) == 0:
                     raise _ToolkitError("SFrame cannot be empty")
                 image_feature = _tkutl._find_only_image_column(images)
-                return self.__proxy__.predict(images[image_feature], options)
+                stylized_images = self.__proxy__.predict(images[image_feature], options)
+                stylized_images = stylized_images.rename({'stylized_image' : 'stylized_' + str(image_feature)})
+                return stylized_images
             elif isinstance(images, (_tc.Image)):
                 stylized_images = self.__proxy__.predict(images, options)
                 return stylized_images["stylized_image"][0]
