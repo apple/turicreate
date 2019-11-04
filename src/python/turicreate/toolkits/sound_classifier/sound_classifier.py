@@ -69,7 +69,7 @@ class _MXNetAccuracy(_Accuracy):
 
 class _TFAccuracy(_Accuracy):
     def __init__(self):
-        import tensorflow.compat.v1 as tf
+        import tensorflow as tf
         self.impl = tf.keras.metrics.Accuracy()
 
     def update(self, ground_truth, predicted):
@@ -188,7 +188,7 @@ def create(dataset, target, feature, max_iterations=10,
         A dataset for monitoring the model's generalization performance. The
         format of this SFrame must be the same as the training dataset. By
         default, a validation set is automatically sampled. If `validation_set`
-        is set to None, no validataion is used. You can also pass a validation
+        is set to None, no validation is used. You can also pass a validation
         set you have constructed yourself.
 
     batch_size : int, optional
@@ -260,7 +260,7 @@ def create(dataset, target, feature, max_iterations=10,
 
     if validation_set is not None:
         if verbose:
-            print("Preparing validataion set")
+            print("Preparing validation set")
         validation_encoded_target = validation_set[target].apply(lambda x: class_label_to_id[x])
 
         if _is_deep_feature_sarray(validation_set[feature]):
@@ -336,7 +336,7 @@ def create(dataset, target, feature, max_iterations=10,
             train_metric.update(label, outputs)
         train_data.reset()
 
-        # Calculate validataion metric
+        # Calculate validation metric
         for batch in validation_data:
             data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
             label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
@@ -350,8 +350,8 @@ def create(dataset, target, feature, max_iterations=10,
         train_metric.reset()
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
         if validation_data:
-            validataion_accuracy = validation_metric.get()
-            printed_row_values['validation_accuracy'] = validataion_accuracy
+            validation_accuracy = validation_metric.get()
+            printed_row_values['validation_accuracy'] = validation_accuracy
             validation_metric.reset()
             validation_data.reset()
         if verbose:
@@ -373,7 +373,7 @@ def create(dataset, target, feature, max_iterations=10,
         'target': target,
         'training_accuracy': train_accuracy,
         'training_time': time.time() - start_time,
-        'validation_accuracy': validataion_accuracy if validation_data else None,
+        'validation_accuracy': validation_accuracy if validation_data else None,
     }
     return SoundClassifier(state)
 
