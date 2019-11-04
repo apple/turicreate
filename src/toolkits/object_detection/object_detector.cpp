@@ -981,6 +981,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
 {
+
   data_iterator::parameters iterator_params;
 
   // Check if data has annotations column
