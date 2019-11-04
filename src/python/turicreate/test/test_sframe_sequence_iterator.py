@@ -10,9 +10,15 @@ import unittest
 import turicreate as tc
 import numpy as np
 import array
-from turicreate.toolkits.activity_classifier import _sframe_sequence_iterator as sframe_sequence_iterator
 
 
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+
+if not IS_PRE_6_0_RC:
+    from turicreate.toolkits.activity_classifier import _sframe_sequence_iterator as sframe_sequence_iterator
+
+
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class SFrameActivityIteratorTest(unittest.TestCase):
     def setUp(self):
         self.features = ['feature_1', 'feature_2']

@@ -13,6 +13,7 @@ import turicreate as tc
 import tempfile
 import numpy as np
 import platform
+import pytest
 import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -20,6 +21,7 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac
 import coremltools
 
 _CLASSES = ['logo_a', 'logo_b', 'logo_c', 'logo_d']
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
 
 def _get_data(feature, target):
     from PIL import Image as _PIL_Image
@@ -78,6 +80,7 @@ def _get_data(feature, target):
     return train, test, backgrounds
 
 
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class OneObjectDetectorSmokeTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
