@@ -63,7 +63,7 @@ def _vgg16_data_prep(batch):
 
 def create(style_dataset, content_dataset, style_feature=None,
         content_feature=None, max_iterations=None, model='resnet-16',
-        verbose=True, batch_size = 6, **kwargs):
+        verbose=True, batch_size = 1, **kwargs):
     """
     Create a :class:`StyleTransfer` model.
 
@@ -874,9 +874,7 @@ class StyleTransfer_beta(_Model):
         |  3    |  Height: 642 Width: 642  |
         +-------+--------------------------+
         """
-        style_sa = self.__proxy__.get_styles(style)
-        style_sf = _tc.SFrame({"style":range(0, len(style_sa)), "image":style_sa})
-        return style_sf
+        return self.__proxy__.get_styles(style)
 
 class StyleTransfer(_CustomModel):
     """

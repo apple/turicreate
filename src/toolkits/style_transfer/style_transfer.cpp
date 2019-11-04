@@ -237,6 +237,13 @@ flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
   return static_cast<flex_int>(num_styles * 10000.0f / batch_size);
 }
 
+void check_style_index(int idx, int num_styles) {
+  std::cout << idx << std::endl;
+  std::cout << num_styles << std::endl;
+  if ((idx < 0) || (idx >= num_styles))
+    log_and_throw("Please choose a valid style index.");
+}
+
 }  // namespace
 
 void style_transfer::init_options(
@@ -270,8 +277,10 @@ void style_transfer::init_options(
       1, std::numeric_limits<int>::max());
   options.create_boolean_option(
       "verbose", "When set to true, verbose is printed", true, true);
-  options.create_string_option("content_feature", "Name of the content column", "image", true);
-  options.create_string_option("style_feature", "Name of the style column", "image", true);
+  options.create_string_option("content_feature", "Name of the content column",
+                               "image", true);
+  options.create_string_option("style_feature", "Name of the style column",
+                               "image", true);
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -296,7 +305,7 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
 
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
     const {
-  return compute_context::create();
+  return compute_context::create_tf();
 }
 
 std::unique_ptr<data_iterator> style_transfer::create_iterator(
@@ -320,7 +329,6 @@ std::unique_ptr<data_iterator> style_transfer::create_iterator(
 }
 
 void style_transfer::infer_derived_options() {
-
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = m_training_compute_context->gpu_names();
   print_training_device(gpu_names);
@@ -347,8 +355,65 @@ void style_transfer::infer_derived_options() {
   add_or_update_state({{"training_iterations", 0}});
 }
 
-gl_sarray style_transfer::get_style() {
-  return read_state<gl_sarray>("style_sarray");
+gl_sframe style_transfer::get_styles(variant_type style_index) {
+  gl_sframe style_sf = read_state<gl_sframe>("styles");
+  gl_sarray style_filter = convert_variant_to_filter(style_index);
+
+  return style_sf[style_filter];
+}
+
+gl_sframe style_transfer::style_sframe_with_index(gl_sarray styles) {
+  std::vector<flexible_type> index_list;
+  flex_int num_styles = read_state<flex_int>("num_styles");
+  index_list.resize(num_styles);
+  std::iota(index_list.begin(), index_list.end(), 0);
+
+  return gl_sframe({
+      {"index", index_list},
+      {"style", styles},
+  });
+}
+
+gl_sarray style_transfer::convert_variant_to_filter(const variant_type& data) {
+  flex_int num_styles = read_state<flex_int>("num_styles");
+  if (variant_is<flex_list>(data) || variant_is<flex_vec>(data)) {
+    std::vector<flexible_type> index_filter(num_styles, 0);
+    flex_list index_list = variant_get_value<flex_list>(data);
+    ASSERT_NE(index_list.size(), 0);
+    std::for_each(index_list.begin(), index_list.end(),
+                  [&index_filter, num_styles](flexible_type& ft) {
+                    ASSERT_TRUE(ft.get_type() == flex_type_enum::INTEGER ||
+                                ft.get_type() == flex_type_enum::FLOAT);
+                    switch (ft.get_type()) {
+                      case flex_type_enum::INTEGER: {
+                        flex_int idx = ft.get<flex_int>();
+                        check_style_index(idx, num_styles);
+                        index_filter[idx] = 1;
+                      }
+                      case flex_type_enum::FLOAT: {
+                        int idx = static_cast<int>(ft.get<flex_float>());
+                        check_style_index(idx, num_styles);
+                        index_filter[idx] = 1;
+                        break;
+                      }
+                      default:
+                        log_and_throw(
+                            "Invalid data type! List should contain either "
+                            "flex_float or flex_int values!");
+                    }
+                  });
+    return index_filter;
+  } else if (variant_is<flex_int>(data)) {
+    std::vector<flexible_type> index_filter(num_styles, 0);
+    flex_int idx = variant_get_value<flex_int>(data);
+    check_style_index(idx, num_styles);
+    index_filter[idx] = 1;
+    return index_filter;
+  } else if (variant_is<flex_undefined>(data)) {
+    return std::vector<flexible_type>(num_styles, 1);
+  } else {
+    log_and_throw("Invalid data type! Expect SArray, or flexible_type!");
+  }
 }
 
 gl_sframe style_transfer::predict(variant_type data,
@@ -374,8 +439,7 @@ gl_sframe style_transfer::predict(variant_type data,
       case flex_type_enum::VECTOR:
         style_idx = std::move(flex_style_idx.get<flex_vec>());
         break;
-      case flex_type_enum::LIST:
-      {
+      case flex_type_enum::LIST: {
         const auto& list = flex_style_idx.get<flex_list>();
         style_idx.resize(list.size());
         std::transform(list.begin(), list.end(), style_idx.begin(),
@@ -383,7 +447,6 @@ gl_sframe style_transfer::predict(variant_type data,
                          return static_cast<double>(val.get<flex_float>());
                        });
         break;
-
       }
       case flex_type_enum::UNDEFINED: {
         flex_int num_styles = read_state<flex_int>("num_styles");
@@ -528,8 +591,8 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
   infer_derived_options();
 
   add_or_update_state({
-    {"model", "resnet-16"},
-    {"style_sarray", style},
+      {"model", "resnet-16"},
+      {"styles", style_sframe_with_index(style)},
   });
 
   m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);

@@ -46,7 +46,7 @@ class EXPORT style_transfer : public ml_model_base {
   gl_sframe predict(variant_type data,
                     std::map<std::string, flexible_type> opts);
 
-  gl_sarray get_style();
+  gl_sframe get_styles(variant_type style_index);
 
   void import_from_custom_model(variant_map_type model_data, size_t version);
 
@@ -99,7 +99,8 @@ class EXPORT style_transfer : public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::import_from_custom_model,
                                  "model_data", "version");
 
-  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::get_style);
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::get_styles, "style_index");
+  register_defaults("get_styles", {{"style_index", FLEX_UNDEFINED}});
 
   END_CLASS_MEMBER_REGISTRATION
 
@@ -134,6 +135,8 @@ class EXPORT style_transfer : public ml_model_base {
   std::unique_ptr<table_printer> training_table_printer_;
 
   static gl_sarray convert_types_to_sarray(const variant_type& data);
+  gl_sarray convert_variant_to_filter(const variant_type& data);
+  gl_sframe style_sframe_with_index(gl_sarray styles);
 
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;
