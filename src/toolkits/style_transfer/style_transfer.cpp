@@ -270,10 +270,8 @@ void style_transfer::init_options(
       1, std::numeric_limits<int>::max());
   options.create_boolean_option(
       "verbose", "When set to true, verbose is printed", true, true);
-  options.create_string_option("content_feature", "Name of the content column",
-                               "image", true);
-  options.create_string_option("style_feature", "Name of the style column",
-                               "image", true);
+  options.create_string_option("content_feature", "Name of the content column", "image", true);
+  options.create_string_option("style_feature", "Name of the style column", "image", true);
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -372,7 +370,8 @@ gl_sframe style_transfer::predict(variant_type data,
       case flex_type_enum::VECTOR:
         style_idx = std::move(flex_style_idx.get<flex_vec>());
         break;
-      case flex_type_enum::LIST: {
+      case flex_type_enum::LIST:
+      {
         const auto& list = flex_style_idx.get<flex_list>();
         style_idx.resize(list.size());
         std::transform(list.begin(), list.end(), style_idx.begin(),
@@ -380,6 +379,7 @@ gl_sframe style_transfer::predict(variant_type data,
                          return static_cast<double>(val.get<flex_float>());
                        });
         break;
+
       }
       case flex_type_enum::UNDEFINED: {
         flex_int num_styles = read_state<flex_int>("num_styles");
