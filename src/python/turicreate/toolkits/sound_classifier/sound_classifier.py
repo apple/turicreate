@@ -58,7 +58,7 @@ class _MXNetAccuracy(_Accuracy):
 
     def update(self, ground_truth, predicted):
         import mxnet as mx
-        self.impl.update(mx.nd.array(ground_truth), mx.nd.array(predicted))
+        self.impl.update([mx.nd.array(ground_truth)], [mx.nd.array(predicted)])
 
     def reset(self):
         self.impl.reset()
@@ -316,14 +316,18 @@ def create(dataset, target, feature, max_iterations=10,
         for batch in train_data:
             data = batch.data[0].asnumpy()
             outputs = custom_NN.predict(data)
-            train_metric.update([batch.label[0]], mx.nd.array(outputs))
+            outputs = _np.array(outputs[0])
+            label = _np.array([x.asnumpy() for x in batch.label[0]])
+            train_metric.update(label, outputs)
         train_data.reset()
 
         # Calculate validation metric
         for batch in validation_data:
             data = batch.data[0].asnumpy()
             outputs = custom_NN.predict(data)
-            validation_metric.update(batch.label[0], mx.nd.array(outputs))
+            outputs = _np.array(outputs[0])
+            label = _np.array([x.asnumpy() for x in batch.label[0]])
+            validation_metric.update(label, outputs)
 
         # Get metrics, print progress table
         train_accuracy = train_metric.get()
