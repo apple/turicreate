@@ -261,17 +261,16 @@ tf_compute_context::tf_compute_context() = default;
 tf_compute_context::~tf_compute_context() = default;
 
 size_t tf_compute_context::memory_budget() const {
-  // TODO: Returns 4GB as that makes sure default batch size is used. 
+  // TODO: Returns 4GB as that makes sure default batch size is used.
   // Do something that makes more sense like MPS later.
   return 4294967296lu;
 }
 
 std::vector<std::string> tf_compute_context::gpu_names() const {
-  pybind11::object gpu_devices;
   std::vector<std::string> gpu_device_names;
 
   call_pybind_function([&]() {
-    
+    pybind11::object gpu_devices;
     pybind11::module tf_gpu_devices =
         pybind11::module::import("turicreate.toolkits._tf_utils");
     // Get the names from tf utilities function
@@ -316,7 +315,6 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
   });
   return std::unique_ptr<tf_model_backend>(
       new tf_model_backend(activity_classifier));
-  
 }
 
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
