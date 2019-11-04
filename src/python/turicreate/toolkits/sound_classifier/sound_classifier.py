@@ -316,7 +316,6 @@ def create(dataset, target, feature, max_iterations=10,
         for batch in train_data:
             data = batch.data[0].asnumpy()
             outputs = custom_NN.predict(data)
-            outputs = _np.array(outputs[0])
             label = _np.array([x.asnumpy() for x in batch.label[0]])
             train_metric.update(label, outputs)
         train_data.reset()
@@ -325,7 +324,6 @@ def create(dataset, target, feature, max_iterations=10,
         for batch in validation_data:
             data = batch.data[0].asnumpy()
             outputs = custom_NN.predict(data)
-            outputs = _np.array(outputs[0])
             label = _np.array([x.asnumpy() for x in batch.label[0]])
             validation_metric.update(label, outputs)
 
@@ -860,8 +858,7 @@ class SoundClassifier(_CustomModel):
             if batch.pad != 0:
                 batch_data = batch_data[:-batch.pad]    # prevent batches looping back
 
-            forward_output = self._custom_classifier.forward(batch_data)
-            y += mx.nd.softmax(mx.nd.array(forward_output[0])).asnumpy().tolist()
+            y += self._custom_classifier.predict(batch_data).asnumpy().tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames
