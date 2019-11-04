@@ -30,8 +30,12 @@ class MultiLayerPerceptronMXNetModel():
         Parameters
         ----------
         data : NumPy Array
+            `data` contains the input data features stored in the `deep features`
+            column of the dataset.
 
         label : NumPy Array
+            `label` contains the input data labels stored in the `labels`
+            column of the dataset.
         """
 
         # Inside training scope
@@ -55,6 +59,8 @@ class MultiLayerPerceptronMXNetModel():
         Parameters
         ----------
         data : NumPy Array
+            `data` contains the input data features stored in the `deep features`
+            column of the dataset.
 
         """
 
