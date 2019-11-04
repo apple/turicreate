@@ -2588,6 +2588,9 @@ class SArray(object):
 
         if (dtype == _Image) and (self.dtype == array.array):
             raise TypeError("Cannot cast from image type to array with sarray.astype(). Please use sarray.pixel_array_to_image() instead.")
+        
+        if float('nan') in self and dtype == int:
+            raise TypeError("cannot convert float('nan') to int")
 
         with cython_context():
             return SArray(_proxy=self.__proxy__.astype(dtype, undefined_on_failure))
