@@ -874,8 +874,9 @@ class StyleTransfer_beta(_Model):
         |  3    |  Height: 642 Width: 642  |
         +-------+--------------------------+
         """
-
-        return self.__proxy__.get_styles(style)
+        style_sa = self.__proxy__.get_styles(style)
+        style_sf = _tc.SFrame({"style":range(0, len(style_sa)), "image":style_sa})
+        return style_sf
 
 class StyleTransfer(_CustomModel):
     """
