@@ -288,7 +288,7 @@ def create(dataset, target, feature, max_iterations=10,
                                     batch_size=training_batch_size, shuffle=True)
 
     from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-    sc_model = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
+    custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
     if verbose:
         # Setup progress table
@@ -309,20 +309,20 @@ def create(dataset, target, feature, max_iterations=10,
         for batch in train_data:
             data = batch.data[0].asnumpy()
             label = batch.label[0].asnumpy()
-            sc_model.train(data, label)
+            custom_NN.train(data, label)
         train_data.reset()
 
         # Calculate training metric
         for batch in train_data:
             data = batch.data[0].asnumpy()
-            outputs = sc_model.predict(data)
+            outputs = custom_NN.predict(data)
             train_metric.update([batch.label[0]], mx.nd.array(outputs))
         train_data.reset()
 
         # Calculate validation metric
         for batch in validation_data:
             data = batch.data[0].asnumpy()
-            outputs = sc_model.predict(data)
+            outputs = custom_NN.predict(data)
             validation_metric.update(batch.label[0], mx.nd.array(outputs))
 
         # Get metrics, print progress table
@@ -341,7 +341,7 @@ def create(dataset, target, feature, max_iterations=10,
 
     state = {
         '_class_label_to_id': class_label_to_id,
-        '_custom_classifier': sc_model,
+        '_custom_classifier': custom_NN,
         '_feature_extractor': feature_extractor,
         '_id_to_class_label': {v: k for k, v in class_label_to_id.items()},
         'classes': classes,
@@ -414,7 +414,7 @@ class SoundClassifier(_CustomModel):
             # Default value, was not part of state for only Turi Create 5.4
             custom_layer_sizes = [100, 100]
         state['custom_layer_sizes'] = custom_layer_sizes
-        
+
         from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
         model_obj = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
         model_obj.load_weights(state['_custom_classifier'])
