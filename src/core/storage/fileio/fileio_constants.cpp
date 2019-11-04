@@ -85,8 +85,10 @@ static bool check_cache_file_location(std::string val) {
   if (paths.size() == 0)
     throw std::string("Value cannot be empty");
   for (std::string path: paths) {
-    if (!boost::filesystem::is_directory(path))
+    if (!boost::filesystem::is_directory(path)){
+      std::cerr<<"Could not write to the turicreate file cache, which is currently set to '" + path + "' Using path : "<<std::endl;
       throw std::string("Directory: ") + path + " does not exist";
+    }
   }
   return true;
 }
