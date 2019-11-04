@@ -651,6 +651,10 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
     result_batch.data_info = data->next_batch(batch_size);
 
     // Send the inputs to the model.
+    /** TODO: Figure out a better solution to having `num_samples` be a 
+     *  top-level input to the network. May be captured in the first
+     *  dimension of the input, or perhaps via a weight tensor.
+     */
     std::map<std::string, shared_float_array> results =
         backend->predict({{"input", result_batch.data_info.drawings},
                           {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}

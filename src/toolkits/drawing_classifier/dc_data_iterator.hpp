@@ -165,8 +165,8 @@ class simple_data_iterator : public data_iterator {
   };
 
   target_properties compute_properties(
-      const gl_sframe& data, std::string target_column_name,
-      std::vector<std::string> expected_class_labels);
+      const gl_sframe& data, const std::string& target_column_name,
+      const std::vector<std::string>& expected_class_labels);
 
   gl_sframe data_;
   const int target_index_;

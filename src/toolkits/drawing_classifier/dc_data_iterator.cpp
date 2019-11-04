@@ -40,38 +40,40 @@ void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
 
 simple_data_iterator::target_properties
 simple_data_iterator::compute_properties(
-    const gl_sframe& data, std::string target_column_name,
-    std::vector<std::string> expected_class_labels) {
+    const gl_sframe& data, const std::string& target_column_name,
+    const std::vector<std::string>& expected_class_labels) {
 
   target_properties result;
 
-  if (data.contains_column(target_column_name)) {
-    const gl_sarray& targets = data[target_column_name];
-    // Determine the list of unique class labels,
-    gl_sarray classes = targets.unique().sort();
+  if (!(data.contains_column(target_column_name))) {
+    return result;
+  }
 
-    if (expected_class_labels.empty()) {
-      // Infer the class-to-index map from the observed labels.
-      result.classes.reserve(classes.size());
-      int i = 0;
-      for (const flexible_type& label : classes.range_iterator()) {
-        result.classes.push_back(label);
-        result.class_to_index_map[label] = i++;
-      }
-    } else {
-      // Construct the class-to-index map from the expected labels.
-      result.classes = std::move(expected_class_labels);
-      int i = 0;
-      for (const std::string& label : result.classes) {
-        result.class_to_index_map[label] = i++;
-      }
+  const gl_sarray& targets = data[target_column_name];
+  // Determine the list of unique class labels,
+  gl_sarray classes = targets.unique().sort();
 
-      // Use the map to verify that we only encountered expected labels.
-      for (const flexible_type& ft : classes.range_iterator()) {
-        std::string label(ft);  // Ensures correct overload resolution below.
-        if (result.class_to_index_map.count(label) == 0) {
-          log_and_throw("Targets contained unexpected class label " + label);
-        }
+  if (expected_class_labels.empty()) {
+    // Infer the class-to-index map from the observed labels.
+    result.classes.reserve(classes.size());
+    int i = 0;
+    for (const flexible_type& label : classes.range_iterator()) {
+      result.classes.push_back(label);
+      result.class_to_index_map[label] = i++;
+    }
+  } else {
+    // Construct the class-to-index map from the expected labels.
+    result.classes = std::move(expected_class_labels);
+    int i = 0;
+    for (const std::string& label : result.classes) {
+      result.class_to_index_map[label] = i++;
+    }
+
+    // Use the map to verify that we only encountered expected labels.
+    for (const flexible_type& ft : classes.range_iterator()) {
+      std::string label(ft);  // Ensures correct overload resolution below.
+      if (result.class_to_index_map.count(label) == 0) {
+        log_and_throw("Targets contained unexpected class label " + label);
       }
     }
   }
