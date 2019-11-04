@@ -22,6 +22,7 @@
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
 #include <toolkits/util/training_utils.hpp>
 
+#include <toolkits/drawing_classifier/data_preparation.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
 
 namespace turi {
@@ -69,9 +70,6 @@ void drawing_classifier::save_impl(oarchive& oarc) const {
 }
 
 void drawing_classifier::load_version(iarchive& iarc, size_t version) {
-  if (!nn_spec_)
-    log_and_throw(
-        "model spec is not initalized, please call `init_train` before loading model");
 
   // Load model attributes.
   variant_deep_load(state, iarc);
@@ -282,6 +280,11 @@ void drawing_classifier::init_training(
     std::string feature_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
 
+  // Convert stroke-based data, if needed
+  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name);
+  }
+
   // Read user-specified options.
   init_options(opts);
 
@@ -297,6 +300,11 @@ void drawing_classifier::init_training(
 
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
+  if (validation_data_.size() > 0 
+    && validation_data_[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    validation_data_ = _drawing_classifier_prepare_data(
+      validation_data_, feature_column_name);
+  }
 
   // Begin printing progress.
   // TODO: Make progress printing optional.
@@ -543,6 +551,7 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
+
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
 

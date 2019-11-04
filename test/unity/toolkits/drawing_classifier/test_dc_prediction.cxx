@@ -181,7 +181,7 @@ std::unique_ptr<data_iterator> prepare_data_for_prediction(
   }
 
   // Create an arbitrary SFrame with test_num_rows rows.
-  drawing_data_generator data_generator(num_of_rows, class_labels);
+  drawing_data_generator data_generator(/* is_bitmap_based */ true, num_of_rows, class_labels);
   gl_sframe my_data = data_generator.get_data();
 
   TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
@@ -229,7 +229,8 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
   const std::string target_name = "target";
 
   // name 'target', 'feature' are used by create_iterator
-  drawing_data_generator data_generator(num_of_rows, class_labels, target_name,
+  drawing_data_generator data_generator(/* is_bitmap_based */ true,
+                                        num_of_rows, class_labels, target_name,
                                         feature_name);
 
   gl_sframe my_data = data_generator.get_data();
