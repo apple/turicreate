@@ -46,6 +46,8 @@ class EXPORT style_transfer : public ml_model_base {
   gl_sframe predict(variant_type data,
                     std::map<std::string, flexible_type> opts);
 
+  gl_sarray get_style();
+
   void import_from_custom_model(variant_map_type model_data, size_t version);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("style_transfer")
@@ -96,6 +98,8 @@ class EXPORT style_transfer : public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::import_from_custom_model,
                                  "model_data", "version");
+
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::get_style);
 
   END_CLASS_MEMBER_REGISTRATION
 

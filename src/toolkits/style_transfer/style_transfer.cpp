@@ -347,6 +347,10 @@ void style_transfer::infer_derived_options() {
   add_or_update_state({{"training_iterations", 0}});
 }
 
+gl_sarray style_transfer::get_style() {
+  return read_state<gl_sarray>("style_sarray");
+}
+
 gl_sframe style_transfer::predict(variant_type data,
                                   std::map<std::string, flexible_type> opts) {
   gl_sframe_writer result({"style_idx", "stylized_image"},
@@ -523,7 +527,10 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
 
   infer_derived_options();
 
-  add_or_update_state({{"model", "resnet-16"}});
+  add_or_update_state({
+    {"model", "resnet-16"},
+    {"style_sarray", style},
+  });
 
   m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);
   m_vgg_spec = init_vgg_16(vgg_mlmodel_path);
