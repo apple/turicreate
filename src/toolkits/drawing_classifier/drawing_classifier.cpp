@@ -625,6 +625,7 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
 
 gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
   // Open a new SFrame for writing.
+  std::cout << "entered perform inference";
   gl_sframe_writer writer({"preds"}, {flex_type_enum::VECTOR},
                           /* num_segments */ 1);
 
@@ -669,7 +670,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
     result_batch.data_info = data->next_batch(batch_size);
 
     // Send the inputs to the model.
-    std::map<std::string, shared_float_array> results =
+    float_array_map results =
         backend->predict({{"input", result_batch.data_info.drawings}});
 
     // Copy the (float) outputs to our (double) buffer and add to the SArray.
