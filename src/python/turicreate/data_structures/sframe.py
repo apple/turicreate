@@ -3702,19 +3702,6 @@ class SFrame(object):
         with cython_context():
             self.__proxy__.materialize()
 
-    def __materialize__(self):
-        """
-        For an SFrame that is lazily evaluated, force the persistence of the
-        SFrame to disk, committing all lazy evaluated operations.
-
-        ..WARNING:: This function is deprecated, It will be removed in the next
-        major release. Use SFrame.materialize instead.
-        """
-        warnings.warn("SFrame.__materialize__ is deprecated. It will be removed in the next major release."
-                      + " Use SFrame.materialize instead.")
-
-        self.materialize()
-
     def is_materialized(self):
         """
         Returns whether or not the SFrame has been materialized.
