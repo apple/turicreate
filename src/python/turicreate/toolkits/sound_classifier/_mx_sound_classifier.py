@@ -39,7 +39,7 @@ class MultiLayerPerceptronMXNetModel():
         """
 
         # Inside training scope
-        data_shape = data.shape[0]
+        batch_size = data.shape[0] # may be smaller than the specified batch_size in create()
         data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
         label = mx.gluon.utils.split_and_load(label, ctx_list=self.ctx, batch_axis=0, even_split=False)
         with mx.autograd.record():
@@ -51,7 +51,7 @@ class MultiLayerPerceptronMXNetModel():
                 loss.backward()
         # Make one step of parameter update. Trainer needs to know the
         # batch size of data to normalize the gradient by 1/batch_size.
-        self.trainer.step(data_shape)
+        self.trainer.step(batch_size)
 
 
     def predict(self, data):
