@@ -30,14 +30,14 @@ class _Dataset(object):
     '''
     Creates a new instance wrapping numpy data and labels.
 
-    The data `x` and labels `y` must have the same first dimension.
+    If `label` is provided, `label.shape[0]` must match `data.shape[0]`.
     '''
-    def __init__(self, x, y, batch_size=1, shuffle=False):
+    def __init__(self, data, label=None, batch_size=1, shuffle=False):
         raise NotImplementedError
 
     '''
     Returns an iterator that yields a sequence of tuples, comprising a batch of
-    `x` values and a batch of `y` values.
+    `data` values and a batch of `label` values.
     '''
     def __iter__(self):
         raise NotImplementedError
@@ -49,9 +49,9 @@ class _Dataset(object):
         raise NotImplementedError
 
 class _MXNetDataset(_Dataset):
-    def __init__(self, x, y, batch_size=1, shuffle=False):
+    def __init__(self, data, label=None, batch_size=1, shuffle=False):
         import mxnet as mx
-        self.impl = mx.io.NDArrayIter(x, label=y, batch_size=batch_size,
+        self.impl = mx.io.NDArrayIter(data, label=label, batch_size=batch_size,
                                       shuffle=shuffle)
 
     def __iter__(self):
@@ -62,18 +62,26 @@ class _MXNetDataset(_Dataset):
 
     def __next__(self):
         batch = self.impl.__next__()
-        return batch.data[0].asnumpy(), batch.label[0].asnumpy()
+        data = batch.data[0]
+        label = batch.label[0] if batch.label else None
+        if batch.pad != 0:
+            data = data[:-batch.pad]
+            label = label[:-batch.pad] if label is not None else None
+        data = data.asnumpy()
+        label = label.asnumpy() if label is not None else None
+        return data, label
 
     def next(self):
         return self.__next__()
 
 class _TFDataSet(_Dataset):
-    def __init__(self, x, y, batch_size=1, shuffle=False):
+    def __init__(self, data, label=None, batch_size=1, shuffle=False):
         import tensorflow as tf
-        self.impl = tf.data.Dataset.from_tensor_slices((x,y))
+        tensor_slices = (data, label) if label is not None else (data,)
+        self.impl = tf.data.Dataset.from_tensor_slices(tensor_slices)
         self.impl = self.impl.batch(batch_size)
         if shuffle:
-            self.impl = self.impl.shuffle(x.shape[0])
+            self.impl = self.impl.shuffle(data.shape[0])
 
     def __iter__(self):
         return self.impl.__iter__()
@@ -81,11 +89,13 @@ class _TFDataSet(_Dataset):
     def reset(self):
         pass
 
-def _create_dataset(data, labels, batch_size=1):
+def _create_dataset(data, label=None, batch_size=1, shuffle=False):
     if USE_TF:
-        return _TFDataSet(data, labels, batch_size=batch_size)
+        return _TFDataSet(data, label=label, batch_size=batch_size,
+                          shuffle=shuffle)
     else:
-        return _MXNetDataset(data, labels, batch_size=batch_size)
+        return _MXNetDataset(data, label=label, batch_size=batch_size,
+                             shuffle=shuffle)
 
 class _Accuracy(object):
     '''
@@ -909,16 +919,8 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
-        for batch in mx.io.NDArrayIter(deep_features['deep features'].to_numpy(), batch_size=batch_size):
-            ctx = _mxnet_utils.get_mxnet_context()
-            if(len(batch.data[0]) < len(ctx)):
-                ctx = ctx[:len(batch.data[0])]
-
-            batch_data = batch.data[0]
-            if batch.pad != 0:
-                batch_data = batch_data[:-batch.pad]    # prevent batches looping back
-
-            y += self._custom_classifier.predict(batch_data).asnumpy().tolist()
+        for data, _ in _create_dataset(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
+            y += self._custom_classifier.predict(data).asnumpy().tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames
