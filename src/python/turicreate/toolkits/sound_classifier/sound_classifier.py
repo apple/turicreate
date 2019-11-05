@@ -21,7 +21,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
 
-class _Dataset(object):
+class _DataIterator(object):
     '''
     Defines a common interface around MXNet NDArrayIter and TensorFlow
     DataSet.from_tensor_slices
@@ -37,7 +37,7 @@ class _Dataset(object):
 
     '''
     Returns an iterator that yields a sequence of tuples, comprising a batch of
-    `data` values and a batch of `label` values.
+    `data` values and a batch of `label` values (if provided).
     '''
     def __iter__(self):
         raise NotImplementedError
@@ -48,7 +48,7 @@ class _Dataset(object):
     def reset(self):
         raise NotImplementedError
 
-class _MXNetDataset(_Dataset):
+class _MXNetDataIterator(_DataIterator):
     def __init__(self, data, label=None, batch_size=1, shuffle=False):
         import mxnet as mx
         self.impl = mx.io.NDArrayIter(data, label=label, batch_size=batch_size,
@@ -69,12 +69,12 @@ class _MXNetDataset(_Dataset):
             label = label[:-batch.pad] if label is not None else None
         data = data.asnumpy()
         label = label.asnumpy() if label is not None else None
-        return data, label
+        return (data, label) if label is not None else (data,)
 
     def next(self):
         return self.__next__()
 
-class _TFDataSet(_Dataset):
+class _TFDataIterator(_DataIterator):
     def __init__(self, data, label=None, batch_size=1, shuffle=False):
         import tensorflow as tf
         tensor_slices = (data, label) if label is not None else (data,)
@@ -89,13 +89,13 @@ class _TFDataSet(_Dataset):
     def reset(self):
         pass
 
-def _create_dataset(data, label=None, batch_size=1, shuffle=False):
+def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
     if USE_TF:
-        return _TFDataSet(data, label=label, batch_size=batch_size,
-                          shuffle=shuffle)
+        return _TFDataIterator(data, label=label, batch_size=batch_size,
+                               shuffle=shuffle)
     else:
-        return _MXNetDataset(data, label=label, batch_size=batch_size,
-                             shuffle=shuffle)
+        return _MXNetDataIterator(data, label=label, batch_size=batch_size,
+                                  shuffle=shuffle)
 
 class _Accuracy(object):
     '''
@@ -349,9 +349,9 @@ def create(dataset, target, feature, max_iterations=10,
         validation_data = validation_data.dropna(columns=['deep features'])
 
         validation_batch_size = min(len(validation_data), batch_size)
-        validation_data = _create_dataset(validation_data['deep features'].to_numpy(),
-                                          validation_data['labels'].to_numpy(),
-                                          batch_size=validation_batch_size)
+        validation_data = _create_data_iterator(validation_data['deep features'].to_numpy(),
+                                                validation_data['labels'].to_numpy(),
+                                                batch_size=validation_batch_size)
     else:
         validation_data = []
 
@@ -359,9 +359,10 @@ def create(dataset, target, feature, max_iterations=10,
         print("\nTraining a custom neural network -")
 
     training_batch_size = min(len(train_data), batch_size)
-    train_data = _create_dataset(train_data['deep features'].to_numpy(),
-                                 train_data['labels'].to_numpy(),
-                                 batch_size=training_batch_size, shuffle=True)
+    train_data = _create_data_iterator(train_data['deep features'].to_numpy(),
+                                       train_data['labels'].to_numpy(),
+                                       batch_size=training_batch_size,
+                                       shuffle=True)
 
     from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
     custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
@@ -919,8 +920,8 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
-        for data, _ in _create_dataset(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
-            y += self._custom_classifier.predict(data).asnumpy().tolist()
+        for data, in _create_data_iterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
+            y += self._custom_classifier.predict(data).tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames
