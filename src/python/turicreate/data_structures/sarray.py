@@ -1768,10 +1768,8 @@ class SArray(object):
         with cython_context():
             return SArray(_proxy=self.__proxy__.dict_has_all_keys(keys))
 
-    def apply(self, fn, dtype=None, skip_na=True, seed=None):
+    def apply(self, fn, dtype=None, skip_na=True):
         """
-        apply(fn, dtype=None, skip_na=True, seed=None)
-
         Transform each element of the SArray by a given function. The result
         SArray is of type ``dtype``. ``fn`` should be a function that returns
         exactly one value which can be cast into the type specified by
@@ -1793,12 +1791,6 @@ class SArray(object):
 
         skip_na : bool, optional
             If True, will not apply ``fn`` to any undefined values.
-
-        seed : int, optional
-            ..WARNING:: This parameter is deprecated, It will be removed in the next
-            major release.
-
-            Used as the seed if a random number generator is included in ``fn``.
 
         Returns
         -------
@@ -1849,11 +1841,7 @@ class SArray(object):
         dryrun = [fn(i) for i in self.head(100) if i is not None]
         if dtype is None:
             dtype = infer_type_of_list(dryrun)
-        if seed is None:
-            seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
-        else:
-            warnings.warn("Passing a \"seed\" parameter to SArray.apply is deprecated. This functionality"
-                          + " will be removed in the next major release.")
+        seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
 
         # First phase test if it is a toolkit function
         nativefn = None
