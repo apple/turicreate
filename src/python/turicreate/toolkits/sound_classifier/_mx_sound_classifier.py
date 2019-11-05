@@ -26,10 +26,6 @@ class MultiLayerPerceptronMXNetModel():
 
 
     def train(self, data, label):
-<<<<<<< HEAD
-        # Inside training scope
-        data_shape = data.shape[0]
-=======
         """
         Parameters
         ----------
@@ -44,7 +40,6 @@ class MultiLayerPerceptronMXNetModel():
 
         # Inside training scope
         batch_size = data.shape[0] # may be smaller than the specified batch_size in create()
->>>>>>> master
         data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
         label = mx.gluon.utils.split_and_load(label, ctx_list=self.ctx, batch_axis=0, even_split=False)
         with mx.autograd.record():
@@ -56,15 +51,6 @@ class MultiLayerPerceptronMXNetModel():
                 loss.backward()
         # Make one step of parameter update. Trainer needs to know the
         # batch size of data to normalize the gradient by 1/batch_size.
-<<<<<<< HEAD
-        self.trainer.step(data_shape)
-
-
-    def predict(self, data):
-        data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
-        outputs = [self.custom_NN(x).asnumpy() for x in data]
-        return outputs
-=======
         self.trainer.step(batch_size)
 
 
@@ -82,7 +68,6 @@ class MultiLayerPerceptronMXNetModel():
         outputs = [self.custom_NN(x).asnumpy() for x in data]
         soft_outputs = mx.nd.softmax(mx.nd.array(outputs[0]))
         return soft_outputs
->>>>>>> master
 
     @staticmethod
     def _build_custom_neural_network(num_inputs, num_labels, layer_sizes):
@@ -106,8 +91,6 @@ class MultiLayerPerceptronMXNetModel():
         return _mxnet_utils.get_gluon_net_params_state(self.custom_NN.collect_params())
 
     def load_weights(self, weights):
-<<<<<<< HEAD
-=======
         """
         Parameters
         ----------
@@ -117,7 +100,6 @@ class MultiLayerPerceptronMXNetModel():
 
         """
 
->>>>>>> master
         net_params = self.custom_NN.collect_params()
         _mxnet_utils.load_net_params_from_state(net_params, weights, ctx=self.ctx)
 
