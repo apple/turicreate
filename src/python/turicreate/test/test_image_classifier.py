@@ -9,6 +9,7 @@ from __future__ import absolute_import as _
 
 import os
 import platform
+import pytest
 import sys
 import tempfile
 import unittest
@@ -24,6 +25,9 @@ import coremltools
 import numpy as np
 import pytest
 import turicreate as tc
+
+
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
 
 
 def get_test_data():
@@ -70,6 +74,7 @@ def get_test_data():
 data = get_test_data()
 
 
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ImageClassifierTest(unittest.TestCase):
     @classmethod
     def setUpClass(self, model = 'resnet-50', input_image_shape = (3, 224, 224), tol=0.02,

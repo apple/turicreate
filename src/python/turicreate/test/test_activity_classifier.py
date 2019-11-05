@@ -20,6 +20,8 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
 USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+
 
 def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
                randomize_num_sessions = True, num_labels = 9, prediction_window = 5,
@@ -70,6 +72,7 @@ def _random_session_ids(num_examples, num_sessions):
     return session_ids
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierCreateStressTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -80,7 +83,7 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
         sf_session_id = max(self.data[self.session_id])
         sf = self.data.append(tc.SFrame({self.features[0]: [None], self.features[1]: [3.14], self.features[2]: [5.23], self.target: [sf_label], self.session_id: [sf_session_id]}))
         with self.assertRaises(_ToolkitError):
-            tc.activity_classifier.create(sf, 
+            tc.activity_classifier.create(sf,
                             features=self.features,
                             target=self.target,
                             session_id=self.session_id,
@@ -133,11 +136,21 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                                                   validation_set=None)
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierAutoValdSetTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         self.fraction = 0.9
         self.seed = 42
+
+    def _compute_expect_frac(self,num_sessions):
+        if num_sessions > 200000:
+            return 10000./num_sessions
+        elif num_sessions >= 200:
+            return 0.95
+        elif num_sessions >= 50:
+            return 0.9
+        return 1
 
     def _create_auto_validation_set(self, is_small=False):
         model = tc.activity_classifier.create(self.data,
@@ -152,7 +165,10 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         num_sessions = len(self.data[self.session_id].unique())
         valid_num_sessions = num_sessions - model.num_sessions
         valid_frac = float(valid_num_sessions / num_sessions)
-        expected_frac = 0.0 if is_small else 1.0 - self.fraction
+        if USE_CPP:
+            expected_frac = 0.0 if is_small else 1.0 - self._compute_expect_frac(num_sessions)
+        else:
+            expected_frac = 0.0 if is_small else 1.0 - self.fraction
         self.assertAlmostEqual(valid_frac, expected_frac, places=1,
                                msg="Got {} validation sessions out of {}, which is {:.3f}, and not the expected {}".format(valid_num_sessions, num_sessions, valid_frac, expected_frac))
 
@@ -186,7 +202,8 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
                         "After train-test split, the train and validation sets should not include the same sessions")
 
     def test_create_auto_validation_set_small(self):
-        num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT // 2
+        min_num_session_for_split = 50 if USE_CPP else tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT
+        num_sessions = min_num_session_for_split // 2
         _load_data(self, max_num_sessions=num_sessions, randomize_num_sessions=False, enforce_all_sessions=True)
 
         self._create_auto_validation_set(is_small=True)
@@ -212,8 +229,9 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
 
         self._create_auto_validation_set()
 
-class ActivityClassifierTest(unittest.TestCase):
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
+class ActivityClassifierTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         """
@@ -439,6 +457,7 @@ class ActivityClassifierTest(unittest.TestCase):
                                     " has failed with error: " + str(e))
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ActivityClassifierGPUTest(unittest.TestCase):

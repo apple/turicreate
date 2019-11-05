@@ -19,6 +19,7 @@ class test_activity_classifier : public activity_classifier {
   class mock_iterator : public data_iterator {
     flex_list class_labels_;
     flex_list feature_names_;
+    size_t num_sessions_;
     void reset() override { return; }
 
     bool has_next_batch() const override { return true; }
@@ -26,6 +27,8 @@ class test_activity_classifier : public activity_classifier {
     const flex_list& class_labels() const override { return class_labels_; }
 
     const flex_list& feature_names() const override { return feature_names_; }
+
+    const size_t num_sessions() const override { return num_sessions_; }
 
     flex_type_enum session_id_type() const override {
       return flex_type_enum::UNDEFINED;

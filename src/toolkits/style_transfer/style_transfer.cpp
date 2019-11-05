@@ -268,7 +268,10 @@ void style_transfer::init_options(
   options.create_integer_option(
       "num_styles", "The number of styles present in the model", FLEX_UNDEFINED,
       1, std::numeric_limits<int>::max());
-
+  options.create_boolean_option(
+      "verbose", "When set to true, verbose is printed", true, true);
+  options.create_string_option("content_feature", "Name of the content column", "image", true);
+  options.create_string_option("style_feature", "Name of the style column", "image", true);
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -283,7 +286,6 @@ void style_transfer::save_impl(oarchive& oarc) const {
 
 void style_transfer::load_version(iarchive& iarc, size_t version) {
   variant_deep_load(state, iarc);
-
   float_array_map nn_params;
   iarc >> nn_params;
 
@@ -355,7 +357,8 @@ gl_sframe style_transfer::predict(variant_type data,
   std::vector<double> style_idx;
   auto style_idx_iter = opts.find("style_idx");
   if (style_idx_iter == opts.end()) {
-    size_t num_styles = read_state<flexible_type>("num_styles");
+    flex_int num_styles = read_state<flex_int>("num_styles");
+
     style_idx.resize(num_styles);
     std::iota(style_idx.begin(), style_idx.end(), 0);
   } else {
@@ -367,9 +370,26 @@ gl_sframe style_transfer::predict(variant_type data,
       case flex_type_enum::VECTOR:
         style_idx = std::move(flex_style_idx.get<flex_vec>());
         break;
+      case flex_type_enum::LIST:
+      {
+        const auto& list = flex_style_idx.get<flex_list>();
+        style_idx.resize(list.size());
+        std::transform(list.begin(), list.end(), style_idx.begin(),
+                       [](flexible_type val) {
+                         return static_cast<double>(val.get<flex_float>());
+                       });
+        break;
+
+      }
+      case flex_type_enum::UNDEFINED: {
+        flex_int num_styles = read_state<flex_int>("num_styles");
+        style_idx.resize(num_styles);
+        std::iota(style_idx.begin(), style_idx.end(), 0);
+        break;
+      }
       default:
         log_and_throw(
-            "Option \"style_idx\" has to be of type `Integer` or `SArray`.");
+            "Option \"style_idx\" has to be of type `Integer` or `List`.");
     }
   }
 
@@ -403,10 +423,9 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   shared_float_array st_train = shared_float_array::wrap(0.f);
   shared_float_array st_num_styles(std::make_shared<float_scalar>(num_styles));
 
-  std::unique_ptr<model_backend> model =
-      m_training_compute_context->create_style_transfer(
-          {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
-          weight_params);
+  std::unique_ptr<model_backend> model = ctx->create_style_transfer(
+      {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
+      weight_params);
 
   // looping through all of the style indicies
   for (size_t i : style_idx) {
@@ -436,14 +455,14 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
       // Write result to gl_sframe_writer
       for (const auto& row : processed_batch) {
-        result.write({row.first, row.second}, 1);
+        result.write({row.first, row.second}, 0);
       }
 
       // get next batch
       batch = data_iter->next_batch(batch_size);
     }
 
-    data_iter.reset();
+    data_iter->reset();
   }
 }
 
@@ -605,8 +624,8 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
       {"max_iterations", read_state<flex_int>("max_iterations")},
       {"training_iterations", read_state<flex_int>("training_iterations")},
       {"type", "StyleTransfer"},
-      {"content_feature", "image"},
-      {"style_feature", "image"},
+      {"content_feature", read_state<flex_string>("content_feature")},
+      {"style_feature", read_state<flex_string>("style_feature")},
       {"num_styles", read_state<flex_string>("num_styles")},
       {"version", get_version()},
   };

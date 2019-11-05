@@ -422,11 +422,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
   // Now, actually invoke object_detector::init_training. This will trigger all
   // the assertions registered above.
   model.init_training(data, test_annotations_name, test_image_name, gl_sframe(),
-                      {
-                          {"mlmodel_path", test_mlmodel_path},
-                          {"batch_size", test_batch_size},
-                          {"max_iterations", test_max_iterations},
-                      });
+                      {{"mlmodel_path", test_mlmodel_path},
+                       {"batch_size", test_batch_size},
+                       {"max_iterations", test_max_iterations}});
 
   // Verify model fields.
   TS_ASSERT_EQUALS(model.get_field<flex_int>("batch_size"), test_batch_size);
