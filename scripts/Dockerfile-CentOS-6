@@ -44,15 +44,12 @@ WORKDIR /src/openssl-1.1.0j
 RUN ./config --prefix=/usr/local --openssldir=/usr/local && \
     make -j4 --quiet && \
     make install && \
-    ldconfig && \
-    rm -rf /src/openssl*
-ADD https://www.openssl.org/source/openssl-1.1.0j.tar.gz /src/openssl-1.1.0j.tar.gz
-WORKDIR /src
-RUN tar xf openssl-1.1.0j.tar.gz
-WORKDIR /src/openssl-1.1.0j
-RUN ./config --prefix=/usr/local --openssldir=/usr/local/openssl11 && \
-    make -j4 --quiet && \
-    make install && \
+    cp libssl.a /usr/local/lib/libssl.a && \
+    cp libcrypto.a /usr/local/lib/libcrypto.a && \
+    cp libcrypto.so.1.1 /usr/local/lib/libcrypto.so.1.1 && \
+    cp libcrypto.so /usr/local/lib/libcrypto.so && \
+    cp libssl.so.1.1 /usr/local/lib/libssl.so.1.1 && \
+    cp libssl.so /usr/local/lib/libssl.so && \
     ldconfig && \
     rm -rf /src/openssl*
 
