@@ -19,6 +19,74 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
+USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
+
+class _Accuracy(object):
+    '''
+    Defines a common interface around MXNet/TensorFlow accuracy metrics.
+    '''
+
+    def __init__(self):
+        raise NotImplementedError
+
+    '''
+    Tallies the results from a single batch of predictions.
+
+    The predictions are expected to contain (possibly unnormalized) class
+    probabilities. Replacing the last axis of the predictions with the argmax
+    should yield a shape matching the ground truth.
+    '''
+    def update(self, ground_truth, predicted):
+        raise NotImplementedError
+
+    '''
+    Removes all tallied results so far.
+    '''
+    def reset(self):
+        raise NotImplementedError
+
+    '''
+    Computes the accuracy for all the results tallied so far.
+    '''
+    def get(self):
+        raise NotImplementedError
+
+class _MXNetAccuracy(_Accuracy):
+    def __init__(self):
+        import mxnet as mx
+        self.impl = mx.metric.Accuracy()
+
+    def update(self, ground_truth, predicted):
+        import mxnet as mx
+        self.impl.update([mx.nd.array(ground_truth)], [mx.nd.array(predicted)])
+
+    def reset(self):
+        self.impl.reset()
+
+    def get(self):
+        _, result = self.impl.get()
+        return result
+
+class _TFAccuracy(_Accuracy):
+    def __init__(self):
+        import tensorflow as tf
+        self.impl = tf.keras.metrics.Accuracy()
+
+    def update(self, ground_truth, predicted):
+        predicted = _np.argmax(predicted, axis=-1)
+        self.impl.update_state(ground_truth, predicted)
+
+    def reset(self):
+        self.impl.reset_states()
+
+    def get(self):
+        return self.impl.result()
+
+def _get_accuracy_metric():
+    if USE_TF:
+        return _TFAccuracy()
+    else:
+        return _MXNetAccuracy()
 
 def _is_deep_feature_sarray(sa):
     if not isinstance(sa, _tc.SArray):
@@ -120,7 +188,7 @@ def create(dataset, target, feature, max_iterations=10,
         A dataset for monitoring the model's generalization performance. The
         format of this SFrame must be the same as the training dataset. By
         default, a validation set is automatically sampled. If `validation_set`
-        is set to None, no validataion is used. You can also pass a validation
+        is set to None, no validation is used. You can also pass a validation
         set you have constructed yourself.
 
     batch_size : int, optional
@@ -205,7 +273,7 @@ def create(dataset, target, feature, max_iterations=10,
 
     if validation_set is not None:
         if verbose:
-            print("Preparing validataion set")
+            print("Preparing validation set")
         validation_encoded_target = validation_set[target].apply(lambda x: class_label_to_id[x])
 
         if _is_deep_feature_sarray(validation_set[feature]):
@@ -233,7 +301,7 @@ def create(dataset, target, feature, max_iterations=10,
                                     batch_size=training_batch_size, shuffle=True)
 
     from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-    sc_model = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
+    custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
     if verbose:
         # Setup progress table
@@ -244,9 +312,9 @@ def create(dataset, target, feature, max_iterations=10,
             row_display_names.insert(2, 'Validation Accuracy (%)')
         table_printer = _tc.util._ProgressTablePrinter(row_ids, row_display_names)
 
-    train_metric = mx.metric.Accuracy()
+    train_metric = _get_accuracy_metric()
     if validation_data:
-        validation_metric = mx.metric.Accuracy()
+        validation_metric = _get_accuracy_metric()
 
     for i in range(max_iterations):
         # TODO: early stopping
@@ -254,29 +322,31 @@ def create(dataset, target, feature, max_iterations=10,
         for batch in train_data:
             data = batch.data[0].asnumpy()
             label = batch.label[0].asnumpy()
-            sc_model.train(data, label)
+            custom_NN.train(data, label)
         train_data.reset()
 
         # Calculate training metric
         for batch in train_data:
             data = batch.data[0].asnumpy()
-            outputs = sc_model.predict(data)
-            train_metric.update([batch.label[0]], mx.nd.array(outputs))
+            outputs = custom_NN.predict(data)
+            label = _np.array([x.asnumpy() for x in batch.label[0]])
+            train_metric.update(label, outputs)
         train_data.reset()
 
-        # Calculate validataion metric
+        # Calculate validation metric
         for batch in validation_data:
             data = batch.data[0].asnumpy()
-            outputs = sc_model.predict(data)
-            validation_metric.update(batch.label[0], mx.nd.array(outputs))
+            outputs = custom_NN.predict(data)
+            label = _np.array([x.asnumpy() for x in batch.label[0]])
+            validation_metric.update(label, outputs)
 
         # Get metrics, print progress table
-        _, train_accuracy = train_metric.get()
+        train_accuracy = train_metric.get()
         train_metric.reset()
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
         if validation_data:
-            _, validataion_accuracy = validation_metric.get()
-            printed_row_values['validation_accuracy'] = validataion_accuracy
+            validation_accuracy = validation_metric.get()
+            printed_row_values['validation_accuracy'] = validation_accuracy
             validation_metric.reset()
             validation_data.reset()
         if verbose:
@@ -298,7 +368,7 @@ def create(dataset, target, feature, max_iterations=10,
         'target': target,
         'training_accuracy': train_accuracy,
         'training_time': time.time() - start_time,
-        'validation_accuracy': validataion_accuracy if validation_data else None,
+        'validation_accuracy': validation_accuracy if validation_data else None,
     }
     return SoundClassifier(state)
 
@@ -332,9 +402,10 @@ class SoundClassifier(_CustomModel):
         """
         from .._mxnet import _mxnet_utils
         state = self.__proxy__.get_state()
+
         del state['_feature_extractor']
+
         state['_custom_classifier'] = state['_custom_classifier'].get_weights()
-        print(state['_custom_classifier'])
 
         return state
 
@@ -800,11 +871,7 @@ class SoundClassifier(_CustomModel):
             if batch.pad != 0:
                 batch_data = batch_data[:-batch.pad]    # prevent batches looping back
 
-            batch_data = mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx, batch_axis=0, even_split=False)
-
-            for x in batch_data:
-                forward_output = self._custom_classifier.predict(x)
-                y += mx.nd.softmax(forward_output[0]).asnumpy().tolist()
+            y += self._custom_classifier.predict(batch_data).asnumpy().tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames

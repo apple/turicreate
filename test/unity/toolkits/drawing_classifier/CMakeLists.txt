@@ -8,3 +8,6 @@ make_boost_test(
 
 make_boost_test(
   test_dc_serialization.cxx REQUIRES unity_shared_for_testing)
+
+make_boost_test(
+  test_dc_prediction.cxx REQUIRES unity_shared_for_testing)

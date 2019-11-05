@@ -3772,6 +3772,20 @@ class SFrameTest(unittest.TestCase):
 
         _assert_sframe_equal(sf, sf_test)
 
+     
+    def test_filter_by_dict(self):
+        # Check for dict in filter_by
+        sf = SFrame({'check':range(10)})
+        d = {1:1}
+
+        sf = sf.filter_by(d.keys(),'check')
+        sf_test = sf.filter_by(list(d.keys()),'check')
+        _assert_sframe_equal(sf, sf_test)
+
+        sf = sf.filter_by(d.values(),'check')
+        sf_test = sf.filter_by(list(d.values()),'check')
+        _assert_sframe_equal(sf, sf_test)
+
 
 if __name__ == "__main__":
 

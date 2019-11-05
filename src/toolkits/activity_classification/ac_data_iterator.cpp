@@ -533,6 +533,10 @@ flex_type_enum simple_data_iterator::session_id_type() const {
   return data_.session_id_type;
 }
 
+const size_t simple_data_iterator::num_sessions() const {
+  return data_.num_sessions;
+}
+
 bool simple_data_iterator::has_next_batch() const {
   return next_row_ != end_of_rows_;
 }
@@ -650,8 +654,8 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
         std::move(labels), { batch_size, 1, num_predictions_per_chunk_, 1 });
     result.weights = shared_float_array::wrap(
         std::move(weights), { batch_size, 1, num_predictions_per_chunk_, 1 });
-    result.labels_per_row = shared_float_array::wrap( 
-        std::move(labels_per_row), { batch_size, 1, num_samples_per_chunk, 1 });
+    result.labels_per_row = shared_float_array::wrap(
+        std::move(labels_per_row), {batch_size, 1, num_samples_per_chunk, 1});
   }
 
   result.batch_info = std::move(batch_info);

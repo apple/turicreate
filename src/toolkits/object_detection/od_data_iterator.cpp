@@ -19,6 +19,27 @@ using annotation_origin_enum = data_iterator::annotation_origin_enum;
 using annotation_scale_enum = data_iterator::annotation_scale_enum;
 using annotation_position_enum = data_iterator::annotation_position_enum;
 
+gl_sarray canonicalize_annotations(gl_sarray data) {
+  auto canonicalize_annotations = [](const flexible_type& annotation) {
+    flex_list annotation_list = flex_list();
+    switch (annotation.get_type()) {
+      case flex_type_enum::LIST:
+        annotation_list = annotation.get<flex_list>();
+        break;
+      case flex_type_enum::DICT:
+        annotation_list.push_back(annotation);
+        break;
+      case flex_type_enum::UNDEFINED:
+        break;
+      default:
+        log_and_throw("Annotations column must be of type dict or list");
+        break;
+    }
+    return annotation_list;
+  };
+  return data.apply(canonicalize_annotations, flex_type_enum::LIST);
+}
+
 flex_image get_image(const flexible_type& image_feature) {
   if (image_feature.get_type() == flex_type_enum::STRING) {
     return read_image(image_feature, /* format_hint */ "");
@@ -28,8 +49,6 @@ flex_image get_image(const flexible_type& image_feature) {
 }
 
 gl_sframe get_data(const data_iterator::parameters& params) {
-
-  gl_sarray annotations = params.data[params.annotations_column_name];
   gl_sarray images = params.data[params.image_column_name];
 
   if (images.dtype() == flex_type_enum::IMAGE) {
@@ -39,8 +58,19 @@ gl_sframe get_data(const data_iterator::parameters& params) {
     images = images.apply(image_util::encode_image, flex_type_enum::IMAGE);
   }
 
-  gl_sframe result({ { params.annotations_column_name, annotations },
-                     { params.image_column_name,       images      }  });
+  gl_sframe result({{params.image_column_name, images}});
+
+  if (!params.annotations_column_name.empty()) {
+    result[params.annotations_column_name] =
+        params.data[params.annotations_column_name];
+  }
+
+  // Check annotations type. If it is a single dictionary, put it into a list.
+  if (params.data.contains_column(params.annotations_column_name)) {
+    gl_sarray raw_annotations = result[params.annotations_column_name];
+    result.replace_add_column(canonicalize_annotations(raw_annotations),
+                              params.annotations_column_name);
+  }
 
   if (!params.predictions_column_name.empty()) {
     result[params.predictions_column_name] =
@@ -57,7 +87,6 @@ std::vector<image_annotation> parse_annotations(
     annotation_origin_enum annotation_origin,
     annotation_scale_enum annotation_scale,
     annotation_position_enum annotation_position) {
-
   std::vector<image_annotation> result;
   result.reserve(flex_annotations.size());
 
@@ -73,10 +102,12 @@ std::vector<image_annotation> parse_annotations(
       const flex_string& key = kv.first.get<flex_string>();
 
       if (key == "label") {
-
-        annotation.identifier =
-            class_to_index_map.at(kv.second.get<flex_string>());
-        has_label = true;
+        // If the label is invalid (not in class_to_index_map) then ignore it.
+        const flex_string& label = kv.second.get<flex_string>();
+        if (class_to_index_map.find(label) != class_to_index_map.end()) {
+          annotation.identifier = class_to_index_map.at(label);
+          has_label = true;
+        }
 
       } else if (key == "coordinates") {
 
@@ -207,17 +238,14 @@ std::vector<image_annotation> parse_annotations(
   return result;
 }
 
-}  // namespace
-
-simple_data_iterator::annotation_properties
-simple_data_iterator::compute_properties(
-    const gl_sarray& annotations,
-    std::vector<std::string> expected_class_labels) {
-
-  annotation_properties result;
+std::pair<gl_sarray, size_t> get_annotation_info(const gl_sarray& annotations) {
+  if (annotations.size() == 0) {
+    return std::make_pair(gl_sarray(), 0);
+  }
 
   // Construct an SFrame with one row per bounding box.
   gl_sframe instances;
+
   if (annotations.dtype() == flex_type_enum::LIST) {
     gl_sframe unstacked_instances({{"annotations", annotations}});
     instances = unstacked_instances.stack("annotations", "bbox",
@@ -228,11 +256,22 @@ simple_data_iterator::compute_properties(
 
   // Extract the label for each bounding box.
   instances = instances.unpack("bbox", /* column_name_prefix */ "",
-                               { flex_type_enum::STRING },
-                               /* na_value */ FLEX_UNDEFINED, { "label" });
+                               {flex_type_enum::STRING},
+                               /* na_value */ FLEX_UNDEFINED, {"label"});
 
-  // Determine the list of unique class labels,
-  gl_sarray classes = instances["label"].unique().sort();
+  return std::make_pair(instances["label"].unique().sort(), instances.size());
+}
+
+}  // namespace
+
+simple_data_iterator::annotation_properties
+simple_data_iterator::compute_properties(
+    const gl_sarray& annotations,
+    std::vector<std::string> expected_class_labels) {
+  annotation_properties result;
+  gl_sarray classes;
+
+  std::tie(classes, result.num_instances) = get_annotation_info(annotations);
 
   if (expected_class_labels.empty()) {
 
@@ -252,17 +291,7 @@ simple_data_iterator::compute_properties(
       result.class_to_index_map[label] = i++;
     }
 
-    // Use the map to verify that we only encountered expected labels.
-    for (const flexible_type& ft : classes.range_iterator()) {
-      std::string label(ft);  // Ensures correct overload resolution below.
-      if (result.class_to_index_map.count(label) == 0) {
-        log_and_throw("Annotations contained unexpected class label " + label);
-      }
-    }
   }
-
-  // Record the number of labeled bounding boxes.
-  result.num_instances = instances.size();
 
   return result;
 }
@@ -270,34 +299,41 @@ simple_data_iterator::compute_properties(
 simple_data_iterator::simple_data_iterator(const parameters& params)
 
     // Reduce SFrame to the two columns we care about.
-  : data_(get_data(params)),
+    : data_(get_data(params)),
 
-    // Determine which column is which within each (ordered) row.
-    annotations_index_(data_.column_index(params.annotations_column_name)),
-    predictions_index_(params.predictions_column_name.empty()
-                       ? -1
-                       : data_.column_index(params.predictions_column_name)),
-    image_index_(data_.column_index(params.image_column_name)),
+      // Determine which column is which within each (ordered) row.
+      annotations_index_(
+          params.annotations_column_name.empty()
+              ? -1
+              : data_.column_index(params.annotations_column_name)),
 
-    annotation_origin_(params.annotation_origin),
-    annotation_scale_(params.annotation_scale),
-    annotation_position_(params.annotation_position),
+      predictions_index_(
+          params.predictions_column_name.empty()
+              ? -1
+              : data_.column_index(params.predictions_column_name)),
+      image_index_(data_.column_index(params.image_column_name)),
 
-    // Whether to traverse the SFrame more than once, and whether to shuffle.
-    repeat_(params.repeat),
-    shuffle_(params.shuffle),
+      annotation_origin_(params.annotation_origin),
+      annotation_scale_(params.annotation_scale),
+      annotation_position_(params.annotation_position),
 
-    // Identify/verify the class labels and other annotation properties.
-    annotation_properties_(
-        compute_properties(data_[params.annotations_column_name],
-                           params.class_labels)),
+      // Whether to traverse the SFrame more than once, and whether to shuffle.
+      repeat_(params.repeat),
+      shuffle_(params.shuffle),
 
-    // Start an iteration through the entire SFrame.
-    range_iterator_(data_.range_iterator()),
-    next_row_(range_iterator_.begin()),
+      // Identify/verify the class labels and other annotation properties.
+      annotation_properties_(
+          compute_properties(params.annotations_column_name.empty()
+                                 ? gl_sarray()
+                                 : data_[params.annotations_column_name],
+                             params.class_labels)),
 
-    // Initialize random number generator.
-    random_engine_(params.random_seed)
+      // Start an iteration through the entire SFrame.
+      range_iterator_(data_.range_iterator()),
+      next_row_(range_iterator_.begin()),
+
+      // Initialize random number generator.
+      random_engine_(params.random_seed)
 
 {}
 
@@ -307,14 +343,16 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
   std::vector<std::tuple<flexible_type,flexible_type,flexible_type>> raw_batch;
   raw_batch.reserve(batch_size);
   while (raw_batch.size() < batch_size && next_row_ != range_iterator_.end()) {
-
     const sframe_rows::row& row = *next_row_;
     flexible_type preds = FLEX_UNDEFINED;
+    flexible_type annotations = FLEX_UNDEFINED;
+    if (annotations_index_ >= 0) {
+      annotations = row[annotations_index_];
+    }
     if (predictions_index_ >= 0) {
       preds = row[predictions_index_];
     }
-    raw_batch.emplace_back(row[image_index_], row[annotations_index_], preds);
-
+    raw_batch.emplace_back(row[image_index_], annotations, preds);
     if (++next_row_ == range_iterator_.end() && repeat_) {
 
       if (shuffle_) {
@@ -353,10 +391,12 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
     // TODO: Investigate parallelizing this file I/O.
     result[i].image = get_image(raw_image);
 
-    result[i].annotations = parse_annotations(
-        raw_annotations, result[i].image.m_width, result[i].image.m_height,
-        annotation_properties_.class_to_index_map, annotation_origin_, annotation_scale_,
-        annotation_position_);
+    if (raw_annotations != FLEX_UNDEFINED) {
+      result[i].annotations = parse_annotations(
+          raw_annotations, result[i].image.m_width, result[i].image.m_height,
+          annotation_properties_.class_to_index_map, annotation_origin_,
+          annotation_scale_, annotation_position_);
+    }
 
     if (raw_predictions != FLEX_UNDEFINED) {
       result[i].predictions = parse_annotations(
@@ -365,7 +405,6 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
           annotation_position_);
     }
   }
-
   return result;
 }
 
