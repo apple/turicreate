@@ -21,10 +21,6 @@ from . import util as test_util
 import unittest
 import pytest
 
-
-IS_PRE_6_0_RC = float(_tc.__version__) < 6.0
-
-
 def _build_bitmap_data():
     '''
     Build an SFrame from 10 saved drawings.
@@ -75,7 +71,6 @@ def _build_stroke_data():
     return _tc.SFrame({"drawing": drawings, "label": labels})
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class DrawingClassifierTest(unittest.TestCase):
     @classmethod
     def setUpClass(self, warm_start='auto'):
@@ -357,15 +352,12 @@ class DrawingClassifierTest(unittest.TestCase):
             model.summary()
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class DrawingClassifierFromScratchTest(DrawingClassifierTest):
     @classmethod
     def setUpClass(self):
         super(DrawingClassifierFromScratchTest, self).setUpClass(
             warm_start=None)
 
-
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
     @classmethod
     def setUpClass(self):
