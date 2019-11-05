@@ -2,7 +2,7 @@
 
 # This image is intended for building Turi Create for maximum compatibility
 # with various Linux distributions.
-# Based on Ubuntu 10.04 for compatibility with older glibc versions.
+# Based on Centos 6 for compatibility with older glibc versions.
 # Builds with LLVM 8.0.0 for modern compiler features and bug fixes.
 # Builds against libstdc++ from GCC 4.8 for compatibility with older libstdc++
 # runtime versions.
@@ -12,9 +12,10 @@ FROM quay.io/pypa/manylinux2010_x86_64@sha256:191e8bc35089ce4ceda48224289b747532
 # Set env variables for tools to pick up
 ENV CC="gcc"
 ENV CXX="g++"
-ENV PATH="/usr/local/bin:${PATH}"
+ENV PATH="/opt/rh/devtoolset-8/root/usr/bin:/usr/local/bin:${PATH}"
 ENV CCACHE_DIR=/build/.docker_ccache
 ENV CCACHE_COMPILERCHECK=content
+RUN ldconfig
 
 # Install dependencies
 RUN yum -y update && \
