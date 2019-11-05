@@ -25,6 +25,7 @@ RUN yum -y update && \
                bzip2-devel \
                sqlite-devel \
                zlib-devel \
+               gcc-multilib \
                ccache \
                make \
                wget \
@@ -38,8 +39,8 @@ RUN yum -y update && \
 # Install OpenSSL and curl from source
 # The built-in SSL is so old it can't talk to anything on the internet anymore
 # (so even get-pip.py doesn't work!)
-ADD https://www.openssl.org/source/openssl-1.1.0j.tar.gz /src/openssl-1.1.0j.tar.gz
 WORKDIR /src
+RUN curl -O https://www.openssl.org/source/openssl-1.1.0j.tar.gz
 RUN tar xf openssl-1.1.0j.tar.gz
 WORKDIR /src/openssl-1.1.0j
 RUN ./config --prefix=/usr/local --openssldir=/usr/local && \
