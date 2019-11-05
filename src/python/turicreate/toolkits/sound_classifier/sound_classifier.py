@@ -74,6 +74,7 @@ class _TFAccuracy(_Accuracy):
 
     def update(self, ground_truth, predicted):
         predicted = _np.argmax(predicted, axis=-1)
+        #print(ground_truth.shape, predicted.shape) #(64, 1) (64,)
         self.impl.update_state(ground_truth, predicted)
 
     def reset(self):
@@ -145,7 +146,7 @@ def get_deep_features(audio_data, verbose=True):
 
 def create(dataset, target, feature, max_iterations=10,
            custom_layer_sizes=[100, 100], verbose=True,
-           validation_set='auto', batch_size=64, **kwargs):
+           validation_set='auto', batch_size=64):
     '''
     Creates a :class:`SoundClassifier` model.
 
@@ -200,19 +201,6 @@ def create(dataset, target, feature, max_iterations=10,
     import mxnet as mx
 
     from ._audio_feature_extractor import _get_feature_extractor
-
-    params = {
-        'use_tensorflow': False,
-    }
-    if '_advanced_parameters' in kwargs:
-        # Make sure no additional parameters are provided
-        new_keys = set(kwargs['_advanced_parameters'].keys())
-        set_keys = set(params.keys())
-        unsupported = new_keys - set_keys
-        if unsupported:
-            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
-
-        params.update(kwargs['_advanced_parameters'])
 
     start_time = time.time()
     if not isinstance(dataset, _tc.SFrame):
@@ -300,9 +288,10 @@ def create(dataset, target, feature, max_iterations=10,
                                     label=train_data['labels'].to_numpy(),
                                     batch_size=training_batch_size, shuffle=True)
 
-    if params['use_tensorflow']:
-        from ._tf_sound_classifier import SoundClassifierTensorFlowModel
+    if USE_TF:
+        from ._tf_sound_classifier import SoundClassifierTensorFlowModel, _tf_train_model
         custom_NN = SoundClassifierTensorFlowModel(batch_size, num_labels)
+        ##_tf_train_model(custom_NN, train_data, validation_data, validation_set, batch_size, num_labels, verbose)
     else:
         from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
         custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
@@ -334,6 +323,7 @@ def create(dataset, target, feature, max_iterations=10,
             data = batch.data[0].asnumpy()
             outputs = custom_NN.predict(data)
             label = _np.array([x.asnumpy() for x in batch.label[0]])
+            print("label:", label, "outputs:",outputs)
             train_metric.update(label, outputs)
         train_data.reset()
 

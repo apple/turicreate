@@ -32,10 +32,9 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.num_classes = num_classes
         self.batch_size = batch_size
 
-        self.x = _tf.placeholder("float", [None, 1, 12288])
+        self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
-        '''
         # Weights
         weights = {
         'sound_dense0_weight'  : _tf.Variable(_tf.random.uniform([12288, 100]), name='sound_dense0_weight'),
@@ -68,6 +67,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                         metrics=[keras.metrics.categorical_accuracy])
         print(model.summary())
         return model
+        '''
 
         self.predictions = out
 
@@ -76,7 +76,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             labels=self.y))
 
         # Optimizer
-        self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.01).minimize(self.cost)
+        self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.1).minimize(self.cost)
 
         # Predictions
         correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
@@ -100,25 +100,41 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                                         net_params[key].data().asnumpy().transpose(1, 0)))
         '''
 
-
-    def train(self, feed_dict):
+    def train(self, data, label):
+        data_shape = data.shape[0]
         _, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
                             feed_dict={
-                                self.x: feed_dict['x'],
-                                self.y: feed_dict['y']
+                                self.x: data.reshape((data_shape, 12288)),
+                                self.y: _tf.keras.utils.to_categorical(label, self.num_classes).reshape((data_shape, self.num_classes))
                             })
+        result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
+
+    def predict(self, data):
+        data_shape = data.shape[0]
+        pred_probs = self.sess.run([self.predictions],
+                            feed_dict={
+                                self.x: data.reshape((data_shape, 12288))
+                            })
+        pred_probs = pred_probs[0]
+        return pred_probs
+
+    def method_train(self, feed_dict):
+        _, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
+                             feed_dict={
+                                 self.x: feed_dict['x'],
+                                 self.y: feed_dict['y']
+                             })
         result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
         return result
 
-    def predict(self, feed_dict):
+    def method_predict(self, feed_dict):
         pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
-                            feed_dict={
-                                self.x: feed_dict['x'],
-                                self.y: feed_dict['y']
-                            })
+                             feed_dict={
+                                 self.x: feed_dict['x'],
+                                 self.y: feed_dict['y']
+                             })
         result = {'accuracy' : final_accuracy, 'predictions' : pred_probs}
         return result
-
 
     def export_weights(self):
         """
@@ -196,23 +212,22 @@ def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, b
 
     num_iter = 0
     start_time = _time.time()
+
     for train_batch in train_loader:
-        #batch_x, batch_y = process_data(train_batch, batch_size, num_classes)
-        result = tf_model.train( feed_dict={
-                            'x': train_batch['deep features'].reshape((1, 1, 12288)), #batch_x,
-                            'y': _tf.keras.utils.to_categorical(train_batch['labels'], num_classes).reshape((1, num_classes)) #batch_y
+        data_shape = train_batch.label[0].asnumpy().shape[0]
+        result = tf_model.method_train( feed_dict={
+                            'x': train_batch.data[0].asnumpy().reshape((data_shape, 12288)),
+                            'y': _tf.keras.utils.to_categorical(train_batch.label[0].asnumpy(), self.num_classes).reshape((data_shape, self.num_classes))
                         })
         final_train_accuracy = result['accuracy']
         final_train_loss = result['loss']
-
         for val_batch in validation_loader:
-            #val_x, val_y = process_data(val_batch)
-            result = tf_model.predict(feed_dict={
-                            'x': train_batch['deep features'].reshape((1, 1, 12288)), #val_x,
-                            'y': _tf.keras.utils.to_categorical(train_batch['labels'], num_classes).reshape((1, num_classes)) #val_y
+            data_shape = val_batch.label[0].asnumpy().shape[0]
+            result = tf_model.method_predict(feed_dict={
+                            'x': val_batch.data[0].asnumpy().reshape((data_shape, 12288)),
+                            'y': _tf.keras.utils.to_categorical(val_batch.label[0].asnumpy(), self.num_classes).reshape((data_shape, self.num_classes))
                         })
             val_acc = result['accuracy']
-        #validation_loader.reset()
 
         num_iter+=1
         if verbose:
@@ -222,23 +237,9 @@ def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, b
                         "time": _time.time() - start_time}
             if validation_set is not None:
                 kwargs["validation_accuracy"] = "{:.3f}".format(val_acc)
-            if num_iter%100==0:
-                table_printer.print_row(**kwargs)
+            #if num_iter%100==0:
+            table_printer.print_row(**kwargs)
 
     final_val_accuracy = val_acc if validation_set else None
     total_train_time = _time.time() - start_time
 
-    return final_train_accuracy, final_val_accuracy
-
-'''
-def process_data(batch_data, batch_size, num_classes):
-
-    if batch_data.pad is not None:
-        batch_x = batch_data.data[0].asnumpy()[0:batch_size-batch_data.pad]
-        batch_y = _tf.keras.utils.to_categorical(batch_data.label[0].asnumpy()[0:batch_size-batch_data.pad],
-                                                    num_classes)
-    else:
-        batch_x = batch_data.data[0].asnumpy()
-        batch_y = _tf.keras.utils.to_categorical(batch_data['labels'], num_classes)
-    return batch_x, batch_y
-'''
