@@ -135,6 +135,14 @@ class EXPORT style_transfer : public ml_model_base {
   std::unique_ptr<table_printer> training_table_printer_;
 
   static gl_sarray convert_types_to_sarray(const variant_type& data);
+
+  /**
+   * convert_variant_to_filter
+   *
+   * This function takes a variant type and converts it into a boolean filter.
+   * The elements at the indicies we want to keep are set to a value of `1`, the
+   * elements we don't want to keep are set to a value of `0`.
+   */
   gl_sarray convert_variant_to_filter(const variant_type& data);
   gl_sframe style_sframe_with_index(gl_sarray styles);
 

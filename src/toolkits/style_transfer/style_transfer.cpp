@@ -238,8 +238,6 @@ flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
 }
 
 void check_style_index(int idx, int num_styles) {
-  std::cout << idx << std::endl;
-  std::cout << num_styles << std::endl;
   if ((idx < 0) || (idx >= num_styles))
     log_and_throw("Please choose a valid style index.");
 }
@@ -374,16 +372,34 @@ gl_sframe style_transfer::style_sframe_with_index(gl_sarray styles) {
   });
 }
 
+/**
+ * convert_variant_to_filter
+ *
+ * This function takes a variant type and converts it into a boolean filter. The
+ * elements at the indicies we want to keep are set to a value of `1`, the
+ * elements we don't want to keep are set to a value of `0`.
+ */
 gl_sarray style_transfer::convert_variant_to_filter(const variant_type& data) {
+  // read the `num_styles`
   flex_int num_styles = read_state<flex_int>("num_styles");
   if (variant_is<flex_list>(data) || variant_is<flex_vec>(data)) {
+    // if the type is `flex_list` or `flex_vec` create a vector where every
+    // element is set to zero
     std::vector<flexible_type> index_filter(num_styles, 0);
     flex_list index_list = variant_get_value<flex_list>(data);
+    // Assert that the list is not zero-length
     ASSERT_NE(index_list.size(), 0);
+    
+    // populate the indicies that are selected by the flex_list 
     std::for_each(index_list.begin(), index_list.end(),
                   [&index_filter, num_styles](flexible_type& ft) {
+                    // assert if the type is an integer or a float
                     ASSERT_TRUE(ft.get_type() == flex_type_enum::INTEGER ||
                                 ft.get_type() == flex_type_enum::FLOAT);
+
+                    // parse the float or integer value based on the type and,
+                    // set the value at the indicies to 1 indicating the filter
+                    // to be true.
                     switch (ft.get_type()) {
                       case flex_type_enum::INTEGER: {
                         flex_int idx = ft.get<flex_int>();
@@ -404,15 +420,22 @@ gl_sarray style_transfer::convert_variant_to_filter(const variant_type& data) {
                   });
     return index_filter;
   } else if (variant_is<flex_int>(data)) {
+    // Set the index filter to zeros, set to the length of the style sframe
     std::vector<flexible_type> index_filter(num_styles, 0);
     flex_int idx = variant_get_value<flex_int>(data);
+    // Check if the index is out of range or not
     check_style_index(idx, num_styles);
+    // Set the value at the index to `1`
     index_filter[idx] = 1;
     return index_filter;
   } else if (variant_is<flex_undefined>(data)) {
+    // If undefined set the value to all of the styles in the sframe to 1. Or \
+    // run stylize on all elements of the `SFrame`
     return std::vector<flexible_type>(num_styles, 1);
   } else {
-    log_and_throw("Invalid data type! Expect SArray, or flexible_type!");
+    log_and_throw(
+        "Invalid data type! Expect flex_list, flex_vec, flex_int, or "
+        "flex_undefined!");
   }
 }
 
