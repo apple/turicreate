@@ -61,14 +61,20 @@ class _MXNetDataIterator(_DataIterator):
         self.impl.reset()
 
     def __next__(self):
+        # Extract the data and label values, if applicable.
         batch = self.impl.__next__()
         data = batch.data[0]
         label = batch.label[0] if batch.label else None
+
+        # Instead of MXNet-style padding, we use TF-style non-fixed shapes.
         if batch.pad != 0:
             data = data[:-batch.pad]
             label = label[:-batch.pad] if label is not None else None
+
+        # Convert to numpy.
         data = data.asnumpy()
         label = label.asnumpy() if label is not None else None
+
         return (data, label) if label is not None else (data,)
 
     def next(self):
@@ -77,8 +83,14 @@ class _MXNetDataIterator(_DataIterator):
 class _TFDataIterator(_DataIterator):
     def __init__(self, data, label=None, batch_size=1, shuffle=False):
         import tensorflow as tf
+
+        # Always pass a tuple, so that the impl's built-in iterator returns a
+        # tuple.
         tensor_slices = (data, label) if label is not None else (data,)
+
         self.impl = tf.data.Dataset.from_tensor_slices(tensor_slices)
+
+        # Apply options.
         self.impl = self.impl.batch(batch_size)
         if shuffle:
             self.impl = self.impl.shuffle(data.shape[0])
@@ -87,6 +99,10 @@ class _TFDataIterator(_DataIterator):
         return self.impl.__iter__()
 
     def reset(self):
+        # Each call to __iter__ returns a fresh iterator object that will do one
+        # pass through the data. The mxnet.io.NDArrayIter interface only needs
+        # this method because their __iter__ function returns the NDArrayIter
+        # instance itself.
         pass
 
 def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
