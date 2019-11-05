@@ -182,7 +182,7 @@ std::unique_ptr<data_iterator> prepare_data_for_prediction(
 
   // Create an arbitrary SFrame with test_num_rows rows.
 
-  drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap,
+  drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap_based,
                                         num_of_rows, class_labels);
   gl_sframe my_data = data_generator.get_data();
 
@@ -206,7 +206,7 @@ using test_runner_t =
 
 void prediction_test_driver(size_t batch_size, size_t num_of_rows,
                             size_t num_of_classes, test_runner_t runner,
-                            bool is_bitmap) {
+                            bool is_bitmap_based) {
 #ifndef NDEBUG
   logprogress_stream << "batch_size=" << batch_size
                      << "; num_of_rows=" << num_of_rows
@@ -233,7 +233,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
   const std::string target_name = "target";
 
   // name 'target', 'feature' are used by create_iterator
-  drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap,
+  drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap_based,
                                         num_of_rows, class_labels, target_name, feature_name);
 
   gl_sframe my_data = data_generator.get_data();
@@ -330,291 +330,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_rank) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
-  log_for_debug("test_drawing_classifier_predict_prob");
 
-  for (auto& entry : TEST_CASES) {
-    size_t batch_size = std::get<0>(entry);
-    size_t num_of_rows = std::get<1>(entry);
-    size_t num_of_classes = std::get<2>(entry);
-
-    auto runner = [](test_drawing_classifier& mock_model, gl_sframe my_data,
-                     gl_sframe expected) {
-      auto result_prob = mock_model.predict(my_data, "probability_vector");
-
-      TS_ASSERT_EQUALS(result_prob.size(), expected[PRED_NAME].size());
-      _assert_sframe_equals(gl_sframe({{PRED_NAME, result_prob}}), expected);
-    };
-
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
-    }
-  }
-}
-
-/* ========================= predict top k ============================*/
-
-namespace {
-
-void verify_topk_result(size_t kk, size_t num_of_classes, size_t num_of_rows,
-                        gl_sframe result, gl_sframe expected) {
-  bool test_rank = result.contains_column("rank");
-
-  std::vector<unsigned> idx_vec;
-  if (test_rank) idx_vec.resize(num_of_classes);
-  flex_vec output(kk);
-
-  for (size_t ii = 0; ii < num_of_rows; ++ii) {
-    flex_vec prob_vec = expected[PRED_NAME][ii];
-
-    size_t idx_beg = ii * kk;
-
-    if (test_rank) {
-      // reset for each iteration
-      std::iota(idx_vec.begin(), idx_vec.end(), 0);
-
-      auto compare = [&](size_t i, size_t j) {
-        return prob_vec[i] > prob_vec[j];
-      };
-
-      std::sort(idx_vec.begin(), idx_vec.end(), compare);
-
-      // using rank
-      for (size_t jj = 0; jj < kk; ++jj) {
-        output[jj] = prob_vec[result["rank"][idx_beg + jj]];
-      }
-    } else {
-      // test probability
-      for (size_t jj = 0; jj < kk; ++jj) {
-        output[jj] = result["probability"][idx_beg + jj];
-      }
-    }
-
-    auto prob_vec_sorted = prob_vec;
-    std::sort(prob_vec_sorted.begin(), prob_vec_sorted.end(),
-              std::greater<double>());
-
-    TS_ASSERT(std::equal(prob_vec_sorted.begin(), prob_vec_sorted.begin(),
-                         output.begin()));
-
-    // label is stringized sequence [0, num_of_classes)
-    auto get_index_of_label = [](const std::string& label) {
-      return std::stoi(label);
-    };
-
-    for (size_t jj = 0; jj < kk; ++jj) {
-      output[jj] = prob_vec[get_index_of_label(
-          result["class"][idx_beg + jj].get<flex_string>())];
-    }
-
-    TS_ASSERT(std::equal(prob_vec_sorted.begin(), prob_vec_sorted.begin(),
-                         output.begin()));
-  }
-};
-
-}  // namespace
-
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_zero_k) {
-  log_for_debug("test_drawing_classifier_predict_topk_rank_zero_k");
-
-  size_t batch_size = 2;
-  size_t num_of_rows = 1;
-  size_t num_of_classes = 2;
-
-  size_t kk = 0;
-  auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
-                    gl_sframe expected) {
-    auto result_rank = mock_model.predict_topk(my_data, "rank", kk);
-
-    TS_ASSERT_EQUALS(result_rank.size(), num_of_rows);
-    TS_ASSERT_EQUALS(result_rank["rank"].size(), expected[PRED_NAME].size());
-    // stack empty list will return undefined value
-    TS_ASSERT_EQUALS(result_rank["rank"][0].get_type(),
-                     flex_type_enum::UNDEFINED);
-  };
-  std::vector<bool> is_bitmap = {true, false};
-  for (bool b : is_bitmap) {
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
-  }
-}
-
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_normal_k) {
-  log_for_debug("test_drawing_classifier_predict_topk_rank_normal_k");
-
-  for (auto& entry : TEST_CASES) {
-    size_t batch_size = std::get<0>(entry);
-    size_t num_of_rows = std::get<1>(entry);
-    size_t num_of_classes = std::get<2>(entry);
-
-    if (num_of_classes == 0) continue;
-
-    size_t kk = num_of_classes > 1 ? num_of_classes - 1 : 1;
-
-    auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
-                      gl_sframe expected) {
-      auto result_rank = mock_model.predict_topk(my_data, "rank", kk);
-
-      TS_ASSERT_EQUALS(result_rank.size(), num_of_rows * kk);
-      TS_ASSERT_EQUALS(result_rank["rank"].size() / kk,
-                       expected[PRED_NAME].size());
-      // label should be string type
-      TS_ASSERT_EQUALS(result_rank["rank"][0].get_type(),
-                       flex_type_enum::INTEGER);
-      TS_ASSERT_EQUALS(result_rank["class"][0].get_type(),
-                       flex_type_enum::STRING);
-
-      verify_topk_result(kk, num_of_classes, num_of_rows, result_rank,
-                         expected);
-    };
-
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
-    }
-  }
-}
-
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_big_k) {
-  log_for_debug("test_drawing_classifier_predict_topk_rank_big_k");
-
-  for (auto& entry : TEST_CASES) {
-    size_t batch_size = std::get<0>(entry);
-    size_t num_of_rows = std::get<1>(entry);
-    size_t num_of_classes = std::get<2>(entry);
-
-    if (num_of_classes == 0) continue;
-
-    size_t kk = num_of_classes + 1;
-
-    auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
-                      gl_sframe expected) {
-      auto result_rank = mock_model.predict_topk(my_data, "rank", kk);
-
-      size_t realk = num_of_classes;
-      TS_ASSERT_EQUALS(result_rank.size(), num_of_rows * realk);
-      TS_ASSERT_EQUALS(result_rank["rank"].size() / realk,
-                       expected[PRED_NAME].size());
-      // label should be string type
-      TS_ASSERT_EQUALS(result_rank["rank"][0].get_type(),
-                       flex_type_enum::INTEGER);
-      TS_ASSERT_EQUALS(result_rank["class"][0].get_type(),
-                       flex_type_enum::STRING);
-
-      verify_topk_result(realk, num_of_classes, num_of_rows, result_rank,
-                         expected);
-    };
-
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
-    }
-  }
-}
-
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_zero_k) {
-  log_for_debug("test_drawing_classifier_predict_topk_prob_zero_k");
-
-  size_t batch_size = 2;
-  size_t num_of_rows = 1;
-  size_t num_of_classes = 2;
-
-  size_t kk = 0;
-  auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
-                    gl_sframe expected) {
-    auto result_rank = mock_model.predict_topk(my_data, "probability", kk);
-
-    TS_ASSERT_EQUALS(result_rank.size(), num_of_rows);
-    TS_ASSERT_EQUALS(result_rank["probability"].size(),
-                     expected[PRED_NAME].size());
-    // stack empty list will return undefined value
-    TS_ASSERT_EQUALS(result_rank["probability"][0].get_type(),
-                     flex_type_enum::UNDEFINED);
-  };
-
-  std::vector<bool> is_bitmap = {true, false};
-  for (bool b : is_bitmap) {
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
-  }
-}
-
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_normal_k) {
-  log_for_debug("test_drawing_classifier_predict_topk_prob_normal_k");
-
-  for (auto& entry : TEST_CASES) {
-    size_t batch_size = std::get<0>(entry);
-    size_t num_of_rows = std::get<1>(entry);
-    size_t num_of_classes = std::get<2>(entry);
-
-    if (num_of_classes == 0) continue;
-
-    size_t kk = num_of_classes > 1 ? num_of_classes - 1 : 1;
-
-    auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
-                      gl_sframe expected) {
-      auto result_rank = mock_model.predict_topk(my_data, "probability", kk);
-
-      TS_ASSERT_EQUALS(result_rank.size(), num_of_rows * kk);
-      TS_ASSERT_EQUALS(result_rank["probability"].size() / kk,
-                       expected[PRED_NAME].size());
-      // label should be string type
-      TS_ASSERT_EQUALS(result_rank["probability"][0].get_type(),
-                       flex_type_enum::FLOAT);
-      TS_ASSERT_EQUALS(result_rank["class"][0].get_type(),
-                       flex_type_enum::STRING);
-
-      verify_topk_result(kk, num_of_classes, num_of_rows, result_rank,
-                         expected);
-    };
-
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
-    }
-  }
-}
-
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_big_k) {
-  log_for_debug("test_drawing_classifier_predict_topk_prob_big_k");
-
-  for (auto& entry : TEST_CASES) {
-    size_t batch_size = std::get<0>(entry);
-    size_t num_of_rows = std::get<1>(entry);
-    size_t num_of_classes = std::get<2>(entry);
-
-    if (num_of_classes == 0) continue;
-
-    size_t kk = num_of_classes + 1;
-
-    auto runner = [=](test_drawing_classifier& mock_model, gl_sframe my_data,
-                      gl_sframe expected) {
-      auto result_rank = mock_model.predict_topk(my_data, "probability", kk);
-
-      size_t realk = num_of_classes;
-      TS_ASSERT_EQUALS(result_rank.size(), num_of_rows * realk);
-      TS_ASSERT_EQUALS(result_rank["probability"].size() / realk,
-                       expected[PRED_NAME].size());
-      // label should be string type
-      TS_ASSERT_EQUALS(result_rank["probability"][0].get_type(),
-                       flex_type_enum::FLOAT);
-      TS_ASSERT_EQUALS(result_rank["class"][0].get_type(),
-                       flex_type_enum::STRING);
-
-      verify_topk_result(realk, num_of_classes, num_of_rows, result_rank,
-                         expected);
-    };
-
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
-    }
-  }
-}
 
 
 }  // namespace drawing_classifier

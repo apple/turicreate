@@ -54,6 +54,7 @@ gl_sframe infer_feature_column_and_prepare_data(gl_sframe data) {
 
   gl_sframe bitmap_data = data;
 
+
   for (std::string column_name: data.column_names()) {
     if (data[column_name].dtype() == flex_type_enum::LIST
       || data[column_name].dtype() == flex_type_enum::IMAGE) {
@@ -64,7 +65,8 @@ gl_sframe infer_feature_column_and_prepare_data(gl_sframe data) {
   if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
     bitmap_data = _drawing_classifier_prepare_data(data, feature_column_name);
   }
-
+  std::cout << "convert to image";
+  std::cout << bitmap_data;
   return bitmap_data;
 }
 
@@ -689,9 +691,11 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
                   "Expected one of: probability, rank");
   }
 
-  data = infer_feature_column_and_prepare_data(data);
+  gl_sframe processed_data = infer_feature_column_and_prepare_data(data);
+  std::cout << "in predict";
+  std::cout << processed_data;
   auto data_itr =
-      create_iterator(data, /* is_train */ false, /* class labels */ {});
+      create_iterator(processed_data, /* is_train */ false, /* class labels */ {});
 
   gl_sframe predictions = perform_inference(data_itr.get());
 
@@ -719,11 +723,11 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
                   "Expected one of: probability, rank");
   }
 
-  data = infer_feature_column_and_prepare_data(data);
+  gl_sframe processed_data = infer_feature_column_and_prepare_data(data);
 
   // data inference
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, /* is_train */ false, /* class lables */ {});
+      create_iterator(processed_data, /* is_train */ false, /* class lables */ {});
 
   gl_sframe dc_predictions = perform_inference(data_it.get());
 
