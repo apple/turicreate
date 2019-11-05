@@ -292,8 +292,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
       // Make an instance of python object
       pybind11::object object_detector = tf_od_backend.attr(
           "ODTensorFlowModel")(h_in, w_in, n, c_out, weights, config);
-      result = std::unique_ptr<tf_model_backend>(
-          new tf_model_backend(object_detector));
+      result.reset(new tf_model_backend(object_detector));
     });
   return result;
 }
@@ -313,8 +312,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
     // Make an instance of python object
     pybind11::object activity_classifier = tf_ac_backend.attr(
         "ActivityTensorFlowModel")(weights, n, c_in, c_out, pw, w_out);
-    result = std::unique_ptr<tf_model_backend>(
-        new tf_model_backend(activity_classifier));
+    result.reset(new tf_model_backend(activity_classifier));
   });
   return result;
 }
@@ -334,8 +332,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
     // Make an instance of python object
     pybind11::object style_transfer =
         tf_st_backend.attr("StyleTransferTensorFlowModel")(config, weights);
-    result =
-        std::unique_ptr<tf_model_backend>(new tf_model_backend(style_transfer));
+    result.reset(new tf_model_backend(style_transfer));
   });
   return result;
 }
@@ -355,8 +352,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
     // Make an instance of python object
     pybind11::object drawing_classifier = tf_dc_backend.attr(
         "DrawingClassifierTensorFlowModel")(weights, batch_size, num_classes);
-    result = std::unique_ptr<tf_model_backend>(
-        new tf_model_backend(drawing_classifier));
+    result.reset(new tf_model_backend(drawing_classifier));
   });
   return result;
 }
