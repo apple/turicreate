@@ -17,9 +17,6 @@ import numpy as np
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 
-IS_PRE_6_0_RC = float(tc.__version__) < 6.0
-
-
 def get_test_data():
     '''
     Create 5 all white images and 5 all black images. Then add some noise to
@@ -63,7 +60,6 @@ def get_test_data():
 data = get_test_data()
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ImageSimilarityTest(unittest.TestCase):
 
     @classmethod
@@ -237,7 +233,6 @@ class ImageSimilarityTest(unittest.TestCase):
             print("Export coreml passed")
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
@@ -245,7 +240,6 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
                                                               input_image_shape=(3, 227, 227))
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
 class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
     @classmethod
@@ -254,7 +248,7 @@ class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
                                                                              input_image_shape=(3, 299, 299))
 
 # A test to gaurantee that old code using the incorrect name still works.
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+
 @unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
 class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
     @classmethod
