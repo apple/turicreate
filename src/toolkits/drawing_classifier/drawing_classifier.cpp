@@ -348,9 +348,8 @@ void drawing_classifier::init_training(
   }
 
   // Report to the user what GPU(s) is being used.
-  /* The following two lines segfault!!! */
-  // std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  // print_training_device(gpu_names);
+  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
+  print_training_device(gpu_names);
 
   // Initialize the neural net. Note that this depends on statistics computed
   // by the data iterator.
