@@ -150,7 +150,7 @@ RUN tar xf llvm-8.0.0.src.tar.xz && \
     mv cfe-8.0.0.src llvm-8.0.0.src/tools/clang && \
     mkdir llvm-8.0.0.build
 WORKDIR /src/llvm-8.0.0.build
-RUN cmake ../llvm-8.0.0.src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_COMPILER=gcc-4.8 -DCMAKE_CXX_COMPILER=g++-4.8 -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=ON && \
+RUN cmake ../llvm-8.0.0.src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=ON && \
     make -j24 || make -j4 && \
     make --quiet install && \
     ldconfig && \
