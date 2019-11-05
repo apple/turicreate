@@ -211,7 +211,6 @@ class StyleTransferTest(unittest.TestCase):
                 model.get_styles(style=style)
 
     def test_get_styles_success(self):
-
         style = [0,1,2]
         model = self.model
         model_styles = model.get_styles(style=style)
