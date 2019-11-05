@@ -37,7 +37,7 @@ def get_test_data():
     for _ in range(5):
         data.append( np.full((DIM, DIM, 3), 0, dtype=np.uint8) )
 
-    # Add some random noise each images
+    # Add some random noise to each image
     random = np.random.RandomState(100)
     for cur_image in data:
         for _ in range(1000):

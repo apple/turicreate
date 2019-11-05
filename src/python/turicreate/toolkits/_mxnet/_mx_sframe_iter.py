@@ -322,6 +322,7 @@ class SFrameImageIter(SFrameIter):
 
         #Augmentation parameters
         self._random_flip = random_flip
+
     def _type_check(self, sframe, data_field, label_field):
         if label_field is not None:
             label_column_type = sframe[label_field].dtype
