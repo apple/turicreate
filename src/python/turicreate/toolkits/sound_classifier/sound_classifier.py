@@ -58,7 +58,7 @@ class _MXNetAccuracy(_Accuracy):
 
     def update(self, ground_truth, predicted):
         import mxnet as mx
-        self.impl.update(mx.nd.array(ground_truth), mx.nd.array(predicted))
+        self.impl.update([mx.nd.array(ground_truth)], [mx.nd.array(predicted)])
 
     def reset(self):
         self.impl.reset()
@@ -287,11 +287,8 @@ def create(dataset, target, feature, max_iterations=10,
                                     label=train_data['labels'].to_numpy(),
                                     batch_size=training_batch_size, shuffle=True)
 
-    custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels, custom_layer_sizes)
-    ctx = _mxnet_utils.get_mxnet_context()
-    custom_NN.initialize(mx.init.Xavier(), ctx=ctx)
-
-    trainer = mx.gluon.Trainer(custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
+    from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
+    custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
     if verbose:
         # Setup progress table
@@ -305,44 +302,29 @@ def create(dataset, target, feature, max_iterations=10,
     train_metric = _get_accuracy_metric()
     if validation_data:
         validation_metric = _get_accuracy_metric()
-    softmax_cross_entropy_loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+
     for i in range(max_iterations):
         # TODO: early stopping
 
         for batch in train_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-
-            # Inside training scope
-            with mx.autograd.record():
-                for x, y in zip(data, label):
-                    z = custom_NN(x)
-                    # Computes softmax cross entropy loss.
-                    loss = softmax_cross_entropy_loss(z, y)
-                    # Backpropagate the error for one iteration.
-                    loss.backward()
-            # Make one step of parameter update. Trainer needs to know the
-            # batch size of data to normalize the gradient by 1/batch_size.
-            trainer.step(batch.data[0].shape[0])
+            data = batch.data[0].asnumpy()
+            label = batch.label[0].asnumpy()
+            custom_NN.train(data, label)
         train_data.reset()
 
         # Calculate training metric
         for batch in train_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            outputs = [custom_NN(x) for x in data]
-            label = _np.array([x.asnumpy() for x in label])
-            outputs = _np.array([x.asnumpy() for x in outputs])
+            data = batch.data[0].asnumpy()
+            outputs = custom_NN.predict(data)
+            label = _np.array([x.asnumpy() for x in batch.label[0]])
             train_metric.update(label, outputs)
         train_data.reset()
 
         # Calculate validation metric
         for batch in validation_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            outputs = [custom_NN(x) for x in data]
-            label = _np.array([x.asnumpy() for x in label])
-            outputs = _np.array([x.asnumpy() for x in outputs])
+            data = batch.data[0].asnumpy()
+            outputs = custom_NN.predict(data)
+            label = _np.array([x.asnumpy() for x in batch.label[0]])
             validation_metric.update(label, outputs)
 
         # Get metrics, print progress table
@@ -390,25 +372,6 @@ class SoundClassifier(_CustomModel):
     """
     _PYTHON_SOUND_CLASSIFIER_VERSION = 1
 
-    @staticmethod
-    def _build_custom_neural_network(num_inputs, num_labels, layer_sizes):
-        from mxnet.gluon import nn
-
-        net = nn.Sequential(prefix='custom_')
-        with net.name_scope():
-            for i, cur_layer_size in enumerate(layer_sizes):
-                prefix = "dense%d_" % i
-                if i == 0:
-                    in_units = num_inputs
-                else:
-                    in_units = layer_sizes[i-1]
-
-                net.add(nn.Dense(cur_layer_size, in_units=in_units, activation='relu', prefix=prefix))
-
-            prefix = 'dense%d_' % len(layer_sizes)
-            net.add(nn.Dense(num_labels, prefix=prefix))
-        return net
-
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
 
@@ -429,8 +392,7 @@ class SoundClassifier(_CustomModel):
 
         del state['_feature_extractor']
 
-        mxnet_params = state['_custom_classifier'].collect_params()
-        state['_custom_classifier'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
+        state['_custom_classifier'] = state['_custom_classifier'].get_weights()
 
         return state
 
@@ -454,11 +416,11 @@ class SoundClassifier(_CustomModel):
             # Default value, was not part of state for only Turi Create 5.4
             custom_layer_sizes = [100, 100]
         state['custom_layer_sizes'] = custom_layer_sizes
-        net = SoundClassifier._build_custom_neural_network(num_inputs, num_classes, custom_layer_sizes)
-        net_params = net.collect_params()
-        ctx = _mxnet_utils.get_mxnet_context()
-        _mxnet_utils.load_net_params_from_state(net_params, state['_custom_classifier'], ctx=ctx)
-        state['_custom_classifier'] = net
+
+        from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
+        model_obj = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
+        model_obj.load_weights(state['_custom_classifier'])
+        state['_custom_classifier'] = model_obj
 
         return SoundClassifier(state)
 
@@ -702,12 +664,11 @@ class SoundClassifier(_CustomModel):
                                            [(prob_name, Dictionary(String))],
                                            'classifier')
 
-            ctx = _mxnet_utils.get_mxnet_context()[0]
             input_name, output_name = input_name, 0
-            for i, cur_layer in enumerate(self._custom_classifier):
-                W = cur_layer.weight.data(ctx).asnumpy()
+            for i, cur_layer in enumerate(self._custom_classifier.export_weights()):
+                W = cur_layer['weight']
                 nC, nB = W.shape
-                Wb = cur_layer.bias.data(ctx).asnumpy()
+                Wb = cur_layer['bias']
 
                 builder.add_inner_product(name="inner_product_"+str(i),
                                           W=W,
@@ -718,7 +679,7 @@ class SoundClassifier(_CustomModel):
                                           input_name=str(input_name),
                                           output_name='inner_product_'+str(output_name))
 
-                if cur_layer.act:
+                if cur_layer['act']:
                     builder.add_activation("activation"+str(i), 'RELU', 'inner_product_'+str(output_name), str(output_name))
 
                 input_name = i
@@ -897,11 +858,7 @@ class SoundClassifier(_CustomModel):
             if batch.pad != 0:
                 batch_data = batch_data[:-batch.pad]    # prevent batches looping back
 
-            batch_data = mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx, batch_axis=0, even_split=False)
-
-            for x in batch_data:
-                forward_output = self._custom_classifier.forward(x)
-                y += mx.nd.softmax(forward_output).asnumpy().tolist()
+            y += self._custom_classifier.predict(batch_data).asnumpy().tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames
