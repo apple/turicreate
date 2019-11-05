@@ -181,7 +181,9 @@ std::unique_ptr<data_iterator> prepare_data_for_prediction(
   }
 
   // Create an arbitrary SFrame with test_num_rows rows.
-  drawing_data_generator data_generator(is_bitmap_based, num_of_rows, class_labels);
+
+  drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap,
+                                        num_of_rows, class_labels);
   gl_sframe my_data = data_generator.get_data();
 
   TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
@@ -203,7 +205,8 @@ using test_runner_t =
 
 
 void prediction_test_driver(size_t batch_size, size_t num_of_rows,
-                            size_t num_of_classes, test_runner_t runner, bool is_bitmap) {
+                            size_t num_of_classes, test_runner_t runner,
+                            bool is_bitmap) {
 #ifndef NDEBUG
   logprogress_stream << "batch_size=" << batch_size
                      << "; num_of_rows=" << num_of_rows
@@ -321,7 +324,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_rank) {
 
     std::vector<bool> is_bitmap = {true, false};
     for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             b);
     }
   }
 }
@@ -344,7 +348,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
 
     std::vector<bool> is_bitmap = {true, false};
     for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             b);
     }
   }
 }
@@ -466,7 +471,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_normal_k) {
 
     std::vector<bool> is_bitmap = {true, false};
     for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             b);
     }
   }
 }
@@ -503,7 +509,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_big_k) {
 
     std::vector<bool> is_bitmap = {true, false};
     for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             b);
     }
   }
 }
@@ -565,7 +572,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_normal_k) {
 
     std::vector<bool> is_bitmap = {true, false};
     for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             b);
     }
   }
 }
@@ -602,7 +610,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_big_k) {
 
     std::vector<bool> is_bitmap = {true, false};
     for (bool b : is_bitmap) {
-      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             b);
     }
   }
 }
