@@ -21,6 +21,72 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
 
+class _Dataset(object):
+    '''
+    Defines a common interface around MXNet NDArrayIter and TensorFlow
+    DataSet.from_tensor_slices
+    '''
+
+    '''
+    Creates a new instance wrapping numpy data and labels.
+
+    The data `x` and labels `y` must have the same first dimension.
+    '''
+    def __init__(self, x, y, batch_size=1, shuffle=False):
+        raise NotImplementedError
+
+    '''
+    Returns an iterator that yields a sequence of tuples, comprising a batch of
+    `x` values and a batch of `y` values.
+    '''
+    def __iter__(self):
+        raise NotImplementedError
+
+    '''
+    Ensures that the next iteration through the dataset starts from the beginning.
+    '''
+    def reset(self):
+        raise NotImplementedError
+
+class _MXNetDataset(_Dataset):
+    def __init__(self, x, y, batch_size=1, shuffle=False):
+        import mxnet as mx
+        self.impl = mx.io.NDArrayIter(x, label=y, batch_size=batch_size,
+                                      shuffle=shuffle)
+
+    def __iter__(self):
+        return self
+
+    def reset(self):
+        self.impl.reset()
+
+    def __next__(self):
+        batch = self.impl.__next__()
+        return batch.data[0].asnumpy(), batch.label[0].asnumpy()
+
+    def next(self):
+        return self.__next__()
+
+class _TFDataSet(_Dataset):
+    def __init__(self, x, y, batch_size=1, shuffle=False):
+        import tensorflow as tf
+        self.impl = tf.data.Dataset.from_tensor_slices((x,y))
+        self.impl = self.impl.batch(batch_size)
+        if shuffle:
+            self.impl = self.impl.shuffle(x.shape[0])
+
+    def __iter__(self):
+        return self.impl.__iter__()
+
+    def reset(self):
+        pass
+
+def _create_dataset(data, labels, batch_size=1):
+    if USE_TF:
+        return _TFDataSet(data, labels, batch_size=batch_size)
+    else:
+        return _MXNetDataset(data, labels, batch_size=batch_size)
+
 class _Accuracy(object):
     '''
     Defines a common interface around MXNet/TensorFlow accuracy metrics.
@@ -273,9 +339,9 @@ def create(dataset, target, feature, max_iterations=10,
         validation_data = validation_data.dropna(columns=['deep features'])
 
         validation_batch_size = min(len(validation_data), batch_size)
-        validation_data = mx.io.NDArrayIter(validation_data['deep features'].to_numpy(),
-                                             label=validation_data['labels'].to_numpy(),
-                                             batch_size=validation_batch_size)
+        validation_data = _create_dataset(validation_data['deep features'].to_numpy(),
+                                          validation_data['labels'].to_numpy(),
+                                          batch_size=validation_batch_size)
     else:
         validation_data = []
 
@@ -283,9 +349,9 @@ def create(dataset, target, feature, max_iterations=10,
         print("\nTraining a custom neural network -")
 
     training_batch_size = min(len(train_data), batch_size)
-    train_data = mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
-                                    label=train_data['labels'].to_numpy(),
-                                    batch_size=training_batch_size, shuffle=True)
+    train_data = _create_dataset(train_data['deep features'].to_numpy(),
+                                 train_data['labels'].to_numpy(),
+                                 batch_size=training_batch_size, shuffle=True)
 
     from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
     custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
@@ -306,25 +372,19 @@ def create(dataset, target, feature, max_iterations=10,
     for i in range(max_iterations):
         # TODO: early stopping
 
-        for batch in train_data:
-            data = batch.data[0].asnumpy()
-            label = batch.label[0].asnumpy()
+        for data, label in train_data:
             custom_NN.train(data, label)
         train_data.reset()
 
         # Calculate training metric
-        for batch in train_data:
-            data = batch.data[0].asnumpy()
+        for data, label in train_data:
             outputs = custom_NN.predict(data)
-            label = _np.array([x.asnumpy() for x in batch.label[0]])
             train_metric.update(label, outputs)
         train_data.reset()
 
         # Calculate validation metric
-        for batch in validation_data:
-            data = batch.data[0].asnumpy()
+        for data, label in validation_data:
             outputs = custom_NN.predict(data)
-            label = _np.array([x.asnumpy() for x in batch.label[0]])
             validation_metric.update(label, outputs)
 
         # Get metrics, print progress table
