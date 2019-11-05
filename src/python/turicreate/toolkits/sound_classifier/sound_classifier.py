@@ -202,7 +202,7 @@ def create(dataset, target, feature, max_iterations=10,
     from ._audio_feature_extractor import _get_feature_extractor
 
     params = {
-     'use_tensorflow': False,
+        'use_tensorflow': False,
     }
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -300,8 +300,12 @@ def create(dataset, target, feature, max_iterations=10,
                                     label=train_data['labels'].to_numpy(),
                                     batch_size=training_batch_size, shuffle=True)
 
-    from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-    custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
+    if params['use_tensorflow']:
+        from ._tf_sound_classifier import SoundClassifierTensorFlowModel
+        custom_NN = SoundClassifierTensorFlowModel(batch_size, num_labels)
+    else:
+        from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
+        custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
     if verbose:
         # Setup progress table
@@ -356,7 +360,7 @@ def create(dataset, target, feature, max_iterations=10,
 
     state = {
         '_class_label_to_id': class_label_to_id,
-        '_custom_classifier': sc_model,
+        '_custom_classifier': custom_NN,
         '_feature_extractor': feature_extractor,
         '_id_to_class_label': {v: k for k, v in class_label_to_id.items()},
         'classes': classes,
