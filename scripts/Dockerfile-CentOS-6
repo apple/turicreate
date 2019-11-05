@@ -26,6 +26,7 @@ RUN yum -y update && \
                sqlite-devel \
                zlib-devel \
                gcc-multilib \
+               glibc-devel \
                ccache \
                make \
                wget \
