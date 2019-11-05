@@ -39,6 +39,7 @@ class MultiLayerPerceptronMXNetModel():
         """
 
         # Inside training scope
+        print(self.custom_NN)
         batch_size = data.shape[0] # may be smaller than the specified batch_size in create()
         data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
         label = mx.gluon.utils.split_and_load(label, ctx_list=self.ctx, batch_axis=0, even_split=False)

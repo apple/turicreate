@@ -44,32 +44,23 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         # Biases
         biases = {
-        'sound_dense0_bias'  : _tf.Variable(_tf.zeros([100]), name='sound_dense0_bias'),
-        'sound_dense1_bias'  : _tf.Variable(_tf.zeros([100]), name='sound_dense1_bias'),
-        'sound_dense2_bias'  : _tf.Variable(_tf.zeros([self.num_classes]), name='sound_dense2_bias')
+        'sound_dense0_bias'  : _tf.Variable(_tf.random.uniform([100]), name='sound_dense0_bias'),
+        'sound_dense1_bias'  : _tf.Variable(_tf.random.uniform([100]), name='sound_dense1_bias'),
+        'sound_dense2_bias'  : _tf.Variable(_tf.random.uniform([self.num_classes]), name='sound_dense2_bias')
         }
 
+        self.names_of_layers = [x.split('_')[1] for x in weights.keys()]
+
         dense0 = _tf.nn.xw_plus_b(self.x, weights=weights["sound_dense0_weight"], biases=biases["sound_dense0_bias"])
-        dense0 = _tf.nn.relu(dense0)
+        self.dense0 = _tf.nn.relu(dense0)
 
         dense1 = _tf.nn.xw_plus_b(dense0, weights=weights["sound_dense1_weight"], biases=biases["sound_dense1_bias"])
-        dense1 = _tf.nn.relu(dense1)
+        self.dense1 = _tf.nn.relu(dense1)
 
         out = _tf.nn.xw_plus_b(dense1, weights=weights["sound_dense2_weight"], biases=biases["sound_dense2_bias"])
-        out = _tf.nn.softmax(out)
-        '''
-        model = Sequential()
-        model.add(Dense(100, input_shape=(12288,), activation='relu'))
-        model.add(Dense(100, activation='relu'))
-        model.add(Dense(self.num_classes, activation = 'softmax',activity_regularizer=keras.regularizers.l2()))
-        model.compile( loss='categorical_crossentropy',
-                        optimizer=keras.optimizers.SGD(),
-                        metrics=[keras.metrics.categorical_accuracy])
-        print(model.summary())
-        return model
-        '''
+        self.out = _tf.nn.softmax(out)
 
-        self.predictions = out
+        self.predictions = self.out
 
         # Loss
         self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
@@ -148,18 +139,27 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             layer (e.g. `sound_conv0_weight`) and the value is the
             respective weight of type `numpy.ndarray` in MXNET format.
         """
-        net_params = {}
         layer_names = _tf.trainable_variables()
         layer_weights = self.sess.run(layer_names)
-
+        layer_dict = {}
         for var, val in zip(layer_names, layer_weights):
-            if 'bias' in var.name:
-                net_params.update({var.name.replace(":0", ""): val})
-            else:
-                #if 'dense' in var.name:
-                net_params.update({var.name.replace(":0", ""): val.transpose(1, 0)})
-        return net_params
+            layer_dict[var.name] = val
 
+        layers = []
+        for i, name in enumerate(self.names_of_layers):
+            weight_name = 'sound_{}_weight:0'.format(name)
+            bias_name = 'sound_{}_weight:0'.format(name)
+            layer={}
+            #print(weight_name,layer_dict[weight_name], type(layer_dict[weight_name]), layer_dict[weight_name].shape)
+            layer['weight'] = layer_dict[weight_name].transpose(1, 0)#.asnumpy()
+            #print(bias_name,layer_dict[bias_name], type(layer_dict[bias_name]), layer_dict[bias_name].shape)
+            layer['bias'] = layer_dict[bias_name]#.asnumpy()
+            if i==(len(self.names_of_layers)-1):
+                layer['act']=None
+            else:
+                layer['act']='relu'
+            layers.append(layer)
+        return layers
 
     def evaluate(self, train_loader):
         total_acc = 0.0
@@ -180,6 +180,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         final_accuracy = total_acc/count
         return final_accuracy
+
 
 
 def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, batch_size, num_classes, verbose):
@@ -217,7 +218,7 @@ def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, b
         data_shape = train_batch.label[0].asnumpy().shape[0]
         result = tf_model.method_train( feed_dict={
                             'x': train_batch.data[0].asnumpy().reshape((data_shape, 12288)),
-                            'y': _tf.keras.utils.to_categorical(train_batch.label[0].asnumpy(), self.num_classes).reshape((data_shape, self.num_classes))
+                            'y': _tf.keras.utils.to_categorical(train_batch.label[0].asnumpy(), num_classes).reshape((data_shape, num_classes))
                         })
         final_train_accuracy = result['accuracy']
         final_train_loss = result['loss']
@@ -225,7 +226,7 @@ def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, b
             data_shape = val_batch.label[0].asnumpy().shape[0]
             result = tf_model.method_predict(feed_dict={
                             'x': val_batch.data[0].asnumpy().reshape((data_shape, 12288)),
-                            'y': _tf.keras.utils.to_categorical(val_batch.label[0].asnumpy(), self.num_classes).reshape((data_shape, self.num_classes))
+                            'y': _tf.keras.utils.to_categorical(val_batch.label[0].asnumpy(), num_classes).reshape((data_shape, num_classes))
                         })
             val_acc = result['accuracy']
 

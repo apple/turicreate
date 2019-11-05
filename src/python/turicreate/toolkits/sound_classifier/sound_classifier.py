@@ -256,6 +256,11 @@ def create(dataset, target, feature, max_iterations=10,
     train_data = train_data.stack('deep features', new_column_name='deep features')
     train_data, missing_ids = train_data.dropna_split(columns=['deep features'])
 
+    training_batch_size = min(len(train_data), batch_size)
+    train_data = mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
+                                    label=train_data['labels'].to_numpy(),
+                                    batch_size=training_batch_size, shuffle=True)
+
     if len(missing_ids) > 0:
         _logging.warning("Dropping %d examples which are less than 975ms in length." % len(missing_ids))
 
@@ -283,16 +288,13 @@ def create(dataset, target, feature, max_iterations=10,
     if verbose:
         print("\nTraining a custom neural network -")
 
-    training_batch_size = min(len(train_data), batch_size)
-    train_data = mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
-                                    label=train_data['labels'].to_numpy(),
-                                    batch_size=training_batch_size, shuffle=True)
-
     if USE_TF:
+        print("Using TensorFlow ...")
         from ._tf_sound_classifier import SoundClassifierTensorFlowModel, _tf_train_model
         custom_NN = SoundClassifierTensorFlowModel(batch_size, num_labels)
-        ##_tf_train_model(custom_NN, train_data, validation_data, validation_set, batch_size, num_labels, verbose)
+        #_tf_train_model(custom_NN, train_data, validation_data, validation_set, batch_size, num_labels, verbose)
     else:
+        print("Using MXNet ...")
         from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
         custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
@@ -323,7 +325,7 @@ def create(dataset, target, feature, max_iterations=10,
             data = batch.data[0].asnumpy()
             outputs = custom_NN.predict(data)
             label = _np.array([x.asnumpy() for x in batch.label[0]])
-            print("label:", label, "outputs:",outputs)
+            #print("label:", label, "outputs:",outputs)
             train_metric.update(label, outputs)
         train_data.reset()
 
@@ -347,6 +349,11 @@ def create(dataset, target, feature, max_iterations=10,
             printed_row_values['time'] = time.time()-start_time
             table_printer.print_row(**printed_row_values)
 
+    layers = custom_NN.export_weights()
+    for ll in layers:
+        for k in ll.keys():
+            if k!='act':
+                print(ll[k], ll[k].shape, k)
 
     state = {
         '_class_label_to_id': class_label_to_id,
