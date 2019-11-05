@@ -20,6 +20,8 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
 USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+
 
 def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
                randomize_num_sessions = True, num_labels = 9, prediction_window = 5,
@@ -70,6 +72,7 @@ def _random_session_ids(num_examples, num_sessions):
     return session_ids
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierCreateStressTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -133,6 +136,7 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                                                   validation_set=None)
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierAutoValdSetTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -225,8 +229,9 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
 
         self._create_auto_validation_set()
 
-class ActivityClassifierTest(unittest.TestCase):
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
+class ActivityClassifierTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         """
@@ -452,6 +457,7 @@ class ActivityClassifierTest(unittest.TestCase):
                                     " has failed with error: " + str(e))
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ActivityClassifierGPUTest(unittest.TestCase):

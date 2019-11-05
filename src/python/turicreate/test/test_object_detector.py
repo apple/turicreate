@@ -13,6 +13,7 @@ import turicreate as tc
 import tempfile
 import numpy as np
 import platform
+import pytest
 import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -21,6 +22,8 @@ import coremltools
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
 USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+
 
 def _get_data(feature, annotations):
     from PIL import Image as _PIL_Image
@@ -88,6 +91,7 @@ def _get_data(feature, annotations):
     return data
 
 
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ObjectDetectorTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -400,6 +404,7 @@ class ObjectDetectorTest(unittest.TestCase):
             print("List fields passed")
 
 
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ObjectDetectorGPUTest(unittest.TestCase):

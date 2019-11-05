@@ -7,7 +7,6 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
 import os
-import subprocess
 import sys
 from setuptools import setup, find_packages, Extension
 from setuptools.dist import Distribution
@@ -123,39 +122,8 @@ if __name__ == '__main__':
         "requests >= 2.9.1",
         "scipy >= 1.1.0",
         "six >= 1.10.0",
+        "tensorflow >= 2.0.0"
     ]
-
-    if sys.version_info.major == 3 and sys.version_info.minor == 7:
-        if not cur_platform.startswith("macosx"):
-            msg = (
-                "Python 3.7 is only currently supported on macOS."
-            )
-            sys.stderr.write(msg)
-            sys.exit(1)
-
-        # Determine if AVX2 is supported
-        try:
-            p1 = subprocess.Popen(['sysctl', '-a'], stdout=subprocess.PIPE)
-            p2 = subprocess.Popen(['grep', '-E', '^hw\.\w+.avx\w*: 1$'],
-                                  stdin=p1.stdout, stdout=subprocess.PIPE)
-            p1.stdout.close()
-            stdout = p2.communicate()[0]
-        except:
-            msg = (
-                "Error running: sysctl system command"
-            )
-            sys.stderr.write(msg)
-            sys.exit(1)
-        if stdout == b'':
-            msg = (
-                "Error: Python 3.7 requires AVX2 support."
-            )
-            sys.stderr.write(msg)
-            sys.exit(1)
-
-        install_requires.append("mxnet==1.5.0")
-    else:
-        install_requires.append("mxnet >= 1.1.0, < 1.2.0")
 
     setup(
         name="turicreate",
