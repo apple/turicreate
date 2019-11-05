@@ -394,7 +394,6 @@ void activity_classifier::train(
   }
 
   state_update["verbose"] = read_state<bool>("verbose");
-  state_update["num_sessions"] = data[session_id_column_name].unique().size();
   state_update["num_examples"] = data.size();
   state_update["training_time"] = time_object.current_time();
 
@@ -1074,6 +1073,7 @@ void activity_classifier::init_train(
       {"features", training_data_iterator_->feature_names()},
       {"num_classes", training_data_iterator_->class_labels().size()},
       {"num_features", training_data_iterator_->feature_names().size()},
+      {"num_sessions", training_data_iterator_->num_sessions()},
       {"training_iterations", 0},
   });
 

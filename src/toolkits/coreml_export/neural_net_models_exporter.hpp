@@ -34,6 +34,7 @@ std::shared_ptr<coreml::MLModelWrapper> export_object_detector_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
     size_t image_height, size_t num_classes, size_t num_predictions,
     flex_dict user_defined_metadata, flex_list class_labels,
+    const std::string& input_name,
     std::map<std::string, flexible_type> options);
 
 /** Wraps a trained activity classifier model_spec as a complete MLModel. */
