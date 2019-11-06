@@ -791,12 +791,11 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 
 variant_map_type drawing_classifier::evaluate(gl_sframe data,
                                               std::string metric) {
-  // Perform prediction.
   gl_sarray predictions = predict(data, "probability_vector");
 
-  /* TODO: This is just for the skeleton. Rewrite. */
-  return evaluation::compute_classifier_metrics(data, "label", metric,
-                                                predictions, {{"classes", 2}});
+  return evaluation::compute_classifier_metrics(
+      data, read_state<flex_string>("target"), metric, predictions,
+      {{"classes", read_state<flex_list>("classes")}});
 }
 
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
