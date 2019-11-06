@@ -305,7 +305,7 @@ class ActivityClassifierTest(unittest.TestCase):
             expected_len = self._calc_expected_predictions_length(self.data)
             self.assertEqual(len(preds), expected_len)
 
-    @unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
+    @pytest.mark.xfail()
     def test_export_coreml(self):
         """
         Check the export_coreml() function.
@@ -429,7 +429,7 @@ class ActivityClassifierTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
-    @unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
+    @pytest.mark.xfail()
     def test_save_and_load(self):
         """
         Make sure saving and loading retains everything.
@@ -453,7 +453,7 @@ class ActivityClassifierTest(unittest.TestCase):
                     self.assertTrue(False, "After model save and load, method " + test_method +
                                     " has failed with error: " + str(e))
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+@pytest.mark.xfail()
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ActivityClassifierGPUTest(unittest.TestCase):
