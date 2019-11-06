@@ -71,8 +71,6 @@ def _random_session_ids(num_examples, num_sessions):
 
     return session_ids
 
-
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierCreateStressTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -136,7 +134,6 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                                                   validation_set=None)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierAutoValdSetTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -229,8 +226,6 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
 
         self._create_auto_validation_set()
 
-
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
