@@ -129,33 +129,46 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         labels = feed_dict["labels"].astype("int32").T
         one_hot_labels[_np.arange(int(num_samples)), labels] = 1
 
-        _, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
+        _, final_train_loss, final_train_accuracy = self.sess.run(
+            [self.optimizer, self.cost, self.accuracy],
                             feed_dict={
                                 self.input: feed_dict['input'],
                                 self.one_hot_labels: one_hot_labels
                             })
-        result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
+        result = {'accuracy' : _np.array(final_train_accuracy),
+                  'loss' : _np.array(final_train_loss)}
         return result
 
 
     def predict(self, feed_dict):
 
+        is_train = ("labels" in feed_dict)
+
         for key in feed_dict.keys():
-            feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
+            feed_dict[key] = _utils.convert_shared_float_array_to_numpy(
+                feed_dict[key])
 
         num_samples = float(feed_dict["num_samples"])
-        one_hot_labels = np.zeros((int(num_samples), self.num_classes))
+        one_hot_labels = _np.zeros((int(num_samples), self.num_classes))
+        
+        feed_dict_for_session = { self.input: feed_dict["input"] }
 
-        # convert to one hot
-        labels = feed_dict["labels"].astype("int32").T
-        one_hot_labels[_np.arange(num_samples), labels] = 1
+        if is_train:
+            # convert to one hot
+            labels = feed_dict["labels"].astype("int32").T
+            one_hot_labels[_np.arange(num_samples), labels] = 1
+            feed_dict_for_session[self.one_hot_labels] = one_hot_labels
+            pred_probs, loss, final_accuracy = self.sess.run(
+                [self.predictions, self.cost, self.accuracy],
+                feed_dict=feed_dict_for_session)
+            result = {'accuracy' : _np.array(final_accuracy),
+                      'loss': _np.array(loss),
+                      'output' : _np.array(pred_probs)}
+        else:
+            pred_probs = self.sess.run([self.predictions],
+                feed_dict=feed_dict_for_session)
+            result = {'output' : _np.array(pred_probs)}
 
-        pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
-                            feed_dict={
-                                self.input: feed_dict['input'],
-                                self.one_hot_labels: one_hot_labels
-                            })
-        result = {'accuracy' : final_accuracy, 'predictions' : pred_probs}
         return result
 
 
