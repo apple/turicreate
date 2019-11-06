@@ -32,10 +32,15 @@ _proxy_map = {UnitySFrameProxy: (lambda x: _SFrame(_proxy=x)),
               UnityGraphProxy: (lambda x: _SGraph(_proxy=x))}
 
 def _read_env_var_cpp(var_name):
+    """
+    Reads environment variables used to enable/disable the new C++
+    implementations of existing Python toolkits.
+    """
+    # Default to using the C++ implementation for toolkits that have one.
+    # TODO: Remove the old implementations, and this function, once the dust has
+    #       settled.
     import os as _os
-    if var_name not in _os.environ or _os.environ.get(var_name)=="0":
-        return False
-    return True
+    return bool(int(_os.environ.get(var_name, "1")))
 
 def _toolkit_serialize_summary_struct(model, sections, section_titles):
     """
