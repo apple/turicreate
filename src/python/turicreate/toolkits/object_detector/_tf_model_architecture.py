@@ -17,6 +17,9 @@ class ODTensorFlowModel(object):
 
     def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
 
+        #reset tensorflow graph when a new model is created
+        _tf.reset_default_graph()
+
         # Suppresses verbosity to only errors
         _tf.logging.set_verbosity(_tf.logging.ERROR)
         _tf.debugging.set_log_device_placement(False)
