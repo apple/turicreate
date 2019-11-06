@@ -398,16 +398,15 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
   ModelDescription* model_desc = model.mutable_description();
 
   FeatureDescription* model_input = model_desc->add_input();
-  ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, "Input image");
-  model_input->set_name("image");
+  ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, "image", "Input image");
 
   set_array_feature(
       model_desc->add_input(), "index",
       "Style index array (set index I to 1.0 to enable Ith style)", {1});
 
   FeatureDescription* model_output = model_desc->add_output();
-  ImageFeatureType* style_feat = set_image_feature(model_output, image_width, image_height, "Stylized image");
-  model_output->set_name("stylizedImage");
+  ImageFeatureType* style_feat = set_image_feature(model_output, image_width, image_height, "stylizedImage", "Stylized image");
+  
   /**
    * The -1 indicates no upper limits for the image size
    */
