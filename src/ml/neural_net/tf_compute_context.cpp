@@ -231,10 +231,17 @@ tf_image_augmenter::prepare_augmented_images(
 
     for (size_t i = 0; i < aug_annotations.size(); i++) {
       pybind11::buffer_info buf_ann = aug_annotations[i].request();
-      turi::neural_net::shared_float_array annotate =
-          turi::neural_net::shared_float_array::copy(
-              static_cast<float*>(buf_ann.ptr),
-              std::vector<size_t>(buf_ann.shape.begin(), buf_ann.shape.end()));
+      size_t num_annotations = buf_ann.shape[0];
+      turi::neural_net::shared_float_array annotate;
+      if (num_annotations > 0) {
+        annotate = turi::neural_net::shared_float_array::copy(
+            static_cast<float*>(buf_ann.ptr),
+            std::vector<size_t>(buf_ann.shape.begin(), buf_ann.shape.end()));
+      } else {
+        std::vector<float> data = {0};
+        std::vector<size_t> shape = {1};
+        annotate = turi::neural_net::shared_float_array::wrap(data, shape);
+      }
       annotations_per_batch.push_back(annotate);
     }
     image_annotations.annotations = annotations_per_batch;

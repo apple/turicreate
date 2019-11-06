@@ -35,6 +35,11 @@ shared_float_array convert_to_shared_float_array(
 
 std::vector<image_annotation> convert_to_image_annotation(
     shared_float_array augmented_annotation) {
+  // Check if the annotation is empty
+  if (augmented_annotation.size() == 1) {
+    return std::vector<image_annotation>();
+  }
+
   const size_t* shape = augmented_annotation.shape();
   size_t num_annotations_per_image = shape[0];
   std::vector<image_annotation> augmented_ann(num_annotations_per_image);
