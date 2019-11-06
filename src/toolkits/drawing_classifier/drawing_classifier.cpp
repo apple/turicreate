@@ -262,7 +262,10 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   }
 
   data_params.is_train = is_train;
-  data_params.target_column_name = read_state<flex_string>("target");
+  if (data.contains_column(read_state<flex_string>("target"))) {
+    data_params.target_column_name = read_state<flex_string>("target");
+  }
+
   const flex_list& features_values = read_state<flex_list>("features");
 
   /**
@@ -647,8 +650,14 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
     result_batch.data_info = data->next_batch(batch_size);
 
     // Send the inputs to the model.
+    /** TODO: Figure out a better solution to having `num_samples` be a 
+     *  top-level input to the network. May be captured in the first
+     *  dimension of the input, or perhaps via a weight tensor.
+     */
     std::map<std::string, shared_float_array> results =
-        backend->predict({{"input", result_batch.data_info.drawings}});
+        backend->predict({{"input", result_batch.data_info.drawings},
+                          {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                         });
 
     // Copy the (float) outputs to our (double) buffer and add to the SArray.
     result_batch.data_info.predictions = results.at("output");
@@ -664,9 +673,11 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   // by default, it should be "probability" if the value is
   // passed in through python client
-  if (output_type != "probability_vector" && output_type != "class") {
+  if (output_type != "probability"
+    && output_type != "probability_vector"
+    && output_type != "class") {
     log_and_throw(output_type + " is not a valid option for output_type.  " +
-                  "Expected one of: probability, rank");
+                  "Expected one of: probability, probability_vector, rank");
   }
 
   auto data_itr =
@@ -684,6 +695,16 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
     };
 
     result = result.apply(max_prob_label, class_labels.front().get_type());
+
+  } else if (output_type == "probability") {
+    auto max_prob = [=](const flexible_type& ft) {
+      const flex_vec& prob_vec = ft.get<flex_vec>();
+      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+      return *max_it;
+    };
+
+    result = result.apply(max_prob, flex_type_enum::FLOAT);
+
   }
 
   return result;
@@ -700,7 +721,7 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 
   // data inference
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(data, /* is_train */ false, /* class lables */ {});
+      create_iterator(data, /* is_train */ false, /* class labels */ {});
 
   gl_sframe dc_predictions = perform_inference(data_it.get());
 
@@ -772,7 +793,7 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 
   result.add_column(stacked_class["class"], "class");
   result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
-                    "row_id");
+                    "id");
 
   // stack the rank column,
   gl_sframe stacked_rank =
@@ -826,7 +847,8 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"target", read_state<flex_string>("target")},
       {"features", features_string},
       {"max_iterations", read_state<flex_int>("max_iterations")},
-      {"warm_start", read_state<flex_int>("warm_start")},
+      // TODO: Uncomment as part of #2524
+      // {"warm_start", read_state<flex_int>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
