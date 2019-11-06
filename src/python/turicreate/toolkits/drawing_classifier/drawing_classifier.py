@@ -132,8 +132,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         >>> data['predictions'] = model.predict(data)
     """
 
-    import warnings
-
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
 
     if '_advanced_parameters' in kwargs:
@@ -153,9 +151,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     # automatically infer feature column
     if feature is None:
-        warnings.warn("Not specifying a feature column is deprecate. This functionality will be removed"
-                      + " in the next major release. Please specify a \"feature\" value to"
-                      + " turicreate.drawing_classifier.create.")
         feature = _tkutl._find_only_drawing_column(input_dataset)
 
     _raise_error_if_not_drawing_classifier_input_sframe(
