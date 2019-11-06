@@ -91,7 +91,7 @@ def _get_data(feature, annotations):
     return data
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+
 class ObjectDetectorTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -199,6 +199,7 @@ class ObjectDetectorTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.object_detector.create(self.sf[:0])
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
         sf_copy[self.annotations] = sf_copy[self.annotations].apply(lambda x: x[0] if len(x) > 0 else None)
@@ -241,6 +242,7 @@ class ObjectDetectorTest(unittest.TestCase):
         pred0 = self.model.predict(sf[:0])
         self.assertEqual(len(pred0), 0)
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_single_image(self):
         # Predict should work on a single image and product a list of dictionaries
         # (we set confidene threshold to 0 to ensure predictions are returned)
@@ -329,6 +331,7 @@ class ObjectDetectorTest(unittest.TestCase):
 
     @unittest.skipIf(_mac_ver() < (10, 14),
         "Non-maximum suppression is only supported on MacOS 10.14+.")
+
     def test_export_coreml_with_non_maximum_suppression(self):
         from PIL import Image
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
@@ -404,7 +407,6 @@ class ObjectDetectorTest(unittest.TestCase):
             print("List fields passed")
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ObjectDetectorGPUTest(unittest.TestCase):
