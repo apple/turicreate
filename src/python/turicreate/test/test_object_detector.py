@@ -91,7 +91,7 @@ def _get_data(feature, annotations):
     return data
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+
 class ObjectDetectorTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -404,7 +404,6 @@ class ObjectDetectorTest(unittest.TestCase):
             print("List fields passed")
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ObjectDetectorGPUTest(unittest.TestCase):
