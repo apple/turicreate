@@ -29,12 +29,15 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         _tf.reset_default_graph()
 
+        user_num_layers = 3
+
         self.num_classes = num_classes
         self.batch_size = batch_size
 
         self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
+        '''
         # Weights
         weights = {
         'sound_dense0_weight'  : _tf.Variable(_tf.random.uniform([12288, 100]), name='sound_dense0_weight'),
@@ -52,15 +55,55 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.names_of_layers = [x.split('_')[1] for x in weights.keys()]
 
         dense0 = _tf.nn.xw_plus_b(self.x, weights=weights["sound_dense0_weight"], biases=biases["sound_dense0_bias"])
-        self.dense0 = _tf.nn.relu(dense0)
+        dense0 = _tf.nn.relu(dense0)
 
         dense1 = _tf.nn.xw_plus_b(dense0, weights=weights["sound_dense1_weight"], biases=biases["sound_dense1_bias"])
-        self.dense1 = _tf.nn.relu(dense1)
+        dense1 = _tf.nn.relu(dense1)
 
         out = _tf.nn.xw_plus_b(dense1, weights=weights["sound_dense2_weight"], biases=biases["sound_dense2_bias"])
-        self.out = _tf.nn.softmax(out)
+        out = _tf.nn.softmax(out)
+        '''
 
-        self.predictions = self.out
+        weights = {}
+        biases = {}
+        self.names_of_layers = []
+        initializer = _tf.keras.initializers.glorot_uniform() #xavier initialization
+
+        for i in range(user_num_layers):
+            weight_name = 'sound_dense{}_weight'.format(i)
+            bias_name = 'sound_dense{}_bias'.format(i)
+            self.names_of_layers.append('dense{}'.format(i))
+            if i==0:
+                #weights[weight_name] = _tf.Variable(_tf.random.uniform([12288, 100]), name=weight_name)
+                weights[weight_name] = _tf.Variable(initializer([12288, 100]), name=weight_name)
+            else:
+                weights[weight_name] = _tf.Variable(initializer([100, 100]), name=weight_name)
+                #weights[weight_name] = _tf.Variable(_tf.random.uniform([100, 100]), name=weight_name)
+
+            if i==(user_num_layers-1):
+                weights[weight_name] = _tf.Variable(initializer([100, self.num_classes]), name=weight_name)
+                #weights[weight_name] = _tf.Variable(_tf.random.uniform([100, self.num_classes]), name=weight_name)
+                biases[bias_name] = _tf.Variable(initializer([self.num_classes]), name=bias_name)
+                #biases[bias_name] = _tf.Variable(_tf.random.uniform([self.num_classes]), name=bias_name)
+            else:
+                biases[bias_name] = _tf.Variable(initializer([100]), name=bias_name)
+                #biases[bias_name] = _tf.Variable(_tf.random.uniform([100]), name=bias_name)
+
+
+        for i in range(user_num_layers):
+            weight_name = 'sound_dense{}_weight'.format(i)
+            bias_name = 'sound_dense{}_bias'.format(i)
+            if i==0:
+                curr_dense = _tf.nn.xw_plus_b(self.x, weights=weights[weight_name], biases=biases[bias_name])
+            else:
+                curr_dense = _tf.nn.xw_plus_b(curr_dense, weights=weights[weight_name], biases=biases[bias_name])
+            if i==(user_num_layers-1):
+                out = _tf.nn.softmax(curr_dense)
+            else:
+                curr_dense = _tf.nn.relu(curr_dense)
+
+
+        self.predictions = out
 
         # Loss
         self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
@@ -151,7 +194,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             bias_name = 'sound_{}_weight:0'.format(name)
             layer={}
             #print(weight_name,layer_dict[weight_name], type(layer_dict[weight_name]), layer_dict[weight_name].shape)
-            layer['weight'] = layer_dict[weight_name].transpose(1, 0)#.asnumpy()
+            layer['weight'] = layer_dict[weight_name].transpose(1, 0)#.asnumpy() #### wait we don't need this!
             #print(bias_name,layer_dict[bias_name], type(layer_dict[bias_name]), layer_dict[bias_name].shape)
             layer['bias'] = layer_dict[bias_name]#.asnumpy()
             if i==(len(self.names_of_layers)-1):

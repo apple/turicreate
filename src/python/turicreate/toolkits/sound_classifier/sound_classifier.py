@@ -74,7 +74,6 @@ class _TFAccuracy(_Accuracy):
 
     def update(self, ground_truth, predicted):
         predicted = _np.argmax(predicted, axis=-1)
-        #print(ground_truth.shape, predicted.shape) #(64, 1) (64,)
         self.impl.update_state(ground_truth, predicted)
 
     def reset(self):
@@ -324,8 +323,6 @@ def create(dataset, target, feature, max_iterations=10,
         for batch in train_data:
             data = batch.data[0].asnumpy()
             outputs = custom_NN.predict(data)
-            label = _np.array([x.asnumpy() for x in batch.label[0]])
-            #print("label:", label, "outputs:",outputs)
             train_metric.update(label, outputs)
         train_data.reset()
 
