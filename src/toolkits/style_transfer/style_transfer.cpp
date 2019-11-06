@@ -303,7 +303,7 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
 
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
     const {
-  return compute_context::create_tf();
+  return compute_context::create();
 }
 
 std::unique_ptr<data_iterator> style_transfer::create_iterator(
@@ -355,7 +355,7 @@ void style_transfer::infer_derived_options() {
 
 gl_sframe style_transfer::get_styles(variant_type style_index) {
   gl_sframe style_sf = read_state<gl_sframe>("styles");
-  gl_sarray style_filter = convert_variant_to_filter(style_index);
+  gl_sarray style_filter = convert_style_indicies_to_filter(style_index);
 
   return style_sf[style_filter];
 }
@@ -373,13 +373,13 @@ gl_sframe style_transfer::style_sframe_with_index(gl_sarray styles) {
 }
 
 /**
- * convert_variant_to_filter
+ * convert_style_indicies_to_filter
  *
  * This function takes a variant type and converts it into a boolean filter. The
  * elements at the indicies we want to keep are set to a value of `1`, the
  * elements we don't want to keep are set to a value of `0`.
  */
-gl_sarray style_transfer::convert_variant_to_filter(const variant_type& data) {
+gl_sarray style_transfer::convert_style_indicies_to_filter(const variant_type& data) {
   // read the `num_styles`
   flex_int num_styles = read_state<flex_int>("num_styles");
   if (variant_is<flex_list>(data) || variant_is<flex_vec>(data)) {
