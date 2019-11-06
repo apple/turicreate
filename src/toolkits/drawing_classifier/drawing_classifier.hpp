@@ -289,6 +289,7 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   // Primary dependencies for training. These should be nonnull while training
   // is in progress.
+  std::string feature_column_name_;
   gl_sframe training_data_;  // TODO: Avoid storing gl_sframe AND data_iterator.
   gl_sframe validation_data_;
   std::unique_ptr<data_iterator> training_data_iterator_;

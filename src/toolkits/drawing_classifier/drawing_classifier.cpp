@@ -49,26 +49,6 @@ struct result {
   data_iterator::batch data_info;
 };
 
-gl_sframe infer_feature_column_and_prepare_data(gl_sframe data) {
-  std::string feature_column_name;
-
-  gl_sframe bitmap_data = data;
-
-  for (std::string column_name: data.column_names()) {
-    if (data[column_name].dtype() == flex_type_enum::LIST
-      || data[column_name].dtype() == flex_type_enum::IMAGE) {
-      feature_column_name = column_name;
-    }
-  }
-
-  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
-    bitmap_data = _drawing_classifier_prepare_data(data, feature_column_name);
-  }
-
-  return bitmap_data;
-}
-
-
 }  // namespace
 
 const size_t drawing_classifier::DRAWING_CLASSIFIER_VERSION = 1;
@@ -304,6 +284,8 @@ void drawing_classifier::init_training(
   if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
     data = _drawing_classifier_prepare_data(data, feature_column_name);
   }
+
+  feature_column_name_ = feature_column_name;
 
   // Read user-specified options.
   init_options(opts);
@@ -689,7 +671,11 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
                   "Expected one of: probability, rank");
   }
 
-  data = infer_feature_column_and_prepare_data(data);
+  // Prepare stroke-based data, if needed.
+  if (data[feature_column_name_].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name_);
+  }
+
   auto data_itr =
       create_iterator(data, /* is_train */ false, /* class labels */ {});
 
@@ -719,7 +705,10 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
                   "Expected one of: probability, rank");
   }
 
-  data = infer_feature_column_and_prepare_data(data);
+  // Prepare stroke-based data, if needed.
+  if (data[feature_column_name_].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name_);
+  }
 
   // data inference
   std::unique_ptr<data_iterator> data_it =
