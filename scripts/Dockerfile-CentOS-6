@@ -56,16 +56,6 @@ RUN ./config --prefix=/usr/local --openssldir=/usr/local && \
     ldconfig && \
     rm -rf /src/openssl*
 
-ADD https://curl.haxx.se/download/curl-7.64.1.tar.xz /src/curl-7.64.1.tar.xz
-WORKDIR /src
-RUN tar xf curl-7.64.1.tar.xz
-WORKDIR /src/curl-7.64.1
-RUN ./configure --with-ssl --prefix=/usr/local && \
-     make -j24 --quiet && \
-     make --quiet install && \
-     ldconfig && \
-     rm -rf /src/curl*
-
 # Install cmake from binary release
 RUN mkdir -p /opt
 WORKDIR /opt
