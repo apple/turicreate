@@ -137,7 +137,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
           row[predictions_index_].to<flex_string>()));
       batch_predictions.emplace_back(preds);
     }
-    std::cout << row[feature_index_].get_type();
+
     add_drawing_pixel_data_to_batch(next_drawing_pointer,
                                     row[feature_index_].to<flex_image>());
     next_drawing_pointer += image_data_size;

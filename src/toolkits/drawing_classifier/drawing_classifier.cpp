@@ -49,28 +49,6 @@ struct result {
   data_iterator::batch data_info;
 };
 
-gl_sframe infer_feature_column_and_prepare_data(gl_sframe data) {
-  std::string feature_column_name;
-
-  gl_sframe bitmap_data = data;
-
-
-  for (std::string column_name: data.column_names()) {
-    if (data[column_name].dtype() == flex_type_enum::LIST
-      || data[column_name].dtype() == flex_type_enum::IMAGE) {
-      feature_column_name = column_name;
-    }
-  }
-
-  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
-    bitmap_data = _drawing_classifier_prepare_data(data, feature_column_name);
-  }
-  std::cout << "convert to image";
-  std::cout << bitmap_data;
-  return bitmap_data;
-}
-
-
 }  // namespace
 
 const size_t drawing_classifier::DRAWING_CLASSIFIER_VERSION = 1;
@@ -277,6 +255,12 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     gl_sframe data, bool is_train,
     std::vector<std::string> class_labels) const {
   data_iterator::parameters data_params;
+
+  std::string feature_column_name = "feature";
+  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name);
+  }
+
   data_params.data = std::move(data);
 
   if (!is_train) {
@@ -302,11 +286,6 @@ void drawing_classifier::init_training(
     std::string feature_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
 
-  // Convert stroke-based data, if needed
-  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
-    data = _drawing_classifier_prepare_data(data, feature_column_name);
-  }
-
   // Read user-specified options.
   init_options(opts);
 
@@ -322,11 +301,6 @@ void drawing_classifier::init_training(
 
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
-  if (validation_data_.size() > 0 
-    && validation_data_[feature_column_name].dtype() != flex_type_enum::IMAGE) {
-    validation_data_ = _drawing_classifier_prepare_data(
-      validation_data_, feature_column_name);
-  }
 
   // Begin printing progress.
   // TODO: Make progress printing optional.
@@ -625,7 +599,6 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
 
 gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
   // Open a new SFrame for writing.
-  std::cout << "entered perform inference";
   gl_sframe_writer writer({"preds"}, {flex_type_enum::VECTOR},
                           /* num_segments */ 1);
 
@@ -692,11 +665,8 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
                   "Expected one of: probability, rank");
   }
 
-  gl_sframe processed_data = infer_feature_column_and_prepare_data(data);
-  std::cout << "in predict";
-  std::cout << processed_data;
   auto data_itr =
-      create_iterator(processed_data, /* is_train */ false, /* class labels */ {});
+      create_iterator(data, /* is_train */ false, /* class labels */ {});
 
   gl_sframe predictions = perform_inference(data_itr.get());
 
@@ -724,11 +694,11 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
                   "Expected one of: probability, rank");
   }
 
-  gl_sframe processed_data = infer_feature_column_and_prepare_data(data);
+  // gl_sframe processed_data = infer_feature_column_and_prepare_data(data);
 
   // data inference
   std::unique_ptr<data_iterator> data_it =
-      create_iterator(processed_data, /* is_train */ false, /* class lables */ {});
+      create_iterator(data, /* is_train */ false, /* class lables */ {});
 
   gl_sframe dc_predictions = perform_inference(data_it.get());
 
