@@ -67,7 +67,7 @@ class MultiLayerPerceptronMXNetModel():
         data = mx.gluon.utils.split_and_load(data, ctx_list=self.ctx, batch_axis=0, even_split=False)
         outputs = [self.custom_NN(x).asnumpy() for x in data]
         soft_outputs = mx.nd.softmax(mx.nd.array(outputs[0]))
-        return soft_outputs
+        return soft_outputs.asnumpy()
 
     @staticmethod
     def _build_custom_neural_network(num_inputs, num_labels, layer_sizes):
