@@ -462,7 +462,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       batch = data_iter->next_batch(batch_size);
     }
 
-    data_iter.reset();
+    data_iter->reset();
   }
 }
 

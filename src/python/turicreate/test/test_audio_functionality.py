@@ -27,6 +27,9 @@ from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits._internal_utils import _mac_ver
 
 
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+
+
 class ReadAudioTest(unittest.TestCase):
 
     @classmethod
@@ -149,6 +152,7 @@ def _generate_binary_test_data():
 binary_test_data = _generate_binary_test_data()
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @classmethod
@@ -299,6 +303,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue(self.model.validation_accuracy is None)
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -312,6 +317,7 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         assert(self.model.custom_layer_sizes == layer_sizes)
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -336,6 +342,7 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.assertTrue(self.model.validation_accuracy is not None)
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestWithShortClip(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -386,6 +393,7 @@ class ClassifierTestWithShortClip(unittest.TestCase):
             self.assertNotEqual(r['probability'], None)
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
@@ -426,6 +434,7 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
         self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())
 
 
+@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ReuseDeepFeatures(unittest.TestCase):
     def test_simple_case(self):
         data = copy(binary_test_data)
