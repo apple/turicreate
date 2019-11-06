@@ -26,7 +26,6 @@ class ODTensorFlowModel(object):
             init_weights[key] = _utils.convert_shared_float_array_to_numpy(init_weights[key])
 
         self.config = config
-        self.batch_size = batch_size
         self.grid_shape = [13,13]
         self.num_classes = int(_utils.convert_shared_float_array_to_numpy(config['num_classes']))
         self.anchors = [
@@ -41,10 +40,10 @@ class ODTensorFlowModel(object):
         self.is_train = is_train  # Set flag for training or val
 
         # Create placeholders for image and labels
-        self.images = _tf.placeholder(_tf.float32, [self.batch_size, input_h,
+        self.images = _tf.placeholder(_tf.float32, [None, input_h,
                                                               input_w, 3], name='images')
         self.labels = _tf.placeholder(_tf.float32,
-                                [self.batch_size, self.grid_shape[0], self.grid_shape[1],
+                                [None, self.grid_shape[0], self.grid_shape[1],
                                  self.num_anchors, self.num_classes + 5],
                                 name='labels')
         self.init_weights = init_weights
@@ -284,6 +283,7 @@ class ODTensorFlowModel(object):
         loss: TensorFlow Tensor
             Loss (combination of regression and classification losses)
         """
+        batch_size = _tf.shape(labels)[0]
         rescore = int(_utils.convert_shared_float_array_to_numpy(self.config.get('od_rescore')))
         lmb_coord_xy = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_coord_xy'))
         lmb_coord_wh = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_coord_wh'))
@@ -337,7 +337,7 @@ class ODTensorFlowModel(object):
         kr_obj_ij = _tf.stop_gradient(resp_box * gt_conf)
 
         kr_noobj_ij = 1 - kr_obj_ij
-        s = 1 / (self.batch_size * self.grid_shape[0] * self.grid_shape[1])
+        s = 1 / (batch_size * self.grid_shape[0] * self.grid_shape[1])
         kr_obj_ij_plus1 = _tf.expand_dims(kr_obj_ij, -1)
 
         if rescore:
@@ -352,7 +352,7 @@ class ODTensorFlowModel(object):
         loss_wh = _tf.losses.huber_loss (labels=gt_raw_wh, predictions=raw_wh, weights=lmb_coord_wh * kr_box,
                                                    delta= 1.0)
         # Confidence loss
-        loss_conf = s * _tf.reduce_sum(
+        loss_conf = _tf.cast(s, _tf.float32) * _tf.reduce_sum(
             obj_w * _tf.nn.sigmoid_cross_entropy_with_logits(labels=obj_gt_conf, logits=raw_conf))
 
         # TODO: tf.nn.softmax_cross_entropy_with_logits_v2 instead of tf.nn.softmax_cross_entropy_with_logits
@@ -380,7 +380,7 @@ class ODTensorFlowModel(object):
         """
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
-        feed_dict['labels'] = feed_dict['labels'].reshape(self.batch_size, self.grid_shape[0], self.grid_shape[1],self.num_anchors, self.num_classes + 5)
+        feed_dict['labels'] = feed_dict['labels'].reshape(-1, self.grid_shape[0], self.grid_shape[1],self.num_anchors, self.num_classes + 5)
 
         _, loss_batch = self.sess.run([self.train_op, self.loss], feed_dict={self.images: feed_dict['input'],
                                                                              self.labels: feed_dict['labels']})

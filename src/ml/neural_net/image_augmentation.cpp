@@ -171,8 +171,7 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
   // Decode a batch of images to raw format (shared_float_arrays)
   // Also convert annotations and predictions per batch of images
   // to vectors of shared_float_arrays.
-  for (size_t i = 0; i < n; i++) {
-    const labeled_image& source = source_batch[i];
+  for (const labeled_image& source : source_batch) {
     size_t input_height = source.image.m_height;
     size_t input_width = source.image.m_width;
     std::vector<float> img(input_height * input_width * c, 0.f);
@@ -199,7 +198,7 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
 
   // Convert augmented_data to the data structure needed
   res.image_batch = augmented_data.images;
-  for (size_t a = 0; a < n; a++) {
+  for (size_t a = 0; a < source_batch.size(); a++) {
     res.annotations_batch[a] =
         convert_to_image_annotation(augmented_data.annotations[a]);
   }
