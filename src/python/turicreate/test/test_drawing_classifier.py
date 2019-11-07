@@ -287,6 +287,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 assert (new_preds.dtype == old_preds.dtype
                     and (new_preds == old_preds).all())
 
+    @pytest.mark.xfail()
     @unittest.skipIf(_sys.platform == "darwin", "test_export_coreml_with_predict(...) covers this functionality and more")
     def test_export_coreml(self):
         for model in self.models:
