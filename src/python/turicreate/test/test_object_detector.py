@@ -328,7 +328,6 @@ class ObjectDetectorTest(unittest.TestCase):
 
     @unittest.skipIf(_mac_ver() < (10, 14),
         "Non-maximum suppression is only supported on MacOS 10.14+.")
-
     def test_export_coreml_with_non_maximum_suppression(self):
         from PIL import Image
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
