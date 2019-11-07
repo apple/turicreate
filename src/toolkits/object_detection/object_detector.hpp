@@ -106,7 +106,7 @@ class EXPORT object_detector: public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::synchronize_training);
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::finalize_training,
                                  "compute_final_metrics");
-  register_defaults("finalize_training", {{"compute_final_metrics", false}});
+  register_defaults("finalize_training", {{"compute_final_metrics", true}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
                                  "output_type", "options");
