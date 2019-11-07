@@ -414,7 +414,7 @@ void object_detector::train(gl_sframe data,
                             std::map<std::string, flexible_type> opts)
 {
   auto compute_final_metrics_iter = opts.find("compute_final_metrics");
-  bool compute_final_metrics = true;;
+  bool compute_final_metrics = true;
   if (compute_final_metrics_iter != opts.end()) {
     compute_final_metrics = compute_final_metrics_iter->second;
   }
