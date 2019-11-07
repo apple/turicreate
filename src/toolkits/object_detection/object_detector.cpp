@@ -413,6 +413,15 @@ void object_detector::train(gl_sframe data,
                             variant_type validation_data,
                             std::map<std::string, flexible_type> opts)
 {
+  auto compute_final_metrics_iter = opts.find("compute_final_metrics");
+  bool compute_final_metrics;
+  if (compute_final_metrics_iter == opts.end()) {
+    compute_final_metrics = true;
+  } else {
+    compute_final_metrics = compute_final_metrics_iter->second;
+  }
+
+  opts.erase(compute_final_metrics_iter);
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
   init_training(data, annotations_column_name, image_column_name,
@@ -427,7 +436,7 @@ void object_detector::train(gl_sframe data,
   }
 
   // Wait for any outstanding batches to finish.
-  finalize_training(false);
+  finalize_training(compute_final_metrics);
 
   add_or_update_state({
       {"training_time", time_object.current_time()},

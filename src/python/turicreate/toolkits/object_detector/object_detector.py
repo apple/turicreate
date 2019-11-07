@@ -441,7 +441,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             'grid_width': params['grid_shape'][1],
             'max_iterations': num_iterations,
             'mlmodel_path' : params['mlmodel_path'],
-            'classes' : classes
+            'classes' : classes,
+            'compute_final_metrics' : False
         }
         model = _tc.extensions.object_detector()
         model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
