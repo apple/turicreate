@@ -89,50 +89,50 @@ RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enab
     rm -rf /src/Python-2.7.15*
 
 # Install Python 3.5 from source
-# WORKDIR /src
-# RUN curl -O https://www.python.org/ftp/python/3.5.6/Python-3.5.6.tgz
-# RUN tar xf Python-3.5.6.tgz
-# WORKDIR /src/Python-3.5.6
-# RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
-#     make -j4 --quiet && \
-#     make install && \
-#     ldconfig && \
-#     rm -rf /src/Python-3.5.6*
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.5.6/Python-3.5.6.tgz
+RUN tar xf Python-3.5.6.tgz
+WORKDIR /src/Python-3.5.6
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.5.6*
 
 # Install Python 3.6 from source
-# WORKDIR /src
-# RUN curl -O https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tgz
-# RUN tar xf Python-3.6.8.tgz
-# WORKDIR /src/Python-3.6.8
-# RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
-#     make -j4 --quiet && \
-#     make install && \
-#     ldconfig && \
-#     rm -rf /src/Python-3.6.8*
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.6.8/Python-3.6.8.tgz
+RUN tar xf Python-3.6.8.tgz
+WORKDIR /src/Python-3.6.8
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.6.8*
 
 # Install Python 3.7 from source
-# WORKDIR /src
-# RUN curl -O https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
-# RUN tar xf Python-3.7.3.tgz
-# WORKDIR /src/Python-3.7.3
-# RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
-#     make -j4 --quiet && \
-#     make install && \
-#     ldconfig && \
-#     rm -rf /src/Python-3.7.3*
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.7.3/Python-3.7.3.tgz
+RUN tar xf Python-3.7.3.tgz
+WORKDIR /src/Python-3.7.3
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.7.3*
 
 # Install pip and virtualenv
 WORKDIR /src
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
 RUN python2.7 get-pip.py
 RUN pip2.7 install virtualenv
-# RUN python3.5 get-pip.py
-# RUN pip3.5 install virtualenv
-# RUN python3.6 get-pip.py
-# RUN pip3.6 install virtualenv
-# RUN python3.7 get-pip.py
-# RUN pip3.7 install virtualenv
-# RUN rm -rf /src/get-pip.py
+RUN python3.5 get-pip.py
+RUN pip3.5 install virtualenv
+RUN python3.6 get-pip.py
+RUN pip3.6 install virtualenv
+RUN python3.7 get-pip.py
+RUN pip3.7 install virtualenv
+RUN rm -rf /src/get-pip.py
 
 # Install llvm 8.0.0 from source with clang (no libc++)
 WORKDIR /src
