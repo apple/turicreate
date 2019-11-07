@@ -182,7 +182,7 @@ class CreateTest(unittest.TestCase):
 
         ## Numeric standard distances should work for numeric columns
         for d in ['euclidean', 'squared_euclidean', 'manhattan', 'cosine',
-                  'dot_product', 'transformed_dot_product']:
+                  'transformed_dot_product']:
             try:
                 m = tc.dbscan.create(sf, features=numeric_features, distance=d,
                                      radius=1, min_core_neighbors=3,
@@ -193,7 +193,7 @@ class CreateTest(unittest.TestCase):
 
         ## Numeric standard distances should work for array columns
         for d in ['euclidean', 'squared_euclidean', 'manhattan', 'cosine',
-                  'dot_product', 'transformed_dot_product']:
+                  'transformed_dot_product']:
             try:
                 m = tc.dbscan.create(sf, features=array_features, distance=d,
                                      radius=1, min_core_neighbors=3,
@@ -213,8 +213,7 @@ class CreateTest(unittest.TestCase):
 
 
         ## Dictionary standard distances should work.
-        for d in ['jaccard', 'weighted_jaccard', 'cosine', 'dot_product',
-                  'transformed_dot_product']:
+        for d in ['jaccard', 'weighted_jaccard', 'cosine', 'transformed_dot_product']:
             try:
                 m = tc.dbscan.create(sf, features=dict_features, distance=d,
                                      radius=1, min_core_neighbors=3,

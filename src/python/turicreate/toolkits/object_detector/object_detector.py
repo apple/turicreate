@@ -271,8 +271,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             'grid_width': params['grid_shape'][1],
             'max_iterations': max_iterations,
             'mlmodel_path' : params['mlmodel_path'],
-            'classes' : classes
-
+            'classes' : classes,
+            'compute_final_metrics' : False
         }
         if batch_size > 0:
             tf_config['batch_size'] = batch_size
@@ -455,7 +455,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 cur_iter=iteration_base1, loss=progress['smoothed_loss'],
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
-
 
         net.hybridize()
 

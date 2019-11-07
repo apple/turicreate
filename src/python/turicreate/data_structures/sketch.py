@@ -391,25 +391,6 @@ class Sketch(object):
         with cython_context():
             return int(self.__proxy__.num_undefined())
 
-    def num_na(self):
-        """
-        ..WARNING:: This function is deprecated, It will be removed in the next
-        major release. Use Sketch.num_missing instead.
-
-        Returns the the number of missing (i.e. None) values in the SArray.
-        Return 0 on an empty SArray.
-
-        Returns
-        -------
-        out : int
-            The number of missing values in the SArray.
-        """
-        import warnings
-        warnings.warn("Sketch.num_na is deprecated. It will be removed in the next major release."
-                      + " Use Sketch.num_missing instead.")
-
-        return self.num_missing()
-
     def num_unique(self):
         """
         Returns a sketched estimate of the number of unique values in the
