@@ -44,7 +44,7 @@ def _get_data(feature, annotations):
                 pil_img.save(f, format=image_format)
                 return tc.Image(f.name)
 
-    num_examples = 10
+    num_examples = 100
     max_num_boxes_per_image = 10
     classes = _CLASSES
     images = []
