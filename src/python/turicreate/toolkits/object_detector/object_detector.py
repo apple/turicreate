@@ -183,16 +183,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     """
     _raise_error_if_not_sframe(dataset, "dataset")
 
-    if not USE_CPP:
-        # Use MxNet
-        from ._model import tiny_darknet as _tiny_darknet
-        import mxnet as _mx
-        from .._mxnet import _mxnet_utils
-        from ._mx_detector import YOLOLoss as _YOLOLoss
-        from ._sframe_loader import SFrameDetectionIter as _SFrameDetectionIter
-        from ._manual_scheduler import ManualScheduler as _ManualScheduler
-
-
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
 
@@ -271,16 +261,12 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'mlmodel_path': pretrained_model_path,
     }
 
-    if batch_size < 1:
-        batch_size = 32  # Default if not user-specified
-
     #create tensorflow model here
     if USE_CPP:
         import turicreate.toolkits.libtctensorflow
         if classes == None:
             classes = []
         tf_config = {
-            'batch_size' : batch_size,
             'grid_height': params['grid_shape'][0],
             'grid_width': params['grid_shape'][1],
             'max_iterations': max_iterations,
@@ -288,10 +274,20 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             'classes' : classes
 
         }
+        if batch_size > 0:
+            tf_config['batch_size'] = batch_size
+
         model = _tc.extensions.object_detector()
         model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
         return ObjectDetector_beta(model_proxy=model, name="object_detector")
 
+    # Use MxNet
+    from ._model import tiny_darknet as _tiny_darknet
+    import mxnet as _mx
+    from .._mxnet import _mxnet_utils
+    from ._mx_detector import YOLOLoss as _YOLOLoss
+    from ._sframe_loader import SFrameDetectionIter as _SFrameDetectionIter
+    from ._manual_scheduler import ManualScheduler as _ManualScheduler
 
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -305,6 +301,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     anchors = params['anchors']
     num_anchors = len(anchors)
+
+    if batch_size < 1:
+        batch_size = 32  # Default if not user-specified
 
     cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
     num_mxnet_gpus = len(cuda_gpus)
@@ -324,6 +323,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # to be problematic to run independently of a MXNet-powered neural network
     # in a separate thread. For this reason, we restrict IO threads to when
     # the neural network backend is MPS.
+    io_thread_buffer_size = params['io_thread_buffer_size'] if use_mps else 0
 
     if verbose:
         # Estimate memory usage (based on experiments)
@@ -369,7 +369,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         num_iterations = max_iterations
 
     # Create data loader
-    io_thread_buffer_size = params['io_thread_buffer_size'] if use_mps else 0
 
     loader = _SFrameDetectionIter(dataset,
                                   batch_size=batch_size,

@@ -35,8 +35,8 @@ shared_float_array convert_to_shared_float_array(
 
 std::vector<image_annotation> convert_to_image_annotation(
     shared_float_array augmented_annotation) {
-  // Check if the annotation is empty
-  if (augmented_annotation.size() == 1) {
+  // Check if the annotation is empty (a default value).
+  if (augmented_annotation.dim() == 0) {
     return {};
   }
 
@@ -207,7 +207,7 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
   std::vector<float> result_array(n * h * w * c);
   size_t image_size = augmented_data.images.size();
   const float* start_address = augmented_data.images.data();
-  const float* end_address = (float*)(start_address + image_size);
+  const float* end_address = start_address + image_size;
   std::copy(start_address, end_address, result_array.begin());
   res.image_batch =
       shared_float_array::wrap(std::move(result_array), {n, h, w, c});
