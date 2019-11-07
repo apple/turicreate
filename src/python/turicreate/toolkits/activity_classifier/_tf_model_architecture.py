@@ -18,9 +18,9 @@ import numpy as _np
 CONV_H = 64
 LSTM_H = 200
 DENSE_H = 128
-        
+
 class ActivityTensorFlowModel(TensorFlowModel):
-    
+
     def __init__(self, net_params, batch_size, num_features, num_classes, prediction_window, seq_len):
 
         for key in net_params.keys():
@@ -29,27 +29,27 @@ class ActivityTensorFlowModel(TensorFlowModel):
          # Suppresses verbosity to only errors
         _tf.logging.set_verbosity(_tf.logging.ERROR)
         _tf.debugging.set_log_device_placement(False)
-        
+
         _tf.reset_default_graph()
 
         self.num_classes = num_classes
         self.batch_size = batch_size
         self.seq_len = seq_len
-        
+
         # Vars
         self.data = _tf.placeholder(_tf.float32, [None, prediction_window*seq_len, num_features])
         self.weight = _tf.placeholder(_tf.float32, [None, seq_len, 1])
         self.target = _tf.placeholder(_tf.int32, [None, seq_len, 1])
         self.is_training = _tf.placeholder(_tf.bool)
-        
-        # Reshaping weights 
+
+        # Reshaping weights
         reshaped_weight = _tf.reshape(self.weight, [self.batch_size, seq_len])
 
         # One hot encoding target
         reshaped_target = _tf.reshape(self.target, [self.batch_size, seq_len])
         one_hot_target = _tf.one_hot(reshaped_target, depth=self.num_classes, axis=-1)
-        
-        # Weights 
+
+        # Weights
         self.weights = {
         'conv_weight' : _tf.Variable(_tf.zeros([prediction_window, num_features, CONV_H]), name='conv_weight'),
         'dense0_weight': _tf.Variable(_tf.zeros([LSTM_H, DENSE_H]), name='dense0_weight'),
@@ -63,7 +63,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         'dense1_bias'  : _tf.Variable(_tf.zeros([num_classes]), name='dense1_bias')
         }
 
-        # Convolution 
+        # Convolution
         conv = _tf.nn.conv1d(self.data, self.weights['conv_weight'], stride=prediction_window, padding='SAME')
         conv = _tf.nn.bias_add(conv, self.biases['conv_bias'])
         conv = _tf.nn.relu(conv)
@@ -72,7 +72,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
         # Long Stem Term Memory
         lstm = self.load_lstm_weights_params(net_params)
-        cells = _tf.nn.rnn_cell.LSTMCell(num_units=LSTM_H, reuse=_tf.AUTO_REUSE, forget_bias=0.0, 
+        cells = _tf.nn.rnn_cell.LSTMCell(num_units=LSTM_H, reuse=_tf.AUTO_REUSE, forget_bias=0.0,
             initializer=_tf.initializers.constant(lstm, verify_shape=True))
         init_state = cells.zero_state(batch_size, _tf.float32)
         rnn_outputs, final_state = _tf.nn.dynamic_rnn(cells, dropout, initial_state=init_state)
@@ -80,20 +80,20 @@ class ActivityTensorFlowModel(TensorFlowModel):
         # Dense
         dense = _tf.reshape(rnn_outputs, (-1, LSTM_H))
         dense = _tf.add(_tf.matmul(dense, self.weights['dense0_weight']), self.biases['dense0_bias'])
-        dense = _tf.layers.batch_normalization(inputs=dense, 
-            beta_initializer=_tf.initializers.constant(net_params['bn_beta'], verify_shape=True), 
+        dense = _tf.layers.batch_normalization(inputs=dense,
+            beta_initializer=_tf.initializers.constant(net_params['bn_beta'], verify_shape=True),
             gamma_initializer=_tf.initializers.constant(net_params['bn_gamma'], verify_shape=True),
-            moving_mean_initializer=_tf.initializers.constant(net_params['bn_running_mean'], verify_shape=True), 
+            moving_mean_initializer=_tf.initializers.constant(net_params['bn_running_mean'], verify_shape=True),
             moving_variance_initializer=_tf.initializers.constant(net_params['bn_running_var'], verify_shape=True), training=self.is_training )
         dense = _tf.nn.relu(dense)
         dense = _tf.layers.dropout(dense, rate=0.5, training=self.is_training)
-        
+
         # Output
         out = _tf.add(_tf.matmul(dense, self.weights['dense1_weight']), self.biases['dense1_bias'])
         out = _tf.reshape(out, (-1, self.seq_len, self.num_classes))
         self.probs = _tf.nn.softmax(out)
-        
-        # Weights 
+
+        # Weights
         seq_sum_weights = _tf.reduce_sum(reshaped_weight, axis=1)
         binary_seq_sum_weights = _tf.reduce_sum(_tf.cast(seq_sum_weights > 0, dtype=_tf.float32))
 
@@ -102,19 +102,19 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.loss_per_seq = _tf.reduce_sum(loss, axis=1) / (seq_sum_weights + 1e-5)
         self.loss_op = _tf.reduce_sum(self.loss_per_seq) / (binary_seq_sum_weights + 1e-5)
 
-        # Optimizer 
+        # Optimizer
         update_ops = _tf.get_collection(_tf.GraphKeys.UPDATE_OPS)
         self.set_learning_rate(1e-3)
         train_op = self.optimizer.minimize(self.loss_op)
         self.train_op = _tf.group([train_op, update_ops])
 
-        # Session 
+        # Session
         self.sess = _tf.Session()
 
         # Initialize all variables
         self.sess.run(_tf.global_variables_initializer())
         self.sess.run(_tf.local_variables_initializer())
-        
+
         self.load_weights(net_params)
 
     def load_lstm_weights_params(self, net_params):
@@ -164,12 +164,12 @@ class ActivityTensorFlowModel(TensorFlowModel):
             elif key in self.biases.keys():
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"), net_params[key]))
 
-        h2h_i_bias = net_params['lstm_h2h_i_bias'] 
-        h2h_c_bias = net_params['lstm_h2h_c_bias'] 
-        h2h_f_bias = net_params['lstm_h2h_f_bias'] 
+        h2h_i_bias = net_params['lstm_h2h_i_bias']
+        h2h_c_bias = net_params['lstm_h2h_c_bias']
+        h2h_f_bias = net_params['lstm_h2h_f_bias']
         h2h_o_bias = net_params['lstm_h2h_o_bias']
         lstm_bias = _utils.convert_lstm_bias_coreml_to_tf(h2h_i_bias, h2h_c_bias, h2h_f_bias, h2h_o_bias)
-        self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name('rnn/lstm_cell/bias:0'), lstm_bias))     
+        self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name('rnn/lstm_cell/bias:0'), lstm_bias))
 
     def train(self, feed_dict):
         """
@@ -191,9 +191,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
             feed_dict[key] = _np.squeeze(feed_dict[key], axis=1)
             feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[1], feed_dict[key].shape[2]))
 
-        _, loss, probs = self.sess.run([self.train_op, self.loss_per_seq, self.probs], 
+        _, loss, probs = self.sess.run([self.train_op, self.loss_per_seq, self.probs],
             feed_dict={self.data : feed_dict['input'], self.target : feed_dict['labels'], self.weight : feed_dict['weights'], self.is_training : True})
-        
+
         prob = _np.array(probs)
         probabilities = _np.reshape(prob, (prob.shape[0], prob.shape[1]*prob.shape[2]))
         result = {'loss' : _np.array(loss), 'output': probabilities }
@@ -223,23 +223,23 @@ class ActivityTensorFlowModel(TensorFlowModel):
             feed_dict[key] =  _np.reshape(feed_dict[key], (feed_dict[key].shape[0], feed_dict[key].shape[1], feed_dict[key].shape[2]))
 
         if len(feed_dict.keys()) == 1:
-            probs = self.sess.run(self.probs, 
+            probs = self.sess.run(self.probs,
                 feed_dict={self.data : feed_dict['input'], self.is_training: False})
             prob = _np.array(probs)
             probabilities = _np.reshape(prob, (prob.shape[0], prob.shape[1]*prob.shape[2]))
-            result  = { 'output' :  probabilities}    
+            result  = { 'output' :  probabilities}
         else:
-            loss,  probs= self.sess.run([self.loss_per_seq,  self.probs], 
+            loss,  probs= self.sess.run([self.loss_per_seq,  self.probs],
                 feed_dict={self.data : feed_dict['input'], self.target : feed_dict['labels'], self.weight : feed_dict['weights'], self.is_training: False})
             prob = _np.array(probs)
             probabilities = _np.reshape(prob, (prob.shape[0], prob.shape[1]*prob.shape[2]))
-            result = {'loss' : _np.array(loss),  'output': probabilities } 
+            result = {'loss' : _np.array(loss),  'output': probabilities }
         return result
 
 
     def export_weights(self):
         """
-        Function to store TensorFlow weights back to into a dict in CoreML format to be used 
+        Function to store TensorFlow weights back to into a dict in CoreML format to be used
         by the C++ implementation
 
         Returns
@@ -254,7 +254,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         for var, val in zip(tvars, tvars_vals):
             if 'weight' in var.name:
                 if var.name.startswith('conv'):
-                    
+
                     tf_export_params[var.name.split(':')[0]] = _utils.convert_conv1d_tf_to_coreml(val)
                 elif var.name.startswith('dense'):
                     tf_export_params[var.name.split(':')[0]] =  _utils.convert_dense_tf_to_coreml(val)
@@ -278,7 +278,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 tf_export_params['bn_'+var.name.split('/')[-1][0:-2]] = _np.array(val)
             else:
                 tf_export_params[var.name.split(':')[0]] = _np.array(val)
-            
+
         tvars = _tf.all_variables()
         tvars_vals = self.sess.run(tvars)
         for var, val in zip(tvars, tvars_vals):
@@ -302,4 +302,3 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
         """
         self.optimizer = _tf.train.AdamOptimizer(learning_rate=lr)
-        

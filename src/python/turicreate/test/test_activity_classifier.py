@@ -305,7 +305,7 @@ class ActivityClassifierTest(unittest.TestCase):
             expected_len = self._calc_expected_predictions_length(self.data)
             self.assertEqual(len(preds), expected_len)
 
-    @pytest.mark.xfail()
+    #ma@pytest.mark.xfail()
     def test_export_coreml(self):
         """
         Check the export_coreml() function.
@@ -331,6 +331,30 @@ class ActivityClassifierTest(unittest.TestCase):
                 labels = list(map(str, sorted(self.model.classes)))
             else:
                 labels = list(map(str, sorted(self.model._target_id_map.keys())))
+
+            if USE_CPP:
+                input_features = {}
+                for f in self.features:
+                    input_features[f] = dataset[f].to_numpy()
+                    #print(input_features[f].shape)
+                pred = self.model.predict(dataset, output_type='probability_vector')
+                print(pred.shape)
+                print(w)
+                model_time0_values = pred[0]
+                model_time1_values = pred[w]
+                model_predictions = np.array([model_time0_values, model_time1_values])
+                first_input_dict  = {}
+                second_input_dict = {}
+                for key, value in input_features.items():
+                    first_input_dict[key] = value[:w].copy()
+                    second_input_dict[key] = value[w:2*w].copy()
+                ret0 = coreml_model.predict(first_input_features)
+
+                second_input_dict[]
+                ret1 = coreml.model.predict()
+
+
+
 
             data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
             np_data = np.concatenate(data_list, 1)[np.newaxis]
