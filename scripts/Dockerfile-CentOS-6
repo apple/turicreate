@@ -29,14 +29,27 @@ RUN yum -y update && \
                gcc-multilib \
                glibc-devel \
                ccache \
-               make \
-               wget \
                tk-devel \
                patch \
                rsync \
                git \
                file \
                xz
+
+RUN yum install -y wget tar make flex gcc gcc-c++ gcc-devel.s390 binutils-devel bzip2
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+RUN mkdir /src
+WORKDIR /src
+RUN wget ftp://gcc.gnu.org/pub/gcc/releases/gcc-4.8.5/gcc-4.8.5.tar.gz
+RUN tar xzf gcc-4.8.5.tar.gz
+WORKDIR gcc-4.8.5
+RUN ./contrib/download_prerequisites
+WORKDIR ..
+RUN mkdir build
+WORKDIR build
+RUN ../gcc-4.8.5/configure --enable-languages=c,c++ --disable-checking --disable-multilib --disable-bootstrap
+RUN make -j16
+RUN make install
 
 # Install OpenSSL
 # The built-in SSL is so old it can't talk to anything on the internet anymore
@@ -121,6 +134,9 @@ RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enab
     ldconfig && \
     rm -rf /src/Python-3.7.3*
 
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+
 # Install pip and virtualenv
 WORKDIR /src
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
@@ -133,6 +149,18 @@ RUN pip3.6 install virtualenv
 RUN python3.7 get-pip.py
 RUN pip3.7 install virtualenv
 RUN rm -rf /src/get-pip.py
+
+ENV LD="/usr/local/lib64"
+
+# TODO: Add comment explaining this.
+RUN mkdir -p /usr/libexec/gcc/x86_64-redhat-linux/4.8.5
+RUN mkdir -p /usr/include/c++/4.8.5
+RUN mkdir -p /usr/lib/gcc/x86_64-redhat-linux/4.8.5
+
+RUN cp -a /usr/local/libexec/gcc/x86_64-unknown-linux-gnu/4.8.5/* /usr/libexec/gcc/x86_64-redhat-linux/4.8.5/
+RUN cp -a /usr/local/include/c++/4.8.5/* /usr/include/c++/4.8.5/
+RUN cp -a /usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.8.5/* /usr/lib/gcc/x86_64-redhat-linux/4.8.5/
+RUN cp -a /usr/local/lib64/* /usr/lib/gcc/x86_64-redhat-linux/4.8.5/
 
 # Install llvm 8.0.0 from source with clang (no libc++)
 WORKDIR /src
@@ -161,16 +189,6 @@ WORKDIR /build
 # Set ccache size to 4GB
 RUN mkdir -p $CCACHE_DIR
 RUN ccache -M 4G
-
-# TODO: Add comment explaining this.
-RUN mkdir -p /usr/libexec/gcc/x86_64-redhat-linux/4.8.5
-RUN mkdir -p /usr/include/c++/4.8.5
-RUN mkdir -p /usr/lib/gcc/x86_64-redhat-linux/4.8.5
-
-RUN cp -a /usr/local/libexec/gcc/x86_64-unknown-linux-gnu/4.8.5/* /usr/libexec/gcc/x86_64-redhat-linux/4.8.5/
-RUN cp -a /usr/local/include/c++/4.8.5/* /usr/include/c++/4.8.5/
-RUN cp -a /usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.8.5/* /usr/lib/gcc/x86_64-redhat-linux/4.8.5/
-RUN cp -a /usr/local/lib64/* /usr/lib/gcc/x86_64-redhat-linux/4.8.5/
 
 # Clean up now-unnecessary paths in image
 RUN rm -rf /src
