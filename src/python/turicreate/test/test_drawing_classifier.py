@@ -209,7 +209,7 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (output_type == "probability")
                     assert (preds["probability"].dtype == float)
                 assert (len(preds) == k*len(sf))
-    
+
 
     def test_predict_output_type_probability_with_sframe(self):
         for index in range(len(self.models)):
@@ -221,7 +221,7 @@ class DrawingClassifierTest(unittest.TestCase):
             else:
                 preds = model.predict(sf, output_type="probability")
                 assert (preds.dtype == float)
-    
+
 
     def test_predict_output_type_probability_with_sarray(self):
         for index in range(len(self.models)):
