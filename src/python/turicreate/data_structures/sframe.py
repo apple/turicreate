@@ -2447,7 +2447,7 @@ class SFrame(object):
         """
         return SFrame(_proxy=self.__proxy__.tail(n))
 
-    def apply(self, fn, dtype=None, seed=None):
+    def apply(self, fn, dtype=None):
         """
         Transform each row to an :class:`~turicreate.SArray` according to a
         specified function. Returns a new SArray of ``dtype`` where each element
@@ -2469,12 +2469,6 @@ class SFrame(object):
             The dtype of the new SArray. If None, the first 100
             elements of the array are used to guess the target
             data type.
-
-        seed : int, optional
-            ..WARNING:: This parameter is deprecated, It will be removed in the next
-            major release.
-
-            Used as the seed if a random number generator is included in `fn`.
 
         Returns
         -------
@@ -2499,11 +2493,7 @@ class SFrame(object):
         if dtype is None:
             dtype = SArray(dryrun).dtype
 
-        if seed is None:
-            seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
-        else:
-            warnings.warn("Passing a \"seed\" parameter to SFrame.apply is deprecated. This functionality"
-                          + " will be removed in the next major release.")
+        seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
 
         nativefn = None
         try:
@@ -3701,19 +3691,6 @@ class SFrame(object):
         """
         with cython_context():
             self.__proxy__.materialize()
-
-    def __materialize__(self):
-        """
-        For an SFrame that is lazily evaluated, force the persistence of the
-        SFrame to disk, committing all lazy evaluated operations.
-
-        ..WARNING:: This function is deprecated, It will be removed in the next
-        major release. Use SFrame.materialize instead.
-        """
-        warnings.warn("SFrame.__materialize__ is deprecated. It will be removed in the next major release."
-                      + " Use SFrame.materialize instead.")
-
-        self.materialize()
 
     def is_materialized(self):
         """

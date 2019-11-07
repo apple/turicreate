@@ -71,18 +71,6 @@ void inline all_pairs_cosine(const DenseMatrix& A, const DenseMatrix& B,
 }
 
 
-void inline all_pairs_dot_product(const DenseMatrix& A, const DenseMatrix& B,
-                                  DenseMatrix& dists) {
-
-  DASSERT_EQ(A.cols(), B.cols());
-  DASSERT_EQ(A.rows(), dists.rows());
-  DASSERT_EQ(B.rows(), dists.cols());
-
-  dists = A * B.transpose();
-  dists = dists.cwiseMax(1e-10).cwiseInverse();
-}
-
-
 void inline all_pairs_transformed_dot_product(const DenseMatrix& A,
                                               const DenseMatrix& B,
                                               DenseMatrix& dists) {
@@ -205,24 +193,6 @@ struct cosine final : public distance_metric {
     return  1 - similarity;
   }
 
-};
-
-/* dot_product distance
- */
-struct dot_product final : public distance_metric {
-
-  double distance(const DenseVector& a, const DenseVector& b) const {
-    DASSERT_TRUE(a.size() == b.size());
-    DASSERT_TRUE(a.size() > 0);
-
-    double dot_product = (double)a.dot(b);
-    return 1.0 / std::max(dot_product, 1e-10);
-  }
-
-  double distance(const SparseVector& a, const SparseVector& b) const {
-    double dot_product = (double)a.dot(b);
-    return 1.0 / std::max(dot_product, 1e-10);
-  }
 };
 
 /* transformed_dot_product distance
@@ -485,8 +455,6 @@ std::shared_ptr<distance_metric> inline distance_metric::make_dist_instance(
     dist_ptr.reset(new manhattan);
   else if (dist_name == "cosine")
     dist_ptr.reset(new cosine);
-  else if (dist_name == "dot_product")
-    dist_ptr.reset(new dot_product);
   else if (dist_name == "transformed_dot_product")
     dist_ptr.reset(new transformed_dot_product);
   else if (dist_name == "jaccard")
