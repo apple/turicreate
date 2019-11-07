@@ -369,7 +369,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         num_iterations = max_iterations
 
     # Create data loader
-
     loader = _SFrameDetectionIter(dataset,
                                   batch_size=batch_size,
                                   input_shape=input_image_shape[1:],
