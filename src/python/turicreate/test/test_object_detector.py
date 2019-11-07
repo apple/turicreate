@@ -44,7 +44,7 @@ def _get_data(feature, annotations):
                 pil_img.save(f, format=image_format)
                 return tc.Image(f.name)
 
-    num_examples = 100
+    num_examples = 10
     max_num_boxes_per_image = 10
     classes = _CLASSES
     images = []
@@ -198,7 +198,6 @@ class ObjectDetectorTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.object_detector.create(self.sf[:0])
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
         sf_copy[self.annotations] = sf_copy[self.annotations].apply(lambda x: x[0] if len(x) > 0 else None)
@@ -213,7 +212,6 @@ class ObjectDetectorTest(unittest.TestCase):
         annotated_img = tc.object_detector.util.draw_bounding_boxes(sf_copy[self.feature],
                 sf_copy[self.annotations])
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_extra_classes(self):
         # Create while the data has extra classes
         model = tc.object_detector.create(self.sf, classes=_CLASSES[:2], max_iterations=1)
@@ -242,7 +240,6 @@ class ObjectDetectorTest(unittest.TestCase):
         pred0 = self.model.predict(sf[:0])
         self.assertEqual(len(pred0), 0)
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_single_image(self):
         # Predict should work on a single image and product a list of dictionaries
         # (we set confidene threshold to 0 to ensure predictions are returned)
@@ -297,7 +294,6 @@ class ObjectDetectorTest(unittest.TestCase):
             del sf[self.annotations]
             self.model.evaluate(sf.head())
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_export_coreml(self):
         from PIL import Image
         import coremltools
@@ -332,7 +328,7 @@ class ObjectDetectorTest(unittest.TestCase):
 
     @unittest.skipIf(_mac_ver() < (10, 14),
         "Non-maximum suppression is only supported on MacOS 10.14+.")
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+
     def test_export_coreml_with_non_maximum_suppression(self):
         from PIL import Image
         filename = tempfile.mkstemp('bingo.mlmodel')[1]

@@ -1153,6 +1153,8 @@ void object_detector::init_training_backend() {
   // Instantiate the data augmenter.
   flex_int grid_height = read_state<flex_int>("grid_height");
   flex_int grid_width = read_state<flex_int>("grid_width");
+  std::cout << "start training!\n";
+  std::cout << grid_height << '\n';
   training_data_augmenter_ = training_compute_context_->create_image_augmenter(
       get_augmentation_options(read_state<flex_int>("batch_size"), grid_height,
                                grid_width));

@@ -185,7 +185,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     if not USE_CPP:
         # Use MxNet
-        print('shit')
         from ._model import tiny_darknet as _tiny_darknet
         import mxnet as _mx
         from .._mxnet import _mxnet_utils
@@ -272,6 +271,28 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'mlmodel_path': pretrained_model_path,
     }
 
+    if batch_size < 1:
+        batch_size = 32  # Default if not user-specified
+
+    #create tensorflow model here
+    if USE_CPP:
+        import turicreate.toolkits.libtctensorflow
+        if classes == None:
+            classes = []
+        tf_config = {
+            'batch_size' : batch_size,
+            'grid_height': params['grid_shape'][0],
+            'grid_width': params['grid_shape'][1],
+            'max_iterations': max_iterations,
+            'mlmodel_path' : params['mlmodel_path'],
+            'classes' : classes
+
+        }
+        model = _tc.extensions.object_detector()
+        model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
+        return ObjectDetector_beta(model_proxy=model, name="object_detector")
+
+
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
         new_keys = set(kwargs['_advanced_parameters'].keys())
@@ -285,23 +306,18 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     anchors = params['anchors']
     num_anchors = len(anchors)
 
-
-    if batch_size < 1:
-        batch_size = 32  # Default if not user-specified
-
-    if not USE_CPP:
-        cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
-        num_mxnet_gpus = len(cuda_gpus)
-        use_mps = _use_mps() and num_mxnet_gpus == 0 and not USE_CPP
-        batch_size_each = batch_size // max(num_mxnet_gpus, 1)
-        if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
-            # Reduce batch size for GPUs with less than 4GB RAM
-            if batch_size_each > 16:
-                batch_size_each = 16
-        # Note, this may slightly alter the batch size to fit evenly on the GPUs
-        batch_size = max(num_mxnet_gpus, 1) * batch_size_each
-        if verbose:
-            print("Setting 'batch_size' to {}".format(batch_size))
+    cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
+    num_mxnet_gpus = len(cuda_gpus)
+    use_mps = _use_mps() and num_mxnet_gpus == 0
+    batch_size_each = batch_size // max(num_mxnet_gpus, 1)
+    if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
+        # Reduce batch size for GPUs with less than 4GB RAM
+        if batch_size_each > 16:
+            batch_size_each = 16
+    # Note, this may slightly alter the batch size to fit evenly on the GPUs
+    batch_size = max(num_mxnet_gpus, 1) * batch_size_each
+    if verbose:
+        print("Setting 'batch_size' to {}".format(batch_size))
 
 
     # The IO thread also handles MXNet-powered data augmentation. This seems
@@ -309,7 +325,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     # in a separate thread. For this reason, we restrict IO threads to when
     # the neural network backend is MPS.
 
-    if verbose and not USE_CPP:
+    if verbose:
         # Estimate memory usage (based on experiments)
         cuda_mem_req = 550 + batch_size_each * 85
 
@@ -351,24 +367,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             print("Setting 'max_iterations' to {}".format(num_iterations))
     else:
         num_iterations = max_iterations
-
-
-    #create tensorflow model here
-    if USE_CPP:
-        import turicreate.toolkits.libtctensorflow
-
-        tf_config = {
-            'batch_size' : batch_size,
-            'grid_height': params['grid_shape'][0],
-            'grid_width': params['grid_shape'][1],
-            'max_iterations': num_iterations,
-            'mlmodel_path' : params['mlmodel_path'],
-            'classes' : classes
-
-        }
-        model = _tc.extensions.object_detector()
-        model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
-        return ObjectDetector_beta(model_proxy=model, name="object_detector")
 
     # Create data loader
     io_thread_buffer_size = params['io_thread_buffer_size'] if use_mps else 0
