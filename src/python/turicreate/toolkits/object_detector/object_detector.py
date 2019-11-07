@@ -1649,7 +1649,7 @@ class ObjectDetector_beta(_Model):
         return self.__proxy__.export_to_coreml(filename, options)
 
 
-    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45):
+    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45, verbose=True):
         """
         Predict object instances in an SFrame of images.
 
@@ -1699,6 +1699,7 @@ class ObjectDetector_beta(_Model):
         options = {}
         options["confidence_threshold"] = confidence_threshold
         options["iou_threshold"] = iou_threshold
+        options["verbose"] = verbose
         return self.__proxy__.predict(dataset, options)
 
     def evaluate(self, dataset, metric='auto', output_type='dict', confidence_threshold = 0.001, iou_threshold = 0.45):
