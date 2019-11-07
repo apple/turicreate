@@ -212,7 +212,7 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (output_type == "probability")
                     assert (preds["probability"].dtype == float)
                 assert (len(preds) == k*len(sf))
-    
+
 
     def test_predict_output_type_probability_with_sframe(self):
         for index in range(len(self.models)):
@@ -224,7 +224,7 @@ class DrawingClassifierTest(unittest.TestCase):
             else:
                 preds = model.predict(sf, output_type="probability")
                 assert (preds.dtype == float)
-    
+
 
     def test_predict_output_type_probability_with_sarray(self):
         for index in range(len(self.models)):
@@ -237,7 +237,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 preds = model.predict(sf[self.feature], output_type="probability")
                 assert (preds.dtype == float)
 
-    @unittest.skip("Coming soon: Waiting on PR #2533")
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -246,7 +245,6 @@ class DrawingClassifierTest(unittest.TestCase):
             with self.assertRaises(_ToolkitError):
                 model.evaluate(sf_without_ground_truth)
 
-    @unittest.skip("Coming soon: Waiting on PR #2533")
     def test_evaluate_with_ground_truth(self):
         all_metrics = ["accuracy", "auc", "precision", "recall",
                        "f1_score", "log_loss", "confusion_matrix", "roc_curve"]
@@ -268,7 +266,6 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (metric in evaluation)
                     assert (individual_run_results[metric] == evaluation[metric])
 
-    @unittest.skip("Coming soon: Waiting on PR #2533")
     def test_evaluate_with_unsupported_metric(self):
         for index in range(len(self.trains)):
             model = self.models[index]
