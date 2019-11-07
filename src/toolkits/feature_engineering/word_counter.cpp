@@ -18,7 +18,9 @@ namespace feature_engineering {
  * Ported from original count_words implementation.
  */
 void word_count_delimiters_update(flexible_type f, flex_list delimiter_list, bool to_lower,
-                           std::unordered_map<flexible_type, float>& ret_count, flex_type_enum run_mode, flexible_type f_type = 0) {
+                                  std::unordered_map<flexible_type, float>& ret_count, 
+			          flex_type_enum run_mode, 
+			          flexible_type f_type = 0) {
   std::set<char> delimiters;
   for (auto it = delimiter_list.begin(); it != delimiter_list.end(); ++it) {
     // iterate through flexible_types storing the delimiters
@@ -129,10 +131,18 @@ flexible_type word_counter_apply_with_manual(const flexible_type& input,
         if (kvp.second.get_type() != flex_type_enum::INTEGER
             && kvp.second.get_type() != flex_type_enum::FLOAT)
           log_and_throw("Invalid type. Dictionary input to WordCounter must have integer or float values.");
-	if (kvp.second.get_type() == flex_type_enum::INTEGER)
-            word_count_delimiters_update(kvp.first.get<flex_string>(), delimiter_list, to_lower, ret_count, run_mode, kvp.second.get<flex_int>());
-        else if (kvp.second.get_type() == flex_type_enum::FLOAT)
-            word_count_delimiters_update(kvp.first.get<flex_string>(), delimiter_list, to_lower, ret_count, run_mode, kvp.second.get<flex_float>());
+	if (kvp.second.get_type() == flex_type_enum::INTEGER){
+            word_count_delimiters_update(
+		       kvp.first.get<flex_string>(), delimiter_list, 
+		       to_lower, ret_count, 
+		       run_mode, (float)kvp.second.get<flex_int>());
+	}
+        else if (kvp.second.get_type() == flex_type_enum::FLOAT){
+            word_count_delimiters_update(
+			 kvp.first.get<flex_string>(), delimiter_list, 
+			 to_lower, ret_count, 
+			 run_mode, kvp.second.get<flex_float>());
+	}
       }
       break;
     }
