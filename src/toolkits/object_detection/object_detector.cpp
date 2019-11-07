@@ -414,13 +414,10 @@ void object_detector::train(gl_sframe data,
                             std::map<std::string, flexible_type> opts)
 {
   auto compute_final_metrics_iter = opts.find("compute_final_metrics");
-  bool compute_final_metrics;
-  if (compute_final_metrics_iter == opts.end()) {
-    compute_final_metrics = true;
-  } else {
+  bool compute_final_metrics = true;;
+  if (compute_final_metrics_iter != opts.end()) {
     compute_final_metrics = compute_final_metrics_iter->second;
   }
-
   opts.erase(compute_final_metrics_iter);
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
