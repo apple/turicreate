@@ -162,5 +162,20 @@ WORKDIR /build
 RUN mkdir -p $CCACHE_DIR
 RUN ccache -M 4G
 
+# TODO: Add comment explaining this.
+RUN mkdir -p /usr/libexec/gcc/x86_64-redhat-linux/4.8.5
+RUN mkdir -p /usr/include/c++/4.8.5
+RUN mkdir -p /usr/lib/gcc/x86_64-redhat-linux/4.8.5
+
+RUN cp -a /usr/local/libexec/gcc/x86_64-unknown-linux-gnu/4.8.5/* /usr/libexec/gcc/x86_64-redhat-linux/4.8.5/
+RUN cp -a /usr/local/include/c++/4.8.5/* /usr/include/c++/4.8.5/
+RUN cp -a /usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.8.5/* /usr/lib/gcc/x86_64-redhat-linux/4.8.5/
+RUN cp -a /usr/local/lib64/* /usr/lib/gcc/x86_64-redhat-linux/4.8.5/
+
 # Clean up now-unnecessary paths in image
 RUN rm -rf /src
+
+# Remove zlib-devel because turicreate also has zlib in it.
+RUN yum -y remove zlib-devel
+
+WORKDIR /build/
