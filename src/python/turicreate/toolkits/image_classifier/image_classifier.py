@@ -227,13 +227,6 @@ def create(dataset, target, feature=None, model = 'resnet-50',
     allowed_models = list(_pre_trained_models.IMAGE_MODELS.keys())
     if _mac_ver() >= (10,14):
         allowed_models.append('VisionFeaturePrint_Scene')
-
-        # Also, to make sure existing code doesn't break, replace incorrect name
-        # with the correct name version
-        if model == "VisionFeaturePrint_Screen":
-            print("WARNING: Correct spelling of model name is VisionFeaturePrint_Scene; VisionFeaturePrint_Screen will be removed in subsequent versions.")
-            model = "VisionFeaturePrint_Scene"
-
     _tkutl._check_categorical_option_type('model', model, allowed_models)
 
     # Check dataset parameter
