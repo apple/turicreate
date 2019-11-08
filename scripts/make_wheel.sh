@@ -12,7 +12,7 @@ WORKSPACE=${SCRIPT_DIR}/..
 build_type="release"
 
 # The build image version that will be used for building
-TC_BUILD_IMAGE_CENTOS_6=$(sh $WORKSPACE/scripts/get_docker_image.sh --centos=6)
+TC_BUILD_IMAGE_CENTOS_6=$(bash $WORKSPACE/scripts/get_docker_image.sh --centos=6)
 
 unknown_option() {
   echo "Unknown option $1. Exiting."

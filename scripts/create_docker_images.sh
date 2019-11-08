@@ -8,10 +8,10 @@ WORKSPACE=${SCRIPT_DIR}/..
 cd ${WORKSPACE}
 
 # The build image version that will be used for testing
-TC_BUILD_IMAGE_CENTOS6=$(sh $WORKSPACE/scripts/get_docker_image.sh --centos=6)
-TC_BUILD_IMAGE_1204=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=12.04)
-TC_BUILD_IMAGE_1404=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=14.04)
-TC_BUILD_IMAGE_1804=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=18.04)
+TC_BUILD_IMAGE_CENTOS6=$(bash $WORKSPACE/scripts/get_docker_image.sh --centos=6)
+TC_BUILD_IMAGE_1204=$(bash $WORKSPACE/scripts/get_docker_image.sh --ubuntu=12.04)
+TC_BUILD_IMAGE_1404=$(bash $WORKSPACE/scripts/get_docker_image.sh --ubuntu=14.04)
+TC_BUILD_IMAGE_1804=$(bash $WORKSPACE/scripts/get_docker_image.sh --ubuntu=18.04)
 
 print_help() {
   echo "Creates Docker images for building and testing Turi Create."
