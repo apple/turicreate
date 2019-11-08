@@ -305,7 +305,6 @@ class ActivityClassifierTest(unittest.TestCase):
             expected_len = self._calc_expected_predictions_length(self.data)
             self.assertEqual(len(preds), expected_len)
 
-    @pytest.mark.xfail()
     def test_export_coreml(self):
         """
         Check the export_coreml() function.
@@ -332,20 +331,32 @@ class ActivityClassifierTest(unittest.TestCase):
             else:
                 labels = list(map(str, sorted(self.model._target_id_map.keys())))
 
-            data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
-            np_data = np.concatenate(data_list, 1)[np.newaxis]
+            if USE_CPP:
+                input_features = {}
+                for f in self.features:
+                    input_features[f] = dataset[f].to_numpy()
+                first_input_dict  = {}
+                second_input_dict = {}
+                for key, value in input_features.items():
+                    first_input_dict[key] = value[:w].copy()
+                    second_input_dict[key] = value[w:2*w].copy()
+                ret0 = coreml_model.predict(first_input_dict)
+
+                second_input_dict["stateIn"] = ret0["stateOut"]
+                ret1 = coreml_model.predict(second_input_dict)
+
+            else:
+                data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
+                np_data = np.concatenate(data_list, 1)[np.newaxis]
+                ret0 = coreml_model.predict({'features' : np_data[:, :w].copy()})
+                ret1 = coreml_model.predict({'features' : np_data[:, w:2*w].copy(),
+                                         'hiddenIn': ret0['hiddenOut'],
+                                         'cellIn': ret0['cellOut']})
 
             pred = self.model.predict(dataset, output_type='probability_vector')
             model_time0_values = pred[0]
             model_time1_values = pred[w]
             model_predictions = np.array([model_time0_values, model_time1_values])
-
-            ret0 = coreml_model.predict({'features' : np_data[:, :w].copy()})
-
-            ret1 = coreml_model.predict({'features' : np_data[:, w:2*w].copy(),
-                                         'hiddenIn': ret0['hiddenOut'],
-                                         'cellIn': ret0['cellOut']})
-
             coreml_time0_values = [ret0[self.target + 'Probability'][l] for l in labels]
             coreml_time1_values = [ret1[self.target + 'Probability'][l] for l in labels]
             coreml_predictions = np.array([coreml_time0_values, coreml_time1_values])
@@ -429,7 +440,6 @@ class ActivityClassifierTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
-    @pytest.mark.xfail()
     def test_save_and_load(self):
         """
         Make sure saving and loading retains everything.
