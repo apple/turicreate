@@ -14,6 +14,7 @@ from .util import TempDirectory
 from copy import copy
 import math
 from os import mkdir
+import pytest
 import unittest
 
 import coremltools
@@ -152,7 +153,7 @@ def _generate_binary_test_data():
 binary_test_data = _generate_binary_test_data()
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @classmethod
@@ -303,7 +304,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue(self.model.validation_accuracy is None)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -317,7 +318,7 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         assert(self.model.custom_layer_sizes == layer_sizes)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -342,7 +343,6 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.assertTrue(self.model.validation_accuracy is not None)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestWithShortClip(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -360,6 +360,7 @@ class ClassifierTestWithShortClip(unittest.TestCase):
         self.assertEqual(len(deep_features), len(self.data))
         self.assertEqual(deep_features[-1], [])
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_model(self):
         model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
                                                 validation_set=self.data)
@@ -393,7 +394,6 @@ class ClassifierTestWithShortClip(unittest.TestCase):
             self.assertNotEqual(r['probability'], None)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
@@ -434,7 +434,7 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
         self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ReuseDeepFeatures(unittest.TestCase):
     def test_simple_case(self):
         data = copy(binary_test_data)
