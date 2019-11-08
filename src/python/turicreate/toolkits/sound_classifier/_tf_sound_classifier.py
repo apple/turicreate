@@ -145,7 +145,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
         return result
 
-    def predict(self, data):
+    def predict(self, data, label):
+        '''
         data_shape = data.shape[0]
         pred_probs = self.sess.run([self.predictions],
                             feed_dict={
@@ -153,6 +154,15 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                             })
         pred_probs = pred_probs[0]
         return pred_probs
+        '''
+        data_shape = data.shape[0]
+        pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
+                             feed_dict={
+                                 self.x: data.reshape((data_shape, 12288)),
+                                 self.y: _tf.keras.utils.to_categorical(label, self.num_classes).reshape((data_shape, self.num_classes))
+                             })
+        result = {'accuracy' : final_accuracy, 'predictions' : pred_probs}
+        return result
 
     def method_train(self, feed_dict):
         _, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
@@ -194,6 +204,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         for i, name in enumerate(self.names_of_layers):
             weight_name = 'sound_{}_weight:0'.format(name)
             bias_name = 'sound_{}_weight:0'.format(name)
+            #weight_name = 'sound_{}_weight'.format(name)
+            #bias_name = 'sound_{}_weight'.format(name)
             layer={}
             #print(weight_name,layer_dict[weight_name], type(layer_dict[weight_name]), layer_dict[weight_name].shape)
             layer['weight'] = layer_dict[weight_name]#.transpose(1, 0)#.asnumpy() #### wait we don't need this!
@@ -220,7 +232,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         data = {}
         shapes = {}
         for var, val in zip(layer_names, layer_weights):
-            layer_name = var.name#[:-2]
+            layer_name = var.name[:-2]
             data[layer_name] = val
             shapes[layer_name] = val.shape
 

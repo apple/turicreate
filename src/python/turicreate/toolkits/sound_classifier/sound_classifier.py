@@ -424,9 +424,8 @@ def create(dataset, target, feature, max_iterations=10,
 
     if USE_TF:
         print("------ Using TensorFlow ...")
-        from ._tf_sound_classifier import SoundClassifierTensorFlowModel #, _tf_train_model
+        from ._tf_sound_classifier import SoundClassifierTensorFlowModel
         custom_NN = SoundClassifierTensorFlowModel(batch_size, num_labels)
-        #_tf_train_model(custom_NN, train_data, validation_data, validation_set, batch_size, num_labels, verbose)
     else:
         print("------ Using MXNet ...")
         from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
@@ -441,80 +440,22 @@ def create(dataset, target, feature, max_iterations=10,
             row_display_names.insert(2, 'Validation Accuracy (%)')
         table_printer = _tc.util._ProgressTablePrinter(row_ids, row_display_names)
 
-    train_metric = _get_accuracy_metric()
-    if validation_data:
-        validation_metric = _get_accuracy_metric()
-
     for i in range(max_iterations):
         # TODO: early stopping
-        #print("Training")
-        cumul_loss = 0.0
-        cumul_acc = 0.0
-        bbs = 0.0
         for data, label in train_data:
-            bbs= bbs+1.0
-            #print("data",data)
-            #print("label",label)
             result = custom_NN.train(data, label)
-            #print("batch:",bbs, "acc:",result['accuracy'], "loss:",result['loss'])
-            outputs = custom_NN.predict(data)
-            outputs = _np.argmax(outputs, axis=-1)
-            #print("outputs:", outputs)
-            #print("labels:", label)
-            cumul_acc += result['accuracy']
-            cumul_loss += result['loss']
-        train_data.reset()
-        #print(bbs)
-        #cumul_acc = cumul_acc/bbs
-        #cumul_loss = cumul_loss/bbs
-        #print("acc:",cumul_acc, "loss:",cumul_loss)
-
-        #print("METRIC:")
-        cumul_loss = 0.0
-        cumul_acc = 0.0
-        bbs = 0.0
-        # Calculate training metric
-        for data, label in train_data:
-            outputs = custom_NN.predict(data)
-            #print(outputs, type(outputs), outputs.shape)
-            outputs = _np.argmax(outputs, axis=-1)
-            #print("outputs", outputs, type(outputs), outputs.shape)
-            #print("label", label, type(label), label.shape)
-            train_metric.update(label, outputs)
+            train_accuracy = result['accuracy']
         train_data.reset()
 
         # Calculate validation metric
         for data, label in validation_data:
-            outputs = custom_NN.predict(data)
-            outputs = _np.argmax(outputs, axis=-1)
-            #label = label.reshape((1,1))
-            print("outputs", outputs, type(outputs), outputs.shape)
-            print("label", label, type(label), label.shape)
-            points = sum([1 for x,y in zip(label,outputs) if x==y])
-            print("points:",points)
-            validation_metric.update(label, outputs)
-        #validation_data.reset()
-        '''
-        for data, label in train_data:
-            x,y,z = custom_NN.get_layer_activations(data, label)
-        if False:#i==0 or i==max_iterations-1:
-            print("dense0 ", x)
-            print("dense1 ", y)
-            print("dense2 ", z)
-        '''
-        #train_data.reset()
-        # Get metrics, print progress table
-        train_accuracy = train_metric.get()
-        train_metric.reset()
+            result = custom_NN.predict(data, label)
+            validation_accuracy = result['accuracy']
+
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
+
         if validation_data:
-            print("we have validation_data!")
-        else:
-            print("we don't have validation_data!")
-        if validation_data:
-            validation_accuracy = validation_metric.get()
             printed_row_values['validation_accuracy'] = validation_accuracy
-            validation_metric.reset()
             validation_data.reset()
         if verbose:
             printed_row_values['time'] = time.time()-start_time
@@ -1033,7 +974,7 @@ class SoundClassifier(_CustomModel):
             #ipdb.set_trace()
             #print(data, data.shape, batch_size)
             #print(self._custom_classifier.predict(data))
-            y += self._custom_classifier.predict(data[0]).tolist()
+            y += self._custom_classifier.predict(data)['predictions'].tolist()#
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames
