@@ -618,21 +618,23 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
   const flex_int image_width = read_opts<flex_int>(opts, "image_width");
   const flex_int image_height = read_opts<flex_int>(opts, "image_height");
   const flex_int include_flexible_shape = read_opts<flex_int>(opts, "include_flexible_shape");
-
+  const flex_string content_feature = read_state<flex_string>("content_feature");
+  const flex_string style_feature = read_state<flex_string>("style_feature");
+  
   flex_dict user_defined_metadata = {
       {"model", read_state<flex_string>("model")},
       {"max_iterations", read_state<flex_int>("max_iterations")},
       {"training_iterations", read_state<flex_int>("training_iterations")},
       {"type", "StyleTransfer"},
-      {"content_feature", "image"},  // TODO: refactor to take content name and style name
-      {"style_feature", "image"},  // TODO: refactor to take content name and style name
+      {"content_feature", content_feature},  // TODO: refactor to take content name and style name
+      {"style_feature", style_feature},
       {"num_styles", read_state<flex_int>("num_styles")},
       {"version", get_version()},
   };
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
       *m_resnet_spec, image_width, image_height, include_flexible_shape,
-      std::move(user_defined_metadata));
+      std::move(user_defined_metadata), content_feature, style_feature);
 
   if (!filename.empty()) model_wrapper->save(filename);
 
