@@ -270,12 +270,3 @@ class VisionFeaturePrintSceneTest(ImageClassifierTest):
                                                               input_image_shape=(3, 299, 299),
                                                               tol=0.005, num_examples = 100,
                                                               label_type = str)
-
-@unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
-class VisionFeaturePrintSceneTest_BadName(ImageClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(VisionFeaturePrintSceneTest_BadName, self).setUpClass(model='VisionFeaturePrint_Screen',
-                                                              input_image_shape=(3, 299, 299),
-                                                              tol=0.005, num_examples = 100,
-                                                              label_type = str)

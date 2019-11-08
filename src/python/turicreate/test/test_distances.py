@@ -46,10 +46,6 @@ class StandardDistancesTest(unittest.TestCase):
         self.assertAlmostEqual(cosine(self.a, self.b),
                                tc.distances.cosine(self.a, self.b))
 
-    def test_dot_product(self):
-        self.assertAlmostEqual(dot_product(self.a, self.b),
-                               tc.distances.dot_product(self.a, self.b))
-
     def test_transformed_dot_product(self):
         self.assertAlmostEqual(transformed_dot_product(self.a, self.b),
                                tc.distances.transformed_dot_product(self.a, self.b))
@@ -71,7 +67,7 @@ class StandardDistancesTest(unittest.TestCase):
         self.assertAlmostEqual(tc.distances.jaccard({}, {}), 0.0)
 
         dists = ['euclidean', 'squared_euclidean', 'manhattan',
-                 'cosine', 'dot_product', 'jaccard', 'weighted_jaccard',
+                 'cosine', 'jaccard', 'weighted_jaccard',
                  'levenshtein']
 
         for d in dists:
@@ -266,13 +262,6 @@ class LocalDistancesTest(unittest.TestCase):
         self.assertAlmostEqual(cosine(self.a, {}), 1)
         self.assertAlmostEqual(cosine(self.a, self.a), 0)
 
-    def test_local_dot_product(self):
-        ans = 1. / 0.7
-        self.assertAlmostEqual(dot_product(self.a, self.b), ans)
-
-        ans = 1. / (0.5**2 + 0.7**2)
-        self.assertAlmostEqual(dot_product(self.a, self.a), ans)
-
     def test_local_transformed_dot_product(self):
         ans = np.log(1. + np.exp(-0.7))
         self.assertAlmostEqual(transformed_dot_product(self.a, self.b), ans)
@@ -354,11 +343,6 @@ def cosine(a, b):
     if den == 0:
         den = 0.0001
     return 1 - num/den
-
-def dot_product(a, b):
-    ks = set(a.keys()).intersection(set(b.keys()))
-    dotprod = sum([a[k] * b[k] for k in ks])
-    return 1. / dotprod
 
 def transformed_dot_product(a, b):
     ks = set(a.keys()).intersection(set(b.keys()))

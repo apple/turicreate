@@ -1451,26 +1451,6 @@ class _Recommender(_Model):
 
         return recommendations
 
-
-    def _training_stats(self):
-        """
-        Get information about model creation, e.g. time elapsed during
-        model fitting, data loading, and more.
-
-        ..WARNING:: This method is *deprecated*. Please use m.summary() instead.
-
-        Returns
-        -------
-        out : dict
-            Statistics about model training, e.g. runtime.
-
-        """
-        import warnings
-
-        warnings.warn("This method is deprecated. Please use m.summary().")
-        response = self.__proxy__.get_train_stats()
-        return response
-
     def evaluate_precision_recall(self, dataset, cutoffs=list(range(1,11,1))+list(range(11,50,5)),
                                   skip_set=None, exclude_known=True,
                                   verbose=True, **kwargs):

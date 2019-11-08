@@ -21,6 +21,7 @@ import coremltools
 
 
 _NUM_STYLES = 4
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
 
 
 def _get_data(feature, num_examples=100):
@@ -58,7 +59,6 @@ def _get_data(feature, num_examples=100):
             feature: tc.SArray(images),
     })
     return data
-
 
 class StyleTransferTest(unittest.TestCase):
 
@@ -154,6 +154,7 @@ class StyleTransferTest(unittest.TestCase):
 
         return style_cases
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_stylize_fail(self):
         style_cases = self._get_invalid_style_cases()
         model = self.model
@@ -161,6 +162,7 @@ class StyleTransferTest(unittest.TestCase):
             with self.assertRaises(_ToolkitError):
                 model.stylize(self.content_sf[0:1], style=style)
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_stylize_success(self):
         sf = self.content_sf[0:1]
         model = self.model
@@ -201,6 +203,7 @@ class StyleTransferTest(unittest.TestCase):
         self.assertTrue(isinstance(imgs, tc.SArray))
         self.assertEqual(len(imgs), len(sarray))
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_get_styles_fail(self):
         style_cases = self._get_invalid_style_cases()
         model = self.model
@@ -208,8 +211,8 @@ class StyleTransferTest(unittest.TestCase):
             with self.assertRaises(_ToolkitError):
                 model.get_styles(style=style)
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_get_styles_success(self):
-
         style = [0,1,2]
         model = self.model
         model_styles = model.get_styles(style=style)
@@ -232,6 +235,7 @@ class StyleTransferTest(unittest.TestCase):
             img = img[..., 0:3]
             return img
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_export_coreml(self):
         import coremltools
         model = self.model
@@ -271,6 +275,7 @@ class StyleTransferTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)
@@ -282,6 +287,7 @@ class StyleTransferTest(unittest.TestCase):
             print("Get styles passed")
 
 
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class StyleTransferGPUTest(unittest.TestCase):
