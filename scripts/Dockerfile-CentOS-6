@@ -2,7 +2,7 @@
 
 # This image is intended for building Turi Create for maximum compatibility
 # with various Linux distributions.
-# Based on Centos 6 for compatibility with older glibc versions.
+# Based on CentOS 6 for compatibility with older glibc versions.
 # Builds with LLVM 8.0.0 for modern compiler features and bug fixes.
 # Builds against libstdc++ from GCC 4.8 for compatibility with older libstdc++
 # runtime versions.
@@ -152,7 +152,15 @@ RUN rm -rf /src/get-pip.py
 
 ENV LD="/usr/local/lib64"
 
-# TODO: Add comment explaining this.
+# So this is where the real magic happens. Clang has a flag to specify the 
+# version of libstdc++ `--gcc-toolchain`. In turicreate we don't necessarily
+# have a flag to take care of this so we can re-create the expected directory
+# structure using the script below. This is effectively creating the structure
+# you'd expect when calling yum install gcc-4.*
+# 
+# Using `clang -v` you can see the version of gcc that clang picks up
+# automatically from `/usr`. If all goes well, this should be the `libstdc++`
+# from gcc-4.8.5 and turicreate can build.
 RUN mkdir -p /usr/libexec/gcc/x86_64-redhat-linux/4.8.5
 RUN mkdir -p /usr/include/c++/4.8.5
 RUN mkdir -p /usr/lib/gcc/x86_64-redhat-linux/4.8.5
