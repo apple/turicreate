@@ -299,7 +299,8 @@ class DrawingClassifierTest(unittest.TestCase):
                 prefix = "pretrained" + str(test_number)
             else:
                 prefix = "scratch" + str(test_number)
-            filename = _mkstemp(prefix + ".mlmodel")[1]
+            # filename = _mkstemp(prefix + ".mlmodel")[1]
+            filename = "/Users/guihaoliang/my.mlmodel"
             model.export_coreml(filename)
             mlmodel = _coremltools.models.MLModel(filename)
             tc_preds = model.predict(sf)
@@ -348,14 +349,14 @@ class DrawingClassifierTest(unittest.TestCase):
             model.summary()
 
 
-class DrawingClassifierFromScratchTest(DrawingClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(DrawingClassifierFromScratchTest, self).setUpClass(
-            warm_start=None)
+# class DrawingClassifierFromScratchTest(DrawingClassifierTest):
+#     @classmethod
+#     def setUpClass(self):
+#         super(DrawingClassifierFromScratchTest, self).setUpClass(
+#             warm_start=None)
 
-class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(DrawingClassifierUsingQuickdraw245, self).setUpClass(
-            warm_start="quickdraw_245_v0")
+# class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
+#     @classmethod
+#     def setUpClass(self):
+#         super(DrawingClassifierUsingQuickdraw245, self).setUpClass(
+#             warm_start="quickdraw_245_v0")

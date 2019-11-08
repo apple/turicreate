@@ -24,12 +24,20 @@
 
 #include <toolkits/drawing_classifier/data_preparation.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
+#include <core/logging/assertions.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <core/util/string_util.hpp>
 
 
 namespace turi {
 namespace drawing_classifier {
 
 namespace {
+
+using CoreML::Specification::NeuralNetworkLayer;
+using CoreML::Specification::NeuralNetworkPreprocessing;
+using CoreML::Specification::SizeRange;
+using turi::coreml::MLModelWrapper;
 
 using coreml::MLModelWrapper;
 using neural_net::compute_context;
@@ -161,7 +169,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
           /* kernel_width         */ 2,
           /* stride_height        */ 2,
           /* stride_width         */ 2,
-          /* padding              */ padding_type::VALID,
+          /* padding              */ pad_type,
           /* avg excluded padding */ false);
     }
   }
@@ -286,12 +294,12 @@ void drawing_classifier::init_training(
     std::map<std::string, flexible_type> opts) {
 
   if (!data.contains_column(feature_column_name)) {
-    log_and_throw(feature_column_name + " column not found. Data does not " + 
+    log_and_throw(feature_column_name + " column not found. Data does not " +
       "contain the feature column.");
   }
 
   if (!data.contains_column(target_column_name)) {
-    log_and_throw(target_column_name + " column not found. Data does not " + 
+    log_and_throw(target_column_name + " column not found. Data does not " +
       "contain the target column.");
   }
 
@@ -648,7 +656,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
     result result_batch;
     result_batch.data_info = data->next_batch(batch_size);
 
-    /** TODO: Figure out a better solution to having `num_samples` be a 
+    /** TODO: Figure out a better solution to having `num_samples` be a
      *  top-level input to the network. May be captured in the first
      *  dimension of the input, or perhaps via a weight tensor.
      */
@@ -871,6 +879,26 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
+    std::ofstream out_file(
+        "/Users/guihaoliang/my.debug",
+        std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+    auto result = nn_spec_->export_params_view();
+    for (auto& entry : result) {
+      out_file << entry.first << std::endl;
+      out_file << "dim" << std::endl;
+      auto array = entry.second;
+      auto ds = array.dim();
+      for (size_t i = 0; i < ds; ++i) {
+        out_file << array.shape()[i] << std::endl;
+      }
+      out_file << "weights" << std::endl;
+      auto size = array.size();
+      for (size_t i = 0; i < size; ++i) {
+        out_file << array.data()[i] << std::endl;
+      }
+
+      out_file << std::endl;
+    }
   }
 
   return model_wrapper;
