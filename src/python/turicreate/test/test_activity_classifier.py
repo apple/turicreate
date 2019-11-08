@@ -462,6 +462,8 @@ class ActivityClassifierTest(unittest.TestCase):
                 except Exception as e:
                     self.assertTrue(False, "After model save and load, method " + test_method +
                                     " has failed with error: " + str(e))
+
+
 @pytest.mark.xfail()
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
