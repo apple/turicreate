@@ -24,11 +24,19 @@
 
 #include <toolkits/drawing_classifier/data_preparation.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
+#include <core/logging/assertions.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <core/util/string_util.hpp>
 
 namespace turi {
 namespace drawing_classifier {
 
 namespace {
+
+using CoreML::Specification::NeuralNetworkLayer;
+using CoreML::Specification::NeuralNetworkPreprocessing;
+using CoreML::Specification::SizeRange;
+using turi::coreml::MLModelWrapper;
 
 using coreml::MLModelWrapper;
 using neural_net::compute_context;
@@ -89,26 +97,21 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   flex_string target = read_state<flex_string>("target");
   size_t num_classes = read_state<flex_int>("num_classes");
 
-  // feature columns names
-  const flex_list &features_list = read_state<flex_list>("features");
-
-  result->add_channel_concat(
-      "features",
-      std::vector<std::string>(features_list.begin(), features_list.end()));
 
   std::mt19937 random_engine;
-  try {
-    std::seed_seq seed_seq{read_state<int>("random_seed")};
-    random_engine = std::mt19937(seed_seq);
-  } catch (const std::out_of_range &e) {
-  }
+  std::seed_seq seed_seq{read_state<int>("random_seed")};
+  random_engine = std::mt19937(seed_seq);
 
   weight_initializer initializer = zero_weight_initializer();
+
+  // feature columns names
+  const flex_list &features_list = read_state<flex_list>("features");
+  DASSERT_TRUE(features_list.size() == 1);
 
   const std::string prefix{"drawing"};
   // add suffix when needed.
   const std::string _suffix{""};
-  std::string input_name{"features"};
+  std::string input_name{features_list.front().to<flex_string>()};
   std::string output_name;
 
   {
@@ -156,6 +159,10 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       ss.str("");
       ss << prefix << "_pool" << ii << _suffix;
       output_name = ss.str();
+
+      auto pad_type =padding_type::SAME;
+      if (ii == 2) pad_type = padding_type::VALID;
+
       result->add_pooling(
           /* name                 */ output_name,
           /* input                */ input_name,
@@ -163,7 +170,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
           /* kernel_width         */ 2,
           /* stride_height        */ 2,
           /* stride_width         */ 2,
-          /* padding              */ padding_type::VALID,
+          /* padding              */ pad_type,
           /* avg excluded padding */ false);
     }
   }
@@ -303,7 +310,7 @@ void drawing_classifier::init_training(
 
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
-  if (validation_data_.size() > 0 
+  if (validation_data_.size() > 0
     && validation_data_[feature_column_name].dtype() != flex_type_enum::IMAGE) {
     validation_data_ = _drawing_classifier_prepare_data(
       validation_data_, feature_column_name);
@@ -650,7 +657,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
     result_batch.data_info = data->next_batch(batch_size);
 
     // Send the inputs to the model.
-    /** TODO: Figure out a better solution to having `num_samples` be a 
+    /** TODO: Figure out a better solution to having `num_samples` be a
      *  top-level input to the network. May be captured in the first
      *  dimension of the input, or perhaps via a weight tensor.
      */
@@ -858,6 +865,26 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
+    std::ofstream out_file(
+        "/Users/guihaoliang/my.debug",
+        std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
+    auto result = nn_spec_->export_params_view();
+    for (auto& entry : result) {
+      out_file << entry.first << std::endl;
+      out_file << "dim" << std::endl;
+      auto array = entry.second;
+      auto ds = array.dim();
+      for (size_t i = 0; i < ds; ++i) {
+        out_file << array.shape()[i] << std::endl;
+      }
+      out_file << "weights" << std::endl;
+      auto size = array.size();
+      for (size_t i = 0; i < size; ++i) {
+        out_file << array.data()[i] << std::endl;
+      }
+
+      out_file << std::endl;
+    }
   }
 
   return model_wrapper;

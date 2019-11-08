@@ -67,7 +67,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         conv_3 = _tf.nn.conv2d(pool_2, weights["drawing_conv2_weight"], strides=1, padding='SAME')
         conv_3 = _tf.nn.bias_add(conv_3, biases["drawing_conv2_bias"])
         relu_3 = _tf.nn.relu(conv_3)
-        pool_3 = _tf.nn.max_pool2d(relu_3, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID') 
+        pool_3 = _tf.nn.max_pool2d(relu_3, ksize=[1, 2, 2, 1], strides=[1, 2, 2, 1], padding='VALID')
 
         # Flatten the data to a 1-D vector for the fully connected layer
         fc1 = _tf.reshape(pool_3, (-1, 576))
@@ -93,7 +93,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         # Predictions
         correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.one_hot_labels, 1))
         self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, _tf.float32))
-        
+
         self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 
@@ -150,7 +150,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         num_samples = float(feed_dict["num_samples"])
         one_hot_labels = _np.zeros((int(num_samples), self.num_classes))
-        
+
         feed_dict_for_session = { self.input: feed_dict["input"] }
 
         if is_train:

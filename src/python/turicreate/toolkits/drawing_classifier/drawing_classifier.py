@@ -1068,7 +1068,6 @@ class DrawingClassifier_beta(_Model):
         """
         return self.__proxy__.export_to_coreml(filename)
 
-
     def predict(self, dataset, output_type='class'):
         """
         Predict on an SFrame or SArray of drawings, or on a single drawing.
@@ -1242,4 +1241,3 @@ class DrawingClassifier_beta(_Model):
           >>> print results['accuracy']
         """
         return self.__proxy__.evaluate(dataset, metric)
-

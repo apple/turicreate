@@ -73,7 +73,7 @@ def _build_stroke_data():
 
 class DrawingClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, warm_start='auto'):
+    def setUpClass(self, warm_start=None):
         self.feature = "drawing"
         self.target = "label"
         self.check_cross_sf = _build_bitmap_data()
@@ -83,7 +83,7 @@ class DrawingClassifierTest(unittest.TestCase):
             self.check_cross_sf,
             self.target,
             feature=self.feature,
-            max_iterations=10,
+            max_iterations=20,
             warm_start=warm_start)
         # Disabled the following model creation because of an error
         # ToolkitError: Both SArrays have to have the same value type.
@@ -95,7 +95,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 feature=self.feature,
                 max_iterations=1,
                 warm_start=warm_start)
-        self.trains = [self.check_cross_sf, self.stroke_sf]
+        self.trains = [self.check_cross_sf] # , self.stroke_sf]
         self.models = [self.check_cross_model] #, self.stroke_model]
 
     def test_create_with_missing_value_bitmap(self):
@@ -212,7 +212,7 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (output_type == "probability")
                     assert (preds["probability"].dtype == float)
                 assert (len(preds) == k*len(sf))
-    
+
 
     def test_predict_output_type_probability_with_sframe(self):
         for index in range(len(self.models)):
@@ -224,7 +224,7 @@ class DrawingClassifierTest(unittest.TestCase):
             else:
                 preds = model.predict(sf, output_type="probability")
                 assert (preds.dtype == float)
-    
+
 
     def test_predict_output_type_probability_with_sarray(self):
         for index in range(len(self.models)):
@@ -294,8 +294,6 @@ class DrawingClassifierTest(unittest.TestCase):
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
 
-    # @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
-    @unittest.skip("Coming soon: Need to test and debug export_to_coreml")
     def test_export_coreml_with_predict(self):
         for test_number in range(len(self.models)):
             feature = self.feature
@@ -305,10 +303,19 @@ class DrawingClassifierTest(unittest.TestCase):
                 prefix = "pretrained" + str(test_number)
             else:
                 prefix = "scratch" + str(test_number)
-            filename = _mkstemp(prefix + ".mlmodel")[1]
+            # filename = _mkstemp(prefix + ".mlmodel")[1]
+            filename = "/Users/guihaoliang/my.mlmodel"
             model.export_coreml(filename)
             mlmodel = _coremltools.models.MLModel(filename)
             tc_preds = model.predict(sf)
+            print(tc_preds)
+            tc_preds = model.predict(sf)
+            print(tc_preds)
+            tc_preds_prob = model.predict(sf, "probability")
+            print(tc_preds_prob)
+            tc_preds_prob = model.predict(sf, "probability")
+            print(tc_preds_prob)
+
             if test_number == 1:
                 # stroke input
                 sf[feature] = _tc.drawing_classifier.util.draw_strokes(
@@ -318,7 +325,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 core_ml_preds = mlmodel.predict({
                     "drawing": sf[feature][row_number]._to_pil_image()
                     })
-                assert (core_ml_preds["classLabel"] == tc_preds[row_number])
+                assert (core_ml_preds[self.target] == tc_preds[row_number])
 
             if test_number == 1:
                 sf = sf.remove_column(feature)
@@ -353,14 +360,14 @@ class DrawingClassifierTest(unittest.TestCase):
             model.summary()
 
 
-class DrawingClassifierFromScratchTest(DrawingClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(DrawingClassifierFromScratchTest, self).setUpClass(
-            warm_start=None)
+# class DrawingClassifierFromScratchTest(DrawingClassifierTest):
+#     @classmethod
+#     def setUpClass(self):
+#         super(DrawingClassifierFromScratchTest, self).setUpClass(
+#             warm_start=None)
 
-class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(DrawingClassifierUsingQuickdraw245, self).setUpClass(
-            warm_start="quickdraw_245_v0")
+# class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
+#     @classmethod
+#     def setUpClass(self):
+#         super(DrawingClassifierUsingQuickdraw245, self).setUpClass(
+#             warm_start="quickdraw_245_v0")
