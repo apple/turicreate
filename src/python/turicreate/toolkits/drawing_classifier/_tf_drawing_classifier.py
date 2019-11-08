@@ -34,6 +34,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         self.batch_size = batch_size
 
         self.input = _tf.placeholder(_tf.float32, [None, 28, 28, 1])
+        self.input = _tf.div(self.input, 255.0)
         self.one_hot_labels = _tf.placeholder(_tf.int32, [None, self.num_classes])
 
         # Weights
