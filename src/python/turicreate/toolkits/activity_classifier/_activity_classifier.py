@@ -189,8 +189,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         model.train(dataset, target, session_id, validation_set, options)
         return ActivityClassifier_beta(model_proxy=model, name=name)
-    print("q8666666")
-    print("=======")
+
     from .._mxnet import _mxnet_utils
     from ._mx_model_architecture import _net_params
     from ._sframe_sequence_iterator import SFrameSequenceIter as _SFrameSequenceIter
