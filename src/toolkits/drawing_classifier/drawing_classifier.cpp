@@ -114,6 +114,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   std::string input_name{features_list.front().to<flex_string>()};
   std::string output_name;
 
+  result->add_preprocessing(features_list[0].to<flex_string>(), 1 / 255.f);
+
   {
     size_t channels_filter = 16;
     size_t channels_kernel = 1;
@@ -194,6 +196,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* num_input_channels  */ 64 * 3 * 3,
       /* weight_init_fn      */ initializer,
       /* bias_init_fn        */ zero_weight_initializer());
+
+  input_name = std::move(output_name);
+  output_name = prefix + "_relu3" + _suffix;
+
+  result->add_relu(output_name, input_name);
 
   input_name = std::move(output_name);
   output_name = prefix + "_dense1" + _suffix;

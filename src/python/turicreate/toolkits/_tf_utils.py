@@ -258,4 +258,5 @@ def convert_dense_tf_to_coreml(dense_weights):
 
 	"""
 	dense_weights = np.transpose(dense_weights)
-	return np.reshape(dense_weights, (dense_weights.shape[0], dense_weights.shape[1], 1, 1))
+	# , 1, 1))
+	return np.reshape(dense_weights, (dense_weights.shape[0], dense_weights.shape[1]))

@@ -185,17 +185,38 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
             respective weight of type `numpy.ndarray`.
         """
 
+        from pprint import pprint as pprint
         net_params = {}
         layer_names = _tf.trainable_variables()
         layer_weights = self.sess.run(layer_names)
+        ff = open("/Users/guihaoliang/tf_dc_weights.txt", 'w') #as f:
+        #    from pprint import pprint as pprint
+        #    pprint(, f)
 
         for var, val in zip(layer_names, layer_weights):
             if 'bias' in var.name:
+                pprint("{} ".format(var.name), ff)
+                pprint(val, ff)
                 net_params.update({var.name.replace(":0", ""): val})
             else:
                 if 'dense' in var.name:
-                    net_params.update({var.name.replace(":0", ""): _utils.convert_dense_tf_to_coreml(val)})
+                    pprint("{} ".format(var.name), ff)
+                    pprint(val.shape, ff)
+                    pprint(val, ff)
+                    net_params.update(
+                        {var.name.replace(":0", ""): _utils.convert_dense_tf_to_coreml(val)})
                 else:
                     # TODO: Call _utils.convert_conv2d_tf_to_coreml once #2513 is merged.
-                    net_params.update({var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
+                    pprint("{} ".format(var.name), ff)
+                    pprint(val.shape, ff)
+                    pprint(val, ff)
+                    net_params.update(
+                        {var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
+
+        with open("/Users/guihaoliang/tf_dc.txt", 'w') as f:
+            for k in net_params.keys():
+                pprint(k, f)
+                pprint(net_params[k].shape, f)
+                pprint(net_params[k], f)
+
         return net_params

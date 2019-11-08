@@ -325,6 +325,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 core_ml_preds = mlmodel.predict({
                     "drawing": sf[feature][row_number]._to_pil_image()
                     })
+                print(core_ml_preds)
                 assert (core_ml_preds[self.target] == tc_preds[row_number])
 
             if test_number == 1:
