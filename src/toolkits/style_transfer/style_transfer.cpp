@@ -270,8 +270,10 @@ void style_transfer::init_options(
       1, std::numeric_limits<int>::max());
   options.create_boolean_option(
       "verbose", "When set to true, verbose is printed", true, true);
-  options.create_string_option("content_feature", "Name of the content column", "image", true);
-  options.create_string_option("style_feature", "Name of the style column", "image", true);
+  options.create_string_option("content_feature", "Name of the content column",
+                               "image", true);
+  options.create_string_option("style_feature", "Name of the style column",
+                               "image", true);
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -369,8 +371,7 @@ gl_sframe style_transfer::predict(variant_type data,
       case flex_type_enum::VECTOR:
         style_idx = std::move(flex_style_idx.get<flex_vec>());
         break;
-      case flex_type_enum::LIST:
-      {
+      case flex_type_enum::LIST: {
         const auto& list = flex_style_idx.get<flex_list>();
         style_idx.resize(list.size());
         std::transform(list.begin(), list.end(), style_idx.begin(),
@@ -378,7 +379,6 @@ gl_sframe style_transfer::predict(variant_type data,
                          return static_cast<double>(val.get<flex_float>());
                        });
         break;
-
       }
       case flex_type_enum::UNDEFINED: {
         flex_int num_styles = read_state<flex_int>("num_styles");
@@ -615,22 +615,19 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
 
 std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
     std::string filename, std::map<std::string, flexible_type> opts) {
-  const flex_int image_width =
-      read_opts<flex_int>(opts, "image_width", /* delete item */ true);
-  const flex_int image_height =
-      read_opts<flex_int>(opts, "image_height", /* delete item */ true);
-  const flex_int include_flexible_shape =
-      read_opts<flex_int>(opts, "include_flexible_shape", /* delete item */ true);
+  const flex_int image_width = read_opts<flex_int>(opts, "image_width");
+  const flex_int image_height = read_opts<flex_int>(opts, "image_height");
+  const flex_int include_flexible_shape = read_opts<flex_int>(opts, "include_flexible_shape");
 
   flex_dict user_defined_metadata = {
       {"model", read_state<flex_string>("model")},
-      {"max_iterations", std::to_string(read_state<flex_int>("max_iterations"))},
-      {"training_iterations", std::to_string(read_state<flex_int>("training_iterations"))},
+      {"max_iterations", read_state<flex_int>("max_iterations")},
+      {"training_iterations", read_state<flex_int>("training_iterations")},
       {"type", "StyleTransfer"},
-      {"content_feature", "image"},
-      {"style_feature", "image"},
-      {"num_styles", std::to_string(read_state<flex_int>("num_styles"))},
-      {"version", std::to_string(get_version())},
+      {"content_feature", "image"},  // TODO: refactor to take content name and style name
+      {"style_feature", "image"},  // TODO: refactor to take content name and style name
+      {"num_styles", read_state<flex_int>("num_styles")},
+      {"version", get_version()},
   };
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
@@ -645,14 +642,10 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
 void style_transfer::import_from_custom_model(variant_map_type model_data,
                                               size_t version) {
   // Get relevant values from variant_map_type
-  const flex_dict& model =
-      read_opts<flex_dict>(model_data, "_model", /* delete item */ true);
-  const flex_int num_styles =
-      read_opts<flex_int>(model_data, "num_styles", /* delete item */ true);
-  const flex_int max_iterations =
-      read_opts<flex_int>(model_data, "max_iterations", /* delete item */ true);
-  const flex_string model_type =
-      read_opts<flex_string>(model_data, "model", /* delete item */ true);
+  const flex_dict& model = read_opts<flex_dict>(model_data, "_model");
+  const flex_int num_styles = read_opts<flex_int>(model_data, "num_styles");
+  const flex_int max_iterations = read_opts<flex_int>(model_data, "max_iterations");
+  const flex_string model_type = read_opts<flex_string>(model_data, "model");
 
   add_or_update_state({{"model", model_type},
                        {"num_styles", num_styles},
