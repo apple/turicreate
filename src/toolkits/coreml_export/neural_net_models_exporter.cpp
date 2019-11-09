@@ -399,7 +399,7 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
   ModelDescription* model_desc = model.mutable_description();
 
   FeatureDescription* model_input = model_desc->add_input();
-  ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, "image", "Input image");
+  ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, content_feature, "Input image");
 
   set_array_feature(
       model_desc->add_input(), "index",
@@ -417,6 +417,9 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
   }
 
   model.mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
+
+  // content_feature
+  // style_feature
 
   auto model_wrapper =
       std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Model>(model));
