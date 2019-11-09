@@ -198,6 +198,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         """
 
         from pprint import pprint as pprint
+        pprint("called once")
         net_params = {}
         layer_names = _tf.trainable_variables()
         layer_weights = self.sess.run(layer_names)
@@ -236,7 +237,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                     net_params.update(
                         {var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
 
-        with open("/Users/guihaoliang/tf_dc.txt", 'w') as f:
+        with open("/Users/guihaoliang/tc_tf.txt", 'w') as f:
             for k in net_params.keys():
                 pprint(k, f)
                 pprint(net_params[k].shape, f)
