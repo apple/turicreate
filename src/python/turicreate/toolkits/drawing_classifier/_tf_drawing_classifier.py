@@ -108,7 +108,18 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
                     net_params[key]))
             else:
-                if 'dense' in key:
+                if 'drawing_dense0_weight' in key:
+                    '''
+                    To make output of MXNET pool3 (NCHW) compatible with TF (NHWC).
+                    Decompose FC weights to NCHW. Transpose to NHWC. Reshape back to FC.
+                    '''
+                    mxnet_128_576 = net_params[key]
+                    mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 64, 3, 3))
+                    mxnet_128_576 = _np.transpose(mxnet_128_576, (0, 2, 3, 1))
+                    mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 576))
+                    self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
+                                                       _np.transpose(mxnet_128_576, (1, 0))))
+                elif 'dense' in key:
                     dense_weights = _utils.convert_dense_coreml_to_tf(net_params[key])
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
                         dense_weights))
@@ -204,7 +215,18 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                     pprint("{} ".format(var.name), ff)
                     pprint(val.shape, ff)
                     pprint(val, ff)
-                    net_params.update(
+                    if 'drawing_dense0_weight' in var.name:
+                         '''
+                         To make output of TF pool3 (NHWC) compatible with MXNET (NCHW).
+                         Decompose FC weights to NHWC. Transpose to NCHW. Reshape back to FC.
+                         '''
+                         tf_576_128 = val
+                         tf_576_128 = _np.reshape(tf_576_128, (3, 3, 64, 128))
+                         tf_576_128 = _np.transpose(tf_576_128, (2, 0, 1, 3))
+                         tf_576_128 = _np.reshape(tf_576_128, (576, 128))
+                         net_params.update({var.name.replace(":0", ""): _np.transpose(tf_576_128, (1, 0))})
+                    else:
+                        net_params.update(
                         {var.name.replace(":0", ""): _utils.convert_dense_tf_to_coreml(val)})
                 else:
                     # TODO: Call _utils.convert_conv2d_tf_to_coreml once #2513 is merged.
