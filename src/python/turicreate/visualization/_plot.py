@@ -66,11 +66,12 @@ def set_target(target='auto'):
           otherwise launch a native GUI window.
         * 'browser': opens a web browser pointing to http://localhost.
         * 'gui': always launch a native GUI window.
+        * 'notebook': launch in a notebook.
         * 'none': prevent all visualizations from being displayed.
     """
     global _target
-    if target not in ['auto', 'browser', 'gui', 'none']:
-        raise ValueError("Expected target to be one of: 'auto', 'browser', 'gui', 'none'.")
+    if target not in ['auto', 'browser', 'gui', 'notebook', 'none']:
+        raise ValueError("Expected target to be one of: 'auto', 'browser', 'gui', 'notebook', 'none'.")
     _target = target
 
 
@@ -144,7 +145,7 @@ class Plot(object):
 
         # If auto target is set, try to show inline in Jupyter Notebook
         try:
-            if _target == 'auto' and \
+            if (_target == 'auto' or _target == 'notebook') and \
                get_ipython().__class__.__name__ == "ZMQInteractiveShell":
                 self._repr_javascript_()
                 return

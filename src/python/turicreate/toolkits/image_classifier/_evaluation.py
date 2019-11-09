@@ -63,8 +63,11 @@ class Evaluation(dict):
     params = (self._get_eval_json()+"\n", self.data["test_data"], self, )
     # Suppress visualization output if 'none' target is set
     from ...visualization._plot import _target
+    from ...visualization._plot import show
     if _target == 'none':
         return
+    if _target == 'notebook':
+        return show()
     _thread.start_new_thread(_start_process, params)
 
 
