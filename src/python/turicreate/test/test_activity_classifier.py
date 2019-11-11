@@ -20,6 +20,8 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
 USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+
 
 def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
                randomize_num_sessions = True, num_labels = 9, prediction_window = 5,
@@ -69,7 +71,6 @@ def _random_session_ids(num_examples, num_sessions):
 
     return session_ids
 
-
 class ActivityClassifierCreateStressTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -80,7 +81,7 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
         sf_session_id = max(self.data[self.session_id])
         sf = self.data.append(tc.SFrame({self.features[0]: [None], self.features[1]: [3.14], self.features[2]: [5.23], self.target: [sf_label], self.session_id: [sf_session_id]}))
         with self.assertRaises(_ToolkitError):
-            tc.activity_classifier.create(sf, 
+            tc.activity_classifier.create(sf,
                             features=self.features,
                             target=self.target,
                             session_id=self.session_id,
@@ -139,6 +140,15 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         self.fraction = 0.9
         self.seed = 42
 
+    def _compute_expect_frac(self,num_sessions):
+        if num_sessions > 200000:
+            return 10000./num_sessions
+        elif num_sessions >= 200:
+            return 0.95
+        elif num_sessions >= 50:
+            return 0.9
+        return 1
+
     def _create_auto_validation_set(self, is_small=False):
         model = tc.activity_classifier.create(self.data,
                             features=self.features,
@@ -152,7 +162,10 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         num_sessions = len(self.data[self.session_id].unique())
         valid_num_sessions = num_sessions - model.num_sessions
         valid_frac = float(valid_num_sessions / num_sessions)
-        expected_frac = 0.0 if is_small else 1.0 - self.fraction
+        if USE_CPP:
+            expected_frac = 0.0 if is_small else 1.0 - self._compute_expect_frac(num_sessions)
+        else:
+            expected_frac = 0.0 if is_small else 1.0 - self.fraction
         self.assertAlmostEqual(valid_frac, expected_frac, places=1,
                                msg="Got {} validation sessions out of {}, which is {:.3f}, and not the expected {}".format(valid_num_sessions, num_sessions, valid_frac, expected_frac))
 
@@ -186,7 +199,8 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
                         "After train-test split, the train and validation sets should not include the same sessions")
 
     def test_create_auto_validation_set_small(self):
-        num_sessions = tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT // 2
+        min_num_session_for_split = 50 if USE_CPP else tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT
+        num_sessions = min_num_session_for_split // 2
         _load_data(self, max_num_sessions=num_sessions, randomize_num_sessions=False, enforce_all_sessions=True)
 
         self._create_auto_validation_set(is_small=True)
@@ -213,7 +227,6 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         self._create_auto_validation_set()
 
 class ActivityClassifierTest(unittest.TestCase):
-
     @classmethod
     def setUpClass(self):
         """
@@ -318,20 +331,32 @@ class ActivityClassifierTest(unittest.TestCase):
             else:
                 labels = list(map(str, sorted(self.model._target_id_map.keys())))
 
-            data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
-            np_data = np.concatenate(data_list, 1)[np.newaxis]
+            if USE_CPP:
+                input_features = {}
+                for f in self.features:
+                    input_features[f] = dataset[f].to_numpy()
+                first_input_dict  = {}
+                second_input_dict = {}
+                for key, value in input_features.items():
+                    first_input_dict[key] = value[:w].copy()
+                    second_input_dict[key] = value[w:2*w].copy()
+                ret0 = coreml_model.predict(first_input_dict)
+
+                second_input_dict["stateIn"] = ret0["stateOut"]
+                ret1 = coreml_model.predict(second_input_dict)
+
+            else:
+                data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
+                np_data = np.concatenate(data_list, 1)[np.newaxis]
+                ret0 = coreml_model.predict({'features' : np_data[:, :w].copy()})
+                ret1 = coreml_model.predict({'features' : np_data[:, w:2*w].copy(),
+                                         'hiddenIn': ret0['hiddenOut'],
+                                         'cellIn': ret0['cellOut']})
 
             pred = self.model.predict(dataset, output_type='probability_vector')
             model_time0_values = pred[0]
             model_time1_values = pred[w]
             model_predictions = np.array([model_time0_values, model_time1_values])
-
-            ret0 = coreml_model.predict({'features' : np_data[:, :w].copy()})
-
-            ret1 = coreml_model.predict({'features' : np_data[:, w:2*w].copy(),
-                                         'hiddenIn': ret0['hiddenOut'],
-                                         'cellIn': ret0['cellOut']})
-
             coreml_time0_values = [ret0[self.target + 'Probability'][l] for l in labels]
             coreml_time1_values = [ret1[self.target + 'Probability'][l] for l in labels]
             coreml_predictions = np.array([coreml_time0_values, coreml_time1_values])
@@ -438,7 +463,7 @@ class ActivityClassifierTest(unittest.TestCase):
                     self.assertTrue(False, "After model save and load, method " + test_method +
                                     " has failed with error: " + str(e))
 
-
+@pytest.mark.xfail()
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ActivityClassifierGPUTest(unittest.TestCase):

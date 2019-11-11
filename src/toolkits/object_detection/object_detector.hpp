@@ -58,7 +58,7 @@ class EXPORT object_detector: public ml_model_base {
   virtual void resume_training(gl_sframe data, variant_type validation_data);
   virtual void iterate_training();
   virtual void synchronize_training();
-  virtual void finalize_training();
+  virtual void finalize_training(bool compute_final_metrics);
 
   // Register with Unity server
 
@@ -104,7 +104,9 @@ class EXPORT object_detector: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::iterate_training);
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::synchronize_training);
-  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::finalize_training);
+  REGISTER_CLASS_MEMBER_FUNCTION(object_detector::finalize_training,
+                                 "compute_final_metrics");
+  register_defaults("finalize_training", {{"compute_final_metrics", true}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
                                  "output_type", "options");
@@ -220,6 +222,7 @@ class EXPORT object_detector: public ml_model_base {
                                            const std::string& output_type);
   static gl_sframe convert_types_to_sframe(const variant_type& data,
                                            const std::string& column_name);
+
   // Sets certain user options heuristically (from the data).
   void infer_derived_options();
 

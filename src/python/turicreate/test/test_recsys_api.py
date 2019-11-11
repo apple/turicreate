@@ -113,10 +113,6 @@ class AdditionalDataTest(unittest.TestCase):
         for field in m._list_fields():
              m._get(field)
 
-        result = m._training_stats()
-        assert result is not None
-
-
     def _test_score(self, m):
         data = self.data
 

@@ -145,7 +145,7 @@ class Plot(object):
         # If auto target is set, try to show inline in Jupyter Notebook
         try:
             if _target == 'auto' and \
-               get_ipython().__class__.__name__ == "ZMQInteractiveShell":
+               (get_ipython().__class__.__name__ == "ZMQInteractiveShell" or get_ipython().__class__.__name__ == "Shell"):
                 self._repr_javascript_()
                 return
         except NameError:
