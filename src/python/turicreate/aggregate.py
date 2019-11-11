@@ -74,7 +74,7 @@ def MIN(src_column):
   return ("__builtin__min__", [src_column])
 
 
-def COUNT(*args):
+def COUNT():
   """
   Builtin count aggregator for groupby
 
@@ -84,13 +84,6 @@ def COUNT(*args):
   ...            {'count':tc.aggregate.COUNT()})
 
   """
-  # arguments if any are ignored
-  import warnings
-
-  if len(args) == 0:
-    warnings.warn('Passing parameter(s) to COUNT is deprecated. This functionality will be removed in '
-                  + 'the next major release. Any passed parameters are ignored.')
-
   return ("__builtin__count__", [""])
 
 

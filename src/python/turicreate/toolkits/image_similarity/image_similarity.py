@@ -105,7 +105,7 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
         raise TypeError("'dataset' must be of type SFrame.")
 
     # Check parameters
-    allowed_models = list(_pre_trained_models.MODELS.keys())
+    allowed_models = list(_pre_trained_models.IMAGE_MODELS.keys())
     if _mac_ver() >= (10,14):
         allowed_models.append('VisionFeaturePrint_Scene')
 
@@ -144,8 +144,8 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
             features = ['__image_features__'], verbose = verbose)
 
     # set input image shape
-    if model in _pre_trained_models.MODELS:
-        input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
+    if model in _pre_trained_models.IMAGE_MODELS:
+        input_image_shape = _pre_trained_models.IMAGE_MODELS[model].input_image_shape
     else:    # model == VisionFeaturePrint_Scene
         input_image_shape = (3, 299, 299)
 
@@ -508,9 +508,9 @@ class ImageSimilarityModel(_CustomModel):
         {'distance': array([ 0., 28.453125, 24.96875 ])}
         """
         import numpy as _np
+        from copy import deepcopy
         import coremltools as _cmt
         from coremltools.models import datatypes as _datatypes, neural_network as _neural_network
-        from .._mxnet._mxnet_to_coreml import _mxnet_converter
         from turicreate.toolkits import _coreml_utils
 
         # Get the reference data from the model
@@ -522,30 +522,22 @@ class ImageSimilarityModel(_CustomModel):
         output_features = [(output_name, _datatypes.Array(num_examples))]
 
         if self.model != 'VisionFeaturePrint_Scene':
-            # Convert the MxNet model to Core ML
-            ptModel = _pre_trained_models.MODELS[self.model]()
-            feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
+            # Get the Core ML spec for the feature extractor
+            ptModel = _pre_trained_models.IMAGE_MODELS[self.model]()
+            feature_extractor = _image_feature_extractor.TensorFlowFeatureExtractor(ptModel)
+            feature_extractor_spec = feature_extractor.get_coreml_model().get_spec()
 
-            input_name = feature_extractor.data_layer
+            input_name = feature_extractor.coreml_data_layer
             input_features = [(input_name, _datatypes.Array(*(self.input_image_shape)))]
 
-            # Create a neural network
-            builder = _neural_network.NeuralNetworkBuilder(
-                input_features, output_features, mode=None)
+            # Convert the neuralNetworkClassifier to a neuralNetwork
+            layers = deepcopy(feature_extractor_spec.neuralNetworkClassifier.layers)
+            for l in layers:
+                feature_extractor_spec.neuralNetwork.layers.append(l)
 
-            # Convert the feature extraction network
-            mx_feature_extractor = feature_extractor._get_mx_module(
-                feature_extractor.ptModel.mxmodel,
-                feature_extractor.data_layer,
-                feature_extractor.feature_layer,
-                feature_extractor.context,
-                self.input_image_shape
-            )
-            batch_input_shape = (1, ) + self.input_image_shape
-            _mxnet_converter.convert(mx_feature_extractor, mode=None,
-                                     input_shape=[(input_name, batch_input_shape)],
-                                     builder=builder, verbose=False)
-            feature_layer = feature_extractor.feature_layer
+            builder = _neural_network.NeuralNetworkBuilder(input_features, output_features,
+                                                            spec=feature_extractor_spec)
+            feature_layer = feature_extractor.coreml_feature_layer
 
         else:     # self.model == VisionFeaturePrint_Scene
             # Create a pipleline that contains a VisionFeaturePrint followed by a
@@ -622,7 +614,6 @@ class ImageSimilarityModel(_CustomModel):
 
         # Finalize model
         if self.model != 'VisionFeaturePrint_Scene':
-            _mxnet_converter._set_input_output_layers(builder, [input_name], [output_name])
             builder.set_input([input_name], [self.input_image_shape])
             builder.set_output([output_name], [(num_examples,)])
             _cmt.models.utils.rename_feature(builder.spec, input_name, self.feature)

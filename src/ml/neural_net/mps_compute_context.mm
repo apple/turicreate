@@ -9,6 +9,7 @@
 #import <ml/neural_net/mps_device_manager.h>
 
 #include <core/logging/logger.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 #include <ml/neural_net/mps_cnnmodule.h>
 #include <ml/neural_net/mps_graph_cnnmodule.h>
 #include <ml/neural_net/mps_image_augmentation.hpp>
@@ -39,6 +40,9 @@ float_array_map multiply_mps_od_loss_multiplier(float_array_map config,
 }
 
 std::unique_ptr<compute_context> create_mps_compute_context() {
+  // If the user has disabled GPU usage, don't use MPS at all.
+  if (fileio::NUM_GPUS == 0) return nullptr;
+
   return std::unique_ptr<compute_context>(new mps_compute_context);
 }
 

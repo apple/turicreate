@@ -139,7 +139,7 @@ class KnnClassifierCreateTest(unittest.TestCase):
 
         ## Numeric standard distances should work for numeric columns
         for d in ['euclidean', 'squared_euclidean', 'manhattan', 'cosine',
-                  'dot_product', 'transformed_dot_product']:
+                  'transformed_dot_product']:
             try:
                 m = tc.nearest_neighbor_classifier.create(self.sf, target='class',
                                                           features=numeric_features,
@@ -151,7 +151,7 @@ class KnnClassifierCreateTest(unittest.TestCase):
 
         ## Numeric standard distances should work for array columns
         for d in ['euclidean', 'squared_euclidean', 'manhattan', 'cosine',
-                  'dot_product', 'transformed_dot_product']:
+                  'transformed_dot_product']:
             try:
                 m = tc.nearest_neighbor_classifier.create(self.sf, target='class',
                                                           features=array_features,
@@ -173,8 +173,7 @@ class KnnClassifierCreateTest(unittest.TestCase):
 
 
         ## Dictionary standard distances should work.
-        for d in ['jaccard', 'weighted_jaccard', 'cosine', 'dot_product',
-                  'transformed_dot_product']:
+        for d in ['jaccard', 'weighted_jaccard', 'cosine', 'transformed_dot_product']:
             try:
                 m = tc.nearest_neighbor_classifier.create(self.sf, target='class',
                                                           features=dict_features,

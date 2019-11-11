@@ -85,58 +85,57 @@ class ImageClassifierPreTrainedModel(object):
     def _is_gl_pickle_safe(cls):
         return False
 
+    def get_model_path(self, format):
+        assert(format in ('coreml', 'tensorflow'))
+
+        filename = self.name + '-TuriCreate-6.0'
+        if(format == 'coreml'):
+            filename = filename + '.mlmodel'
+        else:
+            filename = filename + '.h5'
+
+        url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
+        checksum = self.source_md5[format]
+        model_path = _download_and_checksum_files(
+            [(url, checksum)], _get_cache_dir()
+            )[0]
+
+        return model_path
+
 
 class ResNetImageClassifier(ImageClassifierPreTrainedModel):
     input_image_shape = (3, 224, 224)
 
     def __init__(self):
         self.name = 'resnet-50'
-        self.num_classes = 1000
-        self.feature_layer_size = 2048
-        self.data_layer = 'data'
-        self.output_layer = 'softmax_output'
-        self.label_layer = 'softmax_label'
-        self.feature_layer = 'flatten0_output'
-        self.is_feature_layer_final = False
-        epoch = 0
-        self.symbols_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-symbol.json' % self.name)
-        self.symbols_md5 = '2989c88d1d6629b777949a3ae695a42e'
-        self.params_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-%04d.params' % (self.name, epoch))
-        self.params_md5 = '246423771006aaf77acf68c99852f5b5'
-        path = _get_cache_dir()
-        _download_and_checksum_files([
-            (self.symbols_url, self.symbols_md5),
-            (self.params_url, self.params_md5),
-        ], path)
-        import mxnet as _mx
-        self.mxmodel = _mx.model.load_checkpoint(_os.path.join(path, self.name), epoch)
+        self.input_is_BGR = False
+        
+        self.coreml_data_layer = 'data'
+        self.coreml_feature_layer = 'flatten0'
+
+        self.source_md5 = {
+            'coreml': '8503ef18f368b65ebaaa07ba5689b5f8',
+            'tensorflow': 'ac73d2cc03700035c6cd756742bd59d6'
+        }
+
 
 class SqueezeNetImageClassifierV1_1(ImageClassifierPreTrainedModel):
     input_image_shape = (3, 227, 227)
 
     def __init__(self):
         self.name = 'squeezenet_v1.1'
-        self.num_classes = 1000
-        self.feature_layer_size = 1000
-        self.is_feature_layer_final = True
-        self.data_layer = 'data'
-        self.output_layer = 'prob_output'
-        self.label_layer = 'prob_label'
-        self.feature_layer = 'flatten_output'
-        epoch = 0
-        self.symbols_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-symbol.json' % self.name)
-        self.symbols_md5 = 'bab4d80f45e9285cf9f4a3f01f07022e'
-        self.params_url = _urlparse.urljoin(MODELS_URL_ROOT, '%s-%04d.params' % (self.name, epoch))
-        self.params_md5 = '05b1eb6acabdaaee37c9c9ff666c1b51'
-        path = _get_cache_dir()
-        _download_and_checksum_files([
-            (self.symbols_url, self.symbols_md5),
-            (self.params_url, self.params_md5),
-        ], path)
-        import mxnet as _mx
-        self.mxmodel = _mx.model.load_checkpoint(_os.path.join(path, self.name), epoch)
+        self.input_is_BGR = True
 
-MODELS = {
+        self.coreml_data_layer = 'data'
+        self.coreml_feature_layer = 'flatten'
+
+        self.source_md5 = {
+            'coreml': '5d8a41bb9a48f71b779a98b345de0900',
+            'tensorflow': '60d5afff4c5bc535bc29655feac5571f'
+        }
+
+
+IMAGE_MODELS = {
     'resnet-50': ResNetImageClassifier,
     'squeezenet_v1.1': SqueezeNetImageClassifierV1_1
 }
@@ -248,16 +247,16 @@ class VGGish():
         self.name = 'VGGishFeatureEmbedding-v1'
         self.source_md5 = {
             'coreml': 'e8ae7d8cbcabb988b6ed6c0bf3f45571',
-            'mxnet': '13c040de982a51e4664705564be8ae8b'
+            'tensorflow': '1ae04d42492703e75fa79304873c642a'
         }
 
     def get_model_path(self, format):
-        assert(format in ('coreml', 'mxnet'))
+        assert(format in ('coreml', 'tensorflow'))
 
         if(format == 'coreml'):
             filename = self.name + '.mlmodel'
         else:
-            filename = self.name + '.params'
+            filename = self.name + '.h5'
         url = _urlparse.urljoin(MODELS_URL_ROOT, filename)
 
         checksum = self.source_md5[format]

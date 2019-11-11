@@ -224,16 +224,9 @@ def create(dataset, target, feature=None, model = 'resnet-50',
         raise TypeError('"dataset" must be of type SFrame.')
 
     # Check model parameter
-    allowed_models = list(_pre_trained_models.MODELS.keys())
+    allowed_models = list(_pre_trained_models.IMAGE_MODELS.keys())
     if _mac_ver() >= (10,14):
         allowed_models.append('VisionFeaturePrint_Scene')
-
-        # Also, to make sure existing code doesn't break, replace incorrect name
-        # with the correct name version
-        if model == "VisionFeaturePrint_Screen":
-            print("WARNING: Correct spelling of model name is VisionFeaturePrint_Scene; VisionFeaturePrint_Screen will be removed in subsequent versions.")
-            model = "VisionFeaturePrint_Scene"
-
     _tkutl._check_categorical_option_type('model', model, allowed_models)
 
     # Check dataset parameter
@@ -288,8 +281,8 @@ def create(dataset, target, feature=None, model = 'resnet-50',
 
 
     # set input image shape
-    if model in _pre_trained_models.MODELS:
-        input_image_shape = _pre_trained_models.MODELS[model].input_image_shape
+    if model in _pre_trained_models.IMAGE_MODELS:
+        input_image_shape = _pre_trained_models.IMAGE_MODELS[model].input_image_shape
     else:    # model == VisionFeaturePrint_Scene
         input_image_shape = (3, 299, 299)
 
@@ -930,10 +923,9 @@ class ImageClassifier(_CustomModel):
 
 
         # main part of the export_coreml function
-        if self.model in _pre_trained_models.MODELS:
-            ptModel = _pre_trained_models.MODELS[self.model]()
-            feature_extractor = _image_feature_extractor.MXFeatureExtractor(ptModel)
-
+        if self.model in _pre_trained_models.IMAGE_MODELS:
+            ptModel = _pre_trained_models.IMAGE_MODELS[self.model]()
+            feature_extractor = _image_feature_extractor.TensorFlowFeatureExtractor(ptModel)
             coreml_model = feature_extractor.get_coreml_model()
             spec = coreml_model.get_spec()
             nn_spec = spec.neuralNetworkClassifier

@@ -413,6 +413,12 @@ void object_detector::train(gl_sframe data,
                             variant_type validation_data,
                             std::map<std::string, flexible_type> opts)
 {
+  auto compute_final_metrics_iter = opts.find("compute_final_metrics");
+  bool compute_final_metrics = true;
+  if (compute_final_metrics_iter != opts.end()) {
+    compute_final_metrics = compute_final_metrics_iter->second;
+  }
+  opts.erase(compute_final_metrics_iter);
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
   init_training(data, annotations_column_name, image_column_name,
@@ -427,7 +433,7 @@ void object_detector::train(gl_sframe data,
   }
 
   // Wait for any outstanding batches to finish.
-  finalize_training();
+  finalize_training(compute_final_metrics);
 
   add_or_update_state({
       {"training_time", time_object.current_time()},
@@ -450,7 +456,7 @@ void object_detector::synchronize_model(model_spec* nn_spec) const {
   nn_spec->update_params(trained_weights);
 }
 
-void object_detector::finalize_training() {
+void object_detector::finalize_training(bool compute_final_metrics) {
   // Wait for any outstanding batches.
   synchronize_training();
 
@@ -470,7 +476,9 @@ void object_detector::finalize_training() {
   training_compute_context_.reset();
 
   // Compute training and validation metrics.
-  update_model_metrics(training_data_, validation_data_);
+  if (compute_final_metrics) {
+    update_model_metrics(training_data_, validation_data_);
+  }
 }
 
 variant_type object_detector::evaluate(gl_sframe data, std::string metric,
@@ -981,6 +989,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
 {
+
   data_iterator::parameters iterator_params;
 
   // Check if data has annotations column
