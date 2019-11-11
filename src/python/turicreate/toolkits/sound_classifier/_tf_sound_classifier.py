@@ -74,20 +74,14 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             bias_name = 'sound_dense{}_bias'.format(i)
             self.names_of_layers.append('dense{}'.format(i))
             if i==0:
-                #weights[weight_name] = _tf.Variable(_tf.random.uniform([12288, 100]), name=weight_name)
                 weights[weight_name] = _tf.Variable(initializer([12288, 100]), name=weight_name)
+                biases[bias_name] = _tf.Variable(initializer([100]), name=bias_name)
+            elif i==(user_num_layers-1):
+                weights[weight_name] = _tf.Variable(initializer([100, self.num_classes]), name=weight_name)
+                biases[bias_name] = _tf.Variable(initializer([self.num_classes]), name=bias_name)
             else:
                 weights[weight_name] = _tf.Variable(initializer([100, 100]), name=weight_name)
-                #weights[weight_name] = _tf.Variable(_tf.random.uniform([100, 100]), name=weight_name)
-
-            if i==(user_num_layers-1):
-                weights[weight_name] = _tf.Variable(initializer([100, self.num_classes]), name=weight_name)
-                #weights[weight_name] = _tf.Variable(_tf.random.uniform([100, self.num_classes]), name=weight_name)
-                biases[bias_name] = _tf.Variable(initializer([self.num_classes]), name=bias_name)
-                #biases[bias_name] = _tf.Variable(_tf.random.uniform([self.num_classes]), name=bias_name)
-            else:
                 biases[bias_name] = _tf.Variable(initializer([100]), name=bias_name)
-                #biases[bias_name] = _tf.Variable(_tf.random.uniform([100]), name=bias_name)
 
 
         for i in range(user_num_layers):
@@ -135,8 +129,6 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
     def train(self, data, label):
         data_shape = data.shape[0]
-        #print("data", data, data.shape)
-        #print("label", label, label.shape)
         _, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
                             feed_dict={
                                 self.x: data.reshape((data_shape, 12288)),
@@ -167,12 +159,10 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
     def predict(self, data):
         data = data[0] #tuple
         data_shape = data.shape[0]
-        print("data.shape[0]", data.shape[0])
         pred_probs = self.sess.run([self.predictions],
                             feed_dict={
                                 self.x: data#.reshape((data_shape, 12288))
                             })
-        #pred_probs = pred_probs[0]
         result = {'predictions' : pred_probs}
         return result
 
@@ -216,12 +206,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         for i, name in enumerate(self.names_of_layers):
             weight_name = 'sound_{}_weight:0'.format(name)
             bias_name = 'sound_{}_weight:0'.format(name)
-            #weight_name = 'sound_{}_weight'.format(name)
-            #bias_name = 'sound_{}_weight'.format(name)
             layer={}
-            #print(weight_name,layer_dict[weight_name], type(layer_dict[weight_name]), layer_dict[weight_name].shape)
             layer['weight'] = layer_dict[weight_name]#.transpose(1, 0)#.asnumpy() #### wait we don't need this!
-            #print(bias_name,layer_dict[bias_name], type(layer_dict[bias_name]), layer_dict[bias_name].shape)
             layer['bias'] = layer_dict[bias_name]#.asnumpy()
             if i==(len(self.names_of_layers)-1):
                 layer['act']=None
@@ -254,39 +240,28 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         """
         Parameters
         ----------
-        weights : dict
+        net_params : dict
                 Containing model weights and shapes
-                {'data': weight data, 'shapes': weight shapes}
+                {'data': weight data dict, 'shapes': weight shapes dict}
 
         """
-        #import ipdb
-        #ipdb.set_trace()
-        # Assign the initialised weights from MXNet to tensorflow
-        #layers = ['sound_dense0_weight', 'sound_dense0_bias', 'sound_dense1_weight', 'sound_dense1_bias',
-        #'sound_dense2_weight', 'sound_dense2_bias']
         layers = net_params['data'].keys()
-        #layers = [x.replace("custom", "sound") for x in layers]
 
         for layer_name in layers:
-            #new_layer_name = layer_name
             new_layer_name = layer_name.replace("custom", "sound")
             if 'bias' in layer_name:
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
-                    net_params['data'][layer_name])) #[key].data().asnumpy()))
+                    net_params['data'][layer_name]))
             else:
-                #if 'dense' in key:
                 curr_shape = [int(x) for x in net_params['shapes'][layer_name]]
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
-                                        net_params['data'][layer_name].reshape(curr_shape).transpose(1, 0)))
-
+                                        net_params['data'][layer_name].reshape(curr_shape)))#.transpose(1, 0)))
 
 
     def get_layer_activations(self, data, label):
         data_shape = data.shape[0]
         dense0, dense1, dense2 = self.sess.run([self.dense0, self.dense1, self.out],
                             feed_dict={
-                                #self.x: x_data,#.asnumpy(),
-                                #self.y: y_data
                                 self.x: data.reshape((data_shape, 12288)),
                                 self.y: _tf.keras.utils.to_categorical(label, self.num_classes).reshape((data_shape, self.num_classes))
                             })
