@@ -400,6 +400,7 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
 
   FeatureDescription* model_input = model_desc->add_input();
   ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, content_feature, "Input image");
+  model_input->set_name(content_feature);
 
   set_array_feature(
       model_desc->add_input(), "index",
@@ -407,7 +408,8 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
 
   FeatureDescription* model_output = model_desc->add_output();
   ImageFeatureType* style_feat = set_image_feature(model_output, image_width, image_height, "stylizedImage", "Stylized image");
-  
+  model_output->set_name(style_feature);
+
   /**
    * The -1 indicates no upper limits for the image size
    */
