@@ -463,7 +463,6 @@ class ActivityClassifierTest(unittest.TestCase):
                     self.assertTrue(False, "After model save and load, method " + test_method +
                                     " has failed with error: " + str(e))
 
-@pytest.mark.xfail()
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ActivityClassifierGPUTest(unittest.TestCase):
@@ -482,10 +481,9 @@ class ActivityClassifierGPUTest(unittest.TestCase):
                                     session_id=self.session_id)
                 with test_util.TempDirectory() as filename:
                     model.save(filename)
-                    tc.config.set_num_gpus(out_gpus)
                     model = tc.load_model(filename)
 
-                with test_util.TempDirectory() as filename:
-                    model.export_coreml(filename)
+                filename = tempfile.mkstemp('ActivityClassifier.mlmodel')[1]
+                model.export_coreml(filename)
 
         tc.config.set_num_gpus(old_num_gpus)
