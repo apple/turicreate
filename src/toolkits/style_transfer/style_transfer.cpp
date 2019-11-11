@@ -355,7 +355,7 @@ void style_transfer::infer_derived_options() {
 
 gl_sframe style_transfer::get_styles(variant_type style_index) {
   gl_sframe style_sf = read_state<gl_sframe>("styles");
-  gl_sarray style_filter = convert_style_indicies_to_filter(style_index);
+  gl_sarray style_filter = convert_style_indices_to_filter(style_index);
 
   return style_sf[style_filter];
 }
@@ -373,13 +373,14 @@ gl_sframe style_transfer::style_sframe_with_index(gl_sarray styles) {
 }
 
 /**
- * convert_style_indicies_to_filter
+ * convert_style_indices_to_filter
  *
  * This function takes a variant type and converts it into a boolean filter. The
- * elements at the indicies we want to keep are set to a value of `1`, the
+ * elements at the indices we want to keep are set to a value of `1`, the
  * elements we don't want to keep are set to a value of `0`.
  */
-gl_sarray style_transfer::convert_style_indicies_to_filter(const variant_type& data) {
+gl_sarray style_transfer::convert_style_indices_to_filter(
+    const variant_type& data) {
   // read the `num_styles`
   flex_int num_styles = read_state<flex_int>("num_styles");
   if (variant_is<flex_list>(data) || variant_is<flex_vec>(data)) {
@@ -389,35 +390,36 @@ gl_sarray style_transfer::convert_style_indicies_to_filter(const variant_type& d
     flex_list index_list = variant_get_value<flex_list>(data);
     // Assert that the list is not zero-length
     ASSERT_NE(index_list.size(), 0);
-    
-    // populate the indicies that are selected by the flex_list 
-    std::for_each(index_list.begin(), index_list.end(),
-                  [&index_filter, num_styles](flexible_type& ft) {
-                    // assert if the type is an integer or a float
-                    ASSERT_TRUE(ft.get_type() == flex_type_enum::INTEGER ||
-                                ft.get_type() == flex_type_enum::FLOAT);
 
-                    // parse the float or integer value based on the type and,
-                    // set the value at the indicies to 1 indicating the filter
-                    // to be true.
-                    switch (ft.get_type()) {
-                      case flex_type_enum::INTEGER: {
-                        flex_int idx = ft.get<flex_int>();
-                        check_style_index(idx, num_styles);
-                        index_filter[idx] = 1;
-                      }
-                      case flex_type_enum::FLOAT: {
-                        int idx = static_cast<int>(ft.get<flex_float>());
-                        check_style_index(idx, num_styles);
-                        index_filter[idx] = 1;
-                        break;
-                      }
-                      default:
-                        log_and_throw(
-                            "Invalid data type! List should contain either "
-                            "flex_float or flex_int values!");
-                    }
-                  });
+    // populate the indices that are selected by the flex_list
+    std::for_each(
+        index_list.begin(), index_list.end(),
+        [&index_filter, num_styles](flexible_type& ft) {
+          // assert if the type is an integer or a float
+          ASSERT_TRUE(ft.get_type() == flex_type_enum::INTEGER ||
+                      ft.get_type() == flex_type_enum::FLOAT);
+
+          // parse the float or integer value based on the type and,
+          // set the value at the indices to 1 indicating the filter
+          // to be true.
+          switch (ft.get_type()) {
+            case flex_type_enum::INTEGER: {
+              flex_int idx = ft.get<flex_int>();
+              check_style_index(idx, num_styles);
+              index_filter[idx] = 1;
+            }
+            case flex_type_enum::FLOAT: {
+              int idx = static_cast<int>(ft.get<flex_float>());
+              check_style_index(idx, num_styles);
+              index_filter[idx] = 1;
+              break;
+            }
+            default:
+              log_and_throw(
+                  "Invalid data type! The `style` list should contain either "
+                  "integer or float values!");
+          }
+        });
     return index_filter;
   } else if (variant_is<flex_int>(data)) {
     // Set the index filter to zeros, set to the length of the style sframe
@@ -517,7 +519,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
       weight_params);
 
-  // looping through all of the style indicies
+  // looping through all of the style indices
   for (size_t i : style_idx) {
     std::vector<st_example> batch = data_iter->next_batch(batch_size);
     while (!batch.empty()) {
