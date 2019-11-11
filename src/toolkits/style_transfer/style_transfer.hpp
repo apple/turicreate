@@ -130,20 +130,16 @@ class EXPORT style_transfer : public ml_model_base {
 
   template <typename T>
   T read_opts(std::map<std::string, turi::variant_type>& opts,
-              const std::string& key, bool remove_item = false) const {
+              const std::string& key) const {
     auto iter = _read_iter_opts<turi::variant_type>(opts, key);
-    T value = variant_get_value<T>(iter->second);
-    if (remove_item) opts.erase(iter);
-    return value;
+    return variant_get_value<T>(iter->second);
   }
 
   template <typename T>
   T read_opts(std::map<std::string, turi::flexible_type>& opts,
-              const std::string& key, bool remove_item = false) const {
+              const std::string& key) const {
     auto iter = _read_iter_opts<turi::flexible_type>(opts, key);
-    T value = iter->second.get<T>();
-    if (remove_item) opts.erase(iter);
-    return value;
+    return iter->second.get<T>();
   }
 
  private:

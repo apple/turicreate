@@ -400,15 +400,13 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
 
   FeatureDescription* model_input = model_desc->add_input();
   ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, content_feature, "Input image");
-  model_input->set_name(content_feature);
 
   set_array_feature(
       model_desc->add_input(), "index",
       "Style index array (set index I to 1.0 to enable Ith style)", {1});
 
   FeatureDescription* model_output = model_desc->add_output();
-  ImageFeatureType* style_feat = set_image_feature(model_output, image_width, image_height, "stylizedImage", "Stylized image");
-  model_output->set_name(style_feature);
+  ImageFeatureType* style_feat = set_image_feature(model_output, image_width, image_height, style_feature, "Stylized image");
 
   /**
    * The -1 indicates no upper limits for the image size
@@ -418,10 +416,18 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
     set_image_feature_size_range(style_feat, 64, -1, 64, -1);
   }
 
-  model.mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
+  CoreML::Specification::NeuralNetwork* nn = model.mutable_neuralnetwork();
+  nn->MergeFrom(nn_spec.get_coreml_spec());
 
-  // content_feature
-  // style_feature
+  /*
+    Change input to first and last layers to match input and output feature names.
+  */
+  int last_layer_index = nn->layers_size() - 1;
+  NeuralNetworkLayer* first_layer = nn->mutable_layers(0);
+  NeuralNetworkLayer* last_layer = nn->mutable_layers(last_layer_index);
+
+  first_layer->set_input(0, content_feature);
+  last_layer->set_output(0, style_feature);
 
   auto model_wrapper =
       std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Model>(model));
