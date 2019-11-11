@@ -436,8 +436,8 @@ gl_sarray style_transfer::convert_style_indices_to_filter(
     return std::vector<flexible_type>(num_styles, 1);
   } else {
     log_and_throw(
-        "Invalid data type! Expect flex_list, flex_vec, flex_int, or "
-        "flex_undefined!");
+        "Invalid data type! Expect `list`, `integer`, or "
+        "`None` types!");
   }
 }
 
