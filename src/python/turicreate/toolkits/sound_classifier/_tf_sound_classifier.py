@@ -19,79 +19,53 @@ _tf.disable_v2_behavior()
 
 class SoundClassifierTensorFlowModel(TensorFlowModel):
 
-    def __init__(self, num_classes):
+    def __init__(self, num_inputs, num_classes, custom_layer_sizes):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy.
 
         """
-        #for key in net_params.keys():
-        #    net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
         _tf.reset_default_graph()
 
-        user_num_layers = 3
-
         self.num_classes = num_classes
-        #self.batch_size = batch_size
 
         self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
         initializer = _tf.keras.initializers.glorot_uniform() #xavier initialization
-        # Weights
-        '''
-        weights = {
-        'sound_dense0_weight'  : _tf.Variable(initializer([12288, 100]), name='sound_dense0_weight'),
-        'sound_dense1_weight'  : _tf.Variable(initializer([100, 100]), name='sound_dense1_weight'),
-        'sound_dense2_weight'  : _tf.Variable(initializer([100, self.num_classes]), name='sound_dense2_weight')
-        }
-
-        # Biases
-        biases = {
-        'sound_dense0_bias'  : _tf.Variable(initializer([100]), name='sound_dense0_bias'),
-        'sound_dense1_bias'  : _tf.Variable(initializer([100]), name='sound_dense1_bias'),
-        'sound_dense2_bias'  : _tf.Variable(initializer([self.num_classes]), name='sound_dense2_bias')
-        }
-
-        self.names_of_layers = [x.split('_')[1] for x in weights.keys()]
-
-        self.dense0 = _tf.nn.xw_plus_b(self.x, weights=weights["sound_dense0_weight"], biases=biases["sound_dense0_bias"])
-        dense0 = _tf.nn.relu(self.dense0)
-
-        self.dense1 = _tf.nn.xw_plus_b(dense0, weights=weights["sound_dense1_weight"], biases=biases["sound_dense1_bias"])
-        dense1 = _tf.nn.relu(self.dense1)
-
-        self.out = _tf.nn.xw_plus_b(dense1, weights=weights["sound_dense2_weight"], biases=biases["sound_dense2_bias"])
-        out = _tf.nn.softmax(self.out)
-        '''
 
         weights = {}
         biases = {}
         self.names_of_layers = []
 
-        for i in range(user_num_layers):
+        # Create variables for customized layers
+        for i, cur_layer_size in enumerate(custom_layer_sizes):
             weight_name = 'sound_dense{}_weight'.format(i)
             bias_name = 'sound_dense{}_bias'.format(i)
             self.names_of_layers.append('dense{}'.format(i))
+            out_units = cur_layer_size
             if i==0:
-                weights[weight_name] = _tf.Variable(initializer([12288, 100]), name=weight_name)
-                biases[bias_name] = _tf.Variable(initializer([100]), name=bias_name)
-            elif i==(user_num_layers-1):
-                weights[weight_name] = _tf.Variable(initializer([100, self.num_classes]), name=weight_name)
-                biases[bias_name] = _tf.Variable(initializer([self.num_classes]), name=bias_name)
-            else:
-                weights[weight_name] = _tf.Variable(initializer([100, 100]), name=weight_name)
-                biases[bias_name] = _tf.Variable(initializer([100]), name=bias_name)
+                in_units = num_inputs
+            weights[weight_name] = _tf.Variable(initializer([in_units, out_units]), name=weight_name)
+            biases[bias_name] = _tf.Variable(initializer([out_units]), name=bias_name)
+            in_units = out_units
 
+        i+=1
+        weight_name = 'sound_dense{}_weight'.format(i)
+        bias_name = 'sound_dense{}_bias'.format(i)
+        self.names_of_layers.append('dense{}'.format(i))
+        weights[weight_name] = _tf.Variable(initializer([in_units, num_classes]), name=weight_name)
+        biases[bias_name] = _tf.Variable(initializer([num_classes]), name=bias_name)
 
-        for i in range(user_num_layers):
+        # Add customized layers
+        for i in range(len(weights.keys())):
             weight_name = 'sound_dense{}_weight'.format(i)
             bias_name = 'sound_dense{}_bias'.format(i)
             if i==0:
                 curr_dense = _tf.nn.xw_plus_b(self.x, weights=weights[weight_name], biases=biases[bias_name])
             else:
                 curr_dense = _tf.nn.xw_plus_b(curr_dense, weights=weights[weight_name], biases=biases[bias_name])
-            if i==(user_num_layers-1):
+            if i==(len(weights.keys())-1):
                 out = _tf.nn.softmax(curr_dense)
             else:
                 curr_dense = _tf.nn.relu(curr_dense)
@@ -112,20 +86,6 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 
-        '''
-        # Assign the initialised weights from MXNet to tensorflow
-        layers = ['sound_dense0_weight', 'sound_dense0_bias', 'sound_dense1_weight', 'sound_dense1_bias',
-        'sound_dense2_weight', 'sound_dense2_bias']
-
-        for key in layers:
-            if 'bias' in key:
-                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                    net_params[key].data().asnumpy()))
-            else:
-                #if 'dense' in key:
-                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                                        net_params[key].data().asnumpy().transpose(1, 0)))
-        '''
 
     def train(self, data, label):
         data_shape = data.shape[0]
@@ -138,15 +98,6 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         return result
 
     def predict_with_accuracy(self, data, label):
-        '''
-        data_shape = data.shape[0]
-        pred_probs = self.sess.run([self.predictions],
-                            feed_dict={
-                                self.x: data.reshape((data_shape, 12288))
-                            })
-        pred_probs = pred_probs[0]
-        return pred_probs
-        '''
         data_shape = data.shape[0]
         pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
                              feed_dict={
@@ -161,7 +112,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         data_shape = data.shape[0]
         pred_probs = self.sess.run([self.predictions],
                             feed_dict={
-                                self.x: data#.reshape((data_shape, 12288))
+                                self.x: data.reshape((data_shape, 12288))
                             })
         result = {'predictions' : pred_probs}
         return result
@@ -259,6 +210,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
 
     def get_layer_activations(self, data, label):
+        #TODO: remove this 
         data_shape = data.shape[0]
         dense0, dense1, dense2 = self.sess.run([self.dense0, self.dense1, self.out],
                             feed_dict={
@@ -268,6 +220,9 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         return dense0, dense1, dense2
 
     def evaluate(self, train_loader):
+        '''
+        TODO: Fix or remove this
+        '''
         total_acc = 0.0
         count = 0
         for train_batch in train_loader:
@@ -287,66 +242,4 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         final_accuracy = total_acc/count
         return final_accuracy
 
-
-
-def _tf_train_model(tf_model, train_loader, validation_loader, validation_set, batch_size, num_classes, verbose):
-    """
-    Trains the TensorFlow model.
-
-    Returns
-    -------
-
-    final_train_accuracy : numpy.float32
-        Training accuracy of the last iteration.
-
-    final_val_accuracy : numpy.float32
-        Validation accuracy of the last iteration.
-
-    final_train_loss : numpy.float32
-        The final loss recorded in training.
-
-    total_train_time : float
-        Time taken to complete the training
-    """
-
-    if verbose:
-        column_names = ['iteration', 'train_loss', 'train_accuracy', 'time']
-        column_titles = ['Iteration', 'Training Loss', 'Training Accuracy', 'Elapsed Time (seconds)']
-        if validation_set is not None:
-            column_names.insert(3, 'validation_accuracy')
-            column_titles.insert(3, 'Validation Accuracy')
-        table_printer = _ProgressTablePrinter(column_names, column_titles)
-
-    num_iter = 0
-    start_time = _time.time()
-
-    for train_batch in train_loader:
-        data_shape = train_batch.label[0].asnumpy().shape[0]
-        result = tf_model.method_train( feed_dict={
-                            'x': train_batch.data[0].asnumpy().reshape((data_shape, 12288)),
-                            'y': _tf.keras.utils.to_categorical(train_batch.label[0].asnumpy(), num_classes).reshape((data_shape, num_classes))
-                        })
-        final_train_accuracy = result['accuracy']
-        final_train_loss = result['loss']
-        for val_batch in validation_loader:
-            data_shape = val_batch.label[0].asnumpy().shape[0]
-            result = tf_model.method_predict(feed_dict={
-                            'x': val_batch.data[0].asnumpy().reshape((data_shape, 12288)),
-                            'y': _tf.keras.utils.to_categorical(val_batch.label[0].asnumpy(), num_classes).reshape((data_shape, num_classes))
-                        })
-            val_acc = result['accuracy']
-
-        num_iter+=1
-        if verbose:
-            kwargs = {  "iteration": num_iter,
-                        "train_loss": "{:.3f}".format(final_train_loss),
-                        "train_accuracy": "{:.3f}".format(final_train_accuracy),
-                        "time": _time.time() - start_time}
-            if validation_set is not None:
-                kwargs["validation_accuracy"] = "{:.3f}".format(val_acc)
-            #if num_iter%100==0:
-            table_printer.print_row(**kwargs)
-
-    final_val_accuracy = val_acc if validation_set else None
-    total_train_time = _time.time() - start_time
 
