@@ -58,7 +58,7 @@ class EXPORT object_detector: public ml_model_base {
   virtual void resume_training(gl_sframe data, variant_type validation_data);
   virtual void iterate_training();
   virtual void synchronize_training();
-  virtual void finalize_training(bool compute_final_metrics = false);
+  virtual void finalize_training(bool compute_final_metrics);
 
   // Register with Unity server
 
