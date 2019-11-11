@@ -4538,7 +4538,7 @@ class SFrame(object):
         # If auto target is set, try to show inline in Jupyter Notebook
         try:
             if _target == 'auto' and \
-                get_ipython().__class__.__name__ == "ZMQInteractiveShell":
+                (get_ipython().__class__.__name__ == "ZMQInteractiveShell" or get_ipython().__class__.__name__ == "Shell"):
                 display_table_in_notebook(self, title)
                 return
         except NameError:
