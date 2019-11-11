@@ -425,7 +425,7 @@ def create(dataset, target, feature, max_iterations=10,
     if USE_TF:
         print("------ Using TensorFlow ...")
         from ._tf_sound_classifier import SoundClassifierTensorFlowModel
-        custom_NN = SoundClassifierTensorFlowModel(batch_size, num_labels)
+        custom_NN = SoundClassifierTensorFlowModel(num_labels)
     else:
         print("------ Using MXNet ...")
         from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
@@ -449,7 +449,7 @@ def create(dataset, target, feature, max_iterations=10,
 
         # Calculate validation metric
         for data, label in validation_data:
-            result = custom_NN.predict(data, label)
+            result = custom_NN.predict_with_accuracy(data, label)
             validation_accuracy = result['accuracy']
 
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
@@ -536,8 +536,12 @@ class SoundClassifier(_CustomModel):
             custom_layer_sizes = [100, 100]
         state['custom_layer_sizes'] = custom_layer_sizes
 
-        from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-        model_obj = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
+        if USE_TF:
+            from ._tf_sound_classifier import SoundClassifierTensorFlowModel
+            model_obj = SoundClassifierTensorFlowModel(num_classes)
+        else:
+            from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
+            model_obj = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
         model_obj.load_weights(state['_custom_classifier'])
         state['_custom_classifier'] = model_obj
 
@@ -968,13 +972,11 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
+        data_gen = _MXNetDataIterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size)
 
-        for data in _create_data_iterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
-            #import ipdb
-            #ipdb.set_trace()
-            #print(data, data.shape, batch_size)
-            #print(self._custom_classifier.predict(data))
-            y += self._custom_classifier.predict(data)['predictions'].tolist()#
+        #for data in _create_data_iterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
+        for data in data_gen:
+            y += self._custom_classifier.predict(data)['predictions'][0].tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames

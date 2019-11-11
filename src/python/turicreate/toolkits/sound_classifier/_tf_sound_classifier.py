@@ -19,7 +19,7 @@ _tf.disable_v2_behavior()
 
 class SoundClassifierTensorFlowModel(TensorFlowModel):
 
-    def __init__(self, batch_size, num_classes):
+    def __init__(self, num_classes):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy.
 
@@ -32,7 +32,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         user_num_layers = 3
 
         self.num_classes = num_classes
-        self.batch_size = batch_size
+        #self.batch_size = batch_size
 
         self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
@@ -145,7 +145,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
         return result
 
-    def predict(self, data, label):
+    def predict_with_accuracy(self, data, label):
         '''
         data_shape = data.shape[0]
         pred_probs = self.sess.run([self.predictions],
@@ -162,6 +162,18 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                                  self.y: _tf.keras.utils.to_categorical(label, self.num_classes).reshape((data_shape, self.num_classes))
                              })
         result = {'accuracy' : final_accuracy, 'predictions' : pred_probs}
+        return result
+
+    def predict(self, data):
+        data = data[0] #tuple
+        data_shape = data.shape[0]
+        print("data.shape[0]", data.shape[0])
+        pred_probs = self.sess.run([self.predictions],
+                            feed_dict={
+                                self.x: data#.reshape((data_shape, 12288))
+                            })
+        #pred_probs = pred_probs[0]
+        result = {'predictions' : pred_probs}
         return result
 
     def method_train(self, feed_dict):
@@ -237,6 +249,37 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             shapes[layer_name] = val.shape
 
         return {'data': data, 'shapes': shapes}
+
+    def load_weights(self, net_params):
+        """
+        Parameters
+        ----------
+        weights : dict
+                Containing model weights and shapes
+                {'data': weight data, 'shapes': weight shapes}
+
+        """
+        #import ipdb
+        #ipdb.set_trace()
+        # Assign the initialised weights from MXNet to tensorflow
+        #layers = ['sound_dense0_weight', 'sound_dense0_bias', 'sound_dense1_weight', 'sound_dense1_bias',
+        #'sound_dense2_weight', 'sound_dense2_bias']
+        layers = net_params['data'].keys()
+        #layers = [x.replace("custom", "sound") for x in layers]
+
+        for layer_name in layers:
+            #new_layer_name = layer_name
+            new_layer_name = layer_name.replace("custom", "sound")
+            if 'bias' in layer_name:
+                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
+                    net_params['data'][layer_name])) #[key].data().asnumpy()))
+            else:
+                #if 'dense' in key:
+                curr_shape = [int(x) for x in net_params['shapes'][layer_name]]
+                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
+                                        net_params['data'][layer_name].reshape(curr_shape).transpose(1, 0)))
+
+
 
     def get_layer_activations(self, data, label):
         data_shape = data.shape[0]
