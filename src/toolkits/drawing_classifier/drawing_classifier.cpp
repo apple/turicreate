@@ -587,7 +587,6 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
 
   // Sync trained weights to our local storage of the NN weights.
   float_array_map trained_weights = training_model_->export_weights();
-  logprogress_stream << ">>> weights are updated" << std::endl;
   nn_spec_->update_params(trained_weights);
 
   variant_map_type state_update;

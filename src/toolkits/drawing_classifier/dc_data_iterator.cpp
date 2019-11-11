@@ -211,6 +211,10 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     batch_drawings.erase(pend, batch_drawings.end());
   }
 
+  // do noramization on each pixels
+  parallel_for(batch_drawings.begin(), batch_drawings.end(),
+               [=](float& x) { x /= norm_fator_; });
+
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
       {real_batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels});
