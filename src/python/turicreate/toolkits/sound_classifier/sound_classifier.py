@@ -531,12 +531,12 @@ class SoundClassifier(_CustomModel):
 
         if USE_TF:
             from ._tf_sound_classifier import SoundClassifierTensorFlowModel
-            model_obj = SoundClassifierTensorFlowModel(num_inputs, num_classes, custom_layer_sizes)
+            custom_NN = SoundClassifierTensorFlowModel(num_inputs, num_classes, custom_layer_sizes)
         else:
             from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-            model_obj = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
-        model_obj.load_weights(state['_custom_classifier'])
-        state['_custom_classifier'] = model_obj
+            custom_NN = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
+        custom_NN.load_weights(state['_custom_classifier'])
+        state['_custom_classifier'] = custom_NN
 
         return SoundClassifier(state)
 
