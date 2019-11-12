@@ -167,8 +167,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     if USE_CPP:
         import turicreate.toolkits.libtctensorflow
-        if verbose:
-            print("Using C++")
         model = _tc.extensions.drawing_classifier()
         options = dict()
         options["batch_size"] = batch_size
