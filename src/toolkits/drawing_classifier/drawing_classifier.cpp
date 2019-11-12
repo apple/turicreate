@@ -24,19 +24,12 @@
 
 #include <toolkits/drawing_classifier/data_preparation.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
-#include <core/logging/assertions.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
-#include <core/util/string_util.hpp>
+
 
 namespace turi {
 namespace drawing_classifier {
 
 namespace {
-
-using CoreML::Specification::NeuralNetworkLayer;
-using CoreML::Specification::NeuralNetworkPreprocessing;
-using CoreML::Specification::SizeRange;
-using turi::coreml::MLModelWrapper;
 
 using coreml::MLModelWrapper;
 using neural_net::compute_context;
