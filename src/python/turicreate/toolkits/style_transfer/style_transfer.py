@@ -879,7 +879,6 @@ class StyleTransfer_beta(_Model):
         |  3    |  Height: 642 Width: 642  |
         +-------+--------------------------+
         """
-
         return self.__proxy__.get_styles(style)
 
 class StyleTransfer(_CustomModel):
