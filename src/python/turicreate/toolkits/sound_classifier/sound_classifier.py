@@ -20,8 +20,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
-#import tensorflow as tf
-#tf.compat.v1.enable_eager_execution()
 
 USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
 
@@ -212,11 +210,9 @@ class _TFAccuracy(_Accuracy):
         return self.impl.result()
 
 def _get_accuracy_metric():
-    if False:#USE_TF:
-        print("******** Using TF Accurcay metric")
+    if USE_TF:
         return _TFAccuracy()
     else:
-        print("******** Using MXNet Accurcay metric")
         return _MXNetAccuracy()
 
 def _is_deep_feature_sarray(sa):
@@ -327,8 +323,6 @@ def create(dataset, target, feature, max_iterations=10,
         have a powerful computer, increasing this value may improve performance.
     '''
     import time
-    #from .._mxnet import _mxnet_utils
-    #import mxnet as mx
 
     from ._audio_feature_extractor import _get_feature_extractor
 
@@ -773,7 +767,6 @@ class SoundClassifier(_CustomModel):
         """
         import coremltools
         from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
-        from .._mxnet import _mxnet_utils
 
         prob_name = self.target + 'Probability'
 
@@ -929,8 +922,6 @@ class SoundClassifier(_CustomModel):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
-        #from .._mxnet import _mxnet_utils
-        #import mxnet as mx
 
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, dict)):
             raise TypeError('\'dataset\' parameter must be either an SFrame, SArray or dictionary')
