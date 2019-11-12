@@ -395,6 +395,7 @@ def create(dataset, target, feature, max_iterations=10,
     train_metric = _get_accuracy_metric()
     if validation_data:
         validation_metric = _get_accuracy_metric()
+
     for i in range(max_iterations):
         # TODO: early stopping
 
