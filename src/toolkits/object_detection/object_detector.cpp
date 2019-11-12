@@ -417,8 +417,9 @@ void object_detector::train(gl_sframe data,
   bool compute_final_metrics = true;
   if (compute_final_metrics_iter != opts.end()) {
     compute_final_metrics = compute_final_metrics_iter->second;
+    opts.erase(compute_final_metrics_iter);
   }
-  opts.erase(compute_final_metrics_iter);
+
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
   init_training(data, annotations_column_name, image_column_name,
@@ -1075,13 +1076,9 @@ void object_detector::init_training(gl_sframe data,
 
   // Record the relevant column names upfront, for use in create_iterator. Also
   // values fixed by this version of the toolkit.
-  add_or_update_state({
-      { "annotations", annotations_column_name },
-      { "feature", image_column_name },
-      { "model", "darknet-yolo" },
-      { "non_maximum_suppression_threshold",
-        DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD },
-  });
+  add_or_update_state({{"annotations", annotations_column_name},
+                       {"feature", image_column_name},
+                       {"model", "darknet-yolo"}});
 
   // Perform random validation split if necessary.
   std::tie(training_data_, validation_data_) =
