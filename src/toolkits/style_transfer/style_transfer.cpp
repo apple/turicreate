@@ -463,12 +463,12 @@ gl_sframe style_transfer::predict(variant_type data,
         break;
       case flex_type_enum::VECTOR:
         style_idx = std::move(flex_style_idx.get<flex_vec>());
-        if(style_idx.size() == 0)
+        if (style_idx.empty())
           log_and_throw("The `style` parameter can't be an empty list");
         break;
       case flex_type_enum::LIST: {
         const auto& list = flex_style_idx.get<flex_list>();
-        if(list.size() == 0)
+        if (list.empty())
           log_and_throw("The `style` parameter can't be an empty list");
         style_idx.resize(list.size());
         std::transform(list.begin(), list.end(), style_idx.begin(),
@@ -525,7 +525,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
   // looping through all of the style indices
   for (size_t i : style_idx) {
-    // check whether the style indicies are valid
+    // check whether the style indices are valid
     check_style_index(i, num_styles);
 
     std::vector<st_example> batch = data_iter->next_batch(batch_size);
