@@ -1069,8 +1069,9 @@ class DrawingClassifier_beta(_Model):
             Rows: 10
             [3, 4, 3, 3, 4, 5, 8, 8, 8, 4]
         """
+        feature_column = self.__proxy__.get_state()["feature_column_name"]
         if isinstance(dataset, _tc.SArray):
-            dataset = _tc.SFrame({'drawing': dataset})
+            dataset = _tc.SFrame({feature_column: dataset})
         return self.__proxy__.predict(dataset, output_type)
 
     def predict_topk(self, dataset, k=3, output_type='class'):
@@ -1133,6 +1134,9 @@ class DrawingClassifier_beta(_Model):
         +----+-------+-------------------+
         [35688 rows x 3 columns]
         """
+        feature_column = self.__proxy__.get_state()["feature_column_name"]
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({feature_column: dataset})
         return self.__proxy__.predict_topk(dataset, output_type, k)
 
     def evaluate(self, dataset, metric='auto'):
