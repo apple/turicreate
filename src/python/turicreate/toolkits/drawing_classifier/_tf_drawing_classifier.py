@@ -121,15 +121,17 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
             else:
                 if 'drawing_dense0_weight' in key:
                     '''
-                    To make output of MXNET pool3 (NCHW) compatible with TF (NHWC).
+                    To make output of CoreML pool3 (NCHW) compatible with TF (NHWC).
                     Decompose FC weights to NCHW. Transpose to NHWC. Reshape back to FC.
                     '''
-                    mxnet_128_576 = net_params[key]
-                    mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 64, 3, 3))
-                    mxnet_128_576 = _np.transpose(mxnet_128_576, (0, 2, 3, 1))
-                    mxnet_128_576 = _np.reshape(mxnet_128_576, (128, 576))
+                    coreml_128_576 = net_params[key]
+                    coreml_128_576 = _np.reshape(
+                        coreml_128_576, (128, 64, 3, 3))
+                    coreml_128_576 = _np.transpose(
+                        coreml_128_576, (0, 2, 3, 1))
+                    coreml_128_576 = _np.reshape(coreml_128_576, (128, 576))
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
-                                             _np.transpose(mxnet_128_576, (1, 0))))
+                                             _np.transpose(coreml_128_576, (1, 0))))
                 elif 'dense' in key:
                     dense_weights = _utils.convert_dense_coreml_to_tf(
                         net_params[key])
@@ -222,7 +224,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                 if 'dense' in var.name:
                     if 'drawing_dense0_weight' in var.name:
                          '''
-                         To make output of TF pool3 (NHWC) compatible with MXNET (NCHW).
+                         To make output of TF pool3 (NHWC) compatible with CoreML (NCHW).
                          Decompose FC weights to NHWC. Transpose to NCHW. Reshape back to FC.
                          '''
                          tf_576_128 = val
