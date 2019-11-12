@@ -99,8 +99,7 @@ gl_sframe set_up_perform_inference(
     test_drawing_classifier& mock_model,
     std::unique_ptr<mock_model_backend>& mock_backend,
     std::unique_ptr<mock_compute_context>& mock_context, size_t batch_size,
-    const size_t num_of_rows, const size_t num_of_classes,
-    const std::string feature_column_name) {
+    const size_t num_of_rows, const size_t num_of_classes) {
   ASSERT_MSG(num_of_rows > 0, "num_of_rows should be bigger than 0");
   ASSERT_MSG(num_of_classes > 0, "num_of_classes should be bigger than 0");
   ASSERT_MSG(batch_size > 0, "batch_size should be bigger than 0");
@@ -155,8 +154,7 @@ gl_sframe set_up_perform_inference(
 
   mock_model.add_or_update_state(
       {{"num_classes", num_of_classes},
-       {"batch_size", batch_size},
-       {"feature_column_name", feature_column_name}});
+       {"batch_size", batch_size}});
 
   auto create_drawing_classifier_impl =
       [&mock_backend](const float_array_map&, size_t batch_size,
@@ -226,8 +224,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
 
   auto expected_sf =
       set_up_perform_inference(mock_model, mock_backend, mock_context,
-                               batch_size, num_of_rows, num_of_classes,
-                               feature_name);
+                               batch_size, num_of_rows, num_of_classes);
 
   // make sure the output is what expected
   std::vector<std::string> class_labels;
@@ -250,7 +247,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
             new simple_data_iterator(my_params));
       });
 
-  // specific for perdict
+  // specific for predict
   mock_model.add_or_update_state(
       {{"target", target_name},
        {"features", flex_list({feature_name})},
@@ -266,36 +263,35 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
   log_for_debug("test_drawing_classifier_perform_inference");
 
   for (auto& entry : TEST_CASES) {
-    for (bool is_bitmap_based : {true}) {
-
-      size_t batch_size = std::get<0>(entry);
-      size_t num_of_rows = std::get<1>(entry);
-      size_t num_of_classes = std::get<2>(entry);
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
 
 #ifndef NDEBUG
-      logprogress_stream << "batch_size=" << batch_size
-                         << "; num_of_rows=" << num_of_rows
-                         << "; num_of_classes=" << num_of_classes << std::endl;
+    logprogress_stream << "batch_size=" << batch_size
+                       << "; num_of_rows=" << num_of_rows
+                       << "; num_of_classes=" << num_of_classes << std::endl;
 #endif
 
-      const std::string feature_name = "feature";
+    const std::string feature_name = "feature";
+    const std::string target_name = "target";
 
-      // mode the data iterator first
-      mock_perform_inference mock_model;
-      std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
-      std::unique_ptr<mock_compute_context> mock_context(
-          new mock_compute_context);
+    // mode the data iterator first
+    mock_perform_inference mock_model;
+    std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
+    std::unique_ptr<mock_compute_context> mock_context(
+        new mock_compute_context);
 
-      auto expected_sf =
-          set_up_perform_inference(mock_model, mock_backend, mock_context,
-                                   batch_size, num_of_rows, num_of_classes,
-                                   feature_name);
+    auto expected_sf =
+        set_up_perform_inference(mock_model, mock_backend, mock_context,
+                                 batch_size, num_of_rows, num_of_classes);
 
-      auto data_itr = prepare_data_for_prediction(is_bitmap_based,
-        num_of_rows, num_of_classes);
-      auto result = mock_model.get_inference_result(data_itr.get());
-      _assert_sframe_equals(result, expected_sf);
-    }
+    // For perform inference,
+    // we only want to test with is_bitmap_based set to true.
+    auto data_itr = prepare_data_for_prediction(/* is_bitmap_based */ true,
+      num_of_rows, num_of_classes);
+    auto result = mock_model.get_inference_result(data_itr.get());
+    _assert_sframe_equals(result, expected_sf);
     // make sure the output is what expected
   }
 }

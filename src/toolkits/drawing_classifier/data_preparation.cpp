@@ -451,7 +451,6 @@ gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
         flex_image bitmap = convert_stroke_based_drawing_to_bitmap(
             current_stroke_based_drawing, row_number);
         bitmaps.push_back(bitmap);
-        std::cout << row_number;
         row_number++;
     }
     gl_sarray bitmaps_sarray(bitmaps);

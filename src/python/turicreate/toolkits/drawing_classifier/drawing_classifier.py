@@ -1069,7 +1069,7 @@ class DrawingClassifier_beta(_Model):
             Rows: 10
             [3, 4, 3, 3, 4, 5, 8, 8, 8, 4]
         """
-        feature_column = self.__proxy__.get_state()["feature_column_name"]
+        feature_column = self.features[0]
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({feature_column: dataset})
         return self.__proxy__.predict(dataset, output_type)
