@@ -182,7 +182,6 @@ std::unique_ptr<data_iterator> prepare_data_for_prediction(
   }
 
   // Create an arbitrary SFrame with test_num_rows rows.
-
   drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap_based,
                                         num_of_rows, class_labels);
   gl_sframe my_data = data_generator.get_data();
