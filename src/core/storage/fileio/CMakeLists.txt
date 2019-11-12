@@ -47,4 +47,6 @@ make_library(fileio OBJECT
     iconv
 )
 
+add_dependencies(fileio ${FILEIO_REMOTE_FS_REQUIRES})
+
 target_compile_options(fileio PRIVATE -Ddmlc=__tc_dmlc)

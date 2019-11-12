@@ -24,7 +24,6 @@ RUN yum -y update && \
                libX11-devel \
                bzip2-devel \
                sqlite-devel \
-               zlib-devel \
                gcc \
                gcc-multilib \
                glibc-devel \
@@ -200,17 +199,5 @@ RUN ccache -M 4G
 
 # Clean up now-unnecessary paths in image
 RUN rm -rf /src
-
-# Remove zlib-devel because turicreate also has zlib in it.
-RUN yum -y remove zlib-devel
-
-# Build zlib-devel from source so it doesn't conflict with TC's zlib version
-WORKDIR /src
-RUN curl -O https://zlib.net/zlib-1.2.11.tar.gz
-RUN tar xf zlib-1.2.11.tar.gz
-WORKDIR zlib-1.2.11
-RUN ./configure --prefix=/usr/local/
-RUN make -j4
-RUN make install
 
 WORKDIR /build/
