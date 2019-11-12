@@ -1134,7 +1134,7 @@ class DrawingClassifier_beta(_Model):
         +----+-------+-------------------+
         [35688 rows x 3 columns]
         """
-        feature_column = self.__proxy__.get_state()["feature_column_name"]
+        feature_column = self.features[0]
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({feature_column: dataset})
         return self.__proxy__.predict_topk(dataset, output_type, k)
