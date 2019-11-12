@@ -215,10 +215,10 @@ an AWS S3 bucket. The saved model sits in its own directory, and can be
 loaded back in later to make more predictions.
 
 ```python
-model.save("my_model.model")
+model.save("recommendations.model")
 ```
 Like other models in Turi Create, we can load the model back:
 
 ```python
-model = tc.load_model("my_model.model")
+model = tc.load_model("recommendations.model")
 ```
