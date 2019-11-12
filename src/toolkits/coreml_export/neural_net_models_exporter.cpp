@@ -358,7 +358,6 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
   set_array_feature(feature_desc, "stateIn", "LSTM state input",
                     { lstm_hidden_layer_size*2 });
 
-  set_feature_optional(feature_desc);
   set_array_feature(model_desc->add_output(), "stateOut",
                     "LSTM state output", { lstm_hidden_layer_size * 2 });
 
