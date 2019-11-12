@@ -154,7 +154,6 @@ class StyleTransferTest(unittest.TestCase):
 
         return style_cases
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_stylize_fail(self):
         style_cases = self._get_invalid_style_cases()
         model = self.model
