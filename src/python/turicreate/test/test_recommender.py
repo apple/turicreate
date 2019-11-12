@@ -865,19 +865,6 @@ class PopularityRecommenderTest(RecommenderTestBase):
         new_item_preds = yhat[ix][0]
         assert(abs(new_item_preds - mean_rating) < DELTA)
 
-    def test_rmse_report(self):
-        m = tc.popularity_recommender.create(self.df, target='rating')
-        stats = m._training_stats()
-
-        assert 'training_rmse' in stats.keys()
-        # assert 'validation_rmse' in stats.keys()
-        '''
-        TODO:
-        Test CoreML export, when we have a dirarchiver that doesn't
-        depend on the filesystem
-        self._test_coreml_export(m, ['a','b'], [.2,.3])
-        '''
-
     def test_largescale_recommendations(self):
 
         user_item_list = []

@@ -131,16 +131,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     --------
     ActivityClassifier, util.random_split_by_session
     """
-    from .._mxnet import _mxnet_utils
-    from ._mx_model_architecture import _net_params
-    from ._sframe_sequence_iterator import SFrameSequenceIter as _SFrameSequenceIter
-    from ._sframe_sequence_iterator import prep_data as _prep_data
-    from ._mx_model_architecture import _define_model_mxnet, _fit_model_mxnet
-    from ._mps_model_architecture import _define_model_mps, _fit_model_mps
-    from .._mps_utils import (use_mps as _use_mps,
-                              mps_device_name as _mps_device_name,
-                              ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
-
 
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
     if not isinstance(target, str):
@@ -199,6 +189,16 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         model.train(dataset, target, session_id, validation_set, options)
         return ActivityClassifier_beta(model_proxy=model, name=name)
+        
+    from .._mxnet import _mxnet_utils
+    from ._mx_model_architecture import _net_params
+    from ._sframe_sequence_iterator import SFrameSequenceIter as _SFrameSequenceIter
+    from ._sframe_sequence_iterator import prep_data as _prep_data
+    from ._mx_model_architecture import _define_model_mxnet, _fit_model_mxnet
+    from ._mps_model_architecture import _define_model_mps, _fit_model_mps
+    from .._mps_utils import (use_mps as _use_mps,
+                              mps_device_name as _mps_device_name,
+                              ac_weights_mps_to_mxnet as _ac_weights_mps_to_mxnet)
 
     if isinstance(validation_set, str) and validation_set == 'auto':
         # Computing the number of unique sessions in this way is relatively

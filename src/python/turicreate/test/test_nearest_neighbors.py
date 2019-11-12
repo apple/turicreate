@@ -22,7 +22,7 @@ import sys
 from functools import partial
 
 from .test_distances import euclidean, squared_euclidean, manhattan, levenshtein
-from .test_distances import cosine, dot_product, transformed_dot_product, jaccard, weighted_jaccard
+from .test_distances import cosine, transformed_dot_product, jaccard, weighted_jaccard
 
 if sys.version_info.major > 2:
     long = int
@@ -201,10 +201,9 @@ class NearestNeighborsCreateTest(unittest.TestCase):
                               method=m, distance='euclidean',
                               field='method', value=name)
 
-        ## Cosine distances should not work with ball tree
-        for dist in ['cosine', 'dot_product', 'transformed_dot_product',
+        ## Cosine and transformed_dot_product distances should not work with ball tree
+        for dist in ['cosine', 'transformed_dot_product',
                      tc.distances.cosine,
-                     tc.distances.dot_product,
                      tc.distances.transformed_dot_product]:
 
             with self.assertRaises(TypeError):
@@ -249,7 +248,6 @@ class NearestNeighborsCreateTest(unittest.TestCase):
             'gaussian_kernel': tc.distances.gaussian_kernel,
             'manhattan': tc.distances.manhattan,
             'cosine': tc.distances.cosine,
-            'dot_product': tc.distances.dot_product,
             'transformed_dot_product': tc.distances.transformed_dot_product}
 
         for dist_name, dist_fn in dense_dists.items():
@@ -290,7 +288,6 @@ class NearestNeighborsCreateTest(unittest.TestCase):
             'jaccard': tc.distances.jaccard,
             'weighted_jaccard': tc.distances.weighted_jaccard,
             'cosine': tc.distances.cosine,
-            'dot_product': tc.distances.dot_product,
             'transformed_dot_product': tc.distances.transformed_dot_product}
 
         for dist_name, dist_fn in sparse_dists.items():
@@ -1374,30 +1371,6 @@ class NearestNeighborsNumericQueryTest(unittest.TestCase):
         self._test_query(answer, self.refs, self.queries, self.label,
                          features=None, distance='auto', method='brute_force')
 
-        ## "Dot product" distance
-        D = 1. / self.q.dot(self.r.T)
-        D = D.values
-        n_query, n = D.shape
-
-        idx_col = np.argsort(D, axis=1)
-        idx_row = np.array([[x] for x in range(n_query)])
-        query_labels = list(np.repeat(range(n_query), n))
-        ranks = np.tile(range(1, n+1), n_query)
-
-        answer = tc.SFrame({'query_label': query_labels,
-                            'reference_label': idx_col.flatten(),
-                            'distance': D[idx_row, idx_col].flatten(),
-                            'rank': ranks})
-
-        answer.swap_columns('distance', 'query_label', inplace=True)
-        answer.swap_columns('distance', 'reference_label', inplace=True)
-        answer.swap_columns('distance', 'rank', inplace=True)
-
-
-        self._test_query(answer, self.refs, self.queries, self.label,
-                         features=None, distance='dot_product',
-                         method='brute_force')
-
         ## Transformed dot product distance
         D = self.q.dot(self.r.T)
         D = np.log(1 + np.exp(-1 * D))
@@ -1598,8 +1571,7 @@ class NearestNeighborsSparseQueryTest(unittest.TestCase):
         Test query accuracy for various distances.
         """
         for dist in ['euclidean', 'squared_euclidean', 'manhattan', 'cosine',
-                     'dot_product', 'transformed_dot_product', 'jaccard',
-                     'weighted_jaccard']:
+                     'transformed_dot_product', 'jaccard', 'weighted_jaccard']:
 
             self._test_query(self.refs, self.refs, self.label, features=None,
                              distance=dist, method='brute_force')

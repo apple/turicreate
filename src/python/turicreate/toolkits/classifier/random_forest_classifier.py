@@ -582,13 +582,6 @@ def create(dataset, target,
         kwargs['model_checkpoint_path'] = _make_internal_url(kwargs['model_checkpoint_path'])
     if 'resume_from_checkpoint' in kwargs:
         kwargs['resume_from_checkpoint'] = _make_internal_url(kwargs['resume_from_checkpoint'])
-    if 'num_trees' in kwargs:
-        logger = _logging.getLogger(__name__)
-        logger.warning("The `num_trees` keyword argument is deprecated. Please "
-              "use the `max_iterations` argument instead. Any value provided "
-              "for `num_trees` will be used in place of `max_iterations`.")
-        max_iterations = kwargs['num_trees']
-        del kwargs['num_trees']
 
     model = _sl.create(dataset = dataset,
                         target = target,
