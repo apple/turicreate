@@ -742,7 +742,7 @@ class StyleTransfer_beta(_Model):
         options['image_height'] = image_shape[0]
         options['include_flexible_shape'] = include_flexible_shape
 
-        return self.__proxy__.export_to_coreml(filename, options)
+        self.__proxy__.export_to_coreml(filename, options)
 
 
     def stylize(self, images, style=None, verbose=True, max_size=800, batch_size = 4):

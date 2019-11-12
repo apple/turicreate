@@ -1651,7 +1651,7 @@ class ObjectDetector_beta(_Model):
         options['confidence_threshold'] = confidence_threshold
         options['iou_threshold'] = iou_threshold
 
-        return self.__proxy__.export_to_coreml(filename, options)
+        self.__proxy__.export_to_coreml(filename, options)
 
 
     def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45, verbose=True):
