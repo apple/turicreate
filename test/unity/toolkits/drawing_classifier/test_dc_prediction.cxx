@@ -99,7 +99,8 @@ gl_sframe set_up_perform_inference(
     test_drawing_classifier& mock_model,
     std::unique_ptr<mock_model_backend>& mock_backend,
     std::unique_ptr<mock_compute_context>& mock_context, size_t batch_size,
-    const size_t num_of_rows, const size_t num_of_classes) {
+    const size_t num_of_rows, const size_t num_of_classes,
+    const std::string feature_column_name) {
   ASSERT_MSG(num_of_rows > 0, "num_of_rows should be bigger than 0");
   ASSERT_MSG(num_of_classes > 0, "num_of_classes should be bigger than 0");
   ASSERT_MSG(batch_size > 0, "batch_size should be bigger than 0");
@@ -153,7 +154,9 @@ gl_sframe set_up_perform_inference(
                                             : num_of_rows / batch_size);
 
   mock_model.add_or_update_state(
-      {{"num_classes", num_of_classes}, {"batch_size", batch_size}});
+      {{"num_classes", num_of_classes},
+       {"batch_size", batch_size},
+       {"feature_column_name", feature_column_name}});
 
   auto create_drawing_classifier_impl =
       [&mock_backend](const float_array_map&, size_t batch_size,
@@ -213,6 +216,9 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
                      << "; num_of_classes=" << num_of_classes << std::endl;
 #endif
 
+  const std::string feature_name = "feature";
+  const std::string target_name = "target";
+
   // mode the data iterator first
   test_drawing_classifier mock_model;
   std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
@@ -220,7 +226,8 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
 
   auto expected_sf =
       set_up_perform_inference(mock_model, mock_backend, mock_context,
-                               batch_size, num_of_rows, num_of_classes);
+                               batch_size, num_of_rows, num_of_classes,
+                               feature_name);
 
   // make sure the output is what expected
   std::vector<std::string> class_labels;
@@ -229,12 +236,10 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
     class_labels.push_back(std::to_string(ii));
   }
 
-  const std::string feature_name = "feature";
-  const std::string target_name = "target";
-
   // name 'target', 'feature' are used by create_iterator
   drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap_based,
-                                        num_of_rows, class_labels, target_name, feature_name);
+                                        num_of_rows, class_labels, target_name,
+                                        feature_name);
 
   gl_sframe my_data = data_generator.get_data();
   TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
@@ -273,6 +278,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
                          << "; num_of_classes=" << num_of_classes << std::endl;
 #endif
 
+      const std::string feature_name = "feature";
+
       // mode the data iterator first
       mock_perform_inference mock_model;
       std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
@@ -281,7 +288,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
 
       auto expected_sf =
           set_up_perform_inference(mock_model, mock_backend, mock_context,
-                                   batch_size, num_of_rows, num_of_classes);
+                                   batch_size, num_of_rows, num_of_classes,
+                                   feature_name);
 
       auto data_itr = prepare_data_for_prediction(is_bitmap_based,
         num_of_rows, num_of_classes);
@@ -319,10 +327,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_rank) {
       }
     };
 
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
+    for (bool is_bitmap_based : {true, false}) {
       prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
+                             is_bitmap_based);
     }
   }
 }
@@ -343,10 +350,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
       _assert_sframe_equals(gl_sframe({{PRED_NAME, result_prob}}), expected);
     };
 
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
+    for (bool is_bitmap_based : {true, false}) {
       prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
+                             is_bitmap_based);
     }
   }
 }
@@ -432,9 +438,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_zero_k) {
                      flex_type_enum::UNDEFINED);
   };
 
-  std::vector<bool> is_bitmap = {true, false};
-  for (bool b : is_bitmap) {
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
+  for (bool is_bitmap_based : {true, false}) {
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                           is_bitmap_based);
   }
 }
 
@@ -467,10 +473,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_normal_k) {
                          expected);
     };
 
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
+    for (bool is_bitmap_based : {true, false}) {
       prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
+                             is_bitmap_based);
     }
   }
 }
@@ -505,10 +510,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_big_k) {
                          expected);
     };
 
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
+    for (bool is_bitmap_based : {true, false}) {
       prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
+                             is_bitmap_based);
     }
   }
 }
@@ -533,9 +537,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_zero_k) {
                      flex_type_enum::UNDEFINED);
   };
 
-  std::vector<bool> is_bitmap = {true, false};
-  for (bool b : is_bitmap) {
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner, b);
+  for (bool is_bitmap_based : {true, false}) {
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                           is_bitmap_based);
   }
 }
 
@@ -568,10 +572,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_normal_k) {
                          expected);
     };
 
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
+    for (bool is_bitmap_based : {true, false}) {
       prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
+                             is_bitmap_based);
     }
   }
 }
@@ -606,10 +609,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_big_k) {
                          expected);
     };
 
-    std::vector<bool> is_bitmap = {true, false};
-    for (bool b : is_bitmap) {
+    for (bool is_bitmap_based : {true, false}) {
       prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
-                             b);
+                             is_bitmap_based);
     }
   }
 }
