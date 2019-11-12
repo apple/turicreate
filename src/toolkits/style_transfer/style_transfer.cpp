@@ -431,7 +431,7 @@ gl_sarray style_transfer::convert_style_indices_to_filter(
     index_filter[idx] = 1;
     return index_filter;
   } else if (variant_is<flex_undefined>(data)) {
-    // If undefined set the value to all of the styles in the sframe to 1. Or \
+    // If undefined set the value to all of the styles in the sframe to 1. Or
     // run stylize on all elements of the `SFrame`
     return std::vector<flexible_type>(num_styles, 1);
   } else {
