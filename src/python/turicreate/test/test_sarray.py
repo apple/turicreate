@@ -252,6 +252,11 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(len(g), len(tlist))
         for i in range(len(tlist)):
           self.assertEqual(g[i], tlist[i])
+    
+    def test_nan_to_none_type_conversion(self):
+        sa=SArray([1.0,2.0,float('nan'),3.0])
+        sa=sa.astype(int)
+        self.assertTrue(None in sa)
 
     def test_list_with_array_creation(self):
         import array

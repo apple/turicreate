@@ -155,6 +155,7 @@ class ObjectDetectorTest(unittest.TestCase):
             del self.get_ans['_training_time_as_string']
             del self.get_ans['_grid_shape']
             del self.get_ans['anchors']
+            del self.get_ans['non_maximum_suppression_threshold']
 
         self.fields_ans = self.get_ans.keys()
 
