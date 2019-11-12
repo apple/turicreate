@@ -119,6 +119,29 @@ class EXPORT style_transfer : public ml_model_base {
     return variant_get_value<T>(get_state().at(key));
   }
 
+  template <typename T>
+  typename std::map<std::string, T>::iterator _read_iter_opts(
+      std::map<std::string, T>& opts, const std::string& key) const {
+    auto iter = opts.find(key);
+    if (iter == opts.end())
+      log_and_throw("Expected option \"" + key + "\" not found.");
+    return iter;
+  }
+
+  template <typename T>
+  T read_opts(std::map<std::string, turi::variant_type>& opts,
+              const std::string& key) const {
+    auto iter = _read_iter_opts<turi::variant_type>(opts, key);
+    return variant_get_value<T>(iter->second);
+  }
+
+  template <typename T>
+  T read_opts(std::map<std::string, turi::flexible_type>& opts,
+              const std::string& key) const {
+    auto iter = _read_iter_opts<turi::flexible_type>(opts, key);
+    return iter->second.get<T>();
+  }
+
  private:
   std::unique_ptr<neural_net::model_spec> m_resnet_spec;
   std::unique_ptr<neural_net::model_spec> m_vgg_spec;
