@@ -155,9 +155,6 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       ss << prefix << "_pool" << ii << _suffix;
       output_name = ss.str();
 
-      auto pad_type =padding_type::SAME;
-      if (ii == 2) pad_type = padding_type::VALID;
-
       result->add_pooling(
           /* name                 */ output_name,
           /* input                */ input_name,
@@ -165,7 +162,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
           /* kernel_width         */ 2,
           /* stride_height        */ 2,
           /* stride_width         */ 2,
-          /* padding              */ pad_type,
+          /* padding              */ padding_type::VALID,
           /* avg excluded padding */ false);
     }
   }

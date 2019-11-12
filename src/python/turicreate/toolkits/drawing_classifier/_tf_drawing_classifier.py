@@ -62,14 +62,14 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         conv_1 = _tf.nn.bias_add(conv_1, biases["drawing_conv0_bias"])
         relu_1 = _tf.nn.relu(conv_1)
         pool_1 = _tf.nn.max_pool2d(relu_1, ksize=[1, 2, 2, 1], strides=[
-                                   1, 2, 2, 1], padding='SAME')
+                                   1, 2, 2, 1], padding='VALID')
 
         conv_2 = _tf.nn.conv2d(
             pool_1, weights["drawing_conv1_weight"], strides=1, padding='SAME')
         conv_2 = _tf.nn.bias_add(conv_2, biases["drawing_conv1_bias"])
         relu_2 = _tf.nn.relu(conv_2)
         pool_2 = _tf.nn.max_pool2d(relu_2, ksize=[1, 2, 2, 1], strides=[
-                                   1, 2, 2, 1], padding='SAME')
+                                   1, 2, 2, 1], padding='VALID')
 
         conv_3 = _tf.nn.conv2d(
             pool_2, weights["drawing_conv2_weight"], strides=1, padding='SAME')
