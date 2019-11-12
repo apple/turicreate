@@ -18,6 +18,7 @@ using CoreML::Specification::ImageFeatureType;
 using CoreML::Specification::ImageFeatureType_ImageSizeRange;
 using CoreML::Specification::ModelDescription;
 using CoreML::Specification::NeuralNetworkLayer;
+using CoreML::Specification::NeuralNetworkPreprocessing;
 using CoreML::Specification::SizeRange;
 using turi::coreml::MLModelWrapper;
 
@@ -140,9 +141,9 @@ void set_image_feature_size_range(ImageFeatureType* image_feature,
 
 ImageFeatureType* set_image_feature(
     FeatureDescription* feature_desc, size_t image_width, size_t image_height,
-    std::string description = "",
+    std::string input_name, std::string description = "",
     ImageFeatureType::ColorSpace image_type = ImageFeatureType::RGB) {
-  feature_desc->set_name("image");
+  feature_desc->set_name(input_name);
   if (!description.empty()) feature_desc->set_shortdescription(description);
 
   ImageFeatureType* image_feature =
@@ -160,8 +161,8 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
     size_t image_height, size_t num_classes, size_t num_predictions,
     flex_dict user_defined_metadata, flex_list class_labels,
+    const std::string& input_name,
     std::map<std::string, flexible_type> options) {
-
   // Set up Pipeline
   CoreML::Specification::Model model_pipeline;
   model_pipeline.set_specificationversion(3);
@@ -174,7 +175,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   NeuralNetworkLayer* first_layer =
       model_nn->mutable_neuralnetwork()->add_layers();
   first_layer->set_name("_divscalar0");
-  first_layer->add_input("image");
+  first_layer->add_input(input_name);
   first_layer->add_output("_divscalar0");
   first_layer->mutable_scale()->add_shapescale(1);
   first_layer->mutable_scale()->mutable_scale()->add_floatvalue(1 / 255.f);
@@ -185,20 +186,30 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   model_nn->mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
   ASSERT_GT(model_nn->neuralnetwork().layers_size(), 1);
 
+  // Set the name of preprocessing layer to input_name as well.
+  // Since in the test case somehow the model doesn't have a preprocessing
+  // layer, so we need to check the size first...
+  if (model_nn->neuralnetwork().preprocessing_size() == 1) {
+    NeuralNetworkPreprocessing* preprocessing_layer =
+        model_nn->mutable_neuralnetwork()->mutable_preprocessing(0);
+    preprocessing_layer->set_featurename(input_name);
+  }
+
   // Wire up the input layer from the copied layers to _divscalar0.
   // TODO: This assumes that the first copied layer is the (only) one to take
   // the input from "image".
   NeuralNetworkLayer* second_layer =
       model_nn->mutable_neuralnetwork()->mutable_layers(1);
   ASSERT_EQ(second_layer->input_size(), 1);
-  ASSERT_EQ(second_layer->input(0), "image");
+
   second_layer->set_input(0, "_divscalar0");
 
   // Write the ModelDescription.
   ModelDescription* model_desc = model_nn->mutable_description();
 
   // Write FeatureDescription for the image input.
-  set_image_feature(model_desc->add_input(), image_width, image_height);
+  set_image_feature(model_desc->add_input(), image_width, image_height,
+                    input_name);
 
   if (!options["include_non_maximum_suppression"].to<bool>()){
 
@@ -281,7 +292,8 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   first_layer_nms->set_coordinatesoutputfeaturename("coordinates");
 
   // Write FeatureDescription for the image input.
-  set_image_feature(pipeline_desc->add_input(), image_width, image_height, "Input image");
+  set_image_feature(pipeline_desc->add_input(), image_width, image_height,
+                    input_name, "Input image");
 
   // Write FeatureDescription for the IOU Threshold input.
   FeatureDescription* iou_threshold = pipeline_desc->add_input();
@@ -384,7 +396,9 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
 
   ModelDescription* model_desc = model.mutable_description();
 
-  ImageFeatureType* input_feat = set_image_feature(model_desc->add_input(), image_width, image_height, "Input image");
+  ImageFeatureType* input_feat =
+      set_image_feature(model_desc->add_input(), image_width, image_height,
+                        "image", "Input image");
 
   /**
    * The -1 indicates no upper limits for the image size
@@ -395,7 +409,9 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
       model_desc->add_input(), "index",
       "Style index array (set index I to 1.0 to enable Ith style)", {1});
 
-  ImageFeatureType* style_feat = set_image_feature(model_desc->add_output(), image_width, image_height, "Stylized image");
+  ImageFeatureType* style_feat =
+      set_image_feature(model_desc->add_output(), image_width, image_height,
+                        "image", "Stylized image");
 
   /**
    * The -1 indicates no upper limits for the image size
@@ -425,7 +441,8 @@ std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
 
   // Write the primary input features.
   for (size_t i = 0; i < features.size(); i++) {
-    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28, "Input image", ImageFeatureType::GRAYSCALE);
+    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28, "image",
+                      "Input image", ImageFeatureType::GRAYSCALE);
   }
 
   // Write the primary output features.

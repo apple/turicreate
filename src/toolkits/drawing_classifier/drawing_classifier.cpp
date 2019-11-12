@@ -255,6 +255,12 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     gl_sframe data, bool is_train,
     std::vector<std::string> class_labels) const {
   data_iterator::parameters data_params;
+
+  std::string feature_column_name = read_state<flex_string>("feature_column_name");
+  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name);
+  }
+
   data_params.data = std::move(data);
 
   if (!is_train) {
@@ -280,19 +286,23 @@ void drawing_classifier::init_training(
     std::string feature_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
 
-  // Convert stroke-based data, if needed
-  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
-    data = _drawing_classifier_prepare_data(data, feature_column_name);
+  if (!(data.contains_column(feature_column_name))) {
+    log_and_throw(feature_column_name + "not found. Data passed in " + 
+      "does not contain the feature column model was trained with");
   }
 
-  feature_column_name_ = feature_column_name;
+  if (!(data.contains_column(target_column_name))) {
+    log_and_throw(target_column_name + "not found. Data passed in " + 
+      "does not contain the target column model was trained with");
+  }
+
+  add_or_update_state({
+    {"feature_column_name", feature_column_name},
+    {"training_iterations", 0}
+  });
 
   // Read user-specified options.
   init_options(opts);
-
-  add_or_update_state({
-      {"training_iterations", 0},
-  });
 
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
     std::random_device rd;
@@ -302,11 +312,6 @@ void drawing_classifier::init_training(
 
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
-  if (validation_data_.size() > 0 
-    && validation_data_[feature_column_name].dtype() != flex_type_enum::IMAGE) {
-    validation_data_ = _drawing_classifier_prepare_data(
-      validation_data_, feature_column_name);
-  }
 
   // Begin printing progress.
   // TODO: Make progress printing optional.
@@ -649,7 +654,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
     result_batch.data_info = data->next_batch(batch_size);
 
     // Send the inputs to the model.
-    std::map<std::string, shared_float_array> results =
+    float_array_map results =
         backend->predict({{"input", result_batch.data_info.drawings}});
 
     // Copy the (float) outputs to our (double) buffer and add to the SArray.
@@ -671,9 +676,10 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
                   "Expected one of: probability, rank");
   }
 
-  // Prepare stroke-based data, if needed.
-  if (data[feature_column_name_].dtype() != flex_type_enum::IMAGE) {
-    data = _drawing_classifier_prepare_data(data, feature_column_name_);
+  std::string feature_column_name = read_state<flex_string>("feature_column_name");
+  if (!(data.contains_column(feature_column_name))) {
+    log_and_throw(feature_column_name + "not found. Data passed in for " + 
+      "predict does not contain the feature column model was trained with");
   }
 
   auto data_itr =
@@ -705,9 +711,10 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
                   "Expected one of: probability, rank");
   }
 
-  // Prepare stroke-based data, if needed.
-  if (data[feature_column_name_].dtype() != flex_type_enum::IMAGE) {
-    data = _drawing_classifier_prepare_data(data, feature_column_name_);
+  std::string feature_column_name = read_state<flex_string>("feature_column_name");
+  if (!(data.contains_column(feature_column_name))) {
+    log_and_throw(feature_column_name + "not found. Data passed in for " + 
+      "predict does not contain the feature column model was trained with");
   }
 
   // data inference
