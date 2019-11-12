@@ -448,9 +448,9 @@ gl_sframe _drawing_classifier_prepare_data(const gl_sframe &data,
     for (const auto& row: data.range_iterator()) {
         const flexible_type &strokes = row[column_index_map[feature]];
         flex_list current_stroke_based_drawing = strokes.to<flex_list>();
-        flex_image bitmap = convert_stroke_based_drawing_to_bitmap(
-            current_stroke_based_drawing, row_number);
-        bitmaps.push_back(bitmap);
+        bitmaps.push_back(convert_stroke_based_drawing_to_bitmap(
+            current_stroke_based_drawing, row_number)
+        );
         row_number++;
     }
     gl_sarray bitmaps_sarray(bitmaps);
