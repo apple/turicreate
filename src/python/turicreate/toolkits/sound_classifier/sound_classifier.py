@@ -117,15 +117,21 @@ class _NumPyDataIterator(_DataIterator):
         self.num_batches = int(_ceil(len(data) / float(self.batch_size)))
 
     def __iter__(self):
+        return self
+
+    def __next__(self):
         if self.batch_idx < self.num_batches:
             data = self.data_slices[0][self.batch_size*self.batch_idx:self.batch_size*(self.batch_idx+1)]
             label = None
             if len(self.data_slices)>1:
                 label = self.data_slices[1][self.batch_size*self.batch_idx:self.batch_size*(self.batch_idx+1)]
             self.batch_idx += 1
-            yield data, label if label is not None else data
+            return (data, label) if label is not None else (data,)
         else:
             raise StopIteration
+
+    def next(self):
+        return self.__next__()
 
     def reset(self):
         # Each call to __iter__ returns a fresh iterator object that will do one
@@ -208,9 +214,28 @@ class _TFAccuracy(_Accuracy):
     def get(self):
         return self.impl.result()
 
+class _NumPyAccuracy(_Accuracy):
+
+    def __init__(self):
+        self.acc = 0.0
+        self.num_batches = 0.0
+
+    def update(self, accuracy):
+        self.acc += accuracy
+        self.num_batches += 1.0
+
+    def reset(self):
+        self.acc = 0.0
+        self.num_batches = 0.0
+
+    def get(self):
+        return self.acc/self.num_batches
+
+
+
 def _get_accuracy_metric():
     if USE_TF:
-        return _TFAccuracy()
+        return _NumPyAccuracy() #_TFAccuracy()
     else:
         return _MXNetAccuracy()
 
@@ -411,6 +436,10 @@ def create(dataset, target, feature, max_iterations=10,
     else:
         validation_data = []
 
+    train_metric = _get_accuracy_metric()
+    if validation_data:
+        validation_metric = _get_accuracy_metric()
+
     if verbose:
         print("\nTraining a custom neural network -")
 
@@ -424,6 +453,7 @@ def create(dataset, target, feature, max_iterations=10,
         from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
         custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
+
     if verbose:
         # Setup progress table
         row_ids = ['iteration', 'train_accuracy', 'time']
@@ -435,20 +465,28 @@ def create(dataset, target, feature, max_iterations=10,
 
     for i in range(max_iterations):
         # TODO: early stopping
+
         for data, label in train_data:
-            result = custom_NN.train(data, label)
-            train_accuracy = result['accuracy']
+            custom_NN.train(data, label)
         train_data.reset()
 
-        # Calculate validation metric
+        for data, label in train_data:
+            result = custom_NN.evaluate(data, label)
+            train_metric.update(result['accuracy'])
+        train_data.reset()
+
         for data, label in validation_data:
             result = custom_NN.evaluate(data, label)
-            validation_accuracy = result['accuracy']
+            validation_metric.update(result['accuracy'])
 
+        train_accuracy = train_metric.get()
+        train_metric.reset()
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
 
         if validation_data:
+            validation_accuracy = validation_metric.get()
             printed_row_values['validation_accuracy'] = validation_accuracy
+            validation_metric.reset()
             validation_data.reset()
         if verbose:
             printed_row_values['time'] = time.time()-start_time
@@ -962,11 +1000,9 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
-        data_gen = _MXNetDataIterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size)
 
-        #for data in _create_data_iterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
-        for data in data_gen:
-            y += self._custom_classifier.predict(data)['predictions'][0].tolist()
+        for data, in _create_data_iterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
+            y += self._custom_classifier.predict(data)[0].tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames

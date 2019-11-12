@@ -108,14 +108,12 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         return result
 
     def predict(self, data):
-        data = data[0] #tuple
         data_shape = data.shape[0]
         pred_probs = self.sess.run([self.predictions],
                             feed_dict={
                                 self.x: data.reshape((data_shape, 12288))
                             })
-        result = {'predictions' : pred_probs}
-        return result
+        return pred_probs
 
     def export_weights(self):
         """
