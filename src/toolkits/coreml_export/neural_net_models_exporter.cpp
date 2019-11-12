@@ -390,35 +390,44 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
 
 std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
-    size_t image_height, flex_dict user_defined_metadata) {
+    size_t image_height, bool include_flexible_shape,
+    flex_dict user_defined_metadata, std::string content_feature,
+    std::string style_feature) {
   CoreML::Specification::Model model;
   model.set_specificationversion(3);
 
   ModelDescription* model_desc = model.mutable_description();
 
-  ImageFeatureType* input_feat =
-      set_image_feature(model_desc->add_input(), image_width, image_height,
-                        "image", "Input image");
-
-  /**
-   * The -1 indicates no upper limits for the image size
-   */
-  set_image_feature_size_range(input_feat, 64, -1, 64, -1);
+  FeatureDescription* model_input = model_desc->add_input();
+  ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, content_feature, "Input image");
 
   set_array_feature(
       model_desc->add_input(), "index",
       "Style index array (set index I to 1.0 to enable Ith style)", {1});
 
-  ImageFeatureType* style_feat =
-      set_image_feature(model_desc->add_output(), image_width, image_height,
-                        "image", "Stylized image");
+  FeatureDescription* model_output = model_desc->add_output();
+  ImageFeatureType* style_feat = set_image_feature(model_output, image_width, image_height, style_feature, "Stylized image");
 
   /**
    * The -1 indicates no upper limits for the image size
    */
-  set_image_feature_size_range(style_feat, 64, -1, 64, -1);
+  if (include_flexible_shape) {
+    set_image_feature_size_range(input_feat, 64, -1, 64, -1);
+    set_image_feature_size_range(style_feat, 64, -1, 64, -1);
+  }
 
-  model.mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
+  CoreML::Specification::NeuralNetwork* nn = model.mutable_neuralnetwork();
+  nn->MergeFrom(nn_spec.get_coreml_spec());
+
+  /*
+    Change input to first and last layers to match input and output feature names.
+  */
+  int last_layer_index = nn->layers_size() - 1;
+  NeuralNetworkLayer* first_layer = nn->mutable_layers(0);
+  NeuralNetworkLayer* last_layer = nn->mutable_layers(last_layer_index);
+
+  first_layer->set_input(0, content_feature);
+  last_layer->set_output(0, style_feature);
 
   auto model_wrapper =
       std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Model>(model));

@@ -582,18 +582,6 @@ class SFrameTest(unittest.TestCase):
 
         os.remove(skip_file_url)
 
-
-    def test_creation_from_csv_on_http(self):
-        pass
-        # sf = SFrame(data=self.url, use_header=False)
-        # self.__test_equal(sf, pd.DataFrame({'1': self.a_to_z}))
-
-    def test_creation_from_csv_on_s3(self):
-        # Requires s3 account for jenkins
-        # sf = SFrame(data='s3://turicreate-testdata/foo.csv')
-        # print sf.head(sf.num_rows())
-        pass
-
     def test_creation_from_csv_dir_local(self):
         csv_dir = "./csv_dir"
 

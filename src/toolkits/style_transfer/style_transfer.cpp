@@ -711,23 +711,26 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
 
 std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
     std::string filename, std::map<std::string, flexible_type> opts) {
-  flex_int image_width = read_state<flex_int>("image_width");
-  flex_int image_height = read_state<flex_int>("image_height");
-
+  const flex_int image_width = read_opts<flex_int>(opts, "image_width");
+  const flex_int image_height = read_opts<flex_int>(opts, "image_height");
+  const flex_int include_flexible_shape = read_opts<flex_int>(opts, "include_flexible_shape");
+  const flex_string content_feature = read_state<flex_string>("content_feature");
+  const flex_string style_feature = read_state<flex_string>("style_feature");
+  
   flex_dict user_defined_metadata = {
       {"model", read_state<flex_string>("model")},
       {"max_iterations", read_state<flex_int>("max_iterations")},
       {"training_iterations", read_state<flex_int>("training_iterations")},
       {"type", "StyleTransfer"},
-      {"content_feature", read_state<flex_string>("content_feature")},
-      {"style_feature", read_state<flex_string>("style_feature")},
-      {"num_styles", read_state<flex_string>("num_styles")},
+      {"content_feature", content_feature},  // TODO: refactor to take content name and style name
+      {"style_feature", style_feature},
+      {"num_styles", read_state<flex_int>("num_styles")},
       {"version", get_version()},
   };
 
-  std::shared_ptr<MLModelWrapper> model_wrapper =
-      export_style_transfer_model(*m_resnet_spec, image_width, image_height,
-                                  std::move(user_defined_metadata));
+  std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
+      *m_resnet_spec, image_width, image_height, include_flexible_shape,
+      std::move(user_defined_metadata), content_feature, style_feature);
 
   if (!filename.empty()) model_wrapper->save(filename);
 
@@ -737,37 +740,10 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
 void style_transfer::import_from_custom_model(variant_map_type model_data,
                                               size_t version) {
   // Get relevant values from variant_map_type
-  auto model_iter = model_data.find("_model");
-  if (model_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain '_model'!\n");
-  }
-  const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
-  model_data.erase(model_iter);
-
-  auto num_styles_iter = model_data.find("num_styles");
-  if (num_styles_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain 'num_styles'!\n");
-  }
-  const size_t num_styles =
-      variant_get_value<flex_int>(num_styles_iter->second);
-  model_data.erase(num_styles_iter);
-
-  auto max_iterations_iter = model_data.find("max_iterations");
-  if (max_iterations_iter == model_data.end()) {
-    log_and_throw(
-        "The loaded turicreate model must contain 'max_iterations'!\n");
-  }
-  const size_t max_iterations =
-      variant_get_value<flex_int>(max_iterations_iter->second);
-  model_data.erase(max_iterations_iter);
-
-  auto model_type_iter = model_data.find("model");
-  if (model_type_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain 'model_iter'!\n");
-  }
-  const std::string model_type =
-      variant_get_value<flex_string>(model_type_iter->second);
-  model_data.erase(model_type_iter);
+  const flex_dict& model = read_opts<flex_dict>(model_data, "_model");
+  const flex_int num_styles = read_opts<flex_int>(model_data, "num_styles");
+  const flex_int max_iterations = read_opts<flex_int>(model_data, "max_iterations");
+  const flex_string model_type = read_opts<flex_string>(model_data, "model");
 
   add_or_update_state({{"model", model_type},
                        {"num_styles", num_styles},
