@@ -140,7 +140,6 @@ class _NumPyDataIterator(_DataIterator):
         # instance itself.
         self.batch_idx = 0
 
-
 def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
 
     if USE_TF:
@@ -151,7 +150,6 @@ def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
         print("******** Using MXNet data iterator")
         return _MXNetDataIterator(data, label=label, batch_size=batch_size,
                                   shuffle=shuffle)
-
 
 class _Accuracy(object):
     '''
@@ -230,8 +228,6 @@ class _NumPyAccuracy(_Accuracy):
 
     def get(self):
         return self.acc/self.num_batches
-
-
 
 def _get_accuracy_metric():
     if USE_TF:
@@ -429,7 +425,6 @@ def create(dataset, target, feature, max_iterations=10,
         validation_data = validation_data.dropna(columns=['deep features'])
 
         validation_batch_size = min(len(validation_data), batch_size)
-
         validation_data = _create_data_iterator(validation_data['deep features'].to_numpy(),
                                                 validation_data['labels'].to_numpy(),
                                                 batch_size=validation_batch_size)
@@ -470,6 +465,7 @@ def create(dataset, target, feature, max_iterations=10,
             custom_NN.train(data, label)
         train_data.reset()
 
+        # Calculate training metric
         for data, label in train_data:
             result = custom_NN.evaluate(data, label)
             train_metric.update(result['accuracy'])
@@ -479,10 +475,10 @@ def create(dataset, target, feature, max_iterations=10,
             result = custom_NN.evaluate(data, label)
             validation_metric.update(result['accuracy'])
 
+        # Get metrics, print progress table
         train_accuracy = train_metric.get()
         train_metric.reset()
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
-
         if validation_data:
             validation_accuracy = validation_metric.get()
             printed_row_values['validation_accuracy'] = validation_accuracy
