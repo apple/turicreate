@@ -996,7 +996,6 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
-
         for data, in _create_data_iterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
             y += self._custom_classifier.predict(data)[0].tolist()
         assert(len(y) == len(deep_features))
