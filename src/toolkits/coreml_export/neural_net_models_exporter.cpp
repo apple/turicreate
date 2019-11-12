@@ -6,7 +6,7 @@
 
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 
-#include <cctype>
+#include <locale>
 #include <sstream>
 
 #include <core/logging/assertions.hpp>
@@ -412,7 +412,7 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
    * prefix style with stylized and capitalize the following identifier, this
    * avoids name clashes with the `content_feature` for exporting to CoreML.
    */
-  style_feature[0] = toupper(style_feature[0]);
+  style_feature[0] = std::toupper(style_feature[0]);
   style_feature = "stylized" + style_feature;
 
   FeatureDescription* model_output = model_desc->add_output();
