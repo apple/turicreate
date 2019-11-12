@@ -233,7 +233,6 @@ class StyleTransferTest(unittest.TestCase):
             img = img[..., 0:3]
             return img
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_export_coreml(self):
         import coremltools
         model = self.model
