@@ -162,7 +162,6 @@ class StyleTransferTest(unittest.TestCase):
             with self.assertRaises(_ToolkitError):
                 model.stylize(self.content_sf[0:1], style=style)
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_stylize_success(self):
         sf = self.content_sf[0:1]
         model = self.model
