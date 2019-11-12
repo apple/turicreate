@@ -442,7 +442,7 @@ def create(dataset, target, feature, max_iterations=10,
 
         # Calculate validation metric
         for data, label in validation_data:
-            result = custom_NN.predict_with_accuracy(data, label)
+            result = custom_NN.evaluate(data, label)
             validation_accuracy = result['accuracy']
 
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}

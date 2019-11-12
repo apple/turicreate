@@ -97,7 +97,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
         return result
 
-    def predict_with_accuracy(self, data, label):
+    def evaluate(self, data, label):
         data_shape = data.shape[0]
         pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
                              feed_dict={
@@ -115,24 +115,6 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                                 self.x: data.reshape((data_shape, 12288))
                             })
         result = {'predictions' : pred_probs}
-        return result
-
-    def method_train(self, feed_dict):
-        _, final_train_loss, final_train_accuracy = self.sess.run([self.optimizer, self.cost, self.accuracy],
-                             feed_dict={
-                                 self.x: feed_dict['x'],
-                                 self.y: feed_dict['y']
-                             })
-        result = {'accuracy' : final_train_accuracy, 'loss' : final_train_loss}
-        return result
-
-    def method_predict(self, feed_dict):
-        pred_probs, final_accuracy = self.sess.run([self.predictions, self.accuracy],
-                             feed_dict={
-                                 self.x: feed_dict['x'],
-                                 self.y: feed_dict['y']
-                             })
-        result = {'accuracy' : final_accuracy, 'predictions' : pred_probs}
         return result
 
     def export_weights(self):
@@ -219,27 +201,5 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                             })
         return dense0, dense1, dense2
 
-    def evaluate(self, train_loader):
-        '''
-        TODO: Fix or remove this
-        '''
-        total_acc = 0.0
-        count = 0
-        for train_batch in train_loader:
-            batch_x, batch_y = process_data(train_batch, self.batch_size, self.num_classes)
-            import itertools
-            for x_data, y_data in itertools.izip(batch_x, batch_y):
-                x_data = _np.asarray(x_data).reshape((1, 1, 12288))
-                y_data = _np.asarray(y_data).reshape((1, self.num_classes))
-                acc = self.sess.run(self.accuracy,
-                            feed_dict={
-                                self.x: x_data,
-                                self.y: y_data
-                            })
-                total_acc+= acc
-                count+=1
-
-        final_accuracy = total_acc/count
-        return final_accuracy
 
 
