@@ -8,7 +8,7 @@ Create, save it in Core ML format by calling `export_coreml` API as follows:
 
 ```python
 # assume my_recommender is the trained Turi Create Recommender Model
-my_recommender.export_coreml("MyRecommender.mlmodel")
+my_recommender.export_coreml("MyCustomRecommender.mlmodel")
 ```
 
 After you drag and drop the exported Core ML model in your iOS app, it will look something like this:

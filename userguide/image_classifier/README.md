@@ -55,7 +55,7 @@ metrics = model.evaluate(test_data)
 print(metrics['accuracy'])
 
 # Save the model for later use in Turi Create
-model.save('mymodel.model')
+model.save('cats-dogs.model')
 
 # Export for use in Core ML
 model.export_coreml('MyCustomImageClassifier.mlmodel')
