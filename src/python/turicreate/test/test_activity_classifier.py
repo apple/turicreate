@@ -340,6 +340,7 @@ class ActivityClassifierTest(unittest.TestCase):
                 for key, value in input_features.items():
                     first_input_dict[key] = value[:w].copy()
                     second_input_dict[key] = value[w:2*w].copy()
+                first_input_dict["stateIn"] = np.zeros((400))
                 ret0 = coreml_model.predict(first_input_dict)
 
                 second_input_dict["stateIn"] = ret0["stateOut"]
