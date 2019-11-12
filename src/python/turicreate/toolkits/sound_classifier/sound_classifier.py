@@ -20,7 +20,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
-
 USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
 
 class _DataIterator(object):
@@ -139,7 +138,7 @@ class _NumPyDataIterator(_DataIterator):
 def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
 
     if USE_TF:
-        print("******** Using Numpy/TF data iterator")
+        print("******** Using Numpy data iterator for TF")
         return _NumPyDataIterator(data, label=label, batch_size=batch_size,
                                shuffle=shuffle)
     else:
