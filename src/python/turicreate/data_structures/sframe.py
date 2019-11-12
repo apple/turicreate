@@ -1955,7 +1955,13 @@ class SFrame(object):
         Just make it match default behavior in Python 2.
         '''
         return id(self) // 16
-
+    
+    def __add__(self,other):
+        """
+        Return sum of frames
+        """
+        self=self.append(other)
+        return self
 
     def __repr__(self):
         """

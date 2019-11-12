@@ -704,6 +704,13 @@ class SFrameTest(unittest.TestCase):
 
         sa = sf.apply(lambda x: x['int_data'] + x['float_data'], float)
         self.__assert_sarray_equal(sf['int_data'] + sf['float_data'], sa)
+    
+    def test_add(self):
+        sf1 = SFrame({'a': [1,2,3]})
+        sf2 = SFrame({'a': [6,7]})
+        sf1=sf1+sf2
+        self.assertTrue({'a': 7} in sf1)
+        self.assertTrue({'a': 6} in sf1)
 
     def test_transform_with_recursion(self):
         sf = SFrame(data={'a':[0,1,2,3,4], 'b':['0','1','2','3','4']})
