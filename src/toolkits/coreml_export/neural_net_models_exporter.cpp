@@ -6,6 +6,7 @@
 
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 
+#include <locale>
 #include <sstream>
 
 #include <core/logging/assertions.hpp>
@@ -391,21 +392,35 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
     size_t image_height, bool include_flexible_shape,
     flex_dict user_defined_metadata, std::string content_feature,
-    std::string style_feature) {
+    std::string style_feature, size_t num_styles) {
   CoreML::Specification::Model model;
   model.set_specificationversion(3);
 
   ModelDescription* model_desc = model.mutable_description();
 
   FeatureDescription* model_input = model_desc->add_input();
-  ImageFeatureType* input_feat = set_image_feature(model_input, image_width, image_height, content_feature, "Input image");
+  ImageFeatureType* input_feat = set_image_feature(model_input,
+                                                   image_width,
+                                                   image_height,
+                                                   content_feature,
+                                                   "Input image");
 
   set_array_feature(
       model_desc->add_input(), "index",
-      "Style index array (set index I to 1.0 to enable Ith style)", {1});
+      "Style index array (set index I to 1.0 to enable Ith style)", {num_styles});
+  /*
+   * prefix style with stylized and capitalize the following identifier, this
+   * avoids name clashes with the `content_feature` for exporting to CoreML.
+   */
+  style_feature[0] = std::toupper(style_feature[0]);
+  style_feature = "stylized" + style_feature;
 
   FeatureDescription* model_output = model_desc->add_output();
-  ImageFeatureType* style_feat = set_image_feature(model_output, image_width, image_height, style_feature, "Stylized image");
+  ImageFeatureType* style_feat = set_image_feature(model_output,
+                                                   image_width,
+                                                   image_height,
+                                                   style_feature,
+                                                   "Stylized image");
 
   /**
    * The -1 indicates no upper limits for the image size
