@@ -119,14 +119,6 @@ def create(dataset, target, features=None, distance=None, verbose=True):
     model. This model predicts the class of a query instance by finding the most
     common class among the query's nearest neighbors.
 
-    .. warning::
-
-        The 'dot_product' distance is deprecated and will be removed in future
-        versions of Turi Create. Please use 'transformed_dot_product'
-        distance instead, although note that this is more than a name change; it
-        is a *different* transformation of the dot product of two vectors.
-        Please see the distances module documentation for more details.
-
     Parameters
     ----------
     dataset : SFrame
@@ -162,8 +154,7 @@ def create(dataset, target, features=None, distance=None, verbose=True):
 
         - *String*: the name of a standard distance function. One of
           'euclidean', 'squared_euclidean', 'manhattan', 'levenshtein',
-          'jaccard', 'weighted_jaccard', 'cosine', 'dot_product' (deprecated),
-          or 'transformed_dot_product'.
+          'jaccard', 'weighted_jaccard', 'cosine' or 'transformed_dot_product'.
 
         - *Function*: a function handle from the
           :mod:`~turicreate.toolkits.distances` module.

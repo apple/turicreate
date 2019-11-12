@@ -1,10 +1,9 @@
 import time as _time
 
 from coremltools.models import MLModel
-import mxnet as mx
 import numpy as _np
+from tensorflow import keras as _keras
 import turicreate as _tc
-from mxnet.gluon import nn
 
 from .vggish_params import SAMPLE_RATE
 from .._internal_utils import _mac_ver
@@ -19,18 +18,6 @@ def _get_feature_extractor(model_name):
     if VGGish_instance is None:
         VGGish_instance = VGGishFeatureExtractor()
     return VGGish_instance
-
-class Flatten_channel_last(nn.HybridBlock):
-    def __init__(self, **kwargs):
-        super(Flatten_channel_last, self).__init__(**kwargs)
-
-    def hybrid_forward(self, F, x):
-        x = mx.ndarray.swapaxes(x, 1, 2)
-        x = mx.ndarray.swapaxes(x, 2, 3)
-        return x.flatten()
-
-    def __repr__(self):
-        return self.__class__.__name__
 
 
 class VGGishFeatureExtractor(object):
@@ -73,39 +60,13 @@ class VGGishFeatureExtractor(object):
             print("Preprocessed {} of {} examples\n".format(len(audio_data), len(audio_data)))
         return _np.asarray(preprocessed_data), audio_data_index
 
-    @staticmethod
-    def _build_net():
-
-        net = nn.HybridSequential()
-        net.add(nn.Conv2D(channels=64, kernel_size=(3, 3), in_channels=1, padding=(1, 1), prefix='vggish_conv0_'))
-        net.add(nn.Activation('relu'))
-        net.add(nn.MaxPool2D())
-        net.add(nn.Conv2D(channels=128, kernel_size=(3, 3), in_channels=64, padding=(1, 1), prefix='vggish_conv1_'))
-        net.add(nn.Activation('relu'))
-        net.add(nn.MaxPool2D())
-        net.add(nn.Conv2D(channels=256, kernel_size=(3, 3), in_channels=128, padding=(1, 1), prefix='vggish_conv2_'))
-        net.add(nn.Activation('relu'))
-        net.add(nn.Conv2D(channels=256, kernel_size=(3, 3), in_channels=256, padding=(1, 1), prefix='vggish_conv3_'))
-        net.add(nn.Activation('relu'))
-        net.add(nn.MaxPool2D())
-        net.add(nn.Conv2D(channels=512, kernel_size=(3, 3), in_channels=256, padding=(1, 1), prefix='vggish_conv4_'))
-        net.add(nn.Activation('relu'))
-        net.add(nn.Conv2D(channels=512, kernel_size=(3, 3), in_channels=512, padding=(1, 1), prefix='vggish_conv5_'))
-        net.add(nn.Activation('relu'))
-        net.add(nn.MaxPool2D())
-        net.add(Flatten_channel_last())
-        return net
-
     def __init__(self):
         vggish_model_file = VGGish()
 
         if _mac_ver() < (10, 14):
-            # Use MXNet
-            model_path = vggish_model_file.get_model_path(format='mxnet')
-            self.vggish_model = VGGishFeatureExtractor._build_net()
-            net_params = self.vggish_model.collect_params()
-            self.ctx = _mxnet_utils.get_mxnet_context()
-            net_params.load(model_path, ctx=self.ctx)
+            # Use TensorFlow/Keras
+            model_path = vggish_model_file.get_model_path(format='tensorflow')
+            self.vggish_model = _keras.models.load_model(model_path)
         else:
             # Use Core ML
             model_path = vggish_model_file.get_model_path(format='coreml')
@@ -125,31 +86,26 @@ class VGGishFeatureExtractor(object):
         progress_header_printed = False
 
         deep_features = _tc.SArrayBuilder(_np.ndarray)
-        from mxnet.gluon import utils
 
         if _mac_ver() < (10, 14):
-            # Use MXNet
-            preprocessed_data = mx.nd.array(preprocessed_data)
+            # Use TensorFlow/Keras
 
-            ctx_list = self.ctx
-            if len(preprocessed_data) < len(ctx_list):
-                ctx_list = ctx_list[:len(preprocessed_data)]
-            batches = utils.split_and_load(preprocessed_data, ctx_list=ctx_list, even_split=False)
+            # Transpose data from channel first to channel last
+            preprocessed_data = _np.transpose(preprocessed_data, (0, 2, 3, 1))
 
-            for i, cur_batch in enumerate(batches):
-                y = self.vggish_model.forward(cur_batch).asnumpy()
-                for j in y:
-                    deep_features.append(j)
+            for i, cur_example in enumerate(preprocessed_data):
+                y = self.vggish_model.predict([[cur_example]])
+                deep_features.append(y[0])
 
                 # If `verbose` is set, print an progress update about every 20s
                 if verbose and _time.time() - last_progress_update >= 20:
                     if not progress_header_printed:
                         print("Extracting deep features -")
                         progress_header_printed = True
-                    print("Extracted {} of {} batches".format(i, len(batches)))
+                    print("Extracted {} of {}".format(i, len(preprocessed_data)))
                     last_progress_update = _time.time()
             if progress_header_printed:
-                print("Extracted {} of {} batches\n".format(len(batches), len(batches)))
+                print("Extracted {} of {}\n".format(len(preprocessed_data), len(preprocessed_data)))
 
         else:
             # Use Core ML

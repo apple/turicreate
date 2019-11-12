@@ -1351,19 +1351,6 @@ class SArray(object):
         with cython_context():
             self.__proxy__.materialize()
 
-    def __materialize__(self):
-        """
-        For a SArray that is lazily evaluated, force persist this sarray
-        to disk, committing all lazy evaluated operations.
-
-        ..WARNING:: This function is deprecated, It will be removed in the next
-        major release. Use SArray.materialize instead.
-        """
-        warnings.warn("SArray.__materialize__ is deprecated. It will be removed in the next major release."
-                      + " Use SArray.materialize instead.")
-
-        self.materialize()
-
     def is_materialized(self):
         """
         Returns whether or not the sarray has been materialized.
@@ -1555,101 +1542,6 @@ class SArray(object):
             raise TypeError("SArray must contain strings, arrays or lists")
         with cython_context():
             return SArray(_proxy=self.__proxy__.subslice(start, step, stop))
-
-    def _count_words(self, to_lower=True, delimiters=["\r", "\v", "\n", "\f", "\t", " "]):
-        """
-        This returns an SArray with, for each input string, a dict from the unique,
-        delimited substrings to their number of occurrences within the original
-        string.
-
-        The SArray must be of type string.
-
-        ..WARNING:: This function is deprecated, and will be removed in future
-        versions of Turi Create. Please use the `text_analytics.count_words`
-        function instead.
-
-        Parameters
-        ----------
-        to_lower : bool, optional
-            "to_lower" indicates whether to map the input strings to lower case
-            before counts
-
-        delimiters: list[string], optional
-            "delimiters" is a list of which characters to delimit on to find tokens
-
-        Returns
-        -------
-        out : SArray
-            for each input string, a dict from the unique, delimited substrings
-            to their number of occurrences within the original string.
-
-        Examples
-        --------
-        >>> sa = turicreate.SArray(["The quick brown fox jumps.",
-                                 "Word word WORD, word!!!word"])
-        >>> sa._count_words()
-        dtype: dict
-        Rows: 2
-        [{'quick': 1, 'brown': 1, 'jumps': 1, 'fox': 1, 'the': 1},
-         {'word': 2, 'word,': 1, 'word!!!word': 1}]
-            """
-        warnings.warn("SArray._count_words is deprecated. It will removed in the next major release."
-                      + " Use text_analytics.count_words.")
-
-        if (self.dtype != str):
-            raise TypeError("Only SArray of string type is supported for counting bag of words")
-
-        if (not all([len(delim) == 1 for delim in delimiters])):
-            raise ValueError("Delimiters must be single-character strings")
-
-
-        # construct options, will extend over time
-        options = dict()
-        options["to_lower"] = to_lower == True
-        # defaults to std::isspace whitespace delimiters if no others passed in
-        options["delimiters"] = delimiters
-
-        with cython_context():
-            return SArray(_proxy=self.__proxy__.count_bag_of_words(options))
-
-    def _count_ngrams(self, n=2, method="word", to_lower=True, ignore_space=True):
-        """
-        For documentation, see turicreate.text_analytics.count_ngrams().
-
-        ..WARNING:: This function is deprecated, and will be removed in future
-        versions of Turi Create. Please use the `text_analytics.count_words`
-        function instead.
-        """
-        warnings.warn("SArray._count_ngrams is deprecated. It will removed in the next major release."
-                     + " Use text_analytics.count_words.")
-
-        if (self.dtype != str):
-            raise TypeError("Only SArray of string type is supported for counting n-grams")
-
-        if (type(n) != int):
-            raise TypeError("Input 'n' must be of type int")
-
-        if (n < 1):
-            raise ValueError("Input 'n' must be greater than 0")
-
-        if (n > 5):
-            warnings.warn("It is unusual for n-grams to be of size larger than 5.")
-
-
-        # construct options, will extend over time
-        options = dict()
-        options["to_lower"] = to_lower == True
-        options["ignore_space"] = ignore_space == True
-
-
-        if method == "word":
-            with cython_context():
-                return SArray(_proxy=self.__proxy__.count_ngrams(n, options))
-        elif method == "character" :
-            with cython_context():
-                return SArray(_proxy=self.__proxy__.count_character_ngrams(n, options))
-        else:
-            raise ValueError("Invalid 'method' input  value. Please input either 'word' or 'character' ")
 
     def dict_trim_by_keys(self, keys, exclude=True):
         """
@@ -1876,10 +1768,8 @@ class SArray(object):
         with cython_context():
             return SArray(_proxy=self.__proxy__.dict_has_all_keys(keys))
 
-    def apply(self, fn, dtype=None, skip_na=True, seed=None):
+    def apply(self, fn, dtype=None, skip_na=True):
         """
-        apply(fn, dtype=None, skip_na=True, seed=None)
-
         Transform each element of the SArray by a given function. The result
         SArray is of type ``dtype``. ``fn`` should be a function that returns
         exactly one value which can be cast into the type specified by
@@ -1901,12 +1791,6 @@ class SArray(object):
 
         skip_na : bool, optional
             If True, will not apply ``fn`` to any undefined values.
-
-        seed : int, optional
-            ..WARNING:: This parameter is deprecated, It will be removed in the next
-            major release.
-
-            Used as the seed if a random number generator is included in ``fn``.
 
         Returns
         -------
@@ -1957,11 +1841,7 @@ class SArray(object):
         dryrun = [fn(i) for i in self.head(100) if i is not None]
         if dtype is None:
             dtype = infer_type_of_list(dryrun)
-        if seed is None:
-            seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
-        else:
-            warnings.warn("Passing a \"seed\" parameter to SArray.apply is deprecated. This functionality"
-                          + " will be removed in the next major release.")
+        seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
 
         # First phase test if it is a toolkit function
         nativefn = None

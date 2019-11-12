@@ -35,6 +35,11 @@ shared_float_array convert_to_shared_float_array(
 
 std::vector<image_annotation> convert_to_image_annotation(
     shared_float_array augmented_annotation) {
+  // Check if the annotation is empty (a default value).
+  if (augmented_annotation.dim() == 0) {
+    return {};
+  }
+
   const size_t* shape = augmented_annotation.shape();
   size_t num_annotations_per_image = shape[0];
   std::vector<image_annotation> augmented_ann(num_annotations_per_image);
@@ -157,6 +162,8 @@ image_augmenter::result resize_only_image_augmenter::prepare_images(
 image_augmenter::result float_array_image_augmenter::prepare_images(
     std::vector<labeled_image> source_batch) {
   const size_t n = opts_.batch_size;
+  const size_t h = opts_.output_height;
+  const size_t w = opts_.output_width;
   constexpr size_t c = 3;
   labeled_float_image input_to_tf_aug;
   result res;
@@ -171,8 +178,7 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
   // Decode a batch of images to raw format (shared_float_arrays)
   // Also convert annotations and predictions per batch of images
   // to vectors of shared_float_arrays.
-  for (size_t i = 0; i < n; i++) {
-    const labeled_image& source = source_batch[i];
+  for (const labeled_image& source : source_batch) {
     size_t input_height = source.image.m_height;
     size_t input_width = source.image.m_width;
     std::vector<float> img(input_height * input_width * c, 0.f);
@@ -198,8 +204,15 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
   float_array_result augmented_data = prepare_augmented_images(input_to_tf_aug);
 
   // Convert augmented_data to the data structure needed
-  res.image_batch = augmented_data.images;
-  for (size_t a = 0; a < n; a++) {
+  std::vector<float> result_array(n * h * w * c);
+  size_t image_size = augmented_data.images.size();
+  const float* start_address = augmented_data.images.data();
+  const float* end_address = start_address + image_size;
+  std::copy(start_address, end_address, result_array.begin());
+  res.image_batch =
+      shared_float_array::wrap(std::move(result_array), {n, h, w, c});
+
+  for (size_t a = 0; a < source_batch.size(); a++) {
     res.annotations_batch[a] =
         convert_to_image_annotation(augmented_data.annotations[a]);
   }
