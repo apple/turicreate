@@ -216,21 +216,35 @@ float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
 
   float_array_map map;
 
-  shared_float_array content_wrap = shared_float_array::wrap(
+  map["input"] = shared_float_array::wrap(
       std::move(content_array), {batch_size, height, width, channels});
-  map.emplace("input", content_wrap);
+  map["index"] = shared_float_array::wrap(std::move(index_array), {batch_size});
 
-  shared_float_array index_wrap =
-      shared_float_array::wrap(std::move(index_array), {batch_size});
-  map.emplace("index", index_wrap);
+  map["width"] = shared_float_array::wrap(width);
+  map["height"] = shared_float_array::wrap(height);
 
   if (train) {
-    shared_float_array style_wrap = shared_float_array::wrap(
+    map["labels"] = shared_float_array::wrap(
         std::move(style_array), {batch_size, height, width, channels});
-    map.emplace("labels", style_wrap);
   }
 
   return map;
+}
+
+// Preparing Batch for prediction. Since the tensorflow implementation of style
+// transfer doesn't have multiple batches supported in predict this function
+// takes exactly one st_example as an argument.
+float_array_map prepare_predict(const st_example& example) {
+  ASSERT_EQ(3, example.content_image.m_channels);
+  
+  size_t image_width = example.content_image.m_width;
+  size_t image_height = example.content_image.m_height;
+  std::vector<st_example> batch = { example };
+
+  return prepare_batch(batch,
+                       image_width,
+                       image_height,
+                       /* train */ false);
 }
 
 flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
@@ -463,9 +477,13 @@ gl_sframe style_transfer::predict(variant_type data,
         break;
       case flex_type_enum::VECTOR:
         style_idx = std::move(flex_style_idx.get<flex_vec>());
+        if (style_idx.empty())
+          log_and_throw("The `style` parameter can't be an empty list");
         break;
       case flex_type_enum::LIST: {
         const auto& list = flex_style_idx.get<flex_list>();
+        if (list.empty())
+          log_and_throw("The `style` parameter can't be an empty list");
         style_idx.resize(list.size());
         std::transform(list.begin(), list.end(), style_idx.begin(),
                        [](flexible_type val) {
@@ -496,8 +514,6 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
   flex_int batch_size = read_state<flex_int>("batch_size");
   flex_int num_styles = read_state<flex_int>("num_styles");
-  flex_int image_width = read_state<flex_int>("image_width");
-  flex_int image_height = read_state<flex_int>("image_height");
 
   // Since we aren't training the style_images are irrelevant
   std::unique_ptr<data_iterator> data_iter =
@@ -521,6 +537,9 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
   // looping through all of the style indices
   for (size_t i : style_idx) {
+    // check whether the style indices are valid
+    check_style_index(i, num_styles);
+
     std::vector<st_example> batch = data_iter->next_batch(batch_size);
     while (!batch.empty()) {
       // getting actual batch size
@@ -529,10 +548,14 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       // setting the style index for each batch
       std::for_each(batch.begin(), batch.end(),
                     [i](st_example& example) { example.style_index = i; });
+      
+      // predict only works with a batch size of one now. This is because images
+      // have varied width and height and since the style transfer network
+      // is size invariant, resizing the inputs isn't an option.
+      ASSERT_EQ(batch.size(), 1);
 
       // prepare batch for prediction
-      float_array_map prepared_batch =
-          prepare_batch(batch, image_width, image_height, /* train */ false);
+      float_array_map prepared_batch = prepare_predict(batch.front());
 
       // perform prediction
       float_array_map result_batch = model->predict(prepared_batch);
@@ -543,7 +566,8 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       // populate gl_sframe_writer
       std::vector<std::pair<flex_int, flex_image>> processed_batch =
           process_output(out_shared_float_array, i, actual_batch_size,
-                         image_width, image_height);
+                         batch.front().content_image.m_width,
+                         batch.front().content_image.m_height);
 
       // Write result to gl_sframe_writer
       for (const auto& row : processed_batch) {

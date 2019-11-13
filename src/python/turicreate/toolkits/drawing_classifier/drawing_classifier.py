@@ -167,8 +167,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     if USE_CPP:
         import turicreate.toolkits.libtctensorflow
-        if verbose:
-            print("Using C++")
         model = _tc.extensions.drawing_classifier()
         options = dict()
         options["batch_size"] = batch_size
@@ -1070,7 +1068,7 @@ class DrawingClassifier_beta(_Model):
             [3, 4, 3, 3, 4, 5, 8, 8, 8, 4]
         """
         if isinstance(dataset, _tc.SArray):
-            dataset = _tc.SFrame({'drawing': dataset})
+            dataset = _tc.SFrame({self.feature: dataset})
         return self.__proxy__.predict(dataset, output_type)
 
     def predict_topk(self, dataset, k=3, output_type='class'):
@@ -1133,6 +1131,8 @@ class DrawingClassifier_beta(_Model):
         +----+-------+-------------------+
         [35688 rows x 3 columns]
         """
+        if isinstance(dataset, _tc.SArray):
+            dataset = _tc.SFrame({self.feature: dataset})
         return self.__proxy__.predict_topk(dataset, output_type, k)
 
     def evaluate(self, dataset, metric='auto'):
