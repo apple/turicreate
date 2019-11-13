@@ -168,7 +168,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
           /* kernel_width         */ 2,
           /* stride_height        */ 2,
           /* stride_width         */ 2,
-          /* padding              */ pad_type,
+          /* padding              */ padding_type::VALID,
           /* avg excluded padding */ false);
     }
   }
