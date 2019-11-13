@@ -215,19 +215,20 @@ class _TFAccuracy(_Accuracy):
 class _NumPyAccuracy(_Accuracy):
 
     def __init__(self):
-        self.acc = 0.0
-        self.num_batches = 0.0
+        self.cumulative_acc = 0.0
+        self.num_examples = 0.0
 
-    def update(self, accuracy):
-        self.acc += accuracy
-        self.num_batches += 1.0
+    def update(self, ground_truth, predicted):
+        self.num_examples += len(predicted)
+        predicted = _np.argmax(predicted, axis=-1)
+        self.cumulative_acc += sum([1 for x,y in zip(ground_truth, predicted) if x==y])
 
     def reset(self):
-        self.acc = 0.0
-        self.num_batches = 0.0
+        self.cumulative_acc = 0.0
+        self.num_examples = 0.0
 
     def get(self):
-        return self.acc/self.num_batches
+        return self.cumulative_acc/self.num_examples
 
 def _get_accuracy_metric():
     if USE_TF:
@@ -467,13 +468,13 @@ def create(dataset, target, feature, max_iterations=10,
 
         # Calculate training metric
         for data, label in train_data:
-            result = custom_NN.evaluate(data, label)
-            train_metric.update(result['accuracy'])
+            outputs = custom_NN.predict(data)
+            train_metric.update(label, outputs)
         train_data.reset()
 
         for data, label in validation_data:
-            result = custom_NN.evaluate(data, label)
-            validation_metric.update(result['accuracy'])
+            outputs = custom_NN.predict(data)
+            validation_metric.update(label, outputs)
 
         # Get metrics, print progress table
         train_accuracy = train_metric.get()
