@@ -997,7 +997,7 @@ class SoundClassifier(_CustomModel):
 
         y = []
         for data, in _create_data_iterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
-            y += self._custom_classifier.predict(data)[0].tolist()
+            y += self._custom_classifier.predict(data).tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames

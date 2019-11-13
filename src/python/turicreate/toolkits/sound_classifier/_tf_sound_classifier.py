@@ -110,7 +110,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
     def predict(self, data):
         data_shape = data.shape[0]
-        pred_probs = self.sess.run([self.predictions],
+        pred_probs = self.sess.run(self.predictions,
                             feed_dict={
                                 self.x: data.reshape((data_shape, 12288))
                             })
