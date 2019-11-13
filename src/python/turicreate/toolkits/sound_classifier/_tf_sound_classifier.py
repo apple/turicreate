@@ -32,7 +32,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
-        initializer = _tf.keras.initializers.glorot_uniform() #xavier initialization
+        #xavier initialization
+        initializer = _tf.keras.initializers.glorot_uniform()
 
         weights = {}
         biases = {}
@@ -117,15 +118,17 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
     def export_weights(self):
         """
-        Retrieve weights from the TF model, convert to the format MXNET
-        expects and store in a dictionary.
+        Retrieve weights from the TF model, converts to the CoreML format
+        and stores in a list of dictionaries.
 
         Returns
         -------
-        net_params : dict
-            Dictionary of weights, where the key is the name of the
-            layer (e.g. `sound_conv0_weight`) and the value is the
-            respective weight of type `numpy.ndarray` in MXNET format.
+        layers : list
+            List of dictionaries of weights and activations, where
+            the key, for each element of the list, is `weight`, `bias`
+            and `act` and the value is the respective weight of type
+            `numpy.ndarray` converted to the CoreML format and the
+            respective activation applied to the layer.
         """
         layer_names = _tf.trainable_variables()
         layer_weights = self.sess.run(layer_names)
@@ -138,8 +141,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             weight_name = 'sound_{}_weight:0'.format(name)
             bias_name = 'sound_{}_weight:0'.format(name)
             layer={}
-            layer['weight'] = layer_dict[weight_name]#.transpose(1, 0)#.asnumpy() #### wait we don't need this!
-            layer['bias'] = layer_dict[bias_name]#.asnumpy()
+            layer['weight'] = layer_dict[weight_name].transpose(1, 0)
+            layer['bias'] = layer_dict[bias_name]
             if i==(len(self.names_of_layers)-1):
                 layer['act']=None
             else:
@@ -149,11 +152,13 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
     def get_weights(self):
         """
-        Parameters
-        ----------
-        weights : dict
+        Returns
+        -------
+                : dict
                 Containing model weights and shapes
                 {'data': weight data dict, 'shapes': weight shapes dict}
+                Model is saved in CoreML format, hence dense weights and
+                shapes are transposed.
 
         """
         layer_names = _tf.trainable_variables()
@@ -162,18 +167,19 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         shapes = {}
         for var, val in zip(layer_names, layer_weights):
             layer_name = var.name[:-2]
-            data[layer_name] = val
-            shapes[layer_name] = val.shape
+            if 'bias' in layer_name:
+                data[layer_name] = val
+            else:
+                data[layer_name] = val.transpose(1, 0)
+            shapes[layer_name] = val.shape[::-1]
 
         return {'data': data, 'shapes': shapes}
 
     def load_weights(self, net_params):
         """
-        Parameters
-        ----------
-        net_params : dict
-                Containing model weights and shapes
-                {'data': weight data dict, 'shapes': weight shapes dict}
+        TensorFlow model is assigned weights from `net_params` dictionary.
+        `net_params` contains weights in CoreML format. The dense layers
+        need to be transposed to match TF format.
 
         """
         layers = net_params['data'].keys()
@@ -186,18 +192,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             else:
                 curr_shape = [int(x) for x in net_params['shapes'][layer_name]]
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
-                                        net_params['data'][layer_name].reshape(curr_shape)))#.transpose(1, 0)))
+                                        net_params['data'][layer_name].reshape(curr_shape).transpose(1,0)))
 
-
-    def get_layer_activations(self, data, label):
-        #TODO: remove this 
-        data_shape = data.shape[0]
-        dense0, dense1, dense2 = self.sess.run([self.dense0, self.dense1, self.out],
-                            feed_dict={
-                                self.x: data.reshape((data_shape, 12288)),
-                                self.y: _tf.keras.utils.to_categorical(label, self.num_classes).reshape((data_shape, self.num_classes))
-                            })
-        return dense0, dense1, dense2
 
 
 
