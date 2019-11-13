@@ -19,6 +19,7 @@ import unittest
 import coremltools
 from coremltools.proto import FeatureTypes_pb2
 import numpy as np
+import pytest
 from scipy.io import wavfile
 
 import turicreate as tc
@@ -152,7 +153,6 @@ def _generate_binary_test_data():
 binary_test_data = _generate_binary_test_data()
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @classmethod
@@ -223,7 +223,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         for a, b in zip(old_model_probs, new_model_probs):
             np.testing.assert_array_almost_equal(a, b, decimal=6)
 
-    @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
+    @pytest.mark.xfail()
     def test_export_coreml_with_prediction(self):
         import resampy
 
@@ -253,7 +253,6 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue('sampleRate' in metadata.userDefined)
         self.assertEqual(metadata.userDefined['sampleRate'], '16000')
 
-    @unittest.skipIf(_mac_ver() >= (10,14), 'Already testing export to Core ML with predictions')
     def test_export_core_ml_no_prediction(self):
         with TempDirectory() as temp_dir:
             file_name = temp_dir + '/model.mlmodel'
@@ -303,7 +302,6 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue(self.model.validation_accuracy is None)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -317,7 +315,6 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         assert(self.model.custom_layer_sizes == layer_sizes)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -342,7 +339,6 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.assertTrue(self.model.validation_accuracy is not None)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ClassifierTestWithShortClip(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -393,8 +389,6 @@ class ClassifierTestWithShortClip(unittest.TestCase):
             self.assertNotEqual(r['probability'], None)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
-@unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
     frame_length = int(.975 * sample_rate)
@@ -434,7 +428,6 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
         self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ReuseDeepFeatures(unittest.TestCase):
     def test_simple_case(self):
         data = copy(binary_test_data)
