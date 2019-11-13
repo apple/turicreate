@@ -866,26 +866,6 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
-    std::ofstream out_file(
-        "/Users/guihaoliang/my.debug",
-        std::ios_base::out | std::ios_base::trunc | std::ios_base::binary);
-    auto result = nn_spec_->export_params_view();
-    for (auto& entry : result) {
-      out_file << entry.first << std::endl;
-      out_file << "dim" << std::endl;
-      auto array = entry.second;
-      auto ds = array.dim();
-      for (size_t i = 0; i < ds; ++i) {
-        out_file << array.shape()[i] << std::endl;
-      }
-      out_file << "weights" << std::endl;
-      auto size = array.size();
-      for (size_t i = 0; i < size; ++i) {
-        out_file << array.data()[i] << std::endl;
-      }
-
-      out_file << std::endl;
-    }
   }
 
   return model_wrapper;
