@@ -40,14 +40,14 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
   // states
   constexpr unsigned int num_classes = 10;
   const std::string target = "target";
-  const std::vector<std::string> features = {"0", "1"};
+  const std::vector<std::string> features = {"0"};
 
   // init_model
   drawing_classifier_mock dc;
   dc.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   auto nn_spec = dc.get_model_spec();
 
@@ -146,7 +146,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
 BOOST_AUTO_TEST_CASE(test_export_coreml) {
   // minimum startup code
   const std::string target = "target";
-  const std::vector<std::string> features = {"0", "1"};
+  const std::vector<std::string> features = {"0"};
   const std::vector<std::string> labels = {"0", "1"};
 
   turi::drawing_classifier::drawing_classifier dc;
@@ -156,7 +156,7 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
        {"classes", flex_list(labels.begin(), labels.end())},
        {"max_iterations", 300},
        {"warm_start", false},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   auto ml_model_wrapper = dc.export_to_coreml("", /* debug no throw */ true);
   TS_ASSERT(ml_model_wrapper != nullptr);
@@ -263,7 +263,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   // states
   constexpr unsigned int num_classes = 10;
   const std::string target = "target";
-  const std::vector<std::string> features = {"0", "1"};
+  const std::vector<std::string> features = {"0"};
 
   // random init; avoid segfault
 
@@ -272,7 +272,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
       {{"target", target},
        {"num_classes", num_classes},
        {"random_seed", 1},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   // model spec should be different since all weights are random
   // generated
@@ -308,14 +308,14 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   dc.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   // load from a different instance
   drawing_classifier_mock dc_other(std::move(spec2));
   dc_other.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   load_save_compare(dc, dc_other);
 }
