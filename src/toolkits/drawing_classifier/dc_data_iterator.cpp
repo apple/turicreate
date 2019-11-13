@@ -13,6 +13,7 @@
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/data/image/io.hpp>
 #include <core/logging/logger.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 #include <model_server/lib/image_util.hpp>
 
 namespace turi {
@@ -41,7 +42,7 @@ void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
 simple_data_iterator::target_properties
 simple_data_iterator::compute_properties(
     const gl_sframe& data, const std::string& target_column_name,
-    const std::vector<std::string>& expected_class_labels) {
+    const flex_list& expected_class_labels) {
 
   target_properties result;
 
@@ -59,21 +60,22 @@ simple_data_iterator::compute_properties(
     int i = 0;
     for (const flexible_type& label : classes.range_iterator()) {
       result.classes.push_back(label);
-      result.class_to_index_map[label] = i++;
+      result.class_to_index_map.push_back(std::make_pair(label, i++));
     }
   } else {
     // Construct the class-to-index map from the expected labels.
     result.classes = std::move(expected_class_labels);
     int i = 0;
-    for (const std::string& label : result.classes) {
-      result.class_to_index_map[label] = i++;
+    for (const flexible_type& label : result.classes) {
+      result.class_to_index_map.push_back(std::make_pair(label, i++));
     }
 
-    // Use the map to verify that we only encountered expected labels.
+    const flex_dict_view class_to_index_map(result.class_to_index_map);
+
+    // TODO: Use the map to verify that we only encountered expected labels.
     for (const flexible_type& ft : classes.range_iterator()) {
-      std::string label(ft);  // Ensures correct overload resolution below.
-      if (result.class_to_index_map.count(label) == 0) {
-        log_and_throw("Targets contained unexpected class label " + label);
+      if (!class_to_index_map.has_key(ft)) {
+        log_and_throw("Targets contained unexpected class label!");
       }
     }
   }
@@ -135,6 +137,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
+  const flex_dict_view class_to_index_map(target_properties_.class_to_index_map);
 
   while (real_batch_size < batch_size && next_row_ != end_of_rows_) {
 
@@ -143,8 +146,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
     if (predictions_index_ >= 0 && target_index_ >= 0) {
       float preds = -1;
-      preds = static_cast<float>(target_properties_.class_to_index_map.at(
-          row[predictions_index_].to<flex_string>()));
+      preds = static_cast<float>(class_to_index_map[row[predictions_index_]]);
       batch_predictions.emplace_back(preds);
     }
 
@@ -154,8 +156,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
     if (target_index_ >= 0) {
       batch_targets.emplace_back(
-          static_cast<float>(target_properties_.class_to_index_map.at(
-              row[target_index_].to<flex_string>())));
+          static_cast<float>(class_to_index_map[row[target_index_]]));
     }
 
     if (++next_row_ == end_of_rows_ && repeat_) {

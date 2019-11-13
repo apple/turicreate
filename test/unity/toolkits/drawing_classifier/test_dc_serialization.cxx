@@ -147,13 +147,13 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
   // minimum startup code
   const std::string target = "target";
   const std::vector<std::string> features = {"0"};
-  const std::vector<std::string> labels = {"0", "1"};
+  const flex_list labels = {"0", "1"};
 
   turi::drawing_classifier::drawing_classifier dc;
   dc.add_or_update_state(
       {{"target", target},
        {"num_classes", labels.size()},
-       {"classes", flex_list(labels.begin(), labels.end())},
+       {"classes", labels},
        {"max_iterations", 300},
        {"warm_start", false},
        {"feature", features[0]}});
