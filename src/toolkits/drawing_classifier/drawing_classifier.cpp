@@ -105,16 +105,15 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   weight_initializer initializer = zero_weight_initializer();
 
   // feature columns names
-  const flex_list &features_list = read_state<flex_list>("features");
-  DASSERT_TRUE(features_list.size() == 1);
+  const flex_string& feature_column_name = read_state<flex_string>("feature");
 
   const std::string prefix{"drawing"};
   // add suffix when needed.
   const std::string _suffix{""};
-  std::string input_name{features_list.front().to<flex_string>()};
+  std::string input_name{feature_column_name};
   std::string output_name;
 
-  result->add_preprocessing(features_list[0].to<flex_string>(), 1 / 255.f);
+  result->add_preprocessing(feature_column_name, 1 / 255.f);
 
   {
     size_t channels_filter = 16;
@@ -860,13 +859,9 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
           *nn_spec_, features_list,
           read_state<flex_list>("classes"), read_state<flex_string>("target"));
 
-  const flex_string features_string =
-      join(std::vector<std::string>(features_list.begin(), features_list.end()),
-           ",");
-
   flex_dict user_defined_metadata = {
       {"target", read_state<flex_string>("target")},
-      {"features", features_string},
+      {"feature", feature_column_name},
       {"max_iterations", read_state<flex_int>("max_iterations")},
       // TODO: Uncomment as part of #2524
       // {"warm_start", read_state<flex_int>("warm_start")},
