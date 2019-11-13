@@ -120,7 +120,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
   {
       const auto& relu_layer = nn.layers(layer_index);
       TS_ASSERT_EQUALS(relu_layer.name(),
-                       "drawing_dense0_relu0" + _suffix);
+                       "drawing_dense0_relu" + _suffix);
       TS_ASSERT(relu_layer.has_activation());
       TS_ASSERT(relu_layer.activation().has_relu());
   }

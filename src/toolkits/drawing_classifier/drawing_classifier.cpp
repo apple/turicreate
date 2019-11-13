@@ -195,7 +195,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* bias_init_fn        */ zero_weight_initializer());
 
   input_name = std::move(output_name);
-  output_name = prefix + "_dense0_relu0" + _suffix;
+  output_name = prefix + "_dense0_relu" + _suffix;
 
   result->add_relu(output_name, input_name);
 
