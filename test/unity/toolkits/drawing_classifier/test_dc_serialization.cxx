@@ -40,7 +40,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
   // states
   constexpr unsigned int num_classes = 10;
   const std::string target = "target";
-  // dc enforces feature to be 1
+  // drawing_classifier enforces feature to be 1
   const std::vector<std::string> features = {"0"};
 
   // init_model
@@ -147,7 +147,8 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
   // minimum startup code
   const std::string target = "target";
   const std::vector<std::string> features = {"0"};
-  // dc enforces the input feature to be 1, in case someday we want more
+  // drawing_classifier enforces the input feature to be 1,
+  // in case someday we want more
   TS_ASSERT_EQUALS(features.size(), 1);
   const std::vector<std::string> labels = {"0", "1"};
 
@@ -267,10 +268,9 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   constexpr unsigned int num_classes = 10;
   const std::string target = "target";
   const std::vector<std::string> features = {"0"};
-  // dc enforces the input feature to be 1, in case someday we want more
+  // drawing_classifier enforces the input feature to be 1, in case someday we
+  // want more
   TS_ASSERT_EQUALS(features.size(), 1);
-
-  // random init; avoid segfault
 
   drawing_classifier_mock dummy;
   dummy.add_or_update_state(
