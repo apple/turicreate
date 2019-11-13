@@ -72,7 +72,6 @@ simple_data_iterator::compute_properties(
 
     const flex_dict_view class_to_index_map(result.class_to_index_map);
 
-    // TODO: Use the map to verify that we only encountered expected labels.
     for (const flexible_type& ft : classes.range_iterator()) {
       if (!class_to_index_map.has_key(ft)) {
         log_and_throw("Targets contained unexpected class label!");
