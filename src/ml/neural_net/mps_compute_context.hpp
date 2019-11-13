@@ -28,13 +28,6 @@ public:
    */
   mps_compute_context(std::unique_ptr<mps_command_queue> command_queue);
 
-  /**
-   * Constructs a context wrapping the best currently available Metal device.
-   *
-   * \todo Guard against eGPU coming and going?
-   */
-  mps_compute_context();
-
   ~mps_compute_context();
 
   std::vector<std::string> gpu_names() const override;

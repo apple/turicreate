@@ -63,8 +63,8 @@ Go to [Data Preparation](data-preparation.md) to find out how to get
 import turicreate as tc
 
 # Try any one of the following
-SFRAME_PATH = "sframes/bitmap_square_triangle.sframe"
-SFRAME_PATH = "sframes/stroke_square_triangle.sframe"
+SFRAME_PATH = "quickdraw/sframes/bitmap_square_triangle.sframe"
+SFRAME_PATH = "quickdraw/sframes/stroke_square_triangle.sframe"
 
 # Load the data
 data =  tc.SFrame(SFRAME_PATH)

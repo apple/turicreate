@@ -49,7 +49,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
       {{"target", target},
        {"num_classes", num_classes},
        {"random_seed", 11},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   auto nn_spec = dc.get_model_spec();
 
@@ -159,7 +159,7 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
        {"max_iterations", 300},
        {"random_seed", 11},
        {"warm_start", false},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   auto ml_model_wrapper = dc.export_to_coreml("", /* debug no throw */ true);
   TS_ASSERT(ml_model_wrapper != nullptr);
@@ -277,7 +277,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
       {{"target", target},
        {"num_classes", num_classes},
        {"random_seed", 1},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   // model spec should be different since all weights are random
   // generated
@@ -314,7 +314,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
       {{"target", target},
        {"num_classes", num_classes},
        {"random_seed", 11},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   // load from a different instance
   drawing_classifier_mock dc_other(std::move(spec2));
@@ -322,7 +322,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
       {{"target", target},
        {"num_classes", num_classes},
        {"random_seed", 11},
-       {"features", flex_list(features.begin(), features.end())}});
+       {"feature", features[0]}});
 
   load_save_compare(dc, dc_other);
 }

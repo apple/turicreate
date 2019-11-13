@@ -2468,6 +2468,10 @@ class SArray(object):
 
         if (dtype == _Image) and (self.dtype == array.array):
             raise TypeError("Cannot cast from image type to array with sarray.astype(). Please use sarray.pixel_array_to_image() instead.")
+        
+        if float('nan') in self:
+            import turicreate as _tc
+            self=_tc.SArray.where(self == float("nan"),None,self)
 
         with cython_context():
             return SArray(_proxy=self.__proxy__.astype(dtype, undefined_on_failure))
