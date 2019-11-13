@@ -134,10 +134,6 @@ class _NumPyDataIterator(_DataIterator):
         return self.__next__()
 
     def reset(self):
-        # Each call to __iter__ returns a fresh iterator object that will do one
-        # pass through the data. The mxnet.io.NDArrayIter interface only needs
-        # this method because their __iter__ function returns the NDArrayIter
-        # instance itself.
         self.batch_idx = 0
 
 def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
@@ -230,7 +226,7 @@ class _NumPyAccuracy(_Accuracy):
 
 def _get_accuracy_metric():
     if USE_TF:
-        return _NumPyAccuracy() #_TFAccuracy()
+        return _NumPyAccuracy()
     else:
         return _MXNetAccuracy()
 
