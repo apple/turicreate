@@ -13,6 +13,7 @@ from turicreate.toolkits.object_detector.object_detector import ObjectDetector a
 from turicreate.toolkits.one_shot_object_detector.util._augmentation import preview_synthetic_training_data as _preview_synthetic_training_data
 import turicreate.toolkits._internal_utils as _tkutl
 
+USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
 def create(data,
            target,
@@ -80,7 +81,7 @@ def create(data,
         }
     return OneShotObjectDetector(state)
 
-class OneShotObjectDetector(_CustomModel): 
+class OneShotObjectDetector(_CustomModel):
     """
     An trained model that is ready to use for classification, exported to
     Core ML, or for feature extraction.
@@ -228,6 +229,7 @@ class OneShotObjectDetector(_CustomModel):
 
         # We don't know how to serialize a Python class, hence we need to
         # reduce the detector to the proxy object before saving it.
+
         state['detector'] = state['detector']._get_native_state()
         return state
 
@@ -256,6 +258,9 @@ class OneShotObjectDetector(_CustomModel):
         Print a string description of the model when the model name is entered
         in the terminal.
         """
+        if USE_CPP:
+            return self.__class__.__name__
+
         width = 40
         sections, section_titles = self._get_summary_struct()
         detector = self.__proxy__['detector']
