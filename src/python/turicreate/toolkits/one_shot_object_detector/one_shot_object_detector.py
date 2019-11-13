@@ -210,7 +210,12 @@ class OneShotObjectDetector(_CustomModel):
         >>> model.export_coreml('one_shot.mlmodel')
         """
         from coremltools.models.utils import save_spec as _save_spec
-        model = self.__proxy__['detector']._create_coreml_model(include_non_maximum_suppression=include_non_maximum_suppression, iou_threshold=iou_threshold, confidence_threshold=confidence_threshold)
+        import coremltools
+        if USE_CPP:
+            self.__proxy__['detector'].export_coreml(filename, include_non_maximum_suppression, iou_threshold, confidence_threshold)
+            model = coremltools.models.MLModel(filename).get_spec()
+        else:
+            model = self.__proxy__['detector']._create_coreml_model(include_non_maximum_suppression=include_non_maximum_suppression, iou_threshold=iou_threshold, confidence_threshold=confidence_threshold)
         model.description.metadata.shortDescription = 'One Shot ' + model.description.metadata.shortDescription
         model.description.metadata.userDefined["type"] = 'OneShotObjectDetector'
         _save_spec(model, filename)

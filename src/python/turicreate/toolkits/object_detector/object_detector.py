@@ -276,7 +276,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         if batch_size > 0:
             tf_config['batch_size'] = batch_size
 
-        ifd max_iterations > 0:
+        if max_iterations > 0:
             tf_config['max_iterations'] = max_iterations
 
         model = _tc.extensions.object_detector()
