@@ -709,8 +709,8 @@ class SFrameTest(unittest.TestCase):
         sf1 = SFrame({'a': [1,2,3]})
         sf2 = SFrame({'a': [6,7]})
         sf1=sf1+sf2
-        self.assertTrue({'a': 7} in sf1)
-        self.assertTrue({'a': 6} in sf1)
+        expected=SFrame({'a': [1,2,3,6,7]})
+        _assert_sframe_equal(sf1, expected)
 
     def test_transform_with_recursion(self):
         sf = SFrame(data={'a':[0,1,2,3,4], 'b':['0','1','2','3','4']})

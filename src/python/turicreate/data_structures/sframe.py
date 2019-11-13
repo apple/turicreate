@@ -1958,7 +1958,7 @@ class SFrame(object):
     
     def __add__(self,other):
         """
-        Return sum of frames
+        Return append one frames to other
         """
         self=self.append(other)
         return self
