@@ -143,11 +143,9 @@ class _NumPyDataIterator(_DataIterator):
 def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
 
     if USE_TF:
-        print("******** Using Numpy data iterator for TF")
         return _NumPyDataIterator(data, label=label, batch_size=batch_size,
                                shuffle=shuffle)
     else:
-        print("******** Using MXNet data iterator")
         return _MXNetDataIterator(data, label=label, batch_size=batch_size,
                                   shuffle=shuffle)
 
@@ -441,11 +439,9 @@ def create(dataset, target, feature, max_iterations=10,
 
 
     if USE_TF:
-        print("------ Using TensorFlow ...")
         from ._tf_sound_classifier import SoundClassifierTensorFlowModel
         custom_NN = SoundClassifierTensorFlowModel(feature_extractor.output_length, num_labels, custom_layer_sizes)
     else:
-        print("------ Using MXNet ...")
         from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
         custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
