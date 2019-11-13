@@ -43,7 +43,6 @@ class SFrameTest(unittest.TestCase):
         self.string_data = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
         self.a_to_z = [str(chr(97 + i)) for i in range(0, 26)]
         self.dataframe = pd.DataFrame({'int_data': self.int_data, 'float_data': self.float_data, 'string_data': self.string_data})
-        self.url = "http://s3-us-west-2.amazonaws.com/testdatasets/a_to_z.txt.gz"
 
         self.int_data2 = range(50,60)
         self.float_data2 = [1.0 * i for i in range(50,60)]
