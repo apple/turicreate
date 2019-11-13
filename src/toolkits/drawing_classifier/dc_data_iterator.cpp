@@ -111,8 +111,8 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
       // Initialize random number generator.
       random_engine_(params.random_seed)
 {
-  ASSERT_MSG(scale_factor_ > 0,
-             "scale factor of image should be postive float");
+  if(scale_factor_ <= 0)
+    log_and_throw("scale factor of image should be positive float");
 }
 
 bool simple_data_iterator::has_next_batch() {
@@ -214,9 +214,9 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     batch_drawings.erase(pend, batch_drawings.end());
   }
 
-  // do noramization on each pixel
+  // do normalization on each pixel
   std::for_each(batch_drawings.begin(), batch_drawings.end(),
-                [=](float& x) { x /= scale_factor_; });
+                [=](float& x) { x *= scale_factor_; });
 
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
