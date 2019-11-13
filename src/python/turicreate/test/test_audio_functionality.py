@@ -19,7 +19,6 @@ import unittest
 import coremltools
 from coremltools.proto import FeatureTypes_pb2
 import numpy as np
-import pytest
 from scipy.io import wavfile
 
 import turicreate as tc
@@ -223,7 +222,6 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         for a, b in zip(old_model_probs, new_model_probs):
             np.testing.assert_array_almost_equal(a, b, decimal=6)
 
-    @pytest.mark.xfail()
     def test_export_coreml_with_prediction(self):
         import resampy
 

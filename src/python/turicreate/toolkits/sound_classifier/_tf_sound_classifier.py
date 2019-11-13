@@ -139,14 +139,14 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         layers = []
         for i, name in enumerate(self.names_of_layers):
             weight_name = 'sound_{}_weight:0'.format(name)
-            bias_name = 'sound_{}_weight:0'.format(name)
+            bias_name = 'sound_{}_bias:0'.format(name)
             layer={}
             layer['weight'] = layer_dict[weight_name].transpose(1, 0)
             layer['bias'] = layer_dict[bias_name]
             if i==(len(self.names_of_layers)-1):
-                layer['act']=None
+                layer['act'] = None
             else:
-                layer['act']='relu'
+                layer['act'] = 'relu'
             layers.append(layer)
         return layers
 
