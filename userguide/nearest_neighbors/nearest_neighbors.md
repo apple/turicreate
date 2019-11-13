@@ -181,8 +181,8 @@ knn = model.query(sf[:3], k=3)
 knn.print_rows()
 
 sf_check = sf[['bedroom', 'bath', 'size']]
-print "distance check 1:", tc.distances.manhattan(sf_check[2], sf_check[10])
-print "distance check 2:", tc.distances.manhattan(sf_check[2], sf_check[14])
+print("distance check 1:", tc.distances.manhattan(sf_check[2], sf_check[10]))
+print("distance check 2:", tc.distances.manhattan(sf_check[2], sf_check[14]))
 ```
 ```no-highlight
 +-------------+-----------------+-----------------+------+

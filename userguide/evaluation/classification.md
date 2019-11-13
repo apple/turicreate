@@ -245,7 +245,7 @@ predictions = turicreate.SArray([1, 0, 0, 1, 0, 1, 0, 1])
 
 pr_score   = turicreate.evaluation.precision(targets, predictions)
 rec_score  = turicreate.evaluation.recall(targets, predictions)
-print pr_score, rec_score
+print(pr_score, rec_score)
 ```
 ```no-highlight
 0.25, 0.5
