@@ -216,24 +216,16 @@ float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
 
   float_array_map map;
 
-  shared_float_array content_wrap = shared_float_array::wrap(
+  map["input"] = shared_float_array::wrap(
       std::move(content_array), {batch_size, height, width, channels});
-  map.emplace("input", content_wrap);
+  map["index"] = shared_float_array::wrap(std::move(index_array), {batch_size});
 
-  shared_float_array index_wrap =
-      shared_float_array::wrap(std::move(index_array), {batch_size});
-  map.emplace("index", index_wrap);
-
-  shared_float_array image_width_wrap = shared_float_array::wrap(width);
-  map.emplace("width", image_width_wrap);
-
-  shared_float_array image_height_wrap = shared_float_array::wrap(height);
-  map.emplace("height", image_height_wrap);
+  map["width"] = shared_float_array::wrap(width);
+  map["height"] = shared_float_array::wrap(height);
 
   if (train) {
-    shared_float_array style_wrap = shared_float_array::wrap(
+    map["labels"] = shared_float_array::wrap(
         std::move(style_array), {batch_size, height, width, channels});
-    map.emplace("labels", style_wrap);
   }
 
   return map;
