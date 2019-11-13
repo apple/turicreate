@@ -89,8 +89,10 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   flex_string target = read_state<flex_string>("target");
   size_t num_classes = read_state<flex_int>("num_classes");
 
-  // feature columns names
-  const flex_list &features_list = read_state<flex_list>("features");
+  // feature column name
+  std::string feature_column_name = read_state<flex_string>("feature");
+  flex_list features_list;
+  features_list.push_back(feature_column_name);
 
   result->add_channel_concat(
       "features",
@@ -256,7 +258,7 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     std::vector<std::string> class_labels) const {
   data_iterator::parameters data_params;
 
-  std::string feature_column_name = read_state<flex_list>("features")[0];
+  std::string feature_column_name = read_state<flex_string>("feature");
   if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
     data = _drawing_classifier_prepare_data(data, feature_column_name);
   }
@@ -272,14 +274,7 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     data_params.target_column_name = read_state<flex_string>("target");
   }
 
-  const flex_list& features_values = read_state<flex_list>("features");
-
-  /**
-   * there is only one feature column name, we will read the features
-   *  flex list and record the 0'th index as the feature column name.
-   */
-  DASSERT_EQ(features_values.size(), 1);
-  data_params.feature_column_name = features_values[0].get<flex_string>();
+  data_params.feature_column_name = read_state<flex_string>("feature");
 
   return create_iterator(data_params);
 }
@@ -289,10 +284,15 @@ void drawing_classifier::init_training(
     std::string feature_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
 
-  ASSERT_MSG(data.contains_column(feature_column_name),
-    "Data does not contain the feature column.");
-  ASSERT_MSG(data.contains_column(target_column_name),
-    "Data does not contain the target column.");
+  if (!data.contains_column(feature_column_name)) {
+    log_and_throw(feature_column_name + " column not found. Data does not " + 
+      "contain the feature column.");
+  }
+
+  if (!data.contains_column(target_column_name)) {
+    log_and_throw(target_column_name + " column not found. Data does not " + 
+      "contain the target column.");
+  }
 
   add_or_update_state({
     {"training_iterations", 0}
@@ -314,11 +314,8 @@ void drawing_classifier::init_training(
   // TODO: Make progress printing optional.
   init_table_printer(!validation_data_.empty());
 
-  flex_list features_list;
-  features_list.push_back(feature_column_name);
-
   add_or_update_state(
-      {{"target", target_column_name}, {"features", features_list}});
+      {{"target", target_column_name}, {"feature", feature_column_name}});
 
   // Bind the data to a data iterator.
   training_data_iterator_ =
@@ -680,9 +677,11 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
                   "Expected one of: probability, probability_vector, rank");
   }
 
-  std::string feature_column_name = read_state<flex_list>("features")[0];
-  ASSERT_MSG(data.contains_column(feature_column_name), 
-    "Data passed in to predict does not contain the feature column.");
+  std::string feature_column_name = read_state<flex_string>("feature");
+  if (!data.contains_column(feature_column_name)) {
+    log_and_throw(feature_column_name + " column not found. " +
+      "Data passed in to predict does not contain the feature column.");
+  }
 
   auto data_itr =
       create_iterator(data, /* is_train */ false, /* class labels */ {});
@@ -723,10 +722,12 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
                   "Expected one of: probability, rank");
   }
 
-  std::string feature_column_name = read_state<flex_list>("features")[0];
-  ASSERT_MSG(data.contains_column(feature_column_name), 
-    "Data passed in to predict_topk does not contain the feature column.");
-  
+  std::string feature_column_name = read_state<flex_string>("feature");
+  if (!data.contains_column(feature_column_name)) {
+    log_and_throw(feature_column_name + " column not found. " +
+      "Data passed in to predict_topk does not contain the feature column.");
+  }
+
   // data inference
   std::unique_ptr<data_iterator> data_it =
       create_iterator(data, /* is_train */ false, /* class labels */ {});
@@ -841,12 +842,15 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     }
   }
 
+  std::string feature_column_name = read_state<flex_string>("feature");
+  flex_list features_list;
+  features_list.push_back(feature_column_name);
+
   std::shared_ptr<MLModelWrapper> model_wrapper =
       export_drawing_classifier_model(
-          *nn_spec_, read_state<flex_list>("features"),
+          *nn_spec_, features_list,
           read_state<flex_list>("classes"), read_state<flex_string>("target"));
 
-  const flex_list& features_list = read_state<flex_list>("features");
   const flex_string features_string =
       join(std::vector<std::string>(features_list.begin(), features_list.end()),
            ",");

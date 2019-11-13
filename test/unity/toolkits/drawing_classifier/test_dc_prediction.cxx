@@ -249,7 +249,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
   // specific for predict
   mock_model.add_or_update_state(
       {{"target", target_name},
-       {"features", flex_list({feature_name})},
+       {"feature", feature_name},
        {"classes", flex_list(class_labels.begin(), class_labels.end())}});
 
   runner(mock_model, my_data, expected_sf);
