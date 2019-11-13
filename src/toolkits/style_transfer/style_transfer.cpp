@@ -242,7 +242,7 @@ float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
 // Preparing Batch for prediction. Since the tensorflow implementation of style
 // transfer doesn't have multiple batches supported in predict this function
 // takes exactly one st_example as an argument.
-float_array_map prepare_predict(st_example& example) {
+float_array_map prepare_predict(const st_example& example) {
   ASSERT_EQ(3, example.content_image.m_channels);
   
   size_t image_width = example.content_image.m_width;
