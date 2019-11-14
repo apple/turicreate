@@ -133,6 +133,15 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     """
 
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
+    if warm_start is not None:
+        if type(warm_start) is not str:
+            raise TypeError("'warm_start' must be a string or None. "
+                + "'warm_start' can take in the following values: "
+                + str(accepted_values_for_warm_start))
+        if warm_start not in accepted_values_for_warm_start:
+            raise _ToolkitError("Unrecognized value for 'warm_start': "
+                + warm_start + ". 'warm_start' can take in the following "
+                + "values: " + str(accepted_values_for_warm_start))
 
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -171,10 +180,11 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
-        options["warm_start"] = warmstart
-        # Loading CoreML warmstart model
-        pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
-        options['mlmodel_path'] = pretrained_mlmodel.get_model_path()
+        options["warm_start"] = warm_start
+        if warm_start:
+            # Loading CoreML warmstart model
+            pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
+            options['mlmodel_path'] = pretrained_mlmodel.get_model_path()
 
         model.train(input_dataset, target, feature, validation_set, options)
         return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
