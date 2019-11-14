@@ -283,13 +283,12 @@ class DrawingClassifierTest(unittest.TestCase):
                 assert (new_preds.dtype == old_preds.dtype
                     and (new_preds == old_preds).all())
 
-    # @unittest.skipIf(_sys.platform == "darwin", "test_export_coreml_with_predict(...) covers this functionality and more")
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon: Need to test and debug export_to_coreml")
     def test_export_coreml(self):
         for model in self.models:
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
 
+    @unittest.skipIf(_sys.platform == "darwin", "Core ML only supported on Mac")
     def test_export_coreml_with_predict(self):
         for test_number in range(len(self.models)):
             feature = self.feature
