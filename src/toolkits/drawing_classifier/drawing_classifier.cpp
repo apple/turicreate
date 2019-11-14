@@ -355,9 +355,10 @@ void drawing_classifier::init_training(
       {"training_iterations", 0},
   });
 
-  if (opts.find("warm_start") != opts.end() ) { // TODO: add better handling e.g. sanitize input etc
-    // Extract 'mlmodel_path' from the options if warmstart enabled,
-    // to avoid storing it as a model field.
+  // If warm_start enabled, an 'mlmodel_path' is passed in options.
+  // Else, call init_model() to initialize the neural net using xavier.
+  if (opts.find("mlmodel_path") != opts.end() ) {
+    // Initialize the neural net with warm start model weights.
     auto mlmodel_path_iter = opts.find("mlmodel_path");
     if (mlmodel_path_iter == opts.end()) {
       log_and_throw("Expected option \"mlmodel_path\" not found.");

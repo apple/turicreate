@@ -180,7 +180,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
-        options["warm_start"] = warm_start
         if warm_start:
             # Loading CoreML warmstart model
             pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
