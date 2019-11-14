@@ -2189,6 +2189,12 @@ class SFrame(object):
                     printed_sf[t] = self[t].astype(str)
         return printed_sf.head(num_rows)
 
+    def drop_duplicates(self, subset=None, keep='first', inplace=False): 
+        self=pandas.DataFrame(self) 
+        self=self.drop_duplicates(subset=subset, keep=keep, inplace=inplace) 
+        self=load_sframe(self) 
+        return self
+
     def __str_impl__(self, num_rows=10, footer=True):
         """
         Returns a string containing the first num_rows elements of the frame, along
