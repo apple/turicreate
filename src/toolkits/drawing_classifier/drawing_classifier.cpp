@@ -25,6 +25,7 @@
 #include <toolkits/drawing_classifier/data_preparation.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
 
+
 namespace turi {
 namespace drawing_classifier {
 
@@ -89,24 +90,14 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   flex_string target = read_state<flex_string>("target");
   size_t num_classes = read_state<flex_int>("num_classes");
 
-  // feature column name
-  const std::string& feature_column_name = read_state<flex_string>("feature");
-
-  flex_list features_list;
-  features_list.push_back(feature_column_name);
-
-  result->add_channel_concat(
-      "features",
-      std::vector<std::string>(features_list.begin(), features_list.end()));
-
   std::mt19937 random_engine;
-  try {
-    std::seed_seq seed_seq{read_state<int>("random_seed")};
-    random_engine = std::mt19937(seed_seq);
-  } catch (const std::out_of_range &e) {
-  }
+  std::seed_seq seed_seq{read_state<int>("random_seed")};
+  random_engine = std::mt19937(seed_seq);
 
   weight_initializer initializer = zero_weight_initializer();
+
+  // feature columns names
+  const flex_string& feature_column_name = read_state<flex_string>("feature");
 
   const std::string prefix{"drawing"};
   // add suffix when needed.
@@ -161,6 +152,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       ss.str("");
       ss << prefix << "_pool" << ii << _suffix;
       output_name = ss.str();
+
       result->add_pooling(
           /* name                 */ output_name,
           /* input                */ input_name,
@@ -192,6 +184,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* num_input_channels  */ 64 * 3 * 3,
       /* weight_init_fn      */ initializer,
       /* bias_init_fn        */ zero_weight_initializer());
+
+  input_name = std::move(output_name);
+  output_name = prefix + "_dense0_relu" + _suffix;
+
+  result->add_relu(output_name, input_name);
 
   input_name = std::move(output_name);
   output_name = prefix + "_dense1" + _suffix;
