@@ -18,9 +18,9 @@ namespace feature_engineering {
  * Ported from original count_words implementation.
  */
 void word_count_delimiters_update(flexible_type f, flex_list delimiter_list, bool to_lower,
-                                  std::unordered_map<flexible_type, float>& ret_count, 
-			          flex_type_enum run_mode, 
-			          flexible_type f_type = 0) {
+                                  std::unordered_map<flexible_type, double>& ret_count, 
+                                  flex_type_enum run_mode, 
+                                  flexible_type delta = 0) {
   std::set<char> delimiters;
   for (auto it = delimiter_list.begin(); it != delimiter_list.end(); ++it) {
     // iterate through flexible_types storing the delimiters
@@ -56,7 +56,7 @@ void word_count_delimiters_update(flexible_type f, flex_list delimiter_list, boo
 
       // add the word to map
       if (run_mode == flex_type_enum::DICT)
-        ret_count[word_flex] = ret_count[word_flex] + f_type;
+        ret_count[word_flex] = ret_count[word_flex] + delta;
       else
         ret_count[word_flex]++;
 
@@ -74,7 +74,7 @@ void word_count_delimiters_update(flexible_type f, flex_list delimiter_list, boo
       std::transform(word.begin(), word.end(), word.begin(), ::tolower);
     word_flex = std::move(word);
     if (run_mode == flex_type_enum::DICT)
-        ret_count[word_flex] = ret_count[word_flex] + f_type;
+        ret_count[word_flex] = ret_count[word_flex] + delta;
     else
         ret_count[word_flex]++;
   }
@@ -109,7 +109,7 @@ flexible_type word_counter_apply_with_manual(const flexible_type& input,
   // Tokenize all string inputs according to delimiters and to_lower options,
   // then accumulate counts and return as dictionary
   flexible_type output;
-  std::unordered_map<flexible_type, float> ret_count;
+  std::unordered_map<flexible_type, double> ret_count;
   switch(run_mode) {
     case flex_type_enum::UNDEFINED: {
       // No transform required
@@ -135,7 +135,7 @@ flexible_type word_counter_apply_with_manual(const flexible_type& input,
             word_count_delimiters_update(
 		       kvp.first.get<flex_string>(), delimiter_list, 
 		       to_lower, ret_count, 
-		       run_mode, (float)kvp.second.get<flex_int>());
+		       run_mode, (flex_float)kvp.second.get<flex_int>());
 	}
         else if (kvp.second.get_type() == flex_type_enum::FLOAT){
             word_count_delimiters_update(

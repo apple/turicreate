@@ -257,7 +257,7 @@ class FeatureEngineeringTest(unittest.TestCase):
 
     def test_count_words_dict_type(self):
         sa = tc.SArray([{'Alice bob mike': 1, 'Bob Alice Sue': 0.5, '': 100},
-            {'a dog cow': 0, 'a dog cat ': 5, 'mice dog': -1, 'mice cat': 2}])
+             {'a dog cow': 0, 'a dog cat ': 5, 'mice dog': -1, 'mice cat': 2}])
         result = tc.text_analytics.count_words(sa)
         expected = [{'bob': 1.5, 'mike': 1.0, 'sue': 0.5, 'alice': 1.5}, {'a': 5.0, 'mice': 1.0, 'dog': 4.0, 'cow': 0.0, 'cat': 7.0}]
         self.assertEqual(result.dtype, dict)
