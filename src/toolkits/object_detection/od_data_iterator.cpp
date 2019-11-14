@@ -113,6 +113,10 @@ std::vector<image_annotation> parse_annotations(
 
         // Scan through the nested "coordinates" keys, populating the bounding
         // box.
+        if (kv.second.get_type() != flex_type_enum::DICT){
+          log_and_throw("Annotation coordinates must have type of dictionary.");
+        }
+
         const flex_dict& coordinates = kv.second.get<flex_dict>();
         for (const auto& coord_kv : coordinates) {
 
