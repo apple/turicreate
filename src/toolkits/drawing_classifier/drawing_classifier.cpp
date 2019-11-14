@@ -342,7 +342,7 @@ void drawing_classifier::init_training(
     const std::string mlmodel_path = mlmodel_path_iter->second;
     opts.erase(mlmodel_path_iter);
 
-    std::unique_ptr<model_spec> nn_spec_(new model_spec(mlmodel_path)); //TODO: Check layers and add dense1 and onwards
+    std::unique_ptr<model_spec> nn_spec_(new model_spec(mlmodel_path));
 
   } else {
     // Initialize the neural net. Note that this depends on statistics computed by
