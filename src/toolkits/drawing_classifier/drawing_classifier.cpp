@@ -349,12 +349,6 @@ void drawing_classifier::init_training(
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   print_training_device(gpu_names);
 
-  // Set additional model fields.
-  add_or_update_state({
-      {"num_classes", training_data_iterator_->class_labels().size()},
-      {"training_iterations", 0},
-  });
-
   // If warm_start enabled, an 'mlmodel_path' is passed in options.
   // Else, call init_model() to initialize the neural net using xavier.
   if (opts.find("mlmodel_path") != opts.end() ) {
