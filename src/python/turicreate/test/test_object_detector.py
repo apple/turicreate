@@ -173,7 +173,7 @@ class ObjectDetectorTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.object_detector.create(self.sf, feature=self.feature, annotations='wrong_annotations')
 
-    @unittest.skip('system crash.')
+    @unittest.skip('A bug need to be fixed.')
     def test_create_with_invalid_annotations_list_coord(self):
         with self.assertRaises(_ToolkitError):
             sf = self.sf.head()
