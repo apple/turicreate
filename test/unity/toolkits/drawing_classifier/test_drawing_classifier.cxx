@@ -145,10 +145,7 @@ void test_init_training(bool with_bitmap_based_data) {
   TS_ASSERT_EQUALS(model.get_field<flex_int>("max_iterations"),
                    test_max_iterations);
   TS_ASSERT_EQUALS(model.get_field<flex_string>("target"), test_target_name);
-  TS_ASSERT_EQUALS(model.get_field<flex_list>("features").size(), 1);
-  TS_ASSERT_EQUALS(
-      model.get_field<flex_list>("features")[0].get<flex_string>(),
-      test_feature_name);
+  TS_ASSERT_EQUALS(model.get_field<flex_string>("feature"), test_feature_name);
   TS_ASSERT_EQUALS(model.get_field<flex_int>("num_classes"),
                    test_class_labels.size());
   TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"), 0);

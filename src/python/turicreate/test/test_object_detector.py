@@ -91,7 +91,6 @@ def _get_data(feature, annotations):
     return data
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 class ObjectDetectorTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -148,20 +147,15 @@ class ObjectDetectorTest(unittest.TestCase):
             self.get_ans['annotation_position'] = lambda x: isinstance(x, str)
             self.get_ans['annotation_scale'] = lambda x: isinstance(x, str)
             self.get_ans['annotation_origin'] = lambda x: isinstance(x, str)
-            self.get_ans['training_average_precision_50'] = lambda x: isinstance(x, dict)
-            self.get_ans['training_mean_average_precision_50'] = lambda x: True
             self.get_ans['grid_height'] = lambda x: x > 0
             self.get_ans['grid_width'] = lambda x: x > 0
-            self.get_ans['training_mean_average_precision'] = lambda x: True
             self.get_ans['random_seed'] = lambda x: True
-            self.get_ans['training_average_precision'] = lambda x: (isinstance(x, dict) and
-                set(x.keys()) == set(_CLASSES) and all([isinstance(y,float) for y in x.values()])
-            )
             del self.get_ans['_model']
             del self.get_ans['_class_to_index']
             del self.get_ans['_training_time_as_string']
             del self.get_ans['_grid_shape']
             del self.get_ans['anchors']
+            del self.get_ans['non_maximum_suppression_threshold']
 
         self.fields_ans = self.get_ans.keys()
 
@@ -404,7 +398,6 @@ class ObjectDetectorTest(unittest.TestCase):
             print("List fields passed")
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ObjectDetectorGPUTest(unittest.TestCase):
