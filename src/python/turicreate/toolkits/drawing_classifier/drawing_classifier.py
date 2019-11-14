@@ -180,10 +180,11 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
+        options["warm_start"] = False if warm_start==None else True
         if warm_start:
             # Loading CoreML warmstart model
             pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
-            options['mlmodel_path'] = pretrained_mlmodel.get_model_path()
+            options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
 
         model.train(input_dataset, target, feature, validation_set, options)
         return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")

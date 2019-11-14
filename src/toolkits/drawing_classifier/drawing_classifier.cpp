@@ -235,6 +235,12 @@ void drawing_classifier::init_options(
       FLEX_UNDEFINED,
       std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
 
+  options.create_boolean_option(
+      "warm_start",
+      "Enable warm start model initialization for training.",
+      false,
+      true);
+
   // Validate user-provided options.
   options.set_options(opts);
 
@@ -298,6 +304,17 @@ void drawing_classifier::init_training(
     {"training_iterations", 0}
   });
 
+  auto warm_start = opts.at("warm_start");
+  std::string mlmodel_path;
+  if ( warm_start == true ) {
+    auto mlmodel_path_iter = opts.find("mlmodel_path");
+    if (mlmodel_path_iter == opts.end()) {
+      log_and_throw("Expected option \"mlmodel_path\" not found.");
+    }
+    mlmodel_path = mlmodel_path_iter->second.to<std::string>();
+    opts.erase(mlmodel_path_iter);
+  }
+
   // Read user-specified options.
   init_options(opts);
 
@@ -349,18 +366,12 @@ void drawing_classifier::init_training(
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   print_training_device(gpu_names);
 
-  // If warm_start enabled, an 'mlmodel_path' is passed in options.
-  // Else, call init_model() to initialize the neural net using xavier.
-  if (opts.find("mlmodel_path") != opts.end() ) {
+  // If warm_start enabled, use warmstart CoreML model to
+  // initialize the neural net. Else, call init_model() to
+  // initialize the neural net using xavier.
+  if ( warm_start == true ) {
     // Initialize the neural net with warm start model weights.
-    auto mlmodel_path_iter = opts.find("mlmodel_path");
-    if (mlmodel_path_iter == opts.end()) {
-      log_and_throw("Expected option \"mlmodel_path\" not found.");
-    }
-    const std::string mlmodel_path = mlmodel_path_iter->second;
-    opts.erase(mlmodel_path_iter);
-
-    std::unique_ptr<model_spec> nn_spec_(new model_spec(mlmodel_path));
+    nn_spec_.reset(new model_spec(mlmodel_path));
 
   } else {
     // Initialize the neural net. Note that this depends on statistics computed by
@@ -875,7 +886,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"features", features_string},
       {"max_iterations", read_state<flex_int>("max_iterations")},
       // TODO: Uncomment as part of #2524
-      // {"warm_start", read_state<flex_int>("warm_start")},
+      {"warm_start", read_state<flex_int>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
