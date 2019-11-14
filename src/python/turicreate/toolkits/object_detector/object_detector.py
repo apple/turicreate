@@ -273,6 +273,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             'classes' : classes,
             'compute_final_metrics' : False
         }
+
+        # If batch_size or max_iterations = 0, they will be automatically
+        # generated in C++.
         if batch_size > 0:
             tf_config['batch_size'] = batch_size
 
