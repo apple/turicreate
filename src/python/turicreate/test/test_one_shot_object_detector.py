@@ -187,7 +187,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         # This should return predictions
         self.assertTrue(len(stacked) > 0)
 
-    @pytest.mark.xfail()
     def test_export_coreml(self):
         from PIL import Image
         import coremltools
@@ -240,6 +239,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
+    @pytest.mark.xfail()
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)
