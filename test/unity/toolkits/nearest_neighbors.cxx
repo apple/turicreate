@@ -483,14 +483,6 @@ struct test_nn_consistency  {
     run_nn_test("lsh", 1000, "D", "jaccard");
   }
 
-  void test_lsh_dot_product_1() {
-    run_nn_test("lsh", 100, "D", "dot_product");
-  }
-
-  void test_lsh_dot_product_2() {
-    run_nn_test("lsh", 100, "V", "dot_product");
-  }
-
   void test_lsh_transformed_dot_product_1() {
     run_nn_test("lsh", 100, "D", "transformed_dot_product");
   }
@@ -767,12 +759,6 @@ BOOST_AUTO_TEST_CASE(test_lsh_jaccard_1) {
 }
 BOOST_AUTO_TEST_CASE(test_lsh_jaccard_2) {
   test_nn_consistency::test_lsh_jaccard_2();
-}
-BOOST_AUTO_TEST_CASE(test_lsh_dot_product_1) {
-  test_nn_consistency::test_lsh_dot_product_1();
-}
-BOOST_AUTO_TEST_CASE(test_lsh_dot_product_2) {
-  test_nn_consistency::test_lsh_dot_product_2();
 }
 BOOST_AUTO_TEST_CASE(test_lsh_transformed_dot_product_1) {
   test_nn_consistency::test_lsh_transformed_dot_product_1();

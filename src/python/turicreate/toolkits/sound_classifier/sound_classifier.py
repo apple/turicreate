@@ -19,6 +19,166 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
+USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
+
+class _DataIterator(object):
+    '''
+    Defines a common interface around MXNet NDArrayIter and TensorFlow
+    DataSet.from_tensor_slices
+    '''
+
+    '''
+    Creates a new instance wrapping numpy data and labels.
+
+    If `label` is provided, `label.shape[0]` must match `data.shape[0]`.
+    '''
+    def __init__(self, data, label=None, batch_size=1, shuffle=False):
+        raise NotImplementedError
+
+    '''
+    Returns an iterator that yields a sequence of tuples, comprising a batch of
+    `data` values and a batch of `label` values (if provided).
+    '''
+    def __iter__(self):
+        raise NotImplementedError
+
+    '''
+    Ensures that the next iteration through the dataset starts from the beginning.
+    '''
+    def reset(self):
+        raise NotImplementedError
+
+class _MXNetDataIterator(_DataIterator):
+    def __init__(self, data, label=None, batch_size=1, shuffle=False):
+        import mxnet as mx
+        self.impl = mx.io.NDArrayIter(data, label=label, batch_size=batch_size,
+                                      shuffle=shuffle)
+
+    def __iter__(self):
+        return self
+
+    def reset(self):
+        self.impl.reset()
+
+    def __next__(self):
+        # Extract the data and label values, if applicable.
+        batch = self.impl.__next__()
+        data = batch.data[0]
+        label = batch.label[0] if batch.label else None
+
+        # Instead of MXNet-style padding, we use TF-style non-fixed shapes.
+        if batch.pad != 0:
+            data = data[:-batch.pad]
+            label = label[:-batch.pad] if label is not None else None
+
+        # Convert to numpy.
+        data = data.asnumpy()
+        label = label.asnumpy() if label is not None else None
+
+        return (data, label) if label is not None else (data,)
+
+    def next(self):
+        return self.__next__()
+
+class _TFDataIterator(_DataIterator):
+    def __init__(self, data, label=None, batch_size=1, shuffle=False):
+        import tensorflow as tf
+
+        # Always pass a tuple, so that the impl's built-in iterator returns a
+        # tuple.
+        tensor_slices = (data, label) if label is not None else (data,)
+
+        self.impl = tf.data.Dataset.from_tensor_slices(tensor_slices)
+
+        # Apply options.
+        self.impl = self.impl.batch(batch_size)
+        if shuffle:
+            self.impl = self.impl.shuffle(data.shape[0])
+
+    def __iter__(self):
+        return self.impl.__iter__()
+
+    def reset(self):
+        # Each call to __iter__ returns a fresh iterator object that will do one
+        # pass through the data. The mxnet.io.NDArrayIter interface only needs
+        # this method because their __iter__ function returns the NDArrayIter
+        # instance itself.
+        pass
+
+def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
+    if USE_TF:
+        return _TFDataIterator(data, label=label, batch_size=batch_size,
+                               shuffle=shuffle)
+    else:
+        return _MXNetDataIterator(data, label=label, batch_size=batch_size,
+                                  shuffle=shuffle)
+
+class _Accuracy(object):
+    '''
+    Defines a common interface around MXNet/TensorFlow accuracy metrics.
+    '''
+
+    def __init__(self):
+        raise NotImplementedError
+
+    '''
+    Tallies the results from a single batch of predictions.
+
+    The predictions are expected to contain (possibly unnormalized) class
+    probabilities. Replacing the last axis of the predictions with the argmax
+    should yield a shape matching the ground truth.
+    '''
+    def update(self, ground_truth, predicted):
+        raise NotImplementedError
+
+    '''
+    Removes all tallied results so far.
+    '''
+    def reset(self):
+        raise NotImplementedError
+
+    '''
+    Computes the accuracy for all the results tallied so far.
+    '''
+    def get(self):
+        raise NotImplementedError
+
+class _MXNetAccuracy(_Accuracy):
+    def __init__(self):
+        import mxnet as mx
+        self.impl = mx.metric.Accuracy()
+
+    def update(self, ground_truth, predicted):
+        import mxnet as mx
+        self.impl.update([mx.nd.array(ground_truth)], [mx.nd.array(predicted)])
+
+    def reset(self):
+        self.impl.reset()
+
+    def get(self):
+        _, result = self.impl.get()
+        return result
+
+class _TFAccuracy(_Accuracy):
+    def __init__(self):
+        import tensorflow as tf
+        self.impl = tf.keras.metrics.Accuracy()
+
+    def update(self, ground_truth, predicted):
+        predicted = _np.argmax(predicted, axis=-1)
+        self.impl.update_state(ground_truth, predicted)
+
+    def reset(self):
+        self.impl.reset_states()
+
+    def get(self):
+        return self.impl.result()
+
+def _get_accuracy_metric():
+    if USE_TF:
+        return _TFAccuracy()
+    else:
+        return _MXNetAccuracy()
 
 def _is_deep_feature_sarray(sa):
     if not isinstance(sa, _tc.SArray):
@@ -120,7 +280,7 @@ def create(dataset, target, feature, max_iterations=10,
         A dataset for monitoring the model's generalization performance. The
         format of this SFrame must be the same as the training dataset. By
         default, a validation set is automatically sampled. If `validation_set`
-        is set to None, no validataion is used. You can also pass a validation
+        is set to None, no validation is used. You can also pass a validation
         set you have constructed yourself.
 
     batch_size : int, optional
@@ -192,7 +352,7 @@ def create(dataset, target, feature, max_iterations=10,
 
     if validation_set is not None:
         if verbose:
-            print("Preparing validataion set")
+            print("Preparing validation set")
         validation_encoded_target = validation_set[target].apply(lambda x: class_label_to_id[x])
 
         if _is_deep_feature_sarray(validation_set[feature]):
@@ -205,9 +365,9 @@ def create(dataset, target, feature, max_iterations=10,
         validation_data = validation_data.dropna(columns=['deep features'])
 
         validation_batch_size = min(len(validation_data), batch_size)
-        validation_data = mx.io.NDArrayIter(validation_data['deep features'].to_numpy(),
-                                             label=validation_data['labels'].to_numpy(),
-                                             batch_size=validation_batch_size)
+        validation_data = _create_data_iterator(validation_data['deep features'].to_numpy(),
+                                                validation_data['labels'].to_numpy(),
+                                                batch_size=validation_batch_size)
     else:
         validation_data = []
 
@@ -215,15 +375,13 @@ def create(dataset, target, feature, max_iterations=10,
         print("\nTraining a custom neural network -")
 
     training_batch_size = min(len(train_data), batch_size)
-    train_data = mx.io.NDArrayIter(train_data['deep features'].to_numpy(),
-                                    label=train_data['labels'].to_numpy(),
-                                    batch_size=training_batch_size, shuffle=True)
+    train_data = _create_data_iterator(train_data['deep features'].to_numpy(),
+                                       train_data['labels'].to_numpy(),
+                                       batch_size=training_batch_size,
+                                       shuffle=True)
 
-    custom_NN = SoundClassifier._build_custom_neural_network(feature_extractor.output_length, num_labels, custom_layer_sizes)
-    ctx = _mxnet_utils.get_mxnet_context()
-    custom_NN.initialize(mx.init.Xavier(), ctx=ctx)
-
-    trainer = mx.gluon.Trainer(custom_NN.collect_params(), 'nag', {'learning_rate': 0.01, 'momentum': 0.9})
+    from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
+    custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
 
     if verbose:
         # Setup progress table
@@ -234,52 +392,35 @@ def create(dataset, target, feature, max_iterations=10,
             row_display_names.insert(2, 'Validation Accuracy (%)')
         table_printer = _tc.util._ProgressTablePrinter(row_ids, row_display_names)
 
-    train_metric = mx.metric.Accuracy()
+    train_metric = _get_accuracy_metric()
     if validation_data:
-        validation_metric = mx.metric.Accuracy()
-    softmax_cross_entropy_loss = mx.gluon.loss.SoftmaxCrossEntropyLoss()
+        validation_metric = _get_accuracy_metric()
+
     for i in range(max_iterations):
         # TODO: early stopping
 
-        for batch in train_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-
-            # Inside training scope
-            with mx.autograd.record():
-                for x, y in zip(data, label):
-                    z = custom_NN(x)
-                    # Computes softmax cross entropy loss.
-                    loss = softmax_cross_entropy_loss(z, y)
-                    # Backpropagate the error for one iteration.
-                    loss.backward()
-            # Make one step of parameter update. Trainer needs to know the
-            # batch size of data to normalize the gradient by 1/batch_size.
-            trainer.step(batch.data[0].shape[0])
+        for data, label in train_data:
+            custom_NN.train(data, label)
         train_data.reset()
 
         # Calculate training metric
-        for batch in train_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            outputs = [custom_NN(x) for x in data]
+        for data, label in train_data:
+            outputs = custom_NN.predict(data)
             train_metric.update(label, outputs)
         train_data.reset()
 
-        # Calculate validataion metric
-        for batch in validation_data:
-            data = mx.gluon.utils.split_and_load(batch.data[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            label = mx.gluon.utils.split_and_load(batch.label[0], ctx_list=ctx, batch_axis=0, even_split=False)
-            outputs = [custom_NN(x) for x in data]
+        # Calculate validation metric
+        for data, label in validation_data:
+            outputs = custom_NN.predict(data)
             validation_metric.update(label, outputs)
 
         # Get metrics, print progress table
-        _, train_accuracy = train_metric.get()
+        train_accuracy = train_metric.get()
         train_metric.reset()
         printed_row_values = {'iteration': i+1, 'train_accuracy': train_accuracy}
         if validation_data:
-            _, validataion_accuracy = validation_metric.get()
-            printed_row_values['validation_accuracy'] = validataion_accuracy
+            validation_accuracy = validation_metric.get()
+            printed_row_values['validation_accuracy'] = validation_accuracy
             validation_metric.reset()
             validation_data.reset()
         if verbose:
@@ -301,7 +442,7 @@ def create(dataset, target, feature, max_iterations=10,
         'target': target,
         'training_accuracy': train_accuracy,
         'training_time': time.time() - start_time,
-        'validation_accuracy': validataion_accuracy if validation_data else None,
+        'validation_accuracy': validation_accuracy if validation_data else None,
     }
     return SoundClassifier(state)
 
@@ -317,25 +458,6 @@ class SoundClassifier(_CustomModel):
     create
     """
     _PYTHON_SOUND_CLASSIFIER_VERSION = 1
-
-    @staticmethod
-    def _build_custom_neural_network(num_inputs, num_labels, layer_sizes):
-        from mxnet.gluon import nn
-
-        net = nn.Sequential(prefix='custom_')
-        with net.name_scope():
-            for i, cur_layer_size in enumerate(layer_sizes):
-                prefix = "dense%d_" % i
-                if i == 0:
-                    in_units = num_inputs
-                else:
-                    in_units = layer_sizes[i-1]
-
-                net.add(nn.Dense(cur_layer_size, in_units=in_units, activation='relu', prefix=prefix))
-
-            prefix = 'dense%d_' % len(layer_sizes)
-            net.add(nn.Dense(num_labels, prefix=prefix))
-        return net
 
     def __init__(self, state):
         self.__proxy__ = _PythonProxy(state)
@@ -357,8 +479,7 @@ class SoundClassifier(_CustomModel):
 
         del state['_feature_extractor']
 
-        mxnet_params = state['_custom_classifier'].collect_params()
-        state['_custom_classifier'] = _mxnet_utils.get_gluon_net_params_state(mxnet_params)
+        state['_custom_classifier'] = state['_custom_classifier'].get_weights()
 
         return state
 
@@ -382,11 +503,11 @@ class SoundClassifier(_CustomModel):
             # Default value, was not part of state for only Turi Create 5.4
             custom_layer_sizes = [100, 100]
         state['custom_layer_sizes'] = custom_layer_sizes
-        net = SoundClassifier._build_custom_neural_network(num_inputs, num_classes, custom_layer_sizes)
-        net_params = net.collect_params()
-        ctx = _mxnet_utils.get_mxnet_context()
-        _mxnet_utils.load_net_params_from_state(net_params, state['_custom_classifier'], ctx=ctx)
-        state['_custom_classifier'] = net
+
+        from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
+        model_obj = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
+        model_obj.load_weights(state['_custom_classifier'])
+        state['_custom_classifier'] = model_obj
 
         return SoundClassifier(state)
 
@@ -630,12 +751,11 @@ class SoundClassifier(_CustomModel):
                                            [(prob_name, Dictionary(String))],
                                            'classifier')
 
-            ctx = _mxnet_utils.get_mxnet_context()[0]
             input_name, output_name = input_name, 0
-            for i, cur_layer in enumerate(self._custom_classifier):
-                W = cur_layer.weight.data(ctx).asnumpy()
+            for i, cur_layer in enumerate(self._custom_classifier.export_weights()):
+                W = cur_layer['weight']
                 nC, nB = W.shape
-                Wb = cur_layer.bias.data(ctx).asnumpy()
+                Wb = cur_layer['bias']
 
                 builder.add_inner_product(name="inner_product_"+str(i),
                                           W=W,
@@ -646,7 +766,7 @@ class SoundClassifier(_CustomModel):
                                           input_name=str(input_name),
                                           output_name='inner_product_'+str(output_name))
 
-                if cur_layer.act:
+                if cur_layer['act']:
                     builder.add_activation("activation"+str(i), 'RELU', 'inner_product_'+str(output_name), str(output_name))
 
                 input_name = i
@@ -816,20 +936,8 @@ class SoundClassifier(_CustomModel):
             batch_size = len(deep_features)
 
         y = []
-        for batch in mx.io.NDArrayIter(deep_features['deep features'].to_numpy(), batch_size=batch_size):
-            ctx = _mxnet_utils.get_mxnet_context()
-            if(len(batch.data[0]) < len(ctx)):
-                ctx = ctx[:len(batch.data[0])]
-
-            batch_data = batch.data[0]
-            if batch.pad != 0:
-                batch_data = batch_data[:-batch.pad]    # prevent batches looping back
-
-            batch_data = mx.gluon.utils.split_and_load(batch_data, ctx_list=ctx, batch_axis=0, even_split=False)
-
-            for x in batch_data:
-                forward_output = self._custom_classifier.forward(x)
-                y += mx.nd.softmax(forward_output).asnumpy().tolist()
+        for data, in _create_data_iterator(deep_features['deep features'].to_numpy(), None, batch_size=batch_size):
+            y += self._custom_classifier.predict(data).tolist()
         assert(len(y) == len(deep_features))
 
         # Combine predictions from multiple frames

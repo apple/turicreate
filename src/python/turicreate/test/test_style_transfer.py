@@ -21,6 +21,7 @@ import coremltools
 
 
 _NUM_STYLES = 4
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
 
 
 def _get_data(feature, num_examples=100):
@@ -58,7 +59,6 @@ def _get_data(feature, num_examples=100):
             feature: tc.SArray(images),
     })
     return data
-
 
 class StyleTransferTest(unittest.TestCase):
 
@@ -209,7 +209,6 @@ class StyleTransferTest(unittest.TestCase):
                 model.get_styles(style=style)
 
     def test_get_styles_success(self):
-
         style = [0,1,2]
         model = self.model
         model_styles = model.get_styles(style=style)
@@ -282,6 +281,7 @@ class StyleTransferTest(unittest.TestCase):
             print("Get styles passed")
 
 
+@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class StyleTransferGPUTest(unittest.TestCase):

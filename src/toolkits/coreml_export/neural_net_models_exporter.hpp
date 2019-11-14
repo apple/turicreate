@@ -34,6 +34,7 @@ std::shared_ptr<coreml::MLModelWrapper> export_object_detector_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
     size_t image_height, size_t num_classes, size_t num_predictions,
     flex_dict user_defined_metadata, flex_list class_labels,
+    const std::string& input_name,
     std::map<std::string, flexible_type> options);
 
 /** Wraps a trained activity classifier model_spec as a complete MLModel. */
@@ -45,7 +46,9 @@ std::shared_ptr<coreml::MLModelWrapper> export_activity_classifier_model(
 /** Wraps a trained style transfer model_spec as a complete MLModel. */
 std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
-    size_t image_height, flex_dict user_defined_metadata);
+    size_t image_height, bool include_flexible_shape,
+    flex_dict user_defined_metadata, std::string content_feature,
+    std::string style_feature, size_t num_styles);
 
 /** Wraps a trained drawing classifier model_spec as a complete MLModel. */
 std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(

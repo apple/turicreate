@@ -15,6 +15,7 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac
 from ._utils import _seconds_as_string
 from .. import _pre_trained_models
 from turicreate.toolkits._model import CustomModel as _CustomModel
+from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 import turicreate as _tc
@@ -29,6 +30,8 @@ from .._mps_utils import (use_mps as _use_mps,
                           MpsGraphMode as _MpsGraphMode,
                           mps_to_mxnet as _mps_to_mxnet,
                           mxnet_to_mps as _mxnet_to_mps)
+
+USE_CPP = _tkutl._read_env_var_cpp('TURI_ST_USE_CPP_PATH')
 
 def _get_mps_st_net(input_image_shape, batch_size, output_size,
                     config, weights={}):
@@ -60,7 +63,7 @@ def _vgg16_data_prep(batch):
 
 def create(style_dataset, content_dataset, style_feature=None,
         content_feature=None, max_iterations=None, model='resnet-16',
-        verbose=True, batch_size = 6, **kwargs):
+        verbose=True, batch_size = 1, **kwargs):
     """
     Create a :class:`StyleTransfer` model.
 
@@ -143,10 +146,6 @@ def create(style_dataset, content_dataset, style_feature=None,
     if max_iterations is not None and (not isinstance(max_iterations, int) or max_iterations < 0):
         raise _ToolkitError("'max_iterations' must be an integer greater than or equal to 0")
 
-    from ._sframe_loader import SFrameSTIter as _SFrameSTIter
-    import mxnet as _mx
-    from .._mxnet import _mxnet_utils
-
     if style_feature is None:
         style_feature = _tkutl._find_only_image_column(style_dataset)
     
@@ -160,7 +159,7 @@ def create(style_dataset, content_dataset, style_feature=None,
     _raise_error_if_not_training_sframe(content_dataset, content_feature)
     _tkutl._handle_missing_values(style_dataset, style_feature, 'style_dataset')
     _tkutl._handle_missing_values(content_dataset, content_feature, 'content_dataset')
-        
+
     params = {
         'batch_size': batch_size,
         'vgg16_content_loss_layer': 2,  # conv3_3 layer
@@ -205,6 +204,38 @@ def create(style_dataset, content_dataset, style_feature=None,
 
         params.update(kwargs['_advanced_parameters'])
 
+    if USE_CPP:
+        name = 'style_transfer'
+
+        import turicreate as _turicreate
+
+        # Imports tensorflow
+        import turicreate.toolkits.libtctensorflow
+
+        model = _turicreate.extensions.style_transfer()
+        pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['resnet-16']()
+        pretrained_vgg16_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']()
+        options = {}
+        options['image_height'] = params['input_shape'][0]
+        options['image_width'] = params['input_shape'][1]
+        options['content_feature'] = content_feature
+        options['style_feature'] = style_feature
+        if verbose is not None:
+            options['verbose'] = verbose
+        if batch_size is not None:
+            options['batch_size'] = batch_size
+        if max_iterations is not None:
+            options['max_iterations'] = max_iterations
+        options['num_styles'] = len(style_dataset)
+        options['resnet_mlmodel_path'] = pretrained_resnet_model.get_model_path('coreml')
+        options['vgg_mlmodel_path'] = pretrained_vgg16_model.get_model_path('coreml')
+
+        model.train(style_dataset[style_feature], content_dataset[content_feature], options)
+        return StyleTransfer_beta(model_proxy=model, name=name)
+
+    from ._sframe_loader import SFrameSTIter as _SFrameSTIter
+    import mxnet as _mx
+    from .._mxnet import _mxnet_utils
     _content_loss_mult = params['content_loss_mult']
     _style_loss_mult = params['style_loss_mult']
 
@@ -233,7 +264,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     # TRANSFORMER MODEL
     from ._model import Transformer as _Transformer
-    transformer_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[model]().get_model_path()
+    transformer_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[model]().get_model_path('mxnet')
     transformer = _Transformer(num_styles, batch_size_each)
     transformer.collect_params().initialize(ctx=ctx)
 
@@ -246,7 +277,7 @@ def create(style_dataset, content_dataset, style_feature=None,
 
     # VGG MODEL
     from ._model import Vgg16 as _Vgg16
-    vgg_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']().get_model_path()
+    vgg_model_path = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS['Vgg16']().get_model_path('mxnet')
     vgg_model = _Vgg16()
     vgg_model.collect_params().initialize(ctx=ctx)
     vgg_model.load_params(vgg_model_path, ctx=ctx, ignore_extra=True)
@@ -634,6 +665,221 @@ def _raise_error_if_not_training_sframe(dataset, context_column):
     if dataset[context_column].dtype != _tc.Image:
         raise _ToolkitError("Context Image column must contain images")
 
+class StyleTransfer_beta(_Model):
+    """
+    A trained model using C++ implementation that is ready to use for classification or export to
+    CoreML.
+
+    This model should not be constructed directly.
+    """
+    _CPP_STYLE_TRANSFER_VERSION = 1
+
+    def __init__(self, model_proxy=None, name=None):
+        self.__proxy__ = model_proxy
+        self.__name__ = name
+
+    @classmethod
+    def _native_name(cls):
+        if USE_CPP:
+            return "style_transfer"
+        return None
+
+    def __str__(self):
+        """
+        Return a string description of the model to the ``print`` method.
+
+        Returns
+        -------
+        out : string
+            A description of the model.
+        """
+        return self.__class__.__name__
+
+    def __repr__(self):
+        """
+        Returns a string description of the model, including (where relevant)
+        the schema of the training data, description of the training data,
+        training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        out : string
+            A description of the model.
+        """
+        return self.__class__.__name__
+
+    def _get_version(self):
+        return self._CPP_ACTIVITY_CLASSIFIER_VERSION
+
+    def export_coreml(self, filename, image_shape=(256, 256), include_flexible_shape=True):
+        """
+        Save the model in Core ML format. The Core ML model takes an image of
+        fixed size, and a style index inputs and produces an output
+        of an image of fixed size
+
+        Parameters
+        ----------
+        path : string
+            A string to the path for saving the Core ML model.
+
+        image_shape: tuple
+            A tuple (defaults to (256, 256)) will bind the coreml model to a fixed shape.
+
+        include_flexible_shape: bool
+            Allows the size of the input image to be flexible. Any input image were the
+            height and width are at least 64 will be accepted by the Core ML Model.
+
+        See Also
+        --------
+        save
+
+        Examples
+        --------
+        >>> model.export_coreml('StyleTransfer.mlmodel')
+        """
+        options = {}
+        options['image_width'] = image_shape[1]
+        options['image_height'] = image_shape[0]
+        options['include_flexible_shape'] = include_flexible_shape
+
+        self.__proxy__.export_to_coreml(filename, options)
+
+
+    def stylize(self, images, style=None, verbose=True, max_size=800, batch_size = 4):
+        """
+        Stylize an SFrame of Images given a style index or a list of
+        styles.
+
+        Parameters
+        ----------
+        images : SFrame | Image
+            A dataset that has the same content image column that was used
+            during training.
+
+        style : int or list, optional
+            The selected style or list of styles to use on the ``images``. If
+            `None`, all styles will be applied to each image in ``images``.
+
+        verbose : bool, optional
+            If True, print progress updates.
+
+        max_size : int or tuple
+            Max input image size that will not get resized during stylization.
+
+            Images with a side larger than this value, will be scaled down, due
+            to time and memory constraints. If tuple, interpreted as (max
+            width, max height). Without resizing, larger input images take more
+            time to stylize.  Resizing can effect the quality of the final
+            stylized image.
+
+        batch_size : int, optional
+            If you are getting memory errors, try decreasing this value. If you
+            have a powerful computer, increasing this value may improve
+            performance.
+
+        Returns
+        -------
+        out : SFrame or SArray or turicreate.Image
+            If ``style`` is a list, an SFrame is always returned. If ``style``
+            is a single integer, the output type will match the input type
+            (Image, SArray, or SFrame).
+
+        See Also
+        --------
+        create
+
+        Examples
+        --------
+        >>> image = tc.Image("/path/to/image.jpg")
+        >>> stylized_images = model.stylize(image, style=[0, 1])
+        Data:
+        +--------+-------+------------------------+
+        | row_id | style |     stylized_image     |
+        +--------+-------+------------------------+
+        |   0    |   0   | Height: 256 Width: 256 |
+        |   0    |   1   | Height: 256 Width: 256 |
+        +--------+-------+------------------------+
+        [2 rows x 3 columns]
+
+        >>> images = tc.image_analysis.load_images('/path/to/images')
+        >>> stylized_images = model.stylize(images)
+        Data:
+        +--------+-------+------------------------+
+        | row_id | style |     stylized_image     |
+        +--------+-------+------------------------+
+        |   0    |   0   | Height: 256 Width: 256 |
+        |   0    |   1   | Height: 256 Width: 256 |
+        |   0    |   2   | Height: 256 Width: 256 |
+        |   0    |   3   | Height: 256 Width: 256 |
+        |   1    |   0   | Height: 640 Width: 648 |
+        |   1    |   1   | Height: 640 Width: 648 |
+        |   1    |   2   | Height: 640 Width: 648 |
+        |   1    |   3   | Height: 640 Width: 648 |
+        +--------+-------+------------------------+
+        [8 rows x 3 columns]
+        """
+        options = {}
+        options['style_idx'] = style
+        options['verbose'] = verbose
+        options['max_size'] = max_size
+        options['batch_size'] = batch_size
+
+        if isinstance(style, list) or style is None:
+            if isinstance(images, _tc.SFrame):
+                image_feature = _tkutl._find_only_image_column(images)
+                stylized_images = self.__proxy__.predict(images[image_feature], options)
+                stylized_images = stylized_images.rename({'stylized_image' : 'stylized_' + str(image_feature)})
+                return stylized_images
+            return self.__proxy__.predict(images, options)
+        else:
+            if isinstance(images, _tc.SFrame):
+                if len(images) == 0:
+                    raise _ToolkitError("SFrame cannot be empty")
+                image_feature = _tkutl._find_only_image_column(images)
+                stylized_images = self.__proxy__.predict(images[image_feature], options)
+                stylized_images = stylized_images.rename({'stylized_image' : 'stylized_' + str(image_feature)})
+                return stylized_images
+            elif isinstance(images, (_tc.Image)):
+                stylized_images = self.__proxy__.predict(images, options)
+                return stylized_images["stylized_image"][0]
+            elif isinstance(images, (_tc.SArray)):
+                stylized_images = self.__proxy__.predict(images, options)
+                return stylized_images["stylized_image"]
+
+    def get_styles(self, style=None):
+        """
+        Returns SFrame of style images used for training the model
+
+        Parameters
+        ----------
+        style: int or list, optional
+            The selected style or list of styles to return. If `None`, all
+            styles will be returned
+
+        See Also
+        --------
+        stylize
+
+        Examples
+        --------
+        >>>  model.get_styles()
+        Columns:
+            style   int
+            image   Image
+
+        Rows: 4
+
+        Data:
+        +-------+--------------------------+
+        | style |          image           |
+        +-------+--------------------------+
+        |  0    |  Height: 642 Width: 642  |
+        |  1    |  Height: 642 Width: 642  |
+        |  2    |  Height: 642 Width: 642  |
+        |  3    |  Height: 642 Width: 642  |
+        +-------+--------------------------+
+        """
+        return self.__proxy__.get_styles(style)
 
 class StyleTransfer(_CustomModel):
     """
@@ -651,7 +897,9 @@ class StyleTransfer(_CustomModel):
 
     @classmethod
     def _native_name(cls):
-        return "style_transfer"
+        if not USE_CPP:
+            return "style_transfer"
+        return None
 
     def _get_native_state(self):
         from .._mxnet import _mxnet_utils

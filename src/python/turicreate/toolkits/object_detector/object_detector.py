@@ -182,12 +182,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
     """
     _raise_error_if_not_sframe(dataset, "dataset")
-    from ._mx_detector import YOLOLoss as _YOLOLoss
-    from ._model import tiny_darknet as _tiny_darknet
-    from ._sframe_loader import SFrameDetectionIter as _SFrameDetectionIter
-    from ._manual_scheduler import ManualScheduler as _ManualScheduler
-    import mxnet as _mx
-    from .._mxnet import _mxnet_utils
 
     if len(dataset) == 0:
         raise _ToolkitError('Unable to train on empty dataset')
@@ -267,6 +261,34 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'mlmodel_path': pretrained_model_path,
     }
 
+    #create tensorflow model here
+    if USE_CPP:
+        import turicreate.toolkits.libtctensorflow
+        if classes == None:
+            classes = []
+        tf_config = {
+            'grid_height': params['grid_shape'][0],
+            'grid_width': params['grid_shape'][1],
+            'max_iterations': max_iterations,
+            'mlmodel_path' : params['mlmodel_path'],
+            'classes' : classes,
+            'compute_final_metrics' : False
+        }
+        if batch_size > 0:
+            tf_config['batch_size'] = batch_size
+
+        model = _tc.extensions.object_detector()
+        model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
+        return ObjectDetector_beta(model_proxy=model, name="object_detector")
+
+    # Use MxNet
+    from ._model import tiny_darknet as _tiny_darknet
+    import mxnet as _mx
+    from .._mxnet import _mxnet_utils
+    from ._mx_detector import YOLOLoss as _YOLOLoss
+    from ._sframe_loader import SFrameDetectionIter as _SFrameDetectionIter
+    from ._manual_scheduler import ManualScheduler as _ManualScheduler
+
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
         new_keys = set(kwargs['_advanced_parameters'].keys())
@@ -282,9 +304,10 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     if batch_size < 1:
         batch_size = 32  # Default if not user-specified
+
     cuda_gpus = _mxnet_utils.get_gpus_in_use(max_devices=batch_size)
     num_mxnet_gpus = len(cuda_gpus)
-    use_mps = _use_mps() and num_mxnet_gpus == 0 and not USE_CPP
+    use_mps = _use_mps() and num_mxnet_gpus == 0
     batch_size_each = batch_size // max(num_mxnet_gpus, 1)
     if use_mps and _mps_device_memory_limit() < 4 * 1024 * 1024 * 1024:
         # Reduce batch size for GPUs with less than 4GB RAM
@@ -431,23 +454,6 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
                 cur_iter=iteration_base1, loss=progress['smoothed_loss'],
                 time=elapsed_time , width=column_width-1))
             progress['last_time'] = cur_time
-
-    if USE_CPP:
-        import turicreate.toolkits.libtctensorflow
-
-        tf_config = {
-            'batch_size' : batch_size,
-            'grid_height': params['grid_shape'][0],
-            'grid_width': params['grid_shape'][1],
-            'max_iterations': num_iterations,
-            'mlmodel_path' : params['mlmodel_path']
-
-        }
-        model = _tc.extensions.object_detector()
-        model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
-        return ObjectDetector_beta(model_proxy=model, name="object_detector")
-
-    else:  # Use MxNet
 
         net.hybridize()
 
@@ -1645,10 +1651,10 @@ class ObjectDetector_beta(_Model):
         options['confidence_threshold'] = confidence_threshold
         options['iou_threshold'] = iou_threshold
 
-        return self.__proxy__.export_to_coreml(filename, options)
+        self.__proxy__.export_to_coreml(filename, options)
 
 
-    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45):
+    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45, verbose=True):
         """
         Predict object instances in an SFrame of images.
 
@@ -1698,7 +1704,8 @@ class ObjectDetector_beta(_Model):
         options = {}
         options["confidence_threshold"] = confidence_threshold
         options["iou_threshold"] = iou_threshold
-        return  self.__proxy__.predict(dataset, options)
+        options["verbose"] = verbose
+        return self.__proxy__.predict(dataset, options)
 
     def evaluate(self, dataset, metric='auto', output_type='dict', confidence_threshold = 0.001, iou_threshold = 0.45):
         """

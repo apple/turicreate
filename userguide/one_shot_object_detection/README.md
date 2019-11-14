@@ -38,7 +38,7 @@ test_images['annotated_predictions'] = \
 test_images.explore()
 
 # Save the model for later use in TuriCreate
-model.save('mymodel.model')
+model.save('stop-sign.model')
 
 # Export for use in Core ML
 model.export_coreml('MyCustomOneShotDetector.mlmodel')

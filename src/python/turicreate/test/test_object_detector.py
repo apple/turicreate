@@ -13,6 +13,7 @@ import turicreate as tc
 import tempfile
 import numpy as np
 import platform
+import pytest
 import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -21,6 +22,8 @@ import coremltools
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
 USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+
 
 def _get_data(feature, annotations):
     from PIL import Image as _PIL_Image
@@ -144,18 +147,15 @@ class ObjectDetectorTest(unittest.TestCase):
             self.get_ans['annotation_position'] = lambda x: isinstance(x, str)
             self.get_ans['annotation_scale'] = lambda x: isinstance(x, str)
             self.get_ans['annotation_origin'] = lambda x: isinstance(x, str)
-            self.get_ans['training_average_precision_50'] = lambda x: isinstance(x, dict)
-            self.get_ans['training_mean_average_precision_50'] = lambda x: True
             self.get_ans['grid_height'] = lambda x: x > 0
             self.get_ans['grid_width'] = lambda x: x > 0
-            self.get_ans['training_mean_average_precision'] = lambda x: True
             self.get_ans['random_seed'] = lambda x: True
-            self.get_ans['training_average_precision'] = lambda x: x >= 0
             del self.get_ans['_model']
             del self.get_ans['_class_to_index']
             del self.get_ans['_training_time_as_string']
             del self.get_ans['_grid_shape']
             del self.get_ans['anchors']
+            del self.get_ans['non_maximum_suppression_threshold']
 
         self.fields_ans = self.get_ans.keys()
 

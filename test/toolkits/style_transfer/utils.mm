@@ -1206,7 +1206,7 @@ std::string get_resnet_model() {
   nn_spec->add_scale(
       /* name */ "stylizedImage",
       /* input */ "transformer_activation5",
-      /* shape_c_h_w */ {1, 1, 1},
+      /* shape_c_h_w */ {1},
       /* weight_init_fn */ scalar_weight_initializer(255.0));
 
   const std::string TRANSFORMER_NAME = "./transformer.mlmodel";

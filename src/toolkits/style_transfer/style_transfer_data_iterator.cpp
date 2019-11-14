@@ -33,18 +33,24 @@ gl_sarray ensure_encoded(const gl_sarray& sa) {
 
 }  // namespace
 
+void style_transfer_data_iterator::reset() {
+  m_content_range_iterator = m_content_images.range_iterator();
+  m_content_next_row = m_content_range_iterator.begin();
+}
+
 style_transfer_data_iterator::style_transfer_data_iterator(
     const data_iterator::parameters& params)
     : m_style_images(ensure_encoded(params.style)),
       m_content_images(ensure_encoded(params.content)),
       m_repeat(params.repeat),
       m_shuffle(params.shuffle),
+      m_mode(params.mode),
       m_content_range_iterator(m_content_images.range_iterator()),
       m_content_next_row(m_content_range_iterator.begin()),
       m_random_engine(params.random_seed) {}
 
-std::vector<st_example> style_transfer_data_iterator::next_batch(
-    size_t batch_size) {
+std::vector<st_example> style_transfer_data_iterator::next_batch(size_t batch_size) {
+
   std::vector<std::tuple<flexible_type, flexible_type, flexible_type>>
       raw_batch;
   raw_batch.reserve(batch_size);
@@ -53,11 +59,15 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(
          m_content_next_row != m_content_range_iterator.end()) {
     const turi::flexible_type& content_image = *m_content_next_row;
 
-    std::uniform_int_distribution<size_t> dist(0, m_style_images.size() - 1);
-    size_t random_style_index = dist(m_random_engine);
-    const flexible_type& style_image = m_style_images[random_style_index];
+    if (m_mode == st_mode::TRAIN) {
+      std::uniform_int_distribution<size_t> dist(0, m_style_images.size() - 1);
+      size_t random_style_index = dist(m_random_engine);
+      const flexible_type& style_image = m_style_images[random_style_index];
 
-    raw_batch.emplace_back(content_image, style_image, random_style_index);
+      raw_batch.emplace_back(content_image, style_image, random_style_index);
+    } else {
+      raw_batch.emplace_back(content_image, FLEX_UNDEFINED, FLEX_UNDEFINED);
+    }
 
     if (++m_content_next_row == m_content_range_iterator.end() && m_repeat) {
       if (m_shuffle) {
@@ -79,8 +89,7 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(
         m_content_images = temp_content["content"];
       }
 
-      m_content_range_iterator = m_content_images.range_iterator();
-      m_content_next_row = m_content_range_iterator.begin();
+      reset();
     }
   }
 
@@ -90,9 +99,12 @@ std::vector<st_example> style_transfer_data_iterator::next_batch(
     flexible_type content_image, style_image, style_index;
     std::tie(content_image, style_image, style_index) = raw_batch[i];
 
-    result[i].style_image = get_image(style_image);
+    if (m_mode == st_mode::TRAIN) {
+      result[i].style_image = get_image(style_image);
+      result[i].style_index = style_index.get<flex_int>();
+    }
+
     result[i].content_image = get_image(content_image);
-    result[i].style_index = style_index.get<flex_int>();
   }
 
   return result;

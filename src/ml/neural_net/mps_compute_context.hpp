@@ -21,19 +21,12 @@ namespace neural_net {
  * augmentation.
  */
 class mps_compute_context: public compute_context {
-public:
+ public:
 
   /**
    * Constructs a context wrapping the given Metal command queue.
    */
   mps_compute_context(std::unique_ptr<mps_command_queue> command_queue);
-
-  /**
-   * Constructs a context wrapping the best currently available Metal device.
-   *
-   * \todo Guard against eGPU coming and going?
-   */
-  mps_compute_context();
 
   ~mps_compute_context();
 
@@ -63,11 +56,11 @@ public:
    * Alternate implementation of create_image_augmenter supporting injection of
    * the random number generator, for test purposes.
    */
-  std::unique_ptr<image_augmenter> create_image_augmenter_for_testing(
+  static std::unique_ptr<image_augmenter> create_image_augmenter_for_testing(
       const image_augmenter::options& opts,
       std::function<float(float lower, float upper)> rng);
 
-private:
+ private:
 
   std::unique_ptr<mps_command_queue> command_queue_;
 };

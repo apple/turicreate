@@ -172,7 +172,7 @@ private:
       std::vector<std::string> expected_class_labels);
 
   gl_sframe data_;
-  const size_t annotations_index_;
+  const ssize_t annotations_index_;
   const ssize_t predictions_index_;
   const size_t image_index_;
 

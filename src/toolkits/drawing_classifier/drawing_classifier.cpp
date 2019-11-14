@@ -22,6 +22,7 @@
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
 #include <toolkits/util/training_utils.hpp>
 
+#include <toolkits/drawing_classifier/data_preparation.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
 
 namespace turi {
@@ -69,9 +70,6 @@ void drawing_classifier::save_impl(oarchive& oarc) const {
 }
 
 void drawing_classifier::load_version(iarchive& iarc, size_t version) {
-  if (!nn_spec_)
-    log_and_throw(
-        "model spec is not initalized, please call `init_train` before loading model");
 
   // Load model attributes.
   variant_deep_load(state, iarc);
@@ -91,8 +89,10 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   flex_string target = read_state<flex_string>("target");
   size_t num_classes = read_state<flex_int>("num_classes");
 
-  // feature columns names
-  const flex_list &features_list = read_state<flex_list>("features");
+  // feature column name
+  std::string feature_column_name = read_state<flex_string>("feature");
+  flex_list features_list;
+  features_list.push_back(feature_column_name);
 
   result->add_channel_concat(
       "features",
@@ -187,7 +187,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* input               */ input_name,
       /* num_output_channels */ 128,
       /* num_input_channels  */ 64 * 3 * 3,
-      /* weight_init_fn      */ initializer);
+      /* weight_init_fn      */ initializer,
+      /* bias_init_fn        */ zero_weight_initializer());
 
   input_name = std::move(output_name);
   output_name = prefix + "_dense1" + _suffix;
@@ -201,7 +202,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* input               */ input_name,
       /* num_output_channels */ num_classes,
       /* num_input_channels  */ 128,
-      /* weight_init_fn      */ initializer);
+      /* weight_init_fn      */ initializer,
+      /* bias_init_fn        */ zero_weight_initializer());
 
   input_name = std::move(output_name);
 
@@ -255,6 +257,12 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     gl_sframe data, bool is_train,
     std::vector<std::string> class_labels) const {
   data_iterator::parameters data_params;
+
+  std::string feature_column_name = read_state<flex_string>("feature");
+  if (data[feature_column_name].dtype() != flex_type_enum::IMAGE) {
+    data = _drawing_classifier_prepare_data(data, feature_column_name);
+  }
+
   data_params.data = std::move(data);
 
   if (!is_train) {
@@ -262,13 +270,12 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   }
 
   data_params.is_train = is_train;
-  data_params.target_column_name = read_state<flex_string>("target");
-  const flex_list &features_values = read_state<flex_list>("features");
-  DASSERT_GE(features_values.size(), 1);
-  data_params.feature_column_name = features_values[0].get<flex_string>();
-  /** Until there is only one feature column name, we will read the features
-   *  flex list and record the 0'th index as the feature column name.
-   */
+  if (data.contains_column(read_state<flex_string>("target"))) {
+    data_params.target_column_name = read_state<flex_string>("target");
+  }
+
+  data_params.feature_column_name = read_state<flex_string>("feature");
+
   return create_iterator(data_params);
 }
 
@@ -276,12 +283,27 @@ void drawing_classifier::init_training(
     gl_sframe data, std::string target_column_name,
     std::string feature_column_name, variant_type validation_data,
     std::map<std::string, flexible_type> opts) {
+
+  if (!data.contains_column(feature_column_name)) {
+    log_and_throw(feature_column_name + " column not found. Data does not " + 
+      "contain the feature column.");
+  }
+
+  if (!data.contains_column(target_column_name)) {
+    log_and_throw(target_column_name + " column not found. Data does not " + 
+      "contain the target column.");
+  }
+
+  add_or_update_state({
+    {"training_iterations", 0}
+  });
+
   // Read user-specified options.
   init_options(opts);
 
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
-    std::random_device random_device;
-    int random_seed = static_cast<int>(random_device());
+    std::random_device rd;
+    int random_seed = static_cast<int>(rd());
     add_or_update_state({{"random_seed", random_seed}});
   }
 
@@ -292,20 +314,21 @@ void drawing_classifier::init_training(
   // TODO: Make progress printing optional.
   init_table_printer(!validation_data_.empty());
 
-  flex_list features_list;
-  features_list.push_back(feature_column_name);
-
   add_or_update_state(
-      {{"target", target_column_name}, {"features", features_list}});
+      {{"target", target_column_name}, {"feature", feature_column_name}});
 
   // Bind the data to a data iterator.
   training_data_iterator_ =
       create_iterator(training_data_,
                       /* is_train */ true, /* class labels */ {});
 
-  const std::vector<std::string> &classes =
+  const std::vector<std::string>& classes =
       training_data_iterator_->class_labels();
-  add_or_update_state({{"classes", flex_list(classes.begin(), classes.end())}});
+
+  add_or_update_state({
+      {"classes", flex_list(classes.begin(), classes.end())},
+      {"num_classes", classes.size()},
+  });
 
   // Bind the validation data to a data iterator.
   if (!validation_data_.empty()) {
@@ -350,12 +373,11 @@ void drawing_classifier::init_training(
     nn_spec_ = init_model();
   }
 
-  // TODO: Do not hardcode values
   training_model_ = training_compute_context_->create_drawing_classifier(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
       read_state<size_t>("num_classes"));
 
-  // Print the header last, after any logging triggered by initialization above.
+  // Print the header last, after any logging by initialization above
   if (training_table_printer_) {
     training_table_printer_->print_header();
   }
@@ -403,7 +425,9 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->predict({{"input", result_batch.data_info.drawings},
-                                  {"labels", result_batch.data_info.targets}});
+                                  {"labels", result_batch.data_info.targets},
+                                  {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                                });
 
     result_batch.accuracy_info = results.at("accuracy");
     result_batch.loss_info = results.at("loss");
@@ -455,7 +479,7 @@ void drawing_classifier::iterate_training() {
                           batch.loss_info.data() + batch.loss_info.size(), 0.f,
                           std::plus<float>());
 
-      cumulative_batch_loss += batch_loss / batch.data_info.num_samples;
+      cumulative_batch_loss += (batch.data_info.num_samples * batch_loss);
     }
   };
 
@@ -470,7 +494,9 @@ void drawing_classifier::iterate_training() {
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
         training_model_->train({{"input", result_batch.data_info.drawings},
-                                {"labels", result_batch.data_info.targets}});
+                                {"labels", result_batch.data_info.targets},
+                                {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                              });
     result_batch.loss_info = results.at("loss");
     result_batch.accuracy_info = results.at("accuracy");
 
@@ -481,7 +507,7 @@ void drawing_classifier::iterate_training() {
   }
   // Process all remaining batches.
   pop_until_size(0);
-  float average_batch_loss = cumulative_batch_loss / num_batches;
+  float average_batch_loss = cumulative_batch_loss / train_num_samples;
   float average_batch_accuracy =
       static_cast<float>(train_num_correct) / train_num_samples;
   float average_val_accuracy;
@@ -546,8 +572,10 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
+
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
+
   init_training(data, target_column_name, feature_column_name, validation_data,
                 opts);
 
@@ -574,7 +602,7 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
       training_data_, target_column_name, "report", train_predictions,
       {{"classes", read_state<flex_list>("classes")}});
 
-  for (auto &p : train_metric) {
+  for (auto& p : train_metric) {
     state_update["training_" + p.first] = p.second;
   }
 
@@ -586,7 +614,7 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
         validation_data_, target_column_name, "report", val_predictions,
         {{"classes", read_state<flex_list>("classes")}});
 
-    for (auto &p : val_metric) {
+    for (auto& p : val_metric) {
       state_update["validation_" + p.first] = p.second;
     }
   }
@@ -594,25 +622,230 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
   add_or_update_state(state_update);
 }
 
+gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
+  // Open a new SFrame for writing.
+  gl_sframe_writer writer({"preds"}, {flex_type_enum::VECTOR},
+                          /* num_segments */ 1);
+
+  const size_t num_classes = read_state<size_t>("num_classes");
+  const size_t batch_size = read_state<size_t>("batch_size");
+
+  // Initialize the NN backend.
+  std::unique_ptr<compute_context> ctx = create_compute_context();
+  std::unique_ptr<model_backend> backend = ctx->create_drawing_classifier(
+      nn_spec_->export_params_view(), batch_size, num_classes);
+
+  // To support double buffering, use a queue of pending inference results.
+  std::queue<result> pending_batches;
+
+  // Allocate a buffer into which to write the class probabilities.
+  flex_vec preds(num_classes);
+
+  auto pop_until_size = [&](size_t remaining) {
+    while (pending_batches.size() > remaining) {
+      // Pop one batch from the queue.
+      result batch = pending_batches.front();
+      pending_batches.pop();
+
+      size_t num_images = batch.data_info.num_samples;
+      ASSERT_EQ(num_images * num_classes, batch.data_info.predictions.size());
+
+      auto output_itr = batch.data_info.predictions.data();
+      for (size_t ii = 0; ii < num_images; ++ii) {
+        std::copy(output_itr, output_itr + num_classes, preds.begin());
+        output_itr += num_classes;
+        writer.write({preds}, 0);
+      }
+    }
+  };
+
+  while (data->has_next_batch()) {
+    // Wait until we have just one asynchronous batch outstanding. The work
+    // below should be concurrent with the neural net inference for that batch.
+    pop_until_size(1);
+
+    result result_batch;
+    result_batch.data_info = data->next_batch(batch_size);
+
+    /** TODO: Figure out a better solution to having `num_samples` be a 
+     *  top-level input to the network. May be captured in the first
+     *  dimension of the input, or perhaps via a weight tensor.
+     */
+    std::map<std::string, shared_float_array> results =
+        backend->predict({{"input", result_batch.data_info.drawings},
+                          {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
+                         });
+
+    // Copy the (float) outputs to our (double) buffer and add to the SArray.
+    result_batch.data_info.predictions = results.at("output");
+
+    pending_batches.push(std::move(result_batch));
+  }
+
+  pop_until_size(0);
+
+  return writer.close();
+}
+
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
-  /* TODO: Add code to predict! */
-  return gl_sarray();
+  // by default, it should be "probability" if the value is
+  // passed in through python client
+  if (output_type != "probability"
+    && output_type != "probability_vector"
+    && output_type != "class") {
+    log_and_throw(output_type + " is not a valid option for output_type.  " +
+                  "Expected one of: probability, probability_vector, rank");
+  }
+
+  std::string feature_column_name = read_state<flex_string>("feature");
+  if (!data.contains_column(feature_column_name)) {
+    log_and_throw(feature_column_name + " column not found. " +
+      "Data passed in to predict does not contain the feature column.");
+  }
+
+  auto data_itr =
+      create_iterator(data, /* is_train */ false, /* class labels */ {});
+
+  gl_sframe predictions = perform_inference(data_itr.get());
+
+  gl_sarray result = predictions["preds"];
+  if (output_type == "class") {
+    flex_list class_labels = read_state<flex_list>("classes");
+    auto max_prob_label = [=](const flexible_type& ft) {
+      const flex_vec& prob_vec = ft.get<flex_vec>();
+      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+      return class_labels[max_it - prob_vec.begin()];
+    };
+
+    result = result.apply(max_prob_label, class_labels.front().get_type());
+
+  } else if (output_type == "probability") {
+    auto max_prob = [=](const flexible_type& ft) {
+      const flex_vec& prob_vec = ft.get<flex_vec>();
+      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+      return *max_it;
+    };
+
+    result = result.apply(max_prob, flex_type_enum::FLOAT);
+
+  }
+
+  return result;
 }
 
 gl_sframe drawing_classifier::predict_topk(gl_sframe data,
                                            std::string output_type, size_t k) {
-  /* TODO: Add code to predict_topk! */
-  return gl_sframe();
+  // check valid input arguments
+  if (output_type != "probability" && output_type != "rank") {
+    log_and_throw(output_type +
+                  " is not a valid option for output_type.  "
+                  "Expected one of: probability, rank");
+  }
+
+  std::string feature_column_name = read_state<flex_string>("feature");
+  if (!data.contains_column(feature_column_name)) {
+    log_and_throw(feature_column_name + " column not found. " +
+      "Data passed in to predict_topk does not contain the feature column.");
+  }
+
+  // data inference
+  std::unique_ptr<data_iterator> data_it =
+      create_iterator(data, /* is_train */ false, /* class labels */ {});
+
+  gl_sframe dc_predictions = perform_inference(data_it.get());
+
+  // argsort probability to get the index (rank) for top k class
+  // if k is greater than the class number, set it to be class number
+  flex_list class_labels = read_state<flex_list>("classes");
+  k = std::min(k, class_labels.size());
+
+  auto argsort_prob = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+
+    std::vector<size_t> index_vec(prob_vec.size());
+    std::iota(index_vec.begin(), index_vec.end(), 0);
+
+    auto compare = [&](size_t lhs, size_t rhs) {
+      return prob_vec[lhs] > prob_vec[rhs];
+    };
+
+    std::nth_element(index_vec.begin(), index_vec.begin() + k, index_vec.end(),
+                     compare);
+
+    std::sort(index_vec.begin(), index_vec.begin() + k, compare);
+
+    return flex_list(index_vec.begin(), index_vec.begin() + k);
+  };
+
+  // store the index in a column "rank"
+  dc_predictions.add_column(
+      dc_predictions["preds"].apply(argsort_prob, flex_type_enum::LIST),
+      "rank");
+
+  // get top k class name and store in a column "class"
+  size_t rank_idx = dc_predictions.column_index("rank");
+  auto get_class_name = [=](const sframe_rows::row& row) {
+    const flex_list& rank_list = row[rank_idx];
+    flex_list topk_class;
+    for (flexible_type order : rank_list) {
+      topk_class.push_back(class_labels[order]);
+    }
+    return topk_class;
+  };
+
+  dc_predictions.add_column(
+      dc_predictions.apply(get_class_name, flex_type_enum::LIST), "class");
+
+  // if output_type is "probability" then change rank to probabilty
+  if (output_type == "probability") {
+    size_t prob_column_index = dc_predictions.column_index("preds");
+    auto get_probability = [=](const sframe_rows::row& row) {
+      const flex_list& rank_list = row[rank_idx];
+      flex_list topk_prob;
+      for (const flexible_type i : rank_list) {
+        topk_prob.push_back(row[prob_column_index][i]);
+      }
+      return topk_prob;
+    };
+
+    dc_predictions["rank"] =
+        dc_predictions.apply(get_probability, flex_type_enum::LIST);
+  }
+
+  // construct the final result
+  gl_sframe result = gl_sframe();
+
+  // stack data into a column with single element for each row
+  // stack the labels first
+  gl_sframe stacked_class =
+      gl_sframe({{"class", dc_predictions["class"]}}).stack("class", "class");
+
+  result.add_column(stacked_class["class"], "class");
+  result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
+                    "id");
+
+  // stack the rank column,
+  gl_sframe stacked_rank =
+      gl_sframe({{"rank", dc_predictions["rank"]}}).stack("rank", "rank");
+  ASSERT_EQ(stacked_rank.size(), stacked_class.size());
+
+  result.add_column(stacked_rank["rank"], "rank");
+
+  // change the column name rank to probability according to the output_type
+  if (output_type == "probability") {
+    result.rename({{"rank", "probability"}});
+  }
+
+  return result;
 }
 
 variant_map_type drawing_classifier::evaluate(gl_sframe data,
                                               std::string metric) {
-  // Perform prediction.
   gl_sarray predictions = predict(data, "probability_vector");
 
-  /* TODO: This is just for the skeleton. Rewrite. */
-  return evaluation::compute_classifier_metrics(data, "label", metric,
-                                                predictions, {{"classes", 2}});
+  return evaluation::compute_classifier_metrics(
+      data, read_state<flex_string>("target"), metric, predictions,
+      {{"classes", read_state<flex_list>("classes")}});
 }
 
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
@@ -629,12 +862,15 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     }
   }
 
+  std::string feature_column_name = read_state<flex_string>("feature");
+  flex_list features_list;
+  features_list.push_back(feature_column_name);
+
   std::shared_ptr<MLModelWrapper> model_wrapper =
       export_drawing_classifier_model(
-          *nn_spec_, read_state<flex_list>("features"),
+          *nn_spec_, features_list,
           read_state<flex_list>("classes"), read_state<flex_string>("target"));
 
-  const flex_list &features_list = read_state<flex_list>("features");
   const flex_string features_string =
       join(std::vector<std::string>(features_list.begin(), features_list.end()),
            ",");
@@ -643,7 +879,8 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"target", read_state<flex_string>("target")},
       {"features", features_string},
       {"max_iterations", read_state<flex_int>("max_iterations")},
-      {"warm_start", read_state<flex_int>("warm_start")},
+      // TODO: Uncomment as part of #2524
+      // {"warm_start", read_state<flex_int>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };

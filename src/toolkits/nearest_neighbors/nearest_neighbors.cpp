@@ -165,10 +165,6 @@ void find_block_neighbors(const DenseMatrix& R, const DenseMatrix& Q,
     all_pairs_cosine(R, Q, dists);
   }
 
-  else if (dist_name == "dot_product") {
-    all_pairs_dot_product(R, Q, dists);
-  }
-
   else if (dist_name == "transformed_dot_product") {
     all_pairs_transformed_dot_product(R, Q, dists);
   }
@@ -213,12 +209,8 @@ void off_diag_block_similarity_graph(const DenseMatrix& R, const DenseMatrix& C,
     all_pairs_cosine(R, C, dists);
   }
 
-  else if (dist_name == "dot_product") {
-    all_pairs_dot_product(R, C, dists);
-  }
-
   else if (dist_name == "transformed_dot_product") {
-    all_pairs_dot_product(R, C, dists);
+    all_pairs_transformed_dot_product(R, C, dists);
   }
 
   else {

@@ -2,81 +2,72 @@
 
 # This image is intended for building Turi Create for maximum compatibility
 # with various Linux distributions.
-# Based on Ubuntu 10.04 for compatibility with older glibc versions.
+# Based on CentOS 6 for compatibility with older glibc versions.
 # Builds with LLVM 8.0.0 for modern compiler features and bug fixes.
 # Builds against libstdc++ from GCC 4.8 for compatibility with older libstdc++
 # runtime versions.
 
-FROM ubuntu:10.04
-
-# Prevent apt-get from asking questions and expecting answers
-ENV DEBIAN_FRONTEND noninteractive
+FROM quay.io/pypa/manylinux2010_x86_64@sha256:191e8bc35089ce4ceda48224289b7475322ee6853faa4bf7d4b8e0d9c3b0358e
 
 # Set env variables for tools to pick up
 ENV CC="gcc"
 ENV CXX="g++"
-ENV PATH="/usr/local/bin:${PATH}"
+ENV PATH="/opt/rh/devtoolset-8/root/usr/bin:/usr/local/bin:${PATH}"
 ENV CCACHE_DIR=/build/.docker_ccache
 ENV CCACHE_COMPILERCHECK=content
+RUN ldconfig
 
-# Fix path to new location for older Ubuntu releases
-RUN sed -i -e 's/archive\./old-releases\./g' /etc/apt/sources.list
-
-# Install add-apt-repository and set up PPA for GCC 4.8 and git
-# Then, install dependencies
-RUN apt-get update && \
-    apt-get -y --no-install-recommends install python-software-properties && \
-    add-apt-repository ppa:ubuntu-toolchain-r/test && \
-    add-apt-repository ppa:git-core/ppa && \
-    add-apt-repository ppa:h-rayflood/llvm && \
-    apt-get update && \
-    apt-get -y --no-install-recommends install \
+# Install dependencies
+RUN yum -y update && \
+    yum -y install \
                vim-common \
-               gcc-4.8 \
-               g++-4.8 \
-               libgif-dev \
-               libx11-dev \
+               libX11-devel \
+               bzip2-devel \
+               sqlite-devel \
+               gcc \
+               gcc-multilib \
+               glibc-devel \
                ccache \
-               make \
-               zlib1g-dev \
-               libsqlite3-dev \
-               tk-dev \
-               libgdbm-dev \
-               libc6-dev \
-               libbz2-dev \
-               perl-modules \
+               tk-devel \
                patch \
                rsync \
                git \
                file \
-               pkg-config \
-               xz-utils && \
-    ln -s /usr/bin/gcc-4.8 /usr/bin/gcc && \
-    ln -s /usr/bin/g++-4.8 /usr/bin/g++ && \
-    rm -rf /var/lib/apt/lists/*
+               xz
 
-# Install OpenSSL and curl from source
+RUN yum install -y wget tar make flex gcc gcc-c++ gcc-devel.s390 binutils-devel bzip2
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+RUN mkdir /src
+WORKDIR /src
+RUN wget ftp://gcc.gnu.org/pub/gcc/releases/gcc-4.8.5/gcc-4.8.5.tar.gz
+RUN tar xzf gcc-4.8.5.tar.gz
+WORKDIR gcc-4.8.5
+RUN ./contrib/download_prerequisites
+WORKDIR ..
+RUN mkdir build
+WORKDIR build
+RUN ../gcc-4.8.5/configure --enable-languages=c,c++ --disable-checking --disable-multilib --disable-bootstrap
+RUN make -j16
+RUN make install
+
+# Install OpenSSL
 # The built-in SSL is so old it can't talk to anything on the internet anymore
 # (so even get-pip.py doesn't work!)
-ADD https://www.openssl.org/source/openssl-1.1.0j.tar.gz /src/openssl-1.1.0j.tar.gz
 WORKDIR /src
+RUN curl -O https://www.openssl.org/source/openssl-1.1.0j.tar.gz
 RUN tar xf openssl-1.1.0j.tar.gz
 WORKDIR /src/openssl-1.1.0j
-RUN ./config --prefix=/usr/local && \
+RUN ./config --prefix=/usr/local --openssldir=/usr/local && \
     make -j4 --quiet && \
     make install && \
+    cp libssl.a /usr/local/lib/libssl.a && \
+    cp libcrypto.a /usr/local/lib/libcrypto.a && \
+    cp libcrypto.so.1.1 /usr/local/lib/libcrypto.so.1.1 && \
+    cp libcrypto.so /usr/local/lib/libcrypto.so && \
+    cp libssl.so.1.1 /usr/local/lib/libssl.so.1.1 && \
+    cp libssl.so /usr/local/lib/libssl.so && \
     ldconfig && \
     rm -rf /src/openssl*
-
-ADD https://curl.haxx.se/download/curl-7.64.1.tar.xz /src/curl-7.64.1.tar.xz
-WORKDIR /src
-RUN tar xf curl-7.64.1.tar.xz
-WORKDIR /src/curl-7.64.1
-RUN ./configure --with-ssl --prefix=/usr/local && \
-     make -j24 --quiet && \
-     make --quiet install && \
-     ldconfig && \
-     rm -rf /src/curl*
 
 # Install cmake from binary release
 RUN mkdir -p /opt
@@ -142,6 +133,9 @@ RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enab
     ldconfig && \
     rm -rf /src/Python-3.7.3*
 
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+
 # Install pip and virtualenv
 WORKDIR /src
 RUN curl -O https://bootstrap.pypa.io/get-pip.py
@@ -155,6 +149,26 @@ RUN python3.7 get-pip.py
 RUN pip3.7 install virtualenv
 RUN rm -rf /src/get-pip.py
 
+ENV LD="/usr/local/lib64"
+
+# So this is where the real magic happens. Clang has a flag to specify the 
+# version of libstdc++ `--gcc-toolchain`. In turicreate we don't necessarily
+# have a flag to take care of this so we can re-create the expected directory
+# structure using the script below. This is effectively creating the structure
+# you'd expect when calling yum install gcc-4.*
+# 
+# Using `clang -v` you can see the version of gcc that clang picks up
+# automatically from `/usr`. If all goes well, this should be the `libstdc++`
+# from gcc-4.8.5 and turicreate can build.
+RUN mkdir -p /usr/libexec/gcc/x86_64-redhat-linux/4.8.5
+RUN mkdir -p /usr/include/c++/4.8.5
+RUN mkdir -p /usr/lib/gcc/x86_64-redhat-linux/4.8.5
+
+RUN cp -a /usr/local/libexec/gcc/x86_64-unknown-linux-gnu/4.8.5/* /usr/libexec/gcc/x86_64-redhat-linux/4.8.5/
+RUN cp -a /usr/local/include/c++/4.8.5/* /usr/include/c++/4.8.5/
+RUN cp -a /usr/local/lib/gcc/x86_64-unknown-linux-gnu/4.8.5/* /usr/lib/gcc/x86_64-redhat-linux/4.8.5/
+RUN cp -a /usr/local/lib64/* /usr/lib/gcc/x86_64-redhat-linux/4.8.5/
+
 # Install llvm 8.0.0 from source with clang (no libc++)
 WORKDIR /src
 RUN curl -O https://releases.llvm.org/8.0.0/llvm-8.0.0.src.tar.xz
@@ -164,7 +178,7 @@ RUN tar xf llvm-8.0.0.src.tar.xz && \
     mv cfe-8.0.0.src llvm-8.0.0.src/tools/clang && \
     mkdir llvm-8.0.0.build
 WORKDIR /src/llvm-8.0.0.build
-RUN cmake ../llvm-8.0.0.src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_COMPILER=gcc-4.8 -DCMAKE_CXX_COMPILER=g++-4.8 -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=ON && \
+RUN cmake ../llvm-8.0.0.src/ -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX -DLLVM_TEMPORARILY_ALLOW_OLD_TOOLCHAIN=ON && \
     make -j24 || make -j4 && \
     make --quiet install && \
     ldconfig && \
@@ -185,3 +199,5 @@ RUN ccache -M 4G
 
 # Clean up now-unnecessary paths in image
 RUN rm -rf /src
+
+WORKDIR /build/

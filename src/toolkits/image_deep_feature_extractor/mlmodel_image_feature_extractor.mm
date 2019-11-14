@@ -102,7 +102,7 @@ private:
 
 const std::map<const std::string, const neural_network_model_details> model_name_to_info =
   {{"resnet-50", {224, 224, 2048, "flatten0", "data",
-                  "Resnet50.mlmodel"}},
+                  "https://docs-assets.developer.apple.com/turicreate/models/resnet-50-TuriCreate-6.0.mlmodel"}},
    {"VisionFeaturePrint_Scene", {299, 299, 2048, "output", "image_input", ""}},
    {"squeezenet_v1.1", {227, 227, 1000, "pool10", "image",
                         "https://docs-assets.developer.apple.com/coreml/models/SqueezeNet.mlmodel"}}};

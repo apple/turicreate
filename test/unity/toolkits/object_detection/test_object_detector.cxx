@@ -422,11 +422,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
   // Now, actually invoke object_detector::init_training. This will trigger all
   // the assertions registered above.
   model.init_training(data, test_annotations_name, test_image_name, gl_sframe(),
-                      {
-                          {"mlmodel_path", test_mlmodel_path},
-                          {"batch_size", test_batch_size},
-                          {"max_iterations", test_max_iterations},
-                      });
+                      {{"mlmodel_path", test_mlmodel_path},
+                       {"batch_size", test_batch_size},
+                       {"max_iterations", test_max_iterations}});
 
   // Verify model fields.
   TS_ASSERT_EQUALS(model.get_field<flex_int>("batch_size"), test_batch_size);
@@ -498,7 +496,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_finalize_training) {
 
   // Now, actually invoke object_detector::finalize_training. This will trigger
   // all the assertions registered above.
-  model.finalize_training();
+  model.finalize_training(true);
 
   // Verify model fields.
   TS_ASSERT_EQUALS(
@@ -1092,7 +1090,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
     model.convert_yolo_to_annotations_calls_.push_back(convert_yolo_impl);
   }
   std::map<std::string, flexible_type> opts{{"confidence_threshold",0.25}, {"iou_threshold",0.45}};
-  gl_sarray result = model.predict(data, opts);
+  variant_type result_variant = model.predict(data, opts);
+  gl_sarray result = variant_get_value<gl_sarray>(result_variant);
   for (size_t j = 0; j < result.size(); ++j) {
     TS_ASSERT_EQUALS(result[j].size(), num_prediction_instances);
   }

@@ -34,10 +34,10 @@ test_images = tc.load_images('test/')
 stylized_images = model.stylize(test_images)
 
 # Save the model for later use in Turi Create
-model.save('mymodel.model')
+model.save('style-transfer.model')
 
 # Export for use in Core ML
-model.export_coreml('MyStyleTransfer.mlmodel')
+model.export_coreml('MyCustomStyleTransfer.mlmodel')
 ```
 
 #### Data Acquisition

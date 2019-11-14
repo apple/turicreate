@@ -7,8 +7,8 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 
 # The build image version that will be used for testing
-TC_BUILD_IMAGE_1404=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=14.04)
-TC_BUILD_IMAGE_1804=$(sh $WORKSPACE/scripts/get_docker_image.sh --ubuntu=18.04)
+TC_BUILD_IMAGE_1404=$(bash $WORKSPACE/scripts/get_docker_image.sh --ubuntu=14.04)
+TC_BUILD_IMAGE_1804=$(bash $WORKSPACE/scripts/get_docker_image.sh --ubuntu=18.04)
 
 unknown_option() {
   echo "Unknown option $1. Exiting."

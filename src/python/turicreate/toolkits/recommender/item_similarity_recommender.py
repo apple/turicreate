@@ -103,27 +103,6 @@ def create(observation_data,
         recommendations based on either popularity (no target present)
         or average item score (target present) are made in this case.
 
-    training_method : (advanced), optional.
-        The internal processing is done with a combination of nearest
-        neighbor searching, dense tables for tracking item-item
-        similarities, and sparse item-item tables.  If 'auto' is chosen
-        (default), then the estimated computation time is estimated for
-        each, and the computation balanced between the methods in order to
-        minimize training time given the target memory usage.  This allows
-        the user to force the use of one of these methods.  All should give
-        equivalent results; the only difference would be training time.
-        Possible values are {'auto', 'dense', 'sparse', 'nn', 'nn:dense',
-        'nn:sparse'}. 'dense' uses a dense matrix to store item-item
-        interactions as a lookup, and may do multiple passes to control
-        memory requirements. 'sparse' does the same but with a sparse lookup
-        table; this is better if the data has many infrequent items.  "nn"
-        uses a brute-force nearest neighbors search.  "nn:dense" and
-        "nn:sparse" use nearest neighbors for the most frequent items
-        (see nearest_neighbors_interaction_proportion_threshold below),
-        and either sparse or dense matrices for the remainder.  "auto"
-        chooses the method predicted to be the fastest based on the
-        properties of the data.
-
     nearest_neighbors_interaction_proportion_threshold : (advanced) float
         Any item that has was rated by more than this proportion of
         users is  treated by doing a nearest neighbors search.  For
@@ -224,10 +203,6 @@ def create(observation_data,
         item_data = _turicreate.SFrame()
     if nearest_items is None:
         nearest_items = _turicreate.SFrame()
-
-    if "training_method" in kwargs and kwargs["training_method"] in ["in_memory", "sgraph"]:
-        print("WARNING: training_method = " + str(kwargs["training_method"]) + " deprecated; see documentation.")
-        kwargs["training_method"] = "auto"
 
     opts = {'user_id': user_id,
             'item_id': item_id,
