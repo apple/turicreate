@@ -257,6 +257,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             raise _ToolkitError("Unrecognized value for 'warm_start': "
                 + warm_start + ". 'warm_start' can take in the following "
                 + "values: " + str(accepted_values_for_warm_start))
+
+        # TODO: Remove these three lines when removing MXNet
         pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedModel(
             warm_start)
         pretrained_model_params_path = pretrained_model.get_model_path()
@@ -264,10 +266,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             ctx=ctx,
             allow_missing=True)
 
-        # TODO: Comment lines above
-        pretrained_model = _pre_trained_models.DrawingClassifierPreTrainedMLodel()
-        pretrained_model_path = pretrained_model.get_model_path()
-        params['mlmodel_path'] = pretrained_model_path
+        # Loading CoreML warmstart model
+        pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
+        params['mlmodel_path'] = pretrained_mlmodel.get_model_path()
 
     if params['use_tensorflow']:
         ## TensorFlow implementation

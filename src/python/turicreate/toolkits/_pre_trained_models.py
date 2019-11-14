@@ -275,9 +275,9 @@ class DrawingClassifierPreTrainedModel(object):
 
 class DrawingClassifierPreTrainedMLModel(object):
     def __init__(self):
-        self.name = 'quickdraw_245_v0' # this or auto?
-        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT, 'drawing_classifier_pre_trained_model_245_classes_v0.mlmodel')
-        self.source_md5 = '295c0f01813d9621c70094c72d7d5348'
+        self.source_url = _urlparse.urljoin(MODELS_URL_ROOT,
+            'drawing_classifier_pre_trained_model_245_classes_v0.mlmodel')
+        self.source_md5 = 'd9bb2afadca527b2d33b9b1a1b0b7f89'
 
     def get_model_path(self):
         model_path = _download_and_checksum_files(
@@ -285,7 +285,3 @@ class DrawingClassifierPreTrainedMLModel(object):
             )[0]
         return model_path
 
-# TODO: Update model with license
-# TODO below: Since two models for DC - maybe create a models base
-#DRAWING_CLASSIFIER_BASE_MODELS = {
-#}
