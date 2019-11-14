@@ -234,7 +234,6 @@ class OneShotObjectDetector(_CustomModel):
 
         # We don't know how to serialize a Python class, hence we need to
         # reduce the detector to the proxy object before saving it.
-
         state['detector'] = state['detector']._get_native_state()
         return state
 
