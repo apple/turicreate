@@ -104,7 +104,7 @@ Before we discuss how to use this threshold, we must first make a prediction.
 ##### Prediction
 
 Making a prediction is easy. Starting in iOS 13 we can now include confidence thresholds
-directly in the `VNCoreMLModel`. For an example of how to include thresholds in a project utiziling the Vision framework,
+directly in the `VNCoreMLModel`. For an example of how to include thresholds in a project utilizing the Vision framework,
 see [here](https://developer.apple.com/documentation/coreml/understanding_a_dice_roll_with_vision_and_object_detection).
 First, we need to setup a subclass of [`MLFeatureProvider`](https://developer.apple.com/documentation/coreml/mlfeatureprovider):
 
