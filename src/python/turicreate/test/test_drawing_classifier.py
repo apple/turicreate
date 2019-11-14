@@ -288,7 +288,7 @@ class DrawingClassifierTest(unittest.TestCase):
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
 
-    @unittest.skipIf(_sys.platform == "darwin", "Core ML only supported on Mac")
+    @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_with_predict(self):
         for test_number in range(len(self.models)):
             feature = self.feature
