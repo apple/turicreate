@@ -97,6 +97,7 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
       // Whether to traverse the SFrame more than once, and whether to shuffle.
       repeat_(params.repeat),
       shuffle_(params.shuffle),
+      scale_factor_(params.scale_factor),
 
       // Identify/verify the class labels and other target properties.
       target_properties_(compute_properties(data_, params.target_column_name,
@@ -109,8 +110,10 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
 
       // Initialize random number generator.
       random_engine_(params.random_seed)
-
-{}
+{
+  if(scale_factor_ <= 0)
+    log_and_throw("scale factor of image should be positive float");
+}
 
 bool simple_data_iterator::has_next_batch() {
   return (next_row_ != end_of_rows_);
@@ -210,6 +213,10 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     auto pend = std::begin(batch_drawings) + real_batch_size * image_data_size;
     batch_drawings.erase(pend, batch_drawings.end());
   }
+
+  // do normalization on each pixel
+  std::for_each(batch_drawings.begin(), batch_drawings.end(),
+                [=](float& x) { x *= scale_factor_; });
 
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
