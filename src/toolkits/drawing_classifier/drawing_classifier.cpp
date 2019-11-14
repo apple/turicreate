@@ -90,7 +90,8 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   size_t num_classes = read_state<flex_int>("num_classes");
 
   // feature column name
-  std::string feature_column_name = read_state<flex_string>("feature");
+  const std::string& feature_column_name = read_state<flex_string>("feature");
+
   flex_list features_list;
   features_list.push_back(feature_column_name);
 
@@ -106,9 +107,6 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   }
 
   weight_initializer initializer = zero_weight_initializer();
-
-  // feature columns names
-  const flex_string& feature_column_name = read_state<flex_string>("feature");
 
   const std::string prefix{"drawing"};
   // add suffix when needed.
