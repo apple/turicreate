@@ -256,7 +256,6 @@ class OneShotObjectDetector(_CustomModel):
         # back into a Python class
         state['detector'] = _ObjectDetector._load_version(
             state['detector'], state["_detector_version"])
-
         return OneShotObjectDetector(state)
 
     def __str__(self):
