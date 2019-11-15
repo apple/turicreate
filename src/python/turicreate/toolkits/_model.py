@@ -91,6 +91,7 @@ def load_model(location):
     elif archive_version == 1:
         name = saved_state['model_name'];
         if name in MODEL_NAME_MAP:
+            import turicreate.toolkits.libtctensorflow
             cls = MODEL_NAME_MAP[name]
             if 'model' in saved_state:
                 # this is a native model
