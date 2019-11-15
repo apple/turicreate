@@ -16,7 +16,7 @@ ExternalProject_Add(ex_libpng
   BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libpng.a
   BUILD_IN_SOURCE 1)
 
-add_dependencies(ex_libpng libza)
+add_dependencies(ex_libpng z)
 add_library(libpnga STATIC IMPORTED)
 set_property(TARGET libpnga PROPERTY INTERFACE_LINK_LIBRARIES z)
 set_property(TARGET libpnga PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/deps/local/lib/libpng.a)

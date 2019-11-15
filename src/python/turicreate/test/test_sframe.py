@@ -43,7 +43,6 @@ class SFrameTest(unittest.TestCase):
         self.string_data = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
         self.a_to_z = [str(chr(97 + i)) for i in range(0, 26)]
         self.dataframe = pd.DataFrame({'int_data': self.int_data, 'float_data': self.float_data, 'string_data': self.string_data})
-        self.url = "http://s3-us-west-2.amazonaws.com/testdatasets/a_to_z.txt.gz"
 
         self.int_data2 = range(50,60)
         self.float_data2 = [1.0 * i for i in range(50,60)]
@@ -582,18 +581,6 @@ class SFrameTest(unittest.TestCase):
 
         os.remove(skip_file_url)
 
-
-    def test_creation_from_csv_on_http(self):
-        pass
-        # sf = SFrame(data=self.url, use_header=False)
-        # self.__test_equal(sf, pd.DataFrame({'1': self.a_to_z}))
-
-    def test_creation_from_csv_on_s3(self):
-        # Requires s3 account for jenkins
-        # sf = SFrame(data='s3://turicreate-testdata/foo.csv')
-        # print sf.head(sf.num_rows())
-        pass
-
     def test_creation_from_csv_dir_local(self):
         csv_dir = "./csv_dir"
 
@@ -704,6 +691,13 @@ class SFrameTest(unittest.TestCase):
 
         sa = sf.apply(lambda x: x['int_data'] + x['float_data'], float)
         self.__assert_sarray_equal(sf['int_data'] + sf['float_data'], sa)
+    
+    def test_add(self):
+        sf1 = SFrame({'a': [1,2,3]})
+        sf2 = SFrame({'a': [6,7]})
+        sf1=sf1+sf2
+        expected=SFrame({'a': [1,2,3,6,7]})
+        _assert_sframe_equal(sf1, expected)
 
     def test_transform_with_recursion(self):
         sf = SFrame(data={'a':[0,1,2,3,4], 'b':['0','1','2','3','4']})

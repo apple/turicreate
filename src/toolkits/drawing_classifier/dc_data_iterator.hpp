@@ -36,9 +36,9 @@ class data_iterator {
     /**
      * The name of the column containing the target variable.
      *
-     * If empty, then the output will not contain labels or weights.
+     * If empty, then the output will not contain labels.
      */
-    std::string target_column_name{"target"};
+    std::string target_column_name;
 
     /** The name of the feature column. */
     std::string feature_column_name{"feature"};
@@ -67,6 +67,9 @@ class data_iterator {
 
     /** Determines results of shuffle operations if enabled. */
     int random_seed = 0;
+
+    // normalization factor for input data
+    float scale_factor = 1 / 255.f;
   };
 
   /** Defines the output of a data_iterator. */
@@ -165,7 +168,8 @@ class simple_data_iterator : public data_iterator {
   };
 
   target_properties compute_properties(
-      const gl_sarray& targets, std::vector<std::string> expected_class_labels);
+      const gl_sframe& data, const std::string& target_column_name,
+      const std::vector<std::string>& expected_class_labels);
 
   gl_sframe data_;
   const int target_index_;
@@ -173,6 +177,7 @@ class simple_data_iterator : public data_iterator {
   const int feature_index_;
   const bool repeat_;
   const bool shuffle_;
+  const float scale_factor_ = 1 / 255.0f;
 
   const target_properties target_properties_;
 

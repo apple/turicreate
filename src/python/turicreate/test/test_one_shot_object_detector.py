@@ -13,13 +13,16 @@ import turicreate as tc
 import tempfile
 import numpy as np
 import platform
+import pytest
 import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver, _read_env_var_cpp
 import coremltools
 
 _CLASSES = ['logo_a', 'logo_b', 'logo_c', 'logo_d']
+IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
 def _get_data(feature, target):
     from PIL import Image as _PIL_Image
@@ -108,19 +111,21 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
            'detector': lambda x: isinstance(x, tc.object_detector.object_detector.ObjectDetector),
            '_detector_version': lambda x: x==1
         }
+
+        if USE_CPP:
+            self.get_ans['detector'] = lambda x: isinstance(x, tc.object_detector.object_detector.ObjectDetector_beta)
+
         self.fields_ans = self.get_ans.keys()
 
-    @unittest.skip("Skipping until https://github.com/apple/turicreate/issues/2406 gets resolved")
     def test_synthesis_with_single_image(self):
         image = self.train[0][self.feature]
         data = tc.one_shot_object_detector.util.preview_synthetic_training_data(
             image, 'custom_logo', backgrounds=self.backgrounds)
 
-    @unittest.skip("Skipping until https://github.com/apple/turicreate/issues/2406 gets resolved")
     def test_create_with_single_image(self):
         image = self.train[0][self.feature]
         model = tc.one_shot_object_detector.create(
-            image, 'custom_logo', backgrounds=self.backgrounds)
+            image, 'custom_logo', backgrounds=self.backgrounds, max_iterations=1)
 
     def test_create_with_missing_value(self):
         sf = self.train.append(tc.SFrame({self.feature: tc.SArray([None], dtype=tc.Image), self.target: [self.train[self.target][0]]}))
@@ -182,7 +187,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         # This should return predictions
         self.assertTrue(len(stacked) > 0)
 
-
     def test_export_coreml(self):
         from PIL import Image
         import coremltools
@@ -235,6 +239,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
+    @pytest.mark.xfail()
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)

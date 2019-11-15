@@ -64,22 +64,6 @@ class TestModel(unittest.TestCase):
             self.pr_model.save(url)
             self.__assert_model_equals__(self.pr_model, tc.load_model(url))
 
-    def test_backwards_compatible_load(self):
-        r"""
-        `load_model` should be backwards compatible with models saved with the
-        previous version of GLC.  Make sure this still works, using a model
-        saved from GLC 0.9.
-
-        Notes
-        -----
-        **Important**: The saved model needs to be updated with every release.
-        """
-
-        # Will enable soon.
-        # model = tc.load_model('https://static.turi.com/models/mf_model_0.9')
-        # assert model is not None
-
-
     @unittest.skip('failing since 08/30/2016')
     def test_exception(self):
         # load model from empty file

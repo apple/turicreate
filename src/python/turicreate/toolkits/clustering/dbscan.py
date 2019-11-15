@@ -62,8 +62,7 @@ def create(dataset, features=None, distance=None, radius=1.,
 
         - *String*: the name of a standard distance function. One of
           'euclidean', 'squared_euclidean', 'manhattan', 'levenshtein',
-          'jaccard', 'weighted_jaccard', 'cosine', 'dot_product' (deprecated),
-          or 'transformed_dot_product'.
+          'jaccard', 'weighted_jaccard', 'cosine', or 'transformed_dot_product'.
 
         - *Composite distance*: the weighted sum of several standard distance
           functions applied to various features. This is specified as a list of
@@ -168,14 +167,9 @@ def create(dataset, features=None, distance=None, radius=1.,
     +--------+------------+----------+
     [14 rows x 3 columns]
     """
-    import warnings
-    
     ## Start the training time clock and instantiate an empty model
     logger = _logging.getLogger(__name__)
     start_time = _time.time()
-
-    if distance == 'dot_product':
-        warnings.warn("Using a \"dot_product\" distance is deprecated. This functionality will be removed in the next major release.")
 
     ## Validate the input dataset
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")

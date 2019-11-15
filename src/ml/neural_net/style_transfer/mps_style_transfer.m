@@ -260,6 +260,16 @@
   // TODO: Change for testing
   _batchSize = 1;
 
+  NSData* imageWidthData = inputs[@"width"];
+  float imageWidth;
+  [imageWidthData getBytes:&imageWidth length:sizeof(float)];
+  _imgWidth = (NSInteger) imageWidth;
+
+  NSData* imageHeightData = inputs[@"height"];
+  float imageHeight;
+  [imageHeightData getBytes:&imageHeight length:sizeof(float)];
+  _imgHeight = (NSInteger) imageHeight;
+
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
                                width:_imgWidth
@@ -326,6 +336,16 @@
 
 - (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
   _batchSize = 1;
+
+  NSData* imageWidthData = inputs[@"width"];
+  float imageWidth;
+  [imageWidthData getBytes:&imageWidth length:sizeof(float)];
+  _imgWidth = (NSInteger) imageWidth;
+
+  NSData* imageHeightData = inputs[@"height"];
+  float imageHeight;
+  [imageHeightData getBytes:&imageHeight length:sizeof(float)];
+  _imgHeight = (NSInteger) imageHeight;
 
   NSString* indexKey = @"index";
 

@@ -29,7 +29,6 @@ we've included a method to help you recover those annotations. The code
 for that is shown below:
 
 ```python
-
 import turicreate as tc
 
 # Use the example provided in the `Introductory Example`

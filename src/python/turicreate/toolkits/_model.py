@@ -68,7 +68,7 @@ def load_model(location):
         dir_archive_exists = file_util.exists(os.path.join(model_path, 'dir_archive.ini'))
     else:
         model_path = location
-        if protocol in ['http', 'https']:
+        if protocol in ['http', 'https', 's3']:
             dir_archive_exists = True
         else:
             import posixpath
@@ -115,7 +115,7 @@ def load_model(location):
                     model = _extensions.style_transfer()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
-
+                    
                 return cls._load_version(model_data, model_version)
 
         elif hasattr(_extensions, name):

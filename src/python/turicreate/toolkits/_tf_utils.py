@@ -16,11 +16,11 @@ def get_gpu_names():
 	"""
 	import tensorflow as tf
 	gpu_names = tf.config.experimental.list_physical_devices('GPU')
-	return gpu_names
-	
+	return [str(gpu_name) for gpu_name in gpu_names]
+
 def convert_shared_float_array_to_numpy(array):
 	"""
-	The initialization from C++ implementation is mapped to SharedFloatArray 
+	The initialization from C++ implementation is mapped to SharedFloatArray
 	in Python through Pybind. It must be converted to numpy arrays to be used
 	in TensorFlow.
 
@@ -38,18 +38,18 @@ def convert_shared_float_array_to_numpy(array):
 
 def convert_conv1d_coreml_to_tf(conv_weights):
 	"""
-	The Convolutional weights in CoreML specification converted to 
+	The Convolutional weights in CoreML specification converted to
 	the TensorFlow format for training in TensorFlow.
 
 	Parameters
     ----------
-    conv_weights: 4d numpy array of shape 
-       [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
+    conv_weights: 4d numpy array of shape
+       [outputChannels, kernelChannels, kernelHeight, kernelWidth]
 
     Returns
     -------
 	return: 3d numpy array of shape
-	   [kernelWidth, kernelChannels, outputChannels] 
+	   [kernelWidth, kernelChannels, outputChannels]
 	   since kernelHeight = 1 for conv1d
 
 	"""
@@ -58,14 +58,14 @@ def convert_conv1d_coreml_to_tf(conv_weights):
 	return np.squeeze(conv_weights, axis=3)
 
 def convert_conv2d_coreml_to_tf(conv_weights):
-	
+
 	"""
-	The Convolutional weights in CoreML specification converted to 
+	The Convolutional weights in CoreML specification converted to
 	the TensorFlow format for training in TensorFlow.
 
 	Parameters
     ----------
-    conv_weights: 4d numpy array of shape 
+    conv_weights: 4d numpy array of shape
        [output_channels, input_channels, filter_height, filter_width]
 
     Returns
@@ -79,18 +79,18 @@ def convert_conv2d_coreml_to_tf(conv_weights):
 
 def convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o):
 	"""
-	The weights of four gates of LSTM - input, state, forget, output are 
-	sent separately for input to hidden layer and hidden to hidden layer. 
+	The weights of four gates of LSTM - input, state, forget, output are
+	sent separately for input to hidden layer and hidden to hidden layer.
 
-	For tensorflow, the layers - input to hidden and hidden to hidden are 
+	For tensorflow, the layers - input to hidden and hidden to hidden are
 	combined.
 	Internally we need to combine the gates it in the order of input, state,
-	forget and output. 
+	forget and output.
 
 	Parameters
     ----------
-    i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o: 
-       2d numpy arrays of input to hidden layer 
+    i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o:
+       2d numpy arrays of input to hidden layer
 	   and hidden to hidden layer split into their individual gates
 
 	   i2h_gate : [hidden_units, input_depth]
@@ -98,8 +98,8 @@ def convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h
 
     Returns
     -------
-	return: 2d numpy array of shape 
-       [input_depth + hidden_units, hidden_units * 4] 
+	return: 2d numpy array of shape
+       [input_depth + hidden_units, hidden_units * 4]
 
 	"""
 	i2h = np.concatenate((i2h_i, i2h_c, i2h_f, i2h_o), axis=0)
@@ -109,18 +109,18 @@ def convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h
 
 def convert_lstm_bias_coreml_to_tf(h2h_i, h2h_c, h2h_f, h2h_o):
 	"""
-	The biases of four gates of LSTM - input, state, forget, output are 
-	sent separately for hidden to hidden layer and are cincatenated for 
+	The biases of four gates of LSTM - input, state, forget, output are
+	sent separately for hidden to hidden layer and are cincatenated for
 	TensorFlow in the specified order.
 
 	Parameters
     ----------
-    h2h_i, h2h_c, h2h_f, h2h_o: Separated out LSTM gates 
-	    1d numpy arrays of shapes [hidden_units] 
+    h2h_i, h2h_c, h2h_f, h2h_o: Separated out LSTM gates
+	    1d numpy arrays of shapes [hidden_units]
 
     Returns
     -------
-	return: 1d numpy array of the LSTM bias arranged 
+	return: 1d numpy array of the LSTM bias arranged
        in the order - input, state, forget, output
        Shape [hidden_units * 4]
 
@@ -131,18 +131,18 @@ def convert_lstm_bias_coreml_to_tf(h2h_i, h2h_c, h2h_f, h2h_o):
 
 def convert_dense_coreml_to_tf(dense_weights):
 	"""
-	The Dense layer weights from CoreML are [C_out, C_in, 1, 1] and need to be 
+	The Dense layer weights from CoreML are [C_out, C_in, 1, 1] and need to be
 	converted to [C_in, C_out] for TensorFlow.
 
 	Parameters
     ----------
     dense_weights: 4d numpy array of shape
-	   [outputChannels, inChannels, 1, 1] 
+	   [outputChannels, inChannels, 1, 1]
 
     Returns
     -------
-	return: 2d numpy array of shape 
-       [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
+	return: 2d numpy array of shape
+       [outputChannels, kernelChannels, kernelHeight, kernelWidth]
 
 	"""
 	dense_weights = np.transpose(dense_weights, (1, 0, 2, 3))
@@ -156,13 +156,13 @@ def convert_conv1d_tf_to_coreml(conv_weights):
 	Parameters
     ----------
     conv_weights: 3d numpy array of shape
-	   [kernelWidth, kernelChannels, outputChannels] 
+	   [kernelWidth, kernelChannels, outputChannels]
 	   since kernelHeight = 1 for conv1d
 
     Returns
     -------
-	return: 4d numpy array of shape 
-       [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
+	return: 4d numpy array of shape
+       [outputChannels, kernelChannels, kernelHeight, kernelWidth]
 
 	"""
 	conv_weights = np.expand_dims(conv_weights, axis=2)
@@ -180,8 +180,8 @@ def convert_conv2d_tf_to_coreml(conv_weights):
 	   [filter_height, filter_width, input_channels, output_channels]
     Returns
     -------
-	return: 4d numpy array of shape 
-       [output_channels, input_channels, filter_height, filter_width] 
+	return: 4d numpy array of shape
+       [output_channels, input_channels, filter_height, filter_width]
 
 	"""
 	conv_weights = np.transpose(conv_weights, (3, 2, 0, 1))
@@ -189,18 +189,18 @@ def convert_conv2d_tf_to_coreml(conv_weights):
 
 def convert_lstm_weight_tf_to_coreml(lstm_weight, split):
 	"""
-	The weights of four gates of LSTM - input, state, forget, output are 
+	The weights of four gates of LSTM - input, state, forget, output are
 	sent separately for input to hidden layer and hidden to hidden layer
 	to abide by CoreML specification.
 
 	Parameters
     ----------
-    lstm_weight: 2d numpy array of shape 
-       [input_depth + hidden_units, hidden_units * 4] 
+    lstm_weight: 2d numpy array of shape
+       [input_depth + hidden_units, hidden_units * 4]
 
     Returns
     -------
-	return: 2d numpy arrays of input to hidden layer 
+	return: 2d numpy arrays of input to hidden layer
 	and hidden to hidden layer split into their individual gates
 
 	i2h_gate : [hidden_units, input_depth]
@@ -222,20 +222,20 @@ def convert_lstm_weight_tf_to_coreml(lstm_weight, split):
 
 def convert_lstm_bias_tf_to_coreml(lstm_bias):
 	"""
-	The biases of four gates of LSTM - input, state, forget, output are 
+	The biases of four gates of LSTM - input, state, forget, output are
 	sent separately for hidden to hidden layer to abide by CoreML specification.
 
 	Parameters
     ----------
-    lstm_bias: 1d numpy array of the LSTM bias arranged 
+    lstm_bias: 1d numpy array of the LSTM bias arranged
        in the order - input, state, forget, output
        Shape [hidden_units * 4]
 
     Returns
     -------
-	return: Separated out LSTM gates 
+	return: Separated out LSTM gates
 	    1d numpy arrays of shapes [hidden_units]
-	   
+
 
 	"""
 	h2h_i, h2h_c, h2h_f, h2h_o = np.split(lstm_bias, 4)
@@ -243,18 +243,18 @@ def convert_lstm_bias_tf_to_coreml(lstm_bias):
 
 def convert_dense_tf_to_coreml(dense_weights):
 	"""
-	The Dense layer weights from TensorFlow are converted 
+	The Dense layer weights from TensorFlow are converted
 	back to CoreML specification.
 
 	Parameters
     ----------
-    dense_weights: 2d numpy array of shape 
-       [outputChannels, kernelChannels, kernelHeight, kernelWidth] 
+    dense_weights: 2d numpy array of shape
+       [outputChannels, kernelChannels, kernelHeight, kernelWidth]
 
     Returns
     -------
 	return: 4d numpy array of shape
-	   [outputChannels, inChannels, 1, 1] 
+	   [outputChannels, inChannels, 1, 1]
 
 	"""
 	dense_weights = np.transpose(dense_weights)

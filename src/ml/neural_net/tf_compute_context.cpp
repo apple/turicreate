@@ -231,11 +231,16 @@ tf_image_augmenter::prepare_augmented_images(
 
     for (size_t i = 0; i < aug_annotations.size(); i++) {
       pybind11::buffer_info buf_ann = aug_annotations[i].request();
-      turi::neural_net::shared_float_array annotate =
-          turi::neural_net::shared_float_array::copy(
-              static_cast<float*>(buf_ann.ptr),
-              std::vector<size_t>(buf_ann.shape.begin(), buf_ann.shape.end()));
-      annotations_per_batch.push_back(annotate);
+      size_t num_annotations = buf_ann.shape[0];
+      turi::neural_net::shared_float_array annotation;
+      if (num_annotations > 0) {
+        annotation = turi::neural_net::shared_float_array::copy(
+            static_cast<float*>(buf_ann.ptr),
+            std::vector<size_t>(buf_ann.shape.begin(), buf_ann.shape.end()));
+      } else {
+        annotation = turi::neural_net::shared_float_array();
+      }
+      annotations_per_batch.push_back(annotation);
     }
     image_annotations.annotations = annotations_per_batch;
   });
@@ -261,21 +266,19 @@ tf_compute_context::tf_compute_context() = default;
 tf_compute_context::~tf_compute_context() = default;
 
 size_t tf_compute_context::memory_budget() const {
-  // TODO: Returns 4GB as that makes sure default batch size is used. 
+  // TODO: Returns 4GB as that makes sure default batch size is used.
   // Do something that makes more sense like MPS later.
   return 4294967296lu;
 }
 
 std::vector<std::string> tf_compute_context::gpu_names() const {
-  pybind11::object gpu_devices;
   std::vector<std::string> gpu_device_names;
 
   call_pybind_function([&]() {
-    
     pybind11::module tf_gpu_devices =
         pybind11::module::import("turicreate.toolkits._tf_utils");
     // Get the names from tf utilities function
-    gpu_devices = tf_gpu_devices.attr("get_gpu_names")();
+    pybind11::object gpu_devices = tf_gpu_devices.attr("get_gpu_names")();
     gpu_device_names = gpu_devices.cast<std::vector<std::string>>();
   });
 
@@ -286,17 +289,17 @@ std::vector<std::string> tf_compute_context::gpu_names() const {
 std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
     const float_array_map& config, const float_array_map& weights) {
-
-  pybind11::object object_detector;
+  std::unique_ptr<tf_model_backend> result;
   call_pybind_function([&]() {
       pybind11::module tf_od_backend = pybind11::module::import(
           "turicreate.toolkits.object_detector._tf_model_architecture");
 
       // Make an instance of python object
-      object_detector = tf_od_backend.attr("ODTensorFlowModel")(h_in, w_in, n, c_out, weights, config);
+      pybind11::object object_detector = tf_od_backend.attr(
+          "ODTensorFlowModel")(h_in, w_in, n, c_out, weights, config);
+      result.reset(new tf_model_backend(object_detector));
     });
-  return std::unique_ptr<tf_model_backend>(
-      new tf_model_backend(object_detector));
+  return result;
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
@@ -305,18 +308,18 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
   shared_float_array prediction_window = config.at("ac_pred_window");
   const float* pred_window = prediction_window.data();
   int pw = static_cast<int>(*pred_window);
-  pybind11::object activity_classifier;
+
+  std::unique_ptr<tf_model_backend> result;
   call_pybind_function([&]() {
     pybind11::module tf_ac_backend = pybind11::module::import(
         "turicreate.toolkits.activity_classifier._tf_model_architecture");
 
     // Make an instance of python object
-    activity_classifier = tf_ac_backend.attr("ActivityTensorFlowModel")(
-        weights, n, c_in, c_out, pw, w_out);
+    pybind11::object activity_classifier = tf_ac_backend.attr(
+        "ActivityTensorFlowModel")(weights, n, c_in, c_out, pw, w_out);
+    result.reset(new tf_model_backend(activity_classifier));
   });
-  return std::unique_ptr<tf_model_backend>(
-      new tf_model_backend(activity_classifier));
-  
+  return result;
 }
 
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
@@ -326,17 +329,17 @@ std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
 
 std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
       const float_array_map& config, const float_array_map& weights) {
-  pybind11::object style_transfer;
+  std::unique_ptr<tf_model_backend> result;
   call_pybind_function([&]() {
     pybind11::module tf_st_backend = pybind11::module::import(
         "turicreate.toolkits.style_transfer._tf_model_architecture");
 
     // Make an instance of python object
-    style_transfer =
+    pybind11::object style_transfer =
         tf_st_backend.attr("StyleTransferTensorFlowModel")(config, weights);
+    result.reset(new tf_model_backend(style_transfer));
   });
-  return std::unique_ptr<tf_model_backend>(
-      new tf_model_backend(style_transfer));
+  return result;
 }
 
 /**
@@ -346,17 +349,17 @@ std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
     /* TODO: const float_array_map& config if needed */
     const float_array_map& weights,
     size_t batch_size, size_t num_classes) {
-  pybind11::object drawing_classifier;
+  std::unique_ptr<tf_model_backend> result;
   call_pybind_function([&]() {
     pybind11::module tf_dc_backend = pybind11::module::import(
         "turicreate.toolkits.drawing_classifier._tf_drawing_classifier");
 
     // Make an instance of python object
-    drawing_classifier = tf_dc_backend.attr("DrawingClassifierTensorFlowModel")(
-        weights, batch_size, num_classes);
+    pybind11::object drawing_classifier = tf_dc_backend.attr(
+        "DrawingClassifierTensorFlowModel")(weights, batch_size, num_classes);
+    result.reset(new tf_model_backend(drawing_classifier));
   });
-  return std::unique_ptr<tf_model_backend>(
-      new tf_model_backend(drawing_classifier));
+  return result;
 }
 
 }  // namespace neural_net

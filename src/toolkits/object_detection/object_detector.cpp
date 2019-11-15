@@ -269,6 +269,12 @@ void object_detector::init_options(
       /* default_value     */ "center",
       /* allowed_values    */ {flexible_type("center"), flexible_type("top_left"), flexible_type("bottom_left")},
       /* allowed_overwrite */ false);
+  options.create_flexible_type_option(
+      /* name              */ "classes",
+      /* description       */
+      "Defines class labels.",
+      /* default_value     */ flex_list(),
+      /* allowed_overwrite */ false);
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -407,6 +413,13 @@ void object_detector::train(gl_sframe data,
                             variant_type validation_data,
                             std::map<std::string, flexible_type> opts)
 {
+  auto compute_final_metrics_iter = opts.find("compute_final_metrics");
+  bool compute_final_metrics = true;
+  if (compute_final_metrics_iter != opts.end()) {
+    compute_final_metrics = compute_final_metrics_iter->second;
+    opts.erase(compute_final_metrics_iter);
+  }
+
   // Instantiate the training dependencies: data iterator, image augmenter,
   // backend NN model.
   init_training(data, annotations_column_name, image_column_name,
@@ -421,7 +434,7 @@ void object_detector::train(gl_sframe data,
   }
 
   // Wait for any outstanding batches to finish.
-  finalize_training();
+  finalize_training(compute_final_metrics);
 
   add_or_update_state({
       {"training_time", time_object.current_time()},
@@ -444,7 +457,7 @@ void object_detector::synchronize_model(model_spec* nn_spec) const {
   nn_spec->update_params(trained_weights);
 }
 
-void object_detector::finalize_training() {
+void object_detector::finalize_training(bool compute_final_metrics) {
   // Wait for any outstanding batches.
   synchronize_training();
 
@@ -464,7 +477,9 @@ void object_detector::finalize_training() {
   training_compute_context_.reset();
 
   // Compute training and validation metrics.
-  update_model_metrics(training_data_, validation_data_);
+  if (compute_final_metrics) {
+    update_model_metrics(training_data_, validation_data_);
+  }
 }
 
 variant_type object_detector::evaluate(gl_sframe data, std::string metric,
@@ -963,7 +978,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
       grid_height * SPATIAL_REDUCTION, class_labels.size(),
       grid_height * grid_width * anchor_boxes().size(),
       std::move(user_defined_metadata), std::move(class_labels),
-      std::move(opts));
+      read_state<flex_string>("feature"), std::move(opts));
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
@@ -975,10 +990,16 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 std::unique_ptr<data_iterator> object_detector::create_iterator(
     gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
 {
+
   data_iterator::parameters iterator_params;
+
+  // Check if data has annotations column
+  std::string annotations_column_name = read_state<flex_string>("annotations");
+  if (data.contains_column(annotations_column_name)) {
+    iterator_params.annotations_column_name = annotations_column_name;
+  }
+
   iterator_params.data = std::move(data);
-  iterator_params.annotations_column_name =
-      read_state<flex_string>("annotations");
   iterator_params.image_column_name = read_state<flex_string>("feature");
   iterator_params.class_labels = std::move(class_labels);
   iterator_params.repeat = repeat;
@@ -1055,13 +1076,9 @@ void object_detector::init_training(gl_sframe data,
 
   // Record the relevant column names upfront, for use in create_iterator. Also
   // values fixed by this version of the toolkit.
-  add_or_update_state({
-      { "annotations", annotations_column_name },
-      { "feature", image_column_name },
-      { "model", "darknet-yolo" },
-      { "non_maximum_suppression_threshold",
-        DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD },
-  });
+  add_or_update_state({{"annotations", annotations_column_name},
+                       {"feature", image_column_name},
+                       {"model", "darknet-yolo"}});
 
   // Perform random validation split if necessary.
   std::tie(training_data_, validation_data_) =
@@ -1069,8 +1086,11 @@ void object_detector::init_training(gl_sframe data,
                                          read_state<int>("random_seed"));
 
   // Bind the data to a data iterator.
-  training_data_iterator_ = create_iterator(
-      training_data_, /* expected class_labels */ {}, /* repeat */ true);
+  std::vector<std::string> class_labels =
+      read_state<std::vector<std::string>>("classes");
+  training_data_iterator_ =
+      create_iterator(training_data_, /* expected class_labels */ class_labels,
+                      /* repeat */ true);
 
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of

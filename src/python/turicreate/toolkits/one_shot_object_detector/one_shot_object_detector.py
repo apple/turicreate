@@ -13,13 +13,10 @@ from turicreate.toolkits.object_detector.object_detector import ObjectDetector a
 from turicreate.toolkits.one_shot_object_detector.util._augmentation import preview_synthetic_training_data as _preview_synthetic_training_data
 import turicreate.toolkits._internal_utils as _tkutl
 
+USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
-def create(data,
-           target,
-           backgrounds=None,
-           batch_size=0,
-           max_iterations=0,
-           verbose=True):
+
+def create(data, target, backgrounds=None, batch_size=0, max_iterations=0, verbose=True):
     """
     Create a :class:`OneShotObjectDetector` model. Note: The One Shot Object Detector
     is currently in beta.
@@ -62,11 +59,12 @@ def create(data,
     """
     if not isinstance(data, _tc.SFrame) and not isinstance(data, _tc.Image):
         raise TypeError("'data' must be of type SFrame or Image.")
-    augmented_data = _preview_synthetic_training_data(data, target, backgrounds)
-    model = _tc.object_detector.create( augmented_data,
-                                        batch_size=batch_size,
-                                        max_iterations=max_iterations,
-                                        verbose=verbose)
+    augmented_data = _preview_synthetic_training_data(
+        data, target, backgrounds)
+    model = _tc.object_detector.create(augmented_data,
+                                       batch_size=batch_size,
+                                       max_iterations=max_iterations,
+                                       verbose=verbose)
     if isinstance(data, _tc.SFrame):
         num_starter_images = len(data)
     else:
@@ -77,10 +75,11 @@ def create(data,
         "num_classes": model.num_classes,
         "num_starter_images": num_starter_images,
         "_detector_version": _ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION,
-        }
+    }
     return OneShotObjectDetector(state)
 
-class OneShotObjectDetector(_CustomModel): 
+
+class OneShotObjectDetector(_CustomModel):
     """
     An trained model that is ready to use for classification, exported to
     Core ML, or for feature extraction.
@@ -143,13 +142,13 @@ class OneShotObjectDetector(_CustomModel):
             >>> predictions_with_bounding_boxes.explore()
 
         """
-        return self.__proxy__['detector'].predict(dataset=dataset,
-            confidence_threshold=confidence_threshold, iou_threshold=iou_threshold, verbose=verbose)
+        return self.__proxy__['detector'].predict(
+            dataset=dataset,
+            confidence_threshold=confidence_threshold,
+            iou_threshold=iou_threshold,
+            verbose=verbose)
 
-    def export_coreml(self, filename,
-            include_non_maximum_suppression = True,
-            iou_threshold = None,
-            confidence_threshold = None):
+    def export_coreml(self, filename, include_non_maximum_suppression=True, iou_threshold=None, confidence_threshold=None):
         """
         Save the model in Core ML format. The Core ML model takes an image of
         fixed size as input and produces two output arrays: `confidence` and
@@ -209,8 +208,18 @@ class OneShotObjectDetector(_CustomModel):
         >>> model.export_coreml('one_shot.mlmodel')
         """
         from coremltools.models.utils import save_spec as _save_spec
-        model = self.__proxy__['detector']._create_coreml_model(include_non_maximum_suppression=include_non_maximum_suppression, iou_threshold=iou_threshold, confidence_threshold=confidence_threshold)
-        model.description.metadata.shortDescription = 'One Shot ' + model.description.metadata.shortDescription
+        import coremltools
+        if USE_CPP:
+            self.__proxy__['detector'].export_coreml(
+                filename, include_non_maximum_suppression, iou_threshold, confidence_threshold)
+            model = coremltools.models.MLModel(filename).get_spec()
+        else:
+            model = self.__proxy__['detector']._create_coreml_model(
+                include_non_maximum_suppression=include_non_maximum_suppression,
+                iou_threshold=iou_threshold,
+                confidence_threshold=confidence_threshold)
+        model.description.metadata.shortDescription = 'One Shot ' + \
+            model.description.metadata.shortDescription
         model.description.metadata.userDefined["type"] = 'OneShotObjectDetector'
         _save_spec(model, filename)
 
@@ -228,7 +237,10 @@ class OneShotObjectDetector(_CustomModel):
 
         # We don't know how to serialize a Python class, hence we need to
         # reduce the detector to the proxy object before saving it.
-        state['detector'] = state['detector']._get_native_state()
+        if USE_CPP:
+            pass
+        else:
+            state['detector'] = state['detector']._get_native_state()
         return state
 
     @classmethod
@@ -256,11 +268,18 @@ class OneShotObjectDetector(_CustomModel):
         Print a string description of the model when the model name is entered
         in the terminal.
         """
+        if USE_CPP:
+            return self.__class__.__name__
+
         width = 40
         sections, section_titles = self._get_summary_struct()
         detector = self.__proxy__['detector']
-        out = _tkutl._toolkit_repr_print(detector, sections, section_titles,
-                                         width=width, class_name='OneShotObjectDetector')
+        out = _tkutl._toolkit_repr_print(
+            detector,
+            sections,
+            section_titles,
+            width=width,
+            class_name='OneShotObjectDetector')
         return out
 
     def _get_summary_struct(self):
@@ -295,5 +314,8 @@ class OneShotObjectDetector(_CustomModel):
             ('Final loss (specific to model)', 'training_loss'),
         ]
 
-        section_titles = ['Model summary', 'Synthetic data summary', 'Training summary']
+        section_titles = [
+            'Model summary',
+            'Synthetic data summary',
+            'Training summary']
         return([model_fields, data_fields, training_fields], section_titles)

@@ -9,6 +9,7 @@
 #import <ml/neural_net/mps_device_manager.h>
 
 #include <core/logging/logger.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 #include <ml/neural_net/mps_cnnmodule.h>
 #include <ml/neural_net/mps_graph_cnnmodule.h>
 #include <ml/neural_net/mps_image_augmentation.hpp>
@@ -39,7 +40,39 @@ float_array_map multiply_mps_od_loss_multiplier(float_array_map config,
 }
 
 std::unique_ptr<compute_context> create_mps_compute_context() {
-  return std::unique_ptr<compute_context>(new mps_compute_context);
+  @autoreleasepool {
+
+  // If the user has disabled GPU usage, don't use MPS at all.
+  if (fileio::NUM_GPUS == 0) return nullptr;
+
+  std::unique_ptr<compute_context> result;
+
+  // Query the best available Metal device.
+  // \todo Guard against eGPU coming and going?
+  id<MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
+
+  // Discrete GPUs should work, but the story for integrated "low-power" GPUs is more complex.
+  bool supported = true;
+  if (dev.lowPower) {
+    if (@available(macOS 10.15, *)) {
+      // Intel HD 515 or later is supported.
+      supported = [dev supportsFeatureSet:MTLFeatureSet_macOS_GPUFamily2_v1];
+    } else {
+      // For our use cases, older versions of macOS cannot robustly support integrated GPUs.
+      supported = false;
+    }
+  }
+
+  // If we have a supported Metal device, wrap a mps_command_queue around it.
+  if (supported) {
+    std::unique_ptr<mps_command_queue> command_queue(new mps_command_queue);
+    command_queue->impl = [dev newCommandQueue];
+    result.reset(new mps_compute_context(std::move(command_queue)));
+  }
+
+  return result;
+
+  }  // @autoreleasepool
 }
 
 // At static-init time, register create_mps_compute_context().
@@ -53,21 +86,6 @@ mps_compute_context::mps_compute_context(
     std::unique_ptr<mps_command_queue> command_queue)
   : command_queue_(std::move(command_queue))
 {}
-
-mps_compute_context::mps_compute_context()
-  : command_queue_(new mps_command_queue)
-{
-  @autoreleasepool {
-
-  id <MTLDevice> dev = [[TCMPSDeviceManager sharedInstance] preferredDevice];
-  if (dev == nil) {
-    log_and_throw("No valid Metal device found.");
-  }
-
-  command_queue_->impl = [dev newCommandQueue];
-
-  }  // @autoreleasepool
-}
 
 mps_compute_context::~mps_compute_context() = default;
 
@@ -95,6 +113,7 @@ std::unique_ptr<image_augmenter> mps_compute_context::create_image_augmenter(
   return std::unique_ptr<image_augmenter>(new mps_image_augmenter(opts));
 }
 
+// static
 std::unique_ptr<image_augmenter>
 mps_compute_context::create_image_augmenter_for_testing(
     const image_augmenter::options& opts,
