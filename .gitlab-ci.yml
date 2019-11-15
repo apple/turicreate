@@ -92,7 +92,7 @@ build_wheel_linux_python37:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.7 --skip_doc
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.7 --skip_doc
   artifacts:
     expire_in: 1 day
     paths:
@@ -385,7 +385,7 @@ test_python_linux_python37:
     - build_wheel_linux_python37
   script:
     - apk add bash
-    - bash scripts/test_wheel.sh --docker-python3.7
+    - bash -e scripts/test_wheel.sh --docker-python3.7
   artifacts:
     when: always
     expire_in: 2 weeks
