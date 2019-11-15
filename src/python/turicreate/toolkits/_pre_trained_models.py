@@ -288,7 +288,7 @@ class DrawingClassifierPreTrainedMLModel(object):
     def __init__(self):
         self.source_url = _urlparse.urljoin(MODELS_URL_ROOT,
             'drawing_classifier_pre_trained_model_245_classes_v0.mlmodel')
-        self.source_md5 = 'd9bb2afadca527b2d33b9b1a1b0b7f89'
+        self.source_md5 = 'fc1c04126728514c47991a62b9e66715'
 
     def get_model_path(self):
         model_path = _download_and_checksum_files(

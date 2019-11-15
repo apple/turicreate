@@ -366,17 +366,15 @@ void drawing_classifier::init_training(
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   print_training_device(gpu_names);
 
-  // If warm_start enabled, use warmstart CoreML model to
-  // initialize the neural net. Else, call init_model() to
-  // initialize the neural net using xavier.
+  // Initialize the neural net. Note that this depends on statistics computed by
+  // the data iterator.
+  nn_spec_ = init_model();
+
   if ( warm_start == true ) {
     // Initialize the neural net with warm start model weights.
-    nn_spec_.reset(new model_spec(mlmodel_path));
-
-  } else {
-    // Initialize the neural net. Note that this depends on statistics computed by
-    // the data iterator.
-    nn_spec_ = init_model();
+    std::unique_ptr<model_spec> warmstart_model = std::unique_ptr<model_spec>(new model_spec(mlmodel_path));
+    float_array_map trained_weights = warmstart_model->export_params_view();
+    nn_spec_->update_params(trained_weights);
   }
 
   training_model_ = training_compute_context_->create_drawing_classifier(
