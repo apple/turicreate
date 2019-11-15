@@ -20,8 +20,8 @@ _tf.disable_v2_behavior()
 import os
 from pprint import pprint
 
-
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
+    count = 0
 
     def __init__(self, net_params, batch_size, num_classes):
         """
@@ -113,9 +113,14 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 
-        fname = os.path.join(os.path.expanduser('~'), "tf_weight_init.txt")
+        fname = os.path.join(os.path.expanduser('~'), "tf_weight_init_{}.txt".format(
+            DrawingClassifierTensorFlowModel.count))
+        DrawingClassifierTensorFlowModel.count += 1
         with open(fname, 'w') as f:
-            pprint(net_params, f)
+            for key in net_params.keys():
+                pprint(net_params[key].shape, f)
+                pprint(key, f)
+                pprint(net_params[key], f)
 
 
         # Assign the initialised weights from MXNet to tensorflow
@@ -253,8 +258,13 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                     net_params.update(
                         {var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
 
-        fname = os.path.join(os.path.expanduser('~'), "tf_weight_end.txt")
+        fname = os.path.join(os.path.expanduser('~'), "tf_weight_end_{}.txt".format(
+            DrawingClassifierTensorFlowModel.count))
+
         with open(fname, 'w') as f:
-            pprint(net_params, f)
+            for key in net_params.keys():
+                pprint(net_params[key].shape, f)
+                pprint(key, f)
+                pprint(net_params[key], f)
 
         return net_params

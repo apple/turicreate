@@ -298,7 +298,9 @@ class DrawingClassifierTest(unittest.TestCase):
                 prefix = "pretrained" + str(test_number)
             else:
                 prefix = "scratch" + str(test_number)
-            filename = _mkstemp(prefix + ".mlmodel")[1]
+            # filename = _mkstemp(prefix + ".mlmodel")[1]
+            import os
+            filename = os.path.join(os.path.expanduser('~'), "coreml_weight.mlmodel")
             model.export_coreml(filename)
             mlmodel = _coremltools.models.MLModel(filename)
 
