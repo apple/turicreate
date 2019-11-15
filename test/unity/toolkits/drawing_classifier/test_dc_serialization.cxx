@@ -40,6 +40,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
   // states
   constexpr unsigned int num_classes = 10;
   const std::string target = "target";
+  // drawing_classifier enforces feature to be 1
   const std::vector<std::string> features = {"0"};
 
   // init_model
@@ -47,6 +48,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
   dc.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
+       {"random_seed", 11},
        {"feature", features[0]}});
 
   auto nn_spec = dc.get_model_spec();
@@ -63,21 +65,10 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
 
   /* layer 0: concat layer */
   {
-    auto concat_layer = nn.layers(0);
-    TS_ASSERT(concat_layer.has_concat());
-    TS_ASSERT(concat_layer.output_size() == 1);
-    TS_ASSERT_EQUALS(concat_layer.output(0), "features");
-    TS_ASSERT_EQUALS(concat_layer.name(), "features");
-    for (int ii = 0; ii < concat_layer.input_size(); ii++) {
-      TS_ASSERT_EQUALS(concat_layer.input(ii), features.at(ii));
-    }
-  }
-
-  {
     const std::map<int, int> layer_num_to_channels = {
         {0, 16}, {1, 32}, {2, 64}};
     for (auto& x : layer_num_to_channels) {
-      int layer_index = x.first * 3 + 1;
+      int layer_index = x.first * 3;
       const auto& convlayer = nn.layers(layer_index);
       TS_ASSERT(convlayer.has_convolution());
       TS_ASSERT_EQUALS(convlayer.name(),
@@ -109,7 +100,7 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
     }
   }
 
-  unsigned layer_index = 10;
+  unsigned layer_index = 9;
   {
     const auto& flatten_layer = nn.layers(layer_index);
     TS_ASSERT(flatten_layer.has_flatten());
@@ -123,6 +114,15 @@ BOOST_AUTO_TEST_CASE(test_dc_init_model) {
     TS_ASSERT_EQUALS(dense_layer.name(), "drawing_dense0" + _suffix);
     TS_ASSERT_EQUALS(dense_layer.innerproduct().inputchannels(), 64 * 3 * 3);
     TS_ASSERT_EQUALS(dense_layer.innerproduct().outputchannels(), 128);
+  }
+
+  layer_index++;
+  {
+      const auto& relu_layer = nn.layers(layer_index);
+      TS_ASSERT_EQUALS(relu_layer.name(),
+                       "drawing_dense0_relu" + _suffix);
+      TS_ASSERT(relu_layer.has_activation());
+      TS_ASSERT(relu_layer.activation().has_relu());
   }
 
   layer_index++;
@@ -147,6 +147,9 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
   // minimum startup code
   const std::string target = "target";
   const std::vector<std::string> features = {"0"};
+  // drawing_classifier enforces the input feature to be 1,
+  // in case someday we want more
+  TS_ASSERT_EQUALS(features.size(), 1);
   const std::vector<std::string> labels = {"0", "1"};
 
   turi::drawing_classifier::drawing_classifier dc;
@@ -155,6 +158,7 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
        {"num_classes", labels.size()},
        {"classes", flex_list(labels.begin(), labels.end())},
        {"max_iterations", 300},
+       {"random_seed", 11},
        {"warm_start", false},
        {"feature", features[0]}});
 
@@ -168,7 +172,7 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
   TS_ASSERT_EQUALS(my_model_desc.input_size(), features.size());
 
   // test input image type
-  TS_ASSERT_EQUALS(my_model_desc.input(0).name(), "image");
+  TS_ASSERT_EQUALS(my_model_desc.input(0).name(), features[0]);
   TS_ASSERT(my_model_desc.input(0).type().has_imagetype());
 
   auto input_feature_type = my_model_desc.input(0).type().imagetype();
@@ -264,8 +268,9 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   constexpr unsigned int num_classes = 10;
   const std::string target = "target";
   const std::vector<std::string> features = {"0"};
-
-  // random init; avoid segfault
+  // drawing_classifier enforces the input feature to be 1, in case someday we
+  // want more
+  TS_ASSERT_EQUALS(features.size(), 1);
 
   drawing_classifier_mock dummy;
   dummy.add_or_update_state(
@@ -308,6 +313,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   dc.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
+       {"random_seed", 11},
        {"feature", features[0]}});
 
   // load from a different instance
@@ -315,6 +321,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   dc_other.add_or_update_state(
       {{"target", target},
        {"num_classes", num_classes},
+       {"random_seed", 11},
        {"feature", features[0]}});
 
   load_save_compare(dc, dc_other);

@@ -67,6 +67,9 @@ class data_iterator {
 
     /** Determines results of shuffle operations if enabled. */
     int random_seed = 0;
+
+    // normalization factor for input data
+    float scale_factor = 1 / 255.f;
   };
 
   /** Defines the output of a data_iterator. */
@@ -174,6 +177,7 @@ class simple_data_iterator : public data_iterator {
   const int feature_index_;
   const bool repeat_;
   const bool shuffle_;
+  const float scale_factor_ = 1 / 255.0f;
 
   const target_properties target_properties_;
 

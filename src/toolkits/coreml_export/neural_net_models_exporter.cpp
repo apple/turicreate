@@ -464,8 +464,9 @@ std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
 
   // Write the primary input features.
   for (size_t i = 0; i < features.size(); i++) {
-    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28, "image",
-                      "Input image", ImageFeatureType::GRAYSCALE);
+    set_image_feature(model_desc->add_input(), /* W */ 28, /* H */ 28,
+                      features[i].to<flex_string>(), "Input image",
+                      ImageFeatureType::GRAYSCALE);
   }
 
   // Write the primary output features.

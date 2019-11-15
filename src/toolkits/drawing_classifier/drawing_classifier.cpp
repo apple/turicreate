@@ -25,6 +25,7 @@
 #include <toolkits/drawing_classifier/data_preparation.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
 
+
 namespace turi {
 namespace drawing_classifier {
 
@@ -89,29 +90,22 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   flex_string target = read_state<flex_string>("target");
   size_t num_classes = read_state<flex_int>("num_classes");
 
-  // feature column name
-  std::string feature_column_name = read_state<flex_string>("feature");
-  flex_list features_list;
-  features_list.push_back(feature_column_name);
-
-  result->add_channel_concat(
-      "features",
-      std::vector<std::string>(features_list.begin(), features_list.end()));
-
   std::mt19937 random_engine;
-  try {
-    std::seed_seq seed_seq{read_state<int>("random_seed")};
-    random_engine = std::mt19937(seed_seq);
-  } catch (const std::out_of_range &e) {
-  }
+  std::seed_seq seed_seq{read_state<int>("random_seed")};
+  random_engine = std::mt19937(seed_seq);
 
   weight_initializer initializer = zero_weight_initializer();
+
+  // feature columns names
+  const flex_string& feature_column_name = read_state<flex_string>("feature");
 
   const std::string prefix{"drawing"};
   // add suffix when needed.
   const std::string _suffix{""};
-  std::string input_name{"features"};
+  std::string input_name{feature_column_name};
   std::string output_name;
+
+  result->add_preprocessing(feature_column_name, 1 / 255.f);
 
   {
     size_t channels_filter = 16;
@@ -158,6 +152,7 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       ss.str("");
       ss << prefix << "_pool" << ii << _suffix;
       output_name = ss.str();
+
       result->add_pooling(
           /* name                 */ output_name,
           /* input                */ input_name,
@@ -189,6 +184,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       /* num_input_channels  */ 64 * 3 * 3,
       /* weight_init_fn      */ initializer,
       /* bias_init_fn        */ zero_weight_initializer());
+
+  input_name = std::move(output_name);
+  output_name = prefix + "_dense0_relu" + _suffix;
+
+  result->add_relu(output_name, input_name);
 
   input_name = std::move(output_name);
   output_name = prefix + "_dense1" + _suffix;
@@ -285,12 +285,12 @@ void drawing_classifier::init_training(
     std::map<std::string, flexible_type> opts) {
 
   if (!data.contains_column(feature_column_name)) {
-    log_and_throw(feature_column_name + " column not found. Data does not " + 
+    log_and_throw(feature_column_name + " column not found. Data does not " +
       "contain the feature column.");
   }
 
   if (!data.contains_column(target_column_name)) {
-    log_and_throw(target_column_name + " column not found. Data does not " + 
+    log_and_throw(target_column_name + " column not found. Data does not " +
       "contain the target column.");
   }
 
@@ -647,7 +647,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
     result result_batch;
     result_batch.data_info = data->next_batch(batch_size);
 
-    /** TODO: Figure out a better solution to having `num_samples` be a 
+    /** TODO: Figure out a better solution to having `num_samples` be a
      *  top-level input to the network. May be captured in the first
      *  dimension of the input, or perhaps via a weight tensor.
      */
@@ -851,13 +851,9 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
           *nn_spec_, features_list,
           read_state<flex_list>("classes"), read_state<flex_string>("target"));
 
-  const flex_string features_string =
-      join(std::vector<std::string>(features_list.begin(), features_list.end()),
-           ",");
-
   flex_dict user_defined_metadata = {
       {"target", read_state<flex_string>("target")},
-      {"features", features_string},
+      {"feature", feature_column_name},
       {"max_iterations", read_state<flex_int>("max_iterations")},
       // TODO: Uncomment as part of #2524
       // {"warm_start", read_state<flex_int>("warm_start")},
