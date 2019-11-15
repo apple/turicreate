@@ -28,7 +28,7 @@ verts = [Vertex(0, attr={'breed': 'labrador'}),
          Vertex(2, attr={'breed': 'vizsla'})]
 g = g.add_vertices(verts)
 g = g.add_edges(Edge(1, 2))
-print g
+print(g)
 ```
 ```no-highlight
 SGraph({'num_edges': 1, 'num_vertices': 3})

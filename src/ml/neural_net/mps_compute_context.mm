@@ -113,6 +113,7 @@ std::unique_ptr<image_augmenter> mps_compute_context::create_image_augmenter(
   return std::unique_ptr<image_augmenter>(new mps_image_augmenter(opts));
 }
 
+// static
 std::unique_ptr<image_augmenter>
 mps_compute_context::create_image_augmenter_for_testing(
     const image_augmenter::options& opts,
