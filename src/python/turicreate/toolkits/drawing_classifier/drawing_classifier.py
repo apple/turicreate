@@ -142,7 +142,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             raise _ToolkitError("Unrecognized value for 'warm_start': "
                 + warm_start + ". 'warm_start' can take in the following "
                 + "values: " + str(accepted_values_for_warm_start))
-        # Currently default warm start model is quickdraw_245_v0
+        # Replace 'auto' with name of current default Warm Start model.
         warm_start = warm_start.replace("auto", "quickdraw_245_v0")
 
     if '_advanced_parameters' in kwargs:
@@ -183,7 +183,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
         if warm_start:
-            # Loading CoreML warmstart model
+            # Load CoreML warmstart model
             pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
             options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
 
