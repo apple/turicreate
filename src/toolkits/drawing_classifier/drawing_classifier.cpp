@@ -366,8 +366,8 @@ void drawing_classifier::init_training(
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   print_training_device(gpu_names);
 
-  // Initialize the neural net. Note that this depends on statistics computed by
-  // the data iterator.
+  // Initialize the neural net. Note that this depends on statistics computed
+  // by the data iterator.
   nn_spec_ = init_model();
 
   if ( warm_start == true ) {
