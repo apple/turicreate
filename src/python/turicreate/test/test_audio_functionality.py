@@ -388,6 +388,7 @@ class ClassifierTestWithShortClip(unittest.TestCase):
             self.assertNotEqual(r['class'], None)
             self.assertNotEqual(r['probability'], None)
 
+
 @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
