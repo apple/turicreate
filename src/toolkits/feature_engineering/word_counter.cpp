@@ -18,7 +18,7 @@ namespace feature_engineering {
  * Ported from original count_words implementation.
  */
 void word_count_delimiters_update(flexible_type f, flex_list delimiter_list, bool to_lower,
-                                  std::unordered_map<flexible_type, double>& ret_count, 
+                                  std::unordered_map<flexible_type, flex_float>& ret_count, 
                                   flex_type_enum run_mode, 
                                   flexible_type delta = 0) {
   std::set<char> delimiters;
@@ -109,7 +109,7 @@ flexible_type word_counter_apply_with_manual(const flexible_type& input,
   // Tokenize all string inputs according to delimiters and to_lower options,
   // then accumulate counts and return as dictionary
   flexible_type output;
-  std::unordered_map<flexible_type, double> ret_count;
+  std::unordered_map<flexible_type, flex_float> ret_count;
   switch(run_mode) {
     case flex_type_enum::UNDEFINED: {
       // No transform required
