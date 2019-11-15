@@ -222,6 +222,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         for a, b in zip(old_model_probs, new_model_probs):
             np.testing.assert_array_almost_equal(a, b, decimal=6)
 
+    @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
     def test_export_coreml_with_prediction(self):
         import resampy
 
@@ -251,6 +252,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue('sampleRate' in metadata.userDefined)
         self.assertEqual(metadata.userDefined['sampleRate'], '16000')
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'Already testing export to Core ML with predictions')
     def test_export_core_ml_no_prediction(self):
         with TempDirectory() as temp_dir:
             file_name = temp_dir + '/model.mlmodel'
@@ -386,7 +388,7 @@ class ClassifierTestWithShortClip(unittest.TestCase):
             self.assertNotEqual(r['class'], None)
             self.assertNotEqual(r['probability'], None)
 
-
+@unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
     frame_length = int(.975 * sample_rate)
