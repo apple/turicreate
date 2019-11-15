@@ -123,8 +123,6 @@ class data_iterator {
    */
   virtual const flex_list& class_labels() const = 0;
 
-  virtual const flex_dict& class_to_index_map()
-      const = 0;
 };
 
 /**
@@ -152,15 +150,9 @@ class simple_data_iterator : public data_iterator {
     return target_properties_.classes;
   }
 
-  const flex_dict& class_to_index_map()
-      const override {
-    return target_properties_.class_to_index_map;
-  }
-
  private:
   struct target_properties {
     flex_list classes;
-    flex_dict class_to_index_map;
   };
 
   target_properties compute_properties(

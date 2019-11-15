@@ -55,25 +55,18 @@ simple_data_iterator::compute_properties(
   gl_sarray classes = targets.unique().sort();
 
   if (expected_class_labels.empty()) {
-    // Infer the class-to-index map from the observed labels.
+    // Populate classes with inferred labels.
     result.classes.reserve(classes.size());
-    int i = 0;
     for (const flexible_type& label : classes.range_iterator()) {
       result.classes.push_back(label);
-      result.class_to_index_map.push_back(std::make_pair(label, i++));
     }
   } else {
-    // Construct the class-to-index map from the expected labels.
+    // Populate classes with given labels.
     result.classes = std::move(expected_class_labels);
-    int i = 0;
-    for (const flexible_type& label : result.classes) {
-      result.class_to_index_map.push_back(std::make_pair(label, i++));
-    }
-
-    const flex_dict_view class_to_index_map(result.class_to_index_map);
-
+    // Go through inferred classes and make sure there's no unexpected classes!
     for (const flexible_type& ft : classes.range_iterator()) {
-      if (!class_to_index_map.has_key(ft)) {
+      if (std::find(expected_class_labels.begin(), expected_class_labels.end(),
+                    ft) == expected_class_labels.end()) {
         log_and_throw("Targets contained unexpected class label!");
       }
     }
@@ -136,7 +129,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
-  const flex_dict_view class_to_index_map(target_properties_.class_to_index_map);
+  const flex_list classes(target_properties_.classes);
 
   while (real_batch_size < batch_size && next_row_ != end_of_rows_) {
 
@@ -145,7 +138,9 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
     if (predictions_index_ >= 0 && target_index_ >= 0) {
       float preds = -1;
-      preds = static_cast<float>(class_to_index_map[row[predictions_index_]]);
+      preds = static_cast<float>(
+          std::find(classes.begin(), classes.end(), row[predictions_index_]) -
+          classes.begin());
       batch_predictions.emplace_back(preds);
     }
 
@@ -154,8 +149,9 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     next_drawing_pointer += image_data_size;
 
     if (target_index_ >= 0) {
-      batch_targets.emplace_back(
-          static_cast<float>(class_to_index_map[row[target_index_]]));
+      batch_targets.emplace_back(static_cast<float>(
+          std::find(classes.begin(), classes.end(), row[target_index_]) -
+          classes.begin()));
     }
 
     if (++next_row_ == end_of_rows_ && repeat_) {

@@ -49,7 +49,6 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   /* Create a simple data iterator */
   simple_data_iterator data_source(params);
   flex_list actual_class_labels = data_source.class_labels();
-  flex_dict_view class_to_index_map(data_source.class_to_index_map());
 
   /* Test class labels */
   if (!checked_class_labels) {
@@ -96,7 +95,9 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   for (size_t index_in_batch = 0; index_in_batch < batch_size;
        index_in_batch++) {
     float expected_target = static_cast<float>(
-        class_to_index_map[data[params.target_column_name][index_in_data]]);
+        std::find(actual_class_labels.begin(), actual_class_labels.end(),
+                  data[params.target_column_name][index_in_data]) -
+        actual_class_labels.begin());
     float actual_target = actual_target_data[index_in_batch];
     TS_ASSERT_EQUALS(expected_target, actual_target);
     index_in_data = (index_in_data + 1) % data.size();

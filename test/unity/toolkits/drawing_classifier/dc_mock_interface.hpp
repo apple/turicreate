@@ -71,11 +71,6 @@ class mock_data_iterator : public data_iterator {
     return expected_call();
   }
 
-  const flex_dict& class_to_index_map()
-      const override {
-    return class_to_index_map_;
-  }
-
   const flex_list& class_labels() const override {
     return class_labels_;
   }
@@ -84,7 +79,6 @@ class mock_data_iterator : public data_iterator {
   std::deque<next_batch_call> next_batch_calls_;
   std::deque<reset_call> reset_calls_;
   flex_list class_labels_;
-  flex_dict class_to_index_map_;
 };
 
 /**
