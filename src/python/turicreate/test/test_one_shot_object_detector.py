@@ -42,7 +42,7 @@ def _get_data(feature, target):
                 pil_img.save(f, format=image_format)
                 return tc.Image(f.name)
 
-    num_examples = 10
+    num_examples = 100
     num_starter_images = 5
     max_num_boxes_per_image = 10
     classes = _CLASSES
@@ -239,7 +239,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
-    @pytest.mark.xfail()
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)
