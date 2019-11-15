@@ -90,7 +90,6 @@ def load_model(location):
                            "Please upgrade Turi Create before attempting to load this model file.")
     elif archive_version == 1:
         name = saved_state['model_name'];
-
         if name in MODEL_NAME_MAP:
             cls = MODEL_NAME_MAP[name]
             if 'model' in saved_state:
