@@ -322,7 +322,7 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
     const {
   #ifdef __APPLE__
-  if (mps_compute_context::has_style_transfer()) {
+  if (neural_net::mps_compute_context::has_style_transfer()) {
     return compute_context::create();
   }
   #endif // __APPLE__
