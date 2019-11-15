@@ -312,7 +312,8 @@ void drawing_classifier::init_training(
   if ( opts.find("mlmodel_path") != opts.end()) {
     auto mlmodel_path_iter = opts.find("mlmodel_path");
     mlmodel_path = mlmodel_path_iter->second.to<std::string>();
-    // Remove `ml_path` from options
+    // Remove `mlmodel_path` from options as
+    // it is not a user-defined option.
     opts.erase(mlmodel_path_iter);
     enable_warmstart = true;
   }
@@ -885,7 +886,6 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"target", read_state<flex_string>("target")},
       {"features", features_string},
       {"max_iterations", read_state<flex_int>("max_iterations")},
-      // TODO: Uncomment as part of #2524
       {"warm_start", read_state<flex_int>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
