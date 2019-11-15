@@ -10,7 +10,6 @@ from turicreate import extensions as _extensions
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits.object_detector.object_detector import ObjectDetector as _ObjectDetector
-from turicreate.toolkits.object_detector.object_detector import ObjectDetector_beta as _ObjectDetector_beta
 from turicreate.toolkits.one_shot_object_detector.util._augmentation import preview_synthetic_training_data as _preview_synthetic_training_data
 import turicreate.toolkits._internal_utils as _tkutl
 
