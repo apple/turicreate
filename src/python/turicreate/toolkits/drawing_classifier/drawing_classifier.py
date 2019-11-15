@@ -144,8 +144,6 @@ def create(input_dataset, target, feature=None, validation_set='auto',
                 + "values: " + str(accepted_values_for_warm_start))
         # Currently default warm start model is quickdraw_245_v0
         warm_start = warm_start.replace("auto", "quickdraw_245_v0")
-    else:
-        warm_start = "None"
 
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -184,12 +182,12 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
-        options["warm_start"] = False if warm_start==None else True
         if warm_start:
             # Loading CoreML warmstart model
             pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
             options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
 
+        options["warm_start"] = "None" if warm_start==None else warm_start
         model.train(input_dataset, target, feature, validation_set, options)
         return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
 
