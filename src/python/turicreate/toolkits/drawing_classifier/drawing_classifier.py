@@ -142,6 +142,10 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             raise _ToolkitError("Unrecognized value for 'warm_start': "
                 + warm_start + ". 'warm_start' can take in the following "
                 + "values: " + str(accepted_values_for_warm_start))
+        # Currently default warm start model is quickdraw_245_v0
+        warm_start = warm_start.replace("auto", "quickdraw_245_v0")
+    else:
+        warm_start = "None"
 
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided

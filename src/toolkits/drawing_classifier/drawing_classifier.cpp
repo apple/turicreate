@@ -235,10 +235,11 @@ void drawing_classifier::init_options(
       FLEX_UNDEFINED,
       std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
 
-  options.create_boolean_option(
+  options.create_string_option(
       "warm_start",
-      "Enable warm start model initialization for training.",
-      false,
+      "Record warm start model version used. If no warmstart used"
+      " None is assigned by default."
+      "None",
       true);
 
   // Validate user-provided options.
@@ -304,15 +305,16 @@ void drawing_classifier::init_training(
     {"training_iterations", 0}
   });
 
-  auto warm_start = opts.at("warm_start");
+  // Capture Core ML model path from options,
+  // if provided by Python.
   std::string mlmodel_path;
-  if ( warm_start == true ) {
+  bool enable_warmstart = false;
+  if ( opts.find("mlmodel_path") != opts.end()) {
     auto mlmodel_path_iter = opts.find("mlmodel_path");
-    if (mlmodel_path_iter == opts.end()) {
-      log_and_throw("Expected option \"mlmodel_path\" not found.");
-    }
     mlmodel_path = mlmodel_path_iter->second.to<std::string>();
+    // Remove `ml_path` from options
     opts.erase(mlmodel_path_iter);
+    enable_warmstart = true;
   }
 
   // Read user-specified options.
@@ -370,7 +372,7 @@ void drawing_classifier::init_training(
   // by the data iterator.
   nn_spec_ = init_model();
 
-  if ( warm_start == true ) {
+  if ( enable_warmstart ) {
     // Initialize the neural net with warm start model weights.
     std::unique_ptr<model_spec> warmstart_model = std::unique_ptr<model_spec>(new model_spec(mlmodel_path));
     float_array_map trained_weights = warmstart_model->export_params_view();
