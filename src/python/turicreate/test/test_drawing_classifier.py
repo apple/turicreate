@@ -304,17 +304,19 @@ class DrawingClassifierTest(unittest.TestCase):
             model.export_coreml(filename)
             mlmodel = _coremltools.models.MLModel(filename)
 
+            print("test number is :", test_number)
+
             tc_preds = model.predict(sf)
-            print(test_number)
-            print(tc_preds)
+            print("tc prediction (label)", tc_preds)
             tc_probs = model.predict(sf, output_type="probability")
-            print(tc_probs)
+            print("tc prediction (prob_vec)", tc_probs)
 
             if test_number == 1:
                 # stroke input
                 sf[feature] = _tc.drawing_classifier.util.draw_strokes(
                     sf[self.feature])
 
+            print("coreml predictions")
             for row_number in range(len(sf)):
                 core_ml_preds = mlmodel.predict({
                     "drawing": sf[feature][row_number]._to_pil_image()

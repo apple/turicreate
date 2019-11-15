@@ -166,6 +166,20 @@ float_array_map tf_model_backend::export_weights() const {
               static_cast<float*>(buf.ptr),
               std::vector<size_t>(buf.shape.begin(), buf.shape.end()));
       result[kv.first] = value;
+
+      if (kv.first == "dummy") {
+        std::cout << kv.first << std::endl;
+        auto ndim = value.dim();
+        std::cout << "(";
+        for (size_t i = 0; i < ndim; i++) {
+          std::cout << value.shape()[i] << ", ";
+        }
+        std::cout << ")" << std::endl;
+
+        for (size_t i = 0; i < std::min<size_t>(10U, value.size()); i++) {
+          std::cout << value.data()[i] << std::endl;
+        }
+      }
     }
   });
 
@@ -346,7 +360,6 @@ std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
  * TODO: Add proper arguments to create_drawing_classifier
  */
 std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
-    /* TODO: const float_array_map& config if needed */
     const float_array_map& weights,
     size_t batch_size, size_t num_classes) {
   std::unique_ptr<tf_model_backend> result;
