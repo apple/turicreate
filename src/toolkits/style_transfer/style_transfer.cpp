@@ -18,7 +18,7 @@
 #include <toolkits/util/training_utils.hpp>
 
 #ifdef __APPLE__
-#import <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
+#import <ml/neural_net/mps_compute_context.hpp>
 #endif // __APPLE__
 
 namespace turi {
