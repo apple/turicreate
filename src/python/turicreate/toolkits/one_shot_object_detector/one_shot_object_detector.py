@@ -10,6 +10,7 @@ from turicreate import extensions as _extensions
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits.object_detector.object_detector import ObjectDetector as _ObjectDetector
+from turicreate.toolkits.object_detector.object_detector import ObjectDetector_beta as _ObjectDetector_beta
 from turicreate.toolkits.one_shot_object_detector.util._augmentation import preview_synthetic_training_data as _preview_synthetic_training_data
 import turicreate.toolkits._internal_utils as _tkutl
 
@@ -238,7 +239,7 @@ class OneShotObjectDetector(_CustomModel):
         # We don't know how to serialize a Python class, hence we need to
         # reduce the detector to the proxy object before saving it.
         if USE_CPP:
-            pass
+            state['detector'] = state['detector'].__proxy__
         else:
             state['detector'] = state['detector']._get_native_state()
         return state
@@ -248,8 +249,11 @@ class OneShotObjectDetector(_CustomModel):
         assert(version == cls._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION)
         # we need to undo what we did at save and turn the proxy object
         # back into a Python class
-        state['detector'] = _ObjectDetector._load_version(
-            state['detector'], state["_detector_version"])
+        if USE_CPP:
+            state['detector'] = _ObjectDetector_beta(state['detector'])
+        else:
+            state['detector'] = _ObjectDetector._load_version(
+                state['detector'], state["_detector_version"])
         return OneShotObjectDetector(state)
 
     def __str__(self):
