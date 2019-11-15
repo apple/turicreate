@@ -46,6 +46,8 @@ class EXPORT style_transfer : public ml_model_base {
   gl_sframe predict(variant_type data,
                     std::map<std::string, flexible_type> opts);
 
+  gl_sframe get_styles(variant_type style_index);
+
   void import_from_custom_model(variant_map_type model_data, size_t version);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("style_transfer")
@@ -97,6 +99,9 @@ class EXPORT style_transfer : public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::import_from_custom_model,
                                  "model_data", "version");
 
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::get_styles, "style_index");
+  register_defaults("get_styles", {{"style_index", FLEX_UNDEFINED}});
+
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
@@ -119,6 +124,29 @@ class EXPORT style_transfer : public ml_model_base {
     return variant_get_value<T>(get_state().at(key));
   }
 
+  template <typename T>
+  typename std::map<std::string, T>::iterator _read_iter_opts(
+      std::map<std::string, T>& opts, const std::string& key) const {
+    auto iter = opts.find(key);
+    if (iter == opts.end())
+      log_and_throw("Expected option \"" + key + "\" not found.");
+    return iter;
+  }
+
+  template <typename T>
+  T read_opts(std::map<std::string, turi::variant_type>& opts,
+              const std::string& key) const {
+    auto iter = _read_iter_opts<turi::variant_type>(opts, key);
+    return variant_get_value<T>(iter->second);
+  }
+
+  template <typename T>
+  T read_opts(std::map<std::string, turi::flexible_type>& opts,
+              const std::string& key) const {
+    auto iter = _read_iter_opts<turi::flexible_type>(opts, key);
+    return iter->second.get<T>();
+  }
+
  private:
   std::unique_ptr<neural_net::model_spec> m_resnet_spec;
   std::unique_ptr<neural_net::model_spec> m_vgg_spec;
@@ -130,6 +158,16 @@ class EXPORT style_transfer : public ml_model_base {
   std::unique_ptr<table_printer> training_table_printer_;
 
   static gl_sarray convert_types_to_sarray(const variant_type& data);
+
+  /**
+   * convert_style_indices_to_filter
+   *
+   * This function takes a variant type and converts it into a boolean filter.
+   * The elements at the indices we want to keep are set to a value of `1`, the
+   * elements we don't want to keep are set to a value of `0`.
+   */
+  gl_sarray convert_style_indices_to_filter(const variant_type& data);
+  gl_sframe style_sframe_with_index(gl_sarray styles);
 
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;

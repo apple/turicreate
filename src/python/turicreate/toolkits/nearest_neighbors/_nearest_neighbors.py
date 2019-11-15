@@ -79,14 +79,6 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
     argument is specified as `auto`, the type of model is chosen automatically
     based on the type of data in `dataset`.
 
-    .. warning::
-
-        The 'dot_product' distance is deprecated and will be removed in future
-        versions of Turi Create. Please use 'transformed_dot_product'
-        distance instead, although note that this is more than a name change;
-        it is a *different* transformation of the dot product of two vectors.
-        Please see the distances module documentation for more details.
-
     Parameters
     ----------
     dataset : SFrame
@@ -128,8 +120,7 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
 
         - *String*: the name of a standard distance function. One of
           'euclidean', 'squared_euclidean', 'manhattan', 'levenshtein',
-          'jaccard', 'weighted_jaccard', 'cosine', 'dot_product' (deprecated),
-          or 'transformed_dot_product'.
+          'jaccard', 'weighted_jaccard', 'cosine' or 'transformed_dot_product'.
 
         - *Function*: a function handle from the
           :mod:`~turicreate.toolkits.distances` module.
@@ -163,7 +154,8 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
         - *ball_tree*: use a tree structure to find the k-closest neighbors to
           each query point. The ball tree model is slower to construct than the
           brute force model, but queries are faster than linear time. This
-          method is not applicable for the cosine and dot product distances.
+          method is not applicable for the cosine  or transformed_dot_product
+          distances.
           See `Liu, et al (2004)
           <http://papers.nips.cc/paper/2666-an-investigation-of-p
           ractical-approximat e-nearest-neighbor-algorithms>`_ for
@@ -176,10 +168,10 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
 
         - *lsh*: use Locality Sensitive Hashing (LSH) to find approximate
           nearest neighbors efficiently. The LSH model supports 'euclidean',
-          'squared_euclidean', 'manhattan', 'cosine', 'jaccard', 'dot_product'
-          (deprecated), and 'transformed_dot_product' distances. Two options
-          are provided for LSH -- ``num_tables`` and
-          ``num_projections_per_table``. See the notes below for details.
+          'squared_euclidean', 'manhattan', 'cosine', 'jaccard', and
+          'transformed_dot_product' distances. Two options are provided for
+          LSH -- ``num_tables`` and ``num_projections_per_table``. See the
+          notes below for details.
 
     verbose: bool, optional
         If True, print progress updates and model details.
@@ -300,12 +292,6 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
       <http://www.auai.org/uai2014/proceedings/individuals/225.pdf>`_ for
       details.
 
-    - `dot_product`: The reference data points are first transformed to
-      fixed-norm vectors, and then the minimum `dot_product` distance search
-      problem can be solved via finding the reference data with smallest
-      `cosine` distances. See the paper `[Neyshabur and Srebro, ICML 2015]
-      <http://proceedings.mlr.press/v37/neyshabur15.html>`_ for details.
-
     References
     ----------
     - `Wikipedia - nearest neighbor
@@ -362,11 +348,6 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
     ...
     >>> model = turicreate.nearest_neighbors.create(sf, distance=my_dist)
     """
-    import warnings
-
-    if distance == 'dot_product':
-        warnings.warn("Using a \"dot_product\" distance is deprecated. This functionality will be removed in the next major release.")
-
     ## Validate the 'dataset' input
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
     _tkutl._raise_error_if_sframe_empty(dataset, "dataset")
@@ -392,12 +373,11 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
     ## Exclude inappropriate combinations of method an distance
     if method == 'ball_tree' and (distance == 'cosine'
                                   or distance == _turicreate.distances.cosine
-                                  or distance == 'dot_product'
                                   or distance == _turicreate.distances.dot_product
                                   or distance == 'transformed_dot_product'
                                   or distance == _turicreate.distances.transformed_dot_product):
         raise TypeError("The ball tree method does not work with 'cosine' " +
-                        "'dot_product', or 'transformed_dot_product' distance." +
+                        "or 'transformed_dot_product' distance." +
                         "Please use the 'brute_force' method for these distances.")
 
 
@@ -478,7 +458,7 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
 
     ## Raise an error if any distances are used with non-lists
     list_features_to_check = []
-    sparse_distances = ['jaccard', 'weighted_jaccard', 'cosine', 'dot_product', 'transformed_dot_product']
+    sparse_distances = ['jaccard', 'weighted_jaccard', 'cosine', 'transformed_dot_product']
     sparse_distances = [_turicreate.distances.__dict__[k] for k in sparse_distances]
     for d in distance:
         feature_names, dist, _ = d

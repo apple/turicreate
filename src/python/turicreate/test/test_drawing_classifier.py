@@ -21,6 +21,8 @@ from . import util as test_util
 import unittest
 import pytest
 
+IS_PRE_6_0_RC = float(_tc.__version__) < 6.0
+
 def _build_bitmap_data():
     '''
     Build an SFrame from 10 saved drawings.
@@ -87,7 +89,7 @@ class DrawingClassifierTest(unittest.TestCase):
             warm_start=warm_start)
         # Disabled the following model creation because of an error
         # ToolkitError: Both SArrays have to have the same value type.
-        # Will fix in a later PR
+        # TODO: Will fix in a later PR
         if False:
             self.stroke_model = _tc.drawing_classifier.create(
                 self.stroke_sf,
@@ -120,7 +122,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 _tc.drawing_classifier.create(sf[:0], self.target,
                                               feature=self.feature)
 
-    @unittest.skip("Coming soon in a later PR")
     def test_create_with_missing_coordinates_in_stroke_input(self):
         drawing = [[{"x": 1.0, "y": 1.0}], [{"x": 0.0}, {"y": 0.0}]]
         sf = _tc.SFrame({
@@ -130,7 +131,6 @@ class DrawingClassifierTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             _tc.drawing_classifier.create(sf, self.target)
 
-    @unittest.skip("Coming soon in a later PR")
     def test_create_with_wrongly_typed_coordinates_in_stroke_input(self):
         drawing = [[{"x": 1.0, "y": 0}], [{"x": "string_x?!", "y": 0.1}]]
         sf = _tc.SFrame({
@@ -140,7 +140,6 @@ class DrawingClassifierTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             _tc.drawing_classifier.create(sf, self.target)
 
-    @unittest.skip("Coming soon in a later PR")
     def test_create_with_None_coordinates_in_stroke_input(self):
         drawing = [[{"x": 1.0, "y": None}], [{"x": 1.1, "y": 0.1}]]
         sf = _tc.SFrame({
@@ -150,7 +149,6 @@ class DrawingClassifierTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             _tc.drawing_classifier.create(sf, self.target, feature=self.feature)
 
-    @unittest.skip("Coming soon in a later PR")
     def test_create_with_empty_drawing_in_stroke_input(self):
         drawing = []
         sf = _tc.SFrame({
@@ -161,7 +159,6 @@ class DrawingClassifierTest(unittest.TestCase):
         _tc.drawing_classifier.create(sf, self.target, feature=self.feature,
             max_iterations=1)
 
-    @unittest.skip("Coming soon in a later PR")
     def test_create_with_empty_stroke_in_stroke_input(self):
         drawing = [[{"x": 1.0, "y": 0.0}], [], [{"x": 1.1, "y": 0.1}]]
         sf = _tc.SFrame({
@@ -212,7 +209,7 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (output_type == "probability")
                     assert (preds["probability"].dtype == float)
                 assert (len(preds) == k*len(sf))
-    
+
 
     def test_predict_output_type_probability_with_sframe(self):
         for index in range(len(self.models)):
@@ -224,7 +221,7 @@ class DrawingClassifierTest(unittest.TestCase):
             else:
                 preds = model.predict(sf, output_type="probability")
                 assert (preds.dtype == float)
-    
+
 
     def test_predict_output_type_probability_with_sarray(self):
         for index in range(len(self.models)):
@@ -237,7 +234,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 preds = model.predict(sf[self.feature], output_type="probability")
                 assert (preds.dtype == float)
 
-    @unittest.skip("Coming soon: Waiting on PR #2533")
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon in a later PR")
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -246,7 +243,6 @@ class DrawingClassifierTest(unittest.TestCase):
             with self.assertRaises(_ToolkitError):
                 model.evaluate(sf_without_ground_truth)
 
-    @unittest.skip("Coming soon: Waiting on PR #2533")
     def test_evaluate_with_ground_truth(self):
         all_metrics = ["accuracy", "auc", "precision", "recall",
                        "f1_score", "log_loss", "confusion_matrix", "roc_curve"]
@@ -268,7 +264,7 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (metric in evaluation)
                     assert (individual_run_results[metric] == evaluation[metric])
 
-    @unittest.skip("Coming soon: Waiting on PR #2533")
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon in a later PR")
     def test_evaluate_with_unsupported_metric(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -287,14 +283,15 @@ class DrawingClassifierTest(unittest.TestCase):
                 assert (new_preds.dtype == old_preds.dtype
                     and (new_preds == old_preds).all())
 
-    @unittest.skipIf(_sys.platform == "darwin", "test_export_coreml_with_predict(...) covers this functionality and more")
+    # @unittest.skipIf(_sys.platform == "darwin", "test_export_coreml_with_predict(...) covers this functionality and more")
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon: Need to test and debug export_to_coreml")
     def test_export_coreml(self):
         for model in self.models:
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
 
     # @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
-    @unittest.skip("Coming soon: Need to test and debug export_to_coreml")
+    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon: Need to test and debug export_to_coreml")
     def test_export_coreml_with_predict(self):
         for test_number in range(len(self.models)):
             feature = self.feature

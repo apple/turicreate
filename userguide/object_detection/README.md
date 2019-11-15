@@ -19,7 +19,7 @@ Preparation](data-preparation.md) to find out how to get `ig02.sframe`).
 import turicreate as tc
 
 # Load the data
-data =  tc.SFrame('ig02.sframe')
+data = tc.SFrame('ig02.sframe')
 
 # Make a train-test split
 train_data, test_data = data.random_split(0.8)
@@ -34,7 +34,7 @@ predictions = model.predict(test_data)
 metrics = model.evaluate(test_data)
 
 # Save the model for later use in Turi Create
-model.save('mymodel.model')
+model.save('ig02.model')
 
 # Export for use in Core ML
 model.export_coreml('MyCustomObjectDetector.mlmodel')

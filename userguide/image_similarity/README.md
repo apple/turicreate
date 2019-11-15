@@ -124,8 +124,8 @@ similar_images = similarity_graph.edges
 Once you have created a model, you can save it and load it back later for use.
 
 ```python
-model.save('./myModel.model')
-loaded_model = turicreate.load_model('./myModel.model')
+model.save('./caltech-101.model')
+loaded_model = turicreate.load_model('./caltech-101.model')
 ```
 
 #### Using GPUs

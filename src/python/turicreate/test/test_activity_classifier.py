@@ -71,8 +71,6 @@ def _random_session_ids(num_examples, num_sessions):
 
     return session_ids
 
-
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierCreateStressTests(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -136,7 +134,6 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                                                   validation_set=None)
 
 
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierAutoValdSetTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -229,8 +226,6 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
 
         self._create_auto_validation_set()
 
-
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 class ActivityClassifierTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -336,20 +331,33 @@ class ActivityClassifierTest(unittest.TestCase):
             else:
                 labels = list(map(str, sorted(self.model._target_id_map.keys())))
 
-            data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
-            np_data = np.concatenate(data_list, 1)[np.newaxis]
+            if USE_CPP:
+                input_features = {}
+                for f in self.features:
+                    input_features[f] = dataset[f].to_numpy()
+                first_input_dict  = {}
+                second_input_dict = {}
+                for key, value in input_features.items():
+                    first_input_dict[key] = value[:w].copy()
+                    second_input_dict[key] = value[w:2*w].copy()
+                first_input_dict["stateIn"] = np.zeros((400))
+                ret0 = coreml_model.predict(first_input_dict)
+
+                second_input_dict["stateIn"] = ret0["stateOut"]
+                ret1 = coreml_model.predict(second_input_dict)
+
+            else:
+                data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
+                np_data = np.concatenate(data_list, 1)[np.newaxis]
+                ret0 = coreml_model.predict({'features' : np_data[:, :w].copy()})
+                ret1 = coreml_model.predict({'features' : np_data[:, w:2*w].copy(),
+                                         'hiddenIn': ret0['hiddenOut'],
+                                         'cellIn': ret0['cellOut']})
 
             pred = self.model.predict(dataset, output_type='probability_vector')
             model_time0_values = pred[0]
             model_time1_values = pred[w]
             model_predictions = np.array([model_time0_values, model_time1_values])
-
-            ret0 = coreml_model.predict({'features' : np_data[:, :w].copy()})
-
-            ret1 = coreml_model.predict({'features' : np_data[:, w:2*w].copy(),
-                                         'hiddenIn': ret0['hiddenOut'],
-                                         'cellIn': ret0['cellOut']})
-
             coreml_time0_values = [ret0[self.target + 'Probability'][l] for l in labels]
             coreml_time1_values = [ret1[self.target + 'Probability'][l] for l in labels]
             coreml_predictions = np.array([coreml_time0_values, coreml_time1_values])
@@ -456,8 +464,6 @@ class ActivityClassifierTest(unittest.TestCase):
                     self.assertTrue(False, "After model save and load, method " + test_method +
                                     " has failed with error: " + str(e))
 
-
-@unittest.skipIf(IS_PRE_6_0_RC, 'Requires MXNet')
 @unittest.skipIf(tc.util._num_available_gpus() == 0, 'Requires GPU')
 @pytest.mark.gpu
 class ActivityClassifierGPUTest(unittest.TestCase):
@@ -476,10 +482,9 @@ class ActivityClassifierGPUTest(unittest.TestCase):
                                     session_id=self.session_id)
                 with test_util.TempDirectory() as filename:
                     model.save(filename)
-                    tc.config.set_num_gpus(out_gpus)
                     model = tc.load_model(filename)
 
-                with test_util.TempDirectory() as filename:
-                    model.export_coreml(filename)
+                filename = tempfile.mkstemp('ActivityClassifier.mlmodel')[1]
+                model.export_coreml(filename)
 
         tc.config.set_num_gpus(old_num_gpus)

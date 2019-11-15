@@ -153,7 +153,8 @@ gl_sframe set_up_perform_inference(
                                             : num_of_rows / batch_size);
 
   mock_model.add_or_update_state(
-      {{"num_classes", num_of_classes}, {"batch_size", batch_size}});
+      {{"num_classes", num_of_classes},
+       {"batch_size", batch_size}});
 
   auto create_drawing_classifier_impl =
       [&mock_backend](const float_array_map&, size_t batch_size,
@@ -172,7 +173,7 @@ gl_sframe set_up_perform_inference(
 }
 
 std::unique_ptr<data_iterator> prepare_data_for_prediction(
-    size_t num_of_rows, size_t num_of_classes) {
+    bool is_bitmap_based, size_t num_of_rows, size_t num_of_classes) {
   std::vector<std::string> class_labels;
 
   class_labels.reserve(num_of_classes);
@@ -181,7 +182,8 @@ std::unique_ptr<data_iterator> prepare_data_for_prediction(
   }
 
   // Create an arbitrary SFrame with test_num_rows rows.
-  drawing_data_generator data_generator(/* is_bitmap_based */ true, num_of_rows, class_labels);
+  drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap_based,
+                                        num_of_rows, class_labels);
   gl_sframe my_data = data_generator.get_data();
 
   TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
@@ -201,13 +203,18 @@ std::unique_ptr<data_iterator> prepare_data_for_prediction(
 using test_runner_t =
     std::function<void(test_drawing_classifier&, gl_sframe, gl_sframe)>;
 
+
 void prediction_test_driver(size_t batch_size, size_t num_of_rows,
-                            size_t num_of_classes, test_runner_t runner) {
+                            size_t num_of_classes, test_runner_t runner,
+                            bool is_bitmap_based) {
 #ifndef NDEBUG
   logprogress_stream << "batch_size=" << batch_size
                      << "; num_of_rows=" << num_of_rows
                      << "; num_of_classes=" << num_of_classes << std::endl;
 #endif
+
+  const std::string feature_name = "feature";
+  const std::string target_name = "target";
 
   // mode the data iterator first
   test_drawing_classifier mock_model;
@@ -225,30 +232,24 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
     class_labels.push_back(std::to_string(ii));
   }
 
-  const std::string feature_name = "feature";
-  const std::string target_name = "target";
-
   // name 'target', 'feature' are used by create_iterator
-  drawing_data_generator data_generator(/* is_bitmap_based */ true,
+  drawing_data_generator data_generator(/* is_bitmap_based */ is_bitmap_based,
                                         num_of_rows, class_labels, target_name,
                                         feature_name);
 
   gl_sframe my_data = data_generator.get_data();
   TS_ASSERT_EQUALS(my_data.size(), num_of_rows);
 
-  mock_model.create_iterator_calls_.push_back([=](data_iterator::parameters) {
-    data_iterator::parameters my_params;
-    my_params.data = my_data;
-    my_params.is_train = false;
-    my_params.feature_column_name = feature_name;
-    my_params.target_column_name = target_name;
-    return std::unique_ptr<data_iterator>(new simple_data_iterator(my_params));
-  });
+  mock_model.create_iterator_calls_.push_back(
+      [=](data_iterator::parameters my_params) {
+        return std::unique_ptr<data_iterator>(
+            new simple_data_iterator(my_params));
+      });
 
-  // specific for perdict
+  // specific for predict
   mock_model.add_or_update_state(
       {{"target", target_name},
-       {"features", flex_list({feature_name})},
+       {"feature", feature_name},
        {"classes", flex_list(class_labels.begin(), class_labels.end())}});
 
   runner(mock_model, my_data, expected_sf);
@@ -271,6 +272,9 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
                        << "; num_of_classes=" << num_of_classes << std::endl;
 #endif
 
+    const std::string feature_name = "feature";
+    const std::string target_name = "target";
+
     // mode the data iterator first
     mock_perform_inference mock_model;
     std::unique_ptr<mock_model_backend> mock_backend(new mock_model_backend);
@@ -281,11 +285,13 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_perform_inference) {
         set_up_perform_inference(mock_model, mock_backend, mock_context,
                                  batch_size, num_of_rows, num_of_classes);
 
-    auto data_itr = prepare_data_for_prediction(num_of_rows, num_of_classes);
-    // make sure the output is what expected
+    // For perform inference,
+    // we only want to test with is_bitmap_based set to true.
+    auto data_itr = prepare_data_for_prediction(/* is_bitmap_based */ true,
+      num_of_rows, num_of_classes);
     auto result = mock_model.get_inference_result(data_itr.get());
-
     _assert_sframe_equals(result, expected_sf);
+    // make sure the output is what expected
   }
 }
 
@@ -316,7 +322,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_rank) {
       }
     };
 
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+    for (bool is_bitmap_based : {true, false}) {
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             is_bitmap_based);
+    }
   }
 }
 
@@ -336,7 +345,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
       _assert_sframe_equals(gl_sframe({{PRED_NAME, result_prob}}), expected);
     };
 
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+    for (bool is_bitmap_based : {true, false}) {
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             is_bitmap_based);
+    }
   }
 }
 
@@ -421,7 +433,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_zero_k) {
                      flex_type_enum::UNDEFINED);
   };
 
-  prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+  for (bool is_bitmap_based : {true, false}) {
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                           is_bitmap_based);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_normal_k) {
@@ -453,7 +468,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_normal_k) {
                          expected);
     };
 
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+    for (bool is_bitmap_based : {true, false}) {
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             is_bitmap_based);
+    }
   }
 }
 
@@ -487,7 +505,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_rank_big_k) {
                          expected);
     };
 
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+    for (bool is_bitmap_based : {true, false}) {
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             is_bitmap_based);
+    }
   }
 }
 
@@ -511,7 +532,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_zero_k) {
                      flex_type_enum::UNDEFINED);
   };
 
-  prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+  for (bool is_bitmap_based : {true, false}) {
+    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                           is_bitmap_based);
+  }
 }
 
 BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_normal_k) {
@@ -543,7 +567,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_normal_k) {
                          expected);
     };
 
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+    for (bool is_bitmap_based : {true, false}) {
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             is_bitmap_based);
+    }
   }
 }
 
@@ -577,7 +604,10 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_topk_prob_big_k) {
                          expected);
     };
 
-    prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner);
+    for (bool is_bitmap_based : {true, false}) {
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             is_bitmap_based);
+    }
   }
 }
 

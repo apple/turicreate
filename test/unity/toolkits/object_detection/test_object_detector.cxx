@@ -496,7 +496,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_finalize_training) {
 
   // Now, actually invoke object_detector::finalize_training. This will trigger
   // all the assertions registered above.
-  model.finalize_training();
+  model.finalize_training(true);
 
   // Verify model fields.
   TS_ASSERT_EQUALS(

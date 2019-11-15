@@ -216,25 +216,44 @@ float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
 
   float_array_map map;
 
-  shared_float_array content_wrap = shared_float_array::wrap(
+  map["input"] = shared_float_array::wrap(
       std::move(content_array), {batch_size, height, width, channels});
-  map.emplace("input", content_wrap);
+  map["index"] = shared_float_array::wrap(std::move(index_array), {batch_size});
 
-  shared_float_array index_wrap =
-      shared_float_array::wrap(std::move(index_array), {batch_size});
-  map.emplace("index", index_wrap);
+  map["width"] = shared_float_array::wrap(width);
+  map["height"] = shared_float_array::wrap(height);
 
   if (train) {
-    shared_float_array style_wrap = shared_float_array::wrap(
+    map["labels"] = shared_float_array::wrap(
         std::move(style_array), {batch_size, height, width, channels});
-    map.emplace("labels", style_wrap);
   }
 
   return map;
 }
 
+// Preparing Batch for prediction. Since the tensorflow implementation of style
+// transfer doesn't have multiple batches supported in predict this function
+// takes exactly one st_example as an argument.
+float_array_map prepare_predict(const st_example& example) {
+  ASSERT_EQ(3, example.content_image.m_channels);
+  
+  size_t image_width = example.content_image.m_width;
+  size_t image_height = example.content_image.m_height;
+  std::vector<st_example> batch = { example };
+
+  return prepare_batch(batch,
+                       image_width,
+                       image_height,
+                       /* train */ false);
+}
+
 flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
   return static_cast<flex_int>(num_styles * 10000.0f / batch_size);
+}
+
+void check_style_index(int idx, int num_styles) {
+  if ((idx < 0) || (idx >= num_styles))
+    log_and_throw("Please choose a valid style index.");
 }
 
 }  // namespace
@@ -270,8 +289,10 @@ void style_transfer::init_options(
       1, std::numeric_limits<int>::max());
   options.create_boolean_option(
       "verbose", "When set to true, verbose is printed", true, true);
-  options.create_string_option("content_feature", "Name of the content column", "image", true);
-  options.create_string_option("style_feature", "Name of the style column", "image", true);
+  options.create_string_option("content_feature", "Name of the content column",
+                               "image", true);
+  options.create_string_option("style_feature", "Name of the style column",
+                               "image", true);
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -320,7 +341,6 @@ std::unique_ptr<data_iterator> style_transfer::create_iterator(
 }
 
 void style_transfer::infer_derived_options() {
-
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = m_training_compute_context->gpu_names();
   print_training_device(gpu_names);
@@ -347,6 +367,94 @@ void style_transfer::infer_derived_options() {
   add_or_update_state({{"training_iterations", 0}});
 }
 
+gl_sframe style_transfer::get_styles(variant_type style_index) {
+  gl_sframe style_sf = read_state<gl_sframe>("styles");
+  gl_sarray style_filter = convert_style_indices_to_filter(style_index);
+
+  return style_sf[style_filter];
+}
+
+gl_sframe style_transfer::style_sframe_with_index(gl_sarray styles) {
+  std::vector<flexible_type> index_list;
+  flex_int num_styles = read_state<flex_int>("num_styles");
+  index_list.resize(num_styles);
+  std::iota(index_list.begin(), index_list.end(), 0);
+
+  return gl_sframe({
+      {"index", index_list},
+      {"style", styles},
+  });
+}
+
+/**
+ * convert_style_indices_to_filter
+ *
+ * This function takes a variant type and converts it into a boolean filter. The
+ * elements at the indices we want to keep are set to a value of `1`, the
+ * elements we don't want to keep are set to a value of `0`.
+ */
+gl_sarray style_transfer::convert_style_indices_to_filter(
+    const variant_type& data) {
+  // read the `num_styles`
+  flex_int num_styles = read_state<flex_int>("num_styles");
+  if (variant_is<flex_list>(data) || variant_is<flex_vec>(data)) {
+    // if the type is `flex_list` or `flex_vec` create a vector where every
+    // element is set to zero
+    std::vector<flexible_type> index_filter(num_styles, 0);
+    flex_list index_list = variant_get_value<flex_list>(data);
+    // Assert that the list is not zero-length
+    ASSERT_NE(index_list.size(), 0);
+
+    // populate the indices that are selected by the flex_list
+    std::for_each(
+        index_list.begin(), index_list.end(),
+        [&index_filter, num_styles](flexible_type& ft) {
+          // assert if the type is an integer or a float
+          ASSERT_TRUE(ft.get_type() == flex_type_enum::INTEGER ||
+                      ft.get_type() == flex_type_enum::FLOAT);
+
+          // parse the float or integer value based on the type and,
+          // set the value at the indices to 1 indicating the filter
+          // to be true.
+          switch (ft.get_type()) {
+            case flex_type_enum::INTEGER: {
+              flex_int idx = ft.get<flex_int>();
+              check_style_index(idx, num_styles);
+              index_filter[idx] = 1;
+            }
+            case flex_type_enum::FLOAT: {
+              int idx = static_cast<int>(ft.get<flex_float>());
+              check_style_index(idx, num_styles);
+              index_filter[idx] = 1;
+              break;
+            }
+            default:
+              log_and_throw(
+                  "Invalid data type! The `style` list should contain either "
+                  "integer or float values!");
+          }
+        });
+    return index_filter;
+  } else if (variant_is<flex_int>(data)) {
+    // Set the index filter to zeros, set to the length of the style sframe
+    std::vector<flexible_type> index_filter(num_styles, 0);
+    flex_int idx = variant_get_value<flex_int>(data);
+    // Check if the index is out of range or not
+    check_style_index(idx, num_styles);
+    // Set the value at the index to `1`
+    index_filter[idx] = 1;
+    return index_filter;
+  } else if (variant_is<flex_undefined>(data)) {
+    // If undefined set the value to all of the styles in the sframe to 1. Or
+    // run stylize on all elements of the `SFrame`
+    return std::vector<flexible_type>(num_styles, 1);
+  } else {
+    log_and_throw(
+        "Invalid data type! Expect `list`, `integer`, or "
+        "`None` types!");
+  }
+}
+
 gl_sframe style_transfer::predict(variant_type data,
                                   std::map<std::string, flexible_type> opts) {
   gl_sframe_writer result({"style_idx", "stylized_image"},
@@ -369,17 +477,19 @@ gl_sframe style_transfer::predict(variant_type data,
         break;
       case flex_type_enum::VECTOR:
         style_idx = std::move(flex_style_idx.get<flex_vec>());
+        if (style_idx.empty())
+          log_and_throw("The `style` parameter can't be an empty list");
         break;
-      case flex_type_enum::LIST:
-      {
+      case flex_type_enum::LIST: {
         const auto& list = flex_style_idx.get<flex_list>();
+        if (list.empty())
+          log_and_throw("The `style` parameter can't be an empty list");
         style_idx.resize(list.size());
         std::transform(list.begin(), list.end(), style_idx.begin(),
                        [](flexible_type val) {
                          return static_cast<double>(val.get<flex_float>());
                        });
         break;
-
       }
       case flex_type_enum::UNDEFINED: {
         flex_int num_styles = read_state<flex_int>("num_styles");
@@ -404,8 +514,6 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
   flex_int batch_size = read_state<flex_int>("batch_size");
   flex_int num_styles = read_state<flex_int>("num_styles");
-  flex_int image_width = read_state<flex_int>("image_width");
-  flex_int image_height = read_state<flex_int>("image_height");
 
   // Since we aren't training the style_images are irrelevant
   std::unique_ptr<data_iterator> data_iter =
@@ -427,8 +535,11 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
       weight_params);
 
-  // looping through all of the style indicies
+  // looping through all of the style indices
   for (size_t i : style_idx) {
+    // check whether the style indices are valid
+    check_style_index(i, num_styles);
+
     std::vector<st_example> batch = data_iter->next_batch(batch_size);
     while (!batch.empty()) {
       // getting actual batch size
@@ -437,10 +548,14 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       // setting the style index for each batch
       std::for_each(batch.begin(), batch.end(),
                     [i](st_example& example) { example.style_index = i; });
+      
+      // predict only works with a batch size of one now. This is because images
+      // have varied width and height and since the style transfer network
+      // is size invariant, resizing the inputs isn't an option.
+      ASSERT_EQ(batch.size(), 1);
 
       // prepare batch for prediction
-      float_array_map prepared_batch =
-          prepare_batch(batch, image_width, image_height, /* train */ false);
+      float_array_map prepared_batch = prepare_predict(batch.front());
 
       // perform prediction
       float_array_map result_batch = model->predict(prepared_batch);
@@ -451,7 +566,8 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       // populate gl_sframe_writer
       std::vector<std::pair<flex_int, flex_image>> processed_batch =
           process_output(out_shared_float_array, i, actual_batch_size,
-                         image_width, image_height);
+                         batch.front().content_image.m_width,
+                         batch.front().content_image.m_height);
 
       // Write result to gl_sframe_writer
       for (const auto& row : processed_batch) {
@@ -523,7 +639,10 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
 
   infer_derived_options();
 
-  add_or_update_state({{"model", "resnet-16"}});
+  add_or_update_state({
+      {"model", "resnet-16"},
+      {"styles", style_sframe_with_index(style)},
+  });
 
   m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);
   m_vgg_spec = init_vgg_16(vgg_mlmodel_path);
@@ -616,23 +735,27 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
 
 std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
     std::string filename, std::map<std::string, flexible_type> opts) {
-  flex_int image_width = read_state<flex_int>("image_width");
-  flex_int image_height = read_state<flex_int>("image_height");
+  const flex_int image_width = read_opts<flex_int>(opts, "image_width");
+  const flex_int image_height = read_opts<flex_int>(opts, "image_height");
+  const flex_int include_flexible_shape = read_opts<flex_int>(opts, "include_flexible_shape");
+  const flex_string content_feature = read_state<flex_string>("content_feature");
+  const flex_string style_feature = read_state<flex_string>("style_feature");
+  const flex_int num_styles = read_state<flex_int>("num_styles");
 
   flex_dict user_defined_metadata = {
       {"model", read_state<flex_string>("model")},
       {"max_iterations", read_state<flex_int>("max_iterations")},
       {"training_iterations", read_state<flex_int>("training_iterations")},
       {"type", "StyleTransfer"},
-      {"content_feature", read_state<flex_string>("content_feature")},
-      {"style_feature", read_state<flex_string>("style_feature")},
-      {"num_styles", read_state<flex_string>("num_styles")},
+      {"content_feature", content_feature},  // TODO: refactor to take content name and style name
+      {"style_feature", style_feature},
+      {"num_styles", num_styles},
       {"version", get_version()},
   };
 
-  std::shared_ptr<MLModelWrapper> model_wrapper =
-      export_style_transfer_model(*m_resnet_spec, image_width, image_height,
-                                  std::move(user_defined_metadata));
+  std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
+      *m_resnet_spec, image_width, image_height, include_flexible_shape,
+      std::move(user_defined_metadata), content_feature, style_feature, num_styles);
 
   if (!filename.empty()) model_wrapper->save(filename);
 
@@ -642,37 +765,10 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
 void style_transfer::import_from_custom_model(variant_map_type model_data,
                                               size_t version) {
   // Get relevant values from variant_map_type
-  auto model_iter = model_data.find("_model");
-  if (model_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain '_model'!\n");
-  }
-  const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
-  model_data.erase(model_iter);
-
-  auto num_styles_iter = model_data.find("num_styles");
-  if (num_styles_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain 'num_styles'!\n");
-  }
-  const size_t num_styles =
-      variant_get_value<flex_int>(num_styles_iter->second);
-  model_data.erase(num_styles_iter);
-
-  auto max_iterations_iter = model_data.find("max_iterations");
-  if (max_iterations_iter == model_data.end()) {
-    log_and_throw(
-        "The loaded turicreate model must contain 'max_iterations'!\n");
-  }
-  const size_t max_iterations =
-      variant_get_value<flex_int>(max_iterations_iter->second);
-  model_data.erase(max_iterations_iter);
-
-  auto model_type_iter = model_data.find("model");
-  if (model_type_iter == model_data.end()) {
-    log_and_throw("The loaded turicreate model must contain 'model_iter'!\n");
-  }
-  const std::string model_type =
-      variant_get_value<flex_string>(model_type_iter->second);
-  model_data.erase(model_type_iter);
+  const flex_dict& model = read_opts<flex_dict>(model_data, "_model");
+  const flex_int num_styles = read_opts<flex_int>(model_data, "num_styles");
+  const flex_int max_iterations = read_opts<flex_int>(model_data, "max_iterations");
+  const flex_string model_type = read_opts<flex_string>(model_data, "model");
 
   add_or_update_state({{"model", model_type},
                        {"num_styles", num_styles},
