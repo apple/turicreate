@@ -17,6 +17,10 @@
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
 #include <toolkits/util/training_utils.hpp>
 
+#ifdef __APPLE__
+#import <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
+#endif // __APPLE__
+
 namespace turi {
 namespace style_transfer {
 
@@ -317,7 +321,13 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
 
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
     const {
-  return compute_context::create();
+  #ifdef __APPLE__
+  if (mps_compute_context::has_style_transfer()) {
+    return compute_context::create();
+  }
+  #endif // __APPLE__
+
+  return compute_context::create_tf();
 }
 
 std::unique_ptr<data_iterator> style_transfer::create_iterator(
