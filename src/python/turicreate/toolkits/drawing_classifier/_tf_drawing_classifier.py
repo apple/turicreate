@@ -16,6 +16,10 @@ import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
 
+# for debug purpose
+import os
+from pprint import pprint
+
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
@@ -109,6 +113,11 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 
+        fname = os.path.join(os.path.expanduser('~'), "tf_weight_init.txt")
+        with open(fname, 'w') as f:
+            pprint(net_params, f)
+
+
         # Assign the initialised weights from MXNet to tensorflow
         layers = ['drawing_conv0_weight', 'drawing_conv0_bias', 'drawing_conv1_weight', 'drawing_conv1_bias',
                   'drawing_conv2_weight', 'drawing_conv2_bias', 'drawing_dense0_weight', 'drawing_dense0_bias',
@@ -133,6 +142,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
                                              _np.transpose(coreml_128_576, (1, 0))))
                 elif 'dense' in key:
+                    print(key, net_params[key].shape)
                     dense_weights = _utils.convert_dense_coreml_to_tf(
                         net_params[key])
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
@@ -141,6 +151,8 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                     # TODO: Call _utils.convert_conv2d_coreml_to_tf when #2513 is merged
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
                                              _np.transpose(net_params[key], (2, 3, 1, 0))))
+
+        print("init model init is called")
 
     def train(self, feed_dict):
 
@@ -240,5 +252,9 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                     # TODO: Call _utils.convert_conv2d_tf_to_coreml once #2513 is merged.
                     net_params.update(
                         {var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
+
+        fname = os.path.join(os.path.expanduser('~'), "tf_weight_end.txt")
+        with open(fname, 'w') as f:
+            pprint(net_params, f)
 
         return net_params

@@ -301,7 +301,12 @@ class DrawingClassifierTest(unittest.TestCase):
             filename = _mkstemp(prefix + ".mlmodel")[1]
             model.export_coreml(filename)
             mlmodel = _coremltools.models.MLModel(filename)
+
             tc_preds = model.predict(sf)
+            print(test_number)
+            print(tc_preds)
+            tc_probs = model.predict(sf, output_type="probability")
+            print(tc_probs)
 
             if test_number == 1:
                 # stroke input
@@ -312,6 +317,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 core_ml_preds = mlmodel.predict({
                     "drawing": sf[feature][row_number]._to_pil_image()
                     })
+                print(core_ml_preds)
                 assert (core_ml_preds[self.target] == tc_preds[row_number])
 
             if test_number == 1:
@@ -347,14 +353,14 @@ class DrawingClassifierTest(unittest.TestCase):
             model.summary()
 
 
-class DrawingClassifierFromScratchTest(DrawingClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(DrawingClassifierFromScratchTest, self).setUpClass(
-            warm_start=None)
+# class DrawingClassifierFromScratchTest(DrawingClassifierTest):
+#     @classmethod
+#     def setUpClass(self):
+#         super(DrawingClassifierFromScratchTest, self).setUpClass(
+#             warm_start=None)
 
-class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
-    @classmethod
-    def setUpClass(self):
-        super(DrawingClassifierUsingQuickdraw245, self).setUpClass(
-            warm_start="quickdraw_245_v0")
+# class DrawingClassifierUsingQuickdraw245(DrawingClassifierTest):
+#     @classmethod
+#     def setUpClass(self):
+#         super(DrawingClassifierUsingQuickdraw245, self).setUpClass(
+#             warm_start="quickdraw_245_v0")
