@@ -143,11 +143,17 @@ class OneShotObjectDetector(_CustomModel):
             >>> predictions_with_bounding_boxes.explore()
 
         """
-        return self.__proxy__['detector'].predict(
-            dataset=dataset,
-            confidence_threshold=confidence_threshold,
-            iou_threshold=iou_threshold,
-            verbose=verbose)
+        if USE_CPP:
+            return self.__proxy__['detector'].predict(
+                dataset=dataset,
+                confidence_threshold=confidence_threshold,
+                iou_threshold=iou_threshold)
+        else:
+            return self.__proxy__['detector'].predict(
+                dataset=dataset,
+                confidence_threshold=confidence_threshold,
+                iou_threshold=iou_threshold,
+                verbose=verbose)
 
     def export_coreml(self, filename, include_non_maximum_suppression=True, iou_threshold=None, confidence_threshold=None):
         """
@@ -239,7 +245,7 @@ class OneShotObjectDetector(_CustomModel):
         # We don't know how to serialize a Python class, hence we need to
         # reduce the detector to the proxy object before saving it.
         if USE_CPP:
-            state['detector'] = state['detector'].__proxy__
+            state['detector'] = {'detector_model':state['detector'].__proxy__}
         else:
             state['detector'] = state['detector']._get_native_state()
         return state
@@ -249,11 +255,9 @@ class OneShotObjectDetector(_CustomModel):
         assert(version == cls._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION)
         # we need to undo what we did at save and turn the proxy object
         # back into a Python class
-        if USE_CPP:
-            state['detector'] = _ObjectDetector_beta(state['detector'])
-        else:
-            state['detector'] = _ObjectDetector._load_version(
-                state['detector'], state["_detector_version"])
+        state['detector'] = _ObjectDetector._load_version(
+            state['detector'], state["_detector_version"])
+
         return OneShotObjectDetector(state)
 
     def __str__(self):
