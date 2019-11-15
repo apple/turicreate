@@ -165,11 +165,11 @@ std::vector<std::pair<flex_int, flex_image>> process_output(
 
   const float* start_ptr = contents.data();
 
-  for (size_t index = 0; index < batch_size; index++) {
+  for (size_t i = 0; i < batch_size; i++) {
     std::vector<uint8_t> image_data;
     image_data.reserve(image_size);
 
-    size_t start_offset = image_size * index;
+    size_t start_offset = image_size * i;
     size_t end_offset = start_offset + image_size;
 
     std::transform(start_ptr + start_offset, start_ptr + end_offset,
