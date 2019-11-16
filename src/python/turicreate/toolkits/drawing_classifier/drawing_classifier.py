@@ -171,6 +171,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
+        if validation_set is None:
+            validation_set = _tc.SFrame()
         # Enable the following line when #2524 is merged
         # options["warm_start"] = warm_start
         model.train(input_dataset, target, feature, validation_set, options)
