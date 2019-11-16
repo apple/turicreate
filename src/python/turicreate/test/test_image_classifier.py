@@ -168,13 +168,23 @@ class ImageClassifierTest(unittest.TestCase):
         with self.assertRaises(TypeError):
             predictions = model.classify("more junk")
 
-    @unittest.skipIf(sys.platform == 'darwin', 'test_export_coreml_with_predict(...) covers this functionality and more')
     def test_export_coreml(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
 
+        coreml_model = coremltools.models.MLModel(filename)
+        self.assertDictEqual({
+            u'com.github.apple.turicreate.version': tc.__version__,
+            'type': 'ImageClassifier',
+            'version': '1'
+            }, dict(coreml_model.user_defined_metadata)
+        )
+        expected_result = 'Image classifier (%s) created by Turi Create (version %s)' % (
+                self.model.model, tc.__version__)
+        self.assertEquals(expected_result, coreml_model.short_description)
+
     @unittest.skipIf(sys.platform != 'darwin', 'Core Ml only supported on Mac')
-    def test_export_coreml_with_predict(self):
+    def test_export_coreml_predict(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
 

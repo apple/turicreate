@@ -26,6 +26,7 @@ from .. import _image_feature_extractor
 from ._evaluation import Evaluation as _Evaluation
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
+from turicreate.toolkits import _coreml_utils
 
 _DEFAULT_SOLVER_OPTIONS = {
 'convergence_threshold': 1e-2,
@@ -912,15 +913,21 @@ class ImageClassifier(_CustomModel):
             mlmodel.input_description[self.feature] = u'Input image'
             mlmodel.output_description[prob_name] = 'Prediction probabilities'
             mlmodel.output_description[label_name] = 'Class label of top prediction'
-            _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
-                'model': self.model,
-                'target': self.target,
-                'features': self.feature,
-                'max_iterations': str(self.max_iterations),
-            }, version=ImageClassifier._PYTHON_IMAGE_CLASSIFIER_VERSION)
+
+            model_metadata = {
+                 'model': self.model,
+                 'target': self.target,
+                 'features': self.feature,
+                 'max_iterations': str(self.max_iterations),
+            }
+            user_defined_metadata = model_metadata.update(
+                    _coreml_utils._get_tc_version_info())
+            _coreml_utils._set_model_metadata(mlmodel,
+                    self.__class__.__name__,
+                    user_defined_metadata,
+                    version=ImageClassifier._PYTHON_IMAGE_CLASSIFIER_VERSION)
 
             return mlmodel
-
 
         # main part of the export_coreml function
         if self.model in _pre_trained_models.IMAGE_MODELS:
