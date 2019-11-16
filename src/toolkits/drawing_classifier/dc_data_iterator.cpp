@@ -132,7 +132,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
-  const flex_list classes(target_properties_.classes);
+  const flex_list& classes(target_properties_.classes);
 
   while (real_batch_size < batch_size && next_row_ != end_of_rows_) {
 
