@@ -17,8 +17,8 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _raise_error_if_not_sframe, \
                                         _check_categorical_option_type, \
                                         _raise_error_evaluation_metric_is_valid, \
-                                        _summarize_coefficients
-
+                                        _summarize_coefficients, \
+                                        _get_tc_version_info_export_coreml
 
 _DEFAULT_SOLVER_OPTIONS = {
 'convergence_threshold': 1e-2,
@@ -478,12 +478,11 @@ class LogisticClassifier(_Classifier):
         display_name = "logistic classifier"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {"class": self.__class__.__name__,
-                   "version": _turicreate.__version__,
                    "short_description": short_description,
-                   'user_defined':{
-                    'turicreate_version': _turicreate.__version__
-                   }
+                   'user_defined': {}
                 }
+        tc_version_info = _get_tc_version_info_export_coreml()
+        context['user_defined'].update(tc_version_info)
         _logistic_classifier_export_as_model_asset(self.__proxy__, filename, context)
 
     def _get(self, field):

@@ -20,7 +20,7 @@ def _get_model_metadata(model_class, metadata, version=None):
     """
     from turicreate import __version__
     info = {
-        'turicreate_version': __version__,
+        'com.github.apple.turicreate.version': __version__,
         'type': model_class,
     }
     if version is not None:

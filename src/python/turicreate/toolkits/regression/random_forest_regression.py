@@ -290,11 +290,8 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {"mode" : "regression",
                    "model_type" : "random_forest",
-                   "version": _turicreate.__version__,
                    "class": self.__class__.__name__,
-                   'user_defined':{
-                    'turicreate_version': _turicreate.__version__
-                   },
+                   'user_defined':{},
                    "short_description": short_description}
         self._export_coreml_impl(filename, context)
 
