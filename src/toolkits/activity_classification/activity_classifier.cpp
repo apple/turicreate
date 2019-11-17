@@ -693,7 +693,8 @@ variant_map_type activity_classifier::evaluate(gl_sframe data,
 
 
 std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
-    std::string filename)
+    std::string filename, std::string short_desc,
+    std::map<std::string, flexible_type> additional_user_defined)
 {
   std::shared_ptr<MLModelWrapper> model_wrapper =
       export_activity_classifier_model(
@@ -704,9 +705,6 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
           read_state<flex_list>("classes"),
           read_state<flex_string>("target"));
 
-  // Add "user-defined" metadata.
-  // TODO: Should we also be adding the non-user-defined keys, such as
-  // "turicreate_version" and "shortDescription", or is that up to the frontend?
   const flex_list& features_list = read_state<flex_list>("features");
   const flex_string features_string =
       join(std::vector<std::string>(features_list.begin(),
@@ -720,8 +718,13 @@ std::shared_ptr<MLModelWrapper> activity_classifier::export_to_coreml(
       {"type", "activity_classifier"},
       {"version", 2},
   };
+  for(const auto& kvp : additional_user_defined) {
+       user_defined_metadata.emplace_back(kvp.first, kvp.second);
+  }
+
   model_wrapper->add_metadata({
-      {"user_defined", std::move(user_defined_metadata)}
+      {"short_description", short_desc},
+      {"user_defined", std::move(user_defined_metadata)},
   });
 
   if (!filename.empty()) {

@@ -316,10 +316,23 @@ class ActivityClassifierTest(unittest.TestCase):
 
         # Load the model back from the CoreML model file
         coreml_model = coremltools.models.MLModel(filename)
-
-        rs = np.random.RandomState(1234)
+        self.assertDictEqual({
+            'com.github.apple.turicreate.version': tc.__version__,
+            'target': self.target,
+            'type': 'activity_classifier',
+            'prediction_window': str(self.prediction_window),
+            'session_id': self.session_id,
+            'features': ','.join(self.features),
+            'max_iterations': '10',
+            'version': '2',
+            }, dict(coreml_model.user_defined_metadata)
+        )
+        expected_result = 'Activity classifier created by Turi Create (version %s)' \
+                                    % (tc.__version__)
+        self.assertEquals(expected_result, coreml_model.short_description)
 
         # Create a small dataset, and compare the models' predict() output
+        rs = np.random.RandomState(1234)
         dataset = tc.util.generate_random_sframe(column_codes='r' * 3, num_rows=10)
         dataset['session_id'] = 0
         dataset[self.target] = random_labels = [rs.randint(0, self.num_labels - 1, ) for i in range(10)]
