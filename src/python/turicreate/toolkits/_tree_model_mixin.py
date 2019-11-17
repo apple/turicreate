@@ -316,5 +316,9 @@ class TreeModelMixin(object):
         return ([data_fields, training_fields], ["Schema", "Settings"])
 
     def _export_coreml_impl(self, filename, context):
-        context['user_defined'] = _coreml_utils._get_tc_version_info()
+        tc_version_info = _coreml_utils._get_tc_version_info()
+        if 'user_defined' not in context:
+            context['user_defined'] = tc_version_info
+        else:
+            context['user_defined'].update(tc_version_info)
         tc.extensions._xgboost_export_as_model_asset(self.__proxy__, filename, context)
