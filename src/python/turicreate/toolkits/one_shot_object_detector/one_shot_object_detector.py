@@ -12,6 +12,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits.object_detector.object_detector import ObjectDetector as _ObjectDetector
 from turicreate.toolkits.one_shot_object_detector.util._augmentation import preview_synthetic_training_data as _preview_synthetic_training_data
 import turicreate.toolkits._internal_utils as _tkutl
+from turicreate.toolkits import _coreml_utils
 
 USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
@@ -207,21 +208,27 @@ class OneShotObjectDetector(_CustomModel):
         --------
         >>> model.export_coreml('one_shot.mlmodel')
         """
-        from coremltools.models.utils import save_spec as _save_spec
         import coremltools
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        short_description = _coreml_utils._mlmodel_short_description('Object Detector')
         if USE_CPP:
-            self.__proxy__['detector'].export_coreml(
-                filename, include_non_maximum_suppression, iou_threshold, confidence_threshold)
-            model = coremltools.models.MLModel(filename).get_spec()
+            options = {
+                    'include_non_maximum_suppression': include_non_maximum_suppression,
+                    'confidence_threshold': confidence_threshold,
+                    'iou_threshold': iou_threshold,
+            }
+            additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+            short_description = _coreml_utils._mlmodel_short_description('One Shot Object Detector')
+            self.__proxy__['detector'].__proxy__.export_to_coreml(filename,
+                short_description, additional_user_defined_metadata, options)
         else:
+            from coremltools.models.utils import save_spec as _save_spec
             model = self.__proxy__['detector']._create_coreml_model(
                 include_non_maximum_suppression=include_non_maximum_suppression,
                 iou_threshold=iou_threshold,
                 confidence_threshold=confidence_threshold)
-        model.description.metadata.shortDescription = 'One Shot ' + \
-            model.description.metadata.shortDescription
-        model.description.metadata.userDefined["type"] = 'OneShotObjectDetector'
-        _save_spec(model, filename)
+            model.description.metadata.shortDescription = short_description
+            _save_spec(model, filename)
 
     def _get_version(self):
         return self._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION

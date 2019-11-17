@@ -192,9 +192,28 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         import coremltools
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename,
-            include_non_maximum_suppression=False)
+                include_non_maximum_suppression=False)
 
+        ## Test metadata
         coreml_model = coremltools.models.MLModel(filename)
+        self.maxDiff = None
+        self.assertDictEqual({
+            'com.github.apple.turicreate.version': tc.__version__,
+            'type': 'object_detector',
+            'classes': ','.join(sorted(_CLASSES)),
+            'feature': self.feature,
+            'include_non_maximum_suppression': 'False',
+            'annotations': 'annotation',
+            'max_iterations': '1',
+            'model': 'darknet-yolo',
+            'training_iterations': '1',
+            }, dict(coreml_model.user_defined_metadata)
+        )
+        expected_result = 'One shot object detector created by Turi Create (version %s)' \
+                                    % (tc.__version__)
+        self.assertEquals(expected_result, coreml_model.short_description)
+
+        ## Test prediction
         img = self.train[0:1][self.feature][0]
         img_fixed = tc.image_analysis.resize(img, 416, 416, 3)
         pil_img = Image.fromarray(img_fixed.pixel_data)
@@ -206,16 +225,12 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
             self.assertEqual(ret['coordinates'].shape[0],
                 ret['confidence'].shape[0])
 
-        # Also check if we can train a second model and export it (there could
-        # be naming issues in mxnet)
+        # Test export without non max supression
         filename2 = tempfile.mkstemp('bingo2.mlmodel')[1]
-        # We also test at the same time if we can export a model with a single
-        # class
-        sf = tc.SFrame({'image': tc.SArray([self.train[self.feature][0]]),
-                        'label': tc.SArray([self.train[self.target][0]])})
-        model2 = tc.one_shot_object_detector.create(sf, 'label', max_iterations=1)
-        model2.export_coreml(filename2,
-            include_non_maximum_suppression=False)
+        self.model.export_coreml(filename2, include_non_maximum_suppression=True)
+        coreml_model = coremltools.models.MLModel(filename)
+        self.assertTrue(
+            coreml_model.user_defined_metadata['include_non_maximum_suppression'])
 
     def test__list_fields(self):
         model = self.model
