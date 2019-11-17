@@ -25,7 +25,7 @@ from ..toolkits._main import ToolkitError
 import json
 import logging as _logging
 import six as _six
-import turicreate as _turicreate
+
 
 _proxy_map = {UnitySFrameProxy: (lambda x: _SFrame(_proxy=x)),
               UnitySArrayProxy: (lambda x: _SArray(_proxy=x)),

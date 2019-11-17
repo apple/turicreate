@@ -29,7 +29,8 @@ def _get_model_metadata(model_class, metadata, version=None):
     info['type'] = model_class
     if version is not None:
         info['version'] = str(version)
-    info.update(metadata)
+    if metadata is not None:
+        info.update(metadata)
     return info
 
 def _set_model_metadata(mlmodel, model_class, metadata, version=None):

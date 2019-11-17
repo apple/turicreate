@@ -99,7 +99,8 @@ class TextClassifierTest(unittest.TestCase):
             'com.github.apple.turicreate.version': tc.__version__
             }, dict(coreml_model.user_defined_metadata)
         )
-        self.assertTrue('Text classifier created by Turi Create' in coreml_model.short_description)
+        expected_result = 'Text classifier created by Turi Create (version %s)' % tc.__version__
+        self.assertEquals(expected_result, coreml_model.short_description)
 
     @unittest.skipIf(_mac_ver() < (10, 13), 'Only supported on macOS 10.13+')
     def test_export_coreml_with_predict(self):
