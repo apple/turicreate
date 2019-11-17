@@ -11,8 +11,9 @@ import turicreate as _tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
-from turicreate.toolkits._internal_utils import _toolkit_repr_print, _get_tc_version_info_export_coreml
+from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits import text_analytics as _text_analytics
+from turicreate.toolkits import _coreml_utils
 
 
 def _BOW_FEATURE_EXTRACTOR(sf, target=None):
@@ -357,10 +358,8 @@ class TextClassifier(_CustomModel):
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {'class': self.__class__.__name__,
                    'short_description': short_description,
-                   'user_defined':{}
-                }
-        tc_version_info = _get_tc_version_info_export_coreml()
-        context['user_defined'].update(tc_version_info)
+                  }
+        context['user_defined'] = _coreml_utils._get_tc_version_info()
 
         model = self.__proxy__['classifier'].__proxy__
         _logistic_classifier_export_as_model_asset(model, filename, context)

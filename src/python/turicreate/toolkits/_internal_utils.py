@@ -750,9 +750,3 @@ def _print_neural_compute_device(cuda_gpus, use_mps, cuda_mem_req=None, has_mps_
         print('Using CPU to create model')
         if sys.platform == 'darwin' and _mac_ver() < (10, 14) and has_mps_impl:
             print('NOTE: If available, an AMD GPU can be leveraged on macOS 10.14+ for faster model creation')
-
-def _get_tc_version_info_export_coreml():
-    """
-    Return metadata related to the package to be added to the CoreML model
-    """
-    return {'com.github.apple.turicreate.version': _turicreate.__version__}

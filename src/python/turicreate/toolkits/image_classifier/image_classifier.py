@@ -912,12 +912,16 @@ class ImageClassifier(_CustomModel):
             mlmodel.input_description[self.feature] = u'Input image'
             mlmodel.output_description[prob_name] = 'Prediction probabilities'
             mlmodel.output_description[label_name] = 'Class label of top prediction'
-            _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
+            model_metadata = {
                 'model': self.model,
                 'target': self.target,
                 'features': self.feature,
                 'max_iterations': str(self.max_iterations),
-            }, version=ImageClassifier._PYTHON_IMAGE_CLASSIFIER_VERSION)
+            }
+            user_defined_metadata = model_metadata.update(
+                    _get_tc_version_info_export_coreml())
+            _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, user_defined_metadata,
+                    version=imageclassifier._python_image_classifier_version)
 
             return mlmodel
 

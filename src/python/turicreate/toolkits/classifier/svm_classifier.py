@@ -16,8 +16,8 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _toolkit_get_topk_bottomk, \
                                         _raise_error_evaluation_metric_is_valid, \
                                         _check_categorical_option_type, \
-                                        _summarize_coefficients, \
-                                        _get_tc_version_info_export_coreml
+                                        _summarize_coefficients
+from turicreate.toolkits import _coreml_utils
 
 _DEFAULT_SOLVER_OPTIONS = {
 'convergence_threshold': 1e-2,
@@ -387,8 +387,7 @@ class SVMClassifier(_Classifier):
                    "short_description": short_description,
                    'user_defined':{}
                 }
-        tc_version_info = _get_tc_version_info_export_coreml()
-        context['user_defined'].update(tc_version_info)
+        context['user_defined'] = _coreml_utils._get_tc_version_info()
         _linear_svm_export_as_model_asset(self.__proxy__, filename, context)
 
     def _get(self, field):
