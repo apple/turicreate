@@ -46,7 +46,8 @@ class EXPORT object_detector: public ml_model_base {
   variant_type predict(variant_type data,
                        std::map<std::string, flexible_type> opts);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename, std::map<std::string, flexible_type> opts);
+      std::string filename, std::map<std::string, flexible_type> opts,
+      std::string short_description, std::map<std::string, flexible_type> additional_user_defined);
   void import_from_custom_model(variant_map_type model_data, size_t version);
 
   // Support for iterative training.
@@ -118,8 +119,11 @@ class EXPORT object_detector: public ml_model_base {
   register_defaults("predict",{});
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::export_to_coreml, "filename",
-    "options");
-  register_defaults("export_to_coreml", {{"options", to_variant(std::map<std::string, flexible_type>())}});
+    "options", "short_description", "additional_user_defined");
+  register_defaults("export_to_coreml",
+          {{"options", to_variant(std::map<std::string, flexible_type>())},
+          {"short_description", ""},
+          {"additional_user_defined", to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_DOCSTRING(
       object_detector::export_to_coreml,

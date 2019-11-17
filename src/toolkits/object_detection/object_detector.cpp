@@ -903,7 +903,8 @@ std::unique_ptr<model_spec> object_detector::init_model(
 }
 
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
-    std::string filename, std::map<std::string, flexible_type> opts) {
+    std::string filename, std::map<std::string, flexible_type> opts,
+    std::string short_description, std::map<std::string, flexible_type> additional_user_defined) {
   // If called during training, synchronize the model first.
   if (training_model_) {
     synchronize_training();
@@ -963,15 +964,15 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
       {"type", "object_detector"},
     };
 
+  for(const auto& kvp : additional_user_defined) {
+       user_defined_metadata.emplace_back(kvp.first, kvp.second);
+  }
 
   if (opts["include_non_maximum_suppression"].to<bool>()){
     user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
     user_defined_metadata.emplace_back("confidence_threshold", opts["confidence_threshold"]);
     user_defined_metadata.emplace_back("iou_threshold", opts["iou_threshold"]);
   }
-
-  // TODO: Should we also be adding the non-user-defined keys, such as
-  // "version" and "shortDescription", or is that up to the frontend?
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
       yolo_nn_spec, grid_width * SPATIAL_REDUCTION,
