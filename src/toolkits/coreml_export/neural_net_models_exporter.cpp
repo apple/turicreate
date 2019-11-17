@@ -383,8 +383,8 @@ std::shared_ptr<MLModelWrapper> export_activity_classifier_model(
 std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
     const neural_net::model_spec& nn_spec, size_t image_width,
     size_t image_height, bool include_flexible_shape,
-    flex_dict user_defined_metadata, std::string content_feature,
-    std::string style_feature, size_t num_styles) {
+    std::string content_feature, std::string style_feature, size_t num_styles) {
+
   CoreML::Specification::Model model;
   model.set_specificationversion(3);
 
@@ -437,9 +437,6 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
 
   auto model_wrapper =
       std::make_shared<MLModelWrapper>(std::make_shared<CoreML::Model>(model));
-
-  model_wrapper->add_metadata(
-      {{"user_defined", std::move(user_defined_metadata)}});
 
   return model_wrapper;
 }

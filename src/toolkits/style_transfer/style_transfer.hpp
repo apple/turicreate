@@ -32,7 +32,9 @@ class EXPORT style_transfer : public ml_model_base {
   void load_version(iarchive& iarc, size_t version) override;
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename, std::map<std::string, flexible_type> opts);
+      std::string filename, std::string short_description,
+      std::map<std::string, flexible_type> additional_user_defined,
+      std::map<std::string, flexible_type> opts);
 
   void train(gl_sarray style, gl_sarray content,
              std::map<std::string, flexible_type> opts);
@@ -88,7 +90,12 @@ class EXPORT style_transfer : public ml_model_base {
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::finalize_training);
 
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::export_to_coreml, "filename",
-                                 "options");
+    "short_description", "additional_user_defined", "options");
+  register_defaults("export_to_coreml",
+         {{"short_description", ""},
+          {"additional_user_defined", to_variant(std::map<std::string, flexible_type>())},
+          {"options", to_variant(std::map<std::string, flexible_type>())}});
+
 
   register_defaults("export_to_coreml",
                     {{"options",

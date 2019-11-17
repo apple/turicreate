@@ -741,8 +741,11 @@ class StyleTransfer_beta(_Model):
         options['image_width'] = image_shape[1]
         options['image_height'] = image_shape[0]
         options['include_flexible_shape'] = include_flexible_shape
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        short_description = _coreml_utils._mlmodel_short_description('Style Transfer')
 
-        self.__proxy__.export_to_coreml(filename, options)
+        self.__proxy__.export_to_coreml(filename, short_description,
+                additional_user_defined_metadata, options)
 
 
     def stylize(self, images, style=None, verbose=True, max_size=800, batch_size = 4):
