@@ -385,7 +385,6 @@ class SVMClassifier(_Classifier):
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {"class": self.__class__.__name__,
                    "short_description": short_description,
-                   'user_defined':{}
                 }
         context['user_defined'] = _coreml_utils._get_tc_version_info()
         _linear_svm_export_as_model_asset(self.__proxy__, filename, context)

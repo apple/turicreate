@@ -291,7 +291,6 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
         context = {"mode" : "regression",
                    "model_type" : "random_forest",
                    "class": self.__class__.__name__,
-                   'user_defined':{},
                    "short_description": short_description}
         self._export_coreml_impl(filename, context)
 

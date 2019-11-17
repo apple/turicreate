@@ -247,9 +247,7 @@ class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
                    "model_type" : "decision_tree",
                    "class": self.__class__.__name__,
                    "short_description": short_description,
-                   'user_defined':{}
                 }
-
         self._export_coreml_impl(filename, context)
 
     def predict(self, dataset, missing_value_action='auto'):
