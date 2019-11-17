@@ -284,9 +284,25 @@ class DrawingClassifierTest(unittest.TestCase):
                     and (new_preds == old_preds).all())
 
     def test_export_coreml(self):
+        import coremltools
         for model in self.models:
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
+
+            # Load the model back from the CoreML model file
+            coreml_model = coremltools.models.MLModel(filename)
+            self.assertDictEqual({
+                'com.github.apple.turicreate.version': _tc.__version__,
+                'target': self.target,
+                'feature': self.feature,
+                'type': 'drawing_classifier',
+                'max_iterations': '20',
+                'version': '2',
+                }, dict(coreml_model.user_defined_metadata)
+            )
+            expected_result = 'Drawing classifier created by Turi Create (version %s)' \
+                                        % (_tc.__version__)
+            self.assertEquals(expected_result, coreml_model.short_description)
 
     @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_with_predict(self):
