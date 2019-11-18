@@ -21,8 +21,6 @@ from . import util as test_util
 import unittest
 import pytest
 
-IS_PRE_6_0_RC = float(_tc.__version__) < 6.0
-
 def _build_bitmap_data():
     '''
     Build an SFrame from 10 saved drawings.

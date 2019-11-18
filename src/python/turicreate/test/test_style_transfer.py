@@ -21,7 +21,7 @@ import coremltools
 
 
 _NUM_STYLES = 4
-IS_PRE_6_0_RC = float(tc.__version__) < 6.0
+IS_PRE_6_0_RC = float(tc.__version__[:3]) < 6.0
 
 
 def _get_data(feature, num_examples=100):
