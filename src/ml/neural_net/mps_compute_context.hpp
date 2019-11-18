@@ -41,6 +41,8 @@ class mps_compute_context: public compute_context {
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
       const float_array_map& config, const float_array_map& weights) override;
 
+  static bool has_style_transfer();
+
   std::unique_ptr<model_backend> create_style_transfer(
       const float_array_map& config, const float_array_map& weights) override;
 
