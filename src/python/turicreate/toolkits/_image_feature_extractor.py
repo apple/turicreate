@@ -72,6 +72,10 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         """
         from tensorflow import keras
 
+        # Suppresses verbosity to only errors
+        import os
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
         self.ptModel = ptModel
 
         self.input_shape = ptModel.input_image_shape
