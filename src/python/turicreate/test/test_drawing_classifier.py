@@ -237,7 +237,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 preds = model.predict(sf[self.feature], output_type="probability")
                 assert (preds.dtype == float)
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon in a later PR")
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -267,7 +266,6 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (metric in evaluation)
                     assert (individual_run_results[metric] == evaluation[metric])
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon in a later PR")
     def test_evaluate_with_unsupported_metric(self):
         for index in range(len(self.trains)):
             model = self.models[index]
