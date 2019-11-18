@@ -269,13 +269,18 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         tf_config = {
             'grid_height': params['grid_shape'][0],
             'grid_width': params['grid_shape'][1],
-            'max_iterations': max_iterations,
             'mlmodel_path' : params['mlmodel_path'],
             'classes' : classes,
             'compute_final_metrics' : False
         }
+
+        # If batch_size or max_iterations = 0, they will be automatically
+        # generated in C++.
         if batch_size > 0:
             tf_config['batch_size'] = batch_size
+
+        if max_iterations > 0:
+            tf_config['max_iterations'] = max_iterations
 
         model = _tc.extensions.object_detector()
         model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)

@@ -80,6 +80,24 @@ build_wheel_linux_python36:
     paths:
       - target/
 
+build_wheel_linux_python37:
+  tags:
+    - docker
+  services:
+    - docker:18.09-dind
+  image: docker:18.09
+  stage: build
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  script:
+    - apk add bash
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.7 --skip_doc
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - target/
+
 build_wheel_mac_10_15_python27:
   tags:
     - macos10.15
@@ -353,6 +371,27 @@ test_python_linux_python36:
     paths:
       - pytest.*
 
+test_python_linux_python37:
+  tags:
+    - docker
+  services:
+    - docker:18.09-dind
+  image: docker:18.09
+  stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  dependencies:
+    - build_wheel_linux_python37
+  script:
+    - apk add bash
+    - bash -e scripts/test_wheel.sh --docker-python3.7
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
 # This coremltools issues needs to be resolved before we can run on macOS 10.13
 # https://github.com/apple/coremltools/issues/408
 #test_python_mac_python27_10_13:
@@ -539,6 +578,7 @@ collect_artifacts:
     - build_wheel_linux_python27
     - build_wheel_linux_python35
     - build_wheel_linux_python36
+    - build_wheel_linux_python37
     - build_wheel_mac_10_15_python27
     - build_wheel_mac_10_15_python35
     - build_wheel_mac_10_15_python36

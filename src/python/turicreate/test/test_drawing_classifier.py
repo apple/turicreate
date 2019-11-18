@@ -75,7 +75,7 @@ def _build_stroke_data():
 
 class DrawingClassifierTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, warm_start='auto'):
+    def setUpClass(self, warm_start=None):
         self.feature = "drawing"
         self.target = "label"
         self.check_cross_sf = _build_bitmap_data()
@@ -85,7 +85,7 @@ class DrawingClassifierTest(unittest.TestCase):
             self.check_cross_sf,
             self.target,
             feature=self.feature,
-            max_iterations=10,
+            max_iterations=20,
             warm_start=warm_start)
         # Disabled the following model creation because of an error
         # ToolkitError: Both SArrays have to have the same value type.
@@ -97,7 +97,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 feature=self.feature,
                 max_iterations=1,
                 warm_start=warm_start)
-        self.trains = [self.check_cross_sf, self.stroke_sf]
+        self.trains = [self.check_cross_sf] # , self.stroke_sf]
         self.models = [self.check_cross_model] #, self.stroke_model]
 
     def test_create_with_missing_value_bitmap(self):
@@ -234,7 +234,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 preds = model.predict(sf[self.feature], output_type="probability")
                 assert (preds.dtype == float)
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon in a later PR")
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -264,7 +263,6 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (metric in evaluation)
                     assert (individual_run_results[metric] == evaluation[metric])
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon in a later PR")
     def test_evaluate_with_unsupported_metric(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -283,15 +281,12 @@ class DrawingClassifierTest(unittest.TestCase):
                 assert (new_preds.dtype == old_preds.dtype
                     and (new_preds == old_preds).all())
 
-    # @unittest.skipIf(_sys.platform == "darwin", "test_export_coreml_with_predict(...) covers this functionality and more")
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon: Need to test and debug export_to_coreml")
     def test_export_coreml(self):
         for model in self.models:
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
 
-    # @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon: Need to test and debug export_to_coreml")
+    @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_with_predict(self):
         for test_number in range(len(self.models)):
             feature = self.feature
@@ -305,6 +300,7 @@ class DrawingClassifierTest(unittest.TestCase):
             model.export_coreml(filename)
             mlmodel = _coremltools.models.MLModel(filename)
             tc_preds = model.predict(sf)
+
             if test_number == 1:
                 # stroke input
                 sf[feature] = _tc.drawing_classifier.util.draw_strokes(
@@ -314,7 +310,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 core_ml_preds = mlmodel.predict({
                     "drawing": sf[feature][row_number]._to_pil_image()
                     })
-                assert (core_ml_preds["classLabel"] == tc_preds[row_number])
+                assert (core_ml_preds[self.target] == tc_preds[row_number])
 
             if test_number == 1:
                 sf = sf.remove_column(feature)
