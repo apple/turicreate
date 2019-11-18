@@ -516,8 +516,22 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
     def predict(self, feed_dict):
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
-        stylized_image = self.sess.run([self.output], feed_dict={self.tf_input : feed_dict['input'], self.tf_index: feed_dict['index']})
-        return { "output": _np.array(stylized_image) }
+
+        tf_input_shape = [None] + list(feed_dict['input'].shape)[1:]
+        self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = tf_input_shape)
+        self._define_training_graph = False
+        self.__define_graph()
+
+        stylized_image = self.sess.run([self.output], feed_dict={self.tf_input : feed_dict['input'], self.tf_index: feed_dict['index']})        
+        stylized_raw = _np.array(stylized_image)
+
+        expected_height = feed_dict['input'].shape[1]
+        expected_width = feed_dict['input'].shape[2]
+
+        # Crop to remove added padding
+        stylized_cropped = stylized_raw[:,:,0:expected_height,0:expected_width][0]
+
+        return { "output":  stylized_cropped }
 
     def export_weights(self):
         tf_export_params = {}

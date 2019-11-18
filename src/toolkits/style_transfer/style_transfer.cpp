@@ -152,14 +152,24 @@ void prepare_images(const image_type& image,
 }
 
 std::vector<std::pair<flex_int, flex_image>> process_output(
-    const shared_float_array& contents, size_t index, size_t batch_size,
-    size_t width, size_t height) {
-  constexpr size_t channels = 3;
+    const shared_float_array& contents, size_t index) {
+  size_t image_dim = contents.dim();
 
+  ASSERT_EQ(image_dim, 4);
+
+  const size_t* content_ptr = contents.shape();
+  
+  // Note: the float array from each context's predict is expected to be in the format
+  // {batch_size, height, width, channels}.
+  size_t batch_size = content_ptr[0];
+  size_t height = content_ptr[1];
+  size_t width = content_ptr[2];
+  size_t channels = content_ptr[3];
+
+  size_t image_size = contents.size() / batch_size;
+  
   std::vector<std::pair<flex_int, flex_image>> result;
   result.reserve(batch_size);
-
-  size_t image_size = height * width * channels;
 
   ASSERT_EQ(contents.size(), image_size * batch_size);
 
@@ -181,7 +191,7 @@ std::vector<std::pair<flex_int, flex_image>> process_output(
     image_type img(reinterpret_cast<char*>(image_data.data()), height, width,
                    channels, image_data.size(), IMAGE_TYPE_CURRENT_VERSION,
                    static_cast<int>(Format::RAW_ARRAY));
-
+    
     result.emplace_back(index, img);
   }
 
@@ -542,9 +552,6 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
     std::vector<st_example> batch = data_iter->next_batch(batch_size);
     while (!batch.empty()) {
-      // getting actual batch size
-      size_t actual_batch_size = batch.size();
-
       // setting the style index for each batch
       std::for_each(batch.begin(), batch.end(),
                     [i](st_example& example) { example.style_index = i; });
@@ -565,9 +572,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
       // populate gl_sframe_writer
       std::vector<std::pair<flex_int, flex_image>> processed_batch =
-          process_output(out_shared_float_array, i, actual_batch_size,
-                         batch.front().content_image.m_width,
-                         batch.front().content_image.m_height);
+          process_output(out_shared_float_array, i);
 
       // Write result to gl_sframe_writer
       for (const auto& row : processed_batch) {
