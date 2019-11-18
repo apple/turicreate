@@ -156,14 +156,24 @@ void prepare_images(const image_type& image,
 }
 
 std::vector<std::pair<flex_int, flex_image>> process_output(
-    const shared_float_array& contents, size_t index, size_t batch_size,
-    size_t width, size_t height) {
-  constexpr size_t channels = 3;
+    const shared_float_array& contents, size_t index) {
+  size_t image_dim = contents.dim();
+
+  ASSERT_EQ(image_dim, 4);
+
+  const size_t* content_ptr = contents.shape();
+
+  // Note: the float array from each context's predict is expected to be in the
+  // format {batch_size, height, width, channels}.
+  size_t batch_size = content_ptr[0];
+  size_t height = content_ptr[1];
+  size_t width = content_ptr[2];
+  size_t channels = content_ptr[3];
+
+  size_t image_size = contents.size() / batch_size;
 
   std::vector<std::pair<flex_int, flex_image>> result;
   result.reserve(batch_size);
-
-  size_t image_size = height * width * channels;
 
   ASSERT_EQ(contents.size(), image_size * batch_size);
 
@@ -240,14 +250,12 @@ float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
 // takes exactly one st_example as an argument.
 float_array_map prepare_predict(const st_example& example) {
   ASSERT_EQ(3, example.content_image.m_channels);
-  
+
   size_t image_width = example.content_image.m_width;
   size_t image_height = example.content_image.m_height;
-  std::vector<st_example> batch = { example };
+  std::vector<st_example> batch = {example};
 
-  return prepare_batch(batch,
-                       image_width,
-                       image_height,
+  return prepare_batch(batch, image_width, image_height,
                        /* train */ false);
 }
 
@@ -557,13 +565,10 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
     std::vector<st_example> batch = data_iter->next_batch(batch_size);
     while (!batch.empty()) {
-      // getting actual batch size
-      size_t actual_batch_size = batch.size();
-
       // setting the style index for each batch
       std::for_each(batch.begin(), batch.end(),
                     [i](st_example& example) { example.style_index = i; });
-      
+
       // predict only works with a batch size of one now. This is because images
       // have varied width and height and since the style transfer network
       // is size invariant, resizing the inputs isn't an option.
@@ -580,9 +585,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
       // populate gl_sframe_writer
       std::vector<std::pair<flex_int, flex_image>> processed_batch =
-          process_output(out_shared_float_array, i, actual_batch_size,
-                         batch.front().content_image.m_width,
-                         batch.front().content_image.m_height);
+          process_output(out_shared_float_array, i);
 
       // Write result to gl_sframe_writer
       for (const auto& row : processed_batch) {
@@ -752,8 +755,10 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
     std::string filename, std::map<std::string, flexible_type> opts) {
   const flex_int image_width = read_opts<flex_int>(opts, "image_width");
   const flex_int image_height = read_opts<flex_int>(opts, "image_height");
-  const flex_int include_flexible_shape = read_opts<flex_int>(opts, "include_flexible_shape");
-  const flex_string content_feature = read_state<flex_string>("content_feature");
+  const flex_int include_flexible_shape =
+      read_opts<flex_int>(opts, "include_flexible_shape");
+  const flex_string content_feature =
+      read_state<flex_string>("content_feature");
   const flex_string style_feature = read_state<flex_string>("style_feature");
   const flex_int num_styles = read_state<flex_int>("num_styles");
 
@@ -762,7 +767,8 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
       {"max_iterations", read_state<flex_int>("max_iterations")},
       {"training_iterations", read_state<flex_int>("training_iterations")},
       {"type", "StyleTransfer"},
-      {"content_feature", content_feature},  // TODO: refactor to take content name and style name
+      {"content_feature",
+       content_feature},  // TODO: refactor to take content name and style name
       {"style_feature", style_feature},
       {"num_styles", num_styles},
       {"version", get_version()},
@@ -770,7 +776,8 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
       *m_resnet_spec, image_width, image_height, include_flexible_shape,
-      std::move(user_defined_metadata), content_feature, style_feature, num_styles);
+      std::move(user_defined_metadata), content_feature, style_feature,
+      num_styles);
 
   if (!filename.empty()) model_wrapper->save(filename);
 
@@ -782,7 +789,8 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
   // Get relevant values from variant_map_type
   const flex_dict& model = read_opts<flex_dict>(model_data, "_model");
   const flex_int num_styles = read_opts<flex_int>(model_data, "num_styles");
-  const flex_int max_iterations = read_opts<flex_int>(model_data, "max_iterations");
+  const flex_int max_iterations =
+      read_opts<flex_int>(model_data, "max_iterations");
   const flex_string model_type = read_opts<flex_string>(model_data, "model");
 
   add_or_update_state({{"model", model_type},
