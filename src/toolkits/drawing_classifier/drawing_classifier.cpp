@@ -239,7 +239,7 @@ void drawing_classifier::init_options(
       "warm_start",
       "Record warm start model version used. If no warmstart used"
       " None is assigned by default."
-      "None",
+      "",
       true);
 
   // Validate user-provided options.
@@ -375,8 +375,8 @@ void drawing_classifier::init_training(
 
   if ( enable_warmstart ) {
     // Initialize the neural net with warm start model weights.
-    std::unique_ptr<model_spec> warmstart_model = std::unique_ptr<model_spec>(new model_spec(mlmodel_path));
-    float_array_map trained_weights = warmstart_model->export_params_view();
+    model_spec warmstart_model(mlmodel_path);
+    float_array_map trained_weights = warmstart_model.export_params_view();
     nn_spec_->update_params(trained_weights);
   }
 
