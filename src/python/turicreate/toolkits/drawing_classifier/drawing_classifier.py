@@ -186,7 +186,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             # Load CoreML warmstart model
             pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
             options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
-        options["warm_start"] = "" if warm_start==None else warm_start
+        options["warm_start"] = "" if warm_start is None else warm_start
         model.train(input_dataset, target, feature, validation_set, options)
         return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
 
