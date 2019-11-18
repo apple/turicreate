@@ -172,6 +172,8 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # C++ model
 
     if USE_CPP:
+        import os
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
         name = 'activity_classifier'
 

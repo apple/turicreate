@@ -26,7 +26,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
-         # Suppresses verbosity to only errors
+        # Suppresses verbosity to only errors
+        import os
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
         _tf.logging.set_verbosity(_tf.logging.ERROR)
         _tf.debugging.set_log_device_placement(False)
 
@@ -279,7 +281,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             else:
                 tf_export_params[var.name.split(':')[0]] = _np.array(val)
 
-        tvars = _tf.all_variables()
+        tvars = _tf.global_variables()
         tvars_vals = self.sess.run(tvars)
         for var, val in zip(tvars, tvars_vals):
             if 'moving_mean' in var.name:

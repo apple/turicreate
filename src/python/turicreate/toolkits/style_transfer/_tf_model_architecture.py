@@ -469,6 +469,11 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         
         _tf.reset_default_graph()
 
+        # Suppresses verbosity to only errors
+        import os
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+        _tf.logging.set_verbosity(_tf.logging.ERROR)
+
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 

@@ -14,8 +14,9 @@ def get_gpu_names():
 	"""
 	Gets the available GPU names.
 	"""
-	import tensorflow as tf
-	gpu_names = tf.config.experimental.list_physical_devices('GPU')
+	import tensorflow.compat.v1 as _tf
+	_tf.disable_v2_behavior()
+	gpu_names = _tf.config.experimental.list_physical_devices('GPU')
 	return [str(gpu_name) for gpu_name in gpu_names]
 
 def convert_shared_float_array_to_numpy(array):

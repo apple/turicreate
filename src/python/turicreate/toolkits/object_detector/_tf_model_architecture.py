@@ -21,6 +21,8 @@ class ODTensorFlowModel(object):
         _tf.reset_default_graph()
 
         # Suppresses verbosity to only errors
+        import os
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
         _tf.logging.set_verbosity(_tf.logging.ERROR)
         _tf.debugging.set_log_device_placement(False)
 
