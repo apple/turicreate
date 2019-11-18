@@ -115,7 +115,17 @@ def load_model(location):
                     model = _extensions.style_transfer()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
-                    
+
+                if name=='one_shot_object_detector' and OD_USE_CPP:
+                    od_cls = MODEL_NAME_MAP['object_detector']
+                    if 'detector_model' in model_data['detector']:
+                        model_data['detector'] = od_cls(model_data['detector']['detector_model'])
+                    else:
+                        model = _extensions.object_detector()
+                        model.import_from_custom_model(model_data['detector'], model_data['_detector_version'])
+                        model_data['detector'] = od_cls(model)
+                    return cls(model_data)
+
                 return cls._load_version(model_data, model_version)
 
         elif hasattr(_extensions, name):
