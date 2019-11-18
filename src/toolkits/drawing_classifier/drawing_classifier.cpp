@@ -309,8 +309,8 @@ void drawing_classifier::init_training(
   // if provided by Python.
   std::string mlmodel_path;
   bool enable_warmstart = false;
-  if ( opts.find("mlmodel_path") != opts.end()) {
-    auto mlmodel_path_iter = opts.find("mlmodel_path");
+  auto mlmodel_path_iter = opts.find("mlmodel_path");
+  if ( mlmodel_path_iter != opts.end()) {
     mlmodel_path = mlmodel_path_iter->second.to<std::string>();
     // Remove `mlmodel_path` from options as
     // it is not a user-defined option.
