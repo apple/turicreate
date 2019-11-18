@@ -718,8 +718,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
 
     auto true_class_probability = [=](const flexible_type& ft) {
       const flex_vec& prob_vec = ft.get<flex_vec>();
-      size_t last_index = num_classes - 1;  // either 0 or 1
-      return *(prob_vec.begin() + last_index);
+      return prob_vec.back();
     };
 
     result = result.apply(true_class_probability, flex_type_enum::FLOAT);
