@@ -529,9 +529,9 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         expected_width = feed_dict['input'].shape[2]
 
         # Crop to remove added padding
-        stylized_cropped = stylized_raw[:,:,0:expected_height,0:expected_width][0]
+        stylized_cropped = stylized_raw[:,:,0:expected_height,0:expected_width,:][0]
 
-        return { "output":  stylized_cropped }
+        return { "output":  _np.array(stylized_cropped) }
 
     def export_weights(self):
         tf_export_params = {}
