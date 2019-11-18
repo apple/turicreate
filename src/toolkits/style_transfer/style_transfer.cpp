@@ -79,7 +79,7 @@ const std::map<std::string, std::string>& get_custom_model_naming_map() {
            {"transformer_instancenorm0_beta",
             "transformer_encode_1_inst_beta_weight"},
            {"transformer_instancenorm4_beta",
-            "transformer_decoding_1_inst_beta_weight"},
+            "transformer_decoding_2_inst_beta_weight"},
            {"transformer_conv0_weight", "transformer_encode_1_conv_weight"},
            {"transformer_instancenorm1_gamma",
             "transformer_encode_2_inst_gamma_weight"},
@@ -102,7 +102,7 @@ const std::map<std::string, std::string>& get_custom_model_naming_map() {
            {"transformer_residualblock1_conv0_weight",
             "transformer_residual_2_conv_1_weight"},
            {"transformer_instancenorm5_gamma",
-            "transformer_decoding_2_inst_gamma_weight"},
+            "transformer_instancenorm5_gamma_weight"},
            {"transformer_instancenorm1_beta",
             "transformer_encode_2_inst_beta_weight"},
            {"transformer_residualblock3_conv0_weight",
@@ -115,7 +115,7 @@ const std::map<std::string, std::string>& get_custom_model_naming_map() {
             "transformer_residual_1_inst_2_beta_weight"},
            {"transformer_conv3_weight", "transformer_decoding_1_conv_weight"},
            {"transformer_instancenorm5_beta",
-            "transformer_decoding_2_inst_beta_weight"},
+            "transformer_instancenorm5_beta_weight"},
            {"transformer_residualblock2_conv0_weight",
             "transformer_residual_3_conv_1_weight"},
            {"transformer_residualblock4_conv1_weight",
@@ -125,7 +125,7 @@ const std::map<std::string, std::string>& get_custom_model_naming_map() {
            {"transformer_residualblock1_instancenorm0_gamma",
             "transformer_residual_2_inst_1_gamma_weight"},
            {"transformer_instancenorm4_gamma",
-            "transformer_decoding_1_inst_gamma_weight"},
+            "transformer_decoding_2_inst_gamma_weight"},
            {"transformer_residualblock2_instancenorm0_beta",
             "transformer_residual_3_inst_1_beta_weight"},
            {"transformer_residualblock3_conv1_weight",
@@ -772,7 +772,8 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
 
   add_or_update_state({{"model", model_type},
                        {"num_styles", num_styles},
-                       {"max_iterations", max_iterations}});
+                       {"max_iterations", max_iterations},
+                       {"batch_size", DEFAULT_BATCH_SIZE}});
 
   // Extract the weights and shapes
   flex_dict mxnet_data_dict;
