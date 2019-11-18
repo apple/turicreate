@@ -204,7 +204,7 @@ class ODTensorFlowModel(object):
 
         return conv
 
-    def pooling_layer(self, inputs, pool_size, strides, name='1_pool'):
+    def pooling_layer(self, inputs, pool_size, strides, padding, name='1_pool'):
         """
         Define pooling layer
 
@@ -225,7 +225,7 @@ class ODTensorFlowModel(object):
             Return pooling layer
         """
 
-        pool = _tf.nn.max_pool2d(inputs, ksize=pool_size, strides=strides, padding='SAME', name=name)
+        pool = _tf.nn.max_pool2d(inputs, ksize=pool_size, strides=strides, padding=padding, name=name)
         return pool
 
     def tiny_yolo(self, inputs, output_size=125):
@@ -262,8 +262,10 @@ class ODTensorFlowModel(object):
                     strides = [1, 2, 2, 1]
                 else:
                     strides = [1, 1, 1, 1]
-
-                net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, name='pool%d_' % idx)
+                if idx < 6 :
+                    net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, padding='VALID', name='pool%d_' % idx)
+                else :
+                    net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, padding='SAME', name='pool%d_' % idx)
 
         if output_size is not None:
             net = self.conv_layer(net, [1, 1, filter_sizes[idx - 1], output_size],
