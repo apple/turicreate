@@ -19,7 +19,7 @@
 
 #ifdef __APPLE__
 #import <ml/neural_net/mps_compute_context.hpp>
-#endif // __APPLE__
+#endif  // __APPLE__
 
 namespace turi {
 namespace style_transfer {
@@ -321,11 +321,16 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
 
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
     const {
-  #ifdef __APPLE__
+// Since the tcmps library isn't compiled if the system isn't Apple. We have an
+// if_def to check for an apple system. If it is an apple system then a check
+// for MacOS greater than 10.15 is performed. If it is then the Style Transfer
+// MPS implementation is used. On all other systems currently the TensorFlow
+// implementation is used.
+#ifdef __APPLE__
   if (neural_net::mps_compute_context::has_style_transfer()) {
     return compute_context::create();
   }
-  #endif // __APPLE__
+#endif  // __APPLE__
 
   return compute_context::create_tf();
 }
