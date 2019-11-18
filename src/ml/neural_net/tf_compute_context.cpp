@@ -155,7 +155,14 @@ float_array_map tf_model_backend::export_weights() const {
   float_array_map result;
   call_pybind_function([&]() {
     // Call export_weights method on the TensorFLowModel
-    pybind11::object exported_weights = model_.attr("export_weights")();
+    pybind11::dict exported_weights = model_.attr("export_weights")();
+
+    // it should be trivial to call this if we use the same interpreter process
+    pybind11::module np = pybind11::module::import("numpy");
+    for (auto& kv : exported_weights) {
+      exported_weights[kv.first] = np.attr("ascontiguousarray")((kv.second));
+    }
+
     std::map<std::string, pybind11::buffer> buf_output =
         exported_weights.cast<std::map<std::string, pybind11::buffer>>();
 
