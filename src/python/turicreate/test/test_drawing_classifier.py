@@ -21,8 +21,6 @@ from . import util as test_util
 import unittest
 import pytest
 
-IS_PRE_6_0_RC = float(_tc.__version__) < 6.0
-
 def _build_bitmap_data():
     '''
     Build an SFrame from 10 saved drawings.
@@ -148,6 +146,11 @@ class DrawingClassifierTest(unittest.TestCase):
             })
         with self.assertRaises(_ToolkitError):
             _tc.drawing_classifier.create(sf, self.target, feature=self.feature)
+
+    def test_create_with_validation_set_None(self):
+        for data in self.trains:
+            model = _tc.drawing_classifier.create(data, self.target,
+                feature=self.feature, validation_set=None, max_iterations=1)
 
     def test_create_with_empty_drawing_in_stroke_input(self):
         drawing = []
