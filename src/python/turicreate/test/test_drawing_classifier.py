@@ -85,18 +85,14 @@ class DrawingClassifierTest(unittest.TestCase):
             feature=self.feature,
             max_iterations=20,
             warm_start=warm_start)
-        # Disabled the following model creation because of an error
-        # ToolkitError: Both SArrays have to have the same value type.
-        # TODO: Will fix in a later PR
-        if False:
-            self.stroke_model = _tc.drawing_classifier.create(
-                self.stroke_sf,
-                self.target,
-                feature=self.feature,
-                max_iterations=1,
-                warm_start=warm_start)
-        self.trains = [self.check_cross_sf] # , self.stroke_sf]
-        self.models = [self.check_cross_model] #, self.stroke_model]
+        self.stroke_model = _tc.drawing_classifier.create(
+            self.stroke_sf,
+            self.target,
+            feature=self.feature,
+            max_iterations=1,
+            warm_start=warm_start)
+        self.trains = [self.check_cross_sf, self.stroke_sf]
+        self.models = [self.check_cross_model, self.stroke_model]
 
     def test_create_with_missing_value_bitmap(self):
         sf = self.check_cross_sf.append(_tc.SFrame({self.feature: _tc.SArray([None], dtype=_tc.Image), self.target: ["check"]}))
