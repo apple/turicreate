@@ -188,8 +188,10 @@ void word_trimmer_topk_index_mapping(const gl_sarray& src,
             if (kvp.first.get_type() != flex_type_enum::STRING)
           log_and_throw("Invalid type. Dictionary input to RareWordTrimmer must have string-typed keys.");
 
-            if (kvp.second.get_type() != flex_type_enum::INTEGER)
+            if (kvp.second.get_type() != flex_type_enum::INTEGER &&
+                kvp.second.get_type() != flex_type_enum::FLOAT) {
               log_and_throw("Invalid type. Dictionary input to RareWordTrimmer must have integer or float values.");
+	    }
             indexer_key = kvp.first.get<flex_string>();
             if (to_lower){
               std::transform(indexer_key.begin(), indexer_key.end(), indexer_key.begin(), ::tolower);
@@ -310,8 +312,10 @@ flexible_type word_trimmer_apply(const flexible_type& input,
         if (kvp.first.get_type() != flex_type_enum::STRING)
           log_and_throw("Invalid type. Dictionary input to RareWordTrimmer must have string-typed keys.");
 
-        if (kvp.second.get_type() != flex_type_enum::INTEGER)
+        if (kvp.second.get_type() != flex_type_enum::INTEGER &&
+            kvp.second.get_type() != flex_type_enum::FLOAT) {
           log_and_throw("Invalid type. Dictionary input to RareWordTrimmer must have integer values.");
+	}
 
         indexer_key = kvp.first.get<flex_string>();
         if (to_lower){

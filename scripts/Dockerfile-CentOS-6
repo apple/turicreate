@@ -56,6 +56,7 @@ RUN make install
 WORKDIR /src
 RUN curl -O https://www.openssl.org/source/openssl-1.1.0j.tar.gz
 RUN tar xf openssl-1.1.0j.tar.gz
+RUN mkdir -p /etc/ssl/certs/
 WORKDIR /src/openssl-1.1.0j
 RUN ./config --prefix=/usr/local --openssldir=/usr/local && \
     make -j4 --quiet && \

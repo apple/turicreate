@@ -1321,11 +1321,6 @@ std::shared_ptr<unity_sarray_base> unity_sframe::pack_columns(
 
   log_func_entry();
 
-  // Error checking
-  if (pack_column_names.size() == 0) {
-    throw "There is no column to pack";
-  }
-
   if (dtype != flex_type_enum::DICT &&
     dtype != flex_type_enum::LIST &&
     dtype != flex_type_enum::VECTOR) {

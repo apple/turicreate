@@ -13,6 +13,7 @@
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/data/image/io.hpp>
 #include <core/logging/logger.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 #include <model_server/lib/image_util.hpp>
 
 namespace turi {
@@ -41,7 +42,7 @@ void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
 simple_data_iterator::target_properties
 simple_data_iterator::compute_properties(
     const gl_sframe& data, const std::string& target_column_name,
-    const std::vector<std::string>& expected_class_labels) {
+    const flex_list& expected_class_labels) {
 
   target_properties result;
 
@@ -54,26 +55,19 @@ simple_data_iterator::compute_properties(
   gl_sarray classes = targets.unique().sort();
 
   if (expected_class_labels.empty()) {
-    // Infer the class-to-index map from the observed labels.
+    // Populate classes with inferred labels.
     result.classes.reserve(classes.size());
-    int i = 0;
     for (const flexible_type& label : classes.range_iterator()) {
       result.classes.push_back(label);
-      result.class_to_index_map[label] = i++;
     }
   } else {
-    // Construct the class-to-index map from the expected labels.
+    // Populate classes with given labels.
     result.classes = std::move(expected_class_labels);
-    int i = 0;
-    for (const std::string& label : result.classes) {
-      result.class_to_index_map[label] = i++;
-    }
-
-    // Use the map to verify that we only encountered expected labels.
+    // Go through inferred classes and make sure there's no unexpected classes!
     for (const flexible_type& ft : classes.range_iterator()) {
-      std::string label(ft);  // Ensures correct overload resolution below.
-      if (result.class_to_index_map.count(label) == 0) {
-        log_and_throw("Targets contained unexpected class label " + label);
+      if (std::find(expected_class_labels.begin(), expected_class_labels.end(),
+                    ft) == expected_class_labels.end()) {
+        log_and_throw("Targets contained unexpected class label!");
       }
     }
   }
@@ -138,6 +132,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   float* next_drawing_pointer = batch_drawings.data();
   size_t real_batch_size = 0;
+  const flex_list& classes(target_properties_.classes);
 
   while (real_batch_size < batch_size && next_row_ != end_of_rows_) {
 
@@ -146,8 +141,9 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
     if (predictions_index_ >= 0 && target_index_ >= 0) {
       float preds = -1;
-      preds = static_cast<float>(target_properties_.class_to_index_map.at(
-          row[predictions_index_].to<flex_string>()));
+      preds = static_cast<float>(
+          std::find(classes.begin(), classes.end(), row[predictions_index_]) -
+          classes.begin());
       batch_predictions.emplace_back(preds);
     }
 
@@ -156,9 +152,9 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
     next_drawing_pointer += image_data_size;
 
     if (target_index_ >= 0) {
-      batch_targets.emplace_back(
-          static_cast<float>(target_properties_.class_to_index_map.at(
-              row[target_index_].to<flex_string>())));
+      batch_targets.emplace_back(static_cast<float>(
+          std::find(classes.begin(), classes.end(), row[target_index_]) -
+          classes.begin()));
     }
 
     if (++next_row_ == end_of_rows_ && repeat_) {
