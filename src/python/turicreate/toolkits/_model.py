@@ -96,7 +96,7 @@ def load_model(location):
         if name in MODEL_NAME_MAP:
             cls = MODEL_NAME_MAP[name]
             if 'model' in saved_state:
-                if name=='activity_classifier' or name=='object_detector' or name=='style_transfer':
+                if name in ['activity_classifier', 'object_detector', 'style_transfer', 'drawing_classifier']:
                     import turicreate.toolkits.libtctensorflow
                 # this is a native model
                 return cls(saved_state['model'])
