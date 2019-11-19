@@ -235,6 +235,13 @@ void drawing_classifier::init_options(
       FLEX_UNDEFINED,
       std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
 
+  options.create_string_option(
+      "warm_start",
+      "Record warm start model version used. If no warmstart used"
+      " None is assigned by default."
+      "",
+      true);
+
   // Validate user-provided options.
   options.set_options(opts);
 
@@ -298,6 +305,19 @@ void drawing_classifier::init_training(
     {"training_iterations", 0}
   });
 
+  // Capture Core ML model path from options,
+  // if provided by Python.
+  std::string mlmodel_path;
+  bool enable_warmstart = false;
+  auto mlmodel_path_iter = opts.find("mlmodel_path");
+  if ( mlmodel_path_iter != opts.end()) {
+    mlmodel_path = mlmodel_path_iter->second.to<std::string>();
+    // Remove `mlmodel_path` from options as
+    // it is not a user-defined option.
+    opts.erase(mlmodel_path_iter);
+    enable_warmstart = true;
+  }
+
   // Read user-specified options.
   init_options(opts);
 
@@ -352,6 +372,13 @@ void drawing_classifier::init_training(
   // Initialize the neural net. Note that this depends on statistics computed
   // by the data iterator.
   nn_spec_ = init_model();
+
+  if ( enable_warmstart ) {
+    // Initialize the neural net with warm start model weights.
+    model_spec warmstart_model(mlmodel_path);
+    float_array_map trained_weights = warmstart_model.export_params_view();
+    nn_spec_->update_params(trained_weights);
+  }
 
   training_model_ = training_compute_context_->create_drawing_classifier(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
@@ -855,8 +882,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"target", read_state<flex_string>("target")},
       {"feature", feature_column_name},
       {"max_iterations", read_state<flex_int>("max_iterations")},
-      // TODO: Uncomment as part of #2524
-      // {"warm_start", read_state<flex_int>("warm_start")},
+      {"warm_start", read_state<flex_string>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
