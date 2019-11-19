@@ -27,7 +27,7 @@ class drawing_data_generator {
    *  unique_labels.size().
    */
   drawing_data_generator(bool is_bitmap_based, size_t num_rows,
-      const std::vector<std::string> &unique_labels,
+      const flex_list &unique_labels,
       const std::string& target_name = "test_target",
       const std::string& feature_name = "test_feature")
       : is_bitmap_based_(is_bitmap_based),
@@ -45,8 +45,8 @@ class drawing_data_generator {
 
 
   /* Get the unique labels based on the generated data */
-  std::vector<std::string> get_unique_labels() const {
-    std::vector<std::string> expected_class_labels;
+  flex_list get_unique_labels() const {
+    flex_list expected_class_labels;
     if (num_rows_ < unique_labels_.size()) {
       expected_class_labels.insert(
         expected_class_labels.end(),
@@ -58,7 +58,7 @@ class drawing_data_generator {
     return expected_class_labels;
   }
 
-  void set_class_labels(std::vector<std::string> class_labels) {
+  void set_class_labels(flex_list class_labels) {
     params_.class_labels = std::move(class_labels);
   }
 
@@ -176,7 +176,7 @@ class drawing_data_generator {
   bool is_bitmap_based_;
   data_iterator::parameters params_;
   size_t num_rows_;
-  std::vector<std::string> unique_labels_;
+  flex_list unique_labels_;
   std::string target_column_name_ = "test_target";
   std::string feature_column_name_ = "test_feature";
 };

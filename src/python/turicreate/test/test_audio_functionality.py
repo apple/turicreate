@@ -14,13 +14,14 @@ from .util import TempDirectory
 from copy import copy
 import math
 from os import mkdir
-import pytest
 import unittest
 
 import coremltools
 from coremltools.proto import FeatureTypes_pb2
 import numpy as np
+import pytest
 from scipy.io import wavfile
+import sys as _sys
 
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray
@@ -153,7 +154,7 @@ def _generate_binary_test_data():
 binary_test_data = _generate_binary_test_data()
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux") ##
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @classmethod
@@ -304,7 +305,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue(self.model.validation_accuracy is None)
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux")
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -318,7 +319,7 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         assert(self.model.custom_layer_sizes == layer_sizes)
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux")
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -343,6 +344,7 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.assertTrue(self.model.validation_accuracy is not None)
 
 
+@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux")
 class ClassifierTestWithShortClip(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -360,7 +362,6 @@ class ClassifierTestWithShortClip(unittest.TestCase):
         self.assertEqual(len(deep_features), len(self.data))
         self.assertEqual(deep_features[-1], [])
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
     def test_model(self):
         model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
                                                 validation_set=self.data)
@@ -434,7 +435,7 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
         self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
+@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux")
 class ReuseDeepFeatures(unittest.TestCase):
     def test_simple_case(self):
         data = copy(binary_test_data)

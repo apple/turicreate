@@ -174,7 +174,7 @@ gl_sframe set_up_perform_inference(
 
 std::unique_ptr<data_iterator> prepare_data_for_prediction(
     bool is_bitmap_based, size_t num_of_rows, size_t num_of_classes) {
-  std::vector<std::string> class_labels;
+  flex_list class_labels;
 
   class_labels.reserve(num_of_classes);
   for (size_t ii = 0; ii < num_of_classes; ++ii) {
@@ -226,7 +226,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
                                batch_size, num_of_rows, num_of_classes);
 
   // make sure the output is what expected
-  std::vector<std::string> class_labels;
+  flex_list class_labels;
   class_labels.reserve(num_of_classes);
   for (size_t ii = 0; ii < num_of_classes; ++ii) {
     class_labels.push_back(std::to_string(ii));
@@ -250,7 +250,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
   mock_model.add_or_update_state(
       {{"target", target_name},
        {"feature", feature_name},
-       {"classes", flex_list(class_labels.begin(), class_labels.end())}});
+       {"classes", class_labels}});
 
   runner(mock_model, my_data, expected_sf);
 }

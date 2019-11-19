@@ -516,10 +516,10 @@ simple_data_iterator::simple_data_iterator(const parameters &params)
       next_row_(range_iterator_.begin()),
       end_of_rows_(range_iterator_.end()),
       sample_in_row_(0),
+      num_chunks_in_row_(0),
       is_train_(params.is_train),
       use_data_augmentation_(params.use_data_augmentation),
-      random_engine_(params.random_seed)
-{}
+      random_engine_(params.random_seed) {}
 
 const flex_list& simple_data_iterator::feature_names() const {
   return data_.feature_names;
@@ -634,13 +634,16 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
     batch_info.emplace_back();
     batch_info.back().session_id = row[session_id_column_index];
+    batch_info.back().chunk_index = num_chunks_in_row_;
     batch_info.back().num_samples = end - sample_in_row_;
 
     sample_in_row_ = end;
+    ++num_chunks_in_row_;
 
     if (sample_in_row_ >= static_cast<size_t>(chunk_length)) {
       ++next_row_;
       sample_in_row_ = 0;
+      num_chunks_in_row_ = 0;
     }
   }
 

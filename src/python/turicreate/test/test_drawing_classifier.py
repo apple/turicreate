@@ -87,18 +87,14 @@ class DrawingClassifierTest(unittest.TestCase):
             feature=self.feature,
             max_iterations=20,
             warm_start=warm_start)
-        # Disabled the following model creation because of an error
-        # ToolkitError: Both SArrays have to have the same value type.
-        # TODO: Will fix in a later PR
-        if False:
-            self.stroke_model = _tc.drawing_classifier.create(
-                self.stroke_sf,
-                self.target,
-                feature=self.feature,
-                max_iterations=1,
-                warm_start=warm_start)
-        self.trains = [self.check_cross_sf] # , self.stroke_sf]
-        self.models = [self.check_cross_model] #, self.stroke_model]
+        self.stroke_model = _tc.drawing_classifier.create(
+            self.stroke_sf,
+            self.target,
+            feature=self.feature,
+            max_iterations=1,
+            warm_start=warm_start)
+        self.trains = [self.check_cross_sf, self.stroke_sf]
+        self.models = [self.check_cross_model, self.stroke_model]
 
     def test_create_with_missing_value_bitmap(self):
         sf = self.check_cross_sf.append(_tc.SFrame({self.feature: _tc.SArray([None], dtype=_tc.Image), self.target: ["check"]}))
@@ -234,7 +230,6 @@ class DrawingClassifierTest(unittest.TestCase):
                 preds = model.predict(sf[self.feature], output_type="probability")
                 assert (preds.dtype == float)
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon in a later PR")
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
             model = self.models[index]
@@ -264,7 +259,6 @@ class DrawingClassifierTest(unittest.TestCase):
                     assert (metric in evaluation)
                     assert (individual_run_results[metric] == evaluation[metric])
 
-    @pytest.mark.xfail(IS_PRE_6_0_RC, reason="Coming soon in a later PR")
     def test_evaluate_with_unsupported_metric(self):
         for index in range(len(self.trains)):
             model = self.models[index]

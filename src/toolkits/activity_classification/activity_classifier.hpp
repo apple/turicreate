@@ -236,8 +236,9 @@ class EXPORT activity_classifier: public ml_model_base {
   virtual void init_table_printer(bool has_validation);
 
   // Returns an SFrame where each row corresponds to one prediction, and
-  // containing three columns: "session_id" indicating the session ID shared by
-  // the samples in the prediction window, "preds" containing the class
+  // containing four columns: "session_id" indicating the session ID shared by
+  // the samples in the prediction window, "prediction_id" indicating the index
+  // of the prediction window within the session, "preds" containing the class
   // probability vector for the prediction window, and "num_samples" indicating
   // the number of corresponding rows from the original SFrame (at most the
   // prediction window size).

@@ -155,15 +155,14 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         labels = feed_dict["labels"].astype("int32").T
         one_hot_labels[_np.arange(int(num_samples)), labels] = 1
 
-        _, final_train_loss, final_train_accuracy = self.sess.run(
-            [self.optimizer, self.cost, self.accuracy],
+        _, final_train_accuracy = self.sess.run(
+            [self.optimizer, self.accuracy],
             feed_dict={
                 self.input: feed_dict['input'],
                 self.one_hot_labels: one_hot_labels
             })
 
-        result = {'accuracy': _np.array(final_train_accuracy),
-                  'loss': _np.array(final_train_loss)}
+        result = {'accuracy': _np.array(final_train_accuracy)}
 
         return result
 
@@ -186,12 +185,11 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
             one_hot_labels[_np.arange(num_samples), labels] = 1
             feed_dict_for_session[self.one_hot_labels] = one_hot_labels
 
-            pred_probs, loss, final_accuracy = self.sess.run(
-                [self.predictions, self.cost, self.accuracy],
+            pred_probs, final_accuracy = self.sess.run(
+                [self.predictions, self.accuracy],
                 feed_dict=feed_dict_for_session)
 
             result = {'accuracy': _np.array(final_accuracy),
-                      'loss': _np.array(loss),
                       'output': _np.array(pred_probs)}
         else:
             pred_probs = self.sess.run([self.predictions],
