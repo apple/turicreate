@@ -7,7 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from turicreate.util import _ProgressTablePrinter
-import tensorflow as _tf
 import numpy as _np
 import time as _time
 from .._tf_model import TensorFlowModel
@@ -26,8 +25,10 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         """
         for key in net_params.keys():
-            net_params[key] = _utils.convert_shared_float_array_to_numpy(
-                net_params[key])
+            net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
+
+        # Suppresses verbosity to only show errors
+        _utils.suppress_tensorflow_warnings()
 
         _tf.reset_default_graph()
 

@@ -27,10 +27,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
         # Suppresses verbosity to only errors
-        import os
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
-        _tf.logging.set_verbosity(_tf.logging.ERROR)
-        _tf.debugging.set_log_device_placement(False)
+        _utils.suppress_tensorflow_warnings()
 
         _tf.reset_default_graph()
 

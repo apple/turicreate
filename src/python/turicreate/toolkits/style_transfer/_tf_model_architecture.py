@@ -10,7 +10,6 @@ from __future__ import absolute_import as _
 
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-_tf.logging.set_verbosity(_tf.logging.ERROR)
 import turicreate.toolkits._tf_utils as _utils
 import numpy as _np
 
@@ -469,10 +468,8 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         
         _tf.reset_default_graph()
 
-        # Suppresses verbosity to only errors
-        import os
-        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
-        _tf.logging.set_verbosity(_tf.logging.ERROR)
+        # Suppresses verbosity to only show errors
+        _utils.suppress_tensorflow_warnings()
 
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
