@@ -182,6 +182,8 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
+        if validation_set is None:
+            validation_set = _tc.SFrame()
         if warm_start:
             # Load CoreML warmstart model
             pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()

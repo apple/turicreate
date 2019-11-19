@@ -174,7 +174,7 @@ gl_sframe set_up_perform_inference(
 
 std::unique_ptr<data_iterator> prepare_data_for_prediction(
     bool is_bitmap_based, size_t num_of_rows, size_t num_of_classes) {
-  std::vector<std::string> class_labels;
+  flex_list class_labels;
 
   class_labels.reserve(num_of_classes);
   for (size_t ii = 0; ii < num_of_classes; ++ii) {
@@ -226,7 +226,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
                                batch_size, num_of_rows, num_of_classes);
 
   // make sure the output is what expected
-  std::vector<std::string> class_labels;
+  flex_list class_labels;
   class_labels.reserve(num_of_classes);
   for (size_t ii = 0; ii < num_of_classes; ++ii) {
     class_labels.push_back(std::to_string(ii));
@@ -250,7 +250,7 @@ void prediction_test_driver(size_t batch_size, size_t num_of_rows,
   mock_model.add_or_update_state(
       {{"target", target_name},
        {"feature", feature_name},
-       {"classes", flex_list(class_labels.begin(), class_labels.end())}});
+       {"classes", class_labels}});
 
   runner(mock_model, my_data, expected_sf);
 }
@@ -329,8 +329,8 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_rank) {
   }
 }
 
-BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
-  log_for_debug("test_drawing_classifier_predict_prob");
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob_vec) {
+  log_for_debug("test_drawing_classifier_predict_prob_vec");
 
   for (auto& entry : TEST_CASES) {
     size_t batch_size = std::get<0>(entry);
@@ -343,6 +343,39 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
 
       TS_ASSERT_EQUALS(result_prob.size(), expected[PRED_NAME].size());
       _assert_sframe_equals(gl_sframe({{PRED_NAME, result_prob}}), expected);
+    };
+
+    for (bool is_bitmap_based : {true, false}) {
+      prediction_test_driver(batch_size, num_of_rows, num_of_classes, runner,
+                             is_bitmap_based);
+    }
+  }
+}
+
+BOOST_AUTO_TEST_CASE(test_drawing_classifier_predict_prob) {
+  log_for_debug("test_drawing_classifier_predict_prob");
+
+  for (auto& entry : TEST_CASES) {
+    size_t batch_size = std::get<0>(entry);
+    size_t num_of_rows = std::get<1>(entry);
+    size_t num_of_classes = std::get<2>(entry);
+
+    auto runner = [&num_of_classes](test_drawing_classifier& mock_model,
+                                    gl_sframe my_data, gl_sframe expected) {
+      if (num_of_classes > 2) {
+        TS_ASSERT_THROWS_ANYTHING(mock_model.predict(my_data, "probability"));
+
+      } else {
+        auto result_prob = mock_model.predict(my_data, "probability");
+
+        for (size_t ii = 0; ii < result_prob.size(); ++ii) {
+          flex_float expected_prob =
+              expected[PRED_NAME][ii][num_of_classes - 1];
+          TS_ASSERT_EQUALS(result_prob[ii].get_type(), flex_type_enum::FLOAT);
+          TS_ASSERT_EQUALS(expected_prob, result_prob[ii]);
+        }
+        TS_ASSERT_EQUALS(result_prob.size(), expected[PRED_NAME].size());
+      }
     };
 
     for (bool is_bitmap_based : {true, false}) {
