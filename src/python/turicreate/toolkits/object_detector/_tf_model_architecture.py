@@ -204,7 +204,7 @@ class ODTensorFlowModel(object):
 
         return conv
 
-    def pooling_layer(self, inputs, pool_size, strides, name='1_pool'):
+    def pooling_layer(self, inputs, pool_size, strides, padding, name='1_pool'):
         """
         Define pooling layer
 
@@ -225,7 +225,7 @@ class ODTensorFlowModel(object):
             Return pooling layer
         """
 
-        pool = _tf.nn.max_pool2d(inputs, ksize=pool_size, strides=strides, padding='SAME', name=name)
+        pool = _tf.nn.max_pool2d(inputs, ksize=pool_size, strides=strides, padding=padding, name=name)
         return pool
 
     def tiny_yolo(self, inputs, output_size=125):
@@ -260,10 +260,10 @@ class ODTensorFlowModel(object):
             if idx < 7:
                 if idx < 6:
                     strides = [1, 2, 2, 1]
+                    net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, padding='VALID', name='pool%d_' % idx)
                 else:
                     strides = [1, 1, 1, 1]
-
-                net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, name='pool%d_' % idx)
+                    net = _tf.nn.avg_pool2d(net, ksize=[1, 2, 2, 1], strides=strides, padding='SAME', name='pool%d_' % idx)
 
         if output_size is not None:
             net = self.conv_layer(net, [1, 1, filter_sizes[idx - 1], output_size],
@@ -434,10 +434,8 @@ class ODTensorFlowModel(object):
                 tf_export_params.update(
                     {var.name.replace(":0", ""): val})
             elif val.ndim == 4:
-                # Converting from [filter_height, filter_width, input_channels, output_channels] to
-                # [output_channels, input_channels, filter_height, filter_width]
                 tf_export_params.update(
-                    {var.name.replace(":0", ""): val.transpose(3,2,0,1)})
+                    {var.name.replace(":0", ""): _utils.convert_conv2d_tf_to_coreml(val)})
         for layer_name in tf_export_params.keys():
             tf_export_params[layer_name] = _np.ascontiguousarray(tf_export_params[layer_name])
 

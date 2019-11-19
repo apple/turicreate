@@ -246,8 +246,8 @@ class EXPORT drawing_classifier : public ml_model_base {
   virtual std::tuple<gl_sframe, gl_sframe> init_data(
       gl_sframe data, variant_type validation_data) const;
 
-  virtual std::tuple<float, float> compute_validation_metrics(
-      size_t num_classes, size_t batch_size);
+  virtual float compute_validation_metrics(size_t num_classes,
+                                           size_t batch_size);
 
   virtual void init_table_printer(bool has_validation);
 
