@@ -160,11 +160,9 @@ float_array_map tf_model_backend::export_weights() const {
     // it should be trivial to call this if we use the same interpreter process
     pybind11::module np = pybind11::module::import("numpy");
     for (auto& kv : exported_weights) {
-      // defensively call ascontiguousarray to force the
+      // defensively call ascontiguousarray to force to reorganize
       // underlying numpy memory layout using the real strides
-      // after this, stride should be vector of 1s
-      exported_weights[kv.first] = np.attr("ascontiguousarray")(
-          pybind11::reinterpret_borrow<pybind11::object>(kv.second));
+      exported_weights[kv.first] = np.attr("ascontiguousarray")(kv.second);
     }
 
     std::map<std::string, pybind11::buffer> buf_output =
