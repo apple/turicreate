@@ -863,5 +863,57 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
   return model_wrapper;
 }
 
+void drawing_classifier::import_from_custom_model(variant_map_type model_data,
+                                               size_t version) {
+  auto model_iter = model_data.find("_model");
+  if (model_iter == model_data.end()) {
+    log_and_throw("The loaded turicreate model must contain '_model'!\n");
+  }
+  const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
+  
+  state.clear();
+  state.insert(model_data.begin(), model_data.end());
+
+  flex_dict mxnet_data_dict;
+  flex_dict mxnet_shape_dict;
+
+  for (const auto& data : model) {
+    if (data.first == "data") {
+      mxnet_data_dict = data.second;
+    }
+    if (data.first == "shapes") {
+      mxnet_shape_dict = data.second;
+    }
+  }
+
+  auto cmp = [](const flex_dict::value_type& a, const flex_dict::value_type& b) {
+    return (a.first < b.first);
+  };
+
+  std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
+  std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
+
+  float_array_map nn_params;
+
+  for (size_t i = 0; i < mxnet_data_dict.size(); i++) {
+    std::string layer_name = mxnet_data_dict[i].first;
+    flex_nd_vec mxnet_data_nd = mxnet_data_dict[i].second.to<flex_nd_vec>();
+    flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[i].second.to<flex_nd_vec>();
+    const std::vector<double>& model_weight = mxnet_data_nd.elements();
+    const std::vector<double>& model_shape = mxnet_shape_nd.elements();
+    std::vector<float> layer_weight(model_weight.begin(), model_weight.end());
+    std::vector<size_t> layer_shape(model_shape.begin(), model_shape.end());
+    size_t index = layer_name.find('_');
+    layer_name =
+        layer_name.substr(0, index) + "_fwd_" + layer_name.substr(index + 1);
+    nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
+                                                     std::move(layer_shape));
+  }
+  nn_spec_.reset(new model_spec);
+  nn_spec_->update_params(nn_params);
+  model_data.erase(model_iter);
+  return;
+}
+
 }  // namespace drawing_classifier
 }  // namespace turi
