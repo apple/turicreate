@@ -82,32 +82,83 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         self.model = keras.models.load_model(model_path)
 
     def extract_features(self, dataset, feature, batch_size=64, verbose=False):
-        from array import array
-        import turicreate as tc
+        """
+        Parameters
+        ----------
+        dataset: SFrame
+            SFrame of images
+        """
+        from ._mxnet._mx_sframe_iter import SFrameImageIter as _SFrameImageIter
+        from six.moves.queue import Queue as _Queue
+        from threading import Thread as _Thread
+        import turicreate as _tc
+        import array
 
-        input_is_BGR = self.ptModel.input_is_BGR
+        if len(dataset) == 0:
+            return _tc.SArray([], array.array)
 
-        def preprocess(image):
-            pixel_data = image.pixel_data
-            if input_is_BGR:
-                pixel_data = pixel_data[:,:,::-1]         # Convert RGB to BGR
-            return pixel_data
+        batch_size = min(len(dataset), batch_size)
+        # Make a data iterator
+        dataIter = _SFrameImageIter(sframe=dataset, data_field=[feature], batch_size=batch_size, image_shape=self.image_shape)
 
-        images = dataset[feature]
-        images = tc.image_analysis.resize(
-            images,
-            self.ptModel.input_image_shape[1],
-            self.ptModel.input_image_shape[2],
-            self.ptModel.input_image_shape[0])
-        images = images.apply(preprocess)
+        # Setup the MXNet model
+        model = MXFeatureExtractor._get_mx_module(self.ptModel.mxmodel,
+                self.data_layer, self.feature_layer, self.context, self.image_shape, batch_size)
 
-        # TODO: use batching and an SArray builder
+        out = _tc.SArrayBuilder(dtype = array.array)
+        progress = { 'num_processed' : 0, 'total' : len(dataset) }
+        if verbose:
+            print("Performing feature extraction on resized images...")
 
-        images = images.to_numpy()
-        y = self.model.predict(images)
-        y = [i[0][0] for i in y]
+        # Encapsulates the work done by the MXNet model for a single batch
+        def handle_request(batch):
+            model.forward(batch)
+            mx_out = [array.array('d',m) for m in model.get_outputs()[0].asnumpy()]
+            if batch.pad != 0:
+                # If batch size is not evenly divisible by the length, it will loop back around.
+                # We don't want that.
+                mx_out = mx_out[:-batch.pad]
+            return mx_out
 
-        return tc.SArray(y, dtype=array)
+        # Copies the output from MXNet into the SArrayBuilder and emits progress
+        def consume_response(mx_out):
+            out.append_multiple(mx_out)
+
+            progress['num_processed'] += len(mx_out)
+            if verbose:
+                print('Completed {num_processed:{width}d}/{total:{width}d}'.format(
+                    width = len(str(progress['total'])), **progress))
+
+        # Create a dedicated thread for performing MXNet work, using two FIFO
+        # queues for communication back and forth with this thread, with the
+        # goal of keeping MXNet busy throughout.
+        request_queue = _Queue()
+        response_queue = _Queue()
+        def mx_worker():
+            while True:
+                batch = request_queue.get()  # Consume request
+                if batch is None:
+                    # No more work remains. Allow the thread to finish.
+                    return
+                response_queue.put(handle_request(batch))  # Produce response
+        mx_worker_thread = _Thread(target=mx_worker)
+        mx_worker_thread.start()
+
+        try:
+            # Attempt to have two requests in progress at any one time (double
+            # buffering), so that the iterator is creating one batch while MXNet
+            # performs inference on the other.
+            if dataIter.has_next:
+                request_queue.put(next(dataIter))  # Produce request
+                while dataIter.has_next:
+                    request_queue.put(next(dataIter))  # Produce request
+                    consume_response(response_queue.get())
+                consume_response(response_queue.get())
+        finally:
+            # Tell the worker thread to shut down.
+            request_queue.put(None)
+
+        return out.close()
 
     def get_coreml_model(self):
         import coremltools
