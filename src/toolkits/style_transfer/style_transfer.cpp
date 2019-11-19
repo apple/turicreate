@@ -724,6 +724,16 @@ void style_transfer::iterate_training() {
       loss_batch.data(), loss_batch.data() + loss_batch_size, 0.f,
       [loss_batch_size](float a, float b) { return a + b / loss_batch_size; });
 
+  // Update our rolling average (smoothed) loss.
+  auto loss_it = state.find("training_loss");
+  if (loss_it == state.end()) {
+    loss_it = state.emplace("training_loss", variant_type(batch_loss)).first;
+  } else {
+    float smoothed_loss = variant_get_value<flex_float>(loss_it->second);
+    smoothed_loss = 0.9f * smoothed_loss + 0.1f * batch_loss;
+    loss_it->second = smoothed_loss;
+  }
+
   if (training_table_printer_) {
     training_table_printer_->print_progress_row(
         iteration_idx, iteration_idx + 1, batch_loss, progress_time());
