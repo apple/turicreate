@@ -36,6 +36,9 @@ AC_USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 # Style Transfer use C++ codepath
 ST_USE_CPP = _read_env_var_cpp('TURI_ST_USE_CPP_PATH')
 
+# Drawing Classifier use C++ codepath
+DC_USE_CPP = _read_env_var_cpp('TURI_DC_USE_CPP_PATH')
+
 def load_model(location):
     """
     Load any Turi Create model that was previously saved.
@@ -118,6 +121,12 @@ def load_model(location):
                 if name=='style_transfer' and ST_USE_CPP:
                     import turicreate.toolkits.libtctensorflow
                     model = _extensions.style_transfer()
+                    model.import_from_custom_model(model_data, model_version)
+                    return cls(model)
+
+                if name=='drawing_classifier' and DC_USE_CPP:
+                    import turicreate.toolkits.libtctensorflow
+                    model = _extensions.drawing_classifier()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
