@@ -508,6 +508,10 @@ void drawing_classifier::iterate_training() {
         {"validation_accuracy", average_val_accuracy},
         {"validation_log_loss", average_val_loss},
     });
+  } else {
+    add_or_update_state({
+      {"validation_accuracy", FLEX_UNDEFINED}
+    });
   }
 
   if (training_table_printer_) {
@@ -552,6 +556,9 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
+
+  turi::timer time_object;
+  time_object.start();
 
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
@@ -598,6 +605,9 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
       state_update["validation_" + p.first] = p.second;
     }
   }
+
+  state_update["num_examples"] = data.size();
+  state_update["training_time"] = time_object.current_time();
 
   add_or_update_state(state_update);
 }

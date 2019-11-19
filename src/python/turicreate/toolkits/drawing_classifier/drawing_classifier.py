@@ -970,22 +970,21 @@ class DrawingClassifier_beta(_Model):
         Returns
         -------
         out : string
-            A description of the model.
+            A description of the DrawingClassifier.
         """
-        return self.__class__.__name__
+        return self.__repr__()
 
     def __repr__(self):
         """
-        Returns a string description of the model, including (where relevant)
-        the schema of the training data, description of the training data,
-        training statistics, and model hyperparameters.
-
-        Returns
-        -------
-        out : string
-            A description of the model.
+        Returns a string description of the model when the model name is
+        entered in the terminal.
         """
-        return self.__class__.__name__
+
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
 
     def _get_version(self):
         return self._CPP_DRAWING_CLASSIFIER_VERSION
@@ -1180,3 +1179,37 @@ class DrawingClassifier_beta(_Model):
           >>> print results['accuracy']
         """
         return self.__proxy__.evaluate(dataset, metric)
+
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Number of classes', 'num_classes'),
+            ('Feature column', 'feature'),
+            ('Target column', 'target')
+        ]
+        training_fields = [
+            ('Training Iterations', 'max_iterations'),
+            ('Training Accuracy', 'training_accuracy'),
+            ('Validation Accuracy', 'validation_accuracy'),
+            ('Training Time', 'training_time'),
+            ('Number of Examples', 'num_examples'),
+            ('Final Loss (specific to model)', 'training_log_loss')
+        ]
+
+        section_titles = ['Schema', 'Training summary']
+        return([model_fields, training_fields], section_titles)
