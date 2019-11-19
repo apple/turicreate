@@ -82,83 +82,108 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         self.model = keras.models.load_model(model_path)
 
     def extract_features(self, dataset, feature, batch_size=64, verbose=False):
-        """
-        Parameters
-        ----------
-        dataset: SFrame
-            SFrame of images
-        """
-        from ._mxnet._mx_sframe_iter import SFrameImageIter as _SFrameImageIter
         from six.moves.queue import Queue as _Queue
         from threading import Thread as _Thread
+        import numpy as _np
         import turicreate as _tc
         import array
 
         if len(dataset) == 0:
             return _tc.SArray([], array.array)
 
-        batch_size = min(len(dataset), batch_size)
-        # Make a data iterator
-        dataIter = _SFrameImageIter(sframe=dataset, data_field=[feature], batch_size=batch_size, image_shape=self.image_shape)
+        # Only expose the feature column to the SFrame-to-NumPy loader.
+        image_sf = _tc.SFrame({'image' : dataset[feature]})
 
-        # Setup the MXNet model
-        model = MXFeatureExtractor._get_mx_module(self.ptModel.mxmodel,
-                self.data_layer, self.feature_layer, self.context, self.image_shape, batch_size)
+        # Encapsulate state in a dict to sidestep variable scoping issues.
+        state = {}
+        state['num_started'] = 0       # Images read from the SFrame
+        state['num_processed'] = 0     # Images processed by TensorFlow
+        state['total'] = len(dataset)  # Images in the dataset
 
-        out = _tc.SArrayBuilder(dtype = array.array)
-        progress = { 'num_processed' : 0, 'total' : len(dataset) }
+        # We should be using SArrayBuilder, but it doesn't accept ndarray yet.
+        #out = _tc.SArrayBuilder(dtype = array.array)
+        state['out'] = _tc.SArray(dtype=array.array)
+
         if verbose:
             print("Performing feature extraction on resized images...")
 
-        # Encapsulates the work done by the MXNet model for a single batch
+        # Provide an iterator-like interface around the SFrame.
+        def has_next_batch():
+            return state['num_started'] < state['total']
+
+        # Yield a numpy array representing one batch of images.
+        def next_batch():
+            # Compute the range of the SFrame to yield.
+            start_index = state['num_started']
+            end_index = min(start_index + batch_size, state['total'])
+            state['num_started'] = end_index
+
+            # Allocate a numpy array with the desired shape.
+            # TODO: Recycle allocations?
+            num_images = end_index - start_index
+            shape = (num_images,) + self.ptModel.input_image_shape
+            batch = _np.zeros(shape, dtype=_np.float32)
+
+            # Resize and load the images.
+            _tc.extensions.sframe_load_to_numpy(image_sf, batch.ctypes.data,
+                                                batch.strides, batch.shape,
+                                                start_index, end_index)
+
+            # TODO: Converge to NCHW everywhere.
+            batch = batch.transpose(0, 2, 3, 1)  # NCHW -> NHWC
+
+            if self.ptModel.input_is_BGR:
+                batch = batch[:,:,:,::-1]  # RGB -> BGR
+
+            return batch
+
+        # Encapsulates the work done by TensorFlow for a single batch.
         def handle_request(batch):
-            model.forward(batch)
-            mx_out = [array.array('d',m) for m in model.get_outputs()[0].asnumpy()]
-            if batch.pad != 0:
-                # If batch size is not evenly divisible by the length, it will loop back around.
-                # We don't want that.
-                mx_out = mx_out[:-batch.pad]
-            return mx_out
+            y = self.model.predict(batch)
+            tf_out = [i[0][0] for i in y]
+            return tf_out
 
-        # Copies the output from MXNet into the SArrayBuilder and emits progress
-        def consume_response(mx_out):
-            out.append_multiple(mx_out)
+        # Copies the output from TensorFlow into the SArrayBuilder and emits
+        # progress.
+        def consume_response(tf_out):
+            sa = _tc.SArray(tf_out, dtype=array.array)
+            state['out'] = state['out'].append(sa)
 
-            progress['num_processed'] += len(mx_out)
+            state['num_processed'] += len(tf_out)
             if verbose:
                 print('Completed {num_processed:{width}d}/{total:{width}d}'.format(
-                    width = len(str(progress['total'])), **progress))
+                    width = len(str(state['total'])), **state))
 
-        # Create a dedicated thread for performing MXNet work, using two FIFO
-        # queues for communication back and forth with this thread, with the
-        # goal of keeping MXNet busy throughout.
+        # Create a dedicated thread for performing TensorFlow work, using two
+        # FIFO queues for communication back and forth with this thread, with
+        # the goal of keeping TensorFlow busy throughout.
         request_queue = _Queue()
         response_queue = _Queue()
-        def mx_worker():
+        def tf_worker():
             while True:
                 batch = request_queue.get()  # Consume request
                 if batch is None:
                     # No more work remains. Allow the thread to finish.
                     return
                 response_queue.put(handle_request(batch))  # Produce response
-        mx_worker_thread = _Thread(target=mx_worker)
-        mx_worker_thread.start()
+        tf_worker_thread = _Thread(target=tf_worker)
+        tf_worker_thread.start()
 
         try:
             # Attempt to have two requests in progress at any one time (double
-            # buffering), so that the iterator is creating one batch while MXNet
-            # performs inference on the other.
-            if dataIter.has_next:
-                request_queue.put(next(dataIter))  # Produce request
-                while dataIter.has_next:
-                    request_queue.put(next(dataIter))  # Produce request
+            # buffering), so that the iterator is creating one batch while
+            # TensorFlow performs inference on the other.
+            if has_next_batch():
+                request_queue.put(next_batch())  # Produce request
+                while has_next_batch():
+                    request_queue.put(next_batch())  # Produce request
                     consume_response(response_queue.get())
                 consume_response(response_queue.get())
         finally:
             # Tell the worker thread to shut down.
             request_queue.put(None)
 
-        return out.close()
+        return state['out']
 
     def get_coreml_model(self):
         import coremltools
