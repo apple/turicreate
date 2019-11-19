@@ -1199,12 +1199,11 @@ void activity_classifier::perform_training_iteration() {
     if (validation_data_iterator_) {
       training_table_printer_->print_progress_row(
           iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          average_batch_loss, average_val_accuracy, average_val_loss,
-          progress_time());
+          average_val_accuracy, progress_time());
     } else {
       training_table_printer_->print_progress_row(
           iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          average_batch_loss, progress_time());
+          progress_time());
     }
   }
 
