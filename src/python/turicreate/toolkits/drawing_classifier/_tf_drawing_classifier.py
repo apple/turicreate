@@ -32,8 +32,12 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                 key_60 = key[:idx] + key[idx + 4:]
             else:
                 key_60 = key
+
             net_params[key_60] = _utils.convert_shared_float_array_to_numpy(
                 net_params[key])
+
+            if idx != -1:
+                del net_params[key]
 
         _tf.reset_default_graph()
 
