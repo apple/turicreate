@@ -5,10 +5,11 @@ cache:
 
 language: python
 
-python:
-  - "2.7"
-  - "3.5"
-  - "3.6"
+matrix:
+  include:
+    - python: 3.7
+      dist: xenial
+      sudo: true
 
 addons:
   apt:

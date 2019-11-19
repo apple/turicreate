@@ -6,6 +6,8 @@
  */
 #define BOOST_TEST_MODULE test_activity_classifier
 
+#include <set>
+
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <toolkits/activity_classification/activity_classifier.hpp>
@@ -40,6 +42,10 @@ class test_activity_classifier : public activity_classifier {
     }
   };
 
+  test_activity_classifier() {
+    add_or_update_state({{"session_id", "exp_id"}});
+  }
+
   gl_sframe predict_data;
 
   std::unique_ptr<data_iterator> create_iterator(
@@ -52,10 +58,11 @@ class test_activity_classifier : public activity_classifier {
     return predict_data;
   }
 
-  void set_mock_predict_data(gl_sarray session, gl_sarray num_samples,
-                             gl_sarray prob) {
+  void set_mock_predict_data(gl_sarray session, gl_sarray prediction_id,
+                             gl_sarray num_samples, gl_sarray prob) {
     predict_data = gl_sframe();
     predict_data.add_column(session, "session_id");
+    predict_data.add_column(prediction_id, "prediction_id");
     predict_data.add_column(num_samples, "num_samples");
     predict_data.add_column(prob, "preds");
   }
@@ -92,6 +99,8 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
    */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
   const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  const std::vector<flexible_type> prediction_id = {0, 0, 0, 1, 0,
+                                                    1, 2, 0, 1, 2};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
 
   flexible_type check_sum_samples = 0;
@@ -124,15 +133,19 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   // put all thing in a predict data
   test_activity_classifier classifier;
   gl_sarray session_id_array;
+  gl_sarray prediction_id_array;
   gl_sarray num_samples_array;
   gl_sarray predict_probability_array;
 
   session_id_array.construct_from_vector(session_id, flex_type_enum::INTEGER);
+  prediction_id_array.construct_from_vector(prediction_id,
+                                            flex_type_enum::INTEGER);
   num_samples_array.construct_from_vector(num_samples, flex_type_enum::INTEGER);
   predict_probability_array.construct_from_vector(predict_probability,
                                                   flex_type_enum::VECTOR);
 
-  classifier.set_mock_predict_data(session_id_array, num_samples_array,
+  classifier.set_mock_predict_data(session_id_array, prediction_id_array,
+                                   num_samples_array,
                                    predict_probability_array);
   classifier.set_model_label(class_labels);
 
@@ -143,14 +156,14 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
 
   // some simple tests for shape, column names
   TS_ASSERT_EQUALS(predict_result.size(), session_id.size());
-  std::vector<std::string> column_names = predict_result.column_names();
-  TS_ASSERT_EQUALS(column_names.size(), 3);
-    TS_ASSERT(std::find(column_names.begin(), column_names.end(),
-    "exp_id") != column_names.end());
-  TS_ASSERT(std::find(column_names.begin(), column_names.end(),
-    "class") != column_names.end());
-    TS_ASSERT(std::find(column_names.begin(), column_names.end(),
-    "probability") != column_names.end());
+  std::vector<std::string> column_names_vector = predict_result.column_names();
+  std::set<std::string> column_names(column_names_vector.begin(),
+                                     column_names_vector.end());
+  TS_ASSERT_EQUALS(column_names.size(), 4);
+  TS_ASSERT_EQUALS(column_names.count("exp_id"), 1);
+  TS_ASSERT_EQUALS(column_names.count("prediction_id"), 1);
+  TS_ASSERT_EQUALS(column_names.count("class"), 1);
+  TS_ASSERT_EQUALS(column_names.count("probability"), 1);
 
   // test exp_id
   gl_sarray exp_id_array = predict_result["exp_id"];
@@ -185,12 +198,12 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
 
   // simple test for shape, column names
   TS_ASSERT_EQUALS(predict_result.size(), test_num_examples);
-  column_names = predict_result.column_names();
+  column_names_vector = predict_result.column_names();
+  column_names = std::set<std::string>(column_names_vector.begin(),
+                                       column_names_vector.end());
   TS_ASSERT_EQUALS(column_names.size(), 2);
-  TS_ASSERT(std::find(column_names.begin(), column_names.end(),
-    "class") != column_names.end());
-  TS_ASSERT(std::find(column_names.begin(), column_names.end(),
-    "probability") != column_names.end());
+  TS_ASSERT_EQUALS(column_names.count("class"), 1);
+  TS_ASSERT_EQUALS(column_names.count("probability"), 1);
 
   // ground truth class and probability for per_row
   std::vector<float> gt_prob_per_row;
@@ -240,16 +253,18 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   gl_sframe predict_per_row_class =
       classifier.predict_per_window(gl_sframe(), "class");
   TS_ASSERT_EQUALS(predict_per_row_class.size(), num_samples.size());
-  std::vector<std::string> predict_per_row_column_names =
+  std::vector<std::string> predict_per_row_column_names_vector =
       predict_per_row_class.column_names();
-  TS_ASSERT_EQUALS(predict_per_row_column_names.size(), 2);
-  TS_ASSERT(std::find(predict_per_row_column_names.begin(), predict_per_row_column_names.end(),
-    "session_id") != predict_per_row_column_names.end());
-  TS_ASSERT(std::find(predict_per_row_column_names.begin(), predict_per_row_column_names.end(),
-    "class") != predict_per_row_column_names.end());
+  std::set<std::string> predict_per_row_column_names(
+      predict_per_row_column_names_vector.begin(),
+      predict_per_row_column_names_vector.end());
+  TS_ASSERT_EQUALS(predict_per_row_column_names.size(), 3);
+  TS_ASSERT_EQUALS(predict_per_row_column_names.count("exp_id"), 1);
+  TS_ASSERT_EQUALS(predict_per_row_column_names.count("prediction_id"), 1);
+  TS_ASSERT_EQUALS(predict_per_row_column_names.count("class"), 1);
 
   // test for session_id
-  gl_sarray predict_session_id = predict_per_row_class["session_id"];
+  gl_sarray predict_session_id = predict_per_row_class["exp_id"];
   for (size_t i = 0; i < predict_session_id.size(); i++) {
     TS_ASSERT_EQUALS(predict_session_id[i], session_id[i]);
   }
@@ -265,17 +280,19 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_classify_and_predict) {
   gl_sframe predict_per_row_prob =
       classifier.predict_per_window(gl_sframe(), "probability_vector");
   TS_ASSERT_EQUALS(predict_per_row_prob.size(), num_samples.size());
-  std::vector<std::string> predict_per_row_column_names_prob =
+  std::vector<std::string> predict_per_row_column_names_prob_vector =
       predict_per_row_prob.column_names();
-  TS_ASSERT_EQUALS(predict_per_row_column_names_prob.size(), 2);
-  TS_ASSERT(std::find(predict_per_row_column_names_prob.begin(), predict_per_row_column_names_prob.end(),
-    "session_id") != predict_per_row_column_names_prob.end());
-  TS_ASSERT(std::find(predict_per_row_column_names_prob.begin(), predict_per_row_column_names_prob.end(),
-    "probability_vector") != predict_per_row_column_names_prob.end());
-
+  std::set<std::string> predict_per_row_column_names_prob(
+      predict_per_row_column_names_prob_vector.begin(),
+      predict_per_row_column_names_prob_vector.end());
+  TS_ASSERT_EQUALS(predict_per_row_column_names_prob.size(), 3);
+  TS_ASSERT_EQUALS(predict_per_row_column_names_prob.count("exp_id"), 1);
+  TS_ASSERT_EQUALS(predict_per_row_column_names_prob.count("prediction_id"), 1);
+  TS_ASSERT_EQUALS(
+      predict_per_row_column_names_prob.count("probability_vector"), 1);
 
   // test for session_id
-  gl_sarray predict_session_id_prob = predict_per_row_prob["session_id"];
+  gl_sarray predict_session_id_prob = predict_per_row_prob["exp_id"];
   for (size_t i = 0; i < predict_session_id_prob.size(); i++) {
     TS_ASSERT_EQUALS(predict_session_id_prob[i], session_id[i]);
   }
@@ -320,6 +337,8 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_row_rank) {
    */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
   const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  const std::vector<flexible_type> prediction_id = {0, 0, 0, 1, 0,
+                                                    1, 2, 0, 1, 2};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
 
   flexible_type check_sum_samples = 0;
@@ -352,15 +371,19 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_row_rank) {
   // put all thing in a predict data
   test_activity_classifier classifier;
   gl_sarray session_id_array;
+  gl_sarray prediction_id_array;
   gl_sarray num_samples_array;
   gl_sarray predict_probability_array;
 
   session_id_array.construct_from_vector(session_id, flex_type_enum::INTEGER);
+  prediction_id_array.construct_from_vector(prediction_id,
+                                            flex_type_enum::INTEGER);
   num_samples_array.construct_from_vector(num_samples, flex_type_enum::INTEGER);
   predict_probability_array.construct_from_vector(predict_probability,
                                                   flex_type_enum::VECTOR);
 
-  classifier.set_mock_predict_data(session_id_array, num_samples_array,
+  classifier.set_mock_predict_data(session_id_array, prediction_id_array,
+                                   num_samples_array,
                                    predict_probability_array);
   classifier.set_model_label(class_labels);
 
@@ -458,6 +481,8 @@ BOOST_AUTO_TEST_CASE(
    */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
   const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  const std::vector<flexible_type> prediction_id = {0, 0, 0, 1, 0,
+                                                    1, 2, 0, 1, 2};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
 
   flexible_type check_sum_samples = 0;
@@ -490,15 +515,19 @@ BOOST_AUTO_TEST_CASE(
   // put all thing in a predict data
   test_activity_classifier classifier;
   gl_sarray session_id_array;
+  gl_sarray prediction_id_array;
   gl_sarray num_samples_array;
   gl_sarray predict_probability_array;
 
   session_id_array.construct_from_vector(session_id, flex_type_enum::INTEGER);
+  prediction_id_array.construct_from_vector(prediction_id,
+                                            flex_type_enum::INTEGER);
   num_samples_array.construct_from_vector(num_samples, flex_type_enum::INTEGER);
   predict_probability_array.construct_from_vector(predict_probability,
                                                   flex_type_enum::VECTOR);
 
-  classifier.set_mock_predict_data(session_id_array, num_samples_array,
+  classifier.set_mock_predict_data(session_id_array, prediction_id_array,
+                                   num_samples_array,
                                    predict_probability_array);
   classifier.set_model_label(class_labels);
 
@@ -604,6 +633,8 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_window_rank) {
    */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
   const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  const std::vector<flexible_type> prediction_id = {0, 0, 0, 1, 0,
+                                                    1, 2, 0, 1, 2};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
 
   flexible_type check_sum_samples = 0;
@@ -636,15 +667,19 @@ BOOST_AUTO_TEST_CASE(test_activity_classifier_predict_topk_per_window_rank) {
   // put all thing in a predict data
   test_activity_classifier classifier;
   gl_sarray session_id_array;
+  gl_sarray prediction_id_array;
   gl_sarray num_samples_array;
   gl_sarray predict_probability_array;
 
   session_id_array.construct_from_vector(session_id, flex_type_enum::INTEGER);
+  prediction_id_array.construct_from_vector(prediction_id,
+                                            flex_type_enum::INTEGER);
   num_samples_array.construct_from_vector(num_samples, flex_type_enum::INTEGER);
   predict_probability_array.construct_from_vector(predict_probability,
                                                   flex_type_enum::VECTOR);
 
-  classifier.set_mock_predict_data(session_id_array, num_samples_array,
+  classifier.set_mock_predict_data(session_id_array, prediction_id_array,
+                                   num_samples_array,
                                    predict_probability_array);
   classifier.set_model_label(class_labels);
 
@@ -738,6 +773,8 @@ BOOST_AUTO_TEST_CASE(
    */
   const std::vector<flexible_type> num_samples = {1, 3, 3, 2, 3, 3, 1, 3, 3, 3};
   const std::vector<flexible_type> session_id = {1, 2, 3, 3, 4, 4, 4, 5, 5, 5};
+  const std::vector<flexible_type> prediction_id = {0, 0, 0, 1, 0,
+                                                    1, 2, 0, 1, 2};
   TS_ASSERT_EQUALS(session_id.size(), num_samples.size());
 
   flexible_type check_sum_samples = 0;
@@ -770,15 +807,19 @@ BOOST_AUTO_TEST_CASE(
   // put all thing in a predict data
   test_activity_classifier classifier;
   gl_sarray session_id_array;
+  gl_sarray prediction_id_array;
   gl_sarray num_samples_array;
   gl_sarray predict_probability_array;
 
   session_id_array.construct_from_vector(session_id, flex_type_enum::INTEGER);
+  prediction_id_array.construct_from_vector(prediction_id,
+                                            flex_type_enum::INTEGER);
   num_samples_array.construct_from_vector(num_samples, flex_type_enum::INTEGER);
   predict_probability_array.construct_from_vector(predict_probability,
                                                   flex_type_enum::VECTOR);
 
-  classifier.set_mock_predict_data(session_id_array, num_samples_array,
+  classifier.set_mock_predict_data(session_id_array, prediction_id_array,
+                                   num_samples_array,
                                    predict_probability_array);
   classifier.set_model_label(class_labels);
 
