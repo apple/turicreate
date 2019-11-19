@@ -125,7 +125,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
     def test_create_with_single_image(self):
         image = self.train[0][self.feature]
         model = tc.one_shot_object_detector.create(
-            image, 'custom_logo', backgrounds=self.backgrounds)
+            image, 'custom_logo', backgrounds=self.backgrounds, max_iterations=1)
 
     def test_create_with_missing_value(self):
         sf = self.train.append(tc.SFrame({self.feature: tc.SArray([None], dtype=tc.Image), self.target: [self.train[self.target][0]]}))
@@ -239,7 +239,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
-    @pytest.mark.xfail()
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)

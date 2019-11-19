@@ -152,6 +152,14 @@ std::unique_ptr<model_backend> mps_compute_context::create_activity_classifier(
   return result;
 }
 
+bool mps_compute_context::has_style_transfer() {
+  if (@available(macOS 10.15, *)) {
+    return true;
+  } else {
+    return false;
+  }
+}
+
 std::unique_ptr<model_backend> mps_compute_context::create_style_transfer(
     const float_array_map& config, const float_array_map& weights) {
 #ifdef HAS_MACOS_10_15
