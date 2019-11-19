@@ -699,18 +699,28 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
     result = result.apply(max_prob_label, class_labels.front().get_type());
 
   } else if (output_type == "probability") {
+    /** The output_type="probability" is to provide the probability of the True
+     *  class in binary classifiers.
+     *  For example, if one is building a binary classifier for
+     *  "cat" vs "not cat", output_type="probability" should output the
+     *  probability of the data point being "cat", not the probability of the
+     *  predicted class.
+     */
 
-    if (read_state<flex_int>("num_classes") > 2) {
-      log_and_throw("Use probability_vector in case of multi-class classification.");
+    size_t num_classes = read_state<flex_int>("num_classes");
+    DASSERT_GT(num_classes, 0);
+
+    if (num_classes > 2) {
+      log_and_throw(
+          "Use probability_vector in case of multi-class classification.");
     }
 
-    auto max_prob = [=](const flexible_type& ft) {
+    auto true_class_probability = [=](const flexible_type& ft) {
       const flex_vec& prob_vec = ft.get<flex_vec>();
-      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
-      return *max_it;
+      return prob_vec.back();
     };
-    result = result.apply(max_prob, flex_type_enum::FLOAT);
 
+    result = result.apply(true_class_probability, flex_type_enum::FLOAT);
   }
 
   return result;
