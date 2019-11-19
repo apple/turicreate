@@ -506,11 +506,10 @@ void drawing_classifier::iterate_training() {
   if (validation_data_iterator_) {
     add_or_update_state({
         {"validation_accuracy", average_val_accuracy},
-        {"validation_log_loss", average_val_loss},
     });
   } else {
     add_or_update_state({
-      {"validation_accuracy", FLEX_UNDEFINED}
+        {"validation_accuracy", FLEX_UNDEFINED}
     });
   }
 
