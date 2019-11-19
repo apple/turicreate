@@ -327,14 +327,11 @@ void activity_classifier::init_table_printer(bool has_validation) {
     training_table_printer_.reset(
         new table_printer({{"Iteration", 12},
                            {"Train Accuracy", 12},
-                           {"Train Loss", 12},
                            {"Validation Accuracy", 12},
-                           {"Validation Loss", 12},
                            {"Elapsed Time", 12}}));
   } else {
     training_table_printer_.reset(new table_printer({{"Iteration", 12},
                                                      {"Train Accuracy", 12},
-                                                     {"Train Loss", 12},
                                                      {"Elapsed Time", 12}}));
   }
 }
@@ -398,6 +395,8 @@ void activity_classifier::train(
   state_update["training_time"] = time_object.current_time();
 
   add_or_update_state(state_update);
+  std::cout << "Training complete" << std::endl;
+  std::cout << "Total Time Spent: " << read_state<flex_float>("training_time") << std::endl;
 
 }
 
@@ -1188,13 +1187,11 @@ void activity_classifier::perform_training_iteration() {
   add_or_update_state({
       {"training_iterations", iteration_idx + 1},
       {"training_accuracy", average_batch_accuracy},
-      {"training_log_loss", average_batch_loss},
   });
 
   if (validation_data_iterator_) {
     add_or_update_state({
-        {"validation_accuracy", average_val_accuracy},
-        {"validation_log_loss", average_val_loss},
+        {"validation_accuracy", average_val_accuracy}
     });
   }
 
