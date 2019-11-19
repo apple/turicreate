@@ -1213,8 +1213,7 @@ class DrawingClassifier_beta(_Model):
             ('Training Accuracy', 'training_accuracy'),
             ('Validation Accuracy', 'validation_accuracy'),
             ('Training Time', 'training_time'),
-            ('Number of Examples', 'num_examples'),
-            ('Final Loss (specific to model)', 'training_log_loss')
+            ('Number of Examples', 'num_examples')
         ]
 
         section_titles = ['Schema', 'Training summary']
