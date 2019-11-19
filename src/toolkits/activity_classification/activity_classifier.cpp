@@ -461,8 +461,10 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
 
   // Accumulate the class probabilities for each prediction window.
   gl_sframe raw_preds_per_window = perform_inference(data_it.get());
+  std::string session_id_column_name = read_state<std::string>("session_id");
   gl_sframe result =
-      gl_sframe({{"session_id", raw_preds_per_window["session_id"]},
+      gl_sframe({{session_id_column_name, raw_preds_per_window["session_id"]},
+                 {"prediction_id", raw_preds_per_window["prediction_id"]},
                  {"probability_vector", raw_preds_per_window["preds"]}});
 
   if (output_type == "class") {
@@ -481,7 +483,8 @@ gl_sframe activity_classifier::predict_per_window(gl_sframe data,
   return result;
 }
 
-
+// TODO: This implementation would ideally just post-process the return value of
+// predict.
 gl_sframe activity_classifier::classify(gl_sframe data,
                                         std::string output_frequency) {
   if (output_frequency != "per_row" &&
@@ -524,9 +527,12 @@ gl_sframe activity_classifier::classify(gl_sframe data,
   // create the result
   gl_sframe result = gl_sframe();
   if (output_frequency == "per_window") {
-    result = gl_sframe({{"exp_id", raw_preds_per_window["session_id"]},
-                        {"class", raw_preds_per_window["class"]},
-                        {"probability", raw_preds_per_window["probability"]}});
+    std::string session_id_column_name = read_state<std::string>("session_id");
+    result =
+        gl_sframe({{session_id_column_name, raw_preds_per_window["session_id"]},
+                   {"prediction_id", raw_preds_per_window["prediction_id"]},
+                   {"class", raw_preds_per_window["class"]},
+                   {"probability", raw_preds_per_window["probability"]}});
   } else {
     size_t class_column_index = raw_preds_per_window.column_index("class");
     size_t prob_column_index = raw_preds_per_window.column_index("probability");
@@ -660,10 +666,10 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
     stacked_rank = stacked_rank.stack("rank", "rank");
     result.add_column(stacked_rank["rank"], "rank");
   } else {
-    // add "exp_id" and "prediction_id" if the output_frequency is per_window
-    result.add_column(raw_preds_per_window["session_id"], "exp_id");
-    result.add_column(gl_sarray::from_sequence(0, raw_preds_per_window.size()),
-                      "prediction_id");
+    // add session ID and prediction ID if the output_frequency is per_window
+    result.add_column(raw_preds_per_window["session_id"],
+                      read_state<std::string>("session_id"));
+    result.add_column(raw_preds_per_window["prediction_id"], "prediction_id");
     result.add_column(raw_preds_per_window["class"], "class");
     result = result.stack("class", "class");
     gl_sframe rank_per_row = gl_sframe({{"rank", raw_preds_per_window["rank"]}})
@@ -1220,10 +1226,11 @@ void activity_classifier::perform_training_iteration() {
 
 gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   // Open a new SFrame for writing.
-  gl_sframe_writer writer({"session_id", "preds", "num_samples"},
-                          {data->session_id_type(), flex_type_enum::VECTOR,
-                           flex_type_enum::INTEGER},
-                          /* num_segments */ 1);
+  gl_sframe_writer writer(
+      {"session_id", "prediction_id", "preds", "num_samples"},
+      {data->session_id_type(), flex_type_enum::INTEGER, flex_type_enum::VECTOR,
+       flex_type_enum::INTEGER},
+      /* num_segments */ 1);
 
   size_t prediction_window = read_state<size_t>("prediction_window");
   size_t num_classes = read_state<size_t>("num_classes");
@@ -1277,11 +1284,12 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
           // Compute how many samples this prediction applies to.
           size_t num_samples = std::min(prediction_window,
                                         info.num_samples - cumulative_samples);
-          cumulative_samples += prediction_window ;
-          // Add a row to the output SFrame.
-          writer.write({ info.session_id, preds, num_samples },
-                       /* segment_id */ 0);
+          cumulative_samples += prediction_window;
 
+          // Add a row to the output SFrame.
+          flex_int prediction_id = info.chunk_index;
+          writer.write({info.session_id, prediction_id, preds, num_samples},
+                       /* segment_id */ 0);
         }
       }
     }

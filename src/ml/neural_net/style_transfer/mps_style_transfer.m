@@ -324,6 +324,17 @@
     imagesOut[key] = styleData;
   }
 
+  float imageChannels = 3.0;
+  NSData* imageChannelsData = [NSData dataWithBytes:&imageChannels length:sizeof(float)];
+
+  float imageBatchSize = _batchSize;
+  NSData* imageBatchSizeData = [NSData dataWithBytes:&imageBatchSize length:sizeof(float)];
+
+  imagesOut[@"width"] = imageWidthData;
+  imagesOut[@"height"] = imageHeightData;
+  imagesOut[@"channels"] = imageChannelsData;
+  imagesOut[@"batch_size"] = imageBatchSizeData;
+
   return [imagesOut copy];
 }
 
