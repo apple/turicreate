@@ -287,7 +287,7 @@ class EXPORT drawing_classifier : public ml_model_base {
    **/
    std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, bool is_train,
-      std::vector<std::string> class_labels) const;
+      flex_list class_labels) const;
 
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;

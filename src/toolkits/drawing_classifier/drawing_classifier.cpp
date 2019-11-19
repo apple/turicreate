@@ -261,7 +261,7 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     gl_sframe data, bool is_train,
-    std::vector<std::string> class_labels) const {
+    flex_list class_labels) const {
   data_iterator::parameters data_params;
 
   std::string feature_column_name = read_state<flex_string>("feature");
@@ -341,11 +341,10 @@ void drawing_classifier::init_training(
       create_iterator(training_data_,
                       /* is_train */ true, /* class labels */ {});
 
-  const std::vector<std::string>& classes =
-      training_data_iterator_->class_labels();
+  const flex_list& classes = training_data_iterator_->class_labels();
 
   add_or_update_state({
-      {"classes", flex_list(classes.begin(), classes.end())},
+      {"classes", classes},
       {"num_classes", classes.size()},
   });
 
@@ -700,14 +699,28 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
     result = result.apply(max_prob_label, class_labels.front().get_type());
 
   } else if (output_type == "probability") {
-    auto max_prob = [=](const flexible_type& ft) {
+    /** The output_type="probability" is to provide the probability of the True
+     *  class in binary classifiers.
+     *  For example, if one is building a binary classifier for
+     *  "cat" vs "not cat", output_type="probability" should output the
+     *  probability of the data point being "cat", not the probability of the
+     *  predicted class.
+     */
+
+    size_t num_classes = read_state<flex_int>("num_classes");
+    DASSERT_GT(num_classes, 0);
+
+    if (num_classes > 2) {
+      log_and_throw(
+          "Use probability_vector in case of multi-class classification.");
+    }
+
+    auto true_class_probability = [=](const flexible_type& ft) {
       const flex_vec& prob_vec = ft.get<flex_vec>();
-      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
-      return *max_it;
+      return prob_vec.back();
     };
 
-    result = result.apply(max_prob, flex_type_enum::FLOAT);
-
+    result = result.apply(true_class_probability, flex_type_enum::FLOAT);
   }
 
   return result;
@@ -734,12 +747,12 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 
   gl_sframe dc_predictions = perform_inference(data_it.get());
 
-  // argsort probability to get the index (rank) for top k class
+  // argsort probability to get the index for top k class
   // if k is greater than the class number, set it to be class number
   flex_list class_labels = read_state<flex_list>("classes");
   k = std::min(k, class_labels.size());
 
-  auto argsort_prob = [=](const flexible_type& ft) {
+  auto argsort_top_k_indices = [=](const flexible_type& ft) {
     const flex_vec& prob_vec = ft.get<flex_vec>();
 
     std::vector<size_t> index_vec(prob_vec.size());
@@ -757,59 +770,39 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
     return flex_list(index_vec.begin(), index_vec.begin() + k);
   };
 
-  // store the index in a column "rank"
-  dc_predictions.add_column(
-      dc_predictions["preds"].apply(argsort_prob, flex_type_enum::LIST),
-      "rank");
+  auto compute_result_column = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
 
-  // get top k class name and store in a column "class"
-  size_t rank_idx = dc_predictions.column_index("rank");
-  auto get_class_name = [=](const sframe_rows::row& row) {
-    const flex_list& rank_list = row[rank_idx];
-    flex_list topk_class;
-    for (flexible_type order : rank_list) {
-      topk_class.push_back(class_labels[order]);
+    const flex_list& top_k_indices = argsort_top_k_indices(ft);
+
+    flex_dict result;
+
+    for (size_t rank = 0; rank < k; rank++) {
+      flex_int class_index = top_k_indices[rank];
+      flexible_type value;
+
+      if (output_type == "probability") {
+        value = prob_vec[class_index];
+      } else {
+        value = rank;
+      }
+
+      result.emplace_back(class_labels[class_index], value);
     }
-    return topk_class;
+    return result;
   };
 
-  dc_predictions.add_column(
-      dc_predictions.apply(get_class_name, flex_type_enum::LIST), "class");
-
-  // if output_type is "probability" then change rank to probabilty
-  if (output_type == "probability") {
-    size_t prob_column_index = dc_predictions.column_index("preds");
-    auto get_probability = [=](const sframe_rows::row& row) {
-      const flex_list& rank_list = row[rank_idx];
-      flex_list topk_prob;
-      for (const flexible_type i : rank_list) {
-        topk_prob.push_back(row[prob_column_index][i]);
-      }
-      return topk_prob;
-    };
-
-    dc_predictions["rank"] =
-        dc_predictions.apply(get_probability, flex_type_enum::LIST);
-  }
-
-  // construct the final result
   gl_sframe result = gl_sframe();
 
-  // stack data into a column with single element for each row
-  // stack the labels first
-  gl_sframe stacked_class =
-      gl_sframe({{"class", dc_predictions["class"]}}).stack("class", "class");
-
-  result.add_column(stacked_class["class"], "class");
-  result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
-                    "id");
-
-  // stack the rank column,
-  gl_sframe stacked_rank =
-      gl_sframe({{"rank", dc_predictions["rank"]}}).stack("rank", "rank");
-  ASSERT_EQ(stacked_rank.size(), stacked_class.size());
-
-  result.add_column(stacked_rank["rank"], "rank");
+  // Get a result column that we can stack, from the probability vector
+  result.add_column(dc_predictions["preds"].apply(compute_result_column,
+                                                  flex_type_enum::DICT),
+                    "result");
+  result = result.add_row_number();
+  std::vector<std::string> new_column_names;
+  new_column_names.push_back("class");
+  new_column_names.push_back("rank");
+  result = result.stack("result", new_column_names);
 
   // change the column name rank to probability according to the output_type
   if (output_type == "probability") {
