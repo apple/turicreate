@@ -252,11 +252,24 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(len(g), len(tlist))
         for i in range(len(tlist)):
           self.assertEqual(g[i], tlist[i])
+
+    def test_append_empty_sarray(self):
+        existing_sa = SArray([1,2,3])
+        new_sa = SArray()
+        existing_sa=existing_sa.append(new_sa)
+        self.assertTrue(int,existing_sa.dtype)
+
+    def test_append_sarray_to_empty_sarray(self):
+        existing_sa = SArray()
+        new_sa = SArray([1,2,3])
+        existing_sa=existing_sa.append(new_sa)
+        self.assertTrue(int,existing_sa.dtype)
     
     def test_nan_to_none_type_conversion(self):
         sa=SArray([1.0,2.0,float('nan'),3.0])
         sa=sa.astype(int)
         self.assertTrue(None in sa)
+
 
     def test_list_with_array_creation(self):
         import array

@@ -93,6 +93,8 @@ def load_model(location):
         if name in MODEL_NAME_MAP:
             cls = MODEL_NAME_MAP[name]
             if 'model' in saved_state:
+                if name=='activity_classifier' or name=='object_detector' or name=='style_transfer':
+                    import turicreate.toolkits.libtctensorflow
                 # this is a native model
                 return cls(saved_state['model'])
             else:
@@ -102,16 +104,19 @@ def load_model(location):
                 del model_data['model_version']
 
                 if name=='activity_classifier' and AC_USE_CPP:
+                    import turicreate.toolkits.libtctensorflow
                     model = _extensions.activity_classifier()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name=='object_detector' and OD_USE_CPP:
+                    import turicreate.toolkits.libtctensorflow
                     model = _extensions.object_detector()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name=='style_transfer' and ST_USE_CPP:
+                    import turicreate.toolkits.libtctensorflow
                     model = _extensions.style_transfer()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
