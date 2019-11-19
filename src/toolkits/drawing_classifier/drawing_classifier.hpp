@@ -39,6 +39,8 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   void load_version(iarchive& iarc, size_t version) override;
 
+  void import_from_custom_model(variant_map_type model_data, size_t version);
+
   /**
    * Interface exposed via Unity server
    */
@@ -213,6 +215,9 @@ class EXPORT drawing_classifier : public ml_model_base {
                       to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::iterate_training);
+
+  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::import_from_custom_model,
+                                 "model_data", "version");
 
   END_CLASS_MEMBER_REGISTRATION
 
