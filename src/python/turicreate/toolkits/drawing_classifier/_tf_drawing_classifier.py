@@ -28,7 +28,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         for key in net_params.keys():
             # if load conv or dense layer from prior 6.0 viersion
             idx = key.rfind('_fwd')
-            if idx > 0:
+            if idx != -1:
                 key_60 = key[:idx] + key[idx + 4:]
             else:
                 key_60 = key
