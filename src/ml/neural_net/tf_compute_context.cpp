@@ -160,7 +160,11 @@ float_array_map tf_model_backend::export_weights() const {
     // it should be trivial to call this if we use the same interpreter process
     pybind11::module np = pybind11::module::import("numpy");
     for (auto& kv : exported_weights) {
-      exported_weights[kv.first] = np.attr("ascontiguousarray")((kv.second));
+      // defensively call ascontiguousarray to force the
+      // underlying numpy memory layout using the real strides
+      // after this, stride should be vector of 1s
+      exported_weights[kv.first] = np.attr("ascontiguousarray")(
+          pybind11::reinterpret_borrow<pybind11::object>(kv.second));
     }
 
     std::map<std::string, pybind11::buffer> buf_output =
@@ -173,20 +177,6 @@ float_array_map tf_model_backend::export_weights() const {
               static_cast<float*>(buf.ptr),
               std::vector<size_t>(buf.shape.begin(), buf.shape.end()));
       result[kv.first] = value;
-
-      if (kv.first == "dummy") {
-        std::cout << kv.first << std::endl;
-        auto ndim = value.dim();
-        std::cout << "(";
-        for (size_t i = 0; i < ndim; i++) {
-          std::cout << value.shape()[i] << ", ";
-        }
-        std::cout << ")" << std::endl;
-
-        for (size_t i = 0; i < std::min<size_t>(10U, value.size()); i++) {
-          std::cout << value.data()[i] << std::endl;
-        }
-      }
     }
   });
 
