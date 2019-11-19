@@ -237,7 +237,9 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                             {var.name.replace(":0", ""): val.transpose(1, 0)})
                 else:
                     # TODO: Call _utils.convert_conv2d_tf_to_coreml once #2513 is merged.
+                    # np.transpose won't change the underlying memory layout
+                    # but in turicreate we will force it.
                     net_params.update(
-                        {var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1)).copy()})
+                        {var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
 
         return net_params
