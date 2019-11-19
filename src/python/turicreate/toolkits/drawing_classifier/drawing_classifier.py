@@ -976,8 +976,14 @@ class DrawingClassifier_beta(_Model):
 
     def __repr__(self):
         """
-        Returns a string description of the model when the model name is
-        entered in the terminal.
+        Returns a string description of the model, including (where relevant)
+        the schema of the training data, description of the training data,
+        training statistics, and model hyperparameters.
+
+        Returns     
+        -------     
+        out : string        
+            A description of the model.
         """
 
         width = 40
