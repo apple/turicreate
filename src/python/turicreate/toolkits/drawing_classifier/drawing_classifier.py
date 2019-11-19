@@ -980,9 +980,9 @@ class DrawingClassifier_beta(_Model):
         the schema of the training data, description of the training data,
         training statistics, and model hyperparameters.
 
-        Returns     
-        -------     
-        out : string        
+        Returns
+        -------
+        out : string
             A description of the model.
         """
 
