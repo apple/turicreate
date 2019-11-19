@@ -101,6 +101,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         state['total'] = len(dataset)  # Images in the dataset
 
         # We should be using SArrayBuilder, but it doesn't accept ndarray yet.
+        # TODO: https://github.com/apple/turicreate/issues/2672
         #out = _tc.SArrayBuilder(dtype = array.array)
         state['out'] = _tc.SArray(dtype=array.array)
 
@@ -119,7 +120,8 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
             state['num_started'] = end_index
 
             # Allocate a numpy array with the desired shape.
-            # TODO: Recycle allocations?
+            # TODO: Recycle the ndarray instances we're allocating below with
+            # _np.zeros, instead of creating new ones every time.
             num_images = end_index - start_index
             shape = (num_images,) + self.ptModel.input_image_shape
             batch = _np.zeros(shape, dtype=_np.float32)
@@ -140,7 +142,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         # Encapsulates the work done by TensorFlow for a single batch.
         def handle_request(batch):
             y = self.model.predict(batch)
-            tf_out = [i[0][0] for i in y]
+            tf_out = [i.flatten() for i in y]
             return tf_out
 
         # Copies the output from TensorFlow into the SArrayBuilder and emits
