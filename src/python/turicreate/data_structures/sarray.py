@@ -2786,11 +2786,19 @@ class SArray(object):
         Rows: 6
         [1, 2, 3, 4, 5, 6]
         """
+
         if type(other) is not SArray:
             raise RuntimeError("SArray append can only work with SArray")
 
         if self.dtype != other.dtype:
-            raise RuntimeError("Data types in both SArrays have to be the same")
+            if len(other) == 0:
+                other=other.astype(self.dtype)
+
+            elif len(self) == 0:
+                self=self.astype(other.dtype)
+
+            else:
+                raise RuntimeError("Data types in both SArrays have to be the same")
 
         with cython_context():
             return SArray(_proxy = self.__proxy__.append(other.__proxy__))
