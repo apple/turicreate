@@ -18,7 +18,11 @@ def _get_tc_version_info():
     Return metadata related to the package to be added to the CoreML model
     """
     from turicreate import __version__
-    return {'com.github.apple.turicreate.version': __version__}
+    import platform
+    return {
+       'com.github.apple.turicreate.version': __version__,
+       'com.github.apple.os.platform': platform.platform()
+    }
 
 def _get_model_metadata(model_class, metadata, version=None):
     """

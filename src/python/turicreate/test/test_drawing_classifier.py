@@ -285,6 +285,7 @@ class DrawingClassifierTest(unittest.TestCase):
 
     def test_export_coreml(self):
         import coremltools
+        import platform
         for model in self.models:
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
@@ -293,6 +294,7 @@ class DrawingClassifierTest(unittest.TestCase):
             coreml_model = coremltools.models.MLModel(filename)
             self.assertDictEqual({
                 'com.github.apple.turicreate.version': _tc.__version__,
+                'com.github.apple.os.platform': platform.platform(),
                 'target': self.target,
                 'feature': self.feature,
                 'type': 'drawing_classifier',

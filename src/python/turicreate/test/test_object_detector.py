@@ -292,6 +292,7 @@ class ObjectDetectorTest(unittest.TestCase):
     def test_export_coreml(self):
         from PIL import Image
         import coremltools
+        import platform
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename,
             include_non_maximum_suppression=False)
@@ -299,6 +300,7 @@ class ObjectDetectorTest(unittest.TestCase):
         coreml_model = coremltools.models.MLModel(filename)
         self.assertDictEqual({
             'com.github.apple.turicreate.version': tc.__version__,
+            'com.github.apple.os.platform': platform.platform(),
             'annotations': self.annotations,
             'type': 'object_detector',
             'classes': ','.join(sorted(_CLASSES)),

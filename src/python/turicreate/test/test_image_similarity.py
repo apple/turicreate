@@ -196,8 +196,10 @@ class ImageSimilarityTest(unittest.TestCase):
 
         # Load the model back from the CoreML model file
         coreml_model = coremltools.models.MLModel(filename)
+        import platform
         self.assertDictEqual({
-            u'com.github.apple.turicreate.version': tc.__version__,
+            'com.github.apple.turicreate.version': tc.__version__,
+            'com.github.apple.os.platform': platform.platform(),
             'type': 'ImageSimilarityModel',
             'version': '1'
             }, dict(coreml_model.user_defined_metadata)

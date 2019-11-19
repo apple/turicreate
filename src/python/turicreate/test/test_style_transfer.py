@@ -234,6 +234,7 @@ class StyleTransferTest(unittest.TestCase):
 
     def test_export_coreml(self):
         import coremltools
+        import platform
         model = self.model
         for flexible_shape_on in [True, False]:
             filename = tempfile.mkstemp('my_style_transfer.mlmodel')[1]
@@ -244,6 +245,7 @@ class StyleTransferTest(unittest.TestCase):
             coreml_model = coremltools.models.MLModel(filename)
             self.assertDictEqual({
                 'com.github.apple.turicreate.version': tc.__version__,
+                'com.github.apple.os.platform': platform.platform(),
                 'type': 'style_transfer',
                 'content_feature': self.content_feature,
                 'style_feature': self.style_feature,

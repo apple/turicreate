@@ -316,8 +316,10 @@ class ActivityClassifierTest(unittest.TestCase):
 
         # Load the model back from the CoreML model file
         coreml_model = coremltools.models.MLModel(filename)
+        import platform
         self.assertDictEqual({
             'com.github.apple.turicreate.version': tc.__version__,
+            'com.github.apple.os.platform': platform.platform(),
             'target': self.target,
             'type': 'activity_classifier',
             'prediction_window': str(self.prediction_window),

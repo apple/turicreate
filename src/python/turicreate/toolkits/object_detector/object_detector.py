@@ -1655,7 +1655,6 @@ class ObjectDetector_beta(_Model):
         options['include_non_maximum_suppression'] = include_non_maximum_suppression
         options['confidence_threshold'] = confidence_threshold
         options['iou_threshold'] = iou_threshold
-        options['iou_threshold'] = iou_threshold
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
         short_description = _coreml_utils._mlmodel_short_description('Object Detector')
 
