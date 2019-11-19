@@ -660,6 +660,7 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
   add_or_update_state({
       {"model", "resnet-16"},
       {"styles", style_sframe_with_index(style)},
+      {"num_content_images", content.size()}
   });
 
   m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);
@@ -736,6 +737,10 @@ void style_transfer::finalize_training() {
 
 void style_transfer::train(gl_sarray style, gl_sarray content,
                            std::map<std::string, flexible_type> opts) {
+
+  turi::timer time_object;
+  time_object.start();
+
   training_table_printer_.reset(new table_printer(
       {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
 
@@ -749,6 +754,14 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
 
   training_table_printer_->print_footer();
   training_table_printer_.reset();
+
+  // Using training_epochs * data_size = training_iterations * batch_size
+  size_t training_epochs = ((read_state<flex_int>("batch_size") * read_state<flex_int>("training_iterations")) / read_state<flex_int>("num_content_images"));
+  
+  add_or_update_state({
+    {"training_epochs", training_epochs},
+    {"training_time", time_object.current_time()}
+  });
 }
 
 std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(

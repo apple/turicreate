@@ -691,22 +691,20 @@ class StyleTransfer_beta(_Model):
         Returns
         -------
         out : string
-            A description of the model.
+            A description of the StyleTransfer.
         """
-        return self.__class__.__name__
+        return self.__repr__()
 
     def __repr__(self):
         """
-        Returns a string description of the model, including (where relevant)
-        the schema of the training data, description of the training data,
-        training statistics, and model hyperparameters.
-
-        Returns
-        -------
-        out : string
-            A description of the model.
+        Print a string description of the model when the model name is entered
+        in the terminal.
         """
-        return self.__class__.__name__
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
 
     def _get_version(self):
         return self._CPP_ACTIVITY_CLASSIFIER_VERSION
@@ -880,6 +878,40 @@ class StyleTransfer_beta(_Model):
         +-------+--------------------------+
         """
         return self.__proxy__.get_styles(style)
+
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Model', 'model'),
+            ('Number of unique styles', 'num_styles'),
+        ]
+
+        training_fields = [
+            ('Training time', 'training_time'),
+            ('Training epochs', 'training_epochs'),
+            ('Training iterations', 'training_iterations'),
+            ('Number of style images', 'num_styles'),
+            ('Number of content images', 'num_content_images'),
+            ('Final loss', 'training_log_loss'),
+        ]
+
+        section_titles = ['Schema', 'Training summary']
+        return([model_fields, training_fields], section_titles)
 
 class StyleTransfer(_CustomModel):
     """
