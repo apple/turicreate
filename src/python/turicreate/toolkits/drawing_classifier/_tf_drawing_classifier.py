@@ -26,7 +26,12 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         """
         for key in net_params.keys():
-            net_params[key] = _utils.convert_shared_float_array_to_numpy(
+            # if load conv or dense layer from prior 6.0 viersion
+            if key.endswith('_fwd'):
+                key_60 = key[:-4]
+            else:
+                key_60 = key
+            net_params[key_60] = _utils.convert_shared_float_array_to_numpy(
                 net_params[key])
 
         _tf.reset_default_graph()
