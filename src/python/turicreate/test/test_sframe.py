@@ -3780,6 +3780,12 @@ class SFrameTest(unittest.TestCase):
         sf_test = sf.filter_by(list(d.values()),'check')
         _assert_sframe_equal(sf, sf_test)
 
+    def test_export_empty_SFrame(self):
+        f = tempfile.NamedTemporaryFile(suffix='.json', delete=False)
+        sf = SFrame()
+        sf.export_json(f.name)
+        sf2 = SFrame.read_json(f.name)
+        _assert_sframe_equal(sf, sf2)
 
 if __name__ == "__main__":
 

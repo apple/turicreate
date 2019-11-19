@@ -81,6 +81,9 @@ public:
       /** The session ID from which the chunk was segmented. */
       flexible_type session_id;
 
+      /** The position of this chunk within the session. */
+      size_t chunk_index;
+
       /** Number of samples (rows from the raw SFrame) comprising the chunk. */
       size_t num_samples;
     };
@@ -199,6 +202,7 @@ private:
   gl_sframe_range::iterator next_row_;
   gl_sframe_range::iterator end_of_rows_;
   size_t sample_in_row_ = 0;
+  size_t num_chunks_in_row_ = 0;
   bool is_train_ = false;
   bool use_data_augmentation_ = false;
   std::default_random_engine random_engine_;

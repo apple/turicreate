@@ -45,7 +45,6 @@ using padding_type = model_spec::padding_type;
 // anonymous helper sections
 
 struct result {
-  shared_float_array loss_info;
   shared_float_array accuracy_info;
   data_iterator::batch data_info;
 };
@@ -235,6 +234,13 @@ void drawing_classifier::init_options(
       FLEX_UNDEFINED,
       std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
 
+  options.create_string_option(
+      "warm_start",
+      "Record warm start model version used. If no warmstart used"
+      " None is assigned by default."
+      "",
+      true);
+
   // Validate user-provided options.
   options.set_options(opts);
 
@@ -255,7 +261,7 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
     gl_sframe data, bool is_train,
-    std::vector<std::string> class_labels) const {
+    flex_list class_labels) const {
   data_iterator::parameters data_params;
 
   std::string feature_column_name = read_state<flex_string>("feature");
@@ -298,6 +304,19 @@ void drawing_classifier::init_training(
     {"training_iterations", 0}
   });
 
+  // Capture Core ML model path from options,
+  // if provided by Python.
+  std::string mlmodel_path;
+  bool enable_warmstart = false;
+  auto mlmodel_path_iter = opts.find("mlmodel_path");
+  if ( mlmodel_path_iter != opts.end()) {
+    mlmodel_path = mlmodel_path_iter->second.to<std::string>();
+    // Remove `mlmodel_path` from options as
+    // it is not a user-defined option.
+    opts.erase(mlmodel_path_iter);
+    enable_warmstart = true;
+  }
+
   // Read user-specified options.
   init_options(opts);
 
@@ -322,11 +341,10 @@ void drawing_classifier::init_training(
       create_iterator(training_data_,
                       /* is_train */ true, /* class labels */ {});
 
-  const std::vector<std::string>& classes =
-      training_data_iterator_->class_labels();
+  const flex_list& classes = training_data_iterator_->class_labels();
 
   add_or_update_state({
-      {"classes", flex_list(classes.begin(), classes.end())},
+      {"classes", classes},
       {"num_classes", classes.size()},
   });
 
@@ -353,6 +371,13 @@ void drawing_classifier::init_training(
   // by the data iterator.
   nn_spec_ = init_model();
 
+  if ( enable_warmstart ) {
+    // Initialize the neural net with warm start model weights.
+    model_spec warmstart_model(mlmodel_path);
+    float_array_map trained_weights = warmstart_model.export_params_view();
+    nn_spec_->update_params(trained_weights);
+  }
+
   training_model_ = training_compute_context_->create_drawing_classifier(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
       read_state<size_t>("num_classes"));
@@ -364,9 +389,8 @@ void drawing_classifier::init_training(
 }
 
 // Returns the validation accuracy and validation loss respectively as a tuple
-std::tuple<float, float> drawing_classifier::compute_validation_metrics(
-    size_t num_classes, size_t batch_size) {
-  float cumulative_val_loss = 0.f;
+float drawing_classifier::compute_validation_metrics(size_t num_classes,
+                                                     size_t batch_size) {
   size_t val_size = 0;
   size_t val_num_correct = 0;
   size_t val_num_samples = 0;
@@ -386,11 +410,6 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
                                               batch.data_info.num_samples);
       val_num_correct += batch_num_correct;
       val_num_samples += batch.data_info.num_samples;
-      float val_loss =
-          std::accumulate(batch.loss_info.data(),
-                          batch.loss_info.data() + batch.loss_info.size(), 0.f,
-                          std::plus<float>());
-      cumulative_val_loss += val_loss;
     }
   };
 
@@ -410,7 +429,6 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
                                 });
 
     result_batch.accuracy_info = results.at("accuracy");
-    result_batch.loss_info = results.at("loss");
     val_size += result_batch.data_info.num_samples;
 
     // Add the pending result to our queue and move on to the next input batch.
@@ -420,9 +438,8 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
   pop_until_size(0);
   float average_val_accuracy =
       static_cast<float>(val_num_correct) / val_num_samples;
-  float average_val_loss = cumulative_val_loss / val_size;
 
-  return std::make_tuple(average_val_accuracy, average_val_loss);
+  return average_val_accuracy;
 }
 
 void drawing_classifier::iterate_training() {
@@ -433,7 +450,6 @@ void drawing_classifier::iterate_training() {
   const size_t batch_size = read_state<flex_int>("batch_size");
   const size_t iteration_idx = read_state<flex_int>("training_iterations");
 
-  float cumulative_batch_loss = 0.f;
   size_t num_batches = 0;
   size_t train_num_correct = 0;
   size_t train_num_samples = 0;
@@ -453,13 +469,6 @@ void drawing_classifier::iterate_training() {
                                               batch.data_info.num_samples);
       train_num_correct += batch_num_correct;
       train_num_samples += batch.data_info.num_samples;
-
-      float batch_loss =
-          std::accumulate(batch.loss_info.data(),
-                          batch.loss_info.data() + batch.loss_info.size(), 0.f,
-                          std::plus<float>());
-
-      cumulative_batch_loss += (batch.data_info.num_samples * batch_loss);
     }
   };
 
@@ -477,7 +486,6 @@ void drawing_classifier::iterate_training() {
                                 {"labels", result_batch.data_info.targets},
                                 {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
                               });
-    result_batch.loss_info = results.at("loss");
     result_batch.accuracy_info = results.at("accuracy");
 
     ++num_batches;
@@ -487,26 +495,21 @@ void drawing_classifier::iterate_training() {
   }
   // Process all remaining batches.
   pop_until_size(0);
-  float average_batch_loss = cumulative_batch_loss / train_num_samples;
   float average_batch_accuracy =
       static_cast<float>(train_num_correct) / train_num_samples;
   float average_val_accuracy;
-  float average_val_loss;
 
   if (validation_data_iterator_) {
-    std::tie(average_val_accuracy, average_val_loss) =
-        compute_validation_metrics(num_classes, batch_size);
+    average_val_accuracy = compute_validation_metrics(num_classes, batch_size);
   }
   add_or_update_state({
       {"training_iterations", iteration_idx + 1},
       {"training_accuracy", average_batch_accuracy},
-      {"training_log_loss", average_batch_loss},
   });
 
   if (validation_data_iterator_) {
     add_or_update_state({
         {"validation_accuracy", average_val_accuracy},
-        {"validation_log_loss", average_val_loss},
     });
   }
 
@@ -514,12 +517,11 @@ void drawing_classifier::iterate_training() {
     if (validation_data_iterator_) {
       training_table_printer_->print_progress_row(
           iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          average_batch_loss, average_val_accuracy, average_val_loss,
-          progress_time());
+          average_val_accuracy, progress_time());
     } else {
       training_table_printer_->print_progress_row(
           iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          average_batch_loss, progress_time());
+          progress_time());
     }
   }
 
@@ -536,14 +538,11 @@ void drawing_classifier::init_table_printer(bool has_validation) {
     training_table_printer_.reset(
         new table_printer({{"Iteration", 12},
                            {"Train Accuracy", 12},
-                           {"Train Loss", 12},
                            {"Validation Accuracy", 12},
-                           {"Validation Loss", 12},
                            {"Elapsed Time", 12}}));
   } else {
     training_table_printer_.reset(new table_printer({{"Iteration", 12},
                                                      {"Train Accuracy", 12},
-                                                     {"Train Loss", 12},
                                                      {"Elapsed Time", 12}}));
   }
 }
@@ -748,12 +747,12 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 
   gl_sframe dc_predictions = perform_inference(data_it.get());
 
-  // argsort probability to get the index (rank) for top k class
+  // argsort probability to get the index for top k class
   // if k is greater than the class number, set it to be class number
   flex_list class_labels = read_state<flex_list>("classes");
   k = std::min(k, class_labels.size());
 
-  auto argsort_prob = [=](const flexible_type& ft) {
+  auto argsort_top_k_indices = [=](const flexible_type& ft) {
     const flex_vec& prob_vec = ft.get<flex_vec>();
 
     std::vector<size_t> index_vec(prob_vec.size());
@@ -771,59 +770,39 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
     return flex_list(index_vec.begin(), index_vec.begin() + k);
   };
 
-  // store the index in a column "rank"
-  dc_predictions.add_column(
-      dc_predictions["preds"].apply(argsort_prob, flex_type_enum::LIST),
-      "rank");
+  auto compute_result_column = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
 
-  // get top k class name and store in a column "class"
-  size_t rank_idx = dc_predictions.column_index("rank");
-  auto get_class_name = [=](const sframe_rows::row& row) {
-    const flex_list& rank_list = row[rank_idx];
-    flex_list topk_class;
-    for (flexible_type order : rank_list) {
-      topk_class.push_back(class_labels[order]);
+    const flex_list& top_k_indices = argsort_top_k_indices(ft);
+
+    flex_dict result;
+
+    for (size_t rank = 0; rank < k; rank++) {
+      flex_int class_index = top_k_indices[rank];
+      flexible_type value;
+
+      if (output_type == "probability") {
+        value = prob_vec[class_index];
+      } else {
+        value = rank;
+      }
+
+      result.emplace_back(class_labels[class_index], value);
     }
-    return topk_class;
+    return result;
   };
 
-  dc_predictions.add_column(
-      dc_predictions.apply(get_class_name, flex_type_enum::LIST), "class");
-
-  // if output_type is "probability" then change rank to probabilty
-  if (output_type == "probability") {
-    size_t prob_column_index = dc_predictions.column_index("preds");
-    auto get_probability = [=](const sframe_rows::row& row) {
-      const flex_list& rank_list = row[rank_idx];
-      flex_list topk_prob;
-      for (const flexible_type i : rank_list) {
-        topk_prob.push_back(row[prob_column_index][i]);
-      }
-      return topk_prob;
-    };
-
-    dc_predictions["rank"] =
-        dc_predictions.apply(get_probability, flex_type_enum::LIST);
-  }
-
-  // construct the final result
   gl_sframe result = gl_sframe();
 
-  // stack data into a column with single element for each row
-  // stack the labels first
-  gl_sframe stacked_class =
-      gl_sframe({{"class", dc_predictions["class"]}}).stack("class", "class");
-
-  result.add_column(stacked_class["class"], "class");
-  result.add_column(gl_sarray::from_sequence(0, stacked_class.size()),
-                    "id");
-
-  // stack the rank column,
-  gl_sframe stacked_rank =
-      gl_sframe({{"rank", dc_predictions["rank"]}}).stack("rank", "rank");
-  ASSERT_EQ(stacked_rank.size(), stacked_class.size());
-
-  result.add_column(stacked_rank["rank"], "rank");
+  // Get a result column that we can stack, from the probability vector
+  result.add_column(dc_predictions["preds"].apply(compute_result_column,
+                                                  flex_type_enum::DICT),
+                    "result");
+  result = result.add_row_number();
+  std::vector<std::string> new_column_names;
+  new_column_names.push_back("class");
+  new_column_names.push_back("rank");
+  result = result.stack("result", new_column_names);
 
   // change the column name rank to probability according to the output_type
   if (output_type == "probability") {
@@ -869,8 +848,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"target", read_state<flex_string>("target")},
       {"feature", feature_column_name},
       {"max_iterations", read_state<flex_int>("max_iterations")},
-      // TODO: Uncomment as part of #2524
-      // {"warm_start", read_state<flex_int>("warm_start")},
+      {"warm_start", read_state<flex_string>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
