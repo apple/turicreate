@@ -1187,11 +1187,13 @@ void activity_classifier::perform_training_iteration() {
   add_or_update_state({
       {"training_iterations", iteration_idx + 1},
       {"training_accuracy", average_batch_accuracy},
+      {"training_log_loss", average_batch_loss},
   });
 
   if (validation_data_iterator_) {
     add_or_update_state({
-        {"validation_accuracy", average_val_accuracy}
+        {"validation_accuracy", average_val_accuracy},
+        {"validation_log_loss", average_val_loss}
     });
   }
 
