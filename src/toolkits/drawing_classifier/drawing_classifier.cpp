@@ -873,20 +873,26 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
   const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
 
   // For a model trained on integer classes, when saved and loaded back,
-  // the classes are loaded as floats. The following if statement casts
+  // the classes are loaded as floats. The following code block casts
   // the loaded "float" classes back to int.
-  auto classes_iter = model_data.find("classes");
-  flex_list classes_list = variant_get_value<flex_list>(classes_iter->second);
+  if (model_data.count("classes")) {
+    flex_list classes_list = variant_get_value<flex_list>(model_data.find("classes")->second);
 
-  if (classes_list.size() > 0 &&
-      classes_list.dtype() == flex_type_enum::FLOAT) {
-    flex_list new_classes_list;
+    if (classes_list.size() > 0 && classes_list.begin()->get_type() == flex_type_enum::FLOAT) {
+      flex_list new_classes_list;
+      new_classes_list.reserve(classes_list.size());
+
+      std::transform(classes_list.begin(), classes_list.end(), std::back_inserter(new_classes_list),
+        [](flexible_type& ft) { return ft.to<flex_int>(); });
+      
+      model_data.erase("classes");
+      model_data.emplace("classes", std::move(new_classes_list));
     
-    std::transform(classes_list.begin(), classes_list.end(), std::back_inserter(new_classes_list),
-      [](flexible_type& ft) { return ft.to<flex_int>(); })
-    
-    model_data.erase("classes");
-    model_data.emplace("classes", new_classes_list);
+    } else if (classes_list.size() == 0) {
+      log_and_throw("The loaded turicreate model must have at least one class!\n");
+    }
+  } else {
+    log_and_throw("The loaded turicreate model must contain 'classes'!\n");
   }
 
   flex_dict mxnet_data_dict;
