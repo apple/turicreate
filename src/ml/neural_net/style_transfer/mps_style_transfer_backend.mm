@@ -13,57 +13,48 @@
 #import <ml/neural_net/mps_device_manager.h>
 #import <ml/neural_net/mps_utils.h>
 
+#import <ml/neural_net/style_transfer/mps_style_transfer_weights.h>
+
 #include <numeric>
 
 using namespace turi::neural_net;
 
 @interface TCMPSStyleTransferHelpers:NSObject
-+(float_array_map) fromNSDictionary: (NSDictionary<NSString *, NSData *> *) dictionary;
++(std::vector<size_t>)toVector: (NSArray<NSNumber *>*) array;
++(float_array_map) fromNSDictionary: (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) dictionary;
 +(NSDictionary<NSString *, NSData *> *) toNSDictionary: (float_array_map) map;
 @end
 
 @implementation TCMPSStyleTransferHelpers
-+(float_array_map) fromNSDictionary: (NSDictionary<NSString *, NSData *> *) dictionary {
++(std::vector<size_t>)toVector: (NSArray<NSNumber *>*) array {
+  std::vector<size_t> v;
+  v.reserve([array count]);
+  for (NSNumber *n in array) {
+    v.push_back([n integerValue]);
+  }
+  return v;
+}
+
++(float_array_map) fromNSDictionary: (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) dictionary {
   float_array_map map;
 
-  NSMutableDictionary<NSString *, NSData *> *dictionaryMutable = [dictionary mutableCopy];
+  for (NSString* key in dictionary) {
+    TCMPSStyleTransferWeights* value = [dictionary objectForKey:key];
 
-  NSData* widthData = dictionaryMutable[@"width"];
-  NSData* heightData = dictionaryMutable[@"height"];
-  NSData* channelsData = dictionaryMutable[@"channels"];
-  NSData* batchSizeData = dictionaryMutable[@"batch_size"];
+    NSData* data = [value data];
+    NSArray<NSNumber *>* shape = [value shape];
 
-  std::vector<size_t> imageShape;
+    size_t dataLength = (size_t) (data.length / sizeof(float));
 
-  if (widthData != nil && heightData != nil && channelsData != nil) {
-    size_t width = static_cast<size_t>(((float *) (widthData.bytes)) [0]);
-    size_t height = static_cast<size_t>(((float *) (heightData.bytes)) [0]);
-    size_t channels = static_cast<size_t>(((float *) (channelsData.bytes)) [0]);
-    size_t batchSize = static_cast<size_t>(((float *) (batchSizeData.bytes)) [0]);
+    std::vector<size_t> dataShape = [TCMPSStyleTransferHelpers toVector: shape];
 
-    imageShape = { batchSize, height, width, channels };
-  }
+    size_t dataShapeSize = std::accumulate(dataShape.begin(),
+                                           dataShape.end(), 1,
+                                           std::multiplies<size_t>());
 
-  [dictionaryMutable removeObjectForKey:@"width"];
-  [dictionaryMutable removeObjectForKey:@"height"];
-  [dictionaryMutable removeObjectForKey:@"channels"];
-  [dictionaryMutable removeObjectForKey:@"batch_size"];
-
-  for (NSString* key in dictionaryMutable) {
-    NSData* value = [dictionaryMutable objectForKey:key];
-
-    size_t dataLength = (size_t) (value.length / sizeof(float));
-    std::vector<size_t> dataShape = { dataLength }; 
-
-    if (imageShape.size() > 0) {
-      size_t imageSize = std::accumulate(imageShape.begin(),
-                                         imageShape.end(), 1,
-                                         std::multiplies<size_t>());
-      ASSERT_EQ(dataLength, imageSize);
-      dataShape = imageShape;
-    }
+    ASSERT_EQ(dataLength, dataShapeSize);
     
-    float *dataBytes = (float *) (value.bytes);
+    float *dataBytes = (float *) (data.bytes);
     
     // TODO: This copy is inefficient. This should be a wrapper around NSData: 
     //       a custom subclass of float_array that preserves a strong reference
@@ -105,7 +96,7 @@ namespace {
 float_array_map convert_weights_coreml_mps(const float_array_map &coreml_weights) {
   float_array_map mps_weights;
   for (auto const& w : coreml_weights) {
-    if (w.first.find("conv") != std::string::npos) {
+    if (w.first.find("conv") != std::string::npos && w.first.find("bias") == std::string::npos) {
       std::vector<float> init_w;
       init_w.resize(w.second.size());
       convert_chw_to_hwc(w.second, init_w.data(), init_w.data() + w.second.size());
@@ -133,7 +124,7 @@ float_array_map convert_weights_coreml_mps(const float_array_map &coreml_weights
 float_array_map convert_weights_mps_coreml(const float_array_map &mps_weights) {
   float_array_map coreml_weights;
   for (auto const& w : mps_weights) {
-    if (w.first.find("conv") != std::string::npos) {
+    if (w.first.find("conv") != std::string::npos && w.first.find("bias") == std::string::npos) {
       std::vector<float> init_w;
       init_w.resize(w.second.size());
       convert_hwc_to_chw(w.second, init_w.data(), init_w.data() + w.second.size());
@@ -231,7 +222,7 @@ mps_style_transfer::~mps_style_transfer() = default;
 
 float_array_map mps_style_transfer::export_weights() const {
   if (@available(macOS 10.15, *)) {
-    NSDictionary<NSString *, NSData *> *dictWeights
+    NSDictionary<NSString *, TCMPSStyleTransferWeights *> *dictWeights
         = [m_impl->model exportWeights];
     
     float_array_map weights
@@ -249,7 +240,7 @@ float_array_map mps_style_transfer::predict(const float_array_map& inputs) const
     NSDictionary<NSString *, NSData *> *dictInputs
         = [TCMPSStyleTransferHelpers toNSDictionary: inputs];
 
-    NSDictionary<NSString *, NSData *> *dictOutput
+    NSDictionary<NSString *, TCMPSStyleTransferWeights *> *dictOutput
         = [m_impl->model predict:dictInputs];
 
     float_array_map output
@@ -276,7 +267,7 @@ float_array_map mps_style_transfer::train(const float_array_map& inputs) {
     NSDictionary<NSString *, NSData *> *dictInputs
         = [TCMPSStyleTransferHelpers toNSDictionary: inputs];
 
-    NSDictionary<NSString *, NSData *> *dictLoss
+    NSDictionary<NSString *, TCMPSStyleTransferWeights *> *dictLoss
         = [m_impl->model train: dictInputs];
 
     float_array_map loss

@@ -251,12 +251,12 @@
   return self;
 }
 
-- (NSDictionary<NSString *, NSData *> *) exportWeights {
+- (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) exportWeights {
   [self checkpoint];
   return [_model exportWeights:@"transformer_"];
 }
 
-- (NSDictionary<NSString *, NSData *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs {
+- (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) predict:(NSDictionary<NSString *, NSData *> *)inputs {
   // TODO: Change for testing
   _batchSize = 1;
 
@@ -311,31 +311,19 @@
   [cb commit];
   [cb waitUntilCompleted];
 
-  NSMutableDictionary<NSString *, NSData *> *imagesOut = [[NSMutableDictionary alloc] init];;
+  TCMPSStyleTransferWeights *imagesOut = [[TCMPSStyleTransferWeights alloc] init];
 
   /**
   * TODO: write what needs to be done for batching
   **/
   for (MPSImage *image in stylizedImages) {
-    // NSString* key = [NSString stringWithFormat:@"%@%lu", @"stylizedImage", [stylizedImages indexOfObject:image]];
-    NSString* key = @"output";
     NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 3];
     [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-    imagesOut[key] = styleData;
+    imagesOut.data = styleData;
+    imagesOut.shape = @[@(_batchSize), @(_imgHeight), @(_imgWidth), @(3)];
   }
 
-  float imageChannels = 3.0;
-  NSData* imageChannelsData = [NSData dataWithBytes:&imageChannels length:sizeof(float)];
-
-  float imageBatchSize = _batchSize;
-  NSData* imageBatchSizeData = [NSData dataWithBytes:&imageBatchSize length:sizeof(float)];
-
-  imagesOut[@"width"] = imageWidthData;
-  imagesOut[@"height"] = imageHeightData;
-  imagesOut[@"channels"] = imageChannelsData;
-  imagesOut[@"batch_size"] = imageBatchSizeData;
-
-  return [imagesOut copy];
+  return @{@"output": imagesOut};
 }
 
 - (void) setLearningRate:(float)lr {
@@ -345,7 +333,7 @@
   [_contentVggLoss setLearningRate:lr];
 }
 
-- (NSDictionary<NSString *, NSData *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
+- (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) train:(NSDictionary<NSString *, NSData *> *)inputs {
   _batchSize = 1;
 
   NSData* imageWidthData = inputs[@"width"];
@@ -463,10 +451,12 @@
   NSMutableData * lossData = [NSMutableData data];
   [lossData appendBytes:&lossValue length:sizeof(float)];
 
-  NSMutableDictionary<NSString *, NSData *> *lossDict = [[NSMutableDictionary alloc] init];
-  lossDict[@"loss"] = [NSData dataWithData:lossData];
+  TCMPSStyleTransferWeights *lossWrapper = [[TCMPSStyleTransferWeights alloc] init];
 
-  return [lossDict copy];
+  lossWrapper.data = lossData;
+  lossWrapper.shape = @[@(1)];
+
+  return @{@"loss": lossWrapper};
 }
 
 /**

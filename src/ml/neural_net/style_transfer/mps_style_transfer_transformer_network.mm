@@ -200,47 +200,47 @@
   [_instNorm.tc_weightsData setLearningRate:lr];
 }
 
-- (NSDictionary<NSString *, NSData *> *) exportWeights:(NSString *)prefix {
-  NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];
+- (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) exportWeights:(NSString *)prefix {
+  NSMutableDictionary<NSString *, TCMPSStyleTransferWeights *> *weights = [[NSMutableDictionary alloc] init];
 
   NSString* encoding1Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encode_1_"];
-  NSDictionary<NSString *, NSData *> * encode1Weights = [_encoding1 exportWeights:encoding1Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * encode1Weights = [_encoding1 exportWeights:encoding1Prefix];
   [weights addEntriesFromDictionary: encode1Weights];
 
   NSString* encoding2Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encode_2_"];
-  NSDictionary<NSString *, NSData *> * encode2Weights = [_encoding2 exportWeights:encoding2Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * encode2Weights = [_encoding2 exportWeights:encoding2Prefix];
   [weights addEntriesFromDictionary: encode2Weights];
 
   NSString* encoding3Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"encode_3_"];
-  NSDictionary<NSString *, NSData *> * encode3Weights = [_encoding3 exportWeights:encoding3Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * encode3Weights = [_encoding3 exportWeights:encoding3Prefix];
   [weights addEntriesFromDictionary: encode3Weights];
   
   NSString* residual1Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"residual_1_"];
-  NSDictionary<NSString *, NSData *> * residual1Weights = [_residual1 exportWeights:residual1Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * residual1Weights = [_residual1 exportWeights:residual1Prefix];
   [weights addEntriesFromDictionary: residual1Weights];
 
   NSString* residual2Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"residual_2_"];
-  NSDictionary<NSString *, NSData *> * residual2Weights = [_residual2 exportWeights:residual2Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * residual2Weights = [_residual2 exportWeights:residual2Prefix];
   [weights addEntriesFromDictionary: residual2Weights];
 
   NSString* residual3Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"residual_3_"];
-  NSDictionary<NSString *, NSData *> * residual3Weights = [_residual3 exportWeights:residual3Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * residual3Weights = [_residual3 exportWeights:residual3Prefix];
   [weights addEntriesFromDictionary: residual3Weights];
   
   NSString* residual4Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"residual_4_"];
-  NSDictionary<NSString *, NSData *> * residual4Weights = [_residual4 exportWeights:residual4Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * residual4Weights = [_residual4 exportWeights:residual4Prefix];
   [weights addEntriesFromDictionary: residual4Weights];
 
   NSString* residual5Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"residual_5_"];
-  NSDictionary<NSString *, NSData *> * residual5Weights = [_residual5 exportWeights:residual5Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * residual5Weights = [_residual5 exportWeights:residual5Prefix];
   [weights addEntriesFromDictionary: residual5Weights];
 
   NSString* decode1Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"decoding_1_"];
-  NSDictionary<NSString *, NSData *> * decode1Weights = [_decoding1 exportWeights:decode1Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * decode1Weights = [_decoding1 exportWeights:decode1Prefix];
   [weights addEntriesFromDictionary: decode1Weights];
 
   NSString* decode2Prefix = [NSString stringWithFormat:@"%@%@", prefix, @"decoding_2_"];
-  NSDictionary<NSString *, NSData *> * decode2Weights = [_decoding2 exportWeights:decode2Prefix];
+  NSDictionary<NSString *, TCMPSStyleTransferWeights *> * decode2Weights = [_decoding2 exportWeights:decode2Prefix];
   [weights addEntriesFromDictionary: decode2Weights];
 
   NSUInteger convWeightSize = (NSUInteger)([_conv.tc_weightsData weightSize] * sizeof(float));
@@ -249,7 +249,14 @@
   memcpy(convDataWeight.mutableBytes, [_conv.tc_weightsData weights], convWeightSize);
   NSString* conv5Weight = [NSString stringWithFormat:@"%@%@", prefix, @"conv5_weight"];
 
-  weights[conv5Weight] = convDataWeight;
+  NSArray<NSNumber *>* convWeightShape = [_conv.tc_weightsData weightShape];
+
+  TCMPSStyleTransferWeights* convWeightWrapper = [[TCMPSStyleTransferWeights alloc] init];
+
+  convWeightWrapper.data = convDataWeight;
+  convWeightWrapper.shape = convWeightShape;
+
+  weights[conv5Weight] = convWeightWrapper;
 
   NSString* instNorm5Gamma = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_gamma_weight"];
   NSString* instNorm5Beta = [NSString stringWithFormat:@"%@%@", prefix, @"instancenorm5_beta_weight"];
@@ -260,10 +267,22 @@
   memcpy(instNormDataGamma.mutableBytes, [_instNorm.tc_weightsData gamma], instNormSize);
   memcpy(instNormDataBeta.mutableBytes, [_instNorm.tc_weightsData beta], instNormSize);
 
-  weights[instNorm5Gamma] = instNormDataGamma;
-  weights[instNorm5Beta] = instNormDataBeta;
+  NSArray<NSNumber *>* instNormGammaShape = @[@([_instNorm.tc_weightsData styles]), @([_instNorm.tc_weightsData numberOfFeatureChannels])];
+  NSArray<NSNumber *>* instNormBetaShape = @[@([_instNorm.tc_weightsData styles]), @([_instNorm.tc_weightsData numberOfFeatureChannels])];
 
-  return [weights copy];
+  TCMPSStyleTransferWeights* instNormGammaWrapper = [[TCMPSStyleTransferWeights alloc] init];
+  TCMPSStyleTransferWeights* instNormBetaWrapper = [[TCMPSStyleTransferWeights alloc] init];
+
+  instNormGammaWrapper.data = instNormDataGamma;
+  instNormGammaWrapper.shape = instNormGammaShape;
+
+  instNormBetaWrapper.data = instNormDataBeta;
+  instNormBetaWrapper.shape = instNormBetaShape;
+
+  weights[instNorm5Gamma] = instNormGammaWrapper;
+  weights[instNorm5Beta] = instNormBetaWrapper;
+
+  return weights;
 }
 
 @end
