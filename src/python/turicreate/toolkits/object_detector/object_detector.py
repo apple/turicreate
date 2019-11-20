@@ -266,6 +266,13 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         import turicreate.toolkits.libtctensorflow
         if classes == None:
             classes = []
+
+        if not isinstance(classes, list):
+            raise _ToolkitError("'classes' should be type of list.")
+
+        if not isinstance(grid_shape, list) or not len(grid_shape) == 2 or not isinstance(grid_shape[0], int) or not isinstance(grid_shape[1], int):
+            raise _ToolkitError("Invalid 'grid_shape' input.")
+
         tf_config = {
             'grid_height': params['grid_shape'][0],
             'grid_width': params['grid_shape'][1],
