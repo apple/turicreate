@@ -831,7 +831,7 @@ class SoundClassifier(_CustomModel):
             last_output = builder.spec.neuralNetworkClassifier.layers[-1].output[0]
             builder.add_softmax('softmax', last_output, self.target)
 
-            builder.set_class_labels(self.classes)
+            builder.set_class_labels(self.classes, predicted_feature_name = self.target)
             builder.set_input([input_name], [(input_length,)])
             builder.set_output([self.target], [(self.num_classes,)])
 
@@ -852,8 +852,8 @@ class SoundClassifier(_CustomModel):
         prob_output = desc.output.add()
         prob_output.name = prob_name
         label_output = desc.output.add()
-        label_output.name = 'classLabel'
-        desc.predictedFeatureName = 'classLabel'
+        label_output.name = self.target
+        desc.predictedFeatureName = self.target
         desc.predictedProbabilitiesName = prob_name
         if type(self.classes[0]) == int:
             # Class labels are ints
@@ -900,15 +900,14 @@ class SoundClassifier(_CustomModel):
             prob_output_type.stringKeyType.MergeFromString(b'')
 
         mlmodel = coremltools.models.MLModel(top_level_spec)
-        model_type = 'sound classifier (%s)' % self.model
+        model_type = 'sound classifier'
         mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
         mlmodel.input_description[self.feature] = u'Input audio features'
         mlmodel.output_description[prob_name] = 'Prediction probabilities'
-        mlmodel.output_description[label_name] = 'Class label of top prediction'
+        mlmodel.output_description[self.target] = 'Class label of top prediction'
         model_metadata = {
-             'model': self.model,
-             'target': self.target,
-             'features': self.feature,
+          'target': self.target,
+          'feature': self.feature,
         }
         user_defined_metadata = model_metadata.update(
                 _coreml_utils._get_tc_version_info())
