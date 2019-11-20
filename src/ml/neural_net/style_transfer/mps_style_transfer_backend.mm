@@ -100,6 +100,67 @@ using namespace turi::neural_net;
 
 @end
 
+namespace {
+
+float_array_map convert_weights_coreml_mps(const float_array_map &coreml_weights) {
+  float_array_map mps_weights;
+  for (auto const& w : coreml_weights) {
+    if (w.first.find("conv") != std::string::npos) {
+      std::vector<float> init_w;
+      init_w.resize(w.second.size());
+      convert_chw_to_hwc(w.second, init_w.data(), init_w.data() + w.second.size());
+      ASSERT_EQ(w.second.dim(), 4);
+
+      std::vector<size_t> w_shape;
+      w_shape.resize(w.second.dim());
+      const size_t* w_ptr = w.second.shape();
+
+      // nchw to nhwc
+      w_shape[0] = w_ptr[0];
+      w_shape[1] = w_ptr[2];
+      w_shape[2] = w_ptr[3];
+      w_shape[3] = w_ptr[1];
+      
+      mps_weights[w.first] = shared_float_array::wrap(std::move(init_w),
+                                                      std::move(w_shape));
+    } else {
+      mps_weights.insert(w);
+    }
+  }
+  return mps_weights;
+}
+
+float_array_map convert_weights_mps_coreml(const float_array_map &mps_weights) {
+  float_array_map coreml_weights;
+  for (auto const& w : mps_weights) {
+    if (w.first.find("conv") != std::string::npos) {
+      std::vector<float> init_w;
+      init_w.resize(w.second.size());
+      convert_hwc_to_chw(w.second, init_w.data(), init_w.data() + w.second.size());
+      ASSERT_EQ(w.second.dim(), 4);
+
+      std::vector<size_t> w_shape;
+      w_shape.resize(w.second.dim());
+      const size_t* w_ptr = w.second.shape();
+
+      // nhwc to nchw
+      w_shape[0] = w_ptr[0];
+      w_shape[1] = w_ptr[3];
+      w_shape[2] = w_ptr[1];
+      w_shape[3] = w_ptr[2];
+      
+      coreml_weights[w.first] = shared_float_array::wrap(std::move(init_w),
+                                                      std::move(w_shape));
+    } else {
+      coreml_weights.insert(w);
+    }
+  }
+  return coreml_weights;
+}
+
+
+} // namespace
+
 namespace turi {
 namespace style_transfer {
 
@@ -150,8 +211,10 @@ void mps_style_transfer::init(
       NSUInteger numStyles
           = (NSUInteger) get_array_map_scalar(config, "st_num_styles", 1);
 
+      float_array_map transformed_weights = convert_weights_coreml_mps(weights);
+
       NSDictionary<NSString *, NSData *> *styleTransferWeights
-          = [TCMPSStyleTransferHelpers toNSDictionary: weights];
+          = [TCMPSStyleTransferHelpers toNSDictionary: transformed_weights];
 
       m_impl->model = [[TCMPSStyleTransfer alloc] initWithDev:command_queue.impl.device
                                                  commandQueue:command_queue.impl
@@ -174,7 +237,7 @@ float_array_map mps_style_transfer::export_weights() const {
     float_array_map weights
         = [TCMPSStyleTransferHelpers fromNSDictionary:dictWeights];
 
-    return weights;
+    return convert_weights_mps_coreml(weights);
   } else {
     log_and_throw("Can't export weights on the GPU Style Transfer Network for \
                    MacOS platform lower than 10.15");
