@@ -43,10 +43,9 @@ Deploying an activity classification model in an iOS/watchOS app involves 3 basi
 
 #### Creating arrays for aggregating inputs
 The ActivityClassifier model expects to receive `MLMultiArray` arrays containing readings of the sensors' values.  
-The app will need to aggregate the sensors' readings into a `MLMultiArray` with a dimension of `prediction\_window`.
+The app will need to aggregate the sensors' readings into a `MLMultiArray` with a dimension of `prediction_window`.
 
 Finally, the app needs to save the last `stateOut` outputs, to be fed to the model in the next prediction.
-
 
 ```swift
 struct ModelConstants {
@@ -87,11 +86,11 @@ motionManager.startAccelerometerUpdates(to: .main) { accelerometerData, error in
     self.addAccelSampleToDataArray(accelSample: accelerometerData)
 }
 ```
-For simplicity  - we only show here setting the accelerometer’s block handler.
+For simplicity, we only show here setting the accelerometer’s block handler.
 
 #### Aggregating sensor readings
-Whenever a new reading has been received from the sensor - we will add it to our `prediction_window` long data array.  
-When the array is full - the application is ready to call the model and get a new activity prediction.
+Whenever a new reading has been received from the sensor, we will add it to our `prediction_window` long data array.  
+When the array is full, the application is ready to call the model and get a new activity prediction.
 
 ```swift
 func addAccelSampleToDataArray (accelSample: CMAccelerometerData) {  
@@ -164,9 +163,9 @@ Deploying an activity classification model in an iOS/watchOS app involves 3 basi
 
 #### Creating arrays for aggregating inputs
 The ActivityClassifier model expects to receive an array containing `prediction_window` readings of the sensors' values.  
-The app will need to aggregate the sensors' readings into a `MLMultiArray` with dimensions 1 x prediction\_window x  number\_of\_features.
+The app will need to aggregate the sensors' readings into a `MLMultiArray` with dimensions 1 x `prediction_window` x  `number_of_features`.
 
-In addition - the app needs to save the last `hiddenOut` and `cellOut` outputs, to be fed to the model in the next prediction.
+In addition, the app needs to save the last `hiddenOut` and `cellOut` outputs, to be fed to the model in the next prediction.
 
 
 ```swift
@@ -203,10 +202,10 @@ motionManager.startAccelerometerUpdates(to: .main) { accelerometerData, error in
     self.addAccelSampleToDataArray(accelSample: accelerometerData)                       
 }
 ```
-For simplicity  - we only show here setting the accelerometer’s block handler.
+For simplicity, we only show here setting the accelerometer’s block handler.
 #### Aggregating sensor readings
-Whenever a new reading has been received from the sensor - we will add it to our `prediction_window` long data array.  
-When the array is full - the application is ready to call the model and get a new activity prediction.
+Whenever a new reading has been received from the sensor, we will add it to our `prediction_window` long data array.  
+When the array is full, the application is ready to call the model and get a new activity prediction.
 
 ```swift
 func addAccelSampleToDataArray (accelSample: CMAccelerometerData) {  
@@ -234,7 +233,6 @@ func addAccelSampleToDataArray (accelSample: CMAccelerometerData) {
 ```
 #### Making predictions
 After `prediction_window` readings were aggregated, we call the model to get a prediction of the current user's activity.
-
 
 ```swift
 func performModelPrediction () -> String? {
