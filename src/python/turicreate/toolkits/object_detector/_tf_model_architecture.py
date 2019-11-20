@@ -9,19 +9,19 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import numpy as _np
+from .._tf_model import TensorFlowModel
+import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-import turicreate.toolkits._tf_utils as _utils
+# Suppresses verbosity to only errors
+_utils.suppress_tensorflow_warnings()
 
-class ODTensorFlowModel(object):
+class ODTensorFlowModel(TensorFlowModel):
 
     def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
 
         #reset tensorflow graph when a new model is created
         _tf.reset_default_graph()
-
-        # Suppresses verbosity to only show errors
-        _utils.suppress_tensorflow_warnings()
 
         # Converting incoming weights from shared_float_array to numpy
         for key in init_weights.keys():

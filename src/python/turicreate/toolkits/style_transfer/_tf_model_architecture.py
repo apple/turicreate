@@ -8,12 +8,13 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
+import numpy as _np
+from .._tf_model import TensorFlowModel
+import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-import turicreate.toolkits._tf_utils as _utils
-import numpy as _np
-
-from .._tf_model import TensorFlowModel
+# Suppresses verbosity to only errors
+_utils.suppress_tensorflow_warnings()
 
 def define_tensorflow_variables(net_params, trainable=True):
     """
@@ -467,9 +468,6 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
     def __init__(self, config, net_params):
         
         _tf.reset_default_graph()
-
-        # Suppresses verbosity to only show errors
-        _utils.suppress_tensorflow_warnings()
 
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
