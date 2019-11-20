@@ -78,11 +78,11 @@ void drawing_classifier::load_version(iarchive& iarc, size_t version) {
   float_array_map nn_params;
   iarc >> nn_params;
 
-  nn_spec_ = init_model();
+  nn_spec_ = init_model(false);
   nn_spec_->update_params(nn_params);
 }
 
-std::unique_ptr<model_spec> drawing_classifier::init_model() const {
+std::unique_ptr<model_spec> drawing_classifier::init_model(bool use_random_init) const {
   std::unique_ptr<model_spec> result(new model_spec);
 
   // state is updated through init_train
@@ -90,8 +90,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   size_t num_classes = read_state<flex_int>("num_classes");
 
   std::mt19937 random_engine;
-  std::seed_seq seed_seq{read_state<int>("random_seed")};
-  random_engine = std::mt19937(seed_seq);
+
+  if (use_random_init) {
+    std::seed_seq seed_seq{read_state<int>("random_seed")};
+    random_engine = std::mt19937(seed_seq);
+  }
 
   weight_initializer initializer = zero_weight_initializer();
 
@@ -120,9 +123,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       ss << prefix << "_conv" << ii << _suffix;
       output_name = ss.str();
 
-      initializer = xavier_weight_initializer(
-          /* #input_neurons   */ channels_kernel * 3 * 3,
-          /* #output_neurons  */ channels_filter * 3 * 3, &random_engine);
+      if (use_random_init) {
+        initializer = xavier_weight_initializer(
+            /* #input_neurons   */ channels_kernel * 3 * 3,
+            /* #output_neurons  */ channels_filter * 3 * 3, &random_engine);
+      }
 
       result->add_convolution(
           /* name                */ output_name,
@@ -172,9 +177,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   input_name = std::move(output_name);
   output_name = prefix + "_dense0" + _suffix;
 
-  initializer = xavier_weight_initializer(
-      /* fan_in    */ 64 * 3 * 3,
-      /* fan_out   */ 128, &random_engine);
+  if (use_random_init) {
+    initializer = xavier_weight_initializer(
+        /* fan_in    */ 64 * 3 * 3,
+        /* fan_out   */ 128, &random_engine);
+  }
 
   result->add_inner_product(
       /* name                */ output_name,
@@ -192,9 +199,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   input_name = std::move(output_name);
   output_name = prefix + "_dense1" + _suffix;
 
-  initializer = xavier_weight_initializer(
-      /* fan_in    */ 128,
-      /* fan_out   */ num_classes, &random_engine);
+  if (use_random_init) {
+    initializer = xavier_weight_initializer(
+        /* fan_in    */ 128,
+        /* fan_out   */ num_classes, &random_engine);
+  }
 
   result->add_inner_product(
       /* name                */ output_name,
@@ -369,7 +378,7 @@ void drawing_classifier::init_training(
 
   // Initialize the neural net. Note that this depends on statistics computed
   // by the data iterator.
-  nn_spec_ = init_model();
+  nn_spec_ = init_model(true);
 
   if (mlmodel_path.size()) {
     // Initialize the neural net with warm start model weights.
@@ -939,11 +948,6 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
   if (!model_data.count("training_iterations")) {
     model_data.emplace("training_iterations", 0);
   }
-  if (!model_data.count("random_seed")) {
-    std::random_device rd;
-    int random_seed = static_cast<int>(rd());
-    model_data.emplace("random_seed", random_seed);
-  }
 
   // prune redudant data
   model_data.erase(model_iter);
@@ -957,7 +961,7 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
   // must set state before init_model(); also update
   state = std::move(model_data);
 
-  nn_spec_ = init_model();
+  nn_spec_ = init_model(false);
   nn_spec_->update_params(nn_params);
 
   return;
