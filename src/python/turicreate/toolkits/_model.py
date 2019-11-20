@@ -127,6 +127,11 @@ def load_model(location):
                 if name=='drawing_classifier' and DC_USE_CPP:
                     import turicreate.toolkits.libtctensorflow
                     model = _extensions.drawing_classifier()
+                    # For a model trained on integer classes, when saved and loaded back,
+                    # the classes are loaded as floats. The following if statement casts
+                    # the loaded "float" classes back to int.
+                    if len(model_data['classes']) > 0 and isinstance(model_data['classes'][0], float):
+                        model_data['classes'] = list(map(int, model_data['classes']))
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
