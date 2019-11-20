@@ -396,9 +396,9 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
   model_data.emplace("annotation_scale", "pixel");
   model_data.emplace("annotation_origin", "top_left");
   model_data.emplace("annotation_position", "center");
+  model_data.erase(model_iter);
+  model_data.erase(shape_iter);
 
-  state.erase(model_iter);
-  state.erase(shape_iter);
   state = std::move(model_data);
 
   nn_spec_.reset(new model_spec);
