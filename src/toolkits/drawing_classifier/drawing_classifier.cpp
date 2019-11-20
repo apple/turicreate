@@ -902,7 +902,6 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
 
     const std::vector<double>& model_weight = mxnet_data_nd.elements();
     const std::vector<double>& model_shape = mxnet_shape_nd.elements();
-
     // load the weights
     layer_weight.clear();
     layer_shape.clear();
