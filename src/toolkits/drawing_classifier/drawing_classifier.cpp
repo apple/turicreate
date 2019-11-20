@@ -934,9 +934,6 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
                                                      std::move(layer_shape));
   }
 
-  // update the model states
-  state.clear();
-
   // missing state from prior 6.0; use default value
   if (!model_data.count("batch_size")) model_data.emplace("batch_size", 256);
   if (!model_data.count("warm_start")) model_data.emplace("warm_start", false);
@@ -958,14 +955,11 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
     model_data.erase("input_image_shape");
   }
 
-  // must set state before init_model()
+  // must set state before init_model(); also update
   state = std::move(model_data);
+
   nn_spec_ = init_model();
   nn_spec_->update_params(nn_params);
-
-  for (auto& entry : state) {
-    std::cout << entry.first << std::endl;
-  }
 
   return;
 }
