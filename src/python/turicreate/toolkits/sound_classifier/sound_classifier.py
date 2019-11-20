@@ -18,6 +18,7 @@ import turicreate.toolkits._internal_utils as _tk_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
+from turicreate.toolkits import _coreml_utils
 
 USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
 
@@ -844,6 +845,22 @@ class SoundClassifier(_CustomModel):
             prob_output_type.stringKeyType.MergeFromString(b'')
 
         mlmodel = coremltools.models.MLModel(top_level_spec)
+        model_type = 'sound classifier (%s)' % self.model
+        mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
+        mlmodel.input_description[self.feature] = u'Input audio features'
+        mlmodel.output_description[prob_name] = 'Prediction probabilities'
+        mlmodel.output_description[label_name] = 'Class label of top prediction'
+        model_metadata = {
+             'model': self.model,
+             'target': self.target,
+             'features': self.feature,
+        }
+        user_defined_metadata = model_metadata.update(
+                _coreml_utils._get_tc_version_info())
+        _coreml_utils._set_model_metadata(mlmodel,
+                self.__class__.__name__,
+                user_defined_metadata,
+                version=SoundClassifier._PYTHON_SOUND_CLASSIFIER_VERSION)
         mlmodel.save(filename)
 
     def predict(self, dataset, output_type='class', verbose=True, batch_size=64):

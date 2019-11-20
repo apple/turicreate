@@ -254,7 +254,6 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue('sampleRate' in metadata.userDefined)
         self.assertEqual(metadata.userDefined['sampleRate'], '16000')
 
-    @unittest.skipIf(_mac_ver() >= (10,14), 'Already testing export to Core ML with predictions')
     def test_export_core_ml_no_prediction(self):
         with TempDirectory() as temp_dir:
             file_name = temp_dir + '/model.mlmodel'
@@ -265,6 +264,16 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         metadata = core_ml_model.get_spec().description.metadata
         self.assertTrue('sampleRate' in metadata.userDefined)
         self.assertEqual(metadata.userDefined['sampleRate'], '16000')
+        self.assertDictEqual({
+            'com.github.apple.turicreate.version': tc.__version__,
+            'com.github.apple.os.platform': platform.platform(),
+            'type': 'SoundClassifier',
+            'version': '1'
+            }, dict(coreml_model.user_defined_metadata)
+        )
+        expected_result = 'Sound classifier (%s) created by Turi Create (version %s)' % (
+                self.model.model, tc.__version__)
+        self.assertEquals(expected_result, coreml_model.short_description)
 
     def test_evaluate(self):
         evaluation = self.model.evaluate(self.data)

@@ -857,8 +857,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"target", read_state<flex_string>("target")},
       {"feature", feature_column_name},
       {"max_iterations", read_state<flex_int>("max_iterations")},
-      // TODO: Uncomment as part of #2524
-      // {"warm_start", read_state<flex_int>("warm_start")},
+      {"warm_start", read_state<flex_int>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
