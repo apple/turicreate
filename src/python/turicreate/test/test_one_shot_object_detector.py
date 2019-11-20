@@ -238,7 +238,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
-    @pytest.mark.xfail()
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)

@@ -13,6 +13,8 @@
 #import <ml/neural_net/mps_device_manager.h>
 #import <ml/neural_net/mps_utils.h>
 
+#include <numeric>
+
 using namespace turi::neural_net;
 
 @interface TCMPSStyleTransferHelpers:NSObject
@@ -23,11 +25,44 @@ using namespace turi::neural_net;
 @implementation TCMPSStyleTransferHelpers
 +(float_array_map) fromNSDictionary: (NSDictionary<NSString *, NSData *> *) dictionary {
   float_array_map map;
-  for (NSString* key in dictionary) {
-    NSData* value = [dictionary objectForKey:key];
+
+  NSMutableDictionary<NSString *, NSData *> *dictionaryMutable = [dictionary mutableCopy];
+
+  NSData* widthData = dictionaryMutable[@"width"];
+  NSData* heightData = dictionaryMutable[@"height"];
+  NSData* channelsData = dictionaryMutable[@"channels"];
+  NSData* batchSizeData = dictionaryMutable[@"batch_size"];
+
+  std::vector<size_t> imageShape;
+
+  if (widthData != nil && heightData != nil && channelsData != nil) {
+    size_t width = static_cast<size_t>(((float *) (widthData.bytes)) [0]);
+    size_t height = static_cast<size_t>(((float *) (heightData.bytes)) [0]);
+    size_t channels = static_cast<size_t>(((float *) (channelsData.bytes)) [0]);
+    size_t batchSize = static_cast<size_t>(((float *) (batchSizeData.bytes)) [0]);
+
+    imageShape = { batchSize, height, width, channels };
+  }
+
+  [dictionaryMutable removeObjectForKey:@"width"];
+  [dictionaryMutable removeObjectForKey:@"height"];
+  [dictionaryMutable removeObjectForKey:@"channels"];
+  [dictionaryMutable removeObjectForKey:@"batch_size"];
+
+  for (NSString* key in dictionaryMutable) {
+    NSData* value = [dictionaryMutable objectForKey:key];
 
     size_t dataLength = (size_t) (value.length / sizeof(float));
     std::vector<size_t> dataShape = { dataLength }; 
+
+    if (imageShape.size() > 0) {
+      size_t imageSize = std::accumulate(imageShape.begin(),
+                                         imageShape.end(), 1,
+                                         std::multiplies<size_t>());
+      ASSERT_EQ(dataLength, imageSize);
+      dataShape = imageShape;
+    }
+    
     float *dataBytes = (float *) (value.bytes);
     
     // TODO: This copy is inefficient. This should be a wrapper around NSData: 
