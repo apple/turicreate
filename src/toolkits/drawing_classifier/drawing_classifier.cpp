@@ -875,7 +875,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
 }
 
 void drawing_classifier::import_from_custom_model(variant_map_type model_data,
-                                               size_t version) {
+                                                  size_t version) {
   auto model_iter = model_data.find("_model");
   if (model_iter == model_data.end()) {
     log_and_throw("The loaded turicreate model must contain '_model'!\n");
@@ -891,16 +891,10 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
 
     if (classes_list.size() &&
         classes_list.begin()->get_type() == flex_type_enum::FLOAT) {
-      flex_list new_classes_list;
-      new_classes_list.reserve(classes_list.size());
-
-      std::transform(classes_list.begin(), classes_list.end(),
-                     std::back_inserter(new_classes_list),
-                     [](flexible_type& ft) { return ft.to<flex_int>(); });
-
-      model_data.erase("classes");
-      model_data.emplace("classes", std::move(new_classes_list));
-
+        for (flexible_type& ft : classes_list) {
+          ft = ft.to<flex_int>();
+        }
+        model_data["classes"] = std::move(classes_list);
     } else if (classes_list.empty()) {
       log_and_throw(
           "Error during loading model. 'classes' must contain at least one "
