@@ -53,6 +53,14 @@ void set_string_feature(FeatureDescription* feature_desc, std::string name,
   feature_desc->mutable_type()->mutable_stringtype();
 }
 
+void set_int64_feature(FeatureDescription* feature_desc, std::string name,
+                       std::string short_description)
+{
+  feature_desc->set_name(std::move(name));
+  feature_desc->set_shortdescription(std::move(short_description));
+  feature_desc->mutable_type()->mutable_int64type();
+}
+
 void set_array_feature(FeatureDescription* feature_desc, std::string name,
                        std::string short_description,
                        const std::vector<size_t>& shape)
@@ -474,8 +482,15 @@ std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
                                 target + "Probability",
                                 "drawing classifier prediction probabilities");
 
-  set_string_feature(model_desc->add_output(), target,
-                     "drawing classifier class label of top prediction");
+  flex_type_enum class_type = class_labels.begin()->get_type();
+
+  if (class_type == flex_type_enum::STRING) {
+    set_string_feature(model_desc->add_output(), target,
+                       "drawing classifier class label of top prediction");
+  } else {
+    set_int64_feature(model_desc->add_output(), target,
+                      "drawing classifier class label of top prediction");
+  }
 
   // Specify the prediction output names.
   model_desc->set_predictedfeaturename(target);
@@ -494,8 +509,15 @@ std::shared_ptr<coreml::MLModelWrapper> export_drawing_classifier_model(
 
   // Add the classifier fields: class labels and probability output name.
   for (const auto& class_label : class_labels) {
-    nn_classifier->mutable_stringclasslabels()->add_vector(
+
+    if (class_type == flex_type_enum::STRING) {
+      nn_classifier->mutable_stringclasslabels()->add_vector(
         class_label.to<flex_string>());
+    } else {
+      nn_classifier->mutable_int64classlabels()->add_vector(
+        class_label.to<flex_int>());
+    }
+
   }
 
   nn_classifier->set_labelprobabilitylayername(target + "Probability");
