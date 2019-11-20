@@ -21,8 +21,6 @@ import coremltools
 
 
 _NUM_STYLES = 4
-# TODO: Remove for 6.0
-IS_PRE_6_0_RC = True
 
 
 def _get_data(feature, num_examples=100):
@@ -282,7 +280,6 @@ class StyleTransferTest(unittest.TestCase):
             print("Get styles passed")
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class StyleTransferGPUTest(unittest.TestCase):
