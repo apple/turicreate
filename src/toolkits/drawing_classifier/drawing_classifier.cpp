@@ -875,11 +875,11 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
   // For a model trained on integer classes, when saved and loaded back,
   // the classes are loaded as floats. The following if statement casts
   // the loaded "float" classes back to int.
-  model_iter = model_data.find("classes");
-  flex_list classes_list = variant_get_value<flex_list>(model_iter->second);
+  auto classes_iter = model_data.find("classes");
+  flex_list classes_list = variant_get_value<flex_list>(classes_iter->second);
 
-  if (classes_list.size() > 0 && classes_list->dtype() == flex_type_enum::FLOAT) {
-
+  if (classes_list.size() > 0 &&
+      classes_list.dtype() == flex_type_enum::FLOAT) {
     flex_list new_classes_list;
     
     std::transform(classes_list.begin(), classes_list.end(), std::back_inserter(new_classes_list),
