@@ -82,110 +82,25 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         self.model = keras.models.load_model(model_path)
 
     def extract_features(self, dataset, feature, batch_size=64, verbose=False):
-        from six.moves.queue import Queue as _Queue
-        from threading import Thread as _Thread
-        import numpy as _np
-        import turicreate as _tc
-        import array
+        from array import array
+        import turicreate as tc
+        import numpy as np
 
-        if len(dataset) == 0:
-            return _tc.SArray([], array.array)
+        input_is_BGR = self.ptModel.input_is_BGR
 
-        # Only expose the feature column to the SFrame-to-NumPy loader.
-        image_sf = _tc.SFrame({'image' : dataset[feature]})
+        images = dataset[feature]
+        num_images = len(images)
+        arr = np.zeros((num_images, self.ptModel.input_image_shape[0], self.ptModel.input_image_shape[1], self.ptModel.input_image_shape[2]), dtype=np.float32)
+        tc.extensions.sframe_load_to_numpy(tc.SFrame({'image':images}), arr.ctypes.data, arr.strides, arr.shape, 0, num_images)
 
-        # Encapsulate state in a dict to sidestep variable scoping issues.
-        state = {}
-        state['num_started'] = 0       # Images read from the SFrame
-        state['num_processed'] = 0     # Images processed by TensorFlow
-        state['total'] = len(dataset)  # Images in the dataset
+        # TODO: use batching and an SArray builder
+        arr = arr.transpose(0, 2, 3, 1)  # NCHW -> NHWC
+        if input_is_BGR:
+            arr = arr[:,:,:,::-1]
+        y = self.model.predict(arr)
+        y = [i[0][0] for i in y]
 
-        # We should be using SArrayBuilder, but it doesn't accept ndarray yet.
-        # TODO: https://github.com/apple/turicreate/issues/2672
-        #out = _tc.SArrayBuilder(dtype = array.array)
-        state['out'] = _tc.SArray(dtype=array.array)
-
-        if verbose:
-            print("Performing feature extraction on resized images...")
-
-        # Provide an iterator-like interface around the SFrame.
-        def has_next_batch():
-            return state['num_started'] < state['total']
-
-        # Yield a numpy array representing one batch of images.
-        def next_batch():
-            # Compute the range of the SFrame to yield.
-            start_index = state['num_started']
-            end_index = min(start_index + batch_size, state['total'])
-            state['num_started'] = end_index
-
-            # Allocate a numpy array with the desired shape.
-            # TODO: Recycle the ndarray instances we're allocating below with
-            # _np.zeros, instead of creating new ones every time.
-            num_images = end_index - start_index
-            shape = (num_images,) + self.ptModel.input_image_shape
-            batch = _np.zeros(shape, dtype=_np.float32)
-
-            # Resize and load the images.
-            _tc.extensions.sframe_load_to_numpy(image_sf, batch.ctypes.data,
-                                                batch.strides, batch.shape,
-                                                start_index, end_index)
-
-            # TODO: Converge to NCHW everywhere.
-            batch = batch.transpose(0, 2, 3, 1)  # NCHW -> NHWC
-
-            if self.ptModel.input_is_BGR:
-                batch = batch[:,:,:,::-1]  # RGB -> BGR
-
-            return batch
-
-        # Encapsulates the work done by TensorFlow for a single batch.
-        def handle_request(batch):
-            y = self.model.predict(batch)
-            tf_out = [i.flatten() for i in y]
-            return tf_out
-
-        # Copies the output from TensorFlow into the SArrayBuilder and emits
-        # progress.
-        def consume_response(tf_out):
-            sa = _tc.SArray(tf_out, dtype=array.array)
-            state['out'] = state['out'].append(sa)
-
-            state['num_processed'] += len(tf_out)
-            if verbose:
-                print('Completed {num_processed:{width}d}/{total:{width}d}'.format(
-                    width = len(str(state['total'])), **state))
-
-        # Create a dedicated thread for performing TensorFlow work, using two
-        # FIFO queues for communication back and forth with this thread, with
-        # the goal of keeping TensorFlow busy throughout.
-        request_queue = _Queue()
-        response_queue = _Queue()
-        def tf_worker():
-            while True:
-                batch = request_queue.get()  # Consume request
-                if batch is None:
-                    # No more work remains. Allow the thread to finish.
-                    return
-                response_queue.put(handle_request(batch))  # Produce response
-        tf_worker_thread = _Thread(target=tf_worker)
-        tf_worker_thread.start()
-
-        try:
-            # Attempt to have two requests in progress at any one time (double
-            # buffering), so that the iterator is creating one batch while
-            # TensorFlow performs inference on the other.
-            if has_next_batch():
-                request_queue.put(next_batch())  # Produce request
-                while has_next_batch():
-                    request_queue.put(next_batch())  # Produce request
-                    consume_response(response_queue.get())
-                consume_response(response_queue.get())
-        finally:
-            # Tell the worker thread to shut down.
-            request_queue.put(None)
-
-        return state['out']
+        return tc.SArray(y, dtype=array)
 
     def get_coreml_model(self):
         import coremltools
