@@ -4,10 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#import <Accelerate/Accelerate.h>
 #import <Foundation/Foundation.h>
-#import <Metal/Metal.h>
-#import <MetalPerformanceShaders/MetalPerformanceShaders.h> 
 
 #ifdef HAS_MACOS_10_15
 

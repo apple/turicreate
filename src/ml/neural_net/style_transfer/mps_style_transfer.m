@@ -314,14 +314,14 @@
   TCMPSStyleTransferWeights *imagesOut = [[TCMPSStyleTransferWeights alloc] init];
 
   /**
-  * TODO: write what needs to be done for batching
+  * TODO: Implement batching for multiple images
   **/
-  for (MPSImage *image in stylizedImages) {
-    NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 3];
-    [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-    imagesOut.data = styleData;
-    imagesOut.shape = @[@(_batchSize), @(_imgHeight), @(_imgWidth), @(3)];
-  }
+  MPSImage *image = [stylizedImages firstObject];
+
+  NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 3];
+  [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
+  imagesOut.data = styleData;
+  imagesOut.shape = @[@(_batchSize), @(_imgHeight), @(_imgWidth), @(3)];
 
   return @{@"output": imagesOut};
 }
