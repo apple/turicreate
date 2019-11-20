@@ -341,28 +341,8 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
   if (model_iter == model_data.end()) {
     log_and_throw("The loaded turicreate model must contain '_model'!\n");
   }
+
   const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
-  auto shape_iter = model_data.find("_grid_shape");
-  size_t height, width;
-  if (shape_iter == model_data.end()) {
-    height = 13;
-    width = 13;
-  } else {
-    std::vector<size_t> shape =
-        variant_get_value<std::vector<size_t>>(shape_iter->second);
-    height = shape[0];
-    width = shape[1];
-  }
-  model_data.emplace("grid_height", height);
-  model_data.emplace("grid_width", width);
-
-  model_data.emplace("annotation_scale", "pixel");
-  model_data.emplace("annotation_origin", "top_left");
-  model_data.emplace("annotation_position", "center");
-
-  state.clear();
-  state.insert(model_data.begin(), model_data.end());
-
   flex_dict mxnet_data_dict;
   flex_dict mxnet_shape_dict;
 
@@ -375,9 +355,20 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
     }
   }
 
-  auto cmp = [](const flex_dict::value_type& a, const flex_dict::value_type& b) {
-    return (a.first < b.first);
-  };
+  auto shape_iter = model_data.find("_grid_shape");
+  size_t height, width;
+  if (shape_iter == model_data.end()) {
+    height = 13;
+    width = 13;
+  } else {
+    std::vector<size_t> shape =
+        variant_get_value<std::vector<size_t>>(shape_iter->second);
+    height = shape[0];
+    width = shape[1];
+  }
+
+  auto cmp = [](const flex_dict::value_type& a,
+                const flex_dict::value_type& b) { return (a.first < b.first); };
 
   std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
   std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
@@ -398,12 +389,24 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
     nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
                                                      std::move(layer_shape));
   }
+
+  // adding meta data
+  model_data.emplace("grid_height", height);
+  model_data.emplace("grid_width", width);
+  model_data.emplace("annotation_scale", "pixel");
+  model_data.emplace("annotation_origin", "top_left");
+  model_data.emplace("annotation_position", "center");
+
+  state.erase(model_iter);
+  state.erase(shape_iter);
+  state = std::move(model_data);
+
   nn_spec_.reset(new model_spec);
   init_darknet_yolo(*nn_spec_,
                     variant_get_value<size_t>(state.at("num_classes")),
                     anchor_boxes());
   nn_spec_->update_params(nn_params);
-  model_data.erase(model_iter);
+
   return;
 }
 
