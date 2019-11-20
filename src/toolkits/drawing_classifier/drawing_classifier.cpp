@@ -236,8 +236,8 @@ void drawing_classifier::init_options(
 
   options.create_string_option(
       "warm_start",
-      "Record warm start model version used. If no warmstart used"
-      "Empty string is assigned by default.",
+      "Record warm start model version used. If no warmstart used, "
+      "empty string is assigned by default.",
       "",
       true);
 
