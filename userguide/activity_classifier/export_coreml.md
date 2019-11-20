@@ -2,7 +2,7 @@
 
 In this section, we describe how to export the model created by the activity classifier toolkit to Core ML, and use it in Xcode to get real-time predictions in a Swift app.
 
-Exporting an Activity Classifier model in Core ML format can be performed using the `export_coreml` function.
+Exporting an activity classifier model in Core ML format can be performed using the `export_coreml` function.
 
 ```python
 model.export_coreml('ActivityClassification.mlmodel')
