@@ -376,17 +376,6 @@ void drawing_classifier::init_training(
     model_spec warmstart_model(mlmodel_path);
     float_array_map trained_weights = warmstart_model.export_params_view();
     nn_spec_->update_params(trained_weights);
-
-    size_t idx = 0;
-#ifdef _WIN32
-    idx = mlmodel_path.rfind('\\');
-#else
-    idx = mlmodel_path.rfind('/');
-#endif
-    if (idx == std::string::npos)
-      state["warm_start"] = mlmodel_path;
-    else
-      state["warm_start"] = mlmodel_path.substr(idx + 1);
   }
 
   training_model_ = training_compute_context_->create_drawing_classifier(
