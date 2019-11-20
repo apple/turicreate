@@ -35,45 +35,44 @@ using turi::neural_net::shared_float_array;
 namespace {
 
 class stylization_printer {
+  static constexpr double SECONDS_BETWEEN_PRINTS = 0.3;
+
   turi::timer m_tt;
   double m_previous_time = 0.0;
 
   size_t m_num_content;
   size_t m_num_styles;
   size_t m_index = 0;
-  
-  size_t _num_total_images() {
-    return m_num_content * m_num_styles;
-  }
+
+  size_t _num_total_images() { return m_num_content * m_num_styles; }
 
  public:
-  stylization_printer(size_t num_content, size_t num_styles) 
-    : m_num_content(num_content), m_num_styles(num_styles) {
-    std::cout << "Stylizing "
-              << m_num_content 
-              << " image(s) using " 
-              << m_num_styles
-              << " style(s)"
-              << std::endl;
+  stylization_printer(size_t num_content, size_t num_styles)
+      : m_num_content(num_content), m_num_styles(num_styles) {
+    std::cout << "Stylizing " << m_num_content << " image(s) using "
+              << m_num_styles << " style(s)" << std::endl;
 
     m_tt.start();
   }
 
-  void print() {
-    double current_time = m_tt.current_time();
-    if ((current_time - m_previous_time) > 0.3) {
-      std::cout << "Stylizing " 
-                <<  m_index 
-                << "/" 
-                << _num_total_images()
-                << std::endl;
-      current_time = m_previous_time;
-    }
-    m_index++;
-  }
-
   ~stylization_printer() = default;
 
+  void print() {
+    m_index++;
+
+    double current_time = m_tt.current_time();
+    size_t total_num_images = _num_total_images();
+
+    if ((current_time - m_previous_time) > SECONDS_BETWEEN_PRINTS ||
+        m_index == total_num_images) {
+      std::cout << "Stylizing "
+                << m_index
+                << "/"
+                << total_num_images
+                << std::endl;
+      m_previous_time = current_time;
+    }
+  }
 };
 
 constexpr size_t STYLE_TRANSFER_VERSION = 1;
