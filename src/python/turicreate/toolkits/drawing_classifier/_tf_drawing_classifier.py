@@ -154,7 +154,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         # convert to one hot
         labels = feed_dict["labels"].astype("int32").T
         one_hot_labels[_np.arange(int(num_samples)), labels] = 1
-        print(labels, num_samples)
 
         _, final_train_accuracy = self.sess.run(
             [self.optimizer, self.accuracy],
@@ -183,7 +182,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         if is_train:
             # convert to one hot
             labels = feed_dict["labels"].astype("int32").T
-            print(labels, num_samples)
             one_hot_labels[_np.arange(int(num_samples)), labels] = 1
 
             feed_dict_for_session[self.one_hot_labels] = one_hot_labels
