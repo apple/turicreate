@@ -252,8 +252,8 @@ class EXPORT drawing_classifier : public ml_model_base {
   virtual std::tuple<gl_sframe, gl_sframe> init_data(
       gl_sframe data, variant_type validation_data) const;
 
-  virtual std::tuple<float, float> compute_validation_metrics(
-      size_t num_classes, size_t batch_size);
+  virtual float compute_validation_metrics(size_t num_classes,
+                                           size_t batch_size);
 
   virtual void init_table_printer(bool has_validation);
 
@@ -288,7 +288,7 @@ class EXPORT drawing_classifier : public ml_model_base {
    **/
    std::unique_ptr<data_iterator> create_iterator(
       gl_sframe data, bool is_train,
-      std::vector<std::string> class_labels) const;
+      flex_list class_labels) const;
 
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;

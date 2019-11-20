@@ -453,7 +453,7 @@ class Model(ExposeAttributesFromProxy):
         if field in self._list_fields():
             return self.__proxy__.get_value(field)
         else:
-            raise KeyError('Field \"%s\" not in model. Available fields are'
+            raise KeyError('Field \"%s\" not in model. Available fields are '
                          '%s.') % (field, ', '.join(self.list_fields()))
 
     @classmethod

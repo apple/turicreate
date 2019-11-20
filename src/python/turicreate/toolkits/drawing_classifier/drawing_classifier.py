@@ -134,6 +134,17 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     """
 
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
+    if warm_start is not None:
+        if type(warm_start) is not str:
+            raise TypeError("'warm_start' must be a string or None. "
+                + "'warm_start' can take in the following values: "
+                + str(accepted_values_for_warm_start))
+        if warm_start not in accepted_values_for_warm_start:
+            raise _ToolkitError("Unrecognized value for 'warm_start': "
+                + warm_start + ". 'warm_start' can take in the following "
+                + "values: " + str(accepted_values_for_warm_start))
+        # Replace 'auto' with name of current default Warm Start model.
+        warm_start = warm_start.replace("auto", "quickdraw_245_v0")
 
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -172,8 +183,13 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
-        # Enable the following line when #2524 is merged
-        # options["warm_start"] = warm_start
+        if validation_set is None:
+            validation_set = _tc.SFrame()
+        if warm_start:
+            # Load CoreML warmstart model
+            pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
+            options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
+        options["warm_start"] = "" if warm_start is None else warm_start
         model.train(input_dataset, target, feature, validation_set, options)
         return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
 
