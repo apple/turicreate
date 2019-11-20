@@ -321,18 +321,35 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
   return std::make_tuple(average_val_accuracy, average_val_loss);
 }
 
-
-void activity_classifier::init_table_printer(bool has_validation) {
+void activity_classifier::init_table_printer(bool has_validation,
+                                             bool show_loss) {
   if (has_validation) {
-    training_table_printer_.reset(
-        new table_printer({{"Iteration", 12},
-                           {"Train Accuracy", 12},
-                           {"Validation Accuracy", 12},
-                           {"Elapsed Time", 12}}));
+    if (show_loss) {
+      training_table_printer_.reset(
+          new table_printer({{"Iteration", 12},
+                             {"Train Loss", 12},
+                             {"Train Accuracy", 12},
+                             {"Validation Accuracy", 12},
+                             {"Validation Loss", 12},
+                             {"Elapsed Time", 12}}));
+
+    } else {
+      training_table_printer_.reset(
+          new table_printer({{"Iteration", 12},
+                             {"Train Accuracy", 12},
+                             {"Validation Accuracy", 12},
+                             {"Elapsed Time", 12}}));
+    }
   } else {
-    training_table_printer_.reset(new table_printer({{"Iteration", 12},
-                                                     {"Train Accuracy", 12},
-                                                     {"Elapsed Time", 12}}));
+    if (show_loss) {
+      training_table_printer_.reset(new table_printer({{"Iteration", 12},
+                                                       {"Train Loss", 12},
+                                                       {"Train Accuracy", 12},
+                                                       {"Elapsed Time", 12}}));
+    } else {
+      training_table_printer_.reset(new table_printer(
+          {{"Iteration", 12}, {"Train Accuracy", 12}, {"Elapsed Time", 12}}));
+    }
   }
 }
 
@@ -344,6 +361,12 @@ void activity_classifier::train(
 
   turi::timer time_object;
   time_object.start();
+
+  bool show_loss = true;
+  auto show_loss_it = opts.find("show_loss");
+  if (show_loss_it != opts.end()) {
+    show_loss = show_loss_it->second;
+  }
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
   init_train(data, target_column_name, session_id_column_name, validation_data,
@@ -352,7 +375,7 @@ void activity_classifier::train(
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
   while (read_state<flex_int>("training_iterations") < max_iterations) {
-    perform_training_iteration();
+    perform_training_iteration(show_loss);
   }
 
   // Finish printing progress.
@@ -1017,6 +1040,14 @@ void activity_classifier::init_train(
     opts.erase(features_it);
   }
 
+  bool show_loss = true;
+  auto show_loss_it = opts.find("show_loss");
+  if (show_loss_it != opts.end()) {
+    show_loss = show_loss_it->second;
+  }
+
+  opts.erase(show_loss_it);
+
   // Read user-specified options.
   init_options(opts);
 
@@ -1033,7 +1064,7 @@ void activity_classifier::init_train(
 
   // Begin printing progress.
   // TODO: Make progress printing optional.
-  init_table_printer(!validation_data_.empty());
+  init_table_printer(!validation_data_.empty(), show_loss);
 
   add_or_update_state({{"session_id", session_id_column_name},
                        {"target", target_column_name},
@@ -1102,8 +1133,7 @@ void activity_classifier::init_train(
   }
 }
 
-void activity_classifier::perform_training_iteration() {
-
+void activity_classifier::perform_training_iteration(bool show_loss) {
   // Training must have been initialized.
   ASSERT_TRUE(training_data_iterator_ != nullptr);
   ASSERT_TRUE(training_model_ != nullptr);
@@ -1199,19 +1229,31 @@ void activity_classifier::perform_training_iteration() {
 
   if (training_table_printer_) {
     if (validation_data_iterator_) {
-      training_table_printer_->print_progress_row(
-          iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          average_val_accuracy, progress_time());
+      if (show_loss) {
+        training_table_printer_->print_progress_row(
+            iteration_idx, iteration_idx + 1, average_batch_loss,
+            average_batch_accuracy, average_val_loss, average_val_accuracy,
+            progress_time());
+      } else {
+        training_table_printer_->print_progress_row(
+            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            average_val_accuracy, progress_time());
+      }
     } else {
-      training_table_printer_->print_progress_row(
-          iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          progress_time());
+      if (show_loss) {
+        training_table_printer_->print_progress_row(
+            iteration_idx, iteration_idx + 1, average_batch_loss,
+            average_batch_accuracy, progress_time());
+      } else {
+        training_table_printer_->print_progress_row(
+            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            progress_time());
+      }
     }
   }
 
   training_data_iterator_->reset();
-
-  }
+}
 
 gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   // Open a new SFrame for writing.
