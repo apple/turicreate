@@ -234,11 +234,11 @@ void drawing_classifier::init_options(
       FLEX_UNDEFINED,
       std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
 
-  options.create_string_option(
+  options.create_boolean_option(
       "warm_start",
       "Record warm start model version used. If no warmstart used"
-      " None is assigned by default."
-      "",
+      " None is assigned by default.",
+      false,
       true);
 
   // Validate user-provided options.
@@ -307,14 +307,14 @@ void drawing_classifier::init_training(
   // Capture Core ML model path from options,
   // if provided by Python.
   std::string mlmodel_path;
-  bool enable_warmstart = false;
-  auto mlmodel_path_iter = opts.find("mlmodel_path");
-  if ( mlmodel_path_iter != opts.end()) {
-    mlmodel_path = mlmodel_path_iter->second.to<std::string>();
-    // Remove `mlmodel_path` from options as
-    // it is not a user-defined option.
-    opts.erase(mlmodel_path_iter);
-    enable_warmstart = true;
+  {
+    auto mlmodel_path_iter = opts.find("mlmodel_path");
+    if ( mlmodel_path_iter != opts.end()) {
+      mlmodel_path = mlmodel_path_iter->second.to<std::string>();
+      // Remove `mlmodel_path` from options as
+      // it is not a user-defined option.
+      opts.erase(mlmodel_path_iter);
+    }
   }
 
   // Read user-specified options.
@@ -371,11 +371,12 @@ void drawing_classifier::init_training(
   // by the data iterator.
   nn_spec_ = init_model();
 
-  if ( enable_warmstart ) {
+  if (mlmodel_path.size()) {
     // Initialize the neural net with warm start model weights.
     model_spec warmstart_model(mlmodel_path);
     float_array_map trained_weights = warmstart_model.export_params_view();
     nn_spec_->update_params(trained_weights);
+    add_or_update_state({{"warm_start", true}});
   }
 
   training_model_ = training_compute_context_->create_drawing_classifier(
@@ -848,7 +849,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"target", read_state<flex_string>("target")},
       {"feature", feature_column_name},
       {"max_iterations", read_state<flex_int>("max_iterations")},
-      {"warm_start", read_state<flex_string>("warm_start")},
+      {"warm_start", read_state<bool>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
@@ -871,11 +872,6 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
   }
   const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
 
-  model_data.emplace("batch_size", 256);
-  std::random_device rd;
-  int random_seed = static_cast<int>(rd());
-  model_data.emplace("random_seed", random_seed);
-
   // For a model trained on integer classes, when saved and loaded back,
   // the classes are loaded as floats. The following if statement casts
   // the loaded "float" classes back to int.
@@ -893,45 +889,78 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
     model_data.emplace("classes", new_classes_list);
   }
 
-  state.clear();
-  state.insert(model_data.begin(), model_data.end());
-
   flex_dict mxnet_data_dict;
   flex_dict mxnet_shape_dict;
 
   for (const auto& data : model) {
     if (data.first == "data") {
       mxnet_data_dict = data.second;
-    }
-    if (data.first == "shapes") {
+    } else if (data.first == "shapes") {
       mxnet_shape_dict = data.second;
     }
   }
 
-  auto cmp = [](const flex_dict::value_type& a, const flex_dict::value_type& b) {
-    return (a.first < b.first);
-  };
+  auto cmp = [](const flex_dict::value_type& a,
+                const flex_dict::value_type& b) { return (a.first < b.first); };
 
   std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
   std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
 
   float_array_map nn_params;
 
-  for (size_t i = 0; i < mxnet_data_dict.size(); i++) {
-    std::string layer_name = mxnet_data_dict[i].first;
-    flex_nd_vec mxnet_data_nd = mxnet_data_dict[i].second.to<flex_nd_vec>();
-    flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[i].second.to<flex_nd_vec>();
+  std::vector<float> layer_weight;
+  std::vector<size_t> layer_shape;
+
+  for (size_t ii = 0; ii < mxnet_data_dict.size(); ii++) {
+    std::string layer_name = mxnet_data_dict[ii].first;
+    flex_nd_vec mxnet_data_nd = mxnet_data_dict[ii].second.to<flex_nd_vec>();
+    flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[ii].second.to<flex_nd_vec>();
+
     const std::vector<double>& model_weight = mxnet_data_nd.elements();
     const std::vector<double>& model_shape = mxnet_shape_nd.elements();
-    std::vector<float> layer_weight(model_weight.begin(), model_weight.end());
-    std::vector<size_t> layer_shape(model_shape.begin(), model_shape.end());
+    // load the weights
+    layer_weight.clear();
+    layer_shape.clear();
+    layer_weight.insert(layer_weight.end(), model_weight.begin(), model_weight.end());
+    layer_shape.insert(layer_shape.end(), model_shape.begin(), model_shape.end());
+
     nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
                                                      std::move(layer_shape));
   }
-  
+
+  // update the model states
+  state.clear();
+
+  // missing state from prior 6.0; use default value
+  if (!model_data.count("batch_size")) model_data.emplace("batch_size", 256);
+  if (!model_data.count("warm_start")) model_data.emplace("warm_start", false);
+  if (!model_data.count("training_iterations")) {
+    model_data.emplace("training_iterations", 0);
+  }
+  if (!model_data.count("random_seed")) {
+    std::random_device rd;
+    int random_seed = static_cast<int>(rd());
+    model_data.emplace("random_seed", random_seed);
+  }
+
+  // prune redudant data
+  model_data.erase(model_iter);
+  if (model_data.count("_class_to_index")) {
+    model_data.erase("_class_to_index");
+  }
+  if (model_data.count("input_image_shape")) {
+    model_data.erase("input_image_shape");
+  }
+
+  // must set state before init_model()
+  state = std::move(model_data);
   nn_spec_ = init_model();
   nn_spec_->update_params(nn_params);
-  model_data.erase(model_iter);
+
+  for (auto& entry : state) {
+    std::cout << entry.first << std::endl;
+  }
+
   return;
 }
 
