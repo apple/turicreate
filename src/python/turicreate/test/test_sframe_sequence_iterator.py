@@ -12,7 +12,7 @@ import numpy as np
 import array
 
 # TODO: Remove for 6.0
-IS_PRE_6_0_RC = False
+IS_PRE_6_0_RC = True
 
 if not IS_PRE_6_0_RC:
     from turicreate.toolkits.activity_classifier import _sframe_sequence_iterator as sframe_sequence_iterator

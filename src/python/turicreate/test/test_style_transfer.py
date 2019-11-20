@@ -22,7 +22,7 @@ import coremltools
 
 _NUM_STYLES = 4
 # TODO: Remove for 6.0
-IS_PRE_6_0_RC = False
+IS_PRE_6_0_RC = True
 
 
 def _get_data(feature, num_examples=100):
