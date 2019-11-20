@@ -870,7 +870,12 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
     log_and_throw("The loaded turicreate model must contain '_model'!\n");
   }
   const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
-  
+
+  model_data.emplace("batch_size", 256);
+  std::random_device rd;
+  int random_seed = static_cast<int>(rd());
+  model_data.emplace("random_seed", random_seed);
+
   state.clear();
   state.insert(model_data.begin(), model_data.end());
 
@@ -903,13 +908,14 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
     const std::vector<double>& model_shape = mxnet_shape_nd.elements();
     std::vector<float> layer_weight(model_weight.begin(), model_weight.end());
     std::vector<size_t> layer_shape(model_shape.begin(), model_shape.end());
-    size_t index = layer_name.find('_');
-    layer_name =
-        layer_name.substr(0, index) + "_fwd_" + layer_name.substr(index + 1);
+    // size_t index = layer_name.find('_');
+    // layer_name =
+    //     layer_name.substr(0, index) + "_fwd_" + layer_name.substr(index + 1);
     nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
                                                      std::move(layer_shape));
   }
-  nn_spec_.reset(new model_spec);
+  
+  nn_spec_ = init_model();
   nn_spec_->update_params(nn_params);
   model_data.erase(model_iter);
   return;
