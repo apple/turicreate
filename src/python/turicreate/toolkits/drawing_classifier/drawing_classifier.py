@@ -190,7 +190,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
         options["warm_start"] = "" if warm_start is None else warm_start
         model.train(input_dataset, target, feature, validation_set, options)
-        return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
+        return DrawingClassifier(model_proxy=model, name="drawing_classifier")
 
     # Old MXNet Implementation
 
@@ -393,9 +393,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         'num_examples': len(input_dataset)
     }
 
-    return DrawingClassifier(state)
+    return DrawingClassifier_legacy(state)
 
-class DrawingClassifier(_CustomModel):
+class DrawingClassifier_legacy(_CustomModel):
     """
     A trained model that is ready to use for classification, and to be
     exported to Core ML.
@@ -960,7 +960,7 @@ class DrawingClassifier(_CustomModel):
             return predicted["probability"]
 
 
-class DrawingClassifier_beta(_Model):
+class DrawingClassifier(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification or export to
     CoreML.

@@ -188,7 +188,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         options['verbose'] = verbose
 
         model.train(dataset, target, session_id, validation_set, options)
-        return ActivityClassifier_beta(model_proxy=model, name=name)
+        return ActivityClassifier(model_proxy=model, name=name)
         
     from .._mxnet import _mxnet_utils
     from ._mx_model_architecture import _net_params
@@ -318,7 +318,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         state['valid_accuracy'] = log['valid_acc']
         state['valid_log_loss'] = log['valid_loss']
 
-    model = ActivityClassifier(state)
+    model = ActivityClassifier_legacy(state)
     return model
 
 def _initialize_with_mxnet_weights(model, chunked_data, features, prediction_window, predictions_in_chunk, batch_size, use_target):
@@ -344,7 +344,7 @@ def _encode_target(data, target, mapping=None):
     data[target] = data[target].apply(lambda t: mapping[t])
     return data, mapping
 
-class ActivityClassifier_beta(_Model):
+class ActivityClassifier(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification or export to
     CoreML.
@@ -648,7 +648,7 @@ class ActivityClassifier_beta(_Model):
         """
         return self.__proxy__.classify(dataset, output_frequency);
 
-class ActivityClassifier(_CustomModel):
+class ActivityClassifier_legacy(_CustomModel):
     """
     A trained model that is ready to use for classification or export to
     CoreML.
