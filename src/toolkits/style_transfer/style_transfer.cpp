@@ -10,6 +10,7 @@
 #include <map>
 #include <random>
 #include <string>
+#include <timer/timer.hpp>
 
 #include <core/data/image/image_type.hpp>
 #include <model_server/lib/image_util.hpp>
@@ -32,6 +33,48 @@ using turi::neural_net::model_backend;
 using turi::neural_net::shared_float_array;
 
 namespace {
+
+class stylization_printer {
+  turi::timer m_tt;
+  double m_previous_time = 0.0;
+
+  size_t m_num_content;
+  size_t m_num_styles;
+  size_t m_index = 0;
+  
+  size_t _num_total_images() {
+    return m_num_content * m_num_styles;
+  }
+
+ public:
+  stylization_printer(size_t num_content, size_t num_styles) 
+    : m_num_content(num_content), m_num_styles(num_styles) {
+    std::cout << "Stylizing "
+              << m_num_content 
+              << " image(s) using " 
+              << m_num_styles
+              << " style(s)"
+              << std::endl;
+
+    m_tt.start();
+  }
+
+  void print() {
+    double current_time = m_tt.current_time();
+    if ((current_time - m_previous_time) > 0.3) {
+      std::cout << "Stylizing " 
+                <<  m_index 
+                << "/" 
+                << _num_total_images()
+                << std::endl;
+      current_time = m_previous_time;
+    }
+    m_index++;
+  }
+
+  ~stylization_printer() = default;
+
+};
 
 constexpr size_t STYLE_TRANSFER_VERSION = 1;
 
@@ -535,6 +578,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
                                      const std::vector<double>& style_idx) {
   if (data.size() == 0) return;
 
+  // TODO: if logging enabled
   flex_int batch_size = read_state<flex_int>("batch_size");
   flex_int num_styles = read_state<flex_int>("num_styles");
 
@@ -557,6 +601,9 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   std::unique_ptr<model_backend> model = ctx->create_style_transfer(
       {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
       weight_params);
+
+  // Style Printer
+  stylization_printer pprinter(data.size(), style_idx.size());
 
   // looping through all of the style indices
   for (size_t i : style_idx) {
@@ -591,6 +638,9 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       for (const auto& row : processed_batch) {
         result.write({row.first, row.second}, 0);
       }
+
+      // progress printing for stylization
+      pprinter.print();
 
       // get next batch
       batch = data_iter->next_batch(batch_size);
