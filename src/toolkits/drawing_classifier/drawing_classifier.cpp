@@ -234,11 +234,11 @@ void drawing_classifier::init_options(
       FLEX_UNDEFINED,
       std::numeric_limits<int>::min(), std::numeric_limits<int>::max());
 
-  options.create_boolean_option(
+  options.create_string_option(
       "warm_start",
       "Record warm start model version used. If no warmstart used"
-      " None is assigned by default.",
-      false,
+      "Empty string is assigned by default.",
+      "",
       true);
 
   // Validate user-provided options.
@@ -376,7 +376,17 @@ void drawing_classifier::init_training(
     model_spec warmstart_model(mlmodel_path);
     float_array_map trained_weights = warmstart_model.export_params_view();
     nn_spec_->update_params(trained_weights);
-    add_or_update_state({{"warm_start", true}});
+
+    size_t idx = 0;
+#ifdef _WIN32
+    idx = mlmodel_path.rfind('\\');
+#else
+    idx = mlmodel_path.rfind('/');
+#endif
+    if (idx == std::string::npos)
+      state["warm_start"] = mlmodel_path;
+    else
+      state["warm_start"] = mlmodel_path.substr(idx + 1);
   }
 
   training_model_ = training_compute_context_->create_drawing_classifier(
@@ -849,7 +859,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"target", read_state<flex_string>("target")},
       {"feature", feature_column_name},
       {"max_iterations", read_state<flex_int>("max_iterations")},
-      {"warm_start", read_state<bool>("warm_start")},
+      {"warm_start", read_state<flex_string>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
@@ -876,23 +886,29 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
   // the classes are loaded as floats. The following code block casts
   // the loaded "float" classes back to int.
   if (model_data.count("classes")) {
-    flex_list classes_list = variant_get_value<flex_list>(model_data.find("classes")->second);
+    flex_list classes_list =
+        variant_get_value<flex_list>(model_data.find("classes")->second);
 
-    if (classes_list.size() > 0 && classes_list.begin()->get_type() == flex_type_enum::FLOAT) {
+    if (classes_list.size() &&
+        classes_list.begin()->get_type() == flex_type_enum::FLOAT) {
       flex_list new_classes_list;
       new_classes_list.reserve(classes_list.size());
 
-      std::transform(classes_list.begin(), classes_list.end(), std::back_inserter(new_classes_list),
-        [](flexible_type& ft) { return ft.to<flex_int>(); });
-      
+      std::transform(classes_list.begin(), classes_list.end(),
+                     std::back_inserter(new_classes_list),
+                     [](flexible_type& ft) { return ft.to<flex_int>(); });
+
       model_data.erase("classes");
       model_data.emplace("classes", std::move(new_classes_list));
-    
-    } else if (classes_list.size() == 0) {
-      log_and_throw("The loaded turicreate model must have at least one class!\n");
+
+    } else if (classes_list.empty()) {
+      log_and_throw(
+          "Error during loading model. 'classes' must contain at least one "
+          "class label.");
     }
   } else {
-    log_and_throw("The loaded turicreate model must contain 'classes'!\n");
+    log_and_throw(
+        "Error during loading model. 'classes' not found in the saved model.");
   }
 
   flex_dict mxnet_data_dict;
@@ -936,7 +952,7 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
 
   // missing state from prior 6.0; use default value
   if (!model_data.count("batch_size")) model_data.emplace("batch_size", 256);
-  if (!model_data.count("warm_start")) model_data.emplace("warm_start", false);
+  if (!model_data.count("warm_start")) model_data.emplace("warm_start", "");
   if (!model_data.count("training_iterations")) {
     model_data.emplace("training_iterations", 0);
   }
