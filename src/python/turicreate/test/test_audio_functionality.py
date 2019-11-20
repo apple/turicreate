@@ -28,9 +28,6 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray
 from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits._internal_utils import _mac_ver
 
-# TODO: Remove for 6.0
-IS_PRE_6_0_RC = True
-
 
 class ReadAudioTest(unittest.TestCase):
 
