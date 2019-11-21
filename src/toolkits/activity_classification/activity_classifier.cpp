@@ -363,7 +363,7 @@ void activity_classifier::train(
   time_object.start();
 
   bool show_loss = true;
-  auto show_loss_it = opts.find("show_loss");
+  auto show_loss_it = opts.find("_show_loss");
   if (show_loss_it != opts.end()) {
     show_loss = show_loss_it->second;
   }
@@ -418,8 +418,8 @@ void activity_classifier::train(
   state_update["training_time"] = time_object.current_time();
 
   add_or_update_state(state_update);
-  std::cout << "Training complete" << std::endl;
-  std::cout << "Total Time Spent: " << read_state<flex_float>("training_time") << std::endl;
+  logprogress_stream << "Training complete";
+  logprogress_stream << "Total Time Spent: " << read_state<flex_float>("training_time");
 
 }
 

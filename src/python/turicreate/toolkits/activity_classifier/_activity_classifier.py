@@ -186,7 +186,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         options['batch_size'] = batch_size
         options['max_iterations'] = max_iterations
         options['verbose'] = verbose
-        options['show_loss'] = False
+        options['_show_loss'] = False
 
         model.train(dataset, target, session_id, validation_set, options)
         return ActivityClassifier_beta(model_proxy=model, name=name)
