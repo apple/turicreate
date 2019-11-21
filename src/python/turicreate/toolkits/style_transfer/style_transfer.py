@@ -902,12 +902,12 @@ class StyleTransfer_beta(_Model):
         ]
 
         training_fields = [
-            ('Training time', 'training_time'),
+            ('Training time', '_training_time_as_string'),
             ('Training epochs', 'training_epochs'),
             ('Training iterations', 'training_iterations'),
             ('Number of style images', 'num_styles'),
             ('Number of content images', 'num_content_images'),
-            ('Final loss', 'training_log_loss'),
+            ('Final loss', 'training_loss'),
         ]
 
         section_titles = ['Schema', 'Training summary']

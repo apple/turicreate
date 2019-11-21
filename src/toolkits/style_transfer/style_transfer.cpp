@@ -10,6 +10,7 @@
 #include <map>
 #include <random>
 #include <string>
+#include <sstream>
 
 #include <core/data/image/image_type.hpp>
 #include <model_server/lib/image_util.hpp>
@@ -767,10 +768,15 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
 
   // Using training_epochs * data_size = training_iterations * batch_size
   size_t training_epochs = ((read_state<flex_int>("batch_size") * read_state<flex_int>("training_iterations")) / read_state<flex_int>("num_content_images"));
-  
+  double current_time = time_object.current_time();
+
+  std::stringstream ss;
+  table_internal::_format_time(ss, current_time);
+
   add_or_update_state({
     {"training_epochs", training_epochs},
-    {"training_time", time_object.current_time()}
+    {"training_time", current_time},
+    {"_training_time_as_string", ss.str()}
   });
 }
 
