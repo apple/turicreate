@@ -436,9 +436,10 @@ void object_detector::train(gl_sframe data,
   // Wait for any outstanding batches to finish.
   finalize_training(compute_final_metrics);
 
-  add_or_update_state({
-      {"training_time", time_object.current_time()},
-  });
+  add_or_update_state({{"training_time", time_object.current_time()}});
+  std::stringstream ss;
+  table_internal::_format_time(ss, read_state<flex_float>("training_time"));
+  add_or_update_state({{"_training_time_as_string", ss.str()}});
 }
 
 void object_detector::synchronize_model(model_spec* nn_spec) const {

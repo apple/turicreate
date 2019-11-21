@@ -10,6 +10,7 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <sstream>
 
 #include <core/logging/table_printer/table_printer.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
