@@ -21,7 +21,6 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac
 import coremltools
 
 _CLASSES = ['logo_a', 'logo_b', 'logo_c', 'logo_d']
-IS_PRE_6_0_RC = float(tc.__version__) < 6.0
 USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
 
 def _get_data(feature, target):
