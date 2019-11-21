@@ -172,7 +172,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # C++ model
 
     if USE_CPP:
-
         name = 'activity_classifier'
 
         import turicreate as _turicreate
@@ -186,7 +185,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         options['batch_size'] = batch_size
         options['max_iterations'] = max_iterations
         options['verbose'] = verbose
-
         model.train(dataset, target, session_id, validation_set, options)
         return ActivityClassifier_beta(model_proxy=model, name=name)
         
