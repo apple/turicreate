@@ -419,8 +419,8 @@ void activity_classifier::train(
   state_update["training_time"] = time_object.current_time();
 
   add_or_update_state(state_update);
-  logprogress_stream << "Training complete";
-  logprogress_stream << "Total Time Spent: " << read_state<flex_float>("training_time");
+  logprogress_stream << "Training complete" << std::endl;
+  logprogress_stream << "Total Time Spent: " << read_state<flex_float>("training_time") << std::endl;
 
 }
 
