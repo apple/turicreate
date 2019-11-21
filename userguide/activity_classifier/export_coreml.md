@@ -8,13 +8,13 @@ Exporting an activity classifier model in Core ML format can be performed using 
 model.export_coreml('ActivityClassification.mlmodel')
 ```
 
-## Deployment With Turi Create 6
+## Deployment With Turi Create 6.0+
 
-Starting with Turi Create 6.0 the API for integrating an Activity Classifier into your Swift app has become more explicit. There are now individual features for the accelerometer and gyroscope on x, y, and z axes. Dragging the saved model to Xcode will automatically generate relevant code for calling the model in your app:
+Starting with Turi Create 6.0, the API for integrating an Activity Classifier into your Swift app has become more explicit. There are now individual features for the accelerometer and gyroscope on x, y, and z axes. Dragging the saved model to Xcode will automatically generate relevant code for calling the model in your app:
 
 ![Model imported to Xcode](images/Model_In_Xcode_6.0.png)
 
-For more information about the generated programmatic API please refer to [Core ML documentation](https://developer.apple.com/documentation/coreml/integrating_a_core_ml_model_into_your_app).
+For more information about the generated programmatic API, please refer to [Core ML documentation](https://developer.apple.com/documentation/coreml/integrating_a_core_ml_model_into_your_app).
 
 ##### Model Inputs
 
@@ -28,7 +28,7 @@ For more information about the generated programmatic API please refer to [Core 
 
 ##### Model Outputs
 
-* **activityProbability** - a dictionary, where the keys are each possible label (predicted activity) and the values are the activity's predicted probability - a double in the range [0.0, 1.0].
+* **activityProbability** - a dictionary, where the keys are each possible label (predicted activity) and the values are the activity's predicted probability, a double in the range [0.0, 1.0].
 * **activity** - a string representing the predicted activity. This is the activity with the highest probability value in `activityProbability`.
 * **stateOut** - cell state output of the model's LSTM recurrent layer. This output should be saved and fed to the model's `stateIn` input at the next prediction call.
 
@@ -71,7 +71,7 @@ let motionManager = CMMotionManager()
 
 #### Enabling CoreMotion sensors
 We need to enable the accelerometer and gyroscope sensors, set them to the required update interval, and set our handler block.  
-For more info on using CoreMotion sensors please see [CoreMotion documentation](https://developer.apple.com/documentation/coremotion)
+For more info on using CoreMotion sensors, please see [CoreMotion documentation](https://developer.apple.com/documentation/coremotion)
 
 ```swift
 guard motionManager.isAccelerometerAvailable, motionManager.isGyroAvailable else { return }
@@ -117,7 +117,7 @@ func addAccelSampleToDataArray (accelSample: CMAccelerometerData) {
 }
 ```
 #### Making predictions
-After `prediction_window` readings were aggregated, we call the model to get a prediction of the current user's activity.
+After `prediction_window` readings are aggregated, we call the model to get a prediction of the current user's activity.
 
 ```swift
 func performModelPrediction () -> String? {
@@ -132,7 +132,7 @@ func performModelPrediction () -> String? {
 }
 ```
 
-## Deployment With Turi Create 5
+## Deployment With Turi Create 5.0+
 
 Dragging the saved model to Xcode will automatically generate relevant code for calling the model in your app:
 
@@ -232,7 +232,7 @@ func addAccelSampleToDataArray (accelSample: CMAccelerometerData) {
 }
 ```
 #### Making predictions
-After `prediction_window` readings were aggregated, we call the model to get a prediction of the current user's activity.
+After `prediction_window` readings are aggregated, we call the model to get a prediction of the current user's activity.
 
 ```swift
 func performModelPrediction () -> String? {
