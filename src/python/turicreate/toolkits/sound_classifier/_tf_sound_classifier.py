@@ -6,12 +6,8 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from turicreate.util import _ProgressTablePrinter
-import tensorflow as _tf
-import numpy as _np
-import time as _time
+
 from .._tf_model import TensorFlowModel
-import turicreate.toolkits._tf_utils as _utils
 
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
@@ -22,17 +18,16 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
     def __init__(self, num_inputs, num_classes, custom_layer_sizes):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy.
-
         """
+        from uuid import uuid1
 
-        _tf.reset_default_graph()
-
+        self.instance_id = str(uuid1())
         self.num_classes = num_classes
 
         self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
-        #xavier initialization
+        # Xavier initialization
         initializer = _tf.keras.initializers.glorot_uniform()
 
         weights = {}
@@ -41,8 +36,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         # Create variables for customized layers
         for i, cur_layer_size in enumerate(custom_layer_sizes):
-            weight_name = 'sound_dense{}_weight'.format(i)
-            bias_name = 'sound_dense{}_bias'.format(i)
+            weight_name = '{}_sound_dense{}_weight'.format(self.instance_id, i)
+            bias_name = '{}_sound_dense{}_bias'.format(self.instance_id, i)
             self.names_of_layers.append('dense{}'.format(i))
             out_units = cur_layer_size
             if i==0:
@@ -52,16 +47,16 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             in_units = out_units
 
         i+=1
-        weight_name = 'sound_dense{}_weight'.format(i)
-        bias_name = 'sound_dense{}_bias'.format(i)
+        weight_name = '{}_sound_dense{}_weight'.format(self.instance_id, i)
+        bias_name = '{}_sound_dense{}_bias'.format(self.instance_id, i)
         self.names_of_layers.append('dense{}'.format(i))
         weights[weight_name] = _tf.Variable(initializer([in_units, num_classes]), name=weight_name)
         biases[bias_name] = _tf.Variable(initializer([num_classes]), name=bias_name)
 
         # Add customized layers
         for i in range(len(weights.keys())):
-            weight_name = 'sound_dense{}_weight'.format(i)
-            bias_name = 'sound_dense{}_bias'.format(i)
+            weight_name = '{}_sound_dense{}_weight'.format(self.instance_id, i)
+            bias_name = '{}_sound_dense{}_bias'.format(self.instance_id, i)
             if i==0:
                 curr_dense = _tf.nn.xw_plus_b(self.x, weights=weights[weight_name], biases=biases[bias_name])
             else:
@@ -130,7 +125,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             `numpy.ndarray` converted to the CoreML format and the
             respective activation applied to the layer.
         """
-        layer_names = _tf.trainable_variables()
+        layer_names = _tf.trainable_variables(scope=self.instance_id)
         layer_weights = self.sess.run(layer_names)
         layer_dict = {}
         for var, val in zip(layer_names, layer_weights):
@@ -138,8 +133,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         layers = []
         for i, name in enumerate(self.names_of_layers):
-            weight_name = 'sound_{}_weight:0'.format(name)
-            bias_name = 'sound_{}_bias:0'.format(name)
+            weight_name = '{}_sound_{}_weight:0'.format(self.instance_id, name)
+            bias_name = '{}_sound_{}_bias:0'.format(self.instance_id, name)
             layer={}
             layer['weight'] = layer_dict[weight_name].transpose(1, 0)
             layer['bias'] = layer_dict[bias_name]
@@ -161,7 +156,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                 shapes are transposed.
 
         """
-        layer_names = _tf.trainable_variables()
+        layer_names = _tf.trainable_variables(scope=self.instance_id)
         layer_weights = self.sess.run(layer_names)
         data = {}
         shapes = {}
@@ -182,10 +177,13 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         need to be transposed to match TF format.
 
         """
-        layers = net_params['data'].keys()
+        layers = list(net_params['data'].keys())
+        net_params_instance_id = layers[0][:36]
 
         for layer_name in layers:
             new_layer_name = layer_name.replace("custom", "sound")
+            new_layer_name = layer_name.replace(net_params_instance_id, self.instance_id)
+
             if 'bias' in layer_name:
                 self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
                     net_params['data'][layer_name]))

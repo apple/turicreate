@@ -19,7 +19,6 @@ import unittest
 import coremltools
 from coremltools.proto import FeatureTypes_pb2
 import numpy as np
-import pytest
 from scipy.io import wavfile
 import sys as _sys
 
@@ -151,7 +150,6 @@ def _generate_binary_test_data():
 binary_test_data = _generate_binary_test_data()
 
 
-@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux") ##
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     @classmethod
@@ -313,7 +311,6 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue(self.model.validation_accuracy is None)
 
 
-@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux")
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -327,7 +324,6 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         assert(self.model.custom_layer_sizes == layer_sizes)
 
 
-@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux")
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -352,7 +348,6 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         self.assertTrue(self.model.validation_accuracy is not None)
 
 
-@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux")
 class ClassifierTestWithShortClip(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -443,7 +438,6 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
         self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())
 
 
-@pytest.mark.xfail(_sys.platform != "darwin", reason="Test breaking on Linux")
 class ReuseDeepFeatures(unittest.TestCase):
     def test_simple_case(self):
         data = copy(binary_test_data)
