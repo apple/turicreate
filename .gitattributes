@@ -1,4 +1,4 @@
 # Treat these paths as external for the purposes of GitHub's Linguist
 deps/* linguist-vendored
 src/external/* linguist-vendored
-src/visualization/client/Turi\ Create\ Visualization/src/user_interface/build/* linguist-generated=true
+"src/visualization/client/Turi Create Visualization/src/user_interface/build/" linguist-generated=true
