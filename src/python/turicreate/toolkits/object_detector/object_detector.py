@@ -271,8 +271,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         _raise_error_if_not_iterable(classes)
         _raise_error_if_not_iterable(grid_shape)
 
-        if not all([isinstance(x, int) and x > 0 for x in grid_shape]):
-            raise _ToolkitError("Invalid 'grid_shape' input.")
+        grid_shape = [int(x) for x in grid_shape]
+        assert(len(grid_shape) == 2)
 
         tf_config = {
             'grid_height': params['grid_shape'][0],
