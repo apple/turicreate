@@ -14,6 +14,7 @@
 #include <limits>
 #include <queue>
 #include <random>
+#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -436,8 +437,14 @@ void object_detector::train(gl_sframe data,
   // Wait for any outstanding batches to finish.
   finalize_training(compute_final_metrics);
 
+  double current_time = time_object.current_time();
+
+  std::stringstream ss;
+  table_internal::_format_time(ss, current_time);
+
   add_or_update_state({
-      {"training_time", time_object.current_time()},
+    {"training_time", current_time},
+    {"_training_time_as_string", ss.str()}
   });
 }
 
