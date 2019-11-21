@@ -25,8 +25,6 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         """
 
-        _tf.reset_default_graph()
-
         self.num_classes = num_classes
 
         self.x = _tf.placeholder("float", [None, 12288])

@@ -20,9 +20,6 @@ class ODTensorFlowModel(TensorFlowModel):
 
     def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
 
-        #reset tensorflow graph when a new model is created
-        _tf.reset_default_graph()
-
         # Converting incoming weights from shared_float_array to numpy
         for key in init_weights.keys():
             init_weights[key] = _utils.convert_shared_float_array_to_numpy(init_weights[key])
