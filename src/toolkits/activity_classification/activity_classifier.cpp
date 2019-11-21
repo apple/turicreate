@@ -367,6 +367,7 @@ void activity_classifier::train(
   if (show_loss_it != opts.end()) {
     show_loss = show_loss_it->second;
   }
+
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
   init_train(data, target_column_name, session_id_column_name, validation_data,
@@ -1041,7 +1042,7 @@ void activity_classifier::init_train(
   }
 
   bool show_loss = true;
-  auto show_loss_it = opts.find("show_loss");
+  auto show_loss_it = opts.find("_show_loss");
   if (show_loss_it != opts.end()) {
     show_loss = show_loss_it->second;
   }
