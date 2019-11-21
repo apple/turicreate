@@ -151,6 +151,14 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
                 print('Completed {num_processed:{width}d}/{total:{width}d}'.format(
                     width = len(str(state['total'])), **state))
 
+        # Just iterate through the image batches, converting them into batches
+        # of feature vectors. Note: the helper functions defined above are
+        # designed to support a multi-threaded approach, allowing one Python
+        # thread to drive TensorFlow computation and another to drive SFrame
+        # traversal and image resizing. But test failures reveal an interaction
+        # between the multi-threaded approach we used for MXNet and our usage of
+        # TensorFlow, which we need to resolve before switching to the pipelined
+        # implementation below.
         while has_next_batch():
             images_in_numpy = next_batch()
             predictions_from_tf = handle_request(images_in_numpy)
@@ -162,6 +170,10 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         # request_queue = _Queue()
         # response_queue = _Queue()
         # def tf_worker():
+        #     from tensorflow import keras
+        #     model_path = self.ptModel.get_model_path('tensorflow')
+        #     self.model = keras.models.load_model(model_path)
+        #
         #     while True:
         #         batch = request_queue.get()  # Consume request
         #         if batch is None:
