@@ -18,9 +18,9 @@
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
 #include <toolkits/util/training_utils.hpp>
 
-#ifdef __APPLE__
+#ifdef HAS_MPS
 #import <ml/neural_net/mps_compute_context.hpp>
-#endif  // __APPLE__
+#endif  // HAS_MPS
 
 namespace turi {
 namespace style_transfer {
@@ -335,11 +335,11 @@ std::unique_ptr<compute_context> style_transfer::create_compute_context()
 // for MacOS greater than 10.15 is performed. If it is then the Style Transfer
 // MPS implementation is used. On all other systems currently the TensorFlow
 // implementation is used.
-#ifdef __APPLE__
+#ifdef HAS_MPS
   if (neural_net::mps_compute_context::has_style_transfer()) {
     return compute_context::create();
   }
-#endif  // __APPLE__
+#endif  // HAS_MPS
 
   return compute_context::create_tf();
 }
