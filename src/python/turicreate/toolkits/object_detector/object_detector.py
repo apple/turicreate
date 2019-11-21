@@ -25,7 +25,8 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
-                                                 _numeric_param_check_range)
+                                                 _numeric_param_check_range,
+                                                 _raise_error_if_not_iterable)
 from turicreate import config as _tc_config
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
@@ -267,10 +268,10 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         if classes == None:
             classes = []
 
-        if not isinstance(classes, list):
-            raise _ToolkitError("'classes' should be type of list.")
+        _raise_error_if_not_iterable(classes)
+        _raise_error_if_not_iterable(grid_shape)
 
-        if not isinstance(grid_shape, list) or not len(grid_shape) == 2 or not isinstance(grid_shape[0], int) or not isinstance(grid_shape[1], int):
+        if not all([isinstance(x, int) and x > 0 for x in grid_shape]):
             raise _ToolkitError("Invalid 'grid_shape' input.")
 
         tf_config = {
