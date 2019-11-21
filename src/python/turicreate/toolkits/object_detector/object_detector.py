@@ -1785,7 +1785,7 @@ class ObjectDetector_beta(_Model):
             ('Number of classes', 'num_classes'),
         ]
         training_fields = [
-            ('Training time', 'training_time'),
+            ('Training time', '_training_time_as_string'),
             ('Training epochs', 'training_epochs'),
             ('Training iterations', 'training_iterations'),
             ('Number of examples (images)', 'num_examples'),
