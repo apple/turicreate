@@ -231,7 +231,7 @@ def create(style_dataset, content_dataset, style_feature=None,
         options['vgg_mlmodel_path'] = pretrained_vgg16_model.get_model_path('coreml')
 
         model.train(style_dataset[style_feature], content_dataset[content_feature], options)
-        return StyleTransfer_beta(model_proxy=model, name=name)
+        return StyleTransfer(model_proxy=model, name=name)
 
     from ._sframe_loader import SFrameSTIter as _SFrameSTIter
     import mxnet as _mx
@@ -482,7 +482,7 @@ def create(style_dataset, content_dataset, style_feature=None,
             'training_loss': smoothed_loss,
         }
 
-        return StyleTransfer(state)
+        return StyleTransfer_legacy(state)
 
     num_layers = len(params['style_loss_mult'])
     gram_chunks = [[] for _ in range(num_layers)]
@@ -665,7 +665,7 @@ def _raise_error_if_not_training_sframe(dataset, context_column):
     if dataset[context_column].dtype != _tc.Image:
         raise _ToolkitError("Context Image column must contain images")
 
-class StyleTransfer_beta(_Model):
+class StyleTransfer(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification or export to
     CoreML.
@@ -884,7 +884,7 @@ class StyleTransfer_beta(_Model):
         """
         return self.__proxy__.get_styles(style)
 
-class StyleTransfer(_CustomModel):
+class StyleTransfer_legacy(_CustomModel):
     """
     An trained model that is ready to use for style transfer, exported to
     Core ML.

@@ -284,7 +284,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
         model = _tc.extensions.object_detector()
         model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
-        return ObjectDetector_beta(model_proxy=model, name="object_detector")
+        return ObjectDetector(model_proxy=model, name="object_detector")
 
     # Use MxNet
     from ._model import tiny_darknet as _tiny_darknet
@@ -519,10 +519,10 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'max_iterations': max_iterations,
         'training_loss': progress['smoothed_loss'],
     }
-    return ObjectDetector(state)
+    return ObjectDetector_legacy(state)
 
 
-class ObjectDetector(_CustomModel):
+class ObjectDetector_legacy(_CustomModel):
     """
     An trained model that is ready to use for classification, exported to
     Core ML, or for feature extraction.
@@ -1545,7 +1545,7 @@ class ObjectDetector(_CustomModel):
         _save_spec(model, filename)
 
 
-class ObjectDetector_beta(_Model):
+class ObjectDetector(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification
     or export to CoreML.
