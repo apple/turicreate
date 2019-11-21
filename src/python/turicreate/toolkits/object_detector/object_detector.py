@@ -25,7 +25,8 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
-                                                 _numeric_param_check_range)
+                                                 _numeric_param_check_range,
+                                                 _raise_error_if_not_iterable)
 from turicreate import config as _tc_config
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
@@ -266,6 +267,13 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         import turicreate.toolkits.libtctensorflow
         if classes == None:
             classes = []
+
+        _raise_error_if_not_iterable(classes)
+        _raise_error_if_not_iterable(grid_shape)
+
+        grid_shape = [int(x) for x in grid_shape]
+        assert(len(grid_shape) == 2)
+
         tf_config = {
             'grid_height': params['grid_shape'][0],
             'grid_width': params['grid_shape'][1],
