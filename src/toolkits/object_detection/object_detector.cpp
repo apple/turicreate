@@ -608,15 +608,16 @@ variant_type object_detector::predict(
 
     // Convert predicted_row to flex_type list to call gl_sarray_writer
     flex_list predicted_row_ft;
+    flex_list class_labels = read_state<flex_list>("classes");
     for (const image_annotation& each_row : predicted_row) {
       flex_dict bb_dict = {{"x", each_row.bounding_box.x}, {"y", each_row.bounding_box.y},
                       {"width", each_row.bounding_box.width},
                       {"height", each_row.bounding_box.height}};
-      flex_dict each_annotation = {{"identifier", each_row.identifier},
-                                   {"type", "rectangle"},
-                                   {"coordinates", std::move(bb_dict)},
-                                   {"confidence", each_row.confidence}
-                                   };
+      flex_dict each_annotation = {
+          {"label", class_labels[each_row.identifier].to<flex_string>()},
+          {"type", "rectangle"},
+          {"coordinates", std::move(bb_dict)},
+          {"confidence", each_row.confidence}};
       predicted_row_ft.push_back(std::move(each_annotation));
     }
     result.write(predicted_row_ft, 0);
