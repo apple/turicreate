@@ -247,7 +247,7 @@ void drawing_classifier::init_options(
       "warm_start",
       "Record warm start model version used. If no warmstart used, "
       "empty string is assigned by default.",
-      "",
+      FLEX_UNDEFINED,
       true);
 
   // Validate user-provided options.
@@ -940,13 +940,6 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
 
     nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
                                                      std::move(layer_shape));
-  }
-
-  // missing state from prior 6.0; use default value
-  if (!model_data.count("batch_size")) model_data.emplace("batch_size", 256);
-  if (!model_data.count("warm_start")) model_data.emplace("warm_start", "");
-  if (!model_data.count("training_iterations")) {
-    model_data.emplace("training_iterations", 0);
   }
 
   // prune redudant data
