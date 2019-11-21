@@ -80,8 +80,8 @@
   [_instNorm.tc_weightsData setLearningRate:lr];
 }
 
-- (NSDictionary<NSString *, NSData *> *)exportWeights:(NSString *)prefix {
-  NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];
+- (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *)exportWeights:(NSString *)prefix {
+  NSMutableDictionary<NSString *, TCMPSStyleTransferWeights *> *weights = [[NSMutableDictionary alloc] init];
 
   NSUInteger convWeightSize = (NSUInteger)([_conv.tc_weightsData weightSize] * sizeof(float));
   NSMutableData* convDataWeight = [NSMutableData dataWithLength:convWeightSize];
@@ -89,7 +89,14 @@
 
   NSString* convWeight = [NSString stringWithFormat:@"%@%@", prefix, @"conv_weight"];
 
-  weights[convWeight] = convDataWeight;
+  NSArray<NSNumber *>* convWeightShape = [_conv.tc_weightsData weightShape];
+
+  TCMPSStyleTransferWeights* convWeightWrapper = [[TCMPSStyleTransferWeights alloc] init];
+
+  convWeightWrapper.data = convDataWeight;
+  convWeightWrapper.shape = convWeightShape;
+
+  weights[convWeight] = convWeightWrapper;
 
   NSUInteger instNormSize = (NSUInteger)([_instNorm.tc_weightsData styles] * [_instNorm.tc_weightsData numberOfFeatureChannels] * sizeof(float));
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
@@ -98,13 +105,25 @@
   memcpy(instNormDataGamma.mutableBytes, [_instNorm.tc_weightsData gamma], instNormSize);
   memcpy(instNormDataBeta.mutableBytes, [_instNorm.tc_weightsData beta], instNormSize);
 
+  NSArray<NSNumber *>* instNormGammaShape = @[@([_instNorm.tc_weightsData styles]), @([_instNorm.tc_weightsData numberOfFeatureChannels])];
+  NSArray<NSNumber *>* instNormBetaShape = @[@([_instNorm.tc_weightsData styles]), @([_instNorm.tc_weightsData numberOfFeatureChannels])];
+
+  TCMPSStyleTransferWeights* instNormGammaWrapper = [[TCMPSStyleTransferWeights alloc] init];
+  TCMPSStyleTransferWeights* instNormBetaWrapper = [[TCMPSStyleTransferWeights alloc] init];
+
+  instNormGammaWrapper.data = instNormDataGamma;
+  instNormGammaWrapper.shape = instNormGammaShape;
+
+  instNormBetaWrapper.data = instNormDataBeta;
+  instNormBetaWrapper.shape = instNormBetaShape;
+
   NSString* instNormGamma = [NSString stringWithFormat:@"%@%@", prefix, @"inst_gamma_weight"];
   NSString* instNormBeta = [NSString stringWithFormat:@"%@%@", prefix, @"inst_beta_weight"];
 
-  weights[instNormGamma] = instNormDataGamma;
-  weights[instNormBeta] = instNormDataBeta;
+  weights[instNormGamma] = instNormGammaWrapper;
+  weights[instNormBeta] = instNormBetaWrapper;
 
-  return [weights copy];
+  return weights;
 }
 
 @end

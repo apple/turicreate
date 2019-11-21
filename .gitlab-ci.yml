@@ -20,7 +20,8 @@ build_wheel_debug_linux_python27:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7 --skip_doc
+    - mkdir -p /etc/ssl/certs/
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7 --skip_doc
   artifacts:
     expire_in: 1 day
     paths:
@@ -38,7 +39,8 @@ build_wheel_linux_python27:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7
+    - mkdir -p /etc/ssl/certs/
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python2.7
   artifacts:
     expire_in: 1 day
     paths:
@@ -56,7 +58,8 @@ build_wheel_linux_python35:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5 --skip_doc
+    - mkdir -p /etc/ssl/certs/
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5 --skip_doc
   artifacts:
     expire_in: 1 day
     paths:
@@ -74,7 +77,8 @@ build_wheel_linux_python36:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6 --skip_doc
+    - mkdir -p /etc/ssl/certs/
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6 --skip_doc
   artifacts:
     expire_in: 1 day
     paths:
@@ -92,6 +96,7 @@ build_wheel_linux_python37:
     DOCKER_DRIVER: overlay2
   script:
     - apk add bash
+    - mkdir -p /etc/ssl/certs/
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.7 --skip_doc
   artifacts:
     expire_in: 1 day
@@ -108,7 +113,7 @@ build_wheel_mac_10_15_python27:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - source scripts/use_ccache.sh
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
     expire_in: 1 day
     paths:
@@ -124,7 +129,7 @@ build_wheel_mac_10_15_python35:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv"
     - source scripts/use_ccache.sh
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
     expire_in: 1 day
     paths:
@@ -140,7 +145,7 @@ build_wheel_mac_10_15_python36:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
     - source scripts/use_ccache.sh
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
     expire_in: 1 day
     paths:
@@ -156,7 +161,7 @@ build_wheel_mac_10_15_python37:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenv"
     - source scripts/use_ccache.sh
-    - bash scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
     expire_in: 1 day
     paths:
@@ -215,44 +220,6 @@ test_cpp_linux:
     - apk add python2
     - python2.7 scripts/run_cpp_tests.py -j 2 --docker
 
-build_cpp_linux_no_remotefs:
-  image: ubuntu:18.04
-  stage: build
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-  script:
-    - apt-get -y update
-    - apt-get -y install apt-transport-https ca-certificates gnupg software-properties-common wget bzip2 build-essential xxd
-    - wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | apt-key add -
-    - apt-add-repository 'deb https://apt.kitware.com/ubuntu/ bionic main'
-    - apt-get -y update
-    - apt-get -y install cmake
-    - ./configure --no-remotefs --no-python
-    - cd debug/test
-    - bash -c -e "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access' "
-  artifacts:
-    expire_in: 1 day
-    paths:
-      - debug/ 
-
-test_cpp_linux_no_remotefs:
-  tags:
-    - docker
-  services:
-    - docker:18.09-dind
-  image: docker:18.09
-  stage: test
-  dependencies:
-    - build_cpp_linux_no_remotefs
-  variables:
-    DOCKER_HOST: tcp://docker:2375/
-    DOCKER_DRIVER: overlay2
-  script:
-    - apk add bash
-    - apk add python2 
-    - python2.7 scripts/run_cpp_tests.py -j 2 --docker
-
 test_cpp_mac_10_13:
   tags:
     - macos10.13
@@ -266,7 +233,7 @@ test_cpp_mac_10_13:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - (test -d debug && test -d release) || ./configure --no-python
     - cd debug/test
-    - bash -c -e "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
+    - bash -c -e -o pipefail "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
@@ -285,7 +252,7 @@ test_cpp_mac_10_14:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - (test -d debug && test -d release) || ./configure --no-python
     - cd debug/test
-    - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
+    - bash -c -e -o pipefail "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
@@ -301,7 +268,7 @@ test_cpp_mac_no_remotefs:
   script:
     - ./configure --no-remotefs --no-python
     - cd debug/test
-    - bash -c "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
+    - bash -c -e -o pipefail "make -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
@@ -321,7 +288,7 @@ test_python_linux_python27:
     - build_wheel_linux_python27
   script:
     - apk add bash
-    - bash scripts/test_wheel.sh --docker-python2.7
+    - bash -e scripts/test_wheel.sh --docker-python2.7
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -342,7 +309,7 @@ test_python_linux_python35:
     - build_wheel_linux_python35
   script:
     - apk add bash
-    - bash scripts/test_wheel.sh --docker-python3.5
+    - bash -e scripts/test_wheel.sh --docker-python3.5
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -364,7 +331,7 @@ test_python_linux_python36:
   script:
     - apk add bash
     # TODO get python 3.6 working on a test image
-    - bash scripts/test_wheel.sh --docker-python3.6
+    - bash -e scripts/test_wheel.sh --docker-python3.6
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -441,7 +408,7 @@ test_python_mac_python35_10_14:
     - build_wheel_mac_10_15_python35
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv"
-    - bash scripts/test_wheel.sh
+    - bash -e scripts/test_wheel.sh
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -459,7 +426,7 @@ test_python_mac_python36_10_14:
     - build_wheel_mac_10_15_python36
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
-    - bash scripts/test_wheel.sh
+    - bash -e scripts/test_wheel.sh
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -477,7 +444,7 @@ test_python_mac_python37_10_14:
     - build_wheel_mac_10_15_python37
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenv"
-    - bash scripts/test_wheel.sh
+    - bash -e scripts/test_wheel.sh
   artifacts:
     when: always
     expire_in: 2 weeks

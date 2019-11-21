@@ -7,8 +7,6 @@
 
 #include "utils.hpp"
 
-#import <Foundation/Foundation.h>
-
 #include <ml/neural_net/weight_init.hpp>
 #include <model_server/lib/image_util.hpp>
 #include <toolkits/coreml_export/mlmodel_include.hpp>

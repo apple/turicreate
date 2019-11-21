@@ -255,6 +255,15 @@ class FeatureEngineeringTest(unittest.TestCase):
         assert len(empty_dict_sf) == 1
         assert len(empty_dict_sf.apply(lambda x: len(x) == 0)) == 1
 
+    def test_count_words_dict_type(self):
+        sa = tc.SArray([{'Alice bob mike': 1, 'Bob Alice Sue': 0.5, '': 100},
+             {'a dog cow': 0, 'a dog cat ': 5, 'mice dog': -1, 'mice cat': 2}])
+        result = tc.text_analytics.count_words(sa)
+        expected = [{'bob': 1.5, 'mike': 1.0, 'sue': 0.5, 'alice': 1.5}, {'a': 5.0, 'mice': 1.0, 'dog': 4.0, 'cow': 0.0, 'cat': 7.0}]
+        self.assertEqual(result.dtype, dict)
+        self.sframe_comparer._assert_sarray_equal(result, expected)
+
+
 class RandomWordSplitTest(unittest.TestCase):
     """
     Test that the random split utility in the text analytics toolkit works

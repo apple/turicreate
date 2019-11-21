@@ -18,9 +18,9 @@ namespace feature_engineering {
  * Ported from original count_words implementation.
  */
 void word_count_delimiters_update(flexible_type f, flex_list delimiter_list, bool to_lower,
-                                           std::unordered_map<flexible_type, size_t>& ret_count) {
-
-
+                                  std::unordered_map<flexible_type, flex_float>& ret_count, 
+                                  flex_type_enum run_mode, 
+                                  flexible_type delta = 0) {
   std::set<char> delimiters;
   for (auto it = delimiter_list.begin(); it != delimiter_list.end(); ++it) {
     // iterate through flexible_types storing the delimiters
@@ -55,7 +55,10 @@ void word_count_delimiters_update(flexible_type f, flex_list delimiter_list, boo
       word_flex = std::move(word);
 
       // add the word to map
-      ret_count[word_flex]++;
+      if (run_mode == flex_type_enum::DICT)
+        ret_count[word_flex] = ret_count[word_flex] + delta;
+      else
+        ret_count[word_flex]++;
 
       // keep skipping delimiters, and reset word_begin
       while (i < str.size() && (is_delimiter(str[i])))
@@ -70,7 +73,10 @@ void word_count_delimiters_update(flexible_type f, flex_list delimiter_list, boo
     if  (to_lower)
       std::transform(word.begin(), word.end(), word.begin(), ::tolower);
     word_flex = std::move(word);
-    ret_count[word_flex]++;
+    if (run_mode == flex_type_enum::DICT)
+        ret_count[word_flex] = ret_count[word_flex] + delta;
+    else
+        ret_count[word_flex]++;
   }
 
   // convert to dictionary
@@ -103,7 +109,7 @@ flexible_type word_counter_apply_with_manual(const flexible_type& input,
   // Tokenize all string inputs according to delimiters and to_lower options,
   // then accumulate counts and return as dictionary
   flexible_type output;
-  std::unordered_map<flexible_type, size_t> ret_count;
+  std::unordered_map<flexible_type, flex_float> ret_count;
   switch(run_mode) {
     case flex_type_enum::UNDEFINED: {
       // No transform required
@@ -112,7 +118,7 @@ flexible_type word_counter_apply_with_manual(const flexible_type& input,
     }
 
     case flex_type_enum::STRING: {
-      word_count_delimiters_update(input, delimiter_list, to_lower, ret_count);
+      word_count_delimiters_update(input, delimiter_list, to_lower, ret_count, run_mode);
       break;
     }
 
@@ -125,7 +131,18 @@ flexible_type word_counter_apply_with_manual(const flexible_type& input,
         if (kvp.second.get_type() != flex_type_enum::INTEGER
             && kvp.second.get_type() != flex_type_enum::FLOAT)
           log_and_throw("Invalid type. Dictionary input to WordCounter must have integer or float values.");
-        word_count_delimiters_update(kvp.first.get<flex_string>(), delimiter_list, to_lower, ret_count);
+	if (kvp.second.get_type() == flex_type_enum::INTEGER){
+            word_count_delimiters_update(
+		       kvp.first.get<flex_string>(), delimiter_list, 
+		       to_lower, ret_count, 
+		       run_mode, (flex_float)kvp.second.get<flex_int>());
+	}
+        else if (kvp.second.get_type() == flex_type_enum::FLOAT){
+            word_count_delimiters_update(
+			 kvp.first.get<flex_string>(), delimiter_list, 
+			 to_lower, ret_count, 
+			 run_mode, kvp.second.get<flex_float>());
+	}
       }
       break;
     }
@@ -137,7 +154,7 @@ flexible_type word_counter_apply_with_manual(const flexible_type& input,
         if (elem.get_type() != flex_type_enum::STRING)
           log_and_throw("Invalid type. List input to WordCounter must contain only strings.");
 
-        word_count_delimiters_update(elem.get<flex_string>(), delimiter_list, to_lower, ret_count);
+        word_count_delimiters_update(elem.get<flex_string>(), delimiter_list, to_lower, ret_count, run_mode);
       }
       break;
     }
