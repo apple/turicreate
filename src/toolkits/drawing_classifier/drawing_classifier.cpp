@@ -856,11 +856,19 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
   flex_dict user_defined_metadata = {
       {"target", read_state<flex_string>("target")},
       {"feature", feature_column_name},
-      {"max_iterations", read_state<flex_int>("max_iterations")},
-      {"warm_start", read_state<flex_string>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
+
+  // for model imported from version 5.8 or prior
+  if (state.count("warm_start")){
+    user_defined_metadata.emplace_back("warm_start",
+                                       read_state<flex_string>("warm_start"));
+  }
+  if (state.count("max_iterations")) {
+    user_defined_metadata.emplace_back("max_iterations",
+                                       read_state<flex_int>("max_iterations"));
+  }
 
   model_wrapper->add_metadata(
       {{"user_defined", std::move(user_defined_metadata)}});
@@ -953,6 +961,9 @@ void drawing_classifier::import_from_custom_model(variant_map_type model_data,
 
   // must set state before init_model(); also update
   state = std::move(model_data);
+
+  // needed by evaluate
+  if (!state.count("batch_size")) state.emplace("batch_size", 256);
 
   nn_spec_ = init_model(false);
   nn_spec_->update_params(nn_params);
