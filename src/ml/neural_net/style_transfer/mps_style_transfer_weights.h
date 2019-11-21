@@ -6,11 +6,7 @@
 
 #import <Foundation/Foundation.h>
 
-#ifdef HAS_MACOS_10_15
-
 @interface TCMPSStyleTransferWeights : NSObject 
 @property (nonatomic) NSData *data;
 @property (nonatomic) NSArray<NSNumber *> *shape;
 @end
-
-#endif // #ifdef HAS_MACOS_10_15
