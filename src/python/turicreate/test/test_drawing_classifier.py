@@ -284,6 +284,7 @@ class DrawingClassifierTest(unittest.TestCase):
         import coremltools
         import platform
         max_iters_ans = ['20', '1']
+        warm_start_ans = '' if self.warm_start is None else self.warm_start
         for i, model in enumerate(self.models):
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
@@ -296,7 +297,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 'target': self.target,
                 'feature': self.feature,
                 'type': 'drawing_classifier',
-                'warm_start': '',
+                'warm_start': warm_start_ans,
                 'max_iterations': max_iters_ans[i],
                 'version': '2',
                 }, dict(coreml_model.user_defined_metadata)
