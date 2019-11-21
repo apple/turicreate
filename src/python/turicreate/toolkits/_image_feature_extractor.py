@@ -8,7 +8,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 from ._pre_trained_models import _get_cache_dir
-
+import turicreate.toolkits._tf_utils as _utils
 
 def _create_feature_extractor(model_name):
     import os
@@ -71,6 +71,9 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
             An instance of a pre-trained model.
         """
         from tensorflow import keras
+
+        # Suppresses verbosity to only errors
+        _utils.suppress_tensorflow_warnings()
 
         self.ptModel = ptModel
 

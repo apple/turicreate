@@ -20,6 +20,8 @@ namespace table_internal {
 /** Printers for each of the primimtive types.  Called by the routines below.
  */
 
+void _format_time(std::stringstream& ts, double t);
+
 void _print_string(std::ostringstream& ss, size_t width, const std::string& s);
 void _print_double(std::ostringstream& ss, size_t width, double s);
 void _print_bool(std::ostringstream& ss, size_t width, bool b);

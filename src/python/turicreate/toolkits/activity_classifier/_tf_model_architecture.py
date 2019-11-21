@@ -7,10 +7,13 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
+import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
+# Suppresses verbosity to only errors
+_utils.suppress_tensorflow_warnings()
 from .._tf_model import TensorFlowModel
-import turicreate.toolkits._tf_utils as _utils
+
 
 import numpy as _np
 
@@ -25,10 +28,6 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
-
-         # Suppresses verbosity to only errors
-        _tf.logging.set_verbosity(_tf.logging.ERROR)
-        _tf.debugging.set_log_device_placement(False)
 
         _tf.reset_default_graph()
 
@@ -279,7 +278,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             else:
                 tf_export_params[var.name.split(':')[0]] = _np.array(val)
 
-        tvars = _tf.all_variables()
+        tvars = _tf.global_variables()
         tvars_vals = self.sess.run(tvars)
         for var, val in zip(tvars, tvars_vals):
             if 'moving_mean' in var.name:
