@@ -614,7 +614,7 @@ variant_type object_detector::predict(
                       {"width", each_row.bounding_box.width},
                       {"height", each_row.bounding_box.height}};
       flex_dict each_annotation = {
-          {"label", class_labels[each_row.identifier].get<flex_string>()},
+          {"label", class_labels[each_row.identifier].to<flex_string>()},
           {"type", "rectangle"},
           {"coordinates", std::move(bb_dict)},
           {"confidence", each_row.confidence}};
