@@ -155,7 +155,16 @@ float_array_map tf_model_backend::export_weights() const {
   float_array_map result;
   call_pybind_function([&]() {
     // Call export_weights method on the TensorFLowModel
-    pybind11::object exported_weights = model_.attr("export_weights")();
+    pybind11::dict exported_weights = model_.attr("export_weights")();
+
+    // it should be trivial to call this if we use the same interpreter process
+    pybind11::module np = pybind11::module::import("numpy");
+    for (auto& kv : exported_weights) {
+      // defensively call ascontiguousarray to force to reorganize
+      // underlying numpy memory layout using the real strides
+      exported_weights[kv.first] = np.attr("ascontiguousarray")(kv.second);
+    }
+
     std::map<std::string, pybind11::buffer> buf_output =
         exported_weights.cast<std::map<std::string, pybind11::buffer>>();
 
@@ -346,7 +355,6 @@ std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
  * TODO: Add proper arguments to create_drawing_classifier
  */
 std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
-    /* TODO: const float_array_map& config if needed */
     const float_array_map& weights,
     size_t batch_size, size_t num_classes) {
   std::unique_ptr<tf_model_backend> result;

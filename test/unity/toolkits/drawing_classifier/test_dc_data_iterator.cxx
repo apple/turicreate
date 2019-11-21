@@ -13,6 +13,7 @@
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
+#include <model_server/lib/flex_dict_view.hpp>
 #include <model_server/lib/image_util.hpp>
 
 #include "dc_data_utils.hpp"
@@ -20,7 +21,7 @@
 namespace turi {
 namespace drawing_classifier {
 
-const std::vector<std::string> UNIQUE_LABELS = {"foo", "bar", "baz"};
+const flex_list UNIQUE_LABELS = {"foo", "bar", "baz"};
 
 /** Runs all standard tests for a simple_data_iterator
  *
@@ -52,8 +53,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   /* Create a simple data iterator */
 
   simple_data_iterator data_source(params);
-  std::vector<std::string> actual_class_labels = data_source.class_labels();
-  auto class_to_index_map = data_source.class_to_index_map();
+  flex_list actual_class_labels = data_source.class_labels();
 
   /* Test class labels */
   if (!checked_class_labels) {
@@ -61,8 +61,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
      * expected_class_labels were not passed in to the params, so we need to
      * make sure the inferred class labels are correct
      */
-    std::vector<std::string> expected_class_labels =
-        data_generator.get_unique_labels();
+    flex_list expected_class_labels = data_generator.get_unique_labels();
     TS_ASSERT_EQUALS(actual_class_labels.size(), expected_class_labels.size());
     for (size_t i = 0; i < actual_class_labels.size(); i++) {
       TS_ASSERT_EQUALS(actual_class_labels[i], expected_class_labels[i]);
@@ -101,8 +100,9 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   for (size_t index_in_batch = 0; index_in_batch < batch_size;
        index_in_batch++) {
     float expected_target = static_cast<float>(
-        class_to_index_map[data[params.target_column_name][index_in_data]
-                               .to<flex_string>()]);
+        std::find(actual_class_labels.begin(), actual_class_labels.end(),
+                  data[params.target_column_name][index_in_data]) -
+        actual_class_labels.begin());
     float actual_target = actual_target_data[index_in_batch];
     TS_ASSERT_EQUALS(expected_target, actual_target);
     index_in_data = (index_in_data + 1) % data.size();
@@ -161,7 +161,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
 
   drawing_data_generator data_generator(/* is_bitmap_based */ true, NUM_ROWS,
                                         /* class_labels */ UNIQUE_LABELS);
-  std::vector<std::string> class_labels = {"bar", "foo"};
+  flex_list class_labels = {"bar", "foo"};
 
   // Purposely added an extraneous label 'baz'.
   data_generator.set_class_labels(class_labels);

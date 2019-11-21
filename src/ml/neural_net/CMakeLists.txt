@@ -42,6 +42,7 @@ if(APPLE AND HAS_MPS AND NOT TC_BUILD_IOS)
       style_transfer/mps_style_transfer_vgg_16_block_1_node.mm
       style_transfer/mps_style_transfer_vgg_16_block_2_node.mm
       style_transfer/mps_style_transfer_vgg_16_network.m
+      style_transfer/mps_style_transfer_weights.m
     REQUIRES
       unity_core
       ${ACCELERATE}
