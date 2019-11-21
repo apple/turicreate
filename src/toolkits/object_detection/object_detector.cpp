@@ -14,6 +14,7 @@
 #include <limits>
 #include <queue>
 #include <random>
+#include <sstream>
 #include <utility>
 #include <vector>
 
