@@ -350,6 +350,11 @@ NS_ASSUME_NONNULL_END
 - (size_t)weightSize{
     return sizeWeights / sizeof(float);
 }
+
+- (NSArray<NSNumber *> *)weightShape{
+  return @[@(_outputFeatureChannels), @(_kernelHeight), @(_kernelWidth), @(_inputFeatureChannels)];
+}
+
 - (size_t)biasSize{
     return sizeBias / sizeof(float);
 }

@@ -9,13 +9,24 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as np
 
+def suppress_tensorflow_warnings():
+	"""
+	Suppresses tensorflow warnings
+	"""
+	import os
+	os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
+	import tensorflow.compat.v1 as _tf
+	_tf.disable_v2_behavior()
+	_tf.logging.set_verbosity(_tf.logging.ERROR)
+	_tf.debugging.set_log_device_placement(False)
 
 def get_gpu_names():
 	"""
 	Gets the available GPU names.
 	"""
-	import tensorflow as tf
-	gpu_names = tf.config.experimental.list_physical_devices('GPU')
+	import tensorflow as _tf
+	gpu_names = _tf.config.experimental.list_physical_devices('GPU')
 	return [str(gpu_name) for gpu_name in gpu_names]
 
 def convert_shared_float_array_to_numpy(array):

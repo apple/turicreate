@@ -6,16 +6,14 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from turicreate.util import _ProgressTablePrinter
-import tensorflow as _tf
+
 import numpy as _np
-import time as _time
 from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
-
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-
+# Suppresses verbosity to only errors
+_utils.suppress_tensorflow_warnings()
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
@@ -26,8 +24,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         """
         for key in net_params.keys():
-            net_params[key] = _utils.convert_shared_float_array_to_numpy(
-                net_params[key])
+            net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
         _tf.reset_default_graph()
 
@@ -155,15 +152,14 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         labels = feed_dict["labels"].astype("int32").T
         one_hot_labels[_np.arange(int(num_samples)), labels] = 1
 
-        _, final_train_loss, final_train_accuracy = self.sess.run(
-            [self.optimizer, self.cost, self.accuracy],
+        _, final_train_accuracy = self.sess.run(
+            [self.optimizer, self.accuracy],
             feed_dict={
                 self.input: feed_dict['input'],
                 self.one_hot_labels: one_hot_labels
             })
 
-        result = {'accuracy': _np.array(final_train_accuracy),
-                  'loss': _np.array(final_train_loss)}
+        result = {'accuracy': _np.array(final_train_accuracy)}
 
         return result
 
@@ -186,12 +182,11 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
             one_hot_labels[_np.arange(num_samples), labels] = 1
             feed_dict_for_session[self.one_hot_labels] = one_hot_labels
 
-            pred_probs, loss, final_accuracy = self.sess.run(
-                [self.predictions, self.cost, self.accuracy],
+            pred_probs, final_accuracy = self.sess.run(
+                [self.predictions, self.accuracy],
                 feed_dict=feed_dict_for_session)
 
             result = {'accuracy': _np.array(final_accuracy),
-                      'loss': _np.array(loss),
                       'output': _np.array(pred_probs)}
         else:
             pred_probs = self.sess.run([self.predictions],
@@ -238,6 +233,8 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                             {var.name.replace(":0", ""): val.transpose(1, 0)})
                 else:
                     # TODO: Call _utils.convert_conv2d_tf_to_coreml once #2513 is merged.
+                    # np.transpose won't change the underlying memory layout
+                    # but in turicreate we will force it.
                     net_params.update(
                         {var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
 

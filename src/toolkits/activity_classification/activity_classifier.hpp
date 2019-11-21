@@ -228,12 +228,12 @@ class EXPORT activity_classifier: public ml_model_base {
                           std::string session_id_column_name,
                           variant_type validation_data,
                           std::map<std::string, flexible_type> opts);
-  virtual void perform_training_iteration();
+  virtual void perform_training_iteration(bool show_loss);
 
   virtual std::tuple<float, float> compute_validation_metrics(
       size_t prediction_window, size_t num_classes, size_t batch_size);
 
-  virtual void init_table_printer(bool has_validation);
+  virtual void init_table_printer(bool has_validation, bool show_loss);
 
   // Returns an SFrame where each row corresponds to one prediction, and
   // containing four columns: "session_id" indicating the session ID shared by

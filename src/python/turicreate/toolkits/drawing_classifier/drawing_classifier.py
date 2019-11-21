@@ -133,6 +133,17 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     """
 
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
+    if warm_start is not None:
+        if type(warm_start) is not str:
+            raise TypeError("'warm_start' must be a string or None. "
+                + "'warm_start' can take in the following values: "
+                + str(accepted_values_for_warm_start))
+        if warm_start not in accepted_values_for_warm_start:
+            raise _ToolkitError("Unrecognized value for 'warm_start': "
+                + warm_start + ". 'warm_start' can take in the following "
+                + "values: " + str(accepted_values_for_warm_start))
+        # Replace 'auto' with name of current default Warm Start model.
+        warm_start = warm_start.replace("auto", "quickdraw_245_v0")
 
     if '_advanced_parameters' in kwargs:
         # Make sure no additional parameters are provided
@@ -171,8 +182,13 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
-        # Enable the following line when #2524 is merged
-        # options["warm_start"] = warm_start
+        if validation_set is None:
+            validation_set = _tc.SFrame()
+        if warm_start:
+            # Load CoreML warmstart model
+            pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
+            options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
+        options["warm_start"] = "" if warm_start is None else warm_start
         model.train(input_dataset, target, feature, validation_set, options)
         return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
 
@@ -970,9 +986,9 @@ class DrawingClassifier_beta(_Model):
         Returns
         -------
         out : string
-            A description of the model.
+            A description of the DrawingClassifier.
         """
-        return self.__class__.__name__
+        return self.__repr__()
 
     def __repr__(self):
         """
@@ -985,7 +1001,12 @@ class DrawingClassifier_beta(_Model):
         out : string
             A description of the model.
         """
-        return self.__class__.__name__
+
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
 
     def _get_version(self):
         return self._CPP_DRAWING_CLASSIFIER_VERSION
@@ -1180,3 +1201,36 @@ class DrawingClassifier_beta(_Model):
           >>> print results['accuracy']
         """
         return self.__proxy__.evaluate(dataset, metric)
+
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Number of classes', 'num_classes'),
+            ('Feature column', 'feature'),
+            ('Target column', 'target')
+        ]
+        training_fields = [
+            ('Training Iterations', 'max_iterations'),
+            ('Training Accuracy', 'training_accuracy'),
+            ('Validation Accuracy', 'validation_accuracy'),
+            ('Training Time', 'training_time'),
+            ('Number of Examples', 'num_examples')
+        ]
+
+        section_titles = ['Schema', 'Training summary']
+        return([model_fields, training_fields], section_titles)

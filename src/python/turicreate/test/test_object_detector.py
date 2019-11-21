@@ -22,7 +22,6 @@ import coremltools
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
 USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
-IS_PRE_6_0_RC = float(tc.__version__) < 6.0
 
 
 def _get_data(feature, annotations):

@@ -107,6 +107,7 @@ API_AVAILABLE(macos(10.14))
 - (void *__nonnull)weights;
 - (float *__nullable)biasTerms;
 - (size_t)weightSize;
+- (NSArray<NSNumber *> *)weightShape;
 - (size_t)biasSize;
 - (void)loadWeight:(float *__nullable)src;
 - (void)loadBias:(float *__nullable)src;

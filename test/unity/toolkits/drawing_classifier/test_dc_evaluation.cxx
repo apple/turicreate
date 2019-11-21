@@ -88,7 +88,7 @@ BOOST_AUTO_TEST_CASE(test_dc_evaluation_all_correct) {
   size_t batch_size = 3;
 
   // okay, generate the labels
-  std::vector<std::string> labels;
+  flex_list labels;
   labels.resize(num_of_classes);
   std::iota(labels.begin(), labels.end(), 0);
 
@@ -102,7 +102,7 @@ BOOST_AUTO_TEST_CASE(test_dc_evaluation_all_correct) {
   auto evaluate = [&](gl_sframe data, std::string metric) {
     auto result = evaluation::compute_classifier_metrics(
         data, "target", metric, predictions,
-        {{"classes", flex_list(labels.begin(), labels.end())}});
+        {{"classes", labels}});
     return result;
   };
 
@@ -127,7 +127,7 @@ BOOST_AUTO_TEST_CASE(test_dc_evaluation_all_wrong) {
   size_t batch_size = 3;
 
   // okay, generate the labels
-  std::vector<std::string> labels;
+  flex_list labels;
   labels.resize(num_of_classes);
   std::iota(labels.begin(), labels.end(), 0);
 
@@ -141,7 +141,7 @@ BOOST_AUTO_TEST_CASE(test_dc_evaluation_all_wrong) {
   auto evaluate = [&](gl_sframe data, std::string metric) {
     auto result = evaluation::compute_classifier_metrics(
         data, "target", metric, predictions,
-        {{"classes", flex_list(labels.begin(), labels.end())}});
+        {{"classes", labels}});
     return result;
   };
 

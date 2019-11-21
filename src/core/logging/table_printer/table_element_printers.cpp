@@ -113,12 +113,7 @@ void _print_long(std::ostringstream& ss, size_t width, long v) {
   }
 }
 
-/** Print a formatted time to the output stream ss.
- */
-void _print_time(std::ostringstream& ss, size_t width, double t) {
-
-  std::stringstream ts;
-
+void _format_time(std::stringstream& ts, double t) {
   if(t < 0.001) {
 
     ts << (1000000*t) << "us";
@@ -151,6 +146,14 @@ void _print_time(std::ostringstream& ss, size_t width, double t) {
     ts << int(floor(t/86400)) << "d "
        << ((int(floor(t)) % 86400) /3600) << "h ";
   }
+}
+
+/** Print a formatted time to the output stream ss.
+ */
+void _print_time(std::ostringstream& ss, size_t width, double t) {
+  std::stringstream ts;
+
+  _format_time(ts, t);
 
   _print_string(ss, width, ts.str());
 }

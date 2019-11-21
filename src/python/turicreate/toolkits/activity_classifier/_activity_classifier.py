@@ -172,7 +172,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # C++ model
 
     if USE_CPP:
-
         name = 'activity_classifier'
 
         import turicreate as _turicreate
@@ -186,6 +185,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         options['batch_size'] = batch_size
         options['max_iterations'] = max_iterations
         options['verbose'] = verbose
+        options['_show_loss'] = False
 
         model.train(dataset, target, session_id, validation_set, options)
         return ActivityClassifier_beta(model_proxy=model, name=name)
@@ -370,22 +370,20 @@ class ActivityClassifier_beta(_Model):
         Returns
         -------
         out : string
-            A description of the model.
+            A description of the ActivityClassifier.
         """
-        return self.__class__.__name__
+        return self.__repr__()
 
     def __repr__(self):
         """
-        Returns a string description of the model, including (where relevant)
-        the schema of the training data, description of the training data,
-        training statistics, and model hyperparameters.
-
-        Returns
-        -------
-        out : string
-            A description of the model.
+        Print a string description of the model when the model name is entered
+        in the terminal.
         """
-        return self.__class__.__name__
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
 
     def _get_version(self):
         return self._CPP_ACTIVITY_CLASSIFIER_VERSION
@@ -647,6 +645,38 @@ class ActivityClassifier_beta(_Model):
         >>> classes = model.classify(data)
         """
         return self.__proxy__.classify(dataset, output_frequency);
+
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Number of examples', 'num_examples'),
+            ('Number of sessions', 'num_sessions'),
+            ('Number of classes', 'num_classes'),
+            ('Number of feature columns', 'num_features'),
+            ('Prediction window', 'prediction_window'),
+        ]
+        training_fields = [
+            ('Log-likelihood', 'training_log_loss'),
+            ('Training time (sec)', 'training_time'),
+        ]
+
+        section_titles = ['Schema', 'Training summary']
+        return([model_fields, training_fields], section_titles)
 
 class ActivityClassifier(_CustomModel):
     """

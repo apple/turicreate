@@ -9,20 +9,19 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import numpy as _np
+from .._tf_model import TensorFlowModel
+import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-import turicreate.toolkits._tf_utils as _utils
+# Suppresses verbosity to only errors
+_utils.suppress_tensorflow_warnings()
 
-class ODTensorFlowModel(object):
+class ODTensorFlowModel(TensorFlowModel):
 
     def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
 
         #reset tensorflow graph when a new model is created
         _tf.reset_default_graph()
-
-        # Suppresses verbosity to only errors
-        _tf.logging.set_verbosity(_tf.logging.ERROR)
-        _tf.debugging.set_log_device_placement(False)
 
         # Converting incoming weights from shared_float_array to numpy
         for key in init_weights.keys():
@@ -204,7 +203,7 @@ class ODTensorFlowModel(object):
 
         return conv
 
-    def pooling_layer(self, inputs, pool_size, strides, name='1_pool'):
+    def pooling_layer(self, inputs, pool_size, strides, padding, name='1_pool'):
         """
         Define pooling layer
 
@@ -225,7 +224,7 @@ class ODTensorFlowModel(object):
             Return pooling layer
         """
 
-        pool = _tf.nn.max_pool2d(inputs, ksize=pool_size, strides=strides, padding='SAME', name=name)
+        pool = _tf.nn.max_pool2d(inputs, ksize=pool_size, strides=strides, padding=padding, name=name)
         return pool
 
     def tiny_yolo(self, inputs, output_size=125):
@@ -260,10 +259,10 @@ class ODTensorFlowModel(object):
             if idx < 7:
                 if idx < 6:
                     strides = [1, 2, 2, 1]
+                    net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, padding='VALID', name='pool%d_' % idx)
                 else:
                     strides = [1, 1, 1, 1]
-
-                net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, name='pool%d_' % idx)
+                    net = _tf.nn.avg_pool2d(net, ksize=[1, 2, 2, 1], strides=strides, padding='SAME', name='pool%d_' % idx)
 
         if output_size is not None:
             net = self.conv_layer(net, [1, 1, filter_sizes[idx - 1], output_size],
@@ -434,10 +433,8 @@ class ODTensorFlowModel(object):
                 tf_export_params.update(
                     {var.name.replace(":0", ""): val})
             elif val.ndim == 4:
-                # Converting from [filter_height, filter_width, input_channels, output_channels] to
-                # [output_channels, input_channels, filter_height, filter_width]
                 tf_export_params.update(
-                    {var.name.replace(":0", ""): val.transpose(3,2,0,1)})
+                    {var.name.replace(":0", ""): _utils.convert_conv2d_tf_to_coreml(val)})
         for layer_name in tf_export_params.keys():
             tf_export_params[layer_name] = _np.ascontiguousarray(tf_export_params[layer_name])
 

@@ -20,8 +20,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
 USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
-IS_PRE_6_0_RC = float(tc.__version__) < 6.0
-
 
 def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
                randomize_num_sessions = True, num_labels = 9, prediction_window = 5,
