@@ -10,6 +10,7 @@
 #include <map>
 #include <random>
 #include <string>
+#include <timer/timer.hpp>
 
 #include <core/data/image/image_type.hpp>
 #include <model_server/lib/image_util.hpp>
@@ -535,6 +536,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
                                      const std::vector<double>& style_idx) {
   if (data.size() == 0) return;
 
+  // TODO: if logging enabled
   flex_int batch_size = read_state<flex_int>("batch_size");
   flex_int num_styles = read_state<flex_int>("num_styles");
 
@@ -557,6 +559,12 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   std::unique_ptr<model_backend> model = ctx->create_style_transfer(
       {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
       weight_params);
+
+  // Style Printer
+  size_t idx = 0;
+  table_printer table(
+        { {"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} }, 0);
+  table.print_header();
 
   // looping through all of the style indices
   for (size_t i : style_idx) {
@@ -592,9 +600,22 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
         result.write({row.first, row.second}, 0);
       }
 
+      // progress printing for stylization
+      idx++;
+      std::ostringstream formatted_percentage;
+      formatted_percentage.precision(2);
+      formatted_percentage << std::fixed
+                           << (idx * 100.0 / (data.size() * style_idx.size()));
+      formatted_percentage << "%";
+      table.print_progress_row(idx, idx, progress_time(),
+                               formatted_percentage.str());
+
       // get next batch
       batch = data_iter->next_batch(batch_size);
     }
+
+    table.print_row(idx, progress_time(), "100%");
+    table.print_footer();
 
     data_iter->reset();
   }
