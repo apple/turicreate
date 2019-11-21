@@ -217,9 +217,9 @@ class SFrameTest(unittest.TestCase):
             self.__test_equal(sf, df)
 
     def test_drop_duplicates(self): 
-        sf = SFrame({'A': ['a', 'b', 'a'], 'B': ['b', 'a', 'c'], 'C': [1, 2, 3]}) 
+        sf = SFrame({'A': ['a', 'b', 'a'], 'B': ['b', 'a', 'b'], 'C': [1, 2, 1]}) 
         df1=sf.drop_duplicates(subset=['A']) 
-        sf1 = pd.DataFrame({'A': ['a', 'b'], 'B': ['b', 'a'], 'C': [1, 2]}) 
+        sf1 = pd.DataFrame({'A': ['a','b'], 'B': ['b','a'], 'C': [1,2]}) 
         self.__test_equal(df1,sf1) 
 
     def test_parse_csv(self):
