@@ -562,7 +562,6 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
   // Style Printer
   size_t idx = 0;
-
   table_printer table(
         { {"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} }, 0);
   table.print_header();
