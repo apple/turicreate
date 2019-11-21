@@ -55,7 +55,9 @@ class EXPORT drawing_classifier : public ml_model_base {
   variant_map_type evaluate(gl_sframe data, std::string metric);
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename, bool use_default_spec = false);
+      std::string filename, std::string short_description,
+      std::map<std::string, flexible_type> additional_user_defined,
+      bool use_default_spec = false);
 
   // Support for iterative training.
   // TODO: Expose via forthcoming C-API checkpointing mechanism?
@@ -201,8 +203,12 @@ class EXPORT drawing_classifier : public ml_model_base {
       "                           prediction/true label combinations.\n"
       "    - 'roc_curve'        : An SFrame containing information needed for\n"
       "                           an ROC curve\n");
+
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::export_to_coreml,
-                                 "filename");
+            "filename", "short_description", "additional_user_defined");
+  register_defaults("export_to_coreml",
+      {{"short_description", ""},
+       {"additional_user_defined", to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::init_training, "data",
                                  "target_column_name", "feature_column_name",

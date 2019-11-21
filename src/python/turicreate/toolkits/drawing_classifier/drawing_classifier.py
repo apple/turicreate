@@ -10,6 +10,7 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 import numpy as _np
 import time as _time
+from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
@@ -1024,7 +1025,10 @@ class DrawingClassifier_beta(_Model):
         --------
         >>> model.export_coreml("MyModel.mlmodel")
         """
-        return self.__proxy__.export_to_coreml(filename)
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        short_description = _coreml_utils._mlmodel_short_description('Drawing Classifier')
+        self.__proxy__.export_to_coreml(filename, short_description,
+                additional_user_defined_metadata)
 
     def predict(self, dataset, output_type='class'):
         """

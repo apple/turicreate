@@ -401,7 +401,10 @@ class ActivityClassifier_beta(_Model):
         --------
         >>> model.export_coreml("MyModel.mlmodel")
         """
-        self.__proxy__.export_to_coreml(filename)
+        short_description = _coreml_utils._mlmodel_short_description('Activity classifier')
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        self.__proxy__.export_to_coreml(filename, short_description,
+                additional_user_defined_metadata)
 
 
     def predict(self, dataset, output_type='class', output_frequency='per_row'):

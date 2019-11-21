@@ -1655,8 +1655,11 @@ class ObjectDetector_beta(_Model):
         options['include_non_maximum_suppression'] = include_non_maximum_suppression
         options['confidence_threshold'] = confidence_threshold
         options['iou_threshold'] = iou_threshold
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        short_description = _coreml_utils._mlmodel_short_description('Object Detector')
 
-        self.__proxy__.export_to_coreml(filename, options)
+        self.__proxy__.export_to_coreml(filename, short_description,
+                additional_user_defined_metadata, options)
 
 
     def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45, verbose=True):

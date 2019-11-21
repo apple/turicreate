@@ -9,6 +9,7 @@ from __future__ import absolute_import as _
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._supervised_learning import select_default_missing_value_policy
+from turicreate.toolkits import _coreml_utils
 
 class TreeModelMixin(object):
     """
@@ -315,4 +316,9 @@ class TreeModelMixin(object):
         return ([data_fields, training_fields], ["Schema", "Settings"])
 
     def _export_coreml_impl(self, filename, context):
+        tc_version_info = _coreml_utils._get_tc_version_info()
+        if 'user_defined' not in context:
+            context['user_defined'] = tc_version_info
+        else:
+            context['user_defined'].update(tc_version_info)
         tc.extensions._xgboost_export_as_model_asset(self.__proxy__, filename, context)

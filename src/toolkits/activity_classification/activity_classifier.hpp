@@ -45,7 +45,8 @@ class EXPORT activity_classifier: public ml_model_base {
                          std::string output_frequency);
   variant_map_type evaluate(gl_sframe data, std::string metric);
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
-      std::string filename);
+      std::string filename, std::string short_description,
+      std::map<std::string, flexible_type> additional_user_defined);
   void import_from_custom_model(variant_map_type model_data, size_t version);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("activity_classifier")
@@ -195,7 +196,10 @@ class EXPORT activity_classifier: public ml_model_base {
       "                           ROC curve\n"
   );
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::export_to_coreml,
-                                 "filename");
+            "filename", "short_description", "additional_user_defined");
+  register_defaults("export_to_coreml",
+      {{"short_description", ""},
+       {"additional_user_defined", to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::import_from_custom_model,
                                  "model_data", "version");
