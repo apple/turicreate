@@ -120,22 +120,36 @@
   [_instNorm2.tc_weightsData setLearningRate:lr];
 }
 
-- (NSDictionary<NSString *, NSData *> *)exportWeights:(NSString *)prefix {
-  NSMutableDictionary<NSString *, NSData *> *weights = [[NSMutableDictionary alloc] init];;
+- (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *)exportWeights:(NSString *)prefix {
+  NSMutableDictionary<NSString *, TCMPSStyleTransferWeights *> *weights = [[NSMutableDictionary alloc] init];;
 
   NSString* conv1Keys = [NSString stringWithFormat:@"%@%@", prefix, @"conv_1_weight"];
   NSUInteger conv1WeightSize = (NSUInteger)([_conv1.tc_weightsData weightSize] * sizeof(float));
   NSMutableData* conv1DataWeight = [NSMutableData dataWithLength:conv1WeightSize];
   memcpy(conv1DataWeight.mutableBytes, [_conv1.tc_weightsData weights], conv1WeightSize);
 
-  weights[conv1Keys] = conv1DataWeight;
+  NSArray<NSNumber *>* conv1WeightShape = [_conv1.tc_weightsData weightShape];
+
+  TCMPSStyleTransferWeights* conv1WeightWrapper = [[TCMPSStyleTransferWeights alloc] init];
+
+  conv1WeightWrapper.data = conv1DataWeight;
+  conv1WeightWrapper.shape = conv1WeightShape;
+
+  weights[conv1Keys] = conv1WeightWrapper;
 
   NSString* conv2Keys = [NSString stringWithFormat:@"%@%@", prefix, @"conv_2_weight"];
   NSUInteger conv2WeightSize = (NSUInteger)([_conv2.tc_weightsData weightSize] * sizeof(float));
   NSMutableData* conv2DataWeight = [NSMutableData dataWithLength:conv2WeightSize];
   memcpy(conv2DataWeight.mutableBytes, [_conv2.tc_weightsData weights], conv2WeightSize);
 
-  weights[conv2Keys] = conv2DataWeight;
+  NSArray<NSNumber *>* conv2WeightShape = [_conv2.tc_weightsData weightShape];
+
+  TCMPSStyleTransferWeights* conv2WeightWrapper = [[TCMPSStyleTransferWeights alloc] init];
+
+  conv2WeightWrapper.data = conv2DataWeight;
+  conv2WeightWrapper.shape = conv2WeightShape;
+
+  weights[conv2Keys] = conv2WeightWrapper;
 
   NSString* instNorm1GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_gamma_weight"];
   NSString* instNorm1BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_1_beta_weight"];
@@ -148,8 +162,20 @@
   memcpy(instNorm1DataGamma.mutableBytes, [_instNorm1.tc_weightsData gamma], instNorm1Size);
   memcpy(instNorm1DataBeta.mutableBytes, [_instNorm1.tc_weightsData beta], instNorm1Size);
 
-  weights[instNorm1GammaKeys] = instNorm1DataGamma;
-  weights[instNorm1BetaKeys] = instNorm1DataBeta;
+  NSArray<NSNumber *>* inst1NormGammaShape = @[@([_instNorm1.tc_weightsData styles]), @([_instNorm1.tc_weightsData numberOfFeatureChannels])];
+  NSArray<NSNumber *>* inst1NormBetaShape = @[@([_instNorm1.tc_weightsData styles]), @([_instNorm1.tc_weightsData numberOfFeatureChannels])];
+
+  TCMPSStyleTransferWeights* inst1NormGammaWrapper = [[TCMPSStyleTransferWeights alloc] init];
+  TCMPSStyleTransferWeights* inst1NormBetaWrapper = [[TCMPSStyleTransferWeights alloc] init];
+
+  inst1NormGammaWrapper.data = instNorm1DataGamma;
+  inst1NormGammaWrapper.shape = inst1NormGammaShape;
+
+  inst1NormBetaWrapper.data = instNorm1DataBeta;
+  inst1NormBetaWrapper.shape = inst1NormBetaShape;
+
+  weights[instNorm1GammaKeys] = inst1NormGammaWrapper;
+  weights[instNorm1BetaKeys] = inst1NormBetaWrapper;
 
   NSString* instNorm2GammaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_gamma_weight"];
   NSString* instNorm2BetaKeys = [NSString stringWithFormat:@"%@%@", prefix, @"inst_2_beta_weight"];
@@ -162,10 +188,23 @@
   memcpy(instNorm2DataGamma.mutableBytes, [_instNorm2.tc_weightsData gamma], instNorm2Size);
   memcpy(instNorm2DataBeta.mutableBytes, [_instNorm2.tc_weightsData beta], instNorm2Size);
 
-  weights[instNorm2GammaKeys] = instNorm2DataGamma;
-  weights[instNorm2BetaKeys] = instNorm2DataBeta;
+
+  NSArray<NSNumber *>* inst2NormGammaShape = @[@([_instNorm2.tc_weightsData styles]), @([_instNorm2.tc_weightsData numberOfFeatureChannels])];
+  NSArray<NSNumber *>* inst2NormBetaShape = @[@([_instNorm2.tc_weightsData styles]), @([_instNorm2.tc_weightsData numberOfFeatureChannels])];
+
+  TCMPSStyleTransferWeights* inst2NormGammaWrapper = [[TCMPSStyleTransferWeights alloc] init];
+  TCMPSStyleTransferWeights* inst2NormBetaWrapper = [[TCMPSStyleTransferWeights alloc] init];
+
+  inst2NormGammaWrapper.data = instNorm2DataGamma;
+  inst2NormGammaWrapper.shape = inst2NormGammaShape;
+
+  inst2NormBetaWrapper.data = instNorm2DataBeta;
+  inst2NormBetaWrapper.shape = inst2NormBetaShape;
+
+  weights[instNorm2GammaKeys] = inst2NormGammaWrapper;
+  weights[instNorm2BetaKeys] = inst2NormBetaWrapper;
   
-  return [weights copy];
+  return weights;
 }
 
 @end

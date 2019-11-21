@@ -159,7 +159,7 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
        {"classes", labels},
        {"max_iterations", 300},
        {"random_seed", 11},
-       {"warm_start", false},
+       {"warm_start", ""},
        {"feature", features[0]}});
 
   auto ml_model_wrapper = dc.export_to_coreml("", /* debug no throw */ true);

@@ -16,7 +16,6 @@ import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
 
-
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
     def __init__(self, net_params, batch_size, num_classes):
@@ -236,6 +235,8 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                             {var.name.replace(":0", ""): val.transpose(1, 0)})
                 else:
                     # TODO: Call _utils.convert_conv2d_tf_to_coreml once #2513 is merged.
+                    # np.transpose won't change the underlying memory layout
+                    # but in turicreate we will force it.
                     net_params.update(
                         {var.name.replace(":0", ""): _np.transpose(val, (3, 2, 0, 1))})
 
