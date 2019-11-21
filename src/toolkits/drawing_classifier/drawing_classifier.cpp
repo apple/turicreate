@@ -842,7 +842,7 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
 
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     std::string filename, std::string short_description,
-    std::map<std::string, flexible_type> additional_user_defined,
+    const std::map<std::string, flexible_type>& additional_user_defined,
     bool use_default_spec) {
   /* Add code for export_to_coreml */
   if (!nn_spec_) {
@@ -881,8 +881,9 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
                                        read_state<flex_int>("max_iterations"));
   }
 
-  user_defined_metadata.insert(user_defined_metadata.end(), additional.begin(),
-                               additional.end());
+  user_defined_metadata.insert(user_defined_metadata.end(),
+                               additional_user_defined.begin(),
+                               additional_user_defined.end());
 
   model_wrapper->add_metadata({
       {"short_description", short_description},

@@ -58,7 +58,7 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::string short_description,
-      std::map<std::string, flexible_type> additional_user_defined,
+      const std::map<std::string, flexible_type>& additional_user_defined,
       bool use_default_spec = false);
 
   // Support for iterative training.
