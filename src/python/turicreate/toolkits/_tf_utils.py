@@ -10,16 +10,19 @@ from __future__ import absolute_import as _
 import numpy as np
 
 def suppress_tensorflow_warnings():
-	"""
-	Suppresses tensorflow warnings
-	"""
-	import os
-	os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+        """
+        Suppresses tensorflow warnings
+        """
+        import os
+        os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
 
-	import tensorflow.compat.v1 as _tf
-	_tf.disable_v2_behavior()
-	_tf.logging.set_verbosity(_tf.logging.ERROR)
-	_tf.debugging.set_log_device_placement(False)
+        import tensorflow.compat.v1 as _tf
+
+        # We need to disable this here to match behavior in the rest of TuriCreate
+        _tf.disable_v2_behavior()
+
+        _tf.logging.set_verbosity(_tf.logging.ERROR)
+        _tf.debugging.set_log_device_placement(False)
 
 def get_gpu_names():
 	"""
