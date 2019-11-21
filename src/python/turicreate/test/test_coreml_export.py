@@ -63,23 +63,20 @@ class CoreMLExportTest(unittest.TestCase):
         if predict_topk is None:
             predict_topk = not is_regression
 
-
         # Act & Assert
         with tempfile.NamedTemporaryFile(mode='w', suffix = '.mlmodel') as mlmodel_file:
             mlmodel_filename = mlmodel_file.name
             model.export_coreml(mlmodel_filename)
             coreml_model = coremltools.models.MLModel(mlmodel_filename)
+            self.assertDictEqual({
+                   'com.github.apple.turicreate.version': tc.__version__,
+                   'com.github.apple.os.platform': platform.platform(),
+                }, dict(coreml_model.user_defined_metadata)
+            )
 
             if _mac_ver() < (10, 13):
                 print("Skipping export test; model not supported on this platform.")
                 return
-
-            # print(coreml_model.get_spec())
-
-            # import shutil
-            # shutil.copyfile(mlmodel_filename, "./bt.mlmodel")
-
-            # model.save("./bt.model")
 
             def array_to_numpy(row):
                 import array
@@ -91,13 +88,9 @@ class CoreMLExportTest(unittest.TestCase):
                         row[r] = numpy.array(row[r])
                 return row
 
-
             for row in test_sf:
 
-                # print(row)
-
                 coreml_prediction = coreml_model.predict(array_to_numpy(row))
-
                 tc_prediction = model.predict(row)[0]
 
                 if (is_regression == False) and (type(model.classes[0]) == str):

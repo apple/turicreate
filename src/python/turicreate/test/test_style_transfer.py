@@ -21,7 +21,6 @@ import coremltools
 
 
 _NUM_STYLES = 4
-IS_PRE_6_0_RC = float(tc.__version__) < 6.0
 
 
 def _get_data(feature, num_examples=100):
@@ -70,6 +69,7 @@ class StyleTransferTest(unittest.TestCase):
         self.style_feature = 'style_feature_name'
         self.content_feature = 'content_feature_name'
         self.pre_trained_model = 'resnet-16'
+
         ## Create the model
         # Model
         self.style_sf = _get_data(feature=self.style_feature, num_examples=_NUM_STYLES)
@@ -233,16 +233,37 @@ class StyleTransferTest(unittest.TestCase):
 
     def test_export_coreml(self):
         import coremltools
+        import platform
         model = self.model
         for flexible_shape_on in [True, False]:
             filename = tempfile.mkstemp('my_style_transfer.mlmodel')[1]
             model.export_coreml(filename,
                 include_flexible_shape = flexible_shape_on)
+
+            ## Metadata test
+            coreml_model = coremltools.models.MLModel(filename)
+            self.assertDictEqual({
+                'com.github.apple.turicreate.version': tc.__version__,
+                'com.github.apple.os.platform': platform.platform(),
+                'type': 'style_transfer',
+                'content_feature': self.content_feature,
+                'style_feature': self.style_feature,
+                'model': self.pre_trained_model,
+                'max_iterations': '1',
+                'training_iterations': '1',
+                'num_styles': str(self.num_styles),
+                'version': '1',
+                }, dict(coreml_model.user_defined_metadata)
+            )
+            expected_result = 'Style transfer created by Turi Create (version %s)' \
+                                        % (tc.__version__)
+            self.assertEquals(expected_result, coreml_model.short_description)
+
+            ## Correctness test
             if not flexible_shape_on or _mac_ver() >= (10,14):
                 coreml_model = coremltools.models.MLModel(filename)
 
                 mac_os_version_threshold = (10,14) if flexible_shape_on else (10,13)
-
                 if _mac_ver() >= mac_os_version_threshold:
                     img = self.style_sf[0:2][self.style_feature][0]
                     img_fixed = tc.image_analysis.resize(img, 256, 256, 3)
@@ -255,15 +276,6 @@ class StyleTransferTest(unittest.TestCase):
                         img_fixed = tc.image_analysis.resize(img, 512, 512, 3)
                         img = self._coreml_python_predict(coreml_model, img_fixed)
                         self.assertEqual(img.shape, (512, 512, 3))
-
-                # Also check if we can train a second model and export it (there could
-                # be naming issues in mxnet)
-                filename2 = tempfile.mkstemp('my_style_transfer2.mlmodel')[1]
-                # We also test at the same time if we can export a model with a single
-                # class
-
-                model2 = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
-                model2.export_coreml(filename2)
 
     def test_repr(self):
         model = self.model
@@ -281,7 +293,6 @@ class StyleTransferTest(unittest.TestCase):
             print("Get styles passed")
 
 
-@pytest.mark.xfail(IS_PRE_6_0_RC, reason='Requires MXNet')
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class StyleTransferGPUTest(unittest.TestCase):

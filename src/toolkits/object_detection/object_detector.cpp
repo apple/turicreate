@@ -14,6 +14,7 @@
 #include <limits>
 #include <queue>
 #include <random>
+#include <sstream>
 #include <utility>
 #include <vector>
 
@@ -436,8 +437,14 @@ void object_detector::train(gl_sframe data,
   // Wait for any outstanding batches to finish.
   finalize_training(compute_final_metrics);
 
+  double current_time = time_object.current_time();
+
+  std::stringstream ss;
+  table_internal::_format_time(ss, current_time);
+
   add_or_update_state({
-      {"training_time", time_object.current_time()},
+    {"training_time", current_time},
+    {"_training_time_as_string", ss.str()}
   });
 }
 
@@ -608,15 +615,16 @@ variant_type object_detector::predict(
 
     // Convert predicted_row to flex_type list to call gl_sarray_writer
     flex_list predicted_row_ft;
+    flex_list class_labels = read_state<flex_list>("classes");
     for (const image_annotation& each_row : predicted_row) {
       flex_dict bb_dict = {{"x", each_row.bounding_box.x}, {"y", each_row.bounding_box.y},
                       {"width", each_row.bounding_box.width},
                       {"height", each_row.bounding_box.height}};
-      flex_dict each_annotation = {{"identifier", each_row.identifier},
-                                   {"type", "rectangle"},
-                                   {"coordinates", std::move(bb_dict)},
-                                   {"confidence", each_row.confidence}
-                                   };
+      flex_dict each_annotation = {
+          {"label", class_labels[each_row.identifier].to<flex_string>()},
+          {"type", "rectangle"},
+          {"coordinates", std::move(bb_dict)},
+          {"confidence", each_row.confidence}};
       predicted_row_ft.push_back(std::move(each_annotation));
     }
     result.write(predicted_row_ft, 0);
@@ -903,7 +911,10 @@ std::unique_ptr<model_spec> object_detector::init_model(
 }
 
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
-    std::string filename, std::map<std::string, flexible_type> opts) {
+    std::string filename, std::string short_desc,
+    std::map<std::string, flexible_type> additional_user_defined,
+    std::map<std::string, flexible_type> opts)
+{
   // If called during training, synchronize the model first.
   if (training_model_) {
     synchronize_training();
@@ -963,6 +974,9 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
       {"type", "object_detector"},
     };
 
+  for(const auto& kvp : additional_user_defined) {
+       user_defined_metadata.emplace_back(kvp.first, kvp.second);
+  }
 
   if (opts["include_non_maximum_suppression"].to<bool>()){
     user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
@@ -970,15 +984,16 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     user_defined_metadata.emplace_back("iou_threshold", opts["iou_threshold"]);
   }
 
-  // TODO: Should we also be adding the non-user-defined keys, such as
-  // "version" and "shortDescription", or is that up to the frontend?
-
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
       yolo_nn_spec, grid_width * SPATIAL_REDUCTION,
       grid_height * SPATIAL_REDUCTION, class_labels.size(),
       grid_height * grid_width * anchor_boxes().size(),
-      std::move(user_defined_metadata), std::move(class_labels),
-      read_state<flex_string>("feature"), std::move(opts));
+      std::move(class_labels), read_state<flex_string>("feature"), std::move(opts));
+
+  model_wrapper->add_metadata({
+      {"user_defined", std::move(user_defined_metadata)},
+      {"short_description", short_desc}
+  });
 
   if (!filename.empty()) {
     model_wrapper->save(filename);

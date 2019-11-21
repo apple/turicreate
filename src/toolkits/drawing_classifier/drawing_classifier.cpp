@@ -511,6 +511,10 @@ void drawing_classifier::iterate_training() {
     add_or_update_state({
         {"validation_accuracy", average_val_accuracy},
     });
+  } else {
+    add_or_update_state({
+        {"validation_accuracy", FLEX_UNDEFINED}
+    });
   }
 
   if (training_table_printer_) {
@@ -551,6 +555,9 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
                                std::string feature_column_name,
                                variant_type validation_data,
                                std::map<std::string, flexible_type> opts) {
+
+  turi::timer time_object;
+  time_object.start();
 
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
@@ -597,6 +604,9 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
       state_update["validation_" + p.first] = p.second;
     }
   }
+
+  state_update["num_examples"] = data.size();
+  state_update["training_time"] = time_object.current_time();
 
   add_or_update_state(state_update);
 }
@@ -822,7 +832,9 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
 }
 
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
-    std::string filename, bool use_default_spec) {
+    std::string filename, std::string short_description,
+    std::map<std::string, flexible_type> additional_user_defined,
+    bool use_default_spec) {
   /* Add code for export_to_coreml */
   if (!nn_spec_) {
     // use empty nn spec if not initalized;
@@ -852,9 +864,13 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
       {"type", "drawing_classifier"},
       {"version", 2},
   };
-
-  model_wrapper->add_metadata(
-      {{"user_defined", std::move(user_defined_metadata)}});
+  for(const auto& kvp : additional_user_defined) {
+       user_defined_metadata.emplace_back(kvp.first, kvp.second);
+  }
+  model_wrapper->add_metadata({
+      {"short_description", short_description},
+      {"user_defined", std::move(user_defined_metadata)},
+  });
 
   if (!filename.empty()) {
     model_wrapper->save(filename);

@@ -10,6 +10,7 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 import numpy as _np
 import time as _time
+from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
@@ -190,7 +191,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
             options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
         options["warm_start"] = "" if warm_start is None else warm_start
         model.train(input_dataset, target, feature, validation_set, options)
-        return DrawingClassifier_beta(model_proxy=model, name="drawing_classifier")
+        return DrawingClassifier(model_proxy=model, name="drawing_classifier")
 
     # Old MXNet Implementation
 
@@ -393,9 +394,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         'num_examples': len(input_dataset)
     }
 
-    return DrawingClassifier(state)
+    return DrawingClassifier_legacy(state)
 
-class DrawingClassifier(_CustomModel):
+class DrawingClassifier_legacy(_CustomModel):
     """
     A trained model that is ready to use for classification, and to be
     exported to Core ML.
@@ -960,7 +961,7 @@ class DrawingClassifier(_CustomModel):
             return predicted["probability"]
 
 
-class DrawingClassifier_beta(_Model):
+class DrawingClassifier(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification or export to
     CoreML.
@@ -986,9 +987,9 @@ class DrawingClassifier_beta(_Model):
         Returns
         -------
         out : string
-            A description of the model.
+            A description of the DrawingClassifier.
         """
-        return self.__class__.__name__
+        return self.__repr__()
 
     def __repr__(self):
         """
@@ -1001,7 +1002,12 @@ class DrawingClassifier_beta(_Model):
         out : string
             A description of the model.
         """
-        return self.__class__.__name__
+
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
 
     def _get_version(self):
         return self._CPP_DRAWING_CLASSIFIER_VERSION
@@ -1019,7 +1025,10 @@ class DrawingClassifier_beta(_Model):
         --------
         >>> model.export_coreml("MyModel.mlmodel")
         """
-        return self.__proxy__.export_to_coreml(filename)
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        short_description = _coreml_utils._mlmodel_short_description('Drawing Classifier')
+        self.__proxy__.export_to_coreml(filename, short_description,
+                additional_user_defined_metadata)
 
     def predict(self, dataset, output_type='class'):
         """
@@ -1196,3 +1205,36 @@ class DrawingClassifier_beta(_Model):
           >>> print results['accuracy']
         """
         return self.__proxy__.evaluate(dataset, metric)
+
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Number of classes', 'num_classes'),
+            ('Feature column', 'feature'),
+            ('Target column', 'target')
+        ]
+        training_fields = [
+            ('Training Iterations', 'max_iterations'),
+            ('Training Accuracy', 'training_accuracy'),
+            ('Validation Accuracy', 'validation_accuracy'),
+            ('Training Time', 'training_time'),
+            ('Number of Examples', 'num_examples')
+        ]
+
+        section_titles = ['Schema', 'Training summary']
+        return([model_fields, training_fields], section_titles)

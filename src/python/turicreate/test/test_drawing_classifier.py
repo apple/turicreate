@@ -148,6 +148,11 @@ class DrawingClassifierTest(unittest.TestCase):
             model = _tc.drawing_classifier.create(data, self.target,
                 feature=self.feature, validation_set=None, max_iterations=1)
 
+    def test_create_with_no_validation_set(self):
+        for data in self.trains:
+            model = _tc.drawing_classifier.create(data, self.target,
+                feature=self.feature, max_iterations=1)
+
     def test_create_with_empty_drawing_in_stroke_input(self):
         drawing = []
         sf = _tc.SFrame({
@@ -281,9 +286,30 @@ class DrawingClassifierTest(unittest.TestCase):
                     and (new_preds == old_preds).all())
 
     def test_export_coreml(self):
-        for model in self.models:
+        import coremltools
+        import platform
+        max_iters_ans = ['20', '1']
+        warm_start_ans = '' if self.warm_start is None else self.warm_start
+        for i, model in enumerate(self.models):
             filename = _mkstemp("bingo.mlmodel")[1]
             model.export_coreml(filename)
+
+            # Load the model back from the CoreML model file
+            coreml_model = coremltools.models.MLModel(filename)
+            self.assertDictEqual({
+                'com.github.apple.turicreate.version': _tc.__version__,
+                'com.github.apple.os.platform': platform.platform(),
+                'target': self.target,
+                'feature': self.feature,
+                'type': 'drawing_classifier',
+                'warm_start': warm_start_ans,
+                'max_iterations': max_iters_ans[i],
+                'version': '2',
+                }, dict(coreml_model.user_defined_metadata)
+            )
+            expected_result = 'Drawing classifier created by Turi Create (version %s)' \
+                                        % (_tc.__version__)
+            self.assertEquals(expected_result, coreml_model.short_description)
 
     @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_with_predict(self):

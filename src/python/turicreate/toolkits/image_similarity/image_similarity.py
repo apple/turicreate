@@ -22,6 +22,7 @@ from .. import _pre_trained_models
 from .. import _image_feature_extractor
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
                                                  _numeric_param_check_range)
+from turicreate.toolkits import _coreml_utils
 
 
 def create(dataset, label = None, feature = None, model = 'resnet-50', verbose = True,
@@ -629,9 +630,15 @@ class ImageSimilarityModel(_CustomModel):
         mlmodel.input_description[self.feature] = u'Input image'
         mlmodel.output_description[output_name] = u'Distances between the input and reference images'
 
-        _coreml_utils._set_model_metadata(mlmodel, self.__class__.__name__, {
-            'model': self.model,
-            'num_examples': str(self.num_examples)
-        }, version=ImageSimilarityModel._PYTHON_IMAGE_SIMILARITY_VERSION)
+        model_metadata = {
+             'model': self.model,
+             'num_examples': str(self.num_examples),
+        }
+        user_defined_metadata = model_metadata.update(
+                    _coreml_utils._get_tc_version_info())
+        _coreml_utils._set_model_metadata(mlmodel,
+                self.__class__.__name__,
+                user_defined_metadata,
+                version=ImageSimilarityModel._PYTHON_IMAGE_SIMILARITY_VERSION)
 
         mlmodel.save(filename)

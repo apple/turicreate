@@ -172,7 +172,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # C++ model
 
     if USE_CPP:
-
         name = 'activity_classifier'
 
         import turicreate as _turicreate
@@ -186,9 +185,10 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         options['batch_size'] = batch_size
         options['max_iterations'] = max_iterations
         options['verbose'] = verbose
+        options['_show_loss'] = False
 
         model.train(dataset, target, session_id, validation_set, options)
-        return ActivityClassifier_beta(model_proxy=model, name=name)
+        return ActivityClassifier(model_proxy=model, name=name)
         
     from .._mxnet import _mxnet_utils
     from ._mx_model_architecture import _net_params
@@ -318,7 +318,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         state['valid_accuracy'] = log['valid_acc']
         state['valid_log_loss'] = log['valid_loss']
 
-    model = ActivityClassifier(state)
+    model = ActivityClassifier_legacy(state)
     return model
 
 def _initialize_with_mxnet_weights(model, chunked_data, features, prediction_window, predictions_in_chunk, batch_size, use_target):
@@ -344,7 +344,7 @@ def _encode_target(data, target, mapping=None):
     data[target] = data[target].apply(lambda t: mapping[t])
     return data, mapping
 
-class ActivityClassifier_beta(_Model):
+class ActivityClassifier(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification or export to
     CoreML.
@@ -401,7 +401,10 @@ class ActivityClassifier_beta(_Model):
         --------
         >>> model.export_coreml("MyModel.mlmodel")
         """
-        self.__proxy__.export_to_coreml(filename)
+        short_description = _coreml_utils._mlmodel_short_description('Activity classifier')
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        self.__proxy__.export_to_coreml(filename, short_description,
+                additional_user_defined_metadata)
 
 
     def predict(self, dataset, output_type='class', output_frequency='per_row'):
@@ -678,7 +681,8 @@ class ActivityClassifier_beta(_Model):
         section_titles = ['Schema', 'Training summary']
         return([model_fields, training_fields], section_titles)
 
-class ActivityClassifier(_CustomModel):
+
+class ActivityClassifier_legacy(_CustomModel):
     """
     A trained model that is ready to use for classification or export to
     CoreML.

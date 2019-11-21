@@ -94,6 +94,16 @@ class TextClassifierTest(unittest.TestCase):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
 
+        import platform
+        coreml_model = coremltools.models.MLModel(filename)
+        self.assertDictEqual({
+            'com.github.apple.turicreate.version': tc.__version__,
+            'com.github.apple.os.platform': platform.platform(),
+            }, dict(coreml_model.user_defined_metadata)
+        )
+        expected_result = 'Text classifier created by Turi Create (version %s)' % tc.__version__
+        self.assertEquals(expected_result, coreml_model.short_description)
+
     @unittest.skipIf(_mac_ver() < (10, 13), 'Only supported on macOS 10.13+')
     def test_export_coreml_with_predict(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]

@@ -13,6 +13,7 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits import text_analytics as _text_analytics
+from turicreate.toolkits import _coreml_utils
 
 
 def _BOW_FEATURE_EXTRACTOR(sf, target=None):
@@ -356,18 +357,12 @@ class TextClassifier(_CustomModel):
         display_name = 'text classifier'
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {'class': self.__class__.__name__,
-                   'version': _tc.__version__,
                    'short_description': short_description,
-                   'user_defined':{
-                    'turicreate_version': _tc.__version__
-                   }
-                }
-
+                  }
+        context['user_defined'] = _coreml_utils._get_tc_version_info()
 
         model = self.__proxy__['classifier'].__proxy__
-
         _logistic_classifier_export_as_model_asset(model, filename, context)
-
 
 def _get_str_columns(sf):
     """
