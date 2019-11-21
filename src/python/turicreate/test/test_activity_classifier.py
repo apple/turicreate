@@ -20,8 +20,6 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
 USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
-IS_PRE_6_0_RC = float(tc.__version__) < 6.0
-
 
 def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
                randomize_num_sessions = True, num_labels = 9, prediction_window = 5,
@@ -316,10 +314,25 @@ class ActivityClassifierTest(unittest.TestCase):
 
         # Load the model back from the CoreML model file
         coreml_model = coremltools.models.MLModel(filename)
-
-        rs = np.random.RandomState(1234)
+        import platform
+        self.assertDictEqual({
+            'com.github.apple.turicreate.version': tc.__version__,
+            'com.github.apple.os.platform': platform.platform(),
+            'target': self.target,
+            'type': 'activity_classifier',
+            'prediction_window': str(self.prediction_window),
+            'session_id': self.session_id,
+            'features': ','.join(self.features),
+            'max_iterations': '10',
+            'version': '2',
+            }, dict(coreml_model.user_defined_metadata)
+        )
+        expected_result = 'Activity classifier created by Turi Create (version %s)' \
+                                    % (tc.__version__)
+        self.assertEquals(expected_result, coreml_model.short_description)
 
         # Create a small dataset, and compare the models' predict() output
+        rs = np.random.RandomState(1234)
         dataset = tc.util.generate_random_sframe(column_codes='r' * 3, num_rows=10)
         dataset['session_id'] = 0
         dataset[self.target] = random_labels = [rs.randint(0, self.num_labels - 1, ) for i in range(10)]

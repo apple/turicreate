@@ -172,7 +172,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     # C++ model
 
     if USE_CPP:
-
         name = 'activity_classifier'
 
         import turicreate as _turicreate
@@ -186,9 +185,10 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         options['batch_size'] = batch_size
         options['max_iterations'] = max_iterations
         options['verbose'] = verbose
+        options['_show_loss'] = False
 
         model.train(dataset, target, session_id, validation_set, options)
-        return ActivityClassifier_beta(model_proxy=model, name=name)
+        return ActivityClassifier(model_proxy=model, name=name)
         
     from .._mxnet import _mxnet_utils
     from ._mx_model_architecture import _net_params
@@ -318,7 +318,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         state['valid_accuracy'] = log['valid_acc']
         state['valid_log_loss'] = log['valid_loss']
 
-    model = ActivityClassifier(state)
+    model = ActivityClassifier_legacy(state)
     return model
 
 def _initialize_with_mxnet_weights(model, chunked_data, features, prediction_window, predictions_in_chunk, batch_size, use_target):
@@ -344,7 +344,7 @@ def _encode_target(data, target, mapping=None):
     data[target] = data[target].apply(lambda t: mapping[t])
     return data, mapping
 
-class ActivityClassifier_beta(_Model):
+class ActivityClassifier(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification or export to
     CoreML.
@@ -370,22 +370,20 @@ class ActivityClassifier_beta(_Model):
         Returns
         -------
         out : string
-            A description of the model.
+            A description of the ActivityClassifier.
         """
-        return self.__class__.__name__
+        return self.__repr__()
 
     def __repr__(self):
         """
-        Returns a string description of the model, including (where relevant)
-        the schema of the training data, description of the training data,
-        training statistics, and model hyperparameters.
-
-        Returns
-        -------
-        out : string
-            A description of the model.
+        Print a string description of the model when the model name is entered
+        in the terminal.
         """
-        return self.__class__.__name__
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
 
     def _get_version(self):
         return self._CPP_ACTIVITY_CLASSIFIER_VERSION
@@ -403,7 +401,10 @@ class ActivityClassifier_beta(_Model):
         --------
         >>> model.export_coreml("MyModel.mlmodel")
         """
-        self.__proxy__.export_to_coreml(filename)
+        short_description = _coreml_utils._mlmodel_short_description('Activity classifier')
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        self.__proxy__.export_to_coreml(filename, short_description,
+                additional_user_defined_metadata)
 
 
     def predict(self, dataset, output_type='class', output_frequency='per_row'):
@@ -648,7 +649,40 @@ class ActivityClassifier_beta(_Model):
         """
         return self.__proxy__.classify(dataset, output_frequency);
 
-class ActivityClassifier(_CustomModel):
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Number of examples', 'num_examples'),
+            ('Number of sessions', 'num_sessions'),
+            ('Number of classes', 'num_classes'),
+            ('Number of feature columns', 'num_features'),
+            ('Prediction window', 'prediction_window'),
+        ]
+        training_fields = [
+            ('Log-likelihood', 'training_log_loss'),
+            ('Training time (sec)', 'training_time'),
+        ]
+
+        section_titles = ['Schema', 'Training summary']
+        return([model_fields, training_fields], section_titles)
+
+
+class ActivityClassifier_legacy(_CustomModel):
     """
     A trained model that is ready to use for classification or export to
     CoreML.

@@ -424,12 +424,8 @@ class RandomForestClassifier(_Classifier, _TreeModelMixin):
         short_description = _coreml_utils._mlmodel_short_description(display_name)
         context = {"mode" : "classification",
                    "model_type" : "random_forest",
-                   "version": _turicreate.__version__,
                    "class": self.__class__.__name__,
                    "short_description": short_description,
-                   'user_defined':{
-                    'turicreate_version': _turicreate.__version__
-                   }
                 }
         self._export_coreml_impl(filename, context)
 

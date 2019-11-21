@@ -752,7 +752,10 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
 }
 
 std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
-    std::string filename, std::map<std::string, flexible_type> opts) {
+    std::string filename, std::string short_desc,
+    std::map<std::string, flexible_type> additional_user_defined,
+    std::map<std::string, flexible_type> opts) {
+
   const flex_int image_width = read_opts<flex_int>(opts, "image_width");
   const flex_int image_height = read_opts<flex_int>(opts, "image_height");
   const flex_int include_flexible_shape =
@@ -766,21 +769,28 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
       {"model", read_state<flex_string>("model")},
       {"max_iterations", read_state<flex_int>("max_iterations")},
       {"training_iterations", read_state<flex_int>("training_iterations")},
-      {"type", "StyleTransfer"},
-      {"content_feature",
-       content_feature},  // TODO: refactor to take content name and style name
+      {"type", "style_transfer"},
+      {"content_feature", content_feature},  // TODO: refactor to take content name and style name
       {"style_feature", style_feature},
       {"num_styles", num_styles},
       {"version", get_version()},
   };
+  for(const auto& kvp : additional_user_defined) {
+       user_defined_metadata.emplace_back(kvp.first, kvp.second);
+  }
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
       *m_resnet_spec, image_width, image_height, include_flexible_shape,
-      std::move(user_defined_metadata), content_feature, style_feature,
-      num_styles);
+      content_feature, style_feature, num_styles);
 
-  if (!filename.empty()) model_wrapper->save(filename);
+  model_wrapper->add_metadata({
+      {"user_defined", std::move(user_defined_metadata)},
+      {"short_description", short_desc}
+  });
 
+  if (!filename.empty()) {
+    model_wrapper->save(filename);
+  }
   return model_wrapper;
 }
 

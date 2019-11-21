@@ -25,7 +25,8 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
-                                                 _numeric_param_check_range)
+                                                 _numeric_param_check_range,
+                                                 _raise_error_if_not_iterable)
 from turicreate import config as _tc_config
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
@@ -266,6 +267,13 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         import turicreate.toolkits.libtctensorflow
         if classes == None:
             classes = []
+
+        _raise_error_if_not_iterable(classes)
+        _raise_error_if_not_iterable(grid_shape)
+
+        grid_shape = [int(x) for x in grid_shape]
+        assert(len(grid_shape) == 2)
+
         tf_config = {
             'grid_height': params['grid_shape'][0],
             'grid_width': params['grid_shape'][1],
@@ -284,7 +292,7 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
         model = _tc.extensions.object_detector()
         model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
-        return ObjectDetector_beta(model_proxy=model, name="object_detector")
+        return ObjectDetector(model_proxy=model, name="object_detector")
 
     # Use MxNet
     from ._model import tiny_darknet as _tiny_darknet
@@ -519,10 +527,10 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'max_iterations': max_iterations,
         'training_loss': progress['smoothed_loss'],
     }
-    return ObjectDetector(state)
+    return ObjectDetector_legacy(state)
 
 
-class ObjectDetector(_CustomModel):
+class ObjectDetector_legacy(_CustomModel):
     """
     An trained model that is ready to use for classification, exported to
     Core ML, or for feature extraction.
@@ -1545,7 +1553,7 @@ class ObjectDetector(_CustomModel):
         _save_spec(model, filename)
 
 
-class ObjectDetector_beta(_Model):
+class ObjectDetector(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification
     or export to CoreML.
@@ -1567,24 +1575,25 @@ class ObjectDetector_beta(_Model):
     def __str__(self):
         """
         Return a string description of the model to the ``print`` method.
+
         Returns
         -------
         out : string
-            A description of the model.
+            A description of the ObjectDetector.
         """
-        return self.__class__.__name__
+        return self.__repr__()
 
     def __repr__(self):
         """
-        Returns a string description of the model, including (where relevant)
-        the schema of the training data, description of the training data,
-        training statistics, and model hyperparameters.
-        Returns
-        -------
-        out : string
-            A description of the model.
+        Print a string description of the model when the model name is entered
+        in the terminal.
         """
-        return self.__class__.__name__
+
+        width = 40
+        sections, section_titles = self._get_summary_struct()
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
+                                         width=width)
+        return out
 
     def _get_version(self):
         return self._CPP_OBJECT_DETECTOR_VERSION
@@ -1655,8 +1664,11 @@ class ObjectDetector_beta(_Model):
         options['include_non_maximum_suppression'] = include_non_maximum_suppression
         options['confidence_threshold'] = confidence_threshold
         options['iou_threshold'] = iou_threshold
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        short_description = _coreml_utils._mlmodel_short_description('Object Detector')
 
-        self.__proxy__.export_to_coreml(filename, options)
+        self.__proxy__.export_to_coreml(filename, short_description,
+                additional_user_defined_metadata, options)
 
 
     def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45, verbose=True):
@@ -1761,3 +1773,36 @@ class ObjectDetector_beta(_Model):
         options["confidence_threshold"] = confidence_threshold
         options["iou_threshold"] = iou_threshold
         return self.__proxy__.evaluate(dataset, metric, output_type, options)
+
+    def _get_summary_struct(self):
+        """
+        Returns a structured description of the model, including (where
+        relevant) the schema of the training data, description of the training
+        data, training statistics, and model hyperparameters.
+
+        Returns
+        -------
+        sections : list (of list of tuples)
+            A list of summary sections.
+              Each section is a list.
+                Each item in a section list is a tuple of the form:
+                  ('<label>','<field>')
+        section_titles: list
+            A list of section titles.
+              The order matches that of the 'sections' object.
+        """
+        model_fields = [
+            ('Model', 'model'),
+            ('Number of classes', 'num_classes'),
+        ]
+        training_fields = [
+            ('Training time', '_training_time_as_string'),
+            ('Training epochs', 'training_epochs'),
+            ('Training iterations', 'training_iterations'),
+            ('Number of examples (images)', 'num_examples'),
+            ('Number of bounding boxes (instances)', 'num_bounding_boxes'),
+            ('Final loss (specific to model)', 'training_loss'),
+        ]
+
+        section_titles = ['Schema', 'Training summary']
+        return([model_fields, training_fields], section_titles)

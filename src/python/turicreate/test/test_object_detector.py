@@ -22,7 +22,6 @@ import coremltools
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
 USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
-IS_PRE_6_0_RC = float(tc.__version__) < 6.0
 
 
 def _get_data(feature, annotations):
@@ -292,11 +291,29 @@ class ObjectDetectorTest(unittest.TestCase):
     def test_export_coreml(self):
         from PIL import Image
         import coremltools
+        import platform
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename,
             include_non_maximum_suppression=False)
 
         coreml_model = coremltools.models.MLModel(filename)
+        self.assertDictEqual({
+            'com.github.apple.turicreate.version': tc.__version__,
+            'com.github.apple.os.platform': platform.platform(),
+            'annotations': self.annotations,
+            'type': 'object_detector',
+            'classes': ','.join(sorted(_CLASSES)),
+            'feature': self.feature,
+            'include_non_maximum_suppression': 'False',
+            'max_iterations': '1',
+            'model': 'darknet-yolo',
+            'training_iterations': '1',
+            }, dict(coreml_model.user_defined_metadata)
+        )
+        expected_result = 'Object detector created by Turi Create (version %s)' \
+                                    % (tc.__version__)
+        self.assertEquals(expected_result, coreml_model.short_description)
+
         img = self.sf[0:1][self.feature][0]
         img_fixed = tc.image_analysis.resize(img, 416, 416, 3)
         pil_img = Image.fromarray(img_fixed.pixel_data)

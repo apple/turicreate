@@ -462,8 +462,8 @@ class Model(ExposeAttributesFromProxy):
         if field in self._list_fields():
             return self.__proxy__.get_value(field)
         else:
-            raise KeyError('Field \"%s\" not in model. Available fields are '
-                         '%s.') % (field, ', '.join(self.list_fields()))
+            raise KeyError(('Field \"%s\" not in model. Available fields are '
+                         '%s.') % (field, ', '.join(self._list_fields())))
 
     @classmethod
     def _native_name(cls):
@@ -525,7 +525,6 @@ class Model(ExposeAttributesFromProxy):
             print(self.__repr__())
         except:
             return self.__class__.__name__
-
 
     def __repr__(self):
         raise NotImplementedError

@@ -10,6 +10,7 @@
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h> 
 
 #import <ml/neural_net/mps_descriptor_utils.h>
+#import <ml/neural_net/style_transfer/mps_style_transfer_weights.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -28,7 +29,7 @@ API_AVAILABLE(macos(10.14))
 - (void) setStyleIndex:(NSUInteger)styleIndex;
 - (MPSNNImageNode * _Nullable) backwardPass:(MPSNNImageNode *) inputNode;
 - (void) setLearningRate:(float)lr;
-- (NSDictionary<NSString *, NSData *> *) exportWeights:(NSString *) prefix;
+- (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) exportWeights:(NSString *) prefix;
 @end
 
 NS_ASSUME_NONNULL_END
