@@ -34,47 +34,6 @@ using turi::neural_net::shared_float_array;
 
 namespace {
 
-class stylization_printer {
-  static constexpr double SECONDS_BETWEEN_PRINTS = 0.3;
-
-  turi::timer m_tt;
-  double m_previous_time = 0.0;
-
-  size_t m_num_content;
-  size_t m_num_styles;
-  size_t m_index = 0;
-
-  size_t _num_total_images() { return m_num_content * m_num_styles; }
-
- public:
-  stylization_printer(size_t num_content, size_t num_styles)
-      : m_num_content(num_content), m_num_styles(num_styles) {
-    std::cout << "Stylizing " << m_num_content << " image(s) using "
-              << m_num_styles << " style(s)" << std::endl;
-
-    m_tt.start();
-  }
-
-  ~stylization_printer() = default;
-
-  void print() {
-    m_index++;
-
-    double current_time = m_tt.current_time();
-    size_t total_num_images = _num_total_images();
-
-    if ((current_time - m_previous_time) > SECONDS_BETWEEN_PRINTS ||
-        m_index == total_num_images) {
-      std::cout << "Stylizing "
-                << m_index
-                << "/"
-                << total_num_images
-                << std::endl;
-      m_previous_time = current_time;
-    }
-  }
-};
-
 constexpr size_t STYLE_TRANSFER_VERSION = 1;
 
 constexpr size_t DEFAULT_HEIGHT = 256;
@@ -602,7 +561,11 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       weight_params);
 
   // Style Printer
-  stylization_printer pprinter(data.size(), style_idx.size());
+  size_t idx = 0;
+
+  table_printer table(
+        { {"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} }, 0);
+  table.print_header();
 
   // looping through all of the style indices
   for (size_t i : style_idx) {
@@ -639,11 +602,21 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       }
 
       // progress printing for stylization
-      pprinter.print();
+      idx++;
+      std::ostringstream formatted_percentage;
+      formatted_percentage.precision(2);
+      formatted_percentage << std::fixed
+                           << (idx * 100.0 / (data.size() * style_idx.size()));
+      formatted_percentage << "%";
+      table.print_progress_row(idx, idx, progress_time(),
+                               formatted_percentage.str());
 
       // get next batch
       batch = data_iter->next_batch(batch_size);
     }
+
+    table.print_row(idx, progress_time(), "100%");
+    table.print_footer();
 
     data_iter->reset();
   }
