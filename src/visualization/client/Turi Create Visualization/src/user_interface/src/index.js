@@ -222,6 +222,10 @@ window.handleInput = function(data){
     input_data["data"] = json_obj["accordion_spec"];
     window.setAccordionData(input_data);
   }
+  
+  else if(json_obj["protobuf"] != null) {
+    window.setProtoMessage(json_obj["protobuf"]);
+  }
 
   else {
       throw new Error("Unexpected input to visualization client: " + JSON.stringify(data));
