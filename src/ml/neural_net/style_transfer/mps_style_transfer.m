@@ -41,6 +41,26 @@
 
 @property (nonatomic) id<MTLDevice> dev;
 @property (nonatomic) id<MTLCommandQueue> commandQueue;
+
++ (NSData *) cropImageWidth:(NSData *) data
+                     height:(NSUInteger) height
+                 inputWidth:(NSUInteger) inputWidth
+                outputWidth:(NSUInteger) outputWidth
+                numChannels:(NSUInteger) numChannels;
+
++ (NSData *) cropImageHeight:(NSData *) data
+                 inputHeight:(NSUInteger) inputHeight
+                outputHeight:(NSUInteger) outputHeight
+                       width:(NSUInteger) width
+                 numChannels:(NSUInteger) numChannels;
+
++ (NSData *) topLeftCropImage:(NSData *) data
+                  inputHeight:(NSUInteger) inputHeight
+                   inputWidth:(NSUInteger) inputWidth
+                 outputHeight:(NSUInteger) outputHeight
+                  outputWidth:(NSUInteger) outputWidth 
+                  numChannels:(NSUInteger) numChannels;
+
 @end
 
 @implementation TCMPSStyleTransfer
@@ -251,6 +271,68 @@
   return self;
 }
 
++ (NSData *) cropImageWidth:(NSData *) data
+                     height:(NSUInteger) height
+                 inputWidth:(NSUInteger) inputWidth
+                outputWidth:(NSUInteger) outputWidth
+                numChannels:(NSUInteger) numChannels {
+  NSUInteger outputLength = height * outputWidth * numChannels;
+  NSMutableData *mutableData = [NSMutableData dataWithLength:outputLength];
+
+  NSUInteger xOffset = inputWidth - outputWidth;
+
+  for (NSUInteger idx = 0; idx < height; idx = idx + 1) {
+    NSUInteger startIndex = idx * inputWidth * numChannels;
+    NSUInteger endIndex = startIndex + (numChannels * (inputWidth - xOffset));
+
+    NSRange range = NSMakeRange(startIndex, endIndex);
+
+    NSUInteger dataOffset = outputWidth * numChannels * idx;
+
+    [data getBytes:mutableData.mutableBytes + dataOffset range:range];
+  }
+
+  return mutableData;
+}
+
++ (NSData *) cropImageHeight:(NSData *) data
+                 inputHeight:(NSUInteger) inputHeight
+                outputHeight:(NSUInteger) outputHeight
+                       width:(NSUInteger) width
+                 numChannels:(NSUInteger) numChannels {
+  NSUInteger outputLength = width * outputHeight * numChannels;
+  NSMutableData *mutableData = [NSMutableData dataWithLength:outputLength];
+
+  NSUInteger yOffset = inputHeight - outputHeight;
+
+  NSUInteger endIndex = width * numChannels * (inputHeight - yOffset);
+
+  NSRange range = NSMakeRange(0, endIndex);
+
+  [data getBytes:mutableData.mutableBytes range:range];
+
+  return mutableData;
+}
+
++ (NSData *) topLeftCropImage:(NSData *) data
+                  inputHeight:(NSUInteger) inputHeight
+                   inputWidth:(NSUInteger) inputWidth
+                 outputHeight:(NSUInteger) outputHeight
+                  outputWidth:(NSUInteger) outputWidth 
+                  numChannels:(NSUInteger) numChannels {
+  NSData *croppedHeightData = [TCMPSStyleTransfer cropImageHeight:data
+                                                      inputHeight:inputHeight
+                                                     outputHeight:outputHeight
+                                                            width:inputWidth
+                                                      numChannels:numChannels];
+
+  return [TCMPSStyleTransfer cropImageWidth:croppedHeightData
+                                     height:inputHeight
+                                 inputWidth:inputWidth
+                                outputWidth:outputWidth
+                                numChannels:numChannels];
+}
+
 - (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) exportWeights {
   [self checkpoint];
   return [_model exportWeights:@"transformer_"];
@@ -269,6 +351,13 @@
   float imageHeight;
   [imageHeightData getBytes:&imageHeight length:sizeof(float)];
   _imgHeight = (NSInteger) imageHeight;
+
+  NSString* indexKey = @"index";
+
+  float styleIndex;
+  [inputs[indexKey] getBytes:&styleIndex length:sizeof(float)];
+
+  _model.styleIndex = styleIndex;
 
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
@@ -318,10 +407,21 @@
   **/
   MPSImage *image = [stylizedImages firstObject];
 
-  NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * _imgWidth * _imgHeight * 3];
+  NSUInteger outImageWidth = image.width;
+  NSUInteger outImageHeight = image.height;
+  NSUInteger outImageChannels = image.featureChannels;
+
+  NSMutableData* styleData = [NSMutableData dataWithLength:(NSUInteger)sizeof(float) * outImageWidth * outImageHeight * outImageChannels];
   [image readBytes:styleData.mutableBytes dataLayout:(MPSDataLayoutHeightxWidthxFeatureChannels)imageIndex:0];
-  imagesOut.data = styleData;
-  imagesOut.shape = @[@(_batchSize), @(_imgHeight), @(_imgWidth), @(3)];
+
+  imagesOut.data = [TCMPSStyleTransfer topLeftCropImage:styleData
+                                            inputHeight:outImageHeight
+                                             inputWidth:outImageWidth
+                                           outputHeight:_imgHeight
+                                            outputWidth:_imgWidth
+                                            numChannels:outImageChannels];
+
+  imagesOut.shape = @[@(_batchSize), @(_imgHeight), @(_imgWidth), @(outImageChannels)];
 
   return @{@"output": imagesOut};
 }

@@ -614,11 +614,11 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       batch = data_iter->next_batch(batch_size);
     }
 
-    table.print_row(idx, progress_time(), "100%");
-    table.print_footer();
-
     data_iter->reset();
   }
+
+  table.print_row(idx, progress_time(), "100%");
+  table.print_footer();
 }
 
 gl_sarray style_transfer::convert_types_to_sarray(const variant_type& data) {
