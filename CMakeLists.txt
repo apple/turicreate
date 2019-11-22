@@ -466,12 +466,10 @@ elseif (ARCH)
 else()
   check_cxx_compiler_flag(-march=core2 HAS_MARCH_CORE2)
   if(HAS_MARCH_CORE2)
-    # Old CPU archetecture; enables SSE up to 4.2 + popcnt + other instructions.
-    # Supported on GCC 4.9.x and above
+    # Old CPU archetecture; enables SSE up to 3
     set(MARCH "core2")
   else()
-    # Old CPU archetecture; enables SSE up to 3
-    # Supported on at least GCC 4.8.x, maybe earlier
+    # Old CPU archetecture
     set(MARCH "x86_64")
   endif()
   set(ARCH_FLAG "-march=${MARCH}")
