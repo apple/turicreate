@@ -42,18 +42,6 @@
 @property (nonatomic) id<MTLDevice> dev;
 @property (nonatomic) id<MTLCommandQueue> commandQueue;
 
-+ (NSData *) cropImageWidth:(NSData *) data
-                     height:(NSUInteger) height
-                 inputWidth:(NSUInteger) inputWidth
-                outputWidth:(NSUInteger) outputWidth
-                numChannels:(NSUInteger) numChannels;
-
-+ (NSData *) cropImageHeight:(NSData *) data
-                 inputHeight:(NSUInteger) inputHeight
-                outputHeight:(NSUInteger) outputHeight
-                       width:(NSUInteger) width
-                 numChannels:(NSUInteger) numChannels;
-
 + (NSData *) topLeftCropImage:(NSData *) data
                   inputHeight:(NSUInteger) inputHeight
                    inputWidth:(NSUInteger) inputWidth
@@ -271,58 +259,22 @@
   return self;
 }
 
-+ (NSData *) cropImageWidth:(NSData *) data
-                     height:(NSUInteger) height
-                 inputWidth:(NSUInteger) inputWidth
-                outputWidth:(NSUInteger) outputWidth
-                numChannels:(NSUInteger) numChannels {
-  NSUInteger outputLength = height * outputWidth * numChannels;
-  NSMutableData *mutableData = [NSMutableData dataWithLength:outputLength];
-
-  NSUInteger xOffset = inputWidth - outputWidth;
-
-  for (NSUInteger idx = 0; idx < height; idx = idx + 1) {
-    NSUInteger startIndex = idx * inputWidth * numChannels;
-    NSUInteger endIndex = startIndex + (numChannels * (inputWidth - xOffset));
-
-    NSRange range = NSMakeRange(startIndex, endIndex);
-
-    NSUInteger dataOffset = outputWidth * numChannels * idx;
-
-    [data getBytes:mutableData.mutableBytes + dataOffset range:range];
-  }
-
-  return mutableData;
-}
-
-+ (NSData *) cropImageHeight:(NSData *) data
-                 inputHeight:(NSUInteger) inputHeight
-                outputHeight:(NSUInteger) outputHeight
-                       width:(NSUInteger) width
-                 numChannels:(NSUInteger) numChannels {
-  NSUInteger outputLength = width * outputHeight * numChannels * sizeof(float);
-  NSMutableData *mutableData = [NSMutableData dataWithLength:outputLength];
-  [data getBytes:mutableData.mutableBytes length:outputLength];
-  return mutableData;
-}
-
 + (NSData *) topLeftCropImage:(NSData *) data
                   inputHeight:(NSUInteger) inputHeight
                    inputWidth:(NSUInteger) inputWidth
                  outputHeight:(NSUInteger) outputHeight
                   outputWidth:(NSUInteger) outputWidth 
                   numChannels:(NSUInteger) numChannels {
-  NSData *croppedHeightData = [TCMPSStyleTransfer cropImageHeight:data
-                                                      inputHeight:inputHeight
-                                                     outputHeight:outputHeight
-                                                            width:inputWidth
-                                                      numChannels:numChannels];
-
-  return [TCMPSStyleTransfer cropImageWidth:croppedHeightData
-                                     height:inputHeight
-                                 inputWidth:inputWidth
-                                outputWidth:outputWidth
-                                numChannels:numChannels];
+  NSUInteger dataSize = sizeof(float) * numChannels * outputWidth * outputHeight;
+  NSMutableData *mutableData = [NSMutableData dataWithLength:dataSize];
+  for (NSUInteger idx = 0; idx < outputHeight; idx = idx + 1) {
+    NSUInteger rowSize = sizeof(float) * numChannels * outputWidth;
+    NSUInteger rowOffset = rowSize * idx;
+    NSUInteger startIndex = sizeof(float) * idx * numChannels * inputWidth;
+    NSRange range = NSMakeRange(startIndex, rowSize);
+    [data getBytes:mutableData.mutableBytes + rowOffset range:range];
+  }
+  return mutableData;
 }
 
 - (NSDictionary<NSString *, TCMPSStyleTransferWeights *> *) exportWeights {
