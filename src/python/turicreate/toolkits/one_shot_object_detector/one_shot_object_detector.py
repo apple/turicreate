@@ -93,7 +93,7 @@ class OneShotObjectDetector(_CustomModel):
         # We use PythonProxy here so that we get tab completion
         self.__proxy__ = _PythonProxy(state)
 
-    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=None, verbose=True):
+    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45, verbose=True):
         """
         Predict object instances in an SFrame of images.
 
@@ -143,17 +143,11 @@ class OneShotObjectDetector(_CustomModel):
             >>> predictions_with_bounding_boxes.explore()
 
         """
-        if USE_CPP:
-            return self.__proxy__['detector'].predict(
-                dataset=dataset,
-                confidence_threshold=confidence_threshold,
-                iou_threshold=iou_threshold)
-        else:
-            return self.__proxy__['detector'].predict(
-                dataset=dataset,
-                confidence_threshold=confidence_threshold,
-                iou_threshold=iou_threshold,
-                verbose=verbose)
+        return self.__proxy__['detector'].predict(
+            dataset=dataset,
+            confidence_threshold=confidence_threshold,
+            iou_threshold=iou_threshold,
+            verbose=verbose)
 
     def export_coreml(self, filename, include_non_maximum_suppression=True, iou_threshold=None, confidence_threshold=None):
         """
