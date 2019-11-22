@@ -169,6 +169,10 @@ class ImageClassifierTest(unittest.TestCase):
             predictions = model.classify("more junk")
 
     def test_export_coreml(self):
+        if self.model.model == "VisionFeaturePrint_Scene":
+            pytest.xfail("Expected failure until " 
+                + "https://github.com/apple/turicreate/issues/2744 is fixed")
+        
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
 
@@ -184,7 +188,7 @@ class ImageClassifierTest(unittest.TestCase):
                 self.model.model, tc.__version__)
         self.assertEquals(expected_result, coreml_model.short_description)
 
-    @unittest.skipIf(sys.platform != 'darwin', 'Core Ml only supported on Mac')
+    @unittest.skipIf(sys.platform != 'darwin', 'Core ML only supported on Mac')
     def test_export_coreml_predict(self):
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
