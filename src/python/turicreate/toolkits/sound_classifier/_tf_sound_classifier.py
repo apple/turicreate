@@ -193,7 +193,6 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         need to be transposed to match TF format.
 
         """
-
         layers = net_params['data'].keys()
 
         for layer_name in layers:
@@ -204,7 +203,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             else:
                 curr_shape = [int(x) for x in net_params['shapes'][layer_name]]
                 self.sess.run(_tf.assign(self.sc_graph.get_tensor_by_name(new_layer_name+":0"),
-                                        net_params['data'][layer_name].reshape(curr_shape).transpose(1,0)))
+                    net_params['data'][layer_name].reshape(curr_shape).transpose(1,0)))
 
 
 
