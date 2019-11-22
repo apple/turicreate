@@ -162,7 +162,8 @@ BOOST_AUTO_TEST_CASE(test_export_coreml) {
        {"warm_start", ""},
        {"feature", features[0]}});
 
-  auto ml_model_wrapper = dc.export_to_coreml("", /* debug no throw */ true);
+  auto ml_model_wrapper = dc.export_to_coreml("", "", {},
+                                              /* debug no throw */ true);
   TS_ASSERT(ml_model_wrapper != nullptr);
 
   const auto& my_model_spec = ml_model_wrapper->coreml_model()->getProto();

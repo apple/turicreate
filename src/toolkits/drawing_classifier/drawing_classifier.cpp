@@ -835,7 +835,7 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     std::string filename, std::string short_description,
     std::map<std::string, flexible_type> additional_user_defined,
     bool use_default_spec) {
-  /* Add code for export_to_coreml */
+
   if (!nn_spec_) {
     // use empty nn spec if not initalized;
     // avoid test bad memory access
