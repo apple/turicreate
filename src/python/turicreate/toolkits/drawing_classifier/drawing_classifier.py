@@ -1204,6 +1204,8 @@ class DrawingClassifier(_Model):
           >>> results = model.evaluate(data)
           >>> print results['accuracy']
         """
+
+        # TODO: fix the three passes through the data.
         class_label = self.__proxy__.predict(dataset, "class")
         probability_vector = self.__proxy__.predict(dataset, "probability_vector")
 
