@@ -300,17 +300,9 @@
                 outputHeight:(NSUInteger) outputHeight
                        width:(NSUInteger) width
                  numChannels:(NSUInteger) numChannels {
-  NSUInteger outputLength = width * outputHeight * numChannels;
+  NSUInteger outputLength = width * outputHeight * numChannels * sizeof(float);
   NSMutableData *mutableData = [NSMutableData dataWithLength:outputLength];
-
-  NSUInteger yOffset = inputHeight - outputHeight;
-
-  NSUInteger endIndex = width * numChannels * (inputHeight - yOffset);
-
-  NSRange range = NSMakeRange(0, endIndex);
-
-  [data getBytes:mutableData.mutableBytes range:range];
-
+  [data getBytes:mutableData.mutableBytes length:outputLength];
   return mutableData;
 }
 
