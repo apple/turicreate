@@ -267,12 +267,11 @@
                   numChannels:(NSUInteger) numChannels {
   NSUInteger dataSize = sizeof(float) * numChannels * outputWidth * outputHeight;
   NSMutableData *mutableData = [NSMutableData dataWithLength:dataSize];
+  NSUInteger outputRowStride = sizeof(float) * numChannels * outputWidth;
+  NSUInteger inputRowStride = sizeof(float) * numChannels * inputWidth;
   for (NSUInteger idx = 0; idx < outputHeight; idx = idx + 1) {
-    NSUInteger rowSize = sizeof(float) * numChannels * outputWidth;
-    NSUInteger rowOffset = rowSize * idx;
-    NSUInteger startIndex = sizeof(float) * idx * numChannels * inputWidth;
-    NSRange range = NSMakeRange(startIndex, rowSize);
-    [data getBytes:mutableData.mutableBytes + rowOffset range:range];
+    NSRange range = NSMakeRange(inputRowStride * idx, outputRowStride);
+    [data getBytes:mutableData.mutableBytes + outputRowStride * idx range:range];
   }
   return mutableData;
 }
