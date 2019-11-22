@@ -273,6 +273,18 @@ class ObjectDetectorTest(unittest.TestCase):
         ret = self.model.evaluate(self.sf[:0])
         self.assertEqual(ret['mean_average_precision_50'], 0.0)
 
+    def test_predict_invalid_threshold(self):
+        with self.assertRaises(_ToolkitError):
+            self.model.predict(self.sf.head(), confidence_threshold=-1)
+        with self.assertRaises(_ToolkitError):
+            self.model.predict(self.sf.head(), iou_threshold  =-1)
+
+    def test_evaluate_invalid_threshold(self):
+        with self.assertRaises(_ToolkitError):
+            self.model.evaluate(self.sf.head(), confidence_threshold=-1)
+        with self.assertRaises(_ToolkitError):
+            self.model.evaluate(self.sf.head(), iou_threshold  =-1)
+
     def test_evaluate_invalid_metric(self):
         with self.assertRaises(_ToolkitError):
             self.model.evaluate(self.sf.head(), metric='not-supported-metric')
