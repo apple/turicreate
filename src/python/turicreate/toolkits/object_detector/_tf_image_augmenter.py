@@ -27,20 +27,22 @@ def get_augmented_data(images, annotations, output_height, output_width, resize_
     # Suppresses verbosity to only errors
     tf.logging.set_verbosity(tf.logging.ERROR)
 
-    session = tf.Session()
-    output_shape = (output_height, output_width)
-    
-    if resize_only:
-        images = get_resized_images(images, output_shape)
-        resized_images = session.run(images)
-        resized_images = np.array(resized_images, dtype=np.float32)
-        return tuple((resized_images, len(resized_images)*[np.zeros(6)]))
-    else:
-        imgs, transformations = get_augmented_images(images, output_shape)
-        augmented_images, trans = session.run([imgs, transformations])
-        augmented_annotations = apply_bounding_box_transformation(images, annotations, trans, output_shape)
-        augmented_images = np.array(augmented_images, dtype=np.float32)
-        return tuple((augmented_images, augmented_annotations))
+    graph = tf.Graph()
+    with graph.as_default():
+        with tf.Session() as session:
+            output_shape = (output_height, output_width)
+
+            if resize_only:
+                images = get_resized_images(images, output_shape)
+                resized_images = session.run(images)
+                resized_images = np.array(resized_images, dtype=np.float32)
+                return tuple((resized_images, len(resized_images)*[np.zeros(6)]))
+            else:
+                imgs, transformations = get_augmented_images(images, output_shape)
+                augmented_images, trans = session.run([imgs, transformations])
+                augmented_annotations = apply_bounding_box_transformation(images, annotations, trans, output_shape)
+                augmented_images = np.array(augmented_images, dtype=np.float32)
+                return tuple((augmented_images, augmented_annotations))
 
 def is_tensor(x):
     # Checks if `x` is a symbolic tensor-like object.
