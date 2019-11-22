@@ -111,9 +111,6 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
            '_detector_version': lambda x: x==1
         }
 
-        if USE_CPP:
-            self.get_ans['detector'] = lambda x: isinstance(x, tc.object_detector.object_detector.ObjectDetector_beta)
-
         self.fields_ans = self.get_ans.keys()
 
     def test_synthesis_with_single_image(self):
