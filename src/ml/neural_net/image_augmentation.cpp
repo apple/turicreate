@@ -94,6 +94,11 @@ void image_box::extend(const image_box& other) {
   }
 }
 
+void image_box::set_image_dimension(float image_width, float image_height) {
+  img_width = image_width;
+  img_height = image_height;
+}
+
 bool operator==(const image_box& a, const image_box& b) {
   return a.x == b.x && a.y == b.y && a.width == b.width && a.height == b.height;
 }

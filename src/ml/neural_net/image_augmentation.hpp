@@ -48,10 +48,17 @@ struct image_box {
   // area of the other image_box.
   void extend(const image_box& other);
 
+  // Set image dimentsion
+  void set_image_dimension(float image_width, float image_height);
+
   float x = 0.f;
   float y = 0.f;
   float width = 0.f;
   float height = 0.f;
+
+  // Store true image width and height
+  float img_width = 0.f;
+  float img_height = 0.f;
 };
 
 bool operator==(const image_box& a, const image_box& b);
@@ -237,6 +244,8 @@ public:
      * each inner vector should have the same length as the corresponding input
      * image's annotations vector. */
     std::vector<std::vector<image_annotation>> annotations_batch;
+
+    std::vector<std::pair<float, float>> img_dimensions_batch;
   };
 
   virtual ~image_augmenter() = default;

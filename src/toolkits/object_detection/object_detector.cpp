@@ -610,9 +610,17 @@ variant_type object_detector::predict(
     flex_list predicted_row_ft;
     flex_list class_labels = read_state<flex_list>("classes");
     for (const image_annotation& each_row : predicted_row) {
-      flex_dict bb_dict = {{"x", each_row.bounding_box.x}, {"y", each_row.bounding_box.y},
-                      {"width", each_row.bounding_box.width},
-                      {"height", each_row.bounding_box.height}};
+      float width_scale = each_row.bounding_box.img_width;
+      float height_scale = each_row.bounding_box.img_height;
+
+      flex_dict bb_dict = {
+          {"x", (each_row.bounding_box.x + each_row.bounding_box.width / 2.) *
+                    width_scale},
+          {"y", (each_row.bounding_box.y + each_row.bounding_box.height / 2.) *
+                    height_scale},
+          {"width", each_row.bounding_box.width * width_scale},
+          {"height", each_row.bounding_box.height * height_scale}};
+
       flex_dict each_annotation = {
           {"label", class_labels[each_row.identifier].to<flex_string>()},
           {"type", "rectangle"},
@@ -756,6 +764,16 @@ void object_detector::perform_predict(gl_sframe data,
         predicted_annotations = apply_non_maximum_suppression(
             std::move(predicted_annotations), iou_threshold);
 
+        // Get image dimension
+        float img_width, img_height;
+        std::tie(img_width, img_height) = batch.img_dimensions_batch[i];
+
+        // Set image dimension for predicted_annotations
+        for (size_t j = 0; j < predicted_annotations.size(); ++j) {
+          predicted_annotations[j].bounding_box.set_image_dimension(img_width,
+                                                                    img_height);
+        }
+
         consumer(predicted_annotations, batch.annotations_batch[i]);
       }
     }
@@ -777,6 +795,13 @@ void object_detector::perform_predict(gl_sframe data,
     for (size_t i = 0; i < input_batch.size(); ++i) {
       result_batch.annotations_batch[i] = std::move(input_batch[i].annotations);
       input_batch[i].annotations.clear();
+    }
+
+    // Store image dimentions
+    result_batch.img_dimensions_batch.resize(input_batch.size());
+    for (size_t i = 0; i < input_batch.size(); ++i) {
+      result_batch.img_dimensions_batch[i] = std::make_pair(
+          input_batch[i].image.m_width, input_batch[i].image.m_height);
     }
 
     // Use the image augmenter to format the images into float arrays, and
