@@ -377,7 +377,8 @@ void style_transfer::infer_derived_options() {
     flex_int max_iterations = estimate_max_iterations(
         read_state<flex_int>("num_styles"), read_state<flex_int>("batch_size"));
 
-    std::cout << "Setting max_iterations to be " << max_iterations << std::endl;    
+    logprogress_stream << "Setting max_iterations to be " << max_iterations << std::endl;
+    
     add_or_update_state({{"max_iterations", max_iterations}});
   }
 
