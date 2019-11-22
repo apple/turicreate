@@ -151,7 +151,6 @@ class ObjectDetectorTest(unittest.TestCase):
             self.get_ans['random_seed'] = lambda x: True
             del self.get_ans['_model']
             del self.get_ans['_class_to_index']
-            del self.get_ans['_training_time_as_string']
             del self.get_ans['_grid_shape']
             del self.get_ans['anchors']
             del self.get_ans['non_maximum_suppression_threshold']
