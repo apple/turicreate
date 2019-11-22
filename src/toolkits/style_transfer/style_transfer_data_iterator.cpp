@@ -18,10 +18,17 @@ namespace style_transfer {
 namespace {
 
 flex_image get_image(const flexible_type& image_feature) {
+  flex_image image;
   if (image_feature.get_type() == flex_type_enum::STRING) {
-    return read_image(image_feature, /* format_hint */ "");
+    image = read_image(image_feature, /* format_hint */ "");
   } else {
-    return image_feature;
+    image = image_feature;
+  }
+
+  if (image.m_channels != 3) {
+    return image_util::resize_image(image, image.m_width, image.m_height, 3, true);
+  } else {
+    return image;
   }
 }
 
