@@ -1718,6 +1718,8 @@ class ObjectDetector(_Model):
             # Visualize predictions by generating a new column of marked up images
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
         """
+        _numeric_param_check_range('confidence_threshold', confidence_threshold, 0.0, 1.0)
+        _numeric_param_check_range('iou_threshold', iou_threshold, 0.0, 1.0)
         options = {}
         options["confidence_threshold"] = confidence_threshold
         options["iou_threshold"] = iou_threshold
@@ -1769,6 +1771,8 @@ class ObjectDetector(_Model):
         >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
         mAP: 43.2%
         """
+        _numeric_param_check_range('confidence_threshold', confidence_threshold, 0.0, 1.0)
+        _numeric_param_check_range('iou_threshold', iou_threshold, 0.0, 1.0)
         options = {}
         options["confidence_threshold"] = confidence_threshold
         options["iou_threshold"] = iou_threshold
