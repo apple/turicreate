@@ -48,17 +48,11 @@ struct image_box {
   // area of the other image_box.
   void extend(const image_box& other);
 
-  // Set image dimentsion
-  void set_image_dimension(float image_width, float image_height);
-
   float x = 0.f;
   float y = 0.f;
   float width = 0.f;
   float height = 0.f;
 
-  // Store true image width and height
-  float img_width = 0.f;
-  float img_height = 0.f;
 };
 
 bool operator==(const image_box& a, const image_box& b);
@@ -71,6 +65,13 @@ struct image_annotation {
   int identifier = 0;
   image_box bounding_box;
   float confidence = 0.f;  // Typically 1 for training data
+
+  // True image dimension
+  float img_width = 0.f;
+  float img_height = 0.f;
+
+  // Set image dimentsion
+  void set_image_dimension(float image_width, float image_height);
 };
 
 bool operator==(const image_annotation& a, const image_annotation& b);
@@ -246,6 +247,13 @@ public:
     std::vector<std::vector<image_annotation>> annotations_batch;
 
     std::vector<std::pair<float, float>> img_dimensions_batch;
+  };
+
+  /** Data structure that contains result and labeled image. */
+  struct result_with_dimension {
+    result result_batch;
+
+    std::vector<std::pair<float, float>> image_dimensions_batch;
   };
 
   virtual ~image_augmenter() = default;

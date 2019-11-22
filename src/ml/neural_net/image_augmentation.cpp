@@ -94,7 +94,8 @@ void image_box::extend(const image_box& other) {
   }
 }
 
-void image_box::set_image_dimension(float image_width, float image_height) {
+void image_annotation::set_image_dimension(float image_width,
+                                           float image_height) {
   img_width = image_width;
   img_height = image_height;
 }

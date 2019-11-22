@@ -620,8 +620,8 @@ variant_type object_detector::predict(
     flex_list predicted_row_ft;
     flex_list class_labels = read_state<flex_list>("classes");
     for (const image_annotation& each_row : predicted_row) {
-      float width_scale = each_row.bounding_box.img_width;
-      float height_scale = each_row.bounding_box.img_height;
+      float width_scale = each_row.img_width;
+      float height_scale = each_row.img_height;
 
       flex_dict bb_dict = {
           {"x", (each_row.bounding_box.x + each_row.bounding_box.width / 2.) *
@@ -752,18 +752,19 @@ void object_detector::perform_predict(gl_sframe data,
       /* weights */ get_model_params());
 
   // To support double buffering, use a queue of pending inference results.
-  std::queue<image_augmenter::result> pending_batches;
+  std::queue<image_augmenter::result_with_dimension> pending_batches;
 
   // Helper function to process results until the queue reaches a given size.
   auto pop_until_size = [&](size_t remaining) {
     while (pending_batches.size() > remaining) {
 
       // Pop one batch from the queue.
-      image_augmenter::result batch = pending_batches.front();
+      image_augmenter::result_with_dimension batch = pending_batches.front();
+
       pending_batches.pop();
-      for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
+      for (size_t i = 0; i < batch.result_batch.annotations_batch.size(); ++i) {
         // For this row (corresponding to one image), extract the prediction.
-        shared_float_array raw_prediction = batch.image_batch[i];
+        shared_float_array raw_prediction = batch.result_batch.image_batch[i];
 
         // Translate the raw output into predicted labels and bounding boxes.
         std::vector<image_annotation> predicted_annotations =
@@ -776,15 +777,15 @@ void object_detector::perform_predict(gl_sframe data,
 
         // Get image dimension
         float img_width, img_height;
-        std::tie(img_width, img_height) = batch.img_dimensions_batch[i];
+        std::tie(img_width, img_height) = batch.image_dimensions_batch[i];
 
         // Set image dimension for predicted_annotations
         for (size_t j = 0; j < predicted_annotations.size(); ++j) {
-          predicted_annotations[j].bounding_box.set_image_dimension(img_width,
-                                                                    img_height);
+          predicted_annotations[j].set_image_dimension(img_width, img_height);
         }
 
-        consumer(predicted_annotations, batch.annotations_batch[i]);
+        consumer(predicted_annotations,
+                 batch.result_batch.annotations_batch[i]);
       }
     }
   };
@@ -796,21 +797,24 @@ void object_detector::perform_predict(gl_sframe data,
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
 
-    image_augmenter::result result_batch;
+    image_augmenter::result_with_dimension result_with_dimension_batch;
 
     // Instead of giving the ground truth data to the image augmenter and the
     // neural net, instead save them for later, pairing them with the future
     // predictions.
-    result_batch.annotations_batch.resize(input_batch.size());
+    result_with_dimension_batch.result_batch.annotations_batch.resize(
+        input_batch.size());
     for (size_t i = 0; i < input_batch.size(); ++i) {
-      result_batch.annotations_batch[i] = std::move(input_batch[i].annotations);
+      result_with_dimension_batch.result_batch.annotations_batch[i] =
+          std::move(input_batch[i].annotations);
       input_batch[i].annotations.clear();
     }
 
     // Store image dimentions
-    result_batch.img_dimensions_batch.resize(input_batch.size());
+    result_with_dimension_batch.image_dimensions_batch.resize(
+        input_batch.size());
     for (size_t i = 0; i < input_batch.size(); ++i) {
-      result_batch.img_dimensions_batch[i] = std::make_pair(
+      result_with_dimension_batch.image_dimensions_batch[i] = std::make_pair(
           input_batch[i].image.m_width, input_batch[i].image.m_height);
     }
 
@@ -822,10 +826,11 @@ void object_detector::perform_predict(gl_sframe data,
     std::map<std::string, shared_float_array> prediction_results =
         model->predict({{"input", prepared_input_batch.image_batch}});
 
-    result_batch.image_batch = prediction_results.at("output");
+    result_with_dimension_batch.result_batch.image_batch =
+        prediction_results.at("output");
 
     // Add the pending result to our queue and move on to the next input batch.
-    pending_batches.push(std::move(result_batch));
+    pending_batches.push(std::move(result_with_dimension_batch));
     input_batch = data_iter->next_batch(batch_size);
   }
 
