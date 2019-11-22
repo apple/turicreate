@@ -61,7 +61,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_export_coreml_with_nms) {
     std::shared_ptr<coreml::MLModelWrapper> model_wrapper =
         export_object_detector_model(
             yolo_nn_spec, 13 * 32, 13 * 32, test_class_labels.size(),
-            13 * 13 * 15, std::move(user_defined_metadata),
+            13 * 13 * 15,
             std::move(t_class_labels), "image", std::move(options));
     std::shared_ptr<CoreML::Model> c_model = model_wrapper->coreml_model();
     auto p_model = c_model->getProto();
