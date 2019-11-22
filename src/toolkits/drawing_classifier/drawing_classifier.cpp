@@ -78,11 +78,11 @@ void drawing_classifier::load_version(iarchive& iarc, size_t version) {
   float_array_map nn_params;
   iarc >> nn_params;
 
-  nn_spec_ = init_model();
+  nn_spec_ = init_model(false);
   nn_spec_->update_params(nn_params);
 }
 
-std::unique_ptr<model_spec> drawing_classifier::init_model() const {
+std::unique_ptr<model_spec> drawing_classifier::init_model(bool use_random_init) const {
   std::unique_ptr<model_spec> result(new model_spec);
 
   // state is updated through init_train
@@ -90,8 +90,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   size_t num_classes = read_state<flex_int>("num_classes");
 
   std::mt19937 random_engine;
-  std::seed_seq seed_seq{read_state<int>("random_seed")};
-  random_engine = std::mt19937(seed_seq);
+
+  if (use_random_init) {
+    std::seed_seq seed_seq{read_state<int>("random_seed")};
+    random_engine = std::mt19937(seed_seq);
+  }
 
   weight_initializer initializer = zero_weight_initializer();
 
@@ -120,9 +123,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
       ss << prefix << "_conv" << ii << _suffix;
       output_name = ss.str();
 
-      initializer = xavier_weight_initializer(
-          /* #input_neurons   */ channels_kernel * 3 * 3,
-          /* #output_neurons  */ channels_filter * 3 * 3, &random_engine);
+      if (use_random_init) {
+        initializer = xavier_weight_initializer(
+            /* #input_neurons   */ channels_kernel * 3 * 3,
+            /* #output_neurons  */ channels_filter * 3 * 3, &random_engine);
+      }
 
       result->add_convolution(
           /* name                */ output_name,
@@ -172,9 +177,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   input_name = std::move(output_name);
   output_name = prefix + "_dense0" + _suffix;
 
-  initializer = xavier_weight_initializer(
-      /* fan_in    */ 64 * 3 * 3,
-      /* fan_out   */ 128, &random_engine);
+  if (use_random_init) {
+    initializer = xavier_weight_initializer(
+        /* fan_in    */ 64 * 3 * 3,
+        /* fan_out   */ 128, &random_engine);
+  }
 
   result->add_inner_product(
       /* name                */ output_name,
@@ -192,9 +199,11 @@ std::unique_ptr<model_spec> drawing_classifier::init_model() const {
   input_name = std::move(output_name);
   output_name = prefix + "_dense1" + _suffix;
 
-  initializer = xavier_weight_initializer(
-      /* fan_in    */ 128,
-      /* fan_out   */ num_classes, &random_engine);
+  if (use_random_init) {
+    initializer = xavier_weight_initializer(
+        /* fan_in    */ 128,
+        /* fan_out   */ num_classes, &random_engine);
+  }
 
   result->add_inner_product(
       /* name                */ output_name,
@@ -236,9 +245,9 @@ void drawing_classifier::init_options(
 
   options.create_string_option(
       "warm_start",
-      "Record warm start model version used. If no warmstart used"
-      " None is assigned by default."
-      "",
+      "Record warm start model version used. If no warmstart used, "
+      "'None' is assigned by default.",
+      FLEX_UNDEFINED,
       true);
 
   // Validate user-provided options.
@@ -307,14 +316,14 @@ void drawing_classifier::init_training(
   // Capture Core ML model path from options,
   // if provided by Python.
   std::string mlmodel_path;
-  bool enable_warmstart = false;
-  auto mlmodel_path_iter = opts.find("mlmodel_path");
-  if ( mlmodel_path_iter != opts.end()) {
-    mlmodel_path = mlmodel_path_iter->second.to<std::string>();
-    // Remove `mlmodel_path` from options as
-    // it is not a user-defined option.
-    opts.erase(mlmodel_path_iter);
-    enable_warmstart = true;
+  {
+    auto mlmodel_path_iter = opts.find("mlmodel_path");
+    if ( mlmodel_path_iter != opts.end()) {
+      mlmodel_path = mlmodel_path_iter->second.to<std::string>();
+      // Remove `mlmodel_path` from options as
+      // it is not a user-defined option.
+      opts.erase(mlmodel_path_iter);
+    }
   }
 
   // Read user-specified options.
@@ -369,9 +378,9 @@ void drawing_classifier::init_training(
 
   // Initialize the neural net. Note that this depends on statistics computed
   // by the data iterator.
-  nn_spec_ = init_model();
+  nn_spec_ = init_model(true);
 
-  if ( enable_warmstart ) {
+  if (mlmodel_path.size()) {
     // Initialize the neural net with warm start model weights.
     model_spec warmstart_model(mlmodel_path);
     float_array_map trained_weights = warmstart_model.export_params_view();
@@ -833,7 +842,7 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
 
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
     std::string filename, std::string short_description,
-    std::map<std::string, flexible_type> additional_user_defined,
+    const std::map<std::string, flexible_type>& additional_user_defined,
     bool use_default_spec) {
 
   if (!nn_spec_) {
@@ -859,14 +868,23 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
   flex_dict user_defined_metadata = {
       {"target", read_state<flex_string>("target")},
       {"feature", feature_column_name},
-      {"max_iterations", read_state<flex_int>("max_iterations")},
-      {"warm_start", read_state<flex_string>("warm_start")},
       {"type", "drawing_classifier"},
       {"version", 2},
   };
-  for(const auto& kvp : additional_user_defined) {
-       user_defined_metadata.emplace_back(kvp.first, kvp.second);
+  // for model imported from version 5.8 or prior
+  if (state.count("warm_start")){
+    user_defined_metadata.emplace_back("warm_start",
+                                       read_state<flex_string>("warm_start"));
   }
+  if (state.count("max_iterations")) {
+    user_defined_metadata.emplace_back("max_iterations",
+                                       read_state<flex_int>("max_iterations"));
+  }
+
+  user_defined_metadata.insert(user_defined_metadata.end(),
+                               additional_user_defined.begin(),
+                               additional_user_defined.end());
+
   model_wrapper->add_metadata({
       {"short_description", short_description},
       {"user_defined", std::move(user_defined_metadata)},
@@ -877,6 +895,97 @@ std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
   }
 
   return model_wrapper;
+}
+
+void drawing_classifier::import_from_custom_model(variant_map_type model_data,
+                                                  size_t version) {
+  auto model_iter = model_data.find("_model");
+  if (model_iter == model_data.end()) {
+    log_and_throw("The loaded turicreate model must contain '_model'!\n");
+  }
+  const flex_dict& model = variant_get_value<flex_dict>(model_iter->second);
+
+  // For a model trained on integer classes, when saved and loaded back,
+  // the classes are loaded as floats. The following code block casts
+  // the loaded "float" classes back to int.
+  if (model_data.count("classes")) {
+    flex_list classes_list =
+        variant_get_value<flex_list>(model_data.find("classes")->second);
+
+    if (classes_list.size() &&
+        classes_list.begin()->get_type() == flex_type_enum::FLOAT) {
+        for (flexible_type& ft : classes_list) {
+          ft = ft.to<flex_int>();
+        }
+        model_data["classes"] = std::move(classes_list);
+    } else if (classes_list.empty()) {
+      log_and_throw(
+          "Error during loading model. 'classes' must contain at least one "
+          "class label.");
+    }
+  } else {
+    log_and_throw(
+        "Error during loading model. 'classes' not found in the saved model.");
+  }
+
+  flex_dict mxnet_data_dict;
+  flex_dict mxnet_shape_dict;
+
+  for (const auto& data : model) {
+    if (data.first == "data") {
+      mxnet_data_dict = data.second;
+    } else if (data.first == "shapes") {
+      mxnet_shape_dict = data.second;
+    }
+  }
+
+  auto cmp = [](const flex_dict::value_type& a,
+                const flex_dict::value_type& b) { return (a.first < b.first); };
+
+  std::sort(mxnet_data_dict.begin(), mxnet_data_dict.end(), cmp);
+  std::sort(mxnet_shape_dict.begin(), mxnet_shape_dict.end(), cmp);
+
+  float_array_map nn_params;
+
+  std::vector<float> layer_weight;
+  std::vector<size_t> layer_shape;
+
+  for (size_t ii = 0; ii < mxnet_data_dict.size(); ii++) {
+    std::string layer_name = mxnet_data_dict[ii].first;
+    flex_nd_vec mxnet_data_nd = mxnet_data_dict[ii].second.to<flex_nd_vec>();
+    flex_nd_vec mxnet_shape_nd = mxnet_shape_dict[ii].second.to<flex_nd_vec>();
+
+    const std::vector<double>& model_weight = mxnet_data_nd.elements();
+    const std::vector<double>& model_shape = mxnet_shape_nd.elements();
+    // load the weights
+    layer_weight.clear();
+    layer_shape.clear();
+    layer_weight.insert(layer_weight.end(), model_weight.begin(), model_weight.end());
+    layer_shape.insert(layer_shape.end(), model_shape.begin(), model_shape.end());
+
+    nn_params[layer_name] = shared_float_array::wrap(std::move(layer_weight),
+                                                     std::move(layer_shape));
+  }
+
+  // prune redudant data
+  model_data.erase(model_iter);
+  if (model_data.count("_class_to_index")) {
+    model_data.erase("_class_to_index");
+  }
+  if (model_data.count("input_image_shape")) {
+    model_data.erase("input_image_shape");
+  }
+
+  // must set state before init_model(); also update
+  state = std::move(model_data);
+
+  // needed by evaluate
+  if (!state.count("batch_size")) state.emplace("batch_size", 256);
+
+  nn_spec_ = init_model(false);
+  nn_spec_->update_params(nn_params);
+
+  return;
 }
 
 }  // namespace drawing_classifier

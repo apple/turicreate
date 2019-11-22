@@ -1095,7 +1095,7 @@ class DrawingClassifier(_Model):
             dataset = _tc.SFrame({self.feature: dataset})
         return self.__proxy__.predict(dataset, output_type)
 
-    def predict_topk(self, dataset, k=3, output_type='class'):
+    def predict_topk(self, dataset, output_type='probability', k=3):
         """
         Return top-k predictions for the ``dataset``, using the trained model.
         Predictions are returned as an SFrame with three columns: `id`,

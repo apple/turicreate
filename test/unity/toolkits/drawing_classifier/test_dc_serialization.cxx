@@ -31,7 +31,7 @@ class drawing_classifier_mock
   }
 
   std::unique_ptr<neural_net::model_spec> get_model_spec() const {
-    return init_model();
+    return init_model(true);
   }
 
 };

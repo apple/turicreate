@@ -151,7 +151,6 @@ class ObjectDetectorTest(unittest.TestCase):
             self.get_ans['random_seed'] = lambda x: True
             del self.get_ans['_model']
             del self.get_ans['_class_to_index']
-            del self.get_ans['_training_time_as_string']
             del self.get_ans['_grid_shape']
             del self.get_ans['anchors']
             del self.get_ans['non_maximum_suppression_threshold']
@@ -273,6 +272,18 @@ class ObjectDetectorTest(unittest.TestCase):
         # metrics)
         ret = self.model.evaluate(self.sf[:0])
         self.assertEqual(ret['mean_average_precision_50'], 0.0)
+
+    def test_predict_invalid_threshold(self):
+        with self.assertRaises(_ToolkitError):
+            self.model.predict(self.sf.head(), confidence_threshold=-1)
+        with self.assertRaises(_ToolkitError):
+            self.model.predict(self.sf.head(), iou_threshold  =-1)
+
+    def test_evaluate_invalid_threshold(self):
+        with self.assertRaises(_ToolkitError):
+            self.model.evaluate(self.sf.head(), confidence_threshold=-1)
+        with self.assertRaises(_ToolkitError):
+            self.model.evaluate(self.sf.head(), iou_threshold  =-1)
 
     def test_evaluate_invalid_metric(self):
         with self.assertRaises(_ToolkitError):

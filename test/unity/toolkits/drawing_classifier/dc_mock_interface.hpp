@@ -133,7 +133,7 @@ class test_drawing_classifier : public drawing_classifier {
     return expected_call();
   }
 
-  std::unique_ptr<model_spec> init_model() const override {
+  std::unique_ptr<model_spec> init_model(bool use_random_init) const override {
     TS_ASSERT(!init_model_calls_.empty());
     init_model_call expected_call = std::move(init_model_calls_.front());
     init_model_calls_.pop_front();
