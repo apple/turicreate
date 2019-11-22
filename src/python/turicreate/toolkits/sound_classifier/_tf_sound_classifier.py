@@ -25,67 +25,70 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         """
 
-        _tf.reset_default_graph()
+        self.sc_graph = _tf.Graph()
 
-        self.num_classes = num_classes
+        with self.sc_graph.as_default():
 
-        self.x = _tf.placeholder("float", [None, 12288])
-        self.y = _tf.placeholder("float", [None, self.num_classes])
+            self.num_classes = num_classes
 
-        #xavier initialization
-        initializer = _tf.keras.initializers.glorot_uniform()
+            self.x = _tf.placeholder("float", [None, 12288])
+            self.y = _tf.placeholder("float", [None, self.num_classes])
 
-        weights = {}
-        biases = {}
-        self.names_of_layers = []
+            # Xavier initialization
+            initializer = _tf.keras.initializers.glorot_uniform()
 
-        # Create variables for customized layers
-        for i, cur_layer_size in enumerate(custom_layer_sizes):
+            weights = {}
+            biases = {}
+            self.names_of_layers = []
+
+            # Create variables for customized layers
+            for i, cur_layer_size in enumerate(custom_layer_sizes):
+                weight_name = 'sound_dense{}_weight'.format(i)
+                bias_name = 'sound_dense{}_bias'.format(i)
+                self.names_of_layers.append('dense{}'.format(i))
+                out_units = cur_layer_size
+                if i==0:
+                    in_units = num_inputs
+                weights[weight_name] = _tf.Variable(initializer([in_units, out_units]), name=weight_name)
+                biases[bias_name] = _tf.Variable(initializer([out_units]), name=bias_name)
+                in_units = out_units
+
+            i+=1
             weight_name = 'sound_dense{}_weight'.format(i)
             bias_name = 'sound_dense{}_bias'.format(i)
             self.names_of_layers.append('dense{}'.format(i))
-            out_units = cur_layer_size
-            if i==0:
-                in_units = num_inputs
-            weights[weight_name] = _tf.Variable(initializer([in_units, out_units]), name=weight_name)
-            biases[bias_name] = _tf.Variable(initializer([out_units]), name=bias_name)
-            in_units = out_units
+            weights[weight_name] = _tf.Variable(initializer([in_units, num_classes]), name=weight_name)
+            biases[bias_name] = _tf.Variable(initializer([num_classes]), name=bias_name)
 
-        i+=1
-        weight_name = 'sound_dense{}_weight'.format(i)
-        bias_name = 'sound_dense{}_bias'.format(i)
-        self.names_of_layers.append('dense{}'.format(i))
-        weights[weight_name] = _tf.Variable(initializer([in_units, num_classes]), name=weight_name)
-        biases[bias_name] = _tf.Variable(initializer([num_classes]), name=bias_name)
+            # Add customized layers
+            for i in range(len(weights.keys())):
+                weight_name = 'sound_dense{}_weight'.format(i)
+                bias_name = 'sound_dense{}_bias'.format(i)
+                if i==0:
+                    curr_dense = _tf.nn.xw_plus_b(self.x, weights=weights[weight_name], biases=biases[bias_name])
+                else:
+                    curr_dense = _tf.nn.xw_plus_b(curr_dense, weights=weights[weight_name], biases=biases[bias_name])
+                if i==(len(weights.keys())-1):
+                    out = _tf.nn.softmax(curr_dense)
+                else:
+                    curr_dense = _tf.nn.relu(curr_dense)
 
-        # Add customized layers
-        for i in range(len(weights.keys())):
-            weight_name = 'sound_dense{}_weight'.format(i)
-            bias_name = 'sound_dense{}_bias'.format(i)
-            if i==0:
-                curr_dense = _tf.nn.xw_plus_b(self.x, weights=weights[weight_name], biases=biases[bias_name])
-            else:
-                curr_dense = _tf.nn.xw_plus_b(curr_dense, weights=weights[weight_name], biases=biases[bias_name])
-            if i==(len(weights.keys())-1):
-                out = _tf.nn.softmax(curr_dense)
-            else:
-                curr_dense = _tf.nn.relu(curr_dense)
+            self.predictions = out
 
-        self.predictions = out
+            # Loss
+            self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
+                labels=self.y))
 
-        # Loss
-        self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
-            labels=self.y))
+            # Optimizer
+            self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.01).minimize(self.cost)
 
-        # Optimizer
-        self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.01).minimize(self.cost)
+            # Predictions
+            correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
+            self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, "float"))
+            var_init_op = _tf.global_variables_initializer()
 
-        # Predictions
-        correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
-        self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, "float"))
-
-        self.sess = _tf.Session()
-        self.sess.run(_tf.global_variables_initializer())
+        self.sess = _tf.Session(graph=self.sc_graph)
+        self.sess.run(var_init_op)
 
 
     def train(self, data, label):
@@ -130,8 +133,11 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             `numpy.ndarray` converted to the CoreML format and the
             respective activation applied to the layer.
         """
-        layer_names = _tf.trainable_variables()
-        layer_weights = self.sess.run(layer_names)
+
+        with self.sc_graph.as_default():
+            layer_names = _tf.trainable_variables()
+            layer_weights = self.sess.run(layer_names)
+
         layer_dict = {}
         for var, val in zip(layer_names, layer_weights):
             layer_dict[var.name] = val
@@ -161,8 +167,11 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                 shapes are transposed.
 
         """
-        layer_names = _tf.trainable_variables()
-        layer_weights = self.sess.run(layer_names)
+
+        with self.sc_graph.as_default():
+            layer_names = _tf.trainable_variables()
+            layer_weights = self.sess.run(layer_names)
+
         data = {}
         shapes = {}
         for var, val in zip(layer_names, layer_weights):
@@ -182,16 +191,17 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         need to be transposed to match TF format.
 
         """
+
         layers = net_params['data'].keys()
 
         for layer_name in layers:
             new_layer_name = layer_name.replace("custom", "sound")
             if 'bias' in layer_name:
-                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
+                self.sess.run(_tf.assign(self.sc_graph.get_tensor_by_name(new_layer_name+":0"),
                     net_params['data'][layer_name]))
             else:
                 curr_shape = [int(x) for x in net_params['shapes'][layer_name]]
-                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
+                self.sess.run(_tf.assign(self.sc_graph.get_tensor_by_name(new_layer_name+":0"),
                                         net_params['data'][layer_name].reshape(curr_shape).transpose(1,0)))
 
 
