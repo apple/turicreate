@@ -148,6 +148,11 @@ class DrawingClassifierTest(unittest.TestCase):
             model = _tc.drawing_classifier.create(data, self.target,
                 feature=self.feature, validation_set=None, max_iterations=1)
 
+    def test_create_with_no_validation_set(self):
+        for data in self.trains:
+            model = _tc.drawing_classifier.create(data, self.target,
+                feature=self.feature, max_iterations=1)
+
     def test_create_with_empty_drawing_in_stroke_input(self):
         drawing = []
         sf = _tc.SFrame({
