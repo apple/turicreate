@@ -160,14 +160,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     for feature in features:
         _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
 
-    if '_advanced_parameters' in kwargs:
-        # Make sure no additional parameters are provided
-        new_keys = set(kwargs['_advanced_parameters'].keys())
-        set_keys = set(params.keys())
-        unsupported = new_keys - set_keys
-        if unsupported:
-            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
-        params.update(kwargs['_advanced_parameters'])
 
     # C++ model
 
