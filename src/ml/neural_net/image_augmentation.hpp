@@ -52,7 +52,6 @@ struct image_box {
   float y = 0.f;
   float width = 0.f;
   float height = 0.f;
-
 };
 
 bool operator==(const image_box& a, const image_box& b);
@@ -245,8 +244,6 @@ public:
      * each inner vector should have the same length as the corresponding input
      * image's annotations vector. */
     std::vector<std::vector<image_annotation>> annotations_batch;
-
-    std::vector<std::pair<float, float>> img_dimensions_batch;
   };
 
   /** Data structure that contains result and labeled image. */
