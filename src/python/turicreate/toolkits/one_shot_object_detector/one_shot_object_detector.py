@@ -75,7 +75,7 @@ def create(data, target, backgrounds=None, batch_size=0, max_iterations=0, verbo
         "target": target,
         "num_classes": model.num_classes,
         "num_starter_images": num_starter_images,
-        "_detector_version": _ObjectDetector._PYTHON_OBJECT_DETECTOR_VERSION,
+        "_detector_version": _ObjectDetector._CPP_OBJECT_DETECTOR_VERSION,
     }
     return OneShotObjectDetector(state)
 
