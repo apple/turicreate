@@ -239,13 +239,6 @@ public:
     std::vector<std::vector<image_annotation>> annotations_batch;
   };
 
-  /** Data structure that contains result and labeled image. */
-  struct result_with_dimension {
-    result result_batch;
-
-    std::vector<std::pair<float, float>> image_dimensions_batch;
-  };
-
   virtual ~image_augmenter() = default;
 
   /** Returns the options parameterizing this instance. */

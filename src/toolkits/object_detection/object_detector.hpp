@@ -259,6 +259,10 @@ class EXPORT object_detector: public ml_model_base {
 
   // Map from iteration index to the loss future.
   std::map<size_t, neural_net::shared_float_array> pending_training_batches_;
+
+  struct inference_batch : neural_net::image_augmenter::result {
+    std::vector<std::pair<float, float>> image_dimensions_batch;
+  };
 };
 
 }  // object_detection

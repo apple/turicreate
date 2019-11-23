@@ -626,7 +626,7 @@ variant_type object_detector::predict(
       const image_annotation& each_row = predicted_row[i];
       float width_scale, height_scale;
 
-      std::tie(width_scale, height_scale) = image_dimension[i];
+      std::tie(height_scale, width_scale) = image_dimension[i];
 
       flex_dict bb_dict = {
           {"x", (each_row.bounding_box.x + each_row.bounding_box.width / 2.) *
@@ -760,19 +760,19 @@ void object_detector::perform_predict(
       /* weights */ get_model_params());
 
   // To support double buffering, use a queue of pending inference results.
-  std::queue<image_augmenter::result_with_dimension> pending_batches;
+  std::queue<inference_batch> pending_batches;
 
   // Helper function to process results until the queue reaches a given size.
   auto pop_until_size = [&](size_t remaining) {
     while (pending_batches.size() > remaining) {
 
       // Pop one batch from the queue.
-      image_augmenter::result_with_dimension batch = pending_batches.front();
+      inference_batch batch = pending_batches.front();
 
       pending_batches.pop();
-      for (size_t i = 0; i < batch.result_batch.annotations_batch.size(); ++i) {
+      for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
         // For this row (corresponding to one image), extract the prediction.
-        shared_float_array raw_prediction = batch.result_batch.image_batch[i];
+        shared_float_array raw_prediction = batch.image_batch[i];
 
         // Translate the raw output into predicted labels and bounding boxes.
         std::vector<image_annotation> predicted_annotations =
@@ -783,7 +783,7 @@ void object_detector::perform_predict(
         predicted_annotations = apply_non_maximum_suppression(
             std::move(predicted_annotations), iou_threshold);
 
-        consumer(predicted_annotations, batch.result_batch.annotations_batch[i],
+        consumer(predicted_annotations, batch.annotations_batch[i],
                  batch.image_dimensions_batch);
       }
     }
@@ -796,25 +796,22 @@ void object_detector::perform_predict(
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
 
-    image_augmenter::result_with_dimension result_with_dimension_batch;
+    inference_batch result_batch;
 
     // Instead of giving the ground truth data to the image augmenter and the
     // neural net, instead save them for later, pairing them with the future
     // predictions.
-    result_with_dimension_batch.result_batch.annotations_batch.resize(
-        input_batch.size());
+    result_batch.annotations_batch.resize(input_batch.size());
     for (size_t i = 0; i < input_batch.size(); ++i) {
-      result_with_dimension_batch.result_batch.annotations_batch[i] =
-          std::move(input_batch[i].annotations);
+      result_batch.annotations_batch[i] = std::move(input_batch[i].annotations);
       input_batch[i].annotations.clear();
     }
 
     // Store image dimentions
-    result_with_dimension_batch.image_dimensions_batch.resize(
-        input_batch.size());
+    result_batch.image_dimensions_batch.resize(input_batch.size());
     for (size_t i = 0; i < input_batch.size(); ++i) {
-      result_with_dimension_batch.image_dimensions_batch[i] = std::make_pair(
-          input_batch[i].image.m_width, input_batch[i].image.m_height);
+      result_batch.image_dimensions_batch[i] = std::make_pair(
+          input_batch[i].image.m_height, input_batch[i].image.m_width);
     }
 
     // Use the image augmenter to format the images into float arrays, and
@@ -825,11 +822,10 @@ void object_detector::perform_predict(
     std::map<std::string, shared_float_array> prediction_results =
         model->predict({{"input", prepared_input_batch.image_batch}});
 
-    result_with_dimension_batch.result_batch.image_batch =
-        prediction_results.at("output");
+    result_batch.image_batch = prediction_results.at("output");
 
     // Add the pending result to our queue and move on to the next input batch.
-    pending_batches.push(std::move(result_with_dimension_batch));
+    pending_batches.push(std::move(result_batch));
     input_batch = data_iter->next_batch(batch_size);
   }
 
