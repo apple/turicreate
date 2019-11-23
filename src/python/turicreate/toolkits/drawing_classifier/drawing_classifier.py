@@ -1205,14 +1205,14 @@ class DrawingClassifier(_Model):
           >>> print results['accuracy']
         """
 
+        evaluation_result = self.__proxy__.evaluate(dataset, metric)
+
         # TODO: fix the three passes through the data.
         class_label = self.__proxy__.predict(dataset, "class")
         probability_vector = self.__proxy__.predict(dataset, "probability_vector")
 
         predicted  = _tc.SFrame({"label": class_label, "probability": probability_vector})
         labels = self.classes
-
-        evaluation_result = self.__proxy__.evaluate(dataset, 'auto')
 
         from .._evaluate_utils import  (
             entropy,
