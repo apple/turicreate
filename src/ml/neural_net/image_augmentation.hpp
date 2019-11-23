@@ -64,13 +64,6 @@ struct image_annotation {
   int identifier = 0;
   image_box bounding_box;
   float confidence = 0.f;  // Typically 1 for training data
-
-  // True image dimension
-  float img_width = 0.f;
-  float img_height = 0.f;
-
-  // Set image dimentsion
-  void set_image_dimension(float image_width, float image_height);
 };
 
 bool operator==(const image_annotation& a, const image_annotation& b);

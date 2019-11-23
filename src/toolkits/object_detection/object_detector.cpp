@@ -538,10 +538,12 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
   // Initialize the metric calculator
   average_precision_calculator calculator(class_labels);
 
-  auto consumer = [&](const std::vector<image_annotation>& predicted_row,
-                      const std::vector<image_annotation>& groundtruth_row) {
-    calculator.add_row(predicted_row, groundtruth_row);
-  };
+  auto consumer =
+      [&](const std::vector<image_annotation>& predicted_row,
+          const std::vector<image_annotation>& groundtruth_row,
+          const std::vector<std::pair<float, float>>& image_dimension) {
+        calculator.add_row(predicted_row, groundtruth_row);
+      };
 
   perform_predict(data, consumer, confidence_threshold, iou_threshold);
 
@@ -614,14 +616,17 @@ variant_type object_detector::predict(
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
-                      const std::vector<image_annotation>& groundtruth_row) {
-
+                      const std::vector<image_annotation>& groundtruth_row,
+                      const std::vector<std::pair<float, float>>&
+                          image_dimension) {
     // Convert predicted_row to flex_type list to call gl_sarray_writer
     flex_list predicted_row_ft;
     flex_list class_labels = read_state<flex_list>("classes");
-    for (const image_annotation& each_row : predicted_row) {
-      float width_scale = each_row.img_width;
-      float height_scale = each_row.img_height;
+    for (size_t i = 0; i < predicted_row.size(); i++) {
+      const image_annotation& each_row = predicted_row[i];
+      float width_scale, height_scale;
+
+      std::tie(width_scale, height_scale) = image_dimension[i];
 
       flex_dict bb_dict = {
           {"x", (each_row.bounding_box.x + each_row.bounding_box.width / 2.) *
@@ -695,10 +700,13 @@ gl_sframe object_detector::convert_types_to_sframe(
   return sframe_data;
 }
 
-void object_detector::perform_predict(gl_sframe data,
+void object_detector::perform_predict(
+    gl_sframe data,
     std::function<void(const std::vector<image_annotation>&,
-    const std::vector<image_annotation>&)> consumer, float confidence_threshold,
-    float iou_threshold) {
+                       const std::vector<image_annotation>&,
+                       const std::vector<std::pair<float, float>>&)>
+        consumer,
+    float confidence_threshold, float iou_threshold) {
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
@@ -775,17 +783,8 @@ void object_detector::perform_predict(gl_sframe data,
         predicted_annotations = apply_non_maximum_suppression(
             std::move(predicted_annotations), iou_threshold);
 
-        // Get image dimension
-        float img_width, img_height;
-        std::tie(img_width, img_height) = batch.image_dimensions_batch[i];
-
-        // Set image dimension for predicted_annotations
-        for (size_t j = 0; j < predicted_annotations.size(); ++j) {
-          predicted_annotations[j].set_image_dimension(img_width, img_height);
-        }
-
-        consumer(predicted_annotations,
-                 batch.result_batch.annotations_batch[i]);
+        consumer(predicted_annotations, batch.result_batch.annotations_batch[i],
+                 batch.image_dimensions_batch);
       }
     }
   };
