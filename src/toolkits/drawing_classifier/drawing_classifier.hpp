@@ -39,6 +39,8 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   void load_version(iarchive& iarc, size_t version) override;
 
+  void import_from_custom_model(variant_map_type model_data, size_t version);
+
   /**
    * Interface exposed via Unity server
    */
@@ -56,7 +58,7 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::string short_description,
-      std::map<std::string, flexible_type> additional_user_defined,
+      const std::map<std::string, flexible_type>& additional_user_defined,
       bool use_default_spec = false);
 
   // Support for iterative training.
@@ -220,6 +222,9 @@ class EXPORT drawing_classifier : public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::iterate_training);
 
+  REGISTER_CLASS_MEMBER_FUNCTION(drawing_classifier::import_from_custom_model,
+                                 "model_data", "version");
+
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
@@ -247,7 +252,8 @@ class EXPORT drawing_classifier : public ml_model_base {
       const;
 
   // Returns the initial neural network to train
-  virtual std::unique_ptr<neural_net::model_spec> init_model() const;
+  virtual std::unique_ptr<neural_net::model_spec> init_model(
+      bool use_random_init) const;
 
   virtual std::tuple<gl_sframe, gl_sframe> init_data(
       gl_sframe data, variant_type validation_data) const;

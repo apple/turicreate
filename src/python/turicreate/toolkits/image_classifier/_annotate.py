@@ -119,10 +119,6 @@ def annotate(data, image_column=None, annotation_column='annotations'):
                             [image_column],
                             annotation_column
                         )
-    if __platform == "linux" or __platform == "linux2":
-        model = _image_feature_extractor._create_feature_extractor("squeezenet_v1.1")
-        feature_sframe = model.extract_features(data, image_column, verbose=False, batch_size=64)
-        annotation_window.add_image_features(feature_sframe)
 
     with _QuietProgress(False):
         annotation_window.annotate(_get_client_app_path())

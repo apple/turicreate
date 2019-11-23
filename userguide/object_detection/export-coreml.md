@@ -7,7 +7,7 @@ Core ML.
 
 With Turi Create 5.0+ and starting in iOS 12, macOS 10.14 you can
 directly integrate object detector models via the [Vision
-Framework](https://developer.apple.com/documentation/vision)
+Framework](https://developer.apple.com/documentation/vision).
 
 
 You can export to Core ML in Turi Create 5 as follows:

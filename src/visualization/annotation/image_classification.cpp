@@ -284,8 +284,10 @@ void ImageClassification::_addAnnotationToSFrame(size_t index,
                                                  std::string label) {
   /* Assert that the column type is indeed of type flex_enum::STRING */
   size_t annotation_column_index = m_data->column_index(m_annotation_column);
-  DASSERT_EQ(m_data->dtype().at(annotation_column_index),
-             flex_type_enum::STRING);
+  if (m_data->select_column(annotation_column_index)->any()) {
+    DASSERT_EQ(m_data->dtype().at(annotation_column_index),
+              flex_type_enum::STRING);
+  }
 
   std::shared_ptr<unity_sarray> data_sarray =
       std::static_pointer_cast<unity_sarray>(

@@ -378,6 +378,8 @@ void style_transfer::infer_derived_options() {
     flex_int max_iterations = estimate_max_iterations(
         read_state<flex_int>("num_styles"), read_state<flex_int>("batch_size"));
 
+    logprogress_stream << "Setting max_iterations to be " << max_iterations << std::endl;
+    
     add_or_update_state({{"max_iterations", max_iterations}});
   }
 
@@ -615,11 +617,11 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       batch = data_iter->next_batch(batch_size);
     }
 
-    table.print_row(idx, progress_time(), "100%");
-    table.print_footer();
-
     data_iter->reset();
   }
+
+  table.print_row(idx, progress_time(), "100%");
+  table.print_footer();
 }
 
 gl_sarray style_transfer::convert_types_to_sarray(const variant_type& data) {
