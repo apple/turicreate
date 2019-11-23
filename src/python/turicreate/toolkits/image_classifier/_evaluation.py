@@ -24,43 +24,45 @@ import math as _math
 class Evaluation(dict):
   def __init__(self, obj = {}):
     dict.__init__(self)
-    self.data = obj
-    self.update(obj)
+    self._data = obj
+
+    metrics_keys = ['f1_score', 'auc', 'recall', 'precision', 'log_loss', 'roc_curve', 'confusion_matrix', 'accuracy']
+    metrics_obj = { k: v for k, v in obj.items() if k in metrics_keys }
+
+    self.update(metrics_obj)
 
   def _get_eval_json(self):
     evaluation_dictionary = dict()
 
-    for key, value in _six.iteritems(self.data):
+    for key, value in _six.iteritems(self._data):
       if (isinstance(value, float) or isinstance(value, int)) and _math.isnan(value):
         continue
-      if (key is "test_data" or key is "confusion_matrix" or key is "roc_curve"):
+      if (key == "test_data" or key == "confusion_matrix" or key == "roc_curve"):
         continue
       evaluation_dictionary[key] = value
 
     evaluation_dictionary["table_spec"] = {
       "column_names": ["path", "image", "target_label", "predicted_label"],
-      "size": len(self.data["test_data"]),
+      "size": len(self._data["test_data"]),
       "title": "",
       "column_types": ["string", "image", "string", "string"]
     }
 
-    evaluation_dictionary["corrects_size"] = len(self.data["test_data"].filter_by([True], "correct"))
+    evaluation_dictionary["corrects_size"] = len(self._data["test_data"].filter_by([True], "correct"))
     evaluation_dictionary["incorrects_size"] = evaluation_dictionary["table_spec"]["size"] - evaluation_dictionary["corrects_size"]
 
-    # make sure numpy.float32 is serializable
-    evaluation_dictionary["training_loss"] = float(evaluation_dictionary["training_loss"])
     return str(_json.dumps({ "evaluation_spec": evaluation_dictionary }, allow_nan = False))
 
   def explore(self):
     """
     Explore model evaluation qualitatively through a GUI assisted application.
     """
-    if self.data["test_data"][self["feature"]].dtype == _tc.Image:
+    if self._data["test_data"][self._data["feature"]].dtype == _tc.Image:
       print("Resizing image data... ", end='')
-      self.data["test_data"][self["feature"]] = self.data["test_data"][self["feature"]].apply(_image_conversion)
-      self.data["test_data"].materialize()
+      self._data["test_data"][self._data["feature"]] = self._data["test_data"][self._data["feature"]].apply(_image_conversion)
+      self._data["test_data"].materialize()
       print("Done.")
-    params = (self._get_eval_json()+"\n", self.data["test_data"], self, )
+    params = (self._get_eval_json()+"\n", self._data["test_data"], self, )
     # Suppress visualization output if 'none' target is set
     from ...visualization._plot import _target
     if _target == 'none':
@@ -110,12 +112,12 @@ def _reform_sframe(sf):
   return list(sf_sending_data)
 
 def _filter_sframe(filters, row_type, mat_type, sf, evaluation):
-  conf_metric = evaluation["confidence_metric_for_threshold"]
+  conf_metric = evaluation._data["confidence_metric_for_threshold"]
 
   if mat_type == "conf_wrong":
-    sf = sf[sf[conf_metric] > evaluation["confidence_threshold"]]
+    sf = sf[sf[conf_metric] > evaluation._data["confidence_threshold"]]
   elif mat_type == "hesitant":
-    sf = sf[sf[conf_metric] < evaluation["hesitant_threshold"]]
+    sf = sf[sf[conf_metric] < evaluation._data["hesitant_threshold"]]
 
   filtered_array = None
   if row_type == "corrects":
@@ -138,7 +140,7 @@ def _filter_sframe(filters, row_type, mat_type, sf, evaluation):
   return filtered_array
 
 def __get_incorrects(label, sf, evaluation):
-  conf_metric = evaluation["confidence_metric_for_threshold"]
+  conf_metric = evaluation._data["confidence_metric_for_threshold"]
 
   sf = sf.filter_by([False], "correct")
 
@@ -151,12 +153,12 @@ def __get_incorrects(label, sf, evaluation):
   data = []
   for u in unique_predictions:
     u_filt = filtered_sframe.filter_by([u], "predicted_label")
-    data.append({"label": str(u), "images": list(u_filt[evaluation.data['feature']])})
+    data.append({"label": str(u), "images": list(u_filt[evaluation._data['feature']])})
 
   return _json.dumps({"data_spec": { "incorrects": {"target": label, "data": data }}}) + "\n"
 
 def __get_corrects(sf, evaluation):
-  conf_metric = evaluation["confidence_metric_for_threshold"]
+  conf_metric = evaluation._data["confidence_metric_for_threshold"]
 
   sf = sf.filter_by([True], "correct")
 
@@ -165,7 +167,7 @@ def __get_corrects(sf, evaluation):
   data = []
   for u in unique_predictions:
     u_filt = sf.filter_by([u], "predicted_label")
-    data.append({"target": u, "images": list(u_filt[evaluation.data['feature']])})
+    data.append({"target": u, "images": list(u_filt[evaluation._data['feature']])})
   return _json.dumps({"data_spec": { "correct": data}}) + "\n"
 
 def _process_value(value, extended_sframe, proc, evaluation):

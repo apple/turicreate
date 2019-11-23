@@ -1204,7 +1204,71 @@ class DrawingClassifier(_Model):
           >>> results = model.evaluate(data)
           >>> print results['accuracy']
         """
-        return self.__proxy__.evaluate(dataset, metric)
+
+        # TODO: fix the three passes through the data.
+        class_label = self.__proxy__.predict(dataset, "class")
+        probability_vector = self.__proxy__.predict(dataset, "probability_vector")
+
+        predicted  = _tc.SFrame({"label": class_label, "probability": probability_vector})
+        labels = self.classes
+
+        evaluation_result = self.__proxy__.evaluate(dataset, 'auto')
+
+        from .._evaluate_utils import  (
+            entropy,
+            confidence,
+            relative_confidence,
+            get_confusion_matrix,
+            hclusterSort,
+            l2Dist
+        )
+
+        evaluation_result['num_test_examples'] = len(dataset)
+        for k in ['num_classes', 'num_examples', 'training_time', 'max_iterations']:
+            evaluation_result[k] = getattr(self, k)
+
+        #evaluation_result['input_image_shape'] = getattr(self, 'input_image_shape')
+
+        evaluation_result["model_name"] = "Drawing Classifier"
+        extended_test = dataset.add_column(predicted["probability"], 'probs')
+        extended_test['label'] = dataset[self.target]
+
+        extended_test = extended_test.add_columns( [extended_test.apply(lambda d: labels[d['probs'].index(confidence(d['probs']))]),
+            extended_test.apply(lambda d: entropy(d['probs'])),
+            extended_test.apply(lambda d: confidence(d['probs'])),
+            extended_test.apply(lambda d: relative_confidence(d['probs']))],
+            ['predicted_label', 'entropy', 'confidence', 'relative_confidence'])
+
+        extended_test = extended_test.add_column(extended_test.apply(lambda d: d['label'] == d['predicted_label']), 'correct')
+
+        sf_conf_mat = get_confusion_matrix(extended_test, labels)
+        confidence_threshold = 0.5
+        hesitant_threshold = 0.2
+        evaluation_result['confidence_threshold'] = confidence_threshold
+        evaluation_result['hesitant_threshold'] = hesitant_threshold
+        evaluation_result['confidence_metric_for_threshold'] = 'relative_confidence'
+
+        evaluation_result['conf_mat'] = list(sf_conf_mat)
+
+        vectors = map(lambda l: {'name': l, 'pos':list(sf_conf_mat[sf_conf_mat['target_label']==l].sort('predicted_label')['norm_prob'])},
+                    labels)
+        evaluation_result['sorted_labels'] = hclusterSort(vectors, l2Dist)[0]['name'].split("|")
+
+        per_l = extended_test.groupby(['label'], {'count': _tc.aggregate.COUNT, 'correct_count': _tc.aggregate.SUM('correct') })
+        per_l['recall'] = per_l.apply(lambda l: l['correct_count']*1.0 / l['count'])
+
+        per_pl = extended_test.groupby(['predicted_label'], {'predicted_count': _tc.aggregate.COUNT, 'correct_count': _tc.aggregate.SUM('correct') })
+        per_pl['precision'] = per_pl.apply(lambda l: l['correct_count']*1.0 / l['predicted_count'])
+        per_pl = per_pl.rename({'predicted_label': 'label'})
+        evaluation_result['label_metrics'] = list(per_l.join(per_pl, on='label', how='outer').select_columns(['label', 'count', 'correct_count', 'predicted_count', 'recall', 'precision']))
+        evaluation_result['labels'] = labels
+
+        extended_test = extended_test.add_row_number('__idx').rename({'label': 'target_label'})
+
+        evaluation_result['test_data'] = extended_test
+        evaluation_result['feature'] = self.feature
+
+        return _Evaluation(evaluation_result)
 
     def _get_summary_struct(self):
         """
