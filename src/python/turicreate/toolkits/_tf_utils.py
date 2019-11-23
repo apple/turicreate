@@ -9,6 +9,29 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as np
 
+class TensorFlowGPUPolicy(object):
+    def start(self):
+        import turicreate as tc
+        self.force_cpu = tc.config.get_num_gpus() == 0
+        if self.force_cpu:
+            import os
+            if 'CUDA_VISIBLE_DEVICES' in os.environ:
+                self.cuda_visible_devices = os.environ['CUDA_VISIBLE_DEVICES']
+            else:
+                self.cuda_visible_devices = None
+            os.environ['CUDA_VISIBLE_DEVICES'] = ''
+    def stop(self):
+        if self.force_cpu:
+            import os
+            if self.cuda_visible_devices is None:
+                del os.environ['CUDA_VISIBLE_DEVICES']
+            else:
+                os.environ['CUDA_VISIBLE_DEVICES'] = self.cuda_visible_devices
+    def __enter__(self):
+        self.start()
+    def __exit__(self, exception_type, exception_val, exception_traceback):
+        self.stop()
+
 def suppress_tensorflow_warnings():
 	"""
 	Suppresses tensorflow warnings

@@ -25,6 +25,9 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         """
 
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
+
         _tf.reset_default_graph()
 
         self.num_classes = num_classes
@@ -87,6 +90,9 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 
+    def __del__(self):
+        self.sess.close()
+        self.gpu_policy.stop()
 
     def train(self, data, label):
         data_shape = data.shape[0]

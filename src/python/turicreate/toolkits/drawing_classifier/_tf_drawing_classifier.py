@@ -23,6 +23,9 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         loads the MXNET weights into the model.
 
         """
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
+
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
@@ -138,6 +141,10 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                     # TODO: Call _utils.convert_conv2d_coreml_to_tf when #2513 is merged
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
                                              _np.transpose(net_params[key], (2, 3, 1, 0))))
+
+    def __del__(self):
+        self.sess.close()
+        self.gpu_policy.stop()
 
     def train(self, feed_dict):
 

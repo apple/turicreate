@@ -65,12 +65,20 @@ class VGGishFeatureExtractor(object):
 
         if _mac_ver() < (10, 14):
             # Use TensorFlow/Keras
+            import turicreate.toolkits._tf_utils as _utils
+            self.gpu_policy = _utils.TensorFlowGPUPolicy()
+            self.gpu_policy.start()
+
             model_path = vggish_model_file.get_model_path(format='tensorflow')
             self.vggish_model = _keras.models.load_model(model_path)
         else:
             # Use Core ML
             model_path = vggish_model_file.get_model_path(format='coreml')
             self.vggish_model = MLModel(model_path)
+
+    def __del__(self):
+        if _mac_ver() < (10, 14):
+            self.gpu_policy.stop()
 
     def _extract_features(self, preprocessed_data, verbose=True):
         """

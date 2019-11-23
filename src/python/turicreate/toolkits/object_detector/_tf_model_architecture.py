@@ -20,6 +20,9 @@ class ODTensorFlowModel(TensorFlowModel):
 
     def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
 
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
+
         #reset tensorflow graph when a new model is created
         _tf.reset_default_graph()
 
@@ -77,6 +80,10 @@ class ODTensorFlowModel(TensorFlowModel):
         self.sess.run(_tf.local_variables_initializer())
 
         self.load_weights(self.init_weights)
+
+    def __del__(self):
+        self.sess.close()
+        self.gpu_policy.stop()
 
     def load_weights(self, tf_net_params):
         """
