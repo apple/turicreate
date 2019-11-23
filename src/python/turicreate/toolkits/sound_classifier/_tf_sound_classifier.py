@@ -6,12 +6,7 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from turicreate.util import _ProgressTablePrinter
-import tensorflow as _tf
-import numpy as _np
-import time as _time
 from .._tf_model import TensorFlowModel
-import turicreate.toolkits._tf_utils as _utils
 
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
@@ -25,14 +20,19 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         """
 
-        _tf.reset_default_graph()
-
+        self.sc_graph = _tf.Graph()
         self.num_classes = num_classes
+        self.sess = _tf.Session(graph=self.sc_graph)
+        with self.sc_graph.as_default():
+            self.init_sound_classifier_graph(num_inputs, custom_layer_sizes)
+
+
+    def init_sound_classifier_graph(self, num_inputs, custom_layer_sizes):
 
         self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
-        #xavier initialization
+        # Xavier initialization
         initializer = _tf.keras.initializers.glorot_uniform()
 
         weights = {}
@@ -55,8 +55,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         weight_name = 'sound_dense{}_weight'.format(i)
         bias_name = 'sound_dense{}_bias'.format(i)
         self.names_of_layers.append('dense{}'.format(i))
-        weights[weight_name] = _tf.Variable(initializer([in_units, num_classes]), name=weight_name)
-        biases[bias_name] = _tf.Variable(initializer([num_classes]), name=bias_name)
+        weights[weight_name] = _tf.Variable(initializer([in_units, self.num_classes]), name=weight_name)
+        biases[bias_name] = _tf.Variable(initializer([self.num_classes]), name=bias_name)
 
         # Add customized layers
         for i in range(len(weights.keys())):
@@ -84,7 +84,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
         self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, "float"))
 
-        self.sess = _tf.Session()
+        # Set variables to their initial values
         self.sess.run(_tf.global_variables_initializer())
 
 
@@ -130,8 +130,11 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             `numpy.ndarray` converted to the CoreML format and the
             respective activation applied to the layer.
         """
-        layer_names = _tf.trainable_variables()
-        layer_weights = self.sess.run(layer_names)
+
+        with self.sc_graph.as_default():
+            layer_names = _tf.trainable_variables()
+            layer_weights = self.sess.run(layer_names)
+
         layer_dict = {}
         for var, val in zip(layer_names, layer_weights):
             layer_dict[var.name] = val
@@ -161,8 +164,11 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                 shapes are transposed.
 
         """
-        layer_names = _tf.trainable_variables()
-        layer_weights = self.sess.run(layer_names)
+
+        with self.sc_graph.as_default():
+            layer_names = _tf.trainable_variables()
+            layer_weights = self.sess.run(layer_names)
+
         data = {}
         shapes = {}
         for var, val in zip(layer_names, layer_weights):
@@ -187,12 +193,12 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         for layer_name in layers:
             new_layer_name = layer_name.replace("custom", "sound")
             if 'bias' in layer_name:
-                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
+                self.sess.run(_tf.assign(self.sc_graph.get_tensor_by_name(new_layer_name+":0"),
                     net_params['data'][layer_name]))
             else:
                 curr_shape = [int(x) for x in net_params['shapes'][layer_name]]
-                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
-                                        net_params['data'][layer_name].reshape(curr_shape).transpose(1,0)))
+                self.sess.run(_tf.assign(self.sc_graph.get_tensor_by_name(new_layer_name+":0"),
+                    net_params['data'][layer_name].reshape(curr_shape).transpose(1,0)))
 
 
 
