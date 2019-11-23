@@ -102,8 +102,8 @@
   NSMutableData* instNormDataGamma = [NSMutableData dataWithLength:instNormSize];
   NSMutableData* instNormDataBeta = [NSMutableData dataWithLength:instNormSize];
 
-  memcpy(instNormDataGamma.mutableBytes, [_instNorm.tc_weightsData gamma], instNormSize);
-  memcpy(instNormDataBeta.mutableBytes, [_instNorm.tc_weightsData beta], instNormSize);
+  memcpy(instNormDataGamma.mutableBytes, [_instNorm.tc_weightsData gammaWeights], instNormSize);
+  memcpy(instNormDataBeta.mutableBytes, [_instNorm.tc_weightsData betaWeights], instNormSize);
 
   NSArray<NSNumber *>* instNormGammaShape = @[@([_instNorm.tc_weightsData styles]), @([_instNorm.tc_weightsData numberOfFeatureChannels])];
   NSArray<NSNumber *>* instNormBetaShape = @[@([_instNorm.tc_weightsData styles]), @([_instNorm.tc_weightsData numberOfFeatureChannels])];

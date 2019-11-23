@@ -302,6 +302,8 @@
 
   _model.styleIndex = styleIndex;
 
+  [_inferenceGraph reloadFromDataSources];
+
   MPSImageDescriptor *imgDesc = [MPSImageDescriptor
     imageDescriptorWithChannelFormat:MPSImageFeatureChannelFormatFloat32
                                width:_imgWidth
