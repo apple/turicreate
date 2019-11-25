@@ -33,7 +33,7 @@ from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 USE_CPP = _tkutl._read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 
 def create(dataset, session_id, target, features=None, prediction_window=100,
-           validation_set='auto', max_iterations=10, batch_size=32, verbose=True, **kwargs):
+           validation_set='auto', max_iterations=10, batch_size=32, verbose=True):
     """
     Create an :class:`ActivityClassifier` model.
 
