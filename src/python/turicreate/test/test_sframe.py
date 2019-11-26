@@ -219,7 +219,7 @@ class SFrameTest(unittest.TestCase):
     def test_drop_duplicate(self):
         sf = SFrame({'A': ['a', 'b', 'a','C'], 'B': ['b', 'a', 'b','D'], 'C': [1, 2, 1,8]})
         df = pd.DataFrame({'A': ['a', 'b', 'a','C'], 'B': ['b', 'a', 'b','D'], 'C': [1, 2, 1,8]})
-        sf1=sf.drop_duplicate(subset=["A","B"])
+        sf1=sf.drop_duplicates(subset=["A","B"])
         sf1=sf1.topk("C",reverse=True)
         df1=df.drop_duplicates(subset=["A","B"]).reset_index(drop=True)
         self.__test_equal(sf1,df1)
