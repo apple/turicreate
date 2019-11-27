@@ -201,6 +201,13 @@ class SFrameTest(unittest.TestCase):
             sf = SFrame.read_csv(csvfile.name, header=True)
             self.assertEqual(sf.dtype, [float, int, str])
             self.__test_equal(sf, df)
+    def test_read_json(self):
+        x='{"row 1":{"col 1":"a","col 2":"b"},"row 2":{"col 1":"c","col 2":"d"}}'
+        sf=SFrame.read_json(x)
+        df =pd.read_json(x)
+        df=df.reset_index()
+        df=df.drop(['index'],axis=1)
+        self.__test_equal(sf, df)
 
     def test_auto_parse_csv(self):
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
