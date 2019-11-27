@@ -3215,3 +3215,10 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(sorted(x.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake'])), ['cat', 'dog'])
         self.assertEqual(sorted(x.filter_by(['cat', 'hamster', 'dog', 'fish', 'bird', 'snake'], exclude=True)), ['cow', 'horse'])
         self.assertEqual(sorted(x.filter_by('dog')), ['dog'])
+
+    def test_abs(self):
+        sa = SArray([-1.10, 2, -3.33, 4])
+        result = sa.abs()
+        expected = [1.1, 2.0, 3.33, 4.0]
+        self.__test_equal(result, expected, float)
+

@@ -4433,3 +4433,6 @@ class SArray(object):
         immutable, this is identical to __copy__.
         """
         return SArray(_proxy = self.__proxy__)
+
+    def abs(self):
+        return abs(self)
