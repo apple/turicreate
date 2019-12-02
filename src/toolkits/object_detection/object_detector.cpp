@@ -564,11 +564,13 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
     result_map.erase(MAP);
   }
 
-  return convert_map_to_types(result_map, output_type);
+  return convert_map_to_types(result_map, output_type,
+                              read_state<flex_list>("classes"));
 }
 
 variant_type object_detector::convert_map_to_types(
-    const variant_map_type& result_map, const std::string& output_type) {
+    const variant_map_type& result_map, const std::string& output_type,
+    const flex_list& class_labels) {
   // Handle different output types here
   // If output_type = "dict", just return the result_map.
   // If output_type = "sframe", construct a sframe,
@@ -582,18 +584,15 @@ variant_type object_detector::convert_map_to_types(
   if (output_type == "dict") {
     final_result = to_variant(result_map);
   } else if (output_type == "sframe") {
-    gl_sframe sframe_result;
+    gl_sframe sframe_result({{"label", gl_sarray(class_labels)}});
     auto add_score_list = [&](std::string& metric_name) {
       flex_list score_list;
-      flex_list label_list;
       auto it = result_map.find(metric_name);
       if (it != result_map.end()) {
         const flex_dict& dict = variant_get_value<flex_dict>(it->second);
         for (const auto& label_score_pair : dict) {
-          label_list.push_back(label_score_pair.first);
           score_list.push_back(label_score_pair.second);
         }
-        sframe_result.replace_add_column(gl_sarray(label_list), "label");
         sframe_result.add_column(gl_sarray(score_list), metric_name);
       }
     };

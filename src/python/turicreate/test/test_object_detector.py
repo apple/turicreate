@@ -285,6 +285,12 @@ class ObjectDetectorTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             self.model.evaluate(self.sf.head(), iou_threshold  =-1)
 
+    def test_evaluate_sframe_format(self):
+        metrics = ["mean_average_precision_50","mean_average_precision"]
+        for metric in metrics:
+            pred = self.model.evaluate(self.sf.head(), metric=metric, output_type="sframe")
+            self.assertEqual(pred.column_names(), ["label"])
+
     def test_evaluate_invalid_metric(self):
         with self.assertRaises(_ToolkitError):
             self.model.evaluate(self.sf.head(), metric='not-supported-metric')

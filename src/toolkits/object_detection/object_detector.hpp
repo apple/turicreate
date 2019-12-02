@@ -224,7 +224,8 @@ class EXPORT object_detector: public ml_model_base {
   flex_int get_num_classes() const;
 
   static variant_type convert_map_to_types(const variant_map_type& result_map,
-                                           const std::string& output_type);
+                                           const std::string& output_type,
+                                           const flex_list& class_labels);
   static gl_sframe convert_types_to_sframe(const variant_type& data,
                                            const std::string& column_name);
 
