@@ -289,8 +289,7 @@ class ObjectDetectorTest(unittest.TestCase):
         metrics = ["mean_average_precision_50","mean_average_precision"]
         for metric in metrics:
             pred = self.model.evaluate(self.sf.head(), metric=metric, output_type="sframe")
-            self.assertEqual(len(pred.column_names()), 1)
-            self.assertEqual(pred.column_names()[0], "label")
+            self.assertEqual(pred.column_names(), ["label"])
 
     def test_evaluate_invalid_metric(self):
         with self.assertRaises(_ToolkitError):
