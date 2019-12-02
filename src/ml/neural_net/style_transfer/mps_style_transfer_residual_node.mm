@@ -159,8 +159,8 @@
   NSMutableData* instNorm1DataGamma = [NSMutableData dataWithLength:instNorm1Size];
   NSMutableData* instNorm1DataBeta = [NSMutableData dataWithLength:instNorm1Size];
   
-  memcpy(instNorm1DataGamma.mutableBytes, [_instNorm1.tc_weightsData gamma], instNorm1Size);
-  memcpy(instNorm1DataBeta.mutableBytes, [_instNorm1.tc_weightsData beta], instNorm1Size);
+  memcpy(instNorm1DataGamma.mutableBytes, [_instNorm1.tc_weightsData gammaWeights], instNorm1Size);
+  memcpy(instNorm1DataBeta.mutableBytes, [_instNorm1.tc_weightsData betaWeights], instNorm1Size);
 
   NSArray<NSNumber *>* inst1NormGammaShape = @[@([_instNorm1.tc_weightsData styles]), @([_instNorm1.tc_weightsData numberOfFeatureChannels])];
   NSArray<NSNumber *>* inst1NormBetaShape = @[@([_instNorm1.tc_weightsData styles]), @([_instNorm1.tc_weightsData numberOfFeatureChannels])];
@@ -185,8 +185,8 @@
   NSMutableData* instNorm2DataGamma = [NSMutableData dataWithLength:instNorm2Size];
   NSMutableData* instNorm2DataBeta = [NSMutableData dataWithLength:instNorm2Size];
 
-  memcpy(instNorm2DataGamma.mutableBytes, [_instNorm2.tc_weightsData gamma], instNorm2Size);
-  memcpy(instNorm2DataBeta.mutableBytes, [_instNorm2.tc_weightsData beta], instNorm2Size);
+  memcpy(instNorm2DataGamma.mutableBytes, [_instNorm2.tc_weightsData gammaWeights], instNorm2Size);
+  memcpy(instNorm2DataBeta.mutableBytes, [_instNorm2.tc_weightsData betaWeights], instNorm2Size);
 
 
   NSArray<NSNumber *>* inst2NormGammaShape = @[@([_instNorm2.tc_weightsData styles]), @([_instNorm2.tc_weightsData numberOfFeatureChannels])];

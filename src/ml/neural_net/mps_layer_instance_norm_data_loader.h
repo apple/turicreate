@@ -63,9 +63,11 @@ API_AVAILABLE(macos(10.14))
 
 - (void) loadBeta:(float *)beta;
 - (float *) beta;
+- (float *) betaWeights;
 
 - (void) loadGamma:(float *)gamma;
 - (float *) gamma;
+- (float *) gammaWeights;
 
 - (MPSCNNNormalizationGammaAndBetaState *)updateGammaAndBetaWithCommandBuffer:(id<MTLCommandBuffer>)commandBuffer 
                                               instanceNormalizationStateBatch:(MPSCNNInstanceNormalizationGradientStateBatch *)instanceNormalizationStateBatch;

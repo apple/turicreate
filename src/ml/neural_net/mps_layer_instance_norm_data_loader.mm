@@ -177,7 +177,13 @@ API_AVAILABLE(macos(10.14))
   memcpy(betaWeights, beta, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
+
 - (float *) beta {
+  [self checkpointWithCommandQueue:_cq];
+  return (float *) [_style_props[_styleIndex].betaBuffer contents];
+}
+
+- (float *) betaWeights {
   NSUInteger previousStyle = _styleIndex;
   _betaPlaceHolder.length = 0;
   for (NSUInteger index = 0; index < _styles; index++) {
@@ -196,8 +202,13 @@ API_AVAILABLE(macos(10.14))
   memcpy(gammaWeights, gamma, _numberOfFeatureChannels * _styles * sizeof(float));
 }
 
-// TODO: refactor for multiple indicies
 - (float *) gamma {
+  [self checkpointWithCommandQueue:_cq];
+  return (float *) [_style_props[_styleIndex].gammaBuffer contents];
+}
+
+// TODO: refactor for multiple indicies
+- (float *) gammaWeights {
   NSUInteger previousStyle = _styleIndex;
   _gammaPlaceHolder.length = 0;
   for (NSUInteger index = 0; index < _styles; index++) { 
