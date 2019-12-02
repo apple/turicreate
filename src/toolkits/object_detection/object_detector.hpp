@@ -201,7 +201,8 @@ class EXPORT object_detector: public ml_model_base {
   void perform_predict(
       gl_sframe data,
       std::function<void(const std::vector<neural_net::image_annotation>&,
-                         const std::vector<neural_net::image_annotation>&)>
+                         const std::vector<neural_net::image_annotation>&,
+                         const std::vector<std::pair<float, float>>&)>
           consumer,
       float confidence_threshold, float iou_threshold);
 
@@ -259,6 +260,10 @@ class EXPORT object_detector: public ml_model_base {
 
   // Map from iteration index to the loss future.
   std::map<size_t, neural_net::shared_float_array> pending_training_batches_;
+
+  struct inference_batch : neural_net::image_augmenter::result {
+    std::vector<std::pair<float, float>> image_dimensions_batch;
+  };
 };
 
 }  // object_detection
