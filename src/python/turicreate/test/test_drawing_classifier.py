@@ -369,6 +369,10 @@ class DrawingClassifierTest(unittest.TestCase):
         for model in self.models:
             model.summary()
 
+    def test_name(self):
+        for model in self.models:
+            self.assertEqual(model.name(), 'DrawingClassifier')
+
 
 class DrawingClassifierFromScratchTest(DrawingClassifierTest):
     @classmethod

@@ -282,6 +282,9 @@ class StyleTransferTest(unittest.TestCase):
         self.assertEqual(type(str(model)), str)
         self.assertEqual(type(model.__repr__()), str)
 
+    def test_name(self):
+        self.assertEqual(self.model.name(), 'StyleTransfer')
+
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
             self.model.save(filename)

@@ -156,6 +156,9 @@ class ImageSimilarityTest(unittest.TestCase):
             self.assertTrue(self.get_ans[field](ans),
                     "Get failed in field {}. Output was {}.".format(field, ans))
 
+    def test_name(self):
+        self.assertEqual(self.model.name(), 'ImageSimilarityModel')
+
     def test_query_input(self):
         model = self.model
 

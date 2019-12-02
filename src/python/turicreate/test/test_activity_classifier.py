@@ -445,6 +445,9 @@ class ActivityClassifierTest(unittest.TestCase):
         model = self.model
         model.summary()
 
+    def test_name(self):
+        self.assertEqual(self.model.name(), 'ActivityClassifier')
+
     def test_repr(self):
         """
         Check the repr function.

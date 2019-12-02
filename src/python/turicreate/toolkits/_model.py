@@ -526,6 +526,9 @@ class Model(ExposeAttributesFromProxy):
         except:
             return self.__class__.__name__
 
+    def name(self):
+        return self._name()
+
     def __repr__(self):
         raise NotImplementedError
 

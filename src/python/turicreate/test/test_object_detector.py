@@ -405,6 +405,9 @@ class ObjectDetectorTest(unittest.TestCase):
         model = self.model
         model.summary()
 
+    def test_name(self):
+        self.assertEqual(self.model.name(), 'ObjectDetector')
+
     def test_repr(self):
         # Repr after fit
         model = self.model

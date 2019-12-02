@@ -310,6 +310,9 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
     def test_validation_set(self):
         self.assertTrue(self.model.validation_accuracy is None)
 
+    def test_name(self):
+        self.assertEqual(self.model.name(), 'SoundClassifier')
+
 
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
