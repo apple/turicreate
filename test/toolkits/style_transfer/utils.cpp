@@ -57,8 +57,7 @@ turi::gl_sarray random_image_sarray(size_t length) {
   turi::gl_sarray sa;
   sa.construct_from_vector(image_column_data, turi::flex_type_enum::IMAGE);
 
-  return sa.apply(turi::image_util::encode_image, turi::flex_type_enum::IMAGE);
-  ;
+  return sa;
 }
 
 turi::gl_sframe random_sframe(size_t length, std::string image_column_name) {
