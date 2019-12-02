@@ -3,6 +3,9 @@ import time as _time
 from coremltools.models import MLModel
 import numpy as _np
 from tensorflow import keras as _keras
+# Suppresses verbosity to only errors
+import turicreate.toolkits._tf_utils as _utils
+_utils.suppress_tensorflow_warnings()
 import turicreate as _tc
 
 from .vggish_params import SAMPLE_RATE
@@ -10,9 +13,11 @@ from .._internal_utils import _mac_ver
 from .._mxnet import _mxnet_utils
 from .._pre_trained_models import VGGish
 
+
 # We need to disable this here to match behavior in the rest of TuriCreate
 from tensorflow.compat.v1 import disable_v2_behavior
 disable_v2_behavior()
+
 
 VGGish_instance = None
 def _get_feature_extractor(model_name):

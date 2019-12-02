@@ -8,8 +8,11 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from .._tf_model import TensorFlowModel
 
+import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
+# Suppresses verbosity to only errors
+_utils.suppress_tensorflow_warnings()
 
 
 class SoundClassifierTensorFlowModel(TensorFlowModel):
@@ -81,6 +84,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.accuracy = _tf.reduce_mean(_tf.cast(correct_prediction, "float"))
 
         # Set variables to their initial values
+        self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 
     def __del__(self):
@@ -130,9 +134,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             respective activation applied to the layer.
         """
 
-        with self.sc_graph.as_default():
-            layer_names = _tf.trainable_variables()
-            layer_weights = self.sess.run(layer_names)
+        layer_names = _tf.trainable_variables()
+        layer_weights = self.sess.run(layer_names)
 
         layer_dict = {}
         for var, val in zip(layer_names, layer_weights):
@@ -164,9 +167,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         """
 
-        with self.sc_graph.as_default():
-            layer_names = _tf.trainable_variables()
-            layer_weights = self.sess.run(layer_names)
+        layer_names = _tf.trainable_variables()
+        layer_weights = self.sess.run(layer_names)
 
         data = {}
         shapes = {}
@@ -192,11 +194,11 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         for layer_name in layers:
             new_layer_name = layer_name.replace("custom", "sound")
             if 'bias' in layer_name:
-                self.sess.run(_tf.assign(self.sc_graph.get_tensor_by_name(new_layer_name+":0"),
+                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
                     net_params['data'][layer_name]))
             else:
                 curr_shape = [int(x) for x in net_params['shapes'][layer_name]]
-                self.sess.run(_tf.assign(self.sc_graph.get_tensor_by_name(new_layer_name+":0"),
+                self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(new_layer_name+":0"),
                     net_params['data'][layer_name].reshape(curr_shape).transpose(1,0)))
 
 
