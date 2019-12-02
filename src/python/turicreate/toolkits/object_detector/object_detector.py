@@ -1798,6 +1798,7 @@ class ObjectDetector(_Model):
         model_fields = [
             ('Model', 'model'),
             ('Number of classes', 'num_classes'),
+            ('Input image shape', 'input_image_shape')
         ]
         training_fields = [
             ('Training time', '_training_time_as_string'),
