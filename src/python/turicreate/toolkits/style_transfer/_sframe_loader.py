@@ -125,9 +125,13 @@ class SFrameSTIter(_mx.io.DataIter):
         return self._provide_data
 
     def _next(self):
-
         if self.cur_epoch == self.num_epochs or len(self.sframe) == 0:
-            raise StopIteration
+            import sys
+            #In python3.7, no support for StopIteration to raise as an exception. 
+            if(sys.version_info.major == 3 and sys.version_info.minor == 7):
+                raise RuntimeError("StopIteration")
+            else:
+                raise StopIteration
 
         if self.loader_type == 'favor-native-size':
             b_images = []

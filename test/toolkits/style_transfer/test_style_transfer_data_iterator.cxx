@@ -23,6 +23,7 @@ BOOST_AUTO_TEST_CASE(test_initialization) {
 
   size_t expected_batch_size = sizeof(expected_batch_array)/sizeof(size_t);
 
+  // Test image equality for decoded images only
   turi::gl_sarray style_sarray = random_image_sarray(8);
   turi::gl_sarray content_sarray = random_image_sarray(50);
   
