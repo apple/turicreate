@@ -305,7 +305,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
 
       // Make an instance of python object
       pybind11::object object_detector = tf_od_backend.attr(
-          "ODTensorFlowModel")(h_in, w_in, n, c_out, weights, config);
+          "ODTensorFlowModel")(h_in, w_in, n, c_out, h_out, w_out, weights, config);
       result.reset(new tf_model_backend(object_detector));
     });
   return result;

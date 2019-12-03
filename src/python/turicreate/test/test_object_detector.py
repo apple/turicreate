@@ -191,6 +191,7 @@ class ObjectDetectorTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.object_detector.create(self.sf[:0])
 
+
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
         sf_copy[self.annotations] = sf_copy[self.annotations].apply(lambda x: x[0] if len(x) > 0 else None)
@@ -213,6 +214,13 @@ class ObjectDetectorTest(unittest.TestCase):
         # Evaluate while the data has extra classes
         ret = model.evaluate(self.sf.head())
         self.assertEqual(len(ret['average_precision_50']), 2)
+
+    def test_different_grip_shape(self):
+        #should able to givre different input grip shape
+        shapes = [[1,1], [5,5], [13,13], [26,26]]
+        for shape in shapes:
+            model = tc.object_detector.create(self.sf, max_iterations=1, grid_shape=shape)
+            pred = model.predict(self.sf)
 
     def test_predict(self):
         sf = self.sf.head()
