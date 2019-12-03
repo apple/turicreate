@@ -78,8 +78,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             labels=self.y))
 
         # Optimizer
-        self.optimizer = _tf.train.MomentumOptimizer(learning_rate=0.01, momentum=0.9,
-            use_nesterov=True).minimize(self.cost)
+        self.optimizer = _tf.train.AdamOptimizer(learning_rate=0.01).minimize(self.cost)
 
         # Predictions
         correct_prediction = _tf.equal(_tf.argmax(self.predictions, 1), _tf.argmax(self.y, 1))
