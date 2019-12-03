@@ -65,13 +65,10 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
     if _fnmatch(path, '*.wav'):    # single file
         all_wav_files.append(path)
     elif recursive:
-        if _os.path.isdir(path):
-            for (dir_path, _, file_names) in _os.walk(path):
-                for cur_file in file_names:
-                    if _fnmatch(cur_file, '*.wav'):
-                        all_wav_files.append(dir_path + '/' + cur_file)
-        else:
-            raise Exception("No such file or directory exist")
+        for (dir_path, _, file_names) in _os.walk(path):
+            for cur_file in file_names:
+                if _fnmatch(cur_file, '*.wav'):
+                    all_wav_files.append(dir_path + '/' + cur_file)
     else:
         all_wav_files = _glob(path + '/*.wav')
 
