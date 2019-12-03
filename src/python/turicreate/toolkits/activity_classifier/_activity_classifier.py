@@ -33,7 +33,7 @@ from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 USE_CPP = _tkutl._read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 
 def create(dataset, session_id, target, features=None, prediction_window=100,
-           validation_set='auto', max_iterations=10, batch_size=32, verbose=True, **kwargs):
+           validation_set='auto', max_iterations=10, batch_size=32, verbose=True):
     """
     Create an :class:`ActivityClassifier` model.
 
@@ -160,14 +160,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     for feature in features:
         _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
 
-    if '_advanced_parameters' in kwargs:
-        # Make sure no additional parameters are provided
-        new_keys = set(kwargs['_advanced_parameters'].keys())
-        set_keys = set(params.keys())
-        unsupported = new_keys - set_keys
-        if unsupported:
-            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
-        params.update(kwargs['_advanced_parameters'])
 
     # C++ model
 

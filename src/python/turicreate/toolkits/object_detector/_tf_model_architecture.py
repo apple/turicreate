@@ -18,7 +18,7 @@ _utils.suppress_tensorflow_warnings()
 
 class ODTensorFlowModel(TensorFlowModel):
 
-    def __init__(self, input_h, input_w, batch_size, output_size, init_weights, config, is_train=True):
+    def __init__(self, input_h, input_w, batch_size, output_size, out_h, out_w, init_weights, config, is_train=True):
 
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
@@ -32,7 +32,7 @@ class ODTensorFlowModel(TensorFlowModel):
 
         self.config = config
         self.batch_size = batch_size
-        self.grid_shape = [13,13]
+        self.grid_shape = [out_h, out_w]
         self.num_classes = int(_utils.convert_shared_float_array_to_numpy(config['num_classes']))
         self.anchors = [
             (1.0, 2.0), (1.0, 1.0), (2.0, 1.0),

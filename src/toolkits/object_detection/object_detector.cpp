@@ -538,10 +538,12 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
   // Initialize the metric calculator
   average_precision_calculator calculator(class_labels);
 
-  auto consumer = [&](const std::vector<image_annotation>& predicted_row,
-                      const std::vector<image_annotation>& groundtruth_row) {
-    calculator.add_row(predicted_row, groundtruth_row);
-  };
+  auto consumer =
+      [&](const std::vector<image_annotation>& predicted_row,
+          const std::vector<image_annotation>& groundtruth_row,
+          const std::vector<std::pair<float, float>>& image_dimension) {
+        calculator.add_row(predicted_row, groundtruth_row);
+      };
 
   perform_predict(data, consumer, confidence_threshold, iou_threshold);
 
@@ -564,11 +566,13 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
     result_map.erase(MAP);
   }
 
-  return convert_map_to_types(result_map, output_type);
+  return convert_map_to_types(result_map, output_type,
+                              read_state<flex_list>("classes"));
 }
 
 variant_type object_detector::convert_map_to_types(
-    const variant_map_type& result_map, const std::string& output_type) {
+    const variant_map_type& result_map, const std::string& output_type,
+    const flex_list& class_labels) {
   // Handle different output types here
   // If output_type = "dict", just return the result_map.
   // If output_type = "sframe", construct a sframe,
@@ -582,18 +586,15 @@ variant_type object_detector::convert_map_to_types(
   if (output_type == "dict") {
     final_result = to_variant(result_map);
   } else if (output_type == "sframe") {
-    gl_sframe sframe_result;
+    gl_sframe sframe_result({{"label", gl_sarray(class_labels)}});
     auto add_score_list = [&](std::string& metric_name) {
       flex_list score_list;
-      flex_list label_list;
       auto it = result_map.find(metric_name);
       if (it != result_map.end()) {
         const flex_dict& dict = variant_get_value<flex_dict>(it->second);
         for (const auto& label_score_pair : dict) {
-          label_list.push_back(label_score_pair.first);
           score_list.push_back(label_score_pair.second);
         }
-        sframe_result.replace_add_column(gl_sarray(label_list), "label");
         sframe_result.add_column(gl_sarray(score_list), metric_name);
       }
     };
@@ -614,15 +615,26 @@ variant_type object_detector::predict(
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
-                      const std::vector<image_annotation>& groundtruth_row) {
-
+                      const std::vector<image_annotation>& groundtruth_row,
+                      const std::vector<std::pair<float, float>>&
+                          image_dimension) {
     // Convert predicted_row to flex_type list to call gl_sarray_writer
     flex_list predicted_row_ft;
     flex_list class_labels = read_state<flex_list>("classes");
-    for (const image_annotation& each_row : predicted_row) {
-      flex_dict bb_dict = {{"x", each_row.bounding_box.x}, {"y", each_row.bounding_box.y},
-                      {"width", each_row.bounding_box.width},
-                      {"height", each_row.bounding_box.height}};
+    for (size_t i = 0; i < predicted_row.size(); i++) {
+      const image_annotation& each_row = predicted_row[i];
+      float width_scale, height_scale;
+
+      std::tie(height_scale, width_scale) = image_dimension[i];
+
+      flex_dict bb_dict = {
+          {"x", (each_row.bounding_box.x + each_row.bounding_box.width / 2.) *
+                    width_scale},
+          {"y", (each_row.bounding_box.y + each_row.bounding_box.height / 2.) *
+                    height_scale},
+          {"width", each_row.bounding_box.width * width_scale},
+          {"height", each_row.bounding_box.height * height_scale}};
+
       flex_dict each_annotation = {
           {"label", class_labels[each_row.identifier].to<flex_string>()},
           {"type", "rectangle"},
@@ -687,10 +699,13 @@ gl_sframe object_detector::convert_types_to_sframe(
   return sframe_data;
 }
 
-void object_detector::perform_predict(gl_sframe data,
+void object_detector::perform_predict(
+    gl_sframe data,
     std::function<void(const std::vector<image_annotation>&,
-    const std::vector<image_annotation>&)> consumer, float confidence_threshold,
-    float iou_threshold) {
+                       const std::vector<image_annotation>&,
+                       const std::vector<std::pair<float, float>>&)>
+        consumer,
+    float confidence_threshold, float iou_threshold) {
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
@@ -744,14 +759,15 @@ void object_detector::perform_predict(gl_sframe data,
       /* weights */ get_model_params());
 
   // To support double buffering, use a queue of pending inference results.
-  std::queue<image_augmenter::result> pending_batches;
+  std::queue<inference_batch> pending_batches;
 
   // Helper function to process results until the queue reaches a given size.
   auto pop_until_size = [&](size_t remaining) {
     while (pending_batches.size() > remaining) {
 
       // Pop one batch from the queue.
-      image_augmenter::result batch = pending_batches.front();
+      inference_batch batch = pending_batches.front();
+
       pending_batches.pop();
       for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
         // For this row (corresponding to one image), extract the prediction.
@@ -766,7 +782,8 @@ void object_detector::perform_predict(gl_sframe data,
         predicted_annotations = apply_non_maximum_suppression(
             std::move(predicted_annotations), iou_threshold);
 
-        consumer(predicted_annotations, batch.annotations_batch[i]);
+        consumer(predicted_annotations, batch.annotations_batch[i],
+                 batch.image_dimensions_batch);
       }
     }
   };
@@ -778,7 +795,7 @@ void object_detector::perform_predict(gl_sframe data,
     // below should be concurrent with the neural net inference for that batch.
     pop_until_size(1);
 
-    image_augmenter::result result_batch;
+    inference_batch result_batch;
 
     // Instead of giving the ground truth data to the image augmenter and the
     // neural net, instead save them for later, pairing them with the future
@@ -787,6 +804,13 @@ void object_detector::perform_predict(gl_sframe data,
     for (size_t i = 0; i < input_batch.size(); ++i) {
       result_batch.annotations_batch[i] = std::move(input_batch[i].annotations);
       input_batch[i].annotations.clear();
+    }
+
+    // Store image dimentions
+    result_batch.image_dimensions_batch.resize(input_batch.size());
+    for (size_t i = 0; i < input_batch.size(); ++i) {
+      result_batch.image_dimensions_batch[i] = std::make_pair(
+          input_batch[i].image.m_height, input_batch[i].image.m_width);
     }
 
     // Use the image augmenter to format the images into float arrays, and
