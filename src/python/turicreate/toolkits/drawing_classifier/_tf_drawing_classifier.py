@@ -85,12 +85,12 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         out = _tf.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"],
             biases=biases["drawing_dense1_bias"])
-        out = _tf.nn.softmax(out)
+        softmax_out = _tf.nn.softmax(out)
 
-        self.predictions = out
+        self.predictions = softmax_out
 
         # Loss
-        self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
+        self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=out,
                                                                                 labels=self.one_hot_labels))
 
         # Optimizer
