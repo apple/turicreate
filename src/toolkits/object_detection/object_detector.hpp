@@ -202,7 +202,7 @@ class EXPORT object_detector: public ml_model_base {
       gl_sframe data,
       std::function<void(const std::vector<neural_net::image_annotation>&,
                          const std::vector<neural_net::image_annotation>&,
-                         const std::vector<std::pair<float, float>>&)>
+                         const std::pair<float, float>&)>
           consumer,
       float confidence_threshold, float iou_threshold);
 

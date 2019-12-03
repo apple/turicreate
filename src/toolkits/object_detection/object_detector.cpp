@@ -538,12 +538,11 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
   // Initialize the metric calculator
   average_precision_calculator calculator(class_labels);
 
-  auto consumer =
-      [&](const std::vector<image_annotation>& predicted_row,
-          const std::vector<image_annotation>& groundtruth_row,
-          const std::vector<std::pair<float, float>>& image_dimension) {
-        calculator.add_row(predicted_row, groundtruth_row);
-      };
+  auto consumer = [&](const std::vector<image_annotation>& predicted_row,
+                      const std::vector<image_annotation>& groundtruth_row,
+                      const std::pair<float, float>& image_dimension) {
+    calculator.add_row(predicted_row, groundtruth_row);
+  };
 
   perform_predict(data, consumer, confidence_threshold, iou_threshold);
 
@@ -616,16 +615,14 @@ variant_type object_detector::predict(
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
                       const std::vector<image_annotation>& groundtruth_row,
-                      const std::vector<std::pair<float, float>>&
-                          image_dimension) {
+                      const std::pair<float, float>& image_dimension) {
     // Convert predicted_row to flex_type list to call gl_sarray_writer
     flex_list predicted_row_ft;
     flex_list class_labels = read_state<flex_list>("classes");
+    float height_scale = image_dimension.first;
+    float width_scale = image_dimension.second;
     for (size_t i = 0; i < predicted_row.size(); i++) {
       const image_annotation& each_row = predicted_row[i];
-      float width_scale, height_scale;
-
-      std::tie(height_scale, width_scale) = image_dimension[i];
 
       flex_dict bb_dict = {
           {"x", (each_row.bounding_box.x + each_row.bounding_box.width / 2.) *
@@ -703,7 +700,7 @@ void object_detector::perform_predict(
     gl_sframe data,
     std::function<void(const std::vector<image_annotation>&,
                        const std::vector<image_annotation>&,
-                       const std::vector<std::pair<float, float>>&)>
+                       const std::pair<float, float>&)>
         consumer,
     float confidence_threshold, float iou_threshold) {
   std::string image_column_name = read_state<flex_string>("feature");
@@ -777,19 +774,19 @@ void object_detector::perform_predict(
         std::vector<image_annotation> predicted_annotations =
             convert_yolo_to_annotations(raw_prediction, anchor_boxes(),
                                         confidence_threshold);
-
         // Remove overlapping predictions.
         predicted_annotations = apply_non_maximum_suppression(
             std::move(predicted_annotations), iou_threshold);
 
         consumer(predicted_annotations, batch.annotations_batch[i],
-                 batch.image_dimensions_batch);
+                 batch.image_dimensions_batch[i]);
       }
     }
   };
 
   // Iterate through the data once.
   std::vector<labeled_image> input_batch = data_iter->next_batch(batch_size);
+
   while (!input_batch.empty()) {
     // Wait until we have just one asynchronous batch outstanding. The work
     // below should be concurrent with the neural net inference for that batch.
@@ -801,16 +798,12 @@ void object_detector::perform_predict(
     // neural net, instead save them for later, pairing them with the future
     // predictions.
     result_batch.annotations_batch.resize(input_batch.size());
-    for (size_t i = 0; i < input_batch.size(); ++i) {
-      result_batch.annotations_batch[i] = std::move(input_batch[i].annotations);
-      input_batch[i].annotations.clear();
-    }
-
-    // Store image dimentions
     result_batch.image_dimensions_batch.resize(input_batch.size());
     for (size_t i = 0; i < input_batch.size(); ++i) {
+      result_batch.annotations_batch[i] = std::move(input_batch[i].annotations);
       result_batch.image_dimensions_batch[i] = std::make_pair(
           input_batch[i].image.m_height, input_batch[i].image.m_width);
+      input_batch[i].annotations.clear();
     }
 
     // Use the image augmenter to format the images into float arrays, and
