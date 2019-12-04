@@ -74,7 +74,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.predictions = out
 
         # Loss
-        self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
+        self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=curr_dense,
             labels=self.y))
 
         # Optimizer
