@@ -8,9 +8,11 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from .._tf_model import TensorFlowModel
 
+import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-
+# Suppresses verbosity to only errors
+_utils.suppress_tensorflow_warnings()
 
 class SoundClassifierTensorFlowModel(TensorFlowModel):
 
@@ -19,6 +21,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         Defines the TensorFlow model, loss, optimisation and accuracy.
 
         """
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
 
         self.sc_graph = _tf.Graph()
         self.num_classes = num_classes
@@ -26,6 +30,9 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         with self.sc_graph.as_default():
             self.init_sound_classifier_graph(num_inputs, custom_layer_sizes)
 
+    def __del__(self):
+        self.sess.close()
+        self.gpu_policy.stop()
 
     def init_sound_classifier_graph(self, num_inputs, custom_layer_sizes):
 
@@ -199,7 +206,3 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                 curr_shape = [int(x) for x in net_params['shapes'][layer_name]]
                 self.sess.run(_tf.assign(self.sc_graph.get_tensor_by_name(new_layer_name+":0"),
                     net_params['data'][layer_name].reshape(curr_shape).transpose(1,0)))
-
-
-
-
