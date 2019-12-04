@@ -21,6 +21,9 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         loads the MXNET weights into the model.
 
         """
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
+
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
@@ -83,12 +86,12 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         out = _tf.nn.xw_plus_b(fc1, weights=weights["drawing_dense1_weight"],
             biases=biases["drawing_dense1_bias"])
-        out = _tf.nn.softmax(out)
+        softmax_out = _tf.nn.softmax(out)
 
-        self.predictions = out
+        self.predictions = softmax_out
 
         # Loss
-        self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=self.predictions,
+        self.cost = _tf.reduce_mean(_tf.nn.softmax_cross_entropy_with_logits_v2(logits=out,
                                                                                 labels=self.one_hot_labels))
 
         # Optimizer
@@ -136,6 +139,10 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                     # TODO: Call _utils.convert_conv2d_coreml_to_tf when #2513 is merged
                     self.sess.run(_tf.assign(_tf.get_default_graph().get_tensor_by_name(key+":0"),
                                              _np.transpose(net_params[key], (2, 3, 1, 0))))
+
+    def __del__(self):
+        self.sess.close()
+        self.gpu_policy.stop()
 
     def train(self, feed_dict):
 

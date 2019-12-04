@@ -9,6 +9,40 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as np
 
+class TensorFlowGPUPolicy(object):
+    """
+    Suppresses GPU usage within TensorFlow if the Turi Create configuration has
+    requested no GPUs to be used. Can also be used as a context manager.
+    """
+
+    def start(self):
+        import turicreate as tc
+        self.force_cpu = tc.config.get_num_gpus() == 0
+        if self.force_cpu:
+            # Setting the environment variable CUDA_VISIBLE_DEVICES appears to
+            # be the most reliable way to suppress GPU usage. Set that, but
+            # first save the old value so we can restore it when we're done.
+            import os
+            if 'CUDA_VISIBLE_DEVICES' in os.environ:
+                self.cuda_visible_devices = os.environ['CUDA_VISIBLE_DEVICES']
+            else:
+                self.cuda_visible_devices = None
+            os.environ['CUDA_VISIBLE_DEVICES'] = ''
+
+    def stop(self):
+        if self.force_cpu:
+            import os
+            if self.cuda_visible_devices is not None:
+                os.environ['CUDA_VISIBLE_DEVICES'] = self.cuda_visible_devices
+            elif 'CUDA_VISIBLE_DEVICES' in os.environ:
+                del os.environ['CUDA_VISIBLE_DEVICES']
+
+    def __enter__(self):
+        self.start()
+
+    def __exit__(self, exception_type, exception_val, exception_traceback):
+        self.stop()
+
 def suppress_tensorflow_warnings():
     """
     Suppresses tensorflow warnings

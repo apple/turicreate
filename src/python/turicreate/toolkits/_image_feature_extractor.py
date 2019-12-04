@@ -76,6 +76,9 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
 
         from tensorflow import keras
 
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
+
         self.ptModel = ptModel
 
         self.input_shape = ptModel.input_image_shape
@@ -84,6 +87,9 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
 
         model_path = ptModel.get_model_path('tensorflow')
         self.model = keras.models.load_model(model_path)
+
+    def __del__(self):
+        self.gpu_policy.stop()
 
     def extract_features(self, dataset, feature, batch_size=64, verbose=False):
         from array import array
