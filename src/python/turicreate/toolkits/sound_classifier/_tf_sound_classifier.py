@@ -7,10 +7,10 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from .._tf_model import TensorFlowModel
-
+import turicreate.toolkits._tf_utils as _utils
+_utils.suppress_tensorflow_warnings()
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-
 
 class SoundClassifierTensorFlowModel(TensorFlowModel):
 

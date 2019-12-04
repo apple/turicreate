@@ -70,10 +70,11 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         ptModel: ImageClassifierPreTrainedModel
             An instance of a pre-trained model.
         """
-        from tensorflow import keras
 
         # Suppresses verbosity to only errors
         _utils.suppress_tensorflow_warnings()
+
+        from tensorflow import keras
 
         self.ptModel = ptModel
 
