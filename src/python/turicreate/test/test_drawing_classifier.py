@@ -106,7 +106,7 @@ class DrawingClassifierTest(unittest.TestCase):
         sf = self.check_cross_sf
         sf = sf.remove_column(self.target)
         sf = sf.add_column(_tc.SArray(
-            [None for _ in range(len(sf))], dtype=str), self.target)
+            [None] * len(sf), dtype=str), self.target)
         try:
             _tc.drawing_classifier.create(sf, self.target)
         except _ToolkitError as e:
@@ -158,8 +158,8 @@ class DrawingClassifierTest(unittest.TestCase):
 
     def test_create_with_validation_set_None(self):
         for data in self.trains:
-             _tc.drawing_classifier.create(
-                 data, self.target, feature=self.feature, validation_set=None, max_iterations=1)
+            _tc.drawing_classifier.create(
+                data, self.target, feature=self.feature, validation_set=None, max_iterations=1)
 
     def test_create_with_no_validation_set(self):
         for data in self.trains:
