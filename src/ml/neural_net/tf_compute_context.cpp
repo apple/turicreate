@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 
+#include <core/parallel/thread_pool.hpp>
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
@@ -101,12 +102,16 @@ class tf_model_backend : public model_backend {
   void set_learning_rate(float lr) override;
 
  private:
+  float_array_map train_sync(const float_array_map& inputs);
+
   pybind11::object model_;
+  thread_pool thread_pool_;
+  parallel_task_queue task_queue_;
 };
 
-tf_model_backend::tf_model_backend(pybind11::object model) : model_(model) {}
+  tf_model_backend::tf_model_backend(pybind11::object model) : model_(model), thread_pool_(1), task_queue_(thread_pool_) {}
 
-float_array_map tf_model_backend::train(const float_array_map& inputs) {
+float_array_map tf_model_backend::train_sync(const float_array_map& inputs) {
   // Call train method on the TensorflowModel
   float_array_map result;
 
@@ -128,6 +133,22 @@ float_array_map tf_model_backend::train(const float_array_map& inputs) {
 
   return result;
 }
+
+float_array_map tf_model_backend::train(const float_array_map& inputs) {
+  float_array_map result;
+  auto loss_promise = std::make_shared<std::promise<shared_float_array>>();
+
+  auto perform_train = [inputs,loss_promise,this] {
+    float_array_map local_result = this->train_sync(inputs);
+    loss_promise->set_value(local_result["loss"]);
+  };
+  task_queue_.launch(perform_train);
+  result["loss"] = shared_float_array(std::make_shared<deferred_float_array>(
+      loss_promise->get_future(), std::vector<size_t>({1})));
+
+  return result;
+}
+
 
 float_array_map tf_model_backend::predict(const float_array_map& inputs) const {
   float_array_map result;
