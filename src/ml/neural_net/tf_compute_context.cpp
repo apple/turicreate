@@ -253,9 +253,9 @@ tf_image_augmenter::prepare_augmented_images(
             .cast<std::pair<pybind11::buffer, std::vector<pybind11::buffer>>>();
 
     pybind11::buffer_info buf_img = std::get<0>(aug_data).request();
-    image_annotations.images = turi::neural_net::shared_float_array::copy(
+    image_annotations.images.push_back(shared_float_array::copy(
         static_cast<float*>(buf_img.ptr),
-        std::vector<size_t>(buf_img.shape.begin(), buf_img.shape.end()));
+        std::vector<size_t>(buf_img.shape.begin(), buf_img.shape.end())));
     std::vector<turi::neural_net::shared_float_array> annotations_per_batch;
     std::vector<pybind11::buffer> aug_annotations = std::get<1>(aug_data);
 

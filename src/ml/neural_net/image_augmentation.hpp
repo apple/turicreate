@@ -288,7 +288,7 @@ class float_array_image_augmenter : public image_augmenter {
   /** The output sent from TensorFlow after augmenting the images. */
   struct float_array_result {
     /** The images after augmenting sent from Tensorflow */
-    shared_float_array images;
+    std::vector<shared_float_array> images;
 
     /** The annotations associated with augmented images sent from Tensorflow */
     std::vector<shared_float_array> annotations;
