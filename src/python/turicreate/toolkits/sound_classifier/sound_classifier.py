@@ -286,7 +286,7 @@ def get_deep_features(audio_data, verbose=True):
     return feature_extractor.get_deep_features(audio_data, verbose=verbose)
 
 
-def create(dataset, target, feature, max_iterations=100,
+def create(dataset, target, feature, max_iterations=10,
            custom_layer_sizes=[100, 100], verbose=True,
            validation_set='auto', batch_size=64):
     '''
