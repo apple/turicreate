@@ -8,6 +8,7 @@
 
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cmath>
 #include <cstdio>
 #include <iostream>
@@ -51,6 +52,9 @@ static const os_log_t& _get_os_log_object() {
 #define _os_log_integer(...)
 
 #endif  // #ifdef __APPLE__
+
+
+using namespace std::chrono; 
 
 using turi::coreml::MLModelWrapper;
 using turi::neural_net::compute_context;
@@ -1234,7 +1238,9 @@ void object_detector::iterate_training() {
 
   // We want to have no more than two pending batches at a time (double
   // buffering). We're about to add a new one, so wait until we only have one.
+  auto start_batch_processing = high_resolution_clock::now();
   wait_for_training_batches(1);
+  auto stop_batch_processing = high_resolution_clock::now();
 
   // Update iteration count and check learning rate schedule.
   // TODO: Abstract out the learning rate schedule.
@@ -1267,19 +1273,36 @@ void object_detector::iterate_training() {
   std::vector<labeled_image> image_batch =
       training_data_iterator_->next_batch(static_cast<size_t>(batch_size));
 
+  // time
+  
+  auto start_augumentation = high_resolution_clock::now();
   // Perform data augmentation.
   image_augmenter::result augmenter_result =
       training_data_augmenter_->prepare_images(std::move(image_batch));
-
+  auto stop_augumentation = high_resolution_clock::now();
   // Encode the labels.
   shared_float_array label_batch =
       prepare_label_batch(augmenter_result.annotations_batch);
-
+  auto stop_prepare = high_resolution_clock::now();
   // Submit the batch to the neural net model.
   std::map<std::string, shared_float_array> results = training_model_->train(
       { { "input",  augmenter_result.image_batch },
         { "labels", label_batch                  }  });
   shared_float_array loss_batch = results.at("loss");
+
+  auto stop_submit = high_resolution_clock::now();
+
+  auto batch_duration = duration_cast<nanoseconds>(stop_batch_processing - start_batch_processing);
+  auto augumentation_duration = duration_cast<nanoseconds>(stop_augumentation - start_augumentation);
+  auto prepare_duration = duration_cast<nanoseconds>(stop_prepare - stop_augumentation);
+  auto submition_duration = duration_cast<nanoseconds>(stop_submit - stop_prepare);
+
+  std::cout << "Elapsed Training" << std::endl;
+  std::cout << "augumentation: " << augumentation_duration.count() << std::endl;
+  std::cout << "prepare_duration: " << prepare_duration.count() << std::endl;
+  std::cout << "batch_duration: " << batch_duration.count() << std::endl;
+  std::cout << "submition_duration: " << submition_duration.count() << std::endl;
+  std::cout << std::endl;
 
   // Save the result, which is a future that can synchronize with the
   // completion of this batch.

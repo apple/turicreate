@@ -338,7 +338,8 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
 
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
-  return std::unique_ptr<image_augmenter>(new tf_image_augmenter(opts));
+  return std::unique_ptr<image_augmenter>(new resize_only_image_augmenter(opts));
+  // return std::unique_ptr<image_augmenter>(new tf_image_augmenter(opts));
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
