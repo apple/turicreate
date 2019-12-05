@@ -807,7 +807,7 @@ class SoundClassifier(_CustomModel):
                                            [(prob_name, Dictionary(String))],
                                            'classifier')
 
-            input_name, output_name = input_name, 0
+            input_name, output_name = input_name, str(0)
             for i, cur_layer in enumerate(self._custom_classifier.export_weights()):
                 W = cur_layer['weight']
                 nC, nB = W.shape
@@ -819,14 +819,14 @@ class SoundClassifier(_CustomModel):
                                           input_channels=nB,
                                           output_channels=nC,
                                           has_bias=True,
-                                          input_name=str(input_name),
-                                          output_name='inner_product_'+str(output_name))
+                                          input_name=input_name,
+                                          output_name='inner_product_'+output_name)
 
                 if cur_layer['act']:
-                    builder.add_activation("activation"+str(i), 'RELU', 'inner_product_'+str(output_name), str(output_name))
+                    builder.add_activation("activation"+str(i), 'RELU', 'inner_product_'+output_name, output_name)
 
-                input_name = i
-                output_name = i + 1
+                input_name = str(i)
+                output_name = str(i + 1)
 
             last_output = builder.spec.neuralNetworkClassifier.layers[-1].output[0]
             builder.add_softmax('softmax', last_output, self.target)
@@ -845,6 +845,7 @@ class SoundClassifier(_CustomModel):
         desc = top_level_spec.description
         input = desc.input.add()
         input.name = self.feature
+        assert type(self.feature) is str
         input.type.multiArrayType.dataType = ArrayFeatureType.ArrayDataType.Value('FLOAT32')
         input.type.multiArrayType.shape.append(15600)
 
