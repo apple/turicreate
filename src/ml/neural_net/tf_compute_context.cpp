@@ -106,7 +106,8 @@ class tf_model_backend : public model_backend {
 
   // Setters for values needed to enable asynchronous computation, using
   // deferred_float_array.
-  void set_train_output_shapes(std::map<std::string, std::vector<size_t>> output_shapes) {
+  void set_train_output_shapes(
+      std::map<std::string, std::vector<size_t>> output_shapes) {
     train_output_shapes_ = std::move(output_shapes);
   }
 
@@ -121,7 +122,8 @@ class tf_model_backend : public model_backend {
   std::map<std::string, std::vector<size_t>> predict_output_shapes_;
 };
 
-  tf_model_backend::tf_model_backend(pybind11::object model) : model_(model), thread_pool_(1), task_queue_(thread_pool_) {}
+tf_model_backend::tf_model_backend(pybind11::object model)
+    : model_(model), thread_pool_(1), task_queue_(thread_pool_) {}
 
 float_array_map tf_model_backend::train_sync(const float_array_map& inputs) {
   // Call train method on the TensorflowModel
@@ -152,7 +154,8 @@ float_array_map tf_model_backend::train(const float_array_map& inputs) {
     return train_sync(inputs);
   }
 
-  std::map<std::string, std::shared_ptr<std::promise<shared_float_array>>> promises;
+  std::map<std::string, std::shared_ptr<std::promise<shared_float_array>>>
+      promises;
   for (const auto& kv : train_output_shapes_) {
     promises[kv.first] = std::make_shared<std::promise<shared_float_array>>();
   }
@@ -170,12 +173,11 @@ float_array_map tf_model_backend::train(const float_array_map& inputs) {
     const std::string& key = kv.first;
     const std::vector<size_t>& shape = kv.second;
     result[key] = shared_float_array(std::make_shared<deferred_float_array>(
-                                                                                 promises.at(key)->get_future(), shape));
+        promises.at(key)->get_future(), shape));
   }
 
   return result;
 }
-
 
 float_array_map tf_model_backend::predict(const float_array_map& inputs) const {
   float_array_map result;
@@ -256,7 +258,8 @@ class tf_image_augmenter : public float_array_image_augmenter {
 tf_image_augmenter::tf_image_augmenter(const options& opts) : float_array_image_augmenter(opts) {}
 
 float_array_image_augmenter::float_array_result
-tf_image_augmenter::prepare_augmented_images(labeled_float_image data_to_augment) {
+tf_image_augmenter::prepare_augmented_images(
+    labeled_float_image data_to_augment) {
   size_t batch_size = data_to_augment.images.size();
 
   // Allocate a result into which the worker threads can write their
@@ -273,11 +276,14 @@ tf_image_augmenter::prepare_augmented_images(labeled_float_image data_to_augment
     labeled_float_image local_data_to_augment;
     auto first_image_it = data_to_augment.images.begin();
     auto first_annotation_it = data_to_augment.annotations.begin();
-    local_data_to_augment.images = std::vector<shared_float_array>(first_image_it + range_start, first_image_it + range_end);
-    local_data_to_augment.annotations = std::vector<shared_float_array>(first_annotation_it + range_start, first_annotation_it + range_end);
+    local_data_to_augment.images = std::vector<shared_float_array>(
+        first_image_it + range_start, first_image_it + range_end);
+    local_data_to_augment.annotations = std::vector<shared_float_array>(
+        first_annotation_it + range_start, first_annotation_it + range_end);
 
     // Augment the slice.
-    float_array_result local_result = this->prepare_augmented_images_sync(local_data_to_augment);
+    float_array_result local_result =
+        this->prepare_augmented_images_sync(local_data_to_augment);
 
     // Write the result into the appropriate slice of the shared output.
     result.images[thread_id] = local_result.images[0];
@@ -292,8 +298,8 @@ tf_image_augmenter::prepare_augmented_images(labeled_float_image data_to_augment
   auto unused_output = [](const shared_float_array& image) {
     return image.dim() == 0;
   };
-  auto new_end = std::remove_if(result.images.begin(), result.images.end(),
-                                unused_output);
+  auto new_end =
+      std::remove_if(result.images.begin(), result.images.end(), unused_output);
   result.images.erase(new_end, result.images.end());
 
   return result;
