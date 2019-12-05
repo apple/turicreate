@@ -6,6 +6,8 @@
 #include <ml/neural_net/tf_compute_context.hpp>
 
 #include <iostream>
+#include <map>
+#include <string>
 #include <vector>
 
 #include <core/parallel/lambda_omp.hpp>
@@ -102,12 +104,21 @@ class tf_model_backend : public model_backend {
   float_array_map export_weights() const override;
   void set_learning_rate(float lr) override;
 
+  // Setters for values needed to enable asynchronous computation, using
+  // deferred_float_array.
+  void set_train_output_shapes(std::map<std::string, std::vector<size_t>> output_shapes) {
+    train_output_shapes_ = std::move(output_shapes);
+  }
+
  private:
   float_array_map train_sync(const float_array_map& inputs);
 
   pybind11::object model_;
   thread_pool thread_pool_;
   parallel_task_queue task_queue_;
+
+  std::map<std::string, std::vector<size_t>> train_output_shapes_;
+  std::map<std::string, std::vector<size_t>> predict_output_shapes_;
 };
 
   tf_model_backend::tf_model_backend(pybind11::object model) : model_(model), thread_pool_(1), task_queue_(thread_pool_) {}
@@ -136,16 +147,31 @@ float_array_map tf_model_backend::train_sync(const float_array_map& inputs) {
 }
 
 float_array_map tf_model_backend::train(const float_array_map& inputs) {
-  float_array_map result;
-  auto loss_promise = std::make_shared<std::promise<shared_float_array>>();
+  // We can only use asynchronous training if we know the shapes of the outputs.
+  if (train_output_shapes_.empty()) {
+    return train_sync(inputs);
+  }
 
-  auto perform_train = [inputs,loss_promise,this] {
+  std::map<std::string, std::shared_ptr<std::promise<shared_float_array>>> promises;
+  for (const auto& kv : train_output_shapes_) {
+    promises[kv.first] = std::make_shared<std::promise<shared_float_array>>();
+  }
+
+  auto perform_train = [inputs, promises, this] {
     float_array_map local_result = this->train_sync(inputs);
-    loss_promise->set_value(local_result["loss"]);
+    for (const auto& kv : promises) {
+      kv.second->set_value(local_result.at(kv.first));
+    }
   };
   task_queue_.launch(perform_train);
-  result["loss"] = shared_float_array(std::make_shared<deferred_float_array>(
-      loss_promise->get_future(), std::vector<size_t>({1})));
+
+  float_array_map result;
+  for (const auto& kv : train_output_shapes_) {
+    const std::string& key = kv.first;
+    const std::vector<size_t>& shape = kv.second;
+    result[key] = shared_float_array(std::make_shared<deferred_float_array>(
+                                                                                 promises.at(key)->get_future(), shape));
+  }
 
   return result;
 }
@@ -383,6 +409,13 @@ std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
           "ODTensorFlowModel")(h_in, w_in, n, c_out, h_out, w_out, weights, config);
       result.reset(new tf_model_backend(object_detector));
     });
+
+  // Enable asynchronous training.
+  // TODO: Match the MPS implementation, which has loss shape {batch_size}
+  std::map<std::string, std::vector<size_t>> output_shapes;
+  output_shapes["loss"] = {1};
+  result->set_train_output_shapes(std::move(output_shapes));
+
   return result;
 }
 
