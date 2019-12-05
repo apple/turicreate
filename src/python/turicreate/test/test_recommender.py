@@ -96,6 +96,14 @@ class RecommenderTestBase(unittest.TestCase):
 
             # compare them
             self.assertEqual(predictions_tc_dict, _coreml_to_tc(predictions_coreml))
+
+            # compare user defined data
+            import platform
+            self.assertDictEqual({
+                'com.github.apple.turicreate.version': tc.__version__,
+                'com.github.apple.os.platform': platform.platform(),
+                }, dict(coremlmodel.user_defined_metadata)
+            )
         os.unlink(temp_file_path)
 
     def _get_trained_model(self, model_name, data,
