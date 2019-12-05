@@ -153,20 +153,27 @@ float_array_map tf_model_backend::train(const float_array_map& inputs) {
     return train_sync(inputs);
   }
 
+  // Create a promise for each expected output.
   std::map<std::string, std::shared_ptr<std::promise<shared_float_array>>>
       promises;
   for (const auto& kv : train_output_shapes_) {
     promises[kv.first] = std::make_shared<std::promise<shared_float_array>>();
   }
 
+  // Dispatch the call to TF to our worker thread.
   auto perform_train = [inputs, promises, this] {
+    // Invoke TensorFlow.
     float_array_map local_result = this->train_sync(inputs);
+
+    // Fulfill the promises we made.
     for (const auto& kv : promises) {
       kv.second->set_value(local_result.at(kv.first));
     }
   };
   task_queue_.launch(perform_train);
 
+  // Return a result dictionary wrapping the futures for the promises dispatched
+  // to TensorFlow.
   float_array_map result;
   for (const auto& kv : train_output_shapes_) {
     const std::string& key = kv.first;
@@ -246,24 +253,24 @@ class tf_image_augmenter : public float_array_image_augmenter {
   tf_image_augmenter(const options& opts);
   ~tf_image_augmenter() override = default;
 
-  float_array_result prepare_augmented_images(
+  labeled_float_image prepare_augmented_images(
       labeled_float_image data_to_augment) override;
 
  private:
-  float_array_result prepare_augmented_images_sync(
+  labeled_float_image prepare_augmented_images_sync(
       labeled_float_image data_to_augment);
 };
 
 tf_image_augmenter::tf_image_augmenter(const options& opts) : float_array_image_augmenter(opts) {}
 
-float_array_image_augmenter::float_array_result
+float_array_image_augmenter::labeled_float_image
 tf_image_augmenter::prepare_augmented_images(
     labeled_float_image data_to_augment) {
   size_t batch_size = data_to_augment.images.size();
 
   // Allocate a result into which the worker threads can write their
   // thread-local results in parallel.
-  float_array_result result;
+  labeled_float_image result;
   result.images.resize(batch_size);
   result.annotations.resize(batch_size);
 
@@ -281,7 +288,7 @@ tf_image_augmenter::prepare_augmented_images(
         first_annotation_it + range_start, first_annotation_it + range_end);
 
     // Augment the slice.
-    float_array_result local_result =
+    labeled_float_image local_result =
         this->prepare_augmented_images_sync(local_data_to_augment);
 
     // Write the result into the appropriate slice of the shared output.
@@ -304,11 +311,11 @@ tf_image_augmenter::prepare_augmented_images(
   return result;
 }
 
-float_array_image_augmenter::float_array_result
+float_array_image_augmenter::labeled_float_image
 tf_image_augmenter::prepare_augmented_images_sync(
     float_array_image_augmenter::labeled_float_image data_to_augment) {
   options opts = get_options();
-  float_array_image_augmenter::float_array_result image_annotations;
+  float_array_image_augmenter::labeled_float_image image_annotations;
 
   call_pybind_function([&]() {
     // Import the module from python that does data augmentation

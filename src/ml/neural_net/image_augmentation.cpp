@@ -201,7 +201,8 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
 
   // Call the virtual function to use the intermediate data structure and
   // process it
-  float_array_result augmented_data = prepare_augmented_images(input_to_tf_aug);
+  labeled_float_image augmented_data =
+      prepare_augmented_images(input_to_tf_aug);
 
   // Convert augmented_data to the data structure needed
   std::vector<float> result_array(n * h * w * c);
