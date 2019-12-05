@@ -10,10 +10,7 @@ from __future__ import absolute_import as _
 import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 _tf.disable_v2_behavior()
-# Suppresses verbosity to only errors
-_utils.suppress_tensorflow_warnings()
 from .._tf_model import TensorFlowModel
-
 
 import numpy as _np
 

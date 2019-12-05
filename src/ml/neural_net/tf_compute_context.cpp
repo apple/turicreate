@@ -270,7 +270,12 @@ static auto* tf_registration = new compute_context::registration(
 
 }  // namespace
 
-tf_compute_context::tf_compute_context() = default;
+tf_compute_context::tf_compute_context() {
+  call_pybind_function([&]() {
+    pybind11::module os = pybind11::module::import("os");
+    os.attr("environ")["TF_CPP_MIN_LOG_LEVEL"] = "2";
+  });
+};
 
 tf_compute_context::~tf_compute_context() = default;
 
