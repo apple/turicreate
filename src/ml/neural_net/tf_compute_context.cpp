@@ -119,7 +119,6 @@ class tf_model_backend : public model_backend {
   parallel_task_queue task_queue_;
 
   std::map<std::string, std::vector<size_t>> train_output_shapes_;
-  std::map<std::string, std::vector<size_t>> predict_output_shapes_;
 };
 
 tf_model_backend::tf_model_backend(pybind11::object model)
