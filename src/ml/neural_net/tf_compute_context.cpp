@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 
+#include <core/parallel/lambda_omp.hpp>
 #include <core/parallel/thread_pool.hpp>
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
@@ -220,12 +221,60 @@ class tf_image_augmenter : public float_array_image_augmenter {
 
   float_array_result prepare_augmented_images(
       labeled_float_image data_to_augment) override;
+
+ private:
+  float_array_result prepare_augmented_images_sync(
+      labeled_float_image data_to_augment);
 };
 
 tf_image_augmenter::tf_image_augmenter(const options& opts) : float_array_image_augmenter(opts) {}
 
 float_array_image_augmenter::float_array_result
-tf_image_augmenter::prepare_augmented_images(
+tf_image_augmenter::prepare_augmented_images(labeled_float_image data_to_augment) {
+  size_t batch_size = data_to_augment.images.size();
+
+  // Allocate a result into which the worker threads can write their
+  // thread-local results in parallel.
+  float_array_result result;
+  result.images.resize(batch_size);
+  result.annotations.resize(batch_size);
+
+  auto perform_augmentations = [&](size_t thread_id, size_t num_threads) {
+    size_t range_start = batch_size * thread_id / num_threads;
+    size_t range_end = batch_size * (thread_id + 1) / num_threads;
+
+    // Slice out the inputs we need to augment.
+    labeled_float_image local_data_to_augment;
+    auto first_image_it = data_to_augment.images.begin();
+    auto first_annotation_it = data_to_augment.annotations.begin();
+    local_data_to_augment.images = std::vector<shared_float_array>(first_image_it + range_start, first_image_it + range_end);
+    local_data_to_augment.annotations = std::vector<shared_float_array>(first_annotation_it + range_start, first_annotation_it + range_end);
+
+    // Augment the slice.
+    float_array_result local_result = this->prepare_augmented_images_sync(local_data_to_augment);
+
+    // Write the result into the appropriate slice of the shared output.
+    result.images[thread_id] = local_result.images[0];
+    for (size_t i = range_start; i < range_end; ++i) {
+      result.annotations[i] = local_result.annotations[i - range_start];
+    }
+  };
+  in_parallel(perform_augmentations);
+
+  // Trim the result images, which are populated at one element per thread, not
+  // one element per image.
+  auto unused_output = [](const shared_float_array& image) {
+    return image.dim() == 0;
+  };
+  auto new_end = std::remove_if(result.images.begin(), result.images.end(),
+                                unused_output);
+  result.images.erase(new_end, result.images.end());
+
+  return result;
+}
+
+float_array_image_augmenter::float_array_result
+tf_image_augmenter::prepare_augmented_images_sync(
     float_array_image_augmenter::labeled_float_image data_to_augment) {
   options opts = get_options();
   float_array_image_augmenter::float_array_result image_annotations;
