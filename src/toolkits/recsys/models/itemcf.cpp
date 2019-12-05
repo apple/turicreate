@@ -796,6 +796,7 @@ sframe recsys_itemcf::get_similar_items(
 
 std::shared_ptr<coreml::MLModelWrapper> recsys_itemcf::export_to_coreml(const std::string& filename) {
 
+  std::cout << "shit\n";
   std::shared_ptr<CoreML::Model> coreml_model = std::make_shared<CoreML::Model>(
       std::string("Item Similarity Recommender Model exported from Turi Create ") + __UNITY_VERSION__);
 
