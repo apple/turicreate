@@ -156,7 +156,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
     def setUpClass(self):
         self.data = copy(binary_test_data)
         self.is_binary_classification = True
-        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio')
+        self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', max_iterations=100)
 
     def test_predict(self):
         # default ('class') output_type
@@ -341,7 +341,7 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
         layer_sizes = [75, 100, 20]
         self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio',
                                                 custom_layer_sizes = layer_sizes,
-                                                validation_set=self.data)
+                                                validation_set=self.data, max_iterations=100)
         assert(self.model.custom_layer_sizes == layer_sizes)
 
     def test_validation_set(self):
