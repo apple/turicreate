@@ -299,13 +299,13 @@ class ODTensorFlowModel(TensorFlowModel):
         lmb_class = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_class'))
 
         # Prediction values from model on the images
-        ypred = _tf.reshape(predict, [-1] + list(grid_shape) + [num_anchors, 5 + num_classes])
+        ypred = _tf.reshape(predict, [-1] + list(self.grid_shape) + [self.num_anchors, 5 + self.num_classes])
         raw_xy = ypred[..., 0:2]
         raw_wh = ypred[..., 2:4]
         raw_conf = ypred[..., 4]
         class_scores = ypred[..., 5:]
 
-        tf_anchors = _tf.constant(anchors)
+        tf_anchors = _tf.constant(self.anchors)
 
         # Ground Truth info derived from ymap/labels
         gt_xy = labels[..., 0:2]
@@ -359,7 +359,7 @@ class ODTensorFlowModel(TensorFlowModel):
         count = _tf.reduce_sum(kr_obj_ij)
         eps_count = _tf.math.add(count, _tf.constant(1e-4))
 
-        scale_conf = 1 / (batch_size * grid_shape[0] * grid_shape[1])
+        scale_conf = 1 / (self.batch_size * self.grid_shape[0] * self.grid_shape[1])
 
         kr_obj_ij_plus1 = _tf.expand_dims(kr_obj_ij, -1)
         if rescore:
