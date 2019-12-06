@@ -291,6 +291,9 @@ class ODTensorFlowModel(TensorFlowModel):
         loss: TensorFlow Tensor
             Loss (combination of regression and classification losses)
         """
+        POS_IOU = 0.7
+        NEG_IOU = 0.3
+
         rescore = int(_utils.convert_shared_float_array_to_numpy(self.config.get('od_rescore')))
         lmb_coord_xy = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_coord_xy'))
         lmb_coord_wh = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_coord_wh'))
