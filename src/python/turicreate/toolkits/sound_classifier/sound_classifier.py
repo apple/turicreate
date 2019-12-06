@@ -806,12 +806,21 @@ class SoundClassifier(_CustomModel):
             builder = NeuralNetworkBuilder([(input_name, Array(input_length,))],
                                            [(prob_name, Dictionary(String))],
                                            'classifier')
+            
+            builder.set_input([input_name], [(input_length,)])
 
-            input_name, output_name = input_name, str(0)
+            layer_counter = [0]
+
+            def next_layer_name():
+                layer_counter[0] += 1 
+                return "layer_%d" % layer_counter[0]
+
             for i, cur_layer in enumerate(self._custom_classifier.export_weights()):
                 W = cur_layer['weight']
                 nC, nB = W.shape
                 Wb = cur_layer['bias']
+
+                output_name = next_layer_name()
 
                 builder.add_inner_product(name="inner_product_"+str(i),
                                           W=W,
@@ -820,19 +829,20 @@ class SoundClassifier(_CustomModel):
                                           output_channels=nC,
                                           has_bias=True,
                                           input_name=input_name,
-                                          output_name='inner_product_'+output_name)
+                                          output_name=output_name)
+
+                input_name = output_name
 
                 if cur_layer['act']:
-                    builder.add_activation("activation"+str(i), 'RELU', 'inner_product_'+output_name, output_name)
+                    output_name = next_layer_name()
 
-                input_name = str(i)
-                output_name = str(i + 1)
+                    builder.add_activation("activation"+str(i), 'RELU', input_name, output_name)
 
-            last_output = builder.spec.neuralNetworkClassifier.layers[-1].output[0]
-            builder.add_softmax('softmax', last_output, self.target)
+                    input_name = output_name
+
+            builder.add_softmax('softmax', input_name, self.target)
 
             builder.set_class_labels(self.classes, predicted_feature_name = self.target)
-            builder.set_input([input_name], [(input_length,)])
             builder.set_output([self.target], [(self.num_classes,)])
 
             return builder.spec
