@@ -468,7 +468,6 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
         
-        _tf.reset_default_graph()
 
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])

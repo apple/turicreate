@@ -21,8 +21,6 @@ class ODTensorFlowModel(TensorFlowModel):
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
 
-        #reset tensorflow graph when a new model is created
-        _tf.reset_default_graph()
 
         # Converting incoming weights from shared_float_array to numpy
         for key in init_weights.keys():

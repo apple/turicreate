@@ -27,7 +27,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
-        _tf.reset_default_graph()
 
         self.num_classes = num_classes
         self.batch_size = batch_size
