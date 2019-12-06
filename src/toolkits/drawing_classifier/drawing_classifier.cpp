@@ -310,7 +310,9 @@ void drawing_classifier::init_training(
   }
 
   add_or_update_state({
-    {"training_iterations", 0}
+    {"training_iterations", 0},
+    {"target", target_column_name},
+    {"feature", feature_column_name}
   });
 
   // Capture Core ML model path from options,
@@ -338,12 +340,28 @@ void drawing_classifier::init_training(
   // Perform validation split if necessary.
   std::tie(training_data_, validation_data_) = init_data(data, validation_data);
 
-  // Begin printing progress.
-  // TODO: Make progress printing optional.
-  init_table_printer(!validation_data_.empty());
+  // there should be an early termination version of finding na
+  // like `any`; zero is a broader concept than na;
+  // however, most time, if no na, traverse the whole data set is still needed.
+  auto throw_if_contains_na =
+      [](const gl_sframe& data, const std::string& col_name) {
+        if (data[col_name].num_missing()) {
+          std::stringstream ss;
+          ss << "column '" << col_name << "' contains undefined data."
+             << " Please call 'dropna()' before training";
+          log_and_throw(ss.str());
+        }
+      };
 
-  add_or_update_state(
-      {{"target", target_column_name}, {"feature", feature_column_name}});
+  if (!training_data_.empty()) {
+    throw_if_contains_na(training_data_, feature_column_name);
+    throw_if_contains_na(training_data_, target_column_name);
+  }
+
+  if (!validation_data_.empty()) {
+    throw_if_contains_na(validation_data_, feature_column_name);
+    throw_if_contains_na(validation_data_, target_column_name);
+  }
 
   // Bind the data to a data iterator.
   training_data_iterator_ =
@@ -372,10 +390,6 @@ void drawing_classifier::init_training(
     log_and_throw("No neural network compute context provided");
   }
 
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  print_training_device(gpu_names);
-
   // Initialize the neural net. Note that this depends on statistics computed
   // by the data iterator.
   nn_spec_ = init_model(true);
@@ -390,6 +404,15 @@ void drawing_classifier::init_training(
   training_model_ = training_compute_context_->create_drawing_classifier(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
       read_state<size_t>("num_classes"));
+
+  // reports
+  // Report to the user what GPU(s) is being used.
+  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
+  print_training_device(std::move(gpu_names));
+
+  // Begin printing progress.
+  // TODO: Make progress printing optional.
+  init_table_printer(!validation_data_.empty());
 
   // Print the header last, after any logging by initialization above
   if (training_table_printer_) {

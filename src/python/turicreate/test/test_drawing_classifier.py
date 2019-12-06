@@ -79,11 +79,12 @@ class DrawingClassifierTest(unittest.TestCase):
         self.check_cross_sf = _build_bitmap_data()
         self.stroke_sf = _build_stroke_data()
         self.warm_start = warm_start
+        self.max_iterations = 10
         self.check_cross_model = _tc.drawing_classifier.create(
             self.check_cross_sf,
             self.target,
             feature=self.feature,
-            max_iterations=20,
+            max_iterations=self.max_iterations,
             warm_start=warm_start)
         self.stroke_model = _tc.drawing_classifier.create(
             self.stroke_sf,
@@ -96,8 +97,20 @@ class DrawingClassifierTest(unittest.TestCase):
 
     def test_create_with_missing_value_bitmap(self):
         sf = self.check_cross_sf.append(_tc.SFrame({self.feature: _tc.SArray([None], dtype=_tc.Image), self.target: ["check"]}))
-        with self.assertRaises(_ToolkitError):
+        try:
             _tc.drawing_classifier.create(sf, self.target)
+        except _ToolkitError as e:
+            self.assertTrue("dropna" in str(e))
+
+    def test_create_with_missing_value_in_label(self):
+        sf = self.check_cross_sf
+        sf = sf.remove_column(self.target)
+        sf = sf.add_column(_tc.SArray(
+            [None] * len(sf), dtype=str), self.target)
+        try:
+            _tc.drawing_classifier.create(sf, self.target)
+        except _ToolkitError as e:
+            self.assertTrue("dropna" in str(e))
 
     def test_create_with_missing_feature(self):
         for sf in self.trains:
@@ -145,13 +158,13 @@ class DrawingClassifierTest(unittest.TestCase):
 
     def test_create_with_validation_set_None(self):
         for data in self.trains:
-            model = _tc.drawing_classifier.create(data, self.target,
-                feature=self.feature, validation_set=None, max_iterations=1)
+            _tc.drawing_classifier.create(
+                data, self.target, feature=self.feature, validation_set=None, max_iterations=1)
 
     def test_create_with_no_validation_set(self):
         for data in self.trains:
-            model = _tc.drawing_classifier.create(data, self.target,
-                feature=self.feature, max_iterations=1)
+            _tc.drawing_classifier.create(
+                data, self.target, feature=self.feature, max_iterations=1)
 
     def test_create_with_empty_drawing_in_stroke_input(self):
         drawing = []
@@ -180,10 +193,10 @@ class DrawingClassifierTest(unittest.TestCase):
             for output_type in ["class", "probability_vector"]:
                 preds = model.predict(sf, output_type=output_type)
                 if output_type == "class":
-                    assert (preds.dtype == sf[self.target].dtype)
+                    assert(preds.dtype == sf[self.target].dtype)
                 else:
-                    assert (preds.dtype == _array)
-                assert (len(preds) == len(sf))
+                    assert(preds.dtype == _array)
+                assert(len(preds) == len(sf))
 
     def test_predict_with_sarray(self):
         for index in range(len(self.models)):
@@ -192,28 +205,27 @@ class DrawingClassifierTest(unittest.TestCase):
             for output_type in ["class", "probability_vector"]:
                 preds = model.predict(sf[self.feature], output_type=output_type)
                 if output_type == "class":
-                    assert (preds.dtype == sf[self.target].dtype)
+                    assert(preds.dtype == sf[self.target].dtype)
                 else:
-                    assert (preds.dtype == _array)
-                assert (len(preds) == len(sf))
+                    assert(preds.dtype == _array)
+                assert(len(preds) == len(sf))
 
     def test_predict_topk(self):
-        k=2
+        k = 2
         for index in range(len(self.models)):
             model = self.models[index]
             sf = self.trains[index]
             for output_type in ["rank", "probability"]:
                 preds = model.predict_topk(sf, k=k, output_type=output_type)
-                assert ("id" in preds.column_names())
-                assert ("class" in preds.column_names())
+                assert("id" in preds.column_names())
+                assert("class" in preds.column_names())
                 if output_type == "rank":
-                    assert (preds["rank"].dtype == int)
-                    assert (sorted(preds["rank"].unique()) == [0,1])
+                    assert(preds["rank"].dtype == int)
+                    assert(sorted(preds["rank"].unique()) == [0, 1])
                 else:
-                    assert (output_type == "probability")
-                    assert (preds["probability"].dtype == float)
-                assert (len(preds) == k*len(sf))
-
+                    assert(output_type == "probability")
+                    assert(preds["probability"].dtype == float)
+                assert(len(preds) == k*len(sf))
 
     def test_predict_output_type_probability_with_sframe(self):
         for index in range(len(self.models)):
@@ -224,8 +236,7 @@ class DrawingClassifierTest(unittest.TestCase):
                     model.predict(sf, output_type="probability")
             else:
                 preds = model.predict(sf, output_type="probability")
-                assert (preds.dtype == float)
-
+                assert(preds.dtype == float)
 
     def test_predict_output_type_probability_with_sarray(self):
         for index in range(len(self.models)):
@@ -235,8 +246,9 @@ class DrawingClassifierTest(unittest.TestCase):
                 with self.assertRaises(_ToolkitError):
                     model.predict(sf[self.feature], output_type="probability")
             else:
-                preds = model.predict(sf[self.feature], output_type="probability")
-                assert (preds.dtype == float)
+                preds = model.predict(
+                    sf[self.feature], output_type="probability")
+                assert(preds.dtype == float)
 
     def test_evaluate_without_ground_truth(self):
         for index in range(len(self.trains)):
@@ -255,7 +267,7 @@ class DrawingClassifierTest(unittest.TestCase):
             individual_run_results = dict()
             for metric in all_metrics:
                 evaluation = model.evaluate(sf, metric=metric)
-                assert (metric in evaluation)
+                assert(metric in evaluation)
                 individual_run_results[metric] = evaluation[metric]
             evaluation = model.evaluate(sf, metric="auto")
             for metric in all_metrics:
@@ -264,8 +276,9 @@ class DrawingClassifierTest(unittest.TestCase):
                         individual_run_results[metric],
                         evaluation[metric])
                 else:
-                    assert (metric in evaluation)
-                    assert (individual_run_results[metric] == evaluation[metric])
+                    assert(metric in evaluation)
+                    assert(
+                        individual_run_results[metric] == evaluation[metric])
 
     def test_evaluate_with_unsupported_metric(self):
         for index in range(len(self.trains)):
@@ -282,13 +295,13 @@ class DrawingClassifierTest(unittest.TestCase):
                 new_model = _tc.load_model(filename)
                 old_preds = old_model.predict(data)
                 new_preds = new_model.predict(data)
-                assert (new_preds.dtype == old_preds.dtype
-                    and (new_preds == old_preds).all())
+                assert(new_preds.dtype == old_preds.dtype
+                       and (new_preds == old_preds).all())
 
     def test_export_coreml(self):
         import coremltools
         import platform
-        max_iters_ans = ['20', '1']
+        max_iters_ans = [str(self.max_iterations), '1']
         warm_start_ans = '' if self.warm_start is None else self.warm_start
         for i, model in enumerate(self.models):
             filename = _mkstemp("bingo.mlmodel")[1]
@@ -305,10 +318,10 @@ class DrawingClassifierTest(unittest.TestCase):
                 'warm_start': warm_start_ans,
                 'max_iterations': max_iters_ans[i],
                 'version': '2',
-                }, dict(coreml_model.user_defined_metadata)
+            }, dict(coreml_model.user_defined_metadata)
             )
             expected_result = 'Drawing classifier created by Turi Create (version %s)' \
-                                        % (_tc.__version__)
+                % (_tc.__version__)
             self.assertEquals(expected_result, coreml_model.short_description)
 
     @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
@@ -334,8 +347,8 @@ class DrawingClassifierTest(unittest.TestCase):
             for row_number in range(len(sf)):
                 core_ml_preds = mlmodel.predict({
                     "drawing": sf[feature][row_number]._to_pil_image()
-                    })
-                assert (core_ml_preds[self.target] == tc_preds[row_number])
+                })
+                assert(core_ml_preds[self.target] == tc_preds[row_number])
 
             if test_number == 1:
                 sf = sf.remove_column(feature)
@@ -346,19 +359,19 @@ class DrawingClassifierTest(unittest.TestCase):
             sf[self.feature])
         for index in range(len(sf["rendered"])):
             rendered = sf["rendered"][index]
-            assert (type(rendered) == _tc.Image
-                and rendered.channels == 1
-                and rendered.width == 28
-                and rendered.height == 28)
+            assert(type(rendered) == _tc.Image
+                   and rendered.channels == 1
+                   and rendered.width == 28
+                   and rendered.height == 28)
 
     def test_draw_strokes_single_input(self):
         sf = self.stroke_sf
         single_bitmap = _tc.drawing_classifier.util.draw_strokes(
             sf[self.feature][0])
-        assert (type(single_bitmap) == _tc.Image
-            and single_bitmap.channels == 1
-            and single_bitmap.width == 28
-            and single_bitmap.height == 28)
+        assert(type(single_bitmap) == _tc.Image
+               and single_bitmap.channels == 1
+               and single_bitmap.width == 28
+               and single_bitmap.height == 28)
 
     def test_repr(self):
         for model in self.models:
