@@ -218,7 +218,10 @@ public:
     return sframe();
   }
 
-  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(const std::string& filename) override;
+  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+      const std::string& filename,
+      const std::map<std::string, flexible_type>& additional_user_defined)
+      override;
 
  private:
 

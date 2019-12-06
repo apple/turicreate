@@ -336,7 +336,9 @@ public:
 
   std::shared_ptr<unity_sframe_base> get_num_items_per_user_extension_wrapper() const;
 
-  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(const std::string& filename);
+  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+      const std::string& filename,
+      const std::map<std::string, flexible_type>& additional_user_defined);
 
   variant_map_type summary();
 
@@ -447,7 +449,7 @@ public:
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION("export_to_coreml",
                                        recsys_model_base::export_to_coreml,
-                                       "filename");
+                                       "filename", "additional_user_defined");
 
   REGISTER_NAMED_CLASS_MEMBER_FUNCTION(
       "precision_recall_by_user", recsys_model_base::api_precision_recall_by_user,

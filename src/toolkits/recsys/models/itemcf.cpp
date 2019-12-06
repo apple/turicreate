@@ -794,12 +794,27 @@ sframe recsys_itemcf::get_similar_items(
   #pragma clang diagnostic ignored "-Wswitch"
 #endif
 
-std::shared_ptr<coreml::MLModelWrapper> recsys_itemcf::export_to_coreml(const std::string& filename) {
+std::shared_ptr<coreml::MLModelWrapper> recsys_itemcf::export_to_coreml(
+    const std::string& filename,
+    const std::map<std::string, flexible_type>& additional_user_defined) {
+  flex_dict user_defined_metadata;
+  for (const auto& kvp : additional_user_defined) {
+    user_defined_metadata.emplace_back(kvp.first, kvp.second);
+  }
 
   std::shared_ptr<CoreML::Model> coreml_model = std::make_shared<CoreML::Model>(
       std::string("Item Similarity Recommender Model exported from Turi Create ") + __UNITY_VERSION__);
 
   auto& proto = coreml_model->getProto();
+
+  // Add user defined meta data
+  CoreML::Specification::Metadata* metadata =
+      proto.mutable_description()->mutable_metadata();
+  auto user_defined = metadata->mutable_userdefined();
+  for (const auto& kv : user_defined_metadata) {
+    (*user_defined)[kv.first] = kv.second.to<flex_string>();
+  }
+
   auto* desc = proto.mutable_description();
   auto* interactions_feature = desc->add_input();
 
@@ -915,7 +930,6 @@ std::shared_ptr<coreml::MLModelWrapper> recsys_itemcf::export_to_coreml(const st
   }
 
   return std::make_shared<coreml::MLModelWrapper>(coreml_model);
-
 }
 
 #if defined(__GNUC__)

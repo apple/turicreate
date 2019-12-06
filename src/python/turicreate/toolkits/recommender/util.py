@@ -12,6 +12,7 @@ import array as _array
 import logging as _logging
 import time as _time
 import six as _six
+from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
@@ -1789,4 +1790,5 @@ class _Recommender(_Model):
               'https://apple.github.io/turicreate/docs/userguide/recommender/coreml-deployment.html')
 
         import turicreate as tc
-        self.__proxy__.export_to_coreml(filename)
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        self.__proxy__.export_to_coreml(filename, additional_user_defined_metadata)
