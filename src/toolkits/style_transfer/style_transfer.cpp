@@ -379,7 +379,7 @@ void style_transfer::infer_derived_options() {
         read_state<flex_int>("num_styles"), read_state<flex_int>("batch_size"));
 
     logprogress_stream << "Setting max_iterations to be " << max_iterations << std::endl;
-    
+
     add_or_update_state({{"max_iterations", max_iterations}});
   }
 
@@ -484,8 +484,8 @@ gl_sarray style_transfer::convert_style_indices_to_filter(
 
 gl_sframe style_transfer::predict(variant_type data,
                                   std::map<std::string, flexible_type> opts) {
-  gl_sframe_writer result({"style_idx", "stylized_image"},
-                          {flex_type_enum::INTEGER, flex_type_enum::IMAGE}, 1);
+  gl_sframe_writer result({"row_idx","style_idx", "stylized_image"},
+                          {flex_type_enum::INTEGER, flex_type_enum::INTEGER, flex_type_enum::IMAGE}, 1);
 
   gl_sarray content_images = convert_types_to_sarray(data);
 
