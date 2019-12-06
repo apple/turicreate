@@ -28,8 +28,14 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
 
+        self.dc_graph = _tf.Graph()
         self.num_classes = num_classes
         self.batch_size = batch_size
+        self.sess = _tf.Session(graph=self.dc_graph)
+        with self.dc_graph.as_default():
+            self.init_drawing_classifier_graph(net_params)
+
+    def init_drawing_classifier_graph(self, net_params):
 
         self.input = _tf.placeholder(_tf.float32, [None, 28, 28, 1])
 
@@ -103,7 +109,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         self.accuracy = _tf.reduce_mean(
             _tf.cast(correct_prediction, _tf.float32))
 
-        self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 
         # Assign the initialised weights from MXNet to tensorflow
@@ -214,8 +219,9 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         """
 
         net_params = {}
-        layer_names = _tf.trainable_variables()
-        layer_weights = self.sess.run(layer_names)
+        with self.dc_graph.as_default():
+            layer_names = _tf.trainable_variables()
+            layer_weights = self.sess.run(layer_names)
 
         for var, val in zip(layer_names, layer_weights):
             if 'bias' in var.name:

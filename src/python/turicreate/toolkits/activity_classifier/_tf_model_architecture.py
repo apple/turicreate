@@ -30,21 +30,27 @@ class ActivityTensorFlowModel(TensorFlowModel):
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
 
+        self.ac_graph = _tf.Graph()
         self.num_classes = num_classes
         self.batch_size = batch_size
         self.seq_len = seq_len
+        self.sess = _tf.Session(graph=self.ac_graph)
+        with self.ac_graph.as_default():
+            self.init_activity_classifier_graph(net_params, num_features, prediction_window)
+
+    def init_activity_classifier_graph(self, net_params, num_features, prediction_window):
 
         # Vars
-        self.data = _tf.placeholder(_tf.float32, [None, prediction_window*seq_len, num_features])
-        self.weight = _tf.placeholder(_tf.float32, [None, seq_len, 1])
-        self.target = _tf.placeholder(_tf.int32, [None, seq_len, 1])
+        self.data = _tf.placeholder(_tf.float32, [None, prediction_window*self.seq_len, num_features])
+        self.weight = _tf.placeholder(_tf.float32, [None, self.seq_len, 1])
+        self.target = _tf.placeholder(_tf.int32, [None, self.seq_len, 1])
         self.is_training = _tf.placeholder(_tf.bool)
 
         # Reshaping weights
-        reshaped_weight = _tf.reshape(self.weight, [self.batch_size, seq_len])
+        reshaped_weight = _tf.reshape(self.weight, [self.batch_size, self.seq_len])
 
         # One hot encoding target
-        reshaped_target = _tf.reshape(self.target, [self.batch_size, seq_len])
+        reshaped_target = _tf.reshape(self.target, [self.batch_size, self.seq_len])
         one_hot_target = _tf.one_hot(reshaped_target, depth=self.num_classes, axis=-1)
 
         # Weights
@@ -58,7 +64,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.biases = {
         'conv_bias' : _tf.Variable(_tf.zeros([CONV_H]), name='conv_bias'),
         'dense0_bias': _tf.Variable(_tf.zeros([DENSE_H]), name='dense0_bias'),
-        'dense1_bias'  : _tf.Variable(_tf.zeros([num_classes]), name='dense1_bias')
+        'dense1_bias'  : _tf.Variable(_tf.zeros([self.num_classes]), name='dense1_bias')
         }
 
         # Convolution
@@ -72,7 +78,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         lstm = self.load_lstm_weights_params(net_params)
         cells = _tf.nn.rnn_cell.LSTMCell(num_units=LSTM_H, reuse=_tf.AUTO_REUSE, forget_bias=0.0,
             initializer=_tf.initializers.constant(lstm, verify_shape=True))
-        init_state = cells.zero_state(batch_size, _tf.float32)
+        init_state = cells.zero_state(self.batch_size, _tf.float32)
         rnn_outputs, final_state = _tf.nn.dynamic_rnn(cells, dropout, initial_state=init_state)
 
         # Dense
@@ -105,9 +111,6 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.set_learning_rate(1e-3)
         train_op = self.optimizer.minimize(self.loss_op)
         self.train_op = _tf.group([train_op, update_ops])
-
-        # Session
-        self.sess = _tf.Session()
 
         # Initialize all variables
         self.sess.run(_tf.global_variables_initializer())
@@ -250,8 +253,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
             Dictionary of weights from TensorFlow stored as {weight_name: weight_value}
         """
         tf_export_params = {}
-        tvars = _tf.trainable_variables()
-        tvars_vals = self.sess.run(tvars)
+        with self.ac_graph.as_default():
+            tvars = _tf.trainable_variables()
+            tvars_vals = self.sess.run(tvars)
 
         for var, val in zip(tvars, tvars_vals):
             if 'weight' in var.name:
