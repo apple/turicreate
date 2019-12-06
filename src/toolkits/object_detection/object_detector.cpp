@@ -1004,6 +1004,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     user_defined_metadata.emplace_back("iou_threshold", opts["iou_threshold"]);
   }
 
+  user_defined_metadata.emplace_back("version", opts["version"]);
+
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
       yolo_nn_spec, grid_width * SPATIAL_REDUCTION,
       grid_height * SPATIAL_REDUCTION, class_labels.size(),

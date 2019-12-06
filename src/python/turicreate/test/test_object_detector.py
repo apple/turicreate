@@ -333,6 +333,7 @@ class ObjectDetectorTest(unittest.TestCase):
             'max_iterations': '1',
             'model': 'darknet-yolo',
             'training_iterations': '1',
+            'version': '1',
             }, dict(coreml_model.user_defined_metadata)
         )
         expected_result = 'Object detector created by Turi Create (version %s)' \
