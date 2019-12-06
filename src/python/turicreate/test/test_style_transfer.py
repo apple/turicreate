@@ -292,6 +292,17 @@ class StyleTransferTest(unittest.TestCase):
             self.test_get_styles_success()
             print("Get styles passed")
 
+    def test_state(self):
+        model = self.model
+        fields = model.__proxy__.list_fields()
+        assert "model" in fields
+        assert "num_styles" in fields
+        assert "_training_time_as_string" in fields
+        assert "training_epochs" in fields
+        assert "training_iterations" in fields
+        assert "num_content_images" in fields
+        assert "training_loss" in fields
+
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
