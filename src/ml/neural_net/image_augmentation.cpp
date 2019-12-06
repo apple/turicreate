@@ -201,14 +201,18 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
 
   // Call the virtual function to use the intermediate data structure and
   // process it
-  float_array_result augmented_data = prepare_augmented_images(input_to_tf_aug);
+  labeled_float_image augmented_data =
+      prepare_augmented_images(input_to_tf_aug);
 
   // Convert augmented_data to the data structure needed
   std::vector<float> result_array(n * h * w * c);
-  size_t image_size = augmented_data.images.size();
-  const float* start_address = augmented_data.images.data();
-  const float* end_address = start_address + image_size;
-  std::copy(start_address, end_address, result_array.begin());
+  float* result_array_out = result_array.data();
+  for (const shared_float_array& image : augmented_data.images) {
+    size_t image_size = image.size();
+    const float* start_address = image.data();
+    const float* end_address = start_address + image_size;
+    result_array_out = std::copy(start_address, end_address, result_array_out);
+  }
   res.image_batch =
       shared_float_array::wrap(std::move(result_array), {n, h, w, c});
 
