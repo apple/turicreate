@@ -484,7 +484,7 @@ gl_sarray style_transfer::convert_style_indices_to_filter(
 
 gl_sframe style_transfer::predict(variant_type data,
                                   std::map<std::string, flexible_type> opts) {
-  gl_sframe_writer result({"row_idx","style_idx", "stylized_image"},
+  gl_sframe_writer result({"row_id","style", "stylized_image"},
                           {flex_type_enum::INTEGER, flex_type_enum::INTEGER, flex_type_enum::IMAGE}, 1);
 
   gl_sarray content_images = convert_types_to_sarray(data);
