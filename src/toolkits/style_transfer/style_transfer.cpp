@@ -484,8 +484,9 @@ gl_sarray style_transfer::convert_style_indices_to_filter(
 
 gl_sframe style_transfer::predict(variant_type data,
                                   std::map<std::string, flexible_type> opts) {
-  gl_sframe_writer result({"style_idx", "stylized_image"},
-                          {flex_type_enum::INTEGER, flex_type_enum::IMAGE}, 1);
+  gl_sframe_writer result({"row_id", "style", "stylized_image"},
+                          {flex_type_enum::INTEGER, flex_type_enum::INTEGER,
+                           flex_type_enum::IMAGE}, 1);
 
   gl_sarray content_images = convert_types_to_sarray(data);
 
@@ -854,11 +855,21 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
   const flex_int max_iterations =
       read_opts<flex_int>(model_data, "max_iterations");
   const flex_string model_type = read_opts<flex_string>(model_data, "model");
+  const flex_string _training_time_as_string = read_opts<flex_string>(model_data, "_training_time_as_string");
+  const flex_int training_epochs = read_opts<flex_int>(model_data, "training_epochs");
+  const flex_int training_iterations = read_opts<flex_int>(model_data, "training_iterations");
+  const flex_int num_content_images = read_opts<flex_int>(model_data, "num_content_images");
+  const flex_float training_loss = read_opts<flex_float>(model_data, "training_loss");  
 
   add_or_update_state({{"model", model_type},
                        {"num_styles", num_styles},
                        {"max_iterations", max_iterations},
-                       {"batch_size", DEFAULT_BATCH_SIZE}});
+                       {"batch_size", DEFAULT_BATCH_SIZE},
+                       {"_training_time_as_string", _training_time_as_string},
+                       {"training_epochs", training_epochs},
+                       {"training_iterations", training_iterations},
+                       {"num_content_images", num_content_images},
+                       {"training_loss", training_loss}});
 
   // Extract the weights and shapes
   flex_dict mxnet_data_dict;
