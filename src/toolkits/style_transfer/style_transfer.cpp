@@ -569,13 +569,17 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
         { {"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} }, 0);
   table.print_header();
 
-  // looping through all of the style indices
-  for (size_t i : style_idx) {
-    // check whether the style indices are valid
-    check_style_index(i, num_styles);
+  // looping through all of the data
+  data_iter->reset();
+  ASSERT_EQ(batch_size, 1);
+  std::vector<st_example> batch = data_iter->next_batch(batch_size);
+  int row_idx = 0;
 
-    std::vector<st_example> batch = data_iter->next_batch(batch_size);
-    while (!batch.empty()) {
+  while (!batch.empty()) {
+    // loopiong through all of the style indices
+    for (size_t i : style_idx) {
+      // check whether the style indices are valid
+      check_style_index(i, num_styles);
       // setting the style index for each batch
       std::for_each(batch.begin(), batch.end(),
                     [i](st_example& example) { example.style_index = i; });
@@ -600,7 +604,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
       // Write result to gl_sframe_writer
       for (const auto& row : processed_batch) {
-        result.write({row.first, row.second}, 0);
+        result.write({row_idx, row.first, row.second}, 0);
       }
 
       // progress printing for stylization
@@ -612,12 +616,10 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       formatted_percentage << "%";
       table.print_progress_row(idx, idx, progress_time(),
                                formatted_percentage.str());
-
-      // get next batch
-      batch = data_iter->next_batch(batch_size);
     }
-
-    data_iter->reset();
+    // get next batch and increase the row_idx
+    batch = data_iter->next_batch(batch_size);
+    ++row_idx;
   }
 
   table.print_row(idx, progress_time(), "100%");
