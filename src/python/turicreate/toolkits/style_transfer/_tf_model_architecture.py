@@ -466,6 +466,9 @@ def define_style_transfer_network(content_image,
 
 class StyleTransferTensorFlowModel(TensorFlowModel):
     def __init__(self, config, net_params):
+
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
         
         _tf.reset_default_graph()
 
@@ -490,6 +493,10 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self.sess = _tf.Session()
         init = _tf.global_variables_initializer()
         self.sess.run(init)
+
+    def __del__(self):
+        self.sess.close()
+        self.gpu_policy.stop()
 
     def __define_graph(self):
         self.optimizer, self.loss, self.output = define_style_transfer_network(self.tf_input,

@@ -26,6 +26,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
 
     def __init__(self, net_params, batch_size, num_features, num_classes, prediction_window, seq_len):
 
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
+
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
@@ -115,6 +118,10 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.sess.run(_tf.local_variables_initializer())
 
         self.load_weights(net_params)
+
+    def __del__(self):
+        self.sess.close()
+        self.gpu_policy.stop()
 
     def load_lstm_weights_params(self, net_params):
         """

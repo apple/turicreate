@@ -18,7 +18,10 @@ _utils.suppress_tensorflow_warnings()
 
 class ODTensorFlowModel(TensorFlowModel):
 
-    def __init__(self, input_h, input_w, batch_size, output_size, out_h, out_w, init_weights, config, is_train=True):
+    def __init__(self, input_h, input_w, batch_size, output_size, out_h, out_w, init_weights, config):
+
+        self.gpu_policy = _utils.TensorFlowGPUPolicy()
+        self.gpu_policy.start()
 
         #reset tensorflow graph when a new model is created
         _tf.reset_default_graph()
@@ -40,7 +43,7 @@ class ODTensorFlowModel(TensorFlowModel):
         ]
         self.num_anchors = len(self.anchors)
         self.output_size = output_size
-        self.is_train = is_train  # Set flag for training or val
+        self.is_train = _tf.placeholder(_tf.bool)  # Set flag for training or val
 
         # Create placeholders for image and labels
         self.images = _tf.placeholder(_tf.float32, [self.batch_size, input_h,
@@ -78,9 +81,13 @@ class ODTensorFlowModel(TensorFlowModel):
 
         self.load_weights(self.init_weights)
 
+    def __del__(self):
+        self.sess.close()
+        self.gpu_policy.stop()
+
     def load_weights(self, tf_net_params):
         """
-        Function to load MXNet weights into TensorFlow
+        Function to load C++ weights into TensorFlow
 
         Parameters
         ----------
@@ -262,7 +269,7 @@ class ODTensorFlowModel(TensorFlowModel):
                     net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, padding='VALID', name='pool%d_' % idx)
                 else:
                     strides = [1, 1, 1, 1]
-                    net = _tf.nn.avg_pool2d(net, ksize=[1, 2, 2, 1], strides=strides, padding='SAME', name='pool%d_' % idx)
+                    net = self.pooling_layer(net, pool_size=[1, 2, 2, 1], strides=strides, padding='SAME', name='pool%d_' % idx)
 
         if output_size is not None:
             net = self.conv_layer(net, [1, 1, filter_sizes[idx - 1], output_size],
@@ -385,7 +392,8 @@ class ODTensorFlowModel(TensorFlowModel):
         feed_dict['labels'] = feed_dict['labels'].reshape(self.batch_size, self.grid_shape[0], self.grid_shape[1],self.num_anchors, self.num_classes + 5)
 
         _, loss_batch = self.sess.run([self.train_op, self.loss], feed_dict={self.images: feed_dict['input'],
-                                                                             self.labels: feed_dict['labels']})
+                                                                             self.labels: feed_dict['labels'],
+                                                                             self.is_train: True})
         result = {}
         result['loss'] = _np.array([loss_batch])
         return result
@@ -407,7 +415,7 @@ class ODTensorFlowModel(TensorFlowModel):
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
 
-        output = self.sess.run([self.tf_model], feed_dict={self.images: feed_dict['input']})
+        output = self.sess.run([self.tf_model], feed_dict={self.images: feed_dict['input'], self.is_train: False})
 
         # TODO: Include self.labels: feed_dict['label'] to handle labels from validation set
         result = {}

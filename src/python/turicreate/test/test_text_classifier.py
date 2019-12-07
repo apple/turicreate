@@ -99,6 +99,7 @@ class TextClassifierTest(unittest.TestCase):
         self.assertDictEqual({
             'com.github.apple.turicreate.version': tc.__version__,
             'com.github.apple.os.platform': platform.platform(),
+            'coremltoolsVersion': coremltools.__version__,
             }, dict(coreml_model.user_defined_metadata)
         )
         expected_result = 'Text classifier created by Turi Create (version %s)' % tc.__version__
