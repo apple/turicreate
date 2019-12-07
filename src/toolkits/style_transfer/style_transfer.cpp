@@ -576,7 +576,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   int row_idx = 0;
 
   while (!batch.empty()) {
-    // loopiong through all of the style indices
+    // looping through all of the style indices
     for (size_t i : style_idx) {
       // check whether the style indices are valid
       check_style_index(i, num_styles);
