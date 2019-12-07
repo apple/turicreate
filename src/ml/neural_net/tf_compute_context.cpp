@@ -271,7 +271,7 @@ tf_image_augmenter::prepare_augmented_images(
   // Allocate a result into which the worker threads can write their
   // thread-local results in parallel.
   labeled_float_image result;
-  result.images.resize(batch_size);
+  result.images.resize(thread::cpu_count());
   result.annotations.resize(batch_size);
 
   auto perform_augmentations = [&](size_t thread_id, size_t num_threads) {
