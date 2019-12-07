@@ -295,13 +295,13 @@ class StyleTransferTest(unittest.TestCase):
     def test_state(self):
         model = self.model
         fields = model.__proxy__.list_fields()
-        assert "model" in fields
-        assert "num_styles" in fields
-        assert "_training_time_as_string" in fields
-        assert "training_epochs" in fields
-        assert "training_iterations" in fields
-        assert "num_content_images" in fields
-        assert "training_loss" in fields
+        self.assertTrue("model" in fields)
+        self.assertTrue("num_styles" in fields)
+        self.assertTrue("_training_time_as_string" in fields)
+        self.assertTrue("training_epochs" in fields)
+        self.assertTrue("training_iterations" in fields)
+        self.assertTrue("num_content_images" in fields)
+        self.assertTrue("training_loss" in fields)
 
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
