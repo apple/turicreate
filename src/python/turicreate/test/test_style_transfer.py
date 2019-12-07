@@ -168,6 +168,8 @@ class StyleTransferTest(unittest.TestCase):
 
         for style in styles:
             stylized_out = model.stylize(sf, style=style)
+            self.assertEqual(set(stylized_out.column_names()),
+                             set(["row_id", "style", "stylized_image"]))
 
             # Check the structure of the output
             _raise_error_if_not_sframe(stylized_out)
