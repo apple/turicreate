@@ -403,7 +403,15 @@ BOOST_AUTO_TEST_CASE(test_recommender) {
           tc_parameters_add_flexible_type(export_args, "filename", ft_name,
                                           &error);
           CAPI_CHECK_ERROR(error);
+
+          tc_flex_dict* fd_user_defined = tc_flex_dict_create(&error);
+          CAPI_CHECK_ERROR(error);
+          tc_parameters_add_flex_dict(export_args,
+              "additional_user_defined", fd_user_defined, &error);
+          CAPI_CHECK_ERROR(error);
+
           tc_release(ft_name);
+          tc_release(fd_user_defined);
         }
 
         tc_model_call_method(model, "export_to_coreml",
