@@ -168,8 +168,9 @@ class StyleTransferTest(unittest.TestCase):
 
         for style in styles:
             stylized_out = model.stylize(sf, style=style)
+            feat_name = 'stylized_{}'.format(self.content_feature)
             self.assertEqual(set(stylized_out.column_names()),
-                             set(["row_id", "style", "stylized_image"]))
+                  set(["row_id", "style", feat_name]))
 
             # Check the structure of the output
             _raise_error_if_not_sframe(stylized_out)
@@ -183,7 +184,6 @@ class StyleTransferTest(unittest.TestCase):
 
             # Check if input and output image have the same shape
             input_size = (sf[self.content_feature][0].width, sf[self.content_feature][0].height)
-            feat_name = 'stylized_{}'.format(self.content_feature)
             output_size = (stylized_out[0][feat_name].width,
                            stylized_out[0][feat_name].height)
             self.assertEqual(input_size, output_size)
