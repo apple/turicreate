@@ -291,6 +291,9 @@ class ODTensorFlowModel(TensorFlowModel):
         loss: TensorFlow Tensor
             Loss (combination of regression and classification losses)
         """
+        POS_IOU = 0.7
+        NEG_IOU = 0.3
+
         rescore = int(_utils.convert_shared_float_array_to_numpy(self.config.get('od_rescore')))
         lmb_coord_xy = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_coord_xy'))
         lmb_coord_wh = _utils.convert_shared_float_array_to_numpy(self.config.get('lmb_coord_wh'))
@@ -337,37 +340,49 @@ class ODTensorFlowModel(TensorFlowModel):
         iou = inter_area / (area + gt_area - inter_area)
         active_iou = c_iou
 
+
+        cond_gt = _tf.cast(_tf.equal(gt_conf, _tf.constant(1.0)), dtype=_tf.float32)
         max_iou = _tf.reduce_max(active_iou, 3, keepdims=True)
-        resp_box = _tf.cast(_tf.equal(active_iou, max_iou), dtype=_tf.float32)
-        count = _tf.reduce_sum(gt_conf0)
+        cond_max = _tf.cast(_tf.equal(active_iou ,max_iou), dtype=_tf.float32)
 
-        kr_obj_ij = _tf.stop_gradient(resp_box * gt_conf)
+        cond_above = c_iou > POS_IOU
 
-        kr_noobj_ij = 1 - kr_obj_ij
-        s = 1 / (self.batch_size * self.grid_shape[0] * self.grid_shape[1])
+        cond_logical_or = _tf.cast(_tf.math.logical_or(_tf.cast(cond_max, dtype=_tf.bool), _tf.cast(cond_above, dtype=_tf.bool)), dtype=_tf.float32)
+        cond_obj = _tf.cast(_tf.math.logical_and(_tf.cast(cond_gt, dtype=_tf.bool), _tf.cast(cond_logical_or, dtype=_tf.bool)), dtype=_tf.float32)
+
+        kr_obj_ij = _tf.stop_gradient(cond_obj)
+
+        cond_below = c_iou < NEG_IOU
+
+        cond_logical_not = _tf.cast(_tf.math.logical_not(_tf.cast(cond_obj, dtype=_tf.bool)), dtype=_tf.float32)
+        cond_noobj = _tf.cast(_tf.math.logical_and(_tf.cast(cond_below, dtype=_tf.bool), _tf.cast(cond_logical_not, dtype=_tf.bool)), dtype=_tf.float32)
+
+        kr_noobj_ij = _tf.stop_gradient(cond_noobj)
+
+        count = _tf.reduce_sum(kr_obj_ij)
+        eps_count = _tf.math.add(count, _tf.constant(1e-4))
+
+        scale_conf = 1 / (self.batch_size * self.grid_shape[0] * self.grid_shape[1])
+
         kr_obj_ij_plus1 = _tf.expand_dims(kr_obj_ij, -1)
-
         if rescore:
             obj_gt_conf = kr_obj_ij * _tf.stop_gradient(iou)
         else:
             obj_gt_conf = kr_obj_ij
-        kr_box = kr_obj_ij_plus1
-        obj_w = (kr_obj_ij * lmb_obj + kr_noobj_ij * lmb_noobj)
 
-        loss_xy = lmb_coord_xy * _tf.reduce_sum(kr_box * _tf.square(gt_xy - xy)) / (count + 0.01)
+        obj_w_obj = kr_obj_ij * lmb_obj
+        obj_w_noobj = kr_noobj_ij * lmb_noobj
 
-        loss_wh = _tf.losses.huber_loss (labels=gt_raw_wh, predictions=raw_wh, weights=lmb_coord_wh * kr_box,
-                                                   delta= 1.0)
-        # Confidence loss
-        loss_conf = s * _tf.reduce_sum(
-            obj_w * _tf.nn.sigmoid_cross_entropy_with_logits(labels=obj_gt_conf, logits=raw_conf))
+        obj_w = _tf.math.add(obj_w_obj, obj_w_noobj)
 
-        # TODO: tf.nn.softmax_cross_entropy_with_logits_v2 instead of tf.nn.softmax_cross_entropy_with_logits
-        loss_cls = lmb_class * _tf.reduce_sum(
-            kr_obj_ij * _tf.nn.softmax_cross_entropy_with_logits_v2(labels=gt_class, logits=class_scores)) / (
-                           count + 0.01)
+        loss_xy = lmb_coord_xy * _tf.reduce_sum(kr_obj_ij_plus1 * _tf.square(gt_xy - xy)) / eps_count
+        loss_wh = _tf.losses.huber_loss(labels=gt_raw_wh, predictions=raw_wh, weights=lmb_coord_wh * kr_obj_ij_plus1, delta= 1.0)
+        loss_conf = scale_conf * _tf.reduce_sum(obj_w * _tf.nn.sigmoid_cross_entropy_with_logits(labels=obj_gt_conf, logits=raw_conf))
+        loss_cls = lmb_class * _tf.reduce_sum(kr_obj_ij * _tf.nn.softmax_cross_entropy_with_logits_v2(labels=gt_class, logits=class_scores)) / eps_count
+
         losses = [loss_xy, loss_wh, loss_conf, loss_cls]
         loss = _tf.add_n(losses)
+
         return loss
 
     def train(self, feed_dict):
