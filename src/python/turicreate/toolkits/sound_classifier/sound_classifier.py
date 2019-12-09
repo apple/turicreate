@@ -803,7 +803,7 @@ class SoundClassifier(_CustomModel):
             input_name = 'output1'
             input_length = self._feature_extractor.output_length
             builder = NeuralNetworkBuilder([(input_name, Array(input_length,))],
-                                           [(prob_name, Dictionary(String))],
+                                           [(prob_name, Array(self.num_classes, ))],
                                            'classifier')
             layer_counter = [0]
             builder.set_input([input_name], [(input_length,)])
@@ -834,8 +834,7 @@ class SoundClassifier(_CustomModel):
                     builder.add_activation("activation"+str(i), 'RELU', input_name, output_name)
                     input_name = output_name
 
-            builder.add_softmax('softmax', input_name, self.target)
-            builder.set_output([prob_name], [(self.num_classes,)])
+            builder.add_softmax('softmax', input_name, prob_name)
             builder.set_class_labels(self.classes, predicted_feature_name = self.target,
                     prediction_blob = prob_name)
             return builder.spec
