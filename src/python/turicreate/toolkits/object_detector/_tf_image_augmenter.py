@@ -29,7 +29,7 @@ def get_augmented_data(images, annotations, output_height, output_width, resize_
 
     graph = tf.Graph()
     with graph.as_default():
-        with tf.Session() as session:
+        with tf.Session(graph=graph) as session:
             output_shape = (output_height, output_width)
 
             if resize_only:
