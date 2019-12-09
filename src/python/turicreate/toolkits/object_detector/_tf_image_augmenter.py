@@ -199,7 +199,8 @@ def pad_to_bounding_box(image, offset_height, offset_width, target_height,
     return padded
 
 def apply_bounding_box_transformation(images, annotations, transformations, clip_to_shape=None):
-
+  minEjectCoverage = 0.5 # TODO: get from config
+  
   aug_anns = []
   for i in range(len(annotations)):
       image = _utils.convert_shared_float_array_to_numpy(images[i])
@@ -224,6 +225,8 @@ def apply_bounding_box_transformation(images, annotations, transformations, clip
       # Reverse shape
       bbox_out = v[:, :2].reshape(-1, 4)
       
+      drop_indicies = []
+
       # Make points correctly ordered (lower < upper)
       # Can probably be made much nicer (numpy-ified?)
       for i in range(len(bbox_out)):
@@ -232,11 +235,27 @@ def apply_bounding_box_transformation(images, annotations, transformations, clip
           if bbox_out[i][1] > bbox_out[i][3]:
               bbox_out[i][1], bbox_out[i][3] = bbox_out[i][3], bbox_out[i][1]
 
+          bb_height = bbox_out[i][2] - bbox_out[i][0]
+          bb_width = bbox_out[i][3] - bbox_out[i][1]
+          bb_area = bb_height * bb_width
+
           if clip_to_shape is not None:
               bbox_out[:, 0::2] = np.clip(bbox_out[:, 0::2], 0, clip_to_shape[0])
               bbox_out[:, 1::2] = np.clip(bbox_out[:, 1::2], 0, clip_to_shape[1])
 
+          clip_height = bbox_out[i][2] - bbox_out[i][0]
+          clip_width = bbox_out[i][3] - bbox_out[i][1]
+          clip_area = clip_height * clip_width
+
+          if (clip_area/bb_area) < minEjectCoverage:
+              drop_indicies.append(i)
+      
+      bbox_out = np.delete(bbox_out, drop_indicies, 0)
+      identifier = np.delete(identifier, drop_indicies, 0)
+      confidence = np.delete(confidence, drop_indicies, 0)
+
       bbox = np.zeros(bbox_out.shape)
+      
       for k in range(len(bbox_out)):
           bbox[k][0] = bbox_out[k][1]/float(clip_to_shape[0])
           bbox[k][1] = bbox_out[k][0]/float(clip_to_shape[1])
