@@ -456,17 +456,17 @@ gl_sframe gl_sframe::tail(size_t n) const {
 
 gl_sarray gl_sframe::apply(std::function<flexible_type(const sframe_rows::row&)> fn,
                 flex_type_enum dtype) const {
-  return get_proxy()->transform_lambda(fn, dtype, time(NULL));
+  return get_proxy()->transform_lambda(fn, dtype, random::pure_random_seed());
 }
 
 gl_sframe gl_sframe::sample(double fraction) const {
-  return get_proxy()->sample(fraction, time(NULL));
+  return get_proxy()->sample(fraction, random::pure_random_seed());
 }
 gl_sframe gl_sframe::sample(double fraction, size_t seed, bool exact) const {
   return get_proxy()->sample(fraction, seed, exact);
 }
 std::pair<gl_sframe, gl_sframe> gl_sframe::random_split(double fraction) const {
-  return random_split(fraction, time(NULL));
+  return random_split(fraction, random::pure_random_seed());
 }
 
 std::pair<gl_sframe, gl_sframe> gl_sframe::random_split(double fraction, size_t seed, bool exact) const {

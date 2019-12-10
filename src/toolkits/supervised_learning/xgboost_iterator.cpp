@@ -324,7 +324,7 @@ void MakeColPage(const RowBatch &batch,
                  dense_bitset& row_mask,
                  size_t num_columns,
                  DiskPageType* pcol) {
-  size_t nthread = thread::cpu_count();
+  int nthread = static_cast<int>(thread::cpu_count());
   auto base_rowid = batch.base_rowid;
   utils::ParallelGroupBuilder<SparseBatch::Entry>
           builder(&(pcol->offset), &(pcol->data));
@@ -332,23 +332,23 @@ void MakeColPage(const RowBatch &batch,
   bst_omp_uint ndata = static_cast<bst_uint>(batch.size);
   turi::parallel_for(0, ndata, [&](size_t i) {
     if (row_mask.get(i) == false) return;
-    int tid = turi::thread::thread_id();
+    size_t tid = turi::thread::thread_id();
     RowBatch::Inst inst = batch[i];
     for (bst_uint j = 0; j < inst.length; ++j) {
       const SparseBatch::Entry &e = inst[j];
-      builder.AddBudget(e.index, tid);
+      builder.AddBudget(e.index, static_cast<int>(tid));
     }
   });
   builder.InitStorage();
   turi::parallel_for(0, ndata, [&](size_t i) {
     if (row_mask.get(i) == false) return;
-    int tid = turi::thread::thread_id();
+    size_t tid = turi::thread::thread_id();
     RowBatch::Inst inst = batch[i];
     for (bst_uint j = 0; j < inst.length; ++j) {
       const SparseBatch::Entry &e = inst[j];
       builder.Push(e.index,
-                   SparseBatch::Entry(base_rowid + i, e.fvalue),
-                   tid);
+                   SparseBatch::Entry(static_cast<unsigned int>(base_rowid + i), e.fvalue),
+                   static_cast<int>(tid));
     }
   });
   // sort columns
@@ -617,7 +617,7 @@ class DiskPagedFMatrix: public IFMatrix {
       for (size_t i = 0; i < rowbatch.size; ++i) {
         if (skip_sample || ::xgboost::random::SampleBinary(pkeep)) {
           row_mask.set_bit(i);
-          buffered_rowset_.push_back(base_rowid + i);
+          buffered_rowset_.push_back(static_cast<int>(base_rowid + i));
         }
       }
       col_pages.push_back(DiskPageType());

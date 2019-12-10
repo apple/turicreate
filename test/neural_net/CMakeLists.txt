@@ -1,4 +1,4 @@
-project(neural_net_test)
+project(Turi)
 
 
 if(APPLE AND 

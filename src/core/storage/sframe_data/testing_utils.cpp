@@ -485,9 +485,9 @@ sframe make_random_sframe(
             stride.resize(3, 0);
             size_t cur_stride = 1;
             while (!_order.empty()) {
-              int pick_index =
+              size_t pick_index =
                   rng_int(0, _order.size() - 1);
-              int index = _order[pick_index];
+              size_t index = _order[pick_index];
               _order.erase(_order.begin() + pick_index);
 
               stride[index] = cur_stride;

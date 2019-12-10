@@ -52,7 +52,7 @@ class parallel_task_queue {
    * thread ID equal to the requested thread ID.
    */
   void launch(const boost::function<void (void)> &spawn_function,
-              int virtual_threadid = -1);
+              size_t virtual_threadid = size_t(-1));
 
 
   /** Waits for all tasks to complete. const char* exceptions
@@ -157,7 +157,7 @@ class parallel_task_queue {
      * thread ID equal to the requested thread ID.
      */
     void launch(const boost::function<void (void)> &spawn_function,
-                 int virtual_threadid = -1);
+                 size_t virtual_threadid = size_t(-1));
 
     void join();
 

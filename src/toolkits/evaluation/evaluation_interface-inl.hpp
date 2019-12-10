@@ -1710,7 +1710,7 @@ class roc_curve: public supervised_evaluation_interface {
     // Get the number of false positives and true positives for all
     // bins above the current bin.
     for (size_t c = 0; c < num_classes; c++) {
-      for (int j = NUM_BINS-2; j >= 0; --j) {
+      for (ssize_t j = NUM_BINS-2; j >= 0; --j) {
         total_fp[c][j] += total_fp[c][j+1];
         total_tp[c][j] += total_tp[c][j+1];
       }

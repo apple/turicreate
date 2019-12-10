@@ -9,6 +9,8 @@ RELEASE_DIR=release
 DEBUG_DIR=debug
 TURI_HOME=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 DEPS_PREFIX=$PWD/deps/local
+IOS_DEFAULT_MIN_VERSION=12
+MACOS_DEFAULT_MIN_VERSION=10.12
 
 function print_help {
   echo "Configures the build with the specified toolchain. "
@@ -26,34 +28,53 @@ function print_help {
   echo "  --no-ccache "
   echo
   echo "  --with-capi (default)             Build C API."
-  echo "  --with-capi-framework             Build C API as macOS framework (macOS only)"
+  echo "  --with-capi-framework             Build C API as macOS framework (macOS + XCode builder only)"
   echo "  --no-capi                         Skip building the C API."
   echo
   echo "  --with-python (default)           Build python components."
   echo "  --no-python"
   echo
+  echo "  --virtualenv=VIRTUALENV_EXE       Path to virtualenv executable (otherwise looks in \$PATH)."
+  echo
   echo "  --with-visualization (default)    Build Turi Create visualization client."
   echo "  --no-visualization"
   echo
-  echo "  --with-extra-opt-flags (default)  Enable extra optimization flags (e.g. inlining)."
-  echo "  --no-extra-opt-flags"
-  echo
-  echo "  --with-stack-display              Display stack traces to stderr when possible."
-  echo "  --no-stack-display (default)      Only write stack traces to file, not to stderr."
-  echo "  --llvm-path                       Path to LLVM (required for stack trace display)."
-  echo
   echo "  --release-opt-for-size            Optimize for size."
   echo "  --debug-opt-for-size              Debug optimize for size."
-  echo "  --target-ios                      Build for iOS (macOS only)"
   echo
+  echo "  --arch=<architecture>             The target architecture.  "
+  echo "                                    May be added multiple times.  First entry is used to determine compile-time features." 
+  echo 
   echo "  --with-remotefs (default)         Include capabilities for remote file access."
   echo "  --no-remotefs                     Disable remote file access."
-  echo
-  echo "  --virtualenv VIRTUALENV_EXE       Path to virtualenv executable (otherwise looks in \$PATH)."
-  echo
+  echo 
+  echo "  --builder=<builder>               Generates build files for the given build system.  "
+  echo "                                    Possible values are make (default), xcode, or ninja."
+  echo 
+  echo "  --with-release (default)          Configure release-mode build directory release/."
+  echo "  --no-release                      Disable release-mode build directory release/." 
+  echo 
+  echo "  --release-dir=<dir>               Directory to use for release mode build tree."
+  echo 
+  echo "  --with-debug (default)            Configure debug-mode build directory release/."
+  echo "  --no-debug                        Disable release-mode build directory release/." 
+  echo 
+  echo "  --debug-dir=<dir>                 Directory to use for debug mode build tree."
+  echo 
   echo "  --yes                             Defaults to yes on a prompt"
+  echo 
+  echo "  --min-ios-version                 Override the minimum iOS version (default ${IOS_DEFAULT_MIN_VERSION})"
+  echo "  --min-macos-version               Override the minimum MacOS version (default ${MACOS_DEFAULT_MIN_VERSION})"
   echo
-  echo "  -D var=value                      Specify CFLAGS definitions to be passed on to cmake."
+  echo "  --codesign                        Enable code signing for OSX projects.  If enabled, the "
+  echo "                                    proper CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_**** parameters "
+  echo                                      denoting the signing variables should be passed in. 
+  echo
+  echo "  --list-source-files               If given, a list of all the source files compiled using "
+  echo "                                    the given options is printed as part of the configuration, "
+  echo "                                    using the [SOURCE:<source_file>] format. "
+  echo
+  echo "  -D var=value                      Specify FLAGS definitions to be passed on to cmake."
   echo
   echo "Relevant environment variables: "
   echo
@@ -126,12 +147,22 @@ with_ios=0
 with_ccache=1
 with_visualization=1
 with_remotefs=1
-with_extra_opt_flags=1
-with_stack_display=0
+with_release=1
+with_debug=1
 release_opt_for_size=0
 debug_opt_for_size=0
+arch_list=""
+target=""
+builder="make"
+min_ios_version=${IOS_DEFAULT_MIN_VERSION}
+min_macos_version=${MACOS_DEFAULT_MIN_VERSION}
+enable_codesign=0
+list_source_files=0
 
-llvm_path=""
+DEBUG_DIR="${TURI_HOME}/debug"
+RELEASE_DIR="$TURI_HOME/release"
+
+
 
 ###############################################################################
 #
@@ -145,7 +176,12 @@ while [ $# -gt 0 ]
 
     --release-opt-for-size) release_opt_for_size=1;;
     --debug-opt-for-size)   debug_opt_for_size=1;;
-    --target-ios)           with_ios=1; with_python=0; with_capi=1; release_opt_for_size=1;;
+
+    --target=*)             target=${1##--target=};;
+    --target)               target=${2}; shift;;
+
+    --arch=*)               arch_list="${arch_list};${1##--arch=}";;
+    --arch)                 arch_list="${arch_list};$2"; shift ;;
 
     --with-ccache)          with_ccache=1;;
     --no-ccache)            with_ccache=0;;
@@ -157,26 +193,45 @@ while [ $# -gt 0 ]
     --with-python)          with_python=1;;
     --no-python)            with_python=0;;
 
-    --with-extra-opt-flags) with_extra_opt_flags=1;;
-    --no-extra-opt-flags)   with_extra_opt_flags=0;;
-
-    --with-stack-display)   with_stack_display=1;;
-    --no-stack-display)     with_stack_display=0;;
-    --llvm-path)            shift; llvm_path="$1";;
-
     --with-visualization)   with_visualization=1;;
     --no-visualization)     with_visualization=0;;
 
     --with-remotefs)        with_remotefs=1;;
     --no-remotefs)          with_remotefs=0;;
+    
+    --with-release)         with_release=1;;
+    --no-release)           with_release=0;;
+    --with-debug)           with_debug=1;;
+    --no-debug)             with_debug=0;;
+    
+    --release-dir=*)        RELEASE_DIR=${1##--release-dir=} ;;
+    --release-dir)          RELEASE_DIR=${2} ; shift ;;
+
+    --debug-dir=*)          DEBUG_DIR=${1##--debug-dir=} ;;
+    --debug-dir)            DEBUG_DIR=${2} ; shift ;;
 
     --yes)                  default_yes=1;;
+
+    --builder=*)            builder=${1##--builder=} ;;
+    --builder)              builder=${2} ; shift ;;
+
+    --codesign)             enable_codesign=1;;
 
     --help)                 print_help ;;
 
     -D)                     CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -D $2"; shift ;;
 
+    --virtualenv=*)         VIRTUALENV="${1##--virtualenv=}" ;;
     --virtualenv)           VIRTUALENV="$2"; shift ;;
+
+    --min-ios-version=*)    min_ios_version=${1##--min-ios-version=};; 
+    --min-ios-version)      min_ios_version=${2}; shift;; 
+
+    --min-macos-version=*)  min_macos_version=${1##--min-macos-version=};; 
+    --min-macos-version)    min_macos_version=${2}; shift ;;
+
+    --list-source-files)    list_source_files=1 ;;
+
     *) unknown_option $1 ;;
   esac
   shift
@@ -202,32 +257,26 @@ if [[ $with_python == 1 ]]; then
 
   install_python_toolchain
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=1"
+
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DPYTHON_EXECUTABLE:FILEPATH=${PWD}/deps/env/bin/python"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DPYTHON_INCLUDE_DIR=${PWD}/deps/env/include/python*/"
+
+
+  # Activate the virtual environment
+  export PYTHON_EXECUTABLE=${PWD}/deps/env/bin/python
+  export PATH=${PWD}/deps/env/bin:$PATH
 else
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_PYTHON=0"
 fi
 
-if [[ $with_extra_opt_flags == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_EXTRA_OPTIMIZATION_FLAGS=1"
-fi
+# Release Opt for size
+CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DRELEASE_OPT_FOR_SIZE=${release_opt_for_size}"
 
-if [[ $with_stack_display == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_STACK_DISPLAY=1"
-fi
+# Debug Opt for size
+CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DDEBUG_OPT_FOR_SIZE=${debug_opt_for_size}"
 
-if [[ ! -z "${llvm_path}" ]]; then
-  llvm_libraries=$("${llvm_path}/bin/llvm-config" --link-static --libs | tr ' ' ';')
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_LLVM_PATH=${llvm_path}"
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_LLVM_LIBRARIES='${llvm_libraries}'"
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_HAS_LLVM=1"
-fi
-
-if [[ $release_opt_for_size == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DRELEASE_OPT_FOR_SIZE=1"
-fi
-
-if [[ $debug_opt_for_size == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DDEBUG_OPT_FOR_SIZE=1"
-fi
+# Tell CMake whether we need to build the remote FS stuff.
+CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_LIST_SOURCE_FILES=${list_source_files}"
 
 # Check what is needed with the remote_fs stuff
 if [[ $with_capi == 1 ]]; then
@@ -235,28 +284,15 @@ if [[ $with_capi == 1 ]]; then
   if [[ $with_capi_framework == 1 ]]; then
     CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI_FRAMEWORK=1"
   fi
-  if [[ $with_ios == 1 ]]; then
-    CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DARCH=arm64 -DTC_BUILD_IOS=1"
-  fi
 else
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_CAPI=0"
 fi
 
 # Do we need to build the visualization toolkit?
-if [[ $with_visualization == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_VISUALIZATION_CLIENT=1"
-else
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_VISUALIZATION_CLIENT=0"
-fi
-
+CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_VISUALIZATION_CLIENT=${with_visualization}"
 
 # Tell CMake whether we need to build the remote FS stuff.
-if [[ $with_remotefs == 1 ]]; then
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_REMOTEFS=1"
-else 
-  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_REMOTEFS=0"
-fi
-
+CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_REMOTEFS=${with_remotefs}"
 
 ##################################################################3
 # setup compilers and includes
@@ -269,6 +305,28 @@ export INCLUDE_PATH=${PWD}/deps/local/include:$LD_LIBRARY_PATH
 echo "======================= BUILD CONFIGURATION ========================"
 echo "System Information: "
 uname -v
+
+build_platform="$(uname -s)"
+case "${build_platform}" in
+    Darwin*)    build_platform=macosx;;
+    Linux*)     build_platform=linux;;
+    *)          ;;  
+esac
+
+echo "Build platform identified as ${build_platform}."
+
+if [[ ! -z ${arch_list} ]] ; then 
+  arch_list="${arch_list##;}"
+  echo "Using architectures: ${arch_list}"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_ARCH='${arch_list}'"
+fi
+
+if [[ -z ${target} ]] ; then 
+  target=${build_platform}
+fi
+
+echo "Build targeting ${target}."
+
 
 echo "======================= FINDING COMPILERS ========================"
 
@@ -285,46 +343,106 @@ echo "======================= FINDING CMAKE ========================"
 # Set up the path to CMake
 CMAKE=`./scripts/find_cmake.sh`
 
-
 ########################################################
 # Prepare to build
 
 set -e
 set -o pipefail
 
-echo -e "\n\n\n======================= Release ========================" \
+case $builder in
+ xcode) 
+   CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -GXcode"
+   CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=1"
 
-if [ ! -d $RELEASE_DIR ]; then
-    mkdir $RELEASE_DIR
+   if [[ ! -z ${arch_list} ]] ; then 
+     CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_ARCHITECTURES='${arch_list}'"
+   fi
+
+   ;;
+ make) ;; 
+ ninja) CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -Gninja"
+   ;; 
+ *) echo "Unrecognized builder $builder; valid options are make, ninja, and xcode." ; exit 1 ;;
+esac
+
+if [[ ${enable_codesign} == 1 ]] ; then 
+
+  if [[ ! $builder == xcode ]] ; then 
+    echo "Code signing currently only supported with xcode builder."
+    exit 1
+  fi
+
+elif [[ ${builder} == xcode ]] ; then
+
+  # Deal with the code signing issues. 
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY= -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED=0 -DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM= "
+
+  # This also requires us to skip the code signing when trying to compile targets to check definitions.
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY"
+
+  echo "Skipping code signing."
 fi
-cd $RELEASE_DIR
-rm -f CMakeCache.txt
+
+#######################################################
+# Handle the case where the builder is not xcode but we still need to set the sdk root. 
+
+if [[ ${build_platform} == macosx ]] && [[ ${target} != macosx* ]] ; then 
+
+  if [[ ${builder} != xcode ]] ; then 
+    # Cross-platform builds on macosx must use the xcode builder. 
+    echo "ERROR: cross-compilation on OSX requires the xcode build train using --builder=xcode." 
+    exit 1
+  fi
+
+  # Turn on cross compilation
+
+  # Setting CMAKE_SYSTEM_NAME turns on cross-compilation (setting CMAKE_CROSSCOMPILING=1)
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DCMAKE_SYSTEM_NAME=Darwin"
+
+  # Target build architecture to be the first architecture given by the arch list.
+  config_arch="${arch_list%%;*}"
+  CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DCMAKE_SYSTEM_PROCESSOR=${config_arch}"
+  echo "Targeting build configuration to run on ${config_arch}."
+fi
+
+
+if [[ ${build_platform} == macosx ]] ; then 
+  SDKROOT=`xcrun --sdk ${target} --show-sdk-path || echo ""`
+  if [[ -z ${SDKROOT} ]] ; then 
+    echo "Cannot find valid SDK for target ${target}. (command xcrun --sdk ${target} --show-sdk-path)."
+  fi
+
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DTC_BASE_SDK=${target} -DCMAKE_OSX_SYSROOT=${SDKROOT}"
+
+  # Set up minimum versions
+  if [[ ${target} == iphoneos* ]] ; then 
+    CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${min_ios_version}"
+  elif [[ ${target} == macosx* ]] ; then 
+    CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${min_macos_version}"
+  else
+    echo "ERROR: Compiling for unsupported target ${target}."
+    exit 1
+  fi
+fi
+   
 build_cmd="$CMAKE \
     $GENERATOR \
-    -D CMAKE_BUILD_TYPE=Release \
     -D CMAKE_C_COMPILER=$CCCMD \
     -D CMAKE_CXX_COMPILER=$CXXCMD \
-    $CMAKE_CONFIG_FLAGS
-    ../."
-echo $build_cmd
-eval $build_cmd
-cd $TURI_HOME
+    ${CMAKE_CONFIG_FLAGS}"
 
-
-echo -e "\n\n\n======================= Debug =========================" \
-
-if [ ! -d $DEBUG_DIR ]; then
-    mkdir $DEBUG_DIR
+if [[ $with_debug == 1 ]] ; then 
+  set -x
+  mkdir -p ${DEBUG_DIR}
+  cd ${DEBUG_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Debug --config Debug -D CMAKE_CONFIGURATION_TYPES='Debug;Release' ${TURI_HOME}
+  set +x
 fi
-cd $DEBUG_DIR
-rm -f CMakeCache.txt
-build_cmd="$CMAKE \
-    $GENERATOR \
-    -D CMAKE_BUILD_TYPE=Debug \
-    -D CMAKE_C_COMPILER=$CCCMD \
-    -D CMAKE_CXX_COMPILER=$CXXCMD \
-    $CMAKE_CONFIG_FLAGS
-    ../."
-echo $build_cmd
-eval $build_cmd
-cd $TURI_HOME
+
+if [[ $with_release == 1 ]] ; then 
+  set -x
+  mkdir -p ${RELEASE_DIR}
+  cd ${RELEASE_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Release -D CMAKE_CONFIGURATION_TYPES='Release;Debug' --config Release ${TURI_HOME}
+  set +x
+fi
+
+

@@ -88,7 +88,7 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval(
     size_t lambda_id,
     const std::vector<flexible_type>& args,
     bool skip_undefined,
-    int seed) {
+    uint64_t seed) {
 
   evaluation_functions.set_random_seed(seed);
 
@@ -111,7 +111,7 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_rows(
     size_t lambda_id,
     const sframe_rows& rows,
     bool skip_undefined,
-    int seed) {
+    uint64_t seed) {
 
   evaluation_functions.set_random_seed(seed);
 
@@ -137,7 +137,7 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_dict(
     const std::vector<std::string>& keys,
     const std::vector<std::vector<flexible_type>>& values,
     bool skip_undefined,
-    int seed) {
+    uint64_t seed) {
 
   evaluation_functions.set_random_seed(seed);
 
@@ -161,7 +161,7 @@ std::vector<flexible_type> pylambda_evaluator::bulk_eval_dict_rows(
     const std::vector<std::string>& keys,
     const sframe_rows& rows,
     bool skip_undefined,
-    int seed) {
+    uint64_t seed) {
 
   evaluation_functions.set_random_seed(seed);
 

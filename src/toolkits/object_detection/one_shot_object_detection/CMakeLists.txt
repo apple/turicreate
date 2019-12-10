@@ -1,4 +1,4 @@
-project(unity_toolkits)
+project(Turi)
 
 make_library(unity_one_shot_object_detection OBJECT
   SOURCES

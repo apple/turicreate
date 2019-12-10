@@ -1,4 +1,4 @@
-project(util)
+project(Turi)
 
 make_library(util OBJECT
   SOURCES

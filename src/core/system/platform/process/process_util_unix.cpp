@@ -22,14 +22,14 @@ size_t get_my_pid() {
 void wait_for_parent_exit(size_t parent_pid) {
   while(1) {
     sleep(1);
-    if (parent_pid != 0 && kill(parent_pid, 0) == -1) {
+    if (parent_pid != 0 && kill(static_cast<pid_t>(parent_pid), 0) == -1) {
       break;
     }
   }
 }
 
 bool is_process_running(size_t pid) {
-  return (kill(pid, 0) == 0);
+  return (kill(static_cast<pid_t>(pid), 0) == 0);
 }
 
 boost::optional<std::string> getenv_str(const char* variable_name) {

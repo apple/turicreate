@@ -1,4 +1,4 @@
-project(unity)
+project(Turi)
 set(EXTENSIONS_LIST)
 macro(make_extension NAME)
   list(APPEND EXTENSIONS_LIST "${NAME}")

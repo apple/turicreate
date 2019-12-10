@@ -1,4 +1,4 @@
-project(fileio_test)
+project(Turi)
 
 make_executable(fs SOURCES fs REQUIRES unity_shared_for_testing)
 make_executable(general_fstream_test SOURCES general_fstream_test.cpp REQUIRES unity_shared_for_testing)

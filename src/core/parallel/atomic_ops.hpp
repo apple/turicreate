@@ -6,7 +6,7 @@
 #ifndef TURI_ATOMIC_OPS_HPP
 #define TURI_ATOMIC_OPS_HPP
 
-#include <stdint.h>
+#include <cstdint>
 
 
 namespace turi {
@@ -288,8 +288,9 @@ namespace turi {
    *     value += increment;
    *     return value;
    */
-  template<typename T>
-  T atomic_increment(T& value, int increment = 1) {
+  template<typename T, typename U = int> 
+  static inline T atomic_increment(T& value, const U& increment = 1,
+      typename std::enable_if<std::is_integral<T>::value && std::is_integral<U>::value>::type* = 0) {
     return __sync_fetch_and_add(&value, increment);
   }
 
@@ -302,8 +303,9 @@ namespace turi {
    *
    *   \overload
    */
-  template<typename T>
-  T atomic_increment(volatile T& value, int increment = 1) {
+  template<typename T, typename U = int>
+  static inline T atomic_increment(volatile T& value, const U& increment = 1,
+      typename std::enable_if<std::is_integral<T>::value && std::is_integral<U>::value>::type* = 0) {
     return __sync_fetch_and_add(&value, increment);
   }
 

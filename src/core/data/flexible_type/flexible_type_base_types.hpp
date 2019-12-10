@@ -13,6 +13,7 @@
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <core/data/flexible_type/ndarray.hpp>
 #include <core/data/image/image_type.hpp>
+#include <core/util/bitops.hpp>
 
 namespace turi {
 
@@ -145,7 +146,7 @@ struct flex_date_time {
   inline void set_posix_timestamp(int64_t ts) {
     uint64_t uposix_timestamp = ts;
     m_posix_timestamp_high = uposix_timestamp >> 32;
-    m_posix_timestamp_low = uposix_timestamp;
+    m_posix_timestamp_low = static_cast<uint32_t>(uposix_timestamp & bit_mask<uint64_t>(32));
   }
 
   /**

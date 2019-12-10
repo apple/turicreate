@@ -1,4 +1,4 @@
-project(vega_renderer_test)
+project(Turi)
 
 if(APPLE AND NOT TC_BUILD_IOS)
 
@@ -24,10 +24,17 @@ if(APPLE AND NOT TC_BUILD_IOS)
     target_compile_options(vega_renderer_test_utils PUBLIC "-fobjc-arc")
     add_dependencies(vega_renderer_test_utils vega_renderer)
 
-    set(source_deps
+if(NOT TC_DISABLE_OBJECT_BUILDS)
+    set(source_object_deps
         $<TARGET_OBJECTS:vega_renderer>
         $<TARGET_OBJECTS:vega_renderer_test_utils>
     )
+else()
+    set(source_deps
+        vega_renderer
+        vega_renderer_test_utils
+    )
+endif()
 
     set(target_deps
         vega_renderer
@@ -39,11 +46,11 @@ if(APPLE AND NOT TC_BUILD_IOS)
         ${JAVASCRIPT_CORE}
     )
 
-    make_boost_test(vega_js_unit_tests.cxx ${source_deps} REQUIRES ${target_deps})
-    make_boost_test(vega_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
-    make_boost_test(vega_lite_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
-    make_boost_test(turicreate_example_tests.cxx ${source_deps} REQUIRES ${target_deps})
-    make_boost_test(log_proxy_tests.cxx log_proxy_tests_impl.mm ${source_deps} REQUIRES ${target_deps})
+    make_boost_test(vega_js_unit_tests.cxx ${source_object_deps} REQUIRES ${target_deps} ${source_deps})
+    make_boost_test(vega_example_tests.cxx ${source_object_deps} REQUIRES ${target_deps} ${source_deps})
+    make_boost_test(vega_lite_example_tests.cxx ${source_object_deps} REQUIRES ${target_deps} ${source_deps})
+    make_boost_test(turicreate_example_tests.cxx ${source_object_deps} REQUIRES ${target_deps} ${source_deps})
+    make_boost_test(log_proxy_tests.cxx log_proxy_tests_impl.mm ${source_object_deps} REQUIRES ${target_deps} ${source_deps})
     target_compile_options(log_proxy_tests.cxxtest PUBLIC "-fobjc-arc")
 
     # loop through files in turicreate

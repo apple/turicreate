@@ -56,7 +56,7 @@ class logistic_regression_opt_interface: public
   size_t variables = 0;
   size_t n_threads;
 
-  std::map<int, float> class_weights = {{0,1.0}, {1, 1.0}};
+  std::map<size_t, float> class_weights = {{0,1.0}, {1, 1.0}};
 
   std::shared_ptr<l2_rescaling> scaler;        /** <Scale features */
   bool feature_rescaling = false;              /** Feature rescaling */

@@ -83,7 +83,7 @@ EXPORT void tc_datetime_set_time_zone_offset(
 
   CHECK_NOT_NULL(error, dt, "Datetime");
 
-  dt->value.set_time_zone_offset(4* n_tz_hour_offset + n_tz_15min_offsets);
+  dt->value.set_time_zone_offset(static_cast<int>(4* n_tz_hour_offset + n_tz_15min_offsets));
 
   ERROR_HANDLE_END(error);
 }
@@ -107,7 +107,7 @@ EXPORT void tc_datetime_set_microsecond(
 
   CHECK_NOT_NULL(error, dt, "Datetime");
 
-  dt->value.set_microsecond(microseconds);
+  dt->value.set_microsecond(static_cast<int>(microseconds));
 
   ERROR_HANDLE_END(error);
 }

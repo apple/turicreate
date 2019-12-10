@@ -7,13 +7,10 @@
 #ifndef TURI_CAPI_H
 #define TURI_CAPI_H
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-#ifdef __APPLE__
-#include <CoreGraphics/CoreGraphics.h>
-#endif // __APPLE__
 
 #include <stdint.h>
 #include <stddef.h>
@@ -896,8 +893,9 @@ tc_flexible_type* tc_plot_get_vega_spec(const tc_plot* plot,
 // computes the next batch of results, and returns a flex string of JSON data
 tc_flexible_type* tc_plot_get_next_data(const tc_plot* plot, const tc_parameters *params, tc_error** error);
 
-#ifdef __APPLE__
-#ifndef TC_BUILD_IOS
+#if defined(__APPLE__) && !defined(TC_BUILD_IOS)
+
+typedef struct CGContext* CGContextRef;
 
 // pre-computes the final plot and renders it into a CoreGraphics context
 void tc_plot_render_final_into_context(const tc_plot* plot,
@@ -920,8 +918,7 @@ void tc_plot_render_vega_spec_into_context(const char * vega_spec,
                                            const tc_parameters *params,
                                            tc_error** error);
 
-#endif // TC_BUILD_IOS
-#endif // __APPLE__
+#endif // __APPLE__ && TC_BUILD_IOS
 
 // Returns a URL to this plot on a localhost web server.
 // Note: on the first call to this function, spins up the web server.

@@ -284,7 +284,7 @@ class unity_sframe : public unity_sframe_base {
   std::shared_ptr<unity_sarray_base> transform(const std::string& lambda,
                                                flex_type_enum type,
                                                bool skip_undefined,
-                                               int seed) override;
+                                               uint64_t seed) override;
 
   /**
    * Returns a new sarray which is a transform of each row in the sframe
@@ -293,7 +293,7 @@ class unity_sframe : public unity_sframe_base {
   std::shared_ptr<unity_sarray_base> transform_native(const function_closure_info& lambda,
                                                       flex_type_enum type,
                                                       bool skip_undefined,
-                                                      int seed) override;
+                                                      uint64_t seed) override;
 
   /**
    * Returns a new sarray which is a transform of each row in the sframe
@@ -302,7 +302,7 @@ class unity_sframe : public unity_sframe_base {
   std::shared_ptr<unity_sarray_base> transform_lambda(
       std::function<flexible_type(const sframe_rows::row&)> lambda,
       flex_type_enum type,
-      int seed);
+      uint64_t seed);
 
   /**
    * Returns a new sarray which is a transform of each row in the sframe
@@ -312,7 +312,7 @@ class unity_sframe : public unity_sframe_base {
                                               std::vector<std::string> output_column_names,
                                               std::vector<flex_type_enum> output_column_types,
                                               bool skip_undefined,
-                                              int seed) override;
+                                              uint64_t seed) override;
 
   /**
    * Set the ith column name.
@@ -413,14 +413,14 @@ class unity_sframe : public unity_sframe_base {
    *
    * Returns a list of size 2 of the unity_sframes resulting from the split.
    */
-  std::list<std::shared_ptr<unity_sframe_base>> random_split(float percent, int random_seed, bool exact=false) override;
+  std::list<std::shared_ptr<unity_sframe_base>> random_split(float percent, uint64_t random_seed, bool exact=false) override;
 
   /**
    * Sample the rows of sframe uniformly with ratio = percent, and seed = random_seed.
    *
    * Returns unity_sframe* containing the sampled rows.
    */
-  std::shared_ptr<unity_sframe_base> sample(float percent, int random_seed, bool exact=false) override;
+  std::shared_ptr<unity_sframe_base> sample(float percent, uint64_t random_seed, bool exact=false) override;
 
   /**
    * materialize the sframe, this is different from save() as this is a temporary persist of

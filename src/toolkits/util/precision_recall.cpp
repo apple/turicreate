@@ -110,9 +110,9 @@ float average_precision(const std::unordered_set<flexible_type> &actual,
     seen_predictions.insert(predicted[k]);
   }
 
-  int num_observations = actual.size();
+  size_t num_observations = actual.size();
 
-  return (float) score / (float) std::min(num_observations, K);
+  return double(score) /  std::min<size_t>(num_observations, K);
 }
 
 float mean_average_precision(const std::vector<std::unordered_set<flexible_type>> &actual,

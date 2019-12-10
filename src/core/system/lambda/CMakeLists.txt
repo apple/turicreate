@@ -1,4 +1,4 @@
-project(lambda)
+project(Turi)
 
 make_library(python_callbacks OBJECT
   SOURCES

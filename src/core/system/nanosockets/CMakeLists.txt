@@ -1,4 +1,4 @@
-project(nanosockets)
+project(Turi)
 
 make_library(nanosockets OBJECT
   SOURCES

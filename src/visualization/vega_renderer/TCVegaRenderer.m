@@ -15,22 +15,22 @@
 #ifdef NDEBUG
 
 // release mode, use minified JS
-#include "vega-5.4.0.min.js.h"
+#include <visualization/vega_renderer/vega-5.4.0.min.js.h>
 #define vega_js vega_5_4_0_min_js
 #define vega_js_size vega_5_4_0_min_js_len
 
-#import "vega-lite-3.3.0.min.js.h"
+#import <visualization/vega_renderer/vega-lite-3.3.0.min.js.h>
 #define vegalite_js vega_lite_3_3_0_min_js
 #define vegalite_js_size vega_lite_3_3_0_min_js_len
 
 #else
 
 // debug mode, use unminified JS
-#import "vega-5.4.0.js.h"
+#import <visualization/vega_renderer/vega-5.4.0.js.h>
 #define vega_js vega_5_4_0_js
 #define vega_js_size vega_5_4_0_js_len
 
-#import "vega-lite-3.3.0.js.h"
+#import <visualization/vega_renderer/vega-lite-3.3.0.js.h>
 #define vegalite_js vega_lite_3_3_0_js
 #define vegalite_js_size vega_lite_3_3_0_js_len
 

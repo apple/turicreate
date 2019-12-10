@@ -18,7 +18,7 @@
 #import <CoreML/CoreML.h>
 #include <memory>
 
-#include <mlmodel/src/Format.hpp>
+#include <coremltools/mlmodel/src/Format.hpp>
 
 namespace turi {
 namespace image_deep_feature_extractor {
@@ -244,7 +244,7 @@ static MLModel *create_model(const std::string& download_path,
     checkNSError(error);
   }
 
-  return [result retain];  // Safe to retain now that no exceptions possible
+  return result;  // Safe to retain now that no exceptions possible
 
   }  // @autoreleasepool
 }
@@ -319,9 +319,6 @@ CVPixelBufferRef create_pixel_buffer_from_flex_image(const flex_image image) {
 
 struct mlmodel_image_feature_extractor::impl {
   API_AVAILABLE(macos(10.13),ios(11.0))
-  ~impl() {
-    [model release];
-  }
 
   std::string name;
   API_AVAILABLE(macos(10.13),ios(11.0)) MLModel *model = nil;
@@ -390,7 +387,7 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
 
     NSString* input_name = [NSString stringWithUTF8String: model_info.input_name.c_str()];
     NSError *error = nil;
-    MLDictionaryFeatureProvider *input = [[[MLDictionaryFeatureProvider alloc] initWithDictionary:@{input_name: image_feature} error:&error] autorelease];
+    MLDictionaryFeatureProvider *input = [[MLDictionaryFeatureProvider alloc] initWithDictionary:@{input_name: image_feature} error:&error];
     checkNSError(error);  // Can throw, must autorelease before here.
     return input;
   };
@@ -459,8 +456,6 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
       [options setUsesCPUOnly:use_only_cpu];
       NSError *error = nil;
       id<MLBatchProvider> features_batch = [m_impl->model predictionsFromBatch:image_batch options:options error:&error];
-      [options release];
-      [image_batch release];
       checkNSError(error);
 
       for (NSInteger i = 0; i < features_batch.count; ++i) {
@@ -479,7 +474,6 @@ mlmodel_image_feature_extractor::extract_features(gl_sarray data, bool verbose, 
         MLPredictionOptions* options = [[MLPredictionOptions alloc] init];
         [options setUsesCPUOnly:use_only_cpu];
         id<MLFeatureProvider> features = [m_impl->model predictionFromFeatures:inputs[i]  options:options error:&error];
-        [options release];
         checkNSError(error);
 
         // Just collect the outputs for now. Delay any copying until after we

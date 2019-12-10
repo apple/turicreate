@@ -1,4 +1,4 @@
-project(unity_test_toolkits)
+project(Turi)
 
 make_boost_test(test_transpose.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(test_itemitem_matrix.cxx REQUIRES unity_shared_for_testing)

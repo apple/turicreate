@@ -1,4 +1,4 @@
-project(unity)
+project(Turi)
 
 # We depend on the open source src/python/turicreate
 # to fill

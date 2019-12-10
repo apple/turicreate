@@ -1,4 +1,4 @@
-project(TuriCreate)
+project(Turi)
 
 # Fix the current source directory of the framework stuff so the macro below
 # references everything correctly.

@@ -138,7 +138,7 @@ flexible_type calc_avg_document_lengths(const gl_sarray& src){
  * For more information, see http://en.wikipedia.org/wiki/Okapi_BM25
  * and see src/python/turicreate/toolkits/feature_engineering/_bm25.py
  */
-double compute_bm25(const int term_frequency,
+double compute_bm25(const size_t term_frequency,
                     const size_t document_length,
                     const size_t num_documents,
                     const size_t document_frequency,
@@ -211,7 +211,7 @@ double bm25_apply(const flexible_type& input,
     case flex_type_enum::DICT: {
       const flex_dict& dv = processed_input.get<flex_dict>();
       size_t n_values = dv.size();
-      int term_frequency = 0;
+      flex_int term_frequency = 0;
 
       // Calculate Document Length
       size_t document_length = 0;

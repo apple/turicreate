@@ -127,7 +127,7 @@ static lambda_master* instance_ptr = nullptr;
   void lambda_master::bulk_eval(size_t lambda_hash,
                                 const std::vector<flexible_type>& args,
                                 std::vector<flexible_type>& out,
-                                bool skip_undefined, int seed) {
+                                bool skip_undefined, uint64_t seed) {
 
     auto worker = m_worker_pool->get_worker();
     auto worker_guard = m_worker_pool->get_worker_guard(worker);
@@ -205,7 +205,7 @@ static lambda_master* instance_ptr = nullptr;
                                   const sframe_rows& args,
                                   std::vector<flexible_type>& out,
                                   bool skip_undefined,
-                                  int seed) {
+                                  uint64_t seed) {
 
     auto worker = m_worker_pool->get_worker();
     auto worker_guard = m_worker_pool->get_worker_guard(worker);
@@ -246,7 +246,7 @@ static lambda_master* instance_ptr = nullptr;
                                 const std::vector<std::string>& keys,
                                 const std::vector<std::vector<flexible_type>>& values,
                                 std::vector<flexible_type>& out,
-                                bool skip_undefined, int seed) {
+                                bool skip_undefined, uint64_t seed) {
     auto worker = m_worker_pool->get_worker();
     auto worker_guard = m_worker_pool->get_worker_guard(worker);
     // catch and reinterpret comm failure
@@ -262,7 +262,7 @@ static lambda_master* instance_ptr = nullptr;
                                   const std::vector<std::string>& keys,
                                   const sframe_rows& rows,
                                   std::vector<flexible_type>& out,
-                                  bool skip_undefined, int seed) {
+                                  bool skip_undefined, uint64_t seed) {
     auto worker = m_worker_pool->get_worker();
     auto worker_guard = m_worker_pool->get_worker_guard(worker);
     // catch and reinterpret comm failure

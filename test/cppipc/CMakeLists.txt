@@ -1,4 +1,4 @@
-project(cppipc_test)
+project(Turi)
 
 # cppipc tests only a couple of these are testable
 make_executable(ping_client_test SOURCES ping_client_test.cpp REQUIRES unity_shared_for_testing)

@@ -1,4 +1,4 @@
-project(table_printer)
+project(Turi)
 
 make_library(table_printer OBJECT
   SOURCES

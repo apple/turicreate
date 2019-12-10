@@ -146,6 +146,7 @@ EXPORT void tc_plot_render_final_into_context(const tc_plot* plot,
                                               const tc_parameters *params,
                                               tc_error** error) {
   ERROR_HANDLE_START();
+
   turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, plot, "plot");
@@ -153,6 +154,7 @@ EXPORT void tc_plot_render_final_into_context(const tc_plot* plot,
   plot->value->materialize();
   bool result = plot->value->render(context, variation);
   ASSERT_TRUE(result);
+
   ERROR_HANDLE_END(error);
 }
 
@@ -162,6 +164,7 @@ EXPORT bool tc_plot_render_next_into_context(const tc_plot* plot,
                                              const tc_parameters *params,
                                              tc_error** error) {
   ERROR_HANDLE_START();
+
   turi::ensure_server_initialized();
 
   CHECK_NOT_NULL(error, plot, "plot", true);

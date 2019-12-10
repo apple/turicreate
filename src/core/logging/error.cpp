@@ -21,10 +21,6 @@ io_error::io_error(const std::string &message)
 #endif
 
 
-#ifdef COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS
-const char *io_error::what() const noexcept {
-#else
-const char *io_error::what() const {
-#endif
+const char *io_error::what() const COMPILER_MODIFIER_ON_EXCEPTION_WHAT {  
   return m_message.c_str();
 }

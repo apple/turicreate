@@ -141,7 +141,7 @@ private:
     // points as the one we track.  It's a small thing internally, but
     // important from a user experience perspective.
 
-    std::default_random_engine shuffle_g(hash64(iteration, block_idx));
+    std::default_random_engine shuffle_g(static_cast<uint32_t>(hash64(iteration, block_idx)));
 
     static constexpr size_t ITEM_COLUMN_INDEX = 1;
 

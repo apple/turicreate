@@ -197,7 +197,7 @@ class unity_sarray: public unity_sarray_base {
   std::shared_ptr<unity_sarray_base> transform(const std::string& lambda,
                                                flex_type_enum type,
                                                bool skip_undefined,
-                                               int seed);
+                                               uint64_t seed);
 
   /**
    * Returns a new sarray which is a transform of this using a registered
@@ -207,12 +207,12 @@ class unity_sarray: public unity_sarray_base {
       const function_closure_info& closure,
       flex_type_enum type,
       bool skip_undefined,
-      int seed);
+      uint64_t seed);
 
   std::shared_ptr<unity_sarray_base> transform_lambda(std::function<flexible_type(const flexible_type&)> lambda,
                                                       flex_type_enum type,
                                                       bool skip_undefined,
-                                                      int seed);
+                                                      uint64_t seed);
 
   /**
    * Append all rows from "other" sarray to "this" sarray and returns a new sarray
@@ -241,7 +241,7 @@ class unity_sarray: public unity_sarray_base {
    * new SArray.  If not, it isn't.  Throws an exception if the return type
    * of the lambda is not castable to a boolean value.
    */
-  std::shared_ptr<unity_sarray_base> filter(const std::string& lambda, bool skip_undefined, int seed);
+  std::shared_ptr<unity_sarray_base> filter(const std::string& lambda, bool skip_undefined, uint64_t seed);
 
 
   /**
@@ -525,7 +525,7 @@ class unity_sarray: public unity_sarray_base {
    * Returns a uniform random sample of the sarray, that contains percent of
    * the total elements, without replacement, using the random_seed.
    */
-  std::shared_ptr<unity_sarray_base> sample(float percent, int random_seed, bool exact=false);
+  std::shared_ptr<unity_sarray_base> sample(float percent, uint64_t random_seed, bool exact=false);
 
   /**
    * Returns an SArray of type flex_int that contains the hash of each element.
@@ -777,7 +777,7 @@ class unity_sarray: public unity_sarray_base {
     */
    static std::shared_ptr<unity_sarray_base> make_uniform_boolean_array(size_t size,
                                                                  float percent,
-                                                                 int random_seed,
+                                                                 uint64_t random_seed,
                                                                  bool exact=false);
 
    /**
@@ -787,7 +787,7 @@ class unity_sarray: public unity_sarray_base {
     */
    static std::shared_ptr<unity_sarray_base> make_exact_uniform_boolean_array(size_t size,
                                                                               size_t num_trues,
-                                                                              int random_seed);
+                                                                              uint64_t random_seed);
    std::shared_ptr<unity_sarray_base> builtin_rolling_apply(
        const std::string &fn_name,
        ssize_t before,

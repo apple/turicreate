@@ -1,5 +1,5 @@
 
-project(TuriExternalDependencies)
+project(Turi)
 
 
 add_library(sparsehash INTERFACE )

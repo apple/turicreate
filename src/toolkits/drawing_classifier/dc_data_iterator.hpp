@@ -163,9 +163,9 @@ class simple_data_iterator : public data_iterator {
       const flex_list& expected_class_labels);
 
   gl_sframe data_;
-  const int target_index_;
-  const int predictions_index_;
-  const int feature_index_;
+  const size_t target_index_;
+  const size_t predictions_index_;
+  const size_t feature_index_;
   const bool repeat_;
   const bool shuffle_;
   const float scale_factor_ = 1 / 255.0f;

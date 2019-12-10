@@ -70,7 +70,7 @@ pytest.xml
 pydocs/*
 
 ## docxgen under root dir
-doc/
+/doc/
 /doxygen.log
 
 # vim

@@ -1,4 +1,4 @@
-project(TuriExternalDependencies)
+project(Turi)
 
 #3rd party source 
 

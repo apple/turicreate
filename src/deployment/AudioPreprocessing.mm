@@ -159,7 +159,7 @@ static inline float hzToMel(float freq) {
     _sampleRate = sampleRate;
     _numMelBands = numMelBands;
     _numBins = numBins;
-    _filterBanks = calloc(_numMelBands, sizeof(float *));
+    _filterBanks = reinterpret_cast<float**>(calloc(_numMelBands, sizeof(float *)));
 
     NSAssert(_minFreq < _maxFreq, @"Min mel frequency must be less than max mel frequency.");
     NSAssert(_maxFreq != 0, @"Max frequency cannot be 0.");

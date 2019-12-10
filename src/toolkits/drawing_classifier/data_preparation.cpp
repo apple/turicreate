@@ -184,7 +184,7 @@ flex_list simplify_drawing(flex_list raw_drawing, int row_number) {
         const flex_list &stroke = raw_drawing[i].get<flex_list>();
         for (size_t j = 0; j < stroke.size(); j++) {
             const flex_dict &point = stroke[j].get<flex_dict>();
-            Point P(point, row_number, i, j);
+            Point P(point, row_number, static_cast<int>(i), static_cast<int>(j));
             float x = P.get_x();
             float y = P.get_y();
             min_x = std::min(x, min_x);
@@ -235,7 +235,7 @@ bool in_bounds(int x, int y, int dim) {
 }
 
 void paint_point(flex_nd_vec &bitmap, int x, int y, int pad) {
-    size_t dimension = bitmap.shape()[1];
+    int dimension = static_cast<int>(bitmap.shape()[1]);
     for (int dx = -pad; dx < pad; dx++) {
         for (int dy = -pad; dy < pad; dy++) {
             if (in_bounds(x+dx, y+dy, dimension)) {
@@ -281,7 +281,7 @@ flex_nd_vec paint_stroke(
 flex_image blur_bitmap(flex_nd_vec bitmap, int ksize) {
     std::vector<size_t> bitmap_shape = bitmap.shape();
     flex_nd_vec blurred_bitmap(bitmap_shape, 0.0);
-    int dimension = bitmap_shape[1];
+    int dimension = static_cast<int>(bitmap_shape[1]);
     int pad = ksize/2;
     for (int row = 0; row < dimension; row++) {
         for (int col = 0; col < dimension; col++) {

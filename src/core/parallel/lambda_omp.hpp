@@ -45,7 +45,7 @@ inline void in_parallel(const std::function<void (size_t thread_id,
 
     parallel_task_queue threads(thread_pool::get_instance());
 
-    for (size_t i = 0;i < nworkers; ++i) {
+    for (unsigned int i = 0;i < nworkers; ++i) {
       threads.launch([&fn, i, nworkers]() { fn(i, nworkers); }, i);
     }
     threads.join();

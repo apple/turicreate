@@ -216,7 +216,7 @@ static bool handleError(tc_error* error_ptr, NSError** error) {
     if (!self) return nil;
     tc_error *error_ptr = NULL;
     NSData *model_data = (NSData *)parameters[@"turi_create_model"];
-    _model = tc_model_load_from_data(model_data.bytes, model_data.length, &error_ptr);
+    _model = tc_model_load_from_data(reinterpret_cast<const char*>(model_data.bytes), model_data.length, &error_ptr);
     _modelDescription = modelDescription;
     if (handleError(error_ptr, error)) {
         return nil;

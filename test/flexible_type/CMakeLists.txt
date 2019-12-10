@@ -1,4 +1,4 @@
-project(flexible_type_test)
+project(Turi)
 
 make_boost_test(flexible_datatype.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(new_flexible_type_test.cxx REQUIRES unity_shared_for_testing)

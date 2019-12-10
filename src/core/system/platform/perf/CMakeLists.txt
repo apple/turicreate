@@ -1,4 +1,4 @@
-project(perf)
+project(Turi)
 
 make_library(perf OBJECT
   SOURCES

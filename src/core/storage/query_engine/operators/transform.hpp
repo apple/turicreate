@@ -46,7 +46,7 @@ class operator_impl<planner_node_type::TRANSFORM_NODE> : public query_operator {
 
   inline operator_impl(const transform_type& f,
                        flex_type_enum output_type,
-                       int random_seed=-1)
+                       size_t random_seed=size_t(-1))
       : m_transform_fn(f), m_output_type(output_type), m_random_seed(random_seed)
   { }
 
@@ -59,7 +59,7 @@ class operator_impl<planner_node_type::TRANSFORM_NODE> : public query_operator {
   }
   inline void execute(query_context& context) {
     CORO_BEGIN(execute)
-    if (m_random_seed != -1){
+    if (m_random_seed != size_t(-1)){
       random::get_source().seed(m_random_seed + thread::thread_id());
     }
     while(1) {
@@ -97,7 +97,7 @@ class operator_impl<planner_node_type::TRANSFORM_NODE> : public query_operator {
       std::shared_ptr<planner_node> source,
       transform_type fn,
       flex_type_enum output_type,
-      int random_seed=-1) {
+      size_t random_seed=size_t(-1)) {
     return planner_node::make_shared(planner_node_type::TRANSFORM_NODE,
                                      {{"output_type", (int)(output_type)},
                                       {"random_seed", random_seed}},
@@ -133,7 +133,7 @@ class operator_impl<planner_node_type::TRANSFORM_NODE> : public query_operator {
  private:
   transform_type m_transform_fn;
   flex_type_enum m_output_type;
-  int m_random_seed;
+  size_t m_random_seed;
 };
 
 typedef operator_impl<planner_node_type::TRANSFORM_NODE> op_transform;

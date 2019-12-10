@@ -83,14 +83,14 @@ static inline void variable_encode(OutArcType& oarc, uint64_t s) {
   else if ((s >> (24-3)) == 0) {
     // 0b00000000 00000000 00000000 -
     // 0b00011111 11111111 11111111
-    uint32_t trunc_s = s;
+    uint32_t trunc_s = static_cast<uint32_t>(s);
     trunc_s = (trunc_s << 3) | 3;
     oarc.write((char*)(&trunc_s), 3);
   }
   else if ((s >> (32-4)) == 0) {
     // 0b00000000 00000000 00000000 00000000 -
     // 0b00001111 11111111 11111111 11111111
-    uint32_t trunc_s = s;
+    uint32_t trunc_s = static_cast<uint32_t>(s);
     trunc_s = (trunc_s << 4) | 7;
     oarc.direct_assign(trunc_s);
   }

@@ -66,9 +66,9 @@ endmacro()
 
 MACRO(FIND_INT128_TYPES)
 
+  Check_Int128("__int128_t" INT128_DEF "HAVE__int128_t")
   Check_Int128("long long"  INT128_DEF "HAVEint128_as_long_long")
   Check_Int128("int128_t"   INT128_DEF "HAVEint128_t")
-  Check_Int128("__int128_t" INT128_DEF "HAVE__int128_t")
   Check_Int128("__int128"   INT128_DEF "HAVE__int128")
   Check_Int128("int128"     INT128_DEF "HAVEint128")
 
@@ -84,9 +84,9 @@ MACRO(FIND_INT128_TYPES)
     set(INT128_FLAGS "")
   endif()
 
+  Check_UInt128("__uint128_t"         UINT128_DEF "HAVE__uint128_t")
   Check_UInt128("unsigned long long"  UINT128_DEF "HAVEuint128_as_u_long_long")
   Check_UInt128("uint128_t"           UINT128_DEF "HAVEuint128_t")
-  Check_UInt128("__uint128_t"         UINT128_DEF "HAVE__uint128_t")
   Check_UInt128("__uint128"           UINT128_DEF "HAVE__uint128")
   Check_UInt128("uint128"             UINT128_DEF "HAVEuint128")
   Check_UInt128("unsigned __int128_t" UINT128_DEF "HAVEunsigned__int128_t")

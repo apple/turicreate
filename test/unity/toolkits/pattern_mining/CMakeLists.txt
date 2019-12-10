@@ -1,4 +1,4 @@
-project(unity_test_toolkits)
+project(Turi)
 
 make_boost_test (fp_node.cxx REQUIRES unity_shared_for_testing)
 make_boost_test (fp_tree.cxx REQUIRES unity_shared_for_testing)
