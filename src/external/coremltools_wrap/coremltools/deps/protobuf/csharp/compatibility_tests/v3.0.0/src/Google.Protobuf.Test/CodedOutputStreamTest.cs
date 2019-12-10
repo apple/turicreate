@@ -207,7 +207,7 @@ namespace Google.Protobuf
                 Assert.AreEqual(rawBytes, rawOutput.ToArray());
             }
         }
-
+        
         [Test]
         public void EncodeZigZag32()
         {

@@ -816,7 +816,7 @@ void GLMClassifier::clear_postevaluationtransform() {
   return static_cast< ::CoreML::Specification::GLMClassifier_PostEvaluationTransform >(postevaluationtransform_);
 }
 void GLMClassifier::set_postevaluationtransform(::CoreML::Specification::GLMClassifier_PostEvaluationTransform value) {
-
+  
   postevaluationtransform_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.GLMClassifier.postEvaluationTransform)
 }
@@ -830,7 +830,7 @@ void GLMClassifier::clear_classencoding() {
   return static_cast< ::CoreML::Specification::GLMClassifier_ClassEncoding >(classencoding_);
 }
 void GLMClassifier::set_classencoding(::CoreML::Specification::GLMClassifier_ClassEncoding value) {
-
+  
   classencoding_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.GLMClassifier.classEncoding)
 }

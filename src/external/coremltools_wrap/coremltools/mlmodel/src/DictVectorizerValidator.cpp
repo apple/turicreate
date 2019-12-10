@@ -21,19 +21,19 @@ namespace CoreML {
         if (!result.good()) {
             return result;
         }
-
+        
         // Validate the inputs
         result = validateDescriptionsContainFeatureWithTypes(interface.input(), 1, {Specification::FeatureType::kDictionaryType});
         if (!result.good()) {
             return result;
         }
-
+        
         // Validate the outputs
         result = validateDescriptionsContainFeatureWithTypes(interface.output(), 1, {Specification::FeatureType::kDictionaryType});
         if (!result.good()) {
             return result;
         }
-
+        
         // Validate the parameters
         switch (format.dictvectorizer().Map_case()) {
             case Specification::DictVectorizer::kInt64ToIndex:

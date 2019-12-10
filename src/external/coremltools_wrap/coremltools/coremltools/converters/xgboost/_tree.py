@@ -6,7 +6,15 @@
 from ._tree_ensemble import convert_tree_ensemble as _convert_tree_ensemble
 from ...models import MLModel as _MLModel
 
-def convert(model, feature_names = None, target = 'target', force_32bit_float = True):
+def convert(
+        model,
+        feature_names = None,
+        target = 'target',
+        force_32bit_float = True,
+        mode="regressor",
+        class_labels=None,
+        n_classes=None,
+    ):
     """
     Convert a trained XGBoost model to Core ML format.
 
@@ -32,6 +40,17 @@ def convert(model, feature_names = None, target = 'target', force_32bit_float = 
     force_32bit_float: bool
         If True, then the resulting CoreML model will use 32 bit floats internally.
 
+    mode: str in ['regressor', 'classifier']
+        Mode of the tree model.
+
+    class_labels: list[int] or None
+        List of classes. When set to None, the class labels are just the range from
+        0 to n_classes - 1.
+
+    n_classes: int or None
+        Number of classes in classification. When set to None, the number of
+        classes is expected from the model or class_labels should be provided.
+
     Returns
     -------
     model:MLModel
@@ -42,10 +61,18 @@ def convert(model, feature_names = None, target = 'target', force_32bit_float = 
     .. sourcecode:: python
 
 		# Convert it with default input and output names
-		>>> import coremltools
+   		>>> import coremltools
 		>>> coreml_model = coremltools.converters.xgboost.convert(model)
 
 		# Saving the Core ML model to a file.
 		>>> coremltools.save('my_model.mlmodel')
     """
-    return _MLModel(_convert_tree_ensemble(model, feature_names, target, force_32bit_float = force_32bit_float))
+    return _MLModel(_convert_tree_ensemble(
+        model,
+        feature_names,
+        target,
+        force_32bit_float = force_32bit_float,
+        mode=mode,
+        class_labels=class_labels,
+        n_classes=n_classes,
+    ))

@@ -17,7 +17,7 @@
 
 namespace CoreML {
 
-    // This is the type used internally in Espresso for float 16
+    // This is the type used internally
     typedef unsigned short float16;
 
     // insert_or_assign not available until C++17
@@ -55,8 +55,8 @@ namespace CoreML {
     }
 
     template <typename T>
-    static inline  Result loadSpecification(T& formatObj,
-                                            std::istream& in) {
+    static inline Result loadSpecification(T& formatObj,
+                                           std::istream& in) {
 
         google::protobuf::io::IstreamInputStream rawInput(&in);
         google::protobuf::io::CodedInputStream codedInput(&rawInput);
@@ -94,6 +94,7 @@ namespace CoreML {
     bool hasFlexibleShapes(const Specification::Model& model);
     bool hasIOS11_2Features(const Specification::Model& model);
     bool hasIOS12Features(const Specification::Model& model);
+    bool hasIOS13Features(const Specification::Model& model);
 
     typedef std::pair<std::string,std::string> StringPair;
     // Returns a vector of pairs of strings, one pair per custom layer instance
@@ -109,11 +110,17 @@ namespace CoreML {
     bool hasCustomModel(const Specification::Model& model);
     bool hasAppleWordTagger(const Specification::Model& model);
     bool hasAppleTextClassifier(const Specification::Model& model);
+    bool hasAppleGazetteer(const Specification::Model& model);
+    bool hasAppleWordEmbedding(const Specification::Model& model);
     bool hasAppleImageFeatureExtractor(const Specification::Model& model);
     bool hasCategoricalSequences(const Specification::Model& model);
     bool hasNonmaxSuppression(const Specification::Model& model);
     bool hasBayesianProbitRegressor(const Specification::Model& model);
+    bool hasItemSimilarityRecommender(const Specification::Model& model);
+    bool hasSoundAnalysisPreprocessing(const Specification::Model& model);
     bool hasIOS12NewNeuralNetworkLayers(const Specification::Model& model);
+    bool isIOS12NeuralNetworkLayer(const Specification::NeuralNetworkLayer& layer);
+    bool hasIOS13NeuralNetworkFeatures(const Specification::Model& model);
 
     bool hasModelOrSubModelProperty(const Specification::Model& model, const std::function<bool(const Specification::Model&)> &boolFunc);
 

@@ -18,7 +18,6 @@ from .utils import has_custom_layer as _has_custom_layer
 from .utils import macos_version as _macos_version
 from ..proto import Model_pb2 as _Model_pb2
 
-
 _MLMODEL_FULL_PRECISION = 'float32'
 _MLMODEL_HALF_PRECISION = 'float16'
 _MLMODEL_QUANTIZED = 'quantized_model'
@@ -37,12 +36,15 @@ _QUANTIZATION_MODE_LOOKUP_TABLE_KMEANS = '_lookup_table_quantization_kmeans'
 _QUANTIZATION_MODE_CUSTOM_LOOKUP_TABLE = '_lookup_table_quantization_custom'
 # Dequantization
 _QUANTIZATION_MODE_DEQUANTIZE = '_dequantize_network'  # used for testing
+# Symmetric linear quantization
+_QUANTIZATION_MODE_LINEAR_SYMMETRIC = '_linear_quantization_symmetric'
 
 _SUPPORTED_QUANTIZATION_MODES = [_QUANTIZATION_MODE_LINEAR_QUANTIZATION,
                                  _QUANTIZATION_MODE_LOOKUP_TABLE_LINEAR,
                                  _QUANTIZATION_MODE_LOOKUP_TABLE_KMEANS,
                                  _QUANTIZATION_MODE_CUSTOM_LOOKUP_TABLE,
-                                 _QUANTIZATION_MODE_DEQUANTIZE]
+                                 _QUANTIZATION_MODE_DEQUANTIZE,
+                                 _QUANTIZATION_MODE_LINEAR_SYMMETRIC]
 
 _LUT_BASED_QUANTIZATION = [_QUANTIZATION_MODE_LOOKUP_TABLE_LINEAR,
                            _QUANTIZATION_MODE_LOOKUP_TABLE_KMEANS,
@@ -82,34 +84,34 @@ class _FeatureDescription(object):
         for f in self._fd_spec:
             yield f.name
 
-def _get_proxy_from_spec(filename):
+
+def _get_proxy_and_spec(filename, use_cpu_only=False):
     try:
         from ..libcoremlpython import _MLModelProxy
-    except:
+    except Exception:
         _MLModelProxy = None
 
+    specification = _load_spec(filename)
+
     if _MLModelProxy:
+
         # check if the version is supported
-        engineVersion = _MLModelProxy.maximum_supported_specification_version()
-        spec = _load_spec(filename)
-        if spec.specificationVersion > engineVersion:
-            # in this case the specification is a newer kind of .mlmodel than this version of the engine can support
-            # so we'll not try to have a proxy object
-            return None
-        # check if there are custom layers
-        if _has_custom_layer(spec):
-            # custom layers can't be supported directly by compiling and loading the model here
-            return None
+        engine_version = _MLModelProxy.maximum_supported_specification_version()
+        if specification.specificationVersion > engine_version:
+            # in this case the specification is a newer kind of .mlmodel than this
+            # version of the engine can support so we'll not try to have a proxy object
+            return None, specification
+
         try:
-            return _MLModelProxy(filename)
+            return _MLModelProxy(filename, use_cpu_only), specification
         except RuntimeError as e:
             warnings.warn(
                 "You will not be able to run predict() on this Core ML model." +
-                "Underlying exception message was: " + str(e),
+                " Underlying exception message was: " + str(e),
                 RuntimeWarning)
-            return None
-    else:
-        return None
+            return None, specification
+
+    return None, specification
 
 
 class NeuralNetworkShaper(object):
@@ -127,7 +129,7 @@ class NeuralNetworkShaper(object):
             path = model
         elif isinstance(model, _Model_pb2.Model):
             self._spec = model
-            filename = _tempfile.mktemp(suffix = '.mlmodel')
+            filename = _tempfile.mktemp(suffix='.mlmodel')
             _save_spec(model, filename)
             path = filename
         else:
@@ -191,29 +193,30 @@ class MLModel(object):
     --------
     predict
     """
-    def __init__(self, model):
+
+    def __init__(self, model, useCPUOnly=False):
         """
         Construct an MLModel from a .mlmodel
 
         Parameters
         ----------
-        model: str | Model_pb2
+        model: str or Model_pb2
             If a string is given it should be the location of the .mlmodel to load.
+
+        useCPUOnly: bool
+            Set to true to restrict loading of model on CPU Only. Defaults to False.
 
         Examples
         --------
         >>> loaded_model = MLModel('my_model_file.mlmodel')
         """
-        from .utils import load_spec as _load_spec
 
         if isinstance(model, str):
-            self._spec = _load_spec(model)
-            self.__proxy__ = _get_proxy_from_spec(model)
+            self.__proxy__, self._spec = _get_proxy_and_spec(model, useCPUOnly)
         elif isinstance(model, _Model_pb2.Model):
-            self._spec = model
-            filename = _tempfile.mktemp(suffix = '.mlmodel')
+            filename = _tempfile.mktemp(suffix='.mlmodel')
             _save_spec(model, filename)
-            self.__proxy__ = _get_proxy_from_spec(filename)
+            self.__proxy__, self._spec = _get_proxy_and_spec(filename, useCPUOnly)
         else:
             raise TypeError("Expected model to be a .mlmodel file or a Model_pb2 object")
 
@@ -268,7 +271,7 @@ class MLModel(object):
 
         Parameters
         ----------
-        location : str
+        filename: str
             Target filename for the model.
 
         See Also
@@ -304,16 +307,16 @@ class MLModel(object):
 
         Parameters
         ----------
-        data : dict[str, value]
+        data: dict[str, value]
             Dictionary of data to make predictions from where the keys are
             the names of the input features.
 
-        useCPUOnly : bool
+        useCPUOnly: bool
             Set to true to restrict computation to use only the CPU. Defaults to False.
 
         Returns
         -------
-        out : dict[str, value]
+        out: dict[str, value]
             Predictions as a dictionary where each key is the output feature
             name.
 
@@ -324,14 +327,18 @@ class MLModel(object):
         """
 
         if self.__proxy__:
-            return self.__proxy__.predict(data,useCPUOnly)
+            return self.__proxy__.predict(data, useCPUOnly)
         else:
             if _macos_version() < (10, 13):
                 raise Exception('Model prediction is only supported on macOS version 10.13 or later.')
 
             try:
                 from ..libcoremlpython import _MLModelProxy
+            except Exception as e:
+                print("exception loading model proxy: %s\n" % e)
+                _MLModelProxy = None
             except:
+                print("exception while loading model proxy.\n")
                 _MLModelProxy = None
 
             if not _MLModelProxy:
@@ -348,28 +355,28 @@ class MLModel(object):
 
     def visualize_spec(self, port=None, input_shape_dict=None):
         """
-            Visualize the model.
+        Visualize the model.
 
-            Parameters
-            ----------
-            port : int
-                if server is to be hosted on specific localhost port
+        Parameters
+        ----------
+        port: int
+            if server is to be hosted on specific localhost port
 
-            input_shape_dict : dict
-                The shapes are calculated assuming the batch and sequence
-                are 1 i.e. (1, 1, C, H, W). If either is not 1, then provide
-                full input shape
+        input_shape_dict: dict
+            The shapes are calculated assuming the batch and sequence
+            are 1 i.e. (1, 1, C, H, W). If either is not 1, then provide
+            full input shape
 
-            Returns
-            -------
+        Returns
+        -------
 
-            None
+        None
 
-            Examples
-            --------
-            >>> model = coreml.models.MLModel('HousePricer.mlmodel')
-            >>> model.visualize_spec()
-            """
+        Examples
+        --------
+        >>> model = coreml.models.MLModel('HousePricer.mlmodel')
+        >>> model.visualize_spec()
+        """
 
         spec = self._spec
         model_type = spec.WhichOneof('Type')
@@ -467,7 +474,6 @@ class MLModel(object):
             print("Model is not of type Pipeline or Neural Network "
                   "and cannot be visualized")
             return
-
 
         import coremltools
         web_dir = _os.path.join(_os.path.dirname(coremltools.__file__),

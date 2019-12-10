@@ -140,3 +140,4 @@ class MethodOptions extends \Google\Protobuf\Internal\Message
     }
 
 }
+

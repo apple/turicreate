@@ -16,17 +16,17 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeBias(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     int layerIdWeights = CoreMLConverter::getLayerIndex(caffeLayer,layerParameters.mapCaffeLayerNamesToIndex);
     const caffe::LayerParameter& caffeLayerWeights = layerParameters.protoweights.layer(layerIdWeights);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+   
     const caffe::BiasParameter& caffeLayerParams =  caffeLayer.bias_param();
-
+    
     #pragma unused(caffeLayerWeights)
-
+    
     /* CoreML Bias layer does not support all the functionality of Caffe Bias layer.
      Certain error modes can only be detected at compile time when we have input shapes available.
      Such errors cannot be detected at conversion time.
@@ -38,28 +38,28 @@ void CoreMLConverter::convertCaffeBias(CoreMLConverter::ConvertLayerParameters l
         Please refer to the CoreML documentation to see what is supported.
          */
     }
-
+    
     /*
      Caffe can have bias as either an additional input or as a learned parameter. If former, there will be 2 bottoms,
      otherwise 1.
      if bottom_size == 1 => add an CoreML "bias" layer
-     if bottom_size == 2 => add an MLkit "add" layer.
+     if bottom_size == 2 => add an MLkit "add" layer.     
      */
-
+    
     if (! (caffeLayer.bottom_size() == 1 || caffeLayer.bottom_size() == 2)){
         CoreMLConverter::errorInCaffeProto("Must have 1 or 2 input(s)",caffeLayer.name(),caffeLayer.type());
     }
     if (caffeLayer.top_size() != 1) {
         CoreMLConverter::errorInCaffeProto("Must have 1 output",caffeLayer.name(),caffeLayer.type());
     }
-
+    
     auto* nnWrite = layerParameters.nnWrite;
     std::vector<std::string> bottom;
     std::vector<std::string> top;
     top.push_back(caffeLayer.top(0));
-
+    
     int nBottom = caffeLayer.bottom_size();
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (nBottom == 1){
         if (caffeLayerWeights.blobs_size() != 1){
@@ -88,16 +88,16 @@ void CoreMLConverter::convertCaffeBias(CoreMLConverter::ConvertLayerParameters l
         }
     }
     //***************************************************************
-
+    
     /*
      Get params related to bias when it is a learned parameter
      */
     std::vector<int64_t> biasShape;
     int biasSize = 1;
     if (nBottom == 1) {
-
+        
         int dimSize = caffeLayerWeights.blobs(0).shape().dim_size();
-
+        
         if (dimSize == 0){
             biasSize = 1;
         } else if (dimSize == 1){
@@ -127,18 +127,18 @@ void CoreMLConverter::convertCaffeBias(CoreMLConverter::ConvertLayerParameters l
             CoreMLConverter::errorInCaffeProto("Bias blob's size inconsistent with the blob dimensions",caffeLayer.name(),caffeLayer.type());
         }
     }
-
+    
     /*
      Add appropriate CoreML layer(s) now
      */
-
+    
     if (nBottom == 1){
         Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
         bottom.push_back(caffeLayer.bottom(0));
         CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
                                              bottom, top,
                                              nnWrite, mappingDataBlobNames);
-
+        
         Specification::BiasLayerParams* specLayerParams = specLayer->mutable_bias();
         for (const auto& dim: biasShape){
             assert(dim >= 0);
@@ -157,3 +157,7 @@ void CoreMLConverter::convertCaffeBias(CoreMLConverter::ConvertLayerParameters l
         (void) specLayer->mutable_add();
     }
 }
+
+
+
+

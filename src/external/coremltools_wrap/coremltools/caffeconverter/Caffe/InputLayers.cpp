@@ -16,20 +16,20 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeInputLayers(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::vector<int64_t> >& mapBlobNameToDimensions = layerParameters.mapBlobNameToDimensions;
     std::set<std::string>& caffeNetworkInputNames = layerParameters.caffeNetworkInputNames;
-
+    
     /*
      Mapping from Caffe Input Layer dimensions to CoreML Specification input dimensions:
      1-D (C) ----> (C)
      2-D : (Batch/Seq,C) ----> (C) [last dimension retained]
      >=3-D (...,C,H,W) ----> (C,H,W) [last 3 dimensions retained]
      */
-
+    
     if (caffeLayer.type() == "Input"){
         if (caffeLayer.input_param().shape_size() == 0) {
             std::stringstream ss;
@@ -55,8 +55,8 @@ void CoreMLConverter::convertCaffeInputLayers(CoreMLConverter::ConvertLayerParam
             std::cout<<"Ignoring batch size and retaining only the trailing 3 dimensions for conversion. " << std::endl;
             dims.erase(dims.begin(),dims.end()-3);
         }
-
-
+        
+        
         if (caffeLayer.top_size() == 0) {
             CoreMLConverter::errorInCaffeProto("Caffe layer does not have a top blob ",caffeLayer.name(),caffeLayer.type());
         }

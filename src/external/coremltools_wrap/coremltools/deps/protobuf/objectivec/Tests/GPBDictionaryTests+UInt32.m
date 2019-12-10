@@ -3644,3 +3644,4 @@ static BOOL TestingEnum_IsValidValue(int32_t value) {
 @end
 
 //%PDDM-EXPAND-END TEST_FOR_POD_KEY(UInt32, uint32_t, 1U, 2U, 3U, 4U)
+

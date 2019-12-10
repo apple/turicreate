@@ -16,12 +16,12 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeCrop(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -36,13 +36,13 @@ void CoreMLConverter::convertCaffeCrop(CoreMLConverter::ConvertLayerParameters l
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::CropParameter& caffeLayerParams = caffeLayer.crop_param();
-
-
+    
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerParams.axis() != 2){
         CoreMLConverter::unsupportedCaffeParrameterWithOption("axis",caffeLayer.name(),caffeLayer.type(),std::to_string(caffeLayerParams.axis()));
@@ -51,7 +51,7 @@ void CoreMLConverter::convertCaffeCrop(CoreMLConverter::ConvertLayerParameters l
         CoreMLConverter::unsupportedCaffeParrameterWithOption("offset size",caffeLayer.name(),caffeLayer.type(),std::to_string(caffeLayerParams.offset_size()));
     }
     //***************************************************************
-
+    
     Specification::CropLayerParams* specLayerParams = specLayer->mutable_crop();
     specLayerParams->add_offset(static_cast<uint64_t>(caffeLayerParams.offset(0)));
     if (caffeLayerParams.offset_size() == 2){
@@ -59,5 +59,12 @@ void CoreMLConverter::convertCaffeCrop(CoreMLConverter::ConvertLayerParameters l
     } else {
         specLayerParams->add_offset(static_cast<uint64_t>(caffeLayerParams.offset(0)));
     }
-
+    
 }
+
+
+
+
+
+
+

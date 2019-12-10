@@ -756,7 +756,7 @@ public class ByteStringTest extends TestCase {
     assertEquals((byte) 2, result[dataSize - dataSize / 2]);
     assertEquals((byte) 2, result[dataSize - 1]);
   }
-
+  
   /**
    * Tests ByteString uses Arrays based byte copier when running under Hotstop VM.
    */

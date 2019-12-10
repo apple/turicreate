@@ -39,7 +39,7 @@ def convert(model, input_features, output_features):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     # Set the interface params.
     spec = _Model_pb2.Model()
     spec.specificationVersion = SPECIFICATION_VERSION
@@ -53,14 +53,14 @@ def convert(model, input_features, output_features):
     # Test the scikit-learn model
     _sklearn_util.check_expected_type(model, Imputer)
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'statistics_'))
-
+    
     if model.axis != 0:
         raise ValueError("Imputation is only supported along axis = 0.")
 
 
     # The imputer in our framework only works on single columns, so
-    # we need to translate that over.  The easiest way to do that is to
-    # put it in a nested pipeline with a feature extractor and a
+    # we need to translate that over.  The easiest way to do that is to 
+    # put it in a nested pipeline with a feature extractor and a 
 
     tr_spec = spec.imputer
 
@@ -88,6 +88,8 @@ def update_dimension(model, input_dimension):
 def get_input_dimension(model):
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'statistics_'))
     return len(model.statistics_)
+
+

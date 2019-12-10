@@ -31,17 +31,17 @@ int testOneHotEncoderBasic() {
     Result r;
     ML_ASSERT_GOOD(r = ohe.addInput("Double", FeatureType::Double()));
     ML_ASSERT_EQ(r.type(), ResultType::FEATURE_TYPE_INVARIANT_VIOLATION);
-
+    
     r = ohe.addInput("Image", FeatureType::Image());
     ML_ASSERT_EQ(r.type(), ResultType::FEATURE_TYPE_INVARIANT_VIOLATION);
-
+    
     r = ohe.addInput("Array", FeatureType::Array({2,3}));
     ML_ASSERT_EQ(r.type(), ResultType::FEATURE_TYPE_INVARIANT_VIOLATION);
-
+                     
     r = ohe.addInput("Dictionary", FeatureType::Dictionary(MLTypeInt64));
     ML_ASSERT_EQ(r.type(), ResultType::FEATURE_TYPE_INVARIANT_VIOLATION);
     */
-
+    
     /* Asserts that the TYPE provided is generally allowed as a feature type by a
      new one hot encoder, but has a type mismatch if that one hot encoder is added
      to the existing model asset "a". */

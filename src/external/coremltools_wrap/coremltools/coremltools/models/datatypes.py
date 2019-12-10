@@ -106,7 +106,7 @@ class Dictionary(_DatatypeBase):
         global _simple_type_remap
         if key_type in _simple_type_remap:
             key_type = _simple_type_remap[key_type]
-
+            
         if not isinstance(key_type, (Int64, String)):
             raise TypeError("Key type for dictionary must be either string or integer.")
 
@@ -131,19 +131,19 @@ def _is_valid_datatype(datatype_instance):
     """
     Returns true if datatype_instance is a valid datatype object and false otherwise.
     """
-
+    
     # Remap so we can still use the python types for the simple cases
     global _simple_type_remap
     if datatype_instance in _simple_type_remap:
         return True
-
+    
     # Now set the protobuf from this interface.
     if isinstance(datatype_instance, (Int64, Double, String, Array)):
         return True
 
     elif isinstance(datatype_instance, Dictionary):
         kt = datatype_instance.key_type
-
+        
         if isinstance(kt, (Int64, String)):
             return True
 
@@ -151,8 +151,8 @@ def _is_valid_datatype(datatype_instance):
 
 def _normalize_datatype(datatype_instance):
     """
-    Translates a user specified datatype to an instance of the ones defined above.
-
+    Translates a user specified datatype to an instance of the ones defined above. 
+    
     Valid data types are passed through, and the following type specifications
     are translated to the proper instances:
 
@@ -160,19 +160,19 @@ def _normalize_datatype(datatype_instance):
     int, "Int64" -> Int64()
     float, "Double" -> Double()
 
-    If a data type is not recognized, then an error is raised.
+    If a data type is not recognized, then an error is raised. 
     """
     global _simple_type_remap
     if datatype_instance in _simple_type_remap:
         return _simple_type_remap[datatype_instance]
-
+    
     # Now set the protobuf from this interface.
     if isinstance(datatype_instance, (Int64, Double, String, Array)):
         return datatype_instance
 
     elif isinstance(datatype_instance, Dictionary):
         kt = datatype_instance.key_type
-
+        
         if isinstance(kt, (Int64, String)):
             return datatype_instance
 
@@ -208,7 +208,7 @@ def _set_datatype(proto_type_obj, datatype_instance):
         proto_type_obj.dictionaryType.MergeFromString(b'')
 
         kt = datatype_instance.key_type
-
+        
         if isinstance(kt, Int64):
             proto_type_obj.dictionaryType.int64KeyType.MergeFromString(b'')
         elif isinstance(kt, String):
@@ -220,3 +220,4 @@ def _set_datatype(proto_type_obj, datatype_instance):
         raise TypeError("Datatype parameter not recognized; must be an instance "
                         "of datatypes.{Double, Int64, String, Dictionary, Array}, or "
                         "python int, float, or str types.")
+

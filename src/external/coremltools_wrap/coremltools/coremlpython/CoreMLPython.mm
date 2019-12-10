@@ -3,7 +3,7 @@
 #import "CoreMLPython.h"
 #import "CoreMLPythonUtils.h"
 #import "Globals.hpp"
-#import "NeuralNetworkShapes.hpp"
+#import "NeuralNetwork/NeuralNetworkShapes.hpp"
 #import "Utils.hpp"
 
 #pragma clang diagnostic push
@@ -25,7 +25,7 @@ Model::~Model() {
     }
 }
 
-Model::Model(const std::string& urlStr) {
+Model::Model(const std::string& urlStr, bool useCPUOnly) {
     @autoreleasepool {
 
         // Compile the model
@@ -54,7 +54,15 @@ Model::Model(const std::string& urlStr) {
             throw std::runtime_error(errmsg.str());
         }
 
-        m_model = [MLModel modelWithContentsOfURL:compiledUrl error:&error];
+        if (@available(macOS 10.14, *)) {
+            MLModelConfiguration *configuration = [MLModelConfiguration new];
+            if (useCPUOnly){
+                configuration.computeUnits = MLComputeUnitsCPUOnly;
+            }
+            m_model = [MLModel modelWithContentsOfURL:compiledUrl configuration:configuration error:&error];
+        } else {
+            m_model = [MLModel modelWithContentsOfURL:compiledUrl error:&error];
+        }
         Utils::handleError(error);
     }
 }
@@ -74,8 +82,23 @@ py::dict Model::predict(const py::dict& input, bool useCPUOnly) {
     }
 }
 
+py::bytes Model::autoSetSpecificationVersion(const py::bytes& modelBytes) {
+
+    CoreML::Specification::Model model;
+    std::istringstream modelIn(static_cast<std::string>(modelBytes), std::ios::binary);
+    CoreML::loadSpecification<Specification::Model>(model, modelIn);
+    model.set_specificationversion(CoreML::MLMODEL_SPECIFICATION_VERSION_NEWEST);
+    // always try to downgrade the specification version to the
+    // minimal version that supports everything in this mlmodel
+    CoreML::downgradeSpecificationVersion(&model);
+    std::ostringstream modelOut;
+    saveSpecification(model, modelOut);
+    return static_cast<py::bytes>(modelOut.str());
+
+}
+
 int32_t Model::maximumSupportedSpecificationVersion() {
-    return CoreML::MLMODEL_SPECIFICATION_VERSION;
+    return CoreML::MLMODEL_SPECIFICATION_VERSION_NEWEST;
 }
 
 NeuralNetworkShapeInformation::NeuralNetworkShapeInformation(const std::string& filename) {
@@ -109,8 +132,9 @@ PYBIND11_PLUGIN(libcoremlpython) {
     py::module m("libcoremlpython", "CoreML.Framework Python bindings");
 
     py::class_<Model>(m, "_MLModelProxy")
-        .def(py::init<const std::string&>())
+        .def(py::init<const std::string&, bool>())
         .def("predict", &Model::predict)
+        .def_static("auto_set_specification_version", &Model::autoSetSpecificationVersion)
         .def_static("maximum_supported_specification_version", &Model::maximumSupportedSpecificationVersion);
 
     py::class_<NeuralNetworkShapeInformation>(m, "_NeuralNetworkShaperProxy")

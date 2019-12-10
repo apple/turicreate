@@ -51,12 +51,18 @@ extern DictionaryFeatureTypeDefaultTypeInternal _DictionaryFeatureType_default_i
 class DoubleFeatureType;
 class DoubleFeatureTypeDefaultTypeInternal;
 extern DoubleFeatureTypeDefaultTypeInternal _DoubleFeatureType_default_instance_;
+class DoubleRange;
+class DoubleRangeDefaultTypeInternal;
+extern DoubleRangeDefaultTypeInternal _DoubleRange_default_instance_;
 class DoubleVector;
 class DoubleVectorDefaultTypeInternal;
 extern DoubleVectorDefaultTypeInternal _DoubleVector_default_instance_;
 class FeatureType;
 class FeatureTypeDefaultTypeInternal;
 extern FeatureTypeDefaultTypeInternal _FeatureType_default_instance_;
+class FloatVector;
+class FloatVectorDefaultTypeInternal;
+extern FloatVectorDefaultTypeInternal _FloatVector_default_instance_;
 class GLMClassifier;
 class GLMClassifierDefaultTypeInternal;
 extern GLMClassifierDefaultTypeInternal _GLMClassifier_default_instance_;
@@ -78,6 +84,12 @@ extern ImageFeatureType_ImageSizeRangeDefaultTypeInternal _ImageFeatureType_Imag
 class Int64FeatureType;
 class Int64FeatureTypeDefaultTypeInternal;
 extern Int64FeatureTypeDefaultTypeInternal _Int64FeatureType_default_instance_;
+class Int64Range;
+class Int64RangeDefaultTypeInternal;
+extern Int64RangeDefaultTypeInternal _Int64Range_default_instance_;
+class Int64Set;
+class Int64SetDefaultTypeInternal;
+extern Int64SetDefaultTypeInternal _Int64Set_default_instance_;
 class Int64ToDoubleMap;
 class Int64ToDoubleMapDefaultTypeInternal;
 extern Int64ToDoubleMapDefaultTypeInternal _Int64ToDoubleMap_default_instance_;
@@ -537,7 +549,7 @@ inline ::CoreML::Specification::GLMClassifier_PostEvaluationTransform GLMClassif
   return static_cast< ::CoreML::Specification::GLMClassifier_PostEvaluationTransform >(postevaluationtransform_);
 }
 inline void GLMClassifier::set_postevaluationtransform(::CoreML::Specification::GLMClassifier_PostEvaluationTransform value) {
-
+  
   postevaluationtransform_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.GLMClassifier.postEvaluationTransform)
 }
@@ -551,7 +563,7 @@ inline ::CoreML::Specification::GLMClassifier_ClassEncoding GLMClassifier::class
   return static_cast< ::CoreML::Specification::GLMClassifier_ClassEncoding >(classencoding_);
 }
 inline void GLMClassifier::set_classencoding(::CoreML::Specification::GLMClassifier_ClassEncoding value) {
-
+  
   classencoding_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.GLMClassifier.classEncoding)
 }

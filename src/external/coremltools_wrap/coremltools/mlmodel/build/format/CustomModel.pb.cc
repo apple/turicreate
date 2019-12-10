@@ -1170,13 +1170,13 @@ const ::std::string& CustomModel::classname() const {
   return classname_.GetNoArena();
 }
 void CustomModel::set_classname(const ::std::string& value) {
-
+  
   classname_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CustomModel.className)
 }
 #if LANG_CXX11
 void CustomModel::set_classname(::std::string&& value) {
-
+  
   classname_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CustomModel.className)
@@ -1184,31 +1184,31 @@ void CustomModel::set_classname(::std::string&& value) {
 #endif
 void CustomModel::set_classname(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   classname_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CustomModel.className)
 }
 void CustomModel::set_classname(const char* value, size_t size) {
-
+  
   classname_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CustomModel.className)
 }
 ::std::string* CustomModel::mutable_classname() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CustomModel.className)
   return classname_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* CustomModel::release_classname() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CustomModel.className)
-
+  
   return classname_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void CustomModel::set_allocated_classname(::std::string* classname) {
   if (classname != NULL) {
-
+    
   } else {
-
+    
   }
   classname_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), classname);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CustomModel.className)
@@ -1241,13 +1241,13 @@ const ::std::string& CustomModel::description() const {
   return description_.GetNoArena();
 }
 void CustomModel::set_description(const ::std::string& value) {
-
+  
   description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CustomModel.description)
 }
 #if LANG_CXX11
 void CustomModel::set_description(::std::string&& value) {
-
+  
   description_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CustomModel.description)
@@ -1255,31 +1255,31 @@ void CustomModel::set_description(::std::string&& value) {
 #endif
 void CustomModel::set_description(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CustomModel.description)
 }
 void CustomModel::set_description(const char* value, size_t size) {
-
+  
   description_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CustomModel.description)
 }
 ::std::string* CustomModel::mutable_description() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CustomModel.description)
   return description_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* CustomModel::release_description() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CustomModel.description)
-
+  
   return description_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void CustomModel::set_allocated_description(::std::string* description) {
   if (description != NULL) {
-
+    
   } else {
-
+    
   }
   description_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), description);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CustomModel.description)

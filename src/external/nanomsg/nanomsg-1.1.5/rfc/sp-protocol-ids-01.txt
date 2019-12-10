@@ -1,0 +1,171 @@
+
+
+
+
+Internet Engineering Task Force                          M. Sustrik, Ed.
+Internet-Draft
+Intended status: Informational                              June 5, 2014
+Expires: December 7, 2014
+
+
+                        List of SP protocol IDs
+                           sp-protocol-ids-01
+
+Abstract
+
+   This document is intended to be a central repository of SP protocol
+   IDs.  The intention is to pass the task to IANA later on.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on December 7, 2014.
+
+Copyright Notice
+
+   Copyright (c) 2014 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+
+
+Sustrik                 Expires December 7, 2014                [Page 1]
+
+Internet-Draft           List of SP protocol IDs               June 2014
+
+
+1.  Introduction
+
+   Different mappings for scalability protocols (see, for example
+   SPoverTCP [SPoverTCP]) define a protocol header which in turn
+   contains SP endpoint type ID.  The ID consists of protocol ID and end
+   the endpoint role:
+
+   +-----------------------+------------------------+
+   | Protocol ID (12 bits) | Endpoint role (4 bits) |
+   +-----------------------+------------------------+
+
+   Protocol IDs denote the SP protocol used (such as request/reply or
+   publish/subscribe), while endpoint role determines the role of the
+   endpoint within the topology (requester vs. replier, publisher vs.
+   subscriber etc.)  Both numbers are in network byte order.
+
+   Protocol IDs are global, while endpoint roles are specific to any
+   given protocol.  As such, protocol IDs are defined in this document,
+   while endpoint roles are defined in specific SP protocol RFCs.
+
+   Note that there's no versioning of SP protocols.  New versions of old
+   protocols should register with new protocol ID.
+
+2.  Protocol IDs
+
+   1 - pair (v1)
+
+   2 - publish/subscribe (v1)
+
+   3 - request/reply (v1)
+
+   4 - unassigned
+
+   5 - pipeline (v1)
+
+   6 - survey (v1)
+
+   7 - bus (v1)
+
+   8 - slowsand (v1)
+
+   9-3839 - unassigned
+
+   3840-4095 local and experimental
+
+3.  IANA Considerations
+
+   This memo describes numbers that should be eventually managed by
+   IANA.
+
+
+
+
+Sustrik                 Expires December 7, 2014                [Page 2]
+
+Internet-Draft           List of SP protocol IDs               June 2014
+
+
+4.  Security Considerations
+
+   There are no security considerations.
+
+5.  References
+
+   [SPoverTCP]
+              Sustrik, M., "TCP mapping for SPs", August 2013.
+
+Author's Address
+
+   Martin Sustrik (editor)
+
+   Email: sustrik@250bpm.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sustrik                 Expires December 7, 2014                [Page 3]
+

@@ -31,3 +31,4 @@ def check_expected_type(model, expected_type):
     if (model.__class__.__name__ != expected_type.__name__):
         raise TypeError("Expected model of type '%s' (got %s)" % \
                 (expected_type.__name__, model.__class__.__name__))
+

@@ -312,13 +312,13 @@ const ::std::string& FeatureVectorizer_InputColumn::inputcolumn() const {
   return inputcolumn_.GetNoArena();
 }
 void FeatureVectorizer_InputColumn::set_inputcolumn(const ::std::string& value) {
-
+  
   inputcolumn_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.FeatureVectorizer.InputColumn.inputColumn)
 }
 #if LANG_CXX11
 void FeatureVectorizer_InputColumn::set_inputcolumn(::std::string&& value) {
-
+  
   inputcolumn_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.FeatureVectorizer.InputColumn.inputColumn)
@@ -326,31 +326,31 @@ void FeatureVectorizer_InputColumn::set_inputcolumn(::std::string&& value) {
 #endif
 void FeatureVectorizer_InputColumn::set_inputcolumn(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   inputcolumn_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.FeatureVectorizer.InputColumn.inputColumn)
 }
 void FeatureVectorizer_InputColumn::set_inputcolumn(const char* value, size_t size) {
-
+  
   inputcolumn_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.FeatureVectorizer.InputColumn.inputColumn)
 }
 ::std::string* FeatureVectorizer_InputColumn::mutable_inputcolumn() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.FeatureVectorizer.InputColumn.inputColumn)
   return inputcolumn_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* FeatureVectorizer_InputColumn::release_inputcolumn() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.FeatureVectorizer.InputColumn.inputColumn)
-
+  
   return inputcolumn_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void FeatureVectorizer_InputColumn::set_allocated_inputcolumn(::std::string* inputcolumn) {
   if (inputcolumn != NULL) {
-
+    
   } else {
-
+    
   }
   inputcolumn_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), inputcolumn);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.FeatureVectorizer.InputColumn.inputColumn)
@@ -365,7 +365,7 @@ void FeatureVectorizer_InputColumn::clear_inputdimensions() {
   return inputdimensions_;
 }
 void FeatureVectorizer_InputColumn::set_inputdimensions(::google::protobuf::uint64 value) {
-
+  
   inputdimensions_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.FeatureVectorizer.InputColumn.inputDimensions)
 }

@@ -179,7 +179,7 @@ inline ::CoreML::Specification::Normalizer_NormType Normalizer::normtype() const
   return static_cast< ::CoreML::Specification::Normalizer_NormType >(normtype_);
 }
 inline void Normalizer::set_normtype(::CoreML::Specification::Normalizer_NormType value) {
-
+  
   normtype_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.Normalizer.normType)
 }

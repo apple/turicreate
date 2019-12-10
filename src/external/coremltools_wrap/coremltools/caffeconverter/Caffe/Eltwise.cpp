@@ -16,8 +16,8 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeEltwise(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
@@ -39,15 +39,15 @@ void CoreMLConverter::convertCaffeEltwise(CoreMLConverter::ConvertLayerParameter
     CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::EltwiseParameter& caffeLayerParams = caffeLayer.eltwise_param();
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerParams.coeff_size()!=0) {
         CoreMLConverter::unsupportedCaffeParrameter("coeff", caffeLayer.name(), "Elementwise");
     }
     //***************************************************************
-
+    
     if (caffeLayerParams.operation()==caffe::EltwiseParameter::SUM){
         (void) specLayer->mutable_add();
     } else if (caffeLayerParams.operation()==caffe::EltwiseParameter::PROD) {

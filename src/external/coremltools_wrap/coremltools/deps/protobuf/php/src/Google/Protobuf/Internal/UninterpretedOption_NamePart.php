@@ -87,3 +87,4 @@ class UninterpretedOption_NamePart extends \Google\Protobuf\Internal\Message
     }
 
 }
+

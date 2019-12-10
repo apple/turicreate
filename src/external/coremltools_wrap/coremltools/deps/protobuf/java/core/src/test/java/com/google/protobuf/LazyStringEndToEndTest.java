@@ -87,7 +87,7 @@ public class LazyStringEndToEndTest extends TestCase {
         TEST_ALL_TYPES_SERIALIZED_WITH_ILLEGAL_UTF8,
         ByteString.copyFrom(sink));
   }
-
+  
   public void testCaching() {
     String a = "a";
     String b = "b";

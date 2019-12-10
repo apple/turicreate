@@ -6,7 +6,9 @@
 #pragma clang diagnostic ignored "-Wunused-parameter"
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
 #pragma clang diagnostic ignored "-Wshadow"
+#if __apple_build_version__ < 10010028
 #pragma clang diagnostic ignored "-Wextended-offsetof"
+#endif
 
 #include <google/protobuf/text_format.h>
 #include <google/protobuf/io/coded_stream.h>

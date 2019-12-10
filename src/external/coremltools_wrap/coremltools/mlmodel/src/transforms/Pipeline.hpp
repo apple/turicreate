@@ -25,7 +25,7 @@ private:
   Pipeline(const std::string& a, const std::string& b, const std::string& description, bool isClassifier);
 
 public:
-
+  
   /**
    * Construct as a regressor.
   */

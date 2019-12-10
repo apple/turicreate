@@ -33,7 +33,7 @@ void convertCaffe(const std::string& srcPath,
     if (srcPath == "") {
         throw std::runtime_error("Required source model path --srcModelPath\n");
     }
-
+    
     if (dstPath == "") {
         throw std::runtime_error("Required destination model path --dstModelPath\n");
     }
@@ -47,22 +47,22 @@ void convertCaffe(const std::string& srcPath,
         ss << std::endl;
         throw std::runtime_error(ss.str());
     }
-
+    
     // Load the caffe network
     caffe::NetParameter caffeNetwork;
     caffe::NetParameter caffeWeightsNetwork;
     std::map<std::string, caffe::BlobProto> caffeMeanImageBlob;
-
-    // TODO: We need to use only one caffe network proto variable (rdar://problem/30400140)
+    
+    // TODO: We need to use only one caffe network proto variable
     // This is a workaround for that.
     if (caffeProtoTxtPath != "") {
         CoreMLConverter::loadCaffeNetwork(srcPath, caffeWeightsNetwork, caffeProtoTxtPath, caffeNetwork, meanImageProtoPath, caffeMeanImageBlob);
-
+    
     } else {
         CoreMLConverter::loadCaffeNetwork(srcPath, caffeWeightsNetwork, caffeProtoTxtPath, caffeNetwork, meanImageProtoPath, caffeMeanImageBlob);
         caffeNetwork = caffeWeightsNetwork;
     }
-
+    
     if (classLabelPath != "") {
 	statResult = stat(classLabelPath.c_str(), &buf);
         if (statResult != 0) {
@@ -73,13 +73,13 @@ void convertCaffe(const std::string& srcPath,
             throw std::runtime_error(ss.str());
         }
     }
-
+    
     // Convert the caffe network
     Specification::Model modelSpec;
     CoreMLConverter::convertCaffeNetwork(caffeWeightsNetwork, caffeNetwork, caffeMeanImageBlob, modelSpec,
                     isBGR, redBias, blueBias, greenBias, grayBias, scale, imageInputs, classLabelPath,
                     predictedFeatureName);
-
+    
     // Save the format to the model path.
     Result r = saveSpecificationPath(modelSpec, dstPath);
     if (!r.good()) {

@@ -162,7 +162,7 @@ public abstract class AbstractMessage
     }
     return hash;
   }
-
+  
   private static ByteString toByteString(Object value) {
     if (value instanceof byte[]) {
       return ByteString.copyFrom((byte[]) value);
@@ -170,7 +170,7 @@ public abstract class AbstractMessage
       return (ByteString) value;
     }
   }
-
+ 
   /**
    * Compares two bytes fields. The parameters must be either a byte array or a
    * ByteString object. They can be of different type though.
@@ -181,7 +181,7 @@ public abstract class AbstractMessage
     }
     return toByteString(a).equals(toByteString(b));
   }
-
+  
   /**
    * Converts a list of MapEntry messages into a Map used for equals() and
    * hashCode().
@@ -212,7 +212,7 @@ public abstract class AbstractMessage
     }
     return result;
   }
-
+  
   /**
    * Compares two map fields. The parameters must be a list of MapEntry
    * messages.
@@ -223,7 +223,7 @@ public abstract class AbstractMessage
     Map mb = convertMapEntryListToMap((List) b);
     return MapFieldLite.equals(ma, mb);
   }
-
+  
   /**
    * Compares two set of fields.
    * This method is used to implement {@link AbstractMessage#equals(Object)}
@@ -275,7 +275,7 @@ public abstract class AbstractMessage
     }
     return true;
   }
-
+  
   /**
    * Calculates the hash code of a map field. {@code value} must be a list of
    * MapEntry messages.
@@ -371,7 +371,7 @@ public abstract class AbstractMessage
     public String getInitializationErrorString() {
       return MessageReflection.delimitWithCommas(findInitializationErrors());
     }
-
+    
     @Override
     protected BuilderType internalMergeFrom(AbstractMessageLite other) {
       return mergeFrom((Message) other);

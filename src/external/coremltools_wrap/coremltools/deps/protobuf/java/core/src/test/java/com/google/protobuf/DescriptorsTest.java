@@ -273,7 +273,7 @@ public class DescriptorsTest extends TestCase {
     assertFalse(repeatedField.isRequired());
     assertTrue(repeatedField.isRepeated());
   }
-
+  
   public void testFieldDescriptorJsonName() throws Exception {
     FieldDescriptor requiredField = TestRequired.getDescriptor().findFieldByName("a");
     FieldDescriptor optionalField = TestAllTypes.getDescriptor().findFieldByName("optional_int32");

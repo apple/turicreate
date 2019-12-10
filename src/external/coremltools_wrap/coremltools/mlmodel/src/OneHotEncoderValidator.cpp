@@ -29,7 +29,7 @@ namespace CoreML {
         if (!result.good()) {
             return result;
         }
-
+        
         // If sparse then the input must be dictionary
         bool sparse = format.onehotencoder().outputsparse();
 
@@ -39,7 +39,7 @@ namespace CoreML {
         if (!result.good()) {
             return result;
         }
-
+        
         // Validate the parameters
         switch (format.onehotencoder().CategoryType_case()) {
             case Specification::OneHotEncoder::kInt64Categories:

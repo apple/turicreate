@@ -43,6 +43,7 @@ from . import _imputer
 from . import _random_forest_classifier
 from . import _random_forest_regressor
 from . import _standard_scaler
+from . import _k_neighbors_classifier
 
 _PIPELINE_INTERNAL_FEATURE_NAME = "__feature_vector__"
 
@@ -65,7 +66,8 @@ _converter_module_list = [
         _decision_tree_classifier,
         _decision_tree_regressor,
         _gradient_boosting_classifier,
-        _gradient_boosting_regressor]
+        _gradient_boosting_regressor,
+        _k_neighbors_classifier]
 
 def _test_module(m):
     assert m.model_type in ["transformer", "regressor", "classifier"], m.__name__
@@ -86,7 +88,7 @@ _converter_functions = [md.convert for md in _converter_module_list]
 
 def _get_converter_module(sk_obj):
     """
-    Returns the module holding the conversion functions for a
+    Returns the module holding the conversion functions for a 
     particular model).
     """
     try:
@@ -103,19 +105,19 @@ def _is_sklearn_model(sk_obj):
     if not(HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
     from sklearn.pipeline import Pipeline as sk_Pipeline
-    return (isinstance(sk_obj, sk_Pipeline)
+    return (isinstance(sk_obj, sk_Pipeline) 
             or sk_obj.__class__ in _converter_lookup)
 
 def _convert_sklearn_model(input_sk_obj, input_features = None,
                            output_feature_names = None, class_labels = None):
     """
-    Converts a generic sklearn pipeline, transformer, classifier, or regressor
+    Converts a generic sklearn pipeline, transformer, classifier, or regressor 
     into an coreML specification.
     """
     if not(HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
     from sklearn.pipeline import Pipeline as sk_Pipeline
-
+    
     if input_features is None:
         input_features = "input"
 
@@ -127,22 +129,22 @@ def _convert_sklearn_model(input_sk_obj, input_features = None,
     if len(sk_obj_list) == 0:
         raise ValueError("No SKLearn transformers supplied.")
 
-    # Put the transformers into a pipeline list to hold them so that they can
-    # later be added to a pipeline object.  (Hold off adding them to the
+    # Put the transformers into a pipeline list to hold them so that they can 
+    # later be added to a pipeline object.  (Hold off adding them to the 
     # pipeline now in case it's a single model at the end, in which case it
     # gets returned as is.)
     #
-    # Each member of the pipeline list is a tuple of the proto spec for that
+    # Each member of the pipeline list is a tuple of the proto spec for that 
     # model, the input features, and the output features.
     pipeline_list = []
 
-    # These help us keep track of what's going on a bit easier.
+    # These help us keep track of what's going on a bit easier. 
     Input = _namedtuple('InputTransformer', ['name', 'sk_obj', 'module'])
     Output = _namedtuple('CoreMLTransformer', ['spec', 'input_features', 'output_features'])
 
 
-    # Get a more information rich representation of the list for convenience.
-    # obj_list is a list of tuples of (name, sk_obj, and the converter module for
+    # Get a more information rich representation of the list for convenience. 
+    # obj_list is a list of tuples of (name, sk_obj, and the converter module for 
     # that step in the list.
     obj_list = [ Input(sk_obj_name, sk_obj, _get_converter_module(sk_obj))
                 for sk_obj_name, sk_obj in sk_obj_list]
@@ -158,16 +160,16 @@ def _convert_sklearn_model(input_sk_obj, input_features = None,
 
         dv_obj = obj_list[0].sk_obj
         output_dim = len(_dict_vectorizer.get_input_feature_names(dv_obj))
-
+ 
         if not isinstance(input_features, _string_types):
             raise TypeError("If the first transformer in a pipeline is a "
                             "DictVectorizer, then the input feature must be the name "
                             "of the input dictionary.")
 
         input_features = [(input_features, datatypes.Dictionary(str))]
-
+       
         if len(obj_list) > 1:
-            output_feature_name = _PIPELINE_INTERNAL_FEATURE_NAME
+            output_feature_name = _PIPELINE_INTERNAL_FEATURE_NAME 
 
         else:
             if output_feature_names is None:
@@ -175,13 +177,13 @@ def _convert_sklearn_model(input_sk_obj, input_features = None,
 
             elif isinstance(output_feature_names, _string_types):
                 output_feature_name = output_feature_names
-
+            
             else:
                 raise TypeError(
                     "For a transformer pipeline, the "
                     "output_features needs to be None or a string "
                     "for the predicted value.")
-
+ 
         output_features = [(output_feature_name, datatypes.Array(output_dim))]
 
         spec = _dict_vectorizer.convert(dv_obj, input_features, output_features)._spec
@@ -190,27 +192,27 @@ def _convert_sklearn_model(input_sk_obj, input_features = None,
         # Set up the environment for the rest of the pipeline
         current_input_features = output_features
         current_num_dimensions = output_dim
-
+    
         # In the corner case that it's only the dict vectorizer here, just return
-        # and exit with that at this point.
+        # and exit with that at this point. 
         if len(obj_list) == 1:
             return spec
         else:
             del obj_list[0]
 
-    else:
+    else: 
 
         # First, we need to resolve the input feature types as the sklearn pipeline
         # expects just an array as input, but what we want to expose to the coreML
-        # user is an interface with named variables.  This resolution has to handle
-        # a number of cases.
+        # user is an interface with named variables.  This resolution has to handle 
+        # a number of cases. 
 
         # Can we get the number of features from the model?  If so, pass that
-        # information into the feature resolution function.  If we can't, then this
+        # information into the feature resolution function.  If we can't, then this 
         # function should return None.
         first_sk_obj = obj_list[0].sk_obj
         num_dimensions = _get_converter_module(first_sk_obj).get_input_dimension(first_sk_obj)
-        # Resolve the input features.
+        # Resolve the input features.  
         features = _fm.process_or_validate_features(input_features, num_dimensions)
         current_num_dimensions = _fm.dimension_of_array_features(features)
 
@@ -225,7 +227,7 @@ def _convert_sklearn_model(input_sk_obj, input_features = None,
                     features, _PIPELINE_INTERNAL_FEATURE_NAME)
 
             assert _output_dimension == current_num_dimensions
-            ft_out_features = [(_PIPELINE_INTERNAL_FEATURE_NAME,
+            ft_out_features = [(_PIPELINE_INTERNAL_FEATURE_NAME, 
                                 datatypes.Array(current_num_dimensions))]
             pipeline_list.append( Output(spec, features, ft_out_features) )
             current_input_features = ft_out_features
@@ -247,7 +249,7 @@ def _convert_sklearn_model(input_sk_obj, input_features = None,
 
         next_dimension = sk_m.update_dimension(sk_obj, current_num_dimensions)
 
-        output_features = [(_PIPELINE_INTERNAL_FEATURE_NAME,
+        output_features = [(_PIPELINE_INTERNAL_FEATURE_NAME, 
                             datatypes.Array(next_dimension))]
         spec = sk_m.convert(sk_obj, current_input_features, output_features)._spec
 
@@ -322,3 +324,4 @@ def _convert_sklearn_model(input_sk_obj, input_features = None,
         pipeline.add_model(spec)
 
     return pipeline.spec
+

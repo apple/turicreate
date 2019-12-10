@@ -24,6 +24,6 @@ namespace CoreMLConverter {
 void upgradeCaffeNetworkIfNeeded(const std::string input_filename,
                                  caffe::NetParameter& caffeSpec);
 
-
+    
 }
 #endif /* UpgradeProto_hpp */

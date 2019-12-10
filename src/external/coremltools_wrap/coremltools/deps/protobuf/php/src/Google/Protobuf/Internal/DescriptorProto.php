@@ -322,3 +322,4 @@ class DescriptorProto extends \Google\Protobuf\Internal\Message
     }
 
 }
+

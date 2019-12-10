@@ -45,7 +45,7 @@ import java.util.Arrays;
  * @author dweis@google.com (Daniel Weis)
  */
 public final class UnknownFieldSetLite {
-
+  
   // Arbitrarily chosen.
   // TODO(dweis): Tune this number?
   private static final int MIN_CAPACITY = 8;
@@ -61,7 +61,7 @@ public final class UnknownFieldSetLite {
   public static UnknownFieldSetLite getDefaultInstance() {
     return DEFAULT_INSTANCE;
   }
-
+  
   /**
    * Returns a new mutable instance.
    */
@@ -81,29 +81,29 @@ public final class UnknownFieldSetLite {
     System.arraycopy(second.objects, 0, objects, first.count, second.count);
     return new UnknownFieldSetLite(count, tags, objects, true /* isMutable */);
   }
-
+  
   /**
    * The number of elements in the set.
    */
   private int count;
-
+  
   /**
    * The tag numbers for the elements in the set.
    */
   private int[] tags;
-
+  
   /**
    * The boxed values of the elements in the set.
    */
   private Object[] objects;
-
+  
   /**
    * The lazily computed serialized size of the set.
    */
   private int memoizedSerializedSize = -1;
-
+  
   /**
-   * Indicates that this object is mutable.
+   * Indicates that this object is mutable. 
    */
   private boolean isMutable;
 
@@ -113,7 +113,7 @@ public final class UnknownFieldSetLite {
   private UnknownFieldSetLite() {
     this(0, new int[MIN_CAPACITY], new Object[MIN_CAPACITY], true /* isMutable */);
   }
-
+  
   /**
    * Constructs the {@code UnknownFieldSetLite}.
    */
@@ -123,22 +123,22 @@ public final class UnknownFieldSetLite {
     this.objects = objects;
     this.isMutable = isMutable;
   }
-
+  
   /**
    * Marks this object as immutable.
-   *
+   * 
    * <p>Future calls to methods that attempt to modify this object will throw.
    */
   public void makeImmutable() {
     this.isMutable = false;
   }
-
+  
   /**
    * Throws an {@link UnsupportedOperationException} if immutable.
    */
   void checkMutable() {
     if (!isMutable) {
-      throw new UnsupportedOperationException();
+      throw new UnsupportedOperationException(); 
     }
   }
 
@@ -197,7 +197,7 @@ public final class UnknownFieldSetLite {
     if (size != -1) {
       return size;
     }
-
+    
     size = 0;
     for (int i = 0; i < count; i++) {
       int tag = tags[i];
@@ -205,9 +205,9 @@ public final class UnknownFieldSetLite {
       size += CodedOutputStream.computeRawMessageSetExtensionSize(
           fieldNumber, (ByteString) objects[i]);
     }
-
+    
     memoizedSerializedSize = size;
-
+    
     return size;
   }
 
@@ -221,7 +221,7 @@ public final class UnknownFieldSetLite {
     if (size != -1) {
       return size;
     }
-
+    
     size = 0;
     for (int i = 0; i < count; i++) {
       int tag = tags[i];
@@ -247,12 +247,12 @@ public final class UnknownFieldSetLite {
           throw new IllegalStateException(InvalidProtocolBufferException.invalidWireType());
       }
     }
-
+    
     memoizedSerializedSize = size;
-
+    
     return size;
   }
-
+  
   private static boolean equals(int[] tags1, int[] tags2, int count) {
     for (int i = 0; i < count; ++i) {
       if (tags1[i] != tags2[i]) {
@@ -284,8 +284,8 @@ public final class UnknownFieldSetLite {
     if (!(obj instanceof UnknownFieldSetLite)) {
       return false;
     }
-
-    UnknownFieldSetLite other = (UnknownFieldSetLite) obj;
+    
+    UnknownFieldSetLite other = (UnknownFieldSetLite) obj;    
     if (count != other.count
         || !equals(tags, other.tags, count)
         || !equals(objects, other.objects, count)) {
@@ -298,11 +298,11 @@ public final class UnknownFieldSetLite {
   @Override
   public int hashCode() {
     int hashCode = 17;
-
+    
     hashCode = 31 * hashCode + count;
     hashCode = 31 * hashCode + Arrays.hashCode(tags);
     hashCode = 31 * hashCode + Arrays.deepHashCode(objects);
-
+    
     return hashCode;
   }
 
@@ -324,25 +324,25 @@ public final class UnknownFieldSetLite {
   // Package private for unsafe experimental runtime.
   void storeField(int tag, Object value) {
     ensureCapacity();
-
+    
     tags[count] = tag;
     objects[count] = value;
     count++;
   }
-
+  
   /**
    * Ensures that our arrays are long enough to store more metadata.
    */
   private void ensureCapacity() {
-    if (count == tags.length) {
+    if (count == tags.length) {        
       int increment = count < (MIN_CAPACITY / 2) ? MIN_CAPACITY : count >> 1;
       int newLength = count + increment;
-
+        
       tags = Arrays.copyOf(tags, newLength);
       objects = Arrays.copyOf(objects, newLength);
     }
   }
-
+  
   /**
    * Parse a single field from {@code input} and merge it into this set.
    *
@@ -395,7 +395,7 @@ public final class UnknownFieldSetLite {
     }
 
     storeField(WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_VARINT), (long) value);
-
+    
     return this;
   }
 
@@ -404,17 +404,17 @@ public final class UnknownFieldSetLite {
    *
    * <p>For use by generated code only.
    */
-  UnknownFieldSetLite mergeLengthDelimitedField(final int fieldNumber, final ByteString value) {
+  UnknownFieldSetLite mergeLengthDelimitedField(final int fieldNumber, final ByteString value) {  
     checkMutable();
     if (fieldNumber == 0) {
       throw new IllegalArgumentException("Zero is not a valid field number.");
     }
 
     storeField(WireFormat.makeTag(fieldNumber, WireFormat.WIRETYPE_LENGTH_DELIMITED), value);
-
+    
     return this;
   }
-
+  
   /**
    * Parse an entire message from {@code input} and merge its fields into
    * this set.

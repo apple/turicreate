@@ -22,3 +22,4 @@ foreach (getGeneratedFiles("generated") as $filename)
     }
 
 }
+

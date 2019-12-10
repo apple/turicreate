@@ -195,3 +195,4 @@ class GeneratedCodeInfo_Annotation extends \Google\Protobuf\Internal\Message
     }
 
 }
+

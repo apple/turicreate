@@ -32,7 +32,7 @@ message CategoricalMapping {
         // Default output when converting from an integer to a string.
         string strValue = 101;
 
-        // Default output when converting from an string to an integer.
+        // Default output when converting from a string to an integer.
         int64 int64Value = 102;
     }
 }

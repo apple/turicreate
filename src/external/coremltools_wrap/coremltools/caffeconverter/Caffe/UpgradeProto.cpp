@@ -17,7 +17,7 @@ namespace CoreMLConverter {
 // the input_file doesn't actually get used
 void upgradeCaffeNetworkIfNeeded(const std::string input_filename,
                                  caffe::NetParameter& caffeSpec) {
-
+    
     bool need_upgrade = caffe::NetNeedsUpgrade(caffeSpec);
     bool success = true;
     if (need_upgrade) {
@@ -28,6 +28,6 @@ void upgradeCaffeNetworkIfNeeded(const std::string input_filename,
         }
     }
 }
-
-
+    
+    
 } // namespace CoreMLConverter

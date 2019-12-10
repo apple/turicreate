@@ -42,7 +42,7 @@ def convert(model, input_features, output_features):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     # Test the scikit-learn model
     _sklearn_util.check_expected_type(model, StandardScaler)
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'mean_'))
@@ -66,7 +66,7 @@ def convert(model, input_features, output_features):
 def update_dimension(model, input_dimension):
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'mean_'))
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'scale_'))
     # Nothing to do for this model
@@ -75,7 +75,8 @@ def update_dimension(model, input_dimension):
 def get_input_dimension(model):
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'mean_'))
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'scale_'))
     return len(model.mean_)
+

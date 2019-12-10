@@ -1,0 +1,647 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+
+<rfc category="info" docName="sp-surveyor-01">
+
+  <front>
+
+    <title abbrev="Surveor/Respondent SP">
+    Surveyor/Respondent Scalability Protocol
+    </title>
+
+    <author fullname="Garrett D'Amore" initials="G." role="editor"
+            surname="D'Amore">
+      <address>
+        <email>garrett@damore.org</email>
+      </address>
+    </author>
+
+    <date month="March" year="2015" />
+
+    <area>Applications</area>
+    <workgroup>Internet Engineering Task Force</workgroup>
+
+    <keyword>Surveyor</keyword>
+    <keyword>Respondent</keyword>
+    <keyword>SURVEYOR</keyword>
+    <keyword>RESPONDENT</keyword>
+    <keyword>stateless</keyword>
+    <keyword>service</keyword>
+    <keyword>SP</keyword>
+
+    <abstract>
+      <t>This document defines a scalability protocol used for performing
+	 surveys and collecting responses amongst a number of stateless
+         processing nodes, and returning the results of those
+	 surveyors.  This protocol can be used for solving such problems
+	 as voting (consensus algorithms), presence detection, and peer
+	 discovery.</t>
+    </abstract>
+
+  </front>
+
+  <middle>
+
+    <section title = "Introduction">
+
+      <t>A fairly common problem in building distributed applications is
+	 peer discovery -- or how do you find your peers.  For example, imagine
+	 an internet chat type application, where server wants to determine
+	 the presence of all peers, including perhaps some information such
+	 as their unique social networking handle.</t>
+
+      <t>Another similar problem involves voting algorithms, where a survey
+	 of all connected peers is required to arrive to some solution to
+	 a problem.  This is common with distributed consensus algorithms.</t>
+	
+      <t>One of the most common problems in distributed applications is how to
+         delegate a work to another processing node and get the result back to
+         the original node. In other words, the goal is to utilise the CPU
+         power of a remote node.</t>
+
+      <t>It turns out that these problems are very similar.  We can assume
+         potential participants will register with a central process.  Once
+         that is done, the central process can send out a survey request
+	 to the participants when it wants to perform a survey.</t>
+
+      <t>Also, note that it is reasonable and possible for a participant to
+         decline to participate (i.e. decline to respond.)  This can happen
+         due to loss of network connectivity, or can represent a conscious
+         decision on the part of the respondent.</t>
+
+      <t>For example, a real-world example of this would be asking audience
+         members to raise their hands if they like the color red.  The act of
+         raising one's hand can be thought of as responding.</t>
+
+      <t>As a consequence, taken generally, the surveyor should not infer any
+         thing about parties it doesn't get a response from.  Perhaps the
+         respondent simply
+         didn't hear the question, or perhaps she declines to self-identify.</t>
+
+      <t>This measn that surveying should be thought of as a best-effort
+         service.  Applications which need more resilience may repeat
+         their inquiries.  It is common in other networking protocols to
+         do so periodically, and only "expire" the response from a peer that
+         is non-responsive after it has missed several successive surveys.</t>
+
+      <t>Furthermore, the act of asking a question has to be time bounded.
+         This is particularly important if multiple surveys are to be issued.
+         Sufficient time for responses from the first survey to occur must
+         pass before starting a new one, unless some other identifying
+         content is present to distinguish the results from one survey from
+         another.  (Going back to our raised hands, imagine two questions
+         asked in rapid succession, one if you like the color red, the other
+         if you like the color blue.  If only one hand is used, and there is
+         not sufficient time between the questions, it becomes impossible to
+         distinguish which color is preferred.  Of course, if one uses two
+         hands -- a distinguishing identifier, now we can have two surveys
+         running in parallel.  Fortunately we usually have more bits available
+         for conveying this kind of information in network protocols.)</t>
+
+      <t>In all cases the act of surveying and replying can be thought of as
+         state-less.  In otherwords, a given response should not depend upon
+         the content of any prior surveys.  Ideally, because of the best-effort
+         nature of this, it is also beneficial if surveying is itself
+         idempotent, i.e. the act of responding to a survey should not itself
+         change state on the respondent.</t>
+
+      <t>Generally there are few common scenarios that come up with real-world
+         situations.  Here are some of them.
+
+        <list style = "numbers">
+          <t>One surveyor issues one survey, and then zero, one or many
+             responders reply.  The surveyor collects then these responses
+             over a period of time before issuing a new survey.</t>
+
+          <t>One surveyor issues multiple surveys, distinguishing which
+             replies are to which survey based on some identifying content.
+             For example, this can be thought of like ARP, where multiple
+             requests can be outstanding.</t>
+
+          <t>Multiple surveyors issue surveys, but one each at a time.
+             Responders reply to each of these as appropriate.  For
+             example, imagine a network with two print clients and a number
+             of networked printers.  Both clients may occasionally desire
+             to inquire as supply levels, and since they don't talk to
+             each other, the replies may go to either system.</t>
+
+          <t>Multiple surveyors issuing multiple surveys concurrently.
+             This is the combination of the second and third cases above.</t>
+
+        </list>
+
+      </t>
+
+    </section>
+
+    <section title = "Underlying protocol">
+
+      <t>The surveyor/respondent protocol can be run on top of any SP mapping,
+         such as, for example, <xref target='SPoverTCP'>SP TCPmapping</xref>.
+         </t>
+
+      <t>Also, given that SP protocols describe the behaviour of entire
+         arbitrarily complex topology rather than of a single node-to-node
+         communication, several underlying protocols can be used in parallel.
+         For example, a client may send a request via WebSocket, then, on the
+         edge of the company network an intermediary node may retransmit it
+         using TCP etc.</t>
+
+      <figure>
+        <artwork>
++---+  WebSocket  +---+    TCP    +---+
+|   |-------------|   |-----------|   |
++---+             +---+           +---+
+                   | |
+     +---+   IPC   | |  SCTP  +---+    DCCP   +---+
+     |   |---------+ +--------|   |-----------|   |
+     +---+                    +---+           +---+
+        </artwork>
+      </figure>
+
+    </section>
+
+    <section title = "Overview of the algorithm">
+
+      <t>Surveyor/respondent protocol defines two different endpoint types:
+         The SURVEYOR and the replier or RESPONDENT.</t>
+
+      <t>A SURVEYOR endpoint can be connected only to a RESPONDENT endpoint,
+         and vice versa. If the underlying protocol
+         indicates that there's an attempt to create a channel to an
+         incompatible endpoint, the channel MUST NOT be used. In the case of
+         TCP mapping, for example, the underlying TCP connection MUST
+         be closed.</t>
+
+      <t>When creating more complex topologies, SURVEYOR and RESPONDENT
+         endpoints are paired in the intermediate nodes to form a
+         forwarding component,
+         so called "device". Device receives requests from the SURVEYOR endpoint
+         and forwards them to the RESPONDENT endpoint. At the same time it
+         receives replies from the RESPONDENT endpoint and forwards them to
+         the SURVEYOR endpoint:</t>
+
+      <figure>
+        <artwork>
+                --- surveys --&gt;
+
++----------+   +------------+----------+   +------------+
+|          |--&gt;|            |          |--&gt;|            |
+| SURVEYOR |   | RESPONDENT | SURVEYOR |   | RESPONDENT |
+|          |&lt;--|            |          |&lt;--|            |
++----------+   +------------+----------+   +------------+
+
+                &lt;-- responses ---
+        </artwork>
+      </figure>
+
+      <t>Using devices, arbitrary complex topologies can be built. The rest
+         of this section explains how are the requests routed through a topology
+         towards processing nodes and how are responses routed back from
+         processing nodes to the original clients.</t>
+
+      <t>Because the delivery of both surveys and responses is handled on
+         a best-effort basis, when the transport is faced with pushback, it
+         is acceptable for the implementation to drop the message.</t>
+
+      <t>Applications expecting resilience in the face of such events should
+         expect to perform multiple surveys over time; a failure to respond
+         to a survey shall not be taken as a critical fault.</t>
+
+      <t>As for delivering replies back to the clients, it should be understood
+         that the client may not be directly accessible (say using TCP/IP) from
+         the processing node. It may be beyond a firewall, have no static IP
+         address etc. Furthermore, the client and the processing may not even
+         speak the same transport protocol -- imagine client connecting to the
+         topology using WebSockets and processing node via SCTP.</t>
+
+      <t>Given the above, it becomes obvious that the replies must be routed
+         back through the existing topology rather than directly. In fact,
+         surveyor/respondent topology may be thought of as an overlay network
+         on the top of underlying transport mechanisms.</t>
+
+      <t>As for routing replies within the surveyor/respondent topology, it
+         is designed in
+         such a way that each reply contains the whole routing path, rather
+         than containing just the address of destination node, as is the case
+         with, for example, TCP/IP.</t>
+
+      <t>The downside of the design is that surveys and responses are a
+         little bit longer. Also this assumes symmetric connectivity in the
+         underlying transports.</t>
+
+      <t>The upside, on the other hand, is that the nodes in the topology don't
+         have to maintain any routing tables beside the simple table of
+         adjacent channels along with their IDs. There's also no need for any
+         additional protocols for distributing routing information within
+         the topology.</t>
+
+      <t>The most important reason for adopting the design though is that
+         there's no propagation delay and any nodes becomes accessible
+         immediately after it is started. Given that some nodes in the topology
+         may be extremely short-lived this is a crucial requirement. Imagine
+         a database client that sends a survey, gets a single response, and
+         then immediately answers.  (Think of a simple question like "is
+         anyone here?"  A single reply is sufficies to answer the question.)
+         It makes no sense to delay the whole process until the routing tables
+         are synchronised between the client and the server.</t>
+
+      <t>The algorithm thus works as follows: When a survey is routed from the
+         client to the processing node, every RESPONDENT endpoint determines
+         which channel it was received from and adds the ID of the channel to
+         the survey. Thus, when the survey arrives at the ultimate respondent
+         it already contains a full backtrace stack, which in turn contains
+         all the info needed to route a message back to the original
+         surveyor.</t>
+
+      <t>After processing the survey, the responding node attaches the
+         backtrace stack from the survey to the response and sends it back
+         to the topology. At that point every RESPONDENT endpoint can check the
+         traceback and determine which channel it should send the reply to.</t>
+
+      <t>In addition to routing, surveyor/respondent protocol takes care of
+         matching responses and surveys. That is, it can ensure that a given
+         response cannot be mismatched to a different survey.</t>
+
+      <t>In order to avoid confusion, after the surveyor has received all the
+         responses it expects to (typically when a period of time has passed),
+         it should discard further stray responses.</t>
+
+      <t>The surveyor thus adds an unique request ID to the survey. The ID gets
+         copied from the survey to the response by the responding node. When the
+         response gets back to the surveyor, it can simply check whether the
+         survey in question is still being outstanding and if not so, it can
+         ignore the response.</t>
+
+      <t>To implement all the functionality described above, messages (both
+         surveys and responses have the following format:</t>
+
+      <figure>
+        <artwork>
++-+------------+-+------------+   +-+------------+-------------+
+|0| Channel ID |0| Channel ID |...|1| Request ID |   payload   |
++-+------------+-+------------+   +-+------------+ ------------+
+        </artwork>
+      </figure>
+
+      <t>The payload of the message is preceded by a stack of 32-bit tags.
+         The most significant bit of each tag is set to 0 except for the very
+	 last tag.
+         That allows the algorithm to find out where the tags end and where
+         the message payload begins.</t>
+
+      <t>As for the remaining 31 bits, they are either survey ID (in the last
+         tag) or a channel ID (in all the remaining tags). The first channel ID
+         is added and processed by the RESPONDENT endpoint closest to the
+         processing
+         node. The last channel ID is added and processed by the RESPONDENT
+         endpoint closest to the client.</t>
+
+      <t>Following picture shows an example of request saying "Hello" being
+         routed from the client through two intermediate nodes to the
+         processing node and the reply "World" being routed back. It shows
+         what messages are passed over the network at each step of the
+         process:</t>
+
+      <figure>
+        <artwork>
+                            client
+                  Hello       |         World
+                   |    +------------+    ^
+                   |    |  SURVEYOR  |    |
+                   V    +------------+    |
+            1|823|Hello       |         1|823|World
+                   |    +------------+    ^
+                   |    | RESPONDENT |    |
+                   |    +------------+    |
+                   |    |  SURVEYOR  |    |
+                   V    +------------+    |
+      0|299|1|823|Hello       |         0|299|1|823|World
+                   |    +------------+    ^
+                   |    | RESPONDENT |    |
+                   |    +------------+    |
+                   |    |  SURVEYOR  |    |
+                   V    +------------+    |
+0|446|0|299|1|823|Hello       |         0|446|0|299|1|823|World
+                   |    +------------+    ^
+                   |    | RESPONDENT |    |
+                   V    +------------+    |
+                  Hello       |         World
+                           server
+        </artwork>
+      </figure>
+
+    </section>
+
+    <section title = "Hop-by-hop vs. End-to-end">
+
+      <t>All endpoints implement so called "hop-by-hop" functionality. It's
+         the functionality concerned with sending messages to the immediately
+         adjacent components and receiving messages from them.</t>
+
+      <t>To make an analogy with the TCP/IP stack, IP provides hop-by-hop
+         functionality, i.e. routing of the packets to the adjacent node,
+         while TCP implements end-to-end functionality such resending of
+         lost packets.</t>
+
+      <t>As a rule of thumb, raw hop-by-hop endpoints are used to build
+         devices (intermediary nodes in the topology) while end-to-end
+         endpoints are used directly by the applications.</t>
+
+      <t>To prevent confusion, the specification of the endpoint behaviour
+         below will discuss hop-by-hop and end end-to-end functionality in
+         separate chapters.</t>
+
+    </section>
+
+    <section title = "Hop-by-hop functionality">
+
+      <section title = "SURVEYOR endpoint">
+
+        <t>The SURVEYOR endpoint is used by the user to send surveyor to the
+           responding nodes and receive the responses afterwards.</t>
+
+        <t>When user asks the SURVEYOR endpoint to send a request, the
+           endpoint should
+           send it to ALL of the associated outbound channels (TCP connections
+           or similar). The request sent is exactly the message supplied by
+           the user. SURVEYOR sockets MUST NOT modify an outgoing survey in
+           any way.</t>
+
+        <t>If there's no channel to send the survey to, the survey is merely
+           discarded.  The endpoint MAY report the backpressure condition to
+           the user as well.</t>
+
+        <t>If there are associated channels but none of them is available for
+           sending, i.e. all of them are already reporting backpressure, the
+           endpoint won't send the message and MAY report the backpressure
+           condition to the user.  The actual survey is discarded.</t>
+
+        <t>If the channel is not capable of reporting backpressure (e.g. DCCP)
+           the endpoint SHOULD consider it as always available for sending new
+           request.</t>
+
+        <t>When there are multiple channels available for sending the survey
+           endpoint MUST deliver the survey to all of them.</t>
+
+        <t>As for incoming messages, i.e. responses, SURVEYOR endpoints MUST
+	   fair-queue them. In other words, if there are replies available
+	   on several channels, they MUST receive them in a round-robin fashion.
+	   They must also take care not to compromise the fairness when new
+	   channels are added or old ones removed.</t>
+
+        <t>In addition to providing basic fairness, the goal of fair-queueing is
+           to prevent DoS attacks where a huge stream of fake responses from one
+           channel would be able to block the real replies coming from different
+           channels. Fair queueing ensures that messages from every channel are
+           received at approximately the same rate. That way, DoS attack can
+           slow down the system but it can't entirely block it.</t>
+
+        <t>Incoming responses MUST be handed to the user exactly as they were
+           received. SURVEYOR endpoints MUST not modify the responses in any
+	   way.</t>
+
+      </section>
+
+      <section title = "RESPONDENT endpoint">
+
+        <t>RESPONDENT endpoints are used to receive surveys from the clients
+	   and send resopnses back to the clients.</t>
+
+        <t>First of all, each RESPONDENT socket is responsible for assigning
+	   unique 31-bit channel IDs to the individual associated channels.</t>
+
+        <t>The first ID assigned MUST be random. Next is computed by adding 1 to
+           the previous one with potential overflow to 0.</t>
+
+        <t>The implementation MUST ensure that the random number is different
+           each time the endpoint is re-started, the process that contains
+           it is restarted or similar. So, for example, using pseudo-random
+           generator with a constant seed won't do.</t>
+
+        <t>The goal of the algorithm is to the spread of possible channel ID
+           values and thus minimise the chance that a response is routed to an
+           unrelated channel, even in the face of intermediate node
+           failures.</t>
+
+        <t>When receiving a message, RESPONDENT endpoints MUST fair-queue
+	   among the channels available for receiving. In other words they
+	   should round-robin among such channels and receive one request from
+           a channel at a time.  They MUST also implement the round-robin
+           algorithm is such a way that adding or removing channels doesn't
+           break the fairness.</t>
+
+        <t>In addition to guaranteeing basic fairness in access to computing
+           resources the above algorithm makes it impossible for a malevolent
+           or misbehaving client to completely block the processing of requests
+           from other clients by issuing steady stream of surveys.</t>
+
+        <t>After receiving the survey, the RESPONDENT socket should prepend it
+           by 32 bit value, consisting of 1 bit set to 0 followed by the 31-bit
+           ID of the channel the request was received from. The extended survey
+           will be then handed to the user.</t>
+
+        <t>The goal of adding the channel ID to the response is to be able to
+           route the response back to the original channel later on. Thus, when
+           the user sends a response, endpoint strips first 32 bits off and uses
+           the value to determine where it is to be routed.</t>
+
+        <t>If the response is shorter than 32 bits, it is malformed and
+           the endpoint MUST ignore it. Also, if the most relevant bit of the
+           32-bit value isn't set to 0, the response is malformed and MUST
+           be ignored.</t>
+
+        <t>Otherwise, the endpoint checks whether its table of associated
+           channels contains the channel with a corresponding ID. If so, it
+           sends the response (with first 32 bits stripped off) to that channel.
+           If the channel is not found, the response MUST be dropped. If the
+           channel is not available for sending, i.e. it is applying
+           backpressure, the response MUST be dropped.</t>
+
+        <t>Note that when the response is unroutable two things might have
+           happened. Either there was some kind of network disruption, in which
+           case the survey may be re-sent later on, or the original client
+           have failed or been shut down. In such case the survey won't be
+           resent, however, it doesn't really matter because there's no one to
+           deliver the response to any more anyway.</t>
+
+        <t>Unlike surveys, there's never pushback applied to the responses; they
+	   are simply dropped. If the endpoint blocked and waited for the
+	   channel to become available, all the subsequent replies, possibly
+	   destined for
+           different unblocked channels, would be blocked in the meantime. That
+           allows for a DoS attack simply by firing a lot of surveys and not
+           receiving the responses.</t>
+
+      </section>
+   
+    </section>
+
+    <section title = "End-to-end functionality">
+
+      <t>End-to-end functionality is built on top of hop-to-hop functionality.
+         Thus, an endpoint on the edge of a topology contains all the
+         hop-by-hop functionality, but also implements additional
+         functionality of its own. This end-to-end functionality acts
+         basically as a user of the underlying hop-by-hop functionality.</t>
+
+      <section title = "SURVEYOR endpoint">
+
+        <t>End-to-end functionality for SURVEYOR sockets is concerned with
+	   matching the responses to surveys, and with filtering out stray or
+           outdated responses.</t>
+
+        <t>To be able to do this, the endpoint must tag the survey with
+           unique 31-bit survey IDs. First survey ID is picked at random. All
+           subsequent survey IDs are generated by adding 1 to the last survey
+           ID and possibly overflowing to 0.</t>
+
+        <t>To improve robustness of the system, the implementation MUST ensure
+           that the random number is different each time the endpoint, the
+           process or the machine is restarted. Pseudo-random generator with
+           fixed seed won't do.</t>
+
+        <t>When user asks the endpoint to send a message, the endpoint prepends
+           a 32-bit value to the message, consisting of a single bit set to 1
+           followed by a 31-bit survey ID and passes it on in a standard
+           hop-by-hop way.</t>
+
+        <t>If the hop-by-hop layer reports pushback condition, the end-to-end
+           layer considers the survey unsent and MAY report pushback condition
+           to the user.</t>
+
+        <t>If the survey is successfully sent, the endpoint stores the survey
+           including its survey ID, so that it can be resent later on if
+           needed. At the same time it sets up a timer to receive all of the
+           responses. The user MUST be allowed to specify the timeout interval.
+           The default timeout interval must be 60 seconds.</t>
+
+        <t>When a response is received from the underlying hop-by-hop
+           implementation, the endpoint should strip off first 32 bits from
+           the response to check whether it is a valid reply.</t>
+
+        <t>If the response is shorter than 32 bits, it is malformed and the
+           endpoint MUST ignore it. If the most significant bit of the 32-bit
+           value is set to 0, the reply is malformed and MUST be ignored.</t>
+
+        <t>Otherwise, the endpoint should check whether the survey ID in
+           the response matches any of the survey IDs of the surveys being
+           processed at the moment. If not so, the response MUST be ignored.
+           It is either a stray message or a too-long delayed response.</t>
+
+        <t>Please note that the endpoint can support either one or more
+           surveys being processed in parallel. Which one is the case depends
+           on the API exposed to the user and is not part of this
+           specification.</t>
+
+        <t>If the ID in the response matches one of the surveys in progress, the
+           response MUST be passed to the user (with the 32-bit prefix stripped
+           off).</t>
+
+        <t>A SURVEYOR endpoint MUST make it possible for the user to
+	   cancel a particular survey in progress. What it means technically is
+           deleting the stored copy of the survey and cancelling the associated
+           timer. Thus, once the response arrives, it will be discarded by the
+           algorithm above.</t>
+
+	<t>Finally, when the timeout for a survey expires, then the survey
+	   must be canceled in a manner similar to user-initiated cancelation.
+	   That is, the stored copy of the survey must be deleted, the timer
+	   removed, and any further responses received with the same survey ID
+	   are subsequently discarded.</t>
+
+      </section>
+
+      <section title = "RESPONDENT endpoint">
+
+        <t>End-to-end functionality for RESPONDENT endpoints is concerned with
+	   turning surveys into corresponding responses.</t>
+
+        <t>When user asks to receive a survey, the endpoint gets next request
+           from the hop-by-hop layer and splits it into the traceback stack and
+           the message payload itself. The traceback stack is stored and the
+           payload is returned to the user.</t>
+
+        <t>The algorithm for splitting the survey is as follows: Strip 32 bit
+           tags from the message in one-by-one manner. Once the most significant
+           bit of the tag is set, we've reached the bottom of the traceback
+           stack and the splitting is done. If the end of the message is reached
+           without finding the bottom of the stack, the survey is malformed and
+           MUST be ignored.</t>
+
+        <t>Note that the payload produced by this procedure is the same as the
+           survey payload sent by the original client.</t>
+
+        <t>Once the user processes the survey and sends the response, the
+	   endpoint prepends the response with the stored traceback stack and
+	   sends it on using the hop-by-hop layer. At that point the stored
+	   traceback stack MUST be deallocated.</t>
+
+        <t>Additionally, RESPONDENT endpoints MUST support cancelling any
+	   survey being processed at the moment. What it means, technically,
+	   is that state associated with the survey, i.e. the traceback stack
+	   stored by the endpoint is deleted and reply to that particular
+           survey is never sent.</t>
+
+        <t>The most important use of cancellation is allowing the service
+           instances to ignore surveys (whether due to malformation or for
+           other application specific reasons.) In such case the reply
+           is never sent. Of course, if application wants to send an
+           application-specific error massage back to the client it can do so
+           by not cancelling the survey and sending a regular response.</t>
+
+      </section>
+
+    </section>
+
+    <section title = "Loop avoidance">
+
+      <t>It may happen that a request/reply topology contains a loop. It becomes
+         increasingly likely as the topology grows out of scope of a single
+         organisation and there are multiple administrators involved
+         in maintaining it. Unfortunate interaction between two perfectly
+         legitimate setups can cause loop to be created.</t>
+
+      <t>With no additional guards against the loops, it's likely that
+         requests will be caught inside the loop, rotating there forever,
+         each message gradually growing in size as new prefixes are added to it
+         by each RESPONDENT endpoint on the way. Eventually, a loop can cause
+         congestion and bring the whole system to a halt.</t>
+
+      <t>To deal with the problem SURVEYOR endpoints MUST check the depth of the
+         traceback stack for every outgoing request and discard any requests
+         where it exceeds certain threshold. The threshold SHOULD be defined
+         by the user. The default value is suggested to be 8.</t>
+
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>New SP endpoint types SURVEYOR and RESPONDENT should be registered by
+	 IANA. For now, value of 98 should be used for SURVEYOR endpoints and
+	 value of 99 for RESPONDENT endpoints. (An earlier similar protocol
+         without the backtrace headers used protocol numbers 96 and 97.)</t>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>The mapping is not intended to provide any additional security to the
+         underlying protocol. DoS concerns are addressed within
+         the specification.</t>
+    </section>
+
+  </middle>
+
+  <back>
+    <references>
+      <reference anchor='SPoverTCP'>
+         <front>
+           <title>TCP mapping for SPs</title>
+           <author initials='M.' surname='Sustrik' fullname='M. Sustrik'/>
+           <date month='August' year='2013'/>
+         </front>
+         <format type='TXT' target='sp-tcp-mapping-01.txt'/>
+       </reference>
+    </references>
+  </back>
+
+</rfc>
+

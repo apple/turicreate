@@ -3356,3 +3356,4 @@ static BOOL TestingEnum_IsValidValue(int32_t value) {
 @end
 
 //%PDDM-EXPAND-END TESTS_FOR_POD_VALUES(String, NSString, *, Objects, @"foo", @"bar", @"baz", @"mumble")
+

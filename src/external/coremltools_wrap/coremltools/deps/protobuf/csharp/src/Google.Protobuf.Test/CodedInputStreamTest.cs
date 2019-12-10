@@ -225,7 +225,7 @@ namespace Google.Protobuf
             Assert.AreEqual(0x7FFFFFFFFFFFFFFFL, CodedInputStream.DecodeZigZag64(0xFFFFFFFFFFFFFFFEL));
             Assert.AreEqual(unchecked((long) 0x8000000000000000L), CodedInputStream.DecodeZigZag64(0xFFFFFFFFFFFFFFFFL));
         }
-
+        
         [Test]
         public void ReadWholeMessage_VaryingBlockSizes()
         {
@@ -243,7 +243,7 @@ namespace Google.Protobuf
                 Assert.AreEqual(message, message2);
             }
         }
-
+                
         [Test]
         public void ReadHugeBlob()
         {
@@ -437,7 +437,7 @@ namespace Google.Protobuf
             var output = new CodedOutputStream(stream);
             output.WriteTag(1, WireFormat.WireType.LengthDelimited);
             output.WriteString("field 1");
-
+            
             // The outer group...
             output.WriteTag(2, WireFormat.WireType.StartGroup);
             output.WriteTag(1, WireFormat.WireType.Fixed32);

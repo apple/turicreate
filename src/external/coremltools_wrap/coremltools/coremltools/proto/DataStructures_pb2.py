@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='DataStructures.proto',
   package='CoreML.Specification',
   syntax='proto3',
-  serialized_pb=_b('\n\x14\x44\x61taStructures.proto\x12\x14\x43oreML.Specification\x1a\x12\x46\x65\x61tureTypes.proto\"|\n\x10StringToInt64Map\x12<\n\x03map\x18\x01 \x03(\x0b\x32/.CoreML.Specification.StringToInt64Map.MapEntry\x1a*\n\x08MapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x03:\x02\x38\x01\"|\n\x10Int64ToStringMap\x12<\n\x03map\x18\x01 \x03(\x0b\x32/.CoreML.Specification.Int64ToStringMap.MapEntry\x1a*\n\x08MapEntry\x12\x0b\n\x03key\x18\x01 \x01(\x03\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"~\n\x11StringToDoubleMap\x12=\n\x03map\x18\x01 \x03(\x0b\x32\x30.CoreML.Specification.StringToDoubleMap.MapEntry\x1a*\n\x08MapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"|\n\x10Int64ToDoubleMap\x12<\n\x03map\x18\x01 \x03(\x0b\x32/.CoreML.Specification.Int64ToDoubleMap.MapEntry\x1a*\n\x08MapEntry\x12\x0b\n\x03key\x18\x01 \x01(\x03\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"\x1e\n\x0cStringVector\x12\x0e\n\x06vector\x18\x01 \x03(\t\"\x1d\n\x0bInt64Vector\x12\x0e\n\x06vector\x18\x01 \x03(\x03\"\x1e\n\x0c\x44oubleVector\x12\x0e\n\x06vector\x18\x01 \x03(\x01\x42\x02H\x03P\x00\x62\x06proto3')
+  serialized_pb=_b('\n\x14\x44\x61taStructures.proto\x12\x14\x43oreML.Specification\x1a\x12\x46\x65\x61tureTypes.proto\"|\n\x10StringToInt64Map\x12<\n\x03map\x18\x01 \x03(\x0b\x32/.CoreML.Specification.StringToInt64Map.MapEntry\x1a*\n\x08MapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x03:\x02\x38\x01\"|\n\x10Int64ToStringMap\x12<\n\x03map\x18\x01 \x03(\x0b\x32/.CoreML.Specification.Int64ToStringMap.MapEntry\x1a*\n\x08MapEntry\x12\x0b\n\x03key\x18\x01 \x01(\x03\x12\r\n\x05value\x18\x02 \x01(\t:\x02\x38\x01\"~\n\x11StringToDoubleMap\x12=\n\x03map\x18\x01 \x03(\x0b\x32\x30.CoreML.Specification.StringToDoubleMap.MapEntry\x1a*\n\x08MapEntry\x12\x0b\n\x03key\x18\x01 \x01(\t\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"|\n\x10Int64ToDoubleMap\x12<\n\x03map\x18\x01 \x03(\x0b\x32/.CoreML.Specification.Int64ToDoubleMap.MapEntry\x1a*\n\x08MapEntry\x12\x0b\n\x03key\x18\x01 \x01(\x03\x12\r\n\x05value\x18\x02 \x01(\x01:\x02\x38\x01\"\x1e\n\x0cStringVector\x12\x0e\n\x06vector\x18\x01 \x03(\t\"\x1d\n\x0bInt64Vector\x12\x0e\n\x06vector\x18\x01 \x03(\x03\"\x1d\n\x0b\x46loatVector\x12\x0e\n\x06vector\x18\x01 \x03(\x02\"\x1e\n\x0c\x44oubleVector\x12\x0e\n\x06vector\x18\x01 \x03(\x01\"0\n\nInt64Range\x12\x10\n\x08minValue\x18\x01 \x01(\x03\x12\x10\n\x08maxValue\x18\x02 \x01(\x03\"\x1a\n\x08Int64Set\x12\x0e\n\x06values\x18\x01 \x03(\x03\"1\n\x0b\x44oubleRange\x12\x10\n\x08minValue\x18\x01 \x01(\x01\x12\x10\n\x08maxValue\x18\x02 \x01(\x01\x42\x02H\x03P\x00\x62\x06proto3')
   ,
   dependencies=[FeatureTypes__pb2.DESCRIPTOR,],
   public_dependencies=[FeatureTypes__pb2.DESCRIPTOR,])
@@ -363,6 +363,37 @@ _INT64VECTOR = _descriptor.Descriptor(
 )
 
 
+_FLOATVECTOR = _descriptor.Descriptor(
+  name='FloatVector',
+  full_name='CoreML.Specification.FloatVector',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='vector', full_name='CoreML.Specification.FloatVector.vector', index=0,
+      number=1, type=2, cpp_type=6, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=635,
+  serialized_end=664,
+)
+
+
 _DOUBLEVECTOR = _descriptor.Descriptor(
   name='DoubleVector',
   full_name='CoreML.Specification.DoubleVector',
@@ -389,8 +420,115 @@ _DOUBLEVECTOR = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=635,
-  serialized_end=665,
+  serialized_start=666,
+  serialized_end=696,
+)
+
+
+_INT64RANGE = _descriptor.Descriptor(
+  name='Int64Range',
+  full_name='CoreML.Specification.Int64Range',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='minValue', full_name='CoreML.Specification.Int64Range.minValue', index=0,
+      number=1, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='maxValue', full_name='CoreML.Specification.Int64Range.maxValue', index=1,
+      number=2, type=3, cpp_type=2, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=698,
+  serialized_end=746,
+)
+
+
+_INT64SET = _descriptor.Descriptor(
+  name='Int64Set',
+  full_name='CoreML.Specification.Int64Set',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='values', full_name='CoreML.Specification.Int64Set.values', index=0,
+      number=1, type=3, cpp_type=2, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=748,
+  serialized_end=774,
+)
+
+
+_DOUBLERANGE = _descriptor.Descriptor(
+  name='DoubleRange',
+  full_name='CoreML.Specification.DoubleRange',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='minValue', full_name='CoreML.Specification.DoubleRange.minValue', index=0,
+      number=1, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='maxValue', full_name='CoreML.Specification.DoubleRange.maxValue', index=1,
+      number=2, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=776,
+  serialized_end=825,
 )
 
 _STRINGTOINT64MAP_MAPENTRY.containing_type = _STRINGTOINT64MAP
@@ -407,7 +545,11 @@ DESCRIPTOR.message_types_by_name['StringToDoubleMap'] = _STRINGTODOUBLEMAP
 DESCRIPTOR.message_types_by_name['Int64ToDoubleMap'] = _INT64TODOUBLEMAP
 DESCRIPTOR.message_types_by_name['StringVector'] = _STRINGVECTOR
 DESCRIPTOR.message_types_by_name['Int64Vector'] = _INT64VECTOR
+DESCRIPTOR.message_types_by_name['FloatVector'] = _FLOATVECTOR
 DESCRIPTOR.message_types_by_name['DoubleVector'] = _DOUBLEVECTOR
+DESCRIPTOR.message_types_by_name['Int64Range'] = _INT64RANGE
+DESCRIPTOR.message_types_by_name['Int64Set'] = _INT64SET
+DESCRIPTOR.message_types_by_name['DoubleRange'] = _DOUBLERANGE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
 
 StringToInt64Map = _reflection.GeneratedProtocolMessageType('StringToInt64Map', (_message.Message,), dict(
@@ -484,12 +626,40 @@ Int64Vector = _reflection.GeneratedProtocolMessageType('Int64Vector', (_message.
   ))
 _sym_db.RegisterMessage(Int64Vector)
 
+FloatVector = _reflection.GeneratedProtocolMessageType('FloatVector', (_message.Message,), dict(
+  DESCRIPTOR = _FLOATVECTOR,
+  __module__ = 'DataStructures_pb2'
+  # @@protoc_insertion_point(class_scope:CoreML.Specification.FloatVector)
+  ))
+_sym_db.RegisterMessage(FloatVector)
+
 DoubleVector = _reflection.GeneratedProtocolMessageType('DoubleVector', (_message.Message,), dict(
   DESCRIPTOR = _DOUBLEVECTOR,
   __module__ = 'DataStructures_pb2'
   # @@protoc_insertion_point(class_scope:CoreML.Specification.DoubleVector)
   ))
 _sym_db.RegisterMessage(DoubleVector)
+
+Int64Range = _reflection.GeneratedProtocolMessageType('Int64Range', (_message.Message,), dict(
+  DESCRIPTOR = _INT64RANGE,
+  __module__ = 'DataStructures_pb2'
+  # @@protoc_insertion_point(class_scope:CoreML.Specification.Int64Range)
+  ))
+_sym_db.RegisterMessage(Int64Range)
+
+Int64Set = _reflection.GeneratedProtocolMessageType('Int64Set', (_message.Message,), dict(
+  DESCRIPTOR = _INT64SET,
+  __module__ = 'DataStructures_pb2'
+  # @@protoc_insertion_point(class_scope:CoreML.Specification.Int64Set)
+  ))
+_sym_db.RegisterMessage(Int64Set)
+
+DoubleRange = _reflection.GeneratedProtocolMessageType('DoubleRange', (_message.Message,), dict(
+  DESCRIPTOR = _DOUBLERANGE,
+  __module__ = 'DataStructures_pb2'
+  # @@protoc_insertion_point(class_scope:CoreML.Specification.DoubleRange)
+  ))
+_sym_db.RegisterMessage(DoubleRange)
 
 
 DESCRIPTOR.has_options = True

@@ -38,7 +38,7 @@ def convert(model, feature_names, target):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_expected_type(model, LogisticRegression)
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'coef_'))
 
@@ -52,7 +52,7 @@ def _convert(model, feature_names, target):
     set_classifier_interface_params(spec, feature_names, model.classes_, 'glmClassifier', output_features=target)
 
     glmClassifier = spec.glmClassifier
-
+    
     if model.multi_class == "ovr":
         glmClassifier.classEncoding = glmClassifier.OneVsRest
     else:
@@ -69,7 +69,7 @@ def _convert(model, feature_names, target):
             glmClassifier.offset.append(model.intercept_)
 
     for cur_in_row in model.coef_:
-        cur_out_row = glmClassifier.weights.add()
+        cur_out_row = glmClassifier.weights.add()        
         for val in cur_in_row:
             cur_out_row.value.append(val)
 

@@ -781,3 +781,4 @@ class FileOptions extends \Google\Protobuf\Internal\Message
     }
 
 }
+

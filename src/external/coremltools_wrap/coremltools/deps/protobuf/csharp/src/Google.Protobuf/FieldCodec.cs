@@ -278,7 +278,7 @@ namespace Google.Protobuf
 
             /// <summary>
             /// Returns a field codec which effectively wraps a value of type T in a message.
-            ///
+            /// 
             /// </summary>
             internal static FieldCodec<T> GetCodec<T>()
             {
@@ -408,7 +408,7 @@ namespace Google.Protobuf
         internal T DefaultValue { get; }
 
         private readonly int tagSize;
-
+        
         internal FieldCodec(
                 Func<CodedInputStream, T> reader,
                 Action<CodedOutputStream, T> writer,

@@ -117,8 +117,7 @@ enum ArrayDataType {
     //
     // If ShapeFlexibility is present, shape indicate a "default"
     // shape which must be consistent with the flexibilty specified
-    //
-    // For neural networks, shape must be of length 1 or 3, representing input shape [C] or [C,H,W], respectively.
+
     repeated int64 shape = 1;
 
     ArrayDataType dataType = 2;
@@ -215,3 +214,4 @@ message FeatureType {
 
     bool isOptional = 1000;
 }
+

@@ -638,7 +638,7 @@ namespace Google.Protobuf
         /// </summary>
         /// <remarks>
         /// ZigZag encodes signed integers into values that can be efficiently
-        /// encoded with varint.  (Otherwise, negative values must be
+        /// encoded with varint.  (Otherwise, negative values must be 
         /// sign-extended to 64 bits to be varint encoded, thus always taking
         /// 10 bytes on the wire.)
         /// </remarks>
@@ -653,7 +653,7 @@ namespace Google.Protobuf
         /// </summary>
         /// <remarks>
         /// ZigZag encodes signed integers into values that can be efficiently
-        /// encoded with varint.  (Otherwise, negative values must be
+        /// encoded with varint.  (Otherwise, negative values must be 
         /// sign-extended to 64 bits to be varint encoded, thus always taking
         /// 10 bytes on the wire.)
         /// </remarks>

@@ -34,7 +34,7 @@
         "define": [ "PCL" ]
       },
       "dependencies": {
-        "Microsoft.NETCore.App": {
+        "Microsoft.NETCore.App": { 
           "version": "1.0.0",
           "type": "platform"
         },

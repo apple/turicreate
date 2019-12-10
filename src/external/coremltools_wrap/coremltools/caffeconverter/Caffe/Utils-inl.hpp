@@ -17,7 +17,7 @@
 #include "MLModelSpecification.hpp"
 
 namespace CoreMLConverter {
-
+   
     /*
      * Convert all the metadata from the caffe layer.
      *
@@ -29,13 +29,13 @@ namespace CoreMLConverter {
                                      const std::vector<std::string>& top,
                                      ::google::protobuf::RepeatedPtrField< ::CoreML::Specification::NeuralNetworkLayer >* nnWrite,
                                      std::map<std::string, std::string>& mappingDataBlobNames) {
-
+        
         int currentLayerNumber = nnWrite->size() - 1;
         CoreML::Specification::NeuralNetworkLayer* specLayer = nnWrite->Mutable(currentLayerNumber);
-
+        
         //set name
         specLayer->set_name(name);
-
+        
         //get inputs and outputs
         std::vector<std::string> inputs;
         std::vector<std::string> outputs;
@@ -53,7 +53,7 @@ namespace CoreMLConverter {
                 outputs.push_back(mappingDataBlobNames[output]);
             }
         }
-
+        
         if (outputs.size() == inputs.size() == 1 && outputs[0]==inputs[0]) {
             if (currentLayerNumber == 0) {
                 std::stringstream ss;
@@ -73,19 +73,19 @@ namespace CoreMLConverter {
                 }
             }
         }
-
+        
         // set input names
         for (const auto& input: inputs) {
             specLayer->add_input(input);
         }
-
+        
         //set output names
         for (const auto& output: outputs) {
             specLayer->add_output(output);
         }
 
     }
-
+    
     /*
      * Throw an error when an error in caffe proto is found. (e.g.: Contradictory options set)
      *
@@ -95,13 +95,13 @@ namespace CoreMLConverter {
     inline void errorInCaffeProto(const std::string& errorDescription,
                                       const std::string& layerName,
                                       const std::string& layerType) {
-
+        
         std::stringstream ss;
         ss << "Caffe model error in layer '" << layerName << "' of type '"<< layerType << "': "<< errorDescription <<". " << std::endl;
         throw std::runtime_error(ss.str());
     }
-
-
+    
+    
     /*
      * Throw an error with an unsupported caffe parameter.
      *
@@ -111,16 +111,16 @@ namespace CoreMLConverter {
     inline void unsupportedCaffeParrameter(const std::string& parameterName,
                                     const std::string& layerName,
                                     const std::string& layerType) {
-
+        
         std::stringstream ss;
         ss << "Unsupported parameter '" << parameterName << "' in caffe layer '"
            << layerName  << "' of type '"<< layerType << "'." << std::endl;
         throw std::runtime_error(ss.str());
     }
-
-
+    
+    
     /*
-     * Throw an error with an unsupported caffe parameter with option.
+     * Throw an error with an unsupported caffe parameter with option. 
      *
      * @param[in] parameterName Name of the caffe parameter not supported.
      * @param[out] layerName Name of the layer in which its not supported.
@@ -129,7 +129,7 @@ namespace CoreMLConverter {
                                                    const std::string& layerName,
                                                    const std::string& layerType,
                                                    const std::string& optionName) {
-
+        
         std::stringstream ss;
         ss << "Unsupported option '" << optionName << "' for the parameter '"
            << parameterName << "' in layer '"<< layerName<< "' of type '" << layerType<< "' during caffe conversion."
@@ -143,18 +143,18 @@ namespace CoreMLConverter {
      * @param[in]  caffeSpec Caffe model format
      */
     inline void validateCaffeLayerTypeAndName(const caffe::LayerParameter& caffeLayer) {
-
+        
         if (!caffeLayer.has_name()) {
             throw std::runtime_error("Invalid caffe network: Encountered a layer that does not have a name.");
         }
-
+        
         if (!caffeLayer.has_type()) {
             std::stringstream ss;
             ss << "Invalid caffe network: Layer type missing for layer: '" << caffeLayer.name()  << "'." << std::endl;
             throw std::runtime_error(ss.str());
         }
     }
-
+    
     /*
      * Get the corresponding layer index in the weights file.
      *
@@ -162,8 +162,8 @@ namespace CoreMLConverter {
      */
     inline int getLayerIndex(const caffe::LayerParameter& caffeLayer,
                                              const std::map<std::string, int>& mapCaffeLayerNamesToIndex) {
-
-
+        
+        
         size_t layerIndexInWeightsFile = 0;
         if (mapCaffeLayerNamesToIndex.find(caffeLayer.name()) != mapCaffeLayerNamesToIndex.end()) {
             int l = mapCaffeLayerNamesToIndex.at(caffeLayer.name());
@@ -177,7 +177,7 @@ namespace CoreMLConverter {
         }
         assert(layerIndexInWeightsFile <= INT_MAX);
         return static_cast<int>(layerIndexInWeightsFile);
-
+        
     }
 
 }

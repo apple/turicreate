@@ -117,7 +117,7 @@ namespace CoreML {
 
         _getNode(treeId, nodeId, false).set_relativehitrate(v);
     }
-
+    
     /**
      * Missing values can either track the path of the "true" child or the "false" child.  By
      * default, they always travel down the false path.  Set this to alter this behavior for a
@@ -235,11 +235,11 @@ namespace CoreML {
         tree_classifier_parameters->set_postevaluationtransform(
                                                                 static_cast<Specification::TreeEnsemblePostEvaluationTransform>(transform));
     }
-
-
+    
+    
     ///////////////////////////////////////////////////////////////////////
     // Regressor parameters
-
+    
     /**
      * This function sets the post evaluation transform that will be used
      * following the prediction.  Possible values are "none", "sigmoid".  More
@@ -250,5 +250,5 @@ namespace CoreML {
         // TODO: this should do something.
         tree_regressor_parameters->set_postevaluationtransform(static_cast<Specification::TreeEnsemblePostEvaluationTransform>(transform));
     }
-
+    
 }

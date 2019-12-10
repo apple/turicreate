@@ -38,3 +38,4 @@ class FileOptions_OptimizeMode
      */
     const LITE_RUNTIME = 3;
 }
+

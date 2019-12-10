@@ -113,3 +113,4 @@ enum ForeignEnumNano {
   FOREIGN_NANO_BAR = 5;
   FOREIGN_NANO_BAZ = 6;
 }
+

@@ -172,7 +172,7 @@ public final class TestUtilLite {
     setPackedExtensions(builder);
     return builder.build();
   }
-
+  
   /**
    * Set every field of {@code builder} to the values expected by
    * {@code assertAllFieldsSet()}.

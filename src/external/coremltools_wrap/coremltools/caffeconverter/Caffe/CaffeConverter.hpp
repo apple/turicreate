@@ -16,7 +16,7 @@
 #include <functional>
 
 namespace CoreMLConverter {
-
+    
     //struct to specify parameters taken by convert layer functions
     struct ConvertLayerParameters {
         const caffe::NetParameter& prototxt;
@@ -28,7 +28,7 @@ namespace CoreMLConverter {
         std::map<std::string, std::vector<int64_t> >& mapBlobNameToDimensions;
         std::set<std::string>& caffeNetworkInputNames;
         int* layerId;
-
+        
         ConvertLayerParameters(const caffe::NetParameter& ptxt,
                                const caffe::NetParameter& pw,
                                std::map<std::string, std::string>& mapDataBlobs,
@@ -42,7 +42,7 @@ namespace CoreMLConverter {
                                     mapBlobNameToDimensions(blobToDim),
                                     caffeNetworkInputNames(networkInputNames) {}
     };
-
+    
     typedef std::function<void(ConvertLayerParameters layerParameters)> convertCaffeLayerFn;
 
     /*
@@ -86,10 +86,10 @@ namespace CoreMLConverter {
                              const std::set<std::string>& imageNames = std::set<std::string>(),
                              const std::string& classInputPath = "",
                              const std::string& predictedFeatureName = "");
-
+        
     // Specializations for each layer.
     // ------------------------------------------------------------------------
-
+    
     void convertCaffeInnnerProduct(ConvertLayerParameters layerParameters);
     void convertCaffeActivation(ConvertLayerParameters layerParameters);
     void convertCaffeLRN(ConvertLayerParameters layerParameters);

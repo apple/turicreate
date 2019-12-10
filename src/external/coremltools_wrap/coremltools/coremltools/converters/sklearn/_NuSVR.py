@@ -37,13 +37,14 @@ def convert(model, feature_names, target):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_expected_type(model, _NuSVR)
     return _SVR.convert(model, feature_names, target)
 
 def get_input_dimension(model):
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     check_fitted(model, lambda m: hasattr(m, 'support_vectors_'))
     return _SVR.get_input_dimension(model)
+

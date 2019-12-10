@@ -606,7 +606,7 @@ void WordTagger::clear_revision() {
   return revision_;
 }
 void WordTagger::set_revision(::google::protobuf::uint32 value) {
-
+  
   revision_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.WordTagger.revision)
 }
@@ -620,13 +620,13 @@ const ::std::string& WordTagger::language() const {
   return language_.GetNoArena();
 }
 void WordTagger::set_language(const ::std::string& value) {
-
+  
   language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.WordTagger.language)
 }
 #if LANG_CXX11
 void WordTagger::set_language(::std::string&& value) {
-
+  
   language_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CoreMLModels.WordTagger.language)
@@ -634,31 +634,31 @@ void WordTagger::set_language(::std::string&& value) {
 #endif
 void WordTagger::set_language(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CoreMLModels.WordTagger.language)
 }
 void WordTagger::set_language(const char* value, size_t size) {
-
+  
   language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CoreMLModels.WordTagger.language)
 }
 ::std::string* WordTagger::mutable_language() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CoreMLModels.WordTagger.language)
   return language_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* WordTagger::release_language() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CoreMLModels.WordTagger.language)
-
+  
   return language_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void WordTagger::set_allocated_language(::std::string* language) {
   if (language != NULL) {
-
+    
   } else {
-
+    
   }
   language_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), language);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CoreMLModels.WordTagger.language)
@@ -673,13 +673,13 @@ const ::std::string& WordTagger::tokensoutputfeaturename() const {
   return tokensoutputfeaturename_.GetNoArena();
 }
 void WordTagger::set_tokensoutputfeaturename(const ::std::string& value) {
-
+  
   tokensoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.WordTagger.tokensOutputFeatureName)
 }
 #if LANG_CXX11
 void WordTagger::set_tokensoutputfeaturename(::std::string&& value) {
-
+  
   tokensoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CoreMLModels.WordTagger.tokensOutputFeatureName)
@@ -687,31 +687,31 @@ void WordTagger::set_tokensoutputfeaturename(::std::string&& value) {
 #endif
 void WordTagger::set_tokensoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   tokensoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CoreMLModels.WordTagger.tokensOutputFeatureName)
 }
 void WordTagger::set_tokensoutputfeaturename(const char* value, size_t size) {
-
+  
   tokensoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CoreMLModels.WordTagger.tokensOutputFeatureName)
 }
 ::std::string* WordTagger::mutable_tokensoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CoreMLModels.WordTagger.tokensOutputFeatureName)
   return tokensoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* WordTagger::release_tokensoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CoreMLModels.WordTagger.tokensOutputFeatureName)
-
+  
   return tokensoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void WordTagger::set_allocated_tokensoutputfeaturename(::std::string* tokensoutputfeaturename) {
   if (tokensoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   tokensoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), tokensoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CoreMLModels.WordTagger.tokensOutputFeatureName)
@@ -726,13 +726,13 @@ const ::std::string& WordTagger::tokentagsoutputfeaturename() const {
   return tokentagsoutputfeaturename_.GetNoArena();
 }
 void WordTagger::set_tokentagsoutputfeaturename(const ::std::string& value) {
-
+  
   tokentagsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.WordTagger.tokenTagsOutputFeatureName)
 }
 #if LANG_CXX11
 void WordTagger::set_tokentagsoutputfeaturename(::std::string&& value) {
-
+  
   tokentagsoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CoreMLModels.WordTagger.tokenTagsOutputFeatureName)
@@ -740,31 +740,31 @@ void WordTagger::set_tokentagsoutputfeaturename(::std::string&& value) {
 #endif
 void WordTagger::set_tokentagsoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   tokentagsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CoreMLModels.WordTagger.tokenTagsOutputFeatureName)
 }
 void WordTagger::set_tokentagsoutputfeaturename(const char* value, size_t size) {
-
+  
   tokentagsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CoreMLModels.WordTagger.tokenTagsOutputFeatureName)
 }
 ::std::string* WordTagger::mutable_tokentagsoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CoreMLModels.WordTagger.tokenTagsOutputFeatureName)
   return tokentagsoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* WordTagger::release_tokentagsoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CoreMLModels.WordTagger.tokenTagsOutputFeatureName)
-
+  
   return tokentagsoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void WordTagger::set_allocated_tokentagsoutputfeaturename(::std::string* tokentagsoutputfeaturename) {
   if (tokentagsoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   tokentagsoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), tokentagsoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CoreMLModels.WordTagger.tokenTagsOutputFeatureName)
@@ -779,13 +779,13 @@ const ::std::string& WordTagger::tokenlocationsoutputfeaturename() const {
   return tokenlocationsoutputfeaturename_.GetNoArena();
 }
 void WordTagger::set_tokenlocationsoutputfeaturename(const ::std::string& value) {
-
+  
   tokenlocationsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.WordTagger.tokenLocationsOutputFeatureName)
 }
 #if LANG_CXX11
 void WordTagger::set_tokenlocationsoutputfeaturename(::std::string&& value) {
-
+  
   tokenlocationsoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CoreMLModels.WordTagger.tokenLocationsOutputFeatureName)
@@ -793,31 +793,31 @@ void WordTagger::set_tokenlocationsoutputfeaturename(::std::string&& value) {
 #endif
 void WordTagger::set_tokenlocationsoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   tokenlocationsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CoreMLModels.WordTagger.tokenLocationsOutputFeatureName)
 }
 void WordTagger::set_tokenlocationsoutputfeaturename(const char* value, size_t size) {
-
+  
   tokenlocationsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CoreMLModels.WordTagger.tokenLocationsOutputFeatureName)
 }
 ::std::string* WordTagger::mutable_tokenlocationsoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CoreMLModels.WordTagger.tokenLocationsOutputFeatureName)
   return tokenlocationsoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* WordTagger::release_tokenlocationsoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CoreMLModels.WordTagger.tokenLocationsOutputFeatureName)
-
+  
   return tokenlocationsoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void WordTagger::set_allocated_tokenlocationsoutputfeaturename(::std::string* tokenlocationsoutputfeaturename) {
   if (tokenlocationsoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   tokenlocationsoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), tokenlocationsoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CoreMLModels.WordTagger.tokenLocationsOutputFeatureName)
@@ -832,13 +832,13 @@ const ::std::string& WordTagger::tokenlengthsoutputfeaturename() const {
   return tokenlengthsoutputfeaturename_.GetNoArena();
 }
 void WordTagger::set_tokenlengthsoutputfeaturename(const ::std::string& value) {
-
+  
   tokenlengthsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.WordTagger.tokenLengthsOutputFeatureName)
 }
 #if LANG_CXX11
 void WordTagger::set_tokenlengthsoutputfeaturename(::std::string&& value) {
-
+  
   tokenlengthsoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CoreMLModels.WordTagger.tokenLengthsOutputFeatureName)
@@ -846,31 +846,31 @@ void WordTagger::set_tokenlengthsoutputfeaturename(::std::string&& value) {
 #endif
 void WordTagger::set_tokenlengthsoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   tokenlengthsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CoreMLModels.WordTagger.tokenLengthsOutputFeatureName)
 }
 void WordTagger::set_tokenlengthsoutputfeaturename(const char* value, size_t size) {
-
+  
   tokenlengthsoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CoreMLModels.WordTagger.tokenLengthsOutputFeatureName)
 }
 ::std::string* WordTagger::mutable_tokenlengthsoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CoreMLModels.WordTagger.tokenLengthsOutputFeatureName)
   return tokenlengthsoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* WordTagger::release_tokenlengthsoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CoreMLModels.WordTagger.tokenLengthsOutputFeatureName)
-
+  
   return tokenlengthsoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void WordTagger::set_allocated_tokenlengthsoutputfeaturename(::std::string* tokenlengthsoutputfeaturename) {
   if (tokenlengthsoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   tokenlengthsoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), tokenlengthsoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CoreMLModels.WordTagger.tokenLengthsOutputFeatureName)
@@ -885,13 +885,13 @@ const ::std::string& WordTagger::modelparameterdata() const {
   return modelparameterdata_.GetNoArena();
 }
 void WordTagger::set_modelparameterdata(const ::std::string& value) {
-
+  
   modelparameterdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.WordTagger.modelParameterData)
 }
 #if LANG_CXX11
 void WordTagger::set_modelparameterdata(::std::string&& value) {
-
+  
   modelparameterdata_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CoreMLModels.WordTagger.modelParameterData)
@@ -899,31 +899,31 @@ void WordTagger::set_modelparameterdata(::std::string&& value) {
 #endif
 void WordTagger::set_modelparameterdata(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   modelparameterdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CoreMLModels.WordTagger.modelParameterData)
 }
 void WordTagger::set_modelparameterdata(const void* value, size_t size) {
-
+  
   modelparameterdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CoreMLModels.WordTagger.modelParameterData)
 }
 ::std::string* WordTagger::mutable_modelparameterdata() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CoreMLModels.WordTagger.modelParameterData)
   return modelparameterdata_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* WordTagger::release_modelparameterdata() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CoreMLModels.WordTagger.modelParameterData)
-
+  
   return modelparameterdata_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void WordTagger::set_allocated_modelparameterdata(::std::string* modelparameterdata) {
   if (modelparameterdata != NULL) {
-
+    
   } else {
-
+    
   }
   modelparameterdata_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), modelparameterdata);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CoreMLModels.WordTagger.modelParameterData)

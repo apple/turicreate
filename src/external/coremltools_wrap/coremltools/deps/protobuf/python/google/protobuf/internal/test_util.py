@@ -845,3 +845,4 @@ class NonStandardInteger(numbers.Integral):
 
   def __repr__(self):
     return 'NonStandardInteger(%s)' % self.val
+

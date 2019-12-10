@@ -1,0 +1,8 @@
+The programs here are intended to demonstrate how to use the nanomsg API.  
+The intention is that you can use these programs (or parts thereof) in
+your own code.
+
+We welcome further contributions here.
+
+These have their own CMake driven configuration if you want to build them
+all.  They are not built automatically.

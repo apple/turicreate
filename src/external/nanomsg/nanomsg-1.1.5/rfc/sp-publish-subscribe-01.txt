@@ -1,0 +1,168 @@
+
+
+
+
+Internet Engineering Task Force                          M. Sustrik, Ed.
+Internet-Draft
+Intended status: Informational                               May 4, 2014
+Expires: November 5, 2014
+
+
+                 Publish/Subscribe Scalability Protocol
+                        sp-publish-subscribe-01
+
+Abstract
+
+   This document defines a scalability protocol used for distributing
+   data to arbitrary number of subscriber nodes.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on November 5, 2014.
+
+Copyright Notice
+
+   Copyright (c) 2014 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+
+
+Sustrik                 Expires November 5, 2014                [Page 1]
+
+Internet-Draft            Publish/Subscribe SP                  May 2014
+
+
+1.  Introduction
+
+   Blah-blah.
+
+2.  Underlying protocol
+
+   The publish/subscribe protocol can be run on top of any SP mapping,
+   such as, for example, SP TCPmapping [SPoverTCP].
+
+   Also, given that SP protocols describe the behaviour of entire
+   arbitrarily complex topology rather than of a single node-to-node
+   communication, several underlying protocols can be used in parallel.
+   For example, publisher can send a message to intermediary node via
+   TCP.  The intermediate node can then forward the message via PGM etc.
+
+   +---+     TCP    +---+    PGM    +---+
+   |   |----------->|   |---------->|   |
+   +---+            +---+           +---+
+                      |
+                      |      PGM    +---+
+                      +------------>|   |
+                                    +---+
+
+3.  Overview of the algorithm
+
+   Blah-blah.
+
+4.  Hop-by-hop vs. End-to-end
+
+   Blah-blah.
+
+5.  Hop-by-hop functionality
+
+5.1.  PUB endpoint
+
+   Blah-blah.
+
+5.2.  SUB endpoint
+
+   Blah-blah.
+
+6.  End-to-end functionality
+
+   End-to-end functionality is built on top of hop-to-hop functionality.
+   Thus, an endpoint on the edge of a topology contains all the hop-by-
+   hop functionality, but also implements additional functionality of
+
+
+
+
+Sustrik                 Expires November 5, 2014                [Page 2]
+
+Internet-Draft            Publish/Subscribe SP                  May 2014
+
+
+   its own.  This end-to-end functionality acts basically as a user of
+   the underlying hop-by-hop functionality.
+
+6.1.  PUB endpoint
+
+   Blah-blah.
+
+6.2.  SUB endpoint
+
+   Blah-blah.
+
+7.  Loop avoidance
+
+   TODO: Do we want any loop avoidance in PUB/SUB?
+
+8.  IANA Considerations
+
+   New SP endpoint types PUB and SUB should be registered by IANA.  For
+   now, value of 32 should be used for PUB endpoints and value of 33 for
+   SUB endpoints.
+
+   IANA should eventually also register and issue numbers for different
+   message matching algorithms.
+
+9.  Security Considerations
+
+   The mapping is not intended to provide any additional security to the
+   underlying protocol.  DoS concerns are addressed within the
+   specification.
+
+10.  References
+
+   [SPoverTCP]
+              Sustrik, M., "TCP mapping for SPs", August 2013.
+
+Author's Address
+
+   Martin Sustrik (editor)
+
+   Email: sustrik@250bpm.com
+
+
+
+
+
+
+
+
+
+
+
+Sustrik                 Expires November 5, 2014                [Page 3]
+

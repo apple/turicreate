@@ -37,7 +37,7 @@ def convert(model, feature_names, target):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_expected_type(model, _ensemble.GradientBoostingClassifier)
     def is_gbr_model(m):
         if len(m.estimators_) == 0:
@@ -66,3 +66,5 @@ def supports_output_scores(model):
 
 def get_output_classes(model):
     return list(model.classes_)
+
+

@@ -89,7 +89,7 @@ message NonMaximumSuppression {
     * larger than boxes after suppression, the unused boxes are filled with
     * zero confidence. If the prediction is handled by Core Vision, it is also
     * important that confidences are defined with the following semantics:
-    *
+    * 
     *   1. Confidences should be between 0 and 1
     *   2. The sum of the confidences for a prediction should not exceed 1, but is
     *      allowed to be less than 1

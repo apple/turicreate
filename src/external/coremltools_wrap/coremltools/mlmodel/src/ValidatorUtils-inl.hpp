@@ -16,7 +16,7 @@
 #include <sstream>
 
 namespace CoreML {
-
+    
     enum WeightParamType {
         FLOAT32, // float32 weights
         FLOAT16, // float16 weights
@@ -24,7 +24,7 @@ namespace CoreML {
         UNSPECIFIED, // More then one type specified
         EMPTY // No populated fields
     };
-
+    
     // Returns true if the weight params object has only a single type encoded in it
     inline bool checkSingleWeightType(const Specification::WeightParams &param) {
         int numFilledIn = 0;
@@ -34,10 +34,10 @@ namespace CoreML {
             numFilledIn++;
         if (param.rawvalue().size() > 0)
             numFilledIn++;
-
+        
         return (numFilledIn == 1);
     }
-
+    
     inline int numberOfWeightType(const Specification::WeightParams &param) {
         int numFilledIn = 0;
         if (param.floatvalue_size() > 0)
@@ -46,7 +46,7 @@ namespace CoreML {
             numFilledIn++;
         if (param.rawvalue().size() > 0)
             numFilledIn++;
-
+        
         return numFilledIn;
     }
 
@@ -68,7 +68,7 @@ namespace CoreML {
         }
         return EMPTY;
     }
-
+    
     /*
      * Utility that make sures the feature types are valid.
      *
@@ -78,7 +78,7 @@ namespace CoreML {
      */
     inline Result validateSchemaTypes(const std::vector<Specification::FeatureType::TypeCase>& allowedFeatureTypes,
                  const Specification::FeatureDescription& featureDesc) {
-
+        
         // Check the types
         auto type = featureDesc.type().Type_case();
         for (const auto& t : allowedFeatureTypes) {
@@ -87,7 +87,7 @@ namespace CoreML {
                 return Result();
             }
         }
-
+        
         // Invalid type
         std::stringstream out;
         out << "Unsupported type \"" << MLFeatureTypeType_Name(static_cast<MLFeatureTypeType>(featureDesc.type().Type_case()))
@@ -133,24 +133,24 @@ namespace CoreML {
                                                               int maxFeatureCount,
                                                               const std::vector<Specification::FeatureType::TypeCase>& allowedFeatureTypes) {
         Result result;
-
+        
         // 0 means no maximum fixed feature count.
         if (maxFeatureCount != 0 && features.size() > maxFeatureCount) {
             return Result(ResultType::TOO_MANY_FEATURES_FOR_MODEL_TYPE, "Feature descriptions exceeded " + std::to_string(maxFeatureCount));
         }
-
+        
         for (int i = 0; i < features.size(); i++) {
             result = validateSchemaTypes(allowedFeatureTypes, features[i]);
             if (!result.good()) {
                 return result;
             }
         }
-
+        
         return result;
     }
 
     /*
-     * Utility that checks a set of descriptions to validate
+     * Utility that checks a set of descriptions to validate 
      * there is a feature with a specific name and type in an allowed set
      */
     template <typename Descriptions>
@@ -167,8 +167,8 @@ namespace CoreML {
 
         return Result(ResultType::INTERFACE_FEATURE_NAME_MISMATCH, "Expected feature '" + name + "' to the model is not present in the model description.");
     }
-
-
+    
+    
     static inline int getWeightParamSize(const Specification::WeightParams& weights) {
         WeightParamType paramValueType = valueType(weights);
         switch (paramValueType) {
@@ -184,7 +184,7 @@ namespace CoreML {
         return 0;
 
     };
-
+    
     static inline int getWeightParamSizeInBytes(const Specification::WeightParams& weights) {
         WeightParamType paramValueType = valueType(weights);
         switch (paramValueType) {

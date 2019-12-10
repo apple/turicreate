@@ -432,7 +432,7 @@ void Duration::clear_seconds() {
   return seconds_;
 }
 void Duration::set_seconds(::google::protobuf::int64 value) {
-
+  
   seconds_ = value;
   // @@protoc_insertion_point(field_set:google.protobuf.Duration.seconds)
 }
@@ -446,7 +446,7 @@ void Duration::clear_nanos() {
   return nanos_;
 }
 void Duration::set_nanos(::google::protobuf::int32 value) {
-
+  
   nanos_ = value;
   // @@protoc_insertion_point(field_set:google.protobuf.Duration.nanos)
 }

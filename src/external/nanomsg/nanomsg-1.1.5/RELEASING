@@ -1,0 +1,42 @@
+Release process
+===============
+
+ 1. Check CI
+
+   * CircleCI: https://circleci.com/gh/nanomsg/nanomsg/tree/master
+   * AppVeyor: https://ci.appveyor.com/project/nanomsg/nanomsg
+
+ 2. Bump ABI version as appropriate (see the docs on versioning). This happens
+    in src/nn.h, check links there on which numbers to update.
+
+ 3. Bump the version in the .version file, such as 0.10-beta or 1.0 or
+    whatever.  This should match the tag you are going to use.
+
+ 4. Commit and push both of the above changes back to the public repo.
+
+ 5. Tag the new version, e.g. git tag -a 0.3-beta.  (Make sure to use -a
+    to create an annotated tag.)
+
+ 6. Push the tag to the repo, e.g. git push origin 0.3-beta.
+
+ 7. Wait a little bit for CI to build.
+
+ 8. Check the AppVeyor CI again just to be sure.
+
+ 9. Check the github releases page - a release for the tag should have
+    already been created with artifacts ready to download.
+
+10. Update the _config.yml page on the website (see gh-pages branch of the
+    repo).  The only thing that needs to be updated is the "latest" and
+    "latest_date".
+
+11. In the online docs (gh-pages branch), copy the man pages (adoc format)
+    into a subdirectory of _adoc named after the version (e.g.
+    "_adoc/v1.1.3"), then run the _adoc/build.sh script.  Add the resulting
+    "v1.1.3" directory, commit, and push.
+
+12. Send the announcement about the release. These commands might be useful:
+    git log --oneline 0.2-alpha..0.3-beta | wc -l
+    git diff -U0 0.2-alpha..0.3-beta AUTHORS
+
+13. Update the topic in the Gitter chatroom accordingly.

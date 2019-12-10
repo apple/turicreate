@@ -432,7 +432,7 @@ void Timestamp::clear_seconds() {
   return seconds_;
 }
 void Timestamp::set_seconds(::google::protobuf::int64 value) {
-
+  
   seconds_ = value;
   // @@protoc_insertion_point(field_set:google.protobuf.Timestamp.seconds)
 }
@@ -446,7 +446,7 @@ void Timestamp::clear_nanos() {
   return nanos_;
 }
 void Timestamp::set_nanos(::google::protobuf::int32 value) {
-
+  
   nanos_ = value;
   // @@protoc_insertion_point(field_set:google.protobuf.Timestamp.nanos)
 }

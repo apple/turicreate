@@ -47,7 +47,7 @@ def _recurse(coreml_tree, scikit_tree, tree_id, node_id, scaling = 1.0, mode = '
     """
     if not(HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     ## Recursion should not be called on the leaf node.
     if node_id == _tree.TREE_LEAF:
         raise ValueError("Invalid node_id %s" % _tree.TREE_LEAF)
@@ -130,10 +130,10 @@ def convert_tree_ensemble(model, input_features,
 
     class_labels: list[int]
         List of classes
-
+        
     post_evaluation_transform: list[int]
         Post evaluation transform
-
+        
     Returns
     -------
     model_spec: An object of type Model_pb.
@@ -142,7 +142,7 @@ def convert_tree_ensemble(model, input_features,
 
     num_dimensions = get_input_dimension(model)
     features = process_or_validate_features(input_features, num_dimensions)
-
+    
     n_classes = None
     if mode == 'classifier':
         n_classes = model.n_classes_
@@ -197,3 +197,4 @@ def convert_tree_ensemble(model, input_features,
         raise TypeError('Unknown scikit-learn tree model type.')
 
     return coreml_tree.spec
+
