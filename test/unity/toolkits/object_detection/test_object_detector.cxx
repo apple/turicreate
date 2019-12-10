@@ -761,7 +761,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   // Create an arbitrary SFrame with test_num_examples rows, since
   // object_detector uses the number of rows to compute num_examples, which is
   // used as a normalizer.
-  gl_sframe data({{"ignored", gl_sarray::from_sequence(0, test_num_examples)}});
+  gl_sframe data(
+      {{test_image_name, gl_sarray::from_sequence(0, test_num_examples)}});
 
   test_object_detector model;
   // Allocate the mock dependencies. We'll transfer ownership when the toolkit
