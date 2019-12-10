@@ -674,7 +674,7 @@ class ObjectDetector_legacy(_CustomModel):
         preds_per_box = 5 + len(self.classes)
         output_size = preds_per_box * num_anchors
 
-        # If prediction is done with ground truth, two sframes of the same z
+        # If prediction is done with ground truth, two sframes of the same
         # structure are returned, the second one containing ground truth labels
         num_returns = 2 if with_ground_truth else 1
 
