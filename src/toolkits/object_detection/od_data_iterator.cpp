@@ -104,7 +104,7 @@ std::vector<image_annotation> parse_annotations(
       if (key == "label") {
         // If the label is invalid (not in class_to_index_map) then ignore it.
         if (kv.second.get_type() == flex_type_enum::UNDEFINED) {
-          log_and_throw("Annotation labels must have valid type.");
+          log_and_throw("Annotation label is missing.");
         }
 
         const flex_string& label = kv.second.get<flex_string>();
