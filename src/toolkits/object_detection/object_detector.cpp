@@ -659,8 +659,11 @@ variant_type object_detector::predict(
   // Convert data to SFrame
   std::string image_column_name = read_state<flex_string>("feature");
   gl_sframe sframe_data = convert_types_to_sframe(data, image_column_name);
+  gl_sframe sframe_image_data(
+      {{image_column_name, sframe_data[image_column_name]}});
 
-  perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
+  perform_predict(sframe_image_data, consumer, confidence_threshold,
+                  iou_threshold);
 
   // Convert output to flex_list if data is a single image
   gl_sarray result_sarray = result.close();

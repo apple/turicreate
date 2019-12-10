@@ -241,6 +241,12 @@ class ObjectDetectorTest(unittest.TestCase):
         pred0 = self.model.predict(sf[:0])
         self.assertEqual(len(pred0), 0)
 
+    def test_predict_with_invalid_annotation(self):
+        #predict function shouldn't throw exception when annotations column is invalid
+        sf = self.sf.head()
+        sf[self.annotations] = sf[self.annotations].apply(lambda x:'invalid')
+        pred = self.model.predict(sf)
+
     def test_single_image(self):
         # Predict should work on a single image and product a list of dictionaries
         # (we set confidene threshold to 0 to ensure predictions are returned)
