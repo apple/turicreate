@@ -268,15 +268,21 @@ tf_image_augmenter::prepare_augmented_images(
     labeled_float_image data_to_augment) {
   size_t batch_size = data_to_augment.images.size();
 
+  size_t par_comp_size = std::min(batch_size, thread::cpu_count());
+
   // Allocate a result into which the worker threads can write their
   // thread-local results in parallel.
   labeled_float_image result;
-  result.images.resize(thread::cpu_count());
+  result.images.resize(par_comp_size);
   result.annotations.resize(batch_size);
 
   auto perform_augmentations = [&](size_t thread_id, size_t num_threads) {
-    size_t range_start = batch_size * thread_id / num_threads;
-    size_t range_end = batch_size * (thread_id + 1) / num_threads;
+    if(thread_id >= par_comp_size) {
+      return;
+    }
+
+    size_t range_start = batch_size * thread_id / par_comp_size;
+    size_t range_end = batch_size * (thread_id + 1) / par_comp_size;
 
     // Slice out the inputs we need to augment.
     labeled_float_image local_data_to_augment;
