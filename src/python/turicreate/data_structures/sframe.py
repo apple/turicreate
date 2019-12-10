@@ -2189,7 +2189,36 @@ class SFrame(object):
                     printed_sf[t] = self[t].astype(str)
         return printed_sf.head(num_rows)
     
-    def drop_duplicates(self, subset): 
+    def drop_duplicates(self, subset):
+        """
+        Return SFrame with duplicate rows removed, optionally only considering certain columns.
+
+        Parameters
+        ----------
+        subset : column label or sequence of labels, optional
+            Only consider certain columns for identifying duplicates, by default use all of the columns.
+
+        Examples
+        --------
+        >>> import turicreate as tc
+        >>> sf =tc.SFrame({'A': ['a', 'b', 'a','C'], 'B': ['b', 'a', 'b','D'], 'C': [1, 2, 1,8]})
+        >>> sf.drop_duplicates(subset=["A","B"])
+        Columns:
+	        A	str
+	        B	str
+	        C	int
+        Rows: 3
+        Data:
+        +---+---+---+
+        | A | B | C |
+        +---+---+---+
+        | b | a | 2 |
+        | C | D | 8 |
+        | a | b | 1 |
+        +---+---+---+
+        [3 rows x 3 columns]
+
+        """
         result =  all(elem in self.column_names()  for elem in subset)
         if result :
             return (self.groupby(subset, {col: aggregate.SELECT_ONE(col) for col in self.column_names() if col not in subset}))
