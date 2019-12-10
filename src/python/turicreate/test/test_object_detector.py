@@ -179,6 +179,44 @@ class ObjectDetectorTest(unittest.TestCase):
 
             tc.object_detector.create(sf)
 
+    def test_create_with_invalid_annotations_coordinate(self):
+        try:
+            with self.assertRaises(_ToolkitError):
+                sf = self.sf.head()
+                sf[self.annotations] = sf[self.annotations].apply(
+                        lambda x: [{'label': _CLASSES[0], 'coordinates':{'x':None, 'y':1, 'width':1, 'height': 1}}])
+                tc.object_detector.create(sf)
+        except _ToolkitError as e:
+            self.assertTrue('Invalid object annotations' in str(e))
+
+        try:
+            with self.assertRaises(_ToolkitError):
+                sf = self.sf.head()
+                sf[self.annotations] = sf[self.annotations].apply(
+                        lambda x: [{'label': _CLASSES[0], 'coordinates':{'x':1, 'y':[], 'width':1, 'height': 1}}])
+                tc.object_detector.create(sf)
+        except _ToolkitError as e:
+            self.assertTrue('Invalid object annotations' in str(e))
+
+        try:
+            with self.assertRaises(_ToolkitError):
+                sf = self.sf.head()
+                sf[self.annotations] = sf[self.annotations].apply(
+                        lambda x: [{'label': _CLASSES[0], 'coordinates':{'x':1, 'y':1, 'width':{}, 'height': 1}}])
+                tc.object_detector.create(sf)
+        except _ToolkitError as e:
+            self.assertTrue('Invalid object annotations' in str(e))
+
+        try:
+            with self.assertRaises(_ToolkitError):
+                sf = self.sf.head()
+                sf[self.annotations] = sf[self.annotations].apply(
+                        lambda x: [{'label': _CLASSES[0], 'coordinates':{'x':1, 'y':1, 'width':1, 'height': '1'}}])
+                tc.object_detector.create(sf)
+        except _ToolkitError as e:
+            self.assertTrue('Invalid object annotations' in str(e))
+
+
     def test_create_with_invalid_annotations_not_dict(self):
         with self.assertRaises(_ToolkitError):
             sf = self.sf.head()
