@@ -475,9 +475,15 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for key in config.keys():
             config[key] = _utils.convert_shared_float_array_to_numpy(config[key])
 
+        self.st_graph = _tf.Graph()
         self._batch_size = 1
         self._finetune_all_params = True
         self._define_training_graph = bool(config['st_training'])
+        self.sess = _tf.Session(graph=self.st_graph)
+        with self.st_graph.as_default():
+            self.init_style_transfer_graph(net_params)
+
+    def init_style_transfer_graph(self, net_params):
         self._tf_variables = define_tensorflow_variables(net_params)
 
         # TODO: take care of batch size
@@ -487,7 +493,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
 
         self.__define_graph();
         
-        self.sess = _tf.Session()
+        #self.sess = _tf.Session()
         init = _tf.global_variables_initializer()
         self.sess.run(init)
 
@@ -539,9 +545,11 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
 
     def export_weights(self):
         tf_export_params = {}
-        tvars = _tf.trainable_variables()
-        tvars_vals = self.sess.run(tvars)
-        
+
+        with self.st_graph.as_default():
+            tvars = _tf.trainable_variables()
+            tvars_vals = self.sess.run(tvars)
+
         for var, val in zip(tvars, tvars_vals):
             if 'weight' in var.name:
                 if 'conv' in var.name:
