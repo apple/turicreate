@@ -185,6 +185,8 @@ class ObjectDetectorTest(unittest.TestCase):
             for y in x:
                 y['label'] = None
             return x
+
+
         try:
             with self.assertRaises(_ToolkitError):
                 sf = self.sf.head()
@@ -335,6 +337,8 @@ class ObjectDetectorTest(unittest.TestCase):
             for y in x:
                 y['label'] = None
             return x
+
+
         try:
             with self.assertRaises(_ToolkitError):
                 sf = self.sf.head()
