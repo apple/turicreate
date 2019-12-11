@@ -158,7 +158,6 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
 
     for feature in features:
-
         _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
 
     # Check for missing values for sframe validation set
