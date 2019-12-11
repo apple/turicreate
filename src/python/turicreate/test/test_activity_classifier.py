@@ -86,6 +86,25 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                             prediction_window=self.prediction_window,
                             validation_set=None)
 
+    def test_create_invalid_batch_size(self):
+        with self.assertRaises(_ToolkitError):
+            tc.activity_classifier.create(self.data,
+                            features=self.features,
+                            target=self.target,
+                            session_id=self.session_id,
+                            prediction_window=self.prediction_window,
+                            validation_set=None,
+                            batch_size=-1)
+
+        with self.assertRaises(_ToolkitError):
+            tc.activity_classifier.create(self.data,
+                            features=self.features,
+                            target=self.target,
+                            session_id=self.session_id,
+                            prediction_window=self.prediction_window,
+                            validation_set=None,
+                            batch_size='1')
+
     def test_create_none_validation_set(self):
         model = tc.activity_classifier.create(self.data,
                             features=self.features,

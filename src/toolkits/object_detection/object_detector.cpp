@@ -660,7 +660,16 @@ variant_type object_detector::predict(
   std::string image_column_name = read_state<flex_string>("feature");
   gl_sframe sframe_data = convert_types_to_sframe(data, image_column_name);
 
-  perform_predict(sframe_data, consumer, confidence_threshold, iou_threshold);
+  // Predict function should only depends on the feature column
+  // So we extract the image column only.
+  if (!sframe_data.contains_column(image_column_name)) {
+    log_and_throw("Column name '" + image_column_name + "' does not exist.");
+  }
+  gl_sframe sframe_image_data(
+      {{image_column_name, sframe_data[image_column_name]}});
+
+  perform_predict(sframe_image_data, consumer, confidence_threshold,
+                  iou_threshold);
 
   // Convert output to flex_list if data is a single image
   gl_sarray result_sarray = result.close();

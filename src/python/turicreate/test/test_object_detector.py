@@ -179,6 +179,24 @@ class ObjectDetectorTest(unittest.TestCase):
 
             tc.object_detector.create(sf)
 
+    def test_create_with_missing_annotations_label(self):
+
+        def create_missing_annotations_label(x):
+            for y in x:
+                y['label'] = None
+            return x
+
+
+        try:
+            with self.assertRaises(_ToolkitError):
+                sf = self.sf.head()
+                sf[self.annotations] = sf[self.annotations].apply(
+                    lambda x: create_missing_annotations_label(x))
+                tc.object_detector.create(sf)
+        except _ToolkitError as e:
+            self.assertTrue('Annotation labels' in str(e))
+
+
     def test_create_with_invalid_annotations_not_dict(self):
         with self.assertRaises(_ToolkitError):
             sf = self.sf.head()
@@ -240,6 +258,12 @@ class ObjectDetectorTest(unittest.TestCase):
         # Predict should work on no input (and produce no predictions)
         pred0 = self.model.predict(sf[:0])
         self.assertEqual(len(pred0), 0)
+
+    def test_predict_with_invalid_annotation(self):
+        #predict function shouldn't throw exception when annotations column is invalid
+        sf = self.sf.head()
+        sf[self.annotations] = sf[self.annotations].apply(lambda x:'invalid')
+        pred = self.model.predict(sf)
 
     def test_single_image(self):
         # Predict should work on a single image and product a list of dictionaries
@@ -312,6 +336,23 @@ class ObjectDetectorTest(unittest.TestCase):
             sf = self.sf.copy()
             del sf[self.annotations]
             self.model.evaluate(sf.head())
+
+    def test_evaluate_with_missing_annotations_label(self):
+
+        def create_missing_annotations_label(x):
+            for y in x:
+                y['label'] = None
+            return x
+
+
+        try:
+            with self.assertRaises(_ToolkitError):
+                sf = self.sf.head()
+                sf[self.annotations] = sf[self.annotations].apply(
+                    lambda x: create_missing_annotations_label(x))
+                self.model.evaluate(sf)
+        except _ToolkitError as e:
+            self.assertTrue('Annotation labels' in str(e))
 
     def test_export_coreml(self):
         from PIL import Image

@@ -285,26 +285,29 @@ class float_array_image_augmenter : public image_augmenter {
   result prepare_images(std::vector<labeled_image> source_batch) override;
 
  protected:
-  /**
-   * Container for a batch of images and their annotations, represented as
-   * float arrays.
-   */
+  /** The output sent from TensorFlow after augmenting the images. */
+  struct float_array_result {
+    /** The images after augmenting sent from Tensorflow */
+    shared_float_array images;
+
+    /** The annotations associated with augmented images sent from Tensorflow */
+    std::vector<shared_float_array> annotations;
+  };
+
+  /** The output sent to TensorFlow to augment the images. */
   struct labeled_float_image {
-    /**
-     * Either a vector of N float arrays that are each stored in HWC format but
-     * with potentially different sizes, or a single float array in NHWC format.
+    /** The images to be augmented are raw images decoded
+     * and send to tf_image_augmneter as vector of shared_float_array
      */
     std::vector<shared_float_array> images;
 
-    /**
-     * The annotations of the images above. The size of this vector should equal
-     * the batch size N, but each float array may have different size, depending
-     * on the number of annotations for each image.
+    /** The annotations of the images to be augmented are raw images decoded
+     * and send to tf_image_augmneter as vector of shared_float_array
      */
     std::vector<shared_float_array> annotations;
   };
 
-  virtual labeled_float_image prepare_augmented_images(
+  virtual float_array_result prepare_augmented_images(
       labeled_float_image data_to_augment) = 0;
 
  private:
