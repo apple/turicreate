@@ -22,38 +22,238 @@ import turicreate.toolkits._tf_utils as _utils
 
 tf.disable_v2_behavior()
 
+# def convert_to_tensorflow_variables(images, annotations):
+#     defined_images = []
+#     for image in images:
+#         image = tf.Variable(image)
+#         defined_images.append(image)
+
+#     defined_annotations = []
+#     for annotation in annotations:
+#         annotation = tf.Variable(annotation)
+#         defined_annotations.append(annotation)
+#     return defined_images, defined_annotations
+
+def convert_to_numpy(images, annotations):
+    for image in images:
+        image = _utils.convert_shared_float_array_to_numpy(image)
+        images.append(image)
+    for annotation in annotations:
+        annotation = _utils.convert_shared_float_array_to_numpy(annotation)
+        annotations.append(annotation)
+    return images, annotations
+
 def get_augmented_data(images, annotations, output_height, output_width, resize_only):
 
-    # Suppresses verbosity to only errors
-    tf.logging.set_verbosity(tf.logging.ERROR)
-
+    options = {
+    'max_hue' : 0.05,
+    'max_brightness' : 0.05,
+    'max_contrast' : 1.25,
+    'max_saturation' : 1.25,
+    'flip' : True,
+    'skip_probability' : 0.1,
+    'min_aspect_ratio' : 0.8, 
+    'max_aspect_ratio' : 1.25, 
+    'min_area_fraction' : 1.0, 
+    'max_area_fraction' : 2.0, 
+    'max_attempts' : 50.0
+    }
+    
     graph = tf.Graph()
     with graph.as_default():
         with tf.Session() as session:
             output_shape = (output_height, output_width)
-
+            images, annotations = convert_to_numpy(images, annotations)
             if resize_only:
-                images = get_resized_images(images, output_shape)
-                resized_images = session.run(images)
-                resized_images = np.array(resized_images, dtype=np.float32)
-                return tuple((resized_images, len(resized_images)*[np.zeros(6)]))
+                resize_op = resize_augmenter(images, None, output_shape)
+                session.run(tf.global_variables_initializer)
+                resized_out = session.run(resize_op)
             else:
-                imgs, transformations = get_augmented_images(images, output_shape)
-                augmented_images, trans = session.run([imgs, transformations])
-                augmented_annotations = apply_bounding_box_transformation(images, annotations, trans, output_shape)
-                augmented_images = np.array(augmented_images, dtype=np.float32)
-                return tuple((augmented_images, augmented_annotations))
+                images = tf.placeholder(tf.float32, [32, None, None, 3])
+                annotations = tf.placeholder(tf.float32, [32, None, 6])
+                # images, annotations = crop_augmenter(images, annotations, options)
+                images, annotations = padding_augmenter(images, annotations, options)
+                images, annotations = horizontal_flip_augmenter(images, annotations, options)
+                images, annotations = color_augmenter(images, annotations, options)
+                images, annotations = hue_augmenter(images, annotations, options)
+                resize_op = resize_augmenter(images, annotations, output_shape)
+                session.run(tf.global_variables_initializer)
+                
+                resize_out = session.run(resize_op)  
+            return tuple(resized_out)
 
-def is_tensor(x):
-    # Checks if `x` is a symbolic tensor-like object.
-    return isinstance(x, (ops.Tensor, variables.Variable))
+def hue_augmenter(images, annotations, options):
+    max_hue = options['max_hue']
+    hue_images = []
+    for image in images:
+        if max_hue is not None and max_hue > 0:
+            image = tf.image.random_hue(image, max_delta=max_hue)
+        image = tf.clip_by_value(image, 0, 1)
+        hue_images.append(image)
+    return hue_images, annotations
 
-def image_dimensions(images, static_only=True):
-    # Returns the dimensions of an image tensor.
-    if static_only or images.get_shape().is_fully_defined():
-        return images.get_shape().as_list()
-    else:
-        return tf.unstack(tf.shape(images))
+def color_augmenter(images, annotations, options):
+    max_brightness = options['max_brightness']
+    max_contrast = options['max_contrast']
+    max_saturation = options['max_saturation']
+    colored_images = []
+    for image in images:
+        if max_brightness is not None and max_brightness > 0:
+            image = tf.image.random_brightness(image, max_delta=max_brightness)
+
+        if max_saturation is not None and max_saturation > 1.0:
+            log_sat = np.log(max_saturation)
+            image = tf.image.random_saturation(image, lower=np.exp(-log_sat), upper=np.exp(log_sat))
+
+        if max_contrast is not None and max_contrast > 1.0:
+            log_con = np.log(max_contrast)
+            image = tf.image.random_contrast(image, lower=np.exp(-log_con), upper=np.exp(log_con))
+        
+        image = tf.clip_by_value(image, 0, 1)
+        colored_images.append(image)
+    return colored_images, annotations
+
+def _crop_augmenter_loop_conditional(num_attempts, max_attempts, perform_cropped_annotations):
+    return math_ops.logical_and(math_ops.less_equal(num_attempts, max_attempts), math_ops.logical_not(perform_cropped_annotations))
+
+# image, annotation, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction
+
+def _crop_augmenter_loop_perform_crop(image_box, keep_annotations, annotations, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction):
+    cropped_height = random_ops.random_uniform([], min_height_var, max_height_var)
+    cropped_width = cropped_height * aspect_ratio_var
+    
+    x_offset = random_ops.random_uniform([], 0.0, (image_width - cropped_width))
+    y_offset = random_ops.random_uniform([], 0.0, (image_height - cropped_height))
+    
+    # image = tf.image.crop_to_bounding_box(image,  tf.to_int32(y_offset),  tf.to_int32(x_offset),  tf.to_int32(cropped_height),  tf.to_int32(cropped_width))
+    
+    unstacked_image_box = tf.unstack(image_box)
+    
+    unstacked_image_box[0] = tf.to_float(tf.to_int32(y_offset))
+    unstacked_image_box[1] = tf.to_float(tf.to_int32(x_offset))
+    unstacked_image_box[2] = tf.to_float(tf.to_int32(cropped_height))
+    unstacked_image_box[3] = tf.to_float(tf.to_int32(cropped_width))
+
+    image_box = tf.stack(unstacked_image_box)
+    
+    intersection_image_box = tf.unstack(image_box)
+    
+    intersection_image_box[0] = tf.to_float(tf.to_int32(y_offset))
+    intersection_image_box[1] = tf.to_float(tf.to_int32(x_offset))
+    intersection_image_box[2] = tf.to_float(tf.to_int32(cropped_height + y_offset))
+    intersection_image_box[3] = tf.to_float(tf.to_int32(cropped_width + x_offset))
+
+    intersection_bounding_box = tf.stack(intersection_image_box)
+    
+    identifier, box, confidence = decompose_annotations(annotations, tf.to_float(image_height), tf.to_float(image_width))
+    
+    unstacked_ann = tf.unstack(box)
+    new_annotations_arr = []
+    
+    ty = tf.to_float(tf.to_int32(y_offset))
+    tx = tf.to_float(tf.to_int32(x_offset))
+
+    # Make the transformation matrix
+    transformation = tf.reshape(tf.stack([
+        1.0,     0.0,     -ty,
+        0.0,     1.0,     -tx,
+        0.0,     0.0,    1.0]
+    ), (3, 3))
+
+    for ann in unstacked_ann:
+        intersection_points = _get_intersection_point(intersection_bounding_box, ann)
+        area_intersection = _get_area(intersection_points)
+        area_annotation = _get_area(ann)
+        area_fraction = area_intersection / area_annotation
+        
+        # TODO: figure out this condition but we don't ever hit this scenario
+        # overlap_condition = math_ops.less(area_intersection/area_annotation, 0.0)
+        # control_flow_ops.cond(overlap_condition, )
+        
+        # TODO: Replace this condition soon
+        
+        mat_intersection_points = tf.expand_dims(intersection_points, 0)
+        transformed_intersection_points = apply_transformation(mat_intersection_points, transformation)
+        
+        overlap_condition = math_ops.greater_equal(area_fraction, 0.5)
+        new_annotations_arr.append(control_flow_ops.cond(overlap_condition,
+                                                        lambda: tf.squeeze(transformed_intersection_points),
+                                                        lambda: np.array([0.0, 0.0, 0.0, 0.0], dtype=np.float32)))
+    
+    
+    transformed_box = tf.stack(new_annotations_arr, axis=0)
+    
+    annotations = recompose_annotations(identifier, transformed_box, confidence, tf.to_float(cropped_height), tf.to_float(cropped_width))
+    
+    perform_cropped_annotations = True
+    
+    return image_box, keep_annotations, annotations, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction
+
+def _crop_augmenter_loop_no_op(image_box, keep_annotations, annotations, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction):
+    return image_box, keep_annotations, annotations, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction
+
+def _crop_augmenter_loop_body(image_box, keep_annotations, annotations, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction):
+    # increment the num attempts
+    num_attempts = tf.add(num_attempts, 1.0)
+    aspect_ratio_var = random_ops.random_uniform([], min_aspect_ratio, max_aspect_ratio)
+    max_height_var = image_height
+    
+    max_height_from_width = tf.to_float(image_width) / aspect_ratio_var
+    height_condition = math_ops.greater(max_height_var, max_height_from_width)
+    max_height_var = control_flow_ops.cond(height_condition,
+                                    lambda: max_height_from_width,
+                                    lambda: max_height_var)
+    
+    max_height_from_area = tf.math.sqrt(max_area_fraction * image_height * image_width / aspect_ratio_var)
+    area_condition = math_ops.greater(max_height_var, max_height_from_area)
+    max_height_var = control_flow_ops.cond(area_condition,
+                                    lambda: max_height_from_area,
+                                    lambda: max_height_var)
+    
+    min_height_var = tf.math.sqrt(min_area_fraction * image_height * image_width / aspect_ratio_var)
+    crop_condition = math_ops.greater(min_height_var, max_height_var)
+    return control_flow_ops.cond(crop_condition,
+                                lambda: _crop_augmenter_loop_no_op(image_box, keep_annotations, annotations, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction),
+                                lambda: _crop_augmenter_loop_perform_crop(image_box, keep_annotations, annotations, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction))
+
+def _crop_augmenter_worker(image, annotation, num_attempts_var, max_attempts, perform_cropped_annotations, image_height, image_width, min_height_var, max_height_var, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_area_fraction, max_area_fraction, image_box, keep_annotations):
+    image_box, keep_annotations, annotation, num_attempts_var, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction = tf.while_loop(lambda image_box, keep_annotations, annotation, num_attempts_var, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction:_crop_augmenter_loop_conditional(num_attempts_var, max_attempts, perform_cropped_annotations),
+                                                                                                                                                                                                                                                                                lambda image_box, keep_annotations, annotation, num_attempts_var, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction:_crop_augmenter_loop_body(image_box, keep_annotations, annotation, num_attempts_var, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction),
+                                                                                                                                                                                                                                                                   [image_box, keep_annotations, annotation, num_attempts_var, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction])
+    return image_box, annotation
+
+def crop_augmenter(images, annotations, skip_probability=0.1, min_aspect_ratio=0.8, max_aspect_ratio=1.25, min_area_fraction=0.15, max_area_fraction=1.0, min_object_covered=0.0, max_attempts=50.0, min_eject_coverage=0.5):
+    crop_images = []
+    crop_annotations = []
+    for image, annotation in zip(images, annotations):
+        uniform_random = random_ops.random_uniform([], 0, 1.0)
+        skip_image = math_ops.greater(uniform_random, 0.0)
+        
+        image_height, image_width, _ = tf.unstack(tf.shape(image))
+        image_height = tf.to_float(image_height)
+        image_width = tf.to_float(image_width)
+        min_height_var = tf.Variable(image_height)
+        max_height_var = tf.Variable(image_height)
+        
+        image_box = tf.Variable([0, 0, image_height, image_width])
+        
+        num_annotations = tf.shape(annotation)[0]
+        keep_annotations = tf.ones([num_annotations])
+        
+        aspect_ratio_var  = tf.Variable(1.0)
+        num_attempts_var = tf.Variable(0.0)
+        
+        perform_cropped_annotations = tf.Variable(False)
+    
+        output = control_flow_ops.cond(skip_image,
+                                       lambda: _crop_augmenter_worker(image, annotation, num_attempts_var, max_attempts, perform_cropped_annotations, image_height, image_width, min_height_var, max_height_var, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_area_fraction, max_area_fraction, image_box, keep_annotations),
+                                       lambda: (image_box, annotation))
+        
+        cropped_image = tf.image.crop_to_bounding_box(image, tf.to_int32(output[0][0]), tf.to_int32(output[0][1]), tf.to_int32(output[0][2]), tf.to_int32(output[0][3]))
+        
+        crop_images.append(cropped_image)
+        crop_annotations.append(output[1])
+    return crop_images, crop_annotations
 
 def get_image_dimensions(image, rank):
     # Returns the dimensions of an image tensor.
@@ -63,310 +263,263 @@ def get_image_dimensions(image, rank):
         static_shape = image.get_shape().with_rank(rank).as_list()
         dynamic_shape = array_ops.unstack(array_ops.shape(image), rank)
         return [s if s is not None else d for s, d in zip(static_shape, dynamic_shape)]
-
-def check_three_dim_image(image, require_static=True):
-    # Assert image is three dimensional
-    try:
-        image_shape = image.get_shape().with_rank(3)
-    except ValueError:
-        raise ValueError("'image' must be three-dimensional.")
-    if require_static and not image_shape.is_fully_defined():
-        raise ValueError("'image' must be fully defined.")
-    if any(x == 0 for x in image_shape):
-        raise ValueError("all dims of 'image.shape' must be > 0: %s" %
-                                         image_shape)
-    if not image_shape.is_fully_defined():
-        return [check_ops.assert_positive(array_ops.shape(image),
-                ["all dims of 'image.shape' must be > 0."])]
-    else:
-        return []
-
-def check_atlease_three_dim_image(image, require_static=True):
-    # Assert image is atleast three dimensional
-    try:
-        if image.get_shape().ndims is None:
-            image_shape = image.get_shape().with_rank(3)
-        else:
-            image_shape = image.get_shape().with_rank_at_least(3)
-    except ValueError:
-        raise ValueError("'image' must be at least three-dimensional.")
-    if require_static and not image_shape.is_fully_defined():
-        raise ValueError('\'image\' must be fully defined.')
-    if any(x == 0 for x in image_shape):
-        raise ValueError('all dims of \'image.shape\' must be > 0: %s' %
-                                       image_shape)
-    if not image_shape.is_fully_defined():
-        return [check_ops.assert_positive(array_ops.shape(image),["all dims of 'image.shape' "
-                                                                           "must be > 0."])]
-    else:
-        return []
-
-def pad_to_ensure_size(image, target_height, target_width, random=True):
-    image = ops.convert_to_tensor(image, name='image')
-
-    assert_ops = []
-    assert_ops += check_three_dim_image(image, require_static=False)
     
-    image = control_flow_ops.with_dependencies(assert_ops, image)
-    # `crop_to_bounding_box` and `pad_to_bounding_box` have their own checks.
-    # Make sure our checks come first, so that error messages are clearer.
-    if is_tensor(target_height):
-        target_height = control_flow_ops.with_dependencies(assert_ops, target_height)
-    if is_tensor(target_width):
-        target_width = control_flow_ops.with_dependencies(assert_ops, target_width)
+def _padding_augmenter_loop_conditional(min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction):
+    return tf.math.logical_and(math_ops.greater_equal(min_height, max_height), math_ops.less(num_attempts, max_attempts))
 
-    def max_(x, y):
-        if is_tensor(x) or is_tensor(y):
-            return math_ops.maximum(x, y)
-        else:
-            return max(x, y)
+def _padding_augmenter_loop_body(min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction):
+    num_attempts = tf.add(num_attempts, 1.0)
+    aspect_ratio = random_ops.random_uniform([], tf.to_float(min_aspect_ratio), tf.to_float(max_aspect_ratio))
+    min_height = image_height
+    min_height_from_width = image_width / aspect_ratio;
+    
+    height_condition = math_ops.less(min_height, min_height_from_width)
+    min_height = control_flow_ops.cond(height_condition,
+                                lambda: min_height_from_width,
+                                lambda: min_height)
+    
+    min_height_from_area = tf.math.sqrt(min_area_fraction * image_height * image_width / aspect_ratio)
+    
+    area_condition = math_ops.less(min_height, min_height_from_area)
+    min_height = control_flow_ops.cond(area_condition,
+                                lambda: min_height_from_area,
+                                lambda: min_height)
+    
+    max_height = tf.math.sqrt(max_area_fraction * image_height * image_width / aspect_ratio)
+    return min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction
 
-    height, width, _ = image_dimensions(image, static_only=False)
-    width_diff = target_width - width
-    offset_crop_width = max_(-width_diff // 2, 0)
-    if random:
-        offset_pad_width = tf.random_uniform([], minval=0, maxval=max_(width_diff, 1), dtype=tf.int32)
-    else:
-        offset_pad_width = max_(width_diff // 2, 0)
-
-    height_diff = target_height - height
-    offset_crop_height = max_(-height_diff // 2, 0)
-    if random:
-        offset_pad_height = tf.random_uniform([], minval=0, maxval=max_(height_diff, 1), dtype=tf.int32)
-    else:
-        offset_pad_height = max_(height_diff // 2, 0)
-
-    # Maybe pad if needed.
-    resized = pad_to_bounding_box(image, offset_pad_height, offset_pad_width,
-                                           max_(target_height, height), max_(target_width, width))
-
-    # In theory all the checks below are redundant.
-    if resized.get_shape().ndims is None:
-        raise ValueError('resized contains no shape.')
-
-    resized_height, resized_width, _ = \
-        image_dimensions(resized, static_only=False)
-    return resized, (offset_pad_height, offset_pad_width)
-
-def pad_to_bounding_box(image, offset_height, offset_width, target_height,
-                                      target_width):
-    image = ops.convert_to_tensor(image, name='image')
-
-    is_batch = True
-    image_shape = image.get_shape()
-    if image_shape.ndims == 3:
-        is_batch = False
-        image = array_ops.expand_dims(image, 0)
-    elif image_shape.ndims is None:
-        is_batch = False
-        image = array_ops.expand_dims(image, 0)
-        image.set_shape([None] * 4)
-    elif image_shape.ndims != 4:
-        raise ValueError('\'image\' must have either 3 or 4 dimensions.')
-
-    assert_ops = check_atlease_three_dim_image(image, require_static=False)
-
+def  _padding_augmentation_apply(image, annotation, min_height, max_height, aspect_ratio, image_height, image_width):
+    padded_height = random_ops.random_uniform([], min_height, max_height)
+    padded_width = padded_height * aspect_ratio
+    
+    x_offset = random_ops.random_uniform([], 0.0, (padded_width  - image_width))
+    y_offset = random_ops.random_uniform([], 0.0, (padded_height  - image_height))
+    
+    image = array_ops.expand_dims(image, 0)
     batch, height, width, depth = get_image_dimensions(image, rank=4)
+    
+    after_padding_width = padded_width - width - x_offset
+    after_padding_height = padded_height - height - y_offset
+    
+    padd_arr = array_ops.stack([
+                  tf.to_float(tf.to_int32(y_offset)), tf.to_float(tf.to_int32(after_padding_height)),
+                  tf.to_float(tf.to_int32(x_offset)), tf.to_float(tf.to_int32(after_padding_width)),
+                  tf.to_float(tf.to_int32(height)), tf.to_float(tf.to_int32(width))])
 
-    after_padding_width = target_width - offset_width - width
-    after_padding_height = target_height - offset_height - height
-
-    assert_ops += _assert(offset_height >= 0, ValueError,
-                                              'offset_height must be >= 0')
-    assert_ops += _assert(offset_width >= 0, ValueError,
-                                              'offset_width must be >= 0')
-    assert_ops += _assert(after_padding_width >= 0, ValueError,
-                                              'width must be <= target - offset')
-    assert_ops += _assert(after_padding_height >= 0, ValueError,
-                                              'height must be <= target - offset')
-    image = control_flow_ops.with_dependencies(assert_ops, image)
-
-    # Do not pad on the depth dimensions.
     paddings = array_ops.reshape(array_ops.stack([
                   0, 0,
-                  offset_height, after_padding_height,
-                  offset_width, after_padding_width,
+                  tf.to_int32(y_offset), tf.to_int32(after_padding_height),
+                  tf.to_int32(x_offset), tf.to_int32(after_padding_width),
                   0, 0]), [4, 2])
+    
     padded = array_ops.pad(image, paddings, constant_values=0.5)
+    padded = array_ops.squeeze(padded, squeeze_dims=[0])
+    
+    ty = tf.to_float(y_offset) 
+    tx = tf.to_float(x_offset)
 
-    padded_shape = [None if is_tensor(i) else i
-                                  for i in [batch, target_height, target_width, depth]]
-    padded.set_shape(padded_shape)
-
-    if not is_batch:
-        padded = array_ops.squeeze(padded, squeeze_dims=[0])
-
-    return padded
-
-def apply_bounding_box_transformation(images, annotations, transformations, clip_to_shape=None):
-
-  aug_anns = []
-  for i in range(len(annotations)):
-      image = _utils.convert_shared_float_array_to_numpy(images[i])
-      height = image.shape[0]
-      width = image.shape[0]
-      ann = annotations[i]
-      annotation = _utils.convert_shared_float_array_to_numpy(ann)
-      identifier = np.expand_dims(annotation[:, 0], axis=1)
-      box = np.zeros(annotation[:, 1:5].shape)
-      for j in range(len(annotation)):
-          box[j][0] = annotation[j][2]*float(height)
-          box[j][1] = annotation[j][1]*float(width)
-          box[j][2] = (annotation[j][4]+annotation[j][2])*float(height)
-          box[j][3] = (annotation[j][3]+annotation[j][1])*float(width) 
-      
-      confidence = np.expand_dims(annotation[:, 5], axis=1)
-
-      # The bounding box is [n, 4] reshaped and ones added to multiply to tranformation matrix
-      v = np.concatenate([box.reshape(-1, 2), np.ones((box.shape[0]*2, 1), dtype=np.float32)], axis=1)
-      # Transform
-      v = np.dot(v, np.transpose(transformations[i]))
-      # Reverse shape
-      bbox_out = v[:, :2].reshape(-1, 4)
-      
-      # Make points correctly ordered (lower < upper)
-      # Can probably be made much nicer (numpy-ified?)
-      for i in range(len(bbox_out)):
-          if bbox_out[i][0] > bbox_out[i][2]:
-              bbox_out[i][0], bbox_out[i][2] = bbox_out[i][2], bbox_out[i][0]
-          if bbox_out[i][1] > bbox_out[i][3]:
-              bbox_out[i][1], bbox_out[i][3] = bbox_out[i][3], bbox_out[i][1]
-
-          if clip_to_shape is not None:
-              bbox_out[:, 0::2] = np.clip(bbox_out[:, 0::2], 0, clip_to_shape[0])
-              bbox_out[:, 1::2] = np.clip(bbox_out[:, 1::2], 0, clip_to_shape[1])
-
-      bbox = np.zeros(bbox_out.shape)
-      for k in range(len(bbox_out)):
-          bbox[k][0] = bbox_out[k][1]/float(clip_to_shape[0])
-          bbox[k][1] = bbox_out[k][0]/float(clip_to_shape[1])
-          bbox[k][2] = (bbox_out[k][3] - bbox_out[k][1])/float(clip_to_shape[0])
-          bbox[k][3] = (bbox_out[k][2] - bbox_out[k][0])/float(clip_to_shape[1])
-      
-      an = np.hstack((np.hstack((identifier, bbox)), confidence))
-      an = np.ascontiguousarray(an, dtype=np.float32)
-      aug_anns.append(an)
-  return aug_anns
-
-def _assert(cond, ex_type, msg):
-    # A polymorphic assert, works with tensors and boolean expressions.
-    # If `cond` is not a tensor, behave like an ordinary assert statement, except
-    # that a empty list is returned. If `cond` is a tensor, return a list
-    # containing a single TensorFlow assert op.
-
-    if is_tensor(cond):
-       return [control_flow_ops.Assert(cond, [msg])]
-    else:
-        if not cond:
-            raise ex_type(msg)
-        else:
-            return []
-
-def get_augmented_images(images, output_shape):
-
-    # Store transformations and augmented_images for the input batch
-    transformations = []
-    augmented_images = []
-
-    # Augmentation option
-    min_scale = 1/1.5 
-    max_scale = 1.5 
-    max_aspect_ratio=1.5 
-    max_hue=0.05 
-    max_brightness=0.05 
-    max_saturation=1.25 
-    max_contrast=1.25 
-    horizontal_flip=True 
-
-    for i in range(len(images)):
-
-        image = images[i]
-        image = _utils.convert_shared_float_array_to_numpy(image)
+    # Make the transformation matrix
+    transformation = tf.reshape(tf.stack([
+        1.0,     0.0,     ty,
+        0.0,     1.0,     tx,
+        0.0,     0.0,    1.0]
+        ), (3, 3))
+    
+    identifier, box, confidence = decompose_annotations(annotation, tf.to_float(height), tf.to_float(width))
+    transformed_box = apply_transformation(box, transformation)
+    recomp_annotation = recompose_annotations(identifier, transformed_box, confidence, tf.to_float(padded_height), tf.to_float(padded_width))
         
+    return (padded, recomp_annotation)
+    
+def _padding_augmenter_worker(image, annotation, min_aspect_ratio, max_aspect_ratio, min_area_fraction, max_area_fraction, max_attempts, aspect_ratio, image_height, image_width, min_height, max_height, num_attempts):
+    min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction = tf.while_loop(lambda min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction: _padding_augmenter_loop_conditional(min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction),
+                                                                                                                                                                                          lambda min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction: _padding_augmenter_loop_body(min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction),
+                                                                                                                                                                                          [min_height, max_height, num_attempts, max_attempts, aspect_ratio, min_aspect_ratio, max_aspect_ratio, image_height, image_width, min_area_fraction, max_area_fraction])
+    height_condition = math_ops.greater(min_height, max_height)
+    return control_flow_ops.cond(height_condition,
+                                lambda: (image, annotation),
+                                lambda: _padding_augmentation_apply(image, annotation, min_height, max_height, aspect_ratio, image_height, image_width))
+
+def padding_augmenter(images, annotations, options):
+    
+    skip_probability = options['skip_probability']
+    min_aspect_ratio = options['min_aspect_ratio']
+    max_aspect_ratio = options['max_aspect_ratio']
+    min_area_fraction = options['min_area_fraction']
+    max_area_fraction = options['max_area_fraction']
+    max_attempts = options['max_attempts']
+
+    padded_images = []
+    padded_annotations = []
+    
+    for image, annotation in zip(images, annotations):
+        image = _utils.convert_shared_float_array_to_numpy(image)
+        uniform_random = random_ops.random_uniform([], 0, 1.0)
+        skip_image = math_ops.greater(uniform_random, skip_probability)
+        
+        image_height, image_width, _ = tf.unstack(tf.shape(image))
+        image_height = tf.to_float(image_height)
+        image_width = tf.to_float(image_width)
+        min_height_var = tf.Variable(image_height)
+        max_height_var = tf.Variable(image_height)
+        aspect_ratio_var  = tf.Variable(1.0)
+        num_attempts_var = tf.Variable(0.0)
+        
+        output = control_flow_ops.cond(skip_image,
+                                       lambda: _padding_augmenter_worker(image, annotation, min_aspect_ratio, max_aspect_ratio, min_area_fraction, max_area_fraction, max_attempts, aspect_ratio_var, image_height, image_width, min_height_var, max_height_var, num_attempts_var),
+                                       lambda: (image, annotation))
+        padded_images.append(output[0])
+        padded_annotations.append(output[1])
+    return padded_images, padded_annotations
+
+def horizontal_flip_augmenter(images, annotations, options):
+    flipped_images = []
+    flipped_annotation = []
+
+    flip = options['flip']
+    
+    for image, annotation in zip(images, annotations):
+        # Handle the resize of the images
+        # image = _utils.convert_shared_float_array_to_numpy(image)
         height, width, _ = tf.unstack(tf.shape(image))
-        scale_h = tf.random_uniform([], minval=min_scale, maxval=max_scale)
-        scale_w = scale_h * tf.exp(tf.random_uniform([], minval=-np.log(max_aspect_ratio), maxval=np.log(max_aspect_ratio)))
-        new_height = tf.to_int32(tf.to_float(height) * scale_h)
-        new_width = tf.to_int32(tf.to_float(width) * scale_w)
-
-        image_scaled = tf.squeeze(tf.image.resize_bilinear(tf.expand_dims(image, 0), [new_height, new_width]), [0])
-        # Image padding
-        pad_image, pad_offset = pad_to_ensure_size(image_scaled, output_shape[0], output_shape[1])
-
-        new_height = tf.maximum(output_shape[0], new_height)
-        new_width = tf.maximum(output_shape[1], new_width)
-
-        slice_offset = (tf.random_uniform([], minval=0, maxval=new_height - output_shape[0] + 1, dtype=tf.int32),
-                        tf.random_uniform([], minval=0, maxval=new_width - output_shape[1] + 1, dtype=tf.int32))
-        augmented_image = array_ops.slice(pad_image, [slice_offset[0], slice_offset[1], 0], [output_shape[0], output_shape[1], 3])
-
-        if horizontal_flip:
+        
+        if flip:
             uniform_random = random_ops.random_uniform([], 0, 1.0)
-            did_horiz_flip = math_ops.less(uniform_random, .5)
-            augmented_image = control_flow_ops.cond(did_horiz_flip,
-                                             lambda: array_ops.reverse(augmented_image, [1]),
-                                             lambda: augmented_image)
+            did_horiz_flip = math_ops.less(uniform_random, 0.5)
+            image = control_flow_ops.cond(did_horiz_flip,
+                                lambda: array_ops.reverse(image, [1]),
+                                lambda: image)
             flip_sign = 1 - tf.to_float(did_horiz_flip) * 2
         else:
-            flip_sign = 1
+            flip_sign = 1.0
             did_horiz_flip = tf.constant(False)
 
-        ty = tf.to_float(pad_offset[0] - slice_offset[0] ) 
-        tx = flip_sign * tf.to_float(pad_offset[1] - slice_offset[1] ) + tf.to_float(did_horiz_flip) * output_shape[1]
-
-        # Make the transformation matrix
+        flipped_images.append(image)
+        
+        tx = tf.to_float(did_horiz_flip) * tf.to_float(width)
         transformation = tf.reshape(tf.stack([
-            scale_h, 0.0,                  ty,
-            0.0,     flip_sign * scale_w,   tx,
+            1.0,     0.0,                 0.0,
+            0.0,     flip_sign,            tx,
             0.0,     0.0,                 1.0]
+        ), (3, 3))
+        
+        identifier, box, confidence = decompose_annotations(annotation, tf.to_float(height), tf.to_float(width))
+        transformed_box = apply_transformation(box, transformation)
+        recomp_annotation = recompose_annotations(identifier, transformed_box, confidence, tf.to_float(height), tf.to_float(width))
+        
+        flipped_annotation.append(recomp_annotation)
+        
+    return flipped_images, flipped_annotation
+
+def resize_augmenter(images, annotations, output_shape):
+    resized_images = []
+    resized_annotation = []
+    
+    if annotations is None:
+        for image in images:
+            image = _utils.convert_shared_float_array_to_numpy(image)
+            new_height = tf.to_int32(tf.constant(output_shape[0], dtype=tf.float32))
+            new_width = tf.to_int32(tf.constant(output_shape[1], dtype=tf.float32))
+
+            image_scaled = tf.squeeze(tf.image.resize_bilinear(tf.expand_dims(image, 0), [new_height, new_width]), [0])
+
+            image_clipped = tf.clip_by_value(image_scaled, 0, 1)
+
+            resized_images.append(image_clipped)
+            resize_annotation.append(len(resized_images)*[np.zeros(6)])
+    else:       
+    
+        for image, annotation in zip(images, annotations):
+            # Handle the resize of the images
+            image = _utils.convert_shared_float_array_to_numpy(image)
+
+            new_height = tf.to_int32(tf.constant(output_shape[0], dtype=tf.float32))
+            new_width = tf.to_int32(tf.constant(output_shape[1], dtype=tf.float32))
+
+            image_scaled = tf.squeeze(tf.image.resize_bilinear(tf.expand_dims(image, 0), [new_height, new_width]), [0])
+
+            image_clipped = tf.clip_by_value(image_scaled, 0, 1)
+
+            # Transformation Matrix
+            height, width, _ = tf.unstack(tf.shape(image))
+
+            scale_h = tf.constant(output_shape[0], dtype=tf.float32) / tf.to_float(height)
+            scale_w = tf.constant(output_shape[1], dtype=tf.float32) / tf.to_float(width)
+
+            transformation = tf.reshape(tf.stack([
+                scale_h, 0.0,       0,
+                0.0,     scale_w,   0,
+                0.0,     0.0,       1.0]
             ), (3, 3))
 
-        if max_hue is not None and max_hue > 0:
-            image = tf.image.random_hue(augmented_image, max_delta=max_hue)
+            # Handle the Resize of the annotations
+            annotation = _utils.convert_shared_float_array_to_numpy(annotation)
 
-        if max_brightness is not None and max_brightness > 0:
-            image = tf.image.random_brightness(augmented_image, max_delta=max_brightness)
 
-        if max_saturation is not None and max_saturation > 1.0:
-            log_sat = np.log(max_saturation)
-            image = tf.image.random_saturation(augmented_image, lower=np.exp(-log_sat), upper=np.exp(log_sat))
+            identifier, box, confidence = decompose_annotations(annotation, tf.to_float(height), tf.to_float(width))
 
-        if max_contrast is not None and max_contrast > 1.0:
-            log_con = np.log(max_contrast)
-            image = tf.image.random_contrast(augmented_image, lower=np.exp(-log_con), upper=np.exp(log_con))
+            transformed_box = apply_transformation(box, transformation)
 
-        augmented_image = tf.clip_by_value(augmented_image, 0, 1)
-        augmented_images.append(augmented_image)
-        transformations.append(transformation)
-        
-    return augmented_images, transformations
+            recomp_annotation = recompose_annotations(identifier, transformed_box, confidence, tf.to_float(height), tf.to_float(width))
 
-def get_resized_images(images, output_shape):
+            resized_images.append(image_clipped)
+            resized_annotation.append(annotation)
     
-    resized_images = []
-    for i in range(len(images)):
-        
-        image = images[i] 
-        image = _utils.convert_shared_float_array_to_numpy(image)
-        height, width, _ = tf.unstack(tf.shape(image))
-        orig_shape = (height, width)
-        scale_h = tf.constant(output_shape[0], dtype=tf.float32) / tf.to_float(height)
-        scale_w = tf.constant(output_shape[1], dtype=tf.float32) / tf.to_float(width)
-        new_height = tf.to_int32(tf.to_float(height) * scale_h)
-        new_width = tf.to_int32(tf.to_float(width) * scale_w)
+    return resized_images, resized_annotation
 
-        image_scaled = tf.squeeze(tf.image.resize_bilinear(tf.expand_dims(image, 0), [new_height, new_width]), [0])
+def apply_transformation(box, transformation):
+    reshaped_box = tf.reshape(box, [ -1, 2])
+    
+    ones_padding = tf.ones(tf.shape(reshaped_box)[0], dtype=tf.dtypes.float32)
+    ones_padding = tf.expand_dims(ones_padding, 1)
+    
+    concat_box = tf.concat([reshaped_box, ones_padding], 1)
+    
+    transformed = tf.matmul(concat_box, tf.transpose(transformation))
+    transformed_sliced = transformed[:, :2]
+    
+    # reshaped_transformation = tf.reshape(transformed_sliced, [ -1, 4])
+    transpose_transformed_slices = tf.transpose(transformed_sliced)
+    reshaped_trans_slice = tf.reshape(transpose_transformed_slices, [ -1, 2])
+    unstacked_trans_slice = tf.unstack(reshaped_trans_slice, reshaped_trans_slice.shape[0], axis=0)
+    
+    flipped_slices = []
+    for uts in unstacked_trans_slice:
+        flip_values = math_ops.less(uts[1], uts[0])
+        flipped_slices.append(control_flow_ops.cond(flip_values,
+                                    lambda: array_ops.reverse(uts, [0]),
+                                    lambda: uts))
+    
+    stacked_flipped_slices = tf.stack(flipped_slices, axis=0)
+    reshaped_stacked_slices = tf.reshape(stacked_flipped_slices, [ -1, 4])
+    transpose_flipped_slices = tf.transpose(reshaped_stacked_slices)
+    corrected_flipped_slices = tf.reshape(transpose_flipped_slices, [ -1, 4])
+    
+    return corrected_flipped_slices
 
-        pad_image, pad_offset = pad_to_ensure_size(image_scaled, output_shape[0], output_shape[1],
-              random=False)
+def recompose_annotations(identifier, box, confidence, height, width):
+    unstacked_box = tf.unstack(box, box.shape[1], axis=1)
+    conf = tf.squeeze(confidence, axis=1)
+    iden = tf.squeeze(identifier, axis=1)
+    
+    ele_1 = unstacked_box[1] / width
+    ele_2 = unstacked_box[0] / height
+    ele_3 = (unstacked_box[3] - unstacked_box[1]) / width
+    ele_4 = (unstacked_box[2] - unstacked_box[0]) / height
 
-        new_height = tf.maximum(output_shape[0], new_height)
-        new_width = tf.maximum(output_shape[1], new_width)
+    return tf.stack([iden, ele_1, ele_2, ele_3, ele_4, conf], axis=1)
 
-        slice_offset = (tf.random_uniform([], minval=0, maxval=new_height - output_shape[0] + 1, dtype=tf.int32),
-                      tf.random_uniform([], minval=0, maxval=new_width - output_shape[1] + 1, dtype=tf.int32))
-        image = array_ops.slice(pad_image, [slice_offset[0], slice_offset[1], 0], [output_shape[0], output_shape[1], 3])
-        image = tf.clip_by_value(image, 0, 1)
-        resized_images.append(image)
-
-    return resized_images
+def decompose_annotations(annotation, height, width):
+    identifier = tf.expand_dims(annotation[:, 0], 1, name=None)
+    box = annotation[:, 1:5]
+    unstacked_box = tf.unstack(box, box.shape[1], axis=1)
+    
+    top = unstacked_box[1] * height
+    left = unstacked_box[0] * width
+    bottom = (unstacked_box[3] + unstacked_box[1])  * height
+    right = (unstacked_box[2] + unstacked_box[0]) * width
+    
+    stacked_boxes = tf.stack([top, left, bottom, right], axis=1)
+    
+    confidence = tf.expand_dims(annotation[:, 5], axis=1)
+    return identifier, stacked_boxes, confidence

@@ -318,6 +318,9 @@ tf_image_augmenter::prepare_augmented_images_sync(
   float_array_image_augmenter::labeled_float_image image_annotations;
 
   call_pybind_function([&]() {
+
+    pybind11::module os = pybind11::module::import("os");
+    os.attr("environ")["TF_CPP_MIN_LOG_LEVEL"] = "2";
     // Import the module from python that does data augmentation
     pybind11::module tf_aug = pybind11::module::import(
         "turicreate.toolkits.object_detector._tf_image_augmenter");
