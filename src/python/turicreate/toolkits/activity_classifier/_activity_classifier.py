@@ -158,8 +158,14 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
 
     for feature in features:
+
         _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
 
+    # Check for missing values for sframe validation set
+    if isinstance(validation_set, _SFrame):
+        _tkutl._raise_error_if_sframe_empty(validation_set, 'validation_set')
+        for feature in features:
+            _tkutl._handle_missing_values(validation_set, feature, 'validation_set')
 
     # C++ model
 
@@ -181,7 +187,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         model.train(dataset, target, session_id, validation_set, options)
         return ActivityClassifier(model_proxy=model, name=name)
-        
+
     from .._mxnet import _mxnet_utils
     from ._mx_model_architecture import _net_params
     from ._sframe_sequence_iterator import SFrameSequenceIter as _SFrameSequenceIter
