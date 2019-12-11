@@ -137,6 +137,9 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
         raise _ToolkitError('target must be of type str')
     if not isinstance(session_id, str):
         raise _ToolkitError('session_id must be of type str')
+    if not isinstance(batch_size, int):
+        raise _ToolkitError('batch_size must be of type int')
+
     _tkutl._raise_error_if_sframe_empty(dataset, 'dataset')
     _tkutl._numeric_param_check_range('prediction_window', prediction_window, 1, 400)
     _tkutl._numeric_param_check_range('max_iterations', max_iterations, 0, _six.MAXSIZE)
@@ -181,7 +184,7 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
         model.train(dataset, target, session_id, validation_set, options)
         return ActivityClassifier(model_proxy=model, name=name)
-        
+
     from .._mxnet import _mxnet_utils
     from ._mx_model_architecture import _net_params
     from ._sframe_sequence_iterator import SFrameSequenceIter as _SFrameSequenceIter
