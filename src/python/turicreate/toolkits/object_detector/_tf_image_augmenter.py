@@ -22,18 +22,6 @@ import turicreate.toolkits._tf_utils as _utils
 
 tf.disable_v2_behavior()
 
-# def convert_to_tensorflow_variables(images, annotations):
-#     defined_images = []
-#     for image in images:
-#         image = tf.Variable(image)
-#         defined_images.append(image)
-
-#     defined_annotations = []
-#     for annotation in annotations:
-#         annotation = tf.Variable(annotation)
-#         defined_annotations.append(annotation)
-#     return defined_images, defined_annotations
-
 def convert_to_numpy(images, annotations):
     for image in images:
         image = _utils.convert_shared_float_array_to_numpy(image)
@@ -71,7 +59,7 @@ def get_augmented_data(images, annotations, output_height, output_width, resize_
             else:
                 images = tf.placeholder(tf.float32, [32, None, None, 3])
                 annotations = tf.placeholder(tf.float32, [32, None, 6])
-                # images, annotations = crop_augmenter(images, annotations, options)
+                images, annotations = crop_augmenter(images, annotations, options)
                 images, annotations = padding_augmenter(images, annotations, options)
                 images, annotations = horizontal_flip_augmenter(images, annotations, options)
                 images, annotations = color_augmenter(images, annotations, options)
@@ -113,10 +101,57 @@ def color_augmenter(images, annotations, options):
         colored_images.append(image)
     return colored_images, annotations
 
+def _is_intersection(bounding_box1, bounding_box2):
+    bounding_box1_unstacked = tf.unstack(bounding_box1)
+    bounding_box2_unstacked = tf.unstack(bounding_box2)
+    is_intersection_cond = math_ops.logical_and(math_ops.logical_and(math_ops.less(bounding_box1_unstacked[0], bounding_box2_unstacked[2]),
+                                                                     math_ops.less(bounding_box1_unstacked[1], bounding_box2_unstacked[3])),
+                                                math_ops.logical_and(math_ops.less(bounding_box2_unstacked[0], bounding_box1_unstacked[2]),
+                                                                     math_ops.less(bounding_box2_unstacked[1], bounding_box1_unstacked[3])))
+    
+    return control_flow_ops.cond(is_intersection_cond,
+                                lambda: True,
+                                lambda: False)
+def _get_middle_points(bounding_box1, bounding_box2):
+    stacked_points = tf.transpose(tf.stack([bounding_box1, bounding_box2]))
+    uts = tf.unstack(stacked_points)
+
+    flip_values_0 = math_ops.greater(uts[0][1], uts[0][0])
+    uts[0] = control_flow_ops.cond(flip_values_0,
+                        lambda: array_ops.reverse(uts[0], [0]),
+                        lambda: uts[0])
+    
+    flip_values_1 = math_ops.greater(uts[1][1], uts[1][0])
+    uts[1] = control_flow_ops.cond(flip_values_1,
+                        lambda: array_ops.reverse(uts[1], [0]),
+                        lambda: uts[1])
+    
+    flip_values_2 = math_ops.less(uts[2][1], uts[2][0])
+    uts[2] = control_flow_ops.cond(flip_values_2,
+                        lambda: array_ops.reverse(uts[2], [0]),
+                        lambda: uts[2])
+    
+    flip_values_3 = math_ops.less(uts[3][1], uts[3][0])
+    uts[3] = control_flow_ops.cond(flip_values_3,
+                        lambda: array_ops.reverse(uts[3], [0]),
+                        lambda: uts[3])
+
+    restack_points = tf.stack(uts)[:, :1]
+    reshaped_points = tf.reshape(restack_points, [ -1, 4])
+    
+    return tf.squeeze(reshaped_points)
+
+def _get_intersection_point(bounding_box1, bounding_box2):
+    intersection_cond = _is_intersection(bounding_box1, bounding_box2)
+    return control_flow_ops.cond(intersection_cond,
+                                lambda: _get_middle_points(bounding_box1, bounding_box2),
+                                lambda: np.array([0.0, 0.0, 0.0, 0.0], dtype=np.float32))
+def _get_area(bounds):
+    points = tf.unstack(bounds)
+    return ((points[2] - points[0]) * (points[3] - points[1]))
+
 def _crop_augmenter_loop_conditional(num_attempts, max_attempts, perform_cropped_annotations):
     return math_ops.logical_and(math_ops.less_equal(num_attempts, max_attempts), math_ops.logical_not(perform_cropped_annotations))
-
-# image, annotation, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction
 
 def _crop_augmenter_loop_perform_crop(image_box, keep_annotations, annotations, num_attempts, max_attempts, perform_cropped_annotations, aspect_ratio_var, min_aspect_ratio, max_aspect_ratio, min_height_var, max_height_var, image_height, image_width, min_area_fraction, max_area_fraction):
     cropped_height = random_ops.random_uniform([], min_height_var, max_height_var)
@@ -124,9 +159,7 @@ def _crop_augmenter_loop_perform_crop(image_box, keep_annotations, annotations, 
     
     x_offset = random_ops.random_uniform([], 0.0, (image_width - cropped_width))
     y_offset = random_ops.random_uniform([], 0.0, (image_height - cropped_height))
-    
-    # image = tf.image.crop_to_bounding_box(image,  tf.to_int32(y_offset),  tf.to_int32(x_offset),  tf.to_int32(cropped_height),  tf.to_int32(cropped_width))
-    
+        
     unstacked_image_box = tf.unstack(image_box)
     
     unstacked_image_box[0] = tf.to_float(tf.to_int32(y_offset))
@@ -166,12 +199,8 @@ def _crop_augmenter_loop_perform_crop(image_box, keep_annotations, annotations, 
         area_annotation = _get_area(ann)
         area_fraction = area_intersection / area_annotation
         
-        # TODO: figure out this condition but we don't ever hit this scenario
-        # overlap_condition = math_ops.less(area_intersection/area_annotation, 0.0)
-        # control_flow_ops.cond(overlap_condition, )
-        
         # TODO: Replace this condition soon
-        
+    
         mat_intersection_points = tf.expand_dims(intersection_points, 0)
         transformed_intersection_points = apply_transformation(mat_intersection_points, transformation)
         
