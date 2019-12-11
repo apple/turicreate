@@ -188,7 +188,6 @@ endif()
 # Get framework dependencies.
 if (APPLE)
   find_library(ACCELERATE NAMES Accelerate)
-  find_library(APPKIT AppKit)
   find_library(CORE_GRAPHICS CoreGraphics)
   find_library(JAVASCRIPT_CORE JavaScriptCore)
   find_library(FOUNDATION Foundation)
@@ -198,8 +197,13 @@ if (APPLE)
   find_library(METAL NAMES Metal)
   find_library(METAL_PERFORMANCE_SHADERS NAMES MetalPerformanceShaders)
   set(_TC_APPLE_DEPENDENCIES 
-    ${ACCELERATE} ${APPKIT} ${CORE_GRAPHICS} ${JAVASCRIPT_CORE} ${FOUNDATION} 
+    ${ACCELERATE} ${CORE_GRAPHICS} ${JAVASCRIPT_CORE} ${FOUNDATION} 
     ${CORE_IMAGE} ${CORE_ML} ${CORE_VIDEO} ${METAL} ${METAL_PERFORMANCE_SHADERS})
+
+  if(TC_BUILD_IOS)
+    find_library(APPKIT AppKit)
+    set(_TC_APPLE_DEPENDENCIES ${_TC_APPLE_DEPENDENCIES} ${APPKIT}) 
+  endif()
 endif()
 
 
