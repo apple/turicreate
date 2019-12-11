@@ -126,7 +126,7 @@ std::vector<image_annotation> parse_annotations(
           if (coord_kv.second.get_type() != flex_type_enum::FLOAT and
               coord_kv.second.get_type() != flex_type_enum::INTEGER) {
             log_and_throw(
-                "Bounding box co-ordinates must be int or float values.");
+                "Bounding box coordinates must be int or float values.");
           }
 
           float coord_val = coord_kv.second;
