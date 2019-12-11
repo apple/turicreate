@@ -48,7 +48,7 @@ if(WIN32)
   add_definitions(-D_WIN32_WINNT=0x0600)
 endif()
 
-if(TC_BUILD_IOS)
+if(${TC_BUILD_IOS})
   add_definitions(-DTC_BUILD_IOS)
 
   if(${TC_BUILD_REMOTEFS})
@@ -200,7 +200,7 @@ if (APPLE)
     ${ACCELERATE} ${CORE_GRAPHICS} ${JAVASCRIPT_CORE} ${FOUNDATION} 
     ${CORE_IMAGE} ${CORE_ML} ${CORE_VIDEO} ${METAL} ${METAL_PERFORMANCE_SHADERS})
 
-  if(TC_BUILD_IOS)
+  if(${TC_BUILD_IOS})
     find_library(APPKIT AppKit)
     set(_TC_APPLE_DEPENDENCIES ${_TC_APPLE_DEPENDENCIES} ${APPKIT}) 
   endif()
@@ -470,7 +470,7 @@ if(APPLE)
     ${CORE_VIDEO}
     ${FOUNDATION}
   )
-  if(NOT TC_BUILD_IOS)
+  if(NOT ${TC_BUILD_IOS})
     set(_TC_COMMON_OBJECTS
       ${_TC_COMMON_OBJECTS}
       "$<TARGET_OBJECTS:vega_renderer>"
