@@ -91,7 +91,7 @@ def resize_augmenter(image, annotation,
     return image_clipped, annotation
 
 
-def horizontal_flip_augmenter(image, annotation, skip_probability=0.0):
+def horizontal_flip_augmenter(image, annotation, skip_probability=0.5):
     if np.random.uniform(0.0, 1.0) < skip_probability:
         return image, annotation
     
@@ -99,7 +99,8 @@ def horizontal_flip_augmenter(image, annotation, skip_probability=0.0):
     flipped_image = np.flip(image, 1)
     
     for i in range(0, len(annotation)):
-        annotation[i][1] = 1 - annotation[i][1] - annotation[i][3]
+        if np.any(annotation[i][1:5]):
+            annotation[i][1] = 1 - annotation[i][1] - annotation[i][3]
 
     return flipped_image, annotation
 
@@ -162,6 +163,10 @@ def padding_augmenter(image,
         identifier = aug[0:1]
         bounds = aug[1:5]
         confidence = aug[5:6]
+
+        if not np.any(bounds):
+            formatted_annotation.append(np.concatenate([identifier, np.array([0, 0, 0, 0]), confidence]))
+            continue
             
         width = bounds[2]
         height = bounds[3]
@@ -237,6 +242,7 @@ def crop_augmenter(image,
         crop_bounds_y2 = y_offset + cropped_height
         
         formatted_annotation = []
+        condition_met = True
         for aug in annotation:
             identifier = aug[0:1]
             bounds = aug[1:5]
@@ -269,7 +275,8 @@ def crop_augmenter(image,
                 area_coverage = intersection_area / annotation_area
                 
                 if area_coverage < min_object_covered:
-                    continue
+                    condition_met = False
+                    break
                 
                 if area_coverage >= min_eject_coverage:
                     transformation_matrix = np.array([
@@ -277,16 +284,16 @@ def crop_augmenter(image,
                         [0.0,     1.0,     -x_offset],
                         [0.0,     0.0,    1.0]
                     ])
-                    
+                        
                     v = np.concatenate([intersection.reshape((2, 2)), np.ones((2, 1), dtype=np.float32)], axis=1)
                     transposed_v = np.dot(v, np.transpose(transformation_matrix))
                     t_intersection = np.squeeze(transposed_v[:, :2].reshape(-1, 4))
-                    
+                        
                     if t_intersection[0] > t_intersection[2]:
                         t_intersection[0], t_intersection[2] = t_intersection[2], t_intersection[0]
                     if t_intersection[1] > t_intersection[3]:
                         t_intersection[1], t_intersection[3] = t_intersection[3], t_intersection[1]
-                    
+                        
                     ele_1 = t_intersection[1] / cropped_width
                     ele_2 = t_intersection[0] / cropped_height
                     ele_3 = (t_intersection[3] - t_intersection[1]) /cropped_width
@@ -299,21 +306,17 @@ def crop_augmenter(image,
                 formatted_annotation.append(np.concatenate([identifier, np.array([0.0, 0.0, 0.0, 0.0]), confidence]))
         
         
-        def check_formatted_annotation(fa):
-            for f in fa:
-                if np.any(f[1:5]):
-                    return True
-            return False
-        
-        if check_formatted_annotation(formatted_annotation):
-            y_offset = int(y_offset)
-            x_offset = int(x_offset)
-            end_y = int(cropped_height + y_offset)
-            end_x = int(cropped_width + x_offset)
+        if not condition_met:
+            continue
+
+        y_offset = int(y_offset)
+        x_offset = int(x_offset)
+        end_y = int(cropped_height + y_offset)
+        end_x = int(cropped_width + x_offset)
             
-            image_cropped = image[y_offset:end_y, x_offset:end_x]
+        image_cropped = image[y_offset:end_y, x_offset:end_x]
             
-            return np.array(image_cropped), np.array(formatted_annotation, dtype=np.float32)
+        return np.array(image_cropped), np.array(formatted_annotation, dtype=np.float32)
     
     return np.array(image), annotation
 
@@ -321,9 +324,9 @@ def complete_augmenter(img_tf, ann_tf):
     img_tf, ann_tf = tf.numpy_function(func=crop_augmenter, inp=[img_tf, ann_tf], Tout=[tf.float32, tf.float32])
     img_tf, ann_tf = tf.numpy_function(func=padding_augmenter, inp=[img_tf, ann_tf], Tout=[tf.float32, tf.float32])
     img_tf, ann_tf = tf.numpy_function(func=horizontal_flip_augmenter, inp=[img_tf, ann_tf], Tout=[tf.float32, tf.float32])
-    img_tf, ann_tf = resize_augmenter(img_tf, ann_tf, (416, 416))
     img_tf, ann_tf = color_augmenter(img_tf, ann_tf)
     img_tf, ann_tf = hue_augmenter(img_tf, ann_tf)
+    img_tf, ann_tf = resize_augmenter(img_tf, ann_tf, (416, 416))
     return img_tf, ann_tf
 
 class DataAugmenter(object):
@@ -349,6 +352,7 @@ class DataAugmenter(object):
             processed_annotations = []
             for o in aug_output:
                 processed_images.append(o[0])
-                processed_annotations.append(o[1])
+                processed_annotations.append(np.ascontiguousarray(o[1], dtype=np.float32))
             processed_images = np.array(processed_images, dtype=np.float32)
+            processed_images = np.ascontiguousarray(processed_images, dtype=np.float32)
             return tuple((processed_images, processed_annotations))
