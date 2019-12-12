@@ -78,6 +78,7 @@ def color_augmenter(image, annotation,
 
 def resize_augmenter(image, annotation,
                      output_shape = _DEFAULT_AUG_PARAMS["output_shape"]):
+    
 
     new_height = tf.cast(output_shape[0], dtype=tf.int32)
     new_width = tf.cast(output_shape[1], dtype=tf.int32)
@@ -320,33 +321,43 @@ def crop_augmenter(image,
     
     return np.array(image), annotation
 
-def complete_augmenter(img_tf, ann_tf):
+def complete_augmenter(img_tf, ann_tf, output_height, output_width):
     img_tf, ann_tf = tf.numpy_function(func=crop_augmenter, inp=[img_tf, ann_tf], Tout=[tf.float32, tf.float32])
     img_tf, ann_tf = tf.numpy_function(func=padding_augmenter, inp=[img_tf, ann_tf], Tout=[tf.float32, tf.float32])
     img_tf, ann_tf = tf.numpy_function(func=horizontal_flip_augmenter, inp=[img_tf, ann_tf], Tout=[tf.float32, tf.float32])
     img_tf, ann_tf = color_augmenter(img_tf, ann_tf)
     img_tf, ann_tf = hue_augmenter(img_tf, ann_tf)
-    img_tf, ann_tf = resize_augmenter(img_tf, ann_tf, (416, 416))
+    img_tf, ann_tf = resize_augmenter(img_tf, ann_tf, (output_height, output_width))
     return img_tf, ann_tf
 
+
+
 class DataAugmenter(object):
-    def __init__(self, params = {}):
+    def __init__(self, output_height, output_width, resize_only):
         self.batch_size = 32
         self.graph = tf.Graph()
+        self.resize_only = resize_only
         with self.graph.as_default():
             self.img_tf = [tf.placeholder(tf.float32, [None, None, 3]) for x in range(0, self.batch_size )]
             self.ann_tf = [tf.placeholder(tf.float32, [None, 6]) for x in range(0, self.batch_size )]
             self.resize_op_batch = []
             for i in range(0, self.batch_size):
-                aug_img_tf, aug_ann_tf = complete_augmenter(self.img_tf[i], self.ann_tf[i])
-                self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
+                if resize_only :
+                    aug_img_tf, aug_ann_tf = resize_augmenter(self.img_tf[i], self.ann_tf[i], (output_height, output_width))
+                    self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
+                else:
+                    aug_img_tf, aug_ann_tf = complete_augmenter(self.img_tf[i], self.ann_tf[i], output_height, output_width)
+                    self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
 
-    def get_augmented_data(self, images, annotations, output_height, output_width, resize_only):
+    def get_augmented_data(self, images, annotations):
         with tf.Session(graph=self.graph) as session:
             feed_dict = dict()
             for i in range(0, self.batch_size):
                 feed_dict[self.img_tf[i]] = _utils.convert_shared_float_array_to_numpy(images[i])
-                feed_dict[self.ann_tf[i]] = _utils.convert_shared_float_array_to_numpy(annotations[i])
+                if self.resize_only:
+                    feed_dict[self.ann_tf[i]] = self.batch_size * [np.zeros(6)]
+                else:
+                    feed_dict[self.ann_tf[i]] = _utils.convert_shared_float_array_to_numpy(annotations[i])
             aug_output = session.run(self.resize_op_batch, feed_dict=feed_dict)
             processed_images = []
             processed_annotations = []
@@ -356,3 +367,5 @@ class DataAugmenter(object):
             processed_images = np.array(processed_images, dtype=np.float32)
             processed_images = np.ascontiguousarray(processed_images, dtype=np.float32)
             return tuple((processed_images, processed_annotations))
+
+    
