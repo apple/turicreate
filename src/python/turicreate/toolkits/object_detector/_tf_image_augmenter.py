@@ -23,7 +23,7 @@ import turicreate.toolkits._tf_utils as _utils
 tf.disable_v2_behavior()
 
 _DEFAULT_AUG_PARAMS = {
-  'max_hue' : 0.05,
+  'max_hue_adjust' : 0.05,
   'max_brightness' : 0.05,
   'max_contrast' : 1.25,
   'max_saturation' : 1.25,
@@ -55,7 +55,7 @@ def hue_augmenter(image, annotation,
 def color_augmenter(image, annotation,
                     max_brightness=_DEFAULT_AUG_PARAMS["max_brightness"],
                     max_contrast=_DEFAULT_AUG_PARAMS["max_contrast"],
-                    max_saturation=_DEFAULT_AUG_PARAMS["max_saturation"]:
+                    max_saturation=_DEFAULT_AUG_PARAMS["max_saturation"]):
 
     # Sample a random adjustment to brightness.
     if max_brightness is not None and max_brightness > 0:
@@ -93,9 +93,9 @@ def resize_augmenter(image, annotation,
 def complete_augmenter(img_tf, ann_tf):
     #img_tf, ann_tf = self.crop_augmenter(img_tf, ann_tf)
     #img_tf, ann_tf = self.padding_augmenter(img_tf, ann_tf)
-    img_tf, ann_tf = resize_augmenter(img_tf, ann_tf)
+    #img_tf, ann_tf = resize_augmenter(img_tf, ann_tf)
     #img_tf, ann_tf = self.horizontal_flip_augmenter(img_tf, ann_tf)
-    img_tf, ann_tf = color_augmenter(img_tf, ann_tf)
+    #img_tf, ann_tf = color_augmenter(img_tf, ann_tf)
     img_tf, ann_tf = hue_augmenter(img_tf, ann_tf)
     return img_tf, ann_tf
 
