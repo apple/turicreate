@@ -342,7 +342,7 @@ class DataAugmenter(object):
             self.ann_tf = [tf.placeholder(tf.float32, [None, 6]) for x in range(0, self.batch_size )]
             self.resize_op_batch = []
             for i in range(0, self.batch_size):
-                if resize_only :
+                if resize_only:
                     aug_img_tf, aug_ann_tf = resize_augmenter(self.img_tf[i], self.ann_tf[i], (output_height, output_width))
                     self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
                 else:
@@ -352,13 +352,14 @@ class DataAugmenter(object):
     def get_augmented_data(self, images, annotations):
         with tf.Session(graph=self.graph) as session:
             feed_dict = dict()
-            for i in range(0, self.batch_size):
+            graph_op = self.resize_op_batch[0:len(images)]
+            for i in range(0, len(images)):
                 feed_dict[self.img_tf[i]] = _utils.convert_shared_float_array_to_numpy(images[i])
                 if self.resize_only:
                     feed_dict[self.ann_tf[i]] = self.batch_size * [np.zeros(6)]
                 else:
                     feed_dict[self.ann_tf[i]] = _utils.convert_shared_float_array_to_numpy(annotations[i])
-            aug_output = session.run(self.resize_op_batch, feed_dict=feed_dict)
+            aug_output = session.run(graph_op, feed_dict=feed_dict)
             processed_images = []
             processed_annotations = []
             for o in aug_output:
