@@ -86,7 +86,8 @@ def resize_augmenter(image, annotation,
     # Determine the affine transform to apply and apply to the image itself.
     image_scaled = tf.squeeze(tf.image.resize_bilinear(
                           tf.expand_dims(image, 0), [new_height, new_width]), [0])
-    image_clipped = tf.clip_by_value(image_scaled, 0, 1)
+    image_clipped = tf.clip_by_value(image_scaled, 0.0, 1.0)
+    annotation = tf.clip_by_value(annotation, 0.0, 1.0)
 
     # No geometry changes (because of relative co-ordinate system)
     return image_clipped, annotation
