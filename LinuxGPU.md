@@ -10,7 +10,7 @@ variable.  In the typical case, this means adding the following line to your
 export LD_LIBRARY_PATH=/usr/local/cuda/lib64:$LD_LIBRARY_PATH
 ```
 If you installed the cuDNN files into a separate directory, make sure to
-separately add it as well.
+separately add those as well.
 
 The next step is to uninstall `tensorflow` and install the
 CUDA-enabled `tensorflow-gpu` package:
