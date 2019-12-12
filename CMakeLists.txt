@@ -107,6 +107,9 @@ add_definitions(-DBOOST_RESULT_OF_USE_TR1_WITH_DECLTYPE_FALLBACK)
 # Legal define for Eigen.
 add_definitions(-DEIGEN_MPL2_ONLY)
 
+# Defines to avoid symbol collisions
+add_definitions(-Dgoogle=_tc_google)
+add_definitions(-DCoreML=_tc_CoreML)
 
 #**************************************************************************/
 #*                                                                        */
