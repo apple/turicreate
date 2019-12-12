@@ -405,6 +405,13 @@ class ActivityClassifierTest(unittest.TestCase):
         expected_len = self._calc_expected_predictions_length(self.data)
         self.assertEqual(len(preds), expected_len)
 
+    def test_classify_with_incomplete_data(self):
+        data = self.data.copy()
+        del data[self.features[0]]
+        with self.assertRaises(_ToolkitError):
+            pred = self.model.classify(data)
+
+
     def test_predict_topk(self):
         """
         Check the predict_topk function.
