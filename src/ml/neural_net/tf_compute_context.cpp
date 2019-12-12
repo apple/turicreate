@@ -338,6 +338,7 @@ std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
 
     const size_t output_height = opts.output_height;
     const size_t output_width = opts.output_width;
+    const size_t batch_size = opts.batch_size;
 
     // TODO: Remove resize_only by passing all the augmentation options
     bool resize_only = false;
@@ -350,7 +351,7 @@ std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
 
     // Make an instance of python object
     pybind11::object image_augmenter =
-        tf_aug.attr("DataAugmenter")(output_height, output_width, resize_only);
+        tf_aug.attr("DataAugmenter")(output_height, output_width, batch_size, resize_only);
     result.reset(new tf_image_augmenter(opts, image_augmenter));
   });
   return result;

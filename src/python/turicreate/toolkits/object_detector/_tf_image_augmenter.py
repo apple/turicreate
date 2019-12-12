@@ -28,13 +28,18 @@ _DEFAULT_AUG_PARAMS = {
   'max_contrast' : 1.25,
   'max_saturation' : 1.25,
   'flip_pr' : True,
-  'skip_probability' : 0.1,
+  'skip_probability_flip' : 0.5,
   'min_aspect_ratio' : 0.8,
   'max_aspect_ratio' : 1.25,
-  'min_area_fraction' : 1.0,
-  'max_area_fraction' : 2.0,
+  'min_area_fraction_crop' : 0.15,
+  'max_area_fraction_crop' : 1.0,
+  'min_area_fraction_pad' : 1.0,
+  'max_area_fraction_pad' : 2.0,
   'max_attempts' : 50,
-  'output_shape' : (416, 416),
+  'skip_probability_pad' : 0.1,
+  'skip_probability_crop' : 0.1,
+  'min_object_covered': 0.0,
+  'min_eject_coverage': 0.5
 }
 
 def hue_augmenter(image, annotation,
@@ -77,7 +82,7 @@ def color_augmenter(image, annotation,
     return image, annotation
 
 def resize_augmenter(image, annotation,
-                     output_shape = _DEFAULT_AUG_PARAMS["output_shape"]):
+                     output_shape):
     
 
     new_height = tf.cast(output_shape[0], dtype=tf.int32)
@@ -93,7 +98,8 @@ def resize_augmenter(image, annotation,
     return image_clipped, annotation
 
 
-def horizontal_flip_augmenter(image, annotation, skip_probability=0.5):
+def horizontal_flip_augmenter(image, annotation, skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"]):
+
     if np.random.uniform(0.0, 1.0) < skip_probability:
         return image, annotation
     
@@ -108,12 +114,12 @@ def horizontal_flip_augmenter(image, annotation, skip_probability=0.5):
 
 def padding_augmenter(image,
                       annotation,
-                      skip_probability=0.1,
-                      min_aspect_ratio=0.8,
-                      max_aspect_ratio=1.25,
-                      min_area_fraction=1.0,
-                      max_area_fraction=2.0,
-                      max_attempts=50):
+                      skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_pad"],
+                      min_aspect_ratio=_DEFAULT_AUG_PARAMS["min_aspect_ratio"],
+                      max_aspect_ratio=_DEFAULT_AUG_PARAMS["max_aspect_ratio"],
+                      min_area_fraction=_DEFAULT_AUG_PARAMS["min_area_fraction_pad"],
+                      max_area_fraction=_DEFAULT_AUG_PARAMS["max_area_fraction_pad"],
+                      max_attempts=_DEFAULT_AUG_PARAMS["max_attempts"]):
     if np.random.uniform(0.0, 1.0) < skip_probability:
         return np.array(image), annotation
     
@@ -200,14 +206,14 @@ def padding_augmenter(image,
 
 def crop_augmenter(image,
                    annotation,
-                   skip_probability=0.1,
-                   min_aspect_ratio=0.8,
-                   max_aspect_ratio=1.25,
-                   min_area_fraction=0.15,
-                   max_area_fraction=1.0,
-                   min_object_covered=0.0,
-                   max_attempts=50,
-                   min_eject_coverage=0.5):
+                   skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_crop"],
+                   min_aspect_ratio=_DEFAULT_AUG_PARAMS["min_aspect_ratio"],
+                   max_aspect_ratio=_DEFAULT_AUG_PARAMS["max_aspect_ratio"],
+                   min_area_fraction=_DEFAULT_AUG_PARAMS["min_area_fraction_crop"],
+                   max_area_fraction=_DEFAULT_AUG_PARAMS["max_area_fraction_crop"],
+                   min_object_covered=_DEFAULT_AUG_PARAMS["min_object_covered"],
+                   max_attempts=_DEFAULT_AUG_PARAMS["max_attempts"],
+                   min_eject_coverage=_DEFAULT_AUG_PARAMS["min_eject_coverage"]):
     
     if np.random.uniform(0.0, 1.0) < skip_probability:
         return np.array(image), annotation
@@ -244,7 +250,7 @@ def crop_augmenter(image,
         crop_bounds_y2 = y_offset + cropped_height
         
         formatted_annotation = []
-        condition_met = True
+        is_min_object_covered = True
         for aug in annotation:
             identifier = aug[0:1]
             bounds = aug[1:5]
@@ -277,7 +283,7 @@ def crop_augmenter(image,
                 area_coverage = intersection_area / annotation_area
                 
                 if area_coverage < min_object_covered:
-                    condition_met = False
+                    is_min_object_covered = False
                     break
                 
                 if area_coverage >= min_eject_coverage:
@@ -308,7 +314,7 @@ def crop_augmenter(image,
                 formatted_annotation.append(np.concatenate([identifier, np.array([0.0, 0.0, 0.0, 0.0]), confidence]))
         
         
-        if not condition_met:
+        if not is_min_object_covered:
             continue
 
         y_offset = int(y_offset)
@@ -334,8 +340,8 @@ def complete_augmenter(img_tf, ann_tf, output_height, output_width):
 
 
 class DataAugmenter(object):
-    def __init__(self, output_height, output_width, resize_only):
-        self.batch_size = 32
+    def __init__(self, output_height, output_width, batch_size, resize_only):
+        self.batch_size = batch_size
         self.graph = tf.Graph()
         self.resize_only = resize_only
         with self.graph.as_default():
