@@ -196,18 +196,16 @@ class tf_image_augmenter : public float_array_image_augmenter {
  public:
   tf_image_augmenter(const options& opts, pybind11::object augmenter);
 
-  ~tf_image_augmenter() override = default;
+  ~tf_image_augmenter();
 
   float_array_result prepare_augmented_images(
       labeled_float_image data_to_augment) override;
-
  private:
   pybind11::object augmenter_;
+
 };
 
-tf_image_augmenter::tf_image_augmenter(const options& opts,
-                                       pybind11::object augmenter)
-    : float_array_image_augmenter(opts), augmenter_(augmenter) {}
+tf_image_augmenter::tf_image_augmenter(const options& opts, pybind11::object augmenter) : float_array_image_augmenter(opts), augmenter_(augmenter) {}
 
 float_array_image_augmenter::float_array_result
 tf_image_augmenter::prepare_augmented_images(
@@ -216,9 +214,6 @@ tf_image_augmenter::prepare_augmented_images(
   float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
-    // Import the module from python that does data augmentation
-    // pybind11::module tf_aug = pybind11::module::import(
-    //     "turicreate.toolkits.object_detector._tf_image_augmenter");
 
     const size_t output_height = opts.output_height;
     const size_t output_width = opts.output_width;
@@ -261,6 +256,10 @@ tf_image_augmenter::prepare_augmented_images(
   });
 
   return image_annotations;
+}
+
+tf_image_augmenter::~tf_image_augmenter() {
+  call_pybind_function([&]() { augmenter_ = pybind11::object(); });
 }
 
 namespace {
@@ -350,7 +349,8 @@ std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
         "turicreate.toolkits.object_detector._tf_image_augmenter");
 
     // Make an instance of python object
-    pybind11::object image_augmenter = tf_aug.attr("DataAugmenter")();
+    pybind11::object image_augmenter =
+        tf_aug.attr("DataAugmenter")();
     result.reset(new tf_image_augmenter(opts, image_augmenter));
   });
   return result;
