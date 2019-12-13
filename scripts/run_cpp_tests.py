@@ -155,6 +155,7 @@ if __name__ == '__main__':
 
   exit_code = 0
 
+  print("Running: %s" % cmd)
   ctest_process = subprocess.Popen(cmd, stdout=subprocess.PIPE)
 
   lines = []
