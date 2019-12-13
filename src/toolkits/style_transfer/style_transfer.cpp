@@ -676,7 +676,7 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
   }
 
   m_training_data_iterator = create_iterator(content, style, /* repeat */ true,
-                                             /* training */ false, static_cast<int>(num_styles));
+                                             /* training */ true, static_cast<int>(num_styles));
 
   m_training_compute_context = create_compute_context();
   if (m_training_compute_context == nullptr) {
