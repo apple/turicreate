@@ -347,7 +347,7 @@ foreach(package ${packages})
 endforeach()
 
 set(_TC_EXTERNAL_DEPENDENCIES 
-  openssl libxml2 curl
+  openssl libxml2 curl omp
   Threads::Threads
   ${CMAKE_DL_LIBS})
 

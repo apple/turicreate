@@ -10,3 +10,5 @@ make_library(parallel OBJECT
     logger
   EXTERNAL_VISIBILITY
 )
+
+set_source_files_properties(lambda_omp.hpp PROPERTIES COMPILE_FLAGS -fopenmp)
