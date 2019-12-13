@@ -85,7 +85,7 @@ class hyperloglog {
     uint64_t h = hash64(hash64(t));
     size_t index = h >> (64 - m_b);
     DASSERT_LT(index, m_buckets.size());
-    unsigned char pos = h != 0 ? 1 + n_leading_zeros(h) : sizeof(size_t);
+    unsigned char pos = h != 0 ? 1 + __builtin_clz(h) : sizeof(size_t);
     m_buckets[index] = std::max(m_buckets[index], pos);
   }
 
