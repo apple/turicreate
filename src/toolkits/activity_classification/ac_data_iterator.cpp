@@ -296,7 +296,7 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(
   }
 #endif
 
-  for (auto &feat : features) {
+  for (std::string feat : features) {
     if (!data.contains_column(feat)) {
       log_and_throw("Column name " + feat + " does not exist.");
     }
