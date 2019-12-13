@@ -27,7 +27,6 @@ _DEFAULT_AUG_PARAMS = {
   'max_brightness' : 0.05,
   'max_contrast' : 1.25,
   'max_saturation' : 1.25,
-  'flip_pr' : True,
   'skip_probability_flip' : 0.5,
   'min_aspect_ratio' : 0.8,
   'max_aspect_ratio' : 1.25,
@@ -106,7 +105,9 @@ def horizontal_flip_augmenter(image, annotation, skip_probability=_DEFAULT_AUG_P
     image_height, image_width, _ = image.shape
     flipped_image = np.flip(image, 1)
     
-    for i in range(0, len(annotation)):
+    # One image can have more than one annotation. so loop through annotations and flip across the horizontal axis
+    for i in range(len(annotation)):
+        # Only flip if the annotation is not an empty annotation.
         if np.any(annotation[i][1:5]):
             annotation[i][1] = 1 - annotation[i][1] - annotation[i][3]
 
@@ -125,47 +126,65 @@ def padding_augmenter(image,
     
     image_height, image_width, _ = image.shape
 
+    # Randomly sample aspect ratios until one derives a non-empty range of
+    # compatible heights, or until reaching the upper limit on attempts.    
     for i in range(max_attempts):
+        # Randomly sample an aspect ratio.
         aspect_ratio = np.random.uniform(min_aspect_ratio, max_aspect_ratio)
+
+        # The padded height must be at least as large as the original height.
+        # h' >= h
         min_height = float(image_height)
         
+        # The padded width must be at least as large as the original width.
+        # w' >= w IMPLIES ah' >= w IMPLIES h' >= w / a
         min_height_from_width = float(image_width) / aspect_ratio
         if min_height < min_height_from_width:
             min_height = min_height_from_width
         
+        # The padded area must attain the minimum area fraction.
+        # w'h' >= fhw IMPLIES ah'h' >= fhw IMPLIES h' >= sqrt(fhw/a)
         min_height_from_area = np.sqrt(image_height * image_width * min_area_fraction / aspect_ratio)
         if min_height < min_height_from_area:
             min_height = min_height_from_area
         
+        # The padded area must not exceed the maximum area fraction.
         max_height = np.sqrt(image_height * image_width *  max_area_fraction / aspect_ratio)
         
         if min_height >= max_height:
             break
     
+    # We did not find a compatible aspect ratio. Just return the original data.
     if (min_height > max_height):
         return np.array(image), annotation
     
+    # Sample a final size, given the sampled aspect ratio and range of heights.
     padded_height = np.random.uniform(min_height, max_height)
     padded_width = padded_height * aspect_ratio;
-        
+    
+    # Sample the offset of the source image inside the padded image.
     x_offset = np.random.uniform(0.0, (padded_width - image_width))
     y_offset = np.random.uniform(0.0, (padded_height - image_height))
     
+    # Compute padding needed on the image
     after_padding_width = padded_width - image_width - x_offset
     after_padding_height = padded_height - image_height - y_offset
     
+    # Pad the image
     npad = ((int(y_offset), int(after_padding_height)), (int(x_offset), int(after_padding_width)), (0, 0))
     padded_image = np.pad(image, pad_width=npad, mode='constant', constant_values=0.5)
     
     ty = float(y_offset)
     tx = float(x_offset)
     
+    # Transformation matrix for the annotations
     transformation_matrix = np.array([
                                 [1.0,     0.0,     ty],
                                 [0.0,     1.0,     tx],
                                 [0.0,     0.0,    1.0]
                             ])
     
+    # Use transformation matrix to augment annotations
     formatted_annotation = []
     for aug in annotation:
         identifier = aug[0:1]
@@ -189,12 +208,14 @@ def padding_augmenter(image,
         v = np.concatenate([augmentation_coordinates.reshape((2, 2)), np.ones((2, 1), dtype=np.float32)], axis=1)
         transposed_v = np.dot(v, np.transpose(transformation_matrix))
         t_intersection = np.squeeze(transposed_v[:, :2].reshape(-1, 4))
-             
+        
+        # Sort the points top, left, bottom, right     
         if t_intersection[0] > t_intersection[2]:
             t_intersection[0], t_intersection[2] = t_intersection[2], t_intersection[0]
         if t_intersection[1] > t_intersection[3]:
             t_intersection[1], t_intersection[3] = t_intersection[3], t_intersection[1]
-                    
+        
+        # Normalize the elements to the cropped width and height        
         ele_1 = t_intersection[1] / padded_width
         ele_2 = t_intersection[0] / padded_height
         ele_3 = (t_intersection[3] - t_intersection[1]) /padded_width
@@ -220,23 +241,43 @@ def crop_augmenter(image,
 
     image_height, image_width, _ = image.shape
 
+    # Sample crop rects until one satisfies our constraints (by yielding a valid
+    # list of cropped annotations), or reaching the limit on attempts.
     for i in range(max_attempts):
+        # Randomly sample an aspect ratio.
         aspect_ratio = np.random.uniform(min_aspect_ratio, max_aspect_ratio)
+
+        # Next we'll sample a height (which combined with the now known aspect
+        # ratio, determines the size and area). But first we must compute the range
+        # of valid heights. The crop cannot be taller than the original image,
+        # cannot be wider than the original image, and must have an area in the
+        # specified range.
+
+        # The cropped height must be no larger the original height.
+        # h' <= h
         max_height = float(image_height)
 
+        # The cropped width must be no larger than the original width.
+        # w' <= w IMPLIES ah' <= w IMPLIES h' <= w / a
         max_height_from_width = float(image_width) / aspect_ratio
         if max_height > max_height_from_width:
             max_height = max_height_from_width
         
+        # The cropped area must not exceed the maximum area fraction.
         max_height_from_area = np.sqrt(image_height * image_width * max_area_fraction / aspect_ratio)
         if max_height > max_height_from_area:
             max_height = max_height_from_area
         
+        # The padded area must attain the minimum area fraction.
         min_height = np.sqrt(image_height * image_width * min_area_fraction / aspect_ratio)
         
+        # If the range is empty, then crops with the sampled aspect ratio cannot
+        # satisfy the area constraint.
         if min_height > max_height:
             continue
 
+
+        # Sample a position for the crop, constrained to lie within the image.
         cropped_height = np.random.uniform(min_height, max_height)
         cropped_width = cropped_height * aspect_ratio;
         
@@ -245,7 +286,6 @@ def crop_augmenter(image,
         
         crop_bounds_x1 = x_offset
         crop_bounds_y1 = y_offset
-        
         crop_bounds_x2 = x_offset + cropped_width
         crop_bounds_y2 = y_offset + cropped_height
         
@@ -265,6 +305,7 @@ def crop_augmenter(image,
             x2 = (bounds[0] + width) * image_width
             y2 = (bounds[1] + height) * image_height
             
+            # This tests whether the crop bounds are out of the annotated bounds, if not it returns an empty annotation
             if crop_bounds_x1 < x2 and crop_bounds_y1 < y2 and x1 < crop_bounds_x2 and y1 < crop_bounds_y2:
                 x_bounds = [x1, x2, x_offset, x_offset + cropped_width]
                 y_bounds = [y1, y2, y_offset, y_offset + cropped_height]
@@ -282,26 +323,32 @@ def crop_augmenter(image,
                 
                 area_coverage = intersection_area / annotation_area
                 
+                # Invalidate the crop if it did not sufficiently overlap each annotation and try again.
                 if area_coverage < min_object_covered:
                     is_min_object_covered = False
                     break
                 
+
+                # If the area coverage is greater the min_eject_coverage, then actually keep the annotation
                 if area_coverage >= min_eject_coverage:
+                    # Transformation matrix for the annotations
                     transformation_matrix = np.array([
                         [1.0,     0.0,     -y_offset],
                         [0.0,     1.0,     -x_offset],
                         [0.0,     0.0,    1.0]
                     ])
-                        
+                    
                     v = np.concatenate([intersection.reshape((2, 2)), np.ones((2, 1), dtype=np.float32)], axis=1)
                     transposed_v = np.dot(v, np.transpose(transformation_matrix))
                     t_intersection = np.squeeze(transposed_v[:, :2].reshape(-1, 4))
-                        
+
+                    # Sort the points top, left, bottom, right    
                     if t_intersection[0] > t_intersection[2]:
                         t_intersection[0], t_intersection[2] = t_intersection[2], t_intersection[0]
                     if t_intersection[1] > t_intersection[3]:
                         t_intersection[1], t_intersection[3] = t_intersection[3], t_intersection[1]
-                        
+                    
+                    # Normalize the elements to the cropped width and height  
                     ele_1 = t_intersection[1] / cropped_width
                     ele_2 = t_intersection[0] / cropped_height
                     ele_3 = (t_intersection[3] - t_intersection[1]) /cropped_width
@@ -374,6 +421,6 @@ class DataAugmenter(object):
                 processed_annotations.append(np.ascontiguousarray(o[1], dtype=np.float32))
             processed_images = np.array(processed_images, dtype=np.float32)
             processed_images = np.ascontiguousarray(processed_images, dtype=np.float32)
-            return tuple((processed_images, processed_annotations))
+            return (processed_images, processed_annotations)
 
     
