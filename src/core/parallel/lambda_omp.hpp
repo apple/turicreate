@@ -5,6 +5,7 @@
  */
 #ifndef TURI_PARALLEL_LAMBDA_OMP_HPP
 #define TURI_PARALLEL_LAMBDA_OMP_HPP
+#include <omp.h>
 #include <iterator>
 #include <utility>
 #include <functional>
@@ -12,6 +13,7 @@
 
 #include <core/util/basic_types.hpp>
 #include <core/parallel/thread_pool.hpp>
+
 
 namespace turi {
 
@@ -34,21 +36,10 @@ namespace turi {
  */
 inline void in_parallel(const std::function<void (size_t thread_id,
                                                   size_t num_threads)>& fn) {
-  size_t nworkers = thread_pool::get_instance().size();
-
-  if (thread::get_tls_data().is_in_thread() || nworkers <= 1) {
-
-    fn(0, 1);
-    return;
-
-  } else {
-
-    parallel_task_queue threads(thread_pool::get_instance());
-
-    for (unsigned int i = 0;i < nworkers; ++i) {
-      threads.launch([&fn, i, nworkers]() { fn(i, nworkers); }, i);
-    }
-    threads.join();
+  size_t nworkers = omp_get_num_threads();
+#pragma omp parallel for
+for (size_t ii = 0; ii < nworkers; ii++) {
+         fn(ii, nworkers);
   }
 }
 
