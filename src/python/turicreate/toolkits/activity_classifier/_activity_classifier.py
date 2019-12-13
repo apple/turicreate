@@ -606,6 +606,7 @@ class ActivityClassifier(_Model):
         |      ...      |  ...  |        ...        |
         +---------------+-------+-------------------+
         """
+        _tkutl._numeric_param_check_range('k', k, 1, _six.MAXSIZE)
         return self.__proxy__.predict_topk(dataset, output_type, k, output_frequency);
 
     def classify(self, dataset, output_frequency='per_row'):
