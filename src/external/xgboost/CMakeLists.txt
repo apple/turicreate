@@ -15,4 +15,3 @@ make_library(xgboost OBJECT
 
 target_compile_options(xgboost PUBLIC "-Wno-narrowing -msse2 -funroll-loops")
 target_compile_definitions(xgboost PUBLIC "-DXGBOOST_CUSTOMIZE_MSG_")
-target_compile_definitions(xgboost PUBLIC "-D_OPENMP_1")

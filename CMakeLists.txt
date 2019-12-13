@@ -89,6 +89,7 @@ endif()
 
 
 # Add global defines
+add_definitions(-D_OPENMP=1)
 add_definitions(-DTC_BUILD_PATH_BASE="${CMAKE_SOURCE_DIR}")
 add_definitions(-DCURL_STATICLIB)
 add_definitions(-DIN_TURI_SOURCE_TREE)
