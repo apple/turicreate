@@ -633,7 +633,7 @@ class ImageClassifier(_CustomModel):
             - 'roc_curve'        : An SFrame containing information needed for an ROC curve
 
             For more flexibility in calculating evaluation metrics, use the
-            :class:`~turicreate.evaluation` module.
+            :class:`~turicreate.toolkits.evaluation` module.
 
         verbose : bool, optional
             If True, prints progress updates and model details.
