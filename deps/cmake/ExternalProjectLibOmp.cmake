@@ -1,3 +1,9 @@
+set(ON_X86 ON CACHE BOOL "build on x86 architecture")
+
+if(${TC_BUILD_IOS}) 
+  set(ON_X86 OFF)
+endif()
+
 ExternalProject_Add(ex_libomp
   PREFIX ${CMAKE_SOURCE_DIR}/deps/build/libomp
   URL ${CMAKE_SOURCE_DIR}/deps/src/openmp-llvm-9x
@@ -7,13 +13,14 @@ ExternalProject_Add(ex_libomp
   "CFLAGS=-fPIC ${C_REAL_COMPILER_FLAGS}"
   "CPPFLAGS=-fPIC ${CPP_REAL_COMPILER_FLAGS}"
   ${CMAKE_COMMAND} -G "Unix Makefiles"
-  -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   -DOPENMP_STANDALONE_BUILD=ON
+  -DCMAKE_INSTALL_PREFIX=<INSTALL_DIR>
   -DCMAKE_OSX_SYSROOT=${CMAKE_OSX_SYSROOT} .
   -DCMAKE_CXX_COMPILER=${CMAKE_CXX_COMPILER}
   -DCMAKE_C_COMPILER=${CMAKE_C_COMPILER}
   -DCMAKE_OSX_ARCHITECTURES=${CMAKE_OSX_ARCHITECTURES}
   -DLIBOMP_ENABLE_SHARED=OFF
+  -DLIBOMP_USE_ADAPTIVE_LOCKS=${ON_X86}
   INSTALL_COMMAND make install VERBOSE=1
   BUILD_BYPRODUCTS ${CMAKE_SOURCE_DIR}/deps/local/lib/libomp.a
   ${CMAKE_SOURCE_DIR}/deps/local/include/omp.h
@@ -21,7 +28,7 @@ ExternalProject_Add(ex_libomp
 
 add_library(libompa STATIC IMPORTED)
 set_property(TARGET libompa PROPERTY IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/deps/local/lib/libomp.a)
-
 add_library(omp INTERFACE)
+
 target_link_libraries(omp INTERFACE libompa)
 add_dependencies(omp ex_libomp)
