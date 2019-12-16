@@ -257,6 +257,7 @@ test_cpp_linux_no_remotefs:
     - apk add bash
     - apk add python2 
     - cd debug/test/
+    - bash -c -e -o pipefail "make -k -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - python2.7 ../../scripts/run_cpp_tests.py -j 2
 
 test_cpp_mac_10_13:
@@ -305,12 +306,12 @@ test_cpp_mac_no_remotefs:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
   script:
-    - ./configure --no-remotefs --no-python --no-visualization
-    - cd debug/test 
-    - bash -c -e -o pipefail "make -k -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - export LD_LIBRARY_PATH=`pwd`/deps/local/lib:`pwd`/deps/local/lib64:$LD_LIBRARY_PATH
     - export PATH=`pwd`/deps/local/bin:$PATH
     - export LD_LIBRARY_PATH=`pwd`/src/unity:`pwd`/src/python/turicreate:$LD_LIBRARY_PATH
+    - ./configure --no-remotefs --no-python --no-visualization
+    - cd debug/test 
+    - bash -c -e -o pipefail "make -k -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - python ../../scripts/run_cpp_tests.py -j 2
 
 test_python_linux_python27:
