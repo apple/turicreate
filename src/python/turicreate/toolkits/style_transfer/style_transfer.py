@@ -757,7 +757,7 @@ class StyleTransfer(_Model):
             A dataset that has the same content image column that was used
             during training.
 
-        style : int or list, optional
+        style : None | int | list
             The selected style or list of styles to use on the ``images``. If
             `None`, all styles will be applied to each image in ``images``.
 
@@ -819,6 +819,21 @@ class StyleTransfer(_Model):
         +--------+-------+------------------------+
         [8 rows x 3 columns]
         """
+        if not isinstance(images, (_tc.SFrame, _tc.SArray, _tc.Image)):
+            raise TypeError('"image" parameter must be of type SFrame, SArray or turicreate.Image.')
+        if isinstance(images, (_tc.SFrame, _tc.SArray)) and len(images) == 0:
+            raise _ToolkitError('"image" parameter cannot be empty')
+        if style is not None and not isinstance(style, (int, list)):
+            raise TypeError('"style" must parameter must be a None, int or a list')
+        if not isinstance(max_size, int):
+            raise TypeError('"max_size" must parameter must be an int')
+        if (max_size < 1):
+            raise _ToolkitError("'max_size' must be greater than or equal to 1")
+        if not isinstance(batch_size, int):
+            raise TypeError('"batch_size" must parameter must be an int')
+        if (batch_size < 1):
+            raise _ToolkitError("'batch_size' must be greater than or equal to 1")
+
         options = {}
         options['style_idx'] = style
         options['verbose'] = verbose
