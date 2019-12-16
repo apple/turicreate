@@ -753,7 +753,7 @@ class StyleTransfer(_Model):
 
         Parameters
         ----------
-        images : SFrame | Image
+        images : SFrame | SArray | turicreate.Image
             A dataset that has the same content image column that was used
             during training.
 
