@@ -142,6 +142,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a41f1cc16bc99f8727ed3b4c41e95f11a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6da40c90ac172d007bb33eefe01b1dc1"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a6da40c90ac172d007bb33eefe01b1dc1">create_activity_classifier</a> (int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out, const float_array_map &amp;config, const float_array_map &amp;weights)=0</td></tr>
 <tr class="separator:a6da40c90ac172d007bb33eefe01b1dc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7f80d30494bdefb7ff30007855507129"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a7f80d30494bdefb7ff30007855507129">create_style_transfer</a> (const float_array_map &amp;config, const float_array_map &amp;weights)=0</td></tr>
+<tr class="separator:a7f80d30494bdefb7ff30007855507129"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a31ea9c356ffe05da18f63d6d7b214dd5"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a31ea9c356ffe05da18f63d6d7b214dd5">create_drawing_classifier</a> (const float_array_map &amp;weights, size_t batch_size, size_t num_classes)=0</td></tr>
+<tr class="separator:a31ea9c356ffe05da18f63d6d7b214dd5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a85d5dd29c2b658048e79bcc5fa882276"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1image__augmenter.html">image_augmenter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a85d5dd29c2b658048e79bcc5fa882276">create_image_augmenter</a> (const <a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html">image_augmenter::options</a> &amp;opts)=0</td></tr>
 <tr class="separator:a85d5dd29c2b658048e79bcc5fa882276"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -274,6 +278,49 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="a31ea9c356ffe05da18f63d6d7b214dd5"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a>&gt; turi::neural_net::compute_context::create_drawing_classifier </td>
+          <td>(</td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>weights</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>batch_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>num_classes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Creates a drawing classification network.</p>
+
+<p>Implemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#abb445f574065dcc796d880e18ddf02ba">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#aed93186e844980c020d705c18b39eb39">turi::neural_net::tf_compute_context</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a85d5dd29c2b658048e79bcc5fa882276"></a>
 <div class="memitem">
 <div class="memproto">
@@ -377,6 +424,43 @@ Static Public Member Functions</h2></td></tr>
 <p>Creates an object detection network.</p>
 
 <p>Implemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a03c6887972c882079babb35c9e9ee346">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a381d4341845163a6fc6b09a6c2837f9e">turi::neural_net::tf_compute_context</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a7f80d30494bdefb7ff30007855507129"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a>&gt; turi::neural_net::compute_context::create_style_transfer </td>
+          <td>(</td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>config</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>weights</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Creates a style transfer network</p>
+
+<p>Implemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a1ec8788aa44d3cfb643ab88dfdeaeb3e">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a6cee1c3d2583dd6f7dc33530dedca55f">turi::neural_net::tf_compute_context</a>.</p>
 
 </div>
 </div>

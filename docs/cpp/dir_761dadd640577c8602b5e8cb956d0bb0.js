@@ -19,6 +19,7 @@ var dir_761dadd640577c8602b5e8cb956d0bb0 =
     [ "recsys", "dir_31cfab954b87465e261ae6467a1afe7a.html", "dir_31cfab954b87465e261ae6467a1afe7a" ],
     [ "sgd", "dir_0ca7db9c474654c83cd54108938daeb0.html", "dir_0ca7db9c474654c83cd54108938daeb0" ],
     [ "sparse_similarity", "dir_14834428e783f979bf9038682a675002.html", "dir_14834428e783f979bf9038682a675002" ],
+    [ "style_transfer", "dir_08ae4010bc64b74cad49cb891d3859f2.html", "dir_08ae4010bc64b74cad49cb891d3859f2" ],
     [ "supervised_learning", "dir_b422264094eea21f952908548b88c6fc.html", "dir_b422264094eea21f952908548b88c6fc" ],
     [ "text", "dir_5f8b7f70f94ee6e1d5a032ed22d9c887.html", "dir_5f8b7f70f94ee6e1d5a032ed22d9c887" ],
     [ "util", "dir_8967f91bbdd5292c9f194c9294aa5c30.html", "dir_8967f91bbdd5292c9f194c9294aa5c30" ]

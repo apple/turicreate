@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame.apply &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.SFrame.apply &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -126,7 +126,7 @@
 <h1>turicreate.SFrame.apply<a class="headerlink" href="#turicreate-sframe-apply" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.SFrame.apply">
-<code class="descclassname">SFrame.</code><code class="descname">apply</code><span class="sig-paren">(</span><em>self</em>, <em>fn</em>, <em>dtype=None</em>, <em>seed=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.apply" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">SFrame.</code><code class="descname">apply</code><span class="sig-paren">(</span><em>self</em>, <em>fn</em>, <em>dtype=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame.apply" title="Permalink to this definition">¶</a></dt>
 <dd><p>Transform each row to an <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a> according to a
 specified function. Returns a new SArray of <code class="docutils literal"><span class="pre">dtype</span></code> where each element
 in this SArray is transformed by <cite>fn(x)</cite> where <cite>x</cite> is a single row in
@@ -149,11 +149,6 @@ as a native shared library using SDK.</p>
 <dd><p class="first last">The dtype of the new SArray. If None, the first 100
 elements of the array are used to guess the target
 data type.</p>
-</dd>
-<dt><strong>seed</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int, optional</span></dt>
-<dd><p class="first">..WARNING:: This parameter is deprecated, It will be removed in the next
-major release.</p>
-<p class="last">Used as the seed if a random number generator is included in <cite>fn</cite>.</p>
 </dd>
 </dl>
 </td>
@@ -191,7 +186,7 @@ type <code class="docutils literal"><span class="pre">dtype</span></code></p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -208,7 +203,7 @@ type <code class="docutils literal"><span class="pre">dtype</span></code></p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

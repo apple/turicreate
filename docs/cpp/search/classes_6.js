@@ -26,6 +26,8 @@ var searchData=
   ['flexible_5ftype_5fconverter',['flexible_type_converter',['../structturi_1_1flexible__type__converter.html',1,'turi']]],
   ['flexible_5ftype_5fparser',['flexible_type_parser',['../classturi_1_1flexible__type__parser.html',1,'turi']]],
   ['flexible_5ftype_5fparser_5fimpl',['flexible_type_parser_impl',['../structturi_1_1flexible__type__parser__impl.html',1,'turi']]],
+  ['float_5farray_5fimage_5faugmenter',['float_array_image_augmenter',['../classturi_1_1neural__net_1_1float__array__image__augmenter.html',1,'turi::neural_net']]],
+  ['float_5farray_5fresult',['float_array_result',['../structturi_1_1neural__net_1_1float__array__image__augmenter_1_1float__array__result.html',1,'turi::neural_net::float_array_image_augmenter']]],
   ['fp_5fgrowth',['fp_growth',['../classturi_1_1pattern__mining_1_1fp__growth.html',1,'turi::pattern_mining']]],
   ['fp_5fnode',['fp_node',['../classturi_1_1pattern__mining_1_1fp__node.html',1,'turi::pattern_mining']]],
   ['fp_5fresults_5ftree',['fp_results_tree',['../classturi_1_1pattern__mining_1_1fp__results__tree.html',1,'turi::pattern_mining']]],

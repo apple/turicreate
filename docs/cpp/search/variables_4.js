@@ -1,7 +1,7 @@
 var searchData=
 [
   ['dag_5fsingleton',['dag_singleton',['../classturi_1_1unity__sgraph.html#a258e51f48b8b86d86d67a7ce4ad8d552',1,'turi::unity_sgraph']]],
-  ['data',['data',['../structturi_1_1activity__classification_1_1data__iterator_1_1parameters.html#a38550aa218663a272d387f6c47f32639',1,'turi::activity_classification::data_iterator::parameters::data()'],['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#ab0948f6c12aad421a4d9c88745f757d8',1,'turi::object_detection::data_iterator::parameters::data()']]],
+  ['data',['data',['../structturi_1_1activity__classification_1_1data__iterator_1_1parameters.html#a38550aa218663a272d387f6c47f32639',1,'turi::activity_classification::data_iterator::parameters::data()'],['../structturi_1_1drawing__classifier_1_1data__iterator_1_1parameters.html#a859868152900070f0560c4878979ada8',1,'turi::drawing_classifier::data_iterator::parameters::data()'],['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#ab0948f6c12aad421a4d9c88745f757d8',1,'turi::object_detection::data_iterator::parameters::data()']]],
   ['data_5fsize_5fis_5fconstant',['data_size_is_constant',['../structturi_1_1ml__data__internal_1_1row__metadata.html#ad40b85f9d9b3711b442e26b754d42261',1,'turi::ml_data_internal::row_metadata::data_size_is_constant()'],['../structturi_1_1v2_1_1ml__data__internal_1_1row__metadata.html#a98be7b8c8028801451d9e0d32771d139',1,'turi::v2::ml_data_internal::row_metadata::data_size_is_constant()']]],
   ['default_5fnum_5fgraph_5flambda_5fworkers',['DEFAULT_NUM_GRAPH_LAMBDA_WORKERS',['../namespaceturi.html#aa645decb0a71f2af50301f4dcb336496',1,'turi']]],
   ['default_5fnum_5fpylambda_5fworkers',['DEFAULT_NUM_PYLAMBDA_WORKERS',['../namespaceturi.html#af3497457f9cc0ff907b406a901c9a82a',1,'turi']]],
@@ -16,5 +16,6 @@ var searchData=
   ['dir_5farchive_5fobjects_5fbin',['DIR_ARCHIVE_OBJECTS_BIN',['../namespaceturi.html#a1b7d5834c43f10bb674f0008616ff805',1,'turi']]],
   ['directories',['directories',['../structturi_1_1list__objects__response.html#a76ffe7439c8f537e75bbad6f7e561356',1,'turi::list_objects_response']]],
   ['disable_5foptimization',['disable_optimization',['../structturi_1_1query__eval_1_1materialize__options.html#aec0a88853b556924b61fd7fa45faafa2',1,'turi::query_eval::materialize_options']]],
-  ['double_5fquote',['double_quote',['../structparser__impl_1_1parser__config.html#a18488efd5e8552911c936a3a8bd4c267',1,'parser_impl::parser_config::double_quote()'],['../structturi_1_1csv__line__tokenizer.html#a12c6577567bdc0c46ee0fed2a6d7da3a',1,'turi::csv_line_tokenizer::double_quote()'],['../classturi_1_1csv__writer.html#a0d16f9b799c0e53b067de516b1b4805c',1,'turi::csv_writer::double_quote()']]]
+  ['double_5fquote',['double_quote',['../structparser__impl_1_1parser__config.html#a18488efd5e8552911c936a3a8bd4c267',1,'parser_impl::parser_config::double_quote()'],['../structturi_1_1csv__line__tokenizer.html#a12c6577567bdc0c46ee0fed2a6d7da3a',1,'turi::csv_line_tokenizer::double_quote()'],['../classturi_1_1csv__writer.html#a0d16f9b799c0e53b067de516b1b4805c',1,'turi::csv_writer::double_quote()']]],
+  ['drawings',['drawings',['../structturi_1_1drawing__classifier_1_1data__iterator_1_1batch.html#ac9a29ed90a5f2e3682f13370511e2f79',1,'turi::drawing_classifier::data_iterator::batch']]]
 ];

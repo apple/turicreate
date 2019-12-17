@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.SFrame &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SGraph" href="turicreate.SGraph.html"/>
         <link rel="prev" title="turicreate.SArray" href="turicreate.SArray.html"/> 
@@ -218,7 +218,7 @@ non-standard JVM.</li>
 </ul>
 <p class="rubric">Examples</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">turicreate</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span>
 </pre></div>
 </div>
 <p><strong>Construction</strong></p>
@@ -242,7 +242,7 @@ set before the python session started.</p>
 only applies when using Linux)</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">os</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;TURI_JAVA_HOME&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;/my/path/to/java&#39;</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SFrame</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">(</span><span class="s2">&quot;hdfs://mycluster.example.com:8020/user/myname/coolfile.txt&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -655,7 +655,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
 </div>
 <blockquote>
 <div>Create an SFrame from a Python dictionary.</div></blockquote>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SFrame</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;id&#39;</span><span class="p">:[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">],</span> <span class="s1">&#39;val&#39;</span><span class="p">:[</span><span class="s1">&#39;A&#39;</span><span class="p">,</span><span class="s1">&#39;B&#39;</span><span class="p">,</span><span class="s1">&#39;C&#39;</span><span class="p">]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">sf</span>
 <span class="go">Columns:</span>
@@ -690,7 +690,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
 <tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.append.html#turicreate.SFrame.append" title="turicreate.SFrame.append"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.append</span></code></a>(self,&nbsp;other)</td>
 <td>Add the rows of an SFrame to the end of this SFrame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.apply.html#turicreate.SFrame.apply" title="turicreate.SFrame.apply"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.apply</span></code></a>(self,&nbsp;fn[,&nbsp;dtype,&nbsp;seed])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.apply.html#turicreate.SFrame.apply" title="turicreate.SFrame.apply"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.apply</span></code></a>(self,&nbsp;fn[,&nbsp;dtype])</td>
 <td>Transform each row to an <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a> according to a specified function.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.column_names.html#turicreate.SFrame.column_names" title="turicreate.SFrame.column_names"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.column_names</span></code></a>(self)</td>
@@ -853,7 +853,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -870,7 +870,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

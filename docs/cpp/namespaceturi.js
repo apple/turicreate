@@ -12,6 +12,10 @@ var namespaceturi =
     [ "dir_archive_impl", null, [
       [ "archive_index_information", "structturi_1_1dir__archive__impl_1_1archive__index__information.html", null ]
     ] ],
+    [ "drawing_classifier", null, [
+      [ "data_iterator", "classturi_1_1drawing__classifier_1_1data__iterator.html", "classturi_1_1drawing__classifier_1_1data__iterator" ],
+      [ "simple_data_iterator", "classturi_1_1drawing__classifier_1_1simple__data__iterator.html", "classturi_1_1drawing__classifier_1_1simple__data__iterator" ]
+    ] ],
     [ "evaluation", null, [
       [ "classifier_accuracy", "classturi_1_1evaluation_1_1classifier__accuracy.html", "classturi_1_1evaluation_1_1classifier__accuracy" ],
       [ "confusion_matrix", "classturi_1_1evaluation_1_1confusion__matrix.html", "classturi_1_1evaluation_1_1confusion__matrix" ],
@@ -158,6 +162,7 @@ var namespaceturi =
     ] ],
     [ "neural_net", null, [
       [ "compute_context", "classturi_1_1neural__net_1_1compute__context.html", "classturi_1_1neural__net_1_1compute__context" ],
+      [ "float_array_image_augmenter", "classturi_1_1neural__net_1_1float__array__image__augmenter.html", "classturi_1_1neural__net_1_1float__array__image__augmenter" ],
       [ "image_annotation", "structturi_1_1neural__net_1_1image__annotation.html", null ],
       [ "image_augmenter", "classturi_1_1neural__net_1_1image__augmenter.html", "classturi_1_1neural__net_1_1image__augmenter" ],
       [ "image_box", "structturi_1_1neural__net_1_1image__box.html", null ],

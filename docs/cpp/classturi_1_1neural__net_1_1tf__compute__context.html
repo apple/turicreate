@@ -138,6 +138,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a381d4341845163a6fc6b09a6c2837f9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7f55a84873df6d63922c697229987647"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a7f55a84873df6d63922c697229987647">create_activity_classifier</a> (int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out, const float_array_map &amp;config, const float_array_map &amp;weights) override</td></tr>
 <tr class="separator:a7f55a84873df6d63922c697229987647"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cee1c3d2583dd6f7dc33530dedca55f"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a6cee1c3d2583dd6f7dc33530dedca55f">create_style_transfer</a> (const float_array_map &amp;config, const float_array_map &amp;weights) override</td></tr>
+<tr class="separator:a6cee1c3d2583dd6f7dc33530dedca55f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed93186e844980c020d705c18b39eb39"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#aed93186e844980c020d705c18b39eb39">create_drawing_classifier</a> (const float_array_map &amp;weights, size_t batch_size, size_t num_classes) override</td></tr>
+<tr class="separator:aed93186e844980c020d705c18b39eb39"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a22bb0103b6d8c04e6bebee2110a230cd"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1image__augmenter.html">image_augmenter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a22bb0103b6d8c04e6bebee2110a230cd">create_image_augmenter</a> (const <a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html">image_augmenter::options</a> &amp;opts) override</td></tr>
 <tr class="separator:a22bb0103b6d8c04e6bebee2110a230cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -295,6 +299,49 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="aed93186e844980c020d705c18b39eb39"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a>&gt; turi::neural_net::tf_compute_context::create_drawing_classifier </td>
+          <td>(</td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>weights</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>batch_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>num_classes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Creates a drawing classification network.</p>
+
+<p>Implements <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a31ea9c356ffe05da18f63d6d7b214dd5">turi::neural_net::compute_context</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a22bb0103b6d8c04e6bebee2110a230cd"></a>
 <div class="memitem">
 <div class="memproto">
@@ -398,6 +445,43 @@ Static Public Member Functions</h2></td></tr>
 <p>Creates an object detection network.</p>
 
 <p>Implements <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a41f1cc16bc99f8727ed3b4c41e95f11a">turi::neural_net::compute_context</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a6cee1c3d2583dd6f7dc33530dedca55f"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a>&gt; turi::neural_net::tf_compute_context::create_style_transfer </td>
+          <td>(</td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>config</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>weights</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Creates a style transfer network</p>
+
+<p>Implements <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a7f80d30494bdefb7ff30007855507129">turi::neural_net::compute_context</a>.</p>
 
 </div>
 </div>

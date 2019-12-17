@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.nearest_neighbor_classifier.create &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.nearest_neighbor_classifier.create &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/>
         <link rel="up" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="next" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html"/>
         <link rel="prev" title="turicreate.svm_classifier.SVMClassifier" href="turicreate.svm_classifier.SVMClassifier.html"/> 
@@ -138,14 +138,6 @@
 <a class="reference internal" href="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier.html#turicreate.nearest_neighbor_classifier.NearestNeighborClassifier" title="turicreate.nearest_neighbor_classifier.NearestNeighborClassifier"><code class="xref py py-class docutils literal"><span class="pre">NearestNeighborClassifier</span></code></a>
 model. This model predicts the class of a query instance by finding the most
 common class among the query’s nearest neighbors.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The ‘dot_product’ distance is deprecated and will be removed in future
-versions of Turi Create. Please use ‘transformed_dot_product’
-distance instead, although note that this is more than a name change; it
-is a <em>different</em> transformation of the dot product of two vectors.
-Please see the distances module documentation for more details.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -181,8 +173,7 @@ may be one of three types:</p>
 <ul class="simple">
 <li><em>String</em>: the name of a standard distance function. One of
 ‘euclidean’, ‘squared_euclidean’, ‘manhattan’, ‘levenshtein’,
-‘jaccard’, ‘weighted_jaccard’, ‘cosine’, ‘dot_product’ (deprecated),
-or ‘transformed_dot_product’.</li>
+‘jaccard’, ‘weighted_jaccard’, ‘cosine’ or ‘transformed_dot_product’.</li>
 <li><em>Function</em>: a function handle from the
 <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</li>
 <li><em>Composite distance</em>: the weighted sum of several standard distance
@@ -274,7 +265,7 @@ accepts composite distance functions.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -291,7 +282,7 @@ accepts composite distance functions.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

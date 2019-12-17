@@ -4,6 +4,7 @@ var searchData=
   ['l2_5fnorm',['l2_norm',['../classturi_1_1optimization_1_1l2__norm.html',1,'turi::optimization']]],
   ['l2_5frescaling',['l2_rescaling',['../classturi_1_1supervised_1_1l2__rescaling.html',1,'turi::supervised']]],
   ['l2_5frescaling',['l2_rescaling',['../classturi_1_1l2__rescaling.html',1,'turi']]],
+  ['labeled_5ffloat_5fimage',['labeled_float_image',['../structturi_1_1neural__net_1_1float__array__image__augmenter_1_1labeled__float__image.html',1,'turi::neural_net::float_array_image_augmenter']]],
   ['labeled_5fimage',['labeled_image',['../structturi_1_1neural__net_1_1labeled__image.html',1,'turi::neural_net']]],
   ['lambda_5fcall_5fby_5fdict_5fdata',['lambda_call_by_dict_data',['../structturi_1_1lambda_1_1lambda__call__by__dict__data.html',1,'turi::lambda']]],
   ['lambda_5fcall_5fby_5fsframe_5frows_5fdata',['lambda_call_by_sframe_rows_data',['../structturi_1_1lambda_1_1lambda__call__by__sframe__rows__data.html',1,'turi::lambda']]],

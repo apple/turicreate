@@ -36,7 +36,7 @@ var searchData=
   ['sgraph_5fingress_5fvid_5fbuffer_5fsize',['SGRAPH_INGRESS_VID_BUFFER_SIZE',['../group__sgraph__main.html#ga9f1f371663b47e7e732b6a8659a1b9da',1,'turi']]],
   ['sgraph_5ftriple_5fapply_5fedge_5fbatch_5fsize',['SGRAPH_TRIPLE_APPLY_EDGE_BATCH_SIZE',['../group__sgraph__main.html#gac3b74b2a0841f9710d6216963504b92c',1,'turi']]],
   ['sgraph_5ftriple_5fapply_5flock_5farray_5fsize',['SGRAPH_TRIPLE_APPLY_LOCK_ARRAY_SIZE',['../group__sgraph__main.html#gacc2ec4c1b9133efa5b133b70066a06e4',1,'turi']]],
-  ['shuffle',['shuffle',['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#ac841ac06cfca279c95a9dce811a6d5a1',1,'turi::object_detection::data_iterator::parameters']]],
+  ['shuffle',['shuffle',['../structturi_1_1drawing__classifier_1_1data__iterator_1_1parameters.html#ac8a1589e091038106c4b8f7ba37b7757',1,'turi::drawing_classifier::data_iterator::parameters::shuffle()'],['../structturi_1_1object__detection_1_1data__iterator_1_1parameters.html#ac841ac06cfca279c95a9dce811a6d5a1',1,'turi::object_detection::data_iterator::parameters::shuffle()']]],
   ['skip_5finitial_5fspace',['skip_initial_space',['../structturi_1_1csv__line__tokenizer.html#a839eaf9c68ac8c72e0545c74e90ac197',1,'turi::csv_line_tokenizer']]],
   ['skip_5frows',['skip_rows',['../structturi_1_1csv__file__handling__options.html#a257ac25f7f0a0146b3a4f048c97a2d71',1,'turi::csv_file_handling_options']]],
   ['solution',['solution',['../group__LBFGS.html#ga98fb8e2f6bffd3338abfdd3a35352025',1,'turi::optimization::solver_status::solution()'],['../structturi_1_1optimization_1_1__solver__return.html#a01a16ca5f0394c0d6f6f06570b7c033c',1,'turi::optimization::_solver_return::solution()']]],

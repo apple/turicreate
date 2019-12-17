@@ -361,7 +361,7 @@ Variables</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -374,8 +374,6 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <p>Use the Cauchy point as a measure of optimality. See Pg 486 of Nocedal and Wright (Edition 2) </p>
-
-<p>Implements <a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a27dc898432d169b4897c1487866e2ed3">turi::optimization::constraint_interface</a>.</p>
 
 <p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00120">120</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
 
@@ -408,7 +406,7 @@ Variables</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -421,6 +419,8 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <p>Use the Cauchy point as a measure of optimality. See Pg 486 of Nocedal and Wright (Edition 2) </p>
+
+<p>Implements <a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a27dc898432d169b4897c1487866e2ed3">turi::optimization::constraint_interface</a>.</p>
 
 <p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00251">251</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
 
@@ -443,7 +443,7 @@ Variables</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -453,8 +453,6 @@ Variables</h2></td></tr>
   </table>
   </dd>
 </dl>
-
-<p>Implements <a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a9328231aa0293dd69c05c598cc16fbd1">turi::optimization::constraint_interface</a>.</p>
 
 <p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00100">100</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
 
@@ -477,7 +475,7 @@ Variables</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -487,6 +485,8 @@ Variables</h2></td></tr>
   </table>
   </dd>
 </dl>
+
+<p>Implements <a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a9328231aa0293dd69c05c598cc16fbd1">turi::optimization::constraint_interface</a>.</p>
 
 <p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00230">230</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
 
@@ -509,7 +509,7 @@ Variables</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -520,8 +520,6 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <p>Given a convex set X, the projection operator is given by P(y) = ::max(x, o) </p>
-
-<p>Implements <a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a12d7fa7276f1ea88751daf0955e35155">turi::optimization::constraint_interface</a>.</p>
 
 <p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00071">71</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
 
@@ -544,7 +542,7 @@ Variables</h2></td></tr>
       </table>
   </td>
   <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
   </tr>
 </table>
 </div><div class="memdoc">
@@ -555,6 +553,8 @@ Variables</h2></td></tr>
   </dd>
 </dl>
 <p>Given a convex set X, the projection operator is given by P(y) = ::max(x, o) </p>
+
+<p>Implements <a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a12d7fa7276f1ea88751daf0955e35155">turi::optimization::constraint_interface</a>.</p>
 
 <p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00196">196</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
 
@@ -569,6 +569,58 @@ Variables</h2></td></tr>
       <table class="memname">
         <tr>
           <td class="memname">void turi::optimization::non_negative_orthant::project_block </td>
+          <td>(</td>
+          <td class="paramtype">DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>block_start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>block_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Project a block of a dense point into the constraint space.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">point</td><td>A block project the point. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">block_start</td><td>Start index of the block </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">block_size</td><td>Size of the block</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Given a convex set X, the projection operator is given by P(y) = ::max(x, o) </p>
+
+<p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00087">87</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="gab7f22cb166822d964adfc446702638e6"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::optimization::box_constraints::project_block </td>
           <td>(</td>
           <td class="paramtype">DenseVector &amp;&#160;</td>
           <td class="paramname"><em>point</em>, </td>
@@ -609,58 +661,6 @@ Variables</h2></td></tr>
 <p>Given a convex set X, the projection operator is given by P(y) = ::max(x, o) </p>
 
 <p>Implements <a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a091667fb02b04048a3efc4211032ce09">turi::optimization::constraint_interface</a>.</p>
-
-<p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00087">87</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
-
-</div>
-</div>
-<a class="anchor" id="gab7f22cb166822d964adfc446702638e6"></a>
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">void turi::optimization::box_constraints::project_block </td>
-          <td>(</td>
-          <td class="paramtype">DenseVector &amp;&#160;</td>
-          <td class="paramname"><em>point</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const size_t&#160;</td>
-          <td class="paramname"><em>block_start</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const size_t&#160;</td>
-          <td class="paramname"><em>block_size</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Project a block of a dense point into the constraint space.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in,out]</td><td class="paramname">point</td><td>A block project the point. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">block_start</td><td>Start index of the block </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">block_size</td><td>Size of the block</td></tr>
-  </table>
-  </dd>
-</dl>
-<p>Given a convex set X, the projection operator is given by P(y) = ::max(x, o) </p>
 
 <p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00214">214</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
 

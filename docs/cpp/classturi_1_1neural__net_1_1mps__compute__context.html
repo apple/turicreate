@@ -130,8 +130,6 @@ Public Types</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a10b9addf2c7324e9b02798a88d431da6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a10b9addf2c7324e9b02798a88d431da6">mps_compute_context</a> (std::unique_ptr&lt; mps_command_queue &gt; command_queue)</td></tr>
 <tr class="separator:a10b9addf2c7324e9b02798a88d431da6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac3f1f2ef730a752a786a30f10814d182"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#ac3f1f2ef730a752a786a30f10814d182">mps_compute_context</a> ()</td></tr>
-<tr class="separator:ac3f1f2ef730a752a786a30f10814d182"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab6b911dd16cd40d1ada5da76ac230716"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#ab6b911dd16cd40d1ada5da76ac230716">gpu_names</a> () const  override</td></tr>
 <tr class="separator:ab6b911dd16cd40d1ada5da76ac230716"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15b26d8ef9a5a7efda4166a8bfd483d9"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a15b26d8ef9a5a7efda4166a8bfd483d9">memory_budget</a> () const  override</td></tr>
@@ -140,13 +138,17 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a03c6887972c882079babb35c9e9ee346"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad11c005793d9e4dc2e3ce776d9cfcc91"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#ad11c005793d9e4dc2e3ce776d9cfcc91">create_activity_classifier</a> (int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out, const float_array_map &amp;config, const float_array_map &amp;weights) override</td></tr>
 <tr class="separator:ad11c005793d9e4dc2e3ce776d9cfcc91"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1ec8788aa44d3cfb643ab88dfdeaeb3e"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a1ec8788aa44d3cfb643ab88dfdeaeb3e">create_style_transfer</a> (const float_array_map &amp;config, const float_array_map &amp;weights) override</td></tr>
+<tr class="separator:a1ec8788aa44d3cfb643ab88dfdeaeb3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abb445f574065dcc796d880e18ddf02ba"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#abb445f574065dcc796d880e18ddf02ba">create_drawing_classifier</a> (const float_array_map &amp;weights, size_t batch_size, size_t num_classes) override</td></tr>
+<tr class="separator:abb445f574065dcc796d880e18ddf02ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2da8e45adf3b667d77acd1e1c69e9fe6"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1image__augmenter.html">image_augmenter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a2da8e45adf3b667d77acd1e1c69e9fe6">create_image_augmenter</a> (const <a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html">image_augmenter::options</a> &amp;opts) override</td></tr>
 <tr class="separator:a2da8e45adf3b667d77acd1e1c69e9fe6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac5c0a0e6aa9d138dff30ce58cfec3a42"><td class="memItemLeft" align="right" valign="top">std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1image__augmenter.html">image_augmenter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#ac5c0a0e6aa9d138dff30ce58cfec3a42">create_image_augmenter_for_testing</a> (const <a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html">image_augmenter::options</a> &amp;opts, std::function&lt; float(float lower, float upper)&gt; rng)</td></tr>
-<tr class="separator:ac5c0a0e6aa9d138dff30ce58cfec3a42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a14365db4f8b0efb7a1aa3ff2856af409"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1image__augmenter.html">image_augmenter</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a14365db4f8b0efb7a1aa3ff2856af409">create_image_augmenter_for_testing</a> (const <a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html">image_augmenter::options</a> &amp;opts, std::function&lt; float(float lower, float upper)&gt; rng)</td></tr>
+<tr class="separator:a14365db4f8b0efb7a1aa3ff2856af409"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac047143e45b9ce5dc614c9eb3818aa78"><td class="memItemLeft" align="right" valign="top">static std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1compute__context.html">compute_context</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#ac047143e45b9ce5dc614c9eb3818aa78">create</a> ()</td></tr>
 <tr class="separator:ac047143e45b9ce5dc614c9eb3818aa78"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -193,22 +195,6 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Constructs a context wrapping the given Metal command queue. </p>
-
-</div>
-</div>
-<a class="anchor" id="ac3f1f2ef730a752a786a30f10814d182"></a>
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">turi::neural_net::mps_compute_context::mps_compute_context </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Constructs a context wrapping the best currently available Metal device.</p>
 
 </div>
 </div>
@@ -316,6 +302,49 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a class="anchor" id="abb445f574065dcc796d880e18ddf02ba"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a>&gt; turi::neural_net::mps_compute_context::create_drawing_classifier </td>
+          <td>(</td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>weights</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>batch_size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>num_classes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Creates a drawing classification network.</p>
+
+<p>Implements <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a31ea9c356ffe05da18f63d6d7b214dd5">turi::neural_net::compute_context</a>.</p>
+
+</div>
+</div>
 <a class="anchor" id="a2da8e45adf3b667d77acd1e1c69e9fe6"></a>
 <div class="memitem">
 <div class="memproto">
@@ -343,12 +372,15 @@ Static Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a class="anchor" id="ac5c0a0e6aa9d138dff30ce58cfec3a42"></a>
+<a class="anchor" id="a14365db4f8b0efb7a1aa3ff2856af409"></a>
 <div class="memitem">
 <div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1image__augmenter.html">image_augmenter</a>&gt; turi::neural_net::mps_compute_context::create_image_augmenter_for_testing </td>
+          <td class="memname">static std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1image__augmenter.html">image_augmenter</a>&gt; turi::neural_net::mps_compute_context::create_image_augmenter_for_testing </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="structturi_1_1neural__net_1_1image__augmenter_1_1options.html">image_augmenter::options</a> &amp;&#160;</td>
           <td class="paramname"><em>opts</em>, </td>
@@ -365,6 +397,11 @@ Static Public Member Functions</h2></td></tr>
           <td></td><td></td>
         </tr>
       </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
 </div><div class="memdoc">
 <p>Alternate implementation of create_image_augmenter supporting injection of the random number generator, for test purposes. </p>
 
@@ -446,6 +483,43 @@ Static Public Member Functions</h2></td></tr>
 <p>Creates an object detection network.</p>
 
 <p>Implements <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a41f1cc16bc99f8727ed3b4c41e95f11a">turi::neural_net::compute_context</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a1ec8788aa44d3cfb643ab88dfdeaeb3e"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::unique_ptr&lt;<a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a>&gt; turi::neural_net::mps_compute_context::create_style_transfer </td>
+          <td>(</td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>config</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const float_array_map &amp;&#160;</td>
+          <td class="paramname"><em>weights</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Creates a style transfer network</p>
+
+<p>Implements <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a7f80d30494bdefb7ff30007855507129">turi::neural_net::compute_context</a>.</p>
 
 </div>
 </div>

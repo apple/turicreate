@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.style_transfer.StyleTransfer &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.style_transfer.StyleTransfer &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/>
         <link rel="up" title="style_transfer" href="../turicreate.toolkits.style_transfer.html"/>
         <link rel="next" title="classifier" href="../turicreate.toolkits.classifier.html"/>
         <link rel="prev" title="turicreate.style_transfer.create" href="turicreate.style_transfer.create.html"/> 
@@ -133,9 +133,9 @@
 <h1>turicreate.style_transfer.StyleTransfer<a class="headerlink" href="#turicreate-style-transfer-styletransfer" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="turicreate.style_transfer.StyleTransfer">
-<em class="property">class </em><code class="descclassname">turicreate.style_transfer.</code><code class="descname">StyleTransfer</code><span class="sig-paren">(</span><em>state=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.style_transfer.StyleTransfer" title="Permalink to this definition">¶</a></dt>
-<dd><p>An trained model that is ready to use for style transfer, exported to
-Core ML.</p>
+<em class="property">class </em><code class="descclassname">turicreate.style_transfer.</code><code class="descname">StyleTransfer</code><span class="sig-paren">(</span><em>model_proxy=None</em>, <em>name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.style_transfer.StyleTransfer" title="Permalink to this definition">¶</a></dt>
+<dd><p>A trained model using C++ implementation that is ready to use for classification or export to
+CoreML.</p>
 <p>This model should not be constructed directly.</p>
 </dd></dl>
 
@@ -146,22 +146,19 @@ Core ML.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.export_coreml.html#turicreate.style_transfer.StyleTransfer.export_coreml" title="turicreate.style_transfer.StyleTransfer.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.export_coreml</span></code></a>(self,&nbsp;path[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.export_coreml.html#turicreate.style_transfer.StyleTransfer.export_coreml" title="turicreate.style_transfer.StyleTransfer.export_coreml"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.export_coreml</span></code></a>(self,&nbsp;filename)</td>
 <td>Save the model in Core ML format.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.get_styles.html#turicreate.style_transfer.StyleTransfer.get_styles" title="turicreate.style_transfer.StyleTransfer.get_styles"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.get_styles</span></code></a>(self[,&nbsp;style])</td>
 <td>Returns SFrame of style images used for training the model</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.name.html#turicreate.style_transfer.StyleTransfer.name" title="turicreate.style_transfer.StyleTransfer.name"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.name</span></code></a>(self)</td>
-<td>Returns the name of the model.</td>
-</tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.save.html#turicreate.style_transfer.StyleTransfer.save" title="turicreate.style_transfer.StyleTransfer.save"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.save</span></code></a>(self,&nbsp;location)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.save.html#turicreate.style_transfer.StyleTransfer.save" title="turicreate.style_transfer.StyleTransfer.save"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.save</span></code></a>(self,&nbsp;location)</td>
 <td>Save the model.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.stylize.html#turicreate.style_transfer.StyleTransfer.stylize" title="turicreate.style_transfer.StyleTransfer.stylize"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.stylize</span></code></a>(self,&nbsp;images[,&nbsp;style,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.stylize.html#turicreate.style_transfer.StyleTransfer.stylize" title="turicreate.style_transfer.StyleTransfer.stylize"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.stylize</span></code></a>(self,&nbsp;images[,&nbsp;style,&nbsp;…])</td>
 <td>Stylize an SFrame of Images given a style index or a list of styles.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.summary.html#turicreate.style_transfer.StyleTransfer.summary" title="turicreate.style_transfer.StyleTransfer.summary"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.summary</span></code></a>(self[,&nbsp;output])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.style_transfer.StyleTransfer.summary.html#turicreate.style_transfer.StyleTransfer.summary" title="turicreate.style_transfer.StyleTransfer.summary"><code class="xref py py-obj docutils literal"><span class="pre">StyleTransfer.summary</span></code></a>(self[,&nbsp;output])</td>
 <td>Print a summary of the model.</td>
 </tr>
 </tbody>
@@ -186,7 +183,7 @@ Core ML.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -203,7 +200,7 @@ Core ML.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.topic_model.create &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.topic_model.create &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="turicreate.topic_model.TopicModel" href="turicreate.topic_model.TopicModel.html"/>
         <link rel="prev" title="turicreate.text_analytics.tf_idf" href="turicreate.text_analytics.tf_idf.html"/> 
@@ -277,7 +277,7 @@ it was created using Turi Create or another package.</p>
 <p>To manually fix several words to always be assigned to a topic, use
 the <cite>associations</cite> argument. The following will ensure that topic 0
 has the most probability for each of the provided words:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="k">import</span> <span class="n">SFrame</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">SFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">associations</span> <span class="o">=</span> <span class="n">SFrame</span><span class="p">({</span><span class="s1">&#39;word&#39;</span><span class="p">:[</span><span class="s1">&#39;hurricane&#39;</span><span class="p">,</span> <span class="s1">&#39;wind&#39;</span><span class="p">,</span> <span class="s1">&#39;storm&#39;</span><span class="p">],</span>
 <span class="go">                           &#39;topic&#39;: [0, 0, 0]})</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">topic_model</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">docs</span><span class="p">,</span>
@@ -324,7 +324,7 @@ training.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -341,7 +341,7 @@ training.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

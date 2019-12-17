@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.object_detector.ObjectDetector.predict &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.object_detector.ObjectDetector.predict &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -126,7 +126,7 @@
 <h1>turicreate.object_detector.ObjectDetector.predict<a class="headerlink" href="#turicreate-object-detector-objectdetector-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.object_detector.ObjectDetector.predict">
-<code class="descclassname">ObjectDetector.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>confidence_threshold=0.25</em>, <em>iou_threshold=None</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.object_detector.ObjectDetector.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ObjectDetector.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>confidence_threshold=0.25</em>, <em>iou_threshold=0.45</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.object_detector.ObjectDetector.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Predict object instances in an SFrame of images.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -138,21 +138,6 @@
 If dataset is an SFrame, it must have a column with the same name
 as the feature column during training. Additional columns are
 ignored.</p>
-</dd>
-<dt><strong>confidence_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Only return predictions above this level of confidence. The
-threshold can range from 0 to 1.</p>
-</dd>
-<dt><strong>iou_threshold</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float</span></dt>
-<dd><p class="first last">Threshold value for non-maximum suppression. Non-maximum suppression
-prevents multiple bounding boxes appearing over a single object.
-This threshold, set between 0 and 1, controls how aggressive this
-suppression is. A value of 1 means no maximum suppression will
-occur, while a value of 0 will maximally suppress neighboring
-boxes around a prediction.</p>
-</dd>
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool</span></dt>
-<dd><p class="first last">If True, prints prediction progress.</p>
 </dd>
 </dl>
 </td>
@@ -210,7 +195,7 @@ prediction.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -227,7 +212,7 @@ prediction.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.Sketch &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.Sketch &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.aggregate" href="turicreate.aggregate.html"/>
         <link rel="prev" title="turicreate.SFrameBuilder" href="turicreate.SFrameBuilder.html"/> 
@@ -311,28 +311,25 @@ The Count-Min Sketch and its Applications.</a></li>
 <tr class="row-odd"><td><a class="reference internal" href="turicreate.Sketch.num_missing.html#turicreate.Sketch.num_missing" title="turicreate.Sketch.num_missing"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.num_missing</span></code></a>(self)</td>
 <td>Returns the the number of missing (i.e.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.Sketch.num_na.html#turicreate.Sketch.num_na" title="turicreate.Sketch.num_na"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.num_na</span></code></a>(self)</td>
-<td>..WARNING:: This function is deprecated, It will be removed in the next</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.Sketch.num_unique.html#turicreate.Sketch.num_unique" title="turicreate.Sketch.num_unique"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.num_unique</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.Sketch.num_unique.html#turicreate.Sketch.num_unique" title="turicreate.Sketch.num_unique"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.num_unique</span></code></a>(self)</td>
 <td>Returns a sketched estimate of the number of unique values in the SArray based on the Hyperloglog sketch.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.Sketch.quantile.html#turicreate.Sketch.quantile" title="turicreate.Sketch.quantile"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.quantile</span></code></a>(self,&nbsp;quantile_val)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.Sketch.quantile.html#turicreate.Sketch.quantile" title="turicreate.Sketch.quantile"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.quantile</span></code></a>(self,&nbsp;quantile_val)</td>
 <td>Returns a sketched estimate of the value at a particular quantile between 0.0 and 1.0.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.Sketch.size.html#turicreate.Sketch.size" title="turicreate.Sketch.size"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.size</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.Sketch.size.html#turicreate.Sketch.size" title="turicreate.Sketch.size"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.size</span></code></a>(self)</td>
 <td>Returns the size of the input SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.Sketch.sketch_ready.html#turicreate.Sketch.sketch_ready" title="turicreate.Sketch.sketch_ready"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.sketch_ready</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.Sketch.sketch_ready.html#turicreate.Sketch.sketch_ready" title="turicreate.Sketch.sketch_ready"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.sketch_ready</span></code></a>(self)</td>
 <td>Returns True if the sketch has been executed on all the data.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.Sketch.std.html#turicreate.Sketch.std" title="turicreate.Sketch.std"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.std</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.Sketch.std.html#turicreate.Sketch.std" title="turicreate.Sketch.std"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.std</span></code></a>(self)</td>
 <td>Returns the standard deviation of the values in the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.Sketch.sum.html#turicreate.Sketch.sum" title="turicreate.Sketch.sum"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.sum</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.Sketch.sum.html#turicreate.Sketch.sum" title="turicreate.Sketch.sum"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.sum</span></code></a>(self)</td>
 <td>Returns the sum of all the values in the SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.Sketch.var.html#turicreate.Sketch.var" title="turicreate.Sketch.var"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.var</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.Sketch.var.html#turicreate.Sketch.var" title="turicreate.Sketch.var"><code class="xref py py-obj docutils literal"><span class="pre">Sketch.var</span></code></a>(self)</td>
 <td>Returns the variance of the values in the sarray.</td>
 </tr>
 </tbody>
@@ -357,7 +354,7 @@ The Count-Min Sketch and its Applications.</a></li>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -374,7 +371,7 @@ The Count-Min Sketch and its Applications.</a></li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

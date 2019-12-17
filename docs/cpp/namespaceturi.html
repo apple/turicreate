@@ -1181,10 +1181,14 @@ template&lt;typename Key , typename T &gt; </td></tr>
 <tr class="separator:a2f8f75adab79449ded48cf73fff58ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef2291d40ba400f9fed0fbcd55c20810"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aef2291d40ba400f9fed0fbcd55c20810">setup_pipeline_from_mldata</a> (CoreML::Pipeline &amp;pipeline, std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; metadata)</td></tr>
 <tr class="separator:aef2291d40ba400f9fed0fbcd55c20810"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9623f4cefedb6ecd21cb24d20c8f0070"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a9623f4cefedb6ecd21cb24d20c8f0070">export_object_detector_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, size_t num_classes, size_t num_predictions, <a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a> user_defined_metadata, <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> class_labels, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; options)</td></tr>
-<tr class="separator:a9623f4cefedb6ecd21cb24d20c8f0070"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac64c11cf579e1fd985c800e91134444b"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ac64c11cf579e1fd985c800e91134444b">export_object_detector_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, size_t num_classes, size_t num_predictions, <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> class_labels, const std::string &amp;input_name, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; options)</td></tr>
+<tr class="separator:ac64c11cf579e1fd985c800e91134444b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c70151020bc0f0c9dddcfe8c83e7095"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a3c70151020bc0f0c9dddcfe8c83e7095">export_activity_classifier_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t prediction_window, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;features, size_t lstm_hidden_layer_size, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;class_labels, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;target)</td></tr>
 <tr class="separator:a3c70151020bc0f0c9dddcfe8c83e7095"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8813fec2c1c8be93a8d50d2c11379a0"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae8813fec2c1c8be93a8d50d2c11379a0">export_style_transfer_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, bool include_flexible_shape, std::string content_feature, std::string style_feature, size_t num_styles)</td></tr>
+<tr class="separator:ae8813fec2c1c8be93a8d50d2c11379a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30665b30c12e6d5ee807e5e68eae9bd8"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a30665b30c12e6d5ee807e5e68eae9bd8">export_drawing_classifier_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;features, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;class_labels, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;target)</td></tr>
+<tr class="separator:a30665b30c12e6d5ee807e5e68eae9bd8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acf17c7990e00eab46358ea2f7865faee"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#acf17c7990e00eab46358ea2f7865faee">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;dict_or_list, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, std::function&lt; <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>(const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;)&gt; nonnumeric_value_handler)</td></tr>
 <tr class="separator:acf17c7990e00eab46358ea2f7865faee"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a47dee7eafcb0830112b307af255480aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a47dee7eafcb0830112b307af255480aa">to_flat_dict</a> (const <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &amp;input, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;separator, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;undefined_string, const std::string &amp;image_policy=&quot;error&quot;, const std::string &amp;datetime_policy=&quot;error&quot;)</td></tr>
@@ -1226,6 +1230,8 @@ template&lt;typename Key , typename T &gt; </td></tr>
 <tr class="memitem:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memTemplParams" colspan="2">template&lt;typename GenFunction &gt; </td></tr>
 <tr class="memitem:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="classturi_1_1sframe.html">sframe</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="group__toolkit__util.html#ga18a4682bfe16de1db8594e334d57e7ab">sframe_from_ranged_generator</a> (const std::vector&lt; std::string &gt; &amp;column_names, const std::vector&lt; <a class="el" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a> &gt; &amp;column_types, size_t num_rows, GenFunction &amp;&amp;generator_function)</td></tr>
 <tr class="separator:ga18a4682bfe16de1db8594e334d57e7ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96f956da5b0f586de1140168890dfb1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a96f956da5b0f586de1140168890dfb1a">print_training_device</a> (std::vector&lt; std::string &gt; gpu_names)</td></tr>
+<tr class="separator:a96f956da5b0f586de1140168890dfb1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -2541,6 +2547,45 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a class="anchor" id="a30665b30c12e6d5ee807e5e68eae9bd8"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;coreml::MLModelWrapper&gt; turi::export_drawing_classifier_model </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;&#160;</td>
+          <td class="paramname"><em>nn_spec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;&#160;</td>
+          <td class="paramname"><em>features</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;&#160;</td>
+          <td class="paramname"><em>class_labels</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;&#160;</td>
+          <td class="paramname"><em>target</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Wraps a trained drawing classifier model_spec as a complete MLModel. </p>
+
+</div>
+</div>
 <a class="anchor" id="af8f198ba330dd013625dbf4b410a2567"></a>
 <div class="memitem">
 <div class="memproto">
@@ -2679,7 +2724,7 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a class="anchor" id="a9623f4cefedb6ecd21cb24d20c8f0070"></a>
+<a class="anchor" id="ac64c11cf579e1fd985c800e91134444b"></a>
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
@@ -2716,14 +2761,14 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__group__flexible__type__types.html#ga408eb4413a2a629b462fb3a5d4f42c24">flex_dict</a>&#160;</td>
-          <td class="paramname"><em>user_defined_metadata</em>, </td>
+          <td class="paramtype"><a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a>&#160;</td>
+          <td class="paramname"><em>class_labels</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a>&#160;</td>
-          <td class="paramname"><em>class_labels</em>, </td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>input_name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -2742,10 +2787,66 @@ template&lt;typename T &gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">nn_spec</td><td>The NeuralNetwork to wrap, which must accept an input "image" with shape (3, image_height, image_width) and values in [0,1], output "confidence" with shape (num_predictions, num_classes), and "coordinates" with shape (num_predictions, 4). </td></tr>
-    <tr><td class="paramname">user_defined_metadata</td><td>Key-value pairs to add as user-defined metadata.</td></tr>
   </table>
   </dd>
 </dl>
+
+</div>
+</div>
+<a class="anchor" id="ae8813fec2c1c8be93a8d50d2c11379a0"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;coreml::MLModelWrapper&gt; turi::export_style_transfer_model </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;&#160;</td>
+          <td class="paramname"><em>nn_spec</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>image_width</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>image_height</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>include_flexible_shape</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>content_feature</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>style_feature</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>num_styles</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Wraps a trained style transfer model_spec as a complete MLModel. </p>
 
 </div>
 </div>
@@ -4135,6 +4236,23 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 <p>Parse the image information, set width, height and channels using libpng. </p>
+
+</div>
+</div>
+<a class="anchor" id="a96f956da5b0f586de1140168890dfb1a"></a>
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::print_training_device </td>
+          <td>(</td>
+          <td class="paramtype">std::vector&lt; std::string &gt;&#160;</td>
+          <td class="paramname"><em>gpu_names</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>This prints the verbose statements based on GPU names it gets from the respective compute contexts. </p>
 
 </div>
 </div>

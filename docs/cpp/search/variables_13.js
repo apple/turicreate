@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['target_5fcolumn_5fname',['target_column_name',['../structturi_1_1activity__classification_1_1data__iterator_1_1parameters.html#a3cafe63e47308181db216489ec3ad51b',1,'turi::activity_classification::data_iterator::parameters']]],
+  ['target_5fcolumn_5fname',['target_column_name',['../structturi_1_1activity__classification_1_1data__iterator_1_1parameters.html#a3cafe63e47308181db216489ec3ad51b',1,'turi::activity_classification::data_iterator::parameters::target_column_name()'],['../structturi_1_1drawing__classifier_1_1data__iterator_1_1parameters.html#aece96427aeb1b3d86013b4f18a205d76',1,'turi::drawing_classifier::data_iterator::parameters::target_column_name()']]],
+  ['targets',['targets',['../structturi_1_1drawing__classifier_1_1data__iterator_1_1batch.html#a2fa188d774d14193b7d0e5207aed7b91',1,'turi::drawing_classifier::data_iterator::batch']]],
   ['timezone_5fhigh',['TIMEZONE_HIGH',['../structturi_1_1flex__date__time.html#a3e3f759dde7ebf572c7dfa2a8f7e41b7',1,'turi::flex_date_time']]],
   ['timezone_5flow',['TIMEZONE_LOW',['../structturi_1_1flex__date__time.html#ab5faa9d8fe0f445c2bb0a2e103d50770',1,'turi::flex_date_time']]],
   ['timezone_5fresolution_5fin_5fhours',['TIMEZONE_RESOLUTION_IN_HOURS',['../structturi_1_1flex__date__time.html#a0c5bf93f52592b07623ae590751ed1eb',1,'turi::flex_date_time']]],

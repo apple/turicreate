@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.drawing_classifier.DrawingClassifier.export_coreml &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.drawing_classifier.DrawingClassifier.export_coreml &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -126,41 +126,23 @@
 <h1>turicreate.drawing_classifier.DrawingClassifier.export_coreml<a class="headerlink" href="#turicreate-drawing-classifier-drawingclassifier-export-coreml" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.drawing_classifier.DrawingClassifier.export_coreml">
-<code class="descclassname">DrawingClassifier.</code><code class="descname">export_coreml</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em>, <em>verbose=False</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.drawing_classifier.DrawingClassifier.export_coreml" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save the model in Core ML format. The Core ML model takes a grayscale
-drawing of fixed size as input and produces two outputs:
-<cite>classLabel</cite> and <cite>labelProbabilities</cite>.</p>
-<p>The first one, <cite>classLabel</cite> is an integer or string (depending on the
-classes the model was trained on) to store the label of the top
-prediction by the model.</p>
-<p>The second one, <cite>labelProbabilities</cite>, is a dictionary with all the
-class labels in the dataset as the keys, and their respective
-probabilities as the values.</p>
+<code class="descclassname">DrawingClassifier.</code><code class="descname">export_coreml</code><span class="sig-paren">(</span><em>self</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.drawing_classifier.DrawingClassifier.export_coreml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the model in Core ML format.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
-<dt><strong>filename</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
-<dd><p class="first last">The path of the file where we want to save the Core ML model.</p>
-</dd>
-<dt><strong>verbose</strong> <span class="classifier-delimiter">:</span> <span class="classifier">bool optional</span></dt>
-<dd><p class="first last">If True, prints export progress.</p>
+<dt><strong>filename: str</strong></dt>
+<dd><p class="first last">A valid filename where the model can be saved.</p>
 </dd>
 </dl>
 </td>
 </tr>
 </tbody>
 </table>
-<div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<dl class="last docutils">
-<dt><a class="reference internal" href="turicreate.drawing_classifier.DrawingClassifier.save.html#turicreate.drawing_classifier.DrawingClassifier.save" title="turicreate.drawing_classifier.DrawingClassifier.save"><code class="xref py py-obj docutils literal"><span class="pre">save</span></code></a></dt>
-<dd></dd>
-</dl>
-</div>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">export_coreml</span><span class="p">(</span><span class="s1">&#39;drawing_classifier.mlmodel&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">export_coreml</span><span class="p">(</span><span class="s2">&quot;MyModel.mlmodel&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -176,7 +158,7 @@ probabilities as the values.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -193,7 +175,7 @@ probabilities as the values.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

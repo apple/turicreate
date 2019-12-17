@@ -114,7 +114,7 @@ $(document).ready(function(){initNavTree('classturi_1_1optimization_1_1non__nega
 <a href="#pro-attribs">Protected Attributes</a> &#124;
 <a href="classturi_1_1optimization_1_1non__negative__orthant-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">turi::optimization::non_negative_orthant Class Reference<div class="ingroups"><a class="el" href="group__group__optimization.html">Convex Optimization</a> &raquo; <a class="el" href="group__optimization__constraints.html">Optimization Constraints</a></div></div>  </div>
+<div class="title">turi::optimization::non_negative_orthant Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span><div class="ingroups"><a class="el" href="group__group__optimization.html">Convex Optimization</a> &raquo; <a class="el" href="group__optimization__constraints.html">Optimization Constraints</a></div></div>  </div>
 </div><!--header-->
 <div class="contents">
 
@@ -134,6 +134,14 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ga5b7475d5c16f1f415bba8f2a414876bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga06935e19ffddeaaf926ef912d927ca1e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__optimization__constraints.html#ga06935e19ffddeaaf926ef912d927ca1e">first_order_optimality_conditions</a> (const DenseVector &amp;point, const DenseVector &amp;gradient) const </td></tr>
 <tr class="separator:ga06935e19ffddeaaf926ef912d927ca1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a12d7fa7276f1ea88751daf0955e35155"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a12d7fa7276f1ea88751daf0955e35155">project</a> (DenseVector &amp;point) const  =0</td></tr>
+<tr class="separator:a12d7fa7276f1ea88751daf0955e35155"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a091667fb02b04048a3efc4211032ce09"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a091667fb02b04048a3efc4211032ce09">project_block</a> (DenseVector &amp;point, const size_t block_start, const size_t block_size) const  =0</td></tr>
+<tr class="separator:a091667fb02b04048a3efc4211032ce09"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9328231aa0293dd69c05c598cc16fbd1"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a9328231aa0293dd69c05c598cc16fbd1">is_satisfied</a> (const DenseVector &amp;point) const  =0</td></tr>
+<tr class="separator:a9328231aa0293dd69c05c598cc16fbd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a27dc898432d169b4897c1487866e2ed3"><td class="memItemLeft" align="right" valign="top">virtual double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1optimization_1_1constraint__interface.html#a27dc898432d169b4897c1487866e2ed3">first_order_optimality_conditions</a> (const DenseVector &amp;point, const DenseVector &amp;gradient) const  =0</td></tr>
+<tr class="separator:a27dc898432d169b4897c1487866e2ed3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-attribs"></a>
 Protected Attributes</h2></td></tr>
@@ -144,7 +152,168 @@ Protected Attributes</h2></td></tr>
 <div class="textblock"><p>Interface for non-negative constriants. x &gt;= 0 </p>
 
 <p>Definition at line <a class="el" href="constraints-inl_8hpp_source.html#l00040">40</a> of file <a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a>.</p>
-</div><hr/>The documentation for this class was generated from the following file:<ul>
+</div><h2 class="groupheader">Member Function Documentation</h2>
+<a class="anchor" id="a27dc898432d169b4897c1487866e2ed3"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual double turi::optimization::constraint_interface::first_order_optimality_conditions </td>
+          <td>(</td>
+          <td class="paramtype">const DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>gradient</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>A measure of the first order optimality conditions.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">point</td><td>Point which we are querying. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">gradient</td><td>Gradient at that point for a given function</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>If you don't know what to do, then use ||P_C(x - grad) - x|| where x is the point, grad is the gradient and P_C is the projection to the set in consideration. </p>
+
+<p>Implemented in <a class="el" href="group__optimization__constraints.html#gac054436ec7b9ac70f60f57cb9b0c5d1b">turi::optimization::box_constraints</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a9328231aa0293dd69c05c598cc16fbd1"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool turi::optimization::constraint_interface::is_satisfied </td>
+          <td>(</td>
+          <td class="paramtype">const DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Boolean function to determine if a dense point is present in a constraint space. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">point</td><td>Point which we are querying. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Implemented in <a class="el" href="group__optimization__constraints.html#ga44d6a1015f8393c2c343074e47848e67">turi::optimization::box_constraints</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a12d7fa7276f1ea88751daf0955e35155"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void turi::optimization::constraint_interface::project </td>
+          <td>(</td>
+          <td class="paramtype">DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>point</em></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Project a dense point into the constraint space. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">point</td><td>Point which we are using to project the point.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Given a convex set X, the projection operator is given by </p><pre class="fragment">P(y) = \min_{x \in X} || x - y ||^2</pre> 
+<p>Implemented in <a class="el" href="group__optimization__constraints.html#ga9a911fe86d418b48572f53ab0d7b1fa7">turi::optimization::box_constraints</a>.</p>
+
+</div>
+</div>
+<a class="anchor" id="a091667fb02b04048a3efc4211032ce09"></a>
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void turi::optimization::constraint_interface::project_block </td>
+          <td>(</td>
+          <td class="paramtype">DenseVector &amp;&#160;</td>
+          <td class="paramname"><em>point</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>block_start</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const size_t&#160;</td>
+          <td class="paramname"><em>block_size</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span><span class="mlabel">inherited</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Project a dense a block of co-ordinates point into the constraint space.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in,out]</td><td class="paramname">point</td><td>A block project the point. </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">block_start</td><td>Start index of the block </td></tr>
+    <tr><td class="paramdir">[in]</td><td class="paramname">block_size</td><td>Size of the block</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Given a convex set X, the projection operator is given by </p><pre class="fragment">P(y) = \min_{x \in X} || x - y ||^2</pre> 
+<p>Implemented in <a class="el" href="group__optimization__constraints.html#gab7f22cb166822d964adfc446702638e6">turi::optimization::box_constraints</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this class was generated from the following file:<ul>
 <li>ml/optimization/<a class="el" href="constraints-inl_8hpp_source.html">constraints-inl.hpp</a></li>
 </ul>
 </div><!-- contents -->

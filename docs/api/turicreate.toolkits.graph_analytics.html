@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>graph_analytics &mdash; Turi Create API 5.8 documentation</title>
+  <title>graph_analytics &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="index.html"/>
+    <link rel="top" title="Turi Create API 6.0 documentation" href="index.html"/>
         <link rel="up" title="Modelling" href="turicreate.toolkits.html"/>
         <link rel="next" title="turicreate.connected_components.create" href="generated/turicreate.connected_components.create.html"/>
         <link rel="prev" title="turicreate.kmeans.KmeansModel" href="generated/turicreate.kmeans.KmeansModel.html"/> 
@@ -161,7 +161,7 @@ the group. If two vertices are in different connected components there is no
 path between them.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">turicreate</span> <span class="kn">import</span> <span class="n">connected_components</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cc</span> <span class="o">=</span> <span class="n">connected_components</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">print</span> <span class="n">cc</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span> <span class="n">cc</span><span class="o">.</span><span class="n">summary</span><span class="p">()</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cc_ids</span> <span class="o">=</span> <span class="n">cc</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;component_id&#39;</span><span class="p">)</span>  <span class="c1"># an SFrame</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">cc_ids</span> <span class="o">=</span> <span class="n">cc</span><span class="p">[</span><span class="s1">&#39;component_id&#39;</span><span class="p">]</span>      <span class="c1"># equivalent to the above line</span>
@@ -214,7 +214,7 @@ which contains the probability that a vertex belongs to each of the label classe
 <span class="gp">... </span>    <span class="k">elif</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mf">0.1</span><span class="p">:</span>
 <span class="gp">... </span>        <span class="k">return</span> <span class="mi">1</span>
 <span class="gp">... </span>    <span class="k">else</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="k">return</span> <span class="bp">None</span>
+<span class="gp">... </span>        <span class="k">return</span> <span class="kc">None</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">g</span><span class="o">.</span><span class="n">vertices</span><span class="p">[</span><span class="s1">&#39;__id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">init_label</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">m</span> <span class="o">=</span> <span class="n">label_propagation</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">labels</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>
@@ -401,7 +401,7 @@ the User Guide</a>.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -418,7 +418,7 @@ the User Guide</a>.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

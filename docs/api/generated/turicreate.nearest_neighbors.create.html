@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.nearest_neighbors.create &mdash; Turi Create API 5.8 documentation</title>
+  <title>turicreate.nearest_neighbors.create &mdash; Turi Create API 6.0 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 5.8 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/>
         <link rel="up" title="nearest_neighbors" href="../turicreate.toolkits.nearest_neighbors.html"/>
         <link rel="next" title="turicreate.nearest_neighbors.NearestNeighborsModel" href="turicreate.nearest_neighbors.NearestNeighborsModel.html"/>
         <link rel="prev" title="nearest_neighbors" href="../turicreate.toolkits.nearest_neighbors.html"/> 
@@ -138,14 +138,6 @@
 quickly for the nearest neighbors of a query observation. If the <cite>method</cite>
 argument is specified as <cite>auto</cite>, the type of model is chosen automatically
 based on the type of data in <cite>dataset</cite>.</p>
-<div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The ‘dot_product’ distance is deprecated and will be removed in future
-versions of Turi Create. Please use ‘transformed_dot_product’
-distance instead, although note that this is more than a name change;
-it is a <em>different</em> transformation of the dot product of two vectors.
-Please see the distances module documentation for more details.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -186,8 +178,7 @@ may be one of three types:</p>
 <ul class="simple">
 <li><em>String</em>: the name of a standard distance function. One of
 ‘euclidean’, ‘squared_euclidean’, ‘manhattan’, ‘levenshtein’,
-‘jaccard’, ‘weighted_jaccard’, ‘cosine’, ‘dot_product’ (deprecated),
-or ‘transformed_dot_product’.</li>
+‘jaccard’, ‘weighted_jaccard’, ‘cosine’ or ‘transformed_dot_product’.</li>
 <li><em>Function</em>: a function handle from the
 <a class="reference internal" href="../turicreate.toolkits.distances.html#module-turicreate.toolkits.distances" title="turicreate.toolkits.distances"><code class="xref py py-mod docutils literal"><span class="pre">distances</span></code></a> module.</li>
 <li><em>Composite distance</em>: the weighted sum of several standard distance
@@ -216,7 +207,8 @@ values, then the ‘ball_tree’ method is used. Otherwise, the
 <li><em>ball_tree</em>: use a tree structure to find the k-closest neighbors to
 each query point. The ball tree model is slower to construct than the
 brute force model, but queries are faster than linear time. This
-method is not applicable for the cosine and dot product distances.
+method is not applicable for the cosine  or transformed_dot_product
+distances.
 See <a class="reference external" href="http://papers.nips.cc/paper/2666-an-investigation-of-practical-approximate-nearest-neighbor-algorithms">Liu, et al (2004)</a> for
 implementation details.</li>
 <li><em>brute_force</em>: compute the distance from a query point to all
@@ -225,10 +217,10 @@ creation with the brute force method (although the reference data is
 held in the model, but each query takes linear time.</li>
 <li><em>lsh</em>: use Locality Sensitive Hashing (LSH) to find approximate
 nearest neighbors efficiently. The LSH model supports ‘euclidean’,
-‘squared_euclidean’, ‘manhattan’, ‘cosine’, ‘jaccard’, ‘dot_product’
-(deprecated), and ‘transformed_dot_product’ distances. Two options
-are provided for LSH – <code class="docutils literal"><span class="pre">num_tables</span></code> and
-<code class="docutils literal"><span class="pre">num_projections_per_table</span></code>. See the notes below for details.</li>
+‘squared_euclidean’, ‘manhattan’, ‘cosine’, ‘jaccard’, and
+‘transformed_dot_product’ distances. Two options are provided for
+LSH – <code class="docutils literal"><span class="pre">num_tables</span></code> and <code class="docutils literal"><span class="pre">num_projections_per_table</span></code>. See the
+notes below for details.</li>
 </ul>
 </dd>
 <dt><strong>verbose: bool, optional</strong></dt>
@@ -344,10 +336,6 @@ q)\)</span>, where <span class="math">\(a\)</span> is randomly sampled normal un
 <li><cite>jaccard</cite>: We use a recently proposed method one permutation hashing by
 Shrivastava and Li. See the paper <a class="reference external" href="http://www.auai.org/uai2014/proceedings/individuals/225.pdf">[Shrivastava and Li, UAI 2014]</a> for
 details.</li>
-<li><cite>dot_product</cite>: The reference data points are first transformed to
-fixed-norm vectors, and then the minimum <cite>dot_product</cite> distance search
-problem can be solved via finding the reference data with smallest
-<cite>cosine</cite> distances. See the paper <a class="reference external" href="http://proceedings.mlr.press/v37/neyshabur15.html">[Neyshabur and Srebro, ICML 2015]</a> for details.</li>
 </ul>
 <p class="rubric">References</p>
 <ul class="simple">
@@ -413,7 +401,7 @@ distance may have a different relative weight.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Oct 03, 2019.
+      Last updated on Dec 16, 2019.
     </p>
   </div>
 </footer>
@@ -430,7 +418,7 @@ distance may have a different relative weight.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'5.8',
+            VERSION:'6.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false
