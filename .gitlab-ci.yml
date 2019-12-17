@@ -293,6 +293,8 @@ test_cpp_mac_10_15_no_remotefs:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: test
+  dependencies:
+    - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - ./configure --no-remotefs --no-python --no-visualization
