@@ -391,5 +391,13 @@ std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
   return result;
 }
 
+std::unique_ptr<model_backend>
+tf_compute_context::create_multilayer_perceptron_classifier(
+    int n, int c_in, int c_out, const std::vector<size_t>& lay_sizes,
+    const float_array_map& config) {
+  // TODO: Support MLP Classifier
+  return nullptr;
+}
+
 }  // namespace neural_net
 }  // namespace turi

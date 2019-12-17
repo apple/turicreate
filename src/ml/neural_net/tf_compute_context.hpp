@@ -51,7 +51,10 @@ public:
 
   std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options &opts) override;
-  
+
+  std::unique_ptr<model_backend> create_multilayer_perceptron_classifier(
+      int n, int c_in, int c_out, const std::vector<size_t>& lay_sizes,
+      const float_array_map& config) override;
 };
 
 }  // namespace neural_net

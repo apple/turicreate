@@ -191,6 +191,13 @@ class mock_compute_context : public compute_context {
     throw std::runtime_error("create_style_transfer not implemented");
   }
 
+  std::unique_ptr<model_backend> create_multilayer_perceptron_classifier(
+      int n, int c_in, int c_out, const std::vector<size_t>& lay_sizes,
+      const float_array_map& config) override {
+    throw std::runtime_error(
+        "create_multilayer_perceptron_classifier not implemented");
+  }
+
   mutable std::deque<create_augmenter_call> create_augmenter_calls_;
   mutable std::deque<create_object_detector_call> create_object_detector_calls_;
   mutable std::deque<create_drawing_classifier_call>
