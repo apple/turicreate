@@ -15,8 +15,13 @@ if(NOT APPLE)
   set(NN_ENABLE_GETADDRINFO_A 0 CACHE BOOL "Disable Getaddrinfo_a.")
   
   set(NN_PACKAGE_VERSION 1.1.5)
+ 
+  if (DEFINED ENV{TRAVIS_TAG})
+    # Needed workaround for building this in our travis system. 
+    unset(ENV{TRAVIS_TAG}) 
+  endif()
 
-set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/${_nanomsg_dir}/cmake")
+  set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_CURRENT_SOURCE_DIR}/${_nanomsg_dir}/cmake")
 
   add_subdirectory(${_nanomsg_dir})
 
