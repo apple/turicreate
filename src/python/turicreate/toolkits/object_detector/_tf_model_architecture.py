@@ -25,7 +25,6 @@ class ODTensorFlowModel(TensorFlowModel):
         # Converting incoming weights from shared_float_array to numpy
         for key in init_weights.keys():
             init_weights[key] = _utils.convert_shared_float_array_to_numpy(init_weights[key])
-        self.init_weights = init_weights
 
         self.od_graph = _tf.Graph()
         self.config = config
@@ -43,9 +42,9 @@ class ODTensorFlowModel(TensorFlowModel):
         self.output_size = output_size
         self.sess = _tf.Session(graph=self.od_graph)
         with self.od_graph.as_default():
-            self.init_object_detector_graph(input_h, input_w)
+            self.init_object_detector_graph(input_h, input_w, init_weights)
 
-    def init_object_detector_graph(self, input_h, input_w):
+    def init_object_detector_graph(self, input_h, input_w, init_weights):
 
         self.is_train = _tf.placeholder(_tf.bool)  # Set flag for training or val
 
@@ -82,7 +81,7 @@ class ODTensorFlowModel(TensorFlowModel):
         self.sess.run(_tf.global_variables_initializer())
         self.sess.run(_tf.local_variables_initializer())
 
-        self.load_weights(self.init_weights)
+        self.load_weights(init_weights)
 
     def __del__(self):
         self.sess.close()

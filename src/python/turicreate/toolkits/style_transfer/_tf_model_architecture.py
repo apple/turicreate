@@ -492,8 +492,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self.tf_index = _tf.placeholder(dtype = _tf.int64, shape = [self.batch_size])
 
         self.__define_graph();
-        
-        #self.sess = _tf.Session()
+
         init = _tf.global_variables_initializer()
         self.sess.run(init)
 
