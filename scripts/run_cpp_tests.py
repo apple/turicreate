@@ -45,6 +45,7 @@ if __name__ == '__main__':
       help='If present, the ctest command is printed rather than run.')
   parser.add_argument('--docker', action='store_true',
       help='Run the C++ tests inside of Docker on Centos 6.')
+  parser.add_argument('--configure-args', dest='configure_args', type=str, default='', help="Space-separated arguments to pass to the configure command.")
 
   args = parser.parse_args()
 
@@ -55,7 +56,7 @@ if __name__ == '__main__':
     subprocess.check_call(['bash', os.path.join(WORKSPACE, 'scripts/create_docker_images.sh')])
 
     # make tests if needed
-    run_in_docker(['bash', 'configure', '--no-python'])
+    run_in_docker(['bash', 'configure', '--no-python'] + [s.strip() for s in args.configure_args.split(' ') if s.strip()])
     run_in_docker(['bash', '-c', 'make -j%d 2>&1 | grep -v \'ld: warning: direct access\'' % args.j], '/build/debug/test')
 
     # run tests
