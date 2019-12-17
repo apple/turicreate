@@ -54,6 +54,11 @@ class mps_compute_context: public compute_context {
   std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options &opts) override;
 
+  std::unique_ptr<model_backend> create_multilayer_perceptron_classifier(
+      int n, int c_in, int c_out,
+      const std::vector<size_t>& layerSizes,
+      const float_array_map& config) override;
+
   /**
    * Alternate implementation of create_image_augmenter supporting injection of
    * the random number generator, for test purposes.

@@ -177,5 +177,13 @@ std::unique_ptr<model_backend> mps_compute_context::create_drawing_classifier(
   return nullptr;
 }
 
+std::unique_ptr<model_backend> mps_compute_context::create_multilayer_perceptron_classifier(
+      int n, int c_in, int c_out,
+      const std::vector<size_t>& layerSizes,
+      const float_array_map& config) {
+  // TODO: Support MLP Classifier
+  return nullptr;
+}
+
 }  // namespace neural_net
 }  // namespace turi
