@@ -179,6 +179,32 @@ class ObjectDetectorTest(unittest.TestCase):
 
             tc.object_detector.create(sf)
 
+    def test_create_with_invalid_annotations_coordinate(self):
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.head()
+            sf[self.annotations] = sf[self.annotations].apply(
+                    lambda x: [{'label': _CLASSES[0], 'coordinates':{'x':None, 'y':1, 'width':1, 'height': 1}}])
+            tc.object_detector.create(sf)
+
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.head()
+            sf[self.annotations] = sf[self.annotations].apply(
+                    lambda x: [{'label': _CLASSES[0], 'coordinates':{'x':1, 'y':[], 'width':1, 'height': 1}}])
+            tc.object_detector.create(sf)
+
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.head()
+            sf[self.annotations] = sf[self.annotations].apply(
+                    lambda x: [{'label': _CLASSES[0], 'coordinates':{'x':1, 'y':1, 'width':{}, 'height': 1}}])
+            tc.object_detector.create(sf)
+
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.head()
+            sf[self.annotations] = sf[self.annotations].apply(
+                    lambda x: [{'label': _CLASSES[0], 'coordinates':{'x':1, 'y':1, 'width':1, 'height': '1'}}])
+            tc.object_detector.create(sf)
+
+
     def test_create_with_missing_annotations_label(self):
 
         def create_missing_annotations_label(x):
@@ -186,16 +212,11 @@ class ObjectDetectorTest(unittest.TestCase):
                 y['label'] = None
             return x
 
-
-        try:
-            with self.assertRaises(_ToolkitError):
-                sf = self.sf.head()
-                sf[self.annotations] = sf[self.annotations].apply(
-                    lambda x: create_missing_annotations_label(x))
-                tc.object_detector.create(sf)
-        except _ToolkitError as e:
-            self.assertTrue('Annotation labels' in str(e))
-
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.head()
+            sf[self.annotations] = sf[self.annotations].apply(
+                lambda x: create_missing_annotations_label(x))
+            tc.object_detector.create(sf)
 
     def test_create_with_invalid_annotations_not_dict(self):
         with self.assertRaises(_ToolkitError):
@@ -345,14 +366,11 @@ class ObjectDetectorTest(unittest.TestCase):
             return x
 
 
-        try:
-            with self.assertRaises(_ToolkitError):
-                sf = self.sf.head()
-                sf[self.annotations] = sf[self.annotations].apply(
-                    lambda x: create_missing_annotations_label(x))
-                self.model.evaluate(sf)
-        except _ToolkitError as e:
-            self.assertTrue('Annotation labels' in str(e))
+        with self.assertRaises(_ToolkitError):
+            sf = self.sf.head()
+            sf[self.annotations] = sf[self.annotations].apply(
+                lambda x: create_missing_annotations_label(x))
+            self.model.evaluate(sf)
 
     def test_export_coreml(self):
         from PIL import Image
