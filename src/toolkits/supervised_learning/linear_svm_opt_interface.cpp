@@ -91,7 +91,7 @@ void linear_svm_scaled_logistic_opt_interface::set_class_weights(
                                         const flexible_type& _class_weights) {
   DASSERT_TRUE(_class_weights.size() == classes);
   for(const auto& kvp: _class_weights.get<flex_dict>()){
-    class_weights[kvp.first.get<flex_int>()]= kvp.second.get<flex_float>();
+    class_weights[static_cast<int>(kvp.first.get<flex_int>())]= kvp.second.get<flex_float>();
   }
 }
 
@@ -223,7 +223,7 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
     in_parallel([&](size_t thread_idx, size_t num_threads) {
       DenseVector x(primal_variables);
       double y, row_prob, margin, row_func;
-      size_t class_idx = 0;
+      int class_idx = 0;
       for(auto it = data.get_iterator(thread_idx, num_threads);
                                                               !it.done(); ++it) {
         fill_reference_encoding(*it, x);
@@ -233,7 +233,7 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
         }
 
         // Map
-        class_idx = it->target_index();
+        class_idx = static_cast<int>(it->target_index());
         y = class_idx * 2 - 1.0;
         margin = -gamma * (y * x.dot(point) - 1);
         row_prob = -1.0/(1 + exp(-margin));
@@ -254,7 +254,7 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
     in_parallel([&](size_t thread_idx, size_t num_threads) {
       SparseVector x(primal_variables);
       double y, row_prob, margin, row_func;
-      size_t class_idx = 0;
+      int class_idx = 0;
       for(auto it = data.get_iterator(thread_idx, num_threads);
                                                               !it.done(); ++it) {
         fill_reference_encoding(*it, x);
@@ -264,7 +264,7 @@ void linear_svm_scaled_logistic_opt_interface::compute_first_order_statistics(co
         }
 
         // Map
-        class_idx = it->target_index();
+        class_idx = static_cast<int>(it->target_index());
         y = class_idx * 2 - 1.0;
         margin = -gamma * (y * x.dot(point) - 1);
         row_prob = -1.0/(1 + exp(-margin));

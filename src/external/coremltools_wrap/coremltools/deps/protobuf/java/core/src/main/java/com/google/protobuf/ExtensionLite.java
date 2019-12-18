@@ -55,7 +55,7 @@ public abstract class ExtensionLite<ContainingType extends MessageLite, Type> {
    * extension.
    */
   public abstract MessageLite getMessageDefaultInstance();
-
+  
   /** Returns whether or not this extension is a Lite Extension. */
   boolean isLite() {
     return true;

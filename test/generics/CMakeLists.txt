@@ -1,4 +1,4 @@
-project(generics_test)
+project(Turi)
 
 make_boost_test(gl_vector.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(gl_string.cxx REQUIRES unity_shared_for_testing)

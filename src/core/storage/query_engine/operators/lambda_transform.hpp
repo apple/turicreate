@@ -92,7 +92,7 @@ class operator_impl<planner_node_type::LAMBDA_TRANSFORM_NODE> : public query_ope
       flex_type_enum output_type,
       const std::vector<std::string> column_names = {},
       bool skip_undefined = false,
-      int random_seed = -1) {
+      size_t random_seed = size_t(-1)) {
 
     flex_list column_names_list(column_names.begin(), column_names.end());
     auto lambda_function = std::make_shared<lambda::pylambda_function>(lambda_str);

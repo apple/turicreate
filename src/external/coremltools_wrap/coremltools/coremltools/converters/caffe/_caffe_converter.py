@@ -7,9 +7,11 @@ import sys as _sys
 import six as _six
 from ...models import _MLMODEL_FULL_PRECISION, _MLMODEL_HALF_PRECISION, _VALID_MLMODEL_PRECISION_TYPES
 
+
 def convert(model, image_input_names=[], is_bgr=False,
             red_bias=0.0, blue_bias=0.0, green_bias=0.0, gray_bias=0.0,
-            image_scale=1.0, class_labels=None, predicted_feature_name=None, model_precision=_MLMODEL_FULL_PRECISION):
+            image_scale=1.0, class_labels=None, predicted_feature_name=None,
+            model_precision=_MLMODEL_FULL_PRECISION):
     """
     Convert a Caffe model to Core ML format.
 
@@ -29,7 +31,7 @@ def convert(model, image_input_names=[], is_bgr=False,
         - A tuple of two paths to .caffemodel and .prototxt and a dict with image input names
           as keys and paths to mean image binaryprotos as values. The keys should be same as
           the input names provided via the argument 'image_input_name'.
-
+          
     image_input_names: [str] | str
         The name(s) of the input blob(s) in the Caffe model that can be treated
         as images by Core ML. All other inputs are treated as MultiArrays (N-D
@@ -57,25 +59,24 @@ def convert(model, image_input_names=[], is_bgr=False,
         Bias value to be added to the the blue channel of the input image.
         Defaults to 0.0.
         Applicable only if image_input_names is specified.
-        To specify different values for each image input provide a dictionary with input names as keys.
+        To specify different values for each image input provide a dictionary with input names as keys.    
 
     green_bias: float | dict()
         Bias value to be added to the green channel of the input image.
         Defaults to 0.0.
         Applicable only if image_input_names is specified.
-        To specify different values for each image input provide a dictionary with input names as keys.
+        To specify different values for each image input provide a dictionary with input names as keys.    
 
     gray_bias: float | dict()
-		Bias value to be added to the input image (in grayscale).
-        Defaults to 0.0.
+        Bias value to be added to the input image (in grayscale). Defaults to 0.0.
         Applicable only if image_input_names is specified.
-        To specify different values for each image input provide a dictionary with input names as keys.
+        To specify different values for each image input provide a dictionary with input names as keys.    
 
     image_scale: float | dict()
-        Value by which the input images will be scaled before bias is added and
+        Value by which the input images will be scaled before bias is added and 
         Core ML model makes a prediction. Defaults to 1.0.
         Applicable only if image_input_names is specified.
-        To specify different values for each image input provide a dictionary with input names as keys.
+        To specify different values for each image input provide a dictionary with input names as keys.    
 
     class_labels: str
         Filepath where classes are parsed as a list of newline separated
@@ -100,7 +101,7 @@ def convert(model, image_input_names=[], is_bgr=False,
     .. sourcecode:: python
 
 		# Convert it with default input and output names
-		>>> import coremltools
+   		>>> import coremltools
 		>>> coreml_model = coremltools.converters.caffe.convert('my_caffe_model.caffemodel')
 
 		# Saving the Core ML model to a file.
@@ -122,21 +123,21 @@ def convert(model, image_input_names=[], is_bgr=False,
 
         >>> coreml_model = coremltools.converters.caffe.convert(('my_caffe_model.caffemodel',
         ...                 'my_deploy.prototxt', 'mean_image.binaryproto'), image_input_names = 'image_input')
-
+        
         # Multiple mean images for preprocessing
         >>> coreml_model = coremltools.converters.caffe.convert(('my_caffe_model.caffemodel',
         ...                 'my_deploy.prototxt', {'image1': 'mean_image1.binaryproto', 'image2': 'mean_image2.binaryproto'}),
         ...                     image_input_names = ['image1', 'image2'])
-
+        
         # Multiple image inputs and bias/scale values
         >>> coreml_model = coremltools.converters.caffe.convert(('my_caffe_model.caffemodel', 'my_deploy.prototxt'),
         ...                     red_bias = {'image1': -100, 'image2': -110},
         ...                     green_bias = {'image1': -90, 'image2': -125},
         ...                     blue_bias = {'image1': -105, 'image2': -120},
         ...                     image_input_names = ['image1', 'image2'])
-
-
-
+            
+            
+            
     Input and output names used in the interface of the converted Core ML model are inferred from the .prototxt file,
     which contains a description of the network architecture.
     Input names are read from the input layer definition in the .prototxt. By default, they are of type MultiArray.
@@ -144,11 +145,11 @@ def convert(model, image_input_names=[], is_bgr=False,
     All the blobs that are "dangling", i.e.
     which do not feed as input to any other layer are taken as outputs. The .prototxt file can be modified to specify
     custom input and output names.
-
+    
     The converted Core ML model is of type classifier when the argument "class_labels" is specified.
 
     Advanced usage with custom classifiers, and images:
-
+            
     .. sourcecode:: python
 
 		# Mark some inputs as Images
@@ -158,22 +159,22 @@ def convert(model, image_input_names=[], is_bgr=False,
 		# Export as a classifier with classes from a file
 		>>> coreml_model = coremltools.converters.caffe.convert(('my_caffe_model.caffemodel', 'my_caffe_model.prototxt'),
 		...         image_input_names = 'my_image_input', class_labels = 'labels.txt')
-
-
-    Sometimes the converter might return a message about not able to infer input data dimensions.
-    This happens when the input size information is absent from the deploy.prototxt file. This can be easily provided by editing
+            
+                 
+    Sometimes the converter might return a message about not able to infer input data dimensions. 
+    This happens when the input size information is absent from the deploy.prototxt file. This can be easily provided by editing 
     the .prototxt in a text editor. Simply add a snippet in the beginning, similar to the following, for each of the inputs to the model:
-
+            
     .. code-block:: bash
-
+            
         input: "my_image_input"
         input_dim: 1
         input_dim: 3
         input_dim: 227
         input_dim: 227
-
-    Here we have specified an input with dimensions (1,3,227,227), using Caffe's convention, in the order (batch, channel, height, width).
-    Input name string ("my_image_input") must also match the name of the input (or "bottom", as inputs are known in Caffe) of the first layer in the .prototxt.
+                                    
+    Here we have specified an input with dimensions (1,3,227,227), using Caffe's convention, in the order (batch, channel, height, width). 
+    Input name string ("my_image_input") must also match the name of the input (or "bottom", as inputs are known in Caffe) of the first layer in the .prototxt.                                         
 
     """
     from ...models import MLModel
@@ -233,12 +234,12 @@ def _export(filename, model, image_input_names=[], is_bgr=False,
     else:
         raise RuntimeError('Mean image binaryproto path must be a string or a dictionary of inputs names and paths. ')
 
-    if not isinstance(is_bgr, dict): is_bgr = dict.fromkeys(image_input_names, is_bgr)
-    if not isinstance(red_bias, dict): red_bias = dict.fromkeys(image_input_names, red_bias)
-    if not isinstance(blue_bias, dict): blue_bias = dict.fromkeys(image_input_names, blue_bias)
-    if not isinstance(green_bias, dict): green_bias = dict.fromkeys(image_input_names, green_bias)
-    if not isinstance(gray_bias, dict): gray_bias = dict.fromkeys(image_input_names, gray_bias)
-    if not isinstance(image_scale, dict): image_scale = dict.fromkeys(image_input_names, image_scale)
+    if not isinstance(is_bgr, dict): is_bgr = dict.fromkeys(image_input_names, is_bgr) 
+    if not isinstance(red_bias, dict): red_bias = dict.fromkeys(image_input_names, red_bias) 
+    if not isinstance(blue_bias, dict): blue_bias = dict.fromkeys(image_input_names, blue_bias) 
+    if not isinstance(green_bias, dict): green_bias = dict.fromkeys(image_input_names, green_bias) 
+    if not isinstance(gray_bias, dict): gray_bias = dict.fromkeys(image_input_names, gray_bias) 
+    if not isinstance(image_scale, dict): image_scale = dict.fromkeys(image_input_names, image_scale) 
 
     libcaffeconverter._convert_to_file(src_model_path,
                                        filename,

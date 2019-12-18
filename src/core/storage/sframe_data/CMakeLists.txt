@@ -1,4 +1,4 @@
-project(sframe)
+project(Turi)
 
 make_library(sframe OBJECT
   SOURCES

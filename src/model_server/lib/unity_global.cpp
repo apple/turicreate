@@ -583,7 +583,7 @@ namespace turi {
   }
 
   void unity_global::set_log_level(size_t level) {
-    if (level <= 8) global_logger().set_log_level(level);
+    if (level <= 8) global_logger().set_log_level(static_cast<int>(level));
   }
 
   std::map<std::string, flexible_type> unity_global::list_globals(bool runtime_modifiable) {

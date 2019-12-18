@@ -1,4 +1,4 @@
-project(process)
+project(Turi)
 
 if(WIN32)
   SET(PLATFORM_SOURCES process_win.cpp process_util_win.cpp)

@@ -17,7 +17,7 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeLSTM(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     int layerIdWeights = CoreMLConverter::getLayerIndex(caffeLayer,layerParameters.mapCaffeLayerNamesToIndex);
@@ -37,7 +37,7 @@ void CoreMLConverter::convertCaffeLSTM(CoreMLConverter::ConvertLayerParameters l
     bottom.push_back(hnamein);
     std::string cnamein = "LSTM_" + std::to_string(layerId) + "_c_in";
     bottom.push_back(cnamein);
-
+    
     // Same deal for top names
     std::vector<std::string> top;
     top.push_back(caffeLayer.top(0));
@@ -45,17 +45,17 @@ void CoreMLConverter::convertCaffeLSTM(CoreMLConverter::ConvertLayerParameters l
     top.push_back(hnameout);
     std::string cnameout = "LSTM_" + std::to_string(layerId) + "_c_out";
     top.push_back(cnameout);
-
+    
     CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::RecurrentParameter& caffeLayerParams = caffeLayer.recurrent_param();
     uint32_t hidden_size = caffeLayerParams.num_output();
     layerParameters.mapBlobNameToDimensions[hnamein] = std::vector<int64_t>(1, hidden_size);
     layerParameters.mapBlobNameToDimensions[cnamein] = std::vector<int64_t>(1, hidden_size);
-
-
+    
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerWeights.blobs_size()==0){
         CoreMLConverter::errorInCaffeProto("Weights not found in the caffemodel file", caffeLayer.name(), "Recurrent");
@@ -76,26 +76,26 @@ void CoreMLConverter::convertCaffeLSTM(CoreMLConverter::ConvertLayerParameters l
     specLayerParams->set_outputvectorsize(static_cast<uint64_t>(hidden_size));
     assert(input_size >= 0);
     specLayerParams->set_inputvectorsize(static_cast<uint64_t>(input_size));
-
+    
     specLayerParams->mutable_params()->set_sequenceoutput(false);
     // Caffe doesn't support forget bias, so it won't come up
     specLayerParams->mutable_params()->set_forgetbias(false);
     specLayerParams->mutable_params()->set_hasbiasvectors(true);
-
+    
     //Add default set of non-linearities
     specLayerParams->add_activations()->mutable_sigmoid();
     specLayerParams->add_activations()->mutable_tanh();
     specLayerParams->add_activations()->mutable_tanh();
-
+    
     //Copy weights
     //Input Weight Matrices
     int blobSize = caffeLayerWeights.blobs(0).data_size();
-    int64_t expectedSize = 4*hidden_size*input_size;
+    int64_t expectedSize = 4*((int64_t)hidden_size)*input_size;
     if (blobSize != expectedSize) {
         CoreMLConverter::errorInCaffeProto("Expected blob size = "+std::to_string(expectedSize)+" but found blob of size = "+std::to_string(blobSize)+" in caffe"
                           , caffeLayer.name(), "Recurrent");
     }
-
+    
     ::google::protobuf::RepeatedField<float>* Wi = specLayerParams->mutable_weightparams()->mutable_inputgateweightmatrix()->mutable_floatvalue();
     Wi->Resize(blobSize/4, 0.0);
     for (int i=0; i<blobSize/4; i++){
@@ -116,10 +116,10 @@ void CoreMLConverter::convertCaffeLSTM(CoreMLConverter::ConvertLayerParameters l
     for (int i=0; i<blobSize/4; i++){
         Wz->Set(i,caffeLayerWeights.blobs(0).data(i + 3*static_cast<int>(hidden_size*input_size)));
     }
-
+    
     //biases
     blobSize = caffeLayerWeights.blobs(1).data_size();
-    expectedSize = 4*hidden_size;
+    expectedSize = 4*((int64_t)hidden_size);
     if (blobSize != expectedSize) {
         CoreMLConverter::errorInCaffeProto("Expected blob size = "+std::to_string(expectedSize)+" but found blob of size = "+std::to_string(blobSize)+" in caffe"
                           , caffeLayer.name(), "Recurrent");
@@ -144,11 +144,11 @@ void CoreMLConverter::convertCaffeLSTM(CoreMLConverter::ConvertLayerParameters l
     for (int i=0; i<blobSize/4; i++){
         bz->Set(i,caffeLayerWeights.blobs(1).data(i + 3*static_cast<int>(hidden_size)));
     }
-
-
+    
+    
     //Recursion matrices
     blobSize = caffeLayerWeights.blobs(2).data_size();
-    expectedSize = 4*hidden_size*hidden_size;
+    expectedSize = 4*((int64_t)hidden_size)*((int64_t)hidden_size);
     if (blobSize != expectedSize) {
         CoreMLConverter::errorInCaffeProto("Expected blob size = "+std::to_string(expectedSize)+" but found blob of size = "+std::to_string(blobSize)+" in caffe"
                           , caffeLayer.name(), "Recurrent");

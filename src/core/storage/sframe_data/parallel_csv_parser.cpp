@@ -776,7 +776,7 @@ class parallel_csv_parser {
     const char comment_char = tokenizer.comment_char;
     bool cur_in_quote = false;
 
-    int idx = 0;
+    size_t idx = 0;
     const char* __restrict__ buf = &(buffer[0]);
     const char* __restrict__ bufend = &(buffer[0]) + buffer.size();
     if (tokenizer.has_comment_char) {
@@ -791,7 +791,7 @@ class parallel_csv_parser {
                 (*(buf) != escape_char)) {
             ++buf;
           }
-          int endidx = buf - &(buffer[0]);
+          size_t endidx = buf - &(buffer[0]);
           if (cur_in_quote) {
             // if in_quote we need to flag all the quote_parity bits
             while(idx < endidx) {
@@ -834,7 +834,7 @@ class parallel_csv_parser {
                 (*(buf) != escape_char)) {
             ++buf;
           }
-          int endidx = buf - &(buffer[0]);
+          size_t endidx = buf - &(buffer[0]);
           if (cur_in_quote) {
             // if in_quote we need to flag all the quote_parity bits
             while(idx < endidx) {

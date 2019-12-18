@@ -72,9 +72,11 @@ namespace CoreML {
                 break;
             default:
                 assert(false);
-                break;
+                // Fix coverity defect 70786 explicit null dereferenced
+                return Result(ResultType::INVALID_MODEL_PARAMETERS,
+                              "invalid specification for pipeline model");
         }
-
+        
         auto* contained = container->Add();
         *contained = spec.getProto();
         return Result();
@@ -85,7 +87,7 @@ namespace CoreML {
 
         std::vector<Model> out;
         auto container = p.models();
-
+        
         int size = container.size();
         assert(size >= 0);
         out.reserve(static_cast<size_t>(size));

@@ -1,4 +1,4 @@
-project(network)
+project(Turi)
 
 make_library(network OBJECT
   SOURCES

@@ -1,4 +1,4 @@
-project(unity_test_toolkits)
+project(Turi)
 
 make_boost_test(test_neural_nets_model_exporter.cxx
   REQUIRES

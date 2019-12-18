@@ -83,7 +83,7 @@ void subscribe_socket::connect(std::string objectkey) {
 void subscribe_socket::disconnect(std::string objectkey) {
   std::lock_guard<mutex> guard(lock);
   if (publishers.count(objectkey)) {
-    nn_shutdown(z_socket, publishers[objectkey]);
+    nn_shutdown(z_socket, static_cast<int>(publishers[objectkey]));
     publishers.erase(objectkey);
   }
 }

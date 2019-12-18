@@ -1307,3 +1307,4 @@ VALUE Message_encode_json(int argc, VALUE* argv, VALUE klass) {
     return ret;
   }
 }
+

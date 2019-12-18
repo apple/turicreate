@@ -120,3 +120,4 @@ class FieldDescriptorProto_Type
      */
     const TYPE_SINT64 = 18;
 }
+

@@ -1,4 +1,4 @@
-project(unity_toolkits)
+project(Turi)
 
 make_library(unity_ml_model OBJECT
   SOURCES
@@ -6,4 +6,5 @@ make_library(unity_ml_model OBJECT
   REQUIRES
     unity_core
     optimization
+    boost
 )

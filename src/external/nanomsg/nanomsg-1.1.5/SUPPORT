@@ -1,0 +1,23 @@
+SUPPORT
+=======
+
+This project ("nanomsg") or more properly "nanomsg 1.0" is now in
+"sustaining" mode.
+
+This means that generally the project maintainers will only integrate fixes
+or release new versions when severe defects are found.  The  reason for this
+is that new development effort has transitioned to the "NNG" project
+(see https://github.com/nanomsg/nng for more information).
+
+The possible exception to this would be for features with a specific
+commercial sponsorship, for commercial users unable to use NNG.
+
+The NNG project as of this writing has *nearly* complete compatibility
+with nanomsg (99% of apps will work with no source code changes, and
+the NNG library is also wire compatible with nanomsg, so that projects
+built with the two separate libraries can interoperate seamlessly).
+In addition it offers higher scalability, reliability, and usability.
+It also offers a number of more advanced features.
+
+Commercial support for both NNG and this project ("nanomsg") is offered
+by Staysail Systems, Inc.  Contact info@staysail.tech for more information.

@@ -1,4 +1,4 @@
-project(sframe_query_engine_test)
+project(Turi)
 
 make_boost_test(basic_end_to_end.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(optimizations.cxx REQUIRES unity_shared_for_testing)

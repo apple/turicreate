@@ -52,12 +52,18 @@ extern DictionaryFeatureTypeDefaultTypeInternal _DictionaryFeatureType_default_i
 class DoubleFeatureType;
 class DoubleFeatureTypeDefaultTypeInternal;
 extern DoubleFeatureTypeDefaultTypeInternal _DoubleFeatureType_default_instance_;
+class DoubleRange;
+class DoubleRangeDefaultTypeInternal;
+extern DoubleRangeDefaultTypeInternal _DoubleRange_default_instance_;
 class DoubleVector;
 class DoubleVectorDefaultTypeInternal;
 extern DoubleVectorDefaultTypeInternal _DoubleVector_default_instance_;
 class FeatureType;
 class FeatureTypeDefaultTypeInternal;
 extern FeatureTypeDefaultTypeInternal _FeatureType_default_instance_;
+class FloatVector;
+class FloatVectorDefaultTypeInternal;
+extern FloatVectorDefaultTypeInternal _FloatVector_default_instance_;
 class ImageFeatureType;
 class ImageFeatureTypeDefaultTypeInternal;
 extern ImageFeatureTypeDefaultTypeInternal _ImageFeatureType_default_instance_;
@@ -73,6 +79,12 @@ extern ImageFeatureType_ImageSizeRangeDefaultTypeInternal _ImageFeatureType_Imag
 class Int64FeatureType;
 class Int64FeatureTypeDefaultTypeInternal;
 extern Int64FeatureTypeDefaultTypeInternal _Int64FeatureType_default_instance_;
+class Int64Range;
+class Int64RangeDefaultTypeInternal;
+extern Int64RangeDefaultTypeInternal _Int64Range_default_instance_;
+class Int64Set;
+class Int64SetDefaultTypeInternal;
+extern Int64SetDefaultTypeInternal _Int64Set_default_instance_;
 class Int64ToDoubleMap;
 class Int64ToDoubleMapDefaultTypeInternal;
 extern Int64ToDoubleMapDefaultTypeInternal _Int64ToDoubleMap_default_instance_;
@@ -705,6 +717,91 @@ class Int64Vector : public ::google::protobuf::MessageLite /* @@protoc_insertion
 };
 // -------------------------------------------------------------------
 
+class FloatVector : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.FloatVector) */ {
+ public:
+  FloatVector();
+  virtual ~FloatVector();
+
+  FloatVector(const FloatVector& from);
+
+  inline FloatVector& operator=(const FloatVector& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const FloatVector& default_instance();
+
+  static inline const FloatVector* internal_default_instance() {
+    return reinterpret_cast<const FloatVector*>(
+               &_FloatVector_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    10;
+
+  void Swap(FloatVector* other);
+
+  // implements Message ----------------------------------------------
+
+  inline FloatVector* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  FloatVector* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const FloatVector& from);
+  void MergeFrom(const FloatVector& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(FloatVector* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated float vector = 1;
+  int vector_size() const;
+  void clear_vector();
+  static const int kVectorFieldNumber = 1;
+  float vector(int index) const;
+  void set_vector(int index, float value);
+  void add_vector(float value);
+  const ::google::protobuf::RepeatedField< float >&
+      vector() const;
+  ::google::protobuf::RepeatedField< float >*
+      mutable_vector();
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.FloatVector)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  ::google::protobuf::RepeatedField< float > vector_;
+  mutable int _vector_cached_byte_size_;
+  mutable int _cached_size_;
+  friend struct protobuf_DataStructures_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class DoubleVector : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.DoubleVector) */ {
  public:
   DoubleVector();
@@ -724,7 +821,7 @@ class DoubleVector : public ::google::protobuf::MessageLite /* @@protoc_insertio
                &_DoubleVector_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    10;
+    11;
 
   void Swap(DoubleVector* other);
 
@@ -785,6 +882,261 @@ class DoubleVector : public ::google::protobuf::MessageLite /* @@protoc_insertio
   ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
   ::google::protobuf::RepeatedField< double > vector_;
   mutable int _vector_cached_byte_size_;
+  mutable int _cached_size_;
+  friend struct protobuf_DataStructures_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class Int64Range : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.Int64Range) */ {
+ public:
+  Int64Range();
+  virtual ~Int64Range();
+
+  Int64Range(const Int64Range& from);
+
+  inline Int64Range& operator=(const Int64Range& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const Int64Range& default_instance();
+
+  static inline const Int64Range* internal_default_instance() {
+    return reinterpret_cast<const Int64Range*>(
+               &_Int64Range_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    12;
+
+  void Swap(Int64Range* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Int64Range* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  Int64Range* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const Int64Range& from);
+  void MergeFrom(const Int64Range& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Int64Range* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // int64 minValue = 1;
+  void clear_minvalue();
+  static const int kMinValueFieldNumber = 1;
+  ::google::protobuf::int64 minvalue() const;
+  void set_minvalue(::google::protobuf::int64 value);
+
+  // int64 maxValue = 2;
+  void clear_maxvalue();
+  static const int kMaxValueFieldNumber = 2;
+  ::google::protobuf::int64 maxvalue() const;
+  void set_maxvalue(::google::protobuf::int64 value);
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.Int64Range)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  ::google::protobuf::int64 minvalue_;
+  ::google::protobuf::int64 maxvalue_;
+  mutable int _cached_size_;
+  friend struct protobuf_DataStructures_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class Int64Set : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.Int64Set) */ {
+ public:
+  Int64Set();
+  virtual ~Int64Set();
+
+  Int64Set(const Int64Set& from);
+
+  inline Int64Set& operator=(const Int64Set& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const Int64Set& default_instance();
+
+  static inline const Int64Set* internal_default_instance() {
+    return reinterpret_cast<const Int64Set*>(
+               &_Int64Set_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    13;
+
+  void Swap(Int64Set* other);
+
+  // implements Message ----------------------------------------------
+
+  inline Int64Set* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  Int64Set* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const Int64Set& from);
+  void MergeFrom(const Int64Set& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(Int64Set* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // repeated int64 values = 1;
+  int values_size() const;
+  void clear_values();
+  static const int kValuesFieldNumber = 1;
+  ::google::protobuf::int64 values(int index) const;
+  void set_values(int index, ::google::protobuf::int64 value);
+  void add_values(::google::protobuf::int64 value);
+  const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
+      values() const;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
+      mutable_values();
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.Int64Set)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  ::google::protobuf::RepeatedField< ::google::protobuf::int64 > values_;
+  mutable int _values_cached_byte_size_;
+  mutable int _cached_size_;
+  friend struct protobuf_DataStructures_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
+class DoubleRange : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.DoubleRange) */ {
+ public:
+  DoubleRange();
+  virtual ~DoubleRange();
+
+  DoubleRange(const DoubleRange& from);
+
+  inline DoubleRange& operator=(const DoubleRange& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const DoubleRange& default_instance();
+
+  static inline const DoubleRange* internal_default_instance() {
+    return reinterpret_cast<const DoubleRange*>(
+               &_DoubleRange_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    14;
+
+  void Swap(DoubleRange* other);
+
+  // implements Message ----------------------------------------------
+
+  inline DoubleRange* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  DoubleRange* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const DoubleRange& from);
+  void MergeFrom(const DoubleRange& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(DoubleRange* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // double minValue = 1;
+  void clear_minvalue();
+  static const int kMinValueFieldNumber = 1;
+  double minvalue() const;
+  void set_minvalue(double value);
+
+  // double maxValue = 2;
+  void clear_maxvalue();
+  static const int kMaxValueFieldNumber = 2;
+  double maxvalue() const;
+  void set_maxvalue(double value);
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.DoubleRange)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  double minvalue_;
+  double maxvalue_;
   mutable int _cached_size_;
   friend struct protobuf_DataStructures_2eproto::TableStruct;
 };
@@ -997,6 +1349,40 @@ Int64Vector::mutable_vector() {
 
 // -------------------------------------------------------------------
 
+// FloatVector
+
+// repeated float vector = 1;
+inline int FloatVector::vector_size() const {
+  return vector_.size();
+}
+inline void FloatVector::clear_vector() {
+  vector_.Clear();
+}
+inline float FloatVector::vector(int index) const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.FloatVector.vector)
+  return vector_.Get(index);
+}
+inline void FloatVector::set_vector(int index, float value) {
+  vector_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.FloatVector.vector)
+}
+inline void FloatVector::add_vector(float value) {
+  vector_.Add(value);
+  // @@protoc_insertion_point(field_add:CoreML.Specification.FloatVector.vector)
+}
+inline const ::google::protobuf::RepeatedField< float >&
+FloatVector::vector() const {
+  // @@protoc_insertion_point(field_list:CoreML.Specification.FloatVector.vector)
+  return vector_;
+}
+inline ::google::protobuf::RepeatedField< float >*
+FloatVector::mutable_vector() {
+  // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.FloatVector.vector)
+  return &vector_;
+}
+
+// -------------------------------------------------------------------
+
 // DoubleVector
 
 // repeated double vector = 1;
@@ -1029,7 +1415,113 @@ DoubleVector::mutable_vector() {
   return &vector_;
 }
 
+// -------------------------------------------------------------------
+
+// Int64Range
+
+// int64 minValue = 1;
+inline void Int64Range::clear_minvalue() {
+  minvalue_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 Int64Range::minvalue() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Int64Range.minValue)
+  return minvalue_;
+}
+inline void Int64Range::set_minvalue(::google::protobuf::int64 value) {
+  
+  minvalue_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.Int64Range.minValue)
+}
+
+// int64 maxValue = 2;
+inline void Int64Range::clear_maxvalue() {
+  maxvalue_ = GOOGLE_LONGLONG(0);
+}
+inline ::google::protobuf::int64 Int64Range::maxvalue() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Int64Range.maxValue)
+  return maxvalue_;
+}
+inline void Int64Range::set_maxvalue(::google::protobuf::int64 value) {
+  
+  maxvalue_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.Int64Range.maxValue)
+}
+
+// -------------------------------------------------------------------
+
+// Int64Set
+
+// repeated int64 values = 1;
+inline int Int64Set::values_size() const {
+  return values_.size();
+}
+inline void Int64Set::clear_values() {
+  values_.Clear();
+}
+inline ::google::protobuf::int64 Int64Set::values(int index) const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Int64Set.values)
+  return values_.Get(index);
+}
+inline void Int64Set::set_values(int index, ::google::protobuf::int64 value) {
+  values_.Set(index, value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.Int64Set.values)
+}
+inline void Int64Set::add_values(::google::protobuf::int64 value) {
+  values_.Add(value);
+  // @@protoc_insertion_point(field_add:CoreML.Specification.Int64Set.values)
+}
+inline const ::google::protobuf::RepeatedField< ::google::protobuf::int64 >&
+Int64Set::values() const {
+  // @@protoc_insertion_point(field_list:CoreML.Specification.Int64Set.values)
+  return values_;
+}
+inline ::google::protobuf::RepeatedField< ::google::protobuf::int64 >*
+Int64Set::mutable_values() {
+  // @@protoc_insertion_point(field_mutable_list:CoreML.Specification.Int64Set.values)
+  return &values_;
+}
+
+// -------------------------------------------------------------------
+
+// DoubleRange
+
+// double minValue = 1;
+inline void DoubleRange::clear_minvalue() {
+  minvalue_ = 0;
+}
+inline double DoubleRange::minvalue() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.DoubleRange.minValue)
+  return minvalue_;
+}
+inline void DoubleRange::set_minvalue(double value) {
+  
+  minvalue_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.DoubleRange.minValue)
+}
+
+// double maxValue = 2;
+inline void DoubleRange::clear_maxvalue() {
+  maxvalue_ = 0;
+}
+inline double DoubleRange::maxvalue() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.DoubleRange.maxValue)
+  return maxvalue_;
+}
+inline void DoubleRange::set_maxvalue(double value) {
+  
+  maxvalue_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.DoubleRange.maxValue)
+}
+
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

@@ -455,7 +455,7 @@ public final class MapEntry<K, V> extends AbstractMessage {
     }
     return true;
   }
-
+  
   /** Returns the metadata only for experimental runtime. */
   final Metadata<K, V> getMetadata() {
     return metadata;

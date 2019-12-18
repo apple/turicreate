@@ -10,8 +10,9 @@ from ._feature_management import process_or_validate_features
 from ._feature_management import is_valid_feature_list
 from . import _feature_management as _fm
 
+
 def set_classifier_interface_params(spec, features, class_labels,
-        model_accessor_for_class_labels, output_features = None):
+        model_accessor_for_class_labels, output_features = None, training_features=None):
     """
     Common utilities to set the regression interface params.
     """
@@ -59,12 +60,16 @@ def set_classifier_interface_params(spec, features, class_labels,
         input_ = spec.description.input.add()
         input_.name = cur_input_name
         datatypes._set_datatype(input_.type, input_type)
-
+    
     # add output
     for index, (cur_output_name, output_type) in enumerate(output_features):
         output_ = spec.description.output.add()
         output_.name = cur_output_name
         datatypes._set_datatype(output_.type, output_type)
+
+    # Add training features
+    if training_features is not None:
+        spec = set_training_features(spec, training_features)
 
     # Worry about the class labels
     if pred_cl_type == datatypes.String():
@@ -72,7 +77,7 @@ def set_classifier_interface_params(spec, features, class_labels,
             for c in class_labels:
                 getattr(spec, model_accessor_for_class_labels).stringClassLabels.vector.append(str(c))
         # Not all the classifiers have class labels; in particular the pipeline
-        # classifier.  Thus it's not an error if we can't actually set them.
+        # classifier.  Thus it's not an error if we can't actually set them. 
         except AttributeError:
             pass
 
@@ -88,33 +93,34 @@ def set_classifier_interface_params(spec, features, class_labels,
             if conv_error:
                 raise TypeError(("Cannot cast '%s' class to an int type " % str(c))
                 + "(class type determined by type of first class).")
-
+            
             try:
                 getattr(spec, model_accessor_for_class_labels).int64ClassLabels.vector.append(int(c))
             # Not all the classifiers have class labels; in particular the pipeline
-            # classifier.  Thus it's not an error if we can't actually set them.
+            # classifier.  Thus it's not an error if we can't actually set them. 
             except AttributeError:
                 break
 
     # And we are done!
     return spec
 
-def set_regressor_interface_params(spec, features, output_features):
+
+def set_regressor_interface_params(spec, features, output_features, training_features=None):
     """ Common utilities to set the regressor interface params.
     """
     if output_features is None:
         output_features = [("predicted_class", datatypes.Double())]
     else:
         output_features = _fm.process_or_validate_features(output_features, 1)
-
+ 
     if len(output_features) != 1:
         raise ValueError("Provided output features for a regressor must be "
                     "one Double feature.")
-
+    
     if output_features[0][1] != datatypes.Double():
         raise ValueError("Output type of a regressor must be a Double.")
 
-    prediction_name = output_features[0][0]
+    prediction_name = output_features[0][0] 
     spec.description.predictedFeatureName = prediction_name
 
     # Normalize the features list.
@@ -126,12 +132,17 @@ def set_regressor_interface_params(spec, features, output_features):
         input_.name = cur_input_name
         datatypes._set_datatype(input_.type, feature_type)
 
+    # Add training features
+    if training_features is not None:
+        spec = set_training_features(spec, training_features)
+
     output_ = spec.description.output.add()
-    output_.name = prediction_name
+    output_.name = prediction_name 
     datatypes._set_datatype(output_.type, 'Double')
     return spec
 
-def set_transform_interface_params(spec, input_features, output_features, are_optional = False):
+
+def set_transform_interface_params(spec, input_features, output_features, are_optional=False, training_features=None):
     """ Common utilities to set transform interface params.
     """
     input_features = _fm.process_or_validate_features(input_features)
@@ -149,5 +160,20 @@ def set_transform_interface_params(spec, input_features, output_features, are_op
         output_ = spec.description.output.add()
         output_.name = fname
         datatypes._set_datatype(output_.type, ftype)
+
+    # Add training features
+    if training_features is not None:
+        spec = set_training_features(spec, training_features)
+
+    return spec
+
+
+def set_training_features(spec, training_features):
+
+    for (fname, ftype) in training_features:
+        training_input_ = spec.description.trainingInput.add()
+        training_input_.name = fname
+        if ftype:
+            datatypes._set_datatype(training_input_.type, ftype)
 
     return spec

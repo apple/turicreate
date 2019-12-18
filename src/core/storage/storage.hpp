@@ -87,10 +87,10 @@
 #include <core/storage/core/storage/fileio/file_ownership_handle.hpp>
 #include <core/storage/core/storage/fileio/fs_utils.hpp>
 #include <core/storage/core/storage/fileio/cache_stream.hpp>
-#include <core/storage/core/storage/fileio/curl_downloader.hpp>
+#include <core/storage/fileio/curl_downloader.hpp>
 #include <core/storage/core/storage/fileio/sanitize_url.hpp>
 #include <core/storage/core/storage/fileio/file_handle_pool.hpp>
-#include <core/storage/core/storage/fileio/fileio_constants.hpp>
+#include <core/storage/fileio/fileio_constants.hpp>
 #include <core/storage/core/storage/fileio/cache_stream_sink.hpp>
 #include <core/storage/core/storage/lazy_eval/lazy_eval_operation_dag.hpp>
 #include <core/storage/core/storage/lazy_eval/lazy_eval_operation.hpp>

@@ -21,19 +21,19 @@ namespace CoreML {
         if (!result.good()) {
             return result;
         }
-
+        
         // Validate the inputs
         result = validateDescriptionsContainFeatureWithTypes(interface.input(), 1, {Specification::FeatureType::kMultiArrayType});
         if (!result.good()) {
             return result;
         }
-
+        
         // Validate the outputs
         result = validateDescriptionsContainFeatureWithTypes(interface.output(), 1, {Specification::FeatureType::kMultiArrayType});
         if (!result.good()) {
             return result;
         }
-
+        
         // Validate the parameters
         auto normLx = format.normalizer().normtype();
         if (normLx != Specification::Normalizer_NormType::Normalizer_NormType_L1 &&
@@ -42,7 +42,7 @@ namespace CoreML {
             return Result(ResultType::INVALID_MODEL_PARAMETERS,
                           "NormalizerValidator normLx invalid");
         }
-
+        
         return result;
     }
 }

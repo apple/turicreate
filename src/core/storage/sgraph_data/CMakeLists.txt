@@ -1,4 +1,4 @@
-project(sgraph)
+project(Turi)
 
 make_library(sgraph OBJECT
   SOURCES

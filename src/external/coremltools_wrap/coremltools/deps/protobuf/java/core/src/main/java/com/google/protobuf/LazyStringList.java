@@ -110,7 +110,7 @@ public interface LazyStringList extends ProtocolStringList {
    *         ({@code index < 0 || index >= size()})
    */
   void set(int index, ByteString element);
-
+  
   /**
    * Replaces the element at the specified position in this list with the
    * specified element (optional operation).

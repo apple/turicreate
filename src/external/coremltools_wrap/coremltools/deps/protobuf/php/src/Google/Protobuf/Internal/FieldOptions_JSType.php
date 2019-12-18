@@ -34,3 +34,4 @@ class FieldOptions_JSType
      */
     const JS_NUMBER = 2;
 }
+

@@ -16,12 +16,12 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeReshape(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -36,13 +36,13 @@ void CoreMLConverter::convertCaffeReshape(CoreMLConverter::ConvertLayerParameter
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::ReshapeParameter& caffeLayerParams = caffeLayer.reshape_param();
-
-
+    
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerParams.axis() != 0){
         CoreMLConverter::unsupportedCaffeParrameterWithOption("axis",caffeLayer.name(),caffeLayer.type(),std::to_string(caffeLayerParams.axis()));
@@ -60,10 +60,17 @@ void CoreMLConverter::convertCaffeReshape(CoreMLConverter::ConvertLayerParameter
         CoreMLConverter::unsupportedCaffeParrameter("shape dims[0], dims[1], dims[2] must all be positve",caffeLayer.name(),caffeLayer.type());
     }
     //***************************************************************
-
+    
     Specification::ReshapeLayerParams* specLayerParams = specLayer->mutable_reshape();
     specLayerParams->add_targetshape(caffeLayerParams.shape().dim(1)); //C
     specLayerParams->add_targetshape(caffeLayerParams.shape().dim(2)); //H
     specLayerParams->add_targetshape(caffeLayerParams.shape().dim(3)); //W
-
+    
 }
+
+
+
+
+
+
+

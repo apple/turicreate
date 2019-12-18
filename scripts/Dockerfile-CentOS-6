@@ -22,7 +22,6 @@ RUN yum -y update && \
     yum -y install \
                vim-common \
                libX11-devel \
-               bzip2-devel \
                sqlite-devel \
                gcc \
                gcc-multilib \

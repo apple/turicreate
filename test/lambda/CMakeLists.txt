@@ -1,4 +1,4 @@
-project(lambda_test)
+project(Turi)
 
 make_boost_test(worker_pool_test.cxx REQUIRES unity_shared_for_testing)
 

@@ -16,12 +16,12 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffePooling(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -36,19 +36,19 @@ void CoreMLConverter::convertCaffePooling(CoreMLConverter::ConvertLayerParameter
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     Specification::PoolingLayerParams* specLayerParams = specLayer->mutable_pooling();
     const caffe::PoolingParameter& caffeLayerParams = caffeLayer.pooling_param();
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerParams.pool()==caffe::PoolingParameter::STOCHASTIC){
         CoreMLConverter::unsupportedCaffeParrameterWithOption("pool method",caffeLayer.name(), "Pooling", "Stochastic");
     }
     //***************************************************************
-
+    
     // Copy over the parameters.
     if (caffeLayerParams.pool() == caffe::PoolingParameter::MAX) {
         specLayerParams->set_type(Specification::PoolingLayerParams::MAX);
@@ -69,10 +69,10 @@ void CoreMLConverter::convertCaffePooling(CoreMLConverter::ConvertLayerParameter
         pad_h = caffeLayerParams.pad_h();
         pad_w = caffeLayerParams.pad_w();
     }
-
+    
     specLayerParams->mutable_includelastpixel()->add_paddingamounts(static_cast<uint64_t>(pad_h));
     specLayerParams->mutable_includelastpixel()->add_paddingamounts(static_cast<uint64_t>(pad_w));
-
+    
     uint32_t stride_h = 0;
     uint32_t stride_w = 0;
     if (caffeLayerParams.has_stride()){
@@ -90,7 +90,7 @@ void CoreMLConverter::convertCaffePooling(CoreMLConverter::ConvertLayerParameter
     }
     specLayerParams->add_stride(static_cast<uint64_t>(stride_h));
     specLayerParams->add_stride(static_cast<uint64_t>(stride_w));
-
+    
     uint32_t kernel_h = 0;
     uint32_t kernel_w = 0;
     if (caffeLayerParams.has_kernel_size()){
@@ -103,7 +103,12 @@ void CoreMLConverter::convertCaffePooling(CoreMLConverter::ConvertLayerParameter
     if((kernel_h == 0 || (kernel_w == 0)) && !(caffeLayerParams.global_pooling())){
         CoreMLConverter::errorInCaffeProto("Kernel size must be non-zero",caffeLayer.name(),caffeLayer.type());
     }
-
+    
     specLayerParams->add_kernelsize(static_cast<uint64_t>(kernel_h));
     specLayerParams->add_kernelsize(static_cast<uint64_t>(kernel_w));
 }
+
+
+
+
+

@@ -1,1 +1,1 @@
-project(TuriCreate)
+project(Turi)

@@ -11,11 +11,11 @@
 #include "../build/format/Model.pb.h"
 
 namespace CoreML {
-
+    
     template <>
     Result validate<MLModelType_identity>(const Specification::Model&) {
         // all identities are valid
         return Result();
     }
-
+    
 }

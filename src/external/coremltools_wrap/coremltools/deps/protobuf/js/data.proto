@@ -48,3 +48,4 @@ message data {
 message UnnestedData {
   required string str = 1;
 }
+

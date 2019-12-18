@@ -22,7 +22,7 @@ namespace CoreML {
         template<typename T>
         static std::vector<std::string> outputNames(const Specification::Model& spec, const T&);
     };
-
+    
     template<typename T>
     std::vector<std::string> NeuralNetwork::outputNames(const Specification::Model& spec, const T&) {
         // We won't do correctness checking here, that's for the validator.
@@ -32,13 +32,13 @@ namespace CoreML {
         }
         return std::vector<std::string>(layerOutputs.begin(), layerOutputs.end());
     }
-
+    
     // The classifier is a special case. Here, we need to not count as layer names the predicted
     // feature name or predicted probabilities name. Additionally, we need to get the blob
     // corresponding to the layer that will generate the probabilities
     template<>
     inline std::vector<std::string> NeuralNetwork::outputNames<Specification::NeuralNetworkClassifier>(const CoreML::Specification::Model& spec, const Specification::NeuralNetworkClassifier& nnClassifier) {
-
+        
         // We won't do correctness checking here, that's for the validator
         std::unordered_set<std::string> layerOutputs;
         for (const auto& output : spec.description().output()) {
@@ -46,7 +46,7 @@ namespace CoreML {
                 && output.name().compare(spec.description().predictedprobabilitiesname()) != 0)
                 layerOutputs.insert(output.name());
         }
-
+        
         const std::string& probBlob = nnClassifier.labelprobabilitylayername();
         if (probBlob.compare("") != 0) {
             // then just add this to the set
@@ -72,10 +72,10 @@ namespace CoreML {
             }
         }
         return std::vector<std::string>(layerOutputs.begin(), layerOutputs.end());
-
+        
     }
-
-
+    
+    
 }
 
 

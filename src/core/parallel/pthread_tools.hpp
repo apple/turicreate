@@ -722,8 +722,8 @@ namespace turi {
   private:
     turi::mutex mutex;
     turi::conditional conditional;
-    mutable int needed;
-    mutable int called;
+    mutable size_t needed;
+    mutable size_t called;
 
     mutable bool barrier_sense;
     mutable bool barrier_release;

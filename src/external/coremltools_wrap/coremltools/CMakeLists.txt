@@ -1,8 +1,20 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.10.2)
 
 set(CMAKE_OSX_ARCHITECTURES x86_64)
+set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 
 project(coremltools)
+
+if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
+  message(FATAL_ERROR "
+    Source directory '${PROJECT_SOURCE_DIR}' is the same
+    as binary directory '${PROJECT_BINARY_DIR}'; coremltools requires
+    an out-of-source build.  Note that your directory tree will require
+    you to remove CMakeCache.txt before this will work, and CMake may have
+    clobbered some source files (use git reset --hard).
+    See: https://gitlab.kitware.com/cmake/community/wikis/FAQ#i-run-an-out-of-source-build-but-cmake-generates-in-source-anyway-why
+  ")
+endif()
 
 find_program(HAS_CCACHE ccache)
 if(HAS_CCACHE)
@@ -13,34 +25,12 @@ endif()
 add_subdirectory(deps)
 add_subdirectory(mlmodel)
 
-if("${PYTHON}" STREQUAL "")
-  find_program(PYTHON NAMES python3 python)
-endif()
-if("${PYTHON_MAJOR_VERSION}" STREQUAL "")
-  exec_program(${PYTHON}
-    ARGS "-c 'import sys; print(sys.version_info.major)'"
-    OUTPUT_VARIABLE PYTHON_MAJOR_VERSION)
-endif()
-if("${PYTHON_MINOR_VERSION}" STREQUAL "")
-  exec_program(${PYTHON}
-    ARGS "-c 'import sys; print(sys.version_info.minor)'"
-    OUTPUT_VARIABLE PYTHON_MINOR_VERSION)
-endif()
-if("${PYTHON_VERSION}" STREQUAL "")
-  set(PYTHON_VERSION "${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}")
-endif()
+find_package(PythonInterp)
+find_package(PythonLibs)
 
-if("${PYTHON_CONFIG}" STREQUAL "")
-  find_program(PYTHON_CONFIG NAMES python3-config python-config)
-endif()
-exec_program(${PYTHON_CONFIG}
-  ARGS "--includes"
-  OUTPUT_VARIABLE PYTHON_CFLAGS)
-
-message("Found python at ${PYTHON}")
-message("Found python version ${PYTHON_VERSION}")
-message("Found python-config at ${PYTHON_CONFIG}")
-message("Found python includes ${PYTHON_CFLAGS}")
+message("Found python at ${PYTHON_EXECUTABLE}")
+message("Found python version ${PYTHON_VERSION_STRING}")
+message("Found python includes ${PYTHON_INCLUDE_DIRS}")
 
 include_directories(
   .
@@ -49,11 +39,11 @@ include_directories(
   deps/protobuf/src
   deps/pybind11/include
   mlmodel/src
+  ${PYTHON_INCLUDE_DIRS}
 )
 
 set(CMAKE_CXX_FLAGS " \
   ${CMAKE_CXX_FLAGS} \
-  ${PYTHON_CFLAGS} \
   --std=c++14 \
 ")
 
@@ -127,6 +117,16 @@ if (APPLE)
   set_target_properties(caffeconverter PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 
+file(COPY ${CMAKE_SOURCE_DIR}/README.rst DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/coremltools/__init__.py
+     DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
+file(COPY ${CMAKE_SOURCE_DIR}/coremltools/__main__.py
+     DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
+set(copy_dirs _deps _scripts converters graph_visualization models proto)
+foreach(cdir IN ITEMS ${copy_dirs})
+  file(COPY ${CMAKE_SOURCE_DIR}/coremltools/${cdir}
+       DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
+endforeach()
 if(APPLE)
   add_custom_command(
     TARGET caffeconverter
@@ -147,14 +147,14 @@ find_library(FOUNDATION Foundation)
 
 if (APPLE AND CORE_VIDEO AND CORE_ML AND FOUNDATION)
   execute_process(
-      COMMAND ${PYTHON} -c "import numpy; print(numpy.get_include())"
+      COMMAND ${PYTHON_EXECUTABLE} -c "import numpy; print(numpy.get_include())"
       RESULT_VARIABLE NUMPY_INCLUDE_STATUS
-      OUTPUT_VARIABLE NUMPY_INCLUDE)
+      OUTPUT_VARIABLE NUMPY_INCLUDE
+  )
 
   if("${NUMPY_INCLUDE}" STREQUAL "" OR NOT NUMPY_INCLUDE_STATUS EQUAL 0)
       message(FATAL_ERROR "Could not find numpy include path. Exit code: ${NUMPY_INCLUDE_STATUS}")
   endif()
-
   message("Found numpy include path at ${NUMPY_INCLUDE}")
 
   include_directories(
@@ -175,6 +175,7 @@ if (APPLE AND CORE_VIDEO AND CORE_ML AND FOUNDATION)
     ${CORE_VIDEO}
     ${CORE_ML}
     ${FOUNDATION}
+    ${PYTHON_LIBRARIES}
   )
 
   if (APPLE)
@@ -193,22 +194,33 @@ else()
   message(STATUS "CoreML.framework and dependent frameworks not found. Skipping libcoremlpython build.")
 endif()
 
-set(PYTHON_TAG "cp${PYTHON_MAJOR_VERSION}${PYTHON_MINOR_VERSION}")
+set(PYTHON_TAG "cp${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
 if(APPLE)
-  set(PLAT_NAME "macosx_10_14_intel;macosx_10_13_intel;macosx_10_12_intel")
+  set(PLAT_NAME "macosx_10_15_intel;macosx_10_14_intel;macosx_10_13_intel;macosx_10_12_intel")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
   set(PLAT_NAME "manylinux1_x86_64")
 else()
   message(FATAL_ERROR "Unsupported build platform. Supported platforms are Linux and macOS.")
 endif()
 
-add_custom_target(dist
-  # Workaround for building multiple platform versions since python setuptools only take in one platform via '--plat-name' argument
-  # and cmake 'foreach' does not seem to work inside add_custom_target
-  COMMAND for SUPP_PLATFORM in ${PLAT_NAME}$<SEMICOLON> do ${PYTHON} setup.py bdist_wheel --plat-name=$$SUPP_PLATFORM --python-tag=${PYTHON_TAG}$<SEMICOLON> done$<SEMICOLON>
-  DEPENDS caffeconverter coremlpython
-  COMMENT "Building Python wheel for coremltools under dist/"
-)
+# Add a target for each platform, and then a 'dist' that will build all of them.
+# Parallel invocations of setup.py is not safe, so we serialize them.
+set(plat_targets "")
+foreach(platform IN ITEMS ${PLAT_NAME})
+  add_custom_target(dist_${platform}
+    COMMENT "Building dist for platform ${platform}..."
+    COMMAND ${PYTHON_EXECUTABLE}
+      ${CMAKE_SOURCE_DIR}/setup.py
+      bdist_wheel
+      --plat-name=${platform}
+      --python-tag=${PYTHON_TAG}
+    DEPENDS "caffeconverter;coremlpython;${plat_targets}"
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+  )
+  set(plat_targets "${plat_targets};dist_${platform}")
+endforeach()
+# Add a 'dist' target that will build wheels for all possible platforms.
+add_custom_target(dist DEPENDS ${plat_targets})
 
 add_custom_target(pytest
   COMMAND pytest coremltools/test/

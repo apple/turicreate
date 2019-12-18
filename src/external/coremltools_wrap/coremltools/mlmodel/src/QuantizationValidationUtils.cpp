@@ -12,7 +12,7 @@
 #include "QuantizationValidationUtils.hpp"
 
 namespace CoreML {
-
+    
     bool hasSufficientBytesInQuantizedWeightParam(const CoreML::Specification::WeightParams& weight,
                                                          const uint64_t units){
         // Checks whether the quantized weight params have sufficiently large byte array
@@ -21,7 +21,7 @@ namespace CoreML {
         uint64_t weightSizeInBytes = (uint64_t) CoreML::getWeightParamSizeInBytes(weight);
         return (weightSizeInBytes >= numBytesNeeded);
     }
-
+    
     bool hasValidQuantizationParams(const CoreML::Specification::WeightParams& weight,
                                     const int expectSize){
         if (!weight.has_quantization()){
@@ -54,5 +54,7 @@ namespace CoreML {
         }
         return true;
     }
-
+    
 }
+
+

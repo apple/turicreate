@@ -22,5 +22,5 @@ def raise_error_unsupported_scenario(message, layer_type, layer_name):
     """
     Raise an error if an scenario is not supported.
     """
-    raise RuntimeError("Unsupported scenario '%s' in layer %s(%s)" % (message,
+    raise RuntimeError("Unsupported scenario '%s' in layer %s(%s)" % (message, 
         layer_type, layer_name))

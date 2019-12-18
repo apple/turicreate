@@ -1,4 +1,4 @@
-project(sframe_query_engine)
+project(Turi)
 
 make_library(sframe_query_engine OBJECT
    SOURCES
@@ -18,6 +18,6 @@ make_library(sframe_query_engine OBJECT
       algorithm/ec_permute.cpp
       query_engine_lock.cpp
    REQUIRES
-      sframe flexible_type pylambda dot_graph_printer
+      sframe flexible_type pylambda
    EXTERNAL_VISIBILITY
 )

@@ -1,4 +1,4 @@
-project(serialization)
+project(Turi)
 
 make_library(serialization OBJECT
   SOURCES

@@ -3,7 +3,7 @@
 # Use of this source code is governed by a BSD-3-clause license that can be
 # found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
-from ...models.tree_ensemble import TreeEnsembleRegressor as _TreeEnsembleRegressor
+from ...models.tree_ensemble import TreeEnsembleRegressor as _TreeEnsembleRegressor, TreeEnsembleClassifier
 
 from ..._deps import HAS_XGBOOST as _HAS_XGBOOST
 
@@ -13,7 +13,7 @@ if _HAS_XGBOOST:
     import xgboost as _xgboost
 
 def recurse_json(mlkit_tree, xgb_tree_json, tree_id, node_id, feature_map,
-        force_32bit_float):
+        force_32bit_float, mode="regressor", tree_index=0, n_classes=2):
     """Traverse through the tree and append to the tree spec.
     """
     relative_hit_rate = None
@@ -60,9 +60,11 @@ def recurse_json(mlkit_tree, xgb_tree_json, tree_id, node_id, feature_map,
 
     else:
         value = xgb_tree_json["leaf"]
-
         if force_32bit_float:
             value = float(_np.float32(value))
+
+        if mode == "classifier" and n_classes > 2:
+            value = {tree_index: value}
 
         mlkit_tree.add_leaf_node(tree_id, node_id, value,
                 relative_hit_rate = relative_hit_rate)
@@ -70,9 +72,17 @@ def recurse_json(mlkit_tree, xgb_tree_json, tree_id, node_id, feature_map,
     # Now recurse
     if "children" in xgb_tree_json:
         for child in xgb_tree_json["children"]:
-            recurse_json(mlkit_tree, child, tree_id, child['nodeid'], feature_map, force_32bit_float)
+            recurse_json(mlkit_tree, child, tree_id, child['nodeid'], feature_map, force_32bit_float, mode=mode, tree_index=tree_index, n_classes=n_classes)
 
-def convert_tree_ensemble(model, feature_names, target, force_32bit_float):
+def convert_tree_ensemble(
+        model,
+        feature_names,
+        target,
+        force_32bit_float,
+        mode="regressor",
+        class_labels=None,
+        n_classes=None,
+    ):
     """Convert a generic tree model to the protobuf spec.
 
     This currently supports:
@@ -94,6 +104,17 @@ def convert_tree_ensemble(model, feature_names, target, force_32bit_float):
     force_32bit_float: bool
         If True, then the resulting CoreML model will use 32 bit floats internally.
 
+    mode: str in ['regressor', 'classifier']
+        Mode of the tree model.
+
+    class_labels: list[int] or None
+        List of classes. When set to None, the class labels are just the range from
+        0 to n_classes - 1.
+
+    n_classes: int or None
+        Number of classes in classification. When set to None, the number of
+        classes is expected from the model or class_labels should be provided.
+
     Returns
     -------
     model_spec: An object of type Model_pb.
@@ -101,14 +122,18 @@ def convert_tree_ensemble(model, feature_names, target, force_32bit_float):
     """
     if not(_HAS_XGBOOST):
         raise RuntimeError('xgboost not found. xgboost conversion API is disabled.')
-
+    accepted_modes = ["regressor", "classifier"]
+    if mode not in accepted_modes:
+        raise ValueError("mode should be in %s" % accepted_modes)
     import json
     import os
     feature_map = None
-    if isinstance(model,  (_xgboost.core.Booster, _xgboost.XGBRegressor)):
+    if isinstance(model,  (_xgboost.core.Booster, _xgboost.XGBRegressor, _xgboost.XGBClassifier)):
 
         # Testing a few corner cases that we don't support
         if isinstance(model, _xgboost.XGBRegressor):
+            if mode == "classifier":
+                raise ValueError("mode is classifier but provided a regressor")
             try:
                 objective = model.get_xgb_params()["objective"]
             except:
@@ -116,8 +141,20 @@ def convert_tree_ensemble(model, feature_names, target, force_32bit_float):
             if objective in ["reg:gamma", "reg:tweedie"]:
                 raise ValueError("Regression objective '%s' not supported for export." % objective)
 
+        if isinstance(model, _xgboost.XGBClassifier):
+            if mode == "regressor":
+                raise ValueError("mode is regressor but provided a classifier")
+            n_classes = model.n_classes_
+            if class_labels is not None:
+                if len(class_labels) != n_classes:
+                    raise ValueError("Number of classes in model (%d) does not match "
+                                     "length of supplied class list (%d)."
+                                     % (n_classes, len(class_labels)))
+            else:
+                class_labels = list(range(n_classes))
+
         # Now use the booster API.
-        if isinstance(model, _xgboost.XGBRegressor):
+        if isinstance(model, (_xgboost.XGBRegressor, _xgboost.XGBClassifier)):
             # Name change in 0.7
             if hasattr(model, 'get_booster'):
                 model = model.get_booster()
@@ -146,11 +183,33 @@ def convert_tree_ensemble(model, feature_names, target, force_32bit_float):
     else:
         raise TypeError("Unexpected type. Expecting XGBoost model.")
 
-    mlkit_tree = _TreeEnsembleRegressor(feature_names, target)
-    mlkit_tree.set_default_prediction_value(0.5)
+    if mode == "classifier":
+        if n_classes is None and class_labels is None:
+            raise ValueError("You must provide class_labels or n_classes when not providing the XGBClassifier")
+        elif n_classes is None:
+            n_classes = len(class_labels)
+        elif class_labels is None:
+            class_labels = range(n_classes)
+        if n_classes == 2:
+            # if we have only 2 classes we only have one sequence of estimators
+            base_prediction = [0.0]
+        else:
+            base_prediction = [0.0 for c in range(n_classes)]
+        # target here is the equivalent of output_features in scikit learn
+        mlkit_tree = TreeEnsembleClassifier(feature_names, class_labels, target)
+        mlkit_tree.set_default_prediction_value(base_prediction)
+        if n_classes == 2:
+            mlkit_tree.set_post_evaluation_transform("Regression_Logistic")
+    else:
+        mlkit_tree = _TreeEnsembleRegressor(feature_names, target)
+        mlkit_tree.set_default_prediction_value(0.5)
+
     for xgb_tree_id, xgb_tree_str in enumerate(xgb_model_str):
+        if mode == "classifier" and n_classes > 2:
+            tree_index = xgb_tree_id % n_classes
+        else:
+            tree_index = 0
         xgb_tree_json = json.loads(xgb_tree_str)
         recurse_json(mlkit_tree, xgb_tree_json, xgb_tree_id, node_id = 0,
-                feature_map = feature_map, force_32bit_float = force_32bit_float)
-
+                feature_map = feature_map, force_32bit_float = force_32bit_float, mode=mode, tree_index=tree_index, n_classes=n_classes)
     return mlkit_tree.spec

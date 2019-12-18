@@ -16,12 +16,12 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffePower(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -36,20 +36,20 @@ void CoreMLConverter::convertCaffePower(CoreMLConverter::ConvertLayerParameters 
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::PowerParameter& caffeLayerParams = caffeLayer.power_param();
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     //nothing
     //***************************************************************
-
+    
     Specification::UnaryFunctionLayerParams* specLayerParams = specLayer->mutable_unary();
     specLayerParams->set_type(Specification::UnaryFunctionLayerParams::POWER);
     specLayerParams->set_shift(caffeLayerParams.shift());
     specLayerParams->set_scale(caffeLayerParams.scale());
     specLayerParams->set_alpha(caffeLayerParams.power());
-
+    
 }

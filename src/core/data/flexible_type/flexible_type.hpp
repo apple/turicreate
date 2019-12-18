@@ -2047,7 +2047,7 @@ template<typename T>
 inline FLEX_ALWAYS_INLINE_FLATTEN
 typename std::enable_if<std::is_integral<T>::value, T>::type
 flexible_type::to() const {
-  return apply_visitor(flexible_type_impl::get_int_visitor());
+  return static_cast<T>(apply_visitor(flexible_type_impl::get_int_visitor()));
 }
 
 template<typename T>

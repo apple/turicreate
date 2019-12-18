@@ -16,17 +16,17 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeScale(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     int layerIdWeights = CoreMLConverter::getLayerIndex(caffeLayer,layerParameters.mapCaffeLayerNamesToIndex);
     const caffe::LayerParameter& caffeLayerWeights = layerParameters.protoweights.layer(layerIdWeights);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     const caffe::ScaleParameter& caffeLayerParams =  caffeLayer.scale_param();
-
+    
     #pragma unused(caffeLayerWeights)
-
+    
     /* CoreML Scale layer does not support all the functionality of Caffe Scale layer.
      Certain error modes can only be detected at compile time when we have input shapes available.
      Such errors cannot be detected at conversion time.
@@ -38,36 +38,36 @@ void CoreMLConverter::convertCaffeScale(CoreMLConverter::ConvertLayerParameters 
         Please refer to the CoreML documentation to see what is supported.
          */
     }
-
+    
     /*
      Caffe can have scale as either an additional input or as a learned parameter. If former, there will be 2 bottoms,
      otherwise 1.
      if bottom_size == 1 => add an CoreML "scale" layer
      if bottom_size == 2 => add an MLkit "multiply" layer. If bias term is true then add another CoreML "bias" layer as well.
      */
-
+   
     if (! (caffeLayer.bottom_size() == 1 || caffeLayer.bottom_size() == 2)){
         CoreMLConverter::errorInCaffeProto("Must have 1 or 2 input(s)",caffeLayer.name(),caffeLayer.type());
     }
     if (caffeLayer.top_size() != 1) {
         CoreMLConverter::errorInCaffeProto("Must have 1 output",caffeLayer.name(),caffeLayer.type());
     }
-
+    
     auto* nnWrite = layerParameters.nnWrite;
     std::vector<std::string> bottom;
     std::vector<std::string> top;
     top.push_back(caffeLayer.top(0));
-
+    
     int nBottom = caffeLayer.bottom_size();
     bool biasTerm = caffeLayerParams.bias_term();
-
+    
     int biasLocation = 0;
     if (biasTerm) {
         if (nBottom == 1){
             biasLocation = 1;
         }
     }
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if ((nBottom == 1 && !biasTerm) || (nBottom == 2 && biasTerm)){
         if (caffeLayerWeights.blobs_size() != 1){
@@ -117,7 +117,7 @@ void CoreMLConverter::convertCaffeScale(CoreMLConverter::ConvertLayerParameters 
         }
     }
     //***************************************************************
-
+    
     /*
      Get params related to the bias
      */
@@ -126,7 +126,7 @@ void CoreMLConverter::convertCaffeScale(CoreMLConverter::ConvertLayerParameters 
     if (biasTerm) {
 
         int dimSize = caffeLayerWeights.blobs(biasLocation).shape().dim_size();
-
+        
         if (dimSize == 0){
             biasSize = 1;
         } else if (dimSize == 1){
@@ -156,16 +156,16 @@ void CoreMLConverter::convertCaffeScale(CoreMLConverter::ConvertLayerParameters 
             CoreMLConverter::errorInCaffeProto("Bias blob data inconsistent with the blob dimensions",caffeLayer.name(),caffeLayer.type());
         }
     }
-
+    
     /*
      Get params related to scale when it is a learned parameter
      */
     std::vector<int64_t> scaleShape;
     int scaleSize = 1;
     if (nBottom == 1) {
-
+        
         int dimSize = caffeLayerWeights.blobs(0).shape().dim_size();
-
+        
         if (dimSize == 0){
             scaleSize = 1;
         } else if (dimSize == 1){
@@ -195,18 +195,18 @@ void CoreMLConverter::convertCaffeScale(CoreMLConverter::ConvertLayerParameters 
             CoreMLConverter::errorInCaffeProto("Scale blob data size inconsistent with the  blob dimensions",caffeLayer.name(),caffeLayer.type());
         }
     }
-
+    
     /*
      Add appropriate CoreML layer(s) now
      */
-
+    
     if (nBottom == 1){
         Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
         bottom.push_back(caffeLayer.bottom(0));
-        CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+        CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                              bottom, top,
                                              nnWrite, mappingDataBlobNames);
-
+        
         Specification::ScaleLayerParams* specLayerParams = specLayer->mutable_scale();
         for (const auto& dim: scaleShape){
             assert(dim >= 0);
@@ -234,13 +234,13 @@ void CoreMLConverter::convertCaffeScale(CoreMLConverter::ConvertLayerParameters 
         CoreMLConverter::convertCaffeMetadata(caffeLayer.name() + "_Mul",
                                              bottom, topMulLayer,
                                              nnWrite, mappingDataBlobNames);
-
+        
         (void) specLayerMul->mutable_multiply();
         Specification::NeuralNetworkLayer* specLayerBias = nnWrite->Add();
         CoreMLConverter::convertCaffeMetadata(caffeLayer.name() + "_Bias",
                                              topMulLayer, top,
                                              nnWrite, mappingDataBlobNames);
-
+        
         Specification::BiasLayerParams* specLayerParamsBias = specLayerBias->mutable_bias();
         for (const auto& dim: biasShape){
             assert(dim >= 0);
@@ -253,9 +253,13 @@ void CoreMLConverter::convertCaffeScale(CoreMLConverter::ConvertLayerParameters 
         Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
         bottom.push_back(caffeLayer.bottom(0));
         bottom.push_back(caffeLayer.bottom(1));
-        CoreMLConverter::convertCaffeMetadata(caffeLayer.name() + "_Mul",
+        CoreMLConverter::convertCaffeMetadata(caffeLayer.name() + "_Mul", 
                                              bottom, top,
                                              nnWrite, mappingDataBlobNames);
         (void) specLayer->mutable_multiply();
     }
 }
+
+
+
+

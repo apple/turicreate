@@ -6,11 +6,13 @@
 #include <set>
 #include <iostream>
 #include <fstream>
+#include <chrono>
 
 #include <boost/random.hpp>
 #include <boost/integer_traits.hpp>
 
 #include <core/parallel/pthread_tools.hpp>
+#include <core/parallel/atomic.hpp>
 #include <core/logging/assertions.hpp>
 #include <timer/timer.hpp>
 
@@ -22,10 +24,36 @@
 #endif
 
 #include <core/util/syserr_reporting.hpp>
+#include <core/util/cityhash_tc.hpp>
 
 namespace turi {
   namespace random {
 
+    /** Get as close to a true source of randomness as possible. 
+     *
+     *  nanoseconds clock from program start.  This should be pretty good.
+     *
+     *  In case subsequent calls on a platform that does not support nanosecond resolution 
+     *  happen, also increment a base count to make sure that subsequent seeds 
+     *  are never the same. 
+     *
+     *  hash all these together to get a final seed hash.
+     */
+    uint64_t pure_random_seed() { 
+      static auto base_start_time = std::chrono::high_resolution_clock::now();
+      static uint64_t base_seed = hash64(time(NULL));
+      static atomic<uint64_t> base_count = 0;
+
+
+      ++base_count; 
+
+      auto now = std::chrono::high_resolution_clock::now();
+
+      uint64_t cur_seed = std::chrono::duration_cast<std::chrono::nanoseconds>(now-base_start_time).count();
+
+      return hash64(base_seed, hash64(cur_seed, base_count));
+    }
+    
     /**
      * A truely nondeterministic generator
      */
@@ -274,11 +302,11 @@ namespace turi {
       nondet_generator& nondet_rnd(nondet_generator::global());
       mut.lock();
       // std::cerr << "initializing real rng" << std::endl;
-      real_rng.seed(nondet_rnd());
+      real_rng.seed(static_cast<uint32_t>(nondet_rnd()));
       // std::cerr << "initializing discrete rng" << std::endl;
-      discrete_rng.seed(nondet_rnd());
+      discrete_rng.seed(static_cast<uint32_t>(nondet_rnd()));
       // std::cerr << "initializing fast discrete rng" << std::endl;
-      fast_discrete_rng.seed(nondet_rnd());
+      fast_discrete_rng.seed(static_cast<uint32_t>(nondet_rnd()));
       mut.unlock();
     }
 

@@ -82,6 +82,7 @@ static void handleMessage(const Descriptor& message, std::ostream& ret) {
         ret << INDENT << INDENT << "case " << enumName.str() << "_NOT_SET:" << std::endl;
         ret << INDENT << INDENT << INDENT << "return \"INVALID\";" << std::endl;
         ret << INDENT << "}" << std::endl;
+        ret << INDENT << "return \"INVALID\";" << std::endl;
         ret << "}" << std::endl << std::endl;
   }
 

@@ -72,3 +72,4 @@ class RepeatedMessageFieldGenerator : public FieldGeneratorBase {
 }  // namespace google
 
 #endif  // GOOGLE_PROTOBUF_COMPILER_CSHARP_REPEATED_MESSAGE_FIELD_H__
+

@@ -4,13 +4,16 @@
 #include <sstream>
 
 namespace CoreML {
-
+    
   static const char* m_prefix = "validator error: ";
-
+    
   Result::Result() : m_type(ResultType::NO_ERROR), m_message("not an error") { }
 
   Result::Result(ResultType type, const std::string& message) :
-    m_type(type), m_message(m_prefix + message) { }
+    m_type(type), m_message(m_prefix + message) {
+
+
+    }
 
   bool Result::good() const {
       return (m_type == ResultType::NO_ERROR || m_type == ResultType::POTENTIALLY_INVALID_NEURAL_NETWORK_SHAPES);
@@ -59,5 +62,5 @@ namespace CoreML {
     out.m_type = ResultType::FEATURE_TYPE_INVARIANT_VIOLATION;
     return out;
   }
-
+  
 }

@@ -197,7 +197,6 @@ namespace CoreML {
                             if (!hasDefault) {
                                 defaultWidth = (int64_t)type.imagetype().enumeratedsizes().sizes(0).width();
                                 defaultHeight = (int64_t)type.imagetype().enumeratedsizes().sizes(0).height();
-                                hasDefault = true;
                                 break;
                             }
 
@@ -239,7 +238,6 @@ namespace CoreML {
                             if (!hasDefault) {
                                 defaultWidth = (int64_t)widthRange.lowerbound();
                                 defaultHeight = (int64_t)heightRange.lowerbound();
-                                hasDefault = true;
                                 break;
                             }
 
@@ -367,12 +365,12 @@ namespace CoreML {
 
 
     Result validateRegressorInterface(const Specification::ModelDescription& description, int modelVersion) {
-
+        
         if (description.predictedfeaturename() == "") {
             return Result(ResultType::INVALID_MODEL_INTERFACE,
                           "Specification is missing regressor predictedFeatureName.");
         }
-
+        
         // Validate feature descriptions
         Result result = validateFeatureDescriptions(description, modelVersion);
         if (!result.good()) {
@@ -410,11 +408,11 @@ namespace CoreML {
         }
         return validateOptionalOutputs(interface);
     }
-
+    
     inline Result validateOptionalTree(const Specification::ModelDescription& interface) {
         return validateOptionalOutputs(interface);
     }
-
+    
     inline Result validateOptionalNN(const Specification::ModelDescription& description) {
         // just need to check that not all inputs are optional
         bool hasNotOptional = false;
@@ -464,5 +462,24 @@ namespace CoreML {
 
         return validateOptionalOutputs(format.description());
     }
-
+    
+    Result validateCanModelBeUpdatable(const Specification::Model& format) {
+        Result r;
+        switch (format.Type_case()) {
+            case Specification::Model::kNeuralNetwork:
+            case Specification::Model::kNeuralNetworkRegressor:
+            case Specification::Model::kNeuralNetworkClassifier:
+            case Specification::Model::kKNearestNeighborsClassifier:
+            case Specification::Model::kPipeline:
+            case Specification::Model::kPipelineRegressor:
+            case Specification::Model::kPipelineClassifier:
+                return r;
+            default: {
+                std::string err;
+                err = "This model type is not supported for on-device update.";
+                return Result(ResultType::INVALID_UPDATABLE_MODEL_PARAMETERS, err);
+            }
+        }
+    }
 }
+

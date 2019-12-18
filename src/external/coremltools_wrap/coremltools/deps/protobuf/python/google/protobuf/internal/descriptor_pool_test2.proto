@@ -70,3 +70,4 @@ message DescriptorPoolTest3 {
 
   optional NestedMessage nested_message = 2;
 }
+

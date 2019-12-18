@@ -56,3 +56,4 @@ class FileDescriptorSet extends \Google\Protobuf\Internal\Message
     }
 
 }
+

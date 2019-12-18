@@ -37,7 +37,7 @@ def convert(model, feature_names, target):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_expected_type(model, _ensemble.RandomForestRegressor)
     def is_rf_model(m):
         if len(m.estimators_) == 0:
@@ -51,3 +51,5 @@ def convert(model, feature_names, target):
             return False
     _sklearn_util.check_fitted(model, is_rf_model)
     return _MLModel(_convert_tree_ensemble(model, feature_names, target))
+
+

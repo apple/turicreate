@@ -569,7 +569,7 @@ inline double BayesianProbitRegressor_Gaussian::mean() const {
   return mean_;
 }
 inline void BayesianProbitRegressor_Gaussian::set_mean(double value) {
-
+  
   mean_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.Gaussian.mean)
 }
@@ -583,7 +583,7 @@ inline double BayesianProbitRegressor_Gaussian::precision() const {
   return precision_;
 }
 inline void BayesianProbitRegressor_Gaussian::set_precision(double value) {
-
+  
   precision_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.Gaussian.precision)
 }
@@ -601,7 +601,7 @@ inline ::google::protobuf::uint32 BayesianProbitRegressor_FeatureValueWeight::fe
   return featurevalue_;
 }
 inline void BayesianProbitRegressor_FeatureValueWeight::set_featurevalue(::google::protobuf::uint32 value) {
-
+  
   featurevalue_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.FeatureValueWeight.featureValue)
 }
@@ -620,7 +620,7 @@ inline const ::CoreML::Specification::BayesianProbitRegressor_Gaussian& Bayesian
                          : *::CoreML::Specification::BayesianProbitRegressor_Gaussian::internal_default_instance();
 }
 inline ::CoreML::Specification::BayesianProbitRegressor_Gaussian* BayesianProbitRegressor_FeatureValueWeight::mutable_featureweight() {
-
+  
   if (featureweight_ == NULL) {
     featureweight_ = new ::CoreML::Specification::BayesianProbitRegressor_Gaussian;
   }
@@ -629,7 +629,7 @@ inline ::CoreML::Specification::BayesianProbitRegressor_Gaussian* BayesianProbit
 }
 inline ::CoreML::Specification::BayesianProbitRegressor_Gaussian* BayesianProbitRegressor_FeatureValueWeight::release_featureweight() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.FeatureValueWeight.featureWeight)
-
+  
   ::CoreML::Specification::BayesianProbitRegressor_Gaussian* temp = featureweight_;
   featureweight_ = NULL;
   return temp;
@@ -638,9 +638,9 @@ inline void BayesianProbitRegressor_FeatureValueWeight::set_allocated_featurewei
   delete featureweight_;
   featureweight_ = featureweight;
   if (featureweight) {
-
+    
   } else {
-
+    
   }
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.FeatureValueWeight.featureWeight)
 }
@@ -658,7 +658,7 @@ inline ::google::protobuf::uint32 BayesianProbitRegressor_FeatureWeight::feature
   return featureid_;
 }
 inline void BayesianProbitRegressor_FeatureWeight::set_featureid(::google::protobuf::uint32 value) {
-
+  
   featureid_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.FeatureWeight.featureId)
 }
@@ -706,7 +706,7 @@ inline ::google::protobuf::uint32 BayesianProbitRegressor::numberoffeatures() co
   return numberoffeatures_;
 }
 inline void BayesianProbitRegressor::set_numberoffeatures(::google::protobuf::uint32 value) {
-
+  
   numberoffeatures_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.numberOfFeatures)
 }
@@ -725,7 +725,7 @@ inline const ::CoreML::Specification::BayesianProbitRegressor_Gaussian& Bayesian
                          : *::CoreML::Specification::BayesianProbitRegressor_Gaussian::internal_default_instance();
 }
 inline ::CoreML::Specification::BayesianProbitRegressor_Gaussian* BayesianProbitRegressor::mutable_bias() {
-
+  
   if (bias_ == NULL) {
     bias_ = new ::CoreML::Specification::BayesianProbitRegressor_Gaussian;
   }
@@ -734,7 +734,7 @@ inline ::CoreML::Specification::BayesianProbitRegressor_Gaussian* BayesianProbit
 }
 inline ::CoreML::Specification::BayesianProbitRegressor_Gaussian* BayesianProbitRegressor::release_bias() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.bias)
-
+  
   ::CoreML::Specification::BayesianProbitRegressor_Gaussian* temp = bias_;
   bias_ = NULL;
   return temp;
@@ -743,9 +743,9 @@ inline void BayesianProbitRegressor::set_allocated_bias(::CoreML::Specification:
   delete bias_;
   bias_ = bias;
   if (bias) {
-
+    
   } else {
-
+    
   }
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.bias)
 }
@@ -789,13 +789,13 @@ inline const ::std::string& BayesianProbitRegressor::regressioninputfeaturename(
   return regressioninputfeaturename_.GetNoArena();
 }
 inline void BayesianProbitRegressor::set_regressioninputfeaturename(const ::std::string& value) {
-
+  
   regressioninputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.regressionInputFeatureName)
 }
 #if LANG_CXX11
 inline void BayesianProbitRegressor::set_regressioninputfeaturename(::std::string&& value) {
-
+  
   regressioninputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.BayesianProbitRegressor.regressionInputFeatureName)
@@ -803,31 +803,31 @@ inline void BayesianProbitRegressor::set_regressioninputfeaturename(::std::strin
 #endif
 inline void BayesianProbitRegressor::set_regressioninputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   regressioninputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.BayesianProbitRegressor.regressionInputFeatureName)
 }
 inline void BayesianProbitRegressor::set_regressioninputfeaturename(const char* value, size_t size) {
-
+  
   regressioninputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.BayesianProbitRegressor.regressionInputFeatureName)
 }
 inline ::std::string* BayesianProbitRegressor::mutable_regressioninputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.BayesianProbitRegressor.regressionInputFeatureName)
   return regressioninputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BayesianProbitRegressor::release_regressioninputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.regressionInputFeatureName)
-
+  
   return regressioninputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BayesianProbitRegressor::set_allocated_regressioninputfeaturename(::std::string* regressioninputfeaturename) {
   if (regressioninputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   regressioninputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), regressioninputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.regressionInputFeatureName)
@@ -842,13 +842,13 @@ inline const ::std::string& BayesianProbitRegressor::optimisminputfeaturename() 
   return optimisminputfeaturename_.GetNoArena();
 }
 inline void BayesianProbitRegressor::set_optimisminputfeaturename(const ::std::string& value) {
-
+  
   optimisminputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.optimismInputFeatureName)
 }
 #if LANG_CXX11
 inline void BayesianProbitRegressor::set_optimisminputfeaturename(::std::string&& value) {
-
+  
   optimisminputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.BayesianProbitRegressor.optimismInputFeatureName)
@@ -856,31 +856,31 @@ inline void BayesianProbitRegressor::set_optimisminputfeaturename(::std::string&
 #endif
 inline void BayesianProbitRegressor::set_optimisminputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   optimisminputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.BayesianProbitRegressor.optimismInputFeatureName)
 }
 inline void BayesianProbitRegressor::set_optimisminputfeaturename(const char* value, size_t size) {
-
+  
   optimisminputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.BayesianProbitRegressor.optimismInputFeatureName)
 }
 inline ::std::string* BayesianProbitRegressor::mutable_optimisminputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.BayesianProbitRegressor.optimismInputFeatureName)
   return optimisminputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BayesianProbitRegressor::release_optimisminputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.optimismInputFeatureName)
-
+  
   return optimisminputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BayesianProbitRegressor::set_allocated_optimisminputfeaturename(::std::string* optimisminputfeaturename) {
   if (optimisminputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   optimisminputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), optimisminputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.optimismInputFeatureName)
@@ -895,13 +895,13 @@ inline const ::std::string& BayesianProbitRegressor::samplingscaleinputfeaturena
   return samplingscaleinputfeaturename_.GetNoArena();
 }
 inline void BayesianProbitRegressor::set_samplingscaleinputfeaturename(const ::std::string& value) {
-
+  
   samplingscaleinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.samplingScaleInputFeatureName)
 }
 #if LANG_CXX11
 inline void BayesianProbitRegressor::set_samplingscaleinputfeaturename(::std::string&& value) {
-
+  
   samplingscaleinputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.BayesianProbitRegressor.samplingScaleInputFeatureName)
@@ -909,31 +909,31 @@ inline void BayesianProbitRegressor::set_samplingscaleinputfeaturename(::std::st
 #endif
 inline void BayesianProbitRegressor::set_samplingscaleinputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   samplingscaleinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.BayesianProbitRegressor.samplingScaleInputFeatureName)
 }
 inline void BayesianProbitRegressor::set_samplingscaleinputfeaturename(const char* value, size_t size) {
-
+  
   samplingscaleinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.BayesianProbitRegressor.samplingScaleInputFeatureName)
 }
 inline ::std::string* BayesianProbitRegressor::mutable_samplingscaleinputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.BayesianProbitRegressor.samplingScaleInputFeatureName)
   return samplingscaleinputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BayesianProbitRegressor::release_samplingscaleinputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.samplingScaleInputFeatureName)
-
+  
   return samplingscaleinputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BayesianProbitRegressor::set_allocated_samplingscaleinputfeaturename(::std::string* samplingscaleinputfeaturename) {
   if (samplingscaleinputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   samplingscaleinputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), samplingscaleinputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.samplingScaleInputFeatureName)
@@ -948,13 +948,13 @@ inline const ::std::string& BayesianProbitRegressor::samplingtruncationinputfeat
   return samplingtruncationinputfeaturename_.GetNoArena();
 }
 inline void BayesianProbitRegressor::set_samplingtruncationinputfeaturename(const ::std::string& value) {
-
+  
   samplingtruncationinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.samplingTruncationInputFeatureName)
 }
 #if LANG_CXX11
 inline void BayesianProbitRegressor::set_samplingtruncationinputfeaturename(::std::string&& value) {
-
+  
   samplingtruncationinputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.BayesianProbitRegressor.samplingTruncationInputFeatureName)
@@ -962,31 +962,31 @@ inline void BayesianProbitRegressor::set_samplingtruncationinputfeaturename(::st
 #endif
 inline void BayesianProbitRegressor::set_samplingtruncationinputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   samplingtruncationinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.BayesianProbitRegressor.samplingTruncationInputFeatureName)
 }
 inline void BayesianProbitRegressor::set_samplingtruncationinputfeaturename(const char* value, size_t size) {
-
+  
   samplingtruncationinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.BayesianProbitRegressor.samplingTruncationInputFeatureName)
 }
 inline ::std::string* BayesianProbitRegressor::mutable_samplingtruncationinputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.BayesianProbitRegressor.samplingTruncationInputFeatureName)
   return samplingtruncationinputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BayesianProbitRegressor::release_samplingtruncationinputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.samplingTruncationInputFeatureName)
-
+  
   return samplingtruncationinputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BayesianProbitRegressor::set_allocated_samplingtruncationinputfeaturename(::std::string* samplingtruncationinputfeaturename) {
   if (samplingtruncationinputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   samplingtruncationinputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), samplingtruncationinputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.samplingTruncationInputFeatureName)
@@ -1001,13 +1001,13 @@ inline const ::std::string& BayesianProbitRegressor::meanoutputfeaturename() con
   return meanoutputfeaturename_.GetNoArena();
 }
 inline void BayesianProbitRegressor::set_meanoutputfeaturename(const ::std::string& value) {
-
+  
   meanoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.meanOutputFeatureName)
 }
 #if LANG_CXX11
 inline void BayesianProbitRegressor::set_meanoutputfeaturename(::std::string&& value) {
-
+  
   meanoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.BayesianProbitRegressor.meanOutputFeatureName)
@@ -1015,31 +1015,31 @@ inline void BayesianProbitRegressor::set_meanoutputfeaturename(::std::string&& v
 #endif
 inline void BayesianProbitRegressor::set_meanoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   meanoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.BayesianProbitRegressor.meanOutputFeatureName)
 }
 inline void BayesianProbitRegressor::set_meanoutputfeaturename(const char* value, size_t size) {
-
+  
   meanoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.BayesianProbitRegressor.meanOutputFeatureName)
 }
 inline ::std::string* BayesianProbitRegressor::mutable_meanoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.BayesianProbitRegressor.meanOutputFeatureName)
   return meanoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BayesianProbitRegressor::release_meanoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.meanOutputFeatureName)
-
+  
   return meanoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BayesianProbitRegressor::set_allocated_meanoutputfeaturename(::std::string* meanoutputfeaturename) {
   if (meanoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   meanoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), meanoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.meanOutputFeatureName)
@@ -1054,13 +1054,13 @@ inline const ::std::string& BayesianProbitRegressor::varianceoutputfeaturename()
   return varianceoutputfeaturename_.GetNoArena();
 }
 inline void BayesianProbitRegressor::set_varianceoutputfeaturename(const ::std::string& value) {
-
+  
   varianceoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.varianceOutputFeatureName)
 }
 #if LANG_CXX11
 inline void BayesianProbitRegressor::set_varianceoutputfeaturename(::std::string&& value) {
-
+  
   varianceoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.BayesianProbitRegressor.varianceOutputFeatureName)
@@ -1068,31 +1068,31 @@ inline void BayesianProbitRegressor::set_varianceoutputfeaturename(::std::string
 #endif
 inline void BayesianProbitRegressor::set_varianceoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   varianceoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.BayesianProbitRegressor.varianceOutputFeatureName)
 }
 inline void BayesianProbitRegressor::set_varianceoutputfeaturename(const char* value, size_t size) {
-
+  
   varianceoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.BayesianProbitRegressor.varianceOutputFeatureName)
 }
 inline ::std::string* BayesianProbitRegressor::mutable_varianceoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.BayesianProbitRegressor.varianceOutputFeatureName)
   return varianceoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BayesianProbitRegressor::release_varianceoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.varianceOutputFeatureName)
-
+  
   return varianceoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BayesianProbitRegressor::set_allocated_varianceoutputfeaturename(::std::string* varianceoutputfeaturename) {
   if (varianceoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   varianceoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), varianceoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.varianceOutputFeatureName)
@@ -1107,13 +1107,13 @@ inline const ::std::string& BayesianProbitRegressor::pessimisticprobabilityoutpu
   return pessimisticprobabilityoutputfeaturename_.GetNoArena();
 }
 inline void BayesianProbitRegressor::set_pessimisticprobabilityoutputfeaturename(const ::std::string& value) {
-
+  
   pessimisticprobabilityoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.pessimisticProbabilityOutputFeatureName)
 }
 #if LANG_CXX11
 inline void BayesianProbitRegressor::set_pessimisticprobabilityoutputfeaturename(::std::string&& value) {
-
+  
   pessimisticprobabilityoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.BayesianProbitRegressor.pessimisticProbabilityOutputFeatureName)
@@ -1121,31 +1121,31 @@ inline void BayesianProbitRegressor::set_pessimisticprobabilityoutputfeaturename
 #endif
 inline void BayesianProbitRegressor::set_pessimisticprobabilityoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   pessimisticprobabilityoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.BayesianProbitRegressor.pessimisticProbabilityOutputFeatureName)
 }
 inline void BayesianProbitRegressor::set_pessimisticprobabilityoutputfeaturename(const char* value, size_t size) {
-
+  
   pessimisticprobabilityoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.BayesianProbitRegressor.pessimisticProbabilityOutputFeatureName)
 }
 inline ::std::string* BayesianProbitRegressor::mutable_pessimisticprobabilityoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.BayesianProbitRegressor.pessimisticProbabilityOutputFeatureName)
   return pessimisticprobabilityoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BayesianProbitRegressor::release_pessimisticprobabilityoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.pessimisticProbabilityOutputFeatureName)
-
+  
   return pessimisticprobabilityoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BayesianProbitRegressor::set_allocated_pessimisticprobabilityoutputfeaturename(::std::string* pessimisticprobabilityoutputfeaturename) {
   if (pessimisticprobabilityoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   pessimisticprobabilityoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), pessimisticprobabilityoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.pessimisticProbabilityOutputFeatureName)
@@ -1160,13 +1160,13 @@ inline const ::std::string& BayesianProbitRegressor::sampledprobabilityoutputfea
   return sampledprobabilityoutputfeaturename_.GetNoArena();
 }
 inline void BayesianProbitRegressor::set_sampledprobabilityoutputfeaturename(const ::std::string& value) {
-
+  
   sampledprobabilityoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.BayesianProbitRegressor.sampledProbabilityOutputFeatureName)
 }
 #if LANG_CXX11
 inline void BayesianProbitRegressor::set_sampledprobabilityoutputfeaturename(::std::string&& value) {
-
+  
   sampledprobabilityoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.BayesianProbitRegressor.sampledProbabilityOutputFeatureName)
@@ -1174,31 +1174,31 @@ inline void BayesianProbitRegressor::set_sampledprobabilityoutputfeaturename(::s
 #endif
 inline void BayesianProbitRegressor::set_sampledprobabilityoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   sampledprobabilityoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.BayesianProbitRegressor.sampledProbabilityOutputFeatureName)
 }
 inline void BayesianProbitRegressor::set_sampledprobabilityoutputfeaturename(const char* value, size_t size) {
-
+  
   sampledprobabilityoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.BayesianProbitRegressor.sampledProbabilityOutputFeatureName)
 }
 inline ::std::string* BayesianProbitRegressor::mutable_sampledprobabilityoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.BayesianProbitRegressor.sampledProbabilityOutputFeatureName)
   return sampledprobabilityoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* BayesianProbitRegressor::release_sampledprobabilityoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.BayesianProbitRegressor.sampledProbabilityOutputFeatureName)
-
+  
   return sampledprobabilityoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline void BayesianProbitRegressor::set_allocated_sampledprobabilityoutputfeaturename(::std::string* sampledprobabilityoutputfeaturename) {
   if (sampledprobabilityoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   sampledprobabilityoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), sampledprobabilityoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.BayesianProbitRegressor.sampledProbabilityOutputFeatureName)

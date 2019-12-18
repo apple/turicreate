@@ -1,4 +1,4 @@
-project(cppipc_test)
+project(Turi)
 
 # cppipc tests only a couple of these are testable
 if(NOT WIN32)

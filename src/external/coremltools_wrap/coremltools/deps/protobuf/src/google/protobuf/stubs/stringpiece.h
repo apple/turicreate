@@ -472,7 +472,7 @@ GOOGLE_PROTOBUF_HASH_NAMESPACE_DECLARATION_START
 template<> struct hash<StringPiece> {
   size_t operator()(const StringPiece& s) const {
     size_t result = 0;
-    for (const char *str = s.data(), *end = str + s.size(); str < end; str++) {
+    for (const char *str = s.data(), *end = str + s.size(); str < end; str++) {  
       result = 5 * result + *str;
     }
     return result;

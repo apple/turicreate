@@ -1,4 +1,4 @@
-project(unity)
+project(Turi)
 
 add_subdirectory(turicreate)
 

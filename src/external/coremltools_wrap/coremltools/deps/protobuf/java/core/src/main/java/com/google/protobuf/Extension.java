@@ -70,7 +70,7 @@ public abstract class Extension<ContainingType extends MessageLite, Type>
     PROTO1,
     PROTO2,
   }
-
+  
   /**
    * If the extension is a message extension (i.e., getLiteType() == MESSAGE),
    * returns the type of the message, otherwise undefined.

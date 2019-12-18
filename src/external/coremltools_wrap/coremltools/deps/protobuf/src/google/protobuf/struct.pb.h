@@ -186,13 +186,13 @@ class LIBPROTOBUF_EXPORT Struct : public ::google::protobuf::Message /* @@protoc
   typedef void InternalArenaConstructable_;
   typedef void DestructorSkippable_;
   public:
-  class Struct_FieldsEntry : public ::google::protobuf::internal::MapEntry<Struct_FieldsEntry,
+  class Struct_FieldsEntry : public ::google::protobuf::internal::MapEntry<Struct_FieldsEntry, 
       ::std::string, ::google::protobuf::Value,
       ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
       0 > {
   public:
-    typedef ::google::protobuf::internal::MapEntry<Struct_FieldsEntry,
+    typedef ::google::protobuf::internal::MapEntry<Struct_FieldsEntry, 
       ::std::string, ::google::protobuf::Value,
       ::google::protobuf::internal::WireFormatLite::TYPE_STRING,
       ::google::protobuf::internal::WireFormatLite::TYPE_MESSAGE,
@@ -769,7 +769,7 @@ inline ::google::protobuf::Struct* Value::mutable_struct_value() {
   if (!has_struct_value()) {
     clear_kind();
     set_has_struct_value();
-    kind_.struct_value_ =
+    kind_.struct_value_ = 
       ::google::protobuf::Arena::CreateMessage< ::google::protobuf::Struct >(
       GetArenaNoVirtual());
   }
@@ -801,7 +801,7 @@ inline void Value::set_allocated_struct_value(::google::protobuf::Struct* struct
       GetArenaNoVirtual()->Own(struct_value);
     } else if (GetArenaNoVirtual() !=
                ::google::protobuf::Arena::GetArena(struct_value)) {
-      ::google::protobuf::Struct* new_struct_value =
+      ::google::protobuf::Struct* new_struct_value = 
           ::google::protobuf::Arena::CreateMessage< ::google::protobuf::Struct >(
           GetArenaNoVirtual());
       new_struct_value->CopyFrom(*struct_value);
@@ -857,7 +857,7 @@ inline ::google::protobuf::ListValue* Value::mutable_list_value() {
   if (!has_list_value()) {
     clear_kind();
     set_has_list_value();
-    kind_.list_value_ =
+    kind_.list_value_ = 
       ::google::protobuf::Arena::CreateMessage< ::google::protobuf::ListValue >(
       GetArenaNoVirtual());
   }
@@ -889,7 +889,7 @@ inline void Value::set_allocated_list_value(::google::protobuf::ListValue* list_
       GetArenaNoVirtual()->Own(list_value);
     } else if (GetArenaNoVirtual() !=
                ::google::protobuf::Arena::GetArena(list_value)) {
-      ::google::protobuf::ListValue* new_list_value =
+      ::google::protobuf::ListValue* new_list_value = 
           ::google::protobuf::Arena::CreateMessage< ::google::protobuf::ListValue >(
           GetArenaNoVirtual());
       new_list_value->CopyFrom(*list_value);

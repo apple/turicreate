@@ -6,7 +6,7 @@
     const auto& dt = array.dtype();
     char kind = dt.kind();
     size_t itemsize = dt.itemsize();
-
+    
     if(kind == 'i' && itemsize == 4) {
         return MLMultiArrayDataTypeInt32;
     } else if(kind == 'f' && itemsize == 4) {
@@ -14,7 +14,7 @@
     } else if( (kind == 'f' || kind == 'd') && itemsize == 8) {
         return MLMultiArrayDataTypeDouble;
     }
-
+    
     throw std::runtime_error("Unsupported array type: " + std::to_string(kind) + " with itemsize = " + std::to_string(itemsize));
 }
 
@@ -29,7 +29,7 @@
 + (NSArray<NSNumber *> *)stridesOf:(py::array)array {
     // numpy strides is in bytes.
     // this type must return number of ELEMENTS! (as per mlkit)
-
+    
     NSMutableArray<NSNumber *> *ret = [[NSMutableArray alloc] init];
     for (size_t i=0; i<array.ndim(); i++) {
         size_t stride = array.strides(i) / array.itemsize();

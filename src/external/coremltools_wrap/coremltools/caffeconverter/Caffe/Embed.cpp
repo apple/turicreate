@@ -16,13 +16,13 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeEmbed(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     int layerIdWeights = CoreMLConverter::getLayerIndex(caffeLayer,layerParameters.mapCaffeLayerNamesToIndex);
     const caffe::LayerParameter& caffeLayerWeights = layerParameters.protoweights.layer(layerIdWeights);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+   
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -40,9 +40,9 @@ void CoreMLConverter::convertCaffeEmbed(CoreMLConverter::ConvertLayerParameters 
     CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::EmbedParameter& caffeLayerParams = caffeLayer.embed_param();
-
+    
     uint32_t inputChannels = caffeLayerParams.input_dim();
     uint32_t outputChannels = caffeLayerParams.num_output();
     bool hasBias = caffeLayerParams.bias_term();
@@ -50,7 +50,7 @@ void CoreMLConverter::convertCaffeEmbed(CoreMLConverter::ConvertLayerParameters 
     if (caffeLayerWeights.blobs_size()>1){
         caffeBiasLength = caffeLayerWeights.blobs(1).data_size();
     }
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerWeights.blobs_size() == 0){
         CoreMLConverter::errorInCaffeProto("Weight blobs not provided", caffeLayer.name(), "Embed");
@@ -73,12 +73,12 @@ void CoreMLConverter::convertCaffeEmbed(CoreMLConverter::ConvertLayerParameters 
                                           ,caffeLayer.name(), "Embed");
     }
     //**************************************************************
-
+    
     Specification::EmbeddingLayerParams* specLayerParams = specLayer->mutable_embedding();
     specLayerParams->set_inputdim(inputChannels);
     specLayerParams->set_outputchannels(outputChannels);
     specLayerParams->set_hasbias(hasBias);
-
+    
     // Write weights: need to transpose
     // Caffe embed weights are stored as [inputChannels,outputChannels]
     // CoreML needs in the format: [outputChannels,inputChannels]
@@ -101,7 +101,7 @@ void CoreMLConverter::convertCaffeEmbed(CoreMLConverter::ConvertLayerParameters 
             weightsWrite->Set(static_cast<int>(index), caffeLayerWeights.blobs(0).data(static_cast<int>(dataIndex)));
         }
     }
-
+    
     // Write bias
     if (hasBias) {
         if (caffeBiasLength < 0 ||

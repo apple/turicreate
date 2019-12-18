@@ -638,12 +638,12 @@ class file_logger{
   * @param arg var args. The parameters that match the format string
   */
   void _log(int loglevel,const char* file,const char* function,
-                int line,const char* fmt, va_list arg );
+                size_t line,const char* fmt, va_list arg );
 
   void _logbuf(int loglevel,const char* file,const char* function,
-                int line,  const char* buf, int len);
+                size_t line,  const char* buf, size_t len);
 
-  void _lograw(int loglevel, const char* buf, int len);
+  void _lograw(int loglevel, const char* buf, size_t len);
 
   inline void stream_flush() {
     // get the stream buffer

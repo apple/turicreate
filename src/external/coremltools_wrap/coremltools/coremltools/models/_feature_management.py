@@ -17,11 +17,11 @@ from ..proto import FeatureTypes_pb2 as _FeatureTypes_pb2
 
 
 def process_or_validate_classifier_output_features(
-        output_features, class_labels, supports_class_scores = True):
+        output_features, class_labels, supports_class_scores = True): 
 
     """
-    Given a list of class labels and a list of output_features, validate the
-    list and return a valid version of output_features with all the correct
+    Given a list of class labels and a list of output_features, validate the 
+    list and return a valid version of output_features with all the correct 
     data type information included.
     """
 
@@ -38,7 +38,7 @@ def process_or_validate_classifier_output_features(
         output_class_type = datatypes.Int64()
 
     elif all(isinstance(cl, _string_types) for cl in class_labels):
-        output_class_type = datatypes.String()
+        output_class_type = datatypes.String() 
 
     else:
         raise ValueError('Class labels must be all of type int or all of type string.')
@@ -60,7 +60,7 @@ def process_or_validate_classifier_output_features(
     elif (isinstance(output_features, (list, tuple))
             and all(isinstance(fn, _string_types) for fn in output_features)
             and len(output_features) == 2):
-
+        
         if supports_class_scores:
             out = [(output_features[0], output_class_type),
                    (output_features[1], datatypes.Dictionary(output_class_type))]
@@ -76,7 +76,7 @@ def process_or_validate_classifier_output_features(
                 raise ValueError("Type of output class feature does not match type of class labels.")
 
         else:
-            # Make sure the first two output features specified give the output
+            # Make sure the first two output features specified give the output 
             # class field and the output class scores dictionary field
             if (isinstance(output_features[0][1], datatypes.Dictionary)
                     and isinstance(output_features[1][1], output_class_type)):
@@ -89,10 +89,10 @@ def process_or_validate_classifier_output_features(
             if output_features[1][1].key_type != output_class_type:
                 raise_error("Class scores dictionary key type does not match type of class labels.")
 
-            if output_features[0][1] != output_class_type:
+            if output_features[0][1] != output_class_type: 
                 raise_error("Specified type of output class does not match type of class labels.")
 
-        # NOTE: We are intentionally allowing the case where additional fields are allowed
+        # NOTE: We are intentionally allowing the case where additional fields are allowed 
         # beyond the original two features.
 
         out = output_features
@@ -103,7 +103,7 @@ def process_or_validate_classifier_output_features(
     return out
 
 def is_valid_feature_list(features):
-
+    
     # Just test all the ways this could be
     return (type(features) is list
         and len(features) >= 1
@@ -131,53 +131,53 @@ def process_or_validate_features(features, num_dimensions = None, feature_type_m
     """
     Puts features into a standard form from a number of different possible forms.
 
-    The standard form is a list of 2-tuples of (name, datatype) pairs.  The name
+    The standard form is a list of 2-tuples of (name, datatype) pairs.  The name 
     is a string and the datatype is an object as defined in the _datatype module.
 
     The possible input forms are as follows:
 
-    *   A list of strings. in this case, the overall dimension is assumed to be
-        the length of the list.  If neighboring names are identical, they are
+    *   A list of strings. in this case, the overall dimension is assumed to be 
+        the length of the list.  If neighboring names are identical, they are 
         assumed to be an input array of that length.  For example:
 
-           ["a", "b", "c"]
+           ["a", "b", "c"] 
 
-        resolves to
+        resolves to 
 
             [("a", Double), ("b", Double), ("c", Double)].
 
-        And:
+        And: 
 
             ["a", "a", "b"]
 
-        resolves to
+        resolves to 
 
             [("a", Array(2)), ("b", Double)].
 
-    *   A dictionary of keys to indices or ranges of feature indices.
+    *   A dictionary of keys to indices or ranges of feature indices. 
 
-        In this case, it's presented as a mapping from keys to indices or
-        ranges of contiguous indices.  For example,
+        In this case, it's presented as a mapping from keys to indices or 
+        ranges of contiguous indices.  For example, 
 
-            {"a" : 0, "b" : [2,3], "c" : 1}
+            {"a" : 0, "b" : [2,3], "c" : 1} 
 
-        Resolves to
+        Resolves to 
 
             [("a", Double), ("c", Double), ("b", Array(2))].
 
-        Note that the ordering is determined by the indices.
+        Note that the ordering is determined by the indices. 
 
-    *   A single string.  In this case, the input is assumed to be a single array,
-        with the number of dimensions set using num_dimensions.
+    *   A single string.  In this case, the input is assumed to be a single array, 
+        with the number of dimensions set using num_dimensions. 
 
 
     Notes:
 
-    If the features variable is in the standard form, it is simply checked and
-    returned.
+    If the features variable is in the standard form, it is simply checked and 
+    returned. 
 
-    If num_dimensions is given, it is used to check against the existing features,
-    or fill in missing information in the case when features is a single string.
+    If num_dimensions is given, it is used to check against the existing features, 
+    or fill in missing information in the case when features is a single string. 
     """
 
     original_features = copy(features)
@@ -206,8 +206,8 @@ def process_or_validate_features(features, num_dimensions = None, feature_type_m
             if feature_dims is not None and feature_dims != num_dimensions:
                 raise_type_error("Dimension mismatch.")
 
-        # We may need to translate some parts of this back to the actual
-        # datatype class -- e.g. translate str to datatypes.String().
+        # We may need to translate some parts of this back to the actual 
+        # datatype class -- e.g. translate str to datatypes.String(). 
         return [(k, datatypes._normalize_datatype(dt)) for k, dt in features]
 
     if isinstance(features, _string_types):
@@ -223,7 +223,7 @@ def process_or_validate_features(features, num_dimensions = None, feature_type_m
 
         for i, k in enumerate(features):
             if not isinstance(k, _string_types):
-                raise_type_error("List of feature names must be list of strings.")
+                raise_type_error("List of feature names must either be a list of strings, or a list of (name, datatypes.Array instance) tuples.")
 
         if num_dimensions is not None and len(features) != num_dimensions:
             raise_type_error(("List of feature names has wrong length; "
@@ -315,3 +315,4 @@ def process_or_validate_features(features, num_dimensions = None, feature_type_m
             output_features[i] = (k, datatypes.Array(len(v)))
 
     return output_features
+

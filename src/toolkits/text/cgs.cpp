@@ -162,7 +162,7 @@ cgs_topic_model::forward_sample(const v2::ml_data& d,
 
       for (size_t j = 0; j < x.size(); ++j) {
         size_t word_id = x[j].index;
-        size_t freq = x[j].value;
+        int freq = x[j].value;
         size_t topic = 0;
         bool topic_sampled = false;
         // If this word is in the set of fixed associations, get its topic.
@@ -191,8 +191,8 @@ cgs_topic_model::forward_sample(const v2::ml_data& d,
           doc_assignments.push_back(topic);
 
           // Increment counts
-          __sync_add_and_fetch(&word_topic_counts(word_id, topic), freq);
-          __sync_add_and_fetch(&topic_counts(0, topic), freq);
+          atomic_increment(word_topic_counts(word_id, topic), freq);
+          atomic_increment(topic_counts(0, topic), freq);
 
           doc_topic_counts(doc_id, topic) += freq;
         }

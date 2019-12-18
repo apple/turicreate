@@ -40,10 +40,10 @@ def convert(model, input_features, output_features):
     model_spec: An object of type Model_pb.
         Protobuf representation of the model
     """
-
+    
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     # Test the scikit-learn model
     _sklearn_util.check_expected_type(model, Normalizer)
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'norm'))
@@ -75,3 +75,4 @@ def update_dimension(model, input_dimension):
 def get_input_dimension(model):
     # Cannot determine this now.
     return None
+

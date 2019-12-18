@@ -1,4 +1,4 @@
-project(util_test)
+project(Turi)
 
 make_executable(time_fast_power
   SOURCES time_fast_power.cpp

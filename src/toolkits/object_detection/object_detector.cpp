@@ -715,9 +715,9 @@ void object_detector::perform_predict(
   std::string image_column_name = read_state<flex_string>("feature");
   std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
-  size_t batch_size = read_state<size_t>("batch_size");
-  size_t grid_height = read_state<size_t>("grid_height");
-  size_t grid_width = read_state<size_t>("grid_width");
+  int batch_size = read_state<int>("batch_size");
+  int grid_height = read_state<int>("grid_height");
+  int grid_width = read_state<int>("grid_width");
 
   // return if the data is empty
   if (data.size() == 0) return;
@@ -745,7 +745,7 @@ void object_detector::perform_predict(
   // Instantiate the NN backend.
   // For each anchor box, we have 4 bbox coords + 1 conf + one-hot class labels
   int num_outputs_per_anchor = 5 + static_cast<int>(class_labels.size());
-  int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
+  int num_output_channels = static_cast<int>(num_outputs_per_anchor * anchor_boxes().size());
 
   float_array_map pred_config = get_prediction_config();
   pred_config["num_iterations"] =
@@ -1202,8 +1202,8 @@ void object_detector::resume_training(gl_sframe data,
 
 void object_detector::init_training_backend() {
   // Instantiate the data augmenter.
-  flex_int grid_height = read_state<flex_int>("grid_height");
-  flex_int grid_width = read_state<flex_int>("grid_width");
+  int grid_height = read_state<int>("grid_height");
+  int grid_width = read_state<int>("grid_width");
   training_data_augmenter_ = training_compute_context_->create_image_augmenter(
       get_augmentation_options(read_state<flex_int>("batch_size"), grid_height,
                                grid_width));
@@ -1211,7 +1211,7 @@ void object_detector::init_training_backend() {
   // Instantiate the NN backend.
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
       5 + static_cast<int>(training_data_iterator_->class_labels().size());
-  int num_output_channels = num_outputs_per_anchor * anchor_boxes().size();
+  int num_output_channels = static_cast<int>(num_outputs_per_anchor * anchor_boxes().size());
 
   float_array_map train_config = get_training_config();
   train_config["num_iterations"] =

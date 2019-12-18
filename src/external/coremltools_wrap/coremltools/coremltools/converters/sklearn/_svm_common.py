@@ -13,7 +13,7 @@ def _set_kernel(model, spec):
     Takes the sklearn SVM model and returns the spec with the protobuf kernel for that model.
     """
     def gamma_value(model):
-        if(model.gamma == 'auto'):
+        if(model.gamma == 'auto' or model.gamma == 'auto_deprecated'):
             # auto gamma value is 1/num_features
             return 1/float(len(model.support_vectors_[0]))
         else:
@@ -35,3 +35,4 @@ def _set_kernel(model, spec):
     else:
         raise ValueError('Unsupported kernel. The following kernel are supported: linear, RBF, polynomial and sigmoid.')
     return result
+

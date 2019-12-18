@@ -103,7 +103,7 @@ topic_model::get_topic(size_t topic_id, size_t num_words, double cdf_cutoff) {
   word_topic_prob = word_topic_prob.array() / word_topic_prob.sum();
 
   // Get a list of (word_id, score) pairs for this topic.
-  std::vector<std::pair<int, double>> data(vocab_size);
+  std::vector<std::pair<size_t, double>> data(vocab_size);
   for(size_t i=0; i < data.size(); ++i) {
     data[i].first = i;
     data[i].second = word_topic_prob(i, 0);
@@ -112,8 +112,8 @@ topic_model::get_topic(size_t topic_id, size_t num_words, double cdf_cutoff) {
   // Sort column k of the topics matrix, phi.
   // TODO: Only sort the largest num_words
   std::sort(data.begin(), data.end(),
-            [](const std::pair<int, double>& a,
-               const std::pair<int, double>& b) -> bool {
+            [](const std::pair<size_t, double>& a,
+               const std::pair<size_t, double>& b) -> bool {
                 return a.second > b.second;
             });
 
@@ -276,7 +276,7 @@ void topic_model::set_topics(const std::shared_ptr<sarray<flexible_type>> word_t
     for (size_t k = 0; k < num_topics; ++k) {
       // Convert probabilities into (approximate) counts by
       // multiplying by the provided weight.
-      word_topic_counts(i, k) = (size_t) ceil(phi[i][k] * weight);
+      word_topic_counts(i, k) = static_cast<int>(ceil(phi[i][k] * weight));
     }
   }
 

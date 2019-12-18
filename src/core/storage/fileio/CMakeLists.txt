@@ -1,4 +1,4 @@
-project(fileio)
+project(Turi)
 
 if(WIN32)
   SET(PLATFORM_DEPENDENCIES ws2_32)

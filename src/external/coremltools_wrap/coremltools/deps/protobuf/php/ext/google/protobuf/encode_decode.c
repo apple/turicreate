@@ -850,7 +850,7 @@ static void add_handlers_for_mapentry(const upb_msgdef* msgdef, upb_handlers* h,
                                   offsetof(map_parse_frame_data_t,
                                            key_storage));
   add_handlers_for_singular_field(h, value_field,
-                                  offsetof(map_parse_frame_data_t,
+                                  offsetof(map_parse_frame_data_t, 
                                            value_storage));
 }
 

@@ -16,12 +16,12 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeMVN(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -36,17 +36,17 @@ void CoreMLConverter::convertCaffeMVN(CoreMLConverter::ConvertLayerParameters la
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::MVNParameter& caffeLayerParams = caffeLayer.mvn_param();
-
-
+    
+    
     //***************** Some Error Checking in Caffe Proto **********
     //None for this layer
     //***************************************************************
-
+    
     Specification::MeanVarianceNormalizeLayerParams* specLayerParams = specLayer->mutable_mvn();
     specLayerParams->set_normalizevariance(caffeLayerParams.normalize_variance());
     specLayerParams->set_acrosschannels(caffeLayerParams.across_channels());

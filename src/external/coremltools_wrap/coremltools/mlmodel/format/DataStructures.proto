@@ -57,8 +57,39 @@ message Int64Vector {
 }
 
 /**
+ * A vector of floating point numbers.
+ */
+message FloatVector {
+    repeated float vector = 1;
+}
+
+/**
  * A vector of double-precision floating point numbers.
  */
 message DoubleVector {
     repeated double vector = 1;
 }
+
+/**
+ * A range of int64 values
+ */
+message Int64Range {
+    int64 minValue = 1;
+    int64 maxValue = 2;
+}
+
+/**
+ * A set of int64 values
+ */
+message Int64Set {
+    repeated int64 values = 1;
+}
+
+/**
+ * A range of double values
+ */
+message DoubleRange {
+    double minValue = 1;
+    double maxValue = 2;
+}
+

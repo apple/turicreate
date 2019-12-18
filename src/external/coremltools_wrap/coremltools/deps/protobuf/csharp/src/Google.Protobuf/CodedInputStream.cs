@@ -106,7 +106,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// The absolute position of the end of the current message.
-        /// </summary>
+        /// </summary> 
         private int currentLimit = int.MaxValue;
 
         private int recursionDepth = 0;
@@ -122,7 +122,7 @@ namespace Google.Protobuf
         /// Creates a new CodedInputStream reading data from the given byte array.
         /// </summary>
         public CodedInputStream(byte[] buffer) : this(null, ProtoPreconditions.CheckNotNull(buffer, "buffer"), 0, buffer.Length)
-        {
+        {            
         }
 
         /// <summary>
@@ -130,7 +130,7 @@ namespace Google.Protobuf
         /// </summary>
         public CodedInputStream(byte[] buffer, int offset, int length)
             : this(null, ProtoPreconditions.CheckNotNull(buffer, "buffer"), offset, offset + length)
-        {
+        {            
             if (offset < 0 || offset > buffer.Length)
             {
                 throw new ArgumentOutOfRangeException("offset", "Offset must be within the buffer");
@@ -162,7 +162,7 @@ namespace Google.Protobuf
         {
             this.leaveOpen = leaveOpen;
         }
-
+        
         /// <summary>
         /// Creates a new CodedInputStream reading data from the given
         /// stream and buffer, using the default limits.
@@ -223,7 +223,7 @@ namespace Google.Protobuf
         /// <summary>
         /// Returns the current position in the input stream, or the position in the input buffer
         /// </summary>
-        public long Position
+        public long Position 
         {
             get
             {
@@ -287,7 +287,7 @@ namespace Google.Protobuf
         /// Verifies that the last call to ReadTag() returned tag 0 - in other words,
         /// we've reached the end of the stream when we expected to.
         /// </summary>
-        /// <exception cref="InvalidProtocolBufferException">The
+        /// <exception cref="InvalidProtocolBufferException">The 
         /// tag read was not the one specified</exception>
         internal void CheckReadEndOfStreamTag()
         {
@@ -561,7 +561,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// Reads an embedded message field value from the stream.
-        /// </summary>
+        /// </summary>   
         public void ReadMessage(IMessage builder)
         {
             int length = ReadLength();
@@ -584,7 +584,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// Reads a bytes field value from the stream.
-        /// </summary>
+        /// </summary>   
         public ByteString ReadBytes()
         {
             int length = ReadLength();
@@ -605,7 +605,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// Reads a uint32 field value from the stream.
-        /// </summary>
+        /// </summary>   
         public uint ReadUInt32()
         {
             return ReadRawVarint32();
@@ -613,7 +613,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// Reads an enum field value from the stream.
-        /// </summary>
+        /// </summary>   
         public int ReadEnum()
         {
             // Currently just a pass-through, but it's nice to separate it logically from WriteInt32.
@@ -622,7 +622,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// Reads an sfixed32 field value from the stream.
-        /// </summary>
+        /// </summary>   
         public int ReadSFixed32()
         {
             return (int) ReadRawLittleEndian32();
@@ -630,7 +630,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// Reads an sfixed64 field value from the stream.
-        /// </summary>
+        /// </summary>   
         public long ReadSFixed64()
         {
             return (long) ReadRawLittleEndian64();
@@ -638,7 +638,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// Reads an sint32 field value from the stream.
-        /// </summary>
+        /// </summary>   
         public int ReadSInt32()
         {
             return DecodeZigZag32(ReadRawVarint32());
@@ -646,7 +646,7 @@ namespace Google.Protobuf
 
         /// <summary>
         /// Reads an sint64 field value from the stream.
-        /// </summary>
+        /// </summary>   
         public long ReadSInt64()
         {
             return DecodeZigZag64(ReadRawVarint64());
@@ -893,7 +893,7 @@ namespace Google.Protobuf
         /// </summary>
         /// <remarks>
         /// ZigZag encodes signed integers into values that can be efficiently
-        /// encoded with varint.  (Otherwise, negative values must be
+        /// encoded with varint.  (Otherwise, negative values must be 
         /// sign-extended to 64 bits to be varint encoded, thus always taking
         /// 10 bytes on the wire.)
         /// </remarks>
@@ -907,7 +907,7 @@ namespace Google.Protobuf
         /// </summary>
         /// <remarks>
         /// ZigZag encodes signed integers into values that can be efficiently
-        /// encoded with varint.  (Otherwise, negative values must be
+        /// encoded with varint.  (Otherwise, negative values must be 
         /// sign-extended to 64 bits to be varint encoded, thus always taking
         /// 10 bytes on the wire.)
         /// </remarks>
@@ -1224,7 +1224,7 @@ namespace Google.Protobuf
                 // ROK 5/7/2013 Issue #54: should retire all bytes in buffer (bufferSize)
                 // totalBytesRetired += pos;
                 totalBytesRetired += bufferSize;
-
+                
                 bufferPos = 0;
                 bufferSize = 0;
 

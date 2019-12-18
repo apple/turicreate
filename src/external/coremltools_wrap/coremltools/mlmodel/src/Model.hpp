@@ -31,7 +31,7 @@ private:
 
 protected:
     std::shared_ptr<Specification::Model> m_spec;
-
+    
 public:
     Model();
     Model(const std::string& description);
@@ -53,7 +53,7 @@ public:
      */
     static Result load(std::istream& stream,
                        Model& out);
-
+    
     /**
      * Deserializes a MLModel from a file given by a path.
      *
@@ -64,7 +64,7 @@ public:
      */
     static Result load(const std::string& path,
                        Model& out);
-
+    
     /**
      * Serializes a MLModel to an std::ostream.
      *
@@ -72,7 +72,7 @@ public:
      * @return the result of the save operation, with ResultType::NO_ERROR on success.
      */
     Result save(std::ostream& stream);
-
+    
     /**
      * Serializes a MLModel to a file given by a path.
      *
@@ -80,26 +80,26 @@ public:
      * @return result of save operation, with ResultType::NO_ERROR on success.
      */
     Result save(const std::string& path);
-
+    
 
     const std::string& shortDescription() const;
     MLModelType modelType() const;
     std::string modelTypeName() const;
-
+    
     /**
      * Get the schema (name, type) for the inputs of this transform.
      *
      * @return input schema for outputs in this transform.
      */
     SchemaType inputSchema() const;
-
+    
     /**
      * Get the output schema (name, type) for the inputs of this transform.
      *
      * @return output schema for outputs in this transform.
      */
     SchemaType outputSchema() const;
-
+    
     /**
      * Enforces type invariant conditions.
      *
@@ -120,8 +120,8 @@ public:
      */
     static Result enforceTypeInvariant(const std::vector<FeatureType>&
                                        allowedFeatureTypes, FeatureType featureType);
-
-
+    
+    
     /**
      * Ensures the spec is valid. This gets called every time before the
      * spec gets added to the MLModel.
@@ -130,7 +130,7 @@ public:
      */
     static Result validate(const Specification::Model& model);
     Result validate() const;
-
+    
     /**
      * Add an input to the transform-spec.
      *
@@ -139,7 +139,7 @@ public:
      * @return Result type of this operation.
      */
     virtual Result addInput(const std::string& featureName, FeatureType featureType);
-
+    
     /**
      * Add an output to the transform-spec.
      *
@@ -148,18 +148,18 @@ public:
      * @return Result type of this operation.
      */
     virtual Result addOutput(const std::string& outputName, FeatureType outputType);
-
+    
     /**
      * If a model does not use features from later specification versions, this will
      * set the spec version so that the model can be executed on older versions of
      * Core ML.
      */
     void downgradeSpecificationVersion();
-
+    
     // TODO -- This seems like a giant hack. This is leaking abstractions.
     const Specification::Model& getProto() const;
     Specification::Model& getProto();
-
+    
     // string representation (text description)
     std::string toString() const;
     void toStringStream(std::stringstream& ss) const;
@@ -177,7 +177,7 @@ typedef struct _MLModelSpecification {
     _MLModelSpecification(const CoreML::Specification::Model&);
     _MLModelSpecification(const CoreML::Model&);
 } MLModelSpecification;
-
+    
 typedef struct _MLModelMetadataSpecification {
     std::shared_ptr<CoreML::Specification::Metadata> cppMetadata;
     _MLModelMetadataSpecification();
@@ -189,6 +189,6 @@ typedef struct _MLModelDescriptionSpecification {
     _MLModelDescriptionSpecification();
     _MLModelDescriptionSpecification(const CoreML::Specification::ModelDescription&);
 } MLModelDescriptionSpecification;
-
+    
 }
 #endif

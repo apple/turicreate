@@ -47,7 +47,7 @@ lm_data_generator::lm_data_generator(
   double V_sd               = _options["V_sd"];
 
   dim = 0;
-  for(int ncv : n_categorical_values)
+  for(size_t ncv : n_categorical_values)
     dim += ((ncv == 0) ? 1 : ncv);
 
   w.resize(dim);

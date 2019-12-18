@@ -60,3 +60,4 @@ class EnumGenerator : public SourceGeneratorBase {
 }  // namespace google
 
 #endif  // GOOGLE_PROTOBUF_COMPILER_CSHARP_ENUM_H__
+

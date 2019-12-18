@@ -1,4 +1,4 @@
-project(sframe_test)
+project(Turi)
 
 make_boost_test(sframe_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(shuffle_test.cxx REQUIRES unity_shared_for_testing)

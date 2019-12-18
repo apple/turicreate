@@ -41,7 +41,7 @@ def convert(model, features, target):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     # Check the scikit learn model
     _sklearn_util.check_expected_type(model, LinearRegression)
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'coef_'))

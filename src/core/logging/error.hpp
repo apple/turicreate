@@ -4,6 +4,9 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#ifndef TURI_LOGGINC_ERROR_H_
+#define TURI_LOGGINC_ERROR_H_
+
 /*
  * Error types to distinguish Turi Create errors from arbitrary C++ exceptions
  */
@@ -21,12 +24,12 @@ class io_error : public std::ios_base::failure {
   public:
     explicit io_error(const std::string &message);
 
-#ifdef COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS
-  virtual const char *what() const noexcept override;
-#else
-  virtual const char *what() const override;
-#endif
+  virtual const char *what() const COMPILER_MODIFIER_ON_EXCEPTION_WHAT override;
 };
 
 } // namespace error
 } // namespace turi
+
+#endif
+
+

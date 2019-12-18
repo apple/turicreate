@@ -1,10 +1,4 @@
-project(unity_cython)
-
-set(CMAKE_C_FLAGS_DEBUG
-  "${EXTERNAL_CMAKE_C_FLAGS_DEBUG}")
-
-set(CMAKE_CXX_FLAGS_DEBUG
-  "${EXTERNAL_CMAKE_CXX_FLAGS_DEBUG}")
+project(Turi)
 
 include_directories(${NUMPY_INCLUDE_DIRS})
 

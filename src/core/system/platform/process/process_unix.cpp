@@ -48,7 +48,7 @@ static void sigchld_handler(int sig) {
   // and try to reap them
   auto iter = __proc_ids_to_reap->begin();
   while (iter != __proc_ids_to_reap->end()) {
-    if (waitpid(*iter, NULL, WNOHANG) > 0) {
+    if (waitpid(static_cast<pid_t>(*iter), NULL, WNOHANG) > 0) {
       iter = __proc_ids_to_reap->erase(iter);
     } else {
       ++iter;

@@ -92,7 +92,7 @@ flex_date_time date_time_string_reader::read(const flex_string& input) {
 
     boost::posix_time::ptime p = ldt.utc_time();
     std::time_t time = ptime_to_time_t(p);
-    int32_t microseconds = ptime_to_fractional_microseconds(p);
+    int32_t microseconds = static_cast<int32_t>(ptime_to_fractional_microseconds(p));
     int32_t timezone_offset = flex_date_time::EMPTY_TIMEZONE;
     if (ldt.zone()) {
       timezone_offset =

@@ -40,7 +40,7 @@ namespace Google.Protobuf
     public sealed partial class CodedOutputStream
     {
         private const int LittleEndian64Size = 8;
-        private const int LittleEndian32Size = 4;
+        private const int LittleEndian32Size = 4;        
 
         /// <summary>
         /// Computes the number of bytes that would be needed to encode a

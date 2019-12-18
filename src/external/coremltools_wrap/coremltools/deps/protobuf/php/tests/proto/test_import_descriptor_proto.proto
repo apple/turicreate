@@ -11,3 +11,4 @@ message TestImportDescriptorProto {
 extend google.protobuf.MethodOptions {
   int32 a = 72295728;
 }
+

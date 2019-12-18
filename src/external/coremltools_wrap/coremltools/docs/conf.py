@@ -25,8 +25,11 @@ sys.path.insert(0, os.path.abspath('.'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'numpydoc', 'sphinx.ext.coverage', 'sphinx.ext.mathjax',
-              'sphinx.ext.inheritance_diagram', 'sphinx.ext.autosummary', 'sphinxtogithub']
+extensions = [
+  'sphinx.ext.autodoc', 'numpydoc', 'sphinx.ext.coverage', 'sphinx.ext.mathjax',
+  'sphinx.ext.inheritance_diagram', 'sphinx.ext.autosummary', 'sphinx_rtd_theme',
+  'sphinxtogithub'
+]
 
 
 autosummary_generate = True
@@ -44,7 +47,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'coremltools'
-copyright = u'2018, Apple Inc.'
+copyright = u'2017-2019, Apple Inc'
 author = u'Apple Inc.'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -56,7 +59,7 @@ import pkg_resources
 try:
     version = pkg_resources.require("coremltools")[0].version
 except:
-    version = "2.0b1"
+    version = "3.0"
 
 # The short X.Y version.
 version = version
@@ -83,13 +86,16 @@ pygments_style = 'sphinx'
 todo_include_todos = False
 
 html_theme = "sphinx_rtd_theme"
+html_theme_path = ["_themes", ]
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#
 html_theme_options = {
-    "navigation_depth": 2
+    'navigation_depth': 2,
+    'style_nav_header_background': '#007AFF',
+    'collapse_navigation': False,
+    'style_external_links': True,
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,

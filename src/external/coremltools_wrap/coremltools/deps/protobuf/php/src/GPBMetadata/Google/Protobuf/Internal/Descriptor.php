@@ -258,3 +258,4 @@ class Descriptor
         static::$is_initialized = true;
     }
 }
+

@@ -274,7 +274,7 @@ namespace Google.Protobuf.Collections
             if (index == -1)
             {
                 return false;
-            }
+            }            
             Array.Copy(array, index + 1, array, index, count - index - 1);
             count--;
             array[count] = default(T);
@@ -403,7 +403,7 @@ namespace Google.Protobuf.Collections
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
         public override int GetHashCode()
         {
@@ -589,6 +589,6 @@ namespace Google.Protobuf.Collections
             }
             Remove((T)value);
         }
-        #endregion
+        #endregion        
     }
 }

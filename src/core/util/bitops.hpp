@@ -172,7 +172,7 @@ static inline unsigned int num_bits_on(T v, _ENABLE_IF_UINT(T))
       vt = T(uint128_t(vt) >> bitsizeof(unsigned long long));
     }
 
-    return vt;
+    return bitcount;
   }
 }
 

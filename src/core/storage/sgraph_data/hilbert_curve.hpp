@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <core/logging/assertions.hpp>
 #include <core/util/bitops.hpp>
+
 namespace turi {
 
 
@@ -32,7 +33,7 @@ inline std::pair<size_t, size_t> hilbert_index_to_coordinate(size_t s, size_t n)
 
   ASSERT_GE(n, 2);
   ASSERT_TRUE(is_power_of_2(n));
-  n = __builtin_ctz(n); // convert to the "Order" of the curve. i.e. log(n)
+  n = n_trailing_zeros(n); // convert to the "Order" of the curve. i.e. log(n)
   size_t comp, swap, cs, t, sr;
 
   s = s | (0x55555555 << 2*n); // Pad s on left with 01
@@ -84,8 +85,8 @@ inline size_t coordinate_to_hilbert_index(std::pair<size_t, size_t> coord, size_
   ASSERT_LT(coord.first, n);
   ASSERT_LT(coord.second, n);
 
-  n = __builtin_ctz(n); // convert to the "Order" of the curve. i.e. log(n)
-  int i;
+  n = n_trailing_zeros(n); // convert to the "Order" of the curve. i.e. log(n)
+  size_t i;
   size_t state, s, row;
   size_t x = coord.first;
   size_t y = coord.second;

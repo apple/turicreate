@@ -206,7 +206,7 @@ public class UnknownFieldSetTest extends TestCase {
       TestEmptyMessage.newBuilder().mergeFrom(emptyMessage).clear().build();
     assertEquals(0, message.getSerializedSize());
   }
-
+  
   public void testClearField() throws Exception {
     int fieldNumber = unknownFields.asMap().keySet().iterator().next();
     UnknownFieldSet fields =

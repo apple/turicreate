@@ -1,4 +1,4 @@
-project(neural_net_test)
+project(Turi)
 
 make_library(style_transfer_toolkit_test_utils
   SOURCES

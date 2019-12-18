@@ -155,9 +155,9 @@ void setup_png_writer(png_structp* outpng_ptr, png_infop* out_info_ptr, size_t w
     throw(std::string("Unexpected libpng error"));
   }
 
-  int color_type = png_color_type(channels);
+  int color_type = png_color_type(static_cast<int>(channels));
 
-  png_set_IHDR(png_ptr, info_ptr, width, height, BIT_DEPTH, color_type,
+  png_set_IHDR(png_ptr, info_ptr, static_cast<int>(width), static_cast<int>(height), BIT_DEPTH, color_type,
       PNG_INTERLACE_NONE, PNG_COMPRESSION_TYPE_DEFAULT, PNG_FILTER_TYPE_DEFAULT);
 
 

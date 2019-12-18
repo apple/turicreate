@@ -1,4 +1,4 @@
-project(globals)
+project(Turi)
 
 make_library(globals OBJECT
   SOURCES

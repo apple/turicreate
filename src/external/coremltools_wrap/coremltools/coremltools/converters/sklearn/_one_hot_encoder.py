@@ -51,25 +51,25 @@ def convert(model, input_features, output_features):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     # Make sure the model is fitted.
     _sklearn_util.check_expected_type(model, OneHotEncoder)
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'active_features_'))
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'n_values_'))
 
-    input_dimension = get_input_dimension(model)
+    input_dimension = get_input_dimension(model) 
 
     if input_dimension is not None:
-        # Make sure that our starting dimensions are correctly managed.
+        # Make sure that our starting dimensions are correctly managed. 
         assert len(input_features) == 1
         assert input_features[0][1] == datatypes.Array(input_dimension)
 
     input_dimension = input_features[0][1].num_elements
 
-    expected_output_dimension = update_dimension(model, input_dimension)
+    expected_output_dimension = update_dimension(model, input_dimension) 
     assert output_features[0][1] == datatypes.Array(expected_output_dimension)
 
-    # Create a pipeline that can do all of the subsequent feature extraction.
+    # Create a pipeline that can do all of the subsequent feature extraction. 
     feature_vectorizer_input_features = []
     feature_vectorizer_size_map = {}
 
@@ -82,7 +82,7 @@ def convert(model, input_features, output_features):
 
     pline = Pipeline(input_features, output_features)
 
-    # Track the overall packing index, which determines the output ordering.
+    # Track the overall packing index, which determines the output ordering. 
     pack_idx = 0
 
     # First, go through all the columns that are encoded. The sklearn OHE puts
@@ -115,9 +115,9 @@ def convert(model, input_features, output_features):
                 ohe_spec.handleUnknown = _OHE_pb2.OneHotEncoder.HandleUnknown.Value('ErrorOnUnknown')
             else:
                 ohe_spec.handleUnknown = _OHE_pb2.OneHotEncoder.HandleUnknown.Value('IgnoreUnknown')
-
-            # Need to do a quick search to find the part of the active_features_ mask
-            # that represents the categorical variables in our part.  Could do this
+            
+            # Need to do a quick search to find the part of the active_features_ mask 
+            # that represents the categorical variables in our part.  Could do this 
             # with binary search, but we probably don't need speed so much here.
             def bs_find(a, i):
                 lb, k = 0, len(a)
@@ -133,10 +133,10 @@ def convert(model, input_features, output_features):
             # Here are the indices we are looking fo
             f_idx_bottom = model.feature_indices_[_cat_feature_idx]
             f_idx_top = model.feature_indices_[_cat_feature_idx + 1]
-
-            # Now find where in the active features list we should look.
+            
+            # Now find where in the active features list we should look. 
             cat_feat_idx_bottom = bs_find(model.active_features_, f_idx_bottom)
-            cat_feat_idx_top = bs_find(model.active_features_, f_idx_top)
+            cat_feat_idx_top = bs_find(model.active_features_, f_idx_top) 
             n_cat_values = cat_feat_idx_top - cat_feat_idx_bottom
 
             for i in range(cat_feat_idx_bottom, cat_feat_idx_top):
@@ -153,11 +153,11 @@ def convert(model, input_features, output_features):
 
             pack_idx += 1
 
-    # Now go through all the columns that are not encoded as the sklearn OHE puts
+    # Now go through all the columns that are not encoded as the sklearn OHE puts 
     # these after the encoded ones.  For speed, we can put these all in a single
-    # ArrayFeatureExtractor
+    # ArrayFeatureExtractor 
     #
-    pass_through_features = [idx for idx in range(input_dimension)
+    pass_through_features = [idx for idx in range(input_dimension) 
                              if idx not in _categorical_features]
 
     if pass_through_features:
@@ -170,15 +170,15 @@ def convert(model, input_features, output_features):
                 input_features, f_name, pass_through_features)
 
         pline.add_model(feature_extractor_spec)
-        feature_vectorizer_input_features.append(
+        feature_vectorizer_input_features.append( 
                 (f_name, datatypes.Array(len(pass_through_features))) )
 
 
     # Finally, add the feature vectorizer to the pipeline.
-    output_feature_name = output_features[0][0]
-    output_feature_dimension = output_features[0][1].num_elements
+    output_feature_name = output_features[0][0] 
+    output_feature_dimension = output_features[0][1].num_elements 
 
-    fvec, _num_out_dim = create_feature_vectorizer(feature_vectorizer_input_features,
+    fvec, _num_out_dim = create_feature_vectorizer(feature_vectorizer_input_features, 
             output_features[0][0], feature_vectorizer_size_map)
 
     # Make sure that the feature vectorizer input actually matches up with the
@@ -196,14 +196,14 @@ def update_dimension(model, input_dimension):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'active_features_'))
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'n_values_'))
 
     if model.categorical_features == 'all':
         return len(model.active_features_)
     else:
-        out_dimension = (len(model.active_features_)
+        out_dimension = (len(model.active_features_) 
                          + (input_dimension - len(model.n_values_)))
 
     return out_dimension
@@ -212,13 +212,14 @@ def update_dimension(model, input_dimension):
 def get_input_dimension(model):
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'active_features_'))
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'n_values_'))
-
+    
     if model.categorical_features == 'all':
         return len(model.feature_indices_) - 1
     else:
-        # This can't actually be determined from the model as indices after the
+        # This can't actually be determined from the model as indices after the 
         # rest of the categorical values don't seem to be tracked
         return None
+

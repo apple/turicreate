@@ -27,7 +27,7 @@ def _generate_base_svm_regression_spec(model):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     spec = _Model_pb2.Model()
     spec.specificationVersion = SPECIFICATION_VERSION
     svm = spec.supportVectorRegressor

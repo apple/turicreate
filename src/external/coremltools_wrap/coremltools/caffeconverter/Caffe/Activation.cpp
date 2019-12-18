@@ -16,11 +16,11 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeActivation(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -38,10 +38,10 @@ void CoreMLConverter::convertCaffeActivation(CoreMLConverter::ConvertLayerParame
     CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
-
+    
+    
     Specification::ActivationParams* specLayerParams = specLayer->mutable_activation();
-
+    
     if (caffeLayer.type() == "ReLU"){
         const caffe::ReLUParameter& caffeLayerParams = caffeLayer.relu_param();
         if (std::abs(caffeLayerParams.negative_slope()) < 1e-6f) {
@@ -79,5 +79,6 @@ void CoreMLConverter::convertCaffeActivation(CoreMLConverter::ConvertLayerParame
         alpha->Resize(C, 0.0);
         alpha->CopyFrom(caffeLayerWeights.blobs(0).data());
     }
-
+    
 }
+

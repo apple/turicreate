@@ -91,7 +91,7 @@ EXPORT class compute_context {
    */
   virtual std::unique_ptr<model_backend> create_object_detector(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const float_array_map& config, const float_array_map& weights) = 0;
+      const float_array_map& config, const float_array_map& weights) { ASSERT_TRUE(false); }
 
   /**
    * Creates an activity classification network.
@@ -103,7 +103,8 @@ EXPORT class compute_context {
    */
   virtual std::unique_ptr<model_backend> create_activity_classifier(
       int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const float_array_map& config, const float_array_map& weights) = 0;
+      const float_array_map& config, const float_array_map& weights) { ASSERT_TRUE(false); }
+
 
   /**
    * Creates a style transfer network
@@ -114,7 +115,7 @@ EXPORT class compute_context {
    *       weights as a float_array_map.
    */
   virtual std::unique_ptr<model_backend> create_style_transfer(
-      const float_array_map& config, const float_array_map& weights) = 0;
+      const float_array_map& config, const float_array_map& weights) { ASSERT_TRUE(false); }
 
   /**
    * Creates a drawing classification network.
@@ -128,13 +129,21 @@ EXPORT class compute_context {
   virtual std::unique_ptr<model_backend> create_drawing_classifier(
       /* TODO: const float_array_map& config if needed */
       const float_array_map& weights,
-      size_t batch_size, size_t num_classes) = 0;
+      size_t batch_size, size_t num_classes) { ASSERT_TRUE(false); }
 
   /**
    * Creates an image augmenter.
    */
   virtual std::unique_ptr<image_augmenter> create_image_augmenter(
-      const image_augmenter::options &opts) = 0;
+      const image_augmenter::options &opts) { ASSERT_TRUE(false); }
+
+  /**
+   * Creates a multilevel perceptron classifier.
+   */
+   virtual std::unique_ptr<turi::neural_net::model_backend> create_multilayer_perceptron_classifier(
+    int n, int c_in, int c_out, const std::vector<size_t> &layer_sizes, 
+    const turi::neural_net::float_array_map& config) { ASSERT_TRUE(false); }
+
 
 };
 

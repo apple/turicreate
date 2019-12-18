@@ -33,10 +33,10 @@ def convert(model, feature_names, target):
     model_spec: An object of type Model_pb.
         Protobuf representation of the model
     """
-
+    
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_expected_type(model, _NuSVC)
     return _SVC.convert(model, feature_names, target)
 
@@ -47,11 +47,12 @@ def get_output_classes(model):
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
     check_fitted(model, lambda m: hasattr(m, 'support_vectors_'))
-    return _SVC.get_output_classes(model)
+    return _SVC.get_output_classes(model) 
 
 def get_input_dimension(model):
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     check_fitted(model, lambda m: hasattr(m, 'support_vectors_'))
     return _SVC.get_input_dimension(model)
+

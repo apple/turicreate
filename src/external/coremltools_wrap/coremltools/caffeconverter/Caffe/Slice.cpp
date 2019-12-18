@@ -17,11 +17,11 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeSlice(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -36,12 +36,12 @@ void CoreMLConverter::convertCaffeSlice(CoreMLConverter::ConvertLayerParameters 
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
 
     const caffe::SliceParameter& caffeLayerParams = caffeLayer.slice_param();
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerParams.axis()!=1){
         CoreMLConverter::unsupportedCaffeParrameterWithOption("axis",caffeLayer.name(), "Slice",std::to_string(caffeLayerParams.axis()));
@@ -50,7 +50,7 @@ void CoreMLConverter::convertCaffeSlice(CoreMLConverter::ConvertLayerParameters 
         CoreMLConverter::unsupportedCaffeParrameter("slice_point", caffeLayer.name(), "Slice");
     }
     //***************************************************************
-
+    
     Specification::SplitLayerParams* specLayerParams = specLayer->mutable_split();
 
     int topSize = caffeLayer.top_size();

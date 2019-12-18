@@ -1,4 +1,4 @@
-project(TuriTest)
+project(Turi)
 
 enable_testing()
 

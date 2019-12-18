@@ -227,7 +227,7 @@ std::shared_ptr<supervised_learning_model_base> create_automatic_classifier_mode
     models[i] = cur_model;
   }
 
-  int best_model = 0;
+  size_t best_model = 0;
   for(size_t i = 1; i < possible_models.size(); i++) {
     if(accuracies[i] > accuracies[best_model]) {
       best_model = i;

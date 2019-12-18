@@ -36,7 +36,7 @@ def convert(model, input_name, output_features):
     """
     if not(HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     _sklearn_util.check_expected_type(model, _tree.DecisionTreeClassifier)
     _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'tree_') and model.tree_ is not None)
 
@@ -52,3 +52,5 @@ def get_output_classes(model):
 
 def get_input_dimension(model):
     return model.n_features_
+
+

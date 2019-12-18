@@ -1,4 +1,4 @@
-project(unity_test_toolkits)
+project(Turi)
 
 make_boost_test(test_model_spec.cxx
   REQUIRES

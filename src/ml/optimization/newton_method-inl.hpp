@@ -185,7 +185,7 @@ inline solver_return newton_method(second_order_opt_interface& model,
         stats.status = OPTIMIZATION_STATUS::OPT_ITERATION_LIMIT;
       }
     }
-    stats.iters = iters;
+    stats.iters = static_cast<int>(iters);
     stats.residual = residual;
     stats.func_value = func_value;
     stats.solve_time = t.current_time() - start_time;

@@ -1,4 +1,4 @@
-project(TuriExternalDependencies)
+project(Turi)
 
 make_library(libjson
   OBJECT

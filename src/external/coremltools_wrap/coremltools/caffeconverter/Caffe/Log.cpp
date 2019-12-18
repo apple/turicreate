@@ -16,12 +16,12 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeLog(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -39,18 +39,18 @@ void CoreMLConverter::convertCaffeLog(CoreMLConverter::ConvertLayerParameters la
     CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::LogParameter& caffeLayerParams = caffeLayer.log_param();
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (std::abs(caffeLayerParams.base()+1) > 1e-5f) {
         CoreMLConverter::unsupportedCaffeParrameterWithOption("base",caffeLayer.name(), "Log", "non e base");
     }
     //***************************************************************
-
+    
     Specification::UnaryFunctionLayerParams* specLayerParams = specLayer->mutable_unary();
     specLayerParams->set_type(Specification::UnaryFunctionLayerParams::LOG);
     specLayerParams->set_shift(caffeLayerParams.shift());
     specLayerParams->set_scale(caffeLayerParams.scale());
-
+    
 }

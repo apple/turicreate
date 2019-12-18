@@ -1,4 +1,4 @@
-# Copyright (c) 2017, Apple Inc. All rights reserved.
+# Copyright (c) 2017-2019, Apple Inc. All rights reserved.
 #
 # Use of this source code is governed by a BSD-3-clause license that can be
 # found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -62,7 +62,7 @@ def _convert(args):
                 model = (args.kerasJsonPath, args.srcModelPath)
             else:
                 model = args.srcModelPath
-
+            
             model = converters.keras.convert(model,
                                     args.inputNames,
                                     args.outputNames,
@@ -74,7 +74,8 @@ def _convert(args):
                                     gray_bias = args.grayBias,
                                     image_scale = args.scale,
                                     class_labels = args.classInputPath if args.classInputPath else None,
-                                    predicted_feature_name = args.predictedFeatureName)
+                                    predicted_feature_name = args.predictedFeatureName,
+                                    respect_trainable = args.respectTrainable)
             model.save(args.dstModelPath)
         except Exception as e:
             print('error: coremlconverter: %s.' % str(e))
@@ -105,6 +106,8 @@ def _main():
     parser.add_argument('--scale', type=float, default=1.0, help='Value by which the image data must be scaled (optional, default 1.0)')
     parser.add_argument('--classInputPath', type=unicode, default='', help='Path to class labels (ordered new line separated) for treating the neural network as a classifier')
     parser.add_argument('--predictedFeatureName', type=unicode, default='class_output', help='Name of the output feature that captures the class name (for classifiers models).')
+    parser.add_argument('--respectTrainable', action='store_true', default=False,
+                        help="Honor Keras' 'trainable' flag.")
 
     args = parser.parse_args()
     ret = _convert(args)

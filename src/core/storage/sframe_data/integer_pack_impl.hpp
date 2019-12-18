@@ -131,7 +131,7 @@ static inline size_t pack_32(const uint64_t* src, size_t srclen, uint32_t* out) 
   uint32_t* initial_out = out;
   const uint64_t* src_end = src + srclen;
   while(src != src_end) {
-    (*out++) = (*src++);
+    (*out++) = static_cast<uint32_t>(*src++);
   }
   return 4*(out - initial_out);
 }

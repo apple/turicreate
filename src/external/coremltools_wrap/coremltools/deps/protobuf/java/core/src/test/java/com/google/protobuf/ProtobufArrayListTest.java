@@ -42,33 +42,33 @@ import junit.framework.TestCase;
  * Tests for {@link ProtobufArrayList}.
  */
 public class ProtobufArrayListTest extends TestCase {
-
+  
   private static final ProtobufArrayList<Integer> UNARY_LIST = newImmutableProtoArrayList(1);
   private static final ProtobufArrayList<Integer> TERTIARY_LIST =
       newImmutableProtoArrayList(1, 2, 3);
-
+  
   private ProtobufArrayList<Integer> list;
-
+  
   @Override
   protected void setUp() throws Exception {
     list = new ProtobufArrayList<Integer>();
   }
-
+  
   public void testEmptyListReturnsSameInstance() {
     assertSame(ProtobufArrayList.emptyList(), ProtobufArrayList.emptyList());
   }
-
+  
   public void testEmptyListIsImmutable() {
     assertImmutable(ProtobufArrayList.<Integer>emptyList());
   }
-
+  
   public void testModificationWithIteration() {
     list.addAll(asList(1, 2, 3, 4));
     Iterator<Integer> iterator = list.iterator();
     assertEquals(4, list.size());
     assertEquals(1, (int) list.get(0));
     assertEquals(1, (int) iterator.next());
-
+    
     list.remove(0);
     try {
       iterator.next();
@@ -76,7 +76,7 @@ public class ProtobufArrayListTest extends TestCase {
     } catch (ConcurrentModificationException e) {
       // expected
     }
-
+    
     iterator = list.iterator();
     list.set(0, 1);
     try {
@@ -85,7 +85,7 @@ public class ProtobufArrayListTest extends TestCase {
     } catch (ConcurrentModificationException e) {
       // expected
     }
-
+    
     iterator = list.iterator();
     list.add(0, 0);
     try {
@@ -95,7 +95,7 @@ public class ProtobufArrayListTest extends TestCase {
       // expected
     }
   }
-
+  
   public void testMakeImmutable() {
     list.add(2);
     list.add(4);
@@ -104,7 +104,7 @@ public class ProtobufArrayListTest extends TestCase {
     list.makeImmutable();
     assertImmutable(list);
   }
-
+  
   public void testRemove() {
     list.add(2);
     list.add(4);
@@ -119,19 +119,19 @@ public class ProtobufArrayListTest extends TestCase {
     list.remove(0);
     assertEquals(asList(), list);
   }
-
+  
   public void testGet() {
     list.add(2);
     list.add(6);
-
+    
     assertEquals(2, (int) list.get(0));
     assertEquals(6, (int) list.get(1));
   }
-
+  
   public void testSet() {
     list.add(2);
     list.add(6);
-
+    
     list.set(0, 1);
     assertEquals(1, (int) list.get(0));
     list.set(1, 2);
@@ -142,69 +142,69 @@ public class ProtobufArrayListTest extends TestCase {
     if (list.contains(1)) {
       throw new RuntimeException("Cannot test the immutability of lists that contain 1.");
     }
-
+    
     try {
       list.add(1);
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.add(0, 1);
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.addAll(Collections.<Integer>emptyList());
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.addAll(Collections.singletonList(1));
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.addAll(new ProtobufArrayList<Integer>());
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.addAll(UNARY_LIST);
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.addAll(0, Collections.singleton(1));
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.addAll(0, UNARY_LIST);
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.addAll(0, Collections.<Integer>emptyList());
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
-    }
+    } 
 
     try {
       list.clear();
@@ -219,56 +219,56 @@ public class ProtobufArrayListTest extends TestCase {
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.remove(new Object());
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.removeAll(Collections.emptyList());
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.removeAll(Collections.singleton(1));
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.removeAll(UNARY_LIST);
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.retainAll(Collections.emptyList());
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.retainAll(Collections.singleton(1));
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.retainAll(UNARY_LIST);
       fail();
     } catch (UnsupportedOperationException e) {
       // expected
     }
-
+    
     try {
       list.set(0, 0);
       fail();
@@ -276,7 +276,7 @@ public class ProtobufArrayListTest extends TestCase {
       // expected
     }
   }
-
+  
   private static ProtobufArrayList<Integer> newImmutableProtoArrayList(int... elements) {
     ProtobufArrayList<Integer> list = new ProtobufArrayList<Integer>();
     for (int element : elements) {

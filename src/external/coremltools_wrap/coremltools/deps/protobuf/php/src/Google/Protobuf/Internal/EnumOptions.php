@@ -155,3 +155,4 @@ class EnumOptions extends \Google\Protobuf\Internal\Message
     }
 
 }
+

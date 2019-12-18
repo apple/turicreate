@@ -227,7 +227,7 @@ public:
     // Get the indices
     inline std::pair<size_t, size_t> get_indices(size_t n_col_bits) const GL_HOT_INLINE_FLATTEN {
       size_t idx = reverse_index_hash(key) - 1;
-      return std::pair<size_t, size_t>{(idx >> n_col_bits), idx & bit_mask<size_t>(n_col_bits)};
+      return std::pair<size_t, size_t>{(idx >> n_col_bits), idx & bit_mask<size_t>(static_cast<int>(n_col_bits))};
     }
   };
 

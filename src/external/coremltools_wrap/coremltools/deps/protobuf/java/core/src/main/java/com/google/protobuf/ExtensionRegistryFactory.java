@@ -34,7 +34,7 @@ import static com.google.protobuf.ExtensionRegistryLite.EMPTY_REGISTRY_LITE;
 
 /**
  * A factory object to create instances of {@link ExtensionRegistryLite}.
- *
+ * 
  * <p>
  * This factory detects (via reflection) if the full (non-Lite) protocol buffer libraries
  * are available, and if so, the instances returned are actually {@link ExtensionRegistry}.

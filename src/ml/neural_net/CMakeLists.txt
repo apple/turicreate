@@ -1,4 +1,4 @@
-project(unity_toolkits)
+project(Turi)
 
 # The unity_neural_net library provides a platform-agnostic interface to
 # neural-network inference and training backends. It provides a factory method

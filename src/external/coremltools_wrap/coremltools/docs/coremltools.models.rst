@@ -1,8 +1,9 @@
-*************
-:mod:`Models`
-*************
+******
+Models
+******
 
 .. automodule:: coremltools.models
+.. automodule:: coremltools.models.nearest_neighbors
 .. automodule:: coremltools.models.neural_network
   :noindex:
 .. currentmodule:: coremltools.models
@@ -20,6 +21,8 @@
   :nosignatures:
   :toctree: generated/
 
+    coremltools.models.nearest_neighbors.builder
     coremltools.models.neural_network.builder
     coremltools.models.neural_network.flexible_shape_utils
     coremltools.models.neural_network.quantization_utils
+    coremltools.models.neural_network.update_optimizer_utils
