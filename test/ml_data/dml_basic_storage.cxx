@@ -314,6 +314,8 @@ static void run_storage_check_test(size_t n, const std::string& run_string,
 ////////////////////////////////////////////////////////////////////////////////
 
 
+BOOST_AUTO_TEST_SUITE(dml_basic_storage)
+
 BOOST_AUTO_TEST_CASE(test_storage_000) {
   // All unique
   run_storage_check_test(0, "n", target_column_type::NONE);
@@ -919,3 +921,6 @@ BOOST_AUTO_TEST_CASE(test_storage_24nd_tc) {
   // One with just a lot of stuff
   run_storage_check_test(25, "11234Avv", target_column_type::CATEGORICAL);
 }
+
+BOOST_AUTO_TEST_SUITE_END()
+

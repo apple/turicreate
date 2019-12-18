@@ -1,4 +1,4 @@
-project(shmipc)
+project(Turi)
 
 make_library(shmipc OBJECT
   SOURCES

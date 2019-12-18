@@ -170,9 +170,8 @@ class ImageClassifierTest(unittest.TestCase):
 
     def test_export_coreml(self):
         if self.model.model == "VisionFeaturePrint_Scene":
-            pytest.xfail("Expected failure until " 
+            pytest.xfail("Expected failure until "
                 + "https://github.com/apple/turicreate/issues/2744 is fixed")
-        
         filename = tempfile.mkstemp('bingo.mlmodel')[1]
         self.model.export_coreml(filename)
 
@@ -181,6 +180,7 @@ class ImageClassifierTest(unittest.TestCase):
             'com.github.apple.turicreate.version': tc.__version__,
             'com.github.apple.os.platform': platform.platform(),
             'type': 'ImageClassifier',
+            'coremltoolsVersion': coremltools.__version__,
             'version': '1'
             }, dict(coreml_model.user_defined_metadata)
         )

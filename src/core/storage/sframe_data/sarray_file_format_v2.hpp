@@ -383,7 +383,7 @@ fetch_cache_from_file(size_t block_number, cache_entry& ret) {
   m_used_cache_entries.set_bit(block_number);
   // evict something random
   // we will only loop at most this number of times
-  int num_to_evict = (int)(m_cache_size.value) -
+  size_t num_to_evict = m_cache_size.value -
       SFRAME_MAX_BLOCKS_IN_CACHE;
   while(num_to_evict > 0 &&
         m_cache_size.value > SFRAME_MAX_BLOCKS_IN_CACHE) {
@@ -409,8 +409,7 @@ fetch_cache_from_file(size_t block_number, cache_entry& ret) {
   m_used_cache_entries.set_bit(block_number);
   // evict something random
   // we will only loop at most this number of times
-  int num_to_evict = (int)(m_cache_size.value) -
-      SFRAME_MAX_BLOCKS_IN_CACHE;
+  size_t num_to_evict = m_cache_size.value - SFRAME_MAX_BLOCKS_IN_CACHE;
   while(num_to_evict > 0 &&
         m_cache_size.value > SFRAME_MAX_BLOCKS_IN_CACHE) {
     try_evict_something_from_cache();

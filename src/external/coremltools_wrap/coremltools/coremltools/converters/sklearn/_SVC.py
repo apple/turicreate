@@ -28,7 +28,7 @@ def _generate_base_svm_classifier_spec(model):
     """
     if not(_HAS_SKLEARN):
         raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-
+    
     check_fitted(model, lambda m: hasattr(m, 'support_vectors_'))
 
     spec = _Model_pb2.Model()

@@ -16,12 +16,12 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeReduction(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -36,19 +36,19 @@ void CoreMLConverter::convertCaffeReduction(CoreMLConverter::ConvertLayerParamet
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::ReductionParameter& caffeLayerParams = caffeLayer.reduction_param();
-
-
+    
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerParams.axis() != 0){
         CoreMLConverter::unsupportedCaffeParrameterWithOption("axis",caffeLayer.name(),caffeLayer.type(),std::to_string(caffeLayerParams.axis()));
     }
     //***************************************************************
-
+    
     Specification::ReduceLayerParams* specLayerParams = specLayer->mutable_reduce();
     switch(caffeLayerParams.operation()) {
         case caffe::ReductionParameter::ASUM:
@@ -67,3 +67,10 @@ void CoreMLConverter::convertCaffeReduction(CoreMLConverter::ConvertLayerParamet
             CoreMLConverter::errorInCaffeProto("operation not set",caffeLayer.name(), caffeLayer.type());
     }
 }
+    
+
+    
+    
+    
+    
+    

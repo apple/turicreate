@@ -1,4 +1,4 @@
-project(unity)
+project(Turi)
 
 make_library(ml_data OBJECT
   SOURCES

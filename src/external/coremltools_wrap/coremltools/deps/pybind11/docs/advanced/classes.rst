@@ -90,7 +90,7 @@ functions, and :func:`PYBIND11_OVERLOAD` should be used for functions which have
 a default implementation.  There are also two alternate macros
 :func:`PYBIND11_OVERLOAD_PURE_NAME` and :func:`PYBIND11_OVERLOAD_NAME` which
 take a string-valued name argument between the *Parent class* and *Name of the
-function* slots, which defines the name of function in Python. This is required
+function* slots, which defines the name of function in Python. This is required 
 when the C++ and Python versions of the
 function have different names, e.g.  ``operator()`` vs ``__call__``.
 

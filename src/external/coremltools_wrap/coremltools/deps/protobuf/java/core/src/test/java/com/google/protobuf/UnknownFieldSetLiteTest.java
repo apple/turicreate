@@ -45,7 +45,7 @@ import junit.framework.TestCase;
  * @author dweis@google.com (Daniel Weis)
  */
 public class UnknownFieldSetLiteTest extends TestCase {
-
+  
   public void testDefaultInstance() {
     UnknownFieldSetLite unknownFields = UnknownFieldSetLite.getDefaultInstance();
 
@@ -261,46 +261,46 @@ public class UnknownFieldSetLiteTest extends TestCase {
       // Expected.
     }
   }
-
+  
   public void testMakeImmutable() throws Exception {
     UnknownFieldSetLite unknownFields = UnknownFieldSetLite.newInstance();
     unknownFields.makeImmutable();
-
+    
     try {
       unknownFields.mergeVarintField(1, 1);
       fail();
     } catch (UnsupportedOperationException expected) {}
-
+    
     try {
       unknownFields.mergeLengthDelimitedField(2, ByteString.copyFromUtf8("hello"));
       fail();
     } catch (UnsupportedOperationException expected) {}
-
+    
     try {
       unknownFields.mergeFieldFrom(1, CodedInputStream.newInstance(new byte[0]));
       fail();
     } catch (UnsupportedOperationException expected) {}
   }
-
+  
   public void testEndToEnd() throws Exception {
     TestAllTypesLite testAllTypes = TestAllTypesLite.getDefaultInstance();
     try {
       testAllTypes.unknownFields.checkMutable();
       fail();
     } catch (UnsupportedOperationException expected) {}
-
+    
     testAllTypes = TestAllTypesLite.parseFrom(new byte[0]);
     try {
       testAllTypes.unknownFields.checkMutable();
       fail();
     } catch (UnsupportedOperationException expected) {}
-
+    
     testAllTypes = TestAllTypesLite.newBuilder().build();
     try {
       testAllTypes.unknownFields.checkMutable();
       fail();
     } catch (UnsupportedOperationException expected) {}
-
+    
     testAllTypes = TestAllTypesLite.newBuilder()
         .setDefaultBool(true)
         .build();
@@ -308,7 +308,7 @@ public class UnknownFieldSetLiteTest extends TestCase {
       testAllTypes.unknownFields.checkMutable();
       fail();
     } catch (UnsupportedOperationException expected) {}
-
+    
     TestAllExtensionsLite testAllExtensions = TestAllExtensionsLite.newBuilder()
         .mergeFrom(TestAllExtensionsLite.newBuilder()
             .setExtension(UnittestLite.optionalInt32ExtensionLite, 2)

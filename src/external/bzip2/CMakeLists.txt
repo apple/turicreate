@@ -1,4 +1,4 @@
-make_library(libbz2 OBJECT
+make_library(libbz2
   SOURCES
 blocksort.c
 huffman.c

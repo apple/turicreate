@@ -229,7 +229,7 @@ size_t load_images_impl(std::vector<std::string>& all_files,
 
   atomic<size_t> cnt = 0;
   double previous_time = 0;
-  int previous_cnt = 0;
+  size_t previous_cnt = 0;
   bool cancel = false;
 
   auto iter = all_files.begin();

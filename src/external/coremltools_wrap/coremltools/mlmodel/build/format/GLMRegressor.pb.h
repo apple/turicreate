@@ -390,7 +390,7 @@ inline ::CoreML::Specification::GLMRegressor_PostEvaluationTransform GLMRegresso
   return static_cast< ::CoreML::Specification::GLMRegressor_PostEvaluationTransform >(postevaluationtransform_);
 }
 inline void GLMRegressor::set_postevaluationtransform(::CoreML::Specification::GLMRegressor_PostEvaluationTransform value) {
-
+  
   postevaluationtransform_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.GLMRegressor.postEvaluationTransform)
 }

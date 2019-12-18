@@ -1,16 +1,28 @@
 Core ML Community Tools
 =======================
 
-Core ML community tools contains all supporting tools for CoreML model
-conversion and validation. This includes Scikit Learn, LIBSVM, Caffe,
+Core ML community tools contains all supporting tools for Core ML model
+conversion and validation. This includes scikit-learn, LIBSVM, Caffe,
 Keras and XGBoost.
+
+coremltools 3.0
+---------------
+[Release notes](https://github.com/apple/coremltools/releases/)
+
+
+👍👎 Please take this quick poll and let us know how you liked this release, [here](https://github.com/apple/coremltools/blob/master/release-feedback.md)!
+
+```shell
+# Install using pip
+pip install coremltools==3.0
+```
 
 API
 ---
-[Example Code snippets](docs/APIExamples.md)
-[CoreMLTools Documentation](https://apple.github.io/coremltools)
-[CoreML Specification Documentation](https://apple.github.io/coremltools/coremlspecification/)
-[IPython Notebooks](https://github.com/apple/coremltools/tree/master/examples)
+- [Example Code Snippets](docs/APIExamples.md)
+- [coremltools Documentation](https://apple.github.io/coremltools)
+- [Core ML Specification Documentation](https://apple.github.io/coremltools/coremlspecification/)
+- [IPython Notebooks](https://github.com/apple/coremltools/tree/master/examples)
 
 Installation
 ------------
@@ -31,7 +43,7 @@ To create a Python virtual environment called `pythonenv` follow these steps:
 mkdir mlvirtualenv
 cd mlvirtualenv
 
-# Create a Python virtual environment for your CoreML project
+# Create a Python virtual environment for your Core ML project
 virtualenv pythonenv
 ```
 
@@ -59,10 +71,10 @@ Dependencies
 In addition, it has the following soft dependencies that are only needed when
 you are converting models of these formats:
 
-- Keras (1.2.2, 2.0.4+) with corresponding Tensorflow version
-- Xgboost (0.7+)
+- Keras (1.2.2, 2.0.4+) with corresponding TensorFlow version
+- XGBoost (0.7+)
 - scikit-learn (0.17+)
-- libSVM
+- LIBSVM
 
 
 Building from source
@@ -70,7 +82,9 @@ Building from source
 To build the project, you need [CMake](https://cmake.org) to configure the project
 
 ```shell
-cmake .
+mkdir build
+cd build
+cmake ../
 ```
 
 When several python virtual environments are installed,
@@ -78,9 +92,12 @@ it may be useful to use the following command instead,
 to point to the correct intended version of python:
 
 ```shell
-cmake . -DPYTHON=$(which python) -DPYTHON_CONFIG=$(which python-config)
+cmake \
+  -DPYTHON_EXECUTABLE:FILEPATH=/Library/Frameworks/Python.framework/Versions/3.7/bin/python \
+  -DPYTHON_INCLUDE_DIR=/Library/Frameworks/Python.framework/Versions/3.7/include/python3.7m/ \
+  -DPYTHON_LIBRARY=/Library/Frameworks/Python.framework/Versions/3.7/lib/ \
+  ../
 ```
-
 after which you can use make to build the project
 
 ```shell
@@ -97,7 +114,7 @@ make dist
 
 Running Unit Tests
 -------------------
-In order to run unit tests, you need pytest, pandas, and h5py.
+In order to run unit tests, you need `pytest`, `pandas`, and `h5py`.
 
 ```shell
 pip install pytest pandas h5py
@@ -107,13 +124,13 @@ To add a new unit test, add it to the `coremltools/test` folder. Make sure you
 name the file with a 'test' as the prefix.
 
 Additionally, running unit-tests would require more packages (like
-libsvm)
+LIBSVM)
 
 ```shell
 pip install -r test_requirements.pip
 ```
 
-To install libsvm
+To install LIBSVM
 
 ```shell
 git clone https://github.com/cjlin1/libsvm.git
@@ -123,7 +140,7 @@ cd python/
 make
 ```
 
-To make sure you can run libsvm python bindings everywhere, you need the
+To make sure you can run LIBSVM python bindings everywhere, you need the
 following command, replacing `<LIBSVM_PATH>` with the path to the root of
 your repository.
 
@@ -131,21 +148,24 @@ your repository.
 export PYTHONPATH=${PYTHONPATH}:<LIBSVM_PATH>/python
 ```
 
-To install xgboost
+To install XGBoost
 
 ```shell
 git clone --recursive https://github.com/dmlc/xgboost
-cd xgboost; cp make/minimum.mk ./config.mk; make
+cd xgboost
+git checkout v0.90
+git submodule update
+make config=make/config.mk -j8
 cd python-package; python setup.py develop
 ```
 
-To install keras (Version >= 2.0)
+To install Keras (Version >= 2.0)
 
 ```shell
 pip install keras tensorflow
 ```
 
-If you'd like to use the old keras version, you can:
+If you'd like to use the old Keras version, you can:
 
 ```shell
 pip install keras==1.2.2 tensorflow
@@ -168,7 +188,7 @@ Building Documentation
 First install all external dependencies.
 
 ```shell
-pip install Sphinx==1.5.3 sphinx-rtd-theme==0.2.4 numpydoc
+pip install Sphinx==1.8.5 sphinx-rtd-theme==0.4.3 numpydoc==0.9.1
 pip install -e git+git://github.com/michaeljones/sphinx-to-github.git#egg=sphinx-to-github
 ```
 
@@ -184,7 +204,8 @@ open _build/html/index.html
 
 External Tools
 --------------
-In addition to the conversion tools in this package, TensorFlow and MXNet have their own conversion tools:
+In addition to the conversion tools in this package, TensorFlow, ONNX, and MXNet have their own conversion tools:
 
 - [TensorFlow](https://pypi.python.org/pypi/tfcoreml)
 - [MXNet](https://github.com/apache/incubator-mxnet/tree/master/tools/coreml)
+- [ONNX](https://github.com/onnx/onnx-coreml)

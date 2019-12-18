@@ -308,7 +308,7 @@ public final class Internal {
     // based hashCode() method.
     return Internal.hashCode(bytes, 0, bytes.length);
   }
-
+  
   /**
    * Helper method for implementing {@link LiteralByteString#hashCode()}.
    */
@@ -330,7 +330,7 @@ public final class Internal {
     }
     return h;
   }
-
+  
   /**
    * Helper method for implementing {@link Message#equals(Object)} for bytes
    * field.

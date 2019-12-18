@@ -1,4 +1,4 @@
-project(TuriCreate_ml)
+project(Turi)
 
 make_library(
   unity_sketches OBJECT

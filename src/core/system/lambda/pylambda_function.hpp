@@ -76,7 +76,7 @@ class pylambda_function {
 
   //// Options
   void set_skip_undefined(bool value);
-  void set_random_seed(int value);
+  void set_random_seed(uint64_t value);
 
   //// Evaluating Interface
 
@@ -92,7 +92,7 @@ class pylambda_function {
  private:
   size_t lambda_hash = -1;
   bool skip_undefined = false;
-  size_t random_seed = 0;
+  uint64_t random_seed = 0;
   std::shared_ptr<fileio::file_ownership_handle> m_pickle_file_handle;
 };
 

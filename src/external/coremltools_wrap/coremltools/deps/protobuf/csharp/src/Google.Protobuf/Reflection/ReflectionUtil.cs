@@ -102,6 +102,6 @@ namespace Google.Protobuf.Reflection
             Expression castTarget = Expression.Convert(targetParameter, method.DeclaringType);
             Expression call = Expression.Call(castTarget, method);
             return Expression.Lambda<Action<IMessage>>(call, targetParameter).Compile();
-        }
+        }        
     }
 }

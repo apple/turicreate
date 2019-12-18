@@ -17,7 +17,7 @@ namespace CoreML {
             return Result(ResultType::INVALID_MODEL_PARAMETERS,
                           "Model not an a CustomModel.");
         }
-
+        
         Result result;
 
         result = validateModelDescription(interface, format.specificationversion());

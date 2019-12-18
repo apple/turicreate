@@ -237,7 +237,7 @@ std::tuple<gl_sframe, gl_sframe> activity_classifier::random_split_by_session(
   // session. The boolean filter is a pseudorandom function of the session_id
   // and the global seed above, allowing the train-test split to vary across
   // runs using the same dataset.
-  auto random_session_pick = [fraction](size_t session_id_hash) {
+  auto random_session_pick = [fraction](uint32_t session_id_hash) {
     std::default_random_engine generator(session_id_hash);
     std::uniform_real_distribution<float> dis(0.f, 1.f);
     return dis(generator) < fraction;
@@ -1123,17 +1123,17 @@ void activity_classifier::init_train(
   nn_spec_ = init_model(use_random_init);
 
   // Instantiate the NN backend.
-  size_t samples_per_chunk =
-      read_state<flex_int>("prediction_window") * NUM_PREDICTIONS_PER_CHUNK;
+  int samples_per_chunk =
+      read_state<int>("prediction_window") * NUM_PREDICTIONS_PER_CHUNK;
   training_model_ = training_compute_context_->create_activity_classifier(
-      /* n */     read_state<flex_int>("batch_size"),
-      /* c_in */  read_state<flex_int>("num_features"),
+      /* n */     read_state<int>("batch_size"),
+      /* c_in */  read_state<int>("num_features"),
       /* h_in */  1,
       /* w_in */  samples_per_chunk,
-      /* c_out */ read_state<flex_int>("num_classes"),
+      /* c_out */ read_state<int>("num_classes"),
       /* h_out */ 1,
       /* w_out */ NUM_PREDICTIONS_PER_CHUNK,
-      get_training_config(read_state<flex_int>("prediction_window"),
+      get_training_config(read_state<int>("prediction_window"),
                           read_state<int>("random_seed")),
       nn_spec_->export_params_view());
 
@@ -1273,8 +1273,8 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
        flex_type_enum::INTEGER},
       /* num_segments */ 1);
 
-  size_t prediction_window = read_state<size_t>("prediction_window");
-  size_t num_classes = read_state<size_t>("num_classes");
+  int prediction_window = read_state<int>("prediction_window");
+  int num_classes = read_state<int>("num_classes");
 
   // Allocate a buffer into which to write the class probabilities.
   flex_vec preds(num_classes);
@@ -1282,8 +1282,8 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   // Initialize the NN backend.
   std::unique_ptr<compute_context> ctx = create_compute_context();
   std::unique_ptr<model_backend> backend = ctx->create_activity_classifier(
-      /* n */     read_state<flex_int>("batch_size"),
-      /* c_in */  read_state<flex_int>("num_features"),
+      /* n */     read_state<int>("batch_size"),
+      /* c_in */  read_state<int>("num_features"),
       /* h_in */  1,
       /* w_in */  NUM_PREDICTIONS_PER_CHUNK * prediction_window,
       /* c_out */ num_classes,
@@ -1323,10 +1323,10 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
           output_ptr += num_classes;
 
           // Compute how many samples this prediction applies to.
-          size_t num_samples = std::min(prediction_window,
-                                        info.num_samples - cumulative_samples);
-          cumulative_samples += prediction_window;
-
+          size_t num_samples = std::min<size_t>(prediction_window,
+                                                info.num_samples - cumulative_samples);
+          cumulative_samples += prediction_window ;
+          
           // Add a row to the output SFrame.
           flex_int prediction_id = info.chunk_index;
           writer.write({info.session_id, prediction_id, preds, num_samples},

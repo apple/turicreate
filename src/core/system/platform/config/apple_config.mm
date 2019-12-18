@@ -34,7 +34,8 @@ void init_cocoa_multithreaded_runtime() {
   // Start an NSThread and let it exit.  This turns the CoreFoundation / Cocoa
   // runtime to multithreaded mode.  Otherwise, shit is bad in weird ways.
   @autoreleasepool {
-     [[DummyThread alloc] init];
+    DummyThread* _thread = [[DummyThread alloc] init];
+#pragma unused(_thread)
   };
 
  _cocoa_initialized = true;

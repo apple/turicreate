@@ -16,7 +16,7 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeSoftmax(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
@@ -35,12 +35,12 @@ void CoreMLConverter::convertCaffeSoftmax(CoreMLConverter::ConvertLayerParameter
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::SoftmaxParameter& caffeLayerParams = caffeLayer.softmax_param();
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerParams.axis() !=1 ){
         CoreMLConverter::unsupportedCaffeParrameterWithOption("axis",caffeLayer.name(), "Softmax", std::to_string(caffeLayerParams.axis()));

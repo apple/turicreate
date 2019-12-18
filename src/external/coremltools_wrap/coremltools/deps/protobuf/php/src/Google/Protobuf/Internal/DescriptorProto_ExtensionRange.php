@@ -79,3 +79,4 @@ class DescriptorProto_ExtensionRange extends \Google\Protobuf\Internal\Message
     }
 
 }
+

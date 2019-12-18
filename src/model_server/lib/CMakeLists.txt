@@ -1,4 +1,4 @@
-project(unity)
+project(Turi)
 
 make_library(unity_core OBJECT
   SOURCES

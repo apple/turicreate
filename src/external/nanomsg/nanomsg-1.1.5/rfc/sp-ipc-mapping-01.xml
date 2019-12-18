@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+
+<rfc category="info" docName="sp-ipc-mapping-01">
+
+  <front>
+
+    <title abbrev="IPC mapping for SPs">
+    IPC Mapping for Scalability Protocols
+    </title>
+
+    <author fullname="Garrett D'Amore" initials="G." role="editor"
+            surname="D'Amore">
+      <address>
+        <email>garrett@damore.org</email>
+      </address>
+    </author>
+    <author fullname="Martin Sustrik" initials="M." surname="Sustrik">
+      <address>
+        <email>sustrik@250bpm.com</email>
+      </address>
+    </author>
+
+    <date month="APril" year="2016" />
+
+    <area>Applications</area>
+    <workgroup>Internet Engineering Task Force</workgroup>
+
+    <keyword>IPC</keyword>
+    <keyword>UNIX</keyword>
+    <keyword>SP</keyword>
+
+    <abstract>
+      <t>This document defines the IPC mapping for scalability protocols.
+         It deals with how IPC (inter-process communication) should be
+         implemented on POSIX-compliant platforms.</t>
+    </abstract>
+
+  </front>
+
+  <middle>
+
+    <section title = "Underlying protocol">
+
+      <t>This mapping should be layered directly on the top of AF_UNIX
+         sockets of type SOCK_STREAM. On the platforms where AF_UNIX sockets
+         are not available IPC mapping may be done in a platform-specific way
+         and SHOULD be described in a separate RFC.</t>
+
+      <t>There's no fixed file to use for SP communication. Instead, filenames
+         are assigned to individual services by the user.</t>
+
+    </section>
+
+    <section title = "Connection initiation">
+
+      <t>Before binding the AF_UNIX socket the implementation SHOULD check
+         whether there's another process bound to the address. If not so
+         it SHOULD try to delete the associated file, if present. This measure
+         will prevent subsequent bind from failing if there's a leftover file
+         from the previous runs of the application.</t>
+
+      <t>The check can be performed in a platform-specific way, however,
+         a generic way to implement it is to try to connect to the address
+         and close the connection immediately if successful.</t>
+
+      <t>After establishing underlying AF_UNIX connection, both parties MUST
+         send the protocol header immediately. Both endpoints MUST then wait
+         for the protocol header from the peer before proceeding on.</t>
+
+      <t>The protocol header is 8 bytes long and looks like this:</t>
+
+      <figure>
+        <artwork>
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|      0x00     |      0x53     |      0x50     |    version    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|             type              |           reserved            |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+        </artwork>
+      </figure>
+
+      <t>First four bytes of the protocol header are used to make sure that
+         the peer's protocol is compatible with the protocol used by the local
+         endpoint.</t>
+
+      <t>First four bytes of the protocol header MUST be set to 0x00, 0x53, 0x50
+         and 0x00 respectively. If the protocol header received from the peer
+         differs, the TCP connection MUST be closed immediately.</t>
+
+      <t>The fact that the first byte of the protocol header is binary zero
+         eliminates any text-based protocols that were accidentally connected
+         to the endpoint. Subsequent two bytes make the check even more
+         rigorous. At the same time they can be used as a debugging hint to
+         indicate that the connection is supposed to use one of the scalability
+         protocols -- ASCII representation of these bytes is 'SP'. Finally,
+         the fourth byte rules out any incompatible versions of this
+         protocol.</t>
+      
+      <t>Fifth and sixth bytes of the header form a 16-bit unsigned integer in
+         network byte order representing the type of SP endpoint on the layer
+         above. The value SHOULD NOT be interpreted by the mapping, rather
+         the interpretation should be delegated to the scalability protocol
+         above the mapping. For informational purposes, it should be noted that
+         the field encodes information such as SP protocol ID, protocol version
+         and the role of endpoint within the protocol. Individual values are
+         assigned by IANA.</t>
+
+      <t>Finally, the last two bytes of the protocol header are reserved for
+         future use and must be set to binary zeroes. If the protocol header
+         from the peer contains anything else than zeroes in this field, the
+         implementation MUST close the underlying TCP connection.</t>
+
+    </section>
+
+    <section title = "Message header">
+
+      <t>Once the protocol header is accepted, endpoint can send and receive
+         messages. Every message starts with a message header consisting of
+         of a single byte called 'message type'.</t>
+
+      <t>The only value of this field that is currently allowed is 0x1, which
+         means "in-band" message, i.e. message whose body is passed as a stream
+         of bytes via the AF_UNIX socket.</t>
+
+      <t>The intent of this field is to eventually allow out-of-band transfer
+         of the message bodies, e.g. via shared memory.</t>
+
+      <t>The in-band message type MUST be implemented.</t>
+
+    </section>
+
+    <section title = "In-band messages">
+
+      <t>For in-band messages, message header is immediately followed by 64-bit
+         unsigned integer in network byte order representing the payload size,
+         in bytes. Thus, the message payload can be from 0 to 2^64-1 bytes long.
+         The payload of the specified size follows directly after the size
+         field:</t>
+
+      <figure>
+        <artwork>
++-----------+------------+-----------------+
+| type (8b) | size (64b) |     payload     |
++-----------+------------+-----------------+ 
+        </artwork>
+      </figure>
+
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>This memo includes no request to IANA.</t>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>The mapping isn't intended to provide any additional security in
+         addition to what AF_UNIX does.</t>
+    </section>
+
+  </middle>
+
+</rfc>

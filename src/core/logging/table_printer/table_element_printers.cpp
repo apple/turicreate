@@ -62,7 +62,7 @@ void _print_double(std::ostringstream& ss, size_t width, double value) {
 
     // Find a good precision with which to print this; loop until it
     // breaks or we hit 4 decimal places.
-    size_t precision = 0;
+    int precision = 0;
     for(;precision < 5; ++precision) {
 
       std::ostringstream ss_buf;

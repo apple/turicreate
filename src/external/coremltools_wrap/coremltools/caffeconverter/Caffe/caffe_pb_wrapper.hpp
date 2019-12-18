@@ -4,7 +4,9 @@
 #pragma clang diagnostic ignored "-Wunused-parameter"
 #pragma clang diagnostic ignored "-Wshorten-64-to-32"
 #pragma clang diagnostic ignored "-Wshadow"
+#if __apple_build_version__ < 10010028
 #pragma clang diagnostic ignored "-Wextended-offsetof"
+#endif
 #pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 #include "caffe.pb.h"

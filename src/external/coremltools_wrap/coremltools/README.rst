@@ -4,20 +4,22 @@ coremltools
 ===========
 
 `Core ML <http://developer.apple.com/documentation/coreml>`_
-is an Apple framework which allows developers to simply and easily integrate
-machine learning (ML) models into apps running on Apple devices (including iOS,
-watchOS, macOS, and tvOS).  Core ML introduces a public file format (.mlmodel)
-for a broad set of ML methods including deep neural networks (both
-convolutional and recurrent), tree ensembles with boosting, and generalized
-linear models. Models in this format can be directly integrated into apps
-through Xcode.
+is an Apple framework that allows developers to easily integrate
+machine learning (ML) models into apps. Core ML is available on iOS, iPadOS,
+watchOS, macOS, and tvOS. Core ML introduces a public file format (.mlmodel)
+for a broad set of ML methods including deep neural networks (convolutional
+and recurrent), tree ensembles (boosted trees, random forest, decision trees),
+and generalized linear models. Core ML models can be directly integrated into
+apps within Xcode.
 
 :code:`coremltools` is a python package for creating, examining, and testing models in
-the .mlmodel format.  In particular, it can be used to:
+the .mlmodel format. In particular, it can be used to:
 
-- Convert existing models to .mlmodel format from popular machine learning tools including Keras, Caffe, scikit-learn, libsvm, and XGBoost.
-- Express models in .mlmodel format through a simple API.
-- Make predictions with an .mlmodel (on select platforms for testing purposes).
+- Convert trained models from popular machine learning tools into Core ML format
+  (.mlmodel).
+- Write models to Core ML format with a simple API.
+- Making predictions using the Core ML framework (on select platforms) to
+  verify conversion.
 
 Installation
 ------------
@@ -42,10 +44,10 @@ Dependencies
 In addition, it has the following soft dependencies that are only needed when
 you are converting models of these formats:
 
-- Keras (1.2.2, 2.0.4+) with corresponding Tensorflow version
-- Xgboost (0.7+)
+- Keras (1.2.2, 2.0.4+) with corresponding TensorFlow version
+- XGBoost (0.7+)
 - scikit-learn (0.17+)
-- libSVM
+- LIBSVM
 
 More Information
 ----------------
@@ -58,6 +60,6 @@ License
 -------
 Copyright (c) 2018, Apple Inc. All rights reserved.
 
-Use of this source code is governed by the
+Use of this source code is governed by the 
 `3-Clause BSD License <https://opensource.org/licenses/BSD-3-Clause>`_
 that can be found in the LICENSE.txt file.

@@ -26,7 +26,7 @@ def load_model(model_path):
     """
     if not(HAS_LIBSVM):
         raise RuntimeError('libsvm not found. libsvm conversion API is disabled.')
-
+    
     from svmutil import svm_load_model # From libsvm
     import os
     if (not os.path.exists(model_path)):

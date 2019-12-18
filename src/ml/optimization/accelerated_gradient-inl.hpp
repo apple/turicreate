@@ -224,7 +224,7 @@ inline solver_return accelerated_gradient(first_order_opt_interface& model,
         stats.status = OPTIMIZATION_STATUS::OPT_ITERATION_LIMIT;
       }
     }
-    stats.iters = iters;
+    stats.iters = static_cast<int>(iters);
     stats.residual = residual;
     stats.func_value = fy;
     stats.gradient = gradient;

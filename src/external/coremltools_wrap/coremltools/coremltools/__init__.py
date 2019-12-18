@@ -22,6 +22,8 @@ format. In particular, it can be used to:
 For more information: http://developer.apple.com/documentation/coreml
 """
 
+__version__ = '3.0'
+
 # This is the basic Core ML specification format understood by iOS 11.0
 SPECIFICATION_VERSION = 1
 
@@ -37,6 +39,12 @@ _MINIMUM_FP16_SPEC_VERSION = 2
 _MINIMUM_CUSTOM_MODEL_SPEC_VERSION = 3
 _MINIMUM_QUANTIZED_MODEL_SPEC_VERSION = 3
 _MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION = 3
+
+# New versions for iOS 13.0.
+_MINIMUM_NDARRAY_SPEC_VERSION = 4
+_MINIMUM_NEAREST_NEIGHBORS_SPEC_VERSION = 4
+_MINIMUM_LINKED_MODELS_SPEC_VERSION = 4
+_MINIMUM_UPDATABLE_SPEC_VERSION = 4
 
 # expose sub packages as directories
 from . import converters

@@ -1,1 +1,1 @@
-project(turicreate_dot_graph)
+project(Turi)

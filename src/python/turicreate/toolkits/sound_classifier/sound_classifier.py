@@ -794,7 +794,6 @@ class SoundClassifier(_CustomModel):
         """
         import coremltools
         from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
-
         prob_name = self.target + 'Probability'
 
         def get_custom_model_spec():
@@ -804,37 +803,40 @@ class SoundClassifier(_CustomModel):
             input_name = 'output1'
             input_length = self._feature_extractor.output_length
             builder = NeuralNetworkBuilder([(input_name, Array(input_length,))],
-                                           [(prob_name, Dictionary(String))],
+                                           [(prob_name, Array(self.num_classes, ))],
                                            'classifier')
+            layer_counter = [0]
+            builder.set_input([input_name], [(input_length,)])
 
-            input_name, output_name = input_name, 0
+            def next_layer_name():
+                layer_counter[0] += 1
+                return "layer_%d" % layer_counter[0]
+
             for i, cur_layer in enumerate(self._custom_classifier.export_weights()):
                 W = cur_layer['weight']
                 nC, nB = W.shape
                 Wb = cur_layer['bias']
 
+                output_name = next_layer_name()
                 builder.add_inner_product(name="inner_product_"+str(i),
                                           W=W,
                                           b=Wb,
                                           input_channels=nB,
                                           output_channels=nC,
                                           has_bias=True,
-                                          input_name=str(input_name),
-                                          output_name='inner_product_'+str(output_name))
+                                          input_name=input_name,
+                                          output_name=output_name)
+
+                input_name = output_name
 
                 if cur_layer['act']:
-                    builder.add_activation("activation"+str(i), 'RELU', 'inner_product_'+str(output_name), str(output_name))
+                    output_name = next_layer_name()
+                    builder.add_activation("activation"+str(i), 'RELU', input_name, output_name)
+                    input_name = output_name
 
-                input_name = i
-                output_name = i + 1
-
-            last_output = builder.spec.neuralNetworkClassifier.layers[-1].output[0]
-            builder.add_softmax('softmax', last_output, self.target)
-
-            builder.set_class_labels(self.classes, predicted_feature_name = self.target)
-            builder.set_input([input_name], [(input_length,)])
-            builder.set_output([self.target], [(self.num_classes,)])
-
+            builder.add_softmax('softmax', input_name, prob_name)
+            builder.set_class_labels(self.classes, predicted_feature_name = self.target,
+                    prediction_blob = prob_name)
             return builder.spec
 
 
@@ -845,6 +847,7 @@ class SoundClassifier(_CustomModel):
         desc = top_level_spec.description
         input = desc.input.add()
         input.name = self.feature
+        assert type(self.feature) is str
         input.type.multiArrayType.dataType = ArrayFeatureType.ArrayDataType.Value('FLOAT32')
         input.type.multiArrayType.shape.append(15600)
 

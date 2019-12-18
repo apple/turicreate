@@ -16,13 +16,13 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeParameter(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     int layerIdWeights = CoreMLConverter::getLayerIndex(caffeLayer,layerParameters.mapCaffeLayerNamesToIndex);
     const caffe::LayerParameter& caffeLayerWeights = layerParameters.protoweights.layer(layerIdWeights);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+   
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -32,10 +32,10 @@ void CoreMLConverter::convertCaffeParameter(CoreMLConverter::ConvertLayerParamet
     std::vector<std::string> bottom;
     std::vector<std::string> top;
     top.push_back(caffeLayer.top(0));
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::ParameterParameter& caffeLayerParams = caffeLayer.parameter_param();
     //***************** Some Error Checking in Caffe Proto **********
     if (!caffeLayerParams.has_shape()){
@@ -73,3 +73,7 @@ void CoreMLConverter::convertCaffeParameter(CoreMLConverter::ConvertLayerParamet
     dataWrite->Resize(blobSize, 0.0);
     dataWrite->CopyFrom(caffeLayerWeights.blobs(0).data());
 }
+
+
+
+

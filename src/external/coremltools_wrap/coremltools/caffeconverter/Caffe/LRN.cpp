@@ -16,12 +16,12 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeLRN(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -36,13 +36,13 @@ void CoreMLConverter::convertCaffeLRN(CoreMLConverter::ConvertLayerParameters la
     for (const auto& topName: caffeLayer.top()){
         top.push_back(topName);
     }
-    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
+    CoreMLConverter::convertCaffeMetadata(caffeLayer.name(), 
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
+    
     const caffe::LRNParameter& caffeLayerParams = caffeLayer.lrn_param();
-
-
+    
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayerParams.norm_region()==caffe::LRNParameter::WITHIN_CHANNEL){
         CoreMLConverter::unsupportedCaffeParrameterWithOption("norm_region",caffeLayer.name(),"LRN","WITHIN CHANNEL");
@@ -51,11 +51,11 @@ void CoreMLConverter::convertCaffeLRN(CoreMLConverter::ConvertLayerParameters la
         CoreMLConverter::unsupportedCaffeParrameterWithOption("k",caffeLayer.name(),"LRN",std::to_string(caffeLayerParams.k()));
     }
     //***************************************************************
-
+    
     Specification::LRNLayerParams* specLayerParams = specLayer->mutable_lrn();
     specLayerParams->set_alpha(caffeLayerParams.alpha());
     specLayerParams->set_beta(caffeLayerParams.beta());
     specLayerParams->set_localsize(caffeLayerParams.local_size());
     specLayerParams->set_k(caffeLayerParams.k());
-
+    
 }

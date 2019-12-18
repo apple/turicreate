@@ -1,4 +1,4 @@
-project(sgraph_test)
+project(Turi)
 
 make_boost_test(hilbert_par_for.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(sgraph_test.cxx REQUIRES unity_shared_for_testing)

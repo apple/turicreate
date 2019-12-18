@@ -77,9 +77,9 @@ annotate_spec::Data ObjectDetection::getItems(size_t start, size_t end) {
     flex_image img = image.get<flex_image>();
     img = turi::image_util::encode_image(img);
 
-    size_t img_width = img.m_width;
-    size_t img_height = img.m_height;
-    size_t img_channels = img.m_channels;
+    int img_width = static_cast<int>(img.m_width);
+    int img_height = static_cast<int>(img.m_height);
+    int img_channels = static_cast<int>(img.m_channels);
 
     annotate_spec::Datum *datum = data.add_data();
     annotate_spec::ImageDatum *img_datum = datum->add_images();
@@ -211,7 +211,7 @@ bool ObjectDetection::setAnnotations(
         switch (label.labelType_case()) {
         case annotate_spec::Label::LabelTypeCase::kObjectDetectionLabel: {
           flex_dict bounds = _parse_bounding_boxes(label);
-          int tag = label.intlabel();
+          auto tag = label.intlabel();
 
           flex_dict annotation_dict = {{"label", tag}, {"coordinates", bounds}};
 

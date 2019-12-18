@@ -57,7 +57,7 @@ public class UnmodifiableLazyStringList extends AbstractList<String>
   public String get(int index) {
     return list.get(index);
   }
-
+  
   @Override
   public Object getRaw(int index) {
     return list.getRaw(index);
@@ -97,7 +97,7 @@ public class UnmodifiableLazyStringList extends AbstractList<String>
   public void add(byte[] element) {
     throw new UnsupportedOperationException();
   }
-
+  
   @Override
   public void set(int index, byte[] element) {
     throw new UnsupportedOperationException();

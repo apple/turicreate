@@ -310,7 +310,7 @@ public class MessageTest extends TestCase {
       assertEquals("Message missing required fields: a, b, c", e.getMessage());
     }
   }
-
+  
   /** Test reading unset repeated message from DynamicMessage. */
   public void testDynamicRepeatedMessageNull() throws Exception {
     Descriptors.Descriptor descriptor = TestRequired.getDescriptor();
@@ -324,7 +324,7 @@ public class MessageTest extends TestCase {
     assertEquals(result.getRepeatedFieldCount(result.getDescriptorForType()
         .findFieldByName("repeated_foreign_message")), 0);
   }
-
+  
   /** Test reading repeated message from DynamicMessage. */
   public void testDynamicRepeatedMessageNotNull() throws Exception {
 

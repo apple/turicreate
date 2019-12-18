@@ -13,7 +13,7 @@ if _HAS_SKLEARN:
     import sklearn.ensemble as _ensemble
     from . import _sklearn_util
     sklearn_class = _ensemble.GradientBoostingRegressor
-
+    
 model_type = 'regressor'
 
 def convert(model, input_features, output_features):
@@ -56,3 +56,4 @@ def convert(model, input_features, output_features):
 
     return _MLModel(_convert_tree_ensemble(model, input_features, output_features,
             base_prediction = base_prediction))
+

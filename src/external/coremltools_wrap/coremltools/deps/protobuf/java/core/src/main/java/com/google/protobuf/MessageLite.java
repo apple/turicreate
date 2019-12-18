@@ -295,7 +295,7 @@ public interface MessageLite extends MessageLiteOrBuilder {
     Builder mergeFrom(InputStream input,
                       ExtensionRegistryLite extensionRegistry)
                       throws IOException;
-
+    
     /**
      * Merge {@code other} into the message being built.  {@code other} must
      * have the exact same type as {@code this} (i.e.

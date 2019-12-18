@@ -23,13 +23,13 @@
 #undef CHECK
 
 // Include this first.  We need to undefine some defines here.
-#include <mlmodel/src/transforms/TreeEnsemble.hpp>
-#include <mlmodel/src/transforms/Pipeline.hpp>
+#include <coremltools/mlmodel/src/transforms/TreeEnsemble.hpp>
+#include <coremltools/mlmodel/src/transforms/Pipeline.hpp>
 
-#include <mlmodel/src/transforms/OneHotEncoder.hpp>
-#include <mlmodel/src/transforms/FeatureVectorizer.hpp>
-#include <mlmodel/src/transforms/DictVectorizer.hpp>
-#include <mlmodel/src/transforms/LinearModel.hpp>
+#include <coremltools/mlmodel/src/transforms/OneHotEncoder.hpp>
+#include <coremltools/mlmodel/src/transforms/FeatureVectorizer.hpp>
+#include <coremltools/mlmodel/src/transforms/DictVectorizer.hpp>
+#include <coremltools/mlmodel/src/transforms/LinearModel.hpp>
 
 
 

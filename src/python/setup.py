@@ -13,7 +13,7 @@ from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME="turicreate"
-VERSION='6.0rc1'#{{VERSION_STRING}}
+VERSION='6.0'#{{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -112,7 +112,7 @@ if __name__ == '__main__':
         long_description = f.read().decode('utf-8')
 
     install_requires = [
-        "coremltools==3.0b3",
+        "coremltools==3.1",
         "decorator >= 4.0.9",
         "numpy==1.16.4",
         "pandas >= 0.23.2",

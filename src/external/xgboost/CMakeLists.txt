@@ -9,6 +9,7 @@ make_library(xgboost OBJECT
     subtree/rabit/src/engine_empty.cc
   REQUIRES
     libjson
+    boost
 )
 
 target_compile_options(xgboost PUBLIC "-Wno-narrowing -msse2 -funroll-loops")

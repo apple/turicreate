@@ -1,4 +1,4 @@
-project(unity)
+project(Turi)
 
 set(FORMAT_DIR "${CMAKE_CURRENT_SOURCE_DIR}/format")
 set(BUILD_DIR "${CMAKE_CURRENT_SOURCE_DIR}/build/format/cpp")
@@ -18,6 +18,8 @@ set(TC_ANNOTATIONS_PROTO_FILES
   build/format/cpp/progress.pb.cc
   build/format/cpp/similarity.pb.cc
 )
+
+set_source_files_properties(${TC_ANNOTATIONS_PROTO_FILES} PROPERTIES COMPILE_FLAGS -Wno-everything)
 
 set(TC_ANNOTATIONS_PROTO_HEADERS
   build/format/cpp/annotate.pb.h
@@ -39,6 +41,8 @@ add_custom_command(TARGET annotationProtobuf
                                           ${PROGRESS_PROTO}
                                           ${SIMILARITY_PROTO}
 )
+
+
 
 set(TC_ANNOTATIONS_SOURCE_FILES
   annotation_base.cpp

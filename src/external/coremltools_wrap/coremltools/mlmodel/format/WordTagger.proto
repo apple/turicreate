@@ -70,5 +70,6 @@ message WordTagger {
     }
 
 
-
+    
 }
+

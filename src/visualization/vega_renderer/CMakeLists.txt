@@ -1,4 +1,4 @@
-project( vega_renderer )
+project(Turi)
 
 if(APPLE AND NOT TC_BUILD_IOS)
 

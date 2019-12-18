@@ -1,4 +1,4 @@
-project(unity_toolkits)
+project(Turi)
 
 make_library(unity_pattern_mining OBJECT
   SOURCES

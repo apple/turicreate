@@ -152,7 +152,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
     }
 
     int chunk_size = prediction_window * predictions_in_chunk;
-    int feature_size = chunk_size * features.size();
+    size_t feature_size = chunk_size * features.size();
 
     // Build a dict pf the column order by column name, to later access within the iterator
     auto column_index_map = generate_column_index_map(data.column_names());

@@ -1,4 +1,4 @@
-project(unity_test_toolkits)
+project(Turi)
 
     add_subdirectory(one_shot_object_detection)
 

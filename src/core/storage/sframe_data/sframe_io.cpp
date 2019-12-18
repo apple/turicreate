@@ -16,8 +16,8 @@ namespace turi{
 size_t sframe_row_to_csv(const std::vector<flexible_type>& row, char* buf, size_t buflen) {
   flexible_type val;
   char* cur = buf;
-  int space_remaining = buflen;
-  int last_bytes_written = 0;
+  size_t space_remaining = buflen;
+  size_t last_bytes_written = 0;
   for(size_t i = 0; (i < row.size()) && (space_remaining); ++i) {
     val = row[i];
     switch(val.get_type()) {

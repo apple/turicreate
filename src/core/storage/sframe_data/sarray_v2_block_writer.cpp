@@ -84,12 +84,12 @@ size_t block_writer::write_block(size_t segment_id,
   DASSERT_LT(column_id, m_index_info.columns.size());
   DASSERT_TRUE(m_output_files[segment_id] != NULL);
   // try to compress the data
-  size_t compress_bound = LZ4_compressBound(block.block_size);
+  size_t compress_bound = LZ4_compressBound(static_cast<int>(block.block_size));
   auto compression_buffer = m_buffer_pool.get_new_buffer();
   compression_buffer->resize(compress_bound);
   char* cbuffer = compression_buffer->data();
   size_t clen = compress_bound;
-  clen = LZ4_compress(data, cbuffer, block.block_size);
+  clen = LZ4_compress(data, cbuffer, static_cast<int>(block.block_size));
 
   char* buffer_to_write = NULL;
   size_t buffer_to_write_len = 0;

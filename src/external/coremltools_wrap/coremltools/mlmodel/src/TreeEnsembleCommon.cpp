@@ -431,7 +431,7 @@ namespace CoreML { namespace TreeEnsembles {
          *  correctness of the dimension and multiclass options.
          */
         auto tree_ensemble = std::make_shared<_TreeEnsemble>();
-
+        
 
         /** Add in the default values.
          */
@@ -457,22 +457,22 @@ namespace CoreML { namespace TreeEnsembles {
             << ") does not match specified output dimension (" << output_dimension << ").";
             add_error_message(ss.str());
         }
-
+        
         /** Stage 5: pull out and verify the class-type specific parameters.
          */
         if(m_spec.has_treeensembleregressor()) {
             tree_ensemble->operation_mode = _TreeEnsemble::OperationMode::REGRESSION_MODE;
             tree_ensemble->post_processing_transform = static_cast<PostEvaluationTransform>(
                                         m_spec.treeensembleregressor().postevaluationtransform());
-
+            
         } else if(m_spec.has_treeensembleclassifier()) {
 
             //auto tes_cl = m_spec.description().classifiertargets();
-
+            
             const auto& classifier = m_spec.treeensembleclassifier();
             Specification::Int64Vector int64ClassLabels;
             Specification::StringVector stringClassLabels;
-
+            
             switch (classifier.ClassLabels_case()) {
                 case Specification::TreeEnsembleClassifier::kInt64ClassLabels:
                     int64ClassLabels = classifier.int64classlabels();
@@ -486,58 +486,58 @@ namespace CoreML { namespace TreeEnsembles {
                     // not sure if that's the desired outcome.
                     break;
             }
-
+            
             tree_ensemble->post_processing_transform = static_cast<PostEvaluationTransform>(
                                     m_spec.treeensembleclassifier().postevaluationtransform());
-
+            
             size_t n_classes = static_cast<size_t>(std::max(int64ClassLabels.vector_size(), stringClassLabels.vector_size()));
             if(n_classes == 0) {
-
+                
                 /** Handle the binary classification mode.
                  */
                 if(output_dimension == 1) {
                     tree_ensemble->output_classes_string.clear();
                     tree_ensemble->output_classes_integer = {0, 1};
-
+                    
                     tree_ensemble->operation_mode = _TreeEnsemble::OperationMode::BINARY_CLASSIFICATION_MODE;
-
+                    
                 } else {
-
+                    
                     tree_ensemble->output_classes_string.clear();
                     tree_ensemble->output_classes_integer.resize(static_cast<size_t>(output_dimension));
-
+                    
                     for(size_t i = 0; i < output_dimension; ++i) {
                         tree_ensemble->output_classes_integer[i] = int64_t(i);
                     }
-
+                    
                     tree_ensemble->operation_mode = _TreeEnsemble::OperationMode::MULTICLASS_CLASSIFICATION_MODE;
                 }
-
+                
             } else if(/* Binary classification. */
                       (output_dimension == 1
                        && n_classes == 2)
-
+                      
                       /* Multiclass classification. */
                       || (output_dimension >= 2
                           && n_classes == output_dimension) ) {
-
+                          
                           bool binary_classification = (output_dimension == 1);
-
+                          
                           if(binary_classification) {
                               tree_ensemble->operation_mode = _TreeEnsemble::OperationMode::BINARY_CLASSIFICATION_MODE;
                           } else {
                               tree_ensemble->operation_mode = _TreeEnsemble::OperationMode::MULTICLASS_CLASSIFICATION_MODE;
                           }
-
-
+                          
+                          
                           bool integer_classes = int64ClassLabels.vector_size() > stringClassLabels.vector_size();
-
+                          
                           if(integer_classes) {
                               tree_ensemble->output_classes_integer.resize(n_classes);
                           } else {
                               tree_ensemble->output_classes_string.resize(n_classes);
                           }
-
+                          
                           assert(n_classes >= 0);
                           assert(n_classes < std::numeric_limits<int>::max());
                           for(size_t i = 0; i < n_classes; ++i) {
@@ -556,14 +556,14 @@ namespace CoreML { namespace TreeEnsembles {
                           add_error_message(ss.str());
                       }
         }
-
+        
         /** Stage 6: If there have been any errors, raise them.
          *
          */
         if(error_count != 0) {
             throw std::logic_error("Error(s) in tree structure: \n" + current_error_msg.str());
         }
-
+        
         // And we're done.
         return tree_ensemble;
     }

@@ -1,4 +1,4 @@
-project(unity_test_toolkits)
+project(Turi)
 
 make_boost_test(supervised_learning_mock_test_model.cxx
   REQUIRES unity_shared_for_testing

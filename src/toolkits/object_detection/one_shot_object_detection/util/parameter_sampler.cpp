@@ -94,21 +94,25 @@ void ParameterSampler::set_warped_corners(
   warped_corners_[3] = warped_corners[2];
 }
 
-int generate_random_index(std::mt19937 *engine_pointer, int range) {
+int generate_random_index(std::mt19937 *engine_pointer, size_t range) {
   DASSERT_GT(range, 0);
-  std::uniform_int_distribution<int> index_distribution(0, range - 1);
+  std::uniform_int_distribution<int> index_distribution(0, static_cast<int>(range - 1));
   return index_distribution(*engine_pointer);
 }
 
 /* Function to sample all the parameters needed to build a transform, and
  * then also build the transform.
  */
-void ParameterSampler::sample(size_t background_width, size_t background_height,
+void ParameterSampler::sample(size_t _background_width, size_t _background_height,
                               size_t seed, size_t row_number) {
   double theta_mean, phi_mean, gamma_mean;
   std::seed_seq seed_seq = {static_cast<int>(seed),
                             static_cast<int>(row_number)};
   std::mt19937 engine(seed_seq);
+  
+  int background_width = static_cast<int>(_background_width);
+  int background_height = static_cast<int>(_background_height);
+
 
   theta_mean =
       theta_means_[generate_random_index(&engine, theta_means_.size())];
@@ -127,10 +131,10 @@ void ParameterSampler::sample(size_t background_width, size_t background_height,
   gamma_ = deg_to_rad(gamma_distribution(engine));
   focal_ = focal_distribution(engine);
   std::uniform_int_distribution<int> dz_distribution(
-      std::max(background_width, background_height), max_depth_);
-  dz_ = focal_ + dz_distribution(engine);
+      std::max(background_width, background_height), static_cast<int>(max_depth_));
+  dz_ = static_cast<int>(focal_ + dz_distribution(engine));
   transform_ = warp_perspective::get_transformation_matrix(
-      starter_width_, starter_height_, theta_, phi_, gamma_, dx_, dy_, dz_,
+      static_cast<int>(starter_width_), static_cast<int>(starter_height_), theta_, phi_, gamma_, static_cast<int>(dx_), static_cast<int>(dy_), static_cast<int>(dz_),
       focal_);
   warped_corners_.reserve(4);
 }

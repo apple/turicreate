@@ -102,7 +102,7 @@ class ndarray {
     // construct m_stide if not given
     if (m_stride.size() == 0 && m_shape.size() > 0) {
       m_stride.resize(m_shape.size());
-      int i = m_shape.size() - 1;
+      int64_t i = m_shape.size() - 1;
       m_stride[i] = 1;
       --i;
       for (;i >= 0; --i) {
@@ -397,7 +397,7 @@ class ndarray {
   template <typename U, typename V>
   static size_t inline increment_index(std::vector<U>& idx, const std::vector<V>& _shape) {
     DASSERT_TRUE(idx.size() == _shape.size());
-    int i = idx.size() - 1;
+    int64_t i = idx.size() - 1;
     for (;i >= 0 ; --i) {
       ++idx[i];
       if (idx[i] < _shape[i]) break;
@@ -447,7 +447,7 @@ class ndarray {
     }
 
     // compute the stride
-    int i = ret.m_shape.size() - 1;
+    int64_t i = ret.m_shape.size() - 1;
     ret.m_stride[i] = 1;
     --i;
     for (;i >= 0; --i) {

@@ -281,7 +281,7 @@ inline ::CoreML::Specification::CoreMLModels::VisionFeaturePrint_Scene_SceneVers
   return static_cast< ::CoreML::Specification::CoreMLModels::VisionFeaturePrint_Scene_SceneVersion >(version_);
 }
 inline void VisionFeaturePrint_Scene::set_version(::CoreML::Specification::CoreMLModels::VisionFeaturePrint_Scene_SceneVersion value) {
-
+  
   version_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.VisionFeaturePrint.Scene.version)
 }

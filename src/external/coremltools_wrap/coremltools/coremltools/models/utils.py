@@ -10,13 +10,13 @@ import math as _math
 import numpy as _np
 import os as _os
 import six as _six
+import warnings
 
 from .._deps import HAS_SKLEARN as _HAS_SKLEARN
 
-
-
 if _HAS_SKLEARN:
     import scipy.sparse as _sp
+
 
 def _to_unicode(x):
     if isinstance(x, _six.binary_type):
@@ -25,7 +25,7 @@ def _to_unicode(x):
         return x
 
 
-def save_spec(spec, filename):
+def save_spec(spec, filename, auto_set_specification_version=False):
     """
     Save a protobuf model specification to file.
 
@@ -36,6 +36,9 @@ def save_spec(spec, filename):
 
     filename: str
         File path  where the spec gets saved.
+
+    auto_set_specification_version: bool
+        If true, will always try to set specification version automatically.
 
     Examples
     --------
@@ -54,19 +57,35 @@ def save_spec(spec, filename):
         if ext != '.mlmodel':
             raise Exception("Extension must be .mlmodel (not %s)" % ext)
 
+    # set model coremltools version
+    from coremltools import __version__
+    spec.description.metadata.userDefined['coremltoolsVersion'] = __version__
+
+    spec = spec.SerializeToString()
+    if auto_set_specification_version:
+        try:
+            # always try to downgrade the specification version to the
+            # minimal version that supports everything in this mlmodel
+            from ..libcoremlpython import _MLModelProxy
+            spec = _MLModelProxy.auto_set_specification_version(spec)
+        except Exception as e:
+            print(e)
+            warnings.warn(
+                "Failed to automatic set specification version for this model.",
+                RuntimeWarning)
+
     with open(filename, 'wb') as f:
-        s = spec.SerializeToString()
-        f.write(s)
+        f.write(spec)
 
 
 def load_spec(filename):
     """
-    Load a protobuf model specification from file
+    Load a protobuf model specification from file.
 
     Parameters
     ----------
     filename: str
-        Location on disk (a valid filepath) from which the file is loaded
+        Location on disk (a valid file path) from which the file is loaded
         as a protobuf spec.
 
     Returns
@@ -169,179 +188,16 @@ def _wp_to_fp16wp(wp):
     del wp.floatValue[:]
 
 
-def _convert_nn_spec_to_half_precision(spec):
-    ignored_layers = [
-        'pooling', 'mvn', 'l2normalize', 'softmax',
-        'lrn', 'crop', 'padding', 'upsample', 'unary', 'add',
-        'multiply', 'average', 'max', 'min', 'dot', 'reduce',
-        'reshape', 'flatten', 'permute', 'concat', 'split',
-        'sequenceRepeat', 'reorganizeData', 'slice', 'custom',
-        'resizeBilinear', 'cropResize'
-    ]
-
-    quantized_layers = [
-        'convolution', 'innerProduct', 'embedding',
-        'batchnorm', 'scale', 'bias', 'loadConstant',
-        'simpleRecurrent', 'gru', 'uniDirectionalLSTM',
-        'biDirectionalLSTM'
-    ]
-
-    from coremltools import _MINIMUM_FP16_SPEC_VERSION
-    spec.specificationVersion = max(_MINIMUM_FP16_SPEC_VERSION, spec.specificationVersion)
-
-    layers = _get_nn_layers(spec)
-
-    if not layers:
-        raise Exception("Half precision conversion only supported for "
-                        "neural network models with layers")
-
-    for layer in layers:
-        layer_type = layer.WhichOneof('layer')
-
-        if layer_type in ignored_layers:
-            continue
-
-        # Convolution
-        if layer_type == 'convolution':
-            _wp_to_fp16wp(layer.convolution.weights)
-            if layer.convolution.hasBias:
-                _wp_to_fp16wp(layer.convolution.bias)
-
-        # Batchnorm
-        elif layer_type == 'batchnorm':
-            _wp_to_fp16wp(layer.batchnorm.gamma)
-            _wp_to_fp16wp(layer.batchnorm.beta)
-            _wp_to_fp16wp(layer.batchnorm.mean)
-            _wp_to_fp16wp(layer.batchnorm.variance)
-
-        # InnerProduct
-        elif layer_type == 'innerProduct':
-            _wp_to_fp16wp(layer.innerProduct.weights)
-            if layer.innerProduct.hasBias:
-                _wp_to_fp16wp(layer.innerProduct.bias)
-
-        # Embedding layer
-        elif layer_type == 'embedding':
-            _wp_to_fp16wp(layer.embedding.weights)
-            if layer.embedding.hasBias:
-                _wp_to_fp16wp(layer.embedding.bias)
-
-        # Scale layer
-        elif layer_type == 'scale':
-            _wp_to_fp16wp(layer.scale.scale)
-            if layer.scale.hasBias:
-                _wp_to_fp16wp(layer.scale.bias)
-
-        # Bias layer
-        elif layer_type == 'bias':
-            _wp_to_fp16wp(layer.bias.bias)
-
-        # LoadConstant layer
-        elif layer_type == 'loadConstant':
-            _wp_to_fp16wp(layer.loadConstant.data)
-
-        # Activation layer
-        elif layer_type == 'activation':
-            activation_type = layer.activation.WhichOneof('NonlinearityType')
-            if activation_type == 'PReLU':
-                _wp_to_fp16wp(layer.activation.PReLU.alpha)
-            elif activation_type == 'parametricSoftplus':
-                _wp_to_fp16wp(layer.activation.parametricSoftplus.alpha)
-                _wp_to_fp16wp(layer.activation.parametricSoftplus.beta)
-
-        # Simple Recurrent
-        elif layer_type == 'simpleRecurrent':
-            _wp_to_fp16wp(layer.simpleRecurrent.weightMatrix)
-            _wp_to_fp16wp(layer.simpleRecurrent.recursionMatrix)
-            if layer.simpleRecurrent.hasBiasVector:
-                _wp_to_fp16wp(layer.simpleRecurrent.biasVector)
-
-        # GRU
-        elif layer_type == 'gru':
-            # Weight Matrix
-            _wp_to_fp16wp(layer.gru.updateGateWeightMatrix)
-            _wp_to_fp16wp(layer.gru.resetGateWeightMatrix)
-            _wp_to_fp16wp(layer.gru.outputGateWeightMatrix)
-
-            # Recursion Weights
-            _wp_to_fp16wp(layer.gru.updateGateRecursionMatrix)
-            _wp_to_fp16wp(layer.gru.resetGateRecursionMatrix)
-            _wp_to_fp16wp(layer.gru.outputGateRecursionMatrix)
-
-            if layer.gru.hasBiasVectors:
-                _wp_to_fp16wp(layer.gru.updateGateBiasVector)
-                _wp_to_fp16wp(layer.gru.resetGateBiasVector)
-                _wp_to_fp16wp(layer.gru.outputGateBiasVector)
-
-        # LSTM Layers
-        elif layer_type in ['uniDirectionalLSTM', 'biDirectionalLSTM']:
-
-            def _lstmwp_to_fp16_lstmwp(lstm_wp, has_peephole=True):
-                assert lstm_wp
-                _wp_to_fp16wp(lstm_wp.inputGateWeightMatrix)
-                _wp_to_fp16wp(lstm_wp.forgetGateWeightMatrix)
-                _wp_to_fp16wp(lstm_wp.blockInputWeightMatrix)
-                _wp_to_fp16wp(lstm_wp.outputGateWeightMatrix)
-
-                _wp_to_fp16wp(lstm_wp.inputGateRecursionMatrix)
-                _wp_to_fp16wp(lstm_wp.forgetGateRecursionMatrix)
-                _wp_to_fp16wp(lstm_wp.blockInputRecursionMatrix)
-                _wp_to_fp16wp(lstm_wp.outputGateRecursionMatrix)
-
-                _wp_to_fp16wp(lstm_wp.inputGateBiasVector)
-                _wp_to_fp16wp(lstm_wp.forgetGateBiasVector)
-                _wp_to_fp16wp(lstm_wp.blockInputBiasVector)
-                _wp_to_fp16wp(lstm_wp.outputGateBiasVector)
-
-                if has_peephole:
-                    _wp_to_fp16wp(lstm_wp.inputGatePeepholeVector)
-                    _wp_to_fp16wp(lstm_wp.forgetGatePeepholeVector)
-                    _wp_to_fp16wp(lstm_wp.outputGatePeepholeVector)
-
-            if layer_type == 'uniDirectionalLSTM':
-                _lstmwp_to_fp16_lstmwp(
-                    lstm_wp=layer.uniDirectionalLSTM.weightParams,
-                    has_peephole=layer.uniDirectionalLSTM.params.hasPeepholeVectors
-                )
-            elif layer_type == 'biDirectionalLSTM':
-                for lstm_wp in layer.biDirectionalLSTM.weightParams:
-                    _lstmwp_to_fp16_lstmwp(
-                        lstm_wp=lstm_wp,
-                        has_peephole=layer.biDirectionalLSTM.params.hasPeepholeVectors
-                    )
-
-        elif layer_type == 'custom':
-            print ('Skipping custom layer {}. Weights for this layer need to'
-                   'be converted manually'.format(layer.name))
-            continue
-
-        elif layer_type in quantized_layers:
-            raise Exception('Half precision for ' + layer_type +
-                            ' not yet implemented\n')
-        else:
-            raise Exception('Unknown layer ' + layer_type)
-
-    return spec
-
-
 def convert_neural_network_spec_weights_to_fp16(fp_spec):
     nn_model_types = ['neuralNetwork', 'neuralNetworkClassifier',
                       'neuralNetworkRegressor']
 
-    # Neural network models
-    if fp_spec.WhichOneof('Type') in nn_model_types:
-        return _convert_nn_spec_to_half_precision(fp_spec)
+    from .neural_network.quantization_utils import quantize_spec_weights
+    from .neural_network.quantization_utils import _QUANTIZATION_MODE_LINEAR_QUANTIZATION
 
-    # Recursively convert all pipeline models
-    elif fp_spec.WhichOneof('Type') == 'pipeline':
-        for model_spec in fp_spec.pipeline.models:
-            convert_neural_network_spec_weights_to_fp16(model_spec)
+    qspec = quantize_spec_weights(fp_spec, 16, _QUANTIZATION_MODE_LINEAR_QUANTIZATION)
 
-    elif fp_spec.WhichOneof('Type') in ['pipelineClassifier',
-                                        'pipelineRegressor']:
-        convert_neural_network_spec_weights_to_fp16(fp_spec.pipeline)
-
-    return fp_spec
+    return qspec
 
 
 def convert_neural_network_weights_to_fp16(full_precision_model):
@@ -349,7 +205,7 @@ def convert_neural_network_weights_to_fp16(full_precision_model):
     Utility function to convert a full precision (float) MLModel to a
     half precision MLModel (float16).
 
-    Parameter
+    Parameters
     ----------
     full_precision_model: MLModel
         Model which will be converted to half precision. Currently conversion
@@ -390,11 +246,11 @@ def evaluate_regressor(model, data, target="target", verbose=False):
 
     Parameters
     ----------
-    filename: [str | MLModel]
+    filename: list of str or list of MLModel
         File path from which to load the MLModel from (OR) a loaded version of
         MLModel.
 
-    data: [str | Dataframe]
+    data: list of str or list of Dataframe
         Test data on which to evaluate the models (dataframe,
         or path to a .csv file).
 
@@ -450,17 +306,17 @@ def evaluate_regressor(model, data, target="target", verbose=False):
 
 def evaluate_classifier(model, data, target='target', verbose=False):
     """
-    Evaluate a CoreML classifier model and compare against predictions
-    from the original framework (for testing correctness of conversion). Use
-    this evaluation for models that don't deal with probabilities.
+    Evaluate a Core ML classifier model and compare against predictions
+    from the original framework (for testing correctness of conversion). 
+    Use this evaluation for models that don't deal with probabilities.
 
     Parameters
     ----------
-    filename: [str | MLModel]
+    filename: list of str or list of MLModel
         File from where to load the model from (OR) a loaded
         version of the MLModel.
 
-    data: [str | Dataframe]
+    data: list of str or list of Dataframe
         Test data on which to evaluate the models (dataframe,
         or path to a csv file).
 
@@ -723,14 +579,14 @@ def evaluate_transformer(model, input_data, reference_output,
 
     Parameters
     ----------
-    spec: [str | MLModel]
+    spec: list of str or list of MLModel
         File from where to load the Model from (OR) a loaded
         version of MLModel.
 
-    input_data: list[dict]
+    input_data: list of dict
         Test data on which to evaluate the models.
 
-    reference_output: list[dict]
+    reference_output: list of dict
         Expected results for the model.
 
     verbose: bool
@@ -847,7 +703,6 @@ def get_custom_layers(spec):
     -------
 
     [NN layer] A list of custom layer implementations
-
     """
     layers = _get_nn_layers(spec)
     layers_out = []
@@ -909,11 +764,12 @@ def _get_feature(spec, feature_name):
 
     raise Exception('Feature with name {} does not exist'.format(feature_name))
 
+
 def _get_input_names(spec):
     """
     Returns a list of the names of the inputs to this model.
     :param spec: The model protobuf specification
-    :return: [str] A list of input feature names
+    :return: list of str A list of input feature names
     """
     retval = [feature.name for feature in spec.description.input]
     return retval

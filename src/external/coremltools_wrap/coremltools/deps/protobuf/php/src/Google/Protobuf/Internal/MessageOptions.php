@@ -331,3 +331,4 @@ class MessageOptions extends \Google\Protobuf\Internal\Message
     }
 
 }
+

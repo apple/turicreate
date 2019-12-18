@@ -522,7 +522,7 @@ public abstract class GeneratedMessageLite<
       if (unknown) {  // Unknown field or wrong wire type.  Skip.
         return parseUnknownField(tag, input);
       }
-
+      
       if (packed) {
         int length = input.readRawVarint32();
         int limit = input.pushLimit(length);
@@ -603,7 +603,7 @@ public abstract class GeneratedMessageLite<
       }
       return true;
     }
-
+    
     /**
      * Parse an unknown field or an extension. For use by generated code only.
      *
@@ -636,7 +636,7 @@ public abstract class GeneratedMessageLite<
 
     /**
      * Merges the message set from the input stream; requires message set wire format.
-     *
+     * 
      * @param defaultInstance the default instance of the containing message we are parsing in
      * @param input the stream to parse from
      * @param extensionRegistry the registry to use when parsing

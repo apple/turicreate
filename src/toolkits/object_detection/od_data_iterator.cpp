@@ -103,6 +103,10 @@ std::vector<image_annotation> parse_annotations(
 
       if (key == "label") {
         // If the label is invalid (not in class_to_index_map) then ignore it.
+        if (kv.second.get_type() == flex_type_enum::UNDEFINED) {
+          log_and_throw("All annotations must contain label information.");
+        }
+
         const flex_string& label = kv.second.get<flex_string>();
         if (class_to_index_map.find(label) != class_to_index_map.end()) {
           annotation.identifier = class_to_index_map.at(label);
@@ -121,6 +125,14 @@ std::vector<image_annotation> parse_annotations(
         for (const auto& coord_kv : coordinates) {
 
           const flex_string& coord_key = coord_kv.first.get<flex_string>();
+
+          // Check the type of coordinate
+          if (coord_kv.second.get_type() != flex_type_enum::FLOAT and
+              coord_kv.second.get_type() != flex_type_enum::INTEGER) {
+            log_and_throw(
+                "Bounding box coordinates must be int or float values.");
+          }
+
           float coord_val = coord_kv.second;
 
           if (coord_key == "x") {

@@ -485,7 +485,7 @@ public class CodedInputStreamTest extends TestCase {
    * @return A serialized big message.
    */
   private static byte[] getBigSerializedMessage() {
-    byte[] value = new byte[16 * 1024 * 1024];
+    byte[] value = new byte[16 * 1024 * 1024]; 
     ByteString bsValue = ByteString.wrap(value);
     return TestAllTypes.newBuilder().setOptionalBytes(bsValue).build().toByteArray();
   }

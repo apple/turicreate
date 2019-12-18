@@ -1,4 +1,4 @@
-project(TuriPlatformDepedentcode)
+project(Turi)
 
 subdirs(
   crash_handler

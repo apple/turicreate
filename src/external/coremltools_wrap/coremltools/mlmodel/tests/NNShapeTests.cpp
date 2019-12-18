@@ -219,7 +219,7 @@ int testRangeValDivide() {
     ML_ASSERT(r10.value() == 3);
 
     return 0;
-
+    
 }
 
 int testShapeRange() {
@@ -425,7 +425,8 @@ int testShapeRange() {
     ShapeRange r36 = ShapeRange().intersect(ShapeRange(10));
     ML_ASSERT(r36.minimum().value() == 10);
     ML_ASSERT(r36.maximum().isUnbound());
-
+    
     return 0;
 
 }
+

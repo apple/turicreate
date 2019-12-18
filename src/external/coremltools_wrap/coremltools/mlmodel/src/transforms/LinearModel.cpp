@@ -11,7 +11,7 @@ namespace CoreML {
 
     LinearModel::LinearModel(const Model &modelSpec) : Model(modelSpec) {
     }
-
+    
     Result LinearModel::setOffsets(std::vector<double> offsets) {
         auto lr = m_spec->mutable_glmregressor();
         for(double n : offsets) {

@@ -9,3 +9,5 @@ from . import sklearn
 from . import xgboost
 from . import keras
 from . import caffe
+from . import tensorflow
+from . import nnssa

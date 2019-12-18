@@ -176,7 +176,7 @@ class pylambda_evaluator : public lambda_evaluator_interface {
    * Evaluate the lambda function on each argument separately in the args list.
    */
   std::vector<flexible_type> bulk_eval(size_t lambda_hash, const std::vector<flexible_type>& args,
-                                       bool skip_undefined, int seed);
+                                       bool skip_undefined, uint64_t seed);
 
   /**
    * \overload
@@ -185,7 +185,7 @@ class pylambda_evaluator : public lambda_evaluator_interface {
    * the cppipc interface doesn't support true overload
    */
   std::vector<flexible_type> bulk_eval_rows(size_t lambda_hash,
-                                            const sframe_rows& values, bool skip_undefined, int seed);
+                                            const sframe_rows& values, bool skip_undefined, uint64_t seed);
 
   /**
    * Evaluate the lambda function on each element separately in the values.
@@ -194,7 +194,7 @@ class pylambda_evaluator : public lambda_evaluator_interface {
   std::vector<flexible_type> bulk_eval_dict(size_t lambda_hash,
                                             const std::vector<std::string>& keys,
                                             const std::vector<std::vector<flexible_type>>& values,
-                                            bool skip_undefined, int seed);
+                                            bool skip_undefined, uint64_t seed);
 
   /**
    * We have to use different function name because
@@ -203,7 +203,7 @@ class pylambda_evaluator : public lambda_evaluator_interface {
   std::vector<flexible_type> bulk_eval_dict_rows(size_t lambda_hash,
                                                  const std::vector<std::string>& keys,
                                                  const sframe_rows& values,
-                                                 bool skip_undefined, int seed);
+                                                 bool skip_undefined, uint64_t seed);
 
 
   /**

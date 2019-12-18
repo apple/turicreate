@@ -36,8 +36,8 @@ namespace CoreML {
     }
     return Result();
   }
-
-    /**  Set up the class list -- two versions for string and integer values.
+    
+  /**  Set up the class list -- two versions for string and integer values.
      */
     Result LogisticModel::setClassNames(const std::vector<std::string>& classes) {
         m_spec->mutable_glmclassifier()->mutable_stringclasslabels()->clear_vector();
@@ -47,7 +47,7 @@ namespace CoreML {
         }
         return Result();
     }
-
+    
     Result LogisticModel::setClassNames(const std::vector<int64_t>& classes) {
         m_spec->mutable_glmclassifier()->mutable_int64classlabels()->clear_vector();
         for(size_t i = 0; i < classes.size(); ++i) {
@@ -56,3 +56,4 @@ namespace CoreML {
         return Result();
     }
 }
+

@@ -100,7 +100,7 @@ namespace lambda {
      */
     void bulk_eval(size_t lambda_hash, const std::vector<flexible_type>& args,
                    std::vector<flexible_type>& out,
-                   bool skip_undefined, int seed);
+                   bool skip_undefined, uint64_t seed);
 
     /**
      * \overload
@@ -108,7 +108,7 @@ namespace lambda {
     void bulk_eval(size_t lambda_hash,
                    const sframe_rows& args,
                    std::vector<flexible_type>& out,
-                   bool skip_undefined, int seed);
+                   bool skip_undefined, uint64_t seed);
 
     /**
      * \overload
@@ -118,7 +118,7 @@ namespace lambda {
                    const std::vector<std::string>& keys,
                    const std::vector<std::vector<flexible_type>>& args,
                    std::vector<flexible_type>& out,
-                   bool skip_undefined, int seed);
+                   bool skip_undefined, uint64_t seed);
 
     /**
      * \overload
@@ -127,7 +127,7 @@ namespace lambda {
         const std::vector<std::string>& keys,
         const sframe_rows& args,
         std::vector<flexible_type>& out,
-        bool skip_undefined, int seed);
+        bool skip_undefined, uint64_t seed);
 
     inline size_t num_workers() { return m_worker_pool->num_workers(); }
 

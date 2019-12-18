@@ -54,7 +54,7 @@ uint32_t to_int32(const uint8_t *bytes) {
      ((uint32_t) bytes[3] << 24);
 }
 
-void wiki_md5(const uint8_t *initial_msg, size_t initial_len, uint8_t *digest) {
+void wiki_md5(const uint8_t *initial_msg, uint32_t initial_len, uint8_t *digest) {
 
   // These vars will contain the hash
   uint32_t h0, h1, h2, h3;
@@ -151,7 +151,7 @@ void wiki_md5(const uint8_t *initial_msg, size_t initial_len, uint8_t *digest) {
 std::string md5(std::string val) {
   uint8_t result[16];
   wiki_md5(reinterpret_cast<const uint8_t*>(val.c_str()),
-           val.length(), result);
+           static_cast<uint32_t>(val.length()), result);
   std::string ret(32, ' ');
   const char hexchars[17] = "0123456789ABCDEF";
 
@@ -166,7 +166,7 @@ std::string md5(std::string val) {
 std::string md5_raw(std::string val) {
   uint8_t result[16];
   wiki_md5(reinterpret_cast<const uint8_t*>(val.c_str()),
-           val.length(), result);
+           static_cast<uint32_t>(val.length()), result);
   return std::string(reinterpret_cast<char*>(result), 16);
 }
 

@@ -168,6 +168,9 @@ class StyleTransferTest(unittest.TestCase):
 
         for style in styles:
             stylized_out = model.stylize(sf, style=style)
+            feat_name = 'stylized_{}'.format(self.content_feature)
+            self.assertEqual(set(stylized_out.column_names()),
+                  set(["row_id", "style", feat_name]))
 
             # Check the structure of the output
             _raise_error_if_not_sframe(stylized_out)
@@ -181,7 +184,6 @@ class StyleTransferTest(unittest.TestCase):
 
             # Check if input and output image have the same shape
             input_size = (sf[self.content_feature][0].width, sf[self.content_feature][0].height)
-            feat_name = 'stylized_{}'.format(self.content_feature)
             output_size = (stylized_out[0][feat_name].width,
                            stylized_out[0][feat_name].height)
             self.assertEqual(input_size, output_size)
@@ -291,6 +293,17 @@ class StyleTransferTest(unittest.TestCase):
             print("Stylize passed")
             self.test_get_styles_success()
             print("Get styles passed")
+
+    def test_state(self):
+        model = self.model
+        fields = model.__proxy__.list_fields()
+        self.assertTrue("model" in fields)
+        self.assertTrue("num_styles" in fields)
+        self.assertTrue("_training_time_as_string" in fields)
+        self.assertTrue("training_epochs" in fields)
+        self.assertTrue("training_iterations" in fields)
+        self.assertTrue("num_content_images" in fields)
+        self.assertTrue("training_loss" in fields)
 
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')

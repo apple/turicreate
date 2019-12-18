@@ -484,7 +484,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::head(size_t nrows) {
 std::shared_ptr<unity_sarray_base> unity_sarray::transform(const std::string& lambda,
                                                            flex_type_enum type,
                                                            bool skip_undefined,
-                                                           int seed) {
+                                                           uint64_t seed) {
   log_func_entry();
 #ifdef TC_HAS_PYTHON
   // create a le_transform operator to lazily evaluate this
@@ -509,7 +509,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::transform_native(
     const function_closure_info& toolkit_fn_closure,
     flex_type_enum type,
     bool skip_undefined,
-    int seed) {
+    uint64_t seed) {
   auto native_execute_function =
                   get_unity_global_singleton()
                   ->get_toolkit_function_registry()
@@ -536,7 +536,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::transform_lambda(
     std::function<flexible_type(const flexible_type&)> function,
     flex_type_enum type,
     bool skip_undefined,
-    int seed) {
+    uint64_t seed) {
 
   auto fn = [function, type, skip_undefined](const sframe_rows::row& f)->flexible_type {
     if (skip_undefined && f[0].get_type() == flex_type_enum::UNDEFINED) {
@@ -635,7 +635,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::vector_slice(size_t start, size
 }
 
 std::shared_ptr<unity_sarray_base> unity_sarray::filter(const std::string& lambda,
-                                                        bool skip_undefined, int seed) {
+                                                        bool skip_undefined, uint64_t seed) {
   return logical_filter(
      std::static_pointer_cast<unity_sarray>(transform(lambda,
                                                       flex_type_enum::UNDEFINED,
@@ -1199,7 +1199,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::str_to_datetime(std::string for
 
         boost::posix_time::ptime p = ldt.utc_time();
         std::time_t _time = flexible_type_impl::ptime_to_time_t(p);
-        int32_t microseconds = flexible_type_impl::ptime_to_fractional_microseconds(p);
+        int32_t microseconds = static_cast<int32_t>(flexible_type_impl::ptime_to_fractional_microseconds(p));
         int32_t timezone_offset = flex_date_time::EMPTY_TIMEZONE;
         if(ldt.zone()) {
           timezone_offset =
@@ -1767,7 +1767,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::tail(size_t nrows) {
 
 std::shared_ptr<unity_sarray_base> unity_sarray::make_uniform_boolean_array(size_t size,
                                                                             float percent,
-                                                                            int random_seed,
+                                                                            uint64_t random_seed,
                                                                             bool exact) {
   if (exact) {
     if (percent < 0.0) percent = 0.0;
@@ -1788,7 +1788,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::make_uniform_boolean_array(size
 
 std::shared_ptr<unity_sarray_base> unity_sarray::make_exact_uniform_boolean_array(size_t size,
                                                                           size_t num_trues,
-                                                                          int random_seed) {
+                                                                          uint64_t random_seed) {
   // all false and all true case.
   if (num_trues == 0) {
     auto ret = std::make_shared<unity_sarray>();
@@ -1838,7 +1838,7 @@ std::shared_ptr<unity_sarray_base> unity_sarray::make_exact_uniform_boolean_arra
 }
 
 std::shared_ptr<unity_sarray_base> unity_sarray::sample(float percent,
-                                                        int random_seed,
+                                                        uint64_t random_seed,
                                                         bool exact) {
   // create a sequential sarray
   auto seq = make_uniform_boolean_array(size(), percent, random_seed, exact);

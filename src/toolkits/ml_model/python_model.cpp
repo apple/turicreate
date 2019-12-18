@@ -33,7 +33,7 @@ class python_model : public model_base {
 
     // Get size of the file.
     in_file.seekg(0, in_file.end);
-    unsigned int file_size = in_file.tellg();
+    size_t file_size = in_file.tellg();
 
     // Write the language binding and size.
     std::string language = "python";

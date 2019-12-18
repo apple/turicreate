@@ -333,7 +333,7 @@ struct plus_equal_operator{
       t.set_posix_timestamp(t.posix_timestamp() + 1);
       microsecond -= flex_date_time::MICROSECONDS_PER_SECOND;
     }
-    t.set_microsecond(microsecond);
+    t.set_microsecond(static_cast<uint32_t>(microsecond));
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_int& t, const flex_float u) const { t += u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_float& t, const flex_int u) const { t += u; }
@@ -381,7 +381,7 @@ struct minus_equal_operator{
       t.set_posix_timestamp(t.posix_timestamp() - 1);
       microsecond += flex_date_time::MICROSECONDS_PER_SECOND;
     }
-    t.set_microsecond(microsecond);
+    t.set_microsecond(static_cast<uint32_t>(microsecond));
   }
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_int& t, const flex_int& u) const { t -= u; }
   inline FLEX_ALWAYS_INLINE_FLATTEN void operator()(flex_int& t, const flex_float& u) const { t -= u; }

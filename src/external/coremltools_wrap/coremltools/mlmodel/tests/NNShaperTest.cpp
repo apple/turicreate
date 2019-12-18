@@ -9,7 +9,7 @@
 #include "MLModelTests.hpp"
 #include "../src/Format.hpp"
 #include "../src/Model.hpp"
-#include "../src/NeuralNetworkShapes.hpp"
+#include "../src/NeuralNetwork/NeuralNetworkShapes.hpp"
 
 #include "framework/TestUtils.hpp"
 
@@ -267,9 +267,9 @@ int testPermuteShape() {
 }
 
 int testUpwardPass() {
-
+    
     Specification::Model m1;
-
+    
     auto *topIn = m1.mutable_description()->add_input();
     topIn->set_name("input");
     auto *shape = topIn->mutable_type()->mutable_multiarraytype();
@@ -286,9 +286,9 @@ int testUpwardPass() {
     auto *out = m1.mutable_description()->add_output();
     out->set_name("output");
     out->mutable_type()->mutable_multiarraytype();
-
+    
     auto *nn = m1.mutable_neuralnetwork();
-
+    
     Specification::NeuralNetworkLayer *convLayer = nn->add_layers();
     convLayer->add_input("input");
     convLayer->add_output("conv_out");
@@ -302,7 +302,7 @@ int testUpwardPass() {
     for (int i = 0; i < 5*4*10; i++) {
         convParams->mutable_weights()->add_floatvalue(1.0);
     }
-
+    
     Specification::NeuralNetworkLayer *ipLayer = nn->add_layers();
     ipLayer->add_input("conv_out");
     ipLayer->add_output("output");
@@ -315,31 +315,31 @@ int testUpwardPass() {
     }
 
     NeuralNetworkShaper shapes(m1);
-
+    
     const ShapeConstraint &inShape = shapes.shape("input");
     ML_ASSERT(inShape.sequenceRange().minimumValue() == 0);
     ML_ASSERT(inShape.sequenceRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(inShape.batchRange().minimumValue() == 0);
     ML_ASSERT(inShape.batchRange().maximumValue().isUnbound());
 
     ML_ASSERT(inShape.channelRange().minimumValue() == 4);
     ML_ASSERT(inShape.channelRange().maximumValue().value() == 4);
-
+    
     ML_ASSERT(inShape.heightRange().minimumValue() == 1);
     ML_ASSERT(inShape.heightRange().maximumValue().value() == 1);
 
     ML_ASSERT(inShape.widthRange().minimumValue() == 10);
     ML_ASSERT(inShape.widthRange().maximumValue().value() == 10);
-
+    
     return 0;
-
+    
 }
 
 int testSamePaddingConvolution() {
-
+    
     Specification::Model m1;
-
+    
     auto *topIn = m1.mutable_description()->add_input();
     topIn->set_name("input");
     auto *shape = topIn->mutable_type()->mutable_multiarraytype();
@@ -352,13 +352,13 @@ int testSamePaddingConvolution() {
     auto *shape3 = shape->mutable_shaperange()->add_sizeranges();
     shape3->set_lowerbound(100);
     shape3->set_upperbound(200);
-
+    
     auto *out = m1.mutable_description()->add_output();
     out->set_name("output");
     out->mutable_type()->mutable_multiarraytype();
-
+    
     auto *nn = m1.mutable_neuralnetwork();
-
+    
     Specification::NeuralNetworkLayer *convLayer = nn->add_layers();
     convLayer->add_input("input");
     convLayer->add_output("output");
@@ -372,50 +372,50 @@ int testSamePaddingConvolution() {
     for (int i = 0; i < 5*4*7*8; i++) {
         convParams->mutable_weights()->add_floatvalue(1.0);
     }
-
+    
     NeuralNetworkShaper shapes(m1);
-
+    
     const ShapeConstraint &inShape = shapes.shape("input");
     ML_ASSERT(inShape.sequenceRange().minimumValue() == 0);
     ML_ASSERT(inShape.sequenceRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(inShape.batchRange().minimumValue() == 0);
     ML_ASSERT(inShape.batchRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(inShape.channelRange().minimumValue() == 4);
     ML_ASSERT(inShape.channelRange().maximumValue().value() == 4);
-
+    
     ML_ASSERT(inShape.heightRange().minimumValue() == 100);
     ML_ASSERT(inShape.heightRange().maximumValue().value() == 100);
-
+    
     ML_ASSERT(inShape.widthRange().minimumValue() == 100);
     ML_ASSERT(inShape.widthRange().maximumValue().value() == 200);
-
+    
     const ShapeConstraint &outShape = shapes.shape("output");
     ML_ASSERT(outShape.sequenceRange().minimumValue() == 0);
     ML_ASSERT(outShape.sequenceRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(outShape.batchRange().minimumValue() == 0);
     ML_ASSERT(outShape.batchRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(outShape.channelRange().minimumValue() == 5);
     ML_ASSERT(outShape.channelRange().maximumValue().value() == 5);
-
+    
     ML_ASSERT(outShape.heightRange().minimumValue() == 100);
     ML_ASSERT(outShape.heightRange().maximumValue().value() == 100);
-
+    
     ML_ASSERT(outShape.widthRange().minimumValue() == 100);
     ML_ASSERT(outShape.widthRange().maximumValue().value() == 200);
 
 
     return 0;
-
+    
 }
 
 int testSamePaddingConvolution2() {
-
+    
     Specification::Model m1;
-
+    
     auto *topIn = m1.mutable_description()->add_input();
     topIn->set_name("input");
     auto *shape = topIn->mutable_type()->mutable_multiarraytype();
@@ -428,13 +428,13 @@ int testSamePaddingConvolution2() {
     auto *shape3 = shape->mutable_shaperange()->add_sizeranges();
     shape3->set_lowerbound(100);
     shape3->set_upperbound(200);
-
+    
     auto *out = m1.mutable_description()->add_output();
     out->set_name("output");
     out->mutable_type()->mutable_multiarraytype();
-
+    
     auto *nn = m1.mutable_neuralnetwork();
-
+    
     Specification::NeuralNetworkLayer *convLayer = nn->add_layers();
     convLayer->add_input("input");
     convLayer->add_output("output");
@@ -450,42 +450,45 @@ int testSamePaddingConvolution2() {
     for (int i = 0; i < 5*4*7*8; i++) {
         convParams->mutable_weights()->add_floatvalue(1.0);
     }
-
+    
     NeuralNetworkShaper shapes(m1);
-
+    
     const ShapeConstraint &inShape = shapes.shape("input");
     ML_ASSERT(inShape.sequenceRange().minimumValue() == 0);
     ML_ASSERT(inShape.sequenceRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(inShape.batchRange().minimumValue() == 0);
     ML_ASSERT(inShape.batchRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(inShape.channelRange().minimumValue() == 4);
     ML_ASSERT(inShape.channelRange().maximumValue().value() == 4);
-
+    
     ML_ASSERT(inShape.heightRange().minimumValue() == 100);
     ML_ASSERT(inShape.heightRange().maximumValue().value() == 100);
-
+    
     ML_ASSERT(inShape.widthRange().minimumValue() == 100);
     ML_ASSERT(inShape.widthRange().maximumValue().value() == 200);
-
+    
     const ShapeConstraint &outShape = shapes.shape("output");
     ML_ASSERT(outShape.sequenceRange().minimumValue() == 0);
     ML_ASSERT(outShape.sequenceRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(outShape.batchRange().minimumValue() == 0);
     ML_ASSERT(outShape.batchRange().maximumValue().isUnbound());
-
+    
     ML_ASSERT(outShape.channelRange().minimumValue() == 5);
     ML_ASSERT(outShape.channelRange().maximumValue().value() == 5);
-
+    
     ML_ASSERT(outShape.heightRange().minimumValue() == 50);
     ML_ASSERT(outShape.heightRange().maximumValue().value() == 50);
-
+    
     ML_ASSERT(outShape.widthRange().minimumValue() == 34);
     ML_ASSERT(outShape.widthRange().maximumValue().value() == 67);
-
-
+    
+    
     return 0;
-
+    
 }
+
+
+

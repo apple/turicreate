@@ -1,4 +1,4 @@
-project(unity_toolkits)
+project(Turi)
 
 make_boost_test(algo_utils.cxx
   REQUIRES unity_shared_for_testing

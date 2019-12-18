@@ -43,3 +43,5 @@ def convert(model, feature_names, target):
 
 def get_input_dimension(model):
     return model.n_features_
+
+

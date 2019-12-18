@@ -118,20 +118,6 @@ To install `Turi Create` within your virtual environment:
 (venv) pip install -U turicreate
 ```
 
-Version 5.0 (New)
------------------
-
-Turi Create 5.0 includes:
-* GPU Acceleration on Macs for:
-  * Image Classification (macOS 10.13+)
-  * Image Similarity (macOS 10.13+)
-  * Object Detection (macOS 10.14+)
-  * Activity Classification (macOS 10.14+)
-* New Task: Style Transfer
-* Recommender model deployment
-* Vision Feature Print model deployment
-
-
 Documentation
 -------------
 

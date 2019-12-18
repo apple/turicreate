@@ -8,6 +8,7 @@
 #include <cmath>
 #include <cstdint>
 #include <functional>
+#include <core/util/bitops.hpp>
 #include <core/util/cityhash_tc.hpp>
 #include <core/logging/assertions.hpp>
 namespace turi {
@@ -78,14 +79,13 @@ class hyperloglog {
    */
   template <typename T>
   void add(const T& t) {
-    // we use std::hash first, to bring it to a 64-bit number
     // Then cityhash's hash64 twice to distribute the hash.
     // empirically, one hash64 does not produce enough scattering to
     // get a good estimate
-    size_t h = hash64(hash64(std::hash<T>()(t)));
+    uint64_t h = hash64(hash64(t));
     size_t index = h >> (64 - m_b);
     DASSERT_LT(index, m_buckets.size());
-    unsigned char pos = h != 0 ? 1 + __builtin_clz(h) : sizeof(size_t);
+    unsigned char pos = h != 0 ? 1 + __builtin_clz(static_cast<unsigned int>(h)) : sizeof(size_t);
     m_buckets[index] = std::max(m_buckets[index], pos);
   }
 

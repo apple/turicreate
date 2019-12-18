@@ -50,7 +50,7 @@ def convert(libsvm_model, feature_names, target, input_length, probability):
     """
     if not(HAS_LIBSVM):
         raise RuntimeError('libsvm not found. libsvm conversion API is disabled.')
-
+    
     import svm as libsvm
     from ...proto import SVM_pb2
     from ...proto import Model_pb2

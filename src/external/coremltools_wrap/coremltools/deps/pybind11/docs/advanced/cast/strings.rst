@@ -46,13 +46,13 @@ The results are the same whether the C++ function accepts arguments by value or 
 Passing bytes to C++
 --------------------
 
-A Python ``bytes`` object will be passed to C++ functions that accept ``std::string`` or ``char*`` *without* conversion.
+A Python ``bytes`` object will be passed to C++ functions that accept ``std::string`` or ``char*`` *without* conversion. 
 
 
 Returning C++ strings to Python
 ===============================
 
-When a C++ function returns a ``std::string`` or ``char*`` to a Python caller, **pybind11 will assume that the string is valid UTF-8** and will decode it to a native Python ``str``, using the same API as Python uses to perform ``bytes.decode('utf-8')``. If this implicit conversion fails, pybind11 will raise a ``UnicodeDecodeError``.
+When a C++ function returns a ``std::string`` or ``char*`` to a Python caller, **pybind11 will assume that the string is valid UTF-8** and will decode it to a native Python ``str``, using the same API as Python uses to perform ``bytes.decode('utf-8')``. If this implicit conversion fails, pybind11 will raise a ``UnicodeDecodeError``. 
 
 .. code-block:: c++
 
@@ -128,7 +128,7 @@ Note the asymmetry: pybind11 will convert ``bytes`` to ``std::string`` without e
         [](std::string s) {  // Accepts str or bytes from Python
             return s;  // Looks harmless, but implicitly converts to str
         }
-    );
+    );    
 
 .. code-block:: python
 
@@ -189,14 +189,14 @@ When a character literal is returned from C++ (such as a ``char`` or a ``wchar_t
     m.def("pass_wchar", [](wchar_t w) { return w; });
 
 .. code-block:: python
-
+    
     >>> example.pass_char('A')
     'A'
 
 While C++ will cast integers to character types (``char c = 0x65;``), pybind11 does not convert Python integers to characters implicitly. The Python function ``chr()`` can be used to convert integers to characters.
 
 .. code-block:: python
-
+    
     >>> example.pass_char(0x65)
     TypeError
 
@@ -240,4 +240,4 @@ References
 ==========
 
 * `The Absolute Minimum Every Software Developer Absolutely, Positively Must Know About Unicode and Character Sets (No Excuses!) <https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/>`_
-* `C++ - Using STL Strings at Win32 API Boundaries <https://msdn.microsoft.com/en-ca/magazine/mt238407.aspx>`_
+* `C++ - Using STL Strings at Win32 API Boundaries <https://msdn.microsoft.com/en-ca/magazine/mt238407.aspx>`_ 

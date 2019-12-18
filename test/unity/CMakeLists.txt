@@ -1,4 +1,4 @@
-project(unity_test)
+project(Turi)
 
 
 make_boost_test(unity_sarray.cxx REQUIRES unity_shared_for_testing)

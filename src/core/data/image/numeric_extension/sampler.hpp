@@ -50,7 +50,7 @@ struct nearest_neighbor_sampler {};
 
 template <typename DstP, typename SrcView, typename F>
 bool sample(nearest_neighbor_sampler, const SrcView& src, const point2<F>& p, DstP& result) {
-    point2<int> center(iround(p).x, iround(p).y);
+    point2<int> center(static_cast<int>(iround(p).x), static_cast<int>(iround(p).y));
     if (center.x>=0 && center.y>=0 && center.x<src.width() && center.y<src.height()) {
         result=src(center.x,center.y);
         return true;

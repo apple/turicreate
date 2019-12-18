@@ -270,7 +270,7 @@ bool NonMaximumSuppression_PickTop::perclass() const {
   return perclass_;
 }
 void NonMaximumSuppression_PickTop::set_perclass(bool value) {
-
+  
   perclass_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.PickTop.perClass)
 }
@@ -1098,7 +1098,7 @@ double NonMaximumSuppression::iouthreshold() const {
   return iouthreshold_;
 }
 void NonMaximumSuppression::set_iouthreshold(double value) {
-
+  
   iouthreshold_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.iouThreshold)
 }
@@ -1112,7 +1112,7 @@ double NonMaximumSuppression::confidencethreshold() const {
   return confidencethreshold_;
 }
 void NonMaximumSuppression::set_confidencethreshold(double value) {
-
+  
   confidencethreshold_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.confidenceThreshold)
 }
@@ -1126,13 +1126,13 @@ const ::std::string& NonMaximumSuppression::confidenceinputfeaturename() const {
   return confidenceinputfeaturename_.GetNoArena();
 }
 void NonMaximumSuppression::set_confidenceinputfeaturename(const ::std::string& value) {
-
+  
   confidenceinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.confidenceInputFeatureName)
 }
 #if LANG_CXX11
 void NonMaximumSuppression::set_confidenceinputfeaturename(::std::string&& value) {
-
+  
   confidenceinputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.NonMaximumSuppression.confidenceInputFeatureName)
@@ -1140,31 +1140,31 @@ void NonMaximumSuppression::set_confidenceinputfeaturename(::std::string&& value
 #endif
 void NonMaximumSuppression::set_confidenceinputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   confidenceinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.NonMaximumSuppression.confidenceInputFeatureName)
 }
 void NonMaximumSuppression::set_confidenceinputfeaturename(const char* value, size_t size) {
-
+  
   confidenceinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.NonMaximumSuppression.confidenceInputFeatureName)
 }
 ::std::string* NonMaximumSuppression::mutable_confidenceinputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.NonMaximumSuppression.confidenceInputFeatureName)
   return confidenceinputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* NonMaximumSuppression::release_confidenceinputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.NonMaximumSuppression.confidenceInputFeatureName)
-
+  
   return confidenceinputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void NonMaximumSuppression::set_allocated_confidenceinputfeaturename(::std::string* confidenceinputfeaturename) {
   if (confidenceinputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   confidenceinputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), confidenceinputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NonMaximumSuppression.confidenceInputFeatureName)
@@ -1179,13 +1179,13 @@ const ::std::string& NonMaximumSuppression::coordinatesinputfeaturename() const 
   return coordinatesinputfeaturename_.GetNoArena();
 }
 void NonMaximumSuppression::set_coordinatesinputfeaturename(const ::std::string& value) {
-
+  
   coordinatesinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.coordinatesInputFeatureName)
 }
 #if LANG_CXX11
 void NonMaximumSuppression::set_coordinatesinputfeaturename(::std::string&& value) {
-
+  
   coordinatesinputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.NonMaximumSuppression.coordinatesInputFeatureName)
@@ -1193,31 +1193,31 @@ void NonMaximumSuppression::set_coordinatesinputfeaturename(::std::string&& valu
 #endif
 void NonMaximumSuppression::set_coordinatesinputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   coordinatesinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.NonMaximumSuppression.coordinatesInputFeatureName)
 }
 void NonMaximumSuppression::set_coordinatesinputfeaturename(const char* value, size_t size) {
-
+  
   coordinatesinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.NonMaximumSuppression.coordinatesInputFeatureName)
 }
 ::std::string* NonMaximumSuppression::mutable_coordinatesinputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.NonMaximumSuppression.coordinatesInputFeatureName)
   return coordinatesinputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* NonMaximumSuppression::release_coordinatesinputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.NonMaximumSuppression.coordinatesInputFeatureName)
-
+  
   return coordinatesinputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void NonMaximumSuppression::set_allocated_coordinatesinputfeaturename(::std::string* coordinatesinputfeaturename) {
   if (coordinatesinputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   coordinatesinputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), coordinatesinputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NonMaximumSuppression.coordinatesInputFeatureName)
@@ -1232,13 +1232,13 @@ const ::std::string& NonMaximumSuppression::iouthresholdinputfeaturename() const
   return iouthresholdinputfeaturename_.GetNoArena();
 }
 void NonMaximumSuppression::set_iouthresholdinputfeaturename(const ::std::string& value) {
-
+  
   iouthresholdinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.iouThresholdInputFeatureName)
 }
 #if LANG_CXX11
 void NonMaximumSuppression::set_iouthresholdinputfeaturename(::std::string&& value) {
-
+  
   iouthresholdinputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.NonMaximumSuppression.iouThresholdInputFeatureName)
@@ -1246,31 +1246,31 @@ void NonMaximumSuppression::set_iouthresholdinputfeaturename(::std::string&& val
 #endif
 void NonMaximumSuppression::set_iouthresholdinputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   iouthresholdinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.NonMaximumSuppression.iouThresholdInputFeatureName)
 }
 void NonMaximumSuppression::set_iouthresholdinputfeaturename(const char* value, size_t size) {
-
+  
   iouthresholdinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.NonMaximumSuppression.iouThresholdInputFeatureName)
 }
 ::std::string* NonMaximumSuppression::mutable_iouthresholdinputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.NonMaximumSuppression.iouThresholdInputFeatureName)
   return iouthresholdinputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* NonMaximumSuppression::release_iouthresholdinputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.NonMaximumSuppression.iouThresholdInputFeatureName)
-
+  
   return iouthresholdinputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void NonMaximumSuppression::set_allocated_iouthresholdinputfeaturename(::std::string* iouthresholdinputfeaturename) {
   if (iouthresholdinputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   iouthresholdinputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), iouthresholdinputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NonMaximumSuppression.iouThresholdInputFeatureName)
@@ -1285,13 +1285,13 @@ const ::std::string& NonMaximumSuppression::confidencethresholdinputfeaturename(
   return confidencethresholdinputfeaturename_.GetNoArena();
 }
 void NonMaximumSuppression::set_confidencethresholdinputfeaturename(const ::std::string& value) {
-
+  
   confidencethresholdinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.confidenceThresholdInputFeatureName)
 }
 #if LANG_CXX11
 void NonMaximumSuppression::set_confidencethresholdinputfeaturename(::std::string&& value) {
-
+  
   confidencethresholdinputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.NonMaximumSuppression.confidenceThresholdInputFeatureName)
@@ -1299,31 +1299,31 @@ void NonMaximumSuppression::set_confidencethresholdinputfeaturename(::std::strin
 #endif
 void NonMaximumSuppression::set_confidencethresholdinputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   confidencethresholdinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.NonMaximumSuppression.confidenceThresholdInputFeatureName)
 }
 void NonMaximumSuppression::set_confidencethresholdinputfeaturename(const char* value, size_t size) {
-
+  
   confidencethresholdinputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.NonMaximumSuppression.confidenceThresholdInputFeatureName)
 }
 ::std::string* NonMaximumSuppression::mutable_confidencethresholdinputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.NonMaximumSuppression.confidenceThresholdInputFeatureName)
   return confidencethresholdinputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* NonMaximumSuppression::release_confidencethresholdinputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.NonMaximumSuppression.confidenceThresholdInputFeatureName)
-
+  
   return confidencethresholdinputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void NonMaximumSuppression::set_allocated_confidencethresholdinputfeaturename(::std::string* confidencethresholdinputfeaturename) {
   if (confidencethresholdinputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   confidencethresholdinputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), confidencethresholdinputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NonMaximumSuppression.confidenceThresholdInputFeatureName)
@@ -1338,13 +1338,13 @@ const ::std::string& NonMaximumSuppression::confidenceoutputfeaturename() const 
   return confidenceoutputfeaturename_.GetNoArena();
 }
 void NonMaximumSuppression::set_confidenceoutputfeaturename(const ::std::string& value) {
-
+  
   confidenceoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.confidenceOutputFeatureName)
 }
 #if LANG_CXX11
 void NonMaximumSuppression::set_confidenceoutputfeaturename(::std::string&& value) {
-
+  
   confidenceoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.NonMaximumSuppression.confidenceOutputFeatureName)
@@ -1352,31 +1352,31 @@ void NonMaximumSuppression::set_confidenceoutputfeaturename(::std::string&& valu
 #endif
 void NonMaximumSuppression::set_confidenceoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   confidenceoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.NonMaximumSuppression.confidenceOutputFeatureName)
 }
 void NonMaximumSuppression::set_confidenceoutputfeaturename(const char* value, size_t size) {
-
+  
   confidenceoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.NonMaximumSuppression.confidenceOutputFeatureName)
 }
 ::std::string* NonMaximumSuppression::mutable_confidenceoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.NonMaximumSuppression.confidenceOutputFeatureName)
   return confidenceoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* NonMaximumSuppression::release_confidenceoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.NonMaximumSuppression.confidenceOutputFeatureName)
-
+  
   return confidenceoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void NonMaximumSuppression::set_allocated_confidenceoutputfeaturename(::std::string* confidenceoutputfeaturename) {
   if (confidenceoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   confidenceoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), confidenceoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NonMaximumSuppression.confidenceOutputFeatureName)
@@ -1391,13 +1391,13 @@ const ::std::string& NonMaximumSuppression::coordinatesoutputfeaturename() const
   return coordinatesoutputfeaturename_.GetNoArena();
 }
 void NonMaximumSuppression::set_coordinatesoutputfeaturename(const ::std::string& value) {
-
+  
   coordinatesoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.NonMaximumSuppression.coordinatesOutputFeatureName)
 }
 #if LANG_CXX11
 void NonMaximumSuppression::set_coordinatesoutputfeaturename(::std::string&& value) {
-
+  
   coordinatesoutputfeaturename_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.NonMaximumSuppression.coordinatesOutputFeatureName)
@@ -1405,31 +1405,31 @@ void NonMaximumSuppression::set_coordinatesoutputfeaturename(::std::string&& val
 #endif
 void NonMaximumSuppression::set_coordinatesoutputfeaturename(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   coordinatesoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.NonMaximumSuppression.coordinatesOutputFeatureName)
 }
 void NonMaximumSuppression::set_coordinatesoutputfeaturename(const char* value, size_t size) {
-
+  
   coordinatesoutputfeaturename_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.NonMaximumSuppression.coordinatesOutputFeatureName)
 }
 ::std::string* NonMaximumSuppression::mutable_coordinatesoutputfeaturename() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.NonMaximumSuppression.coordinatesOutputFeatureName)
   return coordinatesoutputfeaturename_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* NonMaximumSuppression::release_coordinatesoutputfeaturename() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.NonMaximumSuppression.coordinatesOutputFeatureName)
-
+  
   return coordinatesoutputfeaturename_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void NonMaximumSuppression::set_allocated_coordinatesoutputfeaturename(::std::string* coordinatesoutputfeaturename) {
   if (coordinatesoutputfeaturename != NULL) {
-
+    
   } else {
-
+    
   }
   coordinatesoutputfeaturename_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), coordinatesoutputfeaturename);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.NonMaximumSuppression.coordinatesOutputFeatureName)

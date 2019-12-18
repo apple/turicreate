@@ -15,7 +15,7 @@ package CoreML.Specification.CoreMLModels;
 message VisionFeaturePrint {
 
     // Specific vision feature print types
-
+   
     // Scene extracts features useful for identifying contents of natural images
     // in both indoor and outdoor environments
     message Scene {
@@ -25,7 +25,7 @@ message VisionFeaturePrint {
             // It uses a 299x299 input image and yields a 2048 float feature vector
             SCENE_VERSION_1 = 1;
         }
-
+        
         SceneVersion version = 1;
     }
 

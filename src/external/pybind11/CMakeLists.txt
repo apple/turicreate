@@ -1,1 +1,1 @@
-project(TuriExternalDependencies)
+project(Turi)

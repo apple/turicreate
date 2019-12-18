@@ -14,7 +14,7 @@ namespace turi {
 parallel_task_queue::parallel_task_queue(thread_pool& pool):pool(pool) { }
 
 void parallel_task_queue::launch(const boost::function<void (void)> &spawn_function,
-                                 int thread_id) {
+                                 size_t thread_id) {
   std::lock_guard<mutex> ulock(mut);
   tasks_inserted++;
   pool.launch(
@@ -171,7 +171,7 @@ void thread_pool::set_cpu_affinity(bool affinity) {
 
 
 void thread_pool::launch(const boost::function<void (void)> &spawn_function,
-                         int virtual_threadid) {
+                         size_t virtual_threadid) {
   std::lock_guard<mutex> lock(mut);
   ++tasks_inserted;
   spawn_queue.enqueue(std::make_pair(spawn_function, virtual_threadid));

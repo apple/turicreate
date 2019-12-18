@@ -51,12 +51,18 @@ extern DictionaryFeatureTypeDefaultTypeInternal _DictionaryFeatureType_default_i
 class DoubleFeatureType;
 class DoubleFeatureTypeDefaultTypeInternal;
 extern DoubleFeatureTypeDefaultTypeInternal _DoubleFeatureType_default_instance_;
+class DoubleRange;
+class DoubleRangeDefaultTypeInternal;
+extern DoubleRangeDefaultTypeInternal _DoubleRange_default_instance_;
 class DoubleVector;
 class DoubleVectorDefaultTypeInternal;
 extern DoubleVectorDefaultTypeInternal _DoubleVector_default_instance_;
 class FeatureType;
 class FeatureTypeDefaultTypeInternal;
 extern FeatureTypeDefaultTypeInternal _FeatureType_default_instance_;
+class FloatVector;
+class FloatVectorDefaultTypeInternal;
+extern FloatVectorDefaultTypeInternal _FloatVector_default_instance_;
 class ImageFeatureType;
 class ImageFeatureTypeDefaultTypeInternal;
 extern ImageFeatureTypeDefaultTypeInternal _ImageFeatureType_default_instance_;
@@ -72,6 +78,12 @@ extern ImageFeatureType_ImageSizeRangeDefaultTypeInternal _ImageFeatureType_Imag
 class Int64FeatureType;
 class Int64FeatureTypeDefaultTypeInternal;
 extern Int64FeatureTypeDefaultTypeInternal _Int64FeatureType_default_instance_;
+class Int64Range;
+class Int64RangeDefaultTypeInternal;
+extern Int64RangeDefaultTypeInternal _Int64Range_default_instance_;
+class Int64Set;
+class Int64SetDefaultTypeInternal;
+extern Int64SetDefaultTypeInternal _Int64Set_default_instance_;
 class Int64ToDoubleMap;
 class Int64ToDoubleMapDefaultTypeInternal;
 extern Int64ToDoubleMapDefaultTypeInternal _Int64ToDoubleMap_default_instance_;
@@ -396,7 +408,7 @@ inline bool OneHotEncoder::outputsparse() const {
   return outputsparse_;
 }
 inline void OneHotEncoder::set_outputsparse(bool value) {
-
+  
   outputsparse_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.OneHotEncoder.outputSparse)
 }
@@ -410,7 +422,7 @@ inline ::CoreML::Specification::OneHotEncoder_HandleUnknown OneHotEncoder::handl
   return static_cast< ::CoreML::Specification::OneHotEncoder_HandleUnknown >(handleunknown_);
 }
 inline void OneHotEncoder::set_handleunknown(::CoreML::Specification::OneHotEncoder_HandleUnknown value) {
-
+  
   handleunknown_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.OneHotEncoder.handleUnknown)
 }

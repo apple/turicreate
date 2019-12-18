@@ -1,4 +1,4 @@
-project(uuid)
+project(Turi)
 
 make_library(uuid OBJECT
   SOURCES

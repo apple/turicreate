@@ -356,7 +356,7 @@ namespace Google.Protobuf.Collections
         /// Returns a hash code for this instance.
         /// </summary>
         /// <returns>
-        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table.
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
         /// </returns>
         public override int GetHashCode()
         {
@@ -641,7 +641,7 @@ namespace Google.Protobuf.Collections
                         {
                             Value = codec.valueCodec.Read(input);
                         }
-                        else
+                        else 
                         {
                             input.SkipLastField();
                         }

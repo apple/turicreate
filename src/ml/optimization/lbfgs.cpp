@@ -52,16 +52,16 @@ solver_return lbfgs_compat(
 
   auto make_solver_return = [&](const solver_status& stats) {
     solver_return sr;
-    sr.iters = stats.iteration;
+    sr.iters = static_cast<int>(stats.iteration);
     sr.solve_time = stats.solver_time;
     sr.solution = stats.solution;
     sr.gradient = stats.gradient;
     sr.hessian = stats.hessian;
     sr.residual = stats.residual;
     sr.func_value = stats.function_value;
-    sr.func_evals = stats.num_function_evaluations;
-    sr.gradient_evals = stats.num_gradient_evaluations;
-    sr.num_passes = stats.num_function_evaluations;
+    sr.func_evals = static_cast<int>(stats.num_function_evaluations);
+    sr.gradient_evals = static_cast<int>(stats.num_gradient_evaluations);
+    sr.num_passes = static_cast<int>(stats.num_function_evaluations);
     sr.status = stats.status;
     sr.progress_table = printer.get_tracked_table();
     return sr;

@@ -166,8 +166,8 @@ block_manager::read_block(block_address addr, block_info** ret_info) {
     decompression_buffer->resize(info.block_size);
     LZ4_decompress_safe(ret->data(),                   // src
                         decompression_buffer->data(),  // target
-                        info.length,                   // src length
-                        info.block_size);              // target length
+                        static_cast<int>(info.length),      // src length
+                        static_cast<int>(info.block_size)); // target length
     std::swap(ret, decompression_buffer);
     m_buffer_pool.release_buffer(std::move(decompression_buffer));
   }

@@ -1,4 +1,4 @@
-project(parallel_test)
+project(Turi)
 
 
 make_boost_test(thread_tools.cxx REQUIRES unity_shared_for_testing)

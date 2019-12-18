@@ -42,7 +42,7 @@ const int kProtoReadBytesLimit = INT_MAX;  // Read upto 2GB proto files.
 */
 CoreMLConverter::convertCaffeLayerFn
 static caffeLayerRegistry(const std::string& layerType) {
-
+    
     const std::unordered_map<std::string, CoreMLConverter::convertCaffeLayerFn> CAFFE_LAYER_REGISTRY {
         {"ReLU", CoreMLConverter::convertCaffeActivation},
         {"BNLL", CoreMLConverter::convertCaffeActivation},
@@ -96,12 +96,12 @@ static caffeLayerRegistry(const std::string& layerType) {
         {"Crop",CoreMLConverter::convertCaffeCrop},
         {"Reshape",CoreMLConverter::convertCaffeReshape}
     };
-
+    
     // Find the layer in the global registry.
     const auto& it = CAFFE_LAYER_REGISTRY.find(layerType);
     if (it != CAFFE_LAYER_REGISTRY.end()) {
         return it->second;
-
+        
     // Layer type not supported.
     } else {
         std::stringstream ss;
@@ -126,12 +126,12 @@ void CoreMLConverter::loadCaffeNetwork(const std::string& srcPathWeights,
                                       caffe::NetParameter& caffeSpecProto,
                                       const std::map<std::string, std::string>& meanImagePathProto,
                                       std::map<std::string, caffe::BlobProto>& meanImageBlobProto) {
-
+    
     // Load the Caffemodel weights file
     std::ifstream iarc(srcPathWeights, std::ios::binary);
     google::protobuf::io::IstreamInputStream raw_input(&iarc);
     google::protobuf::io::CodedInputStream* coded_input = new google::protobuf::io::CodedInputStream(&raw_input);
-
+    
     // Load in streams because these network files are going to be large and
     // protobuf default reader fails if messages are larger than 64MB.
     coded_input->SetTotalBytesLimit(kProtoReadBytesLimit, 536870912);
@@ -159,7 +159,7 @@ void CoreMLConverter::loadCaffeNetwork(const std::string& srcPathWeights,
         }
         CoreMLConverter::upgradeCaffeNetworkIfNeeded(srcPathProto, caffeSpecProto);
     }
-
+    
     // Load the binary proto file if available
     for (const auto& imageProto : meanImagePathProto) {
         std::ifstream iarc_mean_image(imageProto.second, std::ios::binary);
@@ -175,7 +175,7 @@ void CoreMLConverter::loadCaffeNetwork(const std::string& srcPathWeights,
         }
         delete coded_input;
     }
-
+    
 }
 
 // ----------------------------------------------------------------------------
@@ -208,26 +208,26 @@ void _addClassifierParameters(CoreML::Specification::NeuralNetworkClassifier* nn
         ss << "Model should have exactly one output (the probabilities) to automatically make it a classifier." << std::endl;
         throw std::runtime_error(ss.str());
     }
-
+    
     // Add class labels
     std::string predictedProbabilitiesName = *(networkOutputs.begin());
     modelInterface->set_predictedprobabilitiesname(predictedProbabilitiesName);
-
+    
     // Setting predictedFeatureName is required, but it will get filled in automatically and
     // doesn't need to be a model output explicitly.
     modelInterface->set_predictedfeaturename(predictedFeatureName);
-
+    
     modelInterface->mutable_output(0)->mutable_type()->mutable_dictionarytype();
     modelInterface->mutable_output(0)->mutable_type()->mutable_dictionarytype()->mutable_stringkeytype();
     std::string class_buffer;
     std::ifstream infile;
     infile.open(classInputPath);
-    while(getline(infile, class_buffer)) {
+    while(getline(infile, class_buffer)) {        
         auto *class_ = nnWrite->mutable_stringclasslabels()->add_vector();
         *class_ = class_buffer;
     }
     infile.close();
-
+    
     // Add predicted class name
     Specification::FeatureDescription* classLabel = modelInterface->add_output();
     classLabel->set_name(predictedFeatureName);
@@ -250,15 +250,15 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
                                  const std::string& classInputPath,
                                  const std::string& predictedFeatureName,
                                  T* nnWrite) {
-
+    
     modelSpec.set_specificationversion(MLMODEL_SPECIFICATION_VERSION);
-
+    
     //Hash to map input/output names, to handle Split node and for skipping training layers.
     std::map<std::string, std::string> mappingDataBlobNames;
-
+    
     // Maps the data blob name to its size. Currently only used for the Input Layer of Caffe.
     std::map<std::string, std::vector<int64_t> > mapBlobNameToDimensions;
-
+    
     //map from caffe layer name to its index in the caffeSpecWeights message
     std::map<std::string, int> mapCaffeLayerNamesToIndex;
     for (int layer_id = 0; layer_id < caffeSpecWeights.layer_size(); layer_id++){
@@ -266,20 +266,20 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
             mapCaffeLayerNamesToIndex[caffeSpecWeights.layer(layer_id).name()] = layer_id;
         }
     }
-
+    
     //caffe input names to the input layers
     std::set<std::string> caffeNetworkInputNames;
-
+    
     int numberOfLayers = caffeSpecProto.layer_size();
-
+    
     std::cout<<std::endl<<"================= Starting Conversion from Caffe to CoreML ======================"<<std::endl;
     for (int layer_id = 0; layer_id < numberOfLayers; layer_id++){
-
+        
         const caffe::LayerParameter& caffeLayer = caffeSpecProto.layer(layer_id);
 
         //Check if the layer has type, name, top
         CoreMLConverter::validateCaffeLayerTypeAndName(caffeLayer);
-
+ 
         //************************************************************
         //print layer info
         int number_inputs = caffeLayer.bottom_size();
@@ -302,10 +302,10 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
             std::cout << "." << std::endl;
         }
         //************************************************************
-
+        
         //Call the layer convert function
         CoreMLConverter::convertCaffeLayerFn layerConvertFn = caffeLayerRegistry(caffeLayer.type());
-
+        
         CoreMLConverter::ConvertLayerParameters layerParams(caffeSpecProto,
                                                            caffeSpecWeights,
                                                            mappingDataBlobNames,
@@ -315,11 +315,11 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
         layerParams.nnWrite = nnWrite->mutable_layers();
         layerParams.layerId = &layer_id;
         layerConvertFn(layerParams);
-
+ 
     } //end of looping over caffe layers
-
+    
     std::cout<<std::endl<<"================= Summary of the conversion: ==================================="<<std::endl;
-
+    
     //if mapBlobNameToDimensions is empty, this means we have not been able to infer input dimensions.
     if (mapBlobNameToDimensions.size() == 0){
         std::stringstream ss;
@@ -351,14 +351,14 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
             outputNames.insert(layerName);
         }
     }
-
+    
     // Now, the inputs to the whole network are the set difference between inputs and outputs
     // in other words, all internal nodes appear in both lists
     // We're using a pair which is the name, followed by the dimensions of the input/output
     std::set<std::string> networkInputs;
     std::set_difference(inputNames.begin(), inputNames.end(), outputNames.begin(), outputNames.end(),
                         inserter(networkInputs, networkInputs.begin()));
-
+    
     // add any input that might have been left out in "networkInputs" because it is "dangling", i.e not feeding in to any other layer.
     // This is not ideal, but an error should not be raised if this happens, instead the user must be warned.
     for (const auto& networkInputName:caffeNetworkInputNames){
@@ -369,7 +369,7 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
             std::cout << ss.str();
         }
     }
-
+    
     // Similarly for the output names
     std::set<std::string> networkOutputs;
     std::set_difference(outputNames.begin(), outputNames.end(), inputNames.begin(), inputNames.end(),
@@ -380,23 +380,23 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
     if (networkInputs.size() == 0) {
         throw std::runtime_error("Unable to find any input layer for the network.");
     }
-
+    
     for (const auto& inputName: networkInputs) {
         Specification::FeatureDescription *inputDesc = modelInterface->add_input();
         inputDesc->set_name(inputName);
         Specification::FeatureType *inputType = inputDesc->mutable_type();
-
+        
         // Raise error if we haven't been able to determine dimensions of the detected inputs
         if (mapBlobNameToDimensions.find(inputName) == mapBlobNameToDimensions.end()){
             std::stringstream ss;
             ss <<"Unable to infer shape for the Input '"<<inputName<<"'."<<std::endl;
             throw std::runtime_error(ss.str());
         }
-
+        
         if ((imageInputs.find(inputName)) != imageInputs.end()) {
-
+            
             Specification::ImageFeatureType *params = inputType->mutable_imagetype();
-            // now we assume that the input dimensions are channels, height, width
+            // now we assume that the input dimensions are channels, height, width 
             if (mapBlobNameToDimensions[inputName][0]==1) {
                 params->set_colorspace(Specification::ImageFeatureType_ColorSpace_GRAYSCALE);
             } else if (isBGR.find(inputName) != isBGR.end()) {
@@ -411,17 +411,17 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
             params->set_height(mapBlobNameToDimensions[inputName][1]);
             params->set_width(mapBlobNameToDimensions[inputName][2]);
             Specification::NeuralNetworkPreprocessing* preprocessing = nnWrite->mutable_preprocessing()->Add();
-
+            
             if (meanImageBlobProtoAll.find(inputName) != meanImageBlobProtoAll.end()){
-
+                
                 caffe::BlobProto meanImageBlobProto = meanImageBlobProtoAll.at(inputName);
-
+                
                 if (meanImageBlobProto.data_size() == 0){
                     std::stringstream ss;
                     ss <<"There is no data in the mean image binary proto file specified for input: '"<< inputName << "'."<< std::endl;
                     throw std::runtime_error(ss.str());
                 }
-
+                
                 int dataSize = meanImageBlobProto.data_size();
                 int C = static_cast<int>(mapBlobNameToDimensions[inputName][0]);
                 int H = static_cast<int>(mapBlobNameToDimensions[inputName][1]);
@@ -463,18 +463,18 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
                     ss <<"Height and width of the mean image must be greater than or equal to the input image size. " << std::endl;
                     throw std::runtime_error(ss.str());
                 }
-
+                
                 preprocessing->set_featurename(inputName);
                 Specification::NeuralNetworkMeanImage* meanImage = preprocessing->mutable_meanimage();
                 ::google::protobuf::RepeatedField<float>* meanImageWrite = meanImage->mutable_meanimage(); //destination
                 meanImageWrite->Resize(C * H * W, 0.0);
-
+                
                 if (HMeanImage > H || WMeanImage > W){
                     std::stringstream ss;
                     ss <<"Size of mean image: (H,W) = (" << HMeanImage << ", " << WMeanImage << ") is greater than input image size: (H,W) = (";
                     ss << H << ", " << W << "). Mean image will be center cropped to match the input image dimensions. " << std::endl;
                     std::cout << ss.str();
-
+                    
                     //center crop the mean image:
                     int Hoffset = (HMeanImage - H)/2;
                     int Woffset = (WMeanImage - W)/2;
@@ -511,7 +511,7 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
             }
         }
         else {
-
+            
             // fill in the input sizes
             Specification::ArrayFeatureType *array = inputType->mutable_multiarraytype();
             array->set_datatype(::CoreML::Specification::ArrayFeatureType_ArrayDataType::ArrayFeatureType_ArrayDataType_DOUBLE);
@@ -519,12 +519,12 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
             for (const int64_t& val: dims) {
                 array->add_shape(val);
             }
-
+            
         }
-
+        
     } // end of loop over all network inputs
-
-
+    
+    
     // Likewise, we'll fill out the output names
     for (const auto& outputName: networkOutputs) {
         Specification::FeatureDescription *outputDesc = modelInterface->add_output();
@@ -550,7 +550,7 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
         std::cout << "'" << name << "'";
     }
     std::cout << "." << std::endl << std::endl;
-
+    
     // will be a noop for any types other than NeuralNetworkClassifier
     _addClassifierParameters(nnWrite,
                              networkOutputs,
@@ -559,7 +559,7 @@ static void _convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
                              modelInterface);
 }
 
-
+                                 
 void CoreMLConverter::convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
                                           caffe::NetParameter& caffeSpecProto,
                                           std::map<std::string, caffe::BlobProto>& meanImageBlobProto,
@@ -573,8 +573,8 @@ void CoreMLConverter::convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
                                           const std::set<std::string>& imageInputs,
                                           const std::string& classInputPath,
                                           const std::string& predictedFeatureName) {
-
-
+    
+    
     // Currently, we don't support caffe V1 or V0.
     if (caffeSpecProto.layers_size() != 0) {
         throw std::runtime_error("Caffe prototxt file is not version 2. Please save this model using Caffe V2.");
@@ -582,7 +582,7 @@ void CoreMLConverter::convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
     if (caffeSpecWeights.layers_size() != 0) {
         throw std::runtime_error("Caffemodel file is not version 2. Please save this model using Caffe V2.");
     }
-
+    
     if (classInputPath != "") {
         // we have class labels, produce a classifier
         _convertCaffeNetwork(caffeSpecWeights,
@@ -616,3 +616,5 @@ void CoreMLConverter::convertCaffeNetwork(caffe::NetParameter& caffeSpecWeights,
                              modelSpec.mutable_neuralnetwork());
     }
 }
+
+

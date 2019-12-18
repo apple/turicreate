@@ -44,7 +44,7 @@ import java.io.IOException;
  * to be immutable and none of the setter methods in its API are expected to be invoked. All of the
  * getters are expected to be thread-safe. When used in the context of a MessageLite.Builder,
  * setters can be invoked, but there is no guarantee of thread safety.
- *
+ * 
  * TODO(yatin,dweis): Consider splitting this class's functionality and put the mutable methods
  * into a separate builder class to allow us to give stronger compile-time guarantees.
  *
@@ -140,13 +140,13 @@ public class LazyFieldLite {
     if (this == o) {
       return true;
     }
-
+    
     if (!(o instanceof LazyFieldLite)) {
       return false;
     }
 
     LazyFieldLite other = (LazyFieldLite) o;
-
+    
     // Lazy fields do not work well with equals... If both are delayedBytes, we do not have a
     // mechanism to deserialize them so we rely on bytes equality. Otherwise we coerce into an
     // actual message (if necessary) and call equals on the message itself. This implies that two
@@ -163,7 +163,7 @@ public class LazyFieldLite {
       return getValue(value2.getDefaultInstanceForType()).equals(value2);
     }
   }
-
+  
   @Override
   public int hashCode() {
     // We can't provide a memoizable hash code for lazy fields. The byte strings may have different
@@ -171,7 +171,7 @@ public class LazyFieldLite {
     // a message here if we were not already holding a value.
     return 1;
   }
-
+  
   /**
    * Determines whether this LazyFieldLite instance represents the default instance of this type.
    */
@@ -287,7 +287,7 @@ public class LazyFieldLite {
     // At this point we have two fully parsed messages.
     setValue(this.value.toBuilder().mergeFrom(other.value).build());
   }
-
+  
   /**
    * Merges another instance's contents from a stream.
    *

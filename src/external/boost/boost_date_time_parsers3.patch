@@ -1,0 +1,108 @@
+--- a/boost/date_time/time_facet.hpp
++++ b/boost/date_time/time_facet.hpp
+@@ -972,6 +972,8 @@ namespace date_time {
+ 
+         // time elements
+         hour_type hour = 0;
++        hour_type base_hour = 0; // used for AM/PM
++        bool has_am_pm = false;
+         min_type min = 0;
+         sec_type sec = 0;
+         typename time_duration_type::fractional_seconds_type frac(0);
+@@ -1111,13 +1111,77 @@ namespace date_time {
+                 // time flags
+                 case 'H':
+                   {
+-                    match_results mr;
+-                    hour = fixed_string_to_int<hour_type, CharT>(sitr, stream_end, mr, 2);
++                    hour = var_string_to_int<hour_type, CharT>(sitr, stream_end,
++                                           2);
+                     if(hour == -1){
+                        return check_special_value(sitr, stream_end, t, c);
+                     }
+                     break;
+                   }
++                case 'I':
++                case 'l':
++                  {
++                    hour = var_string_to_int<hour_type, CharT>(sitr, stream_end,
++                                           std::numeric_limits<hour_type>::digits10 + 1);
++                    if (hour > 12) {
++                      boost::throw_exception(
++                          std::ios_base::failure("Bad hour value"));
++                    }
++                    if(hour == -1){
++                       return check_special_value(sitr, stream_end, t, c);
++                    }
++                    break;
++                  }
++                case 'P':
++                  {
++                    char c[2];
++                    c[0] = *sitr;
++                    ++sitr;
++                    if (sitr == stream_end) {
++                      boost::throw_exception(
++                          std::ios_base::failure("Parse failed. Insufficient characters for %P"));
++                    }
++                    c[1] = *sitr;
++
++                    if (c[0] == 'P' && c[1] == 'M') {
++                      // PM
++                      base_hour = 12;
++                      has_am_pm = true;
++                    } else if (c[0] == 'A'&&  c[1] == 'M') {
++                      // AM
++                      base_hour = 0;
++                      has_am_pm = true;
++                    } else {
++                      boost::throw_exception(
++                          std::ios_base::failure("Parse failed. Invalid expression for %P"));
++                    }
++                    break;
++                  }
++                case 'p':
++                  {
++                    char c[2];
++                    c[0] = *sitr;
++                    ++sitr;
++                    if (sitr == stream_end) {
++                      boost::throw_exception(
++                          std::ios_base::failure("Parse failed. Insufficient characters for %P"));
++                    }
++                    c[1] = *sitr;
++
++                    if (c[0] == 'p' && c[1] == 'm') {
++                      // PM
++                      base_hour = 12;
++                      has_am_pm = true;
++                    } else if (c[0] == 'a' && c[1] == 'm') {
++                      // AM
++                      base_hour = 0;
++                      has_am_pm = true;
++                    } else {
++                      boost::throw_exception(
++                          std::ios_base::failure("Parse failed. Invalid expression for %P"));
++                    }
++                    break;
++                  }
+                 case 'M':
+                   {
+                     match_results mr;
+@@ -1238,6 +1302,16 @@ namespace date_time {
+           d = date_type(t_year, t_month, t_day);
+         }
+ 
++        // handle the case where 12:15am really means 0015
++        // and 12:15pm really means 12:15
++        // Also 12pm is noon, 12am is midnight
++        if (hour == 12 && has_am_pm) hour = 0;
++        hour += base_hour;
++        if (hour > 24 && min > 0) {
++          boost::throw_exception(
++              std::ios_base::failure("Bad hour value"));
++        }
++
+         time_duration_type td(hour, min, sec, frac);
+         t = time_type(d, td);
+         return sitr;

@@ -1,4 +1,4 @@
-project(parallel)
+project(Turi)
 
 make_library(parallel OBJECT
   SOURCES

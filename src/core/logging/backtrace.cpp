@@ -83,7 +83,7 @@ void __print_back_trace() {
       ++write_count;
 
       size = backtrace(array, 1024);
-      strings = backtrace_symbols(array, size);
+      strings = backtrace_symbols(array, static_cast<int>(size));
 
       fprintf(ofile, "Pointers\n");
       fprintf(ofile, "------------\n");

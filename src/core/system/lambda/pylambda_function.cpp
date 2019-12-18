@@ -34,7 +34,7 @@ void pylambda_function::set_skip_undefined(bool value) {
   skip_undefined = value;
 }
 
-void pylambda_function::set_random_seed(int value) {
+void pylambda_function::set_random_seed(uint64_t value) {
   random_seed = value;
 }
 

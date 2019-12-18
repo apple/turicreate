@@ -97,7 +97,7 @@ class spmat {
       for (auto it = row.begin(); it != row.end(); ++it) {
         auto j = it->first;
         auto v = it->second;
-        ret(i, j) = v;
+        ret(i, j) = static_cast<int>(v);
       }
     }
     return ret;

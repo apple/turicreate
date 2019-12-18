@@ -444,7 +444,7 @@ class GPBWire
         if (PHP_INT_SIZE == 4) {
             if (bccomp($value, 0) < 0) {
                 return 10;
-            }
+            }    
             if (bccomp($value, 1 << 7) < 0) {
                 return 1;
             }
@@ -473,7 +473,7 @@ class GPBWire
         } else {
             if ($value < 0) {
                 return 10;
-            }
+            }    
             if ($value < (1 <<  7)) {
                 return 1;
             }

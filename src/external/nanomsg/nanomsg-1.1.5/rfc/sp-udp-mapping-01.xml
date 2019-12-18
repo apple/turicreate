@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+
+<rfc category="info" docName="sp-udp-mapping-01">
+
+  <front>
+
+    <title abbrev="UDP mapping for SPs">
+    UDP Mapping for Scalability Protocols
+    </title>
+
+    <author fullname="Garrett D'Amore" initials="G." role="editor"
+            surname="D'Amore">
+      <address>
+        <email>garrett@damore.org</email>
+      </address>
+    </author>
+
+    <author fullname="Martin Sustrik" initials="M."
+            surname="Sustrik">
+      <address>
+        <email>sustrik@250bpm.com</email>
+      </address>
+    </author>
+
+    <date month="October" year="2016" />
+
+    <area>Applications</area>
+    <workgroup>Internet Engineering Task Force</workgroup>
+
+    <keyword>UDP</keyword>
+    <keyword>SP</keyword>
+
+    <abstract>
+      <t>This document defines the UDP mapping for scalability protocols.</t>
+    </abstract>
+
+  </front>
+
+  <middle>
+
+    <section title = "Underlying protocol">
+
+      <t>This mapping should be layered directly on the top of UDP.</t>
+
+      <t>There's no fixed UDP port to use for the communication. Instead, port
+         numbers are assigned to individual services by the user.</t>
+
+    </section>
+
+    <section title = "Message delimitation">
+
+        <t>Each UDP packet maps to exactly one SP message.</t>
+
+        <t>There is no way to split one SP message into multiple UDP packets
+           and therefore SP messages larger than existing path MTU will be
+           dropped silently.</t>
+
+        <t>There is also no way to pack multiple SP messages into a single
+           UDP packet.</t>
+
+    </section>
+
+    <section title = "Packet layout">
+
+      <t>Each packet consists of an 8-byte header followed by the opaque
+         message payload:</t>
+
+      <figure>
+        <artwork>
+ 0                   1                   2                   3
+ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|      0x00     |      0x53     |      0x50     |     opcode    |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|             type              |            reserved           |
++-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+|        payload ...
++-+-+-+-+-+-+-+-+-+-+-+-+-
+        </artwork>
+      </figure>
+
+      <t>The first three bytes of the protocol header are used to make sure that
+         the peer's protocol is compatible with the protocol used by the local
+         endpoint. Keep in mind that this protocol is designed to run on an
+         arbitrary UDP port, thus the standard compatibility check -- if it runs
+         on port X and protocol Y is assigned to X by IANA, it speaks protocol Y
+         -- does not apply. We have to use an alternative mechanism.</t>
+
+      <t>The first three bytes of the protocol header MUST be set to 0x00,
+         0x53 and 0x50.  If the protocol header received from the peer
+         differs, the UDP packet MUST be ignored.</t>
+
+      <t>The fact that the first byte of the protocol header is binary zero
+         eliminates any text-based protocols that were accidentally sending
+         to the endpoint. Subsequent two bytes make the check even more
+         rigorous. At the same time they can be used as a debugging hint to
+         indicate that the connection is supposed to use one of the scalability
+         protocols -- ASCII representation of these bytes is 'SP' that can
+         be easily spotted in when capturing the network traffic.</t>
+
+      <section title="Opcode">
+
+      <t>The fourth byte is an operation code (opcode), which
+         is used to indicate a transport-specific type of operation.  The
+         following operations are defined:
+
+         <list>
+           <t>0x00 -- DATA: The packet carries SP payload data.</t>
+           <t>0x01 -- CREQ: The packet requests (initiates) a logical connection.</t>
+           <t>0x02 -- CACK: The packet confirms creation of a logical connection.</t>
+           <t>0x03 -- DISC: The packet terminates a logical connection.</t>
+         </list>
+      </t>
+
+      <t>It is intended that if the protocol must be revised, that 
+         additional op codes can be assigned, obviating the need for an
+         explicit version field.</t>
+
+      <t>These operation codes are used in the mangement of logical connections,
+         and are described in more detail in the Logical Connections section
+         below.</t>
+
+      </section>
+       
+      <section title="SP Type">
+      <t>The fifth and sixth bytes of the header
+         form a 16-bit unsigned integer
+	 in network byte order representing the type of SP endpoint on the layer
+         above. The value SHOULD NOT be interpreted by the mapping, rather
+         the interpretation should be delegated to the scalability protocol
+         above the mapping. For informational purposes, it should be noted that
+         the field encodes information such as SP protocol ID, protocol version
+         and the role of endpoint within the protocol. Individual values are
+         assigned by IANA.</t>
+      </section>
+
+      <section title="Reserved Field">
+      <t>Finally, the last two bytes of the protocol header are reserved for
+         future use and must be set to binary zeroes. If the protocol header
+         from the peer contains anything else than zeroes in this field, the
+         implementation MUST ignore the UDP packet.</t>
+      </section>
+
+      <section title="Payload">
+         <t>The packet header is followed by the opaque message payload
+         which spans all the way to the end of the packet. The payload contents
+         are the SP message content itself, except in the case of DISC
+         messages.</t>
+       </section>
+
+    </section>
+
+    <section title="Unicast Only">
+        <t>This mapping operates only over Unicast UDP. Messages with
+           source or destination addresses that are not unicast MUST be
+           discarded.</t>
+
+        <t>Furthermore, there is an assumption that bidirectional
+           communication is possible.  Various SP protocols have this
+           requirement anyway.</t>
+
+    </section>
+
+    <section title="Logical Connections">
+        <t>This mapping of the SP protocols is layered on top of a
+           connectionless transport layer.  However the SP protocols require 
+           use of logical connections in order to pass "connection IDs" in some
+           of the fields (such as the backtrace information used for the
+           Request/Reply Scalability Protocol.</t>
+
+        <t>Hence it is desirable to create logical connections, and to be able
+           to ensure that the connections are kept active either by monitoring
+           activity passively, or by active probing.  It is also desirable for
+           a peer to be able to indicate that it's partner may release resources
+           used for tracking the connection.</t>
+
+        <t>The logical connection itself is still best-effort only,
+           and packets may be corrupted, lost, or reordered.  The packets are
+           also subject to inspecion, modification, and replay, if the
+           underlying IP transport is not secured.</t>
+
+
+        <section title="Connection roles">
+
+           <t>As with other transports like TCP, we intentionally create the
+           notion of a connection initiator, and a connection accepter.
+           The initator is always the party who initiates the connection,
+           and is the party responsible for sending CREQ messages. The
+           accepter is the party that receives the CREQ messages, and
+           replies with CACK (or possibly DISC).</t>
+
+           <t>The role of initiator and accepter do not change during the
+           course of a single logical connection.</t>
+
+        </section>
+
+        <section title="Keeping the Connection Alive">
+
+        <t>In order to keep session state, implementations will generally
+        store data for each session.  In order to prevent a stale session
+        from consuming these resources forever, and in order to keep
+        any intervening state active (e.g. NAT rules), a CACK message may be
+        sent at any time by the initator.</t>
+
+        <t>In the event of an error, the accepter MAY reply with an
+        DISC message.  Otherwise it MUST reply with a CREQ message.</t>
+
+        <t>An accepter MUST NOT send a CACK message.</t>
+
+        <t>The initiator MUST send CREQ messages every T1 seconds.</t>
+  
+        <t>An accepter that has not received a CREQ message for at least T2
+        seconds, or an initiator that has not received a CACK message for
+        at least T2 seconds, SHOULD assume the connection has failed, and
+        and may discard any state associated with the logical connection.</t>
+
+        <t>It is recommended that T1 and T2 be configurable, with
+        recommended default values of 30 and 300.  This means that sessions
+        that go inexplicably silent for 5 minutes will be closed, and their
+        resources reclaimed.</t>
+
+        <t>Note that values for T1 and T2 must match on both initiator
+        and accepter for correct operation.  Failure to do so will likely
+        result in permature connection termination.</t>
+
+        </section>
+
+    </section>
+
+    <section title="Message Types">
+
+        <section title="DATA messages">
+
+           <t>DATA messages (opcode 0x00) are used on an established logical,
+           connection and, and carry SP messages.  The payload part of the
+           message is the SP payload.  Data messages are unacknowledged.</t>
+
+           <t>A DATA message that is received by a party which does not have
+           a corresponding logical connection set up SHOULD be replied to
+           with a DISC message, using error code 0x04 (not connected).</t>
+
+           <t>DATA messages may only be sent on an active connection, and
+           may be sent at any time by either party.</t>
+
+        </section>
+
+        <section title="CREQ messages">
+
+           <t>CREQ messages are used to establish a logical connection. The
+           initiator sends a CREQ message to the listener. On success, the
+           accepter will record the full UDP source and destination addresses
+           (including IP addresses and port numbers),
+           creating a local entry in a list of logical connections.
+           </t>
+
+           <t>If this
+           is successful, the accepter MUST respond with an CACK message.
+           Otherwise it SHOULD respond with an appropriately formed DISC
+           message. CREQ messages have no payload.  A CREQ message may be
+           sent at any time, and is idempotent.  (If the receiver of a CREQ
+           already has the logical connection established, it need simply
+           reply with the CACK.</t>
+
+           </section>
+
+           <section title="CACK messages">
+
+           <t>CACK messages are sent in response to a CREQ, when the connection
+           is either already established, or after a new connection is
+           established.  As noted above, CREQ is meant to be idempotent, and
+           indeed may be sent periodically to keep a connection from idling
+           out, and so a CACK message is also expected to be sent over the
+           network periodically.</t>
+
+           </section>
+
+           <section title="DISC messages">
+
+           <t>DISC messages are sent by one side of a logical connection
+           to terminate the logical connection.  This notification
+           allows the remote partner to either terminate an existing connection,
+           such as when it is shutting down, or to reject a connection attempt
+           made with CREQ.</t>
+ 
+           <t>DISC messages carry in their payload, a single byte indicating
+           a reason for the disconnect, along with a human readable reason
+           as an ASCII byte array. (This MAY not be present, and SHOULD NOT
+           be zero terminated.)</t>
+
+           <t>The following reasons for DISC are defined:
+              <list>
+              <t>0x00 - normal close of a socket or endpoint</t>
+              <t>0x01 - connection rejected</t>
+              <t>0x02 - SP protocol invalid</t>
+              <t>0x03 - invalid address (such as multicast)</t>
+              <t>0x04 - not connected</t>
+              <t>0xff - Other error</t>
+              </list>
+           </t>
+
+       </section>
+    </section>
+
+    <section title="Latency Considerations">
+      <t>A full round trip is required to establish a logical connection.</t>
+
+      <t>However, a particularly optimistic initiator could send a CREQ and
+      a DATA message in rapid succession, and hope that the DATA was received.
+      Since these protocols are best effort only, this might not be a terrible
+      thing to do.</t>
+
+      <t>A future extension might be to offer a new opcode, allowing DATA
+      to be combined with a CREQ or CACK.  However, given that typical uses
+      of these protocols are for long-lived use cases, there does not seem
+      to be any particular urgency in doing this.</t>
+    </section>
+     
+    <section anchor="IANA" title="IANA Considerations">
+      <t>This memo includes no request to IANA.</t>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>The mapping isn't intended to provide any additional security in
+         addition to UDP.  If this is a concern, it is recommended that
+         IPsec or similar approaches be used to secure the underlying
+         transport.</t>
+    </section>
+
+  </middle>
+
+</rfc>
+

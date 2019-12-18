@@ -83,3 +83,4 @@ class OneofDescriptorProto extends \Google\Protobuf\Internal\Message
     }
 
 }
+

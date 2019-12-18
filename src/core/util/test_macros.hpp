@@ -5,7 +5,9 @@
  */
 #ifndef TEST_MACROS_HPP
 #define TEST_MACROS_HPP
+
 #include <mutex>
+
 static std::recursive_mutex __b_lock__;
 #define _TS_ADD_LOCK_GUARD std::lock_guard<std::recursive_mutex> __guard_b__(__b_lock__)
 

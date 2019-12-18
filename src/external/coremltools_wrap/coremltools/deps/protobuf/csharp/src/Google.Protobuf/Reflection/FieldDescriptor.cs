@@ -99,7 +99,7 @@ namespace Google.Protobuf.Reflection
             this.propertyName = propertyName;
             JsonName =  Proto.JsonName == "" ? JsonFormatter.ToJsonName(Proto.Name) : Proto.JsonName;
         }
-
+    
 
         /// <summary>
         /// The brief name of the descriptor's target.
@@ -125,7 +125,7 @@ namespace Google.Protobuf.Reflection
         /// </para>
         /// </remarks>
         public IFieldAccessor Accessor => accessor;
-
+        
         /// <summary>
         /// Maps a field type as included in the .proto file to a FieldType.
         /// </summary>
@@ -187,13 +187,13 @@ namespace Google.Protobuf.Reflection
         /// <summary>
         /// Returns <c>true</c> if this field is a packed, repeated field; <c>false</c> otherwise.
         /// </summary>
-        public bool IsPacked =>
+        public bool IsPacked => 
             // Note the || rather than && here - we're effectively defaulting to packed, because that *is*
             // the default in proto3, which is all we support. We may give the wrong result for the protos
             // within descriptor.proto, but that's okay, as they're never exposed and we don't use IsPacked
             // within the runtime.
             Proto.Options == null || Proto.Options.Packed;
-
+        
         /// <summary>
         /// Returns the type of the field.
         /// </summary>

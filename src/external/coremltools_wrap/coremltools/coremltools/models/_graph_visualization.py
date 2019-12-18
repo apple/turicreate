@@ -793,10 +793,14 @@ def _start_server(port, web_dir):
     curr_dir = _os.path.abspath(_os.curdir)
     _os.chdir(web_dir)
     import subprocess
+    import sys
     import webbrowser
     if port is None:
         port = _np.random.randint(8000, 9000)
-    subprocess.Popen(['python', '-m', 'SimpleHTTPServer', str(port)])
+    if sys.version_info[0] <= 2:
+        subprocess.Popen(['python', '-m', 'SimpleHTTPServer', str(port)])
+    else:
+        subprocess.Popen(['python', '-m', 'http.server', str(port)])
     webbrowser.open_new_tab('localhost:{}'.format(str(port)))
     _os.chdir(curr_dir)
     return True

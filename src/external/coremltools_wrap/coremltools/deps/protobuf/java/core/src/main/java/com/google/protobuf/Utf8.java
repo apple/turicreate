@@ -232,7 +232,7 @@ final class Utf8 {
   // These UTF-8 handling methods are copied from Guava's Utf8 class with a modification to throw
   // a protocol buffer local exception. This exception is then caught in CodedOutputStream so it can
   // fallback to more lenient behavior.
-
+  
   static class UnpairedSurrogateException extends IllegalArgumentException {
     UnpairedSurrogateException(int index, int length) {
       super("Unpaired surrogate at index " + index + " of " + length);
@@ -625,7 +625,7 @@ final class Utf8 {
      * replacement character, this method throws {@link UnpairedSurrogateException}.
      *
      * <p>To ensure sufficient space in the output buffer, either call {@link #encodedLength} to
-     * compute the exact amount needed, or leave room for
+     * compute the exact amount needed, or leave room for 
      * {@code Utf8.MAX_BYTES_PER_CHAR * sequence.length()}, which is the largest possible number
      * of bytes that any input can be encoded to.
      *
@@ -1379,7 +1379,7 @@ final class Utf8 {
     }
 
     private static int partialIsValidUtf8(final byte[] bytes, long offset, int remaining) {
-      // Skip past ASCII characters as quickly as possible.
+      // Skip past ASCII characters as quickly as possible. 
       final int skipped = unsafeEstimateConsecutiveAscii(bytes, offset, remaining);
       remaining -= skipped;
       offset += skipped;

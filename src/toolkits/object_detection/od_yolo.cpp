@@ -346,7 +346,7 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
   // (1, C, B, H*W)
   nn_spec->add_channel_slice(prefix + "scores_sp", prefix + "ymap_sp",
                              /* start_index */ 5,
-                             /* end_index */ 5 + num_classes, /* stride */ 1);
+                             /* end_index */ 5 + static_cast<int>(num_classes), /* stride */ 1);
 
   // (1, C, B, H*W)
   nn_spec->add_softmax(prefix + "probs_sp", prefix + "scores_sp");

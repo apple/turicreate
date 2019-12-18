@@ -16,14 +16,14 @@
 using namespace CoreML;
 
 void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParameters layerParameters) {
-
-
+    
+    
     int layerId = *layerParameters.layerId;
     const caffe::LayerParameter& caffeLayer = layerParameters.prototxt.layer(layerId);
     int layerIdWeights = CoreMLConverter::getLayerIndex(caffeLayer,layerParameters.mapCaffeLayerNamesToIndex);
     const caffe::LayerParameter& caffeLayerWeights = layerParameters.protoweights.layer(layerIdWeights);
     std::map<std::string, std::string>& mappingDataBlobNames = layerParameters.mappingDataBlobNames;
-
+    
     //Write Layer metadata
     auto* nnWrite = layerParameters.nnWrite;
     Specification::NeuralNetworkLayer* specLayer = nnWrite->Add();
@@ -41,8 +41,8 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
     CoreMLConverter::convertCaffeMetadata(caffeLayer.name(),
                                          bottom, top,
                                          nnWrite, mappingDataBlobNames);
-
-
+    
+    
     caffe::ConvolutionParameter caffeLayerParams = caffeLayer.convolution_param();
     Specification::ConvolutionLayerParams* specLayerParams = specLayer->mutable_convolution();
 
@@ -52,20 +52,20 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
     uint32_t outputChannels = caffeLayerParams.num_output();
     int64_t outputChannelsWeight = 0;
     int64_t kernelChannels = 0;
-
+    
     // First check that weights exist.
     if (caffeLayerWeights.blobs_size() == 0){
         CoreMLConverter::errorInCaffeProto("Weight blobs not provided", caffeLayer.name(), caffeLayer.type());
     }
-
+    
     //check that groups are not 0
     uint32_t numberGroups = caffeLayerParams.group();
     if (numberGroups==0) {
         CoreMLConverter::errorInCaffeProto("group parameter cannot be 0", caffeLayer.name(), caffeLayer.type());
     }
-
+    
     if (caffeLayerWeights.blobs_size() == 2 || caffeLayerWeights.blobs_size() == 1){
-
+        
         // Sometimes caffe models do not populate the shape (infering from other parameters)
         if (caffeLayerWeights.blobs(0).shape().dim_size() == 0) {
             outputChannelsWeight = caffeLayerWeights.blobs(0).num();
@@ -82,13 +82,13 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
     } else {
         CoreMLConverter::errorInCaffeProto("Number of blobs must be 2 or 1 (when there is no bias)", caffeLayer.name(), caffeLayer.type());
     }
-
+    
     bool hasBias = caffeLayerParams.bias_term();
     int caffeBiasLength = 0;
     if (caffeLayerWeights.blobs_size()>1){
         caffeBiasLength = caffeLayerWeights.blobs(1).data_size();
     }
-
+    
     //***************** Some Error Checking in Caffe Proto **********
     if (caffeLayer.type() == "Deconvolution") {
         if (outputChannels!= outputChannelsWeight * numberGroups){
@@ -126,13 +126,13 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
         CoreMLConverter::unsupportedCaffeParrameterWithOption("Number of stride values", caffeLayer.name(),
                                                              caffeLayer.type(), std::to_string(caffeLayerParams.stride_size()));
     }
-
+    
     if (caffeLayerParams.dilation_size()>2){
         CoreMLConverter::unsupportedCaffeParrameterWithOption("Number of dilation size values", caffeLayer.name(),
                                                              caffeLayer.type(), std::to_string(caffeLayerParams.dilation_size()));
     }
     //**************************************************************
-
+    
     if (caffeLayer.type() == "Deconvolution"){
         specLayerParams->set_isdeconvolution(true);
     } else {
@@ -141,7 +141,7 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
     specLayerParams->set_hasbias(hasBias);
     assert(numberGroups >= 0);
     specLayerParams->set_ngroups(static_cast<uint64_t>(numberGroups));
-
+    
     //Set Stride
     ::google::protobuf::RepeatedField<uint64_t>* stride = specLayerParams->mutable_stride();
     stride->Resize(2, 0);
@@ -160,7 +160,7 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
     }
     specLayerParams->set_stride(0, static_cast<uint64_t>(heightStride));
     specLayerParams->set_stride(1, static_cast<uint64_t>(widthStride));
-
+    
     //Set Kernel sizes
     ::google::protobuf::RepeatedField<uint64_t>* kernelSize = specLayerParams->mutable_kernelsize();
     kernelSize->Resize(2, 0);
@@ -181,7 +181,7 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
     }
     specLayerParams->set_kernelsize(0, static_cast<uint64_t>(Kh));
     specLayerParams->set_kernelsize(1, static_cast<uint64_t>(Kw));
-
+    
     //Set padding params
     uint32_t pad_h = 0;
     uint32_t pad_w = 0;
@@ -206,7 +206,7 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
         widthBorder->set_startedgesize(static_cast<uint64_t>(pad_w));
         widthBorder->set_endedgesize(static_cast<uint64_t>(pad_w));
     }
-
+    
     //Set dilation params
     ::google::protobuf::RepeatedField<uint64_t>* dilation = specLayerParams->mutable_dilationfactor();
     dilation->Resize(2, 0);
@@ -222,15 +222,15 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
     }
     specLayerParams->set_dilationfactor(0, static_cast<uint64_t>(heightDilation));
     specLayerParams->set_dilationfactor(1, static_cast<uint64_t>(widthDilation));
-
+    
     // Write weights
     assert(outputChannels >= 0);
     specLayerParams->set_outputchannels(static_cast<uint64_t>(outputChannels));
     assert(kernelChannels >= 0);
     specLayerParams->set_kernelchannels(static_cast<uint64_t>(kernelChannels));
-
+    
     uint64_t blobSize = static_cast<uint64_t>(outputChannelsWeight) * static_cast<uint64_t>(kernelChannels) * static_cast<uint64_t>(Kh) * static_cast<uint64_t>(Kw);
-
+    
     int caffeBlobSizeWeights = caffeLayerWeights.blobs(0).data_size();
     assert(caffeBlobSizeWeights >= 0);
     if (static_cast<uint64_t>(caffeBlobSizeWeights) != blobSize) {
@@ -240,7 +240,7 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
     assert(blobSize <= INT_MAX);
     weights->Resize(static_cast<int32_t>(blobSize), 0.0);
     weights->CopyFrom(caffeLayerWeights.blobs(0).data());
-
+    
     // Write bias
     if (hasBias) {
         if (caffeBiasLength != static_cast<int32_t>(outputChannels)) {
@@ -253,3 +253,8 @@ void CoreMLConverter::convertCaffeConvolution(CoreMLConverter::ConvertLayerParam
         bias->CopyFrom(caffeLayerWeights.blobs(1).data());
     }
 }
+
+
+
+
+

@@ -68,7 +68,7 @@ namespace CoreML {
      */
     Result validateRegressorInterface(const Specification::ModelDescription& interface, int modelVersion);
 
-
+    
     /*
      * Validate model interface describes a valid classifier
      *
@@ -77,57 +77,63 @@ namespace CoreML {
      */
     template<typename T, typename U>
     Result validateClassifierInterface(const T& model,
-                                       const U& modelParameters) {
-
+                                       const U& modelParameters,
+                                       const bool allowEmptyLabels = false,
+                                       const bool defaultClassLabelIsInt64 = false) {
+        
         bool expected_class_is_int64;
-
+        
         // validate class labels
         switch (modelParameters.ClassLabels_case()) {
             case U::kInt64ClassLabels:
-                if (modelParameters.int64classlabels().vector_size() == 0) {
+                if (!allowEmptyLabels && modelParameters.int64classlabels().vector_size() == 0) {
                     return Result(ResultType::INVALID_MODEL_PARAMETERS,
                                   "Classifier declared to have Int64 class labels must provide labels.");
                 }
-
+                
                 if(modelParameters.stringclasslabels().vector_size() != 0) {
                     return Result(ResultType::INVALID_MODEL_PARAMETERS,
                                   "Classifier declared with Int64 class labels must provide exclusively Int64 class labels.");
                 }
-
+                
                 expected_class_is_int64 = true;
-
+                
                 break;
-
+                
             case U::kStringClassLabels:
-                if (modelParameters.stringclasslabels().vector_size() == 0) {
+                if (!allowEmptyLabels && modelParameters.stringclasslabels().vector_size() == 0) {
                     return Result(ResultType::INVALID_MODEL_PARAMETERS,
                                   "Classifier declared to have String class labels must provide labels.");
                 }
-
+                
                 if(modelParameters.int64classlabels().vector_size() != 0) {
                     return Result(ResultType::INVALID_MODEL_PARAMETERS,
                     "Classifier declared with String class labels must provide exclusively String class labels.");
                 }
-
+                
                 expected_class_is_int64 = false;
-
+                
                 break;
-
+                
             case U::CLASSLABELS_NOT_SET:
-                return Result(ResultType::INVALID_MODEL_PARAMETERS, "Classifier models must provide class labels.");
+                if (!allowEmptyLabels) {
+                    return Result(ResultType::INVALID_MODEL_PARAMETERS, "Classifier models must provide class labels.");
+                }
+                expected_class_is_int64 = defaultClassLabelIsInt64;
+                break;
         }
         const Specification::ModelDescription& interface = model.description();
-
+        
             // Validate feature descriptions
         Result result = validateFeatureDescriptions(interface, model.specificationversion());
         if (!result.good()) {
             return result;
         }
-
+        
         const auto& predictedFeatureName = interface.predictedfeaturename();
         const auto& probOutputName = interface.predictedprobabilitiesname();
-
-
+        
+        
         if (predictedFeatureName == "") {
             return Result(ResultType::INVALID_MODEL_INTERFACE,
                           "Specification is missing classifier predictedFeatureName");
@@ -135,7 +141,7 @@ namespace CoreML {
             auto expected_class = (expected_class_is_int64
                                    ? Specification::FeatureType::TypeCase::kInt64Type
                                    : Specification::FeatureType::TypeCase::kStringType);
-
+            
             result = validateDescriptionsContainFeatureWithNameAndType(interface.output(),
                                                                        predictedFeatureName,
                                                                        {expected_class});
@@ -143,7 +149,7 @@ namespace CoreML {
                 return result;
             }
         }
-
+        
         if (probOutputName != "") {
             // TODO @znation: validate array length below
             // and value type (must be double? different for different classifiers?)
@@ -156,16 +162,21 @@ namespace CoreML {
                 return result;
             }
         }
-
+        
         return Result();
     }
-
+    
     /*
      * Validate optional inputs/outputs.
      * For most models, optional is not allowed (all inputs/outputs required).
      * Some models have different behavior.
      */
     Result validateOptional(const Specification::Model& format);
+    
+    /*
+     * Validate if the model type can be set to updatable.
+     */
+    Result validateCanModelBeUpdatable(const Specification::Model& format);
 
 }
 #endif /* Validator_h */

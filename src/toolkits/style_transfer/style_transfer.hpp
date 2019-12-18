@@ -124,7 +124,7 @@ class EXPORT style_transfer : public ml_model_base {
       const;
 
   void perform_predict(gl_sarray images, gl_sframe_writer& result,
-                       const std::vector<double>& style_idx);
+                       const std::vector<flex_int>& style_idx);
 
   template <typename T>
   T read_state(const std::string& key) const {

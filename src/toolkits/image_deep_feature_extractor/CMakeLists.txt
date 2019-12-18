@@ -1,5 +1,5 @@
 if(HAS_CORE_ML)
-  project(image_deep_feature_extractor)
+  project(Turi)
 
   find_library(core_ml NAMES CoreML)
   message("CoreML found at ${core_ml}.")

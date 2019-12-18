@@ -1,4 +1,4 @@
-project(image)
+project(Turi)
 
 
 #/**************************************************************************/
@@ -13,6 +13,8 @@ make_library(image_type OBJECT
   REQUIRES
     logger
     image_io
+    libjpeg
+    libpng
   EXTERNAL_VISIBILITY
 )
 

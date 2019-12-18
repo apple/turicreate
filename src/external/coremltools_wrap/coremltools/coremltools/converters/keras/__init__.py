@@ -9,7 +9,7 @@ from ..._deps import HAS_KERAS2_TF as _HAS_KERAS2_TF
 if _HAS_KERAS_TF or _HAS_KERAS2_TF:
     import keras as _keras
     import logging as _logging
-    from ._keras_converter import convert
+    from ._keras_converter import convert, convertToSpec
     if _keras.backend.backend() != 'tensorflow':
         _HAS_KERAS_TF = False
         _HAS_KERAS2_TF = False

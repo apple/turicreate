@@ -6,12 +6,8 @@
 #include <ml/neural_net/tf_compute_context.hpp>
 
 #include <iostream>
-#include <map>
-#include <string>
 #include <vector>
 
-#include <core/parallel/lambda_omp.hpp>
-#include <core/parallel/thread_pool.hpp>
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
@@ -104,27 +100,13 @@ class tf_model_backend : public model_backend {
   float_array_map export_weights() const override;
   void set_learning_rate(float lr) override;
 
-  // Setters for values needed to enable asynchronous computation, using
-  // deferred_float_array.
-  void set_train_output_shapes(
-      std::map<std::string, std::vector<size_t>> output_shapes) {
-    train_output_shapes_ = std::move(output_shapes);
-  }
-
  private:
-  float_array_map train_sync(const float_array_map& inputs);
-
   pybind11::object model_;
-  thread_pool thread_pool_;
-  parallel_task_queue task_queue_;
-
-  std::map<std::string, std::vector<size_t>> train_output_shapes_;
 };
 
-tf_model_backend::tf_model_backend(pybind11::object model)
-    : model_(model), thread_pool_(1), task_queue_(thread_pool_) {}
+tf_model_backend::tf_model_backend(pybind11::object model) : model_(model) {}
 
-float_array_map tf_model_backend::train_sync(const float_array_map& inputs) {
+float_array_map tf_model_backend::train(const float_array_map& inputs) {
   // Call train method on the TensorflowModel
   float_array_map result;
 
@@ -143,44 +125,6 @@ float_array_map tf_model_backend::train_sync(const float_array_map& inputs) {
       result[kv.first] = value;
     }
   });
-
-  return result;
-}
-
-float_array_map tf_model_backend::train(const float_array_map& inputs) {
-  // We can only use asynchronous training if we know the shapes of the outputs.
-  if (train_output_shapes_.empty()) {
-    return train_sync(inputs);
-  }
-
-  // Create a promise for each expected output.
-  std::map<std::string, std::shared_ptr<std::promise<shared_float_array>>>
-      promises;
-  for (const auto& kv : train_output_shapes_) {
-    promises[kv.first] = std::make_shared<std::promise<shared_float_array>>();
-  }
-
-  // Dispatch the call to TF to our worker thread.
-  auto perform_train = [inputs, promises, this] {
-    // Invoke TensorFlow.
-    float_array_map local_result = this->train_sync(inputs);
-
-    // Fulfill the promises we made.
-    for (const auto& kv : promises) {
-      kv.second->set_value(local_result.at(kv.first));
-    }
-  };
-  task_queue_.launch(perform_train);
-
-  // Return a result dictionary wrapping the futures for the promises dispatched
-  // to TensorFlow.
-  float_array_map result;
-  for (const auto& kv : train_output_shapes_) {
-    const std::string& key = kv.first;
-    const std::vector<size_t>& shape = kv.second;
-    result[key] = shared_float_array(std::make_shared<deferred_float_array>(
-        promises.at(key)->get_future(), shape));
-  }
 
   return result;
 }
@@ -250,99 +194,37 @@ tf_model_backend::~tf_model_backend() {
 
 class tf_image_augmenter : public float_array_image_augmenter {
  public:
-  tf_image_augmenter(const options& opts);
-  ~tf_image_augmenter() override = default;
+  tf_image_augmenter(const options& opts, pybind11::object augmenter);
 
-  labeled_float_image prepare_augmented_images(
+  ~tf_image_augmenter();
+
+  float_array_result prepare_augmented_images(
       labeled_float_image data_to_augment) override;
-
  private:
-  labeled_float_image prepare_augmented_images_sync(
-      labeled_float_image data_to_augment);
+  pybind11::object augmenter_;
+
 };
 
-tf_image_augmenter::tf_image_augmenter(const options& opts) : float_array_image_augmenter(opts) {}
+tf_image_augmenter::tf_image_augmenter(const options& opts, pybind11::object augmenter) : float_array_image_augmenter(opts), augmenter_(augmenter) {}
 
-float_array_image_augmenter::labeled_float_image
+float_array_image_augmenter::float_array_result
 tf_image_augmenter::prepare_augmented_images(
-    labeled_float_image data_to_augment) {
-  size_t batch_size = data_to_augment.images.size();
-
-  // Allocate a result into which the worker threads can write their
-  // thread-local results in parallel.
-  labeled_float_image result;
-  result.images.resize(batch_size);
-  result.annotations.resize(batch_size);
-
-  auto perform_augmentations = [&](size_t thread_id, size_t num_threads) {
-    size_t range_start = batch_size * thread_id / num_threads;
-    size_t range_end = batch_size * (thread_id + 1) / num_threads;
-
-    // Slice out the inputs we need to augment.
-    labeled_float_image local_data_to_augment;
-    auto first_image_it = data_to_augment.images.begin();
-    auto first_annotation_it = data_to_augment.annotations.begin();
-    local_data_to_augment.images = std::vector<shared_float_array>(
-        first_image_it + range_start, first_image_it + range_end);
-    local_data_to_augment.annotations = std::vector<shared_float_array>(
-        first_annotation_it + range_start, first_annotation_it + range_end);
-
-    // Augment the slice.
-    labeled_float_image local_result =
-        this->prepare_augmented_images_sync(local_data_to_augment);
-
-    // Write the result into the appropriate slice of the shared output.
-    result.images[thread_id] = local_result.images[0];
-    for (size_t i = range_start; i < range_end; ++i) {
-      result.annotations[i] = local_result.annotations[i - range_start];
-    }
-  };
-  in_parallel(perform_augmentations);
-
-  // Trim the result images, which are populated at one element per thread, not
-  // one element per image.
-  auto unused_output = [](const shared_float_array& image) {
-    return image.dim() == 0;
-  };
-  auto new_end =
-      std::remove_if(result.images.begin(), result.images.end(), unused_output);
-  result.images.erase(new_end, result.images.end());
-
-  return result;
-}
-
-float_array_image_augmenter::labeled_float_image
-tf_image_augmenter::prepare_augmented_images_sync(
     float_array_image_augmenter::labeled_float_image data_to_augment) {
-  options opts = get_options();
-  float_array_image_augmenter::labeled_float_image image_annotations;
+  float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
-    // Import the module from python that does data augmentation
-    pybind11::module tf_aug = pybind11::module::import(
-        "turicreate.toolkits.object_detector._tf_image_augmenter");
-
-    const size_t output_height = opts.output_height;
-    const size_t output_width = opts.output_width;
-
-    // TODO: Remove resize_only by passing all the augmentation options
-    bool resize_only = false;
-    if (opts.crop_prob == 0.f) {
-      resize_only = true;
-    }
 
     // Get augmented images and annotations from tensorflow
-    pybind11::object augmented_data = tf_aug.attr("get_augmented_data")(
-        data_to_augment.images, data_to_augment.annotations, output_height,
-        output_width, resize_only);
+    pybind11::object augmented_data = augmenter_.attr("get_augmented_data")(
+        data_to_augment.images, data_to_augment.annotations);
     std::pair<pybind11::buffer, std::vector<pybind11::buffer>> aug_data =
         augmented_data
             .cast<std::pair<pybind11::buffer, std::vector<pybind11::buffer>>>();
 
     pybind11::buffer_info buf_img = std::get<0>(aug_data).request();
-    image_annotations.images.push_back(shared_float_array::copy(
+    image_annotations.images = turi::neural_net::shared_float_array::copy(
         static_cast<float*>(buf_img.ptr),
-        std::vector<size_t>(buf_img.shape.begin(), buf_img.shape.end())));
+        std::vector<size_t>(buf_img.shape.begin(), buf_img.shape.end()));
     std::vector<turi::neural_net::shared_float_array> annotations_per_batch;
     std::vector<pybind11::buffer> aug_annotations = std::get<1>(aug_data);
 
@@ -363,6 +245,10 @@ tf_image_augmenter::prepare_augmented_images_sync(
   });
 
   return image_annotations;
+}
+
+tf_image_augmenter::~tf_image_augmenter() {
+  call_pybind_function([&]() { augmenter_ = pybind11::object(); });
 }
 
 namespace {
@@ -421,13 +307,6 @@ std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
           "ODTensorFlowModel")(h_in, w_in, n, c_out, h_out, w_out, weights, config);
       result.reset(new tf_model_backend(object_detector));
     });
-
-  // Enable asynchronous training.
-  // TODO: Match the MPS implementation, which has loss shape {batch_size}
-  std::map<std::string, std::vector<size_t>> output_shapes;
-  output_shapes["loss"] = {1};
-  result->set_train_output_shapes(std::move(output_shapes));
-
   return result;
 }
 
@@ -453,7 +332,29 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
 
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
-  return std::unique_ptr<image_augmenter>(new tf_image_augmenter(opts));
+  std::unique_ptr<tf_image_augmenter> result;
+  
+  call_pybind_function([&]() {
+
+    const size_t output_height = opts.output_height;
+    const size_t output_width = opts.output_width;
+    const size_t batch_size = opts.batch_size;
+
+    // TODO: Remove resize_only by passing all the augmentation options
+    bool resize_only = false;
+    if (opts.crop_prob == 0.f) {
+      resize_only = true;
+    }
+
+    pybind11::module tf_aug = pybind11::module::import(
+        "turicreate.toolkits.object_detector._tf_image_augmenter");
+
+    // Make an instance of python object
+    pybind11::object image_augmenter =
+        tf_aug.attr("DataAugmenter")(output_height, output_width, batch_size, resize_only);
+    result.reset(new tf_image_augmenter(opts, image_augmenter));
+  });
+  return result;
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(

@@ -388,7 +388,7 @@ public final class UnknownFieldSet implements MessageLite {
       reinitialize();
       return this;
     }
-
+    
     /** Clear fields from the set with a given field number. */
     public Builder clearField(final int number) {
       if (number == 0) {
@@ -458,7 +458,7 @@ public final class UnknownFieldSet implements MessageLite {
      * <p>For use by generated code only.
      */
     public Builder mergeLengthDelimitedField(
-        final int number, final ByteString value) {
+        final int number, final ByteString value) {  
       if (number == 0) {
         throw new IllegalArgumentException("Zero is not a valid field number.");
       }

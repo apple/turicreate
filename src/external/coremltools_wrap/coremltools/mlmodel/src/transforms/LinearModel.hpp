@@ -20,7 +20,7 @@ class LinearModel : public Model {
                     const std::string& description);
 
     LinearModel(const Model &model);
-
+    
     /**
      * Set the weights.
      *
@@ -36,7 +36,7 @@ class LinearModel : public Model {
      * @return Result type with errors.
      */
     Result setOffsets(std::vector<double> offsets);
-
+    
     /**
      * Get offsets/intercepts.
      *
@@ -50,7 +50,7 @@ class LinearModel : public Model {
      * @return weights.
      */
     std::vector< std::vector<double>> getWeights();
-
+    
 };
 }
 

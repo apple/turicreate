@@ -112,3 +112,4 @@ class ServiceOptions extends \Google\Protobuf\Internal\Message
     }
 
 }
+

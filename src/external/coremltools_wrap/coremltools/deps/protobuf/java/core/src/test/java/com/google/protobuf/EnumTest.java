@@ -38,7 +38,7 @@ import protobuf_unittest.UnittestProto.TestAllTypes;
 import junit.framework.TestCase;
 
 public class EnumTest extends TestCase {
-
+  
   public void testForNumber() {
     ForeignEnum e = ForeignEnum.forNumber(ForeignEnum.FOREIGN_BAR.getNumber());
     assertEquals(ForeignEnum.FOREIGN_BAR, e);
@@ -46,7 +46,7 @@ public class EnumTest extends TestCase {
     e = ForeignEnum.forNumber(1000);
     assertEquals(null, e);
   }
-
+  
   public void testForNumber_oneof() {
     TestAllTypes.OneofFieldCase e = TestAllTypes.OneofFieldCase.forNumber(
         TestAllTypes.OneofFieldCase.ONEOF_NESTED_MESSAGE.getNumber());
@@ -55,7 +55,7 @@ public class EnumTest extends TestCase {
     e = TestAllTypes.OneofFieldCase.forNumber(1000);
     assertEquals(null, e);
   }
-
+  
   public void testForNumberLite() {
     ForeignEnumLite e = ForeignEnumLite.forNumber(ForeignEnumLite.FOREIGN_LITE_BAR.getNumber());
     assertEquals(ForeignEnumLite.FOREIGN_LITE_BAR, e);
@@ -63,7 +63,7 @@ public class EnumTest extends TestCase {
     e = ForeignEnumLite.forNumber(1000);
     assertEquals(null, e);
   }
-
+  
   public void testForNumberLite_oneof() {
     TestAllTypesLite.OneofFieldCase e = TestAllTypesLite.OneofFieldCase.forNumber(
         TestAllTypesLite.OneofFieldCase.ONEOF_NESTED_MESSAGE.getNumber());
@@ -73,3 +73,4 @@ public class EnumTest extends TestCase {
     assertEquals(null, e);
   }
 }
+

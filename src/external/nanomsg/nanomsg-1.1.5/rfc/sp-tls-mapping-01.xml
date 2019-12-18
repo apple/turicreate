@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+
+<rfc category="info" docName="sp-tls-mapping-01">
+
+  <front>
+
+    <title abbrev="TLS/TCP mapping for SPs">
+    TLS Mapping for Scalability Protocols
+    </title>
+
+    <author fullname="Garrett D'Amore" initials="G." surname="D'Amore" role="editor">
+      <address>
+        <email>garrett@damore.org</email>
+      </address>
+    </author>
+
+    <date month="March" year="2014" />
+
+    <area>Applications</area>
+    <workgroup>Internet Engineering Task Force</workgroup>
+
+    <keyword>TLS</keyword>
+    <keyword>SP</keyword>
+
+    <abstract>
+      <t>This document defines the mapping for scalability protocols (SP)
+      running on top of Transport Layer Security (TLS) v1.2 on top of TCP.</t>
+    </abstract>
+
+  </front>
+
+  <middle>
+
+    <section title = "Underlying protocol">
+
+      <t>This mapping should be layered directly on the top of
+         <xref target='TLS'>TLS</xref> secured
+         connections.  While it is possible to use TLS on top of other
+         transports, this document specifically concerns itself with TLS
+         running on top of <xref target='TCP'>TCP</xref>.</t>
+
+      <t>Other combinations may be contemplated,
+         and should follow the same details as discussed here.</t>
+
+      <t>As when running SP over TCP directly, the TCP port number is
+         determined by the application or user.</t>
+
+      <t>This mapping follows the details of
+	 <xref target='SPoverTCP'>SP over TCP</xref>.</t>
+
+    </section>
+
+    <section title="Connection initiation">
+
+      <t>An initial connection is first established using TCP, then performing
+         a TLS handshake.  This handshake establishes the security parameters
+         of the connection, including negotiation of cipher suites, exchanging
+         keys, and possibly performing one or two-way authentication.</t>
+
+      <t>The specific details of the TLS negotiation are determined by the
+         application(s) involved, and are not specified here.  This includes
+         selection of the specific version of TLS or possibly falling back to
+         SSL version 3 (but not SSL version 1 or 2).</t>
+
+      <t>TLS presents an encrypted channel that may be treated as a full duplex
+         byte stream between peers.  This mapping sits within that channel.</t>
+
+      <t>Note also that TLS peers may rekey periodically.  This happens in the
+         without involving the upper protocol, and the details need not concern
+         us here.</t>
+
+      <t>Once the TLS layer connection has been established, the communication
+         commences as detailed in <xref target='SPoverTCP'>SPoverTCP</xref>.
+         This includes the exchange of the initial protocol headers identifying
+         the version of SP in use, and the specific protocol type, as well as
+         requirements to disconnect upon receipt of an invalid 
+         protocol header or an unrecognized SP version.</t>
+
+    </section>
+
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t>This memo includes no request to IANA.</t>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t>Security considerations are explored in depth as part of
+         <xref target='TLS'>TLS</xref>.  This document does not provide
+         any further implications beyond that in TLS itself.</t>
+
+      <t>The use of SSLv2 is explicitly <xref target='RFC6176'>forbidden</xref>,
+         as SSLv2 contains known weaknesses.</t>
+
+    </section>
+
+  </middle>
+
+  <back>
+    <references>
+      <reference anchor='TCP'>
+         <front>
+           <title>Transmission Control Protocol</title>
+           <author initials='J.' surname='Postel' fullname='Jon Postel'>
+           </author>
+           <date month='September' year='1981'/>
+         </front>
+         <seriesInfo name='STD' value='7'/>
+         <seriesInfo name='RFC' value='793'/>
+         <format type='TXT' target='http://tools.ietf.org/html/rfc793.txt'/>
+      </reference>
+      <reference anchor='TLS'>
+         <front>
+           <title>The Transport Layer Security (TLS) Protocol Version 1.2</title>
+           <author initials='T.' surname='Dierks' fullname='T. Dierks'>
+               <organization>Independent</organization>
+           </author>
+           <author initials='E.' surname='Rescorla' fullname='E. Rescorla'>
+               <organization>RTFM, Inc.</organization>
+           </author>
+           <date month='August' year='2008'/>
+         </front>
+         <seriesInfo name='RFC' value='5246'/>
+         <format type='TXT' target='http://tools.ietf.org/html/rfc5246.txt'/>
+      </reference>
+      <reference anchor='RFC6176'>
+         <front>
+           <title>Prohibiting Secure Sockets Layer (SSL) Version 2.0</title>
+           <author initials='S.' surname='Turner' fullname='S. Turner'>
+               <organization>IECA</organization>
+           </author>
+           <author initials='T.' surname='Polk' fullname='T. Polk'>
+               <organization>NIST.</organization>
+           </author>
+           <date month='March' year='2011'/>
+         </front>
+         <seriesInfo name='RFC' value='6176'/>
+         <format type='TXT' target='http://tools.ietf.org/html/rfc6176.txt'/>
+      </reference>
+      <reference anchor='SPoverTCP'>
+         <front>
+           <title>TCP mapping for SPs</title>
+           <author initials='M.' surname='Sustrik' fullname='M. Sustrik'/>
+           <date month='August' year='2013'/>
+         </front>
+         <format type='TXT' target='sp-tcp-mapping-01.txt'/>
+       </reference>
+    </references>
+
+  </back>
+
+</rfc>
+

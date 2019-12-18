@@ -2277,7 +2277,7 @@ public abstract class GeneratedMessageV3 extends AbstractMessage
       public Object getRepeatedRaw(Builder builder, int index) {
         return getRepeated(builder, index);
       }
-
+      
       @Override
       public void setRepeated(Builder builder, int index, Object value) {
         getMutableMapField(builder).getMutableList().set(index, coerceType((Message) value));
@@ -2678,7 +2678,7 @@ public abstract class GeneratedMessageV3 extends AbstractMessage
 
     return (Extension<MessageType, T>) extension;
   }
-
+  
   protected static int computeStringSize(final int fieldNumber, final Object value) {
     if (value instanceof String) {
       return CodedOutputStream.computeStringSize(fieldNumber, (String) value);
@@ -2686,7 +2686,7 @@ public abstract class GeneratedMessageV3 extends AbstractMessage
       return CodedOutputStream.computeBytesSize(fieldNumber, (ByteString) value);
     }
   }
-
+  
   protected static int computeStringSizeNoTag(final Object value) {
     if (value instanceof String) {
       return CodedOutputStream.computeStringSizeNoTag((String) value);
@@ -2694,7 +2694,7 @@ public abstract class GeneratedMessageV3 extends AbstractMessage
       return CodedOutputStream.computeBytesSizeNoTag((ByteString) value);
     }
   }
-
+  
   protected static void writeString(
       CodedOutputStream output, final int fieldNumber, final Object value) throws IOException {
     if (value instanceof String) {
@@ -2703,7 +2703,7 @@ public abstract class GeneratedMessageV3 extends AbstractMessage
       output.writeBytes(fieldNumber, (ByteString) value);
     }
   }
-
+  
   protected static void writeStringNoTag(
       CodedOutputStream output, final Object value) throws IOException {
     if (value instanceof String) {

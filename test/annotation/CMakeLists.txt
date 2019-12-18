@@ -1,4 +1,4 @@
-project(annotation_test)
+project(Turi)
 
 
 make_library(annotation_test_utils

@@ -101,7 +101,7 @@ std::vector<RowBatch::Entry> make_row_batch(
           return;
         size_t idx = index_offset + feature_index;
         DASSERT_GE(idx,  0);
-        ret.push_back(RowBatch::Entry(idx ,value));
+        ret.push_back(RowBatch::Entry(static_cast<int>(idx) ,value));
       },
       [&](ml_column_mode mode, size_t column_index, size_t index_size) { }
                                                                  );
@@ -136,7 +136,7 @@ void MakeFeatMap(utils::FeatMap &featmap,
           std::string fname =
               (metadata->column_name(col) + "=" +
                metadata->indexer(col)->map_index_to_value(offset).to<std::string>());
-          featmap.PushBack(fbase + offset, fname.c_str(), "i");
+          featmap.PushBack(static_cast<int>(fbase + offset), fname.c_str(), "i");
         }
         break;
 
@@ -144,7 +144,7 @@ void MakeFeatMap(utils::FeatMap &featmap,
 
         // fname = column_name e.g. age < 25
         for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
-          featmap.PushBack(fbase, metadata->column_name(col).c_str(), "int");
+          featmap.PushBack(static_cast<int>(fbase), metadata->column_name(col).c_str(), "int");
         }
         break;
 
@@ -156,7 +156,7 @@ void MakeFeatMap(utils::FeatMap &featmap,
 
         // fname = column_name[index] e.g. prob[1] > 0.5
         for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
-          featmap.PushBack(fbase + offset, metadata->feature_name(col, offset, true).c_str(), "q");
+          featmap.PushBack(static_cast<int>(fbase + offset), metadata->feature_name(col, offset, true).c_str(), "q");
         }
 
         break;
@@ -980,9 +980,9 @@ void xgboost_model::train(void) {
     }
     // Update
     if (this->is_random_forest()) {
-      booster_->UpdateOneIterKeepGpair(iter, *ptrain);
+      booster_->UpdateOneIterKeepGpair(static_cast<int>(iter), *ptrain);
     } else {
-      booster_->UpdateOneIter(iter, *ptrain);
+      booster_->UpdateOneIter(static_cast<int>(iter), *ptrain);
     }
     // Predict
     std::vector<float> preds;
@@ -1190,7 +1190,7 @@ void xgboost_model::xgboost_predict(const DMatrix& dmat,
   }
   size_t ntree_limit = 0;
   bool pred_leaf = false;
-  booster_->Predict(dmat, output_margin, &out_preds, ntree_limit, pred_leaf, rescale_constant);
+  booster_->Predict(dmat, output_margin, &out_preds, static_cast<int>(ntree_limit), pred_leaf, rescale_constant);
 
   // Correct the margin. Multclass margin should be relative to zero.
   // We set class 0's margin to zero and, minus it from the margin of other classes.
@@ -1377,7 +1377,7 @@ std::shared_ptr<sarray<flexible_type>> xgboost_model::extract_features(
   bool output_margin = false; // doesn't get used if pred_leaf is true
   size_t num_trees = 0; // doesn't get used if pred_leaf is true
   bool pred_leaf = true;
-  booster_->Predict(dmat, output_margin, &out, num_trees, pred_leaf);
+  booster_->Predict(dmat, output_margin, &out, static_cast<int>(num_trees), pred_leaf);
 
   num_trees = options.is_option("max_iterations") ?
       options.value("max_iterations").get<flex_int>() : 1;
@@ -1434,14 +1434,14 @@ utils::FeatMap get_index_map_with_escaping(
         const char* xg_type_code = (metadata->column_type(col) ==
                                     flex_type_enum::INTEGER) ? "int" : "q";
         size_t index = to_index_info(feature_name, col, 0);
-        _index_fmap.PushBack(index, feature_name, xg_type_code);
+        _index_fmap.PushBack(static_cast<int>(index), feature_name, xg_type_code);
         break;
       }
       case ml_column_mode::NUMERIC_VECTOR:
       case ml_column_mode::NUMERIC_ND_VECTOR: {
         for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
           size_t index = to_index_info(feature_name, col, offset);
-          _index_fmap.PushBack(index, feature_name, "q");
+          _index_fmap.PushBack(static_cast<int>(index), feature_name, "q");
         }
         break;
       }
@@ -1449,14 +1449,14 @@ utils::FeatMap get_index_map_with_escaping(
       case ml_column_mode::CATEGORICAL: {
         for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
           size_t index = to_index_info(feature_name, col, offset);
-          _index_fmap.PushBack(index, feature_name, "i");
+          _index_fmap.PushBack(static_cast<int>(index), feature_name, "i");
         }
         break;
       }
       case ml_column_mode::DICTIONARY: {
         for (size_t offset = 0; offset < metadata->index_size(col); ++offset) {
           size_t index = to_index_info(feature_name, col, offset);
-          _index_fmap.PushBack(index, feature_name, "q");
+          _index_fmap.PushBack(static_cast<int>(index), feature_name, "q");
         }
         break;
       }

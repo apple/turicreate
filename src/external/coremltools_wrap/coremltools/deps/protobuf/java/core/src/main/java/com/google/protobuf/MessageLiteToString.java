@@ -47,7 +47,7 @@ final class MessageLiteToString {
   private static final String LIST_SUFFIX = "List";
   private static final String BUILDER_LIST_SUFFIX = "OrBuilderList";
   private static final String BYTES_SUFFIX = "Bytes";
-
+  
   /**
    * Returns a {@link String} representation of the {@link MessageLite} object.  The first line of
    * the {@code String} representation representation includes a comment string to uniquely identify
@@ -153,7 +153,7 @@ final class MessageLiteToString {
       ((GeneratedMessageLite<?, ?>) messageLite).unknownFields.printWithIndent(buffer, indent);
     }
   }
-
+  
   private static boolean isDefaultValue(Object o) {
     if (o instanceof Boolean) {
       return !((Boolean) o);
@@ -179,7 +179,7 @@ final class MessageLiteToString {
     if (o instanceof java.lang.Enum<?>) { // Catches oneof enums.
       return ((java.lang.Enum<?>) o).ordinal() == 0;
     }
-
+    
     return false;
   }
 
@@ -224,7 +224,7 @@ final class MessageLiteToString {
       buffer.append(": ").append(object.toString());
     }
   }
-
+  
   private static final String camelCaseToSnakeCase(String camelCase) {
     StringBuilder builder = new StringBuilder();
     for (int i = 0; i < camelCase.length(); i++) {

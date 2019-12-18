@@ -392,24 +392,55 @@ BOOST_AUTO_TEST_CASE(test_recommender) {
       }
 
       if(std::string(model_name) == "item_similarity") {
-        tc_parameters* export_args = tc_parameters_create_empty(&error);
-        CAPI_CHECK_ERROR(error);
 
         {
-          std::string url = turi::fs_util::system_temp_directory_unique_path(
-            "", "_coreml_export_test_1_tmp.mlmodel");
-          tc_flexible_type* ft_name = tc_ft_create_from_cstring(url.c_str(), &error);
-          CAPI_CHECK_ERROR(error);
-          tc_parameters_add_flexible_type(export_args, "filename", ft_name,
-                                          &error);
-          CAPI_CHECK_ERROR(error);
-          tc_release(ft_name);
+            tc_parameters* export_args = tc_parameters_create_empty(&error);
+            CAPI_CHECK_ERROR(error);
+            {
+              std::string url = turi::fs_util::system_temp_directory_unique_path(
+                "", "_coreml_export_test_1_tmp.mlmodel");
+              tc_flexible_type* ft_name = tc_ft_create_from_cstring(url.c_str(), &error);
+              CAPI_CHECK_ERROR(error);
+              tc_parameters_add_flexible_type(export_args, "filename", ft_name,
+                                              &error);
+              CAPI_CHECK_ERROR(error);
+
+              tc_flex_dict* fd_user_defined = tc_flex_dict_create(&error);
+              CAPI_CHECK_ERROR(error);
+              tc_parameters_add_flex_dict(export_args,
+                  "additional_user_defined", fd_user_defined, &error);
+              CAPI_CHECK_ERROR(error);
+
+              tc_release(ft_name);
+              tc_release(fd_user_defined);
+            }
+
+            tc_model_call_method(model, "export_to_coreml",
+                                 export_args, &error);
+            CAPI_CHECK_ERROR(error);
+            tc_release(export_args);
         }
 
-        tc_model_call_method(model, "export_to_coreml",
-                             export_args, &error);
-        CAPI_CHECK_ERROR(error);
-        tc_release(export_args);
+        // Default parameter check
+        {
+            tc_parameters* export_args = tc_parameters_create_empty(&error);
+            CAPI_CHECK_ERROR(error);
+            {
+              std::string url = turi::fs_util::system_temp_directory_unique_path(
+                "", "_coreml_export_test_1_tmp.mlmodel");
+              tc_flexible_type* ft_name = tc_ft_create_from_cstring(url.c_str(), &error);
+              CAPI_CHECK_ERROR(error);
+              tc_parameters_add_flexible_type(export_args, "filename", ft_name,
+                                              &error);
+              CAPI_CHECK_ERROR(error);
+              tc_release(ft_name);
+            }
+
+            tc_model_call_method(model, "export_to_coreml",
+                                 export_args, &error);
+            CAPI_CHECK_ERROR(error);
+            tc_release(export_args);
+        }
       }
     }
 

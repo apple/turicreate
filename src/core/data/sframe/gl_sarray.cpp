@@ -437,7 +437,7 @@ gl_sarray gl_sarray::dict_has_all_keys(const std::vector<flexible_type>& keys) c
 gl_sarray gl_sarray::apply(std::function<flexible_type(const flexible_type&)> fn,
                            flex_type_enum dtype,
                            bool skip_undefined) const {
-  return get_proxy()->transform_lambda(fn, dtype, skip_undefined, time(NULL));
+  return get_proxy()->transform_lambda(fn, dtype, skip_undefined, random::pure_random_seed());
 }
 
 gl_sarray gl_sarray::filter(std::function<bool(const flexible_type&)> fn,
@@ -452,7 +452,7 @@ gl_sarray gl_sarray::hash(size_t seed) const {
 }
 
 gl_sarray gl_sarray::sample(double fraction) const {
-  return get_proxy()->sample(fraction, time(NULL));
+  return get_proxy()->sample(fraction, random::pure_random_seed());
 }
 gl_sarray gl_sarray::sample(double fraction, size_t seed, bool exact) const {
   return get_proxy()->sample(fraction, seed, exact);
@@ -680,6 +680,7 @@ void gl_sarray::show(const std::string& path_to_client,
                      const flexible_type& title,
                      const flexible_type& xlabel,
                      const flexible_type& ylabel) const {
+
   using namespace turi;
   using namespace turi::visualization;
 

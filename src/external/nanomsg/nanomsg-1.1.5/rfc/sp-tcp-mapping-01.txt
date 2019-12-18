@@ -1,0 +1,281 @@
+
+
+
+
+Internet Engineering Task Force                          M. Sustrik, Ed.
+Internet-Draft
+Intended status: Informational                                March 2014
+Expires: September 2, 2014
+
+
+                 TCP Mapping for Scalability Protocols
+                           sp-tcp-mapping-01
+
+Abstract
+
+   This document defines the TCP mapping for scalability protocols.  The
+   main purpose of the mapping is to turn the stream of bytes into
+   stream of messages.  Additionally, the mapping provides some
+   additional checks during the connection establishment phase.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at http://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on September 2, 2014.
+
+Copyright Notice
+
+   Copyright (c) 2014 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.
+
+
+
+
+Sustrik                 Expires September 2, 2014               [Page 1]
+
+Internet-Draft             TCP mapping for SPs                March 2014
+
+
+1.  Underlying protocol
+
+   This mapping should be layered directly on the top of TCP.
+
+   There's no fixed TCP port to use for the communication.  Instead,
+   port numbers are assigned to individual services by the user.
+
+2.  Connection initiation
+
+   As soon as the underlying TCP connection is established, both parties
+   MUST send the protocol header (described in detail below)
+   immediately.  Both endpoints MUST then wait for the protocol header
+   from the peer before proceeding on.
+
+   The goal of this design is to keep connection establishment as fast
+   as possible by avoiding any additional protocol handshakes, i.e.
+   network round-trips.  Specifically, the protocol headers can be
+   bundled directly with to the last packets of TCP handshake and thus
+   have virtually zero performance impact.
+
+   The protocol header is 8 bytes long and looks like this:
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |      0x00     |      0x53     |      0x50     |    version    |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |             type              |           reserved            |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+   First four bytes of the protocol header are used to make sure that
+   the peer's protocol is compatible with the protocol used by the local
+   endpoint.  Keep in mind that this protocol is designed to run on an
+   arbitrary TCP port, thus the standard compatibility check -- if it
+   runs on port X and protocol Y is assigned to X by IANA, it speaks
+   protocol Y -- does not apply.  We have to use an alternative
+   mechanism.
+
+   First four bytes of the protocol header MUST be set to 0x00, 0x53,
+   0x50 and 0x00 respectively.  If the protocol header received from the
+   peer differs, the TCP connection MUST be closed immediately.
+
+   The fact that the first byte of the protocol header is binary zero
+   eliminates any text-based protocols that were accidentally connected
+   to the endpoint.  Subsequent two bytes make the check even more
+   rigorous.  At the same time they can be used as a debugging hint to
+   indicate that the connection is supposed to use one of the
+   scalability protocols -- ASCII representation of these bytes is 'SP'
+
+
+
+Sustrik                 Expires September 2, 2014               [Page 2]
+
+Internet-Draft             TCP mapping for SPs                March 2014
+
+
+   that can be easily spotted in when capturing the network traffic.
+   Finally, the fourth byte rules out any incompatible versions of this
+   protocol.
+
+   Fifth and sixth bytes of the header form a 16-bit unsigned integer in
+   network byte order representing the type of SP endpoint on the layer
+   above.  The value SHOULD NOT be interpreted by the mapping, rather
+   the interpretation should be delegated to the scalability protocol
+   above the mapping.  For informational purposes, it should be noted
+   that the field encodes information such as SP protocol ID, protocol
+   version and the role of endpoint within the protocol.  Individual
+   values are assigned by IANA.
+
+   Finally, the last two bytes of the protocol header are reserved for
+   future use and must be set to binary zeroes.  If the protocol header
+   from the peer contains anything else than zeroes in this field, the
+   implementation MUST close the underlying TCP connection.
+
+3.  Message delimitation
+
+   Once the protocol header is accepted, endpoint can send and receive
+   messages.  Message is an arbitrarily large chunk of binary data.
+   Every message starts with 64-bit unsigned integer in network byte
+   order representing the size, in bytes, of the remaining part of the
+   message.  Thus, the message payload can be from 0 to 2^64-1 bytes
+   long.  The payload of the specified size follows directly after the
+   size field:
+
+   +------------+-----------------+
+   | size (64b) |     payload     |
+   +------------+-----------------+
+
+   It may seem that 64 bit message size is excessive and consumes too
+   much of valuable bandwidth, especially given that most scenarios call
+   for relatively small messages, in order of bytes or kilobytes.
+
+   Variable length field may seem like a better solution, however, our
+   experience is that variable length size field doesn't provide any
+   performance benefit in the real world.
+
+   For large messages, 64 bits used by the field form a negligible
+   portion of the message and the performance impact is not even
+   measurable.
+
+   For small messages, the overall throughput is heavily CPU-bound,
+   never I/O-bound.  In other words, CPU processing associated with each
+   individual message limits the message rate in such a way that network
+   bandwidth limit is never reached.  In the future we expect it to be
+
+
+
+Sustrik                 Expires September 2, 2014               [Page 3]
+
+Internet-Draft             TCP mapping for SPs                March 2014
+
+
+   even more so: network bandwidth is going to grow faster than CPU
+   speed.  All in all, some performance improvement could be achieved
+   using variable length size field with huge streams of very small
+   messages on very slow networks.  We consider that scenario to be a
+   corner case that's almost never seen in a real world.
+
+   On the other hand, it may be argued that limiting the messages to
+   2^64-1 bytes can prove insufficient in the future.  However,
+   extrapolating the message size growth size seen in the past indicates
+   that 64 bit size should be sufficient for the expected lifetime of
+   the protocol (30-50 years).
+
+   Finally, it may be argued that chaining arbitrary number of smaller
+   data chunks can yield unlimited message size.  The downside of this
+   approach is that the message payload cannot be continuous on the
+   wire, it has to be interleaved with chunk headers.  That typically
+   requires one more copy of the data in the receiving part of the stack
+   which may be a problem for very large messages.
+
+4.  Note on multiplexing
+
+   Several modern general-purpose protocols built on top of TCP provide
+   multiplexing capability, i.e. a way to transfer multiple independent
+   message streams over a single TCP connection.  This mapping
+   deliberately opts to provide no such functionality.  Instead,
+   independent message streams should be implemented as different TCP
+   connections.  This section provides the rationale for the design
+   decision.
+
+   First of all, multiplexing is typically added to protocols to avoid
+   the overhead of establishing additional TCP connections.  This need
+   arises in environments where the TCP connections are extremely short-
+   lived, often used only for a single handshake between the peers.
+   Scalability protocols, on the other hand, require long-lived
+   connections which doesn't make the feature necessary.
+
+   At the same time, multiplexing on top of TCP, while doable, is
+   inferior to the real multiplexing done using multiple TCP
+   connections.  Specifically, TCP's head-of-line blocking feature means
+   that a single lost TCP packet will hinder delivery for all the
+   streams on the top of the connection, not just the one the missing
+   packets belonged to.
+
+   At the same time, implementing multiplexing is a non-trivial matter
+   and results in increased development cost, more bugs and larger
+   attack surface.
+
+
+
+
+
+Sustrik                 Expires September 2, 2014               [Page 4]
+
+Internet-Draft             TCP mapping for SPs                March 2014
+
+
+   Finally, for multiplexing to work properly, large messages have to be
+   split into smaller data chunks interleaved by chunk headers, which
+   makes receiving stack less efficient, as already discussed above.
+
+5.  IANA Considerations
+
+   This memo includes no request to IANA.
+
+6.  Security Considerations
+
+   The mapping isn't intended to provide any additional security in
+   addition to what TCP does.  DoS concerns are addressed within the
+   specification.
+
+Author's Address
+
+   Martin Sustrik (editor)
+
+   Email: sustrik@250bpm.com
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sustrik                 Expires September 2, 2014               [Page 5]
+

@@ -474,3 +474,4 @@ class FileDescriptorProto extends \Google\Protobuf\Internal\Message
     }
 
 }
+

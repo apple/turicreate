@@ -63,7 +63,6 @@ void register_functions(toolkit_function_registry& registry) {
 
   registry.register_toolkit_function(image_util::get_toolkit_function_registration());
   registry.register_toolkit_function(visualization::get_toolkit_function_registration());
-
   registry.register_toolkit_function(turi::annotate::get_toolkit_function_registration());
 
   // Register proprietary toolkits
@@ -159,7 +158,6 @@ void register_models(toolkit_class_registry& registry) {
 
   // Annotate Registration
   registry.register_toolkit_class(turi::annotate::get_toolkit_class_registration());
-
 }
 
 }

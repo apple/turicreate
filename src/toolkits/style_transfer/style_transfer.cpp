@@ -265,7 +265,7 @@ flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
   return static_cast<flex_int>(num_styles * 10000.0f / batch_size);
 }
 
-void check_style_index(int idx, int num_styles) {
+void check_style_index(int64_t idx, int64_t num_styles) {
   if ((idx < 0) || (idx >= num_styles))
     log_and_throw("Please choose a valid style index.");
 }
@@ -379,7 +379,7 @@ void style_transfer::infer_derived_options() {
         read_state<flex_int>("num_styles"), read_state<flex_int>("batch_size"));
 
     logprogress_stream << "Setting max_iterations to be " << max_iterations << std::endl;
-    
+
     add_or_update_state({{"max_iterations", max_iterations}});
   }
 
@@ -484,12 +484,13 @@ gl_sarray style_transfer::convert_style_indices_to_filter(
 
 gl_sframe style_transfer::predict(variant_type data,
                                   std::map<std::string, flexible_type> opts) {
-  gl_sframe_writer result({"style_idx", "stylized_image"},
-                          {flex_type_enum::INTEGER, flex_type_enum::IMAGE}, 1);
+  gl_sframe_writer result({"row_id","style", "stylized_image"},
+                          {flex_type_enum::INTEGER, flex_type_enum::INTEGER, flex_type_enum::IMAGE}, 1);
 
   gl_sarray content_images = convert_types_to_sarray(data);
 
-  std::vector<double> style_idx;
+  std::vector<flex_int> style_idx;
+
   auto style_idx_iter = opts.find("style_idx");
   if (style_idx_iter == opts.end()) {
     flex_int num_styles = read_state<flex_int>("num_styles");
@@ -500,22 +501,23 @@ gl_sframe style_transfer::predict(variant_type data,
     flexible_type flex_style_idx = style_idx_iter->second;
     switch (flex_style_idx.get_type()) {
       case flex_type_enum::INTEGER:
-        style_idx.push_back(flex_style_idx.get<flex_int>());
+        style_idx = {flex_style_idx.get<flex_int>()};
         break;
-      case flex_type_enum::VECTOR:
-        style_idx = std::move(flex_style_idx.get<flex_vec>());
-        if (style_idx.empty())
+      case flex_type_enum::VECTOR: {
+        const auto& v_ref = flex_style_idx.get<flex_vec>();
+        style_idx.assign(v_ref.begin(), v_ref.end());
+        if (style_idx.empty()) {
           log_and_throw("The `style` parameter can't be an empty list");
+        }
         break;
+      }
       case flex_type_enum::LIST: {
         const auto& list = flex_style_idx.get<flex_list>();
-        if (list.empty())
+        if (list.empty()) {
           log_and_throw("The `style` parameter can't be an empty list");
-        style_idx.resize(list.size());
-        std::transform(list.begin(), list.end(), style_idx.begin(),
-                       [](flexible_type val) {
-                         return static_cast<double>(val.get<flex_float>());
-                       });
+        }
+
+        style_idx.assign(list.begin(), list.end());
         break;
       }
       case flex_type_enum::UNDEFINED: {
@@ -536,7 +538,7 @@ gl_sframe style_transfer::predict(variant_type data,
 }
 
 void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
-                                     const std::vector<double>& style_idx) {
+                                     const std::vector<flex_int>& style_idx) {
   if (data.size() == 0) return;
 
   // TODO: if logging enabled
@@ -546,7 +548,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   // Since we aren't training the style_images are irrelevant
   std::unique_ptr<data_iterator> data_iter =
       create_iterator(data, /* style_sframe */ {}, /* repeat */ false,
-                      /* training */ false, num_styles);
+                      /* training */ false, static_cast<int>(num_styles));
 
   std::unique_ptr<compute_context> ctx = create_compute_context();
   if (ctx == nullptr) {
@@ -569,13 +571,17 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
         { {"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} }, 0);
   table.print_header();
 
-  // looping through all of the style indices
-  for (size_t i : style_idx) {
-    // check whether the style indices are valid
-    check_style_index(i, num_styles);
+  // looping through all of the data
+  data_iter->reset();
+  ASSERT_EQ(batch_size, 1);
+  std::vector<st_example> batch = data_iter->next_batch(batch_size);
+  int row_idx = 0;
 
-    std::vector<st_example> batch = data_iter->next_batch(batch_size);
-    while (!batch.empty()) {
+  while (!batch.empty()) {
+    // looping through all of the style indices
+    for (size_t i : style_idx) {
+      // check whether the style indices are valid
+      check_style_index(i, num_styles);
       // setting the style index for each batch
       std::for_each(batch.begin(), batch.end(),
                     [i](st_example& example) { example.style_index = i; });
@@ -600,7 +606,7 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
       // Write result to gl_sframe_writer
       for (const auto& row : processed_batch) {
-        result.write({row.first, row.second}, 0);
+        result.write({row_idx, row.first, row.second}, 0);
       }
 
       // progress printing for stylization
@@ -612,12 +618,10 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       formatted_percentage << "%";
       table.print_progress_row(idx, idx, progress_time(),
                                formatted_percentage.str());
-
-      // get next batch
-      batch = data_iter->next_batch(batch_size);
     }
-
-    data_iter->reset();
+    // get next batch and increase the row_idx
+    batch = data_iter->next_batch(batch_size);
+    ++row_idx;
   }
 
   table.print_row(idx, progress_time(), "100%");
@@ -672,7 +676,7 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
   }
 
   m_training_data_iterator = create_iterator(content, style, /* repeat */ true,
-                                             /* training */ true, num_styles);
+                                             /* training */ true, static_cast<int>(num_styles));
 
   m_training_compute_context = create_compute_context();
   if (m_training_compute_context == nullptr) {
@@ -854,11 +858,21 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
   const flex_int max_iterations =
       read_opts<flex_int>(model_data, "max_iterations");
   const flex_string model_type = read_opts<flex_string>(model_data, "model");
+  const flex_string _training_time_as_string = read_opts<flex_string>(model_data, "_training_time_as_string");
+  const flex_int training_epochs = read_opts<flex_int>(model_data, "training_epochs");
+  const flex_int training_iterations = read_opts<flex_int>(model_data, "training_iterations");
+  const flex_int num_content_images = read_opts<flex_int>(model_data, "num_content_images");
+  const flex_float training_loss = read_opts<flex_float>(model_data, "training_loss");  
 
   add_or_update_state({{"model", model_type},
                        {"num_styles", num_styles},
                        {"max_iterations", max_iterations},
-                       {"batch_size", DEFAULT_BATCH_SIZE}});
+                       {"batch_size", DEFAULT_BATCH_SIZE},
+                       {"_training_time_as_string", _training_time_as_string},
+                       {"training_epochs", training_epochs},
+                       {"training_iterations", training_iterations},
+                       {"num_content_images", num_content_images},
+                       {"training_loss", training_loss}});
 
   // Extract the weights and shapes
   flex_dict mxnet_data_dict;

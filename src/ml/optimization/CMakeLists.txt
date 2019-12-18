@@ -1,4 +1,4 @@
-project(optimization)
+project(Turi)
 
 make_library(optimization OBJECT
   SOURCES

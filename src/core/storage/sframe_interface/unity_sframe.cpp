@@ -671,7 +671,7 @@ void unity_sframe::set_sframe(const std::shared_ptr<sframe>& sf_ptr) {
 std::shared_ptr<unity_sarray_base> unity_sframe::transform(const std::string& lambda,
                                            flex_type_enum type,
                                            bool skip_undefined, // unused
-                                           int random_seed) {
+                                           uint64_t random_seed) {
   log_func_entry();
 #ifdef TC_HAS_PYTHON
   auto new_planner_node = op_lambda_transform::make_planner_node(
@@ -690,7 +690,7 @@ std::shared_ptr<unity_sarray_base> unity_sframe::transform(const std::string& la
 std::shared_ptr<unity_sarray_base> unity_sframe::transform_native(const function_closure_info& toolkit_fn_name,
                                            flex_type_enum type,
                                            bool skip_undefined, // unused
-                                           int seed) {
+                                           uint64_t seed) {
   log_func_entry();
 
   //  find the function
@@ -717,7 +717,7 @@ std::shared_ptr<unity_sarray_base> unity_sframe::transform_native(const function
 std::shared_ptr<unity_sarray_base> unity_sframe::transform_lambda(
       std::function<flexible_type(const sframe_rows::row&)> lambda,
       flex_type_enum type,
-      int random_seed) {
+      uint64_t random_seed) {
   log_func_entry();
 
   auto new_planner_node = op_transform::make_planner_node(this->get_planner_node(),
@@ -734,7 +734,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::flat_map(
     std::vector<std::string> column_names,
     std::vector<flex_type_enum> column_types,
     bool skip_undefined,
-    int seed) {
+    uint64_t seed) {
 #ifdef TC_HAS_PYTHON
   log_func_entry();
   DASSERT_EQ(column_names.size(), column_types.size());
@@ -1153,7 +1153,7 @@ void unity_sframe::save_as_csv(const std::string& url,
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::sample(float percent,
-                                                        int random_seed,
+                                                        uint64_t random_seed,
                                                         bool exact) {
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
   if (percent == 1.0){
@@ -1191,7 +1191,7 @@ std::string unity_sframe::query_plan_string() {
 }
 
 std::list<std::shared_ptr<unity_sframe_base>>
-unity_sframe::random_split(float percent, int random_seed, bool exact) {
+unity_sframe::random_split(float percent, uint64_t random_seed, bool exact) {
   log_func_entry();
   logstream(LOG_INFO) << "Args: " << percent << ", " << random_seed << std::endl;
 

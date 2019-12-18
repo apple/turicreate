@@ -1,1 +1,1 @@
-project(generics)
+project(Turi)

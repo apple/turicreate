@@ -167,7 +167,7 @@ flexible_type tfidf_apply(const flexible_type& input,
         index = indexer->lookup(kvp.first);
         doc_frequency = indexer->lookup_counts(kvp.first);
 
-        int term_frequency = 0;
+        int64_t term_frequency = 0;
         if (kvp.second.get_type() == flex_type_enum::INTEGER) {
           term_frequency = kvp.second.get<flex_int>();
           if (term_frequency <= 0) {
@@ -176,7 +176,7 @@ flexible_type tfidf_apply(const flexible_type& input,
           tfidf_score = compute_tfidf(num_documents, term_frequency, doc_frequency);
         } else if (kvp.second.get_type() == flex_type_enum::FLOAT) {
           // Round down any floats
-          term_frequency = (size_t) kvp.second.get<flex_float>();
+          term_frequency = int64_t(kvp.second.get<flex_float>());
           if (term_frequency <= 0) {
             log_and_throw("Nonpositive dict value found. Only positive numeric values allowed.");
           }

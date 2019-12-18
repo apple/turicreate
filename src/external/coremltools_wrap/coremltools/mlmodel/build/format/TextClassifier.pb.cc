@@ -422,7 +422,7 @@ void TextClassifier::clear_revision() {
   return revision_;
 }
 void TextClassifier::set_revision(::google::protobuf::uint32 value) {
-
+  
   revision_ = value;
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.TextClassifier.revision)
 }
@@ -436,13 +436,13 @@ const ::std::string& TextClassifier::language() const {
   return language_.GetNoArena();
 }
 void TextClassifier::set_language(const ::std::string& value) {
-
+  
   language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.TextClassifier.language)
 }
 #if LANG_CXX11
 void TextClassifier::set_language(::std::string&& value) {
-
+  
   language_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CoreMLModels.TextClassifier.language)
@@ -450,31 +450,31 @@ void TextClassifier::set_language(::std::string&& value) {
 #endif
 void TextClassifier::set_language(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CoreMLModels.TextClassifier.language)
 }
 void TextClassifier::set_language(const char* value, size_t size) {
-
+  
   language_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CoreMLModels.TextClassifier.language)
 }
 ::std::string* TextClassifier::mutable_language() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CoreMLModels.TextClassifier.language)
   return language_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* TextClassifier::release_language() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CoreMLModels.TextClassifier.language)
-
+  
   return language_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void TextClassifier::set_allocated_language(::std::string* language) {
   if (language != NULL) {
-
+    
   } else {
-
+    
   }
   language_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), language);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CoreMLModels.TextClassifier.language)
@@ -489,13 +489,13 @@ const ::std::string& TextClassifier::modelparameterdata() const {
   return modelparameterdata_.GetNoArena();
 }
 void TextClassifier::set_modelparameterdata(const ::std::string& value) {
-
+  
   modelparameterdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
   // @@protoc_insertion_point(field_set:CoreML.Specification.CoreMLModels.TextClassifier.modelParameterData)
 }
 #if LANG_CXX11
 void TextClassifier::set_modelparameterdata(::std::string&& value) {
-
+  
   modelparameterdata_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
   // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.CoreMLModels.TextClassifier.modelParameterData)
@@ -503,31 +503,31 @@ void TextClassifier::set_modelparameterdata(::std::string&& value) {
 #endif
 void TextClassifier::set_modelparameterdata(const char* value) {
   GOOGLE_DCHECK(value != NULL);
-
+  
   modelparameterdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
   // @@protoc_insertion_point(field_set_char:CoreML.Specification.CoreMLModels.TextClassifier.modelParameterData)
 }
 void TextClassifier::set_modelparameterdata(const void* value, size_t size) {
-
+  
   modelparameterdata_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
   // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.CoreMLModels.TextClassifier.modelParameterData)
 }
 ::std::string* TextClassifier::mutable_modelparameterdata() {
-
+  
   // @@protoc_insertion_point(field_mutable:CoreML.Specification.CoreMLModels.TextClassifier.modelParameterData)
   return modelparameterdata_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 ::std::string* TextClassifier::release_modelparameterdata() {
   // @@protoc_insertion_point(field_release:CoreML.Specification.CoreMLModels.TextClassifier.modelParameterData)
-
+  
   return modelparameterdata_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 void TextClassifier::set_allocated_modelparameterdata(::std::string* modelparameterdata) {
   if (modelparameterdata != NULL) {
-
+    
   } else {
-
+    
   }
   modelparameterdata_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), modelparameterdata);
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.CoreMLModels.TextClassifier.modelParameterData)

@@ -707,7 +707,7 @@ class StyleTransfer(_Model):
         return out
 
     def _get_version(self):
-        return self._CPP_ACTIVITY_CLASSIFIER_VERSION
+        return self._CPP_STYLE_TRANSFER_VERSION
 
     def export_coreml(self, filename, image_shape=(256, 256), include_flexible_shape=True):
         """

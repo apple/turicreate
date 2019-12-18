@@ -44,7 +44,7 @@ namespace CoreML {
                 return result;
             }
         }
-
+        
         // Linear regression specific type checking.
         // -------------------------------------------------------------------------
         auto lr = format.glmregressor();
@@ -52,7 +52,7 @@ namespace CoreML {
             return Result(ResultType::INVALID_MODEL_PARAMETERS,
                           "Weights and offsets must be the same size.");
         }
-
+        
         if (lr.weights_size() > 0) {
             int expected_size = lr.weights(0).value_size();
             for (int i = 1; i < lr.weights_size(); i++) {
@@ -74,7 +74,7 @@ namespace CoreML {
         if (!result.good()) {
             return result;
         }
-
+        
         // Check that inputs are vectorizable
         result = validateDescriptionsAreAllVectorizableTypes(interface.input());
         if (!result.good()) {

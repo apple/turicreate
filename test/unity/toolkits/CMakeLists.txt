@@ -1,4 +1,4 @@
-project(unity_test_toolkits)
+project(Turi)
 
 add_subdirectory(feature_engineering)
 add_subdirectory(ml_data_2)

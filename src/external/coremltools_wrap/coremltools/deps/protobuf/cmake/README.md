@@ -173,9 +173,9 @@ You should see output similar to:
 
      Running main() from gmock_main.cc
      [==========] Running 1546 tests from 165 test cases.
-
+     
      ...
-
+     
      [==========] 1546 tests from 165 test cases ran. (2529 ms total)
      [  PASSED  ] 1546 tests.
 
@@ -194,7 +194,7 @@ To run specific tests:
      [ RUN      ] AnyTest.TestIs
      [       OK ] AnyTest.TestIs (0 ms)
      [----------] 3 tests from AnyTest (1 ms total)
-
+     
      [----------] Global test environment tear-down
      [==========] 3 tests from 1 test case ran. (2 ms total)
      [  PASSED  ] 3 tests.
