@@ -11,8 +11,6 @@ cmake_policy(SET CMP0005 NEW)
 cmake_policy(SET CMP0045 OLD)
 cmake_policy(SET CMP0046 OLD)
 cmake_policy(SET CMP0042 NEW)
-cmake_policy(SET CMP0077 NEW)
-   
 
 # Generate a compilation database for use with automated tools like IDE/editor
 # plugins. See http://clang.llvm.org/docs/JSONCompilationDatabase.html
