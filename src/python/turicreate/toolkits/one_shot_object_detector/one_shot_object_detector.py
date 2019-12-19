@@ -12,7 +12,6 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits.object_detector.object_detector import ObjectDetector as _ObjectDetector
 from turicreate.toolkits.one_shot_object_detector.util._augmentation import preview_synthetic_training_data as _preview_synthetic_training_data
 import turicreate.toolkits._internal_utils as _tkutl
-from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
 from turicreate.toolkits import _coreml_utils
 
 USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
@@ -296,6 +295,29 @@ class OneShotObjectDetector(_CustomModel):
         return out
 
     def summary(self, output=None):
+        """
+        Print a summary of the model. The summary includes a description of
+        training data, options, hyper-parameters, and statistics measured
+        during model creation.
+
+        Parameters
+        ----------
+        output : str, None
+            The type of summary to return.
+
+            - None or 'stdout' : print directly to stdout.
+
+            - 'str' : string of summary
+
+            - 'dict' : a dict with 'sections' and 'section_titles' ordered
+              lists. The entries in the 'sections' list are tuples of the form
+              ('label', 'value').
+
+        Examples
+        --------
+        >>> m.summary()
+        """
+        from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
 
         if output is None or output == 'stdout':
             pass
