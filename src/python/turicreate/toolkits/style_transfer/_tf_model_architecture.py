@@ -513,8 +513,9 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
     @batch_size.setter
     def batch_size(self, batch_size):
         self._batch_size = batch_size
-        self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [batch_size])
-        self.__define_graph()
+        with self.st_graph.as_default():
+            self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [batch_size])
+            self.__define_graph()
 
     def train(self, feed_dict):
         for key in feed_dict.keys():
@@ -527,9 +528,10 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
 
         tf_input_shape = [None] + list(feed_dict['input'].shape)[1:]
-        self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = tf_input_shape)
         self._define_training_graph = False
-        self.__define_graph()
+        with self.st_graph.as_default():
+            self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = tf_input_shape)
+            self.__define_graph()
 
         stylized_image = self.sess.run([self.output], feed_dict={self.tf_input : feed_dict['input'], self.tf_index: feed_dict['index']})        
         stylized_raw = _np.array(stylized_image)
