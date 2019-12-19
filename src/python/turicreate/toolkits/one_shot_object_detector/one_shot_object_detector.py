@@ -12,6 +12,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits.object_detector.object_detector import ObjectDetector as _ObjectDetector
 from turicreate.toolkits.one_shot_object_detector.util._augmentation import preview_synthetic_training_data as _preview_synthetic_training_data
 import turicreate.toolkits._internal_utils as _tkutl
+from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
 from turicreate.toolkits import _coreml_utils
 
 USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
@@ -282,8 +283,6 @@ class OneShotObjectDetector(_CustomModel):
         Print a string description of the model when the model name is entered
         in the terminal.
         """
-        if USE_CPP:
-            return self.__class__.__name__
 
         width = 40
         sections, section_titles = self._get_summary_struct()
@@ -295,6 +294,20 @@ class OneShotObjectDetector(_CustomModel):
             width=width,
             class_name='OneShotObjectDetector')
         return out
+
+    def summary(self, output=None):
+
+        if output is None or output == 'stdout':
+            pass
+        elif (output == 'str'):
+            return self.__repr__()
+        elif output == 'dict':
+            return _toolkit_serialize_summary_struct( self.__proxy__['detector'], \
+                                            *self._get_summary_struct() )
+        try:
+            print(self.__repr__())
+        except:
+            return self.__class__.__name__
 
     def _get_summary_struct(self):
         """

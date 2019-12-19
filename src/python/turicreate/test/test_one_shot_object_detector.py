@@ -247,6 +247,18 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         model = self.model
         model.summary()
 
+    def test_summary_str(self):
+        model = self.model
+        self.assertTrue(isinstance(model.summary("str"), str))
+
+    def test_summary_dict(self):
+        model = self.model
+        self.assertTrue(isinstance(model.summary("dict"), dict))
+
+    def test_summary_invalid(self):
+        model = self.model
+        model.summary("invalid")
+
     def test_repr(self):
         # Repr after fit
         model = self.model
