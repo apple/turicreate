@@ -17,6 +17,6 @@ make_library(coremltools_mlmodel
   EXTERNAL_VISIBILITY
   )
 
-target_compile_options(coremltools_mlmodel INTERFACE "-w")
+target_compile_options(coremltools_mlmodel INTERFACE "-w -DCoreML=__tc_coreml")
 
 
