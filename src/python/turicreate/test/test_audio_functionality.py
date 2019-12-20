@@ -328,13 +328,13 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     def test_summary_invalid_input(self):
         model = self.model
-        with self.assertRaises(_ToolkitError):
+        with self.assertRaises(ToolkitError):
             model.summary(model.summary('invalid'))
 
-        with self.assertRaises(_ToolkitError):
+        with self.assertRaises(ToolkitError):
             model.summary(model.summary(0))
 
-        with self.assertRaises(_ToolkitError):
+        with self.assertRaises(ToolkitError):
             model.summary(model.summary({}))
 
 
