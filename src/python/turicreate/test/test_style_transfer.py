@@ -327,7 +327,7 @@ class StyleTransferGPUTest(unittest.TestCase):
                     tc.config.set_num_gpus(out_gpus)
                     model = tc.load_model(path)
 
-                with test_util.TempDirectory() as path:
-                    model.export_coreml(os.path.join(path, 'model.mlmodel'))
+                    with test_util.TempDirectory() as export_path:
+                        model.export_coreml(os.path.join(export_path, 'model.mlmodel'))
 
         tc.config.set_num_gpus(old_num_gpus)
