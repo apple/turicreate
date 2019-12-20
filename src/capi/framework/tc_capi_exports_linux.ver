@@ -1,7 +1,6 @@
 {
   global:
     _tc_*;
-    tc_*;
 
   local:
     *;
