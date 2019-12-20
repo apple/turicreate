@@ -163,6 +163,11 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
     for feature in features:
         _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
 
+    # Check for missing values for sframe validation set
+    if isinstance(validation_set, _SFrame):
+        _tkutl._raise_error_if_sframe_empty(validation_set, 'validation_set')
+        for feature in features:
+            _tkutl._handle_missing_values(validation_set, feature, 'validation_set')
 
     # C++ model
 
