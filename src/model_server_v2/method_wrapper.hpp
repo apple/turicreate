@@ -304,7 +304,7 @@ template <typename Class, typename BaseClass, bool is_const_method,
      return variant_type(); 
   }
 
-  // Fourth case: standalone function, non-void return type.
+  // Fourth case: standalone function, non-void return type 
   template <int arg_idx, typename C, typename... Expanded, 
            enable_if_<arg_idx == N && !is_method && !std::is_void<RetType>::value> = 0>
     variant_type __call(C*, const arg_v_type& arg_v, const Expanded&... args) const {

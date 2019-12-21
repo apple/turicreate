@@ -23,7 +23,6 @@ namespace v2 {
  *  this class by name, along with helpful error messages if the call is wrong. 
  *
  *  If the BaseClass is void, it provides a registry for standalone functions.
- *  TODO: implement this. 
  */
 template <typename BaseClass>
 class method_registry {
