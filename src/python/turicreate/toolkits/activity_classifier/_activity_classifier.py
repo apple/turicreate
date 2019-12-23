@@ -607,7 +607,7 @@ class ActivityClassifier(_Model):
         +---------------+-------+-------------------+
         """
         if not isinstance(k, int):
-            raise _ToolkitError('k must be of type int')
+            raise TypeError('k must be of type int')
         _tkutl._numeric_param_check_range('k', k, 1, _six.MAXSIZE)
         return self.__proxy__.predict_topk(dataset, output_type, k, output_frequency);
 

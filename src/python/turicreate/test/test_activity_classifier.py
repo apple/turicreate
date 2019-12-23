@@ -429,7 +429,7 @@ class ActivityClassifierTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             preds = model.predict_topk(self.data, k=0)
 
-        with self.assertRaises(_ToolkitError):
+        with self.assertRaises(TypeError):
             preds = model.predict_topk(self.data, k=[])
 
 
