@@ -439,6 +439,18 @@ class ActivityClassifierTest(unittest.TestCase):
             expected_len = self._calc_expected_predictions_length(self.data.head(100), top_k=5)
             self.assertEqual(len(preds), expected_len)
 
+    def test_predict_topk_invalid_k(self):
+        model = self.model
+        with self.assertRaises(_ToolkitError):
+            preds = model.predict_topk(self.data, k=-1)
+
+        with self.assertRaises(_ToolkitError):
+            preds = model.predict_topk(self.data, k=0)
+
+        with self.assertRaises(TypeError):
+            preds = model.predict_topk(self.data, k=[])
+
+
     def test_evaluate_with_incomplete_targets(self):
         """
         Check that evaluation does not require the test data to span all labels.
