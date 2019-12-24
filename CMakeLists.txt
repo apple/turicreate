@@ -482,6 +482,14 @@ FILE(GLOB_RECURSE _tc_core_files
     ${CMAKE_SOURCE_DIR}/src/model_server/*.m
     ${CMAKE_SOURCE_DIR}/src/model_server/*.mm
     
+    # TODO: this will be integrated 
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.h
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.c
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.hpp
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.m
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.mm
+    
     ${CMAKE_SOURCE_DIR}/src/toolkits/*.h
     ${CMAKE_SOURCE_DIR}/src/toolkits/*.c
     ${CMAKE_SOURCE_DIR}/src/toolkits/*.hpp
