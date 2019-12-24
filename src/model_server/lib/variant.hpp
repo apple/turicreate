@@ -15,6 +15,7 @@
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_data/dataframe.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>
+#include <model_server/lib/variant.hpp>
 
 namespace turi {
 class model_base;
@@ -307,13 +308,6 @@ inline void variant_set_value(variant_type& v, const T& f) {
 template <typename T>
 inline variant_type to_variant(const T& f) {
   return variant_converter<typename std::decay<T>::type>().set(f);
-}
-
-/** Overload for the case when we're trying to wrap a void return 
- *  type in a template.
- */
-inline variant_type to_variant() {
-  return variant_type();  
 }
 } // namespace turi
 
