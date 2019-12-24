@@ -12,7 +12,7 @@
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
 
-#include <toolkits/sparse_similarity/sliced_itemitem_matrix.hpp>
+#include <ml/sparse_similarity/sliced_itemitem_matrix.hpp>
 #include <core/util/cityhash_tc.hpp>
 
 using namespace turi;

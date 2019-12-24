@@ -9,6 +9,7 @@
 #include <iterator>
 #include <type_traits>
 #include <functional>
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/parallel/pthread_tools.hpp>

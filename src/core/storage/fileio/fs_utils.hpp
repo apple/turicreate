@@ -12,6 +12,7 @@
 #include <tuple>
 #include <string>
 #include <vector>
+#include <turi_common.h>
 #include <core/storage/fileio/sanitize_url.hpp>
 
 namespace turi {

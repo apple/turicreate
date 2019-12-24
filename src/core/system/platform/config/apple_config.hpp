@@ -2,6 +2,7 @@
 #define TURI_APPLE_SYSTEM_CONFIG_H_
 
 #include <string>
+#include <turi_common.h>
 
 
 #ifdef __APPLE__

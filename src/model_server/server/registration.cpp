@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <model_server/server/registration.hpp>
 
 #include <model_server/lib/simple_model.hpp>
@@ -24,14 +25,14 @@
 #include <toolkits/object_detection/one_shot_object_detection/class_registrations.hpp>
 #include <toolkits/style_transfer/class_registrations.hpp>
 
-#include <toolkits/evaluation/metrics.hpp>
-#include <toolkits/evaluation/unity_evaluation.hpp>
+#include <ml/evaluation/metrics.hpp>
+#include <ml/evaluation/unity_evaluation.hpp>
 
 #include <toolkits/graph_analytics/include.hpp>
 #include <core/export.hpp>
 #include <model_server/lib/extensions/model_base.hpp>
 
-#include <toolkits/ml_model/python_model.hpp>
+#include <ml/ml_model/python_model.hpp>
 #include <toolkits/image/image_fn_export.hpp>
 
 #include <toolkits/nearest_neighbors/distances.hpp>
@@ -43,12 +44,12 @@
 #include <toolkits/nearest_neighbors/class_registrations.hpp>
 #include <toolkits/recsys/class_registrations.hpp>
 #include <toolkits/text/class_registrations.hpp>
-#include <toolkits/supervised_learning/class_registrations.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <ml/supervised_learning/class_registrations.hpp>
+#include <ml/supervised_learning/supervised_learning.hpp>
 #include <toolkits/feature_engineering/class_registrations.hpp>
 #include <toolkits/pattern_mining/class_registrations.hpp>
 #include <toolkits/clustering/class_registrations.hpp>
-#include <toolkits/util/class_registrations.hpp>
+#include <ml/util/class_registrations.hpp>
 #include <toolkits/prototype/class_registrations.hpp>
 
 #include <toolkits/image_deep_feature_extractor/class_registrations.hpp>

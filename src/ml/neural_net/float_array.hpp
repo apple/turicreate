@@ -14,6 +14,7 @@
 #include <string>
 #include <vector>
 
+#include <turi_common.h>
 #include <core/storage/serialization/serialization_includes.hpp>
 
 namespace turi {

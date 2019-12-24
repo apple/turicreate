@@ -7,6 +7,7 @@
 #define TURI_UNITY_SITERABLE_HPP
 #include <cstddef>
 #include <vector>
+#include <turi_common.h>
 namespace turi {
 
 /**

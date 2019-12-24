@@ -5,6 +5,7 @@
  */
 #ifndef TURI_LAMBDA_GRAPH_LAMBDA_INTERFACE_HPP
 #define TURI_LAMBDA_GRAPH_LAMBDA_INTERFACE_HPP
+#include <turi_common.h>
 #include <core/storage/sgraph_data/sgraph_types.hpp>
 #include <core/storage/sgraph_data/sgraph_synchronize.hpp>
 #include <core/system/cppipc/cppipc.hpp>

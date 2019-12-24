@@ -10,6 +10,7 @@
 #include <vector>
 #include <cstdint>
 #include <iostream>
+#include <turi_common.h>
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <core/data/flexible_type/ndarray.hpp>
 #include <core/data/image/image_type.hpp>

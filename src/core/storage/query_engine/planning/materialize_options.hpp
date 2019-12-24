@@ -10,6 +10,7 @@
 #include <functional>
 #include <vector>
 #include <string>
+#include <turi_common.h>
 
 namespace turi {
 class sframe_rows;

@@ -9,6 +9,7 @@
 #include <exception>
 #include <sstream>
 #include <map>
+#include <turi_common.h>
 #include <core/system/nanosockets/zmq_msg_vector.hpp>
 #include <typeinfo>
 #include <core/system/exceptions/error_types.hpp>

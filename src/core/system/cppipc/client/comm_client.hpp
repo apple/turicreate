@@ -8,6 +8,7 @@
 #include <map>
 #include <memory>
 #include <chrono>
+#include <turi_common.h>
 #include <core/parallel/atomic.hpp>
 #include <core/logging/logger.hpp>
 #include <boost/thread/thread.hpp>

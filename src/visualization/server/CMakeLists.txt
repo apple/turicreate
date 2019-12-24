@@ -8,7 +8,7 @@ if(APPLE AND NOT TC_BUILD_IOS)
   set(VISUALIZATION_PLATFORM_SOURCES plot_macos.mm)
 endif()
 
-make_library(visualization OBJECT
+make_library(visualization
   SOURCES
     batch_size.cpp
     boxes_and_whiskers.cpp
@@ -34,8 +34,6 @@ make_library(visualization OBJECT
     vega_data.cpp
     vega_spec.cpp
     ${VISUALIZATION_PLATFORM_SOURCES}
-  REQUIRES
-    process
   EXTERNAL_VISIBILITY
 )
 

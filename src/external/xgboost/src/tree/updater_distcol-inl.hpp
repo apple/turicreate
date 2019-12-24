@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <xgboost/src/sync/sync.h>
 #include <xgboost/src/utils/bitmap.h>
-#include <xgboost/src/utils/io.h>
+#include <external/xgboost/src/utils/io.h>
 #include "./updater_colmaker-inl.hpp"
 #include "./updater_prune-inl.hpp"
 

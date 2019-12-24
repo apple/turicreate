@@ -8,6 +8,7 @@
 
 
 
+#include <turi_common.h>
 #include <ml/optimization/optimization_interface.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <Eigen/Core>

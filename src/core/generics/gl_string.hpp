@@ -6,6 +6,7 @@
 #ifndef TURI_GL_STRING_H_
 #define TURI_GL_STRING_H_
 
+#include <turi_common.h>
 #include <core/generics/vector_internals.hpp>
 #include <core/generics/string_internals.hpp>
 #include <core/util/cityhash_tc.hpp>

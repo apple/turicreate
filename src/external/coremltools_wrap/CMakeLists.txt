@@ -10,7 +10,6 @@ file(GLOB_RECURSE _mlmodel_files
   ${CMAKE_CURRENT_SOURCE_DIR}/coremltools/mlmodel/src/*.cpp)
 
 make_library(coremltools_mlmodel
-  OBJECT
   SOURCES
     ${_mlmodel_files}
   REQUIRES protobuf

@@ -9,6 +9,7 @@
 #include <mutex>
 #include <string>
 #include <queue>
+#include <turi_common.h>
 
 namespace turi {
   namespace visualization {

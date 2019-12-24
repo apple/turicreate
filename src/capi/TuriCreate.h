@@ -12,6 +12,7 @@
 extern "C" {
 #endif
 
+#include <turi_common.h>
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>

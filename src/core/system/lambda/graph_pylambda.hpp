@@ -5,6 +5,7 @@
  */
 #ifndef TURI_LAMBDA_GRAPH_PYLAMBDA_EVALUATOR_HPP
 #define TURI_LAMBDA_GRAPH_PYLAMBDA_EVALUATOR_HPP
+#include <turi_common.h>
 #include <core/system/lambda/graph_lambda_interface.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <vector>

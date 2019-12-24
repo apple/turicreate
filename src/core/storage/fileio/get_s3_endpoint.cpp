@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <turi_common.h>
 #include <boost/algorithm/string/predicate.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>

@@ -11,6 +11,7 @@
 #include <memory>
 #include <map>
 #include <unordered_map>
+#include <turi_common.h>
 #include <core/util/mutable_queue.hpp>
 #include <core/storage/lazy_eval/lazy_eval_operation.hpp>
 #include <core/logging/logger.hpp>

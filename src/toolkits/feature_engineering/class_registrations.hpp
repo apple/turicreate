@@ -7,6 +7,7 @@
 #define FEATURE_ENGINEERING_REGISTRATIONS_H_
 
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/toolkit_class_specification.hpp>
 

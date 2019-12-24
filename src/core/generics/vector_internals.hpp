@@ -14,6 +14,7 @@
 #include <exception>
 #include <type_traits>
 #include <initializer_list>
+#include <turi_common.h>
 #include <core/util/basic_types.hpp>
 #include <core/logging/assertions.hpp>
 #include <core/util/basic_types.hpp>

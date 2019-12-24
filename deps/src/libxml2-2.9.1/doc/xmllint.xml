@@ -105,7 +105,7 @@
 			<arg choice="plain"><option>--catalogs</option></arg>
 			<arg choice="plain"><option>--nocatalogs</option></arg>
 			<arg choice="plain"><option>--auto</option></arg>
-			<arg choice="plain"><option>--xinclude</option></arg>
+			<arg choice="plain"><option>--xinclude </option></arg>
 			<arg choice="plain"><option>--noxincludenode</option></arg>
 			<arg choice="plain"><option>--loaddtd</option></arg>
 			<arg choice="plain"><option>--dtdattr</option></arg>
@@ -608,7 +608,7 @@
 		</varlistentry>
 
 		<varlistentry>
-	<term><option>--xinclude</option></term>
+	<term><option>--xinclude </option></term>
 	<listitem>
 		<para>Do XInclude processing.</para>
 	</listitem>

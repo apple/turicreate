@@ -15,7 +15,7 @@
 #include <algorithm>
 #include <vector>
 #include <cmath>
-#include <xgboost/src/utils/io.h>
+#include <external/xgboost/src/utils/io.h>
 #include <xgboost/src/utils/fmap.h>
 #include <xgboost/src/utils/utils.h>
 #include <core/data/json/json_include.hpp>

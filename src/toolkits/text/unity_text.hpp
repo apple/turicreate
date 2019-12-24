@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_TEXT_H
 #define TURI_UNITY_TEXT_H
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_function_specification.hpp>
 #include <model_server/lib/variant.hpp>
 

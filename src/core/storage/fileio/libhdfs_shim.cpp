@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // libhdfs shim library
+#include <turi_common.h>
 #include <core/globals/global_constants.hpp>
 #include <core/logging/logger.hpp>
 #include <core/logging/assertions.hpp>
@@ -13,12 +14,12 @@
 #include <boost/algorithm/string.hpp>
 #include <core/parallel/execute_task_in_native_thread.hpp>
 #include <type_traits>
-#include <process/process.hpp>
+#include <core/system/platform/process/process.hpp>
 #ifdef HAS_HADOOP
 #ifndef _WIN32
 #include <dlfcn.h>
 #else
-#include <cross_platform/windows_wrapper.hpp>
+#include <core/system/platform/cross_platform/windows_wrapper.hpp>
 #include <core/util/syserr_reporting.hpp>
 #endif
 extern  "C" {

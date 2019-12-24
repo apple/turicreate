@@ -12,6 +12,7 @@
 #include <iterator>
 #include <algorithm>
 
+#include <turi_common.h>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/storage/serialization/oarchive.hpp>
 

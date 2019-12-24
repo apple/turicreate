@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <capi/TuriCreate.h>
 #include <model_server/server/unity_server_control.hpp>
 #include <model_server/server/unity_server_options.hpp>

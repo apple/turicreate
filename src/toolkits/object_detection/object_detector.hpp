@@ -11,10 +11,11 @@
 #include <map>
 #include <memory>
 
+#include <turi_common.h>
 #include <core/logging/table_printer/table_printer.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/coreml_export/mlmodel_wrapper.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>

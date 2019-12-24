@@ -6,6 +6,7 @@
 #ifndef TURI_TOOLKIT_FUNCTION_WRAPPER_IMPL_HPP
 #define TURI_TOOLKIT_FUNCTION_WRAPPER_IMPL_HPP
 #include <type_traits>
+#include <turi_common.h>
 #include <boost/mpl/vector.hpp>
 #include <boost/mpl/size.hpp>
 #include <boost/mpl/contains.hpp>

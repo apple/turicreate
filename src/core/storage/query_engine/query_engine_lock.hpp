@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_QUERY_ENGINE_HPP
 #define TURI_SFRAME_QUERY_ENGINE_HPP
 #include <thread>
+#include <turi_common.h>
 namespace turi {
 class recursive_mutex;
 

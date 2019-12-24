@@ -7,6 +7,7 @@
 #define TURI_UNITY_FLEX_DICT_HPP
 
 #include <vector>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {

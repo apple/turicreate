@@ -6,6 +6,7 @@
 #ifndef TURI_ATOMIC_HPP
 #define TURI_ATOMIC_HPP
 
+#include <turi_common.h>
 #include <stdint.h>
 #include <type_traits>
 

@@ -9,6 +9,7 @@
 #include <vector>
 #include <tuple>
 #include <type_traits>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <functional>
 #include <core/storage/sframe_data/sarray.hpp>

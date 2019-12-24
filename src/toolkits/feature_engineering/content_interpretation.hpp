@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_TOOLKITS_CONTENT_INTERPRETATION_H
 #define TURI_UNITY_TOOLKITS_CONTENT_INTERPRETATION_H
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sarray.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 

@@ -9,6 +9,7 @@
 
 #include <vector>
 
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 

@@ -10,6 +10,7 @@
 #include <map>
 #include <utility>
 #include <functional>
+#include <turi_common.h>
 namespace turi {
 
 class flexible_type;

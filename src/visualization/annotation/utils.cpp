@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include "utils.hpp"
 #include <core/logging/assertions.hpp>
 

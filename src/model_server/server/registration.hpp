@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_REGSTRATION_HPP_
 #define TURI_UNITY_REGSTRATION_HPP_
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_registry.hpp>
 #include <model_server/lib/toolkit_function_registry.hpp>
 

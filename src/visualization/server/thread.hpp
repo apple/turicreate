@@ -7,6 +7,7 @@
 #define __TC_VISUALIZATION_THREAD
 
 #include <functional>
+#include <turi_common.h>
 
 namespace turi {
   namespace visualization {

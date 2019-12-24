@@ -324,3 +324,4 @@ struct SingleLstmNetwork : public MPSNetwork {
 }  // namespace turi
 
 #endif
+#include <turi_common.h>

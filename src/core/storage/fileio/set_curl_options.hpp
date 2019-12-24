@@ -17,3 +17,4 @@ void set_curl_options(void* ecurl);
 }
 }
 #endif
+#include <turi_common.h>

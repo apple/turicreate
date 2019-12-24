@@ -9,6 +9,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <turi_common.h>
 #include <stdint.h>
 #include <core/logging/logger.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>

@@ -6,6 +6,7 @@
 #ifndef TURI_FLEXIBLE_TYPE_STRING_ESCAPE_HPP
 #define TURI_FLEXIBLE_TYPE_STRING_ESCAPE_HPP
 #include <string>
+#include <turi_common.h>
 namespace turi {
 
 /**

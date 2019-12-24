@@ -11,7 +11,7 @@
 #include <vector>
 #include <cstring>
 #include <xgboost/src/data.h>
-#include <xgboost/src/utils/io.h>
+#include <external/xgboost/src/utils/io.h>
 namespace xgboost {
 namespace learner {
 /*!

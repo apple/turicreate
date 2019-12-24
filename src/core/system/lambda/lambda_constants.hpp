@@ -6,6 +6,7 @@
 #ifndef TURI_LAMBDA_CONSTANTS_HPP
 #define TURI_LAMBDA_CONSTANTS_HPP
 #include <cstddef>
+#include <turi_common.h>
 
 namespace turi {
 

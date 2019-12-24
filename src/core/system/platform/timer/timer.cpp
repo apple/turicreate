@@ -4,11 +4,12 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <iostream>
+#include <turi_common.h>
 #include <signal.h>
 #include <sys/time.h>
 #include <boost/bind.hpp>
 #include <core/parallel/pthread_tools.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 
 std::ostream&  operator<<(std::ostream& out, const turi::timer& t) {
   return out << t.current_time();

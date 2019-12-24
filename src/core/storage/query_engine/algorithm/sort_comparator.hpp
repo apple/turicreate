@@ -6,6 +6,7 @@
 #ifndef TURI_QUERY_EVAL_SORT_COMPARATOR_HPP
 #define TURI_QUERY_EVAL_SORT_COMPARATOR_HPP
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {

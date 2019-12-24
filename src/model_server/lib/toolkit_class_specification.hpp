@@ -7,6 +7,7 @@
 #define TURI_UNITY_LIB_TOOLKIT_CLASS_SPECIFICATION_HPP
 
 #include <string>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 namespace turi {
 class model_base;

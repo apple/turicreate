@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_QUERY_ENGINE_INFER_OPERATOR_FIELD_H_
 #define TURI_SFRAME_QUERY_ENGINE_INFER_OPERATOR_FIELD_H_
 
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <memory>
 #include <vector>

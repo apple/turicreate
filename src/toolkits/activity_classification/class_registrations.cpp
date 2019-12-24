@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/activity_classification/class_registrations.hpp>
 
 #include <model_server/lib/toolkit_class_macros.hpp>

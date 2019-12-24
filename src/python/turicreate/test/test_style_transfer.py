@@ -305,29 +305,6 @@ class StyleTransferTest(unittest.TestCase):
         self.assertTrue("num_content_images" in fields)
         self.assertTrue("training_loss" in fields)
 
-    def test_summary(self):
-        model = self.model
-        model.summary()
-
-    def test_summary_str(self):
-        model = self.model
-        self.assertTrue(isinstance(model.summary('str'), str))
-
-    def test_summary_dict(self):
-        model = self.model
-        self.assertTrue(isinstance(model.summary('dict'), dict))
-
-    def test_summary_invalid_input(self):
-        model = self.model
-        with self.assertRaises(_ToolkitError):
-            model.summary(model.summary('invalid'))
-
-        with self.assertRaises(_ToolkitError):
-            model.summary(model.summary(0))
-
-        with self.assertRaises(_ToolkitError):
-            model.summary(model.summary({}))
-
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu

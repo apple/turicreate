@@ -7,6 +7,7 @@
 #ifndef __TC_VIS_EXTREMA
 #define __TC_VIS_EXTREMA
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 
 #include <ostream>

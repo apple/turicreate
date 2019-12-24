@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include "handler.h"
 
 #include <iostream>

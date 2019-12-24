@@ -210,7 +210,7 @@
     <ressub>XInclude</ressub>
     <file>*</file>
     <flag>--nowarning</flag>
-    <flag>--xinclude</flag>
+    <flag>--xinclude </flag>
   </test>
   <test>
     <testname>XInclude xmlReader Regression Tests</testname>
@@ -219,7 +219,7 @@
     <resext>rdr</resext>
     <file>*</file>
     <flag>--nowarning</flag>
-    <flag>--xinclude</flag>
+    <flag>--xinclude </flag>
     <flag>--stream</flag>
     <flag>--debug</flag>
   </test>

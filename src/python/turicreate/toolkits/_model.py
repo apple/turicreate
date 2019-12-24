@@ -514,17 +514,17 @@ class Model(ExposeAttributesFromProxy):
         >>> m.summary()
         """
         if output is None or output == 'stdout':
-            try:
-                print(self.__repr__())
-            except:
-                return self.__class__.__name__
+            pass
         elif (output == 'str'):
             return self.__repr__()
         elif output == 'dict':
-            return _toolkit_serialize_summary_struct(self, \
+            return _toolkit_serialize_summary_struct( self, \
                                             *self._get_summary_struct() )
-        else:
-            raise ToolkitError("Unsupported argument " + str(output) + " for \"summary\" parameter.")
+
+        try:
+            print(self.__repr__())
+        except:
+            return self.__class__.__name__
 
     def __repr__(self):
         raise NotImplementedError
@@ -675,17 +675,16 @@ class CustomModel(ExposeAttributesFromProxy):
         >>> m.summary()
         """
         if output is None or output == 'stdout':
-            try:
-                print(self.__repr__())
-            except:
-                return self.__class__.__name__
+            pass
         elif (output == 'str'):
             return self.__repr__()
         elif output == 'dict':
-            return _toolkit_serialize_summary_struct(self, \
+            return _toolkit_serialize_summary_struct( self, \
                                             *self._get_summary_struct() )
-        else:
-            raise ToolkitError("Unsupported argument " + str(output) + " for \"summary\" parameter.")
+        try:
+            print(self.__repr__())
+        except:
+            return self.__class__.__name__
 
 
     def _get_version(self):

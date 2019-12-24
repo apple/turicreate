@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <cstdio>
+#include <turi_common.h>
 #include <boost/algorithm/string.hpp>
 #include <core/storage/sframe_data/sframe_constants.hpp>
 #include <core/storage/sframe_data/sframe.hpp>

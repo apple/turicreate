@@ -32,3 +32,4 @@
 +(NSString *)vegaliteJS;
 
 @end
+#include <turi_common.h>

@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
-#include <process/process.hpp>
+#include <core/system/platform/process/process.hpp>
 #include <thread>
 
 using namespace turi;

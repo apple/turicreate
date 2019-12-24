@@ -2,6 +2,7 @@
 #ifndef __TC_ESCAPE
 #define __TC_ESCAPE
 
+#include <turi_common.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/transform_width.hpp>

@@ -3,7 +3,7 @@
 #include <core/util/test_macros.hpp>
 #include <string>
 #include <iostream>
-#include <shmipc/shmipc.hpp>
+#include <core/system/platform/shmipc/shmipc.hpp>
 #include <core/parallel/pthread_tools.hpp>
 using namespace turi;
 // 16 byte buffer 

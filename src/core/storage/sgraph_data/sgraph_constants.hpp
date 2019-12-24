@@ -6,6 +6,7 @@
 #ifndef TURI_SGRAPH_SGRAPH_CONTANTS_HPP
 #define TURI_SGRAPH_SGRAPH_CONTANTS_HPP
 #include <cstddef>
+#include <turi_common.h>
 
 namespace turi {
 

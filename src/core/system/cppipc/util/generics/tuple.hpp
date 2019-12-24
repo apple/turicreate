@@ -6,6 +6,7 @@
 #ifndef CPPIPC_UTIL_GENERICS_TUPLE_HPP
 #define CPPIPC_UTIL_GENERICS_TUPLE_HPP
 #include <tuple>
+#include <turi_common.h>
 namespace cppipc {
 
 namespace tuple_detail {

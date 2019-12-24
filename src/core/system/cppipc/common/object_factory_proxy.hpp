@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include <functional>
+#include <turi_common.h>
 #include <core/system/cppipc/client/object_proxy.hpp>
 #include <core/system/cppipc/common/object_factory_base.hpp>
 namespace cppipc {

@@ -12,6 +12,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/image_augmentation.hpp>

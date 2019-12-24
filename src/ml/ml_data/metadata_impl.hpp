@@ -368,3 +368,4 @@ inline bool ml_metadata::target_is_indexed() const {
 }
 
 #endif
+#include <turi_common.h>

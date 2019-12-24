@@ -17,6 +17,7 @@
 
 #include <string>
 #include <vector>
+#include <turi_common.h>
 #include "./io.h"
 #include "./filesys.h"
 

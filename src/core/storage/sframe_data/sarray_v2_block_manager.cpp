@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 extern "C" {
+#include <turi_common.h>
 #include <lz4/lz4.h>
 }
 #include <algorithm>

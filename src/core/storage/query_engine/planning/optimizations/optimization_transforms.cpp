@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <core/storage/query_engine/planning/optimization_engine.hpp>
 #include <core/storage/query_engine/planning/optimizations/union_transforms.hpp>
 #include <core/storage/query_engine/planning/optimizations/project_transforms.hpp>

@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_QUERY_OPTIMIZATION_LOGICAL_FILTER_TRANSFORMS_H_
 #define TURI_SFRAME_QUERY_OPTIMIZATION_LOGICAL_FILTER_TRANSFORMS_H_
 
+#include <turi_common.h>
 #include <core/storage/query_engine/planning/optimizations/optimization_transforms.hpp>
 #include <core/storage/query_engine/planning/optimization_engine.hpp>
 #include <core/storage/query_engine/operators/all_operators.hpp>

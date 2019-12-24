@@ -5,6 +5,7 @@
  */
 #include <tuple>
 #include <iostream>
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <core/storage/fileio/curl_downloader.hpp>
 #include <core/storage/fileio/temp_files.hpp>

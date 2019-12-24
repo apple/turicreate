@@ -5,6 +5,7 @@
  */
 #ifndef TURI_UNITY_GL_SFRAME_HPP
 #define TURI_UNITY_GL_SFRAME_HPP
+#include <turi_common.h>
 #include <cmath>
 #include <memory>
 #include <cstddef>

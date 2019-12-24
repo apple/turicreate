@@ -13956,7 +13956,7 @@ Fri Mar 15 19:41:25 CET 2002 Daniel Veillard <daniel@veillard.com>
 	  xml2-config --cflags should not output
 	  -I$includeprefix/libxml2/libxml because libxml2 header names
 	  clashes with existing names like list.h from C++ stl.
-	  Includes should be #include<libxml/xxx.h> so ...
+	  Includes should be #include <libxml/xxx.h> so ...
 
 Fri Mar 15 10:41:50 CET 2002 Daniel Veillard <daniel@veillard.com>
 

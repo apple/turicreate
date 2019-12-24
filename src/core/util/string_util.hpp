@@ -10,6 +10,7 @@
 #include <string>
 #include <sstream>
 #include <vector>
+#include <turi_common.h>
 
 template<class T> std::vector<T> strip_seq_prefix(const std::vector<T>& v, const std::vector<T>& tok) {
   std::vector<T> ret;

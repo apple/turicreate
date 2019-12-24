@@ -8,7 +8,8 @@
 
 #include <vector>
 #include <algorithm>
-#include <core/util/cuckoo_set_pow2.hpp>
+#include <turi_common.h>
+#include <core/generics/cuckoo_set_pow2.hpp>
 
 /**
  * Contains a fast set implementation and utilities.

@@ -3,10 +3,14 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#ifdef _WIN32
+
+#include <turi_common.h>
 #include <core/system/cppipc/client/console_cancel_handler_win.hpp>
 #include <core/system/cppipc/client/comm_client.hpp>
 #include <core/export.hpp>
-#include <cross_platform/windows_wrapper.hpp>
+#include <core/system/platform/cross_platform/windows_wrapper.hpp>
 
 namespace cppipc {
 
@@ -49,3 +53,5 @@ void console_cancel_handler_win::raise_cancel() {
 }
 
 } // namespace cppipc
+
+#endif

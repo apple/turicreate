@@ -5,6 +5,7 @@
  */
 #ifndef TURI_FEATURE_ENGINEERING_COUNT_FEATURIZER_HPP
 #define TURI_FEATURE_ENGINEERING_COUNT_FEATURIZER_HPP
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <toolkits/feature_engineering/transformer_base.hpp>
 #include <ml/sketches/countmin.hpp>

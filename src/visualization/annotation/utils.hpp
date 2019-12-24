@@ -1,6 +1,7 @@
 #ifndef TURI_ANNOTATIONS_UTILS_HPP
 #define TURI_ANNOTATIONS_UTILS_HPP
 
+#include <turi_common.h>
 #include "build/format/cpp/annotate.pb.h"
 #include "build/format/cpp/data.pb.h"
 #include "build/format/cpp/message.pb.h"

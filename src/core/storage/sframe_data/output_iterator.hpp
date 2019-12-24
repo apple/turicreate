@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_OUTPUT_ITERATOR_HPP
 #define TURI_SFRAME_OUTPUT_ITERATOR_HPP
 #include <iterator>
+#include <turi_common.h>
 
 namespace turi {
 class sframe_rows;

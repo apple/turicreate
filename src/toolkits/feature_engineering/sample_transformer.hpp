@@ -6,6 +6,7 @@
 #ifndef TURI_SAMPLE_TRANSFORMER_H_
 #define TURI_SAMPLE_TRANSFORMER_H_
 #include <string>
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <toolkits/feature_engineering/transformer_base.hpp>
 #include <core/export.hpp>

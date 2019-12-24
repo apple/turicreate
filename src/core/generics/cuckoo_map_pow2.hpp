@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <iterator>
+#include <turi_common.h>
 #include <boost/random.hpp>
 #include <boost/unordered_map.hpp>
 #include <ctime>

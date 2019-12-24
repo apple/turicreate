@@ -5,6 +5,7 @@
  */
 #ifndef BLOOM_FILTER_HPP
 #define BLOOM_FILTER_HPP
+#include <turi_common.h>
 #include <core/util/dense_bitset.hpp>
 
 template <size_t len, size_t probes>

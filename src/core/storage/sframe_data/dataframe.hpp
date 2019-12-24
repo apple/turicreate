@@ -7,6 +7,7 @@
 #define TURI_UNITY_DATAFRAME_HPP
 #include <vector>
 #include <iterator>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>
 

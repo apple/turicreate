@@ -8,7 +8,7 @@
 #import "mps_graph_cnnmodule.h"
 
 #include "mps_graph_networks.h"
-#include "style_transfer/mps_style_transfer_backend.hpp"
+#include <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
 
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::external_float_array;

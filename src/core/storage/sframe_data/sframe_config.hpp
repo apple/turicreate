@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_CONFIG_HPP
 #define TURI_SFRAME_CONFIG_HPP
 #include <cstddef>
+#include <turi_common.h>
 namespace turi {
 
 

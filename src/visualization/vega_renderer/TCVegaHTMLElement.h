@@ -47,3 +47,4 @@ JSExportAs(addEventListener,
 @interface TCVegaHTMLElement : NSObject<TCVegaHTMLElementInterface>
 -(instancetype)initWithTagName:(NSString *)tagName NS_DESIGNATED_INITIALIZER;
 @end
+#include <turi_common.h>

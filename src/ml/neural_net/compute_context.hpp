@@ -9,6 +9,7 @@
 
 #include <memory>
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>

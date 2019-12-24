@@ -1,6 +1,6 @@
 project(Turi)
 
-make_library(uuid OBJECT
+make_library(uuid 
   SOURCES
   clear.c compare.c copy.c gen_uuid.c isnull.c pack.c parse.c unpack.c unparse.c uuid_time.c randutils.c
 )

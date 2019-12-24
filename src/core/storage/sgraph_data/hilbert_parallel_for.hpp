@@ -7,6 +7,7 @@
 #define TURI_SGRAPH_HILBERT_PARALLE_FOR_HPP
 #include <utility>
 #include <functional>
+#include <turi_common.h>
 #include <core/parallel/lambda_omp.hpp>
 #include <core/storage/sgraph_data/hilbert_curve.hpp>
 #include <core/storage/sgraph_data/sgraph_constants.hpp>

@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <visualization/annotation/class_registrations.hpp>
 
 #include <visualization/annotation/annotation_base.hpp>

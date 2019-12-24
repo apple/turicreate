@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <ml/optimization/lbfgs.hpp>
 #include <core/logging/table_printer/table_printer.hpp>
 

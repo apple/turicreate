@@ -5,6 +5,7 @@
  */
 #ifndef TURI_FILEIO_CACHING_DEVICE_HPP
 #define TURI_FILEIO_CACHING_DEVICE_HPP
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <core/storage/fileio/block_cache.hpp>
 #include <core/storage/fileio/sanitize_url.hpp>

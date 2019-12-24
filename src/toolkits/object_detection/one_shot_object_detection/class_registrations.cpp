@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <toolkits/object_detection/one_shot_object_detection/class_registrations.hpp>
 #include <toolkits/object_detection/one_shot_object_detection/one_shot_object_detector.hpp>

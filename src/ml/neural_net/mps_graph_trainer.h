@@ -44,3 +44,4 @@ EXPORT int TCMPSExportGraph(MPSHandle handle,
 #endif // __cplusplus
 
 #endif
+#include <turi_common.h>

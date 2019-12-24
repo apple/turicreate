@@ -7,6 +7,7 @@
 #define CPPIPC_SERVER_CANCEL_OPS_HPP
 #include <atomic>
 #include <iostream>
+#include <turi_common.h>
 
 namespace cppipc {
 

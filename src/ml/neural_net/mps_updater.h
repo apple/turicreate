@@ -65,3 +65,4 @@ MPSUpdater *createUpdater(int updater_id);
 }  // namespace turi
 
 #endif
+#include <turi_common.h>

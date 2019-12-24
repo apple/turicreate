@@ -32,3 +32,4 @@
 #endif  // Platform
 
 #endif
+#include <turi_common.h>

@@ -7,6 +7,7 @@
 #define TURI_BRUTE_FORCE_NEIGHBORS_H_
 
 // Types
+#include <turi_common.h>
 #include <core/parallel/atomic.hpp>
 
 // ML-Data Utils

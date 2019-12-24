@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <core/data/image/numeric_extension/perspective_projection.hpp>
 #include <core/logging/assertions.hpp>
 #include <limits>

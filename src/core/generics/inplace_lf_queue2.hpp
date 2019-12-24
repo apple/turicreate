@@ -5,6 +5,7 @@
  */
 #ifndef TURI_INPLACE_LOCKFREE_QUEUE2_HPP
 #define TURI_INPLACE_LOCKFREE_QUEUE2_HPP
+#include <turi_common.h>
 #include <stdint.h>
 #include <cstring>
 #include <core/parallel/atomic.hpp>

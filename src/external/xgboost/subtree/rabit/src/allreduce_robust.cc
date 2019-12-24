@@ -10,7 +10,7 @@
 #define NOMINMAX
 #include <limits>
 #include <utility>
-#include "../include/rabit/io.h"
+#include <external/xgboost/subtree/rabit/include/rabit/io.h>
 #include "../include/rabit/utils.h"
 #include "../include/rabit/engine.h"
 #include "../include/rabit/rabit-inl.h"

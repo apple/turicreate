@@ -7,6 +7,7 @@
 #define TURI_CONSTRAINTS_H_
 
 #include <string>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 
 // Eigen

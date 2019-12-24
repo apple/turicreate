@@ -517,8 +517,8 @@ $(TAB)copy "$(DOLLAR)(InputPath)" ..\$(CONFIG_DSTNAME)
     <template id="xml2" template="base">
 
         <!-- -I & -L equivalents -->
-        <include>$(XMLBASEDIR)$(DIRSEP)include</include>
-        <include>$(ICONV_DIR)$(DIRSEP)include</include>
+        <include>$(XMLBASEDIR)$(DIRSEP)include </include>
+        <include>$(ICONV_DIR)$(DIRSEP)include </include>
         <lib-path>$(ICONV_DIR)$(DIRSEP)lib</lib-path>
 
 		<!-- some conditional define flags -->

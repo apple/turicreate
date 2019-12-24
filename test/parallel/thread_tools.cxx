@@ -7,7 +7,7 @@
 #include <core/parallel/thread_pool.hpp>
 #include <core/parallel/atomic.hpp>
 #include <core/logging/assertions.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <boost/bind.hpp>
 #include <thread>
 #include <chrono>

@@ -5,6 +5,7 @@
  */
 #ifndef TURI_LOGGER_FAIL_METHOD
 #include <string>
+#include <turi_common.h>
 
 #ifdef TURI_LOGGER_THROW_ON_FAILURE
 #define TURI_LOGGER_FAIL_METHOD(str) throw(str)

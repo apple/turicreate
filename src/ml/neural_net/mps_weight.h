@@ -196,3 +196,4 @@ API_AVAILABLE(macos(10.14))
 
 
 #endif /* MPS_WEIGHT_H_ */
+#include <turi_common.h>

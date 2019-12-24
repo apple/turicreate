@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include <atomic>
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
 #include <core/storage/fileio/file_ownership_handle.hpp>
 namespace turi {

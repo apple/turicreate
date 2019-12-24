@@ -6,6 +6,7 @@
 #ifndef TURI_PARALLEL_EXECUTE_TASK_IN_NATIVE_THREAD_HPP
 #define TURI_PARALLEL_EXECUTE_TASK_IN_NATIVE_THREAD_HPP
 #include <functional>
+#include <turi_common.h>
 
 namespace turi {
 

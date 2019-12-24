@@ -6,6 +6,7 @@
 #ifndef TURI_GENERAL_TESTING_UTILS_H_
 #define TURI_GENERAL_TESTING_UTILS_H_
 
+#include <turi_common.h>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/util/cityhash_tc.hpp>
 #include <core/util/try_finally.hpp>

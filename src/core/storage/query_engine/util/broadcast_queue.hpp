@@ -8,6 +8,7 @@
 #include <deque>
 #include <string>
 #include <memory>
+#include <turi_common.h>
 #include <core/storage/fileio/general_fstream.hpp>
 #include <core/storage/fileio/fixed_size_cache_manager.hpp>
 #include <core/logging/assertions.hpp>

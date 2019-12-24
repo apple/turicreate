@@ -31,7 +31,7 @@
 
 #include <core/random/random.hpp>
 
-#include <toolkits/util/algorithmic_utils.hpp>
+#include <ml/util/algorithmic_utils.hpp>
 
 
 using namespace turi;

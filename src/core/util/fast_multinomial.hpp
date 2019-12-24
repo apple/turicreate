@@ -10,6 +10,7 @@
 #include <algorithm>
 
 
+#include <turi_common.h>
 #include <boost/integer.hpp>
 #include <boost/random.hpp>
 

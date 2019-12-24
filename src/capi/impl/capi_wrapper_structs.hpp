@@ -6,6 +6,7 @@
 #ifndef TURI_CAPI_WRAPPER_STRUCTS_HPP_
 #define TURI_CAPI_WRAPPER_STRUCTS_HPP_
 
+#include <turi_common.h>
 #include <capi/TuriCreate.h>
 #include <model_server/lib/variant.hpp>
 #include <model_server/lib/variant_converter.hpp>

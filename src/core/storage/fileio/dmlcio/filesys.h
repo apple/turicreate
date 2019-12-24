@@ -14,6 +14,7 @@
 
 #include <cstring>
 #include <string>
+#include <turi_common.h>
 #include "io.h"
 
 namespace dmlc {

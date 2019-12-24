@@ -5,6 +5,7 @@
  */
 #ifndef TURI_MINIPSUTIL_H
 #define TURI_MINIPSUTIL_H
+#include <turi_common.h>
 #include <stdint.h>
 extern "C" {
 

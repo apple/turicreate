@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>

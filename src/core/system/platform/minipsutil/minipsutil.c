@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <stdint.h>
 /**
  * \defgroup minipsutil Mini Process Utilility Library
@@ -28,7 +29,7 @@ int32_t pid_is_running(int32_t pid);
 /*                                Windows                                 */
 /*                                                                        */
 /**************************************************************************/
-#include <cross_platform/windows_wrapper.hpp>
+#include <core/system/platform/cross_platform/windows_wrapper.hpp>
 #include <Psapi.h>
 
 typedef BOOL (WINAPI *LPFN_GLPI)(

@@ -10,6 +10,7 @@
 #include <string>
 #include <memory>
 
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/storage/query_engine/planning/materialize_options.hpp>
 #include <core/storage/query_engine/planning/planner_node.hpp>

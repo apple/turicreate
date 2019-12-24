@@ -25,3 +25,4 @@ typedef UIView TCVegaRendererNativeView;
 #endif
 
 #endif /* VegaPortabilityTypes_h */
+#include <turi_common.h>

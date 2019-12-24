@@ -7,6 +7,7 @@
 #define TURI_UNITY_GLOBAL_SINGLETON_HPP
 
 #include <memory>
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 
 namespace turi {

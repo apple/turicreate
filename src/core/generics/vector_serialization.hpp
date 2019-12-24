@@ -6,6 +6,7 @@
 #ifndef TURI_SERIALIZE_GL_VECTOR_HPP
 #define TURI_SERIALIZE_GL_VECTOR_HPP
 
+#include <turi_common.h>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/storage/serialization/oarchive.hpp>
 #include <core/storage/serialization/iterator.hpp>

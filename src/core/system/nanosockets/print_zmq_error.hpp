@@ -11,3 +11,4 @@ extern void print_zmq_error(const char* prefix);
 }
 }
 #endif
+#include <turi_common.h>

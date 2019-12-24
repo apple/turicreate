@@ -8,6 +8,7 @@
 
 
 #include <cstdlib>
+#include <turi_common.h>
 #include <core/parallel/pthread_h.h>
 #include <semaphore.h>
 #include <sched.h>
