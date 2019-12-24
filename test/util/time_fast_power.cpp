@@ -5,7 +5,7 @@
  */
 #include <vector>
 #include <string>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <core/util/fast_integer_power.hpp>
 #include <core/util/cityhash_tc.hpp>
 #include <core/random/random.hpp>

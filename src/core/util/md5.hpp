@@ -6,6 +6,7 @@
 #ifndef UTIL_MD5_HPP
 #define UTIL_MD5_HPP
 #include <string>
+#include <turi_common.h>
 namespace turi {
 
 /**

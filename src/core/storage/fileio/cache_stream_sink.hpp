@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <memory>
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 #include <core/storage/fileio/general_fstream_sink.hpp>
 #include <core/storage/fileio/fixed_size_cache_manager.hpp>

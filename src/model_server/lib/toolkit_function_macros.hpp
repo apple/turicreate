@@ -5,6 +5,7 @@
  */
 #ifndef TURI_UNITY_TOOLKIT_FUNCTION_MACROS_HPP
 #define TURI_UNITY_TOOLKIT_FUNCTION_MACROS_HPP
+#include <turi_common.h>
 #include <model_server/lib/toolkit_util.hpp>
 #include <model_server/lib/toolkit_function_specification.hpp>
 #include <model_server/lib/toolkit_function_wrapper_impl.hpp>

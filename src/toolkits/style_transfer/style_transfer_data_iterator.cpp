@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/style_transfer/style_transfer_data_iterator.hpp>
 
 #include <core/data/image/io.hpp>

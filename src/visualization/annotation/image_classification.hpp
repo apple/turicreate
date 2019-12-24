@@ -1,6 +1,7 @@
 #ifndef TURI_ANNOTATIONS_IMAGE_CLASSIFICATION_HPP
 #define TURI_ANNOTATIONS_IMAGE_CLASSIFICATION_HPP
 
+#include <turi_common.h>
 #include <core/export.hpp>
 
 #include <chrono>

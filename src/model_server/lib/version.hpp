@@ -5,6 +5,7 @@
  */
 #ifndef TURI_UNITY_VERSION_HPP
 #define TURI_UNITY_VERSION_HPP
+#include <turi_common.h>
 #include "version_number.hpp"
 
 #ifdef __UNITY_VERSION__

@@ -5,6 +5,7 @@
  */
 // This file should not be included directly. use serialize.hpp
 #ifndef TURI_SERIALIZE_HPP
+#include <turi_common.h>
 #include <core/storage/serialization/serialize.hpp>
 
 #else

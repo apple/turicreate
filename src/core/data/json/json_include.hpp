@@ -26,6 +26,7 @@
 #endif
 
 
+#include <turi_common.h>
 #include <libjson/libjson.h>
 #ifdef __GNUC__
 #pragma GCC diagnostic pop

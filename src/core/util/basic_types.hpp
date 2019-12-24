@@ -7,6 +7,7 @@
 #ifndef TURI_BASIC_TYPES_H_
 #define TURI_BASIC_TYPES_H_
 
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <cstdint>
 

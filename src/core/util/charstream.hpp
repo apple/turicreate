@@ -6,6 +6,7 @@
 #ifndef TURI_CHARSTREAM
 #define TURI_CHARSTREAM
 
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 #include <boost/iostreams/categories.hpp>
 

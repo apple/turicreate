@@ -22,4 +22,4 @@ JSExportAs(set,
 @end
 
 @interface LogProxyHandler : NSObject<LogProxyHandling>
-@end
+@end#include <turi_common.h>

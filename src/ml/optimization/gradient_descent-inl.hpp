@@ -6,6 +6,7 @@
 #ifndef TURI_GRADIENT_DESCENT_H_
 #define TURI_GRADIENT_DESCENT_H_
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <Eigen/Core>
 

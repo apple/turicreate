@@ -12,8 +12,8 @@
 #include <ml/ml_data/ml_data.hpp>
 
 // Models
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/boosted_trees.hpp>
+#include <ml/supervised_learning/supervised_learning.hpp>
+#include <ml/supervised_learning/boosted_trees.hpp>
 
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>

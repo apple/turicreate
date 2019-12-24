@@ -9,6 +9,7 @@
 #include <memory>
 #include <typeinfo>
 #include <map>
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <core/logging/logger.hpp>

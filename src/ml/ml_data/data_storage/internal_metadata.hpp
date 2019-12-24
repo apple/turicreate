@@ -7,6 +7,7 @@
 #ifndef TURI_DML_DATA_COLUMN_METADATA_H_
 #define TURI_DML_DATA_COLUMN_METADATA_H_
 
+#include <turi_common.h>
 #include <ml/ml_data/column_indexer.hpp>
 #include <ml/ml_data/column_statistics.hpp>
 #include <ml/ml_data/ml_data_column_modes.hpp>

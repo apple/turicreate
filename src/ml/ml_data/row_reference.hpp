@@ -6,6 +6,7 @@
 #ifndef TURI_DML_DATA_ROW_REFERENCE_H_
 #define TURI_DML_DATA_ROW_REFERENCE_H_
 
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <ml/ml_data/data_storage/ml_data_row_format.hpp>
 #include <ml/ml_data/data_storage/ml_data_block_manager.hpp>

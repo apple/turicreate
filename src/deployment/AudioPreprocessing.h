@@ -25,3 +25,4 @@ API_AVAILABLE(macos(10.13),ios(11.0))
 @end
 
 NS_ASSUME_NONNULL_END
+#include <turi_common.h>

@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_GLOBAL_HPP
 #define TURI_UNITY_GLOBAL_HPP
 
+#include <turi_common.h>
 #include <model_server/lib/unity_base_types.hpp>
 #include <model_server/lib/toolkit_function_specification.hpp>
 #include <model_server/lib/toolkit_function_registry.hpp>

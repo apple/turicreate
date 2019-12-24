@@ -7,6 +7,7 @@
 #define TURI_TEXT_TOPICMODEL_H_
 
 // SFrame
+#include <turi_common.h>
 #include <core/storage/sframe_data/sarray.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 
@@ -18,8 +19,8 @@
 #include <model_server/lib/unity_base_types.hpp>
 #include <core/util/hash_value.hpp>
 #include <model_server/lib/flex_dict_view.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/metadata.hpp>
 
 // Interfaces
 #include <model_server/lib/extensions/ml_model.hpp>

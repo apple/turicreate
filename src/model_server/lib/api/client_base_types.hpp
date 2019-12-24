@@ -10,6 +10,7 @@
  * This file is a meta-header which includes all the types necessary
  * for the client library.
  */
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_data/dataframe.hpp>
 #include <model_server/lib/variant.hpp>

@@ -12,7 +12,7 @@
 #include <ml/ml_data/ml_data.hpp>
 
 // Models
-#include <toolkits/supervised_learning/random_forest.hpp>
+#include <ml/supervised_learning/random_forest.hpp>
 
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>

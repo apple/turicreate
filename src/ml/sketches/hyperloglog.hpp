@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SKETCH_HYPERLOGLOG_HPP
 #define TURI_SKETCH_HYPERLOGLOG_HPP
+#include <turi_common.h>
 #include <cmath>
 #include <cstdint>
 #include <functional>

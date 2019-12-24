@@ -3,6 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+
+#if defined(__APPLE__) || defined(__linux__) || defined(__unix__) || defined(_POSIX_VERSION)
+
+#include <turi_common.h>
 #include <core/system/cppipc/client/console_cancel_handler_unix.hpp>
 #include <core/system/cppipc/client/comm_client.hpp>
 #include <errno.h>
@@ -72,3 +76,5 @@ void console_cancel_handler_unix::raise_cancel() {
 }
 
 } // namespace cppipc
+
+#endif

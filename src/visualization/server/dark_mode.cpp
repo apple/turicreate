@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <visualization/server/dark_mode.hpp>
 
 #ifdef __APPLE__

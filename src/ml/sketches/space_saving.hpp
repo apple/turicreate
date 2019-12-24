@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <map>
+#include <turi_common.h>
 #include <cmath>
 #include <set>
 #include <core/generics/value_container_mapper.hpp>

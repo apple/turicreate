@@ -6,6 +6,7 @@
 #include <future>
 #include <thread>
 #include <unordered_set>
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
 #include <ml/sketches/unity_sketch.hpp>
 #include <core/storage/sframe_interface/unity_sarray.hpp>

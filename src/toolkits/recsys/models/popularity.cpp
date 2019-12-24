@@ -3,15 +3,16 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <model_server/lib/extensions/option_manager.hpp>
 #include <core/storage/sframe_interface/unity_sframe.hpp>
 #include <toolkits/recsys/models/popularity.hpp>
-#include <toolkits/ml_data_2/metadata.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <toolkits/util/indexed_sframe_tools.hpp>
-#include <toolkits/util/sframe_utils.hpp>
-#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/recsys/ml_data_2/metadata.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
+#include <ml/util/indexed_sframe_tools.hpp>
+#include <ml/util/sframe_utils.hpp>
+#include <toolkits/recsys/ml_data_2/sframe_index_mapping.hpp>
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <toolkits/nearest_neighbors/ball_tree_neighbors.hpp>
 

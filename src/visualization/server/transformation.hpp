@@ -6,6 +6,7 @@
 #ifndef _CANVAS_STREAMING_TRANSFORMATION
 #define _CANVAS_STREAMING_TRANSFORMATION
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/parallel/lambda_omp.hpp>
 

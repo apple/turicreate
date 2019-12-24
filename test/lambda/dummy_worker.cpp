@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <core/system/cppipc/cppipc.hpp>
-#include <process/process_util.hpp>
+#include <core/system/platform/process/process_util.hpp>
 #include "dummy_worker_interface.hpp"
 #include <core/system/nanosockets/socket_config.hpp>
 #include <thread>

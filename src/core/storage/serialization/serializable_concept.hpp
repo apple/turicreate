@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SERIALIZABLE
 #define TURI_SERIALIZABLE
+#include <turi_common.h>
 #include <boost/concept/assert.hpp>
 #include <boost/concept/requires.hpp>
 #include <boost/concept_check.hpp>

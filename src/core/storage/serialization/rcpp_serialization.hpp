@@ -8,6 +8,7 @@
 
 #undef HAVE_VISIBILITY_ATTRIBUTE
 
+#include <turi_common.h>
 #include <stdlib.h>
 #include <string.h>
 // most of functions used here are included from Rinternals.h

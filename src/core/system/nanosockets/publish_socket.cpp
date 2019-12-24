@@ -4,12 +4,13 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <cassert>
+#include <turi_common.h>
 #include <core/system/nanosockets/socket_errors.hpp>
 #include <core/system/nanosockets/socket_config.hpp>
 #include <core/system/nanosockets/publish_socket.hpp>
 #include <core/system/nanosockets/print_zmq_error.hpp>
 #include <core/system/nanosockets/get_next_port_number.hpp>
-#include <network/net_util.hpp>
+#include <core/system/platform/network/net_util.hpp>
 #include <mutex>
 #include <core/storage/serialization/oarchive.hpp>
 extern "C" {

@@ -22,10 +22,10 @@
 #include <model_server/lib/flex_dict_view.hpp>
 
 // ML-Data Utils
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <toolkits/ml_data_2/metadata.hpp>
-#include <toolkits/ml_data_2/testing_utils.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/metadata.hpp>
+#include <toolkits/recsys/ml_data_2/testing_utils.hpp>
 #include <toolkits/recsys/user_item_lists.hpp>
 
 // Testing utils common to all of ml_data_iterator

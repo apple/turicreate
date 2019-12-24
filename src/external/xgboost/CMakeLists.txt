@@ -1,6 +1,6 @@
 project(Turi)
 
-make_library(xgboost OBJECT
+make_library(xgboost
   SOURCES
     src/gbm/gbm.cpp
     src/tree/updater.cpp
@@ -12,5 +12,5 @@ make_library(xgboost OBJECT
     boost
 )
 
-target_compile_options(xgboost PUBLIC "-Wno-narrowing -msse2 -funroll-loops")
+target_compile_options(xgboost PUBLIC "-Wno-narrowing -funroll-loops")
 target_compile_definitions(xgboost PUBLIC "-DXGBOOST_CUSTOMIZE_MSG_")

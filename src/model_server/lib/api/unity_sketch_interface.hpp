@@ -10,6 +10,7 @@
 #include <map>
 #include <string>
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <model_server/lib/api/unity_sarray_interface.hpp>
 #include <core/system/cppipc/magic_macros.hpp>

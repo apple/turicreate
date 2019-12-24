@@ -6,6 +6,7 @@
 #ifndef TC_DISABLE_REMOTEFS
 
 #ifndef _WIN32
+#include <turi_common.h>
 #include <arpa/inet.h>
 #else
 #include <ws2tcpip.h>

@@ -6,6 +6,7 @@
 #ifndef SERIALIZABLE_POD_HPP
 #define SERIALIZABLE_POD_HPP
 
+#include <turi_common.h>
 #include <core/storage/serialization/is_pod.hpp>
 
 #define SERIALIZABLE_POD(tname)                   \

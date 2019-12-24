@@ -6,8 +6,9 @@
 #ifndef PROCESS_UTIL_HPP
 #define PROCESS_UTIL_HPP
 
-#include<string>
-#include<boost/optional.hpp>
+#include <string>
+#include <turi_common.h>
+#include <boost/optional.hpp>
 
 namespace turi {
 

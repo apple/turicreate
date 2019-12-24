@@ -7,6 +7,7 @@
 #define FILEIO_TEMP_FILE_HPP
 #include <string>
 #include <vector>
+#include <turi_common.h>
 
 namespace turi {
 

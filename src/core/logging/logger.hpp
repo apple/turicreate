@@ -45,14 +45,16 @@
 #include <system_error>
 #endif
 #include <functional>
+#include <turi_common.h>
+#include <core/export.hpp>
 #include <core/parallel/pthread_h.h>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <core/logging/fail_method.hpp>
 #include <core/logging/backtrace.hpp>
 #include <core/logging/error.hpp>
 #include <core/system/cppipc/server/cancel_ops.hpp>
 #include <core/util/code_optimization.hpp>
-#include <process/process_util.hpp>
+#include <core/system/platform/process/process_util.hpp>
 
 /**
  * \ingroup turilogger
@@ -696,7 +698,7 @@ class file_logger{
 /**
  * Gets a reference to the global logger which all the logging macros use.
  */
-file_logger& global_logger();
+EXPORT file_logger& global_logger();
 
 /**
 Wrapper to generate 0 code if the output level is lower than the log level

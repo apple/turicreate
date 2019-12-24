@@ -6,6 +6,7 @@
 #ifndef TURI_PARALLEL_PARALLEL_ALL_HPP_
 #define TURI_PARALLEL_PARALLEL_ALL_HPP_
 
+#include <turi_common.h>
 #include <core/parallel/atomic.hpp>
 #include <core/parallel/atomic_ops.hpp>
 #include <core/parallel/atomic_add_vector2.hpp>

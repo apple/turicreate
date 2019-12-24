@@ -6,6 +6,7 @@
 #ifndef _TFIDF_H_
 #define _TFIDF_H_
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <string>
 #include <unordered_map>

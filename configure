@@ -78,6 +78,13 @@ function print_help {
   echo
   echo "  -D var=value                      Specify FLAGS definitions to be passed on to cmake."
   echo
+  echo "  --create-xcode-project            Create an xcode project file as xcode/Turi.xcodeproj."
+  echo
+  echo "  --build-dependencies              Build the external dependencies as part of configure and install them into deps/local."
+  echo "                                    Needed for the xcode project build."
+  echo
+  echo "  --skip-dependencies               Skip building the dependencies."
+  echo
   echo "Relevant environment variables: "
   echo
   echo "  CMAKE                             Path to CMake executable."
@@ -153,12 +160,14 @@ with_release=1
 with_debug=1
 release_opt_for_size=0
 debug_opt_for_size=0
+create_xcode_project=0
 arch_list=""
 target=""
 builder="make"
 min_ios_version=${IOS_DEFAULT_MIN_VERSION}
 min_macos_version=${MACOS_DEFAULT_MIN_VERSION}
 enable_codesign=0
+build_dependencies=0
 list_source_files=0
 
 DEBUG_DIR="${TURI_HOME}/debug"
@@ -232,6 +241,11 @@ while [ $# -gt 0 ]
 
     --min-macos-version=*)  min_macos_version=${1##--min-macos-version=};;
     --min-macos-version)    min_macos_version=${2}; shift ;;
+
+    --create-xcode-project) create_xcode_project=1; build_dependencies=1; builder=xcode;;
+
+    --build-dependencies)   build_dependencies=1;;
+    --skip-dependencies)    skip_dependencies=1;;
 
     --list-source-files)    list_source_files=1 ;;
 
@@ -338,6 +352,8 @@ mkdir -p ${PWD}/deps/local/bin
 CCCMD=`./scripts/find_compiler.sh cc --ccache=$with_ccache --script-dir=${PWD}/deps/local/bin/`
 CXXCMD=`./scripts/find_compiler.sh cxx --ccache=$with_ccache --script-dir=${PWD}/deps/local/bin/`
 
+CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_C_COMPILER=$CCCMD -DCMAKE_CXX_COMPILER=$CXXCMD"
+
 echo "Setting C compiler to $CCCMD."
 echo "Setting C++ compiler to $CXXCMD."
 
@@ -349,16 +365,21 @@ CMAKE=`./scripts/find_cmake.sh`
 ########################################################
 # Prepare to build
 
+
+
+# Configuration flags that are specific to the xcode builder
+CMAKE_XCODE_CONFIG_FLAGS=""
+
 set -e
 set -o pipefail
 
 case $builder in
- xcode)
-   CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -GXcode"
-   CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=1"
+ xcode) 
+   CMAKE_XCODE_CONFIG_FLAGS="${CMAKE_XCODE_CONFIG_FLAGS} -GXcode"
+   CMAKE_XCODE_CONFIG_FLAGS="${CMAKE_XCODE_CONFIG_FLAGS} -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=1"
 
-   if [[ ! -z ${arch_list} ]] ; then
-     CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_ARCHITECTURES='${arch_list}'"
+   if [[ ! -z ${arch_list} ]] ; then 
+     CMAKE_XCODE_CONFIG_FLAGS="${CMAKE_XCODE_CONFIG_FLAGS} -DCMAKE_OSX_ARCHITECTURES='${arch_list}'"
    fi
 
    ;;
@@ -377,11 +398,11 @@ if [[ ${enable_codesign} == 1 ]] ; then
 
 elif [[ ${builder} == xcode ]] ; then
 
-  # Deal with the code signing issues.
-  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY= -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED=0 -DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM= "
+  # Deal with the code signing issues. 
+  CMAKE_XCODE_CONFIG_FLAGS="${CMAKE_XCODE_CONFIG_FLAGS} -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY= -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED=0 -DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM= "
 
   # This also requires us to skip the code signing when trying to compile targets to check definitions.
-  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY"
+  CMAKE_XCODE_CONFIG_FLAGS="${CMAKE_XCODE_CONFIG_FLAGS} -DCMAKE_TRY_COMPILE_TARGET_TYPE=STATIC_LIBRARY"
 
   echo "Skipping code signing."
 fi
@@ -429,22 +450,41 @@ if [[ ${build_platform} == macosx ]] ; then
   fi
 fi
 
-build_cmd="$CMAKE \
-    $GENERATOR \
-    -D CMAKE_C_COMPILER=$CCCMD \
-    -D CMAKE_CXX_COMPILER=$CXXCMD \
-    ${CMAKE_CONFIG_FLAGS}"
+if [[ $build_dependencies == 1 ]] ; then
 
-if [[ $with_debug == 1 ]] ; then
-  set -x
-  mkdir -p ${DEBUG_DIR}
-  cd ${DEBUG_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Debug --config Debug -D CMAKE_CONFIGURATION_TYPES='Debug;Release' ${TURI_HOME}
-  set +x
+  # Build the dependencies through the make build scripts so they don't have to
+  # be part of the XCode project, which doesn't work.
+
+  deps_build_dir=${TURI_HOME}/deps/build
+  mkdir -p $deps_build_dir
+  cd ${deps_build_dir}
+  $CMAKE ${CMAKE_CONFIG_FLAGS} -DCMAKE_BUILD_TYPE=Release --config Release ${TURI_HOME}
+  make external_dependencies
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DTC_EXTERNAL_DEPS_PREBUILT=1"
+else
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DTC_EXTERNAL_DEPS_PREBUILT=0"
 fi
 
-if [[ $with_release == 1 ]] ; then
-  set -x
-  mkdir -p ${RELEASE_DIR}
-  cd ${RELEASE_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Release -D CMAKE_CONFIGURATION_TYPES='Release;Debug' --config Release ${TURI_HOME}
-  set +x
+
+if [[ $create_xcode_project == 1 ]] ; then
+  xcode_proj_dir=${TURI_HOME}/xcode/
+  mkdir -p $xcode_proj_dir
+  cd ${xcode_proj_dir}
+  $CMAKE ${CMAKE_CONFIG_FLAGS} ${CMAKE_XCODE_CONFIG_FLAGS} -DTC_EXTERNAL_DEPS_PREBUILT=1 -DCMAKE_BUILD_TYPE=Debug --config Debug -D CMAKE_CONFIGURATION_TYPES='Debug;Release' ${TURI_HOME}
+
+else
+  if [[ $with_debug == 1 ]] ; then
+    set -x
+    mkdir -p ${DEBUG_DIR}
+    cd ${DEBUG_DIR} && $CMAKE ${CMAKE_CONFIG_FLAGS} ${CMAKE_XCODE_CONFIG_FLAGS} -DCMAKE_BUILD_TYPE=Debug --config Debug -D CMAKE_CONFIGURATION_TYPES='Debug;Release' ${TURI_HOME}
+    set +x
+  fi
+
+  if [[ $with_release == 1 ]] ; then
+    set -x
+    mkdir -p ${RELEASE_DIR}
+    cd ${RELEASE_DIR} && $CMAKE ${CMAKE_CONFIG_FLAGS} ${CMAKE_XCODE_CONFIG_FLAGS} -DCMAKE_BUILD_TYPE=Release -D CMAKE_CONFIGURATION_TYPES='Release;Debug' --config Release ${TURI_HOME}
+    set +x
+  fi
 fi
+

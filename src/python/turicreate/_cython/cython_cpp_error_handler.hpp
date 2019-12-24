@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #define PY_SSIZE_T_CLEAN
+#include <turi_common.h>
 #include <Python.h>
 #include <string>
 #include <exception>

@@ -8,6 +8,7 @@
 #include <tuple>
 #include <string>
 #include <cstdlib>
+#include <turi_common.h>
 
 namespace turi {
 /**

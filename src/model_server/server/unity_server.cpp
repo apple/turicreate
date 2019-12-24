@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <cstdlib>
+#include <turi_common.h>
 #include <time.h>
 #include <unistd.h>
 

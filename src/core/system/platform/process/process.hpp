@@ -18,10 +18,11 @@
 
 #include <string>
 #include <vector>
+#include <turi_common.h>
 #include <core/util/syserr_reporting.hpp>
 
 #ifdef _WIN32
-#include <cross_platform/windows_wrapper.hpp>
+#include <core/system/platform/cross_platform/windows_wrapper.hpp>
 #endif
 #ifdef __APPLE__
 #include <sys/types.h>

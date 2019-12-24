@@ -5,6 +5,7 @@
  */
 #ifndef TURI_UNITY_CONNECTED_COMPONENT
 #define TURI_UNITY_CONNECTED_COMPONENT
+#include <turi_common.h>
 #include <model_server/lib/toolkit_function_specification.hpp>
 
 namespace turi {

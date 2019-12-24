@@ -6,6 +6,7 @@
 #ifndef CPPIPC_IPC_OBJECT_BASE_HPP
 #define CPPIPC_IPC_OBJECT_BASE_HPP
 #include <memory>
+#include <turi_common.h>
 #include <core/export.hpp>
 /**
  * All exported base classes must inherit from this class.

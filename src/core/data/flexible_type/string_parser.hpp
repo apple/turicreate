@@ -5,6 +5,7 @@
  */
 #ifndef TURI_FLEXIBLE_TYPE_STRING_PARSER_HPP
 #define TURI_FLEXIBLE_TYPE_STRING_PARSER_HPP
+#include <turi_common.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>

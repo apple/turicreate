@@ -9,6 +9,7 @@
 
 #include <memory>
 
+#include <turi_common.h>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/mps_command_queue.hpp>
 

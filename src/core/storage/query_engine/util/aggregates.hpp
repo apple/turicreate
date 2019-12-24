@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SFRAME_QUERY_ENGINE_UTIL_AGGREGATES_HPP
 #define TURI_SFRAME_QUERY_ENGINE_UTIL_AGGREGATES_HPP
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <core/storage/query_engine/operators/reduce.hpp>

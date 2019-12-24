@@ -21,3 +21,4 @@
 
 @interface TCVegaJSMouseEvent : NSObject<TCVegaJSMouseEventInterface>
 @end
+#include <turi_common.h>

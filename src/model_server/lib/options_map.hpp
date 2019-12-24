@@ -14,3 +14,4 @@ namespace turi {
 typedef std::map<std::string, flexible_type> options_map_t;
 }
 #endif
+#include <turi_common.h>

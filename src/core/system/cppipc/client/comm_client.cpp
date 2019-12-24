@@ -3,12 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <boost/bind.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <core/system/cppipc/client/comm_client.hpp>
 #include <core/system/cppipc/common/object_factory_proxy.hpp>
-#include <minipsutil/minipsutil.h>
+#include <core/system/platform/minipsutil/minipsutil.h>
 #include <core/export.hpp>
 
 namespace cppipc {

@@ -10,6 +10,7 @@
 #ifdef __cplusplus
 #include <cstdint>
 #else
+#include <turi_common.h>
 #include <stdint.h>
 #endif
 

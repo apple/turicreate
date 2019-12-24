@@ -6,6 +6,7 @@
 #ifndef TURI_HASH_MAP_CONTAINER_H_
 #define TURI_HASH_MAP_CONTAINER_H_
 
+#include <turi_common.h>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/util/cityhash_tc.hpp>
 

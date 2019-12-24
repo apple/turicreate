@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <sys/time.h>
 #ifdef HAS_TCMALLOC
 #include <google/malloc_extension.h>
@@ -11,7 +12,7 @@
 #include <sys/resource.h>
 #endif
 #ifndef _WIN32
-#include <crash_handler/crash_handler.hpp>
+#include <core/system/platform/crash_handler/crash_handler.hpp>
 #include <signal.h>
 #endif
 #include <Eigen/Core>
@@ -31,7 +32,7 @@
 #include <core/system/lambda/lambda_master.hpp>
 #include <core/system/lambda/graph_pylambda_master.hpp>
 #endif
-#include <minipsutil/minipsutil.h>
+#include <core/system/platform/minipsutil/minipsutil.h>
 
 #include "startup_teardown.hpp"
 

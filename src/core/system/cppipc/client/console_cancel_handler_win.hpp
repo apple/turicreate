@@ -3,9 +3,12 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#ifdef _WIN32
+
 #ifndef CPPIPC_SERVER_CONSOLE_CANCEL_HANDLER_WIN_HPP
 #define CPPIPC_SERVER_CONSOLE_CANCEL_HANDLER_WIN_HPP
 
+#include <turi_common.h>
 #include <core/system/cppipc/client/console_cancel_handler.hpp>
 
 namespace cppipc {
@@ -25,3 +28,5 @@ class console_cancel_handler_win : public console_cancel_handler {
 
 
 #endif //CPPIPC_SERVER_CONSOLE_CANCEL_HANDLER_WIN_HPP
+
+#endif

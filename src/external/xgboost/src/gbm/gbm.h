@@ -10,7 +10,7 @@
 #include <vector>
 #include <string>
 #include <xgboost/src/data.h>
-#include <xgboost/src/io/io.h>
+#include <external/xgboost/src/io/io.h>
 #include <xgboost/src/utils/fmap.h>
 
 namespace xgboost {

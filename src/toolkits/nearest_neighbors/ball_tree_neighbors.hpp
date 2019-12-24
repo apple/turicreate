@@ -7,6 +7,7 @@
 #define TURI_BALL_TREE_NEIGHBORS_H_
 
 // Toolkits
+#include <turi_common.h>
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 
 // Miscellaneous

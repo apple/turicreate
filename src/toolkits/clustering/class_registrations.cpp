@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <toolkits/clustering/kmeans.hpp>
 
 namespace turi { namespace kmeans {

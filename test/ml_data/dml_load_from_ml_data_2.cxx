@@ -24,7 +24,7 @@
 // Testing utils common to all of ml_data_iterator
 #include <core/util/testing_utils.hpp>
 #include <ml/ml_data/testing_utils.hpp>
-#include <toolkits/ml_data_2/testing_utils.hpp>
+#include <toolkits/recsys/ml_data_2/testing_utils.hpp>
 
 #include <core/globals/globals.hpp>
 

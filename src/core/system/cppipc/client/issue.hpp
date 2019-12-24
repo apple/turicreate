@@ -6,6 +6,7 @@
 #ifndef CPPIPC_CLIENT_ISSUE_HPP
 #define CPPIPC_CLIENT_ISSUE_HPP
 #include <tuple>
+#include <turi_common.h>
 #include <boost/function.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/function_types/function_type.hpp>

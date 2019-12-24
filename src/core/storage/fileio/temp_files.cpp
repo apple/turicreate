@@ -4,9 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #ifndef _WIN32
+#include <turi_common.h>
 #include <pwd.h>
 #else
-#include <cross_platform/windows_wrapper.hpp>
+#include <core/system/platform/cross_platform/windows_wrapper.hpp>
 #include <Lmcons.h>
 #endif
 
@@ -27,8 +28,8 @@
 #include <core/storage/fileio/fileio_constants.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/util/syserr_reporting.hpp>
-#include <process/process_util.hpp>
-#include <network/net_util.hpp>
+#include <core/system/platform/process/process_util.hpp>
+#include <core/system/platform/network/net_util.hpp>
 #include <boost/lexical_cast.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/uuid_generators.hpp>

@@ -1,5 +1,6 @@
 #include <iostream>
 
+#include <turi_common.h>
 #include <sys/types.h>
 #include <unistd.h>
 

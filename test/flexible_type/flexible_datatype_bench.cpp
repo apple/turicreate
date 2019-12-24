@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <core/data/flexible_type/flexible_type.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 using namespace turi;
 const int PI_ITERATIONS = 100000000;
 const int BUBBLE_SORT_SIZE = 30000;

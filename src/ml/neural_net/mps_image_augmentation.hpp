@@ -7,6 +7,7 @@
 #ifndef TURI_NEURAL_NET_CORE_IMAGE_AUGMENTATION_HPP_
 #define TURI_NEURAL_NET_CORE_IMAGE_AUGMENTATION_HPP_
 
+#include <turi_common.h>
 #include <ml/neural_net/image_augmentation.hpp>
 
 #import <CoreImage/CoreImage.h>

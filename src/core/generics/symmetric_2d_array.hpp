@@ -7,6 +7,7 @@
 #define TURI_SYMMETRIC_ARRAY_H_
 
 #include <vector>
+#include <turi_common.h>
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <core/logging/assertions.hpp>
 

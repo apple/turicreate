@@ -10,6 +10,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/util/any.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>

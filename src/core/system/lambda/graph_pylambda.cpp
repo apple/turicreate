@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <core/system/lambda/lambda_utils.hpp>
 #include <core/system/lambda/graph_pylambda.hpp>
 #include <core/system/lambda/pylambda.hpp>

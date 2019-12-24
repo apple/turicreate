@@ -6,6 +6,7 @@
 #ifndef UNITY_CLUSTERING_INCLUDE_HPP
 #define UNITY_CLUSTERING_INCLUDE_HPP
 
+#include <turi_common.h>
 #include "kmeans.hpp"
 
 #endif

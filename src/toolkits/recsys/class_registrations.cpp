@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <toolkits/recsys/models/factorization_models.hpp>
 #include <toolkits/recsys/models/itemcf.hpp>
 #include <toolkits/recsys/models/item_content_recommender.hpp>

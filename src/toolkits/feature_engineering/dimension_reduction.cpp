@@ -4,12 +4,13 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/feature_engineering/dimension_reduction.hpp>
 #include <toolkits/feature_engineering/transform_utils.hpp>
 
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <core/random/random.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <ml/supervised_learning/supervised_learning_utils-inl.hpp>
 #include <core/logging/table_printer/table_printer.hpp>
 #include <sstream>
 

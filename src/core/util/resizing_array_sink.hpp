@@ -6,6 +6,7 @@
 #ifndef TURI_RESIZING_COUNTING_SINK
 #define TURI_RESIZING_COUNTING_SINK
 
+#include <turi_common.h>
 #include <core/util/charstream.hpp>
 
 namespace turi {

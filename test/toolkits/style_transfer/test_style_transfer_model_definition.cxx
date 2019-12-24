@@ -16,7 +16,7 @@
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <ml/neural_net/float_array.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
 
 #include "utils.hpp"

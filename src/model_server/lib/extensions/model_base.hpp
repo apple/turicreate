@@ -12,6 +12,7 @@
 #include <utility>
 #include <vector>
 
+#include <turi_common.h>
 #include <core/export.hpp>
 
 #include <core/system/cppipc/ipc_object_base.hpp>

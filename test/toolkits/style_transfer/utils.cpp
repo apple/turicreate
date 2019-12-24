@@ -9,8 +9,8 @@
 
 #include <ml/neural_net/weight_init.hpp>
 #include <model_server/lib/image_util.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
-#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
 
 using CoreML::Specification::ArrayFeatureType;
 using CoreML::Specification::FeatureDescription;

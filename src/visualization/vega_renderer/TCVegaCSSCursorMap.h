@@ -22,3 +22,4 @@
 #endif
 
 #endif /* VegaCSSCursorMap_h */
+#include <turi_common.h>

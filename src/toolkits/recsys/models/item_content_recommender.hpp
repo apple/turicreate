@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <toolkits/recsys/models/itemcf.hpp>
 
 namespace turi {

@@ -23,3 +23,4 @@ JSExportAs(set,
 
 @interface TCVegaLogProxyHandler : NSObject<TCVegaLogProxyHandling>
 @end
+#include <turi_common.h>

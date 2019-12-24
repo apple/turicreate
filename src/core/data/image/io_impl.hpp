@@ -14,6 +14,7 @@
 #define int_p_NULL (int*)NULL
 #endif
 
+#include <turi_common.h>
 #include <core/data/image/image_type.hpp>
 #include <boost/gil/extension/io/jpeg.hpp>
 #include <boost/gil/extension/io/jpeg/old.hpp>

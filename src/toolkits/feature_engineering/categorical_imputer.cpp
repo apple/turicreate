@@ -7,6 +7,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <turi_common.h>
 #include <cmath>
 
 #include <core/storage/sgraph_data/sgraph.hpp>

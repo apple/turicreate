@@ -6,6 +6,7 @@
 #ifndef TURI_RECSYS_FACTORIZATION_MODELS_H_
 #define TURI_RECSYS_FACTORIZATION_MODELS_H_
 
+#include <turi_common.h>
 #include <toolkits/recsys/recsys_model_base.hpp>
 #include <toolkits/recsys/recsys_model_base.hpp>
 

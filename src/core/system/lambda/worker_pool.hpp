@@ -6,16 +6,17 @@
 #ifndef TURI_LAMBDA_WORKER_POOL_HPP
 #define TURI_LAMBDA_WORKER_POOL_HPP
 
-#include<core/system/lambda/lambda_utils.hpp>
-#include<core/logging/assertions.hpp>
-#include<core/storage/fileio/temp_files.hpp>
-#include<boost/filesystem/operations.hpp>
-#include<boost/filesystem/path.hpp>
-#include<core/parallel/lambda_omp.hpp>
-#include<core/parallel/pthread_tools.hpp>
-#include<process/process.hpp>
-#include<core/system/cppipc/client/comm_client.hpp>
-#include<timer/timer.hpp>
+#include <turi_common.h>
+#include <core/system/lambda/lambda_utils.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+#include <boost/filesystem/operations.hpp>
+#include <boost/filesystem/path.hpp>
+#include <core/parallel/lambda_omp.hpp>
+#include <core/parallel/pthread_tools.hpp>
+#include <core/system/platform/process/process.hpp>
+#include <core/system/cppipc/client/comm_client.hpp>
+#include <core/system/platform/timer/timer.hpp>
 
 namespace turi {
 

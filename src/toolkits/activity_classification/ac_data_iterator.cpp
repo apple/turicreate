@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/activity_classification/ac_data_iterator.hpp>
 
 #include <time.h>
@@ -295,12 +296,6 @@ variant_map_type _activity_classifier_prepare_data_aug_impl(
     DASSERT_TRUE(data.contains_column(feat));
   }
 #endif
-
-  for (std::string feat : features) {
-    if (!data.contains_column(feat)) {
-      log_and_throw("Column name " + feat + " does not exist.");
-    }
-  }
 
   bool use_target = (target != "");
   DASSERT_TRUE(!use_target || data.contains_column(target));

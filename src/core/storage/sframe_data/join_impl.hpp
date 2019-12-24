@@ -7,6 +7,7 @@
 #include <unordered_set>
 #include <unordered_map>
 
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 
 //TODO: What happens if a join key (or part of one) is NULL?

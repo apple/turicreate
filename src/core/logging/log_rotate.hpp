@@ -7,6 +7,7 @@
 #define TURI_LOGGER_LOG_ROTATE_HPP
 #include <cstddef>
 #include <string>
+#include <turi_common.h>
 namespace turi {
 
 /**

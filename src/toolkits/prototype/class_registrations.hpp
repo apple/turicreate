@@ -6,6 +6,7 @@
 #ifndef TURI_PROTOTYPE_REGISTRATIONS_H_
 #define TURI_PROTOTYPE_REGISTRATIONS_H_
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 
 namespace turi {

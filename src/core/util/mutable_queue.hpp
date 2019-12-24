@@ -26,6 +26,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <turi_common.h>
 #include <boost/unordered_map.hpp>
 
 namespace turi {

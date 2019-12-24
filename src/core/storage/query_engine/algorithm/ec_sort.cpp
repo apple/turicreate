@@ -7,6 +7,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <turi_common.h>
 #include <core/system/platform/timer//timer.hpp>
 #include <core/storage/sframe_data/sarray.hpp>
 #include <core/storage/sframe_data/sframe.hpp>

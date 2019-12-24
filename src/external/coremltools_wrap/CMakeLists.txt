@@ -10,13 +10,14 @@ file(GLOB_RECURSE _mlmodel_files
   ${CMAKE_CURRENT_SOURCE_DIR}/coremltools/mlmodel/src/*.cpp)
 
 make_library(coremltools_mlmodel
-  OBJECT
   SOURCES
     ${_mlmodel_files}
   REQUIRES protobuf
   EXTERNAL_VISIBILITY
   )
 
-target_compile_options(coremltools_mlmodel INTERFACE "-w -DCoreML=__tc_coreml")
+target_compile_options(coremltools_mlmodel PRIVATE "-w")
+
+target_compile_options(coremltools_mlmodel PUBLIC "-DCoreML=__tc_coreml")
 
 

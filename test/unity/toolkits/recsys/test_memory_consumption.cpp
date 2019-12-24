@@ -6,12 +6,12 @@
 #include <vector>
 #include <string>
 #include <core/random/random.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/sframe_index_mapping.hpp>
 #include <toolkits/recsys/models.hpp>
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 
 using namespace turi;
 using namespace turi::recsys;

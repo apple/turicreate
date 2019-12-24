@@ -8,6 +8,7 @@
 #ifndef TURI_OBJECT_DETECTION_OD_SERIALIZATION_H_
 #define TURI_OBJECT_DETECTION_OD_SERIALIZATION_H_
 
+#include <turi_common.h>
 #include <ml/neural_net/model_spec.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>

@@ -7,6 +7,7 @@
 #define TURI_UTIL_CRASH_HANDLER_HPP
 
 #include <string>
+#include <turi_common.h>
 #include <signal.h>
 
 // The filename which we write backtrace to, default empty and we write to STDERR_FILENO

@@ -1,6 +1,7 @@
 #ifndef __TC_PLOT_HPP_
 #define __TC_PLOT_HPP_
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/toolkit_function_macros.hpp>
 #include <visualization/server/transformation.hpp>

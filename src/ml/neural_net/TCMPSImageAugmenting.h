@@ -148,3 +148,4 @@ API_AVAILABLE(macos(10.13))
 @end
 
 NS_ASSUME_NONNULL_END
+#include <turi_common.h>

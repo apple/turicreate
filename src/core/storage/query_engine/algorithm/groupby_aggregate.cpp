@@ -5,6 +5,7 @@
  */
 #include <string>
 #include <vector>
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <core/system/platform/timer//timer.hpp>
 #include <core/storage/query_engine/planning/planner_node.hpp>

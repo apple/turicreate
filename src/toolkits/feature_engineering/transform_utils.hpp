@@ -6,6 +6,7 @@
 #ifndef TURI_TRANSFORM_UTILS_H_
 #define TURI_TRANSFORM_UTILS_H_
 
+#include <turi_common.h>
 #include <boost/regex.hpp>
 
 #include <core/data/sframe/gl_sframe.hpp>

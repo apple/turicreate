@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <core/system/cppipc/common/object_factory_impl.hpp>
 #include <core/system/cppipc/server/cancel_ops.hpp>
 #include <core/logging/logger.hpp>

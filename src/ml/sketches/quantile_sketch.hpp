@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SKETCH_QUANTILE_SKETCH_HPP
 #define TURI_SKETCH_QUANTILE_SKETCH_HPP
+#include <turi_common.h>
 #include <cmath>
 #include <iostream>
 #include <vector>

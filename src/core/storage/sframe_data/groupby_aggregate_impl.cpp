@@ -7,6 +7,7 @@
 #include <memory>
 #include <queue>
 #include <thread>
+#include <turi_common.h>
 #include <core/storage/sframe_data/groupby_aggregate_impl.hpp>
 #include <core/storage/sframe_data/sarray_reader_buffer.hpp>
 #include <core/parallel/lambda_omp.hpp>

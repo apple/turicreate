@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <unistd.h>
 using namespace turi;
 

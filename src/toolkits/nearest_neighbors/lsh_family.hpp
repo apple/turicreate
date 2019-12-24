@@ -7,6 +7,7 @@
 #define TURI_LSH_FAMILY_H_
 
 #include <memory>
+#include <turi_common.h>
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <toolkits/nearest_neighbors/hash_map_container.hpp>
 

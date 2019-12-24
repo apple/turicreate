@@ -32,6 +32,7 @@
 #include <sstream>
 #include <iostream>
 #include <iomanip>
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <boost/exception/detail/is_output_streamable.hpp>
 

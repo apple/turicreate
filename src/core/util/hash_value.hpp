@@ -6,6 +6,7 @@
 #ifndef TURI_HASH_VALUE_H_
 #define TURI_HASH_VALUE_H_
 
+#include <turi_common.h>
 #include <core/util/cityhash_tc.hpp>
 #include <core/util/bitops.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>

@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <iterator>
 #include <atomic>
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
 #include <boost/thread/mutex.hpp>
 #include <boost/thread/lock_guard.hpp>

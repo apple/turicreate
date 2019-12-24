@@ -7,6 +7,7 @@
 #define TURI_SFRAME_ITERATORS_H_
 
 #include <vector>
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/logging/assertions.hpp>
 

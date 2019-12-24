@@ -6,6 +6,7 @@
 #ifndef TURI_TEXT_PERPLEXITY_H_
 #define TURI_TEXT_PERPLEXITY_H_
 
+#include <turi_common.h>
 #include <core/storage/sframe_interface/unity_sarray.hpp>
 
 namespace turi {

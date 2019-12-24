@@ -6,6 +6,7 @@
 #ifndef TURI_DML_DATA_ROW_FORMAT_H_
 #define TURI_DML_DATA_ROW_FORMAT_H_
 
+#include <turi_common.h>
 #include <ml/ml_data/ml_data_entry.hpp>
 #include <ml/ml_data/ml_data_column_modes.hpp>
 #include <ml/ml_data/data_storage/internal_metadata.hpp>

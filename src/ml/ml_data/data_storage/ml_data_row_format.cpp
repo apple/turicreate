@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 #include <cstdint>
+#include <turi_common.h>
 #include <core/globals/globals.hpp>
 #include <ml/ml_data/data_storage/ml_data_row_format.hpp>
 #include <ml/ml_data/metadata.hpp>

@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <turi_common.h>
 #include <core/export.hpp>
 
 #include <model_server/lib/toolkit_class_macros.hpp>

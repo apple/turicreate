@@ -34,3 +34,4 @@ API_AVAILABLE(macos(10.14))
                                               suggestedDescriptor:(MPSImageDescriptor *)inDescriptor;
 
 @end
+#include <turi_common.h>

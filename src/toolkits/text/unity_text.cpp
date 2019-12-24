@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <core/storage/fileio/temp_files.hpp>
 #include <model_server/lib/toolkit_function_macros.hpp>
@@ -22,7 +23,7 @@
 #include <toolkits/text/cgs.hpp>
 #include <toolkits/text/alias.hpp>
 #include <toolkits/text/perplexity.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <core/export.hpp>
 namespace turi {
 namespace text {

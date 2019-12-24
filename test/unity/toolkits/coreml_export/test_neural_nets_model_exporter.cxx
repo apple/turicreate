@@ -6,7 +6,7 @@
 
 #define BOOST_TEST_MODULE test_neural_nets_model_exporter
 
-#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
 
 #include <map>
 #include <memory>
@@ -14,7 +14,7 @@
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
 #include <core/util/test_macros.hpp>
 
 namespace turi {

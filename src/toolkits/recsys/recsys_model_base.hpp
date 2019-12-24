@@ -10,15 +10,16 @@
 #include <string>
 #include <set>
 
+#include <turi_common.h>
 #include <model_server/lib/extensions/option_manager.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <core/data/sframe/gl_sarray.hpp>
 #include <model_server/lib/toolkit_function_specification.hpp>
 #include <model_server/lib/unity_base_types.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
 #include <core/util/fast_top_k.hpp>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/coreml_export/mlmodel_wrapper.hpp>
 
 
 // Interfaces

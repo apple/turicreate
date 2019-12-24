@@ -1,5 +1,6 @@
 #include <functional>
 
+#include <turi_common.h>
 #include <visualization/annotation/object_detection.hpp>
 #include <visualization/annotation/utils.hpp>
 

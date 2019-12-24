@@ -3,7 +3,8 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <so_utils/so_utils.hpp>
+#include <turi_common.h>
+#include <core/system/platform/so_utils/so_utils.hpp>
 #include <dlfcn.h>
 
 #ifdef __APPLE__

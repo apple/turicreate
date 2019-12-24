@@ -202,3 +202,4 @@ JSExportAs(isPointInPath,
 
 
 #endif /* Canvas_h */
+#include <turi_common.h>
