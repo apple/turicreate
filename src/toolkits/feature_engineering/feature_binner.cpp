@@ -5,6 +5,7 @@
  */
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <cmath>
 #include <cfloat>
 #include <model_server/lib/toolkit_class_macros.hpp>

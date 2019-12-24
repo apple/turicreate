@@ -14,6 +14,7 @@
 #include <algorithm>
 #include <iostream>
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <core/data/sframe/gl_sarray.hpp>
 

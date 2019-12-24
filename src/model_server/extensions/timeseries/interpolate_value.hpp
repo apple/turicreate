@@ -6,6 +6,7 @@
 #ifndef RESAMPLE_INTERPOLATE_VALUE_H
 #define RESAMPLE_INTERPOLATE_VALUE_H
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {

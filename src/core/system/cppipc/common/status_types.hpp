@@ -19,3 +19,4 @@ namespace cppipc {
 
 } // namespace cppipc
 #endif
+#include <turi_common.h>

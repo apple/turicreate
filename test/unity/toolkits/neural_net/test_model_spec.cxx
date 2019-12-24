@@ -13,7 +13,7 @@
 #include <memory>
 
 #include <boost/test/unit_test.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
 #include <core/util/test_macros.hpp>
 
 namespace turi {

@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <mutex>
+#include <turi_common.h>
 #include <core/parallel/thread_pool.hpp>
 #include <core/logging/assertions.hpp>
 #include <core/parallel/pthread_tools.hpp>

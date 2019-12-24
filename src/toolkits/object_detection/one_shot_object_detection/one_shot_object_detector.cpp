@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <atomic>
+#include <turi_common.h>
 #include <cmath>
 #include <limits>
 #include <random>

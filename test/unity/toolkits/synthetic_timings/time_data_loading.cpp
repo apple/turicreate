@@ -7,10 +7,10 @@
 #include <string>
 #include <core/random/random.hpp>
 #include <unity/server/toolkits/recsys/data.hpp>
-#include <unity/server/toolkits/recsys/models.hpp>
-#include <unity/server/toolkits/recsys/models/itemcf.hpp>
-#include <unity/server/toolkits/recsys/data_generators.hpp>
-#include <timer/timer.hpp>
+#include <toolkits/recsys/models.hpp>
+#include <toolkits/recsys/models/itemcf.hpp>
+#include <ml/util/data_generators.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <numerics/armadillo.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 

@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <turi_common.h>
 #include <boost/function.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/system/nanosockets/zmq_msg_vector.hpp>

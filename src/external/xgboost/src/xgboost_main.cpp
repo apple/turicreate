@@ -7,7 +7,7 @@
 #include <cstring>
 #include <vector>
 #include "./sync/sync.h"
-#include "./io/io.h"
+#include <external/xgboost/src/io/io.h>
 #include "./utils/utils.h"
 #include "./utils/config.h"
 #include "./learner/learner-inl.hpp"

@@ -21,6 +21,7 @@
 #include <typeinfo>
 #include <map>
 #include <iostream>
+#include <turi_common.h>
 #include <stdint.h>
 
 #include <boost/type_traits/remove_reference.hpp>

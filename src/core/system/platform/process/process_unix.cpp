@@ -3,7 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <process/process.hpp>
+#if defined(__APPLE__) || defined(__linux__) || defined(__unix__) || defined(_POSIX_VERSION)
+
+#include <turi_common.h>
+#include <core/system/platform/process/process.hpp>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -341,3 +344,5 @@ void process::autoreap() {
 }
 
 } // namespace turi
+
+#endif

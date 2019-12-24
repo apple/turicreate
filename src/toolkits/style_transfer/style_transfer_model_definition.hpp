@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 
+#include <turi_common.h>
 #include <ml/neural_net/model_spec.hpp>
 
 namespace turi {

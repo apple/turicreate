@@ -12,7 +12,7 @@
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
 
-#include <toolkits/sparse_similarity/neighbor_search.hpp>
+#include <ml/sparse_similarity/neighbor_search.hpp>
 #include <core/util/cityhash_tc.hpp>
 #include <core/logging/assertions.hpp>
 

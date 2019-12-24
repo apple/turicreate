@@ -5,6 +5,7 @@
  */
 #ifndef LOCK_FREE_POOL_HPP
 #define LOCK_FREE_POOL_HPP
+#include <turi_common.h>
 #include <stdint.h>
 #include <vector>
 #include <core/logging/assertions.hpp>

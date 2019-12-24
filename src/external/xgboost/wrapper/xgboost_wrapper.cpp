@@ -14,7 +14,7 @@ using namespace std;
 #include "./xgboost_wrapper.h"
 #include "../src/data.h"
 #include "../src/learner/learner-inl.hpp"
-#include "../src/io/io.h"
+#include <external/xgboost/src/io/io.h>
 #include "../src/utils/utils.h"
 #include "../src/utils/math.h"
 #include "../src/utils/group_data.h"

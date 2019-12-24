@@ -11,7 +11,7 @@
 #include <core/util/test_macros.hpp>
 #include <cstdio>
 #include <ml/neural_net/model_spec.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
 #include <toolkits/object_detection/od_serialization.hpp>
 
 namespace turi {

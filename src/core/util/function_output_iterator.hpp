@@ -17,6 +17,7 @@
 #define TURI_FUNCTION_OUTPUT_ITERATOR_HPP
 
 #include <iterator>
+#include <turi_common.h>
 
 namespace turi {
 

@@ -13,6 +13,7 @@
 
 #include <ios>
 #include <system_error>
+#include <turi_common.h>
 
 namespace turi {
 namespace error {

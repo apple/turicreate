@@ -11,8 +11,8 @@
 #include <ml/ml_data/ml_data.hpp>
 #include <ml/optimization/optimization_interface.hpp>
 #include <ml/optimization/utils.hpp>
-#include <toolkits/supervised_learning/linear_regression.hpp>
-#include <toolkits/supervised_learning/linear_regression_opt_interface.hpp>
+#include <ml/supervised_learning/linear_regression.hpp>
+#include <ml/supervised_learning/linear_regression_opt_interface.hpp>
 #include <core/storage/sframe_data/testing_utils.hpp>
 
 using namespace turi;

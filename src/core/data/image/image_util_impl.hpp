@@ -6,6 +6,7 @@
 #ifndef IMAGE_UTIL_IMPL_HPP
 #define IMAGE_UTIL_IMPL_HPP
 
+#include <turi_common.h>
 #include <core/data/image/io.hpp>
 namespace turi {
 

@@ -7,6 +7,7 @@
 #define TURI_SFRAME_COMPACT_HPP
 #include <vector>
 #include <memory>
+#include <turi_common.h>
 namespace turi {
 class sframe;
 

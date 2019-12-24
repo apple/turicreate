@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <boost/gil/gil_all.hpp>
 
 #include <core/data/image/image_type.hpp>

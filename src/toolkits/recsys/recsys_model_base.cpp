@@ -3,28 +3,29 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type_base_types.hpp>
 #include <core/storage/sframe_data/sframe_iterators.hpp>
 #include <core/util/try_finally.hpp>
 
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <toolkits/util/indexed_sframe_tools.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/sframe_index_mapping.hpp>
+#include <ml/util/indexed_sframe_tools.hpp>
 
 #include <toolkits/recsys/models.hpp>
 #include <toolkits/recsys/user_item_lists.hpp>
 #include <model_server/lib/extensions/model_base.hpp>
 #include <toolkits/recsys/train_test_split.hpp>
-#include <toolkits/util/precision_recall.hpp>
-#include <toolkits/util/sframe_utils.hpp>
-#include <toolkits/evaluation/metrics.hpp>
+#include <ml/util/precision_recall.hpp>
+#include <ml/util/sframe_utils.hpp>
+#include <ml/evaluation/metrics.hpp>
 #include <core/util/fast_top_k.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <algorithm>
 #include <core/logging/logger.hpp>
 #include <sstream>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/coreml_export/mlmodel_wrapper.hpp>
 
 // Types
 #include <model_server/lib/variant.hpp>

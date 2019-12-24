@@ -12,6 +12,7 @@
 #include <string>
 #include <sstream>
 #include <map>
+#include <turi_common.h>
 #include <core/storage/fileio/general_fstream.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/ini_parser.hpp>

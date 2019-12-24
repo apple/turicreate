@@ -6,6 +6,7 @@
 #ifndef TURI_DML_DATA_TESTING_UTILS_H_
 #define TURI_DML_DATA_TESTING_UTILS_H_
 
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <ml/ml_data/ml_data.hpp>
 #include <vector>

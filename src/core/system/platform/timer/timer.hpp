@@ -7,6 +7,7 @@
 #define TURI_TIMER_HPP
 
 #ifndef _MSC_VER
+#include <turi_common.h>
 #include <sys/time.h>
 #endif
 
@@ -31,7 +32,7 @@ namespace turi {
    * For example:
    *
    * \code
-   * #include <timer/timer.hpp>
+   * #include <core/system/platform/timer/timer.hpp>
    *
    *
    * turi::timer timer;

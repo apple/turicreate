@@ -7,6 +7,7 @@
 #define TURI_SFRAME_QUERY_MANAGER_BINARY_TRANSFORM_HPP
 
 #include <functional>
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/query_engine/operators/operator.hpp>

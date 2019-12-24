@@ -7,6 +7,7 @@
 #define TURI_IMAGE_IO_IMPL_HPP
 
 #include <string>
+#include <turi_common.h>
 #include <core/data/image/image_type.hpp>
 
 namespace turi {

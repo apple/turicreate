@@ -13,6 +13,7 @@
 #include <future>
 #include <memory>
 #include <vector>
+#include <turi_common.h>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <aws/s3/S3Client.h>
 

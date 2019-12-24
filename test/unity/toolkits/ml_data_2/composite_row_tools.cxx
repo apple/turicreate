@@ -19,13 +19,13 @@
 #include <core/random/random.hpp>
 
 // ML-Data Utils
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/row_slicing_utilities.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/row_slicing_utilities.hpp>
 
 // Testing utils common to all of ml_data_iterator
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
-#include <toolkits/ml_data_2/testing_utils.hpp>
+#include <toolkits/recsys/ml_data_2/testing_utils.hpp>
 
 #include <core/globals/globals.hpp>
 

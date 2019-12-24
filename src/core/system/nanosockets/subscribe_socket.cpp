@@ -8,11 +8,12 @@
 #include <cstdlib>
 #include <iostream>
 #include <mutex>
+#include <turi_common.h>
 #include <core/system/nanosockets/socket_errors.hpp>
 #include <core/system/nanosockets/socket_config.hpp>
 #include <core/system/nanosockets/subscribe_socket.hpp>
 #include <core/system/nanosockets/print_zmq_error.hpp>
-#include <network/net_util.hpp>
+#include <core/system/platform/network/net_util.hpp>
 
 extern "C" {
 #include <nanomsg/nn.h>

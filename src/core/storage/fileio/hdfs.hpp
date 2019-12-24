@@ -37,6 +37,7 @@ extern "C" {
 
 #include <vector>
 #include <iostream>
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 #include <core/logging/assertions.hpp>
 

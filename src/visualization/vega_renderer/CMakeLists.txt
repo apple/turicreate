@@ -39,10 +39,14 @@ if(APPLE AND NOT TC_BUILD_IOS)
    if (CMAKE_BUILD_TYPE STREQUAL "Release")
       set(JS_FILE_EXT "min.js")
    endif()
-   add_custom_command(
-      OUTPUT
+
+   set(_JS_OUTPUT_FILES 
          ${CMAKE_CURRENT_BINARY_DIR}/vega-5.4.0.${JS_FILE_EXT}.h
-         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.3.0.${JS_FILE_EXT}.h
+         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.3.0.${JS_FILE_EXT}.h)
+
+
+   add_custom_command(
+      OUTPUT ${_JS_OUTPUT_FILES}
       COMMENT "Running xxd to generate headers from JavaScript artifacts"
       WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
       COMMAND xxd -i vega-5.4.0.${JS_FILE_EXT} ${CMAKE_CURRENT_BINARY_DIR}/vega-5.4.0.${JS_FILE_EXT}.h
@@ -52,29 +56,21 @@ if(APPLE AND NOT TC_BUILD_IOS)
          ${CMAKE_CURRENT_SOURCE_DIR}/vega-lite-3.3.0.${JS_FILE_EXT}
       VERBATIM
    )
-   add_custom_target(
-      preprocessed_javascript
-      DEPENDS
-         ${CMAKE_CURRENT_BINARY_DIR}/vega-5.4.0.${JS_FILE_EXT}.h
-         ${CMAKE_CURRENT_BINARY_DIR}/vega-lite-3.3.0.${JS_FILE_EXT}.h
-   )
-   include_directories(${CMAKE_CURRENT_BINARY_DIR})
+   
 
    ##
    ## VegaRenderer
    ##
 
-   make_library( vega_renderer OBJECT
+   make_library( vega_renderer
       SOURCES
          ${VEGA_RENDERER_SOURCES}
       REQUIRES
          ${VEGA_RENDERER_DEPENDENCIES}
    )
 
-   add_dependencies(
-      vega_renderer
-      preprocessed_javascript
-   )
+set_source_files_properties(
+  ${VEGA_RENDERER_SOURCES} PROPERTIES OBJECT_DEPENDS "${_JS_OUTPUT_FILES}")
 
    target_compile_options(vega_renderer PUBLIC "-fobjc-arc")
 

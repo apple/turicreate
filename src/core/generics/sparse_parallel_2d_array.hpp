@@ -6,6 +6,7 @@
 #ifndef TURI_2D_SPARSE_PARALLEL_ARRAY
 #define TURI_2D_SPARSE_PARALLEL_ARRAY
 
+#include <turi_common.h>
 #include <core/util/bitops.hpp>
 #include <core/util/cityhash_tc.hpp>
 #include <core/parallel/pthread_tools.hpp>

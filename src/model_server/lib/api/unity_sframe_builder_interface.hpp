@@ -7,6 +7,7 @@
 #define TURI_UNITY_SFRAME_BUILDER_INTERFACE_HPP
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/system/cppipc/magic_macros.hpp>
 

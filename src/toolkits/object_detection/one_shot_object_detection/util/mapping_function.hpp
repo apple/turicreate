@@ -12,6 +12,7 @@
 #include <Eigen/Dense>
 
 #include <algorithm>
+#include <turi_common.h>
 #include <cmath>
 #include <limits>
 #include <random>

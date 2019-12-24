@@ -7,6 +7,7 @@
 #define CACHE_STREAM_SOURCE_HPP
 
 #include <iostream>
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 #include <core/storage/fileio/general_fstream_source.hpp>
 #include <core/storage/fileio/fixed_size_cache_manager.hpp>

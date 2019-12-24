@@ -6,6 +6,7 @@
 #ifndef TURI_DRAWING_DATA_PREPARATION_H_
 #define TURI_DRAWING_DATA_PREPARATION_H_
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <model_server/lib/image_util.hpp>

@@ -5,6 +5,7 @@
  */
 #include <algorithm>
 #include <iterator>
+#include <turi_common.h>
 #include <limits.h>
 #include <math.h>
 #include <core/logging/assertions.hpp>

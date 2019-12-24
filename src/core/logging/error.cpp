@@ -8,6 +8,7 @@
  * Error types to distinguish Turi Create errors from arbitrary C++ exceptions
  */
 
+#include <turi_common.h>
 #include <core/logging/error.hpp>
 
 using namespace turi::error;

@@ -5,6 +5,7 @@
  */
 #ifndef CPPIPC_SERVER_DISPATCH_HPP
 #define CPPIPC_SERVER_DISPATCH_HPP
+#include <turi_common.h>
 #include <core/storage/serialization/serialization_includes.hpp>
 
 namespace cppipc {

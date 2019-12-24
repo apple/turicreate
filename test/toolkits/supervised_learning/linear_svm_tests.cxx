@@ -11,12 +11,12 @@
 #include <ml/ml_data/ml_data.hpp>
 #include <ml/optimization/optimization_interface.hpp>
 #include <ml/optimization/utils.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
-#include <toolkits/supervised_learning/linear_svm.hpp>
-#include <toolkits/supervised_learning/linear_svm_opt_interface.hpp>
+#include <ml/supervised_learning/supervised_learning.hpp>
+#include <ml/supervised_learning/linear_svm.hpp>
+#include <ml/supervised_learning/linear_svm_opt_interface.hpp>
 #include <core/storage/sframe_data/testing_utils.hpp>
 
-#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
 #include <toolkits/coreml_export/MLModel/tests/framework/TestUtils.hpp>
 
 using namespace turi;

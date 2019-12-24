@@ -5,6 +5,7 @@
  */
 #ifndef TURI_FE_ngram_counter_H_
 #define TURI_FE_ngram_counter_H_
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <toolkits/feature_engineering/transformer_base.hpp>
 #include <toolkits/feature_engineering/transform_utils.hpp>

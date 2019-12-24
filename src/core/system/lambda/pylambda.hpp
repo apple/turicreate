@@ -5,6 +5,7 @@
  */
 #ifndef TURI_LAMBDA_PYLAMBDA_EVALUATOR_HPP
 #define TURI_LAMBDA_PYLAMBDA_EVALUATOR_HPP
+#include <turi_common.h>
 #include <core/system/lambda/lambda_interface.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/system/lambda/python_callbacks.hpp>

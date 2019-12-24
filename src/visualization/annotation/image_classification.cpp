@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <core/data/sframe/gl_sarray.hpp>
 
 #include <functional>

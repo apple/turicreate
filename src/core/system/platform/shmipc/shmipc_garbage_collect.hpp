@@ -6,6 +6,7 @@
 #ifndef TURI_SHMIPC_GARBAGE_COLLECT_HPP
 #define TURI_SHMIPC_GARBAGE_COLLECT_HPP
 #include <memory>
+#include <turi_common.h>
 namespace turi {
 namespace shmipc {
 

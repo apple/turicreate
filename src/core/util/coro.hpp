@@ -133,3 +133,4 @@
 #define CLASS_CORO_RUNNING(obj, f) ((obj)._coro_state ##f != 0)
 
 #endif
+#include <turi_common.h>

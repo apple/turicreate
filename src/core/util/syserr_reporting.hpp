@@ -7,6 +7,7 @@
 #define TURI_SYSERR_REPORTING_H_
 
 #include <string>
+#include <turi_common.h>
 
 /**
  * \ingroup util

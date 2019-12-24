@@ -8,6 +8,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
 #include <boost/algorithm/string.hpp>
 #include <core/logging/logger.hpp>

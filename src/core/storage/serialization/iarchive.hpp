@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #ifndef TURI_SERIALIZE_HPP
+#include <turi_common.h>
 #include <core/storage/serialization/serialize.hpp>
 
 #else

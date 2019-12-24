@@ -5,6 +5,7 @@
  */
 #include <fstream>
 #include <memory>
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 #include <core/storage/fileio/read_caching_device.hpp>
 namespace dmlc {

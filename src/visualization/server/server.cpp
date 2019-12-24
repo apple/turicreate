@@ -7,6 +7,7 @@
 // Server impl code adapted from Beast example in
 // boost/beast/example/http/server/async/http_server_async.cpp
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sarray.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/general_fstream.hpp>

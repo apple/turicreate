@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/object_detection/od_serialization.hpp>
 
 #include <stdlib.h>

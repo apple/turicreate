@@ -7,23 +7,24 @@
 #define TURI_NEAREST_NEIGHBORS_H_
 
 // Types
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
 
 // Data structure utils
 #include <core/storage/sframe_data/sframe_iterators.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/metadata.hpp>
-#include <toolkits/ml_data_2/row_slicing_utilities.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/metadata.hpp>
+#include <toolkits/recsys/ml_data_2/row_slicing_utilities.hpp>
 
 // Interfaces
 #include <model_server/lib/toolkit_function_specification.hpp>
 #include <model_server/lib/variant.hpp>
 #include <model_server/lib/unity_base_types.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
-#include <toolkits/util/algorithmic_utils.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <ml/util/algorithmic_utils.hpp>
+#include <ml/supervised_learning/supervised_learning_utils-inl.hpp>
 
 #include <toolkits/nearest_neighbors/distance_functions.hpp>
 

@@ -14,6 +14,7 @@
 #ifndef GIL_SAMPLER_HPP
 #define GIL_SAMPLER_HPP
 
+#include <turi_common.h>
 #include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>
 #include "pixel_numeric_operations.hpp"
 

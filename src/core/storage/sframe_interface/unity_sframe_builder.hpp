@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <set>
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <boost/circular_buffer.hpp>
 #include <model_server/lib/api/unity_sframe_builder_interface.hpp>

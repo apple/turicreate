@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_SIMPLE_MODEL_HPP
 #define TURI_UNITY_SIMPLE_MODEL_HPP
 
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 #include <model_server/lib/extensions/model_base.hpp>
 

@@ -4,9 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <cstddef>
+#include <turi_common.h>
 #include <unistd.h>
 #include <core/logging/logger.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <core/logging/log_rotate.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <boost/filesystem.hpp>

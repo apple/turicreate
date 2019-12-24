@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type_conversion_utilities.hpp>
 
 using namespace turi;

@@ -10,6 +10,7 @@
 #include <set>
 #include <map>
 #include <iostream>
+#include <turi_common.h>
 namespace turi {
 class dot_graph {
  public:

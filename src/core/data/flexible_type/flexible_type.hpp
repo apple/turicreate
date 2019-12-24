@@ -12,6 +12,7 @@
 #include <iostream>
 #include <functional>
 #include <typeindex>
+#include <turi_common.h>
 #include <core/parallel/atomic.hpp>
 #include <core/util/int128_types.hpp>
 #include <core/data/flexible_type/flexible_type_base_types.hpp>

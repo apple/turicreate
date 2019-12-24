@@ -10,6 +10,7 @@
 #include <string>
 #include <memory>
 #include <map>
+#include <turi_common.h>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/general_fstream.hpp>
 namespace turi {

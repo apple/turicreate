@@ -15,7 +15,7 @@
 #include <iterator>
 
 
-#include <toolkits/sparse_similarity/sliced_itemitem_matrix.hpp>
+#include <ml/sparse_similarity/sliced_itemitem_matrix.hpp>
 #include <core/util/cityhash_tc.hpp>
 #include <core/parallel/lambda_omp.hpp>
 

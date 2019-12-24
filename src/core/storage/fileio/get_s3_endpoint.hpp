@@ -7,6 +7,7 @@
 #define TURI_FILEIO_GET_S3_ENDPOINT_HPP
 #include <vector>
 #include <string>
+#include <turi_common.h>
 
 namespace turi {
 namespace fileio {

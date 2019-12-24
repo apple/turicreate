@@ -5,6 +5,7 @@
  */
 #import <CoreML/CoreML.h>
 #import <Foundation/Foundation.h>
+#include <turi_common.h>
 #include <capi/TuriCreate.h>
 
 // @TODO: think about side data later

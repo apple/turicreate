@@ -8,6 +8,7 @@
 #include <set>
 #include <iterator>
 #include <type_traits>
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <core/logging/assertions.hpp>
 #include <boost/algorithm/string/predicate.hpp>

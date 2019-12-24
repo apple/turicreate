@@ -1,6 +1,7 @@
 #ifndef TURI_NEAREST_NEIGHBORS_CLASS_REGISTRATIONS
 #define TURI_NEAREST_NEIGHBORS_CLASS_REGISTRATIONS
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/toolkit_class_specification.hpp>
 

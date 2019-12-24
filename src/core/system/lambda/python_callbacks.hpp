@@ -6,6 +6,7 @@
 #ifndef TURI_PYTHON_CALLBACKS_H_
 #define TURI_PYTHON_CALLBACKS_H_
 
+#include <turi_common.h>
 #include <core/util/code_optimization.hpp>
 #include <string>
 #include <core/export.hpp>

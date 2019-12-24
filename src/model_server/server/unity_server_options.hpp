@@ -7,6 +7,7 @@
 #define TURI_UNITY_SERVER_OPTIONS_HPP
 
 #include <string>
+#include <turi_common.h>
 
 namespace turi {
 

@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <ml/neural_net/float_array.hpp>

@@ -12,6 +12,22 @@ from setuptools import setup, find_packages, Extension
 from setuptools.dist import Distribution
 from setuptools.command.install import install
 
+extensions = [
+    Extension("primes", ["primes.pyx"],
+        include_dirs=[...],
+        libraries=[...],
+        library_dirs=[...]),
+    # Everything but primes.pyx is included here.
+    Extension("*", ["*.pyx"],
+        include_dirs=[...],
+        libraries=[...],
+        library_dirs=[...]),
+]
+setup(
+    name="My hello app",
+    ext_modules=cythonize(extensions),
+)
+
 PACKAGE_NAME="turicreate"
 VERSION='6.0'#{{VERSION_STRING}}
 
@@ -22,6 +38,9 @@ class BinaryDistribution(Distribution):
 
 class InstallEngine(install):
     """Helper class to hook the python setup.py install path to download client libraries and engine"""
+    user_options = [
+        ('turi-root=', None, 'Specify the foo to bar.'),
+    ]
 
     def run(self):
         import platform
@@ -112,6 +131,7 @@ if __name__ == '__main__':
         long_description = f.read().decode('utf-8')
 
     install_requires = [
+        "cython>=3.0",
         "coremltools==3.1",
         "decorator >= 4.0.9",
         "numpy==1.16.4",
@@ -136,10 +156,14 @@ if __name__ == '__main__':
 
         author='Apple Inc.',
         author_email='turi-create@group.apple.com',
-        cmdclass=dict(install=InstallEngine),
+        cmdclass=dict(install = InstallEngine),
         distclass=BinaryDistribution,
         package_data={
             'turicreate': [
+
+
+
+
                 '_cython/*.so', '_cython/*.pyd',
                 '*.so', '*.dylib', 'toolkits/*.so',
 

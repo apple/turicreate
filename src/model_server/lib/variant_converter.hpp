@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <tuple>
 #include <type_traits>
+#include <turi_common.h>
 #include <boost/mpl/contains.hpp>
 #include <boost/mpl/range_c.hpp>
 #include <boost/mpl/vector.hpp>

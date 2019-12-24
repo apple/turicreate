@@ -7,6 +7,7 @@
 #include <limits>
 #include <future>
 #include <unordered_set>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <model_server/lib/api/unity_sketch_interface.hpp>
 #include <core/storage/sframe_data/sarray.hpp>

@@ -6,9 +6,10 @@
 #ifndef TURI_DISTRIBUTED_SO_UTILS
 #define TURI_DISTRIBUTED_SO_UTILS
 
-#include<string>
-#include<core/logging/logger.hpp>
-#include<core/logging/assertions.hpp>
+#include <string>
+#include <turi_common.h>
+#include <core/logging/logger.hpp>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 /**

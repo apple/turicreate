@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include "plot.hpp"
 #include "show.hpp"
 #include "scatter.hpp"

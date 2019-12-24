@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <ml/neural_net/float_array.hpp>
 

@@ -16,6 +16,7 @@
 // $Date$
 // $Revision$
 
+#include <turi_common.h>
 #include <boost/mpl/aux_/lambda_support.hpp>
 
 #define BOOST_TT_AUX_TYPE_TRAIT_DEF1(trait,T,result) \

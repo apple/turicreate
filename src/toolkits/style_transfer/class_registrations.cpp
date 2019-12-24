@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at
  * https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <toolkits/style_transfer/class_registrations.hpp>
 #include <toolkits/style_transfer/style_transfer.hpp>
 

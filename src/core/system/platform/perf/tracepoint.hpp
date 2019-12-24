@@ -8,7 +8,8 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <timer/timer.hpp>
+#include <turi_common.h>
+#include <core/system/platform/timer/timer.hpp>
 #include <core/util/branch_hints.hpp>
 #include <core/parallel/atomic.hpp>
 #include <core/parallel/atomic_ops.hpp>
@@ -26,7 +27,7 @@
  * predefining USE_TRACEPOINT globally.
  * \code
  * #define USE_TRACEPOINT
- * #include "perf/tracepoint.hpp"
+ * #include <core/system/platform/perf/tracepoint.hpp>
  * \endcode
  *
  * Example Usage:

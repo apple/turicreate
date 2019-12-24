@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_TOOLKIT_RESPONSE_TYPE_HPP
 #define TURI_UNITY_TOOLKIT_RESPONSE_TYPE_HPP
 #include <string>
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>
 

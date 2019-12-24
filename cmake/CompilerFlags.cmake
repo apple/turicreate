@@ -2,6 +2,16 @@ include(CheckCXXCompilerFlag)
 include(CheckCCompilerFlag)
 include(CMakeParseArguments)
 
+# Set a define to be dumped into turi_common.h at the end. 
+#
+# A compiler source define is one that determines or switches some part of the 
+# compilation, but isn't related to the particular build being asked for.  These are dumped into 
+# turi_common.h at the end. 
+#
+macro(add_compiler_source_define FLAG)
+  add_definitions(-D${FLAG})
+  set(TC_COMPILER_SOURCE_DEFINES "${TC_COMPILER_SOURCE_DEFINES} ${FLAG}")
+endmacro()
 
 # check_and_set_compiler_flag
 #

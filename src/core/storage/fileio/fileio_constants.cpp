@@ -5,6 +5,7 @@
  */
 #include <cstdlib>
 #include <vector>
+#include <turi_common.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
 #include <core/storage/fileio/fileio_constants.hpp>

@@ -11,6 +11,7 @@ cmake_policy(SET CMP0005 NEW)
 cmake_policy(SET CMP0045 OLD)
 cmake_policy(SET CMP0046 OLD)
 cmake_policy(SET CMP0042 NEW)
+   
 
 # Generate a compilation database for use with automated tools like IDE/editor
 # plugins. See http://clang.llvm.org/docs/JSONCompilationDatabase.html
@@ -40,11 +41,8 @@ set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
 # Configure the compiler
 include(SetupCompiler)
 SetupCompiler()
+include(CompilerFlags)
 
-if(WIN32)
-  add_definitions(-DWINVER=0x0600)
-  add_definitions(-D_WIN32_WINNT=0x0600)
-endif()
 
 if(${TC_BUILD_IOS})
   add_definitions(-DTC_BUILD_IOS)
@@ -56,7 +54,7 @@ if(${TC_BUILD_IOS})
 endif()
 
 if(NOT ${TC_BUILD_REMOTEFS})
-  add_definitions(-DTC_DISABLE_REMOTEFS)
+  add_compiler_source_define(TC_DISABLE_REMOTEFS)
 endif()
 
 # Determine where additional Turi specific cmake modules are
@@ -86,28 +84,29 @@ else()
 endif()
 
 
+# 
+
+
+
 # Add global defines
 add_definitions(-DTC_BUILD_PATH_BASE="${CMAKE_SOURCE_DIR}")
 add_definitions(-DCURL_STATICLIB)
 add_definitions(-DIN_TURI_SOURCE_TREE)
-add_definitions(-DFUSION_MAX_VECTOR_SIZE=20)
-add_definitions(-DBOOST_SPIRIT_THREAD_SAFE)
-add_definitions(-DBOOST_THREAD_ONCE_ATOMIC)
 
-# These determine the maximum number of arguments for extension functions
-add_definitions(-DBOOST_FUSION_INVOKE_MAX_ARITY=12)
-add_definitions(-DBOOST_FUSION_INVOKE_PROCEDURE_MAX_ARITY=12)
-add_definitions(-DBOOST_FUSION_INVOKE_FUNCTION_OBJECT_MAX_ARITY=12)
-
-# Workaround for https://svn.boost.org/trac10/ticket/10443 in Boost 1.68.0
-add_definitions(-DBOOST_RESULT_OF_USE_TR1_WITH_DECLTYPE_FALLBACK)
+# Compile specif defines for boost.
+add_compiler_source_define(FUSION_MAX_VECTOR_SIZE=20)
+add_compiler_source_define(BOOST_SPIRIT_THREAD_SAFE)
+add_compiler_source_define(BOOST_THREAD_ONCE_ATOMIC)
+add_compiler_source_define(BOOST_FUSION_INVOKE_MAX_ARITY=12)
+add_compiler_source_define(BOOST_FUSION_INVOKE_PROCEDURE_MAX_ARITY=12)
+add_compiler_source_define(BOOST_FUSION_INVOKE_FUNCTION_OBJECT_MAX_ARITY=12)
+add_compiler_source_define(BOOST_RESULT_OF_USE_TR1_WITH_DECLTYPE_FALLBACK)
 
 # Legal define for Eigen.
-add_definitions(-DEIGEN_MPL2_ONLY)
+add_compiler_source_define(EIGEN_MPL2_ONLY)
 
 # Defines to avoid symbol collisions
-add_definitions(-Dgoogle=_tc_google)
-add_definitions(-DCoreML=_tc_CoreML)
+add_compiler_source_define(google=_tc_google)
 
 #**************************************************************************/
 #*                                                                        */
@@ -175,6 +174,14 @@ endif()
 include(FindInt128)
 Find_Int128_Types()
 
+set(_compiler_int128_defs ${INT128_FLAGS})
+separate_arguments(_compiler_int128_defs)
+list(FILTER _compiler_int128_defs INCLUDE REGEX "^-D.*")
+foreach(_def ${_compiler_int128_defs})
+  string(REGEX REPLACE "^-D(.*)$" "\\1" _set_arg ${_def})
+  add_compiler_source_define(${_set_arg})
+endforeach()
+
 # Set up defines around a few compiler and language oddities that we have to understand.
 include(CompilerOddities)
 Set_Compiler_Specific_Flags()
@@ -185,6 +192,7 @@ set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 find_package(Threads REQUIRED)
 if(CMAKE_USE_PTHREADS_INIT)
   add_definitions(-DHAVE_PTHREAD)
+  add_compiler_source_define(HAVE_PTHREAD)
 endif()
 
 # Get framework dependencies.
@@ -198,13 +206,13 @@ if (APPLE)
   find_library(CORE_VIDEO CoreVideo)
   find_library(METAL NAMES Metal)
   find_library(METAL_PERFORMANCE_SHADERS NAMES MetalPerformanceShaders)
-  set(_TC_APPLE_DEPENDENCIES 
+  set(TC_APPLE_DEPENDENCIES 
     ${ACCELERATE} ${CORE_GRAPHICS} ${JAVASCRIPT_CORE} ${FOUNDATION} 
     ${CORE_IMAGE} ${CORE_ML} ${CORE_VIDEO} ${METAL} ${METAL_PERFORMANCE_SHADERS})
 
   if(NOT ${TC_BUILD_IOS})
     find_library(APPKIT AppKit)
-    set(_TC_APPLE_DEPENDENCIES ${_TC_APPLE_DEPENDENCIES} ${APPKIT}) 
+    set(TC_APPLE_DEPENDENCIES ${TC_APPLE_DEPENDENCIES} ${APPKIT}) 
   endif()
 endif()
 
@@ -236,9 +244,9 @@ elseif (APPLE)
   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-rpath,@loader_path -Wl,-rpath,@loader_path/..")
 else()
   # LINUX
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,\\$ORIGIN")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,\\$ORIGIN -Wl,-rpath,\\$ORIGIN/..")
-  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-rpath,\\$ORIGIN -Wl,-rpath,\\$ORIGIN/..")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,$ORIGIN")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,$ORIGIN -Wl,-rpath,$ORIGIN/..")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-rpath,$ORIGIN -Wl,-rpath,$ORIGIN/..")
 endif()
 
 # Common install locations for deps linked libraries
@@ -297,55 +305,63 @@ include(MakeExecutable)
 include(MakeTest)
 include(BuildUtilities)
 
-include_directories(SYSTEM
- ${CMAKE_SOURCE_DIR}/deps/local/include)
-include_directories(SYSTEM
- ${CMAKE_SOURCE_DIR}/src/external/boost/boost_1_68_0/)
-include_directories(SYSTEM
- ${CMAKE_SOURCE_DIR}/src/external/libpng/libpng-1.6.37/)
-include_directories(SYSTEM
- ${CMAKE_SOURCE_DIR}/src/external/libjpeg/jpeg-8d/)
-include_directories(SYSTEM
- ${CMAKE_SOURCE_DIR}/src/external/bzip2/)
-include_directories(SYSTEM
- ${CMAKE_SOURCE_DIR}/src/external/zlib/zlib-1.2.11/)
-include_directories(SYSTEM
- ${CMAKE_SOURCE_DIR}/src/external/coremltools_wrap/)
+
 
 link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib)
 link_directories(${CMAKE_SOURCE_DIR}/deps/local/lib64)
+include_directories(${CMAKE_SOURCE_DIR}/deps/local/include/)
 
 include_directories(src)
-include_directories(src/core/system/platform)
-include_directories(SYSTEM src/external)
+include_directories(${CMAKE_BINARY_DIR}/src)
+
+set(TC_EXTERNAL_INCLUDE_SUBDIRS 
+  ./
+  boost/boost_1_68_0/
+  libpng/libpng-1.6.37/
+  libjpeg/jpeg-8d/
+  bzip2/
+  google
+  nanomsg/nanomsg-1.0.0/src
+  zlib/zlib-1.2.11/
+  coremltools_wrap/)
 
 if(${TC_BUILD_REMOTEFS})
-  include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-core/include)
-  include_directories(SYSTEM src/external/aws-sdk-cpp/aws-cpp-sdk-s3/include)
+  set(TC_EXTERNAL_INCLUDE_SUBDIRS
+    ${TC_EXTERNAL_INCLUDE_SUBDIRS}
+    aws-sdk-cpp/aws-cpp-sdk-core/include
+    aws-sdk-cpp/aws-cpp-sdk-s3/include)
 endif()
 
-include_directories(SYSTEM src/external/google)
-include_directories(SYSTEM src/external/nanomsg/nanomsg-1.0.0/src)
+foreach(_dir ${TC_EXTERNAL_INCLUDE_SUBDIRS})
+  include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/src/external/${_dir})
+endforeach()
 
-
-# Include all the external dependencies.
-include(ExternalProject)
 
 add_custom_target(external_dependencies)
 
-file(GLOB packages "${DEPS_CMAKE}/ExternalProject*.cmake")
-foreach(package ${packages})
-        get_filename_component(packagename "${package}" NAME_WE)
-        #package is of the form ExternalProjectXXX"
-        include(${package})
-        STRING(SUBSTRING "${packagename}" 15 -1 depname)
-        string(TOLOWER ${depname} depname)
-        set(package_${depname} requires_${depname} CACHE STRING "Package map")
-        add_dependencies(external_dependencies ex_${depname})
-endforeach()
+if(${TC_BUILD_REMOTEFS})
+  if(NOT ${TC_EXTERNAL_DEPS_PREBUILT})
 
-set(_TC_EXTERNAL_DEPENDENCIES 
-  openssl libxml2 curl
+# Include all the external dependencies.
+    include(ExternalProject)
+
+    file(GLOB packages "${DEPS_CMAKE}/ExternalProject*.cmake")
+    foreach(package ${packages})
+            get_filename_component(packagename "${package}" NAME_WE)
+            #package is of the form ExternalProjectXXX"
+            include(${package})
+            STRING(SUBSTRING "${packagename}" 15 -1 depname)
+            string(TOLOWER ${depname} depname)
+            set(package_${depname} requires_${depname} CACHE STRING "Package map")
+            add_dependencies(external_dependencies ex_${depname})
+    endforeach()
+  endif()
+    
+  set(TC_EXTERNAL_DEPENDENCIES openssl libxml2 curl)
+endif()
+  
+set(TC_EXTERNAL_DEPENDENCIES 
+  ${TC_EXTERNAL_DEPENDENCIES}
   Threads::Threads
   ${CMAKE_DL_LIBS})
 
@@ -353,178 +369,161 @@ set(_TC_EXTERNAL_DEPENDENCIES
 # Collate all the object targets shared among static and shared library targets
 # These are used by C API, unity_shared, etc.
 
-if(NOT _TC_DEFAULT_SERVER_INITIALIZER)
-  set(_TC_DEFAULT_SERVER_INITIALIZER 
+if(NOT TC_DEFAULT_SERVER_INITIALIZER)
+  set(TC_DEFAULT_SERVER_INITIALIZER 
     "${CMAKE_SOURCE_DIR}/src/capi/default_server_initializer.cpp"
   )
 endif()
 
 
-if(NOT TC_DISABLE_OBJECT_BUILDS)
+################################################################################
+#
+#  Write out all the definitions into a common header file. 
 
-set(_TC_COMMON_OBJECTS
+set(TC_COMMON_HEADER_FILE ${CMAKE_SOURCE_DIR}/src/turi_common.h)
 
-  # External dependencies (built from src/external)
-  "$<TARGET_OBJECTS:libjpeg>"
-  "$<TARGET_OBJECTS:libjson>"
-  "$<TARGET_OBJECTS:libpng>"
-  "$<TARGET_OBJECTS:lz4>"
-  "$<TARGET_OBJECTS:protobuf>"
-  "$<TARGET_OBJECTS:uuid>"
-  "$<TARGET_OBJECTS:xgboost>"
-  "$<TARGET_OBJECTS:coremltools_mlmodel>"
+# Write out all the definitions into a single file
+separate_arguments(TC_COMPILER_SOURCE_DEFINES)
 
-  # Then our own source code
-  "$<TARGET_OBJECTS:annotation>"
-  "$<TARGET_OBJECTS:cancel_serverside_ops>"
-  "$<TARGET_OBJECTS:crash_handler>"
-  "$<TARGET_OBJECTS:cppipc>"
-  "$<TARGET_OBJECTS:flexible_type>"
-  "$<TARGET_OBJECTS:globals>"
-  "$<TARGET_OBJECTS:fileio>"
-  "$<TARGET_OBJECTS:image_io>"
-  "$<TARGET_OBJECTS:image_type>"
-  "$<TARGET_OBJECTS:logger>"
-  "$<TARGET_OBJECTS:minipsutil>"
-  "$<TARGET_OBJECTS:ml_data>"
-  "$<TARGET_OBJECTS:nanosockets>"
-  "$<TARGET_OBJECTS:network>"
-  "$<TARGET_OBJECTS:optimization>"
-  "$<TARGET_OBJECTS:parallel>"
-  "$<TARGET_OBJECTS:process>"
-  "$<TARGET_OBJECTS:pylambda>"
-  "$<TARGET_OBJECTS:random>"
-  "$<TARGET_OBJECTS:serialization>"
-  "$<TARGET_OBJECTS:sframe>"
-  "$<TARGET_OBJECTS:sframe_query_engine>"
-  "$<TARGET_OBJECTS:sgraph>"
-  "$<TARGET_OBJECTS:shmipc>"
-  "$<TARGET_OBJECTS:startup_teardown>"
-  "$<TARGET_OBJECTS:supervised_learning>"
-  "$<TARGET_OBJECTS:table_printer>"
-  "$<TARGET_OBJECTS:timer>"
-  "$<TARGET_OBJECTS:unity_sframe>"
-  "$<TARGET_OBJECTS:gl_sframe>"
-  "$<TARGET_OBJECTS:unity_sketches>"
-  "$<TARGET_OBJECTS:unity>"
-  "$<TARGET_OBJECTS:unity_activity_classification>"
-  "$<TARGET_OBJECTS:unity_core>"
-  "$<TARGET_OBJECTS:unity_coreml_model_export>"
-  "$<TARGET_OBJECTS:unity_clustering>"
-  "$<TARGET_OBJECTS:unity_drawing_classifier>"
-  "$<TARGET_OBJECTS:unity_evaluation>"
-  "$<TARGET_OBJECTS:unity_factorization>"
-  "$<TARGET_OBJECTS:unity_feature_engineering>"
-  "$<TARGET_OBJECTS:unity_graph_analytics>"
-  "$<TARGET_OBJECTS:unity_image_export>"
-  "$<TARGET_OBJECTS:unity_ml_data_2>"
-  "$<TARGET_OBJECTS:unity_ml_model>"
-  "$<TARGET_OBJECTS:unity_nearest_neighbors>"
-  "$<TARGET_OBJECTS:unity_neural_net>"
-  "$<TARGET_OBJECTS:unity_object_detection>"
-  "$<TARGET_OBJECTS:unity_one_shot_object_detection>"
-  "$<TARGET_OBJECTS:unity_pattern_mining>"
-  "$<TARGET_OBJECTS:unity_prototype>"
-  "$<TARGET_OBJECTS:unity_recsys>"
-  "$<TARGET_OBJECTS:unity_sgd>"
-  "$<TARGET_OBJECTS:unity_sparse_similarity>"
-  "$<TARGET_OBJECTS:unity_style_transfer>"
-  "$<TARGET_OBJECTS:unity_text>"
-  "$<TARGET_OBJECTS:unity_util>"
-  "$<TARGET_OBJECTS:util>"
-  "$<TARGET_OBJECTS:visualization>"
-)
+set(_file_contents "
+// AUTOGENERATED DEFINITIONS
+// DO NOT EDIT
+#ifndef TC_CODE_DEFINES
+#define TC_CODE_DEFINES
 
-# TODO we can remove the requirements from here when target_link_libraries
-# works with OBJECT library targets (requires CMake 3.12)
-# See https://gitlab.kitware.com/cmake/cmake/issues/14778
-set(_TC_COMMON_REQUIREMENTS
-  # External dependencies (from deps)
-  ${_TC_EXTERNAL_DEPENDENCIES}
-  nanomsg
-  boost
-  libbz2
-  z
-)
+")
 
-if(APPLE)
-  set(_TC_COMMON_REQUIREMENTS
-    # External dependencies (from deps)
-    ${_TC_COMMON_REQUIREMENTS}
-    ${_TC_APPLE_DEPENDENCIES})
+foreach(_def ${TC_COMPILER_SOURCE_DEFINES})
+
+  string(REGEX REPLACE "^([^\\=]+)(=|$)((.*)$|)" "\\1" _variable ${_def})
+  string(REGEX REPLACE "^([^\\=]+)(=|$)((.*)$|)"  "#define \\1 \\3" _expression ${_def})
+
+  set(_file_contents "${_file_contents} 
+#ifndef ${_variable}
+${_expression}
+#endif
+")
+
+endforeach()
+
+set(_file_contents "${_file_contents}
+#endif // End ifdef TC_CODE_DEFINES
+")
+
+file(WRITE ${TC_COMMON_HEADER_FILE} "${_file_contents}")
+
+
+################################################################################
+
+# Add in src/external as a subdirectory.  The rest of the directories are 
+# handled directly below 
+add_subdirectory(src/external)
+
+set(TC_DEPENDENCIES
+  z libjson libjpeg libpng eigen sparsehash protobuf libbz2 
+  lz4 uuid xgboost coremltools_mlmodel boost nanomsg)
+
+
+if(${TC_BUILD_REMOTEFS})
+  set(TC_DEPENDENCIES ${TC_DEPENDENCIES} aws-sdk-cpp) 
 endif()
-  
-  set(_TC_COMMON_OBJECTS
-    ${_TC_COMMON_OBJECTS}
-  "$<TARGET_OBJECTS:annotation>"
-  "$<TARGET_OBJECTS:visualization>")
+
+###############################################################################
+# Also set up the visualization.  This contains a lot of custom scripts, 
+# so we preserve it.
+
+add_subdirectory(src/visualization)
+set(TC_DEPENDENCIES ${TC_DEPENDENCIES} 
+  visualization vega_renderer annotation) 
+
+################################################################################
+# Add all the framework dependencies
 
 if(APPLE)
-  set(_TC_COMMON_OBJECTS
+  macro(AddFrameworkDependency _name) 
+    find_library(_fwrk_path_${_name} ${_name} REQUIRED)
+    set(TC_DEPENDENCIES ${TC_DEPENDENCIES} "-framework ${_name}")
+  endmacro()
 
-    ${_TC_COMMON_OBJECTS}
-    "$<TARGET_OBJECTS:image_deep_feature_extractor>"
-    "$<TARGET_OBJECTS:platform_config>"
-  )
-  set(_TC_COMMON_REQUIREMENTS
-    ${_TC_COMMON_REQUIREMENTS}
-    ${CORE_ML}
-    ${CORE_VIDEO}
-    ${FOUNDATION}
-  )
+  AddFrameworkDependency(Accelerate)
+  AddFrameworkDependency(CoreGraphics)
+  AddFrameworkDependency(JavaScriptCore)
+  AddFrameworkDependency(Foundation)
+  AddFrameworkDependency(CoreImage)
+  AddFrameworkDependency(CoreML)
+  AddFrameworkDependency(CoreVideo)
+  AddFrameworkDependency(Metal)
+  AddFrameworkDependency(MetalPerformanceShaders)
   if(NOT ${TC_BUILD_IOS})
-    set(_TC_COMMON_OBJECTS
-      ${_TC_COMMON_OBJECTS}
-      "$<TARGET_OBJECTS:vega_renderer>"
-    )
-    set(_TC_COMMON_REQUIREMENTS 
-      ${_TC_COMMON_REQUIREMENTS}
-      ${APPKIT}
-      ${CORE_GRAPHICS}
-      ${JAVASCRIPT_CORE}
-    )
-    if(HAS_MPS)
-      set(_TC_COMMON_OBJECTS
-        ${_TC_COMMON_OBJECTS}
-        "$<TARGET_OBJECTS:tcmps>"
-      )
-      set(_TC_COMMON_REQUIREMENTS
-        ${_TC_COMMON_REQUIREMENTS}
-        ${ACCELERATE}
-        ${CORE_IMAGE}
-        ${METAL}
-        ${METAL_PERFORMANCE_SHADERS}
-      )
-    endif()
+    AddFrameworkDependency(AppKit)
   endif()
 endif()
 
-if(${TC_BUILD_REMOTEFS})
-  # object targets that should be included in all APPLE and non-APPLE
-  # platforms except for iOS
-  set(_TC_COMMON_OBJECTS
-    ${_TC_COMMON_OBJECTS}
-    "$<TARGET_OBJECTS:aws-sdk-cpp>"
-  )
-endif()
+FILE(GLOB_RECURSE _tc_core_files
+  CONFIGURE_DEPENDS
+    ${CMAKE_SOURCE_DIR}/src/core/*.h
+    ${CMAKE_SOURCE_DIR}/src/core/*.c
+    ${CMAKE_SOURCE_DIR}/src/core/*.hpp
+    ${CMAKE_SOURCE_DIR}/src/core/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/core/*.m
+    ${CMAKE_SOURCE_DIR}/src/core/*.mm
 
-endif() # End disable object builds
+    ${CMAKE_SOURCE_DIR}/src/ml/*.h
+    ${CMAKE_SOURCE_DIR}/src/ml/*.c
+    ${CMAKE_SOURCE_DIR}/src/ml/*.hpp
+    ${CMAKE_SOURCE_DIR}/src/ml/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/ml/*.m
+    ${CMAKE_SOURCE_DIR}/src/ml/*.mm
+
+    ${CMAKE_SOURCE_DIR}/src/model_server/*.h
+    ${CMAKE_SOURCE_DIR}/src/model_server/*.c
+    ${CMAKE_SOURCE_DIR}/src/model_server/*.hpp
+    ${CMAKE_SOURCE_DIR}/src/model_server/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/model_server/*.m
+    ${CMAKE_SOURCE_DIR}/src/model_server/*.mm
+    
+    # TODO: this will be integrated 
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.h
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.c
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.hpp
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.m
+    ${CMAKE_SOURCE_DIR}/src/model_server_v2/*.mm
+    
+    ${CMAKE_SOURCE_DIR}/src/toolkits/*.h
+    ${CMAKE_SOURCE_DIR}/src/toolkits/*.c
+    ${CMAKE_SOURCE_DIR}/src/toolkits/*.hpp
+    ${CMAKE_SOURCE_DIR}/src/toolkits/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/toolkits/*.m
+    ${CMAKE_SOURCE_DIR}/src/toolkits/*.mm
+
+    
+    ${CMAKE_SOURCE_DIR}/src/capi/*.h
+    ${CMAKE_SOURCE_DIR}/src/capi/*.c
+    ${CMAKE_SOURCE_DIR}/src/capi/*.hpp
+    ${CMAKE_SOURCE_DIR}/src/capi/*.cpp
+    ${CMAKE_SOURCE_DIR}/src/capi/*.m
+    ${CMAKE_SOURCE_DIR}/src/capi/*.mm)
+
+list(FILTER _tc_core_files EXCLUDE REGEX ".*/model_server/extensions/.*")
 
 
+add_library(Core SHARED ${_tc_core_files})
+target_link_libraries(Core ${TC_DEPENDENCIES} ${TC_EXTERNAL_DEPENDENCIES})
+add_dependencies(Core external_dependencies ${TC_EXTERNAL_DEPENDENCIES})
+# set_property(TARGET Core APPEND_STRING PROPERTY LINK_FLAGS " -undefined dynamic_lookup")
+source_group(TREE ${CMAKE_SOURCE_DIR} FILES ${_tc_core_files})
 
-if(EXISTS ${CMAKE_SOURCE_DIR}/extensions)
-  include_directories(SYSTEM extensions)
-  add_subdirectory(extensions)
-endif()
+set(TC_TARGET_DIR "${CMAKE_SOURCE_DIR}/targets/")
 
-# for build-time generated source code
-include_directories(SYSTEM ${CMAKE_BINARY_DIR}/src)
-
-if(EXISTS ${CMAKE_SOURCE_DIR}/subtree)
-  include_directories(SYSTEM subtree)
-  add_subdirectory(subtree)
-endif()
-
-add_subdirectory(src)
-add_subdirectory(test)
+INSTALL(TARGETS Core 
+  LIBRARY DESTINATION ${TC_TARGET_DIR}/lib/)
+INSTALL(DIRECTORY src/
+  DESTINATION ${TC_TARGET_DIR}/include/
+ MESSAGE_NEVER 
+ FILES_MATCHING REGEX "^.*\.((h)|(hpp))$")
+INSTALL(CODE "execute_process( \
+    COMMAND ${CMAKE_COMMAND} -E create_symlink \
+    ${TC_TARGET_DIR}/include/external/boost/boost_1_68_0/boost \
+    ${TC_TARGET_DIR}/include/boost)")
 

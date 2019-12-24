@@ -7,6 +7,7 @@
 #ifndef TURI_DRAWING_CLASSIFIER_H_
 #define TURI_DRAWING_CLASSIFIER_H_
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <core/logging/table_printer/table_printer.hpp>
 #include <ml/neural_net/compute_context.hpp>
@@ -14,8 +15,8 @@
 #include <ml/neural_net/model_spec.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/variant.hpp>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
-#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <ml/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/drawing_classifier/dc_data_iterator.hpp>
 
 namespace turi {

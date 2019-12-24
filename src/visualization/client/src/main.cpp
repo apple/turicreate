@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include "layer.h"
 #include "pipe.h"
 

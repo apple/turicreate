@@ -282,6 +282,8 @@ class OneShotObjectDetector(_CustomModel):
         Print a string description of the model when the model name is entered
         in the terminal.
         """
+        if USE_CPP:
+            return self.__class__.__name__
 
         width = 40
         sections, section_titles = self._get_summary_struct()
@@ -293,43 +295,6 @@ class OneShotObjectDetector(_CustomModel):
             width=width,
             class_name='OneShotObjectDetector')
         return out
-
-    def summary(self, output=None):
-        """
-        Print a summary of the model. The summary includes a description of
-        training data, options, hyper-parameters, and statistics measured
-        during model creation.
-
-        Parameters
-        ----------
-        output : str, None
-            The type of summary to return.
-
-            - None or 'stdout' : print directly to stdout.
-
-            - 'str' : string of summary
-
-            - 'dict' : a dict with 'sections' and 'section_titles' ordered
-              lists. The entries in the 'sections' list are tuples of the form
-              ('label', 'value').
-
-        Examples
-        --------
-        >>> m.summary()
-        """
-        from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
-
-        if output is None or output == 'stdout':
-            pass
-        elif (output == 'str'):
-            return self.__repr__()
-        elif output == 'dict':
-            return _toolkit_serialize_summary_struct( self.__proxy__['detector'], \
-                                            *self._get_summary_struct() )
-        try:
-            print(self.__repr__())
-        except:
-            return self.__class__.__name__
 
     def _get_summary_struct(self):
         """

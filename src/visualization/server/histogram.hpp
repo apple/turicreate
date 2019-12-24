@@ -6,6 +6,7 @@
 #ifndef __TC_HISTOGRAM
 #define __TC_HISTOGRAM
 
+#include <turi_common.h>
 #include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
 #include <visualization/server/batch_size.hpp>
 #include <visualization/server/escape.hpp>

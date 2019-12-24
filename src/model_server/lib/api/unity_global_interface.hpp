@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <map>
+#include <turi_common.h>
 #include <model_server/lib/api/unity_sarray_interface.hpp>
 #include <model_server/lib/api/unity_graph_interface.hpp>
 #include <model_server/lib/toolkit_function_response.hpp>

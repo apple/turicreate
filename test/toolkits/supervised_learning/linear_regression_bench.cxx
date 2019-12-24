@@ -11,14 +11,14 @@
 // ML-Data Utils
 #include <toolkits/ml_data_1/ml_data.hpp>
 #include <toolkits/ml_data_1/metadata.hpp>
-#include <toolkits/ml_data_1/sframe_index_mapping.hpp>
+#include <toolkits/recsys/ml_data_2/sframe_index_mapping.hpp>
 
 // Optimization Interface
 #include <ml/optimization/optimization_interface.hpp>
 #include <ml/optimization/utils.hpp>
 
 // Models
-#include <toolkits/supervised_learning/linear_regression.hpp>
+#include <ml/supervised_learning/linear_regression.hpp>
 #include <core/storage/sframe_data/testing_utils.hpp>
 
 #include <cfenv>

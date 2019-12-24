@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <toolkits/object_detection/od_data_iterator.hpp>
 
 #include <algorithm>

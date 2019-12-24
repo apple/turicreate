@@ -5,6 +5,7 @@
  */
 #include <vector>
 #include <map>
+#include <turi_common.h>
 #include <core/storage/sframe_data/dataframe.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/parallel/lambda_omp.hpp>

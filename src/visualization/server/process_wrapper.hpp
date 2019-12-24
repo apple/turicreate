@@ -6,6 +6,7 @@
 #ifndef __TC_PROCESS_WRAPPER
 #define __TC_PROCESS_WRAPPER
 
+#include <turi_common.h>
 #include "io_buffer.hpp"
 
 #include <cstdio>
@@ -13,7 +14,7 @@
 #include <thread>
 #include <core/parallel/pthread_tools.hpp>
 
-#include <process/process.hpp>
+#include <core/system/platform/process/process.hpp>
 
 
 namespace turi {

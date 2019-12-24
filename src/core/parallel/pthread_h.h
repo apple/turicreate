@@ -6,6 +6,7 @@
 #ifndef TURI_PARALLEL_PTHREAD_INDIRECT_INCLUDE_HPP
 #define TURI_PARALLEL_PTHREAD_INDIRECT_INCLUDE_HPP
 #ifdef _WIN32
+#include <turi_common.h>
 #include <core/parallel/winpthreadsll.h>
 #else
 #include <pthread.h>

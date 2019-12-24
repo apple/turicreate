@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <core/parallel/pthread_tools.hpp>
 #include <unordered_map>
 #include <core/parallel/atomic.hpp>

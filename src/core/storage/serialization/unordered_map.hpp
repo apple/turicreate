@@ -6,6 +6,7 @@
 #ifndef TURI_SERIALIZE_UNORDERED_MAP_HPP
 #define TURI_SERIALIZE_UNORDERED_MAP_HPP
 
+#include <turi_common.h>
 #include <boost/unordered_map.hpp>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/storage/serialization/oarchive.hpp>

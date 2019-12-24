@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_QUERY_OPTIMIZATION_ENGINE_H_
 #define TURI_SFRAME_QUERY_OPTIMIZATION_ENGINE_H_
 
+#include <turi_common.h>
 #include <core/storage/query_engine/planning/planner_node.hpp>
 #include <core/storage/query_engine/planning/materialize_options.hpp>
 #include <core/storage/query_engine/planning/optimization_node_info.hpp>

@@ -85,17 +85,6 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                             session_id=self.session_id,
                             prediction_window=self.prediction_window,
                             validation_set=None)
-    def test_create_missing_validation_set(self):
-        sf_label = random.randint(0, self.num_labels - 1)
-        sf_session_id = max(self.data[self.session_id])
-        sf = self.data.append(tc.SFrame({self.features[0]: [None], self.features[1]: [3.14], self.features[2]: [5.23], self.target: [sf_label], self.session_id: [sf_session_id]}))
-        with self.assertRaises(_ToolkitError):
-            tc.activity_classifier.create(self.data,
-                            features=self.features,
-                            target=self.target,
-                            session_id=self.session_id,
-                            prediction_window=self.prediction_window,
-                            validation_set=sf)
 
     def test_create_invalid_batch_size(self):
         with self.assertRaises(_ToolkitError):
@@ -416,13 +405,6 @@ class ActivityClassifierTest(unittest.TestCase):
         expected_len = self._calc_expected_predictions_length(self.data)
         self.assertEqual(len(preds), expected_len)
 
-    def test_classify_with_incomplete_data(self):
-        data = self.data.copy()
-        del data[self.features[0]]
-        with self.assertRaises(_ToolkitError):
-            pred = self.model.classify(data)
-
-
     def test_predict_topk(self):
         """
         Check the predict_topk function.
@@ -438,18 +420,6 @@ class ActivityClassifierTest(unittest.TestCase):
                 self.data.head(100), k=5, output_frequency='per_window')
             expected_len = self._calc_expected_predictions_length(self.data.head(100), top_k=5)
             self.assertEqual(len(preds), expected_len)
-
-    def test_predict_topk_invalid_k(self):
-        model = self.model
-        with self.assertRaises(_ToolkitError):
-            preds = model.predict_topk(self.data, k=-1)
-
-        with self.assertRaises(_ToolkitError):
-            preds = model.predict_topk(self.data, k=0)
-
-        with self.assertRaises(TypeError):
-            preds = model.predict_topk(self.data, k=[])
-
 
     def test_evaluate_with_incomplete_targets(self):
         """
@@ -493,26 +463,6 @@ class ActivityClassifierTest(unittest.TestCase):
         """
         model = self.model
         model.summary()
-
-    def test_summary_str(self):
-        model = self.model
-        self.assertTrue(isinstance(model.summary('str'), str))
-
-    def test_summary_dict(self):
-        model = self.model
-        self.assertTrue(isinstance(model.summary('dict'), dict))
-
-    def test_summary_invalid_input(self):
-        model = self.model
-        with self.assertRaises(_ToolkitError):
-            model.summary(model.summary('invalid'))
-
-        with self.assertRaises(_ToolkitError):
-            model.summary(model.summary(0))
-
-        with self.assertRaises(_ToolkitError):
-            model.summary(model.summary({}))
-
 
     def test_repr(self):
         """

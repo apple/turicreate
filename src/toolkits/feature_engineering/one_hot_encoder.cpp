@@ -5,6 +5,7 @@
  */
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
 

@@ -10,6 +10,7 @@ namespace turi {
 namespace query_eval {
 
 #include <memory>
+#include <turi_common.h>
 /**
  * \ingroup sframe_query_engine
  * \addtogroup Algorithms Algorithms

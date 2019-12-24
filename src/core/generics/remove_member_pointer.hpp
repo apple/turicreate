@@ -21,6 +21,7 @@
 #   include <boost/preprocessor/comma_if.hpp>
 #endif
 
+#include <turi_common.h>
 #include <boost/config.hpp>
 #include <boost/detail/workaround.hpp>
 

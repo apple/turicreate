@@ -6,7 +6,8 @@
 #ifndef TURI_RECSYS_USER_ITEM_GRAPH_H_
 #define TURI_RECSYS_USER_ITEM_GRAPH_H_
 
-#include <toolkits/ml_data_2/ml_data.hpp>
+#include <turi_common.h>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/storage/sgraph_data/sgraph_compute.hpp>
 #include <memory>

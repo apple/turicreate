@@ -8,6 +8,7 @@
 #include <utility>
 #include <cstdint>
 #include <cstddef>
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <core/util/bitops.hpp>
 

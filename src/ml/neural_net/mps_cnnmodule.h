@@ -10,6 +10,7 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
+#include <turi_common.h>
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/mps_command_queue.hpp>

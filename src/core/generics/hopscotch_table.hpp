@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <functional>
 #include <iterator>
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 
 #define _HOPSCOTCH_TABLE_DEFAULT_HASH std::hash<T>

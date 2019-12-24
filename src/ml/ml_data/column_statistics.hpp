@@ -6,6 +6,7 @@
 #ifndef TURI_DML_DATA_COLUMN_STATISTICS_H_
 #define TURI_DML_DATA_COLUMN_STATISTICS_H_
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/logging/assertions.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>

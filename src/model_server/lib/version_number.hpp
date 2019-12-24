@@ -4,3 +4,4 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #define __UNITY_VERSION__ "6.0"//#{{VERSION_STRING}}
+#include <turi_common.h>

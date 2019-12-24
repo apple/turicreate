@@ -6,6 +6,7 @@
 #ifndef TURI_TRANSFORMER_BASE_H
 #define TURI_TRANSFORMER_BASE_H
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <core/export.hpp>

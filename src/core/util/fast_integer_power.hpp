@@ -9,6 +9,7 @@
 #include <iostream>
 #include <array>
 #include <algorithm>
+#include <turi_common.h>
 #include <core/util/bitops.hpp>
 #include <core/util/code_optimization.hpp>
 

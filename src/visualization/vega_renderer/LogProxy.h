@@ -5,6 +5,7 @@
  */
 
 #import <JavaScriptCore/JavaScriptCore.h>
+#include <turi_common.h>
 #include <os/log.h>
 
 #import "LogProxyHandler.h"

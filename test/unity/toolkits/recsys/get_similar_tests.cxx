@@ -9,7 +9,7 @@
 
 #include <core/storage/sframe_data/sframe_iterators.hpp>
 #include <toolkits/recsys/models/factorization_models.hpp>
-#include <toolkits/util/data_generators.hpp>
+#include <ml/util/data_generators.hpp>
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
 

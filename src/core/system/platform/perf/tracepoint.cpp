@@ -5,8 +5,9 @@
  */
 #include <limits>
 #include <string>
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
-#include <perf/tracepoint.hpp>
+#include <core/system/platform/perf/tracepoint.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <boost/unordered_map.hpp>
 

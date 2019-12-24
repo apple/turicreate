@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_GL_GFRAME_HPP
 #define TURI_UNITY_GL_GFRAME_HPP
 
+#include <turi_common.h>
 #include "gl_sframe.hpp"
 
 namespace turi {

@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/activity_classification/activity_classifier.hpp>
 
 #include <algorithm>
@@ -16,10 +17,10 @@
 #include <core/logging/logger.hpp>
 #include <core/util/string_util.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
-#include <timer/timer.hpp>
-#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
-#include <toolkits/evaluation/metrics.hpp>
-#include <toolkits/util/training_utils.hpp>
+#include <core/system/platform/timer/timer.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
+#include <ml/evaluation/metrics.hpp>
+#include <ml/util/training_utils.hpp>
 
 namespace turi {
 namespace activity_classification {

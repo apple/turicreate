@@ -4,9 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // ML Data
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/metadata.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <turi_common.h>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/metadata.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
 
 // Toolkits
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
@@ -15,7 +16,7 @@
 #include <model_server/lib/variant_deep_serialize.hpp>
 
 // Miscellaneous
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <algorithm>
 #include <time.h>
 #include <string>

@@ -10,8 +10,9 @@
 #include <Eigen/SparseCore>
 #include <Eigen/Core>
 #include <memory>
+#include <turi_common.h>
 #include <core/util/logit_math.hpp>
-#include <toolkits/util/algorithmic_utils.hpp>
+#include <ml/util/algorithmic_utils.hpp>
 #include <core/data/flexible_type/flexible_type_base_types.hpp>
 #include <model_server/lib/toolkit_function_macros.hpp>
 #include <boost/algorithm/string.hpp>

@@ -7,6 +7,7 @@
 #ifndef TURI_VISUALIZATION_BATCH_SIZE_HPP
 #define TURI_VISUALIZATION_BATCH_SIZE_HPP
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sarray.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
 

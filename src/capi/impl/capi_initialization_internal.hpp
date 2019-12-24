@@ -19,3 +19,4 @@ static inline void ensure_server_initialized() {
 
 }  // namespace turi
 #endif
+#include <turi_common.h>

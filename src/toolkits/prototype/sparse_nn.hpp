@@ -6,6 +6,7 @@
 #ifndef SPARSE_NN_HPP
 #define SPARSE_NN_HPP
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <core/data/sframe/gl_sframe.hpp>

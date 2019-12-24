@@ -7,6 +7,7 @@
 #define TURI_ATOMIC_OPS_HPP
 
 #include <cstdint>
+#include <turi_common.h>
 
 
 namespace turi {
