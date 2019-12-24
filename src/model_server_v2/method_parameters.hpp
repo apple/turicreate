@@ -6,6 +6,7 @@
 #ifndef TURI_METHOD_PARAMETERS_HPP_
 #define TURI_METHOD_PARAMETERS_HPP_
 
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 #include <string>
 #include <array>

@@ -11,6 +11,7 @@
 #include <utility>
 #include <vector>
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <model_server/lib/variant.hpp>
 #include <model_server_v2/method_wrapper.hpp>

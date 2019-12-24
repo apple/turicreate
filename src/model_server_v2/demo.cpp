@@ -1,4 +1,5 @@
 #include <string>
+#include <turi_common.h>
 #include <model_server_v2/model_base.hpp>
 #include <model_server_v2/registration.hpp>
 

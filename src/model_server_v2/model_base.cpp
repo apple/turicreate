@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <model_server_v2/model_base.hpp>
 
 namespace turi {

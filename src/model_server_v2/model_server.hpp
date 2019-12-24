@@ -3,9 +3,10 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#ifndef TURI_MODEL_SERVER_HPP
-#define TURI_MODEL_SERVER_HPP
+#ifndef TURI_MODEL_SERVER_V2_HPP
+#define TURI_MODEL_SERVER_V2_HPP
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <core/util/code_optimization.hpp>
 #include <memory>
@@ -13,6 +14,7 @@
 #include <vector>
 #include <model_server/lib/variant.hpp>
 #include <model_server_v2/method_registry.hpp>
+#include <model_server_v2/model_base.hpp>
 
 
 namespace turi {

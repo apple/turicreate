@@ -10,6 +10,7 @@
 #include <atomic>
 #include <mutex>
 #include <array>
+#include <turi_common.h>
 #include <model_server_v2/model_server.hpp> 
 
 namespace turi { 
@@ -21,15 +22,15 @@ namespace turi {
 class __model_server_static_class_registration_hook {
   public:
     inline __model_server_static_class_registration_hook(
-      model_server_impl::_registration_callback f) {
-        model_server().add_registration_callback(f);
+      turi::v2::model_server_impl::_registration_callback f) {
+        turi::v2::model_server().add_registration_callback(f);
     }
 };
 
 
 
 #define REGISTER_MODEL(model) \
-  static void __register_##model(model_server_impl& server) { \
+  static void __register_##model(turi::v2::model_server_impl& server) { \
     server.template register_new_model<model>(); \
   } \
   \
@@ -43,8 +44,8 @@ class __model_server_static_class_registration_hook {
 class __model_server_static_function_registration_hook {
   public:
     inline __model_server_static_function_registration_hook(
-      model_server_impl::_registration_callback f) {
-        model_server().add_registration_callback(f);
+      turi::v2::model_server_impl::_registration_callback f) {
+        turi::v2::model_server().add_registration_callback(f);
     }
 };
 
@@ -52,7 +53,7 @@ class __model_server_static_function_registration_hook {
 
 #define REGISTER_NAMED_FUNCTION(name, function, ...) \
 \
-  static void register_function_##function(model_server_impl& server) {\
+  static void register_function_##function(turi::v2::model_server_impl& server) {\
     server.register_new_function(name, function, __VA_ARGS__);\
   } \
    __model_server_static_function_registration_hook \

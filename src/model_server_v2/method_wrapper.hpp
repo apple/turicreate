@@ -6,6 +6,7 @@
 #ifndef TURI_METHOD_WRAPPER_HPP_
 #define TURI_METHOD_WRAPPER_HPP_
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <model_server/lib/variant.hpp>
 #include <model_server_v2/method_parameters.hpp>
@@ -206,11 +207,11 @@ template <typename Class, typename BaseClass, bool is_const_method,
   
   template <class C>
   struct _call_chooser {
-    static constexpr bool func_path         = !is_method; 
-    static constexpr bool const_method      = is_const_method;
-    static constexpr bool _non_const_method = is_method && !is_const_method;
-    static constexpr bool bad_const_call    = _non_const_method && std::is_const<C>::value;
-    static constexpr bool method_path       = _non_const_method && !std::is_const<C>::value;
+    static constexpr int func_path         = !is_method; 
+    static constexpr int const_method_path = is_const_method;
+    static constexpr int _non_const_method = is_method && !is_const_method;
+    static constexpr int bad_const_call    = _non_const_method && std::is_const<C>::value;
+    static constexpr int method_path       = _non_const_method && !std::is_const<C>::value;
   }; 
 
   // If it's a regular function.
@@ -229,13 +230,13 @@ template <typename Class, typename BaseClass, bool is_const_method,
   }
 
   // Const method.
-  template <class C, enable_if_<_call_chooser<C>::const_method> = 0>
+  template <class C, enable_if_<_call_chooser<C>::const_method_path> = 0>
   variant_type _choose_call_path(C* inst, const argument_pack& args) const {
     return _call(dynamic_cast<const Class*>(inst), args);
   }
 
   // Non-const method.
-  template <class C, enable_if_<_call_chooser<C>::method_call> = 0>
+  template <class C, enable_if_<_call_chooser<C>::method_path> = 0>
   variant_type _choose_call_path(C* inst, const argument_pack& args) const {
     return _call(dynamic_cast<Class*>(inst), args);
   }

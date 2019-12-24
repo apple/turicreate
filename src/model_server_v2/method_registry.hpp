@@ -6,6 +6,7 @@
 #ifndef TURI_METHOD_REGISTRY_HPP_
 #define TURI_METHOD_REGISTRY_HPP_
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <model_server/lib/variant.hpp>
 #include <map>
