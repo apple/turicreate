@@ -45,9 +45,30 @@ using padding_type = model_spec::padding_type;
 // anonymous helper sections
 
 struct result {
+  shared_float_array loss_info;
   shared_float_array accuracy_info;
+  shared_float_array output_info;
   data_iterator::batch data_info;
 };
+
+size_t count_correct_predictions(const result& batch, size_t num_classes) {
+  float num_correct = 0.f;
+
+  const float* output_ptr = batch.output_info.data();
+  const float* truth_ptr = batch.data_info.targets.data();
+
+  for (size_t i = 0; i < batch.data_info.num_samples; ++i) {
+    size_t prediction =
+        std::max_element(output_ptr, output_ptr + num_classes) - output_ptr;
+    if (prediction == *truth_ptr) {
+      num_correct += 1;
+    }
+
+    truth_ptr++;
+    output_ptr += num_classes;
+  }
+  return num_correct;
+}
 
 }  // namespace
 
@@ -328,6 +349,12 @@ void drawing_classifier::init_training(
     }
   }
 
+  bool show_loss = true;
+  auto show_loss_it = opts.find("_show_loss");
+  if (show_loss_it != opts.end()) {
+    show_loss = show_loss_it->second;
+  }
+
   // Read user-specified options.
   init_options(opts);
 
@@ -412,7 +439,7 @@ void drawing_classifier::init_training(
 
   // Begin printing progress.
   // TODO: Make progress printing optional.
-  init_table_printer(!validation_data_.empty());
+  init_table_printer(!validation_data_.empty(), show_loss);
 
   // Print the header last, after any logging by initialization above
   if (training_table_printer_) {
@@ -421,11 +448,12 @@ void drawing_classifier::init_training(
 }
 
 // Returns the validation accuracy and validation loss respectively as a tuple
-float drawing_classifier::compute_validation_metrics(size_t num_classes,
-                                                     size_t batch_size) {
+std::tuple<float, float> drawing_classifier::compute_validation_metrics(
+    size_t num_classes, size_t batch_size) {
+  float cumulative_val_loss = 0.f;
   size_t val_size = 0;
   size_t val_num_correct = 0;
-  size_t val_num_samples = 0;
+
   validation_data_iterator_->reset();
 
   // To support double buffering, use a queue of pending inference results.
@@ -437,11 +465,12 @@ float drawing_classifier::compute_validation_metrics(size_t num_classes,
       result batch = pending_batches.front();
       pending_batches.pop();
 
-      size_t batch_num_correct = 0;
-      batch_num_correct = static_cast<size_t>(*(batch.accuracy_info.data()) *
-                                              batch.data_info.num_samples);
-      val_num_correct += batch_num_correct;
-      val_num_samples += batch.data_info.num_samples;
+      val_num_correct += count_correct_predictions(batch, num_classes);
+      float val_loss =
+          std::accumulate(batch.loss_info.data(),
+                          batch.loss_info.data() + batch.loss_info.size(), 0.f,
+                          std::plus<float>());
+      cumulative_val_loss += val_loss;
     }
   };
 
@@ -460,7 +489,8 @@ float drawing_classifier::compute_validation_metrics(size_t num_classes,
                                   {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
                                 });
 
-    result_batch.accuracy_info = results.at("accuracy");
+    result_batch.loss_info = results.at("loss");
+    result_batch.output_info = results.at("output");
     val_size += result_batch.data_info.num_samples;
 
     // Add the pending result to our queue and move on to the next input batch.
@@ -468,13 +498,13 @@ float drawing_classifier::compute_validation_metrics(size_t num_classes,
   }
   // Process all remaining batches.
   pop_until_size(0);
-  float average_val_accuracy =
-      static_cast<float>(val_num_correct) / val_num_samples;
+  float average_val_accuracy = static_cast<float>(val_num_correct) / val_size;
+  float average_val_loss = cumulative_val_loss / val_size;
 
-  return average_val_accuracy;
+  return std::make_tuple(average_val_accuracy, average_val_loss);
 }
 
-void drawing_classifier::iterate_training() {
+void drawing_classifier::iterate_training(bool show_loss) {
   // Training must have been initialized.
   ASSERT_TRUE(training_data_iterator_ != nullptr);
   ASSERT_TRUE(training_model_ != nullptr);
@@ -482,6 +512,7 @@ void drawing_classifier::iterate_training() {
   const size_t batch_size = read_state<flex_int>("batch_size");
   const size_t iteration_idx = read_state<flex_int>("training_iterations");
 
+  float cumulative_batch_loss = 0.f;
   size_t num_batches = 0;
   size_t train_num_correct = 0;
   size_t train_num_samples = 0;
@@ -496,11 +527,14 @@ void drawing_classifier::iterate_training() {
       result batch = pending_batches.front();
       pending_batches.pop();
 
-      size_t batch_num_correct = 0;
-      batch_num_correct = static_cast<size_t>(*(batch.accuracy_info.data()) *
-                                              batch.data_info.num_samples);
-      train_num_correct += batch_num_correct;
+      train_num_correct += count_correct_predictions(batch, num_classes);
       train_num_samples += batch.data_info.num_samples;
+      float batch_loss =
+          std::accumulate(batch.loss_info.data(),
+                          batch.loss_info.data() + batch.loss_info.size(), 0.f,
+                          std::plus<float>());
+
+      cumulative_batch_loss += batch_loss;
     }
   };
 
@@ -518,8 +552,8 @@ void drawing_classifier::iterate_training() {
                                 {"labels", result_batch.data_info.targets},
                                 {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
                               });
-    result_batch.accuracy_info = results.at("accuracy");
-
+    result_batch.output_info = results.at("output");
+    result_batch.loss_info = results.at("loss");
     ++num_batches;
 
     // Add the pending result to our queue and move on to the next input batch.
@@ -527,22 +561,23 @@ void drawing_classifier::iterate_training() {
   }
   // Process all remaining batches.
   pop_until_size(0);
+  float average_batch_loss = cumulative_batch_loss / train_num_samples;
   float average_batch_accuracy =
       static_cast<float>(train_num_correct) / train_num_samples;
   float average_val_accuracy;
+  float average_val_loss;
 
   if (validation_data_iterator_) {
-    average_val_accuracy = compute_validation_metrics(num_classes, batch_size);
+    std::tie(average_val_accuracy, average_val_loss) =
+        compute_validation_metrics(num_classes, batch_size);
   }
-  add_or_update_state({
-      {"training_iterations", iteration_idx + 1},
-      {"training_accuracy", average_batch_accuracy},
-  });
+  add_or_update_state({{"training_iterations", iteration_idx + 1},
+                       {"training_accuracy", average_batch_accuracy},
+                       {"training_log_loss", average_batch_loss}});
 
   if (validation_data_iterator_) {
-    add_or_update_state({
-        {"validation_accuracy", average_val_accuracy},
-    });
+    add_or_update_state({{"validation_accuracy", average_val_accuracy},
+                         {"validation_log_loss", average_val_loss}});
   } else {
     add_or_update_state({
         {"validation_accuracy", FLEX_UNDEFINED}
@@ -551,13 +586,27 @@ void drawing_classifier::iterate_training() {
 
   if (training_table_printer_) {
     if (validation_data_iterator_) {
-      training_table_printer_->print_progress_row(
-          iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          average_val_accuracy, progress_time());
+      if (show_loss) {
+        training_table_printer_->print_progress_row(
+            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            average_batch_loss, average_val_accuracy, average_val_loss,
+            progress_time());
+      } else {
+        training_table_printer_->print_progress_row(
+            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            average_val_accuracy, progress_time());
+      }
+
     } else {
-      training_table_printer_->print_progress_row(
-          iteration_idx, iteration_idx + 1, average_batch_accuracy,
-          progress_time());
+      if (show_loss) {
+        training_table_printer_->print_progress_row(
+            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            average_batch_loss, progress_time());
+      } else {
+        training_table_printer_->print_progress_row(
+            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            progress_time());
+      }
     }
   }
 
@@ -569,17 +618,35 @@ std::unique_ptr<compute_context> drawing_classifier::create_compute_context()
   return compute_context::create_tf();
 }
 
-void drawing_classifier::init_table_printer(bool has_validation) {
+void drawing_classifier::init_table_printer(bool has_validation,
+                                            bool show_loss) {
   if (has_validation) {
-    training_table_printer_.reset(
-        new table_printer({{"Iteration", 12},
-                           {"Train Accuracy", 12},
-                           {"Validation Accuracy", 12},
-                           {"Elapsed Time", 12}}));
+    if (show_loss) {
+      training_table_printer_.reset(
+          new table_printer({{"Iteration", 12},
+                             {"Train Accuracy", 12},
+                             {"Train Loss", 12},
+                             {"Validation Accuracy", 12},
+                             {"Validation Loss", 12},
+                             {"Elapsed Time", 12}}));
+    } else {
+      training_table_printer_.reset(
+          new table_printer({{"Iteration", 12},
+                             {"Train Accuracy", 12},
+                             {"Validation Accuracy", 12},
+                             {"Elapsed Time", 12}}));
+    }
+
   } else {
-    training_table_printer_.reset(new table_printer({{"Iteration", 12},
-                                                     {"Train Accuracy", 12},
-                                                     {"Elapsed Time", 12}}));
+    if (show_loss) {
+      training_table_printer_.reset(new table_printer({{"Iteration", 12},
+                                                       {"Train Accuracy", 12},
+                                                       {"Train Loss", 12},
+                                                       {"Elapsed Time", 12}}));
+    } else {
+      training_table_printer_.reset(new table_printer(
+          {{"Iteration", 12}, {"Train Accuracy", 12}, {"Elapsed Time", 12}}));
+    }
   }
 }
 
@@ -594,13 +661,19 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
   // Instantiate the training dependencies: data iterator, compute context,
   // backend NN model.
 
+  bool show_loss = true;
+  auto show_loss_it = opts.find("_show_loss");
+  if (show_loss_it != opts.end()) {
+    show_loss = show_loss_it->second;
+  }
+
   init_training(data, target_column_name, feature_column_name, validation_data,
                 opts);
 
   // Perform all the iterations at once.
   flex_int max_iterations = read_state<flex_int>("max_iterations");
   while (read_state<flex_int>("training_iterations") < max_iterations) {
-    iterate_training();
+    iterate_training(show_loss);
   }
 
   // Finish printing progress.
