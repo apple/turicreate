@@ -367,6 +367,8 @@ def create(dataset, target, feature, max_iterations=10,
             raise ValueError("The 'validation_set' SFrame must be in the same format as the 'dataset'")
     if batch_size < 1:
         raise ValueError('\'batch_size\' must be greater than or equal to 1')
+    if not isinstance(max_iterations, int):
+        raise TypeError("'max_iterations' must be type int.")
     _tk_utils._numeric_param_check_range('max_iterations', max_iterations, 1, _six.MAXSIZE)
 
 

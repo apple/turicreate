@@ -162,8 +162,9 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         with self.assertRaises(ToolkitError):
             model = tc.sound_classifier.create(self.data, 'labels', feature='audio', max_iterations=0)
 
-        with self.assertRaises(ToolkitError):
+        with self.assertRaises(TypeError):
             model = tc.sound_classifier.create(self.data, 'labels', feature='audio', max_iterations='1')
+
 
     def test_predict(self):
         # default ('class') output_type
