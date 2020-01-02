@@ -990,7 +990,7 @@ class SoundClassifier(_CustomModel):
                                 ' classification. For multi-class classification, use'
                                 ' predict_topk() instead.')
         if not isinstance(batch_size, int):
-            raise TypeError("'batch_size' must be type int.")
+            raise TypeError("'batch_size' must be of type int.")
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
