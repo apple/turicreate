@@ -1096,7 +1096,7 @@ class SoundClassifier(_CustomModel):
         +------+-------+-------------------+
         """
         prob_vector = self.predict(dataset, output_type='probability_vector',
-                                   verbose=verbose, batch_size=64)
+                                   verbose=verbose, batch_size=batch_size)
         id_to_label = self._id_to_class_label
 
         if output_type == 'probability':
