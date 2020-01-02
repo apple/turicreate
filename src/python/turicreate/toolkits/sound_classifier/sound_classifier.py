@@ -13,6 +13,7 @@ from __future__ import absolute_import as _
 import logging as _logging
 from math import ceil as _ceil
 import numpy as _np
+import six as _six
 
 import turicreate as _tc
 import turicreate.toolkits._internal_utils as _tk_utils
@@ -366,6 +367,8 @@ def create(dataset, target, feature, max_iterations=10,
             raise ValueError("The 'validation_set' SFrame must be in the same format as the 'dataset'")
     if batch_size < 1:
         raise ValueError('\'batch_size\' must be greater than or equal to 1')
+    _tk_utils._numeric_param_check_range('max_iterations', max_iterations, 1, _six.MAXSIZE)
+
 
     classes = list(dataset[target].unique().sort())
     num_labels = len(classes)
