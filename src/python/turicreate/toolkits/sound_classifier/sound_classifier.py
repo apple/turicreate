@@ -989,6 +989,8 @@ class SoundClassifier(_CustomModel):
             raise _ToolkitError('Output type \'probability\' is only supported for binary'
                                 ' classification. For multi-class classification, use'
                                 ' predict_topk() instead.')
+        if not isinstance(batch_size, int):
+            raise TypeError("'batch_size' must be type int.")
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
@@ -1098,7 +1100,7 @@ class SoundClassifier(_CustomModel):
         +------+-------+-------------------+
         """
         prob_vector = self.predict(dataset, output_type='probability_vector',
-                                   verbose=verbose, batch_size=64)
+                                   verbose=verbose, batch_size=batch_size)
         id_to_label = self._id_to_class_label
 
         if output_type == 'probability':
