@@ -13,6 +13,7 @@ from __future__ import absolute_import as _
 import logging as _logging
 from math import ceil as _ceil
 import numpy as _np
+import six as _six
 
 import turicreate as _tc
 import turicreate.toolkits._internal_utils as _tk_utils
@@ -1095,6 +1096,9 @@ class SoundClassifier(_CustomModel):
         | ...  |  ...  |        ...        |
         +------+-------+-------------------+
         """
+        if not isinstance(k, int):
+            raise TypeError("'k' must be of type int.")
+        _tk_utils._numeric_param_check_range('k', k, 1, _six.MAXSIZE)
         prob_vector = self.predict(dataset, output_type='probability_vector',
                                    verbose=verbose, batch_size=64)
         id_to_label = self._id_to_class_label

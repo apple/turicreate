@@ -308,6 +308,16 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue(len(unique_ranks) == 1)
         self.assertTrue(unique_ranks[0] == 0)
 
+    def test_predict_topk_invalid_k(self):
+        with self.assertRaises(ToolkitError):
+            pred = self.model.predict_topk(self.data, k=-1)
+
+        with self.assertRaises(ToolkitError):
+            pred = self.model.predict_topk(self.data, k=0)
+
+        with self.assertRaises(TypeError):
+            pred = self.model.predict_topk(self.data, k={})
+
     def test_validation_set(self):
         self.assertTrue(self.model.validation_accuracy is None)
 
