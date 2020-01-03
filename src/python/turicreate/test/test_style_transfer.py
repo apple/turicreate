@@ -158,8 +158,20 @@ class StyleTransferTest(unittest.TestCase):
         style_cases = self._get_invalid_style_cases()
         model = self.model
         for style in style_cases:
-            with self.assertRaises(_ToolkitError):
+            expected_exception_type = _ToolkitError
+            if isinstance(style, str):
+                expected_exception_type = TypeError
+            with self.assertRaises(expected_exception_type):
                 model.stylize(self.content_sf[0:1], style=style)
+
+        with self.assertRaises(TypeError):
+                model.stylize('junk value')
+        with self.assertRaises(_ToolkitError):
+                model.stylize(self.content_sf[0:1], style=-1)
+        with self.assertRaises(_ToolkitError):
+            model.stylize(self.content_sf[0:1], style=1, max_size=0)
+        with self.assertRaises(TypeError):
+            model.stylize(self.content_sf, style=5, batch_size='12')
 
     def test_stylize_success(self):
         sf = self.content_sf[0:1]
