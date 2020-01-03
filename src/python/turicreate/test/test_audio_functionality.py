@@ -158,13 +158,28 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.is_binary_classification = True
         self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', max_iterations=100)
 
+    def test_create_with_invalid_custom_layers(self):
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=[])
+
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes={})
+
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=['1'])
+
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=[-1])
+
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=[0,0])
+
     def test_create_with_invalid_batch_size(self):
         with self.assertRaises(ValueError):
             model = tc.sound_classifier.create(self.data, 'labels', feature='audio', batch_size=-1)
 
         with self.assertRaises(TypeError):
             model = tc.sound_classifier.create(self.data, 'labels', feature='audio', batch_size=[])
-
 
     def test_predict(self):
         # default ('class') output_type

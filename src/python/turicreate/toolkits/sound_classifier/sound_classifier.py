@@ -360,6 +360,8 @@ def create(dataset, target, feature, max_iterations=10,
     for i in custom_layer_sizes:
         if not isinstance(i, int):
             raise _ToolkitError("'custom_layer_sizes' must contain only integers.")
+        if not i >= 1:
+            raise _ToolkitError("'custom_layer_sizes' must contain integers >= 1.")
     if not (isinstance(validation_set, _tc.SFrame) or validation_set == 'auto' or validation_set is None):
         raise TypeError("Unrecognized value for 'validation_set'")
     if isinstance(validation_set, _tc.SFrame):
