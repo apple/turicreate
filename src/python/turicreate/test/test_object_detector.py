@@ -148,7 +148,7 @@ class ObjectDetectorTest(unittest.TestCase):
             self.get_ans['annotation_origin'] = lambda x: isinstance(x, str)
             self.get_ans['grid_height'] = lambda x: x > 0
             self.get_ans['grid_width'] = lambda x: x > 0
-            self.get_ans['random_seed'] = lambda x: True
+            self.get_ans['random_seed'] = lambda x: isinstance(x, int)
             del self.get_ans['_model']
             del self.get_ans['_class_to_index']
             del self.get_ans['_grid_shape']
@@ -230,6 +230,12 @@ class ObjectDetectorTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.object_detector.create(self.sf[:0])
 
+    def test_create_with_fixed_random_seed(self):
+        model_1 = tc.object_detector.create(self.sf, max_iterations=3, random_seed=86)
+        pred_1 = model_1.evaluate(self.sf)
+        model_2 = tc.object_detector.create(self.sf, max_iterations=3, random_seed=86)
+        pred_2 = model_2.evaluate(self.sf)
+        self.assertEqual(pred_1, pred_2)
 
     def test_dict_annotations(self):
         sf_copy = self.sf[:]

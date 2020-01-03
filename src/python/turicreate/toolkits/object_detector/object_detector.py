@@ -99,7 +99,7 @@ def _raise_error_if_not_detection_sframe(dataset, feature, annotations, require_
 
 def create(dataset, annotations=None, feature=None, model='darknet-yolo',
            classes=None, batch_size=0, max_iterations=0,
-           verbose=True, grid_shape=[13, 13], **kwargs):
+           verbose=True, grid_shape=[13, 13], random_seed=0, **kwargs):
     """
     Create a :class:`ObjectDetector` model.
 
@@ -159,6 +159,9 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
 
     verbose : bool, optional
         If True, print progress updates and model details.
+
+    random_seed : int, optional
+        Random seed for model initialization and validation data splitting.
 
     Returns
     -------
@@ -279,7 +282,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
             'grid_width': params['grid_shape'][1],
             'mlmodel_path' : params['mlmodel_path'],
             'classes' : classes,
-            'compute_final_metrics' : False
+            'compute_final_metrics' : False,
+            'random_seed' : random_seed,
         }
 
         # If batch_size or max_iterations = 0, they will be automatically
