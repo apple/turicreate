@@ -158,7 +158,6 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.is_binary_classification = True
         self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', max_iterations=100)
 
-
     def test_create_with_invalid_custom_layers(self):
         with self.assertRaises(ToolkitError):
             model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=[])
@@ -174,6 +173,13 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
         with self.assertRaises(ToolkitError):
             model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=[0,0])
+
+    def test_create_with_invalid_batch_size(self):
+        with self.assertRaises(ValueError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', batch_size=-1)
+
+        with self.assertRaises(TypeError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', batch_size=[])
 
     def test_predict(self):
         # default ('class') output_type
@@ -324,6 +330,16 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         unique_ranks = topk_predictions['rank'].unique()
         self.assertTrue(len(unique_ranks) == 1)
         self.assertTrue(unique_ranks[0] == 0)
+
+    def test_predict_topk_invalid_k(self):
+        with self.assertRaises(ToolkitError):
+            pred = self.model.predict_topk(self.data, k=-1)
+
+        with self.assertRaises(ToolkitError):
+            pred = self.model.predict_topk(self.data, k=0)
+
+        with self.assertRaises(TypeError):
+            pred = self.model.predict_topk(self.data, k={})
 
     def test_validation_set(self):
         self.assertTrue(self.model.validation_accuracy is None)
