@@ -284,7 +284,7 @@ class SGraph(object):
 
         See Also
         --------
-        edges
+        Edge
 
         Examples
         --------
@@ -337,7 +337,8 @@ class SGraph(object):
 
         See Also
         --------
-        vertices
+        Vertex
+
 
         Examples
         --------
@@ -370,7 +371,7 @@ class SGraph(object):
 
         See Also
         --------
-        vertices, edges
+        Vertex, Edge
 
         Examples
         --------
@@ -415,7 +416,7 @@ class SGraph(object):
 
         See Also
         --------
-        vertices, get_edges
+        Vertex, get_edges
 
         Examples
         --------
@@ -514,7 +515,7 @@ class SGraph(object):
 
         See Also
         --------
-        edges, get_vertices
+        Edge, get_vertices
 
         Examples
         --------
@@ -615,7 +616,7 @@ class SGraph(object):
 
         See Also
         --------
-        vertices, SFrame, add_edges
+        Vertex, SFrame, add_edges
 
         Notes
         -----
@@ -685,7 +686,7 @@ class SGraph(object):
 
         See Also
         --------
-        edges, SFrame, add_vertices
+        Edge, SFrame, add_vertices
 
         Notes
         -----
