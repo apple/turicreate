@@ -107,7 +107,6 @@ add_definitions(-DEIGEN_MPL2_ONLY)
 
 # Defines to avoid symbol collisions
 add_definitions(-Dgoogle=_tc_google)
-add_definitions(-DCoreML=_tc_CoreML)
 
 #**************************************************************************/
 #*                                                                        */
