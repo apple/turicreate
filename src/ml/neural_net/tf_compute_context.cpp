@@ -376,16 +376,17 @@ std::unique_ptr<model_backend> tf_compute_context::create_style_transfer(
  * TODO: Add proper arguments to create_drawing_classifier
  */
 std::unique_ptr<model_backend> tf_compute_context::create_drawing_classifier(
-    const float_array_map& weights,
-    size_t batch_size, size_t num_classes, const float_array_map& config) {
+    const float_array_map& weights, size_t batch_size, size_t num_classes,
+    const float_array_map& config) {
   std::unique_ptr<tf_model_backend> result;
   call_pybind_function([&]() {
     pybind11::module tf_dc_backend = pybind11::module::import(
         "turicreate.toolkits.drawing_classifier._tf_drawing_classifier");
 
     // Make an instance of python object
-    pybind11::object drawing_classifier = tf_dc_backend.attr(
-        "DrawingClassifierTensorFlowModel")(weights, batch_size, num_classes, config);
+    pybind11::object drawing_classifier =
+        tf_dc_backend.attr("DrawingClassifierTensorFlowModel")(
+            weights, batch_size, num_classes, config);
     result.reset(new tf_model_backend(drawing_classifier));
   });
   return result;
