@@ -55,7 +55,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
 
 def create(input_dataset, target, feature=None, validation_set='auto',
             warm_start='auto', batch_size=256,
-            max_iterations=500, verbose=True, **kwargs):
+            max_iterations=500, verbose=True, random_seed=None, **kwargs):
     """
     Create a :class:`DrawingClassifier` model.
 

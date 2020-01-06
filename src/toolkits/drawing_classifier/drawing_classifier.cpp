@@ -43,6 +43,14 @@ using neural_net::zero_weight_initializer;
 
 using padding_type = model_spec::padding_type;
 // anonymous helper sections
+float_array_map get_training_config(int random_seed) {
+  static_assert(sizeof(float) == sizeof(int),
+                "Passing random seed assumes float and int have same size.");
+  float random_seed_float = *reinterpret_cast<float*>(&random_seed);
+  return {
+      {"random_seed", shared_float_array::wrap(random_seed_float)},
+  };
+}
 
 struct result {
   shared_float_array accuracy_info;
@@ -259,7 +267,8 @@ void drawing_classifier::init_options(
 
 std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
     gl_sframe data, variant_type validation_data) const {
-  return turi::supervised::create_validation_data(data, validation_data);
+  return turi::supervised::create_validation_data(
+      data, validation_data, read_state<int>("random_seed"));
 }
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
@@ -290,6 +299,7 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   }
 
   data_params.feature_column_name = read_state<flex_string>("feature");
+  data_params.random_seed = read_state<int>("random_seed");
 
   return create_iterator(data_params);
 }
@@ -331,6 +341,7 @@ void drawing_classifier::init_training(
   // Read user-specified options.
   init_options(opts);
 
+  // Choose a random seed if not set.
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
     std::random_device rd;
     int random_seed = static_cast<int>(rd());
@@ -403,7 +414,8 @@ void drawing_classifier::init_training(
 
   training_model_ = training_compute_context_->create_drawing_classifier(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
-      read_state<size_t>("num_classes"));
+      read_state<size_t>("num_classes"),
+      get_training_config(read_state<int>("random_seed")));
 
   // reports
   // Report to the user what GPU(s) is being used.
@@ -654,7 +666,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
   // Initialize the NN backend.
   std::unique_ptr<compute_context> ctx = create_compute_context();
   std::unique_ptr<model_backend> backend = ctx->create_drawing_classifier(
-      nn_spec_->export_params_view(), batch_size, num_classes);
+      nn_spec_->export_params_view(), batch_size, num_classes, {});
 
   // To support double buffering, use a queue of pending inference results.
   std::queue<result> pending_batches;
