@@ -23,7 +23,6 @@ from .._cython.cy_graph import UnityGraphProxy
 from ..toolkits._main import ToolkitError
 
 import json
-import logging as _logging
 import six as _six
 
 

@@ -18,7 +18,6 @@ from six.moves import _thread
 
 import json as _json
 import base64 as _base64
-import sys as _sys
 import math as _math
 
 class Evaluation(dict):

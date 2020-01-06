@@ -740,7 +740,7 @@ class SoundClassifier(_CustomModel):
 
         def get_custom_model_spec():
             from coremltools.models.neural_network import NeuralNetworkBuilder
-            from coremltools.models.datatypes import Array, Dictionary, String
+            from coremltools.models.datatypes import Array
 
             input_name = 'output1'
             input_length = self._feature_extractor.output_length

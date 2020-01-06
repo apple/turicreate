@@ -9,15 +9,6 @@ from __future__ import absolute_import as _
 
 import numpy as np
 import tensorflow.compat.v1 as tf
-from tensorflow.python.ops import array_ops
-from tensorflow.python.framework import ops
-from tensorflow.python.ops import control_flow_ops
-from tensorflow.python.ops import gen_image_ops
-from tensorflow.python.ops import check_ops
-from tensorflow.python.ops import math_ops
-from tensorflow.python.ops import random_ops
-from tensorflow.python.ops import logging_ops
-from tensorflow.python.ops import variables
 import turicreate.toolkits._tf_utils as _utils
 
 tf.disable_v2_behavior()

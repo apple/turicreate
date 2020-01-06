@@ -31,7 +31,6 @@ import sys
 import array
 import collections
 import datetime
-import warnings
 import numbers
 import six
 import types

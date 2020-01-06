@@ -40,7 +40,6 @@ import sys
 import six
 import csv
 from collections import Iterable as _Iterable
-import warnings
 
 __all__ = ['SFrame']
 __LOGGER__ = _logging.getLogger(__name__)
@@ -831,8 +830,6 @@ class SFrame(object):
         if len(set(len(x) for x in all_column_type_hints)) != 1:
             print("Unable to infer column types. Defaulting to str")
             return str
-
-        import types
 
         column_type_hints = all_column_type_hints[0]
         # now perform type combining across rows
@@ -4516,7 +4513,6 @@ class SFrame(object):
         """
 
         import sys
-        import os
 
         if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
             raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')

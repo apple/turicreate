@@ -9,7 +9,7 @@ Methods for creating and using an SVM model.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import turicreate as _turicreate
+
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._supervised_learning import Classifier as _Classifier
 from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
@@ -17,7 +17,7 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _raise_error_evaluation_metric_is_valid, \
                                         _check_categorical_option_type, \
                                         _summarize_coefficients
-from turicreate.toolkits import _coreml_utils
+
 
 _DEFAULT_SOLVER_OPTIONS = {
 'convergence_threshold': 1e-2,

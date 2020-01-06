@@ -1391,8 +1391,6 @@ class _Recommender(_Model):
         item_type = column_types[item_id]
 
         if not hasattr(self, "_implicit_user_name"):
-            import hashlib
-            import time
             self._implicit_user_name = None #("implicit-user-%s"
 #                                        % hashlib.md5("%0.20f" % time.time()).hexdigest()[:12])
 
@@ -1789,6 +1787,5 @@ class _Recommender(_Model):
               'details see:\n'
               'https://apple.github.io/turicreate/docs/userguide/recommender/coreml-deployment.html')
 
-        import turicreate as tc
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
         self.__proxy__.export_to_coreml(filename, additional_user_defined_metadata)

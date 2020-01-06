@@ -1,5 +1,5 @@
 from six.moves import reduce as _reduce
-import os, json, math
+import math
 import turicreate as _tc
 
 def entropy(probs):

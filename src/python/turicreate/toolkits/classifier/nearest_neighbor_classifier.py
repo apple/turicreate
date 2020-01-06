@@ -334,7 +334,6 @@ class NearestNeighborClassifier(_CustomModel):
         return self._PYTHON_NN_CLASSIFIER_MODEL_VERSION
 
     def _get_native_state(self):
-        import copy
         retstate = self.__proxy__.get_state()
         retstate['knn_model'] = self._knn_model.__proxy__
         retstate['_target_type'] = self._target_type.__name__

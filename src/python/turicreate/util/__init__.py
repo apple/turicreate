@@ -7,13 +7,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-import time as _time
 import os as _os
 import urllib as _urllib
 import re as _re
-from zipfile import ZipFile as _ZipFile
-import bz2 as _bz2
-import tarfile as _tarfile
 import itertools as _itertools
 import uuid as _uuid
 import datetime as _datetime

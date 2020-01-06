@@ -15,14 +15,10 @@ import turicreate as _tc
 from turicreate.toolkits._model import CustomModel as _CustomModel
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._model import ExposeAttributesFromProxy as _ExposeAttributesFromProxy
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
-from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
-                                                 _numeric_param_check_range)
-from turicreate.toolkits import _coreml_utils
 
 
 def create(dataset, label = None, feature = None, model = 'resnet-50', verbose = True,

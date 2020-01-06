@@ -357,7 +357,6 @@ class Plot(object):
 
 def display_table_in_notebook(sf, title=None):
     from IPython.core.display import display
-    from PIL import Image
 
     import base64
     from io import BytesIO
