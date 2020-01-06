@@ -2819,22 +2819,22 @@ class SFrame(object):
             else:
                 format = 'binary'
         else:
-            if format is 'csv':
+            if format == 'csv':
                 if not filename.endswith(('.csv', '.csv.gz')):
                     filename = filename + '.csv'
-            elif format is not 'binary' and format is not 'json':
+            elif format != 'binary' and format != 'json':
                 raise ValueError("Invalid format: {}. Supported formats are 'csv' and 'binary' and 'json'".format(format))
 
         ## Save the SFrame
         url = _make_internal_url(filename)
 
         with cython_context():
-            if format is 'binary':
+            if format == 'binary':
                 self.__proxy__.save(url)
-            elif format is 'csv':
+            elif format == 'csv':
                 assert filename.endswith(('.csv', '.csv.gz'))
                 self.__proxy__.save_as_csv(url, {})
-            elif format is 'json':
+            elif format == 'json':
                 self.export_json(url)
             else:
                 raise ValueError("Unsupported format: {}".format(format))

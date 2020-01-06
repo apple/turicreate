@@ -124,7 +124,7 @@ def _filter_sframe(filters, row_type, mat_type, sf, evaluation):
   elif row_type == "incorrects":
     sf = sf.filter_by([False], "correct")
 
-  if len(filters) is 0:
+  if len(filters) == 0:
     return sf
 
   for f in filters:
