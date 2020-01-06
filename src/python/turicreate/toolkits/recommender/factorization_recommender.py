@@ -196,7 +196,6 @@ def create(observation_data,
         user_data = _turicreate.SFrame()
     if item_data is None:
         item_data = _turicreate.SFrame()
-    nearest_items = _turicreate.SFrame()
 
     opts = {'user_id'                 : user_id,
             'item_id'                 : item_id,

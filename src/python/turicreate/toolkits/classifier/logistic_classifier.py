@@ -757,7 +757,6 @@ class LogisticClassifier(_Classifier):
                 [dataset], missing_value_action, output_type, k)
         # Fast path
         _raise_error_if_not_sframe(dataset, "dataset")
-        options = dict()
         if (missing_value_action == 'auto'):
             missing_value_action = _sl.select_default_missing_value_policy(
                                                               self, 'predict')

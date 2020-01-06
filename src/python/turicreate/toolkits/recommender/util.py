@@ -494,13 +494,6 @@ def random_split_by_user(dataset,
         import time
         random_seed = int(hash("%20f" % time.time()) % 2**63)
 
-    opts = {'dataset': dataset,
-            'user_id': user_id,
-            'item_id': item_id,
-            'max_num_users': max_num_users,
-            'item_test_proportion': item_test_proportion,
-            'random_seed': random_seed}
-
     response = _turicreate.extensions._recsys.train_test_split(dataset, user_id, item_id,
         max_num_users, item_test_proportion, random_seed)
 
@@ -1026,11 +1019,6 @@ class _Recommender(_Model):
         check_type(users, "users", _SArray, ["SArray", "list"])
         check_type(k, "k", int, ["int"])
 
-        opt = {'model': self.__proxy__,
-               'users': users,
-               'get_all_users' : get_all_users,
-               'k': k}
-
         response = self.__proxy__.get_similar_users(users, k, get_all_users)
         return response
 
@@ -1266,19 +1254,6 @@ class _Recommender(_Model):
                 random_seed = int(random_seed)
             except TypeError:
                 raise TypeError("random_seed must be integer.")
-
-        opt = {'model': self.__proxy__,
-               'query': users,
-               'top_k': k,
-               'exclude': exclude,
-               'restrictions': items,
-               'new_data': new_observation_data,
-               'new_user_data': new_user_data,
-               'new_item_data': new_item_data,
-               'exclude_known': exclude_known,
-               'diversity' : diversity,
-               'random_seed' : random_seed
-               }
 
         with QuietProgress(verbose):
             recs = self.__proxy__.recommend(users, exclude, items, new_observation_data, new_user_data,
