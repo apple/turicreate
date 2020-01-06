@@ -15,7 +15,7 @@ _tf.disable_v2_behavior()
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
-    def __init__(self, net_params, batch_size, num_classes):
+    def __init__(self, net_params, batch_size, num_classes, config):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy. Then
         loads the MXNET weights into the model.
@@ -26,6 +26,12 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
+
+        if 'random_seed' in config:
+            seed = int(_utils.convert_shared_float_array_to_numpy(config['random_seed']))
+            _tf.set_random_seed(seed)
+        else:
+            seed=None
 
         _tf.reset_default_graph()
 
