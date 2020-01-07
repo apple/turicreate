@@ -61,7 +61,7 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
     return std::make_tuple(default_host, default_port, default_path);
   };
 
-  if (get_protocol(url) != "hdfs://") {
+  if (get_protocol(url) != "hdfs") {
     return warn_and_return_default();
   };
 
