@@ -159,7 +159,7 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
       // failure for some reason. fail with missing
       return {file_status::MISSING, ex.what()};
     }
-  } else if (get_protocol(path) == "s3")) {
+  } else if (get_protocol(path) == "s3") {
     auto ret = is_directory(path);
     return {ret.first, ret.second.error};
   } else if (is_web_protocol(get_protocol(path))) {
@@ -370,7 +370,7 @@ bool delete_path_impl(const std::string& path,
       // failure for some reason. return with nothing
       return false;
     }
-  } else if (get_protocol(path) == "s3")) {
+  } else if (get_protocol(path) == "s3") {
     return delete_object(path).empty();
 #endif
   } else {
