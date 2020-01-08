@@ -250,6 +250,12 @@ void drawing_classifier::init_options(
       FLEX_UNDEFINED,
       true);
 
+  options.create_boolean_option(
+      "verbose",
+      "If True, print progress updates and model details.",
+      true,
+      true);
+
   // Validate user-provided options.
   options.set_options(opts);
 
@@ -408,11 +414,14 @@ void drawing_classifier::init_training(
   // reports
   // Report to the user what GPU(s) is being used.
   std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  print_training_device(std::move(gpu_names));
+  if (read_state<bool>("verbose")) {
+    print_training_device(std::move(gpu_names));
+  }
 
   // Begin printing progress.
-  // TODO: Make progress printing optional.
-  init_table_printer(!validation_data_.empty());
+  if (read_state<bool>("verbose")) {
+    init_table_printer(!validation_data_.empty());
+  }
 
   // Print the header last, after any logging by initialization above
   if (training_table_printer_) {
@@ -604,8 +613,10 @@ void drawing_classifier::train(gl_sframe data, std::string target_column_name,
   }
 
   // Finish printing progress.
-  training_table_printer_->print_footer();
-  training_table_printer_.reset();
+  if (training_table_printer_) {
+    training_table_printer_->print_footer();
+    training_table_printer_.reset();
+  }
 
   // Sync trained weights to our local storage of the NN weights.
   float_array_map trained_weights = training_model_->export_weights();

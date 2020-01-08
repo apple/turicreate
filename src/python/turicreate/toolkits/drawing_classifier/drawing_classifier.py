@@ -183,6 +183,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
+        options["verbose"] = verbose
         if validation_set is None:
             validation_set = _tc.SFrame()
         if warm_start:
