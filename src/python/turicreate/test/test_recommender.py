@@ -361,6 +361,7 @@ class EdgeCasesTest(RecommenderTestBase):
         m3 = tc.recommender.factorization_recommender.create(self.df, target='rating')
         self.trained_models = [m1, m2, m3]
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_recommend_empty(self):
 
         for m in self.trained_models:
@@ -461,6 +462,7 @@ class ReturnStatisticsTest(RecommenderTestBase):
 
             assert m.training_rmse is None or m.training_rmse >= 0
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_get_counts(self):
         m = self._get_trained_model('item_similarity_recommender_pearson',
                                 self.df,
@@ -549,6 +551,7 @@ class NewUserTest(RecommenderTestBase):
                 recs = m.recommend(new_observation_data=data)
                 assert type(recs) == SFrame
 
+@unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
 class GetSimilarItemsTest(RecommenderTestBase):
     def setUp(self):
         item_column = 'my_item_column'
@@ -770,6 +773,7 @@ class ItemSimTest(RecommenderTestBase):
         self.df = df
 
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_save_load(self):
 
         m = tc.recommender.item_similarity_recommender.create(self.df, user_id='user_id',
@@ -2125,6 +2129,7 @@ class SideDataTests(RecommenderTestBase):
         finally:
             shutil.rmtree(write_dir)
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_recommender_create(self):
         sf_w_target = self.sf
         sf_no_target = self.sf[[self.user_id, self.item_id]]
@@ -2391,6 +2396,7 @@ class FactorizationTests(RecommenderTestBase):
 
 class TestContentRecommender(RecommenderTestBase):
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_basic(self):
 
         item_data = tc.SFrame({"my_item_id" : range(10),
@@ -2425,7 +2431,7 @@ class TestContentRecommender(RecommenderTestBase):
         self.assertEqual(out_2[0]["my_item_id"], 4)
         self._test_coreml_export(m, [0,1])
 
-
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_weights(self):
 
         item_data = tc.SFrame({"my_item_id" : range(4),
@@ -2454,6 +2460,7 @@ class TestContentRecommender(RecommenderTestBase):
             self._test_coreml_export(m, [0,1])
 
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_basic_string_type(self):
 
         item_data = tc.SFrame({"my_item_id" : range(10),
@@ -2489,6 +2496,7 @@ class TestContentRecommender(RecommenderTestBase):
         self._test_coreml_export(m, [0,1])
 
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_basic_mixed_types(self):
 
         item_data = tc.util.generate_random_sframe(50, "cCsSdDnnnv")
@@ -2532,6 +2540,7 @@ class TestContentRecommender(RecommenderTestBase):
         self.assertEqual(len(user_0_items & out_3_items), 0)
         self._test_coreml_export(m, ['0','1'])
 
+    @unittest.skipIf(_mac_ver() >= (10,14), 'https://github.com/apple/turicreate/issues/2904')
     def test_get_similar_items(self):
 
         item_data = tc.util.generate_random_sframe(25, "cCsSdDnnnv")

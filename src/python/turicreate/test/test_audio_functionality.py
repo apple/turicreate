@@ -251,6 +251,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
             np.testing.assert_array_almost_equal(a, b, decimal=6)
 
     @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
+    @unittest.skip("https://github.com/apple/turicreate/issues/2904")
     def test_export_coreml_with_prediction(self):
         import resampy
 
@@ -465,6 +466,7 @@ class ClassifierTestWithShortClip(unittest.TestCase):
             self.assertNotEqual(r['probability'], None)
 
 
+@unittest.skip("https://github.com/apple/turicreate/issues/2904")
 @unittest.skipIf(_mac_ver() < (10,14), 'Custom models only supported on macOS 10.14+')
 class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
     sample_rate = 16000
