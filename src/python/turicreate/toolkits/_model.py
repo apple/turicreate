@@ -636,7 +636,7 @@ class CustomModel(ExposeAttributesFromProxy):
     def __init__(self):
         pass
 
-    def name(self):
+    def _name(self):
         """
         Returns the name of the model.
 
