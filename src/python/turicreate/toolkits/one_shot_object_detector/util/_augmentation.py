@@ -47,8 +47,7 @@ def preview_synthetic_training_data(data,
     seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2**32 - 1)
     if backgrounds is None:
         backgrounds_downloader = _data_zoo.OneShotObjectDetectorBackgroundData()
-        backgrounds_sarray_path = backgrounds_downloader.get_backgrounds_path()
-        backgrounds = _tc.SArray(backgrounds_sarray_path)
+        backgrounds = backgrounds_downloader.get_backgrounds()
         # We resize the background dimensions by half along each axis to reduce
         # the disk footprint during augmentation, and also reduce the time
         # taken to synthesize data. 

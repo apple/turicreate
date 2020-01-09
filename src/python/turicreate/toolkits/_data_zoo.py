@@ -10,6 +10,7 @@ import os as _os
 import sys as _sys
 import requests as _requests
 import turicreate as _tc
+import shutil as _shutil
 import tarfile as _tarfile
 import hashlib as _hashlib
 from six.moves.urllib import parse as _urlparse
@@ -31,12 +32,19 @@ class OneShotObjectDetectorBackgroundData(object):
             (self.sarray_url, "08830e90771897c1cd187a07cdcb52b4")
             ]
 
-    def get_backgrounds_path(self):
-        if _os.path.exists(self.destination_sarray_path):
-            return self.destination_sarray_path
+    def get_backgrounds(self):
         tarfile_path = _download_and_checksum_files(
             self.sarray_url_md5_pairs, _get_cache_dir("data")
             )[0]
         backgrounds_tar = _tarfile.open(tarfile_path)
-        backgrounds_tar.extractall(_get_cache_dir("data"))
-        return self.destination_sarray_path
+        try:
+            backgrounds = _tc.SArray(self.destination_sarray_path)
+        except:
+            # delete the incompletely extracted tarball bits on disk
+            if _os.path.exists(self.destination_sarray_path):
+                _shutil.rmtree(self.destination_sarray_path)
+            # and re-extract
+            backgrounds_tar.extractall(_get_cache_dir("data"))
+            backgrounds = _tc.SArray(self.destination_sarray_path)
+
+        return backgrounds
