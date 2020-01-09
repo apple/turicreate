@@ -232,10 +232,14 @@ class ObjectDetectorTest(unittest.TestCase):
 
     def test_create_with_fixed_random_seed(self):
         model_1 = tc.object_detector.create(self.sf, max_iterations=3, random_seed=86)
-        pred_1 = model_1.evaluate(self.sf)
+        pred_1 = model_1.predict(self.sf)
         model_2 = tc.object_detector.create(self.sf, max_iterations=3, random_seed=86)
-        pred_2 = model_2.evaluate(self.sf)
-        self.assertEqual(pred_1, pred_2)
+        pred_2 = model_2.predict(self.sf)
+        self.assertEqual(len(pred_1), len(pred_2))
+        for i in range(len(pred_1)):
+            self.assertEqual(len(pred_1[i]),len(pred_2[i]))
+            for j in range(len(pred_1[i])):
+                self.assertEqual(pred_1[i][j], pred_2[i][j])
 
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
