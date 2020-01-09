@@ -276,6 +276,11 @@ void object_detector::init_options(
       "Defines class labels.",
       /* default_value     */ flex_list(),
       /* allowed_overwrite */ false);
+  options.create_boolean_option(
+      "verbose",
+      "If True, print progress updates and model details.",
+      true,
+      true);
 
   // Validate user-provided options.
   options.set_options(opts);

@@ -307,6 +307,12 @@ void style_transfer::init_options(
                                "image", true);
   options.create_string_option("style_feature", "Name of the style column",
                                "image", true);
+  options.create_boolean_option(
+      "verbose",
+      "If True, print progress updates and model details.",
+      true,
+      true);
+
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));

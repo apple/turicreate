@@ -49,12 +49,14 @@ class EXPORT drawing_classifier : public ml_model_base {
              std::string feature_column_name, variant_type validation_data,
              std::map<std::string, flexible_type> opts);
 
-  gl_sarray predict(gl_sframe data, std::string output_type = "probability");
+  gl_sarray predict(gl_sframe data, std::string output_type = "probability",
+                    bool verbose = true);
 
   gl_sframe predict_topk(gl_sframe data,
                          std::string output_type = "probability", size_t k = 5);
 
-  variant_map_type evaluate(gl_sframe data, std::string metric);
+  variant_map_type evaluate(gl_sframe data, std::string metric,
+                            bool verbose = true);
 
   std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::string short_description,
