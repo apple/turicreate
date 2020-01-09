@@ -69,8 +69,7 @@ make_library(unity_shared
   REQUIRES
     ${_TC_COMMON_REQUIREMENTS}
     ${unity_shared_deps}
-    Recommender
-    AudioPreprocessing
+    ObjCCustomModels
   SHARED
   SHARED_ALL_DEFINED
   DEAD_STRIP
@@ -87,6 +86,7 @@ make_library(unity_shared_for_testing
     ${unity_shared_deps}
     libbz2
     visualization
+    ObjCCustomModels
   SHARED 
   SHARED_ALL_DEFINED 
   EXTERNAL_VISIBILITY

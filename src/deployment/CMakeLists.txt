@@ -32,12 +32,13 @@ if(APPLE AND HAS_COREML_CUSTOM_MODEL)
   )
 
   # Adding sources here allows us to unit test these custom models in python.
-  make_library(objcapi OBJECT
+  make_library(ObjCCustomModels
     SOURCES
       AudioPreprocessing.mm
       TuriCreateObjC.mm
-      ${_TC_COMMON_OBJECTS}
+      recommender_initialization.cpp
       $<TARGET_OBJECTS:capi>
+    EXTERNAL_VISIBILITY
     REQUIRES
       ${_TC_COMMON_REQUIREMENTS}
       ${FOUNDATION}
@@ -57,9 +58,6 @@ if(APPLE AND HAS_COREML_CUSTOM_MODEL)
     )
   endif()
 else()
-
-  make_empty_library(Recommender)
-  make_empty_library(AudioPreprocessing)
 
   message(STATUS "Skipping Recommender and AudioPreprocessing targets.")
 endif()
