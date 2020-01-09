@@ -289,12 +289,17 @@ simple_data_iterator::compute_properties(
 
   std::tie(classes, result.num_instances) = get_annotation_info(annotations);
 
+  // Infer the class names from the observed labels.
+  std::set<std::string> classes_inferred;
+  for (const flexible_type& label : classes.range_iterator()) {
+    classes_inferred.insert(label);
+  }
+
   if (expected_class_labels.empty()) {
 
-    // Infer the class-to-index map from the observed labels.
     result.classes.reserve(classes.size());
     int i = 0;
-    for (const flexible_type& label : classes.range_iterator()) {
+    for (const std::string& label : classes_inferred) {
       result.classes.push_back(label);
       result.class_to_index_map[label] = i++;
     }
@@ -304,6 +309,10 @@ simple_data_iterator::compute_properties(
     result.classes = std::move(expected_class_labels);
     int i = 0;
     for (const std::string& label : result.classes) {
+      if (classes_inferred.find(label) == classes_inferred.end()) {
+        std::cout << "Warning: class label '" + label +
+                         "' is not presented in the dataset.\n";
+      }
       result.class_to_index_map[label] = i++;
     }
 
