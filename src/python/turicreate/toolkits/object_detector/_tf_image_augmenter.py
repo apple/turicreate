@@ -403,7 +403,7 @@ def horizontal_flip_augmenter_wrapper(img_tf, ann_tf, seed_tf):
     return img_tf, ann_tf
 
 class DataAugmenter(object):
-    def __init__(self, output_height, output_width, batch_size, resize_only):
+    def __init__(self, output_height, output_width, batch_size, resize_only, random_seed=0):
         self.batch_size = batch_size
         self.graph = tf.Graph()
         self.resize_only = resize_only

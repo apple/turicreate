@@ -333,12 +333,13 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
 std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
     const image_augmenter::options& opts) {
   std::unique_ptr<tf_image_augmenter> result;
-  
+
   call_pybind_function([&]() {
 
     const size_t output_height = opts.output_height;
     const size_t output_width = opts.output_width;
     const size_t batch_size = opts.batch_size;
+    const int random_seed = opts.random_seed;
 
     // TODO: Remove resize_only by passing all the augmentation options
     bool resize_only = false;
@@ -351,7 +352,7 @@ std::unique_ptr<image_augmenter> tf_compute_context::create_image_augmenter(
 
     // Make an instance of python object
     pybind11::object image_augmenter =
-        tf_aug.attr("DataAugmenter")(output_height, output_width, batch_size, resize_only);
+        tf_aug.attr("DataAugmenter")(output_height, output_width, batch_size, resize_only, random_seed);
     result.reset(new tf_image_augmenter(opts, image_augmenter));
   });
   return result;

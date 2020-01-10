@@ -158,13 +158,15 @@ float_array_map get_prediction_config() {
 
 image_augmenter::options get_augmentation_options(flex_int batch_size,
                                                   flex_int grid_height,
-                                                  flex_int grid_width) {
+                                                  flex_int grid_width,
+                                                  flex_int random_seed) {
   image_augmenter::options opts;
 
   // Specify the fixed image size expected by the neural network.
   opts.batch_size = static_cast<size_t>(batch_size);
   opts.output_height = static_cast<size_t>(grid_height * SPATIAL_REDUCTION);
   opts.output_width = static_cast<size_t>(grid_width * SPATIAL_REDUCTION);
+  opts.random_seed = static_cast<int>(random_seed);
 
   // Apply random crops.
   opts.crop_prob = 0.9f;
@@ -1197,9 +1199,10 @@ void object_detector::init_training_backend() {
   // Instantiate the data augmenter.
   int grid_height = read_state<int>("grid_height");
   int grid_width = read_state<int>("grid_width");
+  int random_seed = read_state<int>("random_seed");
   training_data_augmenter_ = training_compute_context_->create_image_augmenter(
       get_augmentation_options(read_state<flex_int>("batch_size"), grid_height,
-                               grid_width));
+                               grid_width, random_seed));
 
   // Instantiate the NN backend.
   int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
