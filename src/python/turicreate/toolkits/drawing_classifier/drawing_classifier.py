@@ -113,6 +113,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     verbose : bool optional
         If True, print progress updates and model details.
 
+    random_seed : int, optional
+        The results can be reproduced when given the same seed.
+
     Returns
     -------
     out : DrawingClassifier
