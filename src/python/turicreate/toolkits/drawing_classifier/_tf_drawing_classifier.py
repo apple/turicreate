@@ -27,12 +27,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
-        if 'random_seed' in config:
-            seed = int(_utils.convert_shared_float_array_to_numpy(config['random_seed']))
-            _tf.set_random_seed(seed)
-        else:
-            seed=None
-
         _tf.reset_default_graph()
 
         self.num_classes = num_classes

@@ -172,8 +172,7 @@ std::unique_ptr<model_backend> mps_compute_context::create_style_transfer(
 
 std::unique_ptr<model_backend> mps_compute_context::create_drawing_classifier(
     /* TODO: const float_array_map& config if needed */
-    const float_array_map& weights, size_t batch_size, size_t num_classes,
-    const float_array_map& config) {
+    const float_array_map& weights, size_t batch_size, size_t num_classes) {
   return nullptr;
 }
 
