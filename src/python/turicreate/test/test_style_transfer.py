@@ -20,7 +20,6 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac
 import coremltools
 from six import StringIO as _StringIO
 
-
 _NUM_STYLES = 4
 
 
@@ -127,52 +126,23 @@ class StyleTransferTest(unittest.TestCase):
             tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=1.25)
 
     def test_create_with_verbose_False(self):
-        # Train a model with verbose=False
-        old_stdout = sys.stdout
-        sys.stdout = stdout_without_verbose = _StringIO()
-        model = tc.style_transfer.create(self.style_sf,
-                                              self.content_sf,
-                                              style_feature=self.style_feature,
-                                              content_feature=self.content_feature,
-                                              max_iterations=1,
-                                              model=self.pre_trained_model,
-                                              verbose=False)
-        sys.stdout = old_stdout
-        without_verbose = stdout_without_verbose.getvalue()
-        # Train a model with verbose=True
-        old_stdout = sys.stdout
-        sys.stdout = stdout_with_verbose = _StringIO()
-        model = tc.style_transfer.create(self.style_sf,
-                                              self.content_sf,
-                                              style_feature=self.style_feature,
-                                              content_feature=self.content_feature,
-                                              max_iterations=1,
-                                              model=self.pre_trained_model,
-                                              verbose=True)
-        sys.stdout = old_stdout
-        with_verbose = stdout_with_verbose.getvalue()
-        # Assert that verbose logs are longer
-        assert (len(with_verbose) > len(without_verbose))
+        args = [self.style_sf, self.content_sf]
+        kwargs = {
+            'style_feature': self.style_feature,
+            'content_feature': self.content_feature,
+            'max_iterations': 1,
+            'model': self.pre_trained_model
+        }
+        test_util.assert_longer_verbose_logs(
+            tc.style_transfer.create, args, kwargs)
 
     def test_stylize_with_verbose_False(self):
         sf = self.content_sf[0:1]
-        model = self.model
         styles = self._get_valid_style_cases()
-        # Train a model with verbose=False
-        old_stdout = sys.stdout
-        sys.stdout = stdout_without_verbose = _StringIO()
-        stylized_out = model.stylize(sf, style=styles[0], verbose=False)
-        sys.stdout = old_stdout
-        without_verbose = stdout_without_verbose.getvalue()
-        # Train a model with verbose=True
-        old_stdout = sys.stdout
-        sys.stdout = stdout_with_verbose = _StringIO()
-        stylized_out = model.stylize(sf, style=styles[0])
-        sys.stdout = old_stdout
-        with_verbose = stdout_with_verbose.getvalue()
-        # Assert that verbose logs are longer
-        assert (len(with_verbose) > len(without_verbose))
-        
+        args = [sf]
+        kwargs = {'style': styles[0]}
+        test_util.assert_longer_verbose_logs(
+            self.model.stylize, args, kwargs)
 
     def _get_invalid_style_cases(self):
         style_cases = []

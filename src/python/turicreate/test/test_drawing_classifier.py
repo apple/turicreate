@@ -164,22 +164,13 @@ class DrawingClassifierTest(unittest.TestCase):
 
     def test_create_with_verbose_False(self):
         for data in self.trains:
-            # Train a model with verbose=False
-            old_stdout = _sys.stdout
-            _sys.stdout = stdout_without_verbose = _StringIO()
-            model = _tc.drawing_classifier.create(
-                data, self.target, feature=self.feature, max_iterations=1, verbose=False)
-            _sys.stdout = old_stdout
-            without_verbose = stdout_without_verbose.getvalue()
-            # Train a model with verbose=True
-            old_stdout = _sys.stdout
-            _sys.stdout = stdout_with_verbose = _StringIO()
-            model = _tc.drawing_classifier.create(
-                data, self.target, feature=self.feature, max_iterations=1, verbose=True)
-            _sys.stdout = old_stdout
-            with_verbose = stdout_with_verbose.getvalue()
-            # Assert that verbose logs are longer
-            assert (len(with_verbose) > len(without_verbose))
+            args = [data, self.target]
+            kwargs = {
+                'feature': self.feature,
+                'max_iterations': 1,
+            }
+            test_util.assert_longer_verbose_logs(
+                _tc.drawing_classifier.create, args, kwargs)
 
     def test_create_with_no_validation_set(self):
         for data in self.trains:

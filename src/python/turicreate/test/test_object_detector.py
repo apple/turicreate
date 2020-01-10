@@ -232,30 +232,13 @@ class ObjectDetectorTest(unittest.TestCase):
             tc.object_detector.create(self.sf[:0])
 
     def test_create_with_verbose_False(self):
-        # Train a model with verbose=False
-        old_stdout = sys.stdout
-        sys.stdout = stdout_without_verbose = _StringIO()
-        model = tc.object_detector.create(self.sf,
-                                          feature=self.feature,
-                                          annotations=self.annotations,
-                                          max_iterations=1,
-                                          model=self.pre_trained_model,
-                                          verbose=False)
-        sys.stdout = old_stdout
-        without_verbose = stdout_without_verbose.getvalue()
-        # Train a model with verbose=True
-        old_stdout = sys.stdout
-        sys.stdout = stdout_with_verbose = _StringIO()
-        model = tc.object_detector.create(self.sf,
-                                          feature=self.feature,
-                                          annotations=self.annotations,
-                                          max_iterations=1,
-                                          model=self.pre_trained_model,
-                                          verbose=True)
-        sys.stdout = old_stdout
-        with_verbose = stdout_with_verbose.getvalue()
-        # Assert that verbose logs are longer
-        assert (len(with_verbose) > len(without_verbose))
+        args = [self.sf, self.annotations, self.feature]
+        kwargs = {
+            'max_iterations': 1,
+            'model': self.pre_trained_model
+        }
+        test_util.assert_longer_verbose_logs(
+            tc.object_detector.create, args, kwargs)
 
     def test_dict_annotations(self):
         sf_copy = self.sf[:]

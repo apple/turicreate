@@ -137,32 +137,13 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
         predictions = model.predict(self.data)
 
     def test_create_with_verbose_False(self):
-        # Train a model with verbose=False
-        old_stdout = _sys.stdout
-        _sys.stdout = stdout_without_verbose = _StringIO()
-        model = tc.activity_classifier.create(self.data,
-                        features=self.features,
-                        target=self.target,
-                        session_id=self.session_id,
-                        prediction_window=self.prediction_window,
-                        verbose=False)
-        _sys.stdout = old_stdout
-        without_verbose = stdout_without_verbose.getvalue()
-        # Train a model with verbose=True
-        old_stdout = _sys.stdout
-        _sys.stdout = stdout_with_verbose = _StringIO()
-        model = tc.activity_classifier.create(self.data,
-                        features=self.features,
-                        target=self.target,
-                        session_id=self.session_id,
-                        prediction_window=self.prediction_window,
-                        verbose=True)
-        _sys.stdout = old_stdout
-        with_verbose = stdout_with_verbose.getvalue()
-        # Assert that verbose logs are longer
-        assert (len(with_verbose) > len(without_verbose))
-
-
+        args = [self.data, self.session_id, self.target]
+        kwargs = {
+            'features': self.features,
+            'prediction_window': self.prediction_window
+        }
+        test_util.assert_longer_verbose_logs(
+            tc.activity_classifier.create, args, kwargs)
 
     def test_create_features_target_session(self):
         model = tc.activity_classifier.create(self.data,
