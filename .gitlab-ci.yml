@@ -575,7 +575,7 @@ collect_artifacts:
     - build_wheel_mac_10_15_python36
     - build_wheel_mac_10_15_python37
   script:
-    - mv release/src/deployment/*.dylib target/
+    - find release/src/deployment/ -name '*.dylib' -exec mv {} target/ \;
     - rmdir -p release || find release
   artifacts:
     expire_in: 2 weeks
