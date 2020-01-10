@@ -15,7 +15,7 @@ _tf.disable_v2_behavior()
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
-    def __init__(self, net_params, batch_size, num_classes, config):
+    def __init__(self, net_params, batch_size, num_classes):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy. Then
         loads the MXNET weights into the model.
