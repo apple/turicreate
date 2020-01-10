@@ -130,7 +130,7 @@ class StyleTransferTest(unittest.TestCase):
         # Train a model with verbose=False
         old_stdout = sys.stdout
         sys.stdout = stdout_without_verbose = _StringIO()
-        self.model = tc.style_transfer.create(self.style_sf,
+        model = tc.style_transfer.create(self.style_sf,
                                               self.content_sf,
                                               style_feature=self.style_feature,
                                               content_feature=self.content_feature,
@@ -142,13 +142,32 @@ class StyleTransferTest(unittest.TestCase):
         # Train a model with verbose=True
         old_stdout = sys.stdout
         sys.stdout = stdout_with_verbose = _StringIO()
-        self.model = tc.style_transfer.create(self.style_sf,
+        model = tc.style_transfer.create(self.style_sf,
                                               self.content_sf,
                                               style_feature=self.style_feature,
                                               content_feature=self.content_feature,
                                               max_iterations=1,
                                               model=self.pre_trained_model,
                                               verbose=True)
+        sys.stdout = old_stdout
+        with_verbose = stdout_with_verbose.getvalue()
+        # Assert that verbose logs are longer
+        assert (len(with_verbose) > len(without_verbose))
+
+    def test_stylize_with_verbose_False(self):
+        sf = self.content_sf[0:1]
+        model = self.model
+        styles = self._get_valid_style_cases()
+        # Train a model with verbose=False
+        old_stdout = sys.stdout
+        sys.stdout = stdout_without_verbose = _StringIO()
+        stylized_out = model.stylize(sf, style=styles[0], verbose=False)
+        sys.stdout = old_stdout
+        without_verbose = stdout_without_verbose.getvalue()
+        # Train a model with verbose=True
+        old_stdout = sys.stdout
+        sys.stdout = stdout_with_verbose = _StringIO()
+        stylized_out = model.stylize(sf, style=styles[0])
         sys.stdout = old_stdout
         with_verbose = stdout_with_verbose.getvalue()
         # Assert that verbose logs are longer
