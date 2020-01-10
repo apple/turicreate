@@ -24,6 +24,7 @@ import turicreate.util._file_util as file_util
 import os
 from copy import copy as _copy
 import six as _six
+import warnings
 
 MODEL_NAME_MAP = {}
 
@@ -636,9 +637,12 @@ class CustomModel(ExposeAttributesFromProxy):
     def __init__(self):
         pass
 
-    def _name(self):
+    def name(self):
         """
         Returns the name of the model.
+
+        ..WARNING:: This function is deprecated, It will be removed in the next
+        major release. Use type(CustomModel) instead.
 
         Returns
         -------
@@ -649,6 +653,7 @@ class CustomModel(ExposeAttributesFromProxy):
         --------
         >>> model_name = m.name()
         """
+        warnings.warn("CustomModel.name() is deprecated. It will be removed in the next major release. Use type(CustomModel) instead.")
         return self.__class__.__name__
 
     def summary(self, output=None):
