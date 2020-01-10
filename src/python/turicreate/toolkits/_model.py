@@ -653,7 +653,7 @@ class CustomModel(ExposeAttributesFromProxy):
         --------
         >>> model_name = m.name()
         """
-        warnings.warn("This function is deprecated. It will be removed in the next release.")
+        warnings.warn("This function is deprecated. It will be removed in the next release. Please use python's builtin type function instead.")
         return self.__class__.__name__
 
     def summary(self, output=None):
