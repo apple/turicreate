@@ -8,6 +8,7 @@
 #include <string>
 #include <model_server/lib/variant.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>
+#include <future>
 
 namespace turi {
 
@@ -42,6 +43,29 @@ struct toolkit_function_response_type {
   }
 };
 
+/**
+ * \ingroup unity
+ * The response from a toolkit executed in the background.
+ */
+class toolkit_function_response_future {
+ public:
+   toolkit_function_response_future() {}
+
+   toolkit_function_response_future(std::function<toolkit_function_response_type()> exec_function);
+
+  const toolkit_function_response_type& wait() const;
+
+ private:
+  struct response_info {
+    toolkit_function_response_type response;
+    std::future<bool> response_future;
+    volatile bool is_completed = false;
+  };
+
+  // This field becomes valid and non-null when the execution has
+  // finished.
+  std::shared_ptr<response_info> m_info;
+};
 
 
 } // turicreate

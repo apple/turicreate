@@ -10,6 +10,8 @@ import unittest
 from ..data_structures.sarray import SArray
 from ..data_structures.sframe import SFrame
 
+import turicreate as tc
+
 import sys
 if sys.version_info.major > 2:
     long = int
@@ -126,3 +128,14 @@ class VariantCheckTest(unittest.TestCase):
                     self.assertTrue(A.flextype_encodable)
                 else:
                     self.assertFalse(A.flextype_encodable)
+
+
+
+
+    def test_futures(self):
+
+        future = tc.extensions._demo_addone.run_background(1)
+
+        result = future.wait()
+
+        self.assertEqual(result, 2)

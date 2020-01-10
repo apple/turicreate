@@ -50,6 +50,28 @@ cdef read_archive_version(variant_map_type& d):
     return ret
 
 
+
+cdef class ToolkitFunctionFutureProxy:
+
+    cdef toolkit_function_response_future result_future
+    cdef bint initialized
+
+    def __cinit__(self):
+        self.initialized = 0
+
+    cdef set(self, toolkit_function_response_future res_fut):
+        self.result_future = res_fut
+        self.initialized = 1
+
+    def wait(self):
+        assert self.initialized, "Used uninitialized."
+        cdef toolkit_function_response_type response
+        with nogil:
+            response = self.result_future.wait()
+        return (response.success, cpp_to_str(response.message),
+                variant_map_to_dict(response.params))
+
+
 cdef class UnityGlobalProxy:
     def __cinit__(self):
         self._base_ptr = get_unity_global_singleton()
@@ -92,6 +114,21 @@ cdef class UnityGlobalProxy:
             response = self.thisptr.run_toolkit(toolkit_name, options)
         return (response.success, cpp_to_str(response.message),
                 variant_map_to_dict(response.params))
+
+    cpdef run_toolkit_background(self, _toolkit_name, object arguments):
+        cdef string toolkit_name = str_to_cpp(_toolkit_name)
+        cdef variant_map_type options = variant_map_from_dict(arguments)
+
+        cdef toolkit_function_response_future result = toolkit_function_response_future()
+
+        with nogil:
+            result = self.thisptr.run_toolkit_background(toolkit_name, options)
+
+        cdef ToolkitFunctionFutureProxy proxy = ToolkitFunctionFutureProxy()
+
+        proxy.set(result)
+
+        return proxy
 
     cpdef save_model(self, model, _url, sidedata={}):
         cdef string url = str_to_cpp(_url)
