@@ -1236,10 +1236,11 @@ void object_detector::init_training_backend() {
       /* weights */ get_model_params());
 
   // Begin printing progress, after any logging triggered above.
-  // TODO: Make progress printing optional.
-  training_table_printer_.reset(new table_printer(
-      {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
-  training_table_printer_->print_header();
+  if (read_state<bool>("verbose")) {
+    training_table_printer_.reset(new table_printer(
+        {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
+    training_table_printer_->print_header();
+  }
 }
 
 void object_detector::iterate_training() {

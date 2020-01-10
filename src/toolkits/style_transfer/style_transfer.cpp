@@ -307,12 +307,6 @@ void style_transfer::init_options(
                                "image", true);
   options.create_string_option("style_feature", "Name of the style column",
                                "image", true);
-  options.create_boolean_option(
-      "verbose",
-      "If True, print progress updates and model details.",
-      true,
-      true);
-
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -785,19 +779,25 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
   turi::timer time_object;
   time_object.start();
 
-  training_table_printer_.reset(new table_printer(
-      {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
-
   init_train(style, content, opts);
 
-  training_table_printer_->print_header();
+  if (read_state<bool>("verbose")) {
+    training_table_printer_.reset(new table_printer(
+        {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
+  }
+
+  if (training_table_printer_) {
+    training_table_printer_->print_header();
+  }
 
   while (get_training_iterations() < get_max_iterations()) iterate_training();
 
   finalize_training();
 
-  training_table_printer_->print_footer();
-  training_table_printer_.reset();
+  if (training_table_printer_) {
+    training_table_printer_->print_footer();
+    training_table_printer_.reset();
+  }
 
   // Using training_epochs * data_size = training_iterations * batch_size
   size_t training_epochs = ((read_state<flex_int>("batch_size") * read_state<flex_int>("training_iterations")) / read_state<flex_int>("num_content_images"));

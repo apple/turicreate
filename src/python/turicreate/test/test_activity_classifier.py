@@ -18,6 +18,8 @@ import pytest
 from turicreate.toolkits._internal_utils import _mac_ver, _read_env_var_cpp
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
+from six import StringIO as _StringIO
+import sys as _sys
 
 USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 
@@ -133,6 +135,33 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                             session_id=self.session_id,
                             prediction_window=self.prediction_window)
         predictions = model.predict(self.data)
+
+    def test_create_with_verbose_False(self):
+        # Train a model with verbose=False
+        old_stdout = _sys.stdout
+        _sys.stdout = stdout_without_verbose = _StringIO()
+        model = tc.activity_classifier.create(self.data,
+                        features=self.features,
+                        target=self.target,
+                        session_id=self.session_id,
+                        prediction_window=self.prediction_window,
+                        verbose=False)
+        _sys.stdout = old_stdout
+        without_verbose = stdout_without_verbose.getvalue()
+        # Train a model with verbose=True
+        old_stdout = _sys.stdout
+        _sys.stdout = stdout_with_verbose = _StringIO()
+        model = tc.activity_classifier.create(self.data,
+                        features=self.features,
+                        target=self.target,
+                        session_id=self.session_id,
+                        prediction_window=self.prediction_window,
+                        verbose=True)
+        _sys.stdout = old_stdout
+        with_verbose = stdout_with_verbose.getvalue()
+        # Assert that verbose logs are longer
+        assert (len(with_verbose) > len(without_verbose))
+
 
 
     def test_create_features_target_session(self):
