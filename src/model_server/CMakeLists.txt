@@ -69,6 +69,8 @@ make_library(unity_shared
   REQUIRES
     ${_TC_COMMON_REQUIREMENTS}
     ${unity_shared_deps}
+    Recommender
+    AudioPreprocessing
   SHARED
   SHARED_ALL_DEFINED
   DEAD_STRIP
