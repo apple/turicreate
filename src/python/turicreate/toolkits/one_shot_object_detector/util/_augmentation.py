@@ -5,7 +5,6 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
 import random as _random
-import tarfile as _tarfile
 import turicreate as _tc
 from turicreate import extensions as _extensions
 import turicreate.toolkits._internal_utils as _tkutl
@@ -48,10 +47,7 @@ def preview_synthetic_training_data(data,
     seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2**32 - 1)
     if backgrounds is None:
         backgrounds_downloader = _data_zoo.OneShotObjectDetectorBackgroundData()
-        backgrounds_tar_path = backgrounds_downloader.get_backgrounds_path()
-        backgrounds_tar = _tarfile.open(backgrounds_tar_path)
-        backgrounds_tar.extractall()
-        backgrounds = _tc.SArray("one_shot_backgrounds.sarray")
+        backgrounds = backgrounds_downloader.get_backgrounds()
         # We resize the background dimensions by half along each axis to reduce
         # the disk footprint during augmentation, and also reduce the time
         # taken to synthesize data. 
