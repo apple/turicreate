@@ -18,8 +18,6 @@ import pytest
 from turicreate.toolkits._internal_utils import _mac_ver, _read_env_var_cpp
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
-from six import StringIO as _StringIO
-import sys as _sys
 
 USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
 

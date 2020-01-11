@@ -18,7 +18,6 @@ import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
 import coremltools
-from six import StringIO as _StringIO
 
 _NUM_STYLES = 4
 

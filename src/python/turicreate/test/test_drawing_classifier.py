@@ -20,7 +20,6 @@ import sys as _sys
 from . import util as test_util
 import unittest
 import pytest
-from six import StringIO as _StringIO
 
 def _build_bitmap_data():
     '''

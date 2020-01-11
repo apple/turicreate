@@ -19,7 +19,6 @@ import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver, _read_env_var_cpp
 import coremltools
-from six import StringIO as _StringIO
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
 USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
