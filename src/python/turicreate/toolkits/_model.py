@@ -642,7 +642,7 @@ class CustomModel(ExposeAttributesFromProxy):
         Returns the name of the model.
 
         ..WARNING:: This function is deprecated, It will be removed in the next
-        major release. Use type(CustomModel) instead.
+        release. Use type(CustomModel) instead.
 
         Returns
         -------
