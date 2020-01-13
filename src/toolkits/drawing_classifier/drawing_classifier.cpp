@@ -353,6 +353,7 @@ void drawing_classifier::init_training(
   auto show_loss_it = opts.find("_show_loss");
   if (show_loss_it != opts.end()) {
     show_loss = show_loss_it->second;
+    opts.erase(show_loss_it);
   }
 
   // Read user-specified options.

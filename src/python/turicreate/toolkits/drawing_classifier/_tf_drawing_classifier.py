@@ -160,9 +160,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                 self.input: feed_dict['input'],
                 self.one_hot_labels: one_hot_labels
             })
-        # f = _np.array(final_train_output)
-        # for i in range(f.shape[0]):
-        #     print(feed_dict["labels"][i][0],_np.argmax(f[i]))
 
         result = {'loss': _np.array(final_train_loss),
                   'output': _np.array(final_train_output)}
