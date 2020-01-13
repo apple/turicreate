@@ -310,8 +310,13 @@ simple_data_iterator::compute_properties(
     int i = 0;
     for (const std::string& label : result.classes) {
       if (classes_inferred.find(label) == classes_inferred.end()) {
-        std::cout << "Warning: class label '" + label +
-                         "' is not presented in the dataset.\n";
+
+        std::stringstream ss;
+        ss << "Class label " << label << " is not presented in the dataset.";
+        log_and_warn(ss.str());
+        //logstream("q86!");
+        //std::cout << "Warning: class label '" + label +
+        //                 "' is not presented in the dataset.\n";
       }
       result.class_to_index_map[label] = i++;
     }
