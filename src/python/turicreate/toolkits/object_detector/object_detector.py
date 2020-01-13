@@ -99,7 +99,7 @@ def _raise_error_if_not_detection_sframe(dataset, feature, annotations, require_
 
 def create(dataset, annotations=None, feature=None, model='darknet-yolo',
            classes=None, batch_size=0, max_iterations=0,
-           verbose=True, grid_shape=[13, 13], random_seed=0, **kwargs):
+           verbose=True, grid_shape=[13, 13], random_seed=None, **kwargs):
     """
     Create a :class:`ObjectDetector` model.
 
