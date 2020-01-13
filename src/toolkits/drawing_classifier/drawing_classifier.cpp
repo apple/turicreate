@@ -259,7 +259,8 @@ void drawing_classifier::init_options(
 
 std::tuple<gl_sframe, gl_sframe> drawing_classifier::init_data(
     gl_sframe data, variant_type validation_data) const {
-  return turi::supervised::create_validation_data(data, validation_data);
+  return turi::supervised::create_validation_data(
+      data, validation_data, read_state<int>("random_seed"));
 }
 
 std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
@@ -290,6 +291,7 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   }
 
   data_params.feature_column_name = read_state<flex_string>("feature");
+  data_params.random_seed = read_state<int>("random_seed");
 
   return create_iterator(data_params);
 }
@@ -331,6 +333,7 @@ void drawing_classifier::init_training(
   // Read user-specified options.
   init_options(opts);
 
+  // Choose a random seed if not set.
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
     std::random_device rd;
     int random_seed = static_cast<int>(rd());
