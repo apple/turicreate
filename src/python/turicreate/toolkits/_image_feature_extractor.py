@@ -181,7 +181,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
             batch_store = state['batch_store']
             
             if not batch_store:
-                batch_store.append(np.zeros())
+                batch_store.append(np.zeros((0,)))  # Will get resized later
 
             return batch_store.pop()
 
