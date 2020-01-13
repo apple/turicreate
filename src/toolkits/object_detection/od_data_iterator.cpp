@@ -309,14 +309,11 @@ simple_data_iterator::compute_properties(
     result.classes = std::move(expected_class_labels);
     int i = 0;
     for (const std::string& label : result.classes) {
-      if (classes_inferred.find(label) == classes_inferred.end()) {
-
-        std::stringstream ss;
-        ss << "Class label " << label << " is not presented in the dataset.";
-        log_and_warn(ss.str());
-        //logstream("q86!");
-        //std::cout << "Warning: class label '" + label +
-        //                 "' is not presented in the dataset.\n";
+      if (classes_inferred.find(label) == classes_inferred.end() &&
+          is_training_) {
+        std::cout << "Warning: User provided 'classes' includes label '" +
+                         label +
+                         "', which is not presented in the training dataset.\n";
       }
       result.class_to_index_map[label] = i++;
     }
@@ -350,6 +347,9 @@ simple_data_iterator::simple_data_iterator(const parameters& params)
       // Whether to traverse the SFrame more than once, and whether to shuffle.
       repeat_(params.repeat),
       shuffle_(params.shuffle),
+
+      // Whether it is in the training stage
+      is_training_(params.is_training),
 
       // Identify/verify the class labels and other annotation properties.
       annotation_properties_(
