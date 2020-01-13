@@ -129,7 +129,7 @@ static inline flexible_type apply_binary_op_ff(
     case binary_op::OP_GT:
       return (t > u);
     case binary_op::OP_GE:
-      return (t <= u);
+      return (t >= u);
     case binary_op::OP_AND:
       return (t && u);
     case binary_op::OP_OR:

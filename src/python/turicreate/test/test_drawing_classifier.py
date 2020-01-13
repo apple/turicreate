@@ -382,6 +382,26 @@ class DrawingClassifierTest(unittest.TestCase):
         for model in self.models:
             model.summary()
 
+    def test_summary_str(self):
+        for model in self.models:
+            self.assertTrue(isinstance(model.summary('str'), str))
+
+    def test_summary_dict(self):
+        for model in self.models:
+            self.assertTrue(isinstance(model.summary('dict'), dict))
+
+    def test_summary_invalid_input(self):
+        for model in self.models:
+
+            with self.assertRaises(_ToolkitError):
+                model.summary(model.summary('invalid'))
+
+            with self.assertRaises(_ToolkitError):
+                model.summary(model.summary(0))
+
+            with self.assertRaises(_ToolkitError):
+                model.summary(model.summary({}))
+
 
 class DrawingClassifierFromScratchTest(DrawingClassifierTest):
     @classmethod

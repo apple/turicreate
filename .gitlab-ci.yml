@@ -387,8 +387,6 @@ test_python_linux_python37:
     paths:
       - pytest.*
 
-# This coremltools issues needs to be resolved before we can run on macOS 10.13
-# https://github.com/apple/coremltools/issues/408
 #test_python_mac_python27_10_13:
 #  tags:
 #    - macos10.13
@@ -530,8 +528,6 @@ scenario_tests_linux_python36:
     - cd scenario-tests
     - ./run_scenario_tests.sh --docker-python3.6 ../target/turicreate-*.whl
 
-# This coremltools issues needs to be resolved before we can run on macOS 10.13
-# https://github.com/apple/coremltools/issues/408
 #scenario_tests_mac_python27_10_13:
 #  tags:
 #    - macos10.13
@@ -579,7 +575,7 @@ collect_artifacts:
     - build_wheel_mac_10_15_python36
     - build_wheel_mac_10_15_python37
   script:
-    - mv release/src/deployment/*.dylib target/
+    - find release/src/deployment/ -name '*.dylib' -exec mv {} target/ \;
     - rmdir -p release || find release
   artifacts:
     expire_in: 2 weeks

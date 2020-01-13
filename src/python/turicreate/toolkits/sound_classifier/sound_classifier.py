@@ -13,6 +13,7 @@ from __future__ import absolute_import as _
 import logging as _logging
 from math import ceil as _ceil
 import numpy as _np
+import six as _six
 
 import turicreate as _tc
 import turicreate.toolkits._internal_utils as _tk_utils
@@ -359,13 +360,21 @@ def create(dataset, target, feature, max_iterations=10,
     for i in custom_layer_sizes:
         if not isinstance(i, int):
             raise _ToolkitError("'custom_layer_sizes' must contain only integers.")
+        if not i >= 1:
+            raise _ToolkitError("'custom_layer_sizes' must contain integers >= 1.")
     if not (isinstance(validation_set, _tc.SFrame) or validation_set == 'auto' or validation_set is None):
         raise TypeError("Unrecognized value for 'validation_set'")
     if isinstance(validation_set, _tc.SFrame):
         if feature not in validation_set.column_names() or target not in validation_set.column_names():
             raise ValueError("The 'validation_set' SFrame must be in the same format as the 'dataset'")
+    if not isinstance(batch_size, int):
+        raise TypeError("'batch_size' must be of type int.")
     if batch_size < 1:
         raise ValueError('\'batch_size\' must be greater than or equal to 1')
+    if not isinstance(max_iterations, int):
+        raise TypeError("'max_iterations' must be type int.")
+    _tk_utils._numeric_param_check_range('max_iterations', max_iterations, 1, _six.MAXSIZE)
+
 
     classes = list(dataset[target].unique().sort())
     num_labels = len(classes)
@@ -987,6 +996,8 @@ class SoundClassifier(_CustomModel):
             raise _ToolkitError('Output type \'probability\' is only supported for binary'
                                 ' classification. For multi-class classification, use'
                                 ' predict_topk() instead.')
+        if not isinstance(batch_size, int):
+            raise TypeError("'batch_size' must be of type int.")
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
@@ -1095,8 +1106,11 @@ class SoundClassifier(_CustomModel):
         | ...  |  ...  |        ...        |
         +------+-------+-------------------+
         """
+        if not isinstance(k, int):
+            raise TypeError("'k' must be of type int.")
+        _tk_utils._numeric_param_check_range('k', k, 1, _six.MAXSIZE)
         prob_vector = self.predict(dataset, output_type='probability_vector',
-                                   verbose=verbose, batch_size=64)
+                                   verbose=verbose, batch_size=batch_size)
         id_to_label = self._id_to_class_label
 
         if output_type == 'probability':

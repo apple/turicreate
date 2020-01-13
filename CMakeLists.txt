@@ -11,8 +11,6 @@ cmake_policy(SET CMP0005 NEW)
 cmake_policy(SET CMP0045 OLD)
 cmake_policy(SET CMP0046 OLD)
 cmake_policy(SET CMP0042 NEW)
-cmake_policy(SET CMP0077 NEW)
-   
 
 # Generate a compilation database for use with automated tools like IDE/editor
 # plugins. See http://clang.llvm.org/docs/JSONCompilationDatabase.html
@@ -109,7 +107,6 @@ add_definitions(-DEIGEN_MPL2_ONLY)
 
 # Defines to avoid symbol collisions
 add_definitions(-Dgoogle=_tc_google)
-add_definitions(-DCoreML=_tc_CoreML)
 
 #**************************************************************************/
 #*                                                                        */
@@ -238,9 +235,9 @@ elseif (APPLE)
   set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-rpath,@loader_path -Wl,-rpath,@loader_path/..")
 else()
   # LINUX
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,$ORIGIN")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,$ORIGIN -Wl,-rpath,$ORIGIN/..")
-  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-rpath,$ORIGIN -Wl,-rpath,$ORIGIN/..")
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-rpath,\\$ORIGIN")
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -Wl,-rpath,\\$ORIGIN -Wl,-rpath,\\$ORIGIN/..")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -Wl,-rpath,\\$ORIGIN -Wl,-rpath,\\$ORIGIN/..")
 endif()
 
 # Common install locations for deps linked libraries

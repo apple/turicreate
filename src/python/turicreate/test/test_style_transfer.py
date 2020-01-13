@@ -158,8 +158,20 @@ class StyleTransferTest(unittest.TestCase):
         style_cases = self._get_invalid_style_cases()
         model = self.model
         for style in style_cases:
-            with self.assertRaises(_ToolkitError):
+            expected_exception_type = _ToolkitError
+            if isinstance(style, str):
+                expected_exception_type = TypeError
+            with self.assertRaises(expected_exception_type):
                 model.stylize(self.content_sf[0:1], style=style)
+
+        with self.assertRaises(TypeError):
+                model.stylize('junk value')
+        with self.assertRaises(_ToolkitError):
+                model.stylize(self.content_sf[0:1], style=-1)
+        with self.assertRaises(_ToolkitError):
+            model.stylize(self.content_sf[0:1], style=1, max_size=0)
+        with self.assertRaises(TypeError):
+            model.stylize(self.content_sf, style=5, batch_size='12')
 
     def test_stylize_success(self):
         sf = self.content_sf[0:1]
@@ -305,15 +317,37 @@ class StyleTransferTest(unittest.TestCase):
         self.assertTrue("num_content_images" in fields)
         self.assertTrue("training_loss" in fields)
 
+    def test_summary(self):
+        model = self.model
+        model.summary()
+
+    def test_summary_str(self):
+        model = self.model
+        self.assertTrue(isinstance(model.summary('str'), str))
+
+    def test_summary_dict(self):
+        model = self.model
+        self.assertTrue(isinstance(model.summary('dict'), dict))
+
+    def test_summary_invalid_input(self):
+        model = self.model
+        with self.assertRaises(_ToolkitError):
+            model.summary(model.summary('invalid'))
+
+        with self.assertRaises(_ToolkitError):
+            model.summary(model.summary(0))
+
+        with self.assertRaises(_ToolkitError):
+            model.summary(model.summary({}))
+
 
 @unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
 @pytest.mark.gpu
 class StyleTransferGPUTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.style_feature = self.content_feature = 'image'
-        self.style_sf = _get_data(feature=self.style_feature)
-        self.content_sf = _get_data(feature=self.content_feature)
+        self.style_sf = _get_data('image')
+        self.content_sf = _get_data('image')
 
 
     def test_gpu_save_load_export(self):
@@ -321,12 +355,14 @@ class StyleTransferGPUTest(unittest.TestCase):
         gpu_options = set([old_num_gpus, 0, 1])
         for in_gpus in gpu_options:
             tc.config.set_num_gpus(in_gpus)
-            model = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
+            original_model = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
             for out_gpus in gpu_options:
                 with test_util.TempDirectory() as path:
-                    model.save(path)
+                    original_model.save(path)
                     tc.config.set_num_gpus(out_gpus)
                     model = tc.load_model(path)
-                    model.export_coreml(os.path.join(path, 'model.mlmodel'))
+
+                    with test_util.TempDirectory() as export_path:
+                        model.export_coreml(os.path.join(export_path, 'model.mlmodel'))
 
         tc.config.set_num_gpus(old_num_gpus)

@@ -158,6 +158,36 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.is_binary_classification = True
         self.model = tc.sound_classifier.create(self.data, 'labels', feature='audio', max_iterations=100)
 
+    def test_create_invalid_max_iterations(self):
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', max_iterations=0)
+
+        with self.assertRaises(TypeError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', max_iterations='1')
+
+    def test_create_with_invalid_custom_layers(self):
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=[])
+
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes={})
+
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=['1'])
+
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=[-1])
+
+        with self.assertRaises(ToolkitError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', custom_layer_sizes=[0,0])
+
+    def test_create_with_invalid_batch_size(self):
+        with self.assertRaises(ValueError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', batch_size=-1)
+
+        with self.assertRaises(TypeError):
+            model = tc.sound_classifier.create(self.data, 'labels', feature='audio', batch_size=[])
+
     def test_predict(self):
         # default ('class') output_type
         predictions = self.model.predict(self.data['audio'])
@@ -308,8 +338,44 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         self.assertTrue(len(unique_ranks) == 1)
         self.assertTrue(unique_ranks[0] == 0)
 
+    def test_predict_topk_invalid_k(self):
+        with self.assertRaises(ToolkitError):
+            pred = self.model.predict_topk(self.data, k=-1)
+
+        with self.assertRaises(ToolkitError):
+            pred = self.model.predict_topk(self.data, k=0)
+
+        with self.assertRaises(TypeError):
+            pred = self.model.predict_topk(self.data, k={})
+
     def test_validation_set(self):
         self.assertTrue(self.model.validation_accuracy is None)
+
+    def test_summary(self):
+        """
+        Check the summary function.
+        """
+        model = self.model
+        model.summary()
+
+    def test_summary_str(self):
+        model = self.model
+        self.assertTrue(isinstance(model.summary('str'), str))
+
+    def test_summary_dict(self):
+        model = self.model
+        self.assertTrue(isinstance(model.summary('dict'), dict))
+
+    def test_summary_invalid_input(self):
+        model = self.model
+        with self.assertRaises(ToolkitError):
+            model.summary(model.summary('invalid'))
+
+        with self.assertRaises(ToolkitError):
+            model.summary(model.summary(0))
+
+        with self.assertRaises(ToolkitError):
+            model.summary(model.summary({}))
 
 
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
