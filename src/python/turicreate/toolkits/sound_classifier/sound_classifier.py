@@ -26,7 +26,7 @@ USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
 
 class _DataIterator(object):
     '''
-    Defines a common interface around TensorFlow 
+    Defines a common interface around TensorFlow
     DataSet.from_tensor_slices
     '''
 

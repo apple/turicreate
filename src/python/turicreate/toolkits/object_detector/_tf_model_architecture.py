@@ -90,7 +90,7 @@ class ODTensorFlowModel(TensorFlowModel):
         Parameters
         ----------
         tf_net_params: Dictionary
-            Dict with C++ weights and names
+            Dict with C++ weights and names.
 
         """
         for keys in tf_net_params:
@@ -418,7 +418,7 @@ class ODTensorFlowModel(TensorFlowModel):
         Parameters
         ----------
         feed_dict: Dictionary
-            Dictionary to store a batch of input data
+            Dictionary to store a batch of input data.
 
         Returns
         -------
@@ -437,7 +437,7 @@ class ODTensorFlowModel(TensorFlowModel):
 
     def export_weights(self):
         """
-        Function to store TensorFlow weights back to into a dict
+        Function to store TensorFlow weights back to into a dict.
 
         Returns
         -------

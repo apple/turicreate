@@ -279,7 +279,7 @@ gl_sframe one_shot_object_detector::augment(
   gl_sframe augmented_data = data_augmentation::augment_data(
       data, image_column_name, target_column_name, backgrounds, options["seed"],
       options["verbose"]);
-  // TODO: Call object_detector::train from here
+  // TODO: Call object_detector::train from here.
   return augmented_data;
 }
 
