@@ -131,7 +131,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
             num_images = end_index - start_index
             shape = (num_images,) + self.ptModel.input_image_shape
             if batch.shape != shape:
-                batch.reshape(shape)
+                batch.resize(shape, refcheck=False)
             batch[:] = 0
 
             # Resize and load the images.
@@ -195,7 +195,8 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         # Iterate through the image batches, converting them into batches
         # of feature vectors.  Do the 
         while batch_info is not None:
-            # Get the now - ready batch to process
+
+            # Get the now ready batch to process
             batch = ready_batch(batch_info)
 
             # Start the next one in the background.  
@@ -208,7 +209,6 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
 
             # Requeue the batch array now that we're done.  
             batch_array_done(batch)
-
 
         # Now we have this compiled in 
         return state['out']
