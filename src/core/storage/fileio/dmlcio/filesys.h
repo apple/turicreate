@@ -14,6 +14,7 @@
 
 #include <core/logging/assertions.hpp>
 
+#include <algorithm>
 #include <cstring>
 #include <string>
 
@@ -42,8 +43,10 @@ struct URI {
       name = uri;
     } else {
       protocol = std::string(uri, p - uri + 3);
-      protocol.front() = std::tolower(protocol.front());
-      ASSERT_MSG((protocol == "s3://"), "Invalid protocol for s3 file system");
+      // defensive, in case caller forget to lower case the protocol
+      std::transform(protocol.begin(), protocol.begin() + protocol.size() - 3,
+                     protocol.begin(),
+                     [](unsigned char c) { return std::tolower(c); });
       uri = p + 3;
       p = std::strchr(uri, '/');
       if (p == NULL) {
