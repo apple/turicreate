@@ -68,7 +68,7 @@
     _contentLossMultiplier = 1.0;
     _styleLossMultiplier = 1e-4;
 
-    // Divide loss by large number to get into a more legible range, the same behavior exists in the MxNet Implementation
+    // Divide loss by large number to get into a more legible range, the same behavior used to exist in the MxNet Implementation
     _totalLossMultiplier = 1e-4;
     _updateAllParams = YES;
     _imgWidth = 256;

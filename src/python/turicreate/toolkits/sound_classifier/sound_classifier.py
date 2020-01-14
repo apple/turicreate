@@ -26,7 +26,7 @@ USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
 
 class _DataIterator(object):
     '''
-    Defines a common interface around MXNet NDArrayIter and TensorFlow
+    Defines a common interface around TensorFlow 
     DataSet.from_tensor_slices
     '''
 
@@ -51,38 +51,6 @@ class _DataIterator(object):
     def reset(self):
         raise NotImplementedError
 
-class _MXNetDataIterator(_DataIterator):
-    def __init__(self, data, label=None, batch_size=1, shuffle=False):
-        import mxnet as mx
-        self.impl = mx.io.NDArrayIter(data, label=label, batch_size=batch_size,
-                                      shuffle=shuffle)
-
-    def __iter__(self):
-        return self
-
-    def reset(self):
-        self.impl.reset()
-
-    def __next__(self):
-        # Extract the data and label values, if applicable.
-        batch = self.impl.__next__()
-        data = batch.data[0]
-        label = batch.label[0] if batch.label else None
-
-        # Instead of MXNet-style padding, we use TF-style non-fixed shapes.
-        if batch.pad != 0:
-            data = data[:-batch.pad]
-            label = label[:-batch.pad] if label is not None else None
-
-        # Convert to numpy.
-        data = data.asnumpy()
-        label = label.asnumpy() if label is not None else None
-
-        return (data, label) if label is not None else (data,)
-
-    def next(self):
-        return self.__next__()
-
 class _TFDataIterator(_DataIterator):
     def __init__(self, data, label=None, batch_size=1, shuffle=False):
         import tensorflow as tf
@@ -103,9 +71,7 @@ class _TFDataIterator(_DataIterator):
 
     def reset(self):
         # Each call to __iter__ returns a fresh iterator object that will do one
-        # pass through the data. The mxnet.io.NDArrayIter interface only needs
-        # this method because their __iter__ function returns the NDArrayIter
-        # instance itself.
+        # pass through the data.
         pass
 
 class _NumPyDataIterator(_DataIterator):
@@ -140,16 +106,12 @@ class _NumPyDataIterator(_DataIterator):
 
 def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
 
-    if USE_TF:
-        return _NumPyDataIterator(data, label=label, batch_size=batch_size,
+    return _NumPyDataIterator(data, label=label, batch_size=batch_size,
                                shuffle=shuffle)
-    else:
-        return _MXNetDataIterator(data, label=label, batch_size=batch_size,
-                                  shuffle=shuffle)
 
 class _Accuracy(object):
     '''
-    Defines a common interface around MXNet/TensorFlow accuracy metrics.
+    Defines a common interface around TensorFlow accuracy metrics.
     '''
 
     def __init__(self):
@@ -176,22 +138,6 @@ class _Accuracy(object):
     '''
     def get(self):
         raise NotImplementedError
-
-class _MXNetAccuracy(_Accuracy):
-    def __init__(self):
-        import mxnet as mx
-        self.impl = mx.metric.Accuracy()
-
-    def update(self, ground_truth, predicted):
-        import mxnet as mx
-        self.impl.update([mx.nd.array(ground_truth)], [mx.nd.array(predicted)])
-
-    def reset(self):
-        self.impl.reset()
-
-    def get(self):
-        _, result = self.impl.get()
-        return result
 
 class _TFAccuracy(_Accuracy):
     def __init__(self):
@@ -227,10 +173,7 @@ class _NumPyAccuracy(_Accuracy):
         return self.cumulative_acc/self.num_examples
 
 def _get_accuracy_metric():
-    if USE_TF:
-        return _NumPyAccuracy()
-    else:
-        return _MXNetAccuracy()
+    return _NumPyAccuracy()
 
 def _is_deep_feature_sarray(sa):
     if not isinstance(sa, _tc.SArray):

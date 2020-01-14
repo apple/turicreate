@@ -90,7 +90,7 @@ class ODTensorFlowModel(TensorFlowModel):
         Parameters
         ----------
         tf_net_params: Dictionary
-            Dict with MXNet weights and names
+            Dict with C++ weights and names
 
         """
         for keys in tf_net_params:
@@ -423,7 +423,7 @@ class ODTensorFlowModel(TensorFlowModel):
         Returns
         -------
         output: TensorFlow Tensor
-            Feature map from building the network. This will be used in MXNet for further processing
+            Feature map from building the network.
         """
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
@@ -437,7 +437,7 @@ class ODTensorFlowModel(TensorFlowModel):
 
     def export_weights(self):
         """
-        Function to store TensorFlow weights back to into a dict for use with MXNet
+        Function to store TensorFlow weights back to into a dict
 
         Returns
         -------

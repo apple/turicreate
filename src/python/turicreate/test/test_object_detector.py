@@ -412,8 +412,7 @@ class ObjectDetectorTest(unittest.TestCase):
             # A numeric comparison of the resulting of top bounding boxes is
             # not that meaningful unless the model has converged
 
-        # Also check if we can train a second model and export it (there could
-        # be naming issues in mxnet)
+        # Also check if we can train a second model and export it
         filename2 = tempfile.mkstemp('bingo2.mlmodel')[1]
         # We also test at the same time if we can export a model with a single
         # class
@@ -444,8 +443,7 @@ class ObjectDetectorTest(unittest.TestCase):
             # A numeric comparison of the resulting of top bounding boxes is
             # not that meaningful unless the model has converged
 
-        # Also check if we can train a second model and export it (there could
-        # be naming issues in mxnet)
+        # Also check if we can train a second model and export it
         filename2 = tempfile.mkstemp('bingo2.mlmodel')[1]
         # We also test at the same time if we can export a model with a single
         # class

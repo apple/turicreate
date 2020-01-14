@@ -740,11 +740,8 @@ def _print_neural_compute_device(cuda_gpus, use_mps, cuda_mem_req=None, has_mps_
         from ._mps_utils import mps_device_name
         print('Using GPU to create model ({})'.format(mps_device_name()))
     elif num_cuda_gpus >= 1:
-        from ._mxnet import _mxnet_utils
         plural = 's' if num_cuda_gpus >= 2 else ''
         print('Using GPU{} to create model ({})'.format(plural, gpu_names))
-        if cuda_mem_req is not None:
-            _mxnet_utils._warn_if_less_than_cuda_free_memory(cuda_mem_req, max_devices=num_cuda_gpus)
     else:
         import sys
         print('Using CPU to create model')
