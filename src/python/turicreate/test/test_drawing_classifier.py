@@ -196,6 +196,17 @@ class DrawingClassifierTest(unittest.TestCase):
         _tc.drawing_classifier.create(sf, self.target, feature=self.feature,
             max_iterations=1)
 
+    def test_create_with_fixed_random_seed(self):
+        for data in self.trains:
+            model_1 = _tc.drawing_classifier.create(
+                data, self.target, feature=self.feature, validation_set=None, max_iterations=3, random_seed=86)
+            model_2 = _tc.drawing_classifier.create(
+                data, self.target, feature=self.feature, validation_set=None, max_iterations=3, random_seed=86)
+            pred_1 = model_1.predict(data)
+            pred_2 = model_2.predict(data)
+            for i in range(len(pred_1)):
+                self.assertEqual(pred_1[i], pred_2[i])
+
     def test_predict_with_sframe(self):
         for index in range(len(self.models)):
             model = self.models[index]

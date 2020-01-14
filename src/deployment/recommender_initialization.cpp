@@ -6,6 +6,7 @@
 #include <model_server/server/registration.hpp>
 #include <model_server/server/unity_server_init.hpp>
 #include <toolkits/recsys/models/itemcf.hpp>
+#include <toolkits/recsys/models/item_content_recommender.hpp>
 
 namespace turi {
 
@@ -15,6 +16,7 @@ namespace turi {
   namespace recsys { namespace ios {
   BEGIN_CLASS_REGISTRATION
   REGISTER_CLASS(recsys_itemcf)
+  REGISTER_CLASS(recsys_item_content_recommender)
   END_CLASS_REGISTRATION
   }  // namespace ios
   }  // namespace recsys

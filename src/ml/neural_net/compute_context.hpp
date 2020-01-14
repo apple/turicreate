@@ -128,8 +128,9 @@ EXPORT class compute_context {
    */
   virtual std::unique_ptr<model_backend> create_drawing_classifier(
       /* TODO: const float_array_map& config if needed */
-      const float_array_map& weights,
-      size_t batch_size, size_t num_classes) { ASSERT_TRUE(false); }
+      const float_array_map& weights, size_t batch_size, size_t num_classes) {
+    ASSERT_TRUE(false);
+  }
 
   /**
    * Creates an image augmenter.
