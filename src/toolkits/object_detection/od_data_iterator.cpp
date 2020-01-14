@@ -311,7 +311,7 @@ simple_data_iterator::compute_properties(
     for (const std::string& label : result.classes) {
       if (classes_inferred.find(label) == classes_inferred.end() &&
           is_training_) {
-        logstream(5)
+        logprogress_stream
             << "Warning: User provided 'classes' includes label '" + label +
                    "', which is not presented in the training dataset.\n"
             << std::endl;
