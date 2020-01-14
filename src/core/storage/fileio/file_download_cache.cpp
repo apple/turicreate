@@ -3,15 +3,17 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <string>
-#include <core/logging/logger.hpp>
 #include <boost/algorithm/string/predicate.hpp>
+#include <core/export.hpp>
+#include <core/logging/logger.hpp>
 #include <core/storage/fileio/curl_downloader.hpp>
-#include <core/storage/fileio/temp_files.hpp>
 #include <core/storage/fileio/file_download_cache.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/s3_api.hpp>
 #include <core/storage/fileio/sanitize_url.hpp>
-#include <core/export.hpp>
+#include <core/storage/fileio/temp_files.hpp>
+
+#include <string>
 
 namespace turi {
 
@@ -31,7 +33,7 @@ std::string file_download_cache::get_file(const std::string& url) {
   if (url_to_file.count(url)) {
     bool cache_dirty = false;
 #ifndef TC_DISABLE_REMOTEFS
-    if (boost::starts_with(url, "s3://")) {
+    if (fileio::get_protocol(url) == "s3") {
       std::string last_modified = "";
       try {
         last_modified = get_s3_file_last_modified(url);
@@ -57,11 +59,12 @@ std::string file_download_cache::get_file(const std::string& url) {
   // For remote urls, download_url download it into to local file.
   // For local urls, download_url return as is.
   std::string localfile;
-  int status; bool is_temp;
+  int status;
+  bool is_temp;
   std::tie(status, is_temp, localfile) = download_url(url);
   if (status) {
-    log_and_throw_io_failure("Fail to download from " + url +
-                             ". " + get_curl_error_string(status));
+    log_and_throw_io_failure("Fail to download from " + url + ". " +
+                             get_curl_error_string(status));
   }
   if (is_temp) {
     // if it is a remote file, we check the download status code

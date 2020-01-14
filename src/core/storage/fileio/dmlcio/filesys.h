@@ -12,8 +12,11 @@
 #ifndef DMLC_IO_FILESYS_H_
 #define DMLC_IO_FILESYS_H_
 
+#include <core/logging/assertions.hpp>
+
 #include <cstring>
 #include <string>
+
 #include "io.h"
 
 namespace dmlc {
@@ -39,6 +42,8 @@ struct URI {
       name = uri;
     } else {
       protocol = std::string(uri, p - uri + 3);
+      protocol.front() = std::tolower(protocol.front());
+      ASSERT_MSG((protocol == "s3://"), "Invalid protocol for s3 file system");
       uri = p + 3;
       p = std::strchr(uri, '/');
       if (p == NULL) {
