@@ -444,12 +444,8 @@ def create(dataset, target, feature, max_iterations=10,
         print("\nTraining a custom neural network -")
 
 
-    if USE_TF:
-        from ._tf_sound_classifier import SoundClassifierTensorFlowModel
-        custom_NN = SoundClassifierTensorFlowModel(feature_extractor.output_length, num_labels, custom_layer_sizes)
-    else:
-        from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-        custom_NN = MultiLayerPerceptronMXNetModel(feature_extractor.output_length, num_labels, custom_layer_sizes, verbose)
+    from ._tf_sound_classifier import SoundClassifierTensorFlowModel
+    custom_NN = SoundClassifierTensorFlowModel(feature_extractor.output_length, num_labels, custom_layer_sizes)
 
 
     if verbose:
@@ -566,12 +562,8 @@ class SoundClassifier(_CustomModel):
             custom_layer_sizes = [100, 100]
         state['custom_layer_sizes'] = custom_layer_sizes
 
-        if USE_TF:
-            from ._tf_sound_classifier import SoundClassifierTensorFlowModel
-            custom_NN = SoundClassifierTensorFlowModel(num_inputs, num_classes, custom_layer_sizes)
-        else:
-            from ._mx_sound_classifier import MultiLayerPerceptronMXNetModel
-            custom_NN = MultiLayerPerceptronMXNetModel(num_inputs, num_classes, custom_layer_sizes, 1)
+        from ._tf_sound_classifier import SoundClassifierTensorFlowModel
+        custom_NN = SoundClassifierTensorFlowModel(num_inputs, num_classes, custom_layer_sizes)
         custom_NN.load_weights(state['_custom_classifier'])
         state['_custom_classifier'] = custom_NN
 
