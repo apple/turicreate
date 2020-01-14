@@ -18,6 +18,7 @@ if(NOT TC_DISABLE_OBJECT_BUILDS)
 if(APPLE AND HAS_COREML_CUSTOM_MODEL)
     set(unity_shared_object_deps
       ${unity_shared_object_deps}
+      "$<TARGET_OBJECTS:capi>"
       "$<TARGET_OBJECTS:objcapi>")
   endif()
 
