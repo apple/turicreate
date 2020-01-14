@@ -93,6 +93,13 @@ class data_iterator {
     /**
      * An array with shape: (requested_batch_size, 1)
      *
+     * Each row is the weight associated with the target.
+     */
+    neural_net::shared_float_array weights;
+
+    /**
+     * An array with shape: (requested_batch_size, 1)
+     *
      * Each row is the prediction.
      */
     neural_net::shared_float_array predictions;

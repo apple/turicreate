@@ -72,8 +72,9 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   data_iterator::batch next_batch = data_source.next_batch(batch_size);
 
   // get the real batch size for test now
+  size_t num_samples;
   if (num_rows < batch_size) {
-    batch_size = num_rows;
+    num_samples = num_rows;
   }
 
   /* Test drawing and target sizes */
@@ -97,7 +98,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   size_t index_in_data = 0;
   /* Test target contents */
   const float *actual_target_data = next_batch.targets.data();
-  for (size_t index_in_batch = 0; index_in_batch < batch_size;
+  for (size_t index_in_batch = 0; index_in_batch < num_samples;
        index_in_batch++) {
     float expected_target = static_cast<float>(
         std::find(actual_class_labels.begin(), actual_class_labels.end(),
@@ -112,7 +113,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   index_in_data = 0;
   const float *actual_drawing_data = next_batch.drawings.data();
 
-  for (size_t index_in_batch = 0; index_in_batch < batch_size;
+  for (size_t index_in_batch = 0; index_in_batch < num_samples;
        index_in_batch++) {
     flex_image decoded_drawing = image_util::decode_image(
         data[params.feature_column_name][index_in_data].to<flex_image>());
