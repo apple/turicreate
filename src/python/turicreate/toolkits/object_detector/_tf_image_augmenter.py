@@ -407,7 +407,7 @@ class DataAugmenter(object):
         self.batch_size = batch_size
         self.graph = tf.Graph()
         self.resize_only = resize_only
-        np.random.seed(0)
+        np.random.seed(random_seed if random_seed >=0 else -random_seed)
         self.random_seed = np.random.randint(low=0, high=2**32-1, size=self.batch_size)
 
         with self.graph.as_default():
@@ -423,24 +423,25 @@ class DataAugmenter(object):
                     aug_img_tf, aug_ann_tf = complete_augmenter(self.img_tf[i], self.ann_tf[i], output_height, output_width, self.random_seed[i])
                     self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
 
+        self.session = tf.Session(graph=self.graph)
+
     def get_augmented_data(self, images, annotations):
-        with tf.Session(graph=self.graph) as session:
-            feed_dict = dict()
-            graph_op = self.resize_op_batch[0:len(images)]
-            for i in range(0, len(images)):
-                feed_dict[self.img_tf[i]] = _utils.convert_shared_float_array_to_numpy(images[i])
-                if self.resize_only:
-                    feed_dict[self.ann_tf[i]] = self.batch_size * [np.zeros(6)]
-                else:
-                    feed_dict[self.ann_tf[i]] = _utils.convert_shared_float_array_to_numpy(annotations[i])
-            aug_output = session.run(graph_op, feed_dict=feed_dict)
-            processed_images = []
-            processed_annotations = []
-            for o in aug_output:
-                processed_images.append(o[0])
-                processed_annotations.append(np.ascontiguousarray(o[1], dtype=np.float32))
-            processed_images = np.array(processed_images, dtype=np.float32)
-            processed_images = np.ascontiguousarray(processed_images, dtype=np.float32)
-            return (processed_images, processed_annotations)
+        feed_dict = dict()
+        graph_op = self.resize_op_batch[0:len(images)]
+        for i in range(0, len(images)):
+            feed_dict[self.img_tf[i]] = _utils.convert_shared_float_array_to_numpy(images[i])
+            if self.resize_only:
+                feed_dict[self.ann_tf[i]] = self.batch_size * [np.zeros(6)]
+            else:
+                feed_dict[self.ann_tf[i]] = _utils.convert_shared_float_array_to_numpy(annotations[i])
+        aug_output = self.session.run(graph_op, feed_dict=feed_dict)
+        processed_images = []
+        processed_annotations = []
+        for o in aug_output:
+            processed_images.append(o[0])
+            processed_annotations.append(np.ascontiguousarray(o[1], dtype=np.float32))
+        processed_images = np.array(processed_images, dtype=np.float32)
+        processed_images = np.ascontiguousarray(processed_images, dtype=np.float32)
+        return (processed_images, processed_annotations)
 
 
