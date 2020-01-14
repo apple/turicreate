@@ -20,11 +20,13 @@ m_info->response_future = std::async(std::launch::async,
 
 const toolkit_function_response_type& toolkit_function_response_future::wait() const {
   ASSERT_TRUE(m_info != nullptr); 
-  ASSERT_TRUE(m_info->response_future.valid()); 
-       
-  m_info->response_future.wait(); 
 
-  ASSERT_EQ(m_info->response_future.get(), true); 
+  if(!m_info->is_completed) { 
+     ASSERT_TRUE(m_info->response_future.valid()); 
+     m_info->response_future.wait(); 
+     ASSERT_EQ(m_info->response_future.get(), true); 
+  }
+
   ASSERT_TRUE(m_info->is_completed);
 
   return m_info->response;
