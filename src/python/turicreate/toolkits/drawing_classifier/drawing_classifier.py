@@ -1213,8 +1213,6 @@ class DrawingClassifier(_Model):
 
         evaluation_result = self.__proxy__.evaluate(dataset, metric)
 
-        # TODO: fix the three passes through the data.
-
         class_label = evaluation_result["prediction_class"]
         probability_vector = evaluation_result["prediction_prob"]
 
