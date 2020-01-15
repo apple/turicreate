@@ -44,6 +44,12 @@ if(APPLE AND HAS_COREML_CUSTOM_MODEL)
       ${CORE_ML}
   )
 
+   set_source_files_properties(
+     AudioPreprocessing.mm 
+     TuriCreateObjC.mm
+     PROPERTIES
+     COMPILE_FLAGS "-x objective-c++")
+
   if (CMAKE_BUILD_TYPE STREQUAL "Release")
     add_custom_command(TARGET Recommender
       POST_BUILD
