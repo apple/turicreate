@@ -27,13 +27,6 @@ else()
     pylambda_worker 
     python_callbacks)
 
-  if(APPLE AND HAS_MLCUSTOMMODEL)
-    set(unity_shared_deps
-      ${unity_shared_deps}
-      objcapi
-      )
-  endif()
-
 endif()
 
 
