@@ -260,7 +260,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
   // Now, actually invoke drawing_classifier::iterate_training.
   // This will trigger all the assertions registered above.
   for (size_t i = 0; i < test_max_iterations; ++i) {
-    model.iterate_training();
+    model.iterate_training(false);
   }
 
   TS_ASSERT_EQUALS(model.get_field<flex_int>("training_iterations"),
