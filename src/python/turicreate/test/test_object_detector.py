@@ -149,6 +149,7 @@ class ObjectDetectorTest(unittest.TestCase):
             self.get_ans['grid_height'] = lambda x: x > 0
             self.get_ans['grid_width'] = lambda x: x > 0
             self.get_ans['random_seed'] = lambda x: True
+            self.get_ans['verbose'] = lambda x: True
             del self.get_ans['_model']
             del self.get_ans['_class_to_index']
             del self.get_ans['_grid_shape']
