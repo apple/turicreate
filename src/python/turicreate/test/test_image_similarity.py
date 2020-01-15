@@ -269,7 +269,6 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(model='squeezenet_v1.1',
                                                               input_image_shape=(3, 227, 227))
 
-"""
 
 @unittest.skipIf(_mac_ver() < (10,14), 'VisionFeaturePrint_Scene only supported on macOS 10.14+')
 class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
@@ -284,14 +283,4 @@ class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest_bad_name, self).setUpClass(model='VisionFeaturePrint_Screen',
                                                                              input_image_shape=(3, 299, 299))
-
-"""
-# class ImageFeatureExtractionTest(unittest.TestCase):
-#
-
-#    X = get_test_data()
-
-#    feature_extractor = TensorFlowFeatureExtractor()
-
-
 

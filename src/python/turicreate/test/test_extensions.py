@@ -159,7 +159,7 @@ class VariantCheckTest(unittest.TestCase):
         X = tc.util.generate_random_sframe(1000, "CS")
 
         rows = list(X)
-        indices = range(len(X)) 
+        indices = list(range(len(X)))
 
         random.seed(0)
         random.shuffle(indices)
@@ -168,10 +168,10 @@ class VariantCheckTest(unittest.TestCase):
         n = 50
         indices = indices[:n]
 
-        start_indices = range(n)
+        start_indices = list(range(n))
         random.shuffle(start_indices)
 
-        test_indices = range(n)
+        test_indices = list(range(n))
         random.shuffle(test_indices)
 
         futures = [None]*n
