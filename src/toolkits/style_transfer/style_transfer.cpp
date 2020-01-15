@@ -484,19 +484,22 @@ gl_sarray style_transfer::convert_style_indices_to_filter(
 
 gl_sframe style_transfer::predict(variant_type data,
                                   std::map<std::string, flexible_type> opts) {
-  gl_sframe_writer result({"row_id","style", "stylized_image"},
-                          {flex_type_enum::INTEGER, flex_type_enum::INTEGER, flex_type_enum::IMAGE}, 1);
+  gl_sframe_writer result(
+      {"row_id", "style", "stylized_image"},
+      {flex_type_enum::INTEGER, flex_type_enum::INTEGER, flex_type_enum::IMAGE},
+      1);
 
   gl_sarray content_images = convert_types_to_sarray(data);
 
   std::vector<flex_int> style_idx;
 
   auto style_idx_iter = opts.find("style_idx");
+
   if (style_idx_iter == opts.end()) {
     flex_int num_styles = read_state<flex_int>("num_styles");
-
     style_idx.resize(num_styles);
     std::iota(style_idx.begin(), style_idx.end(), 0);
+
   } else {
     flexible_type flex_style_idx = style_idx_iter->second;
     switch (flex_style_idx.get_type()) {
@@ -565,17 +568,19 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
       {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
       weight_params);
 
-  // Style Printer
-  size_t idx = 0;
-  table_printer table(
-        { {"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0} }, 0);
-  table.print_header();
-
   // looping through all of the data
   data_iter->reset();
   ASSERT_EQ(batch_size, 1);
   std::vector<st_example> batch = data_iter->next_batch(batch_size);
   int row_idx = 0;
+
+  // Style Printer
+  // record time of process
+  size_t idx = 0;
+  table_printer table(
+      {{"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0}},
+      0);
+  table.print_header();
 
   while (!batch.empty()) {
     // looping through all of the style indices
@@ -624,7 +629,6 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
     ++row_idx;
   }
 
-  table.print_row(idx, progress_time(), "100%");
   table.print_footer();
 }
 
@@ -675,8 +679,9 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
     add_or_update_state({{"random_seed", random_seed}});
   }
 
-  m_training_data_iterator = create_iterator(content, style, /* repeat */ true,
-                                             /* training */ true, static_cast<int>(num_styles));
+  m_training_data_iterator =
+      create_iterator(content, style, /* repeat */ true,
+                      /* training */ true, static_cast<int>(num_styles));
 
   m_training_compute_context = create_compute_context();
   if (m_training_compute_context == nullptr) {
@@ -685,11 +690,9 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
 
   infer_derived_options();
 
-  add_or_update_state({
-      {"model", "resnet-16"},
-      {"styles", style_sframe_with_index(style)},
-      {"num_content_images", content.size()}
-  });
+  add_or_update_state({{"model", "resnet-16"},
+                       {"styles", style_sframe_with_index(style)},
+                       {"num_content_images", content.size()}});
 
   m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);
   m_vgg_spec = init_vgg_16(vgg_mlmodel_path);
@@ -862,7 +865,7 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
   const flex_int training_epochs = read_opts<flex_int>(model_data, "training_epochs");
   const flex_int training_iterations = read_opts<flex_int>(model_data, "training_iterations");
   const flex_int num_content_images = read_opts<flex_int>(model_data, "num_content_images");
-  const flex_float training_loss = read_opts<flex_float>(model_data, "training_loss");  
+  const flex_float training_loss = read_opts<flex_float>(model_data, "training_loss");
 
   add_or_update_state({{"model", model_type},
                        {"num_styles", num_styles},

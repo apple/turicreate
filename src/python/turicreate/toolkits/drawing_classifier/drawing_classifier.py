@@ -55,7 +55,7 @@ def _raise_error_if_not_drawing_classifier_input_sframe(
 
 def create(input_dataset, target, feature=None, validation_set='auto',
             warm_start='auto', batch_size=256,
-            max_iterations=500, verbose=True, **kwargs):
+            max_iterations=500, verbose=True, random_seed=None, **kwargs):
     """
     Create a :class:`DrawingClassifier` model.
 
@@ -112,6 +112,9 @@ def create(input_dataset, target, feature=None, validation_set='auto',
 
     verbose : bool optional
         If True, print progress updates and model details.
+
+    random_seed : int, optional
+        The results can be reproduced when given the same seed.
 
     Returns
     -------
@@ -183,12 +186,15 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
+        options["_show_loss"] = False
         if validation_set is None:
             validation_set = _tc.SFrame()
         if warm_start:
             # Load CoreML warmstart model
             pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
             options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
+        if random_seed is not None:
+            options['random_seed'] = random_seed
         options["warm_start"] = "" if warm_start is None else warm_start
         model.train(input_dataset, target, feature, validation_set, options)
         return DrawingClassifier(model_proxy=model, name="drawing_classifier")
