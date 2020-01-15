@@ -131,7 +131,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
             num_images = end_index - start_index
             shape = (num_images,) + self.ptModel.input_image_shape
             if batch.shape != shape:
-                batch.resize(shape, refcheck=False)
+                batch = np.resize(batch, shape)
             batch[:] = 0
 
             # Resize and load the images.
@@ -146,7 +146,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
             assert batch_info is not None
 
             batch_future, batch = batch_info
-            batch_future.wait()
+            batch_future.result()
 
             # TODO: Converge to NCHW everywhere.
             batch = batch.transpose(0, 2, 3, 1)  # NCHW -> NHWC

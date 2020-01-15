@@ -189,7 +189,7 @@ class ToolkitFunctionFuture(object):
         self.__proxy__ = proxy
 
 
-    def wait(self):
+    def result(self):
         """
         Waits for the answer to finish processing in the background, returning
         the result.
