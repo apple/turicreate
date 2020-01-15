@@ -60,6 +60,7 @@ class toolkit_function_response_future {
     toolkit_function_response_type response;
     std::future<bool> response_future;
     volatile bool is_completed = false;
+    bool future_finished = false;
   };
 
   // This field becomes valid and non-null when the execution has

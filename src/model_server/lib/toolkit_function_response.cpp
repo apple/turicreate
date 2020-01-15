@@ -25,11 +25,18 @@ toolkit_function_response_future::toolkit_function_response_future(
 const toolkit_function_response_type& toolkit_function_response_future::wait() const {
   ASSERT_TRUE(m_info != nullptr); 
 
-  // The response future is invalid 
+  // The response future is invalid after get() is called, 
+  // so first see if it's already ready.   
   if(!m_info->is_completed) { 
      ASSERT_TRUE(m_info->response_future.valid()); 
      m_info->response_future.wait(); 
      ASSERT_EQ(m_info->response_future.get(), true); 
+     m_info->future_finished = true;
+  } else if(!m_info->future_finished) {
+     // Call get() to close out the state of the future.
+     ASSERT_TRUE(m_info->response_future.valid()); 
+     ASSERT_EQ(m_info->response_future.get(), true); 
+     m_info->future_finished = true;
   }
 
   ASSERT_TRUE(m_info->is_completed);
