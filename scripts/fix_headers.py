@@ -10,8 +10,7 @@ from collections import defaultdict
 
 parser = argparse.ArgumentParser(description=
 """
-Script to fix the headers in the repository source files.  Useful when
-subdirectories are moved, etc.
+Script to fix invalid headers in the repository source files after file moves.
 
 Must be run from the root of the repository.
 
@@ -143,7 +142,11 @@ def all_headers_matching(match_regex):
     rhl = [h for h in raw_header_list if match_regex.match(h)]
 
 
-    # Split the list into two components -- those with 
+    # Sometimes filenames may have multiple versions, which we need to handle.  
+    # We can do this splitting the list into two components -- those that are 
+    # unique, and those that need additional path information to distinguish 
+    # which one is being included.  The latter we then expand out the directories
+    # until all files are correctly included
     def separate_unique(raw_headers, n):
         lookup = defaultdict(lambda: [])
         
