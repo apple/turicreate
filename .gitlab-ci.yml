@@ -21,7 +21,7 @@ build_wheel_debug_linux_python27:
   script:
     - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
-    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7 --skip_doc
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7
   artifacts:
     expire_in: 1 day
     paths:
@@ -59,7 +59,7 @@ build_wheel_linux_python35:
   script:
     - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
-    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5 --skip_doc
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.5
   artifacts:
     expire_in: 1 day
     paths:
@@ -78,7 +78,7 @@ build_wheel_linux_python36:
   script:
     - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
-    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6 --skip_doc
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.6
   artifacts:
     expire_in: 1 day
     paths:
@@ -97,7 +97,7 @@ build_wheel_linux_python37:
   script:
     - apk add bash
     - mkdir -p /etc/ssl/certs/
-    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.7 --skip_doc
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.7
   artifacts:
     expire_in: 1 day
     paths:
@@ -202,6 +202,26 @@ build_dylib_ios_12:
     paths:
       - release/src/deployment/Release-iphoneos/libRecommender.dylib
       - release/src/deployment/Release-iphoneos/libAudioPreprocessing.dylib
+
+build_documentation:
+  tags:
+    - docker
+  services:
+    - docker:18.09-dind
+  image: docker:18.09
+  stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_DRIVER: overlay2
+  dependencies:
+    - build_wheel_linux_python37
+  script:
+    - bash scripts/make_documentation.sh
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - target/docs.zip
 
 test_cpp_linux:
   tags:
@@ -574,6 +594,7 @@ collect_artifacts:
     - build_wheel_mac_10_15_python35
     - build_wheel_mac_10_15_python36
     - build_wheel_mac_10_15_python37
+    - build_documentation
   script:
     - find release/src/deployment/ -name '*.dylib' -exec mv {} target/ \;
     - rmdir -p release || find release

@@ -32,8 +32,6 @@ print_help() {
   echo
   echo "  --skip_build             Skip the build process."
   echo
-  echo "  --skip_doc               Skip the generation of documentation."
-  echo
   echo "  --skip_smoke_test        Skip importing the wheel and running a quick smoke test."
   echo
   echo "  --debug                  Use debug build instead of release."
@@ -65,7 +63,6 @@ while [ $# -gt 0 ]
     --skip_test)            SKIP_TEST=1;;
     --skip_cpp_test)        SKIP_CPP_TEST=1;;
     --skip_build)           SKIP_BUILD=1;;
-    --skip_doc)             SKIP_DOC=1;;
     --skip_smoke_test)      SKIP_SMOKE_TEST=1;;
     --release)              build_type="release";;
     --debug)                build_type="debug";;
@@ -110,9 +107,6 @@ if [[ -n "${USE_DOCKER}" ]]; then
   fi
   if [[ -n $SKIP_CPP_TEST ]]; then
     make_wheel_args="$make_wheel_args --skip_cpp_test"
-  fi
-  if [[ -n $SKIP_DOC ]]; then
-    make_wheel_args="$make_wheel_args --skip_doc"
   fi
   if [[ "$build_type" == "debug" ]]; then
     make_wheel_args="$make_wheel_args --debug"
@@ -357,25 +351,6 @@ package_wheel() {
   echo -e "\n\n================= Done Packaging Wheel  ================\n\n"
 }
 
-
-# Generate docs
-generate_docs() {
-  echo -e "\n\n\n================= Generating Docs ================\n\n\n"
-
-  $PIP_EXECUTABLE install sphinx==1.6.5
-  $PIP_EXECUTABLE install sphinx-bootstrap-theme
-  $PIP_EXECUTABLE install numpydoc
-  SPHINXBUILD=${WORKSPACE}/$PYTHON_SCRIPTS/sphinx-build
-  cd ${WORKSPACE}
-  rm -rf pydocs
-  mkdir -p pydocs
-  cd pydocs
-  cp -R ${WORKSPACE}/src/python/doc/* .
-  make clean SPHINXBUILD=${SPHINXBUILD}
-  make html SPHINXBUILD=${SPHINXBUILD} || true
-  tar -czf ${TARGET_DIR}/turicreate_python_sphinx_docs.tar.gz *
-}
-
 set_build_number() {
   # set the build number
   cd ${WORKSPACE}/${build_type}/src/python/
@@ -413,6 +388,3 @@ source ${WORKSPACE}/scripts/python_env.sh $build_type
 
 package_wheel
 
-if [[ -z $SKIP_DOC ]]; then
-  generate_docs
-fi
