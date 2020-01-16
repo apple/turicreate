@@ -312,7 +312,6 @@ std::unique_ptr<data_iterator> drawing_classifier::create_iterator(
   }
 
   data_params.feature_column_name = read_state<flex_string>("feature");
-  data_params.random_seed = read_state<int>("random_seed");
 
   return create_iterator(data_params);
 }
