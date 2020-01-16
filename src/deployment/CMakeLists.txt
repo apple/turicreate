@@ -37,7 +37,6 @@ if(APPLE AND HAS_COREML_CUSTOM_MODEL)
       AudioPreprocessing.mm
       TuriCreateObjC.mm
       ${_TC_COMMON_OBJECTS}
-      $<TARGET_OBJECTS:capi>
     REQUIRES
       ${_TC_COMMON_REQUIREMENTS}
       ${FOUNDATION}
