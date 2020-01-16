@@ -264,7 +264,7 @@ class ObjectDetectorTest(unittest.TestCase):
         self.assertEqual(len(ret['average_precision_50']), 2)
 
     def test_different_grip_shape(self):
-        #should able to givre different input grip shape
+        # Should able to give different input grip shape
         shapes = [[1,1], [5,5], [13,13], [26,26]]
         for shape in shapes:
             model = tc.object_detector.create(self.sf, max_iterations=1, grid_shape=shape)
