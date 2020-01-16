@@ -667,7 +667,6 @@ class NearestNeighborsModel(_Model):
         out : list
             List of fields queryable with the ``get`` method.
         """
-        import pdb; pdb.set_trace()
         opts = {'model': self.__proxy__, 'model_name': self.__name__}
         response = _turicreate.extensions._nearest_neighbors.list_fields(opts)
 
