@@ -227,6 +227,14 @@ class ObjectDetectorTest(unittest.TestCase):
         with self.assertRaises(_ToolkitError):
             tc.object_detector.create(self.sf[:0])
 
+    def test_create_with_verbose_False(self):
+        args = [self.sf, self.annotations, self.feature]
+        kwargs = {
+            'max_iterations': 1,
+            'model': self.pre_trained_model
+        }
+        test_util.assert_longer_verbose_logs(
+            tc.object_detector.create, args, kwargs)
 
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
