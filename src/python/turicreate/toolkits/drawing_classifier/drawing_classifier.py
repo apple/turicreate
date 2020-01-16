@@ -186,6 +186,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         options = dict()
         options["batch_size"] = batch_size
         options["max_iterations"] = max_iterations
+        options["verbose"] = verbose
         options["_show_loss"] = False
         if validation_set is None:
             validation_set = _tc.SFrame()
@@ -1213,9 +1214,11 @@ class DrawingClassifier(_Model):
 
         evaluation_result = self.__proxy__.evaluate(dataset, metric)
 
-        # TODO: fix the three passes through the data.
-        class_label = self.__proxy__.predict(dataset, "class")
-        probability_vector = self.__proxy__.predict(dataset, "probability_vector")
+        class_label = evaluation_result["prediction_class"]
+        probability_vector = evaluation_result["prediction_prob"]
+
+        del evaluation_result["prediction_class"]
+        del evaluation_result["prediction_prob"]
 
         predicted  = _tc.SFrame({"label": class_label, "probability": probability_vector})
         labels = self.classes

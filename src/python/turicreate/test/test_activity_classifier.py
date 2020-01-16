@@ -134,6 +134,14 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                             prediction_window=self.prediction_window)
         predictions = model.predict(self.data)
 
+    def test_create_with_verbose_False(self):
+        args = [self.data, self.session_id, self.target]
+        kwargs = {
+            'features': self.features,
+            'prediction_window': self.prediction_window
+        }
+        test_util.assert_longer_verbose_logs(
+            tc.activity_classifier.create, args, kwargs)
 
     def test_create_features_target_session(self):
         model = tc.activity_classifier.create(self.data,

@@ -14,6 +14,9 @@ import string
 import numpy as np
 from pandas.util.testing import assert_frame_equal
 from .. import SArray
+import turicreate as tc
+import sys
+from six import StringIO
 
 class SFrameComparer():
     """
@@ -165,3 +168,23 @@ def uniform_numeric_column(n, col_type=float, range=(0, 1), missingness=0.):
     v = np.where(np.isnan(v), None, v)
 
     return SArray(v, dtype=col_type)
+
+
+def assert_longer_verbose_logs(function_call, args, kwargs):
+    # Run command with verbose=False
+    kwargs['verbose'] = False
+    old_stdout = sys.stdout
+    sys.stdout = stdout_without_verbose = StringIO()
+    function_call(*args, **kwargs)
+    sys.stdout = old_stdout
+    without_verbose = stdout_without_verbose.getvalue()
+    # Run command with verbose=True
+    kwargs['verbose'] = True
+    old_stdout = sys.stdout
+    sys.stdout = stdout_with_verbose = StringIO()
+    function_call(*args, **kwargs)
+    sys.stdout = old_stdout
+    with_verbose = stdout_with_verbose.getvalue()
+    # Assert that verbose logs are longer
+    assert (len(with_verbose) > len(without_verbose))
+
