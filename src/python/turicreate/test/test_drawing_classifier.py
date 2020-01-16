@@ -161,6 +161,16 @@ class DrawingClassifierTest(unittest.TestCase):
             _tc.drawing_classifier.create(
                 data, self.target, feature=self.feature, validation_set=None, max_iterations=1)
 
+    def test_create_with_verbose_False(self):
+        for data in self.trains:
+            args = [data, self.target]
+            kwargs = {
+                'feature': self.feature,
+                'max_iterations': 1,
+            }
+            test_util.assert_longer_verbose_logs(
+                _tc.drawing_classifier.create, args, kwargs)
+
     def test_create_with_no_validation_set(self):
         for data in self.trains:
             _tc.drawing_classifier.create(

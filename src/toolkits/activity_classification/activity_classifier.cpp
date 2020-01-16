@@ -323,32 +323,34 @@ std::tuple<float, float> activity_classifier::compute_validation_metrics(
 
 void activity_classifier::init_table_printer(bool has_validation,
                                              bool show_loss) {
-  if (has_validation) {
-    if (show_loss) {
-      training_table_printer_.reset(
-          new table_printer({{"Iteration", 12},
-                             {"Train Loss", 12},
-                             {"Train Accuracy", 12},
-                             {"Validation Accuracy", 12},
-                             {"Validation Loss", 12},
-                             {"Elapsed Time", 12}}));
+  if (read_state<bool>("verbose")) {
+    if (has_validation) {
+      if (show_loss) {
+        training_table_printer_.reset(
+            new table_printer({{"Iteration", 12},
+                               {"Train Loss", 12},
+                               {"Train Accuracy", 12},
+                               {"Validation Accuracy", 12},
+                               {"Validation Loss", 12},
+                               {"Elapsed Time", 12}}));
 
+      } else {
+        training_table_printer_.reset(
+            new table_printer({{"Iteration", 12},
+                               {"Train Accuracy", 12},
+                               {"Validation Accuracy", 12},
+                               {"Elapsed Time", 12}}));
+      }
     } else {
-      training_table_printer_.reset(
-          new table_printer({{"Iteration", 12},
-                             {"Train Accuracy", 12},
-                             {"Validation Accuracy", 12},
-                             {"Elapsed Time", 12}}));
-    }
-  } else {
-    if (show_loss) {
-      training_table_printer_.reset(new table_printer({{"Iteration", 12},
-                                                       {"Train Loss", 12},
-                                                       {"Train Accuracy", 12},
-                                                       {"Elapsed Time", 12}}));
-    } else {
-      training_table_printer_.reset(new table_printer(
-          {{"Iteration", 12}, {"Train Accuracy", 12}, {"Elapsed Time", 12}}));
+      if (show_loss) {
+        training_table_printer_.reset(new table_printer({{"Iteration", 12},
+                                                         {"Train Loss", 12},
+                                                         {"Train Accuracy", 12},
+                                                         {"Elapsed Time", 12}}));
+      } else {
+        training_table_printer_.reset(new table_printer(
+            {{"Iteration", 12}, {"Train Accuracy", 12}, {"Elapsed Time", 12}}));
+      }
     }
   }
 }
@@ -380,9 +382,10 @@ void activity_classifier::train(
   }
 
   // Finish printing progress.
-  training_table_printer_->print_footer();
-  training_table_printer_.reset();
-
+  if (training_table_printer_) {
+    training_table_printer_->print_footer();
+    training_table_printer_.reset();
+  }
 
   // Sync trained weights to our local storage of the NN weights.
   float_array_map trained_weights = training_model_->export_weights();
@@ -1072,7 +1075,6 @@ void activity_classifier::init_train(
       init_data(data, validation_data, session_id_column_name);
 
   // Begin printing progress.
-  // TODO: Make progress printing optional.
   init_table_printer(!validation_data_.empty(), show_loss);
 
   add_or_update_state({{"session_id", session_id_column_name},
