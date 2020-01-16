@@ -309,12 +309,13 @@ simple_data_iterator::compute_properties(
     result.classes = std::move(expected_class_labels);
     int i = 0;
     for (const std::string& label : result.classes) {
-      if (classes_inferred.find(label) == classes_inferred.end() &&
-          is_training_) {
-        logprogress_stream
-            << "Warning: User provided 'classes' includes label '" + label +
-                   "', which is not presented in the training dataset.\n"
-            << std::endl;
+      if (is_training_) {
+        if (classes_inferred.find(label) == classes_inferred.end()) {
+          logprogress_stream
+              << "Warning: User provided 'classes' includes label '" + label +
+                     "', which is not presented in the training dataset.\n"
+              << std::endl;
+        }
       }
       result.class_to_index_map[label] = i++;
     }
