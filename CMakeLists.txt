@@ -145,6 +145,9 @@ check_and_set_compiler_flag(-Wno-tautological-compare)
 check_and_set_compiler_flag(-fpeel-loops RELEASE)
 check_and_set_compiler_flag(-funswitch-loops RELEASE)
 check_and_set_compiler_flag(-ftracer RELEASE)
+if(APPLE)
+  check_and_set_compiler_flag(-fno-stack-check RELEASE)
+endif()
 
 # Turn on ARC globally.
 check_and_set_compiler_flag(-fobjc-arc)
