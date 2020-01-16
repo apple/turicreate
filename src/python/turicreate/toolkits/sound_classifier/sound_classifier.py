@@ -22,8 +22,6 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import _coreml_utils
 
-USE_TF = _tk_utils._read_env_var_cpp('TURI_SC_USE_TF_PATH')
-
 class _DataIterator(object):
     '''
     Defines a common interface around TensorFlow

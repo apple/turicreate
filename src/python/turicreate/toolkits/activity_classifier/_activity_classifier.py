@@ -30,8 +30,6 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .util import random_split_by_session as _random_split_by_session
 from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
-USE_CPP = _tkutl._read_env_var_cpp('TURI_AC_USE_CPP_PATH')
-
 def create(dataset, session_id, target, features=None, prediction_window=100,
            validation_set='auto', max_iterations=10, batch_size=32, verbose=True):
     """
@@ -211,9 +209,7 @@ class ActivityClassifier(_Model):
 
     @classmethod
     def _native_name(cls):
-        if USE_CPP:
-            return "activity_classifier"
-        return None
+        return "activity_classifier"
 
     def __str__(self):
         """

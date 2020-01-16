@@ -38,8 +38,6 @@ from .._mps_utils import (use_mps as _use_mps,
                           MpsGraphMode as _MpsGraphMode)
 
 
-USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
-
 def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
                     config, weights={}):
     """
@@ -305,9 +303,7 @@ class ObjectDetector(_Model):
 
     @classmethod
     def _native_name(cls):
-        if USE_CPP:
-            return "object_detector"
-        return None
+        return "object_detector"
 
     def __str__(self):
         """

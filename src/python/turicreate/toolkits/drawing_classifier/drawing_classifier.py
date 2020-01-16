@@ -26,8 +26,6 @@ BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
 TRAIN_VALIDATION_SPLIT = .95
 
-USE_CPP = _tkutl._read_env_var_cpp('TURI_DC_USE_CPP_PATH')
-
 def _raise_error_if_not_drawing_classifier_input_sframe(
     dataset, feature, target):
     """
@@ -212,9 +210,7 @@ class DrawingClassifier(_Model):
 
     @classmethod
     def _native_name(cls):
-        if USE_CPP:
-            return "drawing_classifier"
-        return None
+        return "drawing_classifier"
 
     def __str__(self):
         """

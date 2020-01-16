@@ -19,8 +19,6 @@ from turicreate.toolkits._internal_utils import _mac_ver, _read_env_var_cpp
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
-USE_CPP = _read_env_var_cpp('TURI_AC_USE_CPP_PATH')
-
 def _load_data(self, num_examples = 1000, num_features = 3, max_num_sessions = 4,
                randomize_num_sessions = True, num_labels = 9, prediction_window = 5,
                enforce_all_sessions = False):
@@ -190,10 +188,7 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
         num_sessions = len(self.data[self.session_id].unique())
         valid_num_sessions = num_sessions - model.num_sessions
         valid_frac = float(valid_num_sessions / num_sessions)
-        if USE_CPP:
-            expected_frac = 0.0 if is_small else 1.0 - self._compute_expect_frac(num_sessions)
-        else:
-            expected_frac = 0.0 if is_small else 1.0 - self.fraction
+        expected_frac = 0.0 if is_small else 1.0 - self._compute_expect_frac(num_sessions)
         self.assertAlmostEqual(valid_frac, expected_frac, places=1,
                                msg="Got {} validation sessions out of {}, which is {:.3f}, and not the expected {}".format(valid_num_sessions, num_sessions, valid_frac, expected_frac))
 
@@ -227,7 +222,7 @@ class ActivityClassifierAutoValdSetTest(unittest.TestCase):
                         "After train-test split, the train and validation sets should not include the same sessions")
 
     def test_create_auto_validation_set_small(self):
-        min_num_session_for_split = 50 if USE_CPP else tc.activity_classifier.util._MIN_NUM_SESSIONS_FOR_SPLIT
+        min_num_session_for_split = 50
         num_sessions = min_num_session_for_split // 2
         _load_data(self, max_num_sessions=num_sessions, randomize_num_sessions=False, enforce_all_sessions=True)
 
@@ -299,17 +294,11 @@ class ActivityClassifierTest(unittest.TestCase):
             'classes': lambda x: sorted(x) == sorted(self.data[self.target].unique())
         }
         self.exposed_fields_ans = list(self.get_ans.keys())
-        if USE_CPP:
-            self.fields_ans = self.exposed_fields_ans + ['training_report_by_class',
-                'training_iterations', 'random_seed',
-                'training_precision', 'training_confusion_matrix',
-                'use_data_augmentation', 'training_f1_score',
-                'training_auc', 'training_roc_curve', 'training_recall']
-        else:
-            self.fields_ans = self.exposed_fields_ans + ['_recalibrated_batch_size',
-                    '_pred_model', '_id_target_map',
-                    '_predictions_in_chunk', '_target_id_map']
-
+        self.fields_ans = self.exposed_fields_ans + ['training_report_by_class',
+            'training_iterations', 'random_seed',
+            'training_precision', 'training_confusion_matrix',
+            'use_data_augmentation', 'training_f1_score',
+            'training_auc', 'training_roc_curve', 'training_recall']
 
 
     def _calc_expected_predictions_length(self, predict_input, top_k = 1):
@@ -369,33 +358,21 @@ class ActivityClassifierTest(unittest.TestCase):
 
         if _mac_ver() >= (10, 13):
             w = self.prediction_window
-            if USE_CPP:
-                labels = list(map(str, sorted(self.model.classes)))
-            else:
-                labels = list(map(str, sorted(self.model._target_id_map.keys())))
+            labels = list(map(str, sorted(self.model.classes)))
 
-            if USE_CPP:
-                input_features = {}
-                for f in self.features:
-                    input_features[f] = dataset[f].to_numpy()
-                first_input_dict  = {}
-                second_input_dict = {}
-                for key, value in input_features.items():
-                    first_input_dict[key] = value[:w].copy()
-                    second_input_dict[key] = value[w:2*w].copy()
-                first_input_dict["stateIn"] = np.zeros((400))
-                ret0 = coreml_model.predict(first_input_dict)
+            input_features = {}
+            for f in self.features:
+                input_features[f] = dataset[f].to_numpy()
+            first_input_dict  = {}
+            second_input_dict = {}
+            for key, value in input_features.items():
+                first_input_dict[key] = value[:w].copy()
+                second_input_dict[key] = value[w:2*w].copy()
+            first_input_dict["stateIn"] = np.zeros((400))
+            ret0 = coreml_model.predict(first_input_dict)
 
-                second_input_dict["stateIn"] = ret0["stateOut"]
-                ret1 = coreml_model.predict(second_input_dict)
-
-            else:
-                data_list = [dataset[f].to_numpy()[:, np.newaxis] for f in self.features]
-                np_data = np.concatenate(data_list, 1)[np.newaxis]
-                ret0 = coreml_model.predict({'features' : np_data[:, :w].copy()})
-                ret1 = coreml_model.predict({'features' : np_data[:, w:2*w].copy(),
-                                         'hiddenIn': ret0['hiddenOut'],
-                                         'cellIn': ret0['cellOut']})
+            second_input_dict["stateIn"] = ret0["stateOut"]
+            ret1 = coreml_model.predict(second_input_dict)
 
             pred = self.model.predict(dataset, output_type='probability_vector')
             model_time0_values = pred[0]

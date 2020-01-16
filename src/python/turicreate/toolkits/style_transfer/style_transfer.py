@@ -29,8 +29,6 @@ from .._mps_utils import (use_mps as _use_mps,
                           MpsGraphNetworkType as _MpsGraphNetworkType,
                           MpsGraphMode as _MpsGraphMode)
 
-USE_CPP = _tkutl._read_env_var_cpp('TURI_ST_USE_CPP_PATH')
-
 def _get_mps_st_net(input_image_shape, batch_size, output_size,
                     config, weights={}):
     """
@@ -244,9 +242,7 @@ class StyleTransfer(_Model):
 
     @classmethod
     def _native_name(cls):
-        if USE_CPP:
-            return "style_transfer"
-        return None
+        return "style_transfer"
 
     def __str__(self):
         """
