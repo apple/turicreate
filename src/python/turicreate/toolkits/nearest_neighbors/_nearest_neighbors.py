@@ -624,6 +624,7 @@ class NearestNeighborsModel(_Model):
             ("Number of examples", 'num_examples'),
             ("Number of feature columns", 'num_features'),
             ("Number of unpacked features", 'num_unpacked_features'),
+            ("Distance", 'distance_for_summary_struct'),
             ("Total training time (seconds)", 'training_time')]
 
         ball_tree_fields = [

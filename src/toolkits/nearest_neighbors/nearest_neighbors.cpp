@@ -328,6 +328,23 @@ void nearest_neighbors_model::train(const sframe& X, const sframe& ref_labels,
 
   std::vector<flexible_type> ref_labels_vec (X.num_rows(), flexible_type(0));
   ref_labels.select_column(0)->get_reader()->read_rows(0, X.num_rows(), ref_labels_vec);
+
+  if (composite_distance_params.size() > 1) {
+    add_or_update_state({
+      {"distance_for_summary_struct", "composite"}
+    });
+  } else if (composite_distance_params.size() == 1 
+      && std::get<0>(composite_distance_params[0]).size() > 1) {
+    add_or_update_state({
+      {"distance_for_summary_struct", "composite"}
+    });
+  } else {
+    function_closure_info distance_fn = std::get<1>(composite_params[0]);
+    auto dist_name = extract_distance_function_name(distance_fn);
+    add_or_update_state({
+      {"distance_for_summary_struct", dist_name}
+    });
+  }
   train(X, ref_labels_vec, composite_distance_params, opts);
 }
 
