@@ -158,8 +158,6 @@ variant_map_type list_fields(variant_map_type& params) {
     ret[k] = "";
   }
 
-  ret["distance_for_summary_struct"] = "";
-
   // return stuff
   return ret;
 }

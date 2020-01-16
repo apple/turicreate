@@ -318,17 +318,8 @@ void nearest_neighbors_model::train(const sframe& X,
   train(X, ref_labels, composite_distance_params, opts);
 }
 
-
-void nearest_neighbors_model::train(const sframe& X, const sframe& ref_labels,
-                     const std::vector<dist_component_type>& composite_distance_params,
-                     const std::map<std::string, flexible_type>& opts) {
-  if (ref_labels.num_columns() < 1) {
-    log_and_throw("No columns present in the reference labels SFrame.");
-  }
-
-  std::vector<flexible_type> ref_labels_vec (X.num_rows(), flexible_type(0));
-  ref_labels.select_column(0)->get_reader()->read_rows(0, X.num_rows(), ref_labels_vec);
-
+void nearest_neighbors_model::populate_distance_for_summary_struct(
+    const std::vector<dist_component_type>& composite_distance_params) {
   if (composite_distance_params.size() > 1) {
     add_or_update_state({
       {"distance_for_summary_struct", "composite"}
@@ -345,6 +336,19 @@ void nearest_neighbors_model::train(const sframe& X, const sframe& ref_labels,
       {"distance_for_summary_struct", dist_name}
     });
   }
+}
+
+void nearest_neighbors_model::train(const sframe& X, const sframe& ref_labels,
+                     const std::vector<dist_component_type>& composite_distance_params,
+                     const std::map<std::string, flexible_type>& opts) {
+  if (ref_labels.num_columns() < 1) {
+    log_and_throw("No columns present in the reference labels SFrame.");
+  }
+
+  std::vector<flexible_type> ref_labels_vec (X.num_rows(), flexible_type(0));
+  ref_labels.select_column(0)->get_reader()->read_rows(0, X.num_rows(), ref_labels_vec);
+
+  populate_distance_for_summary_struct(composite_distance_params);
   train(X, ref_labels_vec, composite_distance_params, opts);
 }
 
