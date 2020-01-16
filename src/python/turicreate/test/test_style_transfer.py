@@ -223,10 +223,10 @@ class StyleTransferTest(unittest.TestCase):
         img = self.model.stylize(self.content_sf[self.content_feature][0], style=0)
         self.assertTrue(isinstance(img, tc.Image))
 
-        # # If style is a list, it should however return an SFrame
-        # sf = self.model.stylize(self.content_sf[self.content_feature][0], style=[0])
-        # self.assertTrue(isinstance(sf, tc.SFrame))
-        # self.assertEqual(len(sf), 1)
+        # If style is a list, it should however return an SFrame
+        sf = self.model.stylize(self.content_sf[self.content_feature][0], style=[0])
+        self.assertTrue(isinstance(sf, tc.SFrame))
+        self.assertEqual(len(sf), 1)
 
     def test_sarray(self):
         sarray = self.content_sf[self.content_feature][:2]
