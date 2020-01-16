@@ -943,11 +943,27 @@ gl_sframe drawing_classifier::predict_topk(gl_sframe data,
 
 variant_map_type drawing_classifier::evaluate(gl_sframe data,
                                               std::string metric) {
-  gl_sarray predictions = predict(data, "probability_vector");
 
-  return evaluation::compute_classifier_metrics(
-      data, read_state<flex_string>("target"), metric, predictions,
+  gl_sarray predictions_prob = predict(data, "probability_vector");
+
+  flex_list class_labels = read_state<flex_list>("classes");
+    auto max_prob_label = [=](const flexible_type& ft) {
+      const flex_vec& prob_vec = ft.get<flex_vec>();
+      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+      return class_labels[max_it - prob_vec.begin()];
+    };
+
+  gl_sarray predictions_class = predictions_prob.apply(max_prob_label, class_labels.front().get_type());
+
+  variant_map_type result = evaluation::compute_classifier_metrics(
+      data, read_state<flex_string>("target"), metric, predictions_prob,
       {{"classes", read_state<flex_list>("classes")}});
+
+  result.emplace("prediction_prob", predictions_prob);
+  result.emplace("prediction_class", predictions_class);
+
+  return result;
+
 }
 
 std::shared_ptr<coreml::MLModelWrapper> drawing_classifier::export_to_coreml(
