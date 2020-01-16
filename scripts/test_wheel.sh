@@ -89,6 +89,6 @@ cp -a src/python/turicreate/test deps/env/lib/${PYTHON_VERSION}/site-packages/tu
 cd deps/env/lib/${PYTHON_VERSION}/site-packages/turicreate/test
 
 # run tests
-${PYTHON} -m pytest -v --junit-xml=../../../../../../../pytest.xml
+${PYTHON} -m pytest -v --durations=100 --junit-xml=../../../../../../../pytest.xml
 
 date
