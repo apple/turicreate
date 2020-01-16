@@ -241,7 +241,7 @@ BOOST_AUTO_TEST_CASE(test_drawing_classifier_iterate_training) {
       neural_net::float_array_map result;
 
       result["loss"] = shared_float_array::wrap(8 * test_loss);
-      result["accuracy"] = shared_float_array::wrap(.5);
+      result["output"] = shared_float_array::wrap(.5);
 
       return result;
     };
