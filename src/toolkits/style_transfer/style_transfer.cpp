@@ -491,6 +491,14 @@ gl_sframe style_transfer::predict(variant_type data,
 
   gl_sarray content_images = convert_types_to_sarray(data);
 
+  bool verbose;
+  auto verbose_iter = opts.find("verbose");
+  if (verbose_iter == opts.end()) {
+    verbose = false;
+  } else {
+    verbose = verbose_iter->second;
+  }
+
   std::vector<flex_int> style_idx;
 
   auto style_idx_iter = opts.find("style_idx");
@@ -535,13 +543,14 @@ gl_sframe style_transfer::predict(variant_type data,
     }
   }
 
-  perform_predict(content_images, result, style_idx);
+  perform_predict(content_images, result, style_idx, verbose);
 
   return result.close();
 }
 
 void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
-                                     const std::vector<flex_int>& style_idx) {
+                                     const std::vector<flex_int>& style_idx,
+                                     bool verbose) {
   if (data.size() == 0) return;
 
   // TODO: if logging enabled
@@ -580,7 +589,9 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
   table_printer table(
       {{"Images Processed", 0}, {"Elapsed Time", 0}, {"Percent Complete", 0}},
       0);
-  table.print_header();
+  if (verbose) {
+    table.print_header();
+  }
 
   while (!batch.empty()) {
     // looping through all of the style indices
@@ -616,20 +627,24 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
 
       // progress printing for stylization
       idx++;
-      std::ostringstream formatted_percentage;
-      formatted_percentage.precision(2);
-      formatted_percentage << std::fixed
-                           << (idx * 100.0 / (data.size() * style_idx.size()));
-      formatted_percentage << "%";
-      table.print_progress_row(idx, idx, progress_time(),
-                               formatted_percentage.str());
+      if (verbose) {
+        std::ostringstream formatted_percentage;
+        formatted_percentage.precision(2);
+        formatted_percentage << std::fixed
+                             << (idx * 100.0 / (data.size() * style_idx.size()));
+        formatted_percentage << "%";
+        table.print_progress_row(idx, idx, progress_time(),
+                                 formatted_percentage.str());
+      }
     }
     // get next batch and increase the row_idx
     batch = data_iter->next_batch(batch_size);
     ++row_idx;
   }
 
-  table.print_footer();
+  if (verbose) {
+    table.print_footer();
+  }
 }
 
 gl_sarray style_transfer::convert_types_to_sarray(const variant_type& data) {
@@ -782,19 +797,25 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
   turi::timer time_object;
   time_object.start();
 
-  training_table_printer_.reset(new table_printer(
-      {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
-
   init_train(style, content, opts);
 
-  training_table_printer_->print_header();
+  if (read_state<bool>("verbose")) {
+    training_table_printer_.reset(new table_printer(
+        {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
+  }
+
+  if (training_table_printer_) {
+    training_table_printer_->print_header();
+  }
 
   while (get_training_iterations() < get_max_iterations()) iterate_training();
 
   finalize_training();
 
-  training_table_printer_->print_footer();
-  training_table_printer_.reset();
+  if (training_table_printer_) {
+    training_table_printer_->print_footer();
+    training_table_printer_.reset();
+  }
 
   // Using training_epochs * data_size = training_iterations * batch_size
   size_t training_epochs = ((read_state<flex_int>("batch_size") * read_state<flex_int>("training_iterations")) / read_state<flex_int>("num_content_images"));
