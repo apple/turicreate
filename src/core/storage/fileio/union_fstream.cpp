@@ -44,10 +44,13 @@ union_fstream::union_fstream(std::string url,
   }
 
   bool is_output_stream = (mode & std::ios_base::out);
+  auto protocol = fileio::get_protocol(url);
   // since there's temp cache file starts with protocol cache,
   // we need special scrutiny to use the full prefix
-  if (boost::algorithm::istarts_with(url, fileio::get_cache_prefix())) {
+  if (protocol == "cache") {
     // Cache file type
+    ASSERT_MSG(boost::algorithm::istarts_with(url, fileio::get_cache_prefix()),
+               "invalid url cache predix");
     type = CACHE;
     if (is_output_stream) {
       output_stream.reset(new fileio::ocache_stream(url));
@@ -58,7 +61,7 @@ union_fstream::union_fstream(std::string url,
       m_file_size = (*cachestream)->file_size();
       original_input_stream_handle = std::static_pointer_cast<std::istream>(cachestream);
     }
-  } else if(fileio::get_protocol(url) == "hdfs") {
+  } else if(protocol == "hdfs") {
 #ifndef TC_DISABLE_REMOTEFS
     // HDFS file type
     type = HDFS;
@@ -84,7 +87,7 @@ union_fstream::union_fstream(std::string url,
 #else
       log_and_throw_io_failure("Cannot open " + url + " for reading; Remote FS support disabled.");
 #endif
-  } else if (fileio::get_protocol(url) == "s3") {
+  } else if (protocol == "s3") {
 #ifndef TC_DISABLE_REMOTEFS
     // the S3 file type currently works by download/uploading a local file
     // i.e. the s3_stream simply remaps a local file stream
@@ -103,8 +106,11 @@ union_fstream::union_fstream(std::string url,
 #endif
   } else {
     // Remove the preceeding file:// if it's a local URL.
-    if(fileio::get_protocol(url) == "file") {
+    if(protocol == "file") {
       url = url.substr(7);
+    } else {
+      ASSERT_MSG(protocol.empty(),
+                 ("unspported protocol: " + protocol).c_str());
     }
 
     // must be local file
