@@ -145,8 +145,13 @@ check_and_set_compiler_flag(-Wno-tautological-compare)
 check_and_set_compiler_flag(-fpeel-loops RELEASE)
 check_and_set_compiler_flag(-funswitch-loops RELEASE)
 check_and_set_compiler_flag(-ftracer RELEASE)
+
 if(APPLE)
-  check_and_set_compiler_flag(-fno-stack-check RELEASE)
+  # This triggers a bug in clang; the 10.13 symbol ___chkstk_darwin is missing in
+  # 10.13, and the code generated doesn't run on that, even with the 10.12 target.  
+  # The solution to this is to disable the stack checking globally, which seems
+  # to be enabled by default in clang 11 and later for objective C++ code. 
+  check_and_set_compiler_flag(-fno-stack-check)
 endif()
 
 # Turn on ARC globally.
