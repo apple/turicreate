@@ -18,6 +18,7 @@ import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver, _read_env_var_cpp
+from six import StringIO
 import coremltools
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
@@ -223,6 +224,15 @@ class ObjectDetectorTest(unittest.TestCase):
 
             tc.object_detector.create(sf)
 
+    def test_create_with_invalid_user_define_classes(self):
+        sf = self.sf.head()
+        old_stdout = sys.stdout
+        result_out = StringIO()
+        sys.stdout = result_out
+        model = tc.object_detector.create(sf, feature=self.feature, annotations=self.annotations, classes=['invalid'], max_iterations=1)
+        sys.stdout = old_stdout
+        self.assertTrue("Warning" in result_out.getvalue())
+
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
             tc.object_detector.create(self.sf[:0])
@@ -260,7 +270,7 @@ class ObjectDetectorTest(unittest.TestCase):
         self.assertEqual(len(ret['average_precision_50']), 2)
 
     def test_different_grip_shape(self):
-        #should able to givre different input grip shape
+        # Should able to give different input grip shape
         shapes = [[1,1], [5,5], [13,13], [26,26]]
         for shape in shapes:
             model = tc.object_detector.create(self.sf, max_iterations=1, grid_shape=shape)

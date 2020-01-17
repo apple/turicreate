@@ -730,7 +730,7 @@ void object_detector::perform_predict(
   // Bind the data to a data iterator.
   std::unique_ptr<data_iterator> data_iter = create_iterator(
       data, std::vector<std::string>(class_labels.begin(), class_labels.end()),
-      /* repeat */ false);
+      /* repeat */ false, /* is_training*/ false);
 
   // Instantiate the compute context.
   std::unique_ptr<compute_context> ctx = create_compute_context();
@@ -1039,9 +1039,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 }
 
 std::unique_ptr<data_iterator> object_detector::create_iterator(
-    gl_sframe data, std::vector<std::string> class_labels, bool repeat) const
-{
-
+    gl_sframe data, std::vector<std::string> class_labels, bool repeat,
+    bool is_training) const {
   data_iterator::parameters iterator_params;
 
   // Check if data has annotations column
@@ -1054,6 +1053,7 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
   iterator_params.image_column_name = read_state<flex_string>("feature");
   iterator_params.class_labels = std::move(class_labels);
   iterator_params.repeat = repeat;
+  iterator_params.is_training = is_training;
 
   std::string annotation_origin = read_state<flex_string>("annotation_origin");
   std::string annotation_scale = read_state<flex_string>("annotation_scale");
@@ -1141,7 +1141,7 @@ void object_detector::init_training(gl_sframe data,
       read_state<std::vector<std::string>>("classes");
   training_data_iterator_ =
       create_iterator(training_data_, /* expected class_labels */ class_labels,
-                      /* repeat */ true);
+                      /* repeat */ true, /* is_training */ true);
 
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
@@ -1194,7 +1194,7 @@ void object_detector::resume_training(gl_sframe data,
   training_data_iterator_ = create_iterator(
       training_data_,
       std::vector<std::string>(class_labels.begin(), class_labels.end()),
-      /* repeat */ true);
+      /* repeat */ true, /* is_training */ true);
 
   // Instantiate the compute context.
   training_compute_context_ = create_compute_context();
