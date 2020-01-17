@@ -18,6 +18,7 @@ import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver, _read_env_var_cpp
+from six import StringIO
 import coremltools
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
@@ -149,6 +150,7 @@ class ObjectDetectorTest(unittest.TestCase):
             self.get_ans['grid_height'] = lambda x: x > 0
             self.get_ans['grid_width'] = lambda x: x > 0
             self.get_ans['random_seed'] = lambda x: isinstance(x, int)
+            self.get_ans['verbose'] = lambda x: True
             del self.get_ans['_model']
             del self.get_ans['_class_to_index']
             del self.get_ans['_grid_shape']
@@ -226,6 +228,15 @@ class ObjectDetectorTest(unittest.TestCase):
 
             tc.object_detector.create(sf)
 
+    def test_create_with_invalid_user_define_classes(self):
+        sf = self.sf.head()
+        old_stdout = sys.stdout
+        result_out = StringIO()
+        sys.stdout = result_out
+        model = tc.object_detector.create(sf, feature=self.feature, annotations=self.annotations, classes=['invalid'], max_iterations=1)
+        sys.stdout = old_stdout
+        self.assertTrue("Warning" in result_out.getvalue())
+
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
             tc.object_detector.create(self.sf[:0])
@@ -240,6 +251,15 @@ class ObjectDetectorTest(unittest.TestCase):
             self.assertEqual(len(pred_1[i]),len(pred_2[i]))
             for j in range(len(pred_1[i])):
                 self.assertEqual(pred_1[i][j], pred_2[i][j])
+
+    def test_create_with_verbose_False(self):
+        args = [self.sf, self.annotations, self.feature]
+        kwargs = {
+            'max_iterations': 1,
+            'model': self.pre_trained_model
+        }
+        test_util.assert_longer_verbose_logs(
+            tc.object_detector.create, args, kwargs)
 
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
@@ -265,7 +285,7 @@ class ObjectDetectorTest(unittest.TestCase):
         self.assertEqual(len(ret['average_precision_50']), 2)
 
     def test_different_grip_shape(self):
-        #should able to givre different input grip shape
+        # Should able to give different input grip shape
         shapes = [[1,1], [5,5], [13,13], [26,26]]
         for shape in shapes:
             model = tc.object_detector.create(self.sf, max_iterations=1, grid_shape=shape)

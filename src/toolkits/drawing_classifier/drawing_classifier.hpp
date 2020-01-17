@@ -68,7 +68,7 @@ class EXPORT drawing_classifier : public ml_model_base {
                              variant_type validation_data,
                              std::map<std::string, flexible_type> opts);
 
-  virtual void iterate_training();
+  virtual void iterate_training(bool show_loss);
 
   BEGIN_CLASS_MEMBER_REGISTRATION("drawing_classifier")
 
@@ -258,10 +258,10 @@ class EXPORT drawing_classifier : public ml_model_base {
   virtual std::tuple<gl_sframe, gl_sframe> init_data(
       gl_sframe data, variant_type validation_data) const;
 
-  virtual float compute_validation_metrics(size_t num_classes,
-                                           size_t batch_size);
+  virtual std::tuple<float, float> compute_validation_metrics(
+      size_t num_classes, size_t batch_size);
 
-  virtual void init_table_printer(bool has_validation);
+  virtual void init_table_printer(bool has_validation, bool show_loss);
 
   template <typename T>
   T read_state(const std::string& key) const {
