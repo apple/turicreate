@@ -44,8 +44,9 @@ union_fstream::union_fstream(std::string url,
   }
 
   bool is_output_stream = (mode & std::ios_base::out);
-
-  if (fileio::get_protocol(url) == fileio::get_cache_prefix()) {
+  // since there's temp cache file starts with protocol cache,
+  // we need special scrutiny to use the full prefix
+  if (boost::algorithm::istarts_with(url, fileio::get_cache_prefix())) {
     // Cache file type
     type = CACHE;
     if (is_output_stream) {
@@ -102,7 +103,7 @@ union_fstream::union_fstream(std::string url,
 #endif
   } else {
     // Remove the preceeding file:// if it's a local URL.
-    if(boost::algorithm::starts_with(url, "file://")) {
+    if(fileio::get_protocol(url) == "file") {
       url = url.substr(7);
     }
 

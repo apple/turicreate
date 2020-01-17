@@ -133,7 +133,7 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
 
 EXPORT std::pair<file_status, std::string> get_file_status(const std::string& path) {
   std::string err_msg;
-  if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. it is only REGULAR or MISSING
     try {
       fixed_size_cache_manager::get_instance().get_cache(path);
@@ -182,7 +182,7 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
 std::vector<std::pair<std::string, file_status>>
 get_directory_listing(const std::string& path) {
   std::vector<std::pair<std::string, file_status> > ret;
-  if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     // it is only REGULAR or MISSING
     return ret;
@@ -340,7 +340,7 @@ bool delete_path_impl(const std::string& path,
     return false;
   }
   logstream(LOG_INFO) << "Deleting " << sanitize_url(path) << std::endl;
-  if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     try {
       // we ignore recursive here. since the cache can't hold directories
       auto cache_entry = fixed_size_cache_manager::get_instance().get_cache(path);
@@ -393,7 +393,7 @@ EXPORT bool delete_path_recursive(const std::string& path) {
     return true;
   }
 
-  if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // recursive deletion not possible with cache
     return true;
 #ifndef TC_DISABLE_REMOTEFS
@@ -442,14 +442,9 @@ EXPORT std::string get_protocol(std::string path) {
     std::string ret = boost::algorithm::to_lower_copy(path.substr(0, proto));
     std::transform(ret.begin(), ret.end(), ret.begin(),
                    [](unsigned char c) { return std::tolower(c); });
-    // Strip out file as a specific protocol
-    if(ret == "file") {
-      return "";
-    } else {
-      return ret;
-    }
-
+    return ret;
   } else {
+    // denote this is a local file
     return "";
   }
 }
@@ -720,7 +715,7 @@ bool change_file_mode(const std::string path, short mode) {
 #else
       return false;
 #endif
-  } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  } else if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     return true;
   } else if (get_protocol(path) == "s3") {
