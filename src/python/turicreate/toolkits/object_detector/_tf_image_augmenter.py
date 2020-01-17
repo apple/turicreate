@@ -159,7 +159,7 @@ def padding_augmenter(image,
 
     # Sample the offset of the source image inside the padded image.
     x_offset = (padded_width - image_width) * random_nums[1 + max_attempts + 1]
-    y_offset = (padded_height - image_height) + random_nums[1 + max_attempts + 2]
+    y_offset = (padded_height - image_height) * random_nums[1 + max_attempts + 2]
 
     # Compute padding needed on the image
     after_padding_width = padded_width - image_width - x_offset
