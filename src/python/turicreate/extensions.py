@@ -196,7 +196,7 @@ class ToolkitFunctionFuture(object):
         """
 
         with cython_context():
-            ret = self.__proxy__.wait()
+            ret = self.__proxy__.response()
 
         return _toolkit_function_unpack_return(ret)
 

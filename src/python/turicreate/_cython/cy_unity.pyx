@@ -63,11 +63,11 @@ cdef class ToolkitFunctionFutureProxy:
         self.result_future = res_fut
         self.initialized = 1
 
-    def wait(self):
+    def response(self):
         assert self.initialized, "Used uninitialized."
         cdef toolkit_function_response_type response
         with nogil:
-            response = self.result_future.wait()
+            response = self.result_future.response()
         return (response.success, cpp_to_str(response.message),
                 variant_map_to_dict(response.params))
 

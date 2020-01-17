@@ -134,7 +134,7 @@ class VariantCheckTest(unittest.TestCase):
 
         future = tc.extensions._demo_addone.run_background(1)
 
-        result = future.wait()
+        result = future.result()
 
         self.assertEqual(result, 2)
 
@@ -151,7 +151,7 @@ class VariantCheckTest(unittest.TestCase):
             futures[i] = tc.extensions._demo_extract_row.run_background(X, i) 
 
         for i in range(n):
-            self.assertEqual(futures[i].wait(), rows[i])
+            self.assertEqual(futures[i].result(), rows[i])
 
 
     def test_futures_stress_2(self):
@@ -180,6 +180,6 @@ class VariantCheckTest(unittest.TestCase):
             futures[i] = tc.extensions._demo_extract_row.run_background(X, indices[i]) 
 
         for i in test_indices:
-            self.assertEqual(futures[i].wait(), rows[indices[i]])
+            self.assertEqual(futures[i].result(), rows[indices[i]])
 
 

@@ -53,19 +53,13 @@ class toolkit_function_response_future {
 
    toolkit_function_response_future(std::function<toolkit_function_response_type()> exec_function);
 
-  const toolkit_function_response_type& wait() const;
+  const toolkit_function_response_type& response() const {
+    ASSERT_TRUE(m_response->valid());
+    return m_response->get();
+  }
 
  private:
-  struct response_info {
-    toolkit_function_response_type response;
-    std::future<bool> response_future;
-    volatile bool is_completed = false;
-    bool future_finished = false;
-  };
-
-  // This field becomes valid and non-null when the execution has
-  // finished.
-  std::shared_ptr<response_info> m_info;
+  std::shared_ptr<std::shared_future<toolkit_function_response_type> > m_response;
 };
 
 

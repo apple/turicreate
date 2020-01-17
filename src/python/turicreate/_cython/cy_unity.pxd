@@ -25,7 +25,7 @@ cdef extern from "<model_server/lib/unity_global.hpp>" namespace "turi":
 
     cdef cppclass toolkit_function_response_future nogil:
         toolkit_function_response_future() except +
-        toolkit_function_response_type wait() except +
+        toolkit_function_response_type response() except +
 
     cdef cppclass unity_global nogil:
 
