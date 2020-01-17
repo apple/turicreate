@@ -208,6 +208,8 @@ def create(style_dataset, content_dataset, style_feature=None,
     options['style_feature'] = style_feature
     if verbose is not None:
         options['verbose'] = verbose
+    else:
+        options['verbose'] = False
     if batch_size is not None:
         options['batch_size'] = batch_size
     if max_iterations is not None:

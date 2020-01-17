@@ -273,7 +273,8 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
         'grid_width': params['grid_shape'][1],
         'mlmodel_path' : params['mlmodel_path'],
         'classes' : classes,
-        'compute_final_metrics' : False
+        'compute_final_metrics' : False,
+        'verbose' : verbose
     }
 
     # If batch_size or max_iterations = 0, they will be automatically
