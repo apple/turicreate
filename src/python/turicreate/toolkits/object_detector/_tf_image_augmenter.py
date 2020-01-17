@@ -36,11 +36,6 @@ _DEFAULT_AUG_PARAMS = {
 def hue_augmenter(image, annotation, tf_seed,
                   max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"]):
 
-    # Sample a random rotation around the color wheel.
-    hue_adjust = 0.0
-    if (max_hue_adjust is not None) and (max_hue_adjust > 0.0):
-        hue_adjust += np.pi * np.random.uniform(-max_hue_adjust, max_hue_adjust)
-
     # Apply the rotation to the hue
     image = tf.image.random_hue(image, max_delta=max_hue_adjust, seed=tf_seed)
     image = tf.clip_by_value(image, 0, 1)
