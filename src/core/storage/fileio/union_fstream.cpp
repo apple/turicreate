@@ -105,15 +105,16 @@ union_fstream::union_fstream(std::string url,
       log_and_throw_io_failure("Cannot open " + url + " for reading; Remote FS support disabled.");
 #endif
   } else {
-    // Remove the preceeding file:// if it's a local URL.
+    // Remove the preceeding file:// if it's a local URL starting with file://
     if(protocol == "file") {
       url = url.substr(7);
-    } else {
-      ASSERT_MSG(protocol.empty(),
-                 ("unspported protocol: " + protocol).c_str());
     }
 
-    // must be local file
+    /*
+     * now, it can be
+     * 1. local file
+     * 2. http or https
+     */
     if (is_output_stream) {
       // Output stream must be a local openable file.
       output_stream.reset(new std::ofstream(url, std::ofstream::binary));
@@ -121,6 +122,7 @@ union_fstream::union_fstream(std::string url,
         log_and_throw_current_io_failure();
       }
     } else {
+      // handles http and https cases
       url = file_download_cache::get_instance().get_file(url);
       input_stream.reset(new std::ifstream(url, std::ifstream::binary));
       if (!input_stream->good()) {
