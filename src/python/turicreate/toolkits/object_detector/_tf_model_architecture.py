@@ -21,13 +21,12 @@ class ODTensorFlowModel(TensorFlowModel):
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
 
-        #reset tensorflow graph when a new model is created
-        _tf.reset_default_graph()
 
         # Converting incoming weights from shared_float_array to numpy
         for key in init_weights.keys():
             init_weights[key] = _utils.convert_shared_float_array_to_numpy(init_weights[key])
 
+        self.od_graph = _tf.Graph()
         self.config = config
         self.batch_size = batch_size
         self.grid_shape = [out_h, out_w]
@@ -41,6 +40,12 @@ class ODTensorFlowModel(TensorFlowModel):
         ]
         self.num_anchors = len(self.anchors)
         self.output_size = output_size
+        self.sess = _tf.Session(graph=self.od_graph)
+        with self.od_graph.as_default():
+            self.init_object_detector_graph(input_h, input_w, init_weights)
+
+    def init_object_detector_graph(self, input_h, input_w, init_weights):
+
         self.is_train = _tf.placeholder(_tf.bool)  # Set flag for training or val
 
         # Create placeholders for image and labels
@@ -50,14 +55,14 @@ class ODTensorFlowModel(TensorFlowModel):
                                 [self.batch_size, self.grid_shape[0], self.grid_shape[1],
                                  self.num_anchors, self.num_classes + 5],
                                 name='labels')
-        self.init_weights = init_weights
+
         self.tf_model = self.tiny_yolo(inputs=self.images, output_size=self.output_size)
         self.global_step = _tf.Variable(0, trainable=False,
                                         name="global_step")
 
         self.loss = self.loss_layer(self.tf_model, self.labels)
-        self.base_lr = _utils.convert_shared_float_array_to_numpy(config['learning_rate'])
-        self.num_iterations = int(_utils.convert_shared_float_array_to_numpy(config['num_iterations']))
+        self.base_lr = _utils.convert_shared_float_array_to_numpy(self.config['learning_rate'])
+        self.num_iterations = int(_utils.convert_shared_float_array_to_numpy(self.config['num_iterations']))
         self.init_steps = [self.num_iterations // 2, 3 * self.num_iterations // 4, self.num_iterations]
         self.lrs = [_np.float32(self.base_lr * 10 ** (-i)) for i, step in enumerate(self.init_steps)]
         self.steps_tf = self.init_steps[:-1]
@@ -73,11 +78,10 @@ class ODTensorFlowModel(TensorFlowModel):
         self.train_op = self.opt.apply_gradients(clipped_gradients, global_step=self.global_step)
 
 
-        self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
         self.sess.run(_tf.local_variables_initializer())
 
-        self.load_weights(self.init_weights)
+        self.load_weights(init_weights)
 
     def __del__(self):
         self.sess.close()
@@ -447,8 +451,9 @@ class ODTensorFlowModel(TensorFlowModel):
         tf_export_params = {}
 
         # collect all TF variables to include running_mean and running_variance
-        tvars = _tf.global_variables()
-        tvars_vals = self.sess.run(tvars)
+        with self.od_graph.as_default():
+            tvars = _tf.global_variables()
+            tvars_vals = self.sess.run(tvars)
         for var, val in zip(tvars, tvars_vals):
             if val.ndim == 1:
                 tf_export_params.update(
