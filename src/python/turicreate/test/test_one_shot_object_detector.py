@@ -133,6 +133,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
             tc.one_shot_object_detector.create(self.train, target='wrong_feature',
                 backgrounds=self.backgrounds, max_iterations=1)
 
+    @pytest.mark.xfail(reason="Non-deterministic test failure tracked in https://github.com/apple/turicreate/issues/2936")
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
             tc.one_shot_object_detector.create(self.train[:0], target=self.target)
