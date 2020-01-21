@@ -563,7 +563,6 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
 
-        _tf.reset_default_graph()
 
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(
@@ -573,9 +572,15 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for key in config.keys():
             config[key] = _utils.convert_shared_float_array_to_numpy(config[key])
 
+        self.st_graph = _tf.Graph()
         self._batch_size = 1
         self._finetune_all_params = True
-        self._define_training_graph = bool(config["st_training"])
+        self._define_training_graph = bool(config['st_training'])
+        self.sess = _tf.Session(graph=self.st_graph)
+        with self.st_graph.as_default():
+            self.init_style_transfer_graph(net_params)
+
+    def init_style_transfer_graph(self, net_params):
         self._tf_variables = define_tensorflow_variables(net_params)
 
         # TODO: take care of batch size
@@ -585,7 +590,8 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
 
         self.__define_graph()
 
-        self.sess = _tf.Session()
+        self.__define_graph();
+
         init = _tf.global_variables_initializer()
         self.sess.run(init)
 
@@ -609,8 +615,9 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
     @batch_size.setter
     def batch_size(self, batch_size):
         self._batch_size = batch_size
-        self.tf_index = _tf.placeholder(dtype=_tf.int32, shape=[batch_size])
-        self.__define_graph()
+        with self.st_graph.as_default():
+            self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [batch_size])
+            self.__define_graph()
 
     def train(self, feed_dict):
         for key in feed_dict.keys():
@@ -631,13 +638,21 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
 
-        stylized_image = self.sess.run(
-            fetches=[self.output],
-            feed_dict={
-                self.tf_input: feed_dict["input"],
-                self.tf_index: feed_dict["index"],
-            },
-        )
+<<<<<<< HEAD
+        with self.st_graph.as_default():
+            stylized_image = self.sess.run(
+                fetches=[self.output],
+                feed_dict={
+                    self.tf_input: feed_dict["input"],
+                    self.tf_index: feed_dict["index"],
+                },
+            )
+=======
+        tf_input_shape = [None] + list(feed_dict['input'].shape)[1:]
+        self._define_training_graph = False
+            self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = tf_input_shape)
+            self.__define_graph()
+>>>>>>> Remove tensorflow.compat.v1.reset_default_graph() (#2819)
 
         stylized_raw = _np.array(stylized_image)
 
@@ -651,8 +666,10 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
 
     def export_weights(self):
         tf_export_params = {}
-        tvars = _tf.trainable_variables()
-        tvars_vals = self.sess.run(tvars)
+
+        with self.st_graph.as_default():
+            tvars = _tf.trainable_variables()
+            tvars_vals = self.sess.run(tvars)
 
         for var, val in zip(tvars, tvars_vals):
             if "weight" in var.name:
