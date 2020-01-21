@@ -14,9 +14,6 @@ from turicreate.toolkits.one_shot_object_detector.util._augmentation import prev
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 
-USE_CPP = _tkutl._read_env_var_cpp('TURI_OD_USE_CPP_PATH')
-
-
 def create(data, target, backgrounds=None, batch_size=0, max_iterations=0, verbose=True):
     """
     Create a :class:`OneShotObjectDetector` model. Note: The One Shot Object Detector
@@ -211,31 +208,22 @@ class OneShotObjectDetector(_CustomModel):
         import coremltools
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
         short_description = _coreml_utils._mlmodel_short_description('Object Detector')
-        if USE_CPP:
-            options = {
-                    'include_non_maximum_suppression': include_non_maximum_suppression,
-            }
+        options = {
+                'include_non_maximum_suppression': include_non_maximum_suppression,
+        }
 
-            options['version'] = self._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION
+        options['version'] = self._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION
 
-            if confidence_threshold is not None:
-                options['confidence_threshold'] = confidence_threshold
+        if confidence_threshold is not None:
+            options['confidence_threshold'] = confidence_threshold
 
-            if iou_threshold is not None:
-                options['iou_threshold'] = iou_threshold
+        if iou_threshold is not None:
+            options['iou_threshold'] = iou_threshold
 
-            additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
-            short_description = _coreml_utils._mlmodel_short_description('One Shot Object Detector')
-            self.__proxy__['detector'].__proxy__.export_to_coreml(filename,
-                short_description, additional_user_defined_metadata, options)
-        else:
-            from coremltools.models.utils import save_spec as _save_spec
-            model = self.__proxy__['detector']._create_coreml_model(
-                include_non_maximum_suppression=include_non_maximum_suppression,
-                iou_threshold=iou_threshold,
-                confidence_threshold=confidence_threshold)
-            model.description.metadata.shortDescription = short_description
-            _save_spec(model, filename)
+        additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
+        short_description = _coreml_utils._mlmodel_short_description('One Shot Object Detector')
+        self.__proxy__['detector'].__proxy__.export_to_coreml(filename,
+            short_description, additional_user_defined_metadata, options)
 
     def _get_version(self):
         return self._PYTHON_ONE_SHOT_OBJECT_DETECTOR_VERSION
@@ -251,10 +239,7 @@ class OneShotObjectDetector(_CustomModel):
 
         # We don't know how to serialize a Python class, hence we need to
         # reduce the detector to the proxy object before saving it.
-        if USE_CPP:
-            state['detector'] = {'detector_model':state['detector'].__proxy__}
-        else:
-            state['detector'] = state['detector']._get_native_state()
+        state['detector'] = {'detector_model':state['detector'].__proxy__}
         return state
 
     @classmethod
