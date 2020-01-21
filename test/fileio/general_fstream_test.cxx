@@ -107,7 +107,7 @@ struct general_fstream_test {
       TS_ASSERT_EQUALS(get_protocol("hdfs://"), "hdfs");
       TS_ASSERT_EQUALS(get_protocol("s3://pikachu"), "s3");
       TS_ASSERT_EQUALS(get_protocol("/pikachu"), "");
-      TS_ASSERT_EQUALS(get_protocol("file:///pikachu"), "");
+      TS_ASSERT_EQUALS(get_protocol("file:///pikachu"), "file");
       TS_ASSERT_EQUALS(get_protocol("http://pikachu"), "http");
 
       TS_ASSERT_EQUALS(remove_protocol("hdfs://"), "");
