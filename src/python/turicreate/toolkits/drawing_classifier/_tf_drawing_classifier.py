@@ -18,7 +18,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
     def __init__(self, net_params, batch_size, num_classes):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy. Then
-        loads the MXNET weights into the model.
+        loads the weights into the model.
 
         """
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
