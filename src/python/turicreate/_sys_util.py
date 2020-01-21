@@ -61,17 +61,6 @@ def make_unity_server_env():
     if 'PYTHONEXECUTABLE' in env:
         del env['PYTHONEXECUTABLE']
 
-    # Set mxnet envvars
-    if 'MXNET_CPU_WORKER_NTHREADS' not in env:
-        from multiprocessing import cpu_count
-        num_cpus = int(env.get('OMP_NUM_THREADS', cpu_count()))
-        if sys.platform == 'darwin':
-            num_workers = num_cpus
-        else:
-            # On Linux, BLAS doesn't seem to tolerate larger numbers of workers.
-            num_workers = min(2, num_cpus)
-        env['MXNET_CPU_WORKER_NTHREADS'] = str(num_workers)
-
     # add certificate file
     if 'TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE' not in env and \
             'TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR' not in env:
