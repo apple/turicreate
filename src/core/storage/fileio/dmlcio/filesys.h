@@ -12,8 +12,13 @@
 #ifndef DMLC_IO_FILESYS_H_
 #define DMLC_IO_FILESYS_H_
 
+#include <core/logging/assertions.hpp>
+#include <boost/algorithm/string.hpp>
+
+#include <algorithm>
 #include <cstring>
 #include <string>
+
 #include "io.h"
 
 namespace dmlc {
@@ -39,6 +44,8 @@ struct URI {
       name = uri;
     } else {
       protocol = std::string(uri, p - uri + 3);
+      // defensive, in case caller forget to lower case the protocol
+      boost::algorithm::to_lower_copy(protocol.begin(), protocol);
       uri = p + 3;
       p = std::strchr(uri, '/');
       if (p == NULL) {
