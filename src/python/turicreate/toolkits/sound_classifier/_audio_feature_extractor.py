@@ -10,7 +10,6 @@ import turicreate as _tc
 
 from .vggish_params import SAMPLE_RATE
 from .._internal_utils import _mac_ver
-from .._mxnet import _mxnet_utils
 from .._pre_trained_models import VGGish
 
 

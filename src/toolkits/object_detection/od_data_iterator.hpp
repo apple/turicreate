@@ -102,6 +102,9 @@ public:
     /** Whether to shuffle the data on subsequent traversals. */
     bool shuffle = true;
 
+    /** Whether the process is in training or not. */
+    bool is_training = false;
+
     /** Determines results of shuffle operations if enabled. */
     int random_seed = 0;
   };
@@ -182,6 +185,7 @@ private:
 
   const bool repeat_;
   const bool shuffle_;
+  const bool is_training_;
 
   const annotation_properties annotation_properties_;
 

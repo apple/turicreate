@@ -6,4 +6,3 @@ recursive-include turicreate/canvas *.html *.css *.js *.ico *.otf *.eot *.svg *.
 recursive-include turicreate/deploy *.jar
 recursive-include turicreate/distributed *.jar
 recursive-include turicreate/toolkits/deeplearning *.conf
-recursive-include turicreate/mxnet *.ttf

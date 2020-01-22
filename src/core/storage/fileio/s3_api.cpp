@@ -138,7 +138,7 @@ const std::vector<std::string> S3Operation::_enum_to_str = {
  */
 bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
   // must begin with s3://
-  if (!boost::algorithm::starts_with(url, "s3://")) {
+  if (fileio::get_protocol(url) != "s3") {
     err_msg = url + " doesn't start with 's3://'";
     return false;
   }
@@ -150,34 +150,36 @@ bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
   std::stringstream ss;
   size_t splitpos = url.find(':');
   if (splitpos == std::string::npos) {
-    ss << "Cannot find AWS_ACCESS_KEY_ID in the s3 url." << __FILE__ << " at " << __LINE__;
+    ss << "Cannot find AWS_ACCESS_KEY_ID in the s3 url." << __FILE__ << " at "
+       << __LINE__;
     err_msg = ss.str();
     logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
   } else {
     ret.access_key_id = url.substr(0, splitpos);
-    url= url.substr(splitpos + 1);
+    url = url.substr(splitpos + 1);
   }
   // Extract the secret key
   splitpos = url.find(':');
   if (splitpos == std::string::npos) {
-    ss << "Cannot find SECRET_AWS_ACCESS_KEY in the s3 url." << __LINE__ << " at " << __FILE__;
+    ss << "Cannot find SECRET_AWS_ACCESS_KEY in the s3 url." << __LINE__
+       << " at " << __FILE__;
     err_msg = ss.str();
     logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
   } else {
-    ret.secret_key= url.substr(0, splitpos);
-    url= url.substr(splitpos + 1);
+    ret.secret_key = url.substr(0, splitpos);
+    url = url.substr(splitpos + 1);
   }
 
   // The rest is parsed using boost::tokenizer
-  typedef boost::tokenizer<boost::char_separator<char> >
-    tokenizer;
+  typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
   boost::char_separator<char> sep("/");
   tokenizer tokens(url, sep);
   tokenizer::iterator iter = tokens.begin();
   if (iter == tokens.end()) {
-    ss << "missing endpoint or bucket or object key in " << url << __FILE__ << "at" << __LINE__;
+    ss << "missing endpoint or bucket or object key in " << url << __FILE__
+       << "at" << __LINE__;
     err_msg = ss.str();
     return false;
   }
@@ -214,7 +216,7 @@ bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
 
   ret.object_name = *iter;
   ++iter;
-  while(iter != tokens.end()) {
+  while (iter != tokens.end()) {
     ret.object_name += "/" + *iter;
     ++iter;
   }
@@ -226,7 +228,6 @@ bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
   //           << "Endpoint: " << ret.endpoint << "\n";
   return true;
 }
-
 
 // The options we pass to aws cli for s3 commands
 // "us-east-1" is the us-standard and it works with buckets from all regions
@@ -709,7 +710,7 @@ std::string delete_prefix(std::string url,
 
 std::string sanitize_s3_url_aggressive(std::string url) {
   // must begin with s3://
-  if (!boost::algorithm::starts_with(url, "s3://")) {
+  if (fileio::get_protocol(url) != "s3") {
     return url;
   }
   // strip the s3://
