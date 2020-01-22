@@ -18,7 +18,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
     def __init__(self, net_params, batch_size, num_classes):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy. Then
-        loads the MXNET weights into the model.
+        loads the weights into the model.
 
         """
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
@@ -27,10 +27,15 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(net_params[key])
 
-        _tf.reset_default_graph()
 
+        self.dc_graph = _tf.Graph()
         self.num_classes = num_classes
         self.batch_size = batch_size
+        self.sess = _tf.Session(graph=self.dc_graph)
+        with self.dc_graph.as_default():
+            self.init_drawing_classifier_graph(net_params)
+
+    def init_drawing_classifier_graph(self, net_params):
 
         self.input = _tf.placeholder(_tf.float32, [None, 28, 28, 1])
 
@@ -101,7 +106,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         correct_prediction = _tf.equal(_tf.argmax(
             self.predictions, 1), _tf.argmax(self.one_hot_labels, 1))
 
-        self.sess = _tf.Session()
         self.sess.run(_tf.global_variables_initializer())
 
         # Assign the initialised weights from C++ to tensorflow
@@ -213,8 +217,9 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         """
 
         net_params = {}
-        layer_names = _tf.trainable_variables()
-        layer_weights = self.sess.run(layer_names)
+        with self.dc_graph.as_default():
+            layer_names = _tf.trainable_variables()
+            layer_weights = self.sess.run(layer_names)
 
         for var, val in zip(layer_names, layer_weights):
             if 'bias' in var.name:
