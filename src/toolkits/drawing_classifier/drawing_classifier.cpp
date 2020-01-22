@@ -51,6 +51,18 @@ struct result {
   data_iterator::batch data_info;
 };
 
+gl_sarray get_predictions_class(gl_sarray predictions_prob,
+                                flex_list class_labels) {
+  auto max_prob_label = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+    auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+    return class_labels[max_it - prob_vec.begin()];
+  };
+
+  return predictions_prob.apply(max_prob_label,
+                                class_labels.front().get_type());
+}
+
 size_t count_correct_predictions(const result& batch, size_t num_classes) {
   float num_correct = 0.f;
 
@@ -819,13 +831,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   gl_sarray result = predictions["preds"];
   if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
-    auto max_prob_label = [=](const flexible_type& ft) {
-      const flex_vec& prob_vec = ft.get<flex_vec>();
-      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
-      return class_labels[max_it - prob_vec.begin()];
-    };
-
-    result = result.apply(max_prob_label, class_labels.front().get_type());
+    result = get_predictions_class(result, class_labels);
 
   } else if (output_type == "probability") {
     /** The output_type="probability" is to provide the probability of the True
@@ -947,13 +953,8 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
   gl_sarray predictions_prob = predict(data, "probability_vector");
 
   flex_list class_labels = read_state<flex_list>("classes");
-    auto max_prob_label = [=](const flexible_type& ft) {
-      const flex_vec& prob_vec = ft.get<flex_vec>();
-      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
-      return class_labels[max_it - prob_vec.begin()];
-    };
-
-  gl_sarray predictions_class = predictions_prob.apply(max_prob_label, class_labels.front().get_type());
+  gl_sarray predictions_class =
+      get_predictions_class(predictions_prob, class_labels);
 
   variant_map_type result = evaluation::compute_classifier_metrics(
       data, read_state<flex_string>("target"), metric, predictions_prob,
