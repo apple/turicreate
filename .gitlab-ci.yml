@@ -167,9 +167,9 @@ build_wheel_mac_10_15_python37:
     paths:
       - target/
 
-build_dylib_macos_10_14:
+build_dylib_macos_10_15:
   tags:
-    - macos10.14
+    - macos10.15
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
@@ -187,7 +187,7 @@ build_dylib_macos_10_14:
 
 build_dylib_ios_12:
   tags:
-    - macos10.14
+    - macos10.15
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
@@ -565,7 +565,7 @@ collect_artifacts:
   stage: collect_artifacts
   dependencies:
     - build_dylib_ios_12
-    - build_dylib_macos_10_14
+    - build_dylib_macos_10_15
     - build_wheel_linux_python27
     - build_wheel_linux_python35
     - build_wheel_linux_python36
