@@ -440,8 +440,7 @@ EXPORT std::string get_protocol(std::string path) {
   size_t proto = path.find("://");
   if (proto != std::string::npos) {
     std::string ret = boost::algorithm::to_lower_copy(path.substr(0, proto));
-    std::transform(ret.begin(), ret.end(), ret.begin(),
-                   [](unsigned char c) { return std::tolower(c); });
+    boost::algorithm::to_lower_copy(ret.begin(), ret);
     return ret;
   } else {
     // denote this is a local file

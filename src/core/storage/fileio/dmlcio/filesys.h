@@ -13,6 +13,7 @@
 #define DMLC_IO_FILESYS_H_
 
 #include <core/logging/assertions.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <algorithm>
 #include <cstring>
@@ -44,9 +45,7 @@ struct URI {
     } else {
       protocol = std::string(uri, p - uri + 3);
       // defensive, in case caller forget to lower case the protocol
-      std::transform(protocol.begin(), protocol.begin() + protocol.size() - 3,
-                     protocol.begin(),
-                     [](unsigned char c) { return std::tolower(c); });
+      boost::algorithm::to_lower_copy(protocol.begin(), protocol);
       uri = p + 3;
       p = std::strchr(uri, '/');
       if (p == NULL) {
