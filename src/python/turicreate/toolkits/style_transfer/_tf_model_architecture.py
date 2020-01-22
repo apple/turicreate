@@ -563,7 +563,6 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
 
-
         for key in net_params.keys():
             net_params[key] = _utils.convert_shared_float_array_to_numpy(
                 net_params[key]
@@ -638,7 +637,6 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
 
-<<<<<<< HEAD
         with self.st_graph.as_default():
             stylized_image = self.sess.run(
                 fetches=[self.output],
@@ -647,12 +645,6 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
                     self.tf_index: feed_dict["index"],
                 },
             )
-=======
-        tf_input_shape = [None] + list(feed_dict['input'].shape)[1:]
-        self._define_training_graph = False
-            self.tf_input = _tf.placeholder(dtype = _tf.float32, shape = tf_input_shape)
-            self.__define_graph()
->>>>>>> Remove tensorflow.compat.v1.reset_default_graph() (#2819)
 
         stylized_raw = _np.array(stylized_image)
 
