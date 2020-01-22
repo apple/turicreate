@@ -468,6 +468,7 @@ class ObjectDetectorTest(unittest.TestCase):
         model2 = tc.object_detector.create(sf, max_iterations=1)
         model2.export_coreml(filename2, include_non_maximum_suppression=True)
 
+    @pytest.mark.xfail
     @unittest.skipIf(sys.platform != 'darwin' or _mac_ver() >= (10, 14),
         "GPU selection should fail on macOS 10.13 or below")
     def test_no_gpu_support_on_unsupported_macos(self):
