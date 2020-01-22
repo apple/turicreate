@@ -146,6 +146,13 @@ check_and_set_compiler_flag(-fpeel-loops RELEASE)
 check_and_set_compiler_flag(-funswitch-loops RELEASE)
 check_and_set_compiler_flag(-ftracer RELEASE)
 
+check_and_set_compiler_flag(-mmmx RELEASE)
+check_and_set_compiler_flag(-msse RELEASE)
+check_and_set_compiler_flag(-msse2 RELEASE)
+check_and_set_compiler_flag(-msse3 RELEASE)
+check_and_set_compiler_flag(-mfpmath=sse RELEASE)
+
+
 # Turn on ARC globally.
 check_and_set_compiler_flag(-fobjc-arc)
 
