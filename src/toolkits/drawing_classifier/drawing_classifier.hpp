@@ -286,15 +286,16 @@ class EXPORT drawing_classifier : public ml_model_base {
   }
 
   gl_sframe perform_inference(data_iterator* data) const;
+  gl_sarray get_predictions_class(const gl_sarray& predictions_prob,
+                                  const flex_list& class_labels);
 
  private:
   /**
    * by design, this is NOT virtual;
    * this calls the virtual create_iterator(parameters) in the end.
    **/
-   std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, bool is_train,
-      flex_list class_labels) const;
+  std::unique_ptr<data_iterator> create_iterator(gl_sframe data, bool is_train,
+                                                 flex_list class_labels) const;
 
   // Primary representation for the trained model.
   std::unique_ptr<neural_net::model_spec> nn_spec_;

@@ -51,18 +51,6 @@ struct result {
   data_iterator::batch data_info;
 };
 
-gl_sarray get_predictions_class(gl_sarray predictions_prob,
-                                flex_list class_labels) {
-  auto max_prob_label = [=](const flexible_type& ft) {
-    const flex_vec& prob_vec = ft.get<flex_vec>();
-    auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
-    return class_labels[max_it - prob_vec.begin()];
-  };
-
-  return predictions_prob.apply(max_prob_label,
-                                class_labels.front().get_type());
-}
-
 size_t count_correct_predictions(const result& batch, size_t num_classes) {
   float num_correct = 0.f;
 
@@ -805,6 +793,18 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
   pop_until_size(0);
 
   return writer.close();
+}
+
+gl_sarray drawing_classifier::get_predictions_class(
+    const gl_sarray& predictions_prob, const flex_list& class_labels) {
+  auto max_prob_label = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+    auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+    return class_labels[max_it - prob_vec.begin()];
+  };
+
+  return predictions_prob.apply(max_prob_label,
+                                class_labels.front().get_type());
 }
 
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
