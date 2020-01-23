@@ -9,6 +9,7 @@
 #include <core/storage/fileio/sanitize_url.hpp>
 #include <core/export.hpp>
 #ifndef TC_DISABLE_REMOTEFS
+#include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/s3_api.hpp>
 #endif
 
@@ -16,7 +17,7 @@ namespace turi {
 
 EXPORT std::string sanitize_url(std::string url) {
 #ifndef TC_DISABLE_REMOTEFS
-  if (boost::algorithm::starts_with(url, "s3://")) {
+  if (fileio::get_protocol(url) == "s3") {
 #ifdef TC_BUILD_IOS
     log_and_throw_io_failure("Not implemented: compiled without support for s3:// URLs.");
 #else

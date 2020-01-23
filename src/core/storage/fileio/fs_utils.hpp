@@ -127,12 +127,16 @@ bool is_writable_protocol(std::string protocol);
  * Returns true if the protocol is a protocol we will make curl handle.
  */
 bool is_web_protocol(std::string protocol);
+
 /**
  * Returns the protocol header. (everything before the ://).
+ *
+ * local file can have protocol "file" or ""
  *
  * get_protocol("http://www.google.com") == "http"
  * get_protocol("s3://www.google.com") == "s3"
  * get_protocol("/root/test") == ""
+ * get_protocol("file:///root/test") == "file"
  */
 std::string get_protocol(std::string path);
 
@@ -140,9 +144,10 @@ std::string get_protocol(std::string path);
  * \ingroup fileio
  * Returns the path removing the protocol header if there is one. .
  *
- * get_protocol("http://www.google.com") == "www.google.com"
- * get_protocol("s3://www.google.com") == "www.google.com"
- * get_protocol("/root/test") == "/root/test"
+ * remove_protocol("http://www.google.com") == "www.google.com"
+ * remove_protocol("s3://www.google.com") == "www.google.com"
+ * remove_protocol("/root/test") == "/root/test"
+ * remove_protocol("file:///root/test") == "/root/test"
  */
 std::string remove_protocol(std::string path);
 
