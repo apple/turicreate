@@ -339,7 +339,7 @@ void nearest_neighbors_model::populate_distance_for_summary_struct(
      * function applied across some number of features, so we extract that one
      * distance function name and report it.
      */
-    function_closure_info distance_fn = std::get<1>(composite_params[0]);
+    function_closure_info distance_fn = std::get<1>(composite_distance_params[0]);
     std::string dist_name = extract_distance_function_name(distance_fn);
     add_or_update_state({
       {"distance_for_summary_struct", dist_name}
