@@ -576,6 +576,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self._batch_size = 1
         self._finetune_all_params = True
         self._define_training_graph = bool(config['st_training'])
+
         self.sess = _tf.Session(graph=self.st_graph)
         with self.st_graph.as_default():
             self.init_style_transfer_graph(net_params)
@@ -588,14 +589,16 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self.tf_style = _tf.placeholder(dtype=_tf.float32, shape=[None, 256, 256, 3])
         self.tf_index = _tf.placeholder(dtype=_tf.int64, shape=[self.batch_size])
 
-        self.__define_graph()
-
         self.__define_graph();
 
         init = _tf.global_variables_initializer()
         self.sess.run(init)
 
     def __del__(self):
+        # If a base class has a __del__() method, the derived class’s __del__() method,
+        # if any, must explicitly call it to ensure proper deletion of # the base class
+        # part of the instance.
+        # That being said, no __del__() method is in base classes, we should be good.
         self.sess.close()
         self.gpu_policy.stop()
 
