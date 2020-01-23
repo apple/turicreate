@@ -418,7 +418,8 @@ if [[ ${build_platform} == macosx ]] ; then
   if [[ ${target} == iphoneos* ]] ; then 
     CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${min_ios_version} -DTC_BUILD_IOS=1"
   elif [[ ${target} == macosx* ]] ; then 
-    CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${min_macos_version} -DTC_BUILD_IOS=0"
+    target_tag=x86_64-apple-macos${min_macos_version}
+    CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${min_macos_version} -DCMAKE_CXX_COMPILER_TARGET=${target_tag} -DCMAKE_C_COMPILER_TARGET=${target_tag} -DTC_BUILD_IOS=0"
   else
     echo "ERROR: Compiling for unsupported target ${target}."
     exit 1

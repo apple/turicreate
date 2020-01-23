@@ -187,9 +187,8 @@ public:
     /** The probability of flipping the image horizontally. */
     float horizontal_flip_prob = 0.f;
 
-    // TODO: The semantics below are adopted from Core Image but don't match the
-    // behavior of MXNet augmentations.... What should a shared interface
-    // specify?
+    // TODO: The semantics below are adopted from Core Image.
+    // What should a shared interface specify?
     // See also https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIColorControls
 
     /**

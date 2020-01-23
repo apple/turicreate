@@ -61,7 +61,7 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
     return std::make_tuple(default_host, default_port, default_path);
   };
 
-  if (!boost::starts_with(url, "hdfs://")) {
+  if (get_protocol(url) != "hdfs") {
     return warn_and_return_default();
   };
 
@@ -133,7 +133,7 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
 
 EXPORT std::pair<file_status, std::string> get_file_status(const std::string& path) {
   std::string err_msg;
-  if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. it is only REGULAR or MISSING
     try {
       fixed_size_cache_manager::get_instance().get_cache(path);
@@ -142,7 +142,7 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
       return std::make_pair(file_status::MISSING, std::string(ex.what()));
     }
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(boost::starts_with(path, "hdfs://")) {
+  } else if(get_protocol(path) == "hdfs") {
     // hdfs
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
@@ -159,7 +159,7 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
       // failure for some reason. fail with missing
       return {file_status::MISSING, ex.what()};
     }
-  } else if (boost::starts_with(path, "s3://")) {
+  } else if (get_protocol(path) == "s3") {
     auto ret = is_directory(path);
     return {ret.first, ret.second.error};
   } else if (is_web_protocol(get_protocol(path))) {
@@ -182,12 +182,12 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
 std::vector<std::pair<std::string, file_status>>
 get_directory_listing(const std::string& path) {
   std::vector<std::pair<std::string, file_status> > ret;
-  if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     // it is only REGULAR or MISSING
     return ret;
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(boost::starts_with(path, "hdfs://")) {
+  } else if(get_protocol(path) == "hdfs") {
     // hdfs
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
@@ -207,7 +207,7 @@ get_directory_listing(const std::string& path) {
     } catch(...) {
       // failure for some reason. return with nothing
     }
-  } else if (boost::starts_with(path, "s3://")) {
+  } else if (get_protocol(path) == "s3") {
     list_objects_response response = list_directory(path);
     for (auto dir: response.directories) {
       ret.push_back({dir, file_status::DIRECTORY});
@@ -248,7 +248,7 @@ EXPORT bool create_directory(const std::string& path) {
     // this is a cache file. There is no filesystem.
     return true;
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(boost::starts_with(path, "hdfs://")) {
+  } else if(get_protocol(path) == "hdfs") {
     // hdfs
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
@@ -261,7 +261,7 @@ EXPORT bool create_directory(const std::string& path) {
       // failure for some reason. return with nothing
       return false;
     }
-  } else if (boost::starts_with(path, "s3://")) {
+  } else if (get_protocol(path) == "s3") {
     // S3 doesn't need directories
     return true;
 #endif
@@ -281,7 +281,7 @@ EXPORT bool create_directory_or_throw(const std::string& path) {
 
   // this function throws if the directory still doesn't exist
   // at that location
-  if (!boost::starts_with(path, "s3://")) {
+  if (get_protocol(path) == "s3") {
     auto status = get_file_status(path);
     switch (status.first) {
       case file_status::MISSING:
@@ -340,7 +340,7 @@ bool delete_path_impl(const std::string& path,
     return false;
   }
   logstream(LOG_INFO) << "Deleting " << sanitize_url(path) << std::endl;
-  if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     try {
       // we ignore recursive here. since the cache can't hold directories
       auto cache_entry = fixed_size_cache_manager::get_instance().get_cache(path);
@@ -350,7 +350,7 @@ bool delete_path_impl(const std::string& path,
       return false;
     }
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(boost::starts_with(path, "hdfs://")) {
+  } else if(get_protocol(path) == "hdfs") {
     // hdfs only has a recursive deleter. we need to make this safe
     // if the current path is a non-empty directory, fail
     if (stat == file_status::DIRECTORY) {
@@ -370,7 +370,7 @@ bool delete_path_impl(const std::string& path,
       // failure for some reason. return with nothing
       return false;
     }
-  } else if (boost::starts_with(path, "s3://")) {
+  } else if (get_protocol(path) == "s3") {
     return delete_object(path).empty();
 #endif
   } else {
@@ -393,11 +393,11 @@ EXPORT bool delete_path_recursive(const std::string& path) {
     return true;
   }
 
-  if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // recursive deletion not possible with cache
     return true;
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(boost::starts_with(path, "hdfs://")) {
+  } else if(get_protocol(path) == "hdfs") {
     // hdfs
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
@@ -410,7 +410,7 @@ EXPORT bool delete_path_recursive(const std::string& path) {
       // failure for some reason. return with nothing
       return false;
     }
-  } else if(boost::starts_with(path, "s3://")) {
+  } else if(get_protocol(path) == "s3") {
     return delete_prefix(path).empty();
 #endif
   } else {
@@ -440,14 +440,10 @@ EXPORT std::string get_protocol(std::string path) {
   size_t proto = path.find("://");
   if (proto != std::string::npos) {
     std::string ret = boost::algorithm::to_lower_copy(path.substr(0, proto));
-    // Strip out file as a specific protocol
-    if(ret == "file") {
-      return "";
-    } else {
-      return ret;
-    }
-
+    boost::algorithm::to_lower_copy(ret.begin(), ret);
+    return ret;
   } else {
+    // denote this is a local file
     return "";
   }
 }
@@ -701,7 +697,7 @@ bool change_file_mode(const std::string path, short mode) {
     return false;
   }
 
-  if(boost::starts_with(path, "hdfs://")) {
+  if(get_protocol(path) == "hdfs") {
 #ifdef HAS_HADOOP
     // hdfs
     std::string host, port, hdfspath;
@@ -718,10 +714,10 @@ bool change_file_mode(const std::string path, short mode) {
 #else
       return false;
 #endif
-  } else if (boost::starts_with(path, fileio::get_cache_prefix())) {
+  } else if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     return true;
-  } else if (boost::starts_with(path, "s3://")) {
+  } else if (get_protocol(path) == "s3") {
     // S3 doesn't need directories
     return true;
   } else {
