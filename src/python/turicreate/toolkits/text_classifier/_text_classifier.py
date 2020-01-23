@@ -360,6 +360,7 @@ class TextClassifier(_CustomModel):
                    'short_description': short_description,
                   }
         context['user_defined'] = _coreml_utils._get_tc_version_info()
+        context['user_defined']['type'] = self.__class__.__name__
 
         model = self.__proxy__['classifier'].__proxy__
         _logistic_classifier_export_as_model_asset(model, filename, context)

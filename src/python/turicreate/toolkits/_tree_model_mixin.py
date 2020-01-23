@@ -317,6 +317,7 @@ class TreeModelMixin(object):
 
     def _export_coreml_impl(self, filename, context):
         tc_version_info = _coreml_utils._get_tc_version_info()
+        tc_version_info['type'] = context['class']
         if 'user_defined' not in context:
             context['user_defined'] = tc_version_info
         else:
