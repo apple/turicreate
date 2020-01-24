@@ -162,6 +162,19 @@ class unity_global: public unity_global_base {
   toolkit_function_response_type run_toolkit(std::string toolkit_name,
                                     variant_map_type& arguments);
 
+
+  /**
+   * Runs a toolkit of the specified name, and with the specified arguments, in
+   * the background.
+   *
+   * Returns a toolkit_function_response_future which contains the result of the toolkit
+   * execution (success/failure) as well as any additional returned state
+   * (graphs/classes/etc). Will throw an exception if the toolkit name was not
+   * found.
+   */
+  toolkit_function_response_future run_toolkit_background(std::string toolkit_name,
+                                                          variant_map_type& arguments);
+
   /**
    * Internal utility function. Gets the structure of the lazy
    * evaluation dag for the graph operations.

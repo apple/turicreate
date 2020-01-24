@@ -146,6 +146,12 @@ check_and_set_compiler_flag(-fpeel-loops RELEASE)
 check_and_set_compiler_flag(-funswitch-loops RELEASE)
 check_and_set_compiler_flag(-ftracer RELEASE)
 
+check_and_set_compiler_flag(-mmmx RELEASE)
+check_and_set_compiler_flag(-msse RELEASE)
+check_and_set_compiler_flag(-msse2 RELEASE)
+check_and_set_compiler_flag(-msse3 RELEASE)
+check_and_set_compiler_flag(-mfpmath=sse RELEASE)
+
 if(APPLE)
   # This triggers a bug in clang; the 10.13 symbol ___chkstk_darwin is missing in
   # 10.13, and the code generated doesn't run on that, even with the 10.12 target.  
