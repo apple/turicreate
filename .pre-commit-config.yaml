@@ -7,11 +7,23 @@ repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
   rev: v2.4.0
   hooks:
-  - id: trailing-whitespace
-  - id: end-of-file-fixer
-  - id: check-yaml
-  - id: check-added-large-files
+    - id: trailing-whitespace
+    - id: end-of-file-fixer
+    - id: check-yaml
+    - id: check-added-large-files
 - repo: https://github.com/psf/black
   rev: 19.10b0
   hooks:
-  - id: black
+    - id: black
+#
+# TODO: need to resolve external dependencies
+#
+# - repo: https://github.com/pocc/pre-commit-hooks
+#   sha: master
+#   hooks:
+#     - id: clang-format
+#       args: [--style=Google, -i]
+#     - id: clang-tidy
+#       args: [-checks=*, -warnings-as-errors=*]
+#     - id: oclint
+#       args: [-enable-clang-static-analyzer, -enable-global-analysis]
