@@ -24,3 +24,4 @@ pyOpenSSL==19.0.0
 ndg-httpsclient==0.5.1
 pyasn1==0.4.5
 hypothesis==4.24.3
+pre-commit==1.21.0
