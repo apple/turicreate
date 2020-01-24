@@ -1,7 +1,6 @@
 #!/bin/bash
 # has to be run from root of the repo
-set -x
-set -e
+set -eux pipefail
 
 if [[ -z $VIRTUALENV ]]; then
   VIRTUALENV=virtualenv
@@ -38,6 +37,9 @@ function linux_patch_sigfpe_handler {
 $PIP install --upgrade "pip>=8.1"
 $PIP install -r scripts/requirements.txt
 
+# install hooks for git
+$PYTHON -m pre_commit install
+
 mkdir -p deps/local/lib
 mkdir -p deps/local/include
 
@@ -55,4 +57,3 @@ done
 popd
 
 linux_patch_sigfpe_handler
-
