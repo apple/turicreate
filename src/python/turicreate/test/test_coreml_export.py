@@ -71,6 +71,7 @@ class CoreMLExportTest(unittest.TestCase):
             self.assertDictEqual({
                    'com.github.apple.turicreate.version': tc.__version__,
                    'com.github.apple.os.platform': platform.platform(),
+                   'type': model.__class__.__name__,
                 }, dict(coreml_model.user_defined_metadata)
             )
 
