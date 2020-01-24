@@ -87,6 +87,8 @@ void brute_force_neighbors::train(const sframe& X,
   logprogress_stream << "Validating distance components." << std::endl;
   validate_distance_components(composite_distance_params, X);
 
+  populate_distance_for_summary_struct(composite_distance_params);
+
   // Create the ml_data object for the reference data.
   logprogress_stream << "Initializing model data." << std::endl;
   initialize_model_data(X, ref_labels);
