@@ -132,6 +132,7 @@ def load_model(location):
                     return cls(model)
 
                 if name=='one_shot_object_detector' and OD_USE_CPP:
+                    import turicreate.toolkits.libtctensorflow
                     od_cls = MODEL_NAME_MAP['object_detector']
                     if 'detector_model' in model_data['detector']:
                         model_data['detector'] = od_cls(model_data['detector']['detector_model'])
