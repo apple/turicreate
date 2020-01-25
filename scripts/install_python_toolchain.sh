@@ -1,6 +1,6 @@
 #!/bin/bash
 # has to be run from root of the repo
-set -eux pipefail
+set -exo pipefail
 
 if [[ -z $VIRTUALENV ]]; then
   VIRTUALENV=virtualenv
