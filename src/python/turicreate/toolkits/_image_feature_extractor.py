@@ -175,11 +175,11 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
 
 
 
-        # These two arrays will swap off to avoid unnecessary allocations.
+        # These two arrays will swap off to avoid unnecessary allocations.  
         state['batch_store'] = []
         def get_batch_array():
             batch_store = state['batch_store']
-
+            
             if not batch_store:
                 batch_store.append(np.zeros((batch_size,) + self.ptModel.input_image_shape, dtype=np.float32))
 
@@ -191,26 +191,26 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
 
         # Seed the iteration
         batch_info = next_batch(get_batch_array())
-
+            
         # Iterate through the image batches, converting them into batches
-        # of feature vectors.  Do the
+        # of feature vectors.  Do the 
         while batch_info is not None:
 
             # Get the now ready batch to process
             batch = ready_batch(batch_info)
 
-            # Start the next one in the background.
+            # Start the next one in the background.  
             # Returns None if done.
             batch_info = next_batch(get_batch_array())
 
-            # Now, process all this.
+            # Now, process all this. 
             predictions_from_tf = handle_request(batch)
             consume_response(predictions_from_tf)
 
-            # Requeue the batch array now that we're done.
+            # Requeue the batch array now that we're done.  
             batch_array_done(batch)
 
-        # Now we have this compiled in
+        # Now we have this compiled in 
         return state['out']
 
     def get_coreml_model(self):
