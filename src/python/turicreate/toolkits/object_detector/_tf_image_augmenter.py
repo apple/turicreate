@@ -42,7 +42,7 @@ _DEFAULT_AUG_PARAMS = {
   'skip_probability_crop' : 0.1,
   'min_object_covered': 0.0,
   'min_eject_coverage': 0.5,
-  'resize_method': 'PIL',
+  'resize_method': 'turicreate',
 }
 
 def hue_augmenter(image, annotation,
@@ -99,6 +99,22 @@ def resize_augmenter(image, annotation,
         np_img /= 255.
         return np_img
 
+    def resize_turicretae_image(image, output_shape):
+        image *= 255.
+        image = image.astype('uint8')
+        FORMAT_RAW = 2
+        tc_image = tc.Image(_image_data=image.tobytes(),
+                            _width=image.shape[1],
+                            _height=image.shape[0],
+                            _channels=image.shape[2],
+                            _format_enum=FORMAT_RAW,
+                            _image_data_size=image.size)
+        tc_image = tc.image_analysis.resize(tc_image, output_shape[1], output_shape[0], resample='bilinear')
+        image = tc_image.pixel_data
+        image = image.astype(np.float32)
+        image /= 255.
+        return image
+
     if resize_method == 'tensorflow':
         new_height = tf.cast(output_shape[0], dtype=tf.int32)
         new_width = tf.cast(output_shape[1], dtype=tf.int32)
@@ -109,6 +125,9 @@ def resize_augmenter(image, annotation,
 
     elif resize_method == 'PIL':
         image_scaled = tf.numpy_function(func=resize_PIL_image, inp=[image, output_shape], Tout=[tf.float32])
+
+    elif resize_method == 'turicreate':
+        image_scaled = tf.numpy_function(func=resize_turicretae_image, inp=[image, output_shape], Tout=[tf.float32])
 
     else:
         raise Exception('Non-supported resize method.')
