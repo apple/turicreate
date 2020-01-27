@@ -8,7 +8,8 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import numpy as np
-import cv2
+from PIL import Image
+import PIL
 import tensorflow.compat.v1 as tf
 from tensorflow.python.ops import array_ops
 from tensorflow.python.framework import ops
@@ -20,6 +21,7 @@ from tensorflow.python.ops import random_ops
 from tensorflow.python.ops import logging_ops
 from tensorflow.python.ops import variables
 import turicreate.toolkits._tf_utils as _utils
+import turicreate as tc
 
 tf.disable_v2_behavior()
 
@@ -40,7 +42,7 @@ _DEFAULT_AUG_PARAMS = {
   'skip_probability_crop' : 0.1,
   'min_object_covered': 0.0,
   'min_eject_coverage': 0.5,
-  'resize_method': 'opencv',
+  'resize_method': 'PIL',
 }
 
 def hue_augmenter(image, annotation,
@@ -87,18 +89,27 @@ def resize_augmenter(image, annotation,
 
     resize_method = _DEFAULT_AUG_PARAMS['resize_method']
 
-    if resize_method == 'opencv':
-        def resize_cv2(image, output_shape):
-            return cv2.resize(image, (output_shape[1], output_shape[0]))
-        image_scaled = tf.numpy_function(func=resize_cv2, inp=[image, output_shape], Tout=[tf.float32])
+    def resize_PIL_image(image, output_shape):
+        image *= 255.
+        image = image.astype('uint8')
+        pil_img = Image.fromarray(image)
+        resize_img = pil_img.resize((output_shape[1], output_shape[0]), resample=PIL.Image.BILINEAR)
+        np_img = np.array(resize_img)
+        np_img = np_img.astype(np.float32)
+        np_img /= 255.
+        return np_img
 
-    elif resize_method == 'tensorflow':
+    if resize_method == 'tensorflow':
         new_height = tf.cast(output_shape[0], dtype=tf.int32)
         new_width = tf.cast(output_shape[1], dtype=tf.int32)
 
         # Determine the affine transform to apply and apply to the image itself.
         image_scaled = tf.squeeze(tf.image.resize_bilinear(
                             tf.expand_dims(image, 0), [new_height, new_width]), [0])
+
+    elif resize_method == 'PIL':
+        image_scaled = tf.numpy_function(func=resize_PIL_image, inp=[image, output_shape], Tout=[tf.float32])
+
     else:
         raise Exception('Non-supported resize method.')
 
