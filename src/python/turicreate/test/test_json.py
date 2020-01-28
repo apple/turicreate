@@ -22,6 +22,7 @@ import json # Python built-in JSON module
 import math
 import os
 import pandas
+import pytest
 import pytz
 import six
 import string
@@ -354,6 +355,7 @@ class JSONTest(unittest.TestCase):
             sf_expected = SFrame(df)
             _SFrameComparer._assert_sframe_equal(sf_expected, sf_actual)
 
+    @pytest.mark.xfail(reason="Non-deterministic test failure tracked in https://github.com/apple/turicreate/issues/2934")
     # deterministic across runs, and may take a while
     @hypothesis.settings(derandomize=True, suppress_health_check=[hypothesis.HealthCheck.too_slow])
     @hypothesis.given(hypothesis_json)
