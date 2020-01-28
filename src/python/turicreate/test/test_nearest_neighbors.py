@@ -669,7 +669,8 @@ class NearestNeighborsBruteForceAPITest(unittest.TestCase):
             'num_unpacked_features',
             'num_features',
             'num_distance_components',
-            'distance']
+            'distance',
+            'distance_for_summary_struct']
 
         self.default_opts = {
             'leaf_size': {u'default_value': 0,
@@ -803,6 +804,7 @@ class NearestNeighborsLshAPITest(unittest.TestCase):
         ## Answers
         self.fields_ans = [
             'distance',
+            'distance_for_summary_struct',
             'num_distance_components',
             'features',
             'unpacked_features',
@@ -956,6 +958,7 @@ class NearestNeighborsBallTreeAPITest(unittest.TestCase):
         ## Answers
         self.fields_ans = [
             'distance',
+            'distance_for_summary_struct',
             'num_distance_components',
             'features',
             'unpacked_features',

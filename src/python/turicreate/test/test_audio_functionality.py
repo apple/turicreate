@@ -15,6 +15,7 @@ from copy import copy
 import math
 from os import mkdir
 import unittest
+import pytest
 
 import coremltools
 from coremltools.proto import FeatureTypes_pb2
@@ -389,6 +390,16 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
                                                 custom_layer_sizes = layer_sizes,
                                                 validation_set=None)
         assert(self.model.custom_layer_sizes == layer_sizes)
+
+    # Remove the following two tests after #2949 is fixed!
+
+    @pytest.mark.xfail(reason="Non-deterministic test failure tracked in https://github.com/apple/turicreate/issues/2949")
+    def test_classify(self):
+        pass
+
+    @pytest.mark.xfail(reason="Non-deterministic test failure tracked in https://github.com/apple/turicreate/issues/2949")
+    def test_predict(self):
+        pass
 
 
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):

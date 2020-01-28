@@ -3,23 +3,30 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <core/logging/logger.hpp>
-#include <core/storage/fileio/union_fstream.hpp>
-#include <core/storage/fileio/cache_stream.hpp>
-#include <core/storage/fileio/s3_fstream.hpp>
-#include <core/storage/fileio/curl_downloader.hpp>
-#include <core/storage/fileio/hdfs.hpp>
-#include <core/storage/fileio/file_download_cache.hpp>
-#include <core/storage/fileio/sanitize_url.hpp>
 #include <boost/algorithm/string.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/cache_stream.hpp>
+#include <core/storage/fileio/curl_downloader.hpp>
+#include <core/storage/fileio/file_download_cache.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/hdfs.hpp>
+#include <core/storage/fileio/s3_fstream.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/storage/fileio/union_fstream.hpp>
 
-#include <cstring>
 #include <cerrno>
+#include <cstring>
 
 namespace turi {
+
 /**
- * A simple union of std::fstream and turi::hdfs::fstream, and turi::fileio::cache_stream.
+ * A simple union of
+ *
+ * 1. cache file (local, hopefully in-memory)
+ * 2. turi::hdfs::fstream (remote)
+ * 3. s3_fstream (remote)
+ * 4. turi::fileio::cache_stream (local file, and remote http, https)
+ *
  */
 union_fstream::union_fstream(std::string url,
                              std::ios_base::openmode mode,
@@ -37,9 +44,13 @@ union_fstream::union_fstream(std::string url,
   }
 
   bool is_output_stream = (mode & std::ios_base::out);
-
-  if (boost::starts_with(url, fileio::get_cache_prefix())) {
+  auto protocol = fileio::get_protocol(url);
+  // since there's temp cache file starts with protocol cache,
+  // we need special scrutiny to use the full prefix
+  if (protocol == "cache") {
     // Cache file type
+    ASSERT_MSG(boost::algorithm::istarts_with(url, fileio::get_cache_prefix()),
+               "invalid url cache predix");
     type = CACHE;
     if (is_output_stream) {
       output_stream.reset(new fileio::ocache_stream(url));
@@ -50,7 +61,7 @@ union_fstream::union_fstream(std::string url,
       m_file_size = (*cachestream)->file_size();
       original_input_stream_handle = std::static_pointer_cast<std::istream>(cachestream);
     }
-  } else if(boost::starts_with(url, "hdfs://")) {
+  } else if(protocol == "hdfs") {
 #ifndef TC_DISABLE_REMOTEFS
     // HDFS file type
     type = HDFS;
@@ -76,7 +87,7 @@ union_fstream::union_fstream(std::string url,
 #else
       log_and_throw_io_failure("Cannot open " + url + " for reading; Remote FS support disabled.");
 #endif
-  } else if (boost::starts_with(url, "s3://")) {
+  } else if (protocol == "s3") {
 #ifndef TC_DISABLE_REMOTEFS
     // the S3 file type currently works by download/uploading a local file
     // i.e. the s3_stream simply remaps a local file stream
@@ -94,12 +105,16 @@ union_fstream::union_fstream(std::string url,
       log_and_throw_io_failure("Cannot open " + url + " for reading; Remote FS support disabled.");
 #endif
   } else {
-    // Remove the preceeding file:// if it's a local URL.
-    if(boost::algorithm::starts_with(url, "file://")) {
+    // Remove the preceeding file:// if it's a local URL starting with file://
+    if(protocol == "file") {
       url = url.substr(7);
     }
 
-    // must be local file
+    /*
+     * now, it can be
+     * 1. local file
+     * 2. http or https
+     */
     if (is_output_stream) {
       // Output stream must be a local openable file.
       output_stream.reset(new std::ofstream(url, std::ofstream::binary));
@@ -107,6 +122,7 @@ union_fstream::union_fstream(std::string url,
         log_and_throw_current_io_failure();
       }
     } else {
+      // handles http and https cases
       url = file_download_cache::get_instance().get_file(url);
       input_stream.reset(new std::ifstream(url, std::ifstream::binary));
       if (!input_stream->good()) {

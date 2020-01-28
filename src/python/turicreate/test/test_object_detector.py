@@ -22,8 +22,6 @@ from six import StringIO
 import coremltools
 
 _CLASSES = ['person', 'cat', 'dog', 'chair']
-USE_CPP = _read_env_var_cpp('TURI_OD_USE_CPP_PATH')
-
 
 def _get_data(feature, annotations):
     from PIL import Image as _PIL_Image
@@ -143,19 +141,18 @@ class ObjectDetectorTest(unittest.TestCase):
            'num_classes': lambda x: x == len(_CLASSES),
         }
 
-        if USE_CPP:
-            self.get_ans['annotation_position'] = lambda x: isinstance(x, str)
-            self.get_ans['annotation_scale'] = lambda x: isinstance(x, str)
-            self.get_ans['annotation_origin'] = lambda x: isinstance(x, str)
-            self.get_ans['grid_height'] = lambda x: x > 0
-            self.get_ans['grid_width'] = lambda x: x > 0
-            self.get_ans['random_seed'] = lambda x: isinstance(x, int)
-            self.get_ans['verbose'] = lambda x: True
-            del self.get_ans['_model']
-            del self.get_ans['_class_to_index']
-            del self.get_ans['_grid_shape']
-            del self.get_ans['anchors']
-            del self.get_ans['non_maximum_suppression_threshold']
+        self.get_ans['annotation_position'] = lambda x: isinstance(x, str)
+        self.get_ans['annotation_scale'] = lambda x: isinstance(x, str)
+        self.get_ans['annotation_origin'] = lambda x: isinstance(x, str)
+        self.get_ans['grid_height'] = lambda x: x > 0
+        self.get_ans['grid_width'] = lambda x: x > 0
+        self.get_ans['random_seed'] = lambda x: isinstance(x, int)
+        self.get_ans['verbose'] = lambda x: True
+        del self.get_ans['_model']
+        del self.get_ans['_class_to_index']
+        del self.get_ans['_grid_shape']
+        del self.get_ans['anchors']
+        del self.get_ans['non_maximum_suppression_threshold']
 
         self.fields_ans = self.get_ans.keys()
 
@@ -242,10 +239,14 @@ class ObjectDetectorTest(unittest.TestCase):
             tc.object_detector.create(self.sf[:0])
 
     def test_create_with_fixed_random_seed(self):
-        model_1 = tc.object_detector.create(self.sf, max_iterations=3, random_seed=86)
-        pred_1 = model_1.predict(self.sf)
-        model_2 = tc.object_detector.create(self.sf, max_iterations=3, random_seed=86)
-        pred_2 = model_2.predict(self.sf)
+        confidence_threshold = 1e-7
+        random_seed = 86
+        max_iterations = 3
+
+        model_1 = tc.object_detector.create(self.sf, max_iterations=max_iterations, random_seed=random_seed)
+        pred_1 = model_1.predict(self.sf, confidence_threshold=confidence_threshold)
+        model_2 = tc.object_detector.create(self.sf, max_iterations=max_iterations, random_seed=random_seed)
+        pred_2 = model_2.predict(self.sf, confidence_threshold=confidence_threshold)
         self.assertEqual(len(pred_1), len(pred_2))
         for i in range(len(pred_1)):
             self.assertEqual(len(pred_1[i]),len(pred_2[i]))
@@ -442,8 +443,7 @@ class ObjectDetectorTest(unittest.TestCase):
             # A numeric comparison of the resulting of top bounding boxes is
             # not that meaningful unless the model has converged
 
-        # Also check if we can train a second model and export it (there could
-        # be naming issues in mxnet)
+        # Also check if we can train a second model and export it.
         filename2 = tempfile.mkstemp('bingo2.mlmodel')[1]
         # We also test at the same time if we can export a model with a single
         # class
@@ -474,8 +474,7 @@ class ObjectDetectorTest(unittest.TestCase):
             # A numeric comparison of the resulting of top bounding boxes is
             # not that meaningful unless the model has converged
 
-        # Also check if we can train a second model and export it (there could
-        # be naming issues in mxnet)
+        # Also check if we can train a second model and export it.
         filename2 = tempfile.mkstemp('bingo2.mlmodel')[1]
         # We also test at the same time if we can export a model with a single
         # class
@@ -484,6 +483,7 @@ class ObjectDetectorTest(unittest.TestCase):
         model2 = tc.object_detector.create(sf, max_iterations=1)
         model2.export_coreml(filename2, include_non_maximum_suppression=True)
 
+    @pytest.mark.xfail
     @unittest.skipIf(sys.platform != 'darwin' or _mac_ver() >= (10, 14),
         "GPU selection should fail on macOS 10.13 or below")
     def test_no_gpu_support_on_unsupported_macos(self):

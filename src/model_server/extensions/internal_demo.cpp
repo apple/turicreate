@@ -5,9 +5,11 @@
  */
 #include <string>
 #include <vector>
+#include <thread>
 #include <model_server/lib/toolkit_function_macros.hpp>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/extensions/model_base.hpp>
+#include <core/data/sframe/gl_sframe.hpp>
 
 using namespace turi;
 
@@ -28,6 +30,20 @@ std::string _demo_to_string(flexible_type param) {
   return std::string(param);
 }
 
+flex_dict _demo_extract_row(gl_sframe X, size_t idx) {
+
+  // Delay return to test the futures code
+  std::this_thread::sleep_for(std::chrono::milliseconds(25));
+
+  flex_list row = X[idx];
+  flex_dict out_dict(row.size()); 
+
+  for(size_t i = 0; i < row.size(); ++i) { 
+    out_dict[i] = {X.column_name(i), row[i]};
+  }
+
+  return out_dict;
+}
 
 std::string _replicate(const std::map<std::string, flexible_type>& input) {
   std::string ret;
@@ -173,6 +189,7 @@ REGISTER_FUNCTION(_demo_addone, "param");
 REGISTER_FUNCTION(_demo_identity, "param");
 REGISTER_FUNCTION(_demo_add, "param", "param2");
 REGISTER_FUNCTION(_demo_to_string, "param");
+REGISTER_FUNCTION(_demo_extract_row, "X", "row");
 REGISTER_FUNCTION(_replicate, "input");
 REGISTER_FUNCTION(_replicate_column, "input", "column", "times");
 REGISTER_FUNCTION(_connected_components, "src", "edge", "dst");

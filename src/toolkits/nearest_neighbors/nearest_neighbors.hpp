@@ -532,6 +532,12 @@ class EXPORT nearest_neighbors_model : public ml_model_base {
                                    const double weight);
 
   /**
+   * Populates the distance field for the summary struct.
+   */
+  void populate_distance_for_summary_struct(
+    const std::vector<dist_component_type>& composite_distance_params);
+
+  /**
    * Get reference data as a vector of vectors
    * \returns Reference data as a vector of vectors (in ml-data form)
    */

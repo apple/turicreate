@@ -92,6 +92,8 @@ void lsh_neighbors::train(const sframe& X, const std::vector<flexible_type>& ref
   init_options(opts);
   validate_distance_components(composite_distance_params, X);
 
+  populate_distance_for_summary_struct(composite_distance_params);
+
   // Create the ml_data object for the reference data.
   initialize_model_data(X, ref_labels);
 

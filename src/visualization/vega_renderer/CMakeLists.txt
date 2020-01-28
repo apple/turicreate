@@ -78,4 +78,8 @@ if(APPLE AND NOT TC_BUILD_IOS)
 
    target_compile_options(vega_renderer PUBLIC "-fobjc-arc")
 
+else()
+
+  make_empty_library(vega_renderer)
+
 endif()
