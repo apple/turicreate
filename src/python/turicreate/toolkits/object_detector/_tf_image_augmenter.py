@@ -99,7 +99,7 @@ def resize_augmenter(image, annotation,
         np_img /= 255.
         return np_img
 
-    def resize_turicretae_image(image, output_shape):
+    def resize_turicreate_image(image, output_shape):
         image *= 255.
         image = image.astype('uint8')
         FORMAT_RAW = 2
@@ -127,7 +127,7 @@ def resize_augmenter(image, annotation,
         image_scaled = tf.numpy_function(func=resize_PIL_image, inp=[image, output_shape], Tout=[tf.float32])
 
     elif resize_method == 'turicreate':
-        image_scaled = tf.numpy_function(func=resize_turicretae_image, inp=[image, output_shape], Tout=[tf.float32])
+        image_scaled = tf.numpy_function(func=resize_turicreate_image, inp=[image, output_shape], Tout=[tf.float32])
 
     else:
         raise Exception('Non-supported resize method.')
