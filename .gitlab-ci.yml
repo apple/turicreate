@@ -175,7 +175,7 @@ build_dylib_macos_10_15:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
-    - ./configure --no-visualization --no-python --no-remotefs \
+    - ./configure --no-visualization --no-python --no-remotefs
       --release-opt-for-size --with-capi --builder=xcode --no-pre-commit
     - cd release
     - xcodebuild -j 8 -project Turi.xcodeproj/ -target Recommender -quiet
@@ -194,8 +194,8 @@ build_dylib_ios_12:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
-    - ./configure --no-visualization --no-python --no-remotefs \
-      --release-opt-for-size --target=iphoneos --arch=arm64 \
+    - ./configure --no-visualization --no-python --no-remotefs
+      --release-opt-for-size --target=iphoneos --arch=arm64
       --with-capi --builder=xcode --no-pre-commit
     - cd release
     - xcodebuild -j 8 -project Turi.xcodeproj/ -target Recommender -arch arm64 only_active_arch=no -quiet
