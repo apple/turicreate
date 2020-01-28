@@ -37,8 +37,13 @@ function linux_patch_sigfpe_handler {
 $PIP install --upgrade "pip>=8.1"
 $PIP install -r scripts/requirements.txt
 
-# install hooks for git
-$PYTHON -m pre_commit install
+# install pre-commit hooks for git
+if [[ $with_pre_commit -eq 1 ]]; then
+  $PIP install $(cat scripts/requirements-optional.txt | grep pre-commit)
+  # install under root
+  $PYTHON -m pre_commit install
+  # TODO: pre-commit-hooks for clang-format
+fi
 
 mkdir -p deps/local/lib
 mkdir -p deps/local/include
