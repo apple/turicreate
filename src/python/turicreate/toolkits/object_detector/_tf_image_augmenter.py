@@ -9,7 +9,6 @@ from __future__ import absolute_import as _
 
 import numpy as np
 from PIL import Image
-import PIL
 import tensorflow.compat.v1 as tf
 from tensorflow.python.ops import array_ops
 from tensorflow.python.framework import ops
@@ -93,7 +92,7 @@ def resize_augmenter(image, annotation,
         image *= 255.
         image = image.astype('uint8')
         pil_img = Image.fromarray(image)
-        resize_img = pil_img.resize((output_shape[1], output_shape[0]), resample=PIL.Image.BILINEAR)
+        resize_img = pil_img.resize((output_shape[1], output_shape[0]), resample=Image.BILINEAR)
         np_img = np.array(resize_img)
         np_img = np_img.astype(np.float32)
         np_img /= 255.
