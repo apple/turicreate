@@ -1120,10 +1120,10 @@ void object_detector::init_training(gl_sframe data,
   // Read options from user.
   init_options(opts);
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
-     std::random_device random_device;
-     int random_seed = static_cast<int>(random_device());
-     add_or_update_state({{"random_seed", random_seed}});
-   }
+    std::random_device random_device;
+    int random_seed = static_cast<int>(random_device());
+    add_or_update_state({{"random_seed", random_seed}});
+  }
 
   // Record the relevant column names upfront, for use in create_iterator. Also
   // values fixed by this version of the toolkit.
