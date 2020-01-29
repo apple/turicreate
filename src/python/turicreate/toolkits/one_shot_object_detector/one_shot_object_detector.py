@@ -204,6 +204,8 @@ class OneShotObjectDetector(_CustomModel):
         --------
         >>> model.export_coreml('one_shot.mlmodel')
         """
+        from turicreate.toolkits import _coreml_utils
+
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
         short_description = _coreml_utils._mlmodel_short_description('Object Detector')
         options = {
