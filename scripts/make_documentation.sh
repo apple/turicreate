@@ -8,6 +8,10 @@ WORKSPACE=${SCRIPT_DIR}/..
 TARGET_DIR=${WORKSPACE}/target
 
 cd ${WORKSPACE}
+
+${VIRTUALENV} ./deps/env
+source deps/env/bin/activate
+
 pip install target/turicreate-*.whl
 
 OUTPUT_DIR=${TARGET_DIR}/docs
