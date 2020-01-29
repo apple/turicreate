@@ -9,7 +9,7 @@ training_Methods for creating and using a logistic regression model.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import turicreate as _turicreate
+
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._supervised_learning import Classifier as _Classifier
 from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
@@ -18,7 +18,6 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _check_categorical_option_type, \
                                         _raise_error_evaluation_metric_is_valid, \
                                         _summarize_coefficients
-from turicreate.toolkits import _coreml_utils
 
 _DEFAULT_SOLVER_OPTIONS = {
 'convergence_threshold': 1e-2,
@@ -758,7 +757,6 @@ class LogisticClassifier(_Classifier):
                 [dataset], missing_value_action, output_type, k)
         # Fast path
         _raise_error_if_not_sframe(dataset, "dataset")
-        options = dict()
         if (missing_value_action == 'auto'):
             missing_value_action = _sl.select_default_missing_value_policy(
                                                               self, 'predict')

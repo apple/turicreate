@@ -13,7 +13,6 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits import text_analytics as _text_analytics
-from turicreate.toolkits import _coreml_utils
 
 
 def _BOW_FEATURE_EXTRACTOR(sf, target=None):

@@ -10,12 +10,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import sys
-import parser
-import symbol
-import token
 import ast
 import inspect
-from ..import meta
+from .. import meta
 
 class expression_validator(ast.NodeVisitor):
     """

@@ -321,10 +321,7 @@ class _ToolkitClass:
 
 
     def __run_class_function(self, fnname, args, kwargs):
-        # scan for all the arguments in args
         arguments = self._functions[fnname]
-        num_args_got = len(args) + len(kwargs)
-        num_args_required = len(arguments)
 
         ## fill the dict first with the regular args
         argument_dict = {}

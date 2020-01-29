@@ -9,7 +9,6 @@ import turicreate as _tc
 from turicreate import extensions as _extensions
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits.one_shot_object_detector.util._error_handling import check_one_shot_input
-from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 from turicreate.toolkits import _data_zoo
 

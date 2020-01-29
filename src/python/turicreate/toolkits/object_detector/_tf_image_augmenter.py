@@ -10,7 +10,6 @@ from __future__ import absolute_import as _
 import numpy as np
 from PIL import Image
 import tensorflow.compat.v1 as tf
-from tensorflow.python.ops import variables
 import turicreate.toolkits._tf_utils as _utils
 import turicreate as tc
 

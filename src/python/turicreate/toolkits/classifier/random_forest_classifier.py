@@ -18,7 +18,6 @@ from turicreate.toolkits._internal_utils import _raise_error_evaluation_metric_i
 from turicreate.toolkits._internal_utils import _check_categorical_option_type
 from turicreate.toolkits._tree_model_mixin import TreeModelMixin as _TreeModelMixin
 from turicreate.util import _make_internal_url
-import logging as _logging
 
 __doc_string_context = '''
       >>> url = 'https://static.turi.com/datasets/xgboost/mushroom.csv'

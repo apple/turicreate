@@ -9,7 +9,7 @@ Methods for creating and using a linear regression model.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import turicreate as _turicreate
+
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._supervised_learning import SupervisedLearningModel as \
                                     _SupervisedLearningModel
@@ -17,7 +17,6 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
                                         _toolkit_get_topk_bottomk, \
                                         _summarize_coefficients, \
                                         _raise_error_evaluation_metric_is_valid
-from turicreate.toolkits import _coreml_utils
 
 _DEFAULT_SOLVER_OPTIONS = {
 'convergence_threshold': 1e-2,

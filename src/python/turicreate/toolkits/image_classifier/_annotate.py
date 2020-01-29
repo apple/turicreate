@@ -12,12 +12,9 @@ from __future__ import absolute_import as _
 
 from ...visualization import _get_client_app_path
 import turicreate.toolkits._internal_utils as _tkutl
-from .. import _image_feature_extractor
 from turicreate._cython.cy_server import QuietProgress as _QuietProgress
 
 import turicreate as __tc
-from sys import platform as __platform
-import array as _array
 
 def annotate(data, image_column=None, annotation_column='annotations'):
     """

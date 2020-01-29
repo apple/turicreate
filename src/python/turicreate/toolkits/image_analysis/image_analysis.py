@@ -55,7 +55,6 @@ def load_images(url, format='auto', with_path=True, recursive=True, ignore_failu
     ...                                                       recursive=True)
     """
     from ... import extensions as _extensions
-    from ...util import _make_internal_url
     return _extensions.load_images(url, format, with_path,
                                      recursive, ignore_failure, random_order)
 

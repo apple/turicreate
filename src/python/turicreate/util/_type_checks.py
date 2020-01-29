@@ -6,7 +6,6 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import sys as _sys
 
 def _raise_error_if_not_of_type(arg, expected_type, arg_name=None):
     """

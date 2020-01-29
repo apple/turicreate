@@ -229,7 +229,6 @@ def create(observation_data,
     if item_data is None:
         item_data = _turicreate.SFrame()
 
-    nearest_items = _turicreate.SFrame()
     if target is None:
         binary_target = True
 

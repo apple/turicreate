@@ -1,5 +1,5 @@
 from six.moves import reduce as _reduce
-import os, json, math
+import math
 import turicreate as _tc
 
 def entropy(probs):
@@ -34,7 +34,7 @@ def get_confusion_matrix(extended_test, labels):
         else:
             test_longer_form = test_longer_form.append(new_test_data)
 
-    if len(extended_test) is 0:
+    if len(extended_test) == 0:
         sf_confusion_matrix = sf_confusion_matrix.rename({'prob_default': 'prob', 'label': 'target_label'})
     else:
         sf_confusion_matrix = sf_confusion_matrix.join(test_longer_form.groupby(['label', 'predicted_label'], {'prob': _tc.aggregate.SUM('prob')}), how='left', on=['label', 'predicted_label'])

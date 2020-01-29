@@ -15,17 +15,13 @@ import time as _time
 
 from turicreate.toolkits._model import CustomModel as _CustomModel
 import turicreate.toolkits._internal_utils as _tkutl
-import turicreate.toolkits._private_utils as _pvtutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
-from turicreate import config as _tc_config
 from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
 from ._evaluation import Evaluation as _Evaluation
-from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
-                                                 _numeric_param_check_range)
 from turicreate.toolkits import _coreml_utils
 
 _DEFAULT_SOLVER_OPTIONS = {
@@ -34,7 +30,6 @@ _DEFAULT_SOLVER_OPTIONS = {
 'lbfgs_memory_level': 11,
 'max_iterations': 10}
 
-from six.moves import reduce as _reduce
 
 def create(dataset, target, feature=None, model = 'resnet-50',
     l2_penalty=0.01,
@@ -221,8 +216,6 @@ def create(dataset, target, feature=None, model = 'resnet-50',
     ImageClassifier
     """
     start_time = _time.time()
-    if not isinstance(dataset, _tc.SFrame):
-        raise TypeError('"dataset" must be of type SFrame.')
 
     # Check model parameter
     allowed_models = list(_pre_trained_models.IMAGE_MODELS.keys())
@@ -660,9 +653,6 @@ class ImageClassifier(_CustomModel):
           >>> results = model.evaluate(data)
           >>> print results['accuracy']
         """
-
-        import os, json, math
-
         if(batch_size < 1):
             raise ValueError("'batch_size' must be greater than or equal to 1")
         if self.target not in dataset.column_names():
