@@ -37,13 +37,11 @@ def hue_augmenter(image, annotation, tf_seed,
                   max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"]):
 
     # Apply the rotation to the hue
-    image = tf.image.random_hue(image, max_delta=max_hue_adjust, seed=tf_seed)
+    image = tf.image.random_hue(image, max_delta=max_hue_adjust, seed=tf_seed[0])
     image = tf.clip_by_value(image, 0, 1)
 
     # No geometry changes, so just copy the annotations.
     return image, annotation
-
-
 
 def color_augmenter(image, annotation, tf_seed,
                     max_brightness=_DEFAULT_AUG_PARAMS["max_brightness"],
@@ -52,17 +50,17 @@ def color_augmenter(image, annotation, tf_seed,
 
     # Sample a random adjustment to brightness.
     if max_brightness is not None and max_brightness > 0:
-        image = tf.image.random_brightness(image, max_delta=max_brightness, seed=tf_seed)
+        image = tf.image.random_brightness(image, max_delta=max_brightness, seed=tf_seed[0])
 
     # Sample a random adjustment to contrast.
     if max_saturation is not None and max_saturation > 1.0:
         log_sat = np.log(max_saturation)
-        image = tf.image.random_saturation(image, lower=np.exp(-log_sat), upper=np.exp(log_sat), seed=tf_seed)
+        image = tf.image.random_saturation(image, lower=np.exp(-log_sat), upper=np.exp(log_sat), seed=tf_seed[1])
 
     # Sample a random adjustment to saturation.
     if max_contrast is not None and max_contrast > 1.0:
         log_con = np.log(max_contrast)
-        image = tf.image.random_contrast(image, lower=np.exp(-log_con), upper=np.exp(log_con), seed=tf_seed)
+        image = tf.image.random_contrast(image, lower=np.exp(-log_con), upper=np.exp(log_con), seed=tf_seed[2])
 
     image = tf.clip_by_value(image, 0, 1)
 
@@ -368,11 +366,11 @@ def crop_augmenter(image,
     return np.array(image), annotation
 
 def complete_augmenter(img_tf, ann_tf, output_height, output_width, seed_tf):
-    img_tf, ann_tf = crop_augmenter_wrapper(img_tf, ann_tf, seed_tf)
-    img_tf, ann_tf = padding_augmenter_wrapper(img_tf, ann_tf, seed_tf)
-    img_tf, ann_tf = horizontal_flip_augmenter_wrapper(img_tf, ann_tf, seed_tf)
-    img_tf, ann_tf = color_augmenter(img_tf, ann_tf, seed_tf)
-    img_tf, ann_tf = hue_augmenter(img_tf, ann_tf, seed_tf)
+    img_tf, ann_tf = crop_augmenter_wrapper(img_tf, ann_tf, seed_tf[0])
+    img_tf, ann_tf = padding_augmenter_wrapper(img_tf, ann_tf, seed_tf[1])
+    img_tf, ann_tf = horizontal_flip_augmenter_wrapper(img_tf, ann_tf, seed_tf[2])
+    img_tf, ann_tf = color_augmenter(img_tf, ann_tf, seed_tf[3])
+    img_tf, ann_tf = hue_augmenter(img_tf, ann_tf, seed_tf[4])
     img_tf, ann_tf = resize_augmenter(img_tf, ann_tf, (output_height, output_width))
 
     return img_tf, ann_tf
@@ -380,20 +378,20 @@ def complete_augmenter(img_tf, ann_tf, output_height, output_width, seed_tf):
 def crop_augmenter_wrapper(img_tf, ann_tf, seed_tf):
 
     max_attempts = _DEFAULT_AUG_PARAMS["max_attempts"]
-    random_nums = tf.random.uniform([1+4*max_attempts], 0., 1., seed=seed_tf)
+    random_nums = tf.random.uniform([1+4*max_attempts], 0., 1., seed=seed_tf[0])
     img_tf, ann_tf = tf.numpy_function(func=crop_augmenter, inp=[img_tf, ann_tf, random_nums], Tout=[tf.float32, tf.float32])
     return img_tf, ann_tf
 
 def padding_augmenter_wrapper(img_tf, ann_tf, seed_tf):
 
     max_attempts = _DEFAULT_AUG_PARAMS["max_attempts"]
-    random_nums = tf.random.uniform([1+max_attempts+3], 0., 1., seed=seed_tf)
+    random_nums = tf.random.uniform([1+max_attempts+3], 0., 1., seed=seed_tf[0])
     img_tf, ann_tf = tf.numpy_function(func=padding_augmenter, inp=[img_tf, ann_tf, random_nums], Tout=[tf.float32, tf.float32])
     return img_tf, ann_tf
 
 def horizontal_flip_augmenter_wrapper(img_tf, ann_tf, seed_tf):
 
-    random_nums = tf.random.uniform([1], 0., 1., seed=seed_tf)
+    random_nums = tf.random.uniform([1], 0., 1., seed=seed_tf[0])
     img_tf, ann_tf = tf.numpy_function(func=horizontal_flip_augmenter, inp=[img_tf, ann_tf, random_nums], Tout=[tf.float32, tf.float32])
     return img_tf, ann_tf
 
@@ -403,7 +401,16 @@ class DataAugmenter(object):
         self.graph = tf.Graph()
         self.resize_only = resize_only
         np.random.seed(random_seed if random_seed >=0 else -random_seed)
-        self.random_seed = np.random.randint(low=0, high=2**32-1, size=self.batch_size)
+
+        #Total num of augmenters with randomness
+        num_augmenter = 5
+
+        #Max num of functions with randomness in one augmenter
+        num_function = 3
+
+        #Generate a random table
+        random_table_shape = (self.batch_size, num_augmenter, num_function)
+        self.random_seed = np.random.randint(low=0, high=2**32-1, size=random_table_shape)
 
         with self.graph.as_default():
             self.img_tf = [tf.placeholder(tf.float32, [None, None, 3]) for x in range(0, self.batch_size )]
