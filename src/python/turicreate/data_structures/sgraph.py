@@ -976,7 +976,7 @@ class SGraph(object):
             raise TypeError('input_fields must be str or list of str')
         if type(mutated_fields) == str:
             mutated_fields = [mutated_fields]
-        if len(mutated_fields) is 0:
+        if len(mutated_fields) == 0:
             raise ValueError('mutated_fields cannot be empty')
         for f in ['__id', '__src_id', '__dst_id']:
             if f in mutated_fields:
@@ -1049,7 +1049,7 @@ class SGraph(object):
         >>> g.save('mygraph.json', format='json')
         """
 
-        if format is 'auto':
+        if format == 'auto':
             if filename.endswith(('.json', '.json.gz')):
                 format = 'json'
             else:
@@ -1199,21 +1199,21 @@ def load_sgraph(filename, format='binary', delimiter='auto'):
 
     with cython_context():
         g = None
-        if format is 'binary':
+        if format == 'binary':
             proxy = glconnect.get_unity().load_graph(_make_internal_url(filename))
             g = SGraph(_proxy=proxy)
-        elif format is 'snap':
+        elif format == 'snap':
             if delimiter == 'auto':
                 delimiter = '\t'
             sf = SFrame.read_csv(filename, comment_char='#', delimiter=delimiter,
                                  header=False, column_type_hints=int)
             g = SGraph().add_edges(sf, 'X1', 'X2')
-        elif format is 'csv':
+        elif format == 'csv':
             if delimiter == 'auto':
                 delimiter = ','
             sf = SFrame.read_csv(filename, header=False, delimiter=delimiter)
             g = SGraph().add_edges(sf, 'X1', 'X2')
-        elif format is 'tsv':
+        elif format == 'tsv':
             if delimiter == 'auto':
                 delimiter = '\t'
             sf = SFrame.read_csv(filename, header=False, delimiter=delimiter)

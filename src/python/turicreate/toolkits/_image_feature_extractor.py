@@ -11,11 +11,9 @@ from ._pre_trained_models import _get_cache_dir
 import turicreate.toolkits._tf_utils as _utils
 
 def _create_feature_extractor(model_name):
-    import os
     from platform import system
     from ._internal_utils import _mac_ver
     from ._pre_trained_models import IMAGE_MODELS
-    from turicreate.config import get_runtime_config
     from turicreate import extensions
 
     # If we don't have Core ML, use a TensorFlow model.

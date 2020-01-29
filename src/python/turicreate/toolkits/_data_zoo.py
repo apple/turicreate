@@ -6,13 +6,12 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import os as _os
-import sys as _sys
-import requests as _requests
 import turicreate as _tc
 import shutil as _shutil
 import tarfile as _tarfile
-import hashlib as _hashlib
+
 from six.moves.urllib import parse as _urlparse
 from ._pre_trained_models import _download_and_checksum_files
 from ._pre_trained_models import _get_cache_dir

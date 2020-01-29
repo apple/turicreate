@@ -6,9 +6,10 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import sys
 import os
-from os.path import split, abspath, join
+from os.path import split, abspath
 
 def get_main_dir():
     script_path = abspath(sys.modules[__name__].__file__)

@@ -12,7 +12,6 @@ from __future__ import absolute_import as _
 
 import turicreate as _turicreate
 from turicreate.toolkits._model import Model as _Model
-from turicreate.data_structures.sframe import SFrame as _SFrame
 from turicreate.data_structures.sgraph import SGraph as _SGraph
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._private_utils import _validate_row_label

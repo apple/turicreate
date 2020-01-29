@@ -319,7 +319,6 @@ class ODTensorFlowModel(TensorFlowModel):
         gt_wh = labels[..., 2:4]
         gt_raw_wh = _tf.math.log(gt_wh / tf_anchors + 1e-5)
         gt_conf = labels[..., 4]
-        gt_conf0 = labels[..., 0:1, 4]
         gt_class = labels[..., 5:]
 
         # Calculations on predicted confidences

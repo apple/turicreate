@@ -494,13 +494,6 @@ def random_split_by_user(dataset,
         import time
         random_seed = int(hash("%20f" % time.time()) % 2**63)
 
-    opts = {'dataset': dataset,
-            'user_id': user_id,
-            'item_id': item_id,
-            'max_num_users': max_num_users,
-            'item_test_proportion': item_test_proportion,
-            'random_seed': random_seed}
-
     response = _turicreate.extensions._recsys.train_test_split(dataset, user_id, item_id,
         max_num_users, item_test_proportion, random_seed)
 
@@ -1026,11 +1019,6 @@ class _Recommender(_Model):
         check_type(users, "users", _SArray, ["SArray", "list"])
         check_type(k, "k", int, ["int"])
 
-        opt = {'model': self.__proxy__,
-               'users': users,
-               'get_all_users' : get_all_users,
-               'k': k}
-
         response = self.__proxy__.get_similar_users(users, k, get_all_users)
         return response
 
@@ -1267,19 +1255,6 @@ class _Recommender(_Model):
             except TypeError:
                 raise TypeError("random_seed must be integer.")
 
-        opt = {'model': self.__proxy__,
-               'query': users,
-               'top_k': k,
-               'exclude': exclude,
-               'restrictions': items,
-               'new_data': new_observation_data,
-               'new_user_data': new_user_data,
-               'new_item_data': new_item_data,
-               'exclude_known': exclude_known,
-               'diversity' : diversity,
-               'random_seed' : random_seed
-               }
-
         with QuietProgress(verbose):
             recs = self.__proxy__.recommend(users, exclude, items, new_observation_data, new_user_data,
                 new_item_data, exclude_known, k, diversity, random_seed)
@@ -1391,8 +1366,6 @@ class _Recommender(_Model):
         item_type = column_types[item_id]
 
         if not hasattr(self, "_implicit_user_name"):
-            import hashlib
-            import time
             self._implicit_user_name = None #("implicit-user-%s"
 #                                        % hashlib.md5("%0.20f" % time.time()).hexdigest()[:12])
 
@@ -1789,6 +1762,5 @@ class _Recommender(_Model):
               'details see:\n'
               'https://apple.github.io/turicreate/docs/userguide/recommender/coreml-deployment.html')
 
-        import turicreate as tc
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
         self.__proxy__.export_to_coreml(filename, additional_user_defined_metadata)
