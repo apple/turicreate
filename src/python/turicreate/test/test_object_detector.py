@@ -239,14 +239,14 @@ class ObjectDetectorTest(unittest.TestCase):
             tc.object_detector.create(self.sf[:0])
 
     def test_create_with_fixed_random_seed(self):
-        confidence_threshold = 1e-7
         random_seed = 86
         max_iterations = 3
 
         model_1 = tc.object_detector.create(self.sf, max_iterations=max_iterations, random_seed=random_seed)
-        pred_1 = model_1.predict(self.sf, confidence_threshold=confidence_threshold)
+        pred_1 = model_1.predict(self.sf)
         model_2 = tc.object_detector.create(self.sf, max_iterations=max_iterations, random_seed=random_seed)
-        pred_2 = model_2.predict(self.sf, confidence_threshold=confidence_threshold)
+        pred_2 = model_2.predict(self.sf)
+
         self.assertEqual(len(pred_1), len(pred_2))
         for i in range(len(pred_1)):
             self.assertEqual(len(pred_1[i]),len(pred_2[i]))

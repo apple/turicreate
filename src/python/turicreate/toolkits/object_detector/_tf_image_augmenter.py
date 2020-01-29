@@ -33,12 +33,12 @@ _DEFAULT_AUG_PARAMS = {
   'skip_probability_crop' : 0.1,
   'min_object_covered': 0.0,
   'min_eject_coverage': 0.5,
-  'resize_method': 'turicreate',
+  'resize_method': 'tensorflow',
 }
 
 def uniform_num(random_num, min_value, max_value):
-    #return a uniform distribution number between min_value and max_value
-    #using a random_num in [0,1]
+    #return a uniform distribution number in [min_value, max_value]
+    #using a random_num in [0, 1]
     return min_value + (max_value - min_value) * random_num
 
 def hue_augmenter(image, annotation, tf_seed,
@@ -445,7 +445,6 @@ class DataAugmenter(object):
         self.batch_size = batch_size
         self.graph = tf.Graph()
         self.resize_only = resize_only
-        np.random.seed(random_seed if random_seed >=0 else -random_seed)
 
         #Total num of augmenters with randomness
         num_augmenter = 5
@@ -455,6 +454,7 @@ class DataAugmenter(object):
 
         #Generate a random table
         random_table_shape = (self.batch_size, num_augmenter, num_function)
+        np.random.seed(random_seed if random_seed >=0 else -random_seed)
         self.random_seed = np.random.randint(low=0, high=2**32-1, size=random_table_shape)
 
         with self.graph.as_default():
