@@ -216,6 +216,7 @@ build_documentation:
   dependencies:
     - build_wheel_linux_python37
   script:
+    - apk add bash
     - bash scripts/make_documentation.sh
   artifacts:
     when: always
