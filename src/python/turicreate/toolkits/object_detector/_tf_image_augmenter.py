@@ -197,8 +197,8 @@ def padding_augmenter(image,
     padded_width = padded_height * aspect_ratio;
 
     # Sample the offset of the source image inside the padded image.
-    x_offset = uniform_num(random_nums[1+max_attempts+1],0, padded_width - image_width)
-    y_offset = uniform_num(random_nums[1+max_attempts+2],0, padded_height - image_height)
+    x_offset = uniform_num(random_nums[1+max_attempts+1],0 , padded_width - image_width)
+    y_offset = uniform_num(random_nums[1+max_attempts+2],0 , padded_height - image_height)
 
     # Compute padding needed on the image
     after_padding_width = padded_width - image_width - x_offset
@@ -316,8 +316,8 @@ def crop_augmenter(image,
         cropped_height = uniform_num(random_nums[1+4*i+1], min_height, max_height)
         cropped_width = cropped_height * aspect_ratio;
 
-        x_offset = uniform_num(random_nums[1+4*i+2], image_width - cropped_width)
-        y_offset = uniform_num(random_nums[1+4*i+3], image_height - cropped_height)
+        x_offset = uniform_num(random_nums[1+4*i+2], 0, image_width - cropped_width)
+        y_offset = uniform_num(random_nums[1+4*i+3], 0, image_height - cropped_height)
 
         crop_bounds_x1 = x_offset
         crop_bounds_y1 = y_offset
