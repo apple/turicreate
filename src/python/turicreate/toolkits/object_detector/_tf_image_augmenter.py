@@ -8,9 +8,11 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import numpy as np
+from PIL import Image
 import tensorflow.compat.v1 as tf
 from tensorflow.python.ops import variables
 import turicreate.toolkits._tf_utils as _utils
+import turicreate as tc
 
 tf.disable_v2_behavior()
 
@@ -30,8 +32,14 @@ _DEFAULT_AUG_PARAMS = {
   'skip_probability_pad' : 0.1,
   'skip_probability_crop' : 0.1,
   'min_object_covered': 0.0,
-  'min_eject_coverage': 0.5
+  'min_eject_coverage': 0.5,
+  'resize_method': 'turicreate',
 }
+
+def uniform_num(random_num, min_value, max_value):
+    #return a uniform distribution number between min_value and max_value
+    #using a random_num in [0,1]
+    return min_value + (max_value - min_value) * random_num
 
 def hue_augmenter(image, annotation, tf_seed,
                   max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"]):
@@ -70,13 +78,51 @@ def color_augmenter(image, annotation, tf_seed,
 def resize_augmenter(image, annotation,
                      output_shape):
 
+    resize_method = _DEFAULT_AUG_PARAMS['resize_method']
 
-    new_height = tf.cast(output_shape[0], dtype=tf.int32)
-    new_width = tf.cast(output_shape[1], dtype=tf.int32)
+    def resize_PIL_image(image, output_shape):
+        image *= 255.
+        image = image.astype('uint8')
+        pil_img = Image.fromarray(image)
+        resize_img = pil_img.resize((output_shape[1], output_shape[0]), resample=Image.BILINEAR)
+        np_img = np.array(resize_img)
+        np_img = np_img.astype(np.float32)
+        np_img /= 255.
+        return np_img
 
-    # Determine the affine transform to apply and apply to the image itself.
-    image_scaled = tf.squeeze(tf.image.resize_bilinear(
-                          tf.expand_dims(image, 0), [new_height, new_width]), [0])
+    def resize_turicreate_image(image, output_shape):
+        image *= 255.
+        image = image.astype('uint8')
+        FORMAT_RAW = 2
+        tc_image = tc.Image(_image_data=image.tobytes(),
+                            _width=image.shape[1],
+                            _height=image.shape[0],
+                            _channels=image.shape[2],
+                            _format_enum=FORMAT_RAW,
+                            _image_data_size=image.size)
+        tc_image = tc.image_analysis.resize(tc_image, output_shape[1], output_shape[0], resample='bilinear')
+        image = tc_image.pixel_data
+        image = image.astype(np.float32)
+        image /= 255.
+        return image
+
+    if resize_method == 'tensorflow':
+        new_height = tf.cast(output_shape[0], dtype=tf.int32)
+        new_width = tf.cast(output_shape[1], dtype=tf.int32)
+
+        # Determine the affine transform to apply and apply to the image itself.
+        image_scaled = tf.squeeze(tf.image.resize_bilinear(
+                            tf.expand_dims(image, 0), [new_height, new_width]), [0])
+
+    elif resize_method == 'PIL':
+        image_scaled = tf.numpy_function(func=resize_PIL_image, inp=[image, output_shape], Tout=[tf.float32])
+
+    elif resize_method == 'turicreate':
+        image_scaled = tf.numpy_function(func=resize_turicreate_image, inp=[image, output_shape], Tout=[tf.float32])
+
+    else:
+        raise Exception('Non-supported resize method.')
+
     image_clipped = tf.clip_by_value(image_scaled, 0.0, 1.0)
     annotation = tf.clip_by_value(annotation, 0.0, 1.0)
 
@@ -86,7 +132,7 @@ def resize_augmenter(image, annotation,
 
 def horizontal_flip_augmenter(image, annotation, random_nums, skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"]):
 
-    if random_nums[0] < skip_probability:
+    if uniform_num(random_nums[0], 0 ,1) < skip_probability:
         return image, annotation
 
     image_height, image_width, _ = image.shape
@@ -109,7 +155,7 @@ def padding_augmenter(image,
                       min_area_fraction=_DEFAULT_AUG_PARAMS["min_area_fraction_pad"],
                       max_area_fraction=_DEFAULT_AUG_PARAMS["max_area_fraction_pad"],
                       max_attempts=_DEFAULT_AUG_PARAMS["max_attempts"]):
-    if random_nums[0] < skip_probability:
+    if uniform_num(random_nums[0], 0, 1) < skip_probability:
         return np.array(image), annotation
 
     image_height, image_width, _ = image.shape
@@ -118,7 +164,7 @@ def padding_augmenter(image,
     # compatible heights, or until reaching the upper limit on attempts.
     for i in range(max_attempts):
         # Randomly sample an aspect ratio.
-        aspect_ratio  = min_aspect_ratio + (max_aspect_ratio - min_aspect_ratio) * random_nums[1 + i]
+        aspect_ratio = uniform_num(random_nums[1 + i], min_aspect_ratio, max_aspect_ratio)
 
         # The padded height must be at least as large as the original height.
         # h' >= h
@@ -147,12 +193,12 @@ def padding_augmenter(image,
         return np.array(image), annotation
 
     # Sample a final size, given the sampled aspect ratio and range of heights.
-    padded_height = min_height + (max_height - min_height) * random_nums[1 + max_attempts]
+    padded_height = uniform_num(random_nums[1 + max_attempts], min_height, max_height)
     padded_width = padded_height * aspect_ratio;
 
     # Sample the offset of the source image inside the padded image.
-    x_offset = (padded_width - image_width) * random_nums[1 + max_attempts + 1]
-    y_offset = (padded_height - image_height) * random_nums[1 + max_attempts + 2]
+    x_offset = uniform_num(random_nums[1+max_attempts+1],0, padded_width - image_width)
+    y_offset = uniform_num(random_nums[1+max_attempts+2],0, padded_height - image_height)
 
     # Compute padding needed on the image
     after_padding_width = padded_width - image_width - x_offset
@@ -225,8 +271,7 @@ def crop_augmenter(image,
                    max_attempts=_DEFAULT_AUG_PARAMS["max_attempts"],
                    min_eject_coverage=_DEFAULT_AUG_PARAMS["min_eject_coverage"]):
 
-
-    if random_nums[0] < skip_probability:
+    if uniform_num(random_nums[0], 0 , 1) < skip_probability:
         return np.array(image), annotation
 
     image_height, image_width, _ = image.shape
@@ -235,7 +280,7 @@ def crop_augmenter(image,
     # list of cropped annotations), or reaching the limit on attempts.
     for i in range(max_attempts):
         # Randomly sample an aspect ratio.
-        aspect_ratio = min_aspect_ratio + (max_aspect_ratio-min_aspect_ratio)*random_nums[1+4*i]
+        aspect_ratio = uniform_num(random_nums[1+4*i], min_aspect_ratio, max_aspect_ratio)
 
         # Next we'll sample a height (which combined with the now known aspect
         # ratio, determines the size and area). But first we must compute the range
@@ -268,11 +313,11 @@ def crop_augmenter(image,
 
 
         # Sample a position for the crop, constrained to lie within the image.
-        cropped_height = min_height + (max_height - min_height) * random_nums[1+4*i+1]
+        cropped_height = uniform_num(random_nums[1+4*i+1], min_height, max_height)
         cropped_width = cropped_height * aspect_ratio;
 
-        x_offset = (image_width - cropped_width) * random_nums[1+4*i+2]
-        y_offset = (image_height - cropped_height) * random_nums[1+4*i+3]
+        x_offset = uniform_num(random_nums[1+4*i+2], image_width - cropped_width)
+        y_offset = uniform_num(random_nums[1+4*i+3], image_height - cropped_height)
 
         crop_bounds_x1 = x_offset
         crop_bounds_y1 = y_offset
@@ -428,6 +473,7 @@ class DataAugmenter(object):
         self.session = tf.Session(graph=self.graph)
 
     def get_augmented_data(self, images, annotations):
+
         feed_dict = dict()
         graph_op = self.resize_op_batch[0:len(images)]
         for i in range(0, len(images)):
@@ -445,5 +491,6 @@ class DataAugmenter(object):
         processed_images = np.array(processed_images, dtype=np.float32)
         processed_images = np.ascontiguousarray(processed_images, dtype=np.float32)
         return (processed_images, processed_annotations)
+
 
 
