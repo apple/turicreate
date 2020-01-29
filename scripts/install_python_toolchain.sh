@@ -39,7 +39,7 @@ $PIP install -r scripts/requirements.txt
 
 # install pre-commit hooks for git
 if [[ $with_pre_commit -eq 1 ]]; then
-  $PIP install $(cat scripts/requirements-optional.txt | grep pre-commit)
+  $PIP install $(grep pre-commit scripts/requirements-optional.txt)
   # install under root
   $PYTHON -m pre_commit install
   # TODO: pre-commit-hooks for clang-format
