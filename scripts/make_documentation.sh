@@ -9,7 +9,7 @@ TARGET_DIR=${WORKSPACE}/target
 
 cd ${WORKSPACE}
 
-${VIRTUALENV} ./deps/env
+virtualenv ./deps/env
 source deps/env/bin/activate
 
 pip install target/turicreate-*.whl

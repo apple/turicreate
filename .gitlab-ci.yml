@@ -217,7 +217,6 @@ build_documentation:
     - build_wheel_linux_python37
   script:
     - apk add bash
-    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenv"
     - bash scripts/make_documentation.sh
   artifacts:
     when: always
