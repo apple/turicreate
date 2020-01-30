@@ -5912,6 +5912,17 @@ class SFrame(object):
         """
         gsf = GroupedSFrame(self, key_columns)
         return gsf
+    
+    def to_dict(self):
+        dict_sframe = {}
+        for key in self.column_names():
+            sa = SArray(self[key])
+            val_list = []
+            for val in sa:
+                val_list.append(val)
+            dict_sframe.update({key:val_list})
+            del val_list
+        return dict_sframe
 
     @property
     def shape(self):

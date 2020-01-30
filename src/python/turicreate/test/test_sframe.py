@@ -3795,6 +3795,12 @@ class SFrameTest(unittest.TestCase):
         sf2 = SFrame.read_json(f.name)
         _assert_sframe_equal(sf, sf2)
 
+    def test_to_dict(self): 
+        sf = SFrame({'col1': [1, 2],'col2': [0.5, 0.75]}) 
+        result = sf.to_dict() 
+        expected = {'col1': [1, 2], 'col2': [0.5, 0.75]} 
+        self.assertEqual(result, expected) 
+
 if __name__ == "__main__":
 
     import sys
