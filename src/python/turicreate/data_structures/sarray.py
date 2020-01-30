@@ -4434,4 +4434,20 @@ class SArray(object):
         return SArray(_proxy = self.__proxy__)
 
     def abs(self):
+        """
+        Returns a new SArray containing the absolute value of each element.
+
+        Examples
+        --------
+        >>> tc.SArray([1, -1, -2]).abs()
+        dtype: int
+        Rows: 3
+        [1, 1, 2]
+
+        >>> tc.SArray([-1., -2.]).abs()
+        dtype: float
+        Rows: 2
+        [1.0, 2.0]
+        """
+
         return abs(self)

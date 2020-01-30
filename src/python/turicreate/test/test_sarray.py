@@ -3221,4 +3221,3 @@ class SArrayTest(unittest.TestCase):
         result = sa.abs()
         expected = [1.1, 2.0, 3.33, 4.0]
         self.__test_equal(result, expected, float)
-
