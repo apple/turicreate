@@ -215,6 +215,14 @@ class SFrameTest(unittest.TestCase):
             self.assertEqual(sf.dtype, [float, int, str])
             self.__test_equal(sf, df)
 
+    def test_drop_duplicate(self):
+        sf = SFrame({'A': ['a', 'b', 'a','C'], 'B': ['b', 'a', 'b','D'], 'C': [1, 2, 1,8]})
+        df = pd.DataFrame({'A': ['a', 'b', 'a','C'], 'B': ['b', 'a', 'b','D'], 'C': [1, 2, 1,8]})
+        sf1=sf.drop_duplicates(subset=["A","B"])
+        sf1=sf1.topk("C",reverse=True)
+        df1=df.drop_duplicates(subset=["A","B"]).reset_index(drop=True)
+        self.__test_equal(sf1,df1)
+    
     def test_parse_csv(self):
         with tempfile.NamedTemporaryFile(mode='w', delete=False) as csvfile:
             self.dataframe.to_csv(csvfile, index=False)
