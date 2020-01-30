@@ -324,12 +324,11 @@ class ObjectDetectorTest(unittest.TestCase):
 
     def test_different_grip_shape(self):
         # Should able to give different input grip shape
-        shapes = [[1, 1], [5, 5], [13, 13], [26, 26]]
+        shapes = [[1,1], [5,5], [26,26], [10,20], [7, 19] ]
         for shape in shapes:
             model = tc.object_detector.create(
-                self.sf, max_iterations=1, grid_shape=shape
-            )
-            pred = model.predict(self.sf)
+                    self.sf[:2], max_iterations=1, grid_shape=shape)
+            pred = model.predict(self.sf[:2])
 
     def test_predict(self):
         sf = self.sf.head()
