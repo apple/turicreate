@@ -38,7 +38,7 @@ $PIP install --upgrade "pip>=8.1"
 $PIP install -r scripts/requirements.txt
 
 # install pre-commit hooks for git
-with_pre_commit=${with_pre_commit-0}
+with_pre_commit=${with_pre_commit:-0}
 if [[ $with_pre_commit -eq 1 ]]; then
   # install under root
   $PYTHON -m pre_commit install
