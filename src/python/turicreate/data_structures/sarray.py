@@ -4451,4 +4451,3 @@ class SArray(object):
         """
 
         return abs(self)
-
