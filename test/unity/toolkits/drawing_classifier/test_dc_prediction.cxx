@@ -135,10 +135,10 @@ gl_sframe set_up_perform_inference(
       }
 
       auto to_return =
-          shared_float_array::copy(buffer.data(), {num_of_classes, repeat});
+          shared_float_array::copy(buffer.data(), {num_of_classes, batch_size});
 
       mock_backend->predict_calls_.push_back([=](const float_array_map& input) {
-        TS_ASSERT_EQUALS(input.at("input").size(), repeat * 28 * 28);
+        TS_ASSERT_EQUALS(input.at("input").size(), batch_size * 28 * 28);
         return float_array_map({{"output", to_return}});
       });
     }

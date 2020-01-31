@@ -126,8 +126,10 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   size_t image_data_size = kDrawingHeight * kDrawingWidth * kDrawingChannels;
   std::vector<float> batch_drawings(batch_size * image_data_size, 0.f);
   std::vector<float> batch_targets;
+  std::vector<float> batch_weights;
   std::vector<float> batch_predictions;
   batch_targets.reserve(batch_size);
+  batch_weights.reserve(batch_size);
   batch_predictions.reserve(batch_size);
 
   float* next_drawing_pointer = batch_drawings.data();
@@ -155,6 +157,7 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
       batch_targets.emplace_back(static_cast<float>(
           std::find(classes.begin(), classes.end(), row[target_index_]) -
           classes.begin()));
+      batch_weights.emplace_back(1.f);
     }
 
     if (++next_row_ == end_of_rows_ && repeat_) {
@@ -192,7 +195,8 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
   }
 
   if (target_index_ >= 0) {
-    DASSERT_EQ(real_batch_size, batch_targets.size());
+    batch_targets.resize(batch_size, 0.f);
+    batch_weights.resize(batch_size, 0.f);
   }
 
   // Wrap the buffers as float_array values.
@@ -200,33 +204,27 @@ data_iterator::batch simple_data_iterator::next_batch(size_t batch_size) {
 
   result.num_samples = real_batch_size;
 
-  /**
-   * soft shrink to real size to avoid error from shared_float_array::wrap
-   * since it requires `batch_drawings` to have an accurate size as the
-   * shape indicates
-   **/
-  if (real_batch_size < batch_size) {
-    auto pend = std::begin(batch_drawings) + real_batch_size * image_data_size;
-    batch_drawings.erase(pend, batch_drawings.end());
-  }
-
   // do normalization on each pixel
   std::for_each(batch_drawings.begin(), batch_drawings.end(),
                 [=](float& x) { x *= scale_factor_; });
 
   result.drawings = shared_float_array::wrap(
       std::move(batch_drawings),
-      {real_batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels});
+      {batch_size, kDrawingHeight, kDrawingWidth, kDrawingChannels});
 
   if (target_index_ >= 0) {
     result.targets =
-        shared_float_array::wrap(std::move(batch_targets), {real_batch_size, 1});
+        shared_float_array::wrap(std::move(batch_targets), {batch_size, 1});
+    result.weights =
+        shared_float_array::wrap(std::move(batch_weights), {batch_size, 1});
   }
 
-  if (predictions_index_ >= 0) {
-    result.predictions = shared_float_array::wrap(std::move(batch_predictions),
-                                                  {real_batch_size, 1});
+   if (predictions_index_ >= 0) {
+     batch_predictions.resize(batch_size, 0.f);
+     result.predictions = shared_float_array::wrap(std::move(batch_predictions),
+                                                   {real_batch_size, 1});
   }
+  
 
   return result;
 }

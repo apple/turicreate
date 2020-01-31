@@ -496,10 +496,12 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
 
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
-        training_model_->predict({{"input", result_batch.data_info.drawings},
-                                  {"labels", result_batch.data_info.targets},
-                                  {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
-                                });
+        training_model_->predict(
+            {{"input", result_batch.data_info.drawings},
+             {"labels", result_batch.data_info.targets},
+             {"weights", result_batch.data_info.weights},
+             {"num_samples",
+              shared_float_array::wrap(result_batch.data_info.num_samples)}});
 
     result_batch.loss_info = results.at("loss");
     result_batch.output_info = results.at("output");
@@ -562,6 +564,7 @@ void drawing_classifier::iterate_training(bool show_loss) {
     std::map<std::string, shared_float_array> results =
         training_model_->train({{"input", result_batch.data_info.drawings},
                                 {"labels", result_batch.data_info.targets},
+                                {"weights", result_batch.data_info.weights},
                                 {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
                               });
     result_batch.output_info = results.at("output");
@@ -756,9 +759,8 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
       pending_batches.pop();
 
       size_t num_images = batch.data_info.num_samples;
-      ASSERT_EQ(num_images * num_classes, batch.data_info.predictions.size());
-
       auto output_itr = batch.data_info.predictions.data();
+      
       for (size_t ii = 0; ii < num_images; ++ii) {
         std::copy(output_itr, output_itr + num_classes, preds.begin());
         output_itr += num_classes;
