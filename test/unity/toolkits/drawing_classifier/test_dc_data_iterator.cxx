@@ -41,14 +41,14 @@ const flex_list UNIQUE_LABELS = {"foo", "bar", "baz"};
  *
  */
 void test_simple_data_iterator_with_num_rows_and_batch_size(
-    const drawing_data_generator &data_generator, size_t num_rows,
+    const drawing_data_generator &data_generator,
     size_t batch_size, bool checked_class_labels) {
   data_iterator::parameters params = data_generator.get_iterator_params();
 
   // without applying scale factor
   params.scale_factor = 1.0;
 
-  TS_ASSERT_EQUALS(params.data.size(), num_rows);
+  TS_ASSERT_EQUALS(params.data.size(), batch_size);
 
   /* Create a simple data iterator */
 
@@ -71,12 +71,6 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   /* Call next_batch */
   data_iterator::batch next_batch = data_source.next_batch(batch_size);
 
-  // get the real batch size for test now
-  size_t num_samples;
-  if (num_rows < batch_size) {
-    num_samples = num_rows;
-  }
-
   /* Test drawing and target sizes */
   TS_ASSERT_EQUALS(next_batch.drawings.size(),
                    batch_size * IMAGE_WIDTH * IMAGE_HEIGHT * 1);
@@ -98,7 +92,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   size_t index_in_data = 0;
   /* Test target contents */
   const float *actual_target_data = next_batch.targets.data();
-  for (size_t index_in_batch = 0; index_in_batch < num_samples;
+  for (size_t index_in_batch = 0; index_in_batch < batch_size;
        index_in_batch++) {
     float expected_target = static_cast<float>(
         std::find(actual_class_labels.begin(), actual_class_labels.end(),
@@ -113,7 +107,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
   index_in_data = 0;
   const float *actual_drawing_data = next_batch.drawings.data();
 
-  for (size_t index_in_batch = 0; index_in_batch < num_samples;
+  for (size_t index_in_batch = 0; index_in_batch < batch_size;
        index_in_batch++) {
     flex_image decoded_drawing = image_util::decode_image(
         data[params.feature_column_name][index_in_data].to<flex_image>());
@@ -139,28 +133,27 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
-  constexpr size_t MAX_NUM_ROWS = 4;
+
   constexpr size_t MAX_BATCH_SIZE = 8;
 
-  for (size_t num_rows = 1; num_rows <= MAX_NUM_ROWS; num_rows++) {
+
     for (size_t batch_size = 1; batch_size <= MAX_BATCH_SIZE; batch_size++) {
       drawing_data_generator data_generator(/* is_bitmap_based */ true,
-                                            num_rows,
+                                            batch_size,
                                             /* class_labels */ UNIQUE_LABELS);
       data_iterator::parameters params = data_generator.get_iterator_params();
 
       test_simple_data_iterator_with_num_rows_and_batch_size(
-          data_generator, num_rows, batch_size,
+          data_generator, batch_size,
           /* need NOT to check label */ false);
     }
-  }
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
-  constexpr size_t NUM_ROWS = 1;
-  constexpr size_t BATCH_SIZE = 10;
 
-  drawing_data_generator data_generator(/* is_bitmap_based */ true, NUM_ROWS,
+  constexpr size_t BATCH_SIZE = 1;
+
+  drawing_data_generator data_generator(/* is_bitmap_based */ true, BATCH_SIZE,
                                         /* class_labels */ UNIQUE_LABELS);
   flex_list class_labels = {"bar", "foo"};
 
@@ -172,7 +165,7 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
 
   // Confirm that the extraneous label appears in the data_source class_labels.
   test_simple_data_iterator_with_num_rows_and_batch_size(
-      data_generator, NUM_ROWS, BATCH_SIZE,
+      data_generator, BATCH_SIZE,
       /* need NOT to check labels */ true);
 }
 
