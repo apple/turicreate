@@ -151,10 +151,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
             self.cost
         )
 
-<<<<<<< HEAD
-=======
         self.sess = _tf.Session()
->>>>>>> f65e2cd45c... Adding weights to DC
         self.sess.run(_tf.global_variables_initializer())
 
         # Assign the initialised weights from C++ to tensorflow
