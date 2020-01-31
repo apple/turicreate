@@ -1600,13 +1600,18 @@ class SFrame(object):
         [3 rows x 1 columns]
         """
         if orient == "records":
-            g = SArray.read_json(url)
-            if len(g) == 0:
-                return SFrame()
-            if g.dtype != dict:
-                raise RuntimeError("Invalid input JSON format. Expected list of dictionaries")
-            g = SFrame({'X1':g})
-            return g.unpack('X1','')
+            if type(url)==str and url[0] !='{' :
+                g = SArray.read_json(url)
+                if len(g) == 0:
+                    return SFrame()
+                if g.dtype != dict:
+                    raise RuntimeError("Invalid input JSON format. Expected list of dictionaries")
+                g = SFrame({'X1':g})
+                return g.unpack('X1','')
+            elif type(url)==str and url[0] =='{' :
+                url=pandas.read_json(url)
+                url=SFrame(url)
+                return url
         elif orient == "lines":
             g = cls.read_csv(url, header=False,na_values=['null'],true_values=['true'],false_values=['false'],
                     _only_raw_string_substitutions=True)
