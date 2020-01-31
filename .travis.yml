@@ -71,7 +71,7 @@ script:
 
   # Build the wheel
   - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=1
-    --debug --skip_cpp_test --skip_doc
+    --debug --skip_cpp_test
 
   # See the changes in ccache
   - ccache -s
