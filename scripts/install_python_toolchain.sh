@@ -34,7 +34,7 @@ function linux_patch_sigfpe_handler {
   fi
 }
 
-$PIP install --upgrade "pip>=8.1"
+$PIP install --upgrade "pip"
 $PIP install -r scripts/requirements.txt
 
 # install pre-commit hooks for git
