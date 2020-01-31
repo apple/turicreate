@@ -41,8 +41,8 @@ const flex_list UNIQUE_LABELS = {"foo", "bar", "baz"};
  *
  */
 void test_simple_data_iterator_with_num_rows_and_batch_size(
-    const drawing_data_generator &data_generator,
-    size_t batch_size, bool checked_class_labels) {
+    const drawing_data_generator &data_generator, size_t batch_size,
+    bool checked_class_labels) {
   data_iterator::parameters params = data_generator.get_iterator_params();
 
   // without applying scale factor
@@ -133,9 +133,7 @@ void test_simple_data_iterator_with_num_rows_and_batch_size(
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
-
   constexpr size_t MAX_BATCH_SIZE = 8;
-
 
     for (size_t batch_size = 1; batch_size <= MAX_BATCH_SIZE; batch_size++) {
       drawing_data_generator data_generator(/* is_bitmap_based */ true,
@@ -150,7 +148,6 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
 }
 
 BOOST_AUTO_TEST_CASE(test_simple_data_iterator_with_expected_class_labels) {
-
   constexpr size_t BATCH_SIZE = 1;
 
   drawing_data_generator data_generator(/* is_bitmap_based */ true, BATCH_SIZE,
