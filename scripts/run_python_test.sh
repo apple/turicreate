@@ -18,9 +18,9 @@ WORKSPACE=${SCRIPT_DIR}/..
 
 unset PYTHONPATH
 
-cd $WORKSPACE
+cd "$WORKSPACE"
 scripts/install_python_toolchain.sh
-source scripts/python_env.sh $BUILD_TYPE
+source scripts/python_env.sh "$BUILD_TYPE"
 
 # Make python unit tests print unity server log on exception
 export TURI_VERBOSE=1
@@ -34,7 +34,7 @@ pop_ld_library_path() {
   export LD_LIBRARY_PATH=$OLD_LIBRARY_PATH
 }
 push_ld_library_path
-cd $TURI_BUILD_ROOT/src/python
+cd "$TURI_BUILD_ROOT"/src/python
 make -j4
 pop_ld_library_path
 
@@ -44,15 +44,16 @@ if ! type "parallel" 2> /dev/null; then
         if [[ $OSTYPE != msys ]]; then
           cmd=${PYTHON_EXECUTABLE}
         fi
-        cmd="${cmd} ${PYTEST_EXECUTABLE} -v $PYTHONPATH/turicreate/test --junit-xml=alltests.pytest.xml"
-        echo $cmd
+        cmd="${cmd} ${PYTEST_EXECUTABLE} --cov -v $PYTHONPATH/turicreate/test \
+          --junit-xml=alltests.pytest.xml"
+        echo "$cmd"
         $cmd
 else
         cmd=""
         if [[ $OSTYPE != msys ]]; then
           cmd=${PYTHON_EXECUTABLE}
         fi
-        cmd="${cmd} ${PYTEST_EXECUTABLE} -v -s --junit-xml={}.pytest.xml {}"
+        cmd="${cmd} ${PYTEST_EXECUTABLE} --cov -v -s --junit-xml={}.pytest.xml {}"
         echo "Tests are running in parallel. Output is buffered until job is done..."
-        find turicreate/test -name "*.py" | parallel --group -P 4 $cmd
+        find turicreate/test -name "*.py" | parallel --group -P 4 "$cmd"
 fi

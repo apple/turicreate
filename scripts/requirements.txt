@@ -25,4 +25,4 @@ hypothesis>=4.50,<5.0
 wheel>=0.29.0
 six>=1.12.0
 requests>=2.9.1
-coverage>=5.0.2
+pytest-cov>=2.7.1
