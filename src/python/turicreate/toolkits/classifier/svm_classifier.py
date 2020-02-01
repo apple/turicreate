@@ -12,28 +12,36 @@ from __future__ import absolute_import as _
 
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._supervised_learning import Classifier as _Classifier
-from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
-                                        _toolkit_get_topk_bottomk, \
-                                        _raise_error_evaluation_metric_is_valid, \
-                                        _check_categorical_option_type, \
-                                        _summarize_coefficients
+from turicreate.toolkits._internal_utils import (
+    _toolkit_repr_print,
+    _toolkit_get_topk_bottomk,
+    _raise_error_evaluation_metric_is_valid,
+    _check_categorical_option_type,
+    _summarize_coefficients,
+)
 
 
 _DEFAULT_SOLVER_OPTIONS = {
-'convergence_threshold': 1e-2,
-'max_iterations': 10,
-'lbfgs_memory_level': 11,
+    "convergence_threshold": 1e-2,
+    "max_iterations": 10,
+    "lbfgs_memory_level": 11,
 }
 
-def create(dataset, target, features=None,
-    penalty=1.0, solver='auto',
+
+def create(
+    dataset,
+    target,
+    features=None,
+    penalty=1.0,
+    solver="auto",
     feature_rescaling=True,
-    convergence_threshold = _DEFAULT_SOLVER_OPTIONS['convergence_threshold'],
-    lbfgs_memory_level = _DEFAULT_SOLVER_OPTIONS['lbfgs_memory_level'],
-    max_iterations = _DEFAULT_SOLVER_OPTIONS['max_iterations'],
-    class_weights = None,
-    validation_set = 'auto',
-    verbose=True):
+    convergence_threshold=_DEFAULT_SOLVER_OPTIONS["convergence_threshold"],
+    lbfgs_memory_level=_DEFAULT_SOLVER_OPTIONS["lbfgs_memory_level"],
+    max_iterations=_DEFAULT_SOLVER_OPTIONS["max_iterations"],
+    class_weights=None,
+    validation_set="auto",
+    verbose=True,
+):
     """
     Create a :class:`~turicreate.svm_classifier.SVMClassifier` to predict the class of a binary
     target variable based on a model of which side of a hyperplane the example
@@ -215,14 +223,20 @@ def create(dataset, target, features=None,
     model_name = "classifier_svm"
     solver = solver.lower()
 
-    model = _sl.create(dataset, target, model_name, features=features,
-                        validation_set = validation_set, verbose = verbose,
-                        penalty = penalty,
-                        feature_rescaling = feature_rescaling,
-                        convergence_threshold = convergence_threshold,
-                        lbfgs_memory_level = lbfgs_memory_level,
-                        max_iterations = max_iterations,
-                        class_weights = class_weights)
+    model = _sl.create(
+        dataset,
+        target,
+        model_name,
+        features=features,
+        validation_set=validation_set,
+        verbose=verbose,
+        penalty=penalty,
+        feature_rescaling=feature_rescaling,
+        convergence_threshold=convergence_threshold,
+        lbfgs_memory_level=lbfgs_memory_level,
+        max_iterations=max_iterations,
+        class_weights=class_weights,
+    )
 
     return SVMClassifier(model.__proxy__)
 
@@ -289,8 +303,9 @@ class SVMClassifier(_Classifier):
     create
 
     """
+
     def __init__(self, model_proxy):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model_proxy
         self.__name__ = self.__class__._native_name()
 
@@ -327,35 +342,36 @@ class SVMClassifier(_Classifier):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Number of coefficients', 'num_coefficients'),
-            ('Number of examples', 'num_examples'),
-            ('Number of classes', 'num_classes'),
-            ('Number of feature columns', 'num_features'),
-            ('Number of unpacked features', 'num_unpacked_features')]
+            ("Number of coefficients", "num_coefficients"),
+            ("Number of examples", "num_examples"),
+            ("Number of classes", "num_classes"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
+        ]
 
         hyperparam_fields = [
-            ("Mis-classification penalty", 'penalty'),
+            ("Mis-classification penalty", "penalty"),
         ]
 
         solver_fields = [
-            ("Solver", 'solver'),
-            ("Solver iterations", 'training_iterations'),
-            ("Solver status", 'training_solver_status'),
-            ("Training time (sec)", 'training_time')]
+            ("Solver", "solver"),
+            ("Solver iterations", "training_iterations"),
+            ("Solver status", "training_solver_status"),
+            ("Training time (sec)", "training_time"),
+        ]
 
-        training_fields = [
-            ("Train Loss", 'training_loss')]
+        training_fields = [("Train Loss", "training_loss")]
 
         coefs = self.coefficients
         (top_coefs, bottom_coefs) = _toolkit_get_topk_bottomk(coefs, k=5)
 
-        (coefs_list, titles_list) = _summarize_coefficients(top_coefs, \
-                                                                    bottom_coefs)
+        (coefs_list, titles_list) = _summarize_coefficients(top_coefs, bottom_coefs)
 
-        return ([model_fields, hyperparam_fields, solver_fields, \
-                                            training_fields] + coefs_list,
-                            [ 'Schema', 'Hyperparameters', \
-                            'Training Summary', 'Settings'] + titles_list, )
+        return (
+            [model_fields, hyperparam_fields, solver_fields, training_fields]
+            + coefs_list,
+            ["Schema", "Hyperparameters", "Training Summary", "Settings"] + titles_list,
+        )
 
     def __repr__(self):
         """
@@ -381,12 +397,14 @@ class SVMClassifier(_Classifier):
         """
         from turicreate.extensions import _linear_svm_export_as_model_asset
         from turicreate.toolkits import _coreml_utils
+
         display_name = "svm classifier"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
-        context = {"class": self.__class__.__name__,
-                   "short_description": short_description,
-                }
-        context['user_defined'] = _coreml_utils._get_tc_version_info()
+        context = {
+            "class": self.__class__.__name__,
+            "short_description": short_description,
+        }
+        context["user_defined"] = _coreml_utils._get_tc_version_info()
         _linear_svm_export_as_model_asset(self.__proxy__, filename, context)
 
     def _get(self, field):
@@ -448,7 +466,7 @@ class SVMClassifier(_Classifier):
         """
         return super(_Classifier, self)._get(field)
 
-    def predict(self, dataset, output_type='class', missing_value_action='auto'):
+    def predict(self, dataset, output_type="class", missing_value_action="auto"):
         """
         Return predictions for ``dataset``, using the trained logistic
         regression model. Predictions can be generated as class labels (0 or
@@ -510,13 +528,12 @@ class SVMClassifier(_Classifier):
 
         """
 
-        _check_categorical_option_type('output_type', output_type,
-                                               ['class', 'margin'])
-        return super(_Classifier, self).predict(dataset,
-                                                output_type=output_type,
-                                                missing_value_action=missing_value_action)
+        _check_categorical_option_type("output_type", output_type, ["class", "margin"])
+        return super(_Classifier, self).predict(
+            dataset, output_type=output_type, missing_value_action=missing_value_action
+        )
 
-    def classify(self, dataset, missing_value_action='auto'):
+    def classify(self, dataset, missing_value_action="auto"):
         """
         Return a classification, for each example in the ``dataset``, using the
         trained SVM model. The output SFrame contains predictions
@@ -561,10 +578,17 @@ class SVMClassifier(_Classifier):
         >>> classes = model.classify(data)
 
         """
-        return super(SVMClassifier, self).classify(dataset, missing_value_action=missing_value_action)
+        return super(SVMClassifier, self).classify(
+            dataset, missing_value_action=missing_value_action
+        )
 
-
-    def evaluate(self, dataset, metric='auto', missing_value_action='auto', with_predictions=False):
+    def evaluate(
+        self,
+        dataset,
+        metric="auto",
+        missing_value_action="auto",
+        with_predictions=False,
+    ):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -628,10 +652,13 @@ class SVMClassifier(_Classifier):
           >>> results = model.progressvaluate(data)
           >>> print results['accuracy']
         """
-        _raise_error_evaluation_metric_is_valid(metric,
-             ['auto', 'accuracy', 'confusion_matrix', 'precision', 'recall',
-              'f1_score'])
-        return super(_Classifier, self).evaluate(dataset,
-                               missing_value_action=missing_value_action,
-                               metric=metric,
-                               with_predictions=with_predictions)
+        _raise_error_evaluation_metric_is_valid(
+            metric,
+            ["auto", "accuracy", "confusion_matrix", "precision", "recall", "f1_score"],
+        )
+        return super(_Classifier, self).evaluate(
+            dataset,
+            missing_value_action=missing_value_action,
+            metric=metric,
+            with_predictions=with_predictions,
+        )

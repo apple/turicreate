@@ -19,20 +19,34 @@ from turicreate.toolkits._internal_utils import _check_categorical_option_type
 from turicreate.toolkits._tree_model_mixin import TreeModelMixin as _TreeModelMixin
 
 
-_DECISION_TREE_MODEL_PARAMS_KEYS = ['max_depth', 'min_child_weight',
-'min_loss_reduction']
-_DECISION_TREE_TRAINING_PARAMS_KEYS = ['objective', 'training_time',
-'training_error', 'validation_error', 'evaluation_metric']
-_DECISION_TREE_TRAINING_DATA_PARAMS_KEYS = ['target', 'features',
-'num_features', 'num_examples', 'num_validation_examples']
+_DECISION_TREE_MODEL_PARAMS_KEYS = [
+    "max_depth",
+    "min_child_weight",
+    "min_loss_reduction",
+]
+_DECISION_TREE_TRAINING_PARAMS_KEYS = [
+    "objective",
+    "training_time",
+    "training_error",
+    "validation_error",
+    "evaluation_metric",
+]
+_DECISION_TREE_TRAINING_DATA_PARAMS_KEYS = [
+    "target",
+    "features",
+    "num_features",
+    "num_examples",
+    "num_validation_examples",
+]
 
-__doc_string_context = '''
+__doc_string_context = """
       >>> url = 'https://static.turi.com/datasets/xgboost/mushroom.csv'
       >>> data = turicreate.SFrame.read_csv(url)
 
       >>> train, test = data.random_split(0.8)
       >>> model = turicreate.decision_tree_classifier.create(train, target='label')
-'''
+"""
+
 
 class DecisionTreeClassifier(_Classifier, _TreeModelMixin):
     """
@@ -56,6 +70,7 @@ class DecisionTreeClassifier(_Classifier, _TreeModelMixin):
     create
 
     """
+
     def __init__(self, proxy):
         """__init__(self)"""
         self.__proxy__ = proxy
@@ -138,7 +153,7 @@ class DecisionTreeClassifier(_Classifier, _TreeModelMixin):
         """
         return super(_Classifier, self)._get(field)
 
-    def evaluate(self, dataset, metric='auto', missing_value_action='auto'):
+    def evaluate(self, dataset, metric="auto", missing_value_action="auto"):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -198,14 +213,25 @@ class DecisionTreeClassifier(_Classifier, _TreeModelMixin):
           >>> results = model.evaluate(test_data, metric='confusion_matrix')
 
         """
-        _raise_error_evaluation_metric_is_valid(metric,
-                ['auto', 'accuracy', 'confusion_matrix', 'roc_curve', 'auc',
-                 'log_loss', 'precision', 'recall', 'f1_score'])
-        return super(_Classifier, self).evaluate(dataset,
-                                 missing_value_action=missing_value_action,
-                                 metric=metric)
+        _raise_error_evaluation_metric_is_valid(
+            metric,
+            [
+                "auto",
+                "accuracy",
+                "confusion_matrix",
+                "roc_curve",
+                "auc",
+                "log_loss",
+                "precision",
+                "recall",
+                "f1_score",
+            ],
+        )
+        return super(_Classifier, self).evaluate(
+            dataset, missing_value_action=missing_value_action, metric=metric
+        )
 
-    def predict(self, dataset, output_type='class', missing_value_action='auto'):
+    def predict(self, dataset, output_type="class", missing_value_action="auto"):
         """
         A flexible and advanced prediction API.
 
@@ -262,13 +288,18 @@ class DecisionTreeClassifier(_Classifier, _TreeModelMixin):
         >>> m.predict(testdata, output_type='probability')
         >>> m.predict(testdata, output_type='margin')
         """
-        _check_categorical_option_type('output_type', output_type,
-                ['class', 'margin', 'probability', 'probability_vector'])
-        return super(_Classifier, self).predict(dataset,
-                                                output_type=output_type,
-                                                missing_value_action=missing_value_action)
+        _check_categorical_option_type(
+            "output_type",
+            output_type,
+            ["class", "margin", "probability", "probability_vector"],
+        )
+        return super(_Classifier, self).predict(
+            dataset, output_type=output_type, missing_value_action=missing_value_action
+        )
 
-    def predict_topk(self, dataset, output_type="probability", k=3, missing_value_action='auto'):
+    def predict_topk(
+        self, dataset, output_type="probability", k=3, missing_value_action="auto"
+    ):
         """
         Return top-k predictions for the ``dataset``, using the trained model.
         Predictions are returned as an SFrame with three columns: `id`,
@@ -334,23 +365,30 @@ class DecisionTreeClassifier(_Classifier, _TreeModelMixin):
         +--------+-------+-------------------+
         [35688 rows x 3 columns]
         """
-        _check_categorical_option_type('output_type', output_type, ['rank', 'margin', 'probability'])
-        if missing_value_action == 'auto':
-            missing_value_action = _sl.select_default_missing_value_policy(self, 'predict')
+        _check_categorical_option_type(
+            "output_type", output_type, ["rank", "margin", "probability"]
+        )
+        if missing_value_action == "auto":
+            missing_value_action = _sl.select_default_missing_value_policy(
+                self, "predict"
+            )
 
         # Low latency path
         if isinstance(dataset, list):
             return self.__proxy__.fast_predict_topk(
-                dataset, missing_value_action, output_type, k)
+                dataset, missing_value_action, output_type, k
+            )
         if isinstance(dataset, dict):
             return self.__proxy__.fast_predict_topk(
-                [dataset], missing_value_action, output_type, k)
+                [dataset], missing_value_action, output_type, k
+            )
         # Fast path
         _raise_error_if_not_sframe(dataset, "dataset")
         return self.__proxy__.predict_topk(
-            dataset, missing_value_action, output_type, k)
+            dataset, missing_value_action, output_type, k
+        )
 
-    def classify(self, dataset, missing_value_action='auto'):
+    def classify(self, dataset, missing_value_action="auto"):
         """
         Return a classification, for each example in the ``dataset``, using the
         trained model. The output SFrame contains predictions as class labels
@@ -397,9 +435,9 @@ class DecisionTreeClassifier(_Classifier, _TreeModelMixin):
         >>> classes = model.classify(data)
 
         """
-        return super(DecisionTreeClassifier, self).classify(dataset,
-                                                            missing_value_action=missing_value_action)
-
+        return super(DecisionTreeClassifier, self).classify(
+            dataset, missing_value_action=missing_value_action
+        )
 
     def export_coreml(self, filename):
         """
@@ -415,27 +453,33 @@ class DecisionTreeClassifier(_Classifier, _TreeModelMixin):
         >>> model.export_coreml("MyModel.mlmodel")
         """
         from turicreate.toolkits import _coreml_utils
+
         display_name = "decision tree classifier"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
-        context = {"mode" : "classification",
-                   "model_type" : "decision_tree",
-                   "class": self.__class__.__name__,
-                   "short_description": short_description,
-                }
+        context = {
+            "mode": "classification",
+            "model_type": "decision_tree",
+            "class": self.__class__.__name__,
+            "short_description": short_description,
+        }
 
         self._export_coreml_impl(filename, context)
 
-def create(dataset, target,
-           features=None,
-           validation_set='auto',
-           class_weights=None,
-           max_depth=6,
-           min_loss_reduction=0.0,
-           min_child_weight=0.1,
-           verbose=True,
-           random_seed=None,
-           metric='auto',
-           **kwargs):
+
+def create(
+    dataset,
+    target,
+    features=None,
+    validation_set="auto",
+    class_weights=None,
+    max_depth=6,
+    min_loss_reduction=0.0,
+    min_child_weight=0.1,
+    verbose=True,
+    random_seed=None,
+    metric="auto",
+    **kwargs
+):
     """
     Create a (binary or multi-class) classifier model of type
     :class:`~turicreate.decision_tree_classifier.DecisionTreeClassifier`. This
@@ -545,18 +589,20 @@ def create(dataset, target,
       >>> results = model.evaluate(test)
     """
     if random_seed is not None:
-        kwargs['random_seed'] = random_seed
+        kwargs["random_seed"] = random_seed
 
-    model = _sl.create(dataset = dataset,
-                        target = target,
-                        features = features,
-                        model_name = 'decision_tree_classifier',
-                        validation_set = validation_set,
-                        class_weights = class_weights,
-                        max_depth = max_depth,
-                        min_loss_reduction = min_loss_reduction,
-                        min_child_weight = min_child_weight,
-                        verbose = verbose,
-                        metric = metric,
-                        **kwargs)
+    model = _sl.create(
+        dataset=dataset,
+        target=target,
+        features=features,
+        model_name="decision_tree_classifier",
+        validation_set=validation_set,
+        class_weights=class_weights,
+        max_depth=max_depth,
+        min_loss_reduction=min_loss_reduction,
+        min_child_weight=min_child_weight,
+        verbose=verbose,
+        metric=metric,
+        **kwargs
+    )
     return DecisionTreeClassifier(model.__proxy__)

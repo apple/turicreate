@@ -24,28 +24,33 @@ from turicreate.toolkits._model import Model as _Model
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
-from turicreate.toolkits._internal_utils import (_raise_error_if_not_sframe,
-                                                 _numeric_param_check_range,
-                                                 _raise_error_if_not_iterable)
+from turicreate.toolkits._internal_utils import (
+    _raise_error_if_not_sframe,
+    _numeric_param_check_range,
+    _raise_error_if_not_iterable,
+)
 from turicreate import config as _tc_config
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
 from ._evaluation import average_precision as _average_precision
-from .._mps_utils import (use_mps as _use_mps,
-                          mps_device_memory_limit as _mps_device_memory_limit,
-                          MpsGraphAPI as _MpsGraphAPI,
-                          MpsGraphNetworkType as _MpsGraphNetworkType,
-                          MpsGraphMode as _MpsGraphMode)
+from .._mps_utils import (
+    use_mps as _use_mps,
+    mps_device_memory_limit as _mps_device_memory_limit,
+    MpsGraphAPI as _MpsGraphAPI,
+    MpsGraphNetworkType as _MpsGraphNetworkType,
+    MpsGraphMode as _MpsGraphMode,
+)
 
 
-def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
-                    config, weights={}):
+def _get_mps_od_net(
+    input_image_shape, batch_size, output_size, anchors, config, weights={}
+):
     """
     Initializes an MpsGraphAPI for object detection.
     """
     network = _MpsGraphAPI(network_id=_MpsGraphNetworkType.kODGraphNet)
 
-    c_in, h_in, w_in =  input_image_shape
+    c_in, h_in, w_in = input_image_shape
     c_out = output_size
     h_out = h_in // 32
     w_out = w_in // 32
@@ -54,8 +59,17 @@ def _get_mps_od_net(input_image_shape, batch_size, output_size, anchors,
     h_view = h_in
     w_view = w_in
 
-    network.init(batch_size, c_in, h_in, w_in, c_out, h_out, w_out,
-                 weights=weights, config=config)
+    network.init(
+        batch_size,
+        c_in,
+        h_in,
+        w_in,
+        c_out,
+        h_out,
+        w_out,
+        weights=weights,
+        config=config,
+    )
     return network
 
 
@@ -65,7 +79,7 @@ def _seconds_as_string(seconds):
     """
     Returns seconds as a human-friendly string, e.g. '1d 4h 47m 41s'
     """
-    TIME_UNITS = [('s', 60), ('m', 60), ('h', 24), ('d', None)]
+    TIME_UNITS = [("s", 60), ("m", 60), ("h", 24), ("d", None)]
     unit_strings = []
     cur = max(int(seconds), 1)
     for suffix, size in TIME_UNITS:
@@ -74,12 +88,14 @@ def _seconds_as_string(seconds):
         else:
             rest = cur
         if rest > 0:
-            unit_strings.insert(0, '%d%s' % (rest, suffix))
-    return ' '.join(unit_strings)
+            unit_strings.insert(0, "%d%s" % (rest, suffix))
+    return " ".join(unit_strings)
 
 
-def _raise_error_if_not_detection_sframe(dataset, feature, annotations, require_annotations):
-    _raise_error_if_not_sframe(dataset, 'datset')
+def _raise_error_if_not_detection_sframe(
+    dataset, feature, annotations, require_annotations
+):
+    _raise_error_if_not_sframe(dataset, "datset")
     if feature not in dataset.column_names():
         raise _ToolkitError("Feature column '%s' does not exist" % feature)
     if dataset[feature].dtype != _tc.Image:
@@ -92,9 +108,18 @@ def _raise_error_if_not_detection_sframe(dataset, feature, annotations, require_
             raise _ToolkitError("Annotations column must be of type dict or list")
 
 
-def create(dataset, annotations=None, feature=None, model='darknet-yolo',
-           classes=None, batch_size=0, max_iterations=0,
-           verbose=True, grid_shape=[13, 13], **kwargs):
+def create(
+    dataset,
+    annotations=None,
+    feature=None,
+    model="darknet-yolo",
+    classes=None,
+    batch_size=0,
+    max_iterations=0,
+    verbose=True,
+    grid_shape=[13, 13],
+    **kwargs
+):
     """
     Create a :class:`ObjectDetector` model.
 
@@ -180,85 +205,97 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     _raise_error_if_not_sframe(dataset, "dataset")
 
     if len(dataset) == 0:
-        raise _ToolkitError('Unable to train on empty dataset')
+        raise _ToolkitError("Unable to train on empty dataset")
 
-    _numeric_param_check_range('max_iterations', max_iterations, 0, _six.MAXSIZE)
+    _numeric_param_check_range("max_iterations", max_iterations, 0, _six.MAXSIZE)
     start_time = _time.time()
 
-    supported_detectors = ['darknet-yolo']
+    supported_detectors = ["darknet-yolo"]
 
     if feature is None:
         feature = _tkutl._find_only_image_column(dataset)
         if verbose:
             print("Using '%s' as feature column" % feature)
     if annotations is None:
-        annotations = _tkutl._find_only_column_of_type(dataset,
-                                                       target_type=[list, dict],
-                                                       type_name='list',
-                                                       col_name='annotations')
+        annotations = _tkutl._find_only_column_of_type(
+            dataset, target_type=[list, dict], type_name="list", col_name="annotations"
+        )
         if verbose:
             print("Using '%s' as annotations column" % annotations)
 
-    _raise_error_if_not_detection_sframe(dataset, feature, annotations,
-                                         require_annotations=True)
-    _tkutl._handle_missing_values(dataset, feature, 'dataset')
+    _raise_error_if_not_detection_sframe(
+        dataset, feature, annotations, require_annotations=True
+    )
+    _tkutl._handle_missing_values(dataset, feature, "dataset")
     is_annotations_list = dataset[annotations].dtype == list
 
-    _tkutl._check_categorical_option_type('model', model,
-            supported_detectors)
+    _tkutl._check_categorical_option_type("model", model, supported_detectors)
 
-    base_model = model.split('-', 1)[0]
+    base_model = model.split("-", 1)[0]
     ref_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS[base_model]()
 
-    pretrained_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS['darknet_mlmodel']()
+    pretrained_model = _pre_trained_models.OBJECT_DETECTION_BASE_MODELS[
+        "darknet_mlmodel"
+    ]()
     pretrained_model_path = pretrained_model.get_model_path()
 
     params = {
-        'anchors': [
-            (1.0, 2.0), (1.0, 1.0), (2.0, 1.0),
-            (2.0, 4.0), (2.0, 2.0), (4.0, 2.0),
-            (4.0, 8.0), (4.0, 4.0), (8.0, 4.0),
-            (8.0, 16.0), (8.0, 8.0), (16.0, 8.0),
-            (16.0, 32.0), (16.0, 16.0), (32.0, 16.0),
+        "anchors": [
+            (1.0, 2.0),
+            (1.0, 1.0),
+            (2.0, 1.0),
+            (2.0, 4.0),
+            (2.0, 2.0),
+            (4.0, 2.0),
+            (4.0, 8.0),
+            (4.0, 4.0),
+            (8.0, 4.0),
+            (8.0, 16.0),
+            (8.0, 8.0),
+            (16.0, 8.0),
+            (16.0, 32.0),
+            (16.0, 16.0),
+            (32.0, 16.0),
         ],
-        'grid_shape': grid_shape,
-        'aug_resize': 0,
-        'aug_rand_crop': 0.9,
-        'aug_rand_pad': 0.9,
-        'aug_rand_gray': 0.0,
-        'aug_aspect_ratio': 1.25,
-        'aug_hue': 0.05,
-        'aug_brightness': 0.05,
-        'aug_saturation': 0.05,
-        'aug_contrast': 0.05,
-        'aug_horizontal_flip': True,
-        'aug_min_object_covered': 0,
-        'aug_min_eject_coverage': 0.5,
-        'aug_area_range': (.15, 2),
-        'aug_pca_noise': 0.0,
-        'aug_max_attempts': 20,
-        'aug_inter_method': 2,
-        'lmb_coord_xy': 10.0,
-        'lmb_coord_wh': 10.0,
-        'lmb_obj': 100.0,
-        'lmb_noobj': 5.0,
-        'lmb_class': 2.0,
-        'non_maximum_suppression_threshold': 0.45,
-        'rescore': True,
-        'clip_gradients': 0.025,
-        'weight_decay': 0.0005,
-        'sgd_momentum': 0.9,
-        'learning_rate': 1.0e-3,
-        'shuffle': True,
-        'mps_loss_mult': 8,
+        "grid_shape": grid_shape,
+        "aug_resize": 0,
+        "aug_rand_crop": 0.9,
+        "aug_rand_pad": 0.9,
+        "aug_rand_gray": 0.0,
+        "aug_aspect_ratio": 1.25,
+        "aug_hue": 0.05,
+        "aug_brightness": 0.05,
+        "aug_saturation": 0.05,
+        "aug_contrast": 0.05,
+        "aug_horizontal_flip": True,
+        "aug_min_object_covered": 0,
+        "aug_min_eject_coverage": 0.5,
+        "aug_area_range": (0.15, 2),
+        "aug_pca_noise": 0.0,
+        "aug_max_attempts": 20,
+        "aug_inter_method": 2,
+        "lmb_coord_xy": 10.0,
+        "lmb_coord_wh": 10.0,
+        "lmb_obj": 100.0,
+        "lmb_noobj": 5.0,
+        "lmb_class": 2.0,
+        "non_maximum_suppression_threshold": 0.45,
+        "rescore": True,
+        "clip_gradients": 0.025,
+        "weight_decay": 0.0005,
+        "sgd_momentum": 0.9,
+        "learning_rate": 1.0e-3,
+        "shuffle": True,
+        "mps_loss_mult": 8,
         # This large buffer size (8 batches) is an attempt to mitigate against
         # the SFrame shuffle operation that can occur after each epoch.
-        'io_thread_buffer_size': 8,
-        'mlmodel_path': pretrained_model_path,
+        "io_thread_buffer_size": 8,
+        "mlmodel_path": pretrained_model_path,
     }
 
-    #create tensorflow model here
+    # create tensorflow model here
     import turicreate.toolkits.libtctensorflow
+
     if classes == None:
         classes = []
 
@@ -266,28 +303,34 @@ def create(dataset, annotations=None, feature=None, model='darknet-yolo',
     _raise_error_if_not_iterable(grid_shape)
 
     grid_shape = [int(x) for x in grid_shape]
-    assert(len(grid_shape) == 2)
+    assert len(grid_shape) == 2
 
     tf_config = {
-        'grid_height': params['grid_shape'][0],
-        'grid_width': params['grid_shape'][1],
-        'mlmodel_path' : params['mlmodel_path'],
-        'classes' : classes,
-        'compute_final_metrics' : False,
-        'verbose' : verbose
+        "grid_height": params["grid_shape"][0],
+        "grid_width": params["grid_shape"][1],
+        "mlmodel_path": params["mlmodel_path"],
+        "classes": classes,
+        "compute_final_metrics": False,
+        "verbose": verbose,
     }
 
     # If batch_size or max_iterations = 0, they will be automatically
     # generated in C++.
     if batch_size > 0:
-        tf_config['batch_size'] = batch_size
+        tf_config["batch_size"] = batch_size
 
     if max_iterations > 0:
-        tf_config['max_iterations'] = max_iterations
+        tf_config["max_iterations"] = max_iterations
 
     model = _tc.extensions.object_detector()
-    model.train(data=dataset, annotations_column_name=annotations, image_column_name=feature, options=tf_config)
+    model.train(
+        data=dataset,
+        annotations_column_name=annotations,
+        image_column_name=feature,
+        options=tf_config,
+    )
     return ObjectDetector(model_proxy=model, name="object_detector")
+
 
 class ObjectDetector(_Model):
     """
@@ -296,6 +339,7 @@ class ObjectDetector(_Model):
 
     This model should not be constructed directly.
     """
+
     _CPP_OBJECT_DETECTOR_VERSION = 1
 
     def __init__(self, model_proxy=None, name=None):
@@ -325,17 +369,19 @@ class ObjectDetector(_Model):
 
         width = 40
         sections, section_titles = self._get_summary_struct()
-        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
-                                         width=width)
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles, width=width)
         return out
 
     def _get_version(self):
         return self._CPP_OBJECT_DETECTOR_VERSION
 
-    def export_coreml(self, filename,
-            include_non_maximum_suppression = True,
-            iou_threshold = None,
-            confidence_threshold = None):
+    def export_coreml(
+        self,
+        filename,
+        include_non_maximum_suppression=True,
+        iou_threshold=None,
+        confidence_threshold=None,
+    ):
         """
         Save the model in Core ML format. The Core ML model takes an image of
         fixed size as input and produces two output arrays: `confidence` and
@@ -395,20 +441,22 @@ class ObjectDetector(_Model):
         >>> model.export_coreml('detector.mlmodel')
         """
         options = {}
-        options['include_non_maximum_suppression'] = include_non_maximum_suppression
-        options['version'] = self._get_version()
+        options["include_non_maximum_suppression"] = include_non_maximum_suppression
+        options["version"] = self._get_version()
         if confidence_threshold is not None:
-            options['confidence_threshold'] = confidence_threshold
+            options["confidence_threshold"] = confidence_threshold
         if iou_threshold is not None:
-            options['iou_threshold'] = iou_threshold
+            options["iou_threshold"] = iou_threshold
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
-        short_description = _coreml_utils._mlmodel_short_description('Object Detector')
+        short_description = _coreml_utils._mlmodel_short_description("Object Detector")
 
-        self.__proxy__.export_to_coreml(filename, short_description,
-                additional_user_defined_metadata, options)
+        self.__proxy__.export_to_coreml(
+            filename, short_description, additional_user_defined_metadata, options
+        )
 
-
-    def predict(self, dataset, confidence_threshold=0.25, iou_threshold=0.45, verbose=True):
+    def predict(
+        self, dataset, confidence_threshold=0.25, iou_threshold=0.45, verbose=True
+    ):
         """
         Predict object instances in an SFrame of images.
 
@@ -455,15 +503,24 @@ class ObjectDetector(_Model):
             # Visualize predictions by generating a new column of marked up images
             >>> data['image_pred'] = turicreate.object_detector.util.draw_bounding_boxes(data['image'], data['predictions'])
         """
-        _numeric_param_check_range('confidence_threshold', confidence_threshold, 0.0, 1.0)
-        _numeric_param_check_range('iou_threshold', iou_threshold, 0.0, 1.0)
+        _numeric_param_check_range(
+            "confidence_threshold", confidence_threshold, 0.0, 1.0
+        )
+        _numeric_param_check_range("iou_threshold", iou_threshold, 0.0, 1.0)
         options = {}
         options["confidence_threshold"] = confidence_threshold
         options["iou_threshold"] = iou_threshold
         options["verbose"] = verbose
         return self.__proxy__.predict(dataset, options)
 
-    def evaluate(self, dataset, metric='auto', output_type='dict', confidence_threshold = 0.001, iou_threshold = 0.45):
+    def evaluate(
+        self,
+        dataset,
+        metric="auto",
+        output_type="dict",
+        confidence_threshold=0.001,
+        iou_threshold=0.45,
+    ):
         """
         Evaluate the model by making predictions and comparing these to ground
         truth bounding box annotations.
@@ -508,8 +565,10 @@ class ObjectDetector(_Model):
         >>> print('mAP: {:.1%}'.format(results['mean_average_precision']))
         mAP: 43.2%
         """
-        _numeric_param_check_range('confidence_threshold', confidence_threshold, 0.0, 1.0)
-        _numeric_param_check_range('iou_threshold', iou_threshold, 0.0, 1.0)
+        _numeric_param_check_range(
+            "confidence_threshold", confidence_threshold, 0.0, 1.0
+        )
+        _numeric_param_check_range("iou_threshold", iou_threshold, 0.0, 1.0)
         options = {}
         options["confidence_threshold"] = confidence_threshold
         options["iou_threshold"] = iou_threshold
@@ -533,18 +592,18 @@ class ObjectDetector(_Model):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Model', 'model'),
-            ('Number of classes', 'num_classes'),
-            ('Input image shape', 'input_image_shape')
+            ("Model", "model"),
+            ("Number of classes", "num_classes"),
+            ("Input image shape", "input_image_shape"),
         ]
         training_fields = [
-            ('Training time', '_training_time_as_string'),
-            ('Training epochs', 'training_epochs'),
-            ('Training iterations', 'training_iterations'),
-            ('Number of examples (images)', 'num_examples'),
-            ('Number of bounding boxes (instances)', 'num_bounding_boxes'),
-            ('Final loss (specific to model)', 'training_loss'),
+            ("Training time", "_training_time_as_string"),
+            ("Training epochs", "training_epochs"),
+            ("Training iterations", "training_iterations"),
+            ("Number of examples (images)", "num_examples"),
+            ("Number of bounding boxes (instances)", "num_bounding_boxes"),
+            ("Final loss (specific to model)", "training_loss"),
         ]
 
-        section_titles = ['Schema', 'Training summary']
-        return([model_fields, training_fields], section_titles)
+        section_titles = ["Schema", "Training summary"]
+        return ([model_fields, training_fields], section_titles)

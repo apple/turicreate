@@ -9,7 +9,9 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.toolkits.graph_analytics._model_base import (
+    GraphAnalyticsModel as _ModelBase,
+)
 
 
 class PagerankModel(_ModelBase):
@@ -64,26 +66,29 @@ class PagerankModel(_ModelBase):
     --------
     create
     """
+
     def __init__(self, model):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model
 
     def _result_fields(self):
         ret = super(PagerankModel, self)._result_fields()
         ret["vertex pagerank"] = "SFrame. See m.pagerank"
-        ret['change in last iteration (L1 norm)'] = self.delta
+        ret["change in last iteration (L1 norm)"] = self.delta
         return ret
 
     def _metric_fields(self):
         ret = super(PagerankModel, self)._metric_fields()
-        ret['number of iterations'] = 'num_iterations'
+        ret["number of iterations"] = "num_iterations"
         return ret
 
     def _setting_fields(self):
         ret = super(PagerankModel, self)._setting_fields()
-        ret['probability of random jumps to any node in the graph'] = 'reset_probability'
-        ret['convergence threshold (L1 norm)'] = 'threshold'
-        ret['maximum number of iterations'] = 'max_iterations'
+        ret[
+            "probability of random jumps to any node in the graph"
+        ] = "reset_probability"
+        ret["convergence threshold (L1 norm)"] = "threshold"
+        ret["maximum number of iterations"] = "max_iterations"
         return ret
 
     def _get_version(self):
@@ -94,20 +99,23 @@ class PagerankModel(_ModelBase):
         return "pagerank"
 
     def _get_native_state(self):
-        return {'model':self.__proxy__}
+        return {"model": self.__proxy__}
 
     @classmethod
     def _load_version(cls, state, version):
-        assert(version == 0)
-        return cls(state['model'])
+        assert version == 0
+        return cls(state["model"])
 
 
-def create(graph, reset_probability=0.15,
-           threshold=1e-2,
-           max_iterations=20,
-           _single_precision=False,
-           _distributed='auto',
-           verbose=True):
+def create(
+    graph,
+    reset_probability=0.15,
+    threshold=1e-2,
+    max_iterations=20,
+    _single_precision=False,
+    _distributed="auto",
+    verbose=True,
+):
     """
     Compute the PageRank for each vertex in the graph. Return a model object
     with total PageRank as well as the PageRank value for each vertex in the
@@ -177,15 +185,18 @@ def create(graph, reset_probability=0.15,
     from turicreate._cython.cy_server import QuietProgress
 
     if not isinstance(graph, _SGraph):
-        raise TypeError('graph input must be a SGraph object.')
+        raise TypeError("graph input must be a SGraph object.")
 
-    opts = {'threshold': threshold, 'reset_probability': reset_probability,
-            'max_iterations': max_iterations,
-            'single_precision': _single_precision,
-            'graph': graph.__proxy__}
+    opts = {
+        "threshold": threshold,
+        "reset_probability": reset_probability,
+        "max_iterations": max_iterations,
+        "single_precision": _single_precision,
+        "graph": graph.__proxy__,
+    }
 
     with QuietProgress(verbose):
         params = _tc.extensions._toolkits.graph.pagerank.create(opts)
-    model = params['model']
+    model = params["model"]
 
     return PagerankModel(model)

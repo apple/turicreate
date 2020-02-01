@@ -9,8 +9,10 @@ from __future__ import absolute_import as _
 
 import _ast
 
+
 def dont_visit(self, node):
     pass
+
 
 def visit_children(self, node):
     for child in self.children(node):
@@ -18,7 +20,6 @@ def visit_children(self, node):
 
 
 class Visitor(object):
-
     def children(self, node):
         for field in node._fields:
             value = getattr(node, field)
@@ -28,12 +29,10 @@ class Visitor(object):
                         yield item
                     else:
                         pass
-            elif  isinstance(value, _ast.AST):
+            elif isinstance(value, _ast.AST):
                 yield value
 
         return
-
-
 
     def visit_list(self, nodes, *args, **kwargs):
 
@@ -45,22 +44,20 @@ class Visitor(object):
     def visit(self, node, *args, **kwargs):
         node_name = type(node).__name__
 
-        attr = 'visit' + node_name
+        attr = "visit" + node_name
 
         if hasattr(self, attr):
-            method = getattr(self, 'visit' + node_name)
+            method = getattr(self, "visit" + node_name)
             return method(node, *args, **kwargs)
-        elif hasattr(self, 'visitDefault'):
-            method = getattr(self, 'visitDefault')
+        elif hasattr(self, "visitDefault"):
+            method = getattr(self, "visitDefault")
             return method(node, *args, **kwargs)
         else:
-            method = getattr(self, 'visit' + node_name)
+            method = getattr(self, "visit" + node_name)
             return method(node, *args, **kwargs)
-
 
 
 class Mutator(Visitor):
-
     def mutateDefault(self, node):
         for field in node._fields:
             value = getattr(node, field)
@@ -73,7 +70,7 @@ class Mutator(Visitor):
                     else:
                         pass
 
-            elif  isinstance(value, _ast.AST):
+            elif isinstance(value, _ast.AST):
                 new_value = self.mutate(value)
                 if new_value is not None:
                     setattr(node, field, new_value)
@@ -84,14 +81,14 @@ class Mutator(Visitor):
 
         node_name = type(node).__name__
 
-        attr = 'mutate' + node_name
+        attr = "mutate" + node_name
 
         if hasattr(self, attr):
-            mehtod = getattr(self, 'mutate' + node_name)
+            mehtod = getattr(self, "mutate" + node_name)
             return mehtod(node, *args, **kwargs)
-        elif hasattr(self, 'mutateDefault'):
-            mehtod = getattr(self, 'mutateDefault')
+        elif hasattr(self, "mutateDefault"):
+            mehtod = getattr(self, "mutateDefault")
             return mehtod(node, *args, **kwargs)
         else:
-            mehtod = getattr(self, 'mutate' + node_name)
+            mehtod = getattr(self, "mutate" + node_name)
             return mehtod(node, *args, **kwargs)

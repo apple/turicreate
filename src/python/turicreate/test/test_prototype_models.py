@@ -3,8 +3,8 @@ import unittest
 import tempfile
 import shutil
 
-class SparseNNTest(unittest.TestCase):
 
+class SparseNNTest(unittest.TestCase):
     def test_sparse_nn(self):
         X = tc.util.generate_random_sframe(100, "ssszzz")
         Y = X.copy()
@@ -16,7 +16,7 @@ class SparseNNTest(unittest.TestCase):
 
         for i, row in enumerate(Y):
             res = m.query(Y[i], 1)
-            self.assertEqual(res, {i : 1.0})
+            self.assertEqual(res, {i: 1.0})
 
         # Save and load
         model_file = tempfile.gettempdir() + "/sparse_nn.model"
@@ -25,6 +25,6 @@ class SparseNNTest(unittest.TestCase):
 
         for i, row in enumerate(Y):
             res = m2.query(Y[i], 1)
-            self.assertEqual(res, {i : 1.0})
+            self.assertEqual(res, {i: 1.0})
 
         shutil.rmtree(model_file)

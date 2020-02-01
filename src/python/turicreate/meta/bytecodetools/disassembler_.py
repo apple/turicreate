@@ -3,11 +3,11 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Created on May 10, 2012
 
 @author: sean
-'''
+"""
 
 from __future__ import print_function as _
 from __future__ import division as _
@@ -21,13 +21,14 @@ py3 = sys.version_info.major >= 3
 
 
 if sys.version_info < (3, 4):
-    co_ord = (lambda c:c) if py3 else ord
+    co_ord = (lambda c: c) if py3 else ord
+
     def _walk_ops(code):
         """
         Yield (offset, opcode, argument number) tuples for all
         instructions in *code*.
         """
-        code = getattr(code, 'co_code', b'')
+        code = getattr(code, "co_code", b"")
         code = [co_ord(instr) for instr in code]
 
         n = len(code)
@@ -44,7 +45,9 @@ if sys.version_info < (3, 4):
                     extended_arg = oparg * 65536
             yield i, op, oparg
 
+
 else:
+
     def _walk_ops(code):
         """
         Yield (offset, opcode, argument number) tuples for all
@@ -55,7 +58,7 @@ else:
             yield instr.offset, op, instr.arg
 
 
-def disassembler(co, lasti= -1):
+def disassembler(co, lasti=-1):
     """Disassemble a code object.
 
     :param co: code object

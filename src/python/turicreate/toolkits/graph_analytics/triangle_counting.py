@@ -9,7 +9,10 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.toolkits.graph_analytics._model_base import (
+    GraphAnalyticsModel as _ModelBase,
+)
+
 
 class TriangleCountingModel(_ModelBase):
     """
@@ -47,13 +50,14 @@ class TriangleCountingModel(_ModelBase):
     --------
     create
     """
+
     def __init__(self, model):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model
 
     def _result_fields(self):
         ret = super(TriangleCountingModel, self)._result_fields()
-        ret['total number of triangles'] = self.num_triangles
+        ret["total number of triangles"] = self.num_triangles
         ret["vertex triangle count"] = "SFrame. See m.triangle_count"
         return ret
 
@@ -65,12 +69,12 @@ class TriangleCountingModel(_ModelBase):
         return "triangle_count"
 
     def _get_native_state(self):
-        return {'model':self.__proxy__}
+        return {"model": self.__proxy__}
 
     @classmethod
     def _load_version(cls, state, version):
-        assert(version == 0)
-        return cls(state['model'])
+        assert version == 0
+        return cls(state["model"])
 
 
 def create(graph, verbose=True):
@@ -125,9 +129,10 @@ def create(graph, verbose=True):
     from turicreate._cython.cy_server import QuietProgress
 
     if not isinstance(graph, _SGraph):
-        raise TypeError('graph input must be a SGraph object.')
+        raise TypeError("graph input must be a SGraph object.")
 
     with QuietProgress(verbose):
         params = _tc.extensions._toolkits.graph.triangle_counting.create(
-            {'graph': graph.__proxy__})
-    return TriangleCountingModel(params['model'])
+            {"graph": graph.__proxy__}
+        )
+    return TriangleCountingModel(params["model"])

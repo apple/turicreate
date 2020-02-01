@@ -14,8 +14,8 @@ from turicreate.toolkits._main import ToolkitError
 import shutil
 import numpy as np
 
-class FastPathPredictionTest(unittest.TestCase):
 
+class FastPathPredictionTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         """
@@ -33,8 +33,8 @@ class FastPathPredictionTest(unittest.TestCase):
         target[1] = 1
 
         ## Create the model
-        self.sf['target'] = target
-        self.target = 'target'
+        self.sf["target"] = target
+        self.target = "target"
 
         self.model = None
         self.regression = False
@@ -49,7 +49,7 @@ class FastPathPredictionTest(unittest.TestCase):
         if self.model is None:
             return
 
-        filename = 'save_file%s' % (str(uuid.uuid4()))
+        filename = "save_file%s" % (str(uuid.uuid4()))
         old_model = self.model
 
         self.model.save(filename)
@@ -81,7 +81,7 @@ class FastPathPredictionTest(unittest.TestCase):
             lp = model.classify(list(sf))
             dp = model.classify(sf[0])
             sf_new = sf[0].copy()
-            sf_new['new_column'] = 1
+            sf_new["new_column"] = 1
             dp_new = model.classify(sf_new)
 
             self.assertEqual(len(dp), 1)
@@ -102,12 +102,12 @@ class FastPathPredictionTest(unittest.TestCase):
         # Act & Assert
         if self.has_predict_topk:
             # Act & Assert
-            output_type = 'rank'
+            output_type = "rank"
             bp = model.predict_topk(sf, output_type, k)
             lp = model.predict_topk(list(sf), output_type, k)
             dp = model.predict_topk(sf[0], output_type, k)
             sf_new = sf[0].copy()
-            sf_new['new_column'] = 1
+            sf_new["new_column"] = 1
             dp_new = model.predict_topk(sf_new, output_type, k)
 
             self.assertEqual(len(dp), 2)
@@ -119,7 +119,7 @@ class FastPathPredictionTest(unittest.TestCase):
             self.assertEqual(lp[1], dp[1])
 
             # Act & Assert
-            output_type = 'probability'
+            output_type = "probability"
             bp = model.predict_topk(sf, output_type, k)
             lp = model.predict_topk(list(sf), output_type, k)
             dp = model.predict_topk(sf[0], output_type, k)
@@ -134,7 +134,7 @@ class FastPathPredictionTest(unittest.TestCase):
             self.assertEqual(lp[1], dp[1])
 
             # Act & Assert
-            output_type = 'margin'
+            output_type = "margin"
             bp = model.predict_topk(sf, output_type, k)
             lp = model.predict_topk(list(sf), output_type, k)
             dp = model.predict_topk(sf[0], output_type, k)
@@ -160,12 +160,12 @@ class FastPathPredictionTest(unittest.TestCase):
         if not self.regression:
 
             # Act & Assert
-            output_type = 'class'
+            output_type = "class"
             bp = model.predict(sf, output_type)
             lp = model.predict(list(sf), output_type)
             dp = model.predict(sf[0], output_type)
             sf_new = sf[0].copy()
-            sf_new['new_column'] = 1
+            sf_new["new_column"] = 1
             dp_new = model.predict(sf_new, output_type)
 
             self.assertEqual(len(dp), 1)
@@ -175,7 +175,7 @@ class FastPathPredictionTest(unittest.TestCase):
             self.assertEqual(lp[0], dp[0])
 
             # act & assert
-            output_type = 'margin'
+            output_type = "margin"
             bp = model.predict(sf, output_type)
             lp = model.predict(list(sf), output_type)
             dp = model.predict(sf[0], output_type)
@@ -189,7 +189,7 @@ class FastPathPredictionTest(unittest.TestCase):
 
             # act & assert
             if self.has_probability_vector:
-                output_type = 'probability_vector'
+                output_type = "probability_vector"
                 bp = model.predict(sf, output_type)
                 lp = model.predict(list(sf), output_type)
                 dp = model.predict(sf[0], output_type)
@@ -203,7 +203,7 @@ class FastPathPredictionTest(unittest.TestCase):
 
             # act & assert
             if self.has_probability:
-                output_type = 'probability'
+                output_type = "probability"
                 bp = model.predict(sf, output_type)
                 lp = model.predict(list(sf), output_type)
                 dp = model.predict(sf[0], output_type)
@@ -222,7 +222,7 @@ class FastPathPredictionTest(unittest.TestCase):
             lp = model.predict(list(sf))
             dp = model.predict(sf[0])
             sf_new = sf[0].copy()
-            sf_new['new_column'] = 1
+            sf_new["new_column"] = 1
             dp_new = model.predict(sf_new)
 
             self.assertEqual(len(dp), 1)
@@ -253,98 +253,119 @@ class LinearRegressionTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(LinearRegressionTest, self).setUpClass()
-        self.model = tc.linear_regression.create(self.sf,
-                              self.target, validation_set=None)
+        self.model = tc.linear_regression.create(
+            self.sf, self.target, validation_set=None
+        )
         self.regression = True
+
 
 class RandomForestRegressionTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(RandomForestRegressionTest, self).setUpClass()
-        self.model = tc.random_forest_regression.create(self.sf,
-                self.target, validation_set=None)
+        self.model = tc.random_forest_regression.create(
+            self.sf, self.target, validation_set=None
+        )
         self.regression = True
+
 
 class DecisionTreeRegressionTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(DecisionTreeRegressionTest, self).setUpClass()
-        self.model = tc.decision_tree_regression.create(self.sf,
-                self.target, validation_set=None)
+        self.model = tc.decision_tree_regression.create(
+            self.sf, self.target, validation_set=None
+        )
         self.regression = True
+
 
 class BoostedTreesRegressionTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(BoostedTreesRegressionTest, self).setUpClass()
-        self.model = tc.boosted_trees_regression.create(self.sf,
-                             self.target, validation_set=None)
+        self.model = tc.boosted_trees_regression.create(
+            self.sf, self.target, validation_set=None
+        )
         self.regression = True
+
 
 class LogisticRegressionTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(LogisticRegressionTest, self).setUpClass()
-        self.model = tc.logistic_classifier.create(self.sf,
-                      self.target, validation_set=None)
+        self.model = tc.logistic_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.has_predict_topk = True
+
 
 class SVMClassifierTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(SVMClassifierTest, self).setUpClass()
-        self.model = tc.svm_classifier.create(self.sf, self.target,
-                               validation_set=None)
+        self.model = tc.svm_classifier.create(self.sf, self.target, validation_set=None)
         self.has_probability = False
         self.has_probability_vector = False
+
 
 class RandomForestClassifierTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(RandomForestClassifierTest, self).setUpClass()
-        self.model = tc.random_forest_classifier.create(self.sf, self.target,
-                  validation_set=None)
+        self.model = tc.random_forest_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.has_predict_topk = True
+
 
 class DecisionTreeClassifierTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(DecisionTreeClassifierTest, self).setUpClass()
-        self.model = tc.decision_tree_classifier.create(self.sf, self.target,
-                  validation_set=None)
+        self.model = tc.decision_tree_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.has_predict_topk = True
+
 
 class BoostedTreesClassifierTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(BoostedTreesClassifierTest, self).setUpClass()
-        self.model = tc.boosted_trees_classifier.create(self.sf,
-                                  self.target, validation_set=None)
+        self.model = tc.boosted_trees_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.has_predict_topk = True
+
 
 class RandomForestClassifierStringClassTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(RandomForestClassifierStringClassTest, self).setUpClass()
         self.sf[self.target] = self.sf[self.target].astype(str)
-        self.model = tc.random_forest_classifier.create(self.sf, self.target,
-                  validation_set=None)
+        self.model = tc.random_forest_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.has_predict_topk = True
+
 
 class DecisionTreeClassifierStringClassTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(DecisionTreeClassifierStringClassTest, self).setUpClass()
         self.sf[self.target] = self.sf[self.target].astype(str)
-        self.model = tc.decision_tree_classifier.create(self.sf, self.target,
-                  validation_set=None)
+        self.model = tc.decision_tree_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.has_predict_topk = True
+
 
 class BoostedTreesClassifierStringClassTest(FastPathPredictionTest):
     @classmethod
     def setUpClass(self):
         super(BoostedTreesClassifierStringClassTest, self).setUpClass()
         self.sf[self.target] = self.sf[self.target].astype(str)
-        self.model = tc.boosted_trees_classifier.create(self.sf,
-                                  self.target, validation_set=None)
+        self.model = tc.boosted_trees_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.has_predict_topk = True

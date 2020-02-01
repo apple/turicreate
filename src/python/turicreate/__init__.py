@@ -3,17 +3,17 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 @package turicreate
 ...
 Turi Create is a machine learning platform that enables data scientists and app
 developers to easily create intelligent applications at scale.
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-__version__ = '{{VERSION_STRING}}'
+__version__ = "{{VERSION_STRING}}"
 from turicreate.version_info import __version__
 
 from turicreate.data_structures.sgraph import Vertex, Edge
@@ -100,20 +100,24 @@ import turicreate.extensions
 
 # rewrite the extensions module
 class _extensions_wrapper(object):
-  def __init__(self, wrapped):
-    self._wrapped = wrapped
-    self.__doc__ = wrapped.__doc__
+    def __init__(self, wrapped):
+        self._wrapped = wrapped
+        self.__doc__ = wrapped.__doc__
 
-  def __getattr__(self, name):
-    try:
+    def __getattr__(self, name):
+        try:
+            return getattr(self._wrapped, name)
+        except:
+            pass
+        turicreate._connect.main.get_unity()
         return getattr(self._wrapped, name)
-    except:
-        pass
-    turicreate._connect.main.get_unity()
-    return getattr(self._wrapped, name)
+
 
 import sys as _sys
-_sys.modules["turicreate.extensions"] = _extensions_wrapper(_sys.modules["turicreate.extensions"])
+
+_sys.modules["turicreate.extensions"] = _extensions_wrapper(
+    _sys.modules["turicreate.extensions"]
+)
 # rewrite the import
 extensions = _sys.modules["turicreate.extensions"]
 

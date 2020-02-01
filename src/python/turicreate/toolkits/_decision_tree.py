@@ -10,17 +10,26 @@ from turicreate.util import _raise_error_if_not_of_type
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
 
 import sys as _sys
+
 if _sys.version_info.major == 3:
     long = int
 
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 #
 #              Single Node (of a decision tree)
 #
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 class Node(object):
-    def __init__(self, node_id, split_feature, value, node_type,
-                 left_id = None, right_id = None, missing_id = None):
+    def __init__(
+        self,
+        node_id,
+        split_feature,
+        value,
+        node_type,
+        left_id=None,
+        right_id=None,
+        missing_id=None,
+    ):
         """
         Simple class to make a node for a tree.
 
@@ -40,7 +49,7 @@ class Node(object):
         self.node_id = node_id
         # If not a leaf node.
         if split_feature is not None:
-            self.split_feature_column  = split_feature[0]
+            self.split_feature_column = split_feature[0]
             self.split_feature_index = split_feature[1]
         else:
             self.split_feature_column = None
@@ -49,7 +58,7 @@ class Node(object):
         # float/int/str or leaf.
         # Set to leaf if the node type is leaf.
         self.node_type = node_type
-        is_leaf = node_type == u'leaf'
+        is_leaf = node_type == u"leaf"
         self.is_leaf = is_leaf
         self.value = value
 
@@ -77,7 +86,7 @@ class Node(object):
         out += "\nValue                  : %s" % self.value
         return out
 
-    def get_decision(self, child, is_missing = False):
+    def get_decision(self, child, is_missing=False):
         """
         Get the decision from this node to a child node.
 
@@ -112,14 +121,14 @@ class Node(object):
             value = None
 
         return {
-            "node_id"    : self.node_id,
-            "node_type"  : self.node_type,
-            "feature"    : feature,
-            "index"      : index,
-            "sign"       : sign,
-            "value"      : value,
-            "child_id"   : child.node_id,
-            "is_missing" : is_missing
+            "node_id": self.node_id,
+            "node_type": self.node_type,
+            "feature": feature,
+            "index": index,
+            "sign": sign,
+            "value": value,
+            "child_id": child.node_id,
+            "is_missing": is_missing,
         }
 
     def to_dict(self):
@@ -133,25 +142,28 @@ class Node(object):
         """
         out = {}
         for key in self.__dict__.keys():
-            if key not in ['left', 'right', 'missing', 'parent']:
+            if key not in ["left", "right", "missing", "parent"]:
                 out[key] = self.__dict__[key]
         return out
 
     def __eq__(self, node):
-        return (self.node_id == node.node_id) and\
-               (self.value == node.value) and\
-               (self.split_feature_column == node.split_feature_column) and\
-               (self.is_leaf == node.is_leaf) and\
-               (self.left_id == node.left_id) and\
-               (self.missing_id == node.missing_id) and\
-               (self.right_id == node.right_id) and\
-               (self.num_examples == node.num_examples)
+        return (
+            (self.node_id == node.node_id)
+            and (self.value == node.value)
+            and (self.split_feature_column == node.split_feature_column)
+            and (self.is_leaf == node.is_leaf)
+            and (self.left_id == node.left_id)
+            and (self.missing_id == node.missing_id)
+            and (self.right_id == node.right_id)
+            and (self.num_examples == node.num_examples)
+        )
 
-#-----------------------------------------------------------------------------
+
+# -----------------------------------------------------------------------------
 #
 #               Decision Tree (of nodes)
 #
-#-----------------------------------------------------------------------------
+# -----------------------------------------------------------------------------
 class DecisionTree:
     def __init__(self):
         """
@@ -183,16 +195,18 @@ class DecisionTree:
         pass
 
     @classmethod
-    def from_model(cls, model, tree_id = 0):
+    def from_model(cls, model, tree_id=0):
         import turicreate as _tc
         import json as _json
 
-        _raise_error_if_not_of_type(tree_id, [int,long], "tree_id")
+        _raise_error_if_not_of_type(tree_id, [int, long], "tree_id")
         _numeric_param_check_range("tree_id", tree_id, 0, model.num_trees - 1)
 
         tree = DecisionTree()
         tree_str = _tc.extensions._xgboost_get_tree(model.__proxy__, tree_id)
-        metadata_mapping = _tc.extensions._supervised_learning._get_metadata_mapping(model.__proxy__)
+        metadata_mapping = _tc.extensions._supervised_learning._get_metadata_mapping(
+            model.__proxy__
+        )
         trees_json = _json.loads(tree_str)
 
         # Parse the tree from the JSON.
@@ -200,8 +214,12 @@ class DecisionTree:
         tree.root_id = 0
 
         # Keep track of the attributes.
-        for key in {"num_examples", "num_features", "num_unpacked_features",
-                "max_depth"}:
+        for key in {
+            "num_examples",
+            "num_features",
+            "num_unpacked_features",
+            "max_depth",
+        }:
             setattr(tree, key, model._get(key))
         return tree
 
@@ -224,18 +242,19 @@ class DecisionTree:
         nodes = {}
 
         for v in vertices:
-            node_id = v.get('id', None)
-            split_feature = v.get('name', None)
+            node_id = v.get("id", None)
+            split_feature = v.get("name", None)
             if split_feature is not None:
                 idx = int(split_feature.strip("{").strip("}"))
                 split_feature = metadata_mapping[idx]
-            value = v.get('value', None)
-            node_type = v.get('type', None)
-            left_id = v.get('yes_child', None)
-            right_id = v.get('no_child', None)
-            missing_id = v.get('missing_child', None)
-            nodes[node_id] = Node(node_id, split_feature, value, node_type,
-                                  left_id, right_id, missing_id)
+            value = v.get("value", None)
+            node_type = v.get("type", None)
+            left_id = v.get("yes_child", None)
+            right_id = v.get("no_child", None)
+            missing_id = v.get("missing_child", None)
+            nodes[node_id] = Node(
+                node_id, split_feature, value, node_type, left_id, right_id, missing_id
+            )
         return nodes
 
     def _make_tree(self, trees_json, metadata_mapping):
@@ -249,36 +268,23 @@ class DecisionTree:
         for nid, node in self.nodes.items():
             if not node.is_leaf:
                 e = [
-                      {
-                         'src'   : node.node_id,
-                         'dst'   : node.left_id,
-                         'value' : 'left'
-                      },
-
-                      {
-                         'src'   : node.node_id,
-                         'dst'   : node.right_id,
-                         'value' : 'right'
-                      },
-                      {
-                         'src'   : node.node_id,
-                         'dst'   : node.missing_id,
-                         'value' : 'missing'
-                      },
-                    ]
+                    {"src": node.node_id, "dst": node.left_id, "value": "left"},
+                    {"src": node.node_id, "dst": node.right_id, "value": "right"},
+                    {"src": node.node_id, "dst": node.missing_id, "value": "missing"},
+                ]
                 edges += e
 
         # Now, make a tree from the edges.
         for e in edges:
-            src = e['src']
-            dst = e['dst']
-            value = e['value']
+            src = e["src"]
+            dst = e["dst"]
+            value = e["value"]
 
             # Left/Right pointers.
-            if value == 'left':
+            if value == "left":
                 self.nodes[src].left_id = dst
                 self.nodes[src].left = self.nodes[dst]
-            elif value == 'right':
+            elif value == "right":
                 self.nodes[src].right_id = dst
                 self.nodes[src].right = self.nodes[dst]
             else:
@@ -297,7 +303,7 @@ class DecisionTree:
                 self._root_id = n.node_id
                 break
 
-    def to_json(self, root_id = 0, output = {}):
+    def to_json(self, root_id=0, output={}):
         """
         Recursive function to dump this tree as a json blob.
 
@@ -357,17 +363,17 @@ class DecisionTree:
              'split_feature_index': 'count_sum',
              'value': 22.5}
         """
-        _raise_error_if_not_of_type(root_id, [int,long], "root_id")
+        _raise_error_if_not_of_type(root_id, [int, long], "root_id")
         _numeric_param_check_range("root_id", root_id, 0, self.num_nodes - 1)
 
         node = self.nodes[root_id]
         output = node.to_dict()
         if node.left_id is not None:
             j = node.left_id
-            output['left'] = self.to_json(j, output)
+            output["left"] = self.to_json(j, output)
         if node.right_id is not None:
             j = node.right_id
-            output['right'] = self.to_json(j, output)
+            output["right"] = self.to_json(j, output)
         return output
 
     def get_prediction_score(self, node_id):
@@ -395,12 +401,12 @@ class DecisionTree:
             None
 
         """
-        _raise_error_if_not_of_type(node_id, [int,long], "node_id")
+        _raise_error_if_not_of_type(node_id, [int, long], "node_id")
         _numeric_param_check_range("node_id", node_id, 0, self.num_nodes - 1)
         node = self.nodes[node_id]
         return None if node.is_leaf is False else node.value
 
-    def get_prediction_path(self, node_id, missing_id = []):
+    def get_prediction_path(self, node_id, missing_id=[]):
         """
         Return the prediction path from this node to the parent node.
 
@@ -431,24 +437,24 @@ class DecisionTree:
                'sign': '<=',
                'value': 146.5}]
         """
-        _raise_error_if_not_of_type(node_id, [int,long], "node_id")
+        _raise_error_if_not_of_type(node_id, [int, long], "node_id")
         _numeric_param_check_range("node_id", node_id, 0, self.num_nodes - 1)
 
         def _deduplicate_path(path):
-            s_nodes = {} # super_nodes
+            s_nodes = {}  # super_nodes
             s_path = []  # paths of super nodes.
 
             for node in path:
-                feature = node['feature']
-                index = node['index']
+                feature = node["feature"]
+                index = node["index"]
                 if (feature, index) not in s_nodes:
                     s_nodes[feature, index] = node
                     s_path.append(node)
                 else:
                     s_node = s_nodes[feature, index]
-                    s_sign = s_node['sign']
-                    sign = node['sign']
-                    value = node['value']
+                    s_sign = s_node["sign"]
+                    sign = node["sign"]
+                    value = node["value"]
 
                     # Supernode has no range.
                     if s_sign == "<":

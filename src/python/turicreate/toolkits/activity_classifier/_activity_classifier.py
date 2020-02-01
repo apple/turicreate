@@ -30,8 +30,18 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .util import random_split_by_session as _random_split_by_session
 from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
-def create(dataset, session_id, target, features=None, prediction_window=100,
-           validation_set='auto', max_iterations=10, batch_size=32, verbose=True):
+
+def create(
+    dataset,
+    session_id,
+    target,
+    features=None,
+    prediction_window=100,
+    validation_set="auto",
+    max_iterations=10,
+    batch_size=32,
+    verbose=True,
+):
     """
     Create an :class:`ActivityClassifier` model.
 
@@ -132,21 +142,21 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
     if not isinstance(target, str):
-        raise _ToolkitError('target must be of type str')
+        raise _ToolkitError("target must be of type str")
     if not isinstance(session_id, str):
-        raise _ToolkitError('session_id must be of type str')
+        raise _ToolkitError("session_id must be of type str")
     if not isinstance(batch_size, int):
-        raise _ToolkitError('batch_size must be of type int')
+        raise _ToolkitError("batch_size must be of type int")
 
-    _tkutl._raise_error_if_sframe_empty(dataset, 'dataset')
-    _tkutl._numeric_param_check_range('prediction_window', prediction_window, 1, 400)
-    _tkutl._numeric_param_check_range('max_iterations', max_iterations, 0, _six.MAXSIZE)
+    _tkutl._raise_error_if_sframe_empty(dataset, "dataset")
+    _tkutl._numeric_param_check_range("prediction_window", prediction_window, 1, 400)
+    _tkutl._numeric_param_check_range("max_iterations", max_iterations, 0, _six.MAXSIZE)
 
     if features is None:
-        features = _fe_tkutl.get_column_names(dataset,
-                                              interpret_as_excluded=True,
-                                              column_names=[session_id, target])
-    if not hasattr(features, '__iter__'):
+        features = _fe_tkutl.get_column_names(
+            dataset, interpret_as_excluded=True, column_names=[session_id, target]
+        )
+    if not hasattr(features, "__iter__"):
         raise TypeError("Input 'features' must be a list.")
     if not all([isinstance(x, str) for x in features]):
         raise TypeError("Invalid feature %s: Feature names must be of type str." % x)
@@ -155,20 +165,24 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     start_time = _time.time()
     dataset = _tkutl._toolkits_select_columns(dataset, features + [session_id, target])
-    _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[target], target, [str, int])
-    _tkutl._raise_error_if_sarray_not_expected_dtype(dataset[session_id], session_id, [str, int])
+    _tkutl._raise_error_if_sarray_not_expected_dtype(
+        dataset[target], target, [str, int]
+    )
+    _tkutl._raise_error_if_sarray_not_expected_dtype(
+        dataset[session_id], session_id, [str, int]
+    )
 
     for feature in features:
-        _tkutl._handle_missing_values(dataset, feature, 'training_dataset')
+        _tkutl._handle_missing_values(dataset, feature, "training_dataset")
 
     # Check for missing values for sframe validation set
     if isinstance(validation_set, _SFrame):
-        _tkutl._raise_error_if_sframe_empty(validation_set, 'validation_set')
+        _tkutl._raise_error_if_sframe_empty(validation_set, "validation_set")
         for feature in features:
-            _tkutl._handle_missing_values(validation_set, feature, 'validation_set')
+            _tkutl._handle_missing_values(validation_set, feature, "validation_set")
 
     # C++ model
-    name = 'activity_classifier'
+    name = "activity_classifier"
 
     import turicreate as _turicreate
 
@@ -177,14 +191,15 @@ def create(dataset, session_id, target, features=None, prediction_window=100,
 
     model = _turicreate.extensions.activity_classifier()
     options = {}
-    options['prediction_window'] = prediction_window
-    options['batch_size'] = batch_size
-    options['max_iterations'] = max_iterations
-    options['verbose'] = verbose
-    options['_show_loss'] = False
+    options["prediction_window"] = prediction_window
+    options["batch_size"] = batch_size
+    options["max_iterations"] = max_iterations
+    options["verbose"] = verbose
+    options["_show_loss"] = False
 
     model.train(dataset, target, session_id, validation_set, options)
     return ActivityClassifier(model_proxy=model, name=name)
+
 
 def _encode_target(data, target, mapping=None):
     """ Encode targets to integers in [0, num_classes - 1] """
@@ -194,6 +209,7 @@ def _encode_target(data, target, mapping=None):
     data[target] = data[target].apply(lambda t: mapping[t])
     return data, mapping
 
+
 class ActivityClassifier(_Model):
     """
     A trained model using C++ implementation that is ready to use for classification or export to
@@ -201,6 +217,7 @@ class ActivityClassifier(_Model):
 
     This model should not be constructed directly.
     """
+
     _CPP_ACTIVITY_CLASSIFIER_VERSION = 1
 
     def __init__(self, model_proxy=None, name=None):
@@ -229,8 +246,7 @@ class ActivityClassifier(_Model):
         """
         width = 40
         sections, section_titles = self._get_summary_struct()
-        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
-                                         width=width)
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles, width=width)
         return out
 
     def _get_version(self):
@@ -249,13 +265,15 @@ class ActivityClassifier(_Model):
         --------
         >>> model.export_coreml("MyModel.mlmodel")
         """
-        short_description = _coreml_utils._mlmodel_short_description('Activity classifier')
+        short_description = _coreml_utils._mlmodel_short_description(
+            "Activity classifier"
+        )
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
-        self.__proxy__.export_to_coreml(filename, short_description,
-                additional_user_defined_metadata)
+        self.__proxy__.export_to_coreml(
+            filename, short_description, additional_user_defined_metadata
+        )
 
-
-    def predict(self, dataset, output_type='class', output_frequency='per_row'):
+    def predict(self, dataset, output_type="class", output_frequency="per_row"):
         """
         Return predictions for ``dataset``, using the trained activity classifier.
         Predictions can be generated as class labels, or as a probability
@@ -346,14 +364,14 @@ class ActivityClassifier(_Model):
             +---------------+------------+-----+
         """
         _tkutl._check_categorical_option_type(
-            'output_frequency', output_frequency, ['per_window', 'per_row'])
-        if output_frequency == 'per_row':
+            "output_frequency", output_frequency, ["per_window", "per_row"]
+        )
+        if output_frequency == "per_row":
             return self.__proxy__.predict(dataset, output_type)
-        elif output_frequency == 'per_window':
+        elif output_frequency == "per_window":
             return self.__proxy__.predict_per_window(dataset, output_type)
 
-
-    def evaluate(self, dataset, metric='auto'):
+    def evaluate(self, dataset, metric="auto"):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -400,7 +418,9 @@ class ActivityClassifier(_Model):
         """
         return self.__proxy__.evaluate(dataset, metric)
 
-    def predict_topk(self, dataset, output_type='probability', k=3, output_frequency='per_row'):
+    def predict_topk(
+        self, dataset, output_type="probability", k=3, output_frequency="per_row"
+    ):
         """
         Return top-k predictions for the ``dataset``, using the trained model.
         Predictions are returned as an SFrame with three columns: `prediction_id`,
@@ -460,11 +480,11 @@ class ActivityClassifier(_Model):
         +---------------+-------+-------------------+
         """
         if not isinstance(k, int):
-            raise TypeError('k must be of type int')
-        _tkutl._numeric_param_check_range('k', k, 1, _six.MAXSIZE)
-        return self.__proxy__.predict_topk(dataset, output_type, k, output_frequency);
+            raise TypeError("k must be of type int")
+        _tkutl._numeric_param_check_range("k", k, 1, _six.MAXSIZE)
+        return self.__proxy__.predict_topk(dataset, output_type, k, output_frequency)
 
-    def classify(self, dataset, output_frequency='per_row'):
+    def classify(self, dataset, output_frequency="per_row"):
         """
         Return a classification, for each ``prediction_window`` examples in the
         ``dataset``, using the trained activity classification model. The output
@@ -498,7 +518,7 @@ class ActivityClassifier(_Model):
         ----------
         >>> classes = model.classify(data)
         """
-        return self.__proxy__.classify(dataset, output_frequency);
+        return self.__proxy__.classify(dataset, output_frequency)
 
     def _get_summary_struct(self):
         """
@@ -518,16 +538,16 @@ class ActivityClassifier(_Model):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Number of examples', 'num_examples'),
-            ('Number of sessions', 'num_sessions'),
-            ('Number of classes', 'num_classes'),
-            ('Number of feature columns', 'num_features'),
-            ('Prediction window', 'prediction_window'),
+            ("Number of examples", "num_examples"),
+            ("Number of sessions", "num_sessions"),
+            ("Number of classes", "num_classes"),
+            ("Number of feature columns", "num_features"),
+            ("Prediction window", "prediction_window"),
         ]
         training_fields = [
-            ('Log-likelihood', 'training_log_loss'),
-            ('Training time (sec)', 'training_time'),
+            ("Log-likelihood", "training_log_loss"),
+            ("Training time (sec)", "training_time"),
         ]
 
-        section_titles = ['Schema', 'Training summary']
-        return([model_fields, training_fields], section_titles)
+        section_titles = ["Schema", "Training summary"]
+        return ([model_fields, training_fields], section_titles)

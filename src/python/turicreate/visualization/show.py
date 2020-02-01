@@ -9,6 +9,7 @@ from __future__ import absolute_import as _
 from ._plot import Plot, LABEL_DEFAULT
 import turicreate as tc
 
+
 def _get_title(title):
     if title == "":
         title = " "
@@ -16,6 +17,7 @@ def _get_title(title):
         title = ""
 
     return title
+
 
 def plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -77,12 +79,13 @@ def plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
 
     """
     title = _get_title(title)
-    if not(isinstance(x, tc.SArray)):
-      raise ValueError("The X axis data should be an SArray.")
-    if not(isinstance(y, tc.SArray)):
-      raise ValueError("The Y axis data should be an SArray.")
+    if not (isinstance(x, tc.SArray)):
+        raise ValueError("The X axis data should be an SArray.")
+    if not (isinstance(y, tc.SArray)):
+        raise ValueError("The Y axis data should be an SArray.")
     plt_ref = tc.extensions.plot(x, y, xlabel, ylabel, title)
     return Plot(_proxy=plt_ref)
+
 
 def show(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -146,6 +149,7 @@ def show(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     plot(x, y, xlabel, ylabel, title).show()
 
+
 def scatter(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
@@ -185,18 +189,25 @@ def scatter(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     >>> y = x * 2
     >>> scplt = turicreate.visualization.scatter(x, y)
     """
-    if (not isinstance(x, tc.data_structures.sarray.SArray) or
-        not isinstance(y, tc.data_structures.sarray.SArray) or
-        x.dtype not in [int, float] or y.dtype not in [int, float]):
-        raise ValueError("turicreate.visualization.scatter supports " +
-            "SArrays of dtypes: int, float")
+    if (
+        not isinstance(x, tc.data_structures.sarray.SArray)
+        or not isinstance(y, tc.data_structures.sarray.SArray)
+        or x.dtype not in [int, float]
+        or y.dtype not in [int, float]
+    ):
+        raise ValueError(
+            "turicreate.visualization.scatter supports "
+            + "SArrays of dtypes: int, float"
+        )
     # legit input
     title = _get_title(title)
-    plt_ref = tc.extensions.plot_scatter(x, y,
-      xlabel, ylabel,title)
+    plt_ref = tc.extensions.plot_scatter(x, y, xlabel, ylabel, title)
     return Plot(_proxy=plt_ref)
 
-def categorical_heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
+
+def categorical_heatmap(
+    x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT
+):
     """
     Plots the data in `x` on the X axis and the data in `y` on the Y axis
     in a 2d categorical heatmap, and returns the resulting Plot object.
@@ -234,16 +245,21 @@ def categorical_heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=
     >>> y = turicreate.SArray(['a','b','c','d','e'])
     >>> catheat = turicreate.visualization.categorical_heatmap(x, y)
     """
-    if (not isinstance(x, tc.data_structures.sarray.SArray) or
-        not isinstance(y, tc.data_structures.sarray.SArray) or
-        x.dtype != str or y.dtype != str):
-        raise ValueError("turicreate.visualization.categorical_heatmap supports " +
-            "SArrays of dtype: str")
+    if (
+        not isinstance(x, tc.data_structures.sarray.SArray)
+        or not isinstance(y, tc.data_structures.sarray.SArray)
+        or x.dtype != str
+        or y.dtype != str
+    ):
+        raise ValueError(
+            "turicreate.visualization.categorical_heatmap supports "
+            + "SArrays of dtype: str"
+        )
     # legit input
     title = _get_title(title)
-    plt_ref = tc.extensions.plot_categorical_heatmap(x, y,
-      xlabel, ylabel, title)
+    plt_ref = tc.extensions.plot_categorical_heatmap(x, y, xlabel, ylabel, title)
     return Plot(_proxy=plt_ref)
+
 
 def heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -283,15 +299,20 @@ def heatmap(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     >>> y = x * 2
     >>> heat = turicreate.visualization.heatmap(x, y)
     """
-    if (not isinstance(x, tc.data_structures.sarray.SArray) or
-        not isinstance(y, tc.data_structures.sarray.SArray) or
-        x.dtype not in [int, float] or y.dtype not in [int, float]):
-        raise ValueError("turicreate.visualization.heatmap supports " +
-            "SArrays of dtype: int, float")
+    if (
+        not isinstance(x, tc.data_structures.sarray.SArray)
+        or not isinstance(y, tc.data_structures.sarray.SArray)
+        or x.dtype not in [int, float]
+        or y.dtype not in [int, float]
+    ):
+        raise ValueError(
+            "turicreate.visualization.heatmap supports "
+            + "SArrays of dtype: int, float"
+        )
     title = _get_title(title)
-    plt_ref = tc.extensions.plot_heatmap(x, y,
-      xlabel, ylabel, title)
+    plt_ref = tc.extensions.plot_heatmap(x, y, xlabel, ylabel, title)
     return Plot(_proxy=plt_ref)
+
 
 def box_plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -329,16 +350,21 @@ def box_plot(x, y, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAU
 
     >>> bp = turicreate.visualization.box_plot(tc.SArray(['a','b','c','a','a']),tc.SArray([4.0,3.25,2.1,2.0,1.0]))
     """
-    if (not isinstance(x, tc.data_structures.sarray.SArray) or
-        not isinstance(y, tc.data_structures.sarray.SArray) or
-        x.dtype != str or y.dtype not in [int, float]):
-        raise ValueError("turicreate.visualization.box_plot supports " +
-            "x as SArray of dtype str and y as SArray of dtype: int, float." +
-            "\nExample: turicreate.visualization.box_plot(tc.SArray(['a','b','c','a','a']),tc.SArray([4.0,3.25,2.1,2.0,1.0]))")
+    if (
+        not isinstance(x, tc.data_structures.sarray.SArray)
+        or not isinstance(y, tc.data_structures.sarray.SArray)
+        or x.dtype != str
+        or y.dtype not in [int, float]
+    ):
+        raise ValueError(
+            "turicreate.visualization.box_plot supports "
+            + "x as SArray of dtype str and y as SArray of dtype: int, float."
+            + "\nExample: turicreate.visualization.box_plot(tc.SArray(['a','b','c','a','a']),tc.SArray([4.0,3.25,2.1,2.0,1.0]))"
+        )
     title = _get_title(title)
-    plt_ref = tc.extensions.plot_boxes_and_whiskers(x, y,
-      xlabel, ylabel, title)
+    plt_ref = tc.extensions.plot_boxes_and_whiskers(x, y, xlabel, ylabel, title)
     return Plot(_proxy=plt_ref)
+
 
 def columnwise_summary(sf):
     """
@@ -367,10 +393,12 @@ def columnwise_summary(sf):
     >>> colsum = turicreate.visualization.columnwise_summary(sf_test)
     """
     if not isinstance(sf, tc.data_structures.sframe.SFrame):
-        raise ValueError("turicreate.visualization.columnwise_summary " +
-            "supports SFrame")
+        raise ValueError(
+            "turicreate.visualization.columnwise_summary " + "supports SFrame"
+        )
     plt_ref = tc.extensions.plot_columnwise_summary(sf)
     return Plot(_proxy=plt_ref)
+
 
 def histogram(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -405,14 +433,18 @@ def histogram(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAUL
     >>> x = turicreate.SArray([1,2,3,4,5,1,1,1,1,2,2,3,2,3,1,1,1,4])
     >>> hist = turicreate.visualization.histogram(x)
     """
-    if (not isinstance(sa, tc.data_structures.sarray.SArray) or
-        sa.dtype not in [int, float]):
-        raise ValueError("turicreate.visualization.histogram supports " +
-            "SArrays of dtypes: int, float")
+    if not isinstance(sa, tc.data_structures.sarray.SArray) or sa.dtype not in [
+        int,
+        float,
+    ]:
+        raise ValueError(
+            "turicreate.visualization.histogram supports "
+            + "SArrays of dtypes: int, float"
+        )
     title = _get_title(title)
-    plt_ref = tc.extensions.plot_histogram(sa,
-      xlabel, ylabel, title)
+    plt_ref = tc.extensions.plot_histogram(sa, xlabel, ylabel, title)
     return Plot(_proxy=plt_ref)
+
 
 def item_frequency(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_DEFAULT):
     """
@@ -447,11 +479,10 @@ def item_frequency(sa, xlabel=LABEL_DEFAULT, ylabel=LABEL_DEFAULT, title=LABEL_D
     >>> x = turicreate.SArray(['a','ab','acd','ab','a','a','a','ab','cd'])
     >>> ifplt = turicreate.visualization.item_frequency(x)
     """
-    if (not isinstance(sa, tc.data_structures.sarray.SArray) or
-        sa.dtype != str):
-        raise ValueError("turicreate.visualization.item_frequency supports " +
-            "SArrays of dtype str")
+    if not isinstance(sa, tc.data_structures.sarray.SArray) or sa.dtype != str:
+        raise ValueError(
+            "turicreate.visualization.item_frequency supports " + "SArrays of dtype str"
+        )
     title = _get_title(title)
-    plt_ref = tc.extensions.plot_item_frequency(sa,
-      xlabel, ylabel, title)
+    plt_ref = tc.extensions.plot_item_frequency(sa, xlabel, ylabel, title)
     return Plot(_proxy=plt_ref)

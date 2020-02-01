@@ -30,7 +30,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                 net_params[key]
             )
 
-
         self.dc_graph = _tf.Graph()
         self.num_classes = num_classes
         self.batch_size = batch_size

@@ -43,16 +43,19 @@ def binary_classification_integer_target(cls):
     target[1] = 1
 
     ## Compute the correct answers with statsmodels
-    sm_model = sm.GLM(target, sm.add_constant(cls.sf.to_dataframe()),
-                      family=sm.families.Binomial()).fit()
+    sm_model = sm.GLM(
+        target, sm.add_constant(cls.sf.to_dataframe()), family=sm.families.Binomial()
+    ).fit()
     cls.loss = -sm_model.llf
     cls.coef = list(sm_model.params)
     cls.stderr = list(sm_model.bse)
-    cls.yhat_margin = tc.SArray(list(np.log(sm_model.fittedvalues) - \
-                                        np.log(1 - sm_model.fittedvalues)))
+    cls.yhat_margin = tc.SArray(
+        list(np.log(sm_model.fittedvalues) - np.log(1 - sm_model.fittedvalues))
+    )
     cls.yhat_prob = tc.SArray(list(sm_model.fittedvalues))
-    cls.yhat_max_prob = tc.SArray(list(sm_model.fittedvalues)).apply(\
-                                                 lambda x: max(x, 1.0 - x))
+    cls.yhat_max_prob = tc.SArray(list(sm_model.fittedvalues)).apply(
+        lambda x: max(x, 1.0 - x)
+    )
     cls.yhat_class = tc.SArray(list((sm_model.fittedvalues >= 0.5).astype(int)))
     cls.type = int
     cls.test_stderr = True
@@ -67,98 +70,115 @@ def binary_classification_integer_target(cls):
         cls.topk_yhat_prob += [1 - prob, prob]
         cls.topk_yhat_margin += [0, margin]
         if prob <= 0.5:
-            cls.topk_yhat_rank += [0,1]
+            cls.topk_yhat_rank += [0, 1]
         else:
-            cls.topk_yhat_rank += [1,0]
-
+            cls.topk_yhat_rank += [1, 0]
 
     # Compute the answers you get from Stats Models.
     cls.sm_cf_matrix = table = np.histogram2d(target, cls.yhat_class, bins=2)[0]
 
     ## Create the model
-    cls.sf['target'] = target
+    cls.sf["target"] = target
     cls.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
-    cls.def_opts= dict(list(cls.def_kwargs.items()) + list({'solver' : 'auto',
-                                           'feature_rescaling' : True,
-                                           'class_weights' : None,
-                                           'l1_penalty' : 0,
-                                           'l2_penalty': 1e-2}.items()))
+    cls.def_opts = dict(
+        list(cls.def_kwargs.items())
+        + list(
+            {
+                "solver": "auto",
+                "feature_rescaling": True,
+                "class_weights": None,
+                "l1_penalty": 0,
+                "l2_penalty": 1e-2,
+            }.items()
+        )
+    )
 
-    cls.solver = 'auto'
-    cls.features = ['X{}'.format(i) for i in range(1, d+1)]
-    cls.unpacked_features = ['X{}'.format(i) for i in range(1, d+1)]
-    cls.target = 'target'
+    cls.solver = "auto"
+    cls.features = ["X{}".format(i) for i in range(1, d + 1)]
+    cls.unpacked_features = ["X{}".format(i) for i in range(1, d + 1)]
+    cls.target = "target"
 
-    cls.model = tc.logistic_classifier.create(cls.sf, target='target',
-                                               features=None,
-                                               l2_penalty=0.,
-                                               feature_rescaling = True,
-                                               validation_set=None,
-                                               solver=cls.solver)
+    cls.model = tc.logistic_classifier.create(
+        cls.sf,
+        target="target",
+        features=None,
+        l2_penalty=0.0,
+        feature_rescaling=True,
+        validation_set=None,
+        solver=cls.solver,
+    )
 
     # Metrics!
-    cls.metrics = ["accuracy", "auc", "confusion_matrix", "f1_score",
-            "log_loss", "precision", "recall", "roc_curve"]
+    cls.metrics = [
+        "accuracy",
+        "auc",
+        "confusion_matrix",
+        "f1_score",
+        "log_loss",
+        "precision",
+        "recall",
+        "roc_curve",
+    ]
     cls.sm_metrics = {
-        "accuracy"         : accuracy_score(target, list(cls.yhat_class)),
-        "auc"              : roc_auc_score(target, list(cls.yhat_prob)),
-        "confusion_matrix" : cls.sm_cf_matrix.flatten(),
-        "f1_score"         : f1_score(target, list(cls.yhat_class)),
-        "log_loss"         : log_loss(target, list(cls.yhat_prob)),
-        "precision"        : precision_score(target, list(cls.yhat_class)),
-        "recall"           : recall_score(target, list(cls.yhat_class)),
-        "roc_curve"        : tc.toolkits.evaluation.roc_curve(
-                                cls.sf['target'], cls.yhat_prob)
-      }
-
+        "accuracy": accuracy_score(target, list(cls.yhat_class)),
+        "auc": roc_auc_score(target, list(cls.yhat_prob)),
+        "confusion_matrix": cls.sm_cf_matrix.flatten(),
+        "f1_score": f1_score(target, list(cls.yhat_class)),
+        "log_loss": log_loss(target, list(cls.yhat_prob)),
+        "precision": precision_score(target, list(cls.yhat_class)),
+        "recall": recall_score(target, list(cls.yhat_class)),
+        "roc_curve": tc.toolkits.evaluation.roc_curve(cls.sf["target"], cls.yhat_prob),
+    }
 
     ## Answers
     cls.opts = cls.def_opts.copy()
-    cls.opts['l2_penalty'] = 0.
-    cls.opts['solver'] = "newton"
+    cls.opts["l2_penalty"] = 0.0
+    cls.opts["solver"] = "newton"
 
     cls.get_ans = {
-        'coefficients': lambda x: isinstance(x, tc.SFrame),
-        'convergence_threshold': lambda x: x == cls.opts['convergence_threshold'],
-        'unpacked_features': lambda x: x == cls.unpacked_features,
-        'feature_rescaling': lambda x: x == cls.opts['feature_rescaling'],
-        'features': lambda x: x == cls.features,
-        'l1_penalty': lambda x: x == cls.opts['l1_penalty'],
-        'l2_penalty': lambda x: x == cls.opts['l2_penalty'],
-        'lbfgs_memory_level': lambda x: x == cls.opts['lbfgs_memory_level'],
-        'max_iterations': lambda x: x == cls.opts['max_iterations'],
-        'num_classes': lambda x: x == 2,
-        'classes': lambda x: list(x) == [0,1],
-        'num_coefficients': lambda x: x == 11,
-        'num_examples': lambda x: x == 100,
-        'class_weights': lambda x: x == {0:1, 1:1},
-        'num_examples_per_class': \
-                lambda x: {0: cls.sf.num_rows() - cls.sf['target'].sum(),
-                           1: cls.sf['target'].sum()},
-        'num_unpacked_features': lambda x: x == 10,
-        'num_features': lambda x: x == 10,
-        'progress': lambda x: isinstance(x, tc.SFrame) or (x is None),
-        'solver': lambda x: x == cls.opts['solver'],
-        'step_size': lambda x: lambda x: x == cls.opts['step_size'],
-        'target': lambda x: x == cls.target,
-        'training_accuracy': lambda x: x >= 0 and x <= 1,
-        'training_iterations': lambda x: x > 0,
-        'training_loss': lambda x: abs(x - cls.loss) < 1e-5,
-        'training_solver_status': lambda x: x == "SUCCESS: Optimal solution found.",
-        'training_time': lambda x: x >= 0,
-        'simple_mode': lambda x: not x,
-        'training_auc': lambda x: x > 0,
-        'training_confusion_matrix': lambda x: len(x) > 0,
-        'training_f1_score': lambda x: x > 0,
-        'training_log_loss': lambda x: x > 0,
-        'training_precision': lambda x: x > 0,
-        'training_recall': lambda x: x > 0,
-        'training_report_by_class': lambda x: len(x) > 0,
-        'training_roc_curve': lambda x: len(x) > 0,
-        'validation_data': lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
-        'disable_posttrain_evaluation' : lambda x: x == False,
-        }
+        "coefficients": lambda x: isinstance(x, tc.SFrame),
+        "convergence_threshold": lambda x: x == cls.opts["convergence_threshold"],
+        "unpacked_features": lambda x: x == cls.unpacked_features,
+        "feature_rescaling": lambda x: x == cls.opts["feature_rescaling"],
+        "features": lambda x: x == cls.features,
+        "l1_penalty": lambda x: x == cls.opts["l1_penalty"],
+        "l2_penalty": lambda x: x == cls.opts["l2_penalty"],
+        "lbfgs_memory_level": lambda x: x == cls.opts["lbfgs_memory_level"],
+        "max_iterations": lambda x: x == cls.opts["max_iterations"],
+        "num_classes": lambda x: x == 2,
+        "classes": lambda x: list(x) == [0, 1],
+        "num_coefficients": lambda x: x == 11,
+        "num_examples": lambda x: x == 100,
+        "class_weights": lambda x: x == {0: 1, 1: 1},
+        "num_examples_per_class": lambda x: {
+            0: cls.sf.num_rows() - cls.sf["target"].sum(),
+            1: cls.sf["target"].sum(),
+        },
+        "num_unpacked_features": lambda x: x == 10,
+        "num_features": lambda x: x == 10,
+        "progress": lambda x: isinstance(x, tc.SFrame) or (x is None),
+        "solver": lambda x: x == cls.opts["solver"],
+        "step_size": lambda x: lambda x: x == cls.opts["step_size"],
+        "target": lambda x: x == cls.target,
+        "training_accuracy": lambda x: x >= 0 and x <= 1,
+        "training_iterations": lambda x: x > 0,
+        "training_loss": lambda x: abs(x - cls.loss) < 1e-5,
+        "training_solver_status": lambda x: x == "SUCCESS: Optimal solution found.",
+        "training_time": lambda x: x >= 0,
+        "simple_mode": lambda x: not x,
+        "training_auc": lambda x: x > 0,
+        "training_confusion_matrix": lambda x: len(x) > 0,
+        "training_f1_score": lambda x: x > 0,
+        "training_log_loss": lambda x: x > 0,
+        "training_precision": lambda x: x > 0,
+        "training_recall": lambda x: x > 0,
+        "training_report_by_class": lambda x: len(x) > 0,
+        "training_roc_curve": lambda x: len(x) > 0,
+        "validation_data": lambda x: isinstance(x, tc.SFrame) and len(x) == 0,
+        "disable_posttrain_evaluation": lambda x: x == False,
+    }
     cls.fields_ans = cls.get_ans.keys()
+
 
 def multiclass_integer_target(cls):
     """
@@ -180,11 +200,11 @@ def multiclass_integer_target(cls):
     sm_model = sm.MNLogit(target, sm.add_constant(cls.sf.to_dataframe())).fit()
     coef = np.empty([0])
     for i in range(sm_model.params.ndim):
-      coef = np.append(coef, sm_model.params[i].values)
+        coef = np.append(coef, sm_model.params[i].values)
     cls.coef = list(coef)
     stderr = np.empty([0])
     for i in range(sm_model.params.ndim):
-      stderr  = np.append(stderr, sm_model.bse[i].values)
+        stderr = np.append(stderr, sm_model.bse[i].values)
     cls.stderr = list(stderr)
 
     # Predict
@@ -195,41 +215,43 @@ def multiclass_integer_target(cls):
     cls.sm_cf_matrix = sm_model.pred_table().flatten()
 
     cls.sm_metrics = {
-      "accuracy"        : accuracy_score(target, list(cls.yhat_class)),
-      "auc"             : tc.toolkits.evaluation.auc(
-                              tc.SArray(target), tc.SArray(raw_predictions)),
-      "confusion_matrix": cls.sm_cf_matrix.flatten(),
-      "f1_score"        : f1_score(target, list(cls.yhat_class),
-                                   average = 'macro'),
-      "log_loss"        : log_loss(target, list(raw_predictions)),
-      "precision"       : precision_score(target, list(cls.yhat_class),
-                                          average = 'macro'),
-      "recall"          : recall_score(target, list(cls.yhat_class),
-                                       average = 'macro'),
-      "roc_curve"       : tc.toolkits.evaluation.roc_curve(
-                              tc.SArray(target), tc.SArray(raw_predictions))
-      }
-
+        "accuracy": accuracy_score(target, list(cls.yhat_class)),
+        "auc": tc.toolkits.evaluation.auc(
+            tc.SArray(target), tc.SArray(raw_predictions)
+        ),
+        "confusion_matrix": cls.sm_cf_matrix.flatten(),
+        "f1_score": f1_score(target, list(cls.yhat_class), average="macro"),
+        "log_loss": log_loss(target, list(raw_predictions)),
+        "precision": precision_score(target, list(cls.yhat_class), average="macro"),
+        "recall": recall_score(target, list(cls.yhat_class), average="macro"),
+        "roc_curve": tc.toolkits.evaluation.roc_curve(
+            tc.SArray(target), tc.SArray(raw_predictions)
+        ),
+    }
 
     # Predict topk
     preds_sf = tc.SFrame(pd.DataFrame(raw_predictions))
-    cls.topk_yhat_prob = preds_sf\
-                          .pack_columns(preds_sf.column_names(), dtype = dict)\
-                          .add_row_number()\
-                          .stack('X1', ['class', 'prediction'])\
-                          .sort(['id', 'class'])['prediction']
-    cls.yhat_prob_vec = preds_sf\
-                          .pack_columns(preds_sf.column_names(), dtype = dict)\
-                          .add_row_number()\
-                          .stack('X1', ['class', 'prediction'])\
-                          .sort(['id', 'class'])['prediction']
+    cls.topk_yhat_prob = (
+        preds_sf.pack_columns(preds_sf.column_names(), dtype=dict)
+        .add_row_number()
+        .stack("X1", ["class", "prediction"])
+        .sort(["id", "class"])["prediction"]
+    )
+    cls.yhat_prob_vec = (
+        preds_sf.pack_columns(preds_sf.column_names(), dtype=dict)
+        .add_row_number()
+        .stack("X1", ["class", "prediction"])
+        .sort(["id", "class"])["prediction"]
+    )
 
     # Function to rank all items in a list
     rank = lambda x: list(len(x) - ss.rankdata(x))
-    rank_sa = preds_sf.pack_columns(preds_sf.column_names())['X1'].apply(rank)
-    topk_yhat_rank = tc.SFrame({'X1': rank_sa}).add_row_number()
-    topk_yhat_rank['X1'] = topk_yhat_rank['X1'].apply(lambda x: {i:v for i,v in enumerate(x)})
-    topk_yhat_rank = topk_yhat_rank.stack('X1').sort(['id', 'X2'])['X3'].astype(int)
+    rank_sa = preds_sf.pack_columns(preds_sf.column_names())["X1"].apply(rank)
+    topk_yhat_rank = tc.SFrame({"X1": rank_sa}).add_row_number()
+    topk_yhat_rank["X1"] = topk_yhat_rank["X1"].apply(
+        lambda x: {i: v for i, v in enumerate(x)}
+    )
+    topk_yhat_rank = topk_yhat_rank.stack("X1").sort(["id", "X2"])["X3"].astype(int)
     cls.topk_yhat_rank = topk_yhat_rank
 
     # Compute the margins
@@ -237,35 +259,39 @@ def multiclass_integer_target(cls):
     sf_margin = sm.add_constant(np.dot(df.values, sm_model.params))
     sf_margin[:, 0] = 0
     sf_margin = tc.SFrame(pd.DataFrame(sf_margin))
-    cls.topk_yhat_margin = sf_margin\
-                            .pack_columns(sf_margin.column_names(), dtype = dict)\
-                            .add_row_number()\
-                            .stack('X1', ['class', 'prediction'])\
-                            .sort(['id', 'class'])['prediction']
-
+    cls.topk_yhat_margin = (
+        sf_margin.pack_columns(sf_margin.column_names(), dtype=dict)
+        .add_row_number()
+        .stack("X1", ["class", "prediction"])
+        .sort(["id", "class"])["prediction"]
+    )
 
     ## Create the model
-    cls.sf['target'] = target
+    cls.sf["target"] = target
     cls.loss = -sm_model.llf
 
-    cls.model = tc.logistic_classifier.create(cls.sf, target='target',
-                                               features=None,
-                                               l2_penalty=0.,
-                                               feature_rescaling = True,
-                                               validation_set=None,
-                                               solver=cls.solver)
+    cls.model = tc.logistic_classifier.create(
+        cls.sf,
+        target="target",
+        features=None,
+        l2_penalty=0.0,
+        feature_rescaling=True,
+        validation_set=None,
+        solver=cls.solver,
+    )
 
-
-    cls.get_ans['num_classes'] = lambda x: x == 3
-    cls.get_ans['classes'] = lambda x: x == [0,1,2]
-    cls.get_ans['num_coefficients'] = lambda x: x == 22
-    cls.get_ans['class_weights'] = lambda x: x == {0:1, 1:1, 2:1}
-    cls.get_ans['num_examples_per_class'] =  lambda x: {
-                                      0: (cls.sf['target'] == 0).sum(),
-                                      1: (cls.sf['target'] == 1).sum(),
-                                      2: (cls.sf['target'] == 2).sum()}
+    cls.get_ans["num_classes"] = lambda x: x == 3
+    cls.get_ans["classes"] = lambda x: x == [0, 1, 2]
+    cls.get_ans["num_coefficients"] = lambda x: x == 22
+    cls.get_ans["class_weights"] = lambda x: x == {0: 1, 1: 1, 2: 1}
+    cls.get_ans["num_examples_per_class"] = lambda x: {
+        0: (cls.sf["target"] == 0).sum(),
+        1: (cls.sf["target"] == 1).sum(),
+        2: (cls.sf["target"] == 2).sum(),
+    }
 
     cls.fields_ans = cls.get_ans.keys()
+
 
 def binary_classification_string_target(cls):
     """
@@ -275,19 +301,23 @@ def binary_classification_string_target(cls):
 
     binary_classification_integer_target(cls)
 
-    cls.sf['target'] = cls.sf['target'].astype(str)
-    cls.model = tc.logistic_classifier.create(cls.sf, target='target',
-                                               features=None,
-                                               l2_penalty=0.,
-                                               feature_rescaling = True,
-                                               validation_set=None,
-                                               solver=cls.solver)
+    cls.sf["target"] = cls.sf["target"].astype(str)
+    cls.model = tc.logistic_classifier.create(
+        cls.sf,
+        target="target",
+        features=None,
+        l2_penalty=0.0,
+        feature_rescaling=True,
+        validation_set=None,
+        solver=cls.solver,
+    )
 
-    cls.get_ans["classes"] = lambda x: x == ["0","1"]
-    cls.get_ans["class_weights"] = lambda x: x == {"0":1, "1":1}
-    cls.get_ans["num_examples_per_class"] =  lambda x: x == {
-            "0": (cls.sf["target"] == "0").sum(),
-            "1": (cls.sf["target"] == "1").sum()}
+    cls.get_ans["classes"] = lambda x: x == ["0", "1"]
+    cls.get_ans["class_weights"] = lambda x: x == {"0": 1, "1": 1}
+    cls.get_ans["num_examples_per_class"] = lambda x: x == {
+        "0": (cls.sf["target"] == "0").sum(),
+        "1": (cls.sf["target"] == "1").sum(),
+    }
     cls.type = str
 
 
@@ -299,50 +329,57 @@ def multiclass_string_target(cls):
 
     multiclass_integer_target(cls)
 
-    cls.sf['target'] = cls.sf['target'].astype(str)
-    cls.model = tc.logistic_classifier.create(cls.sf, target='target',
-                                               features=None,
-                                               l2_penalty=0.,
-                                               feature_rescaling = True,
-                                               validation_set=None,
-                                               solver=cls.solver)
+    cls.sf["target"] = cls.sf["target"].astype(str)
+    cls.model = tc.logistic_classifier.create(
+        cls.sf,
+        target="target",
+        features=None,
+        l2_penalty=0.0,
+        feature_rescaling=True,
+        validation_set=None,
+        solver=cls.solver,
+    )
 
-    cls.get_ans["classes"] = lambda x: x == ["0","1","2"]
-    cls.get_ans["class_weights"] = lambda x: x == {"0":1, "1":1, "2":1}
-    cls.get_ans["num_examples_per_class"] =  lambda x: x == {
-            "0": (cls.sf["target"] == "0").sum(),
-            "1": (cls.sf["target"] == "1").sum(),
-            "2": (cls.sf["target"] == "2").sum(),
-            }
+    cls.get_ans["classes"] = lambda x: x == ["0", "1", "2"]
+    cls.get_ans["class_weights"] = lambda x: x == {"0": 1, "1": 1, "2": 1}
+    cls.get_ans["num_examples_per_class"] = lambda x: x == {
+        "0": (cls.sf["target"] == "0").sum(),
+        "1": (cls.sf["target"] == "1").sum(),
+        "2": (cls.sf["target"] == "2").sum(),
+    }
     cls.type = str
+
 
 def test_suite():
     """
     Create a test suite for each test case in LogisticRegressionClassifierModelTest
     """
-    testCases = [binary_classification_integer_target,
-                 binary_classification_string_target,
-                 multiclass_integer_target]
-                 #multiclass_string_target]
+    testCases = [
+        binary_classification_integer_target,
+        binary_classification_string_target,
+        multiclass_integer_target,
+    ]
+    # multiclass_string_target]
 
     for t in testCases:
         testcase_members = {}
         testcase_members[t.__name__] = classmethod(t)
         testcase_class = type(
-            'LogisticRegressionClassifierModelTest_%s' % t.__name__,
+            "LogisticRegressionClassifierModelTest_%s" % t.__name__,
             (LogisticRegressionClassifierModelTest,),
-            testcase_members
+            testcase_members,
         )
         getattr(testcase_class, t.__name__)()
         testcase_class.__test__ = True
         for method in dir(testcase_class):
-            if method.startswith('test_'):
+            if method.startswith("test_"):
                 testcase_instance = testcase_class(method)
                 method_instance = getattr(testcase_instance, method)
                 # needs callable() since some class- or instance-level
                 # properties are named test_ and have non-method values.
                 if callable(method_instance):
                     method_instance()
+
 
 class LogisticRegressionClassifierModelTest(unittest.TestCase):
     __test__ = False
@@ -374,14 +411,16 @@ class LogisticRegressionClassifierModelTest(unittest.TestCase):
         """
         model = self.model
         coefs = model.coefficients
-        coef_list = list(coefs['value'])
+        coef_list = list(coefs["value"])
         self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-03, atol=1e-03))
         if self.test_stderr:
-          stderr_list = list(coefs['stderr'])
-          self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-03, atol=1e-03))
+            stderr_list = list(coefs["stderr"])
+            self.assertTrue(
+                np.allclose(stderr_list, self.stderr, rtol=1e-03, atol=1e-03)
+            )
         else:
-          self.assertTrue('stderr' in coefs.column_names())
-          self.assertEqual(list(coefs['stderr']), [None for v in coef_list])
+            self.assertTrue("stderr" in coefs.column_names())
+            self.assertEqual(list(coefs["stderr"]), [None for v in coef_list])
 
     def test_summary(self):
         """
@@ -395,7 +434,7 @@ class LogisticRegressionClassifierModelTest(unittest.TestCase):
         Check the repr function.
         """
         model = self.model
-        ans =  str(model)
+        ans = str(model)
         self.assertEqual(type(ans), str)
 
     def test_predict_topk(self):
@@ -407,25 +446,31 @@ class LogisticRegressionClassifierModelTest(unittest.TestCase):
         tol = 1e-3
         k = model.num_classes
 
-        ans =  model.predict_topk(self.sf, output_type='margin', k=k)
-        ans = ans.sort(['id', 'class'])['margin']
-        self.assertTrue(np.allclose(ans, self.topk_yhat_margin, tol, tol),
-                       "{%s} - {%s}" % (ans, self.topk_yhat_margin))
+        ans = model.predict_topk(self.sf, output_type="margin", k=k)
+        ans = ans.sort(["id", "class"])["margin"]
+        self.assertTrue(
+            np.allclose(ans, self.topk_yhat_margin, tol, tol),
+            "{%s} - {%s}" % (ans, self.topk_yhat_margin),
+        )
 
-        ans =  model.predict_topk(self.sf, output_type='probability', k=k)
-        ans = ans.sort(['id', 'class'])['probability']
-        self.assertTrue(np.allclose(ans, self.topk_yhat_prob, tol, tol),
-                       "{%s} - {%s}" % (ans, self.topk_yhat_prob))
+        ans = model.predict_topk(self.sf, output_type="probability", k=k)
+        ans = ans.sort(["id", "class"])["probability"]
+        self.assertTrue(
+            np.allclose(ans, self.topk_yhat_prob, tol, tol),
+            "{%s} - {%s}" % (ans, self.topk_yhat_prob),
+        )
 
-        ans =  model.predict_topk(self.sf, output_type='rank', k = k)
-        self.assertEqual(ans['class'].dtype, self.type)
-        ans = ans.sort(['id', 'class'])['rank']
+        ans = model.predict_topk(self.sf, output_type="rank", k=k)
+        self.assertEqual(ans["class"].dtype, self.type)
+        ans = ans.sort(["id", "class"])["rank"]
         self.assertEqual(list(ans), list(self.topk_yhat_rank))
 
-        ans =  model.predict_topk(self.sf, k=k)
-        ans = ans.sort(['id', 'class'])['probability']
-        self.assertTrue(np.allclose(ans, self.topk_yhat_prob, tol, tol),
-                       "{%s} - {%s}" % (ans, self.topk_yhat_prob))
+        ans = model.predict_topk(self.sf, k=k)
+        ans = ans.sort(["id", "class"])["probability"]
+        self.assertTrue(
+            np.allclose(ans, self.topk_yhat_prob, tol, tol),
+            "{%s} - {%s}" % (ans, self.topk_yhat_prob),
+        )
 
     def test_predict(self):
         """
@@ -436,33 +481,34 @@ class LogisticRegressionClassifierModelTest(unittest.TestCase):
         tol = 1e-3
 
         if model.num_classes == 2:
-            ans =  model.predict(self.sf, output_type='margin')
+            ans = model.predict(self.sf, output_type="margin")
             self.assertTrue(np.allclose(ans, self.yhat_margin, tol, tol))
-            ans =  model.predict(self.sf, output_type='probability')
+            ans = model.predict(self.sf, output_type="probability")
             self.assertTrue(np.allclose(ans, self.yhat_prob, tol, tol))
         else:
             try:
-                ans =  model.predict(self.sf, output_type='margin')
+                ans = model.predict(self.sf, output_type="margin")
             except ToolkitError:
                 pass
             try:
-                ans =  model.predict(self.sf, output_type='probability')
+                ans = model.predict(self.sf, output_type="probability")
             except ToolkitError:
                 pass
 
         # Prob vector.
-        ans =  model.predict(self.sf, output_type='probability_vector')
+        ans = model.predict(self.sf, output_type="probability_vector")
         import itertools
+
         merged_ans = list(itertools.chain(*ans))
         self.assertTrue(np.allclose(merged_ans, self.yhat_prob_vec, tol, tol))
 
         # class
-        ans =  model.predict(self.sf, output_type='class')
+        ans = model.predict(self.sf, output_type="class")
         self.assertEqual(ans.dtype, self.type)
         self.assertTrue((ans == tc.SArray(list(map(self.type, self.yhat_class)))).all())
 
         # Default is class
-        ans =  model.predict(self.sf)
+        ans = model.predict(self.sf)
         self.assertEqual(ans.dtype, self.type)
         self.assertTrue((ans == tc.SArray(list(map(self.type, self.yhat_class)))).all())
 
@@ -472,61 +518,65 @@ class LogisticRegressionClassifierModelTest(unittest.TestCase):
         all predictions are at most 1e-5 away from the true answers.
         """
         model = self.model
-        ans =  model.classify(self.sf)
+        ans = model.classify(self.sf)
         tol = 1e-3
-        self.assertEqual(ans['class'].dtype, self.type)
-        self.assertTrue((ans['class'] == tc.SArray(list(map(self.type, self.yhat_class)))).all())
-        self.assertTrue(np.allclose(ans['probability'], self.yhat_max_prob, tol, tol))
+        self.assertEqual(ans["class"].dtype, self.type)
+        self.assertTrue(
+            (ans["class"] == tc.SArray(list(map(self.type, self.yhat_class)))).all()
+        )
+        self.assertTrue(np.allclose(ans["probability"], self.yhat_max_prob, tol, tol))
 
     def test_evaluate(self):
         """
         Make sure that evaluate works.
         """
         model = self.model
+
         def check_cf_matrix(ans):
             self.assertTrue(ans is not None)
-            self.assertTrue('confusion_matrix' in ans)
-            cf = ans['confusion_matrix'].sort(['target_label', 'predicted_label'])
+            self.assertTrue("confusion_matrix" in ans)
+            cf = ans["confusion_matrix"].sort(["target_label", "predicted_label"])
             self.assertTrue(
-                    np.allclose(cf['count'],
-                    self.sm_metrics['confusion_matrix']))
+                np.allclose(cf["count"], self.sm_metrics["confusion_matrix"])
+            )
 
         def check_roc_curve(ans):
             self.assertTrue(ans is not None)
-            self.assertTrue('roc_curve' in ans)
-            roc = ans['roc_curve']
+            self.assertTrue("roc_curve" in ans)
+            roc = ans["roc_curve"]
             self.assertEqual(type(roc), tc.SFrame)
 
         def check_metric(ans, metric):
-            if metric == 'confusion_matrix':
+            if metric == "confusion_matrix":
                 check_cf_matrix(ans)
-            elif metric == 'roc_curve':
+            elif metric == "roc_curve":
                 check_roc_curve(ans)
             else:
                 self.assertTrue(ans is not None)
                 self.assertTrue(metric in ans)
-                self.assertAlmostEqual(ans[metric],
-                        self.sm_metrics[metric],
-                        places = 4,
-                        msg = "%s = (%s,%s)" % \
-                               (metric, ans[metric], self.sm_metrics[metric]))
+                self.assertAlmostEqual(
+                    ans[metric],
+                    self.sm_metrics[metric],
+                    places=4,
+                    msg="%s = (%s,%s)" % (metric, ans[metric], self.sm_metrics[metric]),
+                )
 
         # Default
         ans = model.evaluate(self.sf)
         self.assertEqual(sorted(ans.keys()), sorted(self.metrics))
         for m in self.metrics:
-          check_metric(ans, m)
+            check_metric(ans, m)
 
         # Individual
         for m in self.metrics:
-            ans = model.evaluate(self.sf, metric = m)
+            ans = model.evaluate(self.sf, metric=m)
             check_metric(ans, m)
 
     def test_save_and_load(self):
         """
         Make sure saving and loading retains everything.
         """
-        filename = 'save_file{}'.format(uuid.uuid4())
+        filename = "save_file{}".format(uuid.uuid4())
         self.model.save(filename)
         self.model = tc.load_model(filename)
 
@@ -574,56 +624,64 @@ class LogisticRegressionCreateTest(unittest.TestCase):
         target[1] = 1
 
         # the correct model
-        sm_model = sm.GLM(target, sm.add_constant(self.sf.to_dataframe()),
-                          family=sm.families.Binomial()).fit()
+        sm_model = sm.GLM(
+            target,
+            sm.add_constant(self.sf.to_dataframe()),
+            family=sm.families.Binomial(),
+        ).fit()
         self.loss = -sm_model.llf
         self.coef = list(sm_model.params)
         self.stderr = list(sm_model.bse)
 
-
         # turicreate model parameters
         self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
-        self.def_kwargs['max_iterations'] = 100
-        self.def_kwargs['convergence_threshold'] = 1e-5
-        self.sf['target'] = target
-        self.solver = 'newton'
-        self.features = ['X{}'.format(i) for i in range(1, d+1)]
-        self.target = 'target'
-
+        self.def_kwargs["max_iterations"] = 100
+        self.def_kwargs["convergence_threshold"] = 1e-5
+        self.sf["target"] = target
+        self.solver = "newton"
+        self.features = ["X{}".format(i) for i in range(1, d + 1)]
+        self.target = "target"
 
     def _test_create(self, sf, target, features, solver, kwargs, rescaling):
         """
         Test logistic regression create.
         """
 
-        model = tc.logistic_classifier.create(sf, target, features,
-                                              solver=solver,
-                                              l2_penalty = 0.0,
-                                              verbose = True,
-                                              validation_set=None,
-                                              **kwargs)
+        model = tc.logistic_classifier.create(
+            sf,
+            target,
+            features,
+            solver=solver,
+            l2_penalty=0.0,
+            verbose=True,
+            validation_set=None,
+            **kwargs
+        )
 
-        test_case = 'solver = {}, kwargs = {}'.format(solver, kwargs)
+        test_case = "solver = {}, kwargs = {}".format(solver, kwargs)
         self.assertTrue(model is not None)
-        self.assertTrue(abs(model.training_loss - self.loss) < \
-                 0.01 * abs(self.loss), 'Loss failed: {}'.format(test_case))
+        self.assertTrue(
+            abs(model.training_loss - self.loss) < 0.01 * abs(self.loss),
+            "Loss failed: {}".format(test_case),
+        )
         coefs = model.coefficients
-        coefs_list = list(coefs['value'])
+        coefs_list = list(coefs["value"])
         self.assertTrue(np.allclose(coefs_list, self.coef, rtol=2e-01, atol=2e-01))
-        if solver == 'newton':
-          stderr_list = list(model.coefficients['stderr'])
-          self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=2e-01, atol=2e-01))
+        if solver == "newton":
+            stderr_list = list(model.coefficients["stderr"])
+            self.assertTrue(
+                np.allclose(stderr_list, self.stderr, rtol=2e-01, atol=2e-01)
+            )
         else:
-          self.assertTrue('stderr' in coefs.column_names())
-          self.assertEqual(list(coefs['stderr']), [None for v in coefs_list])
-
+            self.assertTrue("stderr" in coefs.column_names())
+            self.assertEqual(list(coefs["stderr"]), [None for v in coefs_list])
 
     def test_create_default_features(self):
         """
         Test logistic regression create.
         """
 
-        for solver in ['newton', 'fista', 'lbfgs']:
+        for solver in ["newton", "fista", "lbfgs"]:
             args = (self.sf, self.target, None, solver, self.def_kwargs, True)
             self._test_create(*args)
             args = (self.sf, self.target, None, solver, self.def_kwargs, False)
@@ -633,12 +691,10 @@ class LogisticRegressionCreateTest(unittest.TestCase):
         """
         Test logistic regression create.
         """
-        for solver in ['newton', 'fista', 'lbfgs']:
-            args = (self.sf, self.target, self.features, solver, self.def_kwargs,
-                    True)
+        for solver in ["newton", "fista", "lbfgs"]:
+            args = (self.sf, self.target, self.features, solver, self.def_kwargs, True)
             self._test_create(*args)
-            args = (self.sf, self.target, self.features, solver, self.def_kwargs,
-                    False)
+            args = (self.sf, self.target, self.features, solver, self.def_kwargs, False)
             self._test_create(*args)
 
     def test_class_weights(self):
@@ -647,46 +703,49 @@ class LogisticRegressionCreateTest(unittest.TestCase):
         """
 
         # Should train correctly
-        model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-                                         class_weights = 'auto')
-        model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-                                         class_weights = {0:1, 1:2})
+        model = tc.logistic_classifier.create(
+            self.sf, self.target, self.features, class_weights="auto"
+        )
+        model = tc.logistic_classifier.create(
+            self.sf, self.target, self.features, class_weights={0: 1, 1: 2}
+        )
         # Should fail
         try:
-          model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-                                          class_weights = 1.0)
+            model = tc.logistic_classifier.create(
+                self.sf, self.target, self.features, class_weights=1.0
+            )
         except ToolkitError:
-          pass
+            pass
         try:
-          model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-                                          class_weights = {2: 10})
+            model = tc.logistic_classifier.create(
+                self.sf, self.target, self.features, class_weights={2: 10}
+            )
         except ToolkitError:
-          pass
+            pass
         try:
-          model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-                                          class_weights = [1,1])
+            model = tc.logistic_classifier.create(
+                self.sf, self.target, self.features, class_weights=[1, 1]
+            )
         except ToolkitError:
-          pass
+            pass
 
     def test_lbfgs(self):
-        solver = 'lbfgs'
+        solver = "lbfgs"
         kwargs = self.def_kwargs.copy()
         for m in [3, 5, 9, 21]:
-            kwargs['lbfgs_memory_level'] = m
-            args = (self.sf, self.target, self.features, solver, kwargs,
-                    True)
+            kwargs["lbfgs_memory_level"] = m
+            args = (self.sf, self.target, self.features, solver, kwargs, True)
             self._test_create(*args)
-            args = (self.sf, self.target, self.features, solver, kwargs,
-                    False)
+            args = (self.sf, self.target, self.features, solver, kwargs, False)
             self._test_create(*args)
 
     def test_init_residual_of_zero(self):
-        X = tc.SFrame({'col1': [2., 1., 2., 1.], 'target': [1, 1, 2, 2]})
+        X = tc.SFrame({"col1": [2.0, 1.0, 2.0, 1.0], "target": [1, 1, 2, 2]})
 
         # Try all three solvers
-        tc.logistic_classifier.create(X, target = 'target', solver = 'newton')
-        tc.logistic_classifier.create(X, target = 'target', solver = 'lbfgs')
-        tc.logistic_classifier.create(X, target = 'target', solver = 'fista')
+        tc.logistic_classifier.create(X, target="target", solver="newton")
+        tc.logistic_classifier.create(X, target="target", solver="lbfgs")
+        tc.logistic_classifier.create(X, target="target", solver="fista")
 
 
 class ListCategoricalLogisticRegressionTest(unittest.TestCase):
@@ -710,45 +769,47 @@ class ListCategoricalLogisticRegressionTest(unittest.TestCase):
             self.sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
 
         # categorical column
-        species = np.array(['cat', 'dog', 'foosa'])
+        species = np.array(["cat", "dog", "foosa"])
         idx = np.random.randint(3, size=n)
         # Stats models maps categorical in alphabetical order of categories.
         # We do it in the order of appearance.
         idx[0] = 0
         idx[1] = 1
         idx[2] = 2
-        self.sf['species'] = list(species[idx])
+        self.sf["species"] = list(species[idx])
 
         # target column
         target = np.random.randint(2, size=n)
         target[0] = 0
         target[1] = 1
-        self.sf['target'] = target
-
+        self.sf["target"] = target
 
         ## Get the right answer with statsmodels
         df = self.sf.to_dataframe()
-        formula = 'target ~ species + ' + \
-            ' + '.join(['X{}'.format(i+1) for i in range(d)])
+        formula = "target ~ species + " + " + ".join(
+            ["X{}".format(i + 1) for i in range(d)]
+        )
         sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
         self.loss = -sm_model.llf
         self.coef = list(sm_model.params)
         self.yhat = np.array([1 if x >= 0.5 else 0 for x in sm_model.fittedvalues])
 
         ## Set the turicreate model params
-        self.target = 'target'
-        self.features = ['species', 'X1', 'X2', 'X3']
+        self.target = "target"
+        self.features = ["species", "X1", "X2", "X3"]
         self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
-        self.sf['species'] = self.sf["species"].apply(lambda x: [x])
+        self.sf["species"] = self.sf["species"].apply(lambda x: [x])
 
     def _test_coefficients(self, model):
         """
         Check that the coefficient values are very close to the correct values.
         """
         coefs = model.coefficients
-        coef_list = list(coefs['value'])
-        self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-02, atol=1e-02), \
-            "value values are incorrect. {} vs {}".format(self.coef, coef_list))
+        coef_list = list(coefs["value"])
+        self.assertTrue(
+            np.allclose(coef_list, self.coef, rtol=1e-02, atol=1e-02),
+            "value values are incorrect. {} vs {}".format(self.coef, coef_list),
+        )
 
     def _test_create(self, sf, target, features, solver, kwargs, rescaling):
         """
@@ -756,17 +817,23 @@ class ListCategoricalLogisticRegressionTest(unittest.TestCase):
         """
 
         test_label = "solver: {}\tkwargs: {}".format(solver, kwargs)
-        model = tc.logistic_classifier.create(sf, target, features,
-                                              l2_penalty=0.,
-                                              solver=solver,
-                                              feature_rescaling = rescaling,
-                                              validation_set=None,
-                                              **kwargs)
+        model = tc.logistic_classifier.create(
+            sf,
+            target,
+            features,
+            l2_penalty=0.0,
+            solver=solver,
+            feature_rescaling=rescaling,
+            validation_set=None,
+            **kwargs
+        )
 
         self.assertTrue(model is not None)
         loss_diff = abs(model.training_loss - self.loss)
-        self.assertTrue(loss_diff < self.def_kwargs['convergence_threshold'], \
-                                          'Loss failed: {}'.format(test_label))
+        self.assertTrue(
+            loss_diff < self.def_kwargs["convergence_threshold"],
+            "Loss failed: {}".format(test_label),
+        )
         self._test_coefficients(model)
 
     def test_create(self):
@@ -774,11 +841,13 @@ class ListCategoricalLogisticRegressionTest(unittest.TestCase):
         Driver for testing create function under various inputs.
         """
 
-        for solver in ['newton']:
-            self._test_create(self.sf, self.target, self.features, solver,
-                              self.def_kwargs, True)
-            self._test_create(self.sf, self.target, self.features, solver,
-                              self.def_kwargs, False)
+        for solver in ["newton"]:
+            self._test_create(
+                self.sf, self.target, self.features, solver, self.def_kwargs, True
+            )
+            self._test_create(
+                self.sf, self.target, self.features, solver, self.def_kwargs, False
+            )
 
 
 class CategoricalLogisticRegressionTest(unittest.TestCase):
@@ -802,34 +871,34 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
             self.sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
 
         # categorical column
-        species = np.array(['cat', 'dog', 'foosa'])
+        species = np.array(["cat", "dog", "foosa"])
         idx = np.random.randint(3, size=n)
         # Stats models maps categorical in alphabetical order of categories.
         # We do it in the order of appearance.
         idx[0] = 0
         idx[1] = 1
         idx[2] = 2
-        self.sf['species'] = list(species[idx])
+        self.sf["species"] = list(species[idx])
 
         # target column
         target = np.random.randint(2, size=n)
         target[0] = 0
         target[1] = 1
-        self.sf['target'] = target
-
+        self.sf["target"] = target
 
         ## Get the right answer with statsmodels
         df = self.sf.to_dataframe()
-        formula = 'target ~ species + ' + \
-            ' + '.join(['X{}'.format(i+1) for i in range(d)])
+        formula = "target ~ species + " + " + ".join(
+            ["X{}".format(i + 1) for i in range(d)]
+        )
         sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
         self.loss = -sm_model.llf
         self.coef = list(sm_model.params)
         self.yhat = np.array([1 if x >= 0.5 else 0 for x in sm_model.fittedvalues])
 
         ## Set the turicreate model params
-        self.target = 'target'
-        self.features = ['species', 'X1', 'X2', 'X3']
+        self.target = "target"
+        self.features = ["species", "X1", "X2", "X3"]
         self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
 
     def _test_coefficients(self, model):
@@ -837,9 +906,11 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
         Check that the coefficient values are very close to the correct values.
         """
         coefs = model.coefficients
-        coef_list = list(coefs['value'])
-        self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-02, atol=1e-02), \
-            "value values are incorrect. {} vs {}".format(self.coef, coef_list))
+        coef_list = list(coefs["value"])
+        self.assertTrue(
+            np.allclose(coef_list, self.coef, rtol=1e-02, atol=1e-02),
+            "value values are incorrect. {} vs {}".format(self.coef, coef_list),
+        )
 
     def _test_create(self, sf, target, features, solver, kwargs, rescaling):
         """
@@ -847,17 +918,23 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
         """
 
         test_label = "solver: {}\tkwargs: {}".format(solver, kwargs)
-        model = tc.logistic_classifier.create(sf, target, features,
-                                              l2_penalty=0.,
-                                              solver=solver,
-                                              feature_rescaling = rescaling,
-                                              validation_set=None,
-                                              **kwargs)
+        model = tc.logistic_classifier.create(
+            sf,
+            target,
+            features,
+            l2_penalty=0.0,
+            solver=solver,
+            feature_rescaling=rescaling,
+            validation_set=None,
+            **kwargs
+        )
 
         self.assertTrue(model is not None)
         loss_diff = abs(model.training_loss - self.loss)
-        self.assertTrue(loss_diff < self.def_kwargs['convergence_threshold'], \
-                                          'Loss failed: {}'.format(test_label))
+        self.assertTrue(
+            loss_diff < self.def_kwargs["convergence_threshold"],
+            "Loss failed: {}".format(test_label),
+        )
         self._test_coefficients(model)
 
     def test_create(self):
@@ -865,260 +942,292 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
         Driver for testing create function under various inputs.
         """
 
-        for solver in ['newton']:
-            self._test_create(self.sf, self.target, self.features, solver,
-                              self.def_kwargs, True)
-            self._test_create(self.sf, self.target, self.features, solver,
-                              self.def_kwargs, False)
+        for solver in ["newton"]:
+            self._test_create(
+                self.sf, self.target, self.features, solver, self.def_kwargs, True
+            )
+            self._test_create(
+                self.sf, self.target, self.features, solver, self.def_kwargs, False
+            )
 
     def test_predict_extra_cols(self):
 
-      sf = self.sf[:]
-      model = tc.logistic_classifier.create(sf, self.target,
-              self.features, feature_rescaling=False)
-      pred = model.predict(sf)
-      sf['species'] = sf['species'].apply(lambda x: 'rat' if x == 'foosa'
-          else x)
-      pred = model.predict(sf)
+        sf = self.sf[:]
+        model = tc.logistic_classifier.create(
+            sf, self.target, self.features, feature_rescaling=False
+        )
+        pred = model.predict(sf)
+        sf["species"] = sf["species"].apply(lambda x: "rat" if x == "foosa" else x)
+        pred = model.predict(sf)
 
     def test_evaluate_extra_cols(self):
 
-      sf = self.sf[:]
-      model = tc.logistic_classifier.create(sf, self.target,
-              self.features, feature_rescaling = False)
-      eval1 = model.evaluate(sf)
-      sf['species'] = sf['species'].apply(lambda x: 'rat' if x == 'foosa'
-          else x)
-      eval2 = model.evaluate(sf)
+        sf = self.sf[:]
+        model = tc.logistic_classifier.create(
+            sf, self.target, self.features, feature_rescaling=False
+        )
+        eval1 = model.evaluate(sf)
+        sf["species"] = sf["species"].apply(lambda x: "rat" if x == "foosa" else x)
+        eval2 = model.evaluate(sf)
 
     """
        Test detection of columns that are almost the same.
     """
+
     def test_zero_variance_detection(self):
         sf = self.sf[:]
-        sf['error-column'] = '1'
+        sf["error-column"] = "1"
         model = tc.logistic_classifier.create(sf, self.target)
 
-        sf['error-column'] = [[1] for i in sf]
+        sf["error-column"] = [[1] for i in sf]
         model = tc.logistic_classifier.create(sf, self.target)
 
-        sf['error-column'] = [{1:1} for i in sf]
+        sf["error-column"] = [{1: 1} for i in sf]
         model = tc.logistic_classifier.create(sf, self.target)
 
     """
        Test detection of columns have nan values
     """
+
     def test_nan_detection(self):
         sf = self.sf[:]
         try:
-            sf['error-column'] = np.nan
+            sf["error-column"] = np.nan
             model = tc.logistic_classifier.create(sf, self.target)
         except ToolkitError:
             pass
         try:
-            sf['error-column'] = [[np.nan] for i in sf]
+            sf["error-column"] = [[np.nan] for i in sf]
             model = tc.logistic_classifier.create(sf, self.target)
         except ToolkitError:
             pass
         try:
-            sf['error-column'] = [{1:np.nan} for i in sf]
+            sf["error-column"] = [{1: np.nan} for i in sf]
             model = tc.logistic_classifier.create(sf, self.target)
         except ToolkitError:
             pass
 
+
 class VectorLogisticRegressionTest(unittest.TestCase):
-  """
+    """
     Unit test class for testing a Logistic Regression create function.
   """
 
-  @classmethod
-  def setUpClass(self):
-    """
+    @classmethod
+    def setUpClass(self):
+        """
         Set up (Run only once)
     """
-    np.random.seed(15)
-    n, d = 100, 3
-    self.sf = tc.SFrame()
-    for i in range(d):
-        self.sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
-    target = np.random.randint(2, size=n)
-    target[0] = 0
-    target[1] = 1
-    self.sf['target'] = target
+        np.random.seed(15)
+        n, d = 100, 3
+        self.sf = tc.SFrame()
+        for i in range(d):
+            self.sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
+        target = np.random.randint(2, size=n)
+        target[0] = 0
+        target[1] = 1
+        self.sf["target"] = target
 
-    ## Get the right answer with statsmodels
-    df = self.sf.to_dataframe()
-    formula = 'target ~ ' + \
-        ' + '.join(['X{}'.format(i+1) for i in range(d)])
-    sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
+        ## Get the right answer with statsmodels
+        df = self.sf.to_dataframe()
+        formula = "target ~ " + " + ".join(["X{}".format(i + 1) for i in range(d)])
+        sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
 
-    self.loss = -sm_model.llf # sum of squared residuals
-    self.coef = list(sm_model.params)
-    self.stderr = list(sm_model.bse)
-    self.yhat = list(sm_model.fittedvalues)
+        self.loss = -sm_model.llf  # sum of squared residuals
+        self.coef = list(sm_model.params)
+        self.stderr = list(sm_model.bse)
+        self.yhat = list(sm_model.fittedvalues)
 
-    ## Set the turicreate model params
-    self.target = 'target'
-    self.sf['vec'] = self.sf.apply(lambda row: [row['X{}'.format(i+1)] for i in
-      range(d)])
-    self.sf['vec'] = self.sf['vec'].apply(lambda x:x, array.array)
+        ## Set the turicreate model params
+        self.target = "target"
+        self.sf["vec"] = self.sf.apply(
+            lambda row: [row["X{}".format(i + 1)] for i in range(d)]
+        )
+        self.sf["vec"] = self.sf["vec"].apply(lambda x: x, array.array)
 
-    self.features = ['vec']
-    self.unpacked_features = ['vec[%s]' % (i) for i in range(d)]
-    self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
+        self.features = ["vec"]
+        self.unpacked_features = ["vec[%s]" % (i) for i in range(d)]
+        self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
 
-  def _test_coefficients(self, model):
-      """
+    def _test_coefficients(self, model):
+        """
       Check that the coefficient values are very close to the correct values.
       """
-      coefs = model.coefficients
-      coef_list = list(coefs['value'])
-      stderr_list = list(coefs['stderr'])
-      self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-02, atol=1e-02))
-      self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-02, atol=1e-02))
+        coefs = model.coefficients
+        coef_list = list(coefs["value"])
+        stderr_list = list(coefs["stderr"])
+        self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-02, atol=1e-02))
+        self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-02, atol=1e-02))
 
-  def _test_create(self, sf, target, features, solver,
-      kwargs, rescaling):
+    def _test_create(self, sf, target, features, solver, kwargs, rescaling):
 
-    model = tc.logistic_classifier.create(sf, target, features, solver
-            = solver, l2_penalty = 0.0, feature_rescaling = rescaling,
+        model = tc.logistic_classifier.create(
+            sf,
+            target,
+            features,
+            solver=solver,
+            l2_penalty=0.0,
+            feature_rescaling=rescaling,
             validation_set=None,
-            **kwargs)
+            **kwargs
+        )
 
-    test_case = 'solver = {solver}, kwargs = {kwargs}'.format(solver = solver,
-                                                          kwargs = kwargs)
-    self.assertTrue(model is not None)
-    self.assertTrue(abs(model.training_loss - self.loss) < \
-            0.01 * abs(self.loss),\
-            'Loss failed: %s. Expected %s' % (test_case, self.loss))
-    self._test_coefficients(model)
+        test_case = "solver = {solver}, kwargs = {kwargs}".format(
+            solver=solver, kwargs=kwargs
+        )
+        self.assertTrue(model is not None)
+        self.assertTrue(
+            abs(model.training_loss - self.loss) < 0.01 * abs(self.loss),
+            "Loss failed: %s. Expected %s" % (test_case, self.loss),
+        )
+        self._test_coefficients(model)
 
-  def test_create(self):
+    def test_create(self):
 
-    for solver in ['newton']:
-        args = (self.sf, self.target, self.features,
-            solver, self.def_kwargs, True)
-        self._test_create(*args)
-        args = (self.sf, self.target, self.features,
-            solver, self.def_kwargs, False)
-        self._test_create(*args)
+        for solver in ["newton"]:
+            args = (self.sf, self.target, self.features, solver, self.def_kwargs, True)
+            self._test_create(*args)
+            args = (self.sf, self.target, self.features, solver, self.def_kwargs, False)
+            self._test_create(*args)
 
-  def test_features(self):
+    def test_features(self):
 
-    model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-        feature_rescaling = False)
-    self.assertEqual(model.num_features, len(self.features))
-    self.assertEqual(model.features, self.features)
-    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEqual(model.unpacked_features, self.unpacked_features)
+        model = tc.logistic_classifier.create(
+            self.sf, self.target, self.features, feature_rescaling=False
+        )
+        self.assertEqual(model.num_features, len(self.features))
+        self.assertEqual(model.features, self.features)
+        self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+        self.assertEqual(model.unpacked_features, self.unpacked_features)
 
 
 class DictLogisticRegressionTest(unittest.TestCase):
-  """
+    """
     Unit test class for testing a Logistic Regression create function.
   """
 
-  @classmethod
-  def setUpClass(self):
-    """
+    @classmethod
+    def setUpClass(self):
+        """
         Set up (Run only once)
     """
 
-    np.random.seed(15)
-    n, d = 100, 3
-    self.sf = tc.SFrame()
+        np.random.seed(15)
+        n, d = 100, 3
+        self.sf = tc.SFrame()
 
-    # float columns
-    for i in range(d):
-        self.sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
+        # float columns
+        for i in range(d):
+            self.sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
 
-    # target column
-    target = np.random.randint(2, size=n)
-    target[0] = 0
-    target[1] = 1
-    self.sf['target'] = target
+        # target column
+        target = np.random.randint(2, size=n)
+        target[0] = 0
+        target[1] = 1
+        self.sf["target"] = target
 
-    ## Get the right answer with statsmodels
-    df = self.sf.to_dataframe()
-    formula = 'target ~ ' + \
-        ' + '.join(['X{}'.format(i+1) for i in range(d)])
-    sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
+        ## Get the right answer with statsmodels
+        df = self.sf.to_dataframe()
+        formula = "target ~ " + " + ".join(["X{}".format(i + 1) for i in range(d)])
+        sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
 
-    self.loss = -sm_model.llf # sum of squared residuals
-    self.coef = list(sm_model.params)
-    self.stderr = list(sm_model.bse)
-    self.yhat = list(sm_model.fittedvalues)
+        self.loss = -sm_model.llf  # sum of squared residuals
+        self.coef = list(sm_model.params)
+        self.stderr = list(sm_model.bse)
+        self.yhat = list(sm_model.fittedvalues)
 
-    ## Set the turicreate model params
-    self.target = 'target'
-    self.sf['dict'] = self.sf.apply(lambda row: {i: row['X{}'.format(i+1)] for i in
-      range(d)})
-    self.features = ['dict']
-    self.unpacked_features = ['dict[%s]' % i for i in range(d)]
-    self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
+        ## Set the turicreate model params
+        self.target = "target"
+        self.sf["dict"] = self.sf.apply(
+            lambda row: {i: row["X{}".format(i + 1)] for i in range(d)}
+        )
+        self.features = ["dict"]
+        self.unpacked_features = ["dict[%s]" % i for i in range(d)]
+        self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
 
-  def _test_coefficients(self, model):
-      coefs = model.coefficients
-      coef_list = list(coefs['value'])
-      stderr_list = list(coefs['stderr'])
-      self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-02, atol=1e-02))
-      self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-02, atol=1e-02))
+    def _test_coefficients(self, model):
+        coefs = model.coefficients
+        coef_list = list(coefs["value"])
+        stderr_list = list(coefs["stderr"])
+        self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-02, atol=1e-02))
+        self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-02, atol=1e-02))
 
-  def test_features(self):
+    def test_features(self):
 
-    model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-        feature_rescaling = False)
-    self.assertEqual(model.num_features, len(self.features))
-    self.assertEqual(model.features, self.features)
-    self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
-    self.assertEqual(model.unpacked_features, self.unpacked_features)
+        model = tc.logistic_classifier.create(
+            self.sf, self.target, self.features, feature_rescaling=False
+        )
+        self.assertEqual(model.num_features, len(self.features))
+        self.assertEqual(model.features, self.features)
+        self.assertEqual(model.num_unpacked_features, len(self.unpacked_features))
+        self.assertEqual(model.unpacked_features, self.unpacked_features)
 
-  def _test_create(self, sf, target, features, solver, opts, rescaling):
+    def _test_create(self, sf, target, features, solver, opts, rescaling):
 
-    model = tc.logistic_classifier.create(sf, target, features,
-        solver= solver, l2_penalty = 0.0, feature_rescaling = rescaling,
-        validation_set=None, **opts)
-    test_case = 'solver = {solver}, opts = {opts}'.format(solver = solver,
-                                                          opts = opts)
-    self.assertTrue(model is not None)
-    self.assertTrue(abs(model.training_loss - self.loss) < \
-                    0.01 * abs(self.loss),\
-                    'Loss failed: %s. Expected %s' % (test_case, self.loss))
-    self._test_coefficients(model)
+        model = tc.logistic_classifier.create(
+            sf,
+            target,
+            features,
+            solver=solver,
+            l2_penalty=0.0,
+            feature_rescaling=rescaling,
+            validation_set=None,
+            **opts
+        )
+        test_case = "solver = {solver}, opts = {opts}".format(solver=solver, opts=opts)
+        self.assertTrue(model is not None)
+        self.assertTrue(
+            abs(model.training_loss - self.loss) < 0.01 * abs(self.loss),
+            "Loss failed: %s. Expected %s" % (test_case, self.loss),
+        )
+        self._test_coefficients(model)
 
-  def test_create(self):
+    def test_create(self):
 
-    for solver in ['newton']:
-        args = (self.sf, self.target, self.features,
-            solver, self.def_kwargs, True)
-        self._test_create(*args)
-        args = (self.sf, self.target, self.features,
-            solver, self.def_kwargs, False)
-        self._test_create(*args)
+        for solver in ["newton"]:
+            args = (self.sf, self.target, self.features, solver, self.def_kwargs, True)
+            self._test_create(*args)
+            args = (self.sf, self.target, self.features, solver, self.def_kwargs, False)
+            self._test_create(*args)
 
-  def test_predict_extra_cols(self):
+    def test_predict_extra_cols(self):
 
-    model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-            feature_rescaling = False)
-    pred = model.predict(self.sf)
-    self.sf['dict'] = self.sf['dict'].apply(lambda x: dict(list(x.items())
-      + list({'extra_col': 0, 'extra_col_2': 1}.items())))
-    pred2 = model.predict(self.sf)
-    self.assertEqual(sum(pred - pred2), 0)
-    self.sf['dict'] = self.sf['dict'].apply(lambda x: {k:v for k,v in x.items() \
-                                if k not in ['extra_col', 'extra_col_2']})
+        model = tc.logistic_classifier.create(
+            self.sf, self.target, self.features, feature_rescaling=False
+        )
+        pred = model.predict(self.sf)
+        self.sf["dict"] = self.sf["dict"].apply(
+            lambda x: dict(
+                list(x.items()) + list({"extra_col": 0, "extra_col_2": 1}.items())
+            )
+        )
+        pred2 = model.predict(self.sf)
+        self.assertEqual(sum(pred - pred2), 0)
+        self.sf["dict"] = self.sf["dict"].apply(
+            lambda x: {
+                k: v for k, v in x.items() if k not in ["extra_col", "extra_col_2"]
+            }
+        )
 
-  def test_evaluate_extra_cols(self):
+    def test_evaluate_extra_cols(self):
 
-    model = tc.logistic_classifier.create(self.sf, self.target, self.features,
-            feature_rescaling = False)
-    eval1 = model.evaluate(self.sf)
-    self.sf['dict'] = self.sf['dict'].apply(lambda x: dict(list(x.items())
-      + list({'extra_col': 0, 'extra_col_2': 1}.items())))
-    eval2 = model.evaluate(self.sf)
-    self.sf['dict'] = self.sf['dict'].apply(lambda x: {k:v for k,v in x.items() \
-                                if k not in ['extra_col', 'extra_col_2']})
-    self.assertEqual(eval1["accuracy"], eval2["accuracy"])
+        model = tc.logistic_classifier.create(
+            self.sf, self.target, self.features, feature_rescaling=False
+        )
+        eval1 = model.evaluate(self.sf)
+        self.sf["dict"] = self.sf["dict"].apply(
+            lambda x: dict(
+                list(x.items()) + list({"extra_col": 0, "extra_col_2": 1}.items())
+            )
+        )
+        eval2 = model.evaluate(self.sf)
+        self.sf["dict"] = self.sf["dict"].apply(
+            lambda x: {
+                k: v for k, v in x.items() if k not in ["extra_col", "extra_col_2"]
+            }
+        )
+        self.assertEqual(eval1["accuracy"], eval2["accuracy"])
+
 
 class RegularizedLogisticRegressionTest(unittest.TestCase):
     """
@@ -1136,7 +1245,7 @@ class RegularizedLogisticRegressionTest(unittest.TestCase):
         """
 
         ## Fake data, generated in R
-        feature_data = '''0.723040834941846,1.0648961025071,-0.479191624484056,0.433073682915559
+        feature_data = """0.723040834941846,1.0648961025071,-0.479191624484056,0.433073682915559
             -1.29705301514688,-0.0898754334392415,-0.244320454255808,-0.578687648218724
             -1.99524976461205,-0.125152158307165,-0.086446106920042,-0.233340479601935
             0.402456295304511,-0.550374347857019,1.35685637262204,0.544712458718116
@@ -1235,48 +1344,145 @@ class RegularizedLogisticRegressionTest(unittest.TestCase):
             -0.313676473532486,0.244242322538692,-0.172553981996335,0.31935807851552
             -0.620909598452922,0.655163343467281,2.00816338389406,-0.422875475337577
             -0.339769903386523,0.189204653082022,-2.34980611959092,0.783263944917566
-            1.19717835010489,0.479479297178576,-0.682999419503163,1.55590456330123'''
-        target_data = [0,1,0,0,0,1,1,1,0,0,0,1,0,1,1,0,0,0,1,0,0,0,1,0,1,1,1,1,
-            0,0,0,0,0,1,0,1,0,0,0,1,1,0,0,1,0,0,0,1,0,1,1,1,1,1,1,0,0,1,0,0,0,1,
-            0,0,1,0,1,0,0,1,0,0,1,1,0,1,0,0,1,1,0,0,1,0,0,1,1,0,0,1,1,0,1,0,0,0,
-            0,0,0,1]
+            1.19717835010489,0.479479297178576,-0.682999419503163,1.55590456330123"""
+        target_data = [
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            1,
+            1,
+            1,
+            1,
+            1,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            0,
+            1,
+            1,
+            0,
+            1,
+            0,
+            0,
+            0,
+            0,
+            0,
+            0,
+            1,
+        ]
 
         ## Write data to file so it can be loaded into an SFrame
-        f_data = 'data_file_{}.csv'.format(uuid.uuid4())
+        f_data = "data_file_{}.csv".format(uuid.uuid4())
         self.dataset = f_data
-        with open(f_data, 'w') as f:
+        with open(f_data, "w") as f:
             f.write(feature_data)
 
         ## Load the data into an SFrame
-        self.sf = tc.SFrame.read_csv(f_data, header=False,
-                                     column_type_hints=float)
-        self.sf['target'] = target_data
+        self.sf = tc.SFrame.read_csv(f_data, header=False, column_type_hints=float)
+        self.sf["target"] = target_data
 
         ## Default options
         self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
-        self.def_kwargs['max_iterations'] = 100
-        self.def_kwargs['convergence_threshold'] = 1e-5
-        self.l2_penalty = 5.
-        self.l1_penalty = 3.
+        self.def_kwargs["max_iterations"] = 100
+        self.def_kwargs["convergence_threshold"] = 1e-5
+        self.l2_penalty = 5.0
+        self.l1_penalty = 3.0
 
         ## Constant parameters
-        self.target = 'target'
-        self.features = ['X{}'.format(i) for i in range(1, 4+1)]
-        self.solver = 'auto'
+        self.target = "target"
+        self.features = ["X{}".format(i) for i in range(1, 4 + 1)]
+        self.solver = "auto"
 
         ## Correct answers, from glmnet in R
         ## require(glmnet)
         ## fit = glmnet(x, y, family='binomial', alpha=0, lambda=0.1, standardize=False)
         ## Note: l2_penalty is 0.1 in R but 5 here because a) the penalty in
         #  glmnet is lambda/2, and b) the loss in glmnet is the log-likelihood/n + penalty.
-        self.l2_coef = np.array([-0.3554688, 0.06594038, -0.48338736, -0.11910414,
-                             -0.09901472])
+        self.l2_coef = np.array(
+            [-0.3554688, 0.06594038, -0.48338736, -0.11910414, -0.09901472]
+        )
 
         ## fit = glmnet(x, y, family='binomial', alpha=1.0, lambda=0.03, standardize=False)
         ## Note: l1 penalty is 0.03 in R but 3 here because the loss in glmnet
         #  is log-lik/n + penalty.
         self.l1_coef = np.array([-0.3728739, 0.0, -0.58645032, -0.07656562, 0.0])
-
 
     def _test_l2_create(self, sf, target, features, solver, opts, l2_penalty):
         """
@@ -1284,15 +1490,19 @@ class RegularizedLogisticRegressionTest(unittest.TestCase):
         parameter settings.
         """
 
-        test_case = 'solver = {}, opts = {}'.format(solver, opts)
-        model = tc.logistic_classifier.create(sf, target, features,
-                                              l2_penalty=l2_penalty,
-                                              l1_penalty=0.,
-                                              solver=solver,
-                                              feature_rescaling = False,
-                                              validation_set=None,
-                                              **opts)
-        coefs = list(model.coefficients['value'])
+        test_case = "solver = {}, opts = {}".format(solver, opts)
+        model = tc.logistic_classifier.create(
+            sf,
+            target,
+            features,
+            l2_penalty=l2_penalty,
+            l1_penalty=0.0,
+            solver=solver,
+            feature_rescaling=False,
+            validation_set=None,
+            **opts
+        )
+        coefs = list(model.coefficients["value"])
         self.assertTrue(model is not None)
         self.assertTrue(np.allclose(coefs, self.l2_coef, rtol=1e-02, atol=1e-02))
 
@@ -1302,15 +1512,19 @@ class RegularizedLogisticRegressionTest(unittest.TestCase):
         parameter settings.
         """
 
-        test_case = 'solver = {}, opts = {}'.format(solver, opts)
-        model = tc.logistic_classifier.create(sf, target, features,
-                                              l2_penalty=0.,
-                                              l1_penalty=l1_penalty,
-                                              solver=solver,
-                                              feature_rescaling = False,
-                                              validation_set=None,
-                                              **opts)
-        coefs = list(model.coefficients['value'])
+        test_case = "solver = {}, opts = {}".format(solver, opts)
+        model = tc.logistic_classifier.create(
+            sf,
+            target,
+            features,
+            l2_penalty=0.0,
+            l1_penalty=l1_penalty,
+            solver=solver,
+            feature_rescaling=False,
+            validation_set=None,
+            **opts
+        )
+        coefs = list(model.coefficients["value"])
         self.assertTrue(model is not None)
         self.assertTrue(np.allclose(coefs, self.l1_coef, rtol=1e-02, atol=1e-02))
 
@@ -1320,48 +1534,62 @@ class RegularizedLogisticRegressionTest(unittest.TestCase):
         regularization.
         """
 
-        for solver in ['newton', 'lbfgs', 'fista']:
-            self._test_l2_create(self.sf, self.target, self.features, solver,
-                              self.def_kwargs, self.l2_penalty)
-        for solver in ['fista']:
-            self._test_l1_create(self.sf, self.target, self.features, solver,
-                              self.def_kwargs, self.l1_penalty)
+        for solver in ["newton", "lbfgs", "fista"]:
+            self._test_l2_create(
+                self.sf,
+                self.target,
+                self.features,
+                solver,
+                self.def_kwargs,
+                self.l2_penalty,
+            )
+        for solver in ["fista"]:
+            self._test_l1_create(
+                self.sf,
+                self.target,
+                self.features,
+                solver,
+                self.def_kwargs,
+                self.l1_penalty,
+            )
+
 
 class ImproperProblemsTest(unittest.TestCase):
-  """
+    """
     Unit test class for problems with the setup, e.g. dataset.
   """
 
-  @classmethod
-  def setUpClass(self):
-    """
+    @classmethod
+    def setUpClass(self):
+        """
         Set up (Run only once)
     """
 
-    self.target =  'y'
-    self.sf = tc.SFrame()
-    self.sf['y'] = tc.SArray([0,1,0], int)
-    self.sf['int'] = tc.SArray([1,2,3], int)
-    self.sf['float'] = tc.SArray([1,2,3], float)
-    self.sf['dict'] = tc.SArray([{'1':3, '2':2},{'2':1},{}], dict)
-    self.sf['array'] = tc.SArray([[1,2],[3,4],[5,6]], array.array)
-    self.sf['str'] = tc.SArray(['1','2','3'], str)
-    print(self.sf)
+        self.target = "y"
+        self.sf = tc.SFrame()
+        self.sf["y"] = tc.SArray([0, 1, 0], int)
+        self.sf["int"] = tc.SArray([1, 2, 3], int)
+        self.sf["float"] = tc.SArray([1, 2, 3], float)
+        self.sf["dict"] = tc.SArray([{"1": 3, "2": 2}, {"2": 1}, {}], dict)
+        self.sf["array"] = tc.SArray([[1, 2], [3, 4], [5, 6]], array.array)
+        self.sf["str"] = tc.SArray(["1", "2", "3"], str)
+        print(self.sf)
 
-  """
+    """
      Test predict missing value
   """
-  def test_single_label_error(self):
-    sf = self.sf.__copy__()
-    sf['y'] = tc.SArray.from_const(0, 3)
-    with self.assertRaises(ToolkitError):
-        m = tc.logistic_classifier.create(sf, 'y')
+
+    def test_single_label_error(self):
+        sf = self.sf.__copy__()
+        sf["y"] = tc.SArray.from_const(0, 3)
+        with self.assertRaises(ToolkitError):
+            m = tc.logistic_classifier.create(sf, "y")
 
 
 class ValidationSetLogisticClassifierTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-      ## Simulate test data
+        ## Simulate test data
         np.random.seed(10)
         n, d = 100, 10
         self.sf = tc.SFrame()
@@ -1372,31 +1600,35 @@ class ValidationSetLogisticClassifierTest(unittest.TestCase):
         target[1] = 1
 
         ## Create the model
-        self.sf['target'] = target
-        self.target = 'target'
+        self.sf["target"] = target
+        self.target = "target"
 
     def test_valid_set(self):
 
-        model = tc.logistic_classifier.create(self.sf, target='target',
-            validation_set = 'auto')
+        model = tc.logistic_classifier.create(
+            self.sf, target="target", validation_set="auto"
+        )
         self.assertTrue(model is not None)
         self.assertTrue(isinstance(model.progress, tc.SFrame))
 
-        model = tc.logistic_classifier.create(self.sf, target='target',
-            validation_set =self.sf)
+        model = tc.logistic_classifier.create(
+            self.sf, target="target", validation_set=self.sf
+        )
         self.assertTrue(model is not None)
         self.assertTrue(isinstance(model.progress, tc.SFrame))
 
         valid_set = self.sf.head(5)
         valid_set[self.target] = 0
-        model = tc.logistic_classifier.create(self.sf, target='target',
-            validation_set = valid_set)
+        model = tc.logistic_classifier.create(
+            self.sf, target="target", validation_set=valid_set
+        )
 
         self.assertTrue(model is not None)
         self.assertTrue(isinstance(model.progress, tc.SFrame))
 
-        model = tc.logistic_classifier.create(self.sf, target='target',
-            validation_set = None)
+        model = tc.logistic_classifier.create(
+            self.sf, target="target", validation_set=None
+        )
         self.assertTrue(model is not None)
         self.assertTrue(isinstance(model.progress, tc.SFrame))
 
@@ -1404,30 +1636,34 @@ class ValidationSetLogisticClassifierTest(unittest.TestCase):
         # validation set.
         with self.assertRaises(RuntimeError):
             validation_set = self.sf.__copy__()
-            validation_set['X1'] = validation_set['X1'].astype(str)
-            model = tc.logistic_classifier.create(self.sf, target='target',
-                validation_set = validation_set)
+            validation_set["X1"] = validation_set["X1"].astype(str)
+            model = tc.logistic_classifier.create(
+                self.sf, target="target", validation_set=validation_set
+            )
+
 
 class TestStringTarget(unittest.TestCase):
-
     def test_cat(self):
         import numpy as np
+
         # Arrange
         np.random.seed(8)
         n, d = 1000, 100
         sf = tc.SFrame()
         for i in range(d):
-                sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
-                target = np.random.randint(2, size=n)
-                sf['target'] = target
+            sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
+            target = np.random.randint(2, size=n)
+            sf["target"] = target
 
-        sf['target'] = sf['target'].astype(str)
-        sf['target'] = 'cat-' + sf['target']
-        model = tc.logistic_classifier.create(sf, 'target')
+        sf["target"] = sf["target"].astype(str)
+        sf["target"] = "cat-" + sf["target"]
+        model = tc.logistic_classifier.create(sf, "target")
 
         # Act
         evaluation = model.evaluate(sf)
 
         # Assert
-        self.assertEqual(['cat-0', 'cat-1'],
-            sorted(list(evaluation['confusion_matrix']['target_label'].unique())))
+        self.assertEqual(
+            ["cat-0", "cat-1"],
+            sorted(list(evaluation["confusion_matrix"]["target_label"].unique())),
+        )

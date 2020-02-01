@@ -3,15 +3,16 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 An interface for creating an SArray over time.
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
 from .._cython.cy_sarray_builder import UnitySArrayBuilderProxy
 from .sarray import SArray
+
 
 class SArrayBuilder(object):
     """
@@ -50,6 +51,7 @@ class SArrayBuilder(object):
     Rows: 3
     [1, 2, 3]
     """
+
     def __init__(self, dtype, num_segments=1, history_size=10):
         self._builder = UnitySArrayBuilderProxy()
         self._builder.init(num_segments, history_size, dtype)
@@ -93,7 +95,7 @@ class SArrayBuilder(object):
             any value in segment 0, and the order of elements in each segment is
             preserved as they are added.
         """
-        if not hasattr(data, '__iter__'):
+        if not hasattr(data, "__iter__"):
             raise TypeError("append_multiple must be passed an iterable object")
         tmp_list = []
 

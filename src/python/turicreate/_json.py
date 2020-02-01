@@ -9,13 +9,18 @@ from __future__ import absolute_import as _
 
 import json as _json
 
+
 def to_serializable(obj):
     from . import extensions
+
     return extensions.json.to_serializable(obj)
+
 
 def from_serializable(data, schema):
     from . import extensions
+
     return extensions.json.from_serializable(data, schema)
+
 
 def dumps(obj):
     """
@@ -35,7 +40,8 @@ def dumps(obj):
       (like Image) from dict.
     """
     (data, schema) = to_serializable(obj)
-    return _json.dumps({'data': data, 'schema': schema})
+    return _json.dumps({"data": data, "schema": schema})
+
 
 def loads(json_string):
     """

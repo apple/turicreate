@@ -3,11 +3,11 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Decompiler module.
 
 This module can decompile arbitrary code objects into a python ast.
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -21,30 +21,30 @@ import sys
 import marshal
 
 
-
 def decompile_func(func):
-    '''
+    """
     Decompile a function into ast.FunctionDef node.
 
     :param func: python function (can not be a built-in)
 
     :return: ast.FunctionDef instance.
-    '''
+    """
     code = func.__code__
 
     # For python 3
-#    defaults = func.func_defaults if sys.version_info.major < 3 else func.__defaults__
-#    if defaults:
-#        default_names = code.co_varnames[:code.co_argcount][-len(defaults):]
-#    else:
-#        default_names = []
-#    defaults = [_ast.Name(id='%s_default' % name, ctx=_ast.Load() , lineno=0, col_offset=0) for name in default_names]
+    #    defaults = func.func_defaults if sys.version_info.major < 3 else func.__defaults__
+    #    if defaults:
+    #        default_names = code.co_varnames[:code.co_argcount][-len(defaults):]
+    #    else:
+    #        default_names = []
+    #    defaults = [_ast.Name(id='%s_default' % name, ctx=_ast.Load() , lineno=0, col_offset=0) for name in default_names]
     ast_node = make_function(code, defaults=[], lineno=code.co_firstlineno)
 
     return ast_node
 
+
 def compile_func(ast_node, filename, globals, **defaults):
-    '''
+    """
     Compile a function from an ast.FunctionDef instance.
 
     :param ast_node: ast.FunctionDef instance
@@ -52,14 +52,14 @@ def compile_func(ast_node, filename, globals, **defaults):
     :param globals: will be used as func_globals
 
     :return: A python function object
-    '''
+    """
 
     function_name = ast_node.name
     module = _ast.Module(body=[ast_node])
 
-    ctx = {'%s_default' % key : arg for key, arg in defaults.items()}
+    ctx = {"%s_default" % key: arg for key, arg in defaults.items()}
 
-    code = compile(module, filename, 'exec')
+    code = compile(module, filename, "exec")
 
     eval(code, globals, ctx)
 
@@ -67,9 +67,10 @@ def compile_func(ast_node, filename, globals, **defaults):
 
     return function
 
-#from imp import get_magic
+
+# from imp import get_magic
 #
-#def extract(binary):
+# def extract(binary):
 #
 #    if len(binary) <= 8:
 #        raise Exception("Binary pyc must be greater than 8 bytes (got %i)" % len(binary))
@@ -86,13 +87,14 @@ def compile_func(ast_node, filename, globals, **defaults):
 #
 #    return modtime, code
 
+
 def decompile_pyc(bin_pyc, output=sys.stdout):
-    '''
+    """
     decompile apython pyc or pyo binary file.
 
     :param bin_pyc: input file objects
     :param output: output file objects
-    '''
+    """
 
     from turicreate.meta.asttools import python_source
 

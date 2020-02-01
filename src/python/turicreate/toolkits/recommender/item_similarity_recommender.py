@@ -15,16 +15,22 @@ from turicreate.toolkits.recommender.util import _Recommender
 from turicreate.toolkits._model import _get_default_options_wrapper
 from turicreate.data_structures.sframe import SFrame as _SFrame
 
-def create(observation_data,
-           user_id='user_id', item_id='item_id', target=None,
-           user_data=None, item_data=None,
-           nearest_items=None,
-           similarity_type='jaccard',
-           threshold=0.001,
-           only_top_k=64,
-           verbose=True,
-           target_memory_usage = 8*1024*1024*1024,
-           **kwargs):
+
+def create(
+    observation_data,
+    user_id="user_id",
+    item_id="item_id",
+    target=None,
+    user_data=None,
+    item_data=None,
+    nearest_items=None,
+    similarity_type="jaccard",
+    threshold=0.001,
+    only_top_k=64,
+    verbose=True,
+    target_memory_usage=8 * 1024 * 1024 * 1024,
+    **kwargs
+):
     """
     Create a recommender that uses item-item similarities based on
     users in common.
@@ -191,8 +197,9 @@ def create(observation_data,
 
     """
     from turicreate._cython.cy_server import QuietProgress
+
     if not (isinstance(observation_data, _SFrame)):
-        raise TypeError('observation_data input must be a SFrame')
+        raise TypeError("observation_data input must be a SFrame")
     opts = {}
     model_proxy = _turicreate.extensions.item_similarity()
     model_proxy.init_options(opts)
@@ -204,16 +211,17 @@ def create(observation_data,
     if nearest_items is None:
         nearest_items = _turicreate.SFrame()
 
-    opts = {'user_id': user_id,
-            'item_id': item_id,
-            'target': target,
-            'similarity_type': similarity_type,
-            'threshold': threshold,
-            'target_memory_usage' : float(target_memory_usage),
-            'max_item_neighborhood_size': only_top_k}
+    opts = {
+        "user_id": user_id,
+        "item_id": item_id,
+        "target": target,
+        "similarity_type": similarity_type,
+        "threshold": threshold,
+        "target_memory_usage": float(target_memory_usage),
+        "max_item_neighborhood_size": only_top_k,
+    }
 
-
-    extra_data = {"nearest_items" : nearest_items}
+    extra_data = {"nearest_items": nearest_items}
 
     if kwargs:
         try:
@@ -223,11 +231,11 @@ def create(observation_data,
 
         bad_arguments = set(kwargs.keys()).difference(possible_args)
         if bad_arguments:
-            raise TypeError("Bad Keyword Arguments: " + ', '.join(bad_arguments))
+            raise TypeError("Bad Keyword Arguments: " + ", ".join(bad_arguments))
 
         opts.update(kwargs)
 
-    extra_data = {"nearest_items" : nearest_items}
+    extra_data = {"nearest_items": nearest_items}
     opts.update(kwargs)
 
     with QuietProgress(verbose):
@@ -237,9 +245,9 @@ def create(observation_data,
 
 
 _get_default_options = _get_default_options_wrapper(
-                          'item_similarity',
-                          'recommender.item_similarity',
-                          'ItemSimilarityRecommender')
+    "item_similarity", "recommender.item_similarity", "ItemSimilarityRecommender"
+)
+
 
 class ItemSimilarityRecommender(_Recommender):
     """
@@ -340,7 +348,7 @@ class ItemSimilarityRecommender(_Recommender):
     """
 
     def __init__(self, model_proxy):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model_proxy
 
     @classmethod

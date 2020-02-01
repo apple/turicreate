@@ -10,8 +10,9 @@ import numpy as _np
 import turicreate as _tc
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
-_TMP_COL_PREP_IMAGE = '_prepared_image'
-_TMP_COL_RANDOM_ORDER = '_random_order'
+_TMP_COL_PREP_IMAGE = "_prepared_image"
+_TMP_COL_RANDOM_ORDER = "_random_order"
+
 
 def _resize_if_too_large(image, max_shape):
     width_f = image.width / max_shape[1]
@@ -28,12 +29,13 @@ def _resize_if_too_large(image, max_shape):
     height = min(height, max_shape[0])
 
     # Decode image and make sure it has 3 channels
-    return _tc.image_analysis.resize(image, width, height, 3, decode=True,
-                                     resample='bilinear')
+    return _tc.image_analysis.resize(
+        image, width, height, 3, decode=True, resample="bilinear"
+    )
 
 
 def _stretch_resize(image, shape):
     height, width = shape
-    return _tc.image_analysis.resize(image, width, height, 3, decode=True,
-                                     resample='bilinear')
-
+    return _tc.image_analysis.resize(
+        image, width, height, 3, decode=True, resample="bilinear"
+    )

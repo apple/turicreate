@@ -8,4 +8,4 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from ._visualization import draw_strokes
 
-__all__ = ['draw_strokes']
+__all__ = ["draw_strokes"]

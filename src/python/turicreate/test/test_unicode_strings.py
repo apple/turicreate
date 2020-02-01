@@ -14,30 +14,30 @@ import six
 import unittest
 import turicreate as tc
 
-class UnicodeStringTest(unittest.TestCase):
 
+class UnicodeStringTest(unittest.TestCase):
     def test_unicode_column_accessor(self):
-        sf = tc.SFrame({'a': range(100)})
-        self.assertEqual(sf[u'a'][0], sf['a'][0])
+        sf = tc.SFrame({"a": range(100)})
+        self.assertEqual(sf[u"a"][0], sf["a"][0])
 
     def test_unicode_unpack_prefix(self):
-        sf = tc.SFrame({'a':[{'x':1}, {'x':2}, {'x':3}]})
-        sf = sf.unpack('a', u'\u00aa')
+        sf = tc.SFrame({"a": [{"x": 1}, {"x": 2}, {"x": 3}]})
+        sf = sf.unpack("a", u"\u00aa")
         for col in sf.column_names():
             if six.PY2:
                 # column names come out as str
-                self.assertTrue(col.startswith(u'\u00aa'.encode('utf-8')))
+                self.assertTrue(col.startswith(u"\u00aa".encode("utf-8")))
             else:
                 # column names come out as unicode
-                self.assertTrue(col.startswith(u'\u00aa'))
+                self.assertTrue(col.startswith(u"\u00aa"))
 
     def test_unicode_column_construction(self):
-        sf = tc.SFrame({u'\u00aa': [1, 2, 3]})
-        self.assertEqual(sf[u'\u00aa'][0], 1)
+        sf = tc.SFrame({u"\u00aa": [1, 2, 3]})
+        self.assertEqual(sf[u"\u00aa"][0], 1)
 
     def test_access_nonexistent_column(self):
-        sf = tc.SFrame({u'\u00aa': [1,2,3], 'a': [4,5,6]})
+        sf = tc.SFrame({u"\u00aa": [1, 2, 3], "a": [4, 5, 6]})
         with self.assertRaises(RuntimeError):
-            sf['b']
+            sf["b"]
         with self.assertRaises(RuntimeError):
-            sf[u'\u00ab']
+            sf[u"\u00ab"]

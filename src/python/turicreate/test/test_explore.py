@@ -23,11 +23,16 @@ import six
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _mac_ver
 
-class ExploreTest(unittest.TestCase):
 
-    @unittest.skipIf(_mac_ver() < (10, 12), "macOS-only test; UISoup doesn't work on Linux")
-    @unittest.skipIf(_mac_ver() > (10, 13), "macOS 10.14 appears to have broken the UX flow to prompt for accessibility access")
-    @unittest.skipIf(not(six.PY2), "Python 2.7-only test; UISoup doesn't work on 3.x")
+class ExploreTest(unittest.TestCase):
+    @unittest.skipIf(
+        _mac_ver() < (10, 12), "macOS-only test; UISoup doesn't work on Linux"
+    )
+    @unittest.skipIf(
+        _mac_ver() > (10, 13),
+        "macOS 10.14 appears to have broken the UX flow to prompt for accessibility access",
+    )
+    @unittest.skipIf(not (six.PY2), "Python 2.7-only test; UISoup doesn't work on 3.x")
     def test_sanity_on_macOS(self):
         """
         Create a simple SFrame, containing a very unique string.
@@ -40,7 +45,7 @@ class ExploreTest(unittest.TestCase):
 
         # Generate some test data
         unique_str = repr(uuid.uuid4())
-        sf = tc.SFrame({'a': [1,2,3], 'b': ['hello', 'world', unique_str]})
+        sf = tc.SFrame({"a": [1, 2, 3], "b": ["hello", "world", unique_str]})
 
         # Run the explore view and make sure we can see our unique string
         sf.explore()
@@ -48,7 +53,7 @@ class ExploreTest(unittest.TestCase):
 
         window = None
         try:
-            window = uisoup.get_window('Turi*Create*Visualization')
+            window = uisoup.get_window("Turi*Create*Visualization")
             result = window.findall(value=unique_str)
             self.assertEqual(
                 len(result),
@@ -56,7 +61,8 @@ class ExploreTest(unittest.TestCase):
                 (
                     "Expected to find exactly one element containing the unique"
                     "string %s."
-                ) % unique_str
+                )
+                % unique_str,
             )
             first = result[0]
             self.assertEqual(
@@ -65,7 +71,8 @@ class ExploreTest(unittest.TestCase):
                 (
                     "Expected to find the unique string %s as the name of the found"
                     "element. Instead, got %s."
-                ) % (unique_str, first.acc_name)
+                )
+                % (unique_str, first.acc_name),
             )
 
         finally:

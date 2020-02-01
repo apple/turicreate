@@ -7,6 +7,7 @@ import turicreate as _tc
 from turicreate import extensions as _extensions
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
+
 def draw_strokes(stroke_based_drawings):
     """
     Visualizes drawings (ground truth or predictions) by
@@ -32,23 +33,29 @@ def draw_strokes(stroke_based_drawings):
 
     """
     single_input = False
-    if (not isinstance(stroke_based_drawings, _tc.SArray)
-        and not isinstance(stroke_based_drawings, list)):
-        raise _ToolkitError("Input to draw_strokes must be of type "
-            + "turicreate.SArray or list (for a single stroke-based drawing)")
-    if (isinstance(stroke_based_drawings, _tc.SArray)
-        and stroke_based_drawings.dtype != list):
-        raise _ToolkitError("SArray input to draw_strokes must have dtype "
+    if not isinstance(stroke_based_drawings, _tc.SArray) and not isinstance(
+        stroke_based_drawings, list
+    ):
+        raise _ToolkitError(
+            "Input to draw_strokes must be of type "
+            + "turicreate.SArray or list (for a single stroke-based drawing)"
+        )
+    if (
+        isinstance(stroke_based_drawings, _tc.SArray)
+        and stroke_based_drawings.dtype != list
+    ):
+        raise _ToolkitError(
+            "SArray input to draw_strokes must have dtype "
             + "list. Each element in the SArray should be a list of strokes, "
             + "where each stroke is a list of points, "
             + "and each point is represented as a dictionary "
-            + "with two keys, \"x\" and \"y\".")
+            + 'with two keys, "x" and "y".'
+        )
     if isinstance(stroke_based_drawings, list):
         single_input = True
         stroke_based_drawings = _tc.SArray([stroke_based_drawings])
     sf = _tc.SFrame({"drawings": stroke_based_drawings})
-    sf_with_drawings = _extensions._drawing_classifier_prepare_data(
-        sf, "drawings")
+    sf_with_drawings = _extensions._drawing_classifier_prepare_data(sf, "drawings")
     if single_input:
         return sf_with_drawings["drawings"][0]
     return sf_with_drawings["drawings"]
