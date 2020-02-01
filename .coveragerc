@@ -25,3 +25,9 @@ exclude_lines =
     if __name__ == .__main__.:
 
 ignore_errors = True
+
+omit =
+    */__init__.py
+    src/python/turicreate/_cython/*
+    src/python/turicreate/test/*
+    src/python/turicreate/_deps/*_mock.py
