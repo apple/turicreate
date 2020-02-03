@@ -49,7 +49,6 @@ mkdir -p deps/local/lib
 mkdir -p deps/local/include
 
 pushd deps/local/include
-# https://github.com/koalaman/shellcheck/wiki/SC2045
 for f in ../../env/include/"$PYTHON_FULL_NAME"/*; do
   ln -Ffs "$f" "$(basename "$f")"
 done
