@@ -40,7 +40,7 @@ script:
   - ccache -s
 
   # Download and install cmake
-  - curl -L https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.tar.gz -o cmake-3.13.4-Linux-x86_64.tar.gz 
+  - curl -L https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.tar.gz -o cmake-3.13.4-Linux-x86_64.tar.gz
   - tar xf cmake-3.13.4-Linux-x86_64.tar.gz
   - export PATH=${PWD}/cmake-3.13.4-Linux-x86_64/bin:${PATH}
 
@@ -66,9 +66,10 @@ script:
   # Remove style transfer unit test due to out-of-memory error.
   # Remove some additional tests temporarily to get under the two-hour timeout.
   - rm src/python/turicreate/test/test_style_transfer.py src/python/turicreate/test/test_object_detector.py src/python/turicreate/test/test_one_shot_object_detector.py
-  
+
   # Build the wheel
-  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=1 --debug --skip_cpp_test
+  - bash scripts/make_wheel.sh --build_number=$CI_PIPELINE_ID --num_procs=1
+    --debug --skip_cpp_test
 
   # See the changes in ccache
   - ccache -s
