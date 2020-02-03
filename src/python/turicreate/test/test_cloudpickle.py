@@ -14,7 +14,6 @@ import turicreate.util._cloudpickle as cloudpickle
 
 
 class CloudPickleTest(unittest.TestCase):
-
     def test_pickle_unity_object_exception(self):
         sa = tc.SArray()
         sf = tc.SFrame()
@@ -27,12 +26,13 @@ class CloudPickleTest(unittest.TestCase):
     def test_memoize_subclass(self):
         class A(object):
             def __init__(self):
-                self.name = 'A'
+                self.name = "A"
 
         class B(A):
             def __init__(self):
                 super(B, self).__init__()
-                self.name2 = 'B'
+                self.name2 = "B"
+
         b = B()
         self.assertEqual(b.name, "A")
         self.assertEqual(b.name2, "B")

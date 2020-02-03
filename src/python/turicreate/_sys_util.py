@@ -19,6 +19,7 @@ if sys.version_info.major == 2:
 else:
     import configparser as _ConfigParser
 
+
 def make_unity_server_env():
     """
     Returns the environment for unity_server.
@@ -37,19 +38,21 @@ def make_unity_server_env():
 
     # Add hadoop class path
     classpath = get_hadoop_class_path()
-    if ("CLASSPATH" in env):
-        env["CLASSPATH"] = env['CLASSPATH'] + (os.path.pathsep + classpath if classpath != '' else '')
+    if "CLASSPATH" in env:
+        env["CLASSPATH"] = env["CLASSPATH"] + (
+            os.path.pathsep + classpath if classpath != "" else ""
+        )
     else:
         env["CLASSPATH"] = classpath
 
     # Add python syspath
-    env['__GL_SYS_PATH__'] = (os.path.pathsep).join(sys.path + [os.getcwd()])
+    env["__GL_SYS_PATH__"] = (os.path.pathsep).join(sys.path + [os.getcwd()])
 
     # Add the python executable to the runtime config
-    env['__GL_PYTHON_EXECUTABLE__'] = os.path.abspath(sys.executable)
+    env["__GL_PYTHON_EXECUTABLE__"] = os.path.abspath(sys.executable)
 
     # Add the pylambda execution script to the runtime config
-    env['__GL_PYLAMBDA_SCRIPT__'] = os.path.abspath(_pylambda_worker.__file__)
+    env["__GL_PYLAMBDA_SCRIPT__"] = os.path.abspath(_pylambda_worker.__file__)
 
     #### Remove PYTHONEXECUTABLE ####
     # Anaconda overwrites this environment variable
@@ -58,19 +61,23 @@ def make_unity_server_env():
     # all subprocess launched under unity_server will use the
     # conda binary outside of virtualenv, which lacks the access
     # to all packages installed inside virtualenv.
-    if 'PYTHONEXECUTABLE' in env:
-        del env['PYTHONEXECUTABLE']
+    if "PYTHONEXECUTABLE" in env:
+        del env["PYTHONEXECUTABLE"]
 
     # add certificate file
-    if 'TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE' not in env and \
-            'TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR' not in env:
+    if (
+        "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE" not in env
+        and "TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR" not in env
+    ):
         try:
             import certifi
-            env['TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE'] = certifi.where()
-            env['TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR'] = ""
+
+            env["TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE"] = certifi.where()
+            env["TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR"] = ""
         except:
             pass
     return env
+
 
 def set_windows_dll_path():
     """
@@ -95,25 +102,26 @@ def set_windows_dll_path():
     import ctypes.wintypes as wintypes
 
     try:
-        kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+        kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
         kernel32.SetDllDirectoryW.errcheck = errcheck_bool
         kernel32.SetDllDirectoryW.argtypes = (wintypes.LPCWSTR,)
         kernel32.SetDllDirectoryW(lib_path)
     except Exception as e:
         logging.getLogger(__name__).warning(
-            "Error setting DLL load orders: %s (things should still work)." % str(e))
+            "Error setting DLL load orders: %s (things should still work)." % str(e)
+        )
 
 
 def get_current_platform_dll_extension():
     """
     Return the dynamic loading library extension for the current platform
     """
-    if sys.platform == 'win32':
-        return 'dll'
-    elif sys.platform == 'darwin':
-        return 'dylib'
+    if sys.platform == "win32":
+        return "dll"
+    elif sys.platform == "darwin":
+        return "dylib"
     else:
-        return 'so'
+        return "so"
 
 
 def test_pylambda_worker():
@@ -131,11 +139,12 @@ def test_pylambda_worker():
     import time
     import zipfile
     import sys
+
     # change the temp directory to /tmp.
     # Otherwise we get interesting zeromq "too long file name" issues.
-    if sys.platform == 'darwin':
-        if exists('/tmp'):
-            tempfile.tempdir = '/tmp'
+    if sys.platform == "darwin":
+        if exists("/tmp"):
+            tempfile.tempdir = "/tmp"
 
     temp_dir = tempfile.mkdtemp()
 
@@ -152,13 +161,13 @@ def test_pylambda_worker():
 
     print("\nRunning simulation.")
 
-    env=make_unity_server_env()
+    env = make_unity_server_env()
     env["TURI_LAMBDA_WORKER_DEBUG_MODE"] = "1"
     env["TURI_LAMBDA_WORKER_LOG_FILE"] = lambda_log_file_sym
 
     proc = subprocess.Popen(
-            [sys.executable, os.path.abspath(_pylambda_worker.__file__)],
-            env = env)
+        [sys.executable, os.path.abspath(_pylambda_worker.__file__)], env=env
+    )
 
     proc.wait()
 
@@ -166,7 +175,8 @@ def test_pylambda_worker():
 
     # Write out the current system path.
     open(join(temp_dir, "sys_path_1.log"), "w").write(
-        "\n".join("  sys.path[%d] = %s. " % (i, p) for i, p in enumerate(sys.path)))
+        "\n".join("  sys.path[%d] = %s. " % (i, p) for i, p in enumerate(sys.path))
+    )
 
     # Now run the program
     print("\nRunning full lambda worker process")
@@ -181,14 +191,16 @@ def test_pylambda_worker():
     run_temp_dir_copy = join(temp_dir, "run_temp_dir_copy")
 
     run_info_dict = {
-        "lambda_log" : lambda_log_file_run,
-        "temp_dir" : trial_temp_dir,
-        "run_temp_dir" : run_temp_dir,
-        "preserved_temp_dir" : run_temp_dir_copy,
-        "runtime_log" : join(trial_temp_dir, "runtime.log"),
-        "sys_path_log" : join(trial_temp_dir, "sys_path_2.log")}
+        "lambda_log": lambda_log_file_run,
+        "temp_dir": trial_temp_dir,
+        "run_temp_dir": run_temp_dir,
+        "preserved_temp_dir": run_temp_dir_copy,
+        "runtime_log": join(trial_temp_dir, "runtime.log"),
+        "sys_path_log": join(trial_temp_dir, "sys_path_2.log"),
+    }
 
-    run_script = r"""
+    run_script = (
+        r"""
 import os
 import traceback
 import shutil
@@ -292,7 +304,9 @@ for f in server_logs:
         sys.stderr.write("Error with: " + f)
         write_exception(e)
 
-    """ % run_info_dict
+    """
+        % run_info_dict
+    )
 
     run_script_file = join(temp_dir, "run_script.py")
     open(run_script_file, "w").write(run_script)
@@ -301,18 +315,21 @@ for f in server_logs:
     log_file_stderr = join(trial_temp_dir, "stderr.log")
 
     env = os.environ.copy()
-    env['__GL_SYS_PATH__'] = (os.path.pathsep).join(sys.path)
+    env["__GL_SYS_PATH__"] = (os.path.pathsep).join(sys.path)
 
     proc = subprocess.Popen(
-            [sys.executable, os.path.abspath(run_script_file)],
-            stdout = open(log_file_stdout, "w"),
-            stderr = open(log_file_stderr, "w"),
-            env = env)
+        [sys.executable, os.path.abspath(run_script_file)],
+        stdout=open(log_file_stdout, "w"),
+        stderr=open(log_file_stderr, "w"),
+        env=env,
+    )
 
     proc.wait()
 
     # Now zip up the output data into a package we can access.
-    timestamp = datetime.datetime.fromtimestamp(time.time()).strftime('%Y-%m-%d-%H-%M-%S')
+    timestamp = datetime.datetime.fromtimestamp(time.time()).strftime(
+        "%Y-%m-%d-%H-%M-%S"
+    )
     zipfile_name = join(temp_dir, "testing_logs-%d-%s.zip" % (os.getpid(), timestamp))
 
     print("Creating archive of log files in %s." % zipfile_name)
@@ -322,7 +339,7 @@ for f in server_logs:
     for root, dirs, files in os.walk(temp_dir):
         save_files += [join(root, name) for name in files]
 
-    with zipfile.ZipFile(zipfile_name, 'w') as logzip:
+    with zipfile.ZipFile(zipfile_name, "w") as logzip:
         error_logs = []
         for f in save_files:
             try:
@@ -335,11 +352,15 @@ for f in server_logs:
             open(error_log_file, "w").write("\n\n".join(error_logs))
             logzip.write(error_log_file)
 
-    print("################################################################################")
+    print(
+        "################################################################################"
+    )
     print("#   ")
     print("#   Results of lambda test logged as %s." % zipfile_name)
     print("#   ")
-    print("################################################################################")
+    print(
+        "################################################################################"
+    )
 
     print("Cleaning up.")
 
@@ -350,7 +371,7 @@ for f in server_logs:
             print("Could not delete: %s" % f)
 
 
-def dump_directory_structure(out = sys.stdout):
+def dump_directory_structure(out=sys.stdout):
     """
     Dumps a detailed report of the turicreate/sframe directory structure
     and files, along with the output of os.lstat for each.  This is useful
@@ -362,57 +383,72 @@ def dump_directory_structure(out = sys.stdout):
     import sys, os
     from os.path import split, abspath, join
     from itertools import chain
+
     main_dir = split(abspath(sys.modules[__name__].__file__))[0]
 
     visited_files = []
 
     def on_error(err):
-        visited_files.append( ("  ERROR", str(err)) )
+        visited_files.append(("  ERROR", str(err)))
 
-    for path, dirs, files in os.walk(main_dir, onerror = on_error):
+    for path, dirs, files in os.walk(main_dir, onerror=on_error):
         for fn in chain(files, dirs):
             name = join(path, fn)
             try:
-                visited_files.append( (name, repr(os.lstat(name))) )
+                visited_files.append((name, repr(os.lstat(name))))
             except:
-                visited_files.append( (name, "ERROR calling os.lstat.") )
+                visited_files.append((name, "ERROR calling os.lstat."))
 
     def strip_name(n):
-        if n[:len(main_dir)] == main_dir:
-            return "<root>/" + n[len(main_dir):]
+        if n[: len(main_dir)] == main_dir:
+            return "<root>/" + n[len(main_dir) :]
         else:
             return n
 
-    out.write("\n".join( ("  %s: %s" % (strip_name(name), stats))
-                     for name, stats in sorted(visited_files)))
+    out.write(
+        "\n".join(
+            ("  %s: %s" % (strip_name(name), stats))
+            for name, stats in sorted(visited_files)
+        )
+    )
 
     out.flush()
 
+
 __hadoop_class_warned = False
+
 
 def get_hadoop_class_path():
     # Try get the classpath directly from executing hadoop
     env = os.environ.copy()
-    hadoop_exe_name = 'hadoop'
-    if sys.platform == 'win32':
-        hadoop_exe_name += '.cmd'
+    hadoop_exe_name = "hadoop"
+    if sys.platform == "win32":
+        hadoop_exe_name += ".cmd"
     output = None
     try:
         try:
-            output = _subprocess.check_output([hadoop_exe_name, 'classpath']).decode()
+            output = _subprocess.check_output([hadoop_exe_name, "classpath"]).decode()
         except:
-            output = _subprocess.check_output(['/'.join([env['HADOOP_HOME'],'bin',hadoop_exe_name]), 'classpath']).decode()
+            output = _subprocess.check_output(
+                ["/".join([env["HADOOP_HOME"], "bin", hadoop_exe_name]), "classpath"]
+            ).decode()
 
-        output = (os.path.pathsep).join(os.path.realpath(path) for path in output.split(os.path.pathsep))
+        output = (os.path.pathsep).join(
+            os.path.realpath(path) for path in output.split(os.path.pathsep)
+        )
         return _get_expanded_classpath(output)
 
     except Exception as e:
         global __hadoop_class_warned
         if not __hadoop_class_warned:
             __hadoop_class_warned = True
-            logging.getLogger(__name__).debug("Exception trying to retrieve Hadoop classpath: %s" % e)
+            logging.getLogger(__name__).debug(
+                "Exception trying to retrieve Hadoop classpath: %s" % e
+            )
 
-    logging.getLogger(__name__).debug("Hadoop not found. HDFS url is not supported. Please make hadoop available from PATH or set the environment variable HADOOP_HOME.")
+    logging.getLogger(__name__).debug(
+        "Hadoop not found. HDFS url is not supported. Please make hadoop available from PATH or set the environment variable HADOOP_HOME."
+    )
     return ""
 
 
@@ -426,15 +462,20 @@ def _get_expanded_classpath(classpath):
 
     mentioned in the path
     """
-    if classpath is None or classpath == '':
-        return ''
+    if classpath is None or classpath == "":
+        return ""
 
     #  so this set comprehension takes paths that end with * to be globbed to find the jars, and then
     #  recombined back into a colon separated list of jar paths, removing dupes and using full file paths
-    jars = (os.path.pathsep).join((os.path.pathsep).join([os.path.abspath(jarpath) for jarpath in _glob.glob(path)])
-                    for path in classpath.split(os.path.pathsep))
-    logging.getLogger(__name__).debug('classpath being used: %s' % jars)
+    jars = (os.path.pathsep).join(
+        (os.path.pathsep).join(
+            [os.path.abspath(jarpath) for jarpath in _glob.glob(path)]
+        )
+        for path in classpath.split(os.path.pathsep)
+    )
+    logging.getLogger(__name__).debug("classpath being used: %s" % jars)
     return jars
+
 
 def get_library_name():
     """
@@ -468,9 +509,14 @@ def get_config_file():
         __default_config_path = abspath(expanduser(os.environ["TURI_CONFIG_FILE"]))
 
         if not exists(__default_config_path):
-            print(("WARNING: Config file specified in environment variable "
-                   "'TURI_CONFIG_FILE' as "
-                   "'%s', but this path does not exist.") % __default_config_path)
+            print(
+                (
+                    "WARNING: Config file specified in environment variable "
+                    "'TURI_CONFIG_FILE' as "
+                    "'%s', but this path does not exist."
+                )
+                % __default_config_path
+            )
 
     return __default_config_path
 
@@ -502,9 +548,13 @@ def setup_environment_from_config_file():
                 try:
                     os.environ[k.upper()] = v
                 except Exception as e:
-                    print(("WARNING: Error setting environment variable "
-                           "'%s = %s' from config file '%s': %s.")
-                          % (k, str(v), config_file, str(e)) )
+                    print(
+                        (
+                            "WARNING: Error setting environment variable "
+                            "'%s = %s' from config file '%s': %s."
+                        )
+                        % (k, str(v), config_file, str(e))
+                    )
     except Exception as e:
         print("WARNING: Error reading config file '%s': %s." % (config_file, str(e)))
 
@@ -525,10 +575,10 @@ def write_config_file_value(key, value):
 
     __section = "Environment"
 
-    if not(config.has_section(__section)):
+    if not (config.has_section(__section)):
         config.add_section(__section)
 
     config.set(__section, key, value)
 
-    with open(filename, 'w') as config_file:
+    with open(filename, "w") as config_file:
         config.write(config_file)

@@ -10,7 +10,9 @@ benchmarking.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-def generate_random_sframe(num_rows, column_codes, random_seed = 0):
+
+
+def generate_random_sframe(num_rows, column_codes, random_seed=0):
     """
     Creates a random SFrame with `num_rows` rows and randomly
     generated column types determined by `column_codes`.  The output
@@ -70,7 +72,10 @@ def generate_random_sframe(num_rows, column_codes, random_seed = 0):
     X.materialize()
     return X
 
-def generate_random_regression_sframe(num_rows, column_codes, random_seed = 0, target_noise_level = 0.25):
+
+def generate_random_regression_sframe(
+    num_rows, column_codes, random_seed=0, target_noise_level=0.25
+):
     """
     Creates a random SFrame with `num_rows` rows and randomly
     generated column types determined by `column_codes`.  The output
@@ -152,14 +157,21 @@ def generate_random_regression_sframe(num_rows, column_codes, random_seed = 0, t
     assert isinstance(num_rows, int)
     assert isinstance(random_seed, int)
 
-    X = _generate_random_sframe(num_rows, column_codes, random_seed, True, target_noise_level)
+    X = _generate_random_sframe(
+        num_rows, column_codes, random_seed, True, target_noise_level
+    )
     X.materialize()
     return X
 
-def generate_random_classification_sframe(num_rows, column_codes, num_classes,
-                                          misclassification_spread = 0.25,
-                                          num_extra_class_bins = None,
-                                          random_seed = 0):
+
+def generate_random_classification_sframe(
+    num_rows,
+    column_codes,
+    num_classes,
+    misclassification_spread=0.25,
+    num_extra_class_bins=None,
+    random_seed=0,
+):
     """
     Creates a random SFrame with `num_rows` rows and randomly
     generated column types determined by `column_codes`.  The output
@@ -232,7 +244,7 @@ def generate_random_classification_sframe(num_rows, column_codes, num_classes,
         raise ValueError("num_classes must be >= 2.")
 
     if num_extra_class_bins is None:
-        num_extra_class_bins = 2*num_classes
+        num_extra_class_bins = 2 * num_classes
 
     if num_extra_class_bins < 0:
         raise ValueError("num_extra_class_bins must be >= 0.")
@@ -246,10 +258,14 @@ def generate_random_classification_sframe(num_rows, column_codes, num_classes,
     assert isinstance(num_classes, int)
     assert isinstance(num_extra_class_bins, int)
 
-
     X = _generate_random_classification_sframe(
-        num_rows, column_codes, random_seed,
-        num_classes, num_extra_class_bins, misclassification_spread)
+        num_rows,
+        column_codes,
+        random_seed,
+        num_classes,
+        num_extra_class_bins,
+        misclassification_spread,
+    )
 
     X.materialize()
     return X

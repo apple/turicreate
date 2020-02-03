@@ -13,15 +13,16 @@ from threading import Thread as _Thread
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from ._detection import yolo_boxes_to_yolo_map as _yolo_boxes_to_yolo_map
 
-_TMP_COL_RANDOM_ORDER = '_random_order'
+_TMP_COL_RANDOM_ORDER = "_random_order"
 
 
 def _convert_image_to_raw(image):
     # Decode image and make sure it has 3 channels
     return _tc.image_analysis.resize(image, image.width, image.height, 3, decode=True)
 
+
 def _is_rectangle_annotation(ann):
-    return 'type' not in ann or ann['type'] == 'rectangle'
+    return "type" not in ann or ann["type"] == "rectangle"
 
 
 def _is_valid_annotation(ann):
@@ -31,12 +32,14 @@ def _is_valid_annotation(ann):
         # Not necessarily valid, but we bypass stricter checks (we simply do
         # not care about non-rectangle types)
         return True
-    return ('coordinates' in ann and
-            isinstance(ann['coordinates'], dict) and
-            set(ann['coordinates'].keys()) == {'x', 'y', 'width', 'height'} and
-            ann['coordinates']['width'] > 0 and
-            ann['coordinates']['height'] > 0 and
-            'label' in ann)
+    return (
+        "coordinates" in ann
+        and isinstance(ann["coordinates"], dict)
+        and set(ann["coordinates"].keys()) == {"x", "y", "width", "height"}
+        and ann["coordinates"]["width"] > 0
+        and ann["coordinates"]["height"] > 0
+        and "label" in ann
+    )
 
 
 def _is_valid_annotations_list(anns):

@@ -3,11 +3,11 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Created on Jul 14, 2011
 
 @author: sean
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -21,37 +21,51 @@ from ..asttools.visitors.print_visitor import print_ast, dump_ast
 from ..asttools import cmp_ast
 
 if py3:
-    class _ast_Print: pass
+
+    class _ast_Print:
+        pass
+
+
 else:
     _ast_Print = _ast.Print
+
 
 def isNone(node):
     if node is None:
         return True
-    elif isinstance(node, _ast.Name) and (node.id == 'None') and isinstance(node.ctx, _ast.Load):
+    elif (
+        isinstance(node, _ast.Name)
+        and (node.id == "None")
+        and isinstance(node.ctx, _ast.Load)
+    ):
         return True
 
     return False
 
-def BINARY_(OP):
 
+def BINARY_(OP):
     def BINARY_OP(self, instr):
         right = self.ast_stack.pop()
         left = self.ast_stack.pop()
 
-        add = _ast.BinOp(left=left, right=right, op=OP(), lineno=instr.lineno, col_offset=0)
+        add = _ast.BinOp(
+            left=left, right=right, op=OP(), lineno=instr.lineno, col_offset=0
+        )
 
         self.ast_stack.append(add)
+
     return BINARY_OP
 
-def INPLACE_(OP):
 
+def INPLACE_(OP):
     def INPLACE_OP(self, instr):
         right = self.ast_stack.pop()
         left = self.ast_stack.pop()
 
         left.ctx = _ast.Store()
-        aug_assign = _ast.AugAssign(target=left, op=OP(), value=right, lineno=instr.lineno, col_offset=0)
+        aug_assign = _ast.AugAssign(
+            target=left, op=OP(), value=right, lineno=instr.lineno, col_offset=0
+        )
 
         self.ast_stack.append(aug_assign)
 
@@ -59,7 +73,6 @@ def INPLACE_(OP):
 
 
 def UNARY_(OP):
-
     def UNARY_OP(self, instr):
         expr = self.ast_stack.pop()
         not_ = _ast.UnaryOp(op=OP(), operand=expr, lineno=instr.lineno, col_offset=0)
@@ -68,27 +81,30 @@ def UNARY_(OP):
 
     return UNARY_OP
 
-CMP_OPMAP = {'>=' :_ast.GtE,
-             '<=' :_ast.LtE,
-             '>' :_ast.Gt,
-             '<' :_ast.Lt,
-             '==': _ast.Eq,
-             '!=': _ast.NotEq,
-             'in': _ast.In,
-             'not in': _ast.NotIn,
-             'is':_ast.Is,
-             'is not':_ast.IsNot,
-             }
+
+CMP_OPMAP = {
+    ">=": _ast.GtE,
+    "<=": _ast.LtE,
+    ">": _ast.Gt,
+    "<": _ast.Lt,
+    "==": _ast.Eq,
+    "!=": _ast.NotEq,
+    "in": _ast.In,
+    "not in": _ast.NotIn,
+    "is": _ast.Is,
+    "is not": _ast.IsNot,
+}
+
 
 def make_const(arg, lineno=0, col_offset=0):
-    kw = {'lineno':lineno, 'col_offset':col_offset}
+    kw = {"lineno": lineno, "col_offset": col_offset}
 
     if isinstance(arg, str):
         const = _ast.Str(s=arg, **kw)
     elif isinstance(arg, (int, float, complex)):
         const = _ast.Num(n=arg, **kw)
     elif arg is None:
-        const = _ast.Name(id='None', ctx=_ast.Load(), **kw)
+        const = _ast.Name(id="None", ctx=_ast.Load(), **kw)
     elif isinstance(arg, tuple):
         elts = []
         for item in arg:
@@ -99,19 +115,23 @@ def make_const(arg, lineno=0, col_offset=0):
 
     return const
 
-class SimpleInstructions(object):
 
+class SimpleInstructions(object):
     def LOAD_CONST(self, instr):
         const = make_const(instr.arg, lineno=instr.lineno, col_offset=0)
 
         self.ast_stack.append(const)
 
     def LOAD_NAME(self, instr):
-        name = _ast.Name(id=instr.arg, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0)
+        name = _ast.Name(
+            id=instr.arg, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0
+        )
         self.ast_stack.append(name)
 
     def LOAD_DEREF(self, instr):
-        name = _ast.Name(id=instr.arg, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0)
+        name = _ast.Name(
+            id=instr.arg, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0
+        )
         self.ast_stack.append(name)
 
     def CALL_FUNCTION_VAR(self, instr):
@@ -152,7 +172,6 @@ class SimpleInstructions(object):
         nkwargs = instr.oparg >> 8
         nargs = (~(nkwargs << 8)) & instr.oparg
 
-
         args = []
         keywords = []
 
@@ -167,7 +186,6 @@ class SimpleInstructions(object):
             arg = self.ast_stack.pop()
             args.insert(0, arg)
 
-
         if len(args) == 1 and isinstance(args[0], (_ast.FunctionDef, _ast.ClassDef)):
             function = args[0]
 
@@ -180,19 +198,29 @@ class SimpleInstructions(object):
             self.ast_stack.append(function)
             return
 
-
         node = self.ast_stack.pop()
-        callfunc = _ast.Call(func=node, args=args, keywords=keywords, starargs=None, kwargs=None,
-                             lineno=instr.lineno, col_offset=0)
+        callfunc = _ast.Call(
+            func=node,
+            args=args,
+            keywords=keywords,
+            starargs=None,
+            kwargs=None,
+            lineno=instr.lineno,
+            col_offset=0,
+        )
 
         self.ast_stack.append(callfunc)
 
     def LOAD_FAST(self, instr):
-        name = _ast.Name(id=instr.arg, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0)
+        name = _ast.Name(
+            id=instr.arg, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0
+        )
         self.ast_stack.append(name)
 
     def LOAD_GLOBAL(self, instr):
-        name = _ast.Name(id=instr.arg, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0)
+        name = _ast.Name(
+            id=instr.arg, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0
+        )
         self.ast_stack.append(name)
 
     def STORE_FAST(self, instr):
@@ -221,13 +249,15 @@ class SimpleInstructions(object):
             else:
                 as_name = instr.arg
                 if value.names[0].asname is None:
-                    base_name = value.names[0].name.split('.')[0]
+                    base_name = value.names[0].name.split(".")[0]
                     if base_name != as_name:
                         value.names[0].asname = as_name
 
             self.ast_stack.append(value)
 
-        elif isinstance(value, (_ast.Attribute)) and isinstance(value.value, (_ast.Import)):
+        elif isinstance(value, (_ast.Attribute)) and isinstance(
+            value.value, (_ast.Import)
+        ):
             asname = instr.arg
             value = value.value
             value.names[0].asname = asname
@@ -242,19 +272,25 @@ class SimpleInstructions(object):
             self.ast_stack.append(value)
         elif isinstance(value, _ast.Assign):
             _ = self.ast_stack.pop()
-            assname = _ast.Name(instr.arg, _ast.Store(), lineno=instr.lineno, col_offset=0)
+            assname = _ast.Name(
+                instr.arg, _ast.Store(), lineno=instr.lineno, col_offset=0
+            )
             value.targets.append(assname)
             self.ast_stack.append(value)
         else:
 
-            assname = _ast.Name(instr.arg, _ast.Store(), lineno=instr.lineno, col_offset=0)
+            assname = _ast.Name(
+                instr.arg, _ast.Store(), lineno=instr.lineno, col_offset=0
+            )
 
-            assign = _ast.Assign(targets=[assname], value=value, lineno=instr.lineno, col_offset=0)
+            assign = _ast.Assign(
+                targets=[assname], value=value, lineno=instr.lineno, col_offset=0
+            )
             self.ast_stack.append(assign)
 
     @py3op
     def STORE_LOCALS(self, instr):
-        'remove Locals from class def'
+        "remove Locals from class def"
         self.ast_stack.pop()
 
     def STORE_GLOBAL(self, instr):
@@ -280,7 +316,9 @@ class SimpleInstructions(object):
 
         attr = instr.arg
 
-        get_attr = _ast.Attribute(value=name, attr=attr, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0)
+        get_attr = _ast.Attribute(
+            value=name, attr=attr, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0
+        )
 
         self.ast_stack.append(get_attr)
 
@@ -291,8 +329,16 @@ class SimpleInstructions(object):
         expr = self.ast_stack.pop()
         expr = self.process_ifexpr(expr)
 
-        assattr = _ast.Attribute(value=node, attr=attrname, ctx=_ast.Store(), lineno=instr.lineno, col_offset=0)
-        set_attr = _ast.Assign(targets=[assattr], value=expr, lineno=instr.lineno, col_offset=0)
+        assattr = _ast.Attribute(
+            value=node,
+            attr=attrname,
+            ctx=_ast.Store(),
+            lineno=instr.lineno,
+            col_offset=0,
+        )
+        set_attr = _ast.Assign(
+            targets=[assattr], value=expr, lineno=instr.lineno, col_offset=0
+        )
 
         self.ast_stack.append(set_attr)
 
@@ -314,7 +360,9 @@ class SimpleInstructions(object):
 
         names = [_ast.alias(instr.arg, None)]
         modname = import_.names[0].name
-        from_ = _ast.ImportFrom(module=modname, names=names, level=0, lineno=instr.lineno, col_offset=0)
+        from_ = _ast.ImportFrom(
+            module=modname, names=names, level=0, lineno=instr.lineno, col_offset=0
+        )
 
         self.ast_stack.append(from_)
         self.ast_stack.append(import_)
@@ -323,9 +371,15 @@ class SimpleInstructions(object):
         import_ = self.ast_stack.pop()
 
         names = import_.names
-        alias = _ast.alias(name='*', asname=None)
+        alias = _ast.alias(name="*", asname=None)
 
-        from_ = _ast.ImportFrom(module=names[0].name, names=[alias], level=0, lineno=instr.lineno, col_offset=0)
+        from_ = _ast.ImportFrom(
+            module=names[0].name,
+            names=[alias],
+            level=0,
+            lineno=instr.lineno,
+            col_offset=0,
+        )
 
         self.ast_stack.append(from_)
 
@@ -369,11 +423,11 @@ class SimpleInstructions(object):
         one = self.ast_stack.pop()
         two = self.ast_stack.pop()
 
-        if self.ilst[0].opname == 'STORE_NAME':
+        if self.ilst[0].opname == "STORE_NAME":
 
             kw = dict(lineno=instr.lineno, col_offset=0)
             stores = []
-            while self.ilst[0].opname == 'STORE_NAME':
+            while self.ilst[0].opname == "STORE_NAME":
                 stores.append(self.ilst.pop(0))
 
             assert len(stores) <= 3, stores
@@ -383,12 +437,14 @@ class SimpleInstructions(object):
 
             tup_load = _ast.Tuple(elts=elts_load[::-1], ctx=_ast.Load(), **kw)
 
-            elts_store = [_ast.Name(id=store.arg, ctx=_ast.Store(), **kw) for store in stores]
+            elts_store = [
+                _ast.Name(id=store.arg, ctx=_ast.Store(), **kw) for store in stores
+            ]
             tup_store = _ast.Tuple(elts=elts_store, ctx=_ast.Store(), **kw)
 
             assgn = _ast.Assign(value=tup_load, targets=[tup_store], **kw)
             self.ast_stack.append(assgn)
-#            self.ast_stack.append(tup_store)
+        #            self.ast_stack.append(tup_store)
         else:
             self.ast_stack.append(one)
             self.ast_stack.append(two)
@@ -436,10 +492,15 @@ class SimpleInstructions(object):
         expr = self.ast_stack.pop()
 
         OP = CMP_OPMAP[op]
-        compare = _ast.Compare(left=expr, ops=[OP()], comparators=[right], lineno=instr.lineno, col_offset=0)
+        compare = _ast.Compare(
+            left=expr,
+            ops=[OP()],
+            comparators=[right],
+            lineno=instr.lineno,
+            col_offset=0,
+        )
 
         self.ast_stack.append(compare)
-
 
     def YIELD_VALUE(self, instr):
         value = self.ast_stack.pop()
@@ -455,7 +516,9 @@ class SimpleInstructions(object):
         nitems = instr.oparg
 
         nodes = []
-        list_ = _ast.List(elts=nodes, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0)
+        list_ = _ast.List(
+            elts=nodes, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0
+        )
         for i in range(nitems):
             nodes.insert(0, self.ast_stack.pop())
 
@@ -466,12 +529,14 @@ class SimpleInstructions(object):
         nitems = instr.oparg
 
         nodes = []
-        list_ = _ast.Tuple(elts=nodes, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0)
+        list_ = _ast.Tuple(
+            elts=nodes, ctx=_ast.Load(), lineno=instr.lineno, col_offset=0
+        )
         for i in range(nitems):
             nodes.insert(0, self.ast_stack.pop())
 
-        if any([item == 'CLOSURE' for item in nodes]):
-            assert all([item == 'CLOSURE' for item in nodes])
+        if any([item == "CLOSURE" for item in nodes]):
+            assert all([item == "CLOSURE" for item in nodes])
             return
 
         self.ast_stack.append(list_)
@@ -497,7 +562,7 @@ class SimpleInstructions(object):
             while 1:
                 new_instr = self.ilst.pop(0)
 
-                if new_instr.opname == 'STORE_MAP':
+                if new_instr.opname == "STORE_MAP":
                     break
 
                 map_instrs.append(new_instr)
@@ -508,7 +573,6 @@ class SimpleInstructions(object):
             values.append(items[0])
             keys.append(items[1])
 
-
         list_ = _ast.Dict(keys=keys, values=values, lineno=instr.lineno, col_offset=0)
         self.ast_stack.append(list_)
 
@@ -516,7 +580,9 @@ class SimpleInstructions(object):
         nargs = instr.oparg
 
         nodes = []
-        ast_tuple = _ast.Tuple(elts=nodes, ctx=_ast.Store(), lineno=instr.lineno, col_offset=0)
+        ast_tuple = _ast.Tuple(
+            elts=nodes, ctx=_ast.Store(), lineno=instr.lineno, col_offset=0
+        )
         for i in range(nargs):
             nex_instr = self.ilst.pop(0)
             self.ast_stack.append(None)
@@ -535,19 +601,25 @@ class SimpleInstructions(object):
             assert cmp_ast(assgn.value, value_dup)
 
         else:
-            assgn = _ast.Assign(targets=[ast_tuple], value=expr, lineno=instr.lineno, col_offset=0)
+            assgn = _ast.Assign(
+                targets=[ast_tuple], value=expr, lineno=instr.lineno, col_offset=0
+            )
         self.ast_stack.append(assgn)
 
     def DELETE_NAME(self, instr):
 
-        name = _ast.Name(id=instr.arg, ctx=_ast.Del(), lineno=instr.lineno, col_offset=0)
+        name = _ast.Name(
+            id=instr.arg, ctx=_ast.Del(), lineno=instr.lineno, col_offset=0
+        )
 
         delete = _ast.Delete(targets=[name], lineno=instr.lineno, col_offset=0)
         self.ast_stack.append(delete)
 
     def DELETE_FAST(self, instr):
 
-        name = _ast.Name(id=instr.arg, ctx=_ast.Del(), lineno=instr.lineno, col_offset=0)
+        name = _ast.Name(
+            id=instr.arg, ctx=_ast.Del(), lineno=instr.lineno, col_offset=0
+        )
 
         delete = _ast.Delete(targets=[name], lineno=instr.lineno, col_offset=0)
         self.ast_stack.append(delete)
@@ -555,7 +627,13 @@ class SimpleInstructions(object):
     def DELETE_ATTR(self, instr):
 
         expr = self.ast_stack.pop()
-        attr = _ast.Attribute(value=expr, attr=instr.arg, ctx=_ast.Del(), lineno=instr.lineno, col_offset=0)
+        attr = _ast.Attribute(
+            value=expr,
+            attr=instr.arg,
+            ctx=_ast.Del(),
+            lineno=instr.lineno,
+            col_offset=0,
+        )
 
         delete = _ast.Delete(targets=[attr], lineno=instr.lineno, col_offset=0)
         self.ast_stack.append(delete)
@@ -568,10 +646,16 @@ class SimpleInstructions(object):
         if locals_ is globals_:
             locals_ = None
 
-        if isinstance(globals_, _ast.Name) and getattr(globals_, 'id',) == 'None':
+        if isinstance(globals_, _ast.Name) and getattr(globals_, "id",) == "None":
             globals_ = None
 
-        exec_ = _ast.Exec(body=expr, globals=globals_, locals=locals_, lineno=instr.lineno, col_offset=0)
+        exec_ = _ast.Exec(
+            body=expr,
+            globals=globals_,
+            locals=locals_,
+            lineno=instr.lineno,
+            col_offset=0,
+        )
 
         self.ast_stack.append(exec_)
 
@@ -593,7 +677,6 @@ class SimpleInstructions(object):
         self.ast_stack.append(expr2)
         self.ast_stack.append(expr1)
 
-
     def DUP_TOPX(self, instr):
 
         exprs = []
@@ -613,7 +696,6 @@ class SimpleInstructions(object):
         self.ast_stack.append(expr3)
         self.ast_stack.append(expr2)
 
-
     def ROT_FOUR(self, instr):
         expr1 = self.ast_stack.pop()
         expr2 = self.ast_stack.pop()
@@ -624,9 +706,6 @@ class SimpleInstructions(object):
         self.ast_stack.append(expr4)
         self.ast_stack.append(expr3)
         self.ast_stack.append(expr2)
-
-
-
 
     def PRINT_ITEM(self, instr):
 
@@ -640,7 +719,9 @@ class SimpleInstructions(object):
         if isinstance(print_, _ast_Print) and not print_.nl and print_.dest is None:
             print_.values.append(item)
         else:
-            print_ = _ast_Print(dest=None, values=[item], nl=False, lineno=instr.lineno, col_offset=0)
+            print_ = _ast_Print(
+                dest=None, values=[item], nl=False, lineno=instr.lineno, col_offset=0
+            )
             self.ast_stack.append(print_)
 
     def PRINT_NEWLINE(self, instr):
@@ -649,7 +730,9 @@ class SimpleInstructions(object):
         if isinstance(item, _ast_Print) and not item.nl and item.dest is None:
             item.nl = True
         else:
-            print_ = _ast_Print(dest=None, values=[], nl=True, lineno=instr.lineno, col_offset=0)
+            print_ = _ast_Print(
+                dest=None, values=[], nl=True, lineno=instr.lineno, col_offset=0
+            )
             self.ast_stack.append(print_)
 
     def PRINT_ITEM_TO(self, instr):
@@ -665,7 +748,9 @@ class SimpleInstructions(object):
             assert dup_print is print_
             self.ast_stack.append(stream)
         else:
-            print_ = _ast_Print(dest=stream, values=[], nl=False, lineno=instr.lineno, col_offset=0)
+            print_ = _ast_Print(
+                dest=stream, values=[], nl=False, lineno=instr.lineno, col_offset=0
+            )
 
         item = self.ast_stack.pop()
 
@@ -682,9 +767,10 @@ class SimpleInstructions(object):
         if isinstance(item, _ast_Print) and not item.nl and item.dest is stream:
             item.nl = True
         else:
-            print_ = _ast_Print(dest=stream, values=[], nl=True, lineno=instr.lineno, col_offset=0)
+            print_ = _ast_Print(
+                dest=stream, values=[], nl=True, lineno=instr.lineno, col_offset=0
+            )
             self.ast_stack.append(print_)
-
 
     def format_slice(self, index, kw):
 
@@ -721,7 +807,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(subscr)
 
     def SLICE_0(self, instr):
-        'obj[:]'
+        "obj[:]"
         value = self.ast_stack.pop()
 
         kw = dict(lineno=instr.lineno, col_offset=0)
@@ -731,7 +817,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(subscr)
 
     def SLICE_1(self, instr):
-        'obj[lower:]'
+        "obj[lower:]"
         lower = self.ast_stack.pop()
         value = self.ast_stack.pop()
 
@@ -742,7 +828,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(subscr)
 
     def SLICE_2(self, instr):
-        'obj[:stop]'
+        "obj[:stop]"
         upper = self.ast_stack.pop()
         value = self.ast_stack.pop()
 
@@ -752,9 +838,8 @@ class SimpleInstructions(object):
 
         self.ast_stack.append(subscr)
 
-
     def SLICE_3(self, instr):
-        'obj[lower:upper]'
+        "obj[lower:upper]"
         upper = self.ast_stack.pop()
         lower = self.ast_stack.pop()
         value = self.ast_stack.pop()
@@ -764,7 +849,6 @@ class SimpleInstructions(object):
         subscr = _ast.Subscript(value=value, slice=slice, ctx=_ast.Load(), **kw)
 
         self.ast_stack.append(subscr)
-
 
     def BUILD_SLICE(self, instr):
 
@@ -788,7 +872,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(slice)
 
     def STORE_SLICE_0(self, instr):
-        'obj[:] = expr'
+        "obj[:] = expr"
         value = self.ast_stack.pop()
         expr = self.ast_stack.pop()
 
@@ -800,7 +884,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(assign)
 
     def STORE_SLICE_1(self, instr):
-        'obj[lower:] = expr'
+        "obj[lower:] = expr"
         lower = self.ast_stack.pop()
         value = self.ast_stack.pop()
         expr = self.ast_stack.pop()
@@ -812,9 +896,8 @@ class SimpleInstructions(object):
         assign = _ast.Assign(targets=[subscr], value=expr, **kw)
         self.ast_stack.append(assign)
 
-
     def STORE_SLICE_2(self, instr):
-        'obj[:upper] = expr'
+        "obj[:upper] = expr"
         upper = self.ast_stack.pop()
         value = self.ast_stack.pop()
         expr = self.ast_stack.pop()
@@ -827,7 +910,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(assign)
 
     def STORE_SLICE_3(self, instr):
-        'obj[lower:upper] = expr'
+        "obj[lower:upper] = expr"
 
         upper = self.ast_stack.pop()
         lower = self.ast_stack.pop()
@@ -849,7 +932,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(assign)
 
     def DELETE_SLICE_0(self, instr):
-        'obj[:] = expr'
+        "obj[:] = expr"
         value = self.ast_stack.pop()
 
         kw = dict(lineno=instr.lineno, col_offset=0)
@@ -860,7 +943,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(delete)
 
     def DELETE_SLICE_1(self, instr):
-        'obj[lower:] = expr'
+        "obj[lower:] = expr"
         lower = self.ast_stack.pop()
         value = self.ast_stack.pop()
 
@@ -871,9 +954,8 @@ class SimpleInstructions(object):
         delete = _ast.Delete(targets=[subscr], **kw)
         self.ast_stack.append(delete)
 
-
     def DELETE_SLICE_2(self, instr):
-        'obj[:upper] = expr'
+        "obj[:upper] = expr"
         upper = self.ast_stack.pop()
         value = self.ast_stack.pop()
 
@@ -885,7 +967,7 @@ class SimpleInstructions(object):
         self.ast_stack.append(delete)
 
     def DELETE_SLICE_3(self, instr):
-        'obj[lower:upper] = expr'
+        "obj[lower:upper] = expr"
         upper = self.ast_stack.pop()
         lower = self.ast_stack.pop()
         value = self.ast_stack.pop()
@@ -943,8 +1025,9 @@ class SimpleInstructions(object):
         if nargs > 0:
             type = self.ast_stack.pop()
 
-        raise_ = _ast.Raise(tback=tback, inst=inst, type=type,
-                            lineno=instr.lineno, col_offset=0)
+        raise_ = _ast.Raise(
+            tback=tback, inst=inst, type=type, lineno=instr.lineno, col_offset=0
+        )
         self.ast_stack.append(raise_)
 
     @RAISE_VARARGS.py3op
@@ -959,8 +1042,7 @@ class SimpleInstructions(object):
         if nargs > 0:
             exc = self.ast_stack.pop()
 
-        raise_ = _ast.Raise(exc=exc, cause=cause,
-                            lineno=instr.lineno, col_offset=0)
+        raise_ = _ast.Raise(exc=exc, cause=cause, lineno=instr.lineno, col_offset=0)
         self.ast_stack.append(raise_)
 
     @py3op
@@ -973,7 +1055,9 @@ class SimpleInstructions(object):
         kw = dict(lineno=instr.lineno, col_offset=0)
         for argument_name in argument_names.elts[::-1]:
             annotation = self.ast_stack.pop()
-            arg = _ast.arg(annotation=annotation, arg=argument_name.s, **kw) #@UndefinedVariable
+            arg = _ast.arg(
+                annotation=annotation, arg=argument_name.s, **kw
+            )  # @UndefinedVariable
             args.append(arg)
 
         for arg in args:

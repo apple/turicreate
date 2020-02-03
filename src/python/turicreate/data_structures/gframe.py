@@ -45,6 +45,7 @@ class GFrame(SFrame):
     >>> # extract an SFrame
     >>> sf = vertices_gf.__to_sframe__()
     """
+
     def __init__(self, graph, gframe_type):
         self.__type__ = gframe_type
         self.__graph__ = graph
@@ -54,11 +55,11 @@ class GFrame(SFrame):
     def __to_sframe__(self):
         return copy.copy(self._get_cache())
 
-#/**************************************************************************/
-#/*                                                                        */
-#/*                               Modifiers                                */
-#/*                                                                        */
-#/**************************************************************************/
+    # /**************************************************************************/
+    # /*                                                                        */
+    # /*                               Modifiers                                */
+    # /*                                                                        */
+    # /**************************************************************************/
     def add_column(self, data, column_name="", inplace=False):
         """
         Adds the specified column to this SFrame.  The number of elements in
@@ -91,15 +92,18 @@ class GFrame(SFrame):
             self.__is_dirty__ = True
             with cython_context():
                 if self._is_vertex_frame():
-                    graph_proxy = self.__graph__.__proxy__.add_vertex_field(data.__proxy__, column_name)
+                    graph_proxy = self.__graph__.__proxy__.add_vertex_field(
+                        data.__proxy__, column_name
+                    )
                     self.__graph__.__proxy__ = graph_proxy
                 elif self._is_edge_frame():
-                    graph_proxy = self.__graph__.__proxy__.add_edge_field(data.__proxy__, column_name)
+                    graph_proxy = self.__graph__.__proxy__.add_edge_field(
+                        data.__proxy__, column_name
+                    )
                     self.__graph__.__proxy__ = graph_proxy
             return self
         else:
             return super(GFrame, self).add_column(data, column_name, inplace=inplace)
-
 
     def add_columns(self, data, column_names=None, inplace=False):
         """
@@ -134,7 +138,9 @@ class GFrame(SFrame):
             my_columns = set(self.column_names())
             for name in column_names:
                 if name in my_columns:
-                    raise ValueError("Column '" + name + "' already exists in current SFrame")
+                    raise ValueError(
+                        "Column '" + name + "' already exists in current SFrame"
+                    )
         else:
             if not _is_non_string_iterable(datalist):
                 raise TypeError("datalist must be an iterable")
@@ -151,8 +157,9 @@ class GFrame(SFrame):
                 self.add_column(data, name)
             return self
         else:
-            return super(GFrame, self).add_column(datalist, column_names, inplace=inplace)
-
+            return super(GFrame, self).add_column(
+                datalist, column_names, inplace=inplace
+            )
 
     def remove_column(self, column_name, inplace=False):
         """
@@ -173,19 +180,27 @@ class GFrame(SFrame):
             Whether the SFrame is modified in place.
         """
         if column_name not in self.column_names():
-            raise KeyError('Cannot find column %s' % column_name)
+            raise KeyError("Cannot find column %s" % column_name)
         if inplace:
             self.__is_dirty__ = True
             try:
                 with cython_context():
                     if self._is_vertex_frame():
-                        assert column_name != '__id', 'Cannot remove \"__id\" column'
-                        graph_proxy = self.__graph__.__proxy__.delete_vertex_field(column_name)
+                        assert column_name != "__id", 'Cannot remove "__id" column'
+                        graph_proxy = self.__graph__.__proxy__.delete_vertex_field(
+                            column_name
+                        )
                         self.__graph__.__proxy__ = graph_proxy
                     elif self._is_edge_frame():
-                        assert column_name != '__src_id', 'Cannot remove \"__src_id\" column'
-                        assert column_name != '__dst_id', 'Cannot remove \"__dst_id\" column'
-                        graph_proxy = self.__graph__.__proxy__.delete_edge_field(column_name)
+                        assert (
+                            column_name != "__src_id"
+                        ), 'Cannot remove "__src_id" column'
+                        assert (
+                            column_name != "__dst_id"
+                        ), 'Cannot remove "__dst_id" column'
+                        graph_proxy = self.__graph__.__proxy__.delete_edge_field(
+                            column_name
+                        )
                         self.__graph__.__proxy__ = graph_proxy
                 return self
             except:
@@ -200,7 +215,7 @@ class GFrame(SFrame):
 
         for name in column_names:
             if name not in existing_columns:
-                raise KeyError('Cannot find column %s' % name)
+                raise KeyError("Cannot find column %s" % name)
 
         if inplace:
             for c in column_names:
@@ -233,14 +248,20 @@ class GFrame(SFrame):
             self.__is_dirty__ = True
             with cython_context():
                 if self._is_vertex_frame():
-                    graph_proxy = self.__graph__.__proxy__.swap_vertex_fields(column_name_1, column_name_2)
+                    graph_proxy = self.__graph__.__proxy__.swap_vertex_fields(
+                        column_name_1, column_name_2
+                    )
                     self.__graph__.__proxy__ = graph_proxy
                 elif self._is_edge_frame():
-                    graph_proxy = self.__graph__.__proxy__.swap_edge_fields(column_name_1, column_name_2)
+                    graph_proxy = self.__graph__.__proxy__.swap_edge_fields(
+                        column_name_1, column_name_2
+                    )
                     self.__graph__.__proxy__ = graph_proxy
             return self
         else:
-            return super(GFrame, self).swap_columns(column_name_1, column_name_2, inplace=inplace)
+            return super(GFrame, self).swap_columns(
+                column_name_1, column_name_2, inplace=inplace
+            )
 
     def rename(self, names, inplace=False):
         """
@@ -262,23 +283,27 @@ class GFrame(SFrame):
         inplace : bool, optional. Defaults to False.
             Whether the SFrame is modified in place.
         """
-        if (type(names) is not dict):
-            raise TypeError('names must be a dictionary: oldname -> newname')
+        if type(names) is not dict:
+            raise TypeError("names must be a dictionary: oldname -> newname")
 
         if inplace:
             self.__is_dirty__ = True
             with cython_context():
                 if self._is_vertex_frame():
-                    graph_proxy = self.__graph__.__proxy__.rename_vertex_fields(names.keys(), names.values())
+                    graph_proxy = self.__graph__.__proxy__.rename_vertex_fields(
+                        names.keys(), names.values()
+                    )
                     self.__graph__.__proxy__ = graph_proxy
                 elif self._is_edge_frame():
-                    graph_proxy = self.__graph__.__proxy__.rename_edge_fields(names.keys(), names.values())
+                    graph_proxy = self.__graph__.__proxy__.rename_edge_fields(
+                        names.keys(), names.values()
+                    )
                     self.__graph__.__proxy__ = graph_proxy
             return self
         else:
             return super(GFrame, self).rename(names, inplace=inplace)
 
-    def add_row_number(self, column_name='id', start=0, inplace=False):
+    def add_row_number(self, column_name="id", start=0, inplace=False):
         if type(column_name) is not str:
             raise TypeError("Must give column_name as str")
 
@@ -294,9 +319,9 @@ class GFrame(SFrame):
 
             return self
         else:
-            return super(GFrame, self).add_row_number(column_name=column_name, start=start,inplace=inplace)
-
-
+            return super(GFrame, self).add_row_number(
+                column_name=column_name, start=start, inplace=inplace
+            )
 
     def __setitem__(self, key, value):
         """
@@ -306,18 +331,21 @@ class GFrame(SFrame):
         every entry is equal to the constant value.  Existing columns can also
         be replaced using this wrapper.
         """
-        if (key in ['__id', '__src_id', '__dst_id']):
-            raise KeyError('Cannot modify column %s. Changing __id column will\
-                    change the graph structure' % key)
+        if key in ["__id", "__src_id", "__dst_id"]:
+            raise KeyError(
+                "Cannot modify column %s. Changing __id column will\
+                    change the graph structure"
+                % key
+            )
         else:
             self.__is_dirty__ = True
             super(GFrame, self).__setitem__(key, value)
 
-#/**************************************************************************/
-#/*                                                                        */
-#/*                               Read-only Accessor                       */
-#/*                                                                        */
-#/**************************************************************************/
+    # /**************************************************************************/
+    # /*                                                                        */
+    # /*                               Read-only Accessor                       */
+    # /*                                                                        */
+    # /**************************************************************************/
     def num_rows(self):
         """
         Returns the number of rows.
@@ -328,9 +356,9 @@ class GFrame(SFrame):
             Number of rows in the SFrame.
         """
         if self._is_vertex_frame():
-            return self.__graph__.summary()['num_vertices']
+            return self.__graph__.summary()["num_vertices"]
         elif self._is_edge_frame():
-            return self.__graph__.summary()['num_edges']
+            return self.__graph__.summary()["num_edges"]
 
     def num_columns(self):
         """
@@ -371,11 +399,11 @@ class GFrame(SFrame):
         elif self.__type__ == EDGE_GFRAME:
             return self.__graph__.__proxy__.get_edge_field_types()
 
-#/**************************************************************************/
-#/*                                                                        */
-#/*                        Internal Private Methods                        */
-#/*                                                                        */
-#/**************************************************************************/
+    # /**************************************************************************/
+    # /*                                                                        */
+    # /*                        Internal Private Methods                        */
+    # /*                                                                        */
+    # /**************************************************************************/
     def _get_cache(self):
         if self.__sframe_cache__ is None or self.__is_dirty__:
             if self._is_vertex_frame():

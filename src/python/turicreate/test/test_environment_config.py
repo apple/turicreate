@@ -20,9 +20,8 @@ from os.path import join
 import os
 import shutil
 
+
 class EnvironmentConfigTester(unittest.TestCase):
-
-
     def test_config_basic_write(self):
 
         test_dir = tempfile.mkdtemp()

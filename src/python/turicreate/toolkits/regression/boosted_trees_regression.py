@@ -10,7 +10,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _turicreate
-from turicreate.toolkits._supervised_learning import SupervisedLearningModel as _SupervisedLearningModel
+from turicreate.toolkits._supervised_learning import (
+    SupervisedLearningModel as _SupervisedLearningModel,
+)
 import turicreate.toolkits._supervised_learning as _sl
 import turicreate.toolkits._main as _toolkits_main
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
@@ -22,12 +24,28 @@ from turicreate.toolkits._internal_utils import _map_unity_proxy_to_object
 from turicreate.util import _make_internal_url
 
 
-_BOOSTED_TREES_MODEL_PARAMS_KEYS = ['step_size', 'max_depth',
-'max_iterations', 'min_child_weight', 'min_loss_reduction', 'row_subsample']
-_BOOSTED_TREE_TRAINING_PARAMS_KEYS = ['objective', 'training_time',
-'training_error', 'validation_error', 'evaluation_metric']
-_BOOSTED_TREE_TRAINING_DATA_PARAMS_KEYS = ['target', 'features',
-'num_features', 'num_examples', 'num_validation_examples']
+_BOOSTED_TREES_MODEL_PARAMS_KEYS = [
+    "step_size",
+    "max_depth",
+    "max_iterations",
+    "min_child_weight",
+    "min_loss_reduction",
+    "row_subsample",
+]
+_BOOSTED_TREE_TRAINING_PARAMS_KEYS = [
+    "objective",
+    "training_time",
+    "training_error",
+    "validation_error",
+    "evaluation_metric",
+]
+_BOOSTED_TREE_TRAINING_DATA_PARAMS_KEYS = [
+    "target",
+    "features",
+    "num_features",
+    "num_examples",
+    "num_validation_examples",
+]
 
 
 class BoostedTreesRegression(_SupervisedLearningModel, _TreeModelMixin):
@@ -54,6 +72,7 @@ class BoostedTreesRegression(_SupervisedLearningModel, _TreeModelMixin):
     --------
     create
     """
+
     def __init__(self, proxy):
         """__init__(self)"""
         self.__proxy__ = proxy
@@ -149,7 +168,7 @@ class BoostedTreesRegression(_SupervisedLearningModel, _TreeModelMixin):
         """
         return super(BoostedTreesRegression, self)._get(field)
 
-    def evaluate(self, dataset, metric='auto', missing_value_action='auto'):
+    def evaluate(self, dataset, metric="auto", missing_value_action="auto"):
         """
         Evaluate the model on the given dataset.
 
@@ -194,11 +213,10 @@ class BoostedTreesRegression(_SupervisedLearningModel, _TreeModelMixin):
           >>> results = model.evaluate(test_data, 'rmse')
 
         """
-        _raise_error_evaluation_metric_is_valid(
-                metric, ['auto', 'rmse', 'max_error'])
-        return super(BoostedTreesRegression, self).evaluate(dataset,
-                                 missing_value_action=missing_value_action,
-                                 metric=metric)
+        _raise_error_evaluation_metric_is_valid(metric, ["auto", "rmse", "max_error"])
+        return super(BoostedTreesRegression, self).evaluate(
+            dataset, missing_value_action=missing_value_action, metric=metric
+        )
 
     def export_coreml(self, filename):
         """
@@ -214,16 +232,18 @@ class BoostedTreesRegression(_SupervisedLearningModel, _TreeModelMixin):
         >>> model.export_coreml("MyModel.mlmodel")
         """
         from turicreate.toolkits import _coreml_utils
+
         display_name = "boosted trees regression"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
-        context = {"mode" : "regression",
-                   "model_type" : "boosted_trees",
-                   "class": self.__class__.__name__,
-                   "short_description": short_description,
-                }
+        context = {
+            "mode": "regression",
+            "model_type": "boosted_trees",
+            "class": self.__class__.__name__,
+            "short_description": short_description,
+        }
         self._export_coreml_impl(filename, context)
 
-    def predict(self, dataset, missing_value_action='auto'):
+    def predict(self, dataset, missing_value_action="auto"):
         """
         Predict the target column of the given dataset.
 
@@ -263,21 +283,28 @@ class BoostedTreesRegression(_SupervisedLearningModel, _TreeModelMixin):
         --------
         >>> m.predict(testdata)
         """
-        return super(BoostedTreesRegression, self).predict(dataset, output_type='margin',
-                                                           missing_value_action=missing_value_action)
+        return super(BoostedTreesRegression, self).predict(
+            dataset, output_type="margin", missing_value_action=missing_value_action
+        )
 
 
-
-def create(dataset, target,
-           features=None, max_iterations=10,
-           validation_set='auto',
-           max_depth=6, step_size=0.3,
-           min_loss_reduction=0.0, min_child_weight=0.1,
-           row_subsample=1.0, column_subsample=1.0,
-           verbose=True,
-           random_seed = None,
-           metric = 'auto',
-           **kwargs):
+def create(
+    dataset,
+    target,
+    features=None,
+    max_iterations=10,
+    validation_set="auto",
+    max_depth=6,
+    step_size=0.3,
+    min_loss_reduction=0.0,
+    min_child_weight=0.1,
+    row_subsample=1.0,
+    column_subsample=1.0,
+    verbose=True,
+    random_seed=None,
+    metric="auto",
+    **kwargs
+):
     """
     Create a :class:`~turicreate.boosted_trees_regression.BoostedTreesRegression` to predict
     a scalar target variable using one or more features. In addition to standard
@@ -420,25 +447,31 @@ def create(dataset, target,
 
     """
     if random_seed is not None:
-        kwargs['random_seed'] = random_seed
-    if 'model_checkpoint_path' in kwargs:
-        kwargs['model_checkpoint_path'] = _make_internal_url(kwargs['model_checkpoint_path'])
-    if 'resume_from_checkpoint' in kwargs:
-        kwargs['resume_from_checkpoint'] = _make_internal_url(kwargs['resume_from_checkpoint'])
+        kwargs["random_seed"] = random_seed
+    if "model_checkpoint_path" in kwargs:
+        kwargs["model_checkpoint_path"] = _make_internal_url(
+            kwargs["model_checkpoint_path"]
+        )
+    if "resume_from_checkpoint" in kwargs:
+        kwargs["resume_from_checkpoint"] = _make_internal_url(
+            kwargs["resume_from_checkpoint"]
+        )
 
-    model = _sl.create(dataset = dataset,
-                        target = target,
-                        features = features,
-                        model_name = 'boosted_trees_regression',
-                        max_iterations = max_iterations,
-                        validation_set = validation_set,
-                        max_depth = max_depth,
-                        step_size = step_size,
-                        min_loss_reduction = min_loss_reduction,
-                        min_child_weight = min_child_weight,
-                        row_subsample = row_subsample,
-                        column_subsample = column_subsample,
-                        verbose = verbose,
-                        metric = metric,
-                        **kwargs)
+    model = _sl.create(
+        dataset=dataset,
+        target=target,
+        features=features,
+        model_name="boosted_trees_regression",
+        max_iterations=max_iterations,
+        validation_set=validation_set,
+        max_depth=max_depth,
+        step_size=step_size,
+        min_loss_reduction=min_loss_reduction,
+        min_child_weight=min_child_weight,
+        row_subsample=row_subsample,
+        column_subsample=column_subsample,
+        verbose=verbose,
+        metric=metric,
+        **kwargs
+    )
     return BoostedTreesRegression(model.__proxy__)

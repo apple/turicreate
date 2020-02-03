@@ -6,11 +6,16 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-from . import util as _util, toolkits as _toolkits, SFrame as _SFrame, SArray as _SArray, \
-    SGraph as _SGraph, load_sgraph as _load_graph
+from . import (
+    util as _util,
+    toolkits as _toolkits,
+    SFrame as _SFrame,
+    SArray as _SArray,
+    SGraph as _SGraph,
+    load_sgraph as _load_graph,
+)
 
-from .util import _get_aws_credentials as _util_get_aws_credentials, \
-    _cloudpickle
+from .util import _get_aws_credentials as _util_get_aws_credentials, _cloudpickle
 
 import pickle as _pickle
 import uuid as _uuid
@@ -20,15 +25,19 @@ import shutil as _shutil
 import atexit as _atexit
 import glob as _glob
 
+
 def _get_aws_credentials():
     (key, secret) = _util_get_aws_credentials()
-    return {'aws_access_key_id': key, 'aws_secret_access_key': secret}
+    return {"aws_access_key_id": key, "aws_secret_access_key": secret}
+
 
 def _get_temp_filename():
-    return _util._make_temp_filename(prefix='gl_pickle_')
+    return _util._make_temp_filename(prefix="gl_pickle_")
+
 
 def _get_tmp_file_location():
-    return _util._make_temp_directory(prefix='gl_pickle_')
+    return _util._make_temp_directory(prefix="gl_pickle_")
+
 
 def _is_not_pickle_safe_gl_model_class(obj_class):
     """
@@ -48,6 +57,7 @@ def _is_not_pickle_safe_gl_model_class(obj_class):
     if issubclass(obj_class, _toolkits._model.CustomModel):
         return not obj_class._is_gl_pickle_safe()
     return False
+
 
 def _is_not_pickle_safe_gl_class(obj_class):
     """
@@ -69,6 +79,7 @@ def _is_not_pickle_safe_gl_class(obj_class):
 
     # Object is GLC-DS or GLC-Model
     return (obj_class in gl_ds) or _is_not_pickle_safe_gl_model_class(obj_class)
+
 
 def _get_gl_class_type(obj_class):
     """
@@ -96,6 +107,7 @@ def _get_gl_class_type(obj_class):
     else:
         return None
 
+
 def _get_gl_object_from_persistent_id(type_tag, gl_archive_abs_path):
     """
     Internal util to get a GLC object from a persistent ID in the pickle file.
@@ -120,14 +132,17 @@ def _get_gl_object_from_persistent_id(type_tag, gl_archive_abs_path):
         obj = _SArray(gl_archive_abs_path)
     elif type_tag == "Model":
         from . import load_model as _load_model
+
         obj = _load_model(gl_archive_abs_path)
     else:
-        raise _pickle.UnpicklingError("Turi pickling Error: Unsupported object."
-              " Only SFrames, SGraphs, SArrays, and Models are supported.")
+        raise _pickle.UnpicklingError(
+            "Turi pickling Error: Unsupported object."
+            " Only SFrames, SGraphs, SArrays, and Models are supported."
+        )
     return obj
 
-class GLPickler(_cloudpickle.CloudPickler):
 
+class GLPickler(_cloudpickle.CloudPickler):
     def _to_abs_path_set(self, l):
         return set([_os.path.abspath(x) for x in l])
 
@@ -211,7 +226,8 @@ class GLPickler(_cloudpickle.CloudPickler):
 
 
     """
-    def __init__(self, filename, protocol = -1, min_bytes_to_save = 0):
+
+    def __init__(self, filename, protocol=-1, min_bytes_to_save=0):
         """
 
         Construct a  GLC pickler.
@@ -245,40 +261,43 @@ class GLPickler(_cloudpickle.CloudPickler):
         self.mark_for_delete = set()
 
         # Make sure the directory exists.
-        filename = _os.path.abspath(
-                     _os.path.expanduser(
-                       _os.path.expandvars(filename)))
+        filename = _os.path.abspath(_os.path.expanduser(_os.path.expandvars(filename)))
         if not _os.path.exists(filename):
             _os.makedirs(filename)
         elif _os.path.isdir(filename):
             self.mark_for_delete = self._to_abs_path_set(
-                         _glob.glob(_os.path.join(filename, "*")))
+                _glob.glob(_os.path.join(filename, "*"))
+            )
             self.mark_for_delete -= self._to_abs_path_set(
-                    [_os.path.join(filename, 'pickle_archive'),
-                     _os.path.join(filename, 'version')])
+                [
+                    _os.path.join(filename, "pickle_archive"),
+                    _os.path.join(filename, "version"),
+                ]
+            )
 
         elif _os.path.isfile(filename):
-           _os.remove(filename)
-           _os.makedirs(filename)
+            _os.remove(filename)
+            _os.makedirs(filename)
 
         # Create a new directory.
         self.gl_temp_storage_path = filename
 
         # The pickle file where all the Python objects are saved.
         relative_pickle_filename = "pickle_archive"
-        pickle_filename = _os.path.join(self.gl_temp_storage_path,
-                                        relative_pickle_filename)
+        pickle_filename = _os.path.join(
+            self.gl_temp_storage_path, relative_pickle_filename
+        )
 
         try:
             # Initialize the pickle file with cloud _pickle. Note, cloud pickle
             # takes a file handle for initialization.
-            self.file = open(pickle_filename, 'wb')
+            self.file = open(pickle_filename, "wb")
             _cloudpickle.CloudPickler.__init__(self, self.file, protocol)
         except IOError as err:
             print("Turi create pickling error: %s" % err)
 
         # Write the version number.
-        with open(_os.path.join(self.gl_temp_storage_path, 'version'), 'w') as f:
+        with open(_os.path.join(self.gl_temp_storage_path, "version"), "w") as f:
             f.write("1.0")
 
     def dump(self, obj):
@@ -322,13 +341,13 @@ class GLPickler(_cloudpickle.CloudPickler):
         """
 
         # Get the class of the object (if it can be done)
-        obj_class = None if not hasattr(obj, '__class__') else obj.__class__
+        obj_class = None if not hasattr(obj, "__class__") else obj.__class__
         if obj_class is None:
             return None
 
         # If the object is a GLC class.
         if _is_not_pickle_safe_gl_class(obj_class):
-            if (id(obj) in self.gl_object_memo):
+            if id(obj) in self.gl_object_memo:
                 # has already been pickled
                 return (None, None, id(obj))
             else:
@@ -368,13 +387,14 @@ class GLPickler(_cloudpickle.CloudPickler):
             def register_error(*args):
                 error[0] = True
 
-            _shutil.rmtree(f, onerror = register_error)
+            _shutil.rmtree(f, onerror=register_error)
 
             if error[0]:
                 _atexit.register(_shutil.rmtree, f, ignore_errors=True)
 
     def __del__(self):
         self.close()
+
 
 class GLUnpickler(_pickle.Unpickler):
     """
@@ -418,11 +438,9 @@ class GLUnpickler(_pickle.Unpickler):
 
         # GLC 1.3 used Zipfiles for storing the objects.
         self.directory_mode = True
-        filename = _os.path.abspath(
-                     _os.path.expanduser(
-                       _os.path.expandvars(filename)))
+        filename = _os.path.abspath(_os.path.expanduser(_os.path.expandvars(filename)))
         if not _os.path.exists(filename):
-            raise IOError('%s is not a valid file name.' % filename)
+            raise IOError("%s is not a valid file name." % filename)
 
         # GLC 1.3 Pickle file
         if _zipfile.is_zipfile(filename):
@@ -432,12 +450,16 @@ class GLUnpickler(_pickle.Unpickler):
             # Get the pickle file name.
             zf = _zipfile.ZipFile(filename, allowZip64=True)
             for info in zf.infolist():
-                if info.filename == 'pickle_file':
+                if info.filename == "pickle_file":
                     pickle_filename = zf.read(info.filename).decode()
             if pickle_filename is None:
-                raise IOError(("Cannot pickle file of the given format. File"
+                raise IOError(
+                    (
+                        "Cannot pickle file of the given format. File"
                         " must be one of (a) GLPickler archive, "
-                        "(b) Cloudpickle archive, or (c) python pickle archive."))
+                        "(b) Cloudpickle archive, or (c) python pickle archive."
+                    )
+                )
 
             # Extract the zip file.
             try:
@@ -446,15 +468,18 @@ class GLUnpickler(_pickle.Unpickler):
             except IOError as err:
                 print("Turi pickle extraction error: %s " % err)
 
-            self.pickle_filename = _os.path.join(self.gl_temp_storage_path,
-                                                 pickle_filename)
+            self.pickle_filename = _os.path.join(
+                self.gl_temp_storage_path, pickle_filename
+            )
 
         # GLC Pickle directory mode.
         elif _os.path.isdir(filename):
             self.directory_mode = True
             pickle_filename = _os.path.join(filename, "pickle_archive")
             if not _os.path.exists(pickle_filename):
-                raise IOError("Corrupted archive: Missing pickle file %s." % pickle_filename)
+                raise IOError(
+                    "Corrupted archive: Missing pickle file %s." % pickle_filename
+                )
             if not _os.path.exists(_os.path.join(filename, "version")):
                 raise IOError("Corrupted archive: Missing version file.")
             self.pickle_filename = pickle_filename
@@ -465,9 +490,8 @@ class GLUnpickler(_pickle.Unpickler):
             self.directory_mode = False
             self.pickle_filename = filename
 
-        self.file = open(self.pickle_filename, 'rb')
+        self.file = open(self.pickle_filename, "rb")
         _pickle.Unpickler.__init__(self, self.file)
-
 
     def persistent_load(self, pid):
         """
@@ -487,7 +511,7 @@ class GLUnpickler(_pickle.Unpickler):
             # Pre GLC-1.3 release behavior, without memorization
             type_tag, filename = pid
             abs_path = _os.path.join(self.gl_temp_storage_path, filename)
-            return  _get_gl_object_from_persistent_id(type_tag, abs_path)
+            return _get_gl_object_from_persistent_id(type_tag, abs_path)
         else:
             # Post GLC-1.3 release behavior, with memorization
             type_tag, filename, object_id = pid

@@ -24,36 +24,52 @@ from six.moves import reduce as _reduce
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
-TRAIN_VALIDATION_SPLIT = .95
+TRAIN_VALIDATION_SPLIT = 0.95
 
-def _raise_error_if_not_drawing_classifier_input_sframe(
-    dataset, feature, target):
+
+def _raise_error_if_not_drawing_classifier_input_sframe(dataset, feature, target):
     """
     Performs some sanity checks on the SFrame provided as input to
     `turicreate.drawing_classifier.create` and raises a ToolkitError
     if something in the dataset is missing or wrong.
     """
     from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
+
     _raise_error_if_not_sframe(dataset)
     if feature not in dataset.column_names():
         raise _ToolkitError("Feature column '%s' does not exist" % feature)
     if target not in dataset.column_names():
         raise _ToolkitError("Target column '%s' does not exist" % target)
-    if (dataset[feature].dtype != _tc.Image and dataset[feature].dtype != list):
-        raise _ToolkitError("Feature column must contain images"
+    if dataset[feature].dtype != _tc.Image and dataset[feature].dtype != list:
+        raise _ToolkitError(
+            "Feature column must contain images"
             + " or stroke-based drawings encoded as lists of strokes"
             + " where each stroke is a list of points and"
-            + " each point is stored as a dictionary")
+            + " each point is stored as a dictionary"
+        )
     if dataset[target].dtype != int and dataset[target].dtype != str:
-        raise _ToolkitError("Target column contains " + str(dataset[target].dtype)
+        raise _ToolkitError(
+            "Target column contains "
+            + str(dataset[target].dtype)
             + " but it must contain strings or integers to represent"
-            + " labels for drawings.")
+            + " labels for drawings."
+        )
     if len(dataset) == 0:
         raise _ToolkitError("Input Dataset is empty!")
 
-def create(input_dataset, target, feature=None, validation_set='auto',
-            warm_start='auto', batch_size=256,
-            max_iterations=500, verbose=True, random_seed=None, **kwargs):
+
+def create(
+    input_dataset,
+    target,
+    feature=None,
+    validation_set="auto",
+    warm_start="auto",
+    batch_size=256,
+    max_iterations=500,
+    verbose=True,
+    random_seed=None,
+    **kwargs
+):
     """
     Create a :class:`DrawingClassifier` model.
 
@@ -137,25 +153,31 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     accepted_values_for_warm_start = ["auto", "quickdraw_245_v0", None]
     if warm_start is not None:
         if type(warm_start) is not str:
-            raise TypeError("'warm_start' must be a string or None. "
+            raise TypeError(
+                "'warm_start' must be a string or None. "
                 + "'warm_start' can take in the following values: "
-                + str(accepted_values_for_warm_start))
+                + str(accepted_values_for_warm_start)
+            )
         if warm_start not in accepted_values_for_warm_start:
-            raise _ToolkitError("Unrecognized value for 'warm_start': "
-                + warm_start + ". 'warm_start' can take in the following "
-                + "values: " + str(accepted_values_for_warm_start))
+            raise _ToolkitError(
+                "Unrecognized value for 'warm_start': "
+                + warm_start
+                + ". 'warm_start' can take in the following "
+                + "values: "
+                + str(accepted_values_for_warm_start)
+            )
         # Replace 'auto' with name of current default Warm Start model.
         warm_start = warm_start.replace("auto", "quickdraw_245_v0")
 
-    if '_advanced_parameters' in kwargs:
+    if "_advanced_parameters" in kwargs:
         # Make sure no additional parameters are provided
-        new_keys = set(kwargs['_advanced_parameters'].keys())
+        new_keys = set(kwargs["_advanced_parameters"].keys())
         set_keys = set(params.keys())
         unsupported = new_keys - set_keys
         if unsupported:
-            raise _ToolkitError('Unknown advanced parameters: {}'.format(unsupported))
+            raise _ToolkitError("Unknown advanced parameters: {}".format(unsupported))
 
-        params.update(kwargs['_advanced_parameters'])
+        params.update(kwargs["_advanced_parameters"])
 
     # @TODO: Should be able to automatically choose number of iterations
     # based on data size: Tracked in Github Issue #1576
@@ -166,8 +188,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
     if feature is None:
         feature = _tkutl._find_only_drawing_column(input_dataset)
 
-    _raise_error_if_not_drawing_classifier_input_sframe(
-        input_dataset, feature, target)
+    _raise_error_if_not_drawing_classifier_input_sframe(input_dataset, feature, target)
 
     if batch_size is not None and not isinstance(batch_size, int):
         raise TypeError("'batch_size' must be an integer >= 1")
@@ -179,6 +200,7 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         raise ValueError("'max_iterations' must be >= 1")
 
     import turicreate.toolkits.libtctensorflow
+
     model = _tc.extensions.drawing_classifier()
     options = dict()
     options["batch_size"] = batch_size
@@ -192,10 +214,11 @@ def create(input_dataset, target, feature=None, validation_set='auto',
         pretrained_mlmodel = _pre_trained_models.DrawingClassifierPreTrainedMLModel()
         options["mlmodel_path"] = pretrained_mlmodel.get_model_path()
     if random_seed is not None:
-        options['random_seed'] = random_seed
+        options["random_seed"] = random_seed
     options["warm_start"] = "" if warm_start is None else warm_start
     model.train(input_dataset, target, feature, validation_set, options)
     return DrawingClassifier(model_proxy=model, name="drawing_classifier")
+
 
 class DrawingClassifier(_Model):
     """
@@ -204,6 +227,7 @@ class DrawingClassifier(_Model):
 
     This model should not be constructed directly.
     """
+
     _CPP_DRAWING_CLASSIFIER_VERSION = 1
 
     def __init__(self, model_proxy=None, name=None):
@@ -239,8 +263,7 @@ class DrawingClassifier(_Model):
 
         width = 40
         sections, section_titles = self._get_summary_struct()
-        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
-                                         width=width)
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles, width=width)
         return out
 
     def _get_version(self):
@@ -260,11 +283,14 @@ class DrawingClassifier(_Model):
         >>> model.export_coreml("MyModel.mlmodel")
         """
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
-        short_description = _coreml_utils._mlmodel_short_description('Drawing Classifier')
-        self.__proxy__.export_to_coreml(filename, short_description,
-                additional_user_defined_metadata)
+        short_description = _coreml_utils._mlmodel_short_description(
+            "Drawing Classifier"
+        )
+        self.__proxy__.export_to_coreml(
+            filename, short_description, additional_user_defined_metadata
+        )
 
-    def predict(self, dataset, output_type='class'):
+    def predict(self, dataset, output_type="class"):
         """
         Predict on an SFrame or SArray of drawings, or on a single drawing.
 
@@ -329,7 +355,7 @@ class DrawingClassifier(_Model):
             dataset = _tc.SFrame({self.feature: dataset})
         return self.__proxy__.predict(dataset, output_type)
 
-    def predict_topk(self, dataset, output_type='probability', k=3):
+    def predict_topk(self, dataset, output_type="probability", k=3):
         """
         Return top-k predictions for the ``dataset``, using the trained model.
         Predictions are returned as an SFrame with three columns: `id`,
@@ -393,7 +419,7 @@ class DrawingClassifier(_Model):
             dataset = _tc.SFrame({self.feature: dataset})
         return self.__proxy__.predict_topk(dataset, output_type, k)
 
-    def evaluate(self, dataset, metric='auto'):
+    def evaluate(self, dataset, metric="auto"):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -447,62 +473,110 @@ class DrawingClassifier(_Model):
         del evaluation_result["prediction_class"]
         del evaluation_result["prediction_prob"]
 
-        predicted  = _tc.SFrame({"label": class_label, "probability": probability_vector})
+        predicted = _tc.SFrame(
+            {"label": class_label, "probability": probability_vector}
+        )
         labels = self.classes
 
-        from .._evaluate_utils import  (
+        from .._evaluate_utils import (
             entropy,
             confidence,
             relative_confidence,
             get_confusion_matrix,
             hclusterSort,
-            l2Dist
+            l2Dist,
         )
 
-        evaluation_result['num_test_examples'] = len(dataset)
-        for k in ['num_classes', 'num_examples', 'training_time', 'max_iterations']:
+        evaluation_result["num_test_examples"] = len(dataset)
+        for k in ["num_classes", "num_examples", "training_time", "max_iterations"]:
             evaluation_result[k] = getattr(self, k)
 
-        #evaluation_result['input_image_shape'] = getattr(self, 'input_image_shape')
+        # evaluation_result['input_image_shape'] = getattr(self, 'input_image_shape')
 
         evaluation_result["model_name"] = "Drawing Classifier"
-        extended_test = dataset.add_column(predicted["probability"], 'probs')
-        extended_test['label'] = dataset[self.target]
+        extended_test = dataset.add_column(predicted["probability"], "probs")
+        extended_test["label"] = dataset[self.target]
 
-        extended_test = extended_test.add_columns( [extended_test.apply(lambda d: labels[d['probs'].index(confidence(d['probs']))]),
-            extended_test.apply(lambda d: entropy(d['probs'])),
-            extended_test.apply(lambda d: confidence(d['probs'])),
-            extended_test.apply(lambda d: relative_confidence(d['probs']))],
-            ['predicted_label', 'entropy', 'confidence', 'relative_confidence'])
+        extended_test = extended_test.add_columns(
+            [
+                extended_test.apply(
+                    lambda d: labels[d["probs"].index(confidence(d["probs"]))]
+                ),
+                extended_test.apply(lambda d: entropy(d["probs"])),
+                extended_test.apply(lambda d: confidence(d["probs"])),
+                extended_test.apply(lambda d: relative_confidence(d["probs"])),
+            ],
+            ["predicted_label", "entropy", "confidence", "relative_confidence"],
+        )
 
-        extended_test = extended_test.add_column(extended_test.apply(lambda d: d['label'] == d['predicted_label']), 'correct')
+        extended_test = extended_test.add_column(
+            extended_test.apply(lambda d: d["label"] == d["predicted_label"]), "correct"
+        )
 
         sf_conf_mat = get_confusion_matrix(extended_test, labels)
         confidence_threshold = 0.5
         hesitant_threshold = 0.2
-        evaluation_result['confidence_threshold'] = confidence_threshold
-        evaluation_result['hesitant_threshold'] = hesitant_threshold
-        evaluation_result['confidence_metric_for_threshold'] = 'relative_confidence'
+        evaluation_result["confidence_threshold"] = confidence_threshold
+        evaluation_result["hesitant_threshold"] = hesitant_threshold
+        evaluation_result["confidence_metric_for_threshold"] = "relative_confidence"
 
-        evaluation_result['conf_mat'] = list(sf_conf_mat)
+        evaluation_result["conf_mat"] = list(sf_conf_mat)
 
-        vectors = map(lambda l: {'name': l, 'pos':list(sf_conf_mat[sf_conf_mat['target_label']==l].sort('predicted_label')['norm_prob'])},
-                    labels)
-        evaluation_result['sorted_labels'] = hclusterSort(vectors, l2Dist)[0]['name'].split("|")
+        vectors = map(
+            lambda l: {
+                "name": l,
+                "pos": list(
+                    sf_conf_mat[sf_conf_mat["target_label"] == l].sort(
+                        "predicted_label"
+                    )["norm_prob"]
+                ),
+            },
+            labels,
+        )
+        evaluation_result["sorted_labels"] = hclusterSort(vectors, l2Dist)[0][
+            "name"
+        ].split("|")
 
-        per_l = extended_test.groupby(['label'], {'count': _tc.aggregate.COUNT, 'correct_count': _tc.aggregate.SUM('correct') })
-        per_l['recall'] = per_l.apply(lambda l: l['correct_count']*1.0 / l['count'])
+        per_l = extended_test.groupby(
+            ["label"],
+            {
+                "count": _tc.aggregate.COUNT,
+                "correct_count": _tc.aggregate.SUM("correct"),
+            },
+        )
+        per_l["recall"] = per_l.apply(lambda l: l["correct_count"] * 1.0 / l["count"])
 
-        per_pl = extended_test.groupby(['predicted_label'], {'predicted_count': _tc.aggregate.COUNT, 'correct_count': _tc.aggregate.SUM('correct') })
-        per_pl['precision'] = per_pl.apply(lambda l: l['correct_count']*1.0 / l['predicted_count'])
-        per_pl = per_pl.rename({'predicted_label': 'label'})
-        evaluation_result['label_metrics'] = list(per_l.join(per_pl, on='label', how='outer').select_columns(['label', 'count', 'correct_count', 'predicted_count', 'recall', 'precision']))
-        evaluation_result['labels'] = labels
+        per_pl = extended_test.groupby(
+            ["predicted_label"],
+            {
+                "predicted_count": _tc.aggregate.COUNT,
+                "correct_count": _tc.aggregate.SUM("correct"),
+            },
+        )
+        per_pl["precision"] = per_pl.apply(
+            lambda l: l["correct_count"] * 1.0 / l["predicted_count"]
+        )
+        per_pl = per_pl.rename({"predicted_label": "label"})
+        evaluation_result["label_metrics"] = list(
+            per_l.join(per_pl, on="label", how="outer").select_columns(
+                [
+                    "label",
+                    "count",
+                    "correct_count",
+                    "predicted_count",
+                    "recall",
+                    "precision",
+                ]
+            )
+        )
+        evaluation_result["labels"] = labels
 
-        extended_test = extended_test.add_row_number('__idx').rename({'label': 'target_label'})
+        extended_test = extended_test.add_row_number("__idx").rename(
+            {"label": "target_label"}
+        )
 
-        evaluation_result['test_data'] = extended_test
-        evaluation_result['feature'] = self.feature
+        evaluation_result["test_data"] = extended_test
+        evaluation_result["feature"] = self.feature
 
         return _Evaluation(evaluation_result)
 
@@ -524,17 +598,17 @@ class DrawingClassifier(_Model):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Number of classes', 'num_classes'),
-            ('Feature column', 'feature'),
-            ('Target column', 'target')
+            ("Number of classes", "num_classes"),
+            ("Feature column", "feature"),
+            ("Target column", "target"),
         ]
         training_fields = [
-            ('Training Iterations', 'max_iterations'),
-            ('Training Accuracy', 'training_accuracy'),
-            ('Validation Accuracy', 'validation_accuracy'),
-            ('Training Time', 'training_time'),
-            ('Number of Examples', 'num_examples')
+            ("Training Iterations", "max_iterations"),
+            ("Training Accuracy", "training_accuracy"),
+            ("Validation Accuracy", "validation_accuracy"),
+            ("Training Time", "training_time"),
+            ("Number of Examples", "num_examples"),
         ]
 
-        section_titles = ['Schema', 'Training summary']
-        return([model_fields, training_fields], section_titles)
+        section_titles = ["Schema", "Training summary"]
+        return ([model_fields, training_fields], section_titles)

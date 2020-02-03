@@ -11,31 +11,33 @@ import turicreate as tc
 import array
 from turicreate.toolkits._main import ToolkitError
 
+
 class SupervisedLearningMissingValueTest(unittest.TestCase):
     """
     Base class for missing values in supervised learning.
     """
+
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
         """
-        self.target = 'y'
+        self.target = "y"
         self.sf = tc.SFrame()
-        self.sf['y'] = tc.SArray([1, 2, 1], int)
-        self.sf['int'] = tc.SArray([1, 2, 3], int)
-        self.sf['float'] = tc.SArray([1, 2, 3], float)
-        self.sf['dict'] = tc.SArray([{'1': 3, '2': 2}, {'2': 1}, {}], dict)
-        self.sf['array'] = tc.SArray([[1, 2], [3, 4], [5, 6]], array.array)
-        self.sf['str'] = tc.SArray(['1', '2', '3'], str)
+        self.sf["y"] = tc.SArray([1, 2, 1], int)
+        self.sf["int"] = tc.SArray([1, 2, 3], int)
+        self.sf["float"] = tc.SArray([1, 2, 3], float)
+        self.sf["dict"] = tc.SArray([{"1": 3, "2": 2}, {"2": 1}, {}], dict)
+        self.sf["array"] = tc.SArray([[1, 2], [3, 4], [5, 6]], array.array)
+        self.sf["str"] = tc.SArray(["1", "2", "3"], str)
 
         test_sf = tc.SFrame()
-        test_sf['y'] = tc.SArray([2], int)
-        test_sf['int'] = tc.SArray([2], int)
-        test_sf['float'] = tc.SArray([2], float)
-        test_sf['dict'] = tc.SArray([{'1': 1, '2': 1}], dict)
-        test_sf['array'] = tc.SArray([[3, 4]], array.array)
-        test_sf['str'] = tc.SArray(['2'], str)
+        test_sf["y"] = tc.SArray([2], int)
+        test_sf["int"] = tc.SArray([2], int)
+        test_sf["float"] = tc.SArray([2], float)
+        test_sf["dict"] = tc.SArray([{"1": 1, "2": 1}], dict)
+        test_sf["array"] = tc.SArray([[3, 4]], array.array)
+        test_sf["str"] = tc.SArray(["2"], str)
         self.test_sf = test_sf
 
         self.model = None
@@ -66,6 +68,7 @@ class SupervisedLearningMissingValueTest(unittest.TestCase):
 
     def get_create_function_of_model(self, model):
         import sys
+
         mod_name = model.__module__
         mod = sys.modules[mod_name]
         return mod.create
@@ -82,13 +85,13 @@ class SupervisedLearningMissingValueTest(unittest.TestCase):
 
         # Missing value in each column
         # -------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             train_sf_with_na = self.fill_with_na(train_sf, col)
             model = create_fun(train_sf_with_na, self.target, validation_set=None)
 
         # Missing value at top of each column
         # -------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             train_sf_with_na = self.fill_some_na(train_sf, col)
             model = create_fun(train_sf_with_na, self.target, validation_set=None)
 
@@ -101,11 +104,11 @@ class SupervisedLearningMissingValueTest(unittest.TestCase):
         create_fun = self.get_create_function_of_model(self.model)
 
         with self.assertRaises(ToolkitError):
-            train_sf_with_na = self.fill_with_na(train_sf, 'y')
+            train_sf_with_na = self.fill_with_na(train_sf, "y")
             model = create_fun(train_sf_with_na, self.target, validation_set=None)
 
         with self.assertRaises(ToolkitError):
-            train_sf_with_na = self.fill_some_na(train_sf, 'y')
+            train_sf_with_na = self.fill_some_na(train_sf, "y")
             model = create_fun(train_sf_with_na, self.target, validation_set=None)
 
     def test_predict(self):
@@ -119,24 +122,26 @@ class SupervisedLearningMissingValueTest(unittest.TestCase):
         test_sf = self.test_sf.copy()
 
         # Should pass
-        pred = model.predict(test_sf, missing_value_action='auto')
-        pred = model.predict(test_sf, missing_value_action='impute')
-        pred = model.predict(test_sf, missing_value_action='error')
+        pred = model.predict(test_sf, missing_value_action="auto")
+        pred = model.predict(test_sf, missing_value_action="impute")
+        pred = model.predict(test_sf, missing_value_action="error")
 
         # Missing value in each column
         # -------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
             pred_missing = model.predict(test_sf_with_na)
 
-        for col in ['int', 'float', 'array']:
+        for col in ["int", "float", "array"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
-            self.assertRaises(ToolkitError, lambda: model.predict(test_sf_with_na,
-                                                                  missing_value_action='error'))
+            self.assertRaises(
+                ToolkitError,
+                lambda: model.predict(test_sf_with_na, missing_value_action="error"),
+            )
 
         # Missing entire columns
         # ----------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             del test_sf[col]
             pred = model.predict(test_sf)
 
@@ -147,35 +152,37 @@ class SupervisedLearningMissingValueTest(unittest.TestCase):
         if self.model is None:
             return
 
-        if not hasattr(self.model, 'extract_features'):
+        if not hasattr(self.model, "extract_features"):
             return
 
         model = self.model
         test_sf = self.test_sf.copy()
 
         # Should pass
-        pred = model.extract_features(test_sf, missing_value_action='auto')
-        pred = model.extract_features(test_sf, missing_value_action='impute')
-        pred = model.extract_features(test_sf, missing_value_action='error')
+        pred = model.extract_features(test_sf, missing_value_action="auto")
+        pred = model.extract_features(test_sf, missing_value_action="impute")
+        pred = model.extract_features(test_sf, missing_value_action="error")
 
         # Missing value in each column
         # -------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
             pred_missing = model.extract_features(test_sf_with_na)
 
-        for col in ['int', 'float', 'array']:
+        for col in ["int", "float", "array"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
-            self.assertRaises(ToolkitError,
-                lambda: model.extract_features(test_sf_with_na,
-                    missing_value_action='error'))
+            self.assertRaises(
+                ToolkitError,
+                lambda: model.extract_features(
+                    test_sf_with_na, missing_value_action="error"
+                ),
+            )
 
         # Missing entire columns
         # ----------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             del test_sf[col]
             pred = model.extract_features(test_sf)
-
 
     def test_evaluate(self):
         """
@@ -188,24 +195,26 @@ class SupervisedLearningMissingValueTest(unittest.TestCase):
         test_sf = self.test_sf.copy()
 
         # Should pass
-        eval = model.evaluate(test_sf, missing_value_action='auto')
-        eval = model.evaluate(test_sf, missing_value_action='impute')
-        eval = model.evaluate(test_sf, missing_value_action='error')
+        eval = model.evaluate(test_sf, missing_value_action="auto")
+        eval = model.evaluate(test_sf, missing_value_action="impute")
+        eval = model.evaluate(test_sf, missing_value_action="error")
 
         # Missing value in each col type
         # -------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
             eval_missing = model.evaluate(test_sf_with_na)
 
-        for col in ['int', 'float', 'array']:
+        for col in ["int", "float", "array"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
-            self.assertRaises(ToolkitError, lambda: model.evaluate(test_sf_with_na,
-                                                                   missing_value_action='error'))
+            self.assertRaises(
+                ToolkitError,
+                lambda: model.evaluate(test_sf_with_na, missing_value_action="error"),
+            )
 
         # Missing columns
         # ----------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             del test_sf[col]
             model.evaluate(test_sf)
 
@@ -213,31 +222,33 @@ class SupervisedLearningMissingValueTest(unittest.TestCase):
         """
         Test classify missing value
         """
-        if self.model is None or not hasattr(self.model, 'classify'):
+        if self.model is None or not hasattr(self.model, "classify"):
             return
 
         model = self.model
         test_sf = self.test_sf.copy()
 
         # Should pass
-        model.classify(test_sf, missing_value_action='auto')
-        model.classify(test_sf, missing_value_action='impute')
-        model.classify(test_sf, missing_value_action='error')
+        model.classify(test_sf, missing_value_action="auto")
+        model.classify(test_sf, missing_value_action="impute")
+        model.classify(test_sf, missing_value_action="error")
 
         # Missing value in each col type
         # -------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
             model.classify(test_sf_with_na)
 
-        for col in ['int', 'float', 'array']:
+        for col in ["int", "float", "array"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
-            self.assertRaises(ToolkitError, lambda: model.classify(test_sf_with_na,
-                                                                   missing_value_action='error'))
+            self.assertRaises(
+                ToolkitError,
+                lambda: model.classify(test_sf_with_na, missing_value_action="error"),
+            )
 
         # Missing columns
         # ----------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             del test_sf[col]
             model.classify(test_sf)
 
@@ -245,31 +256,35 @@ class SupervisedLearningMissingValueTest(unittest.TestCase):
         """
         Test predict topk with missing value
         """
-        if self.model is None or not hasattr(self.model, 'predict_topk'):
+        if self.model is None or not hasattr(self.model, "predict_topk"):
             return
 
         model = self.model
         test_sf = self.test_sf.copy()
 
         # Should pass
-        model.predict_topk(test_sf, k=1, missing_value_action='auto')
-        model.predict_topk(test_sf, k=1, missing_value_action='impute')
-        model.predict_topk(test_sf, k=1, missing_value_action='error')
+        model.predict_topk(test_sf, k=1, missing_value_action="auto")
+        model.predict_topk(test_sf, k=1, missing_value_action="impute")
+        model.predict_topk(test_sf, k=1, missing_value_action="error")
 
         # Missing value in each col type
         # -------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
             model.predict_topk(test_sf_with_na, k=1)
 
-        for col in ['int', 'float', 'array']:
+        for col in ["int", "float", "array"]:
             test_sf_with_na = self.fill_with_na(test_sf, col)
-            self.assertRaises(ToolkitError, lambda: model.predict_topk(test_sf_with_na, k=1,
-                                                                       missing_value_action='error'))
+            self.assertRaises(
+                ToolkitError,
+                lambda: model.predict_topk(
+                    test_sf_with_na, k=1, missing_value_action="error"
+                ),
+            )
 
         # Missing columns
         # ----------------------------------
-        for col in ['int', 'float', 'dict', 'array', 'str']:
+        for col in ["int", "float", "dict", "array", "str"]:
             del test_sf[col]
             model.predict_topk(test_sf, k=1)
 
@@ -278,21 +293,28 @@ class LinearRegressionTest(SupervisedLearningMissingValueTest):
     @classmethod
     def setUpClass(self):
         super(LinearRegressionTest, self).setUpClass()
-        self.model = tc.linear_regression.create(self.sf, self.target, validation_set=None)
+        self.model = tc.linear_regression.create(
+            self.sf, self.target, validation_set=None
+        )
 
 
 class RandomForestRegression(SupervisedLearningMissingValueTest):
     @classmethod
     def setUpClass(self):
         super(RandomForestRegression, self).setUpClass()
-        self.model = tc.random_forest_regression.create(self.sf, self.target, validation_set=None)
+        self.model = tc.random_forest_regression.create(
+            self.sf, self.target, validation_set=None
+        )
         self.support_missing_value = True
+
 
 class DecisionTreeRegression(SupervisedLearningMissingValueTest):
     @classmethod
     def setUpClass(self):
         super(DecisionTreeRegression, self).setUpClass()
-        self.model = tc.decision_tree_regression.create(self.sf, self.target, validation_set=None)
+        self.model = tc.decision_tree_regression.create(
+            self.sf, self.target, validation_set=None
+        )
         self.support_missing_value = True
 
 
@@ -300,7 +322,9 @@ class BoostedTreesRegression(SupervisedLearningMissingValueTest):
     @classmethod
     def setUpClass(self):
         super(BoostedTreesRegression, self).setUpClass()
-        self.model = tc.boosted_trees_regression.create(self.sf, self.target, validation_set=None)
+        self.model = tc.boosted_trees_regression.create(
+            self.sf, self.target, validation_set=None
+        )
         self.support_missing_value = True
 
 
@@ -308,7 +332,9 @@ class LogisticRegressionTest(SupervisedLearningMissingValueTest):
     @classmethod
     def setUpClass(self):
         super(LogisticRegressionTest, self).setUpClass()
-        self.model = tc.logistic_classifier.create(self.sf, self.target, validation_set=None)
+        self.model = tc.logistic_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
 
 
 class SVMClassifierTest(SupervisedLearningMissingValueTest):
@@ -317,23 +343,32 @@ class SVMClassifierTest(SupervisedLearningMissingValueTest):
         super(SVMClassifierTest, self).setUpClass()
         self.model = tc.svm_classifier.create(self.sf, self.target, validation_set=None)
 
+
 class RandomForestClassifierTest(SupervisedLearningMissingValueTest):
     @classmethod
     def setUpClass(self):
         super(RandomForestClassifierTest, self).setUpClass()
-        self.model = tc.random_forest_classifier.create(self.sf, self.target, validation_set=None)
+        self.model = tc.random_forest_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.support_missing_value = True
+
 
 class DecisionTreeClassifierTest(SupervisedLearningMissingValueTest):
     @classmethod
     def setUpClass(self):
         super(DecisionTreeClassifierTest, self).setUpClass()
-        self.model = tc.decision_tree_classifier.create(self.sf, self.target, validation_set=None)
+        self.model = tc.decision_tree_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.support_missing_value = True
+
 
 class BoostedTreesClassifierTest(SupervisedLearningMissingValueTest):
     @classmethod
     def setUpClass(self):
         super(BoostedTreesClassifierTest, self).setUpClass()
-        self.model = tc.boosted_trees_classifier.create(self.sf, self.target, validation_set=None)
+        self.model = tc.boosted_trees_classifier.create(
+            self.sf, self.target, validation_set=None
+        )
         self.support_missing_value = True

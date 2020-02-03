@@ -121,10 +121,17 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-__all__ = ['_distances', '_util']
+__all__ = ["_distances", "_util"]
 
 from ._distances import euclidean, squared_euclidean, manhattan
-from ._distances import cosine, dot_product, transformed_dot_product, jaccard, weighted_jaccard, gaussian_kernel
+from ._distances import (
+    cosine,
+    dot_product,
+    transformed_dot_product,
+    jaccard,
+    weighted_jaccard,
+    gaussian_kernel,
+)
 from ._distances import levenshtein
 
 from . import _util

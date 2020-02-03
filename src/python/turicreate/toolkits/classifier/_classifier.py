@@ -9,8 +9,8 @@ from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate.toolkits import _supervised_learning as _sl
 
-def create(dataset, target, features=None, validation_set = 'auto',
-        verbose=True):
+
+def create(dataset, target, features=None, validation_set="auto", verbose=True):
     """
     Automatically create a suitable classifier model based on the provided
     training data.
@@ -100,7 +100,8 @@ def create(dataset, target, features=None, validation_set = 'auto',
     return _sl.create_classification_with_model_selector(
         dataset,
         target,
-        model_selector = _turicreate.extensions._supervised_learning._classifier_available_models,
-        features = features,
-        validation_set = validation_set,
-        verbose = verbose)
+        model_selector=_turicreate.extensions._supervised_learning._classifier_available_models,
+        features=features,
+        validation_set=validation_set,
+        verbose=verbose,
+    )

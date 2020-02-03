@@ -12,30 +12,40 @@ from __future__ import absolute_import as _
 
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._supervised_learning import Classifier as _Classifier
-from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
-                                        _toolkit_get_topk_bottomk, \
-                                        _raise_error_if_not_sframe, \
-                                        _check_categorical_option_type, \
-                                        _raise_error_evaluation_metric_is_valid, \
-                                        _summarize_coefficients
+from turicreate.toolkits._internal_utils import (
+    _toolkit_repr_print,
+    _toolkit_get_topk_bottomk,
+    _raise_error_if_not_sframe,
+    _check_categorical_option_type,
+    _raise_error_evaluation_metric_is_valid,
+    _summarize_coefficients,
+)
 
 _DEFAULT_SOLVER_OPTIONS = {
-'convergence_threshold': 1e-2,
-'step_size': 1.0,
-'lbfgs_memory_level': 11,
-'max_iterations': 10}
+    "convergence_threshold": 1e-2,
+    "step_size": 1.0,
+    "lbfgs_memory_level": 11,
+    "max_iterations": 10,
+}
 
-def create(dataset, target, features=None,
-    l2_penalty=0.01, l1_penalty=0.0,
-    solver='auto', feature_rescaling=True,
-    convergence_threshold = _DEFAULT_SOLVER_OPTIONS['convergence_threshold'],
-    step_size = _DEFAULT_SOLVER_OPTIONS['step_size'],
-    lbfgs_memory_level = _DEFAULT_SOLVER_OPTIONS['lbfgs_memory_level'],
-    max_iterations = _DEFAULT_SOLVER_OPTIONS['max_iterations'],
-    class_weights = None,
-    validation_set = 'auto',
+
+def create(
+    dataset,
+    target,
+    features=None,
+    l2_penalty=0.01,
+    l1_penalty=0.0,
+    solver="auto",
+    feature_rescaling=True,
+    convergence_threshold=_DEFAULT_SOLVER_OPTIONS["convergence_threshold"],
+    step_size=_DEFAULT_SOLVER_OPTIONS["step_size"],
+    lbfgs_memory_level=_DEFAULT_SOLVER_OPTIONS["lbfgs_memory_level"],
+    max_iterations=_DEFAULT_SOLVER_OPTIONS["max_iterations"],
+    class_weights=None,
+    validation_set="auto",
     verbose=True,
-    seed=None):
+    seed=None,
+):
     """
     Create a :class:`~turicreate.logistic_classifier.LogisticClassifier` (using
     logistic regression as a classifier) to predict the class of a discrete
@@ -292,24 +302,31 @@ def create(dataset, target, features=None,
 
     """
 
-
     # Regression model names.
     model_name = "classifier_logistic_regression"
     solver = solver.lower()
 
-    model = _sl.create(dataset, target, model_name, features=features,
-                        validation_set = validation_set, verbose = verbose,
-                        l2_penalty=l2_penalty, l1_penalty = l1_penalty,
-                        feature_rescaling = feature_rescaling,
-                        convergence_threshold = convergence_threshold,
-                        step_size = step_size,
-                        solver = solver,
-                        lbfgs_memory_level = lbfgs_memory_level,
-                        max_iterations = max_iterations,
-                        class_weights = class_weights,
-                        seed=seed)
+    model = _sl.create(
+        dataset,
+        target,
+        model_name,
+        features=features,
+        validation_set=validation_set,
+        verbose=verbose,
+        l2_penalty=l2_penalty,
+        l1_penalty=l1_penalty,
+        feature_rescaling=feature_rescaling,
+        convergence_threshold=convergence_threshold,
+        step_size=step_size,
+        solver=solver,
+        lbfgs_memory_level=lbfgs_memory_level,
+        max_iterations=max_iterations,
+        class_weights=class_weights,
+        seed=seed,
+    )
 
     return LogisticClassifier(model.__proxy__)
+
 
 class LogisticClassifier(_Classifier):
     """
@@ -379,6 +396,7 @@ class LogisticClassifier(_Classifier):
 
 
     """
+
     def __init__(self, model_proxy):
 
         self.__proxy__ = model_proxy
@@ -418,36 +436,34 @@ class LogisticClassifier(_Classifier):
         """
 
         model_fields = [
-            ('Number of coefficients', 'num_coefficients'),
-            ('Number of examples', 'num_examples'),
-            ('Number of classes', 'num_classes'),
-            ('Number of feature columns', 'num_features'),
-            ('Number of unpacked features', 'num_unpacked_features')]
-
-        hyperparam_fields = [
-            ("L1 penalty", 'l1_penalty'),
-            ("L2 penalty", 'l2_penalty')
+            ("Number of coefficients", "num_coefficients"),
+            ("Number of examples", "num_examples"),
+            ("Number of classes", "num_classes"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
         ]
 
-        solver_fields = [
-            ("Solver", 'solver'),
-            ("Solver iterations", 'training_iterations'),
-            ("Solver status", 'training_solver_status'),
-            ("Training time (sec)", 'training_time')]
+        hyperparam_fields = [("L1 penalty", "l1_penalty"), ("L2 penalty", "l2_penalty")]
 
-        training_fields = [
-            ("Log-likelihood", 'training_loss')]
+        solver_fields = [
+            ("Solver", "solver"),
+            ("Solver iterations", "training_iterations"),
+            ("Solver status", "training_solver_status"),
+            ("Training time (sec)", "training_time"),
+        ]
+
+        training_fields = [("Log-likelihood", "training_loss")]
 
         coefs = self.coefficients
-        top_coefs, bottom_coefs = _toolkit_get_topk_bottomk(coefs,k=5)
+        top_coefs, bottom_coefs = _toolkit_get_topk_bottomk(coefs, k=5)
 
-        (coefs_list, titles_list) = _summarize_coefficients(top_coefs, \
-                                                                    bottom_coefs)
+        (coefs_list, titles_list) = _summarize_coefficients(top_coefs, bottom_coefs)
 
-        return ([ model_fields, hyperparam_fields, \
-                        solver_fields, training_fields ] + coefs_list, \
-                        [ 'Schema', 'Hyperparameters', \
-                        'Training Summary', 'Settings' ] + titles_list )
+        return (
+            [model_fields, hyperparam_fields, solver_fields, training_fields]
+            + coefs_list,
+            ["Schema", "Hyperparameters", "Training Summary", "Settings"] + titles_list,
+        )
 
     def __repr__(self):
         """
@@ -474,12 +490,14 @@ class LogisticClassifier(_Classifier):
         """
         from turicreate.extensions import _logistic_classifier_export_as_model_asset
         from turicreate.toolkits import _coreml_utils
+
         display_name = "logistic classifier"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
-        context = {"class": self.__class__.__name__,
-                   "short_description": short_description,
-                  }
-        context['user_defined'] = _coreml_utils._get_tc_version_info()
+        context = {
+            "class": self.__class__.__name__,
+            "short_description": short_description,
+        }
+        context["user_defined"] = _coreml_utils._get_tc_version_info()
         _logistic_classifier_export_as_model_asset(self.__proxy__, filename, context)
 
     def _get(self, field):
@@ -545,8 +563,7 @@ class LogisticClassifier(_Classifier):
         """
         return super(_Classifier, self)._get(field)
 
-    def predict(self, dataset, output_type='class',
-                missing_value_action='auto'):
+    def predict(self, dataset, output_type="class", missing_value_action="auto"):
         """
         Return predictions for ``dataset``, using the trained logistic
         regression model. Predictions can be generated as class labels,
@@ -618,13 +635,11 @@ class LogisticClassifier(_Classifier):
 
         """
 
-        return super(_Classifier, self).predict(dataset,
-                                                output_type=output_type,
-                                                missing_value_action=missing_value_action)
+        return super(_Classifier, self).predict(
+            dataset, output_type=output_type, missing_value_action=missing_value_action
+        )
 
-
-
-    def classify(self, dataset, missing_value_action='auto'):
+    def classify(self, dataset, missing_value_action="auto"):
         """
         Return a classification, for each example in the ``dataset``, using the
         trained logistic regression model. The output SFrame contains predictions
@@ -672,10 +687,13 @@ class LogisticClassifier(_Classifier):
 
         """
 
-        return super(LogisticClassifier, self).classify(dataset,
-                                                        missing_value_action=missing_value_action)
+        return super(LogisticClassifier, self).classify(
+            dataset, missing_value_action=missing_value_action
+        )
 
-    def predict_topk(self, dataset, output_type="probability", k=3, missing_value_action='auto'):
+    def predict_topk(
+        self, dataset, output_type="probability", k=3, missing_value_action="auto"
+    ):
         """
         Return top-k predictions for the ``dataset``, using the trained model.
         Predictions are returned as an SFrame with three columns: `id`,
@@ -741,30 +759,41 @@ class LogisticClassifier(_Classifier):
         +--------+-------+-------------------+
         [35688 rows x 3 columns]
         """
-        _check_categorical_option_type('output_type', output_type,
-                                       ['rank', 'margin', 'probability'])
-        _check_categorical_option_type('missing_value_action', missing_value_action,
-                                       ['auto', 'impute', 'error'])
-        if missing_value_action == 'auto':
-            missing_value_action = 'impute'
+        _check_categorical_option_type(
+            "output_type", output_type, ["rank", "margin", "probability"]
+        )
+        _check_categorical_option_type(
+            "missing_value_action", missing_value_action, ["auto", "impute", "error"]
+        )
+        if missing_value_action == "auto":
+            missing_value_action = "impute"
 
         # Low latency path
         if isinstance(dataset, list):
             return self.__proxy__.fast_predict_topk(
-                dataset, missing_value_action, output_type, k)
+                dataset, missing_value_action, output_type, k
+            )
         if isinstance(dataset, dict):
             return self.__proxy__.fast_predict_topk(
-                [dataset], missing_value_action, output_type, k)
+                [dataset], missing_value_action, output_type, k
+            )
         # Fast path
         _raise_error_if_not_sframe(dataset, "dataset")
-        if (missing_value_action == 'auto'):
+        if missing_value_action == "auto":
             missing_value_action = _sl.select_default_missing_value_policy(
-                                                              self, 'predict')
+                self, "predict"
+            )
         return self.__proxy__.predict_topk(
-            dataset, missing_value_action, output_type, k)
+            dataset, missing_value_action, output_type, k
+        )
 
-
-    def evaluate(self, dataset, metric='auto', missing_value_action='auto', with_predictions=False):
+    def evaluate(
+        self,
+        dataset,
+        metric="auto",
+        missing_value_action="auto",
+        with_predictions=False,
+    ):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -828,10 +857,23 @@ class LogisticClassifier(_Classifier):
           >>> print results['accuracy']
         """
 
-        _raise_error_evaluation_metric_is_valid(metric,
-                ['auto', 'accuracy', 'confusion_matrix', 'roc_curve', 'auc',
-                 'log_loss', 'precision', 'recall', 'f1_score'])
-        return super(_Classifier, self).evaluate(dataset,
-                                 missing_value_action=missing_value_action,
-                                 metric=metric,
-                                 with_predictions=with_predictions)
+        _raise_error_evaluation_metric_is_valid(
+            metric,
+            [
+                "auto",
+                "accuracy",
+                "confusion_matrix",
+                "roc_curve",
+                "auc",
+                "log_loss",
+                "precision",
+                "recall",
+                "f1_score",
+            ],
+        )
+        return super(_Classifier, self).evaluate(
+            dataset,
+            missing_value_action=missing_value_action,
+            metric=metric,
+            with_predictions=with_predictions,
+        )

@@ -14,7 +14,8 @@ import shutil
 import random
 import sys
 
-temp_number = random.randint(0, 2**64)
+temp_number = random.randint(0, 2 ** 64)
+
 
 class TestModel(unittest.TestCase):
     def __assert_model_equals__(self, m1, m2):
@@ -30,18 +31,18 @@ class TestModel(unittest.TestCase):
         self.pr_model = tc.pagerank.create(tc.SGraph())
         self.cc_model = tc.connected_components.create(tc.SGraph())
 
-        self.__remove_file('~/tmp/tmp_model-%d' % temp_number)
-        self.__remove_file('./tmp_model-%d' % temp_number)
-        self.__remove_file('/tmp/tmp_model-%d' % temp_number)
-        self.__remove_file('/tmp/tmp_model2-%d' % temp_number)
+        self.__remove_file("~/tmp/tmp_model-%d" % temp_number)
+        self.__remove_file("./tmp_model-%d" % temp_number)
+        self.__remove_file("/tmp/tmp_model-%d" % temp_number)
+        self.__remove_file("/tmp/tmp_model2-%d" % temp_number)
 
     def tearDown(self):
-        self.__remove_file('~/tmp/tmp_model-%d' % temp_number)
-        self.__remove_file('./tmp_model-%d' % temp_number)
-        self.__remove_file('/tmp/tmp_model-%d' % temp_number)
-        self.__remove_file('/tmp/tmp_model2-%d' % temp_number)
+        self.__remove_file("~/tmp/tmp_model-%d" % temp_number)
+        self.__remove_file("./tmp_model-%d" % temp_number)
+        self.__remove_file("/tmp/tmp_model-%d" % temp_number)
+        self.__remove_file("/tmp/tmp_model2-%d" % temp_number)
 
-    @unittest.skip('failing since 08/30/2016')
+    @unittest.skip("failing since 08/30/2016")
     def test_basic_save_load(self):
         # save and load the pagerank model
         with util.TempDirectory() as tmp_pr_model_file:
@@ -57,14 +58,16 @@ class TestModel(unittest.TestCase):
 
         # handle different types of urls.
         # TODO: test hdfs and s3 urls.
-        for url in ['./tmp_model-%d' % temp_number,
-                    '/tmp/tmp_model-%d' % temp_number,
-                    '~/tmp/tmp_model-%d' % temp_number]:
+        for url in [
+            "./tmp_model-%d" % temp_number,
+            "/tmp/tmp_model-%d" % temp_number,
+            "~/tmp/tmp_model-%d" % temp_number,
+        ]:
 
             self.pr_model.save(url)
             self.__assert_model_equals__(self.pr_model, tc.load_model(url))
 
-    @unittest.skip('failing since 08/30/2016')
+    @unittest.skip("failing since 08/30/2016")
     def test_exception(self):
         # load model from empty file
         with util.TempDirectory() as tmp_empty_file:
@@ -72,17 +75,17 @@ class TestModel(unittest.TestCase):
                 tc.load_model(tmp_empty_file)
 
         # load model from non-existing file
-        if (os.path.exists('./tmp_model-%d' % temp_number)):
-            shutil.rmtree('./tmp_model-%d' % temp_number)
+        if os.path.exists("./tmp_model-%d" % temp_number):
+            shutil.rmtree("./tmp_model-%d" % temp_number)
         with self.assertRaises(IOError):
-            tc.load_model('./tmp_model-%d' % temp_number)
+            tc.load_model("./tmp_model-%d" % temp_number)
 
         # save model to invalid url
         restricted_place = None
-        if sys.platform == 'win32':
-            restricted_place = 'C:\\Windows\\System32\\config\\RegBack\\testmodel'
+        if sys.platform == "win32":
+            restricted_place = "C:\\Windows\\System32\\config\\RegBack\\testmodel"
         else:
-            restricted_place = '/root/tmp/testmodel'
-        for url in ['http://test', restricted_place]:
+            restricted_place = "/root/tmp/testmodel"
+        for url in ["http://test", restricted_place]:
             with self.assertRaises(IOError):
                 self.pr_model.save(url)

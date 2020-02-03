@@ -162,21 +162,19 @@ class StyleTransferTest(unittest.TestCase):
     def test_create_with_verbose_False(self):
         args = [self.style_sf, self.content_sf]
         kwargs = {
-            'style_feature': self.style_feature,
-            'content_feature': self.content_feature,
-            'max_iterations': 1,
-            'model': self.pre_trained_model
+            "style_feature": self.style_feature,
+            "content_feature": self.content_feature,
+            "max_iterations": 1,
+            "model": self.pre_trained_model,
         }
-        test_util.assert_longer_verbose_logs(
-            tc.style_transfer.create, args, kwargs)
+        test_util.assert_longer_verbose_logs(tc.style_transfer.create, args, kwargs)
 
     def test_stylize_with_verbose_False(self):
         sf = self.content_sf[0:1]
         styles = self._get_valid_style_cases()
         args = [sf]
-        kwargs = {'style': styles[0]}
-        test_util.assert_longer_verbose_logs(
-            self.model.stylize, args, kwargs)
+        kwargs = {"style": styles[0]}
+        test_util.assert_longer_verbose_logs(self.model.stylize, args, kwargs)
 
     def _get_invalid_style_cases(self):
         style_cases = []

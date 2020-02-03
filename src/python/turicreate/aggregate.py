@@ -3,17 +3,18 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Builtin aggregators for SFrame groupby operator.
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
 from .util import _is_non_string_iterable
 
+
 def SUM(src_column):
-  """
+    """
   Builtin sum aggregator for groupby.
 
   Example: Get the sum of the rating column for each user. If
@@ -24,10 +25,11 @@ def SUM(src_column):
   ...            {'rating_sum':tc.aggregate.SUM('rating')})
 
   """
-  return ("__builtin__sum__", [src_column])
+    return ("__builtin__sum__", [src_column])
 
-def ARGMAX(agg_column,out_column):
-  """
+
+def ARGMAX(agg_column, out_column):
+    """
   Builtin arg maximum aggregator for groupby
 
   Example: Get the movie with maximum rating per user.
@@ -35,10 +37,11 @@ def ARGMAX(agg_column,out_column):
   >>> sf.groupby("user",
   ...            {'best_movie':tc.aggregate.ARGMAX('rating','movie')})
   """
-  return ("__builtin__argmax__",[agg_column,out_column])
+    return ("__builtin__argmax__", [agg_column, out_column])
 
-def ARGMIN(agg_column,out_column):
-  """
+
+def ARGMIN(agg_column, out_column):
+    """
   Builtin arg minimum aggregator for groupby
 
   Example: Get the movie with minimum rating per user.
@@ -47,10 +50,11 @@ def ARGMIN(agg_column,out_column):
   ...            {'best_movie':tc.aggregate.ARGMIN('rating','movie')})
 
   """
-  return ("__builtin__argmin__",[agg_column,out_column])
+    return ("__builtin__argmin__", [agg_column, out_column])
+
 
 def MAX(src_column):
-  """
+    """
   Builtin maximum aggregator for groupby
 
   Example: Get the maximum rating of each user.
@@ -59,10 +63,11 @@ def MAX(src_column):
   ...            {'rating_max':tc.aggregate.MAX('rating')})
 
   """
-  return ("__builtin__max__", [src_column])
+    return ("__builtin__max__", [src_column])
+
 
 def MIN(src_column):
-  """
+    """
   Builtin minimum aggregator for groupby
 
   Example: Get the minimum rating of each user.
@@ -71,11 +76,11 @@ def MIN(src_column):
   ...            {'rating_min':tc.aggregate.MIN('rating')})
 
   """
-  return ("__builtin__min__", [src_column])
+    return ("__builtin__min__", [src_column])
 
 
 def COUNT():
-  """
+    """
   Builtin count aggregator for groupby
 
   Example: Get the number of occurrences of each user.
@@ -84,11 +89,11 @@ def COUNT():
   ...            {'count':tc.aggregate.COUNT()})
 
   """
-  return ("__builtin__count__", [""])
+    return ("__builtin__count__", [""])
 
 
 def AVG(src_column):
-  """
+    """
   Builtin average aggregator for groupby. Synonym for tc.aggregate.MEAN. If
   src_column is of array type, and if array's do not match in length a NoneType is
   returned in the destination column.
@@ -99,11 +104,11 @@ def AVG(src_column):
   ...            {'rating_avg':tc.aggregate.AVG('rating')})
 
   """
-  return ("__builtin__avg__", [src_column])
+    return ("__builtin__avg__", [src_column])
 
 
 def MEAN(src_column):
-  """
+    """
   Builtin average aggregator for groupby. Synonym for tc.aggregate.AVG. If
   src_column is of array type, and if array's do not match in length a NoneType is
   returned in the destination column.
@@ -115,10 +120,11 @@ def MEAN(src_column):
   ...            {'rating_mean':tc.aggregate.MEAN('rating')})
 
   """
-  return ("__builtin__avg__", [src_column])
+    return ("__builtin__avg__", [src_column])
+
 
 def VAR(src_column):
-  """
+    """
   Builtin variance aggregator for groupby. Synonym for tc.aggregate.VARIANCE
 
   Example: Get the rating variance of each user.
@@ -127,11 +133,11 @@ def VAR(src_column):
   ...            {'rating_var':tc.aggregate.VAR('rating')})
 
   """
-  return ("__builtin__var__", [src_column])
+    return ("__builtin__var__", [src_column])
 
 
 def VARIANCE(src_column):
-  """
+    """
   Builtin variance aggregator for groupby. Synonym for tc.aggregate.VAR
 
   Example: Get the rating variance of each user.
@@ -140,11 +146,11 @@ def VARIANCE(src_column):
   ...            {'rating_var':tc.aggregate.VARIANCE('rating')})
 
   """
-  return ("__builtin__var__", [src_column])
+    return ("__builtin__var__", [src_column])
 
 
 def STD(src_column):
-  """
+    """
   Builtin standard deviation aggregator for groupby. Synonym for tc.aggregate.STDV
 
   Example: Get the rating standard deviation of each user.
@@ -153,11 +159,11 @@ def STD(src_column):
   ...            {'rating_std':tc.aggregate.STD('rating')})
 
   """
-  return ("__builtin__stdv__", [src_column])
+    return ("__builtin__stdv__", [src_column])
 
 
 def STDV(src_column):
-  """
+    """
   Builtin standard deviation aggregator for groupby. Synonym for tc.aggregate.STD
 
   Example: Get the rating standard deviation of each user.
@@ -166,11 +172,11 @@ def STDV(src_column):
   ...            {'rating_stdv':tc.aggregate.STDV('rating')})
 
   """
-  return ("__builtin__stdv__", [src_column])
+    return ("__builtin__stdv__", [src_column])
 
 
 def SELECT_ONE(src_column):
-  """
+    """
   Builtin aggregator for groupby which selects one row in the group.
 
   Example: Get one rating row from a user.
@@ -188,10 +194,11 @@ def SELECT_ONE(src_column):
   same row in the SFrame.
 
   """
-  return ("__builtin__select_one__", [src_column])
+    return ("__builtin__select_one__", [src_column])
 
-def CONCAT(src_column, dict_value_column = None):
-  """
+
+def CONCAT(src_column, dict_value_column=None):
+    """
   Builtin aggregator that combines values from one or two columns in one group
   into either a dictionary value or list value.
 
@@ -215,10 +222,10 @@ def CONCAT(src_column, dict_value_column = None):
   "count" into a dictionary with keys being words and values being
   counts.
   """
-  if dict_value_column is None:
-    return ("__builtin__concat__list__", [src_column])
-  else:
-    return ("__builtin__concat__dict__", [src_column, dict_value_column])
+    if dict_value_column is None:
+        return ("__builtin__concat__list__", [src_column])
+    else:
+        return ("__builtin__concat__dict__", [src_column, dict_value_column])
 
 
 def QUANTILE(src_column, *args):
@@ -258,7 +265,7 @@ def QUANTILE(src_column, *args):
 
 
 def COUNT_DISTINCT(src_column):
-  """
+    """
   Builtin unique counter for groupby. Counts the number of unique values
 
   Example: Get the number of unique ratings produced by each user.
@@ -267,21 +274,22 @@ def COUNT_DISTINCT(src_column):
   ...    {'rating_distinct_count':tc.aggregate.COUNT_DISTINCT('rating')})
 
   """
-  return ("__builtin__count__distinct__", [src_column])
+    return ("__builtin__count__distinct__", [src_column])
 
 
 def DISTINCT(src_column):
-  """
+    """
   Builtin distinct values for groupby. Returns a list of distinct values.
 
   >>> sf.groupby("user",
   ...       {'rating_distinct':tc.aggregate.DISTINCT('rating')})
 
   """
-  return ("__builtin__distinct__", [src_column])
+    return ("__builtin__distinct__", [src_column])
+
 
 def FREQ_COUNT(src_column):
-  """
+    """
   Builtin frequency counts for groupby. Returns a dictionary where the key is
   the `src_column` and the value is the number of times each value occurs.
 
@@ -289,4 +297,4 @@ def FREQ_COUNT(src_column):
   ...       {'rating_distinct':tc.aggregate.FREQ_COUNT('rating')})
 
   """
-  return ("__builtin__freq_count__", [src_column])
+    return ("__builtin__freq_count__", [src_column])
