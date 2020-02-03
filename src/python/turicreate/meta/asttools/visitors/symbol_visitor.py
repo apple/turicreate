@@ -3,16 +3,17 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Created on Aug 3, 2011
 
 @author: sean
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from ...asttools.visitors import Visitor
 import ast
+
 
 class SymbolVisitor(Visitor):
     def __init__(self, ctx_types=(ast.Load, ast.Store)):
@@ -45,8 +46,8 @@ class SymbolVisitor(Visitor):
 
         name = node.asname if node.asname else node.name
 
-        if '.' in name:
-            name = name.split('.', 1)[0]
+        if "." in name:
+            name = name.split(".", 1)[0]
 
         if ast.Store in self.ctx_types:
             return {name}
@@ -54,9 +55,8 @@ class SymbolVisitor(Visitor):
             return set()
 
 
-
 def get_symbols(node, ctx_types=(ast.Load, ast.Store)):
-    '''
+    """
     Returns all symbols defined in an ast node.
 
     if ctx_types is given, then restrict the symbols to ones with that context.
@@ -65,6 +65,6 @@ def get_symbols(node, ctx_types=(ast.Load, ast.Store)):
     :param ctx_types: type or tuple of types that may be found assigned to the `ctx` attribute of
                       an ast Name node.
 
-    '''
+    """
     gen = SymbolVisitor(ctx_types)
     return gen.visit(node)

@@ -10,7 +10,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from turicreate.toolkits._supervised_learning import SupervisedLearningModel as _SupervisedLearningModel
+from turicreate.toolkits._supervised_learning import (
+    SupervisedLearningModel as _SupervisedLearningModel,
+)
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _raise_error_evaluation_metric_is_valid
@@ -20,13 +22,25 @@ from turicreate.toolkits._tree_model_mixin import TreeModelMixin as _TreeModelMi
 from turicreate.toolkits._internal_utils import _map_unity_proxy_to_object
 
 
-
-_DECISION_TREE_MODEL_PARAMS_KEYS = ['max_depth', 'min_child_weight',
-'min_loss_reduction']
-_DECISION_TREE_TRAINING_PARAMS_KEYS = ['objective', 'training_time',
-'training_error', 'validation_error', 'evaluation_metric']
-_DECISION_TREE_TRAINING_DATA_PARAMS_KEYS = ['target', 'features',
-'num_features', 'num_examples', 'num_validation_examples']
+_DECISION_TREE_MODEL_PARAMS_KEYS = [
+    "max_depth",
+    "min_child_weight",
+    "min_loss_reduction",
+]
+_DECISION_TREE_TRAINING_PARAMS_KEYS = [
+    "objective",
+    "training_time",
+    "training_error",
+    "validation_error",
+    "evaluation_metric",
+]
+_DECISION_TREE_TRAINING_DATA_PARAMS_KEYS = [
+    "target",
+    "features",
+    "num_features",
+    "num_examples",
+    "num_validation_examples",
+]
 
 
 class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
@@ -53,6 +67,7 @@ class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
     --------
     create
     """
+
     def __init__(self, proxy):
         """__init__(self)"""
         self.__proxy__ = proxy
@@ -91,17 +106,19 @@ class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
               The order matches that of the 'sections' object.
         """
         data_fields = [
-            ('Number of examples', 'num_examples'),
-            ('Number of feature columns', 'num_features'),
-            ('Number of unpacked features', 'num_unpacked_features')]
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
+        ]
 
         training_fields = [
-            ("Max tree depth", 'max_depth'),
-            ("Train RMSE", 'training_rmse'),
-            ("Validation RMSE", 'validation_rmse'),
-            ("Training time (sec)", 'training_time')]
+            ("Max tree depth", "max_depth"),
+            ("Train RMSE", "training_rmse"),
+            ("Validation RMSE", "validation_rmse"),
+            ("Training time (sec)", "training_time"),
+        ]
 
-        return ( [data_fields, training_fields], ['Schema', 'Settings'])
+        return ([data_fields, training_fields], ["Schema", "Settings"])
 
     def __repr__(self):
         """
@@ -173,7 +190,7 @@ class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
         """
         return super(DecisionTreeRegression, self)._get(field)
 
-    def evaluate(self, dataset, metric='auto', missing_value_action='auto'):
+    def evaluate(self, dataset, metric="auto", missing_value_action="auto"):
         """
         Evaluate the model on the given dataset.
 
@@ -218,11 +235,10 @@ class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
           >>> results = model.evaluate(test_data, 'rmse')
 
         """
-        _raise_error_evaluation_metric_is_valid(
-                metric, ['auto', 'rmse', 'max_error'])
-        return super(DecisionTreeRegression, self).evaluate(dataset,
-                                 missing_value_action=missing_value_action,
-                                 metric=metric)
+        _raise_error_evaluation_metric_is_valid(metric, ["auto", "rmse", "max_error"])
+        return super(DecisionTreeRegression, self).evaluate(
+            dataset, missing_value_action=missing_value_action, metric=metric
+        )
 
     def export_coreml(self, filename):
         """
@@ -238,16 +254,18 @@ class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
         >>> model.export_coreml("MyModel.mlmodel")
         """
         from turicreate.toolkits import _coreml_utils
+
         display_name = "decision tree regression"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
-        context = {"mode" : "regression",
-                   "model_type" : "decision_tree",
-                   "class": self.__class__.__name__,
-                   "short_description": short_description,
-                }
+        context = {
+            "mode": "regression",
+            "model_type": "decision_tree",
+            "class": self.__class__.__name__,
+            "short_description": short_description,
+        }
         self._export_coreml_impl(filename, context)
 
-    def predict(self, dataset, missing_value_action='auto'):
+    def predict(self, dataset, missing_value_action="auto"):
         """
         Predict the target column of the given dataset.
 
@@ -287,19 +305,24 @@ class DecisionTreeRegression(_SupervisedLearningModel, _TreeModelMixin):
         --------
         >>> m.predict(testdata)
         """
-        return super(DecisionTreeRegression, self).predict(dataset, output_type='margin',
-                                                           missing_value_action=missing_value_action)
+        return super(DecisionTreeRegression, self).predict(
+            dataset, output_type="margin", missing_value_action=missing_value_action
+        )
 
 
-def create(dataset, target,
-           features=None,
-           validation_set='auto',
-           max_depth=6,
-           min_loss_reduction=0.0, min_child_weight=0.1,
-           verbose=True,
-           random_seed = None,
-           metric = 'auto',
-           **kwargs):
+def create(
+    dataset,
+    target,
+    features=None,
+    validation_set="auto",
+    max_depth=6,
+    min_loss_reduction=0.0,
+    min_child_weight=0.1,
+    verbose=True,
+    random_seed=None,
+    metric="auto",
+    **kwargs
+):
     """
     Create a :class:`~turicreate.decision_tree_regression.DecisionTreeRegression` to predict
     a scalar target variable using one or more features. In addition to standard
@@ -396,15 +419,18 @@ def create(dataset, target,
     """
 
     if random_seed is not None:
-        kwargs['random_seed'] = random_seed
+        kwargs["random_seed"] = random_seed
 
-    model = _sl.create(dataset = dataset,
-                        target = target,
-                        features = features,
-                        model_name = 'decision_tree_regression',
-                        validation_set = validation_set,
-                        max_depth = max_depth,
-                        min_loss_reduction = min_loss_reduction,
-                        min_child_weight = min_child_weight,
-                        verbose = verbose, **kwargs)
+    model = _sl.create(
+        dataset=dataset,
+        target=target,
+        features=features,
+        model_name="decision_tree_regression",
+        validation_set=validation_set,
+        max_depth=max_depth,
+        min_loss_reduction=min_loss_reduction,
+        min_child_weight=min_child_weight,
+        verbose=verbose,
+        **kwargs
+    )
     return DecisionTreeRegression(model.__proxy__)

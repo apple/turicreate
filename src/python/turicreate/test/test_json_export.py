@@ -26,22 +26,23 @@ import turicreate as tc
 
 _TEST_CASE_SIZE = 1000
 
+
 class JSONExporterTest(unittest.TestCase):
 
     # tests int/float/str
     def test_simple_types(self):
         np.random.seed(42)
         sf = tc.SFrame()
-        sf['idx'] = range(_TEST_CASE_SIZE)
-        sf['ints'] = np.random.randint(-100000, 100000, _TEST_CASE_SIZE)
-        sf['strings'] = sf['ints'].astype(str)
-        sf['floats'] = np.random.random(_TEST_CASE_SIZE)
+        sf["idx"] = range(_TEST_CASE_SIZE)
+        sf["ints"] = np.random.randint(-100000, 100000, _TEST_CASE_SIZE)
+        sf["strings"] = sf["ints"].astype(str)
+        sf["floats"] = np.random.random(_TEST_CASE_SIZE)
 
         # TODO: nans and infs will break JSON - what should we do about this?
-        #sf['nans_and_infs'] = sf['idx'].apply(lambda x: float('nan') if x > 0 else float('inf'))
+        # sf['nans_and_infs'] = sf['idx'].apply(lambda x: float('nan') if x > 0 else float('inf'))
 
-        with tempfile.NamedTemporaryFile(mode='w', suffix = '.json') as json_file:
-            sf.save(json_file.name, format='json')
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json") as json_file:
+            sf.save(json_file.name, format="json")
             with open(json_file.name) as json_data:
                 # will throw if JSON export doesn't work
                 loaded = json.load(json_data)
@@ -49,9 +50,9 @@ class JSONExporterTest(unittest.TestCase):
     def test_array_dtype(self):
         np.random.seed(42)
         sf = tc.SFrame()
-        sf['arr'] = np.random.rand(100,3)
-        with tempfile.NamedTemporaryFile(mode='w', suffix = '.json') as json_file:
-            sf.save(json_file.name, format='json')
+        sf["arr"] = np.random.rand(100, 3)
+        with tempfile.NamedTemporaryFile(mode="w", suffix=".json") as json_file:
+            sf.save(json_file.name, format="json")
             with open(json_file.name) as json_data:
                 # will throw if JSON export doesn't work
                 loaded = json.load(json_data)

@@ -10,7 +10,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _turicreate
-from turicreate.toolkits._supervised_learning import SupervisedLearningModel as _SupervisedLearningModel
+from turicreate.toolkits._supervised_learning import (
+    SupervisedLearningModel as _SupervisedLearningModel,
+)
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _raise_error_evaluation_metric_is_valid
@@ -20,12 +22,27 @@ from turicreate.toolkits._tree_model_mixin import TreeModelMixin as _TreeModelMi
 import logging as _logging
 from turicreate.util import _make_internal_url
 
-_RANDOM_FOREST_MODEL_PARAMS_KEYS = ['max_depth',
- 'min_child_weight', 'min_loss_reduction', 'row_subsample']
-_RANDOM_FOREST_TRAINING_PARAMS_KEYS = ['objective', 'training_time',
-'training_error', 'validation_error', 'evaluation_metric']
-_RANDOM_FOREST_TRAINING_DATA_PARAMS_KEYS = ['target', 'features',
-'num_features', 'num_examples', 'num_validation_examples']
+_RANDOM_FOREST_MODEL_PARAMS_KEYS = [
+    "max_depth",
+    "min_child_weight",
+    "min_loss_reduction",
+    "row_subsample",
+]
+_RANDOM_FOREST_TRAINING_PARAMS_KEYS = [
+    "objective",
+    "training_time",
+    "training_error",
+    "validation_error",
+    "evaluation_metric",
+]
+_RANDOM_FOREST_TRAINING_DATA_PARAMS_KEYS = [
+    "target",
+    "features",
+    "num_features",
+    "num_examples",
+    "num_validation_examples",
+]
+
 
 class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
     """
@@ -51,6 +68,7 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
     --------
     create
     """
+
     def __init__(self, proxy):
         """__init__(self)"""
         self.__proxy__ = proxy
@@ -59,7 +77,6 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
     @classmethod
     def _native_name(cls):
         return "random_forest_regression"
-
 
     def __str__(self):
         """
@@ -90,19 +107,21 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
               The order matches that of the 'sections' object.
         """
         data_fields = [
-            ('Number of examples', 'num_examples'),
-            ('Number of feature columns', 'num_features'),
-            ('Number of unpacked features', 'num_unpacked_features')]
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
+        ]
 
         training_fields = [
-            ("Maximum number of iterations", 'max_iterations'),
-            ("Number of trees", 'num_trees'),
-            ("Max tree depth", 'max_depth'),
-            ("Train RMSE", 'training_rmse'),
-            ("Validation RMSE", 'validation_rmse'),
-            ("Training time (sec)", 'training_time')]
+            ("Maximum number of iterations", "max_iterations"),
+            ("Number of trees", "num_trees"),
+            ("Max tree depth", "max_depth"),
+            ("Train RMSE", "training_rmse"),
+            ("Validation RMSE", "validation_rmse"),
+            ("Training time (sec)", "training_time"),
+        ]
 
-        return ( [data_fields, training_fields], ['Schema', 'Settings'])
+        return ([data_fields, training_fields], ["Schema", "Settings"])
 
     def __repr__(self):
         """
@@ -176,7 +195,7 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
         """
         return super(RandomForestRegression, self)._get(field)
 
-    def evaluate(self, dataset, metric='auto', missing_value_action='auto'):
+    def evaluate(self, dataset, metric="auto", missing_value_action="auto"):
         """
         Evaluate the model on the given dataset.
 
@@ -221,13 +240,12 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
           >>> results = model.evaluate(test_data, 'rmse')
 
         """
-        _raise_error_evaluation_metric_is_valid(
-                metric, ['auto', 'rmse', 'max_error'])
-        return super(RandomForestRegression, self).evaluate(dataset,
-                                 missing_value_action=missing_value_action,
-                                 metric=metric)
+        _raise_error_evaluation_metric_is_valid(metric, ["auto", "rmse", "max_error"])
+        return super(RandomForestRegression, self).evaluate(
+            dataset, missing_value_action=missing_value_action, metric=metric
+        )
 
-    def predict(self, dataset, missing_value_action='auto'):
+    def predict(self, dataset, missing_value_action="auto"):
         """
         Predict the target column of the given dataset.
 
@@ -267,10 +285,9 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
         --------
         >>> m.predict(testdata)
         """
-        return super(RandomForestRegression, self).predict(dataset,
-                                                           output_type='margin',
-                                                           missing_value_action=missing_value_action)
-
+        return super(RandomForestRegression, self).predict(
+            dataset, output_type="margin", missing_value_action=missing_value_action
+        )
 
     def export_coreml(self, filename):
         """
@@ -286,22 +303,29 @@ class RandomForestRegression(_SupervisedLearningModel, _TreeModelMixin):
         >>> model.export_coreml("MyModel.mlmodel")
         """
         from turicreate.toolkits import _coreml_utils
+
         display_name = "random forest regression"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
-        context = {"mode" : "regression",
-                   "model_type" : "random_forest",
-                   "class": self.__class__.__name__,
-                   "short_description": short_description}
+        context = {
+            "mode": "regression",
+            "model_type": "random_forest",
+            "class": self.__class__.__name__,
+            "short_description": short_description,
+        }
         self._export_coreml_impl(filename, context)
 
-def create(dataset, target,
-           features=None,
-           max_iterations=10,
-           validation_set='auto',
-           verbose=True,
-           random_seed = None,
-           metric = 'auto',
-           **kwargs):
+
+def create(
+    dataset,
+    target,
+    features=None,
+    max_iterations=10,
+    validation_set="auto",
+    verbose=True,
+    random_seed=None,
+    metric="auto",
+    **kwargs
+):
     """
     Create a :class:`~turicreate.random_forest_regression.RandomForestRegression` to predict
     a scalar target variable using one or more features. In addition to standard
@@ -438,26 +462,34 @@ def create(dataset, target,
 
     """
     if random_seed is not None:
-        kwargs['random_seed'] = random_seed
-    if 'model_checkpoint_path' in kwargs:
-        kwargs['model_checkpoint_path'] = _make_internal_url(kwargs['model_checkpoint_path'])
-    if 'resume_from_checkpoint' in kwargs:
-        kwargs['resume_from_checkpoint'] = _make_internal_url(kwargs['resume_from_checkpoint'])
-    if 'num_trees' in kwargs:
+        kwargs["random_seed"] = random_seed
+    if "model_checkpoint_path" in kwargs:
+        kwargs["model_checkpoint_path"] = _make_internal_url(
+            kwargs["model_checkpoint_path"]
+        )
+    if "resume_from_checkpoint" in kwargs:
+        kwargs["resume_from_checkpoint"] = _make_internal_url(
+            kwargs["resume_from_checkpoint"]
+        )
+    if "num_trees" in kwargs:
         logger = _logging.getLogger(__name__)
-        logger.warning("The `num_trees` keyword argument is deprecated. Please "
-              "use the `max_iterations` argument instead. Any value provided "
-              "for `num_trees` will be used in place of `max_iterations`.")
-        max_iterations = kwargs['num_trees']
-        del kwargs['num_trees']
+        logger.warning(
+            "The `num_trees` keyword argument is deprecated. Please "
+            "use the `max_iterations` argument instead. Any value provided "
+            "for `num_trees` will be used in place of `max_iterations`."
+        )
+        max_iterations = kwargs["num_trees"]
+        del kwargs["num_trees"]
 
-    model = _sl.create(dataset = dataset,
-                        target = target,
-                        features = features,
-                        model_name = 'random_forest_regression',
-                        max_iterations = max_iterations,
-                        validation_set = validation_set,
-                        verbose = verbose,
-                        metric = metric,
-                        **kwargs)
+    model = _sl.create(
+        dataset=dataset,
+        target=target,
+        features=features,
+        model_name="random_forest_regression",
+        max_iterations=max_iterations,
+        validation_set=validation_set,
+        verbose=verbose,
+        metric=metric,
+        **kwargs
+    )
     return RandomForestRegression(model.__proxy__)

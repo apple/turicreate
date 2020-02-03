@@ -3,11 +3,11 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Created on Jul 15, 2011
 
 @author: sean
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -24,19 +24,18 @@ else:
 
 
 class ASTFormatter(Formatter):
-
     def format_field(self, value, format_spec):
-        if format_spec == 'node':
+        if format_spec == "node":
             gen = ExprSourceGen()
             gen.visit(value)
             return gen.dumps()
-        elif value == '':
+        elif value == "":
             return value
         else:
             return super(ASTFormatter, self).format_field(value, format_spec)
 
     def get_value(self, key, args, kwargs):
-        if key == '':
+        if key == "":
             return args[0]
         elif key in kwargs:
             return kwargs[key]
@@ -48,23 +47,26 @@ class ASTFormatter(Formatter):
 
         raise Exception
 
+
 def str_node(node):
     gen = ExprSourceGen()
     gen.visit(node)
     return gen.dumps()
 
+
 def simple_string(value):
     def visitNode(self, node):
         self.print(value, **node.__dict__)
+
     return visitNode
+
 
 class ExprSourceGen(Visitor):
     def __init__(self):
         self.out = StringIO()
         self.formatter = ASTFormatter()
-        self.indent = '    '
+        self.indent = "    "
         self.level = 0
-
 
     @property
     def indenter(self):
@@ -86,14 +88,16 @@ class ExprSourceGen(Visitor):
     def print(self, line, *args, **kwargs):
         line = self.formatter.format(line, *args, **kwargs)
 
-        level = kwargs.get('level')
+        level = kwargs.get("level")
         prx = self.indent * (level if level else self.level)
-        print(prx, line, sep='', end='', file=self.out)
+        print(prx, line, sep="", end="", file=self.out)
 
-    def print_lines(self, lines,):
+    def print_lines(
+        self, lines,
+    ):
         prx = self.indent * self.level
         for line in lines:
-            print(prx, line, sep='', file=self.out)
+            print(prx, line, sep="", file=self.out)
 
     def visitName(self, node):
         self.print(node.id)
@@ -112,20 +116,20 @@ class ExprSourceGen(Visitor):
             default = defaults.pop(0)
             self.visit(arg)
             if default is not None:
-                self.print('={:node}', default)
+                self.print("={:node}", default)
 
         while args:
             arg = args.pop(0)
             default = defaults.pop(0)
-            self.print(', ')
+            self.print(", ")
             self.visit(arg)
             if default is not None:
-                self.print('={:node}', default)
+                self.print("={:node}", default)
 
         if node.vararg:
-            self.print('{0}*{1}', ', ' if i else '', node.vararg)
+            self.print("{0}*{1}", ", " if i else "", node.vararg)
         if node.kwarg:
-            self.print('{0}**{1}', ', ' if i else '', node.kwarg)
+            self.print("{0}**{1}", ", " if i else "", node.kwarg)
 
     @visitarguments.py3op
     def visitarguments(self, node):
@@ -141,22 +145,22 @@ class ExprSourceGen(Visitor):
             default = defaults.pop(0)
             self.visit(arg)
             if default is not None:
-                self.print('={:node}', default)
+                self.print("={:node}", default)
 
         while args:
             arg = args.pop(0)
             default = defaults.pop(0)
-            self.print(', ')
+            self.print(", ")
             self.visit(arg)
             if default is not None:
-                self.print('={:node}', default)
+                self.print("={:node}", default)
 
         if node.vararg:
-            self.print('{0}*{1}', ', ' if i else '', node.vararg)
+            self.print("{0}*{1}", ", " if i else "", node.vararg)
             if node.varargannotation:
-                self.print(':{:node}', node.varargannotation)
+                self.print(":{:node}", node.varargannotation)
         elif node.kwonlyargs:
-            self.print('{0}*', ', ' if i else '')
+            self.print("{0}*", ", " if i else "")
 
         kwonlyargs = list(node.kwonlyargs)
 
@@ -168,24 +172,29 @@ class ExprSourceGen(Visitor):
         while kwonlyargs:
             kw_arg = kwonlyargs.pop(0)
             kw_default = kw_defaults.pop(0)
-            self.print(', ')
+            self.print(", ")
             self.visit(kw_arg)
             if kw_default is not None:
-                self.print('={:node}', kw_default)
+                self.print("={:node}", kw_default)
 
         if node.kwarg:
-            self.print('{0}**{1}', ', ' if i else '', node.kwarg)
+            self.print("{0}**{1}", ", " if i else "", node.kwarg)
             if node.varargannotation:
-                self.print(':{:node}', node.kwargannotation)
+                self.print(":{:node}", node.kwargannotation)
 
     def visitNum(self, node):
         self.print(repr(node.n))
 
     def visitBinOp(self, node):
-        self.print('({left:node} {op:node} {right:node})', left=node.left, op=node.op, right=node.right)
+        self.print(
+            "({left:node} {op:node} {right:node})",
+            left=node.left,
+            op=node.op,
+            right=node.right,
+        )
 
     def visitAdd(self, node):
-        self.print('+')
+        self.print("+")
 
     def visitalias(self, node):
         if node.asname is None:
@@ -195,7 +204,7 @@ class ExprSourceGen(Visitor):
 
     def visitCall(self, node):
 
-        self.print('{func:node}(' , func=node.func)
+        self.print("{func:node}(", func=node.func)
         i = 0
 
         print_comma = lambda i: self.print(", ") if i > 0 else None
@@ -203,25 +212,25 @@ class ExprSourceGen(Visitor):
 
             for arg in node.args:
                 print_comma(i)
-                self.print('{:node}', arg)
+                self.print("{:node}", arg)
                 i += 1
 
             for kw in node.keywords:
                 print_comma(i)
-                self.print('{:node}', kw)
+                self.print("{:node}", kw)
                 i += 1
 
             if node.starargs:
                 print_comma(i)
-                self.print('*{:node}', node.starargs)
+                self.print("*{:node}", node.starargs)
                 i += 1
 
             if node.kwargs:
                 print_comma(i)
-                self.print('**{:node}', node.kwargs)
+                self.print("**{:node}", node.kwargs)
                 i += 1
 
-            self.print(')')
+            self.print(")")
 
     def visitkeyword(self, node):
         self.print("{0}={1:node}", node.arg, node.value)
@@ -230,184 +239,184 @@ class ExprSourceGen(Visitor):
         self.print(repr(node.s))
 
     def visitMod(self, node):
-        self.print('%')
+        self.print("%")
 
-    def visitTuple(self, node, brace='()'):
+    def visitTuple(self, node, brace="()"):
         self.print(brace[0])
 
         print_comma = lambda i: self.print(", ") if i > 0 else None
 
         i = 0
         with self.no_indent:
-            for elt in  node.elts:
+            for elt in node.elts:
                 print_comma(i)
-                self.print('{:node}', elt)
+                self.print("{:node}", elt)
                 i += 1
 
             if len(node.elts) == 1:
-                self.print(',')
+                self.print(",")
 
             self.print(brace[1])
 
     def visitCompare(self, node):
-        self.print('({0:node} ', node.left)
+        self.print("({0:node} ", node.left)
         with self.no_indent:
             for (op, right) in zip(node.ops, node.comparators):
-                self.print('{0:node} {1:node}' , op, right)
-            self.print(')')
+                self.print("{0:node} {1:node}", op, right)
+            self.print(")")
 
     @py2op
     def visitRaise(self, node):
-        self.print('raise ')
+        self.print("raise ")
         with self.no_indent:
             if node.type:
-                self.print('{:node}' , node.type)
+                self.print("{:node}", node.type)
             if node.inst:
-                self.print(', {:node}' , node.inst)
+                self.print(", {:node}", node.inst)
             if node.tback:
-                self.print(', {:node}' , node.tback)
+                self.print(", {:node}", node.tback)
 
     @visitRaise.py3op
     def visitRaise(self, node):
-        self.print('raise ')
+        self.print("raise ")
         with self.no_indent:
             if node.exc:
-                self.print('{:node}' , node.exc)
+                self.print("{:node}", node.exc)
             if node.cause:
-                self.print(' from {:node}' , node.cause)
+                self.print(" from {:node}", node.cause)
 
     def visitAttribute(self, node):
-        self.print('{:node}.{attr}', node.value, attr=node.attr)
+        self.print("{:node}.{attr}", node.value, attr=node.attr)
 
     def visitDict(self, node):
-        self.print('{{')
+        self.print("{{")
 
         items = zip(node.keys, node.values)
 
         with self.no_indent:
             i = 0
-            pc = lambda : self.print(", ") if i > 0 else None
+            pc = lambda: self.print(", ") if i > 0 else None
 
             for key, value in items:
                 pc()
-                self.print('{0:node}:{1:node}', key, value)
+                self.print("{0:node}:{1:node}", key, value)
                 i += 1
 
-            self.print('}}')
+            self.print("}}")
 
     def visitSet(self, node):
-        self.print('{{')
+        self.print("{{")
 
         items = node.elts
 
         with self.no_indent:
             i = 0
-            pc = lambda : self.print(", ") if i > 0 else None
+            pc = lambda: self.print(", ") if i > 0 else None
 
             for value in items:
                 pc()
-                self.print('{0:node}', value)
+                self.print("{0:node}", value)
                 i += 1
 
-            self.print('}}')
+            self.print("}}")
 
     def visitList(self, node):
-        self.print('[')
+        self.print("[")
 
         with self.no_indent:
             i = 0
-            pc = lambda : self.print(", ") if i > 0 else None
+            pc = lambda: self.print(", ") if i > 0 else None
 
             for item in node.elts:
                 pc()
-                self.print('{:node}', item)
+                self.print("{:node}", item)
                 i += 1
-            self.print(']')
+            self.print("]")
 
     def visitSubscript(self, node):
 
-        self.print('{0:node}[{1:node}]', node.value, node.slice)
+        self.print("{0:node}[{1:node}]", node.value, node.slice)
 
     def visitIndex(self, node):
         if isinstance(node.value, _ast.Tuple):
             with self.no_indent:
-                self.visit(node.value, brace=['', ''])
+                self.visit(node.value, brace=["", ""])
         else:
-            self.print('{:node}', node.value)
+            self.print("{:node}", node.value)
 
     def visitSlice(self, node):
         with self.no_indent:
             if node.lower is not None:
-                self.print('{:node}', node.lower)
-            self.print(':')
+                self.print("{:node}", node.lower)
+            self.print(":")
             if node.upper is not None:
-                self.print('{:node}', node.upper)
+                self.print("{:node}", node.upper)
 
             if node.step is not None:
-                self.print(':')
-                self.print('{:node}', node.step)
+                self.print(":")
+                self.print("{:node}", node.step)
 
     def visitExtSlice(self, node):
 
         dims = list(node.dims)
         with self.no_indent:
             dim = dims.pop(0)
-            self.print('{0:node}', dim)
+            self.print("{0:node}", dim)
 
             while dims:
                 dim = dims.pop(0)
-                self.print(', {0:node}', dim)
+                self.print(", {0:node}", dim)
 
     def visitUnaryOp(self, node):
-        self.print('({0:node}{1:node})', node.op, node.operand)
+        self.print("({0:node}{1:node})", node.op, node.operand)
 
     def visitAssert(self, node):
-        self.print('assert {0:node}', node.test)
+        self.print("assert {0:node}", node.test)
 
         if node.msg:
             with self.no_indent:
-                self.print(', {0:node}', node.msg)
+                self.print(", {0:node}", node.msg)
 
-    visitUSub = simple_string('-')
-    visitUAdd = simple_string('+')
-    visitNot = simple_string('not ')
-    visitInvert = simple_string('~')
+    visitUSub = simple_string("-")
+    visitUAdd = simple_string("+")
+    visitNot = simple_string("not ")
+    visitInvert = simple_string("~")
 
-    visitAnd = simple_string('and')
-    visitOr = simple_string('or')
+    visitAnd = simple_string("and")
+    visitOr = simple_string("or")
 
-    visitSub = simple_string('-')
-    visitFloorDiv = simple_string('//')
-    visitDiv = simple_string('/')
-    visitMod = simple_string('%')
-    visitMult = simple_string('*')
-    visitPow = simple_string('**')
+    visitSub = simple_string("-")
+    visitFloorDiv = simple_string("//")
+    visitDiv = simple_string("/")
+    visitMod = simple_string("%")
+    visitMult = simple_string("*")
+    visitPow = simple_string("**")
 
-    visitEq = simple_string('==')
-    visitNotEq = simple_string('!=')
+    visitEq = simple_string("==")
+    visitNotEq = simple_string("!=")
 
-    visitLt = simple_string('<')
-    visitGt = simple_string('>')
+    visitLt = simple_string("<")
+    visitGt = simple_string(">")
 
-    visitLtE = simple_string('<=')
-    visitGtE = simple_string('>=')
+    visitLtE = simple_string("<=")
+    visitGtE = simple_string(">=")
 
-    visitLShift = simple_string('<<')
-    visitRShift = simple_string('>>')
+    visitLShift = simple_string("<<")
+    visitRShift = simple_string(">>")
 
-    visitIn = simple_string('in')
-    visitNotIn = simple_string('not in')
+    visitIn = simple_string("in")
+    visitNotIn = simple_string("not in")
 
-    visitIs = simple_string('is')
-    visitIsNot = simple_string('is not')
+    visitIs = simple_string("is")
+    visitIsNot = simple_string("is not")
 
-    visitBitAnd = simple_string('&')
-    visitBitOr = simple_string('|')
-    visitBitXor = simple_string('^')
+    visitBitAnd = simple_string("&")
+    visitBitOr = simple_string("|")
+    visitBitXor = simple_string("^")
 
-    visitEllipsis = simple_string('...')
+    visitEllipsis = simple_string("...")
 
-    visitYield = simple_string('yield {value:node}')
+    visitYield = simple_string("yield {value:node}")
 
     def visitBoolOp(self, node):
 
@@ -415,56 +424,52 @@ class ExprSourceGen(Visitor):
             values = list(node.values)
             left = values.pop(0)
 
-            self.print('({:node} ', left)
+            self.print("({:node} ", left)
             while values:
                 left = values.pop(0)
-                self.print('{0:node} {1:node})', node.op, left)
+                self.print("{0:node} {1:node})", node.op, left)
 
     def visitIfExp(self, node):
-        self.print('{body:node} if {test:node} else {orelse:node}', **node.__dict__)
+        self.print("{body:node} if {test:node} else {orelse:node}", **node.__dict__)
 
     def visitLambda(self, node):
-        self.print('lambda {0:node}: {1:node}', node.args, node.body)
+        self.print("lambda {0:node}: {1:node}", node.args, node.body)
 
     def visitListComp(self, node):
-        self.print('[{0:node}', node.elt)
-
+        self.print("[{0:node}", node.elt)
 
         generators = list(node.generators)
         with self.no_indent:
             while generators:
                 generator = generators.pop(0)
-                self.print('{0:node}', generator)
+                self.print("{0:node}", generator)
 
-            self.print(']')
+            self.print("]")
 
     def visitSetComp(self, node):
-        self.print('{{{0:node}', node.elt)
-
+        self.print("{{{0:node}", node.elt)
 
         generators = list(node.generators)
         with self.no_indent:
             while generators:
                 generator = generators.pop(0)
-                self.print('{0:node}', generator)
+                self.print("{0:node}", generator)
 
-            self.print('}}')
+            self.print("}}")
 
     def visitDictComp(self, node):
-        self.print('{{{0:node}:{1:node}', node.key, node.value)
-
+        self.print("{{{0:node}:{1:node}", node.key, node.value)
 
         generators = list(node.generators)
         with self.no_indent:
             while generators:
                 generator = generators.pop(0)
-                self.print('{0:node}', generator)
+                self.print("{0:node}", generator)
 
-            self.print('}}')
-
+            self.print("}}")
 
     def visitcomprehension(self, node):
-        self.print(' for {0:node} in {1:node}', node.target, node.iter)
+        self.print(" for {0:node} in {1:node}", node.target, node.iter)
 
         ifs = list(node.ifs)
         while ifs:
@@ -477,12 +482,14 @@ class ExprSourceGen(Visitor):
 
         if node.annotation:
             with self.no_indent:
-                self.print(':{0:node}', node.annotation)
+                self.print(":{0:node}", node.annotation)
+
 
 def visit_expr(node):
     gen = ExprSourceGen()
     gen.visit(node)
     return gen.dumps()
+
 
 class NoIndent(object):
     def __init__(self, gen):
@@ -495,20 +502,21 @@ class NoIndent(object):
     def __exit__(self, *args):
         self.gen.level = self.level
 
+
 class Indenter(object):
     def __init__(self, gen):
         self.gen = gen
 
     def __enter__(self):
-        self.gen.print('\n', level=0)
+        self.gen.print("\n", level=0)
         self.gen.level += 1
 
     def __exit__(self, *args):
         self.gen.level -= 1
 
-class SourceGen(ExprSourceGen):
 
-    def __init__(self, header=''):
+class SourceGen(ExprSourceGen):
+    def __init__(self, header=""):
         super(SourceGen, self).__init__()
         print(header, file=self.out)
 
@@ -519,33 +527,33 @@ class SourceGen(ExprSourceGen):
             if isinstance(children[0].value, _ast.Str):
                 doc = children.pop(0).value
                 self.print("'''")
-                self.print_lines(doc.s.split('\n'))
-                self.print_lines(["'''", '\n', '\n'])
+                self.print_lines(doc.s.split("\n"))
+                self.print_lines(["'''", "\n", "\n"])
 
         for node in children:
             self.visit(node)
 
     def visitFor(self, node):
-        self.print('for {0:node} in {1:node}:', node.target, node.iter)
+        self.print("for {0:node} in {1:node}:", node.target, node.iter)
         with self.indenter:
             for stmnt in node.body:
                 self.visit(stmnt)
 
         if node.orelse:
-            self.print('else:')
+            self.print("else:")
             with self.indenter:
                 for stmnt in node.orelse:
                     self.visit(stmnt)
 
     @py2op
     def visitFunctionDef(self, node):
-        #fields = ('name', 'args', 'body', 'decorator_list')
+        # fields = ('name', 'args', 'body', 'decorator_list')
 
         for decorator in node.decorator_list:
-            self.print('@{decorator:node}\n', decorator=decorator)
+            self.print("@{decorator:node}\n", decorator=decorator)
 
         args = visit_expr(node.args)
-        self.print('def {name}({args}):' , name=node.name, args=args)
+        self.print("def {name}({args}):", name=node.name, args=args)
 
         with self.indenter:
             for child in node.body:
@@ -556,16 +564,16 @@ class SourceGen(ExprSourceGen):
     def visitFunctionDef(self, node):
 
         for decorator in node.decorator_list:
-            self.print('@{decorator:node}\n', decorator=decorator)
+            self.print("@{decorator:node}\n", decorator=decorator)
 
         args = visit_expr(node.args)
-        self.print('def {name}({args})' , name=node.name, args=args)
+        self.print("def {name}({args})", name=node.name, args=args)
 
         with self.no_indent:
             if node.returns:
-                self.print(' -> {:node}:', node.returns)
+                self.print(" -> {:node}:", node.returns)
             else:
-                self.print(':', node.returns)
+                self.print(":", node.returns)
 
         with self.indenter:
             for child in node.body:
@@ -575,31 +583,37 @@ class SourceGen(ExprSourceGen):
     def visitAssign(self, node):
         targets = [visit_expr(target) for target in node.targets]
 
-        self.print('{targets} = {value:node}\n', targets=' = '.join(targets), value=node.value)
+        self.print(
+            "{targets} = {value:node}\n", targets=" = ".join(targets), value=node.value
+        )
 
     def visitAugAssign(self, node):
-        self.print('{target:node} {op:node}= {value:node}\n', **node.__dict__)
+        self.print("{target:node} {op:node}= {value:node}\n", **node.__dict__)
 
     def visitIf(self, node, indent_first=True):
 
-        self.print('if {:node}:', node.test, level=self.level if indent_first else 0)
+        self.print("if {:node}:", node.test, level=self.level if indent_first else 0)
 
         with self.indenter:
             if node.body:
                 for expr in node.body:
                     self.visit(expr)
             else:
-                self.print('pass')
+                self.print("pass")
 
-
-        if node.orelse and len(node.orelse) == 1 and isinstance(node.orelse[0], _ast.If):
-            self.print('el'); self.visit(node.orelse[0], indent_first=False)
+        if (
+            node.orelse
+            and len(node.orelse) == 1
+            and isinstance(node.orelse[0], _ast.If)
+        ):
+            self.print("el")
+            self.visit(node.orelse[0], indent_first=False)
         elif node.orelse:
-            self.print('else:')
+            self.print("else:")
             with self.indenter:
                 for expr in node.orelse:
                     self.visit(expr)
-        self.print('\n')
+        self.print("\n")
 
     def visitImportFrom(self, node):
         for name in node.names:
@@ -614,7 +628,7 @@ class SourceGen(ExprSourceGen):
 
         with self.no_indent:
             if node.dest:
-                self.print(">> {:node}" , node.dest)
+                self.print(">> {:node}", node.dest)
                 if not node.values and node.nl:
                     self.print("\n")
                     return
@@ -622,10 +636,10 @@ class SourceGen(ExprSourceGen):
                 self.print(", ")
 
             i = 0
-            pc = lambda : self.print(", ") if i > 0 else None
-            for value in  node.values:
+            pc = lambda: self.print(", ") if i > 0 else None
+            for value in node.values:
                 pc()
-                self.print("{:node}" , value)
+                self.print("{:node}", value)
 
             if not node.nl:
                 self.print(",")
@@ -633,25 +647,28 @@ class SourceGen(ExprSourceGen):
             self.print("\n")
 
     def visitExec(self, node):
-        self.print('exec {0:node} in {1}, {2}\n', node.body,
-                   'None' if node.globals is None else str_node(node.globals),
-                   'None' if node.locals is None else str_node(node.locals))
+        self.print(
+            "exec {0:node} in {1}, {2}\n",
+            node.body,
+            "None" if node.globals is None else str_node(node.globals),
+            "None" if node.locals is None else str_node(node.locals),
+        )
 
     def visitWith(self, node):
-        self.print('with {0:node}', node.context_expr)
+        self.print("with {0:node}", node.context_expr)
         if node.optional_vars is not None:
-            self.print(' as {0:node}', node.optional_vars, level=0)
-        self.print(':', level=0)
+            self.print(" as {0:node}", node.optional_vars, level=0)
+        self.print(":", level=0)
 
         with self.indenter:
             if node.body:
                 for expr in node.body:
                     self.visit(expr)
             else:
-                self.print('pass\n')
+                self.print("pass\n")
 
     def visitGlobal(self, node):
-        self.print('global ')
+        self.print("global ")
         with self.no_indent:
             names = list(node.names)
             if names:
@@ -659,25 +676,24 @@ class SourceGen(ExprSourceGen):
                 self.print(name)
             while names:
                 name = names.pop(0)
-                self.print(', {0}', name)
-            self.print('\n')
-
+                self.print(", {0}", name)
+            self.print("\n")
 
     def visitDelete(self, node):
-        self.print('del ')
+        self.print("del ")
 
         targets = list(node.targets)
 
         with self.no_indent:
             target = targets.pop(0)
-            self.print('{0:node}', target)
+            self.print("{0:node}", target)
             while targets:
                 target = targets.pop(0)
-                self.print(', {0:node}', target)
-            self.print('\n')
+                self.print(", {0:node}", target)
+            self.print("\n")
 
     def visitWhile(self, node):
-        self.print('while {0:node}:', node.test)
+        self.print("while {0:node}:", node.test)
 
         with self.indenter:
             if node.body:
@@ -686,49 +702,48 @@ class SourceGen(ExprSourceGen):
             else:
                 self.print("pass")
 
-
         if node.orelse:
-            self.print('else:')
+            self.print("else:")
             with self.indenter:
                 for expr in node.orelse:
                     self.visit(expr)
-            self.print('\n')
-        self.print('\n')
-
+            self.print("\n")
+        self.print("\n")
 
     def visitExpr(self, node):
-        self.print('{:node}\n', node.value)
+        self.print("{:node}\n", node.value)
 
-    visitBreak = simple_string('break\n')
-    visitPass = simple_string('pass\n')
-    visitContinue = simple_string('continue\n')
+    visitBreak = simple_string("break\n")
+    visitPass = simple_string("pass\n")
+    visitContinue = simple_string("continue\n")
 
     def visitReturn(self, node):
         if node.value is not None:
-            self.print('return {:node}\n', node.value)
+            self.print("return {:node}\n", node.value)
 
     def visitTryExcept(self, node):
-        self.print('try:')
+        self.print("try:")
 
         with self.indenter:
             if node.body:
                 for stmnt in node.body:
                     self.visit(stmnt)
             else:
-                self.print('pass')
+                self.print("pass")
 
         for hndlr in node.handlers:
             self.visit(hndlr)
 
         if node.orelse:
-            self.print('else:')
+            self.print("else:")
             with self.indenter:
                 for stmnt in node.orelse:
                     self.visit(stmnt)
+
     @py2op
     def visitExceptHandler(self, node):
 
-        self.print('except')
+        self.print("except")
 
         with self.no_indent:
             if node.type:
@@ -743,11 +758,11 @@ class SourceGen(ExprSourceGen):
                 for stmnt in node.body:
                     self.visit(stmnt)
             else:
-                self.print('pass')
+                self.print("pass")
 
     @visitExceptHandler.py3op
     def visitExceptHandler(self, node):
-        self.print('except')
+        self.print("except")
 
         with self.no_indent:
             if node.type:
@@ -761,12 +776,11 @@ class SourceGen(ExprSourceGen):
             for stmnt in node.body:
                 self.visit(stmnt)
 
-
     def visitTryFinally(self, node):
         for item in node.body:
             self.visit(item)
 
-        self.print('finally:')
+        self.print("finally:")
 
         with self.indenter:
             for item in node.finalbody:
@@ -776,12 +790,12 @@ class SourceGen(ExprSourceGen):
     def visitClassDef(self, node):
 
         for decorator in node.decorator_list:
-            self.print('@{0:node}\n', decorator)
+            self.print("@{0:node}\n", decorator)
 
-        self.print('class {0}', node.name)
+        self.print("class {0}", node.name)
 
         with self.no_indent:
-            self.print('(')
+            self.print("(")
             bases = list(node.bases)
             if bases:
                 base = bases.pop(0)
@@ -789,7 +803,7 @@ class SourceGen(ExprSourceGen):
                 while bases:
                     base = bases.pop(0)
                     self.print(", {0:node}", base)
-            self.print(')')
+            self.print(")")
 
             self.print(":")
 
@@ -804,12 +818,12 @@ class SourceGen(ExprSourceGen):
     def visitClassDef(self, node):
 
         for decorator in node.decorator_list:
-            self.print('@{0:node}\n', decorator)
+            self.print("@{0:node}\n", decorator)
 
-        self.print('class {0}', node.name)
+        self.print("class {0}", node.name)
 
         with self.no_indent:
-            self.print('(')
+            self.print("(")
             bases = list(node.bases)
             i = 0
             if bases:
@@ -822,7 +836,8 @@ class SourceGen(ExprSourceGen):
             keywords = list(node.keywords)
 
             if keywords:
-                if i: self.print(', ')
+                if i:
+                    self.print(", ")
                 i += 1
                 keyword = keywords.pop(0)
                 self.print("{0:node}", keyword)
@@ -831,16 +846,18 @@ class SourceGen(ExprSourceGen):
                     self.print(", {0:node}", keyword)
 
             if node.starargs:
-                if i: self.print(', ')
+                if i:
+                    self.print(", ")
                 i += 1
                 self.print("*{0:node}", node.starargs)
 
             if node.kwargs:
-                if i: self.print(', ')
+                if i:
+                    self.print(", ")
                 i += 1
                 self.print("*{0:node}", node.kwargs)
 
-            self.print(')')
+            self.print(")")
 
             self.print(":")
 
@@ -851,24 +868,26 @@ class SourceGen(ExprSourceGen):
             else:
                 self.print("pass\n\n")
 
+
 def python_source(ast, file=sys.stdout):
-    '''
+    """
     Generate executable python source code from an ast node.
 
     :param ast: ast node
     :param file: file to write output to.
-    '''
+    """
     gen = SourceGen()
     gen.visit(ast)
     gen.dump(file)
 
+
 def dump_python_source(ast):
-    '''
+    """
     :return: a string containing executable python source code from an ast node.
 
     :param ast: ast node
     :param file: file to write output to.
-    '''
+    """
     gen = SourceGen()
     gen.visit(ast)
     return gen.dumps()

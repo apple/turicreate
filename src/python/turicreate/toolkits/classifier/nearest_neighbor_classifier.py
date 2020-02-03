@@ -36,7 +36,7 @@ def _sort_topk_votes(x, k):
     votes, then truncate to the highest 'k' classes.
     """
     y = sorted(x.items(), key=lambda x: x[1], reverse=True)[:k]
-    return [{'class': i[0], 'votes': i[1]} for i in y]
+    return [{"class": i[0], "votes": i[1]} for i in y]
 
 
 def _construct_auto_distance(features, column_types):
@@ -74,8 +74,9 @@ def _construct_auto_distance(features, column_types):
         try:
             ftr_type = column_types[ftr]
         except:
-            raise ValueError("The specified feature does not exist in the " +
-                             "input data.")
+            raise ValueError(
+                "The specified feature does not exist in the " + "input data."
+            )
 
         if ftr_type == str:
             string_ftrs.append(ftr)
@@ -87,26 +88,27 @@ def _construct_auto_distance(features, column_types):
             numeric_ftrs.append(ftr)
 
         else:
-            raise TypeError("Unable to automatically construct a distance " +
-                            "function for feature '{}'. ".format(ftr) +
-                            "For the nearest neighbor classifier, features " +
-                            "must be of type integer, float, string, dictionary, " +
-                            "or array.array.")
+            raise TypeError(
+                "Unable to automatically construct a distance "
+                + "function for feature '{}'. ".format(ftr)
+                + "For the nearest neighbor classifier, features "
+                + "must be of type integer, float, string, dictionary, "
+                + "or array.array."
+            )
 
     ## Construct the distance function
     dist = []
 
     for ftr in string_ftrs:
-        dist.append([[ftr], 'levenshtein', 1])
+        dist.append([[ftr], "levenshtein", 1])
 
     if len(dict_ftrs) > 0:
-        dist.append([dict_ftrs, 'weighted_jaccard', len(dict_ftrs)])
+        dist.append([dict_ftrs, "weighted_jaccard", len(dict_ftrs)])
 
     if len(numeric_ftrs) > 0:
-        dist.append([numeric_ftrs, 'euclidean', len(numeric_ftrs)])
+        dist.append([numeric_ftrs, "euclidean", len(numeric_ftrs)])
 
     return dist
-
 
 
 ## -------------- ##
@@ -224,7 +226,6 @@ def create(dataset, target, features=None, distance=None, verbose=True):
     ## ------
     start_time = _time.time()
 
-
     ## Validation and preprocessing
     ## ----------------------------
 
@@ -232,24 +233,25 @@ def create(dataset, target, features=None, distance=None, verbose=True):
     _raise_error_if_not_sframe(dataset, "dataset")
     _raise_error_if_sframe_empty(dataset, "dataset")
 
-
     ## 'target' must be a string, in 'dataset', and the type of the target must
     #  be string or integer.
     if not isinstance(target, str) or target not in dataset.column_names():
-        raise _ToolkitError("The 'target' parameter must be the name of a "
-                            "column in the input dataset.")
+        raise _ToolkitError(
+            "The 'target' parameter must be the name of a "
+            "column in the input dataset."
+        )
 
     if not dataset[target].dtype == str and not dataset[target].dtype == int:
         raise TypeError("The target column must contain integers or strings.")
 
-
     ## Warn that 'None' values in the target may lead to ambiguous predictions.
     if dataset[target].countna() > 0:
-        _logging.warning("Missing values detected in the target column. This " +
-                         "may lead to ambiguous 'None' predictions, if the " +
-                         "'radius' parameter is set too small in the prediction, " +
-                         "classification, or evaluation methods.")
-
+        _logging.warning(
+            "Missing values detected in the target column. This "
+            + "may lead to ambiguous 'None' predictions, if the "
+            + "'radius' parameter is set too small in the prediction, "
+            + "classification, or evaluation methods."
+        )
 
     ## convert features and distance arguments into a composite distance
     ## NOTE: this is done here instead of in the nearest neighbors toolkit
@@ -260,46 +262,47 @@ def create(dataset, target, features=None, distance=None, verbose=True):
     else:
         _features = [x for x in features if x != target]
 
-
     if isinstance(distance, list):
         distance = _copy.deepcopy(distance)
 
-    elif (hasattr(distance, '__call__') or
-        (isinstance(distance, str) and not distance == 'auto')):
+    elif hasattr(distance, "__call__") or (
+        isinstance(distance, str) and not distance == "auto"
+    ):
         distance = [[_features, distance, 1]]
 
-    elif distance is None or distance == 'auto':
-        col_types = {k: v for k, v in zip(dataset.column_names(),
-                                          dataset.column_types())}
+    elif distance is None or distance == "auto":
+        col_types = {
+            k: v for k, v in zip(dataset.column_names(), dataset.column_types())
+        }
         distance = _construct_auto_distance(_features, col_types)
 
     else:
-        raise TypeError("Input 'distance' not understood. The 'distance' " +
-                        "parameter must be a string or a composite distance, " +
-                        " or left unspecified.")
-
+        raise TypeError(
+            "Input 'distance' not understood. The 'distance' "
+            + "parameter must be a string or a composite distance, "
+            + " or left unspecified."
+        )
 
     ## Construct and query the nearest neighbors model
     ## -----------------------------------------------
-    knn_model = _tc.nearest_neighbors.create(dataset, label=target,
-                                             distance=distance,
-                                             verbose=verbose)
-
+    knn_model = _tc.nearest_neighbors.create(
+        dataset, label=target, distance=distance, verbose=verbose
+    )
 
     ## Postprocessing and formatting
     ## -----------------------------
     state = {
-       'verbose'  : verbose,
-       'distance' : knn_model.distance,
-       'num_distance_components' : knn_model.num_distance_components,
-       'num_examples' : dataset.num_rows(),
-       'features' : knn_model.features,
-       'target': target,
-       'num_classes': len(dataset[target].unique()),
-       'num_features':  knn_model.num_features,
-       'num_unpacked_features': knn_model.num_unpacked_features,
-       'training_time': _time.time() - start_time,
-       '_target_type': dataset[target].dtype,
+        "verbose": verbose,
+        "distance": knn_model.distance,
+        "num_distance_components": knn_model.num_distance_components,
+        "num_examples": dataset.num_rows(),
+        "features": knn_model.features,
+        "target": target,
+        "num_classes": len(dataset[target].unique()),
+        "num_features": knn_model.num_features,
+        "num_unpacked_features": knn_model.num_unpacked_features,
+        "training_time": _time.time() - start_time,
+        "_target_type": dataset[target].dtype,
     }
     model = NearestNeighborClassifier(knn_model, state)
     return model
@@ -323,7 +326,7 @@ class NearestNeighborClassifier(_CustomModel):
 
     def __init__(self, knn_model, state=None):
         self.__proxy__ = _PythonProxy(state)
-        assert(isinstance(knn_model, _tc.nearest_neighbors.NearestNeighborsModel))
+        assert isinstance(knn_model, _tc.nearest_neighbors.NearestNeighborsModel)
         self._knn_model = knn_model
 
     @classmethod
@@ -335,8 +338,8 @@ class NearestNeighborClassifier(_CustomModel):
 
     def _get_native_state(self):
         retstate = self.__proxy__.get_state()
-        retstate['knn_model'] = self._knn_model.__proxy__
-        retstate['_target_type'] = self._target_type.__name__
+        retstate["knn_model"] = self._knn_model.__proxy__
+        retstate["_target_type"] = self._target_type.__name__
         return retstate
 
     @classmethod
@@ -352,10 +355,10 @@ class NearestNeighborClassifier(_CustomModel):
         version : int
             Version number maintained by the class writer.
         """
-        assert(version == cls._PYTHON_NN_CLASSIFIER_MODEL_VERSION)
-        knn_model = _tc.nearest_neighbors.NearestNeighborsModel(state['knn_model'])
-        del state['knn_model']
-        state['_target_type'] = eval(state['_target_type'])
+        assert version == cls._PYTHON_NN_CLASSIFIER_MODEL_VERSION
+        knn_model = _tc.nearest_neighbors.NearestNeighborsModel(state["knn_model"])
+        del state["knn_model"]
+        state["_target_type"] = eval(state["_target_type"])
         return cls(knn_model, state)
 
     def __repr__(self):
@@ -396,16 +399,16 @@ class NearestNeighborClassifier(_CustomModel):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Number of examples', 'num_examples'),
-            ('Number of feature columns', 'num_features'),
-            ('Number of unpacked features', 'num_unpacked_features'),
-            ('Number of distance components', 'num_distance_components'),
-            ('Number of classes', 'num_classes')]
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
+            ("Number of distance components", "num_distance_components"),
+            ("Number of classes", "num_classes"),
+        ]
 
-        training_fields = [
-            ('Training time (seconds)', 'training_time')]
+        training_fields = [("Training time (seconds)", "training_time")]
 
-        section_titles = [ 'Schema', 'Training Summary']
+        section_titles = ["Schema", "Training Summary"]
         return ([model_fields, training_fields], section_titles)
 
     def classify(self, dataset, max_neighbors=10, radius=None, verbose=True):
@@ -489,41 +492,49 @@ class NearestNeighborClassifier(_CustomModel):
             if max_neighbors <= 0:
                 raise ValueError("Input 'max_neighbors' must be larger than 0.")
 
-
         ## Find the nearest neighbors for each query and count the number of
         #  votes for each class.
-        knn = self._knn_model.query(dataset, k=max_neighbors, radius=radius,
-                                    verbose=verbose)
+        knn = self._knn_model.query(
+            dataset, k=max_neighbors, radius=radius, verbose=verbose
+        )
 
         ## If there are *no* results for *any* query make an SFrame of nothing.
         if knn.num_rows() == 0:
             ystar = _tc.SFrame(
-                    {'class': _tc.SArray([None] * n_query, self._target_type),
-                     'probability': _tc.SArray([None] * n_query, int)})
+                {
+                    "class": _tc.SArray([None] * n_query, self._target_type),
+                    "probability": _tc.SArray([None] * n_query, int),
+                }
+            )
 
         else:
             ## Find the class with the most votes for each query and postprocess.
-            grp = knn.groupby(['query_label', 'reference_label'], _tc.aggregate.COUNT)
+            grp = knn.groupby(["query_label", "reference_label"], _tc.aggregate.COUNT)
 
-            ystar = grp.groupby('query_label',
-                                {'class': _tc.aggregate.ARGMAX('Count', 'reference_label'),
-                                 'max_votes': _tc.aggregate.MAX('Count'),
-                                 'total_votes': _tc.aggregate.SUM('Count')})
+            ystar = grp.groupby(
+                "query_label",
+                {
+                    "class": _tc.aggregate.ARGMAX("Count", "reference_label"),
+                    "max_votes": _tc.aggregate.MAX("Count"),
+                    "total_votes": _tc.aggregate.SUM("Count"),
+                },
+            )
 
-            ystar['probability'] = ystar['max_votes'] / ystar['total_votes']
+            ystar["probability"] = ystar["max_votes"] / ystar["total_votes"]
 
             ## Fill in 'None' for query points that don't have any near neighbors.
-            row_ids = _tc.SFrame({'query_label': range(n_query)})
-            ystar = ystar.join(row_ids, how='right')
+            row_ids = _tc.SFrame({"query_label": range(n_query)})
+            ystar = ystar.join(row_ids, how="right")
 
             ## Sort by row number (because row number is not returned) and return
-            ystar = ystar.sort('query_label', ascending=True)
-            ystar = ystar[['class', 'probability']]
+            ystar = ystar.sort("query_label", ascending=True)
+            ystar = ystar[["class", "probability"]]
 
         return ystar
 
-    def predict(self, dataset, max_neighbors=10, radius=None,
-                output_type='class', verbose=True):
+    def predict(
+        self, dataset, max_neighbors=10, radius=None, output_type="class", verbose=True
+    ):
         """
         Return predicted class labels for instances in *dataset*. This model
         makes predictions based on the closest neighbors stored in the nearest
@@ -586,21 +597,23 @@ class NearestNeighborClassifier(_CustomModel):
         ['dog', 'fossa']
         """
 
-        ystar = self.classify(dataset=dataset, max_neighbors=max_neighbors,
-                              radius=radius, verbose=verbose)
+        ystar = self.classify(
+            dataset=dataset, max_neighbors=max_neighbors, radius=radius, verbose=verbose
+        )
 
-        if output_type == 'class':
-            return ystar['class']
+        if output_type == "class":
+            return ystar["class"]
 
-        elif output_type == 'probability':
-            return ystar['probability']
+        elif output_type == "probability":
+            return ystar["probability"]
 
         else:
-            raise ValueError("Input 'output_type' not understood. 'output_type' "
-                             "must be either 'class' or 'probability'.")
+            raise ValueError(
+                "Input 'output_type' not understood. 'output_type' "
+                "must be either 'class' or 'probability'."
+            )
 
-    def predict_topk(self, dataset,  max_neighbors=10, radius=None, k=3,
-                     verbose=False):
+    def predict_topk(self, dataset, max_neighbors=10, radius=None, k=3, verbose=False):
         """
         Return top-k most likely predictions for each observation in
         ``dataset``. Predictions are returned as an SFrame with three columns:
@@ -667,9 +680,10 @@ class NearestNeighborClassifier(_CustomModel):
         #  'max_neighbors' and 'radius' parameters are validated by the nearest
         #  neighbor model's query method.
         if not isinstance(k, int) or k < 1:
-            raise TypeError("The number of results to return for each point, " +
-                            "'k', must be an integer greater than 0.")
-
+            raise TypeError(
+                "The number of results to return for each point, "
+                + "'k', must be an integer greater than 0."
+            )
 
         ## Validate the query dataset.
         _raise_error_if_not_sframe(dataset, "dataset")
@@ -685,43 +699,40 @@ class NearestNeighborClassifier(_CustomModel):
             if max_neighbors <= 0:
                 raise ValueError("Input 'max_neighbors' must be larger than 0.")
 
-
         ## Find the nearest neighbors for each query and count the number of
         #  votes for each class.
-        knn = self._knn_model.query(dataset, k=max_neighbors, radius=radius,
-                                    verbose=verbose)
+        knn = self._knn_model.query(
+            dataset, k=max_neighbors, radius=radius, verbose=verbose
+        )
 
         ## If there are *no* results for *any* query make an empty SFrame.
         if knn.num_rows() == 0:
-            ystar = _tc.SFrame({'row_id': [], 'class': [], 'probability': []})
-            ystar['row_id'] = ystar['row_id'].astype(int)
-            ystar['class'] = ystar['class'].astype(str)
-
+            ystar = _tc.SFrame({"row_id": [], "class": [], "probability": []})
+            ystar["row_id"] = ystar["row_id"].astype(int)
+            ystar["class"] = ystar["class"].astype(str)
 
         else:
             ## Find the classes with the top-k vote totals
-            grp = knn.groupby(['query_label', 'reference_label'],
-                              _tc.aggregate.COUNT)
+            grp = knn.groupby(["query_label", "reference_label"], _tc.aggregate.COUNT)
 
-            ystar = grp.unstack(column_names=['reference_label', 'Count'],
-                                new_column_name='votes')
+            ystar = grp.unstack(
+                column_names=["reference_label", "Count"], new_column_name="votes"
+            )
 
-            ystar['topk'] = ystar['votes'].apply(
-                lambda x: _sort_topk_votes(x, k))
-            ystar['total_votes'] = ystar['votes'].apply(
-                lambda x: sum(x.values()))
+            ystar["topk"] = ystar["votes"].apply(lambda x: _sort_topk_votes(x, k))
+            ystar["total_votes"] = ystar["votes"].apply(lambda x: sum(x.values()))
 
             ## Re-stack, unpack, and rename the results
-            ystar = ystar.stack('topk', new_column_name='topk')
-            ystar = ystar.unpack('topk')
-            ystar.rename({'topk.class': 'class', 'query_label': 'row_id'}, inplace=True)
-            ystar['probability'] = ystar['topk.votes'] / ystar['total_votes']
-            ystar = ystar[['row_id', 'class', 'probability']]
+            ystar = ystar.stack("topk", new_column_name="topk")
+            ystar = ystar.unpack("topk")
+            ystar.rename({"topk.class": "class", "query_label": "row_id"}, inplace=True)
+            ystar["probability"] = ystar["topk.votes"] / ystar["total_votes"]
+            ystar = ystar[["row_id", "class", "probability"]]
 
         return ystar
 
     #
-    def evaluate(self, dataset, metric='auto', max_neighbors=10, radius=None):
+    def evaluate(self, dataset, metric="auto", max_neighbors=10, radius=None):
         """
         Evaluate the model's predictive accuracy. This is done by predicting the
         target class for instances in a new dataset and comparing to known
@@ -788,50 +799,58 @@ class NearestNeighborClassifier(_CustomModel):
         """
 
         ## Validate the metric name
-        _raise_error_evaluation_metric_is_valid(metric,
-                    ['auto', 'accuracy', 'confusion_matrix', 'roc_curve'])
+        _raise_error_evaluation_metric_is_valid(
+            metric, ["auto", "accuracy", "confusion_matrix", "roc_curve"]
+        )
 
         ## Make sure the input dataset has a target column with an appropriate
         #  type.
         target = self.target
-        _raise_error_if_column_exists(dataset, target, 'dataset', target)
+        _raise_error_if_column_exists(dataset, target, "dataset", target)
 
         if not dataset[target].dtype == str and not dataset[target].dtype == int:
-            raise TypeError("The target column of the evaluation dataset must "
-                            "contain integers or strings.")
+            raise TypeError(
+                "The target column of the evaluation dataset must "
+                "contain integers or strings."
+            )
 
         if self.num_classes != 2:
-            if (metric == 'roc_curve') or (metric == ['roc_curve']):
-                err_msg  = "Currently, ROC curve is not supported for "
+            if (metric == "roc_curve") or (metric == ["roc_curve"]):
+                err_msg = "Currently, ROC curve is not supported for "
                 err_msg += "multi-class classification in this model."
                 raise _ToolkitError(err_msg)
             else:
-                warn_msg  = "WARNING: Ignoring `roc_curve`. "
+                warn_msg = "WARNING: Ignoring `roc_curve`. "
                 warn_msg += "Not supported for multi-class classification."
                 print(warn_msg)
 
         ## Compute predictions with the input dataset.
-        ystar = self.predict(dataset, output_type='class',
-                             max_neighbors=max_neighbors, radius=radius)
-        ystar_prob = self.predict(dataset, output_type='probability',
-                             max_neighbors=max_neighbors, radius=radius)
-
+        ystar = self.predict(
+            dataset, output_type="class", max_neighbors=max_neighbors, radius=radius
+        )
+        ystar_prob = self.predict(
+            dataset,
+            output_type="probability",
+            max_neighbors=max_neighbors,
+            radius=radius,
+        )
 
         ## Compile accuracy metrics
         results = {}
 
-        if metric in ['accuracy', 'auto']:
-            results['accuracy'] = _evaluation.accuracy(targets=dataset[target],
-                                                          predictions=ystar)
+        if metric in ["accuracy", "auto"]:
+            results["accuracy"] = _evaluation.accuracy(
+                targets=dataset[target], predictions=ystar
+            )
 
-        if metric in ['confusion_matrix', 'auto']:
-            results['confusion_matrix'] = \
-                _evaluation.confusion_matrix(targets=dataset[target],
-                                                predictions=ystar)
+        if metric in ["confusion_matrix", "auto"]:
+            results["confusion_matrix"] = _evaluation.confusion_matrix(
+                targets=dataset[target], predictions=ystar
+            )
 
         if self.num_classes == 2:
-            if metric in ['roc_curve', 'auto']:
-                results['roc_curve'] = \
-                      _evaluation.roc_curve(targets=dataset[target],
-                                               predictions=ystar_prob)
+            if metric in ["roc_curve", "auto"]:
+                results["roc_curve"] = _evaluation.roc_curve(
+                    targets=dataset[target], predictions=ystar_prob
+                )
         return results

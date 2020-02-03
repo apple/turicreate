@@ -9,7 +9,9 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.toolkits.graph_analytics._model_base import (
+    GraphAnalyticsModel as _ModelBase,
+)
 
 
 class DegreeCountingModel(_ModelBase):
@@ -35,8 +37,9 @@ class DegreeCountingModel(_ModelBase):
     --------
     create
     """
+
     def __init__(self, model):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model
 
     def _get_version(self):
@@ -47,12 +50,13 @@ class DegreeCountingModel(_ModelBase):
         return "degree_count"
 
     def _get_native_state(self):
-        return {'model':self.__proxy__}
+        return {"model": self.__proxy__}
 
     @classmethod
     def _load_version(cls, state, version):
-        assert(version == 0)
-        return cls(state['model'])
+        assert version == 0
+        return cls(state["model"])
+
 
 def create(graph, verbose=True):
     """
@@ -115,5 +119,6 @@ def create(graph, verbose=True):
 
     with QuietProgress(verbose):
         params = _tc.extensions._toolkits.graph.degree_count.create(
-            {'graph': graph.__proxy__})
-    return DegreeCountingModel(params['model'])
+            {"graph": graph.__proxy__}
+        )
+    return DegreeCountingModel(params["model"])

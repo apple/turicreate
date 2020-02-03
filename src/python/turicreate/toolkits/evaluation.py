@@ -29,9 +29,12 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import turicreate as _turicreate
-from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray,\
-                                              _check_categorical_option_type
+from turicreate.toolkits._internal_utils import (
+    _raise_error_if_not_sarray,
+    _check_categorical_option_type,
+)
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+
 
 def _check_prob_and_prob_vector(predictions):
     """
@@ -41,11 +44,13 @@ def _check_prob_and_prob_vector(predictions):
 
     ptype = predictions.dtype
     import array
+
     if ptype not in [float, numpy.ndarray, array.array, int]:
-        err_msg  = "Input `predictions` must be of numeric type (for binary "
+        err_msg = "Input `predictions` must be of numeric type (for binary "
         err_msg += "classification) or array (of probability vectors) for "
         err_msg += "multiclass classification."
         raise TypeError(err_msg)
+
 
 def _supervised_evaluation_error_checking(targets, predictions):
     """
@@ -54,35 +59,46 @@ def _supervised_evaluation_error_checking(targets, predictions):
     """
     _raise_error_if_not_sarray(targets, "targets")
     _raise_error_if_not_sarray(predictions, "predictions")
-    if (len(targets) != len(predictions)):
+    if len(targets) != len(predictions):
         raise _ToolkitError(
-         "Input SArrays 'targets' and 'predictions' must be of the same length.")
+            "Input SArrays 'targets' and 'predictions' must be of the same length."
+        )
+
 
 # The ignore_float_check is because of [None, None, None] being cast as float :(
-def _check_same_type_not_float(targets, predictions, ignore_float_check = False):
+def _check_same_type_not_float(targets, predictions, ignore_float_check=False):
     if not ignore_float_check:
         if targets.dtype == float:
             raise TypeError("Input `targets` cannot be an SArray of type float.")
         if predictions.dtype == float:
             raise TypeError("Input `predictions` cannot be an SArray of type float.")
     if targets.dtype != predictions.dtype:
-        raise TypeError("Inputs SArrays `targets` and `predictions` must be of the same type.")
+        raise TypeError(
+            "Inputs SArrays `targets` and `predictions` must be of the same type."
+        )
+
 
 def _check_target_not_float(targets):
     if targets.dtype == float:
         raise TypeError("Input `targets` cannot be an SArray of type float.")
+
 
 def _check_index_map(index_map):
     if index_map is None:
         return
 
     if not isinstance(index_map, dict):
-        raise TypeError("Input `index_map` must be a dict mapping target label to prediction-vector index.")
+        raise TypeError(
+            "Input `index_map` must be a dict mapping target label to prediction-vector index."
+        )
 
-    indices = [v for k,v in index_map.items()]
+    indices = [v for k, v in index_map.items()]
     indices.sort()
     if indices != list(range(len(index_map))):
-        raise _ToolkitError("Invalid index_map: each target label must map to a distinct index into the prediction vector.")
+        raise _ToolkitError(
+            "Invalid index_map: each target label must map to a distinct index into the prediction vector."
+        )
+
 
 def log_loss(targets, predictions, index_map=None):
     r"""
@@ -234,14 +250,16 @@ def log_loss(targets, predictions, index_map=None):
 
     opts = {}
     if index_map is not None:
-        opts['index_map'] = index_map
+        opts["index_map"] = index_map
 
     if multiclass:
-        result = _turicreate.extensions._supervised_streaming_evaluator(targets,
-            predictions, "multiclass_logloss", opts)
+        result = _turicreate.extensions._supervised_streaming_evaluator(
+            targets, predictions, "multiclass_logloss", opts
+        )
     else:
-        result = _turicreate.extensions._supervised_streaming_evaluator(targets,
-            predictions, "binary_logloss", opts)
+        result = _turicreate.extensions._supervised_streaming_evaluator(
+            targets, predictions, "binary_logloss", opts
+        )
     return result
 
 
@@ -284,8 +302,10 @@ def max_error(targets, predictions):
     """
 
     _supervised_evaluation_error_checking(targets, predictions)
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                                  predictions, "max_error", {})
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "max_error", {}
+    )
+
 
 def rmse(targets, predictions):
     r"""
@@ -332,8 +352,11 @@ def rmse(targets, predictions):
     """
 
     _supervised_evaluation_error_checking(targets, predictions)
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                                       predictions, "rmse", {})
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "rmse", {}
+    )
+
+
 def confusion_matrix(targets, predictions):
     r"""
     Compute the confusion matrix for classifier predictions.
@@ -368,10 +391,12 @@ def confusion_matrix(targets, predictions):
 
     _supervised_evaluation_error_checking(targets, predictions)
     _check_same_type_not_float(targets, predictions)
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                       predictions, "confusion_matrix_no_map", {})
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "confusion_matrix_no_map", {}
+    )
 
-def accuracy(targets, predictions, average='micro'):
+
+def accuracy(targets, predictions, average="micro"):
     r"""
     Compute the accuracy score; which measures the fraction of predictions made
     by the classifier that are exactly correct. The score lies in the range [0,1]
@@ -467,11 +492,12 @@ def accuracy(targets, predictions, average='micro'):
     _supervised_evaluation_error_checking(targets, predictions)
     _check_same_type_not_float(targets, predictions)
     opts = {"average": average}
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                          predictions, "flexible_accuracy", opts)
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "flexible_accuracy", opts
+    )
 
 
-def fbeta_score(targets, predictions, beta=1.0, average='macro'):
+def fbeta_score(targets, predictions, beta=1.0, average="macro"):
     r"""
     Compute the F-beta score. The F-beta score is the weighted harmonic mean of
     precision and recall. The score lies in the range [0,1] with 1 being ideal
@@ -595,16 +621,16 @@ def fbeta_score(targets, predictions, beta=1.0, average='macro'):
 
     """
     _supervised_evaluation_error_checking(targets, predictions)
-    _check_categorical_option_type('average', average,
-                         ['micro', 'macro', None])
+    _check_categorical_option_type("average", average, ["micro", "macro", None])
     _check_same_type_not_float(targets, predictions)
 
-    opts = {"beta"    : beta,
-            "average" : average}
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                          predictions, "fbeta_score", opts)
+    opts = {"beta": beta, "average": average}
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "fbeta_score", opts
+    )
 
-def f1_score(targets, predictions, average='macro'):
+
+def f1_score(targets, predictions, average="macro"):
     r"""
     Compute the F1 score (sometimes known as the balanced F-score or
     F-measure). The F1 score is commonly interpreted as the average of
@@ -720,9 +746,10 @@ def f1_score(targets, predictions, average='macro'):
       Management 45.4 (2009): 427-437.
 
     """
-    return fbeta_score(targets, predictions, beta = 1.0, average = average)
+    return fbeta_score(targets, predictions, beta=1.0, average=average)
 
-def precision(targets, predictions, average='macro'):
+
+def precision(targets, predictions, average="macro"):
     r"""
 
     Compute the precision score for classification tasks. The precision score
@@ -831,15 +858,15 @@ def precision(targets, predictions, average='macro'):
         {0: 0.0, 1: 0.25, 2: 1.0, 3: 0.0}
     """
     _supervised_evaluation_error_checking(targets, predictions)
-    _check_categorical_option_type('average', average,
-                         ['micro', 'macro', None])
+    _check_categorical_option_type("average", average, ["micro", "macro", None])
     _check_same_type_not_float(targets, predictions)
     opts = {"average": average}
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                          predictions, "precision", opts)
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "precision", opts
+    )
 
 
-def recall(targets, predictions, average='macro'):
+def recall(targets, predictions, average="macro"):
     r"""
     Compute the recall score for classification tasks. The recall score
     quantifies the ability of a classifier to predict `positive` examples.
@@ -947,12 +974,13 @@ def recall(targets, predictions, average='macro'):
         {0: 0.0, 1: 0.5, 2: 1.0, 3: 0.0}
     """
     _supervised_evaluation_error_checking(targets, predictions)
-    _check_categorical_option_type('average', average,
-                         ['micro', 'macro', None])
+    _check_categorical_option_type("average", average, ["micro", "macro", None])
     _check_same_type_not_float(targets, predictions)
     opts = {"average": average}
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                          predictions, "recall", opts)
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "recall", opts
+    )
+
 
 def roc_curve(targets, predictions, average=None, index_map=None):
     r"""
@@ -1134,20 +1162,21 @@ def roc_curve(targets, predictions, average=None, index_map=None):
         [300003 rows x 6 columns]
     """
     _supervised_evaluation_error_checking(targets, predictions)
-    _check_categorical_option_type('average', average, [None])
+    _check_categorical_option_type("average", average, [None])
     _check_prob_and_prob_vector(predictions)
     _check_target_not_float(targets)
     _check_index_map(index_map)
 
-    opts = {"average": average,
-            "binary": predictions.dtype in [int, float]}
+    opts = {"average": average, "binary": predictions.dtype in [int, float]}
     if index_map is not None:
-        opts['index_map'] = index_map
+        opts["index_map"] = index_map
 
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                       predictions, "roc_curve", opts)
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "roc_curve", opts
+    )
 
-def auc(targets, predictions, average='macro', index_map=None):
+
+def auc(targets, predictions, average="macro", index_map=None):
     r"""
     Compute the area under the ROC curve for the given targets and predictions.
 
@@ -1254,16 +1283,15 @@ def auc(targets, predictions, average='macro', index_map=None):
 
     """
     _supervised_evaluation_error_checking(targets, predictions)
-    _check_categorical_option_type('average', average,
-                         ['macro', None])
+    _check_categorical_option_type("average", average, ["macro", None])
     _check_prob_and_prob_vector(predictions)
     _check_target_not_float(targets)
     _check_index_map(index_map)
 
-    opts = {"average": average,
-            "binary": predictions.dtype in [int, float]}
+    opts = {"average": average, "binary": predictions.dtype in [int, float]}
     if index_map is not None:
-        opts['index_map'] = index_map
+        opts["index_map"] = index_map
 
-    return _turicreate.extensions._supervised_streaming_evaluator(targets,
-                      predictions, "auc", opts)
+    return _turicreate.extensions._supervised_streaming_evaluator(
+        targets, predictions, "auc", opts
+    )

@@ -3,9 +3,9 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 This module contains the main logic for start, query, stop turicreate server client connection.
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -50,6 +50,7 @@ def launch(server_log=None):
 
 def get_server():
     return __SERVER__
+
 
 def get_unity():
     """

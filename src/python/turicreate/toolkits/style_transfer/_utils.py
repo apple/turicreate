@@ -11,7 +11,7 @@ def _seconds_as_string(seconds):
     """
     Returns seconds as a human-friendly string, e.g. '1d 4h 47m 41s'
     """
-    TIME_UNITS = [('s', 60), ('m', 60), ('h', 24), ('d', None)]
+    TIME_UNITS = [("s", 60), ("m", 60), ("h", 24), ("d", None)]
     unit_strings = []
     cur = max(int(seconds), 1)
     for suffix, size in TIME_UNITS:
@@ -20,5 +20,5 @@ def _seconds_as_string(seconds):
         else:
             rest = cur
         if rest > 0:
-            unit_strings.insert(0, '%d%s' % (rest, suffix))
-    return ' '.join(unit_strings)
+            unit_strings.insert(0, "%d%s" % (rest, suffix))
+    return " ".join(unit_strings)

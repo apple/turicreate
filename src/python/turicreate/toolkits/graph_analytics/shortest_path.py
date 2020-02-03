@@ -9,7 +9,9 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.toolkits.graph_analytics._model_base import (
+    GraphAnalyticsModel as _ModelBase,
+)
 import copy as _copy
 
 
@@ -49,8 +51,9 @@ class ShortestPathModel(_ModelBase):
     --------
     create
     """
+
     def __init__(self, model):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model
         self._path_query_table = None
 
@@ -60,7 +63,7 @@ class ShortestPathModel(_ModelBase):
         Fields should NOT be wrapped by _precomputed_field
         """
         ret = super(ShortestPathModel, self)._result_fields()
-        ret['vertex distance to the source vertex'] = "SFrame. m.distance"
+        ret["vertex distance to the source vertex"] = "SFrame. m.distance"
         return ret
 
     def _setting_fields(self):
@@ -69,9 +72,9 @@ class ShortestPathModel(_ModelBase):
         Fields SHOULD be wrapped by _precomputed_field, if necessary
         """
         ret = super(ShortestPathModel, self)._setting_fields()
-        ret['source vertex id'] = 'source_vid'
-        ret['edge weight field id'] = 'weight_field'
-        ret['maximum distance between vertices'] = 'max_distance'
+        ret["source vertex id"] = "source_vid"
+        ret["edge weight field id"] = "weight_field"
+        ret["maximum distance between vertices"] = "max_distance"
         return ret
 
     def _method_fields(self):
@@ -79,7 +82,7 @@ class ShortestPathModel(_ModelBase):
         Return model fields related to model methods
         Fields should NOT be wrapped by _precomputed_field
         """
-        return {'get shortest path': 'get_path()  e.g. m.get_path(vid=target_vid)'}
+        return {"get shortest path": "get_path()  e.g. m.get_path(vid=target_vid)"}
 
     def get_path(self, vid, highlight=None):
         """
@@ -114,25 +117,27 @@ class ShortestPathModel(_ModelBase):
         source_vid = self.source_vid
         path = []
         path_query_table = self._path_query_table
-        if not vid in path_query_table['vid']:
-            raise ValueError('Destination vertex id ' + str(vid) + ' not found')
+        if not vid in path_query_table["vid"]:
+            raise ValueError("Destination vertex id " + str(vid) + " not found")
 
-        record = path_query_table[path_query_table['vid'] == vid][0]
-        dist = record['distance']
+        record = path_query_table[path_query_table["vid"] == vid][0]
+        dist = record["distance"]
         if dist > 1e5:
-            raise ValueError('The distance to {} is too large to show the path.'.format(vid))
+            raise ValueError(
+                "The distance to {} is too large to show the path.".format(vid)
+            )
 
         path = [(vid, dist)]
         max_iter = len(path_query_table)
         num_iter = 0
-        while record['distance'] != 0 and num_iter < max_iter:
-            parent_id = record['parent_row_id']
+        while record["distance"] != 0 and num_iter < max_iter:
+            parent_id = record["parent_row_id"]
             assert parent_id < len(path_query_table)
             assert parent_id >= 0
             record = path_query_table[parent_id]
-            path.append((record['vid'], record['distance']))
+            path.append((record["vid"], record["distance"]))
             num_iter += 1
-        assert record['vid'] == source_vid
+        assert record["vid"] == source_vid
         assert num_iter < max_iter
         path.reverse()
         return path
@@ -146,14 +151,14 @@ class ShortestPathModel(_ModelBase):
         weight_field = self.weight_field
 
         query_table = _copy.copy(self.distance)
-        query_table = query_table.add_row_number('row_id')
+        query_table = query_table.add_row_number("row_id")
 
         g = self.graph.add_vertices(query_table)
         # The sequence id which a vertex is visited, initialized with 0 meaning not visited.
-        g.vertices['__parent__'] = -1
+        g.vertices["__parent__"] = -1
         weight_field = self.weight_field
-        if (weight_field == ""):
-            weight_field = '__unit_weight__'
+        if weight_field == "":
+            weight_field = "__unit_weight__"
             g.edges[weight_field] = 1
 
         # Traverse the graph once and get the parent row id for each vertex
@@ -165,13 +170,15 @@ class ShortestPathModel(_ModelBase):
         #     return (src, edge, dst)
         #
         # the internal lambda appear to have some issues.
-        traverse_fun = lambda src, edge, dst:  \
-            _tc.extensions._toolkits.graph.sssp.shortest_path_traverse_function(
-                src, edge, dst, source_vid, weight_field)
+        traverse_fun = lambda src, edge, dst: _tc.extensions._toolkits.graph.sssp.shortest_path_traverse_function(
+            src, edge, dst, source_vid, weight_field
+        )
 
-        g = g.triple_apply(traverse_fun, ['__parent__'])
-        query_table = query_table.join(g.get_vertices()[['__id', '__parent__']], '__id').sort('row_id')
-        query_table.rename({'__parent__': 'parent_row_id', '__id': 'vid'}, inplace=True)
+        g = g.triple_apply(traverse_fun, ["__parent__"])
+        query_table = query_table.join(
+            g.get_vertices()[["__id", "__parent__"]], "__id"
+        ).sort("row_id")
+        query_table.rename({"__parent__": "parent_row_id", "__id": "vid"}, inplace=True)
         return query_table
 
     def _get_version(self):
@@ -182,12 +189,12 @@ class ShortestPathModel(_ModelBase):
         return "shortest_path"
 
     def _get_native_state(self):
-        return {'model':self.__proxy__}
+        return {"model": self.__proxy__}
 
     @classmethod
     def _load_version(cls, state, version):
-        assert(version == 0)
-        return cls(state['model'])
+        assert version == 0
+        return cls(state["model"])
 
 
 def create(graph, source_vid, weight_field="", max_distance=1e30, verbose=True):
@@ -259,13 +266,17 @@ def create(graph, source_vid, weight_field="", max_distance=1e30, verbose=True):
     from turicreate._cython.cy_server import QuietProgress
 
     if not isinstance(graph, _SGraph):
-        raise TypeError('graph input must be a SGraph object.')
+        raise TypeError("graph input must be a SGraph object.")
 
-    opts = {'source_vid': source_vid, 'weight_field': weight_field,
-            'max_distance': max_distance, 'graph': graph.__proxy__}
+    opts = {
+        "source_vid": source_vid,
+        "weight_field": weight_field,
+        "max_distance": max_distance,
+        "graph": graph.__proxy__,
+    }
     with QuietProgress(verbose):
         params = _tc.extensions._toolkits.graph.sssp.create(opts)
-    return ShortestPathModel(params['model'])
+    return ShortestPathModel(params["model"])
 
 
 def _compute_shortest_path(graph, source_vids, dest_vids, weight_field=""):
@@ -325,4 +336,5 @@ def _compute_shortest_path(graph, source_vids, dest_vids, weight_field=""):
     if type(dest_vids) != list:
         dest_vids = [dest_vids]
     return _tc.extensions._toolkits.graph.sssp.all_shortest_paths(
-        graph, source_vids, dest_vids, weight_field)
+        graph, source_vids, dest_vids, weight_field
+    )
