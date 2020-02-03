@@ -88,7 +88,7 @@ PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
 
 cp -a src/python/turicreate/test deps/env/lib/"${PYTHON_VERSION}"/site-packages/turicreate/
 
-TEST_DIR=deps/env/lib/"${PYTHON_VERSION}"/site-packages/turicreate/test
+TEST_DIR="$PWD"/deps/env/lib/"${PYTHON_VERSION}"/site-packages/turicreate/test
 SOURCE_DIR=$(dirname "$TEST_DIR")
 
 $PYTHON -c "import sys; lines=sys.stdin.read(); \
