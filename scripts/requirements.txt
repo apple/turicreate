@@ -17,9 +17,11 @@ future==0.17.1
 pyOpenSSL==19.0.0
 ndg-httpsclient==0.5.1
 pyasn1==0.4.5
-########## >=  #########
-argparse>=1.2.1
 mock==3.0.5
+
+########## >=  #########
+
+argparse>=1.2.1
 pytest>=4.6.3
 hypothesis>=4.50,<5.0
 wheel>=0.29.0
