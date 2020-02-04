@@ -14,11 +14,12 @@ from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _precomputed_field
 from turicreate.toolkits._private_utils import _summarize_accessible_fields
 from turicreate.util import _raise_error_if_not_of_type
+
 # Feature engineering utils
 from . import _internal_utils
 
 
-_fit_examples_doc = '''
+_fit_examples_doc = """
             >>> import turicreate as tc
 
             # Create the data
@@ -61,9 +62,9 @@ _fit_examples_doc = '''
             | string | sentence |   2   |
             +--------+----------+-------+
             [6 rows x 3 columns]
-'''
+"""
 
-_fit_transform_examples_doc = '''
+_fit_transform_examples_doc = """
             >>> import turicreate as tc
 
             # Create the data
@@ -100,9 +101,9 @@ _fit_transform_examples_doc = '''
             | {'this': 1, 'is': 1, 'exam... | [two, two] | sentence |
             +-------------------------------+------------+----------+
             [2 rows x 3 columns]
-'''
+"""
 
-_transform_examples_doc = '''
+_transform_examples_doc = """
             >>> import turicreate as tc
 
             # For list columns (string elements converted to lower case by default):
@@ -167,11 +168,11 @@ _transform_examples_doc = '''
             | {'this': 1, 'is': 1, 'exam... |
             +-------------------------------+
             [2 rows x 1 columns]
-'''
+"""
 
 
 class RareWordTrimmer(Transformer):
-    '''
+    """
     Remove words that occur below a certain number of times in a given column.
     This is a common method of cleaning text before it is used, and can increase the
     quality and explainability of the models learned on the transformed data.
@@ -291,20 +292,28 @@ class RareWordTrimmer(Transformer):
 
        # Save the transformer.
        >>> trimmer.save('save-path')
-'''
+"""
 
     # Doc strings
     _fit_examples_doc = _fit_examples_doc
     _transform_examples_doc = _transform_examples_doc
     _fit_transform_examples_doc = _fit_transform_examples_doc
 
-    def __init__(self, features=None, excluded_features=None,
-            threshold=2,stopwords=None,to_lower=True, delimiters=["\r", "\v", "\n", "\f", "\t", " "],
-output_column_prefix = None):
+    def __init__(
+        self,
+        features=None,
+        excluded_features=None,
+        threshold=2,
+        stopwords=None,
+        to_lower=True,
+        delimiters=["\r", "\v", "\n", "\f", "\t", " "],
+        output_column_prefix=None,
+    ):
 
         # Process and make a copy of the features, exclude.
         _features, _exclude = _internal_utils.process_features(
-                                        features, excluded_features)
+            features, excluded_features
+        )
 
         # Type checking
         _raise_error_if_not_of_type(features, [list, str, type(None)])
@@ -317,25 +326,23 @@ output_column_prefix = None):
         if delimiters is not None:
             for delim in delimiters:
                 _raise_error_if_not_of_type(delim, str, "delimiters")
-                if (len(delim) != 1):
+                if len(delim) != 1:
                     raise ValueError("Delimiters must be single-character strings")
-
-
 
         # Set up options
         opts = {
-          'threshold': threshold,
-          'output_column_prefix': output_column_prefix,
-          'to_lower' : to_lower,
-          'stopwords' : stopwords,
-          'delimiters': delimiters
+            "threshold": threshold,
+            "output_column_prefix": output_column_prefix,
+            "to_lower": to_lower,
+            "stopwords": stopwords,
+            "delimiters": delimiters,
         }
         if _exclude:
-            opts['exclude'] = True
-            opts['features'] = _exclude
+            opts["exclude"] = True
+            opts["features"] = _exclude
         else:
-            opts['exclude'] = False
-            opts['features'] = _features
+            opts["exclude"] = False
+            opts["features"] = _features
 
         # Initialize object
         proxy = _tc.extensions._RareWordTrimmer()
@@ -360,22 +367,25 @@ output_column_prefix = None):
               The order matches that of the 'sections' object.
         """
         _features = _precomputed_field(
-                _internal_utils.pretty_print_list(self.get('features')))
+            _internal_utils.pretty_print_list(self.get("features"))
+        )
         _exclude = _precomputed_field(
-            _internal_utils.pretty_print_list(self.get('excluded_features')))
+            _internal_utils.pretty_print_list(self.get("excluded_features"))
+        )
         _stopwords = _precomputed_field(
-            _internal_utils.pretty_print_list(self.get('stopwords')))
+            _internal_utils.pretty_print_list(self.get("stopwords"))
+        )
 
         fields = [
             ("Features", _features),
             ("Excluded features", _exclude),
-            ("Output column name", 'output_column_prefix'),
-            ("Word count threshold", 'threshold'),
+            ("Output column name", "output_column_prefix"),
+            ("Word count threshold", "threshold"),
             ("Manually specified stopwords", _stopwords),
             ("Whether to convert to lowercase", "to_lower"),
-            ("Delimiters" , "delimiters")
+            ("Delimiters", "delimiters"),
         ]
-        section_titles = ['Model fields']
+        section_titles = ["Model fields"]
 
         return ([fields], section_titles)
 
@@ -389,8 +399,7 @@ output_column_prefix = None):
         out : string
             A description of the model.
         """
-        accessible_fields = {
-            "vocabulary": "The vocabulary of the trimmed input."}
+        accessible_fields = {"vocabulary": "The vocabulary of the trimmed input."}
         (sections, section_titles) = self._get_summary_struct()
         out = _toolkit_repr_print(self, sections, section_titles, width=30)
         out2 = _summarize_accessible_fields(accessible_fields, width=30)
@@ -398,7 +407,6 @@ output_column_prefix = None):
 
     @classmethod
     def _get_instance_and_data(cls):
-        sf = _tc.SFrame({'a' : ['dog', 'dog' , 'dog'], 'b' : ['cat', 'one' ,'one']})
-        trimmer = RareWordTrimmer(
-                    features = ['a', 'b'])
+        sf = _tc.SFrame({"a": ["dog", "dog", "dog"], "b": ["cat", "one", "one"]})
+        trimmer = RareWordTrimmer(features=["a", "b"])
         return trimmer.fit(sf), sf

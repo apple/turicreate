@@ -18,7 +18,9 @@ import turicreate as _tc
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 
-def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random_order=False):
+def load_audio(
+    path, with_path=True, recursive=True, ignore_failure=True, random_order=False
+):
     """
     Loads WAV file(s) from a path.
 
@@ -62,20 +64,22 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
 
     all_wav_files = []
 
-    if _fnmatch(path, '*.wav'):    # single file
+    if _fnmatch(path, "*.wav"):  # single file
         all_wav_files.append(path)
     elif recursive:
         for (dir_path, _, file_names) in _os.walk(path):
             for cur_file in file_names:
-                if _fnmatch(cur_file, '*.wav'):
-                    all_wav_files.append(dir_path + '/' + cur_file)
+                if _fnmatch(cur_file, "*.wav"):
+                    all_wav_files.append(dir_path + "/" + cur_file)
     else:
-        all_wav_files = _glob(path + '/*.wav')
+        all_wav_files = _glob(path + "/*.wav")
 
     if random_order:
         _shuffle(all_wav_files)
 
-    result_builder = _tc.SFrameBuilder(column_types=[dict, str], column_names=['audio', 'path'])
+    result_builder = _tc.SFrameBuilder(
+        column_types=[dict, str], column_names=["audio", "path"]
+    )
     for cur_file_path in all_wav_files:
         try:
             sample_rate, data = _wavfile.read(cur_file_path)
@@ -87,9 +91,11 @@ def load_audio(path, with_path=True, recursive=True, ignore_failure=True, random
                 print(error_string)
                 continue
 
-        result_builder.append([{'sample_rate': sample_rate, 'data': data}, cur_file_path])
+        result_builder.append(
+            [{"sample_rate": sample_rate, "data": data}, cur_file_path]
+        )
 
     result = result_builder.close()
     if not with_path:
-        del result['path']
+        del result["path"]
     return result

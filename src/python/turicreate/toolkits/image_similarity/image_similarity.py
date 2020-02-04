@@ -21,8 +21,9 @@ from .. import _pre_trained_models
 from .. import _image_feature_extractor
 
 
-def create(dataset, label = None, feature = None, model = 'resnet-50', verbose = True,
-           batch_size = 64):
+def create(
+    dataset, label=None, feature=None, model="resnet-50", verbose=True, batch_size=64
+):
     """
     Create a :class:`ImageSimilarityModel` model.
 
@@ -103,23 +104,25 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
 
     # Check parameters
     allowed_models = list(_pre_trained_models.IMAGE_MODELS.keys())
-    if _mac_ver() >= (10,14):
-        allowed_models.append('VisionFeaturePrint_Scene')
+    if _mac_ver() >= (10, 14):
+        allowed_models.append("VisionFeaturePrint_Scene")
 
         # Also, to make sure existing code doesn't break, replace incorrect name
         # with the correct name version
         if model == "VisionFeaturePrint_Screen":
-            print("WARNING: Correct spelling of model name is VisionFeaturePrint_Scene.  VisionFeaturePrint_Screen will be removed in future releases.")
+            print(
+                "WARNING: Correct spelling of model name is VisionFeaturePrint_Scene.  VisionFeaturePrint_Screen will be removed in future releases."
+            )
             model = "VisionFeaturePrint_Scene"
 
-    _tkutl._check_categorical_option_type('model', model, allowed_models)
+    _tkutl._check_categorical_option_type("model", model, allowed_models)
     if len(dataset) == 0:
-        raise _ToolkitError('Unable to train on empty dataset')
+        raise _ToolkitError("Unable to train on empty dataset")
     if (label is not None) and (label not in dataset.column_names()):
         raise _ToolkitError("Row label column '%s' does not exist" % label)
     if (feature is not None) and (feature not in dataset.column_names()):
         raise _ToolkitError("Image feature column '%s' does not exist" % feature)
-    if(batch_size < 1):
+    if batch_size < 1:
         raise ValueError("'batch_size' must be greater than or equal to 1")
 
     # Set defaults
@@ -129,34 +132,41 @@ def create(dataset, label = None, feature = None, model = 'resnet-50', verbose =
     feature_extractor = _image_feature_extractor._create_feature_extractor(model)
 
     # Extract features
-    extracted_features = _tc.SFrame({
-        '__image_features__': feature_extractor.extract_features(dataset, feature, verbose=verbose,
-                                                                 batch_size=batch_size),
-        })
+    extracted_features = _tc.SFrame(
+        {
+            "__image_features__": feature_extractor.extract_features(
+                dataset, feature, verbose=verbose, batch_size=batch_size
+            ),
+        }
+    )
 
     # Train a similarity model using the extracted features
     if label is not None:
         extracted_features[label] = dataset[label]
-    nn_model = _tc.nearest_neighbors.create(extracted_features, label = label,
-            features = ['__image_features__'], verbose = verbose)
+    nn_model = _tc.nearest_neighbors.create(
+        extracted_features,
+        label=label,
+        features=["__image_features__"],
+        verbose=verbose,
+    )
 
     # set input image shape
     if model in _pre_trained_models.IMAGE_MODELS:
         input_image_shape = _pre_trained_models.IMAGE_MODELS[model].input_image_shape
-    else:    # model == VisionFeaturePrint_Scene
+    else:  # model == VisionFeaturePrint_Scene
         input_image_shape = (3, 299, 299)
 
     # Save the model
     state = {
-        'similarity_model': nn_model,
-        'model': model,
-        'feature_extractor': feature_extractor,
-        'input_image_shape': input_image_shape,
-        'label': label,
-        'feature': feature,
-        'num_features': 1,
-        'num_examples': nn_model.num_examples,
-        'training_time': _time.time() - start_time,
+        "similarity_model": nn_model,
+        "model": model,
+        "feature_extractor": feature_extractor,
+        "input_image_shape": input_image_shape,
+        "label": label,
+        "feature": feature,
+        "num_features": 1,
+        "num_examples": nn_model.num_examples,
+        "training_time": _time.time() - start_time,
     }
     return ImageSimilarityModel(state)
 
@@ -199,8 +209,8 @@ class ImageSimilarityModel(_CustomModel):
         >>> loaded_model = turicreate.load_model('my_model_file')
         """
         state = self.__proxy__.get_state()
-        state['similarity_model'] = state['similarity_model'].__proxy__
-        del state['feature_extractor']
+        state["similarity_model"] = state["similarity_model"].__proxy__
+        del state["feature_extractor"]
         return state
 
     @classmethod
@@ -219,17 +229,22 @@ class ImageSimilarityModel(_CustomModel):
         """
         _tkutl._model_version_check(version, cls._PYTHON_IMAGE_SIMILARITY_VERSION)
         from turicreate.toolkits.nearest_neighbors import NearestNeighborsModel
-        state['similarity_model'] = NearestNeighborsModel(state['similarity_model'])
+
+        state["similarity_model"] = NearestNeighborsModel(state["similarity_model"])
 
         # Correct models saved with a previous typo
-        if state['model'] == "VisionFeaturePrint_Screen":
-            state['model'] = "VisionFeaturePrint_Scene"
+        if state["model"] == "VisionFeaturePrint_Screen":
+            state["model"] = "VisionFeaturePrint_Scene"
 
-        if state['model'] == "VisionFeaturePrint_Scene" and _mac_ver() < (10,14):
-            raise ToolkitError("Can not load model on this operating system. This model uses VisionFeaturePrint_Scene, "
-                               "which is only supported on macOS 10.14 and higher.")
-        state['feature_extractor'] = _image_feature_extractor._create_feature_extractor(state['model'])
-        state['input_image_shape'] = tuple([int(i) for i in state['input_image_shape']])
+        if state["model"] == "VisionFeaturePrint_Scene" and _mac_ver() < (10, 14):
+            raise ToolkitError(
+                "Can not load model on this operating system. This model uses VisionFeaturePrint_Scene, "
+                "which is only supported on macOS 10.14 and higher."
+            )
+        state["feature_extractor"] = _image_feature_extractor._create_feature_extractor(
+            state["model"]
+        )
+        state["input_image_shape"] = tuple([int(i) for i in state["input_image_shape"]])
         return ImageSimilarityModel(state)
 
     def __str__(self):
@@ -252,8 +267,7 @@ class ImageSimilarityModel(_CustomModel):
         width = 40
 
         sections, section_titles = self._get_summary_struct()
-        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
-                                         width=width)
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles, width=width)
         return out
 
     def _get_summary_struct(self):
@@ -274,22 +288,25 @@ class ImageSimilarityModel(_CustomModel):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Number of examples', 'num_examples'),
-            ('Number of feature columns', 'num_features'),
-            ('Input image shape', 'input_image_shape'),
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Input image shape", "input_image_shape"),
         ]
         training_fields = [
-            ("Training time (sec)", 'training_time'),
+            ("Training time (sec)", "training_time"),
         ]
 
-        section_titles = ['Schema', 'Training summary']
-        return([model_fields, training_fields], section_titles)
+        section_titles = ["Schema", "Training summary"]
+        return ([model_fields, training_fields], section_titles)
 
-    def _extract_features(self, dataset, verbose, batch_size = 64):
-        return _tc.SFrame({
-            '__image_features__': self.feature_extractor.extract_features(dataset, self.feature, verbose=verbose,
-                                                                          batch_size=batch_size)
-            })
+    def _extract_features(self, dataset, verbose, batch_size=64):
+        return _tc.SFrame(
+            {
+                "__image_features__": self.feature_extractor.extract_features(
+                    dataset, self.feature, verbose=verbose, batch_size=batch_size
+                )
+            }
+        )
 
     def query(self, dataset, label=None, k=5, radius=None, verbose=True, batch_size=64):
         """
@@ -365,8 +382,10 @@ class ImageSimilarityModel(_CustomModel):
         +-------------+-----------------+----------------+------+
         """
         if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
-            raise TypeError('dataset must be either an SFrame, SArray or turicreate.Image')
-        if(batch_size < 1):
+            raise TypeError(
+                "dataset must be either an SFrame, SArray or turicreate.Image"
+            )
+        if batch_size < 1:
             raise ValueError("'batch_size' must be greater than or equal to 1")
 
         if isinstance(dataset, _tc.SArray):
@@ -374,13 +393,23 @@ class ImageSimilarityModel(_CustomModel):
         elif isinstance(dataset, _tc.Image):
             dataset = _tc.SFrame({self.feature: [dataset]})
 
-        extracted_features = self._extract_features(dataset, verbose=verbose, batch_size=batch_size)
+        extracted_features = self._extract_features(
+            dataset, verbose=verbose, batch_size=batch_size
+        )
         if label is not None:
             extracted_features[label] = dataset[label]
-        return self.similarity_model.query(extracted_features, label, k, radius, verbose)
+        return self.similarity_model.query(
+            extracted_features, label, k, radius, verbose
+        )
 
-    def similarity_graph(self, k=5, radius=None, include_self_edges=False,
-                         output_type='SGraph', verbose=True):
+    def similarity_graph(
+        self,
+        k=5,
+        radius=None,
+        include_self_edges=False,
+        output_type="SGraph",
+        verbose=True,
+    ):
         """
         Construct the similarity graph on the reference dataset, which is
         already stored in the model to find the top `k` similar images for each
@@ -452,7 +481,9 @@ class ImageSimilarityModel(_CustomModel):
         |    1     |    0     | 0.376430604494 |  1   |
         +----------+----------+----------------+------+
         """
-        return self.similarity_model.similarity_graph(k, radius, include_self_edges, output_type, verbose)
+        return self.similarity_model.similarity_graph(
+            k, radius, include_self_edges, output_type, verbose
+        )
 
     def export_coreml(self, filename):
         """
@@ -507,21 +538,28 @@ class ImageSimilarityModel(_CustomModel):
         import numpy as _np
         from copy import deepcopy
         import coremltools as _cmt
-        from coremltools.models import datatypes as _datatypes, neural_network as _neural_network
+        from coremltools.models import (
+            datatypes as _datatypes,
+            neural_network as _neural_network,
+        )
         from turicreate.toolkits import _coreml_utils
 
         # Get the reference data from the model
         proxy = self.similarity_model.__proxy__
-        reference_data = _np.array(_tc.extensions._nearest_neighbors._nn_get_reference_data(proxy))
+        reference_data = _np.array(
+            _tc.extensions._nearest_neighbors._nn_get_reference_data(proxy)
+        )
         num_examples, embedding_size = reference_data.shape
 
-        output_name = 'distance'
+        output_name = "distance"
         output_features = [(output_name, _datatypes.Array(num_examples))]
 
-        if self.model != 'VisionFeaturePrint_Scene':
+        if self.model != "VisionFeaturePrint_Scene":
             # Get the Core ML spec for the feature extractor
             ptModel = _pre_trained_models.IMAGE_MODELS[self.model]()
-            feature_extractor = _image_feature_extractor.TensorFlowFeatureExtractor(ptModel)
+            feature_extractor = _image_feature_extractor.TensorFlowFeatureExtractor(
+                ptModel
+            )
             feature_extractor_spec = feature_extractor.get_coreml_model().get_spec()
 
             input_name = feature_extractor.coreml_data_layer
@@ -532,15 +570,20 @@ class ImageSimilarityModel(_CustomModel):
             for l in layers:
                 feature_extractor_spec.neuralNetwork.layers.append(l)
 
-            builder = _neural_network.NeuralNetworkBuilder(input_features, output_features,
-                                                            spec=feature_extractor_spec)
+            builder = _neural_network.NeuralNetworkBuilder(
+                input_features, output_features, spec=feature_extractor_spec
+            )
             feature_layer = feature_extractor.coreml_feature_layer
 
-        else:     # self.model == VisionFeaturePrint_Scene
+        else:  # self.model == VisionFeaturePrint_Scene
             # Create a pipleline that contains a VisionFeaturePrint followed by a
             # neural network.
-            BGR_VALUE = _cmt.proto.FeatureTypes_pb2.ImageFeatureType.ColorSpace.Value('BGR')
-            DOUBLE_ARRAY_VALUE = _cmt.proto.FeatureTypes_pb2.ArrayFeatureType.ArrayDataType.Value('DOUBLE')
+            BGR_VALUE = _cmt.proto.FeatureTypes_pb2.ImageFeatureType.ColorSpace.Value(
+                "BGR"
+            )
+            DOUBLE_ARRAY_VALUE = _cmt.proto.FeatureTypes_pb2.ArrayFeatureType.ArrayDataType.Value(
+                "DOUBLE"
+            )
             INPUT_IMAGE_SHAPE = 299
 
             top_spec = _cmt.proto.Model_pb2.Model()
@@ -570,7 +613,7 @@ class ImageSimilarityModel(_CustomModel):
             input.type.imageType.height = 299
             input.type.imageType.colorSpace = BGR_VALUE
 
-            feature_layer = 'VisionFeaturePrint_Scene_output'
+            feature_layer = "VisionFeaturePrint_Scene_output"
             output = scene_print.description.output.add()
             output.name = feature_layer
             output.type.multiArrayType.dataType = DOUBLE_ARRAY_VALUE
@@ -578,7 +621,9 @@ class ImageSimilarityModel(_CustomModel):
 
             # Neural network builder
             input_features = [(feature_layer, _datatypes.Array(2048))]
-            builder = _neural_network.NeuralNetworkBuilder(input_features, output_features)
+            builder = _neural_network.NeuralNetworkBuilder(
+                input_features, output_features
+            )
 
         # To add the nearest neighbors model we add calculation of the euclidean
         # distance between the newly extracted query features (denoted by the vector u)
@@ -586,31 +631,55 @@ class ImageSimilarityModel(_CustomModel):
         # Calculation of sqrt((v_i-u)^2) = sqrt(v_i^2 - 2v_i*u + u^2) ensues.
         V = reference_data
         v_squared = (V * V).sum(axis=1)
-        builder.add_inner_product('v^2-2vu', W=-2 * V, b=v_squared, has_bias=True,
-                                  input_channels=embedding_size, output_channels=num_examples,
-                                  input_name=feature_layer, output_name='v^2-2vu')
+        builder.add_inner_product(
+            "v^2-2vu",
+            W=-2 * V,
+            b=v_squared,
+            has_bias=True,
+            input_channels=embedding_size,
+            output_channels=num_examples,
+            input_name=feature_layer,
+            output_name="v^2-2vu",
+        )
 
-        builder.add_unary('element_wise-u^2', mode='power', alpha=2,
-                          input_name=feature_layer, output_name='element_wise-u^2')
+        builder.add_unary(
+            "element_wise-u^2",
+            mode="power",
+            alpha=2,
+            input_name=feature_layer,
+            output_name="element_wise-u^2",
+        )
 
         # Produce a vector of length num_examples with all values equal to u^2
-        builder.add_inner_product('u^2', W=_np.ones((embedding_size, num_examples)),
-                                  b=None, has_bias=False,
-                                  input_channels=embedding_size, output_channels=num_examples,
-                                  input_name='element_wise-u^2', output_name='u^2')
+        builder.add_inner_product(
+            "u^2",
+            W=_np.ones((embedding_size, num_examples)),
+            b=None,
+            has_bias=False,
+            input_channels=embedding_size,
+            output_channels=num_examples,
+            input_name="element_wise-u^2",
+            output_name="u^2",
+        )
 
-        builder.add_elementwise('v^2-2vu+u^2', mode='ADD',
-                                input_names=['v^2-2vu', 'u^2'],
-                                output_name='v^2-2vu+u^2')
+        builder.add_elementwise(
+            "v^2-2vu+u^2",
+            mode="ADD",
+            input_names=["v^2-2vu", "u^2"],
+            output_name="v^2-2vu+u^2",
+        )
 
         # v^2-2vu+u^2=(v-u)^2 is non-negative but some computations on GPU may result in
         # small negative values. Apply RELU so we don't take the square root of negative values.
-        builder.add_activation('relu', non_linearity='RELU',
-                               input_name='v^2-2vu+u^2', output_name='relu')
-        builder.add_unary('sqrt', mode='sqrt', input_name='relu', output_name=output_name)
+        builder.add_activation(
+            "relu", non_linearity="RELU", input_name="v^2-2vu+u^2", output_name="relu"
+        )
+        builder.add_unary(
+            "sqrt", mode="sqrt", input_name="relu", output_name=output_name
+        )
 
         # Finalize model
-        if self.model != 'VisionFeaturePrint_Scene':
+        if self.model != "VisionFeaturePrint_Scene":
             builder.set_input([input_name], [self.input_image_shape])
             builder.set_output([output_name], [(num_examples,)])
             _cmt.models.utils.rename_feature(builder.spec, input_name, self.feature)
@@ -621,20 +690,25 @@ class ImageSimilarityModel(_CustomModel):
             mlmodel = _cmt.models.MLModel(top_spec)
 
         # Add metadata
-        model_type = 'image similarity'
+        model_type = "image similarity"
         mlmodel.short_description = _coreml_utils._mlmodel_short_description(model_type)
-        mlmodel.input_description[self.feature] = u'Input image'
-        mlmodel.output_description[output_name] = u'Distances between the input and reference images'
+        mlmodel.input_description[self.feature] = u"Input image"
+        mlmodel.output_description[
+            output_name
+        ] = u"Distances between the input and reference images"
 
         model_metadata = {
-             'model': self.model,
-             'num_examples': str(self.num_examples),
+            "model": self.model,
+            "num_examples": str(self.num_examples),
         }
         user_defined_metadata = model_metadata.update(
-                    _coreml_utils._get_tc_version_info())
-        _coreml_utils._set_model_metadata(mlmodel,
-                self.__class__.__name__,
-                user_defined_metadata,
-                version=ImageSimilarityModel._PYTHON_IMAGE_SIMILARITY_VERSION)
+            _coreml_utils._get_tc_version_info()
+        )
+        _coreml_utils._set_model_metadata(
+            mlmodel,
+            self.__class__.__name__,
+            user_defined_metadata,
+            version=ImageSimilarityModel._PYTHON_IMAGE_SIMILARITY_VERSION,
+        )
 
         mlmodel.save(filename)

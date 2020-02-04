@@ -13,7 +13,6 @@ from .. import config as tc_config
 
 
 class LoggingConfigurationTests(TestCase):
-
     def setUp(self):
         """
         Cleanup the existing log configuration.

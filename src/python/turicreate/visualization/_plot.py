@@ -10,41 +10,68 @@ from subprocess import PIPE as _PIPE
 
 LABEL_DEFAULT = "__TURI_DEFAULT_LABEL"
 
-_target = 'auto'
+_target = "auto"
 
 _SUCCESS = 0
 _CANVAS_PREBUILT_NOT_FOUND_ERROR = 1
 _NODE_NOT_FOUND_ERROR_CODE = 127
 _PERMISSION_DENIED_ERROR_CODE = 243
 
+
 def _get_client_app_path():
     (tcviz_dir, _) = _os.path.split(_os.path.dirname(__file__))
 
-    if _sys.platform != 'darwin' and _sys.platform != 'linux2' and _sys.platform != 'linux' :
-        raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+    if (
+        _sys.platform != "darwin"
+        and _sys.platform != "linux2"
+        and _sys.platform != "linux"
+    ):
+        raise NotImplementedError(
+            "Visualization is currently supported only on macOS and Linux."
+        )
 
-    if _sys.platform == 'darwin':
-        return _os.path.join(tcviz_dir, 'Turi Create Visualization.app', 'Contents', 'MacOS', 'Turi Create Visualization')
+    if _sys.platform == "darwin":
+        return _os.path.join(
+            tcviz_dir,
+            "Turi Create Visualization.app",
+            "Contents",
+            "MacOS",
+            "Turi Create Visualization",
+        )
 
-    if _sys.platform == 'linux2' or _sys.platform == 'linux':
-        return _os.path.join(tcviz_dir, 'Turi Create Visualization', 'visualization_client')
+    if _sys.platform == "linux2" or _sys.platform == "linux":
+        return _os.path.join(
+            tcviz_dir, "Turi Create Visualization", "visualization_client"
+        )
+
 
 def _ensure_web_server():
     import turicreate as tc
-    if (tc.config.get_runtime_config()['TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY'] == ''):
+
+    if (
+        tc.config.get_runtime_config()["TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY"]
+        == ""
+    ):
         path_to_client = _get_client_app_path()
-        tc.config.set_runtime_config('TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY',
-            _os.path.abspath(_os.path.join(_os.path.dirname(path_to_client), '..', 'Resources', 'build'))
+        tc.config.set_runtime_config(
+            "TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY",
+            _os.path.abspath(
+                _os.path.join(
+                    _os.path.dirname(path_to_client), "..", "Resources", "build"
+                )
+            ),
         )
+
 
 def _run_cmdline(command):
     # runs a shell command
     p = _Popen(args=command, stdout=_PIPE, stderr=_PIPE, shell=True)
-    stdout_feed, stderr_feed = p.communicate() # wait for completion
+    stdout_feed, stderr_feed = p.communicate()  # wait for completion
     exit_code = p.poll()
     return (exit_code, stdout_feed, stderr_feed)
 
-def set_target(target='auto'):
+
+def set_target(target="auto"):
     """
     Sets the target for visualizations launched with the `show`
     method. If unset, or if target is not provided, defaults to 'auto'.
@@ -69,8 +96,10 @@ def set_target(target='auto'):
         * 'none': prevent all visualizations from being displayed.
     """
     global _target
-    if target not in ['auto', 'browser', 'gui', 'none']:
-        raise ValueError("Expected target to be one of: 'auto', 'browser', 'gui', 'none'.")
+    if target not in ["auto", "browser", "gui", "none"]:
+        raise ValueError(
+            "Expected target to be one of: 'auto', 'browser', 'gui', 'none'."
+        )
     _target = target
 
 
@@ -99,9 +128,11 @@ class Plot(object):
     >>> plt.save('vega_spec.json', False)
 
     """
+
     def __init__(self, vega_spec=None, _proxy=None):
         if vega_spec is not None:
             import turicreate as tc
+
             self.__proxy__ = tc.extensions.plot_from_vega_spec(vega_spec)
         else:
             self.__proxy__ = _proxy
@@ -128,24 +159,27 @@ class Plot(object):
         global _target
 
         # Suppress visualization output if 'none' target is set
-        if _target == 'none':
+        if _target == "none":
             return
 
         # If browser target is set, launch in web browser
-        if _target == 'browser':
+        if _target == "browser":
             # First, make sure TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY is set
             _ensure_web_server()
 
             # Launch this plot's URL using Python built-in webbrowser module
             import webbrowser
+
             url = self.get_url()
             webbrowser.open_new_tab(url)
             return
 
         # If auto target is set, try to show inline in Jupyter Notebook
         try:
-            if _target == 'auto' and \
-               (get_ipython().__class__.__name__ == "ZMQInteractiveShell" or get_ipython().__class__.__name__ == "Shell"):
+            if _target == "auto" and (
+                get_ipython().__class__.__name__ == "ZMQInteractiveShell"
+                or get_ipython().__class__.__name__ == "Shell"
+            ):
                 self._repr_javascript_()
                 return
         except NameError:
@@ -161,8 +195,10 @@ class Plot(object):
 
         # TODO: allow autodetection of light/dark mode.
         # Disabled for now, since the GUI side needs some work (ie. background color).
-        plot_variation = 0x10 # force light mode
-        self.__proxy__.call_function('show', {'path_to_client': path_to_client, 'variation': plot_variation})
+        plot_variation = 0x10  # force light mode
+        self.__proxy__.call_function(
+            "show", {"path_to_client": path_to_client, "variation": plot_variation}
+        )
 
     def save(self, filepath):
         """
@@ -198,56 +234,74 @@ class Plot(object):
 
         if filepath.endswith(".json"):
             # save as vega json
-            spec = self.get_vega(include_data = True)
-            with open(filepath, 'w') as fp:
+            spec = self.get_vega(include_data=True)
+            with open(filepath, "w") as fp:
                 _json.dump(spec, fp)
         elif filepath.endswith(".png") or filepath.endswith(".svg"):
             # save as png/svg, but json first
-            spec = self.get_vega(include_data = True)
+            spec = self.get_vega(include_data=True)
             EXTENSION_START_INDEX = -3
             extension = filepath[EXTENSION_START_INDEX:]
             temp_file_tuple = _mkstemp()
             temp_file_path = temp_file_tuple[1]
-            with open(temp_file_path, 'w') as fp:
+            with open(temp_file_path, "w") as fp:
                 _json.dump(spec, fp)
             dirname = _os.path.dirname(__file__)
             relative_path_to_vg2png_vg2svg = "../vg2" + extension
-            absolute_path_to_vg2png_vg2svg = _os.path.join(dirname,
-                relative_path_to_vg2png_vg2svg)
+            absolute_path_to_vg2png_vg2svg = _os.path.join(
+                dirname, relative_path_to_vg2png_vg2svg
+            )
             # try node vg2[png|svg] json_filepath out_filepath
-            (exitcode, stdout, stderr) = _run_cmdline("node " +
-                absolute_path_to_vg2png_vg2svg + " "
-                + temp_file_path + " " + filepath)
+            (exitcode, stdout, stderr) = _run_cmdline(
+                "node "
+                + absolute_path_to_vg2png_vg2svg
+                + " "
+                + temp_file_path
+                + " "
+                + filepath
+            )
 
             if exitcode == _NODE_NOT_FOUND_ERROR_CODE:
                 # user doesn't have node installed
-                raise RuntimeError("Node.js not found. Saving as PNG and SVG" +
-                    " requires Node.js, please download and install Node.js " +
-                    "from here and try again: https://nodejs.org/en/download/")
+                raise RuntimeError(
+                    "Node.js not found. Saving as PNG and SVG"
+                    + " requires Node.js, please download and install Node.js "
+                    + "from here and try again: https://nodejs.org/en/download/"
+                )
             elif exitcode == _CANVAS_PREBUILT_NOT_FOUND_ERROR:
                 # try to see if canvas-prebuilt is globally installed
                 # if it is, then link it
                 # if not, tell the user to install it
-                (is_installed_exitcode,
+                (
+                    is_installed_exitcode,
                     is_installed_stdout,
-                    is_installed_stderr) =  _run_cmdline(
-                    "npm ls -g -json | grep canvas-prebuilt")
+                    is_installed_stderr,
+                ) = _run_cmdline("npm ls -g -json | grep canvas-prebuilt")
                 if is_installed_exitcode == _SUCCESS:
                     # npm link canvas-prebuilt
                     link_exitcode, link_stdout, link_stderr = _run_cmdline(
-                        "npm link canvas-prebuilt")
+                        "npm link canvas-prebuilt"
+                    )
                     if link_exitcode == _PERMISSION_DENIED_ERROR_CODE:
                         # They don't have permission, tell them.
-                        raise RuntimeError(link_stderr + '\n\n' +
-                            "`npm link canvas-prebuilt` failed, " +
-                            "Permission Denied.")
+                        raise RuntimeError(
+                            link_stderr
+                            + "\n\n"
+                            + "`npm link canvas-prebuilt` failed, "
+                            + "Permission Denied."
+                        )
                     elif link_exitcode == _SUCCESS:
                         # canvas-prebuilt link is now successful, so run the
                         # node vg2[png|svg] json_filepath out_filepath
                         # command again.
-                        (exitcode, stdout, stderr) = _run_cmdline("node " +
-                            absolute_path_to_vg2png_vg2svg + " "
-                            + temp_file_path + " " + filepath)
+                        (exitcode, stdout, stderr) = _run_cmdline(
+                            "node "
+                            + absolute_path_to_vg2png_vg2svg
+                            + " "
+                            + temp_file_path
+                            + " "
+                            + filepath
+                        )
                         if exitcode != _SUCCESS:
                             # something else that we have not identified yet
                             # happened.
@@ -255,11 +309,13 @@ class Plot(object):
                     else:
                         raise RuntimeError(link_stderr)
                 else:
-                    raise RuntimeError("canvas-prebuilt not found. " +
-                        "Saving as PNG and SVG requires canvas-prebuilt, " +
-                        "please download and install canvas-prebuilt by " +
-                        "running this command, and try again: " +
-                        "`npm install -g canvas-prebuilt`")
+                    raise RuntimeError(
+                        "canvas-prebuilt not found. "
+                        + "Saving as PNG and SVG requires canvas-prebuilt, "
+                        + "please download and install canvas-prebuilt by "
+                        + "running this command, and try again: "
+                        + "`npm install -g canvas-prebuilt`"
+                    )
             elif exitcode == _SUCCESS:
                 pass
             else:
@@ -267,20 +323,23 @@ class Plot(object):
             # delete temp file that user didn't ask for
             _run_cmdline("rm " + temp_file_path)
         else:
-            raise NotImplementedError("filename must end in" +
-                " .json, .svg, or .png")
+            raise NotImplementedError("filename must end in" + " .json, .svg, or .png")
 
     def get_data(self):
-        return _json.loads(self.__proxy__.call_function('get_data'))
+        return _json.loads(self.__proxy__.call_function("get_data"))
 
     def get_vega(self, include_data=True):
         # TODO: allow autodetection of light/dark mode.
         # Disabled for now, since the GUI side needs some work (ie. background color).
-        plot_variation = 0x10 # force light mode
-        return _json.loads(self.__proxy__.call_function('get_spec', {'include_data': include_data, 'variation': plot_variation}))
+        plot_variation = 0x10  # force light mode
+        return _json.loads(
+            self.__proxy__.call_function(
+                "get_spec", {"include_data": include_data, "variation": plot_variation}
+            )
+        )
 
     def materialize(self):
-        self.__proxy__.call_function('materialize')
+        self.__proxy__.call_function("materialize")
 
     def get_url(self):
         """
@@ -290,7 +349,7 @@ class Plot(object):
         --------
         The URL will be served by Turi Create on http://localhost.
         """
-        return self.__proxy__.call_function('get_url')
+        return self.__proxy__.call_function("get_url")
 
     def _repr_javascript_(self):
         from IPython.core.display import display, HTML
@@ -298,7 +357,8 @@ class Plot(object):
         self.materialize()
         vega_spec = self.get_vega(True)
 
-        vega_html = '<html lang="en"> \
+        vega_html = (
+            '<html lang="en"> \
                         <head> \
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/vega/5.4.0/vega.js"></script> \
                             <script src="https://cdnjs.cloudflare.com/ajax/libs/vega-embed/4.0.0/vega-embed.js"></script> \
@@ -330,7 +390,11 @@ class Plot(object):
                             <div id="vis"> \
                             </div> \
                             <script> \
-                                var vega_json = '+_json.dumps(_json.dumps(vega_spec)).replace("&", "&amp;").replace("'", "&apos;")+'; \
+                                var vega_json = '
+            + _json.dumps(_json.dumps(vega_spec))
+            .replace("&", "&amp;")
+            .replace("'", "&apos;")
+            + '; \
                                 var vega_json_parsed = JSON.parse(vega_json); \
                                 var toolTipOpts = { \
                                     showAllFields: true \
@@ -346,14 +410,28 @@ class Plot(object):
                             </script> \
                         </body> \
                     </html>'
+        )
 
-        display(HTML('<html> \
+        display(
+            HTML(
+                '<html> \
                 <body> \
-                    <iframe style="border:0;margin:0" width="'+str((vega_spec["width"] if "width" in vega_spec else 600)+200)+'" height="'+str(vega_spec["height"]+220)+'" srcdoc='+"'"+vega_html+"'"+' src="demo_iframe_srcdoc.htm"> \
+                    <iframe style="border:0;margin:0" width="'
+                + str((vega_spec["width"] if "width" in vega_spec else 600) + 200)
+                + '" height="'
+                + str(vega_spec["height"] + 220)
+                + '" srcdoc='
+                + "'"
+                + vega_html
+                + "'"
+                + ' src="demo_iframe_srcdoc.htm"> \
                         <p>Your browser does not support iframes.</p> \
                     </iframe> \
                 </body> \
-            </html>'));
+            </html>'
+            )
+        )
+
 
 def display_table_in_notebook(sf, title=None):
     from IPython.core.display import display
@@ -365,32 +443,48 @@ def display_table_in_notebook(sf, title=None):
 
     def image_formatter(im):
         image_buffer = BytesIO()
-        im.save(image_buffer, format='PNG')
-        return "<img src=\"data:image/png;base64," + base64.b64encode(image_buffer.getvalue()).decode() + "\"/>"
+        im.save(image_buffer, format="PNG")
+        return (
+            '<img src="data:image/png;base64,'
+            + base64.b64encode(image_buffer.getvalue()).decode()
+            + '"/>'
+        )
 
     import pandas as pd
+
     maximum_rows = 100
     if len(sf) > maximum_rows:
         import warnings
-        warnings.warn('Displaying only the first {} rows.'.format(maximum_rows))
+
+        warnings.warn("Displaying only the first {} rows.".format(maximum_rows))
         sf = sf[:maximum_rows]
-    
+
     check_image_column = [_Image == x for x in sf.column_types()]
     zipped_image_columns = zip(sf.column_names(), check_image_column)
     image_columns = filter(lambda a: a[1], zipped_image_columns)
     image_key = [x[0] for x in image_columns]
-    image_column_formatter = dict.fromkeys(image_key , image_formatter)
+    image_column_formatter = dict.fromkeys(image_key, image_formatter)
 
-    with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.max_colwidth', -1):
+    with pd.option_context(
+        "display.max_rows",
+        None,
+        "display.max_columns",
+        None,
+        "display.max_colwidth",
+        -1,
+    ):
         if _sys.version_info.major < 3:
             import cgi
-            title = cgi.escape(title,quote = True)
+
+            title = cgi.escape(title, quote=True)
         else:
             import html
-            title = html.escape(title,quote = True)
+
+            title = html.escape(title, quote=True)
 
         df = sf.to_dataframe()
-        html_string =  '<html lang="en">                           \
+        html_string = (
+            '<html lang="en">                           \
                           <head>                                   \
                             <style>                                \
                               .sframe {                            \
@@ -456,9 +550,16 @@ def display_table_in_notebook(sf, title=None):
                             </style>                               \
                           </head>                                  \
                           <body>                                   \
-                            <h1> '+ title +' </h1>                 \
-                            '+df.to_html(formatters=image_column_formatter, escape=False, classes='sframe')+'\
+                            <h1> '
+            + title
+            + " </h1>                 \
+                            "
+            + df.to_html(
+                formatters=image_column_formatter, escape=False, classes="sframe"
+            )
+            + "\
                           </body>                                  \
-                        </html>'
+                        </html>"
+        )
 
         display(HTML(html_string))

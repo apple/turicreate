@@ -16,34 +16,41 @@ from turicreate.data_structures.sframe import SFrame as _SFrame
 from turicreate.data_structures.sarray import SArray as _SArray
 from turicreate.toolkits.text_analytics._util import _check_input
 from turicreate.toolkits.text_analytics._util import random_split as _random_split
-from turicreate.toolkits._internal_utils import _check_categorical_option_type, \
-                                            _precomputed_field, \
-                                            _toolkit_repr_print
+from turicreate.toolkits._internal_utils import (
+    _check_categorical_option_type,
+    _precomputed_field,
+    _toolkit_repr_print,
+)
 
 
 import sys as _sys
+
 if _sys.version_info.major == 3:
     _izip = zip
     _xrange = range
 else:
     from itertools import izip as _izip
+
     _xrange = xrange
 
 import operator as _operator
 import array as _array
 
-def create(dataset,
-           num_topics=10,
-           initial_topics=None,
-           alpha=None,
-           beta=.1,
-           num_iterations=10,
-           num_burnin=5,
-           associations=None,
-           verbose=False,
-           print_interval=10,
-           validation_set=None,
-           method='auto'):
+
+def create(
+    dataset,
+    num_topics=10,
+    initial_topics=None,
+    alpha=None,
+    beta=0.1,
+    num_iterations=10,
+    num_burnin=5,
+    associations=None,
+    verbose=False,
+    print_interval=10,
+    validation_set=None,
+    method="auto",
+):
     """
     Create a topic model from the given data set. A topic model assumes each
     document is a mixture of a set of topics, where for each topic some words
@@ -193,24 +200,22 @@ def create(dataset,
     """
     dataset = _check_input(dataset)
 
-    _check_categorical_option_type("method", method, ['auto', 'cgs', 'alias'])
-    if method == 'cgs' or method == 'auto':
-        model_name = 'cgs_topic_model'
+    _check_categorical_option_type("method", method, ["auto", "cgs", "alias"])
+    if method == "cgs" or method == "auto":
+        model_name = "cgs_topic_model"
     else:
-        model_name = 'alias_topic_model'
+        model_name = "alias_topic_model"
 
     # If associations are provided, check they are in the proper format
     if associations is None:
-        associations = _turicreate.SFrame({'word': [], 'topic': []})
-    if isinstance(associations, _turicreate.SFrame) and \
-       associations.num_rows() > 0:
-        assert set(associations.column_names()) == set(['word', 'topic']), \
-            "Provided associations must be an SFrame containing a word column\
+        associations = _turicreate.SFrame({"word": [], "topic": []})
+    if isinstance(associations, _turicreate.SFrame) and associations.num_rows() > 0:
+        assert set(associations.column_names()) == set(
+            ["word", "topic"]
+        ), "Provided associations must be an SFrame containing a word column\
              and a topic column."
-        assert associations['word'].dtype == str, \
-            "Words must be strings."
-        assert associations['topic'].dtype == int, \
-            "Topic ids must be of int type."
+        assert associations["word"].dtype == str, "Words must be strings."
+        assert associations["topic"].dtype == int, "Topic ids must be of int type."
     if alpha is None:
         alpha = float(50) / num_topics
 
@@ -224,49 +229,56 @@ def create(dataset,
         validation_train = _SArray()
         validation_test = _SArray()
 
-    opts = {'model_name': model_name,
-            'data': dataset,
-            'num_topics': num_topics,
-            'num_iterations': num_iterations,
-            'print_interval': print_interval,
-            'alpha': alpha,
-            'beta': beta,
-            'num_burnin': num_burnin,
-            'associations': associations}
+    opts = {
+        "model_name": model_name,
+        "data": dataset,
+        "num_topics": num_topics,
+        "num_iterations": num_iterations,
+        "print_interval": print_interval,
+        "alpha": alpha,
+        "beta": beta,
+        "num_burnin": num_burnin,
+        "associations": associations,
+    }
 
     # Initialize the model with basic parameters
     response = _turicreate.extensions._text.topicmodel_init(opts)
-    m = TopicModel(response['model'])
+    m = TopicModel(response["model"])
 
     # If initial_topics provided, load it into the model
     if isinstance(initial_topics, _turicreate.SFrame):
-        assert set(['vocabulary', 'topic_probabilities']) ==              \
-               set(initial_topics.column_names()),                        \
-            "The provided initial_topics does not have the proper format, \
+        assert set(["vocabulary", "topic_probabilities"]) == set(
+            initial_topics.column_names()
+        ), "The provided initial_topics does not have the proper format, \
              e.g. wrong column names."
-        observed_topics = initial_topics['topic_probabilities'].apply(lambda x: len(x))
-        assert all(observed_topics == num_topics),                        \
-            "Provided num_topics value does not match the number of provided initial_topics."
+        observed_topics = initial_topics["topic_probabilities"].apply(lambda x: len(x))
+        assert all(
+            observed_topics == num_topics
+        ), "Provided num_topics value does not match the number of provided initial_topics."
 
         # Rough estimate of total number of words
         weight = len(dataset) * 1000
 
-        opts = {'model': m.__proxy__,
-                'topics': initial_topics['topic_probabilities'],
-                'vocabulary': initial_topics['vocabulary'],
-                'weight': weight}
+        opts = {
+            "model": m.__proxy__,
+            "topics": initial_topics["topic_probabilities"],
+            "vocabulary": initial_topics["vocabulary"],
+            "weight": weight,
+        }
         response = _turicreate.extensions._text.topicmodel_set_topics(opts)
-        m = TopicModel(response['model'])
+        m = TopicModel(response["model"])
 
     # Train the model on the given data set and retrieve predictions
-    opts = {'model': m.__proxy__,
-            'data': dataset,
-            'verbose': verbose,
-            'validation_train': validation_train,
-            'validation_test': validation_test}
+    opts = {
+        "model": m.__proxy__,
+        "data": dataset,
+        "verbose": verbose,
+        "validation_train": validation_train,
+        "validation_test": validation_test,
+    }
 
     response = _turicreate.extensions._text.topicmodel_train(opts)
-    m = TopicModel(response['model'])
+    m = TopicModel(response["model"])
 
     return m
 
@@ -317,24 +329,22 @@ class TopicModel(_Model):
             A list of section titles.
               The order matches that of the 'sections' object.
         """
-        section_titles=['Schema','Settings']
+        section_titles = ["Schema", "Settings"]
 
         vocab_length = len(self.vocabulary)
         verbose = self.verbose == 1
 
-        sections=[
-                    [
-                        ('Vocabulary Size',_precomputed_field(vocab_length))
-                    ],
-                    [
-                        ('Number of Topics', 'num_topics'),
-                        ('alpha','alpha'),
-                        ('beta','beta'),
-                        ('Iterations', 'num_iterations'),
-                        ('Training time', 'training_time'),
-                        ('Verbose', _precomputed_field(verbose))
-                    ]
-                ]
+        sections = [
+            [("Vocabulary Size", _precomputed_field(vocab_length))],
+            [
+                ("Number of Topics", "num_topics"),
+                ("alpha", "alpha"),
+                ("beta", "beta"),
+                ("Iterations", "num_iterations"),
+                ("Training time", "training_time"),
+                ("Verbose", _precomputed_field(verbose)),
+            ],
+        ]
         return (sections, section_titles)
 
     def __repr__(self):
@@ -350,14 +360,29 @@ class TopicModel(_Model):
 
         extra = []
         extra.append(key_str.format("Accessible fields", width, ""))
-        extra.append(key_str.format("m.topics",width,"An SFrame containing the topics."))
-        extra.append(key_str.format("m.vocabulary",width,"An SArray containing the words in the vocabulary."))
+        extra.append(
+            key_str.format("m.topics", width, "An SFrame containing the topics.")
+        )
+        extra.append(
+            key_str.format(
+                "m.vocabulary",
+                width,
+                "An SArray containing the words in the vocabulary.",
+            )
+        )
         extra.append(key_str.format("Useful methods", width, ""))
-        extra.append(key_str.format("m.get_topics()",width,"Get the most probable words per topic."))
-        extra.append(key_str.format("m.predict(new_docs)",width,"Make predictions for new documents."))
+        extra.append(
+            key_str.format(
+                "m.get_topics()", width, "Get the most probable words per topic."
+            )
+        )
+        extra.append(
+            key_str.format(
+                "m.predict(new_docs)", width, "Make predictions for new documents."
+            )
+        )
 
-        return out + '\n' + '\n'.join(extra)
-
+        return out + "\n" + "\n".join(extra)
 
     def _get(self, field):
         """
@@ -389,9 +414,9 @@ class TopicModel(_Model):
             Value of the requested field.
         """
 
-        opts = {'model': self.__proxy__, 'field': field}
+        opts = {"model": self.__proxy__, "field": field}
         response = _turicreate.extensions._text.topicmodel_get_value(opts)
-        return response['value']
+        return response["value"]
 
     def _training_stats(self):
         """
@@ -419,16 +444,20 @@ class TopicModel(_Model):
         """
 
         fields = self._list_fields()
-        stat_fields = ['training_time',
-                       'training_iterations']
-        if 'validation_perplexity' in fields:
-            stat_fields.append('validation_perplexity')
+        stat_fields = ["training_time", "training_iterations"]
+        if "validation_perplexity" in fields:
+            stat_fields.append("validation_perplexity")
 
-        ret = {k : self._get(k) for k in stat_fields}
+        ret = {k: self._get(k) for k in stat_fields}
         return ret
 
-    def get_topics(self, topic_ids=None, num_words=5, cdf_cutoff=1.0,
-                   output_type='topic_probabilities'):
+    def get_topics(
+        self,
+        topic_ids=None,
+        num_words=5,
+        cdf_cutoff=1.0,
+        output_type="topic_probabilities",
+    ):
 
         """
         Get the words associated with a given topic. The score column is the
@@ -533,41 +562,48 @@ class TopicModel(_Model):
          ['hidden', 'layer', 'system', 'training', 'vector'],
          ['component', 'distribution', 'local', 'model', 'optimal']]
         """
-        _check_categorical_option_type('output_type', output_type,
-            ['topic_probabilities', 'topic_words'])
+        _check_categorical_option_type(
+            "output_type", output_type, ["topic_probabilities", "topic_words"]
+        )
 
         if topic_ids is None:
-            topic_ids = list(range(self._get('num_topics')))
+            topic_ids = list(range(self._get("num_topics")))
 
-        assert isinstance(topic_ids, list), \
-            "The provided topic_ids is not a list."
+        assert isinstance(topic_ids, list), "The provided topic_ids is not a list."
 
         if any([type(x) == str for x in topic_ids]):
-            raise ValueError("Only integer topic_ids can be used at this point in time.")
+            raise ValueError(
+                "Only integer topic_ids can be used at this point in time."
+            )
         if not all([x >= 0 and x < self.num_topics for x in topic_ids]):
-            raise ValueError("Topic id values must be non-negative and less than the " + \
-                "number of topics used to fit the model.")
+            raise ValueError(
+                "Topic id values must be non-negative and less than the "
+                + "number of topics used to fit the model."
+            )
 
-        opts = {'model': self.__proxy__,
-                'topic_ids': topic_ids,
-                'num_words': num_words,
-                'cdf_cutoff': cdf_cutoff}
+        opts = {
+            "model": self.__proxy__,
+            "topic_ids": topic_ids,
+            "num_words": num_words,
+            "cdf_cutoff": cdf_cutoff,
+        }
         response = _turicreate.extensions._text.topicmodel_get_topic(opts)
-        ret = response['top_words']
+        ret = response["top_words"]
 
         def sort_wordlist_by_prob(z):
             words = sorted(z.items(), key=_operator.itemgetter(1), reverse=True)
             return [word for (word, prob) in words]
 
-        if output_type != 'topic_probabilities':
-            ret = ret.groupby('topic',
-                    {'word': _turicreate.aggregate.CONCAT('word', 'score')})
-            words = ret.sort('topic')['word'].apply(sort_wordlist_by_prob)
-            ret = _SFrame({'words': words})
+        if output_type != "topic_probabilities":
+            ret = ret.groupby(
+                "topic", {"word": _turicreate.aggregate.CONCAT("word", "score")}
+            )
+            words = ret.sort("topic")["word"].apply(sort_wordlist_by_prob)
+            ret = _SFrame({"words": words})
 
         return ret
 
-    def predict(self, dataset, output_type='assignment', num_burnin=None):
+    def predict(self, dataset, output_type="assignment", num_burnin=None):
         """
         Use the model to predict topics for each document. The provided
         `dataset` should be an SArray object where each element is a dict
@@ -646,21 +682,18 @@ class TopicModel(_Model):
         if num_burnin is None:
             num_burnin = self.num_burnin
 
-        opts = {'model': self.__proxy__,
-                'data': dataset,
-                'num_burnin': num_burnin}
+        opts = {"model": self.__proxy__, "data": dataset, "num_burnin": num_burnin}
         response = _turicreate.extensions._text.topicmodel_predict(opts)
-        preds = response['predictions']
+        preds = response["predictions"]
 
         # Get most likely topic if probabilities are not requested
-        if output_type not in ['probability', 'probabilities', 'prob']:
+        if output_type not in ["probability", "probabilities", "prob"]:
             # equivalent to numpy.argmax(x)
             preds = preds.apply(lambda x: max(_izip(x, _xrange(len(x))))[1])
 
         return preds
 
-
-    def evaluate(self, train_data, test_data=None, metric='perplexity'):
+    def evaluate(self, train_data, test_data=None, metric="perplexity"):
         """
         Estimate the model's ability to predict new data. Imagine you have a
         corpus of books. One common approach to evaluating topic models is to
@@ -720,14 +753,13 @@ class TopicModel(_Model):
         else:
             test_data = _check_input(test_data)
 
-        predictions = self.predict(train_data, output_type='probability')
+        predictions = self.predict(train_data, output_type="probability")
         topics = self.topics
 
         ret = {}
-        ret['perplexity'] = perplexity(test_data,
-                                       predictions,
-                                       topics['topic_probabilities'],
-                                       topics['vocabulary'])
+        ret["perplexity"] = perplexity(
+            test_data, predictions, topics["topic_probabilities"], topics["vocabulary"]
+        )
         return ret
 
 
@@ -806,15 +838,19 @@ def perplexity(test_data, predictions, topics, vocabulary):
     1720.7  # lower values are better
     """
     test_data = _check_input(test_data)
-    assert isinstance(predictions, _SArray), \
-        "Predictions must be an SArray of vector type."
-    assert predictions.dtype == _array.array, \
-        "Predictions must be probabilities. Try using m.predict() with " + \
-        "output_type='probability'."
+    assert isinstance(
+        predictions, _SArray
+    ), "Predictions must be an SArray of vector type."
+    assert predictions.dtype == _array.array, (
+        "Predictions must be probabilities. Try using m.predict() with "
+        + "output_type='probability'."
+    )
 
-    opts = {'test_data': test_data,
-            'predictions': predictions,
-            'topics': topics,
-            'vocabulary': vocabulary}
+    opts = {
+        "test_data": test_data,
+        "predictions": predictions,
+        "topics": topics,
+        "vocabulary": vocabulary,
+    }
     response = _turicreate.extensions._text.topicmodel_get_perplexity(opts)
-    return response['perplexity']
+    return response["perplexity"]

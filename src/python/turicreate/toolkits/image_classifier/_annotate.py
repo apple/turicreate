@@ -16,7 +16,8 @@ from turicreate._cython.cy_server import QuietProgress as _QuietProgress
 
 import turicreate as __tc
 
-def annotate(data, image_column=None, annotation_column='annotations'):
+
+def annotate(data, image_column=None, annotation_column="annotations"):
     """
     Annotate images using a GUI assisted application. When the GUI is
     terminated an SFrame with the representative images and annotations is
@@ -72,10 +73,10 @@ def annotate(data, image_column=None, annotation_column='annotations'):
     # Check Value of Column Variables
     if not isinstance(data, __tc.SFrame):
         raise TypeError('"data" must be of type SFrame.')
-    
+
     # Check if Value is Empty
     if data.num_rows() == 0:
-        raise Exception('input data cannot be empty')
+        raise Exception("input data cannot be empty")
 
     if image_column == None:
         image_column = _tkutl._find_only_image_column(data)
@@ -92,34 +93,32 @@ def annotate(data, image_column=None, annotation_column='annotations'):
     if type(annotation_column) != str:
         raise TypeError("'annotation_column' has to be of type 'str'")
 
-
     # Check Data Structure
     if type(data) == __tc.data_structures.image.Image:
-        data = __tc.SFrame({image_column:__tc.SArray([data])})
+        data = __tc.SFrame({image_column: __tc.SArray([data])})
 
     elif type(data) == __tc.data_structures.sframe.SFrame:
-        if(data.shape[0] == 0):
+        if data.shape[0] == 0:
             return data
         if not (data[image_column].dtype == __tc.data_structures.image.Image):
             raise TypeError("'data[image_column]' must be an SFrame or SArray")
 
     elif type(data) == __tc.data_structures.sarray.SArray:
-        if(data.shape[0] == 0):
+        if data.shape[0] == 0:
             return data
 
-        data = __tc.SFrame({image_column:data})
+        data = __tc.SFrame({image_column: data})
     else:
         raise TypeError("'data' must be an SFrame or SArray")
 
     annotation_window = __tc.extensions.create_image_classification_annotation(
-                            data,
-                            [image_column],
-                            annotation_column
-                        )
+        data, [image_column], annotation_column
+    )
 
     with _QuietProgress(False):
         annotation_window.annotate(_get_client_app_path())
         return annotation_window.returnAnnotations()
+
 
 def recover_annotation():
     """

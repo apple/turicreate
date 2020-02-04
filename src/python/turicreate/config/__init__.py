@@ -13,23 +13,28 @@ import time as _time
 import re as _re
 
 # Return the root package name
-_root_package_name = 'turicreate'
-_client_log_file = _os.path.join(_tempfile.gettempdir(),
-                                _root_package_name +
-                                '_client_%d_%d.log' % (_time.time(), _os.getpid()))
+_root_package_name = "turicreate"
+_client_log_file = _os.path.join(
+    _tempfile.gettempdir(),
+    _root_package_name + "_client_%d_%d.log" % (_time.time(), _os.getpid()),
+)
+
 
 def _get_log_location():
     from .._connect import main as _glconnect
+
     server = _glconnect.get_server()
-    if hasattr(server, 'unity_log'):
+    if hasattr(server, "unity_log"):
         return server.unity_log
     else:
         return None
+
 
 def _i_am_a_lambda_worker():
     if _re.match(".*lambda_worker.*", _sys.argv[0]) is not None:
         return True
     return False
+
 
 def init_logger():
     """
@@ -41,40 +46,37 @@ def init_logger():
     import logging.config
 
     # Package level logger
-    _logging.config.dictConfig({
-        'version': 1,
-        'disable_existing_loggers': False,
-        'formatters': {
-            'standard': {
-                'format': '%(asctime)s [%(levelname)s] %(name)s, %(lineno)s: %(message)s'
+    _logging.config.dictConfig(
+        {
+            "version": 1,
+            "disable_existing_loggers": False,
+            "formatters": {
+                "standard": {
+                    "format": "%(asctime)s [%(levelname)s] %(name)s, %(lineno)s: %(message)s"
+                },
+                "brief": {"format": "[%(levelname)s] %(name)s: %(message)s"},
             },
-            'brief': {
-                'format': '[%(levelname)s] %(name)s: %(message)s'
-            }
-        },
-        'handlers': {
-            'default': {
-                'class': 'logging.StreamHandler',
-                'formatter': 'brief'
+            "handlers": {
+                "default": {"class": "logging.StreamHandler", "formatter": "brief"},
+                "file": {
+                    "class": "logging.FileHandler",
+                    "formatter": "standard",
+                    "filename": _client_log_file,
+                    "encoding": "UTF-8",
+                    "delay": "False",
+                },
             },
-            'file': {
-                'class': 'logging.FileHandler',
-                'formatter': 'standard',
-                'filename': _client_log_file,
-                'encoding': 'UTF-8',
-                'delay': 'False',
-            }
-        },
-        'loggers': {
-            _root_package_name: {
-                'handlers': ['default', 'file'],
-                'propagate': 'True'
-            }
+            "loggers": {
+                _root_package_name: {
+                    "handlers": ["default", "file"],
+                    "propagate": "True",
+                }
+            },
         }
-    })
+    )
 
     # Set module specific log levels
-    _logging.getLogger('requests').setLevel(_logging.CRITICAL)
+    _logging.getLogger("requests").setLevel(_logging.CRITICAL)
     if _i_am_a_lambda_worker():
         _logging.getLogger(_root_package_name).setLevel(_logging.WARNING)
     else:
@@ -84,17 +86,20 @@ def init_logger():
 # Let's call init_logger on import
 init_logger()
 
+
 def get_client_log_location():
     """
     Get the location of client logs
     """
     return _client_log_file
 
+
 def get_server_log_location():
     """
     Get the locations of server logs
     """
     return _get_log_location()
+
 
 def set_num_gpus(num_gpus):
     """
@@ -127,9 +132,9 @@ def set_num_gpus(num_gpus):
       >> turicreate.config.set_num_gpus(1)
       >> turicreate.image_classifier.create(data, target='label')
     """
-    if(num_gpus < -1):
+    if num_gpus < -1:
         raise ValueError("'num_gpus' must be greater than or equal to -1")
-    set_runtime_config('TURI_NUM_GPUS', num_gpus)
+    set_runtime_config("TURI_NUM_GPUS", num_gpus)
 
 
 def get_num_gpus():
@@ -140,7 +145,8 @@ def get_num_gpus():
     --------
     set_num_gpus
     """
-    return get_runtime_config()['TURI_NUM_GPUS']
+    return get_runtime_config()["TURI_NUM_GPUS"]
+
 
 def get_environment_config():
     """
@@ -156,8 +162,10 @@ def get_environment_config():
     Returns a dictionary of {key:value,..}
     """
     from .._connect import main as _glconnect
+
     unity = _glconnect.get_unity()
     return unity.list_globals(False)
+
 
 def set_log_level(level):
     """
@@ -166,6 +174,7 @@ def set_log_level(level):
     if level is 8, nothing is logged. If level is 0, everything is logged.
     """
     from .._connect import main as _glconnect
+
     unity = _glconnect.get_unity()
     return unity.set_log_level(level)
 
@@ -185,8 +194,10 @@ def get_runtime_config():
     set_runtime_config
     """
     from .._connect import main as _glconnect
+
     unity = _glconnect.get_unity()
     return unity.list_globals(True)
+
 
 def set_runtime_config(name, value):
     """
@@ -306,6 +317,7 @@ def set_runtime_config(name, value):
       file handle limit with "ulimit -n").  Defaults to 128.
     """
     from .._connect import main as _glconnect
+
     unity = _glconnect.get_unity()
     ret = unity.set_global(name, value)
     if ret != "":

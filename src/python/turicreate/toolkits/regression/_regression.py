@@ -11,8 +11,8 @@ from turicreate.toolkits import _supervised_learning as _sl
 from turicreate.toolkits._internal_utils import _validate_data
 from turicreate._cython.cy_server import QuietProgress
 
-def create(dataset, target, features=None, validation_set = 'auto',
-        verbose=True):
+
+def create(dataset, target, features=None, validation_set="auto", verbose=True):
     """
     Automatically create a suitable regression model based on the provided
     training data.
@@ -105,12 +105,12 @@ def create(dataset, target, features=None, validation_set = 'auto',
 
     """
 
-    dataset, validation_set = _validate_data(dataset, target, features,
-                                             validation_set)
+    dataset, validation_set = _validate_data(dataset, target, features, validation_set)
     if validation_set is None:
         validation_set = _turicreate.SFrame()
 
     model_proxy = _turicreate.extensions.create_automatic_regression_model(
-        dataset, target, validation_set, {})
+        dataset, target, validation_set, {}
+    )
 
     return _sl.wrap_model_proxy(model_proxy)

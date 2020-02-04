@@ -14,6 +14,7 @@ import numpy
 
 import os as _os
 
+
 class Config:
     is_debug = False  # always set this to False in production
     level = 0
@@ -27,14 +28,14 @@ class GBDTNode:
     NODE_TYPE_INDICATOR = 2
     NODE_TYPE_LEAF = 3
     type2typeid = {
-        'indicator': NODE_TYPE_INDICATOR,
-        'integer': NODE_TYPE_INT,
-        'leaf': NODE_TYPE_LEAF
+        "indicator": NODE_TYPE_INDICATOR,
+        "integer": NODE_TYPE_INT,
+        "leaf": NODE_TYPE_LEAF,
     }
     typeid2type = {
-        NODE_TYPE_INDICATOR: 'indicator',
-        NODE_TYPE_INT: 'integer',
-        NODE_TYPE_LEAF: 'leaf'
+        NODE_TYPE_INDICATOR: "indicator",
+        NODE_TYPE_INT: "integer",
+        NODE_TYPE_LEAF: "leaf",
     }
 
     def __init__(self, node_type, value, gid, name, left=None, right=None):
@@ -47,46 +48,46 @@ class GBDTNode:
 
     @classmethod
     def load_vertex(cls, v):
-        node_type = GBDTNode.type2typeid[v['type']]
-        name = v['name'] if (node_type != GBDTNode.NODE_TYPE_LEAF) else ''
-        gid = v['id']
-        value = v['value']
+        node_type = GBDTNode.type2typeid[v["type"]]
+        name = v["name"] if (node_type != GBDTNode.NODE_TYPE_LEAF) else ""
+        gid = v["id"]
+        value = v["value"]
         return GBDTNode(node_type, value, gid, name)
 
     @classmethod
     def load_turicreate_json_tree(cls, jstree):
-        vertices = jstree['vertices']
-        edges = jstree['edges']
-        vtup = map(lambda x: (x['id'], GBDTNode.load_vertex(x)), vertices)
+        vertices = jstree["vertices"]
+        edges = jstree["edges"]
+        vtup = map(lambda x: (x["id"], GBDTNode.load_vertex(x)), vertices)
         id2ver = dict(vtup)
         for e in edges:
-            src = id2ver[e['src']]
-            dst = id2ver[e['dst']]
-            val = e['value']
-            if val == 'yes':
+            src = id2ver[e["src"]]
+            dst = id2ver[e["dst"]]
+            val = e["value"]
+            if val == "yes":
                 src.left = dst
             else:
                 src.right = dst
-        r = id2ver[0]   # root node
+        r = id2ver[0]  # root node
         return r
 
     def __str__(self):
         n = "%d:%s" % (self.gid, self.node_name)
         if self.node_type == GBDTNode.NODE_TYPE_INDICATOR:
-            n += '='
+            n += "="
         elif self.node_type == GBDTNode.NODE_TYPE_INT:
-            n += '<'
+            n += "<"
         if self.node_type == GBDTNode.NODE_TYPE_INT:
             n += "%f" % self.value
         else:
             n += "%s" % self.value
-        left = '_'
+        left = "_"
         if self.left is not None:
             if isinstance(self.left, GBDTNode):
                 left = "%d" % self.left.gid
             else:
                 left = self.left
-        right = '_'
+        right = "_"
         if self.right is not None:
             if isinstance(self.right, GBDTNode):
                 right = "%d" % self.right.gid
@@ -95,15 +96,15 @@ class GBDTNode:
         n += ",%s,%s" % (left, right)
         return n
 
-    def traverse(self, level=''):
+    def traverse(self, level=""):
         print(level + str(self))
         this_level = level
         if self.left:
             if isinstance(self.left, GBDTNode):
-                self.left.traverse(level=this_level + ' ')
+                self.left.traverse(level=this_level + " ")
         if self.right:
             if isinstance(self.right, GBDTNode):
-                self.right.traverse(level=this_level + ' ')
+                self.right.traverse(level=this_level + " ")
 
     def renumbering(self, val):
         self.gid = val
@@ -118,7 +119,7 @@ class GBDTNode:
         if Config.is_debug:
             if Config.level == 0:
                 print("=====================")
-            print((' ' * Config.level) + str(self))
+            print((" " * Config.level) + str(self))
             Config.level += 1
         if self.node_type == GBDTNode.NODE_TYPE_LEAF:
             retval = self.value
@@ -129,7 +130,7 @@ class GBDTNode:
             else:
                 retval = self.right.calculate_score(inp)
         elif self.node_type == GBDTNode.NODE_TYPE_INDICATOR:
-            strkey, strval = self.node_name.split('=')
+            strkey, strval = self.node_name.split("=")
             inpval = str(inp[strkey])
             if inpval == strval:
                 retval = self.left.calculate_score(inp)
@@ -143,10 +144,10 @@ class GBDTNode:
         d = {
             "id": self.gid,
             "type": GBDTNode.typeid2type[self.node_type],
-            "value": self.value
+            "value": self.value,
         }
         if self.node_type != GBDTNode.NODE_TYPE_LEAF:
-            d['name'] = self.node_name
+            d["name"] = self.node_name
         return d
 
     def get_all_vertice_helper(self, vhash):
@@ -167,20 +168,12 @@ class GBDTNode:
     def get_all_edge_helper(self, visited, edge_lst):
         visited.add(self.gid)
         if self.left:
-            edge_lst.append({
-                "src" : self.gid,
-                "dst" : self.left.gid,
-                "value" : "yes"
-            })
+            edge_lst.append({"src": self.gid, "dst": self.left.gid, "value": "yes"})
             if self.left.gid not in visited:
                 self.left.get_all_edge_helper(visited, edge_lst)
 
         if self.right:
-            edge_lst.append({
-                "src" : self.gid,
-                "dst" : self.right.gid,
-                "value" : "no"
-            })
+            edge_lst.append({"src": self.gid, "dst": self.right.gid, "value": "no"})
             if self.right.gid not in visited:
                 self.right.get_all_edge_helper(visited, edge_lst)
 
@@ -193,10 +186,7 @@ class GBDTNode:
     def to_dict(self):
         all_vertices = self.get_all_vertices()
         all_edges = self.get_all_edges()
-        ret_dict = {
-            "vertices" : all_vertices,
-            "edges" : all_edges
-        }
+        ret_dict = {"vertices": all_vertices, "edges": all_edges}
         return ret_dict
 
     def is_leaf(self):
@@ -219,7 +209,7 @@ class GBDTDecoder:
 
     @classmethod
     def parse_turicreate_json(cls, jslst):
-        treelst = map(lambda js : GBDTNode.load_turicreate_json_tree(js), jslst)
+        treelst = map(lambda js: GBDTNode.load_turicreate_json_tree(js), jslst)
         return treelst
 
     def predict(self, data):
@@ -231,7 +221,7 @@ class GBDTDecoder:
 
     @classmethod
     def create_from_gbdt(cls, gbdt_model):
-        jss = [json.loads(s) for s in gbdt_model._get('trees_json')]
+        jss = [json.loads(s) for s in gbdt_model._get("trees_json")]
         retval = GBDTDecoder()
         retval.combination_method = 0
         retval.tree_list = list(GBDTDecoder.parse_turicreate_json(jss))
@@ -245,19 +235,19 @@ class GBDTDecoder:
         return retval
 
     def get_json_trees(self):
-        dict_trees = map(lambda x : x.to_dict(), self.tree_list)
-        js_trees = map(lambda x : json.dumps(x), dict_trees)
+        dict_trees = map(lambda x: x.to_dict(), self.tree_list)
+        js_trees = map(lambda x: json.dumps(x), dict_trees)
         # ret_json = json.dumps(js_trees)
         return js_trees
 
     def get(self, key_to_get):
-        if key_to_get == 'trees_json':
+        if key_to_get == "trees_json":
             return self.get_json_trees()
         else:
-            raise Exception('Not implemented yet (get key = %s)' % key_to_get)
+            raise Exception("Not implemented yet (get key = %s)" % key_to_get)
 
     def save_json(self, fpath):
-        fp = open(fpath, 'wt')
+        fp = open(fpath, "wt")
         strjs = json.dumps(self.get_json_trees())
         fp.write(strjs)
         fp.close()
@@ -287,16 +277,27 @@ class TreeJsonDumpTest(unittest.TestCase):
     def test_synthetic_data(self):
         random.seed(0)
         num_rows = 1000
-        sf = tc.SFrame({'num': [random.randint(0, 100) for i in range(num_rows)],
-                        'cat': [['a', 'b'][random.randint(0, 1)] for i in range(num_rows)]})
+        sf = tc.SFrame(
+            {
+                "num": [random.randint(0, 100) for i in range(num_rows)],
+                "cat": [["a", "b"][random.randint(0, 1)] for i in range(num_rows)],
+            }
+        )
         coeffs = [random.random(), random.random()]
 
         def make_target(row):
-            if row['cat'] == 'a':
-                return row['num'] * coeffs[0]
+            if row["cat"] == "a":
+                return row["num"] * coeffs[0]
             else:
-                return row['num'] * coeffs[1]
-        sf['target'] = sf.apply(make_target)
-        m = tc.boosted_trees_regression.create(sf, target='target', validation_set=None, random_seed=0,
-                                               max_depth=10, max_iterations=3)
+                return row["num"] * coeffs[1]
+
+        sf["target"] = sf.apply(make_target)
+        m = tc.boosted_trees_regression.create(
+            sf,
+            target="target",
+            validation_set=None,
+            random_seed=0,
+            max_depth=10,
+            max_iterations=3,
+        )
         self._check_json_model_predict_consistency(m, sf)

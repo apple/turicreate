@@ -84,12 +84,14 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-__all__ = ['popularity_recommender',
-           'factorization_recommender',
-           'ranking_factorization_recommender',
-           'item_similarity_recommender',
-           'create',
-           'util']
+__all__ = [
+    "popularity_recommender",
+    "factorization_recommender",
+    "ranking_factorization_recommender",
+    "item_similarity_recommender",
+    "create",
+    "util",
+]
 
 from . import popularity_recommender
 from . import factorization_recommender

@@ -18,8 +18,10 @@ from operator import iadd
 import turicreate as _tc
 
 import sys as _sys
+
 if _sys.version_info.major == 3:
     from functools import reduce
+
 
 def compute_composite_distance(distance, x, y):
     """
@@ -69,20 +71,24 @@ def compute_composite_distance(distance, x, y):
     distance = _convert_distance_names_to_functions(distance)
 
     if not isinstance(x, dict) or not isinstance(y, dict):
-        raise TypeError("Inputs 'x' and 'y' must be in dictionary form. " +
-                        "Selecting individual rows of an SFrame yields the " +
-                        "correct format.")
+        raise TypeError(
+            "Inputs 'x' and 'y' must be in dictionary form. "
+            + "Selecting individual rows of an SFrame yields the "
+            + "correct format."
+        )
 
-    ans = 0.
+    ans = 0.0
 
     for d in distance:
         ftrs, dist, weight = d
 
         ## Special check for multiple columns with levenshtein distance.
         if dist == _tc.distances.levenshtein and len(ftrs) > 1:
-            raise ValueError("levenshtein distance cannot be used with multiple" +
-                             "columns. Please concatenate strings into a single " +
-                             "column before computing the distance.")
+            raise ValueError(
+                "levenshtein distance cannot be used with multiple"
+                + "columns. Please concatenate strings into a single "
+                + "column before computing the distance."
+            )
 
         ## Extract values for specified features.
         a = {}
@@ -90,7 +96,9 @@ def compute_composite_distance(distance, x, y):
 
         for ftr in ftrs:
             if type(x[ftr]) != type(y[ftr]):
-                if not isinstance(x[ftr], (int, float)) or not isinstance(y[ftr], (int, float)):
+                if not isinstance(x[ftr], (int, float)) or not isinstance(
+                    y[ftr], (int, float)
+                ):
                     raise ValueError("Input data has different types.")
 
             if isinstance(x[ftr], (int, float, str)):
@@ -99,10 +107,10 @@ def compute_composite_distance(distance, x, y):
 
             elif isinstance(x[ftr], dict):
                 for key, val in _six.iteritems(x[ftr]):
-                    a['{}.{}'.format(ftr, key)] = val
+                    a["{}.{}".format(ftr, key)] = val
 
                 for key, val in _six.iteritems(y[ftr]):
-                    b['{}.{}'.format(ftr, key)] = val
+                    b["{}.{}".format(ftr, key)] = val
 
             elif isinstance(x[ftr], (list, _array.array)):
                 for i, val in enumerate(x[ftr]):
@@ -113,7 +121,6 @@ def compute_composite_distance(distance, x, y):
 
             else:
                 raise TypeError("Type of feature '{}' not understood.".format(ftr))
-
 
         ## Pull out the raw values for levenshtein
         if dist == _tc.distances.levenshtein:
@@ -136,10 +143,12 @@ def _validate_composite_distance(distance):
         raise TypeError("Input 'distance' must be a composite distance.")
 
     if len(distance) < 1:
-        raise ValueError("Composite distances must have a least one distance "
-                         "component, consisting of a list of feature names, "
-                         "a distance function (string or function handle), "
-                         "and a weight.")
+        raise ValueError(
+            "Composite distances must have a least one distance "
+            "component, consisting of a list of feature names, "
+            "a distance function (string or function handle), "
+            "and a weight."
+        )
 
     for d in distance:
 
@@ -147,15 +156,19 @@ def _validate_composite_distance(distance):
         try:
             ftrs, dist, weight = d
         except:
-            raise TypeError("Elements of a composite distance function must " +
-                            "have three items: a set of feature names (tuple or list), " +
-                            "a distance function (string or function handle), " +
-                            "and a weight.")
+            raise TypeError(
+                "Elements of a composite distance function must "
+                + "have three items: a set of feature names (tuple or list), "
+                + "a distance function (string or function handle), "
+                + "and a weight."
+            )
 
         ## Validate feature names
         if len(ftrs) == 0:
-            raise ValueError("An empty list of features cannot be passed " +\
-                             "as part of a composite distance function.")
+            raise ValueError(
+                "An empty list of features cannot be passed "
+                + "as part of a composite distance function."
+            )
 
         if not isinstance(ftrs, (list, tuple)):
             raise TypeError("Feature names must be specified in a list or tuple.")
@@ -163,11 +176,12 @@ def _validate_composite_distance(distance):
         if not all([isinstance(x, str) for x in ftrs]):
             raise TypeError("Feature lists must contain only strings.")
 
-
         ## Validate standard distance function
-        if not isinstance(dist, str) and not hasattr(dist, '__call__'):
-            raise ValueError("Standard distances must be the name of a distance " +
-                             "function (string) or a distance function handle")
+        if not isinstance(dist, str) and not hasattr(dist, "__call__"):
+            raise ValueError(
+                "Standard distances must be the name of a distance "
+                + "function (string) or a distance function handle"
+            )
 
         if isinstance(dist, str):
             try:
@@ -175,16 +189,18 @@ def _validate_composite_distance(distance):
             except:
                 raise ValueError("Distance '{}' not recognized".format(dist))
 
-
         ## Validate weight
         if not isinstance(weight, (int, float)):
             raise ValueError(
-                "The weight of each distance component must be a single " +\
-                "integer or a float value.")
+                "The weight of each distance component must be a single "
+                + "integer or a float value."
+            )
 
         if weight < 0:
-            raise ValueError("The weight on each distance component must be " +
-                             "greater than or equal to zero.")
+            raise ValueError(
+                "The weight on each distance component must be "
+                + "greater than or equal to zero."
+            )
 
 
 def _scrub_composite_distance_features(distance, feature_blacklist):
@@ -229,8 +245,9 @@ def _get_composite_distance_features(distance):
     return list(set(reduce(iadd, [x[0] for x in distance], [])))
 
 
-def build_address_distance(number=None, street=None, city=None, state=None,
-                           zip_code=None):
+def build_address_distance(
+    number=None, street=None, city=None, state=None, zip_code=None
+):
     """
     Construct a composite distance appropriate for matching address data. NOTE:
     this utility function does not guarantee that the output composite distance
@@ -270,8 +287,10 @@ def build_address_distance(number=None, street=None, city=None, state=None,
     ## Validate inputs
     for param in [number, street, city, state, zip_code]:
         if param is not None and not isinstance(param, str):
-            raise TypeError("All inputs must be strings. Each parameter is " +
-                            "intended to be the name of an SFrame column.")
+            raise TypeError(
+                "All inputs must be strings. Each parameter is "
+                + "intended to be the name of an SFrame column."
+            )
 
     ## Figure out features for levenshtein distance.
     string_features = []
@@ -282,20 +301,19 @@ def build_address_distance(number=None, street=None, city=None, state=None,
     if zip_code:
         string_features.append(zip_code)
 
-
     ## Compile the distance components.
     dist = []
 
     if number:
-        dist.append([[number], 'jaccard', 1])
+        dist.append([[number], "jaccard", 1])
 
     if street:
-        dist.append([[street], 'jaccard', 5])
+        dist.append([[street], "jaccard", 5])
 
     if state:
-        dist.append([[state], 'jaccard', 5])
+        dist.append([[state], "jaccard", 5])
 
     if len(string_features) > 0:
-        dist.append([string_features, 'levenshtein', 1])
+        dist.append([string_features, "levenshtein", 1])
 
     return dist

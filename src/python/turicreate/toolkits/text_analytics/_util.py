@@ -15,10 +15,46 @@ import six
 import turicreate.toolkits._feature_engineering as _feature_engineering
 
 
-DEFAULT_DELIMITERS = ["\r", "\v", "\n", "\f", "\t", " ", "!", "#", "$", "%",
-                      "&", "'", "\"", "(", ")", "*", "+", ",", "-", ".", "/",
-                      ":", ";", "<", "=", ">", "?", "@", "[", "\\", "]", "^",
-                      "_", "`", "{", "|", "}", "~"]
+DEFAULT_DELIMITERS = [
+    "\r",
+    "\v",
+    "\n",
+    "\f",
+    "\t",
+    " ",
+    "!",
+    "#",
+    "$",
+    "%",
+    "&",
+    "'",
+    '"',
+    "(",
+    ")",
+    "*",
+    "+",
+    ",",
+    "-",
+    ".",
+    "/",
+    ":",
+    ";",
+    "<",
+    "=",
+    ">",
+    "?",
+    "@",
+    "[",
+    "\\",
+    "]",
+    "^",
+    "_",
+    "`",
+    "{",
+    "|",
+    "}",
+    "~",
+]
 
 
 def count_words(text, to_lower=True, delimiters=DEFAULT_DELIMITERS):
@@ -107,18 +143,27 @@ def count_words(text, to_lower=True, delimiters=DEFAULT_DELIMITERS):
     _raise_error_if_not_sarray(text, "text")
 
     ## Compute word counts
-    sf = _turicreate.SFrame({'docs': text})
-    fe = _feature_engineering.WordCounter(features='docs',
-                                                   to_lower=to_lower,
-                                                   delimiters=delimiters,
-                                                   output_column_prefix=None)
+    sf = _turicreate.SFrame({"docs": text})
+    fe = _feature_engineering.WordCounter(
+        features="docs",
+        to_lower=to_lower,
+        delimiters=delimiters,
+        output_column_prefix=None,
+    )
     output_sf = fe.fit_transform(sf)
 
-    return output_sf['docs']
+    return output_sf["docs"]
 
-def count_ngrams(text, n=2, method="word", to_lower=True,
-                 delimiters=DEFAULT_DELIMITERS,
-                 ignore_punct=True, ignore_space=True):
+
+def count_ngrams(
+    text,
+    n=2,
+    method="word",
+    to_lower=True,
+    delimiters=DEFAULT_DELIMITERS,
+    ignore_punct=True,
+    ignore_space=True,
+):
     """
     Return an SArray of ``dict`` type where each element contains the count
     for each of the n-grams that appear in the corresponding input element.
@@ -229,18 +274,20 @@ def count_ngrams(text, n=2, method="word", to_lower=True,
     _raise_error_if_not_sarray(text, "text")
 
     # Compute ngrams counts
-    sf = _turicreate.SFrame({'docs': text})
-    fe = _feature_engineering.NGramCounter(features='docs',
-                                                    n=n,
-                                                    method=method,
-                                                    to_lower=to_lower,
-                                                    delimiters=delimiters,
-                                                    ignore_punct=ignore_punct,
-                                                    ignore_space=ignore_space,
-                                                    output_column_prefix=None)
+    sf = _turicreate.SFrame({"docs": text})
+    fe = _feature_engineering.NGramCounter(
+        features="docs",
+        n=n,
+        method=method,
+        to_lower=to_lower,
+        delimiters=delimiters,
+        ignore_punct=ignore_punct,
+        ignore_space=ignore_space,
+        output_column_prefix=None,
+    )
     output_sf = fe.fit_transform(sf)
 
-    return output_sf['docs']
+    return output_sf["docs"]
 
 
 def tf_idf(text):
@@ -289,15 +336,16 @@ def tf_idf(text):
     if len(text) == 0:
         return _turicreate.SArray()
 
-    dataset = _turicreate.SFrame({'docs': text})
-    scores = _feature_engineering.TFIDF('docs').fit_transform(dataset)
+    dataset = _turicreate.SFrame({"docs": text})
+    scores = _feature_engineering.TFIDF("docs").fit_transform(dataset)
 
-    return scores['docs']
+    return scores["docs"]
 
 
-def drop_words(text, threshold=2, to_lower=True, delimiters=DEFAULT_DELIMITERS,
-               stop_words=None):
-    '''
+def drop_words(
+    text, threshold=2, to_lower=True, delimiters=DEFAULT_DELIMITERS, stop_words=None
+):
+    """
     Remove words that occur below a certain number of times in an SArray.
     This is a common method of cleaning text before it is used, and can increase the
     quality and explainability of the models learned on the transformed data.
@@ -393,21 +441,24 @@ def drop_words(text, threshold=2, to_lower=True, delimiters=DEFAULT_DELIMITERS,
         dtype: list
         Rows: 2
         [['one', 'one'], ['a dog', 'a dog']]
-    '''
+    """
 
     _raise_error_if_not_sarray(text, "text")
 
     ## Compute word counts
-    sf = _turicreate.SFrame({'docs': text})
-    fe = _feature_engineering.RareWordTrimmer(features='docs',
-                                              threshold=threshold,
-                                              to_lower=to_lower,
-                                              delimiters=delimiters,
-                                              stopwords=stop_words,
-                                              output_column_prefix=None)
+    sf = _turicreate.SFrame({"docs": text})
+    fe = _feature_engineering.RareWordTrimmer(
+        features="docs",
+        threshold=threshold,
+        to_lower=to_lower,
+        delimiters=delimiters,
+        stopwords=stop_words,
+        output_column_prefix=None,
+    )
     tokens = fe.fit_transform(sf)
 
-    return tokens['docs']
+    return tokens["docs"]
+
 
 def tokenize(text, to_lower=False, delimiters=DEFAULT_DELIMITERS):
     """
@@ -468,16 +519,19 @@ def tokenize(text, to_lower=False, delimiters=DEFAULT_DELIMITERS):
     _raise_error_if_not_sarray(text, "text")
 
     ## Compute word counts
-    sf = _turicreate.SFrame({'docs': text})
-    fe = _feature_engineering.Tokenizer(features='docs',
-                                                 to_lower=to_lower,
-                                                 delimiters=delimiters,
-                                                 output_column_prefix=None)
+    sf = _turicreate.SFrame({"docs": text})
+    fe = _feature_engineering.Tokenizer(
+        features="docs",
+        to_lower=to_lower,
+        delimiters=delimiters,
+        output_column_prefix=None,
+    )
     tokens = fe.fit_transform(sf)
 
-    return tokens['docs']
+    return tokens["docs"]
 
-def bm25(dataset, query, k1=1.5, b=.75):
+
+def bm25(dataset, query, k1=1.5, b=0.75):
     """
     For a given query and set of documents, compute the BM25 score for each
     document. If we have a query with words q_1, ..., q_n the BM25 score for
@@ -552,10 +606,12 @@ def bm25(dataset, query, k1=1.5, b=.75):
     """
 
     if type(dataset) != _turicreate.SArray:
-        raise TypeError('bm25 requires an SArray of dict, list, or str type'+\
-            ', where each dictionary whose keys are words and whose values' + \
-            ' are word frequency.')
-    sf = _SFrame({'docs' : dataset})
+        raise TypeError(
+            "bm25 requires an SArray of dict, list, or str type"
+            + ", where each dictionary whose keys are words and whose values"
+            + " are word frequency."
+        )
+    sf = _SFrame({"docs": dataset})
 
     if type(query) is dict:  # For backwards compatibility
         query = list(query.keys())
@@ -564,28 +620,34 @@ def bm25(dataset, query, k1=1.5, b=.75):
     if type(query) is set:
         query = list(query)
     if type(query) is not list:
-        raise TypeError('The query must either be an SArray of str type, '+\
-           ' a list of strings, or a set of strings.')
+        raise TypeError(
+            "The query must either be an SArray of str type, "
+            + " a list of strings, or a set of strings."
+        )
 
     # Calculate BM25
-    sf = sf.add_row_number('doc_id')
-    sf = sf.dropna('docs') # Drop missing documents
-    scores = _feature_engineering.BM25('docs',query, k1, b, output_column_name = 'bm25').fit_transform(sf)
+    sf = sf.add_row_number("doc_id")
+    sf = sf.dropna("docs")  # Drop missing documents
+    scores = _feature_engineering.BM25(
+        "docs", query, k1, b, output_column_name="bm25"
+    ).fit_transform(sf)
 
     # Find documents with query words
 
-    if scores['docs'].dtype is dict:
-        scores['doc_terms'] = scores['docs'].dict_keys()
-    elif scores['docs'].dtype is list:
-        scores['doc_terms'] = scores['docs'].apply(lambda x: list(set(x)))
-    elif scores['docs'].dtype is str:
-        scores['doc_terms'] = count_words(scores['docs']).dict_keys()
+    if scores["docs"].dtype is dict:
+        scores["doc_terms"] = scores["docs"].dict_keys()
+    elif scores["docs"].dtype is list:
+        scores["doc_terms"] = scores["docs"].apply(lambda x: list(set(x)))
+    elif scores["docs"].dtype is str:
+        scores["doc_terms"] = count_words(scores["docs"]).dict_keys()
     else:
         # This should never occur (handled by BM25)
-        raise TypeError('bm25 requires an SArray of dict, list, or str type')
-    scores['doc_counts'] = scores['doc_terms'].apply(lambda x: len([word for word in query if word in x]))
-    scores = scores[scores['doc_counts'] > 0] # Drop documents without query word
-    scores = scores.select_columns(['doc_id','bm25'])
+        raise TypeError("bm25 requires an SArray of dict, list, or str type")
+    scores["doc_counts"] = scores["doc_terms"].apply(
+        lambda x: len([word for word in query if word in x])
+    )
+    scores = scores[scores["doc_counts"] > 0]  # Drop documents without query word
+    scores = scores.select_columns(["doc_id", "bm25"])
 
     return scores
 
@@ -634,23 +696,24 @@ def parse_sparse(filename, vocab_filename):
     >>> vocab = 'https://static.turi.com/datasets/text/ap.vocab.txt'
     >>> docs = turicreate.text_analytics.parse_sparse(file, vocab)
     """
-    vocab = _turicreate.SFrame.read_csv(vocab_filename, header=None)['X1']
+    vocab = _turicreate.SFrame.read_csv(vocab_filename, header=None)["X1"]
     vocab = list(vocab)
 
     docs = _turicreate.SFrame.read_csv(filename, header=None)
 
     # Remove first word
-    docs = docs['X1'].apply(lambda x: x.split(' ')[1:])
+    docs = docs["X1"].apply(lambda x: x.split(" ")[1:])
 
     # Helper function that checks whether we get too large a word id
     def get_word(word_id):
-        assert int(word_id) < len(vocab), \
-                "Text data contains integers that are larger than the \
+        assert int(word_id) < len(
+            vocab
+        ), "Text data contains integers that are larger than the \
                  size of the provided vocabulary."
         return vocab[word_id]
 
     def make_dict(pairs):
-        pairs = [z.split(':') for z in pairs]
+        pairs = [z.split(":") for z in pairs]
         ret = {}
         for k, v in pairs:
             ret[get_word(int(k))] = int(v)
@@ -702,21 +765,21 @@ def parse_docword(filename, vocab_filename):
     >>> vocab = 'https://static.turi.com/datasets/text/vocab.nips.txt')
     >>> docs = turicreate.text_analytics.parse_docword(textfile, vocab)
     """
-    vocab = _turicreate.SFrame.read_csv(vocab_filename, header=None)['X1']
+    vocab = _turicreate.SFrame.read_csv(vocab_filename, header=None)["X1"]
     vocab = list(vocab)
 
     sf = _turicreate.SFrame.read_csv(filename, header=False)
     sf = sf[3:]
-    sf['X2'] = sf['X1'].apply(lambda x: [int(z) for z in x.split(' ')])
-    del sf['X1']
-    sf = sf.unpack('X2', column_name_prefix='', column_types=[int,int,int])
-    docs = sf.unstack(['1', '2'], 'bow').sort('0')['bow']
-    docs = docs.apply(lambda x: {vocab[k-1]:v for (k, v) in six.iteritems(x)})
+    sf["X2"] = sf["X1"].apply(lambda x: [int(z) for z in x.split(" ")])
+    del sf["X1"]
+    sf = sf.unpack("X2", column_name_prefix="", column_types=[int, int, int])
+    docs = sf.unstack(["1", "2"], "bow").sort("0")["bow"]
+    docs = docs.apply(lambda x: {vocab[k - 1]: v for (k, v) in six.iteritems(x)})
 
     return docs
 
 
-def random_split(dataset, prob=.5):
+def random_split(dataset, prob=0.5):
     """
     Utility for performing a random split for text data that is already in
     bag-of-words format. For each (word, count) pair in a particular element,
@@ -752,8 +815,9 @@ def random_split(dataset, prob=.5):
             ix = 0
         else:
             ix = 1
-        return dict([(key, value[ix]) for key, value in six.iteritems(x) \
-                    if value[ix] != 0])
+        return dict(
+            [(key, value[ix]) for key, value in six.iteritems(x) if value[ix] != 0]
+        )
 
     def word_count_split(n, p):
         num_in_test = 0
@@ -765,20 +829,26 @@ def random_split(dataset, prob=.5):
     # Get an SArray where each word has a 2 element list containing
     # the count that will be for the training set and the count that will
     # be assigned to the test set.
-    data = dataset.apply(lambda x: dict([(key, word_count_split(int(value), prob)) \
-                                for key, value in six.iteritems(x)]))
+    data = dataset.apply(
+        lambda x: dict(
+            [
+                (key, word_count_split(int(value), prob))
+                for key, value in six.iteritems(x)
+            ]
+        )
+    )
 
     # Materialize the data set
     data.materialize()
 
     # Grab respective counts for each data set
     train = data.apply(lambda x: grab_values(x, train=True))
-    test  = data.apply(lambda x: grab_values(x, train=False))
+    test = data.apply(lambda x: grab_values(x, train=False))
 
     return train, test
 
 
-def stop_words(lang='en'):
+def stop_words(lang="en"):
     """
     Get common words that are often removed during preprocessing of text data,
     i.e. "stop words". Currently only English stop words are provided.
@@ -803,26 +873,553 @@ def stop_words(lang='en'):
     Rows: 1
     [{'entertained': 1}]
     """
-    if lang=='en' or lang=='english':
-        return set(['a', 'able', 'about', 'above', 'according', 'accordingly', 'across', 'actually', 'after', 'afterwards', 'again', 'against', 'all', 'allow', 'allows', 'almost', 'alone', 'along', 'already', 'also', 'although', 'always', 'am', 'among', 'amongst', 'an', 'and', 'another', 'any', 'anybody', 'anyhow', 'anyone', 'anything', 'anyway', 'anyways', 'anywhere', 'apart', 'appear', 'appreciate', 'appropriate', 'are', 'around', 'as', 'aside', 'ask', 'asking', 'associated', 'at', 'available', 'away', 'awfully', 'b', 'be', 'became', 'because', 'become', 'becomes', 'becoming', 'been', 'before', 'beforehand', 'behind', 'being', 'believe', 'below', 'beside', 'besides', 'best', 'better', 'between', 'beyond', 'both', 'brief', 'but', 'by', 'c', 'came', 'can', 'cannot', 'cant', 'cause', 'causes', 'certain', 'certainly', 'changes', 'clearly', 'co', 'com', 'come', 'comes', 'concerning', 'consequently', 'consider', 'considering', 'contain', 'containing', 'contains', 'corresponding', 'could', 'course', 'currently', 'd', 'definitely', 'described', 'despite', 'did', 'different', 'do', 'does', 'doing', 'done', 'down', 'downwards', 'during', 'e', 'each', 'edu', 'eg', 'eight', 'either', 'else', 'elsewhere', 'enough', 'entirely', 'especially', 'et', 'etc', 'even', 'ever', 'every', 'everybody', 'everyone', 'everything', 'everywhere', 'ex', 'exactly', 'example', 'except', 'f', 'far', 'few', 'fifth', 'first', 'five', 'followed', 'following', 'follows', 'for', 'former', 'formerly', 'forth', 'four', 'from', 'further', 'furthermore', 'g', 'get', 'gets', 'getting', 'given', 'gives', 'go', 'goes', 'going', 'gone', 'got', 'gotten', 'greetings', 'h', 'had', 'happens', 'hardly', 'has', 'have', 'having', 'he', 'hello', 'help', 'hence', 'her', 'here', 'hereafter', 'hereby', 'herein', 'hereupon', 'hers', 'herself', 'hi', 'him', 'himself', 'his', 'hither', 'hopefully', 'how', 'howbeit', 'however', 'i', 'ie', 'if', 'ignored', 'immediate', 'in', 'inasmuch', 'inc', 'indeed', 'indicate', 'indicated', 'indicates', 'inner', 'insofar', 'instead', 'into', 'inward', 'is', 'it', 'its', 'itself', 'j', 'just', 'k', 'keep', 'keeps', 'kept', 'know', 'knows', 'known', 'l', 'last', 'lately', 'later', 'latter', 'latterly', 'least', 'less', 'lest', 'let', 'like', 'liked', 'likely', 'little', 'look', 'looking', 'looks', 'ltd', 'm', 'mainly', 'many', 'may', 'maybe', 'me', 'mean', 'meanwhile', 'merely', 'might', 'more', 'moreover', 'most', 'mostly', 'much', 'must', 'my', 'myself', 'n', 'name', 'namely', 'nd', 'near', 'nearly', 'necessary', 'need', 'needs', 'neither', 'never', 'nevertheless', 'new', 'next', 'nine', 'no', 'nobody', 'non', 'none', 'noone', 'nor', 'normally', 'not', 'nothing', 'novel', 'now', 'nowhere', 'o', 'obviously', 'of', 'off', 'often', 'oh', 'ok', 'okay', 'old', 'on', 'once', 'one', 'ones', 'only', 'onto', 'or', 'other', 'others', 'otherwise', 'ought', 'our', 'ours', 'ourselves', 'out', 'outside', 'over', 'overall', 'own', 'p', 'particular', 'particularly', 'per', 'perhaps', 'placed', 'please', 'plus', 'possible', 'presumably', 'probably', 'provides', 'q', 'que', 'quite', 'qv', 'r', 'rather', 'rd', 're', 'really', 'reasonably', 'regarding', 'regardless', 'regards', 'relatively', 'respectively', 'right', 's', 'said', 'same', 'saw', 'say', 'saying', 'says', 'second', 'secondly', 'see', 'seeing', 'seem', 'seemed', 'seeming', 'seems', 'seen', 'self', 'selves', 'sensible', 'sent', 'serious', 'seriously', 'seven', 'several', 'shall', 'she', 'should', 'since', 'six', 'so', 'some', 'somebody', 'somehow', 'someone', 'something', 'sometime', 'sometimes', 'somewhat', 'somewhere', 'soon', 'sorry', 'specified', 'specify', 'specifying', 'still', 'sub', 'such', 'sup', 'sure', 't', 'take', 'taken', 'tell', 'tends', 'th', 'than', 'thank', 'thanks', 'thanx', 'that', 'thats', 'the', 'their', 'theirs', 'them', 'themselves', 'then', 'thence', 'there', 'thereafter', 'thereby', 'therefore', 'therein', 'theres', 'thereupon', 'these', 'they', 'think', 'third', 'this', 'thorough', 'thoroughly', 'those', 'though', 'three', 'through', 'throughout', 'thru', 'thus', 'to', 'together', 'too', 'took', 'toward', 'towards', 'tried', 'tries', 'truly', 'try', 'trying', 'twice', 'two', 'u', 'un', 'under', 'unfortunately', 'unless', 'unlikely', 'until', 'unto', 'up', 'upon', 'us', 'use', 'used', 'useful', 'uses', 'using', 'usually', 'uucp', 'v', 'value', 'various', 'very', 'via', 'viz', 'vs', 'w', 'want', 'wants', 'was', 'way', 'we', 'welcome', 'well', 'went', 'were', 'what', 'whatever', 'when', 'whence', 'whenever', 'where', 'whereafter', 'whereas', 'whereby', 'wherein', 'whereupon', 'wherever', 'whether', 'which', 'while', 'whither', 'who', 'whoever', 'whole', 'whom', 'whose', 'why', 'will', 'willing', 'wish', 'with', 'within', 'without', 'wonder', 'would', 'would', 'x', 'y', 'yes', 'yet', 'you', 'your', 'yours', 'yourself', 'yourselves', 'z', 'zero'])
+    if lang == "en" or lang == "english":
+        return set(
+            [
+                "a",
+                "able",
+                "about",
+                "above",
+                "according",
+                "accordingly",
+                "across",
+                "actually",
+                "after",
+                "afterwards",
+                "again",
+                "against",
+                "all",
+                "allow",
+                "allows",
+                "almost",
+                "alone",
+                "along",
+                "already",
+                "also",
+                "although",
+                "always",
+                "am",
+                "among",
+                "amongst",
+                "an",
+                "and",
+                "another",
+                "any",
+                "anybody",
+                "anyhow",
+                "anyone",
+                "anything",
+                "anyway",
+                "anyways",
+                "anywhere",
+                "apart",
+                "appear",
+                "appreciate",
+                "appropriate",
+                "are",
+                "around",
+                "as",
+                "aside",
+                "ask",
+                "asking",
+                "associated",
+                "at",
+                "available",
+                "away",
+                "awfully",
+                "b",
+                "be",
+                "became",
+                "because",
+                "become",
+                "becomes",
+                "becoming",
+                "been",
+                "before",
+                "beforehand",
+                "behind",
+                "being",
+                "believe",
+                "below",
+                "beside",
+                "besides",
+                "best",
+                "better",
+                "between",
+                "beyond",
+                "both",
+                "brief",
+                "but",
+                "by",
+                "c",
+                "came",
+                "can",
+                "cannot",
+                "cant",
+                "cause",
+                "causes",
+                "certain",
+                "certainly",
+                "changes",
+                "clearly",
+                "co",
+                "com",
+                "come",
+                "comes",
+                "concerning",
+                "consequently",
+                "consider",
+                "considering",
+                "contain",
+                "containing",
+                "contains",
+                "corresponding",
+                "could",
+                "course",
+                "currently",
+                "d",
+                "definitely",
+                "described",
+                "despite",
+                "did",
+                "different",
+                "do",
+                "does",
+                "doing",
+                "done",
+                "down",
+                "downwards",
+                "during",
+                "e",
+                "each",
+                "edu",
+                "eg",
+                "eight",
+                "either",
+                "else",
+                "elsewhere",
+                "enough",
+                "entirely",
+                "especially",
+                "et",
+                "etc",
+                "even",
+                "ever",
+                "every",
+                "everybody",
+                "everyone",
+                "everything",
+                "everywhere",
+                "ex",
+                "exactly",
+                "example",
+                "except",
+                "f",
+                "far",
+                "few",
+                "fifth",
+                "first",
+                "five",
+                "followed",
+                "following",
+                "follows",
+                "for",
+                "former",
+                "formerly",
+                "forth",
+                "four",
+                "from",
+                "further",
+                "furthermore",
+                "g",
+                "get",
+                "gets",
+                "getting",
+                "given",
+                "gives",
+                "go",
+                "goes",
+                "going",
+                "gone",
+                "got",
+                "gotten",
+                "greetings",
+                "h",
+                "had",
+                "happens",
+                "hardly",
+                "has",
+                "have",
+                "having",
+                "he",
+                "hello",
+                "help",
+                "hence",
+                "her",
+                "here",
+                "hereafter",
+                "hereby",
+                "herein",
+                "hereupon",
+                "hers",
+                "herself",
+                "hi",
+                "him",
+                "himself",
+                "his",
+                "hither",
+                "hopefully",
+                "how",
+                "howbeit",
+                "however",
+                "i",
+                "ie",
+                "if",
+                "ignored",
+                "immediate",
+                "in",
+                "inasmuch",
+                "inc",
+                "indeed",
+                "indicate",
+                "indicated",
+                "indicates",
+                "inner",
+                "insofar",
+                "instead",
+                "into",
+                "inward",
+                "is",
+                "it",
+                "its",
+                "itself",
+                "j",
+                "just",
+                "k",
+                "keep",
+                "keeps",
+                "kept",
+                "know",
+                "knows",
+                "known",
+                "l",
+                "last",
+                "lately",
+                "later",
+                "latter",
+                "latterly",
+                "least",
+                "less",
+                "lest",
+                "let",
+                "like",
+                "liked",
+                "likely",
+                "little",
+                "look",
+                "looking",
+                "looks",
+                "ltd",
+                "m",
+                "mainly",
+                "many",
+                "may",
+                "maybe",
+                "me",
+                "mean",
+                "meanwhile",
+                "merely",
+                "might",
+                "more",
+                "moreover",
+                "most",
+                "mostly",
+                "much",
+                "must",
+                "my",
+                "myself",
+                "n",
+                "name",
+                "namely",
+                "nd",
+                "near",
+                "nearly",
+                "necessary",
+                "need",
+                "needs",
+                "neither",
+                "never",
+                "nevertheless",
+                "new",
+                "next",
+                "nine",
+                "no",
+                "nobody",
+                "non",
+                "none",
+                "noone",
+                "nor",
+                "normally",
+                "not",
+                "nothing",
+                "novel",
+                "now",
+                "nowhere",
+                "o",
+                "obviously",
+                "of",
+                "off",
+                "often",
+                "oh",
+                "ok",
+                "okay",
+                "old",
+                "on",
+                "once",
+                "one",
+                "ones",
+                "only",
+                "onto",
+                "or",
+                "other",
+                "others",
+                "otherwise",
+                "ought",
+                "our",
+                "ours",
+                "ourselves",
+                "out",
+                "outside",
+                "over",
+                "overall",
+                "own",
+                "p",
+                "particular",
+                "particularly",
+                "per",
+                "perhaps",
+                "placed",
+                "please",
+                "plus",
+                "possible",
+                "presumably",
+                "probably",
+                "provides",
+                "q",
+                "que",
+                "quite",
+                "qv",
+                "r",
+                "rather",
+                "rd",
+                "re",
+                "really",
+                "reasonably",
+                "regarding",
+                "regardless",
+                "regards",
+                "relatively",
+                "respectively",
+                "right",
+                "s",
+                "said",
+                "same",
+                "saw",
+                "say",
+                "saying",
+                "says",
+                "second",
+                "secondly",
+                "see",
+                "seeing",
+                "seem",
+                "seemed",
+                "seeming",
+                "seems",
+                "seen",
+                "self",
+                "selves",
+                "sensible",
+                "sent",
+                "serious",
+                "seriously",
+                "seven",
+                "several",
+                "shall",
+                "she",
+                "should",
+                "since",
+                "six",
+                "so",
+                "some",
+                "somebody",
+                "somehow",
+                "someone",
+                "something",
+                "sometime",
+                "sometimes",
+                "somewhat",
+                "somewhere",
+                "soon",
+                "sorry",
+                "specified",
+                "specify",
+                "specifying",
+                "still",
+                "sub",
+                "such",
+                "sup",
+                "sure",
+                "t",
+                "take",
+                "taken",
+                "tell",
+                "tends",
+                "th",
+                "than",
+                "thank",
+                "thanks",
+                "thanx",
+                "that",
+                "thats",
+                "the",
+                "their",
+                "theirs",
+                "them",
+                "themselves",
+                "then",
+                "thence",
+                "there",
+                "thereafter",
+                "thereby",
+                "therefore",
+                "therein",
+                "theres",
+                "thereupon",
+                "these",
+                "they",
+                "think",
+                "third",
+                "this",
+                "thorough",
+                "thoroughly",
+                "those",
+                "though",
+                "three",
+                "through",
+                "throughout",
+                "thru",
+                "thus",
+                "to",
+                "together",
+                "too",
+                "took",
+                "toward",
+                "towards",
+                "tried",
+                "tries",
+                "truly",
+                "try",
+                "trying",
+                "twice",
+                "two",
+                "u",
+                "un",
+                "under",
+                "unfortunately",
+                "unless",
+                "unlikely",
+                "until",
+                "unto",
+                "up",
+                "upon",
+                "us",
+                "use",
+                "used",
+                "useful",
+                "uses",
+                "using",
+                "usually",
+                "uucp",
+                "v",
+                "value",
+                "various",
+                "very",
+                "via",
+                "viz",
+                "vs",
+                "w",
+                "want",
+                "wants",
+                "was",
+                "way",
+                "we",
+                "welcome",
+                "well",
+                "went",
+                "were",
+                "what",
+                "whatever",
+                "when",
+                "whence",
+                "whenever",
+                "where",
+                "whereafter",
+                "whereas",
+                "whereby",
+                "wherein",
+                "whereupon",
+                "wherever",
+                "whether",
+                "which",
+                "while",
+                "whither",
+                "who",
+                "whoever",
+                "whole",
+                "whom",
+                "whose",
+                "why",
+                "will",
+                "willing",
+                "wish",
+                "with",
+                "within",
+                "without",
+                "wonder",
+                "would",
+                "would",
+                "x",
+                "y",
+                "yes",
+                "yet",
+                "you",
+                "your",
+                "yours",
+                "yourself",
+                "yourselves",
+                "z",
+                "zero",
+            ]
+        )
     else:
-        raise NotImplementedError('Only English stop words are currently available.')
-
+        raise NotImplementedError("Only English stop words are currently available.")
 
 
 def _check_input(dataset):
     if isinstance(dataset, _SFrame):
-        assert dataset.num_columns() == 1, \
-        "The provided SFrame contains more than one column. It should have " +\
-        "only one column of type dict."
+        assert dataset.num_columns() == 1, (
+            "The provided SFrame contains more than one column. It should have "
+            + "only one column of type dict."
+        )
         colname = dataset.column_names()[0]
         dataset = dataset[colname]
 
-    assert isinstance(dataset, _SArray), \
-    "Provided data must be an SArray."
+    assert isinstance(dataset, _SArray), "Provided data must be an SArray."
 
-    assert dataset.dtype == dict, \
-    "Provided data must be of type dict, representing the documents in " + \
-    "bag-of-words format. Please consult the documentation."
+    assert dataset.dtype == dict, (
+        "Provided data must be of type dict, representing the documents in "
+        + "bag-of-words format. Please consult the documentation."
+    )
 
     return dataset

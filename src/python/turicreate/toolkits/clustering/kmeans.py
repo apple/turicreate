@@ -22,6 +22,7 @@ from turicreate.toolkits._private_utils import _summarize_accessible_fields
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate._cython.cy_server import QuietProgress as _QuietProgress
 
+
 def _validate_dataset(dataset):
     """
     Validate the main Kmeans dataset.
@@ -51,8 +52,9 @@ def _validate_initial_centers(initial_centers):
         raise TypeError("Input 'initial_centers' must be an SFrame.")
 
     if initial_centers.num_rows() == 0 or initial_centers.num_columns() == 0:
-        raise ValueError("An 'initial_centers' argument is provided " +
-                         "but has no data.")
+        raise ValueError(
+            "An 'initial_centers' argument is provided " + "but has no data."
+        )
 
 
 def _validate_num_clusters(num_clusters, initial_centers, num_rows):
@@ -87,9 +89,11 @@ def _validate_num_clusters(num_clusters, initial_centers, num_rows):
     ## Determine the correct number of clusters.
     if initial_centers is None:
         if num_clusters is None:
-            raise ValueError("Number of clusters cannot be determined from " +
-                             "'num_clusters' or 'initial_centers'. You must " +
-                             "specify one of these arguments.")
+            raise ValueError(
+                "Number of clusters cannot be determined from "
+                + "'num_clusters' or 'initial_centers'. You must "
+                + "specify one of these arguments."
+            )
         else:
             _num_clusters = num_clusters
 
@@ -100,17 +104,21 @@ def _validate_num_clusters(num_clusters, initial_centers, num_rows):
             _num_clusters = num_centers
         else:
             if num_clusters != num_centers:
-                raise ValueError("The value of 'num_clusters' does not match " +
-                                 "the number of provided initial centers. " +
-                                 "Please provide only one of these arguments " +
-                                 "or ensure the values match.")
+                raise ValueError(
+                    "The value of 'num_clusters' does not match "
+                    + "the number of provided initial centers. "
+                    + "Please provide only one of these arguments "
+                    + "or ensure the values match."
+                )
             else:
                 _num_clusters = num_clusters
 
     if _num_clusters > num_rows:
-        raise ValueError("The desired number of clusters exceeds the number " +
-                         "of data points. Please set 'num_clusters' to be " +
-                         "smaller than the number of data points.")
+        raise ValueError(
+            "The desired number of clusters exceeds the number "
+            + "of data points. Please set 'num_clusters' to be "
+            + "smaller than the number of data points."
+        )
 
     return _num_clusters
 
@@ -144,8 +152,9 @@ def _validate_features(features, column_type_map, valid_types, label):
         raise TypeError("Input 'features' must be a list, if specified.")
 
     if len(features) == 0:
-        raise ValueError("If specified, input 'features' must contain " +
-                         "at least one column name.")
+        raise ValueError(
+            "If specified, input 'features' must contain " + "at least one column name."
+        )
 
     ## Remove duplicates
     num_original_features = len(features)
@@ -164,24 +173,32 @@ def _validate_features(features, column_type_map, valid_types, label):
 
     for ftr in features:
         if not isinstance(ftr, str):
-            _logging.warning("Feature '{}' excluded. ".format(ftr) +
-                           "Features must be specified as strings " +
-                           "corresponding to column names in the input dataset.")
+            _logging.warning(
+                "Feature '{}' excluded. ".format(ftr)
+                + "Features must be specified as strings "
+                + "corresponding to column names in the input dataset."
+            )
 
         elif ftr not in column_type_map.keys():
-            _logging.warning("Feature '{}' excluded because ".format(ftr) +
-                           "it is not in the input dataset.")
+            _logging.warning(
+                "Feature '{}' excluded because ".format(ftr)
+                + "it is not in the input dataset."
+            )
 
         elif column_type_map[ftr] not in valid_types:
-            _logging.warning("Feature '{}' excluded because of its type. ".format(ftr) +
-                           "Kmeans features must be int, float, dict, or array.array type.")
+            _logging.warning(
+                "Feature '{}' excluded because of its type. ".format(ftr)
+                + "Kmeans features must be int, float, dict, or array.array type."
+            )
 
         else:
             valid_features.append(ftr)
 
     if len(valid_features) == 0:
-        raise _ToolkitError("All specified features have been excluded. " +
-                            "Please specify valid features.")
+        raise _ToolkitError(
+            "All specified features have been excluded. "
+            + "Please specify valid features."
+        )
 
     return valid_features
 
@@ -197,6 +214,7 @@ class KmeansModel(_Model):
     detailed list of parameter options and code samples are available in the
     documentation for the create function.
     """
+
     def __init__(self, model):
         self.__proxy__ = model
         self.__name__ = self.__class__._native_name()
@@ -205,7 +223,7 @@ class KmeansModel(_Model):
     def _native_name(cls):
         return "kmeans"
 
-    def predict(self, dataset, output_type='cluster_id', verbose=True):
+    def predict(self, dataset, output_type="cluster_id", verbose=True):
         """
         Return predicted cluster label for instances in the new 'dataset'.
         K-means predictions are made by assigning each new instance to the
@@ -263,28 +281,32 @@ class KmeansModel(_Model):
         if not isinstance(output_type, str):
             raise TypeError("The 'output_type' parameter must be a string.")
 
-        if not output_type in ('cluster_id', 'distance'):
-            raise ValueError("The 'output_type' parameter must be either " +
-                             "'cluster_label' or 'distance'.")
+        if not output_type in ("cluster_id", "distance"):
+            raise ValueError(
+                "The 'output_type' parameter must be either "
+                + "'cluster_label' or 'distance'."
+            )
 
         ## Get model features.
         ref_features = self.features
         sf_features = _tkutl._toolkits_select_columns(dataset, ref_features)
 
         ## Compute predictions.
-        opts = {'model': self.__proxy__,
-                'model_name': self.__name__,
-                'dataset': sf_features}
+        opts = {
+            "model": self.__proxy__,
+            "model_name": self.__name__,
+            "dataset": sf_features,
+        }
 
         with _QuietProgress(verbose):
             result = _tc.extensions._kmeans.predict(opts)
 
-        sf_result = result['predictions']
+        sf_result = result["predictions"]
 
-        if output_type == 'distance':
-            return sf_result['distance']
+        if output_type == "distance":
+            return sf_result["distance"]
         else:
-            return sf_result['cluster_id']
+            return sf_result["cluster_id"]
 
     def _get(self, field):
         """
@@ -337,12 +359,10 @@ class KmeansModel(_Model):
         out
             Value of the requested field
         """
-        opts = {'model': self.__proxy__,
-                'model_name': self.__name__,
-                'field': field}
+        opts = {"model": self.__proxy__, "model_name": self.__name__, "field": field}
         response = _tc.extensions._kmeans.get_value(opts)
 
-        return response['value']
+        return response["value"]
 
     def __str__(self):
         """
@@ -373,19 +393,21 @@ class KmeansModel(_Model):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Number of clusters', 'num_clusters'),
-            ('Number of examples', 'num_examples'),
-            ('Number of feature columns', 'num_features'),
-            ('Number of unpacked features', 'num_unpacked_features'),
-            ('Row label name', 'row_label_name')]
+            ("Number of clusters", "num_clusters"),
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
+            ("Row label name", "row_label_name"),
+        ]
 
         training_fields = [
-            ('Training method', 'method'),
-            ('Number of training iterations', 'training_iterations'),
-            ('Batch size'   , 'batch_size'),
-            ('Total training time (seconds)', 'training_time')]
+            ("Training method", "method"),
+            ("Number of training iterations", "training_iterations"),
+            ("Batch size", "batch_size"),
+            ("Total training time (seconds)", "training_time"),
+        ]
 
-        section_titles = [ 'Schema', 'Training Summary']
+        section_titles = ["Schema", "Training Summary"]
 
         return ([model_fields, training_fields], section_titles)
 
@@ -400,16 +422,24 @@ class KmeansModel(_Model):
         (sections, section_titles) = self._get_summary_struct()
         accessible_fields = {
             "cluster_id": "An SFrame containing the cluster assignments.",
-            "cluster_info": "An SFrame containing the cluster centers."}
+            "cluster_info": "An SFrame containing the cluster centers.",
+        }
 
-        out = _tkutl._toolkit_repr_print(self, sections, section_titles,
-                                         width=width)
+        out = _tkutl._toolkit_repr_print(self, sections, section_titles, width=width)
         out2 = _summarize_accessible_fields(accessible_fields, width=width)
         return out + "\n" + out2
 
-def create(dataset, num_clusters=None, features=None, label=None,
-           initial_centers=None, max_iterations=10, batch_size=None,
-           verbose=True):
+
+def create(
+    dataset,
+    num_clusters=None,
+    features=None,
+    label=None,
+    initial_centers=None,
+    max_iterations=10,
+    batch_size=None,
+    verbose=True,
+):
     """
     Create a k-means clustering model. The KmeansModel object contains the
     computed cluster centers and the cluster assignment for each instance in
@@ -524,9 +554,10 @@ def create(dataset, num_clusters=None, features=None, label=None,
     ...
     >>> model = turicreate.kmeans.create(sf, num_clusters=3)
     """
-    opts = {'model_name': 'kmeans',
-            'max_iterations': max_iterations,
-            }
+    opts = {
+        "model_name": "kmeans",
+        "max_iterations": max_iterations,
+    }
 
     ## Validate the input dataset and initial centers.
     _validate_dataset(dataset)
@@ -535,9 +566,9 @@ def create(dataset, num_clusters=None, features=None, label=None,
         _validate_initial_centers(initial_centers)
 
     ## Validate and determine the correct number of clusters.
-    opts['num_clusters'] = _validate_num_clusters(num_clusters,
-                                                  initial_centers,
-                                                  dataset.num_rows())
+    opts["num_clusters"] = _validate_num_clusters(
+        num_clusters, initial_centers, dataset.num_rows()
+    )
 
     ## Validate the row label
     col_type_map = {c: dataset[c].dtype for c in dataset.column_names()}
@@ -545,58 +576,62 @@ def create(dataset, num_clusters=None, features=None, label=None,
     if label is not None:
         _validate_row_label(label, col_type_map)
 
-        if label in ['cluster_id', 'distance']:
-            raise ValueError("Row label column name cannot be 'cluster_id' " +
-                             "or 'distance'; these are reserved for other " +
-                             "columns in the Kmeans model's output.")
+        if label in ["cluster_id", "distance"]:
+            raise ValueError(
+                "Row label column name cannot be 'cluster_id' "
+                + "or 'distance'; these are reserved for other "
+                + "columns in the Kmeans model's output."
+            )
 
-        opts['row_labels'] = dataset[label]
-        opts['row_label_name'] = label
+        opts["row_labels"] = dataset[label]
+        opts["row_label_name"] = label
 
     else:
-        opts['row_labels'] = _tc.SArray.from_sequence(dataset.num_rows())
-        opts['row_label_name'] = 'row_id'
-
+        opts["row_labels"] = _tc.SArray.from_sequence(dataset.num_rows())
+        opts["row_label_name"] = "row_id"
 
     ## Validate the features relative to the input dataset.
     if features is None:
         features = dataset.column_names()
 
-    valid_features = _validate_features(features, col_type_map,
-                                        valid_types=[_array, dict, int, float],
-                                        label=label)
+    valid_features = _validate_features(
+        features, col_type_map, valid_types=[_array, dict, int, float], label=label
+    )
 
     sf_features = dataset.select_columns(valid_features)
-    opts['features'] = sf_features
+    opts["features"] = sf_features
 
     ## Validate the features in the initial centers (if provided)
     if initial_centers is not None:
         try:
             initial_centers = initial_centers.select_columns(valid_features)
         except:
-            raise ValueError("Specified features cannot be extracted from " +
-                             "the provided initial centers.")
+            raise ValueError(
+                "Specified features cannot be extracted from "
+                + "the provided initial centers."
+            )
 
         if initial_centers.column_types() != sf_features.column_types():
-            raise TypeError("Feature types are different in the dataset and " +
-                            "initial centers.")
+            raise TypeError(
+                "Feature types are different in the dataset and " + "initial centers."
+            )
 
     else:
         initial_centers = _tc.SFrame()
 
-    opts['initial_centers'] = initial_centers
+    opts["initial_centers"] = initial_centers
 
     ## Validate the batch size and determine the training method.
     if batch_size is None:
-        opts['method'] = 'elkan'
-        opts['batch_size'] = dataset.num_rows()
+        opts["method"] = "elkan"
+        opts["batch_size"] = dataset.num_rows()
 
     else:
-        opts['method'] = 'minibatch'
-        opts['batch_size'] = batch_size
+        opts["method"] = "minibatch"
+        opts["batch_size"] = batch_size
 
     ## Create and return the model
     with _QuietProgress(verbose):
         params = _tc.extensions._kmeans.train(opts)
 
-    return KmeansModel(params['model'])
+    return KmeansModel(params["model"])
