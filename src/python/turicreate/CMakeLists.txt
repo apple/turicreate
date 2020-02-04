@@ -1,11 +1,5 @@
 project(Turi)
 
-# We depend on the open source src/python/turicreate
-# to fill
-#  - INSTALLATION_BINARY_FILES
-#  - INSTALLATION_EXTENSIONS
-#
-# These can be amended locally to set up alternative behavior
 
 if(UNIX AND NOT APPLE)
   set(LINUX TRUE)
@@ -26,7 +20,7 @@ make_copy_target(copy_unity_shared
   FILES
   $<TARGET_FILE:unity_shared>
 )
-add_dependencies(copy_unity_shared unity_shared)
+add_dependencies(copy_unity_shared tctensorflow unity_shared)
 
 if(APPLE AND HAS_COREML_CUSTOM_MODEL)
   make_copy_target(copy_coreml_dylibs
@@ -46,7 +40,7 @@ make_copy_target(release_binaries
         ${INSTALLATION_SYSTEM_BINARY_FILES}
         )
 
-ADD_CUSTOM_TARGET (clean_turicreate_binaries)
+ADD_CUSTOM_TARGET(clean_turicreate_binaries)
 ADD_CUSTOM_COMMAND(
   COMMENT "clean turicreate binaries"
   COMMAND rm -f *.so *.dylib *.dll *.jar
