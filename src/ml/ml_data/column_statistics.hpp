@@ -471,7 +471,7 @@ class column_statistics {
   /**  Check global array size. Possibly resize them.
    */
   template <typename... V>
-  void check_global_array_sizes(size_t idx, V&... vv) GL_HOT_INLINE {
+  inline void check_global_array_sizes(size_t idx, V&... vv) {
 
     // If needed, increase the value of global_size.
     if(UNLIKELY(idx >= global_size)) { 
@@ -485,14 +485,14 @@ class column_statistics {
 
 
   template <typename T>
-  void __resize_global_array(size_t new_size, std::vector<T>& v) {
+  inline void __resize_global_array(size_t new_size, std::vector<T>& v) {
     // This condition should always be true as the 
     DASSERT_EQ(v.size(), global_array_buffer_size);
     v.resize(new_size);
   }
   
   template <typename V1, typename... VV>
-  void __resize_global_array(size_t new_size, V1& v, VV&... other_v) {
+  inline void __resize_global_array(size_t new_size, V1& v, VV&... other_v) {
     __resize_global_array(new_size, v);
     __resize_global_array(new_size, other_v...);
   }
