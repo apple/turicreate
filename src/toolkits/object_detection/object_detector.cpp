@@ -281,6 +281,14 @@ void object_detector::init_options(
       "If True, print progress updates and model details.",
       true,
       true);
+  options.create_categorical_option(
+      /* name              */ "model",
+      /* description       */
+      "Defines the model type",
+      /* default_value     */ "darknet-yolo",
+      /* allowed_values    */
+      {flexible_type("darknet-yolo"), flexible_type("other")},
+      /* allowed_overwrite */ true);
 
   // Validate user-provided options.
   options.set_options(opts);
@@ -1129,7 +1137,7 @@ void object_detector::init_training(gl_sframe data,
   // values fixed by this version of the toolkit.
   add_or_update_state({{"annotations", annotations_column_name},
                        {"feature", image_column_name},
-                       {"model", "darknet-yolo"}});
+                       {"model", read_state<std::string>("model")}});
 
   // Perform random validation split if necessary.
   std::tie(training_data_, validation_data_) =
