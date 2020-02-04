@@ -33,8 +33,10 @@ from .toolkits._main import ToolkitError as _ToolkitError
 from ._cython.context import debug_trace as cython_context
 from sys import version_info as _version_info
 import types as _types
+
 if _sys.version_info.major == 2:
     from types import ClassType as _ClassType
+
     _class_type = _ClassType
 else:
     _class_type = type
@@ -79,6 +81,7 @@ else:
 _thismodule = _sys.modules[__name__]
 class_uid_to_class = {}
 
+
 def _wrap_function_return(val):
     """
     Recursively walks each thing in val, opening lists and dictionaries,
@@ -87,11 +90,11 @@ def _wrap_function_return(val):
     """
 
     if type(val) is _UnityGraphProxy:
-        return _SGraph(_proxy = val)
+        return _SGraph(_proxy=val)
     elif type(val) is _UnitySFrameProxy:
-        return _SFrame(_proxy = val)
+        return _SFrame(_proxy=val)
     elif type(val) is _UnitySArrayProxy:
-        return _SArray(_proxy = val)
+        return _SArray(_proxy=val)
     elif type(val) is _UnityModel:
         # we need to cast it up to the appropriate type
         uid = val.get_uid()
@@ -102,9 +105,10 @@ def _wrap_function_return(val):
     elif type(val) is list:
         return [_wrap_function_return(i) for i in val]
     elif type(val) is dict:
-        return dict( (i, _wrap_function_return(val[i])) for i in val)
+        return dict((i, _wrap_function_return(val[i])) for i in val)
     else:
         return val
+
 
 def _setattr_wrapper(mod, key, value):
     """
@@ -114,6 +118,53 @@ def _setattr_wrapper(mod, key, value):
     setattr(mod, key, value)
     if mod == _thismodule:
         setattr(_sys.modules[__name__], key, value)
+
+
+def _toolkit_function_pack_args(arguments, args, kwargs):
+    """
+    Packs the arguments into the proper form.
+    """
+
+    # scan for all the arguments in args
+    num_args_got = len(args) + len(kwargs)
+    num_args_required = len(arguments)
+    if num_args_got != num_args_required:
+        raise TypeError(
+            "Expecting "
+            + str(num_args_required)
+            + " arguments, got "
+            + str(num_args_got)
+        )
+
+    ## fill the dict first with the regular args
+    argument_dict = {}
+    for i in range(len(args)):
+        argument_dict[arguments[i]] = args[i]
+
+    # now fill with the kwargs.
+    for k in kwargs.keys():
+        if k in argument_dict:
+            raise TypeError("Got multiple values for keyword argument '" + k + "'")
+        argument_dict[k] = kwargs[k]
+
+    return argument_dict
+
+
+def _toolkit_function_unpack_return(ret):
+
+    # handle errors
+    if not ret[0]:
+        if len(ret[1]) > 0:
+            raise _ToolkitError(ret[1])
+        else:
+            raise _ToolkitError("Toolkit failed with unknown error")
+
+    ret = _wrap_function_return(ret[2])
+    if type(ret) is dict and "return_value" in ret:
+        return ret["return_value"]
+    else:
+        return ret
+
 
 def _run_toolkit_function(fnname, arguments, args, kwargs):
     """
@@ -133,41 +184,71 @@ def _run_toolkit_function(fnname, arguments, args, kwargs):
     kwargs : dictionary
         The keyword arguments that were passed
     """
-    # scan for all the arguments in args
-    num_args_got = len(args) + len(kwargs)
-    num_args_required = len(arguments)
-    if num_args_got != num_args_required:
-        raise TypeError("Expecting " + str(num_args_required) + " arguments, got " + str(num_args_got))
-
-    ## fill the dict first with the regular args
-    argument_dict = {}
-    for i in range(len(args)):
-        argument_dict[arguments[i]] = args[i]
-
-    # now fill with the kwargs.
-    for k in kwargs.keys():
-        if k in argument_dict:
-            raise TypeError("Got multiple values for keyword argument '" + k + "'")
-        argument_dict[k] = kwargs[k]
+    argument_dict = _toolkit_function_pack_args(arguments, args, kwargs)
 
     # unwrap it
     with cython_context():
         ret = _get_unity().run_toolkit(fnname, argument_dict)
-    # handle errors
-    if not ret[0]:
-        if len(ret[1]) > 0:
-            raise _ToolkitError(ret[1])
-        else:
-            raise _ToolkitError("Toolkit failed with unknown error")
 
-    ret = _wrap_function_return(ret[2])
-    if type(ret) is dict and 'return_value' in ret:
-        return ret['return_value']
-    else:
-        return ret
+    return _toolkit_function_unpack_return(ret)
+
+
+# Implementation for backgrounding function calls
+
+
+class ToolkitFunctionFuture(object):
+    def __init__(self, proxy):
+        self.__proxy__ = proxy
+
+    def result(self):
+        """
+        Waits for the answer to finish processing in the background, returning
+        the result.
+        """
+
+        with cython_context():
+            ret = self.__proxy__.response()
+
+        return _toolkit_function_unpack_return(ret)
+
+
+def _run_toolkit_function_background(fnname, arguments, args, kwargs):
+    """
+    Dispatches arguments to a toolkit function, then returns a future
+    that provides a handle to the background process.  Calling wait()
+    on the future object .
+
+    Parameters
+    ----------
+    fnname : string
+        The toolkit function to run
+
+    arguments : list[string]
+        The list of all the arguments the function takes.
+
+    args : list
+        The arguments that were passed
+
+    kwargs : dictionary
+        The keyword arguments that were passed
+    """
+    argument_dict = _toolkit_function_pack_args(arguments, args, kwargs)
+
+    with cython_context():
+        proxy = _get_unity().run_toolkit_background(fnname, argument_dict)
+
+    return ToolkitFunctionFuture(proxy)
+
 
 def _make_injected_function(fn, arguments):
     return lambda *args, **kwargs: _run_toolkit_function(fn, arguments, args, kwargs)
+
+
+def _make_injected_function_background(fn, arguments):
+    return lambda *args, **kwargs: _run_toolkit_function_background(
+        fn, arguments, args, kwargs
+    )
+
 
 def _class_instance_from_name(class_name, *arg, **kwarg):
     """
@@ -182,12 +263,13 @@ def _class_instance_from_name(class_name, *arg, **kwarg):
 
     """
     # we first look in tc.extensions for the class name
-    module_path = class_name.split('.')
+    module_path = class_name.split(".")
     import_path = module_path[0:-1]
-    module = __import__('.'.join(import_path), fromlist=[module_path[-1]])
+    module = __import__(".".join(import_path), fromlist=[module_path[-1]])
     class_ = getattr(module, module_path[-1])
     instance = class_(*arg, **kwarg)
     return instance
+
 
 def _create_class_instance(class_name, _proxy):
     """
@@ -195,7 +277,9 @@ def _create_class_instance(class_name, _proxy):
     imported (perhaps as a builtin extensions hard compiled into unity_server).
     """
     try:
-        return _class_instance_from_name('turicreate.extensions.' + class_name, _proxy=_proxy)
+        return _class_instance_from_name(
+            "turicreate.extensions." + class_name, _proxy=_proxy
+        )
     except:
         pass
     return _class_instance_from_name(class_name, _proxy=_proxy)
@@ -210,54 +294,55 @@ class _ToolkitClass:
     inject functions, and attributes into their appropriate places.
     """
 
-    _functions = {} # The functions in the class
-    _get_properties = [] # The getable properties in the class
-    _set_properties = [] # The setable properties in the class
+    _functions = {}  # The functions in the class
+    _get_properties = []  # The getable properties in the class
+    _set_properties = []  # The setable properties in the class
     _tkclass = None
-
 
     def __init__(self, *args, **kwargs):
         tkclass_name = getattr(self.__init__, "tkclass_name")
         _proxy = None
         if "_proxy" in kwargs:
-            _proxy = kwargs['_proxy']
-            del kwargs['_proxy']
+            _proxy = kwargs["_proxy"]
+            del kwargs["_proxy"]
 
         if _proxy:
-            self.__dict__['_tkclass'] = _proxy
+            self.__dict__["_tkclass"] = _proxy
         elif tkclass_name:
-            self.__dict__['_tkclass'] = _get_unity().create_toolkit_class(tkclass_name)
+            self.__dict__["_tkclass"] = _get_unity().create_toolkit_class(tkclass_name)
         try:
             # fill the functions and properties
-            self.__dict__['_functions'] = self._tkclass.list_functions()
-            self.__dict__['_get_properties'] = self._tkclass.list_get_properties()
-            self.__dict__['_set_properties'] = self._tkclass.list_set_properties()
+            self.__dict__["_functions"] = self._tkclass.list_functions()
+            self.__dict__["_get_properties"] = self._tkclass.list_get_properties()
+            self.__dict__["_set_properties"] = self._tkclass.list_set_properties()
             # rewrite the doc string for this class
             try:
-                self.__dict__['__doc__'] = self._tkclass.get('get_docstring', {'__symbol__':'__doc__'})
-                self.__class__.__dict__['__doc__'] = self.__dict__['__doc__']
+                self.__dict__["__doc__"] = self._tkclass.get(
+                    "get_docstring", {"__symbol__": "__doc__"}
+                )
+                self.__class__.__dict__["__doc__"] = self.__dict__["__doc__"]
             except:
                 pass
         except:
-            raise _ToolkitError("Cannot create Toolkit Class for this class. "
-                               "This class was not created with the new toolkit class system.")
+            raise _ToolkitError(
+                "Cannot create Toolkit Class for this class. "
+                "This class was not created with the new toolkit class system."
+            )
         # for compatibility with older classes / models
-        self.__dict__['__proxy__'] = self.__dict__['_tkclass']
+        self.__dict__["__proxy__"] = self.__dict__["_tkclass"]
 
-        if '__init__' in self.__dict__['_functions']:
+        if "__init__" in self.__dict__["_functions"]:
             self.__run_class_function("__init__", args, kwargs)
         elif len(args) != 0 or len(kwargs) != 0:
             raise TypeError("This constructor takes no arguments")
 
     def __dir__(self):
-        return list(self._functions.keys()) + self._get_properties + self._set_properties
-
+        return (
+            list(self._functions.keys()) + self._get_properties + self._set_properties
+        )
 
     def __run_class_function(self, fnname, args, kwargs):
-        # scan for all the arguments in args
         arguments = self._functions[fnname]
-        num_args_got = len(args) + len(kwargs)
-        num_args_required = len(arguments)
 
         ## fill the dict first with the regular args
         argument_dict = {}
@@ -278,36 +363,37 @@ class _ToolkitClass:
         ret = _wrap_function_return(ret)
         return ret
 
-
     def __getattr__(self, name):
-        if name == '__proxy__':
-            return self.__dict__['__proxy__']
+        if name == "__proxy__":
+            return self.__dict__["__proxy__"]
         elif name in self._get_properties:
             # is it an attribute?
             return _wrap_function_return(self._tkclass.get_property(name))
         elif name in self._functions:
             # is it a function?
             ret = lambda *args, **kwargs: self.__run_class_function(name, args, kwargs)
-            ret.__doc__ = "Name: " + name + "\nParameters: " + str(self._functions[name]) + "\n"
+            ret.__doc__ = (
+                "Name: " + name + "\nParameters: " + str(self._functions[name]) + "\n"
+            )
             try:
                 ret.__doc__ += self._tkclass.get_docstring(name)
-                ret.__doc__ += '\n'
+                ret.__doc__ += "\n"
             except:
                 pass
             return ret
         else:
             raise AttributeError("no attribute " + name)
 
-
     def __setattr__(self, name, value):
-        if name == '__proxy__':
-            self.__dict__['__proxy__'] = value
+        if name == "__proxy__":
+            self.__dict__["__proxy__"] = value
         elif name in self._set_properties:
             # is it a setable property?
-            arguments = {'value':value}
+            arguments = {"value": value}
             return _wrap_function_return(self._tkclass.set_property(name, arguments))
         else:
             raise AttributeError("no attribute " + name)
+
 
 def _list_functions():
     """
@@ -316,9 +402,11 @@ def _list_functions():
     unity = _get_unity()
     return unity.list_toolkit_functions()
 
+
 def _publish():
 
     import copy
+
     """
     Publishes all functions and classes registered in unity_server.
     The functions and classes will appear in the module turicreate.extensions
@@ -333,18 +421,21 @@ def _publish():
     for fn in fnlist:
         props = unity.describe_toolkit_function(fn)
         # quit if there is nothing we can process
-        if 'arguments' not in props:
+        if "arguments" not in props:
             continue
-        arguments = props['arguments']
+        arguments = props["arguments"]
 
         newfunc = _make_injected_function(fn, arguments)
 
-        newfunc.__doc__ = "Name: " + fn + "\nParameters: " + str(arguments) + "\n"
-        if 'documentation' in props:
-            newfunc.__doc__ += props['documentation'] + "\n"
+        newfunc.run_background = _make_injected_function_background(fn, arguments)
 
-        newfunc.__dict__['__glmeta__'] = {'extension_name':fn}
-        modpath = fn.split('.')
+        newfunc.__doc__ = "Name: " + fn + "\nParameters: " + str(arguments) + "\n"
+        if "documentation" in props:
+            newfunc.__doc__ += props["documentation"] + "\n"
+
+        newfunc.__dict__["__glmeta__"] = {"extension_name": fn, "arguments": arguments}
+
+        modpath = fn.split(".")
         # walk the module tree
         mod = _thismodule
         for path in modpath[:-1]:
@@ -360,31 +451,38 @@ def _publish():
     for tkclass in tkclasslist:
         m = unity.describe_toolkit_class(tkclass)
         # of v2 type
-        if not ('functions' in m and 'get_properties' in m and 'set_properties' in m and 'uid' in m):
+        if not (
+            "functions" in m
+            and "get_properties" in m
+            and "set_properties" in m
+            and "uid" in m
+        ):
             continue
 
         # create a new class
         if _version_info.major == 3:
             new_class = _ToolkitClass.__dict__.copy()
-            del new_class['__dict__']
-            del new_class['__weakref__']
+            del new_class["__dict__"]
+            del new_class["__weakref__"]
         else:
             new_class = copy.deepcopy(_ToolkitClass.__dict__)
 
-        new_class['__init__'] = _types.FunctionType(new_class['__init__'].__code__,
-                                                    new_class['__init__'].__globals__,
-                                                    name='__init__',
-                                                    argdefs=(),
-                                                    closure=())
+        new_class["__init__"] = _types.FunctionType(
+            new_class["__init__"].__code__,
+            new_class["__init__"].__globals__,
+            name="__init__",
+            argdefs=(),
+            closure=(),
+        )
 
         # rewrite the init method to add the toolkit class name so it will
         # default construct correctly
-        new_class['__init__'].tkclass_name = tkclass
+        new_class["__init__"].tkclass_name = tkclass
 
         newclass = _class_type(tkclass, (), new_class)
-        setattr(newclass, '__glmeta__', {'extension_name':tkclass})
-        class_uid_to_class[m['uid']] = newclass
-        modpath = tkclass.split('.')
+        setattr(newclass, "__glmeta__", {"extension_name": tkclass})
+        class_uid_to_class[m["uid"]] = newclass
+        modpath = tkclass.split(".")
         # walk the module tree
         mod = _thismodule
         for path in modpath[:-1]:
@@ -396,7 +494,6 @@ def _publish():
         _setattr_wrapper(mod, modpath[-1], newclass)
 
 
-
 class _ExtMetaPath(object):
     """
     This is a magic metapath searcher. To understand how this works,
@@ -406,6 +503,7 @@ class _ExtMetaPath(object):
     particular module import was requested, allowing this to essentially
     'override' the default import behaviors.
     """
+
     def find_module(self, fullname, submodule_path=None):
         """
         We have to see if fullname refers to a module we can import.
@@ -424,24 +522,25 @@ class _ExtMetaPath(object):
         # locations
         import sys
         import os
+
         # This drops the last "." So if I am importing aaa.bbb.xxx
         # module_subpath is aaa.bbb
-        module_subpath = ".".join(fullname.split('.')[:-1])
+        module_subpath = ".".join(fullname.split(".")[:-1])
         for path in sys.path:
             # joins the path to aaa/bbb/xxx
-            pathname = os.path.join(path, os.sep.join(fullname.split('.')))
+            pathname = os.path.join(path, os.sep.join(fullname.split(".")))
             # try to laod the ".so" extension
             try:
-                if os.path.exists(pathname + '.so'):
-                    ext_import(pathname + '.so', module_subpath)
+                if os.path.exists(pathname + ".so"):
+                    ext_import(pathname + ".so", module_subpath)
                     break
             except:
                 pass
 
             # try to laod the ".dylib" extension
             try:
-                if os.path.exists(pathname + '.dylib'):
-                    ext_import(pathname + '.dylib', module_subpath)
+                if os.path.exists(pathname + ".dylib"):
+                    ext_import(pathname + ".dylib", module_subpath)
                     break
             except:
                 pass
@@ -455,7 +554,7 @@ class _ExtMetaPath(object):
         # Essentially: if fullname == aaa.bbb.xxx
         # Then we try to see if we have loaded tc.extensions.aaa.bbb.xxx
         mod = _thismodule
-        modpath = fullname.split('.')
+        modpath = fullname.split(".")
         # walk the module tree
         mod = _thismodule
         for path in modpath:
@@ -467,6 +566,7 @@ class _ExtMetaPath(object):
 
     def load_module(self, fullname):
         import sys
+
         # we may have already been loaded
         if fullname in sys.modules:
             return sys.modules[fullname]
@@ -474,7 +574,7 @@ class _ExtMetaPath(object):
         # Essentially: if fullname == aaa.bbb.xxx
         # Then we try to look for tc.extensions.aaa.bbb.xxx
         mod = _thismodule
-        modpath = fullname.split('.')
+        modpath = fullname.split(".")
         for path in modpath:
             mod = getattr(mod, path)
 
@@ -485,13 +585,16 @@ class _ExtMetaPath(object):
         sys.modules[fullname] = mod
         return mod
 
+
 _ext_meta_path_singleton = None
+
 
 def _add_meta_path():
     """
     called on unity_server import to insert the meta path loader.
     """
     import sys
+
     global _ext_meta_path_singleton
     if _ext_meta_path_singleton is None:
         _ext_meta_path_singleton = _ExtMetaPath()
@@ -574,10 +677,14 @@ def ext_import(soname, module_subpath=""):
     3.0
     """
     import warnings
-    warnings.warn("turicreate.ext_import is deprecated. It will be removed in the next major release.")
+
+    warnings.warn(
+        "turicreate.ext_import is deprecated. It will be removed in the next major release."
+    )
 
     unity = _get_unity()
     import os
+
     if os.path.exists(soname):
         soname = os.path.abspath(soname)
     else:
@@ -587,8 +694,9 @@ def ext_import(soname, module_subpath=""):
         raise RuntimeError(ret)
     _publish()
     # push the functions into the corresponding module namespace
-    return unity.list_toolkit_functions_in_dynamic_module(soname) + unity.list_toolkit_classes_in_dynamic_module(soname)
-
+    return unity.list_toolkit_functions_in_dynamic_module(
+        soname
+    ) + unity.list_toolkit_classes_in_dynamic_module(soname)
 
 
 def _get_toolkit_function_name_from_function(fn):
@@ -598,12 +706,13 @@ def _get_toolkit_function_name_from_function(fn):
     Otherwise we return an empty string.
     """
     try:
-        if '__glmeta__' in fn.__dict__:
-            return fn.__dict__['__glmeta__']['extension_name']
+        if "__glmeta__" in fn.__dict__:
+            return fn.__dict__["__glmeta__"]["extension_name"]
         else:
             return ""
     except:
         return ""
+
 
 def _get_argument_list_from_toolkit_function_name(fn):
     """
@@ -611,8 +720,9 @@ def _get_argument_list_from_toolkit_function_name(fn):
     """
     unity = _get_unity()
     fnprops = unity.describe_toolkit_function(fn)
-    argnames = fnprops['arguments']
+    argnames = fnprops["arguments"]
     return argnames
+
 
 class _Closure:
     """
@@ -637,6 +747,7 @@ class _Closure:
         [0, 0],  -->  is not captured value. is argument 0 of the lambda.
         [0, 1]   -->  is not captured value. is argument 1 of the lambda.
     """
+
     def __init__(self, native_fn_name, arguments):
         self.native_fn_name = native_fn_name
         self.arguments = arguments
@@ -648,7 +759,7 @@ def _descend_namespace(caller_globals, name):
     walk the globals expanding caller_globals['a']['b']['c']['d'] returning
     the result. Raises an exception (IndexError) on failure.
     """
-    names =  name.split('.')
+    names = name.split(".")
     cur = caller_globals
     for i in names:
         if type(cur) is dict:
@@ -656,6 +767,7 @@ def _descend_namespace(caller_globals, name):
         else:
             cur = getattr(cur, i)
     return cur
+
 
 def _build_native_function_call(fn):
     """
@@ -731,8 +843,9 @@ def _build_native_function_call(fn):
 
     # attempt to recursively break down any other functions
     import inspect
+
     for i in range(len(arglist)):
-        if arglist[i][0] == 1 and  inspect.isfunction(arglist[i][1]):
+        if arglist[i][0] == 1 and inspect.isfunction(arglist[i][1]):
             try:
                 arglist[i][1] = _build_native_function_call(arglist[i][1])
             except:

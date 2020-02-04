@@ -12,10 +12,12 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _numeric_param_check_range
 
 import sys as _sys
+
 if _sys.version_info.major > 2:
     long = int
 
 _MIN_NUM_SESSIONS_FOR_SPLIT = 100
+
 
 def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     """
@@ -63,26 +65,28 @@ def random_split_by_session(dataset, session_id, fraction=0.9, seed=None):
     """
     from random import Random
 
-    _raise_error_if_not_of_type(dataset, _SFrame, 'dataset')
-    _raise_error_if_not_of_type(session_id, str, 'session_id')
-    _raise_error_if_not_of_type(fraction, float, 'fraction')
-    _raise_error_if_not_of_type(seed, [int, type(None)], 'seed')
-    _numeric_param_check_range('fraction', fraction, 0, 1)
+    _raise_error_if_not_of_type(dataset, _SFrame, "dataset")
+    _raise_error_if_not_of_type(session_id, str, "session_id")
+    _raise_error_if_not_of_type(fraction, float, "fraction")
+    _raise_error_if_not_of_type(seed, [int, type(None)], "seed")
+    _numeric_param_check_range("fraction", fraction, 0, 1)
 
     if session_id not in dataset.column_names():
         raise _ToolkitError(
-            'Input "dataset" must contain a column called %s.' % session_id)
+            'Input "dataset" must contain a column called %s.' % session_id
+        )
 
     if seed is None:
         # Include the nanosecond component as well.
         import time
+
         seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
 
     # The cython bindings require this to be an int, so cast if we can.
     try:
         seed = int(seed)
     except ValueError:
-        raise ValueError('The \'seed\' parameter must be of type int.')
+        raise ValueError("The 'seed' parameter must be of type int.")
 
     random = Random()
 

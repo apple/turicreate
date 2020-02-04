@@ -46,30 +46,36 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         array_features = []
         dict_features = []
         for i in range(n):
-            array_features.append(array.array('f', np.random.rand(d)))
-            dict_features.append({'alice': np.random.randint(10),
-                                  'brian': np.random.randint(10),
-                                  'chris': np.random.randint(10)})
+            array_features.append(array.array("f", np.random.rand(d)))
+            dict_features.append(
+                {
+                    "alice": np.random.randint(10),
+                    "brian": np.random.randint(10),
+                    "chris": np.random.randint(10),
+                }
+            )
 
         self.refs = tc.SFrame()
         for i in range(d):
-            self.refs['X{}'.format(i+1)] = tc.SArray(np.random.rand(n))
+            self.refs["X{}".format(i + 1)] = tc.SArray(np.random.rand(n))
 
-        self.label = 'label'
+        self.label = "label"
         self.refs[self.label] = [str(x) for x in range(n)]
-        self.refs['array_ftr'] = array_features
-        self.refs['dict_ftr'] = dict_features
-        self.refs['str_ftr'] = random_string(n, length=3, num_letters=5)
-        self.refs['list_str_ftr'] = random_list_of_str(n, length=3)
+        self.refs["array_ftr"] = array_features
+        self.refs["dict_ftr"] = dict_features
+        self.refs["str_ftr"] = random_string(n, length=3, num_letters=5)
+        self.refs["list_str_ftr"] = random_list_of_str(n, length=3)
 
-    def _test_create(self, sf, label, features, distance, method, field=None,
-                     value=None):
+    def _test_create(
+        self, sf, label, features, distance, method, field=None, value=None
+    ):
         """
         Test creation of nearest neighbors models.
         """
 
-        m = tc.nearest_neighbors.create(sf, label, features, distance, method,
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            sf, label, features, distance, method, verbose=False
+        )
         assert m is not None, "Model creation failed."
 
         if field is not None:
@@ -82,55 +88,91 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         """
 
         ## check auto configurations for the method when features are provided.
-        self._test_create(self.refs, self.label, features=['X1', 'X2', 'X3'],
-                          distance='auto', method='auto', field='method',
-                          value='ball_tree')
+        self._test_create(
+            self.refs,
+            self.label,
+            features=["X1", "X2", "X3"],
+            distance="auto",
+            method="auto",
+            field="method",
+            value="ball_tree",
+        )
 
-        self._test_create(self.refs, self.label, features=['X1', 'X2', 'X3'],
-                          distance='euclidean', method='auto', field='method',
-                          value='ball_tree')
+        self._test_create(
+            self.refs,
+            self.label,
+            features=["X1", "X2", "X3"],
+            distance="euclidean",
+            method="auto",
+            field="method",
+            value="ball_tree",
+        )
 
         ## check auto configurations for distance if features specified.
-        m = tc.nearest_neighbors.create(self.refs, self.label,
-                                        features=['X1', 'X2', 'X3'],
-                                        distance='auto', method='brute_force',
-                                        verbose=False)
-        self.assertEqual(m.distance, [[['X1', 'X2', 'X3'], 'euclidean', 1.]])
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=["X1", "X2", "X3"],
+            distance="auto",
+            method="brute_force",
+            verbose=False,
+        )
+        self.assertEqual(m.distance, [[["X1", "X2", "X3"], "euclidean", 1.0]])
 
         ## check auto configurations for distance if features *not* specified.
-        ans_dist = [[['X1', 'X2', 'X3'], 'euclidean', 1.],
-                    [['dict_ftr'], 'jaccard', 1.],
-                    [['str_ftr'], 'levenshtein', 1.],
-                    [['array_ftr'], 'euclidean', 1.],
-                    [['list_str_ftr'], 'jaccard', 1.]]
+        ans_dist = [
+            [["X1", "X2", "X3"], "euclidean", 1.0],
+            [["dict_ftr"], "jaccard", 1.0],
+            [["str_ftr"], "levenshtein", 1.0],
+            [["array_ftr"], "euclidean", 1.0],
+            [["list_str_ftr"], "jaccard", 1.0],
+        ]
 
-        m = tc.nearest_neighbors.create(self.refs, self.label, features=None,
-                                        distance='auto', method='brute_force',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=None,
+            distance="auto",
+            method="brute_force",
+            verbose=False,
+        )
         self.assertItemsEqual(m.distance, ans_dist)
 
-
-        m = tc.nearest_neighbors.create(self.refs, self.label, features=None,
-                                        distance=None, method='brute_force',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=None,
+            distance=None,
+            method="brute_force",
+            verbose=False,
+        )
         self.assertItemsEqual(m.distance, ans_dist)
-
 
         ## check default leaf size for ball tree
         correct_leaf_size = 1000
 
-        self._test_create(self.refs, self.label, features=['array_ftr'],
-                          distance='euclidean', method='ball_tree',
-                          field='leaf_size', value=correct_leaf_size)
+        self._test_create(
+            self.refs,
+            self.label,
+            features=["array_ftr"],
+            distance="euclidean",
+            method="ball_tree",
+            field="leaf_size",
+            value=correct_leaf_size,
+        )
 
-        m = tc.nearest_neighbors.create(self.refs, self.label,
-                                        features=['array_ftr'],
-                                        method='ball_tree',
-                                        leaf_size=0,
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=["array_ftr"],
+            method="ball_tree",
+            leaf_size=0,
+            verbose=False,
+        )
         assert m is not None, "Model creation failed."
-        assert m.leaf_size == correct_leaf_size, "Leaf size explicit default" +\
-            "failed."
+        assert m.leaf_size == correct_leaf_size, (
+            "Leaf size explicit default" + "failed."
+        )
 
     def test_create_labels(self):
         """
@@ -143,47 +185,73 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         ## String labels are tested everywhere else in this class.
 
         ## Passing no label should work, with and without listed features
-        self._test_create(sf, label=None, features=None, distance='auto',
-                          method='auto', field='label', value=None)
+        self._test_create(
+            sf,
+            label=None,
+            features=None,
+            distance="auto",
+            method="auto",
+            field="label",
+            value=None,
+        )
 
-        self._test_create(sf, label=None, features=['X1', 'X2', 'X3'],
-                          distance='euclidean', method='auto', field='label',
-                          value=None)
+        self._test_create(
+            sf,
+            label=None,
+            features=["X1", "X2", "X3"],
+            distance="euclidean",
+            method="auto",
+            field="label",
+            value=None,
+        )
 
         ## Integer label should work
-        sf = sf.add_row_number(column_name='id')
+        sf = sf.add_row_number(column_name="id")
 
-        self._test_create(sf, label='id', features=None, distance='auto',
-                  method='auto', field='label', value='id')
+        self._test_create(
+            sf,
+            label="id",
+            features=None,
+            distance="auto",
+            method="auto",
+            field="label",
+            value="id",
+        )
 
-        m = tc.nearest_neighbors.create(sf, label='id',
-                                        features=['X1', 'X2', 'X3'],
-                                        distance='euclidean',
-                                        method='brute_force',
-                                        verbose=False)
-        self.assertEqual(set(m.features), set(['X1', 'X2', 'X3']))
+        m = tc.nearest_neighbors.create(
+            sf,
+            label="id",
+            features=["X1", "X2", "X3"],
+            distance="euclidean",
+            method="brute_force",
+            verbose=False,
+        )
+        self.assertEqual(set(m.features), set(["X1", "X2", "X3"]))
 
         ## Float label should fail
-        sf['id'] = sf['id'].astype(float)
+        sf["id"] = sf["id"].astype(float)
 
         with self.assertRaises(TypeError):
-            m = tc.nearest_neighbors.create(sf, label='id')
+            m = tc.nearest_neighbors.create(sf, label="id")
 
         ## Specified label, included in the features list should drop the label
         #  from the features.
-        m = tc.nearest_neighbors.create(sf, label=None,
-                                        features=['X1', 'X2', '__id'],
-                                        distance='euclidean',
-                                        method='brute_force', verbose=False)
-        self.assertEqual(set(m.features), set(['X1', 'X2']))
+        m = tc.nearest_neighbors.create(
+            sf,
+            label=None,
+            features=["X1", "X2", "__id"],
+            distance="euclidean",
+            method="brute_force",
+            verbose=False,
+        )
+        self.assertEqual(set(m.features), set(["X1", "X2"]))
 
         ## If there is only one feature, and it's specified as the label, this
         #  should raise an informative error.
-        sf = sf.add_row_number('id_test')
+        sf = sf.add_row_number("id_test")
 
         with self.assertRaises(ToolkitError):
-            m = tc.nearest_neighbors.create(sf, label='id_test',
-                                            features=['id_test'])
+            m = tc.nearest_neighbors.create(sf, label="id_test", features=["id_test"])
 
     def test_create_methods(self):
         """
@@ -191,39 +259,57 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         """
 
         methods = {
-            'auto': 'ball_tree',
-            'brute_force': 'brute_force',
-            'ball_tree': 'ball_tree',
-            'lsh': 'lsh'}
+            "auto": "ball_tree",
+            "brute_force": "brute_force",
+            "ball_tree": "ball_tree",
+            "lsh": "lsh",
+        }
 
         for m, name in methods.items():
-            self._test_create(self.refs, self.label, features=['array_ftr'],
-                              method=m, distance='euclidean',
-                              field='method', value=name)
+            self._test_create(
+                self.refs,
+                self.label,
+                features=["array_ftr"],
+                method=m,
+                distance="euclidean",
+                field="method",
+                value=name,
+            )
 
         ## Cosine and transformed_dot_product distances should not work with ball tree
-        for dist in ['cosine', 'transformed_dot_product',
-                     tc.distances.cosine,
-                     tc.distances.transformed_dot_product]:
+        for dist in [
+            "cosine",
+            "transformed_dot_product",
+            tc.distances.cosine,
+            tc.distances.transformed_dot_product,
+        ]:
 
             with self.assertRaises(TypeError):
-                tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['array_ftr'],
-                                            distance=dist,
-                                            method='ball_tree', verbose=False)
+                tc.nearest_neighbors.create(
+                    self.refs,
+                    self.label,
+                    features=["array_ftr"],
+                    distance=dist,
+                    method="ball_tree",
+                    verbose=False,
+                )
 
         ## Multiple distance components should cause an automatic switch to
         #  brute force, even if ball tree is specified.
         distance_components = [
-            [['X1', 'X2', 'X3'], 'euclidean', 1],
-            [['array_ftr'], 'manhattan', 1],
-            [['str_ftr'], 'levenshtein', 1]]
+            [["X1", "X2", "X3"], "euclidean", 1],
+            [["array_ftr"], "manhattan", 1],
+            [["str_ftr"], "levenshtein", 1],
+        ]
 
-        m = tc.nearest_neighbors.create(self.refs, self.label,
-                                        method='ball_tree',
-                                        distance=distance_components,
-                                        verbose=False)
-        self.assertEqual(m.method, 'brute_force')
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            method="ball_tree",
+            distance=distance_components,
+            verbose=False,
+        )
+        self.assertEqual(m.method, "brute_force")
 
     def test_kwargs(self):
         """
@@ -231,11 +317,14 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         raise errors to avoid confusion in downstream errors.
         """
         with self.assertRaises(ToolkitError):
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                                            feature='array_ftr',  # this is bogus
-                                            method='ball_tree',
-                                            distance='euclidean',
-                                            verbose=False)
+            m = tc.nearest_neighbors.create(
+                self.refs,
+                self.label,
+                feature="array_ftr",  # this is bogus
+                method="ball_tree",
+                distance="euclidean",
+                verbose=False,
+            )
 
     def test_create_dense_distances(self):
         """
@@ -243,41 +332,53 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         """
 
         dense_dists = {
-            'euclidean': tc.distances.euclidean,
-            'squared_euclidean': tc.distances.squared_euclidean,
-            'gaussian_kernel': tc.distances.gaussian_kernel,
-            'manhattan': tc.distances.manhattan,
-            'cosine': tc.distances.cosine,
-            'transformed_dot_product': tc.distances.transformed_dot_product}
+            "euclidean": tc.distances.euclidean,
+            "squared_euclidean": tc.distances.squared_euclidean,
+            "gaussian_kernel": tc.distances.gaussian_kernel,
+            "manhattan": tc.distances.manhattan,
+            "cosine": tc.distances.cosine,
+            "transformed_dot_product": tc.distances.transformed_dot_product,
+        }
 
         for dist_name, dist_fn in dense_dists.items():
 
-            ans_dist = [[['array_ftr'], dist_name, 1.]]
+            ans_dist = [[["array_ftr"], dist_name, 1.0]]
 
             ## Test the string form of the distance argument
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['array_ftr'],
-                                            distance=dist_name,
-                                            method='brute_force',
-                                            verbose=False)
+            m = tc.nearest_neighbors.create(
+                self.refs,
+                self.label,
+                features=["array_ftr"],
+                distance=dist_name,
+                method="brute_force",
+                verbose=False,
+            )
             self.assertEqual(m.distance, ans_dist)
 
             ## Test the function form of the distance argument
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['array_ftr'],
-                                            distance=dist_fn,
-                                            method='brute_force',
-                                            verbose=False)
+            m = tc.nearest_neighbors.create(
+                self.refs,
+                self.label,
+                features=["array_ftr"],
+                distance=dist_fn,
+                method="brute_force",
+                verbose=False,
+            )
             self.assertEqual(m.distance, ans_dist)
 
             ## Numeric distances should *not* work with string features
             try:
-                tc.nearest_neighbors.create(self.refs, self.label, ['str_ftr'],
-                                            distance=dist_name)
+                tc.nearest_neighbors.create(
+                    self.refs, self.label, ["str_ftr"], distance=dist_name
+                )
             except ToolkitError as e:
-                self.assertTrue(str(e).startswith("The only distance allowed for string features is 'levenshtein'. "
-                                                  "Please try this distance, or use 'text_analytics.count_ngrams' to "
-                                                  "convert the strings to dictionaries, which permit more distance functions.\n"))
+                self.assertTrue(
+                    str(e).startswith(
+                        "The only distance allowed for string features is 'levenshtein'. "
+                        "Please try this distance, or use 'text_analytics.count_ngrams' to "
+                        "convert the strings to dictionaries, which permit more distance functions.\n"
+                    )
+                )
 
     def test_create_sparse_distances(self):
         """
@@ -285,84 +386,114 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         sparse data, e.g. vectors."""
 
         sparse_dists = {
-            'jaccard': tc.distances.jaccard,
-            'weighted_jaccard': tc.distances.weighted_jaccard,
-            'cosine': tc.distances.cosine,
-            'transformed_dot_product': tc.distances.transformed_dot_product}
+            "jaccard": tc.distances.jaccard,
+            "weighted_jaccard": tc.distances.weighted_jaccard,
+            "cosine": tc.distances.cosine,
+            "transformed_dot_product": tc.distances.transformed_dot_product,
+        }
 
         for dist_name, dist_fn in sparse_dists.items():
 
-            ans_dist = [[['dict_ftr'], dist_name, 1.]]
+            ans_dist = [[["dict_ftr"], dist_name, 1.0]]
 
             ## Test the string form of the distance argument
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['dict_ftr'],
-                                            distance=dist_name,
-                                            method='brute_force',
-                                            verbose=False)
+            m = tc.nearest_neighbors.create(
+                self.refs,
+                self.label,
+                features=["dict_ftr"],
+                distance=dist_name,
+                method="brute_force",
+                verbose=False,
+            )
             self.assertEqual(m.distance, ans_dist)
 
             ## Test the function form of the distance argument
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['dict_ftr'],
-                                            distance=dist_fn,
-                                            method='brute_force',
-                                            verbose=False)
+            m = tc.nearest_neighbors.create(
+                self.refs,
+                self.label,
+                features=["dict_ftr"],
+                distance=dist_fn,
+                method="brute_force",
+                verbose=False,
+            )
             self.assertEqual(m.distance, ans_dist)
 
             ## Test the string form of the distance argument with list of str
-            ans_dist = [[['list_str_ftr'], dist_name, 1.]]
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['list_str_ftr'],
-                                            distance=dist_name,
-                                            method='brute_force',
-                                            verbose=False)
+            ans_dist = [[["list_str_ftr"], dist_name, 1.0]]
+            m = tc.nearest_neighbors.create(
+                self.refs,
+                self.label,
+                features=["list_str_ftr"],
+                distance=dist_name,
+                method="brute_force",
+                verbose=False,
+            )
             self.assertEqual(m.distance, ans_dist)
 
-
         ## Jaccard distances should not work with numeric or string features
-        for dist in ['jaccard',
-                     'weighted_jaccard',
-                     tc.distances.jaccard,
-                     tc.distances.weighted_jaccard]:
+        for dist in [
+            "jaccard",
+            "weighted_jaccard",
+            tc.distances.jaccard,
+            tc.distances.weighted_jaccard,
+        ]:
 
             try:
-                tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['array_ftr'],
-                                            distance=dist,
-                                            method='brute_force',
-                                            verbose=False)
+                tc.nearest_neighbors.create(
+                    self.refs,
+                    self.label,
+                    features=["array_ftr"],
+                    distance=dist,
+                    method="brute_force",
+                    verbose=False,
+                )
             except ToolkitError as e:
-                self.assertTrue(str(e).startswith("Cannot compute jaccard distances with column 'array_ftr'."
-                                                  " Jaccard distances currently can only be computed for"
-                                                  " dictionary and list features.\n"))
+                self.assertTrue(
+                    str(e).startswith(
+                        "Cannot compute jaccard distances with column 'array_ftr'."
+                        " Jaccard distances currently can only be computed for"
+                        " dictionary and list features.\n"
+                    )
+                )
 
             try:
-                tc.nearest_neighbors.create(self.refs, self.label, ['str_ftr'],
-                                            distance=dist_name, verbose=False)
+                tc.nearest_neighbors.create(
+                    self.refs,
+                    self.label,
+                    ["str_ftr"],
+                    distance=dist_name,
+                    verbose=False,
+                )
             except ToolkitError as e:
-                self.assertTrue(str(e).startswith("The only distance allowed for string features is 'levenshtein'. "
-                                                  "Please try this distance, or use 'text_analytics.count_ngrams' "
-                                                  "to convert the strings to dictionaries, which permit more distance functions.\n"))
+                self.assertTrue(
+                    str(e).startswith(
+                        "The only distance allowed for string features is 'levenshtein'. "
+                        "Please try this distance, or use 'text_analytics.count_ngrams' "
+                        "to convert the strings to dictionaries, which permit more distance functions.\n"
+                    )
+                )
 
         ## Jacard distance throws TypeError on lists of non-strings
         refs = self.refs.__copy__()
-        refs['list_float_ftr'] = refs['array_ftr'].apply(lambda x: list(x), dtype=list)
+        refs["list_float_ftr"] = refs["array_ftr"].apply(lambda x: list(x), dtype=list)
 
         # Check autodistance
         with self.assertRaises(TypeError):
-            m = tc.nearest_neighbors.create(refs, self.label,
-                                            features=['list_float_ftr'],
-                                            verbose=False)
+            m = tc.nearest_neighbors.create(
+                refs, self.label, features=["list_float_ftr"], verbose=False
+            )
 
         # Check user-specified distance
-        for distance in ['jaccard', 'weighted_jaccard', 'euclidean']:
+        for distance in ["jaccard", "weighted_jaccard", "euclidean"]:
             with self.assertRaises(TypeError):
-                m = tc.nearest_neighbors.create(refs, self.label,
-                                                features=['list_float_ftr'],
-                                                distance=distance,
-                                                method='brute_force',
-                                                verbose=False)
+                m = tc.nearest_neighbors.create(
+                    refs,
+                    self.label,
+                    features=["list_float_ftr"],
+                    distance=distance,
+                    method="brute_force",
+                    verbose=False,
+                )
 
     def test_create_string_distances(self):
         """
@@ -370,39 +501,56 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         neighbors model.
         """
 
-        string_dists = {
-            'levenshtein': tc.distances.levenshtein}
+        string_dists = {"levenshtein": tc.distances.levenshtein}
 
         for dist_name, dist_fn in string_dists.items():
 
-            ans_dist = [[['str_ftr'], dist_name, 1.]]
+            ans_dist = [[["str_ftr"], dist_name, 1.0]]
 
             ## Test the string form of the distance argument
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['str_ftr'],
-                                            distance=dist_name,
-                                            method='brute_force',
-                                            verbose=False)
+            m = tc.nearest_neighbors.create(
+                self.refs,
+                self.label,
+                features=["str_ftr"],
+                distance=dist_name,
+                method="brute_force",
+                verbose=False,
+            )
             self.assertEqual(m.distance, ans_dist)
 
             ## Test the function form of the distance argument
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['str_ftr'],
-                                            distance=dist_fn,
-                                            method='brute_force',
-                                            verbose=False)
+            m = tc.nearest_neighbors.create(
+                self.refs,
+                self.label,
+                features=["str_ftr"],
+                distance=dist_fn,
+                method="brute_force",
+                verbose=False,
+            )
             self.assertEqual(m.distance, ans_dist)
 
             ## String distances should not work with numeric or dictionary
             #  features
             try:
-                tc.nearest_neighbors.create(self.refs, self.label,
-                                            features=['dict_ftr'],
-                                            distance=dist_name,
-                                            method='brute_force', verbose=False)
+                tc.nearest_neighbors.create(
+                    self.refs,
+                    self.label,
+                    features=["dict_ftr"],
+                    distance=dist_name,
+                    method="brute_force",
+                    verbose=False,
+                )
             except ToolkitError as e:
-                self.assertTrue(str(e).startswith("Cannot compute {} distance with column 'dict_ftr'.".format(dist_name) +
-                                                  " {} distance can only computed for string features.\n".format(dist_name)))
+                self.assertTrue(
+                    str(e).startswith(
+                        "Cannot compute {} distance with column 'dict_ftr'.".format(
+                            dist_name
+                        )
+                        + " {} distance can only computed for string features.\n".format(
+                            dist_name
+                        )
+                    )
+                )
 
     def test_create_composite_distances(self):
         """
@@ -411,29 +559,37 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         """
 
         distance_components = [
-            [['X1', 'X2'], 'euclidean', 1],
-            [['X2', 'X3'], 'manhattan', 1],  # note overlap with first component's features
-            [['array_ftr'], 'manhattan', 1],
-            [['str_ftr'], 'levenshtein', 1]]
+            [["X1", "X2"], "euclidean", 1],
+            [
+                ["X2", "X3"],
+                "manhattan",
+                1,
+            ],  # note overlap with first component's features
+            [["array_ftr"], "manhattan", 1],
+            [["str_ftr"], "levenshtein", 1],
+        ]
 
         ## Test that things work correctly in the vanilla case.
-        m = tc.nearest_neighbors.create(self.refs, self.label,
-                                        distance=distance_components,
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs, self.label, distance=distance_components, verbose=False
+        )
 
         assert m is not None, "Model creation failed."
         self.assertEqual(m.distance, distance_components)
         self.assertEqual(m.num_distance_components, 4)
-        self.assertEqual(m.method, 'brute_force')
+        self.assertEqual(m.method, "brute_force")
         self.assertEqual(m.num_features, 5)
         self.assertEqual(m.num_unpacked_features, 7)
 
         ## Make sure the features parameter is ignored if a composite distance
         #  is specified.
-        m = tc.nearest_neighbors.create(self.refs, self.label,
-                                        features=['X1', 'X2'],
-                                        distance=distance_components,
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=["X1", "X2"],
+            distance=distance_components,
+            verbose=False,
+        )
 
         assert m is not None, "Model creation failed."
         self.assertEqual(m.distance, distance_components)
@@ -445,21 +601,37 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         """
         Test vector features, numeric features, and combinations thereof.
         """
-        for ftr_list, v in [(['X1', 'X2', 'X3'], 3),
-                            (['array_ftr'], 3),
-                            (['dict_ftr'], 3)]:
+        for ftr_list, v in [
+            (["X1", "X2", "X3"], 3),
+            (["array_ftr"], 3),
+            (["dict_ftr"], 3),
+        ]:
 
-            self._test_create(self.refs, self.label, features=ftr_list,
-                              method='auto', distance='auto',
-                              field='num_unpacked_features', value=v)
+            self._test_create(
+                self.refs,
+                self.label,
+                features=ftr_list,
+                method="auto",
+                distance="auto",
+                field="num_unpacked_features",
+                value=v,
+            )
 
-        for ftr_list, v in [(['X1', 'X2', 'X3'], 3),
-                            (['array_ftr'], 1),
-                            (['dict_ftr'], 1)]:
+        for ftr_list, v in [
+            (["X1", "X2", "X3"], 3),
+            (["array_ftr"], 1),
+            (["dict_ftr"], 1),
+        ]:
 
-            self._test_create(self.refs, self.label, features=ftr_list,
-                              method='auto', distance='auto',
-                              field='num_features', value=v)
+            self._test_create(
+                self.refs,
+                self.label,
+                features=ftr_list,
+                method="auto",
+                distance="auto",
+                field="num_features",
+                value=v,
+            )
 
     def test_create_mutations(self):
         """
@@ -468,12 +640,17 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         """
         sf = self.refs[:]
         label = self.label
-        ftrs_orig = ['X1', 'X2', 'X3', 'array_ftr']
+        ftrs_orig = ["X1", "X2", "X3", "array_ftr"]
         ftrs_copy = ftrs_orig[:]
 
-        m = tc.nearest_neighbors.create(sf, label=label, features=ftrs_copy,
-                                        method='auto', distance='auto',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            sf,
+            label=label,
+            features=ftrs_copy,
+            method="auto",
+            distance="auto",
+            verbose=False,
+        )
 
         assert_frame_equal(self.refs.to_dataframe(), sf.to_dataframe())
         self.assertEqual(label, self.label)
@@ -485,20 +662,20 @@ class NearestNeighborsCreateTest(unittest.TestCase):
         missing data of any type in any cell of the input dataset.
         """
 
-        sf = tc.SFrame({'x0': [1, 2, 3],
-                        'x1': ['a', 'b', 'c']})
-        sf['ints'] = [1, 2, None]
-        sf['floats'] = [None, 2.2, 3.3]
-        sf['strings'] = ['a', None, 'c']
-        sf['dicts'] = [{'a': 1}, {'b': 2}, None]
-        sf['arrays'] = [array.array('f', [1., 2.]),
-                        array.array('f', [3., 4.]),
-                        None]
+        sf = tc.SFrame({"x0": [1, 2, 3], "x1": ["a", "b", "c"]})
+        sf["ints"] = [1, 2, None]
+        sf["floats"] = [None, 2.2, 3.3]
+        sf["strings"] = ["a", None, "c"]
+        sf["dicts"] = [{"a": 1}, {"b": 2}, None]
+        sf["arrays"] = [
+            array.array("f", [1.0, 2.0]),
+            array.array("f", [3.0, 4.0]),
+            None,
+        ]
 
-        for ftr in ['ints', 'floats', 'strings', 'dicts', 'arrays']:
+        for ftr in ["ints", "floats", "strings", "dicts", "arrays"]:
             with self.assertRaises(ToolkitError):
-                m = tc.nearest_neighbors.create(sf[['x0', 'x1', ftr]],
-                                                verbose=False)
+                m = tc.nearest_neighbors.create(sf[["x0", "x1", ftr]], verbose=False)
 
 
 class NearestNeighborsEdgeCaseTests(unittest.TestCase):
@@ -512,14 +689,14 @@ class NearestNeighborsEdgeCaseTests(unittest.TestCase):
         ## Make data
         np.random.seed(19)
         n, d = 100, 3
-        self.label = 'label'
+        self.label = "label"
 
         array_features = []
         for i in range(n):
-            array_features.append(array.array('f', np.random.rand(d)))
+            array_features.append(array.array("f", np.random.rand(d)))
 
         self.refs = tc.SFrame()
-        self.refs['array'] = array_features
+        self.refs["array"] = array_features
         self.refs[self.label] = [str(x) for x in range(n)]
 
     def test_empty_data(self):
@@ -530,10 +707,14 @@ class NearestNeighborsEdgeCaseTests(unittest.TestCase):
         ## Useful objects
         sf_empty = tc.SFrame()
 
-        m = tc.nearest_neighbors.create(self.refs, label=self.label,
-                                        features=None,
-                                        method='brute_force',
-                                        distance='euclidean', verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            label=self.label,
+            features=None,
+            method="brute_force",
+            distance="euclidean",
+            verbose=False,
+        )
 
         with self.assertRaises(ToolkitError):
             m = tc.nearest_neighbors.create(sf_empty, self.label)
@@ -547,12 +728,12 @@ class NearestNeighborsEdgeCaseTests(unittest.TestCase):
         """
 
         with self.assertRaises(ToolkitError):
-            m = tc.nearest_neighbors.create(self.refs, label='fossa')
+            m = tc.nearest_neighbors.create(self.refs, label="fossa")
 
         m = tc.nearest_neighbors.create(self.refs)
 
         with self.assertRaises(ValueError):
-            m.query(self.refs, label='fossa')
+            m.query(self.refs, label="fossa")
 
     def test_empty_composite_distance(self):
         """
@@ -568,64 +749,69 @@ class NearestNeighborsEdgeCaseTests(unittest.TestCase):
         """
 
         ## k is out of bounds raises an error
-        m = tc.nearest_neighbors.create(self.refs, self.label,
-                                        method='brute_force')
+        m = tc.nearest_neighbors.create(self.refs, self.label, method="brute_force")
 
-        for k in [-1, 0, 'cat']:
+        for k in [-1, 0, "cat"]:
             with self.assertRaises(ValueError):
                 knn = m.query(self.refs, self.label, k=k)
 
-
         ## k > n should default to n
         knn = m.query(self.refs, self.label, k=2 * self.refs.num_rows())
-        assert knn.num_rows() == self.refs.num_rows()**2, \
-            "Query with k > n returned the wrong number of rows."
-
+        assert (
+            knn.num_rows() == self.refs.num_rows() ** 2
+        ), "Query with k > n returned the wrong number of rows."
 
         ## radius out of bounds should raise an error
-        for r in [-1, 'cat']:
+        for r in [-1, "cat"]:
             with self.assertRaises(ValueError):
                 knn = m.query(self.refs, self.label, radius=r)
-
 
         # ## Leaf size is out of bounds
         # import ipdb
         # ipdb.set_trace()
 
-        for ls in [-1, 12.3, 'fossa']:
+        for ls in [-1, 12.3, "fossa"]:
             with self.assertRaises(ToolkitError):
-                m = tc.nearest_neighbors.create(self.refs, self.label,
-                                                features=['array'],
-                                                method='ball_tree',
-                                                distance='euclidean',
-                                                leaf_size=ls)
-
+                m = tc.nearest_neighbors.create(
+                    self.refs,
+                    self.label,
+                    features=["array"],
+                    method="ball_tree",
+                    distance="euclidean",
+                    leaf_size=ls,
+                )
 
         ## Leaf size > n should be fine
-        m = tc.nearest_neighbors.create(self.refs, self.label,
-                                        features=['array'],
-                                        method='ball_tree',
-                                        distance='euclidean',
-                                        leaf_size = 2 * self.refs.num_rows())
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=["array"],
+            method="ball_tree",
+            distance="euclidean",
+            leaf_size=2 * self.refs.num_rows(),
+        )
         assert m.leaf_size == 2 * self.refs.num_rows()
-
 
         ## Distance component weights are out of bounds
         with self.assertRaises(ValueError):
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                distance=[[['array'], 'euclidean', -1e-7]])
+            m = tc.nearest_neighbors.create(
+                self.refs, self.label, distance=[[["array"], "euclidean", -1e-7]]
+            )
 
         with self.assertRaises(ValueError):
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                distance=[[['array'], 'euclidean', -1]])
+            m = tc.nearest_neighbors.create(
+                self.refs, self.label, distance=[[["array"], "euclidean", -1]]
+            )
 
         with self.assertRaises(ValueError):
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                distance=[[['array'], 'euclidean', 'a']])
+            m = tc.nearest_neighbors.create(
+                self.refs, self.label, distance=[[["array"], "euclidean", "a"]]
+            )
 
         with self.assertRaises(ToolkitError):
-            m = tc.nearest_neighbors.create(self.refs, self.label,
-                distance=[[['array'], 'euclidean', 1e15]])
+            m = tc.nearest_neighbors.create(
+                self.refs, self.label, distance=[[["array"], "euclidean", 1e15]]
+            )
 
 
 class NearestNeighborsBruteForceAPITest(unittest.TestCase):
@@ -638,67 +824,79 @@ class NearestNeighborsBruteForceAPITest(unittest.TestCase):
 
         ## Make data
         np.random.seed(19)
-        d = 3           # dimension
-        n = 100         # number of reference points
+        d = 3  # dimension
+        n = 100  # number of reference points
 
         self.refs = tc.SFrame()
         for i in range(d):
             self.refs.add_column(tc.SArray(np.random.rand(n)), inplace=True)
 
-        self.refs['row_label'] = [str(x) for x in range(n)]
+        self.refs["row_label"] = [str(x) for x in range(n)]
 
-        self.label = 'row_label'
-        self.features = ['X{}'.format(i+1) for i in range(d)]
-        self.unpacked_features = ['X{}'.format(i+1) for i in range(d)]
+        self.label = "row_label"
+        self.features = ["X{}".format(i + 1) for i in range(d)]
+        self.unpacked_features = ["X{}".format(i + 1) for i in range(d)]
 
         ## Create the nearest neighbors model
-        self.model = tc.nearest_neighbors.create(self.refs, self.label,
-                                                 features=None,
-                                                 method='brute_force',
-                                                 distance='euclidean',
-                                                 verbose=False)
+        self.model = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=None,
+            method="brute_force",
+            distance="euclidean",
+            verbose=False,
+        )
 
         ## Answers
         self.fields_ans = [
-            'training_time',
-            'label',
-            'unpacked_features',
-            'features',
-            'method',
-            'num_examples',
-            'num_unpacked_features',
-            'num_features',
-            'num_distance_components',
-            'distance']
+            "training_time",
+            "label",
+            "unpacked_features",
+            "features",
+            "method",
+            "num_examples",
+            "num_unpacked_features",
+            "num_features",
+            "num_distance_components",
+            "distance",
+            "distance_for_summary_struct",
+        ]
 
         self.default_opts = {
-            'leaf_size': {u'default_value': 0,
-                        u'lower_bound': 0,
-                        u'upper_bound': 2147483647,
-                        u'description': u'Max number of points in a leaf node of the ball tree',
-                        u'parameter_type': u'INTEGER'},
-            'label': {u'default_value': u'',
-                      u'description': u'Name of the reference dataset column with row labels.',
-                      u'parameter_type': u'STRING'}}
+            "leaf_size": {
+                u"default_value": 0,
+                u"lower_bound": 0,
+                u"upper_bound": 2147483647,
+                u"description": u"Max number of points in a leaf node of the ball tree",
+                u"parameter_type": u"INTEGER",
+            },
+            "label": {
+                u"default_value": u"",
+                u"description": u"Name of the reference dataset column with row labels.",
+                u"parameter_type": u"STRING",
+            },
+        }
 
-        self.opts = {'label': self.label}
+        self.opts = {"label": self.label}
 
         self.get_ans = {
-            'distance': lambda x: len(x) == 1,
-            'training_time': lambda x: x >= 0,
-            'label': lambda x: x == self.label,
-            'method': lambda x: x == 'brute_force',
-            'num_examples': lambda x: x == 100,
-            'num_features': lambda x: x == 3,
-            'num_unpacked_features': lambda x: x == 3,
-            'num_distance_components': lambda x: x == 1}
+            "distance": lambda x: len(x) == 1,
+            "training_time": lambda x: x >= 0,
+            "label": lambda x: x == self.label,
+            "method": lambda x: x == "brute_force",
+            "num_examples": lambda x: x == 100,
+            "num_features": lambda x: x == 3,
+            "num_unpacked_features": lambda x: x == 3,
+            "num_distance_components": lambda x: x == 1,
+        }
 
     def test__list_fields(self):
         """
         Check the _list_fields method.
         """
-        assert set(self.model._list_fields()) == set(self.fields_ans), \
-            "List fields failed with {}.".format(self.model._list_fields())
+        assert set(self.model._list_fields()) == set(
+            self.fields_ans
+        ), "List fields failed with {}.".format(self.model._list_fields())
 
     def test_get(self):
         """
@@ -706,8 +904,9 @@ class NearestNeighborsBruteForceAPITest(unittest.TestCase):
         """
         for field in self.get_ans.keys():
             ans = self.model._get(field)
-            assert self.get_ans[field](ans), \
-                "Get failed in field '{}'. Output: {}".format(field, ans)
+            assert self.get_ans[field](
+                ans
+            ), "Get failed in field '{}'. Output: {}".format(field, ans)
 
         ## Check names of features and unpacked features
         assert set(self.model.features) == set(self.features)
@@ -775,76 +974,90 @@ class NearestNeighborsLshAPITest(unittest.TestCase):
 
         ## Make data
         np.random.seed(19)
-        d = 3           # dimension
-        n = 100         # number of reference points
+        d = 3  # dimension
+        n = 100  # number of reference points
 
         refs = []
         for i in range(n):
-            refs.append(array.array('f', np.random.rand(d)))
+            refs.append(array.array("f", np.random.rand(d)))
 
-        self.refs = tc.SFrame({'features': refs})
-        self.refs['row_label'] = [str(x) for x in range(n)]
-        self.query = tc.SFrame({'features': refs})
-        self.query['row_label'] = [str(x) for x in range(50, n+50)]
+        self.refs = tc.SFrame({"features": refs})
+        self.refs["row_label"] = [str(x) for x in range(n)]
+        self.query = tc.SFrame({"features": refs})
+        self.query["row_label"] = [str(x) for x in range(50, n + 50)]
 
-        self.label = 'row_label'
+        self.label = "row_label"
         self.features = ["features"]
-        self.unpacked_features= ['features[0]', 'features[1]', 'features[2]']
+        self.unpacked_features = ["features[0]", "features[1]", "features[2]"]
 
-        self.opts = {'num_tables': 4, 'num_projections_per_table': 4, 'label': self.label}
+        self.opts = {
+            "num_tables": 4,
+            "num_projections_per_table": 4,
+            "label": self.label,
+        }
 
         ## Create the nearest neighbors model
-        self.model = tc.nearest_neighbors.create(self.refs, self.label,
-                                                 features=self.features,
-                                                 method='lsh',
-                                                 distance='euclidean',
-                                                 num_tables=self.opts['num_tables'],
-                                                 num_projections_per_table=self.opts['num_projections_per_table'])
+        self.model = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=self.features,
+            method="lsh",
+            distance="euclidean",
+            num_tables=self.opts["num_tables"],
+            num_projections_per_table=self.opts["num_projections_per_table"],
+        )
         ## Answers
         self.fields_ans = [
-            'distance',
-            'num_distance_components',
-            'features',
-            'unpacked_features',
-            'label',
-            'num_tables',
-            'num_projections_per_table',
-            'method',
-            'num_examples',
-            'num_unpacked_features',
-            'num_features',
-            'training_time',
-            ]
+            "distance",
+            "distance_for_summary_struct",
+            "num_distance_components",
+            "features",
+            "unpacked_features",
+            "label",
+            "num_tables",
+            "num_projections_per_table",
+            "method",
+            "num_examples",
+            "num_unpacked_features",
+            "num_features",
+            "training_time",
+        ]
 
         self.default_opts = {
-            'num_tables': {u'default_value': 10,
-                        u'lower_bound': 1,
-                        u'upper_bound': 2147483647,
-                        u'description': u'number of hash tables for LSH',
-                        u'parameter_type': u'INTEGER'},
-
-            'num_projections_per_table': {u'default_value': 8,
-                        u'lower_bound': 1,
-                        u'upper_bound': 2147483647,
-                        u'description': u'number of projections in each hash table',
-                        u'parameter_type': u'INTEGER'},
-
-            'label': {u'default_value': u'',
-                      u'description': u'Name of the reference dataset column with row labels.',
-                      u'parameter_type': u'STRING'}}
+            "num_tables": {
+                u"default_value": 10,
+                u"lower_bound": 1,
+                u"upper_bound": 2147483647,
+                u"description": u"number of hash tables for LSH",
+                u"parameter_type": u"INTEGER",
+            },
+            "num_projections_per_table": {
+                u"default_value": 8,
+                u"lower_bound": 1,
+                u"upper_bound": 2147483647,
+                u"description": u"number of projections in each hash table",
+                u"parameter_type": u"INTEGER",
+            },
+            "label": {
+                u"default_value": u"",
+                u"description": u"Name of the reference dataset column with row labels.",
+                u"parameter_type": u"STRING",
+            },
+        }
 
         self.get_ans = {
-            'distance': lambda x: len(x) == 1,
-            'num_distance_components': lambda x: x == 1,
-            'label': lambda x: x == self.label,
-            'num_tables': lambda x: x == self.opts['num_tables'],
-            'num_projections_per_table': lambda x: x == self.opts['num_projections_per_table'],
-            'method': lambda x: x == 'lsh',
-            'num_examples': lambda x: x == 100,
-            'num_features': lambda x: x == 1,
-            'num_unpacked_features': lambda x: x == 3,
-            'training_time': lambda x: x >= 0,
-            }
+            "distance": lambda x: len(x) == 1,
+            "num_distance_components": lambda x: x == 1,
+            "label": lambda x: x == self.label,
+            "num_tables": lambda x: x == self.opts["num_tables"],
+            "num_projections_per_table": lambda x: x
+            == self.opts["num_projections_per_table"],
+            "method": lambda x: x == "lsh",
+            "num_examples": lambda x: x == 100,
+            "num_features": lambda x: x == 1,
+            "num_unpacked_features": lambda x: x == 3,
+            "training_time": lambda x: x >= 0,
+        }
 
     def test_query(self):
         q = self.model.query(self.query, label=self.label, k=1, verbose=False)
@@ -852,15 +1065,16 @@ class NearestNeighborsLshAPITest(unittest.TestCase):
         assert q.num_rows() >= self.query.num_rows()
         # all the 1-nearest-neighbor should be the queries themselves (and identical points)
         # so that means a distance of zero
-        distances = q['distance']
-        assert(len(distances.filter(lambda x: x != 0.0)) == 0)
+        distances = q["distance"]
+        assert len(distances.filter(lambda x: x != 0.0)) == 0
 
     def test__list_fields(self):
         """
         Check the _list_fields method.
         """
-        assert set(self.model._list_fields()) == set(self.fields_ans), \
-            "List fields failed with {}.".format(self.model._list_fields())
+        assert set(self.model._list_fields()) == set(
+            self.fields_ans
+        ), "List fields failed with {}.".format(self.model._list_fields())
 
     def test_get(self):
         """
@@ -868,8 +1082,9 @@ class NearestNeighborsLshAPITest(unittest.TestCase):
         """
         for field in self.get_ans.keys():
             ans = self.model._get(field)
-            assert self.get_ans[field](ans), \
-                "Get failed in field '{}'. Output: {}".format(field, ans)
+            assert self.get_ans[field](
+                ans
+            ), "Get failed in field '{}'. Output: {}".format(field, ans)
 
         ## Check names of features and unpacked features
         assert set(self.model.features) == set(self.features)
@@ -927,69 +1142,79 @@ class NearestNeighborsBallTreeAPITest(unittest.TestCase):
 
         ## Make data
         np.random.seed(19)
-        d = 3           # dimension
-        n = 100         # number of reference points
+        d = 3  # dimension
+        n = 100  # number of reference points
 
         refs = []
         for i in range(n):
-            refs.append(array.array('f', np.random.rand(d)))
+            refs.append(array.array("f", np.random.rand(d)))
 
-        self.refs = tc.SFrame({'features': refs})
-        self.refs['row_label'] = [str(x) for x in range(n)]
-        self.query = tc.SFrame({'features': refs})
-        self.query['row_label'] = [str(x) for x in range(50, n+50)]
+        self.refs = tc.SFrame({"features": refs})
+        self.refs["row_label"] = [str(x) for x in range(n)]
+        self.query = tc.SFrame({"features": refs})
+        self.query["row_label"] = [str(x) for x in range(50, n + 50)]
 
-        self.label = 'row_label'
+        self.label = "row_label"
         self.features = ["features"]
-        self.unpacked_features= ['features[0]', 'features[1]', 'features[2]']
+        self.unpacked_features = ["features[0]", "features[1]", "features[2]"]
 
-        self.opts = {'leaf_size': 16, 'label': self.label}
+        self.opts = {"leaf_size": 16, "label": self.label}
 
         ## Create the nearest neighbors model
-        self.model = tc.nearest_neighbors.create(self.refs, self.label,
-                                                 features=self.features,
-                                                 method='ball_tree',
-                                                 distance='euclidean',
-                                                 leaf_size=self.opts['leaf_size'],
-                                                 verbose=False)
+        self.model = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=self.features,
+            method="ball_tree",
+            distance="euclidean",
+            leaf_size=self.opts["leaf_size"],
+            verbose=False,
+        )
 
         ## Answers
         self.fields_ans = [
-            'distance',
-            'num_distance_components',
-            'features',
-            'unpacked_features',
-            'label',
-            'leaf_size',
-            'method',
-            'num_examples',
-            'num_unpacked_features',
-            'num_features',
-            'training_time',
-            'tree_depth']
+            "distance",
+            "distance_for_summary_struct",
+            "num_distance_components",
+            "features",
+            "unpacked_features",
+            "label",
+            "leaf_size",
+            "method",
+            "num_examples",
+            "num_unpacked_features",
+            "num_features",
+            "training_time",
+            "tree_depth",
+        ]
 
         self.default_opts = {
-            'leaf_size': {u'default_value': 0,
-                        u'lower_bound': 0,
-                        u'upper_bound': 2147483647,
-                        u'description': u'Max number of points in a leaf node of the ball tree',
-                        u'parameter_type': u'INTEGER'},
-            'label': {u'default_value': u'',
-                      u'description': u'Name of the reference dataset column with row labels.',
-                      u'parameter_type': u'STRING'}}
+            "leaf_size": {
+                u"default_value": 0,
+                u"lower_bound": 0,
+                u"upper_bound": 2147483647,
+                u"description": u"Max number of points in a leaf node of the ball tree",
+                u"parameter_type": u"INTEGER",
+            },
+            "label": {
+                u"default_value": u"",
+                u"description": u"Name of the reference dataset column with row labels.",
+                u"parameter_type": u"STRING",
+            },
+        }
 
         self.get_ans = {
-            'distance': lambda x: len(x) == 1,
-            'num_distance_components': lambda x: x == 1,
-            'label': lambda x: x == self.label,
-            'leaf_size': lambda x: x == self.opts['leaf_size'],
-            'method': lambda x: x == 'ball_tree',
-            'num_examples': lambda x: x == 100,
-            'num_features': lambda x: x == 1,
-            'num_unpacked_features': lambda x: x == 3,
-            'training_time': lambda x: x >= 0,
-            'tree_depth': lambda x: x == 4,  # assumes n=100, leaf_size=16
-            }
+            "distance": lambda x: len(x) == 1,
+            "num_distance_components": lambda x: x == 1,
+            "label": lambda x: x == self.label,
+            "leaf_size": lambda x: x == self.opts["leaf_size"],
+            "method": lambda x: x == "ball_tree",
+            "num_examples": lambda x: x == 100,
+            "num_features": lambda x: x == 1,
+            "num_unpacked_features": lambda x: x == 3,
+            "training_time": lambda x: x >= 0,
+            "tree_depth": lambda x: x == 4,  # assumes n=100, leaf_size=16
+        }
 
     def test_query(self):
         q = self.model.query(self.query, self.label, k=3, verbose=False)
@@ -999,8 +1224,9 @@ class NearestNeighborsBallTreeAPITest(unittest.TestCase):
         """
         Check the _list_fields method.
         """
-        assert set(self.model._list_fields()) == set(self.fields_ans), \
-            "List fields failed with {}.".format(self.model._list_fields())
+        assert set(self.model._list_fields()) == set(
+            self.fields_ans
+        ), "List fields failed with {}.".format(self.model._list_fields())
 
     def test_get(self):
         """
@@ -1008,8 +1234,9 @@ class NearestNeighborsBallTreeAPITest(unittest.TestCase):
         """
         for field in self.get_ans.keys():
             ans = self.model._get(field)
-            assert self.get_ans[field](ans), \
-                "Get failed in field '{}'. Output: {}".format(field, ans)
+            assert self.get_ans[field](
+                ans
+            ), "Get failed in field '{}'. Output: {}".format(field, ans)
 
         ## Check names of features and unpacked features
         assert set(self.model.features) == set(self.features)
@@ -1057,6 +1284,7 @@ class NearestNeighborsBallTreeAPITest(unittest.TestCase):
 
             del self.model
 
+
 class GeneralSimilarityGraphTest(unittest.TestCase):
     """
     Tests that apply to all nearest neighbors similarity graph methods,
@@ -1067,50 +1295,73 @@ class GeneralSimilarityGraphTest(unittest.TestCase):
     def setUpClass(self):
 
         np.random.seed(19)
-        self.dimension = 3               # dimension
-        n = 10              # number of reference points
+        self.dimension = 3  # dimension
+        n = 10  # number of reference points
 
         self.refs = tc.SFrame(np.random.rand(n, self.dimension))
-        self.features = ['X1.{}'.format(i) for i in range(self.dimension)]
-        self.refs = self.refs.unpack('X1')
+        self.features = ["X1.{}".format(i) for i in range(self.dimension)]
+        self.refs = self.refs.unpack("X1")
 
-        self.label = 'id'
+        self.label = "id"
         self.refs = self.refs.add_row_number(self.label)
-        self.refs[self.label] = self.refs[self.label].astype(str) + 'a'
+        self.refs[self.label] = self.refs[self.label].astype(str) + "a"
 
         df_refs = self.refs.to_dataframe().drop(self.label, axis=1)
-        self.answer_dists = scipy_dist(df_refs, df_refs, 'euclidean')
+        self.answer_dists = scipy_dist(df_refs, df_refs, "euclidean")
 
     def test_neighborhood_constraints(self):
         """
         Test various combinations of the k and radius constraints.
         """
-        m = tc.nearest_neighbors.create(self.refs, features=self.features,
-                                        distance='euclidean',
-                                        method='brute_force',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            features=self.features,
+            distance="euclidean",
+            method="brute_force",
+            verbose=False,
+        )
 
-        knn = m.similarity_graph(k=None, radius=None, include_self_edges=True,
-                                 output_type='SFrame', verbose=False)
+        knn = m.similarity_graph(
+            k=None,
+            radius=None,
+            include_self_edges=True,
+            output_type="SFrame",
+            verbose=False,
+        )
         assert_frame_equal(self.answer_dists.to_dataframe(), knn.to_dataframe())
 
         ## k only, no radius
-        knn = m.similarity_graph(k=3, radius=None, include_self_edges=True,
-                                 output_type='SFrame', verbose=False)
-        ans = self.answer_dists[self.answer_dists['rank'] <= 3]
+        knn = m.similarity_graph(
+            k=3,
+            radius=None,
+            include_self_edges=True,
+            output_type="SFrame",
+            verbose=False,
+        )
+        ans = self.answer_dists[self.answer_dists["rank"] <= 3]
         assert_frame_equal(ans.to_dataframe(), knn.to_dataframe())
 
         ## radius only, no k
-        knn = m.similarity_graph(k=None, radius=0.4, include_self_edges=True,
-                                 output_type='SFrame', verbose=False)
-        ans = self.answer_dists[self.answer_dists['distance'] <= 0.4]
+        knn = m.similarity_graph(
+            k=None,
+            radius=0.4,
+            include_self_edges=True,
+            output_type="SFrame",
+            verbose=False,
+        )
+        ans = self.answer_dists[self.answer_dists["distance"] <= 0.4]
         assert_frame_equal(ans.to_dataframe(), knn.to_dataframe())
 
         ## Both radius and k
-        knn = m.similarity_graph(k=3, radius=0.4, include_self_edges=True,
-                                 output_type='SFrame', verbose=False)
-        ans = self.answer_dists[self.answer_dists['rank'] <= 3]
-        ans = ans[ans['distance'] <= 0.4]
+        knn = m.similarity_graph(
+            k=3,
+            radius=0.4,
+            include_self_edges=True,
+            output_type="SFrame",
+            verbose=False,
+        )
+        ans = self.answer_dists[self.answer_dists["rank"] <= 3]
+        ans = ans[ans["distance"] <= 0.4]
         assert_frame_equal(ans.to_dataframe(), knn.to_dataframe())
 
     def test_self_edges(self):
@@ -1120,44 +1371,70 @@ class GeneralSimilarityGraphTest(unittest.TestCase):
         """
 
         ## Without row labels
-        m = tc.nearest_neighbors.create(self.refs, features=self.features,
-                                        distance='euclidean',
-                                        method='brute_force',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            features=self.features,
+            distance="euclidean",
+            method="brute_force",
+            verbose=False,
+        )
 
-        knn = m.similarity_graph(k=None, radius=None, include_self_edges=True,
-                                 output_type='SFrame', verbose=False)
+        knn = m.similarity_graph(
+            k=None,
+            radius=None,
+            include_self_edges=True,
+            output_type="SFrame",
+            verbose=False,
+        )
         assert_frame_equal(self.answer_dists.to_dataframe(), knn.to_dataframe())
 
-        knn2 = m.similarity_graph(k=None, radius=None, include_self_edges=False,
-                                  output_type='SFrame', verbose=False)
-        mask = self.answer_dists['query_label'] != self.answer_dists['reference_label']
+        knn2 = m.similarity_graph(
+            k=None,
+            radius=None,
+            include_self_edges=False,
+            output_type="SFrame",
+            verbose=False,
+        )
+        mask = self.answer_dists["query_label"] != self.answer_dists["reference_label"]
         ans = self.answer_dists[mask]
-        ans['rank'] = ans['rank'] - 1
+        ans["rank"] = ans["rank"] - 1
         assert_frame_equal(ans.to_dataframe(), knn2.to_dataframe())
 
-
         ## With string row labels
-        m = tc.nearest_neighbors.create(self.refs, self.label, features=None,
-                                        distance='euclidean',
-                                        method='brute_force',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=None,
+            distance="euclidean",
+            method="brute_force",
+            verbose=False,
+        )
 
-        knn = m.similarity_graph(k=None, radius=None, output_type='SFrame',
-                                 include_self_edges=True, verbose=False)
+        knn = m.similarity_graph(
+            k=None,
+            radius=None,
+            output_type="SFrame",
+            include_self_edges=True,
+            verbose=False,
+        )
 
         ans = copy.copy(self.answer_dists)
-        ans['query_label'] = ans['query_label'].astype(str) + 'a'
-        ans['reference_label'] = ans['reference_label'].astype(str) + 'a'
+        ans["query_label"] = ans["query_label"].astype(str) + "a"
+        ans["reference_label"] = ans["reference_label"].astype(str) + "a"
         assert_frame_equal(ans.to_dataframe(), knn.to_dataframe())
 
-        knn2 = m.similarity_graph(k=None, radius=None, include_self_edges=False,
-                                  output_type='SFrame', verbose=False)
-        mask = self.answer_dists['query_label'] != self.answer_dists['reference_label']
+        knn2 = m.similarity_graph(
+            k=None,
+            radius=None,
+            include_self_edges=False,
+            output_type="SFrame",
+            verbose=False,
+        )
+        mask = self.answer_dists["query_label"] != self.answer_dists["reference_label"]
         ans = self.answer_dists[mask]
-        ans['rank'] = ans['rank'] - 1
-        ans['query_label'] = ans['query_label'].astype(str) + 'a'
-        ans['reference_label'] = ans['reference_label'].astype(str) + 'a'
+        ans["rank"] = ans["rank"] - 1
+        ans["query_label"] = ans["query_label"].astype(str) + "a"
+        ans["reference_label"] = ans["reference_label"].astype(str) + "a"
 
         assert_frame_equal(ans.to_dataframe(), knn2.to_dataframe())
 
@@ -1166,21 +1443,35 @@ class GeneralSimilarityGraphTest(unittest.TestCase):
         Check that the results can be returned as either an SFrame or an SGraph
         and that the results match in both of these forms.
         """
-        m = tc.nearest_neighbors.create(self.refs, features=self.features,
-                                        distance='euclidean',
-                                        method='brute_force',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            features=self.features,
+            distance="euclidean",
+            method="brute_force",
+            verbose=False,
+        )
 
-        knn = m.similarity_graph(k=None, radius=None, include_self_edges=False,
-                                 output_type='SFrame', verbose=False)
+        knn = m.similarity_graph(
+            k=None,
+            radius=None,
+            include_self_edges=False,
+            output_type="SFrame",
+            verbose=False,
+        )
 
-        sg = m.similarity_graph(k=None, radius=None, include_self_edges=False,
-                                 output_type='SGraph', verbose=False)
+        sg = m.similarity_graph(
+            k=None,
+            radius=None,
+            include_self_edges=False,
+            output_type="SGraph",
+            verbose=False,
+        )
 
         sg_edges = copy.copy(sg.edges)
-        sg_edges = sg_edges.rename({'__src_id': 'query_label',
-                                    '__dst_id': 'reference_label'}, inplace=True)
-        sg_edges = sg_edges.sort(['query_label', 'distance'])
+        sg_edges = sg_edges.rename(
+            {"__src_id": "query_label", "__dst_id": "reference_label"}, inplace=True
+        )
+        sg_edges = sg_edges.sort(["query_label", "distance"])
 
         assert_frame_equal(sg_edges.to_dataframe(), knn.to_dataframe())
 
@@ -1190,19 +1481,26 @@ class GeneralSimilarityGraphTest(unittest.TestCase):
         """
 
         ## Ball tree
-        m = tc.nearest_neighbors.create(self.refs, self.label, features=None,
-                                        distance='euclidean',
-                                        method='ball_tree',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=None,
+            distance="euclidean",
+            method="ball_tree",
+            verbose=False,
+        )
 
         knn = m.similarity_graph(k=5, radius=None, verbose=False)
 
-
         ## LSH
-        m = tc.nearest_neighbors.create(self.refs, self.label, features=None,
-                                        distance='euclidean',
-                                        method='lsh',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            features=None,
+            distance="euclidean",
+            method="lsh",
+            verbose=False,
+        )
 
         knn = m.similarity_graph(k=5, radius=None, verbose=False)
 
@@ -1217,20 +1515,20 @@ class GeneralQueryTest(unittest.TestCase):
     def setUpClass(self):
 
         np.random.seed(19)
-        p = 3               # dimension
-        n = 10              # number of reference points
-        self.n_query = 2    # number of query points
+        p = 3  # dimension
+        n = 10  # number of reference points
+        self.n_query = 2  # number of query points
 
         self.refs = tc.SFrame(np.random.rand(n, p))
-        self.refs = self.refs.unpack('X1')
+        self.refs = self.refs.unpack("X1")
 
-        self.label = 'id'
+        self.label = "id"
         self.refs = self.refs.add_row_number(self.label)
-        self.queries = self.refs[0:self.n_query]
+        self.queries = self.refs[0 : self.n_query]
 
         df_refs = self.refs.to_dataframe().drop(self.label, axis=1)
         df_queries = self.queries.to_dataframe().drop(self.label, axis=1)
-        self.answer_dists = scipy_dist(df_queries, df_refs, 'euclidean')
+        self.answer_dists = scipy_dist(df_queries, df_refs, "euclidean")
 
     def test_neighborhood_constraints(self):
         """
@@ -1238,10 +1536,13 @@ class GeneralQueryTest(unittest.TestCase):
         """
 
         ## No constraints
-        m = tc.nearest_neighbors.create(self.refs, self.label,
-                                        distance='euclidean',
-                                        method='brute_force',
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            self.label,
+            distance="euclidean",
+            method="brute_force",
+            verbose=False,
+        )
 
         knn = m.query(self.queries, k=None, radius=None, verbose=False)
 
@@ -1249,18 +1550,18 @@ class GeneralQueryTest(unittest.TestCase):
 
         ## k only, no radius
         knn = m.query(self.queries, k=3, radius=None, verbose=False)
-        ans = self.answer_dists[self.answer_dists['rank'] <= 3]
+        ans = self.answer_dists[self.answer_dists["rank"] <= 3]
         assert_frame_equal(ans.to_dataframe(), knn.to_dataframe())
 
         ## radius only, no k
         knn = m.query(self.queries, k=None, radius=0.4, verbose=False)
-        ans = self.answer_dists[self.answer_dists['distance'] <= 0.4]
+        ans = self.answer_dists[self.answer_dists["distance"] <= 0.4]
         assert_frame_equal(ans.to_dataframe(), knn.to_dataframe())
 
         ## Both radius and k
         knn = m.query(self.queries, k=3, radius=0.4, verbose=False)
-        ans = self.answer_dists[self.answer_dists['rank'] <= 3]
-        ans = ans[ans['distance'] <= 0.4]
+        ans = self.answer_dists[self.answer_dists["rank"] <= 3]
+        ans = ans[ans["distance"] <= 0.4]
         assert_frame_equal(ans.to_dataframe(), knn.to_dataframe())
 
     def test_labels(self):
@@ -1268,29 +1569,34 @@ class GeneralQueryTest(unittest.TestCase):
         Test query accuracy for various configurations of row labels.
         """
         sfq = self.queries[:]
-        sfq.remove_column('id', inplace=True)
+        sfq.remove_column("id", inplace=True)
         k = 3
 
-        m = tc.nearest_neighbors.create(self.refs, label=self.label,
-                                        features=None, distance='euclidean',
-                                        method='brute_force', verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs,
+            label=self.label,
+            features=None,
+            distance="euclidean",
+            method="brute_force",
+            verbose=False,
+        )
         knn_correct = m.query(self.queries, self.label, k=k, verbose=False)
 
         ## No label should work fine
         knn = m.query(sfq, label=None, k=k, verbose=False)
-        self.assertTrue(knn['query_label'].dtype is int)
+        self.assertTrue(knn["query_label"].dtype is int)
         assert_frame_equal(knn_correct.to_dataframe(), knn.to_dataframe())
 
         ## Integer label should work fine
-        sfq = sfq.add_row_number(column_name='id')
-        knn = m.query(sfq, label='id', k=k, verbose=False)
-        self.assertTrue(knn['query_label'].dtype is int)
+        sfq = sfq.add_row_number(column_name="id")
+        knn = m.query(sfq, label="id", k=k, verbose=False)
+        self.assertTrue(knn["query_label"].dtype is int)
         assert_frame_equal(knn_correct.to_dataframe(), knn.to_dataframe())
 
         ## Float label should fail
-        sfq['id'] = sfq['id'].astype(float)
+        sfq["id"] = sfq["id"].astype(float)
         with self.assertRaises(TypeError):
-            knn = m.query(sfq, label='id', k=k)
+            knn = m.query(sfq, label="id", k=k)
 
 
 class NearestNeighborsNumericQueryTest(unittest.TestCase):
@@ -1303,39 +1609,50 @@ class NearestNeighborsNumericQueryTest(unittest.TestCase):
 
         ## Make data
         np.random.seed(19)
-        p = 3               # dimension
-        n = 10              # number of reference points
-        self.n_query = 2    # number of query points
+        p = 3  # dimension
+        n = 10  # number of reference points
+        self.n_query = 2  # number of query points
 
         self.refs = tc.SFrame(np.random.rand(n, p))
-        self.refs = self.refs.unpack('X1')
+        self.refs = self.refs.unpack("X1")
 
-        self.label = 'id'
+        self.label = "id"
         self.refs = self.refs.add_row_number(self.label)
-        self.queries = self.refs[0:self.n_query]
+        self.queries = self.refs[0 : self.n_query]
 
         ## Answer items common to all tests
         self.r = self.refs.to_dataframe().drop(self.label, axis=1)
         self.q = self.queries.to_dataframe().drop(self.label, axis=1)
 
-    def _test_query(self, answer, sf_ref, sf_query, label, features, distance,
-                    method, k=None, radius=None):
+    def _test_query(
+        self,
+        answer,
+        sf_ref,
+        sf_query,
+        label,
+        features,
+        distance,
+        method,
+        k=None,
+        radius=None,
+    ):
         """
         Test the accuracy of exact queries against python brute force solution,
         from Scipy.
         """
 
         ## Construct nearest neighbors model and get query results
-        m = tc.nearest_neighbors.create(sf_ref, label, features, distance,
-                                        method, verbose=False)
+        m = tc.nearest_neighbors.create(
+            sf_ref, label, features, distance, method, verbose=False
+        )
         knn = m.query(sf_query, label, k=k, radius=radius, verbose=False)
 
         ## Trim the answers to the k and radius parameters
         if k is not None:
-            answer = answer[answer['rank'] <= k]
+            answer = answer[answer["rank"] <= k]
 
         if radius is not None:
-            answer = answer[answer['distance'] <= radius]
+            answer = answer[answer["distance"] <= radius]
 
         ## Test data frame equality
         assert_frame_equal(answer.to_dataframe(), knn.to_dataframe())
@@ -1348,28 +1665,53 @@ class NearestNeighborsNumericQueryTest(unittest.TestCase):
         idx_row = np.array([[x] for x in range(self.n_query)])
 
         ## Euclidean and cosine distance
-        for dist in ['euclidean', 'cosine']:
+        for dist in ["euclidean", "cosine"]:
             answer = scipy_dist(self.q, self.r, dist)
-            self._test_query(answer, self.refs, self.queries, self.label,
-                             features=None, distance=dist, method='brute_force')
-
+            self._test_query(
+                answer,
+                self.refs,
+                self.queries,
+                self.label,
+                features=None,
+                distance=dist,
+                method="brute_force",
+            )
 
         ## Squared euclidean distances
-        answer = scipy_dist(self.q, self.r, 'sqeuclidean')
-        self._test_query(answer, self.refs, self.queries, self.label,
-                         features=None, distance='squared_euclidean', method='brute_force')
-
+        answer = scipy_dist(self.q, self.r, "sqeuclidean")
+        self._test_query(
+            answer,
+            self.refs,
+            self.queries,
+            self.label,
+            features=None,
+            distance="squared_euclidean",
+            method="brute_force",
+        )
 
         ## Manhattan distance
-        answer = scipy_dist(self.q, self.r, 'cityblock')
-        self._test_query(answer, self.refs, self.queries, self.label,
-                         features=None, distance='manhattan', method='brute_force')
-
+        answer = scipy_dist(self.q, self.r, "cityblock")
+        self._test_query(
+            answer,
+            self.refs,
+            self.queries,
+            self.label,
+            features=None,
+            distance="manhattan",
+            method="brute_force",
+        )
 
         ## Auto distance (brute force, dense features)
-        answer = scipy_dist(self.q, self.r, 'euclidean')
-        self._test_query(answer, self.refs, self.queries, self.label,
-                         features=None, distance='auto', method='brute_force')
+        answer = scipy_dist(self.q, self.r, "euclidean")
+        self._test_query(
+            answer,
+            self.refs,
+            self.queries,
+            self.label,
+            features=None,
+            distance="auto",
+            method="brute_force",
+        )
 
         ## Transformed dot product distance
         D = self.q.dot(self.r.T)
@@ -1381,30 +1723,47 @@ class NearestNeighborsNumericQueryTest(unittest.TestCase):
         idx_col = np.argsort(D, axis=1)
         idx_row = np.array([[x] for x in range(n_query)])
         query_labels = list(np.repeat(range(n_query), n))
-        ranks = np.tile(range(1, n+1), n_query)
+        ranks = np.tile(range(1, n + 1), n_query)
 
-        answer = tc.SFrame({'query_label': query_labels,
-                            'reference_label': idx_col.flatten(),
-                            'distance': D[idx_row, idx_col].flatten(),
-                            'rank': ranks})
+        answer = tc.SFrame(
+            {
+                "query_label": query_labels,
+                "reference_label": idx_col.flatten(),
+                "distance": D[idx_row, idx_col].flatten(),
+                "rank": ranks,
+            }
+        )
 
-        answer.swap_columns('distance', 'query_label', inplace=True)
-        answer.swap_columns('distance', 'reference_label', inplace=True)
-        answer.swap_columns('distance', 'rank', inplace=True)
+        answer.swap_columns("distance", "query_label", inplace=True)
+        answer.swap_columns("distance", "reference_label", inplace=True)
+        answer.swap_columns("distance", "rank", inplace=True)
 
-        self._test_query(answer, self.refs, self.queries, self.label,
-                         features=None, distance='transformed_dot_product',
-                         method='brute_force')
+        self._test_query(
+            answer,
+            self.refs,
+            self.queries,
+            self.label,
+            features=None,
+            distance="transformed_dot_product",
+            method="brute_force",
+        )
 
     def test_query_methods(self):
         """
         Test query accuracy for various nearest neighbor methods.
         """
-        answer = scipy_dist(self.q, self.r, 'euclidean')
+        answer = scipy_dist(self.q, self.r, "euclidean")
 
-        for method in ['auto', 'brute_force', 'ball_tree']:
-            self._test_query(answer, self.refs, self.queries, self.label,
-                             features=None, distance='euclidean', method=method)
+        for method in ["auto", "brute_force", "ball_tree"]:
+            self._test_query(
+                answer,
+                self.refs,
+                self.queries,
+                self.label,
+                features=None,
+                distance="euclidean",
+                method=method,
+            )
 
     def test_blockwise_brute_force(self):
         """
@@ -1420,16 +1779,17 @@ class NearestNeighborsNumericQueryTest(unittest.TestCase):
 
         sf = tc.SFrame(np.random.rand(n, d))
 
-        m = tc.nearest_neighbors.create(sf, method='brute_force',
-                                distance='euclidean', verbose=False)
+        m = tc.nearest_neighbors.create(
+            sf, method="brute_force", distance="euclidean", verbose=False
+        )
 
         sf_query = tc.SFrame(np.random.rand(n_query, d))
 
         knn = m.query(sf_query, verbose=False)  # blockwise brute force query
-        knn2 = m.query(sf_query[:10], verbose=False) # pairwise brute force query
+        knn2 = m.query(sf_query[:10], verbose=False)  # pairwise brute force query
 
         self.assertEqual(knn.num_rows(), 21 * 5)
-        assert_frame_equal(knn[:10 * 5].to_dataframe(), knn2.to_dataframe())
+        assert_frame_equal(knn[: 10 * 5].to_dataframe(), knn2.to_dataframe())
 
     def test_similarity_graph(self):
         """
@@ -1442,67 +1802,69 @@ class NearestNeighborsNumericQueryTest(unittest.TestCase):
         n, d = 500, 10
         sf = tc.SFrame(np.random.rand(n, d))
 
-        m = tc.nearest_neighbors.create(sf, method='brute_force',
-                                distance='euclidean', verbose=False)
+        m = tc.nearest_neighbors.create(
+            sf, method="brute_force", distance="euclidean", verbose=False
+        )
 
         knn = m.query(sf[:10], k=3, verbose=False)
-        knn_graph = m.similarity_graph(k=2, output_type='SFrame', verbose=False)
+        knn_graph = m.similarity_graph(k=2, output_type="SFrame", verbose=False)
 
         ## Basic metadata about the output
         self.assertEqual(knn_graph.num_rows(), 1000)
-        self.assertEqual(knn_graph['rank'].max(), 2)
-        self.assertGreaterEqual(knn_graph['distance'].min(), 0.)
+        self.assertEqual(knn_graph["rank"].max(), 2)
+        self.assertGreaterEqual(knn_graph["distance"].min(), 0.0)
 
         ## No self-edges
-        label_diff = knn_graph['query_label'] - knn_graph['reference_label']
+        label_diff = knn_graph["query_label"] - knn_graph["reference_label"]
         self.assertEqual(sum(label_diff == 0), 0)
 
         ## Exact match for query results with different
-        knn = knn[knn['rank'] > 1]
-        knn['rank'] = knn['rank'] - 1
+        knn = knn[knn["rank"] > 1]
+        knn["rank"] = knn["rank"] - 1
         assert_frame_equal(knn.to_dataframe(), knn_graph[:20].to_dataframe())
-
 
         ### Tweaking query-time parameters
         ### ------------------------------
-        knn_graph2 = m.similarity_graph(k=5, output_type='SFrame', verbose=False)
+        knn_graph2 = m.similarity_graph(k=5, output_type="SFrame", verbose=False)
         self.assertEqual(knn_graph2.num_rows(), 2500)
-        self.assertEqual(knn_graph2['rank'].max(), 5)
-        self.assertGreaterEqual(knn_graph2['distance'].min(), 0.)
+        self.assertEqual(knn_graph2["rank"].max(), 5)
+        self.assertGreaterEqual(knn_graph2["distance"].min(), 0.0)
 
-        knn_graph3 = m.similarity_graph(k=None, radius=0.5,
-                                        output_type='SFrame', verbose=False)
-        self.assertLessEqual(knn_graph3['distance'].max(), 0.5)
+        knn_graph3 = m.similarity_graph(
+            k=None, radius=0.5, output_type="SFrame", verbose=False
+        )
+        self.assertLessEqual(knn_graph3["distance"].max(), 0.5)
 
-        knn_graph4 = m.similarity_graph(k=2, radius=0.5, output_type='SFrame',
-                                        verbose=False)
-        self.assertEqual(knn_graph4['rank'].max(), 2)
-        self.assertLessEqual(knn_graph4['distance'].max(), 0.5)
-
+        knn_graph4 = m.similarity_graph(
+            k=2, radius=0.5, output_type="SFrame", verbose=False
+        )
+        self.assertEqual(knn_graph4["rank"].max(), 2)
+        self.assertLessEqual(knn_graph4["distance"].max(), 0.5)
 
         ### Pairwise similarity graph - manhattan distance
         ### ----------------------------------------------
         n, d = 500, 10
         sf = tc.SFrame(np.random.rand(n, d))
 
-        m = tc.nearest_neighbors.create(sf, method='brute_force',
-                                distance='manhattan', verbose=False)
+        m = tc.nearest_neighbors.create(
+            sf, method="brute_force", distance="manhattan", verbose=False
+        )
 
         knn = m.query(sf[:10], k=3, verbose=False)
-        knn_graph = m.similarity_graph(k=2, output_type='SFrame', verbose=False)
+        knn_graph = m.similarity_graph(k=2, output_type="SFrame", verbose=False)
 
         ## Basic metadata about the output
         self.assertEqual(knn_graph.num_rows(), 1000)
-        self.assertEqual(knn_graph['rank'].max(), 2)
-        self.assertGreaterEqual(knn_graph['distance'].min(), 0.)
+        self.assertEqual(knn_graph["rank"].max(), 2)
+        self.assertGreaterEqual(knn_graph["distance"].min(), 0.0)
 
         ## No self-edges
-        label_diff = knn_graph['query_label'] - knn_graph['reference_label']
+        label_diff = knn_graph["query_label"] - knn_graph["reference_label"]
         self.assertEqual(sum(label_diff == 0), 0)
 
         ## Exact match for query results with different
-        knn = knn[knn['rank'] > 1]
-        knn['rank'] = knn['rank'] - 1
+        knn = knn[knn["rank"] > 1]
+        knn["rank"] = knn["rank"] - 1
         assert_frame_equal(knn.to_dataframe(), knn_graph[:20].to_dataframe())
 
 
@@ -1516,51 +1878,53 @@ class NearestNeighborsSparseQueryTest(unittest.TestCase):
         n = 10
         n_query = 2
 
-         # Generate sparse data: an SFrame with a column of type dict
-        self.field = 'docs'
+        # Generate sparse data: an SFrame with a column of type dict
+        self.field = "docs"
         self.refs = tc.SFrame()
         self.refs[self.field] = [random_dict(5, 3) for i in range(n)]
-        self.k = 3 # number of neighbors to return
+        self.k = 3  # number of neighbors to return
         self.radius = 1.0  # radius to use
-        self.label = 'row_label'
+        self.label = "row_label"
         self.refs[self.label] = [str(x) for x in range(n)]
 
-    def _test_query(self, sf_ref, sf_query, label, features, distance, method,
-                    k=5, radius=1.0):
+    def _test_query(
+        self, sf_ref, sf_query, label, features, distance, method, k=5, radius=1.0
+    ):
         """
         Test the accuracy of exact queries against hand-coded solution above.
         """
 
         ## Construct nearest neighbors model and get query results
-        m = tc.nearest_neighbors.create(sf_ref, label, features, distance,
-                                        method, verbose=False)
+        m = tc.nearest_neighbors.create(
+            sf_ref, label, features, distance, method, verbose=False
+        )
 
         knn = m.query(sf_query, label, k=k, radius=radius)
 
         # TODO: Speed up this test
         for row in knn:
-            q = row['query_label']
-            r = row['reference_label']
+            q = row["query_label"]
+            r = row["reference_label"]
             query = sf_ref[int(q)][self.field]
             ref = sf_ref[int(r)][self.field]
 
-            score = row['distance']
+            score = row["distance"]
 
-            if distance == 'cosine':
+            if distance == "cosine":
                 ans = cosine(query, ref)
-            elif distance == 'dot_product':
+            elif distance == "dot_product":
                 ans = dot_product(query, ref)
-            elif distance == 'transformed_dot_product':
+            elif distance == "transformed_dot_product":
                 ans = transformed_dot_product(query, ref)
-            elif distance == 'jaccard':
+            elif distance == "jaccard":
                 ans = jaccard(query, ref)
-            elif distance == 'weighted_jaccard':
+            elif distance == "weighted_jaccard":
                 ans = weighted_jaccard(query, ref)
-            elif distance == 'euclidean':
+            elif distance == "euclidean":
                 ans = euclidean(query, ref)
-            elif distance == 'squared_euclidean':
+            elif distance == "squared_euclidean":
                 ans = squared_euclidean(query, ref)
-            elif distance == 'manhattan':
+            elif distance == "manhattan":
                 ans = manhattan(query, ref)
             else:
                 raise RuntimeError("Unknown distance")
@@ -1570,23 +1934,57 @@ class NearestNeighborsSparseQueryTest(unittest.TestCase):
         """
         Test query accuracy for various distances.
         """
-        for dist in ['euclidean', 'squared_euclidean', 'manhattan', 'cosine',
-                     'transformed_dot_product', 'jaccard', 'weighted_jaccard']:
+        for dist in [
+            "euclidean",
+            "squared_euclidean",
+            "manhattan",
+            "cosine",
+            "transformed_dot_product",
+            "jaccard",
+            "weighted_jaccard",
+        ]:
 
-            self._test_query(self.refs, self.refs, self.label, features=None,
-                             distance=dist, method='brute_force')
-            self._test_query(self.refs, self.refs, self.label, features=None,
-                             distance=dist, method='brute_force', k=self.k)
-            self._test_query(self.refs, self.refs, self.label, features=None,
-                             distance=dist, method='brute_force', k=self.k, radius=self.radius)
+            self._test_query(
+                self.refs,
+                self.refs,
+                self.label,
+                features=None,
+                distance=dist,
+                method="brute_force",
+            )
+            self._test_query(
+                self.refs,
+                self.refs,
+                self.label,
+                features=None,
+                distance=dist,
+                method="brute_force",
+                k=self.k,
+            )
+            self._test_query(
+                self.refs,
+                self.refs,
+                self.label,
+                features=None,
+                distance=dist,
+                method="brute_force",
+                k=self.k,
+                radius=self.radius,
+            )
 
     def test_query_methods(self):
         """
         Test query accuracy for various nearest neighbor methods.
         """
-        for method in ['auto', 'ball_tree', 'brute_force']:
-            self._test_query(self.refs, self.refs, self.label, features=None,
-                             distance='euclidean', method=method)
+        for method in ["auto", "ball_tree", "brute_force"]:
+            self._test_query(
+                self.refs,
+                self.refs,
+                self.label,
+                features=None,
+                distance="euclidean",
+                method=method,
+            )
 
     def test_similarity_graph(self):
         """
@@ -1596,35 +1994,36 @@ class NearestNeighborsSparseQueryTest(unittest.TestCase):
         """
         n = 30
         sf = tc.SFrame()
-        sf['docs'] = [random_dict(5 ,3) for i in range(n)]
-        sf = sf.add_row_number('id')
+        sf["docs"] = [random_dict(5, 3) for i in range(n)]
+        sf = sf.add_row_number("id")
 
-        m = tc.nearest_neighbors.create(sf, label='id', features=None,
-                                        distance='euclidean',
-                                        method='brute_force')
+        m = tc.nearest_neighbors.create(
+            sf, label="id", features=None, distance="euclidean", method="brute_force"
+        )
 
         knn = m.query(sf, k=3, verbose=False)
-        knn_graph = m.similarity_graph(k=2, output_type='SFrame', verbose=False)
+        knn_graph = m.similarity_graph(k=2, output_type="SFrame", verbose=False)
 
         ## Basic metadata about the output
         self.assertEqual(knn_graph.num_rows(), 60)
-        self.assertEqual(knn_graph['rank'].max(), 2)
-        self.assertGreaterEqual(knn_graph['distance'].min(), 0.)
+        self.assertEqual(knn_graph["rank"].max(), 2)
+        self.assertGreaterEqual(knn_graph["distance"].min(), 0.0)
 
         ## No self edges
-        label_diff = knn_graph['query_label'] - knn_graph['reference_label']
+        label_diff = knn_graph["query_label"] - knn_graph["reference_label"]
         self.assertEqual(sum(label_diff == 0), 0)
 
         ## Exact match to query method, adjusting for no self-edges. NOTE: for
         #  this type of data and distance, there are many ties, so the reference
         #  labels won't necessarily match across the two methods. Only check the
         #  three columns that must match exactly.
-        knn = knn[knn['rank'] > 1]
-        knn['rank'] = knn['rank'] - 1
-        test_ftrs = ['query_label', 'distance', 'rank']
+        knn = knn[knn["rank"] > 1]
+        knn["rank"] = knn["rank"] - 1
+        test_ftrs = ["query_label", "distance", "rank"]
 
-        assert_frame_equal(knn[test_ftrs].to_dataframe(),
-                           knn_graph[test_ftrs].to_dataframe())
+        assert_frame_equal(
+            knn[test_ftrs].to_dataframe(), knn_graph[test_ftrs].to_dataframe()
+        )
 
 
 class NearestNeighborsStringQueryTest(unittest.TestCase):
@@ -1639,8 +2038,8 @@ class NearestNeighborsStringQueryTest(unittest.TestCase):
         n = 5
         word_length = 3
         alphabet_size = 5
-        self.label = 'id'
-        self.refs = tc.SFrame({'X1': random_string(n, word_length, alphabet_size)})
+        self.label = "id"
+        self.refs = tc.SFrame({"X1": random_string(n, word_length, alphabet_size)})
         self.refs = self.refs.add_row_number(self.label)
 
     def _test_query(self, sf_ref, sf_query, features, distance, method):
@@ -1649,31 +2048,39 @@ class NearestNeighborsStringQueryTest(unittest.TestCase):
         """
 
         ## Get the toolkit answer
-        m = tc.nearest_neighbors.create(sf_ref, label=self.label,
-                                        features=features,
-                                        distance=distance,
-                                        method=method,
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            sf_ref,
+            label=self.label,
+            features=features,
+            distance=distance,
+            method=method,
+            verbose=False,
+        )
         knn = m.query(sf_query, verbose=False)
 
         ## Compute the answer from scratch
-        knn = knn.join(self.refs, on={'query_label': 'id'}, how='left')
-        knn = knn.join(self.refs, on={'reference_label': 'id'}, how='left')
+        knn = knn.join(self.refs, on={"query_label": "id"}, how="left")
+        knn = knn.join(self.refs, on={"reference_label": "id"}, how="left")
 
-        if distance == 'levenshtein':
-            knn['test_dist'] = knn.apply(lambda x: levenshtein(x['X1'], x['X1.1']))
+        if distance == "levenshtein":
+            knn["test_dist"] = knn.apply(lambda x: levenshtein(x["X1"], x["X1.1"]))
         else:
             raise ValueError("Distance not found in string query test.")
 
-        self.assertAlmostEqual(sum(knn['distance'] - knn['test_dist']), 0)
+        self.assertAlmostEqual(sum(knn["distance"] - knn["test_dist"]), 0)
 
     def test_query_distances(self):
         """
         Test query accuracy for various dista0nces. As of v1.1, only levenshtein
         distance is implemented.
         """
-        self._test_query(self.refs, self.refs, features=None,
-                         distance='levenshtein', method='brute_force')
+        self._test_query(
+            self.refs,
+            self.refs,
+            features=None,
+            distance="levenshtein",
+            method="brute_force",
+        )
 
     def test_similarity_graph(self):
         """
@@ -1682,55 +2089,61 @@ class NearestNeighborsStringQueryTest(unittest.TestCase):
         reference dataset.
         """
         n = 30
-        sf = tc.SFrame({'X1': random_string(n, length=3, num_letters=5)})
-        sf = sf.add_row_number('id')
+        sf = tc.SFrame({"X1": random_string(n, length=3, num_letters=5)})
+        sf = sf.add_row_number("id")
 
-        m = tc.nearest_neighbors.create(sf, label='id', features=None,
-                                        distance='levenshtein',
-                                        method='brute_force')
+        m = tc.nearest_neighbors.create(
+            sf, label="id", features=None, distance="levenshtein", method="brute_force"
+        )
 
         knn = m.query(sf, k=3, verbose=False)
-        knn_graph = m.similarity_graph(k=2, output_type='SFrame', verbose=False)
+        knn_graph = m.similarity_graph(k=2, output_type="SFrame", verbose=False)
 
         ## Basic metadata about the output
         self.assertEqual(knn_graph.num_rows(), 60)
-        self.assertEqual(knn_graph['rank'].max(), 2)
-        self.assertGreaterEqual(knn_graph['distance'].min(), 0.)
+        self.assertEqual(knn_graph["rank"].max(), 2)
+        self.assertGreaterEqual(knn_graph["distance"].min(), 0.0)
 
         ## No self edges
-        label_diff = knn_graph['query_label'] - knn_graph['reference_label']
+        label_diff = knn_graph["query_label"] - knn_graph["reference_label"]
         self.assertEqual(sum(label_diff == 0), 0)
 
         ## Exact match to query method, adjusting for no self-edges. NOTE: for
         #  this type of data and distance, there are many ties, so the reference
         #  labels won't necessarily match across the two methods. Only check the
         #  three columns that must match exactly.
-        knn = knn[knn['rank'] > 1]
-        knn['rank'] = knn['rank'] - 1
-        test_ftrs = ['query_label', 'distance', 'rank']
+        knn = knn[knn["rank"] > 1]
+        knn["rank"] = knn["rank"] - 1
+        test_ftrs = ["query_label", "distance", "rank"]
 
-        assert_frame_equal(knn[test_ftrs].to_dataframe(),
-                           knn_graph[test_ftrs].to_dataframe())
+        assert_frame_equal(
+            knn[test_ftrs].to_dataframe(), knn_graph[test_ftrs].to_dataframe()
+        )
 
     def test_missing_queries(self):
         """
         Check that missing string queries are correctly imputed to be empty
         strings.
         """
-        sf = tc.SFrame({'x0': ['a', 'b'],
-                        'x1': ['d', 'e']})
+        sf = tc.SFrame({"x0": ["a", "b"], "x1": ["d", "e"]})
 
-        sf_query = tc.SFrame({'x0': ['a', None, 'b', None],
-                              'x1': ['b', 'c', None, None]})
+        sf_query = tc.SFrame(
+            {"x0": ["a", None, "b", None], "x1": ["b", "c", None, None]}
+        )
 
         m = tc.nearest_neighbors.create(sf, verbose=False)
         knn = m.query(sf_query, k=None, radius=None)
 
-        answer = tc.SFrame({'query_label': [0, 0, 1, 1, 2, 2, 3, 3],
-                            'distance': [1., 2., 2., 2., 1., 2., 2., 2.]})
+        answer = tc.SFrame(
+            {
+                "query_label": [0, 0, 1, 1, 2, 2, 3, 3],
+                "distance": [1.0, 2.0, 2.0, 2.0, 1.0, 2.0, 2.0, 2.0],
+            }
+        )
 
-        assert_frame_equal(knn[['distance', 'query_label']].to_dataframe(),
-                           answer.to_dataframe())
+        assert_frame_equal(
+            knn[["distance", "query_label"]].to_dataframe(), answer.to_dataframe()
+        )
 
 
 class NearestNeighborsCompositeQueryTest(unittest.TestCase):
@@ -1752,7 +2165,7 @@ class NearestNeighborsCompositeQueryTest(unittest.TestCase):
         #     self.refs['address'], n=2, method='character', to_lower=False,
         #     ignore_space=True)
 
-        self.label = 'id'
+        self.label = "id"
         self.refs = self.refs.add_row_number(self.label)
 
     def _test_query(self, composite_params):
@@ -1760,22 +2173,23 @@ class NearestNeighborsCompositeQueryTest(unittest.TestCase):
         Test query accuracy using arbitrary composite distance inputs.
         """
         ## Get the toolkit answer
-        m = tc.nearest_neighbors.create(self.refs, label=self.label,
-                                        distance=composite_params,
-                                        verbose=False)
+        m = tc.nearest_neighbors.create(
+            self.refs, label=self.label, distance=composite_params, verbose=False
+        )
         knn = m.query(self.refs, verbose=False)
 
         ## Compute the answer from scratch
         dist_ans = []
         for row in knn:
-            query = self.refs[row['query_label']]
-            ref = self.refs[row['reference_label']]
-            dist_row = tc.distances.compute_composite_distance(composite_params,
-                                                               query, ref)
+            query = self.refs[row["query_label"]]
+            ref = self.refs[row["reference_label"]]
+            dist_row = tc.distances.compute_composite_distance(
+                composite_params, query, ref
+            )
             dist_ans.append(dist_row)
 
-        knn['test_dist'] = dist_ans
-        self.assertAlmostEqual(sum(knn['distance'] - knn['test_dist']), 0)
+        knn["test_dist"] = dist_ans
+        self.assertAlmostEqual(sum(knn["distance"] - knn["test_dist"]), 0)
 
     def test_composite_queries(self):
         """
@@ -1784,13 +2198,17 @@ class NearestNeighborsCompositeQueryTest(unittest.TestCase):
         """
 
         ## Test accuracy over overlapping feature sets
-        distance_components = [[['X1', 'X2'], 'euclidean', 1],
-                               [['X2', 'X3'], 'manhattan', 1]]
+        distance_components = [
+            [["X1", "X2"], "euclidean", 1],
+            [["X2", "X3"], "manhattan", 1],
+        ]
         self._test_query(distance_components)
 
         ## Test accuracy of different weights
-        distance_components = [[['X1', 'X2'], 'euclidean', 2],
-                               [['X2', 'X3'], 'manhattan', 3.4]]
+        distance_components = [
+            [["X1", "X2"], "euclidean", 2],
+            [["X2", "X3"], "manhattan", 3.4],
+        ]
         self._test_query(distance_components)
 
     def test_similarity_graph(self):
@@ -1801,32 +2219,31 @@ class NearestNeighborsCompositeQueryTest(unittest.TestCase):
         """
         n, d = 30, 3
         sf = tc.SFrame(np.random.random((n, d)))
-        sf = sf.unpack('X1', column_name_prefix='')
-        sf = sf.add_row_number('id')
+        sf = sf.unpack("X1", column_name_prefix="")
+        sf = sf.add_row_number("id")
 
-        my_dist = [[['0', '1'], 'euclidean', 1],
-                   [['1', '2'], 'manhattan', 1]]
+        my_dist = [[["0", "1"], "euclidean", 1], [["1", "2"], "manhattan", 1]]
 
-        m = tc.nearest_neighbors.create(sf, label='id', features=None,
-                                        distance=my_dist,
-                                        method='brute_force')
+        m = tc.nearest_neighbors.create(
+            sf, label="id", features=None, distance=my_dist, method="brute_force"
+        )
 
         knn = m.query(sf, k=3, verbose=False)
-        knn_graph = m.similarity_graph(k=2, output_type='SFrame', verbose=False)
+        knn_graph = m.similarity_graph(k=2, output_type="SFrame", verbose=False)
 
         ## Basic metadata about the output
         self.assertEqual(knn_graph.num_rows(), 60)
-        self.assertEqual(knn_graph['rank'].max(), 2)
-        self.assertGreaterEqual(knn_graph['distance'].min(), 0.)
+        self.assertEqual(knn_graph["rank"].max(), 2)
+        self.assertGreaterEqual(knn_graph["distance"].min(), 0.0)
 
         ## No self edges
-        label_diff = knn_graph['query_label'] - knn_graph['reference_label']
+        label_diff = knn_graph["query_label"] - knn_graph["reference_label"]
         self.assertEqual(sum(label_diff == 0), 0)
 
         ## Exact match to query method, adjusting for no self-edges.
-        knn = knn[knn['rank'] > 1]
-        knn['rank'] = knn['rank'] - 1
-        test_ftrs = ['query_label', 'distance', 'rank']
+        knn = knn[knn["rank"] > 1]
+        knn["rank"] = knn["rank"] - 1
+        test_ftrs = ["query_label", "distance", "rank"]
 
         assert_frame_equal(knn.to_dataframe(), knn_graph.to_dataframe())
 
@@ -1835,18 +2252,24 @@ class ValidateListUtilityTest(unittest.TestCase):
     """
     Unit test class for checking correctness of utility function.
     """
-    def setUp(self):
-        self.check_for_numeric_fixed_length_lists = partial(_validate_lists,
-                                                    allowed_types=[int, float, long],
-                                                    require_equal_length=True,
-                                                    require_same_type=True)
 
-        self.check_for_str_lists = partial(_validate_lists, allowed_types=[str],
-                                      require_equal_length=False,
-                                      require_same_type=True)
+    def setUp(self):
+        self.check_for_numeric_fixed_length_lists = partial(
+            _validate_lists,
+            allowed_types=[int, float, long],
+            require_equal_length=True,
+            require_same_type=True,
+        )
+
+        self.check_for_str_lists = partial(
+            _validate_lists,
+            allowed_types=[str],
+            require_equal_length=False,
+            require_same_type=True,
+        )
 
     def test_str_cases(self):
-        lst = [['a', 'b'], ['a', 'b', 'c']]
+        lst = [["a", "b"], ["a", "b", "c"]]
         lst = tc.SArray(lst, dtype=list)
         observed = self.check_for_str_lists(lst)
         self.assertTrue(observed)
@@ -1856,11 +2279,10 @@ class ValidateListUtilityTest(unittest.TestCase):
         observed = self.check_for_str_lists(lst)
         self.assertFalse(observed)
 
-        lst = [['a', 2, 3], [1, 2, 3, 4]]
+        lst = [["a", 2, 3], [1, 2, 3, 4]]
         lst = tc.SArray(lst, dtype=list)
         observed = self.check_for_str_lists(lst)
         self.assertFalse(observed)
-
 
     def test_true_numeric_cases(self):
 
@@ -1878,19 +2300,20 @@ class ValidateListUtilityTest(unittest.TestCase):
 
         # Only checks the first 10
         lst = [
-          [1, 2],
-          [2, 3],
-          [1, 2],
-          [1, 2],
-          [2, 3],
-          [1, 2],
-          [1, 2],
-          [2, 3],
-          [1, 2],
-          [1, 2],
-          [2, 3, 4],
-          [1, 2, 3],
-          [2, 3, 4, 5, 6]]
+            [1, 2],
+            [2, 3],
+            [1, 2],
+            [1, 2],
+            [2, 3],
+            [1, 2],
+            [1, 2],
+            [2, 3],
+            [1, 2],
+            [1, 2],
+            [2, 3, 4],
+            [1, 2, 3],
+            [2, 3, 4, 5, 6],
+        ]
         lst = tc.SArray(lst, dtype=list)
         observed = self.check_for_numeric_fixed_length_lists(lst)
         self.assertTrue(observed)
@@ -1935,7 +2358,7 @@ class ValidateListUtilityTest(unittest.TestCase):
 
     def test_bad_cases(self):
 
-        lst = [{'a': 3}, {'b': 5}]
+        lst = [{"a": 3}, {"b": 5}]
         lst = tc.SArray(lst)
         with self.assertRaises(ValueError):
             observed = self.check_for_numeric_fixed_length_lists(lst)
@@ -1951,7 +2374,7 @@ def random_dict(num_elements=10, max_count=20):
     words = string.ascii_lowercase
     d = {}
     for j in range(num_elements):
-        w = words[random.randint(0, len(words)-1)]
+        w = words[random.randint(0, len(words) - 1)]
         d[w] = random.randint(0, max_count)
     return d
 
@@ -1967,9 +2390,10 @@ def random_string(number, length, num_letters):
         word = []
         for j in range(length):
             word.append(random.choice(letters))
-        result.append(''.join(word))
+        result.append("".join(word))
 
     return result
+
 
 def random_list_of_str(number, length):
     """
@@ -1983,6 +2407,7 @@ def random_list_of_str(number, length):
         results.append(result)
     return results
 
+
 def scipy_dist(q, r, dist):
     n = len(r)
     n_query = len(q)
@@ -1991,19 +2416,22 @@ def scipy_dist(q, r, dist):
     idx_col = np.argsort(D, axis=1)
     idx_row = np.array([[x] for x in range(n_query)])
     query_labels = list(np.repeat(range(n_query), n))
-    ranks = np.tile(range(1, n+1), n_query)
+    ranks = np.tile(range(1, n + 1), n_query)
 
-    answer = tc.SFrame({'query_label': query_labels,
-                        'reference_label': idx_col.flatten(),
-                        'distance': D[idx_row, idx_col].flatten(),
-                        'rank': ranks})
+    answer = tc.SFrame(
+        {
+            "query_label": query_labels,
+            "reference_label": idx_col.flatten(),
+            "distance": D[idx_row, idx_col].flatten(),
+            "rank": ranks,
+        }
+    )
 
-    answer.swap_columns('distance', 'query_label', inplace=True)
-    answer.swap_columns('distance', 'reference_label', inplace=True)
-    answer.swap_columns('distance', 'rank', inplace=True)
+    answer.swap_columns("distance", "query_label", inplace=True)
+    answer.swap_columns("distance", "reference_label", inplace=True)
+    answer.swap_columns("distance", "rank", inplace=True)
 
     return answer
-
 
 
 if __name__ == "__main__":

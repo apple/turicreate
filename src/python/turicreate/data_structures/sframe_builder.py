@@ -17,6 +17,7 @@ import logging as _logging
 
 __LOGGER__ = _logging.getLogger(__name__)
 
+
 class SFrameBuilder(object):
     """
     An interface to incrementally build an SFrame (row by row). It has some
@@ -75,8 +76,15 @@ class SFrameBuilder(object):
     [3 rows x 3 columns]
 
     """
-    def __init__(self, column_types, column_names=None, num_segments=1,
-            history_size=10, save_location=None):
+
+    def __init__(
+        self,
+        column_types,
+        column_names=None,
+        num_segments=1,
+        history_size=10,
+        save_location=None,
+    ):
         self._column_names = column_names
         self._column_types = column_types
         self._num_segments = num_segments
@@ -88,22 +96,26 @@ class SFrameBuilder(object):
 
         if column_names is not None and column_types is not None:
             if len(column_names) != len(column_types):
-                raise AssertionError("There must be same amount of column names as column types.")
+                raise AssertionError(
+                    "There must be same amount of column names as column types."
+                )
         elif column_names is None and column_types is not None:
             self._column_names = self._generate_column_names(len(column_types))
         else:
             raise AssertionError("Column types must be defined!")
 
         self._builder = UnitySFrameBuilderProxy()
-        self._builder.init(self._column_types,
-                           self._column_names,
-                           self._num_segments,
-                           self._history_size,
-                           self._save_location)
+        self._builder.init(
+            self._column_types,
+            self._column_names,
+            self._num_segments,
+            self._history_size,
+            self._save_location,
+        )
         self._block_size = 1024
 
     def _generate_column_names(self, num_columns):
-        return ["X"+str(i) for i in range(1,num_columns+1)]
+        return ["X" + str(i) for i in range(1, num_columns + 1)]
 
     def append(self, data, segment=0):
         """
@@ -124,7 +136,7 @@ class SFrameBuilder(object):
             preserved as they are added.
         """
         # Assume this case refers to an SFrame with a single column
-        if not hasattr(data, '__iter__'):
+        if not hasattr(data, "__iter__"):
             data = [data]
         self._builder.append(data, segment)
 
@@ -146,13 +158,13 @@ class SFrameBuilder(object):
             any value in segment 0, and the order of rows in each segment is
             preserved as they are added.
         """
-        if not hasattr(data, '__iter__'):
+        if not hasattr(data, "__iter__"):
             raise TypeError("append_multiple must be passed an iterable object")
         tmp_list = []
 
         # Avoid copy in cases that we are passed materialized data that is
         # smaller than our block size
-        if hasattr(data, '__len__'):
+        if hasattr(data, "__len__"):
             if len(data) <= self._block_size:
                 self._builder.append_multiple(data, segment)
                 return
@@ -181,7 +193,7 @@ class SFrameBuilder(object):
         out : list[list]
         """
         if num < 0:
-          num = 0
+            num = 0
         return self._builder.read_history(num, segment)
 
     def close(self):

@@ -24,6 +24,8 @@ function print_help {
   echo
   echo "  --install-python-toolchain        Install python in local virtualenv."
   echo
+  echo "  --no-pre-commit                   don't install any git pre-commit hooks"
+  echo
   echo "  --with-ccache (default)           Use ccache, if available."
   echo "  --no-ccache "
   echo
@@ -43,32 +45,32 @@ function print_help {
   echo "  --debug-opt-for-size              Debug optimize for size."
   echo
   echo "  --arch=<architecture>             The target architecture.  "
-  echo "                                    May be added multiple times.  First entry is used to determine compile-time features." 
-  echo 
+  echo "                                    May be added multiple times.  First entry is used to determine compile-time features."
+  echo
   echo "  --with-remotefs (default)         Include capabilities for remote file access."
   echo "  --no-remotefs                     Disable remote file access."
-  echo 
+  echo
   echo "  --builder=<builder>               Generates build files for the given build system.  "
   echo "                                    Possible values are make (default), xcode, or ninja."
-  echo 
+  echo
   echo "  --with-release (default)          Configure release-mode build directory release/."
-  echo "  --no-release                      Disable release-mode build directory release/." 
-  echo 
+  echo "  --no-release                      Disable release-mode build directory release/."
+  echo
   echo "  --release-dir=<dir>               Directory to use for release mode build tree."
-  echo 
+  echo
   echo "  --with-debug (default)            Configure debug-mode build directory release/."
-  echo "  --no-debug                        Disable release-mode build directory release/." 
-  echo 
+  echo "  --no-debug                        Disable release-mode build directory release/."
+  echo
   echo "  --debug-dir=<dir>                 Directory to use for debug mode build tree."
-  echo 
+  echo
   echo "  --yes                             Defaults to yes on a prompt"
-  echo 
+  echo
   echo "  --min-ios-version                 Override the minimum iOS version (default ${IOS_DEFAULT_MIN_VERSION})"
   echo "  --min-macos-version               Override the minimum MacOS version (default ${MACOS_DEFAULT_MIN_VERSION})"
   echo
   echo "  --codesign                        Enable code signing for OSX projects.  If enabled, the "
   echo "                                    proper CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_**** parameters "
-  echo                                      denoting the signing variables should be passed in. 
+  echo                                      denoting the signing variables should be passed in.
   echo
   echo "  --list-source-files               If given, a list of all the source files compiled using "
   echo "                                    the given options is printed as part of the configuration, "
@@ -138,7 +140,7 @@ python_only=0
 default_yes=0
 
 with_python=1
-
+with_pre_commit=1
 with_ccache=1
 
 with_capi=1
@@ -183,6 +185,7 @@ while [ $# -gt 0 ]
     --arch=*)               arch_list="${arch_list};${1##--arch=}";;
     --arch)                 arch_list="${arch_list};$2"; shift ;;
 
+    --no-pre-commit)        with_pre_commit=0;;
     --with-ccache)          with_ccache=1;;
     --no-ccache)            with_ccache=0;;
 
@@ -198,12 +201,12 @@ while [ $# -gt 0 ]
 
     --with-remotefs)        with_remotefs=1;;
     --no-remotefs)          with_remotefs=0;;
-    
+
     --with-release)         with_release=1;;
     --no-release)           with_release=0;;
     --with-debug)           with_debug=1;;
     --no-debug)             with_debug=0;;
-    
+
     --release-dir=*)        RELEASE_DIR=${1##--release-dir=} ;;
     --release-dir)          RELEASE_DIR=${2} ; shift ;;
 
@@ -224,10 +227,10 @@ while [ $# -gt 0 ]
     --virtualenv=*)         VIRTUALENV="${1##--virtualenv=}" ;;
     --virtualenv)           VIRTUALENV="$2"; shift ;;
 
-    --min-ios-version=*)    min_ios_version=${1##--min-ios-version=};; 
-    --min-ios-version)      min_ios_version=${2}; shift;; 
+    --min-ios-version=*)    min_ios_version=${1##--min-ios-version=};;
+    --min-ios-version)      min_ios_version=${2}; shift;;
 
-    --min-macos-version=*)  min_macos_version=${1##--min-macos-version=};; 
+    --min-macos-version=*)  min_macos_version=${1##--min-macos-version=};;
     --min-macos-version)    min_macos_version=${2}; shift ;;
 
     --list-source-files)    list_source_files=1 ;;
@@ -244,7 +247,7 @@ fi
 
 
 if [[ $python_only == 1 ]]; then
-  install_python_toolchain
+  with_pre_commit=$with_pre_commit install_python_toolchain
   exit $?
 fi
 
@@ -310,18 +313,18 @@ build_platform="$(uname -s)"
 case "${build_platform}" in
     Darwin*)    build_platform=macosx;;
     Linux*)     build_platform=linux;;
-    *)          ;;  
+    *)          ;;
 esac
 
 echo "Build platform identified as ${build_platform}."
 
-if [[ ! -z ${arch_list} ]] ; then 
+if [[ ! -z ${arch_list} ]] ; then
   arch_list="${arch_list##;}"
   echo "Using architectures: ${arch_list}"
   CMAKE_CONFIG_FLAGS="$CMAKE_CONFIG_FLAGS -DTC_BUILD_ARCH='${arch_list}'"
 fi
 
-if [[ -z ${target} ]] ; then 
+if [[ -z ${target} ]] ; then
   target=${build_platform}
 fi
 
@@ -350,31 +353,31 @@ set -e
 set -o pipefail
 
 case $builder in
- xcode) 
+ xcode)
    CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -GXcode"
    CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_CXX_STANDARD=11 -DCMAKE_CXX_STANDARD_REQUIRED=1"
 
-   if [[ ! -z ${arch_list} ]] ; then 
+   if [[ ! -z ${arch_list} ]] ; then
      CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_ARCHITECTURES='${arch_list}'"
    fi
 
    ;;
- make) ;; 
+ make) ;;
  ninja) CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -Gninja"
-   ;; 
+   ;;
  *) echo "Unrecognized builder $builder; valid options are make, ninja, and xcode." ; exit 1 ;;
 esac
 
-if [[ ${enable_codesign} == 1 ]] ; then 
+if [[ ${enable_codesign} == 1 ]] ; then
 
-  if [[ ! $builder == xcode ]] ; then 
+  if [[ ! $builder == xcode ]] ; then
     echo "Code signing currently only supported with xcode builder."
     exit 1
   fi
 
 elif [[ ${builder} == xcode ]] ; then
 
-  # Deal with the code signing issues. 
+  # Deal with the code signing issues.
   CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGN_IDENTITY= -DCMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED=0 -DCMAKE_XCODE_ATTRIBUTE_DEVELOPMENT_TEAM= "
 
   # This also requires us to skip the code signing when trying to compile targets to check definitions.
@@ -384,13 +387,13 @@ elif [[ ${builder} == xcode ]] ; then
 fi
 
 #######################################################
-# Handle the case where the builder is not xcode but we still need to set the sdk root. 
+# Handle the case where the builder is not xcode but we still need to set the sdk root.
 
-if [[ ${build_platform} == macosx ]] && [[ ${target} != macosx* ]] ; then 
+if [[ ${build_platform} == macosx ]] && [[ ${target} != macosx* ]] ; then
 
-  if [[ ${builder} != xcode ]] ; then 
-    # Cross-platform builds on macosx must use the xcode builder. 
-    echo "ERROR: cross-compilation on OSX requires the xcode build train using --builder=xcode." 
+  if [[ ${builder} != xcode ]] ; then
+    # Cross-platform builds on macosx must use the xcode builder.
+    echo "ERROR: cross-compilation on OSX requires the xcode build train using --builder=xcode."
     exit 1
   fi
 
@@ -406,43 +409,42 @@ if [[ ${build_platform} == macosx ]] && [[ ${target} != macosx* ]] ; then
 fi
 
 
-if [[ ${build_platform} == macosx ]] ; then 
+if [[ ${build_platform} == macosx ]] ; then
   SDKROOT=`xcrun --sdk ${target} --show-sdk-path || echo ""`
-  if [[ -z ${SDKROOT} ]] ; then 
+  if [[ -z ${SDKROOT} ]] ; then
     echo "Cannot find valid SDK for target ${target}. (command xcrun --sdk ${target} --show-sdk-path)."
   fi
 
   CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DTC_BASE_SDK=${target} -DCMAKE_OSX_SYSROOT=${SDKROOT}"
 
   # Set up minimum versions
-  if [[ ${target} == iphoneos* ]] ; then 
+  if [[ ${target} == iphoneos* ]] ; then
     CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${min_ios_version} -DTC_BUILD_IOS=1"
-  elif [[ ${target} == macosx* ]] ; then 
-    CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${min_macos_version} -DTC_BUILD_IOS=0"
+  elif [[ ${target} == macosx* ]] ; then
+    target_tag=x86_64-apple-macos${min_macos_version}
+    CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_OSX_DEPLOYMENT_TARGET=${min_macos_version} -DCMAKE_CXX_COMPILER_TARGET=${target_tag} -DCMAKE_C_COMPILER_TARGET=${target_tag} -DTC_BUILD_IOS=0"
   else
     echo "ERROR: Compiling for unsupported target ${target}."
     exit 1
   fi
 fi
-   
+
 build_cmd="$CMAKE \
     $GENERATOR \
     -D CMAKE_C_COMPILER=$CCCMD \
     -D CMAKE_CXX_COMPILER=$CXXCMD \
     ${CMAKE_CONFIG_FLAGS}"
 
-if [[ $with_debug == 1 ]] ; then 
+if [[ $with_debug == 1 ]] ; then
   set -x
   mkdir -p ${DEBUG_DIR}
   cd ${DEBUG_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Debug --config Debug -D CMAKE_CONFIGURATION_TYPES='Debug;Release' ${TURI_HOME}
   set +x
 fi
 
-if [[ $with_release == 1 ]] ; then 
+if [[ $with_release == 1 ]] ; then
   set -x
   mkdir -p ${RELEASE_DIR}
   cd ${RELEASE_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Release -D CMAKE_CONFIGURATION_TYPES='Release;Debug' --config Release ${TURI_HOME}
   set +x
 fi
-
-

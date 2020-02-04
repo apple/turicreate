@@ -13,17 +13,12 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 from turicreate.toolkits._model import CustomModel
 from prettytable import PrettyTable as _PrettyTable
-from turicreate._cython.cy_graph import UnityGraphProxy
-from turicreate._cython.cy_sframe import UnitySFrameProxy
-import turicreate.toolkits._main as _main
-from turicreate.data_structures.sframe import SFrame
-from turicreate.data_structures.sgraph import SGraph
 from turicreate.toolkits._internal_utils import _precomputed_field, _toolkit_repr_print
 
 import six
 
-class GraphAnalyticsModel(CustomModel):
 
+class GraphAnalyticsModel(CustomModel):
     @classmethod
     def _native_name(cls):
         return None
@@ -50,7 +45,10 @@ class GraphAnalyticsModel(CustomModel):
         if field in self._list_fields():
             return self.__proxy__.get(field)
         else:
-            raise KeyError('Key \"%s\" not in model. Available fields are %s.' % (field, ', '.join(self._list_fields())))
+            raise KeyError(
+                'Key "%s" not in model. Available fields are %s.'
+                % (field, ", ".join(self._list_fields()))
+            )
 
     @classmethod
     def _describe_fields(cls):
@@ -59,32 +57,34 @@ class GraphAnalyticsModel(CustomModel):
         Fields should NOT be wrapped by _precomputed_field, if necessary
         """
         dispatch_table = {
-            'ShortestPathModel': 'sssp',
-            'GraphColoringModel': 'graph_coloring',
-            'PagerankModel': 'pagerank',
-            'ConnectedComponentsModel': 'connected_components',
-            'TriangleCountingModel': 'triangle_counting',
-            'KcoreModel': 'kcore',
-            'DegreeCountingModel': 'degree_count',
-            'LabelPropagationModel': 'label_propagation'
+            "ShortestPathModel": "sssp",
+            "GraphColoringModel": "graph_coloring",
+            "PagerankModel": "pagerank",
+            "ConnectedComponentsModel": "connected_components",
+            "TriangleCountingModel": "triangle_counting",
+            "KcoreModel": "kcore",
+            "DegreeCountingModel": "degree_count",
+            "LabelPropagationModel": "label_propagation",
         }
         try:
             toolkit_name = dispatch_table[cls.__name__]
             toolkit = _tc.extensions._toolkits.graph.__dict__[toolkit_name]
             return toolkit.get_model_fields({})
         except:
-            raise RuntimeError('Model %s does not have fields description' % cls.__name__)
+            raise RuntimeError(
+                "Model %s does not have fields description" % cls.__name__
+            )
 
     def _format(self, title, key_values):
         if len(key_values) == 0:
             return ""
         tbl = _PrettyTable(header=False)
         for k, v in six.iteritems(key_values):
-                tbl.add_row([k, v])
-        tbl.align['Field 1'] = 'l'
-        tbl.align['Field 2'] = 'l'
+            tbl.add_row([k, v])
+        tbl.align["Field 1"] = "l"
+        tbl.align["Field 2"] = "l"
         s = title + ":\n"
-        s += tbl.__str__() + '\n'
+        s += tbl.__str__() + "\n"
         return s
 
     def _get_summary_struct(self):
@@ -106,20 +106,30 @@ class GraphAnalyticsModel(CustomModel):
         """
         g = self.graph
 
-        section_titles = ['Graph']
+        section_titles = ["Graph"]
 
-        graph_summary = [(k, _precomputed_field(v)) for k, v in six.iteritems(g.summary())]
+        graph_summary = [
+            (k, _precomputed_field(v)) for k, v in six.iteritems(g.summary())
+        ]
 
         sections = [graph_summary]
 
         # collect other sections
-        results = [(k, _precomputed_field(v)) for k, v in six.iteritems(self._result_fields())]
-        methods = [(k, _precomputed_field(v)) for k, v in six.iteritems(self._method_fields())]
+        results = [
+            (k, _precomputed_field(v)) for k, v in six.iteritems(self._result_fields())
+        ]
+        methods = [
+            (k, _precomputed_field(v)) for k, v in six.iteritems(self._method_fields())
+        ]
         settings = [(k, v) for k, v in six.iteritems(self._setting_fields())]
         metrics = [(k, v) for k, v in six.iteritems(self._metric_fields())]
 
-        optional_sections = [('Results', results), ('Settings', settings), \
-                                ('Metrics', metrics), ('Methods', methods)]
+        optional_sections = [
+            ("Results", results),
+            ("Settings", settings),
+            ("Metrics", metrics),
+            ("Methods", methods),
+        ]
 
         # if section is not empty, append to summary structure
         for (title, section) in optional_sections:
@@ -131,16 +141,23 @@ class GraphAnalyticsModel(CustomModel):
 
     def __repr__(self):
 
-        descriptions = [(k, _precomputed_field(v)) for k, v in six.iteritems(self._describe_fields())]
+        descriptions = [
+            (k, _precomputed_field(v))
+            for k, v in six.iteritems(self._describe_fields())
+        ]
 
         (sections, section_titles) = self._get_summary_struct()
         non_empty_sections = [s for s in sections if len(s) > 0]
-        non_empty_section_titles = [section_titles[i] for i in range(len(sections)) if len(sections[i]) > 0]
+        non_empty_section_titles = [
+            section_titles[i] for i in range(len(sections)) if len(sections[i]) > 0
+        ]
 
-        non_empty_section_titles.append('Queryable Fields')
+        non_empty_section_titles.append("Queryable Fields")
         non_empty_sections.append(descriptions)
 
-        return _toolkit_repr_print(self, non_empty_sections, non_empty_section_titles, width=40)
+        return _toolkit_repr_print(
+            self, non_empty_sections, non_empty_section_titles, width=40
+        )
 
     def __str__(self):
         return self.__repr__()
@@ -164,11 +181,11 @@ class GraphAnalyticsModel(CustomModel):
         Return results information
         Fields should NOT be wrapped by _precomputed_field
         """
-        return {'graph': "SGraph. See m['graph']"}
+        return {"graph": "SGraph. See m['graph']"}
 
     def _metric_fields(self):
         """
         Return model fields related to training metric
         Fields SHOULD be wrapped by _precomputed_field, if necessary
         """
-        return {'training time (secs)': 'training_time'}
+        return {"training time (secs)": "training_time"}

@@ -22,15 +22,38 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-__all__ = ['tf_idf', 'bm25', 'stop_words', 'count_words',
-           'count_ngrams', 'random_split', 'parse_sparse',
-           'parse_docword', 'tokenize', 'drop_words','split_by_sentence',
-           'extract_parts_of_speech']
+__all__ = [
+    "tf_idf",
+    "bm25",
+    "stop_words",
+    "count_words",
+    "count_ngrams",
+    "random_split",
+    "parse_sparse",
+    "parse_docword",
+    "tokenize",
+    "drop_words",
+    "split_by_sentence",
+    "extract_parts_of_speech",
+]
+
+
 def __dir__():
-  return ['tf_idf', 'bm25', 'stop_words', 'count_words',
-          'count_ngrams', 'random_split', 'parse_sparse',
-          'parse_docword', 'tokenize', 'drop_words', 'split_by_sentence',
-          'extract_parts_of_speech']
+    return [
+        "tf_idf",
+        "bm25",
+        "stop_words",
+        "count_words",
+        "count_ngrams",
+        "random_split",
+        "parse_sparse",
+        "parse_docword",
+        "tokenize",
+        "drop_words",
+        "split_by_sentence",
+        "extract_parts_of_speech",
+    ]
+
 
 from ._util import tf_idf
 from ._util import bm25

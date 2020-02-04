@@ -6,9 +6,11 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import sys
 import os
-from os.path import split, abspath, join
+from os.path import split, abspath
+
 
 def get_main_dir():
     script_path = abspath(sys.modules[__name__].__file__)
@@ -17,9 +19,8 @@ def get_main_dir():
     return main_dir
 
 
-def setup_environment(info_log_function = None, error_log_function = None):
-
-    def _write_log(s, error = False):
+def setup_environment(info_log_function=None, error_log_function=None):
+    def _write_log(s, error=False):
         if error:
             if error_log_function is None:
                 print(s)
@@ -58,7 +59,6 @@ def setup_environment(info_log_function = None, error_log_function = None):
     os.environ["MKL_DOMAIN_NUM_THREADS"] = "1"
     os.environ["NUMBA_NUM_THREADS"] = "1"
 
-
     ########################################
     # Now, import thnigs
 
@@ -68,7 +68,7 @@ def setup_environment(info_log_function = None, error_log_function = None):
 
     ########################################
     # Finally, set the dll load path if we are on windows
-    if sys.platform == 'win32':
+    if sys.platform == "win32":
 
         import ctypes
         import ctypes.wintypes as wintypes
@@ -90,13 +90,16 @@ def setup_environment(info_log_function = None, error_log_function = None):
         # folder so windows attempts to load all DLLs from this
         # directory.
         try:
-            kernel32 = ctypes.WinDLL('kernel32', use_last_error=True)
+            kernel32 = ctypes.WinDLL("kernel32", use_last_error=True)
             kernel32.SetDllDirectoryW.errcheck = errcheck_bool
             kernel32.SetDllDirectoryW.argtypes = (wintypes.LPCWSTR,)
             kernel32.SetDllDirectoryW(lib_path)
         except Exception as e:
-            _write_log("Error setting DLL load orders: %s (things may still work).\n"
-                       % str(e), error = True)
+            _write_log(
+                "Error setting DLL load orders: %s (things may still work).\n" % str(e),
+                error=True,
+            )
+
 
 if __name__ == "__main__":
 
@@ -116,7 +119,7 @@ if __name__ == "__main__":
     _write_out_file_name = os.environ.get("TURI_LAMBDA_WORKER_LOG_FILE", "")
     _write_out_file = None
 
-    def _write_log(s, error = False):
+    def _write_log(s, error=False):
         s = s + "\n"
 
         if error:
@@ -154,17 +157,23 @@ if __name__ == "__main__":
         try:
             _write_out_file = open(_write_out_file_name, "w")
         except Exception as e:
-            _write_log("Error opening '%s' for write: %s" % (_write_out_file_name, repr(e)))
+            _write_log(
+                "Error opening '%s' for write: %s" % (_write_out_file_name, repr(e))
+            )
             _write_out_file = None
 
     for s in sys.argv:
         _write_log("Lambda worker args: \n  %s" % ("\n  ".join(sys.argv)))
 
     if dry_run:
-        print("PyLambda script called with no IPC information; entering diagnostic mode.")
+        print(
+            "PyLambda script called with no IPC information; entering diagnostic mode."
+        )
 
-    setup_environment(info_log_function = _write_log,
-                      error_log_function = lambda s: _write_log(s, error=True))
+    setup_environment(
+        info_log_function=_write_log,
+        error_log_function=lambda s: _write_log(s, error=True),
+    )
 
     ############################################################
     # Load in the cython lambda workers.  On import, this will resolve
@@ -174,8 +183,12 @@ if __name__ == "__main__":
 
     main_dir = get_main_dir()
 
-    default_loglevel = 5  # 5: LOG_WARNING, 4: LOG_PROGRESS  3: LOG_EMPH  2: LOG_INFO  1: LOG_DEBUG
-    dryrun_loglevel = 1  # 5: LOG_WARNING, 4: LOG_PROGRESS  3: LOG_EMPH  2: LOG_INFO  1: LOG_DEBUG
+    default_loglevel = (
+        5  # 5: LOG_WARNING, 4: LOG_PROGRESS  3: LOG_EMPH  2: LOG_INFO  1: LOG_DEBUG
+    )
+    dryrun_loglevel = (
+        1  # 5: LOG_WARNING, 4: LOG_PROGRESS  3: LOG_EMPH  2: LOG_INFO  1: LOG_DEBUG
+    )
 
     if not dry_run:
         # This call only returns after the parent process is done.

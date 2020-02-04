@@ -9,8 +9,9 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-import turicreate.toolkits._main as _main
-from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.toolkits.graph_analytics._model_base import (
+    GraphAnalyticsModel as _ModelBase,
+)
 
 
 class ConnectedComponentsModel(_ModelBase):
@@ -44,8 +45,9 @@ class ConnectedComponentsModel(_ModelBase):
     --------
     create
     """
+
     def __init__(self, model):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model
         self.__model_name__ = self.__class__._native_name()
 
@@ -57,16 +59,16 @@ class ConnectedComponentsModel(_ModelBase):
         return "connected_components"
 
     def _get_native_state(self):
-        return {'model':self.__proxy__}
+        return {"model": self.__proxy__}
 
     @classmethod
     def _load_version(cls, state, version):
-        assert(version == 0)
-        return cls(state['model'])
+        assert version == 0
+        return cls(state["model"])
 
     def _result_fields(self):
         ret = super(ConnectedComponentsModel, self)._result_fields()
-        ret["number of connected components"] = len(self['component_size'])
+        ret["number of connected components"] = len(self["component_size"])
         ret["component size"] = "SFrame. See m['component_size']"
         ret["vertex component id"] = "SFrame. See m['component_id']"
         return ret
@@ -134,5 +136,6 @@ def create(graph, verbose=True):
 
     with QuietProgress(verbose):
         params = _tc.extensions._toolkits.graph.connected_components.create(
-            {'graph': graph.__proxy__})
-    return ConnectedComponentsModel(params['model'])
+            {"graph": graph.__proxy__}
+        )
+    return ConnectedComponentsModel(params["model"])

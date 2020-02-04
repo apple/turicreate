@@ -9,8 +9,9 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-import turicreate.toolkits._main as _main
-from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.toolkits.graph_analytics._model_base import (
+    GraphAnalyticsModel as _ModelBase,
+)
 
 
 class KcoreModel(_ModelBase):
@@ -51,8 +52,9 @@ class KcoreModel(_ModelBase):
     --------
     create
     """
+
     def __init__(self, model):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model
         self.__model_name__ = self.__class__._native_name()
 
@@ -63,8 +65,8 @@ class KcoreModel(_ModelBase):
 
     def _setting_fields(self):
         ret = super(KcoreModel, self)._setting_fields()
-        ret['minimum core id assigned to any vertex'] = 'kmin'
-        ret['maximum core id assigned to any vertex '] = 'kmax'
+        ret["minimum core id assigned to any vertex"] = "kmin"
+        ret["maximum core id assigned to any vertex "] = "kmax"
         return ret
 
     def _get_version(self):
@@ -75,12 +77,12 @@ class KcoreModel(_ModelBase):
         return "kcore"
 
     def _get_native_state(self):
-        return {'model':self.__proxy__}
+        return {"model": self.__proxy__}
 
     @classmethod
     def _load_version(cls, state, version):
-        assert(version == 0)
-        return cls(state['model'])
+        assert version == 0
+        return cls(state["model"])
 
 
 def create(graph, kmin=0, kmax=10, verbose=True):
@@ -140,11 +142,11 @@ def create(graph, kmin=0, kmax=10, verbose=True):
     from turicreate._cython.cy_server import QuietProgress
 
     if not isinstance(graph, _SGraph):
-        raise TypeError('graph input must be a SGraph object.')
+        raise TypeError("graph input must be a SGraph object.")
 
-    opts = {'graph': graph.__proxy__, 'kmin': kmin, 'kmax': kmax}
+    opts = {"graph": graph.__proxy__, "kmin": kmin, "kmax": kmax}
 
     with QuietProgress(verbose):
         params = _tc.extensions._toolkits.graph.kcore.create(opts)
 
-    return KcoreModel(params['model'])
+    return KcoreModel(params["model"])

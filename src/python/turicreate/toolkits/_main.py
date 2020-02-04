@@ -52,12 +52,12 @@ def run(toolkit_name, options, verbose=True, show_progress=False):
         Raises RuntimeError if the server fail executing the toolkit.
     """
     unity = glconnect.get_unity()
-    if (not verbose):
+    if not verbose:
         glconnect.get_server().set_log_progress(False)
 
     (success, message, params) = unity.run_toolkit(toolkit_name, options)
 
-    if (len(message) > 0):
+    if len(message) > 0:
         logging.getLogger(__name__).error("Toolkit error: " + message)
 
     # set the verbose level back to default

@@ -496,10 +496,12 @@ std::tuple<float, float> drawing_classifier::compute_validation_metrics(
 
     // Submit the batch to the neural net model.
     std::map<std::string, shared_float_array> results =
-        training_model_->predict({{"input", result_batch.data_info.drawings},
-                                  {"labels", result_batch.data_info.targets},
-                                  {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
-                                });
+        training_model_->predict(
+            {{"input", result_batch.data_info.drawings},
+             {"labels", result_batch.data_info.targets},
+             {"weights", result_batch.data_info.weights},
+             {"num_samples",
+              shared_float_array::wrap(result_batch.data_info.num_samples)}});
 
     result_batch.loss_info = results.at("loss");
     result_batch.output_info = results.at("output");
@@ -562,6 +564,7 @@ void drawing_classifier::iterate_training(bool show_loss) {
     std::map<std::string, shared_float_array> results =
         training_model_->train({{"input", result_batch.data_info.drawings},
                                 {"labels", result_batch.data_info.targets},
+                                {"weights", result_batch.data_info.weights},
                                 {"num_samples", shared_float_array::wrap(result_batch.data_info.num_samples)}
                               });
     result_batch.output_info = results.at("output");
@@ -756,9 +759,8 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
       pending_batches.pop();
 
       size_t num_images = batch.data_info.num_samples;
-      ASSERT_EQ(num_images * num_classes, batch.data_info.predictions.size());
-
       auto output_itr = batch.data_info.predictions.data();
+      
       for (size_t ii = 0; ii < num_images; ++ii) {
         std::copy(output_itr, output_itr + num_classes, preds.begin());
         output_itr += num_classes;
@@ -795,6 +797,18 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
   return writer.close();
 }
 
+gl_sarray drawing_classifier::get_predictions_class(
+    const gl_sarray& predictions_prob, const flex_list& class_labels) {
+  auto max_prob_label = [=](const flexible_type& ft) {
+    const flex_vec& prob_vec = ft.get<flex_vec>();
+    auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
+    return class_labels[max_it - prob_vec.begin()];
+  };
+
+  return predictions_prob.apply(max_prob_label,
+                                class_labels.front().get_type());
+}
+
 gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   // by default, it should be "probability" if the value is
   // passed in through python client
@@ -819,13 +833,7 @@ gl_sarray drawing_classifier::predict(gl_sframe data, std::string output_type) {
   gl_sarray result = predictions["preds"];
   if (output_type == "class") {
     flex_list class_labels = read_state<flex_list>("classes");
-    auto max_prob_label = [=](const flexible_type& ft) {
-      const flex_vec& prob_vec = ft.get<flex_vec>();
-      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
-      return class_labels[max_it - prob_vec.begin()];
-    };
-
-    result = result.apply(max_prob_label, class_labels.front().get_type());
+    result = get_predictions_class(result, class_labels);
 
   } else if (output_type == "probability") {
     /** The output_type="probability" is to provide the probability of the True
@@ -947,13 +955,8 @@ variant_map_type drawing_classifier::evaluate(gl_sframe data,
   gl_sarray predictions_prob = predict(data, "probability_vector");
 
   flex_list class_labels = read_state<flex_list>("classes");
-    auto max_prob_label = [=](const flexible_type& ft) {
-      const flex_vec& prob_vec = ft.get<flex_vec>();
-      auto max_it = std::max_element(prob_vec.begin(), prob_vec.end());
-      return class_labels[max_it - prob_vec.begin()];
-    };
-
-  gl_sarray predictions_class = predictions_prob.apply(max_prob_label, class_labels.front().get_type());
+  gl_sarray predictions_class =
+      get_predictions_class(predictions_prob, class_labels);
 
   variant_map_type result = evaluation::compute_classifier_metrics(
       data, read_state<flex_string>("target"), metric, predictions_prob,

@@ -17,7 +17,7 @@ from . import _internal_utils
 _NoneType = type(None)
 
 
-_fit_examples_doc = '''
+_fit_examples_doc = """
             >>> import turicreate as tc
 
             # Create the data
@@ -36,9 +36,9 @@ _fit_examples_doc = '''
             # features.
             >>> encoder['features']
             [string, string2]
-'''
+"""
 
-_fit_transform_examples_doc = '''
+_fit_transform_examples_doc = """
             >>> import turicreate as tc
 
             # Create the data
@@ -83,9 +83,9 @@ _fit_transform_examples_doc = '''
             | [sentence, two...] | [One, Two, THREE] |
             +--------------------+-------------------+
             [2 rows x 2 columns]
-'''
+"""
 
-_transform_examples_doc = '''
+_transform_examples_doc = """
             >>> import turicreate as tc
 
             # Create the data
@@ -112,10 +112,11 @@ _transform_examples_doc = '''
             | [sentence, two...] | [One, Two, THREE] |
             +--------------------+-------------------+
             [2 rows x 2 columns]
-'''
+"""
+
 
 class Tokenizer(Transformer):
-    '''
+    """
     __init__(features=None, excluded_features=None,
         to_lower=False, delimiters=["\\\\r", "\\\\v", "\\\\n", "\\\\f", "\\\\t", " "],
         output_column_prefix=None)
@@ -252,18 +253,25 @@ class Tokenizer(Transformer):
         >>> tokenizer['features']  # `features` are set to `None`
 
 
-    '''
+    """
 
     _fit_examples_doc = _fit_examples_doc
     _transform_examples_doc = _transform_examples_doc
     _fit_transform_examples_doc = _fit_transform_examples_doc
 
-    def __init__(self, features=None, excluded_features=None,
-        to_lower=False, delimiters=["\r", "\v", "\n", "\f", "\t", " "],
-        output_column_prefix=None):
+    def __init__(
+        self,
+        features=None,
+        excluded_features=None,
+        to_lower=False,
+        delimiters=["\r", "\v", "\n", "\f", "\t", " "],
+        output_column_prefix=None,
+    ):
 
         # Process and make a copy of the features, exclude.
-        _features, _exclude = _internal_utils.process_features(features, excluded_features)
+        _features, _exclude = _internal_utils.process_features(
+            features, excluded_features
+        )
 
         # Type checking
         _raise_error_if_not_of_type(features, [list, str, _NoneType])
@@ -275,22 +283,22 @@ class Tokenizer(Transformer):
         if delimiters is not None:
             for delim in delimiters:
                 _raise_error_if_not_of_type(delim, str, "delimiters")
-                if (len(delim) != 1):
+                if len(delim) != 1:
                     raise ValueError("Delimiters must be single-character strings")
 
         # Set up options
         opts = {
-          'features': features,
-          'to_lower': to_lower,
-          'delimiters': delimiters,
-          'output_column_prefix' : output_column_prefix
+            "features": features,
+            "to_lower": to_lower,
+            "delimiters": delimiters,
+            "output_column_prefix": output_column_prefix,
         }
         if _exclude:
-            opts['exclude'] = True
-            opts['features'] = _exclude
+            opts["exclude"] = True
+            opts["features"] = _exclude
         else:
-            opts['exclude'] = False
-            opts['features'] = _features
+            opts["exclude"] = False
+            opts["features"] = _features
 
         # Initialize object
         proxy = _tc.extensions._Tokenizer()
@@ -315,15 +323,16 @@ class Tokenizer(Transformer):
               The order matches that of the 'sections' object.
         """
         _features = _precomputed_field(
-            _internal_utils.pretty_print_list(self.get('features')))
+            _internal_utils.pretty_print_list(self.get("features"))
+        )
 
         fields = [
             ("Features", _features),
-            ("Convert strings to lower case", 'to_lower'),
+            ("Convert strings to lower case", "to_lower"),
             ("Delimiters", "delimiters"),
-            ("Output column prefix", 'output_column_prefix')
+            ("Output column prefix", "output_column_prefix"),
         ]
-        section_titles = ['Model fields']
+        section_titles = ["Model fields"]
 
         return ([fields], section_titles)
 
@@ -333,6 +342,6 @@ class Tokenizer(Transformer):
 
     @classmethod
     def _get_instance_and_data(self):
-        sf = _tc.SFrame({'docs': ["this is a test", "this is another test"]})
-        encoder = Tokenizer('docs')
+        sf = _tc.SFrame({"docs": ["this is a test", "this is another test"]})
+        encoder = Tokenizer("docs")
         return encoder.fit(sf), sf

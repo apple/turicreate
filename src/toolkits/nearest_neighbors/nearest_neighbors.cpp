@@ -318,6 +318,34 @@ void nearest_neighbors_model::train(const sframe& X,
   train(X, ref_labels, composite_distance_params, opts);
 }
 
+void nearest_neighbors_model::populate_distance_for_summary_struct(
+    const std::vector<dist_component_type>& composite_distance_params) {
+  DASSERT_GT(composite_distance_params.size(), 0);
+  /* Each element in composite_distance_params is a dist_component_type,
+   * which is std::tuple<std::vector<std::string>, function_closure_info, double> 
+   * where the first element is a list of features, the second element is the 
+   * distance function to apply, and the third element is the weight.
+   */
+  if (composite_distance_params.size() > 1) {
+    /* There are multiple elements in composite_distance_params, which means 
+     * there are multiple distance functions used across a variety of features,
+     * which confirms that this is a composite distance function
+     */
+    add_or_update_state({
+      {"distance_for_summary_struct", "composite"}
+    });
+  } else {
+    /* There is one element in composite_distance_params with one distance 
+     * function applied across some number of features, so we extract that one
+     * distance function name and report it.
+     */
+    function_closure_info distance_fn = std::get<1>(composite_distance_params[0]);
+    std::string dist_name = extract_distance_function_name(distance_fn);
+    add_or_update_state({
+      {"distance_for_summary_struct", dist_name}
+    });
+  }
+}
 
 void nearest_neighbors_model::train(const sframe& X, const sframe& ref_labels,
                      const std::vector<dist_component_type>& composite_distance_params,
@@ -328,6 +356,8 @@ void nearest_neighbors_model::train(const sframe& X, const sframe& ref_labels,
 
   std::vector<flexible_type> ref_labels_vec (X.num_rows(), flexible_type(0));
   ref_labels.select_column(0)->get_reader()->read_rows(0, X.num_rows(), ref_labels_vec);
+
+  populate_distance_for_summary_struct(composite_distance_params);
   train(X, ref_labels_vec, composite_distance_params, opts);
 }
 

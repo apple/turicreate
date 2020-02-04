@@ -14,16 +14,20 @@ from __future__ import absolute_import as _
 import turicreate as _turicreate
 from turicreate import SFrame as _SFrame
 from turicreate.toolkits.recommender.util import _Recommender
-from array import array as _array
 
 
-def create(item_data, item_id,
-           observation_data = None,
-           user_id = None, target = None,
-           weights = 'auto',
-           similarity_metrics = 'auto',
-           item_data_transform = 'auto',
-           max_item_neighborhood_size = 64, verbose=True):
+def create(
+    item_data,
+    item_id,
+    observation_data=None,
+    user_id=None,
+    target=None,
+    weights="auto",
+    similarity_metrics="auto",
+    item_data_transform="auto",
+    max_item_neighborhood_size=64,
+    verbose=True,
+):
 
     """Create a content-based recommender model in which the similarity
     between the items recommended is determined by the content of
@@ -130,27 +134,37 @@ def create(item_data, item_id,
 
     # item_data is correct type
     if not isinstance(item_data, _SFrame) or item_data.num_rows() == 0:
-        raise TypeError("`item_data` argument must be a non-empty SFrame giving item data to use for similarities.")
+        raise TypeError(
+            "`item_data` argument must be a non-empty SFrame giving item data to use for similarities."
+        )
 
     # Error checking on column names
     item_columns = set(item_data.column_names())
 
     if item_id not in item_columns:
-            raise ValueError("Item column given as 'item_id = %s', but this is not found in `item_data` SFrame."
-                             % item_id)
+        raise ValueError(
+            "Item column given as 'item_id = %s', but this is not found in `item_data` SFrame."
+            % item_id
+        )
 
     # Now, get the set ready to test for other argument issues.
     item_columns.remove(item_id)
 
-    if weights != 'auto':
+    if weights != "auto":
         if type(weights) is not dict:
-            raise TypeError("`weights` parameter must be 'auto' or a dictionary of column "
-                            "names in `item_data` to weight values.")
+            raise TypeError(
+                "`weights` parameter must be 'auto' or a dictionary of column "
+                "names in `item_data` to weight values."
+            )
 
-        bad_columns = [col_name for col_name in item_columns if col_name not in item_columns]
+        bad_columns = [
+            col_name for col_name in item_columns if col_name not in item_columns
+        ]
         if bad_columns:
-            raise ValueError("Columns %s given in weights, but these are not found in item_data."
-                             % ', '.join(bad_columns))
+            raise ValueError(
+                "Columns %s given in weights, but these are not found in item_data."
+                % ", ".join(bad_columns)
+            )
 
         # Now, set any columns not given in the weights column to be
         # weight 0.
@@ -161,11 +175,17 @@ def create(item_data, item_id,
     # Now, check the feature transformer stuff.
 
     # Pass it through a feature transformer.
-    if item_data_transform == 'auto':
-        item_data_transform = _turicreate.toolkits._feature_engineering.AutoVectorizer(excluded_features = [item_id])
+    if item_data_transform == "auto":
+        item_data_transform = _turicreate.toolkits._feature_engineering.AutoVectorizer(
+            excluded_features=[item_id]
+        )
 
-    if not isinstance(item_data_transform, _turicreate.toolkits._feature_engineering.TransformerBase):
-        raise TypeError("item_data_transform must be 'auto' or a valid feature_engineering transformer instance.")
+    if not isinstance(
+        item_data_transform, _turicreate.toolkits._feature_engineering.TransformerBase
+    ):
+        raise TypeError(
+            "item_data_transform must be 'auto' or a valid feature_engineering transformer instance."
+        )
 
     # Transform the input data.
     item_data = item_data_transform.fit_transform(item_data)
@@ -177,9 +197,11 @@ def create(item_data, item_id,
 
     for c in item_columns:
         if item_data[c].dtype is str:
-            item_data[c] = item_data[c].apply(lambda s: {s : 1})
+            item_data[c] = item_data[c].apply(lambda s: {s: 1})
         elif item_data[c].dtype in [float, int]:
-            item_data[c] = (item_data[c] - item_data[c].mean()) / max(item_data[c].std(), 1e-8)
+            item_data[c] = (item_data[c] - item_data[c].mean()) / max(
+                item_data[c].std(), 1e-8
+            )
             gaussian_kernel_metrics.add(c)
 
     if verbose:
@@ -205,7 +227,9 @@ def create(item_data, item_id,
         # back if necessary.
         empty_user = _turicreate.SArray([], dtype=str)
         empty_item = _turicreate.SArray([], dtype=item_data[item_id].dtype)
-        observation_data = _turicreate.SFrame( {user_id : empty_user, item_id : empty_item} )
+        observation_data = _turicreate.SFrame(
+            {user_id: empty_user, item_id: empty_item}
+        )
 
     # Now, work out stuff for the observation_data component
     normalization_factor = 1
@@ -216,43 +240,65 @@ def create(item_data, item_id,
         if weights == "auto":
 
             # TODO: automatically tune this.
-            weights = {col_name : 1 for col_name in item_data.column_names() if col_name != item_id}
+            weights = {
+                col_name: 1
+                for col_name in item_data.column_names()
+                if col_name != item_id
+            }
 
         # Use the abs value here in case users pass in weights with negative values.
         normalization_factor = sum(abs(v) for v in weights.values())
         if normalization_factor == 0:
             raise ValueError("Weights cannot all be set to 0.")
 
-        distance = [([col_name], ("gaussian_kernel" if col_name in gaussian_kernel_metrics else "cosine"), weight)
-                      for col_name, weight in weights.items()]
+        distance = [
+            (
+                [col_name],
+                (
+                    "gaussian_kernel"
+                    if col_name in gaussian_kernel_metrics
+                    else "cosine"
+                ),
+                weight,
+            )
+            for col_name, weight in weights.items()
+        ]
 
     else:
         distance = "cosine"
 
     # Now, build the nearest neighbors model:
-    nn = _turicreate.nearest_neighbors.create(item_data, label=item_id, distance = distance, verbose = verbose)
-    graph = nn.query(item_data, label = item_id, k=max_item_neighborhood_size, verbose = verbose)
-    graph = graph.rename({"query_label" : item_id,
-                          "reference_label" : "similar",
-                          "distance" : "score"}, inplace=True)
+    nn = _turicreate.nearest_neighbors.create(
+        item_data, label=item_id, distance=distance, verbose=verbose
+    )
+    graph = nn.query(
+        item_data, label=item_id, k=max_item_neighborhood_size, verbose=verbose
+    )
+    graph = graph.rename(
+        {"query_label": item_id, "reference_label": "similar", "distance": "score"},
+        inplace=True,
+    )
 
     def process_weights(x):
         return max(-1, min(1, 1 - x / normalization_factor))
 
     graph["score"] = graph["score"].apply(process_weights)
 
-    opts = {'user_id': user_id,
-            'item_id': item_id,
-            'target': target,
-            'similarity_type' : "cosine",
-            'max_item_neighborhood_size' : max_item_neighborhood_size}
+    opts = {
+        "user_id": user_id,
+        "item_id": item_id,
+        "target": target,
+        "similarity_type": "cosine",
+        "max_item_neighborhood_size": max_item_neighborhood_size,
+    }
 
     user_data = _turicreate.SFrame()
-    extra_data = {"nearest_items" : graph}
+    extra_data = {"nearest_items": graph}
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
 
     return ItemContentRecommender(model_proxy)
+
 
 class ItemContentRecommender(_Recommender):
     """A recommender based on the similarity between item content rather
@@ -282,7 +328,7 @@ class ItemContentRecommender(_Recommender):
     """
 
     def __init__(self, model_proxy):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model_proxy
 
     @classmethod

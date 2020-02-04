@@ -9,6 +9,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as np
 
+
 class TensorFlowGPUPolicy(object):
     """
     Suppresses GPU usage within TensorFlow if the Turi Create configuration has
@@ -17,25 +18,28 @@ class TensorFlowGPUPolicy(object):
 
     def start(self):
         import turicreate as tc
+
         self.force_cpu = tc.config.get_num_gpus() == 0
         if self.force_cpu:
             # Setting the environment variable CUDA_VISIBLE_DEVICES appears to
             # be the most reliable way to suppress GPU usage. Set that, but
             # first save the old value so we can restore it when we're done.
             import os
-            if 'CUDA_VISIBLE_DEVICES' in os.environ:
-                self.cuda_visible_devices = os.environ['CUDA_VISIBLE_DEVICES']
+
+            if "CUDA_VISIBLE_DEVICES" in os.environ:
+                self.cuda_visible_devices = os.environ["CUDA_VISIBLE_DEVICES"]
             else:
                 self.cuda_visible_devices = None
-            os.environ['CUDA_VISIBLE_DEVICES'] = ''
+            os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
     def stop(self):
         if self.force_cpu:
             import os
+
             if self.cuda_visible_devices is not None:
-                os.environ['CUDA_VISIBLE_DEVICES'] = self.cuda_visible_devices
-            elif 'CUDA_VISIBLE_DEVICES' in os.environ:
-                del os.environ['CUDA_VISIBLE_DEVICES']
+                os.environ["CUDA_VISIBLE_DEVICES"] = self.cuda_visible_devices
+            elif "CUDA_VISIBLE_DEVICES" in os.environ:
+                del os.environ["CUDA_VISIBLE_DEVICES"]
 
     def __enter__(self):
         self.start()
@@ -43,25 +47,31 @@ class TensorFlowGPUPolicy(object):
     def __exit__(self, exception_type, exception_val, exception_traceback):
         self.stop()
 
+
 def suppress_tensorflow_warnings():
     """
     Suppresses tensorflow warnings
     """
     import os
-    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '1'
+
+    os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
 
     import tensorflow.compat.v1 as _tf
+
     _tf.disable_v2_behavior()
     _tf.logging.set_verbosity(_tf.logging.ERROR)
     _tf.debugging.set_log_device_placement(False)
+
 
 def get_gpu_names():
     """
     Gets the available GPU names.
     """
     import tensorflow as _tf
-    gpu_names = _tf.config.experimental.list_physical_devices('GPU')
+
+    gpu_names = _tf.config.experimental.list_physical_devices("GPU")
     return [str(gpu_name) for gpu_name in gpu_names]
+
 
 def convert_shared_float_array_to_numpy(array):
     """
@@ -80,6 +90,7 @@ def convert_shared_float_array_to_numpy(array):
 
     """
     return np.array(array, copy=False, dtype=np.float32)
+
 
 def convert_conv1d_coreml_to_tf(conv_weights):
     """
@@ -102,6 +113,7 @@ def convert_conv1d_coreml_to_tf(conv_weights):
     conv_weights = np.transpose(conv_weights, (3, 1, 0, 2))
     return np.squeeze(conv_weights, axis=3)
 
+
 def convert_conv2d_coreml_to_tf(conv_weights):
 
     """
@@ -122,7 +134,10 @@ def convert_conv2d_coreml_to_tf(conv_weights):
     conv_weights = np.transpose(conv_weights, (2, 3, 1, 0))
     return conv_weights
 
-def convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o):
+
+def convert_lstm_weight_coreml_to_tf(
+    i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o
+):
     """
     The weights of four gates of LSTM - input, state, forget, output are
     sent separately for input to hidden layer and hidden to hidden layer.
@@ -152,6 +167,7 @@ def convert_lstm_weight_coreml_to_tf(i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h
     lstm = np.concatenate((i2h, h2h), axis=1)
     return np.transpose(lstm)
 
+
 def convert_lstm_bias_coreml_to_tf(h2h_i, h2h_c, h2h_f, h2h_o):
     """
     The biases of four gates of LSTM - input, state, forget, output are
@@ -171,8 +187,9 @@ def convert_lstm_bias_coreml_to_tf(h2h_i, h2h_c, h2h_f, h2h_o):
 
 
     """
-    lstm_bias  = np.concatenate((h2h_i, h2h_c, h2h_f, h2h_o), axis=0)
+    lstm_bias = np.concatenate((h2h_i, h2h_c, h2h_f, h2h_o), axis=0)
     return lstm_bias
+
 
 def convert_dense_coreml_to_tf(dense_weights):
     """
@@ -192,6 +209,7 @@ def convert_dense_coreml_to_tf(dense_weights):
     """
     dense_weights = np.transpose(dense_weights, (1, 0, 2, 3))
     return np.reshape(dense_weights, (dense_weights.shape[0], dense_weights.shape[1]))
+
 
 def convert_conv1d_tf_to_coreml(conv_weights):
     """
@@ -214,6 +232,7 @@ def convert_conv1d_tf_to_coreml(conv_weights):
     conv_weights = np.transpose(conv_weights, (3, 1, 2, 0))
     return conv_weights
 
+
 def convert_conv2d_tf_to_coreml(conv_weights):
     """
     Convolutional weights from TensorFlow in the format [filter_height, filter_width, input_channels, output_channels]
@@ -231,6 +250,7 @@ def convert_conv2d_tf_to_coreml(conv_weights):
     """
     conv_weights = np.transpose(conv_weights, (3, 2, 0, 1))
     return conv_weights
+
 
 def convert_lstm_weight_tf_to_coreml(lstm_weight, split):
     """
@@ -252,7 +272,7 @@ def convert_lstm_weight_tf_to_coreml(lstm_weight, split):
     h2h_gate : [hidden_units, hidden_units]
 
     """
-    lstm_i2h , lstm_h2h = np.split(lstm_weight, [split])
+    lstm_i2h, lstm_h2h = np.split(lstm_weight, [split])
     i2h_i, i2h_c, i2h_f, i2h_o = np.split(lstm_i2h, 4, axis=1)
     h2h_i, h2h_c, h2h_f, h2h_o = np.split(lstm_h2h, 4, axis=1)
     i2h_i = np.transpose(i2h_i)
@@ -264,6 +284,7 @@ def convert_lstm_weight_tf_to_coreml(lstm_weight, split):
     h2h_f = np.transpose(h2h_f)
     h2h_o = np.transpose(h2h_o)
     return i2h_i, i2h_c, i2h_f, i2h_o, h2h_i, h2h_c, h2h_f, h2h_o
+
 
 def convert_lstm_bias_tf_to_coreml(lstm_bias):
     """
@@ -286,6 +307,7 @@ def convert_lstm_bias_tf_to_coreml(lstm_bias):
     h2h_i, h2h_c, h2h_f, h2h_o = np.split(lstm_bias, 4)
     return h2h_i, h2h_c, h2h_f, h2h_o
 
+
 def convert_dense_tf_to_coreml(dense_weights):
     """
     The Dense layer weights from TensorFlow are converted
@@ -303,4 +325,6 @@ def convert_dense_tf_to_coreml(dense_weights):
 
     """
     dense_weights = np.transpose(dense_weights)
-    return np.reshape(dense_weights, (dense_weights.shape[0], dense_weights.shape[1], 1, 1))
+    return np.reshape(
+        dense_weights, (dense_weights.shape[0], dense_weights.shape[1], 1, 1)
+    )

@@ -17,6 +17,7 @@ import turicreate as _tc
 ### Standard distance functions ###
 ### --------------------------- ###
 
+
 def euclidean(x, y):
     """
     Compute the Euclidean distance between two dictionaries or two lists
@@ -58,6 +59,7 @@ def euclidean(x, y):
     """
     return _tc.extensions._distances.euclidean(x, y)
 
+
 def gaussian_kernel(x, y):
     """
     Compute a Gaussian-type distance between two dictionaries or two lists
@@ -98,6 +100,7 @@ def gaussian_kernel(x, y):
     8.774964387392123
     """
     return _tc.extensions._distances.gaussian_kernel(x, y)
+
 
 def squared_euclidean(x, y):
     """
@@ -145,6 +148,7 @@ def squared_euclidean(x, y):
     """
     return _tc.extensions._distances.squared_euclidean(x, y)
 
+
 def manhattan(x, y):
     """
     Compute the Manhattan distance between between two dictionaries or
@@ -188,6 +192,7 @@ def manhattan(x, y):
     13.0
     """
     return _tc.extensions._distances.manhattan(x, y)
+
 
 def cosine(x, y):
     """
@@ -236,6 +241,7 @@ def cosine(x, y):
     """
     return _tc.extensions._distances.cosine(x, y)
 
+
 def levenshtein(x, y):
     """
     Compute the Levenshtein distance between between strings. The
@@ -276,6 +282,7 @@ def levenshtein(x, y):
     2.0
     """
     return _tc.extensions._distances.levenshtein(x, y)
+
 
 def dot_product(x, y):
     """
@@ -321,6 +328,7 @@ def dot_product(x, y):
     0.020833333333333332
     """
     return _tc.extensions._distances.dot_product(x, y)
+
 
 def transformed_dot_product(x, y):
     """
@@ -370,6 +378,7 @@ def transformed_dot_product(x, y):
     """
     return _tc.extensions._distances.transformed_dot_product(x, y)
 
+
 def jaccard(x, y):
     """
     Compute the Jaccard distance between between two dictionaries.
@@ -407,6 +416,7 @@ def jaccard(x, y):
     0.6666666666666667
     """
     return _tc.extensions._distances.jaccard(x, y)
+
 
 def weighted_jaccard(x, y):
     """

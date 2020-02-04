@@ -477,6 +477,19 @@ namespace turi {
     }
   }
 
+  toolkit_function_response_future unity_global::run_toolkit_background(
+      std::string toolkit_name,
+      variant_map_type& _arguments) {
+
+    auto capture_args = std::make_shared<variant_map_type>(_arguments);
+
+    return toolkit_function_response_future(
+        [=]() {
+           return this->run_toolkit(toolkit_name, *capture_args);
+        });
+  }
+
+
   flexible_type unity_global::eval_lambda(const std::string& string, const flexible_type& arg) {
     log_func_entry();
 #ifdef TC_HAS_PYTHON

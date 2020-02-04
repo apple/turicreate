@@ -1,13 +1,12 @@
 #!/bin/bash
 # has to be run from root of the repo
-set -x
-set -e
+set -exo pipefail
 
 if [[ -z $VIRTUALENV ]]; then
   VIRTUALENV=virtualenv
 fi
 
-$VIRTUALENV `pwd`/deps/env
+$VIRTUALENV "$(pwd)"/deps/env
 source deps/env/bin/activate
 
 PYTHON="${PWD}/deps/env/bin/python"
@@ -35,24 +34,31 @@ function linux_patch_sigfpe_handler {
   fi
 }
 
-$PIP install --upgrade "pip>=8.1"
+$PIP install --upgrade "pip"
 $PIP install -r scripts/requirements.txt
+
+# install pre-commit hooks for git
+with_pre_commit=${with_pre_commit:-0}
+if [[ $with_pre_commit -eq 1 ]]; then
+  # install under root
+  $PYTHON -m pre_commit install
+  # TODO: pre-commit-hooks for clang-format
+fi
 
 mkdir -p deps/local/lib
 mkdir -p deps/local/include
 
 pushd deps/local/include
-for f in `ls -d ../../env/include/$PYTHON_FULL_NAME/*`; do
-  ln -Ffs $f
+for f in ../../env/include/"$PYTHON_FULL_NAME"/*; do
+  ln -Ffs "$f" "$(basename "$f")"
 done
 popd
 
 mkdir -p deps/local/bin
 pushd deps/local/bin
-for f in `ls ../../env/bin`; do
-  ln -Ffs $f
+for f in ../../env/bin/*; do
+  ln -Ffs "$f" "$(basename "$f")"
 done
 popd
 
 linux_patch_sigfpe_handler
-

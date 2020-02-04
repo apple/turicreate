@@ -9,30 +9,41 @@ Methods for creating and using a linear regression model.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import turicreate as _turicreate
+
 import turicreate.toolkits._supervised_learning as _sl
-from turicreate.toolkits._supervised_learning import SupervisedLearningModel as \
-                                    _SupervisedLearningModel
-from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
-                                        _toolkit_get_topk_bottomk, \
-                                        _summarize_coefficients, \
-                                        _raise_error_evaluation_metric_is_valid
-from turicreate.toolkits import _coreml_utils
+from turicreate.toolkits._supervised_learning import (
+    SupervisedLearningModel as _SupervisedLearningModel,
+)
+from turicreate.toolkits._internal_utils import (
+    _toolkit_repr_print,
+    _toolkit_get_topk_bottomk,
+    _summarize_coefficients,
+    _raise_error_evaluation_metric_is_valid,
+)
 
 _DEFAULT_SOLVER_OPTIONS = {
-'convergence_threshold': 1e-2,
-'step_size': 1.0,
-'lbfgs_memory_level': 11,
-'max_iterations': 10}
+    "convergence_threshold": 1e-2,
+    "step_size": 1.0,
+    "lbfgs_memory_level": 11,
+    "max_iterations": 10,
+}
 
-def create(dataset, target, features=None, l2_penalty=1e-2, l1_penalty=0.0,
-    solver='auto', feature_rescaling=True,
-    convergence_threshold = _DEFAULT_SOLVER_OPTIONS['convergence_threshold'],
-    step_size = _DEFAULT_SOLVER_OPTIONS['step_size'],
-    lbfgs_memory_level = _DEFAULT_SOLVER_OPTIONS['lbfgs_memory_level'],
-    max_iterations = _DEFAULT_SOLVER_OPTIONS['max_iterations'],
-    validation_set = "auto",
-    verbose=True):
+
+def create(
+    dataset,
+    target,
+    features=None,
+    l2_penalty=1e-2,
+    l1_penalty=0.0,
+    solver="auto",
+    feature_rescaling=True,
+    convergence_threshold=_DEFAULT_SOLVER_OPTIONS["convergence_threshold"],
+    step_size=_DEFAULT_SOLVER_OPTIONS["step_size"],
+    lbfgs_memory_level=_DEFAULT_SOLVER_OPTIONS["lbfgs_memory_level"],
+    max_iterations=_DEFAULT_SOLVER_OPTIONS["max_iterations"],
+    validation_set="auto",
+    verbose=True,
+):
 
     """
     Create a :class:`~turicreate.linear_regression.LinearRegression` to
@@ -272,15 +283,22 @@ def create(dataset, target, features=None, l2_penalty=1e-2, l1_penalty=0.0,
     model_name = "regression_linear_regression"
     solver = solver.lower()
 
-    model = _sl.create(dataset, target, model_name, features=features,
-                        validation_set = validation_set,
-                        solver = solver, verbose = verbose,
-                        l2_penalty=l2_penalty, l1_penalty = l1_penalty,
-                        feature_rescaling = feature_rescaling,
-                        convergence_threshold = convergence_threshold,
-                        step_size = step_size,
-                        lbfgs_memory_level = lbfgs_memory_level,
-                        max_iterations = max_iterations)
+    model = _sl.create(
+        dataset,
+        target,
+        model_name,
+        features=features,
+        validation_set=validation_set,
+        solver=solver,
+        verbose=verbose,
+        l2_penalty=l2_penalty,
+        l1_penalty=l1_penalty,
+        feature_rescaling=feature_rescaling,
+        convergence_threshold=convergence_threshold,
+        step_size=step_size,
+        lbfgs_memory_level=lbfgs_memory_level,
+        max_iterations=max_iterations,
+    )
 
     return LinearRegression(model.__proxy__)
 
@@ -340,6 +358,7 @@ class LinearRegression(_SupervisedLearningModel):
     create
 
     """
+
     def __init__(self, model_proxy):
         self.__proxy__ = model_proxy
         self.__name__ = self.__class__._native_name()
@@ -379,35 +398,36 @@ class LinearRegression(_SupervisedLearningModel):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Number of coefficients', 'num_coefficients'),
-            ('Number of examples', 'num_examples'),
-            ('Number of feature columns', 'num_features'),
-            ('Number of unpacked features', 'num_unpacked_features')]
+            ("Number of coefficients", "num_coefficients"),
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
+        ]
 
-        hyperparam_fields = [
-            ("L1 penalty", 'l1_penalty'),
-            ("L2 penalty", 'l2_penalty')]
+        hyperparam_fields = [("L1 penalty", "l1_penalty"), ("L2 penalty", "l2_penalty")]
 
         solver_fields = [
-            ("Solver", 'solver'),
-            ("Solver iterations", 'training_iterations'),
-            ("Solver status", 'training_solver_status'),
-            ("Training time (sec)", 'training_time')]
+            ("Solver", "solver"),
+            ("Solver iterations", "training_iterations"),
+            ("Solver status", "training_solver_status"),
+            ("Training time (sec)", "training_time"),
+        ]
 
         training_fields = [
-            ("Residual sum of squares", 'training_loss'),
-            ("Training RMSE", 'training_rmse')]
+            ("Residual sum of squares", "training_loss"),
+            ("Training RMSE", "training_rmse"),
+        ]
 
         coefs = self.coefficients
-        top_coefs, bottom_coefs = _toolkit_get_topk_bottomk(coefs,k=5)
+        top_coefs, bottom_coefs = _toolkit_get_topk_bottomk(coefs, k=5)
 
-        (coefs_list, titles_list) = _summarize_coefficients(top_coefs, \
-                                                                    bottom_coefs)
+        (coefs_list, titles_list) = _summarize_coefficients(top_coefs, bottom_coefs)
 
-        return ([model_fields, hyperparam_fields,
-                        solver_fields, training_fields] + coefs_list, \
-                            [ 'Schema', 'Hyperparameters', \
-                            'Training Summary', 'Settings' ] + titles_list )
+        return (
+            [model_fields, hyperparam_fields, solver_fields, training_fields]
+            + coefs_list,
+            ["Schema", "Hyperparameters", "Training Summary", "Settings"] + titles_list,
+        )
 
     def __repr__(self):
         """
@@ -439,13 +459,14 @@ class LinearRegression(_SupervisedLearningModel):
         """
         from turicreate.extensions import _linear_regression_export_as_model_asset
         from turicreate.toolkits import _coreml_utils
+
         display_name = "linear regression"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
-        context = {"class": self.__class__.__name__,
-                   "short_description": short_description,
-                  }
-        context['user_defined'] = _coreml_utils._get_model_metadata(self.__class__.__name__, None)
-
+        context = {
+            "class": self.__class__.__name__,
+            "short_description": short_description,
+        }
+        context["user_defined"] = _coreml_utils._get_model_metadata(self.__class__.__name__, None)
         _linear_regression_export_as_model_asset(self.__proxy__, filename, context)
 
     def _get(self, field):
@@ -514,7 +535,7 @@ class LinearRegression(_SupervisedLearningModel):
         """
         return super(LinearRegression, self)._get(field)
 
-    def predict(self, dataset, missing_value_action='auto'):
+    def predict(self, dataset, missing_value_action="auto"):
         """
         Return target value predictions for ``dataset``, using the trained
         linear regression model. This method can be used to get fitted values
@@ -559,10 +580,11 @@ class LinearRegression(_SupervisedLearningModel):
         >>> results = model.predict(data)
         """
 
-        return super(LinearRegression, self).predict(dataset, missing_value_action=missing_value_action)
+        return super(LinearRegression, self).predict(
+            dataset, missing_value_action=missing_value_action
+        )
 
-
-    def evaluate(self, dataset, metric='auto', missing_value_action='auto'):
+    def evaluate(self, dataset, metric="auto", missing_value_action="auto"):
         r"""Evaluate the model by making target value predictions and comparing
         to actual values.
 
@@ -627,7 +649,7 @@ class LinearRegression(_SupervisedLearningModel):
         >>> results = model.evaluate(data)
         """
 
-        _raise_error_evaluation_metric_is_valid(metric,
-                                          ['auto', 'rmse', 'max_error'])
-        return super(LinearRegression, self).evaluate(dataset, missing_value_action=missing_value_action,
-                                                      metric=metric)
+        _raise_error_evaluation_metric_is_valid(metric, ["auto", "rmse", "max_error"])
+        return super(LinearRegression, self).evaluate(
+            dataset, missing_value_action=missing_value_action, metric=metric
+        )

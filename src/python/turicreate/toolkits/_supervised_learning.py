@@ -14,16 +14,17 @@ import turicreate as _turicreate
 
 from turicreate.toolkits._model import Model
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
-from turicreate.toolkits._internal_utils import _SGraphFromJsonTree
 from turicreate.toolkits._internal_utils import _validate_data
 from turicreate.toolkits._main import ToolkitError
 from turicreate._cython.cy_server import QuietProgress
+
 
 class SupervisedLearningModel(Model):
     """
     Supervised learning module to predict a target variable as a function of
     several feature variables.
     """
+
     def __init__(self, model_proxy=None, name=None):
         self.__proxy__ = model_proxy
         self.__name__ = name
@@ -56,8 +57,9 @@ class SupervisedLearningModel(Model):
         """
         return self.__class__.__name__
 
-    def predict(self, dataset, missing_value_action='auto',
-                output_type='', options={}, **kwargs):
+    def predict(
+        self, dataset, missing_value_action="auto", output_type="", options={}, **kwargs
+    ):
         """
         Return predictions for ``dataset``, using the trained supervised_learning
         model. Predictions are generated as class labels (0 or
@@ -97,26 +99,34 @@ class SupervisedLearningModel(Model):
         out : SArray
             An SArray with model predictions.
         """
-        if missing_value_action == 'auto':
-            missing_value_action = select_default_missing_value_policy(self, 'predict')
+        if missing_value_action == "auto":
+            missing_value_action = select_default_missing_value_policy(self, "predict")
 
         # Low latency path
         if isinstance(dataset, list):
             return self.__proxy__.fast_predict(
-                dataset, missing_value_action, output_type)
+                dataset, missing_value_action, output_type
+            )
         if isinstance(dataset, dict):
             return self.__proxy__.fast_predict(
-                [dataset], missing_value_action, output_type)
+                [dataset], missing_value_action, output_type
+            )
 
         # Batch predictions path
         else:
             _raise_error_if_not_sframe(dataset, "dataset")
 
-            return self.__proxy__.predict(
-                dataset, missing_value_action, output_type)
+            return self.__proxy__.predict(dataset, missing_value_action, output_type)
 
-    def evaluate(self, dataset, metric="auto",
-                 missing_value_action='auto', with_predictions=False, options={}, **kwargs):
+    def evaluate(
+        self,
+        dataset,
+        metric="auto",
+        missing_value_action="auto",
+        with_predictions=False,
+        options={},
+        **kwargs
+    ):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -149,13 +159,13 @@ class SupervisedLearningModel(Model):
         kwargs : dict
             additional options to be passed into prediction
         """
-        if missing_value_action == 'auto':
-            missing_value_action = select_default_missing_value_policy(
-                                                             self, 'evaluate')
+        if missing_value_action == "auto":
+            missing_value_action = select_default_missing_value_policy(self, "evaluate")
 
         _raise_error_if_not_sframe(dataset, "dataset")
         results = self.__proxy__.evaluate(
-            dataset, missing_value_action, metric, with_predictions=with_predictions);
+            dataset, missing_value_action, metric, with_predictions=with_predictions
+        )
         return results
 
     def _training_stats(self):
@@ -196,8 +206,7 @@ class Classifier(SupervisedLearningModel):
     def _native_name(cls):
         return None
 
-
-    def classify(self, dataset, missing_value_action='auto'):
+    def classify(self, dataset, missing_value_action="auto"):
         """
         Return predictions for ``dataset``, using the trained supervised_learning
         model. Predictions are generated as class labels (0 or
@@ -226,8 +235,8 @@ class Classifier(SupervisedLearningModel):
         out : SFrame
             An SFrame with model predictions.
         """
-        if (missing_value_action == 'auto'):
-            missing_value_action = select_default_missing_value_policy(self, 'classify')
+        if missing_value_action == "auto":
+            missing_value_action = select_default_missing_value_policy(self, "classify")
 
         # Low latency path
         if isinstance(dataset, list):
@@ -240,13 +249,23 @@ class Classifier(SupervisedLearningModel):
 
 
 def print_validation_track_notification():
-    print ("PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
-           "          You can set ``validation_set=None`` to disable validation tracking.\n")
+    print(
+        "PROGRESS: Creating a validation set from 5 percent of training data. This may take a while.\n"
+        "          You can set ``validation_set=None`` to disable validation tracking.\n"
+    )
 
 
-def create(dataset, target, model_name, features=None,
-           validation_set='auto', distributed='auto',
-           verbose=True, seed=None, **kwargs):
+def create(
+    dataset,
+    target,
+    model_name,
+    features=None,
+    validation_set="auto",
+    distributed="auto",
+    verbose=True,
+    seed=None,
+    **kwargs
+):
     """
     Create a :class:`~turicreate.toolkits.SupervisedLearningModel`,
 
@@ -294,16 +313,15 @@ def create(dataset, target, model_name, features=None,
     """
 
     # Perform error-checking and trim inputs to specified columns
-    dataset, validation_set = _validate_data(dataset, target, features,
-                                             validation_set)
+    dataset, validation_set = _validate_data(dataset, target, features, validation_set)
 
     # Sample a validation set from the training data if requested
     if isinstance(validation_set, str):
-        assert validation_set == 'auto'
+        assert validation_set == "auto"
         if dataset.num_rows() >= 100:
             if verbose:
                 print_validation_track_notification()
-            dataset, validation_set = dataset.random_split(.95, seed=seed, exact=True)
+            dataset, validation_set = dataset.random_split(0.95, seed=seed, exact=True)
         else:
             validation_set = _turicreate.SFrame()
     elif validation_set is None:
@@ -320,8 +338,9 @@ def create(dataset, target, model_name, features=None,
     return SupervisedLearningModel(model, model_name)
 
 
-def create_classification_with_model_selector(dataset, target, model_selector,
-    features=None, validation_set='auto', verbose=True):
+def create_classification_with_model_selector(
+    dataset, target, model_selector, features=None, validation_set="auto", verbose=True
+):
     """
     Create a :class:`~turicreate.toolkits.SupervisedLearningModel`,
 
@@ -353,14 +372,13 @@ def create_classification_with_model_selector(dataset, target, model_selector,
     """
 
     # Perform error-checking and trim inputs to specified columns
-    dataset, validation_set = _validate_data(dataset, target, features,
-                                             validation_set)
+    dataset, validation_set = _validate_data(dataset, target, features, validation_set)
 
     # Sample the data
     features_sframe = dataset
     if features_sframe.num_rows() > 1e5:
         fraction = 1.0 * 1e5 / features_sframe.num_rows()
-        features_sframe = features_sframe.sample(fraction, seed = 0)
+        features_sframe = features_sframe.sample(fraction, seed=0)
 
     # Get available models for this dataset
     num_classes = len(dataset[target].unique())
@@ -368,54 +386,62 @@ def create_classification_with_model_selector(dataset, target, model_selector,
 
     # Create a validation set
     if isinstance(validation_set, str):
-        if validation_set == 'auto':
+        if validation_set == "auto":
             if dataset.num_rows() >= 100:
                 if verbose:
                     print_validation_track_notification()
-                dataset, validation_set = dataset.random_split(.95, exact=True)
+                dataset, validation_set = dataset.random_split(0.95, exact=True)
             else:
                 validation_set = None
         else:
-            raise TypeError('Unrecognized value for validation_set.')
+            raise TypeError("Unrecognized value for validation_set.")
 
     # Match C++ model names with user model names
-    python_names = {'boosted_trees_classifier': 'BoostedTreesClassifier',
-                    'random_forest_classifier': 'RandomForestClassifier',
-                    'decision_tree_classifier': 'DecisionTreeClassifier',
-                    'classifier_logistic_regression': 'LogisticClassifier',
-                    'classifier_svm': 'SVMClassifier'}
+    python_names = {
+        "boosted_trees_classifier": "BoostedTreesClassifier",
+        "random_forest_classifier": "RandomForestClassifier",
+        "decision_tree_classifier": "DecisionTreeClassifier",
+        "classifier_logistic_regression": "LogisticClassifier",
+        "classifier_svm": "SVMClassifier",
+    }
 
     # Print useful user-facing progress messages
     if verbose:
-        print('PROGRESS: The following methods are available for this type of problem.')
-        print('PROGRESS: ' + ', '.join([python_names[x] for x in selected_model_names]))
+        print("PROGRESS: The following methods are available for this type of problem.")
+        print("PROGRESS: " + ", ".join([python_names[x] for x in selected_model_names]))
         if len(selected_model_names) > 1:
-            print('PROGRESS: The returned model will be chosen according to validation accuracy.')
+            print(
+                "PROGRESS: The returned model will be chosen according to validation accuracy."
+            )
 
     models = {}
     metrics = {}
     for model_name in selected_model_names:
 
         # Fit each of the available models
-        m = create_selected(model_name, dataset, target, features, validation_set, verbose)
+        m = create_selected(
+            model_name, dataset, target, features, validation_set, verbose
+        )
         models[model_name] = m
 
-        if 'validation_accuracy' in m._list_fields():
+        if "validation_accuracy" in m._list_fields():
             metrics[model_name] = m.validation_accuracy
-        elif 'training_accuracy' in m._list_fields():
+        elif "training_accuracy" in m._list_fields():
             metrics[model_name] = m.training_accuracy
 
         # Most models have this.
-        elif 'progress' in m._list_fields():
+        elif "progress" in m._list_fields():
             prog = m.progress
-            validation_column = 'Validation Accuracy'
-            accuracy_column = 'Training Accuracy'
+            validation_column = "Validation Accuracy"
+            accuracy_column = "Training Accuracy"
             if validation_column in prog.column_names():
                 metrics[model_name] = float(prog[validation_column].tail(1)[0])
             else:
                 metrics[model_name] = float(prog[accuracy_column].tail(1)[0])
         else:
-            raise ValueError("Model does not have metrics that can be used for model selection.")
+            raise ValueError(
+                "Model does not have metrics that can be used for model selection."
+            )
 
     # Choose model based on either validation, if available.
     best_model = None
@@ -431,65 +457,67 @@ def create_classification_with_model_selector(dataset, target, model_selector,
     ret = []
     width = 32
     if len(selected_model_names) > 1:
-        ret.append('PROGRESS: Model selection based on validation accuracy:')
-        ret.append('---------------------------------------------')
-        key_str = '{:<{}}: {}'
+        ret.append("PROGRESS: Model selection based on validation accuracy:")
+        ret.append("---------------------------------------------")
+        key_str = "{:<{}}: {}"
         for model_name in selected_model_names:
             name = python_names[model_name]
             row = key_str.format(name, width, str(metrics[model_name]))
             ret.append(row)
-        ret.append('---------------------------------------------')
-        ret.append('Selecting ' + python_names[best_model] + ' based on validation set performance.')
+        ret.append("---------------------------------------------")
+        ret.append(
+            "Selecting "
+            + python_names[best_model]
+            + " based on validation set performance."
+        )
 
     if verbose:
-        print('\nPROGRESS: '.join(ret))
+        print("\nPROGRESS: ".join(ret))
     return models[best_model]
 
-def create_selected(selected_model_name, dataset, target, features,
-                    validation_set='auto', verbose=True):
+
+def create_selected(
+    selected_model_name, dataset, target, features, validation_set="auto", verbose=True
+):
 
     # Create the model
-    model = create(dataset,
+    model = create(
+        dataset,
         target,
         selected_model_name,
         features=features,
         validation_set=validation_set,
-        verbose=verbose)
+        verbose=verbose,
+    )
 
     return wrap_model_proxy(model.__proxy__)
+
 
 def wrap_model_proxy(model_proxy):
     selected_model_name = model_proxy.__class__.__name__
 
     # Return the model
-    if selected_model_name == 'boosted_trees_regression':
-        return _turicreate.boosted_trees_regression.BoostedTreesRegression(\
-            model_proxy)
-    elif selected_model_name == 'random_forest_regression':
-        return _turicreate.random_forest_regression.RandomForestRegression(\
-            model_proxy)
-    elif selected_model_name == 'decision_tree_regression':
-        return _turicreate.decision_tree_classifier.DecisionTreeRegression(\
-            model_proxy)
-    elif selected_model_name == 'regression_linear_regression':
-        return _turicreate.linear_regression.LinearRegression(\
-            model_proxy)
-    elif selected_model_name == 'boosted_trees_classifier':
-        return _turicreate.boosted_trees_classifier.BoostedTreesClassifier(\
-            model_proxy)
-    elif selected_model_name == 'random_forest_classifier':
-        return _turicreate.random_forest_classifier.RandomForestClassifier(\
-            model_proxy)
-    elif selected_model_name == 'decision_tree_classifier':
-        return _turicreate.decision_tree_classifier.DecisionTreeClassifier(\
-            model_proxy)
-    elif selected_model_name == 'classifier_logistic_regression':
-        return _turicreate.logistic_classifier.LogisticClassifier(\
-            model_proxy)
-    elif selected_model_name == 'classifier_svm':
+    if selected_model_name == "boosted_trees_regression":
+        return _turicreate.boosted_trees_regression.BoostedTreesRegression(model_proxy)
+    elif selected_model_name == "random_forest_regression":
+        return _turicreate.random_forest_regression.RandomForestRegression(model_proxy)
+    elif selected_model_name == "decision_tree_regression":
+        return _turicreate.decision_tree_classifier.DecisionTreeRegression(model_proxy)
+    elif selected_model_name == "regression_linear_regression":
+        return _turicreate.linear_regression.LinearRegression(model_proxy)
+    elif selected_model_name == "boosted_trees_classifier":
+        return _turicreate.boosted_trees_classifier.BoostedTreesClassifier(model_proxy)
+    elif selected_model_name == "random_forest_classifier":
+        return _turicreate.random_forest_classifier.RandomForestClassifier(model_proxy)
+    elif selected_model_name == "decision_tree_classifier":
+        return _turicreate.decision_tree_classifier.DecisionTreeClassifier(model_proxy)
+    elif selected_model_name == "classifier_logistic_regression":
+        return _turicreate.logistic_classifier.LogisticClassifier(model_proxy)
+    elif selected_model_name == "classifier_svm":
         return _turicreate.svm_classifier.SVMClassifier(model_proxy)
     else:
         raise ToolkitError("Internal error: Incorrect model returned.")
+
 
 def select_default_missing_value_policy(model, action):
     from .classifier.boosted_trees_classifier import BoostedTreesClassifier
@@ -499,11 +527,16 @@ def select_default_missing_value_policy(model, action):
     from .regression.random_forest_regression import RandomForestRegression
     from .regression.decision_tree_regression import DecisionTreeRegression
 
-    tree_models = [BoostedTreesClassifier, BoostedTreesRegression,
-                   RandomForestClassifier, RandomForestRegression,
-                   DecisionTreeClassifier, DecisionTreeRegression]
+    tree_models = [
+        BoostedTreesClassifier,
+        BoostedTreesRegression,
+        RandomForestClassifier,
+        RandomForestRegression,
+        DecisionTreeClassifier,
+        DecisionTreeRegression,
+    ]
 
-    if (any(isinstance(model, tree_model) for tree_model in tree_models)):
-        return 'none'
+    if any(isinstance(model, tree_model) for tree_model in tree_models):
+        return "none"
     else:
-        return 'impute'
+        return "impute"

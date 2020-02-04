@@ -24,124 +24,157 @@ _NUM_STYLES = 4
 
 def _get_data(feature, num_examples=100):
     from PIL import Image as _PIL_Image
+
     rs = np.random.RandomState(1234)
-    def from_pil_image(pil_img, image_format='png'):
+
+    def from_pil_image(pil_img, image_format="png"):
         # The above didn't work, so as a temporary fix write to temp files
-        if image_format == 'raw':
+        if image_format == "raw":
             image = np.array(pil_img)
             FORMAT_RAW = 2
-            return tc.Image(_image_data=image.tobytes(),
-                            _width=image.shape[1],
-                            _height=image.shape[0],
-                            _channels=image.shape[2],
-                            _format_enum=FORMAT_RAW,
-                            _image_data_size=image.size)
+            return tc.Image(
+                _image_data=image.tobytes(),
+                _width=image.shape[1],
+                _height=image.shape[0],
+                _channels=image.shape[2],
+                _format_enum=FORMAT_RAW,
+                _image_data_size=image.size,
+            )
         else:
-            with tempfile.NamedTemporaryFile(mode='w+b', suffix='.' + image_format) as f:
+            with tempfile.NamedTemporaryFile(
+                mode="w+b", suffix="." + image_format
+            ) as f:
                 pil_img.save(f, format=image_format)
                 return tc.Image(f.name)
 
     images = []
-    FORMATS = ['png', 'jpeg', 'raw']
+    FORMATS = ["png", "jpeg", "raw"]
     for i in range(num_examples):
         # Randomly determine image size (should handle large and small)
         img_shape = tuple(rs.randint(100, 600, size=2)) + (3,)
         img = rs.randint(255, size=img_shape)
 
-        pil_img = _PIL_Image.fromarray(img, mode='RGB')
+        pil_img = _PIL_Image.fromarray(img, mode="RGB")
         # Randomly select image format
         image_format = FORMATS[rs.randint(len(FORMATS))]
         images.append(from_pil_image(pil_img, image_format=image_format))
 
-    data = tc.SFrame({
-            feature: tc.SArray(images),
-    })
+    data = tc.SFrame({feature: tc.SArray(images),})
     return data
 
-class StyleTransferTest(unittest.TestCase):
 
+class StyleTransferTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         """
         The setup class method for the basic test case with all default values.
         """
-        self.style_feature = 'style_feature_name'
-        self.content_feature = 'content_feature_name'
-        self.pre_trained_model = 'resnet-16'
+        self.style_feature = "style_feature_name"
+        self.content_feature = "content_feature_name"
+        self.pre_trained_model = "resnet-16"
 
         ## Create the model
         # Model
         self.style_sf = _get_data(feature=self.style_feature, num_examples=_NUM_STYLES)
         self.content_sf = _get_data(feature=self.content_feature)
         self.num_styles = _NUM_STYLES
-        self.model = tc.style_transfer.create(self.style_sf,
-                                              self.content_sf,
-                                              style_feature=self.style_feature,
-                                              content_feature=self.content_feature,
-                                              max_iterations=1,
-                                              model=self.pre_trained_model)
+        self.model = tc.style_transfer.create(
+            self.style_sf,
+            self.content_sf,
+            style_feature=self.style_feature,
+            content_feature=self.content_feature,
+            max_iterations=1,
+            model=self.pre_trained_model,
+        )
 
     def test_create_with_missing_style_value(self):
-        style_with_none = self.style_sf.append(tc.SFrame({self.style_feature: tc.SArray([None], dtype=tc.Image)}))
+        style_with_none = self.style_sf.append(
+            tc.SFrame({self.style_feature: tc.SArray([None], dtype=tc.Image)})
+        )
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(style_with_none, self.content_sf, style_feature=self.style_feature,
-                                 max_iterations=0)
+            tc.style_transfer.create(
+                style_with_none,
+                self.content_sf,
+                style_feature=self.style_feature,
+                max_iterations=0,
+            )
 
     def test_create_with_missing_content_value(self):
-        content_with_none = self.content_sf.append(tc.SFrame({self.content_feature: tc.SArray([None], dtype=tc.Image)}))
+        content_with_none = self.content_sf.append(
+            tc.SFrame({self.content_feature: tc.SArray([None], dtype=tc.Image)})
+        )
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf, content_with_none, style_feature=self.style_feature,
-                                 max_iterations=0)
+            tc.style_transfer.create(
+                self.style_sf,
+                content_with_none,
+                style_feature=self.style_feature,
+                max_iterations=0,
+            )
 
     def test_create_with_missing_style_feature(self):
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf, self.content_sf, style_feature='wrong_feature',
-                                 max_iterations=1)
-
+            tc.style_transfer.create(
+                self.style_sf,
+                self.content_sf,
+                style_feature="wrong_feature",
+                max_iterations=1,
+            )
 
     def test_create_with_missing_content_feature(self):
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf, self.content_sf, content_feature='wrong_feature',
-                                 max_iterations=1)
+            tc.style_transfer.create(
+                self.style_sf,
+                self.content_sf,
+                content_feature="wrong_feature",
+                max_iterations=1,
+            )
 
     def test_create_with_empty_style_dataset(self):
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf[:0], self.content_sf, max_iterations=1)
+            tc.style_transfer.create(
+                self.style_sf[:0], self.content_sf, max_iterations=1
+            )
 
     def test_create_with_empty_content_dataset(self):
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf, self.content_sf[:0], max_iterations=1)
+            tc.style_transfer.create(
+                self.style_sf, self.content_sf[:0], max_iterations=1
+            )
 
     def test_create_with_incorrect_max_iterations_format_string(self):
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations='dummy_string')
+            tc.style_transfer.create(
+                self.style_sf[:1], self.content_sf[:1], max_iterations="dummy_string"
+            )
 
     def test_create_with_incorrect_max_iterations_format_negative(self):
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=-1)
+            tc.style_transfer.create(
+                self.style_sf[:1], self.content_sf[:1], max_iterations=-1
+            )
 
     def test_create_with_incorrect_max_iterations_format_float(self):
         with self.assertRaises(_ToolkitError):
-            tc.style_transfer.create(self.style_sf[:1], self.content_sf[:1], max_iterations=1.25)
+            tc.style_transfer.create(
+                self.style_sf[:1], self.content_sf[:1], max_iterations=1.25
+            )
 
     def test_create_with_verbose_False(self):
         args = [self.style_sf, self.content_sf]
         kwargs = {
-            'style_feature': self.style_feature,
-            'content_feature': self.content_feature,
-            'max_iterations': 1,
-            'model': self.pre_trained_model
+            "style_feature": self.style_feature,
+            "content_feature": self.content_feature,
+            "max_iterations": 1,
+            "model": self.pre_trained_model,
         }
-        test_util.assert_longer_verbose_logs(
-            tc.style_transfer.create, args, kwargs)
+        test_util.assert_longer_verbose_logs(tc.style_transfer.create, args, kwargs)
 
     def test_stylize_with_verbose_False(self):
         sf = self.content_sf[0:1]
         styles = self._get_valid_style_cases()
         args = [sf]
-        kwargs = {'style': styles[0]}
-        test_util.assert_longer_verbose_logs(
-            self.model.stylize, args, kwargs)
+        kwargs = {"style": styles[0]}
+        test_util.assert_longer_verbose_logs(self.model.stylize, args, kwargs)
 
     def _get_invalid_style_cases(self):
         style_cases = []
@@ -152,9 +185,9 @@ class StyleTransferTest(unittest.TestCase):
         # when style is a int, but index is not within the number of styles
         style_cases.append(self.num_styles + 10)
         # when style is a str, and is empty
-        style_cases.append('')
+        style_cases.append("")
         # when style is a str, and is not within label names
-        style_cases.append('style_image_404')
+        style_cases.append("style_image_404")
 
         return style_cases
 
@@ -182,13 +215,13 @@ class StyleTransferTest(unittest.TestCase):
                 model.stylize(self.content_sf[0:1], style=style)
 
         with self.assertRaises(TypeError):
-                model.stylize('junk value')
+            model.stylize("junk value")
         with self.assertRaises(_ToolkitError):
-                model.stylize(self.content_sf[0:1], style=-1)
+            model.stylize(self.content_sf[0:1], style=-1)
         with self.assertRaises(_ToolkitError):
             model.stylize(self.content_sf[0:1], style=1, max_size=0)
         with self.assertRaises(TypeError):
-            model.stylize(self.content_sf, style=5, batch_size='12')
+            model.stylize(self.content_sf, style=5, batch_size="12")
 
     def test_stylize_success(self):
         sf = self.content_sf[0:1]
@@ -197,9 +230,10 @@ class StyleTransferTest(unittest.TestCase):
 
         for style in styles:
             stylized_out = model.stylize(sf, style=style)
-            feat_name = 'stylized_{}'.format(self.content_feature)
-            self.assertEqual(set(stylized_out.column_names()),
-                  set(["row_id", "style", feat_name]))
+            feat_name = "stylized_{}".format(self.content_feature)
+            self.assertEqual(
+                set(stylized_out.column_names()), set(["row_id", "style", feat_name])
+            )
 
             # Check the structure of the output
             _raise_error_if_not_sframe(stylized_out)
@@ -209,12 +243,17 @@ class StyleTransferTest(unittest.TestCase):
                 num_styles = len(style)
             else:
                 num_styles = 1
-            self.assertEqual(len(stylized_out), len(sf)*num_styles)
+            self.assertEqual(len(stylized_out), len(sf) * num_styles)
 
             # Check if input and output image have the same shape
-            input_size = (sf[self.content_feature][0].width, sf[self.content_feature][0].height)
-            output_size = (stylized_out[0][feat_name].width,
-                           stylized_out[0][feat_name].height)
+            input_size = (
+                sf[self.content_feature][0].width,
+                sf[self.content_feature][0].height,
+            )
+            output_size = (
+                stylized_out[0][feat_name].width,
+                stylized_out[0][feat_name].height,
+            )
             self.assertEqual(input_size, output_size)
 
     def test_single_image(self):
@@ -240,7 +279,7 @@ class StyleTransferTest(unittest.TestCase):
                 model.get_styles(style=style)
 
     def test_get_styles_success(self):
-        style = [0,1,2]
+        style = [0, 1, 2]
         model = self.model
         model_styles = model.get_styles(style=style)
 
@@ -250,13 +289,14 @@ class StyleTransferTest(unittest.TestCase):
 
     def _coreml_python_predict(self, coreml_model, img_fixed):
         from PIL import Image
+
         pil_img = Image.fromarray(img_fixed.pixel_data)
         if _mac_ver() >= (10, 13):
             index_data = np.zeros(self.num_styles)
             index_data[0] = 1
             coreml_output = coreml_model.predict(
-                {self.content_feature: pil_img, 'index': index_data},
-                usesCPUOnly=True)
+                {self.content_feature: pil_img, "index": index_data}, usesCPUOnly=True
+            )
             img = next(iter(coreml_output.values()))
             img = np.asarray(img)
             img = img[..., 0:3]
@@ -265,36 +305,39 @@ class StyleTransferTest(unittest.TestCase):
     def test_export_coreml(self):
         import coremltools
         import platform
+
         model = self.model
         for flexible_shape_on in [True, False]:
-            filename = tempfile.mkstemp('my_style_transfer.mlmodel')[1]
-            model.export_coreml(filename,
-                include_flexible_shape = flexible_shape_on)
+            filename = tempfile.mkstemp("my_style_transfer.mlmodel")[1]
+            model.export_coreml(filename, include_flexible_shape=flexible_shape_on)
 
             ## Metadata test
             coreml_model = coremltools.models.MLModel(filename)
-            self.assertDictEqual({
-                'com.github.apple.turicreate.version': tc.__version__,
-                'com.github.apple.os.platform': platform.platform(),
-                'type': 'style_transfer',
-                'content_feature': self.content_feature,
-                'style_feature': self.style_feature,
-                'model': self.pre_trained_model,
-                'max_iterations': '1',
-                'training_iterations': '1',
-                'num_styles': str(self.num_styles),
-                'version': '1',
-                }, dict(coreml_model.user_defined_metadata)
+            self.assertDictEqual(
+                {
+                    "com.github.apple.turicreate.version": tc.__version__,
+                    "com.github.apple.os.platform": platform.platform(),
+                    "type": "style_transfer",
+                    "content_feature": self.content_feature,
+                    "style_feature": self.style_feature,
+                    "model": self.pre_trained_model,
+                    "max_iterations": "1",
+                    "training_iterations": "1",
+                    "num_styles": str(self.num_styles),
+                    "version": "1",
+                },
+                dict(coreml_model.user_defined_metadata),
             )
-            expected_result = 'Style transfer created by Turi Create (version %s)' \
-                                        % (tc.__version__)
+            expected_result = "Style transfer created by Turi Create (version %s)" % (
+                tc.__version__
+            )
             self.assertEquals(expected_result, coreml_model.short_description)
 
             ## Correctness test
-            if not flexible_shape_on or _mac_ver() >= (10,14):
+            if not flexible_shape_on or _mac_ver() >= (10, 14):
                 coreml_model = coremltools.models.MLModel(filename)
 
-                mac_os_version_threshold = (10,14) if flexible_shape_on else (10,13)
+                mac_os_version_threshold = (10, 14) if flexible_shape_on else (10, 13)
                 if _mac_ver() >= mac_os_version_threshold:
                     img = self.style_sf[0:2][self.style_feature][0]
                     img_fixed = tc.image_analysis.resize(img, 256, 256, 3)
@@ -340,16 +383,16 @@ class StyleTransferTest(unittest.TestCase):
 
     def test_summary_str(self):
         model = self.model
-        self.assertTrue(isinstance(model.summary('str'), str))
+        self.assertTrue(isinstance(model.summary("str"), str))
 
     def test_summary_dict(self):
         model = self.model
-        self.assertTrue(isinstance(model.summary('dict'), dict))
+        self.assertTrue(isinstance(model.summary("dict"), dict))
 
     def test_summary_invalid_input(self):
         model = self.model
         with self.assertRaises(_ToolkitError):
-            model.summary(model.summary('invalid'))
+            model.summary(model.summary("invalid"))
 
         with self.assertRaises(_ToolkitError):
             model.summary(model.summary(0))
@@ -358,21 +401,22 @@ class StyleTransferTest(unittest.TestCase):
             model.summary(model.summary({}))
 
 
-@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, 'Requires CUDA GPU')
+@unittest.skipIf(tc.util._num_available_cuda_gpus() == 0, "Requires CUDA GPU")
 @pytest.mark.gpu
 class StyleTransferGPUTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        self.style_sf = _get_data('image')
-        self.content_sf = _get_data('image')
-
+        self.style_sf = _get_data("image")
+        self.content_sf = _get_data("image")
 
     def test_gpu_save_load_export(self):
         old_num_gpus = tc.config.get_num_gpus()
         gpu_options = set([old_num_gpus, 0, 1])
         for in_gpus in gpu_options:
             tc.config.set_num_gpus(in_gpus)
-            original_model = tc.style_transfer.create(self.style_sf, self.content_sf, max_iterations=1)
+            original_model = tc.style_transfer.create(
+                self.style_sf, self.content_sf, max_iterations=1
+            )
             for out_gpus in gpu_options:
                 with test_util.TempDirectory() as path:
                     original_model.save(path)
@@ -380,6 +424,6 @@ class StyleTransferGPUTest(unittest.TestCase):
                     model = tc.load_model(path)
 
                     with test_util.TempDirectory() as export_path:
-                        model.export_coreml(os.path.join(export_path, 'model.mlmodel'))
+                        model.export_coreml(os.path.join(export_path, "model.mlmodel"))
 
         tc.config.set_num_gpus(old_num_gpus)

@@ -13,7 +13,6 @@ from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits import text_analytics as _text_analytics
-from turicreate.toolkits import _coreml_utils
 
 
 def _BOW_FEATURE_EXTRACTOR(sf, target=None):
@@ -21,7 +20,7 @@ def _BOW_FEATURE_EXTRACTOR(sf, target=None):
     Return an SFrame containing a bag of words representation of each column.
     """
     if isinstance(sf, dict):
-        out = _tc.SArray([sf]).unpack('')
+        out = _tc.SArray([sf]).unpack("")
     elif isinstance(sf, _tc.SFrame):
         out = sf.__copy__()
     else:
@@ -31,9 +30,17 @@ def _BOW_FEATURE_EXTRACTOR(sf, target=None):
             out[f] = _tc.text_analytics.count_words(out[f])
     return out
 
-def create(dataset, target, features = None, drop_stop_words = True,
-           word_count_threshold = 2, method = 'auto', validation_set = 'auto',
-           max_iterations = 10):
+
+def create(
+    dataset,
+    target,
+    features=None,
+    drop_stop_words=True,
+    word_count_threshold=2,
+    method="auto",
+    validation_set="auto",
+    max_iterations=10,
+):
     """
     Create a model that trains a classifier to classify text from a
     collection of documents. The model is a
@@ -106,9 +113,9 @@ def create(dataset, target, features = None, drop_stop_words = True,
     _raise_error_if_not_sframe(dataset, "dataset")
 
     # Validate method.
-    if method == 'auto':
-        method = 'bow-logistic'
-    if method not in ['bow-logistic']:
+    if method == "auto":
+        method = "bow-logistic"
+    if method not in ["bow-logistic"]:
         raise ValueError("Unsupported method provided.")
 
     # Validate dataset
@@ -126,30 +133,36 @@ def create(dataset, target, features = None, drop_stop_words = True,
     if drop_stop_words:
         stop_words = _text_analytics.stop_words()
     for cur_feature in features:
-        train[cur_feature] = _text_analytics.drop_words(train[cur_feature],
-                                                        threshold = word_count_threshold,
-                                                        stop_words = stop_words)
+        train[cur_feature] = _text_analytics.drop_words(
+            train[cur_feature], threshold=word_count_threshold, stop_words=stop_words
+        )
 
     # Check for a validation set.
     if isinstance(validation_set, _tc.SFrame):
         validation_set = feature_extractor(validation_set, target)
 
-    m = _tc.logistic_classifier.create(train,
-                                       target=target,
-                                       features=features,
-                                       l2_penalty=.2,
-                                       max_iterations=max_iterations,
-                                       validation_set=validation_set)
+    m = _tc.logistic_classifier.create(
+        train,
+        target=target,
+        features=features,
+        l2_penalty=0.2,
+        max_iterations=max_iterations,
+        validation_set=validation_set,
+    )
     num_examples = len(dataset)
     model = TextClassifier()
     model.__proxy__.update(
-        {'target':   target,
-         'features': features,
-         'method':   method,
-         'num_examples': num_examples,
-         'num_features': len(features),
-         'classifier': m})
+        {
+            "target": target,
+            "features": features,
+            "method": method,
+            "num_examples": num_examples,
+            "num_features": len(features),
+            "classifier": m,
+        }
+    )
     return model
+
 
 class TextClassifier(_CustomModel):
     _PYTHON_TEXT_CLASSIFIER_MODEL_VERSION = 1
@@ -169,18 +182,22 @@ class TextClassifier(_CustomModel):
 
     def _get_native_state(self):
         import copy
+
         retstate = copy.copy(self.__proxy__.state)
-        retstate['classifier'] = retstate['classifier'].__proxy__
+        retstate["classifier"] = retstate["classifier"].__proxy__
         return retstate
 
     @classmethod
     def _load_version(self, state, version):
-        from turicreate.toolkits.classifier.logistic_classifier import LogisticClassifier
-        state['classifier'] = LogisticClassifier(state['classifier'])
+        from turicreate.toolkits.classifier.logistic_classifier import (
+            LogisticClassifier,
+        )
+
+        state["classifier"] = LogisticClassifier(state["classifier"])
         state = _PythonProxy(state)
         return TextClassifier(state)
 
-    def predict(self, dataset, output_type='class'):
+    def predict(self, dataset, output_type="class"):
         """
         Return predictions for ``dataset``, using the trained model.
 
@@ -219,8 +236,8 @@ class TextClassifier(_CustomModel):
         >>> m.predict(dataset)
 
         """
-        m = self.__proxy__['classifier']
-        target = self.__proxy__['target']
+        m = self.__proxy__["classifier"]
+        target = self.__proxy__["target"]
         f = _BOW_FEATURE_EXTRACTOR
         return m.predict(f(dataset, target), output_type=output_type)
 
@@ -255,8 +272,8 @@ class TextClassifier(_CustomModel):
         >>> output = m.classify(dataset)
 
         """
-        m = self.__proxy__['classifier']
-        target = self.__proxy__['target']
+        m = self.__proxy__["classifier"]
+        target = self.__proxy__["target"]
         f = _BOW_FEATURE_EXTRACTOR
         return m.classify(f(dataset, target))
 
@@ -273,12 +290,14 @@ class TextClassifier(_CustomModel):
 
     def _get_summary_struct(self):
 
-        dataset_fields = [('Number of examples', 'num_examples')]
-        model_fields = [('Target column', 'target'),
-                        ('Features',     'features'),
-                        ('Method',       'method')]
+        dataset_fields = [("Number of examples", "num_examples")]
+        model_fields = [
+            ("Target column", "target"),
+            ("Features", "features"),
+            ("Method", "method"),
+        ]
         sections = [dataset_fields, model_fields]
-        section_titles = ['dataset', 'Model']
+        section_titles = ["dataset", "Model"]
         return sections, section_titles
 
     def __repr__(self):
@@ -287,7 +306,7 @@ class TextClassifier(_CustomModel):
         out = _toolkit_repr_print(self, sections, section_titles, width=width)
         return out
 
-    def evaluate(self, dataset, metric='auto', **kwargs):
+    def evaluate(self, dataset, metric="auto", **kwargs):
         """
         Evaluate the model by making predictions of target values and comparing
         these to actual values.
@@ -326,8 +345,8 @@ class TextClassifier(_CustomModel):
         create, predict, classify
 
         """
-        m = self.__proxy__['classifier']
-        target = self.__proxy__['target']
+        m = self.__proxy__["classifier"]
+        target = self.__proxy__["target"]
         f = _BOW_FEATURE_EXTRACTOR
         test = f(dataset, target)
         return m.evaluate(test, metric, **kwargs)
@@ -336,7 +355,7 @@ class TextClassifier(_CustomModel):
         """
         Get a summary for the underlying classifier.
         """
-        return self.__proxy__['classifier'].summary()
+        return self.__proxy__["classifier"].summary()
 
     def export_coreml(self, filename):
         """
@@ -354,15 +373,17 @@ class TextClassifier(_CustomModel):
         from turicreate.extensions import _logistic_classifier_export_as_model_asset
         from turicreate.toolkits import _coreml_utils
 
-        display_name = 'text classifier'
+        display_name = "text classifier"
         short_description = _coreml_utils._mlmodel_short_description(display_name)
-        context = {'class': self.__class__.__name__,
-                   'short_description': short_description,
-                  }
-        context['user_defined'] = _coreml_utils._get_model_metadata(self.__class__.__name__, None)
+        context = {
+            "class": self.__class__.__name__,
+            "short_description": short_description,
+        }
+        context["user_defined"] = _coreml_utils._get_model_metadata(self.__class__.__name__, None)
 
-        model = self.__proxy__['classifier'].__proxy__
+        model = self.__proxy__["classifier"].__proxy__
         _logistic_classifier_export_as_model_asset(model, filename, context)
+
 
 def _get_str_columns(sf):
     """

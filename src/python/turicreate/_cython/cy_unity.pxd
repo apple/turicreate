@@ -23,6 +23,10 @@ cdef extern from "<model_server/lib/unity_global.hpp>" namespace "turi":
         string message
         variant_map_type params
 
+    cdef cppclass toolkit_function_response_future nogil:
+        toolkit_function_response_future() except +
+        toolkit_function_response_type response() except +
+
     cdef cppclass unity_global nogil:
 
         string get_version() except +
@@ -48,6 +52,8 @@ cdef extern from "<model_server/lib/unity_global.hpp>" namespace "turi":
         void save_model2(string, variant_map_type, string) except +
 
         toolkit_function_response_type run_toolkit(string toolkit_name, variant_map_type arguments) except +
+
+        toolkit_function_response_future run_toolkit_background(string toolkit_name, variant_map_type arguments) except +
 
         # Internal testing APIs
         flexible_type eval_lambda(string, flexible_type) except +
@@ -112,6 +118,8 @@ cdef class UnityGlobalProxy:
     cpdef create_toolkit_class(self, model)
 
     cpdef run_toolkit(self, toolkit_name, object arguments)
+
+    cpdef run_toolkit_background(self, toolkit_name, object arguments)
 
     cpdef save_model(self, model, url, object sidedata=*)
 

@@ -21,6 +21,7 @@ from copy import copy as _copy
 import inspect as _inspect
 import sys as _sys
 
+
 class TransformerChain(_TransformerBase):
     """
     Sequentially apply a list of transforms.
@@ -76,6 +77,7 @@ class TransformerChain(_TransformerBase):
         >>> steps = chain['steps']
         >>> steps = chain['steps_by_name']
     """
+
     _TRANSFORMER_CHAIN_VERSION = 0
 
     def __init__(self, steps):
@@ -135,14 +137,14 @@ class TransformerChain(_TransformerBase):
             init_func = init_func.__func__
 
         fields = _inspect.getargspec(init_func).args
-        fields = fields[1:] # remove self
-        if 'features' in fields:
-            fields.remove('features')
+        fields = fields[1:]  # remove self
+        if "features" in fields:
+            fields.remove("features")
             features = obj.get("features")
             if features is not None:
-                post_repr_string = ' on %s feature(s)' % len(features)
-        if 'excluded_features' in fields:
-            fields.remove('excluded_features')
+                post_repr_string = " on %s feature(s)" % len(features)
+        if "excluded_features" in fields:
+            fields.remove("excluded_features")
 
         # GLC transformers.
         if issubclass(obj.__class__, _Transformer):
@@ -151,9 +153,8 @@ class TransformerChain(_TransformerBase):
 
         # Chains
         elif obj.__class__ == TransformerChain:
-            _step_classes = list(map(lambda x: x.__class__.__name__, obj.get('steps')))
-            _steps = _internal_utils.pretty_print_list(
-                                          _step_classes, 'steps', False)
+            _step_classes = list(map(lambda x: x.__class__.__name__, obj.get("steps")))
+            _steps = _internal_utils.pretty_print_list(_step_classes, "steps", False)
             dict_str_list.append(_steps)
 
         # For user defined transformers.
@@ -161,17 +162,21 @@ class TransformerChain(_TransformerBase):
             for attr in fields:
                 dict_str_list.append("%s=%s" % (attr, obj.__dict__[attr]))
 
-        return "%s(%s)%s" % (obj.__class__.__name__, ", ".join(dict_str_list),
-                             post_repr_string)
+        return "%s(%s)%s" % (
+            obj.__class__.__name__,
+            ", ".join(dict_str_list),
+            post_repr_string,
+        )
 
     def _get_struct_summary(self):
         model_fields = []
         for name, tr in self._transformers:
-            model_fields.append((name,
-                         _precomputed_field(self._compact_class_repr(tr))))
+            model_fields.append(
+                (name, _precomputed_field(self._compact_class_repr(tr)))
+            )
 
         sections = [model_fields]
-        section_titles = ['Steps']
+        section_titles = ["Steps"]
 
         return (sections, section_titles)
 
@@ -183,10 +188,13 @@ class TransformerChain(_TransformerBase):
     def __get_steps_repr__(steps):
         def __repr__(steps):
             for name, tr in self._transformers:
-                model_fields.append((name,
-                             _precomputed_field(self._compact_class_repr(tr))))
-            return _toolkit_repr_print(steps, [model_fields], width=8,
-                                           section_titles = ['Steps'])
+                model_fields.append(
+                    (name, _precomputed_field(self._compact_class_repr(tr)))
+                )
+            return _toolkit_repr_print(
+                steps, [model_fields], width=8, section_titles=["Steps"]
+            )
+
         return __repr__
 
     def _preprocess(self, data):
@@ -197,9 +205,11 @@ class TransformerChain(_TransformerBase):
         for name, step in self._transformers[:-1]:
             transformed_data = step.fit_transform(transformed_data)
             if type(transformed_data) != _tc.SFrame:
-                raise RuntimeError("The transform function in step '%s' did not"
-                    " return an SFrame (got %s instead)." % (name,
-                                            type(transformed_data).__name__))
+                raise RuntimeError(
+                    "The transform function in step '%s' did not"
+                    " return an SFrame (got %s instead)."
+                    % (name, type(transformed_data).__name__)
+                )
         return transformed_data
 
     def fit(self, data):
@@ -303,8 +313,10 @@ class TransformerChain(_TransformerBase):
         for name, step in self._transformers:
             transformed_data = step.transform(transformed_data)
             if type(transformed_data) != _tc.SFrame:
-                raise TypeError("The transform function in step '%s' did not return"
-                        " an SFrame." % name)
+                raise TypeError(
+                    "The transform function in step '%s' did not return"
+                    " an SFrame." % name
+                )
         return transformed_data
 
     def _list_fields(self):

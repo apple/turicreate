@@ -11,6 +11,7 @@ from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from turicreate.toolkits._supervised_learning import select_default_missing_value_policy
 from turicreate.toolkits import _coreml_utils
 
+
 class TreeModelMixin(object):
     """
     Implements common methods among tree models:
@@ -63,7 +64,7 @@ class TreeModelMixin(object):
         """
         return tc.extensions._xgboost_feature_importance(self.__proxy__)
 
-    def extract_features(self, dataset, missing_value_action='auto'):
+    def extract_features(self, dataset, missing_value_action="auto"):
         """
         For each example in the dataset, extract the leaf indices of
         each tree as features.
@@ -114,14 +115,16 @@ class TreeModelMixin(object):
         >>> data['classification_tree_features'] = model.extract_features(data)
         """
         _raise_error_if_not_sframe(dataset, "dataset")
-        if missing_value_action == 'auto':
-            missing_value_action = select_default_missing_value_policy(self,
-                    'extract_features')
+        if missing_value_action == "auto":
+            missing_value_action = select_default_missing_value_policy(
+                self, "extract_features"
+            )
 
         return self.__proxy__.extract_features(dataset, missing_value_action)
 
-    def _extract_features_with_missing(self, dataset, tree_id = 0,
-            missing_value_action = 'auto'):
+    def _extract_features_with_missing(
+        self, dataset, tree_id=0, missing_value_action="auto"
+    ):
         """
         Extract features along with all the missing features associated with
         a dataset.
@@ -155,40 +158,41 @@ class TreeModelMixin(object):
 
         # Extract the features from only one tree.
         sf = dataset
-        sf['leaf_id'] = self.extract_features(dataset, missing_value_action)\
-                             .vector_slice(tree_id)\
-                             .astype(int)
+        sf["leaf_id"] = (
+            self.extract_features(dataset, missing_value_action)
+            .vector_slice(tree_id)
+            .astype(int)
+        )
 
         tree = self._get_tree(tree_id)
         type_map = dict(zip(dataset.column_names(), dataset.column_types()))
 
         def get_missing_features(row):
-            x = row['leaf_id']
+            x = row["leaf_id"]
             path = tree.get_prediction_path(x)
-            missing_id = [] # List of "missing_id" children.
+            missing_id = []  # List of "missing_id" children.
 
             # For each node in the prediction path.
             for p in path:
-                fname = p['feature']
-                idx = p['index']
+                fname = p["feature"]
+                idx = p["index"]
                 f = row[fname]
                 if type_map[fname] in [int, float]:
                     if f is None:
-                        missing_id.append(p['child_id'])
+                        missing_id.append(p["child_id"])
 
                 elif type_map[fname] in [dict]:
                     if f is None:
-                        missing_id.append(p['child_id'])
+                        missing_id.append(p["child_id"])
 
                     if idx not in f:
-                        missing_id.append(p['child_id'])
+                        missing_id.append(p["child_id"])
                 else:
                     pass
             return missing_id
 
-        sf['missing_id'] = sf.apply(get_missing_features, list)
-        return sf[['leaf_id', 'missing_id']]
-
+        sf["missing_id"] = sf.apply(get_missing_features, list)
+        return sf[["leaf_id", "missing_id"]]
 
     def _dump_to_text(self, with_stats):
         """
@@ -206,7 +210,9 @@ class TreeModelMixin(object):
             A table with two columns: feature, count,
             ordered by 'count' in descending order.
         """
-        return tc.extensions._xgboost_dump_model(self.__proxy__, with_stats=with_stats, format='text')
+        return tc.extensions._xgboost_dump_model(
+            self.__proxy__, with_stats=with_stats, format="text"
+        )
 
     def _dump_to_json(self, with_stats):
         """
@@ -225,7 +231,10 @@ class TreeModelMixin(object):
             ordered by 'count' in descending order.
         """
         import json
-        trees_json_str = tc.extensions._xgboost_dump_model(self.__proxy__, with_stats=with_stats, format='json')
+
+        trees_json_str = tc.extensions._xgboost_dump_model(
+            self.__proxy__, with_stats=with_stats, format="json"
+        )
         trees_json = [json.loads(x) for x in trees_json_str]
 
         # To avoid lose precision when using libjson, _dump_model with json format encode
@@ -234,20 +243,25 @@ class TreeModelMixin(object):
         # in little endian
         import struct
         import sys
+
         def hexadecimal_to_float(s):
             if sys.version_info[0] >= 3:
-                return struct.unpack('<f', bytes.fromhex(s))[0] # unpack always return a tuple
+                return struct.unpack("<f", bytes.fromhex(s))[
+                    0
+                ]  # unpack always return a tuple
             else:
-                return struct.unpack('<f', s.decode('hex'))[0] # unpack always return a tuple
+                return struct.unpack("<f", s.decode("hex"))[
+                    0
+                ]  # unpack always return a tuple
 
         for d in trees_json:
-            nodes = d['vertices']
+            nodes = d["vertices"]
             for n in nodes:
-                if 'value_hexadecimal' in n:
-                    n['value'] = hexadecimal_to_float(n['value_hexadecimal'])
+                if "value_hexadecimal" in n:
+                    n["value"] = hexadecimal_to_float(n["value_hexadecimal"])
         return trees_json
 
-    def _get_tree(self, tree_id = 0):
+    def _get_tree(self, tree_id=0):
         """
         A simple pure python wrapper around a single (or ensemble) of Turi
         create decision trees.
@@ -275,6 +289,7 @@ class TreeModelMixin(object):
 
         """
         from . import _decision_tree
+
         return _decision_tree.DecisionTree.from_model(self, tree_id)
 
     def _get_summary_struct(self):
@@ -295,30 +310,31 @@ class TreeModelMixin(object):
               The order matches that of the 'sections' object.
         """
         data_fields = [
-            ('Number of examples', 'num_examples'),
-            ('Number of feature columns', 'num_features'),
-            ('Number of unpacked features', 'num_unpacked_features')]
-        if 'num_classes' in self._list_fields():
-            data_fields.append(('Number of classes', 'num_classes'))
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
+        ]
+        if "num_classes" in self._list_fields():
+            data_fields.append(("Number of classes", "num_classes"))
 
         training_fields = [
-            ("Number of trees", 'num_trees'),
-            ("Max tree depth", 'max_depth'),
-            ("Training time (sec)", 'training_time')]
+            ("Number of trees", "num_trees"),
+            ("Max tree depth", "max_depth"),
+            ("Training time (sec)", "training_time"),
+        ]
 
-        for m in ['accuracy', 'log_loss', 'auc', 'rmse', 'max_error']:
-            if 'training_%s' % m in self._list_fields():
-                training_fields.append(('Training %s' % m, 'training_%s' % m))
-                if 'validation_%s' % m in self._list_fields():
-                    training_fields.append(('Validation %s' % m,
-                                            'validation_%s' % m))
+        for m in ["accuracy", "log_loss", "auc", "rmse", "max_error"]:
+            if "training_%s" % m in self._list_fields():
+                training_fields.append(("Training %s" % m, "training_%s" % m))
+                if "validation_%s" % m in self._list_fields():
+                    training_fields.append(("Validation %s" % m, "validation_%s" % m))
 
         return ([data_fields, training_fields], ["Schema", "Settings"])
 
     def _export_coreml_impl(self, filename, context):
         info = _coreml_utils._get_model_metadata(context['class'], None)
-        if 'user_defined' not in context:
-            context['user_defined'] = info
+        if "user_defined" not in context:
+            context["user_defined"] = info
         else:
-            context['user_defined'].update(info)
+            context["user_defined"].update(info)
         tc.extensions._xgboost_export_as_model_asset(self.__proxy__, filename, context)

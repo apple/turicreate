@@ -7,13 +7,9 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-import time as _time
 import os as _os
 import urllib as _urllib
 import re as _re
-from zipfile import ZipFile as _ZipFile
-import bz2 as _bz2
-import tarfile as _tarfile
 import itertools as _itertools
 import uuid as _uuid
 import datetime as _datetime
@@ -31,18 +27,22 @@ try:
 except ImportError:
     import ConfigParser as _ConfigParser
 
+
 def _convert_slashes(path):
     """
     Converts all windows-style slashes to unix-style slashes
     """
-    return path.replace('\\', '/')
+    return path.replace("\\", "/")
+
 
 def _get_s3_endpoint():
     """
     Returns the current S3 Endpoint"
     """
     import turicreate
-    return turicreate.config.get_runtime_config()['TURI_S3_ENDPOINT']
+
+    return turicreate.config.get_runtime_config()["TURI_S3_ENDPOINT"]
+
 
 def _get_aws_credentials():
     """
@@ -63,11 +63,15 @@ def _get_aws_credentials():
     ('RBZH792CTQPP7T435BGQ', '7x2hMqplWsLpU/qQCN6xAPKcmWo46TlPJXYTvKcv')
     """
 
-    if (not 'AWS_ACCESS_KEY_ID' in _os.environ):
-        raise KeyError('No access key found. Please set the environment variable AWS_ACCESS_KEY_ID.')
-    if (not 'AWS_SECRET_ACCESS_KEY' in _os.environ):
-        raise KeyError('No secret key found. Please set the environment variable AWS_SECRET_ACCESS_KEY.')
-    return (_os.environ['AWS_ACCESS_KEY_ID'], _os.environ['AWS_SECRET_ACCESS_KEY'])
+    if not "AWS_ACCESS_KEY_ID" in _os.environ:
+        raise KeyError(
+            "No access key found. Please set the environment variable AWS_ACCESS_KEY_ID."
+        )
+    if not "AWS_SECRET_ACCESS_KEY" in _os.environ:
+        raise KeyError(
+            "No secret key found. Please set the environment variable AWS_SECRET_ACCESS_KEY."
+        )
+    return (_os.environ["AWS_ACCESS_KEY_ID"], _os.environ["AWS_SECRET_ACCESS_KEY"])
 
 
 def _try_inject_s3_credentials(url):
@@ -76,20 +80,20 @@ def _try_inject_s3_credentials(url):
 
     If s3 url already contains secret key/id pairs, just return as is.
     """
-    assert url.startswith('s3://')
+    assert url.startswith("s3://")
     path = url[5:]
     # Check if the path already contains credentials
-    tokens = path.split(':')
+    tokens = path.split(":")
     # If there are two ':', its possible that we have already injected credentials
     if len(tokens) == 3:
         # Edge case: there are exactly two ':'s in the object key which is a false alarm.
         # We prevent this by checking that '/' is not in the assumed key and id.
-        if ('/' not in tokens[0]) and ('/' not in tokens[1]):
+        if ("/" not in tokens[0]) and ("/" not in tokens[1]):
             return url
 
     # S3 url does not contain secret key/id pair, query the environment variables
     (k, v) = _get_aws_credentials()
-    return 's3://' + k + ':' + v + ':' + path
+    return "s3://" + k + ":" + v + ":" + path
 
 
 def _make_internal_url(url):
@@ -116,7 +120,7 @@ def _make_internal_url(url):
         If a bad url is provided.
     """
     if not url:
-        raise ValueError('Invalid url: %s' % url)
+        raise ValueError("Invalid url: %s" % url)
 
     from .. import _sys_util
     from . import _file_util
@@ -127,22 +131,27 @@ def _make_internal_url(url):
     # Try to split the url into (protocol, path).
     protocol = _file_util.get_protocol(url)
     is_local = False
-    if protocol in ['http', 'https']:
+    if protocol in ["http", "https"]:
         pass
-    elif protocol == 'hdfs':
+    elif protocol == "hdfs":
         if not _sys_util.get_hadoop_class_path():
-            raise ValueError("HDFS URL is not supported because Hadoop not found. Please make hadoop available from PATH or set the environment variable HADOOP_HOME and try again.")
-    elif protocol == 's3':
+            raise ValueError(
+                "HDFS URL is not supported because Hadoop not found. Please make hadoop available from PATH or set the environment variable HADOOP_HOME and try again."
+            )
+    elif protocol == "s3":
         return _try_inject_s3_credentials(url)
-    elif protocol == '':
+    elif protocol == "":
         is_local = True
-    elif (protocol == 'local' or protocol == 'remote'):
+    elif protocol == "local" or protocol == "remote":
         # local and remote are legacy protocol for separate server process
         is_local = True
         # This code assumes local and remote are same machine
-        url = _re.sub(protocol+'://','',url,count=1)
+        url = _re.sub(protocol + "://", "", url, count=1)
     else:
-        raise ValueError('Invalid url protocol %s. Supported url protocols are: local, s3://, https:// and hdfs://' % protocol)
+        raise ValueError(
+            "Invalid url protocol %s. Supported url protocols are: local, s3://, https:// and hdfs://"
+            % protocol
+        )
 
     if is_local:
         url = _os.path.abspath(_os.path.expanduser(url))
@@ -171,7 +180,7 @@ def is_directory_archive(path):
     if not _os.path.isdir(path):
         return False
 
-    ini_path = '/'.join([_convert_slashes(path), 'dir_archive.ini'])
+    ini_path = "/".join([_convert_slashes(path), "dir_archive.ini"])
 
     if not _os.path.exists(ini_path):
         return False
@@ -179,6 +188,7 @@ def is_directory_archive(path):
     if _os.path.isfile(ini_path):
         return True
     return False
+
 
 def get_archive_type(path):
     """
@@ -194,17 +204,18 @@ def get_archive_type(path):
     Returns a string of: sframe, sgraph, raises TypeError for anything else
     """
     if not is_directory_archive(path):
-        raise TypeError('Unable to determine the type of archive at path: %s' % path)
+        raise TypeError("Unable to determine the type of archive at path: %s" % path)
 
     try:
-        ini_path = '/'.join([_convert_slashes(path), 'dir_archive.ini'])
+        ini_path = "/".join([_convert_slashes(path), "dir_archive.ini"])
         parser = _ConfigParser.SafeConfigParser()
         parser.read(ini_path)
 
-        contents = parser.get('metadata', 'contents')
+        contents = parser.get("metadata", "contents")
         return contents
     except Exception as e:
-        raise TypeError('Unable to determine type of archive for path: %s' % path, e)
+        raise TypeError("Unable to determine type of archive for path: %s" % path, e)
+
 
 def crossproduct(d):
     """
@@ -241,31 +252,35 @@ def crossproduct(d):
     """
 
     from .. import SArray
+
     d = [list(zip(list(d.keys()), x)) for x in _itertools.product(*list(d.values()))]
-    sa = [{k:v for (k,v) in x} for x in d]
-    return SArray(sa).unpack(column_name_prefix='')
+    sa = [{k: v for (k, v) in x} for x in d]
+    return SArray(sa).unpack(column_name_prefix="")
 
 
 def get_turicreate_object_type(url):
-    '''
+    """
     Given url where a Turi Create object is persisted, return the Turi
     Create object type: 'model', 'graph', 'sframe', or 'sarray'
-    '''
+    """
     from .._connect import main as _glconnect
+
     ret = _glconnect.get_unity().get_turicreate_object_type(_make_internal_url(url))
 
     # to be consistent, we use sgraph instead of graph here
-    if ret == 'graph':
-        ret = 'sgraph'
+    if ret == "graph":
+        ret = "sgraph"
     return ret
 
 
-def _assert_sframe_equal(sf1,
-                         sf2,
-                         check_column_names=True,
-                         check_column_order=True,
-                         check_row_order=True,
-                         float_column_delta=None):
+def _assert_sframe_equal(
+    sf1,
+    sf2,
+    check_column_names=True,
+    check_column_order=True,
+    check_row_order=True,
+    float_column_delta=None,
+):
     """
     Assert the two SFrames are equal.
 
@@ -304,6 +319,7 @@ def _assert_sframe_equal(sf1,
         float type. Applies to all float columns.
     """
     from .. import SFrame as _SFrame
+
     if (type(sf1) is not _SFrame) or (type(sf2) is not _SFrame):
         raise TypeError("Cannot function on types other than SFrames.")
 
@@ -314,8 +330,12 @@ def _assert_sframe_equal(sf1,
     sf2.materialize()
 
     if sf1.num_columns() != sf2.num_columns():
-        raise AssertionError("Number of columns mismatched: " +
-            str(sf1.num_columns()) + " != " + str(sf2.num_columns()))
+        raise AssertionError(
+            "Number of columns mismatched: "
+            + str(sf1.num_columns())
+            + " != "
+            + str(sf2.num_columns())
+        )
 
     s1_names = sf1.column_names()
     s2_names = sf2.column_names()
@@ -324,13 +344,23 @@ def _assert_sframe_equal(sf1,
     sorted_s2_names = sorted(s2_names)
 
     if check_column_names:
-        if (check_column_order and (s1_names != s2_names)) or (sorted_s1_names != sorted_s2_names):
-            raise AssertionError("SFrame does not have same column names: " +
-                str(sf1.column_names()) + " != " + str(sf2.column_names()))
+        if (check_column_order and (s1_names != s2_names)) or (
+            sorted_s1_names != sorted_s2_names
+        ):
+            raise AssertionError(
+                "SFrame does not have same column names: "
+                + str(sf1.column_names())
+                + " != "
+                + str(sf2.column_names())
+            )
 
     if sf1.num_rows() != sf2.num_rows():
-        raise AssertionError("Number of rows mismatched: " +
-            str(sf1.num_rows()) + " != " + str(sf2.num_rows()))
+        raise AssertionError(
+            "Number of rows mismatched: "
+            + str(sf1.num_rows())
+            + " != "
+            + str(sf2.num_rows())
+        )
 
     if not check_row_order and (sf1.num_rows() > 1):
         sf1 = sf1.sort(s1_names)
@@ -338,9 +368,9 @@ def _assert_sframe_equal(sf1,
 
     names_to_check = None
     if check_column_names:
-      names_to_check = list(zip(sorted_s1_names, sorted_s2_names))
+        names_to_check = list(zip(sorted_s1_names, sorted_s2_names))
     else:
-      names_to_check = list(zip(s1_names, s2_names))
+        names_to_check = list(zip(s1_names, s2_names))
     for i in names_to_check:
         col1 = sf1[i[0]]
         col2 = sf2[i[1]]
@@ -350,99 +380,112 @@ def _assert_sframe_equal(sf1,
         compare_ary = None
         if col1.dtype == float and float_column_delta is not None:
             dt = float_column_delta
-            compare_ary = ((col1 > col2-dt) & (col1 < col2+dt))
+            compare_ary = (col1 > col2 - dt) & (col1 < col2 + dt)
         else:
-            compare_ary = (sf1[i[0]] == sf2[i[1]])
+            compare_ary = sf1[i[0]] == sf2[i[1]]
         if not compare_ary.all():
             count = 0
             for j in compare_ary:
                 if not j:
-                  first_row = count
-                  break
+                    first_row = count
+                    break
                 count += 1
-            raise AssertionError("Columns " + str(i) +
-                " are not equal! First differing element is at row " +
-                str(first_row) + ": " + str((col1[first_row],col2[first_row])))
+            raise AssertionError(
+                "Columns "
+                + str(i)
+                + " are not equal! First differing element is at row "
+                + str(first_row)
+                + ": "
+                + str((col1[first_row], col2[first_row]))
+            )
+
 
 def _get_temp_file_location():
-    '''
+    """
     Returns user specified temporary file location.
     The temporary location is specified through:
 
     >>> turicreate.config.set_runtime_config('TURI_CACHE_FILE_LOCATIONS', ...)
 
-    '''
+    """
     from .._connect import main as _glconnect
+
     unity = _glconnect.get_unity()
     cache_dir = _convert_slashes(unity.get_current_cache_file_location())
     if not _os.path.exists(cache_dir):
         _os.makedirs(cache_dir)
     return cache_dir
 
+
 def _make_temp_directory(prefix):
-    '''
+    """
     Generate a temporary directory that would not live beyond the lifetime of
     unity_server.
 
     Caller is expected to clean up the temp file as soon as the directory is no
     longer needed. But the directory will be cleaned as unity_server restarts
-    '''
+    """
     temp_dir = _make_temp_filename(prefix=str(prefix))
     _os.makedirs(temp_dir)
     return temp_dir
 
+
 def _make_temp_filename(prefix):
-    '''
+    """
     Generate a temporary file that would not live beyond the lifetime of
     unity_server.
 
     Caller is expected to clean up the temp file as soon as the file is no
     longer needed. But temp files created using this method will be cleaned up
     when unity_server restarts
-    '''
+    """
     temp_location = _get_temp_file_location()
-    temp_file_name = '/'.join([temp_location, str(prefix)+str(_uuid.uuid4())])
+    temp_file_name = "/".join([temp_location, str(prefix) + str(_uuid.uuid4())])
     return temp_file_name
 
+
 def _pickle_to_temp_location_or_memory(obj):
-        '''
+    """
         If obj can be serialized directly into memory (via cloudpickle) this
         will return the serialized bytes.
         Otherwise, gl_pickle is attempted and it will then
         generates a temporary directory serializes an object into it, returning
         the directory name. This directory will not have lifespan greater than
         that of unity_server.
-        '''
-        from . import _cloudpickle as cloudpickle
-        try:
-            # try cloudpickle first and see if that works
-            lambda_str = cloudpickle.dumps(obj)
-            return lambda_str
-        except:
-            pass
+        """
+    from . import _cloudpickle as cloudpickle
 
-        # nope. that does not work! lets try again with gl pickle
-        filename = _make_temp_filename('pickle')
-        from .. import _gl_pickle
-        pickler = _gl_pickle.GLPickler(filename)
-        pickler.dump(obj)
-        pickler.close()
-        return filename
+    try:
+        # try cloudpickle first and see if that works
+        lambda_str = cloudpickle.dumps(obj)
+        return lambda_str
+    except:
+        pass
+
+    # nope. that does not work! lets try again with gl pickle
+    filename = _make_temp_filename("pickle")
+    from .. import _gl_pickle
+
+    pickler = _gl_pickle.GLPickler(filename)
+    pickler.dump(obj)
+    pickler.close()
+    return filename
 
 
 def _get_module_from_object(obj):
-    mod_str = obj.__class__.__module__.split('.')[0]
+    mod_str = obj.__class__.__module__.split(".")[0]
     return _sys.modules[mod_str]
+
 
 def _infer_dbapi2_types(cursor, mod_info):
     desc = cursor.description
     result_set_types = [i[1] for i in desc]
-    dbapi2_to_python = [ # a type code can match more than one, so ordered by
-                         # preference (loop short-circuits when it finds a match
-                        (mod_info['DATETIME'], _datetime.datetime),
-                        (mod_info['ROWID'],int),
-                        (mod_info['NUMBER'],float),
-                       ]
+    dbapi2_to_python = [  # a type code can match more than one, so ordered by
+        # preference (loop short-circuits when it finds a match
+        (mod_info["DATETIME"], _datetime.datetime),
+        (mod_info["ROWID"], int),
+        (mod_info["NUMBER"], float),
+    ]
     ret_types = []
 
     # Ugly nested loop because the standard only guarantees that a type code
@@ -461,13 +504,15 @@ def _infer_dbapi2_types(cursor, mod_info):
 
     return ret_types
 
+
 def _pytype_to_printf(in_type):
     if in_type == int:
-        return 'd'
+        return "d"
     elif in_type == float:
-        return 'f'
+        return "f"
     else:
-        return 's'
+        return "s"
+
 
 # Automatic GPU detection
 def _get_cuda_gpus():
@@ -479,30 +524,38 @@ def _get_cuda_gpus():
     - memory_total (float, total memory in MiB)
     """
     import subprocess
+
     try:
-        output = subprocess.check_output(['nvidia-smi',
-                                          '--query-gpu=index,gpu_name,memory.free,memory.total',
-                                          '--format=csv,noheader,nounits'],
-                                         universal_newlines=True)
+        output = subprocess.check_output(
+            [
+                "nvidia-smi",
+                "--query-gpu=index,gpu_name,memory.free,memory.total",
+                "--format=csv,noheader,nounits",
+            ],
+            universal_newlines=True,
+        )
     except OSError:
         return []
     except subprocess.CalledProcessError:
         return []
 
     gpus = []
-    for gpu_line in output.split('\n'):
+    for gpu_line in output.split("\n"):
         if gpu_line:
-            index, gpu_name, memory_free, memory_total = gpu_line.split(', ')
+            index, gpu_name, memory_free, memory_total = gpu_line.split(", ")
             index = int(index)
             memory_free = float(memory_free)
             memory_total = float(memory_total)
-            gpus.append({
-                'index': index,
-                'name': gpu_name,
-                'memory_free': memory_free,
-                'memory_total': memory_total,
-            })
+            gpus.append(
+                {
+                    "index": index,
+                    "name": gpu_name,
+                    "memory_free": memory_free,
+                    "memory_total": memory_total,
+                }
+            )
     return gpus
+
 
 _CUDA_GPUS = _get_cuda_gpus()
 
@@ -517,6 +570,7 @@ def _num_available_gpus():
         return num_cuda
 
     from turicreate.toolkits._mps_utils import has_fast_mps_support
+
     if has_fast_mps_support():
         return 1
 

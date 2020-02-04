@@ -12,7 +12,6 @@ from __future__ import absolute_import as _
 
 import turicreate as _turicreate
 from turicreate.toolkits._model import Model as _Model
-from turicreate.data_structures.sframe import SFrame as _SFrame
 from turicreate.data_structures.sgraph import SGraph as _SGraph
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._private_utils import _validate_row_label
@@ -29,6 +28,7 @@ from turicreate._cython.cy_server import QuietProgress
 import array
 import copy as _copy
 import six as _six
+
 
 def _construct_auto_distance(feature_names, column_names, column_types, sample):
     """
@@ -48,7 +48,9 @@ def _construct_auto_distance(feature_names, column_names, column_types, sample):
 
     for c in feature_names:
         if col_type_dict[c] == str:
-            composite_distance_params.append([[c], _turicreate.distances.levenshtein, 1])
+            composite_distance_params.append(
+                [[c], _turicreate.distances.levenshtein, 1]
+            )
         elif col_type_dict[c] == dict:
             composite_distance_params.append([[c], _turicreate.distances.jaccard, 1])
         elif col_type_dict[c] == array.array:
@@ -61,18 +63,29 @@ def _construct_auto_distance(feature_names, column_names, column_types, sample):
         elif col_type_dict[c] in [int, float, array.array, list]:
             numeric_cols.append(c)
         else:
-            raise TypeError("Unable to automatically determine a distance "+\
-                "for column {}".format(c))
+            raise TypeError(
+                "Unable to automatically determine a distance "
+                + "for column {}".format(c)
+            )
 
     # Make the standalone numeric column distance component
     if len(numeric_cols) > 0:
-        composite_distance_params.append([numeric_cols, _turicreate.distances.euclidean, 1])
+        composite_distance_params.append(
+            [numeric_cols, _turicreate.distances.euclidean, 1]
+        )
 
     return composite_distance_params
 
 
-def create(dataset, label=None, features=None, distance=None, method='auto',
-           verbose=True, **kwargs):
+def create(
+    dataset,
+    label=None,
+    features=None,
+    distance=None,
+    method="auto",
+    verbose=True,
+    **kwargs
+):
     """
     Create a nearest neighbor model, which can be searched efficiently and
     quickly for the nearest neighbors of a query observation. If the `method`
@@ -354,53 +367,57 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
 
     ## Basic validation of the features input
     if features is not None and not isinstance(features, list):
-        raise TypeError("If specified, input 'features' must be a list of " +
-                        "strings.")
+        raise TypeError(
+            "If specified, input 'features' must be a list of " + "strings."
+        )
 
     ## Clean the method options and create the options dictionary
-    allowed_kwargs = ['leaf_size', 'num_tables', 'num_projections_per_table']
+    allowed_kwargs = ["leaf_size", "num_tables", "num_projections_per_table"]
     _method_options = {}
 
     for k, v in kwargs.items():
         if k in allowed_kwargs:
             _method_options[k] = v
         else:
-            raise _ToolkitError("'{}' is not a valid keyword argument".format(k) +
-                                " for the nearest neighbors model. Please " +
-                                "check for capitalization and other typos.")
-
+            raise _ToolkitError(
+                "'{}' is not a valid keyword argument".format(k)
+                + " for the nearest neighbors model. Please "
+                + "check for capitalization and other typos."
+            )
 
     ## Exclude inappropriate combinations of method an distance
-    if method == 'ball_tree' and (distance == 'cosine'
-                                  or distance == _turicreate.distances.cosine
-                                  or distance == _turicreate.distances.dot_product
-                                  or distance == 'transformed_dot_product'
-                                  or distance == _turicreate.distances.transformed_dot_product):
-        raise TypeError("The ball tree method does not work with 'cosine' " +
-                        "or 'transformed_dot_product' distance." +
-                        "Please use the 'brute_force' method for these distances.")
+    if method == "ball_tree" and (
+        distance == "cosine"
+        or distance == _turicreate.distances.cosine
+        or distance == _turicreate.distances.dot_product
+        or distance == "transformed_dot_product"
+        or distance == _turicreate.distances.transformed_dot_product
+    ):
+        raise TypeError(
+            "The ball tree method does not work with 'cosine' "
+            + "or 'transformed_dot_product' distance."
+            + "Please use the 'brute_force' method for these distances."
+        )
 
-
-    if method == 'lsh' and ('num_projections_per_table' not in _method_options):
-        if distance == 'jaccard' or distance == _turicreate.distances.jaccard:
-            _method_options['num_projections_per_table'] = 4
-        elif distance == 'cosine' or distance == _turicreate.distances.cosine:
-            _method_options['num_projections_per_table'] = 16
+    if method == "lsh" and ("num_projections_per_table" not in _method_options):
+        if distance == "jaccard" or distance == _turicreate.distances.jaccard:
+            _method_options["num_projections_per_table"] = 4
+        elif distance == "cosine" or distance == _turicreate.distances.cosine:
+            _method_options["num_projections_per_table"] = 16
         else:
-            _method_options['num_projections_per_table'] = 8
+            _method_options["num_projections_per_table"] = 8
 
     ## Initial validation and processing of the label
     if label is None:
-        _label = _robust_column_name('__id', dataset.column_names())
+        _label = _robust_column_name("__id", dataset.column_names())
         _dataset = dataset.add_row_number(_label)
     else:
         _label = label
         _dataset = _copy.copy(dataset)
 
-    col_type_map = {c:_dataset[c].dtype for c in _dataset.column_names()}
+    col_type_map = {c: _dataset[c].dtype for c in _dataset.column_names()}
     _validate_row_label(_label, col_type_map)
     ref_labels = _dataset[_label]
-
 
     ## Determine the internal list of available feature names (may still include
     #  the row label name).
@@ -409,16 +426,16 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
     else:
         _features = _copy.deepcopy(features)
 
-
     ## Check if there's only one feature and it's the same as the row label.
     #  This would also be trapped by the composite distance validation, but the
     #  error message is not very informative for the user.
     free_features = set(_features).difference([_label])
     if len(free_features) < 1:
-        raise _ToolkitError("The only available feature is the same as the " +
-                            "row label column. Please specify features " +
-                            "that are not also row labels.")
-
+        raise _ToolkitError(
+            "The only available feature is the same as the "
+            + "row label column. Please specify features "
+            + "that are not also row labels."
+        )
 
     ### Validate and preprocess the distance function
     ### ---------------------------------------------
@@ -433,22 +450,23 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
         distance = _copy.deepcopy(distance)
 
     # distance is a single name (except 'auto') or function handle.
-    elif (hasattr(distance, '__call__') or
-        (isinstance(distance, str) and not distance == 'auto')):
+    elif hasattr(distance, "__call__") or (
+        isinstance(distance, str) and not distance == "auto"
+    ):
         distance = [[_features, distance, 1]]
 
     # distance is unspecified and needs to be constructed.
-    elif distance is None or distance == 'auto':
+    elif distance is None or distance == "auto":
         sample = _dataset.head()
-        distance = _construct_auto_distance(_features,
-                                            _dataset.column_names(),
-                                            _dataset.column_types(),
-                                            sample)
+        distance = _construct_auto_distance(
+            _features, _dataset.column_names(), _dataset.column_types(), sample
+        )
 
     else:
-        raise TypeError("Input 'distance' not understood. The 'distance' "
-                        " argument must be a string, function handle, or " +
-                        "composite distance.")
+        raise TypeError(
+            "Input 'distance' not understood. The 'distance' "
+            " argument must be a string, function handle, or " + "composite distance."
+        )
 
     ## Basic composite distance validation, remove the row label from all
     #  feature lists, and convert string distance names into distance functions.
@@ -458,7 +476,12 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
 
     ## Raise an error if any distances are used with non-lists
     list_features_to_check = []
-    sparse_distances = ['jaccard', 'weighted_jaccard', 'cosine', 'transformed_dot_product']
+    sparse_distances = [
+        "jaccard",
+        "weighted_jaccard",
+        "cosine",
+        "transformed_dot_product",
+    ]
     sparse_distances = [_turicreate.distances.__dict__[k] for k in sparse_distances]
     for d in distance:
         feature_names, dist, _ = d
@@ -467,102 +490,123 @@ def create(dataset, label=None, features=None, distance=None, method='auto',
             if dist in sparse_distances:
                 list_features_to_check.append(f)
             else:
-                raise TypeError("The chosen distance cannot currently be used " +
-                                "on list-typed columns.")
+                raise TypeError(
+                    "The chosen distance cannot currently be used "
+                    + "on list-typed columns."
+                )
     for f in list_features_to_check:
         only_str_lists = _validate_lists(_dataset[f], [str])
         if not only_str_lists:
-            raise TypeError("Distances for sparse data, such as jaccard " +
-                            "and weighted_jaccard, can only be used on " +
-                            "lists containing only strings. Please modify " +
-                            "any list features accordingly before creating " +
-                            "the nearest neighbors model.")
+            raise TypeError(
+                "Distances for sparse data, such as jaccard "
+                + "and weighted_jaccard, can only be used on "
+                + "lists containing only strings. Please modify "
+                + "any list features accordingly before creating "
+                + "the nearest neighbors model."
+            )
 
     ## Raise an error if any component has string features are in single columns
     for d in distance:
         feature_names, dist, _ = d
 
         if (len(feature_names) > 1) and (dist == _turicreate.distances.levenshtein):
-            raise ValueError("Levenshtein distance cannot be used with multiple " +
-                             "columns. Please concatenate strings into a single " +
-                             "column before creating the nearest neighbors model.")
+            raise ValueError(
+                "Levenshtein distance cannot be used with multiple "
+                + "columns. Please concatenate strings into a single "
+                + "column before creating the nearest neighbors model."
+            )
 
     ## Get the union of feature names and make a clean dataset.
     clean_features = _get_composite_distance_features(distance)
     sf_clean = _tkutl._toolkits_select_columns(_dataset, clean_features)
-
 
     ## Decide which method to use
     ## - If more than one distance component (specified either directly or
     #  generated automatically because distance set to 'auto'), then do brute
     #  force.
     if len(distance) > 1:
-        _method = 'brute_force'
+        _method = "brute_force"
 
-        if method != 'brute_force' and verbose is True:
-            print("Defaulting to brute force instead of ball tree because " +\
-                "there are multiple distance components.")
+        if method != "brute_force" and verbose is True:
+            print(
+                "Defaulting to brute force instead of ball tree because "
+                + "there are multiple distance components."
+            )
 
     else:
-        if method == 'auto':
+        if method == "auto":
 
             # get the total number of variables. Assume the number of elements in
             # array type columns does not change
-            num_variables = sum([len(x) if hasattr(x, '__iter__') else 1
-                for x in _six.itervalues(sf_clean[0])])
+            num_variables = sum(
+                [
+                    len(x) if hasattr(x, "__iter__") else 1
+                    for x in _six.itervalues(sf_clean[0])
+                ]
+            )
 
             # flag if all the features in the single composite are of numeric
             # type.
-            numeric_type_flag = all([x in [int, float, list, array.array]
-                for x in sf_clean.column_types()])
+            numeric_type_flag = all(
+                [x in [int, float, list, array.array] for x in sf_clean.column_types()]
+            )
 
             ## Conditions necessary for ball tree to work and be worth it
-            if ((distance[0][1] in ['euclidean',
-                                    'manhattan',
-                                    _turicreate.distances.euclidean,
-                                    _turicreate.distances.manhattan])
-                    and numeric_type_flag is True
-                    and num_variables <= 200):
+            if (
+                (
+                    distance[0][1]
+                    in [
+                        "euclidean",
+                        "manhattan",
+                        _turicreate.distances.euclidean,
+                        _turicreate.distances.manhattan,
+                    ]
+                )
+                and numeric_type_flag is True
+                and num_variables <= 200
+            ):
 
-                    _method = 'ball_tree'
+                _method = "ball_tree"
 
             else:
-                _method = 'brute_force'
+                _method = "brute_force"
 
         else:
             _method = method
 
-
     ## Pick the right model name for the method
-    if _method == 'ball_tree':
-        model_name = 'nearest_neighbors_ball_tree'
+    if _method == "ball_tree":
+        model_name = "nearest_neighbors_ball_tree"
 
-    elif _method == 'brute_force':
-        model_name = 'nearest_neighbors_brute_force'
+    elif _method == "brute_force":
+        model_name = "nearest_neighbors_brute_force"
 
-    elif _method == 'lsh':
-        model_name = 'nearest_neighbors_lsh'
+    elif _method == "lsh":
+        model_name = "nearest_neighbors_lsh"
 
     else:
-        raise ValueError("Method must be 'auto', 'ball_tree', 'brute_force', " +
-                         "or 'lsh'.")
-
+        raise ValueError(
+            "Method must be 'auto', 'ball_tree', 'brute_force', " + "or 'lsh'."
+        )
 
     ## Package the model options
     opts = {}
     opts.update(_method_options)
     opts.update(
-        {'model_name': model_name,
-        'ref_labels': ref_labels,
-        'label': label,
-        'sf_features': sf_clean,
-        'composite_params': distance})
+        {
+            "model_name": model_name,
+            "ref_labels": ref_labels,
+            "label": label,
+            "sf_features": sf_clean,
+            "composite_params": distance,
+        }
+    )
 
     ## Construct the nearest neighbors model
     with QuietProgress(verbose):
         result = _turicreate.extensions._nearest_neighbors.train(opts)
 
-    model_proxy = result['model']
+    model_proxy = result["model"]
     model = NearestNeighborsModel(model_proxy)
 
     return model
@@ -583,11 +627,15 @@ class NearestNeighborsModel(_Model):
     def __init__(self, model_proxy):
         """___init__(self)"""
         self.__proxy__ = model_proxy
-        self.__name__ = 'nearest_neighbors'
+        self.__name__ = "nearest_neighbors"
 
     @classmethod
     def _native_name(cls):
-        return ["nearest_neighbors_ball_tree", "nearest_neighbors_brute_force", "nearest_neighbors_lsh"]
+        return [
+            "nearest_neighbors_ball_tree",
+            "nearest_neighbors_brute_force",
+            "nearest_neighbors_lsh",
+        ]
 
     def __str__(self):
         """
@@ -619,31 +667,32 @@ class NearestNeighborsModel(_Model):
         """
 
         model_fields = [
-            ("Method", 'method'),
-            ("Number of distance components", 'num_distance_components'),
-            ("Number of examples", 'num_examples'),
-            ("Number of feature columns", 'num_features'),
-            ("Number of unpacked features", 'num_unpacked_features'),
-            ("Total training time (seconds)", 'training_time')]
+            ("Method", "method"),
+            ("Number of distance components", "num_distance_components"),
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Number of unpacked features", "num_unpacked_features"),
+            ("Distance", "distance_for_summary_struct"),
+            ("Total training time (seconds)", "training_time"),
+        ]
 
-        ball_tree_fields = [
-            ("Tree depth", 'tree_depth'),
-            ("Leaf size", 'leaf_size')]
+        ball_tree_fields = [("Tree depth", "tree_depth"), ("Leaf size", "leaf_size")]
 
         lsh_fields = [
-            ("Number of hash tables", 'num_tables'),
-            ("Number of projections per table", 'num_projections_per_table')]
+            ("Number of hash tables", "num_tables"),
+            ("Number of projections per table", "num_projections_per_table"),
+        ]
 
         sections = [model_fields]
-        section_titles = ['Attributes']
+        section_titles = ["Attributes"]
 
-        if (self.method == 'ball_tree'):
+        if self.method == "ball_tree":
             sections.append(ball_tree_fields)
-            section_titles.append('Ball Tree Attributes')
+            section_titles.append("Ball Tree Attributes")
 
-        if (self.method == 'lsh'):
+        if self.method == "lsh":
             sections.append(lsh_fields)
-            section_titles.append('LSH Attributes')
+            section_titles.append("LSH Attributes")
 
         return (sections, section_titles)
 
@@ -666,7 +715,7 @@ class NearestNeighborsModel(_Model):
         out : list
             List of fields queryable with the ``get`` method.
         """
-        opts = {'model': self.__proxy__, 'model_name': self.__name__}
+        opts = {"model": self.__proxy__, "model_name": self.__name__}
         response = _turicreate.extensions._nearest_neighbors.list_fields(opts)
 
         return sorted(response.keys())
@@ -716,11 +765,9 @@ class NearestNeighborsModel(_Model):
         out
             Value of the requested field.
         """
-        opts = {'model': self.__proxy__,
-                'model_name': self.__name__,
-                'field': field}
+        opts = {"model": self.__proxy__, "model_name": self.__name__, "field": field}
         response = _turicreate.extensions._nearest_neighbors.get_value(opts)
-        return response['value']
+        return response["value"]
 
     def _training_stats(self):
         """
@@ -755,7 +802,7 @@ class NearestNeighborsModel(_Model):
          'tree_depth': 1}
         """
 
-        opts = {'model': self.__proxy__, 'model_name': self.__name__}
+        opts = {"model": self.__proxy__, "model_name": self.__name__}
         return _turicreate.extensions._nearest_neighbors.training_stats(opts)
 
     def query(self, dataset, label=None, k=5, radius=None, verbose=True):
@@ -871,8 +918,9 @@ class NearestNeighborsModel(_Model):
         else:
             if not label in dataset.column_names():
                 raise ValueError(
-                    "Input 'label' must be a string matching the name of a " +\
-                    "column in the reference SFrame 'dataset'.")
+                    "Input 'label' must be a string matching the name of a "
+                    + "column in the reference SFrame 'dataset'."
+                )
 
             if not dataset[label].dtype == str and not dataset[label].dtype == int:
                 raise TypeError("The label column must contain integers or strings.")
@@ -881,7 +929,6 @@ class NearestNeighborsModel(_Model):
                 raise ValueError("The label column cannot be one of the features.")
 
             query_labels = dataset[label]
-
 
         ## Validate neighborhood parameters 'k' and 'radius'
         if k is not None:
@@ -898,7 +945,6 @@ class NearestNeighborsModel(_Model):
             if radius < 0:
                 raise ValueError("Input 'radius' must be non-negative.")
 
-
         ## Set k and radius to special values to indicate 'None'
         if k is None:
             k = -1
@@ -906,20 +952,28 @@ class NearestNeighborsModel(_Model):
         if radius is None:
             radius = -1.0
 
-        opts = {'model': self.__proxy__,
-                'model_name': self.__name__,
-                'features': sf_features,
-                'query_labels': query_labels,
-                'k': k,
-                'radius': radius}
+        opts = {
+            "model": self.__proxy__,
+            "model_name": self.__name__,
+            "features": sf_features,
+            "query_labels": query_labels,
+            "k": k,
+            "radius": radius,
+        }
 
         with QuietProgress(verbose):
             result = _turicreate.extensions._nearest_neighbors.query(opts)
 
-        return result['neighbors']
+        return result["neighbors"]
 
-    def similarity_graph(self, k=5, radius=None, include_self_edges=False,
-                         output_type='SGraph', verbose=True):
+    def similarity_graph(
+        self,
+        k=5,
+        radius=None,
+        include_self_edges=False,
+        output_type="SGraph",
+        verbose=True,
+    ):
         """
         Construct the similarity graph on the reference dataset, which is
         already stored in the model. This is conceptually very similar to
@@ -1016,7 +1070,6 @@ class NearestNeighborsModel(_Model):
             if radius < 0:
                 raise ValueError("Input 'radius' must be non-negative.")
 
-
         ## Set k and radius to special values to indicate 'None'
         if k is None:
             k = -1
@@ -1024,22 +1077,24 @@ class NearestNeighborsModel(_Model):
         if radius is None:
             radius = -1.0
 
-        opts = {'model': self.__proxy__,
-                'model_name': self.__name__,
-                'k': k,
-                'radius': radius,
-                'include_self_edges': include_self_edges}
+        opts = {
+            "model": self.__proxy__,
+            "model_name": self.__name__,
+            "k": k,
+            "radius": radius,
+            "include_self_edges": include_self_edges,
+        }
 
         with QuietProgress(verbose):
             result = _turicreate.extensions._nearest_neighbors.similarity_graph(opts)
 
-        knn = result['neighbors']
+        knn = result["neighbors"]
 
         if output_type == "SFrame":
             return knn
 
         else:
-            sg = _SGraph(edges=knn, src_field='query_label',
-                         dst_field='reference_label')
+            sg = _SGraph(
+                edges=knn, src_field="query_label", dst_field="reference_label"
+            )
             return sg
-

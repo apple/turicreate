@@ -84,17 +84,24 @@ void brute_force_neighbors::train(const sframe& X,
 
   // Validate the inputs.
   init_options(opts);
+  logprogress_stream << "Validating distance components." << std::endl;
   validate_distance_components(composite_distance_params, X);
 
+  populate_distance_for_summary_struct(composite_distance_params);
+
   // Create the ml_data object for the reference data.
+  logprogress_stream << "Initializing model data." << std::endl;
   initialize_model_data(X, ref_labels);
 
   // Initialize the distance components. NOTE: this needs data to be initialized
   // first because the row slicers need the column indices to be sorted.
+  logprogress_stream << "Initializing distances." << std::endl;
   initialize_distances();
 
   add_or_update_state({ {"method", "brute_force"},
                         {"training_time", t.current_time() - start_time} });
+
+  logprogress_stream << "Done." << std::endl;  
 }
 
 

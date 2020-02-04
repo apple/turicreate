@@ -17,23 +17,29 @@ from turicreate.toolkits.recommender.util import _Recommender
 from turicreate.toolkits._model import _get_default_options_wrapper
 from turicreate.data_structures.sframe import SFrame as _SFrame
 
-def create(observation_data,
-           user_id='user_id', item_id='item_id', target=None,
-           user_data=None, item_data=None,
-           num_factors=32,
-           regularization=1e-9,
-           linear_regularization=1e-9,
-           side_data_factorization=True,
-           ranking_regularization=0.25,
-           unobserved_rating_value=None,
-           num_sampled_negative_examples=4,
-           max_iterations=25,
-           sgd_step_size=0,
-           random_seed=0,
-           binary_target = False,
-           solver = 'auto',
-           verbose=True,
-           **kwargs):
+
+def create(
+    observation_data,
+    user_id="user_id",
+    item_id="item_id",
+    target=None,
+    user_data=None,
+    item_data=None,
+    num_factors=32,
+    regularization=1e-9,
+    linear_regularization=1e-9,
+    side_data_factorization=True,
+    ranking_regularization=0.25,
+    unobserved_rating_value=None,
+    num_sampled_negative_examples=4,
+    max_iterations=25,
+    sgd_step_size=0,
+    random_seed=0,
+    binary_target=False,
+    solver="auto",
+    verbose=True,
+    **kwargs
+):
     """Create a RankingFactorizationRecommender that learns latent factors for each
     user and item and uses them to make rating predictions.
 
@@ -218,8 +224,9 @@ def create(observation_data,
 
     """
     from turicreate._cython.cy_server import QuietProgress
+
     if not (isinstance(observation_data, _SFrame)):
-        raise TypeError('observation_data input must be a SFrame')
+        raise TypeError("observation_data input must be a SFrame")
     opts = {}
     model_proxy = _turicreate.extensions.ranking_factorization_recommender()
     model_proxy.init_options(opts)
@@ -229,26 +236,26 @@ def create(observation_data,
     if item_data is None:
         item_data = _turicreate.SFrame()
 
-    nearest_items = _turicreate.SFrame()
     if target is None:
         binary_target = True
 
-    opts = {'user_id'                 : user_id,
-            'item_id'                 : item_id,
-            'target'                  : target,
-            'random_seed'             : random_seed,
-            'num_factors'             : num_factors,
-            'regularization'          : regularization,
-            'linear_regularization'   : linear_regularization,
-            'ranking_regularization'  : ranking_regularization,
-            'binary_target'           : binary_target,
-            'max_iterations'          : max_iterations,
-            'side_data_factorization' : side_data_factorization,
-            'num_sampled_negative_examples' : num_sampled_negative_examples,
-            'solver'                  : solver,
-
-            # Has no effect here.
-            'sgd_step_size'           : sgd_step_size}
+    opts = {
+        "user_id": user_id,
+        "item_id": item_id,
+        "target": target,
+        "random_seed": random_seed,
+        "num_factors": num_factors,
+        "regularization": regularization,
+        "linear_regularization": linear_regularization,
+        "ranking_regularization": ranking_regularization,
+        "binary_target": binary_target,
+        "max_iterations": max_iterations,
+        "side_data_factorization": side_data_factorization,
+        "num_sampled_negative_examples": num_sampled_negative_examples,
+        "solver": solver,
+        # Has no effect here.
+        "sgd_step_size": sgd_step_size,
+    }
 
     if unobserved_rating_value is not None:
         opts["unobserved_rating_value"] = unobserved_rating_value
@@ -261,20 +268,23 @@ def create(observation_data,
 
         bad_arguments = set(kwargs.keys()).difference(possible_args)
         if bad_arguments:
-            raise TypeError("Bad Keyword Arguments: " + ', '.join(bad_arguments))
+            raise TypeError("Bad Keyword Arguments: " + ", ".join(bad_arguments))
 
         opts.update(kwargs)
 
-    extra_data = {"nearest_items" : _turicreate.SFrame()}
+    extra_data = {"nearest_items": _turicreate.SFrame()}
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
 
     return RankingFactorizationRecommender(model_proxy)
 
+
 _get_default_options = _get_default_options_wrapper(
-                          'ranking_factorization_recommender',
-                          'recommender.RankingFactorizationRecommender',
-                          'RankingFactorizationRecommender')
+    "ranking_factorization_recommender",
+    "recommender.RankingFactorizationRecommender",
+    "RankingFactorizationRecommender",
+)
+
 
 class RankingFactorizationRecommender(_Recommender):
     r"""
@@ -546,7 +556,7 @@ class RankingFactorizationRecommender(_Recommender):
     """
 
     def __init__(self, model_proxy):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model_proxy
 
     @classmethod

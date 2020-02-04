@@ -12,25 +12,24 @@ from distutils.version import StrictVersion
 
 
 class VersionTest(unittest.TestCase):
-
     def test_min_version(self):
-        MIN_VERSION = StrictVersion('1.8.1')
-        self.assertEqual(get_version('1.8.1'), MIN_VERSION)
-        self.assertEqual(get_version('1.8.1-dev'), MIN_VERSION)
-        self.assertEqual(get_version('1.8.1rc'), MIN_VERSION)
+        MIN_VERSION = StrictVersion("1.8.1")
+        self.assertEqual(get_version("1.8.1"), MIN_VERSION)
+        self.assertEqual(get_version("1.8.1-dev"), MIN_VERSION)
+        self.assertEqual(get_version("1.8.1rc"), MIN_VERSION)
 
-        self.assertLess(get_version('1.8.0'), MIN_VERSION)
-        self.assertLess(get_version('1.8.0-dev'), MIN_VERSION)
-        self.assertLess(get_version('1.8.0rc'), MIN_VERSION)
+        self.assertLess(get_version("1.8.0"), MIN_VERSION)
+        self.assertLess(get_version("1.8.0-dev"), MIN_VERSION)
+        self.assertLess(get_version("1.8.0rc"), MIN_VERSION)
 
-        self.assertLess(get_version('1.6.2'), MIN_VERSION)
-        self.assertLess(get_version('1.6.2-dev'), MIN_VERSION)
-        self.assertLess(get_version('1.6.2rc'), MIN_VERSION)
+        self.assertLess(get_version("1.6.2"), MIN_VERSION)
+        self.assertLess(get_version("1.6.2-dev"), MIN_VERSION)
+        self.assertLess(get_version("1.6.2rc"), MIN_VERSION)
 
-        self.assertGreater(get_version('1.9.0'), MIN_VERSION)
-        self.assertGreater(get_version('1.9.0-dev'), MIN_VERSION)
-        self.assertGreater(get_version('1.9.0rc'), MIN_VERSION)
+        self.assertGreater(get_version("1.9.0"), MIN_VERSION)
+        self.assertGreater(get_version("1.9.0-dev"), MIN_VERSION)
+        self.assertGreater(get_version("1.9.0rc"), MIN_VERSION)
 
-        self.assertGreater(get_version('1.8.2'), MIN_VERSION)
-        self.assertGreater(get_version('1.8.2-dev'), MIN_VERSION)
-        self.assertGreater(get_version('1.8.2rc'), MIN_VERSION)
+        self.assertGreater(get_version("1.8.2"), MIN_VERSION)
+        self.assertGreater(get_version("1.8.2-dev"), MIN_VERSION)
+        self.assertGreater(get_version("1.8.2rc"), MIN_VERSION)

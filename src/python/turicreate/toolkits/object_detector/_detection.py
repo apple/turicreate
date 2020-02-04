@@ -11,16 +11,17 @@ import numpy as _np
 
 def multi_range(*args):
     import itertools
+
     return itertools.product(*[range(a) for a in args])
 
 
 def bbox_to_ybox(bbox):
     """Convert from corner bounding box to center/shape"""
     return [
-            (bbox[1] + bbox[3]) / 2,
-            (bbox[0] + bbox[2]) / 2,
-            (bbox[3] - bbox[1]),
-            (bbox[2] - bbox[0]),
+        (bbox[1] + bbox[3]) / 2,
+        (bbox[0] + bbox[2]) / 2,
+        (bbox[3] - bbox[1]),
+        (bbox[2] - bbox[0]),
     ]
 
 
@@ -38,8 +39,11 @@ def intersection_over_union(bbs1, bbs2):
     bbs1_bc = bbs1[:, _np.newaxis]
     bbs2_bc = bbs2[_np.newaxis]
 
-    inter = (_np.maximum(_np.minimum(bbs1_bc[..., 2:], bbs2_bc[..., 2:]) -
-             _np.maximum(bbs1_bc[..., :2], bbs2_bc[..., :2]), 0))
+    inter = _np.maximum(
+        _np.minimum(bbs1_bc[..., 2:], bbs2_bc[..., 2:])
+        - _np.maximum(bbs1_bc[..., :2], bbs2_bc[..., :2]),
+        0,
+    )
     inter_area = inter[..., 0] * inter[..., 1]
     area1 = (bbs1_bc[..., 2] - bbs1_bc[..., 0]) * (bbs1_bc[..., 3] - bbs1_bc[..., 1])
     area2 = (bbs2_bc[..., 2] - bbs2_bc[..., 0]) * (bbs2_bc[..., 3] - bbs2_bc[..., 1])
@@ -48,8 +52,9 @@ def intersection_over_union(bbs1, bbs2):
 
 
 # Class-independent NMS
-def non_maximum_suppression(boxes, classes, scores, num_classes, threshold=0.5,
-                            limit=None):
+def non_maximum_suppression(
+    boxes, classes, scores, num_classes, threshold=0.5, limit=None
+):
     np_scores = _np.array(scores)
     np_boxes = _np.array(boxes)
     np_classes = _np.array(classes)
@@ -66,8 +71,8 @@ def non_maximum_suppression(boxes, classes, scores, num_classes, threshold=0.5,
         keep = _np.ones(len(c_scores)).astype(_np.bool)
         for i in range(len(c_scores)):
             if keep[i]:
-                ious = intersection_over_union(c_boxes[[i]], c_boxes[i+1:])[0]
-                keep[i + 1:] &= ious <= threshold
+                ious = intersection_over_union(c_boxes[[i]], c_boxes[i + 1 :])[0]
+                keep[i + 1 :] &= ious <= threshold
 
         c_scores = c_scores[keep]
         c_boxes = c_boxes[keep]
@@ -89,8 +94,9 @@ def non_maximum_suppression(boxes, classes, scores, num_classes, threshold=0.5,
     return new_boxes, new_classes, new_scores
 
 
-def yolo_map_to_bounding_boxes(output, anchors, confidence_threshold=0.3,
-                               block_size=32, nms_thresh=0.5, limit=None):
+def yolo_map_to_bounding_boxes(
+    output, anchors, confidence_threshold=0.3, block_size=32, nms_thresh=0.5, limit=None
+):
     assert output.shape[0] == 1, "For now works on single images"
     num_anchors = output.shape[-2]
     num_classes = output.shape[-1] - 5
@@ -116,21 +122,24 @@ def yolo_map_to_bounding_boxes(output, anchors, confidence_threshold=0.3,
 
             confidence_in_class = class_score * confidence
             if confidence_in_class > confidence_threshold:
-                boxes.append([y - h/2, x - w/2, y + h/2, x + w/2])
+                boxes.append([y - h / 2, x - w / 2, y + h / 2, x + w / 2])
                 classes.append(int(i))
                 scores.append(confidence_in_class)
 
     if nms_thresh is not None:
         boxes, classes, scores = non_maximum_suppression(
-                boxes, classes, scores,
-                num_classes=num_classes, threshold=nms_thresh,
-                limit=None)
+            boxes,
+            classes,
+            scores,
+            num_classes=num_classes,
+            threshold=nms_thresh,
+            limit=None,
+        )
 
     return boxes, classes, scores
 
 
-def yolo_boxes_to_yolo_map(gt_mxboxes, input_shape, output_shape,
-                           num_classes, anchors):
+def yolo_boxes_to_yolo_map(gt_mxboxes, input_shape, output_shape, num_classes, anchors):
 
     num_anchors = len(anchors)
 
@@ -166,6 +175,6 @@ def yolo_boxes_to_yolo_map(gt_mxboxes, input_shape, output_shape,
             ymap[iy, ix, :, 3] = h
             ymap[iy, ix, :, 4] = 1
             ymap[iy, ix, :, 5:] = 0
-            ymap[iy, ix, :, 5+gt_cls] = 1
+            ymap[iy, ix, :, 5 + gt_cls] = 1
 
     return ymap

@@ -13,11 +13,17 @@ import turicreate as _turicreate
 from turicreate.toolkits.recommender.util import _Recommender
 from turicreate.data_structures.sframe import SFrame as _SFrame
 
-def create(observation_data,
-           user_id='user_id', item_id='item_id', target=None,
-           user_data=None, item_data=None,
-           random_seed=0,
-           verbose=True):
+
+def create(
+    observation_data,
+    user_id="user_id",
+    item_id="item_id",
+    target=None,
+    user_data=None,
+    item_data=None,
+    random_seed=0,
+    verbose=True,
+):
     """
     Create a model that makes recommendations using item popularity. When no
     target column is provided, the popularity is determined by the number of
@@ -80,8 +86,9 @@ def create(observation_data,
     PopularityRecommender
     """
     from turicreate._cython.cy_server import QuietProgress
+
     if not (isinstance(observation_data, _SFrame)):
-        raise TypeError('observation_data input must be a SFrame')
+        raise TypeError("observation_data input must be a SFrame")
     opts = {}
     model_proxy = _turicreate.extensions.popularity()
     model_proxy.init_options(opts)
@@ -90,18 +97,15 @@ def create(observation_data,
         user_data = _turicreate.SFrame()
     if item_data is None:
         item_data = _turicreate.SFrame()
-    nearest_items = _turicreate.SFrame()
 
-    opts = {'user_id': user_id,
-            'item_id': item_id,
-            'target': target,
-            'random_seed': 1}
+    opts = {"user_id": user_id, "item_id": item_id, "target": target, "random_seed": 1}
 
-    extra_data = {"nearest_items" : _turicreate.SFrame()}
+    extra_data = {"nearest_items": _turicreate.SFrame()}
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
 
     return PopularityRecommender(model_proxy)
+
 
 class PopularityRecommender(_Recommender):
     """
@@ -129,7 +133,7 @@ class PopularityRecommender(_Recommender):
     """
 
     def __init__(self, model_proxy):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model_proxy
 
     @classmethod

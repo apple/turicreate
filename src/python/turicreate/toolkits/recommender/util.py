@@ -15,18 +15,23 @@ import six as _six
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import Model as _Model
-from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
-                                        _precomputed_field
+from turicreate.toolkits._internal_utils import _toolkit_repr_print, _precomputed_field
 import turicreate.aggregate as _Aggregate
 from turicreate.data_structures.sarray import SArray as _SArray
 from turicreate.data_structures.sframe import SFrame as _SFrame
 from turicreate._deps import numpy as _numpy, HAS_NUMPY as _HAS_NUMPY
 
-def _create(observation_data,
-           user_id='user_id', item_id='item_id', target=None,
-           user_data=None, item_data=None,
-           ranking=True,
-           verbose=True):
+
+def _create(
+    observation_data,
+    user_id="user_id",
+    item_id="item_id",
+    target=None,
+    user_data=None,
+    item_data=None,
+    ranking=True,
+    verbose=True,
+):
     """
     A unified interface for training recommender models. Based on simple
     characteristics of the data, a type of model is selected and trained. The
@@ -125,46 +130,47 @@ def _create(observation_data,
     """
 
     if not (isinstance(observation_data, _SFrame)):
-        raise TypeError('observation_data input must be a SFrame')
+        raise TypeError("observation_data input must be a SFrame")
 
     side_data = (user_data is not None) or (item_data is not None)
     if user_data is not None:
         if not isinstance(user_data, _SFrame):
-            raise TypeError('Provided user_data must be an SFrame.')
+            raise TypeError("Provided user_data must be an SFrame.")
     if item_data is not None:
         if not isinstance(item_data, _SFrame):
-            raise TypeError('Provided item_data must be an SFrame.')
+            raise TypeError("Provided item_data must be an SFrame.")
 
     if target is None:
         if ranking:
             if side_data:
-                method = 'ranking_factorization_recommender'
+                method = "ranking_factorization_recommender"
             else:
-                method = 'item_similarity'
+                method = "item_similarity"
         else:
             if side_data:
-                method = 'ranking_factorization_recommender'
+                method = "ranking_factorization_recommender"
             else:
-                method = 'item_similarity'
+                method = "item_similarity"
     else:
         if ranking:
             if side_data:
-                method = 'ranking_factorization_recommender'
+                method = "ranking_factorization_recommender"
             else:
-                method = 'ranking_factorization_recommender'
+                method = "ranking_factorization_recommender"
         else:
             if side_data:
-                method = 'factorization_recommender'
+                method = "factorization_recommender"
             else:
-                method = 'factorization_recommender'
+                method = "factorization_recommender"
 
-    opts = {'observation_data': observation_data,
-            'user_id': user_id,
-            'item_id': item_id,
-            'target': target,
-            'user_data': user_data,
-            'item_data': item_data}
-
+    opts = {
+        "observation_data": observation_data,
+        "user_id": user_id,
+        "item_id": item_id,
+        "target": target,
+        "user_data": user_data,
+        "item_data": item_data,
+    }
 
     if method == "item_similarity":
         return _turicreate.recommender.item_similarity_recommender.create(**opts)
@@ -175,13 +181,19 @@ def _create(observation_data,
     else:
         raise RuntimeError("Provided method not recognized.")
 
-def compare_models(dataset, models, model_names=None, user_sample=1.0,
-                   metric='auto',
-                   target=None,
-                   exclude_known_for_precision_recall=True,
-                   make_plot=False,
-                   verbose=True,
-                   **kwargs):
+
+def compare_models(
+    dataset,
+    models,
+    model_names=None,
+    user_sample=1.0,
+    metric="auto",
+    target=None,
+    exclude_known_for_precision_recall=True,
+    make_plot=False,
+    verbose=True,
+    **kwargs
+):
     """
     Compare the prediction or recommendation performance of recommender models
     on a common test dataset.
@@ -283,15 +295,19 @@ def compare_models(dataset, models, model_names=None, user_sample=1.0,
     num_models = len(models)
 
     if model_names is None:
-        model_names = ['M' + str(i) for i in range(len(models))]
+        model_names = ["M" + str(i) for i in range(len(models))]
 
     if num_models < 1:
-        raise ValueError("Must pass in at least one recommender model to \
-                           evaluate")
+        raise ValueError(
+            "Must pass in at least one recommender model to \
+                           evaluate"
+        )
 
     if model_names is not None and len(model_names) != num_models:
-        raise ValueError("Must pass in the same number of model names as \
-                          models")
+        raise ValueError(
+            "Must pass in the same number of model names as \
+                          models"
+        )
 
     # if we are asked to sample the users, come up with a list of unique users
     if user_sample < 1.0:
@@ -316,22 +332,22 @@ def compare_models(dataset, models, model_names=None, user_sample=1.0,
     results = []
     for (m, mname) in zip(models, model_names):
         if verbose:
-            print('PROGRESS: Evaluate model %s' % mname)
-        r = m.evaluate(dataset_subset,
-                       metric,
-                       exclude_known_for_precision_recall,
-                       target,
-                       verbose=verbose,
-                       cutoffs=list(range(1,11,1))+list(range(11,50,5)),
-                       **kwargs)
+            print("PROGRESS: Evaluate model %s" % mname)
+        r = m.evaluate(
+            dataset_subset,
+            metric,
+            exclude_known_for_precision_recall,
+            target,
+            verbose=verbose,
+            cutoffs=list(range(1, 11, 1)) + list(range(11, 50, 5)),
+            **kwargs
+        )
         results.append(r)
 
     return results
 
 
-def precision_recall_by_user(observed_user_items,
-                             recommendations,
-                             cutoffs=[10]):
+def precision_recall_by_user(observed_user_items, recommendations, cutoffs=[10]):
     """
     Compute precision and recall at a given cutoff for each user. In information
     retrieval terms, precision represents the ratio of relevant, retrieved items
@@ -403,37 +419,45 @@ def precision_recall_by_user(observed_user_items,
     user_id = recommendations.column_names()[0]
     item_id = recommendations.column_names()[1]
 
-    assert observed_user_items.num_rows() > 0, \
-           "Evaluating precision and recall requires a non-empty " + \
-           "observed_user_items."
-    assert user_id in observed_user_items.column_names(), \
-            "User column required in observed_user_items."
-    assert item_id in observed_user_items.column_names(), \
-            "Item column required in observed_user_items."
-    assert observed_user_items[user_id].dtype == \
-           recommendations[user_id].dtype, \
-           "The user column in the two provided SFrames must have the same type."
-    assert observed_user_items[item_id].dtype == \
-           recommendations[item_id].dtype, \
-           "The user column in the two provided SFrames must have the same type."
+    assert observed_user_items.num_rows() > 0, (
+        "Evaluating precision and recall requires a non-empty " + "observed_user_items."
+    )
+    assert (
+        user_id in observed_user_items.column_names()
+    ), "User column required in observed_user_items."
+    assert (
+        item_id in observed_user_items.column_names()
+    ), "Item column required in observed_user_items."
+    assert (
+        observed_user_items[user_id].dtype == recommendations[user_id].dtype
+    ), "The user column in the two provided SFrames must have the same type."
+    assert (
+        observed_user_items[item_id].dtype == recommendations[item_id].dtype
+    ), "The user column in the two provided SFrames must have the same type."
 
-    cutoffs = _array.array('f', cutoffs)
+    cutoffs = _array.array("f", cutoffs)
 
-    opts = {'data': observed_user_items,
-            'recommendations': recommendations,
-            'cutoffs': cutoffs}
+    opts = {
+        "data": observed_user_items,
+        "recommendations": recommendations,
+        "cutoffs": cutoffs,
+    }
 
-    response = _turicreate.toolkits._main.run('evaluation_precision_recall_by_user', opts)
-    sf = _SFrame(None, _proxy=response['pr'])
-    return sf.sort([user_id, 'cutoff'])
+    response = _turicreate.toolkits._main.run(
+        "evaluation_precision_recall_by_user", opts
+    )
+    sf = _SFrame(None, _proxy=response["pr"])
+    return sf.sort([user_id, "cutoff"])
 
 
-def random_split_by_user(dataset,
-                         user_id='user_id',
-                         item_id='item_id',
-                         max_num_users=1000,
-                         item_test_proportion=.2,
-                         random_seed=0):
+def random_split_by_user(
+    dataset,
+    user_id="user_id",
+    item_id="item_id",
+    max_num_users=1000,
+    item_test_proportion=0.2,
+    random_seed=0,
+):
     """Create a recommender-friendly train-test split of the provided data set.
 
     The test dataset is generated by first choosing `max_num_users` out of the
@@ -482,30 +506,27 @@ def random_split_by_user(dataset,
 
     """
 
-    assert user_id in dataset.column_names(), \
-        'Provided user column "{0}" not found in data set.'.format(user_id)
-    assert item_id in dataset.column_names(), \
-        'Provided item column "{0}" not found in data set.'.format(item_id)
+    assert (
+        user_id in dataset.column_names()
+    ), 'Provided user column "{0}" not found in data set.'.format(user_id)
+    assert (
+        item_id in dataset.column_names()
+    ), 'Provided item column "{0}" not found in data set.'.format(item_id)
 
-    if max_num_users == 'all':
+    if max_num_users == "all":
         max_num_users = None
 
     if random_seed is None:
         import time
-        random_seed = int(hash("%20f" % time.time()) % 2**63)
 
-    opts = {'dataset': dataset,
-            'user_id': user_id,
-            'item_id': item_id,
-            'max_num_users': max_num_users,
-            'item_test_proportion': item_test_proportion,
-            'random_seed': random_seed}
+        random_seed = int(hash("%20f" % time.time()) % 2 ** 63)
 
-    response = _turicreate.extensions._recsys.train_test_split(dataset, user_id, item_id,
-        max_num_users, item_test_proportion, random_seed)
+    response = _turicreate.extensions._recsys.train_test_split(
+        dataset, user_id, item_id, max_num_users, item_test_proportion, random_seed
+    )
 
-    train = response['train']
-    test = response['test']
+    train = response["train"]
+    test = response["test"]
     return train, test
 
 
@@ -520,8 +541,6 @@ class _Recommender(_Model):
     def _native_name(cls):
         return None
 
-
-
     def _list_fields(self):
         """
         Get the current settings of the model. The keys depend on the type of
@@ -534,7 +553,7 @@ class _Recommender(_Model):
         """
 
         response = self.__proxy__.list_fields()
-        return [s for s in response['value'] if not s.startswith("_")]
+        return [s for s in response["value"] if not s.startswith("_")]
 
     def _get(self, field):
         """
@@ -600,7 +619,6 @@ class _Recommender(_Model):
         response = self.__proxy__.get_num_users_per_item()
         return response
 
-
     def __str__(self):
         """
         Returns the type of model.
@@ -638,9 +656,7 @@ class _Recommender(_Model):
         sections = []
 
         observation_columns = set(self.observation_data_column_names)
-        not_needed = set([self.user_id,
-                          self.item_id,
-                          self.target])
+        not_needed = set([self.user_id, self.item_id, self.target])
         num_obs_fields = len(observation_columns.difference(not_needed))
 
         user_features = self.user_side_data_column_names
@@ -648,44 +664,42 @@ class _Recommender(_Model):
 
         section_titles.append("Schema")
         schema_fields = [
-            ('User ID', 'user_id'),
-            ('Item ID', 'item_id'),
-            ('Target', 'target'),
-            ('Additional observation features', _precomputed_field(num_obs_fields)),
-            ('User side features', _precomputed_field(user_features)),
-            ('Item side features', _precomputed_field(item_features))]
+            ("User ID", "user_id"),
+            ("Item ID", "item_id"),
+            ("Target", "target"),
+            ("Additional observation features", _precomputed_field(num_obs_fields)),
+            ("User side features", _precomputed_field(user_features)),
+            ("Item side features", _precomputed_field(item_features)),
+        ]
         sections.append(schema_fields)
 
         data_fields = [
-            ('Number of observations', 'num_observations'),
-            ('Number of users', 'num_users'),
-            ('Number of items', 'num_items')]
+            ("Number of observations", "num_observations"),
+            ("Number of users", "num_users"),
+            ("Number of items", "num_items"),
+        ]
         section_titles.append("Statistics")
         sections.append(data_fields)
 
-        training_fields = [
-            ('Training time', 'training_time')]
+        training_fields = [("Training time", "training_time")]
 
-        if 'data_load_elapsed_time' in stats:
-            training_fields.append(('Data load time',
-                                    'data_load_elapsed_time'))
-        if 'validation_metrics_elapsed_time' in stats:
-            training_fields.append(('Validation metrics time',
-                                   'validation_metrics_elapsed_time'))
+        if "data_load_elapsed_time" in stats:
+            training_fields.append(("Data load time", "data_load_elapsed_time"))
+        if "validation_metrics_elapsed_time" in stats:
+            training_fields.append(
+                ("Validation metrics time", "validation_metrics_elapsed_time")
+            )
         section_titles.append("Training summary")
         sections.append(training_fields)
 
         # Remove any options that should not be shown under "Settings"
-        to_ignore = ['random_seed',
-                     'user_id',
-                     'item_id',
-                     'target']
+        to_ignore = ["random_seed", "user_id", "item_id", "target"]
 
         for k in to_ignore:
             if k in options:
                 del options[k]
 
-        def add_ordered_options(name, ordered_options, additional = []):
+        def add_ordered_options(name, ordered_options, additional=[]):
             option_fields = []
 
             for k, v in additional:
@@ -713,10 +727,14 @@ class _Recommender(_Model):
             "nmf",
             "max_iterations",
             "similarity_type",
-            "training_method"]
+            "training_method",
+        ]
 
-        add_ordered_options("Model Parameters", model_parameter_options,
-                            [("Model class", self.__class__.__name__)])
+        add_ordered_options(
+            "Model Parameters",
+            model_parameter_options,
+            [("Model class", self.__class__.__name__)],
+        )
 
         # Regularization type options
         regularization_options = [
@@ -727,7 +745,8 @@ class _Recommender(_Model):
             "unobserved_rating_value",
             "num_sampled_negative_examples",
             "ials_confidence_scaling_type",
-            "ials_confidence_scaling_factor"]
+            "ials_confidence_scaling_factor",
+        ]
 
         add_ordered_options("Regularization Settings", regularization_options)
 
@@ -747,7 +766,8 @@ class _Recommender(_Model):
             "adagrad_momentum_weighting",
             "num_tempering_iterations",
             "tempering_regularization_start_value",
-            "track_exact_loss"]
+            "track_exact_loss",
+        ]
 
         add_ordered_options("Optimization Settings", optimization_settings)
 
@@ -807,18 +827,24 @@ class _Recommender(_Model):
 
         # Translate the dataset argument into the proper type
         if not isinstance(dataset, _SFrame):
+
             def raise_dataset_type_exception():
-                raise TypeError("The dataset parameter must be either an SFrame, "
-                                "or a dictionary of (str : list) or (str : value).")
+                raise TypeError(
+                    "The dataset parameter must be either an SFrame, "
+                    "or a dictionary of (str : list) or (str : value)."
+                )
 
             if type(dataset) is dict:
                 if not all(type(k) is str for k in _six.iterkeys(dataset)):
                     raise_dataset_type_exception()
 
-                if all(type(v) in (list, tuple, _array.array) for v in _six.itervalues(dataset)):
+                if all(
+                    type(v) in (list, tuple, _array.array)
+                    for v in _six.itervalues(dataset)
+                ):
                     dataset = _SFrame(dataset)
                 else:
-                    dataset = _SFrame({k : [v] for k, v in _six.iteritems(dataset)})
+                    dataset = _SFrame({k: [v] for k, v in _six.iteritems(dataset)})
             else:
                 raise_dataset_type_exception()
 
@@ -833,13 +859,16 @@ class _Recommender(_Model):
         if not hasattr(self, "_data_schema"):
             response = self.__proxy__.get_data_schema()
 
-            self._data_schema = {k : _turicreate._cython.cy_flexible_type.pytype_from_type_name(v)
-                                 for k, v in response["schema"].items()}
+            self._data_schema = {
+                k: _turicreate._cython.cy_flexible_type.pytype_from_type_name(v)
+                for k, v in response["schema"].items()
+            }
 
         return self._data_schema
 
-    def predict(self, dataset,
-                new_observation_data=None, new_user_data=None, new_item_data=None):
+    def predict(
+        self, dataset, new_observation_data=None, new_user_data=None, new_item_data=None
+    ):
         """
         Return a score prediction for the user ids and item ids in the provided
         data set.
@@ -890,21 +919,26 @@ class _Recommender(_Model):
         if new_item_data is None:
             new_item_data = _SFrame()
 
-
         dataset = self.__prepare_dataset_parameter(dataset)
 
         def check_type(arg, arg_name, required_type, allowed_types):
             if not isinstance(arg, required_type):
-                raise TypeError("Parameter " + arg_name + " must be of type(s) "
-                                + (", ".join(allowed_types))
-                                + "; Type '" + str(type(arg)) + "' not recognized.")
+                raise TypeError(
+                    "Parameter "
+                    + arg_name
+                    + " must be of type(s) "
+                    + (", ".join(allowed_types))
+                    + "; Type '"
+                    + str(type(arg))
+                    + "' not recognized."
+                )
 
         check_type(new_observation_data, "new_observation_data", _SFrame, ["SFrame"])
         check_type(new_user_data, "new_user_data", _SFrame, ["SFrame"])
         check_type(new_item_data, "new_item_data", _SFrame, ["SFrame"])
 
         response = self.__proxy__.predict(dataset, new_user_data, new_item_data)
-        return response['prediction']
+        return response["prediction"]
 
     def get_similar_items(self, items=None, k=10, verbose=False):
         """
@@ -960,9 +994,15 @@ class _Recommender(_Model):
 
         def check_type(arg, arg_name, required_type, allowed_types):
             if not isinstance(arg, required_type):
-                raise TypeError("Parameter " + arg_name + " must be of type(s) "
-                                + (", ".join(allowed_types) )
-                                + "; Type '" + str(type(arg)) + "' not recognized.")
+                raise TypeError(
+                    "Parameter "
+                    + arg_name
+                    + " must be of type(s) "
+                    + (", ".join(allowed_types))
+                    + "; Type '"
+                    + str(type(arg))
+                    + "' not recognized."
+                )
 
         check_type(items, "items", _SArray, ["SArray", "list"])
         check_type(k, "k", int, ["int"])
@@ -1019,26 +1059,36 @@ class _Recommender(_Model):
 
         def check_type(arg, arg_name, required_type, allowed_types):
             if not isinstance(arg, required_type):
-                raise TypeError("Parameter " + arg_name + " must be of type(s) "
-                                + (", ".join(allowed_types) )
-                                + "; Type '" + str(type(arg)) + "' not recognized.")
+                raise TypeError(
+                    "Parameter "
+                    + arg_name
+                    + " must be of type(s) "
+                    + (", ".join(allowed_types))
+                    + "; Type '"
+                    + str(type(arg))
+                    + "' not recognized."
+                )
 
         check_type(users, "users", _SArray, ["SArray", "list"])
         check_type(k, "k", int, ["int"])
 
-        opt = {'model': self.__proxy__,
-               'users': users,
-               'get_all_users' : get_all_users,
-               'k': k}
-
         response = self.__proxy__.get_similar_users(users, k, get_all_users)
         return response
 
-
-    def recommend(self, users=None, k=10, exclude=None, items=None,
-                  new_observation_data=None, new_user_data=None, new_item_data=None,
-                  exclude_known=True, diversity=0, random_seed=None,
-                  verbose=True):
+    def recommend(
+        self,
+        users=None,
+        k=10,
+        exclude=None,
+        items=None,
+        new_observation_data=None,
+        new_user_data=None,
+        new_item_data=None,
+        exclude_known=True,
+        diversity=0,
+        random_seed=None,
+        verbose=True,
+    ):
         """
         Recommend the ``k`` highest scored items for each user.
 
@@ -1171,18 +1221,22 @@ class _Recommender(_Model):
         if new_item_data is None:
             new_item_data = __null_sframe
 
-        if isinstance(users, list) or (_HAS_NUMPY and isinstance(users, _numpy.ndarray)):
+        if isinstance(users, list) or (
+            _HAS_NUMPY and isinstance(users, _numpy.ndarray)
+        ):
             users = _SArray(users)
 
             # allow to take a list of dictionaries of the form [{'user_id':1,'time':10}] etc.
             if users.dtype == dict:
-                users = users.unpack(column_name_prefix='')
+                users = users.unpack(column_name_prefix="")
 
         if isinstance(users, _SArray):
             users = _SFrame({user_id: users})
 
-        if isinstance(items, list) or (_HAS_NUMPY and isinstance(items, _numpy.ndarray)):
-            items = _SArray(items, dtype = item_type)
+        if isinstance(items, list) or (
+            _HAS_NUMPY and isinstance(items, _numpy.ndarray)
+        ):
+            items = _SArray(items, dtype=item_type)
 
         if isinstance(items, _SArray):
             items = _SFrame({item_id: items})
@@ -1190,13 +1244,23 @@ class _Recommender(_Model):
         # Check type of incoming data.
         def check_type(arg, arg_name, required_type, allowed_types):
             if not isinstance(arg, required_type):
-                raise TypeError("Parameter " + arg_name + " must be of type(s) "
-                                + (", ".join(allowed_types))
-                                + "; Type '" + str(type(arg)) + "' not recognized.")
+                raise TypeError(
+                    "Parameter "
+                    + arg_name
+                    + " must be of type(s) "
+                    + (", ".join(allowed_types))
+                    + "; Type '"
+                    + str(type(arg))
+                    + "' not recognized."
+                )
 
-        check_type(users, "users", _SFrame, ["SArray", "list", "SFrame", "numpy.ndarray"])
+        check_type(
+            users, "users", _SFrame, ["SArray", "list", "SFrame", "numpy.ndarray"]
+        )
         check_type(exclude, "exclude", _SFrame, ["SFrame"])
-        check_type(items, "items", _SFrame, ["SFrame", "SArray", "list", "numpy.ndarray"])
+        check_type(
+            items, "items", _SFrame, ["SFrame", "SArray", "list", "numpy.ndarray"]
+        )
         check_type(new_observation_data, "new_observation_data", _SFrame, ["SFrame"])
         check_type(new_user_data, "new_user_data", _SFrame, ["SFrame"])
         check_type(new_item_data, "new_item_data", _SFrame, ["SFrame"])
@@ -1222,42 +1286,54 @@ class _Recommender(_Model):
                 # everything back and forth to that to preserve type.
 
                 if new_observation_data.num_rows() == 0:
-                    raise ValueError("When users are not specified with the model, "
-                                     "new_observation_data must be set in order to make recommendations.")
+                    raise ValueError(
+                        "When users are not specified with the model, "
+                        "new_observation_data must be set in order to make recommendations."
+                    )
 
-                new_observation_data[user_id] = new_observation_data[user_id].astype(user_type)
+                new_observation_data[user_id] = new_observation_data[user_id].astype(
+                    user_type
+                )
 
             else:
-                print("WARNING: No users specified to model at creation time, so "
-                      "calling recommend() for all users returns empty SFrame.")
+                print(
+                    "WARNING: No users specified to model at creation time, so "
+                    "calling recommend() for all users returns empty SFrame."
+                )
 
         # Cast to the appropriate type if necessary.
         if users.num_rows() != 0:
             try:
                 user_column = users[user_id]
             except RuntimeError:
-                raise _ToolkitError("User column '%s' not present in input user data." % user_id)
+                raise _ToolkitError(
+                    "User column '%s' not present in input user data." % user_id
+                )
 
             if cast_user_to_string_type:
                 assert new_observation_data.num_rows() != 0
                 original_user_type = user_column.dtype
                 users[user_id] = user_column.astype(str)
-                user_type=str
+                user_type = str
 
             elif user_column.dtype != user_type:
                 users[user_id] = user_column.astype(user_type)
 
         # Cast user specified in exclude to the appropriate type if necessary.
-        if user_id in exclude.column_names() and exclude[user_id].dtype!=user_type:
-                exclude[user_id] = exclude[user_id].astype(user_type)
+        if user_id in exclude.column_names() and exclude[user_id].dtype != user_type:
+            exclude[user_id] = exclude[user_id].astype(user_type)
 
         try:
             diversity = float(diversity)
         except Exception:
-            raise TypeError("Parameter diversity must be a floating point value equal to or larger than 0.")
+            raise TypeError(
+                "Parameter diversity must be a floating point value equal to or larger than 0."
+            )
 
         if diversity < 0:
-            raise TypeError("Parameter diversity must be a floating point value equal to or larger than 0.")
+            raise TypeError(
+                "Parameter diversity must be a floating point value equal to or larger than 0."
+            )
 
         if random_seed is None:
             random_seed = hash("%.20f" % _time.time())
@@ -1267,22 +1343,19 @@ class _Recommender(_Model):
             except TypeError:
                 raise TypeError("random_seed must be integer.")
 
-        opt = {'model': self.__proxy__,
-               'query': users,
-               'top_k': k,
-               'exclude': exclude,
-               'restrictions': items,
-               'new_data': new_observation_data,
-               'new_user_data': new_user_data,
-               'new_item_data': new_item_data,
-               'exclude_known': exclude_known,
-               'diversity' : diversity,
-               'random_seed' : random_seed
-               }
-
         with QuietProgress(verbose):
-            recs = self.__proxy__.recommend(users, exclude, items, new_observation_data, new_user_data,
-                new_item_data, exclude_known, k, diversity, random_seed)
+            recs = self.__proxy__.recommend(
+                users,
+                exclude,
+                items,
+                new_observation_data,
+                new_user_data,
+                new_item_data,
+                exclude_known,
+                k,
+                diversity,
+                random_seed,
+            )
 
         if cast_user_to_string_type:
             recs[user_id] = recs[user_id].astype(original_user_type)
@@ -1290,10 +1363,18 @@ class _Recommender(_Model):
         return recs
 
     def recommend_from_interactions(
-            self, observed_items, k=10, exclude=None, items=None,
-            new_user_data=None, new_item_data=None,
-            exclude_known=True, diversity=0, random_seed=None,
-            verbose=True):
+        self,
+        observed_items,
+        k=10,
+        exclude=None,
+        items=None,
+        new_user_data=None,
+        new_item_data=None,
+        exclude_known=True,
+        diversity=0,
+        random_seed=None,
+        verbose=True,
+    ):
         """
         Recommend the ``k`` highest scored items based on the
         interactions given in `observed_items.`
@@ -1391,19 +1472,19 @@ class _Recommender(_Model):
         item_type = column_types[item_id]
 
         if not hasattr(self, "_implicit_user_name"):
-            import hashlib
-            import time
-            self._implicit_user_name = None #("implicit-user-%s"
-#                                        % hashlib.md5("%0.20f" % time.time()).hexdigest()[:12])
+            self._implicit_user_name = None  # ("implicit-user-%s"
+        #                                        % hashlib.md5("%0.20f" % time.time()).hexdigest()[:12])
 
         if isinstance(observed_items, list):
-            observed_items = _SArray(observed_items, dtype = item_type)
+            observed_items = _SArray(observed_items, dtype=item_type)
         if isinstance(observed_items, _SArray):
-            observed_items = _SFrame({self.item_id : observed_items})
+            observed_items = _SFrame({self.item_id: observed_items})
 
         if not isinstance(observed_items, _SFrame):
-            raise TypeError("observed_items must be a list or SArray of items, or an SFrame of items "
-                            "and optionally ratings or other interaction information.")
+            raise TypeError(
+                "observed_items must be a list or SArray of items, or an SFrame of items "
+                "and optionally ratings or other interaction information."
+            )
 
         # Don't modify the user's argument (if it's an SFrame).
         observed_items = observed_items.copy()
@@ -1414,12 +1495,14 @@ class _Recommender(_Model):
         if user_id in observed_items.column_names():
             main_user_value = observed_items[user_id][0]
             if (observed_items[user_id] != main_user_value).any():
-                raise ValueError("To recommend items for more than one user, use `recommend()` and "
-                                 "supply new interactions using new_observation_data.")
-            users = _SArray([main_user_value], dtype = user_type)
+                raise ValueError(
+                    "To recommend items for more than one user, use `recommend()` and "
+                    "supply new interactions using new_observation_data."
+                )
+            users = _SArray([main_user_value], dtype=user_type)
 
         else:
-            users = _SArray([self._implicit_user_name], dtype = user_type)
+            users = _SArray([self._implicit_user_name], dtype=user_type)
             observed_items[user_id] = self._implicit_user_name
 
         if observed_items[user_id].dtype != user_type:
@@ -1428,33 +1511,40 @@ class _Recommender(_Model):
         # Check the rest of the arguments.
         if exclude is not None:
             if isinstance(exclude, list):
-                exclude = _SArray(exclude, dtype = item_type)
+                exclude = _SArray(exclude, dtype=item_type)
             if isinstance(exclude, _SArray):
-                exclude = _SFrame({item_id : exclude})
+                exclude = _SFrame({item_id: exclude})
             if user_id not in exclude.column_names():
                 exclude[user_id] = self._implicit_user_name
                 exclude[user_id] = exclude[user_id].astype(user_type)
 
         recommendations = self.recommend(
-            users                = users,
-            new_observation_data = observed_items,
-	    exclude		= exclude,
-            k                    = k,
-            items                = items,
-            new_user_data        = new_user_data,
-            new_item_data        = new_item_data,
-            exclude_known        = exclude_known,
-            diversity            = diversity,
-            random_seed          = random_seed,
-            verbose              = verbose)
+            users=users,
+            new_observation_data=observed_items,
+            exclude=exclude,
+            k=k,
+            items=items,
+            new_user_data=new_user_data,
+            new_item_data=new_item_data,
+            exclude_known=exclude_known,
+            diversity=diversity,
+            random_seed=random_seed,
+            verbose=verbose,
+        )
 
         del recommendations[user_id]
 
         return recommendations
 
-    def evaluate_precision_recall(self, dataset, cutoffs=list(range(1,11,1))+list(range(11,50,5)),
-                                  skip_set=None, exclude_known=True,
-                                  verbose=True, **kwargs):
+    def evaluate_precision_recall(
+        self,
+        dataset,
+        cutoffs=list(range(1, 11, 1)) + list(range(11, 50, 5)),
+        skip_set=None,
+        exclude_known=True,
+        verbose=True,
+        **kwargs
+    ):
         """
         Compute a model's precision and recall scores for a particular dataset.
 
@@ -1506,10 +1596,11 @@ class _Recommender(_Model):
 
         user_column = self.user_id
         item_column = self.item_id
-        assert user_column in dataset.column_names() and \
-               item_column in dataset.column_names(), \
-            'Provided data set must have a column pertaining to user ids and \
-             item ids, similar to what we had during training.'
+        assert (
+            user_column in dataset.column_names()
+            and item_column in dataset.column_names()
+        ), "Provided data set must have a column pertaining to user ids and \
+             item ids, similar to what we had during training."
 
         dataset = self.__prepare_dataset_parameter(dataset)
 
@@ -1517,21 +1608,30 @@ class _Recommender(_Model):
 
         dataset = dataset[[self.user_id, self.item_id]]
 
-        recs = self.recommend(users=users, k=max(cutoffs), exclude=skip_set,
-                              exclude_known=exclude_known,
-                              verbose=verbose,
-                              **kwargs)
+        recs = self.recommend(
+            users=users,
+            k=max(cutoffs),
+            exclude=skip_set,
+            exclude_known=exclude_known,
+            verbose=verbose,
+            **kwargs
+        )
 
-        precision_recall_by_user = self.__proxy__.precision_recall_by_user(dataset, recs, cutoffs)
+        precision_recall_by_user = self.__proxy__.precision_recall_by_user(
+            dataset, recs, cutoffs
+        )
 
-        ret = {'precision_recall_by_user': precision_recall_by_user}
+        ret = {"precision_recall_by_user": precision_recall_by_user}
 
         pr_agg = precision_recall_by_user.groupby(
-             'cutoff',
-             operations={'precision' : _Aggregate.MEAN('precision'),
-                         'recall'    : _Aggregate.MEAN('recall')})
+            "cutoff",
+            operations={
+                "precision": _Aggregate.MEAN("precision"),
+                "recall": _Aggregate.MEAN("recall"),
+            },
+        )
 
-        pr_agg = pr_agg[['cutoff', 'precision', 'recall']]
+        pr_agg = pr_agg[["cutoff", "precision", "recall"]]
         ret["precision_recall_overall"] = pr_agg.sort("cutoff")
 
         return ret
@@ -1569,38 +1669,55 @@ class _Recommender(_Model):
         turicreate.evaluation.rmse
         """
 
-        assert target in dataset.column_names(), \
-               'Provided dataset must contain a target column with the same \
-                name as the target used during training.'
+        assert (
+            target in dataset.column_names()
+        ), "Provided dataset must contain a target column with the same \
+                name as the target used during training."
         y = dataset[target]
         yhat = self.predict(dataset)
         user_column = self.user_id
         item_column = self.item_id
-        assert user_column in dataset.column_names() and \
-               item_column in dataset.column_names(), \
-            'Provided data set must have a column pertaining to user ids and \
-             item ids, similar to what we had during training.'
+        assert (
+            user_column in dataset.column_names()
+            and item_column in dataset.column_names()
+        ), "Provided data set must have a column pertaining to user ids and \
+             item ids, similar to what we had during training."
 
         result = dataset[[user_column, item_column]]
-        result['sq_error'] = (y - yhat) * (y - yhat)
-        rmse_by_user = result.groupby(user_column,
-                {'rmse':_turicreate.aggregate.AVG('sq_error'),
-                 'count':_turicreate.aggregate.COUNT})
-        rmse_by_user['rmse'] = rmse_by_user['rmse'].apply(lambda x: x**.5)
-        rmse_by_item = result.groupby(item_column,
-                {'rmse':_turicreate.aggregate.AVG('sq_error'),
-                 'count':_turicreate.aggregate.COUNT})
-        rmse_by_item['rmse'] = rmse_by_item['rmse'].apply(lambda x: x**.5)
-        overall_rmse = result['sq_error'].mean() ** .5
+        result["sq_error"] = (y - yhat) * (y - yhat)
+        rmse_by_user = result.groupby(
+            user_column,
+            {
+                "rmse": _turicreate.aggregate.AVG("sq_error"),
+                "count": _turicreate.aggregate.COUNT,
+            },
+        )
+        rmse_by_user["rmse"] = rmse_by_user["rmse"].apply(lambda x: x ** 0.5)
+        rmse_by_item = result.groupby(
+            item_column,
+            {
+                "rmse": _turicreate.aggregate.AVG("sq_error"),
+                "count": _turicreate.aggregate.COUNT,
+            },
+        )
+        rmse_by_item["rmse"] = rmse_by_item["rmse"].apply(lambda x: x ** 0.5)
+        overall_rmse = result["sq_error"].mean() ** 0.5
 
-        return {'rmse_by_user': rmse_by_user,
-                'rmse_by_item': rmse_by_item,
-                'rmse_overall': overall_rmse}
+        return {
+            "rmse_by_user": rmse_by_user,
+            "rmse_by_item": rmse_by_item,
+            "rmse_overall": overall_rmse,
+        }
 
-    def evaluate(self, dataset, metric='auto',
-                 exclude_known_for_precision_recall=True,
-                 target=None,
-                 verbose=True, **kwargs):
+    def evaluate(
+        self,
+        dataset,
+        metric="auto",
+        exclude_known_for_precision_recall=True,
+        target=None,
+        verbose=True,
+        **kwargs
+    ):
         r"""
         Evaluate the model's ability to make rating predictions or
         recommendations.
@@ -1688,38 +1805,53 @@ class _Recommender(_Model):
         dataset = self.__prepare_dataset_parameter(dataset)
 
         # If the model does not have a target column, compute prec-recall.
-        if metric in ['precision_recall', 'auto']:
-            results = self.evaluate_precision_recall(dataset,
-                                                     exclude_known=exclude_known_for_precision_recall,
-                                                     verbose=verbose,
-                                                     **kwargs)
+        if metric in ["precision_recall", "auto"]:
+            results = self.evaluate_precision_recall(
+                dataset,
+                exclude_known=exclude_known_for_precision_recall,
+                verbose=verbose,
+                **kwargs
+            )
             ret.update(results)
             if verbose:
                 print("\nPrecision and recall summary statistics by cutoff")
-                print(results['precision_recall_by_user'].groupby('cutoff', \
-                        {'mean_precision': _turicreate.aggregate.AVG('precision'),
-                         'mean_recall': _turicreate.aggregate.AVG('recall')}).topk('cutoff', reverse=True))
-        if metric in ['rmse', 'auto']:
+                print(
+                    results["precision_recall_by_user"]
+                    .groupby(
+                        "cutoff",
+                        {
+                            "mean_precision": _turicreate.aggregate.AVG("precision"),
+                            "mean_recall": _turicreate.aggregate.AVG("recall"),
+                        },
+                    )
+                    .topk("cutoff", reverse=True)
+                )
+        if metric in ["rmse", "auto"]:
             if target is None:
                 target = self.target
             if target is None or target == "":
-                _logging.warning("Model trained without a target. Skipping RMSE computation.")
+                _logging.warning(
+                    "Model trained without a target. Skipping RMSE computation."
+                )
             else:
                 results = self.evaluate_rmse(dataset, target)
                 ret.update(results)
 
                 if verbose:
-                    print("\nOverall RMSE:", results['rmse_overall'])
+                    print("\nOverall RMSE:", results["rmse_overall"])
                     print("\nPer User RMSE (best)")
-                    print(results['rmse_by_user'].topk('rmse', 1, reverse=True))
+                    print(results["rmse_by_user"].topk("rmse", 1, reverse=True))
                     print("\nPer User RMSE (worst)")
-                    print(results['rmse_by_user'].topk('rmse', 1))
+                    print(results["rmse_by_user"].topk("rmse", 1))
                     print("\nPer Item RMSE (best)")
-                    print(results['rmse_by_item'].topk('rmse', 1, reverse=True))
+                    print(results["rmse_by_item"].topk("rmse", 1, reverse=True))
                     print("\nPer Item RMSE (worst)")
-                    print(results['rmse_by_item'].topk('rmse', 1))
-        if metric not in ['rmse', 'precision_recall', 'auto']:
-            raise ValueError('Unknown evaluation metric %s, supported metrics are [\"rmse\", \"precision_recall\"]' % metric)
+                    print(results["rmse_by_item"].topk("rmse", 1))
+        if metric not in ["rmse", "precision_recall", "auto"]:
+            raise ValueError(
+                'Unknown evaluation metric %s, supported metrics are ["rmse", "precision_recall"]'
+                % metric
+            )
 
         return ret
 
@@ -1732,6 +1864,7 @@ class _Recommender(_Model):
 
         response = self.__proxy__.get_popularity_baseline()
         from .popularity_recommender import PopularityRecommender
+
         return PopularityRecommender(response)
 
     def _get_item_intersection_info(self, item_pairs):
@@ -1757,16 +1890,24 @@ class _Recommender(_Model):
 
         if type(item_pairs) is list:
             if not all(type(t) in [list, tuple] and len(t) == 2 for t in item_pairs):
-                raise TypeError("item_pairs must be 2-column SFrame of two item "
-                                "columns, or a list of (item_1, item_2) tuples. ")
+                raise TypeError(
+                    "item_pairs must be 2-column SFrame of two item "
+                    "columns, or a list of (item_1, item_2) tuples. "
+                )
 
             item_name = self.item_id
-            item_pairs = _turicreate.SFrame({item_name + "_1" : [v1 for v1, v2 in item_pairs],
-                                           item_name + "_2" : [v2 for v1, v2 in item_pairs]})
+            item_pairs = _turicreate.SFrame(
+                {
+                    item_name + "_1": [v1 for v1, v2 in item_pairs],
+                    item_name + "_2": [v2 for v1, v2 in item_pairs],
+                }
+            )
 
         if not isinstance(item_pairs, _turicreate.SFrame):
-            raise TypeError("item_pairs must be 2-column SFrame of two item "
-                            "columns, or a list of (item_1, item_2) tuples. ")
+            raise TypeError(
+                "item_pairs must be 2-column SFrame of two item "
+                "columns, or a list of (item_1, item_2) tuples. "
+            )
 
         response = self.__proxy__.get_item_intersection_info(item_pairs)
         return response
@@ -1784,11 +1925,12 @@ class _Recommender(_Model):
         --------
         >>> model.export_coreml('myModel.mlmodel')
         """
-        print('This model is exported as a custom Core ML model. In order to use it in your\n'
-              'application, you must also include "libRecommender.dylib". For additional\n'
-              'details see:\n'
-              'https://apple.github.io/turicreate/docs/userguide/recommender/coreml-deployment.html')
+        print(
+            "This model is exported as a custom Core ML model. In order to use it in your\n"
+            'application, you must also include "libRecommender.dylib". For additional\n'
+            "details see:\n"
+            "https://apple.github.io/turicreate/docs/userguide/recommender/coreml-deployment.html"
+        )
 
-        import turicreate as tc
         additional_user_defined_metadata = _coreml_utils._get_tc_version_info()
         self.__proxy__.export_to_coreml(filename, additional_user_defined_metadata)

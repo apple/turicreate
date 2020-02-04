@@ -3,12 +3,12 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 This package defines the Turi Create SGraph, Vertex, and Edge objects. The SGraph
 is a directed graph, consisting of a set of Vertex objects and Edges that
 connect pairs of Vertices. The methods in this module are available from the top
 level import of the turicreate package.
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -27,24 +27,25 @@ import inspect
 import copy
 
 import sys
+
 if sys.version_info.major > 2:
     from functools import reduce
 
 ## \internal Default column name for vertex id.
-_VID_COLUMN = '__id'
+_VID_COLUMN = "__id"
 
 ## \internal Default column name for source vid.
-_SRC_VID_COLUMN = '__src_id'
+_SRC_VID_COLUMN = "__src_id"
 
 ## \internal Default column name for target vid.
-_DST_VID_COLUMN = '__dst_id'
+_DST_VID_COLUMN = "__dst_id"
 
 
-#/**************************************************************************/
-#/*                                                                        */
-#/*                         SGraph Related Classes                         */
-#/*                                                                        */
-#/**************************************************************************/
+# /**************************************************************************/
+# /*                                                                        */
+# /*                         SGraph Related Classes                         */
+# /*                                                                        */
+# /**************************************************************************/
 class Vertex(object):
     """
     A vertex object, consisting of a vertex ID and a dictionary of vertex
@@ -74,7 +75,7 @@ class Vertex(object):
     >>> g = g.add_vertices(verts)
     """
 
-    __slots__ = ['vid', 'attr']
+    __slots__ = ["vid", "attr"]
 
     def __init__(self, vid, attr={}, _series=None):
         """__init__(self, vid, attr={})
@@ -129,7 +130,7 @@ class Edge(object):
     >>> g = g.add_vertices(verts).add_edges(edges)
     """
 
-    __slots__ = ['src_vid', 'dst_vid', 'attr']
+    __slots__ = ["src_vid", "dst_vid", "attr"]
 
     def __init__(self, src_vid, dst_vid, attr={}, _series=None):
         """__init__(self, vid, attr={})
@@ -147,12 +148,26 @@ class Edge(object):
             self.attr = attr
 
     def __repr__(self):
-        return ("E(" + str(self.src_vid) + " -> " + str(self.dst_vid) + ", " +
-                str(self.attr) + ")")
+        return (
+            "E("
+            + str(self.src_vid)
+            + " -> "
+            + str(self.dst_vid)
+            + ", "
+            + str(self.attr)
+            + ")"
+        )
 
     def __str__(self):
-        return ("E(" + str(self.src_vid) + " -> " + str(self.dst_vid) + ", " +
-                str(self.attr) + ")")
+        return (
+            "E("
+            + str(self.src_vid)
+            + " -> "
+            + str(self.dst_vid)
+            + ", "
+            + str(self.attr)
+            + ")"
+        )
 
 
 class SGraph(object):
@@ -214,10 +229,17 @@ class SGraph(object):
     >>> g = g.add_edges(Edge(1, 2))
     """
 
-    __slots__ = ['__proxy__', '_vertices', '_edges']
+    __slots__ = ["__proxy__", "_vertices", "_edges"]
 
-    def __init__(self, vertices=None, edges=None, vid_field='__id',
-                 src_field='__src_id', dst_field='__dst_id', _proxy=None):
+    def __init__(
+        self,
+        vertices=None,
+        edges=None,
+        vid_field="__id",
+        src_field="__src_id",
+        dst_field="__dst_id",
+        _proxy=None,
+    ):
         """
         __init__(vertices=None, edges=None, vid_field='__id', src_field='__src_id', dst_field='__dst_id')
 
@@ -243,7 +265,7 @@ class SGraph(object):
         dst_field : str, optional
             The name of target id column in the `edges` SFrame.
         """
-        if (_proxy is None):
+        if _proxy is None:
             self.__proxy__ = UnityGraphProxy()
             if vertices is not None:
                 self.__proxy__ = self.add_vertices(vertices, vid_field).__proxy__
@@ -260,8 +282,11 @@ class SGraph(object):
 
     def __repr__(self):
         """Returns a readable string representation summarizing the graph."""
-        return "SGraph(%s)\nVertex Fields:%s\nEdge Fields:%s" % \
-               (str(self.summary()), str(self.get_vertex_fields()), str(self.get_edge_fields()))
+        return "SGraph(%s)\nVertex Fields:%s\nEdge Fields:%s" % (
+            str(self.summary()),
+            str(self.get_vertex_fields()),
+            str(self.get_edge_fields()),
+        )
 
     def __copy__(self):
         return SGraph(_proxy=self.__proxy__)
@@ -385,7 +410,7 @@ class SGraph(object):
         ret = self.__proxy__.summary()
         return dict(ret.items())
 
-    def get_vertices(self, ids=[], fields={}, format='sframe'):
+    def get_vertices(self, ids=[], fields={}, format="sframe"):
         """
         get_vertices(self, ids=list(), fields={}, format='sframe')
         Return a collection of vertices and their attributes.
@@ -459,26 +484,28 @@ class SGraph(object):
             ids = [ids]
 
         if type(ids) not in (list, SArray):
-            raise TypeError('ids must be list or SArray type')
+            raise TypeError("ids must be list or SArray type")
 
         with cython_context():
             sf = SFrame(_proxy=self.__proxy__.get_vertices(ids, fields))
 
-        if (format == 'sframe'):
+        if format == "sframe":
             return sf
-        elif (format == 'dataframe'):
-            assert HAS_PANDAS, 'Cannot use dataframe because Pandas is not available or version is too low.'
+        elif format == "dataframe":
+            assert (
+                HAS_PANDAS
+            ), "Cannot use dataframe because Pandas is not available or version is too low."
             if sf.num_rows() == 0:
                 return pd.DataFrame()
             else:
                 df = sf.head(sf.num_rows()).to_dataframe()
-                return df.set_index('__id')
-        elif (format == 'list'):
+                return df.set_index("__id")
+        elif format == "list":
             return _dataframe_to_vertex_list(sf.to_dataframe())
         else:
             raise ValueError("Invalid format specifier")
 
-    def get_edges(self, src_ids=[], dst_ids=[], fields={}, format='sframe'):
+    def get_edges(self, src_ids=[], dst_ids=[], fields={}, format="sframe"):
         """
         get_edges(self, src_ids=list(), dst_ids=list(), fields={}, format='sframe')
         Return a collection of edges and their attributes. This function is used
@@ -560,9 +587,9 @@ class SGraph(object):
             dst_ids = [dst_ids]
 
         if type(src_ids) not in (list, SArray):
-            raise TypeError('src_ids must be list or SArray type')
+            raise TypeError("src_ids must be list or SArray type")
         if type(dst_ids) not in (list, SArray):
-            raise TypeError('dst_ids must be list or SArray type')
+            raise TypeError("dst_ids must be list or SArray type")
 
         # implicit Nones
         if len(src_ids) == 0 and len(dst_ids) > 0:
@@ -574,15 +601,17 @@ class SGraph(object):
         with cython_context():
             sf = SFrame(_proxy=self.__proxy__.get_edges(src_ids, dst_ids, fields))
 
-        if (format == 'sframe'):
+        if format == "sframe":
             return sf
-        if (format == 'dataframe'):
-            assert HAS_PANDAS, 'Cannot use dataframe because Pandas is not available or version is too low.'
+        if format == "dataframe":
+            assert (
+                HAS_PANDAS
+            ), "Cannot use dataframe because Pandas is not available or version is too low."
             if sf.num_rows() == 0:
                 return pd.DataFrame()
             else:
                 return sf.head(sf.num_rows()).to_dataframe()
-        elif (format == 'list'):
+        elif format == "list":
             return _dataframe_to_edge_list(sf.to_dataframe())
         else:
             raise ValueError("Invalid format specifier")
@@ -721,7 +750,9 @@ class SGraph(object):
         sf = _edge_data_to_sframe(edges, src_field, dst_field)
 
         with cython_context():
-            proxy = self.__proxy__.add_edges(sf.__proxy__, _SRC_VID_COLUMN, _DST_VID_COLUMN)
+            proxy = self.__proxy__.add_edges(
+                sf.__proxy__, _SRC_VID_COLUMN, _DST_VID_COLUMN
+            )
             return SGraph(_proxy=proxy)
 
     def get_fields(self):
@@ -840,10 +871,10 @@ class SGraph(object):
         >>> g2 = g.select_fields(fields=['breed'])
         """
 
-        if (type(fields) is str):
+        if type(fields) is str:
             fields = [fields]
         if not isinstance(fields, list) or not all(type(x) is str for x in fields):
-            raise TypeError('\"fields\" must be a str or list[str]')
+            raise TypeError('"fields" must be a str or list[str]')
 
         vfields = self.__proxy__.get_vertex_fields()
         efields = self.__proxy__.get_edge_fields()
@@ -858,7 +889,7 @@ class SGraph(object):
                 selected_efields.append(f)
                 found = True
             if not found:
-                raise ValueError('Field \'%s\' not in graph' % f)
+                raise ValueError("Field '%s' not in graph" % f)
 
         with cython_context():
             proxy = self.__proxy__
@@ -867,7 +898,7 @@ class SGraph(object):
             return SGraph(_proxy=proxy)
 
     def triple_apply(self, triple_apply_fn, mutated_fields, input_fields=None):
-        '''
+        """
         Apply a transform function to each edge and its associated source and
         target vertices in parallel. Each edge is visited once and in parallel.
         Modification to vertex data is protected by lock. The effect on the
@@ -967,25 +998,29 @@ class SGraph(object):
         dtype: int
         Rows: 5
         [4, 1, 1, 1, 4]
-        '''
+        """
 
         assert inspect.isfunction(triple_apply_fn), "Input must be a function"
         if not (type(mutated_fields) is list or type(mutated_fields) is str):
-            raise TypeError('mutated_fields must be str or list of str')
-        if not (input_fields is None or type(input_fields) is list or type(input_fields) is str):
-            raise TypeError('input_fields must be str or list of str')
+            raise TypeError("mutated_fields must be str or list of str")
+        if not (
+            input_fields is None
+            or type(input_fields) is list
+            or type(input_fields) is str
+        ):
+            raise TypeError("input_fields must be str or list of str")
         if type(mutated_fields) == str:
             mutated_fields = [mutated_fields]
-        if len(mutated_fields) is 0:
-            raise ValueError('mutated_fields cannot be empty')
-        for f in ['__id', '__src_id', '__dst_id']:
+        if len(mutated_fields) == 0:
+            raise ValueError("mutated_fields cannot be empty")
+        for f in ["__id", "__src_id", "__dst_id"]:
             if f in mutated_fields:
-                raise ValueError('mutated_fields cannot contain %s' % f)
+                raise ValueError("mutated_fields cannot contain %s" % f)
 
         all_fields = self.get_fields()
         if not set(mutated_fields).issubset(set(all_fields)):
             extra_fields = list(set(mutated_fields).difference(set(all_fields)))
-            raise ValueError('graph does not contain fields: %s' % str(extra_fields))
+            raise ValueError("graph does not contain fields: %s" % str(extra_fields))
 
         # select input fields
         if input_fields is None:
@@ -1001,18 +1036,27 @@ class SGraph(object):
         nativefn = None
         try:
             from .. import extensions
+
             nativefn = extensions._build_native_function_call(triple_apply_fn)
         except:
             # failure are fine. we just fall out into the next few phases
             pass
         if nativefn is not None:
             with cython_context():
-                return SGraph(_proxy=g.__proxy__.lambda_triple_apply_native(nativefn, mutated_fields))
+                return SGraph(
+                    _proxy=g.__proxy__.lambda_triple_apply_native(
+                        nativefn, mutated_fields
+                    )
+                )
         else:
             with cython_context():
-                return SGraph(_proxy=g.__proxy__.lambda_triple_apply(triple_apply_fn, mutated_fields))
+                return SGraph(
+                    _proxy=g.__proxy__.lambda_triple_apply(
+                        triple_apply_fn, mutated_fields
+                    )
+                )
 
-    def save(self, filename, format='auto'):
+    def save(self, filename, format="auto"):
         """
         Save the SGraph to disk. If the graph is saved in binary format, the
         graph can be re-loaded using the :py:func:`load_sgraph` method.
@@ -1049,15 +1093,17 @@ class SGraph(object):
         >>> g.save('mygraph.json', format='json')
         """
 
-        if format is 'auto':
-            if filename.endswith(('.json', '.json.gz')):
-                format = 'json'
+        if format == "auto":
+            if filename.endswith((".json", ".json.gz")):
+                format = "json"
             else:
-                format = 'binary'
+                format = "binary"
 
-        if format not in ['binary', 'json', 'csv']:
-            raise ValueError('Invalid format: %s. Supported formats are: %s'
-                             % (format, ['binary', 'json', 'csv']))
+        if format not in ["binary", "json", "csv"]:
+            raise ValueError(
+                "Invalid format: %s. Supported formats are: %s"
+                % (format, ["binary", "json", "csv"])
+            )
         with cython_context():
             self.__proxy__.save_graph(_make_internal_url(filename), format)
 
@@ -1111,7 +1157,6 @@ class SGraph(object):
                                           full_subgraph=True)
         """
 
-
         verts = ids
 
         ## find the vertices within radius (and the path edges)
@@ -1119,13 +1164,17 @@ class SGraph(object):
             edges_out = self.get_edges(src_ids=verts)
             edges_in = self.get_edges(dst_ids=verts)
 
-            verts = list(edges_in['__src_id']) + list(edges_in['__dst_id']) + \
-                list(edges_out['__src_id']) + list(edges_out['__dst_id'])
+            verts = (
+                list(edges_in["__src_id"])
+                + list(edges_in["__dst_id"])
+                + list(edges_out["__src_id"])
+                + list(edges_out["__dst_id"])
+            )
             verts = list(set(verts))
 
         ## make a new graph to return and add the vertices
         g = SGraph()
-        g = g.add_vertices(self.get_vertices(verts), vid_field='__id')
+        g = g.add_vertices(self.get_vertices(verts), vid_field="__id")
 
         ## add the requested edge set
         if full_subgraph is True:
@@ -1142,16 +1191,16 @@ class SGraph(object):
             path_edges = edges_out.append(edges_in)
             edges = path_edges.groupby(path_edges.column_names(), {})
 
-        g = g.add_edges(edges, src_field='__src_id', dst_field='__dst_id')
+        g = g.add_edges(edges, src_field="__src_id", dst_field="__dst_id")
         return g
 
 
-#/**************************************************************************/
-#/*                                                                        */
-#/*                            Module Function                             */
-#/*                                                                        */
-#/**************************************************************************/
-def load_sgraph(filename, format='binary', delimiter='auto'):
+# /**************************************************************************/
+# /*                                                                        */
+# /*                            Module Function                             */
+# /*                                                                        */
+# /**************************************************************************/
+def load_sgraph(filename, format="binary", delimiter="auto"):
     """
     Load SGraph from text file or previously saved SGraph binary.
 
@@ -1193,50 +1242,57 @@ def load_sgraph(filename, format='binary', delimiter='auto'):
     >>> g2 = turicreate.load_sgraph('mygraph')
     """
 
-
-    if not format in ['binary', 'snap', 'csv', 'tsv']:
-        raise ValueError('Invalid format: %s' % format)
+    if not format in ["binary", "snap", "csv", "tsv"]:
+        raise ValueError("Invalid format: %s" % format)
 
     with cython_context():
         g = None
-        if format is 'binary':
+        if format == "binary":
             proxy = glconnect.get_unity().load_graph(_make_internal_url(filename))
             g = SGraph(_proxy=proxy)
-        elif format is 'snap':
-            if delimiter == 'auto':
-                delimiter = '\t'
-            sf = SFrame.read_csv(filename, comment_char='#', delimiter=delimiter,
-                                 header=False, column_type_hints=int)
-            g = SGraph().add_edges(sf, 'X1', 'X2')
-        elif format is 'csv':
-            if delimiter == 'auto':
-                delimiter = ','
+        elif format == "snap":
+            if delimiter == "auto":
+                delimiter = "\t"
+            sf = SFrame.read_csv(
+                filename,
+                comment_char="#",
+                delimiter=delimiter,
+                header=False,
+                column_type_hints=int,
+            )
+            g = SGraph().add_edges(sf, "X1", "X2")
+        elif format == "csv":
+            if delimiter == "auto":
+                delimiter = ","
             sf = SFrame.read_csv(filename, header=False, delimiter=delimiter)
-            g = SGraph().add_edges(sf, 'X1', 'X2')
-        elif format is 'tsv':
-            if delimiter == 'auto':
-                delimiter = '\t'
+            g = SGraph().add_edges(sf, "X1", "X2")
+        elif format == "tsv":
+            if delimiter == "auto":
+                delimiter = "\t"
             sf = SFrame.read_csv(filename, header=False, delimiter=delimiter)
-            g = SGraph().add_edges(sf, 'X1', 'X2')
+            g = SGraph().add_edges(sf, "X1", "X2")
         g.summary()  # materialize
         return g
 
 
-#/**************************************************************************/
-#/*                                                                        */
-#/*                            Helper Function                             */
-#/*                                                                        */
-#/**************************************************************************/
+# /**************************************************************************/
+# /*                                                                        */
+# /*                            Helper Function                             */
+# /*                                                                        */
+# /**************************************************************************/
 def _vertex_list_to_dataframe(ls, id_column_name):
     """
     Convert a list of vertices into dataframe.
     """
-    assert HAS_PANDAS, 'Cannot use dataframe because Pandas is not available or version is too low.'
+    assert (
+        HAS_PANDAS
+    ), "Cannot use dataframe because Pandas is not available or version is too low."
     cols = reduce(set.union, (set(v.attr.keys()) for v in ls))
     df = pd.DataFrame({id_column_name: [v.vid for v in ls]})
     for c in cols:
         df[c] = [v.attr.get(c) for v in ls]
     return df
+
 
 def _vertex_list_to_sframe(ls, id_column_name):
     """
@@ -1256,22 +1312,29 @@ def _vertex_list_to_sframe(ls, id_column_name):
             sf[col] = [val]
 
     else:
-        raise TypeError('Vertices type {} is Not supported.'.format(type(ls)))
+        raise TypeError("Vertices type {} is Not supported.".format(type(ls)))
 
     return sf
+
 
 def _edge_list_to_dataframe(ls, src_column_name, dst_column_name):
     """
     Convert a list of edges into dataframe.
     """
-    assert HAS_PANDAS, 'Cannot use dataframe because Pandas is not available or version is too low.'
+    assert (
+        HAS_PANDAS
+    ), "Cannot use dataframe because Pandas is not available or version is too low."
     cols = reduce(set.union, (set(e.attr.keys()) for e in ls))
-    df = pd.DataFrame({
-        src_column_name: [e.src_vid for e in ls],
-        dst_column_name: [e.dst_vid for e in ls]})
+    df = pd.DataFrame(
+        {
+            src_column_name: [e.src_vid for e in ls],
+            dst_column_name: [e.dst_vid for e in ls],
+        }
+    )
     for c in cols:
         df[c] = [e.attr.get(c) for e in ls]
     return df
+
 
 def _edge_list_to_sframe(ls, src_column_name, dst_column_name):
     """
@@ -1291,9 +1354,10 @@ def _edge_list_to_sframe(ls, src_column_name, dst_column_name):
         sf[dst_column_name] = [ls.dst_vid]
 
     else:
-        raise TypeError('Edges type {} is Not supported.'.format(type(ls)))
+        raise TypeError("Edges type {} is Not supported.".format(type(ls)))
 
     return sf
+
 
 def _dataframe_to_vertex_list(df):
     """
@@ -1301,7 +1365,9 @@ def _dataframe_to_vertex_list(df):
     """
     cols = df.columns
     if len(cols):
-        assert _VID_COLUMN in cols, "Vertex DataFrame must contain column %s" % _VID_COLUMN
+        assert _VID_COLUMN in cols, (
+            "Vertex DataFrame must contain column %s" % _VID_COLUMN
+        )
         df = df[cols].T
         ret = [Vertex(None, _series=df[col]) for col in df]
         return ret
@@ -1315,8 +1381,12 @@ def _dataframe_to_edge_list(df):
     """
     cols = df.columns
     if len(cols):
-        assert _SRC_VID_COLUMN in cols, "Vertex DataFrame must contain column %s" % _SRC_VID_COLUMN
-        assert _DST_VID_COLUMN in cols, "Vertex DataFrame must contain column %s" % _DST_VID_COLUMN
+        assert _SRC_VID_COLUMN in cols, (
+            "Vertex DataFrame must contain column %s" % _SRC_VID_COLUMN
+        )
+        assert _DST_VID_COLUMN in cols, (
+            "Vertex DataFrame must contain column %s" % _DST_VID_COLUMN
+        )
         df = df[cols].T
         ret = [Edge(None, None, _series=df[col]) for col in df]
         return ret
@@ -1340,7 +1410,7 @@ def _vertex_data_to_sframe(data, vid_field):
         return data_copy
 
     if type(data) == Vertex or type(data) == list:
-        return _vertex_list_to_sframe(data, '__id')
+        return _vertex_list_to_sframe(data, "__id")
 
     elif HAS_PANDAS and type(data) == pd.DataFrame:
         if vid_field is None:
@@ -1349,24 +1419,29 @@ def _vertex_data_to_sframe(data, vid_field):
                 if not ("index" in data.columns):
                     # pandas reset_index() will insert a new column of name "index".
                     sf = SFrame(data.reset_index())  # "index"
-                    sf.rename({'index': _VID_COLUMN}, inplace=True)
+                    sf.rename({"index": _VID_COLUMN}, inplace=True)
                     return sf
                 else:
                     # pandas reset_index() will insert a new column of name "level_0" if there exists a column named "index".
                     sf = SFrame(data.reset_index())  # "level_0"
-                    sf.rename({'level_0': _VID_COLUMN}, inplace=True)
+                    sf.rename({"level_0": _VID_COLUMN}, inplace=True)
                     return sf
             else:
-                raise ValueError("Index of the vertices dataframe is not unique, \
-                        try specifying vid_field name to use a column for vertex ids.")
+                raise ValueError(
+                    "Index of the vertices dataframe is not unique, \
+                        try specifying vid_field name to use a column for vertex ids."
+                )
         else:
             sf = SFrame(data)
             if _VID_COLUMN in sf.column_names():
-                raise ValueError('%s reserved vid column name already exists in the SFrame' % _VID_COLUMN)
+                raise ValueError(
+                    "%s reserved vid column name already exists in the SFrame"
+                    % _VID_COLUMN
+                )
             sf.rename({vid_field: _VID_COLUMN}, inplace=True)
             return sf
     else:
-        raise TypeError('Vertices type %s is Not supported.' % str(type(data)))
+        raise TypeError("Vertices type %s is Not supported." % str(type(data)))
 
 
 def _edge_data_to_sframe(data, src_field, dst_field):
@@ -1378,9 +1453,12 @@ def _edge_data_to_sframe(data, src_field, dst_field):
     if isinstance(data, SFrame):
         # '__src_vid' and '__dst_vid' already in the sframe, and
         # it is ok to not specify src_field and dst_field
-        if src_field is None and dst_field is None and \
-           _SRC_VID_COLUMN in data.column_names() and \
-           _DST_VID_COLUMN in data.column_names():
+        if (
+            src_field is None
+            and dst_field is None
+            and _SRC_VID_COLUMN in data.column_names()
+            and _DST_VID_COLUMN in data.column_names()
+        ):
             return data
         if src_field is None:
             raise ValueError("src_field must be specified for SFrame input")
@@ -1395,7 +1473,9 @@ def _edge_data_to_sframe(data, src_field, dst_field):
             data_copy.rename({_SRC_VID_COLUMN: _DST_VID_COLUMN}, inplace=True)
             data_copy[_SRC_VID_COLUMN] = dst_id_column
         else:
-            data_copy.rename({src_field: _SRC_VID_COLUMN, dst_field: _DST_VID_COLUMN}, inplace=True)
+            data_copy.rename(
+                {src_field: _SRC_VID_COLUMN, dst_field: _DST_VID_COLUMN}, inplace=True
+            )
         return data_copy
 
     elif HAS_PANDAS and type(data) == pd.DataFrame:
@@ -1412,7 +1492,9 @@ def _edge_data_to_sframe(data, src_field, dst_field):
             sf.rename({_SRC_VID_COLUMN: _DST_VID_COLUMN}, inplace=True)
             sf[_SRC_VID_COLUMN] = dst_id_column
         else:
-            sf.rename({src_field: _SRC_VID_COLUMN, dst_field: _DST_VID_COLUMN}, inplace=True)
+            sf.rename(
+                {src_field: _SRC_VID_COLUMN, dst_field: _DST_VID_COLUMN}, inplace=True
+            )
         return sf
 
     elif type(data) == Edge:
@@ -1422,7 +1504,8 @@ def _edge_data_to_sframe(data, src_field, dst_field):
         return _edge_list_to_sframe(data, _SRC_VID_COLUMN, _DST_VID_COLUMN)
 
     else:
-        raise TypeError('Edges type %s is Not supported.' % str(type(data)))
+        raise TypeError("Edges type %s is Not supported." % str(type(data)))
+
 
 ## Hack: overriding GFrame class name to make it appears as SFrame##
 GFrame.__name__ = SFrame.__name__

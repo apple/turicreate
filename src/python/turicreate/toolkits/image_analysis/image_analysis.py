@@ -9,7 +9,14 @@ from __future__ import absolute_import as _
 from ...data_structures.image import Image as _Image
 
 
-def load_images(url, format='auto', with_path=True, recursive=True, ignore_failure=True, random_order=False):
+def load_images(
+    url,
+    format="auto",
+    with_path=True,
+    recursive=True,
+    ignore_failure=True,
+    random_order=False,
+):
     """
     Loads images from a directory. JPEG and PNG images are supported.
 
@@ -55,9 +62,10 @@ def load_images(url, format='auto', with_path=True, recursive=True, ignore_failu
     ...                                                       recursive=True)
     """
     from ... import extensions as _extensions
-    from ...util import _make_internal_url
-    return _extensions.load_images(url, format, with_path,
-                                     recursive, ignore_failure, random_order)
+
+    return _extensions.load_images(
+        url, format, with_path, recursive, ignore_failure, random_order
+    )
 
 
 def _decode(image_data):
@@ -66,15 +74,14 @@ def _decode(image_data):
     """
     from ...data_structures.sarray import SArray as _SArray
     from ... import extensions as _extensions
+
     if type(image_data) is _SArray:
         return _extensions.decode_image_sarray(image_data)
     elif type(image_data) is _Image:
         return _extensions.decode_image(image_data)
 
 
-
-def resize(image, width, height, channels=None, decode=False,
-           resample='nearest'):
+def resize(image, width, height, channels=None, decode=False, resample="nearest"):
     """
     Resizes the image or SArray of Images to a specific width, height, and
     number of channels.
@@ -135,7 +142,7 @@ def resize(image, width, height, channels=None, decode=False,
 
     if height < 0 or width < 0:
         raise ValueError("Cannot resize to negative sizes")
-    if resample not in ('nearest', 'bilinear'):
+    if resample not in ("nearest", "bilinear"):
         raise ValueError("Unknown resample option: '%s'" % resample)
 
     from ...data_structures.sarray import SArray as _SArray
@@ -144,19 +151,27 @@ def resize(image, width, height, channels=None, decode=False,
 
     if type(image) is _Image:
 
-        assert resample in ('nearest', 'bilinear')
-        resample_method = 0 if resample == 'nearest' else 1
+        assert resample in ("nearest", "bilinear")
+        resample_method = 0 if resample == "nearest" else 1
 
         if channels is None:
             channels = image.channels
         if channels <= 0:
             raise ValueError("cannot resize images to 0 or fewer channels")
-        return _extensions.resize_image(image, width, height, channels, decode, resample_method)
+        return _extensions.resize_image(
+            image, width, height, channels, decode, resample_method
+        )
     elif type(image) is _SArray:
         if channels is None:
             channels = 3
         if channels <= 0:
             raise ValueError("cannot resize images to 0 or fewer channels")
-        return image.apply(lambda x: _tc.image_analysis.resize(x, width, height, channels, decode, resample))
+        return image.apply(
+            lambda x: _tc.image_analysis.resize(
+                x, width, height, channels, decode, resample
+            )
+        )
     else:
-        raise ValueError("Cannot call 'resize' on objects that are not either an Image or SArray of Images")
+        raise ValueError(
+            "Cannot call 'resize' on objects that are not either an Image or SArray of Images"
+        )

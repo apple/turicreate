@@ -13,23 +13,29 @@ from __future__ import absolute_import as _
 from turicreate.toolkits._model import _get_default_options_wrapper
 import turicreate as _turicreate
 from turicreate.toolkits.recommender.util import _Recommender
-from turicreate.data_structures.sframe import SFrame as _SFrame 
+from turicreate.data_structures.sframe import SFrame as _SFrame
 
-def create(observation_data,
-           user_id='user_id', item_id='item_id', target=None,
-           user_data=None, item_data=None,
-           num_factors=8,
-           regularization=1e-8,
-           linear_regularization=1e-10,
-           side_data_factorization=True,
-           nmf=False,
-           binary_target=False,
-           max_iterations=50,
-           sgd_step_size=0,
-           random_seed=0,
-           solver = 'auto',
-           verbose=True,
-           **kwargs):
+
+def create(
+    observation_data,
+    user_id="user_id",
+    item_id="item_id",
+    target=None,
+    user_data=None,
+    item_data=None,
+    num_factors=8,
+    regularization=1e-8,
+    linear_regularization=1e-10,
+    side_data_factorization=True,
+    nmf=False,
+    binary_target=False,
+    max_iterations=50,
+    sgd_step_size=0,
+    random_seed=0,
+    solver="auto",
+    verbose=True,
+    **kwargs
+):
     """Create a FactorizationRecommender that learns latent factors for each
     user and item and uses them to make rating predictions. This includes
     both standard matrix factorization as well as factorization machines models
@@ -186,8 +192,9 @@ def create(observation_data,
 
     """
     from turicreate._cython.cy_server import QuietProgress
+
     if not (isinstance(observation_data, _SFrame)):
-        raise TypeError('observation_data input must be a SFrame')
+        raise TypeError("observation_data input must be a SFrame")
     opts = {}
     model_proxy = _turicreate.extensions.factorization_recommender()
     model_proxy.init_options(opts)
@@ -196,24 +203,23 @@ def create(observation_data,
         user_data = _turicreate.SFrame()
     if item_data is None:
         item_data = _turicreate.SFrame()
-    nearest_items = _turicreate.SFrame()
 
-    opts = {'user_id'                 : user_id,
-            'item_id'                 : item_id,
-            'target'                  : target,
-            'random_seed'             : random_seed,
-            'num_factors'             : num_factors,
-            'regularization'          : regularization,
-            'linear_regularization'   : linear_regularization,
-            'binary_target'           : binary_target,
-            'max_iterations'          : max_iterations,
-            'sgd_step_size'           : sgd_step_size,
-            'solver'                  : solver,
-            'side_data_factorization' : side_data_factorization,
-
+    opts = {
+        "user_id": user_id,
+        "item_id": item_id,
+        "target": target,
+        "random_seed": random_seed,
+        "num_factors": num_factors,
+        "regularization": regularization,
+        "linear_regularization": linear_regularization,
+        "binary_target": binary_target,
+        "max_iterations": max_iterations,
+        "sgd_step_size": sgd_step_size,
+        "solver": solver,
+        "side_data_factorization": side_data_factorization,
         # has no effect in the c++ end; ignore.
-
-            'nmf'                     : nmf}
+        "nmf": nmf,
+    }
 
     if kwargs:
         try:
@@ -223,21 +229,24 @@ def create(observation_data,
 
         bad_arguments = set(kwargs.keys()).difference(possible_args)
         if bad_arguments:
-            raise TypeError("Bad Keyword Arguments: " + ', '.join(bad_arguments))
+            raise TypeError("Bad Keyword Arguments: " + ", ".join(bad_arguments))
 
         opts.update(kwargs)
 
-    extra_data = {"nearest_items" : _turicreate.SFrame()}
+    extra_data = {"nearest_items": _turicreate.SFrame()}
 
     with QuietProgress(verbose):
         model_proxy.train(observation_data, user_data, item_data, opts, extra_data)
 
     return FactorizationRecommender(model_proxy)
 
+
 _get_default_options = _get_default_options_wrapper(
-                          'factorization_recommender',
-                          'recommender.factorization_recommender',
-                          'FactorizationRecommender')
+    "factorization_recommender",
+    "recommender.factorization_recommender",
+    "FactorizationRecommender",
+)
+
 
 class FactorizationRecommender(_Recommender):
     r"""
@@ -400,9 +409,8 @@ class FactorizationRecommender(_Recommender):
     """
 
     def __init__(self, model_proxy):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model_proxy
-
 
     @classmethod
     def _native_name(cls):

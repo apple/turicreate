@@ -26,6 +26,7 @@ import textwrap as _textwrap
 from turicreate import SFrame as _SFrame
 import turicreate as _tc
 
+
 class _ColumnFunctionTransformation(_TransformerBase, ExposeAttributesFromProxy):
     """
     Utility transformer: Passes all specified columns through a given function.
@@ -39,25 +40,32 @@ class _ColumnFunctionTransformation(_TransformerBase, ExposeAttributesFromProxy)
     def _setup(self):
         self.__proxy__ = _PythonProxy()
 
-
-    def __init__(self, features=None, excluded_features=None, output_column_prefix=None,
-                 transform_function = lambda x: x, transform_function_name = "none"):
+    def __init__(
+        self,
+        features=None,
+        excluded_features=None,
+        output_column_prefix=None,
+        transform_function=lambda x: x,
+        transform_function_name="none",
+    ):
 
         self._setup()
 
         # Process and make a copy of the features, exclude.
-        _features, _exclude = _internal_utils.process_features(features, excluded_features)
+        _features, _exclude = _internal_utils.process_features(
+            features, excluded_features
+        )
 
-        #Type check
+        # Type check
         _raise_error_if_not_of_type(output_column_prefix, [str, type(None)])
 
         state = {}
-        state['output_column_prefix'] = output_column_prefix
-        state['features'] = _features
-        state['excluded_features'] = _exclude
-        state['fitted'] = False
-        state['transform_function'] = transform_function
-        state['transform_function_name'] = transform_function_name
+        state["output_column_prefix"] = output_column_prefix
+        state["features"] = _features
+        state["excluded_features"] = _exclude
+        state["fitted"] = False
+        state["transform_function"] = transform_function
+        state["transform_function_name"] = transform_function_name
 
         if _exclude:
             self._exclude = True
@@ -83,8 +91,8 @@ class _ColumnFunctionTransformation(_TransformerBase, ExposeAttributesFromProxy)
         """
         state, _exclude, _features = unpickler.load()
 
-        features = state['features']
-        excluded_features = state['excluded_features']
+        features = state["features"]
+        excluded_features = state["excluded_features"]
 
         model = cls.__new__(cls)
         model._setup()
@@ -114,8 +122,7 @@ class _ColumnFunctionTransformation(_TransformerBase, ExposeAttributesFromProxy)
         >>> loaded_model = turicreate.load_model('my_model_file')
         """
         raise NotImplementedError("save/load not implemented for feature transformers")
-        pickler.dump( (self.__proxy__.state, self._exclude, self._features) )
-
+        pickler.dump((self.__proxy__.state, self._exclude, self._features))
 
     def _get_summary_struct(self):
         """
@@ -138,9 +145,9 @@ class _ColumnFunctionTransformation(_TransformerBase, ExposeAttributesFromProxy)
         fields = [
             ("Features", "features"),
             ("Excluded_features", "excluded_features"),
-            ("Transform", "transform_function_name")
+            ("Transform", "transform_function_name"),
         ]
-        section_titles = ['Model fields']
+        section_titles = ["Model fields"]
 
         return ([fields], section_titles)
 
@@ -156,13 +163,15 @@ class _ColumnFunctionTransformation(_TransformerBase, ExposeAttributesFromProxy)
         _raise_error_if_not_sframe(data, "data")
 
         fitted_state = {}
-        feature_columns = _internal_utils.get_column_names(data, self._exclude, self._features)
+        feature_columns = _internal_utils.get_column_names(
+            data, self._exclude, self._features
+        )
 
         if not feature_columns:
             raise RuntimeError("No valid feature columns specified in transformation.")
 
-        fitted_state['features'] = feature_columns
-        fitted_state['fitted'] = True
+        fitted_state["features"] = feature_columns
+        fitted_state["fitted"] = True
 
         self.__proxy__.update(fitted_state)
 
@@ -182,7 +191,7 @@ class _ColumnFunctionTransformation(_TransformerBase, ExposeAttributesFromProxy)
         if output_column_prefix is None:
             prefix = ""
         else:
-            prefix = output_column_prefix + '.'
+            prefix = output_column_prefix + "."
 
         transform_function = self._get("transform_function")
 
@@ -212,10 +221,14 @@ class _interpretations_class(object):
 
     def __get_copy_transform(self, column_name, output_column_prefix):
         if output_column_prefix:
-            return [_ColumnFunctionTransformation(
-                features = [column_name], transform_function = lambda x: x,
-                output_column_prefix = output_column_prefix,
-                transform_function_name = "identity")]
+            return [
+                _ColumnFunctionTransformation(
+                    features=[column_name],
+                    transform_function=lambda x: x,
+                    output_column_prefix=output_column_prefix,
+                    transform_function_name="identity",
+                )
+            ]
         else:
             return []
 
@@ -230,15 +243,20 @@ class _interpretations_class(object):
         from ._ngram_counter import NGramCounter
         from ._tfidf import TFIDF
 
-        return [NGramCounter(features=[column_name],
-                             n = 3,
-                             method = "character",
-                             output_column_prefix = output_column_prefix),
-
-                 TFIDF(features=[column_name],
-                       min_document_frequency=0.01,
-                       max_document_frequency=0.5,
-                       output_column_prefix = output_column_prefix)]
+        return [
+            NGramCounter(
+                features=[column_name],
+                n=3,
+                method="character",
+                output_column_prefix=output_column_prefix,
+            ),
+            TFIDF(
+                features=[column_name],
+                min_document_frequency=0.01,
+                max_document_frequency=0.5,
+                output_column_prefix=output_column_prefix,
+            ),
+        ]
 
     short_text__str.description = "3-Character NGram Counts -> TFIDF"
     short_text__str.output_type = dict
@@ -254,15 +272,20 @@ class _interpretations_class(object):
         from ._ngram_counter import NGramCounter
         from ._tfidf import TFIDF
 
-        return [NGramCounter(features=[column_name],
-                             n = 2,
-                             method = "word",
-                             output_column_prefix = output_column_prefix),
-
-                 TFIDF(features=[column_name],
-                       min_document_frequency=0.01,
-                       max_document_frequency=0.5,
-                       output_column_prefix = output_column_prefix)]
+        return [
+            NGramCounter(
+                features=[column_name],
+                n=2,
+                method="word",
+                output_column_prefix=output_column_prefix,
+            ),
+            TFIDF(
+                features=[column_name],
+                min_document_frequency=0.01,
+                max_document_frequency=0.5,
+                output_column_prefix=output_column_prefix,
+            ),
+        ]
 
     long_text__str.description = "2-Word NGram Counts -> TFIDF"
     long_text__str.output_type = dict
@@ -285,11 +308,14 @@ class _interpretations_class(object):
         Interprets an integer column as a categorical variable.
         """
 
-        return [_ColumnFunctionTransformation(
-            features = [column_name],
-            output_column_prefix = output_column_prefix,
-            transform_function = lambda col: col.astype(str),
-            transform_function_name = "astype(str)")]
+        return [
+            _ColumnFunctionTransformation(
+                features=[column_name],
+                output_column_prefix=output_column_prefix,
+                transform_function=lambda col: col.astype(str),
+                transform_function_name="astype(str)",
+            )
+        ]
 
     categorical__int.description = "astype(str)"
     categorical__int.output_type = str
@@ -301,11 +327,14 @@ class _interpretations_class(object):
         Interprets a float column as a categorical variable.
         """
 
-        return [_ColumnFunctionTransformation(
-            features = [column_name],
-            output_column_prefix = output_column_prefix,
-            transform_function = lambda col: col.astype(str),
-            transform_function_name = "astype(str)")]
+        return [
+            _ColumnFunctionTransformation(
+                features=[column_name],
+                output_column_prefix=output_column_prefix,
+                transform_function=lambda col: col.astype(str),
+                transform_function_name="astype(str)",
+            )
+        ]
 
     categorical__float.description = "astype(str)"
     categorical__float.output_type = str
@@ -317,8 +346,11 @@ class _interpretations_class(object):
         Interprets a list of categories as a sparse vector.
         """
 
-        return [_TransformToFlatDictionary(features = [column_name],
-                                           output_column_prefix = output_column_prefix)]
+        return [
+            _TransformToFlatDictionary(
+                features=[column_name], output_column_prefix=output_column_prefix
+            )
+        ]
 
     categorical__list.description = "Flatten"
     categorical__list.output_type = dict
@@ -330,8 +362,11 @@ class _interpretations_class(object):
         Interprets a dictionary as a sparse_vector.
         """
 
-        return [_TransformToFlatDictionary(features = [column_name],
-                                           output_column_prefix = output_column_prefix)]
+        return [
+            _TransformToFlatDictionary(
+                features=[column_name], output_column_prefix=output_column_prefix
+            )
+        ]
 
     sparse_vector__dict.description = "Flatten"
     sparse_vector__dict.output_type = dict
@@ -372,10 +407,11 @@ class _interpretations_class(object):
     vector__array.description = "None"
     vector__array.output_type = _array
 
-
     ############################################################
 
+
 _interpretations = _interpretations_class()
+
 
 def _get_interpretation_function(interpretation, dtype):
     """
@@ -388,10 +424,13 @@ def _get_interpretation_function(interpretation, dtype):
     global _interpretations
 
     if not hasattr(_interpretations, name):
-        raise ValueError("No transform available for type '%s' with interpretation '%s'."
-                         % (type_string, interpretation))
+        raise ValueError(
+            "No transform available for type '%s' with interpretation '%s'."
+            % (type_string, interpretation)
+        )
 
     return getattr(_interpretations, name)
+
 
 def _get_interpretation_description_and_output_type(interpretation, dtype):
     """
@@ -402,15 +441,18 @@ def _get_interpretation_description_and_output_type(interpretation, dtype):
     name = "%s__%s" % (interpretation, type_string)
 
     if not hasattr(_interpretations_class, name):
-        raise ValueError("No transform available for type '%s' with interpretation '%s'."
-                         % (type_string, interpretation))
+        raise ValueError(
+            "No transform available for type '%s' with interpretation '%s'."
+            % (type_string, interpretation)
+        )
 
     # Need unbound method to get the attributes
     func = getattr(_interpretations_class, name)
 
     return func.description, func.output_type
 
-def _get_embeddable_interpretation_doc(indent = 0):
+
+def _get_embeddable_interpretation_doc(indent=0):
     """
     Returns a list of the available interpretations and what they do.
 
@@ -429,11 +471,14 @@ def _get_embeddable_interpretation_doc(indent = 0):
         func = getattr(_interpretations, name)
 
         output_rows.append("%s (%s type):" % (interpretation, type_str))
-        output_rows += [("  " + line) for line in _textwrap.dedent(func.__doc__).strip().split("\n")]
+        output_rows += [
+            ("  " + line) for line in _textwrap.dedent(func.__doc__).strip().split("\n")
+        ]
 
         output_rows.append("")
 
-    return "\n".join(" "*indent + line for line in output_rows)
+    return "\n".join(" " * indent + line for line in output_rows)
+
 
 def infer_column_interpretation(column):
     """
@@ -441,12 +486,14 @@ def infer_column_interpretation(column):
     """
 
     from turicreate.extensions import _infer_content_interpretation
+
     return _infer_content_interpretation(column)
 
 
 class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
-    __doc__ = _textwrap.dedent(
-        """Creates a feature transformer based on the content in the provided
+    __doc__ = (
+        _textwrap.dedent(
+            """Creates a feature transformer based on the content in the provided
     data that turns arbitrary content into informative features usable
     by any Turi ML algorithm.  For example, text is parsed and
     converted into a sparse dictionary of features based on word
@@ -492,12 +539,15 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
 
     %(interpretation_docstrings)s
 
-    """) % {"interpretation_docstrings" : _get_embeddable_interpretation_doc(indent = 2) }
+    """
+        )
+        % {"interpretation_docstrings": _get_embeddable_interpretation_doc(indent=2)}
+    )
 
     @classmethod
     def _get_instance_and_data(cls):
-        sf = _tc.SFrame({'a' : [1, 2, 3, 2, 3], 'b' : ["a", "b", "a", "b", "b"]})
-        encoder = AutoVectorizer( features = ['a', 'b'] )
+        sf = _tc.SFrame({"a": [1, 2, 3, 2, 3], "b": ["a", "b", "a", "b", "b"]})
+        encoder = AutoVectorizer(features=["a", "b"])
         return encoder.fit(sf), sf
 
     def _setup(self):
@@ -506,36 +556,47 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         """
         self.__proxy__ = _PythonProxy()
 
-    def __init__(self, features = None, excluded_features = None, output_column_prefix = None,
-                 column_interpretations = None, verbose = True):
+    def __init__(
+        self,
+        features=None,
+        excluded_features=None,
+        output_column_prefix=None,
+        column_interpretations=None,
+        verbose=True,
+    ):
 
         self._setup()
 
-        _features, _exclude = _internal_utils.process_features(features, excluded_features)
+        _features, _exclude = _internal_utils.process_features(
+            features, excluded_features
+        )
 
         # Check the column_interpretations parameter type
         if column_interpretations is None:
             column_interpretations = {}
 
-        if (not isinstance(column_interpretations, dict)
-            or not all(isinstance(k, str) and isinstance(v, str)
-                       for k, v in column_interpretations.items())):
+        if not isinstance(column_interpretations, dict) or not all(
+            isinstance(k, str) and isinstance(v, str)
+            for k, v in column_interpretations.items()
+        ):
 
-            raise TypeError("`column_interpretations` must be a dictionary of "
-                            "column names to interpretation strings.")
+            raise TypeError(
+                "`column_interpretations` must be a dictionary of "
+                "column names to interpretation strings."
+            )
 
         state = {}
-        state['user_column_interpretations'] = column_interpretations.copy()
-        state['column_interpretations'] = column_interpretations.copy()
-        state['output_column_prefix'] = output_column_prefix
-        state['fitted'] = False
-        state['verbose'] = verbose
+        state["user_column_interpretations"] = column_interpretations.copy()
+        state["column_interpretations"] = column_interpretations.copy()
+        state["output_column_prefix"] = output_column_prefix
+        state["fitted"] = False
+        state["verbose"] = verbose
 
-        state['transforms'] = {}
-        state['transform_chain'] = None
+        state["transforms"] = {}
+        state["transform_chain"] = None
 
-        state['features'] = _features
-        state['excluded_features'] = _exclude
+        state["features"] = _features
+        state["excluded_features"] = _exclude
 
         if _exclude:
             self._exclude = True
@@ -546,7 +607,6 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
 
         self.__proxy__.update(state)
 
-
     def _setup_from_data(self, data):
         """
         Sets up the content transforms.
@@ -556,7 +616,9 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
 
         _raise_error_if_not_of_type(data, [_SFrame])
 
-        feature_columns = _internal_utils.get_column_names(data, self._exclude, self._features)
+        feature_columns = _internal_utils.get_column_names(
+            data, self._exclude, self._features
+        )
 
         if not feature_columns:
             raise RuntimeError("No valid feature columns specified in transformation.")
@@ -567,7 +629,9 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         # Helper functions
 
         def get_valid_interpretations():
-            return list(n.split("__")[0] for n in dir(_interpretations) if not n.startswith("_"))
+            return list(
+                n.split("__")[0] for n in dir(_interpretations) if not n.startswith("_")
+            )
 
         ################################################################################
         # Check input data.
@@ -582,16 +646,23 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         # Make sure all the interpretations are valid.
         for k, v in column_interpretations.items():
             if k not in all_col_names:
-                raise ValueError("Column '%s' in column_interpretations, but not found in `data`." % k)
+                raise ValueError(
+                    "Column '%s' in column_interpretations, but not found in `data`."
+                    % k
+                )
 
         # Get the automatic column interpretations.
         for col_name in feature_columns:
             if col_name not in column_interpretations:
-                n = column_interpretations[col_name] = infer_column_interpretation(data[col_name])
+                n = column_interpretations[col_name] = infer_column_interpretation(
+                    data[col_name]
+                )
 
                 if n.startswith("unknown"):
-                    raise ValueError("Interpretation inference failed on column '%s'; %s"
-                                     % (col_name, n[len("unknown"):].strip()))
+                    raise ValueError(
+                        "Interpretation inference failed on column '%s'; %s"
+                        % (col_name, n[len("unknown") :].strip())
+                    )
 
         # Now, build up the feature transforms.
         transforms = {}
@@ -605,7 +676,9 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         for col_name in feature_columns:
             in_type = input_types[col_name] = data[col_name].dtype
 
-            intr_func = _get_interpretation_function(column_interpretations[col_name], in_type)
+            intr_func = _get_interpretation_function(
+                column_interpretations[col_name], in_type
+            )
             tr_list = intr_func(col_name, output_column_prefix)
             transforms[col_name] = tr_list
             tr_chain += tr_list
@@ -639,7 +712,7 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         self._setup_from_data(data)
         self.transform_chain.fit(data)
 
-        self.__proxy__.update({"fitted" : True})
+        self.__proxy__.update({"fitted": True})
         return self
 
     def fit_transform(self, data):
@@ -667,7 +740,7 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
 
         self._setup_from_data(data)
         ret = self.transform_chain.fit_transform(data)
-        self.__proxy__.update({"fitted" : True})
+        self.__proxy__.update({"fitted": True})
         return ret
 
     def transform(self, data):
@@ -694,10 +767,11 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         """
 
         if self.transform_chain is None:
-            raise RuntimeError("`transform()` method called before `fit` or `fit_transform`.")
+            raise RuntimeError(
+                "`transform()` method called before `fit` or `fit_transform`."
+            )
 
         return self.transform_chain.transform(data)
-
 
     def _get_summary_struct(self):
         """
@@ -721,17 +795,23 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         fields = []
 
         _features = _precomputed_field(_internal_utils.pretty_print_list(self.features))
-        _exclude = _precomputed_field(_internal_utils.pretty_print_list(self.excluded_features))
+        _exclude = _precomputed_field(
+            _internal_utils.pretty_print_list(self.excluded_features)
+        )
 
-        header_fields = [("Features", "features"),
-                         ("Excluded Features", "excluded_features")]
+        header_fields = [
+            ("Features", "features"),
+            ("Excluded Features", "excluded_features"),
+        ]
 
         sections.append("Model Fields")
         fields.append(header_fields)
 
         if self.user_column_interpretations:
             sections.append("User Specified Interpretations")
-            fields.append(list(sorted(self._get("user_column_interpretations").items())))
+            fields.append(
+                list(sorted(self._get("user_column_interpretations").items()))
+            )
 
         column_interpretations = self._get("column_interpretations")
         features = self._get("features")
@@ -739,15 +819,25 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         if self._get("fitted") and features is not None:
 
             n_rows = len(features)
-            transform_info = [None]*n_rows
+            transform_info = [None] * n_rows
 
             for i, f in enumerate(features):
                 interpretation = column_interpretations[f]
                 input_type = self.input_types[f]
-                description, output_type = _get_interpretation_description_and_output_type(
-                    interpretation, input_type)
+                (
+                    description,
+                    output_type,
+                ) = _get_interpretation_description_and_output_type(
+                    interpretation, input_type
+                )
 
-                transform_info[i] = (f, input_type.__name__, interpretation, description, output_type.__name__)
+                transform_info[i] = (
+                    f,
+                    input_type.__name__,
+                    interpretation,
+                    description,
+                    output_type.__name__,
+                )
 
             transform_table = _SFrame()
             transform_table["Column"] = [t[0] for t in transform_info]
@@ -782,8 +872,8 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         """
         state, _exclude, _features = unpickler.load()
 
-        features = state['features']
-        excluded_features = state['excluded_features']
+        features = state["features"]
+        excluded_features = state["excluded_features"]
 
         model = cls.__new__(cls)
         model._setup()
@@ -812,4 +902,4 @@ class AutoVectorizer(_TransformerBase, ExposeAttributesFromProxy):
         >>> model.save('my_model_file')
         >>> loaded_model = turicreate.load_model('my_model_file')
         """
-        pickler.dump( (self.__proxy__.state, self._exclude, self._features) )
+        pickler.dump((self.__proxy__.state, self._exclude, self._features))

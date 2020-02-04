@@ -10,12 +10,10 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import sys
-import parser
-import symbol
-import token
 import ast
 import inspect
-from ..import meta
+from .. import meta
+
 
 class expression_validator(ast.NodeVisitor):
     """
@@ -64,9 +62,11 @@ class attribute_reader(ast.NodeVisitor):
 
     We need to breakdown the attribute into the original string
     """
+
     def default(self, node):
-        raise NotImplementedError("Cannot process token at " +
-                str(node.lineno) + ":" + str(node.col_offset))
+        raise NotImplementedError(
+            "Cannot process token at " + str(node.lineno) + ":" + str(node.col_offset)
+        )
 
     def visit_Name(self, node):
         return node.id
@@ -81,10 +81,11 @@ class Parameter(object):
         self.name = name
 
     def __str__(self):
-        return 'λ' + self.name
+        return "λ" + self.name
 
     def __repr__(self):
         return str(self)
+
 
 class lambda_closure_visitor(ast.NodeVisitor):
     """
@@ -94,9 +95,11 @@ class lambda_closure_visitor(ast.NodeVisitor):
     may be some occurrences of x.
     No additional statements or expressions are permitted
     """
-    FUNCTION = 0 # I am translating the wrapping lambda function
-    INNER_CALL = 1 # I am translating the function call inside
-    PARAMETER = 2 # I am just translating a function parameter
+
+    FUNCTION = 0  # I am translating the wrapping lambda function
+    INNER_CALL = 1  # I am translating the function call inside
+    PARAMETER = 2  # I am just translating a function parameter
+
     def __init__(self):
         # The fn
         self.closure_fn_name = ""
@@ -116,8 +119,9 @@ class lambda_closure_visitor(ast.NodeVisitor):
         self.state = self.FUNCTION
 
     def default(self, node):
-        raise NotImplementedError("Cannot process token at " +
-                str(node.lineno) + ":" + str(node.col_offset))
+        raise NotImplementedError(
+            "Cannot process token at " + str(node.lineno) + ":" + str(node.col_offset)
+        )
 
     def __repr__(self):
         return str(self)
@@ -127,39 +131,51 @@ class lambda_closure_visitor(ast.NodeVisitor):
         comma = False
         for i in self.positional_args:
             if comma:
-                ret = ret + ','
+                ret = ret + ","
             ret = ret + str(i)
             comma = True
 
         for i in self.named_args:
             if comma:
-                ret = ret + ','
+                ret = ret + ","
             ret = ret + i + ":" + str(self.named_args[i])
             comma = True
         ret = ret + ")"
         return ret
 
     def translate_ast(self, ast_node):
-        #print(ast.dump(ast_node))
+        # print(ast.dump(ast_node))
         t = self.visit(ast_node)
 
     def visit_Module(self, node):
-        if (self.state != self.FUNCTION):
-            raise NotImplementedError("Unexpected module in position " +
-                    str(node.lineno) + ":" + str(node.col_offset))
+        if self.state != self.FUNCTION:
+            raise NotImplementedError(
+                "Unexpected module in position "
+                + str(node.lineno)
+                + ":"
+                + str(node.col_offset)
+            )
         for line in node.body:
             self.visit(line)
 
     def visit_Call(self, node):
-        if (self.state != self.INNER_CALL):
-            raise NotImplementedError("Unexpected call in position " +
-                    str(node.lineno) + ":" + str(node.col_offset))
+        if self.state != self.INNER_CALL:
+            raise NotImplementedError(
+                "Unexpected call in position "
+                + str(node.lineno)
+                + ":"
+                + str(node.col_offset)
+            )
         self.state = self.INNER_CALL
 
         # this is the main closure function call
         if self.closure_fn_name != "":
-            raise NotImplementedError("Cannot translate function call " +
-                    str(node.lineno) + ":" + str(node.col_offset))
+            raise NotImplementedError(
+                "Cannot translate function call "
+                + str(node.lineno)
+                + ":"
+                + str(node.col_offset)
+            )
         elif type(node.func) is ast.Name:
             self.closure_fn_name = node.func.id
         elif type(node.func) is ast.Attribute:
@@ -177,13 +193,18 @@ class lambda_closure_visitor(ast.NodeVisitor):
                 try:
                     expression_validator(self.input_arg_names).visit(arg)
                     # try to evaluate the ast
-                    result = eval(compile(ast.Expression(arg), '<string>', 'eval'), self.caller_globals)
+                    result = eval(
+                        compile(ast.Expression(arg), "<string>", "eval"),
+                        self.caller_globals,
+                    )
                 except:
-                    raise NotImplementedError("Only simple expressions not using the function arguments are permitted")
+                    raise NotImplementedError(
+                        "Only simple expressions not using the function arguments are permitted"
+                    )
                 self.positional_args += [result]
 
         # keyword arguments next
-        keywordargs = {i.arg:i.value for i in node.keywords}
+        keywordargs = {i.arg: i.value for i in node.keywords}
         for i in keywordargs:
             arg = keywordargs[i]
             if type(arg) is ast.Name and arg.id in self.input_arg_names:
@@ -192,15 +213,18 @@ class lambda_closure_visitor(ast.NodeVisitor):
                 try:
                     expression_validator(self.input_arg_names).visit(arg)
                     # try to evaluate the ast
-                    result = eval(compile(ast.Expression(arg), '<string>', 'eval'), self.caller_globals)
+                    result = eval(
+                        compile(ast.Expression(arg), "<string>", "eval"),
+                        self.caller_globals,
+                    )
                 except:
-                    raise NotImplementedError("Only simple expressions not using the function arguments are permitted")
+                    raise NotImplementedError(
+                        "Only simple expressions not using the function arguments are permitted"
+                    )
                 self.named_args[i] = result
 
-
-
     def visit_arguments(self, node):
-        if (self.state != self.FUNCTION):
+        if self.state != self.FUNCTION:
             raise NotImplementedError("Unexpected function")
         if sys.version_info.major == 2:
             self.input_arg_names = [arg.id for arg in node.args]
@@ -208,19 +232,18 @@ class lambda_closure_visitor(ast.NodeVisitor):
             self.input_arg_names = [arg.arg for arg in node.args]
 
     def visit_Name(self, node):
-            raise NotImplementedError("Unexpected name")
+        raise NotImplementedError("Unexpected name")
 
     def visit_Return(self, node):
-        if (self.state != self.INNER_CALL):
+        if self.state != self.INNER_CALL:
             raise NotImplementedError("Unexpected return")
         return self.visit(node.value)
 
     def visit_Lambda(self, node):
         return self.visit_FunctionDef(node)
 
-
     def visit_FunctionDef(self, node):
-        if (self.state != self.FUNCTION):
+        if self.state != self.FUNCTION:
             raise NotImplementedError("Unexpected function")
 
         self.visit(node.args)
@@ -232,9 +255,9 @@ class lambda_closure_visitor(ast.NodeVisitor):
             # it actually shows up in the ast as a Expr.str
             # so we need to catch that and skip it
             try:
-              if type(next_node) is ast.Expr and type(next_node.value) is ast.Str:
-                # this is *probably* a doc string!
-                next_node = node.body[1]
+                if type(next_node) is ast.Expr and type(next_node.value) is ast.Str:
+                    # this is *probably* a doc string!
+                    next_node = node.body[1]
             except:
                 # just in case the above fails for various reasons like say...
                 # there is *only* a doc string. We still fail with the
@@ -253,8 +276,9 @@ class lambda_closure_visitor(ast.NodeVisitor):
     def visit_ClassDef(self, node):
         raise NotImplementedError("Classes are not implemented")
 
+
 def _isalambda(v):
-    return isinstance(v, type(lambda: None)) and v.__name__ == '<lambda>'
+    return isinstance(v, type(lambda: None)) and v.__name__ == "<lambda>"
 
 
 def translate(fn):
@@ -292,6 +316,8 @@ def translate(fn):
         raise RuntimeError("Cannot process provided function")
     visitor.translate_ast(ast_node)
     return visitor
+
+
 # if __name__ == "__main__":
 #     if len(sys.argv) <= 1:
 #         print("Usage:\n\t./Lua_Translator.py <FILENAME>\n")
