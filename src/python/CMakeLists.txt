@@ -9,10 +9,6 @@ add_subdirectory(turicreate)
 # source is processed directly.  To handle this, we reproduce the availability
 # of the source files in the build tree.
 
-# Copy all the open source python stuff over first
-
-# Overwrite with the proprietary stuff
-
 make_copy_target(python_source
   FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE.txt
@@ -24,9 +20,8 @@ make_copy_target(python_source
   DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/turicreate
 )
-add_dependencies(python_source numpy_integration tctensorflow)
 
-add_custom_target (clean_python)
+add_custom_target(clean_python)
 add_dependencies(clean_python clean_turicreate_binaries clean_cython)
 
 add_custom_command(
