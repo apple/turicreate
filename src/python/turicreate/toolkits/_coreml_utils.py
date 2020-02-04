@@ -24,7 +24,7 @@ def _get_tc_version_info():
        'com.github.apple.os.platform': platform.platform()
     }
 
-def _get_model_metadata(model_class, metadata, version=None):
+def _get_model_metadata(model_class, metadata=None, version=None):
     """
     Returns user-defined metadata, making sure information all models should
     have is also available, as a dictionary
