@@ -78,10 +78,12 @@ def set_target(target="auto"):
 
     Notes
     -----
-    - When in 'auto' target, `show` will display plot output inline when in
-      Jupyter Notebook, and otherwise will open a native GUI window.
-    - Only `show` can render inline in Jupyter Notebook or a browser.
-      `explore` and `annotate` ignore this setting and open a GUI window
+    - When in 'auto' target, `show` and `explore` will display plot output
+      inline when in Jupyter Notebook, and otherwise will open a native GUI
+      window.
+    - Only `show` and `explore can render inline in Jupyter Notebook
+      or a browser.
+      `annotate` will ignore this setting and open a GUI window
       unless target is set to `None`.
 
     Parameters
