@@ -56,7 +56,7 @@ constexpr float LSTM_CELL_CLIP_THRESHOLD = 50000.f;
 ac_parameters get_parameters(int batch_size, int num_features,
                              int prediction_window, int num_classes,
                              int num_predictions_per_chunk, int random_seed,
-                             float_array_map weights) {
+                             float mode, float_array_map weights) {
   ac_parameters ac_params;
   ac_params.batch_size = batch_size;
   ac_params.num_features = num_features;
@@ -64,6 +64,7 @@ ac_parameters get_parameters(int batch_size, int num_features,
   ac_params.num_classes = num_classes;
   ac_params.num_predictions_per_chunk = num_predictions_per_chunk;
   ac_params.random_seed = random_seed;
+  ac_params.mode = mode;
   ac_params.weights = weights;
   return ac_params;
 }
@@ -1115,7 +1116,7 @@ void activity_classifier::init_train(
   ac_parameters ac_params = get_parameters(
       read_state<int>("batch_size"), read_state<int>("num_features"),
       read_state<int>("prediction_window"), read_state<int>("num_classes"),
-      NUM_PREDICTIONS_PER_CHUNK, read_state<int>("random_seed"),
+      NUM_PREDICTIONS_PER_CHUNK, read_state<int>("random_seed"), 0.f,
       nn_spec_->export_params_view());
 
   // Instantiate the NN backend.
@@ -1267,7 +1268,7 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   ac_parameters ac_params = get_parameters(
       read_state<int>("batch_size"), read_state<int>("num_features"),
       read_state<int>("prediction_window"), num_classes,
-      NUM_PREDICTIONS_PER_CHUNK, read_state<int>("random_seed"),
+      NUM_PREDICTIONS_PER_CHUNK, read_state<int>("random_seed"), 1.f,
       nn_spec_->export_params_view());
 
   // Initialize the NN backend.

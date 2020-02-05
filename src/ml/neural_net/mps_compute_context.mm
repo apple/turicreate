@@ -142,13 +142,12 @@ std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
 std::unique_ptr<model_backend> mps_compute_context::create_activity_classifier(
     ac_parameters ac_params) {
   std::unique_ptr<mps_cnn_module> result(new mps_cnn_module(*command_queue_));
-  static_assert(sizeof(float) == sizeof(int),
-                "Passing random seed assumes float and int have same size.");
+
   float random_seed_float = *reinterpret_cast<float*>(&ac_params.random_seed);
   float_array_map config = {
       {"ac_pred_window", shared_float_array::wrap(ac_params.prediction_window)},
       {"ac_seq_len", shared_float_array::wrap(ac_params.num_predictions_per_chunk)},
-      {"mode", shared_float_array::wrap(0.f)},  // kLowLevelModeTrain
+      {"mode", shared_float_array::wrap(ac_params.mode)},  // kLowLevelModeTrain
       {"random_seed", shared_float_array::wrap(random_seed_float)},
   };
   result->init(

@@ -16,6 +16,9 @@
 namespace turi {
 namespace neural_net {
 
+/** A struct to define all the parameters used to create the activity classifier
+ * model backend
+ */
 struct ac_parameters {
   int batch_size;
   int num_features;
@@ -23,6 +26,7 @@ struct ac_parameters {
   int num_classes;
   int num_predictions_per_chunk;
   int random_seed;
+  float mode;
   float_array_map weights;
 };
 /**
