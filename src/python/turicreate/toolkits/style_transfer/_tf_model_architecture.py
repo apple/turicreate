@@ -81,38 +81,22 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
 
     gamma = weights[prefix + "gamma_weight"]
     beta = weights[prefix + "beta_weight"]
+    
+    inputs_rank = tf_input.shape.ndims
+    reduction_axis = inputs_rank - 1
+    moments_axes = list(range(inputs_rank))
+    
+    del moments_axes[reduction_axis]
+    del moments_axes[0]
 
-    tf_input_shape = tf_index.get_shape()
+    indexed_gamma = _tf.gather(gamma, tf_index)
+    indexed_beta = _tf.gather(beta, tf_index)
 
-    gamma_sliced = _tf.split(gamma, gamma.shape[0], axis=0)
-    gamma_index = _tf.gather(gamma_sliced, tf_index)
-    gamma_split = _tf.split(gamma_index, tf_input_shape[0], axis=0)
+    expanded_gamma = _tf.expand_dims(_tf.expand_dims(indexed_gamma, 1), 1)
+    expanded_beta = _tf.expand_dims(_tf.expand_dims(indexed_beta, 1), 1)
 
-    beta_sliced = _tf.split(beta, beta.shape[0], axis=0)
-    beta_index = _tf.gather(beta_sliced, tf_index)
-    beta_split = _tf.split(beta_index, tf_input_shape[0], axis=0)
-
-    input_split = _tf.split(tf_input, tf_input_shape[0], axis=0)
-
-    batch_norm_array = []
-    for g, b, i in zip(gamma_split, beta_split, input_split):
-        # inputs_shape = i.shape
-        inputs_rank = i.shape.ndims
-
-        reduction_axis = inputs_rank - 1
-        # params_shape = inputs_shape[reduction_axis:reduction_axis + 1]
-
-        moments_axes = list(range(inputs_rank))
-        del moments_axes[reduction_axis]
-        del moments_axes[0]
-
-        mean, variance = _tf.nn.moments(i, moments_axes, keep_dims=True)
-        style_bn = _tf.nn.batch_normalization(i, mean, variance, b, g, epsilon)
-        batch_norm_array.append(style_bn)
-    batch_norm_concat = _tf.concat(batch_norm_array, 0)
-
-    return batch_norm_concat
-
+    mean, variance = _tf.nn.moments(tf_input, moments_axes, keep_dims=True)
+    return _tf.nn.batch_normalization(tf_input, mean, variance, expanded_beta, expanded_gamma, epsilon)
 
 def define_residual(tf_input, tf_index, weights, prefix):
     """
