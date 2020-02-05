@@ -3,13 +3,13 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 This module defines the SFrame class which provides the
 ability to create, access and manipulate a remote scalable dataframe object.
 
 SFrame acts similarly to pandas.DataFrame, but the data is completely immutable
 and is stored column wise.
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -41,17 +41,22 @@ import six
 import csv
 from collections import Iterable as _Iterable
 
-__all__ = ['SFrame']
+__all__ = ["SFrame"]
 __LOGGER__ = _logging.getLogger(__name__)
 
-FOOTER_STRS = ['Note: Only the head of the SFrame is printed.',
-               'You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.']
+FOOTER_STRS = [
+    "Note: Only the head of the SFrame is printed.",
+    "You can use print_rows(num_rows=m, num_columns=n) to print more rows and columns.",
+]
 
-LAZY_FOOTER_STRS = ['Note: Only the head of the SFrame is printed. This SFrame is lazily evaluated.',
-                    'You can use sf.materialize() to force materialization.']
+LAZY_FOOTER_STRS = [
+    "Note: Only the head of the SFrame is printed. This SFrame is lazily evaluated.",
+    "You can use sf.materialize() to force materialization.",
+]
 
 if sys.version_info.major > 2:
     long = int
+
 
 def load_sframe(filename):
     """
@@ -83,6 +88,7 @@ def load_sframe(filename):
     sf = SFrame(data=filename)
     return sf
 
+
 def _get_global_dbapi_info(dbapi_module, conn):
     """
     Fetches all needed information from the top-level DBAPI module,
@@ -90,14 +96,18 @@ def _get_global_dbapi_info(dbapi_module, conn):
     dictionary of all the needed variables. This is put in one place to
     make sure the error message is clear if the module "guess" is wrong.
     """
-    module_given_msg = "The DBAPI2 module given ({0}) is missing the global\n"+\
-    "variable '{1}'. Please make sure you are supplying a module that\n"+\
-    "conforms to the DBAPI 2.0 standard (PEP 0249)."
-    module_not_given_msg = "Hello! I gave my best effort to find the\n"+\
-    "top-level module that the connection object you gave me came from.\n"+\
-    "I found '{0}' which doesn't have the global variable '{1}'.\n"+\
-    "To avoid this confusion, you can pass the module as a parameter using\n"+\
-    "the 'dbapi_module' argument to either from_sql or to_sql."
+    module_given_msg = (
+        "The DBAPI2 module given ({0}) is missing the global\n"
+        + "variable '{1}'. Please make sure you are supplying a module that\n"
+        + "conforms to the DBAPI 2.0 standard (PEP 0249)."
+    )
+    module_not_given_msg = (
+        "Hello! I gave my best effort to find the\n"
+        + "top-level module that the connection object you gave me came from.\n"
+        + "I found '{0}' which doesn't have the global variable '{1}'.\n"
+        + "To avoid this confusion, you can pass the module as a parameter using\n"
+        + "the 'dbapi_module' argument to either from_sql or to_sql."
+    )
 
     if dbapi_module is None:
         dbapi_module = _get_module_from_object(conn)
@@ -105,20 +115,20 @@ def _get_global_dbapi_info(dbapi_module, conn):
     else:
         module_given = True
 
-    module_name = dbapi_module.__name__ if hasattr(dbapi_module, '__name__') else None
+    module_name = dbapi_module.__name__ if hasattr(dbapi_module, "__name__") else None
 
-    needed_vars = ['apilevel','paramstyle','Error','DATETIME','NUMBER','ROWID']
+    needed_vars = ["apilevel", "paramstyle", "Error", "DATETIME", "NUMBER", "ROWID"]
     ret_dict = {}
-    ret_dict['module_name'] = module_name
+    ret_dict["module_name"] = module_name
 
     for i in needed_vars:
         tmp = None
         try:
-            tmp = eval("dbapi_module."+i)
+            tmp = eval("dbapi_module." + i)
         except AttributeError as e:
             # Some DBs don't actually care about types, so they won't define
             # the types. These are the ACTUALLY needed variables though
-            if i not in ['apilevel','paramstyle','Error']:
+            if i not in ["apilevel", "paramstyle", "Error"]:
                 pass
             elif module_given:
                 raise AttributeError(module_given_msg.format(module_name, i))
@@ -127,21 +137,25 @@ def _get_global_dbapi_info(dbapi_module, conn):
         ret_dict[i] = tmp
 
     try:
-        if ret_dict['apilevel'][0:3] != "2.0":
-            raise NotImplementedError("Unsupported API version " +\
-              str(ret_dict['apilevel']) + ". Only DBAPI 2.0 is supported.")
+        if ret_dict["apilevel"][0:3] != "2.0":
+            raise NotImplementedError(
+                "Unsupported API version "
+                + str(ret_dict["apilevel"])
+                + ". Only DBAPI 2.0 is supported."
+            )
     except TypeError as e:
         e.message = "Module's 'apilevel' value is invalid."
         raise e
 
-    acceptable_paramstyles = ['qmark','numeric','named','format','pyformat']
+    acceptable_paramstyles = ["qmark", "numeric", "named", "format", "pyformat"]
     try:
-        if ret_dict['paramstyle'] not in acceptable_paramstyles:
+        if ret_dict["paramstyle"] not in acceptable_paramstyles:
             raise TypeError("Module's 'paramstyle' value is invalid.")
     except TypeError as e:
         raise TypeError("Module's 'paramstyle' value is invalid.")
 
     return ret_dict
+
 
 def _convert_rows_to_builtin_seq(data):
     # Flexible type expects a builtin type (like list or tuple) for conversion.
@@ -151,6 +165,7 @@ def _convert_rows_to_builtin_seq(data):
     if len(data) > 0 and type(data[0]) != list:
         data = [list(row) for row in data]
     return data
+
 
 # Expects list of tuples
 def _force_cast_sql_types(data, result_types, force_cast_cols):
@@ -712,78 +727,80 @@ class SFrame(object):
     2  3   C
     """
 
-    __slots__ = ['_proxy', '_cache']
+    __slots__ = ["_proxy", "_cache"]
 
-    def __init__(self, data=None,
-                 format='auto',
-                 _proxy=None):
+    def __init__(self, data=None, format="auto", _proxy=None):
         """__init__(data=list(), format='auto')
         Construct a new SFrame from a url or a pandas.DataFrame.
         """
         # emit metrics for num_rows, num_columns, and type (local://, s3, hdfs, http)
 
-        if (_proxy):
+        if _proxy:
             self.__proxy__ = _proxy
         else:
             self.__proxy__ = UnitySFrameProxy()
             _format = None
             if six.PY2 and isinstance(data, unicode):
-                data = data.encode('utf-8')
-            if (format == 'auto'):
-                if (HAS_PANDAS and isinstance(data, pandas.DataFrame)):
-                    _format = 'dataframe'
-                elif (isinstance(data, str) or
-                      (sys.version_info.major < 3 and isinstance(data, unicode))):
+                data = data.encode("utf-8")
+            if format == "auto":
+                if HAS_PANDAS and isinstance(data, pandas.DataFrame):
+                    _format = "dataframe"
+                elif isinstance(data, str) or (
+                    sys.version_info.major < 3 and isinstance(data, unicode)
+                ):
 
-                    if data.endswith(('.csv', '.csv.gz')):
-                        _format = 'csv'
-                    elif data.endswith(('.tsv', '.tsv.gz')):
-                        _format = 'tsv'
-                    elif data.endswith(('.txt', '.txt.gz')):
-                        print("Assuming file is csv. For other delimiters, " + \
-                            "please use `SFrame.read_csv`.")
-                        _format = 'csv'
+                    if data.endswith((".csv", ".csv.gz")):
+                        _format = "csv"
+                    elif data.endswith((".tsv", ".tsv.gz")):
+                        _format = "tsv"
+                    elif data.endswith((".txt", ".txt.gz")):
+                        print(
+                            "Assuming file is csv. For other delimiters, "
+                            + "please use `SFrame.read_csv`."
+                        )
+                        _format = "csv"
                     else:
-                        _format = 'sframe'
+                        _format = "sframe"
                 elif type(data) == SArray:
-                    _format = 'sarray'
+                    _format = "sarray"
 
                 elif isinstance(data, SFrame):
-                    _format = 'sframe_obj'
+                    _format = "sframe_obj"
 
                 elif isinstance(data, dict):
-                    _format = 'dict'
+                    _format = "dict"
 
                 elif _is_non_string_iterable(data):
-                    _format = 'array'
+                    _format = "array"
                 elif data is None:
-                    _format = 'empty'
+                    _format = "empty"
                 else:
-                    raise ValueError('Cannot infer input type for data ' + str(data))
+                    raise ValueError("Cannot infer input type for data " + str(data))
             else:
                 _format = format
 
-
             with cython_context():
-                if (_format == 'dataframe'):
+                if _format == "dataframe":
                     for c in data.columns.values:
                         self.add_column(SArray(data[c].values), str(c), inplace=True)
-                elif (_format == 'sframe_obj'):
+                elif _format == "sframe_obj":
                     for col in data.column_names():
                         self.__proxy__.add_column(data[col].__proxy__, col)
-                elif (_format == 'sarray'):
-                    self.__proxy__.add_column(data.__proxy__, '')
-                elif (_format == 'array'):
+                elif _format == "sarray":
+                    self.__proxy__.add_column(data.__proxy__, "")
+                elif _format == "array":
                     if len(data) > 0:
                         unique_types = set([type(x) for x in data if x is not None])
                         if len(unique_types) == 1 and SArray in unique_types:
                             for arr in data:
                                 self.add_column(arr, inplace=True)
                         elif SArray in unique_types:
-                            raise ValueError("Cannot create SFrame from mix of regular values and SArrays")
+                            raise ValueError(
+                                "Cannot create SFrame from mix of regular values and SArrays"
+                            )
                         else:
-                            self.__proxy__.add_column(SArray(data).__proxy__, '')
-                elif (_format == 'dict'):
+                            self.__proxy__.add_column(SArray(data).__proxy__, "")
+                elif _format == "dict":
                     # Validate that every column is the same length.
                     if len(set(len(value) for value in data.values())) > 1:
                         # probably should be a value error. But we used to raise
@@ -791,37 +808,48 @@ class SFrame(object):
                         raise RuntimeError("All column should be of the same length")
                     # split into SArray values and other iterable values.
                     # We convert the iterable values in bulk, and then add the sarray values as columns
-                    sarray_keys = sorted(key for key,value in six.iteritems(data) if isinstance(value, SArray))
-                    self.__proxy__.load_from_dataframe({key:value for key,value in six.iteritems(data) if not isinstance(value, SArray)})
+                    sarray_keys = sorted(
+                        key
+                        for key, value in six.iteritems(data)
+                        if isinstance(value, SArray)
+                    )
+                    self.__proxy__.load_from_dataframe(
+                        {
+                            key: value
+                            for key, value in six.iteritems(data)
+                            if not isinstance(value, SArray)
+                        }
+                    )
                     for key in sarray_keys:
                         self.__proxy__.add_column(data[key].__proxy__, key)
-                elif (_format == 'csv'):
+                elif _format == "csv":
                     url = data
-                    tmpsf = SFrame.read_csv(url, delimiter=',', header=True)
+                    tmpsf = SFrame.read_csv(url, delimiter=",", header=True)
                     self.__proxy__ = tmpsf.__proxy__
-                elif (_format == 'tsv'):
+                elif _format == "tsv":
                     url = data
-                    tmpsf = SFrame.read_csv(url, delimiter='\t', header=True)
+                    tmpsf = SFrame.read_csv(url, delimiter="\t", header=True)
                     self.__proxy__ = tmpsf.__proxy__
-                elif (_format == 'sframe'):
+                elif _format == "sframe":
                     url = _make_internal_url(data)
                     self.__proxy__.load_from_sframe_index(url)
-                elif (_format == 'empty'):
+                elif _format == "empty":
                     pass
                 else:
-                    raise ValueError('Unknown input type: ' + format)
+                    raise ValueError("Unknown input type: " + format)
 
     @staticmethod
     def _infer_column_types_from_lines(first_rows):
-        if (len(first_rows.column_names()) < 1):
-          print("Insufficient number of columns to perform type inference")
-          raise RuntimeError("Insufficient columns ")
+        if len(first_rows.column_names()) < 1:
+            print("Insufficient number of columns to perform type inference")
+            raise RuntimeError("Insufficient columns ")
         if len(first_rows) < 1:
-          print("Insufficient number of rows to perform type inference")
-          raise RuntimeError("Insufficient rows")
+            print("Insufficient number of rows to perform type inference")
+            raise RuntimeError("Insufficient rows")
         # gets all the values column-wise
-        all_column_values_transposed = [list(first_rows[col])
-                for col in first_rows.column_names()]
+        all_column_values_transposed = [
+            list(first_rows[col]) for col in first_rows.column_names()
+        ]
         # transpose
         all_column_values = [list(x) for x in list(zip(*all_column_values_transposed))]
         all_column_type_hints = [[type(t) for t in vals] for vals in all_column_values]
@@ -834,56 +862,58 @@ class SFrame(object):
         column_type_hints = all_column_type_hints[0]
         # now perform type combining across rows
         for i in range(1, len(all_column_type_hints)):
-          currow = all_column_type_hints[i]
-          for j in range(len(column_type_hints)):
-            # combine types
-            d = set([currow[j], column_type_hints[j]])
-            if (len(d) == 1):
-              # easy case. both agree on the type
-              continue
-            if (((long in d) or (int in d)) and (float in d)):
-              # one is an int, one is a float. its a float
-              column_type_hints[j] = float
-            elif ((array.array in d) and (list in d)):
-              # one is an array , one is a list. its a list
-              column_type_hints[j] = list
-            elif type(None) in d:
-              # one is a NoneType. assign to other type
-              if currow[j] != type(None):
-                  column_type_hints[j] = currow[j]
-            else:
-              column_type_hints[j] = str
+            currow = all_column_type_hints[i]
+            for j in range(len(column_type_hints)):
+                # combine types
+                d = set([currow[j], column_type_hints[j]])
+                if len(d) == 1:
+                    # easy case. both agree on the type
+                    continue
+                if ((long in d) or (int in d)) and (float in d):
+                    # one is an int, one is a float. its a float
+                    column_type_hints[j] = float
+                elif (array.array in d) and (list in d):
+                    # one is an array , one is a list. its a list
+                    column_type_hints[j] = list
+                elif type(None) in d:
+                    # one is a NoneType. assign to other type
+                    if currow[j] != type(None):
+                        column_type_hints[j] = currow[j]
+                else:
+                    column_type_hints[j] = str
         # final pass. everything which is still NoneType is now a str
         for i in range(len(column_type_hints)):
-          if column_type_hints[i] == type(None):
-            column_type_hints[i] = str
+            if column_type_hints[i] == type(None):
+                column_type_hints[i] = str
 
         return column_type_hints
 
     @classmethod
-    def _read_csv_impl(cls,
-                       url,
-                       delimiter=',',
-                       header=True,
-                       error_bad_lines=False,
-                       comment_char='',
-                       escape_char='\\',
-                       double_quote=True,
-                       quote_char='\"',
-                       skip_initial_space=True,
-                       column_type_hints=None,
-                       na_values=["NA"],
-                       line_terminator="\n",
-                       usecols=[],
-                       nrows=None,
-                       skiprows=0,
-                       verbose=True,
-                       store_errors=True,
-                       nrows_to_infer=100,
-                       true_values=[],
-                       false_values=[],
-                       _only_raw_string_substitutions=False,
-                       **kwargs):
+    def _read_csv_impl(
+        cls,
+        url,
+        delimiter=",",
+        header=True,
+        error_bad_lines=False,
+        comment_char="",
+        escape_char="\\",
+        double_quote=True,
+        quote_char='"',
+        skip_initial_space=True,
+        column_type_hints=None,
+        na_values=["NA"],
+        line_terminator="\n",
+        usecols=[],
+        nrows=None,
+        skiprows=0,
+        verbose=True,
+        store_errors=True,
+        nrows_to_infer=100,
+        true_values=[],
+        false_values=[],
+        _only_raw_string_substitutions=False,
+        **kwargs
+    ):
         """
         Constructs an SFrame from a CSV file or a path to multiple CSVs, and
         returns a pair containing the SFrame and optionally
@@ -900,22 +930,22 @@ class SFrame(object):
         """
         # Pandas argument compatibility
         if "sep" in kwargs:
-            delimiter = kwargs['sep']
-            del kwargs['sep']
+            delimiter = kwargs["sep"]
+            del kwargs["sep"]
         if "quotechar" in kwargs:
-            quote_char = kwargs['quotechar']
-            del kwargs['quotechar']
+            quote_char = kwargs["quotechar"]
+            del kwargs["quotechar"]
         if "doublequote" in kwargs:
-            double_quote = kwargs['doublequote']
-            del kwargs['doublequote']
+            double_quote = kwargs["doublequote"]
+            del kwargs["doublequote"]
         if "comment" in kwargs:
-            comment_char = kwargs['comment']
-            del kwargs['comment']
+            comment_char = kwargs["comment"]
+            del kwargs["comment"]
             if comment_char is None:
-                comment_char = ''
+                comment_char = ""
         if "lineterminator" in kwargs:
-            line_terminator = kwargs['lineterminator']
-            del kwargs['lineterminator']
+            line_terminator = kwargs["lineterminator"]
+            del kwargs["lineterminator"]
         if len(kwargs) > 0:
             raise TypeError("Unexpected keyword arguments " + str(kwargs.keys()))
 
@@ -924,7 +954,7 @@ class SFrame(object):
         parsing_config["use_header"] = header
         parsing_config["continue_on_failure"] = not error_bad_lines
         parsing_config["comment_char"] = comment_char
-        parsing_config["escape_char"] = '\0' if escape_char is None else escape_char
+        parsing_config["escape_char"] = "\0" if escape_char is None else escape_char
         parsing_config["use_escape_char"] = escape_char is None
         parsing_config["double_quote"] = double_quote
         parsing_config["quote_char"] = quote_char
@@ -932,18 +962,18 @@ class SFrame(object):
         parsing_config["store_errors"] = store_errors
         parsing_config["line_terminator"] = line_terminator
         parsing_config["output_columns"] = usecols
-        parsing_config["skip_rows"] =skiprows
+        parsing_config["skip_rows"] = skiprows
         parsing_config["true_values"] = true_values
         parsing_config["false_values"] = false_values
         parsing_config["only_raw_string_substitutions"] = _only_raw_string_substitutions
 
         if type(na_values) is str:
-          na_values = [na_values]
+            na_values = [na_values]
         if na_values is not None and len(na_values) > 0:
             parsing_config["na_values"] = na_values
 
         if nrows is not None:
-          parsing_config["row_limit"] = nrows
+            parsing_config["row_limit"] = nrows
 
         proxy = UnitySFrameProxy()
         internal_url = _make_internal_url(url)
@@ -954,86 +984,112 @@ class SFrame(object):
         if column_type_hints is None:
             try:
                 # Get the first nrows_to_infer rows (using all the desired arguments).
-                first_rows = SFrame.read_csv(url, nrows=nrows_to_infer,
-                                 column_type_hints=type(None),
-                                 header=header,
-                                 delimiter=delimiter,
-                                 comment_char=comment_char,
-                                 escape_char=escape_char,
-                                 double_quote=double_quote,
-                                 quote_char=quote_char,
-                                 skip_initial_space=skip_initial_space,
-                                 na_values=na_values,
-                                 line_terminator=line_terminator,
-                                 usecols=usecols,
-                                 skiprows=skiprows,
-                                 verbose=verbose,
-                                 true_values=true_values,
-                                 false_values=false_values,
-                                 _only_raw_string_substitutions=_only_raw_string_substitutions)
+                first_rows = SFrame.read_csv(
+                    url,
+                    nrows=nrows_to_infer,
+                    column_type_hints=type(None),
+                    header=header,
+                    delimiter=delimiter,
+                    comment_char=comment_char,
+                    escape_char=escape_char,
+                    double_quote=double_quote,
+                    quote_char=quote_char,
+                    skip_initial_space=skip_initial_space,
+                    na_values=na_values,
+                    line_terminator=line_terminator,
+                    usecols=usecols,
+                    skiprows=skiprows,
+                    verbose=verbose,
+                    true_values=true_values,
+                    false_values=false_values,
+                    _only_raw_string_substitutions=_only_raw_string_substitutions,
+                )
                 column_type_hints = SFrame._infer_column_types_from_lines(first_rows)
-                typelist = '[' + ','.join(t.__name__ for t in column_type_hints) + ']'
+                typelist = "[" + ",".join(t.__name__ for t in column_type_hints) + "]"
                 if verbose:
                     print("------------------------------------------------------")
-                    print("Inferred types from first %d line(s) of file as " % nrows_to_infer)
-                    print("column_type_hints="+ typelist)
+                    print(
+                        "Inferred types from first %d line(s) of file as "
+                        % nrows_to_infer
+                    )
+                    print("column_type_hints=" + typelist)
                     print("If parsing fails due to incorrect types, you can correct")
                     print("the inferred type list above and pass it to read_csv in")
-                    print( "the column_type_hints argument")
+                    print("the column_type_hints argument")
                     print("------------------------------------------------------")
                 column_type_inference_was_used = True
             except RuntimeError as e:
-                if type(e) == RuntimeError and ("cancel" in str(e.args[0]) or "Cancel" in str(e.args[0])):
+                if type(e) == RuntimeError and (
+                    "cancel" in str(e.args[0]) or "Cancel" in str(e.args[0])
+                ):
                     raise e
                 # If the above fails, default back to str for all columns.
                 column_type_hints = str
                 if verbose:
-                    print('Could not detect types. Using str for each column.')
+                    print("Could not detect types. Using str for each column.")
 
         if type(column_type_hints) is type:
-            type_hints = {'__all_columns__': column_type_hints}
+            type_hints = {"__all_columns__": column_type_hints}
         elif type(column_type_hints) is list:
-            type_hints = dict(list(zip(['__X%d__' % i for i in range(len(column_type_hints))], column_type_hints)))
+            type_hints = dict(
+                list(
+                    zip(
+                        ["__X%d__" % i for i in range(len(column_type_hints))],
+                        column_type_hints,
+                    )
+                )
+            )
         elif type(column_type_hints) is dict:
             # we need to fill in a potentially incomplete dictionary
             try:
                 # Get the first nrows_to_infer rows (using all the desired arguments).
-                first_rows = SFrame.read_csv(url, nrows=nrows_to_infer,
-                                 column_type_hints=type(None),
-                                 header=header,
-                                 delimiter=delimiter,
-                                 comment_char=comment_char,
-                                 escape_char=escape_char,
-                                 double_quote=double_quote,
-                                 quote_char=quote_char,
-                                 skip_initial_space=skip_initial_space,
-                                 na_values=na_values,
-                                 line_terminator=line_terminator,
-                                 usecols=usecols,
-                                 skiprows=skiprows,
-                                 verbose=verbose,
-                                 true_values=true_values,
-                                 false_values=false_values,
-                                 _only_raw_string_substitutions=_only_raw_string_substitutions)
+                first_rows = SFrame.read_csv(
+                    url,
+                    nrows=nrows_to_infer,
+                    column_type_hints=type(None),
+                    header=header,
+                    delimiter=delimiter,
+                    comment_char=comment_char,
+                    escape_char=escape_char,
+                    double_quote=double_quote,
+                    quote_char=quote_char,
+                    skip_initial_space=skip_initial_space,
+                    na_values=na_values,
+                    line_terminator=line_terminator,
+                    usecols=usecols,
+                    skiprows=skiprows,
+                    verbose=verbose,
+                    true_values=true_values,
+                    false_values=false_values,
+                    _only_raw_string_substitutions=_only_raw_string_substitutions,
+                )
                 inferred_types = SFrame._infer_column_types_from_lines(first_rows)
                 # make a dict of column_name to type
-                inferred_types = dict(list(zip(first_rows.column_names(), inferred_types)))
+                inferred_types = dict(
+                    list(zip(first_rows.column_names(), inferred_types))
+                )
                 # overwrite with the user's specified types
                 for key in column_type_hints:
                     inferred_types[key] = column_type_hints[key]
                 column_type_hints = inferred_types
             except RuntimeError as e:
-                if type(e) == RuntimeError and ("cancel" in str(e) or "Cancel" in str(e)):
+                if type(e) == RuntimeError and (
+                    "cancel" in str(e) or "Cancel" in str(e)
+                ):
                     raise e
                 # If the above fails, default back to str for unmatched columns
                 if verbose:
-                    print('Could not detect types. Using str for all unspecified columns.')
+                    print(
+                        "Could not detect types. Using str for all unspecified columns."
+                    )
             type_hints = column_type_hints
         else:
-            raise TypeError("Invalid type for column_type_hints. Must be a dictionary, list or a single type.")
+            raise TypeError(
+                "Invalid type for column_type_hints. Must be a dictionary, list or a single type."
+            )
 
         try:
-            if (not verbose):
+            if not verbose:
                 glconnect.get_server().set_log_progress(False)
             with cython_context():
                 errors = proxy.load_from_csvs(internal_url, parsing_config, type_hints)
@@ -1045,10 +1101,12 @@ class SFrame(object):
                 if verbose:
                     print("Unable to parse the file with automatic type inference.")
                     print("Defaulting to column_type_hints=str")
-                type_hints = {'__all_columns__': str}
+                type_hints = {"__all_columns__": str}
                 try:
                     with cython_context():
-                        errors = proxy.load_from_csvs(internal_url, parsing_config, type_hints)
+                        errors = proxy.load_from_csvs(
+                            internal_url, parsing_config, type_hints
+                        )
                 except:
                     glconnect.get_server().set_log_progress(True)
                     raise
@@ -1058,30 +1116,32 @@ class SFrame(object):
 
         glconnect.get_server().set_log_progress(True)
 
-        return (cls(_proxy=proxy), { f: SArray(_proxy = es) for (f, es) in errors.items() })
+        return (cls(_proxy=proxy), {f: SArray(_proxy=es) for (f, es) in errors.items()})
 
     @classmethod
-    def read_csv_with_errors(cls,
-                             url,
-                             delimiter=',',
-                             header=True,
-                             comment_char='',
-                             escape_char='\\',
-                             double_quote=True,
-                             quote_char='\"',
-                             skip_initial_space=True,
-                             column_type_hints=None,
-                             na_values=["NA"],
-                             line_terminator='\n',
-                             usecols = [],
-                             nrows=None,
-                             skiprows=0,
-                             verbose=True,
-                             nrows_to_infer=100,
-                             true_values=[],
-                             false_values=[],
-                             _only_raw_string_substitutions=False,
-                             **kwargs):
+    def read_csv_with_errors(
+        cls,
+        url,
+        delimiter=",",
+        header=True,
+        comment_char="",
+        escape_char="\\",
+        double_quote=True,
+        quote_char='"',
+        skip_initial_space=True,
+        column_type_hints=None,
+        na_values=["NA"],
+        line_terminator="\n",
+        usecols=[],
+        nrows=None,
+        skiprows=0,
+        verbose=True,
+        nrows_to_infer=100,
+        true_values=[],
+        false_values=[],
+        _only_raw_string_substitutions=False,
+        **kwargs
+    ):
         """
         Constructs an SFrame from a CSV file or a path to multiple CSVs, and
         returns a pair containing the SFrame and a dict of filenames to SArrays
@@ -1200,53 +1260,58 @@ class SFrame(object):
          Rows: 1
          ['x,y,z,a,b,c']}
        """
-        return cls._read_csv_impl(url,
-                                  delimiter=delimiter,
-                                  header=header,
-                                  error_bad_lines=False, # we are storing errors,
-                                                         # thus we must not fail
-                                                         # on bad lines
-                                  comment_char=comment_char,
-                                  escape_char=escape_char,
-                                  double_quote=double_quote,
-                                  quote_char=quote_char,
-                                  skip_initial_space=skip_initial_space,
-                                  column_type_hints=column_type_hints,
-                                  na_values=na_values,
-                                  line_terminator=line_terminator,
-                                  usecols=usecols,
-                                  nrows=nrows,
-                                  verbose=verbose,
-                                  skiprows=skiprows,
-                                  store_errors=True,
-                                  nrows_to_infer=nrows_to_infer,
-                                  true_values=true_values,
-                                  false_values=false_values,
-                                  _only_raw_string_substitutions=_only_raw_string_substitutions,
-                                  **kwargs)
+        return cls._read_csv_impl(
+            url,
+            delimiter=delimiter,
+            header=header,
+            error_bad_lines=False,  # we are storing errors,
+            # thus we must not fail
+            # on bad lines
+            comment_char=comment_char,
+            escape_char=escape_char,
+            double_quote=double_quote,
+            quote_char=quote_char,
+            skip_initial_space=skip_initial_space,
+            column_type_hints=column_type_hints,
+            na_values=na_values,
+            line_terminator=line_terminator,
+            usecols=usecols,
+            nrows=nrows,
+            verbose=verbose,
+            skiprows=skiprows,
+            store_errors=True,
+            nrows_to_infer=nrows_to_infer,
+            true_values=true_values,
+            false_values=false_values,
+            _only_raw_string_substitutions=_only_raw_string_substitutions,
+            **kwargs
+        )
+
     @classmethod
-    def read_csv(cls,
-                 url,
-                 delimiter=',',
-                 header=True,
-                 error_bad_lines=False,
-                 comment_char='',
-                 escape_char='\\',
-                 double_quote=True,
-                 quote_char='\"',
-                 skip_initial_space=True,
-                 column_type_hints=None,
-                 na_values=["NA"],
-                 line_terminator='\n',
-                 usecols=[],
-                 nrows=None,
-                 skiprows=0,
-                 verbose=True,
-                 nrows_to_infer=100,
-                 true_values=[],
-                 false_values=[],
-                 _only_raw_string_substitutions=False,
-                 **kwargs):
+    def read_csv(
+        cls,
+        url,
+        delimiter=",",
+        header=True,
+        error_bad_lines=False,
+        comment_char="",
+        escape_char="\\",
+        double_quote=True,
+        quote_char='"',
+        skip_initial_space=True,
+        column_type_hints=None,
+        na_values=["NA"],
+        line_terminator="\n",
+        usecols=[],
+        nrows=None,
+        skiprows=0,
+        verbose=True,
+        nrows_to_infer=100,
+        true_values=[],
+        false_values=[],
+        _only_raw_string_substitutions=False,
+        **kwargs
+    ):
         """
         Constructs an SFrame from a CSV file or a path to multiple CSVs.
 
@@ -1489,34 +1554,33 @@ class SFrame(object):
         Set error_bad_lines=False to skip bad lines
         """
 
-        return cls._read_csv_impl(url,
-                                  delimiter=delimiter,
-                                  header=header,
-                                  error_bad_lines=error_bad_lines,
-                                  comment_char=comment_char,
-                                  escape_char=escape_char,
-                                  double_quote=double_quote,
-                                  quote_char=quote_char,
-                                  skip_initial_space=skip_initial_space,
-                                  column_type_hints=column_type_hints,
-                                  na_values=na_values,
-                                  line_terminator=line_terminator,
-                                  usecols=usecols,
-                                  nrows=nrows,
-                                  skiprows=skiprows,
-                                  verbose=verbose,
-                                  store_errors=False,
-                                  nrows_to_infer=nrows_to_infer,
-                                  true_values=true_values,
-                                  false_values=false_values,
-                                  _only_raw_string_substitutions=_only_raw_string_substitutions,
-                                  **kwargs)[0]
-
+        return cls._read_csv_impl(
+            url,
+            delimiter=delimiter,
+            header=header,
+            error_bad_lines=error_bad_lines,
+            comment_char=comment_char,
+            escape_char=escape_char,
+            double_quote=double_quote,
+            quote_char=quote_char,
+            skip_initial_space=skip_initial_space,
+            column_type_hints=column_type_hints,
+            na_values=na_values,
+            line_terminator=line_terminator,
+            usecols=usecols,
+            nrows=nrows,
+            skiprows=skiprows,
+            verbose=verbose,
+            store_errors=False,
+            nrows_to_infer=nrows_to_infer,
+            true_values=true_values,
+            false_values=false_values,
+            _only_raw_string_substitutions=_only_raw_string_substitutions,
+            **kwargs
+        )[0]
 
     @classmethod
-    def read_json(cls,
-                  url,
-                  orient='records'):
+    def read_json(cls, url, orient="records"):
         """
         Reads a JSON file representing a table into an SFrame.
 
@@ -1604,28 +1668,42 @@ class SFrame(object):
             if len(g) == 0:
                 return SFrame()
             if g.dtype != dict:
-                raise RuntimeError("Invalid input JSON format. Expected list of dictionaries")
-            g = SFrame({'X1':g})
-            return g.unpack('X1','')
+                raise RuntimeError(
+                    "Invalid input JSON format. Expected list of dictionaries"
+                )
+            g = SFrame({"X1": g})
+            return g.unpack("X1", "")
         elif orient == "lines":
-            g = cls.read_csv(url, header=False,na_values=['null'],true_values=['true'],false_values=['false'],
-                    _only_raw_string_substitutions=True)
+            g = cls.read_csv(
+                url,
+                header=False,
+                na_values=["null"],
+                true_values=["true"],
+                false_values=["false"],
+                _only_raw_string_substitutions=True,
+            )
             if g.num_rows() == 0:
                 return SFrame()
             if g.num_columns() != 1:
                 raise RuntimeError("Input JSON not of expected format")
-            if g['X1'].dtype == dict:
-                return g.unpack('X1','')
+            if g["X1"].dtype == dict:
+                return g.unpack("X1", "")
             else:
                 return g
         else:
             raise ValueError("Invalid value for orient parameter (" + str(orient) + ")")
 
-        
-
     @classmethod
-    def from_sql(cls, conn, sql_statement, params=None, type_inference_rows=100,
-        dbapi_module=None, column_type_hints=None, cursor_arraysize=128):
+    def from_sql(
+        cls,
+        conn,
+        sql_statement,
+        params=None,
+        type_inference_rows=100,
+        dbapi_module=None,
+        column_type_hints=None,
+        cursor_arraysize=128,
+    ):
         """
         Convert the result of a SQL database query to an SFrame.
 
@@ -1739,11 +1817,11 @@ class SFrame(object):
                 c.execute(sql_statement)
             else:
                 c.execute(sql_statement, params)
-        except mod_info['Error'] as e:
+        except mod_info["Error"] as e:
             # The rollback method is considered optional by DBAPI2, but some
             # modules that do implement it won't work again unless it is called
             # if an error happens on a cursor.
-            if hasattr(conn, 'rollback'):
+            if hasattr(conn, "rollback"):
                 conn.rollback()
             raise e
 
@@ -1757,18 +1835,20 @@ class SFrame(object):
         temp_vals = []
 
         # Set any types that are given to us
-        col_name_to_num = {result_names[i]:i for i in range(len(result_names))}
+        col_name_to_num = {result_names[i]: i for i in range(len(result_names))}
         if column_type_hints is not None:
             if type(column_type_hints) is dict:
-                for k,v in column_type_hints.items():
+                for k, v in column_type_hints.items():
                     col_num = col_name_to_num[k]
                     cols_to_force_cast.add(col_num)
                     result_types[col_num] = v
             elif type(column_type_hints) is list:
                 if len(column_type_hints) != len(result_names):
-                    __LOGGER__.warn("If column_type_hints is specified as a "+\
-                        "list, it must be of the same size as the result "+\
-                        "set's number of columns. Ignoring (use dict instead).")
+                    __LOGGER__.warn(
+                        "If column_type_hints is specified as a "
+                        + "list, it must be of the same size as the result "
+                        + "set's number of columns. Ignoring (use dict instead)."
+                    )
                 else:
                     result_types = column_type_hints
                     cols_to_force_cast.update(range(len(result_desc)))
@@ -1781,9 +1861,11 @@ class SFrame(object):
         # these are types that a "cast" makes sense, and we're not calling a
         # constructor that expects certain input (e.g.  datetime.datetime),
         # since we could get lots of different input
-        hintable_types = [int,float,str]
+        hintable_types = [int, float, str]
         if not all([i in hintable_types or i is None for i in result_types]):
-            raise TypeError("Only " + str(hintable_types) + " can be provided as type hints!")
+            raise TypeError(
+                "Only " + str(hintable_types) + " can be provided as type hints!"
+            )
 
         # Perform type inference by checking to see what python types are
         # returned from the cursor
@@ -1792,8 +1874,8 @@ class SFrame(object):
             # will raise an exception is if execute didn't produce a result set
             try:
                 row = c.fetchone()
-            except mod_info['Error'] as e:
-                if hasattr(conn, 'rollback'):
+            except mod_info["Error"] as e:
+                if hasattr(conn, "rollback"):
                     conn.rollback()
                 raise e
             while row is not None:
@@ -1812,7 +1894,7 @@ class SFrame(object):
         # point. Try using DBAPI2 type_codes to pick a suitable type. If this
         # doesn't work, fall back to string.
         if not all(result_types):
-            missing_val_cols = [i for i,v in enumerate(result_types) if v is None]
+            missing_val_cols = [i for i, v in enumerate(result_types) if v is None]
             cols_to_force_cast.update(missing_val_cols)
             inferred_types = _infer_dbapi2_types(c, mod_info)
             cnt = 0
@@ -1822,7 +1904,9 @@ class SFrame(object):
                 cnt += 1
 
         sb = SFrameBuilder(result_types, column_names=result_names)
-        unsupported_cols = [i for i,v in enumerate(sb.column_types()) if v is type(None)]
+        unsupported_cols = [
+            i for i, v in enumerate(sb.column_types()) if v is type(None)
+        ]
         if len(unsupported_cols) > 0:
             cols_to_force_cast.update(unsupported_cols)
             for i in unsupported_cols:
@@ -1830,24 +1914,34 @@ class SFrame(object):
             sb = SFrameBuilder(result_types, column_names=result_names)
 
         temp_vals = _convert_rows_to_builtin_seq(temp_vals)
-        sb.append_multiple(_force_cast_sql_types(temp_vals, result_types, cols_to_force_cast))
+        sb.append_multiple(
+            _force_cast_sql_types(temp_vals, result_types, cols_to_force_cast)
+        )
         rows = c.fetchmany()
         while len(rows) > 0:
             rows = _convert_rows_to_builtin_seq(rows)
-            sb.append_multiple(_force_cast_sql_types(rows, result_types, cols_to_force_cast))
+            sb.append_multiple(
+                _force_cast_sql_types(rows, result_types, cols_to_force_cast)
+            )
             rows = c.fetchmany()
         cls = sb.close()
 
         try:
             c.close()
-        except mod_info['Error'] as e:
-            if hasattr(conn, 'rollback'):
+        except mod_info["Error"] as e:
+            if hasattr(conn, "rollback"):
                 conn.rollback()
             raise e
         return cls
 
-    def to_sql(self, conn, table_name, dbapi_module=None,
-            use_python_type_specifiers=False, use_exact_column_names=True):
+    def to_sql(
+        self,
+        conn,
+        table_name,
+        dbapi_module=None,
+        use_python_type_specifiers=False,
+        use_exact_column_names=True,
+    ):
         """
         Convert an SFrame to a single table in a SQL database.
 
@@ -1893,18 +1987,21 @@ class SFrame(object):
         col_info = list(zip(self.column_names(), self.column_types()))
 
         if not use_python_type_specifiers:
-            _pytype_to_printf = lambda x: 's'
+            _pytype_to_printf = lambda x: "s"
 
         # DBAPI2 standard allows for five different ways to specify parameters
         sql_param = {
-            'qmark'   : lambda name,col_num,col_type: '?',
-            'numeric' : lambda name,col_num,col_type:':'+str(col_num+1),
-            'named'   : lambda name,col_num,col_type:':'+str(name),
-            'format'  : lambda name,col_num,col_type:'%'+_pytype_to_printf(col_type),
-            'pyformat': lambda name,col_num,col_type:'%('+str(name)+')'+_pytype_to_printf(col_type),
-            }
+            "qmark": lambda name, col_num, col_type: "?",
+            "numeric": lambda name, col_num, col_type: ":" + str(col_num + 1),
+            "named": lambda name, col_num, col_type: ":" + str(name),
+            "format": lambda name, col_num, col_type: "%" + _pytype_to_printf(col_type),
+            "pyformat": lambda name, col_num, col_type: "%("
+            + str(name)
+            + ")"
+            + _pytype_to_printf(col_type),
+        }
 
-        get_sql_param = sql_param[mod_info['paramstyle']]
+        get_sql_param = sql_param[mod_info["paramstyle"]]
 
         # form insert string
         ins_str = "INSERT INTO " + str(table_name)
@@ -1913,8 +2010,8 @@ class SFrame(object):
         count = 0
         for i in col_info:
             col_str += i[0]
-            value_str += get_sql_param(i[0],count,i[1])
-            if count < len(col_info)-1:
+            value_str += get_sql_param(i[0], count, i[1])
+            if count < len(col_info) - 1:
                 col_str += ","
                 value_str += ","
             count += 1
@@ -1927,37 +2024,35 @@ class SFrame(object):
         ins_str += value_str
 
         # Some formats require values in an iterable, some a dictionary
-        if (mod_info['paramstyle'] == 'named' or\
-            mod_info['paramstyle'] == 'pyformat'):
-          prepare_sf_row = lambda x:x
+        if mod_info["paramstyle"] == "named" or mod_info["paramstyle"] == "pyformat":
+            prepare_sf_row = lambda x: x
         else:
-          col_names = self.column_names()
-          prepare_sf_row = lambda x: [x[i] for i in col_names]
+            col_names = self.column_names()
+            prepare_sf_row = lambda x: [x[i] for i in col_names]
 
         for i in self:
             try:
                 c.execute(ins_str, prepare_sf_row(i))
-            except mod_info['Error'] as e:
-                if hasattr(conn, 'rollback'):
+            except mod_info["Error"] as e:
+                if hasattr(conn, "rollback"):
                     conn.rollback()
                 raise e
 
         conn.commit()
         c.close()
 
-
     def __hash__(self):
-        '''
+        """
         Because we override `__eq__` we need to implement this function in Python 3.
         Just make it match default behavior in Python 2.
-        '''
+        """
         return id(self) // 16
-    
-    def __add__(self,other):
+
+    def __add__(self, other):
         """
         Return append one frames to other
         """
-        self=self.append(other)
+        self = self.append(other)
         return self
 
     def __repr__(self):
@@ -1990,9 +2085,14 @@ class SFrame(object):
             ret = ret + "\tNone\n\n"
         return ret
 
-    def __get_pretty_tables__(self, wrap_text=False, max_row_width=80,
-                              max_column_width=30, max_columns=20,
-                              max_rows_to_display=60):
+    def __get_pretty_tables__(
+        self,
+        wrap_text=False,
+        max_row_width=80,
+        max_column_width=30,
+        max_columns=20,
+        max_rows_to_display=60,
+    ):
         """
         Returns a list of pretty print tables representing the current SFrame.
         If the number of columns is larger than max_columns, the last pretty
@@ -2012,7 +2112,7 @@ class SFrame(object):
         -------
         out : list[PrettyTable]
         """
-        if (len(self) <= max_rows_to_display):
+        if len(self) <= max_rows_to_display:
             headsf = self.__copy__()
         else:
             headsf = self.head(max_rows_to_display)
@@ -2027,30 +2127,36 @@ class SFrame(object):
                 headsf[col] = headsf[col].astype(list)
 
         def _value_to_str(value):
-            if (type(value) is array.array):
+            if type(value) is array.array:
                 return str(list(value))
-            elif (type(value) is numpy.ndarray):
-                return str(value).replace('\n',' ')
-            elif (type(value) is list):
-                return '[' + ", ".join(_value_to_str(x) for x in value) + ']'
+            elif type(value) is numpy.ndarray:
+                return str(value).replace("\n", " ")
+            elif type(value) is list:
+                return "[" + ", ".join(_value_to_str(x) for x in value) + "]"
             else:
                 return str(value)
 
         def _escape_space(s):
             if sys.version_info.major == 3:
-                return "".join([ch.encode('unicode_escape').decode() if ch.isspace() else ch for ch in s])
-            return "".join([ch.encode('string_escape') if ch.isspace() else ch for ch in s])
+                return "".join(
+                    [
+                        ch.encode("unicode_escape").decode() if ch.isspace() else ch
+                        for ch in s
+                    ]
+                )
+            return "".join(
+                [ch.encode("string_escape") if ch.isspace() else ch for ch in s]
+            )
 
         def _truncate_respect_unicode(s, max_length):
-            if (len(s) <= max_length):
+            if len(s) <= max_length:
                 return s
             else:
                 if sys.version_info.major < 3:
-                    u = unicode(s, 'utf-8', errors='replace')
-                    return u[:max_length].encode('utf-8')
+                    u = unicode(s, "utf-8", errors="replace")
+                    return u[:max_length].encode("utf-8")
                 else:
                     return s[:max_length]
-
 
         def _truncate_str(s, wrap_str=False):
             """
@@ -2061,11 +2167,11 @@ class SFrame(object):
 
             if len(s) <= max_column_width:
                 if sys.version_info.major < 3:
-                    return unicode(s, 'utf-8', errors='replace')
+                    return unicode(s, "utf-8", errors="replace")
                 else:
                     return s
             else:
-                ret = ''
+                ret = ""
                 # if wrap_str is true, wrap the text and take at most 2 rows
                 if wrap_str:
                     wrapped_lines = wrap(s, max_column_width)
@@ -2073,13 +2179,15 @@ class SFrame(object):
                         return wrapped_lines[0]
                     last_line = wrapped_lines[1]
                     if len(last_line) >= max_column_width:
-                        last_line = _truncate_respect_unicode(last_line, max_column_width - 4)
-                    ret = wrapped_lines[0] + '\n' + last_line + ' ...'
+                        last_line = _truncate_respect_unicode(
+                            last_line, max_column_width - 4
+                        )
+                    ret = wrapped_lines[0] + "\n" + last_line + " ..."
                 else:
-                    ret = _truncate_respect_unicode(s, max_column_width - 4) + '...'
+                    ret = _truncate_respect_unicode(s, max_column_width - 4) + "..."
 
                 if sys.version_info.major < 3:
-                    return unicode(ret, 'utf-8', errors='replace')
+                    return unicode(ret, "utf-8", errors="replace")
                 else:
                     return ret
 
@@ -2098,34 +2206,48 @@ class SFrame(object):
                 col = columns.pop()
                 # check the max length of element in the column
                 if len(headsf) > 0:
-                    col_width = min(max_column_width, max(len(str(x)) for x in headsf[col]))
+                    col_width = min(
+                        max_column_width, max(len(str(x)) for x in headsf[col])
+                    )
                 else:
                     col_width = max_column_width
-                if (table_width + col_width < max_row_width):
+                if table_width + col_width < max_row_width:
                     # truncate the header if necessary
                     header = _truncate_str(col, wrap_text)
-                    tbl.add_column(header, [_truncate_str(_value_to_str(x), wrap_text) for x in headsf[col]])
-                    table_width = str(tbl).find('\n')
+                    tbl.add_column(
+                        header,
+                        [
+                            _truncate_str(_value_to_str(x), wrap_text)
+                            for x in headsf[col]
+                        ],
+                    )
+                    table_width = str(tbl).find("\n")
                     num_column_of_last_table += 1
                 else:
                     # the column does not fit in the current table, push it back to columns
                     columns.append(col)
                     break
-            tbl.align = 'c'
+            tbl.align = "c"
             row_of_tables.append(tbl)
 
         # add a column of all "..." if there are more columns than displayed
         if self.num_columns() > max_columns:
-            row_of_tables[-1].add_column('...', ['...'] * len(headsf))
+            row_of_tables[-1].add_column("...", ["..."] * len(headsf))
             num_column_of_last_table += 1
 
         # add a row of all "..." if there are more rows than displayed
         if self.__has_size__() and self.num_rows() > headsf.num_rows():
-            row_of_tables[-1].add_row(['...'] * num_column_of_last_table)
+            row_of_tables[-1].add_row(["..."] * num_column_of_last_table)
         return row_of_tables
 
-    def print_rows(self, num_rows=10, num_columns=40, max_column_width=30,
-                   max_row_width=80, output_file=None):
+    def print_rows(
+        self,
+        num_rows=10,
+        num_columns=40,
+        max_column_width=30,
+        max_row_width=80,
+        output_file=None,
+    ):
         """
         Print the first M rows and N columns of the SFrame in human readable
         format.
@@ -2161,13 +2283,18 @@ class SFrame(object):
         max_row_width = max(max_row_width, max_column_width + 1)
 
         printed_sf = self._imagecols_to_stringcols(num_rows)
-        row_of_tables = printed_sf.__get_pretty_tables__(wrap_text=False,
-                                                         max_rows_to_display=num_rows,
-                                                         max_columns=num_columns,
-                                                         max_column_width=max_column_width,
-                                                         max_row_width=max_row_width)
+        row_of_tables = printed_sf.__get_pretty_tables__(
+            wrap_text=False,
+            max_rows_to_display=num_rows,
+            max_columns=num_columns,
+            max_column_width=max_column_width,
+            max_row_width=max_row_width,
+        )
         footer = "[%d rows x %d columns]\n" % self.shape
-        print('\n'.join([str(tb) for tb in row_of_tables]) + "\n" + footer, file=output_file)
+        print(
+            "\n".join([str(tb) for tb in row_of_tables]) + "\n" + footer,
+            file=output_file,
+        )
 
     def _imagecols_to_stringcols(self, num_rows=10):
         # A list of column types
@@ -2178,14 +2305,14 @@ class SFrame(object):
         # Constructing names of sframe columns that are of image type
         image_column_names = [names[i] for i in range(len(names)) if types[i] == _Image]
 
-        #If there are image-type columns, copy the SFrame and cast the top MAX_NUM_ROWS_TO_DISPLAY of those columns to string
+        # If there are image-type columns, copy the SFrame and cast the top MAX_NUM_ROWS_TO_DISPLAY of those columns to string
         printed_sf = self.__copy__()
         if len(image_column_names) > 0:
             for t in names:
                 if t in image_column_names:
                     printed_sf[t] = self[t].astype(str)
         return printed_sf.head(num_rows)
-    
+
     def drop_duplicates(self, subset):
         """
         Return SFrame with duplicate rows removed, optionally only considering certain columns.
@@ -2216,11 +2343,19 @@ class SFrame(object):
         [3 rows x 3 columns]
 
         """
-        result =  all(elem in self.column_names()  for elem in subset)
-        if result :
-            return (self.groupby(subset, {col: aggregate.SELECT_ONE(col) for col in self.column_names() if col not in subset}))
+        result = all(elem in self.column_names() for elem in subset)
+        if result:
+            return self.groupby(
+                subset,
+                {
+                    col: aggregate.SELECT_ONE(col)
+                    for col in self.column_names()
+                    if col not in subset
+                },
+            )
         else:
             raise TypeError("subset  not in  sframe column")
+
     def __str_impl__(self, num_rows=10, footer=True):
         """
         Returns a string containing the first num_rows elements of the frame, along
@@ -2230,20 +2365,22 @@ class SFrame(object):
 
         printed_sf = self._imagecols_to_stringcols(MAX_ROWS_TO_DISPLAY)
 
-        row_of_tables = printed_sf.__get_pretty_tables__(wrap_text=False, max_rows_to_display=MAX_ROWS_TO_DISPLAY)
+        row_of_tables = printed_sf.__get_pretty_tables__(
+            wrap_text=False, max_rows_to_display=MAX_ROWS_TO_DISPLAY
+        )
         is_empty = len(printed_sf) == 0
 
-        if (not footer):
-            return (is_empty, '\n'.join([str(tb) for tb in row_of_tables]))
+        if not footer:
+            return (is_empty, "\n".join([str(tb) for tb in row_of_tables]))
 
         if self.__has_size__():
-            footer = '[%d rows x %d columns]\n' % self.shape
-            if (self.num_rows() > MAX_ROWS_TO_DISPLAY):
-                footer += '\n'.join(FOOTER_STRS)
+            footer = "[%d rows x %d columns]\n" % self.shape
+            if self.num_rows() > MAX_ROWS_TO_DISPLAY:
+                footer += "\n".join(FOOTER_STRS)
         else:
-            footer = '[? rows x %d columns]\n' % self.num_columns()
-            footer += '\n'.join(LAZY_FOOTER_STRS)
-        return (is_empty, '\n'.join([str(tb) for tb in row_of_tables]) + "\n" + footer)
+            footer = "[? rows x %d columns]\n" % self.num_columns()
+            footer += "\n".join(LAZY_FOOTER_STRS)
+        return (is_empty, "\n".join([str(tb) for tb in row_of_tables]) + "\n" + footer)
 
     def __str__(self, num_rows=10, footer=True):
         """
@@ -2257,21 +2394,29 @@ class SFrame(object):
 
         printed_sf = self._imagecols_to_stringcols(MAX_ROWS_TO_DISPLAY)
 
-        row_of_tables = printed_sf.__get_pretty_tables__(wrap_text=True,
-                                                         max_row_width=120,
-                                                         max_columns=40,
-                                                         max_column_width=25,
-                                                         max_rows_to_display=MAX_ROWS_TO_DISPLAY)
+        row_of_tables = printed_sf.__get_pretty_tables__(
+            wrap_text=True,
+            max_row_width=120,
+            max_columns=40,
+            max_column_width=25,
+            max_rows_to_display=MAX_ROWS_TO_DISPLAY,
+        )
         if self.__has_size__():
-            footer = '[%d rows x %d columns]<br/>' % self.shape
-            if (self.num_rows() > MAX_ROWS_TO_DISPLAY):
-                footer += '<br/>'.join(FOOTER_STRS)
+            footer = "[%d rows x %d columns]<br/>" % self.shape
+            if self.num_rows() > MAX_ROWS_TO_DISPLAY:
+                footer += "<br/>".join(FOOTER_STRS)
         else:
-            footer = '[? rows x %d columns]<br/>' % self.num_columns()
-            footer += '<br/>'.join(LAZY_FOOTER_STRS)
+            footer = "[? rows x %d columns]<br/>" % self.num_columns()
+            footer += "<br/>".join(LAZY_FOOTER_STRS)
         begin = '<div style="max-height:1000px;max-width:1500px;overflow:auto;">'
-        end = '\n</div>'
-        return begin + '\n'.join([tb.get_html_string(format=True) for tb in row_of_tables]) + "\n" + footer + end
+        end = "\n</div>"
+        return (
+            begin
+            + "\n".join([tb.get_html_string(format=True) for tb in row_of_tables])
+            + "\n"
+            + footer
+            + end
+        )
 
     def __nonzero__(self):
         """
@@ -2318,7 +2463,9 @@ class SFrame(object):
         """
         if type(other) is SArray:
             if self.__has_size__() and other.__has_size__() and len(other) != len(self):
-                raise IndexError("Cannot perform logical indexing on arrays of different length.")
+                raise IndexError(
+                    "Cannot perform logical indexing on arrays of different length."
+                )
             with cython_context():
                 return SFrame(_proxy=self.__proxy__.logical_filter(other.__proxy__))
 
@@ -2433,18 +2580,21 @@ class SFrame(object):
 
         from ..toolkits.image_classifier._evaluation import _image_resize
 
-        assert HAS_PANDAS, 'pandas is not installed.'
+        assert HAS_PANDAS, "pandas is not installed."
         df = pandas.DataFrame()
         for i in range(self.num_columns()):
             column_name = self.column_names()[i]
-            if(self.column_types()[i] == _Image):
-                df[column_name] = [_image_resize(x[column_name])._to_pil_image() for x in self.select_columns([column_name])]
+            if self.column_types()[i] == _Image:
+                df[column_name] = [
+                    _image_resize(x[column_name])._to_pil_image()
+                    for x in self.select_columns([column_name])
+                ]
             else:
                 df[column_name] = list(self[column_name])
             if len(df[column_name]) == 0:
                 column_type = self.column_types()[i]
                 if column_type in (array.array, type(None)):
-                    column_type = 'object'
+                    column_type = "object"
                 df[column_name] = df[column_name].astype(column_type)
         return df
 
@@ -2461,8 +2611,9 @@ class SFrame(object):
             A Numpy Array containing all the values of the SFrame
 
         """
-        assert HAS_NUMPY, 'numpy is not installed.'
+        assert HAS_NUMPY, "numpy is not installed."
         import numpy
+
         return numpy.transpose(numpy.asarray([self[x] for x in self.column_names()]))
 
     def tail(self, n=10):
@@ -2536,6 +2687,7 @@ class SFrame(object):
         nativefn = None
         try:
             from .. import extensions as extensions
+
             nativefn = extensions._build_native_function_call(fn)
         except:
             pass
@@ -2543,12 +2695,14 @@ class SFrame(object):
         if nativefn is not None:
             # this is a toolkit lambda. We can do something about it
             with cython_context():
-                return SArray(_proxy=self.__proxy__.transform_native(nativefn, dtype, seed))
+                return SArray(
+                    _proxy=self.__proxy__.transform_native(nativefn, dtype, seed)
+                )
 
         with cython_context():
             return SArray(_proxy=self.__proxy__.transform(fn, dtype, seed))
 
-    def flat_map(self, column_names, fn, column_types='auto', seed=None):
+    def flat_map(self, column_names, fn, column_types="auto", seed=None):
         """
         Map each row of the SFrame to multiple rows in a new SFrame via a
         function.
@@ -2614,28 +2768,32 @@ class SFrame(object):
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
 
-
         # determine the column_types
-        if column_types == 'auto':
+        if column_types == "auto":
             types = set()
             sample = self[0:10]
             results = [fn(row) for row in sample]
 
             for rows in results:
                 if type(rows) is not list:
-                    raise TypeError("Output type of the lambda function must be a list of lists")
+                    raise TypeError(
+                        "Output type of the lambda function must be a list of lists"
+                    )
 
                 # note: this skips empty lists
                 for row in rows:
                     if type(row) is not list:
-                        raise TypeError("Output type of the lambda function must be a list of lists")
+                        raise TypeError(
+                            "Output type of the lambda function must be a list of lists"
+                        )
                     types.add(tuple([type(v) for v in row]))
 
             if len(types) == 0:
                 raise TypeError(
-                    "Could not infer output column types from the first ten rows " +\
-                    "of the SFrame. Please use the 'column_types' parameter to " +\
-                    "set the types.")
+                    "Could not infer output column types from the first ten rows "
+                    + "of the SFrame. Please use the 'column_types' parameter to "
+                    + "set the types."
+                )
 
             if len(types) > 1:
                 raise TypeError("Mapped rows must have the same length and types")
@@ -2643,9 +2801,13 @@ class SFrame(object):
             column_types = list(types.pop())
 
         assert type(column_types) is list, "'column_types' must be a list."
-        assert len(column_types) == len(column_names), "Number of output columns must match the size of column names"
+        assert len(column_types) == len(
+            column_names
+        ), "Number of output columns must match the size of column names"
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.flat_map(fn, column_names, column_types, seed))
+            return SFrame(
+                _proxy=self.__proxy__.flat_map(fn, column_names, column_types, seed)
+            )
 
     def sample(self, fraction, seed=None, exact=False):
         """
@@ -2686,10 +2848,10 @@ class SFrame(object):
         if seed is None:
             seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
 
-        if (fraction > 1 or fraction < 0):
-            raise ValueError('Invalid sampling rate: ' + str(fraction))
+        if fraction > 1 or fraction < 0:
+            raise ValueError("Invalid sampling rate: " + str(fraction))
 
-        if (self.num_rows() == 0 or self.num_columns() == 0):
+        if self.num_rows() == 0 or self.num_columns() == 0:
             return self
         else:
             with cython_context():
@@ -2735,10 +2897,10 @@ class SFrame(object):
         >>> print(len(sf_train), len(sf_test))
         922 102
         """
-        if (fraction > 1 or fraction < 0):
-            raise ValueError('Invalid sampling rate: ' + str(fraction))
-        
-        if (self.num_rows() == 0 or self.num_columns() == 0):
+        if fraction > 1 or fraction < 0:
+            raise ValueError("Invalid sampling rate: " + str(fraction))
+
+        if self.num_rows() == 0 or self.num_columns() == 0:
             return (SFrame(), SFrame())
 
         if seed is None:
@@ -2749,12 +2911,14 @@ class SFrame(object):
         try:
             seed = int(seed)
         except ValueError:
-            raise ValueError('The \'seed\' parameter must be of type int.')
-
+            raise ValueError("The 'seed' parameter must be of type int.")
 
         with cython_context():
             proxy_pair = self.__proxy__.random_split(fraction, seed, exact)
-            return (SFrame(data=[], _proxy=proxy_pair[0]), SFrame(data=[], _proxy=proxy_pair[1]))
+            return (
+                SFrame(data=[], _proxy=proxy_pair[0]),
+                SFrame(data=[], _proxy=proxy_pair[1]),
+            )
 
     def topk(self, column_name, k=10, reverse=False):
         """
@@ -2810,7 +2974,6 @@ class SFrame(object):
         if type(column_name) is not str:
             raise TypeError("column_name must be a string")
 
-
         sf = self[self[column_name].is_topk(k, reverse)]
         return sf.sort(column_name, ascending=reverse)
 
@@ -2847,38 +3010,54 @@ class SFrame(object):
         """
 
         if format is None:
-            if filename.endswith(('.csv', '.csv.gz')):
-                format = 'csv'
-            elif filename.endswith(('.json')):
-                format = 'json'
+            if filename.endswith((".csv", ".csv.gz")):
+                format = "csv"
+            elif filename.endswith((".json")):
+                format = "json"
             else:
-                format = 'binary'
+                format = "binary"
         else:
-            if format == 'csv':
-                if not filename.endswith(('.csv', '.csv.gz')):
-                    filename = filename + '.csv'
-            elif format != 'binary' and format != 'json':
-                raise ValueError("Invalid format: {}. Supported formats are 'csv' and 'binary' and 'json'".format(format))
+            if format == "csv":
+                if not filename.endswith((".csv", ".csv.gz")):
+                    filename = filename + ".csv"
+            elif format != "binary" and format != "json":
+                raise ValueError(
+                    "Invalid format: {}. Supported formats are 'csv' and 'binary' and 'json'".format(
+                        format
+                    )
+                )
 
         ## Save the SFrame
         url = _make_internal_url(filename)
 
         with cython_context():
-            if format == 'binary':
+            if format == "binary":
                 self.__proxy__.save(url)
-            elif format == 'csv':
-                assert filename.endswith(('.csv', '.csv.gz'))
+            elif format == "csv":
+                assert filename.endswith((".csv", ".csv.gz"))
                 self.__proxy__.save_as_csv(url, {})
-            elif format == 'json':
+            elif format == "json":
                 self.export_json(url)
             else:
                 raise ValueError("Unsupported format: {}".format(format))
 
-    def export_csv(self, filename, delimiter=',', line_terminator='\n',
-            header=True, quote_level=csv.QUOTE_NONNUMERIC, double_quote=True,
-            escape_char='\\', quote_char='\"', na_rep='',
-            file_header='', file_footer='', line_prefix='',
-            _no_prefix_on_first_value=False, **kwargs):
+    def export_csv(
+        self,
+        filename,
+        delimiter=",",
+        line_terminator="\n",
+        header=True,
+        quote_level=csv.QUOTE_NONNUMERIC,
+        double_quote=True,
+        escape_char="\\",
+        quote_char='"',
+        na_rep="",
+        file_header="",
+        file_footer="",
+        line_prefix="",
+        _no_prefix_on_first_value=False,
+        **kwargs
+    ):
         """
         Writes an SFrame to a CSV file.
 
@@ -2925,49 +3104,47 @@ class SFrame(object):
         """
         # Pandas argument compatibility
         if "sep" in kwargs:
-            delimiter = kwargs['sep']
-            del kwargs['sep']
+            delimiter = kwargs["sep"]
+            del kwargs["sep"]
         if "quotechar" in kwargs:
-            quote_char = kwargs['quotechar']
-            del kwargs['quotechar']
+            quote_char = kwargs["quotechar"]
+            del kwargs["quotechar"]
         if "doublequote" in kwargs:
-            double_quote = kwargs['doublequote']
-            del kwargs['doublequote']
+            double_quote = kwargs["doublequote"]
+            del kwargs["doublequote"]
         if "lineterminator" in kwargs:
-            line_terminator = kwargs['lineterminator']
-            del kwargs['lineterminator']
+            line_terminator = kwargs["lineterminator"]
+            del kwargs["lineterminator"]
         if len(kwargs) > 0:
             raise TypeError("Unexpected keyword arguments " + str(list(kwargs.keys())))
 
         write_csv_options = {}
-        write_csv_options['delimiter'] = delimiter
-        write_csv_options['escape_char'] = escape_char
-        write_csv_options['double_quote'] = double_quote
-        write_csv_options['quote_char'] = quote_char
+        write_csv_options["delimiter"] = delimiter
+        write_csv_options["escape_char"] = escape_char
+        write_csv_options["double_quote"] = double_quote
+        write_csv_options["quote_char"] = quote_char
         if quote_level == csv.QUOTE_MINIMAL:
-            write_csv_options['quote_level'] = 0
+            write_csv_options["quote_level"] = 0
         elif quote_level == csv.QUOTE_ALL:
-            write_csv_options['quote_level'] = 1
+            write_csv_options["quote_level"] = 1
         elif quote_level == csv.QUOTE_NONNUMERIC:
-            write_csv_options['quote_level'] = 2
+            write_csv_options["quote_level"] = 2
         elif quote_level == csv.QUOTE_NONE:
-            write_csv_options['quote_level'] = 3
-        write_csv_options['header'] = header
-        write_csv_options['line_terminator'] = line_terminator
-        write_csv_options['na_value'] = na_rep
-        write_csv_options['file_header'] = file_header
-        write_csv_options['file_footer'] = file_footer
-        write_csv_options['line_prefix'] = line_prefix
+            write_csv_options["quote_level"] = 3
+        write_csv_options["header"] = header
+        write_csv_options["line_terminator"] = line_terminator
+        write_csv_options["na_value"] = na_rep
+        write_csv_options["file_header"] = file_header
+        write_csv_options["file_footer"] = file_footer
+        write_csv_options["line_prefix"] = line_prefix
 
         # undocumented option. Disables line prefix on the first value line
-        write_csv_options['_no_prefix_on_first_value'] = _no_prefix_on_first_value
+        write_csv_options["_no_prefix_on_first_value"] = _no_prefix_on_first_value
 
         url = _make_internal_url(filename)
         self.__proxy__.save_as_csv(url, write_csv_options)
 
-    def export_json(self,
-                    filename,
-                    orient='records'):
+    def export_json(self, filename, orient="records"):
         """
         Writes an SFrame to a JSON file.
 
@@ -3033,14 +3210,19 @@ class SFrame(object):
         """
         if orient == "records":
             self.pack_columns(dtype=dict).export_csv(
-                    filename, file_header='[', file_footer=']',
-                    header=False, double_quote=False,
-                    quote_level=csv.QUOTE_NONE,
-                    line_prefix=',',
-                    _no_prefix_on_first_value=True)
+                filename,
+                file_header="[",
+                file_footer="]",
+                header=False,
+                double_quote=False,
+                quote_level=csv.QUOTE_NONE,
+                line_prefix=",",
+                _no_prefix_on_first_value=True,
+            )
         elif orient == "lines":
             self.pack_columns(dtype=dict).export_csv(
-                    filename, header=False, double_quote=False, quote_level=csv.QUOTE_NONE)
+                filename, header=False, double_quote=False, quote_level=csv.QUOTE_NONE
+            )
         else:
             raise ValueError("Invalid value for orient parameter (" + str(orient) + ")")
 
@@ -3070,7 +3252,6 @@ class SFrame(object):
 
         with cython_context():
             self.__proxy__.save_reference(url)
-
 
     def select_column(self, column_name):
         """
@@ -3152,19 +3333,32 @@ class SFrame(object):
         """
         if not _is_non_string_iterable(column_names):
             raise TypeError("column_names must be an iterable")
-        if not (all([isinstance(x, six.string_types) or isinstance(x, type) or isinstance(x, bytes)
-                     for x in column_names])):
+        if not (
+            all(
+                [
+                    isinstance(x, six.string_types)
+                    or isinstance(x, type)
+                    or isinstance(x, bytes)
+                    for x in column_names
+                ]
+            )
+        ):
             raise TypeError("Invalid key type: must be str, unicode, bytes or type")
 
-        requested_str_columns = [s for s in column_names if isinstance(s, six.string_types)]
+        requested_str_columns = [
+            s for s in column_names if isinstance(s, six.string_types)
+        ]
 
         # Make sure there are no duplicates keys
         from collections import Counter
+
         column_names_counter = Counter(column_names)
         if (len(column_names)) != len(column_names_counter):
             for key in column_names_counter:
                 if column_names_counter[key] > 1:
-                    raise ValueError("There are duplicate keys in key list: '" + key + "'")
+                    raise ValueError(
+                        "There are duplicate keys in key list: '" + key + "'"
+                    )
 
         colnames_and_types = list(zip(self.column_names(), self.column_types()))
 
@@ -3183,7 +3377,9 @@ class SFrame(object):
         selected_columns = selected_columns
 
         with cython_context():
-            return SFrame(data=[], _proxy=self.__proxy__.select_columns(selected_columns))
+            return SFrame(
+                data=[], _proxy=self.__proxy__.select_columns(selected_columns)
+            )
 
     def add_column(self, data, column_name="", inplace=False):
         """
@@ -3235,7 +3431,6 @@ class SFrame(object):
         [3 rows x 3 columns]
         """
         # Check type for pandas dataframe or SArray?
-
 
         if not isinstance(data, SArray):
             if isinstance(data, _Iterable):
@@ -3318,7 +3513,9 @@ class SFrame(object):
             my_columns = set(self.column_names())
             for name in column_names:
                 if name in my_columns:
-                    raise ValueError("Column '" + name + "' already exists in current SFrame")
+                    raise ValueError(
+                        "Column '" + name + "' already exists in current SFrame"
+                    )
         else:
             if not _is_non_string_iterable(datalist):
                 raise TypeError("datalist must be an iterable")
@@ -3381,7 +3578,7 @@ class SFrame(object):
         """
         column_name = str(column_name)
         if column_name not in self.column_names():
-            raise KeyError('Cannot find column %s' % column_name)
+            raise KeyError("Cannot find column %s" % column_name)
         colid = self.column_names().index(column_name)
 
         if inplace:
@@ -3437,7 +3634,7 @@ class SFrame(object):
 
         for name in column_names:
             if name not in existing_columns:
-                raise KeyError('Cannot find column %s' % name)
+                raise KeyError("Cannot find column %s" % name)
 
         # Delete it going backwards so we don't invalidate indices
         deletion_indices = sorted(existing_columns[name] for name in column_names)
@@ -3453,7 +3650,6 @@ class SFrame(object):
 
         ret._cache = None
         return ret
-
 
     def swap_columns(self, column_name_1, column_name_2, inplace=False):
         """
@@ -3554,12 +3750,12 @@ class SFrame(object):
         +-------+-----------------+
         [2 rows x 2 columns]
         """
-        if (type(names) is not dict):
-            raise TypeError('names must be a dictionary: oldname -> newname')
+        if type(names) is not dict:
+            raise TypeError("names must be a dictionary: oldname -> newname")
         all_columns = set(self.column_names())
         for k in names:
             if not k in all_columns:
-                raise ValueError('Cannot find column %s in the SFrame' % k)
+                raise ValueError("Cannot find column %s in the SFrame" % k)
 
         if inplace:
             ret = self
@@ -3598,7 +3794,7 @@ class SFrame(object):
             return self._row_selector(key)
         elif isinstance(key, six.string_types):
             if six.PY2 and type(key) == unicode:
-                key = key.encode('utf-8')
+                key = key.encode("utf-8")
             return self.select_column(key)
         elif type(key) is type:
             return self.select_columns([key])
@@ -3612,7 +3808,7 @@ class SFrame(object):
             if key >= sf_len:
                 raise IndexError("SFrame index out of range")
 
-            if not hasattr(self, '_cache') or self._cache is None:
+            if not hasattr(self, "_cache") or self._cache is None:
                 self._cache = {}
 
             try:
@@ -3627,8 +3823,9 @@ class SFrame(object):
 
             # Do we have a good block size that won't cause memory to blow up?
             if not "getitem_cache_blocksize" in self._cache:
-                block_size = \
-                  (8*1024) // sum( (2 if dt in [int, long, float] else 8) for dt in self.column_types())
+                block_size = (8 * 1024) // sum(
+                    (2 if dt in [int, long, float] else 8) for dt in self.column_types()
+                )
 
                 block_size = max(16, block_size)
                 self._cache["getitem_cache_blocksize"] = block_size
@@ -3640,7 +3837,7 @@ class SFrame(object):
             lb = block_num * block_size
             ub = min(sf_len, lb + block_size)
 
-            val_list = list(SFrame(_proxy = self.__proxy__.copy_range(lb, 1, ub)))
+            val_list = list(SFrame(_proxy=self.__proxy__.copy_range(lb, 1, ub)))
             self._cache["getitem_cache"] = (lb, ub, val_list)
             return val_list[int(key - lb)]
 
@@ -3659,7 +3856,7 @@ class SFrame(object):
                 start = len(self) + start
             if stop < 0:
                 stop = len(self) + stop
-            return SFrame(_proxy = self.__proxy__.copy_range(start, step, stop))
+            return SFrame(_proxy=self.__proxy__.copy_range(start, step, stop))
         else:
             raise TypeError("Invalid index type: must be SArray, list, int, or str")
 
@@ -3675,7 +3872,7 @@ class SFrame(object):
             self.add_columns(value, key, inplace=True)
         elif type(key) is str:
             sa_value = None
-            if (type(value) is SArray):
+            if type(value) is SArray:
                 sa_value = value
             elif _is_non_string_iterable(value):  # wrap list, array... to sarray
                 sa_value = SArray(value)
@@ -3692,29 +3889,29 @@ class SFrame(object):
                 # length than current one, which doesn't make sense if we are replacing
                 # the only column. To support this, we first take out the only column
                 # and then put it back if exception happens
-                single_column = (self.num_columns() == 1)
-                if (single_column):
+                single_column = self.num_columns() == 1
+                if single_column:
                     tmpname = key
                     saved_column = self.select_column(key)
                     self.remove_column(key, inplace=True)
                 else:
                     # add the column to a unique column name.
-                    tmpname = '__' + '-'.join(self.column_names())
+                    tmpname = "__" + "-".join(self.column_names())
                 try:
                     self.add_column(sa_value, tmpname, inplace=True)
                 except Exception:
-                    if (single_column):
+                    if single_column:
                         self.add_column(saved_column, key, inplace=True)
                     raise
 
-                if (not single_column):
+                if not single_column:
                     # if add succeeded, remove the column name and rename tmpname->columnname.
                     self.swap_columns(key, tmpname, inplace=True)
                     self.remove_column(key, inplace=True)
                     self.rename({tmpname: key}, inplace=True)
 
         else:
-            raise TypeError('Cannot set column with key type ' + str(type(key)))
+            raise TypeError("Cannot set column with key type " + str(type(key)))
 
     def __delitem__(self, key):
         """
@@ -3759,13 +3956,12 @@ class SFrame(object):
         Provides an iterator to the rows of the SFrame.
         """
 
-
         def generator():
             elems_at_a_time = 262144
             self.__proxy__.begin_iterator()
             ret = self.__proxy__.iterator_get_next(elems_at_a_time)
             column_names = self.column_names()
-            while(True):
+            while True:
                 for j in ret:
                     yield dict(list(zip(column_names, j)))
 
@@ -4119,83 +4315,109 @@ class SFrame(object):
             # element (probably COUNT). wrap it in a list so we can reuse the
             # list processing code
             operation = op_entry
-            if not(isinstance(operation, list) or isinstance(operation, dict)):
-              operation = [operation]
+            if not (isinstance(operation, list) or isinstance(operation, dict)):
+                operation = [operation]
             if isinstance(operation, dict):
-              # now sweep the dict and add to group_columns and group_ops
-              for key in operation:
-                  val = operation[key]
-                  if type(val) is tuple:
-                    (op, column) = val
-                    if (op == '__builtin__avg__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
-                        op = '__builtin__vector__avg__'
+                # now sweep the dict and add to group_columns and group_ops
+                for key in operation:
+                    val = operation[key]
+                    if type(val) is tuple:
+                        (op, column) = val
+                        if op == "__builtin__avg__" and self[column[0]].dtype in [
+                            array.array,
+                            numpy.ndarray,
+                        ]:
+                            op = "__builtin__vector__avg__"
 
-                    if (op == '__builtin__sum__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
-                        op = '__builtin__vector__sum__'
+                        if op == "__builtin__sum__" and self[column[0]].dtype in [
+                            array.array,
+                            numpy.ndarray,
+                        ]:
+                            op = "__builtin__vector__sum__"
 
-                    if (op == '__builtin__argmax__' or op == '__builtin__argmin__') and ((type(column[0]) is tuple) != (type(key) is tuple)):
-                        raise TypeError("Output column(s) and aggregate column(s) for aggregate operation should be either all tuple or all string.")
+                        if (
+                            op == "__builtin__argmax__" or op == "__builtin__argmin__"
+                        ) and ((type(column[0]) is tuple) != (type(key) is tuple)):
+                            raise TypeError(
+                                "Output column(s) and aggregate column(s) for aggregate operation should be either all tuple or all string."
+                            )
 
-                    if (op == '__builtin__argmax__' or op == '__builtin__argmin__') and type(column[0]) is tuple:
-                      for (col,output) in zip(column[0],key):
-                        group_columns = group_columns + [[col,column[1]]]
+                        if (
+                            op == "__builtin__argmax__" or op == "__builtin__argmin__"
+                        ) and type(column[0]) is tuple:
+                            for (col, output) in zip(column[0], key):
+                                group_columns = group_columns + [[col, column[1]]]
+                                group_ops = group_ops + [op]
+                                group_output_columns = group_output_columns + [output]
+                        else:
+                            group_columns = group_columns + [column]
+                            group_ops = group_ops + [op]
+                            group_output_columns = group_output_columns + [key]
+
+                        if op == "__builtin__concat__dict__":
+                            key_column = column[0]
+                            key_column_type = self.select_column(key_column).dtype
+                            if not key_column_type in (int, float, str):
+                                raise TypeError(
+                                    "CONCAT key column must be int, float or str type"
+                                )
+
+                    elif val == aggregate.COUNT:
+                        group_output_columns = group_output_columns + [key]
+                        val = aggregate.COUNT()
+                        (op, column) = val
+                        group_columns = group_columns + [column]
                         group_ops = group_ops + [op]
-                        group_output_columns = group_output_columns + [output]
                     else:
-                      group_columns = group_columns + [column]
-                      group_ops = group_ops + [op]
-                      group_output_columns = group_output_columns + [key]
-
-                    if (op == '__builtin__concat__dict__'):
-                        key_column = column[0]
-                        key_column_type = self.select_column(key_column).dtype
-                        if not key_column_type in (int, float, str):
-                            raise TypeError('CONCAT key column must be int, float or str type')
-
-                  elif val == aggregate.COUNT:
-                    group_output_columns = group_output_columns + [key]
-                    val = aggregate.COUNT()
-                    (op, column) = val
-                    group_columns = group_columns + [column]
-                    group_ops = group_ops + [op]
-                  else:
-                    raise TypeError("Unexpected type in aggregator definition of output column: " + key)
+                        raise TypeError(
+                            "Unexpected type in aggregator definition of output column: "
+                            + key
+                        )
             elif isinstance(operation, list):
-              # we will be using automatically defined column names
-              for val in operation:
-                  if type(val) is tuple:
-                    (op, column) = val
-                    if (op == '__builtin__avg__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
-                        op = '__builtin__vector__avg__'
+                # we will be using automatically defined column names
+                for val in operation:
+                    if type(val) is tuple:
+                        (op, column) = val
+                        if op == "__builtin__avg__" and self[column[0]].dtype in [
+                            array.array,
+                            numpy.ndarray,
+                        ]:
+                            op = "__builtin__vector__avg__"
 
-                    if (op == '__builtin__sum__' and self[column[0]].dtype in [array.array, numpy.ndarray]):
-                        op = '__builtin__vector__sum__'
+                        if op == "__builtin__sum__" and self[column[0]].dtype in [
+                            array.array,
+                            numpy.ndarray,
+                        ]:
+                            op = "__builtin__vector__sum__"
 
-                    if (op == '__builtin__argmax__' or op == '__builtin__argmin__') and type(column[0]) is tuple:
-                      for col in column[0]:
-                        group_columns = group_columns + [[col,column[1]]]
-                        group_ops = group_ops + [op]
+                        if (
+                            op == "__builtin__argmax__" or op == "__builtin__argmin__"
+                        ) and type(column[0]) is tuple:
+                            for col in column[0]:
+                                group_columns = group_columns + [[col, column[1]]]
+                                group_ops = group_ops + [op]
+                                group_output_columns = group_output_columns + [""]
+                        else:
+                            group_columns = group_columns + [column]
+                            group_ops = group_ops + [op]
+                            group_output_columns = group_output_columns + [""]
+
+                        if op == "__builtin__concat__dict__":
+                            key_column = column[0]
+                            key_column_type = self.select_column(key_column).dtype
+                            if not key_column_type in (int, float, str):
+                                raise TypeError(
+                                    "CONCAT key column must be int, float or str type"
+                                )
+
+                    elif val == aggregate.COUNT:
                         group_output_columns = group_output_columns + [""]
+                        val = aggregate.COUNT()
+                        (op, column) = val
+                        group_columns = group_columns + [column]
+                        group_ops = group_ops + [op]
                     else:
-                      group_columns = group_columns + [column]
-                      group_ops = group_ops + [op]
-                      group_output_columns = group_output_columns + [""]
-
-                    if (op == '__builtin__concat__dict__'):
-                        key_column = column[0]
-                        key_column_type = self.select_column(key_column).dtype
-                        if not key_column_type in (int, float, str):
-                            raise TypeError('CONCAT key column must be int, float or str type')
-
-                  elif val == aggregate.COUNT:
-                    group_output_columns = group_output_columns + [""]
-                    val = aggregate.COUNT()
-                    (op, column) = val
-                    group_columns = group_columns + [column]
-                    group_ops = group_ops + [op]
-                  else:
-                    raise TypeError("Unexpected type in aggregator definition.")
-
+                        raise TypeError("Unexpected type in aggregator definition.")
 
         # let's validate group_columns and group_ops are valid
         for (cols, op) in zip(group_columns, group_ops):
@@ -4211,14 +4433,14 @@ class SFrame(object):
                     if col not in my_column_names:
                         raise KeyError("Column " + col + " does not exist in SFrame")
 
-
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.groupby_aggregate(key_columns_array,
-                                                                  group_columns,
-                                                                  group_output_columns,
-                                                                  group_ops))
+            return SFrame(
+                _proxy=self.__proxy__.groupby_aggregate(
+                    key_columns_array, group_columns, group_output_columns, group_ops
+                )
+            )
 
-    def join(self, right, on=None, how='inner', alter_name=None):
+    def join(self, right, on=None, how="inner", alter_name=None):
         """
         Merge two SFrames. Merges the current (left) SFrame with the given
         (right) SFrame using a SQL-style equi-join operation by columns.
@@ -4334,7 +4556,7 @@ class SFrame(object):
         +----+-------+-------+
         [5 rows x 3 columns]
         """
-        available_join_types = ['left','right','outer','inner']
+        available_join_types = ["left", "right", "outer", "inner"]
 
         if not isinstance(right, SFrame):
             raise TypeError("Can only join two SFrames")
@@ -4366,7 +4588,9 @@ class SFrame(object):
 
         with cython_context():
             if alter_name is None:
-                return SFrame(_proxy=self.__proxy__.join(right.__proxy__, how, join_keys))
+                return SFrame(
+                    _proxy=self.__proxy__.join(right.__proxy__, how, join_keys)
+                )
             if type(alter_name) is dict:
                 left_names = self.column_names()
                 right_names = right.column_names()
@@ -4377,7 +4601,11 @@ class SFrame(object):
                         raise ValueError("Key %s should not be equal to value" % k)
                     if v in left_names or v in right_names:
                         raise ValueError("Value %s will cause further collision" % v)
-                return SFrame(_proxy=self.__proxy__.join_with_custom_name(right.__proxy__, how, join_keys, alter_name))
+                return SFrame(
+                    _proxy=self.__proxy__.join_with_custom_name(
+                        right.__proxy__, how, join_keys, alter_name
+                    )
+                )
 
     def filter_by(self, values, column_name, exclude=False):
         """
@@ -4495,8 +4723,13 @@ class SFrame(object):
 
         given_type = value_sf.column_types()[0]
         if given_type != existing_type:
-            raise TypeError(("Type of given values ({0}) does not match type of column '" +
-                column_name + "' ({1}) in SFrame.").format(given_type, existing_type))
+            raise TypeError(
+                (
+                    "Type of given values ({0}) does not match type of column '"
+                    + column_name
+                    + "' ({1}) in SFrame."
+                ).format(given_type, existing_type)
+            )
 
         # Make sure the values list has unique values, or else join will not
         # filter.
@@ -4511,16 +4744,20 @@ class SFrame(object):
                     id_name += "1"
                 value_sf = value_sf.add_row_number(id_name)
 
-                tmp = SFrame(_proxy=self.__proxy__.join(value_sf.__proxy__,
-                                                     'left',
-                                                     {column_name:column_name}))
+                tmp = SFrame(
+                    _proxy=self.__proxy__.join(
+                        value_sf.__proxy__, "left", {column_name: column_name}
+                    )
+                )
                 ret_sf = tmp[tmp[id_name] == None]
                 del ret_sf[id_name]
                 return ret_sf
             else:
-                return SFrame(_proxy=self.__proxy__.join(value_sf.__proxy__,
-                                                     'inner',
-                                                     {column_name:column_name}))
+                return SFrame(
+                    _proxy=self.__proxy__.join(
+                        value_sf.__proxy__, "inner", {column_name: column_name}
+                    )
+                )
 
     def explore(self, title=None):
         """
@@ -4549,33 +4786,47 @@ class SFrame(object):
 
         import sys
 
-        if sys.platform != 'darwin' and sys.platform != 'linux2' and sys.platform != 'linux':
-            raise NotImplementedError('Visualization is currently supported only on macOS and Linux.')
+        if (
+            sys.platform != "darwin"
+            and sys.platform != "linux2"
+            and sys.platform != "linux"
+        ):
+            raise NotImplementedError(
+                "Visualization is currently supported only on macOS and Linux."
+            )
 
         # Suppress visualization output if 'none' target is set
-        from ..visualization._plot import _target, display_table_in_notebook, _ensure_web_server
-        if _target == 'none':
+        from ..visualization._plot import (
+            _target,
+            display_table_in_notebook,
+            _ensure_web_server,
+        )
+
+        if _target == "none":
             return
 
         if title is None:
             title = ""
 
         # If browser target is set, launch in web browser
-        if _target == 'browser':
+        if _target == "browser":
             # First, make sure TURI_VISUALIZATION_WEB_SERVER_ROOT_DIRECTORY is set
             _ensure_web_server()
 
             # Launch localhost URL using Python built-in webbrowser module
             import webbrowser
             import turicreate as tc
+
             url = tc.extensions.get_url_for_table(self, title)
             webbrowser.open_new_tab(url)
             return
 
         # If auto target is set, try to show inline in Jupyter Notebook
         try:
-            if _target == 'auto' and \
-                (get_ipython().__class__.__name__ == "ZMQInteractiveShell" or get_ipython().__class__.__name__ == "Shell"):
+            if _target == "auto" and (
+                get_ipython().__class__.__name__ == "ZMQInteractiveShell"
+                or get_ipython().__class__.__name__ == "Shell"
+            ):
                 display_table_in_notebook(self, title)
                 return
         except NameError:
@@ -4633,8 +4884,15 @@ class SFrame(object):
         """
         return Plot(_proxy=self.__proxy__.plot())
 
-    def pack_columns(self, column_names=None, column_name_prefix=None, dtype=list,
-                     fill_na=None, remove_prefix=True, new_column_name=None):
+    def pack_columns(
+        self,
+        column_names=None,
+        column_name_prefix=None,
+        dtype=list,
+        fill_na=None,
+        remove_prefix=True,
+        new_column_name=None,
+    ):
         """
         Pack columns of the current SFrame into one single column. The result
         is a new SFrame with the unaffected columns from the original SFrame
@@ -4799,7 +5057,9 @@ class SFrame(object):
         """
 
         if column_names is not None and column_name_prefix is not None:
-            raise ValueError("'column_names' and 'column_name_prefix' parameter cannot be given at the same time.")
+            raise ValueError(
+                "'column_names' and 'column_name_prefix' parameter cannot be given at the same time."
+            )
 
         if new_column_name is None and column_name_prefix is not None:
             new_column_name = column_name_prefix
@@ -4807,9 +5067,15 @@ class SFrame(object):
         if column_name_prefix is not None:
             if type(column_name_prefix) != str:
                 raise TypeError("'column_name_prefix' must be a string")
-            column_names = [name for name in self.column_names() if name.startswith(column_name_prefix)]
+            column_names = [
+                name
+                for name in self.column_names()
+                if name.startswith(column_name_prefix)
+            ]
             if len(column_names) == 0:
-                raise ValueError("There is no column starts with prefix '" + column_name_prefix + "'")
+                raise ValueError(
+                    "There is no column starts with prefix '" + column_name_prefix + "'"
+                )
         elif column_names is None:
             column_names = self.column_names()
         else:
@@ -4818,15 +5084,21 @@ class SFrame(object):
 
             column_name_set = set(self.column_names())
             for column in column_names:
-                if (column not in column_name_set):
-                    raise ValueError("Current SFrame has no column called '" + str(column) + "'.")
+                if column not in column_name_set:
+                    raise ValueError(
+                        "Current SFrame has no column called '" + str(column) + "'."
+                    )
 
             # check duplicate names
             if len(set(column_names)) != len(column_names):
-                raise ValueError("There is duplicate column names in column_names parameter")
+                raise ValueError(
+                    "There is duplicate column names in column_names parameter"
+                )
 
-        if (dtype not in (dict, list, array.array)):
-            raise ValueError("Resulting dtype has to be one of dict/array.array/list type")
+        if dtype not in (dict, list, array.array):
+            raise ValueError(
+                "Resulting dtype has to be one of dict/array.array/list type"
+            )
 
         # fill_na value for array needs to be numeric
         if dtype == array.array:
@@ -4835,44 +5107,59 @@ class SFrame(object):
             # all column_names have to be numeric type
             for column in column_names:
                 if self[column].dtype not in (int, float):
-                    raise TypeError("Column '" + column + "' type is not numeric, cannot pack into array type")
+                    raise TypeError(
+                        "Column '"
+                        + column
+                        + "' type is not numeric, cannot pack into array type"
+                    )
 
         # generate dict key names if pack to dictionary
         # we try to be smart here
         # if all column names are like: a.b, a.c, a.d,...
         # we then use "b", "c", "d", etc as the dictionary key during packing
-        if (dtype == dict) and (column_name_prefix is not None) and (remove_prefix == True):
+        if (
+            (dtype == dict)
+            and (column_name_prefix is not None)
+            and (remove_prefix == True)
+        ):
             size_prefix = len(column_name_prefix)
-            first_char = set([c[size_prefix:size_prefix+1] for c in column_names])
-            if ((len(first_char) == 1) and first_char.pop() in ['.','-','_']):
-                dict_keys = [name[size_prefix+1:] for name in column_names]
+            first_char = set([c[size_prefix : size_prefix + 1] for c in column_names])
+            if (len(first_char) == 1) and first_char.pop() in [".", "-", "_"]:
+                dict_keys = [name[size_prefix + 1 :] for name in column_names]
             else:
                 dict_keys = [name[size_prefix:] for name in column_names]
 
         else:
             dict_keys = column_names
 
-        rest_columns = [name for name in self.column_names() if name not in column_names]
+        rest_columns = [
+            name for name in self.column_names() if name not in column_names
+        ]
         if new_column_name is not None:
             if type(new_column_name) != str:
                 raise TypeError("'new_column_name' has to be a string")
             if new_column_name in rest_columns:
-                raise KeyError("Current SFrame already contains a column name " + new_column_name)
+                raise KeyError(
+                    "Current SFrame already contains a column name " + new_column_name
+                )
         else:
             new_column_name = ""
 
-
         ret_sa = None
         with cython_context():
-            ret_sa = SArray(_proxy=self.__proxy__.pack_columns(column_names, dict_keys,
-                                                               dtype, fill_na))
+            ret_sa = SArray(
+                _proxy=self.__proxy__.pack_columns(
+                    column_names, dict_keys, dtype, fill_na
+                )
+            )
 
         new_sf = self.select_columns(rest_columns)
         new_sf.add_column(ret_sa, new_column_name, inplace=True)
         return new_sf
 
-
-    def split_datetime(self, column_name, column_name_prefix=None, limit=None, timezone=False):
+    def split_datetime(
+        self, column_name, column_name_prefix=None, limit=None, timezone=False
+    ):
         """
         Splits a datetime column of SFrame to multiple columns, with each value in a
         separate column. Returns a new SFrame with the expanded column replaced with
@@ -4938,7 +5225,9 @@ class SFrame(object):
         +----+-----------------+-------------------+
         """
         if column_name not in self.column_names():
-            raise KeyError("column '" + column_name + "' does not exist in current SFrame")
+            raise KeyError(
+                "column '" + column_name + "' does not exist in current SFrame"
+            )
 
         if column_name_prefix is None:
             column_name_prefix = column_name
@@ -4946,7 +5235,7 @@ class SFrame(object):
         new_sf = self[column_name].split_datetime(column_name_prefix, limit, timezone)
 
         # construct return SFrame, check if there is conflict
-        rest_columns =  [name for name in self.column_names() if name != column_name]
+        rest_columns = [name for name in self.column_names() if name != column_name]
         new_names = new_sf.column_names()
         while set(new_names).intersection(rest_columns):
             new_names = [name + ".1" for name in new_names]
@@ -4956,8 +5245,14 @@ class SFrame(object):
         ret_sf.add_columns(new_sf, inplace=True)
         return ret_sf
 
-    def unpack(self, column_name=None, column_name_prefix=None, column_types=None,
-               na_value=None, limit=None):
+    def unpack(
+        self,
+        column_name=None,
+        column_name_prefix=None,
+        column_types=None,
+        na_value=None,
+        limit=None,
+    ):
         """
         Expand one column of this SFrame to multiple columns with each value in
         a separate column. Returns a new SFrame with the unpacked column
@@ -5096,34 +5391,40 @@ class SFrame(object):
 
         """
         if column_name is None:
-            if self.num_columns()==0:
+            if self.num_columns() == 0:
                 raise RuntimeError("No column exists in the current SFrame")
 
             for t in range(self.num_columns()):
                 column_type = self.column_types()[t]
-                if column_type==dict or column_type==list or column_type==array.array:
+                if (
+                    column_type == dict
+                    or column_type == list
+                    or column_type == array.array
+                ):
 
                     if column_name is None:
                         column_name = self.column_names()[t]
                     else:
                         raise RuntimeError("Column name needed to unpack")
 
-
             if column_name is None:
                 raise RuntimeError("No columns can be unpacked")
             elif column_name_prefix is None:
-                column_name_prefix=""
+                column_name_prefix = ""
         elif column_name not in self.column_names():
-            raise KeyError("Column '" + column_name + "' does not exist in current SFrame")
+            raise KeyError(
+                "Column '" + column_name + "' does not exist in current SFrame"
+            )
 
         if column_name_prefix is None:
             column_name_prefix = column_name
 
-
-        new_sf = self[column_name].unpack(column_name_prefix, column_types, na_value, limit)
+        new_sf = self[column_name].unpack(
+            column_name_prefix, column_types, na_value, limit
+        )
 
         # construct return SFrame, check if there is conflict
-        rest_columns =  [name for name in self.column_names() if name != column_name]
+        rest_columns = [name for name in self.column_names() if name != column_name]
         new_names = new_sf.column_names()
         while set(new_names).intersection(rest_columns):
             new_names = [name + ".1" for name in new_names]
@@ -5133,7 +5434,9 @@ class SFrame(object):
         ret_sf.add_columns(new_sf, inplace=True)
         return ret_sf
 
-    def stack(self, column_name, new_column_name=None, drop_na=False, new_column_type=None):
+    def stack(
+        self, column_name, new_column_name=None, drop_na=False, new_column_type=None
+    ):
         """
         Convert a "wide" column of an SFrame to one or two "tall" columns by
         stacking all values.
@@ -5261,11 +5564,15 @@ class SFrame(object):
         # validate column_name
         column_name = str(column_name)
         if column_name not in self.column_names():
-            raise ValueError("Cannot find column '" + str(column_name) + "' in the SFrame.")
+            raise ValueError(
+                "Cannot find column '" + str(column_name) + "' in the SFrame."
+            )
 
-        stack_column_type =  self[column_name].dtype
-        if (stack_column_type not in [dict, array.array, list]):
-            raise TypeError("Stack is only supported for column of dict/list/array type.")
+        stack_column_type = self[column_name].dtype
+        if stack_column_type not in [dict, array.array, list]:
+            raise TypeError(
+                "Stack is only supported for column of dict/list/array type."
+            )
 
         # user defined types. do some checking
         if new_column_type is not None:
@@ -5274,60 +5581,70 @@ class SFrame(object):
                 new_column_type = [new_column_type]
 
             if (stack_column_type in [list, array.array]) and len(new_column_type) != 1:
-                raise ValueError("Expecting a single column type to unpack list or array columns")
+                raise ValueError(
+                    "Expecting a single column type to unpack list or array columns"
+                )
 
             if (stack_column_type in [dict]) and len(new_column_type) != 2:
                 raise ValueError("Expecting two column types to unpack a dict column")
 
-        if (new_column_name is not None):
+        if new_column_name is not None:
             if stack_column_type == dict:
-                if (type(new_column_name) is not list):
-                    raise TypeError("new_column_name has to be a list to stack dict type")
-                elif (len(new_column_name) != 2):
+                if type(new_column_name) is not list:
+                    raise TypeError(
+                        "new_column_name has to be a list to stack dict type"
+                    )
+                elif len(new_column_name) != 2:
                     raise TypeError("new_column_name must have length of two")
             else:
-                if (type(new_column_name) != str):
+                if type(new_column_name) != str:
                     raise TypeError("new_column_name has to be a str")
                 new_column_name = [new_column_name]
 
             # check if the new column name conflicts with existing ones
             for name in new_column_name:
                 if (name in self.column_names()) and (name != column_name):
-                    raise ValueError("Column with name '" + name + "' already exists, pick a new column name")
+                    raise ValueError(
+                        "Column with name '"
+                        + name
+                        + "' already exists, pick a new column name"
+                    )
         else:
             if stack_column_type == dict:
-                new_column_name = ["",""]
+                new_column_name = ["", ""]
             else:
                 new_column_name = [""]
 
         # infer column types
         head_row = SArray(self[column_name].head(100)).dropna()
-        if (len(head_row) == 0):
-            raise ValueError("Cannot infer column type because there is not enough rows to infer value")
+        if len(head_row) == 0:
+            raise ValueError(
+                "Cannot infer column type because there is not enough rows to infer value"
+            )
 
         if new_column_type is None:
             # we have to perform type inference
             if stack_column_type == dict:
                 # infer key/value type
-                keys = []; values = []
+                keys = []
+                values = []
                 for row in head_row:
                     for val in row:
                         keys.append(val)
-                        if val is not None: values.append(row[val])
+                        if val is not None:
+                            values.append(row[val])
 
-                new_column_type = [
-                    infer_type_of_list(keys),
-                    infer_type_of_list(values)
-                ]
+                new_column_type = [infer_type_of_list(keys), infer_type_of_list(values)]
             else:
                 values = [v for v in itertools.chain.from_iterable(head_row)]
                 new_column_type = [infer_type_of_list(values)]
 
-
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.stack(column_name,
-                                                      new_column_name,
-                                                      new_column_type, drop_na))
+            return SFrame(
+                _proxy=self.__proxy__.stack(
+                    column_name, new_column_name, new_column_type, drop_na
+                )
+            )
 
     def unstack(self, column_names, new_column_name=None):
         """
@@ -5401,22 +5718,35 @@ class SFrame(object):
         +------+-----------+
         [4 rows x 2 columns]
         """
-        if (type(column_names) != str and len(column_names) != 2):
-            raise TypeError("'column_names' parameter has to be either a string or a list of two strings.")
+        if type(column_names) != str and len(column_names) != 2:
+            raise TypeError(
+                "'column_names' parameter has to be either a string or a list of two strings."
+            )
 
         with cython_context():
             if type(column_names) == str:
                 key_columns = [i for i in self.column_names() if i != column_names]
                 if new_column_name is not None:
-                    return self.groupby(key_columns, {new_column_name : aggregate.CONCAT(column_names)})
+                    return self.groupby(
+                        key_columns, {new_column_name: aggregate.CONCAT(column_names)}
+                    )
                 else:
                     return self.groupby(key_columns, aggregate.CONCAT(column_names))
             elif len(column_names) == 2:
                 key_columns = [i for i in self.column_names() if i not in column_names]
                 if new_column_name is not None:
-                    return self.groupby(key_columns, {new_column_name: aggregate.CONCAT(column_names[0], column_names[1])})
+                    return self.groupby(
+                        key_columns,
+                        {
+                            new_column_name: aggregate.CONCAT(
+                                column_names[0], column_names[1]
+                            )
+                        },
+                    )
                 else:
-                    return self.groupby(key_columns, aggregate.CONCAT(column_names[0], column_names[1]))
+                    return self.groupby(
+                        key_columns, aggregate.CONCAT(column_names[0], column_names[1])
+                    )
 
     def unique(self):
         """
@@ -5463,7 +5793,7 @@ class SFrame(object):
         +----+-------+
         [4 rows x 2 columns]
         """
-        return self.groupby(self.column_names(),{})
+        return self.groupby(self.column_names(), {})
 
     def sort(self, key_column_names, ascending=True):
         """
@@ -5566,46 +5896,51 @@ class SFrame(object):
         sort_column_orders = []
 
         # validate key_column_names
-        if (type(key_column_names) == str):
+        if type(key_column_names) == str:
             sort_column_names = [key_column_names]
-        elif (type(key_column_names) == list):
-            if (len(key_column_names) == 0):
+        elif type(key_column_names) == list:
+            if len(key_column_names) == 0:
                 raise ValueError("Please provide at least one column to sort")
 
             first_param_types = set([type(i) for i in key_column_names])
-            if (len(first_param_types) != 1):
+            if len(first_param_types) != 1:
                 raise ValueError("key_column_names element are not of the same type")
 
             first_param_type = first_param_types.pop()
-            if (first_param_type == tuple):
+            if first_param_type == tuple:
                 sort_column_names = [i[0] for i in key_column_names]
                 sort_column_orders = [i[1] for i in key_column_names]
-            elif(first_param_type == str):
+            elif first_param_type == str:
                 sort_column_names = key_column_names
             else:
                 raise TypeError("key_column_names type is not supported")
         else:
-            raise TypeError("key_column_names type is not correct. Supported types are str, list of str or list of (str,bool) pair.")
+            raise TypeError(
+                "key_column_names type is not correct. Supported types are str, list of str or list of (str,bool) pair."
+            )
 
         # use the second parameter if the sort order is not given
-        if (len(sort_column_orders) == 0):
+        if len(sort_column_orders) == 0:
             sort_column_orders = [ascending for i in sort_column_names]
 
         # make sure all column exists
         my_column_names = set(self.column_names())
         for column in sort_column_names:
-            if (type(column) != str):
-                raise TypeError("Only string parameter can be passed in as column names")
-            if (column not in my_column_names):
+            if type(column) != str:
+                raise TypeError(
+                    "Only string parameter can be passed in as column names"
+                )
+            if column not in my_column_names:
                 raise ValueError("SFrame has no column named: '" + str(column) + "'")
-            if (self[column].dtype not in (str, int, float,datetime.datetime)):
+            if self[column].dtype not in (str, int, float, datetime.datetime):
                 raise TypeError("Only columns of type (str, int, float) can be sorted")
 
-
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.sort(sort_column_names, sort_column_orders))
+            return SFrame(
+                _proxy=self.__proxy__.sort(sort_column_names, sort_column_orders)
+            )
 
-    def dropna(self, columns=None, how='any', recursive=False):
+    def dropna(self, columns=None, how="any", recursive=False):
         """
         Remove missing values from an SFrame. A missing value is either ``None``
         or ``NaN``.  If ``how`` is 'any', a row will be removed if any of the
@@ -5685,9 +6020,13 @@ class SFrame(object):
         (columns, all_behavior) = self.__dropna_errchk(columns, how)
 
         with cython_context():
-            return SFrame(_proxy=self.__proxy__.drop_missing_values(columns, all_behavior, False, recursive))
+            return SFrame(
+                _proxy=self.__proxy__.drop_missing_values(
+                    columns, all_behavior, False, recursive
+                )
+            )
 
-    def dropna_split(self, columns=None, how='any', recursive=False):
+    def dropna_split(self, columns=None, how="any", recursive=False):
         """
         Split rows with missing values from this SFrame. This function has the
         same functionality as :py:func:`~turicreate.SFrame.dropna`, but returns a
@@ -5752,7 +6091,9 @@ class SFrame(object):
 
         (columns, all_behavior) = self.__dropna_errchk(columns, how)
 
-        sframe_tuple = self.__proxy__.drop_missing_values(columns, all_behavior, True, recursive)
+        sframe_tuple = self.__proxy__.drop_missing_values(
+            columns, all_behavior, True, recursive
+        )
 
         if len(sframe_tuple) != 2:
             raise RuntimeError("Did not return two SFrames!")
@@ -5776,11 +6117,10 @@ class SFrame(object):
             if (str not in list_types) or (len(list_types) > 1):
                 raise TypeError("All columns must be of 'str' type")
 
-
-        if how not in ['any','all']:
+        if how not in ["any", "all"]:
             raise ValueError("Must specify 'any' or 'all'")
 
-        if how == 'all':
+        if how == "all":
             all_behavior = True
         else:
             all_behavior = False
@@ -5833,7 +6173,7 @@ class SFrame(object):
         ret[column_name] = ret[column_name].fillna(value)
         return ret
 
-    def add_row_number(self, column_name='id', start=0, inplace=False):
+    def add_row_number(self, column_name="id", start=0, inplace=False):
         """
         Returns an SFrame with a new column that numbers each row
         sequentially. By default the count starts at 0, but this can be changed
@@ -5891,7 +6231,9 @@ class SFrame(object):
             raise TypeError("Must give start as int")
 
         if column_name in self.column_names():
-            raise RuntimeError("Column '" + column_name + "' already exists in the current SFrame")
+            raise RuntimeError(
+                "Column '" + column_name + "' already exists in the current SFrame"
+            )
 
         the_col = _create_sequential_sarray(self.num_rows(), start)
 

@@ -60,13 +60,13 @@ def _robust_column_name(base_name, column_names):
     i = 1
 
     while robust_name in column_names:
-        robust_name = base_name + '.{}'.format(i)
+        robust_name = base_name + ".{}".format(i)
         i += 1
 
     return robust_name
 
-def _select_valid_features(dataset, features, valid_feature_types,
-                           target_column=None):
+
+def _select_valid_features(dataset, features, valid_feature_types, target_column=None):
     """
     Utility function for selecting columns of only valid feature types.
 
@@ -106,7 +106,7 @@ def _select_valid_features(dataset, features, valid_feature_types,
     >>> valid_columns = _select_valid_features(sf, ['X1', 'X2', 'X3'], [dict, array.array])
     """
     if features is not None:
-        if not hasattr(features, '__iter__'):
+        if not hasattr(features, "__iter__"):
             raise TypeError("Input 'features' must be an iterable type.")
 
         if not all([isinstance(x, str) for x in features]):
@@ -117,30 +117,42 @@ def _select_valid_features(dataset, features, valid_feature_types,
         features = dataset.column_names()
 
     col_type_map = {
-        col_name: col_type for (col_name, col_type) in
-        zip(dataset.column_names(), dataset.column_types())}
+        col_name: col_type
+        for (col_name, col_type) in zip(dataset.column_names(), dataset.column_types())
+    }
 
     valid_features = []
     for col_name in features:
 
         if col_name not in dataset.column_names():
-            _logging.warning("Column '{}' is not in the input dataset.".format(col_name))
+            _logging.warning(
+                "Column '{}' is not in the input dataset.".format(col_name)
+            )
 
         elif col_name == target_column:
-            _logging.warning("Excluding target column " + target_column + " as a feature.")
+            _logging.warning(
+                "Excluding target column " + target_column + " as a feature."
+            )
 
         elif col_type_map[col_name] not in valid_feature_types:
-            _logging.warning("Column '{}' is excluded as a ".format(col_name) +
-                             "feature due to invalid column type.")
+            _logging.warning(
+                "Column '{}' is excluded as a ".format(col_name)
+                + "feature due to invalid column type."
+            )
 
         else:
             valid_features.append(col_name)
 
     if len(valid_features) == 0:
-        raise ValueError("The dataset does not contain any valid feature columns. " +
-                         "Accepted feature types are " + str(valid_feature_types) + ".")
+        raise ValueError(
+            "The dataset does not contain any valid feature columns. "
+            + "Accepted feature types are "
+            + str(valid_feature_types)
+            + "."
+        )
 
     return valid_features
+
 
 def _check_elements_equal(lst):
     """
@@ -149,8 +161,14 @@ def _check_elements_equal(lst):
     assert isinstance(lst, list), "Input value must be a list."
     return not lst or lst.count(lst[0]) == len(lst)
 
-def _validate_lists(sa, allowed_types=[str], require_same_type=True,
-                    require_equal_length=False, num_to_check=10):
+
+def _validate_lists(
+    sa,
+    allowed_types=[str],
+    require_same_type=True,
+    require_equal_length=False,
+    num_to_check=10,
+):
     """
     For a list-typed SArray, check whether the first elements are lists that
     - contain only the provided types
@@ -216,8 +234,10 @@ def _validate_lists(sa, allowed_types=[str], require_same_type=True,
 
     return True
 
-def _summarize_accessible_fields(field_descriptions, width=40,
-                                 section_title='Accessible fields'):
+
+def _summarize_accessible_fields(
+    field_descriptions, width=40, section_title="Accessible fields"
+):
     """
     Create a summary string for the accessible fields in a model. Unlike
     `_toolkit_repr_print`, this function does not look up the values of the

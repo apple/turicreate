@@ -15,6 +15,7 @@ import zipfile
 
 NoneType = type(None)
 
+
 def select_valid_features(data, feature_columns, valid_types):
     valid_features = []
 
@@ -22,9 +23,15 @@ def select_valid_features(data, feature_columns, valid_types):
         if data[f].dtype in valid_types:
             valid_features.append(f)
         else:
-            _logging.warning("Warning: Column " + f + " is excluded due to" +
-                            " invalid column type " + str(data[f].dtype))
+            _logging.warning(
+                "Warning: Column "
+                + f
+                + " is excluded due to"
+                + " invalid column type "
+                + str(data[f].dtype)
+            )
     return valid_features
+
 
 def select_feature_subset(data, feature_columns):
     total_set = set(data.column_names())
@@ -33,9 +40,17 @@ def select_feature_subset(data, feature_columns):
     result = total_set.intersection(feature_set)
 
     if len(result) != len(feature_set):
-        _logging.warning("Warning: The model was fit with " + str(len(feature_columns)) + " feature columns but only " + str(len(result)) + " were present during transform()." +" Proceeding with transform by ignoring the missing columns.")
+        _logging.warning(
+            "Warning: The model was fit with "
+            + str(len(feature_columns))
+            + " feature columns but only "
+            + str(len(result))
+            + " were present during transform()."
+            + " Proceeding with transform by ignoring the missing columns."
+        )
 
     return [f for f in feature_columns if f in result]
+
 
 def get_column_names(data, interpret_as_excluded, column_names):
 
@@ -56,7 +71,6 @@ def get_column_names(data, interpret_as_excluded, column_names):
         return selected_columns
 
 
-
 def validate_feature_columns(data_column_names, feature_column_names):
 
     if len(feature_column_names) == 0:
@@ -65,7 +79,7 @@ def validate_feature_columns(data_column_names, feature_column_names):
     set_difference = set(feature_column_names) - set(data_column_names)
 
     if len(set_difference) > 0:
-        err = 'Feature(s) '
+        err = "Feature(s) "
         for s in range(len(set_difference) - 1):
             err = err + str(list(set_difference)[s]) + ", "
         err = err + str(list(set_difference).pop()) + " are missing from the dataset."
@@ -75,10 +89,17 @@ def validate_feature_columns(data_column_names, feature_column_names):
 def validate_feature_types(feature_names, feature_types, data):
     for col_name in feature_names:
         if data[col_name].dtype != feature_types[col_name]:
-            err = "Column '" + col_name + "' was of type " + \
-                    str(feature_types[col_name]) + " when fitted using .fit() but is of type " +\
-                    str(data[col_name].dtype) + "during .transform()"
+            err = (
+                "Column '"
+                + col_name
+                + "' was of type "
+                + str(feature_types[col_name])
+                + " when fitted using .fit() but is of type "
+                + str(data[col_name].dtype)
+                + "during .transform()"
+            )
             raise ValueError(err)
+
 
 def process_features(features, exclude):
     """
@@ -101,8 +122,8 @@ def process_features(features, exclude):
     """
 
     # Check types
-    _raise_error_if_not_of_type(features, [NoneType, str, list], 'features')
-    _raise_error_if_not_of_type(exclude, [NoneType, str, list], 'exclude')
+    _raise_error_if_not_of_type(features, [NoneType, str, list], "features")
+    _raise_error_if_not_of_type(exclude, [NoneType, str, list], "exclude")
 
     # Make a copy of the parameters.
     _features = _copy.copy(features)
@@ -110,11 +131,12 @@ def process_features(features, exclude):
 
     # Check of both are None or empty.
     if _features and _exclude:
-        raise ValueError("The parameters 'features' and 'exclude' cannot both be set."
-                " Please set one or the other.")
+        raise ValueError(
+            "The parameters 'features' and 'exclude' cannot both be set."
+            " Please set one or the other."
+        )
     if _features == [] and not _exclude:
         raise ValueError("Features cannot be an empty list.")
-
 
     # Allow a single list
     _features = [_features] if type(_features) == str else _features
@@ -132,21 +154,23 @@ def process_features(features, exclude):
         feature_set = set(_features)
         for col_name in _exclude:
             if col_name in feature_set:
-                raise ValueError("'%s' appears in both features and excluded_features." % col_name)
+                raise ValueError(
+                    "'%s' appears in both features and excluded_features." % col_name
+                )
 
     return _features, _exclude
 
 
-def pretty_print_list(lst, name = 'features', repr_format=True):
+def pretty_print_list(lst, name="features", repr_format=True):
     """ Pretty print a list to be readable.
     """
     if not lst or len(lst) < 8:
         if repr_format:
             return lst.__repr__()
         else:
-            return ', '.join(map(str, lst))
+            return ", ".join(map(str, lst))
     else:
-        topk = ', '.join(map(str, lst[:3]))
+        topk = ", ".join(map(str, lst[:3]))
         if repr_format:
             lst_separator = "["
             lst_end_separator = "]"
@@ -154,6 +178,11 @@ def pretty_print_list(lst, name = 'features', repr_format=True):
             lst_separator = ""
             lst_end_separator = ""
 
-        return "{start}{topk}, ... {last}{end} (total {size} {name})".format(\
-                topk = topk, last = lst[-1], name = name, size = len(lst),
-                start = lst_separator, end = lst_end_separator)
+        return "{start}{topk}, ... {last}{end} (total {size} {name})".format(
+            topk=topk,
+            last=lst[-1],
+            name=name,
+            size=len(lst),
+            start=lst_separator,
+            end=lst_end_separator,
+        )

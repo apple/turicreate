@@ -15,20 +15,29 @@ import random
 class BoostedTreesRegressionEarlyStopTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        sf = tc.SFrame({'cat[1]': ['1', '1', '2', '2', '2'] * 20,
-                        'cat[2]': ['1', '3', '3', '1', '1'] * 20,
-                        'target': [random.random() for i in range(100)]})
+        sf = tc.SFrame(
+            {
+                "cat[1]": ["1", "1", "2", "2", "2"] * 20,
+                "cat[2]": ["1", "3", "3", "1", "1"] * 20,
+                "target": [random.random() for i in range(100)],
+            }
+        )
         cls.train, cls.test = sf.random_split(0.5, seed=5)
         cls.model = tc.boosted_trees_regression
-        cls.metrics = ['rmse', 'max_error']
+        cls.metrics = ["rmse", "max_error"]
         return cls
 
-    def _run_test(self, train, valid, early_stopping_rounds, metric='auto'):
+    def _run_test(self, train, valid, early_stopping_rounds, metric="auto"):
         max_iterations = 50
-        m = self.model.create(train, 'target', validation_set=valid, max_depth=2,
-                              max_iterations=max_iterations,
-                              early_stopping_rounds=early_stopping_rounds,
-                              metric=metric)
+        m = self.model.create(
+            train,
+            "target",
+            validation_set=valid,
+            max_depth=2,
+            max_iterations=max_iterations,
+            early_stopping_rounds=early_stopping_rounds,
+            metric=metric,
+        )
         self.assertTrue(m.num_trees < max_iterations)
 
     def test_one_round_early_stop(self):
@@ -48,16 +57,22 @@ class BoostedTreesRegressionEarlyStopTest(unittest.TestCase):
         self.assertRaises(ToolkitError, lambda: self._run_test(self.train, None, 5))
 
     def test_no_metric_exception(self):
-        self.assertRaises(ToolkitError, lambda: self._run_test(self.train, self.test, 5, metric=[]))
+        self.assertRaises(
+            ToolkitError, lambda: self._run_test(self.train, self.test, 5, metric=[])
+        )
 
 
 class BoostedTreesClassifierEarlyStopTest(BoostedTreesRegressionEarlyStopTest):
     @classmethod
     def setUpClass(cls):
-        sf = tc.SFrame({'cat[1]': ['1', '1', '2', '2', '2'] * 20,
-                        'cat[2]': ['1', '3', '3', '1', '1'] * 20,
-                        'target': [0, 1] * 50})
+        sf = tc.SFrame(
+            {
+                "cat[1]": ["1", "1", "2", "2", "2"] * 20,
+                "cat[2]": ["1", "3", "3", "1", "1"] * 20,
+                "target": [0, 1] * 50,
+            }
+        )
         cls.train, cls.test = sf.random_split(0.5, seed=5)
         cls.model = tc.boosted_trees_classifier
-        cls.metrics = ['accuracy', 'log_loss']
+        cls.metrics = ["accuracy", "log_loss"]
         return cls

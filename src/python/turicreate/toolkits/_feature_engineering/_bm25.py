@@ -13,11 +13,12 @@ from ._feature_engineering import Transformer
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _precomputed_field
 from turicreate.util import _raise_error_if_not_of_type
+
 # Feature engineering utils
 from . import _internal_utils
 
 
-_fit_examples_doc = '''
+_fit_examples_doc = """
             >>> import turicreate as tc
 
             # Create the data
@@ -46,9 +47,9 @@ _fit_examples_doc = '''
             |      docs      | example |         1          |
             +----------------+---------+--------------------+
             [2 rows x 3 columns]
-'''
+"""
 
-_fit_transform_examples_doc = '''
+_fit_transform_examples_doc = """
             >>> import turicreate as tc
 
             # Create the data
@@ -81,9 +82,9 @@ _fit_transform_examples_doc = '''
             +----------------+
             [3 rows x 1 columns]
 
-'''
+"""
 
-_transform_examples_doc = '''
+_transform_examples_doc = """
             >>>import turicreate as tc
 
             # Dictionary Input:
@@ -148,11 +149,11 @@ _transform_examples_doc = '''
             |      0.0       |
             +----------------+
             [3 rows x 1 columns]
-'''
+"""
 
 
 class BM25(Transformer):
-    '''
+    """
     Transform an SFrame into BM25 scores for a given query.
 
     If we have a query with words :math:`q_1, ..., q_n` the BM25 score for
@@ -290,15 +291,23 @@ class BM25(Transformer):
       |      docs      | example |         1          |
       +----------------+---------+--------------------+
 
-    '''
+    """
 
     # Doc strings
     _fit_examples_doc = _fit_examples_doc
     _fit_transform_examples_doc = _fit_transform_examples_doc
-    _transform_examples_doc  = _transform_examples_doc
+    _transform_examples_doc = _transform_examples_doc
 
-    def __init__(self, feature, query, k1 = 1.5, b = 0.75, min_document_frequency = 0.0,
-                 max_document_frequency=1.0, output_column_name=None):
+    def __init__(
+        self,
+        feature,
+        query,
+        k1=1.5,
+        b=0.75,
+        min_document_frequency=0.0,
+        max_document_frequency=1.0,
+        output_column_name=None,
+    ):
 
         # Convert query to list if necessary
         if isinstance(query, _tc.SArray):
@@ -309,7 +318,7 @@ class BM25(Transformer):
         # Type checking
         _raise_error_if_not_of_type(feature, [str])
         for q in query:
-            _raise_error_if_not_of_type(q, [str]) # query must be list of strings
+            _raise_error_if_not_of_type(q, [str])  # query must be list of strings
         _raise_error_if_not_of_type(k1, [float, int])
         _raise_error_if_not_of_type(b, [float, int])
         _raise_error_if_not_of_type(min_document_frequency, [float, int])
@@ -318,13 +327,13 @@ class BM25(Transformer):
 
         # Set up options
         opts = {
-          'features': [feature],
-          'query': query,
-          'k1': k1,
-          'b': b,
-          'min_document_frequency': min_document_frequency,
-          'max_document_frequency': max_document_frequency,
-          'output_column_name' : output_column_name
+            "features": [feature],
+            "query": query,
+            "k1": k1,
+            "b": b,
+            "min_document_frequency": min_document_frequency,
+            "max_document_frequency": max_document_frequency,
+            "output_column_name": output_column_name,
         }
 
         # Initialize object
@@ -334,17 +343,18 @@ class BM25(Transformer):
 
     def _get_summary_struct(self):
         _features = _precomputed_field(
-            _internal_utils.pretty_print_list(self.get('features')))
+            _internal_utils.pretty_print_list(self.get("features"))
+        )
         fields = [
             ("Features", _features),
-            ("query", 'query'),
-            ("k1", 'k1'),
-            ("b", 'b'),
-            ("Minimum Document Frequency", 'min_document_frequency'),
-            ("Maximum Document Frequency", 'max_document_frequency'),
-            ("Output Column Name", 'output_column_name')
+            ("query", "query"),
+            ("k1", "k1"),
+            ("b", "b"),
+            ("Minimum Document Frequency", "min_document_frequency"),
+            ("Maximum Document Frequency", "max_document_frequency"),
+            ("Output Column Name", "output_column_name"),
         ]
-        section_titles = ['Model fields']
+        section_titles = ["Model fields"]
         return ([fields], section_titles)
 
     def __repr__(self):
@@ -353,7 +363,7 @@ class BM25(Transformer):
 
     @classmethod
     def _get_instance_and_data(self):
-        sf = _tc.SFrame({'docs': ["this is a test", "this is another test"]})
-        encoder = _tc.feature_engineering.BM25('docs', ['a', 'test'])
+        sf = _tc.SFrame({"docs": ["this is a test", "this is another test"]})
+        encoder = _tc.feature_engineering.BM25("docs", ["a", "test"])
         encoder = encoder.fit(sf)
         return encoder, sf

@@ -13,6 +13,7 @@ from ._feature_engineering import Transformer
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _precomputed_field
 from turicreate.util import _raise_error_if_not_of_type
+
 # Feature engineering utils
 from . import _internal_utils
 import warnings
@@ -20,7 +21,7 @@ import warnings
 
 _NoneType = type(None)
 
-_fit_examples_doc = '''
+_fit_examples_doc = """
             import turicreate as tc
 
             # Create the data
@@ -41,9 +42,9 @@ _fit_examples_doc = '''
             # features.
             >>> encoder['features']
             ['dict', 'list', 'string']
-'''
+"""
 
-_fit_transform_examples_doc = '''
+_fit_transform_examples_doc = """
             import turicreate as tc
 
             # Create the data
@@ -96,9 +97,9 @@ _fit_transform_examples_doc = '''
             | {'sentence one': 1} |
             +---------------------+
             [2 rows x 3 columns]
-'''
+"""
 
-_transform_examples_doc = '''
+_transform_examples_doc = """
             >>> import turicreate as tc
 
             # For list columns (string elements converted to lower case by default):
@@ -181,12 +182,11 @@ _transform_examples_doc = '''
             +--------------------------------+
             [2 rows x 1 columns]
 
-'''
-
+"""
 
 
 class NGramCounter(Transformer):
-    '''
+    """
     __init__(self, features=None, excluded_features=None,
     n=2, method="word", to_lower=True, ignore_punct=True, ignore_space=True,
     delimiters=["\\\\r", "\\\\v", "\\\\n", "\\\\f", "\\\\t", " ", \
@@ -426,24 +426,68 @@ class NGramCounter(Transformer):
         +-----------------------------------------------------------------+
         [2 rows x 1 columns]
 
-    '''
+    """
 
     # Doc strings
     _fit_examples_doc = _fit_examples_doc
     _fit_transform_examples_doc = _fit_transform_examples_doc
-    _transform_examples_doc  = _transform_examples_doc
+    _transform_examples_doc = _transform_examples_doc
 
-    def __init__(self, features=None, excluded_features=None,
-        n=2, method="word", to_lower=True, ignore_punct=True, ignore_space=True,
-        delimiters=["\r", "\v", "\n", "\f", "\t", " ",
-                    "!", "#", "$", "%", "&", "'", "(", ")",
-                    "*", "+", ",", "-", ".", "/", ":", ";",
-                    "<", "=", ">", "?", "@", "[", "\\", "]",
-                    "^", "_", "`", "{", "|", "}", "~"],
-        output_column_prefix=None):
+    def __init__(
+        self,
+        features=None,
+        excluded_features=None,
+        n=2,
+        method="word",
+        to_lower=True,
+        ignore_punct=True,
+        ignore_space=True,
+        delimiters=[
+            "\r",
+            "\v",
+            "\n",
+            "\f",
+            "\t",
+            " ",
+            "!",
+            "#",
+            "$",
+            "%",
+            "&",
+            "'",
+            "(",
+            ")",
+            "*",
+            "+",
+            ",",
+            "-",
+            ".",
+            "/",
+            ":",
+            ";",
+            "<",
+            "=",
+            ">",
+            "?",
+            "@",
+            "[",
+            "\\",
+            "]",
+            "^",
+            "_",
+            "`",
+            "{",
+            "|",
+            "}",
+            "~",
+        ],
+        output_column_prefix=None,
+    ):
 
         # Process and make a copy of the features, exclude.
-        _features, _exclude = _internal_utils.process_features(features, excluded_features)
+        _features, _exclude = _internal_utils.process_features(
+            features, excluded_features
+        )
 
         # Type checking
         _raise_error_if_not_of_type(features, [list, str, _NoneType])
@@ -459,36 +503,38 @@ class NGramCounter(Transformer):
         if delimiters is not None:
             for delim in delimiters:
                 _raise_error_if_not_of_type(delim, str, "delimiters")
-                if (len(delim) != 1):
+                if len(delim) != 1:
                     raise ValueError("Delimiters must be single-character strings")
 
         if n < 1:
             raise ValueError("Input 'n' must be greater than 0")
 
-        if n > 5 and method == 'word':
+        if n > 5 and method == "word":
             warnings.warn("It is unusual for n-grams to be of size larger than 5.")
 
         if method != "word" and method != "character":
-            raise ValueError("Invalid 'method' input  value. Please input " +
-                             "either 'word' or 'character' ")
+            raise ValueError(
+                "Invalid 'method' input  value. Please input "
+                + "either 'word' or 'character' "
+            )
 
         # Set up options
         opts = {
-          'n': n,
-          'features': features,
-          'ngram_type': method,
-          'to_lower': to_lower,
-          'ignore_punct': ignore_punct,
-          'ignore_space': ignore_space,
-          'delimiters': delimiters,
-          'output_column_prefix' : output_column_prefix
+            "n": n,
+            "features": features,
+            "ngram_type": method,
+            "to_lower": to_lower,
+            "ignore_punct": ignore_punct,
+            "ignore_space": ignore_space,
+            "delimiters": delimiters,
+            "output_column_prefix": output_column_prefix,
         }
         if _exclude:
-            opts['exclude'] = True
-            opts['features'] = _exclude
+            opts["exclude"] = True
+            opts["features"] = _exclude
         else:
-            opts['exclude'] = False
-            opts['features'] = _features
+            opts["exclude"] = False
+            opts["features"] = _features
 
         # Initialize object
         proxy = _tc.extensions._NGramCounter()
@@ -497,18 +543,19 @@ class NGramCounter(Transformer):
 
     def _get_summary_struct(self):
         _features = _precomputed_field(
-            _internal_utils.pretty_print_list(self.get('features')))
+            _internal_utils.pretty_print_list(self.get("features"))
+        )
         fields = [
-            ("NGram length", 'n'),
-            ("NGram type (word or character)", 'ngram_type'),
-            ("Convert strings to lower case", 'to_lower'),
-            ("Ignore punctuation in character ngram", 'ignore_punct'),
-            ("Ignore space in character ngram", 'ignore_space'),
+            ("NGram length", "n"),
+            ("NGram type (word or character)", "ngram_type"),
+            ("Convert strings to lower case", "to_lower"),
+            ("Ignore punctuation in character ngram", "ignore_punct"),
+            ("Ignore space in character ngram", "ignore_space"),
             ("Delimiters", "delimiters"),
             ("Features", _features),
-            ("Output column prefix", 'output_column_prefix')
+            ("Output column prefix", "output_column_prefix"),
         ]
-        section_titles = ['Model fields']
+        section_titles = ["Model fields"]
         return ([fields], section_titles)
 
     def __repr__(self):
@@ -518,8 +565,13 @@ class NGramCounter(Transformer):
     @classmethod
     def _get_instance_and_data(self):
         sf = _tc.SFrame(
-            {'docs': [{'this': 1, 'is': 1, 'a': 2, 'sample': 1},
-                      {'this': 1, 'is': 1, 'another': 2, 'example': 3}]})
-        encoder = _tc.feature_engineering.NGramCounter('docs')
+            {
+                "docs": [
+                    {"this": 1, "is": 1, "a": 2, "sample": 1},
+                    {"this": 1, "is": 1, "another": 2, "example": 3},
+                ]
+            }
+        )
+        encoder = _tc.feature_engineering.NGramCounter("docs")
         encoder = encoder.fit(sf)
         return encoder, sf

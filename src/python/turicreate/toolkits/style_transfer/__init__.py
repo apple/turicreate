@@ -8,4 +8,4 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from .style_transfer import create, StyleTransfer
 
-__all__ = ['create', 'StyleTransfer']
+__all__ = ["create", "StyleTransfer"]

@@ -21,8 +21,14 @@ from turicreate.toolkits._private_utils import _summarize_accessible_fields
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 
 
-def create(dataset, features=None, distance=None, radius=1.,
-           min_core_neighbors=10, verbose=True):
+def create(
+    dataset,
+    features=None,
+    distance=None,
+    radius=1.0,
+    min_core_neighbors=10,
+    verbose=True,
+):
     """
     Create a DBSCAN clustering model. The DBSCAN method partitions the input
     dataset into three types of points, based on the estimated probability
@@ -175,31 +181,34 @@ def create(dataset, features=None, distance=None, radius=1.,
     _tkutl._raise_error_if_not_sframe(dataset, "dataset")
     _tkutl._raise_error_if_sframe_empty(dataset, "dataset")
 
-
     ## Validate neighborhood parameters
     if not isinstance(min_core_neighbors, int) or min_core_neighbors < 0:
-        raise ValueError("Input 'min_core_neighbors' must be a non-negative " +
-                         "integer.")
+        raise ValueError(
+            "Input 'min_core_neighbors' must be a non-negative " + "integer."
+        )
 
     if not isinstance(radius, (int, float)) or radius < 0:
-        raise ValueError("Input 'radius' must be a non-negative integer " +
-                         "or float.")
-
+        raise ValueError("Input 'radius' must be a non-negative integer " + "or float.")
 
     ## Compute all-point nearest neighbors within `radius` and count
     #  neighborhood sizes
-    knn_model = _tc.nearest_neighbors.create(dataset, features=features,
-                                             distance=distance,
-                                             method='brute_force',
-                                             verbose=verbose)
+    knn_model = _tc.nearest_neighbors.create(
+        dataset,
+        features=features,
+        distance=distance,
+        method="brute_force",
+        verbose=verbose,
+    )
 
-    knn = knn_model.similarity_graph(k=None, radius=radius,
-                                     include_self_edges=False,
-                                     output_type='SFrame',
-                                     verbose=verbose)
+    knn = knn_model.similarity_graph(
+        k=None,
+        radius=radius,
+        include_self_edges=False,
+        output_type="SFrame",
+        verbose=verbose,
+    )
 
-    neighbor_counts = knn.groupby('query_label', _agg.COUNT)
-
+    neighbor_counts = knn.groupby("query_label", _agg.COUNT)
 
     ### NOTE: points with NO neighbors are already dropped here!
 
@@ -209,13 +218,12 @@ def create(dataset, features=None, distance=None, radius=1.,
     if verbose:
         logger.info("Identifying noise points and core points.")
 
-    boundary_mask = neighbor_counts['Count'] < min_core_neighbors
+    boundary_mask = neighbor_counts["Count"] < min_core_neighbors
     core_mask = 1 - boundary_mask
 
     # this includes too small clusters
-    boundary_idx = neighbor_counts[boundary_mask]['query_label']
-    core_idx = neighbor_counts[core_mask]['query_label']
-
+    boundary_idx = neighbor_counts[boundary_mask]["query_label"]
+    core_idx = neighbor_counts[core_mask]["query_label"]
 
     ## Build a similarity graph on the core points
     ## NOTE: careful with singleton core points - the second filter removes them
@@ -223,98 +231,105 @@ def create(dataset, features=None, distance=None, radius=1.,
     if verbose:
         logger.info("Constructing the core point similarity graph.")
 
-    core_vertices = knn.filter_by(core_idx, 'query_label')
-    core_edges = core_vertices.filter_by(core_idx, 'reference_label')
+    core_vertices = knn.filter_by(core_idx, "query_label")
+    core_edges = core_vertices.filter_by(core_idx, "reference_label")
 
     core_graph = _tc.SGraph()
-    core_graph = core_graph.add_vertices(core_vertices[['query_label']],
-                                         vid_field='query_label')
-    core_graph = core_graph.add_edges(core_edges, src_field='query_label',
-                                      dst_field='reference_label')
-
+    core_graph = core_graph.add_vertices(
+        core_vertices[["query_label"]], vid_field="query_label"
+    )
+    core_graph = core_graph.add_edges(
+        core_edges, src_field="query_label", dst_field="reference_label"
+    )
 
     ## Compute core point connected components and relabel to be consecutive
     #  integers
     cc = _tc.connected_components.create(core_graph, verbose=verbose)
-    cc_labels = cc.component_size.add_row_number('__label')
-    core_assignments = cc.component_id.join(cc_labels, on='component_id',
-                                               how='left')[['__id', '__label']]
-    core_assignments['type'] = 'core'
-
+    cc_labels = cc.component_size.add_row_number("__label")
+    core_assignments = cc.component_id.join(cc_labels, on="component_id", how="left")[
+        ["__id", "__label"]
+    ]
+    core_assignments["type"] = "core"
 
     ## Join potential boundary points to core cluster labels (points that aren't
     #  really on a boundary are implicitly dropped)
     if verbose:
         logger.info("Processing boundary points.")
 
-    boundary_edges = knn.filter_by(boundary_idx, 'query_label')
+    boundary_edges = knn.filter_by(boundary_idx, "query_label")
 
     # separate real boundary points from points in small isolated clusters
-    boundary_core_edges = boundary_edges.filter_by(core_idx, 'reference_label')
+    boundary_core_edges = boundary_edges.filter_by(core_idx, "reference_label")
 
     # join a boundary point to its single closest core point.
-    boundary_assignments = boundary_core_edges.groupby('query_label',
-                    {'reference_label': _agg.ARGMIN('rank', 'reference_label')})
+    boundary_assignments = boundary_core_edges.groupby(
+        "query_label", {"reference_label": _agg.ARGMIN("rank", "reference_label")}
+    )
 
-    boundary_assignments = boundary_assignments.join(core_assignments,
-                                                 on={'reference_label': '__id'})
+    boundary_assignments = boundary_assignments.join(
+        core_assignments, on={"reference_label": "__id"}
+    )
 
-    boundary_assignments = boundary_assignments.rename({'query_label': '__id'}, inplace=True)
-    boundary_assignments = boundary_assignments.remove_column('reference_label', inplace=True)
-    boundary_assignments['type'] = 'boundary'
-
+    boundary_assignments = boundary_assignments.rename(
+        {"query_label": "__id"}, inplace=True
+    )
+    boundary_assignments = boundary_assignments.remove_column(
+        "reference_label", inplace=True
+    )
+    boundary_assignments["type"] = "boundary"
 
     ## Identify boundary candidates that turned out to be in small clusters but
     #  not on real cluster boundaries
-    small_cluster_idx = set(boundary_idx).difference(
-                                                   boundary_assignments['__id'])
-
+    small_cluster_idx = set(boundary_idx).difference(boundary_assignments["__id"])
 
     ## Identify individual noise points by the fact that they have no neighbors.
     noise_idx = set(range(dataset.num_rows())).difference(
-                                                 neighbor_counts['query_label'])
+        neighbor_counts["query_label"]
+    )
 
     noise_idx = noise_idx.union(small_cluster_idx)
 
-    noise_assignments = _tc.SFrame({'row_id': _tc.SArray(list(noise_idx), int)})
-    noise_assignments['cluster_id'] = None
-    noise_assignments['cluster_id'] = noise_assignments['cluster_id'].astype(int)
-    noise_assignments['type'] = 'noise'
-
+    noise_assignments = _tc.SFrame({"row_id": _tc.SArray(list(noise_idx), int)})
+    noise_assignments["cluster_id"] = None
+    noise_assignments["cluster_id"] = noise_assignments["cluster_id"].astype(int)
+    noise_assignments["type"] = "noise"
 
     ## Append core, boundary, and noise results to each other.
     master_assignments = _tc.SFrame()
     num_clusters = 0
 
     if core_assignments.num_rows() > 0:
-        core_assignments = core_assignments.rename({'__id': 'row_id',
-                                                    '__label': 'cluster_id'}, inplace=True)
+        core_assignments = core_assignments.rename(
+            {"__id": "row_id", "__label": "cluster_id"}, inplace=True
+        )
         master_assignments = master_assignments.append(core_assignments)
-        num_clusters = len(core_assignments['cluster_id'].unique())
+        num_clusters = len(core_assignments["cluster_id"].unique())
 
     if boundary_assignments.num_rows() > 0:
-        boundary_assignments = boundary_assignments.rename({'__id': 'row_id',
-                                                       '__label': 'cluster_id'}, inplace=True)
+        boundary_assignments = boundary_assignments.rename(
+            {"__id": "row_id", "__label": "cluster_id"}, inplace=True
+        )
         master_assignments = master_assignments.append(boundary_assignments)
 
     if noise_assignments.num_rows() > 0:
         master_assignments = master_assignments.append(noise_assignments)
 
-
     ## Post-processing and formatting
-    state = {'verbose': verbose,
-             'radius': radius,
-             'min_core_neighbors': min_core_neighbors,
-             'distance': knn_model.distance,
-             'num_distance_components': knn_model.num_distance_components,
-             'num_examples': dataset.num_rows(),
-             'features': knn_model.features,
-             'num_features': knn_model.num_features,
-             'unpacked_features': knn_model.unpacked_features,
-             'num_unpacked_features': knn_model.num_unpacked_features,
-             'cluster_id': master_assignments,
-             'num_clusters': num_clusters,
-             'training_time': _time.time() - start_time}
+    state = {
+        "verbose": verbose,
+        "radius": radius,
+        "min_core_neighbors": min_core_neighbors,
+        "distance": knn_model.distance,
+        "num_distance_components": knn_model.num_distance_components,
+        "num_examples": dataset.num_rows(),
+        "features": knn_model.features,
+        "num_features": knn_model.num_features,
+        "unpacked_features": knn_model.unpacked_features,
+        "num_unpacked_features": knn_model.num_unpacked_features,
+        "cluster_id": master_assignments,
+        "num_clusters": num_clusters,
+        "training_time": _time.time() - start_time,
+    }
 
     return DBSCANModel(state)
 
@@ -329,6 +344,7 @@ class DBSCANModel(_CustomModel):
     :func:`turicreate.clustering.dbscan.create` to create an instance of this
     model.
     """
+
     _PYTHON_DBSCAN_MODEL_VERSION = 1
 
     def __init__(self, state):
@@ -380,7 +396,8 @@ class DBSCANModel(_CustomModel):
 
         sections, section_titles = self._get_summary_struct()
         accessible_fields = {
-            "cluster_id": "Cluster label for each row in the input dataset."}
+            "cluster_id": "Cluster label for each row in the input dataset."
+        }
 
         out = _toolkit_repr_print(self, sections, section_titles, width=width)
         out2 = _summarize_accessible_fields(accessible_fields, width=width)
@@ -404,15 +421,17 @@ class DBSCANModel(_CustomModel):
               The order matches that of the 'sections' object.
         """
         model_fields = [
-            ('Number of examples', 'num_examples'),
-            ('Number of feature columns', 'num_features'),
-            ('Max distance to a neighbor (radius)', 'radius'),
-            ('Min number of neighbors for core points', 'min_core_neighbors'),
-            ('Number of distance components', 'num_distance_components')]
+            ("Number of examples", "num_examples"),
+            ("Number of feature columns", "num_features"),
+            ("Max distance to a neighbor (radius)", "radius"),
+            ("Min number of neighbors for core points", "min_core_neighbors"),
+            ("Number of distance components", "num_distance_components"),
+        ]
 
         training_fields = [
-            ('Total training time (seconds)', 'training_time'),
-            ('Number of clusters', 'num_clusters')]
+            ("Total training time (seconds)", "training_time"),
+            ("Number of clusters", "num_clusters"),
+        ]
 
         section_titles = ["Schema", "Training summary"]
-        return([model_fields, training_fields], section_titles)
+        return ([model_fields, training_fields], section_titles)

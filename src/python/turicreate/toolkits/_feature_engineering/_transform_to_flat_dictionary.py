@@ -13,11 +13,12 @@ from ._feature_engineering import Transformer
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _precomputed_field
 from turicreate.util import _raise_error_if_not_of_type
+
 # Feature engineering utils
 from . import _internal_utils
 
 
-_fit_examples_doc = '''
+_fit_examples_doc = """
 # Create data
 >>> sf = turicreate.SFrame({'values': [{"a" : {"b" : 3}, "c": 2},
 ...                      { "a" : { "b" : 3, "c" : 2.5 }, "c" : 2 },
@@ -36,9 +37,9 @@ Separator                      : .
 None Tag                       : __none__
 Output Column Prefix           :
 
-'''
+"""
 
-_fit_transform_examples_doc = '''
+_fit_transform_examples_doc = """
 # Create data
 >>> sf = turicreate.SFrame({'values': [{"a" : {"b" : 3}, "c": 2},
 ...                      { "a" : { "b" : 3, "c" : 2.5 }, "c" : 2 },
@@ -63,9 +64,9 @@ Data:
 |       {'c': 2, 'a.b': 1}       |
 +--------------------------------+
 [4 rows x 1 columns]
-'''
+"""
 
-_transform_examples_doc = '''
+_transform_examples_doc = """
 # Create data
 >>> sf = turicreate.SFrame({'values': [{"a" : {"b" : 3}, "c": 2},
 ...                      { "a" : { "b" : 3, "c" : 2.5 }, "c" : 2 },
@@ -100,10 +101,11 @@ Data:
 |       {'c': 2, 'a.b': 1}       |
 +--------------------------------+
 [4 rows x 1 columns]
-'''
+"""
+
 
 class TransformToFlatDictionary(Transformer):
-    '''
+    """
     Transforms column values into dictionaries with flat, non-nested
     string keys and numeric values.  Each key in nested containers is a
     concatenation of the keys in each dictionary with `separator`
@@ -183,37 +185,44 @@ class TransformToFlatDictionary(Transformer):
         |              {'c': 2, 'a.b': 1}              |
         +----------------------------------------------+
         [4 rows x 1 columns]
-        '''
+        """
 
     # Doc strings
     _fit_examples_doc = _fit_examples_doc
     _fit_transform_examples_doc = _fit_transform_examples_doc
-    _transform_examples_doc  = _transform_examples_doc
+    _transform_examples_doc = _transform_examples_doc
 
-    def __init__(self, features=None, excluded_features=None,
-                 separator = ".", none_tag = "__none__",
-                 output_column_prefix = None):
+    def __init__(
+        self,
+        features=None,
+        excluded_features=None,
+        separator=".",
+        none_tag="__none__",
+        output_column_prefix=None,
+    ):
 
         # Process and make a copy of the features, exclude.
-        _features, _exclude = _internal_utils.process_features(features, excluded_features)
+        _features, _exclude = _internal_utils.process_features(
+            features, excluded_features
+        )
 
         # Type checking
         _raise_error_if_not_of_type(output_column_prefix, [str, type(None)])
         if output_column_prefix is None:
-            output_column_prefix = ''
+            output_column_prefix = ""
 
         opts = {
-            'separator' : separator,
-            'none_tag' : none_tag,
-            'output_column_prefix' : output_column_prefix
-            }
+            "separator": separator,
+            "none_tag": none_tag,
+            "output_column_prefix": output_column_prefix,
+        }
 
         if _exclude:
-            opts['exclude'] = True
-            opts['features'] = _exclude
+            opts["exclude"] = True
+            opts["features"] = _exclude
         else:
-            opts['exclude'] = False
-            opts['features'] = _features
+            opts["exclude"] = False
+            opts["features"] = _features
 
         # Initialize object
         proxy = _tc.extensions._TransformToFlatDictionary()
@@ -222,18 +231,20 @@ class TransformToFlatDictionary(Transformer):
 
     def _get_summary_struct(self):
         _features = _precomputed_field(
-            _internal_utils.pretty_print_list(self.get('features')))
+            _internal_utils.pretty_print_list(self.get("features"))
+        )
         _exclude = _precomputed_field(
-            _internal_utils.pretty_print_list(self.get('excluded_features')))
+            _internal_utils.pretty_print_list(self.get("excluded_features"))
+        )
         fields = [
             ("Features", _features),
             ("Excluded_features", _exclude),
             ("Separator", "separator"),
             ("None Tag", "none_tag"),
-            ("Output Column Prefix", 'output_column_prefix')
+            ("Output Column Prefix", "output_column_prefix"),
         ]
 
-        section_titles = ['Model fields']
+        section_titles = ["Model fields"]
         return ([fields], section_titles)
 
     def __repr__(self):
@@ -243,8 +254,13 @@ class TransformToFlatDictionary(Transformer):
     @classmethod
     def _get_instance_and_data(self):
         sf = _tc.SFrame(
-            {'docs': [{'this': 1, 'is': 1, 'a': 2, 'sample': 1},
-                      {'this': 1, 'is': 1, 'another': 2, 'example': 3}]})
-        encoder = _tc.feature_engineering.TFIDF(features=['docs'])
+            {
+                "docs": [
+                    {"this": 1, "is": 1, "a": 2, "sample": 1},
+                    {"this": 1, "is": 1, "another": 2, "example": 3},
+                ]
+            }
+        )
+        encoder = _tc.feature_engineering.TFIDF(features=["docs"])
         encoder = encoder.fit(sf)
         return encoder, sf

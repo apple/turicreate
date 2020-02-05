@@ -175,7 +175,8 @@ build_dylib_macos_10_15:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
-    - ./configure --no-visualization --no-python --no-remotefs --release-opt-for-size --with-capi --builder=xcode
+    - ./configure --no-visualization --no-python --no-remotefs
+      --release-opt-for-size --with-capi --builder=xcode --no-pre-commit
     - cd release
     - xcodebuild -j 8 -project Turi.xcodeproj/ -target Recommender -quiet
     - xcodebuild -j 8 -project Turi.xcodeproj/ -target AudioPreprocessing -quiet
@@ -193,7 +194,9 @@ build_dylib_ios_12:
       - $TC_HAS_MACOS_RUNNERS == "1"
   stage: build
   script:
-    - ./configure --no-visualization --no-python --no-remotefs --release-opt-for-size --target=iphoneos --arch=arm64 --with-capi --builder=xcode
+    - ./configure --no-visualization --no-python --no-remotefs
+      --release-opt-for-size --target=iphoneos --arch=arm64
+      --with-capi --builder=xcode --no-pre-commit
     - cd release
     - xcodebuild -j 8 -project Turi.xcodeproj/ -target Recommender -arch arm64 only_active_arch=no -quiet
     - xcodebuild -j 8 -project Turi.xcodeproj/ -target AudioPreprocessing -arch arm64 only_active_arch=no -quiet
@@ -270,7 +273,7 @@ test_cpp_mac_10_13:
     - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
-    - (test -d debug && test -d release) || ./configure --no-python
+    - (test -d debug && test -d release) || ./configure --no-python --no-pre-commit
     - cd debug/test
     - bash -c -e -o pipefail "make -k -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - python ../../scripts/run_cpp_tests.py -j 2
@@ -286,7 +289,7 @@ test_cpp_mac_10_14:
     - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
-    - (test -d debug && test -d release) || ./configure --no-python
+    - (test -d debug && test -d release) || ./configure --no-python --no-pre-commit
     - cd debug/test
     - bash -c -e -o pipefail "make -k -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - python ../../scripts/run_cpp_tests.py -j 2
@@ -302,7 +305,7 @@ test_cpp_mac_10_15:
     - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
-    - (test -d debug && test -d release) || ./configure --no-python
+    - (test -d debug && test -d release) || ./configure --no-python --no-pre-commit
     - cd debug/test
     - bash -c -e -o pipefail "make -k -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - python ../../scripts/run_cpp_tests.py -j 2
@@ -318,8 +321,8 @@ test_cpp_mac_10_15_no_remotefs:
     - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
-    - ./configure --no-remotefs --no-python --no-visualization
-    - cd debug/test 
+    - ./configure --no-remotefs --no-python --no-visualization --no-pre-commit
+    - cd debug/test
     - bash -c -e -o pipefail "make -k -j8 2>&1 | grep -v -E '^ld[^a-z]*warning[^a-z]*direct access'"
     - python ../../scripts/run_cpp_tests.py -j 2
 
@@ -603,4 +606,3 @@ collect_artifacts:
     expire_in: 2 weeks
     paths:
       - target/
-

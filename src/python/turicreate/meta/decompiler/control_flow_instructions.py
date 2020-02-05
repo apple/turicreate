@@ -3,11 +3,11 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Created on Jul 14, 2011
 
 @author: sean
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -16,8 +16,9 @@ import _ast
 from ..bytecodetools.instruction import Instruction
 from ..asttools.visitors.print_visitor import print_ast
 from ..utils import py3op, py2op, py3
-AND_JUMPS = ['JUMP_IF_FALSE_OR_POP', 'POP_JUMP_IF_FALSE']
-OR_JUMPS = ['JUMP_IF_TRUE_OR_POP', 'POP_JUMP_IF_TRUE']
+
+AND_JUMPS = ["JUMP_IF_FALSE_OR_POP", "POP_JUMP_IF_FALSE"]
+OR_JUMPS = ["JUMP_IF_TRUE_OR_POP", "POP_JUMP_IF_TRUE"]
 JUMPS = AND_JUMPS + OR_JUMPS
 JUMP_OPS = [opcode.opmap[name] for name in JUMPS]
 
@@ -25,6 +26,7 @@ JUMP_OPS = [opcode.opmap[name] for name in JUMPS]
 def split(block, name):
     func = lambda instr: instr.opname == name
     return split_cond(block, func)
+
 
 def split_cond(block, func, raise_=True):
     block = block[:]
@@ -41,12 +43,14 @@ def split_cond(block, func, raise_=True):
 
     return new_block, None, block
 
+
 def find_index(lst, func, default=None):
     for i, item in enumerate(lst):
         if func(item):
             return i
     else:
         return default
+
 
 def rfind_index(lst, func, default=None):
     for i, item in reversed(list(enumerate(lst))):
@@ -55,10 +59,11 @@ def rfind_index(lst, func, default=None):
     else:
         return default
 
+
 def refactor_ifs(stmnt, ifs):
-    '''
+    """
     for if statements in list comprehension
-    '''
+    """
     if isinstance(stmnt, _ast.BoolOp):
         test, right = stmnt.values
         if isinstance(stmnt.op, _ast.Or):
@@ -68,6 +73,7 @@ def refactor_ifs(stmnt, ifs):
 
         return refactor_ifs(right, ifs)
     return stmnt
+
 
 def parse_logic(struct):
 
@@ -82,7 +88,7 @@ def parse_logic(struct):
 
     parent = struct.parent
 
-    Logic = _ast.Or if struct.flag == 'OR' else _ast.And
+    Logic = _ast.Or if struct.flag == "OR" else _ast.And
 
     if isinstance(parent, LogicalOp):
         ast_parent, insert_into = parse_logic(struct.parent)
@@ -107,6 +113,7 @@ class ListCompTmp(object):
         self.ifs = ifs
         self.lineno = lineno
 
+
 class LogicalOp(object):
     def __init__(self, flag, right, parent, lineno):
         self.flag = flag
@@ -115,11 +122,10 @@ class LogicalOp(object):
         self.lineno = lineno
 
     def __repr__(self):
-        return '%s(%r, parent=%r)' % (self.flag, self.right, self.parent)
+        return "%s(%r, parent=%r)" % (self.flag, self.right, self.parent)
 
 
 class CtrlFlowInstructions(object):
-
     def split_handlers(self, handlers_blocks):
         handlers = []
         except_instrs = []
@@ -130,10 +136,10 @@ class CtrlFlowInstructions(object):
             instr = handlers_blocks.pop(0)
             except_instrs.append(instr)
 
-            if (instr.opname == 'COMPARE_OP') and (instr.arg == 'exception match'):
+            if (instr.opname == "COMPARE_OP") and (instr.arg == "exception match"):
 
                 jump = handlers_blocks.pop(0)
-                assert jump.opname == 'POP_JUMP_IF_FALSE'
+                assert jump.opname == "POP_JUMP_IF_FALSE"
 
                 next_handler = jump.oparg
 
@@ -144,9 +150,9 @@ class CtrlFlowInstructions(object):
                 instr = handlers_blocks.pop(0)
                 except_instrs.append(instr)
 
-                assert except_instrs[0].opname == 'DUP_TOP'
-                assert except_instrs[-3].opname == 'POP_TOP'
-                assert except_instrs[-1].opname == 'POP_TOP'
+                assert except_instrs[0].opname == "DUP_TOP"
+                assert except_instrs[-3].opname == "POP_TOP"
+                assert except_instrs[-1].opname == "POP_TOP"
 
                 exec_stmnt = self.decompile_block(except_instrs[1:-4]).stmnt()
 
@@ -154,11 +160,15 @@ class CtrlFlowInstructions(object):
 
                 exc_type = exec_stmnt[0]
 
-
-                if except_instrs[-2].opname == 'STORE_NAME':
-                    exc_name = _ast.Name(id=except_instrs[-2].arg, ctx=_ast.Store(), lineno=except_instrs[-2].lineno, col_offset=0)
+                if except_instrs[-2].opname == "STORE_NAME":
+                    exc_name = _ast.Name(
+                        id=except_instrs[-2].arg,
+                        ctx=_ast.Store(),
+                        lineno=except_instrs[-2].lineno,
+                        col_offset=0,
+                    )
                 else:
-                    assert except_instrs[-2].opname == 'POP_TOP'
+                    assert except_instrs[-2].opname == "POP_TOP"
                     exc_name = None
 
                 handler_body = []
@@ -170,36 +180,59 @@ class CtrlFlowInstructions(object):
 
                     handler_body.append(instr)
 
-                assert handler_body[-1].opname == 'JUMP_FORWARD'
+                assert handler_body[-1].opname == "JUMP_FORWARD"
                 ends.append(handler_body[-1].arg)
 
                 exc_body = self.decompile_block(handler_body[:-1]).stmnt()
                 if not exc_body:
-                    exc_body.append(_ast.Pass(lineno=except_instrs[-2].lineno, col_offset=0))
-                #is this for python 3?
+                    exc_body.append(
+                        _ast.Pass(lineno=except_instrs[-2].lineno, col_offset=0)
+                    )
+                # is this for python 3?
                 if py3 and exc_name is not None:
                     exc_name = exc_name.id
 
-                handlers.append(_ast.ExceptHandler(type=exc_type, name=exc_name, body=exc_body, lineno=instr.lineno, col_offset=0))
+                handlers.append(
+                    _ast.ExceptHandler(
+                        type=exc_type,
+                        name=exc_name,
+                        body=exc_body,
+                        lineno=instr.lineno,
+                        col_offset=0,
+                    )
+                )
 
                 except_instrs = []
 
-        assert except_instrs[-1].opname == 'END_FINALLY'
+        assert except_instrs[-1].opname == "END_FINALLY"
 
         if len(except_instrs) == 1:
             pass
         else:
 
-            assert except_instrs[0].opname == 'POP_TOP'
-            assert except_instrs[1].opname == 'POP_TOP'
-            assert except_instrs[2].opname == 'POP_TOP'
-            assert except_instrs[-2].opname in ['JUMP_FORWARD', 'JUMP_ABSOLUTE'], except_instrs[-2]
+            assert except_instrs[0].opname == "POP_TOP"
+            assert except_instrs[1].opname == "POP_TOP"
+            assert except_instrs[2].opname == "POP_TOP"
+            assert except_instrs[-2].opname in [
+                "JUMP_FORWARD",
+                "JUMP_ABSOLUTE",
+            ], except_instrs[-2]
             ends.append(except_instrs[-2].arg)
             exc_body = self.decompile_block(except_instrs[3:-2]).stmnt()
             if not exc_body:
-                exc_body.append(_ast.Pass(lineno=except_instrs[-2].lineno, col_offset=0))
+                exc_body.append(
+                    _ast.Pass(lineno=except_instrs[-2].lineno, col_offset=0)
+                )
 
-            handlers.append(_ast.ExceptHandler(type=None, name=None, body=exc_body, lineno=except_instrs[0].lineno, col_offset=0))
+            handlers.append(
+                _ast.ExceptHandler(
+                    type=None,
+                    name=None,
+                    body=exc_body,
+                    lineno=except_instrs[0].lineno,
+                    col_offset=0,
+                )
+            )
 
             assert all(e == ends[0] for e in ends)
 
@@ -207,13 +240,12 @@ class CtrlFlowInstructions(object):
 
         return end, handlers
 
-
-#    @py3op
+    #    @py3op
     def do_try_except_block(self, block):
 
         while 1:
             instr = block.pop(-1)
-            if instr.opname == 'POP_BLOCK':
+            if instr.opname == "POP_BLOCK":
                 break
 
         try_except = self.decompile_block(block).stmnt()
@@ -221,7 +253,7 @@ class CtrlFlowInstructions(object):
         finally_block = []
         while 1:
             next_instr = self.ilst.pop(0)
-            if next_instr.opname == 'END_FINALLY':
+            if next_instr.opname == "END_FINALLY":
                 break
             finally_block.append(next_instr)
 
@@ -231,59 +263,59 @@ class CtrlFlowInstructions(object):
 
         self.ast_stack.append(try_finally)
 
-#    @py3op
+    #    @py3op
     def do_except_block(self, block):
 
         handler_block = []
         for instr in block:
-            if  instr.opname == 'POP_BLOCK':
+            if instr.opname == "POP_BLOCK":
                 break
             handler_block.append(instr)
 
         while 1:
             instr = self.ilst.pop(0)
-            if instr.opname == 'END_FINALLY':
+            if instr.opname == "END_FINALLY":
                 break
 
         body = self.decompile_block(handler_block).stmnt()
 
         self.ast_stack.extend(body)
 
-#    @py2op
-#    def SETUP_FINALLY(self, instr):
-#        pass
-#
-#    @SETUP_FINALLY.py3op
+    #    @py2op
+    #    def SETUP_FINALLY(self, instr):
+    #        pass
+    #
+    #    @SETUP_FINALLY.py3op
     def SETUP_FINALLY(self, instr):
         to = instr.arg
         try_except_block = self.make_block(to, inclusive=False)
 
-        if try_except_block[0].opname == 'SETUP_EXCEPT':
+        if try_except_block[0].opname == "SETUP_EXCEPT":
             self.do_try_except_block(try_except_block)
         else:
             self.do_except_block(try_except_block)
 
-#            raise Exception()
-#        print("try_except_block", try_except_block)
-#
-#        finally_block = []
-#        while 1:
-#            next_instr = self.ilst.pop(0)
-#            if next_instr.opname == 'END_FINALLY':
-#                break
-#            finally_block.append(next_instr)
-#
-#        print("finally_block", finally_block)
-#
-#        finally_ = self.decompile_block(finally_block).stmnt()
-#
-#        print("finally_", finally_)
-#        print_ast(finally_[0])
-#        print()
-##        print_ast(finally_[1])
-##        print("\n\n")
-#
-#        try_except = self.decompile_block(try_except_block).stmnt()
+    #            raise Exception()
+    #        print("try_except_block", try_except_block)
+    #
+    #        finally_block = []
+    #        while 1:
+    #            next_instr = self.ilst.pop(0)
+    #            if next_instr.opname == 'END_FINALLY':
+    #                break
+    #            finally_block.append(next_instr)
+    #
+    #        print("finally_block", finally_block)
+    #
+    #        finally_ = self.decompile_block(finally_block).stmnt()
+    #
+    #        print("finally_", finally_)
+    #        print_ast(finally_[0])
+    #        print()
+    ##        print_ast(finally_[1])
+    ##        print("\n\n")
+    #
+    #        try_except = self.decompile_block(try_except_block).stmnt()
 
     @py2op
     def SETUP_EXCEPT(self, instr):
@@ -292,17 +324,19 @@ class CtrlFlowInstructions(object):
 
         try_block = self.make_block(to, inclusive=False)
 
-        assert try_block[-1].opname in ['JUMP_FORWARD', 'JUMP_ABSOLUTE'], try_block[-1]
-        assert try_block[-2].opname == 'POP_BLOCK', try_block[-2]
+        assert try_block[-1].opname in ["JUMP_FORWARD", "JUMP_ABSOLUTE"], try_block[-1]
+        assert try_block[-2].opname == "POP_BLOCK", try_block[-2]
 
         try_stmnts = self.decompile_block(try_block[:-2]).stmnt()
         body = try_stmnts
 
-        handlers_blocks = self.make_block(try_block[-1].arg, inclusive=False, raise_=False)
+        handlers_blocks = self.make_block(
+            try_block[-1].arg, inclusive=False, raise_=False
+        )
 
         end, handlers = self.split_handlers(handlers_blocks)
 
-        #raise exception in python 3 (python 2 ilst does not include end so else may go beyond)
+        # raise exception in python 3 (python 2 ilst does not include end so else may go beyond)
         else_block = self.make_block(end, inclusive=False, raise_=py3)
 
         else_stmnts = self.decompile_block(else_block).stmnt()
@@ -311,7 +345,13 @@ class CtrlFlowInstructions(object):
         else:
             else_ = []
 
-        try_except = _ast.TryExcept(body=body, handlers=handlers, orelse=else_, lineno=instr.lineno, col_offset=0)
+        try_except = _ast.TryExcept(
+            body=body,
+            handlers=handlers,
+            orelse=else_,
+            lineno=instr.lineno,
+            col_offset=0,
+        )
 
         self.ast_stack.append(try_except)
 
@@ -322,13 +362,15 @@ class CtrlFlowInstructions(object):
 
         try_block = self.make_block(to, inclusive=False)
 
-        assert try_block[-1].opname in ['JUMP_FORWARD', 'JUMP_ABSOLUTE']
-        assert try_block[-2].opname == 'POP_BLOCK'
+        assert try_block[-1].opname in ["JUMP_FORWARD", "JUMP_ABSOLUTE"]
+        assert try_block[-2].opname == "POP_BLOCK"
 
         try_stmnts = self.decompile_block(try_block[:-2]).stmnt()
         body = try_stmnts
 
-        handlers_blocks = self.make_block(try_block[-1].arg, inclusive=False, raise_=False)
+        handlers_blocks = self.make_block(
+            try_block[-1].arg, inclusive=False, raise_=False
+        )
 
         end, handlers = self.split_handlers(handlers_blocks)
 
@@ -341,7 +383,13 @@ class CtrlFlowInstructions(object):
         else:
             else_ = []
 
-        try_except = _ast.TryExcept(body=body, handlers=handlers, orelse=else_, lineno=instr.lineno, col_offset=0)
+        try_except = _ast.TryExcept(
+            body=body,
+            handlers=handlers,
+            orelse=else_,
+            lineno=instr.lineno,
+            col_offset=0,
+        )
 
         self.ast_stack.append(try_except)
 
@@ -353,7 +401,7 @@ class CtrlFlowInstructions(object):
         to = instr.arg
         loop_block = self.make_block(to, inclusive=False, raise_=False)
 
-        if 'FOR_ITER' in [ins.opname for ins in loop_block]:
+        if "FOR_ITER" in [ins.opname for ins in loop_block]:
             self.for_loop(loop_block)
         else:
             self.while_loop(instr, loop_block)
@@ -362,30 +410,35 @@ class CtrlFlowInstructions(object):
         self.ast_stack.append(_ast.Break(lineno=instr.lineno, col_offset=0))
 
     def for_loop(self, loop_block):
-        iter_block, _, body_else_block = split(loop_block, 'GET_ITER')
+        iter_block, _, body_else_block = split(loop_block, "GET_ITER")
 
-#        for_iter = body_else_block[0]
+        #        for_iter = body_else_block[0]
         for_iter = body_else_block.pop(0)
 
-        assert for_iter.opname == 'FOR_ITER'
+        assert for_iter.opname == "FOR_ITER"
 
-        idx = find_index(body_else_block, lambda instr: instr.opname == 'POP_BLOCK' and for_iter.to == instr.i)
+        idx = find_index(
+            body_else_block,
+            lambda instr: instr.opname == "POP_BLOCK" and for_iter.to == instr.i,
+        )
 
         assert idx is not False
 
         body_block = body_else_block[:idx]
 
-        else_block = body_else_block[idx + 1:]
+        else_block = body_else_block[idx + 1 :]
 
         jump_abs = body_block.pop()
 
-        assert jump_abs.opname == 'JUMP_ABSOLUTE' and jump_abs.to == for_iter.i
+        assert jump_abs.opname == "JUMP_ABSOLUTE" and jump_abs.to == for_iter.i
 
         iter_stmnt = self.decompile_block(iter_block).stmnt()
 
         assert len(iter_stmnt) == 1
         iter_stmnt = iter_stmnt[0]
-        body_lst = self.decompile_block(body_block[:], stack_items=[None], jump_map={for_iter.i:for_iter.to}).stmnt()
+        body_lst = self.decompile_block(
+            body_block[:], stack_items=[None], jump_map={for_iter.i: for_iter.to}
+        ).stmnt()
 
         assign_ = body_lst.pop(0)
         body = body_lst
@@ -396,7 +449,14 @@ class CtrlFlowInstructions(object):
             else_ = self.decompile_block(else_block[:]).stmnt()
 
         assign = assign_.targets[0]
-        for_ = _ast.For(target=assign, iter=iter_stmnt, body=body, orelse=else_, lineno=iter_stmnt.lineno, col_offset=0)
+        for_ = _ast.For(
+            target=assign,
+            iter=iter_stmnt,
+            body=body,
+            orelse=else_,
+            lineno=iter_stmnt.lineno,
+            col_offset=0,
+        )
 
         self.ast_stack.append(for_)
 
@@ -406,10 +466,12 @@ class CtrlFlowInstructions(object):
 
         jump_abs = block.pop()
 
-        assert jump_abs.opname == 'JUMP_ABSOLUTE', jump_abs.opname
-        jump_map = {for_iter.i:for_iter.to}
+        assert jump_abs.opname == "JUMP_ABSOLUTE", jump_abs.opname
+        jump_map = {for_iter.i: for_iter.to}
 
-        stmnts = self.decompile_block(block, stack_items=[None], jump_map=jump_map).stmnt()
+        stmnts = self.decompile_block(
+            block, stack_items=[None], jump_map=jump_map
+        ).stmnt()
 
         if len(stmnts) > 1:
 
@@ -428,14 +490,30 @@ class CtrlFlowInstructions(object):
             elt = refactor_ifs(stmnts[0], ifs)
 
             assert len(assign.targets) == 1
-            generators = [_ast.comprehension(target=assign.targets[0], iter=list_expr, ifs=ifs, lineno=get_iter.lineno, col_offset=0)]
+            generators = [
+                _ast.comprehension(
+                    target=assign.targets[0],
+                    iter=list_expr,
+                    ifs=ifs,
+                    lineno=get_iter.lineno,
+                    col_offset=0,
+                )
+            ]
 
             if isinstance(list_, _ast.Assign):
 
-                comp = _ast.comprehension(target=list_.targets[0], iter=None, ifs=ifs, lineno=get_iter.lineno, col_offset=0)
+                comp = _ast.comprehension(
+                    target=list_.targets[0],
+                    iter=None,
+                    ifs=ifs,
+                    lineno=get_iter.lineno,
+                    col_offset=0,
+                )
                 generators.insert(0, comp)
 
-            list_comp = _ast.ListComp(elt=elt, generators=generators, lineno=get_iter.lineno, col_offset=0)
+            list_comp = _ast.ListComp(
+                elt=elt, generators=generators, lineno=get_iter.lineno, col_offset=0
+            )
         else:
             list_expr = self.ast_stack.pop()
             list_comp = stmnts[0]
@@ -445,7 +523,13 @@ class CtrlFlowInstructions(object):
             # empty ast.List object
             list_ = self.ast_stack.pop()
             if not isinstance(list_, _ast.Assign):
-                comp = _ast.comprehension(target=list_.targets[0], iter=None, ifs=[], lineno=get_iter.lineno, col_offset=0)
+                comp = _ast.comprehension(
+                    target=list_.targets[0],
+                    iter=None,
+                    ifs=[],
+                    lineno=get_iter.lineno,
+                    col_offset=0,
+                )
                 generators.insert(0, comp)
 
             generators[0].iter = list_expr
@@ -463,10 +547,12 @@ class CtrlFlowInstructions(object):
 
         generators = list(value.generators)
         for generator in generators:
-            if generator.iter.id == '.0':
+            if generator.iter.id == ".0":
                 generator.iter = sequence
 
-        setcomp = _ast.ListComp(elt=value.elt, generators=generators, lineno=value.lineno, col_offset=0)
+        setcomp = _ast.ListComp(
+            elt=value.elt, generators=generators, lineno=value.lineno, col_offset=0
+        )
         self.ast_stack.append(setcomp)
 
     def extract_setcomp(self, function, sequence):
@@ -480,10 +566,12 @@ class CtrlFlowInstructions(object):
 
         generators = list(value.generators)
         for generator in generators:
-            if generator.iter.id == '.0':
+            if generator.iter.id == ".0":
                 generator.iter = sequence
 
-        setcomp = _ast.SetComp(elt=value.elt, generators=generators, lineno=value.lineno, col_offset=0)
+        setcomp = _ast.SetComp(
+            elt=value.elt, generators=generators, lineno=value.lineno, col_offset=0
+        )
         self.ast_stack.append(setcomp)
 
     def extract_dictcomp(self, function, sequence):
@@ -497,55 +585,61 @@ class CtrlFlowInstructions(object):
 
         generators = list(value.generators)
         for generator in generators:
-            if generator.iter.id == '.0':
+            if generator.iter.id == ".0":
                 generator.iter = sequence
 
-        setcomp = _ast.DictComp(key=value.elt[0], value=value.elt[1], generators=generators, lineno=value.lineno, col_offset=0)
+        setcomp = _ast.DictComp(
+            key=value.elt[0],
+            value=value.elt[1],
+            generators=generators,
+            lineno=value.lineno,
+            col_offset=0,
+        )
         self.ast_stack.append(setcomp)
-#
-#        assert len(function.code.nodes) == 1
-#        assert isinstance(function.code.nodes[0], _ast.Return)
-#
-#        value = function.code.nodes[0].value
-#
-#        assert isinstance(value, _ast.ListComp)
-#
-#        quals = value.quals
-#        key, value = value.expr
-#
-#        for qual in quals:
-#            qual.list = sequence
-#
-#        setcomp = _ast.DictComp(key=key, value=value, generators=quals, lineno=value.lineno, col_offset=0)
-#        self.ast_stack.append(setcomp)
+
+    #
+    #        assert len(function.code.nodes) == 1
+    #        assert isinstance(function.code.nodes[0], _ast.Return)
+    #
+    #        value = function.code.nodes[0].value
+    #
+    #        assert isinstance(value, _ast.ListComp)
+    #
+    #        quals = value.quals
+    #        key, value = value.expr
+    #
+    #        for qual in quals:
+    #            qual.list = sequence
+    #
+    #        setcomp = _ast.DictComp(key=key, value=value, generators=quals, lineno=value.lineno, col_offset=0)
+    #        self.ast_stack.append(setcomp)
 
     def GET_ITER(self, instr):
         for_iter = self.ilst.pop(0)
 
-        if for_iter.opname == 'CALL_FUNCTION':
+        if for_iter.opname == "CALL_FUNCTION":
             call_function = for_iter
             assert call_function.oparg == 1
 
             sequence = self.ast_stack.pop()
             function = self.ast_stack.pop()
 
-            if function.name == '<listcomp>':
+            if function.name == "<listcomp>":
                 self.extract_listcomp(function, sequence)
-            elif function.name == '<setcomp>':
+            elif function.name == "<setcomp>":
                 self.extract_setcomp(function, sequence)
-            elif function.name == '<dictcomp>':
+            elif function.name == "<dictcomp>":
                 self.extract_dictcomp(function, sequence)
             else:
                 assert False, function.name
 
-        elif for_iter.opname == 'FOR_ITER':
+        elif for_iter.opname == "FOR_ITER":
             self.make_list_comp(instr, for_iter)
         else:
             assert False
 
-
     def LIST_APPEND(self, instr):
-#        assert instr.oparg == 2
+        #        assert instr.oparg == 2
         pass
 
     def MAP_ADD(self, instr):
@@ -553,24 +647,24 @@ class CtrlFlowInstructions(object):
         value = self.ast_stack.pop()
 
         self.ast_stack.append((key, value))
-        'NOP'
+        "NOP"
 
     def SET_ADD(self, instr):
-        'NOP'
+        "NOP"
 
     def FOR_ITER(self, instr):
-        #set or dict comp
+        # set or dict comp
         self.make_list_comp(instr, instr)
 
     def while_loop(self, instr, loop_block):
 
         kw = dict(lineno=instr.lineno, col_offset=0)
 
-        loop_block_map = {instr.i:instr.op for instr in loop_block}
+        loop_block_map = {instr.i: instr.op for instr in loop_block}
 
         first_i = loop_block[0].i
 
-        func = lambda instr: instr.opname == 'JUMP_ABSOLUTE' and instr.oparg == first_i
+        func = lambda instr: instr.opname == "JUMP_ABSOLUTE" and instr.oparg == first_i
         body_index = rfind_index(loop_block[:-1], func)
 
         if body_index is None:
@@ -579,7 +673,7 @@ class CtrlFlowInstructions(object):
         else:
             if body_index + 1 < len(loop_block):
                 pop_block = loop_block[body_index + 1]
-                const_while = pop_block.opname != 'POP_BLOCK'
+                const_while = pop_block.opname != "POP_BLOCK"
                 const_else = True
             else:
                 const_while = True
@@ -589,7 +683,7 @@ class CtrlFlowInstructions(object):
             test = _ast.Num(1, **kw)
             body_ = self.decompile_block(loop_block[:body_index]).stmnt()
 
-            else_block = loop_block[body_index + 1:]
+            else_block = loop_block[body_index + 1 :]
             if else_block:
                 else_ = self.decompile_block(else_block).stmnt()
             else:
@@ -597,7 +691,10 @@ class CtrlFlowInstructions(object):
         else:
             pop_block = loop_block[body_index + 1]
 
-            func = lambda instr: instr.opname in ['POP_JUMP_IF_FALSE', 'POP_JUMP_IF_TRUE'] and instr.oparg == pop_block.i
+            func = (
+                lambda instr: instr.opname in ["POP_JUMP_IF_FALSE", "POP_JUMP_IF_TRUE"]
+                and instr.oparg == pop_block.i
+            )
             idx = rfind_index(loop_block[:body_index], func)
             cond_block = loop_block[:idx]
 
@@ -605,9 +702,9 @@ class CtrlFlowInstructions(object):
             assert len(iter_stmnt) == 1
             test = iter_stmnt[0]
 
-            body_ = self.decompile_block(loop_block[idx + 1:body_index]).stmnt()
+            body_ = self.decompile_block(loop_block[idx + 1 : body_index]).stmnt()
 
-            else_block = loop_block[body_index + 2:]
+            else_block = loop_block[body_index + 2 :]
             if else_block:
                 else_ = self.decompile_block(else_block[:]).stmnt()
             else:
@@ -617,9 +714,7 @@ class CtrlFlowInstructions(object):
 
         self.ast_stack.append(while_)
 
-
     def gather_jumps(self, jump_instr):
-
 
         to = self.jump_map.get(jump_instr.to, jump_instr.to)
         assert to > jump_instr.i
@@ -644,15 +739,17 @@ class CtrlFlowInstructions(object):
                 new_block = self.make_block(to=old_max, inclusive=False, raise_=False)
                 and_block.extend(new_block)
 
-        #print("and_block", and_block)
+        # print("and_block", and_block)
         return and_block
 
     def process_logic(self, logic_block):
 
         if logic_block[0].opname in JUMPS:
             jump_instr = logic_block[0]
-            flag = 'OR' if jump_instr.opname in OR_JUMPS else 'AND'
-            idx = find_index(logic_block, lambda instr: jump_instr.oparg == instr.i, default=None)
+            flag = "OR" if jump_instr.opname in OR_JUMPS else "AND"
+            idx = find_index(
+                logic_block, lambda instr: jump_instr.oparg == instr.i, default=None
+            )
 
             if idx is None:
                 if len(logic_block) == 1:
@@ -660,19 +757,21 @@ class CtrlFlowInstructions(object):
                 else:
                     right = self.process_logic(logic_block[1:])
                 parent = None
-#                assert False
+            #                assert False
             else:
-                right = self.process_logic(logic_block[1:idx - 1])
-                parent = self.process_logic(logic_block[idx - 1:])
+                right = self.process_logic(logic_block[1 : idx - 1])
+                parent = self.process_logic(logic_block[idx - 1 :])
 
-#            if right is None:
+            #            if right is None:
             return LogicalOp(flag, right, parent, jump_instr.lineno)
         else:
-            idx = find_index(logic_block, lambda instr: instr.opname in JUMPS, default=None)
+            idx = find_index(
+                logic_block, lambda instr: instr.opname in JUMPS, default=None
+            )
 
             if idx is None:
                 stmnts = self.decompile_block(logic_block).stmnt()
-#                assert len(stmnts) == 1
+                #                assert len(stmnts) == 1
                 return stmnts[0]
             else:
                 right = logic_block[idx:]
@@ -692,9 +791,8 @@ class CtrlFlowInstructions(object):
                 right.parent = parent
                 return right
 
-
     def logic_ast(self, instr, left, hi):
-#        flag = 'OR' if opname[instr.op] in OR_JUMPS else 'AND'
+        #        flag = 'OR' if opname[instr.op] in OR_JUMPS else 'AND'
 
         ast_, insert_into = parse_logic(hi)
 
@@ -713,16 +811,21 @@ class CtrlFlowInstructions(object):
     def make_if(self, instr, left, and_block):
         block = [instr] + and_block[:-1]
 
-        maxmax = max(block, key=lambda ins: (0, 0) if (ins.op not in JUMP_OPS) else (self.jump_map.get(ins.oparg, ins.oparg), ins.i))
+        maxmax = max(
+            block,
+            key=lambda ins: (0, 0)
+            if (ins.op not in JUMP_OPS)
+            else (self.jump_map.get(ins.oparg, ins.oparg), ins.i),
+        )
 
         idx = block.index(maxmax)
 
         assert idx is not None
 
-        hi = self.process_logic(block[:idx + 1])
+        hi = self.process_logic(block[: idx + 1])
 
         if hi.right is None and hi.parent is None:
-            if instr.opname == 'POP_JUMP_IF_TRUE':
+            if instr.opname == "POP_JUMP_IF_TRUE":
                 cond = _ast.UnaryOp(op=_ast.Not(), operand=left, lineno=0, col_offset=0)
             else:
                 cond = left
@@ -732,34 +835,35 @@ class CtrlFlowInstructions(object):
 
         jump = and_block[-1]
 
-        if jump.opname == 'RETURN_VALUE':
-            body_block = block[idx + 1:] + [jump]
+        if jump.opname == "RETURN_VALUE":
+            body_block = block[idx + 1 :] + [jump]
         else:
-            body_block = block[idx + 1:]
+            body_block = block[idx + 1 :]
 
         body = self.decompile_block(body_block).stmnt()
 
         if jump.is_jump:
             else_block = self.make_block(jump.to, inclusive=False, raise_=False)
-        else: # it is a return
+        else:  # it is a return
             else_block = []
 
         if len(else_block):
             else_ = self.decompile_block(else_block).stmnt()
-#
-#            if len(else_lst) == 1 and isinstance(else_lst[0], _ast.If):
-#                elif_ = else_lst[0]
-#                tests.extend(elif_.tests)
-#                else_ = elif_.else_
-#            else:
-#                else_ = else_lst
+        #
+        #            if len(else_lst) == 1 and isinstance(else_lst[0], _ast.If):
+        #                elif_ = else_lst[0]
+        #                tests.extend(elif_.tests)
+        #                else_ = elif_.else_
+        #            else:
+        #                else_ = else_lst
         else:
             else_ = []
 
-        if_ = _ast.If(test=cond, body=body, orelse=else_, lineno=instr.lineno, col_offset=0)
+        if_ = _ast.If(
+            test=cond, body=body, orelse=else_, lineno=instr.lineno, col_offset=0
+        )
 
         self.ast_stack.append(if_)
-
 
     def POP_JUMP_IF_TRUE(self, instr):
 
@@ -767,7 +871,7 @@ class CtrlFlowInstructions(object):
 
         and_block = self.gather_jumps(instr)
 
-        if and_block[-1].opname in ['JUMP_FORWARD', 'JUMP_ABSOLUTE', 'RETURN_VALUE']:
+        if and_block[-1].opname in ["JUMP_FORWARD", "JUMP_ABSOLUTE", "RETURN_VALUE"]:
 
             self.make_if(instr, left, and_block)
             return
@@ -778,27 +882,27 @@ class CtrlFlowInstructions(object):
 
     def POP_JUMP_IF_FALSE(self, instr):
 
-        #print("POP_JUMP_IF_FALSE")
+        # print("POP_JUMP_IF_FALSE")
 
         left = self.ast_stack.pop()
 
         and_block = self.gather_jumps(instr)
-        #This is an IF statement
+        # This is an IF statement
 
-        if and_block[-1].opname in ['JUMP_FORWARD', 'JUMP_ABSOLUTE', 'RETURN_VALUE']:
+        if and_block[-1].opname in ["JUMP_FORWARD", "JUMP_ABSOLUTE", "RETURN_VALUE"]:
 
-            #this happens if the function was going to return anyway
-            if and_block[-1].opname == 'RETURN_VALUE':
+            # this happens if the function was going to return anyway
+            if and_block[-1].opname == "RETURN_VALUE":
                 JUMP_FORWARD = Instruction(and_block[-1].i, 110, lineno=0)
                 JUMP_FORWARD.arg = instr.to
                 and_block.append(JUMP_FORWARD)
 
-            #print()
-            #print("make_if", instr, left, and_block)
-            #print()
+            # print()
+            # print("make_if", instr, left, and_block)
+            # print()
             self.make_if(instr, left, and_block)
             return
-        else: #This is an expression
+        else:  # This is an expression
             hi = self.process_logic([instr] + and_block)
             ast_ = self.logic_ast(instr, left, hi)
             self.ast_stack.append(ast_)
@@ -822,18 +926,17 @@ class CtrlFlowInstructions(object):
 
         with_block = self.make_block(to=instr.to, inclusive=False)
 
-        assert with_block.pop().opname == 'LOAD_CONST'
-        assert with_block.pop().opname == 'POP_BLOCK'
+        assert with_block.pop().opname == "LOAD_CONST"
+        assert with_block.pop().opname == "POP_BLOCK"
 
         with_cleanup = self.ilst.pop(0)
-        assert with_cleanup.opname == 'WITH_CLEANUP'
+        assert with_cleanup.opname == "WITH_CLEANUP"
         end_finally = self.ilst.pop(0)
-        assert end_finally.opname == 'END_FINALLY'
+        assert end_finally.opname == "END_FINALLY"
 
+        with_ = self.decompile_block(with_block, stack_items=["WITH_BLOCK"]).stmnt()
 
-        with_ = self.decompile_block(with_block, stack_items=['WITH_BLOCK']).stmnt()
-
-        if isinstance(with_[0], _ast.Assign) and with_[0].value == 'WITH_BLOCK':
+        if isinstance(with_[0], _ast.Assign) and with_[0].value == "WITH_BLOCK":
             assign = with_.pop(0)
             as_ = assign.targets[0]
         else:
@@ -843,8 +946,13 @@ class CtrlFlowInstructions(object):
 
         expr = self.ast_stack.pop()
 
-        with_ = _ast.With(context_expr=expr, optional_vars=as_, body=body,
-                          lineno=instr.lineno, col_offset=0)
+        with_ = _ast.With(
+            context_expr=expr,
+            optional_vars=as_,
+            body=body,
+            lineno=instr.lineno,
+            col_offset=0,
+        )
 
         self.ast_stack.append(with_)
 

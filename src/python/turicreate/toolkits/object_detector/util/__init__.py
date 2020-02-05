@@ -9,4 +9,4 @@ from __future__ import absolute_import as _
 from ._output_formats import stack_annotations, unstack_annotations
 from ._visualization import draw_bounding_boxes
 
-__all__ = ['stack_annotations', 'unstack_annotations', 'draw_bounding_boxes']
+__all__ = ["stack_annotations", "unstack_annotations", "draw_bounding_boxes"]

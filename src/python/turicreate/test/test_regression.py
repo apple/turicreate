@@ -19,36 +19,39 @@ class RegressionCreateTest(unittest.TestCase):
     """
        Creation test helper function.
     """
-    def _test_create(self, n, d, validation_set = 'auto'):
 
-      # Simulate test data
-      np.random.seed(42)
-      sf = tc.SFrame()
+    def _test_create(self, n, d, validation_set="auto"):
 
-      for i in range(d):
-          sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
+        # Simulate test data
+        np.random.seed(42)
+        sf = tc.SFrame()
 
-      target = np.random.rand(n)
-      sf['target'] = target
-      model = tc.regression.create(sf, target = 'target', features =None,
-              validation_set = validation_set)
-      self.assertTrue(model is not None)
+        for i in range(d):
+            sf.add_column(tc.SArray(np.random.rand(n)), inplace=True)
 
-      features = sf.column_names()
-      features.remove('target')
-      model = tc.regression.create(sf, target = 'target', features = features,
-              validation_set = validation_set)
-      self.assertTrue(model is not None)
+        target = np.random.rand(n)
+        sf["target"] = target
+        model = tc.regression.create(
+            sf, target="target", features=None, validation_set=validation_set
+        )
+        self.assertTrue(model is not None)
 
+        features = sf.column_names()
+        features.remove("target")
+        model = tc.regression.create(
+            sf, target="target", features=features, validation_set=validation_set
+        )
+        self.assertTrue(model is not None)
 
     """
        Test create.
     """
+
     def test_create(self):
 
         self._test_create(99, 10)
         self._test_create(100, 100)
         self._test_create(20000, 10)
-        self._test_create(99, 10, validation_set = None)
-        self._test_create(100, 100, validation_set = None)
-        self._test_create(20000, 10, validation_set = None)
+        self._test_create(99, 10, validation_set=None)
+        self._test_create(100, 100, validation_set=None)
+        self._test_create(20000, 10, validation_set=None)

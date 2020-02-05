@@ -52,7 +52,7 @@ class Image(object):
     >>> turicreate.SArray([img]).show()
     """
 
-    def __init__(self, path=None, format='auto', **__internal_kw_args):
+    def __init__(self, path=None, format="auto", **__internal_kw_args):
         self._image_data = bytearray()
         self._height = 0
         self._width = 0
@@ -61,9 +61,10 @@ class Image(object):
         self._version = _CURRENT_VERSION
         self._format_enum = _format[_UNDEFINED]
 
-        if (path is not None):
+        if path is not None:
             from ..util import _make_internal_url
             from .. import extensions as _extensions
+
             img = _extensions.load_image(_make_internal_url(path), format)
             for key, value in list(img.__dict__.items()):
                 setattr(self, key, value)
@@ -160,6 +161,7 @@ class Image(object):
         """
 
         from .. import extensions as _extensions
+
         data = _np.zeros((self.height, self.width, self.channels), dtype=_np.uint8)
         _extensions.image_load_to_numpy(self, data.ctypes.data, data.strides)
         if self.channels == 1:
@@ -187,16 +189,20 @@ class Image(object):
     def _repr_png_(self):
         img = self._to_pil_image()
         from io import BytesIO
+
         b = BytesIO()
-        img.save(b, format='png')
+        img.save(b, format="png")
         data = b.getvalue()
-        res = {"Height" :str(self._height), "Width":str(self._width), "Channels: " :str(self._channels)}
-        return (data,res)
-
-
+        res = {
+            "Height": str(self._height),
+            "Width": str(self._width),
+            "Channels: ": str(self._channels),
+        }
+        return (data, res)
 
     def _to_pil_image(self):
         from PIL import Image as _PIL_Image
+
         return _PIL_Image.fromarray(self.pixel_data)
 
     def save(self, filename):
@@ -238,21 +244,24 @@ class Image(object):
         from ..visualization._plot import _target
 
         # Suppress visualization output if 'none' target is set
-        if _target == 'none':
+        if _target == "none":
             return
 
         try:
             img = self._to_pil_image()
             try:
                 # output into jupyter notebook if possible
-                if _target == 'auto' and \
-                    (get_ipython().__class__.__name__ == "ZMQInteractiveShell" or get_ipython().__class__.__name__ == "Shell"):
+                if _target == "auto" and (
+                    get_ipython().__class__.__name__ == "ZMQInteractiveShell"
+                    or get_ipython().__class__.__name__ == "Shell"
+                ):
                     from io import BytesIO
                     from IPython import display
+
                     b = BytesIO()
-                    img.save(b, format='png')
+                    img.save(b, format="png")
                     data = b.getvalue()
-                    ip_img = display.Image(data=data, format='png', embed=True)
+                    ip_img = display.Image(data=data, format="png", embed=True)
                     display.display(ip_img)
                 else:
                     # fall back to pillow .show (jupyter notebook integration disabled or not in jupyter notebook)
