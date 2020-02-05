@@ -41,14 +41,22 @@ class OneShotObjectDetectorBackgroundData(object):
         }
 
     def get_backgrounds(self):
+        # Download tar file, if not already downloaded
+        # Get tar file path
         tarfile_path = _download_and_checksum_files(
             self.sarray_url_md5_pairs, _get_cache_dir("data")
         )[0]
 
+        # Extract from tar file, if not already extracted
+        if _os.path.exists(self.destination_sarray_path):
+            backgrounds_tar = _tarfile.open(tarfile_path)
+            backgrounds_tar.extractall(_get_cache_dir("data"))
+
+        # Verify and load the extracted SArray
         try:
             # Check we extracted the file we expected
             expected_extracted_files = set(self.extracted_file_to_md5.keys())
-            extracted_files = set(_os.listdir(foo.destination_sarray_path))
+            extracted_files = set(_os.listdir(self.destination_sarray_path))
             assert expected_extracted_files == extracted_files
 
             # Check each of the files is what we expect
