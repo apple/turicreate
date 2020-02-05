@@ -47,7 +47,7 @@ class OneShotObjectDetectorBackgroundData(object):
             self.sarray_url_md5_pairs, _get_cache_dir("data")
         )[0]
 
-        # Extract from tar file, if not already extracted
+        # Extract SArray from tar file, if not already extracted
         if _os.path.exists(self.destination_sarray_path):
             backgrounds_tar = _tarfile.open(tarfile_path)
             backgrounds_tar.extractall(_get_cache_dir("data"))

@@ -8,7 +8,9 @@
 import turicreate as _tc
 from turicreate import extensions as _extensions
 from turicreate.toolkits._model import CustomModel as _CustomModel
-from turicreate.toolkits._model import PythonProxy as _PythonProxy
+from turicreate.toolkits._model import (
+    PythonProxy as _PythonProxy, ToolkitError as _ToolkitError
+)
 from turicreate.toolkits.object_detector.object_detector import (
     ObjectDetector as _ObjectDetector,
 )
@@ -63,6 +65,8 @@ def create(
     """
     if not isinstance(data, _tc.SFrame) and not isinstance(data, _tc.Image):
         raise TypeError("'data' must be of type SFrame or tc.Image.")
+    if isinstance(data, _tc.SFrame) and len(data) == 0:
+        raise _ToolkitError("'data' can not be an empty SFrame")
 
     augmented_data = _preview_synthetic_training_data(data, target, backgrounds)
 
