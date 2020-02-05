@@ -79,13 +79,13 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
     """
     epsilon = 1e-5
 
-    gamma = weights[prefix + "gamma_weight"]
-    beta = weights[prefix + "beta_weight"]
-    
+    gamma = weights[prefix + 'gamma_weight']
+    beta = weights[prefix + 'beta_weight']
+
     inputs_rank = tf_input.shape.ndims
     reduction_axis = inputs_rank - 1
     moments_axes = list(range(inputs_rank))
-    
+
     del moments_axes[reduction_axis]
     del moments_axes[0]
 
@@ -96,8 +96,14 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
     expanded_beta = _tf.expand_dims(_tf.expand_dims(indexed_beta, 1), 1)
 
     mean, variance = _tf.nn.moments(tf_input, moments_axes, keep_dims=True)
-    return _tf.nn.batch_normalization(tf_input, mean, variance, expanded_beta, expanded_gamma, epsilon)
-
+    return _tf.nn.batch_normalization(
+        tf_input,
+        mean,
+        variance,
+        expanded_beta,
+        expanded_gamma,
+        epsilon)
+    
 def define_residual(tf_input, tf_index, weights, prefix):
     """
     This function defines the residual network using the tensorflow nn api.
