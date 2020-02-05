@@ -233,6 +233,15 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                 validation_set=None,
             )
 
+    def test_create_with_fixed_random_seed(self):
+        model_1 = tc.activity_classifier.create(self.data, target=self.target, session_id=self.session_id, max_iterations=3, random_seed=86)
+        pred_1 = model_1.predict(self.data, output_type="probability_vector")
+        model_2 = tc.activity_classifier.create(self.data, target=self.target, session_id=self.session_id, max_iterations=3, random_seed=86)
+        pred_2 = model_2.predict(self.data, output_type="probability_vector")
+        assert len(pred_1) == len(pred_2)
+        for i in range(len(pred_1)):
+            self.assertEqual(pred_1[i], pred_2[i])
+
 
 class ActivityClassifierAutoValdSetTest(unittest.TestCase):
     @classmethod

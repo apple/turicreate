@@ -11,6 +11,7 @@
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
+#include <model_server/lib/variant_deep_serialize.hpp>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
@@ -322,7 +323,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
         tf_ac_backend.attr("ActivityTensorFlowModel")(
             ac_params.weights, ac_params.batch_size, ac_params.num_features,
             ac_params.num_classes, ac_params.prediction_window,
-            ac_params.num_predictions_per_chunk);
+            ac_params.num_predictions_per_chunk, ac_params.random_seed);
     result.reset(new tf_model_backend(activity_classifier));
   });
 
