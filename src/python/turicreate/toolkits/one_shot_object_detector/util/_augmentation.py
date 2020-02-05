@@ -36,6 +36,9 @@ def preview_synthetic_training_data(
         A list of backgrounds used for synthetic data generation. When set to
         None, a set of default backgrounds are downloaded and used.
 
+    verbose : bool optional
+        If True, print progress updates and details.
+
     Returns
     -------
     out : SFrame
@@ -45,8 +48,7 @@ def preview_synthetic_training_data(
         data, target, backgrounds
     )
     _tkutl._handle_missing_values(dataset_to_augment, image_column_name, "dataset")
-    one_shot_model = _extensions.one_shot_object_detector()
-    seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2 ** 32 - 1)
+
     if backgrounds is None:
         backgrounds_downloader = _data_zoo.OneShotObjectDetectorBackgroundData()
         backgrounds = backgrounds_downloader.get_backgrounds()
@@ -60,7 +62,10 @@ def preview_synthetic_training_data(
         )
     # Option arguments to pass in to C++ Object Detector, if we use it:
     # {'mlmodel_path':'darknet.mlmodel', 'max_iterations' : 25}
+    seed = kwargs["seed"] if "seed" in kwargs else _random.randint(0, 2 ** 32 - 1)
     options_for_augmentation = {"seed": seed, "verbose": verbose}
+
+    one_shot_model = _extensions.one_shot_object_detector()
     augmented_data = one_shot_model.augment(
         dataset_to_augment,
         image_column_name,

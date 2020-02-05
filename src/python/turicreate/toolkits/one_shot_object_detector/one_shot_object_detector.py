@@ -62,18 +62,22 @@ def create(
         >>> test_data['predictions'] = model.predict(test_data)
     """
     if not isinstance(data, _tc.SFrame) and not isinstance(data, _tc.Image):
-        raise TypeError("'data' must be of type SFrame or Image.")
+        raise TypeError("'data' must be of type SFrame or tc.Image.")
+
     augmented_data = _preview_synthetic_training_data(data, target, backgrounds)
+
     model = _tc.object_detector.create(
         augmented_data,
         batch_size=batch_size,
         max_iterations=max_iterations,
         verbose=verbose,
     )
+
     if isinstance(data, _tc.SFrame):
         num_starter_images = len(data)
     else:
         num_starter_images = 1
+
     state = {
         "detector": model,
         "target": target,
