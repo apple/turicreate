@@ -11,16 +11,25 @@ import time
 import logging
 import platform
 
+
 class TuriConfig:
 
-    __slots__ = ['turicreate_server', 'server_addr', 'server_bin', 'log_dir',
-                 'log_rotation_interval','log_rotation_truncate']
+    __slots__ = [
+        "turicreate_server",
+        "server_addr",
+        "server_bin",
+        "log_dir",
+        "log_rotation_interval",
+        "log_rotation_truncate",
+    ]
 
     def __init__(self, server_addr=None):
         if not server_addr:
-            server_addr = 'default'
+            server_addr = "default"
         self.server_addr = server_addr
-        gl_root = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+        gl_root = os.path.abspath(
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+        )
         self.log_rotation_interval = 86400
         self.log_rotation_truncate = 8
         if "TURI_UNITY" in os.environ:
@@ -35,14 +44,18 @@ class TuriConfig:
             try:
                 self.log_rotation_interval = int(tmp)
             except:
-                logging.getLogger(__name__).warning("TURI_LOG_ROTATION_INTERVAL must be an integral value")
+                logging.getLogger(__name__).warning(
+                    "TURI_LOG_ROTATION_INTERVAL must be an integral value"
+                )
 
         if "TURI_LOG_ROTATION_TRUNCATE" in os.environ:
             tmp = os.environ["TURI_LOG_ROTATION_TRUNCATE"]
             try:
                 self.log_rotation_truncate = int(tmp)
             except:
-                logging.getLogger(__name__).warning("TURI_LOG_ROTATION_TRUNCATE must be an integral value")
+                logging.getLogger(__name__).warning(
+                    "TURI_LOG_ROTATION_TRUNCATE must be an integral value"
+                )
 
         if "TURI_LOG_PATH" in os.environ:
             log_dir = os.environ["TURI_LOG_PATH"]
@@ -61,8 +74,11 @@ class TuriConfig:
 
     def get_unity_log(self):
         ts = str(int(time.time()))
-        log_ext = '.log'
-        root_package_name = 'turicreate'
-        return os.path.join(self.log_dir, root_package_name + '_server_' + str(ts) + log_ext)
+        log_ext = ".log"
+        root_package_name = "turicreate"
+        return os.path.join(
+            self.log_dir, root_package_name + "_server_" + str(ts) + log_ext
+        )
+
 
 DEFAULT_CONFIG = TuriConfig()

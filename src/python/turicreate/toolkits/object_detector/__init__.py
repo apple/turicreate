@@ -9,4 +9,4 @@ from __future__ import absolute_import as _
 from .object_detector import create, ObjectDetector
 from . import util
 
-__all__ = ['create', 'ObjectDetector', 'util']
+__all__ = ["create", "ObjectDetector", "util"]

@@ -10,6 +10,7 @@ from __future__ import absolute_import as _
 from ._pre_trained_models import _get_cache_dir
 import turicreate.toolkits._tf_utils as _utils
 
+
 def _create_feature_extractor(model_name):
     from platform import system
     from ._internal_utils import _mac_ver
@@ -17,19 +18,18 @@ def _create_feature_extractor(model_name):
     from turicreate import extensions
 
     # If we don't have Core ML, use a TensorFlow model.
-    if system() != 'Darwin' or _mac_ver() < (10, 13):
+    if system() != "Darwin" or _mac_ver() < (10, 13):
         ptModel = IMAGE_MODELS[model_name]()
         return TensorFlowFeatureExtractor(ptModel)
 
     download_path = _get_cache_dir()
 
     result = extensions.__dict__["image_deep_feature_extractor"]()
-    result.init_options({'model_name': model_name, 'download_path': download_path})
+    result.init_options({"model_name": model_name, "download_path": download_path})
     return result
 
 
 class ImageFeatureExtractor(object):
-
     def __init__(self, ptModel):
         """
         Parameters
@@ -83,7 +83,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         self.coreml_data_layer = ptModel.coreml_data_layer
         self.coreml_feature_layer = ptModel.coreml_feature_layer
 
-        model_path = ptModel.get_model_path('tensorflow')
+        model_path = ptModel.get_model_path("tensorflow")
         self.model = keras.models.load_model(model_path)
 
     def __del__(self):
@@ -95,25 +95,25 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         import numpy as np
 
         # Only expose the feature column to the SFrame-to-NumPy loader.
-        image_sf = tc.SFrame({'image' : dataset[feature]})
+        image_sf = tc.SFrame({"image": dataset[feature]})
 
         # Encapsulate state in a dict to sidestep variable scoping issues.
         state = {}
-        state['num_started'] = 0       # Images read from the SFrame
-        state['num_processed'] = 0     # Images processed by TensorFlow
-        state['total'] = len(dataset)  # Images in the dataset
+        state["num_started"] = 0  # Images read from the SFrame
+        state["num_processed"] = 0  # Images processed by TensorFlow
+        state["total"] = len(dataset)  # Images in the dataset
 
         # We should be using SArrayBuilder, but it doesn't accept ndarray yet.
         # TODO: https://github.com/apple/turicreate/issues/2672
-        #out = _tc.SArrayBuilder(dtype = array.array)
-        state['out'] = tc.SArray(dtype=array)
+        # out = _tc.SArrayBuilder(dtype = array.array)
+        state["out"] = tc.SArray(dtype=array)
 
         if verbose:
             print("Performing feature extraction on resized images...")
 
         # Provide an iterator-like interface around the SFrame.
         def has_next_batch():
-            return state['num_started'] < state['total']
+            return state["num_started"] < state["total"]
 
         # Yield a numpy array representing one batch of images.
         def next_batch(batch):
@@ -122,9 +122,9 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
                 return None
 
             # Compute the range of the SFrame to yield.
-            start_index = state['num_started']
-            end_index = min(start_index + batch_size, state['total'])
-            state['num_started'] = end_index
+            start_index = state["num_started"]
+            end_index = min(start_index + batch_size, state["total"])
+            state["num_started"] = end_index
 
             num_images = end_index - start_index
             shape = (num_images,) + self.ptModel.input_image_shape
@@ -134,9 +134,13 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
 
             # Resize and load the images.
             future = tc.extensions.sframe_load_to_numpy.run_background(
-                                               image_sf, batch.ctypes.data,
-                                               batch.strides, batch.shape,
-                                               start_index, end_index)
+                image_sf,
+                batch.ctypes.data,
+                batch.strides,
+                batch.shape,
+                start_index,
+                end_index,
+            )
 
             return future, batch
 
@@ -150,7 +154,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
             batch = batch.transpose(0, 2, 3, 1)  # NCHW -> NHWC
 
             if self.ptModel.input_is_BGR:
-                batch = batch[:,:,:,::-1]  # RGB -> BGR
+                batch = batch[:, :, :, ::-1]  # RGB -> BGR
 
             return batch
 
@@ -164,55 +168,60 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         # progress.
         def consume_response(tf_out):
             sa = tc.SArray(tf_out, dtype=array)
-            state['out'] = state['out'].append(sa)
+            state["out"] = state["out"].append(sa)
 
-            state['num_processed'] += len(tf_out)
+            state["num_processed"] += len(tf_out)
             if verbose:
-                print('Completed {num_processed:{width}d}/{total:{width}d}'.format(
-                    width = len(str(state['total'])), **state))
+                print(
+                    "Completed {num_processed:{width}d}/{total:{width}d}".format(
+                        width=len(str(state["total"])), **state
+                    )
+                )
 
+        # These two arrays will swap off to avoid unnecessary allocations.
+        state["batch_store"] = []
 
-
-        # These two arrays will swap off to avoid unnecessary allocations.  
-        state['batch_store'] = []
         def get_batch_array():
-            batch_store = state['batch_store']
-            
+            batch_store = state["batch_store"]
+
             if not batch_store:
-                batch_store.append(np.zeros((batch_size,) + self.ptModel.input_image_shape, dtype=np.float32))
+                batch_store.append(
+                    np.zeros(
+                        (batch_size,) + self.ptModel.input_image_shape, dtype=np.float32
+                    )
+                )
 
             return batch_store.pop()
 
         def batch_array_done(b):
-            state['batch_store'].append(b)
-
+            state["batch_store"].append(b)
 
         # Seed the iteration
         batch_info = next_batch(get_batch_array())
-            
+
         # Iterate through the image batches, converting them into batches
-        # of feature vectors.  Do the 
+        # of feature vectors.  Do the
         while batch_info is not None:
 
             # Get the now ready batch to process
             batch = ready_batch(batch_info)
 
-            # Start the next one in the background.  
+            # Start the next one in the background.
             # Returns None if done.
             batch_info = next_batch(get_batch_array())
 
-            # Now, process all this. 
+            # Now, process all this.
             predictions_from_tf = handle_request(batch)
             consume_response(predictions_from_tf)
 
-            # Requeue the batch array now that we're done.  
+            # Requeue the batch array now that we're done.
             batch_array_done(batch)
 
-        # Now we have this compiled in 
-        return state['out']
+        # Now we have this compiled in
+        return state["out"]
 
     def get_coreml_model(self):
         import coremltools
 
-        model_path = self.ptModel.get_model_path('coreml')
+        model_path = self.ptModel.get_model_path("coreml")
         return coremltools.models.MLModel(model_path)

@@ -9,7 +9,9 @@ from __future__ import absolute_import as _
 
 import turicreate as _tc
 from turicreate.data_structures.sgraph import SGraph as _SGraph
-from turicreate.toolkits.graph_analytics._model_base import GraphAnalyticsModel as _ModelBase
+from turicreate.toolkits.graph_analytics._model_base import (
+    GraphAnalyticsModel as _ModelBase,
+)
 from turicreate.util import _raise_error_if_not_of_type
 
 
@@ -86,30 +88,30 @@ class LabelPropagationModel(_ModelBase):
     --------
     create
     """
+
     def __init__(self, model):
-        '''__init__(self)'''
+        """__init__(self)"""
         self.__proxy__ = model
 
     def _result_fields(self):
         ret = super(LabelPropagationModel, self)._result_fields()
         ret["vertex label probability"] = "SFrame. See m['labels']"
-        ret['change in last iteration (avg. of L2)'] = self['delta']
+        ret["change in last iteration (avg. of L2)"] = self["delta"]
         return ret
 
     def _metric_fields(self):
         ret = super(LabelPropagationModel, self)._metric_fields()
-        ret['number of iterations'] = 'num_iterations'
+        ret["number of iterations"] = "num_iterations"
         return ret
 
     def _setting_fields(self):
         ret = super(LabelPropagationModel, self)._setting_fields()
-        ret['convergence threshold (avg. of L2 norm)'] = 'threshold'
-        ret['treated edge as undirected'] = 'undirected'
-        ret['weight for self edge'] = 'self_weight'
-        ret['edge weight field id'] = 'weight_field'
-        ret['vertex label field id'] = 'label_field'
+        ret["convergence threshold (avg. of L2 norm)"] = "threshold"
+        ret["treated edge as undirected"] = "undirected"
+        ret["weight for self edge"] = "self_weight"
+        ret["edge weight field id"] = "weight_field"
+        ret["vertex label field id"] = "label_field"
         return ret
-
 
     def _get_version(self):
         return 0
@@ -119,24 +121,26 @@ class LabelPropagationModel(_ModelBase):
         return "label_propagation"
 
     def _get_native_state(self):
-        return {'model':self.__proxy__}
+        return {"model": self.__proxy__}
 
     @classmethod
     def _load_version(cls, state, version):
-        assert(version == 0)
-        return cls(state['model'])
+        assert version == 0
+        return cls(state["model"])
 
 
-
-def create(graph, label_field,
-           threshold=1e-3,
-           weight_field='',
-           self_weight=1.0,
-           undirected=False,
-           max_iterations=None,
-           _single_precision=False,
-           _distributed='auto',
-           verbose=True):
+def create(
+    graph,
+    label_field,
+    threshold=1e-3,
+    weight_field="",
+    self_weight=1.0,
+    undirected=False,
+    max_iterations=None,
+    _single_precision=False,
+    _distributed="auto",
+    verbose=True,
+):
     """
     Given a weighted graph with observed class labels of a subset of vertices,
     infer the label probability for the unobserved vertices using the
@@ -253,22 +257,24 @@ def create(graph, label_field,
     _raise_error_if_not_of_type(weight_field, str)
 
     if not isinstance(graph, _SGraph):
-        raise TypeError('graph input must be a SGraph object.')
+        raise TypeError("graph input must be a SGraph object.")
 
     if graph.vertices[label_field].dtype != int:
-        raise TypeError('label_field %s must be integer typed.' % label_field)
+        raise TypeError("label_field %s must be integer typed." % label_field)
 
-    opts = {'label_field': label_field,
-            'threshold': threshold,
-            'weight_field': weight_field,
-            'self_weight': self_weight,
-            'undirected': undirected,
-            'max_iterations': max_iterations,
-            'single_precision': _single_precision,
-            'graph': graph.__proxy__}
+    opts = {
+        "label_field": label_field,
+        "threshold": threshold,
+        "weight_field": weight_field,
+        "self_weight": self_weight,
+        "undirected": undirected,
+        "max_iterations": max_iterations,
+        "single_precision": _single_precision,
+        "graph": graph.__proxy__,
+    }
 
     with QuietProgress(verbose):
         params = _tc.extensions._toolkits.graph.label_propagation.create(opts)
 
-    model = params['model']
+    model = params["model"]
     return LabelPropagationModel(model)

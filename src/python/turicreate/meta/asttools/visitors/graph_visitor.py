@@ -3,11 +3,11 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Created on Jul 18, 2011
 
 @author: sean
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -15,17 +15,19 @@ from ...asttools import Visitor, visit_children
 
 import _ast
 from ...asttools.visitors.symbol_visitor import get_symbols
+
 try:
     from networkx import DiGraph
 except ImportError:
     DiGraph = None
+
 
 def collect_(self, node):
     names = set()
     for child in self.children(node):
         names.update(self.visit(child))
 
-    if hasattr(node, 'ctx'):
+    if hasattr(node, "ctx"):
         if isinstance(node.ctx, _ast.Store):
             self.modified.update(names)
         elif isinstance(node.ctx, _ast.Load):
@@ -34,7 +36,6 @@ def collect_(self, node):
 
 
 class CollectNodes(Visitor):
-
     def __init__(self, call_deps=False):
         self.graph = DiGraph()
         self.modified = set()
@@ -70,8 +71,8 @@ class CollectNodes(Visitor):
     def visitalias(self, node):
         name = node.asname if node.asname else node.name
 
-        if '.' in name:
-            name = name.split('.', 1)[0]
+        if "." in name:
+            name = name.split(".", 1)[0]
 
         if not self.graph.has_node(name):
             self.graph.add_node(name)
@@ -82,12 +83,12 @@ class CollectNodes(Visitor):
         left = self.visit(node.func)
 
         right = set()
-        for attr in ('args', 'keywords'):
+        for attr in ("args", "keywords"):
             for child in getattr(node, attr):
                 if child:
                     right.update(self.visit(child))
 
-        for attr in ('starargs', 'kwargs'):
+        for attr in ("starargs", "kwargs"):
             child = getattr(node, attr)
             if child:
                 right.update(self.visit(child))
@@ -162,11 +163,12 @@ class CollectNodes(Visitor):
 
 
 def add_edges(graph, targets, sources):
-        for target in targets:
-            for src in sources:
-                edge = target, src
-                if not graph.has_edge(*edge):
-                    graph.add_edge(*edge)
+    for target in targets:
+        for src in sources:
+            edge = target, src
+            if not graph.has_edge(*edge):
+                graph.add_edge(*edge)
+
 
 class GlobalDeps(object):
     def __init__(self, gen, nodes):
@@ -180,10 +182,11 @@ class GlobalDeps(object):
     def __exit__(self, *args):
         self.gen.context_names = self._old_context_names
 
+
 class GraphGen(CollectNodes):
-    '''
+    """
     Create a graph from the execution flow of the ast
-    '''
+    """
 
     visitModule = visit_children
 
@@ -212,7 +215,6 @@ class GraphGen(CollectNodes):
 
         for stmnt in node.body:
             self.visit(stmnt)
-
 
     def visitFunctionDef(self, node):
 
@@ -329,7 +331,6 @@ class GraphGen(CollectNodes):
 
         return nodes
 
-
     def visitWhile(self, node):
 
         nodes = set()
@@ -385,13 +386,11 @@ class GraphGen(CollectNodes):
 
         all_nodes.update(nodes)
 
-
         return all_nodes
 
 
-
 def make_graph(node, call_deps=False):
-    '''
+    """
     Create a dependency graph from an ast node.
 
     :param node: ast node.
@@ -399,7 +398,7 @@ def make_graph(node, call_deps=False):
                       function calls. (i.e for `a.b(c)` a depends on b and b depends on a)
 
     :returns: a tuple of (graph, undefined)
-    '''
+    """
 
     gen = GraphGen(call_deps=call_deps)
     gen.visit(node)

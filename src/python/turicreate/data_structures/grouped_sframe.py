@@ -10,12 +10,16 @@ in one or more columns.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
+
 class GroupedSFrame(object):
     """
     Left undocumented intentionally.
     """
+
     def __init__(self, sframe, key_columns):
         from .. import extensions
+
         self._sf_group = extensions.grouped_sframe()
         if isinstance(key_columns, str):
             key_columns = [key_columns]
@@ -42,7 +46,7 @@ class GroupedSFrame(object):
             elems_at_a_time = 16
             self._sf_group.begin_iterator()
             ret = self._sf_group.iterator_get_next(elems_at_a_time)
-            while(True):
+            while True:
                 for j in ret:
                     yield tuple(j)
 

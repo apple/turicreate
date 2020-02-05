@@ -3,11 +3,11 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 Module to augment and analyze python ast nodes.
 
 This module uses the python `ast` module exclusively not the deprecated `compiler.ast`.
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -18,12 +18,14 @@ import ast
 from ..asttools.visitors import dont_visit, visit_children, Visitor
 
 
-class Undedined: pass
+class Undedined:
+    pass
+
 
 def cmp_ast(node1, node2):
-    '''
+    """
     Compare if two nodes are equal.
-    '''
+    """
 
     if type(node1) != type(node2):
         return False
@@ -49,11 +51,9 @@ def cmp_ast(node1, node2):
     return True
 
 
-
-
-#===============================================================================
+# ===============================================================================
 #
-#===============================================================================
+# ===============================================================================
 
 from ..asttools.visitors.print_visitor import print_ast, dump_ast as str_ast
 from ..asttools.visitors.pysourcegen import python_source, dump_python_source

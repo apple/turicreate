@@ -8,9 +8,11 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import turicreate as _tc
 
-from turicreate.toolkits._internal_utils import _toolkit_repr_print, \
-                                                _precomputed_field, \
-                                                _raise_error_if_not_sframe
+from turicreate.toolkits._internal_utils import (
+    _toolkit_repr_print,
+    _precomputed_field,
+    _raise_error_if_not_sframe,
+)
 
 # Base class for models written by users
 # ---------------------------------------------------
@@ -109,10 +111,10 @@ class TransformerBase(object):
     def _get_summary_struct(self):
         model_fields = []
         for attr in self.__dict__:
-            if not attr.startswith('_'):
+            if not attr.startswith("_"):
                 model_fields.append((attr, _precomputed_field(getattr(self, attr))))
 
-        return ([model_fields], ['Attributes'] )
+        return ([model_fields], ["Attributes"])
 
     def __repr__(self):
         (sections, section_titles) = self._get_summary_struct()
@@ -213,18 +215,19 @@ class TransformerBase(object):
     def _get_instance_and_data(self):
         raise NotImplementedError
 
+
 # Base class for Models written in C++ using the SDK.
 # ---------------------------------------------------
 class Transformer(TransformerBase):
 
-    _fit_examples_doc = '''
-    '''
-    _fit_transform_examples_doc = '''
-    '''
-    _transform_examples_doc = '''
-    '''
+    _fit_examples_doc = """
+    """
+    _fit_transform_examples_doc = """
+    """
+    _transform_examples_doc = """
+    """
 
-    def __init__(self, model_proxy = None, _class = None):
+    def __init__(self, model_proxy=None, _class=None):
         self.__proxy__ = model_proxy
         if _class:
             self.__class__ = _class
@@ -353,8 +356,10 @@ class Transformer(TransformerBase):
         if field in self._list_fields():
             return self.__proxy__.get(field)
         else:
-            raise KeyError('Field \"%s\" not in model. Available fields are '
-                         '%s.' % (field, ', '.join(self._list_fields())))
+            raise KeyError(
+                'Field "%s" not in model. Available fields are '
+                "%s." % (field, ", ".join(self._list_fields()))
+            )
 
     def __getitem__(self, key):
         return self.get(key)
@@ -367,14 +372,14 @@ class Transformer(TransformerBase):
         """
         return False
 
-class _SampleTransformer(Transformer):
 
+class _SampleTransformer(Transformer):
     def __init__(self, features=None, constant=0.5):
 
         # Set up options
         opts = {}
-        opts['features'] = features
-        opts['constant'] = constant
+        opts["features"] = features
+        opts["constant"] = constant
 
         # Initialize object
         proxy = _tc.extensions._SampleTransformer()
@@ -400,9 +405,9 @@ class _SampleTransformer(Transformer):
               The order matches that of the 'sections' object.
         """
         section = []
-        section_titles = ['Attributes']
+        section_titles = ["Attributes"]
         for f in self._list_fields():
-            section.append( ("%s" % f,"%s"% f) )
+            section.append(("%s" % f, "%s" % f))
 
         return ([section], section_titles)
 

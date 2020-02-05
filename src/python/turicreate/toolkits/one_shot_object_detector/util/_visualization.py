@@ -1,4 +1,7 @@
-from turicreate.toolkits.object_detector.util._visualization import draw_bounding_boxes as _draw_bounding_boxes
+from turicreate.toolkits.object_detector.util._visualization import (
+    draw_bounding_boxes as _draw_bounding_boxes,
+)
+
 
 def draw_bounding_boxes(images, annotations, confidence_threshold=0):
     """

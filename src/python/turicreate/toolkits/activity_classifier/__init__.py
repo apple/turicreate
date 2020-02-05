@@ -9,6 +9,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 from ._activity_classifier import create, ActivityClassifier
-from .import util
+from . import util
 
-__all__ = ['create', 'ActivityClassifier', 'util']
+__all__ = ["create", "ActivityClassifier", "util"]

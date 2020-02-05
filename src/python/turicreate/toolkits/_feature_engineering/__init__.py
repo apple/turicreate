@@ -3,7 +3,7 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
-'''
+"""
 A transformer is a stateful object that transforms input data (as an SFrame)
 from one form to another. Transformers are commonly used for feature
 engineering. In addition to the modules provided in Turi create, users can
@@ -25,7 +25,7 @@ Each transformer has the following methods:
     +---------------+---------------------------------------------------+
     | save          | Save the model to a Turi Create archive.      |
     +---------------+---------------------------------------------------+
-'''
+"""
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
@@ -43,6 +43,7 @@ from ._word_trimmer import RareWordTrimmer
 from ._transform_to_flat_dictionary import TransformToFlatDictionary
 from ._autovectorizer import AutoVectorizer
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
+
 
 def create(dataset, transformers):
     """
@@ -95,7 +96,7 @@ def create(dataset, transformers):
     _raise_error_if_not_sframe(dataset, "dataset")
 
     # List of transformers.
-    if (cls == list):
+    if cls == list:
         transformers = TransformerChain(transformers)
     # Transformer.
     else:

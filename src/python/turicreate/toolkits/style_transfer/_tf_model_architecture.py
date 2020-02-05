@@ -575,7 +575,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self.st_graph = _tf.Graph()
         self._batch_size = 1
         self._finetune_all_params = True
-        self._define_training_graph = bool(config['st_training'])
+        self._define_training_graph = bool(config["st_training"])
 
         self.sess = _tf.Session(graph=self.st_graph)
         with self.st_graph.as_default():
@@ -589,7 +589,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         self.tf_style = _tf.placeholder(dtype=_tf.float32, shape=[None, 256, 256, 3])
         self.tf_index = _tf.placeholder(dtype=_tf.int64, shape=[self.batch_size])
 
-        self.__define_graph();
+        self.__define_graph()
 
         init = _tf.global_variables_initializer()
         self.sess.run(init)
@@ -619,7 +619,7 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
     def batch_size(self, batch_size):
         self._batch_size = batch_size
         with self.st_graph.as_default():
-            self.tf_index = _tf.placeholder(dtype = _tf.int32, shape = [batch_size])
+            self.tf_index = _tf.placeholder(dtype=_tf.int32, shape=[batch_size])
             self.__define_graph()
 
     def train(self, feed_dict):
