@@ -105,6 +105,7 @@ class TextClassifierTest(unittest.TestCase):
             {
                 "com.github.apple.turicreate.version": tc.__version__,
                 "com.github.apple.os.platform": platform.platform(),
+                "type": self.model.__class__.__name__,
             },
             dict(coreml_model.user_defined_metadata),
         )
