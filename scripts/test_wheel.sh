@@ -47,6 +47,9 @@ done
 
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
+
+# PWD is WORKSPACE
+
 cd "${WORKSPACE}"
 
 # If we are going to run in Docker,
@@ -81,14 +84,14 @@ test -d deps/env || ./scripts/install_python_toolchain.sh
 source deps/env/bin/activate
 pip install target/turicreate-*.whl
 
-PYTHON="$PWD/deps/env/bin/python"
+PYTHON="$WORKSPACE/deps/env/bin/python"
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
 PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
 PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
 
 cp -a src/python/turicreate/test deps/env/lib/"${PYTHON_VERSION}"/site-packages/turicreate/
 
-TEST_DIR="$PWD"/deps/env/lib/"${PYTHON_VERSION}"/site-packages/turicreate/test
+TEST_DIR="$WORKSPACE"/deps/env/lib/"${PYTHON_VERSION}"/site-packages/turicreate/test
 SOURCE_DIR=$(dirname "$TEST_DIR")
 
 $PYTHON -c "import sys; lines=sys.stdin.read(); \
@@ -98,9 +101,8 @@ $PYTHON -c "import sys; lines=sys.stdin.read(); \
 
 cd "$TEST_DIR"
 
-
 # run tests
 ${PYTHON} -m pytest --cov -v --durations=100 \
-  --junit-xml=../../../../../../../pytest.xml
+  --junit-xml="$WORKSPACE"/pytest.xml
 
 date
