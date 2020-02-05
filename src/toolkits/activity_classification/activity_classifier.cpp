@@ -52,13 +52,7 @@ constexpr size_t LSTM_HIDDEN_SIZE = 200;
 constexpr size_t FULLY_CONNECTED_HIDDEN_SIZE = 128;
 constexpr float LSTM_CELL_CLIP_THRESHOLD = 50000.f;
 
-
-// These are the fixed values that the Python implementation currently passes
-// into TCMPS.
-// TODO: These should be exposed in a way that facilitates experimentation.
-// TODO: A struct instead of a map would be nice, too.
-// TODO: And that should really happen before we deploy to Apple platforms where
-//       float and int don't have the same size.
+// Defines the struct needed to create the model backend
 ac_parameters get_parameters(int batch_size, int num_features,
                              int prediction_window, int num_classes,
                              int num_predictions_per_chunk, int random_seed,

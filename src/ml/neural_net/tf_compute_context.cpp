@@ -312,9 +312,6 @@ std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
 
 std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
     ac_parameters ac_params) {
-  // shared_float_array prediction_window = config.at("ac_pred_window");
-  // const float* pred_window = prediction_window.data();
-  // int pw = static_cast<int>(*pred_window);
 
   std::unique_ptr<tf_model_backend> result;
   call_pybind_function([&]() {
@@ -329,6 +326,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
             ac_params.num_predictions_per_chunk);
     result.reset(new tf_model_backend(activity_classifier));
   });
+
   return result;
 }
 
