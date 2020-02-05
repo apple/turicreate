@@ -28,6 +28,8 @@ ignore_errors = True
 
 omit =
     */__init__.py
-    src/python/turicreate/_cython/*
     src/python/turicreate/test/*
+    src/python/turicreate/meta/*
+    src/python/turicreate/_cython/*
     src/python/turicreate/_deps/*_mock.py
+    src/python/turicreate/_connect/*
