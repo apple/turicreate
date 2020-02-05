@@ -46,7 +46,6 @@ if ! type "parallel" 2> /dev/null; then
         fi
         cmd="${cmd} ${PYTEST_EXECUTABLE} --cov -v $PYTHONPATH/turicreate/test \
           --junit-xml=alltests.pytest.xml"
-        echo "$cmd"
         $cmd
 else
         cmd=""
