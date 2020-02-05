@@ -16,6 +16,15 @@
 namespace turi {
 namespace neural_net {
 
+struct ac_parameters {
+  int batch_size;
+  int num_features;
+  int prediction_window;
+  int num_classes;
+  int num_predictions_per_chunk;
+  int random_seed;
+  float_array_map weights;
+};
 /**
  * Interface for factories that produce concrete data augmentation and neural
  * network module instances, used to abstract across backend implementations and
@@ -102,9 +111,9 @@ EXPORT class compute_context {
    *       weights as a float_array_map.
    */
   virtual std::unique_ptr<model_backend> create_activity_classifier(
-      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const float_array_map& config, const float_array_map& weights) { ASSERT_TRUE(false); }
-
+      ac_parameters ac_params) {
+    ASSERT_TRUE(false);
+  }
 
   /**
    * Creates a style transfer network

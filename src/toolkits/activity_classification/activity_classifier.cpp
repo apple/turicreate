@@ -27,6 +27,7 @@ namespace activity_classification {
 namespace {
 
 using coreml::MLModelWrapper;
+using neural_net::ac_parameters;
 using neural_net::compute_context;
 using neural_net::float_array_map;
 using neural_net::lstm_weight_initializers;
@@ -58,25 +59,19 @@ constexpr float LSTM_CELL_CLIP_THRESHOLD = 50000.f;
 // TODO: A struct instead of a map would be nice, too.
 // TODO: And that should really happen before we deploy to Apple platforms where
 //       float and int don't have the same size.
-float_array_map get_training_config(size_t prediction_window,
-                                    int random_seed) {
-  static_assert(sizeof(float) == sizeof(int),
-                "Passing random seed assumes float and int have same size.");
-  float random_seed_float = *reinterpret_cast<float*>(&random_seed);
-
-  return {
-    { "ac_pred_window", shared_float_array::wrap(prediction_window) },
-    { "ac_seq_len", shared_float_array::wrap(NUM_PREDICTIONS_PER_CHUNK) },
-    { "mode", shared_float_array::wrap(0.f) },  // kLowLevelModeTrain
-    { "random_seed", shared_float_array::wrap(random_seed_float) },
-  };
-}
-float_array_map get_inference_config(size_t prediction_window) {
-  return {
-    { "ac_pred_window", shared_float_array::wrap(prediction_window) },
-    { "ac_seq_len", shared_float_array::wrap(NUM_PREDICTIONS_PER_CHUNK) },
-    { "mode", shared_float_array::wrap(1.f) },  // kLowLevelModeInference
-  };
+ac_parameters get_parameters(int batch_size, int num_features,
+                             int prediction_window, int num_classes,
+                             int num_predictions_per_chunk, int random_seed,
+                             float_array_map weights) {
+  ac_parameters ac_params;
+  ac_params.batch_size = batch_size;
+  ac_params.num_features = num_features;
+  ac_params.prediction_window = prediction_window;
+  ac_params.num_classes = num_classes;
+  ac_params.num_predictions_per_chunk = num_predictions_per_chunk;
+  ac_params.random_seed = random_seed;
+  ac_params.weights = weights;
+  return ac_params;
 }
 
 size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk,
@@ -1123,20 +1118,15 @@ void activity_classifier::init_train(
   bool use_random_init = true;
   nn_spec_ = init_model(use_random_init);
 
-  // Instantiate the NN backend.
-  int samples_per_chunk =
-      read_state<int>("prediction_window") * NUM_PREDICTIONS_PER_CHUNK;
-  training_model_ = training_compute_context_->create_activity_classifier(
-      /* n */     read_state<int>("batch_size"),
-      /* c_in */  read_state<int>("num_features"),
-      /* h_in */  1,
-      /* w_in */  samples_per_chunk,
-      /* c_out */ read_state<int>("num_classes"),
-      /* h_out */ 1,
-      /* w_out */ NUM_PREDICTIONS_PER_CHUNK,
-      get_training_config(read_state<int>("prediction_window"),
-                          read_state<int>("random_seed")),
+  ac_parameters ac_params = get_parameters(
+      read_state<int>("batch_size"), read_state<int>("num_features"),
+      read_state<int>("prediction_window"), read_state<int>("num_classes"),
+      NUM_PREDICTIONS_PER_CHUNK, read_state<int>("random_seed"),
       nn_spec_->export_params_view());
+
+  // Instantiate the NN backend.
+  training_model_ =
+      training_compute_context_->create_activity_classifier(ac_params);
 
   // Print the header last, after any logging triggered by initialization above.
   if (training_table_printer_) {
@@ -1280,18 +1270,16 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   // Allocate a buffer into which to write the class probabilities.
   flex_vec preds(num_classes);
 
+  ac_parameters ac_params = get_parameters(
+      read_state<int>("batch_size"), read_state<int>("num_features"),
+      read_state<int>("prediction_window"), num_classes,
+      NUM_PREDICTIONS_PER_CHUNK, read_state<int>("random_seed"),
+      nn_spec_->export_params_view());
+
   // Initialize the NN backend.
   std::unique_ptr<compute_context> ctx = create_compute_context();
-  std::unique_ptr<model_backend> backend = ctx->create_activity_classifier(
-      /* n */     read_state<int>("batch_size"),
-      /* c_in */  read_state<int>("num_features"),
-      /* h_in */  1,
-      /* w_in */  NUM_PREDICTIONS_PER_CHUNK * prediction_window,
-      /* c_out */ num_classes,
-      /* h_out */ 1,
-      /* w_out */ NUM_PREDICTIONS_PER_CHUNK,
-      get_inference_config(prediction_window),
-      nn_spec_->export_params_view());
+  std::unique_ptr<model_backend> backend =
+      ctx->create_activity_classifier(ac_params);
 
   // To support double buffering, use a queue of pending inference results.
   std::queue<result> pending_batches;
