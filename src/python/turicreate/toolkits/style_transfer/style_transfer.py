@@ -247,6 +247,7 @@ def create(
     options["num_styles"] = len(style_dataset)
     options["resnet_mlmodel_path"] = pretrained_resnet_model.get_model_path("coreml")
     options["vgg_mlmodel_path"] = pretrained_vgg16_model.get_model_path("coreml")
+    options["pretrained_weights"] = params["pretrained_weights"]
 
     model.train(style_dataset[style_feature], content_dataset[content_feature], options)
     return StyleTransfer(model_proxy=model, name=name)
