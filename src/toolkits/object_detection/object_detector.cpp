@@ -281,13 +281,11 @@ void object_detector::init_options(
       "If True, print progress updates and model details.",
       true,
       true);
-  options.create_categorical_option(
+  options.create_string_option(
       /* name              */ "model",
       /* description       */
       "Defines the model type",
       /* default_value     */ "darknet-yolo",
-      /* allowed_values    */
-      {flexible_type("darknet-yolo"), flexible_type("other")},
       /* allowed_overwrite */ true);
 
   // Validate user-provided options.
