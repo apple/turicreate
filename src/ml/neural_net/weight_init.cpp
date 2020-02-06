@@ -35,6 +35,19 @@ void xavier_weight_initializer::operator()(float* first_weight,
   }
 }
 
+uniform_weight_initializer::uniform_weight_initializer(
+    float lower_bound, float upper_bound, std::mt19937* random_engine)
+    : dist_(std::uniform_real_distribution<float>(lower_bound, upper_bound)),
+      random_engine_(*random_engine)
+{}
+
+void uniform_weight_initializer::operator()(float* first_weight,
+                                            float* last_weight) {
+  for (float* w = first_weight; w != last_weight; ++w) {
+    *w = dist_(random_engine_);
+  }
+}
+
 scalar_weight_initializer::scalar_weight_initializer(float scalar) 
     : scalar_(scalar) {}
 

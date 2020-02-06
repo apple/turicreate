@@ -22,15 +22,15 @@ using CoreML::Specification::NeuralNetworkLayer;
 using turi::neural_net::float_array_map;
 using turi::neural_net::model_spec;
 using turi::neural_net::scalar_weight_initializer;
-using turi::neural_net::xavier_weight_initializer;
+using turi::neural_net::uniform_weight_initializer;
 using turi::neural_net::zero_weight_initializer;
 
 using padding_type = model_spec::padding_type;
 
 namespace {
 
-constexpr float LOWER_BOUND = -0.7; 
-constexpr float UPPER_BOUND = 0.7; 
+constexpr float LOWER_BOUND = -0.07; 
+constexpr float UPPER_BOUND = 0.07; 
 
 // TODO: refactor code to be more readable with loops
 void define_resnet(model_spec& nn_spec, size_t num_styles, int random_seed=0) {
@@ -38,7 +38,7 @@ void define_resnet(model_spec& nn_spec, size_t num_styles, int random_seed=0) {
   std::seed_seq seed_seq{random_seed};
   random_engine = std::mt19937(seed_seq);
 
-  auto initializer = xavier_weight_initializer(LOWER_BOUND, UPPER_BOUND, &random_engine);
+  auto initializer = uniform_weight_initializer(LOWER_BOUND, UPPER_BOUND, &random_engine);
   
   nn_spec.add_padding(
       /* name */ "transformer_pad0",

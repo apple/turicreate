@@ -48,6 +48,32 @@ private:
   std::mt19937& random_engine_;
 };
 
+
+class uniform_weight_initializer {
+  public:
+
+  /**
+   * Creates a weight initializer that performs Uniform initialization
+   *
+   * \param lower_bound The number of inputs that affect each output from the layer
+   * \param upper_bound The number of outputs affected by each input to the layer
+   * \param random_engine The random number generator to use, which must remain
+   *     valid for the lifetime of this instance.
+   */
+  uniform_weight_initializer(float lower_bound, float upper_bound,
+                            std::mt19937* random_engine);
+
+  /**
+   * Initializes each value in uniformly at random in the range [-lower_bound, upper_bound]
+   */
+  void operator()(float* first_weight, float* last_weight);
+
+private:
+
+  std::uniform_real_distribution<float> dist_;
+  std::mt19937& random_engine_;
+};
+
 struct scalar_weight_initializer {
   /**
    * Creates a weight initializer that initializes all of the weights to a
