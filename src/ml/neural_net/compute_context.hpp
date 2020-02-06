@@ -20,13 +20,30 @@ namespace neural_net {
  * model backend
  */
 struct ac_parameters {
+  /** Defines the batch size */
   int batch_size;
+
+  /** Defines the number of features in the data */
   int num_features;
+
+  /** Each group of this many consecutive samples from the same session are
+   * assumed to have the same class label.
+   */
   int prediction_window;
+
+  /** Defines the number of classes */
   int num_classes;
+
+  /** Each session is segmented into chunks of this many prediction windows. */
   int num_predictions_per_chunk;
+
+  /** Setting random seed makes results reproducible. */
   int random_seed;
-  float mode;
+
+  /**  Set to true, when the data is used for training. */
+  bool is_training;
+
+  /** Defines the weights of the network */
   float_array_map weights;
 };
 /**
@@ -115,7 +132,7 @@ EXPORT class compute_context {
    *       weights as a float_array_map.
    */
   virtual std::unique_ptr<model_backend> create_activity_classifier(
-      ac_parameters ac_params) {
+      const ac_parameters& ac_params) {
     ASSERT_TRUE(false);
   }
 

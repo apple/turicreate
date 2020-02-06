@@ -311,8 +311,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
-    ac_parameters ac_params) {
-
+    const ac_parameters& ac_params) {
   std::unique_ptr<tf_model_backend> result;
   call_pybind_function([&]() {
     pybind11::module tf_ac_backend = pybind11::module::import(

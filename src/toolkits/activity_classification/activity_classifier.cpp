@@ -52,23 +52,6 @@ constexpr size_t LSTM_HIDDEN_SIZE = 200;
 constexpr size_t FULLY_CONNECTED_HIDDEN_SIZE = 128;
 constexpr float LSTM_CELL_CLIP_THRESHOLD = 50000.f;
 
-// Defines the struct needed to create the model backend
-ac_parameters get_parameters(int batch_size, int num_features,
-                             int prediction_window, int num_classes,
-                             int num_predictions_per_chunk, int random_seed,
-                             float mode, float_array_map weights) {
-  ac_parameters ac_params;
-  ac_params.batch_size = batch_size;
-  ac_params.num_features = num_features;
-  ac_params.prediction_window = prediction_window;
-  ac_params.num_classes = num_classes;
-  ac_params.num_predictions_per_chunk = num_predictions_per_chunk;
-  ac_params.random_seed = random_seed;
-  ac_params.mode = mode;
-  ac_params.weights = weights;
-  return ac_params;
-}
-
 size_t count_correct_predictions(size_t num_classes, const shared_float_array& output_chunk,
     const shared_float_array& label_chunk, size_t num_samples, size_t prediction_window) {
 
@@ -1113,11 +1096,16 @@ void activity_classifier::init_train(
   bool use_random_init = true;
   nn_spec_ = init_model(use_random_init);
 
-  ac_parameters ac_params = get_parameters(
-      read_state<int>("batch_size"), read_state<int>("num_features"),
-      read_state<int>("prediction_window"), read_state<int>("num_classes"),
-      NUM_PREDICTIONS_PER_CHUNK, read_state<int>("random_seed"), 0.f,
-      nn_spec_->export_params_view());
+  // Defining the struct for ac parameters
+  ac_parameters ac_params;
+  ac_params.batch_size = read_state<int>("batch_size");
+  ac_params.num_features = read_state<int>("num_features");
+  ac_params.prediction_window = read_state<int>("prediction_window");
+  ac_params.num_classes = read_state<int>("num_classes");
+  ac_params.num_predictions_per_chunk = NUM_PREDICTIONS_PER_CHUNK;
+  ac_params.random_seed = read_state<int>("random_seed");
+  ac_params.is_training = true;
+  ac_params.weights = nn_spec_->export_params_view();
 
   // Instantiate the NN backend.
   training_model_ =
@@ -1265,11 +1253,16 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
   // Allocate a buffer into which to write the class probabilities.
   flex_vec preds(num_classes);
 
-  ac_parameters ac_params = get_parameters(
-      read_state<int>("batch_size"), read_state<int>("num_features"),
-      read_state<int>("prediction_window"), num_classes,
-      NUM_PREDICTIONS_PER_CHUNK, read_state<int>("random_seed"), 1.f,
-      nn_spec_->export_params_view());
+  // Defining the struct for ac parameters
+  ac_parameters ac_params;
+  ac_params.batch_size = read_state<int>("batch_size");
+  ac_params.num_features = read_state<int>("num_features");
+  ac_params.prediction_window = read_state<int>("prediction_window");
+  ac_params.num_classes = num_classes;
+  ac_params.num_predictions_per_chunk = NUM_PREDICTIONS_PER_CHUNK;
+  ac_params.random_seed = read_state<int>("random_seed");
+  ac_params.is_training = false;
+  ac_params.weights = nn_spec_->export_params_view();
 
   // Initialize the NN backend.
   std::unique_ptr<compute_context> ctx = create_compute_context();

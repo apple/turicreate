@@ -38,7 +38,7 @@ public:
       const float_array_map& config, const float_array_map& weights) override;
 
   std::unique_ptr<model_backend> create_activity_classifier(
-      ac_parameters ac_params) override;
+      const ac_parameters& ac_params) override;
 
   std::unique_ptr<model_backend> create_style_transfer(
       const float_array_map& config, const float_array_map& weights) override;
