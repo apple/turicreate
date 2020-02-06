@@ -112,9 +112,13 @@ class EXPORT object_detector: public ml_model_base {
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::evaluate, "data", "metric",
                                  "output_type", "options");
-  register_defaults("evaluate", {{"metric", std::string("auto")},
-                                 {"output_type", std::string("dict")},
-                                 });
+  register_defaults("evaluate",
+                    {
+                        {"metric", std::string("auto")},
+                        {"output_type", std::string("dict")},
+                        {"options",
+                         to_variant(std::map<std::string, flexible_type>())},
+                    });
 
   REGISTER_CLASS_MEMBER_FUNCTION(object_detector::predict, "data", "options");
   register_defaults("predict",{});
