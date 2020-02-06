@@ -312,6 +312,7 @@ def create(
         "classes": classes,
         "compute_final_metrics": False,
         "verbose": verbose,
+        "model" : "darknet-yolo"
     }
 
     # If batch_size or max_iterations = 0, they will be automatically
