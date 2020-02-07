@@ -170,6 +170,48 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
         filename = tempfile.mkstemp("ActivityClassifier.mlmodel")[1]
         model.export_coreml(filename)
 
+        # Load the model back from the CoreML model file
+        import coremltools
+        coreml_model = coremltools.models.MLModel(filename)
+
+        # Create a small dataset, and compare the models' predict() output
+        rs = np.random.RandomState(1234)
+        dataset = tc.util.generate_random_sframe(column_codes="r" * 3, num_rows=10)
+        dataset["session_id"] = 0
+        dataset[self.target] = random_labels = [
+            rs.randint(0, self.num_labels - 1,) for i in range(10)
+        ]
+
+        if _mac_ver() >= (10, 13):
+            w = self.prediction_window
+            labels = list(map(str, sorted(model.classes)))
+
+            input_features = {}
+            for f in self.features:
+                input_features[f] = dataset[f].to_numpy()
+            first_input_dict = {}
+            second_input_dict = {}
+            for key, value in input_features.items():
+                first_input_dict[key] = value[:w].copy()
+                second_input_dict[key] = value[w : 2 * w].copy()
+            first_input_dict["stateIn"] = np.zeros((400))
+            ret0 = coreml_model.predict(first_input_dict)
+
+            second_input_dict["stateIn"] = ret0["stateOut"]
+            ret1 = coreml_model.predict(second_input_dict)
+
+            pred = model.predict(dataset, output_type="probability_vector")
+            model_time0_values = pred[0]
+            model_time1_values = pred[w]
+            model_predictions = np.array([model_time0_values, model_time1_values])
+            coreml_time0_values = [ret0[self.target + "Probability"][l] for l in labels]
+            coreml_time1_values = [ret1[self.target + "Probability"][l] for l in labels]
+            coreml_predictions = np.array([coreml_time0_values, coreml_time1_values])
+
+            np.testing.assert_array_almost_equal(
+                model_predictions, coreml_predictions, decimal=3
+            )
+
     def test_create_invalid_batch_size(self):
         with self.assertRaises(_ToolkitError):
             tc.activity_classifier.create(
