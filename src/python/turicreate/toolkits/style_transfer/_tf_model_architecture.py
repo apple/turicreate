@@ -24,9 +24,11 @@ def define_tensorflow_variables(net_params, trainable=True):
     Parameters
     ----------
     trainable: boolean
-        If `true` the network updates the convolutional layers as well as the
-        instance norm layers of the network. If `false` only the instance norm
-        layers of the network are updated.
+        If `true` the transformer network updates the convolutional layers as
+        well as the instance norm layers of the network. If `false` only the
+        instance norm layers of the network are updated.
+
+        Note the VGG network's parameters aren't updated
     Returns
     -------
     out: dict
@@ -34,22 +36,25 @@ def define_tensorflow_variables(net_params, trainable=True):
     """
     tensorflow_variables = dict()
     for key in net_params.keys():
-        if "weight" in key:
-            if "conv" in key:
+        if 'weight' in key:
+            # only set the parameter to train if in the transformer network
+            train_param = trainable and 'transformer_' in key
+            if 'conv' in key:
                 tensorflow_variables[key] = _tf.Variable(
                     initial_value=_utils.convert_conv2d_coreml_to_tf(net_params[key]),
                     name=key,
-                    trainable=trainable,
+                    trainable=train_param,
                 )
             else:
+                # This is the path that the instance norm takes
                 tensorflow_variables[key] = _tf.Variable(
                     initial_value=_utils.convert_dense_coreml_to_tf(net_params[key]),
                     name=key,
-                    trainable=trainable,
+                    trainable=True,
                 )
         else:
             tensorflow_variables[key] = _tf.Variable(
-                initial_value=net_params[key], name=key, trainable=trainable
+                initial_value=net_params[key], name=key, trainable=False
             )
     return tensorflow_variables
 
