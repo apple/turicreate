@@ -19,6 +19,5 @@ if(NOT ${TC_BUILD_IOS})
   # omp") endif() set_source_files_properties(lambda_omp.cpp PROPERTIES
   # COMPILE_FLAGS -I${TURI_OMP_H_PATH})
   target_link_libraries(parallel omp)
-  set_source_files_properties(lambda_omp.hpp PROPERTIES COMPILE_FLAGS -fopenmp)
-  # target_link_libraries(lambda_omp.cpp omp)
+  set_source_files_properties(lambda_omp.cpp PROPERTIES COMPILE_FLAGS -fopenmp)
 endif()
