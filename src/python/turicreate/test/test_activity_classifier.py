@@ -150,6 +150,26 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
                 validation_set=sf,
             )
 
+    def test_create_single_input_column(self):
+        sf_label = random.randint(0, self.num_labels - 1)
+        sf_session_id = max(self.data[self.session_id])
+        input_data = tc.SFrame(
+                {
+                    self.features[0]: [3.14],
+                    self.target: [sf_label],
+                    self.session_id: [sf_session_id],
+                }
+        )
+        model = tc.activity_classifier.create(
+                input_data,
+                features=["X1-r"],
+                target=self.target,
+                session_id=self.session_id,
+                prediction_window=self.prediction_window,
+        )
+        filename = tempfile.mkstemp("ActivityClassifier.mlmodel")[1]
+        model.export_coreml(filename)
+
     def test_create_invalid_batch_size(self):
         with self.assertRaises(_ToolkitError):
             tc.activity_classifier.create(
