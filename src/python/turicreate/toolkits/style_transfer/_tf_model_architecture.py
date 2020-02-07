@@ -24,8 +24,8 @@ def define_tensorflow_variables(net_params, trainable=True):
     Parameters
     ----------
     trainable: boolean
-        If `true` the transformer network updates the convolutional layers as
-        well as the instance norm layers of the network. If `false` only the
+        If `True` the transformer network updates the convolutional layers as
+        well as the instance norm layers of the network. If `False` only the
         instance norm layers of the network are updated.
 
         Note the VGG network's parameters aren't updated
