@@ -120,11 +120,24 @@ def _setattr_wrapper(mod, key, value):
         setattr(_sys.modules[__name__], key, value)
 
 
-def _toolkit_function_pack_args(arguments, args, kwargs):
+def _run_toolkit_function(fnname, arguments, args, kwargs):
     """
-    Packs the arguments into the proper form.
-    """
+    Dispatches arguments to a toolkit function.
 
+    Parameters
+    ----------
+    fnname : string
+        The toolkit function to run
+
+    arguments : list[string]
+        The list of all the arguments the function takes.
+
+    args : list
+        The arguments that were passed
+
+    kwargs : dictionary
+        The keyword arguments that were passed
+    """
     # scan for all the arguments in args
     num_args_got = len(args) + len(kwargs)
     num_args_required = len(arguments)
@@ -147,11 +160,9 @@ def _toolkit_function_pack_args(arguments, args, kwargs):
             raise TypeError("Got multiple values for keyword argument '" + k + "'")
         argument_dict[k] = kwargs[k]
 
-    return argument_dict
-
-
-def _toolkit_function_unpack_return(ret):
-
+    # unwrap it
+    with cython_context():
+        ret = _get_unity().run_toolkit(fnname, argument_dict)
     # handle errors
     if not ret[0]:
         if len(ret[1]) > 0:
@@ -166,88 +177,8 @@ def _toolkit_function_unpack_return(ret):
         return ret
 
 
-def _run_toolkit_function(fnname, arguments, args, kwargs):
-    """
-    Dispatches arguments to a toolkit function.
-
-    Parameters
-    ----------
-    fnname : string
-        The toolkit function to run
-
-    arguments : list[string]
-        The list of all the arguments the function takes.
-
-    args : list
-        The arguments that were passed
-
-    kwargs : dictionary
-        The keyword arguments that were passed
-    """
-    argument_dict = _toolkit_function_pack_args(arguments, args, kwargs)
-
-    # unwrap it
-    with cython_context():
-        ret = _get_unity().run_toolkit(fnname, argument_dict)
-
-    return _toolkit_function_unpack_return(ret)
-
-
-# Implementation for backgrounding function calls
-
-
-class ToolkitFunctionFuture(object):
-    def __init__(self, proxy):
-        self.__proxy__ = proxy
-
-    def result(self):
-        """
-        Waits for the answer to finish processing in the background, returning
-        the result.
-        """
-
-        with cython_context():
-            ret = self.__proxy__.response()
-
-        return _toolkit_function_unpack_return(ret)
-
-
-def _run_toolkit_function_background(fnname, arguments, args, kwargs):
-    """
-    Dispatches arguments to a toolkit function, then returns a future
-    that provides a handle to the background process.  Calling wait()
-    on the future object .
-
-    Parameters
-    ----------
-    fnname : string
-        The toolkit function to run
-
-    arguments : list[string]
-        The list of all the arguments the function takes.
-
-    args : list
-        The arguments that were passed
-
-    kwargs : dictionary
-        The keyword arguments that were passed
-    """
-    argument_dict = _toolkit_function_pack_args(arguments, args, kwargs)
-
-    with cython_context():
-        proxy = _get_unity().run_toolkit_background(fnname, argument_dict)
-
-    return ToolkitFunctionFuture(proxy)
-
-
 def _make_injected_function(fn, arguments):
     return lambda *args, **kwargs: _run_toolkit_function(fn, arguments, args, kwargs)
-
-
-def _make_injected_function_background(fn, arguments):
-    return lambda *args, **kwargs: _run_toolkit_function_background(
-        fn, arguments, args, kwargs
-    )
 
 
 def _class_instance_from_name(class_name, *arg, **kwarg):
@@ -427,14 +358,11 @@ def _publish():
 
         newfunc = _make_injected_function(fn, arguments)
 
-        newfunc.run_background = _make_injected_function_background(fn, arguments)
-
         newfunc.__doc__ = "Name: " + fn + "\nParameters: " + str(arguments) + "\n"
         if "documentation" in props:
             newfunc.__doc__ += props["documentation"] + "\n"
 
-        newfunc.__dict__["__glmeta__"] = {"extension_name": fn, "arguments": arguments}
-
+        newfunc.__dict__["__glmeta__"] = {"extension_name": fn}
         modpath = fn.split(".")
         # walk the module tree
         mod = _thismodule

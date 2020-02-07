@@ -10,8 +10,6 @@ import unittest
 from ..data_structures.sarray import SArray
 from ..data_structures.sframe import SFrame
 
-import turicreate as tc
-
 import sys
 
 if sys.version_info.major > 2:
@@ -139,53 +137,3 @@ class VariantCheckTest(unittest.TestCase):
                     self.assertTrue(A.flextype_encodable)
                 else:
                     self.assertFalse(A.flextype_encodable)
-
-    def test_futures_1(self):
-
-        future = tc.extensions._demo_addone.run_background(1)
-
-        result = future.result()
-
-        self.assertEqual(result, 2)
-
-    def test_futures_stress_1(self):
-
-        n = 50
-        X = tc.util.generate_random_sframe(n, "CS")
-
-        rows = list(X)
-        futures = [None] * n
-
-        for i in range(n):
-            futures[i] = tc.extensions._demo_extract_row.run_background(X, i)
-
-        for i in range(n):
-            self.assertEqual(futures[i].result(), rows[i])
-
-    def test_futures_stress_2(self):
-
-        X = tc.util.generate_random_sframe(1000, "CS")
-
-        rows = list(X)
-        indices = list(range(len(X)))
-
-        random.seed(0)
-        random.shuffle(indices)
-
-        # Just use the first 50 to not spam off so many threads
-        n = 50
-        indices = indices[:n]
-
-        start_indices = list(range(n))
-        random.shuffle(start_indices)
-
-        test_indices = list(range(n))
-        random.shuffle(test_indices)
-
-        futures = [None] * n
-
-        for i in start_indices:
-            futures[i] = tc.extensions._demo_extract_row.run_background(X, indices[i])
-
-        for i in test_indices:
-            self.assertEqual(futures[i].result(), rows[indices[i]])

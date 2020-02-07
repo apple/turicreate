@@ -116,24 +116,21 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
             return state["num_started"] < state["total"]
 
         # Yield a numpy array representing one batch of images.
-        def next_batch(batch):
-
-            if not has_next_batch():
-                return None
-
+        def next_batch():
             # Compute the range of the SFrame to yield.
             start_index = state["num_started"]
             end_index = min(start_index + batch_size, state["total"])
             state["num_started"] = end_index
 
+            # Allocate a numpy array with the desired shape.
+            # TODO: Recycle the ndarray instances we're allocating below with
+            # _np.zeros, instead of creating new ones every time.
             num_images = end_index - start_index
             shape = (num_images,) + self.ptModel.input_image_shape
-            if batch.shape != shape:
-                batch = np.resize(batch, shape)
-            batch[:] = 0
+            batch = np.zeros(shape, dtype=np.float32)
 
             # Resize and load the images.
-            future = tc.extensions.sframe_load_to_numpy.run_background(
+            tc.extensions.sframe_load_to_numpy(
                 image_sf,
                 batch.ctypes.data,
                 batch.strides,
@@ -141,14 +138,6 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
                 start_index,
                 end_index,
             )
-
-            return future, batch
-
-        def ready_batch(batch_info):
-            assert batch_info is not None
-
-            batch_future, batch = batch_info
-            batch_future.result()
 
             # TODO: Converge to NCHW everywhere.
             batch = batch.transpose(0, 2, 3, 1)  # NCHW -> NHWC
@@ -178,47 +167,53 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
                     )
                 )
 
-        # These two arrays will swap off to avoid unnecessary allocations.
-        state["batch_store"] = []
-
-        def get_batch_array():
-            batch_store = state["batch_store"]
-
-            if not batch_store:
-                batch_store.append(
-                    np.zeros(
-                        (batch_size,) + self.ptModel.input_image_shape, dtype=np.float32
-                    )
-                )
-
-            return batch_store.pop()
-
-        def batch_array_done(b):
-            state["batch_store"].append(b)
-
-        # Seed the iteration
-        batch_info = next_batch(get_batch_array())
-
-        # Iterate through the image batches, converting them into batches
-        # of feature vectors.  Do the
-        while batch_info is not None:
-
-            # Get the now ready batch to process
-            batch = ready_batch(batch_info)
-
-            # Start the next one in the background.
-            # Returns None if done.
-            batch_info = next_batch(get_batch_array())
-
-            # Now, process all this.
-            predictions_from_tf = handle_request(batch)
+        # Just iterate through the image batches, converting them into batches
+        # of feature vectors. Note: the helper functions defined above are
+        # designed to support a multi-threaded approach, allowing one Python
+        # thread to drive TensorFlow computation and another to drive SFrame
+        # traversal and image resizing. But test failures reveal an interaction
+        # between the multi-threaded approach we used for MXNet and our usage of
+        # TensorFlow, which we need to resolve before switching to the pipelined
+        # implementation below.
+        while has_next_batch():
+            images_in_numpy = next_batch()
+            predictions_from_tf = handle_request(images_in_numpy)
             consume_response(predictions_from_tf)
 
-            # Requeue the batch array now that we're done.
-            batch_array_done(batch)
+        # # Create a dedicated thread for performing TensorFlow work, using two
+        # # FIFO queues for communication back and forth with this thread, with
+        # # the goal of keeping TensorFlow busy throughout.
+        # request_queue = _Queue()
+        # response_queue = _Queue()
+        # def tf_worker():
+        #     from tensorflow import keras
+        #     model_path = self.ptModel.get_model_path('tensorflow')
+        #     self.model = keras.models.load_model(model_path)
+        #
+        #     while True:
+        #         batch = request_queue.get()  # Consume request
+        #         if batch is None:
+        #             # No more work remains. Allow the thread to finish.
+        #             return
+        #         response_queue.put(handle_request(batch))  # Produce response
+        # tf_worker_thread = _Thread(target=tf_worker)
+        # tf_worker_thread.start()
 
-        # Now we have this compiled in
-        return state["out"]
+        # try:
+        #     # Attempt to have two requests in progress at any one time (double
+        #     # buffering), so that the iterator is creating one batch while
+        #     # TensorFlow performs inference on the other.
+        #     if has_next_batch():
+        #         request_queue.put(next_batch())  # Produce request
+        #         while has_next_batch():
+        #             request_queue.put(next_batch())  # Produce request
+        #             consume_response(response_queue.get())
+        #         consume_response(response_queue.get())
+        # finally:
+        #     # Tell the worker thread to shut down.
+        #     request_queue.put(None)
+
+        return state['out']
 
     def get_coreml_model(self):
         import coremltools

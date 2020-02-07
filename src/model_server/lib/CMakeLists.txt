@@ -12,7 +12,6 @@ make_library(unity_core OBJECT
     unity_global.cpp
     unity_global_singleton.cpp
     get_toolkit_function_from_closure.cpp
-    toolkit_function_response.cpp
     toolkit_class_registry.cpp
     toolkit_function_registry.cpp
     simple_model.cpp
