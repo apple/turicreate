@@ -328,8 +328,8 @@ void activity_classifier::init_table_printer(bool has_validation,
       if (show_loss) {
         training_table_printer_.reset(
             new table_printer({{"Iteration", 12},
-                               {"Train Loss", 12},
                                {"Train Accuracy", 12},
+                               {"Train Loss", 12},
                                {"Validation Accuracy", 12},
                                {"Validation Loss", 12},
                                {"Elapsed Time", 12}}));
@@ -343,10 +343,11 @@ void activity_classifier::init_table_printer(bool has_validation,
       }
     } else {
       if (show_loss) {
-        training_table_printer_.reset(new table_printer({{"Iteration", 12},
-                                                         {"Train Loss", 12},
-                                                         {"Train Accuracy", 12},
-                                                         {"Elapsed Time", 12}}));
+        training_table_printer_.reset(
+            new table_printer({{"Iteration", 12},
+                               {"Train Accuracy", 12},
+                               {"Train Loss", 12},
+                               {"Elapsed Time", 12}}));
       } else {
         training_table_printer_.reset(new table_printer(
             {{"Iteration", 12}, {"Train Accuracy", 12}, {"Elapsed Time", 12}}));
@@ -1242,8 +1243,8 @@ void activity_classifier::perform_training_iteration(bool show_loss) {
     if (validation_data_iterator_) {
       if (show_loss) {
         training_table_printer_->print_progress_row(
-            iteration_idx, iteration_idx + 1, average_batch_loss,
-            average_batch_accuracy, average_val_loss, average_val_accuracy,
+            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            average_batch_loss, average_val_accuracy, average_val_loss,
             progress_time());
       } else {
         training_table_printer_->print_progress_row(
@@ -1253,8 +1254,8 @@ void activity_classifier::perform_training_iteration(bool show_loss) {
     } else {
       if (show_loss) {
         training_table_printer_->print_progress_row(
-            iteration_idx, iteration_idx + 1, average_batch_loss,
-            average_batch_accuracy, progress_time());
+            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            average_batch_loss, progress_time());
       } else {
         training_table_printer_->print_progress_row(
             iteration_idx, iteration_idx + 1, average_batch_accuracy,
