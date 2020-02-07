@@ -10,5 +10,4 @@ make_library(unity_style_transfer OBJECT
     unity_core
     unity_ml_model
     unity_neural_net
-    vega_renderer
 )
