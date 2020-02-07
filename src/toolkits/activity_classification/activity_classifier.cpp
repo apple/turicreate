@@ -926,8 +926,7 @@ std::unique_ptr<model_spec> activity_classifier::init_model(
     std::string single_input_feature{feature_column_name};
     result->add_reshape("reshape", single_input_feature,
                         {{1, num_features, 1, prediction_window}});
-  }
-  else {
+  } else {
     // Multiple feature columns. Add concatenate layer to concat all columns.
     result->add_channel_concat(
         "features",
