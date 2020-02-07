@@ -181,7 +181,7 @@ class mock_compute_context : public compute_context {
   }
 
   std::unique_ptr<model_backend> create_activity_classifier(
-      ac_parameters ac_params) override {
+      const ac_parameters& ac_params) override {
     throw std::runtime_error("create_activity_classifier not implemented");
   }
 
