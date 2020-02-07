@@ -11,7 +11,6 @@
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
-#include <model_server/lib/variant_deep_serialize.hpp>
 
 #include <pybind11/pybind11.h>
 #include <pybind11/numpy.h>
