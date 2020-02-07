@@ -311,22 +311,21 @@ std::unique_ptr<model_backend> tf_compute_context::create_object_detector(
 }
 
 std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
-    int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-    const float_array_map& config, const float_array_map& weights) {
-  shared_float_array prediction_window = config.at("ac_pred_window");
-  const float* pred_window = prediction_window.data();
-  int pw = static_cast<int>(*pred_window);
-
+    const ac_parameters& ac_params) {
   std::unique_ptr<tf_model_backend> result;
   call_pybind_function([&]() {
     pybind11::module tf_ac_backend = pybind11::module::import(
         "turicreate.toolkits.activity_classifier._tf_model_architecture");
 
     // Make an instance of python object
-    pybind11::object activity_classifier = tf_ac_backend.attr(
-        "ActivityTensorFlowModel")(weights, n, c_in, c_out, pw, w_out);
+    pybind11::object activity_classifier =
+        tf_ac_backend.attr("ActivityTensorFlowModel")(
+            ac_params.weights, ac_params.batch_size, ac_params.num_features,
+            ac_params.num_classes, ac_params.prediction_window,
+            ac_params.num_predictions_per_chunk);
     result.reset(new tf_model_backend(activity_classifier));
   });
+
   return result;
 }
 

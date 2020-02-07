@@ -140,14 +140,21 @@ std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
 }
 
 std::unique_ptr<model_backend> mps_compute_context::create_activity_classifier(
-    int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-    const float_array_map& config, const float_array_map& weights) {
-
+    const ac_parameters& ac_params) {
   std::unique_ptr<mps_cnn_module> result(new mps_cnn_module(*command_queue_));
 
-  result->init(/* network_id */ kActivityClassifierNet, n, c_in, h_in, w_in,
-               c_out, h_out, w_out, /* updater_id */ 2 /* Adam */,  config);
-  result->load(weights);
+  const float random_seed_float = *reinterpret_cast<const float*>(&ac_params.random_seed);
+  float_array_map config = {
+      {"ac_pred_window", shared_float_array::wrap(ac_params.prediction_window)},
+      {"ac_seq_len", shared_float_array::wrap(ac_params.num_predictions_per_chunk)},
+      {"mode", shared_float_array::wrap(1.0f - ac_params.is_training)},  // kLowLevelModeTrain
+      {"random_seed", shared_float_array::wrap(random_seed_float)},
+  };
+  result->init(
+      /* network_id */ kActivityClassifierNet, ac_params.batch_size, ac_params.num_features, 1,
+      ac_params.prediction_window * ac_params.num_predictions_per_chunk, ac_params.num_classes, 1,
+      ac_params.num_predictions_per_chunk, /* updater_id */ 2 /* Adam */, config);
+  result->load(ac_params.weights);
 
   return result;
 }

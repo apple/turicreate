@@ -51,9 +51,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             )
 
     def init_activity_classifier_graph(
-        self, net_params, num_features, prediction_window
-    ):
-
+        self, net_params, num_features, prediction_window):
         # Vars
         self.data = _tf.placeholder(
             _tf.float32, [None, prediction_window * self.seq_len, num_features]
