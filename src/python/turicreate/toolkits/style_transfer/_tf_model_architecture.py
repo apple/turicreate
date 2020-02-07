@@ -36,10 +36,10 @@ def define_tensorflow_variables(net_params, trainable=True):
     """
     tensorflow_variables = dict()
     for key in net_params.keys():
-        if 'weight' in key:
+        if "weight" in key:
             # only set the parameter to train if in the transformer network
-            train_param = trainable and 'transformer_' in key
-            if 'conv' in key:
+            train_param = trainable and "transformer_" in key
+            if "conv" in key:
                 tensorflow_variables[key] = _tf.Variable(
                     initial_value=_utils.convert_conv2d_coreml_to_tf(net_params[key]),
                     name=key,
