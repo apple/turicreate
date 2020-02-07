@@ -23,7 +23,9 @@ using turi::neural_net::float_array_map;
 using turi::neural_net::model_spec;
 using turi::neural_net::scalar_weight_initializer;
 using turi::neural_net::uniform_weight_initializer;
+using turi::neural_net::weight_initializer;
 using turi::neural_net::zero_weight_initializer;
+
 
 using padding_type = model_spec::padding_type;
 
@@ -33,12 +35,20 @@ constexpr float LOWER_BOUND = -0.07;
 constexpr float UPPER_BOUND = 0.07; 
 
 // TODO: refactor code to be more readable with loops
-void define_resnet(model_spec& nn_spec, size_t num_styles, int random_seed=0) {
-  std::mt19937 random_engine;
-  std::seed_seq seed_seq{random_seed};
-  random_engine = std::mt19937(seed_seq);
+void define_resnet(model_spec& nn_spec, size_t num_styles, bool initialize=false, int random_seed=0) {
+  weight_initializer initializer;
 
-  auto initializer = uniform_weight_initializer(LOWER_BOUND, UPPER_BOUND, &random_engine);
+  // This is to make sure that when the uniform initialization is not needed extra work is avoided
+  if (initialize) {
+    std::mt19937 random_engine;
+    std::seed_seq seed_seq{random_seed};
+    random_engine = std::mt19937(seed_seq);
+
+    initializer = uniform_weight_initializer(LOWER_BOUND, UPPER_BOUND, &random_engine);
+  } else {
+    initializer = zero_weight_initializer();
+  }
+ 
   
   nn_spec.add_padding(
       /* name */ "transformer_pad0",
@@ -1179,7 +1189,7 @@ std::unique_ptr<model_spec> init_resnet(const std::string& path) {
 std::unique_ptr<neural_net::model_spec> init_resnet(size_t num_styles,
                                                     int random_seed) {
   std::unique_ptr<model_spec> nn_spec(new model_spec());
-  define_resnet(*nn_spec, num_styles, random_seed);
+  define_resnet(*nn_spec, num_styles, /* initialize */ true, random_seed);
   return nn_spec;
 }
 

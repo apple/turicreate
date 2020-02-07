@@ -55,8 +55,8 @@ class uniform_weight_initializer {
   /**
    * Creates a weight initializer that performs Uniform initialization
    *
-   * \param lower_bound The number of inputs that affect each output from the layer
-   * \param upper_bound The number of outputs affected by each input to the layer
+   * \param lower_bound The lower bound of the uniform distribution to be sampled
+   * \param upper_bound The upper bound of the uniform distribution to be sampled
    * \param random_engine The random number generator to use, which must remain
    *     valid for the lifetime of this instance.
    */

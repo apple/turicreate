@@ -691,6 +691,7 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
   if (pretrained_weights_iter != opts.end()) {
     pretrained_weights = pretrained_weights_iter->second;
   }
+  opts.erase(pretrained_weights_iter);
   
   init_options(opts);
 
