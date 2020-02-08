@@ -31,25 +31,24 @@ using padding_type = model_spec::padding_type;
 
 namespace {
 
-constexpr float LOWER_BOUND = -0.07; 
-constexpr float UPPER_BOUND = 0.07; 
+constexpr float LOWER_BOUND = -0.07;
+constexpr float UPPER_BOUND = 0.07;
 
 // TODO: refactor code to be more readable with loops
 void define_resnet(model_spec& nn_spec, size_t num_styles, bool initialize=false, int random_seed=0) {
+  std::mt19937 random_engine;
+  std::seed_seq seed_seq{random_seed};
+  random_engine = std::mt19937(seed_seq);
+
   weight_initializer initializer;
 
   // This is to make sure that when the uniform initialization is not needed extra work is avoided
   if (initialize) {
-    std::mt19937 random_engine;
-    std::seed_seq seed_seq{random_seed};
-    random_engine = std::mt19937(seed_seq);
-
     initializer = uniform_weight_initializer(LOWER_BOUND, UPPER_BOUND, &random_engine);
   } else {
     initializer = zero_weight_initializer();
   }
- 
-  
+
   nn_spec.add_padding(
       /* name */ "transformer_pad0",
       /* input */ "image",
