@@ -491,6 +491,34 @@ class ActivityClassifierTest(unittest.TestCase):
         )
         self.assertEquals(expected_result, coreml_model.short_description)
 
+        self.check_prediction_match(self.model, coreml_model)
+
+    def test_create_single_input_column(self):
+        sf_label = random.randint(0, self.num_labels - 1)
+        sf_session_id = max(self.data[self.session_id])
+        input_data = tc.SFrame(
+                {
+                    self.features[0]: [3.14],
+                    self.target: [sf_label],
+                    self.session_id: [sf_session_id],
+                }
+        )
+        model = tc.activity_classifier.create(
+                input_data,
+                features=["X1-r"],
+                target=self.target,
+                session_id=self.session_id,
+                prediction_window=self.prediction_window,
+        )
+        filename = tempfile.mkstemp("ActivityClassifier.mlmodel")[1]
+        model.export_coreml(filename)
+
+        # Load the model back from the CoreML model file
+        import coremltools
+        coreml_model = coremltools.models.MLModel(filename)
+        self.check_prediction_match(model, coreml_model)
+
+    def check_prediction_match(self, model, coreml_model):
         # Create a small dataset, and compare the models' predict() output
         rs = np.random.RandomState(1234)
         dataset = tc.util.generate_random_sframe(column_codes="r" * 3, num_rows=10)
@@ -501,7 +529,7 @@ class ActivityClassifierTest(unittest.TestCase):
 
         if _mac_ver() >= (10, 13):
             w = self.prediction_window
-            labels = list(map(str, sorted(self.model.classes)))
+            labels = list(map(str, sorted(model.classes)))
 
             input_features = {}
             for f in self.features:
@@ -517,7 +545,7 @@ class ActivityClassifierTest(unittest.TestCase):
             second_input_dict["stateIn"] = ret0["stateOut"]
             ret1 = coreml_model.predict(second_input_dict)
 
-            pred = self.model.predict(dataset, output_type="probability_vector")
+            pred = model.predict(dataset, output_type="probability_vector")
             model_time0_values = pred[0]
             model_time1_values = pred[w]
             model_predictions = np.array([model_time0_values, model_time1_values])

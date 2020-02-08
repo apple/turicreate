@@ -893,11 +893,21 @@ std::unique_ptr<model_spec> activity_classifier::init_model(
     std::seed_seq seed_seq{read_state<int>("random_seed")};
     random_engine = std::mt19937(seed_seq);
   }
-  result->add_channel_concat(
-      "features",
-      std::vector<std::string>(features_list.begin(), features_list.end()));
-  result->add_reshape("reshape", "features",
-                      {{1, num_features, 1, prediction_window}});
+
+  if (features_list.size() == 1) {
+    // Single feature column
+    const flex_string& feature_column_name = features_list.front();
+    std::string single_input_feature{feature_column_name};
+    result->add_reshape("reshape", single_input_feature,
+                        {{1, num_features, 1, prediction_window}});
+  } else {
+    // Multiple feature columns. Add concatenate layer to concat all columns.
+    result->add_channel_concat(
+        "features",
+        std::vector<std::string>(features_list.begin(), features_list.end()));
+    result->add_reshape("reshape", "features",
+                        {{1, num_features, 1, prediction_window}});
+  }
 
   weight_initializer initializer = zero_weight_initializer();
   lstm_weight_initializers lstm_initializer =
