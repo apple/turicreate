@@ -322,7 +322,7 @@ std::unique_ptr<model_backend> tf_compute_context::create_activity_classifier(
         tf_ac_backend.attr("ActivityTensorFlowModel")(
             ac_params.weights, ac_params.batch_size, ac_params.num_features,
             ac_params.num_classes, ac_params.prediction_window,
-            ac_params.num_predictions_per_chunk);
+            ac_params.num_predictions_per_chunk, ac_params.random_seed);
     result.reset(new tf_model_backend(activity_classifier));
   });
 

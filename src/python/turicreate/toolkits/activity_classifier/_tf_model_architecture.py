@@ -20,7 +20,6 @@ CONV_H = 64
 LSTM_H = 200
 DENSE_H = 128
 
-
 class ActivityTensorFlowModel(TensorFlowModel):
     def __init__(
         self,
@@ -30,8 +29,10 @@ class ActivityTensorFlowModel(TensorFlowModel):
         num_classes,
         prediction_window,
         seq_len,
+        seed
     ):
 
+        _utils.suppress_tensorflow_warnings()
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
 
@@ -47,11 +48,12 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.sess = _tf.Session(graph=self.ac_graph)
         with self.ac_graph.as_default():
             self.init_activity_classifier_graph(
-                net_params, num_features, prediction_window
+                net_params, num_features, prediction_window, seed
             )
 
     def init_activity_classifier_graph(
-        self, net_params, num_features, prediction_window):
+        self, net_params, num_features, prediction_window, seed
+    ):
         # Vars
         self.data = _tf.placeholder(
             _tf.float32, [None, prediction_window * self.seq_len, num_features]
@@ -99,7 +101,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         conv = _tf.nn.bias_add(conv, self.biases["conv_bias"])
         conv = _tf.nn.relu(conv)
 
-        dropout = _tf.layers.dropout(conv, rate=0.2, training=self.is_training)
+        dropout = _tf.layers.dropout(conv, rate=0.2, training=self.is_training, seed=seed)
 
         # Long Stem Term Memory
         lstm = self.load_lstm_weights_params(net_params)
@@ -135,8 +137,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
             ),
             training=self.is_training,
         )
+
         dense = _tf.nn.relu(dense)
-        dense = _tf.layers.dropout(dense, rate=0.5, training=self.is_training)
+        dense = _tf.layers.dropout(dense, rate=0.5, training=self.is_training, seed=seed)
 
         # Output
         out = _tf.add(

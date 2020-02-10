@@ -41,6 +41,7 @@ def create(
     max_iterations=10,
     batch_size=32,
     verbose=True,
+    random_seed=None,
 ):
     """
     Create an :class:`ActivityClassifier` model.
@@ -95,6 +96,9 @@ def create(
 
     verbose : bool, optional
         If True, print progress updates and model details.
+
+    random_seed : int, optional
+        The results can be reproduced when given the same seed.
 
     Returns
     -------
@@ -196,10 +200,10 @@ def create(
     options["max_iterations"] = max_iterations
     options["verbose"] = verbose
     options["_show_loss"] = False
+    options["random_seed"] = random_seed
 
     model.train(dataset, target, session_id, validation_set, options)
     return ActivityClassifier(model_proxy=model, name=name)
-
 
 def _encode_target(data, target, mapping=None):
     """ Encode targets to integers in [0, num_classes - 1] """
