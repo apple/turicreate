@@ -686,6 +686,13 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
   }
   size_t num_styles = num_styles_iter->second;
 
+  auto pretrained_weights_iter = opts.find("pretrained_weights");
+  bool pretrained_weights = false;
+  if (pretrained_weights_iter != opts.end()) {
+    pretrained_weights = pretrained_weights_iter->second;
+  }
+  opts.erase(pretrained_weights_iter);
+  
   init_options(opts);
 
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
@@ -694,9 +701,11 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
     add_or_update_state({{"random_seed", random_seed}});
   }
 
+  int random_seed = read_state<int>("random_seed");
+
   m_training_data_iterator =
       create_iterator(content, style, /* repeat */ true,
-                      /* training */ true, static_cast<int>(num_styles));
+                      /* training */ true, random_seed);
 
   m_training_compute_context = create_compute_context();
   if (m_training_compute_context == nullptr) {
@@ -709,7 +718,13 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
                        {"styles", style_sframe_with_index(style)},
                        {"num_content_images", content.size()}});
 
-  m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);
+  // TODO: change to include random seed.
+  if (pretrained_weights) {
+    m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);
+  } else {
+    m_resnet_spec = init_resnet(num_styles, random_seed);
+  }
+
   m_vgg_spec = init_vgg_16(vgg_mlmodel_path);
 
   float_array_map weight_params = m_resnet_spec->export_params_view();
