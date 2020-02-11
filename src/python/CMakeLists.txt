@@ -16,6 +16,8 @@ make_copy_target(python_source
     ${CMAKE_CURRENT_SOURCE_DIR}/README.rst
     ${CMAKE_CURRENT_SOURCE_DIR}/dummy.c
     ${CMAKE_CURRENT_SOURCE_DIR}/setup.cfg
+    ${CMAKE_CURRENT_SOURCE_DIR}/setup_full.cfg
+    ${CMAKE_CURRENT_SOURCE_DIR}/setup_minimal.cfg
     ${CMAKE_CURRENT_SOURCE_DIR}/setup.py
   DIRECTORIES
     ${CMAKE_CURRENT_SOURCE_DIR}/turicreate

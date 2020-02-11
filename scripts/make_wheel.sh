@@ -291,15 +291,23 @@ package_wheel() {
     cd ..
   fi
 
+function package_wheel () { 
+  setup_file=$1
+  version_modifier=$2
+
   cd ${WORKSPACE}/${build_type}/src/python
   dist_type="bdist_wheel"
 
+  cp $setup_file setup.cfg
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
   ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
 
   cd ${WORKSPACE}
 
-  WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}*.whl`
+  ORIG_WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}*.whl`
+  WHEEL_PATH=${ORIG_WHEEL_PATH/turicreate-${VERSION_NUMBER}/turicreate-${VERSION_NUMBER}${version_modifier}}
+  [[ ! $ORIG_WHEEL_PATH == $WHEEL_PATH ]] && mv $ORIG_WHEEL_PATH $WHEEL_PATH
+
   if [[ $OSTYPE == darwin* ]]; then
     # Change the platform tag embedded in the file name
     temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
@@ -347,7 +355,13 @@ package_wheel() {
   fi
 
   # Done copy to the target directory
-  cp $WHEEL_PATH ${TARGET_DIR}/
+  mv $WHEEL_PATH ${TARGET_DIR}/
+}
+ 
+  # Run the setup 
+  package_wheel setup_full.cfg ""
+  package_wheel setup_minimal.cfg +minimal 
+
   echo -e "\n\n================= Done Packaging Wheel  ================\n\n"
 }
 
