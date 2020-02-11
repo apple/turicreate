@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SArray &mdash; Turi Create API 6.0 documentation</title>
+  <title>turicreate.SArray &mdash; Turi Create API 6.1 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 6.0 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.1 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SFrame" href="turicreate.SFrame.html"/>
         <link rel="prev" title="Data" href="../turicreate.data_structures.html"/> 
@@ -423,229 +423,232 @@ not be used for large data.</p>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.all.html#turicreate.SArray.all" title="turicreate.SArray.all"><code class="xref py py-obj docutils literal"><span class="pre">SArray.all</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.abs.html#turicreate.SArray.abs" title="turicreate.SArray.abs"><code class="xref py py-obj docutils literal"><span class="pre">SArray.abs</span></code></a>(self)</td>
+<td>Returns a new SArray containing the absolute value of each element.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.all.html#turicreate.SArray.all" title="turicreate.SArray.all"><code class="xref py py-obj docutils literal"><span class="pre">SArray.all</span></code></a>(self)</td>
 <td>Return True if every element of the SArray evaluates to True.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.any.html#turicreate.SArray.any" title="turicreate.SArray.any"><code class="xref py py-obj docutils literal"><span class="pre">SArray.any</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.any.html#turicreate.SArray.any" title="turicreate.SArray.any"><code class="xref py py-obj docutils literal"><span class="pre">SArray.any</span></code></a>(self)</td>
 <td>Return True if any element of the SArray evaluates to True.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.append.html#turicreate.SArray.append" title="turicreate.SArray.append"><code class="xref py py-obj docutils literal"><span class="pre">SArray.append</span></code></a>(self,&nbsp;other)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.append.html#turicreate.SArray.append" title="turicreate.SArray.append"><code class="xref py py-obj docutils literal"><span class="pre">SArray.append</span></code></a>(self,&nbsp;other)</td>
 <td>Append an SArray to the current SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.apply.html#turicreate.SArray.apply" title="turicreate.SArray.apply"><code class="xref py py-obj docutils literal"><span class="pre">SArray.apply</span></code></a>(self,&nbsp;fn[,&nbsp;dtype,&nbsp;skip_na])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.apply.html#turicreate.SArray.apply" title="turicreate.SArray.apply"><code class="xref py py-obj docutils literal"><span class="pre">SArray.apply</span></code></a>(self,&nbsp;fn[,&nbsp;dtype,&nbsp;skip_na])</td>
 <td>Transform each element of the SArray by a given function.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.argmax.html#turicreate.SArray.argmax" title="turicreate.SArray.argmax"><code class="xref py py-obj docutils literal"><span class="pre">SArray.argmax</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.argmax.html#turicreate.SArray.argmax" title="turicreate.SArray.argmax"><code class="xref py py-obj docutils literal"><span class="pre">SArray.argmax</span></code></a>(self)</td>
 <td>Get the index of the maximum numeric value in SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.argmin.html#turicreate.SArray.argmin" title="turicreate.SArray.argmin"><code class="xref py py-obj docutils literal"><span class="pre">SArray.argmin</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.argmin.html#turicreate.SArray.argmin" title="turicreate.SArray.argmin"><code class="xref py py-obj docutils literal"><span class="pre">SArray.argmin</span></code></a>(self)</td>
 <td>Get the index of the minimum numeric value in SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.astype.html#turicreate.SArray.astype" title="turicreate.SArray.astype"><code class="xref py py-obj docutils literal"><span class="pre">SArray.astype</span></code></a>(self,&nbsp;dtype[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.astype.html#turicreate.SArray.astype" title="turicreate.SArray.astype"><code class="xref py py-obj docutils literal"><span class="pre">SArray.astype</span></code></a>(self,&nbsp;dtype[,&nbsp;…])</td>
 <td>Create a new SArray with all values cast to the given type.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.clip.html#turicreate.SArray.clip" title="turicreate.SArray.clip"><code class="xref py py-obj docutils literal"><span class="pre">SArray.clip</span></code></a>(self[,&nbsp;lower,&nbsp;upper])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.clip.html#turicreate.SArray.clip" title="turicreate.SArray.clip"><code class="xref py py-obj docutils literal"><span class="pre">SArray.clip</span></code></a>(self[,&nbsp;lower,&nbsp;upper])</td>
 <td>Create a new SArray with each value clipped to be within the given bounds.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.clip_lower.html#turicreate.SArray.clip_lower" title="turicreate.SArray.clip_lower"><code class="xref py py-obj docutils literal"><span class="pre">SArray.clip_lower</span></code></a>(self,&nbsp;threshold)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.clip_lower.html#turicreate.SArray.clip_lower" title="turicreate.SArray.clip_lower"><code class="xref py py-obj docutils literal"><span class="pre">SArray.clip_lower</span></code></a>(self,&nbsp;threshold)</td>
 <td>Create new SArray with all values clipped to the given lower bound.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.clip_upper.html#turicreate.SArray.clip_upper" title="turicreate.SArray.clip_upper"><code class="xref py py-obj docutils literal"><span class="pre">SArray.clip_upper</span></code></a>(self,&nbsp;threshold)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.clip_upper.html#turicreate.SArray.clip_upper" title="turicreate.SArray.clip_upper"><code class="xref py py-obj docutils literal"><span class="pre">SArray.clip_upper</span></code></a>(self,&nbsp;threshold)</td>
 <td>Create new SArray with all values clipped to the given upper bound.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.contains.html#turicreate.SArray.contains" title="turicreate.SArray.contains"><code class="xref py py-obj docutils literal"><span class="pre">SArray.contains</span></code></a>(self,&nbsp;item)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.contains.html#turicreate.SArray.contains" title="turicreate.SArray.contains"><code class="xref py py-obj docutils literal"><span class="pre">SArray.contains</span></code></a>(self,&nbsp;item)</td>
 <td>Performs an element-wise search of “item” in the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.countna.html#turicreate.SArray.countna" title="turicreate.SArray.countna"><code class="xref py py-obj docutils literal"><span class="pre">SArray.countna</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.countna.html#turicreate.SArray.countna" title="turicreate.SArray.countna"><code class="xref py py-obj docutils literal"><span class="pre">SArray.countna</span></code></a>(self)</td>
 <td>Number of missing elements in the SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.cumulative_max.html#turicreate.SArray.cumulative_max" title="turicreate.SArray.cumulative_max"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_max</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.cumulative_max.html#turicreate.SArray.cumulative_max" title="turicreate.SArray.cumulative_max"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_max</span></code></a>(self)</td>
 <td>Return the cumulative maximum value of the elements in the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.cumulative_mean.html#turicreate.SArray.cumulative_mean" title="turicreate.SArray.cumulative_mean"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_mean</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.cumulative_mean.html#turicreate.SArray.cumulative_mean" title="turicreate.SArray.cumulative_mean"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_mean</span></code></a>(self)</td>
 <td>Return the cumulative mean of the elements in the SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.cumulative_min.html#turicreate.SArray.cumulative_min" title="turicreate.SArray.cumulative_min"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_min</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.cumulative_min.html#turicreate.SArray.cumulative_min" title="turicreate.SArray.cumulative_min"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_min</span></code></a>(self)</td>
 <td>Return the cumulative minimum value of the elements in the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.cumulative_std.html#turicreate.SArray.cumulative_std" title="turicreate.SArray.cumulative_std"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_std</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.cumulative_std.html#turicreate.SArray.cumulative_std" title="turicreate.SArray.cumulative_std"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_std</span></code></a>(self)</td>
 <td>Return the cumulative standard deviation of the elements in the SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.cumulative_sum.html#turicreate.SArray.cumulative_sum" title="turicreate.SArray.cumulative_sum"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_sum</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.cumulative_sum.html#turicreate.SArray.cumulative_sum" title="turicreate.SArray.cumulative_sum"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_sum</span></code></a>(self)</td>
 <td>Return the cumulative sum of the elements in the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.cumulative_var.html#turicreate.SArray.cumulative_var" title="turicreate.SArray.cumulative_var"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_var</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.cumulative_var.html#turicreate.SArray.cumulative_var" title="turicreate.SArray.cumulative_var"><code class="xref py py-obj docutils literal"><span class="pre">SArray.cumulative_var</span></code></a>(self)</td>
 <td>Return the cumulative variance of the elements in the SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.date_range.html#turicreate.SArray.date_range" title="turicreate.SArray.date_range"><code class="xref py py-obj docutils literal"><span class="pre">SArray.date_range</span></code></a>(start_time,&nbsp;end_time,&nbsp;freq)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.date_range.html#turicreate.SArray.date_range" title="turicreate.SArray.date_range"><code class="xref py py-obj docutils literal"><span class="pre">SArray.date_range</span></code></a>(start_time,&nbsp;end_time,&nbsp;freq)</td>
 <td>Returns a new SArray that represents a fixed frequency datetime index.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.datetime_to_str.html#turicreate.SArray.datetime_to_str" title="turicreate.SArray.datetime_to_str"><code class="xref py py-obj docutils literal"><span class="pre">SArray.datetime_to_str</span></code></a>(self[,&nbsp;format])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.datetime_to_str.html#turicreate.SArray.datetime_to_str" title="turicreate.SArray.datetime_to_str"><code class="xref py py-obj docutils literal"><span class="pre">SArray.datetime_to_str</span></code></a>(self[,&nbsp;format])</td>
 <td>Create a new SArray with all the values cast to str.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.dict_has_all_keys.html#turicreate.SArray.dict_has_all_keys" title="turicreate.SArray.dict_has_all_keys"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_has_all_keys</span></code></a>(self,&nbsp;keys)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.dict_has_all_keys.html#turicreate.SArray.dict_has_all_keys" title="turicreate.SArray.dict_has_all_keys"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_has_all_keys</span></code></a>(self,&nbsp;keys)</td>
 <td>Create a boolean SArray by checking the keys of an SArray of dictionaries.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.dict_has_any_keys.html#turicreate.SArray.dict_has_any_keys" title="turicreate.SArray.dict_has_any_keys"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_has_any_keys</span></code></a>(self,&nbsp;keys)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.dict_has_any_keys.html#turicreate.SArray.dict_has_any_keys" title="turicreate.SArray.dict_has_any_keys"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_has_any_keys</span></code></a>(self,&nbsp;keys)</td>
 <td>Create a boolean SArray by checking the keys of an SArray of dictionaries.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.dict_keys.html#turicreate.SArray.dict_keys" title="turicreate.SArray.dict_keys"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_keys</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.dict_keys.html#turicreate.SArray.dict_keys" title="turicreate.SArray.dict_keys"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_keys</span></code></a>(self)</td>
 <td>Create an SArray that contains all the keys from each dictionary element as a list.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.dict_trim_by_keys.html#turicreate.SArray.dict_trim_by_keys" title="turicreate.SArray.dict_trim_by_keys"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_trim_by_keys</span></code></a>(self,&nbsp;keys[,&nbsp;exclude])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.dict_trim_by_keys.html#turicreate.SArray.dict_trim_by_keys" title="turicreate.SArray.dict_trim_by_keys"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_trim_by_keys</span></code></a>(self,&nbsp;keys[,&nbsp;exclude])</td>
 <td>Filter an SArray of dictionary type by the given keys.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.dict_trim_by_values.html#turicreate.SArray.dict_trim_by_values" title="turicreate.SArray.dict_trim_by_values"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_trim_by_values</span></code></a>(self[,&nbsp;lower,&nbsp;upper])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.dict_trim_by_values.html#turicreate.SArray.dict_trim_by_values" title="turicreate.SArray.dict_trim_by_values"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_trim_by_values</span></code></a>(self[,&nbsp;lower,&nbsp;upper])</td>
 <td>Filter dictionary values to a given range (inclusive).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.dict_values.html#turicreate.SArray.dict_values" title="turicreate.SArray.dict_values"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_values</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.dict_values.html#turicreate.SArray.dict_values" title="turicreate.SArray.dict_values"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dict_values</span></code></a>(self)</td>
 <td>Create an SArray that contains all the values from each dictionary element as a list.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.dropna.html#turicreate.SArray.dropna" title="turicreate.SArray.dropna"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dropna</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.dropna.html#turicreate.SArray.dropna" title="turicreate.SArray.dropna"><code class="xref py py-obj docutils literal"><span class="pre">SArray.dropna</span></code></a>(self)</td>
 <td>Create new SArray containing only the non-missing values of the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.element_slice.html#turicreate.SArray.element_slice" title="turicreate.SArray.element_slice"><code class="xref py py-obj docutils literal"><span class="pre">SArray.element_slice</span></code></a>(self[,&nbsp;start,&nbsp;stop,&nbsp;step])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.element_slice.html#turicreate.SArray.element_slice" title="turicreate.SArray.element_slice"><code class="xref py py-obj docutils literal"><span class="pre">SArray.element_slice</span></code></a>(self[,&nbsp;start,&nbsp;stop,&nbsp;step])</td>
 <td>This returns an SArray with each element sliced accordingly to the slice specified.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.explore.html#turicreate.SArray.explore" title="turicreate.SArray.explore"><code class="xref py py-obj docutils literal"><span class="pre">SArray.explore</span></code></a>(self[,&nbsp;title])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.explore.html#turicreate.SArray.explore" title="turicreate.SArray.explore"><code class="xref py py-obj docutils literal"><span class="pre">SArray.explore</span></code></a>(self[,&nbsp;title])</td>
 <td>Explore the SArray in an interactive GUI.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.fillna.html#turicreate.SArray.fillna" title="turicreate.SArray.fillna"><code class="xref py py-obj docutils literal"><span class="pre">SArray.fillna</span></code></a>(self,&nbsp;value)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.fillna.html#turicreate.SArray.fillna" title="turicreate.SArray.fillna"><code class="xref py py-obj docutils literal"><span class="pre">SArray.fillna</span></code></a>(self,&nbsp;value)</td>
 <td>Create new SArray with all missing values (None or NaN) filled in with the given value.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.filter.html#turicreate.SArray.filter" title="turicreate.SArray.filter"><code class="xref py py-obj docutils literal"><span class="pre">SArray.filter</span></code></a>(self,&nbsp;fn[,&nbsp;skip_na,&nbsp;seed])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.filter.html#turicreate.SArray.filter" title="turicreate.SArray.filter"><code class="xref py py-obj docutils literal"><span class="pre">SArray.filter</span></code></a>(self,&nbsp;fn[,&nbsp;skip_na,&nbsp;seed])</td>
 <td>Filter this SArray by a function.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.filter_by.html#turicreate.SArray.filter_by" title="turicreate.SArray.filter_by"><code class="xref py py-obj docutils literal"><span class="pre">SArray.filter_by</span></code></a>(self,&nbsp;values[,&nbsp;exclude])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.filter_by.html#turicreate.SArray.filter_by" title="turicreate.SArray.filter_by"><code class="xref py py-obj docutils literal"><span class="pre">SArray.filter_by</span></code></a>(self,&nbsp;values[,&nbsp;exclude])</td>
 <td>Filter an SArray by values inside an iterable object.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.from_const.html#turicreate.SArray.from_const" title="turicreate.SArray.from_const"><code class="xref py py-obj docutils literal"><span class="pre">SArray.from_const</span></code></a>(value,&nbsp;size[,&nbsp;dtype])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.from_const.html#turicreate.SArray.from_const" title="turicreate.SArray.from_const"><code class="xref py py-obj docutils literal"><span class="pre">SArray.from_const</span></code></a>(value,&nbsp;size[,&nbsp;dtype])</td>
 <td>Constructs an SArray of size with a const value.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.from_sequence.html#turicreate.SArray.from_sequence" title="turicreate.SArray.from_sequence"><code class="xref py py-obj docutils literal"><span class="pre">SArray.from_sequence</span></code></a>([start])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.from_sequence.html#turicreate.SArray.from_sequence" title="turicreate.SArray.from_sequence"><code class="xref py py-obj docutils literal"><span class="pre">SArray.from_sequence</span></code></a>([start])</td>
 <td>Create an SArray from sequence</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.hash.html#turicreate.SArray.hash" title="turicreate.SArray.hash"><code class="xref py py-obj docutils literal"><span class="pre">SArray.hash</span></code></a>(self[,&nbsp;seed])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.hash.html#turicreate.SArray.hash" title="turicreate.SArray.hash"><code class="xref py py-obj docutils literal"><span class="pre">SArray.hash</span></code></a>(self[,&nbsp;seed])</td>
 <td>Returns an SArray with a hash of each element.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.head.html#turicreate.SArray.head" title="turicreate.SArray.head"><code class="xref py py-obj docutils literal"><span class="pre">SArray.head</span></code></a>(self[,&nbsp;n])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.head.html#turicreate.SArray.head" title="turicreate.SArray.head"><code class="xref py py-obj docutils literal"><span class="pre">SArray.head</span></code></a>(self[,&nbsp;n])</td>
 <td>Returns an SArray which contains the first n rows of this SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.is_in.html#turicreate.SArray.is_in" title="turicreate.SArray.is_in"><code class="xref py py-obj docutils literal"><span class="pre">SArray.is_in</span></code></a>(self,&nbsp;other)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.is_in.html#turicreate.SArray.is_in" title="turicreate.SArray.is_in"><code class="xref py py-obj docutils literal"><span class="pre">SArray.is_in</span></code></a>(self,&nbsp;other)</td>
 <td>Performs an element-wise search for each row in ‘other’.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.is_materialized.html#turicreate.SArray.is_materialized" title="turicreate.SArray.is_materialized"><code class="xref py py-obj docutils literal"><span class="pre">SArray.is_materialized</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.is_materialized.html#turicreate.SArray.is_materialized" title="turicreate.SArray.is_materialized"><code class="xref py py-obj docutils literal"><span class="pre">SArray.is_materialized</span></code></a>(self)</td>
 <td>Returns whether or not the sarray has been materialized.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.is_topk.html#turicreate.SArray.is_topk" title="turicreate.SArray.is_topk"><code class="xref py py-obj docutils literal"><span class="pre">SArray.is_topk</span></code></a>(self[,&nbsp;topk,&nbsp;reverse])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.is_topk.html#turicreate.SArray.is_topk" title="turicreate.SArray.is_topk"><code class="xref py py-obj docutils literal"><span class="pre">SArray.is_topk</span></code></a>(self[,&nbsp;topk,&nbsp;reverse])</td>
 <td>Create an SArray indicating which elements are in the top k.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.item_length.html#turicreate.SArray.item_length" title="turicreate.SArray.item_length"><code class="xref py py-obj docutils literal"><span class="pre">SArray.item_length</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.item_length.html#turicreate.SArray.item_length" title="turicreate.SArray.item_length"><code class="xref py py-obj docutils literal"><span class="pre">SArray.item_length</span></code></a>(self)</td>
 <td>Length of each element in the current SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.materialize.html#turicreate.SArray.materialize" title="turicreate.SArray.materialize"><code class="xref py py-obj docutils literal"><span class="pre">SArray.materialize</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.materialize.html#turicreate.SArray.materialize" title="turicreate.SArray.materialize"><code class="xref py py-obj docutils literal"><span class="pre">SArray.materialize</span></code></a>(self)</td>
 <td>For a SArray that is lazily evaluated, force persist this sarray to disk, committing all lazy evaluated operations.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.max.html#turicreate.SArray.max" title="turicreate.SArray.max"><code class="xref py py-obj docutils literal"><span class="pre">SArray.max</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.max.html#turicreate.SArray.max" title="turicreate.SArray.max"><code class="xref py py-obj docutils literal"><span class="pre">SArray.max</span></code></a>(self)</td>
 <td>Get maximum numeric value in SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.mean.html#turicreate.SArray.mean" title="turicreate.SArray.mean"><code class="xref py py-obj docutils literal"><span class="pre">SArray.mean</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.mean.html#turicreate.SArray.mean" title="turicreate.SArray.mean"><code class="xref py py-obj docutils literal"><span class="pre">SArray.mean</span></code></a>(self)</td>
 <td>Mean of all the values in the SArray, or mean image.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.min.html#turicreate.SArray.min" title="turicreate.SArray.min"><code class="xref py py-obj docutils literal"><span class="pre">SArray.min</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.min.html#turicreate.SArray.min" title="turicreate.SArray.min"><code class="xref py py-obj docutils literal"><span class="pre">SArray.min</span></code></a>(self)</td>
 <td>Get minimum numeric value in SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.nnz.html#turicreate.SArray.nnz" title="turicreate.SArray.nnz"><code class="xref py py-obj docutils literal"><span class="pre">SArray.nnz</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.nnz.html#turicreate.SArray.nnz" title="turicreate.SArray.nnz"><code class="xref py py-obj docutils literal"><span class="pre">SArray.nnz</span></code></a>(self)</td>
 <td>Number of non-zero elements in the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.pixel_array_to_image.html#turicreate.SArray.pixel_array_to_image" title="turicreate.SArray.pixel_array_to_image"><code class="xref py py-obj docutils literal"><span class="pre">SArray.pixel_array_to_image</span></code></a>(self,&nbsp;width,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.pixel_array_to_image.html#turicreate.SArray.pixel_array_to_image" title="turicreate.SArray.pixel_array_to_image"><code class="xref py py-obj docutils literal"><span class="pre">SArray.pixel_array_to_image</span></code></a>(self,&nbsp;width,&nbsp;…)</td>
 <td>Create a new SArray with all the values cast to <code class="xref py py-class docutils literal"><span class="pre">turicreate.image.Image</span></code> of uniform size.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.plot.html#turicreate.SArray.plot" title="turicreate.SArray.plot"><code class="xref py py-obj docutils literal"><span class="pre">SArray.plot</span></code></a>(self[,&nbsp;title,&nbsp;xlabel,&nbsp;ylabel])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.plot.html#turicreate.SArray.plot" title="turicreate.SArray.plot"><code class="xref py py-obj docutils literal"><span class="pre">SArray.plot</span></code></a>(self[,&nbsp;title,&nbsp;xlabel,&nbsp;ylabel])</td>
 <td>Create a Plot object representing the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.random_integers.html#turicreate.SArray.random_integers" title="turicreate.SArray.random_integers"><code class="xref py py-obj docutils literal"><span class="pre">SArray.random_integers</span></code></a>(size[,&nbsp;seed])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.random_integers.html#turicreate.SArray.random_integers" title="turicreate.SArray.random_integers"><code class="xref py py-obj docutils literal"><span class="pre">SArray.random_integers</span></code></a>(size[,&nbsp;seed])</td>
 <td>Returns an SArray with random integer values.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.random_split.html#turicreate.SArray.random_split" title="turicreate.SArray.random_split"><code class="xref py py-obj docutils literal"><span class="pre">SArray.random_split</span></code></a>(self,&nbsp;fraction[,&nbsp;seed])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.random_split.html#turicreate.SArray.random_split" title="turicreate.SArray.random_split"><code class="xref py py-obj docutils literal"><span class="pre">SArray.random_split</span></code></a>(self,&nbsp;fraction[,&nbsp;seed])</td>
 <td>Randomly split the rows of an SArray into two SArrays.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.read_json.html#turicreate.SArray.read_json" title="turicreate.SArray.read_json"><code class="xref py py-obj docutils literal"><span class="pre">SArray.read_json</span></code></a>(filename)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.read_json.html#turicreate.SArray.read_json" title="turicreate.SArray.read_json"><code class="xref py py-obj docutils literal"><span class="pre">SArray.read_json</span></code></a>(filename)</td>
 <td>Construct an SArray from a json file or glob of json files.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.rolling_count.html#turicreate.SArray.rolling_count" title="turicreate.SArray.rolling_count"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_count</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.rolling_count.html#turicreate.SArray.rolling_count" title="turicreate.SArray.rolling_count"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_count</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
 <td>Count the number of non-NULL values of different subsets over this SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.rolling_max.html#turicreate.SArray.rolling_max" title="turicreate.SArray.rolling_max"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_max</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.rolling_max.html#turicreate.SArray.rolling_max" title="turicreate.SArray.rolling_max"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_max</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
 <td>Calculate a new SArray of the maximum value of different subsets over this SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.rolling_mean.html#turicreate.SArray.rolling_mean" title="turicreate.SArray.rolling_mean"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_mean</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.rolling_mean.html#turicreate.SArray.rolling_mean" title="turicreate.SArray.rolling_mean"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_mean</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
 <td>Calculate a new SArray of the mean of different subsets over this SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.rolling_min.html#turicreate.SArray.rolling_min" title="turicreate.SArray.rolling_min"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_min</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.rolling_min.html#turicreate.SArray.rolling_min" title="turicreate.SArray.rolling_min"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_min</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
 <td>Calculate a new SArray of the minimum value of different subsets over this SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.rolling_stdv.html#turicreate.SArray.rolling_stdv" title="turicreate.SArray.rolling_stdv"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_stdv</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.rolling_stdv.html#turicreate.SArray.rolling_stdv" title="turicreate.SArray.rolling_stdv"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_stdv</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
 <td>Calculate a new SArray of the standard deviation of different subsets over this SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.rolling_sum.html#turicreate.SArray.rolling_sum" title="turicreate.SArray.rolling_sum"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_sum</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.rolling_sum.html#turicreate.SArray.rolling_sum" title="turicreate.SArray.rolling_sum"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_sum</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
 <td>Calculate a new SArray of the sum of different subsets over this SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.rolling_var.html#turicreate.SArray.rolling_var" title="turicreate.SArray.rolling_var"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_var</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.rolling_var.html#turicreate.SArray.rolling_var" title="turicreate.SArray.rolling_var"><code class="xref py py-obj docutils literal"><span class="pre">SArray.rolling_var</span></code></a>(self,&nbsp;window_start,&nbsp;…)</td>
 <td>Calculate a new SArray of the variance of different subsets over this SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.sample.html#turicreate.SArray.sample" title="turicreate.SArray.sample"><code class="xref py py-obj docutils literal"><span class="pre">SArray.sample</span></code></a>(self,&nbsp;fraction[,&nbsp;seed,&nbsp;exact])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.sample.html#turicreate.SArray.sample" title="turicreate.SArray.sample"><code class="xref py py-obj docutils literal"><span class="pre">SArray.sample</span></code></a>(self,&nbsp;fraction[,&nbsp;seed,&nbsp;exact])</td>
 <td>Create an SArray which contains a subsample of the current SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.save.html#turicreate.SArray.save" title="turicreate.SArray.save"><code class="xref py py-obj docutils literal"><span class="pre">SArray.save</span></code></a>(self,&nbsp;filename[,&nbsp;format])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.save.html#turicreate.SArray.save" title="turicreate.SArray.save"><code class="xref py py-obj docutils literal"><span class="pre">SArray.save</span></code></a>(self,&nbsp;filename[,&nbsp;format])</td>
 <td>Saves the SArray to file.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.show.html#turicreate.SArray.show" title="turicreate.SArray.show"><code class="xref py py-obj docutils literal"><span class="pre">SArray.show</span></code></a>(self[,&nbsp;title,&nbsp;xlabel,&nbsp;ylabel])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.show.html#turicreate.SArray.show" title="turicreate.SArray.show"><code class="xref py py-obj docutils literal"><span class="pre">SArray.show</span></code></a>(self[,&nbsp;title,&nbsp;xlabel,&nbsp;ylabel])</td>
 <td>Visualize the SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.sort.html#turicreate.SArray.sort" title="turicreate.SArray.sort"><code class="xref py py-obj docutils literal"><span class="pre">SArray.sort</span></code></a>(self[,&nbsp;ascending])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.sort.html#turicreate.SArray.sort" title="turicreate.SArray.sort"><code class="xref py py-obj docutils literal"><span class="pre">SArray.sort</span></code></a>(self[,&nbsp;ascending])</td>
 <td>Sort all values in this SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.split_datetime.html#turicreate.SArray.split_datetime" title="turicreate.SArray.split_datetime"><code class="xref py py-obj docutils literal"><span class="pre">SArray.split_datetime</span></code></a>(self[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.split_datetime.html#turicreate.SArray.split_datetime" title="turicreate.SArray.split_datetime"><code class="xref py py-obj docutils literal"><span class="pre">SArray.split_datetime</span></code></a>(self[,&nbsp;…])</td>
 <td>Splits an SArray of datetime type to multiple columns, return a new SFrame that contains expanded columns.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.stack.html#turicreate.SArray.stack" title="turicreate.SArray.stack"><code class="xref py py-obj docutils literal"><span class="pre">SArray.stack</span></code></a>(self[,&nbsp;new_column_name,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.stack.html#turicreate.SArray.stack" title="turicreate.SArray.stack"><code class="xref py py-obj docutils literal"><span class="pre">SArray.stack</span></code></a>(self[,&nbsp;new_column_name,&nbsp;…])</td>
 <td>Convert a “wide” SArray to one or two “tall” columns in an SFrame by stacking all values.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.std.html#turicreate.SArray.std" title="turicreate.SArray.std"><code class="xref py py-obj docutils literal"><span class="pre">SArray.std</span></code></a>(self[,&nbsp;ddof])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.std.html#turicreate.SArray.std" title="turicreate.SArray.std"><code class="xref py py-obj docutils literal"><span class="pre">SArray.std</span></code></a>(self[,&nbsp;ddof])</td>
 <td>Standard deviation of all the values in the SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.str_to_datetime.html#turicreate.SArray.str_to_datetime" title="turicreate.SArray.str_to_datetime"><code class="xref py py-obj docutils literal"><span class="pre">SArray.str_to_datetime</span></code></a>(self[,&nbsp;format])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.str_to_datetime.html#turicreate.SArray.str_to_datetime" title="turicreate.SArray.str_to_datetime"><code class="xref py py-obj docutils literal"><span class="pre">SArray.str_to_datetime</span></code></a>(self[,&nbsp;format])</td>
 <td>Create a new SArray with all the values cast to datetime.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.sum.html#turicreate.SArray.sum" title="turicreate.SArray.sum"><code class="xref py py-obj docutils literal"><span class="pre">SArray.sum</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.sum.html#turicreate.SArray.sum" title="turicreate.SArray.sum"><code class="xref py py-obj docutils literal"><span class="pre">SArray.sum</span></code></a>(self)</td>
 <td>Sum of all values in this SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.summary.html#turicreate.SArray.summary" title="turicreate.SArray.summary"><code class="xref py py-obj docutils literal"><span class="pre">SArray.summary</span></code></a>(self[,&nbsp;background,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.summary.html#turicreate.SArray.summary" title="turicreate.SArray.summary"><code class="xref py py-obj docutils literal"><span class="pre">SArray.summary</span></code></a>(self[,&nbsp;background,&nbsp;…])</td>
 <td>Summary statistics that can be calculated with one pass over the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.tail.html#turicreate.SArray.tail" title="turicreate.SArray.tail"><code class="xref py py-obj docutils literal"><span class="pre">SArray.tail</span></code></a>(self[,&nbsp;n])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.tail.html#turicreate.SArray.tail" title="turicreate.SArray.tail"><code class="xref py py-obj docutils literal"><span class="pre">SArray.tail</span></code></a>(self[,&nbsp;n])</td>
 <td>Get an SArray that contains the last n elements in the SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.to_numpy.html#turicreate.SArray.to_numpy" title="turicreate.SArray.to_numpy"><code class="xref py py-obj docutils literal"><span class="pre">SArray.to_numpy</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.to_numpy.html#turicreate.SArray.to_numpy" title="turicreate.SArray.to_numpy"><code class="xref py py-obj docutils literal"><span class="pre">SArray.to_numpy</span></code></a>(self)</td>
 <td>Converts this SArray to a numpy array</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.unique.html#turicreate.SArray.unique" title="turicreate.SArray.unique"><code class="xref py py-obj docutils literal"><span class="pre">SArray.unique</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.unique.html#turicreate.SArray.unique" title="turicreate.SArray.unique"><code class="xref py py-obj docutils literal"><span class="pre">SArray.unique</span></code></a>(self)</td>
 <td>Get all unique values in the current SArray.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.unpack.html#turicreate.SArray.unpack" title="turicreate.SArray.unpack"><code class="xref py py-obj docutils literal"><span class="pre">SArray.unpack</span></code></a>(self[,&nbsp;column_name_prefix,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.unpack.html#turicreate.SArray.unpack" title="turicreate.SArray.unpack"><code class="xref py py-obj docutils literal"><span class="pre">SArray.unpack</span></code></a>(self[,&nbsp;column_name_prefix,&nbsp;…])</td>
 <td>Convert an SArray of list, array, or dict type to an SFrame with multiple columns.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.value_counts.html#turicreate.SArray.value_counts" title="turicreate.SArray.value_counts"><code class="xref py py-obj docutils literal"><span class="pre">SArray.value_counts</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.value_counts.html#turicreate.SArray.value_counts" title="turicreate.SArray.value_counts"><code class="xref py py-obj docutils literal"><span class="pre">SArray.value_counts</span></code></a>(self)</td>
 <td>Return an SFrame containing counts of unique values.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.var.html#turicreate.SArray.var" title="turicreate.SArray.var"><code class="xref py py-obj docutils literal"><span class="pre">SArray.var</span></code></a>(self[,&nbsp;ddof])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.var.html#turicreate.SArray.var" title="turicreate.SArray.var"><code class="xref py py-obj docutils literal"><span class="pre">SArray.var</span></code></a>(self[,&nbsp;ddof])</td>
 <td>Variance of all the values in the SArray.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.vector_slice.html#turicreate.SArray.vector_slice" title="turicreate.SArray.vector_slice"><code class="xref py py-obj docutils literal"><span class="pre">SArray.vector_slice</span></code></a>(self,&nbsp;start[,&nbsp;end])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.vector_slice.html#turicreate.SArray.vector_slice" title="turicreate.SArray.vector_slice"><code class="xref py py-obj docutils literal"><span class="pre">SArray.vector_slice</span></code></a>(self,&nbsp;start[,&nbsp;end])</td>
 <td>If this SArray contains vectors or lists, this returns a new SArray containing each individual element sliced, between start and end (exclusive).</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SArray.where.html#turicreate.SArray.where" title="turicreate.SArray.where"><code class="xref py py-obj docutils literal"><span class="pre">SArray.where</span></code></a>(condition,&nbsp;istrue,&nbsp;isfalse[,&nbsp;dtype])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SArray.where.html#turicreate.SArray.where" title="turicreate.SArray.where"><code class="xref py py-obj docutils literal"><span class="pre">SArray.where</span></code></a>(condition,&nbsp;istrue,&nbsp;isfalse[,&nbsp;dtype])</td>
 <td>Selects elements from either istrue or isfalse depending on the value of the condition SArray.</td>
 </tr>
 </tbody>
@@ -670,7 +673,7 @@ not be used for large data.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Dec 16, 2019.
+      Last updated on Feb 10, 2020.
     </p>
   </div>
 </footer>
@@ -687,7 +690,7 @@ not be used for large data.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.0',
+            VERSION:'6.1',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

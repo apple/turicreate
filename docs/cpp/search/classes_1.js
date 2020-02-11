@@ -1,8 +1,10 @@
 var searchData=
 [
+  ['ac_5fparameters',['ac_parameters',['../structturi_1_1neural__net_1_1ac__parameters.html',1,'turi::neural_net']]],
   ['alias_5fsampler',['alias_sampler',['../classturi_1_1random_1_1alias__sampler.html',1,'turi::random']]],
   ['alias_5ftopic_5fmodel',['alias_topic_model',['../classturi_1_1text_1_1alias__topic__model.html',1,'turi::text']]],
   ['all_5fflexible_5ftype_5fconvertible',['all_flexible_type_convertible',['../structturi_1_1all__flexible__type__convertible.html',1,'turi']]],
+  ['all_5fvariant_5fconvertible',['all_variant_convertible',['../structturi_1_1all__variant__convertible.html',1,'turi']]],
   ['annotation_5fglobal',['annotation_global',['../structturi_1_1annotate_1_1annotation__global.html',1,'turi::annotate']]],
   ['annotationbase',['AnnotationBase',['../classturi_1_1annotate_1_1AnnotationBase.html',1,'turi::annotate']]],
   ['any',['any',['../classturi_1_1any.html',1,'turi']]],

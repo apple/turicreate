@@ -27,9 +27,9 @@ var classturi_1_1neural__net_1_1model__spec =
     [ "add_sigmoid", "classturi_1_1neural__net_1_1model__spec.html#a18df584c6e1eef1cf34fbcb043e935dd", null ],
     [ "add_softmax", "classturi_1_1neural__net_1_1model__spec.html#a903131139a2277c91efae7e68916f13a", null ],
     [ "add_upsampling", "classturi_1_1neural__net_1_1model__spec.html#a54185bc37553c8ea489b2f062e5d58d6", null ],
-    [ "export_params_view", "classturi_1_1neural__net_1_1model__spec.html#a26ad351e337f3cc1aeeef2a1cd12fcb5", null ],
-    [ "get_coreml_spec", "classturi_1_1neural__net_1_1model__spec.html#a3775e8fc38066e8516ada6751b7f054b", null ],
-    [ "has_layer_output", "classturi_1_1neural__net_1_1model__spec.html#af96893504d042d7f4fdf654f1bcdf853", null ],
-    [ "move_coreml_spec", "classturi_1_1neural__net_1_1model__spec.html#acd529f8eaf81a24965c424f331cacb24", null ],
+    [ "export_params_view", "classturi_1_1neural__net_1_1model__spec.html#a773b3150e362e3e5fb094e75b92baf36", null ],
+    [ "get_coreml_spec", "classturi_1_1neural__net_1_1model__spec.html#a4d8bdc11e8d0b74a416a9ccfba8cb4c8", null ],
+    [ "has_layer_output", "classturi_1_1neural__net_1_1model__spec.html#accf5b8ba3d48fdaf91f66a680260a216", null ],
+    [ "move_coreml_spec", "classturi_1_1neural__net_1_1model__spec.html#abd51b4228a76c35335450b7066f8f86c", null ],
     [ "update_params", "classturi_1_1neural__net_1_1model__spec.html#aec2f3705367eac080429f63f2623166c", null ]
 ];

@@ -8,7 +8,7 @@ var classturi_1_1optimization_1_1second__order__opt__interface =
     [ "compute_second_order_statistics", "classturi_1_1optimization_1_1second__order__opt__interface.html#ae4859cd7fd9094eee11dccbf7e068287", null ],
     [ "get_status", "classturi_1_1optimization_1_1second__order__opt__interface.html#a0d6543dcc3676a68e4a10b600c5659dd", null ],
     [ "get_status_header", "classturi_1_1optimization_1_1second__order__opt__interface.html#a835bd64f3a7928937da4114b290db8e8", null ],
-    [ "num_examples", "classturi_1_1optimization_1_1second__order__opt__interface.html#ae75b08d4a918dd15b0647675921b25dc", null ],
-    [ "num_variables", "classturi_1_1optimization_1_1second__order__opt__interface.html#af6e60c704f64b3646c7d513fb8d09059", null ],
+    [ "num_examples", "classturi_1_1optimization_1_1second__order__opt__interface.html#aebb656e5fa35da3b316c7621dd2c16eb", null ],
+    [ "num_variables", "classturi_1_1optimization_1_1second__order__opt__interface.html#ad7be6e45792c26966adf372eca1062e4", null ],
     [ "reset", "classturi_1_1optimization_1_1second__order__opt__interface.html#af5aabe3bfc98f9c17652684e3c4c27b1", null ]
 ];

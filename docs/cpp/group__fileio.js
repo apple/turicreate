@@ -4,8 +4,8 @@ var group__fileio =
       [ "block_cache", "classturi_1_1block__cache.html#a3b6c68e6cb276bb87919393601e357de", null ],
       [ "~block_cache", "classturi_1_1block__cache.html#a28f93816a1f8180a95134d887e9ec065", null ],
       [ "evict_key", "classturi_1_1block__cache.html#a59f843925128056ab02a1f8faa7bb179", null ],
-      [ "file_handle_cache_hits", "classturi_1_1block__cache.html#ad2f7c10518ff1d32db94cafb47fcd457", null ],
-      [ "file_handle_cache_misses", "classturi_1_1block__cache.html#ac680e4300e800f221cd5a43582616949", null ],
+      [ "file_handle_cache_hits", "classturi_1_1block__cache.html#a7d17a57e06a3c03d8a56b659703afc11", null ],
+      [ "file_handle_cache_misses", "classturi_1_1block__cache.html#a4c315773a511b208e14a12aab4168701", null ],
       [ "get_instance", "classturi_1_1block__cache.html#a28db5537fb853bcdf4d22b1963a25ea8", null ],
       [ "get_max_capacity", "classturi_1_1block__cache.html#ac11f52be0ad778ce54f273ea1260a39f", null ],
       [ "init", "classturi_1_1block__cache.html#a51f70490d65ec329f88bbb9a2d7ef3d0", null ],
@@ -41,12 +41,12 @@ var group__fileio =
     [ "cache_block", "structturi_1_1fileio_1_1cache__block.html", [
       [ "~cache_block", "structturi_1_1fileio_1_1cache__block.html#a093700fb9a48dcf0c73c22879e890d6f", null ],
       [ "extend_capacity", "structturi_1_1fileio_1_1cache__block.html#a31a68c442fcc86dc43d5187f83c40ba6", null ],
-      [ "get_filename", "structturi_1_1fileio_1_1cache__block.html#a2b89b86a954b5f4e8ca3a746f7d0b2dd", null ],
-      [ "get_pointer", "structturi_1_1fileio_1_1cache__block.html#a1cd7d6474daf1b044537fe41ce81d7ac", null ],
-      [ "get_pointer_capacity", "structturi_1_1fileio_1_1cache__block.html#afeea0d4cb50e6d703bc68c1934d178ad", null ],
-      [ "get_pointer_size", "structturi_1_1fileio_1_1cache__block.html#a570ada50d0b811503f71746dd600753f", null ],
-      [ "is_file", "structturi_1_1fileio_1_1cache__block.html#a34c771bd17de5d272c78a1f45081e30c", null ],
-      [ "is_pointer", "structturi_1_1fileio_1_1cache__block.html#a7e21295fed5648e0a2f55c6a4cbb547d", null ],
+      [ "get_filename", "structturi_1_1fileio_1_1cache__block.html#a1f30ad0fce6063565fdd68b307f4354c", null ],
+      [ "get_pointer", "structturi_1_1fileio_1_1cache__block.html#a0ac3c33863d10538a7ab166f708fc855", null ],
+      [ "get_pointer_capacity", "structturi_1_1fileio_1_1cache__block.html#a17924d7410dba1306c42fd532995ddd7", null ],
+      [ "get_pointer_size", "structturi_1_1fileio_1_1cache__block.html#a09736453a5a37a70964a067ee728e7b0", null ],
+      [ "is_file", "structturi_1_1fileio_1_1cache__block.html#a5361e4efae8630ff7d5f849bfb152366", null ],
+      [ "is_pointer", "structturi_1_1fileio_1_1cache__block.html#ad9fcf6c32fd2530a5022851b02255ad3", null ],
       [ "write_bytes_to_memory_cache", "structturi_1_1fileio_1_1cache__block.html#a4743c8d357640d6ff838fc597d225077", null ],
       [ "write_to_file", "structturi_1_1fileio_1_1cache__block.html#af18171404c03795c2e0ce693de887cc7", null ]
     ] ],
@@ -62,18 +62,18 @@ var group__fileio =
       [ "general_ifstream", "classturi_1_1general__ifstream.html#a8df3d639064691d4488db0433046d18a", null ],
       [ "general_ifstream", "classturi_1_1general__ifstream.html#a617a626f56666cc5ebb1b63a75951c95", null ],
       [ "file_size", "classturi_1_1general__ifstream.html#a619d5b0e23d715412af4ee997c626b30", null ],
-      [ "filename", "classturi_1_1general__ifstream.html#a7d97e4d9ae681abca5ffede995fa5425", null ],
+      [ "filename", "classturi_1_1general__ifstream.html#ae5115d1f0160cb553196258e5ccf3679", null ],
       [ "get_bytes_read", "classturi_1_1general__ifstream.html#a753986652779f470e64b0b6a58cf8f05", null ],
       [ "get_underlying_stream", "classturi_1_1general__ifstream.html#a6b5c8adcb70f1e10f1635807ec2a4cd2", null ]
     ] ],
     [ "general_ofstream", "classturi_1_1general__ofstream.html", [
       [ "general_ofstream", "classturi_1_1general__ofstream.html#a7b94684f6aa3f4fa16ddff6b8691470d", null ],
       [ "general_ofstream", "classturi_1_1general__ofstream.html#ad388bb8893e72a8b19e5e2b893effb30", null ],
-      [ "bad", "classturi_1_1general__ofstream.html#a96f0a08388476b9cffcd52d86b388155", null ],
-      [ "fail", "classturi_1_1general__ofstream.html#a3469543dac2c58caa7706f90235c3398", null ],
-      [ "filename", "classturi_1_1general__ofstream.html#a2ff80c4334f8335e5f8446dd74524540", null ],
-      [ "get_bytes_written", "classturi_1_1general__ofstream.html#abad3e370bd33a5fbc689cf78171ee362", null ],
-      [ "good", "classturi_1_1general__ofstream.html#abcc551e54ca34b46c738f31cb371d15b", null ]
+      [ "bad", "classturi_1_1general__ofstream.html#a943436137a06c5a493844357e336f54e", null ],
+      [ "fail", "classturi_1_1general__ofstream.html#ace0e1574d018aa33cdf8edbf6439f1a3", null ],
+      [ "filename", "classturi_1_1general__ofstream.html#a7028a9b70cf60547bab8cf590e30746b", null ],
+      [ "get_bytes_written", "classturi_1_1general__ofstream.html#aa2533b87f714eb799a10e6f78522d1a6", null ],
+      [ "good", "classturi_1_1general__ofstream.html#aca2625b6f5f58db95bf21660b5ffbced", null ]
     ] ],
     [ "general_fstream_sink", "classturi_1_1fileio__impl_1_1general__fstream__sink.html", [
       [ "general_fstream_sink", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a8aac14eb9f4138d27d153c2d0d94f675", null ],
@@ -81,12 +81,12 @@ var group__fileio =
       [ "general_fstream_sink", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a0ee08e0ba764c26c59918b40bfac2207", null ],
       [ "general_fstream_sink", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#af5c00d7e1a0c70fe47a575f682e18336", null ],
       [ "~general_fstream_sink", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a489692dc06be58dc5f208a3b705979f2", null ],
-      [ "bad", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a6d6d1a82e909e1ae0e9fd6be292ea4cc", null ],
+      [ "bad", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#ad7486d5cddc1445c06569567137c87d4", null ],
       [ "close", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a5224d3eb428abdeac17eeb1d5678664a", null ],
-      [ "fail", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a31b79b8339b8a020b7039d2438dffc1c", null ],
-      [ "get_bytes_written", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#ad906f3ff181495271284f0da55ea5ddb", null ],
-      [ "good", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a70adc968d094b6db85e612f0c1a265c3", null ],
-      [ "is_open", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a894749f09d59dd16ce0da847501dc2dd", null ],
+      [ "fail", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a2470f26b70fb9a9f6d9f7c6625dd8215", null ],
+      [ "get_bytes_written", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a6bb2c0aa0077083b741ccae55b85e6f2", null ],
+      [ "good", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a9e37e0b9553b36a2623a6e5401caf874", null ],
+      [ "is_open", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a177a55efcb284205653f49a7b9276f40", null ],
       [ "write", "classturi_1_1fileio__impl_1_1general__fstream__sink.html#a2744389e8844d5c0928156dcefd035d3", null ]
     ] ],
     [ "general_fstream_source", "classturi_1_1fileio__impl_1_1general__fstream__source.html", [
@@ -96,17 +96,17 @@ var group__fileio =
       [ "general_fstream_source", "classturi_1_1fileio__impl_1_1general__fstream__source.html#ae265f2b0ff454f8dfe8dfc9d91184c93", null ],
       [ "~general_fstream_source", "classturi_1_1fileio__impl_1_1general__fstream__source.html#af3f8cf843492fcb286001f6869790660", null ],
       [ "close", "classturi_1_1fileio__impl_1_1general__fstream__source.html#ae45b7181203661586ac1cd69196b7bbf", null ],
-      [ "file_size", "classturi_1_1fileio__impl_1_1general__fstream__source.html#af92727abbd590868a60f98c35e995092", null ],
-      [ "get_bytes_read", "classturi_1_1fileio__impl_1_1general__fstream__source.html#aefbca61084d39e92e0cf72f7a712857f", null ],
-      [ "get_underlying_stream", "classturi_1_1fileio__impl_1_1general__fstream__source.html#a822687841823a58637ccd111610649f0", null ],
-      [ "is_open", "classturi_1_1fileio__impl_1_1general__fstream__source.html#a8f0c9fb5e5205d6a03d31e7351d6f36f", null ],
+      [ "file_size", "classturi_1_1fileio__impl_1_1general__fstream__source.html#a906a23eeff0f1ebc91dcc1be9aebffe6", null ],
+      [ "get_bytes_read", "classturi_1_1fileio__impl_1_1general__fstream__source.html#aebafee645c57fc08007f07b81bdf1160", null ],
+      [ "get_underlying_stream", "classturi_1_1fileio__impl_1_1general__fstream__source.html#ada1372af6a95dc306250d8ce9c5ee329", null ],
+      [ "is_open", "classturi_1_1fileio__impl_1_1general__fstream__source.html#aafa94e9a12a051c8c1aff02a8b4b2394", null ],
       [ "read", "classturi_1_1fileio__impl_1_1general__fstream__source.html#a12708c4eded2033bddb97740f71dce9e", null ],
       [ "seek", "classturi_1_1fileio__impl_1_1general__fstream__source.html#a9c3869e1638873e97355fd8c9b0a0eaa", null ]
     ] ],
     [ "read_caching_device", "classturi_1_1read__caching__device.html", [
-      [ "file_size", "classturi_1_1read__caching__device.html#abaace5d798f53c345e6911d127d94a7b", null ],
+      [ "file_size", "classturi_1_1read__caching__device.html#a643f82026732879b32993f99734e662a", null ],
       [ "get_underlying_stream", "classturi_1_1read__caching__device.html#a9f31845d8f6022d68231bd5b7901069e", null ],
-      [ "optimal_buffer_size", "classturi_1_1read__caching__device.html#a8d4e634992adfd5682d4897a8f33f76b", null ],
+      [ "optimal_buffer_size", "classturi_1_1read__caching__device.html#a37da5a78371ed96323f240e703cd8fc7", null ],
       [ "seek", "classturi_1_1read__caching__device.html#aa50898694d3fddccb1ca8f161b6b4d98", null ]
     ] ],
     [ "s3url", "structturi_1_1s3url.html", null ],
@@ -117,16 +117,16 @@ var group__fileio =
       [ "objects_last_modified", "structturi_1_1list__objects__response.html#a6793b0a8073a547dac56ba7f94e254be", null ]
     ] ],
     [ "s3_device", "classturi_1_1s3__device.html", [
-      [ "file_size", "classturi_1_1s3__device.html#a9d5e670426f2b9ae313abc6ecba0a750", null ],
-      [ "optimal_buffer_size", "classturi_1_1s3__device.html#a3ee07b0831c6cf1f07c6af31b528069d", null ],
+      [ "file_size", "classturi_1_1s3__device.html#ad332c987fbe6a25f99d829ca7e7a174c", null ],
+      [ "optimal_buffer_size", "classturi_1_1s3__device.html#a67a5ff6825d56bce65ca1cf4c780f2e5", null ],
       [ "seek", "classturi_1_1s3__device.html#a50c3ab43228ef28d6d18ea642a6b80f1", null ]
     ] ],
     [ "union_fstream", "classturi_1_1union__fstream.html", [
       [ "union_fstream", "classturi_1_1union__fstream.html#a676218ef5658551a625be6dc5266565b", null ],
       [ "~union_fstream", "classturi_1_1union__fstream.html#a5c5ed8650a6c81ebb4db266fd43db844", null ],
       [ "file_size", "classturi_1_1union__fstream.html#a1286551cb1007ef7051c0e1a1d3649df", null ],
-      [ "get_name", "classturi_1_1union__fstream.html#a87b1bcb23cc2c0c16c9e7666b5739f70", null ],
-      [ "get_type", "classturi_1_1union__fstream.html#a656c6a14ac269fb0ceba3c41388e93b8", null ]
+      [ "get_name", "classturi_1_1union__fstream.html#ae8a156931cbbb4b6bbf59322ad5d041b", null ],
+      [ "get_type", "classturi_1_1union__fstream.html#a42f246b0fc39b3b00ca446b5af93ee96", null ]
     ] ],
     [ "icache_stream", "group__fileio.html#gae07098a1b91a5cf1f1d4bf72a410f96a", null ],
     [ "ocache_stream", "group__fileio.html#gafb2414a84c32d256d687301887af1cec", null ],

@@ -1,7 +1,7 @@
 var structturi_1_1ml__data__internal_1_1row__metadata =
 [
     [ "load", "structturi_1_1ml__data__internal_1_1row__metadata.html#a85840bf7a0152296f0fe010ab7862bb8", null ],
-    [ "save", "structturi_1_1ml__data__internal_1_1row__metadata.html#ad4da2ec7d06597333e9fb25d73f01278", null ],
+    [ "save", "structturi_1_1ml__data__internal_1_1row__metadata.html#a05c5bb450dea95e94055a1bcdbe11707", null ],
     [ "set_index_sizes", "structturi_1_1ml__data__internal_1_1row__metadata.html#ad77baac129eba09d58396378a3a186bc", null ],
     [ "setup", "structturi_1_1ml__data__internal_1_1row__metadata.html#a459d8e7342d8b46ff3d30bfed607d2b7", null ],
     [ "constant_data_size", "structturi_1_1ml__data__internal_1_1row__metadata.html#aa06c89bd55192a2735d5f0a6b34e90d1", null ],

@@ -1,7 +1,7 @@
 var structturi_1_1csv__line__tokenizer =
 [
     [ "csv_line_tokenizer", "structturi_1_1csv__line__tokenizer.html#a1566754654bbddf7efbf9b077f2f6af3", null ],
-    [ "get_last_parse_error_diagnosis", "structturi_1_1csv__line__tokenizer.html#a241fcb0a3251da667f8e623aac97289b", null ],
+    [ "get_last_parse_error_diagnosis", "structturi_1_1csv__line__tokenizer.html#a0b78d0ea3c51f0f0f6ad7b39b5710374", null ],
     [ "init", "structturi_1_1csv__line__tokenizer.html#a34a5fcf275ac80b0e474a29196d74de8", null ],
     [ "parse_as", "structturi_1_1csv__line__tokenizer.html#ae2d1562bff94b47af0033f0e75c0f808", null ],
     [ "tokenize_line", "structturi_1_1csv__line__tokenizer.html#a2ce0f06e5faf8ed46866e6be3f5350f7", null ],

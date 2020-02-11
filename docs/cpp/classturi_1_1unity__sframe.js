@@ -23,7 +23,7 @@ var classturi_1_1unity__sframe =
     [ "dtype", "classturi_1_1unity__sframe.html#a065131c99efd3e9f26935f3731554527", null ],
     [ "dtype", "classturi_1_1unity__sframe.html#aa0721ae7e4cb48c5f990798e30d28a15", null ],
     [ "dtype", "classturi_1_1unity__sframe.html#ace572f69a53656502b137c05ca315c01", null ],
-    [ "flat_map", "classturi_1_1unity__sframe.html#a315702c7e0105aa032d96ddcbf197f4e", null ],
+    [ "flat_map", "classturi_1_1unity__sframe.html#a6c693e6f636bf0de7515145320f902f4", null ],
     [ "get_planner_node", "classturi_1_1unity__sframe.html#a101e30368649011ff7e73775341edfd6", null ],
     [ "get_underlying_sframe", "classturi_1_1unity__sframe.html#ad1ad3104a083de00183702ba4eae090b", null ],
     [ "groupby_aggregate", "classturi_1_1unity__sframe.html#aff19571c8615825b6e2146b488ee9b01", null ],
@@ -38,9 +38,9 @@ var classturi_1_1unity__sframe =
     [ "num_columns", "classturi_1_1unity__sframe.html#a94e336479f6fd6009d0d2b43d2cf76f7", null ],
     [ "pack_columns", "classturi_1_1unity__sframe.html#a8f26a6fbb156be22fbe961cd9fc1912e", null ],
     [ "query_plan_string", "classturi_1_1unity__sframe.html#a64076da98d5e3e50ab97f98d3f311d15", null ],
-    [ "random_split", "classturi_1_1unity__sframe.html#a8798fbde82550d120907d44abb6e185e", null ],
+    [ "random_split", "classturi_1_1unity__sframe.html#ab89d828c768561276b28b3f7ae76f5da", null ],
     [ "remove_column", "classturi_1_1unity__sframe.html#a2997d438f43513674de61a5c4eee66d1", null ],
-    [ "sample", "classturi_1_1unity__sframe.html#a537a994601efc447fa9c5a4b9276b019", null ],
+    [ "sample", "classturi_1_1unity__sframe.html#acb138bec2fe574ca70da5d8d74f34cc8", null ],
     [ "save_as_csv", "classturi_1_1unity__sframe.html#af90eb8e284d7a918e7cc915c4b678f71", null ],
     [ "save_frame", "classturi_1_1unity__sframe.html#a26083c273c3a39e8d5228cf3b4c73af7", null ],
     [ "save_frame_by_index_file", "classturi_1_1unity__sframe.html#addea1ba2951b8a8f21c333b4a1430b2f", null ],
@@ -55,7 +55,7 @@ var classturi_1_1unity__sframe =
     [ "stack", "classturi_1_1unity__sframe.html#af7ac6ce97f59af09f461783f0a1950c9", null ],
     [ "swap_columns", "classturi_1_1unity__sframe.html#a75259966494a8e1ad580f15a8f708e03", null ],
     [ "tail", "classturi_1_1unity__sframe.html#a4ba92f88220854f76eae25f643e4b407", null ],
-    [ "transform", "classturi_1_1unity__sframe.html#a9df038d1a27e705a6d574a5331e05210", null ],
-    [ "transform_lambda", "classturi_1_1unity__sframe.html#af9f632b4471babf843ce37c4cf6aae1d", null ],
-    [ "transform_native", "classturi_1_1unity__sframe.html#aff83582492c5ff85cc4341d5ece78963", null ]
+    [ "transform", "classturi_1_1unity__sframe.html#a3024dc5d76801dd482136f93841c9fd9", null ],
+    [ "transform_lambda", "classturi_1_1unity__sframe.html#a44522fc64fb538834b0080a04f937290", null ],
+    [ "transform_native", "classturi_1_1unity__sframe.html#ad45e54cbdd13ac88beba971dee2730fd", null ]
 ];

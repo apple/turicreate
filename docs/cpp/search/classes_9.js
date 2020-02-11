@@ -19,11 +19,9 @@ var searchData=
   ['is_5fsiterable',['is_siterable',['../structturi_1_1sframe__impl_1_1is__siterable.html',1,'turi::sframe_impl']]],
   ['is_5fswriter_5fbase',['is_swriter_base',['../structturi_1_1sframe__impl_1_1is__swriter__base.html',1,'turi::sframe_impl']]],
   ['is_5fvalid_5fflex_5ftype',['is_valid_flex_type',['../structturi_1_1is__valid__flex__type.html',1,'turi']]],
+  ['is_5fvariant_5fconvertible',['is_variant_convertible',['../structturi_1_1is__variant__convertible.html',1,'turi']]],
   ['issue_5fdisect',['issue_disect',['../structcppipc_1_1detail_1_1issue__disect.html',1,'cppipc::detail']]],
   ['issue_5fdisect_3c_20argumenttuple_2c_20arg_2c_20args_2e_2e_2e_20_3e',['issue_disect&lt; ArgumentTuple, Arg, Args... &gt;',['../structcppipc_1_1detail_1_1issue__disect_3_01ArgumentTuple_00_01Arg_00_01Args_8_8_8_01_4.html',1,'cppipc::detail']]],
   ['issue_5fdisect_3c_20std_3a_3atuple_3c_3e_2c_20args_2e_2e_2e_20_3e',['issue_disect&lt; std::tuple&lt;&gt;, Args... &gt;',['../structcppipc_1_1detail_1_1issue__disect_3_01std_1_1tuple_3_4_00_01Args_8_8_8_01_4.html',1,'cppipc::detail']]],
-  ['iterator',['iterator',['../structturi_1_1sframe__rows_1_1iterator.html',1,'turi::sframe_rows']]],
-  ['iterator',['iterator',['../structturi_1_1gl__sarray__range_1_1iterator.html',1,'turi::gl_sarray_range']]],
-  ['iterator',['iterator',['../structturi_1_1hopscotch__table_1_1iterator.html',1,'turi::hopscotch_table']]],
-  ['iterator',['iterator',['../structturi_1_1gl__sframe__range_1_1iterator.html',1,'turi::gl_sframe_range']]]
+  ['iterator',['iterator',['../structturi_1_1gl__sarray__range_1_1iterator.html',1,'turi::gl_sarray_range::iterator'],['../structturi_1_1gl__sframe__range_1_1iterator.html',1,'turi::gl_sframe_range::iterator'],['../structturi_1_1sframe__rows_1_1iterator.html',1,'turi::sframe_rows::iterator'],['../structturi_1_1hopscotch__table_1_1iterator.html',1,'turi::hopscotch_table&lt; T, Hash, KeyEqual &gt;::iterator']]]
 ];

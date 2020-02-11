@@ -1,47 +1,47 @@
 var group__operators =
 [
     [ "operator_impl< planner_node_type::APPEND_NODE >", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html", [
-      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html#af5f43fc5d08ce5b9040b16bbb930a990", null ],
+      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html#a6a049ce50cdb64ae2516a033104c7032", null ],
       [ "execute", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html#a778e8b7e05c18c5f1f678e109afb7356", null ],
       [ "make_planner_node", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html#a63b903315645c69726bdcb55028d12f2", null ],
-      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1APPEND__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::BINARY_TRANSFORM_NODE >", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html", [
-      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html#a10ba4c3042a81d62bee2085ba7df4dfd", null ],
+      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html#a9116615c30dda68c3821ddbdb6227c31", null ],
       [ "execute", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html#a6866b822a65b21f3d12c62c0178fa50b", null ],
-      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1BINARY__TRANSFORM__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::CONSTANT_NODE >", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html", [
-      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html#a4e16693ec606f330d318e808a0f2420a", null ],
+      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html#af2d2786f73ff1c79f57b27ba1ee7bde7", null ],
       [ "execute", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html#afac3dda5395f1757d7cb03bad4115969", null ],
-      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html#a0f6b7c89d37f7c3dacf5067844df3666", null ]
+      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1CONSTANT__NODE_01_4.html#aed8c80a1e8f605959cd311e30b6d2336", null ]
     ] ],
     [ "operator_impl< planner_node_type::GENERALIZED_TRANSFORM_NODE >", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__TRANSFORM__NODE_01_4.html", [
-      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__TRANSFORM__NODE_01_4.html#a13cbef3fd696660267afc7f6d892dc0c", null ],
+      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__TRANSFORM__NODE_01_4.html#a0680cdb02c7e5d5df107d4914e6fff81", null ],
       [ "execute", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__TRANSFORM__NODE_01_4.html#a5dd1b8223fbc3b8c723d326b32691128", null ],
-      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__TRANSFORM__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__TRANSFORM__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__TRANSFORM__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__TRANSFORM__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::GENERALIZED_UNION_PROJECT_NODE >", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__UNION__PROJECT__NODE_01_4.html", [
-      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__UNION__PROJECT__NODE_01_4.html#a4d12a2a8f0f5711f63b5f8a79bc42963", null ],
+      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__UNION__PROJECT__NODE_01_4.html#ae65a473d593614c63772b693359a3143", null ],
       [ "execute", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__UNION__PROJECT__NODE_01_4.html#a2ee38c0512309c7b9325b9ee0995f987", null ],
-      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__UNION__PROJECT__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__UNION__PROJECT__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__UNION__PROJECT__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1GENERALIZED__UNION__PROJECT__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::LAMBDA_TRANSFORM_NODE >", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LAMBDA__TRANSFORM__NODE_01_4.html", [
-      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LAMBDA__TRANSFORM__NODE_01_4.html#a2e029237f0c42c63a4077304dea64397", null ],
+      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LAMBDA__TRANSFORM__NODE_01_4.html#a62e044d3760481a1f9a5cae94a35c9cc", null ],
       [ "execute", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LAMBDA__TRANSFORM__NODE_01_4.html#a9f6ba9a28524c12f22d5485e70d36e1f", null ],
-      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LAMBDA__TRANSFORM__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LAMBDA__TRANSFORM__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LAMBDA__TRANSFORM__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LAMBDA__TRANSFORM__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::LOGICAL_FILTER_NODE >", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html", [
-      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html#a83d089614a3eff0513ba3251049b9ef5", null ],
+      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html#a9317a97093c23dceca970be3d30bb5c5", null ],
       [ "execute", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html#addd6b7f0250e064ee2aecb958741514a", null ],
-      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1LOGICAL__FILTER__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "query_operator_attributes", "structturi_1_1query__eval_1_1query__operator__attributes.html", [
       [ "attribute", "structturi_1_1query__eval_1_1query__operator__attributes.html#a05525a39bd5f136f602e11b97033179b", [
@@ -56,53 +56,53 @@ var group__operators =
     ] ],
     [ "query_operator", "classturi_1_1query__eval_1_1query__operator.html", [
       [ "attributes", "classturi_1_1query__eval_1_1query__operator.html#aa1463a0a3e98b0d4cec4e516b20abd7f", null ],
-      [ "clone", "classturi_1_1query__eval_1_1query__operator.html#adae6d1f3d7f53acbf6433da1068a7ed4", null ],
+      [ "clone", "classturi_1_1query__eval_1_1query__operator.html#ab1af25c63a7ef3ad7020fd41b6c998b0", null ],
       [ "execute", "classturi_1_1query__eval_1_1query__operator.html#a9a3f6d205581f342ef6963be34fad427", null ],
       [ "from_planner_node", "classturi_1_1query__eval_1_1query__operator.html#a4ec540ff9564ce2eade38faf82e43214", null ],
-      [ "name", "classturi_1_1query__eval_1_1query__operator.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "classturi_1_1query__eval_1_1query__operator.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "classturi_1_1query__eval_1_1query__operator.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "classturi_1_1query__eval_1_1query__operator.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::PROJECT_NODE >", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1PROJECT__NODE_01_4.html", [
-      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1PROJECT__NODE_01_4.html#a2d76a2b23b75fcece19e047a347c84f4", null ],
+      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1PROJECT__NODE_01_4.html#a023c94b49f611d6bdb104bce99ed81ab", null ],
       [ "execute", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1PROJECT__NODE_01_4.html#aa08a5f205bdf23c4ca2bafa577e62d2e", null ],
-      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1PROJECT__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1PROJECT__NODE_01_4.html#aeb0c4734622a02c8f02cf48f1bff3933", null ]
+      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1PROJECT__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1PROJECT__NODE_01_4.html#ae3e4ab781f94f8be44dcf5d5122e9252", null ]
     ] ],
     [ "operator_impl< planner_node_type::RANGE_NODE >", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1RANGE__NODE_01_4.html", [
-      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1RANGE__NODE_01_4.html#a9839776c2892f11a80c1c7e5a4be12ee", null ],
+      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1RANGE__NODE_01_4.html#a60e956766f59e2a05e8b919a8e4c812b", null ],
       [ "execute", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1RANGE__NODE_01_4.html#aac91568e9bc30919511d0808a730327b", null ],
-      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1RANGE__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1RANGE__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1RANGE__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1RANGE__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::REDUCE_NODE >", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1REDUCE__NODE_01_4.html", [
-      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1REDUCE__NODE_01_4.html#a75fd4f32f445a5a678768f3ec7a2aa80", null ],
+      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1REDUCE__NODE_01_4.html#a600f2cb6e7317cde6e32a1d74a3c6f76", null ],
       [ "execute", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1REDUCE__NODE_01_4.html#ae5304f85a1d5057167faf2861188e1d9", null ],
-      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1REDUCE__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1REDUCE__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1REDUCE__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1REDUCE__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::SFRAME_SOURCE_NODE >", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1SFRAME__SOURCE__NODE_01_4.html", [
-      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1SFRAME__SOURCE__NODE_01_4.html#a6218e0d866f239b08b9835265bf778bc", null ],
+      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1SFRAME__SOURCE__NODE_01_4.html#a0770b5060a76049127f912ce61020c62", null ],
       [ "execute", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1SFRAME__SOURCE__NODE_01_4.html#a662ee4ed803e079ca88c3cf63f0e6ad3", null ],
-      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1SFRAME__SOURCE__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1SFRAME__SOURCE__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1SFRAME__SOURCE__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1SFRAME__SOURCE__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::TERNARY_OPERATOR >", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TERNARY__OPERATOR_01_4.html", [
-      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TERNARY__OPERATOR_01_4.html#a6b3bd7cd0c247e932ca890e6d5794c79", null ],
+      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TERNARY__OPERATOR_01_4.html#aaec1bc0140e237734a0dbbd7edbb5aac", null ],
       [ "execute", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TERNARY__OPERATOR_01_4.html#ad677bf4fe3757d5675098f0c2820f4b6", null ],
-      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TERNARY__OPERATOR_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TERNARY__OPERATOR_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TERNARY__OPERATOR_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TERNARY__OPERATOR_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::TRANSFORM_NODE >", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TRANSFORM__NODE_01_4.html", [
-      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TRANSFORM__NODE_01_4.html#abbb1deed029a91d24d67a17a1f00c5c8", null ],
+      [ "clone", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TRANSFORM__NODE_01_4.html#aa23c644a3977549244be94526ae77952", null ],
       [ "execute", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TRANSFORM__NODE_01_4.html#a9bfb0ff46627dbefc19b97e6a8eced09", null ],
-      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TRANSFORM__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TRANSFORM__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TRANSFORM__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "classturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1TRANSFORM__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "operator_impl< planner_node_type::UNION_NODE >", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1UNION__NODE_01_4.html", [
-      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1UNION__NODE_01_4.html#ad45dcbfc049b03a54921f52458c17c9a", null ],
+      [ "clone", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1UNION__NODE_01_4.html#a920b5d550600ab662b30d080db998e07", null ],
       [ "execute", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1UNION__NODE_01_4.html#a86fe7476571c731c1ac23f6371530be5", null ],
-      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1UNION__NODE_01_4.html#a0e8f3ed48d2c8f99c81dfea87c80efd0", null ],
-      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1UNION__NODE_01_4.html#ab9251e36d4142daa67e9f02f13a6a896", null ]
+      [ "name", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1UNION__NODE_01_4.html#a7125093301782cc05825f6148e9a1822", null ],
+      [ "print", "structturi_1_1query__eval_1_1operator__impl_3_01planner__node__type_1_1UNION__NODE_01_4.html#a286688110d4e8a499bce6af457790035", null ]
     ] ],
     [ "planner_node", "structturi_1_1query__eval_1_1planner__node.html", [
       [ "clone", "structturi_1_1query__eval_1_1planner__node.html#ad94c2c0059bb2d8b198614ed07da3b4b", null ],

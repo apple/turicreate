@@ -14,58 +14,58 @@ var group__threading =
     [ "mutex", "classturi_1_1mutex.html", [
       [ "mutex", "classturi_1_1mutex.html#a9f1b3c45c6861d04b0b400914d74199f", null ],
       [ "mutex", "classturi_1_1mutex.html#aa0cf344a9a06fe0142f0e1563c9fca47", null ],
-      [ "lock", "classturi_1_1mutex.html#a6367bf977ca57439300d0a0c7dd6f982", null ],
-      [ "try_lock", "classturi_1_1mutex.html#aa3642b3f21dfe0ccaec78f1206b9ed53", null ],
-      [ "unlock", "classturi_1_1mutex.html#ad9fdc47cc92ec7cd1a2e23eef17b7a8e", null ]
+      [ "lock", "classturi_1_1mutex.html#a2387e2a86be55506f151239b9835e1d2", null ],
+      [ "try_lock", "classturi_1_1mutex.html#aaa575dbbf4ab35542d137ddd1bca2f18", null ],
+      [ "unlock", "classturi_1_1mutex.html#a41b9ce059d87652ea33061f3edc23965", null ]
     ] ],
     [ "recursive_mutex", "classturi_1_1recursive__mutex.html", [
       [ "recursive_mutex", "classturi_1_1recursive__mutex.html#a2d120a6b2d83eabb3b9e0b3578360eaf", null ],
       [ "recursive_mutex", "classturi_1_1recursive__mutex.html#a8550908282730d874a9f20942593c0a0", null ],
-      [ "lock", "classturi_1_1recursive__mutex.html#a2f780b34d21e740b831ebcd74db6abee", null ],
-      [ "try_lock", "classturi_1_1recursive__mutex.html#a0712fed7a2d69293f7ec40d189bc8694", null ],
-      [ "unlock", "classturi_1_1recursive__mutex.html#a581d71808ca5976001203b81ae43d52a", null ]
+      [ "lock", "classturi_1_1recursive__mutex.html#ac30249d1d5bf251475ae9ee786bf0619", null ],
+      [ "try_lock", "classturi_1_1recursive__mutex.html#a6af488e29471e5f7ec351570c18fb58e", null ],
+      [ "unlock", "classturi_1_1recursive__mutex.html#a8c9e0f18c820dd47679c7ed990268639", null ]
     ] ],
     [ "simple_spinlock", "classturi_1_1simple__spinlock.html", [
       [ "simple_spinlock", "classturi_1_1simple__spinlock.html#a3a50cedce01293ab886666d0fe703f94", null ],
       [ "simple_spinlock", "classturi_1_1simple__spinlock.html#aee89ec02d0e88420bfad28e91bb183ca", null ],
-      [ "lock", "classturi_1_1simple__spinlock.html#a226f28876c77ae5f8e69edf4f4b97350", null ],
-      [ "try_lock", "classturi_1_1simple__spinlock.html#a7a5eff6e84549e348f2a396bf4772be2", null ],
-      [ "unlock", "classturi_1_1simple__spinlock.html#abb0758f9dbd04c904db918520605ae30", null ]
+      [ "lock", "classturi_1_1simple__spinlock.html#abc8bdd8b57a8f4209ec185b25abb9d7c", null ],
+      [ "try_lock", "classturi_1_1simple__spinlock.html#a5936736e91df7e80691b7c8dfa399554", null ],
+      [ "unlock", "classturi_1_1simple__spinlock.html#a39c0d4288ee6081b8add7a408d0c7d56", null ]
     ] ],
     [ "padded_simple_spinlock", "classturi_1_1padded__simple__spinlock.html", [
       [ "padded_simple_spinlock", "classturi_1_1padded__simple__spinlock.html#a7878ccd01f419175002f22f223c7c03d", null ],
       [ "padded_simple_spinlock", "classturi_1_1padded__simple__spinlock.html#a4f6261099254e70efbb13a03a0d10fbf", null ],
-      [ "lock", "classturi_1_1padded__simple__spinlock.html#afdb860321e3fd5986db8c26afcd5cf06", null ],
-      [ "try_lock", "classturi_1_1padded__simple__spinlock.html#a48954361b728f4c2ac36e03df0da3d6b", null ],
-      [ "unlock", "classturi_1_1padded__simple__spinlock.html#a45c6db20776707ad417808bde1c03eec", null ]
+      [ "lock", "classturi_1_1padded__simple__spinlock.html#a545735ef581f93e46ff28b4033ddf14e", null ],
+      [ "try_lock", "classturi_1_1padded__simple__spinlock.html#a804b5159ac709d2c9e3be6b6cd858cdc", null ],
+      [ "unlock", "classturi_1_1padded__simple__spinlock.html#a52c9acb6a3847b657c7ae75443d9ab54", null ]
     ] ],
     [ "conditional", "classturi_1_1conditional.html", [
       [ "conditional", "classturi_1_1conditional.html#a8dde04d936f047f5738ccb949bf48495", null ],
-      [ "broadcast", "classturi_1_1conditional.html#a925d8aff35a9ff3edc4b256b6deb6a3e", null ],
-      [ "notify_all", "classturi_1_1conditional.html#a1f4c93a5bb8d2ce2b0b72d5ad941fb7e", null ],
-      [ "notify_one", "classturi_1_1conditional.html#a5e3cecea9156d8497b666248ea61b6d1", null ],
-      [ "signal", "classturi_1_1conditional.html#a4b099c768e1953ef52ad56a984be7a38", null ],
-      [ "timedwait", "classturi_1_1conditional.html#addb823d2978ec80493041f3e82b85cec", null ],
-      [ "timedwait", "classturi_1_1conditional.html#a7607cd90a1a5102b51c85cbf3dea0d50", null ],
-      [ "timedwait", "classturi_1_1conditional.html#a8bc5c67646fec76097b4b903ea2f39e4", null ],
-      [ "timedwait_ms", "classturi_1_1conditional.html#a324c199898f01200a065f99abb372930", null ],
-      [ "timedwait_ms", "classturi_1_1conditional.html#adae7da634f1fb8291e54a8309a8595ad", null ],
-      [ "timedwait_ns", "classturi_1_1conditional.html#a3e743a075a8bf974d5c7c8a43a28033b", null ],
-      [ "timedwait_ns", "classturi_1_1conditional.html#afe91b2617aa86276473f8dbaea85a1a6", null ],
-      [ "wait", "classturi_1_1conditional.html#ab8615ce837d3ed89b74b51d81b140827", null ],
-      [ "wait", "classturi_1_1conditional.html#adab16b61a1083b981daf8902d9651056", null ],
-      [ "wait", "classturi_1_1conditional.html#a38e2c5fe04905a4fe5f80f3a209419e3", null ],
-      [ "wait", "classturi_1_1conditional.html#a675ad0c271e3ff38a3e1e74de5cb7aca", null ]
+      [ "broadcast", "classturi_1_1conditional.html#a1be25067955f81e84d5c33c5797437fe", null ],
+      [ "notify_all", "classturi_1_1conditional.html#a1965e6c69168f24d2611a0721899b3a0", null ],
+      [ "notify_one", "classturi_1_1conditional.html#a33a89cbf0169248a793553cbb84b1493", null ],
+      [ "signal", "classturi_1_1conditional.html#a709e9e3a6aa3a638204a4fa6503aa13a", null ],
+      [ "timedwait", "classturi_1_1conditional.html#a9c985a6dd97c9cee125030b2a2813f6e", null ],
+      [ "timedwait", "classturi_1_1conditional.html#a9965531b232a49139037bb91a3e0ab21", null ],
+      [ "timedwait", "classturi_1_1conditional.html#aefa8a7f518a3b7746f27c4eb60561e6d", null ],
+      [ "timedwait_ms", "classturi_1_1conditional.html#a263207f6ada51694511883235d61ba99", null ],
+      [ "timedwait_ms", "classturi_1_1conditional.html#a3f3802e16fb4794afe99fae6a20f969c", null ],
+      [ "timedwait_ns", "classturi_1_1conditional.html#ab865549dcc31c80d55b7e69a34e92cea", null ],
+      [ "timedwait_ns", "classturi_1_1conditional.html#a9c258aa2a7f574fcf70cc1fa0283e3e9", null ],
+      [ "wait", "classturi_1_1conditional.html#a0df1b9ec1629c036436ed3c53688eb12", null ],
+      [ "wait", "classturi_1_1conditional.html#a71d9af3d4b5b0b9bde019a7036ef9a64", null ],
+      [ "wait", "classturi_1_1conditional.html#adf4b1fa63270a65a3ed0cd765640d43d", null ],
+      [ "wait", "classturi_1_1conditional.html#ac3149a8e71ec42867350b96459a33002", null ]
     ] ],
     [ "cancellable_barrier", "classturi_1_1cancellable__barrier.html", [
       [ "cancellable_barrier", "classturi_1_1cancellable__barrier.html#af403f07252b439c972328f639349be71", null ],
       [ "cancel", "classturi_1_1cancellable__barrier.html#a5533ef27418a3389de763894efd3a7fd", null ],
-      [ "wait", "classturi_1_1cancellable__barrier.html#a0740bf2bc0f9867c8cae77bb6cea89e4", null ]
+      [ "wait", "classturi_1_1cancellable__barrier.html#ac7877c3792ef431f50855f059075d60e", null ]
     ] ],
     [ "thread", "classturi_1_1thread.html", [
       [ "tls_data", "classturi_1_1thread_1_1tls__data.html", null ],
       [ "thread", "classturi_1_1thread.html#a1c7e38f82e2e0abe3c2fc120685e285e", null ],
-      [ "active", "classturi_1_1thread.html#a4c895d33ee6f30b357c7a55cbc23b5e5", null ],
+      [ "active", "classturi_1_1thread.html#a1a68c3b500d1078f41e7b213f326e4a7", null ],
       [ "contains", "classturi_1_1thread.html#a767a22df41f4c1f31a4689bf995457ac", null ],
       [ "cpu_count", "classturi_1_1thread.html#ac8bf2f005494b378ec96b4eb5d3e1f80", null ],
       [ "erase", "classturi_1_1thread.html#aa6d60c4cef355747a48ee706dad5f254", null ],
@@ -100,7 +100,7 @@ var group__threading =
     [ "fetch_and_store", "group__threading.html#ga4c9b2ac8cd6e2ea9d83208a9675a7cd7", null ],
     [ "fold_reduce", "group__threading.html#ga3b5df1c3139afa10b171ec12294bccc9", null ],
     [ "get_parfor_thread_pool", "group__threading.html#gae01665f82adc1cb33d894854b82002ed", null ],
-    [ "in_parallel", "group__threading.html#ga5b9a25864879a98c50594582bf2726f0", null ],
+    [ "in_parallel", "group__threading.html#ga1e5d72eafe277424284997a198212730", null ],
     [ "parallel_for", "group__threading.html#gac532f68a1b4c1c4b4d42ffd0fdff2784", null ],
     [ "parallel_for", "group__threading.html#ga7962653131f407609d083726b076eb74", null ]
 ];

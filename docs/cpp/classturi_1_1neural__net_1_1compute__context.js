@@ -3,11 +3,12 @@ var classturi_1_1neural__net_1_1compute__context =
     [ "registration", "classturi_1_1neural__net_1_1compute__context_1_1registration.html", null ],
     [ "factory", "classturi_1_1neural__net_1_1compute__context.html#abcfeff5cc1b622c74073e6a0ccbbe709", null ],
     [ "create", "classturi_1_1neural__net_1_1compute__context.html#ac047143e45b9ce5dc614c9eb3818aa78", null ],
-    [ "create_activity_classifier", "classturi_1_1neural__net_1_1compute__context.html#a6da40c90ac172d007bb33eefe01b1dc1", null ],
-    [ "create_drawing_classifier", "classturi_1_1neural__net_1_1compute__context.html#a31ea9c356ffe05da18f63d6d7b214dd5", null ],
-    [ "create_image_augmenter", "classturi_1_1neural__net_1_1compute__context.html#a85d5dd29c2b658048e79bcc5fa882276", null ],
-    [ "create_object_detector", "classturi_1_1neural__net_1_1compute__context.html#a41f1cc16bc99f8727ed3b4c41e95f11a", null ],
-    [ "create_style_transfer", "classturi_1_1neural__net_1_1compute__context.html#a7f80d30494bdefb7ff30007855507129", null ],
-    [ "gpu_names", "classturi_1_1neural__net_1_1compute__context.html#a029040628cfc32aaa5d0b064611adf66", null ],
-    [ "memory_budget", "classturi_1_1neural__net_1_1compute__context.html#af493864fefc9808dbb4cf16daa5caf14", null ]
+    [ "create_activity_classifier", "classturi_1_1neural__net_1_1compute__context.html#a5d4e3a3bc757f0aeaa032e6f0599051a", null ],
+    [ "create_drawing_classifier", "classturi_1_1neural__net_1_1compute__context.html#a7f5f0dd514fe8c7aefc049c49593bc3e", null ],
+    [ "create_image_augmenter", "classturi_1_1neural__net_1_1compute__context.html#a79cfc174a83ba679018b52b8550d5b24", null ],
+    [ "create_multilayer_perceptron_classifier", "classturi_1_1neural__net_1_1compute__context.html#ac99e1bd8f28b42151036f3c0607cdd65", null ],
+    [ "create_object_detector", "classturi_1_1neural__net_1_1compute__context.html#aafa4af29e68b766f44794d53f86a0b98", null ],
+    [ "create_style_transfer", "classturi_1_1neural__net_1_1compute__context.html#ad6b845657dbbc30331262e06ada29842", null ],
+    [ "gpu_names", "classturi_1_1neural__net_1_1compute__context.html#a648e436c31bfc68d4c7269a9d87c502d", null ],
+    [ "memory_budget", "classturi_1_1neural__net_1_1compute__context.html#afb86816fb369ee6033195785ef956b97", null ]
 ];

@@ -8,15 +8,15 @@ var group__groupby__aggregate =
       [ "add_element", "classturi_1_1group__aggregate__value.html#ad4262697510185d68dfb3397d0d7686f", null ],
       [ "add_element_simple", "classturi_1_1group__aggregate__value.html#abf975251574eb1c616404e1b216d2bb3", null ],
       [ "combine", "classturi_1_1group__aggregate__value.html#a410b803bf9ebbce0053cdd60d997b1b9", null ],
-      [ "emit", "classturi_1_1group__aggregate__value.html#a6c91be402ebecb153f8b51bf6c6aa1ff", null ],
+      [ "emit", "classturi_1_1group__aggregate__value.html#a5553526b514b20d4a4daa5d834a931f7", null ],
       [ "load", "classturi_1_1group__aggregate__value.html#a33926aabef53eeafc123c554830e94e2", null ],
-      [ "name", "classturi_1_1group__aggregate__value.html#abd4322b5d13da83d99a84d5ae00de868", null ],
-      [ "new_instance", "classturi_1_1group__aggregate__value.html#ade1ad9f124a71710ce6508a7f6ef7845", null ],
+      [ "name", "classturi_1_1group__aggregate__value.html#a65cb93063d5ccde34346eb4b36206971", null ],
+      [ "new_instance", "classturi_1_1group__aggregate__value.html#a406cf50595f868a488947a0362221411", null ],
       [ "partial_finalize", "classturi_1_1group__aggregate__value.html#a89733b6d67696b0a44218c33a14a7e22", null ],
-      [ "print", "classturi_1_1group__aggregate__value.html#a2538719caaff63acd2008629e1544681", null ],
-      [ "save", "classturi_1_1group__aggregate__value.html#a060b35ad3ab7d9834758c30a65f2849b", null ],
+      [ "print", "classturi_1_1group__aggregate__value.html#abae8cdde7a548ec7e177abaeaab47276", null ],
+      [ "save", "classturi_1_1group__aggregate__value.html#a4f77df84db2fdb697ddaf07bc916669d", null ],
       [ "set_input_types", "classturi_1_1group__aggregate__value.html#a31c1fda5463b319f0cab9b5bd40b1b0c", null ],
-      [ "support_type", "classturi_1_1group__aggregate__value.html#a08eb770f5d3f44ed6933f02c6bdbd9f4", null ]
+      [ "support_type", "classturi_1_1group__aggregate__value.html#abeaa7317ee10251ac161887aa4cb672c", null ]
     ] ],
     [ "hash_bucket", "classturi_1_1hash__bucket.html", [
       [ "hash_bucket", "classturi_1_1hash__bucket.html#ac8a0b9aca8c1e643df423efa5701a1a5", null ],

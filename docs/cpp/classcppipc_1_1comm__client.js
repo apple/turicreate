@@ -4,7 +4,7 @@ var classcppipc_1_1comm__client =
     [ "comm_client", "classcppipc_1_1comm__client.html#a021f0c9432200eb27d37fa4997110b4e", null ],
     [ "~comm_client", "classcppipc_1_1comm__client.html#a3b5118e1afb6c86135a32dc62090e416", null ],
     [ "add_status_watch", "classcppipc_1_1comm__client.html#af8560b918adaabdb556e0cb4816b1f06", null ],
-    [ "call", "classcppipc_1_1comm__client.html#a14535c64a8981a3888b02d9402032ef6", null ],
+    [ "call", "classcppipc_1_1comm__client.html#a804cdec282173dc88349945009b610d1", null ],
     [ "clear_status_watch", "classcppipc_1_1comm__client.html#aa5b64ed5d3eeaa365809de54273c5e3d", null ],
     [ "delete_object", "classcppipc_1_1comm__client.html#af85b11228c52b8c97b97c029b34fcb8e", null ],
     [ "incr_ref_count", "classcppipc_1_1comm__client.html#a33ad94628bcea50b60d2dc3ebf3b4da8", null ],

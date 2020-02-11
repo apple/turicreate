@@ -15,8 +15,6 @@ var dir_459a7c9a427a2877b0db19c6b8d6e89d =
     [ "coro.hpp", "coro_8hpp.html", null ],
     [ "dense_bitset.hpp", "dense__bitset_8hpp_source.html", null ],
     [ "fast_integer_power.hpp", "fast__integer__power_8hpp_source.html", null ],
-    [ "fast_multinomial.hpp", "fast__multinomial_8hpp_source.html", null ],
-    [ "fast_set.hpp", "fast__set_8hpp_source.html", null ],
     [ "fast_top_k.hpp", "fast__top__k_8hpp_source.html", null ],
     [ "file_line_count_estimator.hpp", "file__line__count__estimator_8hpp_source.html", null ],
     [ "fs_util.hpp", "fs__util_8hpp_source.html", null ],
