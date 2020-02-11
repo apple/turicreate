@@ -122,7 +122,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -fPIC")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Werror")
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror")
 
-# Go through and add in all the relevant build flags as appropriate 
+# Go through and add in all the relevant build flags as appropriate
 check_and_set_compiler_flag(-ftemplate-depth=900 CXX)
 check_and_set_compiler_flag(-Wno-c++11-narrowing CXX)
 check_and_set_compiler_flag(-Wno-stdlibcxx-not-found CXX RESTRICT_CLANG)
@@ -154,9 +154,9 @@ check_and_set_compiler_flag(-mfpmath=sse RELEASE)
 
 if(APPLE)
   # This triggers a bug in clang; the 10.13 symbol ___chkstk_darwin is missing in
-  # 10.13, and the code generated doesn't run on that, even with the 10.12 target.  
+  # 10.13, and the code generated doesn't run on that, even with the 10.12 target.
   # The solution to this is to disable the stack checking globally, which seems
-  # to be enabled by default in clang 11 and later for objective C++ code. 
+  # to be enabled by default in clang 11 and later for objective C++ code.
   check_and_set_compiler_flag(-fno-stack-check)
   check_and_set_compiler_flag(-fno-stack-protector)
 endif()
@@ -164,7 +164,7 @@ endif()
 # Turn on ARC globally.
 check_and_set_compiler_flag(-fobjc-arc)
 
-# This flag needs to be set after all other warning flags, or it may give false 
+# This flag needs to be set after all other warning flags, or it may give false
 # positives.
 check_and_set_compiler_flag(-Wno-unknown-warning-option)
 
@@ -193,7 +193,7 @@ Find_Int128_Types()
 include(CompilerOddities)
 Set_Compiler_Specific_Flags()
 
-# Set up threads. 
+# Set up threads.
 set(THREADS_PREFER_PTHREAD_FLAG TRUE)
 set(CMAKE_THREAD_PREFER_PTHREAD TRUE)
 find_package(Threads REQUIRED)
@@ -212,13 +212,13 @@ if (APPLE)
   find_library(CORE_VIDEO CoreVideo)
   find_library(METAL NAMES Metal)
   find_library(METAL_PERFORMANCE_SHADERS NAMES MetalPerformanceShaders)
-  set(_TC_APPLE_DEPENDENCIES 
-    ${ACCELERATE} ${CORE_GRAPHICS} ${JAVASCRIPT_CORE} ${FOUNDATION} 
+  set(_TC_APPLE_DEPENDENCIES
+    ${ACCELERATE} ${CORE_GRAPHICS} ${JAVASCRIPT_CORE} ${FOUNDATION}
     ${CORE_IMAGE} ${CORE_ML} ${CORE_VIDEO} ${METAL} ${METAL_PERFORMANCE_SHADERS})
 
   if(NOT ${TC_BUILD_IOS})
     find_library(APPKIT AppKit)
-    set(_TC_APPLE_DEPENDENCIES ${_TC_APPLE_DEPENDENCIES} ${APPKIT}) 
+    set(_TC_APPLE_DEPENDENCIES ${_TC_APPLE_DEPENDENCIES} ${APPKIT})
   endif()
 endif()
 
@@ -358,7 +358,7 @@ foreach(package ${packages})
         add_dependencies(external_dependencies ex_${depname})
 endforeach()
 
-set(_TC_EXTERNAL_DEPENDENCIES 
+set(_TC_EXTERNAL_DEPENDENCIES
   openssl libxml2 curl
   Threads::Threads
   ${CMAKE_DL_LIBS})
@@ -368,7 +368,7 @@ set(_TC_EXTERNAL_DEPENDENCIES
 # These are used by C API, unity_shared, etc.
 
 if(NOT _TC_DEFAULT_SERVER_INITIALIZER)
-  set(_TC_DEFAULT_SERVER_INITIALIZER 
+  set(_TC_DEFAULT_SERVER_INITIALIZER
     "${CMAKE_SOURCE_DIR}/src/capi/default_server_initializer.cpp"
   )
 endif()
@@ -459,7 +459,12 @@ set(_TC_COMMON_REQUIREMENTS
   boost
   libbz2
   z
+  omp
 )
+
+# if (NOT TC_BUILD_IOS)
+#   LIST(APPEND _TC_COMMON_REQUIREMENTS omp)
+# endif()
 
 if(APPLE)
   set(_TC_COMMON_REQUIREMENTS
@@ -467,7 +472,7 @@ if(APPLE)
     ${_TC_COMMON_REQUIREMENTS}
     ${_TC_APPLE_DEPENDENCIES})
 endif()
-  
+
   set(_TC_COMMON_OBJECTS
     ${_TC_COMMON_OBJECTS}
   "$<TARGET_OBJECTS:annotation>"
@@ -491,7 +496,7 @@ if(APPLE)
       ${_TC_COMMON_OBJECTS}
       "$<TARGET_OBJECTS:vega_renderer>"
     )
-    set(_TC_COMMON_REQUIREMENTS 
+    set(_TC_COMMON_REQUIREMENTS
       ${_TC_COMMON_REQUIREMENTS}
       ${APPKIT}
       ${CORE_GRAPHICS}
@@ -541,4 +546,3 @@ endif()
 
 add_subdirectory(src)
 add_subdirectory(test)
-
