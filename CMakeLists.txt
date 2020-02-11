@@ -459,12 +459,14 @@ set(_TC_COMMON_REQUIREMENTS
   boost
   libbz2
   z
-  omp
 )
 
-# if (NOT TC_BUILD_IOS)
-#   LIST(APPEND _TC_COMMON_REQUIREMENTS omp)
-# endif()
+if (NOT TC_BUILD_IOS)
+  set(TC_ENABLE_OPENMP ON CACHE STRING "enable openmp")
+  LIST(APPEND _TC_COMMON_REQUIREMENTS omp)
+  add_definitions(-D_OPNMP)
+  remove_definitions(-DDISABLE_OPENMP)
+endif()
 
 if(APPLE)
   set(_TC_COMMON_REQUIREMENTS

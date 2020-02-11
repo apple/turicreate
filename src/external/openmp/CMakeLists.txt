@@ -1,5 +1,9 @@
 project(Turi)
 
+if(TC_BUILD_IOS)
+  return()
+endif()
+
 message("Building openmp using native build system.")
 
 set(_openmp_dir openmp-src)
@@ -7,16 +11,6 @@ set(_openmp_dir openmp-src)
 set(ON_X86
     ON
     CACHE BOOL "build on x86 architecture")
-
-if(TC_BUILD_IOS)
-  set(ON_X86 OFF)
-  foreach(variable LISTS ${CMAKE_OSX_ARCHITECTURES})
-    if(variable STREQUAL "arm64")
-      set(LIBOMP_ARCH aarch64)
-      break()
-    endif() # let OMP decide it self
-  endforeach(variable)
-endif()
 
 # custom settings
 set(OPENMP_STANDALONE_BUILD
