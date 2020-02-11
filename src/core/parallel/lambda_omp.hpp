@@ -6,7 +6,6 @@
  */
 #ifndef TURI_PARALLEL_LAMBDA_OMP_HPP
 #define TURI_PARALLEL_LAMBDA_OMP_HPP
-#include <omp.h>
 
 #include <core/parallel/thread_pool.hpp>
 #include <core/util/basic_types.hpp>

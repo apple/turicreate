@@ -16,10 +16,7 @@ if(TC_BUILD_IOS)
       break()
     endif() # let OMP decide it self
   endforeach(variable)
-  check_cxx_compiler_flag(-no-integrated-as COMPILER_SUPPORTS_NO_ASM)
 endif()
-
-message(FATAL_ERROR ${ON_X86} ${TC_BUILD_IOS})
 
 # custom settings
 set(OPENMP_STANDALONE_BUILD
@@ -42,8 +39,6 @@ set(LIBOMP_COPY_EXPORTS
     FALSE
     CACHE STRING "build in place")
 
-# for <crt_extern.h>
-
 # build openmp
 add_subdirectory(${_openmp_dir})
 
@@ -52,6 +47,8 @@ set(TURI_OMP_H_PATH
     CACHE STRING "build time generated omp.h path")
 
 target_include_directories(omp INTERFACE ${TURI_OMP_H_PATH})
+
+# for <crt_extern.h>
 target_include_directories(omp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 # used to extract the header path
