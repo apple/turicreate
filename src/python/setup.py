@@ -43,6 +43,14 @@ class InstallEngine(install):
         install.initialize_options(self)
         self.minimal = None
 
+    user_options = install.user_options + [
+        ("minimal", None, "control minimal installation"),  # a 'flag' option
+    ]
+
+    def initialize_options(self):
+        install.initialize_options(self)
+        self.minimal = None
+
     def run(self):
         if self.minimal is not None:
 
@@ -161,6 +169,21 @@ if __name__ == "__main__":
 
     with open(os.path.join(os.path.dirname(__file__), "README.rst"), "rb") as f:
         long_description = f.read().decode("utf-8")
+
+    install_requires = [
+        "coremltools==3.3",
+        "decorator >= 4.0.9",
+        "numpy",
+        "pandas >= 0.23.2",
+        "pillow >= 5.2.0",
+        "prettytable == 0.7.2",
+        "resampy == 0.2.1",
+        "llvmlite == 0.31.0",
+        "requests >= 2.9.1",
+        "scipy >= 1.1.0",
+        "six >= 1.10.0",
+        "tensorflow >= 2.0.0",
+    ]
 
     install_requires = [
         "coremltools==3.3",
