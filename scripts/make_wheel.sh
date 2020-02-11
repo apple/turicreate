@@ -349,8 +349,7 @@ function package_wheel () {
     # Install the wheel and do a smoke test
     unset PYTHONPATH
 
-    $PIP_EXECUTABLE uninstall turicreate # make sure any existing build is uninstalled first
-    $PIP_EXECUTABLE install ${WHEEL_PATH}
+    $PIP_EXECUTABLE install --upgrade --force ${WHEEL_PATH}
     $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
   fi
 
