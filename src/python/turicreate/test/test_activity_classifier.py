@@ -240,7 +240,9 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
         pred_2 = model_2.predict(self.data, output_type="probability_vector")
         assert len(pred_1) == len(pred_2)
         for i in range(len(pred_1)):
-            self.assertEqual(pred_1[i], pred_2[i])
+            assert len(pred_1[i]) == len(pred_2[i])
+            for j in range(len(pred_1[i])):
+                np.testing.assert_almost_equal(pred_1[i][j], pred_2[i][j], decimal=5)
 
 
 class ActivityClassifierAutoValdSetTest(unittest.TestCase):
