@@ -292,14 +292,17 @@ package_wheel() {
   fi
 
 function package_wheel () { 
-  setup_file=$1
+  strip_tensorflow=$1
   version_modifier=$2
 
   cd ${WORKSPACE}/${build_type}/src/python
   dist_type="bdist_wheel"
 
-  cp $setup_file setup.cfg
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
+  if [[ $strip_tensorflow == 1 ]] ; then
+    sed -i '' 's|\"tensorflow[^\"]*|""|g' setup.py
+  fi
+
   ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
 
   cd ${WORKSPACE}
@@ -358,8 +361,8 @@ function package_wheel () {
 }
  
   # Run the setup 
-  package_wheel setup_full.cfg ""
-  package_wheel setup_minimal.cfg +minimal 
+  package_wheel 0 ""
+  package_wheel 1 +minimal 
 
   echo -e "\n\n================= Done Packaging Wheel  ================\n\n"
 }
