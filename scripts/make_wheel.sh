@@ -300,7 +300,7 @@ function package_wheel () {
 
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
   if [[ $strip_tensorflow == 1 ]] ; then
-    sed -i '' 's|\"tensorflow[^\"]*|""|g' setup.py
+    sed -i '' 's|\"tensorflow[^\"]*\"|""|g' setup.py
   fi
 
   ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
