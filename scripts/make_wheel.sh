@@ -304,7 +304,7 @@ function package_wheel () {
 
   cd ${WORKSPACE}
 
-  ORIG_WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}*.whl`
+  ORIG_WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}-*.whl`
   WHEEL_PATH=${ORIG_WHEEL_PATH/turicreate-${VERSION_NUMBER}/turicreate-${VERSION_NUMBER}${version_modifier}}
   [[ ! $ORIG_WHEEL_PATH == $WHEEL_PATH ]] && mv $ORIG_WHEEL_PATH $WHEEL_PATH
 
