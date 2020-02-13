@@ -14,6 +14,6 @@ make_library(
   EXTERNAL_VISIBILITY)
 
 if(NOT TC_BUILD_IOS)
-  target_link_libraries(parallel omp)
-  target_compile_options(parallel PUBLIC "-Xpreprocessor -fopenmp")
+  target_link_libraries(parallel PRIVATE omp)
+  target_compile_options(parallel PRIVATE "-Xpreprocessor -fopenmp")
 endif()

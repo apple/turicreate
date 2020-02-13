@@ -30,7 +30,7 @@ else()
 endif()
 
 if(NOT TC_BUILD_IOS)
-  target_link_libraries(xgboost omp)
+  target_link_libraries(xgboost PRIVATE omp)
   target_compile_options(xgboost PUBLIC "-Xpreprocessor -fopenmp")
 endif()
 
