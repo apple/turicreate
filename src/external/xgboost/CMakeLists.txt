@@ -10,7 +10,7 @@ if(TC_BUILD_IOS)
     src/io/io.cpp
     subtree/rabit/src/engine_empty.cc
     REQUIRES
-    libjson
+    # libjson
     boost)
 else()
   make_library(
@@ -22,7 +22,7 @@ else()
     src/io/io.cpp
     subtree/rabit/src/engine_empty.cc
     REQUIRES
-    libjson
+    # libjson
     boost
     omp)
 endif()
