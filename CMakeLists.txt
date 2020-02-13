@@ -385,7 +385,6 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:lz4>"
   "$<TARGET_OBJECTS:protobuf>"
   "$<TARGET_OBJECTS:uuid>"
-  "$<TARGET_OBJECTS:xgboost>"
   "$<TARGET_OBJECTS:coremltools_mlmodel>"
 
   # Then our own source code
@@ -404,7 +403,6 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:nanosockets>"
   "$<TARGET_OBJECTS:network>"
   "$<TARGET_OBJECTS:optimization>"
-  "$<TARGET_OBJECTS:parallel>"
   "$<TARGET_OBJECTS:process>"
   "$<TARGET_OBJECTS:pylambda>"
   "$<TARGET_OBJECTS:random>"
@@ -459,11 +457,12 @@ set(_TC_COMMON_REQUIREMENTS
   boost
   libbz2
   z
+  xgboost
+  parallel
 )
 
 if (NOT TC_BUILD_IOS)
   set(TC_ENABLE_OPENMP ON CACHE STRING "enable openmp")
-  LIST(APPEND _TC_COMMON_REQUIREMENTS omp)
   add_definitions(-D_OPNMP)
   remove_definitions(-DDISABLE_OPENMP)
 endif()

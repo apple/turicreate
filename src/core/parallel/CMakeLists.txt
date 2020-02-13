@@ -2,7 +2,6 @@ project(Turi)
 
 make_library(
   parallel
-  OBJECT
   SOURCES
   pthread_tools.cpp
   thread_pool.cpp

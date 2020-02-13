@@ -3,7 +3,6 @@ project(Turi)
 if(TC_BUILD_IOS)
   make_library(
     xgboost
-    OBJECT
     SOURCES
     src/gbm/gbm.cpp
     src/tree/updater.cpp
@@ -16,7 +15,6 @@ if(TC_BUILD_IOS)
 else()
   make_library(
     xgboost
-    OBJECT
     SOURCES
     src/gbm/gbm.cpp
     src/tree/updater.cpp
