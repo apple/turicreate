@@ -15,14 +15,24 @@ namespace turi {
 void in_parallel(
     const std::function<void(size_t thread_id, size_t num_threads)>& fn) {
 #if defined(_OPENMP) && !defined(DISABLE_OPENMP)
-// start a team of threads
-#pragma omp parallel
+  // start a team of threads
+  std::queue<std::exception_ptr> exception_queue;
+#pragma omp parallel default(none) shared(exception_queue)
   {
-    const size_t nworkers = omp_get_num_threads();
+    size_t nworkers = omp_get_num_threads();
 #pragma omp for schedule(guided)
     for (size_t ii = 0; ii < nworkers; ii++) {
-      fn(ii, nworkers);
+      try {
+        fn(ii, nworkers);
+      } catch (...) {
+#pragma omp critical
+        exception_queue.push(std::current_exception());
+      }
     }
+  }
+
+  if (!exception_queue.empty()) {
+    std::rethrow_exception(exception_queue.front());
   }
 
 #else
