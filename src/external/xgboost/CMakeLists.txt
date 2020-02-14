@@ -29,7 +29,7 @@ endif()
 
 if(NOT TC_BUILD_IOS)
   target_link_libraries(xgboost PRIVATE omp)
-  target_compile_options(xgboost PUBLIC "-Xpreprocessor -fopenmp")
+  target_compile_options(xgboost PRIVATE "-Xpreprocessor -fopenmp")
 endif()
 
 target_compile_options(xgboost PUBLIC "-Wno-narrowing -msse2 -funroll-loops")

@@ -404,6 +404,7 @@ set(_TC_COMMON_OBJECTS
   "$<TARGET_OBJECTS:network>"
   "$<TARGET_OBJECTS:optimization>"
   "$<TARGET_OBJECTS:process>"
+  "$<TARGET_OBJECTS:parallel>"
   "$<TARGET_OBJECTS:pylambda>"
   "$<TARGET_OBJECTS:random>"
   "$<TARGET_OBJECTS:serialization>"
@@ -458,7 +459,6 @@ set(_TC_COMMON_REQUIREMENTS
   libbz2
   z
   xgboost
-  parallel
 )
 
 if (NOT TC_BUILD_IOS)
