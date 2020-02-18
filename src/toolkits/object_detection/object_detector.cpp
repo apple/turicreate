@@ -303,11 +303,11 @@ void object_detector::load(std::map<std::string, variant_type> state,
 
   // Write from the state into our new Config struct.
   Config& config = checkpoint_->config;
-  config.max_iterations = get_max_iterations();
+  config.max_iterations = static_cast<int>(get_max_iterations());
   config.batch_size = read_state<int>("batch_size");
   config.output_height = read_state<int>("grid_height");
   config.output_width = read_state<int>("grid_width");
-  config.num_classes = get_num_classes();
+  config.num_classes = static_cast<int>(get_num_classes());
 }
 
 Checkpoint* object_detector::read_checkpoint() const {
@@ -1045,11 +1045,11 @@ void object_detector::init_training(gl_sframe data,
 
   int batch_size = read_state<int>("batch_size");
   Config config;
-  config.max_iterations = get_max_iterations();
+  config.max_iterations = static_cast<int>(get_max_iterations());
   config.batch_size = batch_size;
-  config.output_height = grid_height;
-  config.output_width = grid_width;
-  config.num_classes = get_num_classes();
+  config.output_height = static_cast<int>(grid_height);
+  config.output_width = static_cast<int>(grid_width);
+  config.num_classes = static_cast<int>(get_num_classes());
 
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
