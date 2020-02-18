@@ -24,6 +24,9 @@ namespace neural_net {
 // Forward declarations for types defined by other headers included by
 // combine.hpp.
 
+template <typename T, typename Callable>
+class CallableTransform;
+
 template <typename T>
 class FuturesStream;
 
@@ -221,19 +224,26 @@ class Publisher : public std::enable_shared_from_this<Publisher<T>> {
   }
 
   std::shared_ptr<FuturesStream<Output>> AsFutures() {
-    auto subscriber =
-        std::make_shared<FuturesSubscriber<Output>>(this->shared_from_this());
+    auto subscriber = std::make_shared<FuturesSubscriber<Output>>();
     Subscribe(subscriber);
     return std::make_shared<FuturesStream<Output>>(std::move(subscriber));
   }
 
-  template <typename Transform>
-  std::shared_ptr<Publisher<typename Transform::Output>> Map(
-      std::shared_ptr<Transform> transform) {
-    using TransformInput = typename Transform::Input;
-    using TransformOutput = typename Transform::Output;
+  template <typename TransformType>
+  std::shared_ptr<Publisher<typename TransformType::Output>> Map(
+      std::shared_ptr<TransformType> transform) {
+    using TransformInput = typename TransformType::Input;
+    using TransformOutput = typename TransformType::Output;
     return std::make_shared<MapPublisher<TransformInput, TransformOutput>>(
         this->shared_from_this(), std::move(transform));
+  }
+
+  template <typename Callable>
+  std::shared_ptr<Publisher<typename std::result_of<Callable(Output)>::type>>
+  Map(Callable fn) {
+    using TransformType = CallableTransform<Output, Callable>;
+    auto transform = std::make_shared<TransformType>(std::move(fn));
+    return Map(std::move(transform));
   }
 };
 

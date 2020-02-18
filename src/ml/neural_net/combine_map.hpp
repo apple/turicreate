@@ -5,8 +5,8 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef ML_NEURAL_NET_COMBINE_ITERATOR_HPP_
-#define ML_NEURAL_NET_COMBINE_ITERATOR_HPP_
+#ifndef ML_NEURAL_NET_COMBINE_MAP_HPP_
+#define ML_NEURAL_NET_COMBINE_MAP_HPP_
 
 #include <exception>
 #include <functional>
@@ -34,6 +34,24 @@ class Transform {
 
   /** Returns the next value in the sequence. May throw on error. */
   virtual Output Invoke(Input value) = 0;
+};
+
+/**
+ * Templated implementation of Transform that wraps an arbitrary callable type.
+ */
+template <typename T, typename Callable>
+class CallableTransform
+    : public Transform<T, typename std::result_of<Callable(T)>::type> {
+ public:
+  using Input = T;
+  using Output = typename std::result_of<Callable(T)>::type;
+
+  CallableTransform(Callable impl) : impl_(std::move(impl)) {}
+
+  Output Invoke(Input input) override { return impl_(std::move(input)); }
+
+ private:
+  Callable impl_;
 };
 
 /**
@@ -126,4 +144,4 @@ class MapPublisher : public Publisher<U> {
 }  // namespace neural_net
 }  // namespace turi
 
-#endif  // ML_NEURAL_NET_COMBINE_ITERATOR_HPP_
+#endif  // ML_NEURAL_NET_COMBINE_MAP_HPP_
