@@ -19,8 +19,6 @@
 #include <ml/neural_net/combine_base.hpp>
 #include <ml/neural_net/combine_futures_subscriber.hpp>
 #include <ml/neural_net/combine_iterator.hpp>
-
-}  // namespace neural_net
-}  // namespace turi
+#include <ml/neural_net/combine_map.hpp>
 
 #endif  // ML_NEURAL_NET_COMBINE_HPP_
