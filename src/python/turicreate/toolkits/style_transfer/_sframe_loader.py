@@ -6,9 +6,8 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import numpy as _np
+
 import turicreate as _tc
-from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
 _TMP_COL_PREP_IMAGE = "_prepared_image"
 _TMP_COL_RANDOM_ORDER = "_random_order"

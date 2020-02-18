@@ -7,7 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-import hashlib as _hashlib
 import os as _os
 import turicreate as _tc
 import shutil as _shutil
