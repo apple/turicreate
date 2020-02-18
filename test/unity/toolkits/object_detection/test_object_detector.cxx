@@ -11,10 +11,13 @@
 #include <array>
 #include <deque>
 #include <memory>
+#include <numeric>
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
+
+#include <toolkits/object_detection/od_darknet_yolo_model.hpp>
 
 #include "../neural_net/neural_net_mocks.hpp"
 
@@ -47,6 +50,18 @@ using turi::neural_net::shared_float_array;
 // boilerplate into some utility templates or macros. Yes, if necessary, create
 // our own simplistic mocking tools.
 
+std::map<std::string, variant_type> get_basic_state() {
+  return {{"annotation_origin", "top_left"},
+          {"annotation_position", "center"},
+          {"annotation_scale", "pixel"},
+          {"annotations", "annotations"},
+          {"feature", "feature"},
+          {"grid_height", 13},
+          {"grid_width", 13},
+          {"random_seed", 7},
+          {"verbose", false}};
+}
+
 class mock_data_iterator: public data_iterator {
 public:
   using next_batch_call =
@@ -55,6 +70,8 @@ public:
   ~mock_data_iterator() {
     TS_ASSERT(next_batch_calls_.empty());
   }
+
+  bool has_next_batch() const override { return !next_batch_calls_.empty(); }
 
   std::vector<labeled_image> next_batch(size_t batch_size) override {
     TS_ASSERT(!next_batch_calls_.empty());
@@ -88,8 +105,9 @@ public:
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
 
-  using init_model_call = std::function<std::unique_ptr<model_spec>(
-      const std::string& pretrained_mlmodel_path, size_t num_classes)>;
+  using create_model_call = std::function<std::unique_ptr<Model>(
+      const Config& config, const std::string& pretrained_model_path,
+      int random_seed, std::unique_ptr<neural_net::compute_context> context)>;
 
   using perform_evaluation_call =
       std::function<variant_type(gl_sframe data, std::string metric,
@@ -102,23 +120,14 @@ public:
           float min_confidence)>;
 
   test_object_detector() = default;
-  test_object_detector(
-      const std::map<std::string, variant_type>& initial_state,
-      std::unique_ptr<model_spec> nn_spec,
-      std::unique_ptr<compute_context> training_compute_context,
-      std::unique_ptr<data_iterator> training_data_iterator,
-      std::unique_ptr<image_augmenter> training_data_augmenter,
-      std::unique_ptr<model_backend> training_model)
-      : object_detector(initial_state, std::move(nn_spec),
-                        std::move(training_compute_context),
-                        std::move(training_data_iterator),
-                        std::move(training_data_augmenter),
-                        std::move(training_model)) {}
+  test_object_detector(std::map<std::string, variant_type> initial_state,
+                       float_array_map initial_weights)
+      : object_detector(std::move(initial_state), std::move(initial_weights)) {}
 
   ~test_object_detector() {
     TS_ASSERT(create_iterator_calls_.empty());
     TS_ASSERT(create_compute_context_calls_.empty());
-    TS_ASSERT(init_model_calls_.empty());
+    TS_ASSERT(create_model_calls_.empty());
   }
 
   std::unique_ptr<data_iterator> create_iterator(
@@ -140,13 +149,15 @@ public:
     return expected_call();
   }
 
-  std::unique_ptr<model_spec> init_model(
-      const std::string& pretrained_mlmodel_path,
-      size_t num_classes) const override {
-    TS_ASSERT(!init_model_calls_.empty());
-    init_model_call expected_call = std::move(init_model_calls_.front());
-    init_model_calls_.pop_front();
-    return expected_call(pretrained_mlmodel_path, num_classes);
+  std::unique_ptr<Model> create_model(
+      const Config& config, const std::string& pretrained_model_path,
+      int random_seed,
+      std::unique_ptr<neural_net::compute_context> context) const override {
+    TS_ASSERT(!create_model_calls_.empty());
+    create_model_call expected_call = std::move(create_model_calls_.front());
+    create_model_calls_.pop_front();
+    return expected_call(config, pretrained_model_path, random_seed,
+                         std::move(context));
   }
 
   variant_type perform_evaluation(gl_sframe data, std::string metric,
@@ -179,7 +190,7 @@ public:
 
   mutable std::deque<create_iterator_call> create_iterator_calls_;
   mutable std::deque<create_compute_context_call> create_compute_context_calls_;
-  mutable std::deque<init_model_call> init_model_calls_;
+  mutable std::deque<create_model_call> create_model_calls_;
   mutable std::deque<perform_evaluation_call> perform_evaluation_calls_;
   mutable std::deque<convert_yolo_to_annotations_call>
       convert_yolo_to_annotations_calls_;
@@ -250,10 +261,11 @@ BOOST_AUTO_TEST_CASE(test_object_detector_iterate_training) {
         TS_ASSERT_EQUALS(source_batch[j].annotations, (*test_annotations)[j]);
       }
 
-      // Return an arbitrary float_array, just a scalar encoding the iteration
-      // index.
+      // Just return a zero array with the correct shape for this test.
       image_augmenter::result res;
-      res.image_batch = shared_float_array::wrap(static_cast<float>(i));
+      res.image_batch = shared_float_array::wrap(
+          std::vector<float>(test_batch_size * 416 * 416 * 3),
+          {test_batch_size, 416, 416, 3});
       res.annotations_batch = *test_annotations;
 
       // Save the image_batch for downstream validation.
@@ -290,15 +302,34 @@ BOOST_AUTO_TEST_CASE(test_object_detector_iterate_training) {
     mock_nn_model->train_calls_.push_back(train_impl);
   }
 
-  test_object_detector model(
-      {{"batch_size", test_batch_size},
-       {"grid_height", 13},
-       {"grid_width", 13},
-       {"max_iterations", 4},
-       {"num_examples", test_num_examples},
-       {"training_iterations", 0}},
-      nullptr, std::move(mock_context), std::move(mock_iterator),
-      std::move(mock_augmenter), std::move(mock_nn_model));
+  std::map<std::string, variant_type> state = get_basic_state();
+  state["batch_size"] = test_batch_size;
+  state["classes"] =
+      flex_list(test_class_labels.begin(), test_class_labels.end());
+  state["max_iterations"] = 4;
+  state["num_classes"] = 2;
+  state["num_examples"] = test_num_examples;
+  state["training_iterations"] = 0;
+  test_object_detector model(state, {});
+
+  // Program the mock_compute_context to emit the other mocks.
+  mock_context->create_augmenter_calls_.push_back(
+      [&](const image_augmenter::options& opts) {
+        return std::move(mock_augmenter);
+      });
+  mock_context->create_object_detector_calls_.push_back(
+      [&](int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+          const float_array_map& config,
+          const float_array_map& weights) { return std::move(mock_nn_model); });
+  model.create_iterator_calls_.push_back(
+      [&](data_iterator::parameters iterator_params) {
+        return std::move(mock_iterator);
+      });
+  model.create_compute_context_calls_.push_back(
+      [&] { return std::move(mock_context); });
+
+  // Trigger the injection of the mocks.
+  model.resume_training(gl_sframe(), gl_sframe());
 
   // Now, actually invoke object_detector::iterate_training. This will trigger
   // all the assertions registered above.
@@ -368,21 +399,25 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.init_model_calls_.emplace_back([=](const std::string& model_path,
-                                           size_t num_classes) {
-    TS_ASSERT_EQUALS(model_path, test_mlmodel_path);
-    TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
+  model.create_model_calls_.emplace_back(
+      [=](const Config& config, const std::string& pretrained_model_path,
+          int random_seed,
+          std::unique_ptr<neural_net::compute_context> context) {
+        TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
+        TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
 
-    std::unique_ptr<model_spec> nn_spec(new model_spec);
-    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
-                             model_spec::padding_type::SAME,
-                             /* weight_init_fn */ [](float* w, float* w_end) {
-                               for (int i = 0; i < w_end - w; ++i) {
-                                 w[i] = static_cast<float>(i);
-                               }
-                             });
-    return nn_spec;
-  });
+        Checkpoint checkpoint;
+        checkpoint.config = config;
+
+        std::vector<float> buffer(16 * 16 * 3 * 3);
+        std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
+        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+            std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
+
+        std::unique_ptr<Model> model;
+        model.reset(new DarknetYOLOModel(checkpoint, std::move(context)));
+        return model;
+      });
 
   auto create_object_detector_impl =
       [&](int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
@@ -395,8 +430,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
         TS_ASSERT_EQUALS(h_out, 13);
         TS_ASSERT_EQUALS(w_out, 13);
 
-        // weights should be what we returned from init_model, as copied by
-        // neural_net::wrap_network_params
+        // weights should be what we returned from create_model
         TS_ASSERT_EQUALS(weights.size(), 1);
         auto it = weights.find("test_layer_weight");
         TS_ASSERT(it != weights.end());
@@ -472,16 +506,36 @@ BOOST_AUTO_TEST_CASE(test_object_detector_finalize_training) {
   mock_iterator->class_labels_ = test_class_labels;
   mock_iterator->num_instances_ = test_num_instances;
 
-  test_object_detector model({{"batch_size", test_batch_size},
-                              {"grid_height", 13},
-                              {"grid_width", 13},
-                              {"max_iterations", 4},
-                              {"num_examples", test_num_examples},
-                              {"training_iterations", 0}},
-                             std::unique_ptr<model_spec>(new model_spec),
-                             std::move(mock_context), std::move(mock_iterator),
-                             std::move(mock_augmenter),
-                             std::move(mock_nn_model));
+  std::map<std::string, variant_type> state = get_basic_state();
+  state["batch_size"] = test_batch_size;
+  state["classes"] =
+      flex_list(test_class_labels.begin(), test_class_labels.end());
+  state["grid_height"] = 13;
+  state["grid_width"] = 13;
+  state["max_iterations"] = 4;
+  state["num_classes"] = 2;
+  state["num_examples"] = test_num_examples;
+  state["training_iterations"] = 0;
+  test_object_detector model(state, {});
+
+  // Program the mock_compute_context to emit the other mocks.
+  mock_context->create_augmenter_calls_.push_back(
+      [&](const image_augmenter::options& opts) {
+        return std::move(mock_augmenter);
+      });
+  mock_context->create_object_detector_calls_.push_back(
+      [&](int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
+          const float_array_map& config,
+          const float_array_map& weights) { return std::move(mock_nn_model); });
+  model.create_iterator_calls_.push_back(
+      [&](data_iterator::parameters iterator_params) {
+        return std::move(mock_iterator);
+      });
+  model.create_compute_context_calls_.push_back(
+      [&] { return std::move(mock_context); });
+
+  // Trigger the injection of the mocks.
+  model.resume_training(gl_sframe(), gl_sframe());
 
   // finalize_training will trigger a call to evaluation, to compute training
   // metrics.
@@ -581,10 +635,11 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
         TS_ASSERT_EQUALS(source_batch[j].annotations, (*test_annotations)[j]);
       }
 
-      // Return an arbitrary float_array, just a scalar encoding the iteration
-      // index.
+      // Just return a zero array with the correct shape for this test.
       image_augmenter::result res;
-      res.image_batch = shared_float_array::wrap(static_cast<float>(i));
+      res.image_batch = shared_float_array::wrap(
+          std::vector<float>(test_batch_size * 416 * 416 * 3),
+          {test_batch_size, 416, 416, 3});
       res.annotations_batch = *test_annotations;
 
       // Save the image_batch for downstream validation.
@@ -650,21 +705,25 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.init_model_calls_.emplace_back([=](const std::string& model_path,
-                                           size_t num_classes) {
-    TS_ASSERT_EQUALS(model_path, test_mlmodel_path);
-    TS_ASSERT_EQUALS(num_classes, test_class_labels.size());
+  model.create_model_calls_.emplace_back(
+      [=](const Config& config, const std::string& pretrained_model_path,
+          int random_seed,
+          std::unique_ptr<neural_net::compute_context> context) {
+        TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
+        TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
 
-    std::unique_ptr<model_spec> nn_spec(new model_spec);
-    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
-                             model_spec::padding_type::SAME,
-                             /* weight_init_fn */ [](float*w , float* w_end) {
-                               for (int i = 0; i < w_end - w; ++i) {
-                                 w[i] = static_cast<float>(i);
-                               }
-                             });
-    return nn_spec;
-  });
+        Checkpoint checkpoint;
+        checkpoint.config = config;
+
+        std::vector<float> buffer(16 * 16 * 3 * 3);
+        std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
+        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+            std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
+
+        std::unique_ptr<Model> model;
+        model.reset(new DarknetYOLOModel(checkpoint, std::move(context)));
+        return model;
+      });
 
   auto create_object_detector_impl = [&](int n, int c_in, int h_in, int w_in,
                                     int c_out, int h_out, int w_out,
@@ -679,8 +738,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
     TS_ASSERT_EQUALS(h_out, 13);
     TS_ASSERT_EQUALS(w_out, 13);
 
-    // weights should be what we returned from init_model, as copied by
-    // neural_net::wrap_network_params
+    // weights should be what we returned from create_model
     TS_ASSERT_EQUALS(weights.size(), 1);
     auto it = weights.find("test_layer_weight");
     TS_ASSERT(it != weights.end());
@@ -813,10 +871,12 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
       for (size_t j = 0; j < source_batch.size(); ++j) {
         TS_ASSERT_EQUALS(source_batch[j].annotations, (*test_annotations)[j]);
       }
-      // Return an arbitrary float_array, just a scalar encoding the iteration
-      // index.
+
+      // Just return a zero array with the correct shape for this test.
       image_augmenter::result res;
-      res.image_batch = shared_float_array::wrap(static_cast<float>(i));
+      res.image_batch = shared_float_array::wrap(
+          std::vector<float>(test_batch_size * 416 * 416 * 3),
+          {test_batch_size, 416, 416, 3});
       res.annotations_batch = *test_annotations;
 
       // Save the image_batch for downstream validation.
@@ -869,18 +929,25 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.init_model_calls_.emplace_back([=](const std::string& model_path,
-                                           size_t num_classes) {
-    std::unique_ptr<model_spec> nn_spec(new model_spec);
-    nn_spec->add_convolution("test_layer", "test_input", 16, 16, 3, 3, 1, 1,
-                             model_spec::padding_type::SAME,
-                             /* weight_init_fn */ [](float* w, float* w_end) {
-                               for (int i = 0; i < w_end - w; ++i) {
-                                 w[i] = static_cast<float>(i);
-                               }
-                             });
-    return nn_spec;
-  });
+  model.create_model_calls_.emplace_back(
+      [=](const Config& config, const std::string& pretrained_model_path,
+          int random_seed,
+          std::unique_ptr<neural_net::compute_context> context) {
+        TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
+        TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
+
+        Checkpoint checkpoint;
+        checkpoint.config = config;
+
+        std::vector<float> buffer(16 * 16 * 3 * 3);
+        std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
+        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+            std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
+
+        std::unique_ptr<Model> model;
+        model.reset(new DarknetYOLOModel(checkpoint, std::move(context)));
+        return model;
+      });
 
   auto create_object_detector_impl =
       [&](int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,

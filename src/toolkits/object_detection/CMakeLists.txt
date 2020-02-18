@@ -4,10 +4,12 @@ make_library(unity_object_detection OBJECT
   SOURCES
     class_registrations.cpp
     object_detector.cpp
+    od_darknet_yolo_model.cpp
     od_data_iterator.cpp
-    od_yolo.cpp
     od_evaluation.cpp
+    od_model.cpp
     od_serialization.cpp
+    od_yolo.cpp
   REQUIRES
     image_io
     random
