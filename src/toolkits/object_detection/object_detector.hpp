@@ -47,7 +47,7 @@ class EXPORT object_detector: public ml_model_base {
                         std::map<std::string, flexible_type> opts);
   variant_type predict(variant_type data,
                        std::map<std::string, flexible_type> opts);
-  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::string short_description,
       std::map<std::string, flexible_type> additional_user_defined,
       std::map<std::string, flexible_type> opts);
