@@ -212,7 +212,7 @@ class ImageClassifierTest(unittest.TestCase):
                 "Expected failure until "
                 + "https://github.com/apple/turicreate/issues/2744 is fixed"
             )
-        filename = tempfile.mkstemp("bingo.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
         coreml_model = coremltools.models.MLModel(filename)
@@ -234,7 +234,7 @@ class ImageClassifierTest(unittest.TestCase):
 
     @unittest.skipIf(sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_predict(self):
-        filename = tempfile.mkstemp("bingo.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
         coreml_model = coremltools.models.MLModel(filename)

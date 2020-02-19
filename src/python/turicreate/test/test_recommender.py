@@ -36,7 +36,7 @@ from turicreate.toolkits.recommender.popularity_recommender import PopularityRec
 import array
 from turicreate.util import _assert_sframe_equal as assert_sframe_equal
 from turicreate.toolkits._internal_utils import _mac_ver
-from tempfile import mkstemp as _mkstemp
+import tempfile
 from copy import copy
 from subprocess import Popen as _Popen
 from subprocess import PIPE as _PIPE
@@ -75,7 +75,7 @@ def _coreml_to_tc(preds):
 
 class RecommenderTestBase(unittest.TestCase):
     def _test_coreml_export(self, m, item_ids, ratings=None):
-        temp_file_path = _mkstemp()[1]
+        temp_file_path = tempfile.NamedTemporaryFile().name
         if m.target and ratings:
             obs_data_sf = tc.SFrame(
                 {m.item_id: tc.SArray(item_ids), m.target: tc.SArray(ratings)}
@@ -3053,8 +3053,8 @@ class ItemSimilarityCoreMLExportTest(unittest.TestCase):
         self.assertEqual(m1.num_users, 10)
         self.assertEqual(m2.num_users, 20 * 10)
 
-        temp_file_path_1 = _mkstemp()[1]
-        temp_file_path_2 = _mkstemp()[1]
+        temp_file_path_1 = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
+        temp_file_path_2 = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
 
         m1.export_coreml(temp_file_path_1)
         m2.export_coreml(temp_file_path_2)
