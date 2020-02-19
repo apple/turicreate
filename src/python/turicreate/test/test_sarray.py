@@ -2306,9 +2306,11 @@ class SArrayTest(unittest.TestCase):
         data = SArray(range(1000))
         data = data[data > 50]
         # lazy and good
-        tmp_dir = tempfile.mkdtemp()
-        data.save(tmp_dir)
-        shutil.rmtree(tmp_dir)
+        try:
+            tmp_dir = tempfile.mkdtemp()
+            data.save(tmp_dir)
+        finally:
+            shutil.rmtree(tmp_dir)
         print(data)
 
     def test_to_numpy(self):
