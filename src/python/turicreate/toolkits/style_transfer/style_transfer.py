@@ -14,7 +14,7 @@ from .. import _pre_trained_models
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import turicreate as _tc
-from .._mps_utils import MpsStyleGraphAPI as _MpsStyleGraphAPI,
+from .._mps_utils import MpsStyleGraphAPI as _MpsStyleGraphAPI
 
 
 def _get_mps_st_net(input_image_shape, batch_size, output_size, config, weights={}):
