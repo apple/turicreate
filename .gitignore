@@ -105,3 +105,6 @@ deps/build
 # CCache within Docker
 /.docker_ccache/
 /.docker_images/
+
+# Pre-commit stuff
+/.pre-commit-config.yaml
