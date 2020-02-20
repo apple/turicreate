@@ -1113,8 +1113,9 @@ void object_detector::connect_training_backend(
     int batch_size) {
   // Subscribe to the backend model using futures, for compatibility with our
   // current synchronous API surface.
+  int offset = read_state<int>("training_iterations");
   training_futures_ =
-      backend->AsTrainingBatchPublisher(std::move(iterator), batch_size)
+      backend->AsTrainingBatchPublisher(std::move(iterator), batch_size, offset)
           ->AsFutures();
   checkpoint_futures_ = backend->AsCheckpointPublisher()->AsFutures();
 

@@ -15,7 +15,7 @@ using neural_net::Publisher;
 
 DataBatch DataIterator::Next() {
   DataBatch batch;
-  batch.iteration_id = ++counter_;  // Start at 1, not 0.
+  batch.iteration_id = ++last_iteration_id_;
   batch.examples = impl_->next_batch(batch_size_);
   return batch;
 }
@@ -57,10 +57,11 @@ Model::Model(std::unique_ptr<neural_net::image_augmenter> augmenter)
     : augmenter_(std::make_shared<DataAugmenter>(std::move(augmenter))) {}
 
 std::shared_ptr<Publisher<TrainingOutputBatch>> Model::AsTrainingBatchPublisher(
-    std::unique_ptr<data_iterator> training_data, size_t batch_size) {
+    std::unique_ptr<data_iterator> training_data, size_t batch_size,
+    int offset) {
   // Wrap the data_iterator to incorporate into a Combine pipeline.
-  auto iterator =
-      std::make_shared<DataIterator>(std::move(training_data), batch_size);
+  auto iterator = std::make_shared<DataIterator>(std::move(training_data),
+                                                 batch_size, offset);
 
   // Apply augmentation to the output of the data iterator.
   auto augmented = iterator->AsPublisher()->Map(augmenter_);

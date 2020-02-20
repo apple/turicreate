@@ -106,8 +106,20 @@ struct Checkpoint {
  */
 class DataIterator : public neural_net::Iterator<DataBatch> {
  public:
-  DataIterator(std::unique_ptr<data_iterator> impl, size_t batch_size)
-      : impl_(std::move(impl)), batch_size_(batch_size) {}
+  /**
+   * \param impl The object_detection::data_iterator to wrap
+   * \param batch_size The number of images to request from impl for each batch.
+   * \param offset The number of batches to skip. The first batch produced will
+   *     have an iteration_id one more than the offset.
+   *
+   * \todo object_detection::data_iterator needs to support specifying the
+   *     offset (and doing the right thing with random seeding)
+   */
+  DataIterator(std::unique_ptr<data_iterator> impl, size_t batch_size,
+               int offset = 0)
+      : impl_(std::move(impl)),
+        batch_size_(batch_size),
+        last_iteration_id_(offset) {}
 
   bool HasNext() const override { return impl_->has_next_batch(); }
 
@@ -116,7 +128,7 @@ class DataIterator : public neural_net::Iterator<DataBatch> {
  private:
   std::unique_ptr<data_iterator> impl_;
   size_t batch_size_ = 32;
-  int counter_ = 0;
+  int last_iteration_id_ = 0;  // Next ID starts at 1, not 0, by default.
 };
 
 /** Wrapper adapting image_augmenter to the Transform interface. */
@@ -170,7 +182,7 @@ class Model {
    */
   virtual std::shared_ptr<neural_net::Publisher<TrainingOutputBatch>>
   AsTrainingBatchPublisher(std::unique_ptr<data_iterator> training_data,
-                           size_t batch_size);
+                           size_t batch_size, int offset);
 
   /** Returns a publisher that can be used to request checkpoints. */
   virtual std::shared_ptr<neural_net::Publisher<Checkpoint>>
