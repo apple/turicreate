@@ -106,5 +106,5 @@ deps/build
 /.docker_ccache/
 /.docker_images/
 
-# Pre-commit stuff
+# git hooks
 /.pre-commit-config.yaml
