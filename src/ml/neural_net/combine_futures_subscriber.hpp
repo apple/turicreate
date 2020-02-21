@@ -8,6 +8,7 @@
 #ifndef ML_NEURAL_NET_COMBINE_FUTURES_SUBSCRIBER_HPP_
 #define ML_NEURAL_NET_COMBINE_FUTURES_SUBSCRIBER_HPP_
 
+#include <cassert>
 #include <future>
 #include <memory>
 #include <queue>
@@ -82,6 +83,10 @@ class FuturesSubscriber : public Subscriber<T> {
   }
 
   void Receive(std::shared_ptr<Subscription> subscription) override {
+    // It is a programmer error to attach the same Subscriber to more than one
+    // Publisher.
+    assert(subscription_ == nullptr);
+
     // Reject any subscriptions after the first. Reject the first subscription
     // if we cancelled before it could start.
     if (subscription_ || completed_) {

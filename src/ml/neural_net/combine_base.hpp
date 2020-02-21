@@ -197,6 +197,10 @@ class Subscriber {
  * whether multiple Subscribers observe the same values or not. (An
  * implementation might only support one Subscriber, by passing an immediate
  * Completion to each Subscriber after the first.)
+ *
+ * Note: instances of this class are intended to be stored using shared_ptr.
+ * Many of the operators rely on generating strong references to the instance
+ * being augmented.
  */
 template <typename T>
 class Publisher : public std::enable_shared_from_this<Publisher<T>> {
