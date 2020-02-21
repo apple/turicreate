@@ -15,7 +15,7 @@ import numpy as np
 from numbers import Number
 from . import util as test_util
 import pytest
-from turicreate.toolkits._internal_utils import _mac_ver, _read_env_var_cpp
+from turicreate.toolkits._internal_utils import _mac_ver
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 

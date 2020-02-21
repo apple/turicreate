@@ -19,8 +19,7 @@ import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_sarray,
-    _mac_ver,
-    _read_env_var_cpp,
+    _mac_ver
 )
 import coremltools
 

@@ -18,8 +18,7 @@ from turicreate.data_structures.sframe import SFrame as _SFrame
 import turicreate.extensions as _extensions
 from turicreate.extensions import _wrap_function_return
 from turicreate.toolkits._internal_utils import (
-    _toolkit_serialize_summary_struct,
-    _read_env_var_cpp,
+    _toolkit_serialize_summary_struct
 )
 from turicreate.util import _make_internal_url
 from turicreate.toolkits._main import ToolkitError
@@ -30,18 +29,6 @@ import six as _six
 import warnings
 
 MODEL_NAME_MAP = {}
-
-# Object detector use C++ codepath
-OD_USE_CPP = _read_env_var_cpp("TURI_OD_USE_CPP_PATH")
-
-# Activity Classifier use C++ codepath
-AC_USE_CPP = _read_env_var_cpp("TURI_AC_USE_CPP_PATH")
-
-# Style Transfer use C++ codepath
-ST_USE_CPP = _read_env_var_cpp("TURI_ST_USE_CPP_PATH")
-
-# Drawing Classifier use C++ codepath
-DC_USE_CPP = _read_env_var_cpp("TURI_DC_USE_CPP_PATH")
 
 
 def load_model(location):
@@ -125,35 +112,35 @@ def load_model(location):
                 model_version = model_data["model_version"]
                 del model_data["model_version"]
 
-                if name == "activity_classifier" and AC_USE_CPP:
+                if name == "activity_classifier":
                     import turicreate.toolkits.libtctensorflow
 
                     model = _extensions.activity_classifier()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
-                if name == "object_detector" and OD_USE_CPP:
+                if name == "object_detector":
                     import turicreate.toolkits.libtctensorflow
 
                     model = _extensions.object_detector()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
-                if name == "style_transfer" and ST_USE_CPP:
+                if name == "style_transfer":
                     import turicreate.toolkits.libtctensorflow
 
                     model = _extensions.style_transfer()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
-                if name == "drawing_classifier" and DC_USE_CPP:
+                if name == "drawing_classifier":
                     import turicreate.toolkits.libtctensorflow
 
                     model = _extensions.drawing_classifier()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
-                if name == "one_shot_object_detector" and OD_USE_CPP:
+                if name == "one_shot_object_detector":
                     import turicreate.toolkits.libtctensorflow
 
                     od_cls = MODEL_NAME_MAP["object_detector"]
