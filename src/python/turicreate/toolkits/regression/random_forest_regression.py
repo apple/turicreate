@@ -9,14 +9,11 @@ This package contains the Random Forest model class and the create function.
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import turicreate as _turicreate
-from turicreate.toolkits._supervised_learning import (
-    SupervisedLearningModel as _SupervisedLearningModel,
-)
+
+from turicreate.toolkits._supervised_learning import SupervisedLearningModel as _SupervisedLearningModel
 import turicreate.toolkits._supervised_learning as _sl
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _raise_error_evaluation_metric_is_valid
-from turicreate.toolkits._internal_utils import _raise_error_if_column_exists
 
 from turicreate.toolkits._tree_model_mixin import TreeModelMixin as _TreeModelMixin
 import logging as _logging

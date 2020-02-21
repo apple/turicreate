@@ -10,25 +10,17 @@ from __future__ import absolute_import as _
 from __future__ import print_function as _
 from __future__ import division as _
 
-import numpy as _np
 import time as _time
 import six as _six
 
-from turicreate import SArray as _SArray, SFrame as _SFrame
-from turicreate import aggregate as _agg
+from turicreate import SFrame as _SFrame
 
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 import turicreate.toolkits._feature_engineering._internal_utils as _fe_tkutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits import evaluation as _evaluation
 
-from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import Model as _Model
-from turicreate.toolkits._model import PythonProxy as _PythonProxy
-
-from .util import random_split_by_session as _random_split_by_session
-from .util import _MIN_NUM_SESSIONS_FOR_SPLIT
 
 
 def create(
@@ -163,7 +155,7 @@ def create(
     if not hasattr(features, "__iter__"):
         raise TypeError("Input 'features' must be a list.")
     if not all([isinstance(x, str) for x in features]):
-        raise TypeError("Invalid feature %s: Feature names must be of type str." % x)
+        raise TypeError('Invalid member of "features": feature names must be of type str.')
     if len(features) == 0:
         raise TypeError("Input 'features' must contain at least one column name.")
 
