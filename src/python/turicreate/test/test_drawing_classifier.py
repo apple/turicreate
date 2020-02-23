@@ -12,7 +12,7 @@ import turicreate as _tc
 import turicreate.toolkits.libtctensorflow
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import numpy as _np
-from tempfile import mkstemp as _mkstemp
+import tempfile
 import coremltools as _coremltools
 from copy import copy as _copy
 from array import array as _array
@@ -350,7 +350,7 @@ class DrawingClassifierTest(unittest.TestCase):
         max_iters_ans = [str(self.max_iterations), "1"]
         warm_start_ans = "" if self.warm_start is None else self.warm_start
         for i, model in enumerate(self.models):
-            filename = _mkstemp("bingo.mlmodel")[1]
+            filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
             model.export_coreml(filename)
 
             # Load the model back from the CoreML model file
@@ -384,7 +384,7 @@ class DrawingClassifierTest(unittest.TestCase):
                 prefix = "pretrained" + str(test_number)
             else:
                 prefix = "scratch" + str(test_number)
-            filename = _mkstemp(prefix + ".mlmodel")[1]
+            filename = tempfile.NamedTemporaryFile(prefix=prefix, suffix=".mlmodel").name
             model.export_coreml(filename)
             mlmodel = _coremltools.models.MLModel(filename)
             tc_preds = model.predict(sf)

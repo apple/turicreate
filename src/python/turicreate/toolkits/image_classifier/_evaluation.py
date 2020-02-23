@@ -208,8 +208,6 @@ def _filter_sframe(filters, row_type, mat_type, sf, evaluation):
 
 
 def __get_incorrects(label, sf, evaluation):
-    conf_metric = evaluation._data["confidence_metric_for_threshold"]
-
     sf = sf.filter_by([False], "correct")
 
     if sf["target_label"].dtype == int:
@@ -232,8 +230,6 @@ def __get_incorrects(label, sf, evaluation):
 
 
 def __get_corrects(sf, evaluation):
-    conf_metric = evaluation._data["confidence_metric_for_threshold"]
-
     sf = sf.filter_by([True], "correct")
 
     unique_predictions = list(sf["target_label"].unique())

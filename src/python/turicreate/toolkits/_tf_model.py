@@ -13,101 +13,90 @@ import six as _six
 
 @_six.add_metaclass(_abc.ABCMeta)
 class TensorFlowModel(object):
-
     """
-	Base Class for neural networks written in tensorflow used to abstract across model
- 	architectures. It defines the computational graph and initialize a session to run the graph.
+    Base Class for neural networks written in tensorflow used to abstract across model
+    architectures. It defines the computational graph and initialize a session to run the graph.
 
- 	Make placeholders for input and targets
-	self.data = tf.placeholder()
-	self.target = tf.placeholder()
+    Make placeholders for input and targets
+    self.data = tf.placeholder()
+    self.target = tf.placeholder()
 
-	Make dictionaries for weights and biases
-	self.weights = {
-	'conv' : tf.Variable()
-	'dense0' : tf.Variable()
-	}
-	self.biases = {
-	'conv' : tf.Variable()
-	'dense0' : tf.Variable()
-	}
+    Make dictionaries for weights and biases
+    self.weights = {
+        'conv' : tf.Variable()
+        'dense0' : tf.Variable()
+    }
+    self.biases = {
+        'conv' : tf.Variable()
+        'dense0' : tf.Variable()
+    }
 
+    Make the graph
+    conv = tf.nn.conv1d(self.data, self.weights['conv'], ..)
+    dense = tf.add(tf.matmul() + self.bias())
+    ...
 
-	Make the graph
-	conv = tf.nn.conv1d(self.data, self.weights['conv'], ..)
-	dense = tf.add(tf.matmul() + self.bias())
-	...
+    Make loss_op with the loss and train_op with the optimizer
+    loss_op =
+    train_op =
 
-	Make loss_op with the loss and train_op with the optimizer
-	loss_op =
-	train_op =
-
-	Define Session
-	self.sess = tf.Session()
-	"""
+    Define Session
+    self.sess = tf.Session()
+    """
 
     @_abc.abstractmethod
     def __init__(self):
+        """
+        Train will do a forward and backward pass and update weights
+        This accepts a dictionary that has feature/target as key and
+        the numpy arrays as value corresponding to them respectively.
+        It returns a dictionary of loss and output (probabilities)
+        This matches model backend train
+
+        Argument : A dictionary of input and true labels
+        Returns : A dictionary of expected output (toolkit specific)
+
+        It will train a mini batch by running the optimizer in the session
+        Running the optimizer is thepart that does back propogation
+        self.sess.run([train_op, loss_op, ..], feed_dict= {self.data = ..., self.target= ..})
+        """
         raise NotImplementedError
-
-    """
-	Train will do a forward and backward pass and update weights
-    This accepts a dictionary that has feature/target as key and
-    the numpy arrays as value corresponding to them respectively.
-    It returns a dictionary of loss and output (probabilities)
-    This matches model backend train
-
-    Argument : A dictionary of input and true labels
-    Returns : A dictionary of expected output (toolkit specific)
-
-    It will train a mini batch by running the optimizer in the session
-    Running the optimizer is thepart that does back propogation
-    self.sess.run([train_op, loss_op, ..], feed_dict= {self.data = ..., self.target= ..})
-
-	"""
 
     def train(self, feed_dict):
+        """
+        Predict does only a forward pass and does not update any weights
+        This accepts a dictionary that has feature/target as key and
+        the numpy arrays as value corresponding to them respectively.
+        It also returns a dictionary of loss and output
+        This matches the model backend predict
+
+        Argument : A dictionary of input and true labels
+        Returns : A dictionary of expected output (toolkit specific)
+
+        It will calculate the specified outputs w
+        self.sess.run([loss_op, ..], feed_dict= {self.data = ..., self.target= ..})
+        """
         raise NotImplementedError
-
-    """
-	Predict does only a forward pass and does not update any weights
-    This accepts a dictionary that has feature/target as key and
-    the numpy arrays as value corresponding to them respectively.
-    It also returns a dictionary of loss and output
-    This matches the model backend predict
-
-    Argument : A dictionary of input and true labels
-    Returns : A dictionary of expected output (toolkit specific)
-
-    It will calculate the specified outputs w
-    self.sess.run([loss_op, ..], feed_dict= {self.data = ..., self.target= ..})
-
-	"""
 
     def predict(self, feed_dict):
+        """
+        Exports the network weights in CoreML format.
+        Returns : A dictionary of weight names as keys and
+
+        layer_names = tf.trainable_variables()
+        layer_weights = self.sess.run(tvars)
+
+        This will get you the layer names from tensorflow and their corresponding
+        values. They need to be converted to CoreML format and stored back in a
+        dictionary with their names and values of correct shapes.
+        """
         raise NotImplementedError
-
-    """
-	Exports the network weights in CoreML format.
-	Returns : A dictionary of weight names as keys and
-
-    layer_names = tf.trainable_variables()
-    layer_weights = self.sess.run(tvars)
-
-    This will get you the layer names from tensorflow and their corresponding
-    values. They need to be converted to CoreML format and stored back in a
-    dictionary with their names and values of correct shapes.
-
-
-	"""
 
     def export_weights(self):
+        """
+        Sets the optimizer to learn at the specified learning rate or using a learning rate scheduler.
+        """
         raise NotImplementedError
-
-    """
-	Sets the optimizer to learn at the specified learning rate or using a learning rate scheduler.
-
-	"""
 
     def set_learning_rate(self, learning_rate):
         raise NotImplementedError

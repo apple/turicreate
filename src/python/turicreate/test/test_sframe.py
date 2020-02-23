@@ -4128,9 +4128,11 @@ class SFrameTest(unittest.TestCase):
         data["x"] = range(100)
         data["x"] = data["x"] > 50
         # lazy and good
-        tmp_dir = tempfile.mkdtemp()
-        data.save(tmp_dir)
-        shutil.rmtree(tmp_dir)
+        try:
+            tmp_dir = tempfile.mkdtemp()
+            data.save(tmp_dir)
+        finally:
+            shutil.rmtree(tmp_dir)
         print(data)
 
     def test_empty_argmax_does_not_fail(self):

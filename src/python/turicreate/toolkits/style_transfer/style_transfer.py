@@ -6,30 +6,15 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import time as _time
-from datetime import datetime as _datetime
 
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
-from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
-from ._utils import _seconds_as_string
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
 from .. import _pre_trained_models
-from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._model import PythonProxy as _PythonProxy
 import turicreate as _tc
-import numpy as _np
-import math as _math
-import six as _six
-from .._mps_utils import (
-    use_mps as _use_mps,
-    mps_device_memory_limit as _mps_device_memory_limit,
-    MpsGraphAPI as _MpsGraphAPI,
-    MpsStyleGraphAPI as _MpsStyleGraphAPI,
-    MpsGraphNetworkType as _MpsGraphNetworkType,
-    MpsGraphMode as _MpsGraphMode,
-)
+from .._mps_utils import MpsStyleGraphAPI as _MpsStyleGraphAPI
 
 
 def _get_mps_st_net(input_image_shape, batch_size, output_size, config, weights={}):
@@ -41,10 +26,6 @@ def _get_mps_st_net(input_image_shape, batch_size, output_size, config, weights=
     c_out = output_size[0]
     h_out = h_in
     w_out = w_in
-
-    c_view = c_in
-    h_view = h_in
-    w_view = w_in
 
     network = _MpsStyleGraphAPI(
         batch_size,

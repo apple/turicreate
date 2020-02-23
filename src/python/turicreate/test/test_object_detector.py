@@ -19,8 +19,7 @@ import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_sarray,
-    _mac_ver,
-    _read_env_var_cpp,
+    _mac_ver
 )
 from six import StringIO
 import coremltools
@@ -449,7 +448,7 @@ class ObjectDetectorTest(unittest.TestCase):
         import coremltools
         import platform
 
-        filename = tempfile.mkstemp("bingo.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename, include_non_maximum_suppression=False)
 
         coreml_model = coremltools.models.MLModel(filename)
@@ -486,7 +485,7 @@ class ObjectDetectorTest(unittest.TestCase):
             # not that meaningful unless the model has converged
 
         # Also check if we can train a second model and export it.
-        filename2 = tempfile.mkstemp("bingo2.mlmodel")[1]
+        filename2 = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         # We also test at the same time if we can export a model with a single
         # class
         sf = tc.SFrame(
@@ -505,7 +504,7 @@ class ObjectDetectorTest(unittest.TestCase):
     def test_export_coreml_with_non_maximum_suppression(self):
         from PIL import Image
 
-        filename = tempfile.mkstemp("bingo.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename, include_non_maximum_suppression=True)
 
         coreml_model = coremltools.models.MLModel(filename)
@@ -521,7 +520,7 @@ class ObjectDetectorTest(unittest.TestCase):
             # not that meaningful unless the model has converged
 
         # Also check if we can train a second model and export it.
-        filename2 = tempfile.mkstemp("bingo2.mlmodel")[1]
+        filename2 = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         # We also test at the same time if we can export a model with a single
         # class
         sf = tc.SFrame(

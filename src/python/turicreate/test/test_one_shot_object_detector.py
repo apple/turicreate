@@ -19,8 +19,7 @@ import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_sarray,
-    _mac_ver,
-    _read_env_var_cpp,
+    _mac_ver
 )
 import coremltools
 
@@ -215,7 +214,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         import coremltools
         import platform
 
-        filename = tempfile.mkstemp("bingo.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename, include_non_maximum_suppression=False)
 
         ## Test metadata
@@ -254,7 +253,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
             self.assertEqual(ret["coordinates"].shape[0], ret["confidence"].shape[0])
 
         # Test export without non max supression
-        filename2 = tempfile.mkstemp("bingo2.mlmodel")[1]
+        filename2 = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename2, include_non_maximum_suppression=True)
         coreml_model = coremltools.models.MLModel(filename)
         self.assertTrue(

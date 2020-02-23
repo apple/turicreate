@@ -239,8 +239,6 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         for key in feed_dict.keys():
             feed_dict[key] = _utils.convert_shared_float_array_to_numpy(feed_dict[key])
 
-        one_hot_labels = _np.zeros((int(self.batch_size), self.num_classes))
-
         feed_dict_for_session = {self.input: feed_dict["input"]}
 
         if is_train:

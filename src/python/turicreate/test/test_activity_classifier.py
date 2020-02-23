@@ -15,7 +15,7 @@ import numpy as np
 from numbers import Number
 from . import util as test_util
 import pytest
-from turicreate.toolkits._internal_utils import _mac_ver, _read_env_var_cpp
+from turicreate.toolkits._internal_utils import _mac_ver
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import uuid
 
@@ -476,7 +476,7 @@ class ActivityClassifierTest(unittest.TestCase):
         import coremltools
 
         # Save the model as a CoreML model file
-        filename = tempfile.mkstemp("ActivityClassifier.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
         # Load the model back from the CoreML model file
@@ -521,7 +521,7 @@ class ActivityClassifierTest(unittest.TestCase):
                 session_id=self.session_id,
                 prediction_window=self.prediction_window,
         )
-        filename = tempfile.mkstemp("ActivityClassifier.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         model.export_coreml(filename)
 
         # Load the model back from the CoreML model file
@@ -748,7 +748,7 @@ class ActivityClassifierGPUTest(unittest.TestCase):
                     model.save(filename)
                     model = tc.load_model(filename)
 
-                filename = tempfile.mkstemp("ActivityClassifier.mlmodel")[1]
+                filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
                 model.export_coreml(filename)
 
         tc.config.set_num_gpus(old_num_gpus)

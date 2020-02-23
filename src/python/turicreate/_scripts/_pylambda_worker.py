@@ -28,7 +28,7 @@ def setup_environment(info_log_function=None, error_log_function=None):
                 try:
                     error_log_function(s)
                 except Exception as e:
-                    print("Error setting exception: repr(e)")
+                    print("Error setting exception: " + repr(e))
                     print("Error: %s" % str(s))
         else:
             if info_log_function is not None:

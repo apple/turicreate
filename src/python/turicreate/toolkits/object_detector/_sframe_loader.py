@@ -6,12 +6,7 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import numpy as _np
 import turicreate as _tc
-from six.moves.queue import Queue as _Queue
-from threading import Thread as _Thread
-from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from ._detection import yolo_boxes_to_yolo_map as _yolo_boxes_to_yolo_map
 
 _TMP_COL_RANDOM_ORDER = "_random_order"
 

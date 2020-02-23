@@ -6,10 +6,10 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import turicreate as _turicreate
 from turicreate.toolkits import _supervised_learning as _sl
 from turicreate.toolkits._internal_utils import _validate_data
-from turicreate._cython.cy_server import QuietProgress
 
 
 def create(dataset, target, features=None, validation_set="auto", verbose=True):

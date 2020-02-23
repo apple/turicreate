@@ -22,7 +22,6 @@ from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
 from ._evaluation import Evaluation as _Evaluation
-from turicreate.toolkits import _coreml_utils
 
 _DEFAULT_SOLVER_OPTIONS = {
     "convergence_threshold": 1e-2,
@@ -359,9 +358,8 @@ class ImageClassifier(_CustomModel):
         instance.
         """
         _tkutl._model_version_check(version, cls._PYTHON_IMAGE_CLASSIFIER_VERSION)
-        from turicreate.toolkits.classifier.logistic_classifier import (
-            LogisticClassifier,
-        )
+        from turicreate.toolkits._main import ToolkitError
+        from turicreate.toolkits.classifier.logistic_classifier import LogisticClassifier
 
         state["classifier"] = LogisticClassifier(state["classifier"])
         state["classes"] = state["classifier"].classes

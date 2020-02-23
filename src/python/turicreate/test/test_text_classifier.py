@@ -95,7 +95,7 @@ class TextClassifierTest(unittest.TestCase):
         self.model.evaluate(self.docs)
 
     def test_export_coreml(self):
-        filename = tempfile.mkstemp("bingo.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
         import platform
@@ -116,7 +116,7 @@ class TextClassifierTest(unittest.TestCase):
 
     @unittest.skipIf(_mac_ver() < (10, 13), "Only supported on macOS 10.13+")
     def test_export_coreml_with_predict(self):
-        filename = tempfile.mkstemp("bingo.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
         preds = self.model.predict(self.docs, output_type="probability_vector")
 

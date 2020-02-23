@@ -308,7 +308,7 @@ class StyleTransferTest(unittest.TestCase):
 
         model = self.model
         for flexible_shape_on in [True, False]:
-            filename = tempfile.mkstemp("my_style_transfer.mlmodel")[1]
+            filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
             model.export_coreml(filename, include_flexible_shape=flexible_shape_on)
 
             ## Metadata test

@@ -227,7 +227,7 @@ class ImageSimilarityTest(unittest.TestCase):
             )
 
         # Save the model as a CoreML model file
-        filename = tempfile.mkstemp("ImageSimilarity.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
         # Load the model back from the CoreML model file
