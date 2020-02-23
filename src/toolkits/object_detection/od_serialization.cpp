@@ -18,28 +18,24 @@ using padding_type = model_spec::padding_type;
 using turi::neural_net::float_array_map;
 using turi::neural_net::zero_weight_initializer;
 
-void _save_impl(oarchive& oarc, const neural_net::model_spec& nn_spec,
-                const std::map<std::string, variant_type>& state) {
+void _save_impl(oarchive& oarc,
+                const std::map<std::string, variant_type>& state,
+                const float_array_map& weights) {
   // Save model attributes.
   variant_deep_save(state, oarc);
 
   // Save neural net weights.
-  oarc << nn_spec.export_params_view();
+  oarc << weights;
 }
 
 void _load_version(iarchive& iarc, size_t version,
-                   neural_net::model_spec& nn_spec,
-                   std::map<std::string, variant_type>& state,
-                   const std::vector<std::pair<float, float>>& anchor_boxes) {
+                   std::map<std::string, variant_type>* state,
+                   float_array_map* weights) {
   // Load model attributes.
-  variant_deep_load(state, iarc);
+  variant_deep_load(*state, iarc);
 
   // Load neural net weights.
-  float_array_map nn_params;
-  iarc >> nn_params;
-  init_darknet_yolo(nn_spec, variant_get_value<size_t>(state.at("num_classes")),
-                    anchor_boxes);
-  nn_spec.update_params(nn_params);
+  iarc >> *weights;
 }
 
 void init_darknet_yolo(

@@ -23,6 +23,7 @@
 #include <core/random/random.hpp>
 #include <timer/timer.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <toolkits/object_detection/od_darknet_yolo_model.hpp>
 #include <toolkits/object_detection/od_evaluation.hpp>
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
@@ -130,70 +131,12 @@ float_array_map get_base_config() {
   return config;
 }
 
-float_array_map get_training_config() {
-  float_array_map config = get_base_config();
-  config["mode"]                     = shared_float_array::wrap(0.f);
-  config["od_include_loss"]          = shared_float_array::wrap(1.0f);
-  config["od_include_network"]       = shared_float_array::wrap(1.0f);
-  config["od_max_iou_for_no_object"] = shared_float_array::wrap(0.3f);
-  config["od_min_iou_for_object"]    = shared_float_array::wrap(0.7f);
-  config["rescore"]                  = shared_float_array::wrap(1.0f);
-  config["od_scale_class"]           = shared_float_array::wrap(2.0f);
-  config["od_scale_no_object"]       = shared_float_array::wrap(5.0f);
-  config["od_scale_object"]          = shared_float_array::wrap(100.0f);
-  config["od_scale_wh"]              = shared_float_array::wrap(10.0f);
-  config["od_scale_xy"]              = shared_float_array::wrap(10.0f);
-  config["use_sgd"]                  = shared_float_array::wrap(1.0f);
-  config["weight_decay"]             = shared_float_array::wrap(0.0005f);
-  return config;
-}
-
 float_array_map get_prediction_config() {
   float_array_map config = get_base_config();
   config["mode"]                     = shared_float_array::wrap(2.0f);
   config["od_include_loss"]          = shared_float_array::wrap(0.0f);
   config["od_include_network"]       = shared_float_array::wrap(1.0f);
   return config;
-}
-
-image_augmenter::options get_augmentation_options(flex_int batch_size,
-                                                  flex_int grid_height,
-                                                  flex_int grid_width) {
-  image_augmenter::options opts;
-
-  // Specify the fixed image size expected by the neural network.
-  opts.batch_size = static_cast<size_t>(batch_size);
-  opts.output_height = static_cast<size_t>(grid_height * SPATIAL_REDUCTION);
-  opts.output_width = static_cast<size_t>(grid_width * SPATIAL_REDUCTION);
-
-  // Apply random crops.
-  opts.crop_prob = 0.9f;
-  opts.crop_opts.min_aspect_ratio = 0.8f;
-  opts.crop_opts.max_aspect_ratio = 1.25f;
-  opts.crop_opts.min_area_fraction = 0.15f;
-  opts.crop_opts.max_area_fraction = 1.f;
-  opts.crop_opts.min_object_covered = 0.f;
-  opts.crop_opts.max_attempts = 50;
-  opts.crop_opts.min_eject_coverage = 0.5f;
-
-  // Apply random padding.
-  opts.pad_prob = 0.9f;
-  opts.pad_opts.min_aspect_ratio = 0.8f;
-  opts.pad_opts.max_aspect_ratio = 1.25f;
-  opts.pad_opts.min_area_fraction = 1.f;
-  opts.pad_opts.max_area_fraction = 2.f;
-  opts.pad_opts.max_attempts = 50;
-
-  // Allow mirror images.
-  opts.horizontal_flip_prob = 0.5f;
-
-  // Apply random perturbations to color.
-  opts.brightness_max_jitter = 0.05f;
-  opts.contrast_max_jitter = 0.05f;
-  opts.saturation_max_jitter = 0.05f;
-  opts.hue_max_jitter = 0.05f;
-
-  return opts;
 }
 
 flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
@@ -295,16 +238,17 @@ void object_detector::init_options(
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
 }
 
-void object_detector::infer_derived_options() {
+void object_detector::infer_derived_options(compute_context* context,
+                                            data_iterator* iterator) {
   // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
+  std::vector<std::string> gpu_names = context->gpu_names();
   print_training_device(gpu_names);
 
   // Configure the batch size automatically if not set.
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {
 
     flex_int batch_size = DEFAULT_BATCH_SIZE;
-    size_t memory_budget = training_compute_context_->memory_budget();
+    size_t memory_budget = context->memory_budget();
     if (memory_budget < MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE) {
       batch_size /= 2;
     }
@@ -320,7 +264,7 @@ void object_detector::infer_derived_options() {
   // Configure targeted number of iterations automatically if not set.
   if (read_state<flexible_type>("max_iterations") == FLEX_UNDEFINED) {
     flex_int max_iterations = estimate_max_iterations(
-        static_cast<flex_int>(training_data_iterator_->num_instances()),
+        static_cast<flex_int>(iterator->num_instances()),
         read_state<flex_int>("batch_size"));
 
     logprogress_stream << "Setting 'max_iterations' to " << max_iterations;
@@ -335,16 +279,42 @@ size_t object_detector::get_version() const {
 }
 
 void object_detector::save_impl(oarchive& oarc) const {
-  if (training_model_) {
-    // If checkpointing during training, first copy weights from the backend.
-    synchronize_model(nn_spec_.get());
-  }
-  _save_impl(oarc, *nn_spec_, state);
+  Checkpoint* checkpoint = read_checkpoint();
+  _save_impl(oarc, state, checkpoint->weights);
 }
 
 void object_detector::load_version(iarchive& iarc, size_t version) {
-  nn_spec_.reset(new model_spec);
-  _load_version(iarc, version, *nn_spec_, state, anchor_boxes());
+  // First read from the archive into local variables for the state and model
+  // weights.
+  std::map<std::string, variant_type> loaded_state;
+  float_array_map loaded_weights;
+  _load_version(iarc, version, &loaded_state, &loaded_weights);
+
+  // Adopt the loaded state and weights.
+  load(std::move(loaded_state), std::move(loaded_weights));
+}
+
+void object_detector::load(std::map<std::string, variant_type> state,
+                           float_array_map weights) {
+  this->state = std::move(state);
+
+  checkpoint_.reset(new Checkpoint);
+  checkpoint_->weights = std::move(weights);
+
+  // Write from the state into our new Config struct.
+  Config& config = checkpoint_->config;
+  config.max_iterations = static_cast<int>(get_max_iterations());
+  config.batch_size = read_state<int>("batch_size");
+  config.output_height = read_state<int>("grid_height");
+  config.output_width = read_state<int>("grid_width");
+  config.num_classes = static_cast<int>(get_num_classes());
+}
+
+Checkpoint* object_detector::read_checkpoint() const {
+  if (checkpoint_ == nullptr) {
+    checkpoint_ = checkpoint_futures_->Next().get();
+  }
+  return checkpoint_.get();
 }
 
 void object_detector::import_from_custom_model(variant_map_type model_data,
@@ -411,15 +381,7 @@ void object_detector::import_from_custom_model(variant_map_type model_data,
   model_data.erase(model_iter);
   model_data.erase(shape_iter);
 
-  state = std::move(model_data);
-
-  nn_spec_.reset(new model_spec);
-  init_darknet_yolo(*nn_spec_,
-                    variant_get_value<size_t>(state.at("num_classes")),
-                    anchor_boxes());
-  nn_spec_->update_params(nn_params);
-
-  return;
+  load(std::move(model_data), std::move(nn_params));
 }
 
 void object_detector::train(gl_sframe data,
@@ -462,22 +424,6 @@ void object_detector::train(gl_sframe data,
   });
 }
 
-void object_detector::synchronize_model(model_spec* nn_spec) const {
-  // Sync trained weights to our local storage of the NN weights.
-  float_array_map raw_trained_weights = training_model_->export_weights();
-  float_array_map trained_weights;
-  for (const auto& kv : raw_trained_weights) {
-    // Convert keys from the model_backend names (e.g. "conv7_weight") to the
-    // names we're exporting to CoreML (e.g. "conv7_fwd_weight").
-    const std::string modifier = "_fwd";
-    std::string key = kv.first;
-    std::string::iterator it = std::find(key.begin(), key.end(), '_');
-    key.insert(it, modifier.begin(), modifier.end());
-    trained_weights[key] = kv.second;
-  }
-  nn_spec->update_params(trained_weights);
-}
-
 void object_detector::finalize_training(bool compute_final_metrics) {
   // Wait for any outstanding batches.
   synchronize_training();
@@ -488,14 +434,12 @@ void object_detector::finalize_training(bool compute_final_metrics) {
     training_table_printer_.reset();
   }
 
-  // Copy out the trained mdoel.
-  synchronize_model(nn_spec_.get());
+  // Copy out the trained model while we still have access to a backend.
+  read_checkpoint();
 
   // Tear down the training backend.
-  training_model_.reset();
-  training_data_augmenter_.reset();
-  training_data_iterator_.reset();
-  training_compute_context_.reset();
+  checkpoint_futures_.reset();
+  training_futures_.reset();
 
   // Compute training and validation metrics.
   if (compute_final_metrics) {
@@ -773,7 +717,7 @@ void object_detector::perform_predict(
       /* h_out   */ grid_height,
       /* w_out   */ grid_width,
       /* config  */ pred_config,
-      /* weights */ get_model_params());
+      /* weights */ strip_fwd(checkpoint_->weights));
 
   // To support double buffering, use a queue of pending inference results.
   std::queue<inference_batch> pending_batches;
@@ -867,102 +811,21 @@ object_detector::convert_yolo_to_annotations(
       yolo_map, anchor_boxes, min_confidence);
 }
 
-std::unique_ptr<model_spec> object_detector::init_model(
-    const std::string& pretrained_mlmodel_path, size_t num_classes) const {
-  // All of this presumes that the pre-trained model is the darknet model from
-  // our first object detector implementation....
-
-  // TODO: Make this more generalizable.
-
-  // Start with parameters from the pre-trained model.
-  std::unique_ptr<model_spec> nn_spec(new model_spec(pretrained_mlmodel_path));
-
-  // Verify that the pre-trained model ends with the expected leakyrelu6 layer.
-  // TODO: Also verify that activation shape here is [1024, 13, 13]?
-  if (!nn_spec->has_layer_output("leakyrelu6_fwd")) {
-    log_and_throw("Expected leakyrelu6_fwd layer in NeuralNetwork parsed from "
-                  + pretrained_mlmodel_path);
-  }
-
-  // Initialize a random number generator for weight initialization.
-  std::seed_seq seed_seq = { read_state<int>("random_seed") };
-  std::mt19937 random_engine(seed_seq);
-
-  // Append conv7, initialized using the Xavier method (with base magnitude 3).
-  // The conv7 weights have shape [1024, 1024, 3, 3], so fan in and fan out are
-  // both 1024*3*3.
-  xavier_weight_initializer conv7_init_fn(1024*3*3, 1024*3*3, &random_engine);
-  nn_spec->add_convolution(/* name */                "conv7_fwd",
-                           /* input */               "leakyrelu6_fwd",
-                           /* num_output_channels */ 1024,
-                           /* num_kernel_channels */ 1024,
-                           /* kernel_height */       3,
-                           /* kernel_width */        3,
-                           /* stride_height */       1,
-                           /* stride_width */        1,
-                           /* padding */             padding_type::SAME,
-                           /* weight_init_fn */      conv7_init_fn);
-
-  // Append batchnorm7.
-  nn_spec->add_batchnorm(/* name */                  "batchnorm7_fwd",
-                         /* input */                 "conv7_fwd",
-                         /* num_channels */          1024,
-                         /* epsilon */               0.00001f);
-
-  // Append leakyrelu7.
-  nn_spec->add_leakyrelu(/* name */                  "leakyrelu7_fwd",
-                         /* input */                 "batchnorm7_fwd",
-                         /* alpha */                 0.1f);
-
-  // Append conv8.
-  static constexpr float CONV8_MAGNITUDE = 0.00005f;
-  const size_t num_predictions = 5 + num_classes;  // Per anchor box
-  const size_t conv8_c_out = anchor_boxes().size() * num_predictions;
-  auto conv8_weight_init_fn = [&random_engine](float* w, float* w_end) {
-    std::uniform_real_distribution<float> dist(-CONV8_MAGNITUDE,
-                                               CONV8_MAGNITUDE);
-    while (w != w_end) {
-      *w++ = dist(random_engine);
-    }
-  };
-  auto conv8_bias_init_fn = [num_predictions](float* w, float* w_end) {
-    while (w < w_end) {
-      // Initialize object confidence low, preventing an unnecessary adjustment
-      // period toward conservative estimates
-      w[4] = -6.f;
-
-      // Iterate through each anchor box.
-      w += num_predictions;
-    }
-  };
-  nn_spec->add_convolution(/* name */                "conv8_fwd",
-                           /* input */               "leakyrelu7_fwd",
-                           /* num_output_channels */ conv8_c_out,
-                           /* num_kernel_channels */ 1024,
-                           /* kernel_height */       1,
-                           /* kernel_width */        1,
-                           /* stride_height */       1,
-                           /* stride_width */        1,
-                           /* padding */             padding_type::SAME,
-                           /* weight_init_fn */      conv8_weight_init_fn,
-                           /* bias_init_fn */        conv8_bias_init_fn);
-
-  return nn_spec;
-}
-
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     std::string filename, std::string short_desc,
     std::map<std::string, flexible_type> additional_user_defined,
     std::map<std::string, flexible_type> opts)
 {
   // If called during training, synchronize the model first.
-  if (training_model_) {
-    synchronize_training();
-    synchronize_model(nn_spec_.get());
-  }
+  Checkpoint* checkpoint = read_checkpoint();
+
+  // TODO: Move this implementation to DarknetYOLOModel, since it is
+  // model-specific.
 
   // Initialize the result with the learned layers from the model_backend.
-  model_spec yolo_nn_spec(nn_spec_->get_coreml_spec());
+  model_spec yolo_nn_spec;
+  init_darknet_yolo(yolo_nn_spec, get_num_classes(), anchor_boxes());
+  yolo_nn_spec.update_params(checkpoint->weights);
 
   size_t grid_height = read_state<size_t>("grid_height");
   size_t grid_width = read_state<size_t>("grid_width");
@@ -1145,39 +1008,34 @@ void object_detector::init_training(gl_sframe data,
   // Bind the data to a data iterator.
   std::vector<std::string> class_labels =
       read_state<std::vector<std::string>>("classes");
-  training_data_iterator_ =
+  std::unique_ptr<data_iterator> iterator =
       create_iterator(training_data_, /* expected class_labels */ class_labels,
                       /* repeat */ true, /* is_training */ true);
 
-  // Load the pre-trained model from the provided path. The final layers are
-  // initialized randomly using the random seed above, using the number of
-  // classes observed by the training_data_iterator_ above.
-  nn_spec_ =
-      init_model(mlmodel_path, training_data_iterator_->class_labels().size());
-
   // Instantiate the compute context.
-  training_compute_context_ = create_compute_context();
-  if (training_compute_context_ == nullptr) {
+  std::unique_ptr<compute_context> context = create_compute_context();
+  if (context == nullptr) {
     log_and_throw("No neural network compute context provided");
   }
 
   // Infer values for unspecified options. Note that this depends on training
   // data statistics and the compute context, initialized above.
-  infer_derived_options();
+  // TODO: Move this into DarknetYOLOModel, since these heuristics are
+  // model-specific.
+  infer_derived_options(context.get(), iterator.get());
 
   // Set additional model fields.
   flex_int grid_height = read_state<flex_int>("grid_height");
   flex_int grid_width = read_state<flex_int>("grid_width");
   std::array<flex_int, 3> input_image_shape =  // Using CoreML CHW format.
       {{3, grid_height * SPATIAL_REDUCTION, grid_width * SPATIAL_REDUCTION}};
-  const std::vector<std::string>& classes =
-      training_data_iterator_->class_labels();
+  const std::vector<std::string>& classes = iterator->class_labels();
   add_or_update_state({
       {"classes", flex_list(classes.begin(), classes.end())},
       {"input_image_shape",
        flex_list(input_image_shape.begin(), input_image_shape.end())},
-      {"num_bounding_boxes", training_data_iterator_->num_instances()},
-      {"num_classes", training_data_iterator_->class_labels().size()},
+      {"num_bounding_boxes", iterator->num_instances()},
+      {"num_classes", iterator->class_labels().size()},
       {"num_examples", training_data_.size()},
       {"training_epochs", 0},
       {"training_iterations", 0},
@@ -1185,7 +1043,32 @@ void object_detector::init_training(gl_sframe data,
   // TODO: The original Python implementation also exposed "anchors",
   // "non_maximum_suppression_threshold", and "training_time".
 
-  init_training_backend();
+  int batch_size = read_state<int>("batch_size");
+  Config config;
+  config.max_iterations = static_cast<int>(get_max_iterations());
+  config.batch_size = batch_size;
+  config.output_height = static_cast<int>(grid_height);
+  config.output_width = static_cast<int>(grid_width);
+  config.num_classes = static_cast<int>(get_num_classes());
+
+  // Load the pre-trained model from the provided path. The final layers are
+  // initialized randomly using the random seed above, using the number of
+  // classes observed by the training_data_iterator_ above.
+  std::unique_ptr<Model> backend = create_model(
+      config, mlmodel_path, read_state<int>("random_seed"), std::move(context));
+
+  // Establish training pipeline.
+  connect_training_backend(std::move(backend), std::move(iterator), batch_size);
+}
+
+std::unique_ptr<Model> object_detector::create_model(
+    const Config& config, const std::string& pretrained_model_path,
+    int random_seed,
+    std::unique_ptr<neural_net::compute_context> context) const {
+  // For now, we only support darknet-yolo. Load the pre-trained model and
+  // randomly initialize the final layers.
+  return DarknetYOLOModel::Create(config, pretrained_model_path, random_seed,
+                                  std::move(context));
 }
 
 void object_detector::resume_training(gl_sframe data,
@@ -1197,49 +1080,44 @@ void object_detector::resume_training(gl_sframe data,
 
   // Bind the data to a data iterator.
   flex_list class_labels = read_state<flex_list>("classes");
-  training_data_iterator_ = create_iterator(
+  std::unique_ptr<data_iterator> iterator = create_iterator(
       training_data_,
       std::vector<std::string>(class_labels.begin(), class_labels.end()),
       /* repeat */ true, /* is_training */ true);
 
   // Instantiate the compute context.
-  training_compute_context_ = create_compute_context();
-  if (training_compute_context_ == nullptr) {
+  std::unique_ptr<compute_context> context = create_compute_context();
+  if (context == nullptr) {
     log_and_throw("No neural network compute context provided");
   }
 
-  init_training_backend();
+  // Load the model from the current checkpoint.
+  std::unique_ptr<Model> backend =
+      create_model(*checkpoint_, std::move(context));
+
+  // Establish training pipeline.
+  connect_training_backend(std::move(backend), std::move(iterator),
+                           read_state<int>("batch_size"));
 }
 
-void object_detector::init_training_backend() {
-  // Instantiate the data augmenter.
-  int grid_height = read_state<int>("grid_height");
-  int grid_width = read_state<int>("grid_width");
-  training_data_augmenter_ = training_compute_context_->create_image_augmenter(
-      get_augmentation_options(read_state<flex_int>("batch_size"), grid_height,
-                               grid_width));
+std::unique_ptr<Model> object_detector::create_model(
+    const Checkpoint& checkpoint,
+    std::unique_ptr<neural_net::compute_context> context) const {
+  // For now, we only support darknet-yolo. Load from a checkpoint.
+  auto* result = new DarknetYOLOModel(checkpoint, std::move(context));
+  return std::unique_ptr<DarknetYOLOModel>(result);
+}
 
-  // Instantiate the NN backend.
-  int num_outputs_per_anchor =  // 4 bbox coords + 1 conf + one-hot class labels
-      5 + static_cast<int>(training_data_iterator_->class_labels().size());
-  int num_output_channels = static_cast<int>(num_outputs_per_anchor * anchor_boxes().size());
-
-  float_array_map train_config = get_training_config();
-  train_config["num_iterations"] =
-      shared_float_array::wrap(get_max_iterations());
-  train_config["num_classes"] =
-      shared_float_array::wrap(get_num_classes());
-
-  training_model_ = training_compute_context_->create_object_detector(
-      /* n       */ read_state<int>("batch_size"),
-      /* c_in    */ NUM_INPUT_CHANNELS,
-      /* h_in    */ grid_height * SPATIAL_REDUCTION,
-      /* w_in    */ grid_width * SPATIAL_REDUCTION,
-      /* c_out   */ num_output_channels,
-      /* h_out   */ grid_height,
-      /* w_out   */ grid_width,
-      /* config  */ train_config,
-      /* weights */ get_model_params());
+void object_detector::connect_training_backend(
+    std::unique_ptr<Model> backend, std::unique_ptr<data_iterator> iterator,
+    int batch_size) {
+  // Subscribe to the backend model using futures, for compatibility with our
+  // current synchronous API surface.
+  int offset = read_state<int>("training_iterations");
+  training_futures_ =
+      backend->AsTrainingBatchPublisher(std::move(iterator), batch_size, offset)
+          ->AsFutures();
+  checkpoint_futures_ = backend->AsCheckpointPublisher()->AsFutures();
 
   // Begin printing progress, after any logging triggered above.
   if (read_state<bool>("verbose")) {
@@ -1251,34 +1129,17 @@ void object_detector::init_training_backend() {
 
 void object_detector::iterate_training() {
   // Training must have been initialized.
-  ASSERT_TRUE(training_data_iterator_ != nullptr);
-  ASSERT_TRUE(training_data_augmenter_ != nullptr);
-  ASSERT_TRUE(training_model_ != nullptr);
+  ASSERT_TRUE(training_futures_ != nullptr);
+
+  // If we have a local checkpoint, it will no longer be valid.
+  checkpoint_.reset();
 
   // We want to have no more than two pending batches at a time (double
   // buffering). We're about to add a new one, so wait until we only have one.
   wait_for_training_batches(1);
 
-  // Update iteration count and check learning rate schedule.
-  // TODO: Abstract out the learning rate schedule.
-  flex_int iteration_idx = get_training_iterations();
-  flex_int max_iterations = get_max_iterations();
-
-  if (iteration_idx == max_iterations / 2) {
-
-    training_model_->set_learning_rate(BASE_LEARNING_RATE / 10.f);
-
-  } else if (iteration_idx == max_iterations * 3 / 4) {
-
-    training_model_->set_learning_rate(BASE_LEARNING_RATE / 100.f);
-
-  } else if (iteration_idx == max_iterations) {
-
-    // Handle any manually triggered iterations after the last planned one.
-    training_model_->set_learning_rate(BASE_LEARNING_RATE / 1000.f);
-  }
-
   // Update the model fields tracking how much training we've done.
+  flex_int iteration_idx = get_training_iterations();
   flex_int batch_size = read_state<flex_int>("batch_size");
   flex_int num_examples = read_state<flex_int>("num_examples");
   add_or_update_state({
@@ -1286,41 +1147,26 @@ void object_detector::iterate_training() {
       { "training_epochs", (iteration_idx + 1) * batch_size / num_examples },
   });
 
-  // Fetch the next batch of raw images and annotations.
-  std::vector<labeled_image> image_batch =
-      training_data_iterator_->next_batch(static_cast<size_t>(batch_size));
-
-  // Perform data augmentation.
-  image_augmenter::result augmenter_result =
-      training_data_augmenter_->prepare_images(std::move(image_batch));
-
-  // Encode the labels.
-  shared_float_array label_batch =
-      prepare_label_batch(augmenter_result.annotations_batch);
-
-  // Submit the batch to the neural net model.
-  std::map<std::string, shared_float_array> results = training_model_->train(
-      { { "input",  augmenter_result.image_batch },
-        { "labels", label_batch                  }  });
-  shared_float_array loss_batch = results.at("loss");
+  // Trigger another training batch.
+  std::future<std::unique_ptr<TrainingOutputBatch>> training_batch =
+      training_futures_->Next();
 
   // Save the result, which is a future that can synchronize with the
   // completion of this batch.
-  pending_training_batches_.emplace(iteration_idx, std::move(loss_batch));
+  pending_training_batches_.emplace(std::move(training_batch));
 }
 
 void object_detector::synchronize_training() { wait_for_training_batches(); }
 
-float_array_map object_detector::get_model_params() const {
-
-  float_array_map raw_model_params = nn_spec_->export_params_view();
-
+float_array_map object_detector::strip_fwd(
+    const float_array_map& raw_model_params) const {
   // Strip the substring "_fwd" from any parameter names, for compatibility with
-  // the compute backend. (We preserve the substring in nn_spec_ for inclusion
-  // in the final exported model.)
+  // the compute backend.
   // TODO: Someday, this will all be an implementation detail of each
   // model_backend implementation, once they actually take model_spec values as
   // inputs. Or maybe we should just not use "_fwd" in the exported model?
+  // TODO: Remove this model-specific code once the inference path no longer
+  // needs it.
   float_array_map model_params;
   for (const float_array_map::value_type& kv : raw_model_params) {
     const std::string modifier = "_fwd";
@@ -1333,36 +1179,6 @@ float_array_map object_detector::get_model_params() const {
   }
 
   return model_params;
-}
-
-shared_float_array object_detector::prepare_label_batch(
-    std::vector<std::vector<image_annotation>> annotations_batch) const {
-
-  // Allocate a float buffer of sufficient size.
-  size_t batch_size = read_state<size_t>("batch_size");
-  size_t grid_height = read_state<size_t>("grid_height");
-  size_t grid_width = read_state<size_t>("grid_width");
-  size_t num_classes = training_data_iterator_->class_labels().size();
-  size_t num_channels = anchor_boxes().size() * (5 + num_classes);  // C
-  size_t batch_stride = grid_height * grid_width * num_channels;    // H * W * C
-  std::vector<float> result(batch_size * batch_stride);  // NHWC
-
-  // Write the structured annotations into the float buffer.
-  float* result_out = result.data();
-  if (annotations_batch.size() > batch_size) {
-    annotations_batch.resize(batch_size);
-  }
-  for (const std::vector<image_annotation>& annotations : annotations_batch) {
-    convert_annotations_to_yolo(annotations, grid_height, grid_width,
-                                anchor_boxes().size(), num_classes, result_out);
-
-    result_out += batch_stride;
-  }
-
-  // Wrap the resulting buffer and return it.
-  return shared_float_array::wrap(
-      std::move(result),
-      {annotations_batch.size(), grid_height, grid_width, num_channels});
 }
 
 flex_int object_detector::get_max_iterations() const {
@@ -1378,14 +1194,21 @@ flex_int object_detector::get_num_classes() const {
 }
 
 void object_detector::wait_for_training_batches(size_t max_pending) {
+  // TODO: Once we adopt an asynchronous API, we can let this "double buffering"
+  // fall out of the back pressure we apply to the Combine pipeline.
 
   while (pending_training_batches_.size() > max_pending) {
 
     // Pop the first pending batch from the queue.
-    auto batch_it = pending_training_batches_.begin();
-    size_t iteration_idx = batch_it->first;
-    deferred_float_array loss_batch = std::move(batch_it->second);
-    pending_training_batches_.erase(batch_it);
+    TrainingOutputBatch training_batch =
+        *pending_training_batches_.front().get();
+    pending_training_batches_.pop();
+    int iteration_id = training_batch.iteration_id;
+    const shared_float_array& loss_batch = training_batch.loss;
+
+    // TODO: Move this into object_detection::Model once the model_backend
+    // interface adopts an async API, so that this post-processing doesn't
+    // prematurely trigger a wait on a future.
 
     // Compute the loss for this batch.
     float batch_loss = std::accumulate(
@@ -1405,8 +1228,8 @@ void object_detector::wait_for_training_batches(size_t max_pending) {
     // Report progress if we have an active table printer.
     if (training_table_printer_) {
       flex_float loss = variant_get_value<flex_float>(loss_it->second);
-      training_table_printer_->print_progress_row(
-          iteration_idx, iteration_idx + 1, loss, progress_time());
+      training_table_printer_->print_progress_row(iteration_id, iteration_id,
+                                                  loss, progress_time());
     }
   }
 }

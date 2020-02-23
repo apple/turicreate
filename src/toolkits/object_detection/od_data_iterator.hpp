@@ -125,6 +125,9 @@ public:
   virtual std::vector<neural_net::labeled_image>
       next_batch(size_t batch_size) = 0;
 
+  /** Returns true when `next_batch` will return a non-empty value. */
+  virtual bool has_next_batch() const = 0;
+
   /**
    * Returns a sorted list of the unique "label" values found in the
    * annotations.
@@ -154,6 +157,12 @@ public:
   simple_data_iterator& operator=(const simple_data_iterator&) = delete;
 
   std::vector<neural_net::labeled_image> next_batch(size_t batch_size) override;
+
+  bool has_next_batch() const override {
+    // TODO: gl_sframe_range::end() should be a const method.
+    gl_sframe_range range_iterator(range_iterator_);
+    return next_row_ != range_iterator.end();
+  }
 
   const std::vector<std::string>& class_labels() const override {
     return annotation_properties_.classes;

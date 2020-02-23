@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   dir_archive archive_write;
   archive_write.open_directory_for_write("serialized_save_load_tests");
   turi::oarchive oarc(archive_write);
-  _save_impl(oarc, nn_spec_1, state1);
+  _save_impl(oarc, state1, nn_spec_1.export_params_view());
   archive_write.close();
 
   // Load it
@@ -137,11 +137,16 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   archive_read.open_directory_for_read("serialized_save_load_tests");
   turi::iarchive iarc(archive_read);
   size_t version = 1;
+  neural_net::float_array_map weights;
   neural_net::model_spec nn_spec_2;
   std::map<std::string, variant_type> state2 = {
       {"num_classes", 10}, {"model", "darknet_yolo"}, {"max_iterations", 5}};
-  _load_version(iarc, version, nn_spec_2, state2, anchor_boxes);
+  _load_version(iarc, version, &state2, &weights);
   archive_read.close();
+  init_darknet_yolo(nn_spec_2,
+                    variant_get_value<size_t>(state2.at("num_classes")),
+                    anchor_boxes);
+  nn_spec_2.update_params(weights);
 
   // Compare saved and loaded models
   const CoreML::Specification::NeuralNetwork& nn_saved =

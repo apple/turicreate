@@ -10,16 +10,18 @@
 #include <functional>
 #include <map>
 #include <memory>
+#include <queue>
 
-#include <core/logging/table_printer/table_printer.hpp>
-#include <model_server/lib/extensions/ml_model.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <core/logging/table_printer/table_printer.hpp>
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/model_spec.hpp>
+#include <model_server/lib/extensions/ml_model.hpp>
+#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <toolkits/object_detection/od_data_iterator.hpp>
+#include <toolkits/object_detection/od_model.hpp>
 
 namespace turi {
 namespace object_detection {
@@ -45,7 +47,7 @@ class EXPORT object_detector: public ml_model_base {
                         std::map<std::string, flexible_type> opts);
   variant_type predict(variant_type data,
                        std::map<std::string, flexible_type> opts);
-  std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
+  virtual std::shared_ptr<coreml::MLModelWrapper> export_to_coreml(
       std::string filename, std::string short_description,
       std::map<std::string, flexible_type> additional_user_defined,
       std::map<std::string, flexible_type> opts);
@@ -155,22 +157,18 @@ class EXPORT object_detector: public ml_model_base {
   END_CLASS_MEMBER_REGISTRATION
 
  protected:
-  // Constructor allowing tests to set the initial state of this class and to
-  // inject dependencies.
-  object_detector(
-      const std::map<std::string, variant_type>& initial_state,
-      std::unique_ptr<neural_net::model_spec> nn_spec,
-      std::unique_ptr<neural_net::compute_context> training_compute_context,
-      std::unique_ptr<data_iterator> training_data_iterator,
-      std::unique_ptr<neural_net::image_augmenter> training_data_augmenter,
-      std::unique_ptr<neural_net::model_backend> training_model)
-      : nn_spec_(std::move(nn_spec)),
-        training_compute_context_(std::move(training_compute_context)),
-        training_data_iterator_(std::move(training_data_iterator)),
-        training_data_augmenter_(std::move(training_data_augmenter)),
-        training_model_(std::move(training_model)) {
-    add_or_update_state(initial_state);
+  // Constructor allowing tests to set the initial state of this class.
+  object_detector(std::map<std::string, variant_type> initial_state,
+                  neural_net::float_array_map initial_weights) {
+    load(std::move(initial_state), std::move(initial_weights));
   }
+
+  // Resets the internal state. Used by deserialization code and unit tests.
+  void load(std::map<std::string, variant_type> state,
+            neural_net::float_array_map weights);
+
+  // Synchronously loads weights from the backend if necessary.
+  Checkpoint* read_checkpoint() const;
 
   // Override points allowing subclasses to inject dependencies
 
@@ -186,12 +184,19 @@ class EXPORT object_detector: public ml_model_base {
   virtual
   std::unique_ptr<neural_net::compute_context> create_compute_context() const;
 
-  // Returns the initial neural network to train (represented by its CoreML
-  // spec), given the path to a mlmodel file containing the pretrained weights.
-  virtual std::unique_ptr<neural_net::model_spec> init_model(
-      const std::string& pretrained_mlmodel_path, size_t num_classes) const;
+  // Factories for Model
+  virtual std::unique_ptr<Model> create_model(
+      const Checkpoint& checkpoint,
+      std::unique_ptr<neural_net::compute_context> context) const;
+  virtual std::unique_ptr<Model> create_model(
+      const Config& config, const std::string& pretrained_model_path,
+      int random_seed,
+      std::unique_ptr<neural_net::compute_context> context) const;
 
-  void init_training_backend();
+  // Establishes training pipelines from the backend.
+  void connect_training_backend(std::unique_ptr<Model> backend,
+                                std::unique_ptr<data_iterator> iterator,
+                                int batch_size);
 
   virtual std::vector<neural_net::image_annotation> convert_yolo_to_annotations(
       const neural_net::float_array& yolo_map,
@@ -219,12 +224,9 @@ class EXPORT object_detector: public ml_model_base {
   }
 
  private:
+  neural_net::float_array_map strip_fwd(
+      const neural_net::float_array_map& params) const;
 
-  neural_net::float_array_map get_model_params() const;
-
-  neural_net::shared_float_array prepare_label_batch(
-      std::vector<std::vector<neural_net::image_annotation>> annotations_batch)
-      const;
   flex_int get_max_iterations() const;
   flex_int get_training_iterations() const;
   flex_int get_num_classes() const;
@@ -236,35 +238,32 @@ class EXPORT object_detector: public ml_model_base {
                                            const std::string& column_name);
 
   // Sets certain user options heuristically (from the data).
-  void infer_derived_options();
+  void infer_derived_options(neural_net::compute_context* context,
+                             data_iterator* iterator);
 
   // Waits until the number of pending patches is at most `max_pending`.
   void wait_for_training_batches(size_t max_pending = 0);
 
-  // Ensures that the local copy of the model weights are in sync with the
-  // training backend.
-  void synchronize_model(neural_net::model_spec* nn_spec) const;
-
   // Computes and records training/validation metrics.
   void update_model_metrics(gl_sframe data, gl_sframe validation_data);
 
-  // Primary representation for the trained model.
-  std::unique_ptr<neural_net::model_spec> nn_spec_;
+  // Primary representation for the trained model. Can be null if the model has
+  // been updated since the last checkpoint.
+  mutable std::unique_ptr<Checkpoint> checkpoint_;
 
   // Primary dependencies for training. These should be nonnull while training
   // is in progress.
   gl_sframe training_data_;  // TODO: Avoid storing gl_sframe AND data_iterator.
   gl_sframe validation_data_;
-  std::unique_ptr<neural_net::compute_context> training_compute_context_;
-  std::unique_ptr<data_iterator> training_data_iterator_;
-  std::unique_ptr<neural_net::image_augmenter> training_data_augmenter_;
-  std::unique_ptr<neural_net::model_backend> training_model_;
+  std::shared_ptr<neural_net::FuturesStream<TrainingOutputBatch>>
+      training_futures_;
+  std::shared_ptr<neural_net::FuturesStream<Checkpoint>> checkpoint_futures_;
 
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;
 
-  // Map from iteration index to the loss future.
-  std::map<size_t, neural_net::shared_float_array> pending_training_batches_;
+  std::queue<std::future<std::unique_ptr<TrainingOutputBatch>>>
+      pending_training_batches_;
 
   struct inference_batch : neural_net::image_augmenter::result {
     std::vector<std::pair<float, float>> image_dimensions_batch;
