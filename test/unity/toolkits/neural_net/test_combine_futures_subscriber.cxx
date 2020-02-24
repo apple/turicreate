@@ -97,7 +97,7 @@ BOOST_AUTO_TEST_CASE(test_request_after_finished) {
   TS_ASSERT(status == std::future_status::ready);
 
   std::unique_ptr<int> value = result.get();
-  TS_ASSERT_EQUALS(value, nullptr);
+  TS_ASSERT(value == nullptr);
 }
 
 // Requests for values before Completion should eventually return non-values if
@@ -139,9 +139,9 @@ BOOST_AUTO_TEST_CASE(test_request_before_finished) {
 
   // Both futures should have non-values.
   std::unique_ptr<int> value1 = result1.get();
-  TS_ASSERT_EQUALS(value1, nullptr);
+  TS_ASSERT(value1 == nullptr);
   std::unique_ptr<int> value2 = result2.get();
-  TS_ASSERT_EQUALS(value2, nullptr);
+  TS_ASSERT(value2 == nullptr);
 }
 
 // Requesting a value should correctly fulfill the future, when the Publisher
@@ -162,7 +162,7 @@ BOOST_AUTO_TEST_CASE(test_synchronous_response) {
   TS_ASSERT(status == std::future_status::ready);
 
   std::unique_ptr<int> value = result.get();
-  TS_ASSERT_DIFFERS(value, nullptr);
+  TS_ASSERT(value != nullptr);
   TS_ASSERT_EQUALS(*value, 9);
 }
 
@@ -203,7 +203,7 @@ BOOST_AUTO_TEST_CASE(test_asynchronous_response) {
 
   // The first future should contain the first value.
   std::unique_ptr<int> value1 = result1.get();
-  TS_ASSERT_DIFFERS(value1, nullptr);
+  TS_ASSERT(value1 != nullptr);
   TS_ASSERT_EQUALS(*value1, 5);
 
   // The second future should still not be ready.
@@ -219,7 +219,7 @@ BOOST_AUTO_TEST_CASE(test_asynchronous_response) {
 
   // The second future should contain the second value.
   std::unique_ptr<int> value2 = result2.get();
-  TS_ASSERT_DIFFERS(value2, nullptr);
+  TS_ASSERT(value2 != nullptr);
   TS_ASSERT_EQUALS(*value2, 8);
 }
 
