@@ -459,6 +459,7 @@ def create(
     custom_NN = SoundClassifierTensorFlowModel(
         feature_extractor.output_length, num_labels, custom_layer_sizes
     )
+    custom_NN.init()
 
     if verbose:
         # Setup progress table

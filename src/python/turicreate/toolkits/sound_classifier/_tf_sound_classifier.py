@@ -20,21 +20,22 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
     def __init__(self, num_inputs, num_classes, custom_layer_sizes):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy.
-
         """
+        self.num_inputs = num_inputs
+        self.num_classes = num_classes
+        self.custom_layer_sizes = custom_layer_sizes
+
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
 
         self.sc_graph = _tf.Graph()
-        self.num_classes = num_classes
         self.sess = _tf.Session(graph=self.sc_graph)
-        with self.sc_graph.as_default():
-            self.init_sound_classifier_graph(num_inputs, custom_layer_sizes)
+
+        self.is_initialized = False
 
     def __del__(self):
         self.sess.close()
         self.gpu_policy.stop()
-
 
     def _build_network(x, weights, biases):
         # Add customized layers
@@ -56,8 +57,14 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         return out, curr_dense
 
-    def init_sound_classifier_graph(self, num_inputs, custom_layer_sizes):
-        self.x = _tf.placeholder("float", [None, 12288])
+    def init(self):
+        assert not self.is_initialized
+        with self.sc_graph.as_default():
+            self.init_sound_classifier_graph()
+        self.is_initialized = True
+
+    def init_sound_classifier_graph(self):
+        self.x = _tf.placeholder("float", [None, self.num_inputs])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
         # Xavier initialization
@@ -68,13 +75,13 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.names_of_layers = []
 
         # Create variables for customized layers
-        for i, cur_layer_size in enumerate(custom_layer_sizes):
+        for i, cur_layer_size in enumerate(self.custom_layer_sizes):
             weight_name = "sound_dense{}_weight".format(i)
             bias_name = "sound_dense{}_bias".format(i)
             self.names_of_layers.append("dense{}".format(i))
             out_units = cur_layer_size
             if i == 0:
-                in_units = num_inputs
+                in_units = self.num_inputs
             weights[weight_name] = _tf.Variable(
                 initializer([in_units, out_units]), name=weight_name
             )
@@ -116,6 +123,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.sess.run(_tf.global_variables_initializer())
 
     def train(self, data, label):
+        assert self.is_initialized
+
         data_shape = data.shape[0]
         _, final_train_loss, final_train_accuracy = self.sess.run(
             [self.optimizer, self.cost, self.accuracy],
@@ -130,6 +139,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         return result
 
     def evaluate(self, data, label):
+        assert self.is_initialized
+
         data_shape = data.shape[0]
         pred_probs, final_accuracy = self.sess.run(
             [self.predictions, self.accuracy],
@@ -144,6 +155,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         return result
 
     def predict(self, data):
+        assert self.is_initialized
+
         data_shape = data.shape[0]
         pred_probs = self.sess.run(
             self.predictions, feed_dict={self.x: data.reshape((data_shape, 12288))}
@@ -164,6 +177,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             `numpy.ndarray` converted to the CoreML format and the
             respective activation applied to the layer.
         """
+        assert self.is_initialized
 
         with self.sc_graph.as_default():
             layer_names = _tf.trainable_variables()
@@ -198,6 +212,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
                 shapes are transposed.
 
         """
+        assert self.is_initialized
 
         with self.sc_graph.as_default():
             layer_names = _tf.trainable_variables()
@@ -222,6 +237,8 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         need to be transposed to match TF format.
 
         """
+        self.init()
+
         layers = net_params["data"].keys()
 
         for layer_name in layers:
