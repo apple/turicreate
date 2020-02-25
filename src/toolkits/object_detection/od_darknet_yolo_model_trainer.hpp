@@ -17,6 +17,7 @@
 
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
+#include <ml/neural_net/model_spec.hpp>
 #include <toolkits/object_detection/od_model_trainer.hpp>
 
 namespace turi {
@@ -65,7 +66,8 @@ class DarknetYOLOTrainer
 /**
  * Wrapper for a darknet-yolo model_backend that publishes checkpoints.
  */
-class DarknetYOLOCheckpointer : public neural_net::Iterator<Checkpoint> {
+class DarknetYOLOCheckpointer
+    : public neural_net::Iterator<std::unique_ptr<Checkpoint>> {
  public:
   DarknetYOLOCheckpointer(const Config& config,
                           std::shared_ptr<neural_net::model_backend> impl)
@@ -73,32 +75,59 @@ class DarknetYOLOCheckpointer : public neural_net::Iterator<Checkpoint> {
 
   bool HasNext() const override { return impl_ != nullptr; }
 
-  Checkpoint Next() override;
+  std::unique_ptr<Checkpoint> Next() override;
 
  private:
   Config config_;
   std::shared_ptr<neural_net::model_backend> impl_;
 };
 
-/** Subclass of ModelTrainer encapsulating the darknet-yolo architecture. */
-class DarknetYOLOModelTrainer : public ModelTrainer {
+/**
+ * Subclass of Checkpoint that generates DarknetYOLOModelTrainer
+ * instances.
+ */
+class DarknetYOLOCheckpoint : public Checkpoint {
  public:
   /**
    * Initializes a new model, combining the pre-trained warm-start weights with
    * random initialization for the final layers.
    */
-  static std::unique_ptr<DarknetYOLOModelTrainer> Create(
-      const Config& config, const std::string& pretrained_model_path,
-      int random_seed, std::unique_ptr<neural_net::compute_context> context);
+  DarknetYOLOCheckpoint(Config config, const std::string& pretrained_model_path,
+                        int random_seed);
 
+  /** Loads weights saved from a DarknetYOLOModelTrainer. */
+  DarknetYOLOCheckpoint(Config config, neural_net::float_array_map weights);
+
+  const Config& config() const override;
+  const neural_net::float_array_map& weights() const override;
+
+  std::unique_ptr<ModelTrainer> CreateModelTrainer(
+      neural_net::compute_context* context) const override;
+
+  /** Returns the config dictionary used to initialize darknet-yolo backends. */
+  neural_net::float_array_map internal_config() const;
+
+  /** Returns the weights with the keys expected by the backends. */
+  neural_net::float_array_map internal_weights() const;
+
+ private:
+  Config config_;
+
+  std::unique_ptr<neural_net::model_spec> model_spec_;
+  neural_net::float_array_map weights_;
+};
+
+/** Subclass of ModelTrainer encapsulating the darknet-yolo architecture. */
+class DarknetYOLOModelTrainer : public ModelTrainer {
+ public:
   /**
    * Initializes a model from a checkpoint.
    */
-  DarknetYOLOModelTrainer(const Checkpoint& checkpoint,
-                          std::unique_ptr<neural_net::compute_context> context);
+  DarknetYOLOModelTrainer(const DarknetYOLOCheckpoint& checkpoint,
+                          neural_net::compute_context* context);
 
-  std::shared_ptr<neural_net::Publisher<Checkpoint>> AsCheckpointPublisher()
-      override;
+  std::shared_ptr<neural_net::Publisher<std::unique_ptr<Checkpoint>>>
+  AsCheckpointPublisher() override;
 
  protected:
   std::shared_ptr<neural_net::Publisher<TrainingOutputBatch>>

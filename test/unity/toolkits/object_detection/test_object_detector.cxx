@@ -407,18 +407,14 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
 
-        Checkpoint checkpoint;
-        checkpoint.config = config;
-
+        float_array_map weights;
         std::vector<float> buffer(16 * 16 * 3 * 3);
         std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
-        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+        weights["test_layer_weight"] = shared_float_array::wrap(
             std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
 
-        std::unique_ptr<ModelTrainer> model;
-        model.reset(
-            new DarknetYOLOModelTrainer(checkpoint, std::move(context)));
-        return model;
+        DarknetYOLOCheckpoint checkpoint(config, std::move(weights));
+        return checkpoint.CreateModelTrainer(context.get());
       });
 
   auto create_object_detector_impl =
@@ -714,18 +710,14 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
 
-        Checkpoint checkpoint;
-        checkpoint.config = config;
-
+        float_array_map weights;
         std::vector<float> buffer(16 * 16 * 3 * 3);
         std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
-        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+        weights["test_layer_weight"] = shared_float_array::wrap(
             std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
 
-        std::unique_ptr<ModelTrainer> model;
-        model.reset(
-            new DarknetYOLOModelTrainer(checkpoint, std::move(context)));
-        return model;
+        DarknetYOLOCheckpoint checkpoint(config, std::move(weights));
+        return checkpoint.CreateModelTrainer(context.get());
       });
 
   auto create_object_detector_impl = [&](int n, int c_in, int h_in, int w_in,
@@ -939,18 +931,14 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
 
-        Checkpoint checkpoint;
-        checkpoint.config = config;
-
+        float_array_map weights;
         std::vector<float> buffer(16 * 16 * 3 * 3);
         std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
-        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+        weights["test_layer_weight"] = shared_float_array::wrap(
             std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
 
-        std::unique_ptr<ModelTrainer> model;
-        model.reset(
-            new DarknetYOLOModelTrainer(checkpoint, std::move(context)));
-        return model;
+        DarknetYOLOCheckpoint checkpoint(config, std::move(weights));
+        return checkpoint.CreateModelTrainer(context.get());
       });
 
   auto create_object_detector_impl =

@@ -279,8 +279,8 @@ size_t object_detector::get_version() const {
 }
 
 void object_detector::save_impl(oarchive& oarc) const {
-  Checkpoint* checkpoint = read_checkpoint();
-  _save_impl(oarc, state, checkpoint->weights);
+  const Checkpoint& checkpoint = read_checkpoint();
+  _save_impl(oarc, state, checkpoint.weights());
 }
 
 void object_detector::load_version(iarchive& iarc, size_t version) {
@@ -297,24 +297,30 @@ void object_detector::load_version(iarchive& iarc, size_t version) {
 void object_detector::load(std::map<std::string, variant_type> state,
                            float_array_map weights) {
   this->state = std::move(state);
+  checkpoint_ = load_checkpoint(std::move(weights));
+}
 
-  checkpoint_.reset(new Checkpoint);
-  checkpoint_->weights = std::move(weights);
-
-  // Write from the state into our new Config struct.
-  Config& config = checkpoint_->config;
+std::unique_ptr<Checkpoint> object_detector::load_checkpoint(
+    float_array_map weights) const {
+  // Write from the state into a new Config struct.
+  Config config;
   config.max_iterations = static_cast<int>(get_max_iterations());
   config.batch_size = read_state<int>("batch_size");
   config.output_height = read_state<int>("grid_height");
   config.output_width = read_state<int>("grid_width");
   config.num_classes = static_cast<int>(get_num_classes());
+
+  std::unique_ptr<Checkpoint> checkpoint;
+  checkpoint.reset(
+      new DarknetYOLOCheckpoint(std::move(config), std::move(weights)));
+  return checkpoint;
 }
 
-Checkpoint* object_detector::read_checkpoint() const {
+const Checkpoint& object_detector::read_checkpoint() const {
   if (checkpoint_ == nullptr) {
-    checkpoint_ = checkpoint_futures_->Next().get();
+    checkpoint_ = std::move(*checkpoint_futures_->Next().get());
   }
-  return checkpoint_.get();
+  return *checkpoint_.get();
 }
 
 void object_detector::import_from_custom_model(variant_map_type model_data,
@@ -717,7 +723,7 @@ void object_detector::perform_predict(
       /* h_out   */ grid_height,
       /* w_out   */ grid_width,
       /* config  */ pred_config,
-      /* weights */ strip_fwd(checkpoint_->weights));
+      /* weights */ strip_fwd(checkpoint_->weights()));
 
   // To support double buffering, use a queue of pending inference results.
   std::queue<inference_batch> pending_batches;
@@ -817,7 +823,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     std::map<std::string, flexible_type> opts)
 {
   // If called during training, synchronize the model first.
-  Checkpoint* checkpoint = read_checkpoint();
+  const Checkpoint& checkpoint = read_checkpoint();
 
   // TODO: Move this implementation to DarknetYOLOModelTrainer, since it is
   // model-specific.
@@ -825,7 +831,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // Initialize the result with the learned layers from the model_backend.
   model_spec yolo_nn_spec;
   init_darknet_yolo(yolo_nn_spec, get_num_classes(), anchor_boxes());
-  yolo_nn_spec.update_params(checkpoint->weights);
+  yolo_nn_spec.update_params(checkpoint.weights());
 
   size_t grid_height = read_state<size_t>("grid_height");
   size_t grid_width = read_state<size_t>("grid_width");
@@ -1067,8 +1073,9 @@ std::unique_ptr<ModelTrainer> object_detector::create_trainer(
     std::unique_ptr<neural_net::compute_context> context) const {
   // For now, we only support darknet-yolo. Load the pre-trained model and
   // randomly initialize the final layers.
-  return DarknetYOLOModelTrainer::Create(config, pretrained_model_path,
-                                         random_seed, std::move(context));
+  checkpoint_.reset(
+      new DarknetYOLOCheckpoint(config, pretrained_model_path, random_seed));
+  return checkpoint_->CreateModelTrainer(context.get());
 }
 
 void object_detector::resume_training(gl_sframe data,
@@ -1093,19 +1100,11 @@ void object_detector::resume_training(gl_sframe data,
 
   // Load the model from the current checkpoint.
   std::unique_ptr<ModelTrainer> trainer =
-      create_trainer(*checkpoint_, std::move(context));
+      checkpoint_->CreateModelTrainer(context.get());
 
   // Establish training pipeline.
   connect_trainer(std::move(trainer), std::move(iterator),
                   read_state<int>("batch_size"));
-}
-
-std::unique_ptr<ModelTrainer> object_detector::create_trainer(
-    const Checkpoint& checkpoint,
-    std::unique_ptr<neural_net::compute_context> context) const {
-  // For now, we only support darknet-yolo. Load from a checkpoint.
-  auto* result = new DarknetYOLOModelTrainer(checkpoint, std::move(context));
-  return std::unique_ptr<DarknetYOLOModelTrainer>(result);
 }
 
 void object_detector::connect_trainer(std::unique_ptr<ModelTrainer> trainer,

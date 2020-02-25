@@ -17,10 +17,13 @@
  */
 
 #include <ml/neural_net/combine.hpp>
+#include <ml/neural_net/compute_context.hpp>
 #include <toolkits/object_detection/od_data_iterator.hpp>
 
 namespace turi {
 namespace object_detection {
+
+class ModelTrainer;
 
 /** Represents one batch of raw data: (possibly) annotated images. */
 struct DataBatch {
@@ -96,9 +99,16 @@ struct Config {
  *
  * \todo Include optimizer state to allow training to resume seamlessly.
  */
-struct Checkpoint {
-  Config config;
-  neural_net::float_array_map weights;
+class Checkpoint {
+ public:
+  virtual ~Checkpoint() = default;
+
+  virtual const Config& config() const = 0;
+  virtual const neural_net::float_array_map& weights() const = 0;
+
+  /** Loads the checkpoint into an active ModelTrainer instance. */
+  virtual std::unique_ptr<ModelTrainer> CreateModelTrainer(
+      neural_net::compute_context* context) const = 0;
 };
 
 /**
@@ -185,7 +195,7 @@ class ModelTrainer {
                            size_t batch_size, int offset);
 
   /** Returns a publisher that can be used to request checkpoints. */
-  virtual std::shared_ptr<neural_net::Publisher<Checkpoint>>
+  virtual std::shared_ptr<neural_net::Publisher<std::unique_ptr<Checkpoint>>>
   AsCheckpointPublisher() = 0;
 
  protected:
