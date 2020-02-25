@@ -35,11 +35,11 @@ This allows us to perform 5-fold cross validation more than twice as fast. For l
 
 
 #### Tune Custom Neural Network Configuration
-The [custom neural network](how-it-works.html#custom-neural-network-stage) used by the Sound Classifier is made up of a series of dense layers. Using more layers or more units in each layer can have a significant affect on accuracy. This will also affect the size of your model.
+The [custom neural network](how-it-works.html#custom-neural-network-stage) used by the Sound Classifier is made up of a series of dense layers. Using more layers or more units in each layer can have a significant effect on accuracy. This will also affect the size of your model.
 
 The `custom_layer_sizes` parameter allows you specify how many layers and the number of units in each layer. The default values for this parameter is `[100, 100]` which corresponds to two dense layers with a 100 units each.
 
-Using a smaller number of overall units will result in a smaller model, potentially with minimal affects on accuracy. If you have a large amount of training data, you should get better accuracy by using more layers and/or more units.
+Using a smaller number of overall units will result in a smaller model, potentially with minimal effects on accuracy. If you have a large amount of training data, you should get better accuracy by using more layers and/or more units.
 
 The code below tries several different neural network configurations and reports the validation accuracy for each one:
 
