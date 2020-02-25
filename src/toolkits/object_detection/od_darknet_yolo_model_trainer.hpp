@@ -5,11 +5,11 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_HPP_
-#define TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_HPP_
+#ifndef TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_TRAINER_HPP_
+#define TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_TRAINER_HPP_
 
 /**
- * \file od_darknet_yolo_model.hpp
+ * \file od_darknet_yolo_model_trainer.hpp
  *
  * Defines helper functions and the Model subclass for the darknet-yolo
  * architecture.
@@ -17,7 +17,7 @@
 
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
-#include <toolkits/object_detection/od_model.hpp>
+#include <toolkits/object_detection/od_model_trainer.hpp>
 
 namespace turi {
 namespace object_detection {
@@ -113,4 +113,4 @@ class DarknetYOLOModel : public Model {
 }  // namespace object_detection
 }  // namespace turi
 
-#endif  // TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_HPP_
+#endif  // TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_TRAINER_HPP_

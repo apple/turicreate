@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <toolkits/object_detection/od_model.hpp>
+#include <toolkits/object_detection/od_model_trainer.hpp>
 
 namespace turi {
 namespace object_detection {

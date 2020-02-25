@@ -23,7 +23,7 @@
 #include <core/random/random.hpp>
 #include <timer/timer.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
-#include <toolkits/object_detection/od_darknet_yolo_model.hpp>
+#include <toolkits/object_detection/od_darknet_yolo_model_trainer.hpp>
 #include <toolkits/object_detection/od_evaluation.hpp>
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>

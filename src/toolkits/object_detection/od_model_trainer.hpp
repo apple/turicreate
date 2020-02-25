@@ -5,11 +5,11 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TOOLKITS_OBJECT_DETECTION_OD_MODEL_HPP_
-#define TOOLKITS_OBJECT_DETECTION_OD_MODEL_HPP_
+#ifndef TOOLKITS_OBJECT_DETECTION_OD_MODEL_TRAINER_HPP_
+#define TOOLKITS_OBJECT_DETECTION_OD_MODEL_TRAINER_HPP_
 
 /**
- * \file od_model.hpp
+ * \file od_model_trainer.hpp
  *
  * Defines the value types representing each stage of an object-detection
  * training pipeline, and the virtual interface for arbitrary object-detection
@@ -202,4 +202,4 @@ class Model {
 }  // namespace object_detection
 }  // namespace turi
 
-#endif  // TOOLKITS_OBJECT_DETECTION_OD_MODEL_HPP_
+#endif  // TOOLKITS_OBJECT_DETECTION_OD_MODEL_TRAINER_HPP_

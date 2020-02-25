@@ -21,7 +21,7 @@
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <toolkits/object_detection/od_data_iterator.hpp>
-#include <toolkits/object_detection/od_model.hpp>
+#include <toolkits/object_detection/od_model_trainer.hpp>
 
 namespace turi {
 namespace object_detection {

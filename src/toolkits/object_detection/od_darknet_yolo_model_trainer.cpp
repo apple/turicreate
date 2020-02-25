@@ -5,7 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <toolkits/object_detection/od_darknet_yolo_model.hpp>
+#include <toolkits/object_detection/od_darknet_yolo_model_trainer.hpp>
 
 #include <toolkits/object_detection/od_yolo.hpp>
 
