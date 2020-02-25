@@ -35,8 +35,28 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.sess.close()
         self.gpu_policy.stop()
 
-    def init_sound_classifier_graph(self, num_inputs, custom_layer_sizes):
 
+    def _build_network(x, weights, biases):
+        # Add customized layers
+        for i in range(len(weights.keys())):
+            weight_name = "sound_dense{}_weight".format(i)
+            bias_name = "sound_dense{}_bias".format(i)
+            if i == 0:
+                curr_dense = _tf.nn.xw_plus_b(
+                    x, weights=weights[weight_name], biases=biases[bias_name]
+                )
+            else:
+                curr_dense = _tf.nn.xw_plus_b(
+                    curr_dense, weights=weights[weight_name], biases=biases[bias_name]
+                )
+            if i == (len(weights.keys()) - 1):
+                out = _tf.nn.softmax(curr_dense)
+            else:
+                curr_dense = _tf.nn.relu(curr_dense)
+
+        return out, curr_dense
+
+    def init_sound_classifier_graph(self, num_inputs, custom_layer_sizes):
         self.x = _tf.placeholder("float", [None, 12288])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
@@ -72,24 +92,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             initializer([self.num_classes]), name=bias_name
         )
 
-        # Add customized layers
-        for i in range(len(weights.keys())):
-            weight_name = "sound_dense{}_weight".format(i)
-            bias_name = "sound_dense{}_bias".format(i)
-            if i == 0:
-                curr_dense = _tf.nn.xw_plus_b(
-                    self.x, weights=weights[weight_name], biases=biases[bias_name]
-                )
-            else:
-                curr_dense = _tf.nn.xw_plus_b(
-                    curr_dense, weights=weights[weight_name], biases=biases[bias_name]
-                )
-            if i == (len(weights.keys()) - 1):
-                out = _tf.nn.softmax(curr_dense)
-            else:
-                curr_dense = _tf.nn.relu(curr_dense)
-
-        self.predictions = out
+        self.predictions, curr_dense = SoundClassifierTensorFlowModel._build_network(self.x, weights, biases)
 
         # Loss
         self.cost = _tf.reduce_mean(
