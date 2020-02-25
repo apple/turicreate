@@ -819,7 +819,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // If called during training, synchronize the model first.
   Checkpoint* checkpoint = read_checkpoint();
 
-  // TODO: Move this implementation to DarknetYOLOModel, since it is
+  // TODO: Move this implementation to DarknetYOLOModelTrainer, since it is
   // model-specific.
 
   // Initialize the result with the learned layers from the model_backend.
@@ -1020,7 +1020,7 @@ void object_detector::init_training(gl_sframe data,
 
   // Infer values for unspecified options. Note that this depends on training
   // data statistics and the compute context, initialized above.
-  // TODO: Move this into DarknetYOLOModel, since these heuristics are
+  // TODO: Move this into DarknetYOLOModelTrainer, since these heuristics are
   // model-specific.
   infer_derived_options(context.get(), iterator.get());
 
@@ -1054,21 +1054,21 @@ void object_detector::init_training(gl_sframe data,
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
   // classes observed by the training_data_iterator_ above.
-  std::unique_ptr<Model> backend = create_model(
+  std::unique_ptr<ModelTrainer> trainer = create_trainer(
       config, mlmodel_path, read_state<int>("random_seed"), std::move(context));
 
   // Establish training pipeline.
-  connect_training_backend(std::move(backend), std::move(iterator), batch_size);
+  connect_trainer(std::move(trainer), std::move(iterator), batch_size);
 }
 
-std::unique_ptr<Model> object_detector::create_model(
+std::unique_ptr<ModelTrainer> object_detector::create_trainer(
     const Config& config, const std::string& pretrained_model_path,
     int random_seed,
     std::unique_ptr<neural_net::compute_context> context) const {
   // For now, we only support darknet-yolo. Load the pre-trained model and
   // randomly initialize the final layers.
-  return DarknetYOLOModel::Create(config, pretrained_model_path, random_seed,
-                                  std::move(context));
+  return DarknetYOLOModelTrainer::Create(config, pretrained_model_path,
+                                         random_seed, std::move(context));
 }
 
 void object_detector::resume_training(gl_sframe data,
@@ -1092,32 +1092,32 @@ void object_detector::resume_training(gl_sframe data,
   }
 
   // Load the model from the current checkpoint.
-  std::unique_ptr<Model> backend =
-      create_model(*checkpoint_, std::move(context));
+  std::unique_ptr<ModelTrainer> trainer =
+      create_trainer(*checkpoint_, std::move(context));
 
   // Establish training pipeline.
-  connect_training_backend(std::move(backend), std::move(iterator),
-                           read_state<int>("batch_size"));
+  connect_trainer(std::move(trainer), std::move(iterator),
+                  read_state<int>("batch_size"));
 }
 
-std::unique_ptr<Model> object_detector::create_model(
+std::unique_ptr<ModelTrainer> object_detector::create_trainer(
     const Checkpoint& checkpoint,
     std::unique_ptr<neural_net::compute_context> context) const {
   // For now, we only support darknet-yolo. Load from a checkpoint.
-  auto* result = new DarknetYOLOModel(checkpoint, std::move(context));
-  return std::unique_ptr<DarknetYOLOModel>(result);
+  auto* result = new DarknetYOLOModelTrainer(checkpoint, std::move(context));
+  return std::unique_ptr<DarknetYOLOModelTrainer>(result);
 }
 
-void object_detector::connect_training_backend(
-    std::unique_ptr<Model> backend, std::unique_ptr<data_iterator> iterator,
-    int batch_size) {
-  // Subscribe to the backend model using futures, for compatibility with our
+void object_detector::connect_trainer(std::unique_ptr<ModelTrainer> trainer,
+                                      std::unique_ptr<data_iterator> iterator,
+                                      int batch_size) {
+  // Subscribe to the trainer using futures, for compatibility with our
   // current synchronous API surface.
   int offset = read_state<int>("training_iterations");
   training_futures_ =
-      backend->AsTrainingBatchPublisher(std::move(iterator), batch_size, offset)
+      trainer->AsTrainingBatchPublisher(std::move(iterator), batch_size, offset)
           ->AsFutures();
-  checkpoint_futures_ = backend->AsCheckpointPublisher()->AsFutures();
+  checkpoint_futures_ = trainer->AsCheckpointPublisher()->AsFutures();
 
   // Begin printing progress, after any logging triggered above.
   if (read_state<bool>("verbose")) {
@@ -1206,9 +1206,9 @@ void object_detector::wait_for_training_batches(size_t max_pending) {
     int iteration_id = training_batch.iteration_id;
     const shared_float_array& loss_batch = training_batch.loss;
 
-    // TODO: Move this into object_detection::Model once the model_backend
-    // interface adopts an async API, so that this post-processing doesn't
-    // prematurely trigger a wait on a future.
+    // TODO: Move this into object_detection::ModelTrainer once the
+    // model_backend interface adopts an async API, so that this post-processing
+    // doesn't prematurely trigger a wait on a future.
 
     // Compute the loss for this batch.
     float batch_loss = std::accumulate(

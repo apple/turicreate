@@ -315,7 +315,7 @@ Checkpoint DarknetYOLOCheckpointer::Next() {
 }
 
 // static
-std::unique_ptr<DarknetYOLOModel> DarknetYOLOModel::Create(
+std::unique_ptr<DarknetYOLOModelTrainer> DarknetYOLOModelTrainer::Create(
     const Config& config, const std::string& pretrained_model_path,
     int random_seed, std::unique_ptr<neural_net::compute_context> context) {
   // Start with parameters from the pre-trained model.
@@ -341,15 +341,15 @@ std::unique_ptr<DarknetYOLOModel> DarknetYOLOModel::Create(
   // The constructor should copy the weights from the checkpoint, so that it's
   // safe to deallocate the model_spec above.
   // TODO: Avoid weak references like the above.
-  std::unique_ptr<DarknetYOLOModel> model;
-  model.reset(new DarknetYOLOModel(checkpoint, std::move(context)));
+  std::unique_ptr<DarknetYOLOModelTrainer> model;
+  model.reset(new DarknetYOLOModelTrainer(checkpoint, std::move(context)));
   return model;
 }
 
-DarknetYOLOModel::DarknetYOLOModel(
+DarknetYOLOModelTrainer::DarknetYOLOModelTrainer(
     const Checkpoint& checkpoint,
     std::unique_ptr<neural_net::compute_context> context)
-    : Model(context->create_image_augmenter(
+    : ModelTrainer(context->create_image_augmenter(
           DarknetYOLOTrainingAugmentationOptions(
               checkpoint.config.batch_size, checkpoint.config.output_height,
               checkpoint.config.output_width))),
@@ -368,14 +368,14 @@ DarknetYOLOModel::DarknetYOLOModel(
 }
 
 std::shared_ptr<Publisher<Checkpoint>>
-DarknetYOLOModel::AsCheckpointPublisher() {
+DarknetYOLOModelTrainer::AsCheckpointPublisher() {
   auto checkpointer =
       std::make_shared<DarknetYOLOCheckpointer>(config_, backend_);
   return checkpointer->AsPublisher();
 }
 
 std::shared_ptr<Publisher<TrainingOutputBatch>>
-DarknetYOLOModel::AsTrainingBatchPublisher(
+DarknetYOLOModelTrainer::AsTrainingBatchPublisher(
     std::shared_ptr<neural_net::Publisher<InputBatch>> augmented_data) {
   Config config = config_;
 

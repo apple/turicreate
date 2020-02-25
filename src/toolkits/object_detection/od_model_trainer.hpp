@@ -163,17 +163,17 @@ class ProgressUpdater
 };
 
 /**
- * Abstract base class for object-detection models.
+ * Abstract base class for object-detection model trainers.
  *
  * Responsible for constructing the model-agnostic portions of the overall
  * training pipeline.
  */
-class Model {
+class ModelTrainer {
  public:
   // TODO: This class should be responsible for producing the augmenter itself.
-  Model(std::unique_ptr<neural_net::image_augmenter> augmenter);
+  ModelTrainer(std::unique_ptr<neural_net::image_augmenter> augmenter);
 
-  virtual ~Model() = default;
+  virtual ~ModelTrainer() = default;
 
   /**
    * Given a data iterator, return a publisher of model outputs.

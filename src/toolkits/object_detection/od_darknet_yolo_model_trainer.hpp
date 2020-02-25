@@ -80,22 +80,22 @@ class DarknetYOLOCheckpointer : public neural_net::Iterator<Checkpoint> {
   std::shared_ptr<neural_net::model_backend> impl_;
 };
 
-/** Subclass of Model encapsulating the darknet-yolo architecture. */
-class DarknetYOLOModel : public Model {
+/** Subclass of ModelTrainer encapsulating the darknet-yolo architecture. */
+class DarknetYOLOModelTrainer : public ModelTrainer {
  public:
   /**
    * Initializes a new model, combining the pre-trained warm-start weights with
    * random initialization for the final layers.
    */
-  static std::unique_ptr<DarknetYOLOModel> Create(
+  static std::unique_ptr<DarknetYOLOModelTrainer> Create(
       const Config& config, const std::string& pretrained_model_path,
       int random_seed, std::unique_ptr<neural_net::compute_context> context);
 
   /**
    * Initializes a model from a checkpoint.
    */
-  DarknetYOLOModel(const Checkpoint& checkpoint,
-                   std::unique_ptr<neural_net::compute_context> context);
+  DarknetYOLOModelTrainer(const Checkpoint& checkpoint,
+                          std::unique_ptr<neural_net::compute_context> context);
 
   std::shared_ptr<neural_net::Publisher<Checkpoint>> AsCheckpointPublisher()
       override;

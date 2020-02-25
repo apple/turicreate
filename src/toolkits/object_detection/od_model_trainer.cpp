@@ -53,10 +53,12 @@ TrainingProgress ProgressUpdater::Invoke(TrainingOutputBatch output_batch) {
   return progress;
 }
 
-Model::Model(std::unique_ptr<neural_net::image_augmenter> augmenter)
+ModelTrainer::ModelTrainer(
+    std::unique_ptr<neural_net::image_augmenter> augmenter)
     : augmenter_(std::make_shared<DataAugmenter>(std::move(augmenter))) {}
 
-std::shared_ptr<Publisher<TrainingOutputBatch>> Model::AsTrainingBatchPublisher(
+std::shared_ptr<Publisher<TrainingOutputBatch>>
+ModelTrainer::AsTrainingBatchPublisher(
     std::unique_ptr<data_iterator> training_data, size_t batch_size,
     int offset) {
   // Wrap the data_iterator to incorporate into a Combine pipeline.
