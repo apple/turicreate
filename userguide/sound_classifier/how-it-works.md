@@ -1,10 +1,12 @@
-# How Does this Work?
+# How Does This Work?
 
 Training and making predictions for a sound classifier model is a three
 stage process:
-1 - Signal preprocessing
-2 - A pretrained neural network is used to extract deep features
-3 - A custom neural network is used to make the predictions
+
+1. Signal preprocessing
+2. A pretrained neural network is used to extract deep features
+3. A custom neural network is used to make the predictions
+
 Details below about each stage.
 
 ## Signal Preprocessing Pipeline Stage
@@ -31,7 +33,7 @@ input length depends on sample rate) and produces an array of shape
 
 ## VGGish Feature Extraction Stage
 VGGish is a pretrained [Convolutional Neural Network](https://en.wikipedia.org/wiki/Convolutional_neural_network) from Google,
-see [their paper](https://ai.google/research/pubs/pub45611) and [their GitHub page](https://github.com/tensorflow/models/tree/master/research/audioset) for more details. As the name suggests, the architecture of
+see [their paper](https://ai.google/research/pubs/pub45611) and [their GitHub page](https://github.com/tensorflow/models/tree/master/research/audioset/vggish) for more details. As the name suggests, the architecture of
 this network is inspired by the famous VGG networks used for image
 classification. The network consists of a series of convolution and
 activation layers, optionally followed by a max pooling layer.
@@ -42,7 +44,7 @@ last three layers of the original VGGish model. We use the widest
 layer, from the original network, as our input data for the final
 stage. This modified VGGish model outputs a double vector of length
 12,288. On non-Linux systems, the model has also been eight bit
-quantized, to reduce its size.
+quantized to reduce its size.
 
 ## Custom Neural Network Stage
 This is the only stage which is updated based on the input data.
