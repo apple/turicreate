@@ -7,6 +7,7 @@
 
 #include <toolkits/object_detection/od_darknet_yolo_model_trainer.hpp>
 
+#include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
 
 namespace turi {
@@ -18,6 +19,7 @@ using neural_net::compute_context;
 using neural_net::float_array_map;
 using neural_net::image_augmenter;
 using neural_net::model_spec;
+using neural_net::pipeline_spec;
 using neural_net::Publisher;
 using neural_net::shared_float_array;
 using neural_net::xavier_weight_initializer;
@@ -26,7 +28,6 @@ using padding_type = model_spec::padding_type;
 
 // The spatial reduction depends on the input size of the pre-trained model
 // (relative to the grid size).
-// TODO: When we support alternative base models, we will have to generalize.
 constexpr int SPATIAL_REDUCTION = 32;
 
 constexpr float BASE_LEARNING_RATE = 0.001f;
@@ -351,6 +352,15 @@ std::unique_ptr<ModelTrainer> DarknetYOLOCheckpoint::CreateModelTrainer(
   std::unique_ptr<DarknetYOLOModelTrainer> result;
   result.reset(new DarknetYOLOModelTrainer(*this, context));
   return result;
+}
+
+pipeline_spec DarknetYOLOCheckpoint::ExportToCoreML(
+    const std::string& input_name, const std::string& coordinates_output_name,
+    const std::string& confidence_output_name) const {
+  return export_darknet_yolo(weights_, input_name, coordinates_output_name,
+                             confidence_output_name, GetAnchorBoxes(),
+                             config_.num_classes, config_.output_height,
+                             config_.output_width, SPATIAL_REDUCTION);
 }
 
 float_array_map DarknetYOLOCheckpoint::internal_config() const {

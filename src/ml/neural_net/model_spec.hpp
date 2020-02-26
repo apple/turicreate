@@ -22,6 +22,7 @@
 namespace CoreML {
 namespace Specification {
 class NeuralNetwork;
+class Pipeline;
 class WeightParams;
 }
 }
@@ -398,6 +399,43 @@ public:
 
  private:
   std::unique_ptr<CoreML::Specification::NeuralNetwork> impl_;
+};
+
+/**
+ * Simple wrapper around CoreML::Specification::Pipeline that allows client code
+ * to pass around instances without importing full protobuf headers.
+ *
+ * \todo As needed, elaborate this class and move into its own file.
+ */
+class pipeline_spec {
+ public:
+  pipeline_spec(std::unique_ptr<CoreML::Specification::Pipeline> impl);
+
+  pipeline_spec(pipeline_spec&&);
+  pipeline_spec& operator=(pipeline_spec&&);
+
+  // Declared here and defined in the .cpp file just to prevent the implicit
+  // default destructor from attempting (and failing) to instantiate
+  // std::unique_ptr<Pipeline>::~unique_ptr()
+  ~pipeline_spec();
+
+  /**
+   * Exposes the underlying CoreML proto.
+   */
+  const CoreML::Specification::Pipeline& get_coreml_spec() const {
+    return *impl_;
+  }
+
+  /**
+   * Transfer ownership of the underlying CoreML proto, invalidating the current
+   * instance (leaving it in a "moved-from" state).
+   *
+   * (Note that this method may only be invoked from a pipeline_spec&&)
+   */
+  std::unique_ptr<CoreML::Specification::Pipeline> move_coreml_spec() &&;
+
+ private:
+  std::unique_ptr<CoreML::Specification::Pipeline> impl_;
 };
 
 }  // neural_net

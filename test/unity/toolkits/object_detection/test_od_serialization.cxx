@@ -18,25 +18,21 @@ namespace turi {
 namespace object_detection {
 namespace {
 
-const std::vector<std::pair<float, float>> anchor_boxes = {
-    {1.f, 2.f}, {1.f, 1.f},  {2.f, 1.f},   {2.f, 4.f},   {2.f, 2.f},
-    {4.f, 2.f}, {4.f, 8.f},  {4.f, 4.f},   {8.f, 4.f},   {8.f, 16.f},
-    {8.f, 8.f}, {16.f, 8.f}, {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
-};
+constexpr size_t NUM_ANCHOR_BOXES = 15;
 
 BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
   neural_net::model_spec nn_spec;
   const size_t num_classes = 10;
-  init_darknet_yolo(nn_spec, num_classes, anchor_boxes);
+  init_darknet_yolo(nn_spec, num_classes, NUM_ANCHOR_BOXES, "image");
 
   const CoreML::Specification::NeuralNetwork& nn = nn_spec.get_coreml_spec();
-  TS_ASSERT_EQUALS(nn.layers_size(), 31);
+  TS_ASSERT_EQUALS(nn.layers_size(), 32);
   /* we totally should have 9 conv layers
    * (conv_0 -> conv_8), 8 batch normalization layer (batch_0 -> batch_7),
    * 6 max pooling layers (pool_0 -> pool_5), and 8 relu layers (leakyrelu_0 ->
    * leakyrelu_7) so totally 31 layers.
    */
-  int layer_num = 0;
+  int layer_num = 1;  // Skip the scale layer at the beginning.
   int num_features = 3;
   const std::map<int, int> layer_num_to_channels = {
       {0, 16},  {1, 32},  {2, 64},   {3, 128},
@@ -106,7 +102,7 @@ BOOST_AUTO_TEST_CASE(test_init_darknet_yolo) {
   const size_t num_predictions =
       5 + num_classes;  // Per anchor box, including predict classes and
                         // bounding box regression
-  const size_t conv8_c_out = anchor_boxes.size() * num_predictions;
+  const size_t conv8_c_out = NUM_ANCHOR_BOXES * num_predictions;
   TS_ASSERT_EQUALS(convlayer_.convolution().outputchannels(), conv8_c_out);
   TS_ASSERT_EQUALS(convlayer_.convolution().kernelchannels(), num_features);
   TS_ASSERT_EQUALS(convlayer_.convolution().stride(0), 1);
@@ -123,7 +119,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
       {"num_classes", 10}, {"model", "darknet_yolo"}, {"max_iterations", 5}};
   init_darknet_yolo(nn_spec_1,
                     variant_get_value<size_t>(state1.at("num_classes")),
-                    anchor_boxes);
+                    NUM_ANCHOR_BOXES, "image");
 
   // Save it
   dir_archive archive_write;
@@ -145,7 +141,7 @@ BOOST_AUTO_TEST_CASE(test_save_load) {
   archive_read.close();
   init_darknet_yolo(nn_spec_2,
                     variant_get_value<size_t>(state2.at("num_classes")),
-                    anchor_boxes);
+                    NUM_ANCHOR_BOXES, "image");
   nn_spec_2.update_params(weights);
 
   // Compare saved and loaded models

@@ -18,6 +18,7 @@
 
 #include <ml/neural_net/combine.hpp>
 #include <ml/neural_net/compute_context.hpp>
+#include <ml/neural_net/model_spec.hpp>
 #include <toolkits/object_detection/od_data_iterator.hpp>
 
 namespace turi {
@@ -109,6 +110,17 @@ class Checkpoint {
   /** Loads the checkpoint into an active ModelTrainer instance. */
   virtual std::unique_ptr<ModelTrainer> CreateModelTrainer(
       neural_net::compute_context* context) const = 0;
+
+  /**
+   * Returns the CoreML spec corresponding to the current model.
+   *
+   * The result must be a pipeline that accepts an image input and yields at
+   * least two outputs, all with the given names. The outputs must be suitable
+   * for passing directly into a NonMaximumSuppression model.
+   */
+  virtual neural_net::pipeline_spec ExportToCoreML(
+      const std::string& input_name, const std::string& coordinates_output_name,
+      const std::string& confidence_output_name) const = 0;
 };
 
 /**

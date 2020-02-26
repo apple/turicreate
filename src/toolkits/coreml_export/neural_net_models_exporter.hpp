@@ -28,9 +28,8 @@ namespace turi {
  *       is responsible for populating the inputs and outputs?
  */
 std::shared_ptr<coreml::MLModelWrapper> export_object_detector_model(
-    const neural_net::model_spec& nn_spec, size_t image_width,
-    size_t image_height, size_t num_classes, size_t num_predictions,
-    flex_list class_labels, const std::string& input_name,
+    neural_net::pipeline_spec pipeline, size_t num_classes,
+    size_t num_predictions, flex_list class_labels,
     std::map<std::string, flexible_type> options);
 
 /** Wraps a trained activity classifier model_spec as a complete MLModel. */

@@ -20,8 +20,8 @@ namespace neural_net {
 
 namespace {
 
-using CoreML::Specification::BorderAmounts_EdgeSizes;
 using CoreML::Specification::BatchnormLayerParams;
+using CoreML::Specification::BorderAmounts_EdgeSizes;
 using CoreML::Specification::ConvolutionLayerParams;
 using CoreML::Specification::InnerProductLayerParams;
 using CoreML::Specification::Model;
@@ -29,8 +29,9 @@ using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkImageScaler;
 using CoreML::Specification::NeuralNetworkLayer;
 using CoreML::Specification::NeuralNetworkPreprocessing;
-using CoreML::Specification::PoolingLayerParams;
 using CoreML::Specification::PaddingLayerParams;
+using CoreML::Specification::Pipeline;
+using CoreML::Specification::PoolingLayerParams;
 using CoreML::Specification::SamePadding;
 using CoreML::Specification::UniDirectionalLSTMLayerParams;
 using CoreML::Specification::UpsampleLayerParams;
@@ -972,6 +973,17 @@ void model_spec::add_preprocessing(const std::string& feature_name,
   layer->set_featurename(feature_name);
   NeuralNetworkImageScaler* image_scaler = layer->mutable_scaler();
   image_scaler->set_channelscale(image_scale);
+}
+
+pipeline_spec::pipeline_spec(std::unique_ptr<Pipeline> impl)
+    : impl_(std::move(impl)) {}
+
+pipeline_spec::pipeline_spec(pipeline_spec&&) = default;
+pipeline_spec& pipeline_spec::operator=(pipeline_spec&&) = default;
+pipeline_spec::~pipeline_spec() = default;
+
+std::unique_ptr<Pipeline> pipeline_spec::move_coreml_spec() && {
+  return std::move(impl_);
 }
 
 }  // neural_net

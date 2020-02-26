@@ -825,17 +825,10 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // If called during training, synchronize the model first.
   const Checkpoint& checkpoint = read_checkpoint();
 
-  // TODO: Move this implementation to DarknetYOLOModelTrainer, since it is
-  // model-specific.
-
-  // Initialize the result with the learned layers from the model_backend.
-  model_spec yolo_nn_spec;
-  init_darknet_yolo(yolo_nn_spec, get_num_classes(), anchor_boxes());
-  yolo_nn_spec.update_params(checkpoint.weights());
-
   size_t grid_height = read_state<size_t>("grid_height");
   size_t grid_width = read_state<size_t>("grid_width");
 
+  std::string input_str = read_state<std::string>("feature");
   std::string coordinates_str = "coordinates";
   std::string confidence_str = "confidence";
 
@@ -855,11 +848,6 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
       opts["confidence_threshold"] = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
     }
   }
-
-  // Add the layers that convert to intelligible predictions.
-  add_yolo(&yolo_nn_spec, coordinates_str, confidence_str, "conv8_fwd",
-           anchor_boxes(), read_state<flex_int>("num_classes"), grid_height,
-           grid_width);
 
   // Compute the string representation of the list of class labels.
   flex_string class_labels_str;
@@ -895,11 +883,13 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
   user_defined_metadata.emplace_back("version", opts["version"]);
 
+  neural_net::pipeline_spec spec =
+      checkpoint.ExportToCoreML(input_str, coordinates_str, confidence_str);
+
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
-      yolo_nn_spec, grid_width * SPATIAL_REDUCTION,
-      grid_height * SPATIAL_REDUCTION, class_labels.size(),
-      grid_height * grid_width * anchor_boxes().size(),
-      std::move(class_labels), read_state<flex_string>("feature"), std::move(opts));
+      std::move(spec), class_labels.size(),
+      grid_height * grid_width * anchor_boxes().size(), std::move(class_labels),
+      std::move(opts));
 
   model_wrapper->add_metadata({
       {"user_defined", std::move(user_defined_metadata)},
