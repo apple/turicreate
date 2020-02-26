@@ -15,6 +15,10 @@
 
 #ifndef TC_DISABLE_REMOTEFS
 
+#include <aws/s3/S3Client.h>
+#include <aws/s3/model/CreateMultipartUploadRequest.h>
+
+#include <core/storage/fileio/s3_api.hpp>
 #include <string>
 #include <vector>
 
@@ -116,17 +120,20 @@ class SeekStream : public Stream {
 class AWSReadStreamBase : public SeekStream {
  public:
   virtual ~AWSReadStreamBase() { Close(); }
+
   virtual void Close() { Reset(file_size_); }
 
   virtual size_t Tell(void) { return curr_bytes_; }
+
   virtual bool AtEnd(void) const { return curr_bytes_ == file_size_; }
+
   virtual void Write(const void *ptr, size_t size) {
-    log_and_throw(LOG_FATAL)
-        << "AWSReadStreamBase is not supposed to write" << std::endl;
+    std_log_and_throw(std::runtime_error,
+                      "AWSReadStreamBase is not supposed to write");
   }
   // lazy seek function
   virtual void Seek(size_t pos) {
-    TS_ASSERT(pos < file_size_);
+    ASSERT_TRUE(pos < file_size_);
     if (curr_bytes_ != pos) {
       this->Reset(pos);
     }
@@ -140,7 +147,7 @@ class AWSReadStreamBase : public SeekStream {
    * \brief initialize the ecurl request,
    * \param begin_bytes the beginning bytes of the stream
    */
-  virtual void InitRequest(size_t begin_bytes, s3url &url) = 0;
+  virtual void InitRequest(size_t begin_bytes, const s3url &url) = 0;
 
  protected:
   // the total size of the file
@@ -149,7 +156,7 @@ class AWSReadStreamBase : public SeekStream {
   Aws::S3::S3Client s3_client_;
 
   void SetBegin(size_t begin_bytes) {
-    TS_ASSERT_LESS_THAN(begin_bytes, file_size_);
+    ASSERT_TRUE(begin_bytes < file_size_);
     curr_bytes_ = begin_bytes;
   }
 
@@ -178,26 +185,28 @@ class AWSReadStreamBase : public SeekStream {
 /*! \brief reader stream that can be used to read */
 class ReadStream : public AWSReadStreamBase {
  public:
-  ReadStream(const s3url &url, size_t file_size)
-      : url_(url), file_size_(file_size) {}
+  ReadStream(const s3url &url, size_t file_size) : url_(url) {
+    file_size_ = file_size;
+  }
 
   virtual ~ReadStream() {}
 
  protected:
   // implement InitRequest
-  virtual void InitRequest(size_t begin_bytes, const s3url &url)
-      s3_client_ = init_aws_sdk_with_turi_env(url);
-  SetBegin(begin_bytes);
-}
+  virtual void InitRequest(size_t begin_bytes, const s3url &url) {
+    s3_client_ = init_aws_sdk_with_turi_env(url);
+    SetBegin(begin_bytes);
+  }
 
-private : s3url url_;
+ private:
+  s3url url_;
 };  // namespace fileio
 
 class WriteStream : public Stream {
  public:
   WriteStream(const s3url &path, bool no_exception = false)
       : path_(path), no_exception_(no_exception) {
-    const char *buz = getenv("DMLC_S3_WRITE_BUFFER_MB");
+    const char *buz = getenv("TURI_S3_WRITE_BUFFER_MB");
     if (buz != nullptr) {
       max_buffer_size_ = static_cast<size_t>(atol(buz)) << 20UL;
     } else {
@@ -206,135 +215,129 @@ class WriteStream : public Stream {
       max_buffer_size_ = kDefaultBufferSize;
     }
 
-    this->InitRequest(path);
+    InitRequest(path);
   }
 
   virtual size_t Read(void *ptr, size_t size) {
     if (no_exception_) {
-      log_and_throw(LOG_FATAL)
-          << "S3.WriteStream cannot be used for read" << std::endl;
+      std_log_and_throw(std::runtime_error,
+                        "S3.WriteStream cannot be used for read");
     }
+    return 0;
+  }
 
-    virtual void Write(const void *ptr, size_t size);
-    // destructor
-    virtual ~WriteStream() {
-      if (!closed_) {
-        no_exception_ = true;
-        Upload(true);
-        Finish();
-      }
-    }
-
-    virtual void Close() {
-      closed_ = true;
+  virtual void Write(const void *ptr, size_t size);
+  // destructor
+  virtual ~WriteStream() {
+    if (!closed_) {
+      no_exception_ = true;
       Upload(true);
       Finish();
     }
+  }
 
-   protected:
-    virtual void InitRequest(const s3url &url) {
-      s3_client_ = init_aws_sdk_with_turi_env(url);
-      SetBegin(begin_bytes);
-      InitMultipart(url);
-    }
+  virtual void Close() {
+    closed_ = true;
+    Upload(true);
+    Finish();
+  }
 
-   private:
-    // internal maximum buffer size
-    size_t max_buffer_size_;
-    // path we are reading
-    s3url path_;
-    // write data buffer
-    std::string buffer_;
+ protected:
+  virtual void InitRequest(const s3url &url) {
+    s3_client_ = init_aws_sdk_with_turi_env(url);
+    InitMultipart(url);
+  }
 
-    std::string upload_id_;
+ private:
+  // internal maximum buffer size
+  size_t max_buffer_size_;
+  // path we are reading
+  s3url path_;
 
-    // UploadPartOutcomeCallable is fucture<UploadPartOutcome>
-    std::list<UploadPartOutcomeCallable> completed_parts_;
+  bool no_exception_ = false;
+  // write data buffer
+  std::string buffer_;
 
-    Aws::S3::S3Client s3_client_;
+  std::string upload_id_;
 
-    bool closed_ = false;
-    bool no_exception_ = false;
+  // UploadPartOutcomeCallable is fucture<UploadPartOutcome>
+  std::list<Aws::S3::Model::UploadPartOutcomeCallable> completed_parts_;
 
-    void InitMultipart(const s3url &url) {
-      Aws::S3::Model::CreateMultipartUploadRequest createMultipartUploadRequest;
-      createMultipartUploadRequest.SetBucket(url.bucket);
-      createMultipartUploadRequest.SetKey(url.object_name);
-      createMultipartUploadRequest.SetContentType("text/plain");
-      auto createMultipartUploadOutcome =
-          s3_client_.CreateMultipartUpload(createMultipartUploadRequest);
-      ASSERT_TRUE(createMultipartUploadOutcome.IsSuccess());
-      upload_id_ = createMultipartUploadOutcome.GetResult().GetUploadId();
-    }
+  Aws::S3::S3Client s3_client_;
 
-    /*!
-     * \brief upload the buffer to S3, store the etag
-     * clear the buffer
-     */
-    void Upload(bool force_upload_even_if_zero_bytes = false);
+  bool closed_ = false;
 
-    /*!
-     * \brief commit the upload and finish the session
-     */
-    void Finish(void);
-  };
+  void InitMultipart(const s3url &url) {
+    Aws::S3::Model::CreateMultipartUploadRequest create_request;
+    create_request.SetBucket(Aws::String(url.bucket));
+    create_request.SetKey(Aws::String(url.object_name));
+    create_request.SetContentType("text/plain");
+    auto createMultipartUploadOutcome =
+        s3_client_.CreateMultipartUpload(create_request);
+    ASSERT_TRUE(createMultipartUploadOutcome.IsSuccess());
+    upload_id_ = createMultipartUploadOutcome.GetResult().GetUploadId();
+  }
 
-  class S3FileSystem {
-   public:
-    /*! \brief constructor */
-    S3FileSystem() = default;
+  /*!
+   * \brief upload the buffer to S3, store the etag
+   * clear the buffer
+   */
+  void Upload(bool force_upload_even_if_zero_bytes = false);
 
-    /*! \brief destructor */
-    virtual ~S3FileSystem() {}
-    /*!
-     * \brief get information about a path
-     * \param path the path to the file
-     * \return the information about the file
-     */
-    virtual FileInfo GetPathInfo(const s3url &path);
-    /*!
-     * \brief list files in a directory
-     * \param path to the file
-     * \param out_list the output information about the files
-     */
-    virtual void ListDirectory(const s3url &path,
-                               std::vector<FileInfo> &out_list);
-    /*!
-     * \brief open a stream, will report error and exit if bad thing happens
-     * NOTE: the Stream can continue to work even when filesystem was destructed
-     * \param path path to file
-     * \param uri the uri of the input
-     * \param flag can be "w", "r", "a"
-     * \return the created stream, can be NULL when allow_null == true and file
-     * do not exist
-     */
-    virtual Stream *Open(const s3url &path, const char *const flag);
-    /*!
-     * \brief open a seekable stream for read
-     * \param path the path to the file
-     * \return the created stream, can be NULL
-     */
-    virtual SeekStream *OpenForRead(const s3url &path);
-    /*!
-     * \brief get a singleton of S3FileSystem when needed
-     * \return a singleton instance
-     */
-    inline static S3FileSystem *GetInstance(void) {
-      static S3FileSystem instance;
-      return &instance;
-    }
+  /*!
+   * \brief commit the upload and finish the session
+   */
+  void Finish(void);
+};
 
-   private:
-    /*!
-     * \brief try to get information about a path
-     * \param path the path to the file
-     * \param out_info holds the path info
-     * \return return false when path do not exist
-     */
-    bool TryGetPathInfo(const s3url &path, FileInfo &info);
+class S3FileSystem {
+ public:
+  /*! \brief constructor */
+  S3FileSystem(const s3url &url) : url_(url) {}
 
-    turi::fileio::s3url url_;
-  };
+  /*! \brief destructor */
+  virtual ~S3FileSystem() {}
+  /*!
+   * \brief get information about a path
+   * \param path the path to the file
+   * \return the information about the file
+   */
+  virtual FileInfo GetPathInfo(const s3url &path);
+  /*!
+   * \brief list files in a directory
+   * \param path to the file
+   * \param out_list the output information about the files
+   */
+  virtual void ListDirectory(const s3url &path,
+                             std::vector<FileInfo> &out_list);
+  /*!
+   * \brief open a stream, will report error and exit if bad thing happens
+   * NOTE: the Stream can continue to work even when filesystem was destructed
+   * \param path path to file
+   * \param uri the uri of the input
+   * \param flag can be "w", "r", "a"
+   * \return the created stream, can be NULL when allow_null == true and file
+   * do not exist
+   */
+  virtual Stream *Open(const s3url &path, const char *const flag);
+  /*!
+   * \brief open a seekable stream for read
+   * \param path the path to the file
+   * \return the created stream, can be NULL
+   */
+  virtual SeekStream *OpenForRead(const s3url &path);
+
+ private:
+  /*!
+   * \brief try to get information about a path
+   * \param path the path to the file
+   * \param out_info holds the path info
+   * \return return false when path do not exist
+   */
+  bool TryGetPathInfo(const s3url &path, FileInfo &info);
+
+  s3url url_;
+};
 
 }  // namespace s3
 }  // namespace fileio

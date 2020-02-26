@@ -6,14 +6,8 @@
 #include <fstream>
 #include <memory>
 #include <boost/iostreams/stream.hpp>
+#include <core/storage/fileio/s3_filesys.hpp>
 #include <core/storage/fileio/read_caching_device.hpp>
-namespace dmlc {
-namespace io {
-class S3FileSystem;
-}
-class Stream;
-class SeekStream;
-}
 
 namespace turi {
 
@@ -34,9 +28,9 @@ class s3_device {
   // it is only read seekable. Will fail when seeking on write
  private:
   std::string remote_fname;
-  std::shared_ptr<dmlc::io::S3FileSystem> m_s3fs;
-  std::shared_ptr<dmlc::Stream> m_write_stream;
-  std::shared_ptr<dmlc::SeekStream> m_read_stream;
+  std::shared_ptr<fileio::s3::S3FileSystem> m_s3fs;
+  std::shared_ptr<fileio::s3::Stream> m_write_stream;
+  std::shared_ptr<fileio::s3::SeekStream> m_read_stream;
   size_t m_filesize = (size_t)(-1);
 
  public:

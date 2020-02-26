@@ -11,9 +11,8 @@
 #include <core/storage/fileio/s3_api.hpp>
 #include <boost/algorithm/string.hpp>
 #include <core/storage/fileio/sanitize_url.hpp>
-#include <core/storage/fileio/dmlcio/s3_filesys.h>
-#include <core/storage/fileio/dmlcio/filesys.h>
-#include <core/storage/fileio/dmlcio/io.h>
+#include <core/storage/fileio/s3_filesys.hpp>
+
 namespace turi {
 
 s3_device::s3_device(const std::string& filename, const bool write) {
@@ -21,31 +20,19 @@ s3_device::s3_device(const std::string& filename, const bool write) {
   // split out the access key and secret key
   s3url url;
   std::string err_msg;
-  if (!parse_s3url(filename, url, err_msg))
-      log_and_throw(err_msg);
+  if (!parse_s3url(filename, url, err_msg)) log_and_throw(err_msg);
+  m_s3fs = std::make_shared<fileio::s3::S3FileSystem>(url);
 
-  m_s3fs = std::make_shared<dmlc::io::S3FileSystem>();
-  m_s3fs->SetCredentials(url.access_key_id, url.secret_key);
-  // just for convienience
-  m_s3fs->url_ = url;
-
-  std::string url_without_credentials;
-  if (url.endpoint.empty()) {
-     url_without_credentials = "s3://" + url.bucket + "/" + url.object_name;
-  } else {
-    url_without_credentials = "s3://" + url.endpoint + "/" + url.bucket + "/" + url.object_name;
-  }
-  auto uri = dmlc::io::URI(url_without_credentials.c_str());
   if (write) {
-    m_write_stream.reset(m_s3fs->Open(uri, "w"));
+    m_write_stream.reset(m_s3fs->Open(url, "w"));
   } else {
     try {
-      auto pathinfo = m_s3fs->GetPathInfo(uri);
+      auto pathinfo = m_s3fs->GetPathInfo(url);
       m_filesize = pathinfo.size;
-      if (pathinfo.type != dmlc::io::kFile) {
+      if (pathinfo.type != fileio::s3::kFile) {
         log_and_throw("Cannot open " + sanitize_url(filename));
       }
-      m_read_stream.reset(m_s3fs->OpenForRead(uri));
+      m_read_stream.reset(m_s3fs->OpenForRead(url));
     } catch (...) {
       log_and_throw("Cannot open " + sanitize_url(filename));
     }
@@ -54,7 +41,8 @@ s3_device::s3_device(const std::string& filename, const bool write) {
 
 void s3_device::close(std::ios_base::openmode mode) {
   if (mode == std::ios_base::out && m_write_stream) {
-    logstream(LOG_INFO) << "S3 Finalizing write to " << sanitize_url(m_filename) << std::endl;
+    logstream(LOG_INFO) << "S3 Finalizing write to " << sanitize_url(m_filename)
+                        << std::endl;
     m_write_stream->Close();
     m_write_stream.reset();
   } else if (mode == std::ios_base::in && m_read_stream) {
@@ -62,7 +50,6 @@ void s3_device::close(std::ios_base::openmode mode) {
     m_read_stream.reset();
   }
 }
-
 
 std::streamsize s3_device::read(char* strm_ptr, std::streamsize n) {
   return m_read_stream->Read((void*)strm_ptr, n);
@@ -74,13 +61,15 @@ std::streamsize s3_device::write(const char* strm_ptr, std::streamsize n) {
 }
 
 bool s3_device::good() const {
-  if (m_read_stream && !m_read_stream->AtEnd()) return true;
-  else if (m_write_stream) return true;
-  else return false;
+  if (m_read_stream && !m_read_stream->AtEnd())
+    return true;
+  else if (m_write_stream)
+    return true;
+  else
+    return false;
 }
 
-std::streampos s3_device::seek(std::streamoff off,
-                               std::ios_base::seekdir way,
+std::streampos s3_device::seek(std::streamoff off, std::ios_base::seekdir way,
                                std::ios_base::openmode openmode) {
   if (openmode == std::ios_base::in) {
     if (way == std::ios_base::beg) {
@@ -98,7 +87,6 @@ std::streampos s3_device::seek(std::streamoff off,
     ASSERT_UNREACHABLE();
   }
 }
-
 
 size_t s3_device::file_size() const {
   if (m_read_stream) {
@@ -118,4 +106,4 @@ s3_device::~s3_device() {
   m_s3fs.reset();
 }
 
-} // namespace turi
+}  // namespace turi

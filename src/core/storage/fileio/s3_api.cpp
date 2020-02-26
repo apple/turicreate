@@ -135,9 +135,8 @@ S3Client init_aws_sdk_with_turi_env(const s3url& parsed_url) {
     clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
   }
 
-  if (!parsed_url.proxy.empty()) {
-    clientConfiguration.proxyHost = proxy.c_str();
-  }
+  // TODO: add proxy support
+  // clientConfiguration.proxyHost = proxy.c_str();
 
   std::string region = fileio::get_region_name_from_endpoint(
       clientConfiguration.endpointOverride.c_str());
@@ -146,7 +145,7 @@ S3Client init_aws_sdk_with_turi_env(const s3url& parsed_url) {
     clientConfiguration.region = region.c_str();
   }
 
-  if (parsed_url.secret_key_id.empty()) {
+  if (parsed_url.secret_key.empty()) {
     return S3Client(clientConfiguration);
   } else {
     // credentials
@@ -440,7 +439,7 @@ list_objects_response list_objects_impl(s3url parsed_url,
     for (auto& object: ret.objects) {
       s3url objurl = parsed_url;
       objurl.object_name = object;
-      object = string_from_s3url(&objurl);
+      object = objurl.string_from_s3url();
     }
     return ret;
 }
@@ -672,7 +671,7 @@ list_objects_response list_directory(std::string url, std::string proxy) {
     return ret;
   }
   // normalize the URL so it doesn't matter if you put strange "/"s at the end
-  url = string_from_s3url(&parsed_url);
+  url = parsed_url.string_from_s3url();
   auto isdir = is_directory(url, proxy);
   // if not found.
   if (isdir.first == file_status::MISSING) return isdir.second;

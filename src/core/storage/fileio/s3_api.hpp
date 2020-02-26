@@ -15,6 +15,7 @@
 #include <vector>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <aws/s3/S3Client.h>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
 
@@ -50,7 +51,7 @@ struct s3url {
     ret.reserve(128);
 
     if (!access_key_id.empty()) {
-      TS_ASSERT(!secret_key.empty());
+      ASSERT_TRUE(!secret_key.empty());
       ret.append(access_key_id);
       ret.append(1, ':');
       ret.append(secret_key);
@@ -62,7 +63,7 @@ struct s3url {
       ret.append(endpoint);
     }
 
-    TS_ASSERT(!bucket.empty());
+    ASSERT_TRUE(!bucket.empty());
     ret.append(1, '/');
     ret.append(bucket);
 
@@ -88,7 +89,7 @@ struct s3url {
  *
  * initialize the sdk with TRUI constomized environment variable
  */
-S3Client init_aws_sdk_with_env(const s3url& parsed_url);
+Aws::S3::S3Client init_aws_sdk_with_turi_env(const s3url& parsed_url);
 
 /**
  * \ingroup fileio
