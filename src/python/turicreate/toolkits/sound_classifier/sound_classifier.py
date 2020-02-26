@@ -1066,7 +1066,7 @@ class SoundClassifier(_CustomModel):
 
         if output_type not in ("probability", "probability_vector", "class"):
             raise ValueError(
-                "'dataset' parameter must be either an SFrame, SArray or dictionary"
+                "'output_type' parameter must be either 'probability', 'probability_vector', 'class'."
             )
         if output_type == "probability" and self.num_classes != 2:
             raise _ToolkitError(
