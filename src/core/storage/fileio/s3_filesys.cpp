@@ -1,4 +1,10 @@
 #include <algorithm>
+#include <boost/algorithm/string.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/storage/fileio/get_s3_endpoint.hpp>
+#include <core/storage/fileio/s3_api.hpp>
+#include <core/storage/fileio/s3_filesys.hpp>
+#include <core/storage/fileio/set_curl_options.hpp>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -6,19 +12,13 @@
 #include <sstream>
 #include <string>
 
-#include <core/storage/fileio/dmlcio/filesys.h>
-#include <core/storage/fileio/dmlcio/io.h>
-#include <boost/algorithm/string.hpp>
-#include <core/logging/assertions.hpp>
-#include <core/storage/fileio/get_s3_endpoint.hpp>
-#include <core/storage/fileio/set_curl_options.hpp>
-#include <core/storage/fileio/s3_api.hpp>
-
 using turi::fileio::get_bucket_path;
 using turi::fileio::set_curl_options;
 
 namespace turi {
 namespace fileio {
+
+namespace s3 {
 
 /*!
  * \brief reader stream that can be used to read from AWS SDK
@@ -132,7 +132,8 @@ void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
   stream_ptr->seekp(0, std::ios_base::end);
   my_request.SetBody(stream_ptr);
 
-  Aws::Utils::ByteBuffer part_md5(Aws::utils::HashingUtils::CalculateMD5(*stream_ptr));
+  Aws::Utils::ByteBuffer part_md5(
+      Aws::utils::HashingUtils::CalculateMD5(*stream_ptr));
   my_request.SetContentMD5(Aws::Utils::HashingUtils::Base64Encode(part_md5));
 
   // it's better to restore the stream cursor
@@ -164,7 +165,8 @@ void WriteStream::Finish() {
     completedMultipartUpload.AddParts(std::move(completed_part));
   }
 
-  completeMultipartUploadRequest.WithMultipartUpload(completed_multipart_upload);
+  completeMultipartUploadRequest.WithMultipartUpload(
+      completed_multipart_upload);
 
   auto completeMultipartUploadOutcome =
       s3_client_.CompleteMultipartUpload(completeMultipartUploadRequest);
@@ -177,7 +179,7 @@ void WriteStream::Finish() {
  * \param path the path to query
  * \paam out_list stores the output results
  */
-void ListObjects(const s3url &path, std::vector<FileInfo>& out_list) {
+void ListObjects(const s3url &path, std::vector<FileInfo> &out_list) {
   if (path.host.length() == 0) {
     log_and_throw_io_failure("bucket name not specified in S3 URI");
   }
@@ -190,11 +192,11 @@ void ListObjects(const s3url &path, std::vector<FileInfo>& out_list) {
     ASSERT_MSG(ret.objects_size[ii] >= 0, "s3 object size is less than 0");
     info.size = ret.objects_size[ii];
     info.path = path;
-    info.path.object_name = ret.objects[ii]
-    // add root path to be consistent with other filesys convention
-    info.type = kFile;
-    info.size -
-    out_list.push_back(info);
+    info.path.object_name =
+        ret.objects[ii]
+        // add root path to be consistent with other filesys convention
+        info.type = kFile;
+    info.size - out_list.push_back(info);
   }
 
   for (auto &s3dir : ret.directories) {
@@ -209,8 +211,7 @@ void ListObjects(const s3url &path, std::vector<FileInfo>& out_list) {
 
 }  // ListObjects
 
-
-bool S3FileSystem::TryGetPathInfo(const s3url &url, FileInfo& out_info) {
+bool S3FileSystem::TryGetPathInfo(const s3url &url, FileInfo &out_info) {
   std::string path = url.object_name;
   while (path.length() > 1 && path.back() == '/') {
     path.pop_back();
@@ -219,7 +220,7 @@ bool S3FileSystem::TryGetPathInfo(const s3url &url, FileInfo& out_info) {
   std::vector<FileInfo> files;
   ListObjects(url, files);
 
-   for (i = 0; i < files.size(); ++i) {
+  for (i = 0; i < files.size(); ++i) {
     if (files[i].path.name == path.name) {
       out_info = files[i];
       return true;
@@ -288,5 +289,6 @@ SeekStream *S3FileSystem::OpenForRead(const s3url &path) {
   }
 }
 
+}  // namespace s3
 }  // namespace fileio
 }  // namespace turi
