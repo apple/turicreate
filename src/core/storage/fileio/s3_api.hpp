@@ -23,16 +23,24 @@ namespace turi {
 /**
  * \ingroup fileio
  * \internal
+ *
+ * constructed **only** from user provided url
+ *
  * A complete specification of an S3 bucket and object,
  * including all authentication required.
- *
  */
 struct s3url {
   std::string access_key_id;
   std::string secret_key;
   std::string bucket;
   std::string object_name;
+  // endpoint that embeded in the url
   std::string endpoint;
+
+  // endpoint used by sdk, not in the url
+  boost::optional<std::string> sdk_endpoint;
+  boost::optional<std::string> sdk_region;
+  boost::optional<std::string> sdk_proxy;
 
   bool operator==(const s3url& other) const {
     return access_key_id == other.access_key_id &&
@@ -43,14 +51,18 @@ struct s3url {
   }
 
   /*
+   * @param with_credentials: user should not see this
+   *
    * reconstruct to url format,
-   * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
+   * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name],
+   * which turi uses everywhere.
    */
-  std::string string_from_s3url() {
+  std::string string_from_s3url(bool with_credentials = true) const {
     std::string ret("s3://");
     ret.reserve(128);
 
-    if (!access_key_id.empty()) {
+
+    if (with_credentials && !access_key_id.empty()) {
       ASSERT_TRUE(!secret_key.empty());
       ret.append(access_key_id);
       ret.append(1, ':');
@@ -58,6 +70,8 @@ struct s3url {
       ret.append(1, ':');
     }
 
+    // this is embeded form
+    // something like: s3://s3.amazonaws.com/bucket/object/name
     if (!endpoint.empty()) {
       ret.append(1, ':');
       ret.append(endpoint);
@@ -76,9 +90,10 @@ struct s3url {
   }
 
   friend std::ostream& operator<<(std::ostream& os, const s3url& url) {
-    os << "bucket: '" << url.bucket << "', object_name: '" << url.object_name
-       << "', endpoint: '" << url.endpoint << '\'';
-    return os;
+    if (url.sdk_endpoint) os << "endpoint used by sdk: " << *url.sdk_endpoint << "; ";
+    if (url.sdk_region) os << "region used by sdk: " << *url.sdk_region << "; ";
+    if (url.sdk_proxy) os << "proxy used by sdk: " << *url.sdk_proxy << "; ";
+    return os << url.string_from_s3url(false);
   }
 };
 
@@ -88,8 +103,10 @@ struct s3url {
  * \internal
  *
  * initialize the sdk with TRUI constomized environment variable
+ *
+ * will set the endpoint/region that used to configure the client
  */
-Aws::S3::S3Client init_aws_sdk_with_turi_env(const s3url& parsed_url);
+Aws::S3::S3Client init_aws_sdk_with_turi_env(s3url& parsed_url);
 
 /**
  * \ingroup fileio
@@ -112,10 +129,10 @@ std::string get_s3_file_last_modified(const std::string& url);
 struct list_objects_response {
   /// Non-empty if there was an error
   std::string error;
-  /// A list of all the "sub-directories" found
+  /// A list of all the "sub-directories" found. Encoded with url, see s3url.
   std::vector<std::string> directories;
-
-  /// A list of all the objects found.
+  /// A list of all the objects found. Encoded with url, see s3url.
+  /// this should be really called object_urls;
   std::vector<std::string> objects;
   /// A list of all the objects size.
   std::vector<size_t> objects_size;

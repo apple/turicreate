@@ -4,17 +4,12 @@
  * be found in the LICENSE.txt file or at
  * https://opensource.org/licenses/BSD-3-Clause
  */
-/*!
- *  Copyright (c) 2015 by Contributors
- * \file s3_filesys.h
- * \brief S3 access module
- * \author Tianqi Chen
- */
 #ifndef TURI_S3_FILESYS_HPP_
 #define TURI_S3_FILESYS_HPP_
 
 #ifndef TC_DISABLE_REMOTEFS
 
+#include <aws/core/Aws.h>
 #include <aws/s3/S3Client.h>
 #include <aws/s3/model/CreateMultipartUploadRequest.h>
 
@@ -147,7 +142,7 @@ class AWSReadStreamBase : public SeekStream {
    * \brief initialize the ecurl request,
    * \param begin_bytes the beginning bytes of the stream
    */
-  virtual void InitRequest(size_t begin_bytes, const s3url &url) = 0;
+  virtual void InitRequest(size_t begin_bytes, s3url &url) = 0;
 
  protected:
   // the total size of the file
@@ -193,7 +188,7 @@ class ReadStream : public AWSReadStreamBase {
 
  protected:
   // implement InitRequest
-  virtual void InitRequest(size_t begin_bytes, const s3url &url) {
+  virtual void InitRequest(size_t begin_bytes, s3url &url) {
     s3_client_ = init_aws_sdk_with_turi_env(url);
     SetBegin(begin_bytes);
   }
@@ -215,7 +210,7 @@ class WriteStream : public Stream {
       max_buffer_size_ = kDefaultBufferSize;
     }
 
-    InitRequest(path);
+    InitRequest(path_);
   }
 
   virtual size_t Read(void *ptr, size_t size) {
@@ -243,7 +238,7 @@ class WriteStream : public Stream {
   }
 
  protected:
-  virtual void InitRequest(const s3url &url) {
+  virtual void InitRequest(s3url &url) {
     s3_client_ = init_aws_sdk_with_turi_env(url);
     InitMultipart(url);
   }
@@ -261,7 +256,7 @@ class WriteStream : public Stream {
   std::string upload_id_;
 
   // UploadPartOutcomeCallable is fucture<UploadPartOutcome>
-  std::list<Aws::S3::Model::UploadPartOutcomeCallable> completed_parts_;
+  std::vector<Aws::S3::Model::UploadPartOutcomeCallable> completed_parts_;
 
   Aws::S3::S3Client s3_client_;
 
@@ -269,8 +264,10 @@ class WriteStream : public Stream {
 
   void InitMultipart(const s3url &url) {
     Aws::S3::Model::CreateMultipartUploadRequest create_request;
-    create_request.SetBucket(Aws::String(url.bucket));
-    create_request.SetKey(Aws::String(url.object_name));
+    create_request.SetBucket(
+        Aws::String(url.bucket.c_str(), url.bucket.length()));
+    create_request.SetKey(
+        Aws::String(url.object_name.c_str(), url.object_name.length()));
     create_request.SetContentType("text/plain");
     auto createMultipartUploadOutcome =
         s3_client_.CreateMultipartUpload(create_request);
@@ -292,17 +289,19 @@ class WriteStream : public Stream {
 
 class S3FileSystem {
  public:
-  /*! \brief constructor */
   S3FileSystem(const s3url &url) : url_(url) {}
 
-  /*! \brief destructor */
   virtual ~S3FileSystem() {}
+
   /*!
    * \brief get information about a path
    * \param path the path to the file
    * \return the information about the file
    */
   virtual FileInfo GetPathInfo(const s3url &path);
+
+  static void ListObjects(const s3url & path, std::vector<FileInfo> &out_list);
+
   /*!
    * \brief list files in a directory
    * \param path to the file
@@ -310,6 +309,7 @@ class S3FileSystem {
    */
   virtual void ListDirectory(const s3url &path,
                              std::vector<FileInfo> &out_list);
+
   /*!
    * \brief open a stream, will report error and exit if bad thing happens
    * NOTE: the Stream can continue to work even when filesystem was destructed
@@ -320,12 +320,16 @@ class S3FileSystem {
    * do not exist
    */
   virtual Stream *Open(const s3url &path, const char *const flag);
+
   /*!
    * \brief open a seekable stream for read
    * \param path the path to the file
    * \return the created stream, can be NULL
    */
   virtual SeekStream *OpenForRead(const s3url &path);
+
+ protected:
+  s3url url_;
 
  private:
   /*!
@@ -335,8 +339,6 @@ class S3FileSystem {
    * \return return false when path do not exist
    */
   bool TryGetPathInfo(const s3url &path, FileInfo &info);
-
-  s3url url_;
 };
 
 }  // namespace s3

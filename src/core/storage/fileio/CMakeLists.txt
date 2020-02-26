@@ -17,6 +17,7 @@ if(${TC_BUILD_REMOTEFS})
       s3_fstream.cpp
       set_curl_options.cpp
       get_s3_endpoint.cpp
+      s3_filesys.cpp
       dmlcio/s3_filesys.cc
   )
 set(FILEIO_REMOTE_FS_REQUIRES curl openssl aws-sdk-cpp soft_hdfs)
