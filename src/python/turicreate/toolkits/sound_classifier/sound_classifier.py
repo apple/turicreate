@@ -54,30 +54,6 @@ class _DataIterator(object):
         raise NotImplementedError
 
 
-class _TFDataIterator(_DataIterator):
-    def __init__(self, data, label=None, batch_size=1, shuffle=False):
-        import tensorflow as tf
-
-        # Always pass a tuple, so that the impl's built-in iterator returns a
-        # tuple.
-        tensor_slices = (data, label) if label is not None else (data,)
-
-        self.impl = tf.data.Dataset.from_tensor_slices(tensor_slices)
-
-        # Apply options.
-        self.impl = self.impl.batch(batch_size)
-        if shuffle:
-            self.impl = self.impl.shuffle(data.shape[0])
-
-    def __iter__(self):
-        return self.impl.__iter__()
-
-    def reset(self):
-        # Each call to __iter__ returns a fresh iterator object that will do one
-        # pass through the data.
-        pass
-
-
 class _NumPyDataIterator(_DataIterator):
     def __init__(self, data, label=None, batch_size=1, shuffle=False):
 
