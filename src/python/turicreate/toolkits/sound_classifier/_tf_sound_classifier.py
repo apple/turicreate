@@ -237,26 +237,18 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         need to be transposed to match TF format.
 
         """
-        self.init()
+        with self.sc_graph.as_default():
+            weights, biases = {}, {}
+            for cur_name, cur_layer in net_params["data"].items():
+                if "bias" in cur_name:
+                    biases[cur_name] = _tf.Variable(cur_layer.astype('float32'), name=cur_name)
+                else:
+                    assert "weight" in cur_name
+                    weights[cur_name] = _tf.Variable(cur_layer.transpose(1, 0).astype('float32'), name=cur_name)
 
-        layers = net_params["data"].keys()
+            self.x = _tf.placeholder("float", [None, self.num_inputs])
+            self.predictions, _ = SoundClassifierTensorFlowModel._build_network(self.x, weights, biases)
 
-        for layer_name in layers:
-            new_layer_name = layer_name.replace("custom", "sound")
-            if "bias" in layer_name:
-                self.sess.run(
-                    _tf.assign(
-                        self.sc_graph.get_tensor_by_name(new_layer_name + ":0"),
-                        net_params["data"][layer_name],
-                    )
-                )
-            else:
-                curr_shape = [int(x) for x in net_params["shapes"][layer_name]]
-                self.sess.run(
-                    _tf.assign(
-                        self.sc_graph.get_tensor_by_name(new_layer_name + ":0"),
-                        net_params["data"][layer_name]
-                        .reshape(curr_shape)
-                        .transpose(1, 0),
-                    )
-                )
+            self.sess.run(_tf.global_variables_initializer())
+
+        self.is_initialized = True
