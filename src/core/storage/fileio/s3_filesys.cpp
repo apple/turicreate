@@ -12,624 +12,164 @@
 #include <core/logging/assertions.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
 #include <core/storage/fileio/set_curl_options.hpp>
-
-extern "C" {
-#include <curl/curl.h>
-#include <errno.h>
-#include <openssl/bio.h>
-#include <openssl/buffer.h>
-#include <openssl/hmac.h>
-#include <openssl/md5.h>
-}
+#include <core/storage/fileio/s3_api.hpp>
 
 using turi::fileio::get_bucket_path;
 using turi::fileio::set_curl_options;
 
-/*!
- * \brief safely get the beginning address of a vector
- * \param vec input vector
- * \return beginning address of a vector
- */
-template <typename T>
-static inline T *BeginPtr(std::vector<T> &vec) {
-  if (vec.size() == 0) {
-    return NULL;
-  } else {
-    return &vec[0];
-  }
-}
-/*! \brief get the beginning address of a vector */
-template <typename T>
-static inline const T *BeginPtr(const std::vector<T> &vec) {
-  if (vec.size() == 0) {
-    return NULL;
-  } else {
-    return &vec[0];
-  }
-}
-static inline char *BeginPtr(std::string &str) {
-  if (str.length() == 0) return NULL;
-  return &str[0];
-}
-static inline const char *BeginPtr(const std::string &str) {
-  if (str.length() == 0) return NULL;
-  return &str[0];
-}
-
-namespace dmlc {
-namespace io {
-
-// remove the beginning slash at name
-inline const char *RemoveBeginSlash(const std::string &name) {
-  const char *s = name.c_str();
-  while (*s == '/') {
-    ++s;
-  }
-  return s;
-}
-
-// fin dthe error field of the header
-static inline bool FindHttpError(const std::string &header) {
-  std::string hd, ret;
-  int code;
-  std::istringstream is(header);
-  if (is >> hd >> code >> ret) {
-    if (code == 206 || ret == "OK") {
-      return false;
-    } else if (ret == "Continue") {
-      return false;
-    }
-  }
-  return true;
-}
-
-// curl callback to write sstream
-size_t WriteSStreamCallback(char *buf, size_t size, size_t count, void *fp) {
-  static_cast<std::ostringstream *>(fp)->write(buf, size * count);
-  return size * count;
-}
-// callback by curl to write to std::string
-size_t WriteStringCallback(char *buf, size_t size, size_t count, void *fp) {
-  size *= count;
-  std::string *str = static_cast<std::string *>(fp);
-  size_t len = str->length();
-  str->resize(len + size);
-  std::memcpy(BeginPtr(*str) + len, buf, size);
-  return size;
-}
-
-// useful callback for reading memory
-struct ReadStringStream {
-  const char *dptr;
-  size_t nleft;
-  // constructor
-  ReadStringStream(const std::string &data) {
-    dptr = BeginPtr(data);
-    nleft = data.length();
-  }
-  // curl callback to write sstream
-  static size_t Callback(char *buf, size_t size, size_t count, void *fp) {
-    size *= count;
-    ReadStringStream *s = static_cast<ReadStringStream *>(fp);
-    size_t nread = std::min(size, s->nleft);
-    std::memcpy(buf, s->dptr, nread);
-    s->dptr += nread;
-    s->nleft -= nread;
-    return nread;
-  }
-};
+namespace turi {
+namespace fileio {
 
 /*!
- * \brief reader stream that can be used to read from CURL
+ * \brief reader stream that can be used to read from AWS SDK
  */
-class CURLReadStreamBase : public SeekStream {
- public:
-  virtual ~CURLReadStreamBase() { Close(); }
-  virtual void Close() { this->Cleanup(); }
-
-  virtual size_t Tell(void) { return curr_bytes_; }
-  virtual bool AtEnd(void) const { return at_end_; }
-  virtual void Write(const void *ptr, size_t size) {
-    logstream(LOG_FATAL) << "CURL.ReadStream cannot be used for write"
-                         << std::endl;
-  }
-  // lazy seek function
-  virtual void Seek(size_t pos) {
-    if (curr_bytes_ != pos) {
-      this->Cleanup();
-      curr_bytes_ = pos;
-    }
-  }
-  virtual size_t Read(void *ptr, size_t size);
-
- protected:
-  CURLReadStreamBase()
-      : mcurl_(NULL),
-        ecurl_(NULL),
-        slist_(NULL),
-        read_ptr_(0),
-        curr_bytes_(0),
-        at_end_(false) {}
-  /*!
-   * \brief initialize the ecurl request,
-   * \param begin_bytes the beginning bytes of the stream
-   * \param ecurl a curl easy handle that can be used to set request
-   * \param slist a curl slist handle that can be used to set headers
-   */
-  virtual void InitRequest(size_t begin_bytes, CURL *ecurl,
-                           curl_slist **slist) = 0;
-
- protected:
-  // the total size of the file
-  size_t expect_file_size_ = 0;
-
- private:
-  /*!
-   * \brief called by child class to initialize read
-   * \param begin_bytes the beginning bytes of the stream
-   */
-  void Init(size_t begin_bytes);
-  /*!
-   * \brief cleanup the previous session for restart
-   */
-  void Cleanup(void);
-  /*!
-   * \brief try to fill the buffer with at least wanted bytes
-   * \param want_bytes number of bytes we want to fill
-   * \return number of remainning running curl handles
-   */
-  int FillBuffer(size_t want_bytes);
-  // multi and easy curl handle
-  CURL *mcurl_, *ecurl_;
-  // slist needed by the program
-  curl_slist *slist_;
-  // data buffer
-  std::string buffer_;
-  // header buffer
-  std::string header_;
-  // data pointer to read position
-  size_t read_ptr_;
-  // current position in the stream
-  size_t curr_bytes_;
-  // mark end of stream
-  bool at_end_;
-};
-
-// read data in
-size_t CURLReadStreamBase::Read(void *ptr, size_t size) {
-  // lazy initialize
-  if (mcurl_ == NULL) Init(curr_bytes_);
+size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
   // check at end
-  if (at_end_) return 0;
+  if (curr_bytes_ == file_size_) return 0;
 
   size_t nleft = size;
   char *buf = reinterpret_cast<char *>(ptr);
 
-  size_t retry_count = 0;
-  while (nleft != 0) {
-    while (nleft != 0) {
-      if (read_ptr_ == buffer_.length()) {
-        read_ptr_ = 0;
-        buffer_.clear();
-        if (this->FillBuffer(nleft) == 0 && buffer_.length() == 0) {
-          at_end_ = true;
-          break;
-        }
-      }
-      size_t nread = std::min(nleft, buffer_.length() - read_ptr_);
-      std::memcpy(buf, BeginPtr(buffer_) + read_ptr_, nread);
-      buf += nread;
-      read_ptr_ += nread;
-      nleft -= nread;
-    }
-    size_t read_bytes = size - nleft;
-    curr_bytes_ += read_bytes;
-
-    // retry
-    if (retry_count < 5 && nleft > 0 && at_end_ && expect_file_size_ != 0 &&
-        curr_bytes_ != expect_file_size_) {
-      // reestablish connection;
-      size_t old_curr_bytes = curr_bytes_;
-      Cleanup();
-      Init(old_curr_bytes);
-      ++retry_count;
-    } else {
-      break;
-    }
+  if (read_ptr_ == buffer_.length()) {
+    read_ptr_ = 0;
+    buffer_.clear();
+  } else {
+    size_t nread = std::min(nleft, buffer_.length() - read_ptr_);
+    std::memcpy(buf, BeginPtr(buffer_) + read_ptr_, nread);
+    buf += nread;
+    read_ptr_ += nread;
+    nleft -= nread;
+    curr_bytes_ += nread;
   }
+
+  // retry is handled by AWS sdk
+  if (nleft != 0 && FillBuffer(nleft) != 0) {
+    TC_ASSERT(buffer_.length() == nleft);
+    TC_ASSERT(read_ptr_ == 0);
+    // nleft is nread
+    std::memcpy(buf, BeginPtr(buffer_) + read_ptr_, nleft);
+    read_ptr_ += nleft;
+    curr_bytes_ += nleft;
+    // nothing left to read
+    nleft = 0;
+  }
+
   return size - nleft;
 }
 
-// cleanup the previous sessions for restart
-void CURLReadStreamBase::Cleanup() {
-  if (mcurl_ != NULL) {
-    curl_multi_remove_handle(mcurl_, ecurl_);
-    curl_easy_cleanup(ecurl_);
-    curl_multi_cleanup(mcurl_);
-    mcurl_ = NULL;
-    ecurl_ = NULL;
-  }
-  if (slist_ != NULL) {
-    curl_slist_free_all(slist_);
-    slist_ = NULL;
-  }
-  buffer_.clear();
-  header_.clear();
-  curr_bytes_ = 0;
-  at_end_ = false;
-}
-
-void CURLReadStreamBase::Init(size_t begin_bytes) {
-  ASSERT_MSG(mcurl_ == NULL && ecurl_ == NULL && slist_ == NULL,
-             "must call init in clean state");
-  // make request
-  ecurl_ = curl_easy_init();
-  this->InitRequest(begin_bytes, ecurl_, &slist_);
-  ASSERT_TRUE(curl_easy_setopt(ecurl_, CURLOPT_WRITEFUNCTION,
-                               WriteStringCallback) == CURLE_OK);
-  ASSERT_TRUE(curl_easy_setopt(ecurl_, CURLOPT_WRITEDATA, &buffer_) ==
-              CURLE_OK);
-  ASSERT_TRUE(curl_easy_setopt(ecurl_, CURLOPT_HEADERFUNCTION,
-                               WriteStringCallback) == CURLE_OK);
-  ASSERT_TRUE(curl_easy_setopt(ecurl_, CURLOPT_HEADERDATA, &header_) ==
-              CURLE_OK);
-  set_curl_options(ecurl_);
-  curl_easy_setopt(ecurl_, CURLOPT_NOSIGNAL, 1);
-  mcurl_ = curl_multi_init();
-  ASSERT_TRUE(curl_multi_add_handle(mcurl_, ecurl_) == CURLM_OK);
-  int nrun;
-  curl_multi_perform(mcurl_, &nrun);
-  ASSERT_TRUE(nrun != 0 || header_.length() != 0 || buffer_.length() != 0);
-  // start running and check header
-  this->FillBuffer(1);
-  if (FindHttpError(header_)) {
-    while (this->FillBuffer(buffer_.length() + 256) != 0)
-      ;
-    std::string message = std::string("Request Error") + header_ + buffer_;
-    log_and_throw_io_failure(message);
-  }
+// used for restart
+void AWSReadStreamBase::Reset(size_t begin_bytes) {
   // setup the variables
-  at_end_ = false;
   curr_bytes_ = begin_bytes;
   read_ptr_ = 0;
+  buffer_.clear();
 }
 
-// fill the buffer with wanted bytes
-int CURLReadStreamBase::FillBuffer(size_t nwant) {
-  int nrun = 0;
-  while (buffer_.length() < nwant) {
-    // wait for the event of read ready
-    fd_set fdread;
-    fd_set fdwrite;
-    fd_set fdexcep;
-    FD_ZERO(&fdread);
-    FD_ZERO(&fdwrite);
-    FD_ZERO(&fdexcep);
-    int maxfd = -1;
-    // Curl default timeout as in:
-    // https://curl.haxx.se/libcurl/c/curl_multi_timeout.html
-    timeval timeout;
-    long curl_timeo = 0;
-    curl_multi_timeout(mcurl_, &curl_timeo);
-    if (curl_timeo < 0) curl_timeo = 980;
-    timeout.tv_sec = curl_timeo / 1000;
-    timeout.tv_usec = (curl_timeo % 1000) * 1000;
-    ASSERT_TRUE(curl_multi_fdset(mcurl_, &fdread, &fdwrite, &fdexcep, &maxfd) ==
-                CURLM_OK);
-    int rc;
-    if (maxfd == -1) {
-#ifdef _WIN32
-      Sleep(100);
-      rc = 0;
-#else
-      struct timeval wait = {0, 100 * 1000};
-      rc = select(0, NULL, NULL, NULL, &wait);
-#endif
-    } else {
-      rc = select(maxfd + 1, &fdread, &fdwrite, &fdexcep, &timeout);
-    }
-    if (rc != -1) {
-      CURLMcode ret = curl_multi_perform(mcurl_, &nrun);
-      if (ret == CURLM_CALL_MULTI_PERFORM) continue;
-      ASSERT_TRUE(ret == CURLM_OK);
-      if (nrun == 0) break;
-    }
-  }
-  // loop through all the subtasks in curl_multi_perform and look for errors
-  struct CURLMsg *m;
-  do {
-    int msgq = 0;
-    m = curl_multi_info_read(mcurl_, &msgq);
-    if (m && (m->msg == CURLMSG_DONE)) {
-      if (m->data.result != CURLE_OK) {
-        logstream(LOG_ERROR) << curl_easy_strerror(m->data.result) << std::endl;
-      }
-    }
-  } while (m);
+/*
+ * Retry will be handled by AWS SDK.
+ *
+ * If request is successful, return all bytes read or 0 if no bytes left from
+ * s3. If failed, throw turi::io::io_error.
+ *
+ * @param nwant: number of bytes to read.
+ * @return: number of bytes
+ */
+int AWSReadStreamBase::FillBuffer(size_t nwant) {
+  // start the new buffer
+  read_ptr_ = 0;
+  nwant = std::min(nwant, file_size_ - curr_bytes_);
+  // nothing to read from remote
+  if (nwant == 0) return 0;
 
-  return nrun;
-}
-// End of CURLReadStreamBase functions
+  // Get the object
+  std::sstream ss("bytes=");
+  ss << curr_bytes_ << '-' << curr_bytes_ + nwant;
+  Aws::S3::Model::GetObjectRequest object_request;
+  obeject_request.SetRange(Range(range_str.c_str()));
 
-// singleton class for global initialization
-struct CURLGlobal {
-  CURLGlobal() {
-    ASSERT_TRUE(curl_global_init(CURL_GLOBAL_DEFAULT) == CURLE_OK);
-  }
-  ~CURLGlobal() { curl_global_cleanup(); }
-};
+  auto get_object_outcome = s3_client.GetObject(object_request);
+  if (get_object_outcome.IsSuccess()) {
+    // Get an Aws::IOStream reference to the retrieved file
+    auto &retrieved_file = get_object_outcome.GetResult().GetBody();
 
-// used for global initialization
-static CURLGlobal curl_global;
+    // Output the first line of the retrieved text file
+    buffer_.resize(nwant);
+    memset(buffer_.data(), 0, nwant);
+    retrieved_file.getline(buffer_.data(), nwant);
 
-/*! \brief reader stream that can be used to read */
-class ReadStream : public CURLReadStreamBase {
- public:
-  ReadStream(const URI &path, const std::string &aws_id,
-             const std::string &aws_key, size_t file_size)
-      : path_(path), aws_id_(aws_id), aws_key_(aws_key) {
-    this->expect_file_size_ = file_size;
-  }
-  virtual ~ReadStream(void) {}
-
- protected:
-  // implement InitRequest
-  virtual void InitRequest(size_t begin_bytes, CURL *ecurl, curl_slist **slist);
-
- private:
-  // path we are reading
-  URI path_;
-  // aws access key and id
-  std::string aws_id_, aws_key_, aws_region_;
-};
-
-// initialize the reader at begin bytes
-void ReadStream::InitRequest(size_t begin_bytes, CURL *ecurl,
-                             curl_slist **slist) {
-  // initialize the curl request
-  std::vector<std::string> amz;
-  std::string date = GetDateString();
-
-  auto lowerhost = boost::algorithm::to_lower_copy(path_.host);
-  std::string signature =
-      Sign(aws_key_, "GET", "", "", date, amz,
-           std::string("/") + lowerhost + '/' + RemoveBeginSlash(path_.name));
-  // generate headers
-  std::ostringstream sauth, sdate, surl, srange;
-  std::ostringstream result;
-  sauth << "Authorization: AWS " << aws_id_ << ":" << signature;
-  sdate << "Date: " << date;
-  surl << get_bucket_path(path_.host) << RemoveBeginSlash(path_.name);
-  srange << "Range: bytes=" << begin_bytes << "-";
-  *slist = curl_slist_append(*slist, sdate.str().c_str());
-  *slist = curl_slist_append(*slist, srange.str().c_str());
-  *slist = curl_slist_append(*slist, sauth.str().c_str());
-  ASSERT_TRUE(curl_easy_setopt(ecurl, CURLOPT_HTTPHEADER, *slist) == CURLE_OK);
-  ASSERT_TRUE(curl_easy_setopt(ecurl, CURLOPT_URL, surl.str().c_str()) ==
-              CURLE_OK);
-  ASSERT_TRUE(curl_easy_setopt(ecurl, CURLOPT_HTTPGET, 1L) == CURLE_OK);
-  ASSERT_TRUE(curl_easy_setopt(ecurl, CURLOPT_HEADER, 0L) == CURLE_OK);
-  ASSERT_TRUE(curl_easy_setopt(ecurl, CURLOPT_NOSIGNAL, 1) == CURLE_OK);
-}
-
-/*! \brief simple http read stream to check */
-class HttpReadStream : public CURLReadStreamBase {
- public:
-  HttpReadStream(const URI &path) : path_(path) {}
-  // implement InitRequest
-  virtual void InitRequest(size_t begin_bytes, CURL *ecurl,
-                           curl_slist **slist) {
-    ASSERT_MSG(begin_bytes == 0, " HttpReadStream: do not support Seek");
-    ASSERT_TRUE(curl_easy_setopt(ecurl, CURLOPT_URL, path_.str().c_str()) ==
-                CURLE_OK);
-    ASSERT_TRUE(curl_easy_setopt(ecurl, CURLOPT_NOSIGNAL, 1) == CURLE_OK);
+    // which means the file size must be accurate
+    TS_ASSERT(retrieved_file.eof());
+  } else {
+    auto error = get_object_outcome.GetError();
+    ss.str("");
+    ss << error.GetExceptionName() << ": " << error.GetMessage() << std::endl;
+    log_stream(LOG_ERROR) << ss.str();
+    log_and_throw_io_failure(ss.str())
   }
 
- private:
-  URI path_;
-};
-
-inline void InitS3Client(const s3url &parsed_url, std::string& proxy, S3Client& client) {
-    // initialization
-    Aws::SDKOptions options;
-    options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
-    Aws::InitAPI(options);
-
-    // credentials
-    Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
-
-    // s3 client config
-    Aws::Client::ClientConfiguration clientConfiguration;
-    if (turi::fileio::insecure_ssl_cert_checks()) {
-      clientConfiguration.verifySSL = false;
-    }
-    if (parsed_url.endpoint.empty()) {
-      clientConfiguration.endpointOverride = endpoint.c_str();
-    } else {
-      clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
-    }
-
-    clientConfiguration.proxyHost = proxy.c_str();
-    clientConfiguration.requestTimeoutMs = 5 * 60000;
-    clientConfiguration.connectTimeoutMs = 20000;
-    std::string region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
-    clientConfiguration.region = region.c_str();
-
-    client = std::move(S3Client(credentials, clientConfiguration));
-}
-
-class WriteStream : public Stream {
- public:
-  WriteStream(const s3url &path) : path_(path) {
-    const char *buz = getenv("DMLC_S3_WRITE_BUFFER_MB");
-    if (buz != NULL) {
-      max_buffer_size_ = static_cast<size_t>(atol(buz)) << 20UL;
-    } else {
-      // 64 MB
-      const size_t kDefaultBufferSize = 64 << 20UL;
-      max_buffer_size_ = kDefaultBufferSize;
-    }
-    max_error_retry_ = 3;
-    this->Init();
-  }
-
-  virtual size_t Read(void *ptr, size_t size) {
-    logstream(LOG_FATAL) << "S3.WriteStream cannot be used for read"
-                         << std::endl;
-    return 0;
-  }
-  virtual void Write(const void *ptr, size_t size);
-  // destructor
-  virtual ~WriteStream() {
-    if (!closed_) {
-      no_exception_ = true;
-      this->Upload(true);
-      this->Finish();
-      curl_easy_cleanup(ecurl_);
-    }
-  }
-
-  virtual void Close() {
-    closed_ = true;
-    this->Upload(true);
-    this->Finish();
-    curl_easy_cleanup(ecurl_);
-  }
-
- private:
-  // internal maximum buffer size
-  size_t max_buffer_size_;
-  // maximum time of retry when error occurs
-  int max_error_retry_;
-  // path we are reading
-  s3url path_;
-  // write data buffer
-  std::string buffer_;
-  // etags of each part we uploaded
-  std::vector<std::string> etags_;
-  // part id of each part we uploaded
-  std::vector<size_t> part_ids_;
-
-  Aws::S3::S3Client client_;
-
-  bool closed_ = false;
-
-  bool no_exception_ = false;
-  /*!
-   * \brief helper function to do http post request
-   * \param method method to peform
-   * \param path the resource to post
-   * \param url_args additional arguments in URL
-   * \param url_args translated arguments to sign
-   * \param content_type content type of the data
-   * \param data data to post
-   * \param out_header holds output Header
-   * \param out_data holds output data
-   */
-  void Run(const std::string &method, const URI &path, const std::string &args,
-           const std::string &content_type, const std::string &data,
-           std::string *out_header, std::string *out_data);
-  /*!
-   * \brief initialize the upload request
-   */
-  void Init(void);
-  /*!
-   * \brief upload the buffer to S3, store the etag
-   * clear the buffer
-   */
-  void Upload(bool force_upload_even_if_zero_bytes = false);
-  /*!
-   * \brief commit the upload and finish the session
-   */
-  void Finish(void);
-};
-
-void WriteStream::Init(void) {
-  InitS3Client(path_, "", client_)
+  return nwant;
 }
 
 void WriteStream::Write(const void *ptr, size_t size) {
   size_t rlen = buffer_.length();
   buffer_.resize(rlen + size);
-  std::memcpy(BeginPtr(buffer_) + rlen, ptr, size);
-  if (buffer_.length() >= max_buffer_size_) {
-    this->Upload();
-  }
-}
-
-void WriteStream::Run(const std::string &method, const s3url &path,
-                      const std::string &content_type, const std::string &data,
-                      std::string &etag) {
-  int num_retry = 0;
-
-  const std::shared_ptr<Aws::IOStream> input_data =
-      Aws::MakeShared<Aws::FStream>("SampleAllocationTag", file_name.c_str(),
-                                    std::ios_base::in | std::ios_base::binary);
-
-  while (num_retry < max_error_retry_) {
-    // helper for read string
-    if (method == "POST") {
-      Aws::S3::Model::PostObjectRequest object_request;
-
-      object_request.SetBucket(path.bucket);
-      object_request.SetKey(path.object_name);
-      object_request.SetBody(input_data);
-      object_request.setContentType(content_type);
-
-      // Put the object
-      auto outcome = s3_client.PostObject(object_request);
-      if (!outcome.IsSuccess()) {
-        auto error = outcome.GetError();
-        logstream(LOG_ERROR) << "ERROR: " << error.GetExceptionName() << ": "
-                             << error.GetMessage() << std::endl;
-        num_retry++;
-      } else {
-        etag = outcome.GetEtag();
-      }
-
-    } else if (method == "PUT") {
-      Aws::S3::Model::PutObjectRequest object_request;
-
-      object_request.SetBucket(path.bucket);
-      object_request.SetKey(path.object_name);
-      object_request.setContentType(content_type);
-
-      object_request.SetBody(input_data);
-
-      // Put the object
-      auto outcome = s3client_.PutObject(object_request);
-      if (!outcome.IsSuccess()) {
-        auto error = outcome.GetError();
-        logstream(LOG_ERROR) << "ERROR: " << error.GetExceptionName() << ": "
-                             << error.GetMessage() << std::endl;
-        num_retry++;
-      } else {
-        etag = outcome.GetEtag();
-      }
-    }
-  }
+  std::memcpy(buffer_.data() + rlen, ptr, size);
+  if (buffer_.length() >= max_buffer_size_) Upload();
 }
 
 void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
-  if (buffer_.length() == 0 && !force_upload_even_if_zero_bytes) return;
-  std::string etag;
-  size_t partno = etags_.size() + 1;
-  Run("PUT", path_, sarg.str(), "binary/octel-stream", buffer_, etag);
-  etags_.push_back(std::move(etag));
-  part_ids_.push_back(partno);
+  if (!force_upload_even_if_zero_bytes && buffer_.empty()) return;
+
+  Aws::S3::Model::UploadPartRequest my_request;
+  my_request.SetBucket(path_.bucket);
+  my_request.SetKey(path_.object_name);
+  my_request.SetPartNumber(completed_parts_.size());
+  my_request.SetUploadId(upload_id_);
+
+  std::shared_ptr<Aws::StringStream> stream_ptr =
+      Aws::MakeShared<Aws::StringStream>(Aws::ALLOCATION_TAG, buffer_);
+  stream_ptr->seekg(0);
+  stream_ptr->seekp(0, std::ios_base::end);
+  my_request.SetBody(stream_ptr);
+
+  Aws::Utils::ByteBuffer part_md5(Aws::utils::HashingUtils::CalculateMD5(*stream_ptr));
+  my_request.SetContentMD5(Aws::Utils::HashingUtils::Base64Encode(part_md5));
+
+  // it's better to restore the stream cursor
+  auto start_pos = stream_ptr->tellg();
+  stream_ptr->seekg(0LL, stream_ptr->end);
+  my_request.SetContentLength(static_cast<long>(stream_ptr->tellg()));
+  stream_ptr->seekg(start_pos);
+
+  // don't forget reset buffer
   buffer_.clear();
+
+  // store the future into completed parts
+  completed_parts_.push_back(s3_client_.UploadPartCallable(my_request));
 }
 
-void WriteStream::Finish(void) {
-  request.SetUploadId(InitMultipart.GetResult().GetUploadId());
-  Aws::S3::Model::CompleteMultipartUploadRequest request;
-  Aws::S3::Model::CompletePart part;
-  for (size_t ii = 0; ii < etags_.size(); ++ii) {
-    part.SetETag(etags_[ii]);
-    part.SetNumber(part_ids_[ii]);
-    request.AddParts(part)
+void WriteStream::Finish() {
+  Aws::S3::Model::CompleteMultipartUploadRequest complete_request;
+  complete_request.SetBucket(path_.bucket);
+  complete_request.SetKey(path_.object_name);
+  complete_request.SetUploadId(upload_id_);
+
+  Aws::S3::Model::CompletedMultipartUpload completed_multipart_upload;
+
+  for (size_t ii = 0; ii < completed_parts_.size(); ii++) {
+    Aws::S3::Model::UploadPartOutcome my_outcome = completed_parts_[ii].get();
+    Aws::S3::Model::CompletedPart completed_part;
+    completed_part.SetETag(my_outcome.GetResult().GetETag());
+    completed_part.SetPartNumber(ii);
+    completedMultipartUpload.AddParts(std::move(completed_part));
   }
-  auto outcome = s3client_.CompleteMultipartUpload(request);
+
+  completeMultipartUploadRequest.WithMultipartUpload(completed_multipart_upload);
+
+  auto completeMultipartUploadOutcome =
+      s3_client_.CompleteMultipartUpload(completeMultipartUploadRequest);
+
+  ASSERT_TRUE(completeMultipartUploadOutcome.IsSuccess());
 }
 
 /*!
@@ -637,54 +177,56 @@ void WriteStream::Finish(void) {
  * \param path the path to query
  * \paam out_list stores the output results
  */
-void ListObjects(const s3url &path, std::vector<FileInfo> *out_list) {
+void ListObjects(const s3url &path, std::vector<FileInfo>& out_list) {
   if (path.host.length() == 0) {
     log_and_throw_io_failure("bucket name not specified in S3 URI");
   }
-  out_list->clear();
+  out_list.clear();
   // use new implementation from s3_api.hpp
   auto ret = fileio::list_objects(path);
 
-  for (auto &s3file : ret.objects) {
+  for (size_t ii 0; ii < ret.objects.size(); ++ii) {
     FileInfo info;
-    ASSERT_MSG(s3file.second >= 0, "s3 object size is less than 0");
-    info.size = static_cast<size_t>(s3file.second);
+    ASSERT_MSG(ret.objects_size[ii] >= 0, "s3 object size is less than 0");
+    info.size = ret.objects_size[ii];
     info.path = path;
+    info.path.object_name = ret.objects[ii]
     // add root path to be consistent with other filesys convention
-    info.path.name = '/' + s3file.first;
     info.type = kFile;
-    out_list->push_back(info);
+    info.size -
+    out_list.push_back(info);
   }
 
   for (auto &s3dir : ret.directories) {
     FileInfo info;
     info.path = path;
     // add root path to be consistent with other filesys convention
-    info.path.name = '/' + s3dir.first;
+    info.path.object_name = s3dir;
     info.size = 0;
     info.type = kDirectory;
-    out_list->push_back(info);
+    out_list.push_back(info);
   }
 
 }  // ListObjects
 
-}  // namespace io
 
-bool S3FileSystem::TryGetPathInfo(const s3url &path_, FileInfo *out_info) {
-  URI path = path_;
-  while (path.name.length() > 1 && path.name.back() == '/') {
-    path.name.resize(path.name.length() - 1);
+bool S3FileSystem::TryGetPathInfo(const s3url &url, FileInfo& out_info) {
+  std::string path = url.object_name;
+  while (path.length() > 1 && path.back() == '/') {
+    path.pop_back();
   }
+  std::string pdir = path + '/';
   std::vector<FileInfo> files;
-  s3::ListObjects(path, &files);
-  std::string pdir = path.name + '/';
-  for (size_t i = 0; i < files.size(); ++i) {
+  ListObjects(url, files);
+
+   for (i = 0; i < files.size(); ++i) {
     if (files[i].path.name == path.name) {
-      *out_info = files[i];
+      out_info = files[i];
       return true;
     }
+
     if (files[i].path.name == pdir) {
-      *out_info = files[i];
+      out_info = files[i];
       return true;
     }
   }
@@ -697,28 +239,28 @@ FileInfo S3FileSystem::GetPathInfo(const s3url &path) {
   return info;
 }
 
-void S3FileSystem::ListDirectory(const s3url &path,
-                                 std::vector<FileInfo> *out_list) {
-
-  if (path.name[path.name.length() - 1] == '/') {
-    s3::ListObjects(path, out_list);
+void S3FileSystem::ListDirectory(const s3url &url,
+                                 std::vector<FileInfo> &out_list) {
+  if (url.object_name.length() && url.object_name.back() == '/') {
+    ListObjects(url, out_list);
     return;
   }
 
   std::vector<FileInfo> files;
-  std::string pdir = path.name + '/';
-  out_list->clear();
-  s3::ListObjects(path, &files);
+  std::string pdir = url.object_name + '/';
+  out_list.clear();
+  ListObjects(url, &files);
 
   for (size_t i = 0; i < files.size(); ++i) {
-    if (files[i].path.name == path.name) {
+    if (files[i].path.object_name == url.object_name) {
       ASSERT_TRUE(files[i].type == kFile);
-      out_list->push_back(files[i]);
+      out_list.push_back(std::move(files[i]));
       return;
     }
-    if (files[i].path.name == pdir) {
+
+    if (files[i].path.oject_name == pdir) {
       ASSERT_TRUE(files[i].type == kDirectory);
-      s3::ListObjects(files[i].path, out_list);
+      ListObjects(files[i].path, out_list);
       return;
     }
   }
@@ -733,7 +275,7 @@ Stream *S3FileSystem::Open(const s3url &path, const char *const flag) {
   } else {
     log_and_throw_io_failure(
         std::string("S3FileSytem.Open do not support flag ") + flag);
-    return NULL;
+    return nullptr;
   }
 }
 
@@ -745,5 +287,6 @@ SeekStream *S3FileSystem::OpenForRead(const s3url &path) {
     return NULL;
   }
 }
-}  // namespace dmlc
-}  // namespace dmlc
+
+}  // namespace fileio
+}  // namespace turi

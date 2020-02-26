@@ -26,6 +26,9 @@ s3_device::s3_device(const std::string& filename, const bool write) {
 
   m_s3fs = std::make_shared<dmlc::io::S3FileSystem>();
   m_s3fs->SetCredentials(url.access_key_id, url.secret_key);
+  // just for convienience
+  m_s3fs->url_ = url;
+
   std::string url_without_credentials;
   if (url.endpoint.empty()) {
      url_without_credentials = "s3://" + url.bucket + "/" + url.object_name;

@@ -111,20 +111,51 @@ bool bucket_name_valid(const std::string& bucket_name) {
 }
 
 
-std::string string_from_s3url(const s3url& parsed_url) {
-  std::string ret = "s3://" + parsed_url.access_key_id + ":"
-      + parsed_url.secret_key + ":";
+} // anonymous namespace
+
+S3Client init_aws_sdk_with_turi_env(const s3url& parsed_url) {
+  // initialization
+  Aws::SDKOptions options;
+  options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
+  Aws::InitAPI(options);
+
+  // s3 client config
+  // DefaultCredentialProviderChain
+  Aws::Client::ClientConfiguration clientConfiguration;
+
+  // a little bit too long, anyway
+  clientConfiguration.requestTimeoutMs = 5 * 60000;
+  clientConfiguration.connectTimeoutMs = 20000;
+
+  if (turi::fileio::insecure_ssl_cert_checks()) {
+    clientConfiguration.verifySSL = false;
+  }
+
   if (!parsed_url.endpoint.empty()) {
-    ret += parsed_url.endpoint + "/";
+    clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
   }
-  ret += parsed_url.bucket;
-  if (!parsed_url.object_name.empty()) {
-    ret += "/" + parsed_url.object_name;
+
+  if (!parsed_url.proxy.empty()) {
+    clientConfiguration.proxyHost = proxy.c_str();
   }
-  return ret;
+
+  std::string region = fileio::get_region_name_from_endpoint(
+      clientConfiguration.endpointOverride.c_str());
+
+  if (!region.empty()) {
+    clientConfiguration.region = region.c_str();
+  }
+
+  if (parsed_url.secret_key_id.empty()) {
+    return S3Client(clientConfiguration);
+  } else {
+    // credentials
+    Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(),
+                                          parsed_url.secret_key.c_str());
+    return S3Client(credentials, clientConfiguration);
+  }
 }
 
-} // anonymous namespace
 
 const std::vector<std::string> S3Operation::_enum_to_str = {
     "DeleteObjects", "ListObjects", "HeadObjects"};
@@ -334,7 +365,9 @@ list_objects_response list_objects_impl(s3url parsed_url,
     clientConfiguration.requestTimeoutMs = 5 * 60000;
     clientConfiguration.connectTimeoutMs = 20000;
     std::string region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
-    clientConfiguration.region = region.c_str();
+    if (!region.empty()) {
+      clientConfiguration.region = region.c_str();
+    }
 
     S3Client client(credentials, clientConfiguration);
 
@@ -363,6 +396,7 @@ list_objects_response list_objects_impl(s3url parsed_url,
                 std::stringstream stream;
                 stream << o.GetLastModified().Millis();
                 ret.objects_last_modified.push_back(stream.str());
+                ret.objects_size.push_back(o.GetSize());
             }
 
             // now iterate through common prefixes - these are directories
@@ -401,12 +435,12 @@ list_objects_response list_objects_impl(s3url parsed_url,
     for (auto& dir : ret.directories) {
       s3url dirurl = parsed_url;
       dirurl.object_name = dir;
-      dir = string_from_s3url(dirurl);
+      dir = dirurl.string_from_s3url();
     }
     for (auto& object: ret.objects) {
       s3url objurl = parsed_url;
       objurl.object_name = object;
-      object = string_from_s3url(objurl);
+      object = string_from_s3url(&objurl);
     }
     return ret;
 }
@@ -638,7 +672,7 @@ list_objects_response list_directory(std::string url, std::string proxy) {
     return ret;
   }
   // normalize the URL so it doesn't matter if you put strange "/"s at the end
-  url = string_from_s3url(parsed_url);
+  url = string_from_s3url(&parsed_url);
   auto isdir = is_directory(url, proxy);
   // if not found.
   if (isdir.first == file_status::MISSING) return isdir.second;

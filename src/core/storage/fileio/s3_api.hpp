@@ -24,6 +24,7 @@ namespace turi {
  * \internal
  * A complete specification of an S3 bucket and object,
  * including all authentication required.
+ *
  */
 struct s3url {
   std::string access_key_id;
@@ -40,6 +41,39 @@ struct s3url {
            endpoint == other.endpoint;
   }
 
+  /*
+   * reconstruct to url format,
+   * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
+   */
+  std::string string_from_s3url() {
+    std::string ret("s3://");
+    ret.reserve(128);
+
+    if (!access_key_id.empty()) {
+      TS_ASSERT(!secret_key.empty());
+      ret.append(access_key_id);
+      ret.append(1, ':');
+      ret.append(secret_key);
+      ret.append(1, ':');
+    }
+
+    if (!endpoint.empty()) {
+      ret.append(1, ':');
+      ret.append(endpoint);
+    }
+
+    TS_ASSERT(!bucket.empty());
+    ret.append(1, '/');
+    ret.append(bucket);
+
+    if (!object_name.empty()) {
+      ret.append(1, '/');
+      ret.append(object_name);
+    }
+
+    return ret;
+  }
+
   friend std::ostream& operator<<(std::ostream& os, const s3url& url) {
     os << "bucket: '" << url.bucket << "', object_name: '" << url.object_name
        << "', endpoint: '" << url.endpoint << '\'';
@@ -47,6 +81,14 @@ struct s3url {
   }
 };
 
+
+/**
+ * \ingroup fileio
+ * \internal
+ *
+ * initialize the sdk with TRUI constomized environment variable
+ */
+S3Client init_aws_sdk_with_env(const s3url& parsed_url);
 
 /**
  * \ingroup fileio
@@ -74,6 +116,8 @@ struct list_objects_response {
 
   /// A list of all the objects found.
   std::vector<std::string> objects;
+  /// A list of all the objects size.
+  std::vector<size_t> objects_size;
   /// Last modified time for the objects.
   std::vector<std::string> objects_last_modified;
 };
@@ -114,7 +158,7 @@ list_objects_response list_objects(std::string s3_url,
  * \internal
  * Lists all objects prefixed by a give s3 url.
  *
- * if s3_url points to a valid prefix, it will return the prefix's contents
+ * if s3_url points to a valid prefix, it  return the prefix's contents
  * like a directory.
  *
  * foo/hello.txt
