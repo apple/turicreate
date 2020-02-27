@@ -39,6 +39,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.sess.close()
         self.gpu_policy.stop()
 
+    @staticmethod
     def _build_network(x, weights, biases):
         # Add customized layers
         for i in range(len(weights.keys())):
