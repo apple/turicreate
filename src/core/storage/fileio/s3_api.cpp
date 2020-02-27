@@ -115,11 +115,6 @@ bool bucket_name_valid(const std::string& bucket_name) {
 } // anonymous namespace
 
 S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
-  // initialization
-  Aws::SDKOptions options;
-  options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
-  Aws::InitAPI(options);
-
   // s3 client config
   // DefaultCredentialProviderChain
   Aws::Client::ClientConfiguration clientConfiguration;
@@ -157,8 +152,6 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
       parsed_url.sdk_region = env_var->c_str();
     }
   }
-
-  Aws::ShutdownAPI(options);
 
   if (parsed_url.secret_key.empty()) {
     return S3Client(clientConfiguration);

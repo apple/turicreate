@@ -42,6 +42,15 @@ struct FileInfo {
   FileInfo() : size(0), type(kFile) {}
 };
 
+
+struct ScopedAwsInitAPI {
+  ScopedAwsInitAPI(Aws::SDKOptions options) : options_(options) {
+    Aws::InitAPI(options_);
+  }
+  ~ScopedAwsInitAPI() { Aws::ShutdownAPI(options_); }
+  Aws::SDKOptions options_;
+};
+
 class Stream {
  public:
   /*!
@@ -148,12 +157,13 @@ class AWSReadStreamBase : public SeekStream {
   // the total size of the file
   size_t file_size_ = 0;
 
-  Aws::S3::S3Client s3_client_;
-
   void SetBegin(size_t begin_bytes) {
     ASSERT_TRUE(begin_bytes < file_size_);
     curr_bytes_ = begin_bytes;
   }
+
+ protected:
+  s3url url_;
 
  private:
   /*!
@@ -180,8 +190,9 @@ class AWSReadStreamBase : public SeekStream {
 /*! \brief reader stream that can be used to read */
 class ReadStream : public AWSReadStreamBase {
  public:
-  ReadStream(const s3url &url, size_t file_size) : url_(url) {
+  ReadStream(const s3url &url, size_t file_size) {
     file_size_ = file_size;
+    url_ = url;
   }
 
   virtual ~ReadStream() {}
@@ -189,18 +200,15 @@ class ReadStream : public AWSReadStreamBase {
  protected:
   // implement InitRequest
   virtual void InitRequest(size_t begin_bytes, s3url &url) {
-    s3_client_ = init_aws_sdk_with_turi_env(url);
     SetBegin(begin_bytes);
+    url_ = url;
   }
-
- private:
-  s3url url_;
 };  // namespace fileio
 
 class WriteStream : public Stream {
  public:
-  WriteStream(const s3url &path, bool no_exception = false)
-      : path_(path), no_exception_(no_exception) {
+  WriteStream(const s3url &url, bool no_exception = false)
+      : url_(url), no_exception_(no_exception) {
     const char *buz = getenv("TURI_S3_WRITE_BUFFER_MB");
     if (buz != nullptr) {
       max_buffer_size_ = static_cast<size_t>(atol(buz)) << 20UL;
@@ -210,7 +218,7 @@ class WriteStream : public Stream {
       max_buffer_size_ = kDefaultBufferSize;
     }
 
-    InitRequest(path_);
+    InitRequest(url_);
   }
 
   virtual size_t Read(void *ptr, size_t size) {
@@ -239,7 +247,6 @@ class WriteStream : public Stream {
 
  protected:
   virtual void InitRequest(s3url &url) {
-    s3_client_ = init_aws_sdk_with_turi_env(url);
     InitMultipart(url);
   }
 
@@ -247,7 +254,7 @@ class WriteStream : public Stream {
   // internal maximum buffer size
   size_t max_buffer_size_;
   // path we are reading
-  s3url path_;
+  s3url url_;
 
   bool no_exception_ = false;
   // write data buffer
@@ -258,11 +265,15 @@ class WriteStream : public Stream {
   // UploadPartOutcomeCallable is fucture<UploadPartOutcome>
   std::vector<Aws::S3::Model::UploadPartOutcomeCallable> completed_parts_;
 
-  Aws::S3::S3Client s3_client_;
-
   bool closed_ = false;
 
   void InitMultipart(const s3url &url) {
+    url_ = url;
+    Aws::SDKOptions options;
+    ScopedAwsInitAPI aws_init(options);
+
+    auto s3_client = init_aws_sdk_with_turi_env(url_);
+
     Aws::S3::Model::CreateMultipartUploadRequest create_request;
     create_request.SetBucket(
         Aws::String(url.bucket.c_str(), url.bucket.length()));
@@ -270,7 +281,7 @@ class WriteStream : public Stream {
         Aws::String(url.object_name.c_str(), url.object_name.length()));
     create_request.SetContentType("text/plain");
     auto createMultipartUploadOutcome =
-        s3_client_.CreateMultipartUpload(create_request);
+        s3_client.CreateMultipartUpload(create_request);
     ASSERT_TRUE(createMultipartUploadOutcome.IsSuccess());
     upload_id_ = createMultipartUploadOutcome.GetResult().GetUploadId();
   }

@@ -31,6 +31,7 @@ namespace s3 {
 size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
   // check at end
   if (curr_bytes_ == file_size_) return 0;
+  std::cerr << buffer_ << std::endl;
 
   size_t nleft = size;
   char *buf = reinterpret_cast<char *>(ptr);
@@ -80,6 +81,9 @@ void AWSReadStreamBase::Reset(size_t begin_bytes) {
  * @return: number of bytes
  */
 int AWSReadStreamBase::FillBuffer(size_t nwant) {
+  Aws::SDKOptions options;
+  ScopedAwsInitAPI aws_init(options);
+  auto s3_client = init_aws_sdk_with_turi_env(url_);
   // start the new buffer
   read_ptr_ = 0;
   nwant = std::min(nwant, file_size_ - curr_bytes_);
@@ -92,7 +96,7 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
   Aws::S3::Model::GetObjectRequest object_request;
   object_request.SetRange(ss.str().c_str());
 
-  auto get_object_outcome = s3_client_.GetObject(object_request);
+  auto get_object_outcome = s3_client.GetObject(object_request);
   if (get_object_outcome.IsSuccess()) {
     // Get an Aws::IOStream reference to the retrieved file
     auto &retrieved_file = get_object_outcome.GetResult().GetBody();
@@ -123,11 +127,15 @@ void WriteStream::Write(const void *ptr, size_t size) {
 }
 
 void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
+  Aws::SDKOptions options;
+  Aws::InitAPI(options);
+  auto s3_client = init_aws_sdk_with_turi_env(url_);
+
   if (!force_upload_even_if_zero_bytes && buffer_.empty()) return;
 
   Aws::S3::Model::UploadPartRequest my_request;
-  my_request.SetBucket(path_.bucket.c_str());
-  my_request.SetKey(path_.object_name.c_str());
+  my_request.SetBucket(url_.bucket.c_str());
+  my_request.SetKey(url_.object_name.c_str());
   my_request.SetPartNumber(completed_parts_.size());
   my_request.SetUploadId(upload_id_.c_str());
 
@@ -152,14 +160,21 @@ void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
   buffer_.clear();
 
   // store the future into completed parts
-  completed_parts_.push_back(s3_client_.UploadPartCallable(my_request));
+  completed_parts_.push_back(s3_client.UploadPartCallable(my_request));
+
+  Aws::ShutdownAPI(options);
 }
 
 void WriteStream::Finish() {
+  Aws::SDKOptions options;
+  ScopedAwsInitAPI aws_init(options);
+
+  auto s3_client = init_aws_sdk_with_turi_env(url_);
+
   Aws::S3::Model::CompleteMultipartUploadRequest complete_request;
   complete_request.SetBucket(
-      Aws::String(path_.bucket.c_str(), path_.bucket.length()));
-  complete_request.SetKey(path_.object_name.c_str());
+      Aws::String(url_.bucket.c_str(), url_.bucket.length()));
+  complete_request.SetKey(url_.object_name.c_str());
   complete_request.SetUploadId(upload_id_.c_str());
 
   Aws::S3::Model::CompletedMultipartUpload completed_multipart_upload;
@@ -175,7 +190,7 @@ void WriteStream::Finish() {
   complete_request.WithMultipartUpload(completed_multipart_upload);
 
   auto completeMultipartUploadOutcome =
-      s3_client_.CompleteMultipartUpload(complete_request);
+      s3_client.CompleteMultipartUpload(complete_request);
 
   ASSERT_TRUE(completeMultipartUploadOutcome.IsSuccess());
 }
