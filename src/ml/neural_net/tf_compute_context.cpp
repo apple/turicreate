@@ -259,7 +259,8 @@ std::unique_ptr<compute_context> create_tf_compute_context() {
 
 // At static-init time, register create_tf_compute_context().
 // TODO: Codify priority levels?
-static auto* tf_registration = new compute_context::registration(
+static auto* tf_registration __attribute__((unused)) =
+  new compute_context::registration(
     /* priority */ 1, &create_tf_compute_context, &create_tf_compute_context);
 
 }  // namespace
