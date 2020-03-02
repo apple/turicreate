@@ -1,0 +1,2 @@
+* Mon Dec 17 2018 Philip Salvaggio <salvaggio.philip@gmail.com> - 0.1.0-1
+  Initial RPM created with CPack
