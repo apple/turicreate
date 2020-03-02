@@ -165,8 +165,7 @@ class column_statistics {
       for(; cv_idx < cat_index_vect.size(); ++cv_idx) {
         size_t idx = cat_index_vect[cv_idx] - parallel_threshhold;
 
-        if(idx >= global_element_counts.size() || idx >= global_size)
-          adjust_global_array_size(idx, global_element_counts);
+        check_global_array_sizes(idx, global_element_counts);
 
         if(cv_idx == 0 || (idx != cat_index_vect[cv_idx - 1]) ) {
           std::lock_guard<simple_spinlock> el_lg(global_element_locks[get_lock_index(idx)]);
@@ -310,12 +309,7 @@ class column_statistics {
         size_t idx = dict[d_idx].first - parallel_threshhold;
         double v   = dict[d_idx].second;
 
-        if(idx >= global_element_counts.size()
-           || idx >= global_mean_var_acc.size()
-           || idx >= global_size) {
-          adjust_global_array_size(idx, global_element_counts);
-          adjust_global_array_size(idx, global_mean_var_acc);
-        }
+        check_global_array_sizes(idx, global_element_counts, global_mean_var_acc);
 
         std::lock_guard<simple_spinlock> el_lg(global_element_locks[get_lock_index(idx)]);
 
@@ -439,7 +433,9 @@ class column_statistics {
   std::vector<size_t> global_element_counts;
   std::vector<element_statistics_accumulator> global_mean_var_acc;
 
-  size_t global_size = 0;
+  volatile size_t global_size = 0;
+  volatile size_t global_array_buffer_size = 0;
+  std::mutex _array_resize_lock;
 
   /**  Return the index of the appropriate lock.
    *
@@ -471,37 +467,64 @@ class column_statistics {
       v.resize(idx + 1);
     }
   }
-
-  /**  Check global array size. Possibly resize it.
+  
+  /**  Check global array size. Possibly resize them.
    */
-  template <typename T>
-  void adjust_global_array_size(size_t idx, std::vector<T>& v) {
+  template <typename... V>
+  inline void check_global_array_sizes(size_t idx, V&... vv) {
 
     // If needed, increase the value of global_size.
-    atomic_set_max(global_size, idx + 1);
+    if(UNLIKELY(idx >= global_size)) { 
+      atomic_set_max(global_size, idx + 1);
+    }
 
-    // See if a resize is needed.
-    if(UNLIKELY(idx >= v.size() )) {
+    if(UNLIKELY(idx >= global_array_buffer_size)) { 
+      resize_global_arrays(idx, vv...);
+    }
+  } 
 
-      // Grow aggressively, since a resize is really expensive.
-      size_t new_size = 2 * (parallel_threshhold + idx + 1);
 
-      {
-        std::array<std::unique_lock<simple_spinlock>, n_locks> all_locks;
-        for(size_t i = 0; i < n_locks; ++i)
-          all_locks[i] = std::unique_lock<simple_spinlock>(global_element_locks[i], std::defer_lock);
+  template <typename T>
+  inline void __resize_global_array(size_t new_size, std::vector<T>& v) {
+    // This condition should always be true as the 
+    DASSERT_EQ(v.size(), global_array_buffer_size);
+    v.resize(new_size);
+  }
+  
+  template <typename V1, typename... VV>
+  inline void __resize_global_array(size_t new_size, V1& v, VV&... other_v) {
+    __resize_global_array(new_size, v);
+    __resize_global_array(new_size, other_v...);
+  }
 
-        // Ensure nothing is happening with the vector by locking all
-        // locks in a thread safe way.  This prevents any thread from
-        // accessing it while we resize it.
-        boost::lock(all_locks.begin(), all_locks.end());
 
-        // It's possible that another thread beat us to it.
-        if(v.size() < idx + 1)
-          v.resize(new_size);
+  template <typename... V>
+  void resize_global_arrays(size_t idx, V&... vv) {
+   
+    // Grow aggressively, since a resize is really expensive.
+    size_t new_size = 2 * (parallel_threshhold + idx + 1);
 
-        // The destructor of all_locks takes care of the unlocking.
+    // First, lock a global lock while the resize is happening, as many threads are likely to 
+    // hit this at once.  This prevents multiple threads from locking all the locks in the full 
+    // array when there is contention. 
+    std::lock_guard<std::mutex> lg(_array_resize_lock); 
+
+    // Do we still need to resize it, or has another array hit this already?
+    if(global_array_buffer_size <= idx) {
+      std::array<std::unique_lock<simple_spinlock>, n_locks> all_locks;
+
+      for(size_t i = 0; i < n_locks; ++i) {
+        all_locks[i] = std::unique_lock<simple_spinlock>(global_element_locks[i], std::defer_lock);
       }
+
+      // Ensure nothing is happening with the vector by locking all
+      // locks in a thread safe way.  This prevents any thread from
+      // accessing it while we resize it.
+      boost::lock(all_locks.begin(), all_locks.end());
+
+      __resize_global_array(new_size, vv...);
+
+      global_array_buffer_size = new_size;
     }
   }
 

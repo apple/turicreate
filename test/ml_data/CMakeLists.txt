@@ -4,8 +4,7 @@ make_boost_test(dml_basic_storage.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(dml_numerics.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(dml_untranslated_columns.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(dml_reindexing.cxx REQUIRES unity_shared_for_testing)
-# KNOWN FAILURE
-# make_boost_test(dml_stats_merge_test.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(dml_stats_merge_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(dml_metadata_api.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(dml_schema_errors.cxx REQUIRES unity_shared_for_testing)
 # KNOWN FAILURE
