@@ -1,37 +1,31 @@
 project(aws-cpp-sdk)
 
-if (NOT DEFINED TC_BUILD_REMOTEFS OR NOT TC_BUILD_REMOTEFS)
+if(NOT DEFINED TC_BUILD_REMOTEFS OR NOT TC_BUILD_REMOTEFS)
   return(0)
 endif()
 
 set(BUILD_TESTING
     OFF
     CACHE BOOL "don't build aws-c-common test")
-set(BUILD_SHARED_LIBS OFF CACHE BOOL "don't build aws-checksums in shared library")
+set(BUILD_SHARED_LIBS
+    OFF
+    CACHE BOOL "don't build aws-checksums in shared library")
 add_subdirectory(aws-c-common)
+target_compile_options(aws-c-common PRIVATE -fPIC)
 
+# aws-checksums ###
 set(AWS_CHECKSUMS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-checksums)
-
 file(GLOB AWS_CHECKSUMS_COMMON_SRC "${AWS_CHECKSUMS_DIR}/source/*.c")
-
 file(GLOB AWS_CHECKSUMS_ARCH_SRC "${AWS_CHECKSUMS_DIR}/source/intel/*.c"
      "${AWS_CHECKSUMS_DIR}/source/arm/*.c")
-
 file(GLOB AWS_CHECKSUMS_SRC ${AWS_CHECKSUMS_COMMON_SRC}
      ${AWS_CHECKSUMS_ARCH_SRC})
 
-add_library(aws-checksums ${AWS_CHECKSUMS_SRC})
-target_include_directories(aws-checksums PUBLIC "${AWS_CHECKSUMS_DIR}/include")
-
+# aws-c-even-stream ###
 set(AWS_EVENT_STREAM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-event-stream)
 file(GLOB AWS_EVENT_STREAM_SRC "${AWS_EVENT_STREAM_DIR}/source/*.c")
 
-add_library(aws-c-event-stream ${AWS_EVENT_STREAM_SRC})
-target_link_libraries(aws-c-event-stream aws-c-common)
-target_link_libraries(aws-c-event-stream aws-checksums)
-target_include_directories(aws-c-event-stream
-                           PUBLIC "${AWS_EVENT_STREAM_DIR}/include")
-
+# aws-cpp-sdk-core ###
 set(AWS_CPP_SDK_CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-cpp-sdk-core)
 file(GLOB AWS_SOURCE "${AWS_CPP_SDK_CORE_DIR}/source/*.cpp")
 file(GLOB AWS_TINYXML2_SOURCE
@@ -110,13 +104,13 @@ file(
   ${UTILS_AWS_CORE_NET_SOURCE}
   ${UTILS_CRYPTO_FACTORY_SOURCE})
 
+# aws-cpp-sdk-s3 ###
 set(AWS_CPP_SDK_S3_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-cpp-sdk-s3)
-
 file(GLOB AWS_CPP_SDK_S3_SOURCE "${AWS_CPP_SDK_S3_DIR}/source/*.cpp"
      "${AWS_CPP_SDK_S3_DIR}/source/model/*.cpp")
 
-file(GLOB _aws_source_file_list ${AWS_NATIVE_SDK_COMMON_SRC}
-     ${AWS_CPP_SDK_S3_SOURCE})
+file(GLOB _aws_source_file_list ${AWS_CHECKSUMS_SRC} ${AWS_EVENT_STREAM_SRC}
+     ${AWS_NATIVE_SDK_COMMON_SRC} ${AWS_CPP_SDK_S3_SOURCE})
 
 make_library(
   aws-cpp-sdk
@@ -127,9 +121,9 @@ make_library(
   openssl
   uuid)
 
-target_link_libraries(aws-cpp-sdk PUBLIC aws-c-common)
-target_link_libraries(aws-cpp-sdk PUBLIC aws-c-event-stream)
+target_link_libraries(aws-cpp-sdk PRIVATE aws-c-common)
 
+target_include_directories(aws-cpp-sdk PRIVATE "${AWS_CHECKSUMS_DIR}/include")
 target_include_directories(aws-cpp-sdk
                            PRIVATE "${AWS_EVENT_STREAM_DIR}/include")
 target_include_directories(aws-cpp-sdk PRIVATE "${AWS_CHECKSUMS_DIR}/include")
