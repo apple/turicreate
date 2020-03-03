@@ -453,8 +453,7 @@ set(_TC_COMMON_REQUIREMENTS
   boost
   libbz2
   z
-  aws-cpp-sdk
-  aws-c-common
+  aws-sdk-cpp
 )
 
 if(APPLE)

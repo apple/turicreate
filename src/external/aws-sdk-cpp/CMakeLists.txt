@@ -3,8 +3,7 @@ project(aws-sdk-cpp)
 set(BUILD_TESTING
     OFF
     CACHE BOOL "don't build aws-c-common test")
-# set(BUILD_SHARED_LIBS OFF CACHE BOOL "don't build aws-checksums in shared
-# library")
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "don't build aws-checksums in shared library")
 add_subdirectory(aws-c-common)
 
 set(AWS_CHECKSUMS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-checksums)
@@ -117,8 +116,6 @@ file(GLOB _aws_source_file_list ${AWS_NATIVE_SDK_COMMON_SRC}
 
 make_library(
   aws-sdk-cpp
-  SHARED
-  SHARED_ALL_DEFINED
   SOURCES
   ${_aws_source_file_list}
   REQUIRES
