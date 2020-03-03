@@ -127,10 +127,18 @@ class EXPORT activity_classifier: public ml_model_base {
       "sampling\n"
       "     during training\n");
 
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::init_training, "data",
+                                 "target", "session_id", "validation_data",
+                                 "options");
+  register_defaults("init_training",
+                    {{"validation_data", to_variant(std::string("auto"))},
+                     {"options",
+                      to_variant(std::map<std::string, flexible_type>())}});
+
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::resume_training, "data",
                                  "validation_data");
   register_defaults("resume_training",
-                    {{"validation_data", to_variant(gl_sframe())}});
+                    {{"validation_data", to_variant(std::string("auto"))}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::iterate_training);
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::synchronize_training);
