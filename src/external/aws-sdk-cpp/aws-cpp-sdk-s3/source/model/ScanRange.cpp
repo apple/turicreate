@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-ScanRange::ScanRange() :
+ScanRange::ScanRange() : 
     m_start(0),
     m_startHasBeenSet(false),
     m_end(0),
@@ -38,7 +38,7 @@ ScanRange::ScanRange() :
 {
 }
 
-ScanRange::ScanRange(const XmlNode& xmlNode) :
+ScanRange::ScanRange(const XmlNode& xmlNode) : 
     m_start(0),
     m_startHasBeenSet(false),
     m_end(0),

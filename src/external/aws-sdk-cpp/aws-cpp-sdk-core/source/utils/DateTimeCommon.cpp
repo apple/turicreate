@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -619,7 +619,13 @@ public:
                         stateStartIndex = index + 1;
                         m_parsedTimestamp.tm_year -= 1900;
                     }
-                    else if(isdigit(c))
+                    else if (isspace(c) && index - stateStartIndex == 2)
+                    {
+                        m_state = 5;
+                        stateStartIndex = index + 1;
+                        m_parsedTimestamp.tm_year += 2000 - 1900;
+                    }
+                    else if (isdigit(c))
                     {
                         m_parsedTimestamp.tm_year = m_parsedTimestamp.tm_year * 10 + (c - '0');
                     }
@@ -888,6 +894,12 @@ DateTime::DateTime() : m_valid(true)
     //init time_point to default by doing nothing.
 }
 
+DateTime& DateTime::operator=(const Aws::String& timestamp)
+{
+    *this = DateTime(timestamp, DateFormat::AutoDetect);
+    return *this;
+}
+
 DateTime& DateTime::operator=(double secondsMillis)
 {
     *this = DateTime(secondsMillis);
@@ -936,6 +948,20 @@ bool DateTime::operator >= (const DateTime& other) const
     return m_time >= other.m_time;
 }
 
+DateTime DateTime::operator +(const std::chrono::milliseconds& a) const
+{
+    auto timepointCpy = m_time;
+    timepointCpy += a;
+    return DateTime(timepointCpy);
+}
+
+DateTime DateTime::operator -(const std::chrono::milliseconds& a) const
+{
+    auto timepointCpy = m_time;
+    timepointCpy -= a;
+    return DateTime(timepointCpy);
+}
+
 Aws::String DateTime::ToLocalTimeString(DateFormat format) const
 {
     switch (format)
@@ -979,7 +1005,7 @@ Aws::String DateTime::ToGmtString(DateFormat format) const
 }
 
 Aws::String DateTime::ToGmtString(const char* formatStr) const
-{    
+{
     struct tm gmtTimeStamp = ConvertTimestampToGmtStruct();
 
     char formattedString[100];
@@ -1068,6 +1094,31 @@ Aws::String DateTime::CalculateGmtTimestampAsString(const char* formatStr)
     return now.ToGmtString(formatStr);
 }
 
+Aws::String DateTime::CalculateGmtTimeWithMsPrecision()
+{
+    auto now = DateTime::Now();
+    struct tm gmtTimeStamp = now.ConvertTimestampToGmtStruct();
+
+    char formattedString[100];
+    auto len = std::strftime(formattedString, sizeof(formattedString), "%Y-%m-%d %H:%M:%S", &gmtTimeStamp);
+    if (len)
+    {
+        auto ms = now.Millis();
+        ms = ms - ms / 1000 * 1000; // calculate the milliseconds as fraction.
+        formattedString[len++] = '.';
+        int divisor = 100;
+        while(divisor)
+        {
+            auto digit = ms / divisor;
+            formattedString[len++] = char('0' + digit);
+            ms = ms - divisor * digit;
+            divisor /= 10;
+        }
+        formattedString[len] = '\0';
+    }
+    return formattedString;
+}
+
 int DateTime::CalculateCurrentHour()
 {
     return Now().GetHour(true);
@@ -1076,6 +1127,18 @@ int DateTime::CalculateCurrentHour()
 double DateTime::ComputeCurrentTimestampInAmazonFormat()
 {
    return Now().SecondsWithMSPrecision();
+}
+
+std::chrono::milliseconds DateTime::Diff(const DateTime& a, const DateTime& b)
+{
+    auto diff = a.m_time - b.m_time;
+    return std::chrono::duration_cast<std::chrono::milliseconds>(diff);
+}
+
+std::chrono::milliseconds DateTime::operator-(const DateTime& other) const
+{
+    auto diff = this->m_time - other.m_time;
+    return std::chrono::duration_cast<std::chrono::milliseconds>(diff);
 }
 
 void DateTime::ConvertTimestampStringToTimePoint(const char* timestamp, DateFormat format)
@@ -1102,6 +1165,29 @@ void DateTime::ConvertTimestampStringToTimePoint(const char* timestamp, DateForm
         isUtc = parser.ShouldIAssumeThisIsUTC();
         timeStruct = parser.GetParsedTimestamp();
         break;      
+    }
+    case DateFormat::AutoDetect:
+    {
+        RFC822DateParser rfcParser(timestamp);
+        rfcParser.Parse();
+        if(rfcParser.WasParseSuccessful())
+        {
+            m_valid = true;
+            isUtc = rfcParser.ShouldIAssumeThisIsUTC();
+            timeStruct = rfcParser.GetParsedTimestamp();
+            break;
+        }
+        ISO_8601DateParser isoParser(timestamp);
+        isoParser.Parse();
+        if (isoParser.WasParseSuccessful())
+        {
+            m_valid = true;
+            isUtc = isoParser.ShouldIAssumeThisIsUTC();
+            timeStruct = isoParser.GetParsedTimestamp();
+            break;
+        }
+        m_valid = false;
+        break;
     }
     default:       
         assert(0);

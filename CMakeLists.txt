@@ -453,6 +453,8 @@ set(_TC_COMMON_REQUIREMENTS
   boost
   libbz2
   z
+  aws-cpp-sdk
+  aws-c-common
 )
 
 if(APPLE)
@@ -512,7 +514,6 @@ if(${TC_BUILD_REMOTEFS})
   # platforms except for iOS
   set(_TC_COMMON_OBJECTS
     ${_TC_COMMON_OBJECTS}
-    "$<TARGET_OBJECTS:aws-sdk-cpp>"
   )
 endif()
 

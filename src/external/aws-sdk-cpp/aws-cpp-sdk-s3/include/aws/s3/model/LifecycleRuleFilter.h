@@ -129,22 +129,22 @@ namespace Model
     inline LifecycleRuleFilter& WithTag(Tag&& value) { SetTag(std::move(value)); return *this;}
 
 
-
+    
     inline const LifecycleRuleAndOperator& GetAnd() const{ return m_and; }
 
-
+    
     inline bool AndHasBeenSet() const { return m_andHasBeenSet; }
 
-
+    
     inline void SetAnd(const LifecycleRuleAndOperator& value) { m_andHasBeenSet = true; m_and = value; }
 
-
+    
     inline void SetAnd(LifecycleRuleAndOperator&& value) { m_andHasBeenSet = true; m_and = std::move(value); }
 
-
+    
     inline LifecycleRuleFilter& WithAnd(const LifecycleRuleAndOperator& value) { SetAnd(value); return *this;}
 
-
+    
     inline LifecycleRuleFilter& WithAnd(LifecycleRuleAndOperator&& value) { SetAnd(std::move(value)); return *this;}
 
   private:

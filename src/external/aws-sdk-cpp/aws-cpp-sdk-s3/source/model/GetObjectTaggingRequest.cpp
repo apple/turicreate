@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-GetObjectTaggingRequest::GetObjectTaggingRequest() :
+GetObjectTaggingRequest::GetObjectTaggingRequest() : 
     m_bucketHasBeenSet(false),
     m_keyHasBeenSet(false),
     m_versionIdHasBeenSet(false),
@@ -67,3 +67,4 @@ void GetObjectTaggingRequest::AddQueryStringParameters(URI& uri) const
         }
     }
 }
+

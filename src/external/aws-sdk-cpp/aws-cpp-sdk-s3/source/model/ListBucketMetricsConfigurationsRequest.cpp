@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-ListBucketMetricsConfigurationsRequest::ListBucketMetricsConfigurationsRequest() :
+ListBucketMetricsConfigurationsRequest::ListBucketMetricsConfigurationsRequest() : 
     m_bucketHasBeenSet(false),
     m_continuationTokenHasBeenSet(false),
     m_customizedAccessLogTagHasBeenSet(false)
@@ -66,3 +66,4 @@ void ListBucketMetricsConfigurationsRequest::AddQueryStringParameters(URI& uri) 
         }
     }
 }
+

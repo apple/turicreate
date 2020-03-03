@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-PutBucketMetricsConfigurationRequest::PutBucketMetricsConfigurationRequest() :
+PutBucketMetricsConfigurationRequest::PutBucketMetricsConfigurationRequest() : 
     m_bucketHasBeenSet(false),
     m_idHasBeenSet(false),
     m_metricsConfigurationHasBeenSet(false),
@@ -78,3 +78,4 @@ void PutBucketMetricsConfigurationRequest::AddQueryStringParameters(URI& uri) co
         }
     }
 }
+

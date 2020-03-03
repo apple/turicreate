@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-MetadataEntry::MetadataEntry() :
+MetadataEntry::MetadataEntry() : 
     m_nameHasBeenSet(false),
     m_valueHasBeenSet(false)
 {
 }
 
-MetadataEntry::MetadataEntry(const XmlNode& xmlNode) :
+MetadataEntry::MetadataEntry(const XmlNode& xmlNode) : 
     m_nameHasBeenSet(false),
     m_valueHasBeenSet(false)
 {

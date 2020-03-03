@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-SourceSelectionCriteria::SourceSelectionCriteria() :
+SourceSelectionCriteria::SourceSelectionCriteria() : 
     m_sseKmsEncryptedObjectsHasBeenSet(false)
 {
 }
 
-SourceSelectionCriteria::SourceSelectionCriteria(const XmlNode& xmlNode) :
+SourceSelectionCriteria::SourceSelectionCriteria(const XmlNode& xmlNode) : 
     m_sseKmsEncryptedObjectsHasBeenSet(false)
 {
   *this = xmlNode;

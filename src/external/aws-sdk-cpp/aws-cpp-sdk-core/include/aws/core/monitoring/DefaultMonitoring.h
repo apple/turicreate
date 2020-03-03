@@ -56,18 +56,18 @@ namespace Aws
             void OnRequestFailed(const Aws::String& serviceName, const Aws::String& requestName, const std::shared_ptr<const Aws::Http::HttpRequest>& request,
                 const Aws::Client::HttpResponseOutcome& outcome, const CoreMetricsCollection& metricsFromCore, void* context) const override;
 
-
-            void OnRequestRetry(const Aws::String& serviceName, const Aws::String& requestName,
+ 
+            void OnRequestRetry(const Aws::String& serviceName, const Aws::String& requestName, 
                 const std::shared_ptr<const Aws::Http::HttpRequest>& request, void* context) const override;
 
 
-            void OnFinish(const Aws::String& serviceName, const Aws::String& requestName,
+            void OnFinish(const Aws::String& serviceName, const Aws::String& requestName, 
                 const std::shared_ptr<const Aws::Http::HttpRequest>& request, void* context) const override;
 
             static inline int GetVersion() { return DEFAULT_MONITORING_VERSION; }
         private:
-            void CollectAndSendAttemptData(const Aws::String& serviceName, const Aws::String& requestName,
-                const std::shared_ptr<const Aws::Http::HttpRequest>& request, const Aws::Client::HttpResponseOutcome& outcome,
+            void CollectAndSendAttemptData(const Aws::String& serviceName, const Aws::String& requestName, 
+                const std::shared_ptr<const Aws::Http::HttpRequest>& request, const Aws::Client::HttpResponseOutcome& outcome, 
                 const CoreMetricsCollection& metricsFromCore, void* context) const;
 
             Aws::Net::SimpleUDP m_udp;

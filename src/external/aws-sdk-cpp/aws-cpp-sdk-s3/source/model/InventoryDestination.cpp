@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-InventoryDestination::InventoryDestination() :
+InventoryDestination::InventoryDestination() : 
     m_s3BucketDestinationHasBeenSet(false)
 {
 }
 
-InventoryDestination::InventoryDestination(const XmlNode& xmlNode) :
+InventoryDestination::InventoryDestination(const XmlNode& xmlNode) : 
     m_s3BucketDestinationHasBeenSet(false)
 {
   *this = xmlNode;

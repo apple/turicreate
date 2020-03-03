@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-GetObjectLegalHoldRequest::GetObjectLegalHoldRequest() :
+GetObjectLegalHoldRequest::GetObjectLegalHoldRequest() : 
     m_bucketHasBeenSet(false),
     m_keyHasBeenSet(false),
     m_versionIdHasBeenSet(false),

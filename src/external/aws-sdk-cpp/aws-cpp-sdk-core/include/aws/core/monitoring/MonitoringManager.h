@@ -47,13 +47,13 @@ namespace Aws
         /**
          * Wrapper function of OnRequestRetry defined by all monitoring instances
          */
-        void OnRequestRetry(const Aws::String& serviceName, const Aws::String& requestName,
+        void OnRequestRetry(const Aws::String& serviceName, const Aws::String& requestName, 
             const std::shared_ptr<const Aws::Http::HttpRequest>& request, const Aws::Vector<void*>& contexts);
 
         /**
          * Wrapper function of OnFinish defined by all monitoring instances
          */
-        void OnFinish(const Aws::String& serviceName, const Aws::String& requestName,
+        void OnFinish(const Aws::String& serviceName, const Aws::String& requestName, 
             const std::shared_ptr<const Aws::Http::HttpRequest>& request, const Aws::Vector<void*>& contexts);
 
         typedef std::function<Aws::UniquePtr<MonitoringFactory>()> MonitoringFactoryCreateFunction;

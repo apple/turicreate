@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-CSVOutput::CSVOutput() :
+CSVOutput::CSVOutput() : 
     m_quoteFields(QuoteFields::NOT_SET),
     m_quoteFieldsHasBeenSet(false),
     m_quoteEscapeCharacterHasBeenSet(false),
@@ -40,7 +40,7 @@ CSVOutput::CSVOutput() :
 {
 }
 
-CSVOutput::CSVOutput(const XmlNode& xmlNode) :
+CSVOutput::CSVOutput(const XmlNode& xmlNode) : 
     m_quoteFields(QuoteFields::NOT_SET),
     m_quoteFieldsHasBeenSet(false),
     m_quoteEscapeCharacterHasBeenSet(false),

@@ -20,7 +20,7 @@ namespace Aws
     {
         namespace Crypto
         {
-            //this is here to force the linker to behave correctly since this is an interface that will need to cross the dll
+            //this is here to force the linker to behave correctly since this is an interface that will need to cross the dll 
             //boundary.
             EncryptionMaterials::~EncryptionMaterials()
             {}

@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-SelectParameters::SelectParameters() :
+SelectParameters::SelectParameters() : 
     m_inputSerializationHasBeenSet(false),
     m_expressionType(ExpressionType::NOT_SET),
     m_expressionTypeHasBeenSet(false),
@@ -39,7 +39,7 @@ SelectParameters::SelectParameters() :
 {
 }
 
-SelectParameters::SelectParameters(const XmlNode& xmlNode) :
+SelectParameters::SelectParameters(const XmlNode& xmlNode) : 
     m_inputSerializationHasBeenSet(false),
     m_expressionType(ExpressionType::NOT_SET),
     m_expressionTypeHasBeenSet(false),

@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-PutBucketInventoryConfigurationRequest::PutBucketInventoryConfigurationRequest() :
+PutBucketInventoryConfigurationRequest::PutBucketInventoryConfigurationRequest() : 
     m_bucketHasBeenSet(false),
     m_idHasBeenSet(false),
     m_inventoryConfigurationHasBeenSet(false),
@@ -78,3 +78,4 @@ void PutBucketInventoryConfigurationRequest::AddQueryStringParameters(URI& uri) 
         }
     }
 }
+

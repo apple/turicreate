@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-Stats::Stats() :
+Stats::Stats() : 
     m_bytesScanned(0),
     m_bytesScannedHasBeenSet(false),
     m_bytesProcessed(0),
@@ -40,7 +40,7 @@ Stats::Stats() :
 {
 }
 
-Stats::Stats(const XmlNode& xmlNode) :
+Stats::Stats(const XmlNode& xmlNode) : 
     m_bytesScanned(0),
     m_bytesScannedHasBeenSet(false),
     m_bytesProcessed(0),

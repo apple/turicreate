@@ -26,12 +26,12 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws;
 
-PutObjectLegalHoldResult::PutObjectLegalHoldResult() :
+PutObjectLegalHoldResult::PutObjectLegalHoldResult() : 
     m_requestCharged(RequestCharged::NOT_SET)
 {
 }
 
-PutObjectLegalHoldResult::PutObjectLegalHoldResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) :
+PutObjectLegalHoldResult::PutObjectLegalHoldResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
     m_requestCharged(RequestCharged::NOT_SET)
 {
   *this = result;

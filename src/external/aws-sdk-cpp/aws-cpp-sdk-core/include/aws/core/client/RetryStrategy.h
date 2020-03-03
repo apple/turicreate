@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ namespace Aws
         class AWS_CORE_API RetryStrategy
         {
         public:
-            virtual ~RetryStrategy() {}
+            virtual ~RetryStrategy() = default;
             /**
              * Returns true if the error can be retried given the error and the number of times already tried.
              */

@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -132,8 +132,8 @@ Aws::Utils::ByteBuffer Base64::Decode(const Aws::String& str) const
 
 size_t Base64::CalculateBase64DecodedLength(const Aws::String& b64input)
 {
-    size_t len = b64input.length();
-    if(len == 0)
+    const size_t len = b64input.length();
+    if(len < 2)
     {
         return 0;
     }

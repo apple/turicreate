@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -17,9 +17,7 @@
 
 #include <aws/core/Core_EXPORTS.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
-#include <iomanip>
-#include <ctime>
-#include <mutex>
+#include <chrono>
 
 namespace Aws
 {
@@ -28,7 +26,8 @@ namespace Aws
         enum class DateFormat
         {
             RFC822, //for http headers
-            ISO_8601 //for query and xml payloads
+            ISO_8601, //for query and xml payloads
+            AutoDetect
         };
 
         enum class Month
@@ -101,6 +100,9 @@ namespace Aws
             bool operator <= (const DateTime& other) const;
             bool operator >= (const DateTime& other) const;
 
+            DateTime operator+(const std::chrono::milliseconds& a) const;
+            DateTime operator-(const std::chrono::milliseconds& a) const;
+            
             /**
              * Assign from seconds.millis since epoch.
              */
@@ -117,9 +119,14 @@ namespace Aws
             DateTime& operator=(const std::chrono::system_clock::time_point& timepointToAssign);
 
             /**
+             * Assign from an ISO8601 or RFC822 formatted string
+             */
+            DateTime& operator=(const Aws::String& timestamp);
+
+            /**
              * Whether or not parsing the timestamp from string was successful.
              */
-            inline bool WasParseSuccessful() { return m_valid; }
+            inline bool WasParseSuccessful() const { return m_valid; }
 
             /**
              * Convert dateTime to local time string using predefined format.
@@ -199,8 +206,8 @@ namespace Aws
             /**
              * Get an instance of DateTime representing this very instant.
              */
-            static DateTime Now(); 
-            
+            static DateTime Now();
+
             /**
              * Get the millis since epoch representing this very instant.
              */
@@ -226,10 +233,22 @@ namespace Aws
              */
             static double ComputeCurrentTimestampInAmazonFormat();
 
+            /**
+             * Calculates the current time in GMT with millisecond precision using the format
+             * "Year-month-day hours:minutes:seconds.milliseconds"
+             */
+            static Aws::String CalculateGmtTimeWithMsPrecision();
+
+            /**
+             * Compute the difference between two timestamps.
+             */
+            static std::chrono::milliseconds Diff(const DateTime& a, const DateTime& b);
+
+            std::chrono::milliseconds operator - (const DateTime& other) const;
         private:
             std::chrono::system_clock::time_point m_time;
             bool m_valid;
-                        
+
             void ConvertTimestampStringToTimePoint(const char* timestamp, DateFormat format);
             tm GetTimeStruct(bool localTime) const;
             tm ConvertTimestampToLocalTimeStruct() const;

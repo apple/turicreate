@@ -54,7 +54,7 @@ namespace Aws
         {
             // Valid DNS hostnames are composed of valid DNS labels separated by a period.
             auto labels = StringUtils::Split(host, '.');
-            if (labels.empty())
+            if (labels.empty()) 
             {
                 return false;
             }

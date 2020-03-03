@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-ProgressEvent::ProgressEvent() :
+ProgressEvent::ProgressEvent() : 
     m_detailsHasBeenSet(false)
 {
 }
 
-ProgressEvent::ProgressEvent(const XmlNode& xmlNode) :
+ProgressEvent::ProgressEvent(const XmlNode& xmlNode) : 
     m_detailsHasBeenSet(false)
 {
   *this = xmlNode;

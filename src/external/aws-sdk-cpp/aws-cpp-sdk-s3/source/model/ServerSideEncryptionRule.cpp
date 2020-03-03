@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-ServerSideEncryptionRule::ServerSideEncryptionRule() :
+ServerSideEncryptionRule::ServerSideEncryptionRule() : 
     m_applyServerSideEncryptionByDefaultHasBeenSet(false)
 {
 }
 
-ServerSideEncryptionRule::ServerSideEncryptionRule(const XmlNode& xmlNode) :
+ServerSideEncryptionRule::ServerSideEncryptionRule(const XmlNode& xmlNode) : 
     m_applyServerSideEncryptionByDefaultHasBeenSet(false)
 {
   *this = xmlNode;

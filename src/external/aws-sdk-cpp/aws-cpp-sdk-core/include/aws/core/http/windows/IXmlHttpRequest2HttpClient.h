@@ -20,7 +20,7 @@
 #include <aws/core/client/ClientConfiguration.h>
 #include <aws/core/utils/ResourceManager.h>
 
-#include <wrl.h>
+#include <wrl.h> 
 
 struct IXMLHTTPRequest2;
 
@@ -65,7 +65,7 @@ namespace Aws
              * called CoInit elsewhere in your system.
              */
             static void InitCOM();
-
+            
             /**
              * IXMLHTTPRequest2 doesn't support transfer-encoding:chunked
              */
@@ -92,3 +92,4 @@ namespace Aws
         };
     }
 }
+

@@ -25,12 +25,12 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws;
 
-ListBucketMetricsConfigurationsResult::ListBucketMetricsConfigurationsResult() :
+ListBucketMetricsConfigurationsResult::ListBucketMetricsConfigurationsResult() : 
     m_isTruncated(false)
 {
 }
 
-ListBucketMetricsConfigurationsResult::ListBucketMetricsConfigurationsResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) :
+ListBucketMetricsConfigurationsResult::ListBucketMetricsConfigurationsResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
     m_isTruncated(false)
 {
   *this = result;

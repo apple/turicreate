@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-InputSerialization::InputSerialization() :
+InputSerialization::InputSerialization() : 
     m_cSVHasBeenSet(false),
     m_compressionType(CompressionType::NOT_SET),
     m_compressionTypeHasBeenSet(false),
@@ -39,7 +39,7 @@ InputSerialization::InputSerialization() :
 {
 }
 
-InputSerialization::InputSerialization(const XmlNode& xmlNode) :
+InputSerialization::InputSerialization(const XmlNode& xmlNode) : 
     m_cSVHasBeenSet(false),
     m_compressionType(CompressionType::NOT_SET),
     m_compressionTypeHasBeenSet(false),

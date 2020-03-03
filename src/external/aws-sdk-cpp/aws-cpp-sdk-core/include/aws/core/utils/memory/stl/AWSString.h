@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -25,16 +25,16 @@
 namespace Aws
 {
 
-#if _GLIBCXX_FULLY_DYNAMIC_STRING == 0 && defined(__ANDROID__)
+#if defined(_GLIBCXX_FULLY_DYNAMIC_STRING) && _GLIBCXX_FULLY_DYNAMIC_STRING == 0 && defined(__ANDROID__)
 
 /*
-using std::string with shared libraries is broken on android due to the platform-level decision to set _GLIBCXX_FULLY_DYNAMIC_STRING to 0
+using std::string with shared libraries is broken on android when using gnustl
+due to the platform-level decision to set _GLIBCXX_FULLY_DYNAMIC_STRING to 0
 
 The problem:
 
-(1) gnustl is the only usable c++11-compliant c++ standard library on Android; it is our only choice
-(2) _GLIBCXX_FULLY_DYNAMIC_STRING is set to 0 in Android's  c++config.h for gnustl
-(3) The optimization that this enables is completely broken if using shared libraries and there is no way to opt out of using it. 
+(1) _GLIBCXX_FULLY_DYNAMIC_STRING is set to 0 in Android's  c++config.h for gnustl
+(2) The optimization that this enables is completely broken if using shared libraries and there is no way to opt out of using it.
     An optimization that uses a comparison to a static memory address is death for shared libraries.
 
 Supposing you have a shared library B that depends on another shared library A.  There are a variety of inocuous scenarios where you end up crashing
@@ -50,18 +50,28 @@ Lessons (with the empty string optimization forced on you):
   (1) You can't move std::strings across shared libraries (as a part of another class, Outcome in our case)
   (2) If you default initialize a std::string member variable, you can't have a mismatched constructor/destructor pair such that one is in a cpp file and the other 
       is missing/implicit or defined in the header file
- 
-After much trouble, we have the following ghetto solution that has stopped all of the crashes so far without having to scour our entire codebase for every Lesson violation above:
+
+Solutions:
+
+Use libc++ rather than gnustl
+
+For those who must use gnustl, we have provided a working solution by cobbling together a set of hacks:
 
 We prevent the empty string optimization from ever being run on our strings by:
   (1) Make Aws::Allocator always fail equality checks with itself; this check is part of the empty string optimization in several std::basic_string constructors 
   (2) All other cases are prevented by turning Aws::String into a subclass whose default constructor and move operations go to baseclass versions which will not
       perform the empty string optimization
 
+Those changes prevent crashes, but lead to very poor performance when using a string stream; every character added will result in multiple copies of the entire
+string (ie, quadratic).
 
-This does not prevent problems with Aws::StringBuf and Aws::StringStream.  We do not appear to be violating any of the lessons with our usage of them though.
+To fix the performance problems, we have put together a set of replacement classes, SimpleStreamBuf and SimpleStringStream, that
+replace std::stringstream and std::stringbuf in SDK code.  These replacements use raw buffers rather than strings in order to
+avoid the performance issues.
 
+This solution is only enabled if using gnustl on Android.  In all other situations, normal STL types are used.
 */
+
 using AndroidBasicString = std::basic_string< char, std::char_traits< char >, Aws::Allocator< char > >;
 
 class String : public AndroidBasicString

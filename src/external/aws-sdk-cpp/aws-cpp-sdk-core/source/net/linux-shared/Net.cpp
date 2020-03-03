@@ -22,7 +22,7 @@ namespace Aws
         // For Posix system, currently we don't need to do anything for network stack initialization.
         // But we need to do initialization for WinSock on Windows and call them in Aws.cpp. So these functions
         // also exist for Posix systems.
-        bool IsNetworkInitiated()
+        bool IsNetworkInitiated() 
         {
             return true;
         }

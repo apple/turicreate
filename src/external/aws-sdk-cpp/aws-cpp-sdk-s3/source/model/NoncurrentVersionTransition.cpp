@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/NoncurrentVersionTransition.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -32,6 +33,7 @@ namespace Model
 NoncurrentVersionTransition::NoncurrentVersionTransition() : 
     m_noncurrentDays(0),
     m_noncurrentDaysHasBeenSet(false),
+    m_storageClass(TransitionStorageClass::NOT_SET),
     m_storageClassHasBeenSet(false)
 {
 }
@@ -39,6 +41,7 @@ NoncurrentVersionTransition::NoncurrentVersionTransition() :
 NoncurrentVersionTransition::NoncurrentVersionTransition(const XmlNode& xmlNode) : 
     m_noncurrentDays(0),
     m_noncurrentDaysHasBeenSet(false),
+    m_storageClass(TransitionStorageClass::NOT_SET),
     m_storageClassHasBeenSet(false)
 {
   *this = xmlNode;
@@ -53,13 +56,13 @@ NoncurrentVersionTransition& NoncurrentVersionTransition::operator =(const XmlNo
     XmlNode noncurrentDaysNode = resultNode.FirstChild("NoncurrentDays");
     if(!noncurrentDaysNode.IsNull())
     {
-      m_noncurrentDays = StringUtils::ConvertToInt32(StringUtils::Trim(noncurrentDaysNode.GetText().c_str()).c_str());
+      m_noncurrentDays = StringUtils::ConvertToInt32(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(noncurrentDaysNode.GetText()).c_str()).c_str());
       m_noncurrentDaysHasBeenSet = true;
     }
     XmlNode storageClassNode = resultNode.FirstChild("StorageClass");
     if(!storageClassNode.IsNull())
     {
-      m_storageClass = TransitionStorageClassMapper::GetTransitionStorageClassForName(StringUtils::Trim(storageClassNode.GetText().c_str()).c_str());
+      m_storageClass = TransitionStorageClassMapper::GetTransitionStorageClassForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(storageClassNode.GetText()).c_str()).c_str());
       m_storageClassHasBeenSet = true;
     }
   }
@@ -73,9 +76,9 @@ void NoncurrentVersionTransition::AddToNode(XmlNode& parentNode) const
   if(m_noncurrentDaysHasBeenSet)
   {
    XmlNode noncurrentDaysNode = parentNode.CreateChildElement("NoncurrentDays");
-  ss << m_noncurrentDays;
+   ss << m_noncurrentDays;
    noncurrentDaysNode.SetText(ss.str());
-  ss.str("");
+   ss.str("");
   }
 
   if(m_storageClassHasBeenSet)

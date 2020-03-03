@@ -30,14 +30,14 @@ namespace S3
 namespace Model
 {
 
-ServerSideEncryptionByDefault::ServerSideEncryptionByDefault() :
+ServerSideEncryptionByDefault::ServerSideEncryptionByDefault() : 
     m_sSEAlgorithm(ServerSideEncryption::NOT_SET),
     m_sSEAlgorithmHasBeenSet(false),
     m_kMSMasterKeyIDHasBeenSet(false)
 {
 }
 
-ServerSideEncryptionByDefault::ServerSideEncryptionByDefault(const XmlNode& xmlNode) :
+ServerSideEncryptionByDefault::ServerSideEncryptionByDefault(const XmlNode& xmlNode) : 
     m_sSEAlgorithm(ServerSideEncryption::NOT_SET),
     m_sSEAlgorithmHasBeenSet(false),
     m_kMSMasterKeyIDHasBeenSet(false)

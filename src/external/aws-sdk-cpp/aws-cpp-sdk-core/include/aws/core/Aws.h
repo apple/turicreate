@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include <aws/core/utils/memory/MemorySystemInterface.h>
 #include <aws/core/utils/crypto/Factories.h>
 #include <aws/core/http/HttpClientFactory.h>
+#include <aws/core/monitoring/MonitoringManager.h>
 #include <aws/core/Core_EXPORTS.h>
 
 namespace Aws
@@ -71,7 +72,7 @@ namespace Aws
      */
     struct HttpOptions
     {
-        HttpOptions() : initAndCleanupCurl(true)
+        HttpOptions() : initAndCleanupCurl(true), installSigPipeHandler(false)
         { }
 
         /**
@@ -83,6 +84,14 @@ namespace Aws
         * If this is a problem for you, set this to false. If you manually initialize libcurl please add the option CURL_GLOBAL_ALL to your init call.
         */
         bool initAndCleanupCurl;
+        /**
+         * Installs a global SIGPIPE handler that logs the error and prevents it from terminating the current process.
+         * This can be used on operating systems on which CURL is being used. In some situations CURL cannot avoid 
+         * triggering a SIGPIPE.
+         * For more information see: https://curl.haxx.se/libcurl/c/CURLOPT_NOSIGNAL.html
+         * NOTE: CURLOPT_NOSIGNAL is already being set.
+         */
+        bool installSigPipeHandler;
     };
 
     /**
@@ -132,6 +141,21 @@ namespace Aws
          */
         bool initAndCleanupOpenSSL;
     };
+
+    /**
+    * MonitoringOptions is used to set up monitoring functionalities globaly and(or) for users to customize monitoring listeners.
+    */
+    struct MonitoringOptions
+    {
+        /**
+         * These factory functions will be used to try to create customized monitoring listener factories, then be used to create monitoring listener instances. 
+         * Based on functions and factory's implementation, it may fail to create an instance.
+         * If a function failed to create factory or a created factory failed to create an instance, SDK just ignore it.
+         * By default, SDK will try to create a default Client Side Monitoring Listener.
+         */
+        std::vector<Aws::Monitoring::MonitoringFactoryCreateFunction> customizedMonitoringFactory_create_fn;
+    };
+
 
     /**
      * You may notice that instead of taking pointers directly to your factories, we take a closure. This is because
@@ -191,6 +215,13 @@ namespace Aws
          * SDK wide options for crypto
          */
         CryptoOptions cryptoOptions;
+
+        /**
+         * Options used to set up customized monitoring implementations
+         * Put your monitoring facotry in a closure (a create factory function) and put all closures in a vector.
+         * Basic usage can be found in aws-cpp-sdk-core-tests/monitoring/MonitoringTest.cpp
+         */
+        MonitoringOptions monitoringOptions;
     };
 
     /*

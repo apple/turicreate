@@ -41,8 +41,9 @@ void Semaphore::Release()
 }
 
 void Semaphore::ReleaseAll()
-{
+{    
     std::lock_guard<std::mutex> locker(m_mutex);
     m_count = m_maxCount;
     m_syncPoint.notify_all();
 }
+

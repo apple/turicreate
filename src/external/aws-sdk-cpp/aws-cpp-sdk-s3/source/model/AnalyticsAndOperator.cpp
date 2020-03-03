@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-AnalyticsAndOperator::AnalyticsAndOperator() :
+AnalyticsAndOperator::AnalyticsAndOperator() : 
     m_prefixHasBeenSet(false),
     m_tagsHasBeenSet(false)
 {
 }
 
-AnalyticsAndOperator::AnalyticsAndOperator(const XmlNode& xmlNode) :
+AnalyticsAndOperator::AnalyticsAndOperator(const XmlNode& xmlNode) : 
     m_prefixHasBeenSet(false),
     m_tagsHasBeenSet(false)
 {

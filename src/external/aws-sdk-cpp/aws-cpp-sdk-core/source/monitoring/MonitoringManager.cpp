@@ -33,7 +33,7 @@ namespace Aws
         const char MonitoringTag[] = "MonitoringAllocTag";
 
         /**
-         * Global factory to create global metrics instance.
+         * Global factory to create global metrics instance. 
          */
         static Aws::UniquePtr<Monitors> s_monitors;
 
@@ -42,7 +42,7 @@ namespace Aws
             assert(s_monitors);
             Aws::Vector<void*> contexts;
             contexts.reserve(s_monitors->size());
-            for (const auto& interface: *s_monitors)
+            for (const auto& interface: *s_monitors) 
             {
                 contexts.emplace_back(interface->OnRequestStarted(serviceName, requestName, request));
             }
@@ -73,7 +73,7 @@ namespace Aws
             }
         }
 
-        void OnRequestRetry(const Aws::String& serviceName, const Aws::String& requestName,
+        void OnRequestRetry(const Aws::String& serviceName, const Aws::String& requestName, 
                 const std::shared_ptr<const Aws::Http::HttpRequest>& request, const Aws::Vector<void*>& contexts)
         {
             assert(s_monitors);
@@ -85,7 +85,7 @@ namespace Aws
             }
         }
 
-        void OnFinish(const Aws::String& serviceName, const Aws::String& requestName,
+        void OnFinish(const Aws::String& serviceName, const Aws::String& requestName, 
                 const std::shared_ptr<const Aws::Http::HttpRequest>& request, const Aws::Vector<void*>& contexts)
         {
             assert(s_monitors);

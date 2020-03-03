@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/MultipartUpload.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -33,6 +34,7 @@ MultipartUpload::MultipartUpload() :
     m_uploadIdHasBeenSet(false),
     m_keyHasBeenSet(false),
     m_initiatedHasBeenSet(false),
+    m_storageClass(StorageClass::NOT_SET),
     m_storageClassHasBeenSet(false),
     m_ownerHasBeenSet(false),
     m_initiatorHasBeenSet(false)
@@ -43,6 +45,7 @@ MultipartUpload::MultipartUpload(const XmlNode& xmlNode) :
     m_uploadIdHasBeenSet(false),
     m_keyHasBeenSet(false),
     m_initiatedHasBeenSet(false),
+    m_storageClass(StorageClass::NOT_SET),
     m_storageClassHasBeenSet(false),
     m_ownerHasBeenSet(false),
     m_initiatorHasBeenSet(false)
@@ -59,25 +62,25 @@ MultipartUpload& MultipartUpload::operator =(const XmlNode& xmlNode)
     XmlNode uploadIdNode = resultNode.FirstChild("UploadId");
     if(!uploadIdNode.IsNull())
     {
-      m_uploadId = StringUtils::Trim(uploadIdNode.GetText().c_str());
+      m_uploadId = Aws::Utils::Xml::DecodeEscapedXmlText(uploadIdNode.GetText());
       m_uploadIdHasBeenSet = true;
     }
     XmlNode keyNode = resultNode.FirstChild("Key");
     if(!keyNode.IsNull())
     {
-      m_key = StringUtils::Trim(keyNode.GetText().c_str());
+      m_key = Aws::Utils::Xml::DecodeEscapedXmlText(keyNode.GetText());
       m_keyHasBeenSet = true;
     }
     XmlNode initiatedNode = resultNode.FirstChild("Initiated");
     if(!initiatedNode.IsNull())
     {
-      m_initiated = DateTime(StringUtils::Trim(initiatedNode.GetText().c_str()).c_str(), DateFormat::ISO_8601);
+      m_initiated = DateTime(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(initiatedNode.GetText()).c_str()).c_str(), DateFormat::ISO_8601);
       m_initiatedHasBeenSet = true;
     }
     XmlNode storageClassNode = resultNode.FirstChild("StorageClass");
     if(!storageClassNode.IsNull())
     {
-      m_storageClass = StorageClassMapper::GetStorageClassForName(StringUtils::Trim(storageClassNode.GetText().c_str()).c_str());
+      m_storageClass = StorageClassMapper::GetStorageClassForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(storageClassNode.GetText()).c_str()).c_str());
       m_storageClassHasBeenSet = true;
     }
     XmlNode ownerNode = resultNode.FirstChild("Owner");
@@ -114,8 +117,8 @@ void MultipartUpload::AddToNode(XmlNode& parentNode) const
 
   if(m_initiatedHasBeenSet)
   {
-     XmlNode initiatedNode = parentNode.CreateChildElement("Initiated");
-     initiatedNode.SetText(m_initiated.ToGmtString(DateFormat::ISO_8601));
+   XmlNode initiatedNode = parentNode.CreateChildElement("Initiated");
+   initiatedNode.SetText(m_initiated.ToGmtString(DateFormat::ISO_8601));
   }
 
   if(m_storageClassHasBeenSet)

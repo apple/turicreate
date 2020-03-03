@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-OutputLocation::OutputLocation() :
+OutputLocation::OutputLocation() : 
     m_s3HasBeenSet(false)
 {
 }
 
-OutputLocation::OutputLocation(const XmlNode& xmlNode) :
+OutputLocation::OutputLocation(const XmlNode& xmlNode) : 
     m_s3HasBeenSet(false)
 {
   *this = xmlNode;

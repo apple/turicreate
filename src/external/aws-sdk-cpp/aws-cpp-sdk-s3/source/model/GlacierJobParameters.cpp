@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-GlacierJobParameters::GlacierJobParameters() :
+GlacierJobParameters::GlacierJobParameters() : 
     m_tier(Tier::NOT_SET),
     m_tierHasBeenSet(false)
 {
 }
 
-GlacierJobParameters::GlacierJobParameters(const XmlNode& xmlNode) :
+GlacierJobParameters::GlacierJobParameters(const XmlNode& xmlNode) : 
     m_tier(Tier::NOT_SET),
     m_tierHasBeenSet(false)
 {

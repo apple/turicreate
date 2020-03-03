@@ -45,7 +45,7 @@ namespace Aws
                 else if (dir == std::ios_base::cur)
                 {
                     if(which == std::ios_base::in)
-                    {
+                    { 
                         return seekpos((gptr() - reinterpret_cast<char*>(m_underlyingBuffer)) + off, which);
                     }
                     else

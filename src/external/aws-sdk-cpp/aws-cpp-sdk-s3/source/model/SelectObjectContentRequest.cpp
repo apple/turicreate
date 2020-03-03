@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-SelectObjectContentRequest::SelectObjectContentRequest() :
+SelectObjectContentRequest::SelectObjectContentRequest() : 
     m_bucketHasBeenSet(false),
     m_keyHasBeenSet(false),
     m_sSECustomerAlgorithmHasBeenSet(false),

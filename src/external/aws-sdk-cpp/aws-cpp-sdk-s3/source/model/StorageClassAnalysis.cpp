@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-StorageClassAnalysis::StorageClassAnalysis() :
+StorageClassAnalysis::StorageClassAnalysis() : 
     m_dataExportHasBeenSet(false)
 {
 }
 
-StorageClassAnalysis::StorageClassAnalysis(const XmlNode& xmlNode) :
+StorageClassAnalysis::StorageClassAnalysis(const XmlNode& xmlNode) : 
     m_dataExportHasBeenSet(false)
 {
   *this = xmlNode;

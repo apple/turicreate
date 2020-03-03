@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-InventoryFilter::InventoryFilter() :
+InventoryFilter::InventoryFilter() : 
     m_prefixHasBeenSet(false)
 {
 }
 
-InventoryFilter::InventoryFilter(const XmlNode& xmlNode) :
+InventoryFilter::InventoryFilter(const XmlNode& xmlNode) : 
     m_prefixHasBeenSet(false)
 {
   *this = xmlNode;

@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-CSVInput::CSVInput() :
+CSVInput::CSVInput() : 
     m_fileHeaderInfo(FileHeaderInfo::NOT_SET),
     m_fileHeaderInfoHasBeenSet(false),
     m_commentsHasBeenSet(false),
@@ -43,7 +43,7 @@ CSVInput::CSVInput() :
 {
 }
 
-CSVInput::CSVInput(const XmlNode& xmlNode) :
+CSVInput::CSVInput(const XmlNode& xmlNode) : 
     m_fileHeaderInfo(FileHeaderInfo::NOT_SET),
     m_fileHeaderInfoHasBeenSet(false),
     m_commentsHasBeenSet(false),

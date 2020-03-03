@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-CopyObjectResultDetails::CopyObjectResultDetails() :
+CopyObjectResultDetails::CopyObjectResultDetails() : 
     m_eTagHasBeenSet(false),
     m_lastModifiedHasBeenSet(false)
 {
 }
 
-CopyObjectResultDetails::CopyObjectResultDetails(const XmlNode& xmlNode) :
+CopyObjectResultDetails::CopyObjectResultDetails(const XmlNode& xmlNode) : 
     m_eTagHasBeenSet(false),
     m_lastModifiedHasBeenSet(false)
 {

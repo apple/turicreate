@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-SseKmsEncryptedObjects::SseKmsEncryptedObjects() :
+SseKmsEncryptedObjects::SseKmsEncryptedObjects() : 
     m_status(SseKmsEncryptedObjectsStatus::NOT_SET),
     m_statusHasBeenSet(false)
 {
 }
 
-SseKmsEncryptedObjects::SseKmsEncryptedObjects(const XmlNode& xmlNode) :
+SseKmsEncryptedObjects::SseKmsEncryptedObjects(const XmlNode& xmlNode) : 
     m_status(SseKmsEncryptedObjectsStatus::NOT_SET),
     m_statusHasBeenSet(false)
 {

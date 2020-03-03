@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-Encryption::Encryption() :
+Encryption::Encryption() : 
     m_encryptionType(ServerSideEncryption::NOT_SET),
     m_encryptionTypeHasBeenSet(false),
     m_kMSKeyIdHasBeenSet(false),
@@ -38,7 +38,7 @@ Encryption::Encryption() :
 {
 }
 
-Encryption::Encryption(const XmlNode& xmlNode) :
+Encryption::Encryption(const XmlNode& xmlNode) : 
     m_encryptionType(ServerSideEncryption::NOT_SET),
     m_encryptionTypeHasBeenSet(false),
     m_kMSKeyIdHasBeenSet(false),

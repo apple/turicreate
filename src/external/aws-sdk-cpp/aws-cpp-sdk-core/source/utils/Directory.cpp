@@ -76,7 +76,7 @@ namespace Aws
 
             if (!toDir) return false;
 
-            bool success(true);
+            bool success(true);            
 
             auto visitor = [to,&success](const DirectoryTree*, const DirectoryEntry& entry)
             {
@@ -89,7 +89,7 @@ namespace Aws
 
                     if(!copyOutStream.good() || !originalStream.good())
                     {
-                        success = false;
+                        success = false; 
                         return false;
                     }
 
@@ -118,7 +118,7 @@ namespace Aws
             {
                 DirectoryTree delDir(toDelete);
 
-                if (!delDir) return false;
+                if (!delDir) return false;           
 
                 auto visitor = [&success](const DirectoryTree*, const DirectoryEntry& entry)
                 {
@@ -157,7 +157,7 @@ namespace Aws
             else
             {
                 m_directoryEntry.path = trimmedPath;
-            }
+            }    
 
             if (!trimmedRelativePath.empty() && trimmedRelativePath[trimmedRelativePath.length() - 1] == PATH_DELIM)
             {
@@ -166,8 +166,8 @@ namespace Aws
             else
             {
                 m_directoryEntry.relativePath = trimmedRelativePath;
-            }
-        }
+            }          
+        }        
 
         Aws::UniquePtr<Directory> Directory::Descend(const DirectoryEntry& directoryEntry)
         {
@@ -179,8 +179,8 @@ namespace Aws
         {
             Aws::FileSystem::DirectoryTree tree(path);
             Aws::Vector<Aws::String> filesVector;
-            auto visitor = [&](const Aws::FileSystem::DirectoryTree*, const Aws::FileSystem::DirectoryEntry& entry)
-            {
+            auto visitor = [&](const Aws::FileSystem::DirectoryTree*, const Aws::FileSystem::DirectoryEntry& entry) 
+            { 
                 if (entry.fileType == Aws::FileSystem::FileType::File)
                 {
                     filesVector.push_back(entry.path);
@@ -254,7 +254,7 @@ namespace Aws
             TraverseBreadthFirst(*m_dir, visitor);
             m_dir = OpenDirectory(m_dir->GetPath());
         }
-
+         
         void DirectoryTree::TraverseBreadthFirst(Directory& dir, const DirectoryEntryVisitor& visitor)
         {
             if (!dir)
@@ -272,7 +272,7 @@ namespace Aws
             {
                 auto entry = queue.front();
                 queue.pop();
-                if(visitor(this, entry))
+                if(visitor(this, entry))               
                 {
                     if(entry.fileType == FileType::Directory)
                     {
@@ -306,7 +306,7 @@ namespace Aws
                 if(!postOrder)
                 {
                     if(!visitor(this, entry))
-                    {
+                    {                    
                         return false;
                     }
                 }
@@ -315,8 +315,8 @@ namespace Aws
                 {
                     auto subDir = dir.Descend(entry);
                     exitTraversal = !TraverseDepthFirst(*subDir, visitor, postOrder);
-                }
-
+                } 
+                
                 if (postOrder)
                 {
                     if (!visitor(this, entry))
@@ -327,7 +327,7 @@ namespace Aws
             }
 
             return !exitTraversal;
-        }
+        }       
 
     }
 }

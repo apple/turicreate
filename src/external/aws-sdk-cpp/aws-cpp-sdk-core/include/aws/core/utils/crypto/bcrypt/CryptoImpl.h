@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -232,31 +232,20 @@ namespace Aws
                 void Reset() override;
 
             protected:
-                /**
-                * Algorithm/Mode level config for the BCRYPT_ALG_HANDLE and BCRYPT_KEY_HANDLE
-                */
-                virtual void InitEncryptor_Internal() = 0;
-                virtual void InitDecryptor_Internal() = 0;
+                void InitKey();
                 virtual size_t GetBlockSizeBytes() const = 0;
                 virtual size_t GetKeyLengthBits() const = 0;
-
-                void CheckInitEncryptor();
-                void CheckInitDecryptor();
 
                 BCRYPT_ALG_HANDLE m_algHandle;
                 BCRYPT_KEY_HANDLE m_keyHandle;
                 DWORD m_flags;
                 CryptoBuffer m_workingIv;
                 PBCRYPT_AUTHENTICATED_CIPHER_MODE_INFO m_authInfoPtr;
-                bool m_encDecInitialized;
-                bool m_encryptionMode;
-                bool m_decryptionMode;
 
                 static BCRYPT_KEY_HANDLE ImportKeyBlob(BCRYPT_ALG_HANDLE handle, CryptoBuffer& key);
 
             private:
                 void Init();
-                void InitKey();
                 void Cleanup();
             };
 
@@ -295,12 +284,11 @@ namespace Aws
                 void Reset() override;
 
             protected:
-                void InitEncryptor_Internal() override;
-                void InitDecryptor_Internal() override;
                 size_t GetBlockSizeBytes() const override;
                 size_t GetKeyLengthBits() const override;
 
             private:
+                void InitCipher();
                 CryptoBuffer FillInOverflow(const CryptoBuffer& buffer);
 
                 CryptoBuffer m_blockOverflow;
@@ -345,14 +333,12 @@ namespace Aws
                 void Reset() override;
 
             protected:
-                void InitEncryptor_Internal() override;
-                void InitDecryptor_Internal() override;
-
                 size_t GetBlockSizeBytes() const override;
                 size_t GetKeyLengthBits() const override;
 
-            private:
-                static void IncrementCounter(CryptoBuffer& buffer);
+            private:                
+                void InitCipher();
+
                 static void InitBuffersToNull(Aws::Vector<ByteBuffer*>& initBuffers);
                 static void CleanupBuffers(Aws::Vector<ByteBuffer*>& cleanupBuffers);
 
@@ -401,9 +387,6 @@ namespace Aws
                 void Reset() override;
 
             protected:
-                void InitEncryptor_Internal() override;
-                void InitDecryptor_Internal() override;
-
                 size_t GetBlockSizeBytes() const override;
                 size_t GetKeyLengthBits() const override;
                 size_t GetTagLengthBytes() const;
@@ -448,13 +431,12 @@ namespace Aws
                 void Reset() override;
 
             protected:
-                void InitEncryptor_Internal() override;
-                void InitDecryptor_Internal() override;
-
                 size_t GetBlockSizeBytes() const override;
                 size_t GetKeyLengthBits() const override; 
                 
             private:
+                void InitCipher();
+
                 static size_t BlockSizeBytes; 
                 static size_t KeyLengthBits;
                 

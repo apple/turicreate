@@ -1,12 +1,12 @@
 /*
  * Copyright 2010-2018 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
  * A copy of the License is located at
- *
+ * 
  *  http://aws.amazon.com/apache2.0
- *
+ * 
  * or in the "license" file accompanying this file. This file is distributed
  * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
  * express or implied. See the License for the specific language governing
@@ -119,7 +119,7 @@ namespace Aws
             int SendDataTo(const sockaddr* address, size_t addressLength, const uint8_t* data, size_t dataLen) const;
 
             /**
-             * @brief An easy way to send data to localhost, when the underlying udp is connected, call this function will
+             * @brief An easy way to send data to localhost, when the underlying udp is connected, call this function will 
              * send the data to where it connects to, not essentially to localhost. when it's not connected, it will send data
              * to localhost, but this call will not connect underlying socket to localhost for you.
              * @param data, the memory address of the data you want to send.
@@ -161,7 +161,7 @@ namespace Aws
         private:
             void CreateSocket(int addressFamily, size_t sendBufSize, size_t receiveBufSize, bool nonBlocking);
             int GetUnderlyingSocket() const { return m_socket; }
-            void SetUnderlyingSocket(int socket) { m_socket = socket; }
+            void SetUnderlyingSocket(int socket) { m_socket = socket; } 
             int m_addressFamily;
             // if not connected, you can't perform SendData, if connected,  SendDataTo will call SendData
             mutable bool m_connected;

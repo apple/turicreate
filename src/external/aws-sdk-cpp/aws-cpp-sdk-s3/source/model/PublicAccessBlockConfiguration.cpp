@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-PublicAccessBlockConfiguration::PublicAccessBlockConfiguration() :
+PublicAccessBlockConfiguration::PublicAccessBlockConfiguration() : 
     m_blockPublicAcls(false),
     m_blockPublicAclsHasBeenSet(false),
     m_ignorePublicAcls(false),
@@ -42,7 +42,7 @@ PublicAccessBlockConfiguration::PublicAccessBlockConfiguration() :
 {
 }
 
-PublicAccessBlockConfiguration::PublicAccessBlockConfiguration(const XmlNode& xmlNode) :
+PublicAccessBlockConfiguration::PublicAccessBlockConfiguration(const XmlNode& xmlNode) : 
     m_blockPublicAcls(false),
     m_blockPublicAclsHasBeenSet(false),
     m_ignorePublicAcls(false),

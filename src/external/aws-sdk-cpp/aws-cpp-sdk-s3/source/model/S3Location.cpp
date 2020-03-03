@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-S3Location::S3Location() :
+S3Location::S3Location() : 
     m_bucketNameHasBeenSet(false),
     m_prefixHasBeenSet(false),
     m_encryptionHasBeenSet(false),
@@ -44,7 +44,7 @@ S3Location::S3Location() :
 {
 }
 
-S3Location::S3Location(const XmlNode& xmlNode) :
+S3Location::S3Location(const XmlNode& xmlNode) : 
     m_bucketNameHasBeenSet(false),
     m_prefixHasBeenSet(false),
     m_encryptionHasBeenSet(false),

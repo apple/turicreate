@@ -36,7 +36,7 @@ namespace Aws
         static bool GetASockAddrFromHostName(const char* hostName, void* sockAddrBuffer, size_t& addrLength, int& addressFamily)
         {
             struct addrinfo hints, *res;
-
+            
             memset(&hints, 0, sizeof(hints));
 
             hints.ai_family = PF_UNSPEC;
@@ -48,7 +48,7 @@ namespace Aws
 
             memcpy(sockAddrBuffer, res->ai_addr, res->ai_addrlen);
             addrLength = res->ai_addrlen;
-            addressFamily = res->ai_family;
+            addressFamily = res->ai_family;            
             freeaddrinfo(res);
             return true;
         }
@@ -96,7 +96,7 @@ namespace Aws
                 m_addressFamily = AF_INET6;
                 m_hostIP = Aws::String(host);
             }
-            else
+            else 
             {
                 char sockAddrBuffer[100];
                 char hostBuffer[100];

@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -14,11 +14,16 @@
   */
 
 #include <aws/core/Core_EXPORTS.h>
+#include <aws/core/utils/memory/stl/AWSString.h>
 
 namespace Aws
 {
 namespace Version
 {
-AWS_CORE_API const char* GetVersionString();
+    AWS_CORE_API const char* GetVersionString();
+    AWS_CORE_API unsigned GetVersionMajor();
+    AWS_CORE_API unsigned GetVersionMinor();
+    AWS_CORE_API unsigned GetVersionPatch();
+    AWS_CORE_API const char* GetCompilerVersionString();
 } //namespace Version
 } //namespace Aws

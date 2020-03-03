@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@
 #include <aws/core/http/HttpTypes.h>
 #include <aws/core/utils/memory/AWSMemory.h>
 #include <aws/core/utils/memory/stl/AWSStreamFwd.h>
+#include <aws/core/client/CoreErrors.h>
 
 namespace Aws
 {
@@ -33,7 +34,7 @@ namespace Aws
     namespace Http
     {
         /**
-         * Enum of Http response Codes. The integer values of the response codes coorespond to the values in the RFC.
+         * Enum of Http response Codes. The integer values of the response codes correspond to the values in the RFC.
          */
         enum class HttpResponseCode
         {
@@ -114,6 +115,26 @@ namespace Aws
             NETWORK_CONNECT_TIMEOUT = 599
         };
 
+        inline bool IsRetryableHttpResponseCode(HttpResponseCode responseCode)
+        {
+            switch (responseCode)
+            {
+                case HttpResponseCode::INTERNAL_SERVER_ERROR:
+                case HttpResponseCode::SERVICE_UNAVAILABLE:
+                case HttpResponseCode::TOO_MANY_REQUESTS:
+                case HttpResponseCode::BANDWIDTH_LIMIT_EXCEEDED:
+                case HttpResponseCode::REQUEST_TIMEOUT:
+                case HttpResponseCode::AUTHENTICATION_TIMEOUT:
+                case HttpResponseCode::LOGIN_TIMEOUT:
+                case HttpResponseCode::GATEWAY_TIMEOUT:
+                case HttpResponseCode::NETWORK_READ_TIMEOUT:
+                case HttpResponseCode::NETWORK_CONNECT_TIMEOUT:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
         /**
          * Abstract class for representing an Http Response.
          */
@@ -123,9 +144,21 @@ namespace Aws
             /**
              * Initializes an http response with the originalRequest and the response code.
              */
-            HttpResponse(const HttpRequest&  originatingRequest) :
-                httpRequest(originatingRequest),
-                responseCode(HttpResponseCode::REQUEST_NOT_MADE)
+            HttpResponse(const HttpRequest& originatingRequest) :
+                m_httpRequest(originatingRequest),
+                m_sharedHttpRequest(nullptr),
+                m_responseCode(HttpResponseCode::REQUEST_NOT_MADE),
+                m_hasClientError(false)
+            {}
+
+            /**
+             * Initializes an http response with the shared_ptr typed originalRequest and the response code.
+             */
+            HttpResponse(const std::shared_ptr<const HttpRequest>& originatingRequest) :
+                m_httpRequest(*originatingRequest),
+                m_sharedHttpRequest(originatingRequest),
+                m_responseCode(HttpResponseCode::REQUEST_NOT_MADE),
+                m_hasClientError(false)
             {}
 
             virtual ~HttpResponse() = default;
@@ -133,7 +166,22 @@ namespace Aws
             /**
              * Get the request that originated this response
              */
-            virtual inline const HttpRequest& GetOriginatingRequest() const { return httpRequest; }
+            virtual inline const HttpRequest& GetOriginatingRequest() const
+            {
+                if (m_sharedHttpRequest == nullptr)
+                {
+                    return m_httpRequest;
+                }
+                return *m_sharedHttpRequest;
+            }
+
+            /**
+            * Get the request that originated this response
+            */
+            virtual inline void SetOriginatingRequest(const std::shared_ptr<const HttpRequest>& httpRequest)
+            {
+                m_sharedHttpRequest = httpRequest;
+            }
 
             /**
              * Get the headers from this response
@@ -150,15 +198,15 @@ namespace Aws
             /**
              * Gets response code for this http response.
              */
-            virtual inline HttpResponseCode GetResponseCode() const { return responseCode; }
+            virtual inline HttpResponseCode GetResponseCode() const { return m_responseCode; }
             /**
              * Sets the response code for this http response.
              */
-            virtual inline void SetResponseCode(HttpResponseCode httpResponseCode) { responseCode = httpResponseCode; }
+            virtual inline void SetResponseCode(HttpResponseCode httpResponseCode) { m_responseCode = httpResponseCode; }
             /**
              * Gets the content-type of the response body
              */
-            virtual const Aws::String& GetContentType() const { return GetHeader(Http::CONTENT_TYPE_HEADER); };
+            virtual const Aws::String& GetContentType() const { return GetHeader(Http::CONTENT_TYPE_HEADER); }
             /**
              * Gets the response body of the response.
              */
@@ -175,16 +223,27 @@ namespace Aws
             /**
              * Sets the content type header on the http response object.
              */
-            virtual void SetContentType(const Aws::String& contentType) { AddHeader("content-type", contentType); };
+            virtual void SetContentType(const Aws::String& contentType) { AddHeader("content-type", contentType); }
+
+            inline bool HasClientError() const { return m_hasClientError; }
+            inline void SetClientErrorType(Aws::Client::CoreErrors errorType) {m_hasClientError = true; m_clientErrorType = errorType;}
+            inline Aws::Client::CoreErrors GetClientErrorType() { return m_clientErrorType; }
+
+            inline const Aws::String &GetClientErrorMessage() const { return m_clientErrorMessage; }
+            inline void SetClientErrorMessage(const Aws::String &error) { m_clientErrorMessage = error; }
 
         private:
             HttpResponse(const HttpResponse&);
             HttpResponse& operator = (const HttpResponse&);
 
-            const HttpRequest& httpRequest;
-            HttpResponseCode responseCode;
+            const HttpRequest& m_httpRequest;
+            std::shared_ptr<const HttpRequest> m_sharedHttpRequest;
+            HttpResponseCode m_responseCode;
+            // Error generated by http client, SDK or users, indicating non service error during http request
+            bool m_hasClientError;
+            Aws::Client::CoreErrors m_clientErrorType;
+            Aws::String m_clientErrorMessage;
         };
-
 
     } // namespace Http
 } // namespace Aws

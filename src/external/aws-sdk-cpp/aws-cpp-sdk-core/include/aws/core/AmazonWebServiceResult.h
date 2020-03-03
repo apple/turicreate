@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -28,7 +28,7 @@ namespace Aws
     class AmazonWebServiceResult
     {
     public:
-        AmazonWebServiceResult() {}
+        AmazonWebServiceResult() : m_responseCode(Http::HttpResponseCode::REQUEST_NOT_MADE) {}
 
         /**
          * Sets payload, header collection and a response code.
@@ -65,8 +65,8 @@ namespace Aws
          */
         inline const PAYLOAD_TYPE& GetPayload() const { return m_payload; }
         /**
-        * Get the payload from the response and take ownership of it.
-        */
+         * Get the payload from the response and take ownership of it.
+         */
         inline PAYLOAD_TYPE TakeOwnershipOfPayload() { return std::move(m_payload); }
         /**
         * Get the headers from the response

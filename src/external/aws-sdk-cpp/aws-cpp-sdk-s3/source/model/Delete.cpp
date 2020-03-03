@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/Delete.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -65,7 +66,7 @@ Delete& Delete::operator =(const XmlNode& xmlNode)
     XmlNode quietNode = resultNode.FirstChild("Quiet");
     if(!quietNode.IsNull())
     {
-      m_quiet = StringUtils::ConvertToBool(StringUtils::Trim(quietNode.GetText().c_str()).c_str());
+      m_quiet = StringUtils::ConvertToBool(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(quietNode.GetText()).c_str()).c_str());
       m_quietHasBeenSet = true;
     }
   }
@@ -87,10 +88,10 @@ void Delete::AddToNode(XmlNode& parentNode) const
 
   if(m_quietHasBeenSet)
   {
-   XmlNode quietNode = parentNode.CreateChildElement("Object");
-  ss << m_quiet;
+   XmlNode quietNode = parentNode.CreateChildElement("Quiet");
+   ss << std::boolalpha << m_quiet;
    quietNode.SetText(ss.str());
-  ss.str("");
+   ss.str("");
   }
 
 }

@@ -30,14 +30,14 @@ namespace S3
 namespace Model
 {
 
-Metrics::Metrics() :
+Metrics::Metrics() : 
     m_status(MetricsStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_eventThresholdHasBeenSet(false)
 {
 }
 
-Metrics::Metrics(const XmlNode& xmlNode) :
+Metrics::Metrics(const XmlNode& xmlNode) : 
     m_status(MetricsStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_eventThresholdHasBeenSet(false)

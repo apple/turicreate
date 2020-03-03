@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-AnalyticsS3BucketDestination::AnalyticsS3BucketDestination() :
+AnalyticsS3BucketDestination::AnalyticsS3BucketDestination() : 
     m_format(AnalyticsS3ExportFileFormat::NOT_SET),
     m_formatHasBeenSet(false),
     m_bucketAccountIdHasBeenSet(false),
@@ -39,7 +39,7 @@ AnalyticsS3BucketDestination::AnalyticsS3BucketDestination() :
 {
 }
 
-AnalyticsS3BucketDestination::AnalyticsS3BucketDestination(const XmlNode& xmlNode) :
+AnalyticsS3BucketDestination::AnalyticsS3BucketDestination(const XmlNode& xmlNode) : 
     m_format(AnalyticsS3ExportFileFormat::NOT_SET),
     m_formatHasBeenSet(false),
     m_bucketAccountIdHasBeenSet(false),

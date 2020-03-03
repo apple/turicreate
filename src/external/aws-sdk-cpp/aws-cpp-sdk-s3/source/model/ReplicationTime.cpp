@@ -30,14 +30,14 @@ namespace S3
 namespace Model
 {
 
-ReplicationTime::ReplicationTime() :
+ReplicationTime::ReplicationTime() : 
     m_status(ReplicationTimeStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_timeHasBeenSet(false)
 {
 }
 
-ReplicationTime::ReplicationTime(const XmlNode& xmlNode) :
+ReplicationTime::ReplicationTime(const XmlNode& xmlNode) : 
     m_status(ReplicationTimeStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_timeHasBeenSet(false)

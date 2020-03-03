@@ -31,7 +31,7 @@ namespace Model
 {
 
   /**
-   * <p>The container element for a bucket's policy status.</p><p><h3>See Also:</h3>
+   * <p>The container element for a bucket's policy status.</p><p><h3>See Also:</h3> 
    * <a href="http://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01/PolicyStatus">AWS
    * API Reference</a></p>
    */

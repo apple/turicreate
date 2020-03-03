@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-AccessControlTranslation::AccessControlTranslation() :
+AccessControlTranslation::AccessControlTranslation() : 
     m_owner(OwnerOverride::NOT_SET),
     m_ownerHasBeenSet(false)
 {
 }
 
-AccessControlTranslation::AccessControlTranslation(const XmlNode& xmlNode) :
+AccessControlTranslation::AccessControlTranslation(const XmlNode& xmlNode) : 
     m_owner(OwnerOverride::NOT_SET),
     m_ownerHasBeenSet(false)
 {

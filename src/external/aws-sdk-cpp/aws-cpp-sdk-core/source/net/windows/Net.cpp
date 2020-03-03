@@ -23,7 +23,7 @@ namespace Aws
     {
         static bool s_globalNetworkInitiated = false;
 
-        bool IsNetworkInitiated()
+        bool IsNetworkInitiated() 
         {
             return s_globalNetworkInitiated;
         }

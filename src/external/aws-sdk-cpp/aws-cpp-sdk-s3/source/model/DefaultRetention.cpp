@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-DefaultRetention::DefaultRetention() :
+DefaultRetention::DefaultRetention() : 
     m_mode(ObjectLockRetentionMode::NOT_SET),
     m_modeHasBeenSet(false),
     m_days(0),
@@ -40,7 +40,7 @@ DefaultRetention::DefaultRetention() :
 {
 }
 
-DefaultRetention::DefaultRetention(const XmlNode& xmlNode) :
+DefaultRetention::DefaultRetention(const XmlNode& xmlNode) : 
     m_mode(ObjectLockRetentionMode::NOT_SET),
     m_modeHasBeenSet(false),
     m_days(0),

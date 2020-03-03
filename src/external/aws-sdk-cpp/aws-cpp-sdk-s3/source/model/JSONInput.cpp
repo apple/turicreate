@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-JSONInput::JSONInput() :
+JSONInput::JSONInput() : 
     m_type(JSONType::NOT_SET),
     m_typeHasBeenSet(false)
 {
 }
 
-JSONInput::JSONInput(const XmlNode& xmlNode) :
+JSONInput::JSONInput(const XmlNode& xmlNode) : 
     m_type(JSONType::NOT_SET),
     m_typeHasBeenSet(false)
 {

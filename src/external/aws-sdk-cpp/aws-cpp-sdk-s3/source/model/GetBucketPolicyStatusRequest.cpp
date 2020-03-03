@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-GetBucketPolicyStatusRequest::GetBucketPolicyStatusRequest() :
+GetBucketPolicyStatusRequest::GetBucketPolicyStatusRequest() : 
     m_bucketHasBeenSet(false),
     m_customizedAccessLogTagHasBeenSet(false)
 {
@@ -58,3 +58,4 @@ void GetBucketPolicyStatusRequest::AddQueryStringParameters(URI& uri) const
         }
     }
 }
+

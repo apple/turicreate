@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/CompletedPart.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -53,13 +54,13 @@ CompletedPart& CompletedPart::operator =(const XmlNode& xmlNode)
     XmlNode eTagNode = resultNode.FirstChild("ETag");
     if(!eTagNode.IsNull())
     {
-      m_eTag = StringUtils::Trim(eTagNode.GetText().c_str());
+      m_eTag = Aws::Utils::Xml::DecodeEscapedXmlText(eTagNode.GetText());
       m_eTagHasBeenSet = true;
     }
     XmlNode partNumberNode = resultNode.FirstChild("PartNumber");
     if(!partNumberNode.IsNull())
     {
-      m_partNumber = StringUtils::ConvertToInt32(StringUtils::Trim(partNumberNode.GetText().c_str()).c_str());
+      m_partNumber = StringUtils::ConvertToInt32(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(partNumberNode.GetText()).c_str()).c_str());
       m_partNumberHasBeenSet = true;
     }
   }
@@ -79,9 +80,9 @@ void CompletedPart::AddToNode(XmlNode& parentNode) const
   if(m_partNumberHasBeenSet)
   {
    XmlNode partNumberNode = parentNode.CreateChildElement("PartNumber");
-  ss << m_partNumber;
+   ss << m_partNumber;
    partNumberNode.SetText(ss.str());
-  ss.str("");
+   ss.str("");
   }
 
 }

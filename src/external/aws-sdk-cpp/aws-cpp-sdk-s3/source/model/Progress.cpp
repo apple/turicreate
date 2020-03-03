@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-Progress::Progress() :
+Progress::Progress() : 
     m_bytesScanned(0),
     m_bytesScannedHasBeenSet(false),
     m_bytesProcessed(0),
@@ -40,7 +40,7 @@ Progress::Progress() :
 {
 }
 
-Progress::Progress(const XmlNode& xmlNode) :
+Progress::Progress(const XmlNode& xmlNode) : 
     m_bytesScanned(0),
     m_bytesScannedHasBeenSet(false),
     m_bytesProcessed(0),

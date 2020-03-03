@@ -106,7 +106,7 @@ namespace Aws
                 AWS_UNREFERENCED_PARAM(decoder);
                 auto handler = static_cast<EventStreamHandler*>(context);
                 handler->Reset();
-
+                
                 //Encounter internal error in prelude received.
                 //This error will be handled by OnError callback function later.
                 if (prelude->total_len < prelude->headers_len + 16)
@@ -118,7 +118,7 @@ namespace Aws
                 AWS_LOGSTREAM_TRACE(EVENT_STREAM_DECODER_CLASS_TAG, "Message received, the expected length of the message is: " << prelude->total_len <<
                                                                     " bytes, and the expected length of the header is: " << prelude->headers_len << " bytes");
 
-                //Handle empty message
+                //Handle empty message 
                 //if (handler->m_message.GetHeadersLength() == 0 && handler->m_message.GetPayloadLength() == 0)
                 if (handler->IsMessageCompleted())
                 {
@@ -177,3 +177,4 @@ namespace Aws
         } // namespace Event
     } // namespace Utils
 } // namespace Aws
+

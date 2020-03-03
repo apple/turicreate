@@ -26,12 +26,12 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws;
 
-PutObjectRetentionResult::PutObjectRetentionResult() :
+PutObjectRetentionResult::PutObjectRetentionResult() : 
     m_requestCharged(RequestCharged::NOT_SET)
 {
 }
 
-PutObjectRetentionResult::PutObjectRetentionResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) :
+PutObjectRetentionResult::PutObjectRetentionResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
     m_requestCharged(RequestCharged::NOT_SET)
 {
   *this = result;

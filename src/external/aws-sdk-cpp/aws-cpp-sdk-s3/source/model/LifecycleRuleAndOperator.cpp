@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-LifecycleRuleAndOperator::LifecycleRuleAndOperator() :
+LifecycleRuleAndOperator::LifecycleRuleAndOperator() : 
     m_prefixHasBeenSet(false),
     m_tagsHasBeenSet(false)
 {
 }
 
-LifecycleRuleAndOperator::LifecycleRuleAndOperator(const XmlNode& xmlNode) :
+LifecycleRuleAndOperator::LifecycleRuleAndOperator(const XmlNode& xmlNode) : 
     m_prefixHasBeenSet(false),
     m_tagsHasBeenSet(false)
 {

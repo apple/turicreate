@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-GetObjectLockConfigurationRequest::GetObjectLockConfigurationRequest() :
+GetObjectLockConfigurationRequest::GetObjectLockConfigurationRequest() : 
     m_bucketHasBeenSet(false),
     m_customizedAccessLogTagHasBeenSet(false)
 {
@@ -58,3 +58,4 @@ void GetObjectLockConfigurationRequest::AddQueryStringParameters(URI& uri) const
         }
     }
 }
+

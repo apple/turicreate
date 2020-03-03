@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-DeleteObjectTaggingRequest::DeleteObjectTaggingRequest() :
+DeleteObjectTaggingRequest::DeleteObjectTaggingRequest() : 
     m_bucketHasBeenSet(false),
     m_keyHasBeenSet(false),
     m_versionIdHasBeenSet(false),
@@ -67,3 +67,4 @@ void DeleteObjectTaggingRequest::AddQueryStringParameters(URI& uri) const
         }
     }
 }
+

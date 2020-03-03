@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-InventoryConfiguration::InventoryConfiguration() :
+InventoryConfiguration::InventoryConfiguration() : 
     m_destinationHasBeenSet(false),
     m_isEnabled(false),
     m_isEnabledHasBeenSet(false),
@@ -43,7 +43,7 @@ InventoryConfiguration::InventoryConfiguration() :
 {
 }
 
-InventoryConfiguration::InventoryConfiguration(const XmlNode& xmlNode) :
+InventoryConfiguration::InventoryConfiguration(const XmlNode& xmlNode) : 
     m_destinationHasBeenSet(false),
     m_isEnabled(false),
     m_isEnabledHasBeenSet(false),

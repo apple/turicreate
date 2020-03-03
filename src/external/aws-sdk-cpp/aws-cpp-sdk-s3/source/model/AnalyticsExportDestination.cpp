@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-AnalyticsExportDestination::AnalyticsExportDestination() :
+AnalyticsExportDestination::AnalyticsExportDestination() : 
     m_s3BucketDestinationHasBeenSet(false)
 {
 }
 
-AnalyticsExportDestination::AnalyticsExportDestination(const XmlNode& xmlNode) :
+AnalyticsExportDestination::AnalyticsExportDestination(const XmlNode& xmlNode) : 
     m_s3BucketDestinationHasBeenSet(false)
 {
   *this = xmlNode;

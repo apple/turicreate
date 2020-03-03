@@ -28,7 +28,7 @@ namespace Aws
             class AWS_CORE_API Semaphore {
                 public:
                     /**
-                     * Initializes a new instance of Semaphore class specifying the initial number of entries and
+                     * Initializes a new instance of Semaphore class specifying the initial number of entries and 
                      * the maximum number of concurrent entries.
                      */
                     Semaphore(size_t initialCount, size_t maxCount);

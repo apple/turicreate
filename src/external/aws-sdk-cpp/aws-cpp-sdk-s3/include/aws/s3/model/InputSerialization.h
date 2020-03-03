@@ -36,7 +36,7 @@ namespace Model
 {
 
   /**
-   * <p>Describes the serialization format of the object.</p><p><h3>See Also:</h3>
+   * <p>Describes the serialization format of the object.</p><p><h3>See Also:</h3>  
    * <a
    * href="http://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01/InputSerialization">AWS
    * API Reference</a></p>

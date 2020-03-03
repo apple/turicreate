@@ -30,12 +30,12 @@ namespace S3
 namespace Model
 {
 
-SSEKMS::SSEKMS() :
+SSEKMS::SSEKMS() : 
     m_keyIdHasBeenSet(false)
 {
 }
 
-SSEKMS::SSEKMS(const XmlNode& xmlNode) :
+SSEKMS::SSEKMS(const XmlNode& xmlNode) : 
     m_keyIdHasBeenSet(false)
 {
   *this = xmlNode;

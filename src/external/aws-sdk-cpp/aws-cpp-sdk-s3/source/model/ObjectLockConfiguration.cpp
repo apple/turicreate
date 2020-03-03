@@ -30,14 +30,14 @@ namespace S3
 namespace Model
 {
 
-ObjectLockConfiguration::ObjectLockConfiguration() :
+ObjectLockConfiguration::ObjectLockConfiguration() : 
     m_objectLockEnabled(ObjectLockEnabled::NOT_SET),
     m_objectLockEnabledHasBeenSet(false),
     m_ruleHasBeenSet(false)
 {
 }
 
-ObjectLockConfiguration::ObjectLockConfiguration(const XmlNode& xmlNode) :
+ObjectLockConfiguration::ObjectLockConfiguration(const XmlNode& xmlNode) : 
     m_objectLockEnabled(ObjectLockEnabled::NOT_SET),
     m_objectLockEnabledHasBeenSet(false),
     m_ruleHasBeenSet(false)

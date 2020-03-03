@@ -30,7 +30,7 @@ namespace S3
 namespace Model
 {
 
-InventoryS3BucketDestination::InventoryS3BucketDestination() :
+InventoryS3BucketDestination::InventoryS3BucketDestination() : 
     m_accountIdHasBeenSet(false),
     m_bucketHasBeenSet(false),
     m_format(InventoryFormat::NOT_SET),
@@ -40,7 +40,7 @@ InventoryS3BucketDestination::InventoryS3BucketDestination() :
 {
 }
 
-InventoryS3BucketDestination::InventoryS3BucketDestination(const XmlNode& xmlNode) :
+InventoryS3BucketDestination::InventoryS3BucketDestination(const XmlNode& xmlNode) : 
     m_accountIdHasBeenSet(false),
     m_bucketHasBeenSet(false),
     m_format(InventoryFormat::NOT_SET),

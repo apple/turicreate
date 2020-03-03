@@ -30,14 +30,14 @@ namespace S3
 namespace Model
 {
 
-ReplicationRuleFilter::ReplicationRuleFilter() :
+ReplicationRuleFilter::ReplicationRuleFilter() : 
     m_prefixHasBeenSet(false),
     m_tagHasBeenSet(false),
     m_andHasBeenSet(false)
 {
 }
 
-ReplicationRuleFilter::ReplicationRuleFilter(const XmlNode& xmlNode) :
+ReplicationRuleFilter::ReplicationRuleFilter(const XmlNode& xmlNode) : 
     m_prefixHasBeenSet(false),
     m_tagHasBeenSet(false),
     m_andHasBeenSet(false)

@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-GetBucketInventoryConfigurationRequest::GetBucketInventoryConfigurationRequest() :
+GetBucketInventoryConfigurationRequest::GetBucketInventoryConfigurationRequest() : 
     m_bucketHasBeenSet(false),
     m_idHasBeenSet(false),
     m_customizedAccessLogTagHasBeenSet(false)
@@ -66,3 +66,4 @@ void GetBucketInventoryConfigurationRequest::AddQueryStringParameters(URI& uri) 
         }
     }
 }
+

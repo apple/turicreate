@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -44,6 +44,8 @@ namespace Aws
                 virtual HeaderValueCollection GetHeaders() const override;
                 /**
                  * Get the value for a Header based on its name.
+                 * This function doesn't check the existence of headerName.
+                 * So make sure you call HasHeader() first before calling this function, otherwise the behavior is undefined.
                  */                
                 virtual const Aws::String& GetHeaderValue(const char* headerName) const override;
                 /**
@@ -87,6 +89,7 @@ namespace Aws
                 HeaderValueCollection headerMap;
                 std::shared_ptr<Aws::IOStream> bodyStream;
                 Aws::IOStreamFactory m_responseStreamFactory;
+                Aws::String m_emptyHeader;
             };
 
         } // namespace Standard

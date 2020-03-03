@@ -30,13 +30,13 @@ namespace S3
 namespace Model
 {
 
-MetricsConfiguration::MetricsConfiguration() :
+MetricsConfiguration::MetricsConfiguration() : 
     m_idHasBeenSet(false),
     m_filterHasBeenSet(false)
 {
 }
 
-MetricsConfiguration::MetricsConfiguration(const XmlNode& xmlNode) :
+MetricsConfiguration::MetricsConfiguration(const XmlNode& xmlNode) : 
     m_idHasBeenSet(false),
     m_filterHasBeenSet(false)
 {

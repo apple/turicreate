@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-PutPublicAccessBlockRequest::PutPublicAccessBlockRequest() :
+PutPublicAccessBlockRequest::PutPublicAccessBlockRequest() : 
     m_bucketHasBeenSet(false),
     m_contentMD5HasBeenSet(false),
     m_publicAccessBlockConfigurationHasBeenSet(false),

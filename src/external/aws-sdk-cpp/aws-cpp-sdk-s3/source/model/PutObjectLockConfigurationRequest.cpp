@@ -26,7 +26,7 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws::Http;
 
-PutObjectLockConfigurationRequest::PutObjectLockConfigurationRequest() :
+PutObjectLockConfigurationRequest::PutObjectLockConfigurationRequest() : 
     m_bucketHasBeenSet(false),
     m_objectLockConfigurationHasBeenSet(false),
     m_requestPayer(RequestPayer::NOT_SET),

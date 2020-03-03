@@ -28,8 +28,8 @@ namespace Aws
          * Generic resource manager with Acquire/Release semantics. Acquire will block waiting on a an available resource. Release will
          * cause one blocked acquisition to unblock.
          *
-         * You must call ShutdownAndWait() when finished with this container, this unblocks the listening thread and gives you a chance to
-         * clean up the resource if needed.
+         * You must call ShutdownAndWait() when finished with this container, this unblocks the listening thread and gives you a chance to 
+         * clean up the resource if needed. 
          * After calling ShutdownAndWait(), you must not call Acquire any more.
          */
         template< typename RESOURCE_TYPE>
@@ -37,7 +37,7 @@ namespace Aws
         {
         public:
             ExclusiveOwnershipResourceManager() : m_shutdown(false) {}
-
+            
             /**
              * Returns a resource with exclusive ownership. You must call Release on the resource when you are finished or other
              * threads will block waiting to acquire it.
@@ -49,7 +49,7 @@ namespace Aws
                 std::unique_lock<std::mutex> locker(m_queueLock);
                 while(!m_shutdown.load() && m_resources.size() == 0)
                 {
-                    m_semaphore.wait(locker, [&](){ return m_shutdown.load() || m_resources.size() > 0; });
+                    m_semaphore.wait(locker, [&](){ return m_shutdown.load() || m_resources.size() > 0; });                    
                 }
 
                 assert(!m_shutdown.load());
@@ -101,7 +101,7 @@ namespace Aws
              * clean up the resource if needed.
              * After calling ShutdownAndWait(), you must not call Acquire any more.
              *
-             * @params resourceCount the number of resources you've added to the resource manager.
+             * @params resourceCount the number of resources you've added to the resource manager. 
              * @return the previously managed resources that are now available for cleanup.
              */
             Aws::Vector<RESOURCE_TYPE> ShutdownAndWait(size_t resourceCount)
@@ -118,7 +118,7 @@ namespace Aws
 
                 resources = m_resources;
                 m_resources.clear();
-
+                
                 return resources;
             }
 
