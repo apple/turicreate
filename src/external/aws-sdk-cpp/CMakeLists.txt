@@ -8,25 +8,25 @@ if(WIN32)
   message(FATAL_ERROR "turicreate doesn't support Windows")
 endif()
 
-### customized for static linkage ###
+# customized for static linkage ###
 
-##################### aws-c-common ##########################
+# #################### aws-c-common ##########################
+
 set(AWS_C_COMMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-common)
 set(AWS_C_COMMON_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/aws-c-common)
 set(AWS_CC_CONFIG_HEADER_TEMPLATE
     "${AWS_C_COMMON_DIR}/include/aws/common/config.h.in")
 set(AWS_CC_GENERATED_CONFIG_HEADER
     "${AWS_C_COMMON_BUILD_DIR}/include/aws/common/config.h")
-# machine specific feature test is disabled
-# list(APPEND CMAKE_MODULE_PATH "${AWS_C_COMMON_DIR}/cmake")
-# include(AwsFeatureTests)
+# machine specific feature test is disabled list(APPEND CMAKE_MODULE_PATH
+# "${AWS_C_COMMON_DIR}/cmake") include(AwsFeatureTests)
 configure_file(${AWS_CC_CONFIG_HEADER_TEMPLATE}
                ${AWS_CC_GENERATED_CONFIG_HEADER} ESCAPE_QUOTES)
 file(GLOB AWS_CC_COMMON_SRC "${AWS_C_COMMON_DIR}/source/*.c")
 file(GLOB AWS_CC_UNIX_SRC "${AWS_C_COMMON_DIR}/source/posix/*.c")
 file(GLOB AWS_CC_SRC ${AWS_CC_COMMON_SRC} ${AWS_CC_UNIX_SRC})
 
-#################### aws-checksums ###########################
+# ################### aws-checksums ###########################
 
 set(AWS_CHECKSUMS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-checksums)
 file(GLOB AWS_CHECKSUMS_COMMON_SRC "${AWS_CHECKSUMS_DIR}/source/*.c")
@@ -37,15 +37,16 @@ file(GLOB AWS_CHECKSUMS_SRC ${AWS_CHECKSUMS_COMMON_SRC}
 
 # https://github.com/awslabs/aws-checksums/issues/8
 if(CMAKE_BUILD_TYPE STREQUAL "" OR CMAKE_BUILD_TYPE STREQUAL "Debug")
-  set_source_files_properties(${AWS_CHECKSUMS_SRC} PROPERTIES COMPILE_DEFINITIONS "DEBUG_BUILD")
+  set_source_files_properties(${AWS_CHECKSUMS_SRC}
+                              PROPERTIES COMPILE_DEFINITIONS "DEBUG_BUILD")
 endif()
 
-##################### aws-c-even-stream ########################
+# #################### aws-c-even-stream ########################
 
 set(AWS_EVENT_STREAM_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-event-stream)
 file(GLOB AWS_EVENT_STREAM_SRC "${AWS_EVENT_STREAM_DIR}/source/*.c")
 
-##################### aws-cpp-sdk-core #########################
+# #################### aws-cpp-sdk-core #########################
 
 set(AWS_CPP_SDK_CORE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-cpp-sdk-core)
 file(GLOB AWS_SOURCE "${AWS_CPP_SDK_CORE_DIR}/source/*.cpp")
@@ -125,7 +126,7 @@ file(
   ${UTILS_AWS_CORE_NET_SOURCE}
   ${UTILS_CRYPTO_FACTORY_SOURCE})
 
-###################### aws-cpp-sdk-s3 ###########################
+# ##################### aws-cpp-sdk-s3 ###########################
 
 set(AWS_CPP_SDK_S3_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-cpp-sdk-s3)
 file(GLOB AWS_CPP_SDK_S3_SOURCE "${AWS_CPP_SDK_S3_DIR}/source/*.cpp"
