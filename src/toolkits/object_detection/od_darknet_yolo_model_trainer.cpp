@@ -5,8 +5,9 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <toolkits/object_detection/od_darknet_yolo_model.hpp>
+#include <toolkits/object_detection/od_darknet_yolo_model_trainer.hpp>
 
+#include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
 
 namespace turi {
@@ -18,6 +19,7 @@ using neural_net::compute_context;
 using neural_net::float_array_map;
 using neural_net::image_augmenter;
 using neural_net::model_spec;
+using neural_net::pipeline_spec;
 using neural_net::Publisher;
 using neural_net::shared_float_array;
 using neural_net::xavier_weight_initializer;
@@ -26,7 +28,6 @@ using padding_type = model_spec::padding_type;
 
 // The spatial reduction depends on the input size of the pre-trained model
 // (relative to the grid size).
-// TODO: When we support alternative base models, we will have to generalize.
 constexpr int SPATIAL_REDUCTION = 32;
 
 constexpr float BASE_LEARNING_RATE = 0.001f;
@@ -121,8 +122,21 @@ float_array_map ConvertWeightsExternalToInternal(
   return model_params;
 }
 
-void InitializeDarknetYOLO(model_spec* nn_spec, int num_classes,
-                           int random_seed) {
+std::unique_ptr<model_spec> InitializeDarknetYOLO(
+    const std::string& pretrained_model_path, int num_classes,
+    int random_seed) {
+  // Start with parameters from the pre-trained model.
+  std::unique_ptr<model_spec> nn_spec;
+  nn_spec.reset(new model_spec(pretrained_model_path));
+
+  // Verify that the pre-trained model ends with the expected leakyrelu6 layer.
+  // TODO: Also verify that activation shape here is [1024, 13, 13]?
+  if (!nn_spec->has_layer_output("leakyrelu6_fwd")) {
+    log_and_throw(
+        "Expected leakyrelu6_fwd layer in NeuralNetwork parsed from " +
+        pretrained_model_path);
+  }
+
   // Initialize a random number generator for weight initialization.
   std::seed_seq seed_seq = {random_seed};
   std::mt19937 random_engine(seed_seq);
@@ -186,6 +200,8 @@ void InitializeDarknetYOLO(model_spec* nn_spec, int num_classes,
                            /* padding */ padding_type::SAME,
                            /* weight_init_fn */ conv8_weight_init_fn,
                            /* bias_init_fn */ conv8_bias_init_fn);
+
+  return nn_spec;
 }
 
 }  // namespace
@@ -294,66 +310,75 @@ void DarknetYOLOTrainer::ApplyLearningRateSchedule(int iteration_id) {
   }
 }
 
-Checkpoint DarknetYOLOCheckpointer::Next() {
-  Checkpoint checkpoint;
-  checkpoint.config = config_;
-
+std::unique_ptr<Checkpoint> DarknetYOLOCheckpointer::Next() {
   // Copy the weights out from the backend.
-  neural_net::float_array_map weights = impl_->export_weights();
+  float_array_map backend_weights = impl_->export_weights();
 
   // Convert keys from the model_backend names (e.g. "conv7_weight") to the
   // names in the on-disk representations (e.g. "conv7_fwd_weight").
-  for (const auto& kv : weights) {
+  float_array_map weights;
+  for (const auto& kv : backend_weights) {
     const std::string modifier = "_fwd";
     std::string key = kv.first;
     std::string::iterator it = std::find(key.begin(), key.end(), '_');
     key.insert(it, modifier.begin(), modifier.end());
-    checkpoint.weights[key] = kv.second;
+    weights[key] = kv.second;
   }
 
+  std::unique_ptr<Checkpoint> checkpoint;
+  checkpoint.reset(new DarknetYOLOCheckpoint(config_, std::move(weights)));
   return checkpoint;
 }
 
-// static
-std::unique_ptr<DarknetYOLOModel> DarknetYOLOModel::Create(
-    const Config& config, const std::string& pretrained_model_path,
-    int random_seed, std::unique_ptr<neural_net::compute_context> context) {
-  // Start with parameters from the pre-trained model.
-  model_spec nn_spec(pretrained_model_path);
+DarknetYOLOCheckpoint::DarknetYOLOCheckpoint(
+    Config config, const std::string& pretrained_model_path, int random_seed)
+    : config_(std::move(config)),
+      model_spec_(InitializeDarknetYOLO(pretrained_model_path,
+                                        config_.num_classes, random_seed)),
+      weights_(model_spec_->export_params_view()) {}
 
-  // Verify that the pre-trained model ends with the expected leakyrelu6 layer.
-  // TODO: Also verify that activation shape here is [1024, 13, 13]?
-  if (!nn_spec.has_layer_output("leakyrelu6_fwd")) {
-    log_and_throw(
-        "Expected leakyrelu6_fwd layer in NeuralNetwork parsed from " +
-        pretrained_model_path);
-  }
+DarknetYOLOCheckpoint::DarknetYOLOCheckpoint(Config config,
+                                             float_array_map weights)
+    : config_(std::move(config)), weights_(std::move(weights)) {}
 
-  // Append the randomly initialized layers.
-  InitializeDarknetYOLO(&nn_spec, config.num_classes, random_seed);
+const Config& DarknetYOLOCheckpoint::config() const { return config_; }
 
-  // Create an initial checkpoint. Note that the weights are a WEAK reference to
-  // the model_spec above.
-  Checkpoint checkpoint;
-  checkpoint.config = config;
-  checkpoint.weights = nn_spec.export_params_view();
-
-  // The constructor should copy the weights from the checkpoint, so that it's
-  // safe to deallocate the model_spec above.
-  // TODO: Avoid weak references like the above.
-  std::unique_ptr<DarknetYOLOModel> model;
-  model.reset(new DarknetYOLOModel(checkpoint, std::move(context)));
-  return model;
+const float_array_map& DarknetYOLOCheckpoint::weights() const {
+  return weights_;
 }
 
-DarknetYOLOModel::DarknetYOLOModel(
-    const Checkpoint& checkpoint,
-    std::unique_ptr<neural_net::compute_context> context)
-    : Model(context->create_image_augmenter(
+std::unique_ptr<ModelTrainer> DarknetYOLOCheckpoint::CreateModelTrainer(
+    neural_net::compute_context* context) const {
+  std::unique_ptr<DarknetYOLOModelTrainer> result;
+  result.reset(new DarknetYOLOModelTrainer(*this, context));
+  return result;
+}
+
+pipeline_spec DarknetYOLOCheckpoint::ExportToCoreML(
+    const std::string& input_name, const std::string& coordinates_output_name,
+    const std::string& confidence_output_name) const {
+  return export_darknet_yolo(weights_, input_name, coordinates_output_name,
+                             confidence_output_name, GetAnchorBoxes(),
+                             config_.num_classes, config_.output_height,
+                             config_.output_width, SPATIAL_REDUCTION);
+}
+
+float_array_map DarknetYOLOCheckpoint::internal_config() const {
+  return GetTrainingBackendConfig(config_.max_iterations, config_.num_classes);
+}
+
+float_array_map DarknetYOLOCheckpoint::internal_weights() const {
+  return ConvertWeightsExternalToInternal(weights_);
+}
+
+DarknetYOLOModelTrainer::DarknetYOLOModelTrainer(
+    const DarknetYOLOCheckpoint& checkpoint,
+    neural_net::compute_context* context)
+    : ModelTrainer(context->create_image_augmenter(
           DarknetYOLOTrainingAugmentationOptions(
-              checkpoint.config.batch_size, checkpoint.config.output_height,
-              checkpoint.config.output_width))),
-      config_(checkpoint.config),
+              checkpoint.config().batch_size, checkpoint.config().output_height,
+              checkpoint.config().output_width))),
+      config_(checkpoint.config()),
       backend_(context->create_object_detector(
           /* n       */ config_.batch_size,
           /* c_in    */ 3,  // RGB input
@@ -362,20 +387,18 @@ DarknetYOLOModel::DarknetYOLOModel(
           /* c_out   */ GetNumOutputChannels(config_),
           /* h_out   */ config_.output_height,
           /* w_out   */ config_.output_width,
-          /* config  */
-          GetTrainingBackendConfig(config_.max_iterations, config_.num_classes),
-          /* weights */ ConvertWeightsExternalToInternal(checkpoint.weights))) {
-}
+          /* config  */ checkpoint.internal_config(),
+          /* weights */ checkpoint.internal_weights())) {}
 
-std::shared_ptr<Publisher<Checkpoint>>
-DarknetYOLOModel::AsCheckpointPublisher() {
+std::shared_ptr<Publisher<std::unique_ptr<Checkpoint>>>
+DarknetYOLOModelTrainer::AsCheckpointPublisher() {
   auto checkpointer =
       std::make_shared<DarknetYOLOCheckpointer>(config_, backend_);
   return checkpointer->AsPublisher();
 }
 
 std::shared_ptr<Publisher<TrainingOutputBatch>>
-DarknetYOLOModel::AsTrainingBatchPublisher(
+DarknetYOLOModelTrainer::AsTrainingBatchPublisher(
     std::shared_ptr<neural_net::Publisher<InputBatch>> augmented_data) {
   Config config = config_;
 

@@ -5,11 +5,11 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_HPP_
-#define TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_HPP_
+#ifndef TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_TRAINER_HPP_
+#define TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_TRAINER_HPP_
 
 /**
- * \file od_darknet_yolo_model.hpp
+ * \file od_darknet_yolo_model_trainer.hpp
  *
  * Defines helper functions and the Model subclass for the darknet-yolo
  * architecture.
@@ -17,7 +17,8 @@
 
 #include <ml/neural_net/compute_context.hpp>
 #include <ml/neural_net/model_backend.hpp>
-#include <toolkits/object_detection/od_model.hpp>
+#include <ml/neural_net/model_spec.hpp>
+#include <toolkits/object_detection/od_model_trainer.hpp>
 
 namespace turi {
 namespace object_detection {
@@ -65,7 +66,8 @@ class DarknetYOLOTrainer
 /**
  * Wrapper for a darknet-yolo model_backend that publishes checkpoints.
  */
-class DarknetYOLOCheckpointer : public neural_net::Iterator<Checkpoint> {
+class DarknetYOLOCheckpointer
+    : public neural_net::Iterator<std::unique_ptr<Checkpoint>> {
  public:
   DarknetYOLOCheckpointer(const Config& config,
                           std::shared_ptr<neural_net::model_backend> impl)
@@ -73,32 +75,63 @@ class DarknetYOLOCheckpointer : public neural_net::Iterator<Checkpoint> {
 
   bool HasNext() const override { return impl_ != nullptr; }
 
-  Checkpoint Next() override;
+  std::unique_ptr<Checkpoint> Next() override;
 
  private:
   Config config_;
   std::shared_ptr<neural_net::model_backend> impl_;
 };
 
-/** Subclass of Model encapsulating the darknet-yolo architecture. */
-class DarknetYOLOModel : public Model {
+/**
+ * Subclass of Checkpoint that generates DarknetYOLOModelTrainer
+ * instances.
+ */
+class DarknetYOLOCheckpoint : public Checkpoint {
  public:
   /**
    * Initializes a new model, combining the pre-trained warm-start weights with
    * random initialization for the final layers.
    */
-  static std::unique_ptr<DarknetYOLOModel> Create(
-      const Config& config, const std::string& pretrained_model_path,
-      int random_seed, std::unique_ptr<neural_net::compute_context> context);
+  DarknetYOLOCheckpoint(Config config, const std::string& pretrained_model_path,
+                        int random_seed);
 
+  /** Loads weights saved from a DarknetYOLOModelTrainer. */
+  DarknetYOLOCheckpoint(Config config, neural_net::float_array_map weights);
+
+  const Config& config() const override;
+  const neural_net::float_array_map& weights() const override;
+
+  std::unique_ptr<ModelTrainer> CreateModelTrainer(
+      neural_net::compute_context* context) const override;
+
+  neural_net::pipeline_spec ExportToCoreML(
+      const std::string& input_name, const std::string& coordinates_output_name,
+      const std::string& confidence_output_name) const override;
+
+  /** Returns the config dictionary used to initialize darknet-yolo backends. */
+  neural_net::float_array_map internal_config() const;
+
+  /** Returns the weights with the keys expected by the backends. */
+  neural_net::float_array_map internal_weights() const;
+
+ private:
+  Config config_;
+
+  std::unique_ptr<neural_net::model_spec> model_spec_;
+  neural_net::float_array_map weights_;
+};
+
+/** Subclass of ModelTrainer encapsulating the darknet-yolo architecture. */
+class DarknetYOLOModelTrainer : public ModelTrainer {
+ public:
   /**
    * Initializes a model from a checkpoint.
    */
-  DarknetYOLOModel(const Checkpoint& checkpoint,
-                   std::unique_ptr<neural_net::compute_context> context);
+  DarknetYOLOModelTrainer(const DarknetYOLOCheckpoint& checkpoint,
+                          neural_net::compute_context* context);
 
-  std::shared_ptr<neural_net::Publisher<Checkpoint>> AsCheckpointPublisher()
-      override;
+  std::shared_ptr<neural_net::Publisher<std::unique_ptr<Checkpoint>>>
+  AsCheckpointPublisher() override;
 
  protected:
   std::shared_ptr<neural_net::Publisher<TrainingOutputBatch>>
@@ -113,4 +146,4 @@ class DarknetYOLOModel : public Model {
 }  // namespace object_detection
 }  // namespace turi
 
-#endif  // TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_HPP_
+#endif  // TOOLKITS_OBJECT_DETECTION_OD_DARKNET_YOLO_MODEL_TRAINER_HPP_

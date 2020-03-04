@@ -17,7 +17,7 @@
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 
-#include <toolkits/object_detection/od_darknet_yolo_model.hpp>
+#include <toolkits/object_detection/od_darknet_yolo_model_trainer.hpp>
 
 #include "../neural_net/neural_net_mocks.hpp"
 
@@ -105,7 +105,7 @@ public:
   using create_compute_context_call =
       std::function<std::unique_ptr<compute_context>()>;
 
-  using create_model_call = std::function<std::unique_ptr<Model>(
+  using create_trainer_call = std::function<std::unique_ptr<ModelTrainer>(
       const Config& config, const std::string& pretrained_model_path,
       int random_seed, std::unique_ptr<neural_net::compute_context> context)>;
 
@@ -127,7 +127,7 @@ public:
   ~test_object_detector() {
     TS_ASSERT(create_iterator_calls_.empty());
     TS_ASSERT(create_compute_context_calls_.empty());
-    TS_ASSERT(create_model_calls_.empty());
+    TS_ASSERT(create_trainer_calls_.empty());
   }
 
   std::unique_ptr<data_iterator> create_iterator(
@@ -149,13 +149,14 @@ public:
     return expected_call();
   }
 
-  std::unique_ptr<Model> create_model(
+  std::unique_ptr<ModelTrainer> create_trainer(
       const Config& config, const std::string& pretrained_model_path,
       int random_seed,
       std::unique_ptr<neural_net::compute_context> context) const override {
-    TS_ASSERT(!create_model_calls_.empty());
-    create_model_call expected_call = std::move(create_model_calls_.front());
-    create_model_calls_.pop_front();
+    TS_ASSERT(!create_trainer_calls_.empty());
+    create_trainer_call expected_call =
+        std::move(create_trainer_calls_.front());
+    create_trainer_calls_.pop_front();
     return expected_call(config, pretrained_model_path, random_seed,
                          std::move(context));
   }
@@ -190,7 +191,7 @@ public:
 
   mutable std::deque<create_iterator_call> create_iterator_calls_;
   mutable std::deque<create_compute_context_call> create_compute_context_calls_;
-  mutable std::deque<create_model_call> create_model_calls_;
+  mutable std::deque<create_trainer_call> create_trainer_calls_;
   mutable std::deque<perform_evaluation_call> perform_evaluation_calls_;
   mutable std::deque<convert_yolo_to_annotations_call>
       convert_yolo_to_annotations_calls_;
@@ -399,24 +400,21 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.create_model_calls_.emplace_back(
+  model.create_trainer_calls_.emplace_back(
       [=](const Config& config, const std::string& pretrained_model_path,
           int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
 
-        Checkpoint checkpoint;
-        checkpoint.config = config;
-
+        float_array_map weights;
         std::vector<float> buffer(16 * 16 * 3 * 3);
         std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
-        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+        weights["test_layer_weight"] = shared_float_array::wrap(
             std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
 
-        std::unique_ptr<Model> model;
-        model.reset(new DarknetYOLOModel(checkpoint, std::move(context)));
-        return model;
+        DarknetYOLOCheckpoint checkpoint(config, std::move(weights));
+        return checkpoint.CreateModelTrainer(context.get());
       });
 
   auto create_object_detector_impl =
@@ -430,7 +428,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
         TS_ASSERT_EQUALS(h_out, 13);
         TS_ASSERT_EQUALS(w_out, 13);
 
-        // weights should be what we returned from create_model
+        // weights should be what we returned from create_trainer
         TS_ASSERT_EQUALS(weights.size(), 1);
         auto it = weights.find("test_layer_weight");
         TS_ASSERT(it != weights.end());
@@ -705,24 +703,21 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.create_model_calls_.emplace_back(
+  model.create_trainer_calls_.emplace_back(
       [=](const Config& config, const std::string& pretrained_model_path,
           int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
 
-        Checkpoint checkpoint;
-        checkpoint.config = config;
-
+        float_array_map weights;
         std::vector<float> buffer(16 * 16 * 3 * 3);
         std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
-        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+        weights["test_layer_weight"] = shared_float_array::wrap(
             std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
 
-        std::unique_ptr<Model> model;
-        model.reset(new DarknetYOLOModel(checkpoint, std::move(context)));
-        return model;
+        DarknetYOLOCheckpoint checkpoint(config, std::move(weights));
+        return checkpoint.CreateModelTrainer(context.get());
       });
 
   auto create_object_detector_impl = [&](int n, int c_in, int h_in, int w_in,
@@ -738,7 +733,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
     TS_ASSERT_EQUALS(h_out, 13);
     TS_ASSERT_EQUALS(w_out, 13);
 
-    // weights should be what we returned from create_model
+    // weights should be what we returned from create_trainer
     TS_ASSERT_EQUALS(weights.size(), 1);
     auto it = weights.find("test_layer_weight");
     TS_ASSERT(it != weights.end());
@@ -929,24 +924,21 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   // object_detector attempts to initialize weights from that path, just return
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
-  model.create_model_calls_.emplace_back(
+  model.create_trainer_calls_.emplace_back(
       [=](const Config& config, const std::string& pretrained_model_path,
           int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
 
-        Checkpoint checkpoint;
-        checkpoint.config = config;
-
+        float_array_map weights;
         std::vector<float> buffer(16 * 16 * 3 * 3);
         std::iota(buffer.begin(), buffer.end(), 0);  // buffer[i] = i
-        checkpoint.weights["test_layer_weight"] = shared_float_array::wrap(
+        weights["test_layer_weight"] = shared_float_array::wrap(
             std::move(buffer), std::vector<size_t>{16, 16, 3, 3});
 
-        std::unique_ptr<Model> model;
-        model.reset(new DarknetYOLOModel(checkpoint, std::move(context)));
-        return model;
+        DarknetYOLOCheckpoint checkpoint(config, std::move(weights));
+        return checkpoint.CreateModelTrainer(context.get());
       });
 
   auto create_object_detector_impl =

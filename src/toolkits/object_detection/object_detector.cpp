@@ -23,7 +23,7 @@
 #include <core/random/random.hpp>
 #include <timer/timer.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
-#include <toolkits/object_detection/od_darknet_yolo_model.hpp>
+#include <toolkits/object_detection/od_darknet_yolo_model_trainer.hpp>
 #include <toolkits/object_detection/od_evaluation.hpp>
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
@@ -279,8 +279,8 @@ size_t object_detector::get_version() const {
 }
 
 void object_detector::save_impl(oarchive& oarc) const {
-  Checkpoint* checkpoint = read_checkpoint();
-  _save_impl(oarc, state, checkpoint->weights);
+  const Checkpoint& checkpoint = read_checkpoint();
+  _save_impl(oarc, state, checkpoint.weights());
 }
 
 void object_detector::load_version(iarchive& iarc, size_t version) {
@@ -297,24 +297,30 @@ void object_detector::load_version(iarchive& iarc, size_t version) {
 void object_detector::load(std::map<std::string, variant_type> state,
                            float_array_map weights) {
   this->state = std::move(state);
+  checkpoint_ = load_checkpoint(std::move(weights));
+}
 
-  checkpoint_.reset(new Checkpoint);
-  checkpoint_->weights = std::move(weights);
-
-  // Write from the state into our new Config struct.
-  Config& config = checkpoint_->config;
+std::unique_ptr<Checkpoint> object_detector::load_checkpoint(
+    float_array_map weights) const {
+  // Write from the state into a new Config struct.
+  Config config;
   config.max_iterations = static_cast<int>(get_max_iterations());
   config.batch_size = read_state<int>("batch_size");
   config.output_height = read_state<int>("grid_height");
   config.output_width = read_state<int>("grid_width");
   config.num_classes = static_cast<int>(get_num_classes());
+
+  std::unique_ptr<Checkpoint> checkpoint;
+  checkpoint.reset(
+      new DarknetYOLOCheckpoint(std::move(config), std::move(weights)));
+  return checkpoint;
 }
 
-Checkpoint* object_detector::read_checkpoint() const {
+const Checkpoint& object_detector::read_checkpoint() const {
   if (checkpoint_ == nullptr) {
-    checkpoint_ = checkpoint_futures_->Next().get();
+    checkpoint_ = std::move(*checkpoint_futures_->Next().get());
   }
-  return checkpoint_.get();
+  return *checkpoint_.get();
 }
 
 void object_detector::import_from_custom_model(variant_map_type model_data,
@@ -717,7 +723,7 @@ void object_detector::perform_predict(
       /* h_out   */ grid_height,
       /* w_out   */ grid_width,
       /* config  */ pred_config,
-      /* weights */ strip_fwd(checkpoint_->weights));
+      /* weights */ strip_fwd(checkpoint_->weights()));
 
   // To support double buffering, use a queue of pending inference results.
   std::queue<inference_batch> pending_batches;
@@ -817,19 +823,12 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     std::map<std::string, flexible_type> opts)
 {
   // If called during training, synchronize the model first.
-  Checkpoint* checkpoint = read_checkpoint();
-
-  // TODO: Move this implementation to DarknetYOLOModel, since it is
-  // model-specific.
-
-  // Initialize the result with the learned layers from the model_backend.
-  model_spec yolo_nn_spec;
-  init_darknet_yolo(yolo_nn_spec, get_num_classes(), anchor_boxes());
-  yolo_nn_spec.update_params(checkpoint->weights);
+  const Checkpoint& checkpoint = read_checkpoint();
 
   size_t grid_height = read_state<size_t>("grid_height");
   size_t grid_width = read_state<size_t>("grid_width");
 
+  std::string input_str = read_state<std::string>("feature");
   std::string coordinates_str = "coordinates";
   std::string confidence_str = "confidence";
 
@@ -849,11 +848,6 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
       opts["confidence_threshold"] = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
     }
   }
-
-  // Add the layers that convert to intelligible predictions.
-  add_yolo(&yolo_nn_spec, coordinates_str, confidence_str, "conv8_fwd",
-           anchor_boxes(), read_state<flex_int>("num_classes"), grid_height,
-           grid_width);
 
   // Compute the string representation of the list of class labels.
   flex_string class_labels_str;
@@ -889,11 +883,13 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
   user_defined_metadata.emplace_back("version", opts["version"]);
 
+  neural_net::pipeline_spec spec =
+      checkpoint.ExportToCoreML(input_str, coordinates_str, confidence_str);
+
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
-      yolo_nn_spec, grid_width * SPATIAL_REDUCTION,
-      grid_height * SPATIAL_REDUCTION, class_labels.size(),
-      grid_height * grid_width * anchor_boxes().size(),
-      std::move(class_labels), read_state<flex_string>("feature"), std::move(opts));
+      std::move(spec), class_labels.size(),
+      grid_height * grid_width * anchor_boxes().size(), std::move(class_labels),
+      std::move(opts));
 
   model_wrapper->add_metadata({
       {"user_defined", std::move(user_defined_metadata)},
@@ -1020,7 +1016,7 @@ void object_detector::init_training(gl_sframe data,
 
   // Infer values for unspecified options. Note that this depends on training
   // data statistics and the compute context, initialized above.
-  // TODO: Move this into DarknetYOLOModel, since these heuristics are
+  // TODO: Move this into DarknetYOLOModelTrainer, since these heuristics are
   // model-specific.
   infer_derived_options(context.get(), iterator.get());
 
@@ -1054,21 +1050,22 @@ void object_detector::init_training(gl_sframe data,
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
   // classes observed by the training_data_iterator_ above.
-  std::unique_ptr<Model> backend = create_model(
+  std::unique_ptr<ModelTrainer> trainer = create_trainer(
       config, mlmodel_path, read_state<int>("random_seed"), std::move(context));
 
   // Establish training pipeline.
-  connect_training_backend(std::move(backend), std::move(iterator), batch_size);
+  connect_trainer(std::move(trainer), std::move(iterator), batch_size);
 }
 
-std::unique_ptr<Model> object_detector::create_model(
+std::unique_ptr<ModelTrainer> object_detector::create_trainer(
     const Config& config, const std::string& pretrained_model_path,
     int random_seed,
     std::unique_ptr<neural_net::compute_context> context) const {
   // For now, we only support darknet-yolo. Load the pre-trained model and
   // randomly initialize the final layers.
-  return DarknetYOLOModel::Create(config, pretrained_model_path, random_seed,
-                                  std::move(context));
+  checkpoint_.reset(
+      new DarknetYOLOCheckpoint(config, pretrained_model_path, random_seed));
+  return checkpoint_->CreateModelTrainer(context.get());
 }
 
 void object_detector::resume_training(gl_sframe data,
@@ -1092,32 +1089,24 @@ void object_detector::resume_training(gl_sframe data,
   }
 
   // Load the model from the current checkpoint.
-  std::unique_ptr<Model> backend =
-      create_model(*checkpoint_, std::move(context));
+  std::unique_ptr<ModelTrainer> trainer =
+      checkpoint_->CreateModelTrainer(context.get());
 
   // Establish training pipeline.
-  connect_training_backend(std::move(backend), std::move(iterator),
-                           read_state<int>("batch_size"));
+  connect_trainer(std::move(trainer), std::move(iterator),
+                  read_state<int>("batch_size"));
 }
 
-std::unique_ptr<Model> object_detector::create_model(
-    const Checkpoint& checkpoint,
-    std::unique_ptr<neural_net::compute_context> context) const {
-  // For now, we only support darknet-yolo. Load from a checkpoint.
-  auto* result = new DarknetYOLOModel(checkpoint, std::move(context));
-  return std::unique_ptr<DarknetYOLOModel>(result);
-}
-
-void object_detector::connect_training_backend(
-    std::unique_ptr<Model> backend, std::unique_ptr<data_iterator> iterator,
-    int batch_size) {
-  // Subscribe to the backend model using futures, for compatibility with our
+void object_detector::connect_trainer(std::unique_ptr<ModelTrainer> trainer,
+                                      std::unique_ptr<data_iterator> iterator,
+                                      int batch_size) {
+  // Subscribe to the trainer using futures, for compatibility with our
   // current synchronous API surface.
   int offset = read_state<int>("training_iterations");
   training_futures_ =
-      backend->AsTrainingBatchPublisher(std::move(iterator), batch_size, offset)
+      trainer->AsTrainingBatchPublisher(std::move(iterator), batch_size, offset)
           ->AsFutures();
-  checkpoint_futures_ = backend->AsCheckpointPublisher()->AsFutures();
+  checkpoint_futures_ = trainer->AsCheckpointPublisher()->AsFutures();
 
   // Begin printing progress, after any logging triggered above.
   if (read_state<bool>("verbose")) {
@@ -1206,9 +1195,9 @@ void object_detector::wait_for_training_batches(size_t max_pending) {
     int iteration_id = training_batch.iteration_id;
     const shared_float_array& loss_batch = training_batch.loss;
 
-    // TODO: Move this into object_detection::Model once the model_backend
-    // interface adopts an async API, so that this post-processing doesn't
-    // prematurely trigger a wait on a future.
+    // TODO: Move this into object_detection::ModelTrainer once the
+    // model_backend interface adopts an async API, so that this post-processing
+    // doesn't prematurely trigger a wait on a future.
 
     // Compute the loss for this batch.
     float batch_loss = std::accumulate(

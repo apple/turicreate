@@ -21,7 +21,7 @@
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 #include <toolkits/object_detection/od_data_iterator.hpp>
-#include <toolkits/object_detection/od_model.hpp>
+#include <toolkits/object_detection/od_model_trainer.hpp>
 
 namespace turi {
 namespace object_detection {
@@ -167,8 +167,12 @@ class EXPORT object_detector: public ml_model_base {
   void load(std::map<std::string, variant_type> state,
             neural_net::float_array_map weights);
 
+  // Assumes state already loaded.
+  virtual std::unique_ptr<Checkpoint> load_checkpoint(
+      neural_net::float_array_map weights) const;
+
   // Synchronously loads weights from the backend if necessary.
-  Checkpoint* read_checkpoint() const;
+  const Checkpoint& read_checkpoint() const;
 
   // Override points allowing subclasses to inject dependencies
 
@@ -184,19 +188,15 @@ class EXPORT object_detector: public ml_model_base {
   virtual
   std::unique_ptr<neural_net::compute_context> create_compute_context() const;
 
-  // Factories for Model
-  virtual std::unique_ptr<Model> create_model(
-      const Checkpoint& checkpoint,
-      std::unique_ptr<neural_net::compute_context> context) const;
-  virtual std::unique_ptr<Model> create_model(
+  // Factories for ModelTrainer
+  virtual std::unique_ptr<ModelTrainer> create_trainer(
       const Config& config, const std::string& pretrained_model_path,
       int random_seed,
       std::unique_ptr<neural_net::compute_context> context) const;
 
   // Establishes training pipelines from the backend.
-  void connect_training_backend(std::unique_ptr<Model> backend,
-                                std::unique_ptr<data_iterator> iterator,
-                                int batch_size);
+  void connect_trainer(std::unique_ptr<ModelTrainer> trainer,
+                       std::unique_ptr<data_iterator> iterator, int batch_size);
 
   virtual std::vector<neural_net::image_annotation> convert_yolo_to_annotations(
       const neural_net::float_array& yolo_map,
@@ -257,7 +257,8 @@ class EXPORT object_detector: public ml_model_base {
   gl_sframe validation_data_;
   std::shared_ptr<neural_net::FuturesStream<TrainingOutputBatch>>
       training_futures_;
-  std::shared_ptr<neural_net::FuturesStream<Checkpoint>> checkpoint_futures_;
+  std::shared_ptr<neural_net::FuturesStream<std::unique_ptr<Checkpoint>>>
+      checkpoint_futures_;
 
   // Nonnull while training is in progress, if progress printing is enabled.
   std::unique_ptr<table_printer> training_table_printer_;

@@ -5,11 +5,11 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TOOLKITS_OBJECT_DETECTION_OD_MODEL_HPP_
-#define TOOLKITS_OBJECT_DETECTION_OD_MODEL_HPP_
+#ifndef TOOLKITS_OBJECT_DETECTION_OD_MODEL_TRAINER_HPP_
+#define TOOLKITS_OBJECT_DETECTION_OD_MODEL_TRAINER_HPP_
 
 /**
- * \file od_model.hpp
+ * \file od_model_trainer.hpp
  *
  * Defines the value types representing each stage of an object-detection
  * training pipeline, and the virtual interface for arbitrary object-detection
@@ -17,10 +17,14 @@
  */
 
 #include <ml/neural_net/combine.hpp>
+#include <ml/neural_net/compute_context.hpp>
+#include <ml/neural_net/model_spec.hpp>
 #include <toolkits/object_detection/od_data_iterator.hpp>
 
 namespace turi {
 namespace object_detection {
+
+class ModelTrainer;
 
 /** Represents one batch of raw data: (possibly) annotated images. */
 struct DataBatch {
@@ -96,9 +100,27 @@ struct Config {
  *
  * \todo Include optimizer state to allow training to resume seamlessly.
  */
-struct Checkpoint {
-  Config config;
-  neural_net::float_array_map weights;
+class Checkpoint {
+ public:
+  virtual ~Checkpoint() = default;
+
+  virtual const Config& config() const = 0;
+  virtual const neural_net::float_array_map& weights() const = 0;
+
+  /** Loads the checkpoint into an active ModelTrainer instance. */
+  virtual std::unique_ptr<ModelTrainer> CreateModelTrainer(
+      neural_net::compute_context* context) const = 0;
+
+  /**
+   * Returns the CoreML spec corresponding to the current model.
+   *
+   * The result must be a pipeline that accepts an image input and yields at
+   * least two outputs, all with the given names. The outputs must be suitable
+   * for passing directly into a NonMaximumSuppression model.
+   */
+  virtual neural_net::pipeline_spec ExportToCoreML(
+      const std::string& input_name, const std::string& coordinates_output_name,
+      const std::string& confidence_output_name) const = 0;
 };
 
 /**
@@ -163,17 +185,17 @@ class ProgressUpdater
 };
 
 /**
- * Abstract base class for object-detection models.
+ * Abstract base class for object-detection model trainers.
  *
  * Responsible for constructing the model-agnostic portions of the overall
  * training pipeline.
  */
-class Model {
+class ModelTrainer {
  public:
   // TODO: This class should be responsible for producing the augmenter itself.
-  Model(std::unique_ptr<neural_net::image_augmenter> augmenter);
+  ModelTrainer(std::unique_ptr<neural_net::image_augmenter> augmenter);
 
-  virtual ~Model() = default;
+  virtual ~ModelTrainer() = default;
 
   /**
    * Given a data iterator, return a publisher of model outputs.
@@ -185,7 +207,7 @@ class Model {
                            size_t batch_size, int offset);
 
   /** Returns a publisher that can be used to request checkpoints. */
-  virtual std::shared_ptr<neural_net::Publisher<Checkpoint>>
+  virtual std::shared_ptr<neural_net::Publisher<std::unique_ptr<Checkpoint>>>
   AsCheckpointPublisher() = 0;
 
  protected:
@@ -202,4 +224,4 @@ class Model {
 }  // namespace object_detection
 }  // namespace turi
 
-#endif  // TOOLKITS_OBJECT_DETECTION_OD_MODEL_HPP_
+#endif  // TOOLKITS_OBJECT_DETECTION_OD_MODEL_TRAINER_HPP_

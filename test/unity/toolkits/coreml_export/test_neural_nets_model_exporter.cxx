@@ -48,21 +48,19 @@ BOOST_AUTO_TEST_CASE(test_object_detector_export_coreml_with_nms) {
     user_defined_metadata.emplace_back("confidence_threshold", options["confidence_threshold"]);
     user_defined_metadata.emplace_back("iou_threshold", options["iou_threshold"]);
 
-    flex_list t_class_labels = flex_list(test_class_labels.begin(), test_class_labels.end());
-    model_spec yolo_nn_spec;
-    yolo_nn_spec.add_convolution("test_layer", "image", 16, 16, 3, 3, 1, 1,
-                                 model_spec::padding_type::SAME,
-                                 /* weight_init_fn */ [](float*w , float* w_end) {
-                                     for (int i = 0; i < w_end - w; ++i) {
-                                         w[i] = static_cast<float>(i);
-                                     }
-                                 });
+    // Create an arbitrary pipeline with one model with one input description.
+    std::unique_ptr<CoreML::Specification::Pipeline> model_to_export;
+    model_to_export.reset(new CoreML::Specification::Pipeline);
+    model_to_export->add_models()->mutable_description()->add_input()->set_name(
+        "test_input");
 
+    flex_list t_class_labels =
+        flex_list(test_class_labels.begin(), test_class_labels.end());
     std::shared_ptr<coreml::MLModelWrapper> model_wrapper =
         export_object_detector_model(
-            yolo_nn_spec, 13 * 32, 13 * 32, test_class_labels.size(),
-            13 * 13 * 15,
-            std::move(t_class_labels), "image", std::move(options));
+            neural_net::pipeline_spec(std::move(model_to_export)),
+            test_class_labels.size(), 13 * 13 * 15, std::move(t_class_labels),
+            std::move(options));
     std::shared_ptr<CoreML::Model> c_model = model_wrapper->coreml_model();
     auto p_model = c_model->getProto();
 
