@@ -12,12 +12,13 @@ endif()
 
 set(AWS_C_COMMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-common)
 set(AWS_C_COMMON_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/aws-c-common)
-list(APPEND CMAKE_MODULE_PATH "${AWS_C_COMMON_DIR}/cmake")
 set(AWS_CC_CONFIG_HEADER_TEMPLATE
     "${AWS_C_COMMON_DIR}/include/aws/common/config.h.in")
 set(AWS_CC_GENERATED_CONFIG_HEADER
     "${AWS_C_COMMON_BUILD_DIR}/include/aws/common/config.h")
-include(AwsFeatureTests)
+# machine specific feature test is disabled
+# list(APPEND CMAKE_MODULE_PATH "${AWS_C_COMMON_DIR}/cmake")
+# include(AwsFeatureTests)
 configure_file(${AWS_CC_CONFIG_HEADER_TEMPLATE}
                ${AWS_CC_GENERATED_CONFIG_HEADER} ESCAPE_QUOTES)
 file(GLOB AWS_CC_COMMON_SRC "${AWS_C_COMMON_DIR}/source/*.c")
