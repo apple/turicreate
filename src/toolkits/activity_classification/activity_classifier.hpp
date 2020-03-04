@@ -49,6 +49,16 @@ class EXPORT activity_classifier: public ml_model_base {
       std::map<std::string, flexible_type> additional_user_defined);
   void import_from_custom_model(variant_map_type model_data, size_t version);
 
+  // Support for iterative training.
+  virtual void init_training(gl_sframe data, std::string target_column_name,
+                             std::string session_id_column_name,
+                             variant_type validation_data,
+                             std::map<std::string, flexible_type> opts);
+  virtual void resume_training(gl_sframe data, variant_type validation_data);
+  virtual void iterate_training();
+  virtual void synchronize_training();
+  virtual void finalize_training();
+
   BEGIN_CLASS_MEMBER_REGISTRATION("activity_classifier")
 
   IMPORT_BASE_CLASS_REGISTRATION(ml_model_base);
@@ -116,6 +126,23 @@ class EXPORT activity_classifier: public ml_model_base {
       "     The given seed is used for random weight initialization and "
       "sampling\n"
       "     during training\n");
+
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::init_training, "data",
+                                 "target", "session_id", "validation_data",
+                                 "options");
+  register_defaults("init_training",
+                    {{"validation_data", to_variant(std::string("auto"))},
+                     {"options",
+                      to_variant(std::map<std::string, flexible_type>())}});
+
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::resume_training, "data",
+                                 "validation_data");
+  register_defaults("resume_training",
+                    {{"validation_data", to_variant(std::string("auto"))}});
+
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::iterate_training);
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::synchronize_training);
+  REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::finalize_training);
 
   REGISTER_CLASS_MEMBER_FUNCTION(activity_classifier::predict, "data",
                                  "output_type");
@@ -211,8 +238,8 @@ class EXPORT activity_classifier: public ml_model_base {
 
   // Factory for data_iterator
   virtual std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, bool requires_labels, bool is_train,
-      bool use_data_augmentation) const;
+      gl_sframe data, bool requires_labels, bool infer_class_labels,
+      bool is_train, bool use_data_augmentation) const;
 
   // Factory for compute_context
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
@@ -226,18 +253,10 @@ class EXPORT activity_classifier: public ml_model_base {
       gl_sframe data, variant_type validation_data,
       std::string session_id_column_name) const;
 
-  // Support for iterative training.
-  // TODO: Expose via forthcoming C-API checkpointing mechanism?
-  virtual void init_train(gl_sframe data, std::string target_column_name,
-                          std::string session_id_column_name,
-                          variant_type validation_data,
-                          std::map<std::string, flexible_type> opts);
-  virtual void perform_training_iteration(bool show_loss);
-
   virtual std::tuple<float, float> compute_validation_metrics(
       size_t prediction_window, size_t num_classes, size_t batch_size);
 
-  virtual void init_table_printer(bool has_validation, bool show_loss);
+  virtual void init_table_printer(bool has_validation);
 
   // Returns an SFrame where each row corresponds to one prediction, and
   // containing four columns: "session_id" indicating the session ID shared by
@@ -256,7 +275,15 @@ class EXPORT activity_classifier: public ml_model_base {
   }
 
  private:
+  const neural_net::model_spec* read_model_spec() const;
+
+  // Whether to include loss in the progress table, in addition to accuracy
+  bool show_loss_ = true;
+
   // Primary representation for the trained model.
+  // TODO: Replace model_spec with a Checkpoint class that encapsulates
+  // serialization.
+  mutable bool nn_spec_synchronized_ = false;
   std::unique_ptr<neural_net::model_spec> nn_spec_;
 
   // Primary dependencies for training. These should be nonnull while training
