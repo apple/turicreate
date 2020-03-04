@@ -4,14 +4,25 @@ if(NOT DEFINED TC_BUILD_REMOTEFS OR NOT TC_BUILD_REMOTEFS)
   return(0)
 endif()
 
-set(BUILD_TESTING
-    OFF
-    CACHE BOOL "don't build aws-c-common test")
-set(BUILD_SHARED_LIBS
-    OFF
-    CACHE BOOL "don't build aws-checksums in shared library")
-add_subdirectory(aws-c-common)
-target_compile_options(aws-c-common PRIVATE -fPIC)
+if(WIN32)
+  message(FATAL_ERROR "turicreate doesn't support Windows")
+endif()
+
+# aws-c-common ### customized for static linkage ###
+
+set(AWS_C_COMMON_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-c-common)
+set(AWS_C_COMMON_BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR}/aws-c-common)
+list(APPEND CMAKE_MODULE_PATH "${AWS_C_COMMON_DIR}/cmake")
+set(AWS_CC_CONFIG_HEADER_TEMPLATE
+    "${AWS_C_COMMON_DIR}/include/aws/common/config.h.in")
+set(AWS_CC_GENERATED_CONFIG_HEADER
+    "${AWS_C_COMMON_BUILD_DIR}/include/aws/common/config.h")
+include(AwsFeatureTests)
+configure_file(${AWS_CC_CONFIG_HEADER_TEMPLATE}
+               ${AWS_CC_GENERATED_CONFIG_HEADER} ESCAPE_QUOTES)
+file(GLOB AWS_CC_COMMON_SRC "${AWS_C_COMMON_DIR}/source/*.c")
+file(GLOB AWS_CC_UNIX_SRC "${AWS_C_COMMON_DIR}/source/posix/*.c")
+file(GLOB AWS_CC_SRC ${AWS_CC_COMMON_SRC} ${AWS_CC_UNIX_SRC})
 
 # aws-checksums ###
 set(AWS_CHECKSUMS_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-checksums)
@@ -109,8 +120,14 @@ set(AWS_CPP_SDK_S3_DIR ${CMAKE_CURRENT_SOURCE_DIR}/aws-cpp-sdk-s3)
 file(GLOB AWS_CPP_SDK_S3_SOURCE "${AWS_CPP_SDK_S3_DIR}/source/*.cpp"
      "${AWS_CPP_SDK_S3_DIR}/source/model/*.cpp")
 
-file(GLOB _aws_source_file_list ${AWS_CHECKSUMS_SRC} ${AWS_EVENT_STREAM_SRC}
-     ${AWS_NATIVE_SDK_COMMON_SRC} ${AWS_CPP_SDK_S3_SOURCE})
+file(
+  GLOB
+  _aws_source_file_list
+  ${AWS_CC_SRC}
+  ${AWS_CHECKSUMS_SRC}
+  ${AWS_EVENT_STREAM_SRC}
+  ${AWS_NATIVE_SDK_COMMON_SRC}
+  ${AWS_CPP_SDK_S3_SOURCE})
 
 make_library(
   aws-cpp-sdk
@@ -121,8 +138,9 @@ make_library(
   openssl
   uuid)
 
-target_link_libraries(aws-cpp-sdk PRIVATE aws-c-common)
-
+target_include_directories(aws-cpp-sdk PRIVATE "${AWS_C_COMMON_DIR}/include")
+target_include_directories(aws-cpp-sdk
+                           PRIVATE "${AWS_C_COMMON_BUILD_DIR}/include")
 target_include_directories(aws-cpp-sdk PRIVATE "${AWS_CHECKSUMS_DIR}/include")
 target_include_directories(aws-cpp-sdk
                            PRIVATE "${AWS_EVENT_STREAM_DIR}/include")
@@ -131,15 +149,14 @@ target_include_directories(aws-cpp-sdk
                            PRIVATE "${AWS_CPP_SDK_CORE_DIR}/include")
 target_include_directories(aws-cpp-sdk PRIVATE "${AWS_CPP_SDK_S3_DIR}/include")
 
-target_optional_compile_flag(aws-cpp-sdk "-Wno-delete-non-virtual-dtor")
-target_optional_compile_flag(aws-cpp-sdk "-Wno-return-std-move")
-
-target_compile_definitions(aws-cpp-sdk PRIVATE "-DAWS_CORE_EXPORTS")
-target_compile_definitions(aws-cpp-sdk PUBLIC "-DAWS_CORE_USE_IMPORT_EXPORT")
+# target_compile_definitions(aws-cpp-sdk PRIVATE "-DAWS_CORE_EXPORTS")
+# target_compile_definitions(aws-cpp-sdk PUBLIC "-DAWS_CORE_USE_IMPORT_EXPORT")
 
 target_compile_definitions(aws-cpp-sdk PRIVATE -DENABLE_CURL_CLIENT)
 target_compile_definitions(aws-cpp-sdk PRIVATE -DENABLE_OPENSSL_ENCRYPTION)
 target_compile_definitions(aws-cpp-sdk PRIVATE -DJSON_USE_EXCEPTION=0)
+
+# version needed by aws-cpp-sdk-core ###
 target_compile_definitions(aws-cpp-sdk PRIVATE -DAWS_SDK_VERSION_MAJOR=1)
 target_compile_definitions(aws-cpp-sdk PRIVATE -DAWS_SDK_VERSION_MINOR=7)
 target_compile_definitions(aws-cpp-sdk PRIVATE -DAWS_SDK_VERSION_PATCH=143)
