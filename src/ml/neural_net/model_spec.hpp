@@ -396,6 +396,39 @@ public:
    */
   void add_preprocessing(const std::string& feature_name,
                          const float image_scale);
+  
+  /**
+   * Appends an Transpose layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param axes The ordering of the axes to transpose for instance {0, 2, 1, 3}
+   *             would flip the channel and height axes
+   */
+  void add_transpose(const std::string& name, const std::string& input,
+                     std::vector<size_t> axes);
+
+  /**
+   * Appends an Split layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param axis The axis to split the layer on
+   * \param num_splits The number of splits to perform
+   */
+  void add_split_nd(const std::string& name, const std::string& input,
+                    size_t axis, size_t num_splits);
+
+  /**
+   * Appends an Concat layer.
+   *
+   * \param name The name of the layer and its output
+   * \param inputs The vector of names of the layer's inputs
+   * \param axis The axis to concat the layer on
+   */
+  void add_concat_nd(const std::string& name,
+                     const std::vector<std::string>& inputs,
+                     size_t axis);
 
  private:
   std::unique_ptr<CoreML::Specification::NeuralNetwork> impl_;

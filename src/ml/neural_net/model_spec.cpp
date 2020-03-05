@@ -24,6 +24,7 @@ using CoreML::Specification::BatchnormLayerParams;
 using CoreML::Specification::BorderAmounts_EdgeSizes;
 using CoreML::Specification::ConvolutionLayerParams;
 using CoreML::Specification::InnerProductLayerParams;
+using CoreML::Specification::ConcatNDLayerParams;
 using CoreML::Specification::Model;
 using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkImageScaler;
@@ -33,6 +34,8 @@ using CoreML::Specification::PaddingLayerParams;
 using CoreML::Specification::Pipeline;
 using CoreML::Specification::PoolingLayerParams;
 using CoreML::Specification::SamePadding;
+using CoreML::Specification::SplitNDLayerParams;
+using CoreML::Specification::TransposeLayerParams;
 using CoreML::Specification::UniDirectionalLSTMLayerParams;
 using CoreML::Specification::UpsampleLayerParams;
 using CoreML::Specification::WeightParams;
@@ -973,6 +976,48 @@ void model_spec::add_preprocessing(const std::string& feature_name,
   layer->set_featurename(feature_name);
   NeuralNetworkImageScaler* image_scaler = layer->mutable_scaler();
   image_scaler->set_channelscale(image_scale);
+}
+
+void model_spec::add_transpose(const std::string& name,
+                               const std::string& input,
+                               std::vector<size_t> axes) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+  TransposeLayerParams* params = layer->mutable_transpose();
+  for (size_t a : axes) {
+    params->add_axes(a);
+  }
+}
+
+void model_spec::add_split_nd(const std::string& name, const std::string& input,
+                              size_t axis, size_t num_splits) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+
+  for (size_t i = 0; i < num_splits; i++) {
+    layer->add_output(name + "_" + std::to_string(i));
+  }
+
+  SplitNDLayerParams* params = layer->mutable_splitnd();
+  params->set_axis(axis);
+  params->set_numsplits(num_splits);
+}
+
+void model_spec::add_concat_nd(const std::string& name,
+                               const std::vector<std::string>& inputs,
+                               size_t axis) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+
+  ConcatNDLayerParams* params = layer->mutable_concatnd();
+  params->set_axis(axis);
 }
 
 pipeline_spec::pipeline_spec(std::unique_ptr<Pipeline> impl)
