@@ -633,6 +633,12 @@ gl_sframe object_detector::convert_types_to_sframe(
   return sframe_data;
 }
 
+std::unique_ptr<ModelTrainer> object_detector::create_inference_trainer(
+    const Checkpoint& checkpoint,
+    std::unique_ptr<neural_net::compute_context> context) const {
+  return checkpoint.CreateModelTrainer(context.get());
+}
+
 void object_detector::perform_predict(
     gl_sframe data,
     std::function<void(const std::vector<image_annotation>&,
@@ -659,7 +665,7 @@ void object_detector::perform_predict(
 
   // Construct a pipeline generating inference results.
   std::unique_ptr<ModelTrainer> model_trainer =
-      read_checkpoint().CreateModelTrainer(ctx.get());
+      create_inference_trainer(read_checkpoint(), std::move(ctx));
   std::shared_ptr<FuturesStream<EncodedBatch>> inference_futures =
       model_trainer
           ->AsInferenceBatchPublisher(std::move(data_iter), batch_size,

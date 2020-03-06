@@ -193,6 +193,9 @@ class EXPORT object_detector: public ml_model_base {
       const Config& config, const std::string& pretrained_model_path,
       int random_seed,
       std::unique_ptr<neural_net::compute_context> context) const;
+  virtual std::unique_ptr<ModelTrainer> create_inference_trainer(
+      const Checkpoint& checkpoint,
+      std::unique_ptr<neural_net::compute_context> context) const;
 
   // Establishes training pipelines from the backend.
   void connect_trainer(std::unique_ptr<ModelTrainer> trainer,
