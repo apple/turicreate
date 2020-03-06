@@ -291,7 +291,7 @@ EncodedInputBatch EncodeDarknetYOLO(InputBatch input_batch,
   return result;
 }
 
-InferenceOutputBatch DecodeDarknetYOLOInference(EncodedOutputBatch batch,
+InferenceOutputBatch DecodeDarknetYOLOInference(EncodedBatch batch,
                                                 float confidence_threshold,
                                                 float iou_threshold) {
   InferenceOutputBatch result;
@@ -300,7 +300,7 @@ InferenceOutputBatch DecodeDarknetYOLOInference(EncodedOutputBatch batch,
   result.predictions.resize(batch.image_sizes.size());
   for (size_t i = 0; i < result.predictions.size(); ++i) {
     // For this row (corresponding to one image), extract the prediction.
-    shared_float_array raw_prediction = batch.encoded_output.at("output")[i];
+    shared_float_array raw_prediction = batch.encoded_data.at("output")[i];
 
     // Translate the raw output into predicted labels and bounding boxes.
     result.predictions[i] = convert_yolo_to_annotations(
@@ -346,11 +346,11 @@ void DarknetYOLOBackendTrainingWrapper::ApplyLearningRateSchedule(
   }
 }
 
-EncodedOutputBatch DarknetYOLOBackendInferenceWrapper::Invoke(
+EncodedBatch DarknetYOLOBackendInferenceWrapper::Invoke(
     EncodedInputBatch input_batch) {
-  EncodedOutputBatch output_batch;
+  EncodedBatch output_batch;
   output_batch.iteration_id = input_batch.iteration_id;
-  output_batch.encoded_output = impl_->predict({{"input", input_batch.images}});
+  output_batch.encoded_data = impl_->predict({{"input", input_batch.images}});
   output_batch.annotations = std::move(input_batch.annotations);
   output_batch.image_sizes = std::move(input_batch.image_sizes);
   return output_batch;
@@ -471,7 +471,7 @@ DarknetYOLOModelTrainer::AsTrainingBatchPublisher(
       ->Map(trainer);
 }
 
-std::shared_ptr<Publisher<EncodedOutputBatch>>
+std::shared_ptr<Publisher<EncodedBatch>>
 DarknetYOLOModelTrainer::AsInferenceBatchPublisher(
     std::unique_ptr<data_iterator> test_data, size_t batch_size,
     float confidence_threshold, float iou_threshold) {
@@ -502,7 +502,7 @@ DarknetYOLOModelTrainer::AsInferenceBatchPublisher(
 }
 
 InferenceOutputBatch DarknetYOLOModelTrainer::DecodeOutputBatch(
-    EncodedOutputBatch batch, float confidence_threshold, float iou_threshold) {
+    EncodedBatch batch, float confidence_threshold, float iou_threshold) {
   return DecodeDarknetYOLOInference(std::move(batch), confidence_threshold,
                                     iou_threshold);
 }

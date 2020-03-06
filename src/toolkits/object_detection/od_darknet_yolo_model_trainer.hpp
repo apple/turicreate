@@ -48,7 +48,7 @@ EncodedInputBatch EncodeDarknetYOLO(InputBatch input_batch,
 /**
  * Decodes the raw inference output into structured predictions.
  */
-InferenceOutputBatch DecodeDarknetYOLOInference(EncodedOutputBatch batch,
+InferenceOutputBatch DecodeDarknetYOLOInference(EncodedBatch batch,
                                                 float confidence_threshold,
                                                 float iou_threshold);
 
@@ -89,13 +89,13 @@ class DarknetYOLOBackendTrainingWrapper
  * invocations, this class won't be able to simply use the Transform base class.
  */
 class DarknetYOLOBackendInferenceWrapper
-    : public neural_net::Transform<EncodedInputBatch, EncodedOutputBatch> {
+    : public neural_net::Transform<EncodedInputBatch, EncodedBatch> {
  public:
   DarknetYOLOBackendInferenceWrapper(
       std::shared_ptr<neural_net::model_backend> impl)
       : impl_(std::move(impl)) {}
 
-  EncodedOutputBatch Invoke(EncodedInputBatch input_batch) override;
+  EncodedBatch Invoke(EncodedInputBatch input_batch) override;
 
  private:
   std::shared_ptr<neural_net::model_backend> impl_;
@@ -172,12 +172,12 @@ class DarknetYOLOModelTrainer : public ModelTrainer {
   AsTrainingBatchPublisher(std::unique_ptr<data_iterator> training_data,
                            size_t batch_size, int offset) override;
 
-  std::shared_ptr<neural_net::Publisher<EncodedOutputBatch>>
+  std::shared_ptr<neural_net::Publisher<EncodedBatch>>
   AsInferenceBatchPublisher(std::unique_ptr<data_iterator> test_data,
                             size_t batch_size, float confidence_threshold,
                             float iou_threshold) override;
 
-  InferenceOutputBatch DecodeOutputBatch(EncodedOutputBatch batch,
+  InferenceOutputBatch DecodeOutputBatch(EncodedBatch batch,
                                          float confidence_threshold,
                                          float iou_threshold) override;
 

@@ -57,6 +57,7 @@ using turi::coreml::MLModelWrapper;
 using turi::neural_net::compute_context;
 using turi::neural_net::deferred_float_array;
 using turi::neural_net::float_array_map;
+using turi::neural_net::FuturesStream;
 using turi::neural_net::image_annotation;
 using turi::neural_net::image_augmenter;
 using turi::neural_net::labeled_image;
@@ -79,15 +80,10 @@ constexpr int DEFAULT_BATCH_SIZE = 32;
 // Empircally, we need 4GB to support batch size 32.
 constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296;
 
-// We assume RGB input.
-constexpr int NUM_INPUT_CHANNELS = 3;
-
 // The spatial reduction depends on the input size of the pre-trained model
 // (relative to the grid size).
 // TODO: When we support alternative base models, we will have to generalize.
 constexpr int SPATIAL_REDUCTION = 32;
-
-constexpr float BASE_LEARNING_RATE = 0.001f;
 
 constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45f;
 
@@ -109,35 +105,6 @@ const std::vector<std::pair<float, float>>& anchor_boxes() {
       });
   return *default_boxes;
 };
-
-// These are the fixed values that the Python implementation currently passes
-// into TCMPS.
-// TODO: These should be exposed in a way that facilitates experimentation.
-// TODO: A struct instead of a map would be nice, too.
-
-float_array_map get_base_config() {
-  float_array_map config;
-  config["learning_rate"]            =
-      shared_float_array::wrap(BASE_LEARNING_RATE);
-  config["gradient_clipping"]        = shared_float_array::wrap(0.025f);
-  // TODO: Have MPS path use these parameters, instead
-  // of the values hardcoded in the MPS code.
-  config["od_rescore"]               = shared_float_array::wrap(1.0f);
-  config["lmb_noobj"]                = shared_float_array::wrap(5.0);
-  config["lmb_obj"]                  = shared_float_array::wrap(100.0);
-  config["lmb_coord_xy"]             = shared_float_array::wrap(10.0);
-  config["lmb_coord_wh"]             = shared_float_array::wrap(10.0);
-  config["lmb_class"]                = shared_float_array::wrap(2.0);
-  return config;
-}
-
-float_array_map get_prediction_config() {
-  float_array_map config = get_base_config();
-  config["mode"]                     = shared_float_array::wrap(2.0f);
-  config["od_include_loss"]          = shared_float_array::wrap(0.0f);
-  config["od_include_network"]       = shared_float_array::wrap(1.0f);
-  return config;
-}
 
 flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 
@@ -673,12 +640,8 @@ void object_detector::perform_predict(
                        const std::pair<float, float>&)>
         consumer,
     float confidence_threshold, float iou_threshold) {
-  std::string image_column_name = read_state<flex_string>("feature");
-  std::string annotations_column_name = read_state<flex_string>("annotations");
   flex_list class_labels = read_state<flex_list>("classes");
   int batch_size = read_state<int>("batch_size");
-  int grid_height = read_state<int>("grid_height");
-  int grid_width = read_state<int>("grid_width");
 
   // return if the data is empty
   if (data.size() == 0) return;
@@ -694,105 +657,41 @@ void object_detector::perform_predict(
     log_and_throw("No neural network compute context provided");
   }
 
-  // Instantiate the data augmenter. Don't enable any of the actual
-  // augmentations, just resize the input images to the desired shape.
-  image_augmenter::options augmenter_opts;
-  augmenter_opts.batch_size = batch_size;
-  augmenter_opts.output_height = grid_height * SPATIAL_REDUCTION;
-  augmenter_opts.output_width = grid_width * SPATIAL_REDUCTION;
-  std::unique_ptr<image_augmenter> augmenter =
-      ctx->create_image_augmenter(augmenter_opts);
+  // Construct a pipeline generating inference results.
+  std::unique_ptr<ModelTrainer> model_trainer =
+      read_checkpoint().CreateModelTrainer(ctx.get());
+  std::shared_ptr<FuturesStream<EncodedBatch>> inference_futures =
+      model_trainer
+          ->AsInferenceBatchPublisher(std::move(data_iter), batch_size,
+                                      confidence_threshold, iou_threshold)
+          ->AsFutures();
 
-  // Instantiate the NN backend.
-  // For each anchor box, we have 4 bbox coords + 1 conf + one-hot class labels
-  int num_outputs_per_anchor = 5 + static_cast<int>(class_labels.size());
-  int num_output_channels = static_cast<int>(num_outputs_per_anchor * anchor_boxes().size());
+  // Consume the results, ensuring that we have the next batch in progress in
+  // the background while we consume the previous batch.
+  std::future<std::unique_ptr<EncodedBatch>> pending_batch =
+      inference_futures->Next();
+  while (pending_batch.valid()) {
+    // Start the next batch before we handle the pending batch.
+    std::future<std::unique_ptr<EncodedBatch>> next_batch =
+        inference_futures->Next();
 
-  float_array_map pred_config = get_prediction_config();
-  pred_config["num_iterations"] =
-      shared_float_array::wrap(get_max_iterations());
-  pred_config["num_classes"] =
-      shared_float_array::wrap(get_num_classes());
+    // Wait for the pending batch to be complete.
+    std::unique_ptr<EncodedBatch> encoded_batch = pending_batch.get();
+    if (encoded_batch) {
+      // We have more raw results. Decode them.
+      InferenceOutputBatch batch = model_trainer->DecodeOutputBatch(
+          *encoded_batch, confidence_threshold, iou_threshold);
 
-  std::unique_ptr<model_backend> model = ctx->create_object_detector(
-      /* n       */ read_state<int>("batch_size"),
-      /* c_in    */ NUM_INPUT_CHANNELS,
-      /* h_in    */ grid_height * SPATIAL_REDUCTION,
-      /* w_in    */ grid_width * SPATIAL_REDUCTION,
-      /* c_out   */ num_output_channels,
-      /* h_out   */ grid_height,
-      /* w_out   */ grid_width,
-      /* config  */ pred_config,
-      /* weights */ strip_fwd(checkpoint_->weights()));
-
-  // To support double buffering, use a queue of pending inference results.
-  std::queue<inference_batch> pending_batches;
-
-  // Helper function to process results until the queue reaches a given size.
-  auto pop_until_size = [&](size_t remaining) {
-    while (pending_batches.size() > remaining) {
-
-      // Pop one batch from the queue.
-      inference_batch batch = pending_batches.front();
-
-      pending_batches.pop();
-      for (size_t i = 0; i < batch.annotations_batch.size(); ++i) {
-        // For this row (corresponding to one image), extract the prediction.
-        shared_float_array raw_prediction = batch.image_batch[i];
-
-        // Translate the raw output into predicted labels and bounding boxes.
-        std::vector<image_annotation> predicted_annotations =
-            convert_yolo_to_annotations(raw_prediction, anchor_boxes(),
-                                        confidence_threshold);
-        // Remove overlapping predictions.
-        predicted_annotations = apply_non_maximum_suppression(
-            std::move(predicted_annotations), iou_threshold);
-
-        consumer(predicted_annotations, batch.annotations_batch[i],
-                 batch.image_dimensions_batch[i]);
+      // Consume the results.
+      for (size_t i = 0; i < batch.annotations.size(); ++i) {
+        consumer(batch.predictions[i], batch.annotations[i],
+                 batch.image_sizes[i]);
       }
+
+      // Continue iterating.
+      pending_batch = std::move(next_batch);
     }
-  };
-
-  // Iterate through the data once.
-  std::vector<labeled_image> input_batch = data_iter->next_batch(batch_size);
-
-  while (!input_batch.empty()) {
-    // Wait until we have just one asynchronous batch outstanding. The work
-    // below should be concurrent with the neural net inference for that batch.
-    pop_until_size(1);
-
-    inference_batch result_batch;
-
-    // Instead of giving the ground truth data to the image augmenter and the
-    // neural net, instead save them for later, pairing them with the future
-    // predictions.
-    result_batch.annotations_batch.resize(input_batch.size());
-    result_batch.image_dimensions_batch.resize(input_batch.size());
-    for (size_t i = 0; i < input_batch.size(); ++i) {
-      result_batch.annotations_batch[i] = std::move(input_batch[i].annotations);
-      result_batch.image_dimensions_batch[i] = std::make_pair(
-          input_batch[i].image.m_height, input_batch[i].image.m_width);
-      input_batch[i].annotations.clear();
-    }
-
-    // Use the image augmenter to format the images into float arrays, and
-    // submit them to the neural net.
-    image_augmenter::result prepared_input_batch =
-        augmenter->prepare_images(std::move(input_batch));
-
-    std::map<std::string, shared_float_array> prediction_results =
-        model->predict({{"input", prepared_input_batch.image_batch}});
-
-    result_batch.image_batch = prediction_results.at("output");
-
-    // Add the pending result to our queue and move on to the next input batch.
-    pending_batches.push(std::move(result_batch));
-    input_batch = data_iter->next_batch(batch_size);
   }
-
-  // Process all remaining batches.
-  pop_until_size(0);
 }
 
 // TODO: Should accept model_backend as an optional argument to avoid

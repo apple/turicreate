@@ -69,7 +69,7 @@ struct EncodedInputBatch {
 };
 
 /** Represents the raw output of an object-detection model. */
-// TODO: Adopt EncodedOutputBatch instead.
+// TODO: Adopt EncodedBatch instead.
 struct TrainingOutputBatch {
   int iteration_id = 0;
   neural_net::shared_float_array loss;
@@ -81,11 +81,14 @@ struct TrainingProgress {
   float smoothed_loss = 0.f;
 };
 
-/** Represents the immediate (model-specific) output of a model backend. */
-struct EncodedOutputBatch {
+/**
+ * Represents the immediate (model-specific) input or output of a model backend,
+ * using the float_array_map representation.
+ */
+struct EncodedBatch {
   int iteration_id = 0;
 
-  neural_net::float_array_map encoded_output;
+  neural_net::float_array_map encoded_data;
 
   std::vector<std::vector<neural_net::image_annotation>> annotations;
   std::vector<std::pair<size_t, size_t>> image_sizes;
@@ -243,9 +246,9 @@ class ModelTrainer {
   /**
    * Given a data iterator, return a publisher of inference model outputs.
    *
-   * \todo Publish InferenceOutputBatch instead of EncodedOutputBatch.
+   * \todo Publish InferenceOutputBatch instead of EncodedBatch.
    */
-  virtual std::shared_ptr<neural_net::Publisher<EncodedOutputBatch>>
+  virtual std::shared_ptr<neural_net::Publisher<EncodedBatch>>
   AsInferenceBatchPublisher(std::unique_ptr<data_iterator> test_data,
                             size_t batch_size, float confidence_threshold,
                             float iou_threshold) = 0;
@@ -257,7 +260,7 @@ class ModelTrainer {
    * \todo This conversion should be incorporated into the inference pipeline
    *       once the backends support proper asynchronous complete handlers.
    */
-  virtual InferenceOutputBatch DecodeOutputBatch(EncodedOutputBatch batch,
+  virtual InferenceOutputBatch DecodeOutputBatch(EncodedBatch batch,
                                                  float confidence_threshold,
                                                  float iou_threshold) = 0;
 
