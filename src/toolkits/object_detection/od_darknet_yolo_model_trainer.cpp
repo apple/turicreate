@@ -7,6 +7,7 @@
 
 #include <toolkits/object_detection/od_darknet_yolo_model_trainer.hpp>
 
+#include <toolkits/object_detection/od_evaluation.hpp>
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
 
@@ -206,7 +207,7 @@ std::unique_ptr<model_spec> InitializeDarknetYOLO(
 
 }  // namespace
 
-image_augmenter::options DarknetYOLOTrainingAugmentationOptions(
+image_augmenter::options DarknetYOLOInferenceAugmentationOptions(
     int batch_size, int output_height, int output_width) {
   image_augmenter::options opts;
 
@@ -214,6 +215,13 @@ image_augmenter::options DarknetYOLOTrainingAugmentationOptions(
   opts.batch_size = static_cast<size_t>(batch_size);
   opts.output_height = static_cast<size_t>(output_height * SPATIAL_REDUCTION);
   opts.output_width = static_cast<size_t>(output_width * SPATIAL_REDUCTION);
+  return opts;
+}
+
+image_augmenter::options DarknetYOLOTrainingAugmentationOptions(
+    int batch_size, int output_height, int output_width) {
+  image_augmenter::options opts = DarknetYOLOInferenceAugmentationOptions(
+      batch_size, output_height, output_width);
 
   // Apply random crops.
   opts.crop_prob = 0.9f;
@@ -252,6 +260,7 @@ EncodedInputBatch EncodeDarknetYOLO(InputBatch input_batch,
   result.iteration_id = input_batch.iteration_id;
   result.images = std::move(input_batch.images);
   result.annotations = std::move(input_batch.annotations);
+  result.image_sizes = std::move(input_batch.image_sizes);
 
   // Allocate a float buffer of sufficient size.
   // TODO: Recycle these allocations.
@@ -282,7 +291,33 @@ EncodedInputBatch EncodeDarknetYOLO(InputBatch input_batch,
   return result;
 }
 
-TrainingOutputBatch DarknetYOLOTrainer::Invoke(EncodedInputBatch input_batch) {
+InferenceOutputBatch DecodeDarknetYOLOInference(EncodedOutputBatch batch,
+                                                float confidence_threshold,
+                                                float iou_threshold) {
+  InferenceOutputBatch result;
+  result.iteration_id = batch.iteration_id;
+
+  result.predictions.resize(batch.image_sizes.size());
+  for (size_t i = 0; i < result.predictions.size(); ++i) {
+    // For this row (corresponding to one image), extract the prediction.
+    shared_float_array raw_prediction = batch.encoded_output.at("output")[i];
+
+    // Translate the raw output into predicted labels and bounding boxes.
+    result.predictions[i] = convert_yolo_to_annotations(
+        raw_prediction, GetAnchorBoxes(), confidence_threshold);
+
+    // Remove overlapping predictions.
+    result.predictions[i] = apply_non_maximum_suppression(
+        std::move(result.predictions[i]), iou_threshold);
+  }
+
+  result.annotations = std::move(batch.annotations);
+  result.image_sizes = std::move(batch.image_sizes);
+  return result;
+}
+
+TrainingOutputBatch DarknetYOLOBackendTrainingWrapper::Invoke(
+    EncodedInputBatch input_batch) {
   ApplyLearningRateSchedule(input_batch.iteration_id);
 
   auto results = impl_->train(
@@ -294,7 +329,8 @@ TrainingOutputBatch DarknetYOLOTrainer::Invoke(EncodedInputBatch input_batch) {
   return output_batch;
 }
 
-void DarknetYOLOTrainer::ApplyLearningRateSchedule(int iteration_id) {
+void DarknetYOLOBackendTrainingWrapper::ApplyLearningRateSchedule(
+    int iteration_id) {
   // Leave the learning rate unchanged for the first half of the expected number
   // of iterations.
   if (iteration_id == 1 + max_iterations_ / 2) {
@@ -308,6 +344,16 @@ void DarknetYOLOTrainer::ApplyLearningRateSchedule(int iteration_id) {
     // Handle any manually triggered iterations after the last planned one.
     impl_->set_learning_rate(base_learning_rate_ / 1000.f);
   }
+}
+
+EncodedOutputBatch DarknetYOLOBackendInferenceWrapper::Invoke(
+    EncodedInputBatch input_batch) {
+  EncodedOutputBatch output_batch;
+  output_batch.iteration_id = input_batch.iteration_id;
+  output_batch.encoded_output = impl_->predict({{"input", input_batch.images}});
+  output_batch.annotations = std::move(input_batch.annotations);
+  output_batch.image_sizes = std::move(input_batch.image_sizes);
+  return output_batch;
 }
 
 std::unique_ptr<Checkpoint> DarknetYOLOCheckpointer::Next() {
@@ -374,11 +420,7 @@ float_array_map DarknetYOLOCheckpoint::internal_weights() const {
 DarknetYOLOModelTrainer::DarknetYOLOModelTrainer(
     const DarknetYOLOCheckpoint& checkpoint,
     neural_net::compute_context* context)
-    : ModelTrainer(context->create_image_augmenter(
-          DarknetYOLOTrainingAugmentationOptions(
-              checkpoint.config().batch_size, checkpoint.config().output_height,
-              checkpoint.config().output_width))),
-      config_(checkpoint.config()),
+    : config_(checkpoint.config()),
       backend_(context->create_object_detector(
           /* n       */ config_.batch_size,
           /* c_in    */ 3,  // RGB input
@@ -388,7 +430,82 @@ DarknetYOLOModelTrainer::DarknetYOLOModelTrainer(
           /* h_out   */ config_.output_height,
           /* w_out   */ config_.output_width,
           /* config  */ checkpoint.internal_config(),
-          /* weights */ checkpoint.internal_weights())) {}
+          /* weights */ checkpoint.internal_weights())),
+      training_augmenter_(
+          std::make_shared<DataAugmenter>(context->create_image_augmenter(
+              DarknetYOLOTrainingAugmentationOptions(
+                  checkpoint.config().batch_size,
+                  checkpoint.config().output_height,
+                  checkpoint.config().output_width)))),
+      inference_augmenter_(
+          std::make_shared<DataAugmenter>(context->create_image_augmenter(
+              DarknetYOLOInferenceAugmentationOptions(
+                  checkpoint.config().batch_size,
+                  checkpoint.config().output_height,
+                  checkpoint.config().output_width)))) {}
+
+std::shared_ptr<Publisher<TrainingOutputBatch>>
+DarknetYOLOModelTrainer::AsTrainingBatchPublisher(
+    std::unique_ptr<data_iterator> training_data, size_t batch_size,
+    int offset) {
+  // Wrap the data_iterator to incorporate into a Combine pipeline.
+  auto iterator = std::make_shared<DataIterator>(std::move(training_data),
+                                                 batch_size, offset);
+
+  // Define a lambda that applies EncodeDarknetYOLO to the raw annotations.
+  Config config = config_;
+  auto encoder = [config](InputBatch input_batch) {
+    return EncodeDarknetYOLO(
+        std::move(input_batch), config.output_height, config.output_width,
+        static_cast<int>(GetAnchorBoxes().size()), config.num_classes);
+  };
+
+  // Wrap the model_backend.
+  auto trainer = std::make_shared<DarknetYOLOBackendTrainingWrapper>(
+      backend_, BASE_LEARNING_RATE, config_.max_iterations);
+
+  // Construct the training pipeline.
+  return iterator->AsPublisher()
+      ->Map(training_augmenter_)
+      ->Map(encoder)
+      ->Map(trainer);
+}
+
+std::shared_ptr<Publisher<EncodedOutputBatch>>
+DarknetYOLOModelTrainer::AsInferenceBatchPublisher(
+    std::unique_ptr<data_iterator> test_data, size_t batch_size,
+    float confidence_threshold, float iou_threshold) {
+  // Wrap the data_iterator to incorporate into a Combine pipeline.
+  auto iterator = std::make_shared<DataIterator>(std::move(test_data),
+                                                 batch_size, /* offset */ 0);
+
+  // No labels to encode. Just pass the annotations through for potential
+  // evaluation.
+  auto trivial_encoder = [](InputBatch input_batch) {
+    EncodedInputBatch result;
+    result.iteration_id = input_batch.iteration_id;
+    result.images = std::move(input_batch.images);
+    result.annotations = std::move(input_batch.annotations);
+    result.image_sizes = std::move(input_batch.image_sizes);
+    return result;
+  };
+
+  // Wrap the model_backend.
+  auto predicter =
+      std::make_shared<DarknetYOLOBackendInferenceWrapper>(backend_);
+
+  // Construct the inference pipeline.
+  return iterator->AsPublisher()
+      ->Map(inference_augmenter_)
+      ->Map(trivial_encoder)
+      ->Map(predicter);
+}
+
+InferenceOutputBatch DarknetYOLOModelTrainer::DecodeOutputBatch(
+    EncodedOutputBatch batch, float confidence_threshold, float iou_threshold) {
+  return DecodeDarknetYOLOInference(std::move(batch), confidence_threshold,
+                                    iou_threshold);
+}
 
 std::shared_ptr<Publisher<std::unique_ptr<Checkpoint>>>
 DarknetYOLOModelTrainer::AsCheckpointPublisher() {
@@ -397,6 +514,8 @@ DarknetYOLOModelTrainer::AsCheckpointPublisher() {
   return checkpointer->AsPublisher();
 }
 
+// TODO: Remove this method. It is only called by the base class implementation
+// of AsTrainingBatchPublisher we overrode above.
 std::shared_ptr<Publisher<TrainingOutputBatch>>
 DarknetYOLOModelTrainer::AsTrainingBatchPublisher(
     std::shared_ptr<neural_net::Publisher<InputBatch>> augmented_data) {
@@ -410,7 +529,7 @@ DarknetYOLOModelTrainer::AsTrainingBatchPublisher(
   };
 
   // Wrap the model_backend.
-  auto trainer = std::make_shared<DarknetYOLOTrainer>(
+  auto trainer = std::make_shared<DarknetYOLOBackendTrainingWrapper>(
       backend_, BASE_LEARNING_RATE, config_.max_iterations);
 
   // Append the encoding function and the model backend to the pipeline.

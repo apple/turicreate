@@ -11,6 +11,7 @@ namespace turi {
 namespace object_detection {
 
 using neural_net::image_augmenter;
+using neural_net::labeled_image;
 using neural_net::Publisher;
 
 DataBatch DataIterator::Next() {
@@ -24,10 +25,19 @@ InputBatch DataAugmenter::Invoke(DataBatch data_batch) {
   image_augmenter::result result =
       impl_->prepare_images(std::move(data_batch.examples));
 
+  auto extract_size = [](const labeled_image &example) {
+    return std::make_pair(example.image.m_height, example.image.m_width);
+  };
+
   InputBatch batch;
   batch.iteration_id = data_batch.iteration_id;
   batch.images = std::move(result.image_batch);
   batch.annotations = std::move(result.annotations_batch);
+
+  batch.image_sizes.resize(data_batch.examples.size());
+  std::transform(data_batch.examples.begin(), data_batch.examples.end(),
+                 batch.image_sizes.begin(), extract_size);
+
   return batch;
 }
 
