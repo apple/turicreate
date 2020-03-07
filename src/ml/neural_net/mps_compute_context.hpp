@@ -62,8 +62,7 @@ class mps_compute_context: public compute_context {
       std::function<float(float lower, float upper)> rng);
 
  private:
-
-  std::unique_ptr<mps_command_queue> command_queue_;
+  std::shared_ptr<mps_command_queue> command_queue_;
 };
 
 }  // namespace neural_net

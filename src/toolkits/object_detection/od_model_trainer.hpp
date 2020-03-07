@@ -44,20 +44,32 @@ struct InputBatch {
 
   /** The raw annotations from the DataBatch. */
   std::vector<std::vector<neural_net::image_annotation>> annotations;
+
+  /**
+   * The original height and width of each image, used to scale bounding-box
+   * predictions.
+   */
+  std::vector<std::pair<size_t, size_t>> image_sizes;
 };
 
 /** Represents one batch of data, in a possibly model-specific format. */
 struct EncodedInputBatch {
   int iteration_id = 0;
+
+  // TODO: Migrate to neural_net::float_array_map
   neural_net::shared_float_array images;
   neural_net::shared_float_array labels;
 
   // The raw annotations are preserved to support evaluation, comparing raw
   // annotations against model predictions.
   std::vector<std::vector<neural_net::image_annotation>> annotations;
+
+  // The original image sizes are preserved to support prediction.
+  std::vector<std::pair<size_t, size_t>> image_sizes;
 };
 
 /** Represents the raw output of an object-detection model. */
+// TODO: Adopt EncodedBatch instead.
 struct TrainingOutputBatch {
   int iteration_id = 0;
   neural_net::shared_float_array loss;
@@ -67,6 +79,29 @@ struct TrainingOutputBatch {
 struct TrainingProgress {
   int iteration_id = 0;
   float smoothed_loss = 0.f;
+};
+
+/**
+ * Represents the immediate (model-specific) input or output of a model backend,
+ * using the float_array_map representation.
+ */
+struct EncodedBatch {
+  int iteration_id = 0;
+
+  neural_net::float_array_map encoded_data;
+
+  std::vector<std::vector<neural_net::image_annotation>> annotations;
+  std::vector<std::pair<size_t, size_t>> image_sizes;
+};
+
+/** Represents one batch of inference results, in a generic format. */
+struct InferenceOutputBatch {
+  int iteration_id = 0;
+
+  std::vector<std::vector<neural_net::image_annotation>> predictions;
+
+  std::vector<std::vector<neural_net::image_annotation>> annotations;
+  std::vector<std::pair<size_t, size_t>> image_sizes;
 };
 
 /** Ostensibly model-agnostic parameters for object detection. */
@@ -192,6 +227,8 @@ class ProgressUpdater
  */
 class ModelTrainer {
  public:
+  ModelTrainer() : ModelTrainer(nullptr) {}
+
   // TODO: This class should be responsible for producing the augmenter itself.
   ModelTrainer(std::unique_ptr<neural_net::image_augmenter> augmenter);
 
@@ -206,6 +243,27 @@ class ModelTrainer {
   AsTrainingBatchPublisher(std::unique_ptr<data_iterator> training_data,
                            size_t batch_size, int offset);
 
+  /**
+   * Given a data iterator, return a publisher of inference model outputs.
+   *
+   * \todo Publish InferenceOutputBatch instead of EncodedBatch.
+   */
+  virtual std::shared_ptr<neural_net::Publisher<EncodedBatch>>
+  AsInferenceBatchPublisher(std::unique_ptr<data_iterator> test_data,
+                            size_t batch_size, float confidence_threshold,
+                            float iou_threshold) = 0;
+
+  /**
+   * Convert the raw output of the inference batch publisher into structured
+   * predictions.
+   *
+   * \todo This conversion should be incorporated into the inference pipeline
+   *       once the backends support proper asynchronous complete handlers.
+   */
+  virtual InferenceOutputBatch DecodeOutputBatch(EncodedBatch batch,
+                                                 float confidence_threshold,
+                                                 float iou_threshold) = 0;
+
   /** Returns a publisher that can be used to request checkpoints. */
   virtual std::shared_ptr<neural_net::Publisher<std::unique_ptr<Checkpoint>>>
   AsCheckpointPublisher() = 0;
@@ -213,6 +271,8 @@ class ModelTrainer {
  protected:
   // Used by subclasses to produce the model-specific portions of the overall
   // training pipeline.
+  // TODO: Remove this method. Just let subclasses define the entire training
+  // pipeline.
   virtual std::shared_ptr<neural_net::Publisher<TrainingOutputBatch>>
   AsTrainingBatchPublisher(
       std::shared_ptr<neural_net::Publisher<InputBatch>> augmented_data) = 0;
