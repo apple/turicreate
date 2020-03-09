@@ -1089,9 +1089,7 @@ void activity_classifier::init_train(
     log_and_throw("No neural network compute context provided");
   }
 
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  print_training_device(gpu_names);
+  training_compute_context_->print_training_device_info();
 
   // Set additional model fields.
   add_or_update_state({

@@ -98,11 +98,17 @@ size_t mps_compute_context::memory_budget() const {
   }  // @autoreleasepool
 }
 
-std::vector<std::string> mps_compute_context::gpu_names() const {
+void mps_compute_context::print_training_device_info() const {
   @autoreleasepool {
 
   id <MTLDevice> dev = command_queue_->impl.device;
-  return { [dev.name cStringUsingEncoding:NSUTF8StringEncoding] };
+  std::string gpu_name = [dev.name cStringUsingEncoding:NSUTF8StringEncoding];
+
+  if (gpu_name.empty()) {
+    logprogress_stream << "Using CPU to create model.";
+  } else {
+    logprogress_stream << "Using GPU (\"" << gpu_name <<"\") to create model.";
+  }
 
   }  // @autoreleasepool
 }

@@ -63,15 +63,17 @@ def suppress_tensorflow_warnings():
     _tf.debugging.set_log_device_placement(False)
 
 
-def get_gpu_names():
-    """
-    Gets the available GPU names.
-    """
-    import tensorflow as _tf
+def is_gpu_available():
+    import tensorflow as tf
 
-    gpu_names = _tf.config.experimental.list_physical_devices("GPU")
-    return [str(gpu_name) for gpu_name in gpu_names]
+    tf_minor_version = int(tf.version.VERSION.split('.')[1])
 
+    if tf_minor_version == 0:
+        gpu_names = tf.config.experimental.list_physical_devices("GPU")
+    else:
+        gpu_names = tf.config.list_physical_devices("GPU")
+
+    return (len(gpu_names) > 0)
 
 def convert_shared_float_array_to_numpy(array):
     """

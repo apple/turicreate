@@ -8,7 +8,6 @@ make_library(unity_util OBJECT
     sframe_utils.cpp
     class_registrations.cpp
     random_sframe_generation.cpp
-    training_utils.cpp
   REQUIRES
     unity_core
 )

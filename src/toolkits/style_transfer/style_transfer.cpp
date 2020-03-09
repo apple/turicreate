@@ -332,8 +332,8 @@ void style_transfer::load_version(iarchive& iarc, size_t version) {
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
     const {
 // Since the tcmps library isn't compiled if the system doesn't have MPS. We
-// have an if_def to check for an mps enabled system system. If it is an mps
-// enabled system system then a check for MacOS greater than 10.15 is performed.
+// have an if_def to check for an mps enabled system system. If it is an MPS
+// enabled system, then a check for MacOS greater than 10.15 is performed.
 // If it is then the Style Transfer MPS implementation is used. On all other
 // systems currently the TensorFlow implementation is used.
 #ifdef HAS_MPS
@@ -366,9 +366,7 @@ std::unique_ptr<data_iterator> style_transfer::create_iterator(
 }
 
 void style_transfer::infer_derived_options() {
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = m_training_compute_context->gpu_names();
-  print_training_device(gpu_names);
+  m_training_compute_context->print_training_device_info();
 
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {
     add_or_update_state({{"batch_size", DEFAULT_BATCH_SIZE}});

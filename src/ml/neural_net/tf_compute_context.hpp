@@ -30,7 +30,7 @@ public:
 
   virtual ~tf_compute_context();
 
-  std::vector<std::string> gpu_names() const override;
+  void print_training_device_info() const override;
   size_t memory_budget() const override;
 
   std::unique_ptr<model_backend> create_object_detector(
