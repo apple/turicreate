@@ -9,6 +9,7 @@
 #include <vector>
 #include <string>
 #include <utility>
+#include <turi_common.h>
 
 namespace turi { namespace random {
 

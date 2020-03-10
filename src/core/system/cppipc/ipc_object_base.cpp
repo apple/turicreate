@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <core/system/cppipc/ipc_object_base.hpp>
 
 namespace cppipc {

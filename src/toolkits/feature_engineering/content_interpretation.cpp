@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <limits>
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <core/util/cityhash_tc.hpp>
 #include <core/random/random.hpp>

@@ -1,7 +1,6 @@
 project(Turi)
 
 make_library(libjson
-  OBJECT
   SOURCES
     Source/internalJSONNode.cpp
     Source/JSONNode_Mutex.cpp

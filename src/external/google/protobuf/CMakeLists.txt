@@ -1,7 +1,6 @@
-project(TuriExternalDependencies)
+project(Turi)
 
 make_library(protobuf
-  OBJECT
   SOURCES
     # Don't need to pull in the compiler source files here.
     # Or any non-lite sources.

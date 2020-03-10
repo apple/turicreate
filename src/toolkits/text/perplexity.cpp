@@ -6,13 +6,14 @@
 #include <fstream>
 #include <algorithm>
 #include <iostream>
+#include <turi_common.h>
 #include <cmath>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/storage/sframe_interface/unity_sarray.hpp>
 #include <model_server/lib/flex_dict_view.hpp>
 #include <toolkits/text/topic_model.hpp>
 #include <core/logging/assertions.hpp>
-#include <toolkits/util/indexed_sframe_tools.hpp>
+#include <ml/util/indexed_sframe_tools.hpp>
 #include <ml/ml_data/ml_data.hpp>
 
 namespace turi {

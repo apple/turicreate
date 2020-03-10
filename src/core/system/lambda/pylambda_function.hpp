@@ -6,9 +6,10 @@
 #ifndef TURI_LAMBDA_PYLAMBDA_FUNCTION_HPP
 #define TURI_LAMBDA_PYLAMBDA_FUNCTION_HPP
 
-#include<vector>
-#include<string>
-#include<core/data/flexible_type/flexible_type.hpp>
+#include <vector>
+#include <string>
+#include <turi_common.h>
+#include <core/data/flexible_type/flexible_type.hpp>
 
 namespace turi {
 

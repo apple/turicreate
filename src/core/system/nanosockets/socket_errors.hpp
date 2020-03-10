@@ -5,5 +5,6 @@
  */
 #ifndef FAULT_SOCKETS_SOCKET_ERRORS_HPP
 #define FAULT_SOCKETS_SOCKET_ERRORS_HPP
+#include <turi_common.h>
 #include <errno.h>
 #endif

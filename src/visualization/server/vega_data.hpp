@@ -6,6 +6,7 @@
 #ifndef __TC_VEGA_DATA
 #define __TC_VEGA_DATA
 
+#include <turi_common.h>
 #include "transformation.hpp"
 
 namespace turi {

@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // #define BOOST_SPIRIT_DEBUG
+#include <turi_common.h>
 #include <boost/bind.hpp>
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/qi_numeric.hpp>

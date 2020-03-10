@@ -31,6 +31,7 @@
 #ifndef EIGEN_SERIALIZATION_HPP
 #define EIGEN_SERIALIZATION_HPP
 
+#include <turi_common.h>
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <core/logging/assertions.hpp>
 #include <typeinfo>

@@ -5,6 +5,7 @@
  */
 #ifndef TURI_LAMBDA_LAMBDA_INTERFACE_HPP
 #define TURI_LAMBDA_LAMBDA_INTERFACE_HPP
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/system/cppipc/cppipc.hpp>
 #include <core/storage/sframe_data/sframe_rows.hpp>

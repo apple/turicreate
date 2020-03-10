@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 // this is a circular dependency that needs to be eliminated
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
 namespace turi {
 

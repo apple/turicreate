@@ -9,6 +9,7 @@
 #include <vector>
 #include <memory>
 #include <functional>
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/storage/query_engine/planning/materialize_options.hpp>
 

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <algorithm>
 #include <iostream>
+#include <turi_common.h>
 #include <cmath>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/storage/sframe_interface/unity_sarray.hpp>
@@ -13,16 +14,16 @@
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/text/topic_model.hpp>
 #include <toolkits/text/alias.hpp>
-#include <toolkits/util/spmat.hpp>
+#include <ml/util/spmat.hpp>
 #include <core/random/alias.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
-#include <toolkits/util/indexed_sframe_tools.hpp>
-#include <toolkits/ml_data_2/metadata.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/sframe_index_mapping.hpp>
+#include <ml/util/indexed_sframe_tools.hpp>
+#include <toolkits/recsys/ml_data_2/metadata.hpp>
 #include <core/logging/assertions.hpp>
 #include <core/logging/table_printer/table_printer.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <Eigen/Core>
 #include <core/parallel/atomic.hpp>
 

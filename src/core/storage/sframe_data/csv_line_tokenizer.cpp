@@ -12,6 +12,7 @@
 #include <string>
 #include <cstdlib>
 #include <algorithm>
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <boost/config/warning_disable.hpp>
 #include <core/storage/sframe_data/csv_line_tokenizer.hpp>

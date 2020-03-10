@@ -20,3 +20,4 @@ struct member_function_return_type {
 } // cppipc
 
 #endif
+#include <turi_common.h>

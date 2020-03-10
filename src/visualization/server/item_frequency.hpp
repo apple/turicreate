@@ -6,6 +6,7 @@
 #ifndef __TC_ITEM_FREQUENCY
 #define __TC_ITEM_FREQUENCY
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sarray.hpp>
 #include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
 #include <visualization/server/item_frequency.hpp>

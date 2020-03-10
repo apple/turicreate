@@ -6,6 +6,7 @@
 #ifndef TIMESERIES_REGISTRATIONS_H_
 #define TIMESERIES_REGISTRATIONS_H_
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/toolkit_class_specification.hpp>
 #include <model_server/lib/toolkit_function_specification.hpp>

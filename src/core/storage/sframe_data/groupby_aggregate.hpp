@@ -11,6 +11,7 @@
 #include <cstdint>
 #include <functional>
 #include <unordered_set>
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/storage/sframe_data/sframe_constants.hpp>
 #include <core/storage/sframe_data/group_aggregate_value.hpp>

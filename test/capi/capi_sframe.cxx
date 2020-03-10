@@ -14,7 +14,7 @@
 #include <vector>
 #include <iostream>
 #include <ctime>
-#include <toolkits/util/random_sframe_generation.hpp>
+#include <ml/util/random_sframe_generation.hpp>
 #include <core/storage/fileio/fileio_constants.hpp>
 #include <core/util/fs_util.hpp>
 #include "capi_utils.hpp"

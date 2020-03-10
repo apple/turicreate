@@ -6,6 +6,7 @@
 #ifndef __TC_VEGA_SPEC
 #define __TC_VEGA_SPEC
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 
 #include <string>

@@ -7,6 +7,7 @@
 #define TURI_LINE_SEARCH_H_
 
 // Types
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 
 // Optimization

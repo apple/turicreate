@@ -11,6 +11,7 @@
 #include <deque>
 #include <iostream>
 #include <cassert>
+#include <turi_common.h>
 #include <math.h>
 #include <core/logging/logger.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>

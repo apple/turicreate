@@ -6,6 +6,7 @@
 #ifndef TURI_GENERICS_IS_MEMMOVABLE_HPP
 #define TURI_GENERICS_IS_MEMMOVABLE_HPP
 #include <type_traits>
+#include <turi_common.h>
 
 // Workaround for libstdc++ < 5.0
 #if defined(__GLIBCXX__) && __GLIBCXX__ < 20150801

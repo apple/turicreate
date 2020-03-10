@@ -1,6 +1,7 @@
 #ifndef TURI_CORE_STORAGE_HPP_
 #define TURI_CORE_STORAGE_HPP_
 
+#include <turi_common.h>
 #include <core/storage/sgraph_data/sgraph_synchronize_interface.hpp>
 #include <core/storage/sgraph_data/sgraph.hpp>
 #include <core/storage/sgraph_data/sgraph_compute_vertex_block.hpp>

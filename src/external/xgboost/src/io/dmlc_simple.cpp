@@ -3,7 +3,7 @@
 #define _CRT_SECURE_NO_DEPRECATE
 #define NOMINMAX
 #include <string>
-#include <xgboost/src/utils/io.h>
+#include <external/xgboost/src/utils/io.h>
 
 // implements a single no split version of DMLC
 // in case we want to avoid dependency on dmlc-core

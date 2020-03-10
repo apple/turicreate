@@ -6,6 +6,7 @@
 #include <iostream>
 #include <thread>
 
+#include <turi_common.h>
 #include <visualization/annotation/annotation_base.hpp>
 #include <model_server/lib/variant.hpp>
 #include <toolkits/nearest_neighbors/unity_nearest_neighbors.hpp>

@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include "javascript_caller.h"
 
 #include <iostream>

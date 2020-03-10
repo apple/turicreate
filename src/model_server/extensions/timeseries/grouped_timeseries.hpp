@@ -6,6 +6,7 @@
 #ifndef TURI_GROUPED_TIMESERIES_HPP
 #define TURI_GROUPED_TIMESERIES_HPP
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/extensions/model_base.hpp>
 #include <model_server/extensions/grouped_sframe.hpp>

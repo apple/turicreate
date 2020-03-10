@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <functional>
 #include <memory>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/parallel/mutex.hpp>
 #include <iostream>

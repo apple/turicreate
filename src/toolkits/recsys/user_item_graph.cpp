@@ -3,12 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <toolkits/recsys/user_item_graph.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
 #include <algorithm>
 #include <core/parallel/pthread_tools.hpp>
-#include <perf/memory_info.hpp>
+#include <core/system/platform/perf/memory_info.hpp>
 
 namespace turi { namespace recsys {
 

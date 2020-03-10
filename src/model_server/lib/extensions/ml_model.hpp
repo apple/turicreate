@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_ML_MODEL_HPP
 #define TURI_UNITY_ML_MODEL_HPP
 
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 #include <model_server/lib/unity_base_types.hpp>
 #include <model_server/lib/toolkit_util.hpp>

@@ -14,6 +14,7 @@
 // jpeglib.h however puts some guard protection to avoid redefining INT32
 // but of course that only works if I include windows BEFORE jpeglib.h
 //
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <stdio.h>
 #include <jpeglib.h>

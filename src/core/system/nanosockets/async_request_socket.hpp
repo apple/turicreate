@@ -7,6 +7,7 @@
 #define NANOSOCKETS_SOCKETS_ASYNC_REQUEST_SOCKET_HPP
 #include <string>
 #include <vector>
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/system/nanosockets/zmq_msg_vector.hpp>

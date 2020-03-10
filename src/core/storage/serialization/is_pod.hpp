@@ -6,6 +6,7 @@
 #ifndef TURI_IS_POD_HPP
 #define TURI_IS_POD_HPP
 #include <type_traits>
+#include <turi_common.h>
 
 namespace turi {
 

@@ -10,3 +10,4 @@ extern void __set_back_trace_file_number(int number);
 extern void __print_back_trace();
 
 #endif
+#include <turi_common.h>

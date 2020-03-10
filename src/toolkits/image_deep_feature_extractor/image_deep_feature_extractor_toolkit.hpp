@@ -8,6 +8,7 @@
 
 #include <memory>
 
+#include <turi_common.h>
 #include <toolkits/image_deep_feature_extractor/image_feature_extractor.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>

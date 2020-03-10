@@ -197,3 +197,4 @@ static inline int compare(const char* s1, const char* s2, size_t n) {
 }}
 
 #endif /* TURI_STRING_INTERNALS_H_ */
+#include <turi_common.h>

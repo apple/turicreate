@@ -11,6 +11,7 @@ syntax: glob
 debug/*
 release/*
 profile/*
+src/turi_common.h
 dist/turicreateapi*
 configure.deps
 config.log

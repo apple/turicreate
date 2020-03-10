@@ -9,7 +9,7 @@
 #include <vector>
 #include <string>
 #include "./rabit/utils.h"
-#include "./dmlc/io.h"
+#include <external/xgboost/subtree/rabit/include/dmlc/io.h>
 
 namespace rabit {
 /*!

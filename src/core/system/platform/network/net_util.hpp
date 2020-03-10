@@ -6,6 +6,7 @@
 #ifndef TURI_NET_UTIL_HPP
 #define TURI_NET_UTIL_HPP
 #include <string>
+#include <turi_common.h>
 #include <stdint.h>
 
 namespace turi {

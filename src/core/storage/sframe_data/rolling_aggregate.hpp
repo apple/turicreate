@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_ROLLING_AGGREGATE_HPP
 #define TURI_SFRAME_ROLLING_AGGREGATE_HPP
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_data/sarray.hpp>
 #include <core/storage/sframe_data/groupby_aggregate_operators.hpp>

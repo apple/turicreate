@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <set>
+#include <turi_common.h>
 #include <core/system/nanosockets/zmq_msg_vector.hpp>
 #include <core/parallel/mutex.hpp>
 #include <core/export.hpp>

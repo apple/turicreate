@@ -7,6 +7,7 @@
 #define CPPIPC_IPC_DESERIALIZER_HPP
 
 #ifdef DISABLE_TURI_CPPIPC_PROXY_GENERATION
+#include <turi_common.h>
 #include <core/system/cppipc/common/ipc_deserializer_minimal.hpp>
 
 #else

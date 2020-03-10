@@ -1,6 +1,7 @@
 #ifndef PIPE_H_
 #define PIPE_H_
 
+#include <turi_common.h>
 #include "layer.h"
 
 #include <thread>

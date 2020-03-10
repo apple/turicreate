@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <unordered_set>
+#include <turi_common.h>
 #include <cmath>
 
 #include <core/util/hash_value.hpp>

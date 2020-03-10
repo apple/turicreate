@@ -13,8 +13,8 @@
 
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/sframe_index_mapping.hpp>
 #include <toolkits/recsys/models.hpp>
 
 

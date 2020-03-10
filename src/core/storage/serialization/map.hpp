@@ -7,6 +7,7 @@
 #define TURI_SERIALIZE_MAP_HPP
 
 #include <map>
+#include <turi_common.h>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/storage/serialization/oarchive.hpp>
 #include <core/storage/serialization/iterator.hpp>

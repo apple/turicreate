@@ -3,6 +3,7 @@
 
 #include <list>
 
+#include <turi_common.h>
 #include "include/cef_client.h"
 
 class Handler : public CefClient, public CefDisplayHandler, public CefLifeSpanHandler, public CefLoadHandler {

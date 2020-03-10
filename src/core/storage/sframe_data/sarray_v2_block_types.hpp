@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SFRAME_SARRAY_V2_BLOCK_TYPES_HPP
 #define TURI_SFRAME_SARRAY_V2_BLOCK_TYPES_HPP
+#include <turi_common.h>
 #include <stdint.h>
 #include <tuple>
 #include <core/storage/serialization/serializable_pod.hpp>

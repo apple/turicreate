@@ -8,6 +8,7 @@
 
 #include <vector>
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_specification.hpp>
 #include <model_server/lib/toolkit_function_specification.hpp>
 

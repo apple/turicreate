@@ -9,6 +9,7 @@
 
 #include <functional>
 #include <random>
+#include <turi_common.h>
 
 namespace turi {
 namespace neural_net {

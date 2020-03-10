@@ -52,14 +52,12 @@ set(TC_ANNOTATIONS_SOURCE_FILES
   utils.cpp
 )
 
-make_library(annotation OBJECT
+make_library(annotation
   SOURCES
     ${TC_ANNOTATIONS_SOURCE_FILES}
     ${TC_ANNOTATIONS_PROTO_FILES}
   REQUIRES
     protobuf
-    process
     visualization
-    image_deep_feature_extractor
   EXTERNAL_VISIBILITY
 )

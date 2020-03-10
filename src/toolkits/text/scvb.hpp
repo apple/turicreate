@@ -7,6 +7,7 @@
 #define TURI_TEXT_SCVB_H_
 
 // SFrame
+#include <turi_common.h>
 #include <core/storage/sframe_data/sarray.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 

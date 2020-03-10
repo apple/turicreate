@@ -5,6 +5,7 @@
  */
 #ifndef CPPIPC_MAGIC_MACROS_HPP
 #define CPPIPC_MAGIC_MACROS_HPP
+#include <turi_common.h>
 #include <core/system/cppipc/ipc_object_base.hpp>
 #include <core/system/cppipc/registration_macros.hpp>
 #ifndef DISABLE_TURI_CPPIPC_PROXY_GENERATION

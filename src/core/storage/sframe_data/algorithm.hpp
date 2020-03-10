@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <type_traits>
 #include <iterator>
+#include <turi_common.h>
 #include <core/parallel/lambda_omp.hpp>
 #include <core/random/random.hpp>
 #include <core/storage/sframe_data/siterable.hpp>

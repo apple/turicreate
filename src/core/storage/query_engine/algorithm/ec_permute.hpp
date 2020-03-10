@@ -9,6 +9,7 @@
 
 #include <vector>
 #include <memory>
+#include <turi_common.h>
 /*
  * See ec_sort.hpp for details
  */

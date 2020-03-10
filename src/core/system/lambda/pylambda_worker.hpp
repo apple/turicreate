@@ -7,6 +7,7 @@
 #define TURI_LAMBDA_PYLAMBDA_WORKER_H_
 
 #include <string>
+#include <turi_common.h>
 
 namespace turi { namespace lambda {
 

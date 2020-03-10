@@ -7,6 +7,7 @@
 #define TURI_SFRAME_QUERY_MANAGER_SFRAME_SOURCE_HPP
 
 #include <sstream>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/operators/sarray_source.hpp>

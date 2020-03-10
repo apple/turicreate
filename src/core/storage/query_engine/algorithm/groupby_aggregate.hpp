@@ -9,6 +9,7 @@
 #include <string>
 #include <utility>
 #include <memory>
+#include <turi_common.h>
 #include <core/storage/sframe_data/group_aggregate_value.hpp>
 
 namespace turi {

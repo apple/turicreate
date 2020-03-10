@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <string>
+#include <turi_common.h>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
 #include <core/storage/query_engine/operators/all_operators.hpp>

@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <toolkits/recsys/recsys_model_base.hpp>
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <toolkits/nearest_neighbors/ball_tree_neighbors.hpp>

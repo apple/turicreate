@@ -8,6 +8,7 @@
 
 
 // Toolkits
+#include <turi_common.h>
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <toolkits/nearest_neighbors/lsh_family.hpp>
 

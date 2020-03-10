@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <cstdlib>
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 #include <boost/filesystem.hpp>
 #include <core/logging/logger.hpp>

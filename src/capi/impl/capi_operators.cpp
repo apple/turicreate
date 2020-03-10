@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <capi/TuriCreate.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <capi/impl/capi_error_handling.hpp>
@@ -129,7 +130,7 @@ static inline flexible_type apply_binary_op_ff(
     case binary_op::OP_GT:
       return (t > u);
     case binary_op::OP_GE:
-      return (t >= u);
+      return (t <= u);
     case binary_op::OP_AND:
       return (t && u);
     case binary_op::OP_OR:

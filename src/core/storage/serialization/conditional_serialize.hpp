@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SERIALIZATION_CONDITIONAL_SERIALIZE_HPP
 #define TURI_SERIALIZATION_CONDITIONAL_SERIALIZE_HPP
+#include <turi_common.h>
 #include <core/storage/serialization/oarchive.hpp>
 #include <core/storage/serialization/iarchive.hpp>
 namespace turi {

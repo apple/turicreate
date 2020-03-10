@@ -26,6 +26,7 @@
 #include <iterator>
 #include <algorithm>
 #include <numeric>
+#include <turi_common.h>
 #include "../../gil_config.hpp"
 #include "../../pixel_iterator.hpp"
 #include "../../metafunctions.hpp"

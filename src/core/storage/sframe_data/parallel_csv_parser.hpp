@@ -8,6 +8,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/storage/sframe_data/csv_line_tokenizer.hpp>

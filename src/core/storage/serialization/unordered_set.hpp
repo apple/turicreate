@@ -6,6 +6,7 @@
 #ifndef TURI_SERIALIZE_UNORDERED_SET_HPP
 #define TURI_SERIALIZE_UNORDERED_SET_HPP
 
+#include <turi_common.h>
 #include <boost/unordered_set.hpp>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/storage/serialization/oarchive.hpp>

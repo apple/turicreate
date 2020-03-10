@@ -6,6 +6,7 @@
 #ifndef TURI_FILEIO_FILEIO_CONSTANTS_HPP
 #define TURI_FILEIO_FILEIO_CONSTANTS_HPP
 #include <string>
+#include <turi_common.h>
 
 namespace turi {
 namespace fileio {

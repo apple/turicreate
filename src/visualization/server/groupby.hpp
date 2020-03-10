@@ -6,6 +6,7 @@
 #ifndef __TC_VIS_GROUPBY
 #define __TC_VIS_GROUPBY
 
+#include <turi_common.h>
 #include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <core/util/sys_util.hpp>

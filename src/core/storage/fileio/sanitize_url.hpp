@@ -6,6 +6,7 @@
 #ifndef FILEIO_SANITIZE_URL_HPP
 #define FILEIO_SANITIZE_URL_HPP
 #include <string>
+#include <turi_common.h>
 namespace turi {
 /**
  * \ingroup fileio

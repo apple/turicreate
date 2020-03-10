@@ -10,6 +10,7 @@
 #ifndef TURI_LOG_LEVEL_SETTER_HPP
 #define TURI_LOG_LEVEL_SETTER_HPP
 
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 
 /**

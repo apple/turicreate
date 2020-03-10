@@ -10,9 +10,9 @@
 #include <boost/test/unit_test.hpp>
 #include <core/util/test_macros.hpp>
 #include <ml/neural_net/model_spec.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
 #include <toolkits/drawing_classifier/drawing_classifier.hpp>
-#include <toolkits/evaluation/metrics.hpp>
+#include <ml/evaluation/metrics.hpp>
 
 namespace turi {
 namespace drawing_classifer {

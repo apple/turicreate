@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <fstream>
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <core/storage/fileio/s3_fstream.hpp>
 #include <core/logging/logger.hpp>

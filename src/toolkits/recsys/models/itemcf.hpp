@@ -8,8 +8,9 @@
 
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <model_server/lib/extensions/option_manager.hpp>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/coreml_export/mlmodel_wrapper.hpp>
 #include <toolkits/recsys/recsys_model_base.hpp>
 #include <core/generics/symmetric_2d_array.hpp>
 

@@ -3,6 +3,9 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+
+# distutils: language = c++
+
 '''
 There are essentially three tasks that need to be done in flexible_type translation;
 each of these are implemented in this file.

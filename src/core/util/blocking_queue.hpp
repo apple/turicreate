@@ -10,6 +10,7 @@
 
 #include <list>
 #include <deque>
+#include <turi_common.h>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/random/random.hpp>
 

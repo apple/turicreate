@@ -10,9 +10,9 @@
 
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/testing_utils.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/testing_utils.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
 
 #include <core/globals/globals.hpp>
 

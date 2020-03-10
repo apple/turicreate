@@ -1,7 +1,7 @@
 #define BOOST_TEST_MODULE classifier_evaluations
 
 #include <vector>
-#include <toolkits/supervised_learning/classifier_evaluations.hpp>
+#include <ml/supervised_learning/classifier_evaluations.hpp>
 #include <boost/test/unit_test.hpp>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <core/util/test_macros.hpp>

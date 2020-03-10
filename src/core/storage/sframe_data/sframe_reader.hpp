@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <memory>
 #include <vector>
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_data/sarray_reader.hpp>

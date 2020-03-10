@@ -1,6 +1,7 @@
 #ifndef TURI_ANNOTATIONS_CLASS_REGISTRATIONS_HPP
 #define TURI_ANNOTATIONS_CLASS_REGISTRATIONS_HPP
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/toolkit_class_specification.hpp>
 

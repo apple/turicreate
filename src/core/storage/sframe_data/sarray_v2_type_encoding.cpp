@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <functional>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_data/sarray_v2_block_types.hpp>
 #include <core/storage/sframe_data/sarray_v2_type_encoding.hpp>

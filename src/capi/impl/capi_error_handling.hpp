@@ -6,6 +6,7 @@
 #ifndef TURI_CAPI_ERROR_HANDLING_INTERNAL
 #define TURI_CAPI_ERROR_HANDLING_INTERNAL
 
+#include <turi_common.h>
 #include <capi/impl/capi_wrapper_structs.hpp>
 #include <exception>
 #include <string>

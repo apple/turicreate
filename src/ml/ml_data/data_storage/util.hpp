@@ -6,6 +6,7 @@
 #ifndef TURI_DATA_STORAGE_UTIL_H_
 #define TURI_DATA_STORAGE_UTIL_H_
 
+#include <turi_common.h>
 #include <ml/ml_data/metadata.hpp>
 #include <core/storage/sframe_data/sarray.hpp>
 

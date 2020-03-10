@@ -3,14 +3,15 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <core/storage/sframe_interface/unity_sframe.hpp>
-#include <toolkits/factorization/factorization_model.hpp>
+#include <ml/factorization/factorization_model.hpp>
 #include <toolkits/recsys/models/factorization_models.hpp>
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <toolkits/nearest_neighbors/brute_force_neighbors.hpp>
 #include <core/logging/table_printer/table_printer.hpp>
 
-#include <toolkits/factorization/als.hpp>
+#include <ml/factorization/als.hpp>
 
 namespace turi { namespace recsys {
 

@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_SERVER_CONTROL_H
 #define TURI_UNITY_SERVER_CONTROL_H
 
+#include <turi_common.h>
 #include <model_server/server/unity_server.hpp>
 #include <model_server/server/unity_server_options.hpp>
 

@@ -5,6 +5,7 @@
  */
 #ifndef TURI_UNITY_TOOLKIT_CLASS_WRAPPER_IMPL_HPP
 #define TURI_UNITY_TOOLKIT_CLASS_WRAPPER_IMPL_HPP
+#include <turi_common.h>
 #include <model_server/lib/toolkit_function_wrapper_impl.hpp>
 
 namespace turi {

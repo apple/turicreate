@@ -7,6 +7,7 @@
 
 #include <set>
 #include <string>
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <core/logging/assertions.hpp>
 #include <boost/algorithm/string.hpp>

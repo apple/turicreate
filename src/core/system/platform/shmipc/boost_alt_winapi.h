@@ -24,6 +24,7 @@
 #  pragma once
 #endif
 
+#include <turi_common.h>
 #include <boost/interprocess/detail/config_begin.hpp>
 #include <boost/interprocess/detail/workaround.hpp>
 #include <boost/date_time/filetime_functions.hpp>
@@ -37,7 +38,7 @@
 #include <vector>
 
 #ifdef BOOST_USE_WINDOWS_H
-#include <cross_platform/windows_wrapper.hpp>
+#include <core/system/platform/cross_platform/windows_wrapper.hpp>
 #include <Wbemidl.h>
 #include <Objbase.h>
 #include <Shlobj.h>

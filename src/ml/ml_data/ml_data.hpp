@@ -8,6 +8,7 @@
 
 #include <vector>
 #include <memory>
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <ml/ml_data/metadata.hpp>
 #include <ml/ml_data/ml_data_entry.hpp>

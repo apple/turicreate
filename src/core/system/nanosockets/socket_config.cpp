@@ -5,6 +5,7 @@
  */
 #include <cassert>
 #include <sstream>
+#include <turi_common.h>
 #include <boost/algorithm/string.hpp>
 #include <boost/integer_traits.hpp>
 #include <core/util/md5.hpp>

@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include "batch_size.hpp"
 #include "columnwise_summary.hpp"
 #include <core/storage/sframe_interface/unity_sframe.hpp>

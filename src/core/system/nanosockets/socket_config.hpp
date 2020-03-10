@@ -6,6 +6,7 @@
 #ifndef LIBNANOSOCKETS_SOCKET_CONFIG_HPP
 #define LIBNANOSOCKETS_SOCKET_CONFIG_HPP
 #include <string>
+#include <turi_common.h>
 namespace turi {
 namespace nanosockets {
 extern int SEND_TIMEOUT;

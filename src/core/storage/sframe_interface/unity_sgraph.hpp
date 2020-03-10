@@ -5,6 +5,7 @@
  */
 #ifndef TURI_UNITY_SGRAPH_HPP
 #define TURI_UNITY_SGRAPH_HPP
+#include <turi_common.h>
 #include <model_server/lib/api/unity_graph_interface.hpp>
 #include <model_server/lib/api/unity_sframe_interface.hpp>
 #include <model_server/lib/sgraph_triple_apply_typedefs.hpp>

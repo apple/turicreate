@@ -8,6 +8,7 @@
 #include <map>
 #include <vector>
 #include <algorithm>
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>

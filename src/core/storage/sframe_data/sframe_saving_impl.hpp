@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SFRAME_SAVING_IMPL_HPP
 #define TURI_SFRAME_SAVING_IMPL_HPP
+#include <turi_common.h>
 #include <core/storage/sframe_data/sarray_v2_block_types.hpp>
 namespace turi {
 

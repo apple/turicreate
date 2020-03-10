@@ -7,6 +7,7 @@
 #define TURI_UNITY_TOOLKIT_INVOCATION_HPP
 #include <string>
 #include <functional>
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 #include <model_server/lib/toolkit_class_registry.hpp>
 namespace turi {

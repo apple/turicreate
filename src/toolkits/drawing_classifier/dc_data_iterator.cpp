@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/drawing_classifier/dc_data_iterator.hpp>
 
 #include <algorithm>

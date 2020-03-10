@@ -7,6 +7,7 @@
 #define TURI_RANDOM_HPP
 
 #include <cstdlib>
+#include <turi_common.h>
 #include <stdint.h>
 
 
@@ -15,7 +16,7 @@
 #include <algorithm>
 
 #include <boost/random.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <core/parallel/pthread_tools.hpp>
 
 namespace turi {

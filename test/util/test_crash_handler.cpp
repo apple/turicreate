@@ -3,7 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#include <crash_handler/crash_handler.hpp>
+#include <core/system/platform/crash_handler/crash_handler.hpp>
 #include <cstdlib>
 #include <cstring>
 

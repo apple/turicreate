@@ -15,10 +15,10 @@
 #include <Eigen/SparseCore>
 
 // ML-Data Utils
-#include <toolkits/ml_data_2/standardization-inl.hpp>
+#include <toolkits/recsys/ml_data_2/standardization-inl.hpp>
 
 // Testing utils common to all of ml_data
-#include <toolkits/ml_data_2/testing_utils.hpp>
+#include <toolkits/recsys/ml_data_2/testing_utils.hpp>
 
 typedef Eigen::Matrix<double,Eigen::Dynamic,1>  DenseVector;
 typedef Eigen::SparseVector<double> SparseVector;

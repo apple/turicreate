@@ -6,6 +6,7 @@
 #ifndef TURI_DML_DATA_COLUMN_INDEXER_H_
 #define TURI_DML_DATA_COLUMN_INDEXER_H_
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/util/hash_value.hpp>
 #include <core/logging/assertions.hpp>

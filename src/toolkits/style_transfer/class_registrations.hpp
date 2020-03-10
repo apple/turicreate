@@ -7,6 +7,7 @@
 #ifndef TURI_STYLE_TRANSFER_REGISTRATION_H_
 #define TURI_STYLE_TRANSFER_REGISTRATION_H_
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_function_macros.hpp>
 
 namespace turi {

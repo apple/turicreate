@@ -5,6 +5,9 @@
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 #cython: boundscheck=False, wraparound=False
 
+# distutils: language = c++
+
+
 from cy_flexible_type cimport flexible_type, flex_type_enum, UNDEFINED, flex_int
 from cy_flexible_type cimport flexible_type_from_pyobject
 from cy_flexible_type cimport process_common_typed_list

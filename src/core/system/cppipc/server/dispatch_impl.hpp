@@ -8,6 +8,7 @@
 
 #include <tuple>
 #include <type_traits>
+#include <turi_common.h>
 #include <boost/function.hpp>
 #include <boost/type_traits.hpp>
 #include <boost/function_types/function_type.hpp>

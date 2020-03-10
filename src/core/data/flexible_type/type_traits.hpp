@@ -6,6 +6,7 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
+#include <turi_common.h>
 #include <core/generics/gl_vector.hpp>
 #include <core/generics/gl_string.hpp>
 

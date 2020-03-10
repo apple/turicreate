@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 #include <typeinfo>
+#include <turi_common.h>
 #include <core/system/cppipc/cppipc.hpp>
 namespace cppipc {
 

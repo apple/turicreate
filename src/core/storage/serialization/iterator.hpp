@@ -7,6 +7,7 @@
 #define TURI_SERIALIZE_ITERATOR_HPP
 
 #include <iterator>
+#include <turi_common.h>
 #include <core/storage/serialization/oarchive.hpp>
 #include <core/storage/serialization/iarchive.hpp>
 

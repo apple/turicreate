@@ -6,6 +6,7 @@
 #ifndef TURI_BITOPS_H
 #define TURI_BITOPS_H
 
+#include <turi_common.h>
 #include <core/util/int128_types.hpp>
 #include <cmath>
 #include <type_traits>

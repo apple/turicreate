@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // Toolkits
+#include <turi_common.h>
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
@@ -12,8 +13,8 @@
 #include <core/storage/sframe_data/sframe_reader.hpp>
 
 // ML Data
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/sframe_index_mapping.hpp>
 
 namespace turi {
 namespace nearest_neighbors {

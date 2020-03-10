@@ -5,6 +5,7 @@
  */
 #ifndef FAULT_SOCKETS_GET_NEXT_PORT_NUMBER_HPP
 #define FAULT_SOCKETS_GET_NEXT_PORT_NUMBER_HPP
+#include <turi_common.h>
 #include <stdint.h>
 #include <cstdlib>
 namespace turi {

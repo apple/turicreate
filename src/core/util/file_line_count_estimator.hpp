@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_FILE_LINE_COUNT_ESTIMATOR_HPP
 #define TURI_UNITY_FILE_LINE_COUNT_ESTIMATOR_HPP
 #include <cstdlib>
+#include <turi_common.h>
 namespace turi {
 
 /**

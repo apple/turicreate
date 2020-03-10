@@ -6,9 +6,10 @@
 #ifndef TURI_TABLE_PRINTER_H_
 #define TURI_TABLE_PRINTER_H_
 
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <core/logging/assertions.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/parallel/atomic.hpp>

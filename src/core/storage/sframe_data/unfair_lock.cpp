@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <algorithm>
+#include <turi_common.h>
 #include <core/parallel/atomic.hpp>
 #include <core/system/platform/timer//timer.hpp>
 #include <core/parallel/pthread_tools.hpp>

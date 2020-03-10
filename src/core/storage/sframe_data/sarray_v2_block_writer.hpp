@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SFRAME_SARRAY_V2_BLOCK_WRITER_HPP
 #define TURI_SFRAME_SARRAY_V2_BLOCK_WRITER_HPP
+#include <turi_common.h>
 #include <stdint.h>
 #include <vector>
 #include <fstream>

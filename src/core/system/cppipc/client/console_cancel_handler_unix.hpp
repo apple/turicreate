@@ -7,6 +7,7 @@
 #define CPPIPC_SERVER_CONSOLE_CANCEL_HANDLER_UNIX_HPP
 
 #include <csignal>
+#include <turi_common.h>
 #include <core/system/cppipc/client/console_cancel_handler.hpp>
 
 namespace cppipc {
