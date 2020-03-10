@@ -7,7 +7,6 @@ subdirs(
   perf
   process
   shmipc
-  so_utils
   timer
   config
   )
