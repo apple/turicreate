@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -26,13 +26,13 @@ namespace Aws
         * It is entirely intended that you override this class in-lieu of using a void* for the user context. The base class just gives you the ability to
         * pass a uuid for your context.
         */
-        class AsyncCallerContext
+        class AWS_CORE_API AsyncCallerContext
         {
         public:
             /**
-             * Initializes object with empty UUID
+             * Initializes object with generated UUID
              */
-            AsyncCallerContext() {}
+            AsyncCallerContext();
 
             /**
              * Initializes object with UUID

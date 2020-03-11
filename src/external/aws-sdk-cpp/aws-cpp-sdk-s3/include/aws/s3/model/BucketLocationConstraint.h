@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
@@ -35,7 +36,15 @@ namespace Model
     ap_northeast_1,
     sa_east_1,
     cn_north_1,
-    eu_central_1
+    eu_central_1,
+    eu_west_3,
+    eu_west_2,
+    ap_northeast_2,
+    ca_central_1,
+    us_gov_west_1,
+    us_east_1,
+    us_east_2,
+    cn_northwest_1
   };
 
 namespace BucketLocationConstraintMapper

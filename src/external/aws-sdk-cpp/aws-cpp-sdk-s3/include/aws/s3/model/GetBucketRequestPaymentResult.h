@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,9 +12,11 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/s3/model/Payer.h>
+#include <utility>
 
 namespace Aws
 {
@@ -36,35 +38,37 @@ namespace Model
   {
   public:
     GetBucketRequestPaymentResult();
-    GetBucketRequestPaymentResult(const AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
-    GetBucketRequestPaymentResult& operator=(const AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+    GetBucketRequestPaymentResult(const Aws::AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+    GetBucketRequestPaymentResult& operator=(const Aws::AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+
 
     /**
-     * Specifies who pays for the download and request fees.
+     * <p>Specifies who pays for the download and request fees.</p>
      */
     inline const Payer& GetPayer() const{ return m_payer; }
 
     /**
-     * Specifies who pays for the download and request fees.
+     * <p>Specifies who pays for the download and request fees.</p>
      */
     inline void SetPayer(const Payer& value) { m_payer = value; }
 
     /**
-     * Specifies who pays for the download and request fees.
+     * <p>Specifies who pays for the download and request fees.</p>
      */
-    inline void SetPayer(Payer&& value) { m_payer = value; }
+    inline void SetPayer(Payer&& value) { m_payer = std::move(value); }
 
     /**
-     * Specifies who pays for the download and request fees.
+     * <p>Specifies who pays for the download and request fees.</p>
      */
     inline GetBucketRequestPaymentResult& WithPayer(const Payer& value) { SetPayer(value); return *this;}
 
     /**
-     * Specifies who pays for the download and request fees.
+     * <p>Specifies who pays for the download and request fees.</p>
      */
-    inline GetBucketRequestPaymentResult& WithPayer(Payer&& value) { SetPayer(value); return *this;}
+    inline GetBucketRequestPaymentResult& WithPayer(Payer&& value) { SetPayer(std::move(value)); return *this;}
 
   private:
+
     Payer m_payer;
   };
 

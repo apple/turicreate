@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,9 +12,11 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/s3/model/BucketLocationConstraint.h>
+#include <utility>
 
 namespace Aws
 {
@@ -36,25 +38,52 @@ namespace Model
   {
   public:
     GetBucketLocationResult();
-    GetBucketLocationResult(const AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
-    GetBucketLocationResult& operator=(const AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+    GetBucketLocationResult(const Aws::AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+    GetBucketLocationResult& operator=(const Aws::AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
 
-    
+
+    /**
+     * <p>Specifies the Region where the bucket resides. For a list of all the Amazon
+     * S3 supported location constraints by Region, see <a
+     * href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions
+     * and Endpoints</a>.</p>
+     */
     inline const BucketLocationConstraint& GetLocationConstraint() const{ return m_locationConstraint; }
 
-    
+    /**
+     * <p>Specifies the Region where the bucket resides. For a list of all the Amazon
+     * S3 supported location constraints by Region, see <a
+     * href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions
+     * and Endpoints</a>.</p>
+     */
     inline void SetLocationConstraint(const BucketLocationConstraint& value) { m_locationConstraint = value; }
 
-    
-    inline void SetLocationConstraint(BucketLocationConstraint&& value) { m_locationConstraint = value; }
+    /**
+     * <p>Specifies the Region where the bucket resides. For a list of all the Amazon
+     * S3 supported location constraints by Region, see <a
+     * href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions
+     * and Endpoints</a>.</p>
+     */
+    inline void SetLocationConstraint(BucketLocationConstraint&& value) { m_locationConstraint = std::move(value); }
 
-    
+    /**
+     * <p>Specifies the Region where the bucket resides. For a list of all the Amazon
+     * S3 supported location constraints by Region, see <a
+     * href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions
+     * and Endpoints</a>.</p>
+     */
     inline GetBucketLocationResult& WithLocationConstraint(const BucketLocationConstraint& value) { SetLocationConstraint(value); return *this;}
 
-    
-    inline GetBucketLocationResult& WithLocationConstraint(BucketLocationConstraint&& value) { SetLocationConstraint(value); return *this;}
+    /**
+     * <p>Specifies the Region where the bucket resides. For a list of all the Amazon
+     * S3 supported location constraints by Region, see <a
+     * href="https://docs.aws.amazon.com/general/latest/gr/rande.html#s3_region">Regions
+     * and Endpoints</a>.</p>
+     */
+    inline GetBucketLocationResult& WithLocationConstraint(BucketLocationConstraint&& value) { SetLocationConstraint(std::move(value)); return *this;}
 
   private:
+
     BucketLocationConstraint m_locationConstraint;
   };
 

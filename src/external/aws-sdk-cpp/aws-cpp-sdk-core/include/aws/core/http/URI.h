@@ -31,7 +31,9 @@ namespace Aws
         static const uint16_t HTTP_DEFAULT_PORT = 80;
         static const uint16_t HTTPS_DEFAULT_PORT = 443;
 
-        typedef Aws::Map<Aws::String, Aws::String> QueryStringParameterCollection;
+        //per https://tools.ietf.org/html/rfc3986#section-3.4 there is nothing preventing servers from allowing
+        //multiple values for the same key. So use a multimap instead of a map.
+        typedef Aws::MultiMap<Aws::String, Aws::String> QueryStringParameterCollection;
 
         /**
          * class modeling universal resource identifier, but implemented for http
@@ -114,6 +116,11 @@ namespace Aws
             */
             inline const Aws::String& GetQueryString() const { return m_queryString; }
 
+            /**
+             * Resets the query string to the raw string. all query string manipulations made before this call will be lost
+             */
+            void SetQueryString(const Aws::String& str);
+
             Aws::String GetFormParameters() const;
 
             /**
@@ -133,6 +140,11 @@ namespace Aws
             void AddQueryStringParameter(const char* key, const Aws::String& value);
 
             /**
+            * Adds multiple query string parameters to underlying query string.
+            */
+            void AddQueryStringParameter(const Aws::Map<Aws::String, Aws::String>& queryStringPairs);
+
+            /**
             * Converts the URI to a String usable for its context. e.g. an http request.
             */
             Aws::String GetURIString(bool includeQueryString = true) const;
@@ -141,6 +153,11 @@ namespace Aws
              * URLEncodes the path portions of path (doesn't encode the "/" portion)
              */
             static Aws::String URLEncodePath(const Aws::String& path);
+
+            /**
+             * URLEncodes the path portion of the URI according to RFC3986
+             */
+            static Aws::String URLEncodePathRFC3986(const Aws::String& path);
 
         private:
             void ParseURIParts(const Aws::String& uri);

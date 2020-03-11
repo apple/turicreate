@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -20,7 +20,8 @@
 #include <aws/core/utils/Array.h>
 #include <aws/core/utils/memory/stl/AWSStreamFwd.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
-#include <aws/core/external/json-cpp/json.h>
+#include <aws/core/utils/memory/stl/AWSMap.h>
+#include <aws/core/external/cjson/cJSON.h>
 
 #include <utility>
 
@@ -30,278 +31,165 @@ namespace Aws
     {
         namespace Json
         {
+            class JsonView;
             /**
-             * Json Document tree object that supports parsing and serialization.
+             * JSON DOM manipulation class.
+             * To read or serialize use @ref View function.
              */
             class AWS_CORE_API JsonValue
             {
             public:
                 /**
-                * Constructs empty json object
-                */
+                 * Constructs empty JSON DOM.
+                 */
                 JsonValue();
 
                 /**
-                * Constructs a json object from a json string
-                */
-
+                 * Constructs a JSON DOM by parsing the input string.
+                 */
                 JsonValue(const Aws::String& value);
 
                 /**
-                * Constructs a json object from a stream containing json
-                */
+                 * Constructs a JSON DOM by parsing the text in the input stream.
+                 */
                 JsonValue(Aws::IStream& istream);
 
                 /**
-                * Copy Constructor
-                */
+                 * Performs a deep copy of the JSON DOM parameter.
+                 * Prefer using a @ref JsonView if copying is not needed.
+                 */
                 JsonValue(const JsonValue& value);
 
                 /**
-                * Move Constructor
-                */
+                 * Moves the ownership of the internal JSON DOM.
+                 * No copying is performed.
+                 */
                 JsonValue(JsonValue&& value);
 
                 ~JsonValue();
 
+                /**
+                 * Performs a deep copy of the JSON DOM parameter.
+                 */
                 JsonValue& operator=(const JsonValue& other);
 
+                /**
+                 * Moves the ownership of the internal JSON DOM of the parameter to the current object.
+                 * No copying is performed.
+                 * A DOM currently owned by the object will be freed prior to copying.
+                 * @warning This will result in invalidating any outstanding views of the current DOM. However, views
+                 * to the moved-from DOM would still valid.
+                 */
                 JsonValue& operator=(JsonValue&& other);
 
-                bool operator!=(const JsonValue& other)
-                {
-                    return m_value != other.m_value;
-                }
-
-                bool operator==(const JsonValue& other)
-                {
-                    return m_value == other.m_value;
-                }
+                bool operator==(const JsonValue& other) const;
+                bool operator!=(const JsonValue& other) const;
 
                 /**
-                * Gets a string from the top level of this node by it's key
-                */
-                Aws::String GetString(const Aws::String& key) const;
-                Aws::String GetString(const char* key) const;
-
-                /**
-                * Adds a string to the top level of this node with key
-                */
+                 * Adds a string to the top level of this node with key.
+                 */
                 JsonValue& WithString(const Aws::String& key, const Aws::String& value);
                 JsonValue& WithString(const char* key, const Aws::String& value);
 
                 /**
-                * Causes the json node to be a string only (makes it a leaf node in token tree)
-                */
+                 * Converts the current JSON node to a string.
+                 */
                 JsonValue& AsString(const Aws::String& value);
 
                 /**
-                * Returns the value of this node as a string as if it was a leaf node in the token tree
-                */
-                Aws::String AsString() const;
-
-                /**
-                * Gets a bool value from the top level of this node by its key.
-                */
-                bool GetBool(const Aws::String& key) const;
-                bool GetBool(const char* key) const;
-
-                /**
-                * Adds a bool value with key to the top level of this node.
-                */
+                 * Adds a bool value with key to the top level of this node.
+                 */
                 JsonValue& WithBool(const Aws::String& key, bool value);
                 JsonValue& WithBool(const char* key, bool value);
 
                 /**
-                * Sets this node to be a bool (makes it a leaf node in the token tree)
-                */
+                 * Converts the current JSON node to a bool.
+                 */
                 JsonValue& AsBool(bool value);
 
                 /**
-                * Gets the value of this node as a bool
-                */
-                bool AsBool() const;
-
-                /**
-                * Gets the integer value at key on the top level of this node.
-                */
-                int GetInteger(const Aws::String& key) const;
-                int GetInteger(const char* key) const;
-
-                /**
-                * Adds an integer value at key at the top level of this node.
-                */
+                 * Adds an integer value at key at the top level of this node.
+                 */
                 JsonValue& WithInteger(const Aws::String& key, int value);
                 JsonValue& WithInteger(const char* key, int value);
 
                 /**
-                * Causes this node to be an integer (becomes a leaf node in the token tree).
-                */
+                 * Converts the current JSON node to an integer.
+                 */
                 JsonValue& AsInteger(int value);
 
                 /**
-                * Gets the integer value from a leaf node.
-                */
-                int AsInteger() const;
-
-                /**
-                * Gets the 64 bit integer value at key from the top level of this node.
-                */
-                long long GetInt64(const Aws::String& key) const;
-                long long GetInt64(const char* key) const;
-
-                /**
-                * Adds a 64 bit integer value at key to the top level of this node.
-                */
+                 * Adds a 64-bit integer value at key to the top level of this node.
+                 */
                 JsonValue& WithInt64(const Aws::String& key, long long value);
                 JsonValue& WithInt64(const char* key, long long value);
 
                 /**
-                * Causes this node to be interpreted as a 64 bit integer (becomes treated like a leaf node).
-                */
+                 * Converts the current JSON node to a 64-bit integer.
+                 */
                 JsonValue& AsInt64(long long value);
 
                 /**
-                * Gets the value of this node as a 64bit integer.
-                */
-                long long AsInt64() const;
-
-                /**
-                * Gets the value of a double at key at the top level of this node.
-                */
-                double GetDouble(const Aws::String& key) const;
-                double GetDouble(const char* key) const;
-
-                /**
-                * Adds a double value at key at the top level of this node.
-                */
+                 * Adds a double value at key at the top level of this node.
+                 */
                 JsonValue& WithDouble(const Aws::String& key, double value);
                 JsonValue& WithDouble(const char* key, double value);
 
                 /**
-                * Causes this node to be interpreted as a double value.
-                */
+                 * Converts the current JSON node to a double.
+                 */
                 JsonValue& AsDouble(double value);
 
                 /**
-                * Gets the value of this node as a double.
-                */
-                double AsDouble() const;
-
-                /**
-                * Gets an array from the top level of this node at key.
-                */
-                Array<JsonValue> GetArray(const Aws::String& key) const;
-                Array<JsonValue> GetArray(const char* key) const;
-
-                /**
-                * Adds an array of strings to the top level of this node at key.
-                */
+                 * Adds an array of strings to the top level of this node at key.
+                 */
                 JsonValue& WithArray(const Aws::String& key, const Array<Aws::String>& array);
                 JsonValue& WithArray(const char* key, const Array<Aws::String>& array);
 
                 /**
-                * Adds an array of strings to the top level of this node at key. Array will be unusable after this call
-                * only use if you intend this to be an r-value. Better yet, let the compiler make this decision
-                * for you, but if you must.... std::move will do the trick.
-                */
-                JsonValue& WithArray(const Aws::String& key, Array<Aws::String>&& array);
-
-                /**
-                * Adds an array of arbitrary json objects to the top level of this node at key.
-                */
+                 * Adds an array of arbitrary JSON objects to the top level of this node at key.
+                 * The values in the array parameter will be deep-copied.
+                 */
                 JsonValue& WithArray(const Aws::String& key, const Array<JsonValue>& array);
 
                 /**
-                * Adds an array of arbitrary json objects to the top level of this node at key. Array will be unusable after this call
-                * only use if you intend this to be an r-value. Better yet, let the compiler make this decision
-                * for you, but if you must.... std::move will do the trick.
-                */
+                 * Adds an array of arbitrary JSON objects to the top level of this node at key.
+                 * The values in the array parameter will be moved-from.
+                 */
                 JsonValue& WithArray(const Aws::String& key, Array<JsonValue>&& array);
 
                 /**
-                * Causes this node to be interpreted as an array.
-                */
+                 * Converts the current JSON node to an array whose values are deep-copied from the array parameter.
+                 */
                 JsonValue& AsArray(const Array<JsonValue>& array);
 
                 /**
-                * Causes this node to be interpreted as an array using move semantics on array.
-                */
+                 * Converts the current JSON node to an array whose values are moved from the array parameter.
+                 */
                 JsonValue& AsArray(Array<JsonValue>&& array);
 
                 /**
-                * Interprets this node as an array and returns a copy of it's values.
-                */
-                Array<JsonValue> AsArray() const;
-
-                /**
-                * Gets a json object from the top level of this node at key.
-                */
-                JsonValue GetObject(const char* key) const;
-                JsonValue GetObject(const Aws::String& key) const;
-
-                /**
-                * Adds a json object to the top level of this node at key.
-                */
+                 * Adds a JSON object to the top level of this node at key.
+                 * The object parameter is deep-copied.
+                 */
                 JsonValue& WithObject(const Aws::String& key, const JsonValue& value);
                 JsonValue& WithObject(const char* key, const JsonValue& value);
 
                 /**
-                * Adds a json object to the top level of this node at key using move semantics.
-                */
-                JsonValue& WithObject(const Aws::String& key, const JsonValue&& value);
-                JsonValue& WithObject(const char* key, const JsonValue&& value);
+                 * Adds a JSON object to the top level of this node at key.
+                 */
+                JsonValue& WithObject(const Aws::String& key, JsonValue&& value);
+                JsonValue& WithObject(const char* key, JsonValue&& value);
 
                 /**
-                * Causes this node to be interpreted as another json object
-                */
+                 * Converts the current JSON node to a JSON object by deep-copying the parameter.
+                 */
                 JsonValue& AsObject(const JsonValue& value);
 
                 /**
-                * Causes this node to be interpreted as another json object using move semantics.
-                */
+                 * Converts the current JSON node to a JSON object by moving from the parameter.
+                 */
                 JsonValue& AsObject(JsonValue&& value);
-
-                /**
-                * Gets the value of this node as a json object.
-                */
-                JsonValue AsObject() const;
-
-                /**
-                * Reads all json objects at the top level of this node (does not traverse the tree any further)
-                * along with their keys.
-                */
-                Aws::Map<Aws::String, JsonValue> GetAllObjects() const;
-
-                /**
-                * Whether or not a value exists at the current node level at a given key.
-                *
-                * Returns true if a values has been found, false otherwise.
-                */
-                bool ValueExists(const char* key) const;
-                bool ValueExists(const Aws::String& key) const;
-
-                /**
-                * Writes the entire json object tree without whitespace characters starting at the current level to a string and
-                * returns it.
-                */
-                Aws::String WriteCompact(bool treatAsObject = true) const;
-
-                /**
-                * Writes the entire json object tree to ostream without whitespace characters at the current level.
-                */
-                void WriteCompact(Aws::OStream& ostream, bool treatAsObject = true) const;
-
-                /**
-                * Writes the entire json object tree starting at the current level to a string and
-                * returns it.
-                */
-                Aws::String WriteReadable(bool treatAsObject = true) const;
-
-                /**
-                * Writes the entire json object tree to ostream at the current level.
-                */
-                void WriteReadable(Aws::OStream& ostream, bool treatAsObject = true) const;
 
                 /**
                  * Returns true if the last parse request was successful. If this returns false,
@@ -319,28 +207,182 @@ namespace Aws
                 {
                     return m_errorMessage;
                 }
+
                 /**
-                 * Appends a json object as a child to the end of this object
+                 * Creates a view from the current root JSON node.
                  */
-                void AppendValue(const JsonValue& value);
-
-                bool IsObject() const;
-                bool IsBool() const;
-                bool IsString() const;
-                bool IsIntegerType() const;
-                bool IsFloatingPointType() const;
-                bool IsListType() const;
-
-                Aws::External::Json::Value& ModifyRawValue() { return m_value; }
+                JsonView View() const;
 
             private:
-                JsonValue(const Aws::External::Json::Value& value);
-
-                JsonValue& operator=(Aws::External::Json::Value& other);
-
-                mutable Aws::External::Json::Value m_value;
+                void Destroy();
+                JsonValue(cJSON* value);
+                cJSON* m_value;
                 bool m_wasParseSuccessful;
                 Aws::String m_errorMessage;
+                friend class JsonView;
+            };
+
+            /**
+             * Provides read-only view to an existing JsonValue. This allows lightweight copying without making deep
+             * copies of the JsonValue.
+             * Note: This class does not extend the lifetime of the given JsonValue. It's your responsibility to ensure
+             * the lifetime of the JsonValue is extended beyond the lifetime of its view.
+             */
+            class AWS_CORE_API JsonView
+            {
+            public:
+                /* constructors */
+                JsonView();
+                JsonView(const JsonValue& v);
+                JsonView& operator=(const JsonValue& v);
+
+                /**
+                 * Gets a string from this node by its key.
+                 */
+                Aws::String GetString(const Aws::String& key) const;
+
+                /**
+                 * Returns the value of this node as a string.
+                 * The behavior is undefined if the node is _not_ of type string.
+                 */
+                Aws::String AsString() const;
+
+                /**
+                 * Gets a boolean value from this node by its key.
+                 */
+                bool GetBool(const Aws::String& key) const;
+
+                /**
+                 * Returns the value of this node as a boolean.
+                 */
+                bool AsBool() const;
+
+                /**
+                 * Gets an integer value from this node by its key.
+                 * The integer is of the same size as an int on the machine.
+                 */
+                int GetInteger(const Aws::String& key) const;
+
+                /**
+                 * Returns the value of this node as an int.
+                 */
+                int AsInteger() const;
+
+                /**
+                 * Gets a 64-bit integer value from this node by its key.
+                 * The value is 64-bit regardless of the platform/machine.
+                 */
+                int64_t GetInt64(const Aws::String& key) const;
+
+                /**
+                 * Returns the value of this node as 64-bit integer.
+                 */
+                int64_t AsInt64() const;
+
+                /**
+                 * Gets a double precision floating-point value from this node by its key.
+                 */
+                double GetDouble(const Aws::String& key) const;
+
+                /**
+                 * Returns the value of this node as a double precision floating-point.
+                 */
+                double AsDouble() const;
+
+                /**
+                 * Gets an array of JsonView objects from this node by its key.
+                 */
+                Array<JsonView> GetArray(const Aws::String& key) const;
+
+                /**
+                 * Returns the value of this node as an array of JsonView objects.
+                 */
+                Array<JsonView> AsArray() const;
+
+                /**
+                 * Gets a JsonView object from this node by its key.
+                 */
+                JsonView GetObject(const Aws::String& key) const;
+
+                /**
+                 * Returns the value of this node as a JsonView object.
+                 */
+                JsonView AsObject() const;
+
+                /**
+                 * Reads all json objects at the top level of this node (does not traverse the tree any further)
+                 * along with their keys.
+                 */
+                Aws::Map<Aws::String, JsonView> GetAllObjects() const;
+
+                /**
+                 * Tests whether a value exists at the current node level for the given key.
+                 * Returns true if a value has been found and its value is not null, false otherwise.
+                 */
+                bool ValueExists(const Aws::String& key) const;
+
+                /**
+                 * Tests whether a key exists at the current node level.
+                 */
+                bool KeyExists(const Aws::String& key) const;
+
+                /**
+                 * Tests whether the current value is a JSON object.
+                 */
+                bool IsObject() const;
+
+                /**
+                 * Tests whether the current value is a boolean.
+                 */
+                bool IsBool() const;
+
+                /**
+                 * Tests whether the current value is a string.
+                 */
+                bool IsString() const;
+
+                /**
+                 * Tests whether the current value is an int or int64_t.
+                 * Returns false if the value is floating-point.
+                 */
+                bool IsIntegerType() const;
+
+                /**
+                 * Tests whether the current value is a floating-point.
+                 */
+                bool IsFloatingPointType() const;
+
+                /**
+                 * Tests whether the current value is a JSON array.
+                 */
+                bool IsListType() const;
+
+                /**
+                 * Tests whether the current value is NULL.
+                 */
+                bool IsNull() const;
+
+                /**
+                 * Writes the current JSON view without whitespace characters starting at the current level to a string.
+                 * @param treatAsObject if the current value is empty, writes out '{}' rather than an empty string.
+                 */
+                Aws::String WriteCompact(bool treatAsObject = true) const;
+
+                /**
+                 * Writes the current JSON view to a string in a human friendly format.
+                 * @param treatAsObject if the current value is empty, writes out '{}' rather than an empty string.
+                 */
+                Aws::String WriteReadable(bool treatAsObject = true) const;
+
+                /**
+                 * Creates a deep copy of the JSON value rooted in the current JSON view.
+                 */
+                JsonValue Materialize() const;
+
+            private:
+                JsonView(cJSON* val);
+                JsonView& operator=(cJSON* val);
+                cJSON* m_value;
             };
 
         } // namespace Json

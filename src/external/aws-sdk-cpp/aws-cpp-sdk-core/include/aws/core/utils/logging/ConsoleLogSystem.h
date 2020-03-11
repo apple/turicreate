@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -39,6 +39,11 @@ namespace Aws
                 {}
 
                 virtual ~ConsoleLogSystem() {}
+
+                /**
+                 * Flushes buffered messages to stdout.
+                 */
+                void Flush() override;
 
             protected:
 

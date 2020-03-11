@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -31,11 +31,11 @@ public:
         m_scaleFactor(scaleFactor), m_maxRetries(maxRetries)  
     {}
 
-    bool ShouldRetry(const AWSError<CoreErrors>& error, long attemptedRetries) const;
+    bool ShouldRetry(const AWSError<CoreErrors>& error, long attemptedRetries) const override;
 
-    long CalculateDelayBeforeNextRetry(const AWSError<CoreErrors>& error, long attemptedRetries) const;
+    long CalculateDelayBeforeNextRetry(const AWSError<CoreErrors>& error, long attemptedRetries) const override;
 
-private:
+protected:
     long m_scaleFactor;
     long m_maxRetries;
 };

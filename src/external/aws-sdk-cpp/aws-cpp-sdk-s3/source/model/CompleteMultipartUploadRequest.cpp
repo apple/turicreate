@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/CompleteMultipartUploadRequest.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
@@ -30,7 +31,9 @@ CompleteMultipartUploadRequest::CompleteMultipartUploadRequest() :
     m_keyHasBeenSet(false),
     m_multipartUploadHasBeenSet(false),
     m_uploadIdHasBeenSet(false),
-    m_requestPayerHasBeenSet(false)
+    m_requestPayer(RequestPayer::NOT_SET),
+    m_requestPayerHasBeenSet(false),
+    m_customizedAccessLogTagHasBeenSet(false)
 {
 }
 
@@ -47,7 +50,7 @@ Aws::String CompleteMultipartUploadRequest::SerializePayload() const
     return payloadDoc.ConvertToString();
   }
 
-  return "";
+  return {};
 }
 
 void CompleteMultipartUploadRequest::AddQueryStringParameters(URI& uri) const
@@ -60,6 +63,23 @@ void CompleteMultipartUploadRequest::AddQueryStringParameters(URI& uri) const
       ss.str("");
     }
 
+    if(!m_customizedAccessLogTag.empty())
+    {
+        // only accept customized LogTag which starts with "x-"
+        Aws::Map<Aws::String, Aws::String> collectedLogTags;
+        for(const auto& entry: m_customizedAccessLogTag)
+        {
+            if (!entry.first.empty() && !entry.second.empty() && entry.first.substr(0, 2) == "x-")
+            {
+                collectedLogTags.emplace(entry.first, entry.second);
+            }
+        }
+
+        if (!collectedLogTags.empty())
+        {
+            uri.AddQueryStringParameter(collectedLogTags);
+        }
+    }
 }
 
 Aws::Http::HeaderValueCollection CompleteMultipartUploadRequest::GetRequestSpecificHeaders() const
@@ -68,7 +88,7 @@ Aws::Http::HeaderValueCollection CompleteMultipartUploadRequest::GetRequestSpeci
   Aws::StringStream ss;
   if(m_requestPayerHasBeenSet)
   {
-    headers.insert(Aws::Http::HeaderValuePair("x-amz-request-payer", RequestPayerMapper::GetNameForRequestPayer(m_requestPayer)));
+    headers.emplace("x-amz-request-payer", RequestPayerMapper::GetNameForRequestPayer(m_requestPayer));
   }
 
   return headers;

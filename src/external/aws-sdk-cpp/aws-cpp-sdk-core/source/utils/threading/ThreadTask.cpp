@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -43,10 +43,9 @@ void ThreadTask::MainTaskRunner()
             }
         }
      
-        std::unique_lock<std::mutex> locker(m_executor.m_syncPointLock);
         if(m_continue)
         {
-            m_executor.m_syncPoint.wait(locker);    
+            m_executor.m_sync.WaitOne();
         }
     }
 }

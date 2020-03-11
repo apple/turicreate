@@ -1,5 +1,5 @@
 /*
- * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+ * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
  * 
  * Licensed under the Apache License, Version 2.0 (the "License").
  * You may not use this file except in compliance with the License.
@@ -20,12 +20,15 @@
 #include <aws/core/utils/memory/stl/AWSAllocator.h>
 
 #include <map>
+#include <unordered_map>
 #include <cstring>
 
 namespace Aws
 {
 
 template< typename K, typename V > using Map = std::map< K, V, std::less< K >, Aws::Allocator< std::pair< const K, V > > >;
+template< typename K, typename V > using UnorderedMap = std::unordered_map< K, V, std::hash< K >, std::equal_to< K >, Aws::Allocator< std::pair< const K, V > > >;
+template< typename K, typename V > using MultiMap = std::multimap< K, V, std::less< K >, Aws::Allocator< std::pair< const K, V > > >;
 
 struct CompareStrings
 {

@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ namespace Aws
             static const size_t SYMMETRIC_KEY_LENGTH = 32;
             static const size_t MIN_IV_LENGTH = 12;
 
+            AWS_CORE_API CryptoBuffer IncrementCTRCounter(const CryptoBuffer& counter, uint32_t numberOfBlocks);
+
             /**
              * Interface for symmetric encryption and decryption providers. An instance of this class is good for exactly one encryption or decryption run.
              * It should not be used to encrypt or decrypt multiple messages.
@@ -40,19 +42,36 @@ namespace Aws
                  *  ivGenerationInCtrMode, if true, initializes the iv with a 4 byte counter at the end.
                  */
                 SymmetricCipher(const CryptoBuffer& key, size_t ivSize, bool ivGenerationInCtrMode = false) :
-                        m_key(key), m_initializationVector(ivSize > 0 ? GenerateIV(ivSize, ivGenerationInCtrMode) : 0), m_failure(false) { Validate(); }
+                        m_key(key),
+                        m_initializationVector(ivSize > 0 ? GenerateIV(ivSize, ivGenerationInCtrMode) : 0),
+                        m_failure(false)
+                {
+                    Validate();
+                }
 
                 /**
                  * Initialize with key and initializationVector, set tag for decryption of authenticated modes (makes copies of the buffers)
                  */
                 SymmetricCipher(const CryptoBuffer& key, const CryptoBuffer& initializationVector, const CryptoBuffer& tag = CryptoBuffer(0)) :
-                        m_key(key), m_initializationVector(initializationVector), m_tag(tag), m_failure(false) { Validate(); }
+                        m_key(key),
+                        m_initializationVector(initializationVector),
+                        m_tag(tag),
+                        m_failure(false)
+                {
+                    Validate();
+                }
 
                 /**
                  * Initialize with key and initializationVector, set tag for decryption of authenticated modes  (move the buffers)
                  */
                 SymmetricCipher(CryptoBuffer&& key, CryptoBuffer&& initializationVector, CryptoBuffer&& tag = CryptoBuffer(0)) :
-                        m_key(std::move(key)), m_initializationVector(std::move(initializationVector)), m_tag(std::move(tag)), m_failure(false) { Validate(); }
+                        m_key(std::move(key)),
+                        m_initializationVector(std::move(initializationVector)),
+                        m_tag(std::move(tag)),  
+                        m_failure(false)
+                {
+                    Validate();
+                }
 
                 SymmetricCipher(const SymmetricCipher& other) = delete;
                 SymmetricCipher& operator=(const SymmetricCipher& other) = delete;
@@ -94,7 +113,7 @@ namespace Aws
                  * Whether or not the cipher is in a good state. If this ever returns false, throw away all buffers
                  * it has vended.
                  */
-                operator bool() const { return Good(); }
+                virtual operator bool() const { return Good(); }
 
                 /**
                  * Encrypt a buffer of data. Part of the contract for this interface is that intention that 
@@ -146,9 +165,11 @@ namespace Aws
                 /**
                  * Generates a non-deterministic random symmetric key. Default (and minimum bar for security) is 256 bits.
                  */
-                static CryptoBuffer GenerateKey(size_t keyLengthBytes = SYMMETRIC_KEY_LENGTH);
+                static CryptoBuffer GenerateKey(size_t keyLengthBytes = SYMMETRIC_KEY_LENGTH);                
 
             protected:
+                SymmetricCipher() : m_failure(false) {}
+
                 CryptoBuffer m_key;
                 CryptoBuffer m_initializationVector;
                 CryptoBuffer m_tag;

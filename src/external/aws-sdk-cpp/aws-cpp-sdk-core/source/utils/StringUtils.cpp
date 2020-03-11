@@ -1,12 +1,12 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-  * 
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
   * A copy of the License is located at
-  * 
+  *
   *  http://aws.amazon.com/apache2.0
-  * 
+  *
   * or in the "license" file accompanying this file. This file is distributed
   * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
   * express or implied. See the License for the specific language governing
@@ -19,8 +19,13 @@
 #include <algorithm>
 #include <iomanip>
 #include <cstdlib>
+#include <cstdio>
 #include <cstring>
 #include <functional>
+
+#ifdef _WIN32
+#include <Windows.h>
+#endif
 
 using namespace Aws::Utils;
 
@@ -51,7 +56,8 @@ Aws::String StringUtils::ToLower(const char* source)
     Aws::String copy;
     size_t sourceLength = strlen(source);
     copy.resize(sourceLength);
-    std::transform(source, source + sourceLength, copy.begin(), ::tolower);
+    //appease the latest whims of the VC++ 2017 gods
+    std::transform(source, source + sourceLength, copy.begin(), [](unsigned char c) { return (char)::tolower(c); });
 
     return copy;
 }
@@ -62,7 +68,8 @@ Aws::String StringUtils::ToUpper(const char* source)
     Aws::String copy;
     size_t sourceLength = strlen(source);
     copy.resize(sourceLength);
-    std::transform(source, source + sourceLength, copy.begin(), ::toupper);
+    //appease the latest whims of the VC++ 2017 gods
+    std::transform(source, source + sourceLength, copy.begin(), [](unsigned char c) { return (char)::toupper(c); });
 
     return copy;
 }
@@ -76,24 +83,60 @@ bool StringUtils::CaselessCompare(const char* value1, const char* value2)
     return value1Lower == value2Lower;
 }
 
-
 Aws::Vector<Aws::String> StringUtils::Split(const Aws::String& toSplit, char splitOn)
 {
-    Aws::StringStream input(toSplit);
+    return Split(toSplit, splitOn, SIZE_MAX, SplitOptions::NOT_SET);
+}
+
+Aws::Vector<Aws::String> StringUtils::Split(const Aws::String& toSplit, char splitOn, SplitOptions option)
+{
+    return Split(toSplit, splitOn, SIZE_MAX, option);
+}
+
+Aws::Vector<Aws::String> StringUtils::Split(const Aws::String& toSplit, char splitOn, size_t numOfTargetParts)
+{
+    return Split(toSplit, splitOn, numOfTargetParts, SplitOptions::NOT_SET);
+}
+
+Aws::Vector<Aws::String> StringUtils::Split(const Aws::String& toSplit, char splitOn, size_t numOfTargetParts, SplitOptions option)
+{
     Aws::Vector<Aws::String> returnValues;
+    Aws::StringStream input(toSplit);
     Aws::String item;
 
-    while(std::getline(input, item, splitOn))
+    while(returnValues.size() < numOfTargetParts - 1 && std::getline(input, item, splitOn))
     {
-        if(item.size() > 0)
+        if (!item.empty() || option == SplitOptions::INCLUDE_EMPTY_ENTRIES)
         {
-            returnValues.push_back(item);
+            returnValues.emplace_back(std::move(item));
         }
+    }
+
+    if (std::getline(input, item, static_cast<char>(EOF)))
+    {
+        if (option != SplitOptions::INCLUDE_EMPTY_ENTRIES)
+        {
+            // Trim all leading delimiters.
+            item.erase(item.begin(), std::find_if(item.begin(), item.end(), [splitOn](int ch) { return ch != splitOn; }));
+            if (!item.empty())
+            {
+                returnValues.emplace_back(std::move(item));
+            }
+        }
+        else
+        {
+            returnValues.emplace_back(std::move(item));
+        }
+
+    }
+    // To handle the case when there are trailing delimiters.
+    else if (!toSplit.empty() && toSplit.back() == splitOn && option == SplitOptions::INCLUDE_EMPTY_ENTRIES)
+    {
+        returnValues.emplace_back();
     }
 
     return returnValues;
 }
-
 
 Aws::Vector<Aws::String> StringUtils::SplitOnLine(const Aws::String& toSplit)
 {
@@ -122,10 +165,8 @@ Aws::String StringUtils::URLEncode(const char* unsafe)
     size_t unsafeLength = strlen(unsafe);
     for (auto i = unsafe, n = unsafe + unsafeLength; i != n; ++i)
     {
-        int c = *i;
-		//MSVC 2015 has an assertion that c is positive in isalnum(). This breaks unicode support.
-		//bypass that with the first check.
-        if (c >= 0 && (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~'))
+        char c = *i;
+        if (IsAlnum(c) || c == '-' || c == '_' || c == '.' || c == '~')
         {
             escaped << (char)c;
         }
@@ -149,8 +190,6 @@ Aws::String StringUtils::UTF8Escape(const char* unicodeString, const char* delim
     for (auto i = unicodeString, n = unicodeString + unsafeLength; i != n; ++i)
     {
         int c = *i;
-        //MSVC 2015 has an assertion that c is positive in isalnum(). This breaks unicode support.
-        //bypass that with the first check.
         if (c >= ' ' && c < 127 )
         {
             escaped << (char)c;
@@ -180,37 +219,93 @@ Aws::String StringUtils::URLEncode(double unsafe)
 
 Aws::String StringUtils::URLDecode(const char* safe)
 {
-    Aws::StringStream unescaped;
-    unescaped.fill('0');
-    unescaped << std::hex;
+    Aws::String unescaped;
 
-    size_t safeLength = strlen(safe);
-    for (auto i = safe, n = safe + safeLength; i != n; ++i)
+    for (; *safe; safe++)
     {
-        char c = *i;
-        if(c == '%')
+        switch(*safe)
         {
-            char hex[3];
-            hex[0] = *(i + 1);
-            hex[1] = *(i + 2);
-            hex[2] = 0;
-            i += 2;
-            auto hexAsInteger = strtol(hex, nullptr, 16);
-            unescaped << (char)hexAsInteger;
-        }
-        else
-        {
-            unescaped << *i;
+            case '%':
+            {
+                int hex = 0;
+                auto ch = *++safe;
+                if (ch >= '0' && ch <= '9')
+                {
+                    hex = (ch - '0') * 16;
+                }
+                else if (ch >= 'A' && ch <= 'F')
+                {
+                    hex = (ch - 'A' + 10) * 16;
+                }
+                else if (ch >= 'a' && ch <= 'f')
+                {
+                    hex = (ch - 'a' + 10) * 16;
+                }
+                else
+                {
+                    unescaped.push_back('%');
+                    if (ch == 0)
+                    {
+                        return unescaped;
+                    }
+                    unescaped.push_back(ch);
+                    break;
+                }
+
+                ch = *++safe;
+                if (ch >= '0' && ch <= '9')
+                {
+                    hex += (ch - '0');
+                }
+                else if (ch >= 'A' && ch <= 'F')
+                {
+                    hex += (ch - 'A' + 10);
+                }
+                else if (ch >= 'a' && ch <= 'f')
+                {
+                    hex += (ch - 'a' + 10);
+                }
+                else
+                {
+                    unescaped.push_back('%');
+                    unescaped.push_back(*(safe - 1));
+                    if (ch == 0)
+                    {
+                        return unescaped;
+                    }
+                    unescaped.push_back(ch);
+                    break;
+                }
+
+                unescaped.push_back(char(hex));
+                break;
+            }
+            case '+':
+                unescaped.push_back(' ');
+                break;
+            default:
+                unescaped.push_back(*safe);
+                break;
         }
     }
 
-    return unescaped.str();
+    return unescaped;
+}
+
+static bool IsSpace(int ch)
+{
+    if (ch < -1 || ch > 255)
+    {
+        return false;
+    }
+
+    return ::isspace(ch) != 0;
 }
 
 Aws::String StringUtils::LTrim(const char* source)
 {
     Aws::String copy(source);
-    copy.erase(copy.begin(), std::find_if(copy.begin(), copy.end(), std::not1(std::ptr_fun<int, int>(::isspace))));
+    copy.erase(copy.begin(), std::find_if(copy.begin(), copy.end(), [](int ch) { return !IsSpace(ch); }));
     return copy;
 }
 
@@ -218,7 +313,7 @@ Aws::String StringUtils::LTrim(const char* source)
 Aws::String StringUtils::RTrim(const char* source)
 {
     Aws::String copy(source);
-    copy.erase(std::find_if(copy.rbegin(), copy.rend(), std::not1(std::ptr_fun<int, int>(::isspace))).base(), copy.end());
+    copy.erase(std::find_if(copy.rbegin(), copy.rend(), [](int ch) { return !IsSpace(ch); }).base(), copy.end());
     return copy;
 }
 
@@ -285,21 +380,52 @@ double StringUtils::ConvertToDouble(const char* source)
 
 Aws::WString StringUtils::ToWString(const char* source)
 {
+    const auto len = static_cast<int>(std::strlen(source));
     Aws::WString outString;
-
-    outString.resize(std::strlen(source));
-    std::copy(source, source + std::strlen(source), outString.begin());
+    outString.resize(len); // there is no way UTF-16 would require _more_ code-points than UTF-8 for the _same_ string
+    const auto result = MultiByteToWideChar(CP_UTF8                             /*CodePage*/,
+                                            0                                   /*dwFlags*/,
+                                            source                              /*lpMultiByteStr*/,
+                                            len                                 /*cbMultiByte*/,
+                                            &outString[0]                       /*lpWideCharStr*/,
+                                            static_cast<int>(outString.length())/*cchWideChar*/);
+    if (!result)
+    {
+        return L"";
+    }
+    outString.resize(result);
     return outString;
 }
 
 Aws::String StringUtils::FromWString(const wchar_t* source)
 {
-    Aws::WString inWString(source);
-
-    Aws::String outString(inWString.begin(), inWString.end());
-    return outString;
+    const auto len = static_cast<int>(std::wcslen(source));
+    Aws::String output;
+    if (int requiredSizeInBytes = WideCharToMultiByte(CP_UTF8 /*CodePage*/,
+                                                      0       /*dwFlags*/,
+                                                      source  /*lpWideCharStr*/,
+                                                      len     /*cchWideChar*/,
+                                                      nullptr /*lpMultiByteStr*/,
+                                                      0       /*cbMultiByte*/,
+                                                      nullptr /*lpDefaultChar*/,
+                                                      nullptr /*lpUsedDefaultChar*/))
+    {
+        output.resize(requiredSizeInBytes);
+    }
+    const auto result = WideCharToMultiByte(CP_UTF8                           /*CodePage*/,
+                                            0                                 /*dwFlags*/,
+                                            source                            /*lpWideCharStr*/,
+                                            len                               /*cchWideChar*/,
+                                            &output[0]                        /*lpMultiByteStr*/,
+                                            static_cast<int>(output.length()) /*cbMultiByte*/,
+                                            nullptr                           /*lpDefaultChar*/,
+                                            nullptr                           /*lpUsedDefaultChar*/);
+    if (!result)
+    {
+        return "";
+    }
+    output.resize(result);
+    return output;
 }
 
 #endif
-
-

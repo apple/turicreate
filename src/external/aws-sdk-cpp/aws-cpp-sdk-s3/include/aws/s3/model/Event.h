@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
@@ -33,7 +34,15 @@ namespace Model
     s3_ObjectCreated_CompleteMultipartUpload,
     s3_ObjectRemoved,
     s3_ObjectRemoved_Delete,
-    s3_ObjectRemoved_DeleteMarkerCreated
+    s3_ObjectRemoved_DeleteMarkerCreated,
+    s3_ObjectRestore,
+    s3_ObjectRestore_Post,
+    s3_ObjectRestore_Completed,
+    s3_Replication,
+    s3_Replication_OperationFailedReplication,
+    s3_Replication_OperationNotTracked,
+    s3_Replication_OperationMissedThreshold,
+    s3_Replication_OperationReplicatedAfterThreshold
   };
 
 namespace EventMapper

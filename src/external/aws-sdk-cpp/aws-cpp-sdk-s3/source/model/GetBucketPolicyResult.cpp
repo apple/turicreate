@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/GetBucketPolicyResult.h>
 #include <aws/core/AmazonWebServiceResult.h>
 #include <aws/core/utils/StringUtils.h>
@@ -44,12 +45,12 @@ GetBucketPolicyResult& GetBucketPolicyResult::operator=(GetBucketPolicyResult&& 
    return *this;
 }
 
-GetBucketPolicyResult::GetBucketPolicyResult(AmazonWebServiceResult<ResponseStream>&& result)
+GetBucketPolicyResult::GetBucketPolicyResult(Aws::AmazonWebServiceResult<ResponseStream>&& result)
 {
   *this = std::move(result);
 }
 
-GetBucketPolicyResult& GetBucketPolicyResult::operator =(AmazonWebServiceResult<ResponseStream>&& result)
+GetBucketPolicyResult& GetBucketPolicyResult::operator =(Aws::AmazonWebServiceResult<ResponseStream>&& result)
 {
   m_policy = result.TakeOwnershipOfPayload();
 

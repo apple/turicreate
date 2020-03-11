@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/CreateBucketConfiguration.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -30,11 +31,13 @@ namespace Model
 {
 
 CreateBucketConfiguration::CreateBucketConfiguration() : 
+    m_locationConstraint(BucketLocationConstraint::NOT_SET),
     m_locationConstraintHasBeenSet(false)
 {
 }
 
 CreateBucketConfiguration::CreateBucketConfiguration(const XmlNode& xmlNode) : 
+    m_locationConstraint(BucketLocationConstraint::NOT_SET),
     m_locationConstraintHasBeenSet(false)
 {
   *this = xmlNode;
@@ -49,7 +52,7 @@ CreateBucketConfiguration& CreateBucketConfiguration::operator =(const XmlNode& 
     XmlNode locationConstraintNode = resultNode.FirstChild("LocationConstraint");
     if(!locationConstraintNode.IsNull())
     {
-      m_locationConstraint = BucketLocationConstraintMapper::GetBucketLocationConstraintForName(StringUtils::Trim(locationConstraintNode.GetText().c_str()).c_str());
+      m_locationConstraint = BucketLocationConstraintMapper::GetBucketLocationConstraintForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(locationConstraintNode.GetText()).c_str()).c_str());
       m_locationConstraintHasBeenSet = true;
     }
   }

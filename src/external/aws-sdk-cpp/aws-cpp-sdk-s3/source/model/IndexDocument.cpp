@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/IndexDocument.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -49,7 +50,7 @@ IndexDocument& IndexDocument::operator =(const XmlNode& xmlNode)
     XmlNode suffixNode = resultNode.FirstChild("Suffix");
     if(!suffixNode.IsNull())
     {
-      m_suffix = StringUtils::Trim(suffixNode.GetText().c_str());
+      m_suffix = Aws::Utils::Xml::DecodeEscapedXmlText(suffixNode.GetText());
       m_suffixHasBeenSet = true;
     }
   }

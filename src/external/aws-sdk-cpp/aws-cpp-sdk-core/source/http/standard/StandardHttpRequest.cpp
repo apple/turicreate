@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -19,17 +19,40 @@
 
 #include <iostream>
 #include <algorithm>
+#include <cassert>
 
 using namespace Aws::Http;
 using namespace Aws::Http::Standard;
 using namespace Aws::Utils;
+
+static bool IsDefaultPort(const URI& uri)
+{
+    switch(uri.GetPort())
+    {
+        case 80:
+            return uri.GetScheme() == Scheme::HTTP;
+        case 443:
+            return uri.GetScheme() == Scheme::HTTPS;
+        default:
+            return false;
+    }
+}
 
 StandardHttpRequest::StandardHttpRequest(const URI& uri, HttpMethod method) :
     HttpRequest(uri, method), 
     bodyStream(nullptr),
     m_responseStreamFactory()
 {
-    SetHeaderValue(HOST_HEADER, uri.GetAuthority());
+    if(IsDefaultPort(uri))
+    {
+        StandardHttpRequest::SetHeaderValue(HOST_HEADER, uri.GetAuthority());
+    }
+    else
+    {
+        Aws::StringStream host;
+        host << uri.GetAuthority() << ":" << uri.GetPort();
+        StandardHttpRequest::SetHeaderValue(HOST_HEADER, host.str());
+    }
 }
 
 HeaderValueCollection StandardHttpRequest::GetHeaders() const
@@ -46,7 +69,9 @@ HeaderValueCollection StandardHttpRequest::GetHeaders() const
 
 const Aws::String& StandardHttpRequest::GetHeaderValue(const char* headerName) const
 {
-    return headerMap.find(headerName)->second;
+    auto iter = headerMap.find(headerName);
+    assert (iter != headerMap.end());
+    return iter->second;
 }
 
 void StandardHttpRequest::SetHeaderValue(const char* headerName, const Aws::String& headerValue)
@@ -72,12 +97,6 @@ bool StandardHttpRequest::HasHeader(const char* headerName) const
 int64_t StandardHttpRequest::GetSize() const
 {
     int64_t size = 0;
-    if(bodyStream)
-    {
-        bodyStream->seekg(0, bodyStream->end);
-        size += bodyStream->tellg();
-        bodyStream->seekg(0, bodyStream->beg);
-    }
 
     std::for_each(headerMap.cbegin(), headerMap.cend(), [&](const HeaderValueCollection::value_type& kvPair){ size += kvPair.first.length(); size += kvPair.second.length(); });
 
