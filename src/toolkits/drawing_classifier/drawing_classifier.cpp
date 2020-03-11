@@ -441,11 +441,8 @@ void drawing_classifier::init_training(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
       read_state<size_t>("num_classes"));
 
-  // reports
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   if (read_state<bool>("verbose")) {
-    print_training_device(std::move(gpu_names));
+    training_compute_context_->print_training_device_info();
   }
 
   // Begin printing progress.
