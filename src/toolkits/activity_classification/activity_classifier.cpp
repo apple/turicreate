@@ -1174,9 +1174,7 @@ void activity_classifier::resume_training(gl_sframe data,
     log_and_throw("No neural network compute context provided");
   }
 
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  print_training_device(gpu_names);
+  training_compute_context_->print_training_device_info();
 
   // Defining the struct for ac parameters
   ac_parameters ac_params;
