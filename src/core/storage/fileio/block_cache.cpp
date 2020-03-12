@@ -17,7 +17,6 @@
 namespace turi {
 constexpr size_t block_cache::KEY_LOCK_SIZE;
 
-
 void block_cache::init(const std::string& storage_prefix,
                        size_t max_file_handle_cache) {
   if (m_initialized) log_and_throw("Multiple initialization of block_cache");
@@ -34,9 +33,9 @@ bool block_cache::write(const std::string& key, const std::string& value) {
 
   std::unique_lock<mutex> lock(key_lock[locknum]);
   try {
-
     // if file already exists fail
-    if (fileio::get_file_status(filename).first != fileio::file_status::MISSING) {
+    if (fileio::get_file_status(filename).first !=
+        fileio::file_status::MISSING) {
       return false;
     }
 
@@ -88,28 +87,24 @@ int64_t block_cache::value_length(const std::string& key) {
   }
 }
 
-int64_t block_cache::read(const std::string& key,
-                          std::string& output,
-                          size_t start,
-                          size_t end) {
+int64_t block_cache::read(const std::string& key, std::string& output,
+                          size_t start, size_t end) {
   // we need to get the end size if we do not know it so that
   // we have resize the output string.
   if (end == (size_t)(-1)) end = value_length(key);
   if (end == (size_t)(-1)) return -1;
-  size_t length = end > start ? end - start : 0 ;
+  size_t length = end > start ? end - start : 0;
   output.resize(length);
   return read(key, &(output[0]), start, end);
 }
 
-
-int64_t block_cache::read(const std::string& key,
-                          char* output,
-                          size_t start,
+int64_t block_cache::read(const std::string& key, char* output, size_t start,
                           size_t end) {
   static atomic<size_t> ctr;
   if (ctr.inc() % 4096 == 0) {
     logstream(LOG_INFO) << "Block Cache Hits: " << file_handle_cache_hits()
-                        << " Misses: " << file_handle_cache_misses() << std::endl;
+                        << " Misses: " << file_handle_cache_misses()
+                        << std::endl;
   }
   ASSERT_TRUE(m_initialized);
 
@@ -136,7 +131,8 @@ int64_t block_cache::read(const std::string& key,
   // not in cache. open it
   if (read_stream == nullptr) {
     try {
-      if (fileio::get_file_status(filename).first == fileio::file_status::REGULAR_FILE) {
+      if (fileio::get_file_status(filename).first ==
+          fileio::file_status::REGULAR_FILE) {
         read_stream = std::make_shared<general_ifstream>(filename);
       }
     } catch (...) {
@@ -148,7 +144,7 @@ int64_t block_cache::read(const std::string& key,
   // fix up the start and end positions
   if (end == (size_t)(-1)) end = read_stream->file_size();
   int64_t retval = 0;
-  size_t length = end > start ? end - start : 0 ;
+  size_t length = end > start ? end - start : 0;
 
   read_stream->clear();
   read_stream->seekg(start);
@@ -185,26 +181,20 @@ bool block_cache::evict_key(const std::string& key) {
   std::unique_lock<mutex> lock(key_lock[locknum]);
   // acquire global lock since we need to touch the lru cache and created files
   std::unique_lock<mutex> global_lock(m_lock);
-  m_cache.erase(filename);             // file handle
-  m_created_files.erase(filename);     // created file list
+  m_cache.erase(filename);          // file handle
+  m_created_files.erase(filename);  // created file list
   m_lru_files.erase(filename);
-  return fileio::delete_path(filename); // actual file
+  return fileio::delete_path(filename);  // actual file
 }
 
-size_t block_cache::file_handle_cache_hits() const {
-  return m_cache.hits();
-}
+size_t block_cache::file_handle_cache_hits() const { return m_cache.hits(); }
 
 size_t block_cache::file_handle_cache_misses() const {
   return m_cache.misses();
 }
 
-size_t block_cache::get_max_capacity() {
-  return m_max_capacity;
-}
-void block_cache::set_max_capacity(size_t mc) {
-  m_max_capacity = mc;
-}
+size_t block_cache::get_max_capacity() { return m_max_capacity; }
+void block_cache::set_max_capacity(size_t mc) { m_max_capacity = mc; }
 
 block_cache::~block_cache() {
   if (m_initialized) {
@@ -212,30 +202,36 @@ block_cache::~block_cache() {
       // delete every file we created. ignore failures
       try {
         fileio::delete_path(f);
-      } catch (...) { }
+      } catch (...) {
+      }
     }
   }
 }
 
-static std::once_flag block_cache_is_initialized;
 static std::shared_ptr<block_cache> bc;
+static std::once_flag block_cache_is_initialized;
 
 block_cache& block_cache::get_instance() {
-  std::call_once(block_cache_is_initialized,
-                 []() {
-                   bc = std::make_shared<block_cache>();
-                   auto temp_name = get_temp_name_prefer_hdfs("block_caches-");
-                   // if temporary storage is on hdfs, we use it to share
-                   // data across processes. Otherwise, stick it into cache://
-                   fileio::delete_path(temp_name);
-                   if (fileio::get_protocol(temp_name) == "hdfs") {
-                     logstream(LOG_INFO) << "Storing S3 Block Caches on HDFS" << std::endl;
-                     bc->init(temp_name, 4*thread::cpu_count());
-                   } else {
-                     logstream(LOG_INFO) << "Storing S3 Block Caches in memory cache" << std::endl;
-                     bc->init("cache://block_caches-", 4*thread::cpu_count());
-                   }
-                 });
+  std::call_once(block_cache_is_initialized, []() {
+    bc = std::make_shared<block_cache>();
+    bc->hold_cache_provider(fileio::fixed_size_cache_manager::hold_instance());
+    auto temp_name = get_temp_name_prefer_hdfs("block_caches-");
+    // if temporary storage is on hdfs, we use it to share
+    // data across processes. Otherwise, stick it into cache://
+    fileio::delete_path(temp_name);
+    if (fileio::get_protocol(temp_name) == "hdfs") {
+      logstream(LOG_INFO) << "Storing S3 Block Caches on HDFS" << std::endl;
+      bc->init(temp_name, 4 * thread::cpu_count());
+    } else {
+      logstream(LOG_INFO) << "Storing S3 Block Caches in memory cache"
+                          << std::endl;
+      bc->init("cache://block_caches-", 4 * thread::cpu_count());
+    }
+  });
+
+  if (bc == nullptr)
+    log_and_throw("Block Cache is released already");
+
   return *bc;
 }
 
@@ -243,4 +239,4 @@ void block_cache::release_instance() {
   bc.reset();
 }
 
-} // namespace turi
+}  // namespace turi
