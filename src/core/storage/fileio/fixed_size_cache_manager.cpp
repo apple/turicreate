@@ -150,7 +150,7 @@ EXPORT fixed_size_cache_manager& fixed_size_cache_manager::get_instance() {
   }
 
  EXPORT cache_id_type fixed_size_cache_manager::get_temp_cache_id(std::string suffix) {
-    std::lock_guard<std::mutex> scoped_lock(mutex_);
+    std::lock_guard<std::mutex> scoped_lock(mutex);
     std::stringstream ss;
     ss << std::setfill('0') << std::setw(6) << temp_cache_counter;
     ++temp_cache_counter;
@@ -159,7 +159,7 @@ EXPORT fixed_size_cache_manager& fixed_size_cache_manager::get_instance() {
   }
 
   std::shared_ptr<cache_block> fixed_size_cache_manager::new_cache(cache_id_type cache_id) {
-    std::lock_guard<std::mutex> lck(mutex_);
+    std::lock_guard<std::mutex> lck(mutex);
     logstream_ontick(5, LOG_INFO) << "Cache Utilization:" << get_cache_utilization() << std::endl;
     // if we have exceeded, we try to evict
     if (current_cache_utilization.value >= FILEIO_MAXIMUM_CACHE_CAPACITY) try_cache_evict();
@@ -200,7 +200,7 @@ EXPORT fixed_size_cache_manager& fixed_size_cache_manager::get_instance() {
 
   void fixed_size_cache_manager::free(std::shared_ptr<cache_block> block) {
     logstream(LOG_DEBUG) << "Free cache block " << block->cache_id << std::endl;
-    std::lock_guard<std::mutex> lck(mutex_);
+    std::lock_guard<std::mutex> lck(mutex);
     cache_id_type id = block->cache_id;
     auto iter = cache_blocks.find(id);
     ASSERT_TRUE(iter != cache_blocks.end());
@@ -209,7 +209,7 @@ EXPORT fixed_size_cache_manager& fixed_size_cache_manager::get_instance() {
 
   std::shared_ptr<cache_block> fixed_size_cache_manager::get_cache(cache_id_type cache_id) {
     logstream(LOG_DEBUG) << "Get cache block " << cache_id << std::endl;
-    std::lock_guard<std::mutex> lck(mutex_);
+    std::lock_guard<std::mutex> lck(mutex);
     if (cache_blocks.find(cache_id) != cache_blocks.end()) {
       return cache_blocks[cache_id];
     }
@@ -226,7 +226,7 @@ EXPORT fixed_size_cache_manager& fixed_size_cache_manager::get_instance() {
 
   void fixed_size_cache_manager::try_cache_evict() {
     // lock must be acquired outside of this call
-    ASSERT_FALSE(mutex_.try_lock());
+    ASSERT_FALSE(mutex.try_lock());
     // we will try to evict the largest
     std::string largest_entry_name;
     std::shared_ptr<cache_block> largest_block;

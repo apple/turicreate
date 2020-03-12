@@ -242,7 +242,7 @@ class fixed_size_cache_manager {
 
   atomic<size_t> current_cache_utilization;
 
-  std::mutex mutex_;
+  turi::mutex mutex;
   std::unordered_map<std::string, std::shared_ptr<cache_block> > cache_blocks;
 
   /**
