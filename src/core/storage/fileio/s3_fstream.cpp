@@ -1,17 +1,17 @@
 /* Copyright © 2017 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
-#include <fstream>
-#include <core/logging/assertions.hpp>
-#include <core/storage/fileio/s3_fstream.hpp>
-#include <core/logging/logger.hpp>
-#include <core/storage/fileio/sanitize_url.hpp>
-#include <core/storage/fileio/s3_api.hpp>
 #include <boost/algorithm/string.hpp>
-#include <core/storage/fileio/sanitize_url.hpp>
+#include <core/logging/assertions.hpp>
+#include <core/logging/logger.hpp>
+#include <core/storage/fileio/s3_api.hpp>
 #include <core/storage/fileio/s3_filesys.hpp>
+#include <core/storage/fileio/s3_fstream.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
+#include <fstream>
 
 #ifndef TC_DISABLE_REMOTEF
 
@@ -36,8 +36,13 @@ s3_device::s3_device(const std::string& filename, const bool write) {
       ASSERT_TRUE(m_read_stream != nullptr);
       // this is a bad design to cache the filesize
       m_filesize = m_read_stream->FileSize();
+    } catch (const error::io_error& e) {
+      std::stringstream ss;
+      ss << "Cannot open " + sanitize_url(filename)
+         << "Error code:" << e.what();
+      log_and_throw_io_failure(ss.str());
     } catch (...) {
-      log_and_throw("Cannot open " + sanitize_url(filename));
+      log_and_throw_io_failure("Cannot open " + sanitize_url(filename));
     }
   }
 }

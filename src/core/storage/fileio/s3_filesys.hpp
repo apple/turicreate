@@ -43,14 +43,15 @@ struct FileInfo {
 };
 
 struct ScopedAwsInitAPI {
-  ScopedAwsInitAPI(const Aws::SDKOptions& options) : options_(options) {
+  ScopedAwsInitAPI(const Aws::SDKOptions &options) : options_(options) {
     Aws::InitAPI(options_);
   }
   ~ScopedAwsInitAPI() { Aws::ShutdownAPI(options_); }
   Aws::SDKOptions options_;
 };
 
-const ScopedAwsInitAPI& turi_global_AWS_SDK_setup(const Aws::SDKOptions &options = Aws::SDKOptions());
+const ScopedAwsInitAPI &turi_global_AWS_SDK_setup(
+    const Aws::SDKOptions &options = Aws::SDKOptions());
 
 class Stream {
  public:
@@ -207,7 +208,9 @@ class ReadStream : public AWSReadStreamBase {
     SetBegin(begin_bytes);
     url_ = url;
   }
-};  // namespace fileio
+};
+
+constexpr size_t S3_MIN_MULTIPART_SIZE = 5 * 1024 * 1024;  // 5MB
 
 class WriteStream : public Stream {
  public:
@@ -215,7 +218,8 @@ class WriteStream : public Stream {
       : url_(url), no_exception_(no_exception) {
     const char *buz = getenv("TURI_S3_WRITE_BUFFER_MB");
     if (buz != nullptr) {
-      max_buffer_size_ = static_cast<size_t>(atol(buz)) << 20UL;
+      max_buffer_size_ = std::max(static_cast<size_t>(atol(buz)) << 20UL,
+                                  S3_MIN_MULTIPART_SIZE);
     } else {
       // 64 MB
       const size_t kDefaultBufferSize = 64 << 20UL;
