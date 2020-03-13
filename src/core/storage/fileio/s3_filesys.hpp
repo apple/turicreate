@@ -42,14 +42,15 @@ struct FileInfo {
   FileInfo() : size(0), type(kFile) {}
 };
 
-
 struct ScopedAwsInitAPI {
-  ScopedAwsInitAPI(Aws::SDKOptions options) : options_(options) {
+  ScopedAwsInitAPI(const Aws::SDKOptions& options) : options_(options) {
     Aws::InitAPI(options_);
   }
   ~ScopedAwsInitAPI() { Aws::ShutdownAPI(options_); }
   Aws::SDKOptions options_;
 };
+
+const ScopedAwsInitAPI& turi_global_AWS_SDK_setup(const Aws::SDKOptions &options = Aws::SDKOptions());
 
 class Stream {
  public:
@@ -100,10 +101,6 @@ class SeekStream : public Stream {
   virtual size_t Tell(void) = 0;
   /*! \brief Returns true if at end of stream */
   virtual bool AtEnd(void) const = 0;
-  /*!
-   * \brief closes the stream
-   */
-  virtual void Close() = 0;
   /*!
    * \brief generic factory function
    *  create an SeekStream for read only,
@@ -240,15 +237,15 @@ class WriteStream : public Stream {
   }
 
   virtual void Close() {
-    closed_ = true;
-    Upload(true);
-    Finish();
+    if (!closed_) {
+      closed_ = true;
+      Upload(true);
+      Finish();
+    }
   }
 
  protected:
-  virtual void InitRequest(s3url &url) {
-    InitMultipart(url);
-  }
+  virtual void InitRequest(s3url &url) { InitMultipart(url); }
 
  private:
   // internal maximum buffer size
@@ -262,6 +259,8 @@ class WriteStream : public Stream {
 
   std::string upload_id_;
 
+  Aws::S3::S3Client s3_client_;
+
   // UploadPartOutcomeCallable is fucture<UploadPartOutcome>
   std::vector<Aws::S3::Model::UploadPartOutcomeCallable> completed_parts_;
 
@@ -269,20 +268,26 @@ class WriteStream : public Stream {
 
   void InitMultipart(const s3url &url) {
     url_ = url;
-    Aws::SDKOptions options;
-    ScopedAwsInitAPI aws_init(options);
-
-    auto s3_client = init_aws_sdk_with_turi_env(url_);
+    s3_client_ = init_aws_sdk_with_turi_env(url_);
 
     Aws::S3::Model::CreateMultipartUploadRequest create_request;
     create_request.SetBucket(
         Aws::String(url.bucket.c_str(), url.bucket.length()));
     create_request.SetKey(
         Aws::String(url.object_name.c_str(), url.object_name.length()));
-    create_request.SetContentType("text/plain");
+    // create_request.SetContentType("text/plain");
+
     auto createMultipartUploadOutcome =
-        s3_client.CreateMultipartUpload(create_request);
-    ASSERT_TRUE(createMultipartUploadOutcome.IsSuccess());
+        s3_client_.CreateMultipartUpload(create_request);
+
+    if (!createMultipartUploadOutcome.IsSuccess()) {
+      auto error = createMultipartUploadOutcome.GetError();
+      std::stringstream ss;
+      ss << error.GetExceptionName() << ": " << error.GetMessage() << std::endl;
+      logstream(LOG_ERROR) << ss.str() << std::endl;
+      log_and_throw_io_failure(ss.str());
+    }
+
     upload_id_ = createMultipartUploadOutcome.GetResult().GetUploadId();
   }
 
@@ -311,7 +316,7 @@ class S3FileSystem {
    */
   virtual FileInfo GetPathInfo(const s3url &path);
 
-  static void ListObjects(const s3url & path, std::vector<FileInfo> &out_list);
+  static void ListObjects(const s3url &path, std::vector<FileInfo> &out_list);
 
   /*!
    * \brief list files in a directory

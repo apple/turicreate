@@ -25,6 +25,11 @@ namespace turi {
 namespace fileio {
 namespace s3 {
 
+const ScopedAwsInitAPI& turi_global_AWS_SDK_setup(const Aws::SDKOptions &options) {
+  static ScopedAwsInitAPI aws_init(options);
+  return aws_init;
+}
+
 /*!
  * \brief reader stream that can be used to read from AWS SDK
  */
@@ -81,8 +86,6 @@ void AWSReadStreamBase::Reset(size_t begin_bytes) {
  * @return: number of bytes
  */
 int AWSReadStreamBase::FillBuffer(size_t nwant) {
-  Aws::SDKOptions options;
-  ScopedAwsInitAPI aws_init(options);
   auto s3_client = init_aws_sdk_with_turi_env(url_);
   // start the new buffer
   read_ptr_ = 0;
@@ -92,9 +95,12 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
 
   // Get the object
   std::stringstream ss("bytes=");
-  ss << curr_bytes_ << '-' << curr_bytes_ + nwant;
+  // range is includsive and zero based
+  ss << curr_bytes_ << '-' << curr_bytes_ + nwant - 1;
   Aws::S3::Model::GetObjectRequest object_request;
   object_request.SetRange(ss.str().c_str());
+  object_request.SetBucket(url_.bucket.c_str());
+  object_request.SetKey(url_.object_name.c_str());
 
   auto get_object_outcome = s3_client.GetObject(object_request);
   if (get_object_outcome.IsSuccess()) {
@@ -104,10 +110,10 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
     // Output the first line of the retrieved text file
     buffer_.resize(nwant);
     std::memset(const_cast<char *>(buffer_.data()), 0, nwant);
-    retrieved_file.getline(const_cast<char *>(buffer_.data()), nwant);
-
-    // which means the file size must be accurate
-    ASSERT_TRUE(retrieved_file.eof());
+    buffer_.assign((std::istreambuf_iterator<char>(retrieved_file)),
+                   std::istreambuf_iterator<char>());
+    logstream(LOG_DEBUG) << buffer_ << std::endl;
+    ASSERT_TRUE(buffer_.size() == nwant);
   } else {
     auto error = get_object_outcome.GetError();
     ss.str("");
@@ -127,23 +133,21 @@ void WriteStream::Write(const void *ptr, size_t size) {
 }
 
 void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
-  Aws::SDKOptions options;
-  Aws::InitAPI(options);
-  auto s3_client = init_aws_sdk_with_turi_env(url_);
-
   if (!force_upload_even_if_zero_bytes && buffer_.empty()) return;
 
   Aws::S3::Model::UploadPartRequest my_request;
   my_request.SetBucket(url_.bucket.c_str());
   my_request.SetKey(url_.object_name.c_str());
-  my_request.SetPartNumber(completed_parts_.size());
+  // OMG, the number must start from 1 !!!!
+  my_request.SetPartNumber(completed_parts_.size() + 1);
   my_request.SetUploadId(upload_id_.c_str());
 
-  std::shared_ptr<Aws::StringStream> stream_ptr =
-      Aws::MakeShared<Aws::StringStream>(buffer_.c_str());
+  Aws::StringStream ss;
+  ss << buffer_.c_str();
 
-  stream_ptr->seekg(0);
-  stream_ptr->seekp(0, std::ios_base::end);
+  std::shared_ptr<Aws::StringStream> stream_ptr =
+      Aws::MakeShared<Aws::StringStream>("WriteStream::Upload", ss.str());
+
   my_request.SetBody(stream_ptr);
 
   Aws::Utils::ByteBuffer part_md5(
@@ -160,39 +164,39 @@ void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
   buffer_.clear();
 
   // store the future into completed parts
-  completed_parts_.push_back(s3_client.UploadPartCallable(my_request));
-
-  Aws::ShutdownAPI(options);
+  completed_parts_.push_back(s3_client_.UploadPartCallable(my_request));
 }
 
 void WriteStream::Finish() {
-  Aws::SDKOptions options;
-  ScopedAwsInitAPI aws_init(options);
+  Aws::S3::Model::CompleteMultipartUploadRequest completedMultipartUploadRequest;
+  completedMultipartUploadRequest.SetBucket(url_.bucket.c_str());
+  completedMultipartUploadRequest.SetKey(url_.object_name.c_str());
+  completedMultipartUploadRequest.SetUploadId(upload_id_.c_str());
 
-  auto s3_client = init_aws_sdk_with_turi_env(url_);
-
-  Aws::S3::Model::CompleteMultipartUploadRequest complete_request;
-  complete_request.SetBucket(
-      Aws::String(url_.bucket.c_str(), url_.bucket.length()));
-  complete_request.SetKey(url_.object_name.c_str());
-  complete_request.SetUploadId(upload_id_.c_str());
-
-  Aws::S3::Model::CompletedMultipartUpload completed_multipart_upload;
+  Aws::S3::Model::CompletedMultipartUpload completedMultipartUpload;
 
   for (size_t ii = 0; ii < completed_parts_.size(); ii++) {
     Aws::S3::Model::UploadPartOutcome my_outcome = completed_parts_[ii].get();
-    Aws::S3::Model::CompletedPart completed_part;
-    completed_part.SetETag(my_outcome.GetResult().GetETag());
-    completed_part.SetPartNumber(ii);
-    completed_multipart_upload.AddParts(std::move(completed_part));
+    Aws::S3::Model::CompletedPart completedPart;
+    auto etag = my_outcome.GetResult().GetETag();
+    ASSERT_TRUE(etag.size());
+    completedPart.SetETag(etag);
+    completedPart.SetPartNumber(ii + 1);
+    completedMultipartUpload.AddParts(completedPart);
   }
 
-  complete_request.WithMultipartUpload(completed_multipart_upload);
+  completedMultipartUploadRequest.WithMultipartUpload(completedMultipartUpload);
 
   auto completeMultipartUploadOutcome =
-      s3_client.CompleteMultipartUpload(complete_request);
+      s3_client_.CompleteMultipartUpload(completedMultipartUploadRequest);
 
-  ASSERT_TRUE(completeMultipartUploadOutcome.IsSuccess());
+  if (!completeMultipartUploadOutcome.IsSuccess()) {
+    auto error = completeMultipartUploadOutcome.GetError();
+    std::stringstream ss;
+    ss << error << error.GetExceptionName() << ": " << error.GetMessage() << std::endl;
+    logstream(LOG_ERROR) << ss.str() << std::endl;
+    log_and_throw_io_failure(ss.str());
+  }
 }
 
 /*!
