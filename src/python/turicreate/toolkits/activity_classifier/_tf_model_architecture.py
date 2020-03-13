@@ -73,23 +73,32 @@ class ActivityTensorFlowModel(TensorFlowModel):
         # Weights
         self.weights = {
             "conv_weight": _tf.Variable(
-                _tf.zeros([prediction_window, num_features, CONV_H]), name="conv_weight"
+                _utils.convert_conv1d_coreml_to_tf(net_params["conv_weight"]),
+                shape=[prediction_window, num_features, CONV_H],
+                name="conv_weight"
             ),
             "dense0_weight": _tf.Variable(
-                _tf.zeros([LSTM_H, DENSE_H]), name="dense0_weight"
+                _utils.convert_dense_coreml_to_tf(net_params["dense0_weight"]),
+                shape=[LSTM_H, DENSE_H],
+                name="dense0_weight"
             ),
             "dense1_weight": _tf.Variable(
-                _tf.zeros([DENSE_H, self.num_classes]), name="dense1_weight"
+                _utils.convert_dense_coreml_to_tf(net_params["dense1_weight"]),
+                shape=[DENSE_H, self.num_classes],
+                name="dense1_weight"
             ),
         }
 
         # Biases
         self.biases = {
-            "conv_bias": _tf.Variable(_tf.zeros([CONV_H]), name="conv_bias"),
-            "dense0_bias": _tf.Variable(_tf.zeros([DENSE_H]), name="dense0_bias"),
-            "dense1_bias": _tf.Variable(
-                _tf.zeros([self.num_classes]), name="dense1_bias"
-            ),
+            "conv_bias": _tf.Variable(
+                net_params["conv_bias"],
+                shape=[CONV_H],
+                name="conv_bias"),
+            "dense0_bias": _tf.Variable(
+                net_params["dense0_bias"],
+                shape=[DENSE_H],
+                name="dense0_bias"),
         }
 
         # Convolution
@@ -106,8 +115,8 @@ class ActivityTensorFlowModel(TensorFlowModel):
             conv, rate=0.2, training=self.is_training, seed=seed
         )
 
-        # Long Stem Term Memory
-        lstm = self.load_lstm_weights_params(net_params)
+        # Long Short Term Memory
+        lstm = self._get_lstm_weights_params(net_params)
         cells = _tf.nn.rnn_cell.LSTMCell(
             num_units=LSTM_H,
             reuse=_tf.AUTO_REUSE,
@@ -115,7 +124,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             initializer=_tf.initializers.constant(lstm, verify_shape=True),
         )
         init_state = cells.zero_state(self.batch_size, _tf.float32)
-        rnn_outputs, final_state = _tf.nn.dynamic_rnn(
+        rnn_outputs, _ = _tf.nn.dynamic_rnn(
             cells, dropout, initial_state=init_state
         )
 
@@ -147,9 +156,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         )
 
         # Output
-        out = _tf.add(
-            _tf.matmul(dense, self.weights["dense1_weight"]), self.biases["dense1_bias"]
-        )
+        out = _tf.matmul(dense, self.weights["dense1_weight"])
         out = _tf.reshape(out, (-1, self.seq_len, self.num_classes))
         self.probs = _tf.nn.softmax(out)
 
@@ -181,15 +188,15 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self.sess.run(_tf.global_variables_initializer())
         self.sess.run(_tf.local_variables_initializer())
 
-        self.load_weights(net_params)
+        self._load_lstm_biases(net_params)
 
     def __del__(self):
         self.sess.close()
         self.gpu_policy.stop()
 
-    def load_lstm_weights_params(self, net_params):
+    def _get_lstm_weights_params(self, net_params):
         """
-        Function to load lstm weights from the C++ implementation into TensorFlow
+        Function to get LSTM weights from the C++ implementation in TensorFlow format
 
         Parameters
         ----------
@@ -214,9 +221,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
         )
         return lstm
 
-    def load_weights(self, net_params):
+    def _load_lstm_biases(self, net_params):
         """
-        Function to load weights from the C++ implementation into TensorFlow
+        Function to load LSTM biases from the C++ implementation into TensorFlow
 
         Parameters
         ----------
@@ -224,34 +231,6 @@ class ActivityTensorFlowModel(TensorFlowModel):
             Dict with weights from the C++ implementation and  its names
 
         """
-        for key in net_params.keys():
-            if key in self.weights.keys():
-                if key.startswith("conv"):
-                    net_params[key] = _utils.convert_conv1d_coreml_to_tf(
-                        net_params[key]
-                    )
-                    self.sess.run(
-                        _tf.assign(
-                            _tf.get_default_graph().get_tensor_by_name(key + ":0"),
-                            net_params[key],
-                        )
-                    )
-                elif key.startswith("dense"):
-                    net_params[key] = _utils.convert_dense_coreml_to_tf(net_params[key])
-                    self.sess.run(
-                        _tf.assign(
-                            _tf.get_default_graph().get_tensor_by_name(key + ":0"),
-                            net_params[key],
-                        )
-                    )
-            elif key in self.biases.keys():
-                self.sess.run(
-                    _tf.assign(
-                        _tf.get_default_graph().get_tensor_by_name(key + ":0"),
-                        net_params[key],
-                    )
-                )
-
         h2h_i_bias = net_params["lstm_h2h_i_bias"]
         h2h_c_bias = net_params["lstm_h2h_c_bias"]
         h2h_f_bias = net_params["lstm_h2h_f_bias"]
@@ -259,6 +238,10 @@ class ActivityTensorFlowModel(TensorFlowModel):
         lstm_bias = _utils.convert_lstm_bias_coreml_to_tf(
             h2h_i_bias, h2h_c_bias, h2h_f_bias, h2h_o_bias
         )
+
+        # Needing to manually set the LSTM bias in this way prevents this toolkit from running with
+        # TensorFlow V2 behavior enabled. This is the only thing preventing this toolkit from
+        # running with V2 behavior enabled.
         self.sess.run(
             _tf.assign(
                 _tf.get_default_graph().get_tensor_by_name("rnn/lstm_cell/bias:0"),
