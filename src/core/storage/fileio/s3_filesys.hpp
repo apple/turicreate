@@ -288,7 +288,7 @@ class WriteStream : public Stream {
       log_and_throw_io_failure(ss.str());
     }
 
-    upload_id_ = createMultipartUploadOutcome.GetResult().GetUploadId();
+    upload_id_ = createMultipartUploadOutcome.GetResult().GetUploadId().c_str();
   }
 
   /*!

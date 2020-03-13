@@ -13,6 +13,8 @@
 #include <core/storage/fileio/sanitize_url.hpp>
 #include <core/storage/fileio/s3_filesys.hpp>
 
+#ifndef TC_DISABLE_REMOTEF
+
 namespace turi {
 
 s3_device::s3_device(const std::string& filename, const bool write) {
@@ -23,6 +25,8 @@ s3_device::s3_device(const std::string& filename, const bool write) {
   if (!parse_s3url(filename, url, err_msg)) log_and_throw(err_msg);
   m_s3fs = std::make_shared<fileio::s3::S3FileSystem>(url);
 
+  logstream(LOG_INFO) << "s3_device constructor is invoked" << std::endl;
+
   if (write) {
     m_write_stream.reset(m_s3fs->Open(url, "w"));
   } else {
@@ -32,6 +36,7 @@ s3_device::s3_device(const std::string& filename, const bool write) {
       if (pathinfo.type != fileio::s3::kFile) {
         log_and_throw("Cannot open " + sanitize_url(filename));
       }
+      logstream(LOG_INFO) << "s3_device reset read_stream" << std::endl;
       m_read_stream.reset(m_s3fs->OpenForRead(url));
     } catch (...) {
       log_and_throw("Cannot open " + sanitize_url(filename));
@@ -107,3 +112,5 @@ s3_device::~s3_device() {
 }
 
 }  // namespace turi
+
+#endif  // End ifndef TC_DISABLE_REMOTEF

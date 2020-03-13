@@ -369,11 +369,6 @@ list_objects_response list_objects_impl(s3url parsed_url,
                                         std::string proxy,
                                         std::string endpoint)
 {
-    // initialization
-    Aws::SDKOptions options;
-    options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
-    Aws::InitAPI(options);
-
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
 
@@ -382,11 +377,13 @@ list_objects_response list_objects_impl(s3url parsed_url,
     if (turi::fileio::insecure_ssl_cert_checks()) {
       clientConfiguration.verifySSL = false;
     }
+
     if (parsed_url.endpoint.empty()) {
       clientConfiguration.endpointOverride = endpoint.c_str();
     } else {
       clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
     }
+
     clientConfiguration.proxyHost = proxy.c_str();
     clientConfiguration.requestTimeoutMs = 5 * 60000;
     clientConfiguration.connectTimeoutMs = 20000;
@@ -418,12 +415,11 @@ list_objects_response list_objects_impl(s3url parsed_url,
             objects = result.GetContents();
             for (auto const& o : objects)
             {
-                // std::cout << "object: " << objects[i].GetKey() << ", size: " << objects[i].GetSize() << ", last_modified: " << objects[i].GetLastModified().Millis() << std::endl;
-                ret.objects.push_back(std::string(o.GetKey().c_str()));
-                std::stringstream stream;
-                stream << o.GetLastModified().Millis();
-                ret.objects_last_modified.push_back(stream.str());
-                ret.objects_size.push_back(o.GetSize());
+              ret.objects.push_back(std::string(o.GetKey().c_str()));
+              std::stringstream stream;
+              stream << o.GetLastModified().Millis();
+              ret.objects_last_modified.push_back(stream.str());
+              ret.objects_size.push_back(o.GetSize());
             }
 
             // now iterate through common prefixes - these are directories
@@ -449,16 +445,18 @@ list_objects_response list_objects_impl(s3url parsed_url,
         }
         else
         {
-            std::stringstream ss;
-            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
-                                  clientConfiguration, outcome)
-                << std::endl;
-            ret.error = ss.str();
+          logstream(LOG_ERROR)
+              << "list_objects_impl failed:" << ret.error << std::endl;
+
+          std::stringstream ss;
+          reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
+                                clientConfiguration, outcome)
+              << std::endl;
+          ret.error = ss.str();
         }
 
     } while (moreResults);
 
-    Aws::ShutdownAPI(options);
     for (auto& dir : ret.directories) {
       s3url dirurl = parsed_url;
       dirurl.object_name = dir;
@@ -478,11 +476,6 @@ std::string delete_object_impl(s3url parsed_url,
                                std::string proxy,
                                std::string endpoint) {
     std::string ret;
-
-    // initialization
-    Aws::SDKOptions options;
-    options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
-    Aws::InitAPI(options);
 
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
@@ -530,7 +523,6 @@ std::string delete_object_impl(s3url parsed_url,
       ret = ss.str();
     }
 
-    Aws::ShutdownAPI(options);
     return ret;
 }
 
@@ -542,11 +534,6 @@ std::string delete_prefix_impl(s3url parsed_url,
     // List objects and then create a DeleteObjects request from the resulting list
 
     std::string ret;
-
-    // initialization
-    Aws::SDKOptions options;
-    options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
-    Aws::InitAPI(options);
 
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
@@ -639,7 +626,6 @@ std::string delete_prefix_impl(s3url parsed_url,
         }
     }
 
-    Aws::ShutdownAPI(options);
     return ret;
 }
 
@@ -649,10 +635,13 @@ list_objects_response list_objects(std::string url,
   list_objects_response ret;
   std::string err_msg;
   bool success = parse_s3url(url, parsed_url, err_msg);
+
   if (!success) {
     ret.error = err_msg;
     return ret;
   }
+
+  logstream(LOG_DEBUG) << "list_obejcts: " << url << std::endl;
 
   size_t current_endpoint = 0;
   // try all endpoints

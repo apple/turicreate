@@ -35,8 +35,8 @@ const ScopedAwsInitAPI& turi_global_AWS_SDK_setup(const Aws::SDKOptions &options
  */
 size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
   // check at end
+  logstream(LOG_ERROR) << "AWSReadStreamBase::Read: " << curr_bytes_ << std::endl;
   if (curr_bytes_ == file_size_) return 0;
-  std::cerr << buffer_ << std::endl;
 
   size_t nleft = size;
   char *buf = reinterpret_cast<char *>(ptr);
@@ -70,6 +70,7 @@ size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
 
 // used for restart
 void AWSReadStreamBase::Reset(size_t begin_bytes) {
+  logstream(LOG_ERROR) << begin_bytes << std::endl;
   // setup the variables
   curr_bytes_ = begin_bytes;
   read_ptr_ = 0;
@@ -86,6 +87,7 @@ void AWSReadStreamBase::Reset(size_t begin_bytes) {
  * @return: number of bytes
  */
 int AWSReadStreamBase::FillBuffer(size_t nwant) {
+  logstream(LOG_INFO) << "FillBuffer: " << nwant << " bytes" << std::endl;
   auto s3_client = init_aws_sdk_with_turi_env(url_);
   // start the new buffer
   read_ptr_ = 0;
@@ -112,7 +114,6 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
     std::memset(const_cast<char *>(buffer_.data()), 0, nwant);
     buffer_.assign((std::istreambuf_iterator<char>(retrieved_file)),
                    std::istreambuf_iterator<char>());
-    logstream(LOG_DEBUG) << buffer_ << std::endl;
     ASSERT_TRUE(buffer_.size() == nwant);
   } else {
     auto error = get_object_outcome.GetError();
@@ -206,12 +207,18 @@ void WriteStream::Finish() {
  */
 void S3FileSystem::ListObjects(const s3url &path,
                                std::vector<FileInfo> &out_list) {
+  logstream(LOG_DEBUG) << "ListObjects:"
+                       << "path=" << path.string_from_s3url() << std::endl;
+
   if (path.bucket.length() == 0) {
     log_and_throw_io_failure("bucket name not specified in S3 URL");
   }
   out_list.clear();
   // use new implementation from s3_api.hpp
   auto ret = list_objects(path.string_from_s3url());
+  if (!ret.error.empty()) {
+    log_and_throw_io_failure(ret.error);
+  }
 
   // used to decode object name from urls
   std::string err;
@@ -224,6 +231,9 @@ void S3FileSystem::ListObjects(const s3url &path,
     info.path = path;
     s3url tmp;
     parse_s3url(ret.objects[ii], tmp, err);
+    if (!err.empty()) {
+      log_and_throw_io_failure(err);
+    }
     info.path.object_name = tmp.object_name;
     info.type = kFile;
     out_list.push_back(info);
@@ -235,6 +245,9 @@ void S3FileSystem::ListObjects(const s3url &path,
     // add root path to be consistent with other filesys convention
     s3url tmp;
     parse_s3url(s3dir, tmp, err);
+    if (!err.empty()) {
+      log_and_throw_io_failure(err);
+    }
     if (tmp.object_name.size() && tmp.object_name.back() != '/')
       tmp.object_name.append(1, '/');
     info.path.object_name = tmp.object_name;
@@ -247,6 +260,7 @@ void S3FileSystem::ListObjects(const s3url &path,
 
 bool S3FileSystem::TryGetPathInfo(const s3url &url, FileInfo &out_info) {
   // listobjects returns encoded url
+  logstream(LOG_DEBUG) << "S3FileSystem::TryGetPathInfo: " << url << std::endl;
   std::string object_name = url.object_name;
   while (object_name.length() > 1 && object_name.back() == '/') {
     object_name.pop_back();
@@ -266,6 +280,7 @@ bool S3FileSystem::TryGetPathInfo(const s3url &url, FileInfo &out_info) {
       return true;
     }
   }
+
   return false;
 }
 
@@ -320,6 +335,8 @@ SeekStream *S3FileSystem::OpenForRead(const s3url &path) {
   if (TryGetPathInfo(path, info) && info.type == kFile) {
     return new s3::ReadStream(path, info.size);
   } else {
+    logstream(LOG_WARNING) << "path " << path
+                           << " does not exist or is not a file" << std::endl;
     return NULL;
   }
 }

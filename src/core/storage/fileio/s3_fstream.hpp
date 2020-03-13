@@ -9,6 +9,9 @@
 #include <core/storage/fileio/s3_filesys.hpp>
 #include <core/storage/fileio/read_caching_device.hpp>
 
+
+#ifndef TC_DISABLE_REMOTEFS
+
 namespace turi {
 
 /**
@@ -76,3 +79,5 @@ class s3_device {
 typedef boost::iostreams::stream<s3_device> raw_s3_fstream;
 typedef boost::iostreams::stream<read_caching_device<s3_device>> s3_fstream;
 }
+
+#endif  // End ifndef TC_DISABLE_REMOTEFS
