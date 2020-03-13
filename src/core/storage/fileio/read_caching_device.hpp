@@ -57,7 +57,7 @@ class read_caching_device {
       if (iter != m_filename_to_filesize_map.end()) {
         m_file_size = iter->second;
       } else {
-        m_contents = std::shared_ptr<T>(new T(filename, write));
+        m_contents = std::make_shared<T>(filename, write);
         m_file_size = m_contents->file_size();
         m_filename_to_filesize_map[filename] = m_file_size;
       }

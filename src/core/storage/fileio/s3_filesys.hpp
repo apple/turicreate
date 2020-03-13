@@ -97,8 +97,13 @@ class SeekStream : public Stream {
   virtual ~SeekStream(void) {}
   /*! \brief seek to certain position of the file */
   virtual void Seek(size_t pos) = 0;
+
   /*! \brief tell the position of the stream */
   virtual size_t Tell(void) = 0;
+
+  /*! tell the physical size of the stream */
+  virtual size_t FileSize(void) const = 0;
+
   /*! \brief Returns true if at end of stream */
   virtual bool AtEnd(void) const = 0;
   /*!
@@ -125,6 +130,8 @@ class AWSReadStreamBase : public SeekStream {
   virtual void Close() { Reset(file_size_); }
 
   virtual size_t Tell(void) { return curr_bytes_; }
+
+  virtual size_t FileSize() const { return file_size_; }
 
   virtual bool AtEnd(void) const { return curr_bytes_ == file_size_; }
 
@@ -340,9 +347,10 @@ class S3FileSystem {
   /*!
    * \brief open a seekable stream for read
    * \param path the path to the file
-   * \return the created stream, can be NULL
+   * \return the created stream, can be NULL if no_exception is true to
+   * indicate a failure to open the file.
    */
-  virtual SeekStream *OpenForRead(const s3url &path);
+  virtual SeekStream *OpenForRead(const s3url &path, bool no_exception = true);
 
  protected:
   s3url url_;

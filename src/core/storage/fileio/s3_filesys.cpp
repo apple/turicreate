@@ -1,3 +1,10 @@
+/* Copyright © 2020 Apple Inc. All rights reserved.
+ *
+ * Use of this source code is governed by a BSD-3-clause license that can
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
+ */
+
 #include <aws/core/utils/HashingUtils.h>
 #include <aws/s3/model/CompleteMultipartUploadRequest.h>
 #include <aws/s3/model/GetObjectRequest.h>
@@ -25,7 +32,8 @@ namespace turi {
 namespace fileio {
 namespace s3 {
 
-const ScopedAwsInitAPI& turi_global_AWS_SDK_setup(const Aws::SDKOptions &options) {
+const ScopedAwsInitAPI &turi_global_AWS_SDK_setup(
+    const Aws::SDKOptions &options) {
   static ScopedAwsInitAPI aws_init(options);
   return aws_init;
 }
@@ -35,7 +43,8 @@ const ScopedAwsInitAPI& turi_global_AWS_SDK_setup(const Aws::SDKOptions &options
  */
 size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
   // check at end
-  logstream(LOG_ERROR) << "AWSReadStreamBase::Read: " << curr_bytes_ << std::endl;
+  logstream(LOG_ERROR) << "AWSReadStreamBase::Read: " << curr_bytes_
+                       << std::endl;
   if (curr_bytes_ == file_size_) return 0;
 
   size_t nleft = size;
@@ -70,7 +79,7 @@ size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
 
 // used for restart
 void AWSReadStreamBase::Reset(size_t begin_bytes) {
-  logstream(LOG_ERROR) << begin_bytes << std::endl;
+  logstream(LOG_DEBUG) << "reset size: " << begin_bytes << std::endl;
   // setup the variables
   curr_bytes_ = begin_bytes;
   read_ptr_ = 0;
@@ -169,7 +178,8 @@ void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
 }
 
 void WriteStream::Finish() {
-  Aws::S3::Model::CompleteMultipartUploadRequest completedMultipartUploadRequest;
+  Aws::S3::Model::CompleteMultipartUploadRequest
+      completedMultipartUploadRequest;
   completedMultipartUploadRequest.SetBucket(url_.bucket.c_str());
   completedMultipartUploadRequest.SetKey(url_.object_name.c_str());
   completedMultipartUploadRequest.SetUploadId(upload_id_.c_str());
@@ -194,7 +204,8 @@ void WriteStream::Finish() {
   if (!completeMultipartUploadOutcome.IsSuccess()) {
     auto error = completeMultipartUploadOutcome.GetError();
     std::stringstream ss;
-    ss << error << error.GetExceptionName() << ": " << error.GetMessage() << std::endl;
+    ss << error << error.GetExceptionName() << ": " << error.GetMessage()
+       << std::endl;
     logstream(LOG_ERROR) << ss.str() << std::endl;
     log_and_throw_io_failure(ss.str());
   }
@@ -281,6 +292,8 @@ bool S3FileSystem::TryGetPathInfo(const s3url &url, FileInfo &out_info) {
     }
   }
 
+  logstream(LOG_WARNING) << "No file is found from " << url << std::endl;
+
   return false;
 }
 
@@ -330,13 +343,16 @@ Stream *S3FileSystem::Open(const s3url &path, const char *const flag) {
   }
 }
 
-SeekStream *S3FileSystem::OpenForRead(const s3url &path) {
+SeekStream *S3FileSystem::OpenForRead(const s3url &path, bool no_exception) {
   FileInfo info;
   if (TryGetPathInfo(path, info) && info.type == kFile) {
     return new s3::ReadStream(path, info.size);
   } else {
     logstream(LOG_WARNING) << "path " << path
                            << " does not exist or is not a file" << std::endl;
+    if (!no_exception) {
+      log_and_throw_io_failure("cannot opend file " + path.string_from_s3url());
+    }
     return NULL;
   }
 }

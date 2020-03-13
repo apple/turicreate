@@ -1,4 +1,4 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2020 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -60,7 +60,7 @@ struct s3url {
   std::string string_from_s3url(bool with_credentials = true) const {
     std::string ret("s3://");
     ret.reserve(128);
-
+    const size_t prot_len = ret.size();
 
     if (with_credentials && !access_key_id.empty()) {
       ASSERT_TRUE(!secret_key.empty());
@@ -78,11 +78,12 @@ struct s3url {
     }
 
     ASSERT_TRUE(!bucket.empty());
-    ret.append(1, '/');
+    // if it's still not pure s3://
+    if (ret.size() > prot_len) ret.append(1, '/');
     ret.append(bucket);
 
     if (!object_name.empty()) {
-      ret.append(1, '/');
+      if (ret.size() > 5) ret.append(1, '/');
       ret.append(object_name);
     }
 

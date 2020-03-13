@@ -31,13 +31,11 @@ s3_device::s3_device(const std::string& filename, const bool write) {
     m_write_stream.reset(m_s3fs->Open(url, "w"));
   } else {
     try {
-      auto pathinfo = m_s3fs->GetPathInfo(url);
-      m_filesize = pathinfo.size;
-      if (pathinfo.type != fileio::s3::kFile) {
-        log_and_throw("Cannot open " + sanitize_url(filename));
-      }
-      logstream(LOG_INFO) << "s3_device reset read_stream" << std::endl;
-      m_read_stream.reset(m_s3fs->OpenForRead(url));
+      logstream(LOG_DEBUG) << "s3_device reset read_stream" << std::endl;
+      m_read_stream.reset(m_s3fs->OpenForRead(url, false /* no throw */));
+      ASSERT_TRUE(m_read_stream != nullptr);
+      // this is a bad design to cache the filesize
+      m_filesize = m_read_stream->FileSize();
     } catch (...) {
       log_and_throw("Cannot open " + sanitize_url(filename));
     }
@@ -83,7 +81,8 @@ std::streampos s3_device::seek(std::streamoff off, std::ios_base::seekdir way,
       size_t offset = m_read_stream->Tell();
       m_read_stream->Seek(offset + off);
     } else if (way == std::ios_base::end) {
-      size_t offset = m_read_stream->Tell();
+      size_t offset = m_filesize;
+      DASSERT_TRUE(m_filesize == m_read_stream->FileSize());
       m_read_stream->Seek(offset + off - 1);
     }
     return m_read_stream->Tell();
