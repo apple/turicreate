@@ -10,23 +10,24 @@
 #else
 #include <ws2tcpip.h>
 #endif
-#include <memory>
-#include <fstream>
-#include <string>
-#include <thread>
-#include <future>
-#include <regex>
+#include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
-#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
-#include <core/logging/logger.hpp>
 #include <core/logging/assertions.hpp>
-#include <core/storage/fileio/s3_api.hpp>
+#include <core/logging/logger.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/general_fstream.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
+#include <core/storage/fileio/s3_api.hpp>
 #include <core/system/cppipc/server/cancel_ops.hpp>
+#include <fstream>
+#include <future>
+#include <memory>
+#include <regex>
+#include <string>
+#include <thread>
 
 /* aws */
 #include <aws/core/Aws.h>
@@ -111,20 +112,57 @@ bool bucket_name_valid(const std::string& bucket_name) {
 }
 
 
-std::string string_from_s3url(const s3url& parsed_url) {
-  std::string ret = "s3://" + parsed_url.access_key_id + ":"
-      + parsed_url.secret_key + ":";
+} // anonymous namespace
+
+S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
+  // s3 client config
+  // DefaultCredentialProviderChain
+  Aws::Client::ClientConfiguration clientConfiguration;
+
+  // a little bit too long, anyway
+  clientConfiguration.requestTimeoutMs = 5 * 60000;
+  clientConfiguration.connectTimeoutMs = 20000;
+
+  if (turi::fileio::insecure_ssl_cert_checks()) {
+    clientConfiguration.verifySSL = false;
+  }
+
   if (!parsed_url.endpoint.empty()) {
-    ret += parsed_url.endpoint + "/";
+    clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
+  } else {
+    auto env_var = get_endpoint_from_env();
+    if (env_var) {
+      clientConfiguration.endpointOverride = env_var->c_str();
+      parsed_url.sdk_endpoint = env_var->c_str();
+    }
   }
-  ret += parsed_url.bucket;
-  if (!parsed_url.object_name.empty()) {
-    ret += "/" + parsed_url.object_name;
+
+  // TODO: add proxy support
+  // clientConfiguration.proxyHost = proxy.c_str();
+
+  std::string region = fileio::get_region_name_from_endpoint(
+      clientConfiguration.endpointOverride.c_str());
+
+  if (!region.empty()) {
+    clientConfiguration.region = region.c_str();
+  } else {
+    auto env_var = get_auth_region_from_env();
+    if (env_var) {
+      clientConfiguration.region = env_var->c_str();
+      parsed_url.sdk_region = env_var->c_str();
+    }
   }
-  return ret;
+
+  if (parsed_url.secret_key.empty()) {
+    return S3Client(clientConfiguration);
+  } else {
+    // credentials
+    Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(),
+                                          parsed_url.secret_key.c_str());
+    return S3Client(credentials, clientConfiguration);
+  }
 }
 
-} // anonymous namespace
 
 const std::vector<std::string> S3Operation::_enum_to_str = {
     "DeleteObjects", "ListObjects", "HeadObjects"};
@@ -136,8 +174,9 @@ const std::vector<std::string> S3Operation::_enum_to_str = {
  *
  * Returns true on success, false on failure.
  */
-bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
+bool parse_s3url(std::string s3_url, s3url& ret, std::string& err_msg) {
   // must begin with s3://
+  auto url = s3_url;
   if (fileio::get_protocol(url) != "s3") {
     err_msg = url + " doesn't start with 's3://'";
     return false;
@@ -172,11 +211,31 @@ bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
     url = url.substr(splitpos + 1);
   }
 
+  boost::trim(url);
+
+  // next char is '/' is credential string is in url
+  // it must be this form: s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
+  if (url.empty()) {
+    ss << "missing endpoint or bucket or object key in " << "s3://" << __FILE__
+       << "at" << __LINE__;
+    err_msg = ss.str();
+    return false;
+  }
+
+  bool no_endpoint = url.front() == '/';
+  if (no_endpoint) {
+    url = url.substr(1);
+  }
+
+  // shouldn't call sanitize_s3_url here, will cause recursion
+  auto url_without_credentials = "s3://" + url;
+
   // The rest is parsed using boost::tokenizer
   typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
   boost::char_separator<char> sep("/");
   tokenizer tokens(url, sep);
   tokenizer::iterator iter = tokens.begin();
+
   if (iter == tokens.end()) {
     ss << "missing endpoint or bucket or object key in " << url << __FILE__
        << "at" << __LINE__;
@@ -184,23 +243,22 @@ bool parse_s3url(std::string url, s3url& ret, std::string& err_msg) {
     return false;
   }
 
-  auto original_url = sanitize_url(url);
   // Parse endpoints; since we support private cloud settings
   // url can be tricky; region (.*)com is not sufficient
-  if (std::regex_match(*iter, std::regex("(.*)\\.(com|net)"))) {
+  if (!no_endpoint && std::regex_match(*iter, std::regex("(.*)\\.(com|net)"))) {
     ret.endpoint = *iter;
     ++iter;
   }
 
   // Parse bucket name
   if (iter == tokens.end()) {
-    ss << "missing bucket name in " << '\'' << original_url << '\'' << " in "
+    ss << "missing bucket name in " << '\'' << url_without_credentials << '\'' << " in "
        << __FILE__ << " at " << __LINE__;
     err_msg = ss.str();
     return false;
   }
   if (!bucket_name_valid(*iter)) {
-    ss << '\'' << original_url << '\'' << " has invalid bucket name: " << *iter;
+    ss << '\'' << url_without_credentials << '\'' << " has invalid bucket name: " << *iter;
     err_msg = ss.str();
     logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
@@ -311,30 +369,29 @@ list_objects_response list_objects_impl(s3url parsed_url,
                                         std::string proxy,
                                         std::string endpoint)
 {
-    // initialization
-    Aws::SDKOptions options;
-    options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
-    Aws::InitAPI(options);
-
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
-
 
     // s3 client config
     Aws::Client::ClientConfiguration clientConfiguration;
     if (turi::fileio::insecure_ssl_cert_checks()) {
       clientConfiguration.verifySSL = false;
     }
+
     if (parsed_url.endpoint.empty()) {
       clientConfiguration.endpointOverride = endpoint.c_str();
     } else {
       clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
     }
+
     clientConfiguration.proxyHost = proxy.c_str();
     clientConfiguration.requestTimeoutMs = 5 * 60000;
     clientConfiguration.connectTimeoutMs = 20000;
     std::string region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
-    clientConfiguration.region = region.c_str();
+    if (!region.empty()) {
+      clientConfiguration.region = region.c_str();
+      parsed_url.sdk_region = region;
+    }
 
     S3Client client(credentials, clientConfiguration);
 
@@ -358,11 +415,11 @@ list_objects_response list_objects_impl(s3url parsed_url,
             objects = result.GetContents();
             for (auto const& o : objects)
             {
-                // std::cout << "object: " << objects[i].GetKey() << ", size: " << objects[i].GetSize() << ", last_modified: " << objects[i].GetLastModified().Millis() << std::endl;
-                ret.objects.push_back(std::string(o.GetKey().c_str()));
-                std::stringstream stream;
-                stream << o.GetLastModified().Millis();
-                ret.objects_last_modified.push_back(stream.str());
+              ret.objects.push_back(std::string(o.GetKey().c_str()));
+              std::stringstream stream;
+              stream << o.GetLastModified().Millis();
+              ret.objects_last_modified.push_back(stream.str());
+              ret.objects_size.push_back(o.GetSize());
             }
 
             // now iterate through common prefixes - these are directories
@@ -388,25 +445,28 @@ list_objects_response list_objects_impl(s3url parsed_url,
         }
         else
         {
-            std::stringstream ss;
-            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
-                                  clientConfiguration, outcome)
-                << std::endl;
-            ret.error = ss.str();
+          logstream(LOG_ERROR)
+              << "list_objects_impl failed:" << ret.error << std::endl;
+
+          std::stringstream ss;
+          reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
+                                clientConfiguration, outcome)
+              << std::endl;
+          ret.error = ss.str();
         }
 
     } while (moreResults);
 
-    Aws::ShutdownAPI(options);
     for (auto& dir : ret.directories) {
       s3url dirurl = parsed_url;
       dirurl.object_name = dir;
-      dir = string_from_s3url(dirurl);
+      // this is not necessary to override what returned by s3
+      dir = dirurl.string_from_s3url();
     }
     for (auto& object: ret.objects) {
       s3url objurl = parsed_url;
       objurl.object_name = object;
-      object = string_from_s3url(objurl);
+      object = objurl.string_from_s3url();
     }
     return ret;
 }
@@ -417,31 +477,36 @@ std::string delete_object_impl(s3url parsed_url,
                                std::string endpoint) {
     std::string ret;
 
-    // initialization
-    Aws::SDKOptions options;
-    options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
-    Aws::InitAPI(options);
-
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
 
     // s3 client config
     Aws::Client::ClientConfiguration clientConfiguration;
+
+    clientConfiguration.requestTimeoutMs = 5 * 60000;
+    clientConfiguration.connectTimeoutMs = 20000;
+
     if (turi::fileio::insecure_ssl_cert_checks()) {
       clientConfiguration.verifySSL = false;
     }
 
     if (parsed_url.endpoint.empty()) {
       clientConfiguration.endpointOverride = endpoint.c_str();
+      parsed_url.sdk_endpoint = endpoint;
     } else {
       clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
     }
 
-    clientConfiguration.proxyHost = proxy.c_str();
-    clientConfiguration.requestTimeoutMs = 5 * 60000;
-    clientConfiguration.connectTimeoutMs = 20000;
+    if (!proxy.empty()) {
+      clientConfiguration.proxyHost = proxy.c_str();
+      parsed_url.sdk_proxy = proxy;
+    }
+
     std::string region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
-    clientConfiguration.region = region.c_str();
+    if (!region.empty()) {
+      clientConfiguration.region = region.c_str();
+      parsed_url.sdk_region = region;
+    }
 
     S3Client client(credentials, clientConfiguration);
 
@@ -458,7 +523,6 @@ std::string delete_object_impl(s3url parsed_url,
       ret = ss.str();
     }
 
-    Aws::ShutdownAPI(options);
     return ret;
 }
 
@@ -470,11 +534,6 @@ std::string delete_prefix_impl(s3url parsed_url,
     // List objects and then create a DeleteObjects request from the resulting list
 
     std::string ret;
-
-    // initialization
-    Aws::SDKOptions options;
-    options.loggingOptions.logLevel = Aws::Utils::Logging::LogLevel::Info;
-    Aws::InitAPI(options);
 
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
@@ -488,15 +547,23 @@ std::string delete_prefix_impl(s3url parsed_url,
 
     if (parsed_url.endpoint.empty()) {
       clientConfiguration.endpointOverride = endpoint.c_str();
+    // for report
+      parsed_url.endpoint = endpoint;
     } else {
       clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
     }
 
-    clientConfiguration.proxyHost = proxy.c_str();
+    if (proxy.size()) {
+      clientConfiguration.proxyHost = proxy.c_str();
+      parsed_url.sdk_proxy = proxy;
+    }
     clientConfiguration.requestTimeoutMs = 5 * 60000;
     clientConfiguration.connectTimeoutMs = 20000;
     std::string region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
-    clientConfiguration.region = region.c_str();
+    if (!region.empty()) {
+      clientConfiguration.region = region.c_str();
+      parsed_url.sdk_region = region;
+    }
 
     S3Client client(credentials, clientConfiguration);
 
@@ -559,7 +626,6 @@ std::string delete_prefix_impl(s3url parsed_url,
         }
     }
 
-    Aws::ShutdownAPI(options);
     return ret;
 }
 
@@ -569,10 +635,13 @@ list_objects_response list_objects(std::string url,
   list_objects_response ret;
   std::string err_msg;
   bool success = parse_s3url(url, parsed_url, err_msg);
+
   if (!success) {
     ret.error = err_msg;
     return ret;
   }
+
+  logstream(LOG_DEBUG) << "list_obejcts: " << url << std::endl;
 
   size_t current_endpoint = 0;
   // try all endpoints
@@ -618,7 +687,7 @@ is_directory(std::string url, std::string proxy) {
   }
 
   // is an object
-  for (auto object: response.objects) {
+  for (auto& object: response.objects) {
     if (object == url) {
       return {file_status::REGULAR_FILE, response};
     }
@@ -638,7 +707,7 @@ list_objects_response list_directory(std::string url, std::string proxy) {
     return ret;
   }
   // normalize the URL so it doesn't matter if you put strange "/"s at the end
-  url = string_from_s3url(parsed_url);
+  url = parsed_url.string_from_s3url();
   auto isdir = is_directory(url, proxy);
   // if not found.
   if (isdir.first == file_status::MISSING) return isdir.second;
