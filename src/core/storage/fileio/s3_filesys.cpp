@@ -106,7 +106,7 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
 
   // in case some nuts
   if (nwant == size_t(-1)) {
-    log_and_throw_io_failure("input size, with value size_t(-1), is invalid");
+    log_and_throw_io_failure("input size, size_t(-1), is invalid");
   }
 
   // Get the object

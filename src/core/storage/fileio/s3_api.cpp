@@ -699,6 +699,17 @@ std::pair<file_status, list_objects_response> is_directory(std::string url,
   }
 
   // is not found
+  // s3 would be slient with list-objects if prefix doesn't exist
+  if (response.error.empty()) {
+    std::stringstream ss;
+
+    ss << sanitize_url(url)
+       << "has no objects or diretoires. Consider create the prefix and try "
+          "again";
+
+    response.error = ss.str();
+  }
+
   return {file_status::MISSING, response};
 }
 
