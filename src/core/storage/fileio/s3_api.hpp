@@ -16,9 +16,9 @@
 #include <core/storage/fileio/fs_utils.hpp>
 #include <aws/s3/S3Client.h>
 #include <core/logging/assertions.hpp>
+#include <chrono>
 
 namespace turi {
-
 
 /**
  * \ingroup fileio
@@ -268,14 +268,6 @@ void set_upload_timeout(long timeout);
  * \param timeout Timeout value in secs.
  */
 void set_download_timeout(long timeout);
-
-/**
- * \ingroup fileio
- * \internal
- * Return the S3 error code contains in the message.
- * If the message does not contain error code, return the message itself.
- */
-std::string get_s3_error_code(const std::string& msg);
 
 struct S3Operation {
   enum ops_enum {

@@ -28,9 +28,11 @@
 #include <regex>
 #include <string>
 #include <thread>
+#include <chrono>
 
 /* aws */
 #include <aws/core/Aws.h>
+#include <aws/core/http/HttpResponse.h>
 #include <aws/s3/S3Client.h>
 #include <aws/s3/model/ListObjectsV2Request.h>
 #include <aws/s3/model/ListObjectsV2Result.h>
@@ -403,59 +405,73 @@ list_objects_response list_objects_impl(s3url parsed_url,
     request.WithDelimiter("/"); // seperate objects from directories
 
     bool moreResults = false;
-    do
-    {
+    bool success = false;
+    int backoff = 50;  // ms
+    int n_retry = 0;
+
+    do {
+      n_retry = 0;
+      do {
         auto outcome = client.ListObjectsV2(request);
-        if(outcome.IsSuccess())
-        {
-            auto result = outcome.GetResult();
 
-            // now iterate through found objects - these are files
-            Aws::Vector<Aws::S3::Model::Object> objects;
-            objects = result.GetContents();
-            for (auto const& o : objects)
-            {
-              ret.objects.push_back(std::string(o.GetKey().c_str()));
-              std::stringstream stream;
-              stream << o.GetLastModified().Millis();
-              ret.objects_last_modified.push_back(stream.str());
-              ret.objects_size.push_back(o.GetSize());
-            }
+        success = outcome.IsSuccess();
 
-            // now iterate through common prefixes - these are directories
-            Aws::Vector<Aws::S3::Model::CommonPrefix> prefixes;
-            prefixes = result.GetCommonPrefixes();
-            for (auto const& p : prefixes)
-            {
-                // std::cout << "directory: " << prefixes[i].GetPrefix() << std::endl;
-                std::string key = std::string(p.GetPrefix().c_str());
-                // strip the ending "/" on a directory
-                if (boost::ends_with(key, "/")) key = key.substr(0, key.length() - 1);
-                ret.directories.push_back(key);
-            }
+        if (success) {
+          auto result = outcome.GetResult();
+          // now iterate through found objects - these are files
+          Aws::Vector<Aws::S3::Model::Object> objects;
+          objects = result.GetContents();
+          for (auto const& o : objects) {
+            ret.objects.push_back(std::string(o.GetKey().c_str()));
+            std::stringstream stream;
+            stream << o.GetLastModified().Millis();
+            ret.objects_last_modified.push_back(stream.str());
+            ret.objects_size.push_back(o.GetSize());
+          }
 
-            // more results to retrieve
-            moreResults = result.GetIsTruncated();
-            if (moreResults)
-            {
-                // add to the request object with continuation token
-                request.WithContinuationToken(result.GetContinuationToken());
-            }
+          // now iterate through common prefixes - these are directories
+          Aws::Vector<Aws::S3::Model::CommonPrefix> prefixes;
+          prefixes = result.GetCommonPrefixes();
+          for (auto const& p : prefixes) {
+            std::string key = std::string(p.GetPrefix().c_str());
+            // strip the ending "/" on a directory
+            if (boost::ends_with(key, "/"))
+              key = key.substr(0, key.length() - 1);
+            ret.directories.push_back(key);
+          }
 
+          // more results to retrieve
+          moreResults = result.GetIsTruncated();
+          if (moreResults) {
+            // add to the request object with continuation token
+            request.WithContinuationToken(result.GetContinuationToken());
+          }
+
+          // jump out the retry loop
+          break;
+
+        } else {
+          auto error = outcome.GetError().GetResponseCode();
+
+          if (error == Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
+            n_retry++;
+            std::this_thread::sleep_for(std::chrono::milliseconds(backoff));
+            backoff *= 2;
+          } else {
+            std::stringstream ss;
+            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
+                                  clientConfiguration, outcome)
+                << std::endl;
+            ret.error = ss.str();
+            logstream(LOG_DEBUG)
+                << "list_objects_impl failed:" << ret.error << std::endl;
+            // no need to retry, just jump out all while loop
+            break;
+          }
         }
-        else
-        {
-          logstream(LOG_ERROR)
-              << "list_objects_impl failed:" << ret.error << std::endl;
+      } while (n_retry < 3);  // finished retry
 
-          std::stringstream ss;
-          reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
-                                clientConfiguration, outcome)
-              << std::endl;
-          ret.error = ss.str();
-        }
-
-    } while (moreResults);
+    } while (moreResults && success);
 
     for (auto& dir : ret.directories) {
       s3url dirurl = parsed_url;
@@ -463,7 +479,7 @@ list_objects_response list_objects_impl(s3url parsed_url,
       // this is not necessary to override what returned by s3
       dir = dirurl.string_from_s3url();
     }
-    for (auto& object: ret.objects) {
+    for (auto& object : ret.objects) {
       s3url objurl = parsed_url;
       objurl.object_name = object;
       object = objurl.string_from_s3url();
@@ -472,165 +488,156 @@ list_objects_response list_objects_impl(s3url parsed_url,
 }
 
 /// returns an error string on failure. Empty string on success
-std::string delete_object_impl(s3url parsed_url,
-                               std::string proxy,
+std::string delete_object_impl(s3url parsed_url, std::string proxy,
                                std::string endpoint) {
-    std::string ret;
+  std::string ret;
 
-    // credentials
-    Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
+  // credentials
+  Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(),
+                                        parsed_url.secret_key.c_str());
 
-    // s3 client config
-    Aws::Client::ClientConfiguration clientConfiguration;
+  // s3 client config
+  Aws::Client::ClientConfiguration clientConfiguration;
 
-    clientConfiguration.requestTimeoutMs = 5 * 60000;
-    clientConfiguration.connectTimeoutMs = 20000;
+  clientConfiguration.requestTimeoutMs = 5 * 60000;
+  clientConfiguration.connectTimeoutMs = 20000;
 
-    if (turi::fileio::insecure_ssl_cert_checks()) {
-      clientConfiguration.verifySSL = false;
-    }
+  if (turi::fileio::insecure_ssl_cert_checks()) {
+    clientConfiguration.verifySSL = false;
+  }
 
-    if (parsed_url.endpoint.empty()) {
-      clientConfiguration.endpointOverride = endpoint.c_str();
-      parsed_url.sdk_endpoint = endpoint;
-    } else {
-      clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
-    }
+  if (parsed_url.endpoint.empty()) {
+    clientConfiguration.endpointOverride = endpoint.c_str();
+    parsed_url.sdk_endpoint = endpoint;
+  } else {
+    clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
+  }
 
-    if (!proxy.empty()) {
-      clientConfiguration.proxyHost = proxy.c_str();
-      parsed_url.sdk_proxy = proxy;
-    }
+  if (!proxy.empty()) {
+    clientConfiguration.proxyHost = proxy.c_str();
+    parsed_url.sdk_proxy = proxy;
+  }
 
-    std::string region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
-    if (!region.empty()) {
-      clientConfiguration.region = region.c_str();
-      parsed_url.sdk_region = region;
-    }
+  std::string region = fileio::get_region_name_from_endpoint(
+      clientConfiguration.endpointOverride.c_str());
+  if (!region.empty()) {
+    clientConfiguration.region = region.c_str();
+    parsed_url.sdk_region = region;
+  }
 
-    S3Client client(credentials, clientConfiguration);
+  S3Client client(credentials, clientConfiguration);
 
-    Aws::S3::Model::DeleteObjectRequest request;
-    request.WithBucket(parsed_url.bucket.c_str());
-    request.WithKey(parsed_url.object_name.c_str());
+  Aws::S3::Model::DeleteObjectRequest request;
+  request.WithBucket(parsed_url.bucket.c_str());
+  request.WithKey(parsed_url.object_name.c_str());
 
-    auto outcome = client.DeleteObject(request);
-    if(!outcome.IsSuccess())
-    {
-      std::stringstream ss;
-      reportS3ErrorDetailed(ss, parsed_url, S3Operation::Delete,
-                            clientConfiguration, outcome) << std::endl;
-      ret = ss.str();
-    }
+  auto outcome = client.DeleteObject(request);
+  if (!outcome.IsSuccess()) {
+    std::stringstream ss;
+    reportS3ErrorDetailed(ss, parsed_url, S3Operation::Delete,
+                          clientConfiguration, outcome)
+        << std::endl;
+    ret = ss.str();
+  }
 
-    return ret;
+  return ret;
 }
 
 /// returns an error string on failure. Empty string on success
-std::string delete_prefix_impl(s3url parsed_url,
-                               std::string proxy,
+std::string delete_prefix_impl(s3url parsed_url, std::string proxy,
                                std::string endpoint) {
+  // List objects and then create a DeleteObjects request from the resulting
+  std::string ret;
 
-    // List objects and then create a DeleteObjects request from the resulting list
+  // credentials
+  Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(),
+                                        parsed_url.secret_key.c_str());
 
-    std::string ret;
+  // s3 client config
+  Aws::Client::ClientConfiguration clientConfiguration;
+  if (turi::fileio::insecure_ssl_cert_checks()) {
+    clientConfiguration.verifySSL = false;
+  }
 
-    // credentials
-    Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
-
-
-    // s3 client config
-    Aws::Client::ClientConfiguration clientConfiguration;
-    if (turi::fileio::insecure_ssl_cert_checks()) {
-      clientConfiguration.verifySSL = false;
-    }
-
-    if (parsed_url.endpoint.empty()) {
-      clientConfiguration.endpointOverride = endpoint.c_str();
+  if (parsed_url.endpoint.empty()) {
+    clientConfiguration.endpointOverride = endpoint.c_str();
     // for report
-      parsed_url.endpoint = endpoint;
+    parsed_url.endpoint = endpoint;
+  } else {
+    clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
+  }
+
+  if (proxy.size()) {
+    clientConfiguration.proxyHost = proxy.c_str();
+    parsed_url.sdk_proxy = proxy;
+  }
+  clientConfiguration.requestTimeoutMs = 5 * 60000;
+  clientConfiguration.connectTimeoutMs = 20000;
+  std::string region = fileio::get_region_name_from_endpoint(
+      clientConfiguration.endpointOverride.c_str());
+  if (!region.empty()) {
+    clientConfiguration.region = region.c_str();
+    parsed_url.sdk_region = region;
+  }
+
+  S3Client client(credentials, clientConfiguration);
+
+  Aws::S3::Model::ListObjectsV2Request request;
+  request.WithBucket(parsed_url.bucket.c_str());
+  request.WithPrefix(parsed_url.object_name.c_str());
+
+  // keep retrieving objects until no more objects match query
+  bool moreResults = false;
+  Aws::S3::Model::Delete deleteObjects;
+  do {
+    auto outcome = client.ListObjectsV2(request);
+    if (outcome.IsSuccess()) {
+      auto result = outcome.GetResult();
+
+      // now iterate through found objects and construct DeleteObjects request
+      // with them
+      auto objects = result.GetContents();
+      for (auto const& o : objects) {
+        Aws::S3::Model::ObjectIdentifier key;
+        deleteObjects.AddObjects(key.WithKey(o.GetKey()));
+      }
+
+      // more results to retrieve
+      moreResults = result.GetIsTruncated();
+      if (moreResults) {
+        // add to the request object with continuation token
+        request.WithContinuationToken(result.GetContinuationToken());
+      }
+
     } else {
-      clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
+      std::stringstream ss;
+      reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
+                            clientConfiguration, outcome)
+          << std::endl;
+      ret = ss.str();
     }
 
-    if (proxy.size()) {
-      clientConfiguration.proxyHost = proxy.c_str();
-      parsed_url.sdk_proxy = proxy;
+  } while (moreResults);
+
+  if (deleteObjects.GetObjects().size() > 0) {
+    Aws::S3::Model::DeleteObjectsRequest delRequest;
+    delRequest.WithBucket(parsed_url.bucket.c_str());
+    delRequest.WithDelete(deleteObjects);
+
+    auto outcome = client.DeleteObjects(delRequest);
+    if (!outcome.IsSuccess()) {
+      std::stringstream ss;
+      reportS3ErrorDetailed(ss, parsed_url, S3Operation::Delete,
+                            clientConfiguration, outcome)
+          << std::endl;
+      ret = ss.str();
     }
-    clientConfiguration.requestTimeoutMs = 5 * 60000;
-    clientConfiguration.connectTimeoutMs = 20000;
-    std::string region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
-    if (!region.empty()) {
-      clientConfiguration.region = region.c_str();
-      parsed_url.sdk_region = region;
-    }
+  }
 
-    S3Client client(credentials, clientConfiguration);
-
-    Aws::S3::Model::ListObjectsV2Request request;
-    request.WithBucket(parsed_url.bucket.c_str());
-    request.WithPrefix(parsed_url.object_name.c_str());
-
-    // keep retrieving objects until no more objects match query
-    bool moreResults = false;
-    Aws::S3::Model::Delete deleteObjects;
-    do
-    {
-        auto outcome = client.ListObjectsV2(request);
-        if(outcome.IsSuccess())
-        {
-            auto result = outcome.GetResult();
-
-            // now iterate through found objects and construct DeleteObjects request with them
-            auto objects = result.GetContents();
-            for (auto const& o : objects)
-            {
-                Aws::S3::Model::ObjectIdentifier key;
-                deleteObjects.AddObjects(key.WithKey(o.GetKey()));
-            }
-
-            // more results to retrieve
-            moreResults = result.GetIsTruncated();
-            if (moreResults)
-            {
-                // add to the request object with continuation token
-                request.WithContinuationToken(result.GetContinuationToken());
-            }
-
-        }
-        else
-        {
-            std::stringstream ss;
-            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
-                                  clientConfiguration, outcome)
-                << std::endl;
-            ret = ss.str();
-        }
-
-    } while (moreResults);
-
-    if (deleteObjects.GetObjects().size() > 0)
-    {
-        Aws::S3::Model::DeleteObjectsRequest delRequest;
-        delRequest.WithBucket(parsed_url.bucket.c_str());
-        delRequest.WithDelete(deleteObjects);
-
-        auto outcome = client.DeleteObjects(delRequest);
-        if (!outcome.IsSuccess())
-        {
-          std::stringstream ss;
-          reportS3ErrorDetailed(ss, parsed_url, S3Operation::Delete,
-                                clientConfiguration, outcome)
-              << std::endl;
-          ret = ss.str();
-        }
-    }
-
-    return ret;
+  return ret;
 }
 
-list_objects_response list_objects(std::string url,
-                                   std::string proxy) {
+list_objects_response list_objects(std::string url, std::string proxy) {
   s3url parsed_url;
   list_objects_response ret;
   std::string err_msg;
@@ -650,14 +657,13 @@ list_objects_response list_objects(std::string url,
     ret = list_objects_impl(parsed_url, proxy, endpoints[current_endpoint]);
     ++current_endpoint;
   } while (boost::algorithm::icontains(ret.error, "PermanentRedirect") &&
-         current_endpoint < endpoints.size());
+           current_endpoint < endpoints.size());
 
   return ret;
 }
 
-
-std::pair<file_status, list_objects_response>
-is_directory(std::string url, std::string proxy) {
+std::pair<file_status, list_objects_response> is_directory(std::string url,
+                                                           std::string proxy) {
   s3url parsed_url;
   list_objects_response ret;
   std::string err_msg;
@@ -680,14 +686,14 @@ is_directory(std::string url, std::string proxy) {
   }
 
   // is a directory
-  for (auto dir: response.directories) {
+  for (auto dir : response.directories) {
     if (dir == url) {
       return {file_status::DIRECTORY, response};
     }
   }
 
   // is an object
-  for (auto& object: response.objects) {
+  for (auto& object : response.objects) {
     if (object == url) {
       return {file_status::REGULAR_FILE, response};
     }
@@ -726,7 +732,7 @@ list_objects_response list_directory(std::string url, std::string proxy) {
       ret = list_objects_impl(parsed_url, proxy, endpoints[current_endpoint]);
       ++current_endpoint;
     } while (boost::algorithm::icontains(ret.error, "PermanentRedirect") &&
-           current_endpoint < endpoints.size());
+             current_endpoint < endpoints.size());
   } else {
     ret.objects.push_back(url);
   }
@@ -734,9 +740,7 @@ list_objects_response list_directory(std::string url, std::string proxy) {
   return ret;
 }
 
-
-std::string delete_object(std::string url,
-                          std::string proxy) {
+std::string delete_object(std::string url, std::string proxy) {
   s3url parsed_url;
   std::string err_msg;
 
@@ -748,34 +752,34 @@ std::string delete_object(std::string url,
   size_t current_endpoint = 0;
   auto endpoints = get_s3_endpoints();
   do {
-    err_msg = delete_object_impl(parsed_url, proxy, endpoints[current_endpoint]);
-    ++current_endpoint;
-  } while (boost::algorithm::icontains(err_msg , "PermanentRedirect") &&
-         current_endpoint < endpoints.size());
-
-  return err_msg;
-}
-
-std::string delete_prefix(std::string url,
-                          std::string proxy) {
-  s3url parsed_url;
-  std::string err_msg;
-  bool success = parse_s3url(url, parsed_url, err_msg);
-  if (!success) {
-    return err_msg;
-  }
-  // try all endpoints
-  size_t current_endpoint = 0;
-  auto endpoints = get_s3_endpoints();
-  do {
-    err_msg = delete_prefix_impl(parsed_url, proxy, endpoints[current_endpoint]);
+    err_msg =
+        delete_object_impl(parsed_url, proxy, endpoints[current_endpoint]);
     ++current_endpoint;
   } while (boost::algorithm::icontains(err_msg, "PermanentRedirect") &&
-         current_endpoint < endpoints.size());
+           current_endpoint < endpoints.size());
 
   return err_msg;
 }
 
+std::string delete_prefix(std::string url, std::string proxy) {
+  s3url parsed_url;
+  std::string err_msg;
+  bool success = parse_s3url(url, parsed_url, err_msg);
+  if (!success) {
+    return err_msg;
+  }
+  // try all endpoints
+  size_t current_endpoint = 0;
+  auto endpoints = get_s3_endpoints();
+  do {
+    err_msg =
+        delete_prefix_impl(parsed_url, proxy, endpoints[current_endpoint]);
+    ++current_endpoint;
+  } while (boost::algorithm::icontains(err_msg, "PermanentRedirect") &&
+           current_endpoint < endpoints.size());
+
+  return err_msg;
+}
 
 std::string sanitize_s3_url_aggressive(std::string url) {
   // must begin with s3://
@@ -812,47 +816,25 @@ std::string sanitize_s3_url(const std::string& url) {
     if (parsed_url.endpoint.empty())
       return "s3://" + parsed_url.bucket + "/" + parsed_url.object_name;
     else
-      return "s3://" + parsed_url.endpoint + "/" + parsed_url.bucket + "/" + parsed_url.object_name;
+      return "s3://" + parsed_url.endpoint + "/" + parsed_url.bucket + "/" +
+             parsed_url.object_name;
   } else {
     return sanitize_s3_url_aggressive(url);
   };
 }
 
-std::string get_s3_error_code(const std::string& msg) {
-  static const std::vector<std::string> errorcodes {
-    "AccessDenied", "NoSuchBucket", "InvalidAccessKeyId",
-    "InvalidBucketName", "KeyTooLong", "NoSuchKey", "RequestTimeout"
-  };
-
-  // User friendly error codes, return immediately.
-  for (const auto& ec : errorcodes) {
-    if (boost::algorithm::icontains(msg, ec)) {
-      return msg;
-    }
-  }
-
-  // Error code that may need some explanation.
-  // Add messages for error code below:
-  // ...
-  // best guess for 403 error
-  if (boost::algorithm::icontains(msg, "forbidden")) {
-    return "403 Forbidden. Please check your AWS credentials and permission to the file.";
-  }
-
-  return msg;
-}
-
-std::string get_s3_file_last_modified(const std::string& url){
+std::string get_s3_file_last_modified(const std::string& url) {
   list_objects_response response = list_objects(url);
   if (response.error.empty() && response.objects_last_modified.size() == 1) {
     return response.objects_last_modified[0];
   } else if (!response.error.empty()) {
-    logstream(LOG_WARNING) << "List object error: " << response.error << " " << __FILE__ << " at " << __LINE__ << std::endl;
+    logstream(LOG_WARNING) << "List object error: " << response.error << " "
+                           << __FILE__ << " at " << __LINE__ << std::endl;
     throw(response.error);
   }
   return "";
 }
 
-}
+}  // namespace turi
 
 #endif
