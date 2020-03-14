@@ -104,6 +104,11 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
   // nothing to read from remote
   if (nwant == 0) return 0;
 
+  // in case some nuts
+  if (nwant == size_t(-1)) {
+    log_and_throw_io_failure("input size, with value size_t(-1), is invalid");
+  }
+
   // Get the object
   std::stringstream ss("bytes=");
   // range is includsive and zero based
@@ -153,7 +158,8 @@ void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
   my_request.SetUploadId(upload_id_.c_str());
 
   Aws::StringStream ss;
-  ss << buffer_.c_str();
+  // force write all '\0', which sframe uses for paddings
+  ss.write(buffer_.c_str(), buffer_.size());
 
   std::shared_ptr<Aws::StringStream> stream_ptr =
       Aws::MakeShared<Aws::StringStream>("WriteStream::Upload", ss.str());
