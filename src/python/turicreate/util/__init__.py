@@ -95,9 +95,9 @@ def _try_inject_s3_credentials(url):
     (k, v) = _get_aws_credentials()
 
     # below is the form that turi customized, used in C++ impl.
-    # s3://[access_key_id]:[secret_key]:[endpoint]:[/bucket]/[object_name]
+    # s3://[access_key_id]:[secret_key]:[endpoint/]:[bucket]/[object_name]
     if path:
-        return "s3://" + k + ":" + v + ":/" + path
+        return "s3://" + k + ":" + v + ":" + path
 
     raise ValueError("bucket not set for %s." % url)
 

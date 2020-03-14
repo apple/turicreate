@@ -215,8 +215,6 @@ bool parse_s3url(std::string s3_url, s3url& ret, std::string& err_msg) {
 
   boost::trim(url);
 
-  // next char is '/' is credential string is in url
-  // it must be this form: s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
   if (url.empty()) {
     ss << "missing endpoint or bucket or object key in " << "s3://" << __FILE__
        << "at" << __LINE__;
@@ -224,13 +222,7 @@ bool parse_s3url(std::string s3_url, s3url& ret, std::string& err_msg) {
     return false;
   }
 
-  bool no_endpoint = url.front() == '/';
-  if (no_endpoint) {
-    url = url.substr(1);
-  }
-
-  // shouldn't call sanitize_s3_url here, will cause recursion
-  auto url_without_credentials = "s3://" + url;
+  auto original_url = sanitize_url(url);
 
   // The rest is parsed using boost::tokenizer
   typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
@@ -247,20 +239,20 @@ bool parse_s3url(std::string s3_url, s3url& ret, std::string& err_msg) {
 
   // Parse endpoints; since we support private cloud settings
   // url can be tricky; region (.*)com is not sufficient
-  if (!no_endpoint && std::regex_match(*iter, std::regex("(.*)\\.(com|net)"))) {
+  if (std::regex_match(*iter, std::regex("(.*)\\.(com|net)"))) {
     ret.endpoint = *iter;
     ++iter;
   }
 
   // Parse bucket name
   if (iter == tokens.end()) {
-    ss << "missing bucket name in " << '\'' << url_without_credentials << '\'' << " in "
+    ss << "missing bucket name in " << '\'' << original_url << '\'' << " in "
        << __FILE__ << " at " << __LINE__;
     err_msg = ss.str();
     return false;
   }
   if (!bucket_name_valid(*iter)) {
-    ss << '\'' << url_without_credentials << '\'' << " has invalid bucket name: " << *iter;
+    ss << '\'' << original_url << '\'' << " has invalid bucket name: " << *iter;
     err_msg = ss.str();
     logstream(LOG_WARNING) << err_msg << std::endl;
     return false;
@@ -672,7 +664,6 @@ std::pair<file_status, list_objects_response> is_directory(std::string url,
     ret.error = std::move(err_msg);
     return {file_status::MISSING, ret};
   }
-  // if there are no "/"'s it is just a top level bucket
 
   list_objects_response response = list_objects(url, proxy);
   // an error occured

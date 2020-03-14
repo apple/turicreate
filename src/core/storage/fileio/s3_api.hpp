@@ -54,7 +54,7 @@ struct s3url {
    * @param with_credentials: user should not see this
    *
    * reconstruct to url format,
-   * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name],
+   * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name],
    * which turi uses everywhere.
    */
   std::string string_from_s3url(bool with_credentials = true) const {
@@ -75,15 +75,14 @@ struct s3url {
     if (!endpoint.empty()) {
       ret.append(1, ':');
       ret.append(endpoint);
+      ret.append(1, '/');
     }
 
     ASSERT_TRUE(!bucket.empty());
-    // if it's still not pure s3://
-    if (ret.size() > prot_len) ret.append(1, '/');
     ret.append(bucket);
 
     if (!object_name.empty()) {
-      if (ret.size() > 5) ret.append(1, '/');
+      if (ret.size() > prot_len) ret.append(1, '/');
       ret.append(object_name);
     }
 

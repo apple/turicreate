@@ -214,7 +214,12 @@ void WriteStream::Finish() {
 /*!
  * \brief list the objects in the bucket with prefix specified by path.name
  * \param path the path to query
- * \paam out_list stores the output results
+ * \param out_list stores the output results
+ *
+ * this is not following turi convention that dir/ should be trimmed to dir.
+ * Here I just use / to distinguish dir and object. Even though there's one enum
+ * for me to use.
+ *
  */
 void S3FileSystem::ListObjects(const s3url &path,
                                std::vector<FileInfo> &out_list) {
@@ -250,6 +255,7 @@ void S3FileSystem::ListObjects(const s3url &path,
     out_list.push_back(info);
   }
 
+  // directories all trim the tail '/' in our implementation
   for (auto &s3dir : ret.directories) {
     FileInfo info;
     info.path = path;
@@ -273,7 +279,8 @@ bool S3FileSystem::TryGetPathInfo(const s3url &url, FileInfo &out_info) {
   // listobjects returns encoded url
   logstream(LOG_DEBUG) << "S3FileSystem::TryGetPathInfo: " << url << std::endl;
   std::string object_name = url.object_name;
-  while (object_name.length() > 1 && object_name.back() == '/') {
+  // dir/ or object
+  if (object_name.length() && object_name.back() == '/') {
     object_name.pop_back();
   }
   std::string pdir = object_name + '/';
