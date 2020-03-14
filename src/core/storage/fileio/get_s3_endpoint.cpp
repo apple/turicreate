@@ -43,6 +43,20 @@ const std::map<std::string, std::string> AWS_S3_ENDPOINT_TO_REGION {
   {"s3-ap-south-1.amazonaws.com","ap-south-1"}};
 
 
+boost::optional<std::string> get_auth_region_from_env() {
+  if (S3_REGION.size()) {
+    return S3_REGION;
+  }
+  return getenv_str("AWS_DEFAULT_REGION");
+}
+
+boost::optional<std::string> get_endpoint_from_env() {
+  if (S3_ENDPOINT.empty())
+    return boost::none;
+  else
+    return S3_ENDPOINT;
+}
+
 std::vector<std::string> get_s3_endpoints() {
   if (S3_ENDPOINT.empty()) {
     return AWS_S3_END_POINTS;
@@ -85,5 +99,6 @@ std::string get_bucket_path(const std::string& bucket) {
     }
   }
 }
+
 } // fileio
 } // turi
