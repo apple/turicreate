@@ -244,7 +244,7 @@ std::string sanitize_s3_url(const std::string& url);
  * \ingroup fileio
  * \internal
  * This splits a URL of the form
- * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
+ * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name]
  * into several pieces.
  *
  * endpoint and object_name are optional.
