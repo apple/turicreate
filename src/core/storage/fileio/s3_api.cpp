@@ -633,6 +633,9 @@ list_objects_response list_objects(std::string url, std::string proxy) {
   s3url parsed_url;
   list_objects_response ret;
   std::string err_msg;
+
+  // in order not to reach the rate limit
+
   bool success = parse_s3url(url, parsed_url, err_msg);
 
   if (!success) {
@@ -671,6 +674,9 @@ std::pair<file_status, list_objects_response> is_directory(std::string url,
    * in turicreate convention, dir should not have ‘/’,
    * refer to dir_archive::init_for_read
    */
+  // remove credentials
+  url = parsed_url.string_from_s3url();
+  logstream(LOG_DEBUG) << "compare on url: " << url << std::endl;
   if (url.length() > 5 && url.back() == '/') url.pop_back();
 
   list_objects_response response = list_objects(url, proxy);
@@ -702,9 +708,8 @@ std::pair<file_status, list_objects_response> is_directory(std::string url,
   // s3 would be slient with list-objects if prefix doesn't exist
   if (response.error.empty()) {
     std::stringstream ss;
-
     ss << sanitize_url(url)
-       << "has no objects or diretoires. Consider create the prefix and try "
+       << " has no objects or diretoires. Consider create the prefix and try "
           "again";
 
     response.error = ss.str();

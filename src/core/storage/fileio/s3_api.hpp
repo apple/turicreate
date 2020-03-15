@@ -16,7 +16,6 @@
 #include <core/storage/fileio/fs_utils.hpp>
 #include <aws/s3/S3Client.h>
 #include <core/logging/assertions.hpp>
-#include <chrono>
 
 namespace turi {
 
@@ -96,6 +95,7 @@ struct s3url {
     return os << url.string_from_s3url(false);
   }
 };
+
 
 
 /**

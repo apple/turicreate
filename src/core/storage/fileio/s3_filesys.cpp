@@ -43,7 +43,7 @@ const ScopedAwsInitAPI &turi_global_AWS_SDK_setup(
  */
 size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
   // check at end
-  logstream(LOG_ERROR) << "AWSReadStreamBase::Read: " << curr_bytes_
+  logstream(LOG_DEBUG) << "AWSReadStreamBase::Read, current pos: " << curr_bytes_
                        << std::endl;
   if (curr_bytes_ == file_size_) return 0;
 
@@ -77,10 +77,23 @@ size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
   return size - nleft;
 }
 
-// used for restart
+/*
+ * used for restart
+ * @param: begin_bytes; beigining position [0, file_size]
+ */
 void AWSReadStreamBase::Reset(size_t begin_bytes) {
-  logstream(LOG_DEBUG) << "reset size: " << begin_bytes << std::endl;
-  // setup the variables
+  logstream(LOG_DEBUG) << "reset position: " << begin_bytes
+                       << ". curr_bytes_: " << curr_bytes_
+                       << ". read_ptr_: " << read_ptr_ << ". buffer length"
+                       << buffer_.size() << std::endl;
+
+  // setup the variables, lazily
+  if (begin_bytes >= curr_bytes_ && begin_bytes - curr_bytes_ < buffer_.length()) {
+    read_ptr_ = begin_bytes - curr_bytes_;
+    curr_bytes_ = begin_bytes;
+    return;
+  }
+
   curr_bytes_ = begin_bytes;
   read_ptr_ = 0;
   buffer_.clear();
@@ -110,9 +123,11 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
   }
 
   // Get the object
-  std::stringstream ss("bytes=");
+  std::stringstream ss;
   // range is includsive and zero based
-  ss << curr_bytes_ << '-' << curr_bytes_ + nwant - 1;
+  ss << "bytes=" << curr_bytes_ << '-' << curr_bytes_ + nwant - 1;
+  logstream(LOG_DEBUG) << "GetObject.Range: " << ss.str() << std::endl;
+
   Aws::S3::Model::GetObjectRequest object_request;
   object_request.SetRange(ss.str().c_str());
   object_request.SetBucket(url_.bucket.c_str());
@@ -121,14 +136,22 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
   auto get_object_outcome = s3_client.GetObject(object_request);
   if (get_object_outcome.IsSuccess()) {
     // Get an Aws::IOStream reference to the retrieved file
-    auto &retrieved_file = get_object_outcome.GetResult().GetBody();
+    auto &retrieved_file = get_object_outcome.GetResultWithOwnership().GetBody();
 
+#ifndef NDEBUG
+    retrieved_file.seekg(0, retrieved_file.end);
+    auto retrieved_size = retrieved_file.tellg();
+    retrieved_file.seekg(0, retrieved_file.beg);
+    if (retrieved_size != nwant) {
+      log_and_throw_io_failure(ss.str());
+    }
+#endif
     // Output the first line of the retrieved text file
     buffer_.resize(nwant);
     std::memset(const_cast<char *>(buffer_.data()), 0, nwant);
-    buffer_.assign((std::istreambuf_iterator<char>(retrieved_file)),
-                   std::istreambuf_iterator<char>());
-    ASSERT_TRUE(buffer_.size() == nwant);
+    // must use read since \0 is used for padding. no
+    // std::istreambuf_iterator<char>
+    retrieved_file.read(const_cast<char*>(buffer_.data()), nwant);
   } else {
     auto error = get_object_outcome.GetError();
     ss.str("");
