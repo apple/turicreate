@@ -63,7 +63,7 @@ namespace turi {
     /// Acquires a lock on the mutex
     inline void lock() const {
       TURI_ATTRIBUTE_UNUSED_NDEBUG int error = pthread_mutex_lock( &m_mut  );
-      DASSERT_MSG(!error, "Mutex lock error %d", error);
+      DASSERT_MSG(!error, "Mutex lock error code: %d", error);
 #ifdef _WIN32
       DASSERT_TRUE(!locked);
       locked = true;
