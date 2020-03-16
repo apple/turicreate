@@ -9,6 +9,7 @@
 #include <algorithm>
 #include <fstream>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include <core/logging/assertions.hpp>
@@ -20,11 +21,16 @@ namespace neural_net {
 
 namespace {
 
+using CoreML::Specification::AddBroadcastableLayerParams;
 using CoreML::Specification::BatchnormLayerParams;
 using CoreML::Specification::BorderAmounts_EdgeSizes;
-using CoreML::Specification::ConvolutionLayerParams;
-using CoreML::Specification::InnerProductLayerParams;
 using CoreML::Specification::ConcatNDLayerParams;
+using CoreML::Specification::ConvolutionLayerParams;
+using CoreML::Specification::ExpandDimsLayerParams;
+using CoreML::Specification::GatherLayerParams;
+using CoreML::Specification::GetShapeLayerParams;
+using CoreML::Specification::InnerProductLayerParams;
+using CoreML::Specification::LoadConstantNDLayerParams;
 using CoreML::Specification::Model;
 using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkImageScaler;
@@ -33,8 +39,11 @@ using CoreML::Specification::NeuralNetworkPreprocessing;
 using CoreML::Specification::PaddingLayerParams;
 using CoreML::Specification::Pipeline;
 using CoreML::Specification::PoolingLayerParams;
+using CoreML::Specification::ReshapeDynamicLayerParams;
+using CoreML::Specification::ReshapeStaticLayerParams;
 using CoreML::Specification::SamePadding;
 using CoreML::Specification::SplitNDLayerParams;
+using CoreML::Specification::SqueezeLayerParams;
 using CoreML::Specification::TransposeLayerParams;
 using CoreML::Specification::UniDirectionalLSTMLayerParams;
 using CoreML::Specification::UpsampleLayerParams;
@@ -992,7 +1001,8 @@ void model_spec::add_transpose(const std::string& name,
 }
 
 void model_spec::add_split_nd(const std::string& name, const std::string& input,
-                              size_t axis, size_t num_splits) {
+                              size_t axis, size_t num_splits,
+                              const std::vector<size_t>& split_sizes) {
   NeuralNetworkLayer* layer = impl_->add_layers();
   layer->set_name(name);
   layer->add_input(input);
@@ -1004,6 +1014,9 @@ void model_spec::add_split_nd(const std::string& name, const std::string& input,
   SplitNDLayerParams* params = layer->mutable_splitnd();
   params->set_axis(axis);
   params->set_numsplits(num_splits);
+  for (size_t s : split_sizes) {
+    params->add_splitsizes(s);
+  }
 }
 
 void model_spec::add_concat_nd(const std::string& name,
@@ -1020,6 +1033,127 @@ void model_spec::add_concat_nd(const std::string& name,
   params->set_axis(axis);
 }
 
+void model_spec::add_reshape_static(const std::string& name,
+                                    const std::string& input,
+                                    const std::vector<size_t>& targetShape) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  ReshapeStaticLayerParams* params = layer->mutable_reshapestatic();
+  for (size_t i = 0; i < targetShape.size(); i++) {
+    params->add_targetshape(targetShape[i]);
+  }
+}
+
+void model_spec::add_reshape_dynamic(const std::string& name,
+                                     const std::vector<std::string>& inputs) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+  layer->mutable_reshapedynamic();
+}
+
+void model_spec::add_expand_dims(const std::string& name,
+                                 const std::string& input,
+                                 const std::vector<size_t>& axes,
+                                 const std::vector<size_t>& inputVector,
+                                 const std::vector<size_t>& outputVector) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  auto* inputTensor = layer->add_inputtensor();
+  inputTensor->set_rank(inputVector.size());
+  for (size_t i = 0; i < inputVector.size(); ++i) {
+    inputTensor->add_dimvalue(inputVector[i]);
+  }
+  layer->add_output(name);
+  auto* outputTensor = layer->add_outputtensor();
+  outputTensor->set_rank(outputVector.size());
+  for (size_t i = 0; i < outputVector.size(); ++i) {
+    outputTensor->add_dimvalue(outputVector[i]);
+  }
+  ExpandDimsLayerParams* params = layer->mutable_expanddims();
+  for (size_t i = 0; i < axes.size(); ++i) {
+    params->add_axes(axes[i]);
+  }
+}
+
+void model_spec::add_squeeze(const std::string& name, const std::string& input,
+                             const std::vector<size_t>& axes,
+                             const std::vector<size_t>& inputVector,
+                             const std::vector<size_t>& outputVector) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  auto* inputTensor = layer->add_inputtensor();
+  inputTensor->set_rank(inputVector.size());
+  for (size_t i = 0; i < inputVector.size(); ++i) {
+    inputTensor->add_dimvalue(inputVector[i]);
+  }
+  layer->add_output(name);
+  auto* outputTensor = layer->add_outputtensor();
+  outputTensor->set_rank(outputVector.size());
+  for (size_t i = 0; i < outputVector.size(); ++i) {
+    outputTensor->add_dimvalue(outputVector[i]);
+  }
+
+  SqueezeLayerParams* params = layer->mutable_squeeze();
+  for (size_t i = 0; i < axes.size(); ++i) {
+    params->add_axes(axes[i]);
+  }
+}
+
+void model_spec::add_add_broadcastable(const std::string& name,
+                                       const std::vector<std::string>& inputs) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+  layer->mutable_addbroadcastable();
+}
+
+void model_spec::add_gather(const std::string& name,
+                            const std::vector<std::string>& inputs) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+  layer->mutable_gather();
+}
+
+void model_spec::add_constant_nd(const std::string& name,
+                                 const std::vector<size_t>& shape,
+                                 const weight_initializer& data) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_output(name);
+  LoadConstantNDLayerParams* params = layer->mutable_loadconstantnd();
+  size_t size = 1;
+  for (size_t i = 0; i < shape.size(); ++i) {
+    params->add_shape(shape[i]);
+    size *= shape[i];
+  }
+  init_weight_params(params->mutable_data(), size, data);
+}
+
+void model_spec::add_get_shape(const std::string& name,
+                               const std::string& input) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+  layer->mutable_getshape();
+}
+
 pipeline_spec::pipeline_spec(std::unique_ptr<Pipeline> impl)
     : impl_(std::move(impl)) {}
 
@@ -1028,8 +1162,7 @@ pipeline_spec& pipeline_spec::operator=(pipeline_spec&&) = default;
 pipeline_spec::~pipeline_spec() = default;
 
 std::unique_ptr<Pipeline> pipeline_spec::move_coreml_spec() && {
-  return std::move(impl_);
-}
+  return std::move(impl_);}
 
 }  // neural_net
 }  // turi
