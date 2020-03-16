@@ -55,13 +55,18 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         # Weights
         weights = {
-            name: _tf.Variable(_utils.convert_conv2d_coreml_to_tf(net_params[name]), name=name)
-            for name in ("drawing_conv0_weight",
-                         "drawing_conv1_weight",
-                         "drawing_conv2_weight")
+            name: _tf.Variable(
+                _utils.convert_conv2d_coreml_to_tf(net_params[name]), name=name
+            )
+            for name in (
+                "drawing_conv0_weight",
+                "drawing_conv1_weight",
+                "drawing_conv2_weight",
+            )
         }
         weights["drawing_dense1_weight"] = _tf.Variable(
-            _utils.convert_dense_coreml_to_tf(net_params["drawing_dense1_weight"]), name="drawing_dense1_weight"
+            _utils.convert_dense_coreml_to_tf(net_params["drawing_dense1_weight"]),
+            name="drawing_dense1_weight",
         )
         """
         To make output of CoreML pool3 (NCHW) compatible with TF (NHWC).
@@ -78,11 +83,13 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         # Biases
         biases = {
             name: _tf.Variable(net_params[name], name=name)
-            for name in ("drawing_conv0_bias",
-                         "drawing_conv1_bias",
-                         "drawing_conv2_bias",
-                         "drawing_dense0_bias",
-                         "drawing_dense1_bias")
+            for name in (
+                "drawing_conv0_bias",
+                "drawing_conv1_bias",
+                "drawing_conv2_bias",
+                "drawing_dense0_bias",
+                "drawing_dense1_bias",
+            )
         }
 
         conv_1 = _tf.nn.conv2d(

@@ -66,14 +66,15 @@ def suppress_tensorflow_warnings():
 def is_gpu_available():
     import tensorflow as tf
 
-    tf_minor_version = int(tf.version.VERSION.split('.')[1])
+    tf_minor_version = int(tf.version.VERSION.split(".")[1])
 
     if tf_minor_version == 0:
         gpu_names = tf.config.experimental.list_physical_devices("GPU")
     else:
         gpu_names = tf.config.list_physical_devices("GPU")
 
-    return (len(gpu_names) > 0)
+    return len(gpu_names) > 0
+
 
 def convert_shared_float_array_to_numpy(array):
     """

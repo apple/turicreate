@@ -2356,7 +2356,6 @@ class SFrame(object):
         else:
             raise TypeError("Not all subset columns in SFrame")
 
-
     def __str_impl__(self, num_rows=10, footer=True):
         """
         Returns a string containing the first num_rows elements of the frame, along

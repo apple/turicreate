@@ -102,7 +102,9 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             initializer([self.num_classes]), name=bias_name
         )
 
-        self.predictions, curr_dense = SoundClassifierTensorFlowModel._build_network(self.x, weights, biases)
+        self.predictions, curr_dense = SoundClassifierTensorFlowModel._build_network(
+            self.x, weights, biases
+        )
 
         # Loss
         self.cost = _tf.reduce_mean(
@@ -244,13 +246,19 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             weights, biases = {}, {}
             for cur_name, cur_layer in net_params["data"].items():
                 if "bias" in cur_name:
-                    biases[cur_name] = _tf.Variable(cur_layer.astype('float32'), name=cur_name)
+                    biases[cur_name] = _tf.Variable(
+                        cur_layer.astype("float32"), name=cur_name
+                    )
                 else:
                     assert "weight" in cur_name
-                    weights[cur_name] = _tf.Variable(cur_layer.transpose(1, 0).astype('float32'), name=cur_name)
+                    weights[cur_name] = _tf.Variable(
+                        cur_layer.transpose(1, 0).astype("float32"), name=cur_name
+                    )
 
             self.x = _tf.placeholder("float", [None, self.num_inputs])
-            self.predictions, _ = SoundClassifierTensorFlowModel._build_network(self.x, weights, biases)
+            self.predictions, _ = SoundClassifierTensorFlowModel._build_network(
+                self.x, weights, biases
+            )
 
             self.sess.run(_tf.global_variables_initializer())
 

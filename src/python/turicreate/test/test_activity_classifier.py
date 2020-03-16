@@ -234,9 +234,21 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
             )
 
     def test_create_with_fixed_random_seed(self):
-        model_1 = tc.activity_classifier.create(self.data, target=self.target, session_id=self.session_id, max_iterations=3, random_seed=86)
+        model_1 = tc.activity_classifier.create(
+            self.data,
+            target=self.target,
+            session_id=self.session_id,
+            max_iterations=3,
+            random_seed=86,
+        )
         pred_1 = model_1.predict(self.data, output_type="probability_vector")
-        model_2 = tc.activity_classifier.create(self.data, target=self.target, session_id=self.session_id, max_iterations=3, random_seed=86)
+        model_2 = tc.activity_classifier.create(
+            self.data,
+            target=self.target,
+            session_id=self.session_id,
+            max_iterations=3,
+            random_seed=86,
+        )
         pred_2 = model_2.predict(self.data, output_type="probability_vector")
         assert len(pred_1) == len(pred_2)
         for i in range(len(pred_1)):
@@ -508,24 +520,25 @@ class ActivityClassifierTest(unittest.TestCase):
         sf_label = random.randint(0, self.num_labels - 1)
         sf_session_id = max(self.data[self.session_id])
         input_data = tc.SFrame(
-                {
-                    self.features[0]: [3.14],
-                    self.target: [sf_label],
-                    self.session_id: [sf_session_id],
-                }
+            {
+                self.features[0]: [3.14],
+                self.target: [sf_label],
+                self.session_id: [sf_session_id],
+            }
         )
         model = tc.activity_classifier.create(
-                input_data,
-                features=["X1-r"],
-                target=self.target,
-                session_id=self.session_id,
-                prediction_window=self.prediction_window,
+            input_data,
+            features=["X1-r"],
+            target=self.target,
+            session_id=self.session_id,
+            prediction_window=self.prediction_window,
         )
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         model.export_coreml(filename)
 
         # Load the model back from the CoreML model file
         import coremltools
+
         coreml_model = coremltools.models.MLModel(filename)
         self.check_prediction_match(model, coreml_model)
 

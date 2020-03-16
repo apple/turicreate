@@ -20,6 +20,7 @@ CONV_H = 64
 LSTM_H = 200
 DENSE_H = 128
 
+
 class ActivityTensorFlowModel(TensorFlowModel):
     def __init__(
         self,
@@ -29,7 +30,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         num_classes,
         prediction_window,
         seq_len,
-        seed
+        seed,
     ):
 
         _utils.suppress_tensorflow_warnings()
@@ -101,7 +102,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
         conv = _tf.nn.bias_add(conv, self.biases["conv_bias"])
         conv = _tf.nn.relu(conv)
 
-        dropout = _tf.layers.dropout(conv, rate=0.2, training=self.is_training, seed=seed)
+        dropout = _tf.layers.dropout(
+            conv, rate=0.2, training=self.is_training, seed=seed
+        )
 
         # Long Stem Term Memory
         lstm = self.load_lstm_weights_params(net_params)
@@ -139,7 +142,9 @@ class ActivityTensorFlowModel(TensorFlowModel):
         )
 
         dense = _tf.nn.relu(dense)
-        dense = _tf.layers.dropout(dense, rate=0.5, training=self.is_training, seed=seed)
+        dense = _tf.layers.dropout(
+            dense, rate=0.5, training=self.is_training, seed=seed
+        )
 
         # Output
         out = _tf.add(
