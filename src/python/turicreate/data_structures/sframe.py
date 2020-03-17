@@ -2876,7 +2876,7 @@ class SFrame(object):
         XXXX: output
 
         """
-        pass
+        return SFrame(_proxy=self.__proxy__.shuffle())
 
     def random_split(self, fraction, seed=None, exact=False):
         """

@@ -1200,6 +1200,15 @@ unity_sframe::random_split(float percent, uint64_t random_seed, bool exact) {
   return logical_filter_split(logical_filter_array);
 }
 
+std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
+  #include <iostream>
+
+  log_func_entry();
+  std::shared_ptr<unity_sframe> ret(new unity_sframe());
+  std::cout<< "\n\nToby DEBUG!\n\n" << std::endl;
+  return ret;
+}
+
 std::shared_ptr<unity_sframe_base> unity_sframe::groupby_aggregate(
     const std::vector<std::string>& key_columns,
     const std::vector<std::vector<std::string>>& group_columns,

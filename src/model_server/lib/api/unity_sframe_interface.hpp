@@ -55,6 +55,7 @@ GENERATE_INTERFACE_AND_PROXY(unity_sframe_base, unity_sframe_proxy,
       (void, save_as_csv, (const std::string&)(csv_parsing_config_map))
       (std::shared_ptr<unity_sframe_base>, sample, (float)(uint64_t)(bool))
       (std::list<std::shared_ptr<unity_sframe_base>>, random_split, (float)(uint64_t)(bool))
+      (std::shared_ptr<unity_sframe_base>, shuffle, )
       (std::shared_ptr<unity_sframe_base>, groupby_aggregate, (const std::vector<std::string>&)
                                               (const std::vector<std::vector<std::string>>&)
                                               (const std::vector<std::string>&)
