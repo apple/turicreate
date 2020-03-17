@@ -359,7 +359,9 @@ class ImageClassifier(_CustomModel):
         """
         _tkutl._model_version_check(version, cls._PYTHON_IMAGE_CLASSIFIER_VERSION)
         from turicreate.toolkits._main import ToolkitError
-        from turicreate.toolkits.classifier.logistic_classifier import LogisticClassifier
+        from turicreate.toolkits.classifier.logistic_classifier import (
+            LogisticClassifier,
+        )
 
         state["classifier"] = LogisticClassifier(state["classifier"])
         state["classes"] = state["classifier"].classes

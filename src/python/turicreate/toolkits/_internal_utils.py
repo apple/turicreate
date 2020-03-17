@@ -706,7 +706,9 @@ def _validate_data(dataset, target, features=None, validation_set="auto"):
     if not hasattr(features, "__iter__"):
         raise TypeError("Input 'features' must be a list.")
     if not all([isinstance(x, str) for x in features]):
-        raise TypeError("Invalid 'features' value. Feature names must all be of type str.")
+        raise TypeError(
+            "Invalid 'features' value. Feature names must all be of type str."
+        )
 
     # Check validation_set argument
     if isinstance(validation_set, str):

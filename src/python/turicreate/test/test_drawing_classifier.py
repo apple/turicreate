@@ -384,7 +384,9 @@ class DrawingClassifierTest(unittest.TestCase):
                 prefix = "pretrained" + str(test_number)
             else:
                 prefix = "scratch" + str(test_number)
-            filename = tempfile.NamedTemporaryFile(prefix=prefix, suffix=".mlmodel").name
+            filename = tempfile.NamedTemporaryFile(
+                prefix=prefix, suffix=".mlmodel"
+            ).name
             model.export_coreml(filename)
             mlmodel = _coremltools.models.MLModel(filename)
             tc_preds = model.predict(sf)

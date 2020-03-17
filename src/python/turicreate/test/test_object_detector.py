@@ -17,10 +17,7 @@ import pytest
 import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._internal_utils import (
-    _raise_error_if_not_sarray,
-    _mac_ver
-)
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver
 from six import StringIO
 import coremltools
 
@@ -323,10 +320,11 @@ class ObjectDetectorTest(unittest.TestCase):
 
     def test_different_grip_shape(self):
         # Should able to give different input grip shape
-        shapes = [[1,1], [5,5], [26,26], [10,20], [7, 19] ]
+        shapes = [[1, 1], [5, 5], [26, 26], [10, 20], [7, 19]]
         for shape in shapes:
             model = tc.object_detector.create(
-                    self.sf[:2], max_iterations=1, grid_shape=shape)
+                self.sf[:2], max_iterations=1, grid_shape=shape
+            )
             pred = model.predict(self.sf[:2])
 
     def test_predict(self):
