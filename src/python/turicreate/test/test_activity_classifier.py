@@ -64,13 +64,11 @@ def _load_data(
     self.data[self.target] = random_labels
 
 
-"""
+def _random_session_ids(num_examples, num_sessions):
+    """
     Creates a random session_id column, that guarantees that the number
     of sessions is exactly the requested one.
-"""
-
-
-def _random_session_ids(num_examples, num_sessions):
+    """
     examples_per_session = num_examples // num_sessions
     if examples_per_session == 0:
         raise ValueError(
@@ -234,12 +232,13 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
             )
 
     def test_create_with_fixed_random_seed(self):
+        SEED = 86
         model_1 = tc.activity_classifier.create(
             self.data,
             target=self.target,
             session_id=self.session_id,
             max_iterations=3,
-            random_seed=86,
+            random_seed=SEED,
         )
         pred_1 = model_1.predict(self.data, output_type="probability_vector")
         model_2 = tc.activity_classifier.create(
@@ -247,9 +246,10 @@ class ActivityClassifierCreateStressTests(unittest.TestCase):
             target=self.target,
             session_id=self.session_id,
             max_iterations=3,
-            random_seed=86,
+            random_seed=SEED,
         )
         pred_2 = model_2.predict(self.data, output_type="probability_vector")
+
         assert len(pred_1) == len(pred_2)
         for i in range(len(pred_1)):
             assert len(pred_1[i]) == len(pred_2[i])
@@ -487,7 +487,7 @@ class ActivityClassifierTest(unittest.TestCase):
         """
         import coremltools
 
-        # Save the model as a CoreML model file
+        # Export the model as a CoreML model file
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
@@ -719,10 +719,16 @@ class ActivityClassifierTest(unittest.TestCase):
         ]
         test_methods_list.remove("test_save_and_load")
 
+        old_model_probs = self.model.predict(self.data[:10], output_type="probability_vector")
+
         with test_util.TempDirectory() as filename:
             self.model.save(filename)
             self.model = None
             self.model = tc.load_model(filename)
+
+            new_model_probs = self.model.predict(self.data[:10], output_type="probability_vector")
+            for a, b in zip(old_model_probs, new_model_probs):
+                np.testing.assert_array_almost_equal(a, b, decimal=6)
 
             print("Repeating all test cases after model delete and reload")
             for test_method in test_methods_list:
