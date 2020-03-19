@@ -16,7 +16,6 @@
 #include <core/storage/fileio/fs_utils.hpp>
 #include <aws/s3/S3Client.h>
 #include <core/logging/assertions.hpp>
-#include <chrono>
 
 namespace turi {
 
@@ -54,7 +53,7 @@ struct s3url {
    * @param with_credentials: user should not see this
    *
    * reconstruct to url format,
-   * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name],
+   * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name],
    * which turi uses everywhere.
    */
   std::string string_from_s3url(bool with_credentials = true) const {
@@ -75,15 +74,14 @@ struct s3url {
     if (!endpoint.empty()) {
       ret.append(1, ':');
       ret.append(endpoint);
+      ret.append(1, '/');
     }
 
     ASSERT_TRUE(!bucket.empty());
-    // if it's still not pure s3://
-    if (ret.size() > prot_len) ret.append(1, '/');
     ret.append(bucket);
 
     if (!object_name.empty()) {
-      if (ret.size() > 5) ret.append(1, '/');
+      if (ret.size() > prot_len) ret.append(1, '/');
       ret.append(object_name);
     }
 
@@ -97,6 +95,7 @@ struct s3url {
     return os << url.string_from_s3url(false);
   }
 };
+
 
 
 /**
@@ -244,7 +243,7 @@ std::string sanitize_s3_url(const std::string& url);
  * \ingroup fileio
  * \internal
  * This splits a URL of the form
- * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
+ * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name]
  * into several pieces.
  *
  * endpoint and object_name are optional.
