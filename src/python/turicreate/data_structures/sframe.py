@@ -2873,7 +2873,7 @@ class SFrame(object):
         >>> shuffled_sf = sf.shuffled()
         >>> print(shuffled_sf)
 
-        XXXX: output
+        TODO: output
 
         """
         return SFrame(_proxy=self.__proxy__.shuffle())

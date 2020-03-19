@@ -1201,12 +1201,43 @@ unity_sframe::random_split(float percent, uint64_t random_seed, bool exact) {
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
-  #include <iostream>
-
   log_func_entry();
-  std::shared_ptr<unity_sframe> ret(new unity_sframe());
-  std::cout<< "\n\nToby DEBUG!\n\n" << std::endl;
-  return ret;
+
+  std::shared_ptr<unity_sframe> temp(new unity_sframe());
+
+  size_t length = this->size();
+
+  std::vector<std::string> column_names = this->column_names();
+
+  const size_t num_buckets = 2;   // XXX: how to determine the number of buckets?
+
+  // Create a column of random ints between 0 and (num_buckets - 1).
+  auto temp_groupby_column = std::static_pointer_cast<unity_sarray>(
+    unity_sarray::make_uniform_int_array(length, num_buckets));
+  const std::string rand_int_column_name("Random Ints");
+  temp->add_column(temp_groupby_column, rand_int_column_name);
+
+  // Pack columns so we can group by concatenate
+  std::shared_ptr<unity_sarray_base> packed_columns = this->pack_columns(column_names,
+                                                                         column_names,
+                                                                         flex_type_enum::LIST,
+                                                                         turi::flex_undefined());
+  const std::string packed_data_column_name("Packed Data");
+  temp->add_column(packed_columns, packed_data_column_name);
+
+  // Group by concatenate on the random int column. This randomly bucketizes.
+  const std::string buckets_column_name("Buckets");
+  std::shared_ptr<unity_sframe_base> bucketized_sframe = temp->groupby_aggregate({rand_int_column_name},
+                                                                                 {{packed_data_column_name}},
+                                                                                 {buckets_column_name},
+                                                                                 {"__builtin__concat__list__"});
+  std::shared_ptr<unity_sarray_base> bucketized_sarray = bucketized_sframe->select_column(buckets_column_name);
+
+  // XXX: Iterate over in parallel and shuffle each group
+
+  // TODO: return real results
+  std::shared_ptr<unity_sframe> foo(new unity_sframe());
+  return foo;
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::groupby_aggregate(
