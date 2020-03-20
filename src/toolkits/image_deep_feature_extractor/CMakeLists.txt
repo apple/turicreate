@@ -13,7 +13,7 @@ if(HAS_CORE_ML)
   find_library(core_video NAMES CoreVideo)
   message("CoreVideo found at ${core_video}.")
 
-  if(HAS_MACOS_10_15 AND NOT TC_BUILD_IOS)
+  if(HAS_MACOS_10_15)
     # On macOS 10.15+, we can use TCMPSDeviceManager to pass eGPUs to CoreML.
     set(additional_image_deep_feature_extractor_requirements tcmps)
   else()
