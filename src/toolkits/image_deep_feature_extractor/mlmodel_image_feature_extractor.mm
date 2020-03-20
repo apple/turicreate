@@ -20,6 +20,10 @@
 
 #include <coremltools/mlmodel/src/Format.hpp>
 
+#ifdef HAS_MACOS_10_15
+#import <ml/neural_net/mps_device_manager.h>
+#endif
+
 namespace turi {
 namespace image_deep_feature_extractor {
 
@@ -158,6 +162,20 @@ void build_vision_feature_print_scene_spec(const std::string& model_path) {
 
 }
 
+API_AVAILABLE(macos(10.13), ios(11.0))
+MLModel* create_model(NSURL* url, NSError* _Nullable* error) {
+#ifdef HAS_MACOS_10_15
+  if (@available(macos 10.15, ios 10.13, *)) {
+    MLModelConfiguration* config = [[MLModelConfiguration alloc] init];
+    config.preferredMetalDevice = [TCMPSDeviceManager sharedInstance].preferredDevice;
+    logprogress_stream << "Using GPU (" << config.preferredMetalDevice.name.UTF8String
+                       << ") to extract features.";
+    return [MLModel modelWithContentsOfURL:url configuration:config error:error];
+  }
+#endif  // HAS_MACOS_10_15
+  return [MLModel modelWithContentsOfURL:url error:error];
+}
+
 API_AVAILABLE(macos(10.13),ios(11.0))
 static MLModel *create_model(const std::string& download_path,
 			     const std::string& model_name) {
@@ -173,7 +191,7 @@ static MLModel *create_model(const std::string& download_path,
   if (boost::filesystem::exists(compiled_modified_model_path)) {
 
     NSError* error = nil;
-    result = [MLModel modelWithContentsOfURL:compiledModelURL error:&error];
+    result = create_model(compiledModelURL, &error);
 
     if (error || !result) {
 
@@ -240,7 +258,7 @@ static MLModel *create_model(const std::string& download_path,
 
     // Load the compiled modified model
     NSError* error = nil;
-    result = [MLModel modelWithContentsOfURL:compiledModelURL error:&error];
+    result = create_model(compiledModelURL, &error);
     checkNSError(error);
   }
 
