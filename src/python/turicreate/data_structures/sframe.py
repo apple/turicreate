@@ -2356,7 +2356,6 @@ class SFrame(object):
         else:
             raise TypeError("Not all subset columns in SFrame")
 
-
     def __str_impl__(self, num_rows=10, footer=True):
         """
         Returns a string containing the first num_rows elements of the frame, along
@@ -2752,7 +2751,7 @@ class SFrame(object):
         >>> sf = turicreate.SFrame({'letter': ['a', 'b', 'c'],
         ...                       'number': [1, 2, 3]})
         >>> sf.flat_map(['number', 'letter'],
-        ...             lambda x: [list(x.itervalues()) for i in range(0, x['number'])])
+        ...             lambda x: [list(x.values()) for i in range(x['number'])])
         +--------+--------+
         | number | letter |
         +--------+--------+

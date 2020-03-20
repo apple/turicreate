@@ -62,6 +62,8 @@ def load_audio(
     """
     from scipy.io import wavfile as _wavfile
 
+    path = _tc.util._make_internal_url(path)
+
     all_wav_files = []
 
     if _fnmatch(path, "*.wav"):  # single file
