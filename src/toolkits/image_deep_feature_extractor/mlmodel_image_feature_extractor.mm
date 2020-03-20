@@ -168,8 +168,15 @@ MLModel* create_model(NSURL* url, NSError* _Nullable* error) {
   if (@available(macos 10.15, ios 10.13, *)) {
     MLModelConfiguration* config = [[MLModelConfiguration alloc] init];
     config.preferredMetalDevice = [TCMPSDeviceManager sharedInstance].preferredDevice;
-    logprogress_stream << "Using GPU (" << config.preferredMetalDevice.name.UTF8String
-                       << ") to extract features.";
+
+    if (config.preferredMetalDevice != nil) {
+      logprogress_stream << "Using GPU (" << config.preferredMetalDevice.name.UTF8String
+                         << ") to extract features.";
+    } else {
+      // Assume that CoreML will fall back to CPU if no Metal devices are available.
+      logprogress_stream << "Using CPU to extract features.";
+    }
+
     return [MLModel modelWithContentsOfURL:url configuration:config error:error];
   }
 #endif  // HAS_MACOS_10_15
