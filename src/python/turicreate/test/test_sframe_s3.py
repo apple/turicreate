@@ -16,11 +16,14 @@ import shutil
 import pytest
 import boto3
 
+# size from small to big: 76K, 21MB, 77MB.
+# 64MB is the cache block size. The big sframe with 77MB is used to
+# ensure there's no issues when crossing different cache blocks.
 remote_sframe_folders = ["small_sframe_dc", "medium_sframe_ac", "big_sframe_od"]
 
 
 @pytest.mark.skipif(
-    os.environ.get("DTURI_ENABLE_SF_S3") is None,
+    os.environ.get("TURI_ENABLE_SF_S3") is None,
     reason="slow IO test; enabled when needed",
 )
 class TestSFrameS3(object):
@@ -71,7 +74,10 @@ class TestSFrameS3(object):
 
     @classmethod
     def teardown_class(self):
-        shutil.rmtree(self.my_tempdir)
+        try:
+            shutil.rmtree(self.my_tempdir)
+        except FileNotFoundError:
+            pass
 
     def test_s3_csv(self):
         fname = os.path.join(self.my_tempdir, "mushroom.csv")
