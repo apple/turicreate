@@ -1166,6 +1166,7 @@ class SFrameTest(unittest.TestCase):
         shuffled_sf = sf.shuffle()
 
         self.assertEqual(len(shuffled_sf), len(sf))
+        # TODO: check dtypes
         # make sure entries in each row match
         for row in shuffled_sf:
             cur_num, cur_letter = row["nums"], row["letters"]

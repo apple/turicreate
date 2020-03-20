@@ -9,6 +9,7 @@
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/optional.hpp>
 #include <core/storage/sframe_interface/unity_sframe.hpp>
+#include <core/storage/sframe_data/sarray.hpp>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/storage/sframe_data/sframe_saving.hpp>
 #include <core/storage/sframe_data/sframe_config.hpp>
@@ -49,6 +50,7 @@
 #include <model_server/lib/image_util.hpp>
 #include <ml/sketches/unity_sketch.hpp>
 #include <algorithm>
+#include <random>
 #include <string>
 #include <boost/archive/iterators/base64_from_binary.hpp>
 #include <boost/archive/iterators/transform_width.hpp>
@@ -1203,18 +1205,15 @@ unity_sframe::random_split(float percent, uint64_t random_seed, bool exact) {
 std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
   log_func_entry();
 
-  std::shared_ptr<unity_sframe> temp(new unity_sframe());
-
-  size_t length = this->size();
-
   std::vector<std::string> column_names = this->column_names();
 
   const size_t num_buckets = 2;   // XXX: how to determine the number of buckets?
 
   // Create a column of random ints between 0 and (num_buckets - 1).
   auto temp_groupby_column = std::static_pointer_cast<unity_sarray>(
-    unity_sarray::make_uniform_int_array(length, num_buckets));
+    unity_sarray::make_uniform_int_array(this->size(), num_buckets));
   const std::string rand_int_column_name("Random Ints");
+  std::shared_ptr<unity_sframe> temp(new unity_sframe());
   temp->add_column(temp_groupby_column, rand_int_column_name);
 
   // Pack columns so we can group by concatenate
@@ -1233,11 +1232,41 @@ std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
                                                                                  {"__builtin__concat__list__"});
   std::shared_ptr<unity_sarray_base> bucketized_sarray = bucketized_sframe->select_column(buckets_column_name);
 
-  // XXX: Iterate over in parallel and shuffle each group
+  // XXX: do this in parallel
+  // Shuffle each bucket
+  gl_sarray_writer writer(flex_type_enum::LIST, 1);
+  gl_sarray gl_bucketized_sarray = gl_sarray(bucketized_sarray);
+  gl_sarray_range ra = gl_bucketized_sarray.range_iterator();
+  auto cur_bucket = ra.begin();
+  unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
+  while (cur_bucket != ra.end()) {
+    std::vector<int> indexes = std::vector<int>(cur_bucket->size());
+    for (size_t i = 0; i < cur_bucket->size(); i++) {
+      indexes[i] = i;
+    }
+    std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
 
-  // TODO: return real results
-  std::shared_ptr<unity_sframe> foo(new unity_sframe());
-  return foo;
+    for (size_t i = 0; i < cur_bucket->size(); i++) {
+      writer.write(cur_bucket->array_at(indexes[i]), 0);
+    }
+    ++cur_bucket;
+  }
+
+  gl_sarray packed_randomized = writer.close();
+  std::string unpacked_column_prefix = "X";
+  gl_sframe ret = packed_randomized.unpack(unpacked_column_prefix, this->dtype());
+  DASSERT_EQ(this->num_columns(), ret.num_columns());
+  DASSERT_EQ(this->size(), ret.size());
+
+  // Rename columns back to original names
+  std::map<std::string, std::string> columns_rename_map;
+  for (size_t i = 0; i < column_names.size(); i++) {
+    std::string to_name = unpacked_column_prefix + "." + std::to_string(i);
+    columns_rename_map[to_name] = column_names[i];
+  }
+  ret.rename(columns_rename_map);
+
+  return ret.get_proxy();
 }
 
 std::shared_ptr<unity_sframe_base> unity_sframe::groupby_aggregate(
