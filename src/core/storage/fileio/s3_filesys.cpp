@@ -84,11 +84,12 @@ size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
 void AWSReadStreamBase::Reset(size_t begin_bytes) {
   logstream(LOG_DEBUG) << "reset position: " << begin_bytes
                        << ". curr_bytes_: " << curr_bytes_
-                       << ". read_ptr_: " << read_ptr_ << ". buffer length"
+                       << ". read_ptr_: " << read_ptr_ << ". buffer length "
                        << buffer_.size() << std::endl;
 
   // setup the variables, lazily
-  if (begin_bytes >= curr_bytes_ && begin_bytes - curr_bytes_ < buffer_.length()) {
+  if (begin_bytes >= curr_bytes_ &&
+      begin_bytes - curr_bytes_ + read_ptr_ < buffer_.length()) {
     read_ptr_ = begin_bytes - curr_bytes_;
     curr_bytes_ = begin_bytes;
     return;

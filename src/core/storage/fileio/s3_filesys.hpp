@@ -126,9 +126,15 @@ class SeekStream : public Stream {
  */
 class AWSReadStreamBase : public SeekStream {
  public:
-  virtual ~AWSReadStreamBase() { Close(); }
+  virtual ~AWSReadStreamBase() {
+    logstream(LOG_DEBUG) << "~AWSReadStream" << std::endl;
+    Close();
+  }
 
-  virtual void Close() { Reset(file_size_); }
+  virtual void Close() {
+    logstream(LOG_DEBUG) << "AWSReadStream::Close()" << std::endl;
+    Reset(file_size_);
+  }
 
   virtual size_t Tell(void) { return curr_bytes_; }
 
