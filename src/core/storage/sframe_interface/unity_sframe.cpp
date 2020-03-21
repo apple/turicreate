@@ -1206,8 +1206,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
   log_func_entry();
 
   std::vector<std::string> column_names = this->column_names();
-
-  const size_t num_buckets = 2;   // XXX: how to determine the number of buckets?
+  const size_t num_buckets = (this->size() / SFRAME_SHUFFLE_BUCKET_SIZE) + 1;
 
   // Create a column of random ints between 0 and (num_buckets - 1).
   auto temp_groupby_column = std::static_pointer_cast<unity_sarray>(
@@ -1238,7 +1237,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
   gl_sarray gl_bucketized_sarray = gl_sarray(bucketized_sarray);
   gl_sarray_range ra = gl_bucketized_sarray.range_iterator();
   auto cur_bucket = ra.begin();
-  unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
+  unsigned int seed = random::pure_random_seed();
   while (cur_bucket != ra.end()) {
     std::vector<int> indexes = std::vector<int>(cur_bucket->size());
     for (size_t i = 0; i < cur_bucket->size(); i++) {
