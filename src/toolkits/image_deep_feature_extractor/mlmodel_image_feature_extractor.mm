@@ -164,7 +164,7 @@ void build_vision_feature_print_scene_spec(const std::string& model_path) {
 
 API_AVAILABLE(macos(10.13), ios(11.0))
 MLModel* create_model(NSURL* url, NSError* _Nullable* error) {
-#ifdef HAS_MACOS_10_15
+#if defined(HAS_MACOS_10_15) && !defined(TC_BUILD_IOS)
   if (@available(macos 10.15, ios 10.13, *)) {
     MLModelConfiguration* config = [[MLModelConfiguration alloc] init];
     config.preferredMetalDevice = [TCMPSDeviceManager sharedInstance].preferredDevice;
@@ -179,7 +179,7 @@ MLModel* create_model(NSURL* url, NSError* _Nullable* error) {
 
     return [MLModel modelWithContentsOfURL:url configuration:config error:error];
   }
-#endif  // HAS_MACOS_10_15
+#endif  // defined(HAS_MACOS_10_15) && !defined(TC_BUILD_IOS)
   return [MLModel modelWithContentsOfURL:url error:error];
 }
 
