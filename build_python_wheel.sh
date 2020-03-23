@@ -45,7 +45,7 @@ cleanup=0
 skip_configure=0
 jobs=4
 configure_options=""
-build_mode="release"
+build_mode="debug"
 target_dir=`pwd`/targets
 install_sysroot=""
 no_sudo=0
@@ -64,6 +64,8 @@ while [ $# -gt 0 ]
     --skip-configure|-s)    skip_configure=1;;
 
     --copy-links)           copy_links=1;;
+
+    --release)              build_mode="release";;
 
     --build-number=*)       build_number=${1##--build-number=} ;;
     --build-number)         build_number="$2"; shift;;
