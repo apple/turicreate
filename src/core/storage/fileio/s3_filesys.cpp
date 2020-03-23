@@ -143,7 +143,7 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
     retrieved_file.seekg(0, retrieved_file.end);
     auto retrieved_size = retrieved_file.tellg();
     retrieved_file.seekg(0, retrieved_file.beg);
-    if (retrieved_size != nwant) {
+    if (static_cast<size_t>(retrieved_size) != nwant) {
       log_and_throw_io_failure(ss.str());
     }
 #endif
