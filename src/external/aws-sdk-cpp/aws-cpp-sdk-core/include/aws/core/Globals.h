@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -26,13 +26,20 @@ namespace Aws
     /**
      * This is used to handle the Enum round tripping problem
      * for when a service updates their enumerations, but the user does not
-     * have an up to date client. This member will be initialized the first time a client
-     * is created and will be cleaned up when the last client goes out of scope.
+     * have an up to date client. This container will be initialized during Aws::InitAPI
+     * and will be cleaned on Aws::ShutdownAPI.
      */
     AWS_CORE_API Utils::EnumParseOverflowContainer* GetEnumOverflowContainer();
 
     /**
-     * Atomically set the underlying container to newValue, if it's current value is expectedValue.
+     * Initializes a global overflow container to a new instance.
+     * This should only be called once from within Aws::InitAPI
      */
-    AWS_CORE_API bool CheckAndSwapEnumOverflowContainer(Utils::EnumParseOverflowContainer* expectedValue, Utils::EnumParseOverflowContainer* newValue);
+    void InitializeEnumOverflowContainer();
+
+    /**
+     * Destroys the global overflow container instance.
+     * This should only be called once from within Aws::ShutdownAPI
+     */
+    void CleanupEnumOverflowContainer();
 }

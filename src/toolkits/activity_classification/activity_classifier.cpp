@@ -1103,9 +1103,7 @@ void activity_classifier::init_training(
     log_and_throw("No neural network compute context provided");
   }
 
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  print_training_device(gpu_names);
+  training_compute_context_->print_training_device_info();
 
   // Set additional model fields.
   add_or_update_state({
@@ -1177,9 +1175,7 @@ void activity_classifier::resume_training(gl_sframe data,
     log_and_throw("No neural network compute context provided");
   }
 
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
-  print_training_device(gpu_names);
+  training_compute_context_->print_training_device_info();
 
   // Defining the struct for ac parameters
   ac_parameters ac_params;
@@ -1391,7 +1387,7 @@ gl_sframe activity_classifier::perform_inference(data_iterator *data) const {
           size_t num_samples = std::min<size_t>(prediction_window,
                                                 info.num_samples - cumulative_samples);
           cumulative_samples += prediction_window ;
-          
+
           // Add a row to the output SFrame.
           flex_int prediction_id = info.chunk_index;
           writer.write({info.session_id, prediction_id, preds, num_samples},

@@ -442,11 +442,8 @@ void drawing_classifier::init_training(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
       read_state<size_t>("num_classes"));
 
-  // reports
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   if (read_state<bool>("verbose")) {
-    print_training_device(std::move(gpu_names));
+    training_compute_context_->print_training_device_info();
   }
 
   // Begin printing progress.
@@ -761,7 +758,7 @@ gl_sframe drawing_classifier::perform_inference(data_iterator* data) const {
 
       size_t num_images = batch.data_info.num_samples;
       auto output_itr = batch.data_info.predictions.data();
-      
+
       for (size_t ii = 0; ii < num_images; ++ii) {
         std::copy(output_itr, output_itr + num_classes, preds.begin());
         output_itr += num_classes;

@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -31,8 +31,7 @@ namespace Aws
             /**
              * Simple STL representation an Http Response, implements HttpResponse.
              */
-            class AWS_CORE_API StandardHttpResponse :
-                public HttpResponse
+            class AWS_CORE_API StandardHttpResponse : public HttpResponse
             {
             public:
                 /**
@@ -40,8 +39,15 @@ namespace Aws
                  */
                 StandardHttpResponse(const HttpRequest& originatingRequest) :
                     HttpResponse(originatingRequest),
-                    headerMap(),
                     bodyStream(originatingRequest.GetResponseStreamFactory())
+                {}
+
+                /**
+                 * Initializes an http response with the originalRequest and the response code.
+                 */
+                StandardHttpResponse(const std::shared_ptr<const HttpRequest>& originatingRequest) :
+                    HttpResponse(originatingRequest),
+                    bodyStream(originatingRequest->GetResponseStreamFactory())
                 {}
 
                 ~StandardHttpResponse() = default;

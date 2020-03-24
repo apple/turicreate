@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 
 #include <aws/core/utils/logging/FormattedLogSystem.h>
 #include <aws/core/utils/logging/LogLevel.h>
-#include <aws/core/utils/memory/stl/AWSQueue.h>
+#include <aws/core/utils/memory/stl/AWSVector.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
 #include <aws/core/utils/memory/stl/AWSStreamFwd.h>
 
@@ -53,7 +53,14 @@ namespace Aws
                  * on construction.
                  */
                 DefaultLogSystem(LogLevel logLevel, const Aws::String& filenamePrefix);
+
                 virtual ~DefaultLogSystem();
+
+                /**
+                 * Flushes buffered messages to the file system.
+                 * This method is thread-safe.
+                 */
+                void Flush() override;
 
                 /**
                  * Structure containing semaphores, queue etc... 
@@ -65,8 +72,8 @@ namespace Aws
 
                     std::mutex m_logQueueMutex;
                     std::condition_variable m_queueSignal;
-                    Aws::Queue<Aws::String> m_queuedLogMessages;
-                    std::atomic<bool> m_stopLogging;
+                    Aws::Vector<Aws::String> m_queuedLogMessages;
+                    bool m_stopLogging;
 
                 private:
                     LogSynchronizationData(const LogSynchronizationData& rhs) = delete;

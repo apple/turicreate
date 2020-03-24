@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,9 +12,11 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/s3/model/BucketLocationConstraint.h>
+#include <utility>
 
 namespace Aws
 {
@@ -30,6 +32,11 @@ namespace S3
 namespace Model
 {
 
+  /**
+   * <p>The configuration information for the bucket.</p><p><h3>See Also:</h3>   <a
+   * href="http://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01/CreateBucketConfiguration">AWS
+   * API Reference</a></p>
+   */
   class AWS_S3_API CreateBucketConfiguration
   {
   public:
@@ -39,37 +46,51 @@ namespace Model
 
     void AddToNode(Aws::Utils::Xml::XmlNode& parentNode) const;
 
+
     /**
-     * Specifies the region where the bucket will be created. If you don't specify a
-     * region, the bucket will be created in US Standard.
+     * <p>Specifies the Region where the bucket will be created. If you don't specify a
+     * Region, the bucket is created in the US East (N. Virginia) Region
+     * (us-east-1).</p>
      */
     inline const BucketLocationConstraint& GetLocationConstraint() const{ return m_locationConstraint; }
 
     /**
-     * Specifies the region where the bucket will be created. If you don't specify a
-     * region, the bucket will be created in US Standard.
+     * <p>Specifies the Region where the bucket will be created. If you don't specify a
+     * Region, the bucket is created in the US East (N. Virginia) Region
+     * (us-east-1).</p>
+     */
+    inline bool LocationConstraintHasBeenSet() const { return m_locationConstraintHasBeenSet; }
+
+    /**
+     * <p>Specifies the Region where the bucket will be created. If you don't specify a
+     * Region, the bucket is created in the US East (N. Virginia) Region
+     * (us-east-1).</p>
      */
     inline void SetLocationConstraint(const BucketLocationConstraint& value) { m_locationConstraintHasBeenSet = true; m_locationConstraint = value; }
 
     /**
-     * Specifies the region where the bucket will be created. If you don't specify a
-     * region, the bucket will be created in US Standard.
+     * <p>Specifies the Region where the bucket will be created. If you don't specify a
+     * Region, the bucket is created in the US East (N. Virginia) Region
+     * (us-east-1).</p>
      */
-    inline void SetLocationConstraint(BucketLocationConstraint&& value) { m_locationConstraintHasBeenSet = true; m_locationConstraint = value; }
+    inline void SetLocationConstraint(BucketLocationConstraint&& value) { m_locationConstraintHasBeenSet = true; m_locationConstraint = std::move(value); }
 
     /**
-     * Specifies the region where the bucket will be created. If you don't specify a
-     * region, the bucket will be created in US Standard.
+     * <p>Specifies the Region where the bucket will be created. If you don't specify a
+     * Region, the bucket is created in the US East (N. Virginia) Region
+     * (us-east-1).</p>
      */
     inline CreateBucketConfiguration& WithLocationConstraint(const BucketLocationConstraint& value) { SetLocationConstraint(value); return *this;}
 
     /**
-     * Specifies the region where the bucket will be created. If you don't specify a
-     * region, the bucket will be created in US Standard.
+     * <p>Specifies the Region where the bucket will be created. If you don't specify a
+     * Region, the bucket is created in the US East (N. Virginia) Region
+     * (us-east-1).</p>
      */
-    inline CreateBucketConfiguration& WithLocationConstraint(BucketLocationConstraint&& value) { SetLocationConstraint(value); return *this;}
+    inline CreateBucketConfiguration& WithLocationConstraint(BucketLocationConstraint&& value) { SetLocationConstraint(std::move(value)); return *this;}
 
   private:
+
     BucketLocationConstraint m_locationConstraint;
     bool m_locationConstraintHasBeenSet;
   };

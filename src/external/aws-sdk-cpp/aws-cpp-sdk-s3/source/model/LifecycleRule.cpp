@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/LifecycleRule.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -32,7 +33,8 @@ namespace Model
 LifecycleRule::LifecycleRule() : 
     m_expirationHasBeenSet(false),
     m_iDHasBeenSet(false),
-    m_prefixHasBeenSet(false),
+    m_filterHasBeenSet(false),
+    m_status(ExpirationStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_transitionsHasBeenSet(false),
     m_noncurrentVersionTransitionsHasBeenSet(false),
@@ -44,7 +46,8 @@ LifecycleRule::LifecycleRule() :
 LifecycleRule::LifecycleRule(const XmlNode& xmlNode) : 
     m_expirationHasBeenSet(false),
     m_iDHasBeenSet(false),
-    m_prefixHasBeenSet(false),
+    m_filterHasBeenSet(false),
+    m_status(ExpirationStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_transitionsHasBeenSet(false),
     m_noncurrentVersionTransitionsHasBeenSet(false),
@@ -69,19 +72,19 @@ LifecycleRule& LifecycleRule::operator =(const XmlNode& xmlNode)
     XmlNode iDNode = resultNode.FirstChild("ID");
     if(!iDNode.IsNull())
     {
-      m_iD = StringUtils::Trim(iDNode.GetText().c_str());
+      m_iD = Aws::Utils::Xml::DecodeEscapedXmlText(iDNode.GetText());
       m_iDHasBeenSet = true;
     }
-    XmlNode prefixNode = resultNode.FirstChild("Prefix");
-    if(!prefixNode.IsNull())
+    XmlNode filterNode = resultNode.FirstChild("Filter");
+    if(!filterNode.IsNull())
     {
-      m_prefix = StringUtils::Trim(prefixNode.GetText().c_str());
-      m_prefixHasBeenSet = true;
+      m_filter = filterNode;
+      m_filterHasBeenSet = true;
     }
     XmlNode statusNode = resultNode.FirstChild("Status");
     if(!statusNode.IsNull())
     {
-      m_status = ExpirationStatusMapper::GetExpirationStatusForName(StringUtils::Trim(statusNode.GetText().c_str()).c_str());
+      m_status = ExpirationStatusMapper::GetExpirationStatusForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(statusNode.GetText()).c_str()).c_str());
       m_statusHasBeenSet = true;
     }
     XmlNode transitionsNode = resultNode.FirstChild("Transition");
@@ -140,10 +143,10 @@ void LifecycleRule::AddToNode(XmlNode& parentNode) const
    iDNode.SetText(m_iD);
   }
 
-  if(m_prefixHasBeenSet)
+  if(m_filterHasBeenSet)
   {
-   XmlNode prefixNode = parentNode.CreateChildElement("Prefix");
-   prefixNode.SetText(m_prefix);
+   XmlNode filterNode = parentNode.CreateChildElement("Filter");
+   m_filter.AddToNode(filterNode);
   }
 
   if(m_statusHasBeenSet)
@@ -172,7 +175,7 @@ void LifecycleRule::AddToNode(XmlNode& parentNode) const
 
   if(m_noncurrentVersionExpirationHasBeenSet)
   {
-   XmlNode noncurrentVersionExpirationNode = parentNode.CreateChildElement("NoncurrentVersionTransition");
+   XmlNode noncurrentVersionExpirationNode = parentNode.CreateChildElement("NoncurrentVersionExpiration");
    m_noncurrentVersionExpiration.AddToNode(noncurrentVersionExpirationNode);
   }
 

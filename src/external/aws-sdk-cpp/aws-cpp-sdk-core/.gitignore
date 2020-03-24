@@ -1,0 +1,7 @@
+# exceptions due to naming conflicts between our external projects (curl/openssl) and implementations that use those libraries
+!source/utils/crypto/openssl
+!source/http/curl
+!source/external
+!include/aws/core/external
+!include/aws/core/http/curl
+!include/aws/core/utils/crypto/openssl

@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/Grantee.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -33,6 +34,7 @@ Grantee::Grantee() :
     m_displayNameHasBeenSet(false),
     m_emailAddressHasBeenSet(false),
     m_iDHasBeenSet(false),
+    m_type(Type::NOT_SET),
     m_typeHasBeenSet(false),
     m_uRIHasBeenSet(false)
 {
@@ -42,6 +44,7 @@ Grantee::Grantee(const XmlNode& xmlNode) :
     m_displayNameHasBeenSet(false),
     m_emailAddressHasBeenSet(false),
     m_iDHasBeenSet(false),
+    m_type(Type::NOT_SET),
     m_typeHasBeenSet(false),
     m_uRIHasBeenSet(false)
 {
@@ -57,31 +60,31 @@ Grantee& Grantee::operator =(const XmlNode& xmlNode)
     XmlNode displayNameNode = resultNode.FirstChild("DisplayName");
     if(!displayNameNode.IsNull())
     {
-      m_displayName = StringUtils::Trim(displayNameNode.GetText().c_str());
+      m_displayName = Aws::Utils::Xml::DecodeEscapedXmlText(displayNameNode.GetText());
       m_displayNameHasBeenSet = true;
     }
     XmlNode emailAddressNode = resultNode.FirstChild("EmailAddress");
     if(!emailAddressNode.IsNull())
     {
-      m_emailAddress = StringUtils::Trim(emailAddressNode.GetText().c_str());
+      m_emailAddress = Aws::Utils::Xml::DecodeEscapedXmlText(emailAddressNode.GetText());
       m_emailAddressHasBeenSet = true;
     }
     XmlNode iDNode = resultNode.FirstChild("ID");
     if(!iDNode.IsNull())
     {
-      m_iD = StringUtils::Trim(iDNode.GetText().c_str());
+      m_iD = Aws::Utils::Xml::DecodeEscapedXmlText(iDNode.GetText());
       m_iDHasBeenSet = true;
     }
-    XmlNode typeNode = resultNode.FirstChild("xsi:type");
-    if(!typeNode.IsNull())
+    auto type = resultNode.GetAttributeValue("xsi:type");
+    if(!type.empty())
     {
-      m_type = TypeMapper::GetTypeForName(StringUtils::Trim(typeNode.GetText().c_str()).c_str());
+      m_type = TypeMapper::GetTypeForName(StringUtils::Trim(type.c_str()).c_str());
       m_typeHasBeenSet = true;
     }
     XmlNode uRINode = resultNode.FirstChild("URI");
     if(!uRINode.IsNull())
     {
-      m_uRI = StringUtils::Trim(uRINode.GetText().c_str());
+      m_uRI = Aws::Utils::Xml::DecodeEscapedXmlText(uRINode.GetText());
       m_uRIHasBeenSet = true;
     }
   }
@@ -92,6 +95,7 @@ Grantee& Grantee::operator =(const XmlNode& xmlNode)
 void Grantee::AddToNode(XmlNode& parentNode) const
 {
   Aws::StringStream ss;
+  parentNode.SetAttributeValue("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance");
   if(m_displayNameHasBeenSet)
   {
    XmlNode displayNameNode = parentNode.CreateChildElement("DisplayName");
@@ -112,13 +116,12 @@ void Grantee::AddToNode(XmlNode& parentNode) const
 
   if(m_typeHasBeenSet)
   {
-   XmlNode typeNode = parentNode.CreateChildElement("Type");
-   typeNode.SetText(TypeMapper::GetNameForType(m_type));
+   parentNode.SetAttributeValue("xsi:type", TypeMapper::GetNameForType(m_type));
   }
 
   if(m_uRIHasBeenSet)
   {
-   XmlNode uRINode = parentNode.CreateChildElement("xsi:type");
+   XmlNode uRINode = parentNode.CreateChildElement("URI");
    uRINode.SetText(m_uRI);
   }
 

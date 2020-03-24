@@ -155,7 +155,9 @@ def create(
     if not hasattr(features, "__iter__"):
         raise TypeError("Input 'features' must be a list.")
     if not all([isinstance(x, str) for x in features]):
-        raise TypeError('Invalid member of "features": feature names must be of type str.')
+        raise TypeError(
+            'Invalid member of "features": feature names must be of type str.'
+        )
     if len(features) == 0:
         raise TypeError("Input 'features' must contain at least one column name.")
 
@@ -196,6 +198,7 @@ def create(
 
     model.train(dataset, target, session_id, validation_set, options)
     return ActivityClassifier(model_proxy=model, name=name)
+
 
 def _encode_target(data, target, mapping=None):
     """ Encode targets to integers in [0, num_classes - 1] """

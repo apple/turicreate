@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -16,12 +16,14 @@
 #pragma once
 
 #include <aws/core/Core_EXPORTS.h>
-#include <aws/core/utils/memory/stl/AWSFunction.h>
 #include <aws/core/utils/memory/stl/AWSQueue.h>
 #include <aws/core/utils/memory/stl/AWSVector.h>
+#include <aws/core/utils/memory/stl/AWSMap.h>
+#include <aws/core/utils/threading/Semaphore.h>
 #include <functional>
+#include <future>
 #include <mutex>
-#include <condition_variable>
+#include <atomic>
 
 namespace Aws
 {
@@ -46,9 +48,9 @@ namespace Aws
                 template<class Fn, class ... Args>
                 bool Submit(Fn&& fn, Args&& ... args)
                 {
-                    return SubmitToThread(AWS_BUILD_TYPED_FUNCTION(std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...), void()));
+                    std::function<void()> callable{ std::bind(std::forward<Fn>(fn), std::forward<Args>(args)...) };
+                    return SubmitToThread(std::move(callable));
                 }
-
 
             protected:
                 /**
@@ -64,9 +66,17 @@ namespace Aws
             class AWS_CORE_API DefaultExecutor : public Executor
             {
             public:
-                DefaultExecutor() {}
+                DefaultExecutor() : m_state(State::Free) {}
+                ~DefaultExecutor();
             protected:
+                enum class State
+                {
+                    Free, Locked, Shutdown
+                };
                 bool SubmitToThread(std::function<void()>&&) override;
+                void Detach(std::thread::id id);
+                std::atomic<State> m_state;
+                Aws::UnorderedMap<std::thread::id, std::thread> m_threads;
             };
 
             enum class OverflowPolicy
@@ -99,8 +109,7 @@ namespace Aws
             private:
                 Aws::Queue<std::function<void()>*> m_tasks;
                 std::mutex m_queueLock;
-                std::mutex m_syncPointLock;
-                std::condition_variable m_syncPoint;
+                Aws::Utils::Threading::Semaphore m_sync;
                 Aws::Vector<ThreadTask*> m_threadTaskHandles;
                 size_t m_poolSize;
                 OverflowPolicy m_overflowPolicy;

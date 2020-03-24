@@ -99,10 +99,9 @@ EXPORT class compute_context {
   virtual ~compute_context();
 
   /**
-   * Returns the (human readable) names of the GPUs used by this context, for
-   * reporting to the user.
+   * Prints (human readable) device information.
    */
-  virtual std::vector<std::string> gpu_names() const = 0;
+  virtual void print_training_device_info() const = 0;
 
   /**
    * Provides a measure of the memory resources available.
@@ -173,7 +172,7 @@ EXPORT class compute_context {
    * Creates a multilevel perceptron classifier.
    */
    virtual std::unique_ptr<turi::neural_net::model_backend> create_multilayer_perceptron_classifier(
-    int n, int c_in, int c_out, const std::vector<size_t> &layer_sizes, 
+    int n, int c_in, int c_out, const std::vector<size_t> &layer_sizes,
     const turi::neural_net::float_array_map& config) { ASSERT_TRUE(false); }
 
 

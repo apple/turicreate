@@ -1,12 +1,12 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-  * 
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
   * A copy of the License is located at
-  * 
+  *
   *  http://aws.amazon.com/apache2.0
-  * 
+  *
   * or in the "license" file accompanying this file. This file is distributed
   * on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either
   * express or implied. See the License for the specific language governing
@@ -77,15 +77,19 @@ namespace Aws
             HashResult MD5CommonCryptoImpl::Calculate(const Aws::String& str)
             {
                 ByteBuffer hash(CC_MD5_DIGEST_LENGTH);
+                //CC_MD5 is deprecated by MacOS 10.15 due to cryptographically broken, but SDk only use it for digestion calculation
+AWS_SUPPRESS_DEPRECATION(
                 CC_MD5(str.c_str(), static_cast<CC_LONG>(str.length()), hash.GetUnderlyingData());
-
+                )
                 return HashResult(std::move(hash));
             }
 
             HashResult MD5CommonCryptoImpl::Calculate(Aws::IStream& stream)
             {
+AWS_SUPPRESS_DEPRECATION(
                 CC_MD5_CTX md5;
                 CC_MD5_Init(&md5);
+                )
 
                 auto currentPos = stream.tellg();
                 stream.seekg(0, stream.beg);
@@ -98,7 +102,9 @@ namespace Aws
 
                     if(bytesRead > 0)
                     {
+AWS_SUPPRESS_DEPRECATION(
                         CC_MD5_Update(&md5, streamBuffer, static_cast<CC_LONG>(bytesRead));
+                        )
                     }
                 }
 
@@ -106,8 +112,9 @@ namespace Aws
                 stream.seekg(currentPos, stream.beg);
 
                 ByteBuffer hash(CC_MD5_DIGEST_LENGTH);
+AWS_SUPPRESS_DEPRECATION(
                 CC_MD5_Final(hash.GetUnderlyingData(), &md5);
-
+                )
                 return HashResult(std::move(hash));
             }
 
@@ -160,76 +167,49 @@ namespace Aws
             }
 
             CommonCryptoCipher::CommonCryptoCipher(const CryptoBuffer& key, size_t ivSizeBytes, bool ctrMode) :
-                    SymmetricCipher(key, ivSizeBytes, ctrMode), m_cryptoHandle(nullptr), m_encDecInitialized(false), m_encryptionMode(false),
-                    m_decryptionMode(false)
+                    SymmetricCipher(key, ivSizeBytes, ctrMode), m_encryptorHandle(nullptr), m_decryptorHandle(nullptr)
             {
                 Init();
             }
 
-            CommonCryptoCipher::CommonCryptoCipher(CommonCryptoCipher&& toMove) : SymmetricCipher(std::move(toMove)),
-                                                                   m_encDecInitialized(false)
+            CommonCryptoCipher::CommonCryptoCipher(CommonCryptoCipher&& toMove) : SymmetricCipher(std::move(toMove))
             {
-                m_cryptoHandle = toMove.m_cryptoHandle;
-                toMove.m_cryptoHandle = nullptr;
-
-                m_encDecInitialized = toMove.m_encDecInitialized;
-                m_encryptionMode = toMove.m_encryptionMode;
-                m_decryptionMode = toMove.m_decryptionMode;
+                m_encryptorHandle = toMove.m_encryptorHandle;
+                toMove.m_encryptorHandle = nullptr;
+                m_decryptorHandle = toMove.m_decryptorHandle;
+                toMove.m_decryptorHandle = nullptr;
             }
 
             CommonCryptoCipher::CommonCryptoCipher(CryptoBuffer&& key, CryptoBuffer&& initializationVector, CryptoBuffer&& tag) :
-                    SymmetricCipher(std::move(key), std::move(initializationVector), std::move(tag)), m_cryptoHandle(nullptr),
-                    m_encDecInitialized(false),
-                    m_encryptionMode(false), m_decryptionMode(false)
+                    SymmetricCipher(std::move(key), std::move(initializationVector), std::move(tag)),
+                    m_encryptorHandle(nullptr), m_decryptorHandle(nullptr)
             {
                 Init();
             }
 
             CommonCryptoCipher::CommonCryptoCipher(const CryptoBuffer& key, const CryptoBuffer& initializationVector,
                                          const CryptoBuffer& tag) :
-                    SymmetricCipher(key, initializationVector, tag), m_cryptoHandle(nullptr), m_encDecInitialized(false),
-                    m_encryptionMode(false), m_decryptionMode(false)
+                    SymmetricCipher(key, initializationVector, tag),
+                    m_encryptorHandle(nullptr), m_decryptorHandle(nullptr)
             {
                 Init();
             }
 
             CommonCryptoCipher::~CommonCryptoCipher()
             {
-                if(m_cryptoHandle)
+                if (m_encryptorHandle)
                 {
-                    CCCryptorRelease(m_cryptoHandle);
+                    CCCryptorRelease(m_encryptorHandle);
+                }
+                if (m_decryptorHandle)
+                {
+                    CCCryptorRelease(m_decryptorHandle);
                 }
             }
 
             void CommonCryptoCipher::Init()
             {
 
-            }
-
-            void CommonCryptoCipher::CheckInitEncryptor()
-            {
-                assert(!m_failure);
-                assert(!m_decryptionMode);
-
-                if (!m_encDecInitialized)
-                {
-                    InitEncryptor_Internal();
-                    m_encryptionMode = true;
-                    m_encDecInitialized = true;
-                }
-            }
-
-            void CommonCryptoCipher::CheckInitDecryptor()
-            {
-                assert(!m_failure);
-                assert(!m_encryptionMode);
-
-                if (!m_encDecInitialized)
-                {
-                    InitDecryptor_Internal();
-                    m_decryptionMode = true;
-                    m_encDecInitialized = true;
-                }
             }
 
             CryptoBuffer CommonCryptoCipher::EncryptBuffer(const CryptoBuffer& unEncryptedData)
@@ -240,11 +220,10 @@ namespace Aws
                     return CryptoBuffer();
                 }
 
-                CheckInitEncryptor();
                 size_t lengthWritten = unEncryptedData.GetLength() + (GetBlockSizeBytes() - 1);
                 CryptoBuffer encryptedText(static_cast<size_t>( lengthWritten + (GetBlockSizeBytes() - 1)));
 
-                CCStatus status = CCCryptorUpdate(m_cryptoHandle, unEncryptedData.GetUnderlyingData(), unEncryptedData.GetLength(),
+                CCStatus status = CCCryptorUpdate(m_encryptorHandle, unEncryptedData.GetUnderlyingData(), unEncryptedData.GetLength(),
                                                   encryptedText.GetUnderlyingData(), encryptedText.GetLength(), &lengthWritten);
 
                 if (status != kCCSuccess)
@@ -274,7 +253,7 @@ namespace Aws
                 CryptoBuffer finalBlock(GetBlockSizeBytes());
                 size_t writtenSize = 0;
 
-                CCStatus status = CCCryptorFinal(m_cryptoHandle, finalBlock.GetUnderlyingData(), finalBlock.GetLength(), &writtenSize);
+                CCStatus status = CCCryptorFinal(m_encryptorHandle, finalBlock.GetUnderlyingData(), finalBlock.GetLength(), &writtenSize);
                 if (status != kCCSuccess)
                 {
                     m_failure = true;
@@ -293,11 +272,10 @@ namespace Aws
                     return CryptoBuffer();
                 }
 
-                CheckInitDecryptor();
                 size_t lengthWritten = encryptedData.GetLength() + (GetBlockSizeBytes() - 1);
                 CryptoBuffer decryptedText(static_cast<size_t>(lengthWritten));
 
-                CCStatus status = CCCryptorUpdate(m_cryptoHandle, encryptedData.GetUnderlyingData(), encryptedData.GetLength(),
+                CCStatus status = CCCryptorUpdate(m_decryptorHandle, encryptedData.GetUnderlyingData(), encryptedData.GetLength(),
                     decryptedText.GetUnderlyingData(), decryptedText.GetLength(), &lengthWritten);
 
                 if (status != kCCSuccess)
@@ -326,7 +304,7 @@ namespace Aws
 
                 CryptoBuffer finalBlock(GetBlockSizeBytes());
                 size_t writtenSize = static_cast<int>(finalBlock.GetLength());
-                CCStatus status = CCCryptorFinal(m_cryptoHandle, finalBlock.GetUnderlyingData(), finalBlock.GetLength(), &writtenSize);
+                CCStatus status = CCCryptorFinal(m_decryptorHandle, finalBlock.GetUnderlyingData(), finalBlock.GetLength(), &writtenSize);
                 if (status != kCCSuccess)
                 {
                     m_failure = true;
@@ -339,15 +317,18 @@ namespace Aws
             void CommonCryptoCipher::Reset()
             {
                 m_failure = false;
-                m_encryptionMode = false;
-                m_encDecInitialized = false;
 
-                if(m_cryptoHandle)
+                if (m_encryptorHandle)
                 {
-                    CCCryptorRelease(m_cryptoHandle);
+                    CCCryptorRelease(m_encryptorHandle);
+                }
+                if (m_decryptorHandle)
+                {
+                    CCCryptorRelease(m_decryptorHandle);
                 }
 
-                m_cryptoHandle = nullptr;
+                m_encryptorHandle = nullptr;
+                m_decryptorHandle = nullptr;
                 Init();
             }
 
@@ -356,41 +337,43 @@ namespace Aws
             static const char* CBC_CC_LOG_TAG = "AES_CBC_Cipher_CommonCrypto";
 
             AES_CBC_Cipher_CommonCrypto::AES_CBC_Cipher_CommonCrypto(const CryptoBuffer& key) : CommonCryptoCipher(key, BlockSizeBytes)
-            { }
+            {
+                InitCipher();
+            }
 
             AES_CBC_Cipher_CommonCrypto::AES_CBC_Cipher_CommonCrypto(CryptoBuffer&& key, CryptoBuffer&& initializationVector) :
                     CommonCryptoCipher(std::move(key), std::move(initializationVector))
-            { }
+            {
+                InitCipher();
+            }
 
             AES_CBC_Cipher_CommonCrypto::AES_CBC_Cipher_CommonCrypto(const CryptoBuffer& key,
                                                            const CryptoBuffer& initializationVector) :
                     CommonCryptoCipher(key, initializationVector)
-            { }
+            {
+                InitCipher();
+            }
 
-            void AES_CBC_Cipher_CommonCrypto::InitEncryptor_Internal()
+            void AES_CBC_Cipher_CommonCrypto::InitCipher()
             {
                 CCCryptorStatus status = CCCryptorCreateWithMode(kCCEncrypt, kCCModeCBC, kCCAlgorithmAES, ccPKCS7Padding,
                                                                  m_initializationVector.GetUnderlyingData(), m_key.GetUnderlyingData(), m_key.GetLength(),
-                                                                 nullptr, 0, 0, 0, &m_cryptoHandle);
-
+                                                                 nullptr, 0, 0, 0, &m_encryptorHandle);
                 if (status != kCCSuccess)
                 {
                     m_failure = true;
-                    AWS_LOGSTREAM_ERROR(CBC_CC_LOG_TAG, "Error while initializing AES 256 CBC in Encryption mode. Status code: " << status);
+                    AWS_LOGSTREAM_ERROR(CBC_CC_LOG_TAG, "Error while initializing AES 256 CBC encryptor. Status code: " << status);
                 }
-            }
 
-            void AES_CBC_Cipher_CommonCrypto::InitDecryptor_Internal()
-            {
-                CCCryptorStatus status = CCCryptorCreateWithMode(kCCDecrypt, kCCModeCBC, kCCAlgorithmAES, ccPKCS7Padding,
-                                                                 m_initializationVector.GetUnderlyingData(), m_key.GetUnderlyingData(), m_key.GetLength(),
-                                                                 nullptr, 0, 0, 0, &m_cryptoHandle);
-
+                status = CCCryptorCreateWithMode(kCCDecrypt, kCCModeCBC, kCCAlgorithmAES, ccPKCS7Padding,
+                                                 m_initializationVector.GetUnderlyingData(), m_key.GetUnderlyingData(), m_key.GetLength(),
+                                                 nullptr, 0, 0, 0, &m_decryptorHandle);
                 if (status != kCCSuccess)
                 {
                     m_failure = true;
-                    AWS_LOGSTREAM_ERROR(CBC_CC_LOG_TAG, "Error while initializing AES 256 CBC in Decryption mode. Status code: " << status);
+                    AWS_LOGSTREAM_ERROR(CBC_CC_LOG_TAG, "Error while initializing AES 256 CBC decryptor. Status code: " << status);
                 }
+
             }
 
             size_t AES_CBC_Cipher_CommonCrypto::GetBlockSizeBytes() const
@@ -403,46 +386,53 @@ namespace Aws
                 return KeyLengthBits;
             }
 
+            void AES_CBC_Cipher_CommonCrypto::Reset()
+            {
+                CommonCryptoCipher::Reset();
+                InitCipher();
+            }
+
             size_t AES_CTR_Cipher_CommonCrypto::BlockSizeBytes = 16;
             size_t AES_CTR_Cipher_CommonCrypto::KeyLengthBits = 256;
             static const char* CTR_CC_LOG_TAG = "AES_CTR_Cipher_CommonCrypto";
 
             AES_CTR_Cipher_CommonCrypto::AES_CTR_Cipher_CommonCrypto(const CryptoBuffer& key) :
                     CommonCryptoCipher(key, BlockSizeBytes, true)
-            { }
+            {
+                InitCipher();
+            }
 
             AES_CTR_Cipher_CommonCrypto::AES_CTR_Cipher_CommonCrypto(CryptoBuffer&& key, CryptoBuffer&& initializationVector) :
                     CommonCryptoCipher(std::move(key), std::move(initializationVector))
-            { }
+            {
+                InitCipher();
+            }
 
             AES_CTR_Cipher_CommonCrypto::AES_CTR_Cipher_CommonCrypto(const CryptoBuffer& key,
                                                            const CryptoBuffer& initializationVector) :
                     CommonCryptoCipher(key, initializationVector)
-            { }
+            {
+                InitCipher();
+            }
 
-            void AES_CTR_Cipher_CommonCrypto::InitEncryptor_Internal()
+            void AES_CTR_Cipher_CommonCrypto::InitCipher()
             {
                 CCCryptorStatus status = CCCryptorCreateWithMode(kCCEncrypt, kCCModeCTR, kCCAlgorithmAES, ccNoPadding,
                                                                  m_initializationVector.GetUnderlyingData(), m_key.GetUnderlyingData(), m_key.GetLength(),
-                                                                 nullptr, 0, 0, kCCModeOptionCTR_BE, &m_cryptoHandle);
-
+                                                                 nullptr, 0, 0, kCCModeOptionCTR_BE, &m_encryptorHandle);
                 if (status != kCCSuccess)
                 {
                     m_failure = true;
-                    AWS_LOGSTREAM_ERROR(CTR_CC_LOG_TAG, "Error while initializing AES 256 CTR in Encryption mode. Status code: " << status);
+                    AWS_LOGSTREAM_ERROR(CTR_CC_LOG_TAG, "Error while initializing AES 256 CTR encryptor. Status code: " << status);
                 }
-            }
 
-            void AES_CTR_Cipher_CommonCrypto::InitDecryptor_Internal()
-            {
-                CCCryptorStatus status = CCCryptorCreateWithMode(kCCDecrypt, kCCModeCTR, kCCAlgorithmAES, ccNoPadding,
-                                                                 m_initializationVector.GetUnderlyingData(), m_key.GetUnderlyingData(), m_key.GetLength(),
-                                                                 nullptr, 0, 0, kCCModeOptionCTR_BE, &m_cryptoHandle);
-
+                status = CCCryptorCreateWithMode(kCCDecrypt, kCCModeCTR, kCCAlgorithmAES, ccNoPadding,
+                                                 m_initializationVector.GetUnderlyingData(), m_key.GetUnderlyingData(), m_key.GetLength(),
+                                                 nullptr, 0, 0, kCCModeOptionCTR_BE, &m_decryptorHandle);
                 if (status != kCCSuccess)
                 {
                     m_failure = true;
-                    AWS_LOGSTREAM_ERROR(CTR_CC_LOG_TAG, "Error while initializing AES 256 CTR in Encryption mode. Status code: " << status);
+                    AWS_LOGSTREAM_ERROR(CTR_CC_LOG_TAG, "Error while initializing AES 256 CTR decryptor. Status code: " << status);
                 }
             }
 
@@ -456,17 +446,23 @@ namespace Aws
                 return KeyLengthBits;
             }
 
+            void AES_CTR_Cipher_CommonCrypto::Reset()
+            {
+                CommonCryptoCipher::Reset();
+                InitCipher();
+            }
+
             static const char* const AES_KEY_WRAP_LOG_TAG = "AES_KeyWrap_Cipher_CommonCrypto";
             size_t AES_KeyWrap_Cipher_CommonCrypto::BlockSizeBytes = 8;
             size_t AES_KeyWrap_Cipher_CommonCrypto::KeyLengthBits = 256;
 
             AES_KeyWrap_Cipher_CommonCrypto::AES_KeyWrap_Cipher_CommonCrypto(const CryptoBuffer& key) : CommonCryptoCipher(key, 0)
-            {
-            }
+            { }
 
             CryptoBuffer AES_KeyWrap_Cipher_CommonCrypto::EncryptBuffer(const CryptoBuffer& unEncryptedData)
             {
-                CheckInitEncryptor();
+                assert(!m_failure);
+
                 m_workingKeyBuffer = CryptoBuffer({&m_workingKeyBuffer, (CryptoBuffer*)&unEncryptedData});
 
                 return CryptoBuffer();
@@ -474,7 +470,18 @@ namespace Aws
 
             CryptoBuffer AES_KeyWrap_Cipher_CommonCrypto::FinalizeEncryption()
             {
-                CheckInitEncryptor();
+                if (m_failure)
+                {
+                    AWS_LOGSTREAM_FATAL(CC_LOG_TAG,
+                                        "Cipher not properly initialized for encryption finalization. Aborting");
+                    return CryptoBuffer();
+                }
+
+                if (m_workingKeyBuffer.GetLength() == 0)
+                {
+                    m_failure = true;
+                    return CryptoBuffer();
+                }
 
                 size_t outputBufferLength = GetBlockSizeBytes() + m_workingKeyBuffer.GetLength();
                 CryptoBuffer outputBuffer(outputBufferLength);
@@ -494,7 +501,8 @@ namespace Aws
 
             CryptoBuffer AES_KeyWrap_Cipher_CommonCrypto::DecryptBuffer(const CryptoBuffer& encryptedData)
             {
-                CheckInitDecryptor();
+                assert(!m_failure);
+
                 m_workingKeyBuffer = CryptoBuffer({&m_workingKeyBuffer, (CryptoBuffer*)&encryptedData});
 
                 return CryptoBuffer();
@@ -502,7 +510,19 @@ namespace Aws
 
             CryptoBuffer AES_KeyWrap_Cipher_CommonCrypto::FinalizeDecryption()
             {
-                CheckInitDecryptor();
+                if (m_failure)
+                {
+                    AWS_LOGSTREAM_FATAL(CC_LOG_TAG,
+                                        "Cipher not properly initialized for decryption finalization. Aborting");
+                    return CryptoBuffer();
+                }
+
+                if (m_workingKeyBuffer.GetLength() == 0)
+                {
+                    m_failure = true;
+                    return CryptoBuffer();
+                }
+
                 size_t outputBufferLength = m_workingKeyBuffer.GetLength() - GetBlockSizeBytes();
                 CryptoBuffer outputBuffer(outputBufferLength);
 

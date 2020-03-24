@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/CORSRule.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -62,7 +63,7 @@ CORSRule& CORSRule::operator =(const XmlNode& xmlNode)
       XmlNode allowedHeaderMember = allowedHeadersNode;
       while(!allowedHeaderMember.IsNull())
       {
-        m_allowedHeaders.push_back(StringUtils::Trim(allowedHeaderMember.GetText().c_str()));
+        m_allowedHeaders.push_back(allowedHeaderMember.GetText());
         allowedHeaderMember = allowedHeaderMember.NextNode("AllowedHeader");
       }
 
@@ -74,7 +75,7 @@ CORSRule& CORSRule::operator =(const XmlNode& xmlNode)
       XmlNode allowedMethodMember = allowedMethodsNode;
       while(!allowedMethodMember.IsNull())
       {
-        m_allowedMethods.push_back(StringUtils::Trim(allowedMethodMember.GetText().c_str()));
+        m_allowedMethods.push_back(allowedMethodMember.GetText());
         allowedMethodMember = allowedMethodMember.NextNode("AllowedMethod");
       }
 
@@ -86,7 +87,7 @@ CORSRule& CORSRule::operator =(const XmlNode& xmlNode)
       XmlNode allowedOriginMember = allowedOriginsNode;
       while(!allowedOriginMember.IsNull())
       {
-        m_allowedOrigins.push_back(StringUtils::Trim(allowedOriginMember.GetText().c_str()));
+        m_allowedOrigins.push_back(allowedOriginMember.GetText());
         allowedOriginMember = allowedOriginMember.NextNode("AllowedOrigin");
       }
 
@@ -98,7 +99,7 @@ CORSRule& CORSRule::operator =(const XmlNode& xmlNode)
       XmlNode exposeHeaderMember = exposeHeadersNode;
       while(!exposeHeaderMember.IsNull())
       {
-        m_exposeHeaders.push_back(StringUtils::Trim(exposeHeaderMember.GetText().c_str()));
+        m_exposeHeaders.push_back(exposeHeaderMember.GetText());
         exposeHeaderMember = exposeHeaderMember.NextNode("ExposeHeader");
       }
 
@@ -107,7 +108,7 @@ CORSRule& CORSRule::operator =(const XmlNode& xmlNode)
     XmlNode maxAgeSecondsNode = resultNode.FirstChild("MaxAgeSeconds");
     if(!maxAgeSecondsNode.IsNull())
     {
-      m_maxAgeSeconds = StringUtils::ConvertToInt32(StringUtils::Trim(maxAgeSecondsNode.GetText().c_str()).c_str());
+      m_maxAgeSeconds = StringUtils::ConvertToInt32(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(maxAgeSecondsNode.GetText()).c_str()).c_str());
       m_maxAgeSecondsHasBeenSet = true;
     }
   }
@@ -156,10 +157,10 @@ void CORSRule::AddToNode(XmlNode& parentNode) const
 
   if(m_maxAgeSecondsHasBeenSet)
   {
-   XmlNode maxAgeSecondsNode = parentNode.CreateChildElement("ExposeHeader");
-  ss << m_maxAgeSeconds;
+   XmlNode maxAgeSecondsNode = parentNode.CreateChildElement("MaxAgeSeconds");
+   ss << m_maxAgeSeconds;
    maxAgeSecondsNode.SetText(ss.str());
-  ss.str("");
+   ss.str("");
   }
 
 }

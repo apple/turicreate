@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/HeadObjectResult.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/AmazonWebServiceResult.h>
@@ -28,19 +29,33 @@ using namespace Aws;
 HeadObjectResult::HeadObjectResult() : 
     m_deleteMarker(false),
     m_contentLength(0),
-    m_missingMeta(0)
+    m_missingMeta(0),
+    m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_storageClass(StorageClass::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET),
+    m_replicationStatus(ReplicationStatus::NOT_SET),
+    m_partsCount(0),
+    m_objectLockMode(ObjectLockMode::NOT_SET),
+    m_objectLockLegalHoldStatus(ObjectLockLegalHoldStatus::NOT_SET)
 {
 }
 
-HeadObjectResult::HeadObjectResult(const AmazonWebServiceResult<XmlDocument>& result) : 
+HeadObjectResult::HeadObjectResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
     m_deleteMarker(false),
     m_contentLength(0),
-    m_missingMeta(0)
+    m_missingMeta(0),
+    m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_storageClass(StorageClass::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET),
+    m_replicationStatus(ReplicationStatus::NOT_SET),
+    m_partsCount(0),
+    m_objectLockMode(ObjectLockMode::NOT_SET),
+    m_objectLockLegalHoldStatus(ObjectLockLegalHoldStatus::NOT_SET)
 {
   *this = result;
 }
 
-HeadObjectResult& HeadObjectResult::operator =(const AmazonWebServiceResult<XmlDocument>& result)
+HeadObjectResult& HeadObjectResult::operator =(const Aws::AmazonWebServiceResult<XmlDocument>& result)
 {
   const XmlDocument& xmlDocument = result.GetPayload();
   XmlNode resultNode = xmlDocument.GetRootElement();
@@ -197,6 +212,30 @@ HeadObjectResult& HeadObjectResult::operator =(const AmazonWebServiceResult<XmlD
   if(replicationStatusIter != headers.end())
   {
     m_replicationStatus = ReplicationStatusMapper::GetReplicationStatusForName(replicationStatusIter->second);
+  }
+
+  const auto& partsCountIter = headers.find("x-amz-mp-parts-count");
+  if(partsCountIter != headers.end())
+  {
+     m_partsCount = StringUtils::ConvertToInt32(partsCountIter->second.c_str());
+  }
+
+  const auto& objectLockModeIter = headers.find("x-amz-object-lock-mode");
+  if(objectLockModeIter != headers.end())
+  {
+    m_objectLockMode = ObjectLockModeMapper::GetObjectLockModeForName(objectLockModeIter->second);
+  }
+
+  const auto& objectLockRetainUntilDateIter = headers.find("x-amz-object-lock-retain-until-date");
+  if(objectLockRetainUntilDateIter != headers.end())
+  {
+    m_objectLockRetainUntilDate = DateTime(objectLockRetainUntilDateIter->second, DateFormat::RFC822);
+  }
+
+  const auto& objectLockLegalHoldStatusIter = headers.find("x-amz-object-lock-legal-hold");
+  if(objectLockLegalHoldStatusIter != headers.end())
+  {
+    m_objectLockLegalHoldStatus = ObjectLockLegalHoldStatusMapper::GetObjectLockLegalHoldStatusForName(objectLockLegalHoldStatusIter->second);
   }
 
   return *this;

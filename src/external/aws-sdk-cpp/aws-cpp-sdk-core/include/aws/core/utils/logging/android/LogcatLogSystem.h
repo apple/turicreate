@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -32,11 +32,11 @@ class AWS_CORE_API LogcatLogSystem : public FormattedLogSystem
 
         using Base = FormattedLogSystem;
 
-        LogcatLogSystem(LogLevel logLevel) :
-	    Base(logLevel)
-	{}
+        LogcatLogSystem(LogLevel logLevel) : Base(logLevel) {}
 
         virtual ~LogcatLogSystem() {}
+
+        void Flush() override { /* no-op android NDK does not have a flush api */ }
 
     protected:
 

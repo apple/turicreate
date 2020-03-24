@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 #include <aws/core/utils/memory/AWSMemory.h>
 
 #include <aws/core/utils/memory/MemorySystemInterface.h>
+#include <aws/common/common.h>
 
 #include <atomic>
 
@@ -105,6 +106,37 @@ void Free(void* memoryPtr)
     {
         free(memoryPtr);
     }
+}
+
+static void* MemAcquire(aws_allocator* allocator, size_t size)
+{
+    (void)allocator; // unused;
+    return Aws::Malloc("MemAcquire", size);
+}
+
+static void MemRelease(aws_allocator* allocator, void* ptr)
+{
+    (void)allocator; // unused;
+    return Aws::Free(ptr);
+}
+
+static aws_allocator create_aws_allocator()
+{
+#if (__GNUC__ == 4) && !defined(__clang__)
+    AWS_SUPPRESS_WARNING("-Wmissing-field-initializers", aws_allocator wrapper{};);
+#else
+    aws_allocator wrapper{};
+#endif
+    wrapper.mem_acquire = MemAcquire;
+    wrapper.mem_release = MemRelease;
+    wrapper.mem_realloc = nullptr;
+    return wrapper;
+}
+
+aws_allocator* get_aws_allocator()
+{
+    static aws_allocator wrapper = create_aws_allocator();
+    return &wrapper;
 }
 
 } // namespace Aws

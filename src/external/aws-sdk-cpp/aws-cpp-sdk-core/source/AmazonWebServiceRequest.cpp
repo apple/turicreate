@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -15,14 +15,16 @@
 
 #include <aws/core/AmazonWebServiceRequest.h>
 #include <aws/core/utils/memory/stl/AWSStringStream.h>
-#include <aws/core/utils/memory/stl/AWSFunction.h>
 
 using namespace Aws;
 
 AmazonWebServiceRequest::AmazonWebServiceRequest() :
-    m_responseStreamFactory(AWS_BUILD_FUNCTION(Aws::Utils::Stream::DefaultResponseStreamFactoryMethod)),
+    m_responseStreamFactory(Aws::Utils::Stream::DefaultResponseStreamFactoryMethod),
     m_onDataReceived(nullptr),
-    m_onDataSent(nullptr)
+    m_onDataSent(nullptr),
+    m_continueRequest(nullptr),
+    m_onRequestSigned(nullptr),
+    m_requestRetryHandler(nullptr)
 {
 }
 

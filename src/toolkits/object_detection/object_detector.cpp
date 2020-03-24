@@ -210,9 +210,7 @@ void object_detector::init_options(
 
 void object_detector::infer_derived_options(compute_context* context,
                                             data_iterator* iterator) {
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = context->gpu_names();
-  print_training_device(gpu_names);
+  context->print_training_device_info();
 
   // Configure the batch size automatically if not set.
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {

@@ -281,18 +281,21 @@ size_t tf_compute_context::memory_budget() const {
   return 4294967296lu;
 }
 
-std::vector<std::string> tf_compute_context::gpu_names() const {
-  std::vector<std::string> gpu_device_names;
+void tf_compute_context::print_training_device_info() const {
+  bool has_gpu;
 
   call_pybind_function([&]() {
-    pybind11::module tf_gpu_devices =
+      pybind11::module tf_gpu_devices =
         pybind11::module::import("turicreate.toolkits._tf_utils");
-    // Get the names from tf utilities function
-    pybind11::object gpu_devices = tf_gpu_devices.attr("get_gpu_names")();
-    gpu_device_names = gpu_devices.cast<std::vector<std::string>>();
-  });
+      pybind11::object resp = tf_gpu_devices.attr("is_gpu_available")();
+      has_gpu = resp.cast<bool>();
+    });
 
-  return gpu_device_names;
+  if (!has_gpu) {
+    logprogress_stream << "Using CPU to create model.";
+  } else {
+    logprogress_stream << "Using a GPU to create model.";
+  }
 }
 
 

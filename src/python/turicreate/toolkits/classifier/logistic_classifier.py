@@ -497,7 +497,9 @@ class LogisticClassifier(_Classifier):
             "class": self.__class__.__name__,
             "short_description": short_description,
         }
-        context["user_defined"] = _coreml_utils._get_model_metadata(self.__class__.__name__, None)
+        context["user_defined"] = _coreml_utils._get_model_metadata(
+            self.__class__.__name__, None
+        )
         _logistic_classifier_export_as_model_asset(self.__proxy__, filename, context)
 
     def _get(self, field):

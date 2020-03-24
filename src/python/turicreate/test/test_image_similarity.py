@@ -304,6 +304,7 @@ class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
             model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299)
         )
 
+
 # A test to gaurantee that old code using the incorrect name still works.
 @unittest.skipIf(
     _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"

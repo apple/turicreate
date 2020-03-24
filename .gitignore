@@ -106,6 +106,3 @@ deps/build
 # CCache within Docker
 /.docker_ccache/
 /.docker_images/
-
-# git hooks
-/.pre-commit-config.yaml

@@ -600,6 +600,14 @@ is_directory(std::string url, std::string proxy) {
   }
   // if there are no "/"'s it is just a top level bucket
 
+  /* if there are no “/”‘s it is just a top level bucket
+   * list_objects_impl will remove the ending ‘/’
+   * e.g., dir/ -> dir
+   * in turicreate convention, dir should not have ‘/’,
+   * refer to dir_archive::init_for_read
+   */
+  if (url.length() > 5 && url.back() == '/') url.pop_back();
+
   list_objects_response response = list_objects(url, proxy);
   // an error occured
   if (!response.error.empty()) {
