@@ -465,8 +465,8 @@ set(TC_DEPENDENCIES
     boost
     nanomsg)
 
-if(${TC_BUILD_REMOTEFS})
-  set(TC_DEPENDENCIES ${TC_DEPENDENCIES} aws-sdk-cpp)
+if(TC_BUILD_REMOTEFS)
+  list(APPEND TC_DEPENDENCIES aws-cpp-sdk)
 endif()
 
 # ##############################################################################

@@ -1,6 +1,7 @@
-project(aws-cpp-sdk)
+project(Turi)
 
 if(NOT DEFINED TC_BUILD_REMOTEFS OR NOT TC_BUILD_REMOTEFS)
+  make_empty_library(aws-cpp-sdk)
   return(0)
 endif()
 

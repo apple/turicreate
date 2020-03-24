@@ -20,6 +20,6 @@ add_subdirectory(coremltools_wrap)
 add_subdirectory(boost)
 add_subdirectory(nanomsg)
 
-if(${TC_BUILD_REMOTEFS})
+if(TC_BUILD_REMOTEFS)
   add_subdirectory(aws-sdk-cpp)
 endif()
