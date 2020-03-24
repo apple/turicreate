@@ -296,8 +296,8 @@ EXPORT bool create_directory_or_throw(const std::string& path) {
         log_and_throw_io_failure(
             "Unable to create directory structure at " + sanitize_url(path) +
             ". Ensure that you have write permission to this location, or try "
-            "again with a different path." +
-            "error messge: " + status.second);
+            "again with a different path. " +
+            "error message: " + status.second);
         break;
       case file_status::REGULAR_FILE:
         log_and_throw_io_failure(
