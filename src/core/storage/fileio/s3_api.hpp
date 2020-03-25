@@ -1,4 +1,4 @@
-/* Copyright © 2017 Apple Inc. All rights reserved.
+/* Copyright © 2020 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
@@ -15,13 +15,16 @@
 #include <vector>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <aws/s3/S3Client.h>
+#include <core/logging/assertions.hpp>
 
 namespace turi {
-
 
 /**
  * \ingroup fileio
  * \internal
+ *
+ * constructed **only** from user provided url
+ *
  * A complete specification of an S3 bucket and object,
  * including all authentication required.
  */
@@ -30,7 +33,13 @@ struct s3url {
   std::string secret_key;
   std::string bucket;
   std::string object_name;
+  // endpoint that embeded in the url
   std::string endpoint;
+
+  // endpoint used by sdk, not in the url
+  boost::optional<std::string> sdk_endpoint;
+  boost::optional<std::string> sdk_region;
+  boost::optional<std::string> sdk_proxy;
 
   bool operator==(const s3url& other) const {
     return access_key_id == other.access_key_id &&
@@ -40,13 +49,64 @@ struct s3url {
            endpoint == other.endpoint;
   }
 
+  /*
+   * @param with_credentials: user should not see this
+   *
+   * reconstruct to url format,
+   * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name],
+   * which turi uses everywhere.
+   */
+  std::string string_from_s3url(bool with_credentials = true) const {
+    std::string ret("s3://");
+    ret.reserve(128);
+    const size_t prot_len = ret.size();
+
+    if (with_credentials && !access_key_id.empty()) {
+      ASSERT_TRUE(!secret_key.empty());
+      ret.append(access_key_id);
+      ret.append(1, ':');
+      ret.append(secret_key);
+      ret.append(1, ':');
+    }
+
+    // this is embeded form
+    // something like: s3://s3.amazonaws.com/bucket/object/name
+    if (!endpoint.empty()) {
+      ret.append(1, ':');
+      ret.append(endpoint);
+      ret.append(1, '/');
+    }
+
+    ASSERT_TRUE(!bucket.empty());
+    ret.append(bucket);
+
+    if (!object_name.empty()) {
+      if (ret.size() > prot_len) ret.append(1, '/');
+      ret.append(object_name);
+    }
+
+    return ret;
+  }
+
   friend std::ostream& operator<<(std::ostream& os, const s3url& url) {
-    os << "bucket: '" << url.bucket << "', object_name: '" << url.object_name
-       << "', endpoint: '" << url.endpoint << '\'';
-    return os;
+    if (url.sdk_endpoint) os << "endpoint used by sdk: " << *url.sdk_endpoint << "; ";
+    if (url.sdk_region) os << "region used by sdk: " << *url.sdk_region << "; ";
+    if (url.sdk_proxy) os << "proxy used by sdk: " << *url.sdk_proxy << "; ";
+    return os << url.string_from_s3url(false);
   }
 };
 
+
+
+/**
+ * \ingroup fileio
+ * \internal
+ *
+ * initialize the sdk with TRUI constomized environment variable
+ *
+ * will set the endpoint/region that used to configure the client
+ */
+Aws::S3::S3Client init_aws_sdk_with_turi_env(s3url& parsed_url);
 
 /**
  * \ingroup fileio
@@ -69,11 +129,13 @@ std::string get_s3_file_last_modified(const std::string& url);
 struct list_objects_response {
   /// Non-empty if there was an error
   std::string error;
-  /// A list of all the "sub-directories" found
+  /// A list of all the "sub-directories" found. Encoded with url, see s3url.
   std::vector<std::string> directories;
-
-  /// A list of all the objects found.
+  /// A list of all the objects found. Encoded with url, see s3url.
+  /// this should be really called object_urls;
   std::vector<std::string> objects;
+  /// A list of all the objects size.
+  std::vector<size_t> objects_size;
   /// Last modified time for the objects.
   std::vector<std::string> objects_last_modified;
 };
@@ -114,7 +176,7 @@ list_objects_response list_objects(std::string s3_url,
  * \internal
  * Lists all objects prefixed by a give s3 url.
  *
- * if s3_url points to a valid prefix, it will return the prefix's contents
+ * if s3_url points to a valid prefix, it  return the prefix's contents
  * like a directory.
  *
  * foo/hello.txt
@@ -205,14 +267,6 @@ void set_upload_timeout(long timeout);
  * \param timeout Timeout value in secs.
  */
 void set_download_timeout(long timeout);
-
-/**
- * \ingroup fileio
- * \internal
- * Return the S3 error code contains in the message.
- * If the message does not contain error code, return the message itself.
- */
-std::string get_s3_error_code(const std::string& msg);
 
 struct S3Operation {
   enum ops_enum {
