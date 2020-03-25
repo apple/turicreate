@@ -777,7 +777,6 @@ void style_transfer::iterate_training() {
   });
 
   shared_float_array loss_batch = results.at("loss");
-
   size_t loss_batch_size = loss_batch.size();
   float batch_loss = std::accumulate(
       loss_batch.data(), loss_batch.data() + loss_batch_size, 0.f,
@@ -794,8 +793,31 @@ void style_transfer::iterate_training() {
   }
 
   if (training_table_printer_) {
-    training_table_printer_->print_progress_row(
-        iteration_idx, iteration_idx + 1, batch_loss, progress_time());
+    if (supports_loss_components()) {
+      shared_float_array style_loss_batch = results.at("style_loss");
+      size_t style_loss_batch_size = style_loss_batch.size();
+      float style_loss_accumulated =
+          std::accumulate(style_loss_batch.data(),
+                          style_loss_batch.data() + style_loss_batch_size, 0.f,
+                          [style_loss_batch_size](float a, float b) {
+                            return a + b / style_loss_batch_size;
+                          });
+
+      shared_float_array content_loss_batch = results.at("content_loss");
+      size_t content_loss_batch_size = content_loss_batch.size();
+      float content_loss_accumulated =
+          std::accumulate(content_loss_batch.data(),
+                          content_loss_batch.data() + content_loss_batch_size,
+                          0.f, [content_loss_batch_size](float a, float b) {
+                            return a + b / content_loss_batch_size;
+                          });
+      training_table_printer_->print_progress_row(
+          iteration_idx, iteration_idx + 1, batch_loss, style_loss_accumulated,
+          content_loss_accumulated, progress_time());
+    } else {
+      training_table_printer_->print_progress_row(
+          iteration_idx, iteration_idx + 1, batch_loss, progress_time());
+    }
   }
 }
 
@@ -813,8 +835,18 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
   init_train(style, content, opts);
 
   if (read_state<bool>("verbose")) {
-    training_table_printer_.reset(new table_printer(
-        {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
+    std::vector<std::pair<std::string, size_t>> table_header_format;
+    if (supports_loss_components()) {
+      table_header_format = {{"Iteration", 12},
+                             {"Total Loss", 12},
+                             {"Style Loss", 12},
+                             {"Content Loss", 12},
+                             {"Elapsed Time", 12}};
+    } else {
+      table_header_format = {
+          {"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}};
+    }
+    training_table_printer_.reset(new table_printer(table_header_format));
   }
 
   if (training_table_printer_) {
@@ -949,6 +981,8 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
   m_resnet_spec = init_resnet(variant_get_value<size_t>(num_styles));
   m_resnet_spec->update_params(nn_params);
 }
+
+bool style_transfer::supports_loss_components() const { return false; }
 
 }  // namespace style_transfer
 }  // namespace turi
