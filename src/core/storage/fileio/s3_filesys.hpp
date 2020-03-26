@@ -97,7 +97,9 @@ class SeekStream : public Stream {
 };
 
 /*!
- * \brief reader stream that can be used to read from AWS SDK
+ * \brief reader stream that should be used to read from AWS SDK
+ * there's no buffer in this implementation. Every read will fetch
+ * packets through network. So combine this with read_caching_device
  */
 class AWSReadStreamBase : public SeekStream {
  public:
@@ -124,14 +126,13 @@ class AWSReadStreamBase : public SeekStream {
   // lazy seek function
   virtual void Seek(size_t pos) {
     ASSERT_TRUE(pos < file_size_);
-    if (curr_bytes_ != pos) {
-      this->Reset(pos);
-    }
+    Reset(pos);
   }
+
   virtual size_t Read(void *ptr, size_t size);
 
  protected:
-  AWSReadStreamBase() : file_size_(0), read_ptr_(0), curr_bytes_(0) {}
+  AWSReadStreamBase() : file_size_(0), curr_bytes_(0) {}
 
   /*!
    * \brief initialize the ecurl request,
@@ -142,13 +143,6 @@ class AWSReadStreamBase : public SeekStream {
  protected:
   // the total size of the file
   size_t file_size_ = 0;
-
-  void SetBegin(size_t begin_bytes) {
-    ASSERT_TRUE(begin_bytes < file_size_);
-    curr_bytes_ = begin_bytes;
-  }
-
- protected:
   s3url url_;
 
  private:
@@ -160,15 +154,12 @@ class AWSReadStreamBase : public SeekStream {
 
   /*!
    * \brief try to fill the buffer with at least wanted bytes
+   * \param buf the output stream pointer provided by client
    * \param want_bytes number of bytes we want to fill
    * \return number of remainning running curl handles
    */
 
-  int FillBuffer(size_t want_bytes);
-  // data buffer
-  std::string buffer_;
-  // data pointer to read position
-  size_t read_ptr_;
+  int FillBuffer(char *buf, size_t want_bytes);
   // current position in the stream
   size_t curr_bytes_;
 };
@@ -186,7 +177,7 @@ class ReadStream : public AWSReadStreamBase {
  protected:
   // implement InitRequest
   virtual void InitRequest(size_t begin_bytes, s3url &url) {
-    SetBegin(begin_bytes);
+    Seek(begin_bytes);
     url_ = url;
   }
 };
@@ -246,7 +237,11 @@ class WriteStream : public Stream {
   s3url url_;
 
   bool no_exception_ = false;
-  // write data buffer
+  /*
+   * write data buffer
+   * Aws multipart upload api requries each part to be
+   * larger than 5MB, except for the last part.
+   **/
   std::string buffer_;
 
   std::string upload_id_;
@@ -285,9 +280,12 @@ class WriteStream : public Stream {
 
   /*!
    * \brief upload the buffer to S3, store the etag
-   * clear the buffer
+   * clear the buffer.
+   *
+   * ONLY use this when you finish writing. Aws multipart api
+   * only allows the last part to be less than 5MB.
    */
-  void Upload(bool force_upload_even_if_zero_bytes = false);
+  void Upload(bool force_upload = false);
 
   /*!
    * \brief commit the upload and finish the session

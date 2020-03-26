@@ -47,34 +47,12 @@ size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
                        << curr_bytes_ << std::endl;
   if (curr_bytes_ == file_size_) return 0;
 
-  size_t nleft = size;
+  ASSERT_TRUE(curr_bytes_ < file_size_);
+
   char *buf = reinterpret_cast<char *>(ptr);
 
-  if (read_ptr_ == buffer_.length()) {
-    read_ptr_ = 0;
-    buffer_.clear();
-  } else {
-    size_t nread = std::min(nleft, buffer_.length() - read_ptr_);
-    std::memcpy(buf, buffer_.data() + read_ptr_, nread);
-    buf += nread;
-    read_ptr_ += nread;
-    nleft -= nread;
-    curr_bytes_ += nread;
-  }
-
   // retry is handled by AWS sdk
-  if (nleft != 0 && FillBuffer(nleft) != 0) {
-    ASSERT_TRUE(buffer_.length() == nleft);
-    ASSERT_TRUE(read_ptr_ == 0);
-    // nleft is nread
-    std::memcpy(buf, buffer_.data() + read_ptr_, nleft);
-    read_ptr_ += nleft;
-    curr_bytes_ += nleft;
-    // nothing left to read
-    nleft = 0;
-  }
-
-  return size - nleft;
+  return FillBuffer(buf, size);
 }
 
 /*
@@ -83,21 +61,8 @@ size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
  */
 void AWSReadStreamBase::Reset(size_t begin_bytes) {
   logstream(LOG_DEBUG) << "reset position: " << begin_bytes
-                       << ". curr_bytes_: " << curr_bytes_
-                       << ". read_ptr_: " << read_ptr_ << ". buffer length "
-                       << buffer_.size() << std::endl;
-
-  // setup the variables, lazily
-  if (begin_bytes >= curr_bytes_ &&
-      begin_bytes - curr_bytes_ + read_ptr_ < buffer_.length()) {
-    read_ptr_ = begin_bytes - curr_bytes_;
-    curr_bytes_ = begin_bytes;
-    return;
-  }
-
+                       << ". curr_bytes_: " << curr_bytes_ << std::endl;
   curr_bytes_ = begin_bytes;
-  read_ptr_ = 0;
-  buffer_.clear();
 }
 
 /*
@@ -109,11 +74,10 @@ void AWSReadStreamBase::Reset(size_t begin_bytes) {
  * @param nwant: number of bytes to read.
  * @return: number of bytes
  */
-int AWSReadStreamBase::FillBuffer(size_t nwant) {
+int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
   logstream(LOG_INFO) << "FillBuffer: " << nwant << " bytes" << std::endl;
   auto s3_client = init_aws_sdk_with_turi_env(url_);
   // start the new buffer
-  read_ptr_ = 0;
   nwant = std::min(nwant, file_size_ - curr_bytes_);
   // nothing to read from remote
   if (nwant == 0) return 0;
@@ -148,12 +112,8 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
       log_and_throw_io_failure(ss.str());
     }
 #endif
-    // Output the first line of the retrieved text file
-    buffer_.resize(nwant);
-    std::memset(const_cast<char *>(buffer_.data()), 0, nwant);
-    // must use read since \0 is used for padding. no
     // std::istreambuf_iterator<char>
-    retrieved_file.read(const_cast<char *>(buffer_.data()), nwant);
+    retrieved_file.read(input_ptr, nwant);
   } else {
     auto error = get_object_outcome.GetError();
     ss.str("");
