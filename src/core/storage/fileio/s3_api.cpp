@@ -226,6 +226,7 @@ bool parse_s3url(const std::string& s3_url, s3url& ret, std::string& err_msg) {
     return false;
   }
 
+  // this is a bad design
   auto original_url = sanitize_url(url);
 
   // The rest is parsed using boost::tokenizer
@@ -244,7 +245,23 @@ bool parse_s3url(const std::string& s3_url, s3url& ret, std::string& err_msg) {
   // Parse endpoints; since we support private cloud settings
   // url can be tricky; region (.*)com is not sufficient
   if (std::regex_match(*iter, std::regex("(.*)\\.(com|net)"))) {
-    ret.endpoint = *iter;
+    std::string endpoint = *iter;
+
+    std::vector<std::string> subs;
+    boost::algorithm::split(subs, endpoint, [](char c) { return c == '.'; });
+    bool is_valid = std::all_of(
+        std::begin(subs), std::end(subs), [](const std::string& name) {
+          return std::regex_match(name, std::regex("[:w:]+"));
+        });
+
+    if (!is_valid) {
+      ss << "endpoint name: " << endpoint << "contains invalid chars" << url
+         << __FILE__ << "at" << __LINE__;
+      err_msg = ss.str();
+      return false;
+    }
+
+    ret.endpoint = std::move(endpoint);
     ++iter;
   }
 
