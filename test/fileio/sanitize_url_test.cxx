@@ -16,6 +16,11 @@ struct sanitize_url_test {
                      "hdfs://hello:world@www.google.com");
     TS_ASSERT_EQUALS(sanitize_url("s3://aa:pika/chu"), "s3://pika/chu");
     TS_ASSERT_EQUALS(sanitize_url("s3://aa:bb:pika/chu"), "s3://pika/chu");
+
+    // with extra token separators
+    // since s3 is not like the UNIX director that redundant '/' will
+    // be removed.
+    TS_ASSERT_EQUALS(sanitize_url("s3://aa:bb:pika/chu//"), "s3://pika/chu//");
     TS_ASSERT_EQUALS(sanitize_url("s3://aa:bb:s3.amazonaws.com/pika/chu"),
                      "s3://s3.amazonaws.com/pika/chu");
     TS_ASSERT_EQUALS(sanitize_url("s3://a/a:bb:cc:pika/chu"), "s3://pika/chu");
