@@ -231,7 +231,15 @@ bool parse_s3url(const std::string& s3_url, s3url& ret, std::string& err_msg) {
 
   // The rest is parsed using boost::tokenizer
   typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-  boost::char_separator<char> sep("/");
+  /*
+   * keep extra token separators
+   * since s3 is not like the UNIX director that redundant '/' will
+   * be removed, e.g.,
+   * s3://key/gui///// is not same as s3://key/gui/.
+   * However in linux,
+   * dir//// is same as dir/ or dir
+   * */
+  boost::char_separator<char> sep("/", 0, boost::keep_empty_tokens);
   tokenizer tokens(url, sep);
   tokenizer::iterator iter = tokens.begin();
 
