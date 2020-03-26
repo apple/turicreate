@@ -221,7 +221,7 @@ bool parse_s3url(const std::string& s3_url, s3url& ret, std::string& err_msg) {
 
   if (url.empty()) {
     ss << "missing endpoint or bucket or object key in "
-       << "s3://" << __FILE__ << "at" << __LINE__;
+       << "s3://" << __FILE__ << " at" << __LINE__;
     err_msg = ss.str();
     return false;
   }
@@ -263,8 +263,8 @@ bool parse_s3url(const std::string& s3_url, s3url& ret, std::string& err_msg) {
         });
 
     if (!is_valid) {
-      ss << "endpoint name: " << endpoint << "contains invalid chars" << url
-         << __FILE__ << "at" << __LINE__;
+      ss << "endpoint name: " << endpoint << " contains invalid chars" << url
+         << __FILE__ << " at" << __LINE__;
       err_msg = ss.str();
       return false;
     }
