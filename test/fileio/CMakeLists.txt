@@ -16,6 +16,7 @@ make_boost_test(parse_hdfs_url_test.cxx REQUIRES unity_shared_for_testing)
 if(${TC_BUILD_REMOTEFS})
   make_executable(s3_filesys_test SOURCES s3_filesys_test.cpp REQUIRES
                   unity_shared_for_testing)
+  make_boost_test(sanitize_url_test.cxx REQUIRES unity_shared_for_testing)
   make_boost_test(s3api_test.cxx REQUIRES unity_shared_for_testing)
   make_boost_test(cache_stream_test.cxx REQUIRES unity_shared_for_testing)
   make_boost_test(block_cache_test.cxx REQUIRES unity_shared_for_testing)
@@ -23,6 +24,3 @@ endif()
 
 # this writes a big file make_executable(windows_4gb_test SOURCES
 # windows_4gb_test.cpp REQUIRES unity_shared_for_testing)
-#
-# requires s3 make_boost_test(sanitize_url_test.cxx REQUIRES
-# unity_shared_for_testing)

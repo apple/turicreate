@@ -1,7 +1,8 @@
 /* Copyright © 2017 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 #ifndef TC_DISABLE_REMOTEFS
 
@@ -15,6 +16,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/tokenizer.hpp>
+#include <chrono>
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
@@ -28,18 +30,17 @@
 #include <regex>
 #include <string>
 #include <thread>
-#include <chrono>
 
 /* aws */
 #include <aws/core/Aws.h>
+#include <aws/core/auth/AWSCredentialsProvider.h>
 #include <aws/core/http/HttpResponse.h>
 #include <aws/s3/S3Client.h>
-#include <aws/s3/model/ListObjectsV2Request.h>
-#include <aws/s3/model/ListObjectsV2Result.h>
+#include <aws/s3/model/Delete.h>
 #include <aws/s3/model/DeleteObjectRequest.h>
 #include <aws/s3/model/DeleteObjectsRequest.h>
-#include <aws/s3/model/Delete.h>
-#include <aws/core/auth/AWSCredentialsProvider.h>
+#include <aws/s3/model/ListObjectsV2Request.h>
+#include <aws/s3/model/ListObjectsV2Result.h>
 
 using namespace Aws;
 using namespace Aws::S3;
@@ -87,13 +88,18 @@ bool bucket_name_valid(const std::string& bucket_name) {
     if (label.empty()) return false;
     using namespace std::regex_constants;
 
-    auto alnum = [=](char x) { return (x <= 'Z' && x >= 'A') || (x <= 'z' && x >= 'a') || (x <= '9' && x >= '0'); };
-    auto alnum_underscore_or_hypen = [=](char x) { return x == '-' || x == '_' || alnum(x); };
+    auto alnum = [=](char x) {
+      return (x <= 'Z' && x >= 'A') || (x <= 'z' && x >= 'a') ||
+             (x <= '9' && x >= '0');
+    };
+    auto alnum_underscore_or_hypen = [=](char x) {
+      return x == '-' || x == '_' || alnum(x);
+    };
 
     // begin
     if (!alnum(*label.begin())) return false;
     // end
-    if (!alnum(*(label.end()-1))) return false;
+    if (!alnum(*(label.end() - 1))) return false;
     // everything in between
     for (size_t i = 1; i < label.size() - 1; ++i) {
       if (!alnum_underscore_or_hypen(label[i])) return false;
@@ -113,8 +119,7 @@ bool bucket_name_valid(const std::string& bucket_name) {
   return true;
 }
 
-
-} // anonymous namespace
+}  // anonymous namespace
 
 S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   // s3 client config
@@ -164,7 +169,6 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
     return S3Client(credentials, clientConfiguration);
   }
 }
-
 
 const std::vector<std::string> S3Operation::_enum_to_str = {
     "DeleteObjects", "ListObjects", "HeadObjects"};
@@ -216,17 +220,26 @@ bool parse_s3url(std::string s3_url, s3url& ret, std::string& err_msg) {
   boost::trim(url);
 
   if (url.empty()) {
-    ss << "missing endpoint or bucket or object key in " << "s3://" << __FILE__
-       << "at" << __LINE__;
+    ss << "missing endpoint or bucket or object key in "
+       << "s3://" << __FILE__ << " at" << __LINE__;
     err_msg = ss.str();
     return false;
   }
 
+  // this is a bad design
   auto original_url = sanitize_url(url);
 
   // The rest is parsed using boost::tokenizer
   typedef boost::tokenizer<boost::char_separator<char> > tokenizer;
-  boost::char_separator<char> sep("/");
+  /*
+   * keep extra token separators
+   * since s3 is not like the UNIX director that redundant '/' will
+   * be removed, e.g.,
+   * s3://key/gui///// is not same as s3://key/gui/.
+   * However in linux,
+   * dir//// is same as dir/ or dir
+   * */
+  boost::char_separator<char> sep("/", 0, boost::keep_empty_tokens);
   tokenizer tokens(url, sep);
   tokenizer::iterator iter = tokens.begin();
 
@@ -240,7 +253,23 @@ bool parse_s3url(std::string s3_url, s3url& ret, std::string& err_msg) {
   // Parse endpoints; since we support private cloud settings
   // url can be tricky; region (.*)com is not sufficient
   if (std::regex_match(*iter, std::regex("(.*)\\.(com|net)"))) {
-    ret.endpoint = *iter;
+    std::string endpoint = *iter;
+
+    std::vector<std::string> subs;
+    boost::algorithm::split(subs, endpoint, [](char c) { return c == '.'; });
+    bool is_valid = std::all_of(
+        std::begin(subs), std::end(subs), [](const std::string& name) {
+          return std::regex_match(name, std::regex("[:w:]+"));
+        });
+
+    if (!is_valid) {
+      ss << "endpoint name: " << endpoint << " contains invalid chars" << url
+         << __FILE__ << " at" << __LINE__;
+      err_msg = ss.str();
+      return false;
+    }
+
+    ret.endpoint = std::move(endpoint);
     ++iter;
   }
 
@@ -283,19 +312,20 @@ bool parse_s3url(std::string s3_url, s3url& ret, std::string& err_msg) {
 
 // The options we pass to aws cli for s3 commands
 // "us-east-1" is the us-standard and it works with buckets from all regions
-// "acl" grants the bucket owner full permission regardless of the uploader's account
-static const std::string S3_COMMAND_OPTION = "--region us-east-1 --acl bucket-owner-full-control";
-
+// "acl" grants the bucket owner full permission regardless of the uploader's
+// account
+static const std::string S3_COMMAND_OPTION =
+    "--region us-east-1 --acl bucket-owner-full-control";
 
 std::string validate_input_file(const std::string& local_file) {
   // Try to open the input file
   std::shared_ptr<turi::general_ifstream> fin(
       new turi::general_ifstream(local_file.c_str(),
-                                     false)); // gzip_compressed.
-                                             // We avoid decompressing the file
-                                             // on transfer. i.e. if the file is
-                                             // compressed/uncompressed to begin
-                                             // with, lets  keep it that way.
+                                 false));  // gzip_compressed.
+                                           // We avoid decompressing the file
+                                           // on transfer. i.e. if the file is
+                                           // compressed/uncompressed to begin
+                                           // with, lets  keep it that way.
 
   // file cannot be opened
   if (!fin->good()) {
@@ -314,11 +344,11 @@ std::string validate_output_file(const std::string& local_file) {
   // Try to open the output file
   std::shared_ptr<turi::general_ofstream> fout(
       new turi::general_ofstream(local_file.c_str(),
-                                     false));// gzip_compressed.
-                                             // We avoid recompressing the file
-                                             // on transfer. i.e. if the file is
-                                             // compressed/uncompressed to begin
-                                             // with, lets  keep it that way.
+                                 false));  // gzip_compressed.
+                                           // We avoid recompressing the file
+                                           // on transfer. i.e. if the file is
+                                           // compressed/uncompressed to begin
+                                           // with, lets  keep it that way.
   // file cannot be opened
   if (!fout->good()) {
     // return a failure immediately.
@@ -328,19 +358,21 @@ std::string validate_output_file(const std::string& local_file) {
 }
 
 /**
- * Adding single quote around the path, and escape all single quotes inside the path.
+ * Adding single quote around the path, and escape all single quotes inside the
+ * path.
  */
 std::string quote_and_escape_path(const std::string& path) {
   // s3 keys are at most 1024 bytes,
   // we make the buffer three times bigger
-  // and it should be enough to conver the length of escaped path s3://bucket_name/key
+  // and it should be enough to conver the length of escaped path
+  // s3://bucket_name/key
   const size_t BUF_SIZE = 1024 * 3;
   char* buf = new char[BUF_SIZE];
   size_t current_pos = 0;
-  buf[current_pos++] = '\"'; // begin quote
+  buf[current_pos++] = '\"';  // begin quote
   for (const auto& c : path) {
     if (c == '\'') {
-      buf[current_pos++] = '\\'; // escape quote
+      buf[current_pos++] = '\\';  // escape quote
       if (current_pos >= BUF_SIZE) {
         delete[] buf;
         throw("Invalid path: exceed length limit");
@@ -352,131 +384,129 @@ std::string quote_and_escape_path(const std::string& path) {
       throw("Invalid path: exceed length limit");
     }
   }
-  buf[current_pos++] = '\"'; // end quote
+  buf[current_pos++] = '\"';  // end quote
   std::string ret(buf, current_pos);
   delete[] buf;
   return ret;
 }
 
+list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
+                                        std::string endpoint) {
+  // credentials
+  Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(),
+                                        parsed_url.secret_key.c_str());
 
-list_objects_response list_objects_impl(s3url parsed_url,
-                                        std::string proxy,
-                                        std::string endpoint)
-{
-    // credentials
-    Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(), parsed_url.secret_key.c_str());
+  // s3 client config
+  Aws::Client::ClientConfiguration clientConfiguration;
+  if (turi::fileio::insecure_ssl_cert_checks()) {
+    clientConfiguration.verifySSL = false;
+  }
 
-    // s3 client config
-    Aws::Client::ClientConfiguration clientConfiguration;
-    if (turi::fileio::insecure_ssl_cert_checks()) {
-      clientConfiguration.verifySSL = false;
-    }
+  if (parsed_url.endpoint.empty()) {
+    clientConfiguration.endpointOverride = endpoint.c_str();
+  } else {
+    clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
+  }
 
-    if (parsed_url.endpoint.empty()) {
-      clientConfiguration.endpointOverride = endpoint.c_str();
-    } else {
-      clientConfiguration.endpointOverride = parsed_url.endpoint.c_str();
-    }
+  clientConfiguration.proxyHost = proxy.c_str();
+  clientConfiguration.requestTimeoutMs = 5 * 60000;
+  clientConfiguration.connectTimeoutMs = 20000;
+  std::string region = fileio::get_region_name_from_endpoint(
+      clientConfiguration.endpointOverride.c_str());
+  if (!region.empty()) {
+    clientConfiguration.region = region.c_str();
+    parsed_url.sdk_region = region;
+  }
 
-    clientConfiguration.proxyHost = proxy.c_str();
-    clientConfiguration.requestTimeoutMs = 5 * 60000;
-    clientConfiguration.connectTimeoutMs = 20000;
-    std::string region = fileio::get_region_name_from_endpoint(clientConfiguration.endpointOverride.c_str());
-    if (!region.empty()) {
-      clientConfiguration.region = region.c_str();
-      parsed_url.sdk_region = region;
-    }
+  S3Client client(credentials, clientConfiguration);
 
-    S3Client client(credentials, clientConfiguration);
+  list_objects_response ret;
 
-    list_objects_response ret;
+  Aws::S3::Model::ListObjectsV2Request request;
+  request.WithBucket(parsed_url.bucket.c_str());
+  request.WithPrefix(parsed_url.object_name.c_str());
+  request.WithDelimiter("/");  // seperate objects from directories
 
-    Aws::S3::Model::ListObjectsV2Request request;
-    request.WithBucket(parsed_url.bucket.c_str());
-    request.WithPrefix(parsed_url.object_name.c_str());
-    request.WithDelimiter("/"); // seperate objects from directories
+  bool moreResults = false;
+  bool success = false;
+  int backoff = 50;  // ms
+  int n_retry = 0;
 
-    bool moreResults = false;
-    bool success = false;
-    int backoff = 50;  // ms
-    int n_retry = 0;
-
+  do {
+    n_retry = 0;
     do {
-      n_retry = 0;
-      do {
-        auto outcome = client.ListObjectsV2(request);
+      auto outcome = client.ListObjectsV2(request);
 
-        success = outcome.IsSuccess();
+      success = outcome.IsSuccess();
 
-        if (success) {
-          auto result = outcome.GetResult();
-          // now iterate through found objects - these are files
-          Aws::Vector<Aws::S3::Model::Object> objects;
-          objects = result.GetContents();
-          for (auto const& o : objects) {
-            ret.objects.push_back(std::string(o.GetKey().c_str()));
-            std::stringstream stream;
-            stream << o.GetLastModified().Millis();
-            ret.objects_last_modified.push_back(stream.str());
-            ret.objects_size.push_back(o.GetSize());
-          }
-
-          // now iterate through common prefixes - these are directories
-          Aws::Vector<Aws::S3::Model::CommonPrefix> prefixes;
-          prefixes = result.GetCommonPrefixes();
-          for (auto const& p : prefixes) {
-            std::string key = std::string(p.GetPrefix().c_str());
-            // strip the ending "/" on a directory
-            if (boost::ends_with(key, "/"))
-              key = key.substr(0, key.length() - 1);
-            ret.directories.push_back(key);
-          }
-
-          // more results to retrieve
-          moreResults = result.GetIsTruncated();
-          if (moreResults) {
-            // add to the request object with continuation token
-            request.WithContinuationToken(result.GetContinuationToken());
-          }
-
-          // jump out the retry loop
-          break;
-
-        } else {
-          auto error = outcome.GetError().GetResponseCode();
-
-          if (error == Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
-            n_retry++;
-            std::this_thread::sleep_for(std::chrono::milliseconds(backoff));
-            backoff *= 2;
-          } else {
-            std::stringstream ss;
-            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
-                                  clientConfiguration, outcome)
-                << std::endl;
-            ret.error = ss.str();
-            logstream(LOG_DEBUG)
-                << "list_objects_impl failed:" << ret.error << std::endl;
-            // no need to retry, just jump out all while loop
-            break;
-          }
+      if (success) {
+        auto result = outcome.GetResult();
+        // now iterate through found objects - these are files
+        Aws::Vector<Aws::S3::Model::Object> objects;
+        objects = result.GetContents();
+        for (auto const& o : objects) {
+          ret.objects.push_back(std::string(o.GetKey().c_str()));
+          std::stringstream stream;
+          stream << o.GetLastModified().Millis();
+          ret.objects_last_modified.push_back(stream.str());
+          ret.objects_size.push_back(o.GetSize());
         }
-      } while (n_retry < 3);  // finished retry
 
-    } while (moreResults && success);
+        // now iterate through common prefixes - these are directories
+        Aws::Vector<Aws::S3::Model::CommonPrefix> prefixes;
+        prefixes = result.GetCommonPrefixes();
+        for (auto const& p : prefixes) {
+          std::string key = std::string(p.GetPrefix().c_str());
+          // strip the ending "/" on a directory
+          if (boost::ends_with(key, "/")) key = key.substr(0, key.length() - 1);
+          ret.directories.push_back(key);
+        }
 
-    for (auto& dir : ret.directories) {
-      s3url dirurl = parsed_url;
-      dirurl.object_name = dir;
-      // this is not necessary to override what returned by s3
-      dir = dirurl.string_from_s3url();
-    }
-    for (auto& object : ret.objects) {
-      s3url objurl = parsed_url;
-      objurl.object_name = object;
-      object = objurl.string_from_s3url();
-    }
-    return ret;
+        // more results to retrieve
+        moreResults = result.GetIsTruncated();
+        if (moreResults) {
+          // add to the request object with continuation token
+          request.WithContinuationToken(result.GetContinuationToken());
+        }
+
+        // jump out the retry loop
+        break;
+
+      } else {
+        auto error = outcome.GetError().GetResponseCode();
+
+        if (error == Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
+          n_retry++;
+          std::this_thread::sleep_for(std::chrono::milliseconds(backoff));
+          backoff *= 2;
+        } else {
+          std::stringstream ss;
+          reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
+                                clientConfiguration, outcome)
+              << std::endl;
+          ret.error = ss.str();
+          logstream(LOG_DEBUG)
+              << "list_objects_impl failed:" << ret.error << std::endl;
+          // no need to retry, just jump out all while loop
+          break;
+        }
+      }
+    } while (n_retry < 3);  // finished retry
+
+  } while (moreResults && success);
+
+  for (auto& dir : ret.directories) {
+    s3url dirurl = parsed_url;
+    dirurl.object_name = dir;
+    // this is not necessary to override what returned by s3
+    dir = dirurl.string_from_s3url();
+  }
+  for (auto& object : ret.objects) {
+    s3url objurl = parsed_url;
+    objurl.object_name = object;
+    object = objurl.string_from_s3url();
+  }
+  return ret;
 }
 
 /// returns an error string on failure. Empty string on success
