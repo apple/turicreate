@@ -28,11 +28,11 @@ s3_device::s3_device(const std::string& filename, const bool write) {
   logstream(LOG_INFO) << "s3_device constructor is invoked" << std::endl;
 
   if (write) {
-    m_write_stream.reset(m_s3fs->Open(url, "w"));
+    m_write_stream = m_s3fs->Open(url, "w");
   } else {
     try {
       logstream(LOG_DEBUG) << "s3_device reset read_stream" << std::endl;
-      m_read_stream.reset(m_s3fs->OpenForRead(url, false /* no throw */));
+      m_read_stream = m_s3fs->OpenForRead(url, false /* no throw */);
       ASSERT_TRUE(m_read_stream != nullptr);
       // this is a bad design to cache the filesize
       m_filesize = m_read_stream->FileSize();

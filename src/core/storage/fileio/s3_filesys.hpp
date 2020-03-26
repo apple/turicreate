@@ -76,19 +76,6 @@ class Stream {
 
   /*! \brief virtual destructor */
   virtual ~Stream(void) {}
-  /*!
-   * \brief generic factory function
-   *  create an stream, the stream will close the underlying files upon deletion
-   *
-   * \param uri the uri of the input currently we support
-   *            hdfs://, s3://, and file:// by default file:// will be used
-   * \param flag can be "w", "r", "a"
-   * \param allow_null whether NULL can be returned, or directly report error
-   * \return the created stream, can be NULL when allow_null == true and file do
-   * not exist
-   */
-  static Stream *Create(const char *uri, const char *const flag,
-                        bool allow_null = false);
 };
 
 /*! \brief interface of i/o stream that support seek */
@@ -107,18 +94,6 @@ class SeekStream : public Stream {
 
   /*! \brief Returns true if at end of stream */
   virtual bool AtEnd(void) const = 0;
-  /*!
-   * \brief generic factory function
-   *  create an SeekStream for read only,
-   *  the stream will close the underlying files upon deletion
-   *  error will be reported and the system will exit when create failed
-   * \param uri the uri of the input currently we support
-   *            hdfs://, s3://, and file:// by default file:// will be used
-   * \param allow_null whether NULL can be returned, or directly report error
-   * \return the created stream, can be NULL when allow_null == true and file do
-   * not exist
-   */
-  static SeekStream *CreateForRead(const char *uri, bool allow_null = false);
 };
 
 /*!
@@ -236,7 +211,7 @@ class WriteStream : public Stream {
   }
 
   virtual size_t Read(void *ptr, size_t size) {
-    if (no_exception_) {
+    if (!no_exception_) {
       std_log_and_throw(std::runtime_error,
                         "S3.WriteStream cannot be used for read");
     }
@@ -352,7 +327,8 @@ class S3FileSystem {
    * \return the created stream, can be NULL when allow_null == true and file
    * do not exist
    */
-  virtual Stream *Open(const s3url &path, const char *const flag);
+  virtual std::shared_ptr<Stream> Open(const s3url &path,
+                                       const char *const flag);
 
   /*!
    * \brief open a seekable stream for read
@@ -360,7 +336,8 @@ class S3FileSystem {
    * \return the created stream, can be NULL if no_exception is true to
    * indicate a failure to open the file.
    */
-  virtual SeekStream *OpenForRead(const s3url &path, bool no_exception = true);
+  virtual std::shared_ptr<SeekStream> OpenForRead(const s3url &path,
+                                                  bool no_exception = true);
 
  protected:
   s3url url_;

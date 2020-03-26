@@ -43,8 +43,8 @@ const ScopedAwsInitAPI &turi_global_AWS_SDK_setup(
  */
 size_t AWSReadStreamBase::Read(void *ptr, size_t size) {
   // check at end
-  logstream(LOG_DEBUG) << "AWSReadStreamBase::Read, current pos: " << curr_bytes_
-                       << std::endl;
+  logstream(LOG_DEBUG) << "AWSReadStreamBase::Read, current pos: "
+                       << curr_bytes_ << std::endl;
   if (curr_bytes_ == file_size_) return 0;
 
   size_t nleft = size;
@@ -137,7 +137,8 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
   auto get_object_outcome = s3_client.GetObject(object_request);
   if (get_object_outcome.IsSuccess()) {
     // Get an Aws::IOStream reference to the retrieved file
-    auto &retrieved_file = get_object_outcome.GetResultWithOwnership().GetBody();
+    auto &retrieved_file =
+        get_object_outcome.GetResultWithOwnership().GetBody();
 
 #ifndef NDEBUG
     retrieved_file.seekg(0, retrieved_file.end);
@@ -152,7 +153,7 @@ int AWSReadStreamBase::FillBuffer(size_t nwant) {
     std::memset(const_cast<char *>(buffer_.data()), 0, nwant);
     // must use read since \0 is used for padding. no
     // std::istreambuf_iterator<char>
-    retrieved_file.read(const_cast<char*>(buffer_.data()), nwant);
+    retrieved_file.read(const_cast<char *>(buffer_.data()), nwant);
   } else {
     auto error = get_object_outcome.GetError();
     ss.str("");
@@ -171,8 +172,12 @@ void WriteStream::Write(const void *ptr, size_t size) {
   if (buffer_.length() >= max_buffer_size_) Upload();
 }
 
-void WriteStream::Upload(bool force_upload_even_if_zero_bytes) {
-  if (!force_upload_even_if_zero_bytes && buffer_.empty()) return;
+void WriteStream::Upload(bool force_upload) {
+  if (buffer_.empty()) return;
+
+  if (!force_upload && buffer_.size() < max_buffer_size_) {
+    return;
+  }
 
   Aws::S3::Model::UploadPartRequest my_request;
   my_request.SetBucket(url_.bucket.c_str());
@@ -367,12 +372,13 @@ void S3FileSystem::ListDirectory(const s3url &url,
   }
 }
 
-Stream *S3FileSystem::Open(const s3url &path, const char *const flag) {
+std::shared_ptr<Stream> S3FileSystem::Open(const s3url &path,
+                                           const char *const flag) {
   using namespace std;
   if (!strcmp(flag, "r") || !strcmp(flag, "rb")) {
     return OpenForRead(path);
   } else if (!strcmp(flag, "w") || !strcmp(flag, "wb")) {
-    return new s3::WriteStream(path);
+    return std::make_shared<s3::WriteStream>(path);
   } else {
     log_and_throw_io_failure(
         std::string("S3FileSytem.Open do not support flag ") + flag);
@@ -380,10 +386,11 @@ Stream *S3FileSystem::Open(const s3url &path, const char *const flag) {
   }
 }
 
-SeekStream *S3FileSystem::OpenForRead(const s3url &path, bool no_exception) {
+std::shared_ptr<SeekStream> S3FileSystem::OpenForRead(const s3url &path,
+                                                      bool no_exception) {
   FileInfo info;
   if (TryGetPathInfo(path, info) && info.type == kFile) {
-    return new s3::ReadStream(path, info.size);
+    return std::make_shared<s3::ReadStream>(path, info.size);
   } else {
     logstream(LOG_WARNING) << "path " << path
                            << " does not exist or is not a file" << std::endl;
