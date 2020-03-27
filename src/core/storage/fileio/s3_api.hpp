@@ -97,6 +97,7 @@ struct s3url {
   }
 };
 
+
 /**
  * \ingroup fileio
  * \internal
