@@ -185,8 +185,8 @@ def _force_cast_sql_types(data, result_types, force_cast_cols):
 
 class SFrame(object):
     """
-    A tabular, column-mutable dataframe object that can scale to big data. The
-    data in SFrame is stored column-wise, and is
+    SFrame means scalable data frame. A tabular, column-mutable dataframe object that can
+    scale to big data. The data in SFrame is stored column-wise, and is
     stored on persistent storage (e.g. disk) to avoid being constrained by
     memory size.  Each column in an SFrame is a size-immutable
     :class:`~turicreate.SArray`, but SFrames are mutable in that columns can be
