@@ -127,10 +127,17 @@ namespace fileio {
 /*                                                                       */
 /*************************************************************************/
 
- EXPORT fixed_size_cache_manager& fixed_size_cache_manager::get_instance() {
-   static std::unique_ptr<fixed_size_cache_manager> instance(new fixed_size_cache_manager);
-   return *instance;
- }
+std::shared_ptr<const fixed_size_cache_manager> fixed_size_cache_manager::hold_instance() {
+  static std::shared_ptr<const fixed_size_cache_manager> instance(new fixed_size_cache_manager);
+  static std::mutex mx;
+  std::lock_guard<std::mutex> lg(mx);
+  return instance;
+}
+
+EXPORT fixed_size_cache_manager& fixed_size_cache_manager::get_instance() {
+  static auto instance = hold_instance();
+  return const_cast<fixed_size_cache_manager&>(*instance);
+}
 
   fixed_size_cache_manager::fixed_size_cache_manager() { }
 

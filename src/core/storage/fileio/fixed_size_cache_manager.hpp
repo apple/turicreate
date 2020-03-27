@@ -18,7 +18,7 @@
 namespace turi {
 namespace fileio {
 
-//forward declaration
+// forward declaration
 class fixed_size_cache_manager;
 
 typedef std::string cache_id_type;
@@ -33,13 +33,11 @@ typedef std::string cache_id_type;
  */
 struct cache_block {
  private:
-
   // Construct an in-memory cache block
   cache_block(cache_id_type cache_id, size_t max_capacity,
               fixed_size_cache_manager* owning_cache_manager);
 
  public:
-
   cache_block(const cache_block&) = delete;
   cache_block& operator=(const cache_block&) = delete;
 
@@ -51,51 +49,37 @@ struct cache_block {
    */
   bool extend_capacity(size_t new_capacity);
 
-  inline cache_id_type get_cache_id() const {
-    return cache_id;
-  }
+  inline cache_id_type get_cache_id() const { return cache_id; }
 
   /**
    * Returns true if this points to an in memory cache.
    */
-  inline bool is_pointer() const {
-    return filename.empty();
-  }
+  inline bool is_pointer() const { return filename.empty(); }
 
   /**
    * Returns true if this points to a file
    */
-  inline bool is_file() const {
-    return !filename.empty();
-  }
+  inline bool is_file() const { return !filename.empty(); }
 
   /**
    * Returns the pointer to the in memory cache.
    */
-  inline char* get_pointer() const {
-    return data;
-  }
+  inline char* get_pointer() const { return data; }
 
   /**
    * Returns the total capacity of the in memory cache
    */
-  inline const size_t get_pointer_capacity() const {
-    return capacity;
-  }
+  inline const size_t get_pointer_capacity() const { return capacity; }
 
   /**
    * Returns the used capacity of the in memory cache
    */
-  inline const size_t get_pointer_size() const {
-    return size;
-  }
+  inline const size_t get_pointer_size() const { return size; }
 
   /**
    * Returns the disk backed filename.
    */
-  inline const std::string& get_filename() const {
-    return filename;
-  }
+  inline const std::string& get_filename() const { return filename; }
 
   /**
    * If this is an in memory cache, writes bufsize bytes to it. Returns true
@@ -169,21 +153,22 @@ struct cache_block {
  *
  *  - For every new cache block requested:
  *    - If there is FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE free bytes,
- *      a new cache block of FILEIO_INITIAL_CAPACITY_PER_FILE is allocated, where
- *      the new cache block is permitted to grow up to
- *      FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE. The capacity is not charged as utilization
- *      until it is actually used. i.e. utilization is only incremented by
- *      FILEIO_INITIAL_CACHE_CAPACITY_PER_FILE. Then as more memory is allocated for the
- *      cache, then utilization is incremented again.
- *    - If there is < FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE free bytes available:
- *      The largest cache block is evicted. If there is
+ *      a new cache block of FILEIO_INITIAL_CAPACITY_PER_FILE is allocated,
+ * where the new cache block is permitted to grow up to
+ *      FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE. The capacity is not charged as
+ * utilization until it is actually used. i.e. utilization is only incremented
+ * by FILEIO_INITIAL_CACHE_CAPACITY_PER_FILE. Then as more memory is allocated
+ * for the cache, then utilization is incremented again.
+ *    - If there is < FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE free bytes
+ * available: The largest cache block is evicted. If there is
  *      FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE free bytes, Goto the first case.
  *      Otherwise, create a new cache block with all the remaining free bytes.
  *
  *  The relevant constants are thus:
  *   FILEIO_MAXIMUM_CACHE_CAPACITY : the maximum total size of all cache blocks
- *   FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE : the maximum size of each cache blocks
- *   FILEIO_INITIAL_CAPACITY_PER_FILE : the initial size of each cache blocks
+ *   FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE : the maximum size of each cache
+ * blocks FILEIO_INITIAL_CAPACITY_PER_FILE : the initial size of each cache
+ * blocks
  *
  *  Overcommit Behavior
  *  -------------------
@@ -192,10 +177,10 @@ struct cache_block {
  *  conditions since we avoid locking on the cache utilization counter.
  */
 class fixed_size_cache_manager {
-
  public:
-
   static fixed_size_cache_manager& get_instance();
+  // for dependency injection
+  static std::shared_ptr<const fixed_size_cache_manager> hold_instance();
 
   /**
    * Returns a temporary cache id that is not yet used by the
@@ -249,7 +234,8 @@ class fixed_size_cache_manager {
  private:
   fixed_size_cache_manager(const fixed_size_cache_manager& other) = delete;
 
-  fixed_size_cache_manager& operator=(const fixed_size_cache_manager& other) = delete;
+  fixed_size_cache_manager& operator=(const fixed_size_cache_manager& other) =
+      delete;
 
  private:
   size_t temp_cache_counter = 0;
@@ -277,6 +263,6 @@ class fixed_size_cache_manager {
   friend struct cache_block;
 };
 
-} // end of fileio
-} // end of turicreate
+}  // namespace fileio
+}  // namespace turi
 #endif

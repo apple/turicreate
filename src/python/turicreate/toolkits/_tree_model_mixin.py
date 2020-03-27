@@ -332,7 +332,7 @@ class TreeModelMixin(object):
         return ([data_fields, training_fields], ["Schema", "Settings"])
 
     def _export_coreml_impl(self, filename, context):
-        info = _coreml_utils._get_model_metadata(context['class'], None)
+        info = _coreml_utils._get_model_metadata(context["class"], None)
         if "user_defined" not in context:
             context["user_defined"] = info
         else:

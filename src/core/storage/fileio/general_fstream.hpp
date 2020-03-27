@@ -41,7 +41,7 @@ typedef boost::iostreams::stream<fileio_impl::general_fstream_source>
  * but random seeks will be disabled.
  *
  * S3 access keys are mediated by having the filename be of the form
- * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
+ * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name]
  *
  * Endpoint URLs however, are set globally via the global variable S3_ENDPOINT.
  */
@@ -123,7 +123,7 @@ typedef boost::iostreams::stream<fileio_impl::general_fstream_sink>
  * If the filename ends with ".gz", gzip compression is automatically performed.
  *
  * S3 access keys are mediated by having the filename be of the form
- * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
+ * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name]
  *
  * Endpoint URLs however, are set globally via the global variable S3_ENDPOINT.
  */

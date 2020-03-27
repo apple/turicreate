@@ -122,7 +122,7 @@ class EXPORT style_transfer : public ml_model_base {
 
   virtual std::unique_ptr<neural_net::compute_context> create_compute_context()
       const;
-
+  virtual bool supports_loss_components() const;
   void perform_predict(gl_sarray images, gl_sframe_writer& result,
                        const std::vector<flex_int>& style_idx,
                        bool verbose);

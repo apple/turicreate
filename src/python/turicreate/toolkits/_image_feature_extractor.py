@@ -213,7 +213,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         #     # Tell the worker thread to shut down.
         #     request_queue.put(None)
 
-        return state['out']
+        return state["out"]
 
     def get_coreml_model(self):
         import coremltools
