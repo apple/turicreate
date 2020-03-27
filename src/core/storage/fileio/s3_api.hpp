@@ -1,24 +1,25 @@
 /* Copyright © 2020 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 #ifndef TURI_S3_UPLOADER_HPP
 #define TURI_S3_UPLOADER_HPP
 
 #ifndef TC_DISABLE_REMOTEFS
 
-#include <string>
+#include <aws/s3/S3Client.h>
+
+#include <core/logging/assertions.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
 #include <fstream>
 #include <future>
 #include <memory>
+#include <string>
 #include <vector>
-#include <core/storage/fileio/fs_utils.hpp>
-#include <aws/s3/S3Client.h>
-#include <core/logging/assertions.hpp>
 
 namespace turi {
-
 
 /**
  * \ingroup fileio
@@ -44,17 +45,15 @@ struct s3url {
 
   bool operator==(const s3url& other) const {
     return access_key_id == other.access_key_id &&
-           secret_key == other.secret_key &&
-           bucket == other.bucket &&
-           object_name == other.object_name &&
-           endpoint == other.endpoint;
+           secret_key == other.secret_key && bucket == other.bucket &&
+           object_name == other.object_name && endpoint == other.endpoint;
   }
 
   /*
    * @param with_credentials: user should not see this
    *
    * reconstruct to url format,
-   * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name],
+   * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name],
    * which turi uses everywhere.
    */
   std::string string_from_s3url(bool with_credentials = true) const {
@@ -75,15 +74,14 @@ struct s3url {
     if (!endpoint.empty()) {
       ret.append(1, ':');
       ret.append(endpoint);
+      ret.append(1, '/');
     }
 
     ASSERT_TRUE(!bucket.empty());
-    // if it's still not pure s3://
-    if (ret.size() > prot_len) ret.append(1, '/');
     ret.append(bucket);
 
     if (!object_name.empty()) {
-      if (ret.size() > 5) ret.append(1, '/');
+      if (ret.size() > prot_len) ret.append(1, '/');
       ret.append(object_name);
     }
 
@@ -91,13 +89,13 @@ struct s3url {
   }
 
   friend std::ostream& operator<<(std::ostream& os, const s3url& url) {
-    if (url.sdk_endpoint) os << "endpoint used by sdk: " << *url.sdk_endpoint << "; ";
+    if (url.sdk_endpoint)
+      os << "endpoint used by sdk: " << *url.sdk_endpoint << "; ";
     if (url.sdk_region) os << "region used by sdk: " << *url.sdk_region << "; ";
     if (url.sdk_proxy) os << "proxy used by sdk: " << *url.sdk_proxy << "; ";
     return os << url.string_from_s3url(false);
   }
 };
-
 
 /**
  * \ingroup fileio
@@ -120,7 +118,6 @@ Aws::S3::S3Client init_aws_sdk_with_turi_env(s3url& parsed_url);
  * e.g. the url is a directory path or file does not exist.
  */
 std::string get_s3_file_last_modified(const std::string& url);
-
 
 /**
  * \ingroup fileio
@@ -168,9 +165,7 @@ struct list_objects_response {
  * requested prefix.
  *
  */
-list_objects_response list_objects(std::string s3_url,
-                                   std::string proxy = "");
-
+list_objects_response list_objects(std::string s3_url, std::string proxy = "");
 
 /**
  * \ingroup fileio
@@ -214,8 +209,7 @@ std::pair<file_status, list_objects_response> is_directory(
  * Where url points to a single object, this deletes the object.
  * Returns an empty string on success, and an error string on failure.
  */
-std::string delete_object(std::string s3_url,
-                          std::string proxy = "");
+std::string delete_object(std::string s3_url, std::string proxy = "");
 
 /**
  * \ingroup fileio
@@ -224,17 +218,17 @@ std::string delete_object(std::string s3_url,
  * specified prefix.
  * Returns an empty string on success, and an error string on failure.
  */
-std::string delete_prefix(std::string s3_url,
-                          std::string proxy = "");
+std::string delete_prefix(std::string s3_url, std::string proxy = "");
 
 /**
  * \ingroup fileio
  * \internal
  * Given an S3 URL of the form expected by parse_s3url,
- * this function drops the access_key_id and the secret_key from the string returning
- * s3://[bucket]/[object_name]
+ * this function drops the access_key_id and the secret_key from the string
+ * returning s3://[bucket]/[object_name]
  *
- * If the url cannot be parsed, we try the best to remove information associated with ':'.
+ * If the url cannot be parsed, we try the best to remove information associated
+ * with ':'.
  *
  * If the url does not begin with s3://, return as is.
  */
@@ -244,7 +238,7 @@ std::string sanitize_s3_url(const std::string& url);
  * \ingroup fileio
  * \internal
  * This splits a URL of the form
- * s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name]
+ * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name]
  * into several pieces.
  *
  * endpoint and object_name are optional.
@@ -269,14 +263,6 @@ void set_upload_timeout(long timeout);
  */
 void set_download_timeout(long timeout);
 
-/**
- * \ingroup fileio
- * \internal
- * Return the S3 error code contains in the message.
- * If the message does not contain error code, return the message itself.
- */
-std::string get_s3_error_code(const std::string& msg);
-
 struct S3Operation {
   enum ops_enum {
     Delete,
@@ -296,8 +282,8 @@ std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
                             S3Operation::ops_enum operation,
                             const Aws::Client::ClientConfiguration& config,
                             const Response& outcome) {
-  ss << "('" << parsed_url << ", proxy: '" << config.proxyHost
-     << "', region: '" << config.region << "')"
+  ss << "('" << parsed_url << ", proxy: '" << config.proxyHost << "', region: '"
+     << config.region << "')"
      << " Error while performing " << S3Operation::toString(operation)
      << ". Error Name: " << outcome.GetError().GetExceptionName()
      << ". Error Message: " << outcome.GetError().GetMessage();
@@ -310,6 +296,6 @@ std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
 
 }  // namespace turi
 
-#endif // End ifndef TC_DISABLE_REMOTEFS
+#endif  // End ifndef TC_DISABLE_REMOTEFS
 
 #endif
