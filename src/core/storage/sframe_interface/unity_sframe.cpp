@@ -1231,27 +1231,35 @@ std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
                                                                                  {"__builtin__concat__list__"});
   std::shared_ptr<unity_sarray_base> bucketized_sarray = bucketized_sframe->select_column(buckets_column_name);
 
-  // XXX: do this in parallel
   // Shuffle each bucket
-  gl_sarray_writer writer(flex_type_enum::LIST, 1);
+  size_t num_threads = thread::cpu_count();
+  gl_sarray_writer writer(flex_type_enum::LIST, num_threads);
   gl_sarray gl_bucketized_sarray = gl_sarray(bucketized_sarray);
-  gl_sarray_range ra = gl_bucketized_sarray.range_iterator();
-  auto cur_bucket = ra.begin();
-  unsigned int seed = random::pure_random_seed();
-  while (cur_bucket != ra.end()) {
-    std::vector<int> indexes = std::vector<int>(cur_bucket->size());
-    for (size_t i = 0; i < cur_bucket->size(); i++) {
-      indexes[i] = i;
-    }
-    std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
 
-    for (size_t i = 0; i < cur_bucket->size(); i++) {
-      writer.write(cur_bucket->array_at(indexes[i]), 0);
-    }
-    ++cur_bucket;
-  }
+  in_parallel([&](size_t thread_id, size_t n_threads) {
+      size_t idx_start = (gl_bucketized_sarray.size() * thread_id) / n_threads;
+      size_t idx_end = (gl_bucketized_sarray.size() * (thread_id + 1) ) / n_threads;
 
+      gl_sarray_range ra = gl_bucketized_sarray.range_iterator(idx_start, idx_end);
+      auto cur_bucket = ra.begin();
+      unsigned int seed = random::pure_random_seed();
+      while (cur_bucket != ra.end()) {
+        // shuffle the indexes for the current bucket
+        std::vector<int> indexes = std::vector<int>(cur_bucket->size());
+        for (size_t i = 0; i < cur_bucket->size(); i++) {
+          indexes[i] = i;
+        }
+        std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
+
+        // output in random order
+        for (size_t i = 0; i < cur_bucket->size(); i++) {
+          writer.write(cur_bucket->array_at(indexes[i]), thread_id);
+        }
+        ++cur_bucket;
+      }
+  });
   gl_sarray packed_randomized = writer.close();
+
   std::string unpacked_column_prefix = "X";
   gl_sframe ret = packed_randomized.unpack(unpacked_column_prefix, this->dtype());
   DASSERT_EQ(this->num_columns(), ret.num_columns());
