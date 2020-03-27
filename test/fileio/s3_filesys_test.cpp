@@ -20,11 +20,7 @@
 /**
  * example program to set up s3 read
  *
- * This program will read from the file_url, writes "hello world" to the stream,
- * read from it and check contents are equal.
- *
  * set AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY in environment variable.
- *
  * set TURI_S3_REGION and TURI_S3_ENDPOINT for more control.
  */
 int main(int argc, char** argv) {

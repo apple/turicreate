@@ -43,6 +43,7 @@ struct s3url {
   boost::optional<std::string> sdk_region;
   boost::optional<std::string> sdk_proxy;
 
+  // this call doesn't compare the optional members
   bool operator==(const s3url& other) const {
     return access_key_id == other.access_key_id &&
            secret_key == other.secret_key && bucket == other.bucket &&
@@ -81,6 +82,7 @@ struct s3url {
     ret.append(bucket);
 
     if (!object_name.empty()) {
+      // s3://object_key is a valid case
       if (ret.size() > prot_len) ret.append(1, '/');
       ret.append(object_name);
     }
@@ -104,6 +106,8 @@ struct s3url {
  * initialize the sdk with TRUI constomized environment variable
  *
  * will set the endpoint/region that used to configure the client
+ *
+ * this call will modify optional sdk_* members
  */
 Aws::S3::S3Client init_aws_sdk_with_turi_env(s3url& parsed_url);
 
