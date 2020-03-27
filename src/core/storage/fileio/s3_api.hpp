@@ -18,9 +18,6 @@
 #include <memory>
 #include <string>
 #include <vector>
-#include <core/storage/fileio/fs_utils.hpp>
-#include <aws/s3/S3Client.h>
-#include <core/logging/assertions.hpp>
 
 namespace turi {
 
@@ -46,6 +43,7 @@ struct s3url {
   boost::optional<std::string> sdk_region;
   boost::optional<std::string> sdk_proxy;
 
+  // this call doesn't compare the optional members
   bool operator==(const s3url& other) const {
     return access_key_id == other.access_key_id &&
            secret_key == other.secret_key && bucket == other.bucket &&
@@ -84,45 +82,7 @@ struct s3url {
     ret.append(bucket);
 
     if (!object_name.empty()) {
-      if (ret.size() > prot_len) ret.append(1, '/');
-      ret.append(object_name);
-    }
-
-    return ret;
-  }
-
-  /*
-   * @param with_credentials: user should not see this
-   *
-   * reconstruct to url format,
-   * s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name],
-   * which turi uses everywhere.
-   */
-  std::string string_from_s3url(bool with_credentials = true) const {
-    std::string ret("s3://");
-    ret.reserve(128);
-    const size_t prot_len = ret.size();
-
-    if (with_credentials && !access_key_id.empty()) {
-      ASSERT_TRUE(!secret_key.empty());
-      ret.append(access_key_id);
-      ret.append(1, ':');
-      ret.append(secret_key);
-      ret.append(1, ':');
-    }
-
-    // this is embeded form
-    // something like: s3://s3.amazonaws.com/bucket/object/name
-    if (!endpoint.empty()) {
-      ret.append(1, ':');
-      ret.append(endpoint);
-      ret.append(1, '/');
-    }
-
-    ASSERT_TRUE(!bucket.empty());
-    ret.append(bucket);
-
-    if (!object_name.empty()) {
+      // s3://object_key is a valid case
       if (ret.size() > prot_len) ret.append(1, '/');
       ret.append(object_name);
     }
@@ -131,7 +91,8 @@ struct s3url {
   }
 
   friend std::ostream& operator<<(std::ostream& os, const s3url& url) {
-    if (url.sdk_endpoint) os << "endpoint used by sdk: " << *url.sdk_endpoint << "; ";
+    if (url.sdk_endpoint)
+      os << "endpoint used by sdk: " << *url.sdk_endpoint << "; ";
     if (url.sdk_region) os << "region used by sdk: " << *url.sdk_region << "; ";
     if (url.sdk_proxy) os << "proxy used by sdk: " << *url.sdk_proxy << "; ";
     return os << url.string_from_s3url(false);
@@ -145,17 +106,8 @@ struct s3url {
  * initialize the sdk with TRUI constomized environment variable
  *
  * will set the endpoint/region that used to configure the client
- */
-Aws::S3::S3Client init_aws_sdk_with_turi_env(s3url& parsed_url);
-
-
-/**
- * \ingroup fileio
- * \internal
  *
- * initialize the sdk with TRUI constomized environment variable
- *
- * will set the endpoint/region that used to configure the client
+ * this call will modify optional sdk_* members
  */
 Aws::S3::S3Client init_aws_sdk_with_turi_env(s3url& parsed_url);
 
@@ -297,7 +249,7 @@ std::string sanitize_s3_url(const std::string& url);
  *
  * Returns true on success, false on failure.
  */
-bool parse_s3url(std::string url, s3url& ret, std::string& err_msg);
+bool parse_s3url(const std::string& url, s3url& ret, std::string& err_msg);
 
 /**
  * \ingroup fileio

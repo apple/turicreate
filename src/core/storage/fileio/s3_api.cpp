@@ -180,7 +180,7 @@ const std::vector<std::string> S3Operation::_enum_to_str = {
  *
  * Returns true on success, false on failure.
  */
-bool parse_s3url(std::string s3_url, s3url& ret, std::string& err_msg) {
+bool parse_s3url(const std::string& s3_url, s3url& ret, std::string& err_msg) {
   // must begin with s3://
   auto url = s3_url;
   if (fileio::get_protocol(url) != "s3") {
@@ -707,14 +707,6 @@ std::pair<file_status, list_objects_response> is_directory(std::string url,
   // remove credentials
   url = parsed_url.string_from_s3url();
   logstream(LOG_DEBUG) << "compare on url: " << url << std::endl;
-  if (url.length() > 5 && url.back() == '/') url.pop_back();
-
-  /* if there are no “/”‘s it is just a top level bucket
-   * list_objects_impl will remove the ending ‘/’
-   * e.g., dir/ -> dir
-   * in turicreate convention, dir should not have ‘/’,
-   * refer to dir_archive::init_for_read
-   */
   if (url.length() > 5 && url.back() == '/') url.pop_back();
 
   list_objects_response response = list_objects(url, proxy);

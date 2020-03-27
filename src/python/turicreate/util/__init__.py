@@ -93,7 +93,13 @@ def _try_inject_s3_credentials(url):
 
     # S3 url does not contain secret key/id pair, query the environment variables
     (k, v) = _get_aws_credentials()
-    return "s3://" + k + ":" + v + ":" + path
+
+    # below is the form that turi customized, used in C++ impl.
+    # s3://[access_key_id]:[secret_key]:[endpoint/]:[bucket]/[object_name]
+    if path:
+        return "s3://" + k + ":" + v + ":" + path
+
+    raise ValueError("bucket not set for %s." % url)
 
 
 def _make_internal_url(url):
