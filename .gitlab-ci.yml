@@ -336,11 +336,11 @@ test_python_linux_python27:
   variables:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
-    TC_ENABLE_S3_TESTS: 1
   dependencies:
     - build_wheel_linux_python27
   script:
     - apk add bash
+    - export TC_ENABLE_S3_TESTS
     - bash -e scripts/test_wheel.sh --docker-python2.7
   artifacts:
     when: always
@@ -379,12 +379,12 @@ test_python_linux_python36:
   variables:
     DOCKER_HOST: tcp://docker:2375/
     DOCKER_DRIVER: overlay2
-    TC_ENABLE_S3_TESTS: 1
   dependencies:
     - build_wheel_linux_python36
   script:
     - apk add bash
     # TODO get python 3.6 working on a test image
+    - export TC_ENABLE_S3_TESTS
     - bash -e scripts/test_wheel.sh --docker-python3.6
   artifacts:
     when: always
@@ -419,12 +419,12 @@ test_python_mac_python27_10_13:
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
-      - $TC_ENABLE_S3_TESTS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
+    - export TC_ENABLE_S3_TESTS
     - bash scripts/test_wheel.sh
   artifacts:
     when: always
@@ -474,12 +474,12 @@ test_python_mac_python36_10_14:
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
-      - $TC_ENABLE_S3_TESTS == "1"
   stage: test
   dependencies:
     - build_wheel_mac_10_15_python36
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
+    - export TC_ENABLE_S3_TESTS
     - bash -e scripts/test_wheel.sh
   artifacts:
     when: always
