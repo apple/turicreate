@@ -65,12 +65,14 @@ if [[ -n "${USE_DOCKER}" ]]; then
       --mount type=bind,source="$WORKSPACE",target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
       "${TC_BUILD_IMAGE_1404}" \
+      -e TC_ENABLE_S3_TESTS=${TC_ENABLE_S3_TESTS:-0} \
       /build/scripts/test_wheel.sh
   elif [[ "${DOCKER_PYTHON}" == "3.6" ]] || [[ "${DOCKER_PYTHON}" == "3.7" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source="$WORKSPACE",target=/build,consistency=delegated \
       -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
       "${TC_BUILD_IMAGE_1804}" \
+      -e TC_ENABLE_S3_TESTS=${TC_ENABLE_S3_TESTS:-0} \
       /build/scripts/test_wheel.sh
   else
     echo "Invalid docker python version detected: ${DOCKER_PYTHON}"

@@ -23,7 +23,7 @@ remote_sframe_folders = ["small_sframe_dc", "medium_sframe_ac", "big_sframe_od"]
 
 
 @pytest.mark.skipif(
-    os.environ.get("TC_ENABLE_S3_TESTS") is None,
+    os.environ.get("TC_ENABLE_S3_TESTS", "0") == "1",
     reason="slow IO test; enabled when needed",
 )
 class TestSFrameS3(object):
