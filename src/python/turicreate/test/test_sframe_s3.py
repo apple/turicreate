@@ -47,7 +47,7 @@ class TestSFrameS3(object):
             # force clean in case same tempdir is reused without cleaning
             try:
                 shutil.rmtree(tmp_folder)
-            except FileNotFoundError:
+            except OSError:
                 pass
 
             os.mkdir(tmp_folder)
@@ -76,7 +76,7 @@ class TestSFrameS3(object):
     def teardown_class(self):
         try:
             shutil.rmtree(self.my_tempdir)
-        except FileNotFoundError:
+        except OSError:
             pass
 
     def test_s3_csv(self):
