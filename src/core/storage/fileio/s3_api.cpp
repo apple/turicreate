@@ -478,8 +478,22 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
 
         if (error == Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
           n_retry++;
-          std::this_thread::sleep_for(std::chrono::milliseconds(backoff));
-          backoff *= 2;
+
+          if (n_retry == 3) {
+            // amend the error msg on the last retry failure
+            std::stringstream ss;
+            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
+                                  clientConfiguration, outcome)
+                << std::endl;
+            ret.error = ss.str();
+            logstream(LOG_DEBUG)
+                << "list_objects_impl failed:" << ret.error << std::endl;
+          } else {
+            // continue retry
+            std::this_thread::sleep_for(std::chrono::milliseconds(backoff));
+            backoff *= 2;
+          }
+
         } else {
           std::stringstream ss;
           reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
@@ -507,6 +521,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
     objurl.object_name = object;
     object = objurl.string_from_s3url();
   }
+
   return ret;
 }
 
