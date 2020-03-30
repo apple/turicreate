@@ -15,6 +15,7 @@ import os
 import shutil
 import pytest
 import boto3
+import warnings
 
 # size from small to big: 76K, 21MB, 77MB.
 # 64MB is the cache block size. The big sframe with 77MB is used to
@@ -47,8 +48,11 @@ class TestSFrameS3(object):
             # force clean in case same tempdir is reused without cleaning
             try:
                 shutil.rmtree(tmp_folder)
-            except OSError:
-                pass
+            except Exception as e:
+                warnings.warn(
+                    "Error raised while cleaning up %s: %s" % (tmp_folder, str(e))
+                )
+                raise e
 
             os.mkdir(tmp_folder)
 
@@ -77,8 +81,6 @@ class TestSFrameS3(object):
         try:
             shutil.rmtree(self.my_tempdir)
         except Exception as e:
-            import warnings
-
             warnings.warn(
                 "Error raised while cleaning up %s: %s" % (tmp_folder, str(e))
             )
