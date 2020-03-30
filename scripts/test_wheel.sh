@@ -59,20 +59,32 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # (this should ideally be a no-op if the image exists and is current)
   "$WORKSPACE"/scripts/create_docker_images.sh
 
+  # define env-files to forward env vars to inner docker session
+  envlist="${WORKSPACE}/${0%.sh}-env.list"
+  echo "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" >> "${envlist}"
+  echo "TC_ENABLE_S3_TESTS=${TC_ENABLE_S3_TESTS:-0}" >> "${envlist}"
+  if [[ "${TC_ENABLE_S3_TESTS:-0}" -gt 0 ]]; then
+    cat <<-EOF >> "${envlist}"
+    TC_ENABLE_S3_TESTS=${TC_ENABLE_S3_TESTS}
+    TURI_S3_ENDPOINT=${TURI_S3_ENDPOINT}
+    TURI_S3_REGION=${TURI_S3_REGION}
+    AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+    AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+    EOF
+  fi
+
   # Run the tests inside Docker
   if [[ "${DOCKER_PYTHON}" == "2.7" ]] || [[ "${DOCKER_PYTHON}" == "3.5" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source="$WORKSPACE",target=/build,consistency=delegated \
-      -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+      --env-file "${envlist}" \
       "${TC_BUILD_IMAGE_1404}" \
-      -e "TC_ENABLE_S3_TESTS=${TC_ENABLE_S3_TESTS:-0}" \
       /build/scripts/test_wheel.sh
   elif [[ "${DOCKER_PYTHON}" == "3.6" ]] || [[ "${DOCKER_PYTHON}" == "3.7" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source="$WORKSPACE",target=/build,consistency=delegated \
-      -e "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" \
+      --env-file "${envlist}" \
       "${TC_BUILD_IMAGE_1804}" \
-      -e "TC_ENABLE_S3_TESTS=${TC_ENABLE_S3_TESTS:-0}" \
       /build/scripts/test_wheel.sh
   else
     echo "Invalid docker python version detected: ${DOCKER_PYTHON}"
