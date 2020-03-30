@@ -120,3 +120,4 @@ ${PYTHON} -m pytest --cov -v --durations=100 \
   --junit-xml="$WORKSPACE"/pytest.xml
 
 date
+# EOF
