@@ -76,8 +76,12 @@ class TestSFrameS3(object):
     def teardown_class(self):
         try:
             shutil.rmtree(self.my_tempdir)
-        except OSError:
-            pass
+        except Exception as e:
+            import warnings
+
+            warnings.warn(
+                "Error raised while cleaning up %s: %s" % (tmp_folder, str(e))
+            )
 
     def test_s3_csv(self):
         fname = os.path.join(self.my_tempdir, "mushroom.csv")
