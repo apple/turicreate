@@ -1246,9 +1246,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
       while (cur_bucket != ra.end()) {
         // shuffle the indexes for the current bucket
         auto indexes = std::vector<int>(cur_bucket->size());
-        for (size_t i = 0; i < cur_bucket->size(); i++) {
-          indexes[i] = i;
-        }
+        std::iota(indexes.begin(), indexes.end(), 0);
         std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
 
         // output in random order
