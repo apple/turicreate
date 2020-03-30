@@ -64,13 +64,11 @@ if [[ -n "${USE_DOCKER}" ]]; then
   echo "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" >> "${envlist}"
   echo "TC_ENABLE_S3_TESTS=${TC_ENABLE_S3_TESTS:-0}" >> "${envlist}"
   if [[ "${TC_ENABLE_S3_TESTS:-0}" -gt 0 ]]; then
-    cat <<-EOF >> "${envlist}"
-    TC_ENABLE_S3_TESTS
-    TURI_S3_ENDPOINT
-    TURI_S3_REGION
-    AWS_SECRET_ACCESS_KEY
-    AWS_ACCESS_KEY_ID
-    EOF
+    echo TC_ENABLE_S3_TESTS  >> "${envlist}"
+    echo TURI_S3_ENDPOINT >> "${envlist}"
+    echo TURI_S3_REGION >> "${envlist}"
+    echo AWS_SECRET_ACCESS_KEY >> "${envlist}"
+    echo AWS_ACCESS_KEY_ID >> "${envlist}"
   fi
 
   # Run the tests inside Docker
@@ -120,4 +118,3 @@ ${PYTHON} -m pytest --cov -v --durations=100 \
   --junit-xml="$WORKSPACE"/pytest.xml
 
 date
-# EOF
