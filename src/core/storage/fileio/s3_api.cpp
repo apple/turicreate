@@ -15,6 +15,7 @@
 #include <boost/algorithm/string/predicate.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/regex.hpp>
 #include <boost/tokenizer.hpp>
 #include <chrono>
 #include <core/logging/assertions.hpp>
@@ -259,7 +260,7 @@ bool parse_s3url(const std::string& s3_url, s3url& ret, std::string& err_msg) {
     boost::algorithm::split(subs, endpoint, [](char c) { return c == '.'; });
     bool is_valid = std::all_of(
         std::begin(subs), std::end(subs), [](const std::string& name) {
-          return std::regex_match(name, std::regex("[[:w:]]+"));
+          return boost::regex_match(name, boost::regex("[[:w:]]+"));
         });
 
     if (!is_valid) {
