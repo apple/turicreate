@@ -104,14 +104,14 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
     auto &retrieved_file =
         get_object_outcome.GetResultWithOwnership().GetBody();
 
-#ifndef NDEBUG
     retrieved_file.seekg(0, retrieved_file.end);
     auto retrieved_size = retrieved_file.tellg();
     retrieved_file.seekg(0, retrieved_file.beg);
+    ss << ". Need " << nwant << " but only " << retrieved_size
+       << " bytes are received. file size is " << FileSize();
     if (static_cast<size_t>(retrieved_size) != nwant) {
       log_and_throw_io_failure(ss.str());
     }
-#endif
     // std::istreambuf_iterator<char>
     retrieved_file.read(input_ptr, nwant);
   } else {

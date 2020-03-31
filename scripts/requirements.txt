@@ -18,7 +18,7 @@ pyOpenSSL==19.0.0
 ndg-httpsclient==0.5.1
 pyasn1==0.4.5
 mock==3.0.5
-boto3>=1.12
+boto3==1.12.22
 
 ########## >=  #########
 

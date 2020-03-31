@@ -12,9 +12,11 @@ from turicreate.util import _assert_sframe_equal
 
 import tempfile
 import os
+import six
 import shutil
 import pytest
 import boto3
+import warnings
 
 # size from small to big: 76K, 21MB, 77MB.
 # 64MB is the cache block size. The big sframe with 77MB is used to
@@ -23,7 +25,7 @@ remote_sframe_folders = ["small_sframe_dc", "medium_sframe_ac", "big_sframe_od"]
 
 
 @pytest.mark.skipif(
-    os.environ.get("TURI_ENABLE_SF_S3") is None,
+    os.environ.get("TC_ENABLE_S3_TESTS", "0") == "0",
     reason="slow IO test; enabled when needed",
 )
 class TestSFrameS3(object):
@@ -47,8 +49,13 @@ class TestSFrameS3(object):
             # force clean in case same tempdir is reused without cleaning
             try:
                 shutil.rmtree(tmp_folder)
-            except FileNotFoundError:
+            except OSError:
                 pass
+            except Exception as e:
+                warnings.warn(
+                    "Error raised while cleaning up %s: %s" % (tmp_folder, str(e))
+                )
+                raise e
 
             os.mkdir(tmp_folder)
 
@@ -76,8 +83,10 @@ class TestSFrameS3(object):
     def teardown_class(self):
         try:
             shutil.rmtree(self.my_tempdir)
-        except FileNotFoundError:
-            pass
+        except Exception as e:
+            warnings.warn(
+                "Error raised while cleaning up %s: %s" % (self.my_tempdir, str(e))
+            )
 
     def test_s3_csv(self):
         fname = os.path.join(self.my_tempdir, "mushroom.csv")
@@ -117,5 +126,9 @@ class TestSFrameS3(object):
         sf = SFrame({"a": [1, 2, 3]})
         obj_key = os.path.join(self.s3_root_prefix, "avalon", non_exist_folder)
         s3_url = os.path.join("s3://", self.bucket, obj_key)
-        with pytest.raises(OSError):
-            sf.save(s3_url)
+        if six.PY2:
+            with pytest.raises(IOError):
+                sf.save(s3_url)
+        else:
+            with pytest.raises(OSError):
+                sf.save(s3_url)
