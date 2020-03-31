@@ -1242,7 +1242,7 @@ std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
 
       gl_sarray_range ra = gl_bucketized_sarray.range_iterator(idx_start, idx_end);
       auto cur_bucket = ra.begin();
-      unsigned int seed = std::chrono::system_clock::now().time_since_epoch().count();
+      unsigned int seed = static_cast<unsigned int>(random::pure_random_seed());
       while (cur_bucket != ra.end()) {
         // shuffle the indexes for the current bucket
         auto indexes = std::vector<int>(cur_bucket->size());
