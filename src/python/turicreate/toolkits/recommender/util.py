@@ -236,7 +236,6 @@ def compare_models(
         final recommendation list. If the input evaluation `dataset` is the
         same as the data used for training the models, set this option to False.
 
-
     verbose : bool, optional
         If true, print the progress.
 
@@ -291,6 +290,14 @@ def compare_models(
     >>> turicreate.recommender.util.compare_models(test_data2, [m1, m2, m3, m4],
     ...                                          metric='precision_recall')
     """
+    from turicreate.toolkits.recommender.util import _Recommender as BaseRecommender
+
+    if not isinstance(dataset, _SFrame):
+        raise TypeError('"dataset" must be of type SFrame.')
+    if len(dataset) == 0:
+        raise _ToolkitError("Unable to test on an empty dataset.")
+    if any(map(lambda m: not issubclass(type(m), BaseRecommender), models)):
+        raise _ToolkitError("All models must be recommender models.")
 
     num_models = len(models)
 
