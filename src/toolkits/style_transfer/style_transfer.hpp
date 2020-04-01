@@ -54,6 +54,7 @@ class EXPORT style_transfer : public ml_model_base {
                                std::map<std::string, flexible_type> opts);
 
   virtual void iterate_training();
+  virtual void synchronize_training();
   virtual void finalize_training();
 
   gl_sframe predict(variant_type data,
@@ -103,6 +104,7 @@ class EXPORT style_transfer : public ml_model_base {
                       to_variant(std::map<std::string, flexible_type>())}});
 
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::iterate_training);
+  REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::synchronize_training);
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::finalize_training);
 
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::export_to_coreml, "filename",

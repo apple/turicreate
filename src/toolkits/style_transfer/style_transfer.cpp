@@ -836,6 +836,9 @@ void style_transfer::iterate_training() {
   }
 }
 
+// This may become necessary once we begin pipelining batches to GPU.
+void style_transfer::synchronize_training() {}
+
 void style_transfer::finalize_training() {
   ASSERT_TRUE(model_trainer_ != nullptr);
   ASSERT_TRUE(training_futures_ != nullptr);
