@@ -698,11 +698,21 @@ gl_sarray style_transfer::convert_types_to_sarray(const variant_type& data) {
 
 void style_transfer::init_training(gl_sarray style, gl_sarray content,
                                    std::map<std::string, flexible_type> opts) {
-  auto resnet_mlmodel_path_iter = opts.find("resnet_mlmodel_path");
-  if (resnet_mlmodel_path_iter == opts.end()) {
-    log_and_throw("Expected option \"resnet_mlmodel_path\" not found.");
+  auto pretrained_weights_iter = opts.find("pretrained_weights");
+  bool pretrained_weights = false;
+  if (pretrained_weights_iter != opts.end()) {
+    pretrained_weights = pretrained_weights_iter->second;
   }
-  const std::string resnet_mlmodel_path = resnet_mlmodel_path_iter->second;
+  opts.erase(pretrained_weights_iter);
+
+  std::string resnet_mlmodel_path;
+  auto resnet_mlmodel_path_iter = opts.find("resnet_mlmodel_path");
+  if (pretrained_weights) {
+    if (resnet_mlmodel_path_iter == opts.end()) {
+      log_and_throw("Expected option \"resnet_mlmodel_path\" not found.");
+    }
+    resnet_mlmodel_path = resnet_mlmodel_path_iter->second.to<flex_string>();
+  }
   opts.erase(resnet_mlmodel_path_iter);
 
   auto vgg_mlmodel_path_iter = opts.find("vgg_mlmodel_path");
@@ -717,13 +727,6 @@ void style_transfer::init_training(gl_sarray style, gl_sarray content,
     log_and_throw("Expected option \"num_styles\" not found.");
   }
 
-  auto pretrained_weights_iter = opts.find("pretrained_weights");
-  bool pretrained_weights = false;
-  if (pretrained_weights_iter != opts.end()) {
-    pretrained_weights = pretrained_weights_iter->second;
-  }
-  opts.erase(pretrained_weights_iter);
-  
   init_options(opts);
 
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
