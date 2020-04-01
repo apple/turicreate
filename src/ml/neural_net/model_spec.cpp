@@ -506,6 +506,8 @@ model_spec::model_spec(const std::string& mlmodel_path)
   impl_->Swap(mlmodel.mutable_neuralnetwork());
 }
 
+model_spec::model_spec(model_spec&&) = default;
+model_spec& model_spec::operator=(model_spec&&) = default;
 model_spec::~model_spec() = default;
 
 std::unique_ptr<NeuralNetwork> model_spec::move_coreml_spec() && {
