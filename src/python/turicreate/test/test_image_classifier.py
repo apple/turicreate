@@ -24,7 +24,6 @@ from . import util as test_util
 
 import coremltools
 import numpy as np
-import pytest
 import turicreate as tc
 
 
@@ -207,11 +206,6 @@ class ImageClassifierTest(unittest.TestCase):
             predictions = model.classify("more junk")
 
     def test_export_coreml(self):
-        if self.model.model == "VisionFeaturePrint_Scene":
-            pytest.xfail(
-                "Expected failure until "
-                + "https://github.com/apple/turicreate/issues/2744 is fixed"
-            )
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
@@ -228,7 +222,7 @@ class ImageClassifierTest(unittest.TestCase):
         )
         expected_result = (
             "Image classifier (%s) created by Turi Create (version %s)"
-            % (self.model.model, tc.__version__)
+            % (self.model.model.lower(), tc.__version__)
         )
         self.assertEquals(expected_result, coreml_model.short_description)
 
