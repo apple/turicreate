@@ -4300,7 +4300,7 @@ class SFrame(object):
             if not isinstance(column, str):
                 raise TypeError("Column name must be a string")
             if column not in my_column_names:
-                raise KeyError("Column " + column + " does not exist in SFrame")
+                raise KeyError("Column \"" + column + "\" does not exist in SFrame")
             if self[column].dtype == dict:
                 raise TypeError("Cannot group on a dictionary column.")
             key_columns_array.append(column)
