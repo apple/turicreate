@@ -1711,6 +1711,13 @@ U1103,135104,0"""
         )
         assert x is not None
 
+        # Passing in a non recsys model should produce a ToolkitError error.
+        non_recsys_model = tc.linear_regression.create(tc.SFrame({'x': [1,2,3], 'y': [2,4,6]}), 'y')
+        with self.assertRaises(ToolkitError):
+            x = compare_models(
+                self.test, [model1, non_recsys_model], skip_set=self.train, make_plot=False
+            )
+
     def _run_recommend_consistency_test(self, is_regression):
 
         if is_regression:
