@@ -815,6 +815,9 @@ void style_transfer::iterate_training() {
   ASSERT_TRUE(model_trainer_ != nullptr);
   ASSERT_TRUE(training_futures_ != nullptr);
 
+  // If we have a local checkpoint, it will no longer be valid.
+  checkpoint_.reset();
+
   std::future<std::unique_ptr<TrainingProgress>> training_batch =
       training_futures_->Next();
   std::unique_ptr<TrainingProgress> progress = training_batch.get();
