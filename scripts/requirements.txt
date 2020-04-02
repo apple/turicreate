@@ -24,7 +24,6 @@ boto3==1.12.22
 
 argparse>=1.2.1
 pytest>=4.6.3
-hypothesis>=4.50,<5.0
 wheel>=0.29.0
 six>=1.12.0
 requests>=2.9.1
