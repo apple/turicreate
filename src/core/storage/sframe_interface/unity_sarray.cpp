@@ -1764,6 +1764,19 @@ std::shared_ptr<unity_sarray_base> unity_sarray::tail(size_t nrows) {
   return copy_range(start, 1, end);
 }
 
+std::shared_ptr<unity_sarray_base> unity_sarray::make_uniform_int_array(size_t size, size_t max_int) {
+  uint64_t seed = random::pure_random_seed();
+
+  auto seq = std::static_pointer_cast<unity_sarray>(
+    unity_sarray::create_sequential_sarray(size, 0, false));
+
+  auto func = [max_int, seed](const flexible_type& val)->flexible_type {
+    uint64_t d = hash64_combine(hash64(val.get<flex_int>()), seed);
+    return d % max_int;
+  };
+
+  return seq->transform_lambda(func, flex_type_enum::INTEGER, false, 0);
+}
 
 std::shared_ptr<unity_sarray_base> unity_sarray::make_uniform_boolean_array(size_t size,
                                                                             float percent,

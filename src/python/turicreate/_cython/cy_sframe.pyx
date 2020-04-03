@@ -257,6 +257,12 @@ cdef class UnitySFrameProxy:
         second = create_proxy_wrapper_from_existing_proxy(proxy_second)
         return (first, second)
 
+    cpdef shuffle(self):
+        cdef unity_sframe_base_ptr proxy
+        with nogil:
+            proxy = (self.thisptr.shuffle())
+        return create_proxy_wrapper_from_existing_proxy(proxy)
+
     cpdef groupby_aggregate(self, _key_columns, _group_column, _group_output_columns, _column_ops):
         cdef vector[string] key_columns          = to_vector_of_strings(_key_columns)
         cdef vector[vector[string]] group_column = to_nested_vectors_of_strings(_group_column)

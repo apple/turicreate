@@ -2857,6 +2857,33 @@ class SFrame(object):
             with cython_context():
                 return SFrame(_proxy=self.__proxy__.sample(fraction, seed, exact))
 
+    def shuffle(self):
+        """
+        Randomly shuffles the rows of the SFrame.
+
+        Returns
+        -------
+        out : [SFrame]
+            An SFrame with all the same rows but with the rows in a random order.
+
+        Examples
+        --------
+        >>> sf = turicreate.SFrame({"nums": [1, 2, 3, 4],
+                                    "letters": ["a", "b", "c", "d"]})
+        >>> shuffled_sf = sf.shuffle()
+        >>> print(shuffled_sf)
+        +---------+------+
+        | letters | nums |
+        +---------+------+
+        |    d    |  4   |
+        |    c    |  3   |
+        |    a    |  1   |
+        |    b    |  2   |
+        +---------+------+
+        [4 rows x 2 columns]
+        """
+        return SFrame(_proxy=self.__proxy__.shuffle())
+
     def random_split(self, fraction, seed=None, exact=False):
         """
         Randomly split the rows of an SFrame into two SFrames. The first SFrame

@@ -166,7 +166,6 @@ class operator_impl<planner_node_type::LAMBDA_TRANSFORM_NODE> : public query_ope
   flex_type_enum m_output_type;
   std::vector<std::string> m_column_names;
 
- private:
   /**
    * Helper function to convert flexible_type value to expected type.
    */
@@ -205,4 +204,4 @@ typedef operator_impl<planner_node_type::LAMBDA_TRANSFORM_NODE> op_lambda_transf
 } // query_eval
 } // turicreate
 
-#endif // TURI_SFRAME_QUERY_MANAGER_TRANSFORM_HPP
+#endif // TURI_SFRAME_QUERY_MANAGER_LAMBDA_TRANSFORM_HPP

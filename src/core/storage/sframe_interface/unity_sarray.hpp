@@ -788,6 +788,13 @@ class unity_sarray: public unity_sarray_base {
    static std::shared_ptr<unity_sarray_base> make_exact_uniform_boolean_array(size_t size,
                                                                               size_t num_trues,
                                                                               uint64_t random_seed);
+
+   /**
+    * Construct a int array with uniform distribution between 0 and \ref max_int.
+    *
+    */
+   static std::shared_ptr<unity_sarray_base> make_uniform_int_array(size_t size, size_t max_int);
+
    std::shared_ptr<unity_sarray_base> builtin_rolling_apply(
        const std::string &fn_name,
        ssize_t before,
