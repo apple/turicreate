@@ -2,6 +2,7 @@ import turicreate as tc
 import unittest
 import tempfile
 import shutil
+import errno
 
 
 class SparseNNTest(unittest.TestCase):
@@ -15,7 +16,7 @@ class SparseNNTest(unittest.TestCase):
         m.train(X, "id")
 
         for i, row in enumerate(Y):
-            res = m.query(Y[i], 1)
+            res = m.query(row, 1)
             self.assertEqual(res, {i: 1.0})
 
         # Save and load
@@ -27,4 +28,11 @@ class SparseNNTest(unittest.TestCase):
             res = m2.query(Y[i], 1)
             self.assertEqual(res, {i: 1.0})
 
-        shutil.rmtree(model_file)
+        # in case file not exist
+        try:
+            shutil.rmtree(model_file)
+        except (OSError, IOError) as e:
+            if e.errno == errno.EEXIST:
+                pass
+            else:
+                raise e
