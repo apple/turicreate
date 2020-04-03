@@ -114,11 +114,6 @@ class EXPORT style_transfer : public ml_model_base {
           {"additional_user_defined", to_variant(std::map<std::string, flexible_type>())},
           {"options", to_variant(std::map<std::string, flexible_type>())}});
 
-
-  register_defaults("export_to_coreml",
-                    {{"options",
-                      to_variant(std::map<std::string, flexible_type>())}});
-
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::predict, "data", "options");
 
   REGISTER_CLASS_MEMBER_FUNCTION(style_transfer::import_from_custom_model,
