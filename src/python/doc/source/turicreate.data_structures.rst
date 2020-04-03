@@ -40,5 +40,8 @@ Utilities
   SFrameBuilder
   Sketch
   aggregate
+  load_sarray
   load_sframe
   load_sgraph
+  load_audio
+  load_images
