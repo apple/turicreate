@@ -384,7 +384,6 @@ test_python_linux_python36:
   script:
     - apk add bash
     # TODO get python 3.6 working on a test image
-    - export TC_ENABLE_S3_TESTS=1
     - bash -e scripts/test_wheel.sh --docker-python3.6
   artifacts:
     when: always
@@ -424,7 +423,6 @@ test_python_mac_python27_10_13:
     - build_wheel_mac_10_15_python27
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
-    - export TC_ENABLE_S3_TESTS=1
     - bash scripts/test_wheel.sh
   artifacts:
     when: always
