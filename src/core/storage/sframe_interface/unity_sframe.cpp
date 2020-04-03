@@ -1242,12 +1242,14 @@ std::shared_ptr<unity_sframe_base> unity_sframe::shuffle() {
 
       gl_sarray_range ra = gl_bucketized_sarray.range_iterator(idx_start, idx_end);
       auto cur_bucket = ra.begin();
+
       unsigned int seed = static_cast<unsigned int>(random::pure_random_seed());
+      auto rand_engine = std::default_random_engine(seed);
       while (cur_bucket != ra.end()) {
         // shuffle the indexes for the current bucket
         auto indexes = std::vector<int>(cur_bucket->size());
         std::iota(indexes.begin(), indexes.end(), 0);
-        std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
+        std::shuffle(indexes.begin(), indexes.end(), rand_engine);
 
         // output in random order
         for (size_t i = 0; i < cur_bucket->size(); i++) {
