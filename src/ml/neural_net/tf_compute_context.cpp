@@ -5,6 +5,7 @@
 */
 #include <ml/neural_net/tf_compute_context.hpp>
 
+#include <cstdint>
 #include <iostream>
 #include <random>
 #include <vector>
@@ -219,8 +220,10 @@ tf_image_augmenter::prepare_augmented_images(
   float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
+    // Use std::seed_seq to hash the iteration index into our random seed. Note
+    // that the result must be unsigned, since numpy requires nonnegative seeds.
     std::seed_seq seq{random_seed_, ++iteration_id_};
-    std::array<int, 1> random_seed;
+    std::array<std::uint32_t, 1> random_seed;
     seq.generate(random_seed.begin(), random_seed.end());
 
     // Get augmented images and annotations from tensorflow
