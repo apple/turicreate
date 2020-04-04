@@ -36,17 +36,24 @@ _DEFAULT_AUG_PARAMS = {
 }
 
 
+def interpolate(alpha_tf, x, y):
+    x = tf.constant(x, dtype=tf.float32)
+    y = tf.constant(y, dtype=tf.float32)
+    range = tf.math.subtract(y, x)
+    delta = tf.math.multiply(alpha_tf, range)
+    return tf.math.add(x, delta)
+
+
 def hue_augmenter(
-    image, annotation, max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"]
+    image,
+    annotation,
+    random_alpha_tf,
+    max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"]
 ):
 
-    # Sample a random rotation around the color wheel.
-    hue_adjust = 0.0
-    if (max_hue_adjust is not None) and (max_hue_adjust > 0.0):
-        hue_adjust += np.pi * np.random.uniform(-max_hue_adjust, max_hue_adjust)
-
-    # Apply the rotation to the hue
-    image = tf.image.random_hue(image, max_delta=max_hue_adjust)
+    # Apply the random rotation around the color wheel.
+    hue_delta = interpolate(random_alpha_tf[0], -max_hue_adjust, max_hue_adjust)
+    image = tf.image.adjust_hue(image, hue_delta)
     image = tf.clip_by_value(image, 0, 1)
 
     # No geometry changes, so just copy the annotations.
@@ -56,28 +63,27 @@ def hue_augmenter(
 def color_augmenter(
     image,
     annotation,
+    random_alpha_tf,
     max_brightness=_DEFAULT_AUG_PARAMS["max_brightness"],
     max_contrast=_DEFAULT_AUG_PARAMS["max_contrast"],
     max_saturation=_DEFAULT_AUG_PARAMS["max_saturation"],
 ):
 
-    # Sample a random adjustment to brightness.
-    if max_brightness is not None and max_brightness > 0:
-        image = tf.image.random_brightness(image, max_delta=max_brightness)
+    # Apply the random adjustment to brightness.
+    brightness_delta = interpolate(
+        random_alpha_tf[0], -max_brightness, max_brightness
+    )
+    image = tf.image.adjust_brightness(image, brightness_delta)
 
-    # Sample a random adjustment to contrast.
-    if max_saturation is not None and max_saturation > 1.0:
-        log_sat = np.log(max_saturation)
-        image = tf.image.random_saturation(
-            image, lower=np.exp(-log_sat), upper=np.exp(log_sat)
-        )
+    # Apply the random adjustment to contrast.
+    log_sat = np.log(max_saturation)
+    saturation_delta = interpolate(random_alpha_tf[1], -log_sat, log_sat)
+    image = tf.image.adjust_saturation(image, saturation_delta)
 
-    # Sample a random adjustment to saturation.
-    if max_contrast is not None and max_contrast > 1.0:
-        log_con = np.log(max_contrast)
-        image = tf.image.random_contrast(
-            image, lower=np.exp(-log_con), upper=np.exp(log_con)
-        )
+    # Apply random adjustment to saturation.
+    log_con = np.log(max_contrast)
+    contrast_delta = interpolate(random_alpha_tf[2], -log_con, log_con)
+    image = tf.image.adjust_contrast(image, contrast_delta)
 
     image = tf.clip_by_value(image, 0, 1)
 
@@ -152,10 +158,13 @@ def resize_augmenter(image, annotation, output_shape):
 
 
 def horizontal_flip_augmenter(
-    image, annotation, skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"]
+    image,
+    annotation,
+    random,
+    skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"]
 ):
 
-    if np.random.uniform(0.0, 1.0) < skip_probability:
+    if random.uniform(0.0, 1.0) < skip_probability:
         return image, annotation
 
     image_height, image_width, _ = image.shape
@@ -173,6 +182,7 @@ def horizontal_flip_augmenter(
 def padding_augmenter(
     image,
     annotation,
+    random,
     skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_pad"],
     min_aspect_ratio=_DEFAULT_AUG_PARAMS["min_aspect_ratio"],
     max_aspect_ratio=_DEFAULT_AUG_PARAMS["max_aspect_ratio"],
@@ -180,7 +190,7 @@ def padding_augmenter(
     max_area_fraction=_DEFAULT_AUG_PARAMS["max_area_fraction_pad"],
     max_attempts=_DEFAULT_AUG_PARAMS["max_attempts"],
 ):
-    if np.random.uniform(0.0, 1.0) < skip_probability:
+    if random.uniform(0.0, 1.0) < skip_probability:
         return np.array(image), annotation
 
     image_height, image_width, _ = image.shape
@@ -189,7 +199,7 @@ def padding_augmenter(
     # compatible heights, or until reaching the upper limit on attempts.
     for i in range(max_attempts):
         # Randomly sample an aspect ratio.
-        aspect_ratio = np.random.uniform(min_aspect_ratio, max_aspect_ratio)
+        aspect_ratio = random.uniform(min_aspect_ratio, max_aspect_ratio)
 
         # The padded height must be at least as large as the original height.
         # h' >= h
@@ -222,12 +232,12 @@ def padding_augmenter(
         return np.array(image), annotation
 
     # Sample a final size, given the sampled aspect ratio and range of heights.
-    padded_height = np.random.uniform(min_height, max_height)
+    padded_height = random.uniform(min_height, max_height)
     padded_width = padded_height * aspect_ratio
 
     # Sample the offset of the source image inside the padded image.
-    x_offset = np.random.uniform(0.0, (padded_width - image_width))
-    y_offset = np.random.uniform(0.0, (padded_height - image_height))
+    x_offset = random.uniform(0.0, (padded_width - image_width))
+    y_offset = random.uniform(0.0, (padded_height - image_height))
 
     # Compute padding needed on the image
     after_padding_width = padded_width - image_width - x_offset
@@ -304,6 +314,7 @@ def padding_augmenter(
 def crop_augmenter(
     image,
     annotation,
+    random,
     skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_crop"],
     min_aspect_ratio=_DEFAULT_AUG_PARAMS["min_aspect_ratio"],
     max_aspect_ratio=_DEFAULT_AUG_PARAMS["max_aspect_ratio"],
@@ -314,7 +325,7 @@ def crop_augmenter(
     min_eject_coverage=_DEFAULT_AUG_PARAMS["min_eject_coverage"],
 ):
 
-    if np.random.uniform(0.0, 1.0) < skip_probability:
+    if random.uniform(0.0, 1.0) < skip_probability:
         return np.array(image), annotation
 
     image_height, image_width, _ = image.shape
@@ -323,7 +334,7 @@ def crop_augmenter(
     # list of cropped annotations), or reaching the limit on attempts.
     for i in range(max_attempts):
         # Randomly sample an aspect ratio.
-        aspect_ratio = np.random.uniform(min_aspect_ratio, max_aspect_ratio)
+        aspect_ratio = random.uniform(min_aspect_ratio, max_aspect_ratio)
 
         # Next we'll sample a height (which combined with the now known aspect
         # ratio, determines the size and area). But first we must compute the range
@@ -359,11 +370,11 @@ def crop_augmenter(
             continue
 
         # Sample a position for the crop, constrained to lie within the image.
-        cropped_height = np.random.uniform(min_height, max_height)
+        cropped_height = random.uniform(min_height, max_height)
         cropped_width = cropped_height * aspect_ratio
 
-        x_offset = np.random.uniform(0.0, (image_width - cropped_width))
-        y_offset = np.random.uniform(0.0, (image_height - cropped_height))
+        x_offset = random.uniform(0.0, (image_width - cropped_width))
+        y_offset = random.uniform(0.0, (image_height - cropped_height))
 
         crop_bounds_x1 = x_offset
         crop_bounds_y1 = y_offset
@@ -490,20 +501,29 @@ def crop_augmenter(
     return np.array(image), annotation
 
 
-def complete_augmenter(img_tf, ann_tf, output_height, output_width):
+def numpy_augmenter(img, ann, seed):
+    random = np.random.RandomState(seed=seed)
+    img, ann = crop_augmenter(img, ann, random)
+    img, ann = padding_augmenter(img, ann, random)
+    img, ann = horizontal_flip_augmenter(img, ann, random)
+    return img, ann
+
+
+def complete_augmenter(
+    img_tf,
+    ann_tf,
+    seed_tf,
+    alpha_tf,
+    output_height,
+    output_width
+):
     img_tf, ann_tf = tf.numpy_function(
-        func=crop_augmenter, inp=[img_tf, ann_tf], Tout=[tf.float32, tf.float32]
+        func=numpy_augmenter,
+        inp=[img_tf, ann_tf, seed_tf],
+        Tout=[tf.float32, tf.float32]
     )
-    img_tf, ann_tf = tf.numpy_function(
-        func=padding_augmenter, inp=[img_tf, ann_tf], Tout=[tf.float32, tf.float32]
-    )
-    img_tf, ann_tf = tf.numpy_function(
-        func=horizontal_flip_augmenter,
-        inp=[img_tf, ann_tf],
-        Tout=[tf.float32, tf.float32],
-    )
-    img_tf, ann_tf = color_augmenter(img_tf, ann_tf)
-    img_tf, ann_tf = hue_augmenter(img_tf, ann_tf)
+    img_tf, ann_tf = color_augmenter(img_tf, ann_tf, alpha_tf[0:3])
+    img_tf, ann_tf = hue_augmenter(img_tf, ann_tf, alpha_tf[3:4])
     img_tf, ann_tf = resize_augmenter(img_tf, ann_tf, (output_height, output_width))
     return img_tf, ann_tf
 
@@ -521,6 +541,8 @@ class DataAugmenter(object):
             self.ann_tf = [
                 tf.placeholder(tf.float32, [None, 6]) for x in range(0, self.batch_size)
             ]
+            self.alpha_tf = tf.placeholder(tf.float32, [self.batch_size, 4])
+            self.random_seed_tf = tf.placeholder(tf.uint32)
             self.resize_op_batch = []
             for i in range(0, self.batch_size):
                 if resize_only:
@@ -530,13 +552,20 @@ class DataAugmenter(object):
                     self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
                 else:
                     aug_img_tf, aug_ann_tf = complete_augmenter(
-                        self.img_tf[i], self.ann_tf[i], output_height, output_width
+                        self.img_tf[i],
+                        self.ann_tf[i],
+                        self.random_seed_tf[i],
+                        self.alpha_tf[i],
+                        output_height,
+                        output_width
                     )
                     self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
 
-    def get_augmented_data(self, images, annotations):
+    def get_augmented_data(self, images, annotations, random_seed):
         with tf.Session(graph=self.graph) as session:
             feed_dict = dict()
+
+            # Populate feed_dict with images and annotations
             graph_op = self.resize_op_batch[0 : len(images)]
             for i in range(0, len(images)):
                 feed_dict[self.img_tf[i]] = _utils.convert_shared_float_array_to_numpy(
@@ -548,6 +577,16 @@ class DataAugmenter(object):
                     feed_dict[
                         self.ann_tf[i]
                     ] = _utils.convert_shared_float_array_to_numpy(annotations[i])
+
+            # Populate feed_dict with random seed and random alpha values, used
+            # to sample image perturbations. We don't use TensorFlow's built-in
+            # support for random number generation, since we want to effectively
+            # reset the seed for each session (batch).
+            random = np.random.RandomState(seed=random_seed)
+            feed_dict[self.alpha_tf] = random.rand(*self.alpha_tf.shape)
+            feed_dict[self.random_seed_tf] = random.random_integers(
+                0, 2**32 - 1, size=self.batch_size
+            )
             aug_output = session.run(graph_op, feed_dict=feed_dict)
             processed_images = []
             processed_annotations = []

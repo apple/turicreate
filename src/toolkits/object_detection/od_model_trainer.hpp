@@ -128,6 +128,9 @@ struct Config {
 
   /** Determines the number of feature channels in the final feature map. */
   int num_classes = -1;
+
+  /** Controls model initialization, data sampling, data augmentation. */
+  int random_seed = 0;
 };
 
 /**

@@ -130,8 +130,8 @@ class DarknetYOLOCheckpoint : public Checkpoint {
    * Initializes a new model, combining the pre-trained warm-start weights with
    * random initialization for the final layers.
    */
-  DarknetYOLOCheckpoint(Config config, const std::string& pretrained_model_path,
-                        int random_seed);
+  DarknetYOLOCheckpoint(Config config,
+                        const std::string& pretrained_model_path);
 
   /** Loads weights saved from a DarknetYOLOModelTrainer. */
   DarknetYOLOCheckpoint(Config config, neural_net::float_array_map weights);

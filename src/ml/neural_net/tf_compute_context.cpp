@@ -6,6 +6,7 @@
 #include <ml/neural_net/tf_compute_context.hpp>
 
 #include <iostream>
+#include <random>
 #include <vector>
 
 #include <core/util/try_finally.hpp>
@@ -202,10 +203,15 @@ class tf_image_augmenter : public float_array_image_augmenter {
       labeled_float_image data_to_augment) override;
  private:
   pybind11::object augmenter_;
-
+  int random_seed_ = 0;
+  int iteration_id_ = 0;
 };
 
-tf_image_augmenter::tf_image_augmenter(const options& opts, pybind11::object augmenter) : float_array_image_augmenter(opts), augmenter_(augmenter) {}
+tf_image_augmenter::tf_image_augmenter(const options& opts,
+                                       pybind11::object augmenter)
+    : float_array_image_augmenter(opts),
+      augmenter_(augmenter),
+      random_seed_(opts.random_seed) {}
 
 float_array_image_augmenter::float_array_result
 tf_image_augmenter::prepare_augmented_images(
@@ -213,10 +219,13 @@ tf_image_augmenter::prepare_augmented_images(
   float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
+    std::seed_seq seq{random_seed_, ++iteration_id_};
+    std::array<int, 1> random_seed;
+    seq.generate(random_seed.begin(), random_seed.end());
 
     // Get augmented images and annotations from tensorflow
     pybind11::object augmented_data = augmenter_.attr("get_augmented_data")(
-        data_to_augment.images, data_to_augment.annotations);
+        data_to_augment.images, data_to_augment.annotations, random_seed[0]);
     std::pair<pybind11::buffer, std::vector<pybind11::buffer>> aug_data =
         augmented_data
             .cast<std::pair<pybind11::buffer, std::vector<pybind11::buffer>>>();
