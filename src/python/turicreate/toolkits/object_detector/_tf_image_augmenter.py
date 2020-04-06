@@ -520,7 +520,7 @@ def complete_augmenter(
     img_tf, ann_tf = tf.numpy_function(
         func=numpy_augmenter,
         inp=[img_tf, ann_tf, seed_tf],
-        Tout=[tf.float32, tf.float32]
+        Tout=[tf.float32, tf.float32],
     )
     img_tf, ann_tf = color_augmenter(img_tf, ann_tf, alpha_tf[0:3])
     img_tf, ann_tf = hue_augmenter(img_tf, ann_tf, alpha_tf[3:4])
