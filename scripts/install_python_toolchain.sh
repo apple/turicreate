@@ -49,16 +49,23 @@ mkdir -p deps/local/lib
 mkdir -p deps/local/include
 
 pushd deps/local/include
+
+set +x
 for f in ../../env/include/"$PYTHON_FULL_NAME"/*; do
   ln -Ffs "$f" "$(basename "$f")"
 done
+set -x
+
 popd
 
 mkdir -p deps/local/bin
 pushd deps/local/bin
+set +x
 for f in ../../env/bin/*; do
   ln -Ffs "$f" "$(basename "$f")"
 done
+set -x
+
 popd
 
 linux_patch_sigfpe_handler
