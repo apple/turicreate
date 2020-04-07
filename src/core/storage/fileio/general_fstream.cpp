@@ -23,6 +23,7 @@ general_ifstream::general_ifstream(std::string filename)
     // every conceieved.
     try :general_ifstream_base(filename), opened_filename(filename)
     {
+      exceptions(std::ios_base::badbit);
     }  catch (const std::exception& e) {
       log_and_throw_io_failure("Cannot open " + sanitize_url(filename) + " for read. " + e.what());
     } catch (std::string e) {
@@ -35,6 +36,7 @@ general_ifstream::general_ifstream(std::string filename)
 general_ifstream::general_ifstream(std::string filename, bool gzip_compressed)
     try :general_ifstream_base(filename, gzip_compressed),
      opened_filename(filename) {
+       exceptions(std::ios_base::badbit);
      } catch (const std::exception& e) {
       log_and_throw_io_failure("Cannot open " + sanitize_url(filename) + " for read. " + e.what());
     } catch (std::string e) {
@@ -67,6 +69,7 @@ std::shared_ptr<std::istream> general_ifstream::get_underlying_stream() {
 general_ofstream::general_ofstream(std::string filename)
     try :general_ofstream_base(filename), opened_filename(filename) {
       // this space intentionally left blank
+       exceptions(std::ios_base::failbit);
     } catch (const std::ios_base::failure& e) {
       // an I/O error is already the exception type - just re-throw
       throw;
@@ -81,7 +84,9 @@ general_ofstream::general_ofstream(std::string filename)
 
 general_ofstream::general_ofstream(std::string filename, bool gzip_compress)
     try :general_ofstream_base(filename, gzip_compress),
-     opened_filename(filename) { }  catch (std::exception e) {
+     opened_filename(filename) {
+       exceptions(std::ios_base::failbit);
+     }  catch (std::exception e) {
       log_and_throw_io_failure("Cannot open " + sanitize_url(filename) + " for write. " + e.what());
     } catch (std::string e) {
       log_and_throw_io_failure("Cannot open " + sanitize_url(filename) + " for write. " + e);
