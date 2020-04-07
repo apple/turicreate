@@ -512,9 +512,9 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
         break;
 
       } else {
-        auto error = outcome.GetError().GetResponseCode();
+        auto error = outcome.GetError();
 
-        if (error == Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
+        if (error.ShouldRetry()) {
           n_retry++;
 
           if (n_retry == 3) {
