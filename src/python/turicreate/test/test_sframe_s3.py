@@ -21,7 +21,8 @@ import warnings
 # size from small to big: 76K, 21MB, 77MB.
 # 64MB is the cache block size. The big sframe with 77MB is used to
 # ensure there's no issues when crossing different cache blocks.
-remote_sframe_folders = ["small_sframe_dc", "medium_sframe_ac", "big_sframe_od"]
+# remote_sframe_folders = ["small_sframe_dc", "medium_sframe_ac", "big_sframe_od"]
+remote_sframe_folders = ["medium_sframe_ac"]
 
 
 @pytest.mark.skipif(

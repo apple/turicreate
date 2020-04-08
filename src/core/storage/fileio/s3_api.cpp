@@ -162,12 +162,18 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   }
 
   if (parsed_url.secret_key.empty()) {
-    return S3Client(clientConfiguration);
+    return S3Client(clientConfiguration,
+                    /* default value */
+                    Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                    /* use virtual address */ false);
   } else {
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(),
                                           parsed_url.secret_key.c_str());
-    return S3Client(credentials, clientConfiguration);
+    return S3Client(credentials, clientConfiguration,
+                    /* default value */
+                    Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                    /* use virtual address */ false);
   }
 }
 
@@ -399,6 +405,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
 
   // s3 client config
   Aws::Client::ClientConfiguration clientConfiguration;
+
   if (turi::fileio::insecure_ssl_cert_checks()) {
     clientConfiguration.verifySSL = false;
   }
@@ -410,7 +417,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
   }
 
   clientConfiguration.proxyHost = proxy.c_str();
-  clientConfiguration.requestTimeoutMs = 5 * 60000;
+  clientConfiguration.requestTimeoutMs = 10000;
   clientConfiguration.connectTimeoutMs = 20000;
   std::string region = fileio::get_region_name_from_endpoint(
       clientConfiguration.endpointOverride.c_str());
@@ -419,7 +426,9 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
     parsed_url.sdk_region = region;
   }
 
-  S3Client client(credentials, clientConfiguration);
+  S3Client client(credentials, clientConfiguration,
+                  Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                  false);
 
   list_objects_response ret;
 
@@ -563,7 +572,10 @@ std::string delete_object_impl(s3url parsed_url, std::string proxy,
     parsed_url.sdk_region = region;
   }
 
-  S3Client client(credentials, clientConfiguration);
+  S3Client client(credentials, clientConfiguration,
+                  /* default value */
+                  Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                  /* use virtual address */ false);
 
   Aws::S3::Model::DeleteObjectRequest request;
   request.WithBucket(parsed_url.bucket.c_str());
@@ -618,7 +630,10 @@ std::string delete_prefix_impl(s3url parsed_url, std::string proxy,
     parsed_url.sdk_region = region;
   }
 
-  S3Client client(credentials, clientConfiguration);
+  S3Client client(credentials, clientConfiguration,
+                  /* default value */
+                  Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                  /* use virtual address */ false);
 
   Aws::S3::Model::ListObjectsV2Request request;
   request.WithBucket(parsed_url.bucket.c_str());
