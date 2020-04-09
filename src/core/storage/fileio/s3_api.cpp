@@ -128,7 +128,7 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   Aws::Client::ClientConfiguration clientConfiguration;
 
   // a little bit too long, anyway
-  clientConfiguration.requestTimeoutMs = 5 * 60000;
+  clientConfiguration.requestTimeoutMs = 2 * 60000;
   clientConfiguration.connectTimeoutMs = 20000;
 
   if (turi::fileio::insecure_ssl_cert_checks()) {
@@ -417,7 +417,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
   }
 
   clientConfiguration.proxyHost = proxy.c_str();
-  clientConfiguration.requestTimeoutMs = 10000;
+  clientConfiguration.requestTimeoutMs = 5 * 60000;
   clientConfiguration.connectTimeoutMs = 20000;
   std::string region = fileio::get_region_name_from_endpoint(
       clientConfiguration.endpointOverride.c_str());
