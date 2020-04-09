@@ -147,18 +147,25 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
 
   // TODO: add proxy support
   // clientConfiguration.proxyHost = proxy.c_str();
+
+  // set path or file for ssl certs
   if (!get_alternative_ssl_cert_file().empty()) {
     auto fstaus = get_file_status(get_alternative_ssl_cert_file());
     ASSERT_TRUE(fstaus.second.empty());
-    switch (fstaus.first) {
-      case file_status::REGULAR_FILE:
-        clientConfiguration.caFile = get_alternative_ssl_cert_file().c_str();
-        break;
-      case file_status::DIRECTORY:
-        clientConfiguration.caPath = get_alternative_ssl_cert_file().c_str();
-        break;
-      default:
-        log_and_throw("Invalid path or file for alternative SSL certificate");
+    if (fstaus.first == file_status::REGULAR_FILE) {
+      clientConfiguration.caFile = get_alternative_ssl_cert_file().c_str();
+    } else {
+      log_and_throw("Invalid file for alternative SSL certificate");
+    }
+  }
+
+  if (!get_alternative_ssl_cert_dir().empty()) {
+    auto fstaus = get_file_status(get_alternative_ssl_cert_dir());
+    ASSERT_TRUE(fstaus.second.empty());
+    if (fstaus.first == file_status::DIRECTORY) {
+      clientConfiguration.caPath = get_alternative_ssl_cert_dir().c_str();
+    } else {
+      log_and_throw("Invalid path for alternative SSL certificate");
     }
   }
 
