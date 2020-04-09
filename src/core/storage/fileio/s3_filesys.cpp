@@ -133,7 +133,8 @@ void WriteStream::Write(const void *ptr, size_t size) {
 }
 
 void WriteStream::Upload(bool force_upload) {
-  if (buffer_.empty()) return;
+  // empty file needs to be uploaded. objects.bin can be 0 bytes.
+  // if (buffer_.empty()) return;
 
   if (!force_upload && buffer_.size() < max_buffer_size_) {
     return;
