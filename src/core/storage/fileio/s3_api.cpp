@@ -123,6 +123,9 @@ bool bucket_name_valid(const std::string& bucket_name) {
 
 }  // anonymous namespace
 
+/*
+ * @param: parsed_url output parameter, its state will be modified
+ */
 S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   // s3 client config
   // DefaultCredentialProviderChain
@@ -413,18 +416,24 @@ std::string quote_and_escape_path(const std::string& path) {
   return ret;
 }
 
-list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
+list_objects_response list_objects_impl(const s3url& parsed_url,
+                                        std::string proxy,
                                         std::string endpoint) {
+  // do not modify the parsed_url because string_from_s3url() will
+  // be called on it to retrieve its original url (prefix) in is_directory.
+
   // let init_aws_sdk to be aware of the endpoint to override
-  if (parsed_url.endpoint.empty()) {
-    parsed_url.endpoint = endpoint;
+  auto temp_url = parsed_url;
+
+  if (temp_url.endpoint.empty()) {
+    temp_url.endpoint = endpoint;
   }
 
-  if (parsed_url.sdk_proxy && !parsed_url.sdk_proxy->empty()) {
-    parsed_url.sdk_proxy = proxy;
+  if (!temp_url.sdk_proxy || temp_url.sdk_proxy->empty()) {
+    temp_url.sdk_proxy = proxy;
   }
 
-  S3Client client = init_aws_sdk_with_turi_env(parsed_url);
+  S3Client client = init_aws_sdk_with_turi_env(temp_url);
 
   list_objects_response ret;
 
@@ -487,7 +496,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
           if (n_retry == 3) {
             // amend the error msg on the last retry failure
             std::stringstream ss;
-            reportS3ErrorDetailed(ss, parsed_url, S3Operation::List, outcome)
+            reportS3ErrorDetailed(ss, temp_url, S3Operation::List, outcome)
                 << std::endl;
             ret.error = ss.str();
             logstream(LOG_DEBUG)
@@ -500,7 +509,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
 
         } else {
           std::stringstream ss;
-          reportS3ErrorDetailed(ss, parsed_url, S3Operation::List, outcome)
+          reportS3ErrorDetailed(ss, temp_url, S3Operation::List, outcome)
               << std::endl;
           ret.error = ss.str();
           logstream(LOG_DEBUG)
@@ -529,17 +538,23 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
 }
 
 /// returns an error string on failure. Empty string on success
-std::string delete_object_impl(s3url parsed_url, std::string proxy,
+std::string delete_object_impl(const s3url& parsed_url, std::string proxy,
                                std::string endpoint) {
-  if (parsed_url.endpoint.empty()) {
-    parsed_url.endpoint = endpoint;
+  // do not modify the parsed_url because string_from_s3url() will
+  // be called on it to retrieve its original url (prefix) in is_directory.
+
+  // let init_aws_sdk to be aware of the endpoint to override
+  auto temp_url = parsed_url;
+
+  if (temp_url.endpoint.empty()) {
+    temp_url.endpoint = endpoint;
   }
 
-  if (parsed_url.sdk_proxy && !parsed_url.sdk_proxy->empty()) {
-    parsed_url.sdk_proxy = proxy;
+  if (!temp_url.sdk_proxy || temp_url.sdk_proxy->empty()) {
+    temp_url.sdk_proxy = proxy;
   }
 
-  S3Client client = init_aws_sdk_with_turi_env(parsed_url);
+  S3Client client = init_aws_sdk_with_turi_env(temp_url);
 
   std::string ret;
 
@@ -550,7 +565,7 @@ std::string delete_object_impl(s3url parsed_url, std::string proxy,
   auto outcome = client.DeleteObject(request);
   if (!outcome.IsSuccess()) {
     std::stringstream ss;
-    reportS3ErrorDetailed(ss, parsed_url, S3Operation::Delete, outcome)
+    reportS3ErrorDetailed(ss, temp_url, S3Operation::Delete, outcome)
         << std::endl;
     ret = ss.str();
   }
@@ -559,18 +574,23 @@ std::string delete_object_impl(s3url parsed_url, std::string proxy,
 }
 
 /// returns an error string on failure. Empty string on success
-std::string delete_prefix_impl(s3url parsed_url, std::string proxy,
+std::string delete_prefix_impl(const s3url& parsed_url, std::string proxy,
                                std::string endpoint) {
-  // List objects and then create a DeleteObjects request from the resulting
-  if (parsed_url.endpoint.empty()) {
-    parsed_url.endpoint = endpoint;
+  // do not modify the parsed_url because string_from_s3url() will
+  // be called on it to retrieve its original url (prefix) in is_directory.
+
+  // let init_aws_sdk to be aware of the endpoint to override
+  auto temp_url = parsed_url;
+
+  if (temp_url.endpoint.empty()) {
+    temp_url.endpoint = endpoint;
   }
 
-  if (parsed_url.sdk_proxy && !parsed_url.sdk_proxy->empty()) {
-    parsed_url.sdk_proxy = proxy;
+  if (!temp_url.sdk_proxy || temp_url.sdk_proxy->empty()) {
+    temp_url.sdk_proxy = proxy;
   }
 
-  S3Client client = init_aws_sdk_with_turi_env(parsed_url);
+  S3Client client = init_aws_sdk_with_turi_env(temp_url);
 
   std::string ret;
 
@@ -603,7 +623,7 @@ std::string delete_prefix_impl(s3url parsed_url, std::string proxy,
 
     } else {
       std::stringstream ss;
-      reportS3ErrorDetailed(ss, parsed_url, S3Operation::List, outcome)
+      reportS3ErrorDetailed(ss, temp_url, S3Operation::List, outcome)
           << std::endl;
       ret = ss.str();
     }

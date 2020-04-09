@@ -73,7 +73,6 @@ struct s3url {
     // this is embeded form
     // something like: s3://s3.amazonaws.com/bucket/object/name
     if (!endpoint.empty()) {
-      ret.append(1, ':');
       ret.append(endpoint);
       ret.append(1, '/');
     }
