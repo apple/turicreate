@@ -284,18 +284,17 @@ struct S3Operation {
 template <class Response>
 std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
                             S3Operation::ops_enum operation,
-                            const Aws::Client::ClientConfiguration& config,
                             const Response& outcome) {
-  ss << "('" << parsed_url << ", proxy: '" << config.proxyHost << "', region: '"
-     << config.region << "')"
+  ss << "('" << parsed_url << ", proxy: '" << parsed_url.sdk_proxy
+     << "', region: '" << parsed_url.sdk_region << "')"
      << " Error while performing " << S3Operation::toString(operation)
      << ". Error Name: " << outcome.GetError().GetExceptionName()
      << ". Error Message: " << outcome.GetError().GetMessage();
   return ss;
 }
 
-#define reportS3ErrorDetailed(ss, parsed_url, operation, config, outcome) \
-  reportS3Error(ss, parsed_url, operation, config, outcome)               \
+#define reportS3ErrorDetailed(ss, parsed_url, operation, outcome) \
+  reportS3Error(ss, parsed_url, operation, outcome)               \
       << " in " << __FILE__ << " at " << __LINE__
 
 }  // namespace turi
