@@ -148,6 +148,35 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   // TODO: add proxy support
   // clientConfiguration.proxyHost = proxy.c_str();
 
+  // set path or file for ssl certs
+  if (!get_alternative_ssl_cert_file().empty()) {
+    auto fstaus = get_file_status(get_alternative_ssl_cert_file());
+    ASSERT_TRUE(fstaus.second.empty());
+    if (fstaus.first == file_status::REGULAR_FILE) {
+      clientConfiguration.caFile = get_alternative_ssl_cert_file().c_str();
+    } else {
+      std::stringstream ss;
+      ss << "Invalid file for alternative SSL certificate. Value of "
+            "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE must be a regular file. "
+         << get_alternative_ssl_cert_file() << " is not a regular file.";
+      log_and_throw(ss.str());
+    }
+  }
+
+  if (!get_alternative_ssl_cert_dir().empty()) {
+    auto fstaus = get_file_status(get_alternative_ssl_cert_dir());
+    ASSERT_TRUE(fstaus.second.empty());
+    if (fstaus.first == file_status::DIRECTORY) {
+      clientConfiguration.caPath = get_alternative_ssl_cert_dir().c_str();
+    } else {
+      std::stringstream ss;
+      ss << "Invalid file for alternative SSL certificate. Value of "
+            "TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR must be a valid directory. "
+         << get_alternative_ssl_cert_dir() << " is not a regular directory.";
+      log_and_throw(ss.str());
+    }
+  }
+
   std::string region = fileio::get_region_name_from_endpoint(
       clientConfiguration.endpointOverride.c_str());
 
