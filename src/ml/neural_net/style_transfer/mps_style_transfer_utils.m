@@ -499,7 +499,7 @@
 + (void)populateMeanCWH:(NSMutableData *)data height:(NSUInteger)height width:(NSUInteger)width {
   NSUInteger dataSize = (data.length) / sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
-  float meanWeights[3] = {0.485, 0.456, 0.406};
+  static const float meanWeights[3] = {0.485, 0.456, 0.406};
   float *ptr = (float *)data.mutableBytes;
 
   size_t channel_stride = height * width;
@@ -516,7 +516,7 @@
                       width:(NSUInteger)width {
   NSUInteger dataSize = (data.length) / sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
-  float varianceWeights[3] = {1.f / 0.229f, 1.f / 0.224f, 1.f / 0.225f};
+  static const float varianceWeights[3] = {1.f / 0.229f, 1.f / 0.224f, 1.f / 0.225f};
   float *ptr = (float *)data.mutableBytes;
 
   size_t channel_stride = height * width;
