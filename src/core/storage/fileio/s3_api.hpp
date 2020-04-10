@@ -286,11 +286,14 @@ std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
                             S3Operation::ops_enum operation,
                             const Aws::Client::ClientConfiguration& config,
                             const Response& outcome) {
+  auto error = outcome.GetError();
   ss << "('" << parsed_url << ", proxy: '" << config.proxyHost << "', region: '"
      << config.region << "')"
      << " Error while performing " << S3Operation::toString(operation)
-     << ". Error Name: " << outcome.GetError().GetExceptionName()
-     << ". Error Message: " << outcome.GetError().GetMessage();
+     << ". Error Name: " << error.GetExceptionName()
+     << ". Error Message: " << error.GetMessage()
+     << ". HTTP Error Code: " << static_cast<int>(error.GetResponseCode());
+
   return ss;
 }
 

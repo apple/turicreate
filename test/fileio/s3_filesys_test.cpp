@@ -91,15 +91,15 @@ int main(int argc, char** argv) {
     // force write all entries
     sa_ptr->materialize();
 
-    /* teardown manually */
-    turi::file_download_cache::get_instance().clear();
-    turi::block_cache::release_instance();
-
   } catch (std::string& e) {
     std::cerr << "Exception: " << e << std::endl;
   } catch (std::exception& e) {
     std::cerr << "Exception: " << e.what() << std::endl;
   }
+
+  /* teardown manually */
+  turi::file_download_cache::get_instance().clear();
+  turi::block_cache::release_instance();
 
   return 0;
 }
