@@ -1856,6 +1856,8 @@ void unity_sframe::delete_on_close() {
 }
 
 std::shared_ptr<planner_node> unity_sframe::get_planner_node() {
+  ASSERT_MSG(m_planner_node != nullptr,
+             "Unintialized SFrame planner node cannot be used for read");
   return m_planner_node;
 }
 
