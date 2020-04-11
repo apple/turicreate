@@ -8,6 +8,7 @@ from __future__ import print_function as _  # noqa
 from __future__ import division as _  # noqa
 from __future__ import absolute_import as _  # noqa
 from ..data_structures.sframe import SFrame
+from ..data_structures.sarray import SArray
 from turicreate.util import _assert_sframe_equal
 
 import tempfile
@@ -22,6 +23,7 @@ import warnings
 # 64MB is the cache block size. The big sframe with 77MB is used to
 # ensure there's no issues when crossing different cache blocks.
 remote_sframe_folders = ["small_sframe_dc", "medium_sframe_ac", "big_sframe_od"]
+remote_sarray_folders = ["tiny_array"]
 
 
 @pytest.mark.skipif(
@@ -40,6 +42,7 @@ class TestSFrameS3(object):
         self.bucket = "tc_qa"
         self.s3_root_prefix = "integration/manual/"
         self.s3_sframe_prefix = os.path.join(self.s3_root_prefix, "sframes/")
+        self.s3_sarray_prefix = os.path.join(self.s3_root_prefix, "sarrays/")
 
         # download all related files once
         self.downloaded_files = dict()
@@ -104,6 +107,13 @@ class TestSFrameS3(object):
         s3_url = os.path.join("s3://", self.bucket, obj_key)
         sf_from_s3 = SFrame(s3_url)
         _assert_sframe_equal(sf_from_disk, sf_from_s3)
+
+    @pytest.mark.parametrize("folder", remote_sarray_folders)
+    def test_s3_sarray_download(self, folder):
+        s3_url = os.path.join("s3://", self.bucket, self.s3_sarray_prefix, folder)
+        array = SArray(s3_url)
+        assert len(array) == 1
+        assert array[0] == 1
 
     @pytest.mark.parametrize("folder", remote_sframe_folders)
     def test_s3_sframe_upload(self, folder):

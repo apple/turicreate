@@ -132,7 +132,7 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   Aws::Client::ClientConfiguration clientConfiguration;
 
   // a little bit too long, anyway
-  clientConfiguration.requestTimeoutMs = 5 * 60000;
+  clientConfiguration.requestTimeoutMs = 2 * 60000;
   clientConfiguration.connectTimeoutMs = 20000;
 
   if (turi::fileio::insecure_ssl_cert_checks()) {
@@ -159,7 +159,11 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
     if (fstaus.first == file_status::REGULAR_FILE) {
       clientConfiguration.caFile = get_alternative_ssl_cert_file().c_str();
     } else {
-      log_and_throw("Invalid file for alternative SSL certificate");
+      std::stringstream ss;
+      ss << "Invalid file for alternative SSL certificate. Value of "
+            "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE must be a regular file. "
+         << get_alternative_ssl_cert_file() << " is not a regular file.";
+      log_and_throw(ss.str());
     }
   }
 
@@ -169,7 +173,11 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
     if (fstaus.first == file_status::DIRECTORY) {
       clientConfiguration.caPath = get_alternative_ssl_cert_dir().c_str();
     } else {
-      log_and_throw("Invalid path for alternative SSL certificate");
+      std::stringstream ss;
+      ss << "Invalid file for alternative SSL certificate. Value of "
+            "TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR must be a valid directory. "
+         << get_alternative_ssl_cert_dir() << " is not a regular directory.";
+      log_and_throw(ss.str());
     }
   }
 
@@ -187,12 +195,18 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   }
 
   if (parsed_url.secret_key.empty()) {
-    return S3Client(clientConfiguration);
+    return S3Client(clientConfiguration,
+                    /* default value */
+                    Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                    /* use virtual address */ false);
   } else {
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(),
                                           parsed_url.secret_key.c_str());
-    return S3Client(credentials, clientConfiguration);
+    return S3Client(credentials, clientConfiguration,
+                    /* default value */
+                    Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                    /* use virtual address */ false);
   }
 }
 
@@ -488,9 +502,9 @@ list_objects_response list_objects_impl(const s3url& parsed_url,
         break;
 
       } else {
-        auto error = outcome.GetError().GetResponseCode();
+        auto error = outcome.GetError();
 
-        if (error == Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
+        if (error.ShouldRetry()) {
           n_retry++;
 
           if (n_retry == 3) {
