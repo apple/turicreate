@@ -513,8 +513,10 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
 
       } else {
         auto error = outcome.GetError();
-
-        if (error.ShouldRetry()) {
+        // Unlike CoreErrors, S3Error Never retries. Use Http code instead.
+        // check aws-cpp-sdk-s3/source/S3Error.cpp
+        if (error.GetResponseCode() ==
+            Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
           n_retry++;
 
           if (n_retry == 3) {
