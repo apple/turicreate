@@ -129,6 +129,20 @@ class TestSFrameS3(object):
         # we can trust the upload becuase if the upload fails,
         # s3 will respond with 5xx
 
+    @pytest.mark.parametrize(
+        "url",
+        ["s3://gui/dummy", "./willy-nily/blah", "https://foo.com", "http://hao.com"],
+    )
+    def test_s3_sframe_load_from_wrong_path(self, url):
+        # s3 only writes when it receives all parts
+        # it's sort of atmoic write on file level.
+        if six.PY2:
+            with pytest.raises(IOError):
+                SFrame(url)
+        else:
+            with pytest.raises(OSError):
+                SFrame(url)
+
     def test_s3_sframe_upload_throw(self):
         # s3 only writes when it receives all parts
         # it's sort of atmoic write on file level.
