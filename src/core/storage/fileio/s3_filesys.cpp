@@ -122,7 +122,7 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
     retrieved_file.read(input_ptr, nwant);
 
     auto end = std::chrono::steady_clock::now();
-    logprogress_stream << "finish downloading" << url_string << ". duration: "
+    logprogress_stream << "finished downloading" << url_string << ". duration: "
                        << std::chrono::duration_cast<std::chrono::milliseconds>(
                               end - start)
                               .count()
@@ -224,7 +224,7 @@ void WriteStream::Finish() {
   }
 
   logprogress_stream << "finished uploading all parts of "
-                     << " of " << url_.string_from_s3url(false) << std::endl;
+                     << url_.string_from_s3url(false) << std::endl;
 }
 
 /*!
