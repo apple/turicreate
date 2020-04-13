@@ -519,9 +519,13 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
          * Retry can be based on HTTP code or HTTP body.
          *
          * 1. if SDK uses HTTP code, e.g., ShouldRetry return true on 429.
-         * We don't need to retry on our own since SDK already retried.
-         * 2. if SDK doesn't use HTTP code, we check HTTP on our own.
-         * check: https://guihao-liang.github.io/2020-04-12-aws-s3-retry/
+         * We don't need to retry on our own since SDK already made decision to
+         * retry based on HTTP code.
+         *
+         * 2. if SDK doesn't use HTTP code but HTTP body, we check HTTP on our
+         * own if SDK doesn't think it should retry based on messages in HTTP
+         * body. Check https://guihao-liang.github.io/2020-04-12-aws-s3-retry/
+         *
          * */
         if (!error.ShouldRetry()) {
           // SDK didn't retry for us, check retry on our own decisions
@@ -552,7 +556,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
           }
 
         } else {
-          // error.ShouldRetry() == 3
+          // error.ShouldRetry() == true
           // AWS SDK already retried 3 times
           std::stringstream ss;
           reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
