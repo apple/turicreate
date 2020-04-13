@@ -12,6 +12,7 @@
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
+#include <chrono>
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
@@ -91,7 +92,12 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
   std::stringstream ss;
   // range is includsive and zero based
   ss << "bytes=" << curr_bytes_ << '-' << curr_bytes_ + nwant - 1;
-  logstream(LOG_DEBUG) << "GetObject.Range: " << ss.str() << std::endl;
+
+  std::string url_string = url_.string_from_s3url(false);
+  logprogress_stream << "start downloading " << url_string << ", " << ss.str()
+                     << std::endl;
+
+  auto start = std::chrono::steady_clock::now();
 
   Aws::S3::Model::GetObjectRequest object_request;
   object_request.SetRange(ss.str().c_str());
@@ -114,6 +120,13 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
     }
     // std::istreambuf_iterator<char>
     retrieved_file.read(input_ptr, nwant);
+
+    auto end = std::chrono::steady_clock::now();
+    logprogress_stream << "finish downloading" << url_string << ". duration: "
+                       << std::chrono::duration_cast<std::chrono::milliseconds>(
+                              end - start)
+                              .count()
+                       << " ms" << std::endl;
   } else {
     auto error = get_object_outcome.GetError();
     ss.str("");
@@ -169,6 +182,12 @@ void WriteStream::Upload(bool force_upload) {
 
   // store the future into completed parts
   completed_parts_.push_back(s3_client_.UploadPartCallable(my_request));
+
+  logprogress_stream << "uploading part " << my_request.GetPartNumber()
+                     << " of " << url_.string_from_s3url(false)
+                     << ", with size "
+                     << (double)(buffer_.size()) / (1024 * 1024) << " MB"
+                     << std::endl;
 }
 
 void WriteStream::Finish() {
@@ -203,6 +222,9 @@ void WriteStream::Finish() {
     logstream(LOG_ERROR) << ss.str() << std::endl;
     log_and_throw_io_failure(ss.str());
   }
+
+  logprogress_stream << "finished uploading all parts of "
+                     << " of " << url_.string_from_s3url(false) << std::endl;
 }
 
 /*!
