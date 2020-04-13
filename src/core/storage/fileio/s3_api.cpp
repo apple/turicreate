@@ -20,6 +20,7 @@
 #include <chrono>
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
+#include <core/random/random.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/general_fstream.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
@@ -513,13 +514,27 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
 
       } else {
         auto error = outcome.GetError();
-        // Unlike CoreErrors, S3Error Never retries. Use Http code instead.
-        // check aws-cpp-sdk-s3/source/S3Error.cpp
-        if (error.GetResponseCode() ==
-            Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
-          n_retry++;
+        /*
+         * Unlike CoreErrors, S3Error Never retries on S3 errors.
+         * Retry can be based on HTTP code or HTTP body.
+         *
+         * 1. if SDK uses HTTP code, e.g., ShouldRetry return true on 429.
+         * We don't need to retry on our own since SDK already retried.
+         * 2. if SDK doesn't use HTTP code, we check HTTP on our own.
+         * check: https://guihao-liang.github.io/2020-04-12-aws-s3-retry/
+         * */
+        if (!error.ShouldRetry()) {
+          // SDK didn't retry for us, check retry on our own decisions
+          if (error.GetResponseCode() ==
+              Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
+            n_retry++;
+          } else {
+            // stop retry immediately
+            n_retry = 3;
+          }
 
-          if (n_retry == 3) {
+          // should be ==, use >= to suppress any surprises
+          if (n_retry >= 3) {
             // amend the error msg on the last retry failure
             std::stringstream ss;
             reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
@@ -531,10 +546,14 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
           } else {
             // continue retry
             std::this_thread::sleep_for(std::chrono::milliseconds(backoff));
-            backoff *= 2;
+            // [2, 4), float random
+            double rdm = (turi::random::pure_random_seed() % 1000 / 500.) + 2;
+            backoff = static_cast<int>(backoff * rdm);
           }
 
         } else {
+          // error.ShouldRetry() == 3
+          // AWS SDK already retried 3 times
           std::stringstream ss;
           reportS3ErrorDetailed(ss, parsed_url, S3Operation::List,
                                 clientConfiguration, outcome)
@@ -543,7 +562,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
           logstream(LOG_DEBUG)
               << "list_objects_impl failed:" << ret.error << std::endl;
           // no need to retry, just jump out all while loop
-          break;
+          break;  // or n_retry = 3;
         }
       }
     } while (n_retry < 3);  // finished retry
