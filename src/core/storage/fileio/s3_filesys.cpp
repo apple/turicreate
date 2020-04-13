@@ -94,7 +94,7 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
   ss << "bytes=" << curr_bytes_ << '-' << curr_bytes_ + nwant - 1;
 
   std::string url_string = url_.string_from_s3url(false);
-  logprogress_stream << "start downloading " << url_string << ", " << ss.str()
+  logprogress_stream << "Start downloading " << url_string << ", " << ss.str()
                      << std::endl;
 
   auto start = std::chrono::steady_clock::now();
@@ -123,7 +123,7 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
 
     auto end = std::chrono::steady_clock::now();
     logprogress_stream
-        << "finished downloading" << url_string << ". duration: "
+        << "Finished downloading" << url_string << ". Duration: "
         << std::chrono::duration_cast<std::chrono::seconds>(end - start).count()
         << " seconds" << std::endl;
   } else {
@@ -182,7 +182,7 @@ void WriteStream::Upload(bool force_upload) {
   // store the future into completed parts
   completed_parts_.push_back(s3_client_.UploadPartCallable(my_request));
 
-  logprogress_stream << "uploading part " << my_request.GetPartNumber()
+  logprogress_stream << "Uploading part " << my_request.GetPartNumber()
                      << " of " << url_.string_from_s3url(false)
                      << ", with size "
                      << (double)(buffer_.size()) / (1024 * 1024) << " MB"
@@ -222,7 +222,7 @@ void WriteStream::Finish() {
     log_and_throw_io_failure(ss.str());
   }
 
-  logprogress_stream << "finished uploading all parts of "
+  logprogress_stream << "Finished uploading all parts of "
                      << url_.string_from_s3url(false) << std::endl;
 }
 
