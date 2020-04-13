@@ -94,6 +94,8 @@ $(document).ready(function(){initNavTree('classturi_1_1object__detection_1_1simp
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a80407e63f9b87eed122ca356cf3f8e62"><td class="memItemLeft" align="right" valign="top">std::vector&lt; <a class="el" href="structturi_1_1neural__net_1_1labeled__image.html">neural_net::labeled_image</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1simple__data__iterator.html#a80407e63f9b87eed122ca356cf3f8e62">next_batch</a> (size_t batch_size) override</td></tr>
 <tr class="separator:a80407e63f9b87eed122ca356cf3f8e62"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4eeb706514e2e38b01df7aa0729dd5ca"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1simple__data__iterator.html#a4eeb706514e2e38b01df7aa0729dd5ca">has_next_batch</a> () const override</td></tr>
+<tr class="separator:a4eeb706514e2e38b01df7aa0729dd5ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adeb77537cc3afc991ada4219da5f7526"><td class="memItemLeft" align="right" valign="top">const std::vector&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1simple__data__iterator.html#adeb77537cc3afc991ada4219da5f7526">class_labels</a> () const override</td></tr>
 <tr class="separator:adeb77537cc3afc991ada4219da5f7526"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a44a931e5168b4eeeee5b80421b5775d4"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1simple__data__iterator.html#a44a931e5168b4eeeee5b80421b5775d4">num_instances</a> () const override</td></tr>
@@ -102,7 +104,7 @@ Public Member Functions</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Concrete <a class="el" href="classturi_1_1object__detection_1_1data__iterator.html">data_iterator</a> implementation that doesn't attempt any parallelization or background I/O.</p>
 
-<p class="definition">Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00147">147</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00150">150</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="adeb77537cc3afc991ada4219da5f7526"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#adeb77537cc3afc991ada4219da5f7526">&#9670;&nbsp;</a></span>class_labels()</h2>
@@ -130,7 +132,37 @@ Public Member Functions</h2></td></tr>
 
 <p>Implements <a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#a1ba244251ccd39eb9d83d3f9d597df1c">turi::object_detection::data_iterator</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00158">158</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00167">167</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a4eeb706514e2e38b01df7aa0729dd5ca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4eeb706514e2e38b01df7aa0729dd5ca">&#9670;&nbsp;</a></span>has_next_batch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool turi::object_detection::simple_data_iterator::has_next_batch </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns true when <code>next_batch</code> will return a non-empty value. </p>
+
+<p>Implements <a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#a66c0baf64ea49763932147a6caf63b36">turi::object_detection::data_iterator</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00161">161</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>
@@ -191,7 +223,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Implements <a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#a8707166673994eac0ad199eba8c5fef2">turi::object_detection::data_iterator</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00162">162</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="od__data__iterator_8hpp_source.html#l00171">171</a> of file <a class="el" href="od__data__iterator_8hpp_source.html">od_data_iterator.hpp</a>.</p>
 
 </div>
 </div>

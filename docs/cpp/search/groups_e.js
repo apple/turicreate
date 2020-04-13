@@ -9,6 +9,5 @@ var searchData=
   ['sgraph_20compute_20internal',['SGraph Compute Internal',['../group__sgraph__compute__internal.html',1,'']]],
   ['sgraph_20_3a_20physical',['SGraph : Physical',['../group__sgraph__physical.html',1,'']]],
   ['shared_20memory_20interprocess_20communication',['Shared Memory Interprocess Communication',['../group__shmipc.html',1,'']]],
-  ['sketching_20datastructures_20and_20algorithms',['Sketching Datastructures and Algorithms',['../group__sketching.html',1,'']]],
-  ['shared_20library_20utilities',['Shared Library Utilities',['../group__soutils.html',1,'']]]
+  ['sketching_20datastructures_20and_20algorithms',['Sketching Datastructures and Algorithms',['../group__sketching.html',1,'']]]
 ];

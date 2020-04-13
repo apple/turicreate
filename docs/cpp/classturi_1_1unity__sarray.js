@@ -48,6 +48,7 @@ var classturi_1_1unity__sarray =
     [ "logical_filter", "classturi_1_1unity__sarray.html#a021c79627ad2eba535744bdf7b678ba1", null ],
     [ "make_exact_uniform_boolean_array", "classturi_1_1unity__sarray.html#ad999f05e4bb5296907e4f561f7ca42f1", null ],
     [ "make_uniform_boolean_array", "classturi_1_1unity__sarray.html#a4e470c1783849077e2cab28b406eaf5b", null ],
+    [ "make_uniform_int_array", "classturi_1_1unity__sarray.html#a0fb3d0ef2ce1dad469e13398e044db1c", null ],
     [ "materialize", "classturi_1_1unity__sarray.html#a281241fc5573044feb6955a430992572", null ],
     [ "max", "classturi_1_1unity__sarray.html#a827f648c316973c9b30c93698b7f29b5", null ],
     [ "mean", "classturi_1_1unity__sarray.html#ae7eca82ad5ed55417a77da0b8d39b0af", null ],

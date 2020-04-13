@@ -187,6 +187,8 @@ Variables</h2></td></tr>
 <tr class="separator:gacdaf1bdee34727191c837f382bd50e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaff6a4d5002d4a34ebd125418f019ef9f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gaff6a4d5002d4a34ebd125418f019ef9f">turi::SFRAME_GROUPBY_BUFFER_NUM_ROWS</a></td></tr>
 <tr class="separator:gaff6a4d5002d4a34ebd125418f019ef9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaac5db85f6ab9cbc4112c4c5297bd3d32"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gaac5db85f6ab9cbc4112c4c5297bd3d32">turi::SFRAME_SHUFFLE_BUCKET_SIZE</a></td></tr>
+<tr class="separator:gaac5db85f6ab9cbc4112c4c5297bd3d32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga072fdea3589d0e65e0f0c71380864190"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#ga072fdea3589d0e65e0f0c71380864190">turi::SFRAME_JOIN_BUFFER_NUM_CELLS</a></td></tr>
 <tr class="separator:ga072fdea3589d0e65e0f0c71380864190"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad8df491acb63b1cf8e7f8ab0d719eda8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gad8df491acb63b1cf8e7f8ab0d719eda8">turi::SFRAME_IO_READ_LOCK</a></td></tr>
@@ -573,7 +575,8 @@ template&lt;typename T&gt; </div>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>A vector of n sframes. </dd></dl>
-
+<dl><dt><b>Examples: </b></dt><dd><a class="el" href="_2build_2src_2core_2storage_2sframe_interface_2unity_sframe_8hpp-example.html#a4">/build/src/core/storage/sframe_interface/unity_sframe.hpp</a>.</dd>
+</dl>
 </div>
 </div>
 <a id="ga0c729f5d7f2ff91f18a07fb3a2461f21"></a>
@@ -874,6 +877,21 @@ template&lt;typename T&gt; </div>
       </table>
 </div><div class="memdoc">
 <p>The maximum number of data blocks that can be maintained in a reader's decoded cache </p>
+
+</div>
+</div>
+<a id="gaac5db85f6ab9cbc4112c4c5297bd3d32"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#gaac5db85f6ab9cbc4112c4c5297bd3d32">&#9670;&nbsp;</a></span>SFRAME_SHUFFLE_BUCKET_SIZE</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">size_t turi::SFRAME_SHUFFLE_BUCKET_SIZE</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>The number of elements per bucket when performing a shuffle operation. </p>
 
 </div>
 </div>

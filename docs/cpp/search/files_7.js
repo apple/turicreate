@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['sampler_2ehpp',['sampler.hpp',['../sampler_8hpp.html',1,'']]]
+  ['resample_2ehpp',['resample.hpp',['../resample_8hpp.html',1,'']]]
 ];

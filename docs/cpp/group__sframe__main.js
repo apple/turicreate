@@ -312,6 +312,7 @@ var group__sframe__main =
     [ "SFRAME_IO_READ_LOCK", "group__sframe__main.html#gad8df491acb63b1cf8e7f8ab0d719eda8", null ],
     [ "SFRAME_JOIN_BUFFER_NUM_CELLS", "group__sframe__main.html#ga072fdea3589d0e65e0f0c71380864190", null ],
     [ "SFRAME_MAX_BLOCKS_IN_CACHE", "group__sframe__main.html#ga11bc6cff209078df4dd9481be5a83733", null ],
+    [ "SFRAME_SHUFFLE_BUCKET_SIZE", "group__sframe__main.html#gaac5db85f6ab9cbc4112c4c5297bd3d32", null ],
     [ "SFRAME_SORT_MAX_SEGMENTS", "group__sframe__main.html#ga83377e8db5ff62da684b96411aaebc08", null ],
     [ "SFRAME_SORT_PIVOT_ESTIMATION_SAMPLE_SIZE", "group__sframe__main.html#gae18272fca6572c6d7515da8e8470e68a", null ],
     [ "SFRAME_WRITER_BUFFER_HARD_LIMIT", "group__sframe__main.html#gaf080605fa1c42e579713cada9700010d", null ],

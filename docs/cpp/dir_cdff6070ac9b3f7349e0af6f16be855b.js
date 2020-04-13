@@ -19,6 +19,7 @@ var dir_cdff6070ac9b3f7349e0af6f16be855b =
     [ "hdfs.hpp", "hdfs_8hpp_source.html", null ],
     [ "read_caching_device.hpp", "read__caching__device_8hpp_source.html", null ],
     [ "s3_api.hpp", "s3__api_8hpp_source.html", null ],
+    [ "s3_filesys.hpp", "s3__filesys_8hpp_source.html", null ],
     [ "s3_fstream.hpp", "s3__fstream_8hpp_source.html", null ],
     [ "sanitize_url.hpp", "sanitize__url_8hpp_source.html", null ],
     [ "set_curl_options.hpp", "set__curl__options_8hpp_source.html", null ],

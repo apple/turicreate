@@ -211,6 +211,8 @@ Functions</h2></td></tr>
 <tr class="separator:ga0ea68b924ea1ef006293970e563861c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga3ec38e6c51a583c14f6f1a3fa93afda9"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga3ec38e6c51a583c14f6f1a3fa93afda9">turi::fileio::get_bucket_path</a> (const std::string &amp;bucket)</td></tr>
 <tr class="separator:ga3ec38e6c51a583c14f6f1a3fa93afda9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7cd9dba3d987eefb44d8a272d0030497"><td class="memItemLeft" align="right" valign="top">Aws::S3::S3Client&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga7cd9dba3d987eefb44d8a272d0030497">turi::init_aws_sdk_with_turi_env</a> (<a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;parsed_url)</td></tr>
+<tr class="separator:ga7cd9dba3d987eefb44d8a272d0030497"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5ff7eac62175d5e5bac69a32ba1fee75">turi::get_s3_file_last_modified</a> (const std::string &amp;url)</td></tr>
 <tr class="separator:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5d061c799a90c5c6a03728ef3de03d07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5d061c799a90c5c6a03728ef3de03d07">turi::list_objects</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
@@ -223,14 +225,12 @@ Functions</h2></td></tr>
 <tr class="separator:ga717b2264a5a6bb05f6c2435b9cb4e7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga814071ebbbb49a2ba27bace0540a09db"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga814071ebbbb49a2ba27bace0540a09db">turi::sanitize_s3_url</a> (const std::string &amp;url)</td></tr>
 <tr class="separator:ga814071ebbbb49a2ba27bace0540a09db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf1f462276b68dd6b4dfec9a8a0e5213c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaf1f462276b68dd6b4dfec9a8a0e5213c">turi::parse_s3url</a> (std::string url, <a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;ret, std::string &amp;err_msg)</td></tr>
-<tr class="separator:gaf1f462276b68dd6b4dfec9a8a0e5213c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6c6d447052f83d9bbc19c83ba1765351"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga6c6d447052f83d9bbc19c83ba1765351">turi::parse_s3url</a> (const std::string &amp;url, <a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;ret, std::string &amp;err_msg)</td></tr>
+<tr class="separator:ga6c6d447052f83d9bbc19c83ba1765351"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5a3799347c103129ae70805e0161a6ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5a3799347c103129ae70805e0161a6ff">turi::set_upload_timeout</a> (long timeout)</td></tr>
 <tr class="separator:ga5a3799347c103129ae70805e0161a6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga2c38590a0ad13fa63e4d25a366b653a3">turi::set_download_timeout</a> (long timeout)</td></tr>
 <tr class="separator:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabade0bf49f31a40150a079328ebc507b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gabade0bf49f31a40150a079328ebc507b">turi::get_s3_error_code</a> (const std::string &amp;msg)</td></tr>
-<tr class="separator:gabade0bf49f31a40150a079328ebc507b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga77744d8898a95679d4f8c399767728b0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga77744d8898a95679d4f8c399767728b0">turi::sanitize_url</a> (std::string url)</td></tr>
 <tr class="separator:ga77744d8898a95679d4f8c399767728b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga65434d49942dcd935311a42566321853"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga65434d49942dcd935311a42566321853">turi::fileio::set_curl_options</a> (void *ecurl)</td></tr>
@@ -959,25 +959,6 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="gabade0bf49f31a40150a079328ebc507b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gabade0bf49f31a40150a079328ebc507b">&#9670;&nbsp;</a></span>get_s3_error_code()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::string turi::get_s3_error_code </td>
-          <td>(</td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>msg</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-<p>Return the S3 error code contains in the message. If the message does not contain error code, return the message itself. </p>
-
-</div>
-</div>
 <a id="ga5ff7eac62175d5e5bac69a32ba1fee75"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ga5ff7eac62175d5e5bac69a32ba1fee75">&#9670;&nbsp;</a></span>get_s3_file_last_modified()</h2>
 
@@ -1134,6 +1115,27 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="ga7cd9dba3d987eefb44d8a272d0030497"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga7cd9dba3d987eefb44d8a272d0030497">&#9670;&nbsp;</a></span>init_aws_sdk_with_turi_env()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Aws::S3::S3Client turi::init_aws_sdk_with_turi_env </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;&#160;</td>
+          <td class="paramname"><em>parsed_url</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>initialize the sdk with TRUI constomized environment variable</p>
+<p>will set the endpoint/region that used to configure the client</p>
+<p>this call will modify optional sdk_* members </p>
+
+</div>
+</div>
 <a id="gacd816d0bb628e05ad9e3387a29bf5809"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#gacd816d0bb628e05ad9e3387a29bf5809">&#9670;&nbsp;</a></span>insecure_ssl_cert_checks()</h2>
 
@@ -1178,11 +1180,11 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Lists all objects prefixed by a give s3 url.</p>
-<p>if s3_url points to a valid prefix, it will return the prefix's contents like a directory.</p>
+<p>if s3_url points to a valid prefix, it return the prefix's contents like a directory.</p>
 <p>foo/hello.txt</p>
 <p>list_objects("s3://foo") will return "foo/hello.txt"</p>
 <p>If s3_url points to an object it will just return the object.</p>
-<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a> object. If <a class="el" href="structturi_1_1list__objects__response.html#af577365458322fb05e09b782bcc257c6" title="Non-empty if there was an error. ">list_objects_response.error</a> is an empty string, it indicates success. Otherwise, it contains an error code. <a class="el" href="structturi_1_1list__objects__response.html#a76ffe7439c8f537e75bbad6f7e561356" title="A list of all the &quot;sub-directories&quot; found. ">list_objects_response.directories</a> indicate all "directories" stored with the requested prefix. And <a class="el" href="structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f" title="A list of all the objects found. ">list_objects_response.objects</a> indicates all regular objects stored with the requested prefix. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a> object. If <a class="el" href="structturi_1_1list__objects__response.html#af577365458322fb05e09b782bcc257c6" title="Non-empty if there was an error. ">list_objects_response.error</a> is an empty string, it indicates success. Otherwise, it contains an error code. <a class="el" href="structturi_1_1list__objects__response.html#a76ffe7439c8f537e75bbad6f7e561356" title="A list of all the &quot;sub-directories&quot; found. Encoded with url, see s3url. ">list_objects_response.directories</a> indicate all "directories" stored with the requested prefix. And <a class="el" href="structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f">list_objects_response.objects</a> indicates all regular objects stored with the requested prefix. </dd></dl>
 
 </div>
 </div>
@@ -1217,7 +1219,7 @@ Variables</h2></td></tr>
 <p>foo/hello.txt</p>
 <p>list_objects("s3://foo") will return simply "foo/" as a directory.</p>
 <p>See <a class="el" href="group__fileio.html#ga234867c61a56b4fa2622e0f672084360">list_directory()</a> and is_directory() for a more sensible implementation which behaves somewhat more file system like.</p>
-<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a> object. If <a class="el" href="structturi_1_1list__objects__response.html#af577365458322fb05e09b782bcc257c6" title="Non-empty if there was an error. ">list_objects_response.error</a> is an empty string, it indicates success. Otherwise, it contains an error code. <a class="el" href="structturi_1_1list__objects__response.html#a76ffe7439c8f537e75bbad6f7e561356" title="A list of all the &quot;sub-directories&quot; found. ">list_objects_response.directories</a> indicate all "directories" stored with the requested prefix. And <a class="el" href="structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f" title="A list of all the objects found. ">list_objects_response.objects</a> indicates all regular objects stored with the requested prefix. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a> object. If <a class="el" href="structturi_1_1list__objects__response.html#af577365458322fb05e09b782bcc257c6" title="Non-empty if there was an error. ">list_objects_response.error</a> is an empty string, it indicates success. Otherwise, it contains an error code. <a class="el" href="structturi_1_1list__objects__response.html#a76ffe7439c8f537e75bbad6f7e561356" title="A list of all the &quot;sub-directories&quot; found. Encoded with url, see s3url. ">list_objects_response.directories</a> indicate all "directories" stored with the requested prefix. And <a class="el" href="structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f">list_objects_response.objects</a> indicates all regular objects stored with the requested prefix. </dd></dl>
 
 </div>
 </div>
@@ -1341,8 +1343,8 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="gaf1f462276b68dd6b4dfec9a8a0e5213c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#gaf1f462276b68dd6b4dfec9a8a0e5213c">&#9670;&nbsp;</a></span>parse_s3url()</h2>
+<a id="ga6c6d447052f83d9bbc19c83ba1765351"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ga6c6d447052f83d9bbc19c83ba1765351">&#9670;&nbsp;</a></span>parse_s3url()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1350,7 +1352,7 @@ Variables</h2></td></tr>
         <tr>
           <td class="memname">bool turi::parse_s3url </td>
           <td>(</td>
-          <td class="paramtype">std::string&#160;</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
           <td class="paramname"><em>url</em>, </td>
         </tr>
         <tr>
@@ -1372,7 +1374,7 @@ Variables</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>This splits a URL of the form s3://[access_key_id]:[secret_key]:[endpoint][/bucket]/[object_name] into several pieces.</p>
+<p>This splits a URL of the form s3://[access_key_id]:[secret_key]:[endpoint/][bucket]/[object_name] into several pieces.</p>
 <p>endpoint and object_name are optional.</p>
 <p>Returns true on success, false on failure. </p>
 

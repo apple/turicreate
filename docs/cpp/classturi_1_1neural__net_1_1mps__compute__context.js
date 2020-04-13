@@ -10,6 +10,6 @@ var classturi_1_1neural__net_1_1mps__compute__context =
     [ "create_multilayer_perceptron_classifier", "classturi_1_1neural__net_1_1mps__compute__context.html#ac99e1bd8f28b42151036f3c0607cdd65", null ],
     [ "create_object_detector", "classturi_1_1neural__net_1_1mps__compute__context.html#a03c6887972c882079babb35c9e9ee346", null ],
     [ "create_style_transfer", "classturi_1_1neural__net_1_1mps__compute__context.html#a1ec8788aa44d3cfb643ab88dfdeaeb3e", null ],
-    [ "gpu_names", "classturi_1_1neural__net_1_1mps__compute__context.html#af92165f54204401f8e4573cafc3b032e", null ],
-    [ "memory_budget", "classturi_1_1neural__net_1_1mps__compute__context.html#a593c502bfb271751a0f6363260e39264", null ]
+    [ "memory_budget", "classturi_1_1neural__net_1_1mps__compute__context.html#a593c502bfb271751a0f6363260e39264", null ],
+    [ "print_training_device_info", "classturi_1_1neural__net_1_1mps__compute__context.html#af3e40ae217e95a8285b65d68d83662be", null ]
 ];

@@ -123,8 +123,6 @@ Namespaces</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceturi_1_1sgraph__compute"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1sgraph__compute.html">sgraph_compute</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:namespaceturi_1_1so__util"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1so__util.html">so_util</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:namespaceturi_1_1v2__block__impl"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi_1_1v2__block__impl.html">v2_block_impl</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -721,6 +719,8 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:gae775e307f6819797b5508a362f3a7853"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5bb1f3b0e8696eb7a9e54404d14ef3a"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ab5bb1f3b0e8696eb7a9e54404d14ef3a">get_curl_error_string</a> (int status)</td></tr>
 <tr class="separator:ab5bb1f3b0e8696eb7a9e54404d14ef3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga7cd9dba3d987eefb44d8a272d0030497"><td class="memItemLeft" align="right" valign="top">Aws::S3::S3Client&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga7cd9dba3d987eefb44d8a272d0030497">init_aws_sdk_with_turi_env</a> (<a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;parsed_url)</td></tr>
+<tr class="separator:ga7cd9dba3d987eefb44d8a272d0030497"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5ff7eac62175d5e5bac69a32ba1fee75">get_s3_file_last_modified</a> (const std::string &amp;url)</td></tr>
 <tr class="separator:ga5ff7eac62175d5e5bac69a32ba1fee75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5d061c799a90c5c6a03728ef3de03d07"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structturi_1_1list__objects__response.html">list_objects_response</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5d061c799a90c5c6a03728ef3de03d07">list_objects</a> (std::string s3_url, std::string proxy=&quot;&quot;)</td></tr>
@@ -733,14 +733,12 @@ template&lt;typename T &gt; </td></tr>
 <tr class="separator:ga717b2264a5a6bb05f6c2435b9cb4e7cc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga814071ebbbb49a2ba27bace0540a09db"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga814071ebbbb49a2ba27bace0540a09db">sanitize_s3_url</a> (const std::string &amp;url)</td></tr>
 <tr class="separator:ga814071ebbbb49a2ba27bace0540a09db"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gaf1f462276b68dd6b4dfec9a8a0e5213c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gaf1f462276b68dd6b4dfec9a8a0e5213c">parse_s3url</a> (std::string url, <a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;ret, std::string &amp;err_msg)</td></tr>
-<tr class="separator:gaf1f462276b68dd6b4dfec9a8a0e5213c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ga6c6d447052f83d9bbc19c83ba1765351"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga6c6d447052f83d9bbc19c83ba1765351">parse_s3url</a> (const std::string &amp;url, <a class="el" href="structturi_1_1s3url.html">s3url</a> &amp;ret, std::string &amp;err_msg)</td></tr>
+<tr class="separator:ga6c6d447052f83d9bbc19c83ba1765351"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga5a3799347c103129ae70805e0161a6ff"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga5a3799347c103129ae70805e0161a6ff">set_upload_timeout</a> (long timeout)</td></tr>
 <tr class="separator:ga5a3799347c103129ae70805e0161a6ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga2c38590a0ad13fa63e4d25a366b653a3">set_download_timeout</a> (long timeout)</td></tr>
 <tr class="separator:ga2c38590a0ad13fa63e4d25a366b653a3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:gabade0bf49f31a40150a079328ebc507b"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#gabade0bf49f31a40150a079328ebc507b">get_s3_error_code</a> (const std::string &amp;msg)</td></tr>
-<tr class="separator:gabade0bf49f31a40150a079328ebc507b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga77744d8898a95679d4f8c399767728b0"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga77744d8898a95679d4f8c399767728b0">sanitize_url</a> (std::string url)</td></tr>
 <tr class="separator:ga77744d8898a95679d4f8c399767728b0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga6a39d09df58879b880f0ba2102ec047f"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__fileio.html#ga6a39d09df58879b880f0ba2102ec047f">get_system_user_name</a> ()</td></tr>
@@ -1197,8 +1195,8 @@ template&lt;typename Key , typename T &gt; </td></tr>
 <tr class="separator:a2f8f75adab79449ded48cf73fff58ac7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef2291d40ba400f9fed0fbcd55c20810"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#aef2291d40ba400f9fed0fbcd55c20810">setup_pipeline_from_mldata</a> (CoreML::Pipeline &amp;pipeline, std::shared_ptr&lt; <a class="el" href="classturi_1_1ml__metadata.html">ml_metadata</a> &gt; metadata)</td></tr>
 <tr class="separator:aef2291d40ba400f9fed0fbcd55c20810"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac64c11cf579e1fd985c800e91134444b"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ac64c11cf579e1fd985c800e91134444b">export_object_detector_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, size_t num_classes, size_t num_predictions, <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> class_labels, const std::string &amp;input_name, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; options)</td></tr>
-<tr class="separator:ac64c11cf579e1fd985c800e91134444b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af021e660a3271556771760a2fc500ae9"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#af021e660a3271556771760a2fc500ae9">export_object_detector_model</a> (<a class="el" href="classturi_1_1neural__net_1_1pipeline__spec.html">neural_net::pipeline_spec</a> pipeline, size_t num_classes, size_t num_predictions, <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> class_labels, std::map&lt; std::string, <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a> &gt; options)</td></tr>
+<tr class="separator:af021e660a3271556771760a2fc500ae9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3c70151020bc0f0c9dddcfe8c83e7095"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#a3c70151020bc0f0c9dddcfe8c83e7095">export_activity_classifier_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t prediction_window, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;features, size_t lstm_hidden_layer_size, const <a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a> &amp;class_labels, const <a class="el" href="group__group__flexible__type__types.html#gaf154f20efeacc01dbbe38388a3067566">flex_string</a> &amp;target)</td></tr>
 <tr class="separator:a3c70151020bc0f0c9dddcfe8c83e7095"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8813fec2c1c8be93a8d50d2c11379a0"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; coreml::MLModelWrapper &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceturi.html#ae8813fec2c1c8be93a8d50d2c11379a0">export_style_transfer_model</a> (const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;nn_spec, size_t image_width, size_t image_height, bool include_flexible_shape, std::string content_feature, std::string style_feature, size_t num_styles)</td></tr>
@@ -1289,6 +1287,8 @@ Variables</h2></td></tr>
 <tr class="separator:gacdaf1bdee34727191c837f382bd50e1e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gaff6a4d5002d4a34ebd125418f019ef9f"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gaff6a4d5002d4a34ebd125418f019ef9f">SFRAME_GROUPBY_BUFFER_NUM_ROWS</a></td></tr>
 <tr class="separator:gaff6a4d5002d4a34ebd125418f019ef9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:gaac5db85f6ab9cbc4112c4c5297bd3d32"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gaac5db85f6ab9cbc4112c4c5297bd3d32">SFRAME_SHUFFLE_BUCKET_SIZE</a></td></tr>
+<tr class="separator:gaac5db85f6ab9cbc4112c4c5297bd3d32"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ga072fdea3589d0e65e0f0c71380864190"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#ga072fdea3589d0e65e0f0c71380864190">SFRAME_JOIN_BUFFER_NUM_CELLS</a></td></tr>
 <tr class="separator:ga072fdea3589d0e65e0f0c71380864190"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:gad8df491acb63b1cf8e7f8ab0d719eda8"><td class="memItemLeft" align="right" valign="top">size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="group__sframe__main.html#gad8df491acb63b1cf8e7f8ab0d719eda8">SFRAME_IO_READ_LOCK</a></td></tr>
@@ -2831,8 +2831,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ac64c11cf579e1fd985c800e91134444b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac64c11cf579e1fd985c800e91134444b">&#9670;&nbsp;</a></span>export_object_detector_model()</h2>
+<a id="af021e660a3271556771760a2fc500ae9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af021e660a3271556771760a2fc500ae9">&#9670;&nbsp;</a></span>export_object_detector_model()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2840,20 +2840,8 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname">std::shared_ptr&lt;coreml::MLModelWrapper&gt; turi::export_object_detector_model </td>
           <td>(</td>
-          <td class="paramtype">const <a class="el" href="classturi_1_1neural__net_1_1model__spec.html">neural_net::model_spec</a> &amp;&#160;</td>
-          <td class="paramname"><em>nn_spec</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>image_width</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>image_height</em>, </td>
+          <td class="paramtype"><a class="el" href="classturi_1_1neural__net_1_1pipeline__spec.html">neural_net::pipeline_spec</a>&#160;</td>
+          <td class="paramname"><em>pipeline</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -2872,12 +2860,6 @@ template&lt;typename T &gt; </div>
           <td></td>
           <td class="paramtype"><a class="el" href="group__group__flexible__type__types.html#ga6850eab6f89c527876575257a7c271ce">flex_list</a>&#160;</td>
           <td class="paramname"><em>class_labels</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>input_name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>

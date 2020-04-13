@@ -16,7 +16,6 @@ var modules =
     [ "Intrusive Performance Monitoring", "group__perfmonitoring.html", "group__perfmonitoring" ],
     [ "Process Management", "group__process__management.html", "group__process__management" ],
     [ "Shared Memory Interprocess Communication", "group__shmipc.html", "group__shmipc" ],
-    [ "Shared Library Utilities", "group__soutils.html", "group__soutils" ],
     [ "INI Utilities", "group__groupini.html", "group__groupini" ],
     [ "Utility Classes and Functions", "group__util.html", "group__util" ],
     [ "Random Number Generators", "group__random.html", "group__random" ],

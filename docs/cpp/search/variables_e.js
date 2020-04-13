@@ -2,6 +2,7 @@ var searchData=
 [
   ['objects',['objects',['../structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f',1,'turi::list_objects_response']]],
   ['objects_5flast_5fmodified',['objects_last_modified',['../structturi_1_1list__objects__response.html#a6793b0a8073a547dac56ba7f94e254be',1,'turi::list_objects_response']]],
+  ['objects_5fsize',['objects_size',['../structturi_1_1list__objects__response.html#afdddca6e651032c5df18dd36f614133c',1,'turi::list_objects_response']]],
   ['only_5ffirst_5fpass_5foptimizations',['only_first_pass_optimizations',['../structturi_1_1query__eval_1_1materialize__options.html#a830054794a0f743b470c57d4df736839',1,'turi::query_eval::materialize_options']]],
   ['only_5fraw_5fstring_5fsubstitutions',['only_raw_string_substitutions',['../structparser__impl_1_1parser__config.html#a6fc6e78d8ea8a634a9680e05a88e8cdf',1,'parser_impl::parser_config::only_raw_string_substitutions()'],['../structturi_1_1csv__line__tokenizer.html#aaf846b5d74d764338a030c57e96a49e7',1,'turi::csv_line_tokenizer::only_raw_string_substitutions()']]],
   ['operator_5fparameters',['operator_parameters',['../structturi_1_1query__eval_1_1planner__node.html#a688f43aa7dfa0149b60d0a3064c44697',1,'turi::query_eval::planner_node']]],
@@ -12,7 +13,7 @@ var searchData=
   ['original_5fcolumn_5ftype',['original_column_type',['../classturi_1_1v2_1_1ml__data__internal_1_1column__indexer.html#a00938b1792607d3cd15a3ce096114fe3',1,'turi::v2::ml_data_internal::column_indexer']]],
   ['output_5fcolumn_5fnames',['output_column_names',['../structturi_1_1query__eval_1_1materialize__options.html#a167eb34a9f5521ef2f03215565da003c',1,'turi::query_eval::materialize_options']]],
   ['output_5fcolumns',['output_columns',['../structturi_1_1csv__file__handling__options.html#a527136ea11dcd01fa4b28569c8099c54',1,'turi::csv_file_handling_options']]],
-  ['output_5fheight',['output_height',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#ae3a74999a354a277cf932361dc930bf0',1,'turi::neural_net::image_augmenter::options']]],
+  ['output_5fheight',['output_height',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#ae3a74999a354a277cf932361dc930bf0',1,'turi::neural_net::image_augmenter::options::output_height()'],['../structturi_1_1object__detection_1_1Config.html#a6ed536f223659e787dfe1c4c2a6ae68b',1,'turi::object_detection::Config::output_height()']]],
   ['output_5findex_5ffile',['output_index_file',['../structturi_1_1query__eval_1_1materialize__options.html#aa0f440f240f496d660d7ee423825a899',1,'turi::query_eval::materialize_options']]],
-  ['output_5fwidth',['output_width',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a5ac9025d711633ba51913a2f00b83212',1,'turi::neural_net::image_augmenter::options']]]
+  ['output_5fwidth',['output_width',['../structturi_1_1neural__net_1_1image__augmenter_1_1options.html#a5ac9025d711633ba51913a2f00b83212',1,'turi::neural_net::image_augmenter::options::output_width()'],['../structturi_1_1object__detection_1_1Config.html#ac658aeadbef5556a966fc61a90420554',1,'turi::object_detection::Config::output_width()']]]
 ];

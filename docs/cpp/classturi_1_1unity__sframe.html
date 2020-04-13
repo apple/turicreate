@@ -182,6 +182,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:af90eb8e284d7a918e7cc915c4b678f71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab89d828c768561276b28b3f7ae76f5da"><td class="memItemLeft" align="right" valign="top">std::list&lt; std::shared_ptr&lt; unity_sframe_base &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ab89d828c768561276b28b3f7ae76f5da">random_split</a> (float percent, uint64_t random_seed, bool exact=false) override</td></tr>
 <tr class="separator:ab89d828c768561276b28b3f7ae76f5da"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aeac0e4a6d0dbae66aafa703c9bad7871"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#aeac0e4a6d0dbae66aafa703c9bad7871">shuffle</a> () override</td></tr>
+<tr class="separator:aeac0e4a6d0dbae66aafa703c9bad7871"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb138bec2fe574ca70da5d8d74f34cc8"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; unity_sframe_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#acb138bec2fe574ca70da5d8d74f34cc8">sample</a> (float percent, uint64_t random_seed, bool exact=false) override</td></tr>
 <tr class="separator:acb138bec2fe574ca70da5d8d74f34cc8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad74ebfb6c6ff6a5c6e3dc8bec2a0cf45"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sframe.html#ad74ebfb6c6ff6a5c6e3dc8bec2a0cf45">materialize</a> () override</td></tr>
@@ -1725,6 +1727,33 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the private shared pointer to an sframe. </p>
+
+</div>
+</div>
+<a id="aeac0e4a6d0dbae66aafa703c9bad7871"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeac0e4a6d0dbae66aafa703c9bad7871">&#9670;&nbsp;</a></span>shuffle()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::shared_ptr&lt;unity_sframe_base&gt; turi::unity_sframe::shuffle </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Randomly shuffles the sframe.</p>
+<p>Returns a list of size 2 of the unity_sframes resulting from the split. </p>
 
 </div>
 </div>

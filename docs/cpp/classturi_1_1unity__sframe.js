@@ -51,6 +51,7 @@ var classturi_1_1unity__sframe =
     [ "select_columns", "classturi_1_1unity__sframe.html#a814ff0c9205a9ae32b4e146102b6f4d2", null ],
     [ "set_column_name", "classturi_1_1unity__sframe.html#a548dd4c73f557ec8d698d4f61a58617f", null ],
     [ "set_sframe", "classturi_1_1unity__sframe.html#af9f9ec8d04de7d05c5a30b5870ee4dd5", null ],
+    [ "shuffle", "classturi_1_1unity__sframe.html#aeac0e4a6d0dbae66aafa703c9bad7871", null ],
     [ "size", "classturi_1_1unity__sframe.html#a4f3fdfee4c929d59e0be098df6ddf424", null ],
     [ "stack", "classturi_1_1unity__sframe.html#af7ac6ce97f59af09f461783f0a1950c9", null ],
     [ "swap_columns", "classturi_1_1unity__sframe.html#a75259966494a8e1ad580f15a8f708e03", null ],

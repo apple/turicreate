@@ -10,6 +10,8 @@ var searchData=
   ['increment_5foperator',['increment_operator',['../structturi_1_1flexible__type__impl_1_1increment__operator.html',1,'turi::flexible_type_impl']]],
   ['index_5ffile_5finformation',['index_file_information',['../structturi_1_1index__file__information.html',1,'turi']]],
   ['indexed_5fcolumn_5fgroupby',['indexed_column_groupby',['../classturi_1_1indexed__column__groupby.html',1,'turi']]],
+  ['inferenceoutputbatch',['InferenceOutputBatch',['../structturi_1_1object__detection_1_1InferenceOutputBatch.html',1,'turi::object_detection']]],
+  ['inputbatch',['InputBatch',['../structturi_1_1object__detection_1_1InputBatch.html',1,'turi::object_detection']]],
   ['insert_5fiterator',['insert_iterator',['../structturi_1_1hopscotch__table_1_1insert__iterator.html',1,'turi::hopscotch_table']]],
   ['interpolator_5fvalue',['interpolator_value',['../classturi_1_1timeseries_1_1interpolator__value.html',1,'turi::timeseries']]],
   ['invalid_5ftype_5finstantiation_5fassert',['invalid_type_instantiation_assert',['../structturi_1_1flexible__type__impl_1_1invalid__type__instantiation__assert.html',1,'turi::flexible_type_impl']]],
@@ -23,5 +25,8 @@ var searchData=
   ['issue_5fdisect',['issue_disect',['../structcppipc_1_1detail_1_1issue__disect.html',1,'cppipc::detail']]],
   ['issue_5fdisect_3c_20argumenttuple_2c_20arg_2c_20args_2e_2e_2e_20_3e',['issue_disect&lt; ArgumentTuple, Arg, Args... &gt;',['../structcppipc_1_1detail_1_1issue__disect_3_01ArgumentTuple_00_01Arg_00_01Args_8_8_8_01_4.html',1,'cppipc::detail']]],
   ['issue_5fdisect_3c_20std_3a_3atuple_3c_3e_2c_20args_2e_2e_2e_20_3e',['issue_disect&lt; std::tuple&lt;&gt;, Args... &gt;',['../structcppipc_1_1detail_1_1issue__disect_3_01std_1_1tuple_3_4_00_01Args_8_8_8_01_4.html',1,'cppipc::detail']]],
-  ['iterator',['iterator',['../structturi_1_1gl__sarray__range_1_1iterator.html',1,'turi::gl_sarray_range::iterator'],['../structturi_1_1gl__sframe__range_1_1iterator.html',1,'turi::gl_sframe_range::iterator'],['../structturi_1_1sframe__rows_1_1iterator.html',1,'turi::sframe_rows::iterator'],['../structturi_1_1hopscotch__table_1_1iterator.html',1,'turi::hopscotch_table&lt; T, Hash, KeyEqual &gt;::iterator']]]
+  ['iterator',['iterator',['../structturi_1_1gl__sarray__range_1_1iterator.html',1,'turi::gl_sarray_range::iterator'],['../structturi_1_1gl__sframe__range_1_1iterator.html',1,'turi::gl_sframe_range::iterator'],['../structturi_1_1sframe__rows_1_1iterator.html',1,'turi::sframe_rows::iterator'],['../structturi_1_1hopscotch__table_1_1iterator.html',1,'turi::hopscotch_table&lt; T, Hash, KeyEqual &gt;::iterator'],['../classturi_1_1neural__net_1_1Iterator.html',1,'turi::neural_net::Iterator&lt; T &gt;']]],
+  ['iterator_3c_20databatch_20_3e',['Iterator&lt; DataBatch &gt;',['../classturi_1_1neural__net_1_1Iterator.html',1,'turi::neural_net']]],
+  ['iterator_3c_20std_3a_3aunique_5fptr_3c_20checkpoint_20_3e_20_3e',['Iterator&lt; std::unique_ptr&lt; Checkpoint &gt; &gt;',['../classturi_1_1neural__net_1_1Iterator.html',1,'turi::neural_net']]],
+  ['iteratorpublisher',['IteratorPublisher',['../classturi_1_1neural__net_1_1IteratorPublisher.html',1,'turi::neural_net']]]
 ];

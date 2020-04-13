@@ -105,8 +105,8 @@ Public Types</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a648e436c31bfc68d4c7269a9d87c502d"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a648e436c31bfc68d4c7269a9d87c502d">gpu_names</a> () const =0</td></tr>
-<tr class="separator:a648e436c31bfc68d4c7269a9d87c502d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a455bb18ba898f08742fa3fe7cc665089"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a455bb18ba898f08742fa3fe7cc665089">print_training_device_info</a> () const =0</td></tr>
+<tr class="separator:a455bb18ba898f08742fa3fe7cc665089"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afb86816fb369ee6033195785ef956b97"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#afb86816fb369ee6033195785ef956b97">memory_budget</a> () const =0</td></tr>
 <tr class="separator:afb86816fb369ee6033195785ef956b97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aafa4af29e68b766f44794d53f86a0b98"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classturi_1_1neural__net_1_1model__backend.html">model_backend</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1compute__context.html#aafa4af29e68b766f44794d53f86a0b98">create_object_detector</a> (int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out, const float_array_map &amp;config, const float_array_map &amp;weights)</td></tr>
@@ -203,7 +203,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#adbbf4ae28159d91a0c0d9b794805d541">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a333f5ba3c6e8b15bd12a349f4e90b5b6">turi::neural_net::tf_compute_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00134">134</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00133">133</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
 
 </div>
 </div>
@@ -250,7 +250,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#abb445f574065dcc796d880e18ddf02ba">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#aed93186e844980c020d705c18b39eb39">turi::neural_net::tf_compute_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00159">159</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00158">158</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
 
 </div>
 </div>
@@ -281,7 +281,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a2da8e45adf3b667d77acd1e1c69e9fe6">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a22bb0103b6d8c04e6bebee2110a230cd">turi::neural_net::tf_compute_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00168">168</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00167">167</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
 
 </div>
 </div>
@@ -338,7 +338,7 @@ Static Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Creates a multilevel perceptron classifier. </p>
 
-<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00174">174</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00173">173</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
 
 </div>
 </div>
@@ -421,7 +421,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a03c6887972c882079babb35c9e9ee346">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a381d4341845163a6fc6b09a6c2837f9e">turi::neural_net::tf_compute_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00122">122</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00121">121</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
 
 </div>
 </div>
@@ -462,35 +462,7 @@ Static Public Member Functions</h2></td></tr>
 
 <p>Reimplemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a1ec8788aa44d3cfb643ab88dfdeaeb3e">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a6cee1c3d2583dd6f7dc33530dedca55f">turi::neural_net::tf_compute_context</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00147">147</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
-
-</div>
-</div>
-<a id="a648e436c31bfc68d4c7269a9d87c502d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a648e436c31bfc68d4c7269a9d87c502d">&#9670;&nbsp;</a></span>gpu_names()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual std::vector&lt;std::string&gt; turi::neural_net::compute_context::gpu_names </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns the (human readable) names of the GPUs used by this context, for reporting to the user. </p>
-
-<p>Implemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#af92165f54204401f8e4573cafc3b032e">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a1db7a24c9f57cdcd6482b7000cf677ae">turi::neural_net::tf_compute_context</a>.</p>
+<p class="definition">Definition at line <a class="el" href="compute__context_8hpp_source.html#l00146">146</a> of file <a class="el" href="compute__context_8hpp_source.html">compute_context.hpp</a>.</p>
 
 </div>
 </div>
@@ -520,6 +492,34 @@ Static Public Member Functions</h2></td></tr>
 <p>Returns the maximum memory size in bytes that neural networks should allocate, typically used to determine batch sizes (often heuristically). </p>
 
 <p>Implemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#a593c502bfb271751a0f6363260e39264">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#aed12e05ab080c0a8b4a20aede68b7262">turi::neural_net::tf_compute_context</a>.</p>
+
+</div>
+</div>
+<a id="a455bb18ba898f08742fa3fe7cc665089"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a455bb18ba898f08742fa3fe7cc665089">&#9670;&nbsp;</a></span>print_training_device_info()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual void turi::neural_net::compute_context::print_training_device_info </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Prints (human readable) device information. </p>
+
+<p>Implemented in <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#af3e40ae217e95a8285b65d68d83662be">turi::neural_net::mps_compute_context</a>, and <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a69776a84603ee5eb81ae999ac0c61ed9">turi::neural_net::tf_compute_context</a>.</p>
 
 </div>
 </div>

@@ -11,6 +11,7 @@ var searchData=
   ['file_5fline_5fcount_5festimator',['file_line_count_estimator',['../classturi_1_1file__line__count__estimator.html',1,'turi']]],
   ['file_5flogger',['file_logger',['../classfile__logger.html',1,'']]],
   ['file_5fownership_5fhandle',['file_ownership_handle',['../structturi_1_1fileio_1_1file__ownership__handle.html',1,'turi::fileio']]],
+  ['fileinfo',['FileInfo',['../structturi_1_1fileio_1_1s3_1_1FileInfo.html',1,'turi::fileio::s3']]],
   ['fill_5fin_5fargs',['fill_in_args',['../structturi_1_1toolkit__function__wrapper__impl_1_1fill__in__args.html',1,'turi::toolkit_function_wrapper_impl']]],
   ['fill_5fnamed_5fin_5fargs',['fill_named_in_args',['../structturi_1_1toolkit__function__wrapper__impl_1_1fill__named__in__args.html',1,'turi::toolkit_function_wrapper_impl']]],
   ['first_5fnested_5ftype',['first_nested_type',['../structturi_1_1first__nested__type.html',1,'turi']]],
@@ -54,5 +55,7 @@ var searchData=
   ['function_5fargs_5fto_5fmpl_5fvector',['function_args_to_mpl_vector',['../structturi_1_1toolkit__function__wrapper__impl_1_1function__args__to__mpl__vector.html',1,'turi::toolkit_function_wrapper_impl']]],
   ['function_5fargs_5fto_5ftuple',['function_args_to_tuple',['../structcppipc_1_1function__args__to__tuple.html',1,'cppipc']]],
   ['function_5fclosure_5finfo',['function_closure_info',['../structturi_1_1function__closure__info.html',1,'turi']]],
-  ['function_5foutput_5fiterator',['function_output_iterator',['../classturi_1_1function__output__iterator.html',1,'turi']]]
+  ['function_5foutput_5fiterator',['function_output_iterator',['../classturi_1_1function__output__iterator.html',1,'turi']]],
+  ['futuresstream',['FuturesStream',['../classturi_1_1neural__net_1_1FuturesStream.html',1,'turi::neural_net']]],
+  ['futuressubscriber',['FuturesSubscriber',['../classturi_1_1neural__net_1_1FuturesSubscriber.html',1,'turi::neural_net']]]
 ];

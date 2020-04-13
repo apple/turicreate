@@ -98,12 +98,14 @@ std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" hre
 <tr class="separator:af577365458322fb05e09b782bcc257c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a76ffe7439c8f537e75bbad6f7e561356"><td class="memItemLeft" align="right" valign="top"><a id="a76ffe7439c8f537e75bbad6f7e561356"></a>
 std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1list__objects__response.html#a76ffe7439c8f537e75bbad6f7e561356">directories</a></td></tr>
-<tr class="memdesc:a76ffe7439c8f537e75bbad6f7e561356"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of all the "sub-directories" found. <br /></td></tr>
+<tr class="memdesc:a76ffe7439c8f537e75bbad6f7e561356"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of all the "sub-directories" found. Encoded with url, see <a class="el" href="structturi_1_1s3url.html">s3url</a>. <br /></td></tr>
 <tr class="separator:a76ffe7439c8f537e75bbad6f7e561356"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5f2adce2ab92d07e7920daacabe97d8f"><td class="memItemLeft" align="right" valign="top"><a id="a5f2adce2ab92d07e7920daacabe97d8f"></a>
-std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f">objects</a></td></tr>
-<tr class="memdesc:a5f2adce2ab92d07e7920daacabe97d8f"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of all the objects found. <br /></td></tr>
+<tr class="memitem:a5f2adce2ab92d07e7920daacabe97d8f"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f">objects</a></td></tr>
 <tr class="separator:a5f2adce2ab92d07e7920daacabe97d8f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afdddca6e651032c5df18dd36f614133c"><td class="memItemLeft" align="right" valign="top"><a id="afdddca6e651032c5df18dd36f614133c"></a>
+std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1list__objects__response.html#afdddca6e651032c5df18dd36f614133c">objects_size</a></td></tr>
+<tr class="memdesc:afdddca6e651032c5df18dd36f614133c"><td class="mdescLeft">&#160;</td><td class="mdescRight">A list of all the objects size. <br /></td></tr>
+<tr class="separator:afdddca6e651032c5df18dd36f614133c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6793b0a8073a547dac56ba7f94e254be"><td class="memItemLeft" align="right" valign="top"><a id="a6793b0a8073a547dac56ba7f94e254be"></a>
 std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structturi_1_1list__objects__response.html#a6793b0a8073a547dac56ba7f94e254be">objects_last_modified</a></td></tr>
 <tr class="memdesc:a6793b0a8073a547dac56ba7f94e254be"><td class="mdescLeft">&#160;</td><td class="mdescRight">Last modified time for the objects. <br /></td></tr>
@@ -112,8 +114,26 @@ std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bott
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Return type of list_objects; </p>
 
-<p class="definition">Definition at line <a class="el" href="s3__api_8hpp_source.html#l00069">69</a> of file <a class="el" href="s3__api_8hpp_source.html">s3_api.hpp</a>.</p>
-</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<p class="definition">Definition at line <a class="el" href="s3__api_8hpp_source.html#l00131">131</a> of file <a class="el" href="s3__api_8hpp_source.html">s3_api.hpp</a>.</p>
+</div><h2 class="groupheader">Member Data Documentation</h2>
+<a id="a5f2adce2ab92d07e7920daacabe97d8f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5f2adce2ab92d07e7920daacabe97d8f">&#9670;&nbsp;</a></span>objects</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::vector&lt;std::string&gt; turi::list_objects_response::objects</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>A list of all the objects found. Encoded with url, see <a class="el" href="structturi_1_1s3url.html">s3url</a>. this should be really called object_urls; </p>
+
+<p class="definition">Definition at line <a class="el" href="s3__api_8hpp_source.html#l00138">138</a> of file <a class="el" href="s3__api_8hpp_source.html">s3_api.hpp</a>.</p>
+
+</div>
+</div>
+<hr/>The documentation for this struct was generated from the following file:<ul>
 <li>core/storage/fileio/<a class="el" href="s3__api_8hpp_source.html">s3_api.hpp</a></li>
 </ul>
 </div><!-- contents -->

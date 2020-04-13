@@ -13,7 +13,6 @@ var searchData=
   ['sframe_5fconfig',['sframe_config',['../namespaceturi_1_1sframe__config.html',1,'turi']]],
   ['sframe_5fsaving_5fimpl',['sframe_saving_impl',['../namespaceturi_1_1sframe__saving__impl.html',1,'turi']]],
   ['sgraph_5fcompute',['sgraph_compute',['../namespaceturi_1_1sgraph__compute.html',1,'turi']]],
-  ['so_5futil',['so_util',['../namespaceturi_1_1so__util.html',1,'turi']]],
   ['turi',['turi',['../namespaceturi.html',1,'']]],
   ['v2_5fblock_5fimpl',['v2_block_impl',['../namespaceturi_1_1v2__block__impl.html',1,'turi']]],
   ['vector_5freserved_5fflags',['VECTOR_RESERVED_FLAGS',['../namespaceturi_1_1v2__block__impl_1_1VECTOR__RESERVED__FLAGS.html',1,'turi::v2_block_impl']]]

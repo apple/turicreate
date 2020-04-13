@@ -1201,12 +1201,14 @@
     
                                 <section class="normal markdown-section">
                                 
-                                <h1 id="how-does-this-work"><a name="how-does-this-work" class="plugin-anchor" href="#how-does-this-work"><i class="fa fa-link" aria-hidden="true"></i></a>How Does this Work?</h1><p>Training and making predictions for a sound classifier model is a three
-stage process:
-1 - Signal preprocessing
-2 - A pretrained neural network is used to extract deep features
-3 - A custom neural network is used to make the predictions
-Details below about each stage.</p><h2 id="signal-preprocessing-pipeline-stage"><a name="signal-preprocessing-pipeline-stage" class="plugin-anchor" href="#signal-preprocessing-pipeline-stage"><i class="fa fa-link" aria-hidden="true"></i></a>Signal Preprocessing Pipeline Stage</h2><p>Several audio transformations happen during this stage. For someone without
+                                <h1 id="how-does-this-work"><a name="how-does-this-work" class="plugin-anchor" href="#how-does-this-work"><i class="fa fa-link" aria-hidden="true"></i></a>How Does This Work?</h1><p>Training and making predictions for a sound classifier model is a three
+stage process:</p><ol><li>Signal preprocessing
+</li>
+<li>A pretrained neural network is used to extract deep features
+</li>
+<li>A custom neural network is used to make the predictions
+</li></ol>
+<p>Details below about each stage.</p><h2 id="signal-preprocessing-pipeline-stage"><a name="signal-preprocessing-pipeline-stage" class="plugin-anchor" href="#signal-preprocessing-pipeline-stage"><i class="fa fa-link" aria-hidden="true"></i></a>Signal Preprocessing Pipeline Stage</h2><p>Several audio transformations happen during this stage. For someone without
 sound domain knowledge, this is probably the most complicated part.
 Nothing about this stage is updated based on the input data (i.e. nothing
 is learned in this stage).</p><p>At a high level, the preprocessing pipeline does the following:</p><ul><li>The raw pulse code modulation data from the wav file is converted to
@@ -1231,7 +1233,7 @@ floats on a [-1.0, +1.0] scale.
 <p>The preprocessing pipeline takes 975ms worth of audio as input (exact
 input length depends on sample rate) and produces an array of shape
 (96, 64).</p><h2 id="vggish-feature-extraction-stage"><a name="vggish-feature-extraction-stage" class="plugin-anchor" href="#vggish-feature-extraction-stage"><i class="fa fa-link" aria-hidden="true"></i></a>VGGish Feature Extraction Stage</h2><p>VGGish is a pretrained <a href="https://en.wikipedia.org/wiki/Convolutional_neural_network" target="_blank">Convolutional Neural Network</a> from Google,
-see <a href="https://ai.google/research/pubs/pub45611" target="_blank">their paper</a> and <a href="https://github.com/tensorflow/models/tree/master/research/audioset" target="_blank">their GitHub page</a> for more details. As the name suggests, the architecture of
+see <a href="https://ai.google/research/pubs/pub45611" target="_blank">their paper</a> and <a href="https://github.com/tensorflow/models/tree/master/research/audioset/vggish" target="_blank">their GitHub page</a> for more details. As the name suggests, the architecture of
 this network is inspired by the famous VGG networks used for image
 classification. The network consists of a series of convolution and
 activation layers, optionally followed by a max pooling layer.
@@ -1240,7 +1242,7 @@ last three layers of the original VGGish model. We use the widest
 layer, from the original network, as our input data for the final
 stage. This modified VGGish model outputs a double vector of length
 12,288. On non-Linux systems, the model has also been eight bit
-quantized, to reduce its size.</p><h2 id="custom-neural-network-stage"><a name="custom-neural-network-stage" class="plugin-anchor" href="#custom-neural-network-stage"><i class="fa fa-link" aria-hidden="true"></i></a>Custom Neural Network Stage</h2><p>This is the only stage which is updated based on the input data.
+quantized to reduce its size.</p><h2 id="custom-neural-network-stage"><a name="custom-neural-network-stage" class="plugin-anchor" href="#custom-neural-network-stage"><i class="fa fa-link" aria-hidden="true"></i></a>Custom Neural Network Stage</h2><p>This is the only stage which is updated based on the input data.
 During training of a sound classifier this model is trained using
 the features from VGGish and the input labels. During prediction,
 only a forward pass is done using this network. This custom neural
@@ -1290,7 +1292,7 @@ equal to the number of labels.</p>
     <script>
         var gitbook = gitbook || [];
         gitbook.push(function() {
-            gitbook.page.hasChanged({"page":{"title":"How it works","level":"1.3.4.1","depth":3,"next":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"sound_classifier/advanced-usage.md","ref":"sound_classifier/advanced-usage.md","articles":[]},"previous":{"title":"Sound Classification","level":"1.3.4","depth":2,"path":"sound_classifier/README.md","ref":"sound_classifier/README.md","articles":[{"title":"How it works","level":"1.3.4.1","depth":3,"path":"sound_classifier/how-it-works.md","ref":"sound_classifier/how-it-works.md","articles":[]},{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"sound_classifier/advanced-usage.md","ref":"sound_classifier/advanced-usage.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.4.3","depth":3,"path":"sound_classifier/export-coreml.md","ref":"sound_classifier/export-coreml.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sound_classifier/how-it-works.md","mtime":"2019-12-05T01:23:25.501Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2020-02-10T22:52:07.454Z"},"basePath":"..","book":{"language":""}});
+            gitbook.page.hasChanged({"page":{"title":"How it works","level":"1.3.4.1","depth":3,"next":{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"sound_classifier/advanced-usage.md","ref":"sound_classifier/advanced-usage.md","articles":[]},"previous":{"title":"Sound Classification","level":"1.3.4","depth":2,"path":"sound_classifier/README.md","ref":"sound_classifier/README.md","articles":[{"title":"How it works","level":"1.3.4.1","depth":3,"path":"sound_classifier/how-it-works.md","ref":"sound_classifier/how-it-works.md","articles":[]},{"title":"Advanced Usage","level":"1.3.4.2","depth":3,"path":"sound_classifier/advanced-usage.md","ref":"sound_classifier/advanced-usage.md","articles":[]},{"title":"Deployment to Core ML","level":"1.3.4.3","depth":3,"path":"sound_classifier/export-coreml.md","ref":"sound_classifier/export-coreml.md","articles":[]}]},"dir":"ltr"},"config":{"gitbook":"3.2.0","theme":"default","variables":{},"plugins":["collapsible-menu@1.0.2","anchors@0.5.0","mathjax"],"pluginsConfig":{"collapsible-menu":{},"search":{},"lunr":{"maxIndexSize":1000000,"ignoreSpecialCharacters":false},"fontsettings":{"theme":"white","family":"sans","size":2},"fontSettings":{"theme":"white","family":"sans","size":2},"highlight":{},"mathjax":{"forceSVG":false,"version":"2.6-latest"},"sharing":{"facebook":true,"twitter":true,"google":false,"weibo":false,"instapaper":false,"vk":false,"all":["facebook","google","twitter","weibo","instapaper"]},"theme-default":{"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"},"showLevel":false},"anchors":{}},"structure":{"langs":"LANGS.md","readme":"README.md","glossary":"GLOSSARY.md","summary":"SUMMARY.md"},"pdf":{"pageNumbers":true,"fontSize":12,"fontFamily":"Arial","paperSize":"a4","chapterMark":"pagebreak","pageBreaksBefore":"/","margin":{"right":62,"left":62,"top":56,"bottom":56}},"styles":{"website":"styles/website.css","pdf":"styles/pdf.css","epub":"styles/epub.css","mobi":"styles/mobi.css","ebook":"styles/ebook.css","print":"styles/print.css"}},"file":{"path":"sound_classifier/how-it-works.md","mtime":"2020-03-13T21:08:52.597Z","type":"markdown"},"gitbook":{"version":"3.2.0","time":"2020-04-13T07:35:17.282Z"},"basePath":"..","book":{"language":""}});
         });
     </script>
 </div>

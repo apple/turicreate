@@ -7,6 +7,7 @@ var classturi_1_1block__cache =
     [ "file_handle_cache_misses", "classturi_1_1block__cache.html#a4c315773a511b208e14a12aab4168701", null ],
     [ "get_instance", "classturi_1_1block__cache.html#a28db5537fb853bcdf4d22b1963a25ea8", null ],
     [ "get_max_capacity", "classturi_1_1block__cache.html#ac11f52be0ad778ce54f273ea1260a39f", null ],
+    [ "hold_cache_provider", "classturi_1_1block__cache.html#af939418d32b74b01740900da530d9d08", null ],
     [ "init", "classturi_1_1block__cache.html#a51f70490d65ec329f88bbb9a2d7ef3d0", null ],
     [ "read", "classturi_1_1block__cache.html#a87aed0f16ade6c386566e35b289624ca", null ],
     [ "read", "classturi_1_1block__cache.html#a794b417e829f6d7a86314dba2ac7fe7e", null ],

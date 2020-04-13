@@ -119,6 +119,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ac11f52be0ad778ce54f273ea1260a39f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abe27283eaa8d829ea1a87e1ec8327a5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1block__cache.html#abe27283eaa8d829ea1a87e1ec8327a5f">set_max_capacity</a> (size_t)</td></tr>
 <tr class="separator:abe27283eaa8d829ea1a87e1ec8327a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af939418d32b74b01740900da530d9d08"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1block__cache.html#af939418d32b74b01740900da530d9d08">hold_cache_provider</a> (std::shared_ptr&lt; const <a class="el" href="classturi_1_1fileio_1_1fixed__size__cache__manager.html">fileio::fixed_size_cache_manager</a> &gt; instance)</td></tr>
+<tr class="separator:af939418d32b74b01740900da530d9d08"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
 Static Public Member Functions</h2></td></tr>
@@ -136,7 +138,7 @@ Static Public Member Functions</h2></td></tr>
 <h2>Design Notes </h2>
 <p>We will like these "interesting" distributed file system properties to not be true when the <a class="el" href="classturi_1_1block__cache.html">block_cache</a> is merely used concurrently. So a bit of care is needed to ensure atomicity, at least within the context of the same <a class="el" href="classturi_1_1block__cache.html">block_cache</a> object. Essentially we want write-once, but arbitrary parallel reads semantics. </p>
 
-<p class="definition">Definition at line <a class="el" href="block__cache_8hpp_source.html#l00052">52</a> of file <a class="el" href="block__cache_8hpp_source.html">block_cache.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="block__cache_8hpp_source.html#l00053">53</a> of file <a class="el" href="block__cache_8hpp_source.html">block_cache.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a3b6c68e6cb276bb87919393601e357de"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3b6c68e6cb276bb87919393601e357de">&#9670;&nbsp;</a></span>block_cache()</h2>
@@ -160,7 +162,8 @@ Static Public Member Functions</h2></td></tr>
   </tr>
 </table>
 </div><div class="memdoc">
-<p>Constructs the block cache. init must be called before the <a class="el" href="classturi_1_1block__cache.html">block_cache</a> can be used. </p>
+<p>Constructs the block cache. init must be called before the <a class="el" href="classturi_1_1block__cache.html">block_cache</a> can be used.</p>
+<p>make sure the cache manager is detroyed after all cache files are deleted. </p>
 
 </div>
 </div>
@@ -274,6 +277,35 @@ Static Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Sets the maximum number of files managed. If 0, there is no max capacity. </p>
+
+</div>
+</div>
+<a id="af939418d32b74b01740900da530d9d08"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af939418d32b74b01740900da530d9d08">&#9670;&nbsp;</a></span>hold_cache_provider()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::block_cache::hold_cache_provider </td>
+          <td>(</td>
+          <td class="paramtype">std::shared_ptr&lt; const <a class="el" href="classturi_1_1fileio_1_1fixed__size__cache__manager.html">fileio::fixed_size_cache_manager</a> &gt;&#160;</td>
+          <td class="paramname"><em>instance</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>dependency injection, meaning, underlying cache provider instance should be released after <a class="el" href="classturi_1_1block__cache.html">block_cache</a> singleton is released. </p>
+
+<p class="definition">Definition at line <a class="el" href="block__cache_8hpp_source.html#l00175">175</a> of file <a class="el" href="block__cache_8hpp_source.html">block_cache.hpp</a>.</p>
 
 </div>
 </div>

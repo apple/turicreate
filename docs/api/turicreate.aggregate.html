@@ -1,0 +1,244 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>aggregate &mdash; Turi Create API 6.2 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="Turi Create API 6.2 documentation" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#logging">logging</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.utils.html#runtime">runtime</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li><code class="docutils literal"><span class="pre">aggregate</span></code></li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="module-turicreate.aggregate">
+<span id="aggregate"></span><h1><code class="xref py py-mod docutils literal"><span class="pre">aggregate</span></code><a class="headerlink" href="#module-turicreate.aggregate" title="Permalink to this headline">¶</a></h1>
+<p>Builtin aggregators for SFrame groupby operator.</p>
+<div class="section" id="classifier-metrics">
+<h2>classifier metrics<a class="headerlink" href="#classifier-metrics" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="longtable docutils">
+<colgroup>
+<col width="10%" />
+<col width="90%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.ARGMAX.html#turicreate.aggregate.ARGMAX" title="turicreate.aggregate.ARGMAX"><code class="xref py py-obj docutils literal"><span class="pre">ARGMAX</span></code></a></td>
+<td>Builtin arg maximum aggregator for groupby</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.ARGMIN.html#turicreate.aggregate.ARGMIN" title="turicreate.aggregate.ARGMIN"><code class="xref py py-obj docutils literal"><span class="pre">ARGMIN</span></code></a></td>
+<td>Builtin arg minimum aggregator for groupby</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.AVG.html#turicreate.aggregate.AVG" title="turicreate.aggregate.AVG"><code class="xref py py-obj docutils literal"><span class="pre">AVG</span></code></a></td>
+<td>Builtin average aggregator for groupby.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.CONCAT.html#turicreate.aggregate.CONCAT" title="turicreate.aggregate.CONCAT"><code class="xref py py-obj docutils literal"><span class="pre">CONCAT</span></code></a></td>
+<td>Builtin aggregator that combines values from one or two columns in one group into either a dictionary value or list value.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.COUNT.html#turicreate.aggregate.COUNT" title="turicreate.aggregate.COUNT"><code class="xref py py-obj docutils literal"><span class="pre">COUNT</span></code></a></td>
+<td>Builtin count aggregator for groupby</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.COUNT_DISTINCT.html#turicreate.aggregate.COUNT_DISTINCT" title="turicreate.aggregate.COUNT_DISTINCT"><code class="xref py py-obj docutils literal"><span class="pre">COUNT_DISTINCT</span></code></a></td>
+<td>Builtin unique counter for groupby.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.DISTINCT.html#turicreate.aggregate.DISTINCT" title="turicreate.aggregate.DISTINCT"><code class="xref py py-obj docutils literal"><span class="pre">DISTINCT</span></code></a></td>
+<td>Builtin distinct values for groupby.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.FREQ_COUNT.html#turicreate.aggregate.FREQ_COUNT" title="turicreate.aggregate.FREQ_COUNT"><code class="xref py py-obj docutils literal"><span class="pre">FREQ_COUNT</span></code></a></td>
+<td>Builtin frequency counts for groupby.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.MAX.html#turicreate.aggregate.MAX" title="turicreate.aggregate.MAX"><code class="xref py py-obj docutils literal"><span class="pre">MAX</span></code></a></td>
+<td>Builtin maximum aggregator for groupby</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.MEAN.html#turicreate.aggregate.MEAN" title="turicreate.aggregate.MEAN"><code class="xref py py-obj docutils literal"><span class="pre">MEAN</span></code></a></td>
+<td>Builtin average aggregator for groupby.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.MIN.html#turicreate.aggregate.MIN" title="turicreate.aggregate.MIN"><code class="xref py py-obj docutils literal"><span class="pre">MIN</span></code></a></td>
+<td>Builtin minimum aggregator for groupby</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.QUANTILE.html#turicreate.aggregate.QUANTILE" title="turicreate.aggregate.QUANTILE"><code class="xref py py-obj docutils literal"><span class="pre">QUANTILE</span></code></a></td>
+<td>Builtin approximate quantile aggregator for groupby.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.SELECT_ONE.html#turicreate.aggregate.SELECT_ONE" title="turicreate.aggregate.SELECT_ONE"><code class="xref py py-obj docutils literal"><span class="pre">SELECT_ONE</span></code></a></td>
+<td>Builtin aggregator for groupby which selects one row in the group.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.STD.html#turicreate.aggregate.STD" title="turicreate.aggregate.STD"><code class="xref py py-obj docutils literal"><span class="pre">STD</span></code></a></td>
+<td>Builtin standard deviation aggregator for groupby.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.STDV.html#turicreate.aggregate.STDV" title="turicreate.aggregate.STDV"><code class="xref py py-obj docutils literal"><span class="pre">STDV</span></code></a></td>
+<td>Builtin standard deviation aggregator for groupby.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.SUM.html#turicreate.aggregate.SUM" title="turicreate.aggregate.SUM"><code class="xref py py-obj docutils literal"><span class="pre">SUM</span></code></a></td>
+<td>Builtin sum aggregator for groupby.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.aggregate.VAR.html#turicreate.aggregate.VAR" title="turicreate.aggregate.VAR"><code class="xref py py-obj docutils literal"><span class="pre">VAR</span></code></a></td>
+<td>Builtin variance aggregator for groupby.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.VARIANCE.html#turicreate.aggregate.VARIANCE" title="turicreate.aggregate.VARIANCE"><code class="xref py py-obj docutils literal"><span class="pre">VARIANCE</span></code></a></td>
+<td>Builtin variance aggregator for groupby.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Apr 13, 2020.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'6.2',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Data &mdash; Turi Create API 6.1 documentation</title>
+  <title>Data &mdash; Turi Create API 6.2 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="Turi Create API 6.1 documentation" href="index.html"/>
+    <link rel="top" title="Turi Create API 6.2 documentation" href="index.html"/>
         <link rel="next" title="turicreate.SArray" href="generated/turicreate.SArray.html"/>
         <link rel="prev" title="Turi Create API Documentation" href="index.html"/> 
 
@@ -141,7 +141,7 @@ documentation, along with a small number of simple examples.</p>
 <td>An immutable, homogeneously typed array object backed by persistent storage.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/turicreate.SFrame.html#turicreate.SFrame" title="turicreate.SFrame"><code class="xref py py-obj docutils literal"><span class="pre">SFrame</span></code></a></td>
-<td>A tabular, column-mutable dataframe object that can scale to big data.</td>
+<td>SFrame means scalable data frame.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.SGraph.html#turicreate.SGraph" title="turicreate.SGraph"><code class="xref py py-obj docutils literal"><span class="pre">SGraph</span></code></a></td>
 <td>A scalable graph data structure.</td>
@@ -186,14 +186,23 @@ documentation, along with a small number of simple examples.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.Sketch.html#turicreate.Sketch" title="turicreate.Sketch"><code class="xref py py-obj docutils literal"><span class="pre">Sketch</span></code></a></td>
 <td>The Sketch object contains a sketch of a single SArray (a column of an SFrame).</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.aggregate.html#module-turicreate.aggregate" title="turicreate.aggregate"><code class="xref py py-obj docutils literal"><span class="pre">aggregate</span></code></a></td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.aggregate.html#module-turicreate.aggregate" title="turicreate.aggregate"><code class="xref py py-obj docutils literal"><span class="pre">aggregate</span></code></a></td>
 <td>Builtin aggregators for SFrame groupby operator.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.load_sframe.html#turicreate.load_sframe" title="turicreate.load_sframe"><code class="xref py py-obj docutils literal"><span class="pre">load_sframe</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.load_sarray.html#turicreate.load_sarray" title="turicreate.load_sarray"><code class="xref py py-obj docutils literal"><span class="pre">load_sarray</span></code></a></td>
+<td>Load an SArray.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.load_sframe.html#turicreate.load_sframe" title="turicreate.load_sframe"><code class="xref py py-obj docutils literal"><span class="pre">load_sframe</span></code></a></td>
 <td>Load an SFrame.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.load_sgraph.html#turicreate.load_sgraph" title="turicreate.load_sgraph"><code class="xref py py-obj docutils literal"><span class="pre">load_sgraph</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.load_sgraph.html#turicreate.load_sgraph" title="turicreate.load_sgraph"><code class="xref py py-obj docutils literal"><span class="pre">load_sgraph</span></code></a></td>
 <td>Load SGraph from text file or previously saved SGraph binary.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.load_audio.html#turicreate.load_audio" title="turicreate.load_audio"><code class="xref py py-obj docutils literal"><span class="pre">load_audio</span></code></a></td>
+<td>Loads WAV file(s) from a path.</td>
+</tr>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.load_images.html#turicreate.load_images" title="turicreate.load_images"><code class="xref py py-obj docutils literal"><span class="pre">load_images</span></code></a></td>
+<td>Loads images from a directory.</td>
 </tr>
 </tbody>
 </table>
@@ -218,7 +227,7 @@ documentation, along with a small number of simple examples.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Feb 10, 2020.
+      Last updated on Apr 13, 2020.
     </p>
   </div>
 </footer>
@@ -235,7 +244,7 @@ documentation, along with a small number of simple examples.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'6.1',
+            VERSION:'6.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

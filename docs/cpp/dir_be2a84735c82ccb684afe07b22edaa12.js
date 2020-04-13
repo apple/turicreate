@@ -7,6 +7,5 @@ var dir_be2a84735c82ccb684afe07b22edaa12 =
     [ "perf", "dir_5066838d51c57eaf90dd749a871eeac5.html", "dir_5066838d51c57eaf90dd749a871eeac5" ],
     [ "process", "dir_eaf2c409b04195f66d7797468e8c18aa.html", "dir_eaf2c409b04195f66d7797468e8c18aa" ],
     [ "shmipc", "dir_fcd5d7d1846444b90aded1e072df8369.html", "dir_fcd5d7d1846444b90aded1e072df8369" ],
-    [ "so_utils", "dir_9ac08222b2625894fd9cbe7239beb6b4.html", "dir_9ac08222b2625894fd9cbe7239beb6b4" ],
     [ "timer", "dir_df02d9302f3d27344d2d345d46e96e1d.html", "dir_df02d9302f3d27344d2d345d46e96e1d" ]
 ];

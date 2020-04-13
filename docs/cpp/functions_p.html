@@ -132,6 +132,9 @@ $(document).ready(function(){initNavTree('functions_p.html','');});
 <li>partition_id
 : <a class="el" href="structturi_1_1sgraph__compute_1_1vertex__partition__exchange.html#a7bb9f454fad622a7963c2b34e6140d59">turi::sgraph_compute::vertex_partition_exchange</a>
 </li>
+<li>path
+: <a class="el" href="structturi_1_1fileio_1_1s3_1_1FileInfo.html#a4f4c79c1157b9dc2f14ebcee4af02e2d">turi::fileio::s3::FileInfo</a>
+</li>
 <li>perform_registration()
 : <a class="el" href="classturi_1_1model__base.html#aaeec48760b29bdc3ee50560c6aa989fc">turi::model_base</a>
 , <a class="el" href="classturi_1_1model__proxy.html#aff35f9884f34c005ec2ac4a60fc2a363">turi::model_proxy</a>
@@ -190,6 +193,7 @@ $(document).ready(function(){initNavTree('functions_p.html','');});
 : <a class="el" href="classturi_1_1factorization_1_1factorization__model.html#a6055ccb5b31c571ac39b3649ba79ce85">turi::factorization::factorization_model</a>
 , <a class="el" href="classturi_1_1kmeans_1_1kmeans__model.html#a8e90ede1c5c5c69f9cf8ac309ae753b6">turi::kmeans::kmeans_model</a>
 , <a class="el" href="classturi_1_1neural__net_1_1model__backend.html#aad1e31f5d953d0c6de4d1e61ef297ca8">turi::neural_net::model_backend</a>
+, <a class="el" href="classturi_1_1neural__net_1_1mps__od__backend.html#ab12495d2f749968ed575ac7f84e8721b">turi::neural_net::mps_od_backend</a>
 , <a class="el" href="classturi_1_1recsys_1_1recsys__factorization__model__base.html#ac91d7068ea9e3728ce25514a9812294e">turi::recsys::recsys_factorization_model_base</a>
 , <a class="el" href="classturi_1_1recsys_1_1recsys__itemcf.html#a3ceb88423e610eeca87f2ae3f7b52beb">turi::recsys::recsys_itemcf</a>
 , <a class="el" href="classturi_1_1recsys_1_1recsys__model__base.html#a92d7dfae28f96dc30bfcb5824445b34a">turi::recsys::recsys_model_base</a>
@@ -204,13 +208,13 @@ $(document).ready(function(){initNavTree('functions_p.html','');});
 </li>
 <li>predict_single_example()
 : <a class="el" href="classturi_1_1supervised_1_1linear__regression.html#a7ae2c94ff945293a5a67294012931252">turi::supervised::linear_regression</a>
-, <a class="el" href="classturi_1_1supervised_1_1linear__svm.html#a6ab54f2f040519d3d17c7bac3fb17ed5">turi::supervised::linear_svm</a>
-, <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#a65dd9b876f53ebe66996f5f6dafc9fa3">turi::supervised::logistic_regression</a>
+, <a class="el" href="classturi_1_1supervised_1_1linear__svm.html#a6eeab5f83b9de818159152e4ca51f5c7">turi::supervised::linear_svm</a>
+, <a class="el" href="classturi_1_1supervised_1_1logistic__regression.html#ac0e84e0b59c93bca6c8a204f113e4c64">turi::supervised::logistic_regression</a>
 , <a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#a64cffb1d927e40e6f3c6e23890d6bd31">turi::supervised::supervised_learning_model_base</a>
 </li>
 <li>predict_topk()
 : <a class="el" href="classturi_1_1pattern__mining_1_1fp__growth.html#a168451c450a9223549d2c207d6cc5f7f">turi::pattern_mining::fp_growth</a>
-, <a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#a7523185dd820bc673a4629cae76a4dc6">turi::supervised::supervised_learning_model_base</a>
+, <a class="el" href="classturi_1_1supervised_1_1supervised__learning__model__base.html#a4280e8183819e2946dfa40adcbf2d28f">turi::supervised::supervised_learning_model_base</a>
 , <a class="el" href="classturi_1_1supervised_1_1xgboost_1_1xgboost__model.html#acc33dcb80a41fd65e24c8fe4eb54e2e7">turi::supervised::xgboost::xgboost_model</a>
 </li>
 <li>prediction_window
@@ -270,10 +274,15 @@ $(document).ready(function(){initNavTree('functions_p.html','');});
 : <a class="el" href="classturi_1_1table__printer.html#ac4e73d95fca83136a4114bcd757b86dc">turi::table_printer</a>
 </li>
 <li>print_row()
-: <a class="el" href="classturi_1_1table__printer.html#abf796b274885163d5cdb16c2669401e5">turi::table_printer</a>
+: <a class="el" href="classturi_1_1table__printer.html#a081b4a0e8c9cbbfd746996a6d2c526c2">turi::table_printer</a>
 </li>
 <li>print_timed_progress_row()
 : <a class="el" href="classturi_1_1table__printer.html#af30d27e2bc0c6ae7b1c8913a7b3cd3c1">turi::table_printer</a>
+</li>
+<li>print_training_device_info()
+: <a class="el" href="classturi_1_1neural__net_1_1compute__context.html#a455bb18ba898f08742fa3fe7cc665089">turi::neural_net::compute_context</a>
+, <a class="el" href="classturi_1_1neural__net_1_1mps__compute__context.html#af3e40ae217e95a8285b65d68d83662be">turi::neural_net::mps_compute_context</a>
+, <a class="el" href="classturi_1_1neural__net_1_1tf__compute__context.html#a69776a84603ee5eb81ae999ac0c61ed9">turi::neural_net::tf_compute_context</a>
 </li>
 <li>priority_at()
 : <a class="el" href="classturi_1_1mutable__queue.html#aaa1083416083093339eb4ff730960819">turi::mutable_queue&lt; T, Priority &gt;</a>

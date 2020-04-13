@@ -100,6 +100,8 @@ Classes</h2></td></tr>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:af0f374d8d37314891662446490bde706"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="structturi_1_1neural__net_1_1labeled__image.html">neural_net::labeled_image</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#af0f374d8d37314891662446490bde706">next_batch</a> (size_t batch_size)=0</td></tr>
 <tr class="separator:af0f374d8d37314891662446490bde706"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a66c0baf64ea49763932147a6caf63b36"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#a66c0baf64ea49763932147a6caf63b36">has_next_batch</a> () const =0</td></tr>
+<tr class="separator:a66c0baf64ea49763932147a6caf63b36"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ba244251ccd39eb9d83d3f9d597df1c"><td class="memItemLeft" align="right" valign="top">virtual const std::vector&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#a1ba244251ccd39eb9d83d3f9d597df1c">class_labels</a> () const =0</td></tr>
 <tr class="separator:a1ba244251ccd39eb9d83d3f9d597df1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8707166673994eac0ad199eba8c5fef2"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1data__iterator.html#a8707166673994eac0ad199eba8c5fef2">num_instances</a> () const =0</td></tr>
@@ -135,6 +137,34 @@ Public Member Functions</h2></td></tr>
 <p>Returns a sorted list of the unique "label" values found in the annotations. </p>
 
 <p>Implemented in <a class="el" href="classturi_1_1object__detection_1_1simple__data__iterator.html#adeb77537cc3afc991ada4219da5f7526">turi::object_detection::simple_data_iterator</a>.</p>
+
+</div>
+</div>
+<a id="a66c0baf64ea49763932147a6caf63b36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a66c0baf64ea49763932147a6caf63b36">&#9670;&nbsp;</a></span>has_next_batch()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual bool turi::object_detection::data_iterator::has_next_batch </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns true when <code>next_batch</code> will return a non-empty value. </p>
+
+<p>Implemented in <a class="el" href="classturi_1_1object__detection_1_1simple__data__iterator.html#a4eeb706514e2e38b01df7aa0729dd5ca">turi::object_detection::simple_data_iterator</a>.</p>
 
 </div>
 </div>

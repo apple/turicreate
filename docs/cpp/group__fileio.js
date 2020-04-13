@@ -8,6 +8,7 @@ var group__fileio =
       [ "file_handle_cache_misses", "classturi_1_1block__cache.html#a4c315773a511b208e14a12aab4168701", null ],
       [ "get_instance", "classturi_1_1block__cache.html#a28db5537fb853bcdf4d22b1963a25ea8", null ],
       [ "get_max_capacity", "classturi_1_1block__cache.html#ac11f52be0ad778ce54f273ea1260a39f", null ],
+      [ "hold_cache_provider", "classturi_1_1block__cache.html#af939418d32b74b01740900da530d9d08", null ],
       [ "init", "classturi_1_1block__cache.html#a51f70490d65ec329f88bbb9a2d7ef3d0", null ],
       [ "read", "classturi_1_1block__cache.html#a87aed0f16ade6c386566e35b289624ca", null ],
       [ "read", "classturi_1_1block__cache.html#a794b417e829f6d7a86314dba2ac7fe7e", null ],
@@ -114,7 +115,8 @@ var group__fileio =
       [ "directories", "structturi_1_1list__objects__response.html#a76ffe7439c8f537e75bbad6f7e561356", null ],
       [ "error", "structturi_1_1list__objects__response.html#af577365458322fb05e09b782bcc257c6", null ],
       [ "objects", "structturi_1_1list__objects__response.html#a5f2adce2ab92d07e7920daacabe97d8f", null ],
-      [ "objects_last_modified", "structturi_1_1list__objects__response.html#a6793b0a8073a547dac56ba7f94e254be", null ]
+      [ "objects_last_modified", "structturi_1_1list__objects__response.html#a6793b0a8073a547dac56ba7f94e254be", null ],
+      [ "objects_size", "structturi_1_1list__objects__response.html#afdddca6e651032c5df18dd36f614133c", null ]
     ] ],
     [ "s3_device", "classturi_1_1s3__device.html", [
       [ "file_size", "classturi_1_1s3__device.html#ad332c987fbe6a25f99d829ca7e7a174c", null ],
@@ -159,7 +161,6 @@ var group__fileio =
     [ "get_io_parallelism_id", "group__fileio.html#gace35fc0e0221b6c2b2c3bc20556a9579", null ],
     [ "get_region_name_from_endpoint", "group__fileio.html#ga0ea68b924ea1ef006293970e563861c0", null ],
     [ "get_s3_endpoints", "group__fileio.html#gafa81576e130480bf0ef09e20896a1ab7", null ],
-    [ "get_s3_error_code", "group__fileio.html#gabade0bf49f31a40150a079328ebc507b", null ],
     [ "get_s3_file_last_modified", "group__fileio.html#ga5ff7eac62175d5e5bac69a32ba1fee75", null ],
     [ "get_system_temp_directory", "group__fileio.html#ga2ca7c12d648fa93188a1a70aed114425", null ],
     [ "get_system_user_name", "group__fileio.html#ga6a39d09df58879b880f0ba2102ec047f", null ],
@@ -167,6 +168,7 @@ var group__fileio =
     [ "get_temp_directories", "group__fileio.html#ga904c193b58d4fefe5737c11a8bd2f961", null ],
     [ "get_temp_name", "group__fileio.html#ga49a7014c73f094ce56bb700d684fd08d", null ],
     [ "get_temp_name_prefer_hdfs", "group__fileio.html#ga8bea12507112de131eebd578bccfcb89", null ],
+    [ "init_aws_sdk_with_turi_env", "group__fileio.html#ga7cd9dba3d987eefb44d8a272d0030497", null ],
     [ "insecure_ssl_cert_checks", "group__fileio.html#gacd816d0bb628e05ad9e3387a29bf5809", null ],
     [ "list_directory", "group__fileio.html#ga234867c61a56b4fa2622e0f672084360", null ],
     [ "list_objects", "group__fileio.html#ga5d061c799a90c5c6a03728ef3de03d07", null ],
@@ -175,7 +177,7 @@ var group__fileio =
     [ "make_relative_path", "group__fileio.html#ga369eff0d3577d8e5fdfc30e5b32b0593", null ],
     [ "num_temp_directories", "group__fileio.html#ga938d93ca534d16a0946cba20516890f7", null ],
     [ "parse_hdfs_url", "group__fileio.html#ga5960b295c95ba0e4db8ddecf2438f924", null ],
-    [ "parse_s3url", "group__fileio.html#gaf1f462276b68dd6b4dfec9a8a0e5213c", null ],
+    [ "parse_s3url", "group__fileio.html#ga6c6d447052f83d9bbc19c83ba1765351", null ],
     [ "reap_current_process_temp_files", "group__fileio.html#ga9148e7456c812a233d184699e377c959", null ],
     [ "reap_unused_temp_files", "group__fileio.html#gaadc7f2e18c38aae6132d2da2b50a08d8", null ],
     [ "remove_protocol", "group__fileio.html#ga9a7d84a46df11a91b15a027e88bc8f8e", null ],

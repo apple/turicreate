@@ -250,6 +250,8 @@ Static Public Member Functions</h2></td></tr>
 <tr class="separator:a4e470c1783849077e2cab28b406eaf5b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad999f05e4bb5296907e4f561f7ca42f1"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sarray.html#ad999f05e4bb5296907e4f561f7ca42f1">make_exact_uniform_boolean_array</a> (size_t <a class="el" href="classturi_1_1unity__sarray.html#a74e62d4b9e3ed62fcd8db92963cc820f">size</a>, size_t num_trues, uint64_t random_seed)</td></tr>
 <tr class="separator:ad999f05e4bb5296907e4f561f7ca42f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0fb3d0ef2ce1dad469e13398e044db1c"><td class="memItemLeft" align="right" valign="top">static std::shared_ptr&lt; unity_sarray_base &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sarray.html#a0fb3d0ef2ce1dad469e13398e044db1c">make_uniform_int_array</a> (size_t <a class="el" href="classturi_1_1unity__sarray.html#a74e62d4b9e3ed62fcd8db92963cc820f">size</a>, size_t max_int)</td></tr>
+<tr class="separator:a0fb3d0ef2ce1dad469e13398e044db1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>This is the SArray object exposed to Python. Abstractly, it stores a single column of a <a class="el" href="classturi_1_1flexible__type.html">flexible_type</a>. An Sarray represents a single immutable column: i.e. once created, it cannot be modified.</p>
@@ -1419,6 +1421,43 @@ Static Public Member Functions</h2></td></tr>
 <p>Construct a boolean array with approximately a percent of the array randomly true.</p>
 <p>if exact is false, each row is a sample from Bernoulli(percent). On average, 'percent' fraction of the array will be true, but this will not be exact.</p>
 <p>If exact is true, <a class="el" href="classturi_1_1unity__sarray.html#ad999f05e4bb5296907e4f561f7ca42f1">make_exact_uniform_boolean_array</a> is used. </p>
+
+</div>
+</div>
+<a id="a0fb3d0ef2ce1dad469e13398e044db1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0fb3d0ef2ce1dad469e13398e044db1c">&#9670;&nbsp;</a></span>make_uniform_int_array()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static std::shared_ptr&lt;unity_sarray_base&gt; turi::unity_sarray::make_uniform_int_array </td>
+          <td>(</td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>size</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>max_int</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Construct a int array with uniform distribution between 0 and max_int. </p>
 
 </div>
 </div>

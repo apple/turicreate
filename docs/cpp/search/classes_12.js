@@ -6,6 +6,7 @@ var searchData=
   ['ranking_5fsgd_5fsolver_5fbase',['ranking_sgd_solver_base',['../classturi_1_1factorization_1_1ranking__sgd__solver__base.html',1,'turi::factorization']]],
   ['rdtsc_5ftime',['rdtsc_time',['../structturi_1_1rdtsc__time.html',1,'turi']]],
   ['read_5fcaching_5fdevice',['read_caching_device',['../classturi_1_1read__caching__device.html',1,'turi']]],
+  ['readstream',['ReadStream',['../classturi_1_1fileio_1_1s3_1_1ReadStream.html',1,'turi::fileio::s3']]],
   ['recall',['recall',['../classturi_1_1evaluation_1_1recall.html',1,'turi::evaluation']]],
   ['recsys_5ffactorization_5fmodel',['recsys_factorization_model',['../classturi_1_1recsys_1_1recsys__factorization__model.html',1,'turi::recsys']]],
   ['recsys_5ffactorization_5fmodel_5fbase',['recsys_factorization_model_base',['../classturi_1_1recsys_1_1recsys__factorization__model__base.html',1,'turi::recsys']]],

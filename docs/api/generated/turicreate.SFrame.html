@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SFrame &mdash; Turi Create API 6.1 documentation</title>
+  <title>turicreate.SFrame &mdash; Turi Create API 6.2 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 6.1 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.2 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.SGraph" href="turicreate.SGraph.html"/>
         <link rel="prev" title="turicreate.SArray" href="turicreate.SArray.html"/> 
@@ -132,8 +132,8 @@
 <dl class="class">
 <dt id="turicreate.SFrame">
 <em class="property">class </em><code class="descclassname">turicreate.</code><code class="descname">SFrame</code><span class="sig-paren">(</span><em>data=None</em>, <em>format='auto'</em>, <em>_proxy=None</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.SFrame" title="Permalink to this definition">¶</a></dt>
-<dd><p>A tabular, column-mutable dataframe object that can scale to big data. The
-data in SFrame is stored column-wise, and is
+<dd><p>SFrame means scalable data frame. A tabular, column-mutable dataframe object that can
+scale to big data. The data in SFrame is stored column-wise, and is
 stored on persistent storage (e.g. disk) to avoid being constrained by
 memory size.  Each column in an SFrame is a size-immutable
 <a class="reference internal" href="turicreate.SArray.html#turicreate.SArray" title="turicreate.SArray"><code class="xref py py-class docutils literal"><span class="pre">SArray</span></code></a>, but SFrames are mutable in that columns can be
@@ -798,40 +798,43 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
 <tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.show.html#turicreate.SFrame.show" title="turicreate.SFrame.show"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.show</span></code></a>(self)</td>
 <td>Visualize a summary of each column in an SFrame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.sort.html#turicreate.SFrame.sort" title="turicreate.SFrame.sort"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.sort</span></code></a>(self,&nbsp;key_column_names[,&nbsp;ascending])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.shuffle.html#turicreate.SFrame.shuffle" title="turicreate.SFrame.shuffle"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.shuffle</span></code></a>(self)</td>
+<td>Randomly shuffles the rows of the SFrame.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.sort.html#turicreate.SFrame.sort" title="turicreate.SFrame.sort"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.sort</span></code></a>(self,&nbsp;key_column_names[,&nbsp;ascending])</td>
 <td>Sort current SFrame by the given columns, using the given sort order.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.split_datetime.html#turicreate.SFrame.split_datetime" title="turicreate.SFrame.split_datetime"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.split_datetime</span></code></a>(self,&nbsp;column_name[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.split_datetime.html#turicreate.SFrame.split_datetime" title="turicreate.SFrame.split_datetime"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.split_datetime</span></code></a>(self,&nbsp;column_name[,&nbsp;…])</td>
 <td>Splits a datetime column of SFrame to multiple columns, with each value in a separate column.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.stack.html#turicreate.SFrame.stack" title="turicreate.SFrame.stack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.stack</span></code></a>(self,&nbsp;column_name[,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.stack.html#turicreate.SFrame.stack" title="turicreate.SFrame.stack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.stack</span></code></a>(self,&nbsp;column_name[,&nbsp;…])</td>
 <td>Convert a “wide” column of an SFrame to one or two “tall” columns by stacking all values.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.swap_columns.html#turicreate.SFrame.swap_columns" title="turicreate.SFrame.swap_columns"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.swap_columns</span></code></a>(self,&nbsp;column_name_1,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.swap_columns.html#turicreate.SFrame.swap_columns" title="turicreate.SFrame.swap_columns"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.swap_columns</span></code></a>(self,&nbsp;column_name_1,&nbsp;…)</td>
 <td>Returns an SFrame with two column positions swapped.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.tail.html#turicreate.SFrame.tail" title="turicreate.SFrame.tail"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.tail</span></code></a>(self[,&nbsp;n])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.tail.html#turicreate.SFrame.tail" title="turicreate.SFrame.tail"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.tail</span></code></a>(self[,&nbsp;n])</td>
 <td>The last n rows of the SFrame.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.to_dataframe.html#turicreate.SFrame.to_dataframe" title="turicreate.SFrame.to_dataframe"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_dataframe</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.to_dataframe.html#turicreate.SFrame.to_dataframe" title="turicreate.SFrame.to_dataframe"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_dataframe</span></code></a>(self)</td>
 <td>Convert this SFrame to pandas.DataFrame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.to_numpy.html#turicreate.SFrame.to_numpy" title="turicreate.SFrame.to_numpy"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_numpy</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.to_numpy.html#turicreate.SFrame.to_numpy" title="turicreate.SFrame.to_numpy"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_numpy</span></code></a>(self)</td>
 <td>Converts this SFrame to a numpy array</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.to_sql.html#turicreate.SFrame.to_sql" title="turicreate.SFrame.to_sql"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_sql</span></code></a>(self,&nbsp;conn,&nbsp;table_name[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.to_sql.html#turicreate.SFrame.to_sql" title="turicreate.SFrame.to_sql"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.to_sql</span></code></a>(self,&nbsp;conn,&nbsp;table_name[,&nbsp;…])</td>
 <td>Convert an SFrame to a single table in a SQL database.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.topk.html#turicreate.SFrame.topk" title="turicreate.SFrame.topk"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.topk</span></code></a>(self,&nbsp;column_name[,&nbsp;k,&nbsp;reverse])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.topk.html#turicreate.SFrame.topk" title="turicreate.SFrame.topk"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.topk</span></code></a>(self,&nbsp;column_name[,&nbsp;k,&nbsp;reverse])</td>
 <td>Get top k rows according to the given column.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.unique.html#turicreate.SFrame.unique" title="turicreate.SFrame.unique"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unique</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.unique.html#turicreate.SFrame.unique" title="turicreate.SFrame.unique"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unique</span></code></a>(self)</td>
 <td>Remove duplicate rows of the SFrame.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.unpack.html#turicreate.SFrame.unpack" title="turicreate.SFrame.unpack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unpack</span></code></a>(self[,&nbsp;column_name,&nbsp;…])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.unpack.html#turicreate.SFrame.unpack" title="turicreate.SFrame.unpack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unpack</span></code></a>(self[,&nbsp;column_name,&nbsp;…])</td>
 <td>Expand one column of this SFrame to multiple columns with each value in a separate column.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SFrame.unstack.html#turicreate.SFrame.unstack" title="turicreate.SFrame.unstack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unstack</span></code></a>(self,&nbsp;column_names[,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SFrame.unstack.html#turicreate.SFrame.unstack" title="turicreate.SFrame.unstack"><code class="xref py py-obj docutils literal"><span class="pre">SFrame.unstack</span></code></a>(self,&nbsp;column_names[,&nbsp;…])</td>
 <td>Concatenate values from one or two columns into one column, grouping by all other columns.</td>
 </tr>
 </tbody>
@@ -856,7 +859,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Feb 10, 2020.
+      Last updated on Apr 13, 2020.
     </p>
   </div>
 </footer>
@@ -873,7 +876,7 @@ is otherwise not expressible with simple boolean functions. For instance:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.1',
+            VERSION:'6.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

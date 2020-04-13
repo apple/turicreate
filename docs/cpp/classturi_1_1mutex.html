@@ -115,7 +115,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 <div class="textblock"><p>Simple wrapper around pthread's mutex. Before you use, see parallel_object_intricacies.</p>
 <p>Windows recursive mutex are annoyingly recursive. We need to prevent recursive locks. We do this by associating an addition boolean "locked" to the mutex. Hence in the event of a double lock, on Windows the behavior is slightly different. On Linux/Mac this will trigger a deadlock. On Windows, this will trigger an assertion failure. </p>
 
-<p class="definition">Definition at line <a class="el" href="mutex_8hpp_source.html#l00028">28</a> of file <a class="el" href="mutex_8hpp_source.html">mutex.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mutex_8hpp_source.html#l00029">29</a> of file <a class="el" href="mutex_8hpp_source.html">mutex.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="aa0cf344a9a06fe0142f0e1563c9fca47"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa0cf344a9a06fe0142f0e1563c9fca47">&#9670;&nbsp;</a></span>mutex()</h2>
@@ -142,7 +142,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="clas
 </div><div class="memdoc">
 <p>Copy constructor which does not copy. Do not use! Required for compatibility with some STL implementations (LLVM). which use the copy constructor for vector resize, rather than the standard constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="mutex_8hpp_source.html#l00044">44</a> of file <a class="el" href="mutex_8hpp_source.html">mutex.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="mutex_8hpp_source.html#l00045">45</a> of file <a class="el" href="mutex_8hpp_source.html">mutex.hpp</a>.</p>
 
 </div>
 </div>

@@ -19,5 +19,6 @@ var searchData=
   ['authentication_5ftoken_5fmethod',['authentication_token_method',['../classcppipc_1_1authentication__token__method.html',1,'cppipc']]],
   ['auto_5fclose_5fsarrays',['auto_close_sarrays',['../classturi_1_1auto__close__sarrays.html',1,'turi']]],
   ['average',['average',['../classturi_1_1groupby__operators_1_1average.html',1,'turi::groupby_operators']]],
-  ['average_5fprecision_5fcalculator',['average_precision_calculator',['../classturi_1_1object__detection_1_1average__precision__calculator.html',1,'turi::object_detection']]]
+  ['average_5fprecision_5fcalculator',['average_precision_calculator',['../classturi_1_1object__detection_1_1average__precision__calculator.html',1,'turi::object_detection']]],
+  ['awsreadstreambase',['AWSReadStreamBase',['../classturi_1_1fileio_1_1s3_1_1AWSReadStreamBase.html',1,'turi::fileio::s3']]]
 ];
