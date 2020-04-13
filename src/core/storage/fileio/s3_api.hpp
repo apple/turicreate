@@ -284,6 +284,7 @@ template <class Response>
 std::ostream& reportS3Error(std::ostream& ss, const s3url& parsed_url,
                             S3Operation::ops_enum operation,
                             const Response& outcome) {
+  auto error = outcome.GetError();
   ss << "('" << parsed_url << ", proxy: '" << parsed_url.sdk_proxy
      << "', region: '" << parsed_url.sdk_region << "')"
      << " Error while performing " << S3Operation::toString(operation)
