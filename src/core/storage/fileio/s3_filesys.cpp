@@ -122,11 +122,10 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
     retrieved_file.read(input_ptr, nwant);
 
     auto end = std::chrono::steady_clock::now();
-    logprogress_stream << "finished downloading" << url_string << ". duration: "
-                       << std::chrono::duration_cast<std::chrono::milliseconds>(
-                              end - start)
-                              .count()
-                       << " ms" << std::endl;
+    logprogress_stream
+        << "finished downloading" << url_string << ". duration: "
+        << std::chrono::duration_cast<std::chrono::seconds>(end - start).count()
+        << " seconds" << std::endl;
   } else {
     auto error = get_object_outcome.GetError();
     ss.str("");
