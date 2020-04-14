@@ -68,6 +68,8 @@ public:
   // Declared here and defined in the .cpp file just to prevent the implicit
   // default destructor from attempting (and failing) to instantiate
   // std::unique_ptr<NeuralNetwork>::~unique_ptr()
+  model_spec(model_spec&&);
+  model_spec& operator=(model_spec&&);
   ~model_spec();
 
   /**
