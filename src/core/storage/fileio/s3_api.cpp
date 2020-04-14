@@ -132,7 +132,7 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   Aws::Client::ClientConfiguration clientConfiguration;
 
   // a little bit too long, anyway
-  clientConfiguration.requestTimeoutMs = 2 * 60000;
+  clientConfiguration.requestTimeoutMs = 5 * 60000;
   clientConfiguration.connectTimeoutMs = 20000;
 
   if (turi::fileio::insecure_ssl_cert_checks()) {
@@ -503,8 +503,10 @@ list_objects_response list_objects_impl(const s3url& parsed_url,
 
       } else {
         auto error = outcome.GetError();
-
-        if (error.ShouldRetry()) {
+        // Unlike CoreErrors, S3Error Never retries. Use Http code instead.
+        // check aws-cpp-sdk-s3/source/S3Error.cpp
+        if (error.GetResponseCode() ==
+            Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
           n_retry++;
 
           if (n_retry == 3) {
