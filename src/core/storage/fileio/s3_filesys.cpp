@@ -93,12 +93,6 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
   // range is includsive and zero based
   ss << "bytes=" << curr_bytes_ << '-' << curr_bytes_ + nwant - 1;
 
-  std::string url_string = url_.string_from_s3url(false);
-  logprogress_stream << "Start downloading " << url_string << ", " << ss.str()
-                     << std::endl;
-
-  auto start = std::chrono::steady_clock::now();
-
   Aws::S3::Model::GetObjectRequest object_request;
   object_request.SetRange(ss.str().c_str());
   object_request.SetBucket(url_.bucket.c_str());
@@ -121,11 +115,6 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
     // std::istreambuf_iterator<char>
     retrieved_file.read(input_ptr, nwant);
 
-    auto end = std::chrono::steady_clock::now();
-    logprogress_stream
-        << "Finished downloading" << url_string << ". Duration: "
-        << std::chrono::duration_cast<std::chrono::seconds>(end - start).count()
-        << " seconds" << std::endl;
   } else {
     auto error = get_object_outcome.GetError();
     ss.str("");
@@ -181,12 +170,6 @@ void WriteStream::Upload(bool force_upload) {
 
   // store the future into completed parts
   completed_parts_.push_back(s3_client_.UploadPartCallable(my_request));
-
-  logprogress_stream << "Uploading part " << my_request.GetPartNumber()
-                     << " of " << url_.string_from_s3url(false)
-                     << ", with size "
-                     << (double)(buffer_.size()) / (1024 * 1024) << " MB"
-                     << std::endl;
 }
 
 void WriteStream::Finish() {
@@ -221,9 +204,6 @@ void WriteStream::Finish() {
     logstream(LOG_ERROR) << ss.str() << std::endl;
     log_and_throw_io_failure(ss.str());
   }
-
-  logprogress_stream << "Finished uploading all parts of "
-                     << url_.string_from_s3url(false) << std::endl;
 }
 
 /*!
