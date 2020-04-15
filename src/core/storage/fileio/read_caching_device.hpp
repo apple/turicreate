@@ -19,8 +19,7 @@ namespace turi {
 // private namespace
 namespace {
 const size_t READ_CACHING_BLOCK_SIZE = 64 * 1024 * 1024;  // 64 MB
-
-using namespace std::chrono;
+}  // namespace
 
 /*
  * For each parallel (streamlined) network IO, we can view them as intervals
@@ -38,10 +37,10 @@ using namespace std::chrono;
  * at once. It may have multiple times of fetching data. So it consists many
  * small parts of IO activities.
  *
- * |----|<- less than 100 ms -> |----|
+ * |----|<- less than 150 ms -> |----|
  * s ------------------------------- e
  *
- * if 2 IO acticity are only separated by less than 50 ms time intervals,
+ * if 2 IO acticity are only separated by less than 150 ms time intervals,
  * they should be considered as the same part of an IO process, instead of 2.
  *
  * |-----| <- 10 mins -> |-------|
@@ -55,6 +54,7 @@ using namespace std::chrono;
 template <class T>
 class StopWatch {
  public:
+  using steady_clock = std::chrono::steady_clock;
   using my_time_t = decltype(steady_clock::now());
   StopWatch(size_t interval)
       : interval_(interval), beg_(steady_clock::now()), end_(beg_) {}
@@ -64,20 +64,27 @@ class StopWatch {
 
   void start() {
     std::lock_guard<std::mutex> lk(mx_);
-    if (thread_num_ == 0) {
-      if (duration_cast<milliseconds>(steady_clock::now() - beg_) >
-          milliseconds{150}) {
+
+    if (thread_set_.size() == 0) {
+      using milliseconds = std::chrono::milliseconds;
+      auto lag = std::chrono::duration_cast<milliseconds>(
+          std::chrono::steady_clock::now() - beg_);
+      if (lag > milliseconds{150}) {
         beg_ = steady_clock::now();
         mile_stone_ = beg_;
       }
     }
-    ++thread_num_;
+
+    if (!thread_set_.insert(std::this_thread::get_id()).second) {
+      logstream(LOG_DEBUG) << "this thread " << std::this_thread::get_id()
+                           << "already starts the clock" << std::endl;
+    }
   }
 
   bool is_time_to_record() {
     std::lock_guard<std::mutex> lock(mx_);
 
-    if (thread_num_ == 0) return false;
+    if (thread_set_.size() == 0) return false;
 
     // reach to timepoint, log it.
     auto cur = steady_clock::now();
@@ -90,25 +97,39 @@ class StopWatch {
     return false;
   }
 
-  void end() {
+  /*
+   * @return: int. number of threads still holding
+   */
+  int stop() {
     std::lock_guard<std::mutex> lk(mx_);
-    if (thread_num_ > 0 && --thread_num_ == 0) {
-      end_ = steady_clock::now();
+    if (thread_set_.count(std::this_thread::get_id())) {
+      thread_set_.erase(std::this_thread::get_id());
+      // last man standing
+      if (thread_set_.size() == 0) {
+        end_ = steady_clock::now();
+        return 0;
+      }
+      // still running
+      return thread_set_.size();
     }
+
+    return thread_set_.size();
   }
 
-  template <typename Output>
+  template <class Output>
   Output duration() const {
     std::lock_guard<std::mutex> lk(mx_);
     // the clock is still on
-    if (thread_num_ > 0) {
-      return duration_cast<Output>(steady_clock::now() - beg_);
+    if (thread_set_.count(std::this_thread::get_id())) {
+      return std::chrono::duration_cast<Output>(steady_clock::now() - beg_);
     }
 
-    return duration_cast<Output>(end_ - beg_);
+    return std::chrono::duration_cast<Output>(end_ - beg_);
   }
 
-  ~StopWatch() { end(); }
+  // singleton destroyed since it's non-copy and movable,
+  // any dangling pointer or reference to this stop_watah is illegal
+  ~StopWatch() { stop(); }
 
  private:
   uint64_t interval_;
@@ -116,12 +137,11 @@ class StopWatch {
   my_time_t end_;
   my_time_t mile_stone_;
   mutable std::mutex mx_;
-  size_t thread_num_;
+
+  std::set<std::thread::id> threads_;
 };
 
 using StopWatchSec_t = StopWatch<std::chrono::seconds>;
-
-}  // namespace
 
 /**
  * \ingroup fileio
@@ -165,8 +185,11 @@ class read_caching_device {
         m_file_size = m_contents->file_size();
         m_filename_to_filesize_map[filename] = m_file_size;
         // report downloading every 30s
-        m_filename_to_stop_watch[filename] =
-            std::unique_ptr<StopWatchSec_t>(new StopWatchSec_t(30));
+        if (m_filename_to_filesize_map.find(filename) !=
+            m_filename_to_filesize_map.end()) {
+          m_filename_to_stop_watch[filename] =
+              std::unique_ptr<StopWatchSec_t>(new StopWatchSec_t(30));
+        }
       }
     } else {
       m_contents = std::make_shared<T>(filename, write);
@@ -194,12 +217,24 @@ class read_caching_device {
       {
         std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
         m_filename_to_filesize_map.erase(m_filename);
-        m_filename_to_stop_watch.erase(m_filename);
+
+        auto iter = m_filename_to_stop_watch.find(m_filename);
+        if (iter != m_filename_to_stop_watch.end()) {
+          if (!iter->stop()) {
+            m_filename_to_stop_watch.erase(iter);
+          }
+        }
       }
 
     } else if (mode == std::ios_base::in && !m_writing) {
       if (m_contents) m_contents->close(mode);
       m_contents.reset();
+      {
+        std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
+        if (m_filename_to_stop_watch.find(m_filename) !=
+            m_filename_to_stop_watch.end())
+          m_filename_to_stop_watch[m_filename]->stop();
+      }
     }
   }
 
@@ -254,10 +289,11 @@ class read_caching_device {
       std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
       auto& stop_watch = m_filename_to_stop_watch[m_filename];
       if (stop_watch->is_time_to_record()) {
-        logprogress_stream << "Finish uploading " << sanitize_url(m_filename)
-                           << ". Elapsed time "
-                           << stop_watch->duration<seconds>().count()
-                           << " seconds" << std::endl;
+        logprogress_stream
+            << "Finish uploading " << sanitize_url(m_filename)
+            << ". Elapsed time "
+            << stop_watch->template duration<std::chrono::seconds>().count()
+            << " seconds" << std::endl;
       }
     }
 
@@ -355,11 +391,10 @@ class read_caching_device {
       std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
       auto& stop_watch = m_filename_to_stop_watch[m_filename];
       if (stop_watch->is_time_to_record()) {
-        logprogress_stream << "Finished fetching block " << block_number
-                           << ". Elapsed "
-                           << stop_watch->duration<seconds>().count()
-                           << "s for downloading " << sanitize_url(m_filename)
-                           << std::endl;
+        logprogress_stream
+            << "Finished fetching block " << block_number << ". Elapsed "
+            << stop_watch->template duration<std::chrono::seconds>().count()
+            << "s for downloading " << sanitize_url(m_filename) << std::endl;
       }
     }
 
