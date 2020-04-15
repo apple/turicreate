@@ -4,8 +4,8 @@
  * be found in the LICENSE.txt file or at
  * https://opensource.org/licenses/BSD-3-Clause
  */
-#ifndef TOOLKITS_UTIL_FLOAT_ARRAY_SERIALIZATION_HPP_
-#define TOOLKITS_UTIL_FLOAT_ARRAY_SERIALIZATION_HPP_
+
+#pragma once
 
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <ml/neural_net/float_array.hpp>
@@ -22,5 +22,3 @@ void save_float_array_map(const neural_net::float_array_map& weights,
 neural_net::float_array_map load_float_array_map(iarchive& iarc);
 
 }  // namespace turi
-
-#endif  // TOOLKITS_UTIL_FLOAT_ARRAY_SERIALIZATION_HPP_

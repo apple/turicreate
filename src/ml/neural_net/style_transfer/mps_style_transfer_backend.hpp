@@ -5,8 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TURI_STYLE_TRANSFER_MPS_STYLE_TRANSFER_BACKEND_H_
-#define TURI_STYLE_TRANSFER_MPS_STYLE_TRANSFER_BACKEND_H_
+#pragma once
 
 #include <functional>
 #include <map>
@@ -50,5 +49,3 @@ private:
 } // namespace turi
 
 #endif // #ifdef HAS_MACOS_10_15
-
-#endif

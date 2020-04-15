@@ -4,8 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
-#define UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
+#pragma once
 
 #include <cstddef>
 #include <future>
@@ -206,5 +205,3 @@ std::ostream &operator<<(std::ostream &out, const float_array &arr);
 
 }  // namespace neural_net
 }  // namespace turi
-
-#endif  // UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
