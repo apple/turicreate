@@ -8,6 +8,7 @@ make_library(unity_util OBJECT
     sframe_utils.cpp
     class_registrations.cpp
     random_sframe_generation.cpp
+    float_array_serialization.cpp
   REQUIRES
     unity_core
 )
