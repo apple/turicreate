@@ -290,26 +290,31 @@ EXPORT bool create_directory_or_throw(const std::string& path) {
   // this function throws if the directory still doesn't exist
   // at that location
   if (get_protocol(path) == "s3") {
-    auto status = get_file_status(path);
+    // only check on parent direcotory or prefix
+    auto ppath = get_dirname(path);
+    auto status = get_file_status(ppath);
+    // no need to create subdirectory in s3 because there's none
     switch (status.first) {
       case file_status::MISSING:
         log_and_throw_io_failure(
-            "Unable to create directory structure at " + sanitize_url(path) +
-            ". Ensure that you have write permission to this location, or try "
-            "again with a different path. " +
-            "error message: " + status.second);
-        break;
+            "Unable to find parent directory structure: " +
+            sanitize_url(ppath) +
+            ". Ensure that you have created this s3 prefix. This behavior "
+            "intends to avoid accidental creation S3 keys. or try "
+            "again with a different path. Error message: " +
+            status.second);
       case file_status::REGULAR_FILE:
         log_and_throw_io_failure(
-            "Unable to create directory at " + sanitize_url(path) +
-            ". A non-directory file already exists there. Delete that file, or "
-            "try again with a different path.");
+            "Parent directory (prefix) " + sanitize_url(path) +
+            " is a regular file. Use prefix as both file and directory is "
+            "discouraged in order to prevent further ambiguity. Delete that "
+            "file, or try again with a different path.");
       case file_status::DIRECTORY:
         // happy path, return below
         break;
       default:
         // not sure what error message to give; fall back to current I/O error
-        log_and_throw_current_io_failure();
+        log_and_throw_io_failure("Unknown error");
     }
   }
 

@@ -103,6 +103,7 @@ def create(
     max_iterations=0,
     verbose=True,
     grid_shape=[13, 13],
+    random_seed=None,
     **kwargs
 ):
     """
@@ -161,6 +162,9 @@ def create(
     max_iterations : int
         The number of training iterations. If 0, then it will be automatically
         be determined based on the amount of data you provide.
+
+    random_seed : int, optional
+        The results can be reproduced when given the same seed.
 
     verbose : bool, optional
         If True, print progress updates and model details.
@@ -296,6 +300,7 @@ def create(
         "compute_final_metrics": False,
         "verbose": verbose,
         "model": "darknet-yolo",
+        "random_seed": random_seed,
     }
 
     # If batch_size or max_iterations = 0, they will be automatically

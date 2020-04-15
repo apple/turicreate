@@ -219,9 +219,11 @@ image_augmenter::options DarknetYOLOInferenceAugmentationOptions(
 }
 
 image_augmenter::options DarknetYOLOTrainingAugmentationOptions(
-    int batch_size, int output_height, int output_width) {
+    int batch_size, int output_height, int output_width, int random_seed) {
   image_augmenter::options opts = DarknetYOLOInferenceAugmentationOptions(
       batch_size, output_height, output_width);
+
+  opts.random_seed = random_seed;
 
   // Apply random crops.
   opts.crop_prob = 0.9f;
@@ -377,10 +379,10 @@ std::unique_ptr<Checkpoint> DarknetYOLOCheckpointer::Next() {
 }
 
 DarknetYOLOCheckpoint::DarknetYOLOCheckpoint(
-    Config config, const std::string& pretrained_model_path, int random_seed)
+    Config config, const std::string& pretrained_model_path)
     : config_(std::move(config)),
-      model_spec_(InitializeDarknetYOLO(pretrained_model_path,
-                                        config_.num_classes, random_seed)),
+      model_spec_(InitializeDarknetYOLO(
+          pretrained_model_path, config_.num_classes, config_.random_seed)),
       weights_(model_spec_->export_params_view()) {}
 
 DarknetYOLOCheckpoint::DarknetYOLOCheckpoint(Config config,
@@ -436,7 +438,8 @@ DarknetYOLOModelTrainer::DarknetYOLOModelTrainer(
               DarknetYOLOTrainingAugmentationOptions(
                   checkpoint.config().batch_size,
                   checkpoint.config().output_height,
-                  checkpoint.config().output_width)))),
+                  checkpoint.config().output_width,
+                  checkpoint.config().random_seed)))),
       inference_augmenter_(
           std::make_shared<DataAugmenter>(context->create_image_augmenter(
               DarknetYOLOInferenceAugmentationOptions(

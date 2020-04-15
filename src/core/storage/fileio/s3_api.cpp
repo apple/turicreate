@@ -148,6 +148,35 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   // TODO: add proxy support
   // clientConfiguration.proxyHost = proxy.c_str();
 
+  // set path or file for ssl certs
+  if (!get_alternative_ssl_cert_file().empty()) {
+    auto fstaus = get_file_status(get_alternative_ssl_cert_file());
+    ASSERT_TRUE(fstaus.second.empty());
+    if (fstaus.first == file_status::REGULAR_FILE) {
+      clientConfiguration.caFile = get_alternative_ssl_cert_file().c_str();
+    } else {
+      std::stringstream ss;
+      ss << "Invalid file for alternative SSL certificate. Value of "
+            "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE must be a regular file. "
+         << get_alternative_ssl_cert_file() << " is not a regular file.";
+      log_and_throw(ss.str());
+    }
+  }
+
+  if (!get_alternative_ssl_cert_dir().empty()) {
+    auto fstaus = get_file_status(get_alternative_ssl_cert_dir());
+    ASSERT_TRUE(fstaus.second.empty());
+    if (fstaus.first == file_status::DIRECTORY) {
+      clientConfiguration.caPath = get_alternative_ssl_cert_dir().c_str();
+    } else {
+      std::stringstream ss;
+      ss << "Invalid file for alternative SSL certificate. Value of "
+            "TURI_FILEIO_ALTERNATIVE_SSL_CERT_DIR must be a valid directory. "
+         << get_alternative_ssl_cert_dir() << " is not a regular directory.";
+      log_and_throw(ss.str());
+    }
+  }
+
   std::string region = fileio::get_region_name_from_endpoint(
       clientConfiguration.endpointOverride.c_str());
 
@@ -162,12 +191,18 @@ S3Client init_aws_sdk_with_turi_env(s3url& parsed_url) {
   }
 
   if (parsed_url.secret_key.empty()) {
-    return S3Client(clientConfiguration);
+    return S3Client(clientConfiguration,
+                    /* default value */
+                    Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                    /* use virtual address */ false);
   } else {
     // credentials
     Aws::Auth::AWSCredentials credentials(parsed_url.access_key_id.c_str(),
                                           parsed_url.secret_key.c_str());
-    return S3Client(credentials, clientConfiguration);
+    return S3Client(credentials, clientConfiguration,
+                    /* default value */
+                    Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                    /* use virtual address */ false);
   }
 }
 
@@ -399,6 +434,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
 
   // s3 client config
   Aws::Client::ClientConfiguration clientConfiguration;
+
   if (turi::fileio::insecure_ssl_cert_checks()) {
     clientConfiguration.verifySSL = false;
   }
@@ -419,7 +455,9 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
     parsed_url.sdk_region = region;
   }
 
-  S3Client client(credentials, clientConfiguration);
+  S3Client client(credentials, clientConfiguration,
+                  Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                  false);
 
   list_objects_response ret;
 
@@ -474,9 +512,11 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
         break;
 
       } else {
-        auto error = outcome.GetError().GetResponseCode();
-
-        if (error == Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
+        auto error = outcome.GetError();
+        // Unlike CoreErrors, S3Error Never retries. Use Http code instead.
+        // check aws-cpp-sdk-s3/source/S3Error.cpp
+        if (error.GetResponseCode() ==
+            Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
           n_retry++;
 
           if (n_retry == 3) {
@@ -563,7 +603,10 @@ std::string delete_object_impl(s3url parsed_url, std::string proxy,
     parsed_url.sdk_region = region;
   }
 
-  S3Client client(credentials, clientConfiguration);
+  S3Client client(credentials, clientConfiguration,
+                  /* default value */
+                  Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                  /* use virtual address */ false);
 
   Aws::S3::Model::DeleteObjectRequest request;
   request.WithBucket(parsed_url.bucket.c_str());
@@ -618,7 +661,10 @@ std::string delete_prefix_impl(s3url parsed_url, std::string proxy,
     parsed_url.sdk_region = region;
   }
 
-  S3Client client(credentials, clientConfiguration);
+  S3Client client(credentials, clientConfiguration,
+                  /* default value */
+                  Aws::Client::AWSAuthV4Signer::PayloadSigningPolicy::Never,
+                  /* use virtual address */ false);
 
   Aws::S3::Model::ListObjectsV2Request request;
   request.WithBucket(parsed_url.bucket.c_str());

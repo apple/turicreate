@@ -131,7 +131,7 @@ public:
 
   using create_trainer_call = std::function<std::unique_ptr<ModelTrainer>(
       const Config& config, const std::string& pretrained_model_path,
-      int random_seed, std::unique_ptr<neural_net::compute_context> context)>;
+      std::unique_ptr<neural_net::compute_context> context)>;
 
   using create_inference_trainer_call =
       std::function<std::unique_ptr<ModelTrainer>(
@@ -180,14 +180,12 @@ public:
 
   std::unique_ptr<ModelTrainer> create_trainer(
       const Config& config, const std::string& pretrained_model_path,
-      int random_seed,
       std::unique_ptr<neural_net::compute_context> context) const override {
     TS_ASSERT(!create_trainer_calls_.empty());
     create_trainer_call expected_call =
         std::move(create_trainer_calls_.front());
     create_trainer_calls_.pop_front();
-    return expected_call(config, pretrained_model_path, random_seed,
-                         std::move(context));
+    return expected_call(config, pretrained_model_path, std::move(context));
   }
 
   std::unique_ptr<ModelTrainer> create_inference_trainer(
@@ -455,7 +453,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
   model.create_trainer_calls_.emplace_back(
       [=](const Config& config, const std::string& pretrained_model_path,
-          int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
@@ -770,7 +767,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
   model.create_trainer_calls_.emplace_back(
       [=](const Config& config, const std::string& pretrained_model_path,
-          int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
@@ -997,7 +993,6 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
   model.create_trainer_calls_.emplace_back(
       [=](const Config& config, const std::string& pretrained_model_path,
-          int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
