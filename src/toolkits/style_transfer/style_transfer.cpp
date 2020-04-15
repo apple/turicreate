@@ -18,6 +18,7 @@
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/style_transfer/st_resnet16_model_trainer.hpp>
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
+#include <toolkits/util/float_array_serialization.hpp>
 #include <toolkits/util/training_utils.hpp>
 
 #ifdef HAS_MPS
@@ -328,14 +329,13 @@ size_t style_transfer::get_version() const { return STYLE_TRANSFER_VERSION; }
 
 void style_transfer::save_impl(oarchive& oarc) const {
   variant_deep_save(state, oarc);
-  oarc << read_checkpoint().weights();
+  save_float_array_map(read_checkpoint().weights(), oarc);
 }
 
 void style_transfer::load_version(iarchive& iarc, size_t version) {
   variant_deep_load(state, iarc);
 
-  float_array_map nn_params;
-  iarc >> nn_params;
+  float_array_map nn_params = load_float_array_map(iarc);
   checkpoint_ = load_checkpoint(nn_params);
 }
 
