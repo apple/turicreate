@@ -51,7 +51,8 @@ void save_float_array_map(const float_array_map& weights, oarchive& oarc) {
   // write itself to the oarchive.
   std::map<std::string, float_array_serialization_wrapper> wrapped_weights;
   for (const auto& key_value : weights) {
-    wrapped_weights.emplace(key_value.first, key_value.second);
+    wrapped_weights[key_value.first] =
+        float_array_serialization_wrapper(key_value.second);
   }
 
   oarc << wrapped_weights;
@@ -65,7 +66,7 @@ float_array_map load_float_array_map(iarchive& iarc) {
   // Obtain direct references to the underlying weights.
   float_array_map weights;
   for (const auto& key_value : wrapped_weights) {
-    weights.emplace(key_value.first, key_value.second.get());
+    weights[key_value.first] = key_value.second.get();
   }
 
   return weights;
