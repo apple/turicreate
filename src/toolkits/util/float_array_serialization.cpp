@@ -14,7 +14,7 @@ using neural_net::shared_float_array;
 class float_array_serialization_wrapper {
  public:
   float_array_serialization_wrapper() = default;
-  float_array_serialization_wrapper(shared_float_array array)
+  explicit float_array_serialization_wrapper(shared_float_array array)
       : impl_(std::move(array)) {}
 
   const shared_float_array& get() const { return impl_; }
@@ -47,8 +47,9 @@ class float_array_serialization_wrapper {
 };
 
 void save_float_array_map(const float_array_map& weights, oarchive& oarc) {
+  // Wrap each shared_float_array in weights in a wrapper that knows how to
+  // write itself to the oarchive.
   std::map<std::string, float_array_serialization_wrapper> wrapped_weights;
-
   for (const auto& key_value : weights) {
     wrapped_weights.emplace(key_value.first, key_value.second);
   }
@@ -57,11 +58,12 @@ void save_float_array_map(const float_array_map& weights, oarchive& oarc) {
 }
 
 float_array_map load_float_array_map(iarchive& iarc) {
+  // Read the iarchive into wrappers around the underlying weights.
   std::map<std::string, float_array_serialization_wrapper> wrapped_weights;
   iarc >> wrapped_weights;
 
+  // Obtain direct references to the underlying weights.
   float_array_map weights;
-
   for (const auto& key_value : wrapped_weights) {
     weights.emplace(key_value.first, key_value.second.get());
   }
