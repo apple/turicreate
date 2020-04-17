@@ -825,8 +825,15 @@ void style_transfer::iterate_training() {
 
   add_or_update_state({
       {"training_iterations", progress->iteration_id},
-      {"training_loss", progress->smoothed_loss},
+      {"training_loss", progress->smoothed_loss}
   });
+
+  if (model_trainer_->SupportsLossComponents()) {
+    add_or_update_state({
+      {"training_style_loss", progress->style_loss},
+      {"training_content_loss", progress->content_loss}
+    });
+  }
 
   if (training_table_printer_) {
     if (model_trainer_->SupportsLossComponents()) {
