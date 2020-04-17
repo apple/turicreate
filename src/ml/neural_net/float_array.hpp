@@ -4,17 +4,15 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
-#define UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
+#pragma once
 
 #include <cstddef>
 #include <future>
 #include <map>
 #include <memory>
+#include <ostream>
 #include <string>
 #include <vector>
-
-#include <core/storage/serialization/serialization_includes.hpp>
 
 namespace turi {
 namespace neural_net {
@@ -160,10 +158,6 @@ public:
 
   // TODO: Operations such as reshape, slice, etc.?
 
-  // Serialization.
-  void save(oarchive& oarc) const;
-  void load(iarchive& iarc);
-
 protected:
   shared_float_array(std::shared_ptr<float_array> impl, size_t offset,
                      const size_t* shape, size_t dim);
@@ -211,5 +205,3 @@ std::ostream &operator<<(std::ostream &out, const float_array &arr);
 
 }  // namespace neural_net
 }  // namespace turi
-
-#endif  // UNITY_TOOLKITS_NEURAL_NET_FLOAT_ARRAY_HPP_
