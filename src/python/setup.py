@@ -13,7 +13,7 @@ from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME = "turicreate"
-VERSION = "6.1"  # {{VERSION_STRING}}
+VERSION = "6.1.1"  # {{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -132,6 +132,7 @@ if __name__ == "__main__":
         "pillow >= 5.2.0",
         "prettytable == 0.7.2",
         "resampy == 0.2.1",
+        "llvmlite == 0.31.0",
         "requests >= 2.9.1",
         "scipy >= 1.1.0",
         "six >= 1.10.0",

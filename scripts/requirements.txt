@@ -8,6 +8,7 @@ pillow==6.2.0
 prettytable==0.7.2
 pytz==2019.1
 resampy==0.2.1
+llvmlite==0.31.0
 scikit-learn==0.20.3
 statsmodels==0.9.0
 tensorflow==2.0.0
