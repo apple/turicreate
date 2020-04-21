@@ -139,7 +139,9 @@ _sys.modules["turicreate.extensions"] = _extensions_wrapper(
 # rewrite the import
 extensions = _sys.modules["turicreate.extensions"]
 
-from .visualization import plot, show
+visualization = _DeferredModuleLoader("turicreate.visualization")
+plot = _DeferredCallableLoader(visualization, "plot")
+show = _DeferredCallableLoader(visualization, "show")
 
 # internal util
 from turicreate._connect.main import launch as _launch
