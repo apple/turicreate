@@ -29,8 +29,9 @@ namespace turi {
  */
 std::shared_ptr<coreml::MLModelWrapper> export_object_detector_model(
     neural_net::pipeline_spec pipeline, size_t num_classes,
-    size_t num_predictions, flex_list class_labels,
-    std::map<std::string, flexible_type> options);
+    size_t num_predictions, flex_list class_labels, float confidence_threshold,
+    float iou_threshold, bool include_non_maximum_suppression,
+    bool use_nms_layer);
 
 /** Wraps a trained activity classifier model_spec as a complete MLModel. */
 std::shared_ptr<coreml::MLModelWrapper> export_activity_classifier_model(
