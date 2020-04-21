@@ -132,11 +132,13 @@ if __name__ == "__main__":
         "pillow >= 5.2.0",
         "prettytable == 0.7.2",
         "resampy == 0.2.1",
-        "llvmlite == 0.31.0",
         "requests >= 2.9.1",
         "scipy >= 1.1.0",
         "six >= 1.10.0",
     ]
+    if sys.version_info[0] == 2:
+        install_requires.append("llvmlite == 0.31.0")
+
     if sys.platform == "darwin":
         install_requires.append("tensorflow >= 2.0.0")
     else:
