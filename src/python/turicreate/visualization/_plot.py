@@ -452,7 +452,7 @@ def display_table_in_notebook(sf, title=None):
             + '"/>'
         )
 
-    import pandas as pd
+    from turicreate._deps import pandas as pd
 
     maximum_rows = 100
     if len(sf) > maximum_rows:

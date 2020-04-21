@@ -68,7 +68,7 @@ class GraphAnalyticsModel(CustomModel):
         }
         try:
             toolkit_name = dispatch_table[cls.__name__]
-            toolkit = _tc.extensions._toolkits.graph.__dict__[toolkit_name]
+            toolkit = getattr(_tc.extensions._toolkits.graph, toolkit_name)
             return toolkit.get_model_fields({})
         except:
             raise RuntimeError(

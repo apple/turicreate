@@ -9,3 +9,11 @@ Turi Create offers a broad set of essential machine learning models as well as
 task specific toolkits that let you to get started quickly while still giving you the
 ability to go back and customize models later.
 """
+
+from turicreate._deps import DeferredModuleLoader as _DeferredModuleLoader
+
+_mod_par = "turicreate.toolkits."
+
+# okay, this is a hack
+_feature_engineering = _DeferredModuleLoader(_mod_par + "_feature_engineering")
+evaluation = _DeferredModuleLoader(_mod_par + "evaluation")

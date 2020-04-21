@@ -9,4 +9,7 @@ from __future__ import absolute_import as _
 
 __all__ = ["image_analysis"]
 
-from . import image_analysis
+from turicreate._deps import DeferredModuleLoader as _DeferredModuleLoader
+
+_mod_par = "turicreate.toolkits.image_analysis."
+image_analysis = _DeferredModuleLoader(_mod_par + "image_analysis")

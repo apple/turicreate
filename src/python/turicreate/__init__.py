@@ -13,9 +13,17 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
+from ._deps import DeferredModuleLoader as _DeferredModuleLoader
+from ._deps import DeferredCallableLoader as _DeferredCallableLoader
+
 __version__ = "{{VERSION_STRING}}"
 from turicreate.version_info import __version__
 
+import turicreate.toolkits
+from turicreate.toolkits import evaluation
+import turicreate.aggregate
+
+# must load
 from turicreate.data_structures.sgraph import Vertex, Edge
 from turicreate.data_structures.sgraph import SGraph
 from turicreate.data_structures.sarray import SArray
@@ -25,16 +33,18 @@ from turicreate.data_structures.image import Image
 from .data_structures.sarray_builder import SArrayBuilder
 from .data_structures.sframe_builder import SFrameBuilder
 
+## bring load functions to the top level
 from turicreate.data_structures.sgraph import load_sgraph
+from turicreate.data_structures.sframe import load_sframe
+from turicreate.data_structures.sarray import load_sarray
 
-import turicreate.aggregate
-import turicreate.toolkits
+# lazy import under leaf module level
 import turicreate.toolkits.clustering as clustering
-import turicreate.toolkits.distances as distances
+from turicreate.toolkits.clustering import kmeans
+from turicreate.toolkits.clustering import dbscan
 
-import turicreate.toolkits.text_analytics as text_analytics
+# lazy import under leaf module level
 import turicreate.toolkits.graph_analytics as graph_analytics
-
 from turicreate.toolkits.graph_analytics import connected_components
 from turicreate.toolkits.graph_analytics import shortest_path
 from turicreate.toolkits.graph_analytics import kcore
@@ -44,6 +54,7 @@ from turicreate.toolkits.graph_analytics import triangle_counting
 from turicreate.toolkits.graph_analytics import degree_counting
 from turicreate.toolkits.graph_analytics import label_propagation
 
+# lazy import under leaf module level
 import turicreate.toolkits.recommender as recommender
 from turicreate.toolkits.recommender import popularity_recommender
 from turicreate.toolkits.recommender import item_similarity_recommender
@@ -51,12 +62,14 @@ from turicreate.toolkits.recommender import ranking_factorization_recommender
 from turicreate.toolkits.recommender import item_content_recommender
 from turicreate.toolkits.recommender import factorization_recommender
 
+# lazy load under leaf node level
 import turicreate.toolkits.regression as regression
 from turicreate.toolkits.regression import boosted_trees_regression
 from turicreate.toolkits.regression import random_forest_regression
 from turicreate.toolkits.regression import decision_tree_regression
 from turicreate.toolkits.regression import linear_regression
 
+# lazy load under leaf node level
 import turicreate.toolkits.classifier as classifier
 from turicreate.toolkits.classifier import svm_classifier
 from turicreate.toolkits.classifier import logistic_classifier
@@ -65,34 +78,40 @@ from turicreate.toolkits.classifier import random_forest_classifier
 from turicreate.toolkits.classifier import decision_tree_classifier
 from turicreate.toolkits.classifier import nearest_neighbor_classifier
 
-import turicreate.toolkits.nearest_neighbors as nearest_neighbors
-from turicreate.toolkits.clustering import kmeans
-from turicreate.toolkits.clustering import dbscan
-from turicreate.toolkits.topic_model import topic_model
-
+# lazy load under leaf node level
 from turicreate.toolkits.image_analysis import image_analysis
-import turicreate.toolkits.text_classifier as text_classifier
-import turicreate.toolkits.image_classifier as image_classifier
-import turicreate.toolkits.image_similarity as image_similarity
-import turicreate.toolkits.object_detector as object_detector
-import turicreate.toolkits.one_shot_object_detector as one_shot_object_detector
-import turicreate.toolkits.style_transfer as style_transfer
-import turicreate.toolkits.sound_classifier.sound_classifier as sound_classifier
-import turicreate.toolkits.activity_classifier as activity_classifier
-import turicreate.toolkits.drawing_classifier as drawing_classifier
 
-from turicreate.toolkits.image_analysis.image_analysis import load_images
-from turicreate.toolkits.audio_analysis.audio_analysis import load_audio
+# self-encaps modules without from import statements
+# we can use top-level lazy import for them
+distances = _DeferredModuleLoader("turicreate.toolkits.distances")
+nearest_neighbors = _DeferredModuleLoader("turicreate.toolkits.nearest_neighbors")
+topci_model = _DeferredModuleLoader("turicreate.toolkits.topci_model")
+text_analytics = _DeferredModuleLoader("turicreate.toolkits.text_analytics")
+text_classifier = _DeferredModuleLoader("turicreate.toolkits.text_classifier")
+image_classifier = _DeferredModuleLoader("turicreate.toolkits.image_classifier")
+image_similarity = _DeferredModuleLoader("turicreate.toolkits.image_similarity")
+object_detector = _DeferredModuleLoader("turicreate.toolkits.object_detector")
+one_shot_object_detector = _DeferredModuleLoader(
+    "turicreate.toolkits.one_shot_object_detector"
+)
+style_transfer = _DeferredModuleLoader("turicreate.toolkits.style_transfer")
+activity_classifier = _DeferredModuleLoader("turicreate.toolkits.activity_classifier")
+drawing_classifier = _DeferredModuleLoader("turicreate.toolkits.drawing_classifier")
 
-from turicreate.toolkits import evaluation
+# modules that don't expose attributes from __init__.py
+sound_classifier = _DeferredModuleLoader(
+    "turicreate.toolkits.sound_classifier.sound_classifier"
+)
+audio_analysis = _DeferredModuleLoader(
+    "turicreate.toolkits.audio_analysis.audio_analysis"
+)
+# lazy callable
+load_images = _DeferredCallableLoader(image_analysis, "load_images")
+load_audio = _DeferredCallableLoader(audio_analysis, "load_audio")
 
-# internal util
-from turicreate._connect.main import launch as _launch
-
-## bring load functions to the top level
-from turicreate.data_structures.sframe import load_sframe
-from turicreate.data_structures.sarray import load_sarray
-from turicreate.toolkits._model import load_model
+load_model = _DeferredCallableLoader(
+    _DeferredModuleLoader("turicreate.toolkits._model"), "load_model"
+)
 
 ################### Extension Importing ########################
 import turicreate.extensions
@@ -121,5 +140,8 @@ _sys.modules["turicreate.extensions"] = _extensions_wrapper(
 extensions = _sys.modules["turicreate.extensions"]
 
 from .visualization import plot, show
+
+# internal util
+from turicreate._connect.main import launch as _launch
 
 _launch()

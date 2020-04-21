@@ -8,7 +8,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import os as _os
 import sys as _sys
-import requests as _requests
 import turicreate as _tc
 import hashlib as _hashlib
 from six.moves.urllib import parse as _urlparse
@@ -56,6 +55,8 @@ def _download_and_checksum_files(urls, dirname, delete=False):
         for fn in fns:
             if _os.path.exists(fn):
                 _os.remove(fn)
+
+    import requests as _requests
 
     try:
         for url, fn, sha in zip(urls, fns, shas):

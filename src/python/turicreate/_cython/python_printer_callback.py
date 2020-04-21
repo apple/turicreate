@@ -6,15 +6,10 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import sys
 
-try:
-    import IPython
-    from IPython.core.interactiveshell import InteractiveShell
-
-    have_ipython = True
-except ImportError:
-    have_ipython = False
+__LAZY_HAVE_IPYTHON = 2
 
 
 def print_callback(val):
@@ -24,12 +19,23 @@ def print_callback(val):
     to Python. It tries to perform incremental printing to IPython Notebook or
     Jupyter Notebook and when all else fails, just prints locally.
     """
+    global __LAZY_HAVE_IPYTHON
+    if __LAZY_HAVE_IPYTHON == 2:
+        try:
+            import IPython
+            from IPython.core.interactiveshell import InteractiveShell
+
+            __LAZY_HAVE_IPYTHON = 1
+        except ImportError:
+            __LAZY_HAVE_IPYTHON = 0
+
     success = False
+
     try:
         # for reasons I cannot fathom, regular printing, even directly
         # to io.stdout does not work.
         # I have to intrude rather deep into IPython to make it behave
-        if have_ipython:
+        if __LAZY_HAVE_IPYTHON == 1:
             if InteractiveShell.initialized():
                 IPython.display.publish_display_data(
                     {"text/plain": val, "text/html": "<pre>" + val + "</pre>"}

@@ -10,7 +10,6 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 from fnmatch import fnmatch as _fnmatch
-from glob import glob as _glob
 import os as _os
 from random import shuffle as _shuffle
 
@@ -74,6 +73,8 @@ def load_audio(
                 if _fnmatch(cur_file, "*.wav"):
                     all_wav_files.append(dir_path + "/" + cur_file)
     else:
+        from glob import glob as _glob
+
         all_wav_files = _glob(path + "/*.wav")
 
     if random_order:

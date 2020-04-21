@@ -35,9 +35,22 @@ from __future__ import absolute_import as _
 
 from ._classifier import create
 
-from . import svm_classifier
-from . import logistic_classifier
-from . import boosted_trees_classifier
-from . import nearest_neighbor_classifier
-from . import random_forest_classifier
-from . import decision_tree_classifier
+# from . import svm_classifier
+# from . import logistic_classifier
+# from . import boosted_trees_classifier
+# from . import nearest_neighbor_classifier
+# from . import random_forest_classifier
+# from . import decision_tree_classifier
+
+from turicreate._deps import DeferredModuleLoader as _DeferredModuleLoader
+
+_mod_par = "turicreate.toolkits.classifier."
+
+svm_classifier = _DeferredModuleLoader(_mod_par + "svm_classifier")
+logistic_classifier = _DeferredModuleLoader(_mod_par + "logistic_classifier")
+boosted_trees_classifier = _DeferredModuleLoader(_mod_par + "boosted_trees_classifier")
+nearest_neighbor_classifier = _DeferredModuleLoader(
+    _mod_par + "nearest_neighbor_classifier"
+)
+random_forest_classifier = _DeferredModuleLoader(_mod_par + "random_forest_classifier")
+decision_tree = _DeferredModuleLoader(_mod_par + "decision_tree")

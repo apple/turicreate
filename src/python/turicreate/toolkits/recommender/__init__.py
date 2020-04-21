@@ -93,10 +93,28 @@ __all__ = [
     "util",
 ]
 
-from . import popularity_recommender
-from . import factorization_recommender
-from . import ranking_factorization_recommender
-from . import item_similarity_recommender
-from . import item_content_recommender
+# from . import popularity_recommender
+# from . import factorization_recommender
+# from . import ranking_factorization_recommender
+# from . import item_similarity_recommender
+# from . import item_content_recommender
+
+from turicreate._deps import DeferredModuleLoader as _DeferredModuleLoader
+
+_mod_par = "turicreate.toolkits.recommender."
+
+popularity_recommender = _DeferredModuleLoader(_mod_par + "popularity_recommender")
+factorization_recommender = _DeferredModuleLoader(
+    _mod_par + "factorization_recommender"
+)
+ranking_factorization_recommender = _DeferredModuleLoader(
+    _mod_par + "ranking_factorization_recommender"
+)
+item_similarity_recommender = _DeferredModuleLoader(
+    _mod_par + "item_similarity_recommender"
+)
+item_content_recommender = _DeferredModuleLoader(_mod_par + "item_content_recommender")
+
+# TODO: lazy callable
 from . import util
 from .util import _create as create

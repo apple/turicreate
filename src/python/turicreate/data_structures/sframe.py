@@ -24,12 +24,13 @@ from ..visualization import _get_client_app_path
 from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
+
+# DeferredModuleLoader version of pandas, numpy
 from .._deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
 from .grouped_sframe import GroupedSFrame
 from ..visualization import Plot
 
 import array
-from prettytable import PrettyTable
 from textwrap import wrap
 import datetime
 import time
@@ -39,6 +40,8 @@ import numbers
 import sys
 import six
 import csv
+import collections
+import array
 from collections import Iterable as _Iterable
 
 __all__ = ["SFrame"]
@@ -743,9 +746,7 @@ class SFrame(object):
             if six.PY2 and isinstance(data, unicode):
                 data = data.encode("utf-8")
             if format == "auto":
-                if HAS_PANDAS and isinstance(data, pandas.DataFrame):
-                    _format = "dataframe"
-                elif isinstance(data, str) or (
+                if isinstance(data, str) or (
                     sys.version_info.major < 3 and isinstance(data, unicode)
                 ):
 
@@ -770,10 +771,20 @@ class SFrame(object):
                 elif isinstance(data, dict):
                     _format = "dict"
 
-                elif _is_non_string_iterable(data):
+                elif isinstance(data, (collections.Sequence, array.array)):
                     _format = "array"
+
                 elif data is None:
                     _format = "empty"
+                # defer importing pandas
+                elif HAS_PANDAS and isinstance(data, pandas.DataFrame):
+                    _format = "dataframe"
+
+                # pandas.dataframe also is iterable
+                # so this check should be called after pandas check
+                # probably numpy.ndarray
+                elif _is_non_string_iterable(data):
+                    _format = "array"
                 else:
                     raise ValueError("Cannot infer input type for data " + str(data))
             else:
@@ -2112,6 +2123,8 @@ class SFrame(object):
         -------
         out : list[PrettyTable]
         """
+        from prettytable import PrettyTable
+
         if len(self) <= max_rows_to_display:
             headsf = self.__copy__()
         else:
@@ -4327,7 +4340,7 @@ class SFrame(object):
             if not isinstance(column, str):
                 raise TypeError("Column name must be a string")
             if column not in my_column_names:
-                raise KeyError("Column \"" + column + "\" does not exist in SFrame")
+                raise KeyError('Column "' + column + '" does not exist in SFrame')
             if self[column].dtype == dict:
                 raise TypeError("Cannot group on a dictionary column.")
             key_columns_array.append(column)

@@ -331,7 +331,7 @@ def create(
     options = {k.lower(): kwargs[k] for k in kwargs}
 
     # Create a model instance and train it
-    model = _turicreate.extensions.__dict__[model_name]()
+    model = getattr(_turicreate.extensions, model_name)()
     with QuietProgress(verbose):
         model.train(dataset, target, validation_set, options)
 

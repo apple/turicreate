@@ -10,7 +10,6 @@ import sys
 import os
 import logging
 import ctypes
-import glob as _glob
 import subprocess as _subprocess
 from ._scripts import _pylambda_worker
 
@@ -467,6 +466,8 @@ def _get_expanded_classpath(classpath):
 
     #  so this set comprehension takes paths that end with * to be globbed to find the jars, and then
     #  recombined back into a colon separated list of jar paths, removing dupes and using full file paths
+    import glob as _glob
+
     jars = (os.path.pathsep).join(
         (os.path.pathsep).join(
             [os.path.abspath(jarpath) for jarpath in _glob.glob(path)]

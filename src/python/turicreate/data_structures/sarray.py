@@ -418,14 +418,19 @@ class SArray(object):
                 data = list(data)
 
             # we need to perform type inference
+            # defer infer numpy and pandas since it will trigger DeferredModuleLoader loading the actual module
             if dtype is None:
-                if HAS_PANDAS and isinstance(data, pandas.Series):
-                    # if it is a pandas series get the dtype of the series
-                    dtype = pytype_from_dtype(data.dtype)
-                    if dtype == object:
-                        # we need to get a bit more fine grained than that
-                        dtype = infer_type_of_sequence(data.values)
-
+                if isinstance(data, str) or (
+                    sys.version_info.major < 3 and isinstance(data, unicode)
+                ):
+                    # if it is a file, we default to string
+                    dtype = str
+                elif isinstance(data, array.array):
+                    dtype = pytype_from_array_typecode(data.typecode)
+                elif isinstance(data, collections.Sequence):
+                    # Covers any ordered python container and arrays.
+                    # Convert it to a list first.
+                    dtype = infer_type_of_sequence(data)
                 elif HAS_NUMPY and isinstance(data, numpy.ndarray):
                     # first try the fast inproc method
                     try:
@@ -462,40 +467,32 @@ class SArray(object):
                         raise TypeError(
                             "Cannot convert Numpy arrays of greater than 2 dimensions"
                         )
-
-                elif isinstance(data, str) or (
-                    sys.version_info.major < 3 and isinstance(data, unicode)
-                ):
-                    # if it is a file, we default to string
-                    dtype = str
-                elif isinstance(data, array.array):
-                    dtype = pytype_from_array_typecode(data.typecode)
-                elif isinstance(data, collections.Sequence):
-                    # Covers any ordered python container and arrays.
-                    # Convert it to a list first.
-                    dtype = infer_type_of_sequence(data)
+                elif HAS_PANDAS and isinstance(data, pandas.Series):
+                    # if it is a pandas series get the dtype of the series
+                    dtype = pytype_from_dtype(data.dtype)
+                    if dtype == object:
+                        # we need to get a bit more fine grained than that
+                        dtype = infer_type_of_sequence(data.values)
                 else:
                     dtype = None
-
-            if HAS_PANDAS and isinstance(data, pandas.Series):
-                with cython_context():
-                    self.__proxy__.load_from_iterable(
-                        data.values, dtype, ignore_cast_failure
-                    )
-            elif isinstance(data, str) or (
+            if isinstance(data, str) or (
                 sys.version_info.major <= 2 and isinstance(data, unicode)
             ):
                 internal_url = _make_internal_url(data)
                 with cython_context():
                     self.__proxy__.load_autodetect(internal_url, dtype)
             elif (
-                (HAS_NUMPY and isinstance(data, numpy.ndarray))
-                or isinstance(data, array.array)
+                isinstance(data, array.array)
                 or isinstance(data, collections.Sequence)
+                or (HAS_NUMPY and isinstance(data, numpy.ndarray))
             ):
-
                 with cython_context():
                     self.__proxy__.load_from_iterable(data, dtype, ignore_cast_failure)
+            elif HAS_PANDAS and isinstance(data, pandas.Series):
+                with cython_context():
+                    self.__proxy__.load_from_iterable(
+                        data.values, dtype, ignore_cast_failure
+                    )
             else:
                 raise TypeError(
                     "Unexpected data source. "

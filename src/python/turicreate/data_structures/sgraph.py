@@ -22,8 +22,6 @@ from .._cython.context import debug_trace as cython_context
 from ..util import _is_non_string_iterable, _make_internal_url
 from .._deps import pandas as pd
 from .._deps import HAS_PANDAS
-
-import inspect
 import copy
 
 import sys
@@ -999,6 +997,8 @@ class SGraph(object):
         Rows: 5
         [4, 1, 1, 1, 4]
         """
+
+        import inspect
 
         assert inspect.isfunction(triple_apply_fn), "Input must be a function"
         if not (type(mutated_fields) is list or type(mutated_fields) is str):

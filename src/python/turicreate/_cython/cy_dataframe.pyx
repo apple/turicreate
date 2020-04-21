@@ -6,15 +6,7 @@
 from .cy_flexible_type cimport common_typed_flex_list_from_iterable
 from .cy_flexible_type cimport pylist_from_flex_list
 from .cy_flexible_type cimport pytype_from_flex_type_enum
-
-HAS_PANDAS = False
-
-try:
-    import pandas as pd
-    HAS_PANDAS = True
-except:
-    HAS_PANDAS = False
-
+from .._deps import HAS_PANDAS, pandas as pd
 
 cdef bint is_pandas_dataframe(object v):
     if HAS_PANDAS:
