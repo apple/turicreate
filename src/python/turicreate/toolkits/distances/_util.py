@@ -185,7 +185,7 @@ def _validate_composite_distance(distance):
 
         if isinstance(dist, str):
             try:
-                _tc.distances.__dict__[dist]
+                getattr(_tc.distances, dist)
             except:
                 raise ValueError("Distance '{}' not recognized".format(dist))
 

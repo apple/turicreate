@@ -482,7 +482,9 @@ def create(
         "cosine",
         "transformed_dot_product",
     ]
-    sparse_distances = [_turicreate.distances.__dict__[k] for k in sparse_distances]
+
+    # use getattr for DeferredModuleLoader
+    sparse_distances = [getattr(_turicreate.distances, k) for k in sparse_distances]
     for d in distance:
         feature_names, dist, _ = d
         list_features = [f for f in feature_names if _dataset[f].dtype == list]
