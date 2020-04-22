@@ -150,15 +150,6 @@ from __future__ import absolute_import as _
 from turicreate._deps import DeferredModuleLoader as _DeferredModuleLoader
 
 
-# from . import pagerank
-# from . import triangle_counting
-# from . import connected_components
-# from . import kcore
-# from . import graph_coloring
-# from . import shortest_path
-# from . import degree_counting
-# from . import label_propagation
-
 __all__ = [
     "pagerank",
     "triangle_counting",

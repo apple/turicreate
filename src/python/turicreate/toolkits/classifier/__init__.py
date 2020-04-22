@@ -33,15 +33,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-from ._classifier import create
-
-# from . import svm_classifier
-# from . import logistic_classifier
-# from . import boosted_trees_classifier
-# from . import nearest_neighbor_classifier
-# from . import random_forest_classifier
-# from . import decision_tree_classifier
-
+from turicreate.toolkits.classifier._classifier import create
 from turicreate._deps import DeferredModuleLoader as _DeferredModuleLoader
 
 _mod_par = "turicreate.toolkits.classifier."

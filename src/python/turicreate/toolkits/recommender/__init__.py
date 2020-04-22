@@ -93,12 +93,6 @@ __all__ = [
     "util",
 ]
 
-# from . import popularity_recommender
-# from . import factorization_recommender
-# from . import ranking_factorization_recommender
-# from . import item_similarity_recommender
-# from . import item_content_recommender
-
 from turicreate._deps import DeferredModuleLoader as _DeferredModuleLoader
 
 _mod_par = "turicreate.toolkits.recommender."
