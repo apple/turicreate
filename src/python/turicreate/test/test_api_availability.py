@@ -48,25 +48,31 @@ class TuriTests(unittest.TestCase):
 
 
 def lazy_modules_force_load():
-    turicreate.recommender.factorization_recommender.get_module()
-    turicreate.recommender.ranking_factorization_recommender.get_module()
-    turicreate.recommender.item_similarity_recommender.get_module()
-    turicreate.recommender.item_content_recommender.get_module()
-    turicreate.recommender.popularity_recommender.get_module()
-    turicreate.nearest_neighbors.get_module()
-    turicreate.text_analytics.get_module()
-    turicreate.logistic_classifier.get_module()
-    turicreate.toolkits.classifier.boosted_trees_classifier.get_module()
-    turicreate.toolkits.classifier.random_forest_classifier.get_module()
-    turicreate.toolkits.object_detector.get_module()
-    turicreate.toolkits.one_shot_object_detector.get_module()
-    turicreate.toolkits.image_similarity.get_module()
-    turicreate.toolkits.image_classifier.get_module()
-    turicreate.toolkits.text_classifier.get_module()
-    turicreate.toolkits.sound_classifier.get_module()
-    turicreate.toolkits.style_transfer.get_module()
-    turicreate.toolkits.activity_classifier.get_module()
-    turicreate.toolkits.drawing_classifier.get_module()
+    mods = [
+        turicreate.recommender.factorization_recommender,
+        turicreate.recommender.ranking_factorization_recommender,
+        turicreate.recommender.item_similarity_recommender,
+        turicreate.recommender.item_content_recommender,
+        turicreate.recommender.popularity_recommender,
+        turicreate.nearest_neighbors,
+        turicreate.text_analytics,
+        turicreate.logistic_classifier,
+        turicreate.toolkits.classifier.boosted_trees_classifier,
+        turicreate.toolkits.classifier.random_forest_classifier,
+        turicreate.toolkits.object_detector,
+        turicreate.toolkits.one_shot_object_detector,
+        turicreate.toolkits.image_similarity,
+        turicreate.toolkits.image_classifier,
+        turicreate.toolkits.text_classifier,
+        turicreate.toolkits.sound_classifier,
+        turicreate.toolkits.style_transfer,
+        turicreate.toolkits.activity_classifier,
+        turicreate.toolkits.drawing_classifier,
+    ]
+
+    for mod in mods:
+        if isinstance(mod, turicreate._DeferredModuleLoader):
+            mod.get_module()
 
 
 def get_visible_items(d):
@@ -254,7 +260,7 @@ class ModuleVisibilityTests(unittest.TestCase):
 
     def test_topic_model(self):
         actual = get_visible_items(turicreate.topic_model)
-        expected = ["topic_model", "create", "perplexity"]
+        expected = ["topic_model", "create", "perplexity", "TopicModel"]
         check_visible_modules(actual, expected)
 
     def test_text_analytics(self):
@@ -382,7 +388,7 @@ class ModuleVisibilityTests(unittest.TestCase):
 
         common_functions = ["create", "perplexity"]
         special_functions = {}
-        special_functions[turicreate.topic_model] = ["topic_model"]
+        special_functions[turicreate.topic_model] = ["topic_model", "TopicModel"]
 
         for module, funcs in special_functions.items():
             actual = get_visible_items(module)

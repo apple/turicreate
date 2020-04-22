@@ -123,7 +123,29 @@ class DeferredModuleLoader(ModuleType, object):
         ...     DeferredModuleLoader('foo').bar
         >>> baz() # the actual module `foo` is loaded
 
+        Caveat:
+
+        The design purpose is to enable user to use this DeferredModuleLoader
+        object as a regular module object. There's one subtlty that if you want
+        to force loading module (or call member functions) between DeferredModuleLoader
+        and module object. You need to first make sure the type of the module-like object
+        that is referred by is still a DeferredModuleLoader type.
+
+        For module references, python will do some tricky stuff to find the
+        real module object. Here's an example,
+
+        >>> import turicreate as tc
+        >>> print(type(tc.recommender.factorization_recommender))
+        >>> <class 'turicreate._deps.DeferredModuleLoader'>
+        >>> tc.recommender.factorization_recommender.get_module()
+        >>> print(type(tc.recommender.factorization_recommender))
+        >>> <class 'module'>
+
+        After first force loading, `tc.recommender.factorization_recommender`
+        refers to the real module object, and it won't refer to the
+        DeferredModuleLoader being injected anymore.
         """
+
         if init_func is None:
             raise ValueError("init function should not be None")
         if not isinstance(name, six.string_types):
