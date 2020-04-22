@@ -529,15 +529,17 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
          * */
         if (!error.ShouldRetry()) {
           // SDK didn't retry for us, check retry on our own decisions
-          if (error.GetResponseCode() ==
-              Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
+          // especially for non-standard AWS error reply
+          if (error.GetErrorType() == Aws::S3::S3Errors::UNKNOWN &&
+              error.GetResponseCode() ==
+                  Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
             n_retry++;
           } else {
-            // stop retry immediately
+            // it's standard AWS error, let's stop retry immediately
+            // and report accordingly to user
             n_retry = 3;
           }
 
-          // should be ==, use >= to suppress any surprises
           if (n_retry >= 3) {
             // amend the error msg on the last retry failure
             std::stringstream ss;
@@ -550,9 +552,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
           } else {
             // continue retry
             std::this_thread::sleep_for(std::chrono::milliseconds(backoff));
-            // [2, 4), float random
-            double rdm = (turi::random::pure_random_seed() % 1000 / 500.) + 2;
-            backoff = static_cast<int>(backoff * rdm);
+            backoff *= 2;
           }
 
         } else {
@@ -566,7 +566,7 @@ list_objects_response list_objects_impl(s3url parsed_url, std::string proxy,
           logstream(LOG_DEBUG)
               << "list_objects_impl failed:" << ret.error << std::endl;
           // no need to retry, just jump out all while loop
-          break;  // or n_retry = 3;
+          break;
         }
       }
     } while (n_retry < 3);  // finished retry
