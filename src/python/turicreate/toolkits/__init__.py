@@ -16,7 +16,7 @@ _mod_par = "turicreate.toolkits."
 
 # okay, this is a hack
 _feature_engineering = _DeferredModuleLoader(_mod_par + "_feature_engineering")
-evaluation = _DeferredModuleLoader(_mod_par + "evaluation")
+evaluation = _DeferredModuleLoader(_mod_par + "evaluation", is_model=False)
 
 distances = _DeferredModuleLoader(_mod_par + "distances")
 nearest_neighbors = _DeferredModuleLoader(_mod_par + "nearest_neighbors")

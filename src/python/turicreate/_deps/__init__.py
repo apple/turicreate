@@ -73,17 +73,19 @@ class DeferredModuleLoader(ModuleType, object):
     # read-only member list -> used by __setattr__; see below
     _my_attrs_ = [
         "is_loaded",
+        "is_model",
         "reload",
         "get_module",
         "_name",
         "_init_func",
         "_module",
         "_loaded",
+        "_is_model",
     ]
     # ensure singleton; must be guarded by _ImportLockContext lock
     registry_ = set()
 
-    def __init__(self, name, init_func=default_init_func, is_lambda=False):
+    def __init__(self, name, init_func=default_init_func, singleton=False, **kwargs):
         """
         Once write then read only. `reload` can reset the state.
         Only singleton instance is allowed.
@@ -134,8 +136,13 @@ class DeferredModuleLoader(ModuleType, object):
         self._name = name
         self._init_func = init_func
 
+        try:
+            self._is_model = kwargs["is_model"]
+        except KeyError:
+            self._is_model = True
+
         with _ImportLockContext():
-            if name in DeferredModuleLoader.registry_ and not is_lambda:
+            if name in DeferredModuleLoader.registry_ and singleton:
                 raise RuntimeError(
                     "pkg {} is already taken by other DeferredModuleLoader instance.".format(
                         name
@@ -222,6 +229,9 @@ class DeferredModuleLoader(ModuleType, object):
         else:
             with _ImportLockContext():
                 return self._loaded
+
+    def is_model(self):
+        return self._is_model
 
     def reload(self):
         # for dev purpose

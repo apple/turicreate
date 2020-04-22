@@ -132,7 +132,7 @@ _sys.modules["turicreate.extensions"] = _extensions_wrapper(
 # rewrite the import
 extensions = _sys.modules["turicreate.extensions"]
 
-visualization = _DeferredModuleLoader("turicreate.visualization")
+visualization = _DeferredModuleLoader("turicreate.visualization", is_model=False)
 plot = _DeferredCallableLoader(visualization, "plot")
 show = _DeferredCallableLoader(visualization, "show")
 

@@ -28,6 +28,29 @@ import warnings
 
 MODEL_NAME_MAP = {}
 
+_IS_FORCE_LOADED = False
+
+
+def _force_load_beforehand():
+    """
+    These models all have C++ layer and they extends the `Model` and `CustomModel` class.
+    Therefore, they need to be registered to `MODEL_NAME_MAP`.
+    """
+    global _IS_FORCE_LOADED
+
+    if _IS_FORCE_LOADED:
+        return
+
+    for name in dir(_tc):
+        # do not force load any non-model modules, such as visualization
+        if not name.startswith("_"):
+            obj = getattr(_tc, name)
+            if isinstance(obj, _tc._DeferredModuleLoader) and obj.is_model():
+                print(name)
+                obj.get_module()
+
+    _IS_FORCE_LOADED = True
+
 
 def load_model(location):
     """
@@ -73,6 +96,9 @@ def load_model(location):
             )
     if not dir_archive_exists:
         raise IOError("Directory %s does not exist" % location)
+
+    # must force load any model module once
+    _force_load_beforehand()
 
     _internal_url = _make_internal_url(location)
     saved_state = glconnect.get_unity().load_model(_internal_url)
