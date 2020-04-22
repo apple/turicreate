@@ -26,3 +26,4 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 from .topic_model import perplexity
+from .topic_model import create

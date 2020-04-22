@@ -83,33 +83,25 @@ from turicreate.toolkits.classifier import nearest_neighbor_classifier
 from turicreate.toolkits.image_analysis import image_analysis
 
 # self-encaps modules without from import statements
-# we can use top-level lazy import for them
-distances = _DeferredModuleLoader("turicreate.toolkits.distances")
-nearest_neighbors = _DeferredModuleLoader("turicreate.toolkits.nearest_neighbors")
-topci_model = _DeferredModuleLoader("turicreate.toolkits.topci_model")
-text_analytics = _DeferredModuleLoader("turicreate.toolkits.text_analytics")
-text_classifier = _DeferredModuleLoader("turicreate.toolkits.text_classifier")
-image_classifier = _DeferredModuleLoader("turicreate.toolkits.image_classifier")
-image_similarity = _DeferredModuleLoader("turicreate.toolkits.image_similarity")
-object_detector = _DeferredModuleLoader("turicreate.toolkits.object_detector")
-one_shot_object_detector = _DeferredModuleLoader(
-    "turicreate.toolkits.one_shot_object_detector"
-)
-style_transfer = _DeferredModuleLoader("turicreate.toolkits.style_transfer")
-activity_classifier = _DeferredModuleLoader("turicreate.toolkits.activity_classifier")
-drawing_classifier = _DeferredModuleLoader("turicreate.toolkits.drawing_classifier")
+from turicreate.toolkits import distances
+from turicreate.toolkits import nearest_neighbors
+from turicreate.toolkits import topic_model
+from turicreate.toolkits import text_analytics
+from turicreate.toolkits import text_classifier
+from turicreate.toolkits import image_classifier
+from turicreate.toolkits import image_similarity
+from turicreate.toolkits import object_detector
+from turicreate.toolkits import one_shot_object_detector
+from turicreate.toolkits import style_transfer
+from turicreate.toolkits import activity_classifier
+from turicreate.toolkits import drawing_classifier
 
-# modules that don't expose attributes from __init__.py
-sound_classifier = _DeferredModuleLoader(
-    "turicreate.toolkits.sound_classifier.sound_classifier"
-)
-audio_analysis = _DeferredModuleLoader(
-    "turicreate.toolkits.audio_analysis.audio_analysis"
-)
-# lazy callable
+from turicreate.toolkits import sound_classifier
+from turicreate.toolkits import audio_analysis
+
+# callables
 load_images = _DeferredCallableLoader(image_analysis, "load_images")
 load_audio = _DeferredCallableLoader(audio_analysis, "load_audio")
-
 load_model = _DeferredCallableLoader(
     _DeferredModuleLoader("turicreate.toolkits._model"), "load_model"
 )
