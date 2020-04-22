@@ -6,16 +6,17 @@
 
 #ifdef HAS_MACOS_10_15
 
-#import <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
-#import <ml/neural_net/style_transfer/mps_style_transfer.h>
-
-#import <ml/neural_net/model_spec.hpp>
-#import <ml/neural_net/mps_device_manager.h>
-#import <ml/neural_net/mps_utils.h>
-
-#import <ml/neural_net/style_transfer/mps_style_transfer_weights.h>
+#include <ml/neural_net/style_transfer/mps_style_transfer_backend.hpp>
 
 #include <numeric>
+
+#include <core/logging/logger_includes.hpp>
+#include <ml/neural_net/model_spec.hpp>
+
+#import <ml/neural_net/mps_device_manager.h>
+#import <ml/neural_net/mps_utils.h>
+#import <ml/neural_net/style_transfer/mps_style_transfer.h>
+#import <ml/neural_net/style_transfer/mps_style_transfer_weights.h>
 
 using namespace turi::neural_net;
 
@@ -283,4 +284,4 @@ float_array_map mps_style_transfer::train(const float_array_map& inputs) {
 } // namespace style_transfer
 } // namespace turi
 
-#endif // #ifdef HAS_MACOS_10_15
+#endif  // #ifdef HAS_MACOS_10_15
