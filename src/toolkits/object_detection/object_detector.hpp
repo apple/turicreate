@@ -191,7 +191,6 @@ class EXPORT object_detector: public ml_model_base {
   // Factories for ModelTrainer
   virtual std::unique_ptr<ModelTrainer> create_trainer(
       const Config& config, const std::string& pretrained_model_path,
-      int random_seed,
       std::unique_ptr<neural_net::compute_context> context) const;
   virtual std::unique_ptr<ModelTrainer> create_inference_trainer(
       const Checkpoint& checkpoint,

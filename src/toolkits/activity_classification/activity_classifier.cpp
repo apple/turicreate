@@ -19,6 +19,7 @@
 #include <timer/timer.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
+#include <toolkits/util/float_array_serialization.hpp>
 #include <toolkits/util/training_utils.hpp>
 
 namespace turi {
@@ -109,7 +110,7 @@ void activity_classifier::save_impl(oarchive& oarc) const {
   variant_deep_save(state, oarc);
 
   // Save neural net weights.
-  oarc << read_model_spec()->export_params_view();
+  save_float_array_map(read_model_spec()->export_params_view(), oarc);
 }
 
 void activity_classifier::load_version(iarchive& iarc, size_t version) {
@@ -117,8 +118,8 @@ void activity_classifier::load_version(iarchive& iarc, size_t version) {
   variant_deep_load(state, iarc);
 
   // Load neural net weights.
-  float_array_map nn_params;
-  iarc >> nn_params;
+  float_array_map nn_params = load_float_array_map(iarc);
+
   bool use_random_init = false;
   nn_spec_ = init_model(use_random_init);
   nn_spec_->update_params(nn_params);

@@ -1,29 +1,30 @@
 /* Copyright © 2017 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
-#include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 #include <unistd.h>
-#include <regex>
-#include <core/storage/fileio/fs_utils.hpp>
-#include <core/storage/fileio/hdfs.hpp>
+
 #include <boost/algorithm/string.hpp>
 #include <boost/filesystem.hpp>
-#include <core/storage/fileio/fixed_size_cache_manager.hpp>
 #include <core/storage/fileio/file_handle_pool.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
+#include <core/storage/fileio/fs_utils.hpp>
+#include <core/storage/fileio/hdfs.hpp>
+#include <regex>
 
 #ifndef TC_DISABLE_REMOTEFS
 #include <core/storage/fileio/s3_api.hpp>
 #endif
 
-#include <core/storage/fileio/sanitize_url.hpp>
 #include <core/export.hpp>
+#include <core/storage/fileio/sanitize_url.hpp>
 
 namespace turi {
 namespace fileio {
-
 
 // import boost filesystem
 namespace fs = boost::filesystem;
@@ -40,24 +41,24 @@ EXPORT std::string make_canonical_path(const std::string& path) {
     } else {
       return fs::canonical(fs::absolute(p)).string();
     }
-  } catch(fs::filesystem_error e) {
+  } catch (fs::filesystem_error e) {
     log_and_throw(std::string("Invalid path: ") + path + ". " + e.what());
   }
 }
-
 
 /**
  * A helper function to parse the hdfs url.
  * Return a tuple of host, port, and path.
  */
-std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url) {
-
+std::tuple<std::string, std::string, std::string> parse_hdfs_url(
+    std::string url) {
   const std::string default_host = "default";
   const std::string default_port = "0";
   const std::string default_path = "";
 
-  auto warn_and_return_default = [=](const std::string& reason = ""){
-    logstream(LOG_WARNING) << "Cannot parse hdfs url: " << url << ". " << reason << std::endl;
+  auto warn_and_return_default = [=](const std::string& reason = "") {
+    logstream(LOG_WARNING) << "Cannot parse hdfs url: " << url << ". " << reason
+                           << std::endl;
     return std::make_tuple(default_host, default_port, default_path);
   };
 
@@ -66,7 +67,7 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
   };
 
   // get the string after hdfs://
-  std::string base(url.begin()+7, url.end());
+  std::string base(url.begin() + 7, url.end());
   std::string host = default_host;
   std::string port = default_port;
   std::string path = default_path;
@@ -81,7 +82,7 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
   // find the first '/' character
   auto first_slash_pos = base.find_first_of("/");
 
-  if (first_slash_pos  == std::string::npos) {
+  if (first_slash_pos == std::string::npos) {
     // No match
     return warn_and_return_default();
   } else if (first_slash_pos == 0) {
@@ -89,8 +90,8 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
     path = base;
   } else {
     // Matches hdfs://PREFIX/PATH
-    auto prefix = std::string(base.begin(), base.begin()+first_slash_pos);
-    path = std::string(base.begin()+first_slash_pos, base.end());
+    auto prefix = std::string(base.begin(), base.begin() + first_slash_pos);
+    path = std::string(base.begin() + first_slash_pos, base.end());
     // Parse the prefix:
     // case 1. HOSTNAME:PORT
     // case 2. HOSTNAME
@@ -101,7 +102,7 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
     } else {
       // Matchees hdfs://HOSTNAME:PORT/PATH
       host = std::string(prefix.begin(), prefix.begin() + first_colon_pos);
-      port = std::string(prefix.begin() + first_colon_pos+ 1, prefix.end());
+      port = std::string(prefix.begin() + first_colon_pos + 1, prefix.end());
     }
   }
 
@@ -114,7 +115,7 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
   }
 
   // Sanity check:
-  for (auto c: port) {
+  for (auto c : port) {
     if (!isdigit(c)) {
       std::stringstream msg;
       msg << "port = " << port << " must be all digits";
@@ -131,7 +132,8 @@ std::tuple<std::string, std::string, std::string> parse_hdfs_url(std::string url
   return std::make_tuple(host, port, path);
 }
 
-EXPORT std::pair<file_status, std::string> get_file_status(const std::string& path) {
+EXPORT std::pair<file_status, std::string> get_file_status(
+    const std::string& path) {
   std::string err_msg;
   if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. it is only REGULAR or MISSING
@@ -142,7 +144,7 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
       return std::make_pair(file_status::MISSING, std::string(ex.what()));
     }
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(get_protocol(path) == "hdfs") {
+  } else if (get_protocol(path) == "hdfs") {
     // hdfs
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
@@ -150,12 +152,17 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
       // get the HDFS object
       auto& hdfs = turi::hdfs::get_hdfs(host, std::stoi(port));
       // fail we we are unable to construct the HDFS object
-      if (!hdfs.good()) return std::make_pair(file_status::FS_UNAVAILABLE, "Unable to construct HDFS connector: " + path);
+      if (!hdfs.good())
+        return std::make_pair(file_status::FS_UNAVAILABLE,
+                              "Unable to construct HDFS connector: " + path);
       // we are good. Use the HDFS accessors to figure out what to return
-      if (!hdfs.path_exists(hdfspath)) return {file_status::MISSING, "hdfs path doesn't exist in " + hdfspath};
-      else if (hdfs.is_directory(hdfspath)) return {file_status::DIRECTORY, ""};
-      else return {file_status::REGULAR_FILE, ""};
-    } catch(const std::exception& ex) {
+      if (!hdfs.path_exists(hdfspath))
+        return {file_status::MISSING, "hdfs path doesn't exist in " + hdfspath};
+      else if (hdfs.is_directory(hdfspath))
+        return {file_status::DIRECTORY, ""};
+      else
+        return {file_status::REGULAR_FILE, ""};
+    } catch (const std::exception& ex) {
       // failure for some reason. fail with missing
       return {file_status::MISSING, ex.what()};
     }
@@ -171,23 +178,24 @@ EXPORT std::pair<file_status, std::string> get_file_status(const std::string& pa
     struct stat statout;
     int ret = stat(path.c_str(), &statout);
     if (ret != 0) return {file_status::MISSING, "file not exist in " + path};
-    if (S_ISDIR(statout.st_mode)) return {file_status::DIRECTORY, ""};
-    else return {file_status::REGULAR_FILE, ""};
+    if (S_ISDIR(statout.st_mode))
+      return {file_status::DIRECTORY, ""};
+    else
+      return {file_status::REGULAR_FILE, ""};
   }
 
   return {file_status::MISSING, "file not exist in " + path};
 }
 
-
-std::vector<std::pair<std::string, file_status>>
-get_directory_listing(const std::string& path) {
-  std::vector<std::pair<std::string, file_status> > ret;
+std::vector<std::pair<std::string, file_status>> get_directory_listing(
+    const std::string& path) {
+  std::vector<std::pair<std::string, file_status>> ret;
   if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
     // it is only REGULAR or MISSING
     return ret;
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(get_protocol(path) == "hdfs") {
+  } else if (get_protocol(path) == "hdfs") {
     // hdfs
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
@@ -196,7 +204,7 @@ get_directory_listing(const std::string& path) {
       // get the HDFS object
       auto& hdfs = turi::hdfs::get_hdfs(host, std::stoi(port));
       auto dircontents = hdfs.list_files_and_stat(hdfspath);
-      for (auto direntry: dircontents) {
+      for (auto direntry : dircontents) {
         if (direntry.second) {
           ret.push_back({direntry.first, file_status::DIRECTORY});
         } else {
@@ -204,15 +212,15 @@ get_directory_listing(const std::string& path) {
         }
       }
       // fail we we are unable to construct the HDFS object
-    } catch(...) {
+    } catch (...) {
       // failure for some reason. return with nothing
     }
   } else if (get_protocol(path) == "s3") {
     list_objects_response response = list_directory(path);
-    for (auto dir: response.directories) {
+    for (auto dir : response.directories) {
       ret.push_back({dir, file_status::DIRECTORY});
     }
-    for (auto obj: response.objects) {
+    for (auto obj : response.objects) {
       ret.push_back({obj, file_status::REGULAR_FILE});
     }
 #endif
@@ -221,18 +229,18 @@ get_directory_listing(const std::string& path) {
       fs::path dir(path);
       auto diriter = fs::directory_iterator(path);
       auto enditer = fs::directory_iterator();
-      while(diriter != enditer) {
+      while (diriter != enditer) {
         bool is_directory = fs::is_directory(diriter->path());
         if (is_directory) {
           ret.push_back({convert_to_generic(diriter->path().string()),
-              file_status::DIRECTORY});
+                         file_status::DIRECTORY});
         } else {
           ret.push_back({convert_to_generic(diriter->path().string()),
-              file_status::REGULAR_FILE});
+                         file_status::REGULAR_FILE});
         }
         ++diriter;
       }
-    } catch(...) {
+    } catch (...) {
       // failure for some reason. return with nothing
     }
   }
@@ -248,7 +256,7 @@ EXPORT bool create_directory(const std::string& path) {
     // this is a cache file. There is no filesystem.
     return true;
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(get_protocol(path) == "hdfs") {
+  } else if (get_protocol(path) == "hdfs") {
     // hdfs
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
@@ -257,7 +265,7 @@ EXPORT bool create_directory(const std::string& path) {
       auto& hdfs = turi::hdfs::get_hdfs(host, std::stoi(port));
       return hdfs.create_directories(hdfspath);
       // fail we we are unable to construct the HDFS object
-    } catch(...) {
+    } catch (...) {
       // failure for some reason. return with nothing
       return false;
     }
@@ -282,27 +290,31 @@ EXPORT bool create_directory_or_throw(const std::string& path) {
   // this function throws if the directory still doesn't exist
   // at that location
   if (get_protocol(path) == "s3") {
-    auto status = get_file_status(path);
+    // only check on parent direcotory or prefix
+    auto ppath = get_dirname(path);
+    auto status = get_file_status(ppath);
+    // no need to create subdirectory in s3 because there's none
     switch (status.first) {
       case file_status::MISSING:
         log_and_throw_io_failure(
-          "Unable to create directory structure at " +
-          sanitize_url(path) +
-          ". Ensure that you have write permission to this location, or try again with a different path."
-        );
-        break;
+            "Unable to find parent directory structure: " +
+            sanitize_url(ppath) +
+            ". Ensure that you have created this s3 prefix. This behavior "
+            "intends to avoid accidental creation S3 keys. or try "
+            "again with a different path. Error message: " +
+            status.second);
       case file_status::REGULAR_FILE:
         log_and_throw_io_failure(
-          "Unable to create directory at " +
-          sanitize_url(path) +
-          ". A non-directory file already exists there. Delete that file, or try again with a different path."
-        );
+            "Parent directory (prefix) " + sanitize_url(path) +
+            " is a regular file. Use prefix as both file and directory is "
+            "discouraged in order to prevent further ambiguity. Delete that "
+            "file, or try again with a different path.");
       case file_status::DIRECTORY:
         // happy path, return below
         break;
       default:
         // not sure what error message to give; fall back to current I/O error
-        log_and_throw_current_io_failure();
+        log_and_throw_io_failure("Unknown error");
     }
   }
 
@@ -311,8 +323,7 @@ EXPORT bool create_directory_or_throw(const std::string& path) {
   return result;
 }
 
-EXPORT bool delete_path(const std::string& path,
-                        file_status stat) {
+EXPORT bool delete_path(const std::string& path, file_status stat) {
   if (stat == file_status::FS_UNAVAILABLE) stat = get_file_status(path).first;
 
   if (stat == file_status::MISSING) {
@@ -322,7 +333,7 @@ EXPORT bool delete_path(const std::string& path,
   // For regular file, go through global file pool to make sure we don't
   // delete files that are in use by some SArray
   if (stat == file_status::REGULAR_FILE &&
-    fileio::file_handle_pool::get_instance().mark_file_for_delete(path)) {
+      fileio::file_handle_pool::get_instance().mark_file_for_delete(path)) {
     logstream(LOG_INFO) << "Attempting to delete " << sanitize_url(path)
                         << " but it is still in use. It will be deleted"
                         << " when all references to the file are closed"
@@ -333,8 +344,7 @@ EXPORT bool delete_path(const std::string& path,
   }
 }
 
-bool delete_path_impl(const std::string& path,
-                      file_status stat) {
+bool delete_path_impl(const std::string& path, file_status stat) {
   if (stat == file_status::FS_UNAVAILABLE) stat = get_file_status(path).first;
   if (stat == file_status::MISSING) {
     return false;
@@ -343,14 +353,15 @@ bool delete_path_impl(const std::string& path,
   if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     try {
       // we ignore recursive here. since the cache can't hold directories
-      auto cache_entry = fixed_size_cache_manager::get_instance().get_cache(path);
+      auto cache_entry =
+          fixed_size_cache_manager::get_instance().get_cache(path);
       fixed_size_cache_manager::get_instance().free(cache_entry);
       return true;
     } catch (...) {
       return false;
     }
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(get_protocol(path) == "hdfs") {
+  } else if (get_protocol(path) == "hdfs") {
     // hdfs only has a recursive deleter. we need to make this safe
     // if the current path is a non-empty directory, fail
     if (stat == file_status::DIRECTORY) {
@@ -366,7 +377,7 @@ bool delete_path_impl(const std::string& path,
       auto& hdfs = turi::hdfs::get_hdfs(host, std::stoi(port));
       return hdfs.delete_file_recursive(hdfspath);
       // fail we we are unable to construct the HDFS object
-    } catch(...) {
+    } catch (...) {
       // failure for some reason. return with nothing
       return false;
     }
@@ -397,7 +408,7 @@ EXPORT bool delete_path_recursive(const std::string& path) {
     // recursive deletion not possible with cache
     return true;
 #ifndef TC_DISABLE_REMOTEFS
-  } else if(get_protocol(path) == "hdfs") {
+  } else if (get_protocol(path) == "hdfs") {
     // hdfs
     std::string host, port, hdfspath;
     std::tie(host, port, hdfspath) = parse_hdfs_url(path);
@@ -406,11 +417,11 @@ EXPORT bool delete_path_recursive(const std::string& path) {
       auto& hdfs = turi::hdfs::get_hdfs(host, std::stoi(port));
       return hdfs.delete_file_recursive(hdfspath);
       // fail we we are unable to construct the HDFS object
-    } catch(...) {
+    } catch (...) {
       // failure for some reason. return with nothing
       return false;
     }
-  } else if(get_protocol(path) == "s3") {
+  } else if (get_protocol(path) == "s3") {
     return delete_prefix(path).empty();
 #endif
   } else {
@@ -425,8 +436,8 @@ EXPORT bool delete_path_recursive(const std::string& path) {
 
 bool is_writable_protocol(std::string protocol) {
 #ifndef TC_DISABLE_REMOTEFS
-  return protocol == "hdfs" || protocol == "s3" ||
-      protocol == "" || protocol == "file" || protocol == "cache";
+  return protocol == "hdfs" || protocol == "s3" || protocol == "" ||
+         protocol == "file" || protocol == "cache";
 #else
   return protocol == "" || protocol == "file" || protocol == "cache";
 #endif
@@ -451,12 +462,11 @@ EXPORT std::string get_protocol(std::string path) {
 std::string remove_protocol(std::string path) {
   size_t proto = path.find("://");
   if (proto != std::string::npos) {
-    return path.substr(proto + 3); // 3 is the "://"
+    return path.substr(proto + 3);  // 3 is the "://"
   } else {
     return path;
   }
 }
-
 
 std::string get_filename(std::string path) {
   return fs::path(path).filename().string();
@@ -467,7 +477,7 @@ std::string get_dirname(std::string path) {
   auto proto = get_protocol(path);
   auto proto_removed = remove_protocol(path);
 
-  if(proto.size()) {
+  if (proto.size()) {
     ret_path += proto;
     ret_path += std::string("://");
   }
@@ -476,12 +486,12 @@ std::string get_dirname(std::string path) {
 
   // S3 is sensitive to trailing slashes, double slashes, etc.
 
-  if((ret_path.size() > 0) && (ret_path.at(ret_path.size()-1) == '/'))
+  if ((ret_path.size() > 0) && (ret_path.at(ret_path.size() - 1) == '/'))
     ret_path.pop_back();
   return ret_path;
 }
 
-std::string convert_to_generic(const std::string &path) {
+std::string convert_to_generic(const std::string& path) {
   return fs::path(path).generic_string();
 }
 
@@ -492,7 +502,8 @@ std::string make_relative_path(std::string root_directory, std::string path) {
   auto original_absolute_path = path;
 
   // if different protocols, it is not possible to relativize
-  if (get_protocol(root_directory) != get_protocol(path)) return original_absolute_path;
+  if (get_protocol(root_directory) != get_protocol(path))
+    return original_absolute_path;
 
   root_directory = remove_protocol(root_directory);
   path = remove_protocol(path);
@@ -517,7 +528,7 @@ std::string make_relative_path(std::string root_directory, std::string path) {
   // count the number of matching path elements
   size_t num_root_elements_match = 0;
   auto min_elements = std::min(root_elements.size(), path_elements.size());
-  for (size_t i = 0;i < min_elements; ++i) {
+  for (size_t i = 0; i < min_elements; ++i) {
     if (path_elements[i] == root_elements[i]) {
       num_root_elements_match = i + 1;
     } else {
@@ -537,12 +548,14 @@ std::string make_relative_path(std::string root_directory, std::string path) {
   // then all the rest of the regular path elements
   std::copy(path_elements.begin() + num_root_elements_match,
             path_elements.end(),
-            std::inserter(new_relative_path_elements, new_relative_path_elements.end()));
+            std::inserter(new_relative_path_elements,
+                          new_relative_path_elements.end()));
   std::string retpath = boost::algorithm::join(new_relative_path_elements, "/");
   return retpath;
 }
 
-EXPORT std::string make_absolute_path(std::string root_directory, std::string path) {
+EXPORT std::string make_absolute_path(std::string root_directory,
+                                      std::string path) {
   // If backslashes, convert them to slashes
   root_directory = convert_to_generic(root_directory);
   path = convert_to_generic(path);
@@ -561,8 +574,8 @@ EXPORT std::string make_absolute_path(std::string root_directory, std::string pa
   // at this point the root directory should be a proper absolute file path
   // with a "/" at the end;
 
-  if (path.empty() || boost::algorithm::contains(path, "://")
-      || boost::algorithm::starts_with(path, "/")) {
+  if (path.empty() || boost::algorithm::contains(path, "://") ||
+      boost::algorithm::starts_with(path, "/")) {
     // if path "looks" like an absolute path, just return it
     return path;
   } else {
@@ -600,17 +613,21 @@ std::pair<std::string, std::string> split_path_elements(const std::string& url,
  * Collects contents of "url" path, testing the rest against the glob
  * return matching file(s) as (url, status) pairs
  */
-EXPORT std::vector<std::pair<std::string, file_status>> get_glob_files(const std::string& url) {
+EXPORT std::vector<std::pair<std::string, file_status>> get_glob_files(
+    const std::string& url) {
   auto trimmed_url = url;
   boost::algorithm::trim(trimmed_url);
   auto status = get_file_status(trimmed_url);
   if (status.first == file_status::REGULAR_FILE) {
     // its a regular file. Ignore the glob and load it
     return {{url, file_status::REGULAR_FILE}};
-  } else if(status.first == file_status::FS_UNAVAILABLE) {
-    log_and_throw_io_failure("Filesystem unavailable. Check server log for details. err: " + status.second);
+  } else if (status.first == file_status::FS_UNAVAILABLE) {
+    log_and_throw_io_failure(
+        "Filesystem unavailable. Check server log for details. err: " +
+        status.second);
   }
-  std::pair<std::string, std::string> path_elements = split_path_elements(trimmed_url, status.first);
+  std::pair<std::string, std::string> path_elements =
+      split_path_elements(trimmed_url, status.first);
   std::vector<std::pair<std::string, file_status>> files;
 
   if (path_elements.second == "") {
@@ -640,7 +657,8 @@ size_t get_io_parallelism_id(const std::string url) {
     return (size_t)(-1);
   } else if (protocol == "cache") {
     try {
-      auto cache_entry = fixed_size_cache_manager::get_instance().get_cache(url);
+      auto cache_entry =
+          fixed_size_cache_manager::get_instance().get_cache(url);
       if (cache_entry) {
         if (cache_entry->is_pointer()) {
           // if its a cached pointer, we can read in parallel always
@@ -651,14 +669,15 @@ size_t get_io_parallelism_id(const std::string url) {
           // each prefix gets its own ID.
           std::string filename = cache_entry->get_filename();
           std::vector<std::string> temp_directories = get_temp_directories();
-          for (size_t i = 0;i < temp_directories.size(); ++i) {
+          for (size_t i = 0; i < temp_directories.size(); ++i) {
             if (boost::starts_with(filename, temp_directories[i])) {
               return i;
             }
           }
         }
       }
-    } catch (...) { }
+    } catch (...) {
+    }
   }
   // all cases, failure cases, missing files, missing cache entries, unknown
   // protocols, local files, etc.
@@ -675,7 +694,7 @@ bool try_to_open_file(const std::string url) {
   try {
     general_ifstream fin(url);
     success = !fin.fail();
-  } catch(...) {
+  } catch (...) {
     success = false;
   }
   return success;
@@ -684,8 +703,8 @@ bool try_to_open_file(const std::string url) {
 void copy(const std::string src, const std::string dest) {
   general_ifstream fin(src.c_str());
   general_ofstream fout(dest.c_str());
-  std::vector<char> buffer(1024*1024); // 1MB
-  while(fin) {
+  std::vector<char> buffer(1024 * 1024);  // 1MB
+  while (fin) {
     fin.read(buffer.data(), buffer.size());
     fout.write(buffer.data(), fin.gcount());
   }
@@ -697,7 +716,7 @@ bool change_file_mode(const std::string path, short mode) {
     return false;
   }
 
-  if(get_protocol(path) == "hdfs") {
+  if (get_protocol(path) == "hdfs") {
 #ifdef HAS_HADOOP
     // hdfs
     std::string host, port, hdfspath;
@@ -707,12 +726,12 @@ bool change_file_mode(const std::string path, short mode) {
       auto& hdfs = turi::hdfs::get_hdfs(host, std::stoi(port));
       return hdfs.chmod(hdfspath, mode);
       // fail we we are unable to construct the HDFS object
-    } catch(...) {
+    } catch (...) {
       // failure for some reason. return with nothing
       return false;
     }
 #else
-      return false;
+    return false;
 #endif
   } else if (boost::istarts_with(path, fileio::get_cache_prefix())) {
     // this is a cache file. There is no filesystem.
@@ -722,7 +741,7 @@ bool change_file_mode(const std::string path, short mode) {
     return true;
   } else {
     try {
-      //permissions(fs::path(path), mode);
+      // permissions(fs::path(path), mode);
       return false;
     } catch (...) {
       return false;
@@ -730,8 +749,7 @@ bool change_file_mode(const std::string path, short mode) {
     return true;
   }
   return false;
-
 }
 
-} // namespace fileio
-} // namespace turi
+}  // namespace fileio
+}  // namespace turi

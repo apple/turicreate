@@ -473,6 +473,7 @@
   return vgg16Desc;
 }
 
+// Note that populateMean will populate data in HWC format
 + (void) populateMean:(NSMutableData *)data {
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
@@ -487,6 +488,7 @@
   }
 }
 
+// Note that populateMultiplication will populate data in HWC format
 + (void) populateMultiplication:(NSMutableData *)data {
   NSUInteger dataSize = (data.length)/sizeof(float);
   NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
@@ -494,5 +496,37 @@
     ((float *)data.mutableBytes)[x] = 255.0;
 }
 
++ (void)populateMeanCWH:(NSMutableData *)data height:(NSUInteger)height width:(NSUInteger)width {
+  NSUInteger dataSize = (data.length) / sizeof(float);
+  NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
+  static const float meanWeights[3] = {0.485, 0.456, 0.406};
+  float *ptr = (float *)data.mutableBytes;
+
+  size_t channel_stride = height * width;
+  for (int c = 0; c < 3; c++) {
+    for (int i = 0; i < channel_stride; i++) {
+      ptr[i] = meanWeights[c];
+    }
+    ptr += channel_stride;
+  }
+}
+
++ (void)populateVarianceCWH:(NSMutableData *)data
+                     height:(NSUInteger)height
+                      width:(NSUInteger)width {
+  NSUInteger dataSize = (data.length) / sizeof(float);
+  NSAssert((dataSize) % 3 == 0, @"Data must follow a 3 channel format");
+  static const float varianceWeights[3] = {1.f / 0.229f, 1.f / 0.224f, 1.f / 0.225f};
+  float *ptr = (float *)data.mutableBytes;
+
+  size_t channel_stride = height * width;
+  for (int c = 0; c < 3; c++) {
+    for (int i = 0; i < channel_stride; i++) {
+      ptr[i] = varianceWeights[c];
+    }
+    ptr += channel_stride;
+  }
+}
+
 @end
-#endif // #ifdef HAS_MACOS_10_15
+#endif  // #ifdef HAS_MACOS_10_15

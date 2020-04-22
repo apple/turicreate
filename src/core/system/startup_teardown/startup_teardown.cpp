@@ -1,7 +1,8 @@
 /* Copyright © 2017 Apple Inc. All rights reserved.
  *
  * Use of this source code is governed by a BSD-3-clause license that can
- * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+ * be found in the LICENSE.txt file or at
+ * https://opensource.org/licenses/BSD-3-Clause
  */
 #include <sys/time.h>
 #ifdef HAS_TCMALLOC
@@ -24,6 +25,7 @@
 #include <core/storage/fileio/fixed_size_cache_manager.hpp>
 #include <core/storage/fileio/temp_files.hpp>
 #include <core/storage/fileio/block_cache.hpp>
+#include <core/storage/fileio/s3_filesys.hpp>
 #include <core/parallel/thread_pool.hpp>
 #include <core/logging/logger.hpp>
 #include <core/logging/log_rotate.hpp>
@@ -50,7 +52,8 @@ void install_sighandlers() {
 #ifdef _WIN32
   // Make sure dialog boxes don't come up for errors (apparently doesn't affect
   // "hard system errors")
-  SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX | SEM_NOOPENFILEERRORBOX);
+  SetErrorMode(SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX |
+               SEM_NOOPENFILEERRORBOX);
 
   // Don't listen to ctrl-c.  On Windows, a ctrl-c is delivered to every
   // application "sharing" the console that is selected with the mouse. This
@@ -60,7 +63,6 @@ void install_sighandlers() {
 #endif
 }
 
-
 #ifdef HAS_TCMALLOC
 /**
  *  If TCMalloc is available, we try to release memory back to the
@@ -68,7 +70,7 @@ void install_sighandlers() {
  *  aggressive about keeping memory around.
  */
 class memory_release_thread {
-  public:
+ public:
   void start() {
     memory_release_thread.launch([this]() { this->memory_release_loop(); });
   }
@@ -78,7 +80,7 @@ class memory_release_thread {
     memory_release_thread.join();
   }
 
-  private:
+ private:
   void memory_release_loop() {
     memory_release_lock.lock();
     while (!stop_memory_release_thread) {
@@ -87,7 +89,8 @@ class memory_release_thread {
     }
     memory_release_lock.unlock();
   }
-  private:
+
+ private:
   turi::thread memory_release_thread;
   bool stop_memory_release_thread = false;
   turi::mutex memory_release_lock;
@@ -95,9 +98,9 @@ class memory_release_thread {
 };
 #else
 class memory_release_thread {
-  public:
-    void start() { }
-    void stop() { }
+ public:
+  void start() {}
+  void stop() {}
 };
 #endif
 
@@ -109,11 +112,11 @@ void configure_global_environment(std::string argv0) {
   fs_util::upgrade_file_handle_limit(4096);
   int file_handle_limit = fs_util::get_file_handle_limit();
   if (file_handle_limit < 4096) {
-    logstream(LOG_WARNING)
-        << "Unable to raise the file handle limit to 4096. "
-        << "Current file handle limit = " << file_handle_limit << ". "
-        << "You may be limited to frames with about " << file_handle_limit / 16
-        << " columns" << std::endl;
+    logstream(LOG_WARNING) << "Unable to raise the file handle limit to 4096. "
+                           << "Current file handle limit = "
+                           << file_handle_limit << ". "
+                           << "You may be limited to frames with about "
+                           << file_handle_limit / 16 << " columns" << std::endl;
   }
   // if file handle limit is >= 512,
   //    we take either 3/4 of the limit
@@ -128,15 +131,15 @@ void configure_global_environment(std::string argv0) {
 
   turi::SFRAME_DEFAULT_NUM_SEGMENTS = turi::thread::cpu_count();
   turi::SFRAME_MAX_BLOCKS_IN_CACHE = 16 * turi::thread::cpu_count();
-  turi::SFRAME_SORT_MAX_SEGMENTS =
-      std::max(turi::SFRAME_SORT_MAX_SEGMENTS, turi::SFRAME_FILE_HANDLE_POOL_SIZE / 4);
+  turi::SFRAME_SORT_MAX_SEGMENTS = std::max(
+      turi::SFRAME_SORT_MAX_SEGMENTS, turi::SFRAME_FILE_HANDLE_POOL_SIZE / 4);
   // configure all memory constants
   // use up at most half of system memory.
   size_t total_system_memory = total_mem();
   total_system_memory /= 2;
   boost::optional<std::string> envval = getenv_str("DISABLE_MEMORY_AUTOTUNE");
-  bool disable_memory_autotune = ((bool)envval) && (std::string(*envval) == "1");
-
+  bool disable_memory_autotune =
+      ((bool)envval) && (std::string(*envval) == "1");
 
   // memory limit
   envval = getenv_str("TURI_MEMORY_LIMIT_IN_MB");
@@ -144,7 +147,8 @@ void configure_global_environment(std::string argv0) {
     size_t limit = atoll((*envval).c_str()) * 1024 * 1024; /* MB */
     if (limit == 0) {
       logstream(LOG_WARNING) << "TURI_MEMORY_LIMIT_IN_MB environment "
-                                "variable cannot be parsed" << std::endl;
+                                "variable cannot be parsed"
+                             << std::endl;
     } else {
       total_system_memory = limit;
     }
@@ -168,16 +172,15 @@ void configure_global_environment(std::string argv0) {
     turi::SFRAME_GROUPBY_BUFFER_NUM_ROWS = max_row_estimate;
     turi::SFRAME_JOIN_BUFFER_NUM_CELLS = max_cell_estimate;
     turi::sframe_config::SFRAME_SORT_BUFFER_SIZE = total_system_memory / 4;
-    turi::fileio::FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE = total_system_memory / 2;
+    turi::fileio::FILEIO_MAXIMUM_CACHE_CAPACITY_PER_FILE =
+        total_system_memory / 2;
     turi::fileio::FILEIO_MAXIMUM_CACHE_CAPACITY = total_system_memory / 2;
   }
   turi::globals::initialize_globals_from_environment(argv0);
 
-
   // force initialize rng
   turi::random::get_source();
 }
-
 
 /**************************************************************************/
 /*                                                                        */
@@ -192,17 +195,20 @@ void global_startup::perform_startup() {
   install_sighandlers();
   MEMORY_RELEASE_THREAD = new memory_release_thread();
   MEMORY_RELEASE_THREAD->start();
+#ifndef TC_DISABLE_REMOTEFS
+  fileio::s3::turi_global_AWS_SDK_setup();
+#endif
   // turicreate stuff
   turi::reap_unused_temp_files();
 }
 
-global_startup::~global_startup() { }
+global_startup::~global_startup() {}
 
 namespace startup_impl {
 // we use an externed global variable so that only one occurance of this
 // object shows up after many shared library linkings.
 global_startup startup_instance;
-} // startup_impl
+}  // namespace startup_impl
 
 global_startup& global_startup::get_instance() {
   return startup_impl::startup_instance;
@@ -244,16 +250,16 @@ void global_teardown::perform_teardown() {
   logstream(LOG_INFO) << "Teardown complete" << std::endl;
 }
 
-global_teardown::~global_teardown() { }
+global_teardown::~global_teardown() {}
 
 namespace teardown_impl {
 // we use an externed global variable so that only one occurance of this
 // object shows up after many shared library linkings.
 global_teardown teardown_instance;
-} // teardown_impl
+}  // namespace teardown_impl
 
 global_teardown& global_teardown::get_instance() {
   return teardown_impl::teardown_instance;
 }
 
-} // turicreate
+}  // namespace turi

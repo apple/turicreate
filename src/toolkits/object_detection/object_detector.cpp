@@ -275,6 +275,11 @@ std::unique_ptr<Checkpoint> object_detector::load_checkpoint(
   config.output_width = read_state<int>("grid_width");
   config.num_classes = static_cast<int>(get_num_classes());
 
+  auto it = state.find("random_seed");
+  if (it != state.end()) {
+    config.random_seed = variant_get_value<int>(it->second);
+  }
+
   std::unique_ptr<Checkpoint> checkpoint;
   checkpoint.reset(
       new DarknetYOLOCheckpoint(std::move(config), std::move(weights)));
@@ -949,12 +954,13 @@ void object_detector::init_training(gl_sframe data,
   config.output_height = static_cast<int>(grid_height);
   config.output_width = static_cast<int>(grid_width);
   config.num_classes = static_cast<int>(get_num_classes());
+  config.random_seed = read_state<int>("random_seed");
 
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
   // classes observed by the training_data_iterator_ above.
-  std::unique_ptr<ModelTrainer> trainer = create_trainer(
-      config, mlmodel_path, read_state<int>("random_seed"), std::move(context));
+  std::unique_ptr<ModelTrainer> trainer =
+      create_trainer(config, mlmodel_path, std::move(context));
 
   // Establish training pipeline.
   connect_trainer(std::move(trainer), std::move(iterator), batch_size);
@@ -962,12 +968,10 @@ void object_detector::init_training(gl_sframe data,
 
 std::unique_ptr<ModelTrainer> object_detector::create_trainer(
     const Config& config, const std::string& pretrained_model_path,
-    int random_seed,
     std::unique_ptr<neural_net::compute_context> context) const {
   // For now, we only support darknet-yolo. Load the pre-trained model and
   // randomly initialize the final layers.
-  checkpoint_.reset(
-      new DarknetYOLOCheckpoint(config, pretrained_model_path, random_seed));
+  checkpoint_.reset(new DarknetYOLOCheckpoint(config, pretrained_model_path));
   return checkpoint_->CreateModelTrainer(context.get());
 }
 

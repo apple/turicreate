@@ -3,6 +3,9 @@
 SFrames are the primary data structure for extracting data from other
 sources for use in Turi Create.
 
+SFrames is a scalable data frame. They are disk backed data frames. So you can eaisly work with
+datasets that are larger than your available RAM.
+
 SFrames can extract data from the following static file formats:
 
 * [CSV](https://apple.github.io/turicreate/docs/api/generated/turicreate.SFrame.read_csv.html#turicreate.SFrame.read_csv)

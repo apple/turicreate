@@ -150,7 +150,7 @@ class ObjectDetectorTest(unittest.TestCase):
         self.get_ans["annotation_origin"] = lambda x: isinstance(x, str)
         self.get_ans["grid_height"] = lambda x: x > 0
         self.get_ans["grid_width"] = lambda x: x > 0
-        self.get_ans["random_seed"] = lambda x: True
+        self.get_ans["random_seed"] = lambda x: isinstance(x, int)
         self.get_ans["verbose"] = lambda x: True
         del self.get_ans["_model"]
         del self.get_ans["_class_to_index"]
@@ -287,6 +287,21 @@ class ObjectDetectorTest(unittest.TestCase):
         args = [self.sf, self.annotations, self.feature]
         kwargs = {"max_iterations": 1, "model": self.pre_trained_model}
         test_util.assert_longer_verbose_logs(tc.object_detector.create, args, kwargs)
+
+    def test_create_with_fixed_random_seed(self):
+         random_seed = 86
+         max_iterations = 3
+
+         model_1 = tc.object_detector.create(self.sf, max_iterations=max_iterations, random_seed=random_seed)
+         pred_1 = model_1.predict(self.sf)
+         model_2 = tc.object_detector.create(self.sf, max_iterations=max_iterations, random_seed=random_seed)
+         pred_2 = model_2.predict(self.sf)
+
+         self.assertEqual(len(pred_1), len(pred_2))
+         for i in range(len(pred_1)):
+             self.assertEqual(len(pred_1[i]),len(pred_2[i]))
+             for j in range(len(pred_1[i])):
+                 self.assertEqual(pred_1[i][j], pred_2[i][j])
 
     def test_dict_annotations(self):
         sf_copy = self.sf[:]

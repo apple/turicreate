@@ -13,8 +13,8 @@ classifier metrics
   :toctree: generated/
   :nosignatures:
 
-  auc
   accuracy
+  auc
   confusion_matrix
   f1_score
   fbeta_score
@@ -30,5 +30,5 @@ regression metrics
   :toctree: generated/
   :nosignatures:
 
-  rmse
   max_error
+  rmse

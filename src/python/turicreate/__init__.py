@@ -65,7 +65,6 @@ from turicreate.toolkits.classifier import random_forest_classifier
 from turicreate.toolkits.classifier import decision_tree_classifier
 from turicreate.toolkits.classifier import nearest_neighbor_classifier
 
-
 import turicreate.toolkits.nearest_neighbors as nearest_neighbors
 from turicreate.toolkits.clustering import kmeans
 from turicreate.toolkits.clustering import dbscan

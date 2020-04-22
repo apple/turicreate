@@ -52,6 +52,9 @@ class data_iterator {
 
   virtual ~data_iterator() = default;
 
+  /** Returns true when `next_batch` will return a non-empty value. */
+  virtual bool has_next_batch() const = 0;
+
   virtual std::vector<st_example> next_batch(size_t batch_size) = 0;
 
   virtual void reset() = 0;
@@ -64,6 +67,12 @@ class style_transfer_data_iterator : public data_iterator {
   style_transfer_data_iterator(const style_transfer_data_iterator&) = delete;
   style_transfer_data_iterator& operator=(const style_transfer_data_iterator&) =
       delete;
+
+  bool has_next_batch() const override {
+    // TODO: gl_sframe_range::end() should be a const method.
+    gl_sarray_range range_iterator(m_content_range_iterator);
+    return m_content_next_row != range_iterator.end();
+  }
 
   std::vector<st_example> next_batch(size_t batch_size) override;
 

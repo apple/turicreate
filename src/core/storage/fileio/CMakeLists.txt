@@ -17,7 +17,7 @@ if(${TC_BUILD_REMOTEFS})
       s3_fstream.cpp
       set_curl_options.cpp
       get_s3_endpoint.cpp
-      dmlcio/s3_filesys.cc
+      s3_filesys.cpp
   )
 set(FILEIO_REMOTE_FS_REQUIRES curl openssl aws-sdk-cpp soft_hdfs)
 endif()
@@ -50,5 +50,3 @@ make_library(fileio OBJECT
 if(${TC_BUILD_REMOTEFS})
   add_dependencies(fileio ${FILEIO_REMOTE_FS_REQUIRES})
 endif()
-
-target_compile_options(fileio PRIVATE -Ddmlc=__tc_dmlc)

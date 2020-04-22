@@ -11,6 +11,7 @@
 #include <cstdio>
 
 #include <toolkits/object_detection/od_yolo.hpp>
+#include <toolkits/util/float_array_serialization.hpp>
 
 #include <toolkits/coreml_export/mlmodel_include.hpp>
 
@@ -48,7 +49,7 @@ void _save_impl(oarchive& oarc,
   variant_deep_save(state, oarc);
 
   // Save neural net weights.
-  oarc << weights;
+  save_float_array_map(weights, oarc);
 }
 
 void _load_version(iarchive& iarc, size_t version,
@@ -58,7 +59,7 @@ void _load_version(iarchive& iarc, size_t version,
   variant_deep_load(*state, iarc);
 
   // Load neural net weights.
-  iarc >> *weights;
+  *weights = load_float_array_map(iarc);
 }
 
 void init_darknet_yolo(model_spec& nn_spec, size_t num_classes,
