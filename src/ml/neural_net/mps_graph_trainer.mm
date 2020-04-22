@@ -3,6 +3,7 @@
 #include <tuple>
 
 #include <ml/neural_net/float_array.hpp>
+#include <core/logging/logger.hpp>
 
 #import "mps_device_manager.h"
 #import "mps_graph_cnnmodule.h"
