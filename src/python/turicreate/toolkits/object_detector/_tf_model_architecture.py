@@ -69,6 +69,13 @@ class ODTensorFlowModel(TensorFlowModel):
             self.init_object_detector_graph(input_h, input_w, init_weights)
 
     def init_object_detector_graph(self, input_h, input_w, init_weights):
+        def ClipIfNotNone(grad, clip_value):
+            """
+            Function to check if grad value is None. If not, continue with clipping.
+            """
+            if grad is None:
+                return grad
+            return _tf.clip_by_value(grad, -clip_value, clip_value)
 
         self.is_train = _tf.placeholder(_tf.bool)  # Set flag for training or val
 
@@ -121,7 +128,7 @@ class ODTensorFlowModel(TensorFlowModel):
 
         grads_and_vars = self.opt.compute_gradients(self.loss)
         clipped_gradients = [
-            (self.ClipIfNotNone(g, self.clip_value), v) for g, v in grads_and_vars
+            (ClipIfNotNone(g, self.clip_value), v) for g, v in grads_and_vars
         ]
         self.train_op = self.opt.apply_gradients(
             clipped_gradients, global_step=self.global_step
@@ -163,16 +170,6 @@ class ODTensorFlowModel(TensorFlowModel):
                         tf_net_params[keys].transpose(2, 3, 1, 0),
                     )
                 )
-            else:
-                continue
-
-    def ClipIfNotNone(self, grad, clip_value):
-        """
-        Function to check if grad value is None. If not, continue with clipping.
-        """
-        if grad is None:
-            return grad
-        return _tf.clip_by_value(grad, -clip_value, clip_value)
 
     def batch_norm_wrapper(
         self, inputs, batch_name, is_training=True, epsilon=1e-05, decay=0.9
@@ -260,7 +257,7 @@ class ODTensorFlowModel(TensorFlowModel):
         ----------
         inputs: TensorFlow Tensor
             4d tensor of NHWC format
-        shape: TensorFlow Tensor
+        shape: list
             Shape of the conv layer
         batch_norm: Bool
             (True or False) to add batch norm layer. This is used to add batch norm to all conv layers but the last.
@@ -285,7 +282,6 @@ class ODTensorFlowModel(TensorFlowModel):
         )
 
         if batch_norm:
-
             conv = self.batch_norm_wrapper(conv, batch_name, is_training=self.is_train)
             alpha = 0.1
             conv = _tf.maximum(alpha * conv, conv)
@@ -295,7 +291,7 @@ class ODTensorFlowModel(TensorFlowModel):
 
         return conv
 
-    def pooling_layer(self, inputs, pool_size, strides, padding, name="1_pool"):
+    def pooling_layer(self, inputs, pool_size, strides, padding, name):
         """
         Define pooling layer
 
@@ -321,7 +317,7 @@ class ODTensorFlowModel(TensorFlowModel):
         )
         return pool
 
-    def tiny_yolo(self, inputs, output_size=125):
+    def tiny_yolo(self, inputs, output_size):
         """
         Building the Tiny yolov2 network
 
