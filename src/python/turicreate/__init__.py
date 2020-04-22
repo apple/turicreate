@@ -21,6 +21,7 @@ from turicreate.version_info import __version__
 
 import turicreate.toolkits
 from turicreate.toolkits import evaluation
+import turicreate.config
 import turicreate.aggregate
 
 # must load
