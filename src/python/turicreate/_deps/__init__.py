@@ -85,8 +85,16 @@ class DeferredModuleLoader(ModuleType, object):
     # ensure singleton; must be guarded by _ImportLockContext lock
     registry_ = set()
 
-    def __init__(self, name, init_func=default_init_func, singleton=False, **kwargs):
+    def __init__(self, name, init_func=default_init_func, singleton=True, **kwargs):
         """
+        Parameters
+        ----------
+
+        init_func: Callable
+        singleton: bool
+            Nothing special. Just to improve code quality. When used in pickle,
+            set this to False
+
         Once write then read only. `reload` can reset the state.
         Only singleton instance is allowed.
         Context _ImportLockContext is reentrant.
@@ -297,7 +305,8 @@ class DeferredModuleLoader(ModuleType, object):
         def _init(*args, **kwargs):
             return DeferredModuleLoader(*args, **kwargs)
 
-        return (_init, (self._name, self._init_func, True))
+        # be aware, singleton must be set false
+        return (_init, (self._name, self._init_func, False))
 
 
 class DeferredCallableLoader(object):

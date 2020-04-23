@@ -80,9 +80,11 @@ def get_visible_items(d):
 
 
 def check_visible_modules(actual, expected):
-    assert set(actual) == set(
-        expected
-    ), "API Surface mis-matched." "Expected %s. Got %s" % (expected, actual)
+    assert set(actual) == set(expected), (
+        "API Surface mis-matched."
+        "expected: %s\nactual: %s\nactual - expected: %s\nexpected - actual: %s"
+        % (expected, actual, actual - expected, expected - actual)
+    )
 
 
 class TabCompleteVisibilityTests(unittest.TestCase):
@@ -463,8 +465,4 @@ class ModuleVisibilityTests(unittest.TestCase):
         tc_modules = inspect.getmembers(turicreate, inspect.ismodule)
         tc_keys = [x[0] for x in tc_modules]
 
-        tc_keys.sort()
-        expected.sort()
-
-        self.assertTrue(len(expected) == len(tc_keys))
-        self.assertTrue(tc_keys == expected)
+        check_visible_modules(tc_keys, expected)
