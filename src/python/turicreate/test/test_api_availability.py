@@ -466,6 +466,9 @@ class ModuleVisibilityTests(unittest.TestCase):
 
         tc_modules = inspect.getmembers(turicreate, inspect.ismodule)
         tc_keys = [x[0] for x in tc_modules]
-        tc_keys = filter(lambda x: not x.startswith("_"), tc_keys)
+
+        # module imported from pybind11
+        cpp_deps = set(["libtctensorflow"])
+        tc_keys = filter(lambda x: not x.startswith("_") and x not in cpp_deps, tc_keys)
 
         check_visible_modules(tc_keys, expected)
