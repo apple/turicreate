@@ -136,6 +136,9 @@ if __name__ == "__main__":
         "scipy >= 1.1.0",
         "six >= 1.10.0",
     ]
+    if sys.version_info[0] == 2:
+        install_requires.append("llvmlite == 0.31.0")
+
     if sys.platform == "darwin":
         install_requires.append("tensorflow >= 2.0.0")
     else:
