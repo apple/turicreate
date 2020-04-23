@@ -80,10 +80,12 @@ def get_visible_items(d):
 
 
 def check_visible_modules(actual, expected):
-    assert set(actual) == set(expected), (
+    a_set = set(actual)
+    e_set = set(expected)
+    assert a_set == e_set, (
         "API Surface mis-matched."
         "expected: %s\nactual: %s\nactual - expected: %s\nexpected - actual: %s"
-        % (expected, actual, actual - expected, expected - actual)
+        % (e_set, a_set, a_set - e_set, e_set - a_set)
     )
 
 
@@ -397,14 +399,8 @@ class ModuleVisibilityTests(unittest.TestCase):
             expected = common_functions + funcs
             check_visible_modules(actual, expected)
 
-    def test_module(self):
+    def test_public_module(self):
         expected = [
-            "_connect",
-            "_cython",
-            "_deps",
-            "_scripts",
-            "_sys",
-            "_sys_util",
             "activity_classifier",
             "aggregate",
             "audio_analysis",
@@ -462,7 +458,14 @@ class ModuleVisibilityTests(unittest.TestCase):
             "visualization",
         ]
 
+        # When user first run `import turicreate`, `_gl_pickle` and `meta` are not available.
+        # They are used by lambda workers. If you run sarray test, they will be imported.
+        import turicreate.meta
+
+        expected.append("meta")
+
         tc_modules = inspect.getmembers(turicreate, inspect.ismodule)
         tc_keys = [x[0] for x in tc_modules]
+        tc_keys = filter(lambda x: not x.startswith("_"), tc_keys)
 
         check_visible_modules(tc_keys, expected)
