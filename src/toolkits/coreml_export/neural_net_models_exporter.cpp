@@ -246,7 +246,7 @@ void add_non_maximum_suppression_layer(Model* model_nn,
                                        float confidence_threshold,
                                        float iou_threshold) {
   // The model we're modifying must be a NeuralNetwork.
-  assert(model_nn->has_neuralnetwork());
+  ASSERT_TRUE(model_nn->has_neuralnetwork());
 
   // Append the actual NMS layer.
   NeuralNetworkLayer* nms_layer =
@@ -355,7 +355,7 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
 
   if (use_nms_layer) {
     int num_models = model_pipeline.pipeline().models_size();
-    assert(num_models > 0);
+    ASSERT_GT(num_models, 0);
     Model* model_nn =
         model_pipeline.mutable_pipeline()->mutable_models(num_models - 1);
     add_non_maximum_suppression_layer(model_nn, pipeline_desc, num_classes,
