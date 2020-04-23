@@ -13,6 +13,8 @@ from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
 import tensorflow.compat.v1 as _tf
 
+# This toolkit is compatible with TensorFlow V2 behavior.
+# However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
 _tf.disable_v2_behavior()
 
 
@@ -95,7 +97,7 @@ class ODTensorFlowModel(TensorFlowModel):
             name="labels",
         )
 
-        self.tf_model = self.tiny_yolo(inputs=self.images, output_size=self.output_size)
+        self.tf_model = self.tiny_yolo(self.images, init_weights)
         self.global_step = _tf.Variable(0, trainable=False, name="global_step")
 
         self.loss = self.loss_layer(self.tf_model, self.labels)
@@ -137,42 +139,12 @@ class ODTensorFlowModel(TensorFlowModel):
         self.sess.run(_tf.global_variables_initializer())
         self.sess.run(_tf.local_variables_initializer())
 
-        self.load_weights(init_weights)
-
     def __del__(self):
         self.sess.close()
         self.gpu_policy.stop()
 
-    def load_weights(self, tf_net_params):
-        """
-        Function to load C++ weights into TensorFlow
-
-        Parameters
-        ----------
-        tf_net_params: Dictionary
-            Dict with C++ weights and names.
-
-        """
-        for keys in tf_net_params:
-            if tf_net_params[keys].ndim == 1:
-                self.sess.run(
-                    _tf.assign(
-                        _tf.get_default_graph().get_tensor_by_name(keys + ":0"),
-                        tf_net_params[keys],
-                    )
-                )
-            elif tf_net_params[keys].ndim == 4:
-                # Converting from [output_channels, input_channels, filter_height, filter_width] to
-                # [filter_height, filter_width, input_channels, output_channels]
-                self.sess.run(
-                    _tf.assign(
-                        _tf.get_default_graph().get_tensor_by_name(keys + ":0"),
-                        tf_net_params[keys].transpose(2, 3, 1, 0),
-                    )
-                )
-
     def batch_norm_wrapper(
-        self, inputs, batch_name, is_training=True, epsilon=1e-05, decay=0.9
+            self, inputs, batch_name, init_weights, is_training=True, epsilon=1e-05, decay=0.9
     ):
         """
         Layer to handle batch norm training and inference
@@ -183,6 +155,8 @@ class ODTensorFlowModel(TensorFlowModel):
             4d tensor of NHWC format
         batch_name: string
             Name for the batch norm layer
+        init_weights: Dict of numpy arrays
+            A mapping of layer names to init weights
         is_training: bool
             True if training and False if running validation; updates based on is_train from params
         epsilon: float
@@ -199,13 +173,13 @@ class ODTensorFlowModel(TensorFlowModel):
         dim_of_x = inputs.get_shape()[-1]
 
         shadow_mean = _tf.Variable(
-            _tf.zeros(shape=[dim_of_x], dtype="float32"),
+            init_weights[batch_name + "running_mean"],
             name=batch_name + "running_mean",
             trainable=False,
         )
 
         shadow_var = _tf.Variable(
-            _tf.ones(shape=[dim_of_x], dtype="float32"),
+            init_weights[batch_name + "running_var"],
             name=batch_name + "running_var",
             trainable=False,
         )
@@ -237,19 +211,19 @@ class ODTensorFlowModel(TensorFlowModel):
             lambda: (_tf.identity(shadow_mean), _tf.identity(shadow_var)),
         )
         beta = _tf.Variable(
-            _tf.zeros(shape=dim_of_x, dtype="float32"),
+            init_weights[batch_name + "beta"],
             name=batch_name + "beta",
             trainable=True,
         )  # Offset/Shift
         gamma = _tf.Variable(
-            _tf.ones(shape=dim_of_x, dtype="float32"),
+            init_weights[batch_name + "gamma"],
             name=batch_name + "gamma",
             trainable=True,
         )  # Scale
 
         return _tf.nn.batch_normalization(inputs, mean, variance, beta, gamma, epsilon)
 
-    def conv_layer(self, inputs, shape, name, batch_name, batch_norm=True):
+    def conv_layer(self, inputs, shape, name, batch_name, init_weights, batch_norm=True):
         """
         Defines conv layer, batch norm and leaky ReLU
 
@@ -263,6 +237,8 @@ class ODTensorFlowModel(TensorFlowModel):
             (True or False) to add batch norm layer. This is used to add batch norm to all conv layers but the last.
         name: string
             Name for the conv layer
+        init_weights: Dict of numpy arrays
+            A mapping of layer names to init weights
         batch_name: string
             Name for the batch norm layer
 
@@ -272,7 +248,7 @@ class ODTensorFlowModel(TensorFlowModel):
             Return result from combining conv, batch norm and leaky ReLU or conv and bias as needed
         """
         weight = _tf.Variable(
-            _tf.random.truncated_normal(shape, stddev=0.1),
+            init_weights[name + "weight"].transpose(2, 3, 1, 0),
             trainable=True,
             name=name + "weight",
         )
@@ -282,7 +258,7 @@ class ODTensorFlowModel(TensorFlowModel):
         )
 
         if batch_norm:
-            conv = self.batch_norm_wrapper(conv, batch_name, is_training=self.is_train)
+            conv = self.batch_norm_wrapper(conv, batch_name, init_weights, is_training=self.is_train)
             alpha = 0.1
             conv = _tf.maximum(alpha * conv, conv)
         else:
@@ -317,7 +293,7 @@ class ODTensorFlowModel(TensorFlowModel):
         )
         return pool
 
-    def tiny_yolo(self, inputs, output_size):
+    def tiny_yolo(self, inputs, init_weights):
         """
         Building the Tiny yolov2 network
 
@@ -326,8 +302,8 @@ class ODTensorFlowModel(TensorFlowModel):
         inputs: TensorFlow Tensor
             Images sent as input for the network.
             This is an input tensor of shape [batch, in_height, in_width, in_channels]
-        output_size: int
-            Result of (num_classes + 5) * num_boxes
+        init_weights: Dict of numpy arrays
+            A mapping of layer names to init weights
 
         Returns
         -------
@@ -343,16 +319,18 @@ class ODTensorFlowModel(TensorFlowModel):
                 net = self.conv_layer(
                     inputs,
                     [3, 3, 3, f],
-                    name="conv%d_" % (idx - 1),
-                    batch_name=batch_name,
+                    "conv%d_" % (idx - 1),
+                    batch_name,
+                    init_weights,
                     batch_norm=True,
                 )
             else:
                 net = self.conv_layer(
                     net,
                     [3, 3, filter_sizes[idx - 2], filter_sizes[idx - 1]],
-                    name="conv%d_" % (idx - 1),
-                    batch_name=batch_name,
+                    "conv%d_" % (idx - 1),
+                    batch_name,
+                    init_weights,
                     batch_norm=True,
                 )
 
@@ -376,12 +354,13 @@ class ODTensorFlowModel(TensorFlowModel):
                         name="pool%d_" % idx,
                     )
 
-        if output_size is not None:
+        if self.output_size is not None:
             net = self.conv_layer(
                 net,
-                [1, 1, filter_sizes[idx - 1], output_size],
-                name="conv8_",
-                batch_name=None,
+                [1, 1, filter_sizes[idx - 1], self.output_size],
+                "conv8_",
+                None,
+                init_weights,
                 batch_norm=False,
             )
 
