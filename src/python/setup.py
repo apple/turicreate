@@ -136,7 +136,7 @@ if __name__ == "__main__":
         "scipy >= 1.1.0",
         "six >= 1.10.0",
     ]
-    if sys.version_info[0] == 2:
+    if sys.version_info[0] == 2 or (sys.version_info[0] == 3 and sys.version_info[1] == 5):
         install_requires.append("llvmlite == 0.31.0")
 
     if sys.platform == "darwin":
