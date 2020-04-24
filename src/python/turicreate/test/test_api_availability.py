@@ -83,7 +83,7 @@ def check_visible_modules(actual, expected):
     a_set = set(actual)
     e_set = set(expected)
     assert a_set == e_set, (
-        "API Surface mis-matched."
+        "API Surface mis-matched. "
         "expected: %s\nactual: %s\nactual - expected: %s\nexpected - actual: %s"
         % (e_set, a_set, a_set - e_set, e_set - a_set)
     )
@@ -313,6 +313,9 @@ class ModuleVisibilityTests(unittest.TestCase):
         check_visible_modules(actual, expected)
 
     def test_toolkits(self):
+        # well, a by-product
+        import turicreate.toolkits.libtctensorflow
+
         actual = get_visible_items(turicreate.toolkits)
 
         expected = [
@@ -337,6 +340,7 @@ class ModuleVisibilityTests(unittest.TestCase):
             "sound_classifier",
             "evaluation",
             "audio_analysis",
+            "libtctensorflow",
         ]
 
         check_visible_modules(actual, expected)
