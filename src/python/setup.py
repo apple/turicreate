@@ -13,7 +13,7 @@ from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME = "turicreate"
-VERSION = "6.2"  # {{VERSION_STRING}}
+VERSION = "6.2.1"  # {{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
