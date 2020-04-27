@@ -741,19 +741,30 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   std::string confidence_str = "confidence";
 
   // No options provided defaults to include Non Maximum Suppression.
-  if (opts.find("include_non_maximum_suppression") == opts.end()) {
-    opts["include_non_maximum_suppression"] = 1;
+  bool include_non_maximum_suppression = true;
+  bool use_nms_layer = false;
+  float iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+  float confidence_threshold = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+  auto opts_it = opts.find("include_non_maximum_suppression");
+  if (opts_it != opts.end()) {
+    include_non_maximum_suppression = opts_it->second.to<bool>();
   }
-
-  if (opts["include_non_maximum_suppression"].to<bool>()){
+  if (include_non_maximum_suppression) {
     coordinates_str = "raw_coordinates";
     confidence_str = "raw_confidence";
-    //Set default values if thresholds not provided.
-    if (opts.find("iou_threshold") == opts.end()) {
-      opts["iou_threshold"] = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+
+    // Read user-provided options.
+    opts_it = opts.find("iou_threshold");
+    if (opts_it != opts.end()) {
+      iou_threshold = opts_it->second.to<float>();
     }
-    if (opts.find("confidence_threshold") == opts.end()) {
-      opts["confidence_threshold"] = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+    opts_it = opts.find("confidence_threshold");
+    if (opts_it != opts.end()) {
+      confidence_threshold = opts_it->second.to<float>();
+    }
+    opts_it = opts.find("use_nms_layer");
+    if (opts_it != opts.end()) {
+      use_nms_layer = opts_it->second.to<bool>();
     }
   }
 
@@ -783,7 +794,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
        user_defined_metadata.emplace_back(kvp.first, kvp.second);
   }
 
-  if (opts["include_non_maximum_suppression"].to<bool>()){
+  if (include_non_maximum_suppression) {
     user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
     user_defined_metadata.emplace_back("confidence_threshold", opts["confidence_threshold"]);
     user_defined_metadata.emplace_back("iou_threshold", opts["iou_threshold"]);
@@ -797,7 +808,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
       std::move(spec), class_labels.size(),
       grid_height * grid_width * anchor_boxes().size(), std::move(class_labels),
-      std::move(opts));
+      confidence_threshold, iou_threshold, include_non_maximum_suppression,
+      use_nms_layer);
 
   model_wrapper->add_metadata({
       {"user_defined", std::move(user_defined_metadata)},
