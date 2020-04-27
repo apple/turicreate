@@ -24,7 +24,36 @@ class BinaryDistribution(Distribution):
 class InstallEngine(install):
     """Helper class to hook the python setup.py install path to download client libraries and engine"""
 
+    user_options = install.user_options + [
+        ("minimal", None, "control minimal installation"),  # a 'flag' option
+    ]
+
+    def initialize_options(self):
+        install.initialize_options(self)
+        self.minimal = None
+
     def run(self):
+        global minimal
+        minimal = self.minimal  # will be 1 or None
+
+        if minimal is not None:
+
+            def do_not_install(require):
+                spam_list = ["tensorflow", "resampy"]
+                require = require.strip()
+                for name in spam_list:
+                    if require.startswith(name):
+                        return False
+                return True
+
+            install_requires_minimal = list(
+                filter(do_not_install, self.distribution.install_requires)
+            )
+
+            print(install_requires_minimal)
+            orig_install_requires = self.distribution.install_requires
+            self.distribution.install_requires = install_requires_minimal
+
         import platform
 
         # start by running base class implementation of run
