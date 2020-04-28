@@ -12,6 +12,7 @@ TC_BUILD_IMAGE_1804=$(bash "$WORKSPACE"/scripts/get_docker_image.sh --ubuntu=18.
 
 unknown_option() {
   echo "Unknown option $1. Exiting."
+  echo "Run --help for more information."
   exit 1
 }
 
@@ -31,6 +32,8 @@ print_help() {
   exit 1
 } # end of print help
 
+USE_MINIMAL=0
+
 # command flag options
 # Parse command line configure flags ------------------------------------------
 while [ $# -gt 0 ]
@@ -39,6 +42,7 @@ while [ $# -gt 0 ]
     --docker-python3.5)     USE_DOCKER=1;DOCKER_PYTHON=3.5;;
     --docker-python3.6)     USE_DOCKER=1;DOCKER_PYTHON=3.6;;
     --docker-python3.7)     USE_DOCKER=1;DOCKER_PYTHON=3.7;;
+    --minimal-build)        USE_MINIMAL=1;;
     --help)                 print_help ;;
     *) unknown_option "$1" ;;
   esac
@@ -49,7 +53,6 @@ SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 
 # PWD is WORKSPACE
-
 cd "${WORKSPACE}"
 
 # If we are going to run in Docker,
@@ -71,19 +74,25 @@ if [[ -n "${USE_DOCKER}" ]]; then
     echo AWS_ACCESS_KEY_ID >> "${envlist}"
   fi
 
+  docker_extra_args=""
+
+  if [[ $USE_MINIMAL -eq 1 ]]; then
+    docker_extra_args="$extra_args --minimal"
+  fi
+
   # Run the tests inside Docker
   if [[ "${DOCKER_PYTHON}" == "2.7" ]] || [[ "${DOCKER_PYTHON}" == "3.5" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source="$WORKSPACE",target=/build,consistency=delegated \
       --env-file "${envlist}" \
       "${TC_BUILD_IMAGE_1404}" \
-      /build/scripts/test_wheel.sh
+      /build/scripts/test_wheel.sh ${docker_extra_args}
   elif [[ "${DOCKER_PYTHON}" == "3.6" ]] || [[ "${DOCKER_PYTHON}" == "3.7" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source="$WORKSPACE",target=/build,consistency=delegated \
       --env-file "${envlist}" \
       "${TC_BUILD_IMAGE_1804}" \
-      /build/scripts/test_wheel.sh
+      /build/scripts/test_wheel.sh ${docker_extra_args}
   else
     echo "Invalid docker python version detected: ${DOCKER_PYTHON}"
     exit 1
@@ -94,7 +103,25 @@ fi
 
 test -d deps/env || ./scripts/install_python_toolchain.sh
 source deps/env/bin/activate
-pip install target/turicreate-*.whl
+
+bdist_wheels=($(ls target/turicreate-*.whl))
+if [[ ${#bdist_wheels[@]} -ne 2 ]]; then
+  echo "Wrong number of wheel files found. Expected 2: ${dist_wheels[@]}"
+  exit 1
+fi
+
+wheel_to_install=${bdist_wheels[0]}
+if [[ $USE_MINIMAL -eq 1 ]]; then
+  if [[ ! "$wheel_to_install" =~ .*"+minimal".* ]]; then
+    wheel_to_install="${bdist_wheels[1]}"
+  fi
+else
+  if [[ "$wheel_to_install" =~ .*"+minimal".* ]]; then
+    wheel_to_install="${bdist_wheels[1]}"
+  fi
+fi
+
+pip install $wheel_to_install
 
 PYTHON="$WORKSPACE/deps/env/bin/python"
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
@@ -114,7 +141,18 @@ $PYTHON -c "import sys; lines=sys.stdin.read(); \
 cd "$TEST_DIR"
 
 # run tests
-${PYTHON} -m pytest --cov -v --durations=100 \
-  --junit-xml="$WORKSPACE"/pytest.xml
+if [[ $USE_MINIMAL -eq 1 ]]; then
+  minimal_test=($(grep -L "toolkits" *.py | grep -v model))
+  # remove other irrelevant files
+  minimal_test=(${minimal_test/test_text_analytics.py})
+  minimal_test=(${minimal_test/__init__.py})
+
+  ${PYTHON} -m pytest -v --durations=100 \
+    --junit-xml="$WORKSPACE"/pytest-minimal.xml ${minimal_test[@]}
+
+else
+  ${PYTHON} -m pytest --cov -v --durations=100 \
+    --junit-xml="$WORKSPACE"/pytest.xml
+fi
 
 date

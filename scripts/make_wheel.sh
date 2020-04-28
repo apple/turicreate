@@ -291,27 +291,26 @@ package_wheel() {
     cd ..
   fi
 
-function package_wheel () { 
-  strip_tensorflow=$1
-  version_modifier=$2
+function package_wheel () {
+  local minimal=$1
+  local version_modifier=$2
 
   cd ${WORKSPACE}/${build_type}/src/python
   dist_type="bdist_wheel"
 
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
-  if [[ $strip_tensorflow == 1 ]] ; then
-    if [[ `uname -s` == 'Darwin' ]] ; then
-      sed -i '' 's|\"tensorflow[^\"]*\"|""|g' setup.py
-    else
-      sed -i 's|\"tensorflow[^\"]*\"|""|g' setup.py
-    fi
-  fi
 
-  ${PYTHON_EXECUTABLE} setup.py ${dist_type} # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
+  # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
+  if [[ ${minimal} -eq 1 ]]; then
+    ${PYTHON_EXECUTABLE} setup.py ${dist_type} install --minimal
+  else
+    # full version
+    ${PYTHON_EXECUTABLE} setup.py ${dist_type}
+  fi
 
   cd ${WORKSPACE}
 
-  ORIG_WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}-*.whl`
+  ORIG_WHEEL_PATH=$(ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}-*.whl)
   WHEEL_PATH=${ORIG_WHEEL_PATH/turicreate-${VERSION_NUMBER}/turicreate-${VERSION_NUMBER}${version_modifier}}
   [[ ! $ORIG_WHEEL_PATH == $WHEEL_PATH ]] && mv $ORIG_WHEEL_PATH $WHEEL_PATH
 
@@ -363,10 +362,10 @@ function package_wheel () {
   # Done copy to the target directory
   mv $WHEEL_PATH ${TARGET_DIR}/
 }
- 
-  # Run the setup 
+
+  # Run the setup
   package_wheel 0 ""
-  package_wheel 1 +minimal 
+  package_wheel 1 +minimal
 
   echo -e "\n\n================= Done Packaging Wheel  ================\n\n"
 }
@@ -407,4 +406,3 @@ set_git_SHA
 source ${WORKSPACE}/scripts/python_env.sh $build_type
 
 package_wheel
-
