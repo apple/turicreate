@@ -26,10 +26,15 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED 1)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+# ##############################################################################
+# Set options
+
+option(TC_BUILD_METRICS "Produce clang build metrics" OFF)
+
 # **************************************************************************/
-# * */
-# * Global Link, Include and Define Flags              */
-# * */
+# *                                                                        */
+# * Global Link, Include and Define Flags                                  */
+# *                                                                        */
 # **************************************************************************/
 
 set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH};${CMAKE_SOURCE_DIR}/cmake")
@@ -111,9 +116,9 @@ add_definitions(-DEIGEN_MPL2_ONLY)
 add_definitions(-Dgoogle=_tc_google)
 
 # **************************************************************************/
-# * */
-# * Adapt Compiler and Linker Flags to the system              */
-# * */
+# *                                                                        */
+# * Adapt Compiler and Linker Flags to the system                          */
+# *                                                                        */
 # **************************************************************************/
 
 include(CompilerFlags)
@@ -147,6 +152,13 @@ check_and_set_compiler_flag(-Wno-tautological-compare)
 check_and_set_compiler_flag(-fpeel-loops RELEASE)
 check_and_set_compiler_flag(-funswitch-loops RELEASE)
 check_and_set_compiler_flag(-ftracer RELEASE)
+
+if(TC_BUILD_METRICS)
+  # TC_BUILD_METRICS enables -ftime-trace in supported compilers, which will
+  # produce a timings json file for each compiled object.
+  
+  check_and_set_compiler_flag(-ftime-trace)
+endif()
 
 if(APPLE)
   # This triggers a bug in clang; the 10.13 symbol ___chkstk_darwin is missing
@@ -291,9 +303,9 @@ set(CMAKE_MODULE_LINKER_FLAGS
 )
 
 # **************************************************************************/
-# * */
-# * Report Final Flags                                */
-# * */
+# *                                                                        */
+# * Report Final Flags                                                     */
+# *                                                                        */
 # **************************************************************************/
 message("CMAKE_BUILD_TYPE= ${CMAKE_BUILD_TYPE}.")
 
