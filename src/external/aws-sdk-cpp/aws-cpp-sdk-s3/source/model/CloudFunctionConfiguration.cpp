@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/CloudFunctionConfiguration.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -55,7 +56,7 @@ CloudFunctionConfiguration& CloudFunctionConfiguration::operator =(const XmlNode
     XmlNode idNode = resultNode.FirstChild("Id");
     if(!idNode.IsNull())
     {
-      m_id = StringUtils::Trim(idNode.GetText().c_str());
+      m_id = Aws::Utils::Xml::DecodeEscapedXmlText(idNode.GetText());
       m_idHasBeenSet = true;
     }
     XmlNode eventsNode = resultNode.FirstChild("Event");
@@ -73,13 +74,13 @@ CloudFunctionConfiguration& CloudFunctionConfiguration::operator =(const XmlNode
     XmlNode cloudFunctionNode = resultNode.FirstChild("CloudFunction");
     if(!cloudFunctionNode.IsNull())
     {
-      m_cloudFunction = StringUtils::Trim(cloudFunctionNode.GetText().c_str());
+      m_cloudFunction = Aws::Utils::Xml::DecodeEscapedXmlText(cloudFunctionNode.GetText());
       m_cloudFunctionHasBeenSet = true;
     }
     XmlNode invocationRoleNode = resultNode.FirstChild("InvocationRole");
     if(!invocationRoleNode.IsNull())
     {
-      m_invocationRole = StringUtils::Trim(invocationRoleNode.GetText().c_str());
+      m_invocationRole = Aws::Utils::Xml::DecodeEscapedXmlText(invocationRoleNode.GetText());
       m_invocationRoleHasBeenSet = true;
     }
   }
@@ -107,7 +108,7 @@ void CloudFunctionConfiguration::AddToNode(XmlNode& parentNode) const
 
   if(m_cloudFunctionHasBeenSet)
   {
-   XmlNode cloudFunctionNode = parentNode.CreateChildElement("Event");
+   XmlNode cloudFunctionNode = parentNode.CreateChildElement("CloudFunction");
    cloudFunctionNode.SetText(m_cloudFunction);
   }
 

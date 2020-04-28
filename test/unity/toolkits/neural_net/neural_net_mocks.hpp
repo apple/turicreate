@@ -133,7 +133,7 @@ class mock_compute_context : public compute_context {
 
   size_t memory_budget() const override { return 0; }
 
-  std::vector<std::string> gpu_names() const override { return {}; }
+  void print_training_device_info() const override { }
 
   std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options& opts) override {

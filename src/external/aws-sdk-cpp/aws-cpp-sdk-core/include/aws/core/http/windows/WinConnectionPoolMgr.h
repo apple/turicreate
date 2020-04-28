@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -18,12 +18,10 @@
 #include <aws/core/Core_EXPORTS.h>
 
 #include <aws/core/utils/memory/stl/AWSMap.h>
-#include <aws/core/utils/memory/stl/AWSStack.h>
 #include <aws/core/utils/memory/stl/AWSString.h>
+#include <aws/core/utils/ResourceManager.h>
 
 #include <utility>
-#include <mutex>
-#include <condition_variable>
 
 namespace Aws
 {
@@ -41,6 +39,7 @@ namespace Aws
             * Constructs instance, using iOpenHandle from InternetOpen api call, and maxConnectionsPerHost.
             */
             WinConnectionPoolMgr(void* iOpenHandle, unsigned maxConnectionsPerHost, long requestTimeout, long connectTimeout);
+            WinConnectionPoolMgr(void* iOpenHandle, unsigned maxConnectionsPerHost, long requestTimeout, long connectTimeout, bool enableTcpKeepAlive, unsigned long tcpKeepAliveIntervalMs);
 
             /*
             * Cleans up all connections that have been allocated (might take a while).
@@ -48,11 +47,11 @@ namespace Aws
             virtual ~WinConnectionPoolMgr();
 
             /*
-            * Aquires a connection for host and port from pool, or adds connections to pool until pool has reached max size
+            * Acquires a connection for host and port from pool, or adds connections to pool until pool has reached max size
             * If no connections are available and the pool is at its maximum size, then this call will block until connections
             * become available.
             */
-            void* AquireConnectionForHost(const Aws::String& host, uint16_t port);
+            void* AcquireConnectionForHost(const Aws::String& host, uint16_t port);
 
             /*
             * Releases a connection to host and port back to the pool, if another thread is blocked in Aquire, then the top queued item
@@ -76,10 +75,8 @@ namespace Aws
             {
             public:
                 uint16_t port;
-                Aws::Stack<void*> hostConnections;
+                Aws::Utils::ExclusiveOwnershipResourceManager<void*> hostConnections;
                 unsigned currentPoolSize;
-                std::mutex connectionsMutex;
-                std::condition_variable conditionVariable;
             };
 
             /**
@@ -92,9 +89,17 @@ namespace Aws
              */
             long GetRequestTimeout() const { return m_requestTimeoutMs; }
             /**
-             * Gets the configured connection timeout for thsi connection pool.
+             * Gets the configured connection timeout for this connection pool.
              */
             long GetConnectTimeout() const { return m_connectTimeoutMs; }
+            /**
+             * Whether sending TCP keep-alive packet for this connection pool.
+             */
+            bool GetEnableTcpKeepAlive() const { return m_enableTcpKeepAlive;  }
+            /**
+             * Gets the interval to send a keep-alive packet for this connection pool.
+             */
+            unsigned long GetTcpKeepAliveInterval() const { return m_tcpKeepAliveIntervalMs; }
             /**
              * Cleans up all open resources.
              */
@@ -117,6 +122,9 @@ namespace Aws
             unsigned m_maxConnectionsPerHost;
             long m_requestTimeoutMs;
             long m_connectTimeoutMs;
+            bool m_enableTcpKeepAlive;
+            unsigned long m_tcpKeepAliveIntervalMs;
+            std::mutex m_containerLock;
         };
 
     } // namespace Http

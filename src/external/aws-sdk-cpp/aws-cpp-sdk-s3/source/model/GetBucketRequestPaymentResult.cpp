@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/GetBucketRequestPaymentResult.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/AmazonWebServiceResult.h>
@@ -24,16 +25,18 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws;
 
-GetBucketRequestPaymentResult::GetBucketRequestPaymentResult()
+GetBucketRequestPaymentResult::GetBucketRequestPaymentResult() : 
+    m_payer(Payer::NOT_SET)
 {
 }
 
-GetBucketRequestPaymentResult::GetBucketRequestPaymentResult(const AmazonWebServiceResult<XmlDocument>& result)
+GetBucketRequestPaymentResult::GetBucketRequestPaymentResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
+    m_payer(Payer::NOT_SET)
 {
   *this = result;
 }
 
-GetBucketRequestPaymentResult& GetBucketRequestPaymentResult::operator =(const AmazonWebServiceResult<XmlDocument>& result)
+GetBucketRequestPaymentResult& GetBucketRequestPaymentResult::operator =(const Aws::AmazonWebServiceResult<XmlDocument>& result)
 {
   const XmlDocument& xmlDocument = result.GetPayload();
   XmlNode resultNode = xmlDocument.GetRootElement();
@@ -43,7 +46,7 @@ GetBucketRequestPaymentResult& GetBucketRequestPaymentResult::operator =(const A
     XmlNode payerNode = resultNode.FirstChild("Payer");
     if(!payerNode.IsNull())
     {
-      m_payer = PayerMapper::GetPayerForName(StringUtils::Trim(payerNode.GetText().c_str()).c_str());
+      m_payer = PayerMapper::GetPayerForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(payerNode.GetText()).c_str()).c_str());
     }
   }
 

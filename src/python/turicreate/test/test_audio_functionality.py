@@ -455,22 +455,9 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
             feature="audio",
             custom_layer_sizes=layer_sizes,
             validation_set=None,
+            max_iterations=100,
         )
         assert self.model.custom_layer_sizes == layer_sizes
-
-    # Remove the following two tests after #2949 is fixed!
-
-    @pytest.mark.xfail(
-        reason="Non-deterministic test failure tracked in https://github.com/apple/turicreate/issues/2949"
-    )
-    def test_classify(self):
-        pass
-
-    @pytest.mark.xfail(
-        reason="Non-deterministic test failure tracked in https://github.com/apple/turicreate/issues/2949"
-    )
-    def test_predict(self):
-        pass
 
 
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):

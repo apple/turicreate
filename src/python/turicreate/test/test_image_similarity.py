@@ -227,7 +227,7 @@ class ImageSimilarityTest(unittest.TestCase):
             )
 
         # Save the model as a CoreML model file
-        filename = tempfile.mkstemp("ImageSimilarity.mlmodel")[1]
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
         # Load the model back from the CoreML model file
@@ -303,6 +303,7 @@ class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
         super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(
             model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299)
         )
+
 
 # A test to gaurantee that old code using the incorrect name still works.
 @unittest.skipIf(

@@ -30,6 +30,10 @@
  */
 + (void) populateMean:(NSMutableData *)data;
 
++ (void)populateMeanCWH:(NSMutableData *)data height:(NSUInteger)height width:(NSUInteger)width;
+
++ (void)populateVarianceCWH:(NSMutableData *)data height:(NSUInteger)height width:(NSUInteger)width;
+
 /**
  * populateMultiplication
  *

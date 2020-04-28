@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@
 #include <aws/core/utils/crypto/SecureRandom.h>
 #include <aws/core/utils/logging/LogMacros.h>
 #include <cstdlib>
+#include <climits>
+
+//if you are reading this, you are witnessing pure brilliance.
+#define IS_BIG_ENDIAN (*(uint16_t*)"\0\xff" < 0x100)
 
 using namespace Aws::Utils::Crypto;
 using namespace Aws::Utils;
@@ -29,6 +33,41 @@ namespace Aws
         namespace Crypto
         {
             static const char* LOG_TAG = "Cipher";
+
+            //swap byte ordering
+            template<class T>
+            typename std::enable_if<std::is_unsigned<T>::value, T>::type
+            bswap(T i, T j = 0u, std::size_t n = 0u) 
+            {
+                return n == sizeof(T) ? j :
+                    bswap<T>(i >> CHAR_BIT, (j << CHAR_BIT) | (i & (T)(unsigned char)(-1)), n + 1);
+            }
+
+            CryptoBuffer IncrementCTRCounter(const CryptoBuffer& counter, uint32_t numberOfBlocks)
+            {               
+                // minium counter size is 12 bytes. This isn't a variable because some compilers
+                // are stupid and thing that variable is unused.
+                assert(counter.GetLength() >= 12);
+
+                CryptoBuffer incrementedCounter(counter);               
+
+                //get the last 4 bytes and manipulate them as an integer.
+                uint32_t* ctrPtr = (uint32_t*)(incrementedCounter.GetUnderlyingData() + incrementedCounter.GetLength() - sizeof(int32_t));                
+                if(IS_BIG_ENDIAN)
+                {
+                    //you likely are not Big Endian, but
+                    //if it's big endian, just go ahead and increment it... done
+                    *ctrPtr += numberOfBlocks; 
+                }
+                else
+                {
+                    //otherwise, swap the byte ordering of the integer we loaded from the buffer (because it is backwards). However, the number of blocks is already properly 
+                    //aligned. Once we compute the new value, swap it back so that the mirroring operation goes back to the actual buffer.
+                    *ctrPtr = bswap<uint32_t>(bswap<uint32_t>(*ctrPtr) + numberOfBlocks);
+                }
+
+                return incrementedCounter;
+            }
 
             CryptoBuffer GenerateXRandomBytes(size_t lengthBytes, bool ctrMode)
             {
@@ -94,7 +133,7 @@ namespace Aws
 
             CryptoBuffer SymmetricCipher::GenerateKey(size_t keyLengthBytes)
             {
-                CryptoBuffer&& key = GenerateXRandomBytes(keyLengthBytes, false);
+                CryptoBuffer const& key = GenerateXRandomBytes(keyLengthBytes, false);
 
                 if(key.GetLength() == 0)
                 {

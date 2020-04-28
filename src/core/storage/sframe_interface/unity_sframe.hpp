@@ -416,6 +416,13 @@ class unity_sframe : public unity_sframe_base {
   std::list<std::shared_ptr<unity_sframe_base>> random_split(float percent, uint64_t random_seed, bool exact=false) override;
 
   /**
+   * Randomly shuffles the sframe.
+   *
+   * Returns a list of size 2 of the unity_sframes resulting from the split.
+   */
+  std::shared_ptr<unity_sframe_base> shuffle() override;
+
+  /**
    * Sample the rows of sframe uniformly with ratio = percent, and seed = random_seed.
    *
    * Returns unity_sframe* containing the sampled rows.

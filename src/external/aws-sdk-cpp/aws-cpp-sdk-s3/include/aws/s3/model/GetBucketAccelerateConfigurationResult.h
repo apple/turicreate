@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,9 +12,11 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/s3/model/BucketAccelerateStatus.h>
+#include <utility>
 
 namespace Aws
 {
@@ -36,35 +38,37 @@ namespace Model
   {
   public:
     GetBucketAccelerateConfigurationResult();
-    GetBucketAccelerateConfigurationResult(const AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
-    GetBucketAccelerateConfigurationResult& operator=(const AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+    GetBucketAccelerateConfigurationResult(const Aws::AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+    GetBucketAccelerateConfigurationResult& operator=(const Aws::AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+
 
     /**
-     * The accelerate configuration of the bucket.
+     * <p>The accelerate configuration of the bucket.</p>
      */
     inline const BucketAccelerateStatus& GetStatus() const{ return m_status; }
 
     /**
-     * The accelerate configuration of the bucket.
+     * <p>The accelerate configuration of the bucket.</p>
      */
     inline void SetStatus(const BucketAccelerateStatus& value) { m_status = value; }
 
     /**
-     * The accelerate configuration of the bucket.
+     * <p>The accelerate configuration of the bucket.</p>
      */
-    inline void SetStatus(BucketAccelerateStatus&& value) { m_status = value; }
+    inline void SetStatus(BucketAccelerateStatus&& value) { m_status = std::move(value); }
 
     /**
-     * The accelerate configuration of the bucket.
+     * <p>The accelerate configuration of the bucket.</p>
      */
     inline GetBucketAccelerateConfigurationResult& WithStatus(const BucketAccelerateStatus& value) { SetStatus(value); return *this;}
 
     /**
-     * The accelerate configuration of the bucket.
+     * <p>The accelerate configuration of the bucket.</p>
      */
-    inline GetBucketAccelerateConfigurationResult& WithStatus(BucketAccelerateStatus&& value) { SetStatus(value); return *this;}
+    inline GetBucketAccelerateConfigurationResult& WithStatus(BucketAccelerateStatus&& value) { SetStatus(std::move(value)); return *this;}
 
   private:
+
     BucketAccelerateStatus m_status;
   };
 

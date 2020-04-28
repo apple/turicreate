@@ -135,6 +135,10 @@ extern size_t SFRAME_CSV_PARSER_READ_SIZE;
  */
 extern size_t SFRAME_GROUPBY_BUFFER_NUM_ROWS;
 
+/**
+ * The number of elements per bucket when performing a shuffle operation.
+ */
+extern size_t SFRAME_SHUFFLE_BUCKET_SIZE;
 
 /**
  * The number of bytes that a join algorithm is allowed to use during execution.

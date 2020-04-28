@@ -7,7 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-import hashlib as _hashlib
 import os as _os
 import turicreate as _tc
 import shutil as _shutil
@@ -34,10 +33,10 @@ class OneShotObjectDetectorBackgroundData(object):
         ]
 
         self.extracted_file_to_md5 = {
-            'dir_archive.ini': '160fe6e7cb81cb0a29fd09239fdb2559',
-            'm_d761047844237e5d.0000': 'd29b68f8ba196f60e0ad115f7bfde863',
-            'm_d761047844237e5d.sidx': '22b0c297aabb836a21d3179c05c9c455',
-            'objects.bin': 'd41d8cd98f00b204e9800998ecf8427e'
+            "dir_archive.ini": "160fe6e7cb81cb0a29fd09239fdb2559",
+            "m_d761047844237e5d.0000": "d29b68f8ba196f60e0ad115f7bfde863",
+            "m_d761047844237e5d.sidx": "22b0c297aabb836a21d3179c05c9c455",
+            "objects.bin": "d41d8cd98f00b204e9800998ecf8427e",
         }
 
     def get_backgrounds(self):

@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -37,19 +37,27 @@ namespace Aws
         /**
          * Base implementation of a windows http client - used by WinInetSyncHttpClient and WinHttpSyncHttpClient
          */
+
         class AWS_CORE_API WinSyncHttpClient : public HttpClient
         {
         public:
             using Base = HttpClient;
-            
+
             virtual ~WinSyncHttpClient();
 
             /**
-             *Makes request and receives response synchronously
+             * Makes request and receives response synchronously
              */
             std::shared_ptr<HttpResponse> MakeRequest(HttpRequest& request,
-                Aws::Utils::RateLimits::RateLimiterInterface* readLimiter = nullptr,
-                Aws::Utils::RateLimits::RateLimiterInterface* writeLimiter = nullptr) const;
+                    Aws::Utils::RateLimits::RateLimiterInterface* readLimiter = nullptr,
+                    Aws::Utils::RateLimits::RateLimiterInterface* writeLimiter = nullptr) const override;
+
+            /**
+             * Makes request and receives response synchronously
+             */
+            std::shared_ptr<HttpResponse> MakeRequest(const std::shared_ptr<HttpRequest>& request,
+                    Aws::Utils::RateLimits::RateLimiterInterface* readLimiter = nullptr,
+                    Aws::Utils::RateLimits::RateLimiterInterface* writeLimiter = nullptr) const override;
 
             /**
              * Gets log tag for use in logging.
@@ -82,18 +90,24 @@ namespace Aws
             bool m_allowRedirects;
         private:
 
+            void MakeRequestInternal(HttpRequest& request,
+                    std::shared_ptr<HttpResponse>& response,
+                    Aws::Utils::RateLimits::RateLimiterInterface* readLimiter,
+                    Aws::Utils::RateLimits::RateLimiterInterface* writeLimiter) const;
+
             virtual void* OpenRequest(const Aws::Http::HttpRequest& request, void* connection, const Aws::StringStream& ss) const = 0;
             virtual void DoAddHeaders(void* hHttpRequest, Aws::String& headerStr) const = 0;
-            virtual uint64_t DoWriteData(void* hHttpRequest, char* streamBuffer, uint64_t bytesRead) const = 0;
+            virtual uint64_t DoWriteData(void* hHttpRequest, char* streamBuffer, uint64_t bytesRead, bool isChunked) const = 0;
+            virtual uint64_t FinalizeWriteData(void* hHttpRequest) const = 0;
             virtual bool DoReceiveResponse(void* hHttpRequest) const = 0;
-            virtual bool DoQueryHeaders(void* hHttpRequest, std::shared_ptr<Aws::Http::Standard::StandardHttpResponse>& response, Aws::StringStream& ss, uint64_t& read) const = 0;
+            virtual bool DoQueryHeaders(void* hHttpRequest, std::shared_ptr<Aws::Http::HttpResponse>& response, Aws::StringStream& ss, uint64_t& read) const = 0;
             virtual bool DoSendRequest(void* hHttpRequest) const = 0;
             virtual bool DoReadData(void* hHttpRequest, char* body, uint64_t size, uint64_t& read) const = 0;
             virtual void* GetClientModule() const = 0;
 
-            bool StreamPayloadToRequest(const HttpRequest& request, void* hHttpRequest) const;
+            bool StreamPayloadToRequest(const HttpRequest& request, void* hHttpRequest, Aws::Utils::RateLimits::RateLimiterInterface* writeLimiter) const;
             void LogRequestInternalFailure() const;
-            std::shared_ptr<HttpResponse> BuildSuccessResponse(const Aws::Http::HttpRequest& request, void* hHttpRequest, Aws::Utils::RateLimits::RateLimiterInterface* readLimiter) const;
+            bool BuildSuccessResponse(const Aws::Http::HttpRequest& request, std::shared_ptr<Aws::Http::HttpResponse>& response, void* hHttpRequest, Aws::Utils::RateLimits::RateLimiterInterface* readLimiter) const;
             void AddHeadersToRequest(const HttpRequest& request, void* hHttpRequest) const;
 
             void* m_openHandle;
@@ -101,7 +115,6 @@ namespace Aws
             //that's why I'm not using unique_ptr here.
             WinConnectionPoolMgr* m_connectionPoolMgr;
         };
-
     } // namespace Http
 } // namespace Aws
 

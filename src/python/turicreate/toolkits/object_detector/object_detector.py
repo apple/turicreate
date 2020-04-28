@@ -10,35 +10,24 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import time as _time
-import itertools as _itertools
 from datetime import datetime as _datetime
 
 import six as _six
 import turicreate as _tc
-import numpy as _np
-from threading import Thread as _Thread
-from six.moves.queue import Queue as _Queue
 
-from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import Model as _Model
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
-from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_sframe,
     _numeric_param_check_range,
     _raise_error_if_not_iterable,
 )
-from turicreate import config as _tc_config
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .. import _pre_trained_models
-from ._evaluation import average_precision as _average_precision
 from .._mps_utils import (
-    use_mps as _use_mps,
-    mps_device_memory_limit as _mps_device_memory_limit,
     MpsGraphAPI as _MpsGraphAPI,
     MpsGraphNetworkType as _MpsGraphNetworkType,
-    MpsGraphMode as _MpsGraphMode,
 )
 
 
@@ -54,10 +43,6 @@ def _get_mps_od_net(
     c_out = output_size
     h_out = h_in // 32
     w_out = w_in // 32
-
-    c_view = c_in
-    h_view = h_in
-    w_view = w_in
 
     network.init(
         batch_size,
@@ -118,6 +103,7 @@ def create(
     max_iterations=0,
     verbose=True,
     grid_shape=[13, 13],
+    random_seed=None,
     **kwargs
 ):
     """
@@ -177,6 +163,9 @@ def create(
         The number of training iterations. If 0, then it will be automatically
         be determined based on the amount of data you provide.
 
+    random_seed : int, optional
+        The results can be reproduced when given the same seed.
+
     verbose : bool, optional
         If True, print progress updates and model details.
 
@@ -227,8 +216,6 @@ def create(
         dataset, feature, annotations, require_annotations=True
     )
     _tkutl._handle_missing_values(dataset, feature, "dataset")
-    is_annotations_list = dataset[annotations].dtype == list
-
     _tkutl._check_categorical_option_type("model", model, supported_detectors)
 
     base_model = model.split("-", 1)[0]
@@ -312,7 +299,8 @@ def create(
         "classes": classes,
         "compute_final_metrics": False,
         "verbose": verbose,
-        "model" : "darknet-yolo"
+        "model": "darknet-yolo",
+        "random_seed": random_seed,
     }
 
     # If batch_size or max_iterations = 0, they will be automatically

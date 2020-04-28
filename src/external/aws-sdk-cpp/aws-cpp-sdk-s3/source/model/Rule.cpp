@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/Rule.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -33,6 +34,7 @@ Rule::Rule() :
     m_expirationHasBeenSet(false),
     m_iDHasBeenSet(false),
     m_prefixHasBeenSet(false),
+    m_status(ExpirationStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_transitionHasBeenSet(false),
     m_noncurrentVersionTransitionHasBeenSet(false),
@@ -45,6 +47,7 @@ Rule::Rule(const XmlNode& xmlNode) :
     m_expirationHasBeenSet(false),
     m_iDHasBeenSet(false),
     m_prefixHasBeenSet(false),
+    m_status(ExpirationStatus::NOT_SET),
     m_statusHasBeenSet(false),
     m_transitionHasBeenSet(false),
     m_noncurrentVersionTransitionHasBeenSet(false),
@@ -69,19 +72,19 @@ Rule& Rule::operator =(const XmlNode& xmlNode)
     XmlNode iDNode = resultNode.FirstChild("ID");
     if(!iDNode.IsNull())
     {
-      m_iD = StringUtils::Trim(iDNode.GetText().c_str());
+      m_iD = Aws::Utils::Xml::DecodeEscapedXmlText(iDNode.GetText());
       m_iDHasBeenSet = true;
     }
     XmlNode prefixNode = resultNode.FirstChild("Prefix");
     if(!prefixNode.IsNull())
     {
-      m_prefix = StringUtils::Trim(prefixNode.GetText().c_str());
+      m_prefix = Aws::Utils::Xml::DecodeEscapedXmlText(prefixNode.GetText());
       m_prefixHasBeenSet = true;
     }
     XmlNode statusNode = resultNode.FirstChild("Status");
     if(!statusNode.IsNull())
     {
-      m_status = ExpirationStatusMapper::GetExpirationStatusForName(StringUtils::Trim(statusNode.GetText().c_str()).c_str());
+      m_status = ExpirationStatusMapper::GetExpirationStatusForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(statusNode.GetText()).c_str()).c_str());
       m_statusHasBeenSet = true;
     }
     XmlNode transitionNode = resultNode.FirstChild("Transition");

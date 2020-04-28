@@ -185,8 +185,8 @@ def _force_cast_sql_types(data, result_types, force_cast_cols):
 
 class SFrame(object):
     """
-    A tabular, column-mutable dataframe object that can scale to big data. The
-    data in SFrame is stored column-wise, and is
+    SFrame means scalable data frame. A tabular, column-mutable dataframe object that can
+    scale to big data. The data in SFrame is stored column-wise, and is
     stored on persistent storage (e.g. disk) to avoid being constrained by
     memory size.  Each column in an SFrame is a size-immutable
     :class:`~turicreate.SArray`, but SFrames are mutable in that columns can be
@@ -2356,7 +2356,6 @@ class SFrame(object):
         else:
             raise TypeError("Not all subset columns in SFrame")
 
-
     def __str_impl__(self, num_rows=10, footer=True):
         """
         Returns a string containing the first num_rows elements of the frame, along
@@ -2752,7 +2751,7 @@ class SFrame(object):
         >>> sf = turicreate.SFrame({'letter': ['a', 'b', 'c'],
         ...                       'number': [1, 2, 3]})
         >>> sf.flat_map(['number', 'letter'],
-        ...             lambda x: [list(x.itervalues()) for i in range(0, x['number'])])
+        ...             lambda x: [list(x.values()) for i in range(x['number'])])
         +--------+--------+
         | number | letter |
         +--------+--------+
@@ -2857,6 +2856,33 @@ class SFrame(object):
         else:
             with cython_context():
                 return SFrame(_proxy=self.__proxy__.sample(fraction, seed, exact))
+
+    def shuffle(self):
+        """
+        Randomly shuffles the rows of the SFrame.
+
+        Returns
+        -------
+        out : [SFrame]
+            An SFrame with all the same rows but with the rows in a random order.
+
+        Examples
+        --------
+        >>> sf = turicreate.SFrame({"nums": [1, 2, 3, 4],
+                                    "letters": ["a", "b", "c", "d"]})
+        >>> shuffled_sf = sf.shuffle()
+        >>> print(shuffled_sf)
+        +---------+------+
+        | letters | nums |
+        +---------+------+
+        |    d    |  4   |
+        |    c    |  3   |
+        |    a    |  1   |
+        |    b    |  2   |
+        +---------+------+
+        [4 rows x 2 columns]
+        """
+        return SFrame(_proxy=self.__proxy__.shuffle())
 
     def random_split(self, fraction, seed=None, exact=False):
         """
@@ -4301,7 +4327,7 @@ class SFrame(object):
             if not isinstance(column, str):
                 raise TypeError("Column name must be a string")
             if column not in my_column_names:
-                raise KeyError("Column " + column + " does not exist in SFrame")
+                raise KeyError("Column \"" + column + "\" does not exist in SFrame")
             if self[column].dtype == dict:
                 raise TypeError("Cannot group on a dictionary column.")
             key_columns_array.append(column)

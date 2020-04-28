@@ -7,20 +7,14 @@
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
+
 import turicreate as _tc
-import numpy as _np
-import time as _time
 from turicreate.toolkits import _coreml_utils
-from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import Model as _Model
-from turicreate.toolkits._model import PythonProxy as _PythonProxy
-from turicreate.toolkits import evaluation as _evaluation
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from ..image_classifier._evaluation import Evaluation as _Evaluation
-from turicreate import extensions as _extensions
 from .. import _pre_trained_models
-from six.moves import reduce as _reduce
 
 BITMAP_WIDTH = 28
 BITMAP_HEIGHT = 28
@@ -170,6 +164,7 @@ def create(
         warm_start = warm_start.replace("auto", "quickdraw_245_v0")
 
     if "_advanced_parameters" in kwargs:
+        # XXX: this code will not work. Tracking in https://github.com/apple/turicreate/issues/3007
         # Make sure no additional parameters are provided
         new_keys = set(kwargs["_advanced_parameters"].keys())
         set_keys = set(params.keys())

@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 #pragma once
 
 #include <aws/core/Core_EXPORTS.h>
+#include <aws/core/utils/UnreferencedParam.h>
 
 #include <memory>
 #include <atomic>
@@ -46,12 +47,32 @@ namespace Aws
             HttpClient();
             virtual ~HttpClient() {}
 
-            /*
-            * Takes an http request, makes it, and returns the newly allocated HttpResponse
-            */
+            /**
+             * Takes an http request, makes it, and returns the newly allocated HttpResponse
+             */
+            AWS_DEPRECATED("Deprecated: in favor of MakeRequest(const std::shared_ptr<HttpRequest>&, ...).")
             virtual std::shared_ptr<HttpResponse> MakeRequest(HttpRequest& request,
                 Aws::Utils::RateLimits::RateLimiterInterface* readLimiter = nullptr,
                 Aws::Utils::RateLimits::RateLimiterInterface* writeLimiter = nullptr) const = 0;
+
+            /**
+             * Takes an http request, makes it, and returns the newly allocated HttpResponse.
+             * Default implementation provided for backwards compatability.
+             */
+            virtual std::shared_ptr<HttpResponse> MakeRequest(const std::shared_ptr<HttpRequest>& request,
+                Aws::Utils::RateLimits::RateLimiterInterface* readLimiter = nullptr,
+                Aws::Utils::RateLimits::RateLimiterInterface* writeLimiter = nullptr) const
+            {
+                AWS_UNREFERENCED_PARAM(request);
+                AWS_UNREFERENCED_PARAM(readLimiter);
+                AWS_UNREFERENCED_PARAM(writeLimiter);
+                return nullptr;
+            }
+
+            /**
+             * If yes, the http client supports transfer-encoding:chunked.
+             */
+            virtual bool SupportsChunkedTransferEncoding() const { return true; }
 
             /**
              * Stops all requests in progress and prevents any others from initiating.
@@ -69,6 +90,8 @@ namespace Aws
              * Sleeps current thread for sleepTime.
              */
             void RetryRequestSleep(std::chrono::milliseconds sleepTime);
+
+            bool ContinueRequest(const Aws::Http::HttpRequest&) const;
 
         private:
 

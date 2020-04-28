@@ -13,7 +13,7 @@ from setuptools.dist import Distribution
 from setuptools.command.install import install
 
 PACKAGE_NAME = "turicreate"
-VERSION = "6.1.1"  # {{VERSION_STRING}}
+VERSION = "6.2"  # {{VERSION_STRING}}
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -136,12 +136,20 @@ if __name__ == "__main__":
         "requests >= 2.9.1",
         "scipy >= 1.1.0",
         "six >= 1.10.0",
-        "tensorflow >= 2.0.0",
     ]
+    if sys.version_info[0] == 2:
+        install_requires.append("llvmlite == 0.31.0")
 
-    # As a hack, the make_wheel script cuts out tensorflow from the above list, 
-    # replacing it with an empty string that this line strips out.  
-    install_requires=[s for s in install_requires if s]
+    if sys.platform == "darwin":
+        install_requires.append("tensorflow >= 2.0.0")
+    else:
+        # ST, OD, AC and DC segfault on Linux with TensorFlow 2.1
+        # See: https://github.com/apple/turicreate/issues/3003
+        install_requires.append("tensorflow >= 2.0.0,<= 2.0.1 ")
+
+    # As a hack, the make_wheel script cuts out tensorflow from the above list,
+    # replacing it with an empty string that this line strips out.
+    install_requires = [s for s in install_requires if s]
 
     setup(
         name="turicreate",

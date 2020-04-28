@@ -237,7 +237,7 @@ class ImageSimilarityModel(_CustomModel):
             state["model"] = "VisionFeaturePrint_Scene"
 
         if state["model"] == "VisionFeaturePrint_Scene" and _mac_ver() < (10, 14):
-            raise ToolkitError(
+            raise _ToolkitError(
                 "Can not load model on this operating system. This model uses VisionFeaturePrint_Scene, "
                 "which is only supported on macOS 10.14 and higher."
             )

@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -35,6 +35,8 @@ namespace Aws
              * configures connect calls with the timeouts. MaxConnectionsPerHost sets the queue sizes for each endpoint.
              */
             WinINetConnectionPoolMgr(void* iOpenHandle, unsigned maxConnectionsPerHost, long requestTimeout, long connectTimeout);
+            WinINetConnectionPoolMgr(void* iOpenHandle, unsigned maxConnectionsPerHost, long requestTimeout, long connectTimeout,
+                                     bool enableTcpKeepAlive, unsigned long tcpKeepAliveIntervalMs);
 
             virtual ~WinINetConnectionPoolMgr();
 

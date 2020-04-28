@@ -49,8 +49,8 @@ class test_activity_classifier : public activity_classifier {
   gl_sframe predict_data;
 
   std::unique_ptr<data_iterator> create_iterator(
-      gl_sframe data, bool requires_labels, bool is_train,
-      bool use_data_augmentation) const override {
+      gl_sframe data, bool requires_labels, bool infer_class_labels,
+      bool is_train, bool use_data_augmentation) const override {
     return std::unique_ptr<mock_iterator>(new mock_iterator());
   }
 

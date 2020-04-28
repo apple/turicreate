@@ -98,10 +98,9 @@ EXPORT class compute_context {
   virtual ~compute_context();
 
   /**
-   * Returns the (human readable) names of the GPUs used by this context, for
-   * reporting to the user.
+   * Prints (human readable) device information.
    */
-  virtual std::vector<std::string> gpu_names() const = 0;
+  virtual void print_training_device_info() const = 0;
 
   /**
    * Provides a measure of the memory resources available.

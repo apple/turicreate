@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,11 +12,13 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/core/utils/stream/ResponseStream.h>
 #include <aws/core/utils/Array.h>
 #include <aws/s3/model/RequestCharged.h>
+#include <utility>
 
 namespace Aws
 {
@@ -40,12 +42,21 @@ namespace Model
     GetObjectTorrentResult& operator=(const GetObjectTorrentResult&) = delete;
 
 
-    GetObjectTorrentResult(AmazonWebServiceResult<Utils::Stream::ResponseStream>&& result);
-    GetObjectTorrentResult& operator=(AmazonWebServiceResult<Utils::Stream::ResponseStream>&& result);
+    GetObjectTorrentResult(Aws::AmazonWebServiceResult<Aws::Utils::Stream::ResponseStream>&& result);
+    GetObjectTorrentResult& operator=(Aws::AmazonWebServiceResult<Aws::Utils::Stream::ResponseStream>&& result);
 
 
-    
+
+    /**
+     * <p>A Bencoded dictionary as defined by the BitTorrent specification</p>
+     */
     inline Aws::IOStream& GetBody() { return m_body.GetUnderlyingStream(); }
+
+    /**
+     * <p>A Bencoded dictionary as defined by the BitTorrent specification</p>
+     */
+    inline void ReplaceBody(Aws::IOStream* body) { m_body = Aws::Utils::Stream::ResponseStream(body); }
+
 
     
     inline const RequestCharged& GetRequestCharged() const{ return m_requestCharged; }
@@ -54,16 +65,18 @@ namespace Model
     inline void SetRequestCharged(const RequestCharged& value) { m_requestCharged = value; }
 
     
-    inline void SetRequestCharged(RequestCharged&& value) { m_requestCharged = value; }
+    inline void SetRequestCharged(RequestCharged&& value) { m_requestCharged = std::move(value); }
 
     
     inline GetObjectTorrentResult& WithRequestCharged(const RequestCharged& value) { SetRequestCharged(value); return *this;}
 
     
-    inline GetObjectTorrentResult& WithRequestCharged(RequestCharged&& value) { SetRequestCharged(value); return *this;}
+    inline GetObjectTorrentResult& WithRequestCharged(RequestCharged&& value) { SetRequestCharged(std::move(value)); return *this;}
 
   private:
-    Utils::Stream::ResponseStream m_body;
+
+  Aws::Utils::Stream::ResponseStream m_body;
+
     RequestCharged m_requestCharged;
   };
 

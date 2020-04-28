@@ -47,6 +47,7 @@ class read_caching_device {
   read_caching_device() { }
 
   read_caching_device(const std::string& filename, const bool write = false) {
+    logstream(LOG_DEBUG) << "read_cachine_device: " << filename << std::endl;
     m_filename = filename;
     if (write == false) {
       // check the filesize cache for the filesize so we don't poke s3 again
@@ -101,7 +102,15 @@ class read_caching_device {
     // there is an upper limit of how many bytes we can read
     // based on the file size
     n = std::min<std::streamsize>(n, m_file_size - m_file_pos);
+
+    // suspicious
+    if (n < 0) {
+      logstream(LOG_DEBUG) << "read size is " << n << "; file size is "
+                           << m_file_size << std::endl;
+    }
+
     std::streamsize ret = 0;
+
     while(n > 0) {
       // the block number containing the offset.
       auto block_number = m_file_pos / READ_CACHING_BLOCK_SIZE;

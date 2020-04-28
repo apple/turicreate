@@ -20,6 +20,7 @@
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>
+#include <toolkits/util/float_array_serialization.hpp>
 #include <toolkits/util/training_utils.hpp>
 
 #include <toolkits/drawing_classifier/data_preparation.hpp>
@@ -87,7 +88,7 @@ void drawing_classifier::save_impl(oarchive& oarc) const {
   variant_deep_save(state, oarc);
 
   // Save neural net weights.
-  oarc << nn_spec_->export_params_view();
+  save_float_array_map(nn_spec_->export_params_view(), oarc);
 }
 
 void drawing_classifier::load_version(iarchive& iarc, size_t version) {
@@ -96,8 +97,7 @@ void drawing_classifier::load_version(iarchive& iarc, size_t version) {
   variant_deep_load(state, iarc);
 
   // Load neural net weights.
-  float_array_map nn_params;
-  iarc >> nn_params;
+  float_array_map nn_params = load_float_array_map(iarc);
 
   nn_spec_ = init_model(false);
   nn_spec_->update_params(nn_params);
@@ -441,11 +441,8 @@ void drawing_classifier::init_training(
       nn_spec_->export_params_view(), read_state<size_t>("batch_size"),
       read_state<size_t>("num_classes"));
 
-  // reports
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = training_compute_context_->gpu_names();
   if (read_state<bool>("verbose")) {
-    print_training_device(std::move(gpu_names));
+    training_compute_context_->print_training_device_info();
   }
 
   // Begin printing progress.

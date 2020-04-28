@@ -167,85 +167,29 @@ ImageFeatureType* set_image_feature(
 } //namespace
 
 std::shared_ptr<MLModelWrapper> export_object_detector_model(
-    const neural_net::model_spec& nn_spec, size_t image_width,
-    size_t image_height, size_t num_classes, size_t num_predictions,
-    flex_list class_labels, const std::string& input_name,
+    neural_net::pipeline_spec raw_pipeline, size_t num_classes,
+    size_t num_predictions, flex_list class_labels,
     std::map<std::string, flexible_type> options) {
   // Set up Pipeline
   CoreML::Specification::Model model_pipeline;
   model_pipeline.set_specificationversion(3);
   ModelDescription* pipeline_desc = model_pipeline.mutable_description();
 
-  // Add NeuralNetwork model to pipeline
-  auto* model_nn = model_pipeline.mutable_pipeline()->add_models();
-
-  // Scale pixel values 0..255 to [0,1]
-  NeuralNetworkLayer* first_layer =
-      model_nn->mutable_neuralnetwork()->add_layers();
-  first_layer->set_name("_divscalar0");
-  first_layer->add_input(input_name);
-  first_layer->add_output("_divscalar0");
-  first_layer->mutable_scale()->add_shapescale(1);
-  first_layer->mutable_scale()->mutable_scale()->add_floatvalue(1 / 255.f);
-
-  // Copy the NeuralNetwork layers from nn_spec.
-  // TODO: This copies ~60MB at present. Should object_detector be responsible
-  // for _divscalar0, even though this isn't performed by the cnn_module?
-  model_nn->mutable_neuralnetwork()->MergeFrom(nn_spec.get_coreml_spec());
-  ASSERT_GT(model_nn->neuralnetwork().layers_size(), 1);
-
-  // Set the name of preprocessing layer to input_name as well.
-  // Since in the test case somehow the model doesn't have a preprocessing
-  // layer, so we need to check the size first...
-  if (model_nn->neuralnetwork().preprocessing_size() == 1) {
-    NeuralNetworkPreprocessing* preprocessing_layer =
-        model_nn->mutable_neuralnetwork()->mutable_preprocessing(0);
-    preprocessing_layer->set_featurename(input_name);
-  }
-
-  // Wire up the input layer from the copied layers to _divscalar0.
-  // TODO: This assumes that the first copied layer is the (only) one to take
-  // the input from "image".
-  NeuralNetworkLayer* second_layer =
-      model_nn->mutable_neuralnetwork()->mutable_layers(1);
-  ASSERT_EQ(second_layer->input_size(), 1);
-
-  second_layer->set_input(0, "_divscalar0");
-
-  // Write the ModelDescription.
-  ModelDescription* model_desc = model_nn->mutable_description();
-
-  // Write FeatureDescription for the image input.
-  set_image_feature(model_desc->add_input(), image_width, image_height,
-                    input_name);
+  // Adopt the model pipeline passed to us as input.
+  std::unique_ptr<CoreML::Specification::Pipeline> raw_pipeline_spec =
+      std::move(raw_pipeline).move_coreml_spec();
+  model_pipeline.mutable_pipeline()->Swap(raw_pipeline_spec.get());
 
   if (!options["include_non_maximum_suppression"].to<bool>()){
+    // Only support this case for models supporting spec version 1, which means
+    // no pipeline models.
+    ASSERT_EQ(model_pipeline.pipeline().models_size(), 1);
 
-    // Write FeatureDescription for the confidence output.
-    set_predictions_feature(model_desc->add_output(), "confidence", num_predictions, num_classes,
-      true, false, CONFIDENCE_STR);
-
-    // Write FeatureDescription for the coordinates output.
-    set_predictions_feature(model_desc->add_output(), "coordinates", num_predictions, 4, true,
-      false, COORDINATES_STR);
-
-    // Set CoreML spec version.
-    model_nn->set_specificationversion(1);
     auto model_wrapper = std::make_shared<MLModelWrapper>(
-      std::make_shared<CoreML::Model>(*model_nn));
+        std::make_shared<CoreML::Model>(model_pipeline.pipeline().models(0)));
 
     return model_wrapper;
   }
-
-  model_nn->set_specificationversion(3);
-
-  // Write FeatureDescription for the raw confidence output.
-  set_predictions_feature(model_desc->add_output(), "raw_confidence", num_predictions, num_classes,
-    true, true, "");
-
-  // Write FeatureDescription for the coordinates output.
-  set_predictions_feature(model_desc->add_output(), "raw_coordinates", num_predictions, 4, true,
-    true, "");
 
   // Add Non Maximum Suppression model to pipeline
   auto* model_nms = model_pipeline.mutable_pipeline()->add_models();
@@ -294,9 +238,9 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   first_layer_nms->set_confidenceoutputfeaturename("confidence");
   first_layer_nms->set_coordinatesoutputfeaturename("coordinates");
 
-  // Write FeatureDescription for the image input.
-  set_image_feature(pipeline_desc->add_input(), image_width, image_height,
-                    input_name, "Input image");
+  // Copy input feature descriptions from the first model in the pipeline.
+  *pipeline_desc->mutable_input() =
+      model_pipeline.pipeline().models(0).description().input();
 
   // Write FeatureDescription for the IOU Threshold input.
   FeatureDescription* iou_threshold = pipeline_desc->add_input();

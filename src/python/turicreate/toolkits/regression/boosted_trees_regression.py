@@ -9,18 +9,16 @@ This package contains the Gradient Boosted Trees model class and the create func
 from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
-import turicreate as _turicreate
+
 from turicreate.toolkits._supervised_learning import (
     SupervisedLearningModel as _SupervisedLearningModel,
 )
 import turicreate.toolkits._supervised_learning as _sl
-import turicreate.toolkits._main as _toolkits_main
 from turicreate.toolkits._internal_utils import _toolkit_repr_print
 from turicreate.toolkits._internal_utils import _raise_error_evaluation_metric_is_valid
 
 from turicreate.toolkits._tree_model_mixin import TreeModelMixin as _TreeModelMixin
 
-from turicreate.toolkits._internal_utils import _map_unity_proxy_to_object
 from turicreate.util import _make_internal_url
 
 

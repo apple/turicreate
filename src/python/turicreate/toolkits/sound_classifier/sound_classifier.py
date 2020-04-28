@@ -54,30 +54,6 @@ class _DataIterator(object):
         raise NotImplementedError
 
 
-class _TFDataIterator(_DataIterator):
-    def __init__(self, data, label=None, batch_size=1, shuffle=False):
-        import tensorflow as tf
-
-        # Always pass a tuple, so that the impl's built-in iterator returns a
-        # tuple.
-        tensor_slices = (data, label) if label is not None else (data,)
-
-        self.impl = tf.data.Dataset.from_tensor_slices(tensor_slices)
-
-        # Apply options.
-        self.impl = self.impl.batch(batch_size)
-        if shuffle:
-            self.impl = self.impl.shuffle(data.shape[0])
-
-    def __iter__(self):
-        return self.impl.__iter__()
-
-    def reset(self):
-        # Each call to __iter__ returns a fresh iterator object that will do one
-        # pass through the data.
-        pass
-
-
 class _NumPyDataIterator(_DataIterator):
     def __init__(self, data, label=None, batch_size=1, shuffle=False):
 
@@ -459,6 +435,7 @@ def create(
     custom_NN = SoundClassifierTensorFlowModel(
         feature_extractor.output_length, num_labels, custom_layer_sizes
     )
+    custom_NN.init()
 
     if verbose:
         # Setup progress table
@@ -1065,7 +1042,7 @@ class SoundClassifier(_CustomModel):
 
         if output_type not in ("probability", "probability_vector", "class"):
             raise ValueError(
-                "'dataset' parameter must be either an SFrame, SArray or dictionary"
+                "'output_type' parameter must be either 'probability', 'probability_vector', 'class'."
             )
         if output_type == "probability" and self.num_classes != 2:
             raise _ToolkitError(

@@ -16,7 +16,9 @@
 #include <core/data/image/image_type.hpp>
 #include <model_server/lib/image_util.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/style_transfer/st_resnet16_model_trainer.hpp>
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
+#include <toolkits/util/float_array_serialization.hpp>
 #include <toolkits/util/training_utils.hpp>
 
 #ifdef HAS_MPS
@@ -30,7 +32,9 @@ using turi::coreml::MLModelWrapper;
 using turi::neural_net::compute_context;
 using turi::neural_net::float_array_map;
 using turi::neural_net::float_scalar;
+using turi::neural_net::FuturesStream;
 using turi::neural_net::model_backend;
+using turi::neural_net::model_spec;
 using turi::neural_net::shared_float_array;
 
 namespace {
@@ -157,6 +161,8 @@ void prepare_images(const image_type& image,
                  [](unsigned char val) { return val / 255.f; });
 }
 
+}  // namespace
+
 std::vector<std::pair<flex_int, flex_image>> process_output(
     const shared_float_array& contents, size_t index) {
   size_t image_dim = contents.dim();
@@ -204,8 +210,8 @@ std::vector<std::pair<flex_int, flex_image>> process_output(
   return result;
 }
 
-float_array_map prepare_batch(std::vector<st_example>& batch, size_t width,
-                              size_t height, bool train = true) {
+float_array_map prepare_batch(const std::vector<st_example>& batch,
+                              size_t width, size_t height, bool train) {
   constexpr size_t channels = 3;
   const size_t batch_size = batch.size();
 
@@ -261,6 +267,8 @@ float_array_map prepare_predict(const st_example& example) {
                        /* train */ false);
 }
 
+namespace {
+
 flex_int estimate_max_iterations(flex_int num_styles, flex_int batch_size) {
   return static_cast<flex_int>(num_styles * 10000.0f / batch_size);
 }
@@ -307,6 +315,11 @@ void style_transfer::init_options(
                                "image", true);
   options.create_string_option("style_feature", "Name of the style column",
                                "image", true);
+  options.create_string_option(
+      /* name              */ "model",
+      /* description       */ "Defines the model type",
+      /* default_value     */ "resnet-16",
+      /* allowed_overwrite */ true);
   options.set_options(opts);
 
   add_or_update_state(flexmap_to_varmap(options.current_option_values()));
@@ -316,24 +329,73 @@ size_t style_transfer::get_version() const { return STYLE_TRANSFER_VERSION; }
 
 void style_transfer::save_impl(oarchive& oarc) const {
   variant_deep_save(state, oarc);
-  oarc << m_resnet_spec->export_params_view();
+  save_float_array_map(read_checkpoint().weights(), oarc);
 }
 
 void style_transfer::load_version(iarchive& iarc, size_t version) {
   variant_deep_load(state, iarc);
-  float_array_map nn_params;
-  iarc >> nn_params;
 
-  m_resnet_spec =
-      init_resnet(variant_get_value<size_t>(state.at("num_styles")));
-  m_resnet_spec->update_params(nn_params);
+  float_array_map nn_params = load_float_array_map(iarc);
+  checkpoint_ = load_checkpoint(nn_params);
+}
+
+std::unique_ptr<Checkpoint> style_transfer::load_checkpoint(
+    float_array_map weights) const {
+  if (read_state<flex_string>("model") != "resnet-16") {
+    log_and_throw("Cannot load unknown model: " +
+                  read_state<flex_string>("model"));
+  }
+
+  std::unique_ptr<Checkpoint> checkpoint;
+  checkpoint.reset(new ResNet16Checkpoint(get_config(), std::move(weights)));
+  return checkpoint;
+}
+
+std::unique_ptr<Checkpoint> style_transfer::create_checkpoint(
+    Config config, const std::string& resnet_model_path) const {
+  if (read_state<flex_string>("model") != "resnet-16") {
+    log_and_throw("Cannot initialize unknown model: " +
+                  read_state<flex_string>("model"));
+  }
+
+  std::unique_ptr<Checkpoint> checkpoint;
+  checkpoint.reset(
+      new ResNet16Checkpoint(std::move(config), resnet_model_path));
+  return checkpoint;
+}
+
+Config style_transfer::get_config() const {
+  Config config;
+  config.num_styles = read_state<int>("num_styles");
+  config.max_iterations = read_state<int>("max_iterations");
+  config.batch_size = read_state<int>("batch_size");
+
+  auto state_iter = state.find("image_height");
+  if (state_iter != state.end()) {
+    config.training_image_height = variant_get_value<int>(state_iter->second);
+  }
+  state_iter = state.find("image_width");
+  if (state_iter != state.end()) {
+    config.training_image_width = variant_get_value<int>(state_iter->second);
+  }
+
+  config.random_seed = read_state<int>("random_seed");
+
+  return config;
+}
+
+const Checkpoint& style_transfer::read_checkpoint() const {
+  if (checkpoint_ == nullptr) {
+    checkpoint_ = std::move(*checkpoint_futures_->Next().get());
+  }
+  return *checkpoint_.get();
 }
 
 std::unique_ptr<compute_context> style_transfer::create_compute_context()
     const {
 // Since the tcmps library isn't compiled if the system doesn't have MPS. We
-// have an if_def to check for an mps enabled system system. If it is an mps
-// enabled system system then a check for MacOS greater than 10.15 is performed.
+// have an if_def to check for an mps enabled system system. If it is an MPS
+// enabled system, then a check for MacOS greater than 10.15 is performed.
 // If it is then the Style Transfer MPS implementation is used. On all other
 // systems currently the TensorFlow implementation is used.
 #ifdef HAS_MPS
@@ -365,10 +427,8 @@ std::unique_ptr<data_iterator> style_transfer::create_iterator(
       new style_transfer_data_iterator(iterator_params));
 }
 
-void style_transfer::infer_derived_options() {
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = m_training_compute_context->gpu_names();
-  print_training_device(gpu_names);
+void style_transfer::infer_derived_options(compute_context* context) {
+  context->print_training_device_info();
 
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {
     add_or_update_state({{"batch_size", DEFAULT_BATCH_SIZE}});
@@ -499,7 +559,7 @@ gl_sframe style_transfer::predict(variant_type data,
     verbose = verbose_iter->second;
   }
 
-  std::vector<flex_int> style_idx;
+  std::vector<int> style_idx;
 
   auto style_idx_iter = opts.find("style_idx");
 
@@ -512,7 +572,7 @@ gl_sframe style_transfer::predict(variant_type data,
     flexible_type flex_style_idx = style_idx_iter->second;
     switch (flex_style_idx.get_type()) {
       case flex_type_enum::INTEGER:
-        style_idx = {flex_style_idx.get<flex_int>()};
+        style_idx = {flex_style_idx.to<int>()};
         break;
       case flex_type_enum::VECTOR: {
         const auto& v_ref = flex_style_idx.get<flex_vec>();
@@ -549,13 +609,15 @@ gl_sframe style_transfer::predict(variant_type data,
 }
 
 void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
-                                     const std::vector<flex_int>& style_idx,
+                                     const std::vector<int>& style_idx,
                                      bool verbose) {
   if (data.size() == 0) return;
 
-  // TODO: if logging enabled
-  flex_int batch_size = read_state<flex_int>("batch_size");
   flex_int num_styles = read_state<flex_int>("num_styles");
+  for (size_t i : style_idx) {
+    // check whether the style indices are valid
+    check_style_index(i, num_styles);
+  }
 
   // Since we aren't training the style_images are irrelevant
   std::unique_ptr<data_iterator> data_iter =
@@ -567,21 +629,15 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
     log_and_throw("No neural network compute context provided");
   }
 
-  float_array_map weight_params = m_resnet_spec->export_params_view();
-
-  // A value of `0` to indicate prediction
-  shared_float_array st_train = shared_float_array::wrap(0.f);
-  shared_float_array st_num_styles(std::make_shared<float_scalar>(num_styles));
-
-  std::unique_ptr<model_backend> model = ctx->create_style_transfer(
-      {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
-      weight_params);
-
-  // looping through all of the data
-  data_iter->reset();
-  ASSERT_EQ(batch_size, 1);
-  std::vector<st_example> batch = data_iter->next_batch(batch_size);
-  int row_idx = 0;
+  std::shared_ptr<ModelTrainer> trainer = model_trainer_;
+  if (!trainer) {
+    trainer = read_checkpoint().CreateModelTrainer();
+  }
+  std::shared_ptr<FuturesStream<DataBatch>> inference_futures =
+      trainer
+          ->AsInferenceBatchPublisher(std::move(data_iter), style_idx,
+                                      ctx.get())
+          ->AsFutures();
 
   // Style Printer
   // record time of process
@@ -593,53 +649,29 @@ void style_transfer::perform_predict(gl_sarray data, gl_sframe_writer& result,
     table.print_header();
   }
 
-  while (!batch.empty()) {
-    // looping through all of the style indices
-    for (size_t i : style_idx) {
-      // check whether the style indices are valid
-      check_style_index(i, num_styles);
-      // setting the style index for each batch
-      std::for_each(batch.begin(), batch.end(),
-                    [i](st_example& example) { example.style_index = i; });
-
-      // predict only works with a batch size of one now. This is because images
-      // have varied width and height and since the style transfer network
-      // is size invariant, resizing the inputs isn't an option.
-      ASSERT_EQ(batch.size(), 1);
-
-      // prepare batch for prediction
-      float_array_map prepared_batch = prepare_predict(batch.front());
-
-      // perform prediction
-      float_array_map result_batch = model->predict(prepared_batch);
-
-      // get shared float array from prediction result
-      shared_float_array out_shared_float_array = result_batch.at("output");
-
-      // populate gl_sframe_writer
-      std::vector<std::pair<flex_int, flex_image>> processed_batch =
-          process_output(out_shared_float_array, i);
-
-      // Write result to gl_sframe_writer
-      for (const auto& row : processed_batch) {
-        result.write({row_idx, row.first, row.second}, 0);
-      }
-
-      // progress printing for stylization
-      idx++;
-      if (verbose) {
-        std::ostringstream formatted_percentage;
-        formatted_percentage.precision(2);
-        formatted_percentage << std::fixed
-                             << (idx * 100.0 / (data.size() * style_idx.size()));
-        formatted_percentage << "%";
-        table.print_progress_row(idx, idx, progress_time(),
-                                 formatted_percentage.str());
-      }
+  // looping through all of the data
+  std::unique_ptr<DataBatch> batch = inference_futures->Next().get();
+  while (batch) {
+    // Write result to gl_sframe_writer
+    for (const auto& row : batch->examples) {
+      result.write({batch->iteration_id - 1, row.style_index, row.style_image},
+                   0);
     }
+
+    // progress printing for stylization
+    idx++;
+    if (verbose) {
+      std::ostringstream formatted_percentage;
+      formatted_percentage.precision(2);
+      formatted_percentage << std::fixed
+                           << (idx * 100.0 / (data.size() * style_idx.size()));
+      formatted_percentage << "%";
+      table.print_progress_row(idx, idx, progress_time(),
+                               formatted_percentage.str());
+    }
+
     // get next batch and increase the row_idx
-    batch = data_iter->next_batch(batch_size);
-    ++row_idx;
+    batch = inference_futures->Next().get();
   }
 
   if (verbose) {
@@ -664,13 +696,23 @@ gl_sarray style_transfer::convert_types_to_sarray(const variant_type& data) {
   return sarray_data;
 }
 
-void style_transfer::init_train(gl_sarray style, gl_sarray content,
-                                std::map<std::string, flexible_type> opts) {
-  auto resnet_mlmodel_path_iter = opts.find("resnet_mlmodel_path");
-  if (resnet_mlmodel_path_iter == opts.end()) {
-    log_and_throw("Expected option \"resnet_mlmodel_path\" not found.");
+void style_transfer::init_training(gl_sarray style, gl_sarray content,
+                                   std::map<std::string, flexible_type> opts) {
+  auto pretrained_weights_iter = opts.find("pretrained_weights");
+  bool pretrained_weights = false;
+  if (pretrained_weights_iter != opts.end()) {
+    pretrained_weights = pretrained_weights_iter->second;
   }
-  const std::string resnet_mlmodel_path = resnet_mlmodel_path_iter->second;
+  opts.erase(pretrained_weights_iter);
+
+  std::string resnet_mlmodel_path;
+  auto resnet_mlmodel_path_iter = opts.find("resnet_mlmodel_path");
+  if (pretrained_weights) {
+    if (resnet_mlmodel_path_iter == opts.end()) {
+      log_and_throw("Expected option \"resnet_mlmodel_path\" not found.");
+    }
+    resnet_mlmodel_path = resnet_mlmodel_path_iter->second.to<flex_string>();
+  }
   opts.erase(resnet_mlmodel_path_iter);
 
   auto vgg_mlmodel_path_iter = opts.find("vgg_mlmodel_path");
@@ -684,15 +726,7 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
   if (num_styles_iter == opts.end()) {
     log_and_throw("Expected option \"num_styles\" not found.");
   }
-  size_t num_styles = num_styles_iter->second;
 
-  auto pretrained_weights_iter = opts.find("pretrained_weights");
-  bool pretrained_weights = false;
-  if (pretrained_weights_iter != opts.end()) {
-    pretrained_weights = pretrained_weights_iter->second;
-  }
-  opts.erase(pretrained_weights_iter);
-  
   init_options(opts);
 
   if (read_state<flexible_type>("random_seed") == FLEX_UNDEFINED) {
@@ -701,46 +735,68 @@ void style_transfer::init_train(gl_sarray style, gl_sarray content,
     add_or_update_state({{"random_seed", random_seed}});
   }
 
-  int random_seed = read_state<int>("random_seed");
-
-  m_training_data_iterator =
-      create_iterator(content, style, /* repeat */ true,
-                      /* training */ true, random_seed);
-
-  m_training_compute_context = create_compute_context();
-  if (m_training_compute_context == nullptr) {
+  std::unique_ptr<compute_context> training_compute_context =
+      create_compute_context();
+  if (training_compute_context == nullptr) {
     log_and_throw("No neural network compute context provided");
   }
 
-  infer_derived_options();
+  infer_derived_options(training_compute_context.get());
 
-  add_or_update_state({{"model", "resnet-16"},
-                       {"styles", style_sframe_with_index(style)},
+  add_or_update_state({{"styles", style_sframe_with_index(style)},
                        {"num_content_images", content.size()}});
 
-  // TODO: change to include random seed.
-  if (pretrained_weights) {
-    m_resnet_spec = init_resnet(resnet_mlmodel_path, num_styles);
-  } else {
-    m_resnet_spec = init_resnet(num_styles, random_seed);
+  checkpoint_ = create_checkpoint(get_config(), resnet_mlmodel_path);
+
+  connect_trainer(std::move(style), std::move(content), vgg_mlmodel_path,
+                  std::move(training_compute_context));
+}
+
+void style_transfer::resume_training(
+    gl_sarray style, gl_sarray content,
+    std::map<std::string, flexible_type> opts) {
+  auto vgg_mlmodel_path_iter = opts.find("vgg_mlmodel_path");
+  if (vgg_mlmodel_path_iter == opts.end()) {
+    log_and_throw("Expected option \"vgg_mlmodel_path\" not found.");
+  }
+  const std::string vgg_mlmodel_path = vgg_mlmodel_path_iter->second;
+
+  std::unique_ptr<compute_context> training_compute_context =
+      create_compute_context();
+  if (training_compute_context == nullptr) {
+    log_and_throw("No neural network compute context provided");
   }
 
-  m_vgg_spec = init_vgg_16(vgg_mlmodel_path);
+  connect_trainer(std::move(style), std::move(content), vgg_mlmodel_path,
+                  std::move(training_compute_context));
+}
 
-  float_array_map weight_params = m_resnet_spec->export_params_view();
-  float_array_map vgg_params = m_vgg_spec->export_params_view();
+void style_transfer::connect_trainer(gl_sarray style, gl_sarray content,
+                                     const std::string& vgg_mlmodel_path,
+                                     std::unique_ptr<compute_context> context) {
+  model_trainer_ = read_checkpoint().CreateModelTrainer();
 
-  weight_params.insert(vgg_params.begin(), vgg_params.end());
+  // TODO: Iterator needs to support resuming from an offset.
+  std::unique_ptr<data_iterator> training_data =
+      create_iterator(content, style, /* repeat */ true,
+                      /* training */ true, read_state<int>("num_styles"));
 
-  // A value of `1` to indicate training
-  shared_float_array st_train = shared_float_array::wrap(1.f);
-  shared_float_array st_num_styles(std::make_shared<float_scalar>(num_styles));
+  int iteration_offset = read_state<int>("training_iterations");
+  std::unique_ptr<float> initial_training_loss;
+  auto loss_it = state.find("training_loss");
+  if (loss_it != state.end()) {
+    initial_training_loss.reset(
+        new float(variant_get_value<float>(loss_it->second)));
+  }
 
-  m_training_model = m_training_compute_context->create_style_transfer(
-      {{"st_num_styles", st_num_styles}, {"st_training", st_train}},
-      weight_params);
+  training_futures_ =
+      model_trainer_
+          ->AsTrainingBatchPublisher(
+              std::move(training_data), vgg_mlmodel_path, iteration_offset,
+              std::move(initial_training_loss), context.get())
+          ->AsFutures();
 
-  // TODO: print table printer
+  checkpoint_futures_ = model_trainer_->AsCheckpointPublisher()->AsFutures();
 }
 
 flex_int style_transfer::get_max_iterations() const {
@@ -756,54 +812,56 @@ flex_int style_transfer::get_num_classes() const {
 }
 
 void style_transfer::iterate_training() {
-  ASSERT_TRUE(m_training_data_iterator != nullptr);
-  ASSERT_TRUE(m_training_model != nullptr);
+  ASSERT_TRUE(model_trainer_ != nullptr);
+  ASSERT_TRUE(training_futures_ != nullptr);
 
-  flex_int iteration_idx = get_training_iterations();
+  // If we have a local checkpoint, it will no longer be valid.
+  checkpoint_.reset();
 
-  flex_int batch_size = read_state<flex_int>("batch_size");
-  flex_int image_width = read_state<flex_int>("image_width");
-  flex_int image_height = read_state<flex_int>("image_height");
-
-  std::vector<st_example> batch =
-      m_training_data_iterator->next_batch(batch_size);
-
-  float_array_map prepared_batch =
-      prepare_batch(batch, image_width, image_height);
-
-  std::map<std::string, shared_float_array> results =
-      m_training_model->train(prepared_batch);
+  std::future<std::unique_ptr<TrainingProgress>> training_batch =
+      training_futures_->Next();
+  std::unique_ptr<TrainingProgress> progress = training_batch.get();
+  ASSERT_TRUE(progress != nullptr);
 
   add_or_update_state({
-      {"training_iterations", iteration_idx + 1},
+      {"training_iterations", progress->iteration_id},
+      {"training_loss", progress->smoothed_loss}
   });
 
-  shared_float_array loss_batch = results.at("loss");
-
-  size_t loss_batch_size = loss_batch.size();
-  float batch_loss = std::accumulate(
-      loss_batch.data(), loss_batch.data() + loss_batch_size, 0.f,
-      [loss_batch_size](float a, float b) { return a + b / loss_batch_size; });
-
-  // Update our rolling average (smoothed) loss.
-  auto loss_it = state.find("training_loss");
-  if (loss_it == state.end()) {
-    loss_it = state.emplace("training_loss", variant_type(batch_loss)).first;
-  } else {
-    float smoothed_loss = variant_get_value<flex_float>(loss_it->second);
-    smoothed_loss = 0.9f * smoothed_loss + 0.1f * batch_loss;
-    loss_it->second = smoothed_loss;
+  if (model_trainer_->SupportsLossComponents()) {
+    add_or_update_state({
+      {"training_style_loss", progress->style_loss},
+      {"training_content_loss", progress->content_loss}
+    });
   }
 
   if (training_table_printer_) {
-    training_table_printer_->print_progress_row(
-        iteration_idx, iteration_idx + 1, batch_loss, progress_time());
+    if (model_trainer_->SupportsLossComponents()) {
+      training_table_printer_->print_progress_row(
+          progress->iteration_id, progress->iteration_id,
+          progress->smoothed_loss, progress->style_loss, progress->content_loss,
+          progress_time());
+    } else {
+      training_table_printer_->print_progress_row(
+          progress->iteration_id, progress->iteration_id,
+          progress->smoothed_loss, progress_time());
+    }
   }
 }
 
+// This may become necessary once we begin pipelining batches to GPU.
+void style_transfer::synchronize_training() {}
+
 void style_transfer::finalize_training() {
-  float_array_map trained_weights = m_training_model->export_weights();
-  m_resnet_spec->update_params(trained_weights);
+  ASSERT_TRUE(model_trainer_ != nullptr);
+  ASSERT_TRUE(training_futures_ != nullptr);
+
+  // Copy out the trained model while we still have access to a backend.
+  read_checkpoint();
+
+  model_trainer_.reset();
+  training_futures_.reset();
+  checkpoint_futures_.reset();
 }
 
 void style_transfer::train(gl_sarray style, gl_sarray content,
@@ -812,14 +870,22 @@ void style_transfer::train(gl_sarray style, gl_sarray content,
   turi::timer time_object;
   time_object.start();
 
-  init_train(style, content, opts);
+  init_training(style, content, opts);
 
+  training_table_printer_.reset();
   if (read_state<bool>("verbose")) {
-    training_table_printer_.reset(new table_printer(
-        {{"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}}));
-  }
-
-  if (training_table_printer_) {
+    std::vector<std::pair<std::string, size_t>> table_header_format;
+    if (model_trainer_->SupportsLossComponents()) {
+      table_header_format = {{"Iteration", 12},
+                             {"Total Loss", 12},
+                             {"Style Loss", 12},
+                             {"Content Loss", 12},
+                             {"Elapsed Time", 12}};
+    } else {
+      table_header_format = {
+          {"Iteration", 12}, {"Loss", 12}, {"Elapsed Time", 12}};
+    }
+    training_table_printer_.reset(new table_printer(table_header_format));
     training_table_printer_->print_header();
   }
 
@@ -874,8 +940,9 @@ std::shared_ptr<MLModelWrapper> style_transfer::export_to_coreml(
        user_defined_metadata.emplace_back(kvp.first, kvp.second);
   }
 
+  model_spec nn_spec = read_checkpoint().ExportToCoreML();
   std::shared_ptr<MLModelWrapper> model_wrapper = export_style_transfer_model(
-      *m_resnet_spec, image_width, image_height, include_flexible_shape,
+      nn_spec, image_width, image_height, include_flexible_shape,
       content_feature, style_feature, num_styles);
 
   model_wrapper->add_metadata({
@@ -948,8 +1015,7 @@ void style_transfer::import_from_custom_model(variant_map_type model_data,
   }
 
   // Update resnet spec with imported weight map
-  m_resnet_spec = init_resnet(variant_get_value<size_t>(num_styles));
-  m_resnet_spec->update_params(nn_params);
+  checkpoint_ = load_checkpoint(std::move(nn_params));
 }
 
 }  // namespace style_transfer

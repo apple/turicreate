@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -14,19 +14,25 @@
 */
 #include <aws/core/Globals.h>
 #include <aws/core/utils/EnumParseOverflowContainer.h>
-#include <atomic>
+#include <aws/core/utils/memory/AWSMemory.h>
 
 namespace Aws
 {
-    static std::atomic<Utils::EnumParseOverflowContainer*> g_enumOverflow(nullptr);
+    static const char TAG[] = "GlobalEnumOverflowContainer";
+    static Utils::EnumParseOverflowContainer* g_enumOverflow;
 
     Utils::EnumParseOverflowContainer* GetEnumOverflowContainer()
     {
-        return g_enumOverflow.load();
+        return g_enumOverflow;
     }
 
-    bool CheckAndSwapEnumOverflowContainer(Utils::EnumParseOverflowContainer* expectedValue, Utils::EnumParseOverflowContainer* newValue)
+    void InitializeEnumOverflowContainer()
     {
-        return g_enumOverflow.compare_exchange_strong(expectedValue, newValue);
+        g_enumOverflow = Aws::New<Aws::Utils::EnumParseOverflowContainer>(TAG);
+    }
+
+    void CleanupEnumOverflowContainer()
+    {
+        Aws::Delete(g_enumOverflow);
     }
 }

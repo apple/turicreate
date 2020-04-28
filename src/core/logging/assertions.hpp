@@ -319,7 +319,7 @@ extern void __print_back_trace();
         logstream(LOG_ERROR) << "Check failed: " << #condition << ":\n"; \
         std::ostringstream ss;                                           \
         ss << "Assertion Failure: " << #condition << ": " << fmt;        \
-        logger(LOG_ERROR, fmt, ##__VA_ARGS__);                           \
+        logger(LOG_ERROR, fmt, ##__VA_ARGS__, "\n");                     \
         __print_back_trace();                                            \
         TURI_LOGGER_FAIL_METHOD(ss.str().c_str());                       \
         ASSERT_UNREACHABLE();                                            \

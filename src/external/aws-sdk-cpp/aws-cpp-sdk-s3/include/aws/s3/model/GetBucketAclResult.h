@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,11 +12,13 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/s3/model/Owner.h>
 #include <aws/core/utils/memory/stl/AWSVector.h>
 #include <aws/s3/model/Grant.h>
+#include <utility>
 
 namespace Aws
 {
@@ -38,61 +40,75 @@ namespace Model
   {
   public:
     GetBucketAclResult();
-    GetBucketAclResult(const AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
-    GetBucketAclResult& operator=(const AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+    GetBucketAclResult(const Aws::AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
+    GetBucketAclResult& operator=(const Aws::AmazonWebServiceResult<Aws::Utils::Xml::XmlDocument>& result);
 
-    
-    inline const Owner& GetOwner() const{ return m_owner; }
-
-    
-    inline void SetOwner(const Owner& value) { m_owner = value; }
-
-    
-    inline void SetOwner(Owner&& value) { m_owner = value; }
-
-    
-    inline GetBucketAclResult& WithOwner(const Owner& value) { SetOwner(value); return *this;}
-
-    
-    inline GetBucketAclResult& WithOwner(Owner&& value) { SetOwner(value); return *this;}
 
     /**
-     * A list of grants.
+     * <p>Container for the bucket owner's display name and ID.</p>
+     */
+    inline const Owner& GetOwner() const{ return m_owner; }
+
+    /**
+     * <p>Container for the bucket owner's display name and ID.</p>
+     */
+    inline void SetOwner(const Owner& value) { m_owner = value; }
+
+    /**
+     * <p>Container for the bucket owner's display name and ID.</p>
+     */
+    inline void SetOwner(Owner&& value) { m_owner = std::move(value); }
+
+    /**
+     * <p>Container for the bucket owner's display name and ID.</p>
+     */
+    inline GetBucketAclResult& WithOwner(const Owner& value) { SetOwner(value); return *this;}
+
+    /**
+     * <p>Container for the bucket owner's display name and ID.</p>
+     */
+    inline GetBucketAclResult& WithOwner(Owner&& value) { SetOwner(std::move(value)); return *this;}
+
+
+    /**
+     * <p>A list of grants.</p>
      */
     inline const Aws::Vector<Grant>& GetGrants() const{ return m_grants; }
 
     /**
-     * A list of grants.
+     * <p>A list of grants.</p>
      */
     inline void SetGrants(const Aws::Vector<Grant>& value) { m_grants = value; }
 
     /**
-     * A list of grants.
+     * <p>A list of grants.</p>
      */
-    inline void SetGrants(Aws::Vector<Grant>&& value) { m_grants = value; }
+    inline void SetGrants(Aws::Vector<Grant>&& value) { m_grants = std::move(value); }
 
     /**
-     * A list of grants.
+     * <p>A list of grants.</p>
      */
     inline GetBucketAclResult& WithGrants(const Aws::Vector<Grant>& value) { SetGrants(value); return *this;}
 
     /**
-     * A list of grants.
+     * <p>A list of grants.</p>
      */
-    inline GetBucketAclResult& WithGrants(Aws::Vector<Grant>&& value) { SetGrants(value); return *this;}
+    inline GetBucketAclResult& WithGrants(Aws::Vector<Grant>&& value) { SetGrants(std::move(value)); return *this;}
 
     /**
-     * A list of grants.
+     * <p>A list of grants.</p>
      */
     inline GetBucketAclResult& AddGrants(const Grant& value) { m_grants.push_back(value); return *this; }
 
     /**
-     * A list of grants.
+     * <p>A list of grants.</p>
      */
-    inline GetBucketAclResult& AddGrants(Grant&& value) { m_grants.push_back(value); return *this; }
+    inline GetBucketAclResult& AddGrants(Grant&& value) { m_grants.push_back(std::move(value)); return *this; }
 
   private:
+
     Owner m_owner;
+
     Aws::Vector<Grant> m_grants;
   };
 

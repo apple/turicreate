@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ namespace Aws
                  * cipherMode, encrypt or decrypt
                  * bufferSize, amount of data to encrypt/decrypt at a time.
                  */
-                SymmetricCryptoBufSink(Aws::OStream& stream, SymmetricCipher& cipher, CipherMode cipherMode, size_t bufferSize = DEFAULT_BUF_SIZE);
+                SymmetricCryptoBufSink(Aws::OStream& stream, SymmetricCipher& cipher, CipherMode cipherMode, size_t bufferSize = DEFAULT_BUF_SIZE, int16_t blockOffset = 0);
                 SymmetricCryptoBufSink(const SymmetricCryptoBufSink&) = delete;
                 SymmetricCryptoBufSink(SymmetricCryptoBufSink&&) = delete;
 
@@ -152,7 +152,7 @@ namespace Aws
                 Aws::OStream& m_stream;
                 CipherMode m_cipherMode;
                 bool m_isFinalized;
-                size_t m_bufferSize;
+                int16_t m_blockOffset;
             };
         }
     }

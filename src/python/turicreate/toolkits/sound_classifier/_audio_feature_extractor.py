@@ -18,6 +18,8 @@ from .._pre_trained_models import VGGish
 # We need to disable this here to match behavior in the rest of TuriCreate
 from tensorflow.compat.v1 import disable_v2_behavior
 
+# This toolkit is compatible with TensorFlow V2 behavior.
+# However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
 disable_v2_behavior()
 
 

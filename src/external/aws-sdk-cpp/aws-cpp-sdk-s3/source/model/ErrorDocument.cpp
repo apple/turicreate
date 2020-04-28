@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/ErrorDocument.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -49,7 +50,7 @@ ErrorDocument& ErrorDocument::operator =(const XmlNode& xmlNode)
     XmlNode keyNode = resultNode.FirstChild("Key");
     if(!keyNode.IsNull())
     {
-      m_key = StringUtils::Trim(keyNode.GetText().c_str());
+      m_key = Aws::Utils::Xml::DecodeEscapedXmlText(keyNode.GetText());
       m_keyHasBeenSet = true;
     }
   }

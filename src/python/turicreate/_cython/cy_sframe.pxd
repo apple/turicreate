@@ -51,6 +51,7 @@ cdef extern from "<core/storage/sframe_interface/unity_sframe.hpp>" namespace "t
         vector[vector[flexible_type]] iterator_get_next(size_t) except +
         void save_as_csv(const string&, gl_options_map) except +
         unity_sframe_base_ptr sample(float, int, bint) except +
+        unity_sframe_base_ptr shuffle() except +
         cpplist[unity_sframe_base_ptr] random_split(float, int, bint) except +
         unity_sframe_base_ptr groupby_aggregate(const vector[string]&, const vector[vector[string]]&, const vector[string]&, const vector[string]&) except +
         unity_sframe_base_ptr append(unity_sframe_base_ptr) except +
@@ -129,6 +130,8 @@ cdef class UnitySFrameProxy:
     cpdef sample(self, float percent, int random_seed, bint exact=*)
 
     cpdef random_split(self, float percent, int random_seed, bint exact=*)
+
+    cpdef shuffle(self)
 
     cpdef groupby_aggregate(self, key_columns, group_columns, group_output_columns, column_ops)
 

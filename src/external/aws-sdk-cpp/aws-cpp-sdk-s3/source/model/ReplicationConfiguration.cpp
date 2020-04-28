@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/ReplicationConfiguration.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -51,7 +52,7 @@ ReplicationConfiguration& ReplicationConfiguration::operator =(const XmlNode& xm
     XmlNode roleNode = resultNode.FirstChild("Role");
     if(!roleNode.IsNull())
     {
-      m_role = StringUtils::Trim(roleNode.GetText().c_str());
+      m_role = Aws::Utils::Xml::DecodeEscapedXmlText(roleNode.GetText());
       m_roleHasBeenSet = true;
     }
     XmlNode rulesNode = resultNode.FirstChild("Rule");
@@ -76,7 +77,7 @@ void ReplicationConfiguration::AddToNode(XmlNode& parentNode) const
   Aws::StringStream ss;
   if(m_roleHasBeenSet)
   {
-   XmlNode roleNode = parentNode.CreateChildElement("Rule");
+   XmlNode roleNode = parentNode.CreateChildElement("Role");
    roleNode.SetText(m_role);
   }
 

@@ -22,6 +22,7 @@
 namespace CoreML {
 namespace Specification {
 class NeuralNetwork;
+class Pipeline;
 class WeightParams;
 }
 }
@@ -43,6 +44,13 @@ public:
   enum class padding_type {
     VALID,
     SAME,
+  };
+
+  /** Parameter for the padding layer */
+  enum class padding_policy {
+    REFLECTIVE,
+    REPLICATION,
+    ZERO,
   };
 
   /**
@@ -67,6 +75,8 @@ public:
   // Declared here and defined in the .cpp file just to prevent the implicit
   // default destructor from attempting (and failing) to instantiate
   // std::unique_ptr<NeuralNetwork>::~unique_ptr()
+  model_spec(model_spec&&);
+  model_spec& operator=(model_spec&&);
   ~model_spec();
 
   /**
@@ -190,10 +200,12 @@ public:
    * \param padding_bottom The padding on the bottom
    * \param padding_left The padding to the left
    * \param padding_right The padding to the right
+   * \param policy The padding policy of zero, reflective, or replication
    */
   void add_padding(const std::string& name, const std::string& input,
                    size_t padding_top, size_t padding_bottom,
-                   size_t padding_left, size_t padding_right);
+                   size_t padding_left, size_t padding_right,
+                   padding_policy policy = padding_policy::REFLECTIVE);
 
   /**
    * Appends an upsampling layer.
@@ -396,8 +408,159 @@ public:
   void add_preprocessing(const std::string& feature_name,
                          const float image_scale);
 
+  /**
+   * Appends an Transpose layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param axes The ordering of the axes to transpose for instance {0, 2, 1, 3}
+   *             would flip the channel and height axes
+   */
+  void add_transpose(const std::string& name, const std::string& input,
+                     std::vector<size_t> axes);
+
+  /**
+   * Appends an Split layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The name of the layer's input
+   * \param axis The axis to split the layer on
+   * \param num_splits The number of splits to perform
+   * \param split_sizes The size of each split
+   */
+  void add_split_nd(const std::string& name, const std::string& input,
+                    size_t axis, size_t num_splits,
+                    const std::vector<size_t>& split_sizes);
+
+  /**
+   * Appends an Concat layer.
+   *
+   * \param name The name of the layer and its output
+   * \param inputs The vector of names of the layer's inputs
+   * \param axis The axis to concat the layer on
+   */
+  void add_concat_nd(const std::string& name,
+                     const std::vector<std::string>& inputs, size_t axis);
+
+  /**
+   * Appends a Reshape Static layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The vector of names of the layer's input
+   * \param targetShape The target shape
+   */
+  void add_reshape_static(const std::string& name, const std::string& input,
+                          const std::vector<size_t>& targetShape);
+
+  /**
+   * Appends a Reshape Dynamic layer.
+   *
+   * \param name The name of the layer and its output
+   * \param inputs The vector of names of the layer's inputs
+   */
+  void add_reshape_dynamic(const std::string& name,
+                           const std::vector<std::string>& inputs);
+
+  /**
+   * Appends an Expand Dims layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The vector of names of the layer's input
+   * \param axes The axes to expand the layer on
+   */
+  void add_expand_dims(const std::string& name, const std::string& input,
+                       const std::vector<size_t>& axes,
+                       const std::vector<size_t>& inputVector,
+                       const std::vector<size_t>& outputVector);
+
+  /**
+   * Appends a Squeeze layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The vector of names of the layer's input
+   * \param axes The axes to squeeze the layer on
+   */
+  void add_squeeze(const std::string& name, const std::string& input,
+                   const std::vector<size_t>& axes,
+                   const std::vector<size_t>& inputVector,
+                   const std::vector<size_t>& outputVector);
+
+  /**
+   * Appends an Add Broadcastable layer.
+   *
+   * \param name The name of the layer and its output
+   * \param inputs The vector of names of the layer's inputs
+   */
+  void add_add_broadcastable(const std::string& name,
+                             const std::vector<std::string>& inputs);
+
+  /**
+   * Appends a Gather layer.
+   *
+   * \param name The name of the layer and its output
+   * \param inputs The vector of names of the layer's inputs
+   */
+  void add_gather(const std::string& name,
+                  const std::vector<std::string>& inputs);
+
+  /**
+   * Appends a Constant ND layer.
+   *
+   * \param name The name of the layer and its output
+   * \param shape The shape of the constant layer
+   * \param data The data being loaded in the constant layer
+   */
+  void add_constant_nd(const std::string& name,
+                       const std::vector<size_t>& shape,
+                       const weight_initializer& data);
+
+  /**
+   * Appends a Get Shape layer.
+   *
+   * \param name The name of the layer and its output
+   * \param input The vector of names of the layer's input
+   */
+  void add_get_shape(const std::string& name, const std::string& input);
+
  private:
   std::unique_ptr<CoreML::Specification::NeuralNetwork> impl_;
+};
+
+/**
+ * Simple wrapper around CoreML::Specification::Pipeline that allows client code
+ * to pass around instances without importing full protobuf headers.
+ *
+ * \todo As needed, elaborate this class and move into its own file.
+ */
+class pipeline_spec {
+ public:
+  pipeline_spec(std::unique_ptr<CoreML::Specification::Pipeline> impl);
+
+  pipeline_spec(pipeline_spec&&);
+  pipeline_spec& operator=(pipeline_spec&&);
+
+  // Declared here and defined in the .cpp file just to prevent the implicit
+  // default destructor from attempting (and failing) to instantiate
+  // std::unique_ptr<Pipeline>::~unique_ptr()
+  ~pipeline_spec();
+
+  /**
+   * Exposes the underlying CoreML proto.
+   */
+  const CoreML::Specification::Pipeline& get_coreml_spec() const {
+    return *impl_;
+  }
+
+  /**
+   * Transfer ownership of the underlying CoreML proto, invalidating the current
+   * instance (leaving it in a "moved-from" state).
+   *
+   * (Note that this method may only be invoked from a pipeline_spec&&)
+   */
+  std::unique_ptr<CoreML::Specification::Pipeline> move_coreml_spec() &&;
+
+ private:
+  std::unique_ptr<CoreML::Specification::Pipeline> impl_;
 };
 
 }  // neural_net

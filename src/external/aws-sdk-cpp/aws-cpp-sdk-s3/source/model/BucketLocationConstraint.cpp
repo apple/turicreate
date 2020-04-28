@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/BucketLocationConstraint.h>
 #include <aws/core/utils/HashingUtils.h>
 #include <aws/core/Globals.h>
@@ -40,6 +41,14 @@ namespace Aws
         static const int sa_east_1_HASH = HashingUtils::HashString("sa-east-1");
         static const int cn_north_1_HASH = HashingUtils::HashString("cn-north-1");
         static const int eu_central_1_HASH = HashingUtils::HashString("eu-central-1");
+        static const int eu_west_3_HASH = HashingUtils::HashString("eu-west-3");
+        static const int eu_west_2_HASH = HashingUtils::HashString("eu-west-2");
+        static const int ap_northeast_2_HASH = HashingUtils::HashString("ap-northeast-2");
+        static const int ca_central_1_HASH = HashingUtils::HashString("ca-central-1");
+        static const int us_gov_west_1_HASH = HashingUtils::HashString("us-gov-west-1");
+        static const int us_east_1_HASH = HashingUtils::HashString("us-east-1");
+        static const int us_east_2_HASH = HashingUtils::HashString("us-east-2");
+        static const int cn_northwest_1_HASH = HashingUtils::HashString("cn-northwest-1");
 
 
         BucketLocationConstraint GetBucketLocationConstraintForName(const Aws::String& name)
@@ -89,6 +98,38 @@ namespace Aws
           {
             return BucketLocationConstraint::eu_central_1;
           }
+          else if (hashCode == eu_west_3_HASH)
+          {
+            return BucketLocationConstraint::eu_west_3;
+          }
+          else if (hashCode == eu_west_2_HASH)
+          {
+            return BucketLocationConstraint::eu_west_2;
+          }
+          else if (hashCode == ap_northeast_2_HASH)
+          {
+            return BucketLocationConstraint::ap_northeast_2;
+          }
+          else if (hashCode == ca_central_1_HASH)
+          {
+            return BucketLocationConstraint::ca_central_1;
+          }
+          else if (hashCode == us_gov_west_1_HASH)
+          {
+            return BucketLocationConstraint::us_gov_west_1;
+          }
+          else if (hashCode == us_east_1_HASH)
+          {
+            return BucketLocationConstraint::us_east_1;
+          }
+          else if (hashCode == us_east_2_HASH)
+          {
+            return BucketLocationConstraint::us_east_2;
+          }
+          else if (hashCode == cn_northwest_1_HASH)
+          {
+            return BucketLocationConstraint::cn_northwest_1;
+          }
           EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
           if(overflowContainer)
           {
@@ -125,6 +166,22 @@ namespace Aws
             return "cn-north-1";
           case BucketLocationConstraint::eu_central_1:
             return "eu-central-1";
+          case BucketLocationConstraint::eu_west_3:
+            return "eu-west-3";
+          case BucketLocationConstraint::eu_west_2:
+            return "eu-west-2";
+          case BucketLocationConstraint::ap_northeast_2:
+            return "ap-northeast-2";
+          case BucketLocationConstraint::ca_central_1:
+            return "ca-central-1";
+          case BucketLocationConstraint::us_gov_west_1:
+            return "us-gov-west-1";
+          case BucketLocationConstraint::us_east_1:
+            return "us-east-1";
+          case BucketLocationConstraint::us_east_2:
+            return "us-east-2";
+          case BucketLocationConstraint::cn_northwest_1:
+            return "cn-northwest-1";
           default:
             EnumParseOverflowContainer* overflowContainer = Aws::GetEnumOverflowContainer();
             if(overflowContainer)
@@ -132,7 +189,7 @@ namespace Aws
               return overflowContainer->RetrieveOverflow(static_cast<int>(enumValue));
             }
 
-            return "";
+            return {};
           }
         }
 

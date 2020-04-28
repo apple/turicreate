@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/UploadPartResult.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/AmazonWebServiceResult.h>
@@ -25,16 +26,20 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws;
 
-UploadPartResult::UploadPartResult()
+UploadPartResult::UploadPartResult() : 
+    m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET)
 {
 }
 
-UploadPartResult::UploadPartResult(const AmazonWebServiceResult<XmlDocument>& result)
+UploadPartResult::UploadPartResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
+    m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET)
 {
   *this = result;
 }
 
-UploadPartResult& UploadPartResult::operator =(const AmazonWebServiceResult<XmlDocument>& result)
+UploadPartResult& UploadPartResult::operator =(const Aws::AmazonWebServiceResult<XmlDocument>& result)
 {
   const XmlDocument& xmlDocument = result.GetPayload();
   XmlNode resultNode = xmlDocument.GetRootElement();

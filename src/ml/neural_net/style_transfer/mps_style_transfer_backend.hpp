@@ -5,13 +5,13 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef TURI_STYLE_TRANSFER_MPS_STYLE_TRANSFER_BACKEND_H_
-#define TURI_STYLE_TRANSFER_MPS_STYLE_TRANSFER_BACKEND_H_
+#pragma once
 
 #include <functional>
 #include <map>
 #include <memory>
 
+#include <core/export.hpp>
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/mps_command_queue.hpp>
@@ -49,5 +49,3 @@ private:
 } // namespace turi
 
 #endif // #ifdef HAS_MACOS_10_15
-
-#endif

@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/PutObjectResult.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/AmazonWebServiceResult.h>
@@ -25,16 +26,20 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws;
 
-PutObjectResult::PutObjectResult()
+PutObjectResult::PutObjectResult() : 
+    m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET)
 {
 }
 
-PutObjectResult::PutObjectResult(const AmazonWebServiceResult<XmlDocument>& result)
+PutObjectResult::PutObjectResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
+    m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET)
 {
   *this = result;
 }
 
-PutObjectResult& PutObjectResult::operator =(const AmazonWebServiceResult<XmlDocument>& result)
+PutObjectResult& PutObjectResult::operator =(const Aws::AmazonWebServiceResult<XmlDocument>& result)
 {
   const XmlDocument& xmlDocument = result.GetPayload();
   XmlNode resultNode = xmlDocument.GetRootElement();
@@ -84,6 +89,12 @@ PutObjectResult& PutObjectResult::operator =(const AmazonWebServiceResult<XmlDoc
   if(sSEKMSKeyIdIter != headers.end())
   {
     m_sSEKMSKeyId = sSEKMSKeyIdIter->second;
+  }
+
+  const auto& sSEKMSEncryptionContextIter = headers.find("x-amz-server-side-encryption-context");
+  if(sSEKMSEncryptionContextIter != headers.end())
+  {
+    m_sSEKMSEncryptionContext = sSEKMSEncryptionContextIter->second;
   }
 
   const auto& requestChargedIter = headers.find("x-amz-request-charged");

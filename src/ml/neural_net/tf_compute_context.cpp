@@ -5,7 +5,9 @@
 */
 #include <ml/neural_net/tf_compute_context.hpp>
 
+#include <cstdint>
 #include <iostream>
+#include <random>
 #include <vector>
 
 #include <core/util/try_finally.hpp>
@@ -202,10 +204,15 @@ class tf_image_augmenter : public float_array_image_augmenter {
       labeled_float_image data_to_augment) override;
  private:
   pybind11::object augmenter_;
-
+  int random_seed_ = 0;
+  int iteration_id_ = 0;
 };
 
-tf_image_augmenter::tf_image_augmenter(const options& opts, pybind11::object augmenter) : float_array_image_augmenter(opts), augmenter_(augmenter) {}
+tf_image_augmenter::tf_image_augmenter(const options& opts,
+                                       pybind11::object augmenter)
+    : float_array_image_augmenter(opts),
+      augmenter_(augmenter),
+      random_seed_(opts.random_seed) {}
 
 float_array_image_augmenter::float_array_result
 tf_image_augmenter::prepare_augmented_images(
@@ -213,10 +220,15 @@ tf_image_augmenter::prepare_augmented_images(
   float_array_image_augmenter::float_array_result image_annotations;
 
   call_pybind_function([&]() {
+    // Use std::seed_seq to hash the iteration index into our random seed. Note
+    // that the result must be unsigned, since numpy requires nonnegative seeds.
+    std::seed_seq seq{random_seed_, ++iteration_id_};
+    std::array<std::uint32_t, 1> random_seed;
+    seq.generate(random_seed.begin(), random_seed.end());
 
     // Get augmented images and annotations from tensorflow
     pybind11::object augmented_data = augmenter_.attr("get_augmented_data")(
-        data_to_augment.images, data_to_augment.annotations);
+        data_to_augment.images, data_to_augment.annotations, random_seed[0]);
     std::pair<pybind11::buffer, std::vector<pybind11::buffer>> aug_data =
         augmented_data
             .cast<std::pair<pybind11::buffer, std::vector<pybind11::buffer>>>();
@@ -259,7 +271,8 @@ std::unique_ptr<compute_context> create_tf_compute_context() {
 
 // At static-init time, register create_tf_compute_context().
 // TODO: Codify priority levels?
-static auto* tf_registration = new compute_context::registration(
+static auto* tf_registration __attribute__((unused)) =
+  new compute_context::registration(
     /* priority */ 1, &create_tf_compute_context, &create_tf_compute_context);
 
 }  // namespace
@@ -279,18 +292,21 @@ size_t tf_compute_context::memory_budget() const {
   return 4294967296lu;
 }
 
-std::vector<std::string> tf_compute_context::gpu_names() const {
-  std::vector<std::string> gpu_device_names;
+void tf_compute_context::print_training_device_info() const {
+  bool has_gpu;
 
   call_pybind_function([&]() {
-    pybind11::module tf_gpu_devices =
+      pybind11::module tf_gpu_devices =
         pybind11::module::import("turicreate.toolkits._tf_utils");
-    // Get the names from tf utilities function
-    pybind11::object gpu_devices = tf_gpu_devices.attr("get_gpu_names")();
-    gpu_device_names = gpu_devices.cast<std::vector<std::string>>();
-  });
+      pybind11::object resp = tf_gpu_devices.attr("is_gpu_available")();
+      has_gpu = resp.cast<bool>();
+    });
 
-  return gpu_device_names;
+  if (!has_gpu) {
+    logprogress_stream << "Using CPU to create model.";
+  } else {
+    logprogress_stream << "Using a GPU to create model.";
+  }
 }
 
 

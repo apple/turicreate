@@ -27,6 +27,7 @@ EXPORT size_t SFRAME_WRITER_MAX_BUFFERED_CELLS_PER_BLOCK = 256*1024; // 1M eleme
 EXPORT // will be modified at startup to be 4x nCPUS
 EXPORT size_t SFRAME_MAX_BLOCKS_IN_CACHE = 32;
 EXPORT size_t SFRAME_CSV_PARSER_READ_SIZE = 50 * 1024 * 1024; // 50MB
+EXPORT size_t SFRAME_SHUFFLE_BUCKET_SIZE = 512;
 EXPORT size_t SFRAME_GROUPBY_BUFFER_NUM_ROWS = 1024 * 1024;
 EXPORT size_t SFRAME_JOIN_BUFFER_NUM_CELLS = 50*1024*1024;
 EXPORT size_t SFRAME_IO_READ_LOCK = false;
@@ -65,6 +66,12 @@ REGISTER_GLOBAL_WITH_CHECKS(int64_t,
                             SFRAME_CSV_PARSER_READ_SIZE,
                             true,
                             +[](int64_t val){ return val >= 1024; });
+
+
+REGISTER_GLOBAL_WITH_CHECKS(int64_t,
+                            SFRAME_SHUFFLE_BUCKET_SIZE,
+                            true,
+                            +[](int64_t val){ return val >= 1; });
 
 
 REGISTER_GLOBAL_WITH_CHECKS(int64_t,

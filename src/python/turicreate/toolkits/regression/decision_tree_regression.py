@@ -19,8 +19,6 @@ from turicreate.toolkits._internal_utils import _raise_error_evaluation_metric_i
 
 from turicreate.toolkits._tree_model_mixin import TreeModelMixin as _TreeModelMixin
 
-from turicreate.toolkits._internal_utils import _map_unity_proxy_to_object
-
 
 _DECISION_TREE_MODEL_PARAMS_KEYS = [
     "max_depth",

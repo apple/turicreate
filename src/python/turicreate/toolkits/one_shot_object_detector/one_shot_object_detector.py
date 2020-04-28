@@ -6,10 +6,10 @@
 #
 
 import turicreate as _tc
-from turicreate import extensions as _extensions
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import (
-    PythonProxy as _PythonProxy, ToolkitError as _ToolkitError
+    PythonProxy as _PythonProxy,
+    ToolkitError as _ToolkitError,
 )
 from turicreate.toolkits.object_detector.object_detector import (
     ObjectDetector as _ObjectDetector,
