@@ -14,6 +14,8 @@ from setuptools.command.install import install
 
 PACKAGE_NAME = "turicreate"
 VERSION = "6.2"  # {{VERSION_STRING}}
+NON_MINIMAL_LIST = ["tensorflow", "resampy"]
+
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -22,7 +24,9 @@ class BinaryDistribution(Distribution):
 
 
 class InstallEngine(install):
-    """Helper class to hook the python setup.py install path to download client libraries and engine"""
+    """Helper class to hook the python setup.py install path to download
+    client libraries and engine
+    """
 
     user_options = install.user_options + [
         ("minimal", None, "control minimal installation"),  # a 'flag' option
@@ -33,15 +37,11 @@ class InstallEngine(install):
         self.minimal = None
 
     def run(self):
-        global minimal
-        minimal = self.minimal  # will be 1 or None
-
-        if minimal is not None:
+        if self.minimal is not None:
 
             def do_not_install(require):
-                spam_list = ["tensorflow", "resampy"]
                 require = require.strip()
-                for name in spam_list:
+                for name in NON_MINIMAL_LIST:
                     if require.startswith(name):
                         return False
                 return True
@@ -51,9 +51,10 @@ class InstallEngine(install):
             )
 
             orig_install_requires = self.distribution.install_requires
-            print("minimal  install: ", install_requires_minimal)
-            print("original install: ", orig_install_requires)
             self.distribution.install_requires = install_requires_minimal
+
+            print(" minimal install: ", install_requires_minimal)
+            print("original install: ", orig_install_requires)
 
         import platform
 
