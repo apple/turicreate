@@ -50,8 +50,9 @@ class InstallEngine(install):
                 filter(do_not_install, self.distribution.install_requires)
             )
 
-            print(install_requires_minimal)
             orig_install_requires = self.distribution.install_requires
+            print("minimal  install: ", install_requires_minimal)
+            print("original install: ", orig_install_requires)
             self.distribution.install_requires = install_requires_minimal
 
         import platform
