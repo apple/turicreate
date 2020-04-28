@@ -66,6 +66,8 @@ class InstallEngine(install):
             )
 
             orig_install_requires = self.distribution.install_requires
+            print("minimal  install: ", install_requires_minimal)
+            print("original install: ", orig_install_requires)
             self.distribution.install_requires = install_requires_minimal
 
             print(" minimal install: ", install_requires_minimal)
