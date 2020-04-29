@@ -301,18 +301,18 @@ function package_wheel () {
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
 
   # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
-  if [[ ${minimal} -eq 1 ]]; then
-    ${PYTHON_EXECUTABLE} setup.py ${dist_type} install --minimal
+  if [[ "${minimal}" -eq 1 ]]; then
+    "${PYTHON_EXECUTABLE}" setup.py "${dist_type}" install --minimal
   else
     # full version
-    ${PYTHON_EXECUTABLE} setup.py ${dist_type}
+    "${PYTHON_EXECUTABLE}" setup.py "${dist_type}"
   fi
 
-  cd ${WORKSPACE}
+  cd "${WORKSPACE}"
 
   ORIG_WHEEL_PATH=$(ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}-*.whl)
   WHEEL_PATH=${ORIG_WHEEL_PATH/turicreate-${VERSION_NUMBER}/turicreate-${VERSION_NUMBER}${version_modifier}}
-  [[ ! $ORIG_WHEEL_PATH == $WHEEL_PATH ]] && mv $ORIG_WHEEL_PATH $WHEEL_PATH
+  [[ ! "$ORIG_WHEEL_PATH" == "$WHEEL_PATH" ]] && mv "$ORIG_WHEEL_PATH" "$WHEEL_PATH"
 
   if [[ $OSTYPE == darwin* ]]; then
     # Change the platform tag embedded in the file name
@@ -355,12 +355,12 @@ function package_wheel () {
     # Install the wheel and do a smoke test
     unset PYTHONPATH
 
-    $PIP_EXECUTABLE install --upgrade --force ${WHEEL_PATH}
+    "$PIP_EXECUTABLE" install --upgrade --force "${WHEEL_PATH}"
     $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
   fi
 
   # Done copy to the target directory
-  mv $WHEEL_PATH ${TARGET_DIR}/
+  mv "$WHEEL_PATH" "${TARGET_DIR}"
 }
 
   # Run the setup
@@ -372,7 +372,7 @@ function package_wheel () {
 
 set_build_number() {
   # set the build number
-  cd ${WORKSPACE}/${build_type}/src/python/
+  cd "${WORKSPACE}/${build_type}/src/python/"
   sed -i -e "s/'.*'#{{BUILD_NUMBER}}/'${BUILD_NUMBER}'#{{BUILD_NUMBER}}/g" turicreate/version_info.py
 }
 
@@ -384,7 +384,7 @@ set_git_SHA() {
     GIT_SHA = "NA"
   fi
 
-  cd ${WORKSPACE}/${build_type}/src/python/
+  cd "${WORKSPACE}/${build_type}/src/python/"
   sed -i -e "s/'.*'#{{GIT_SHA}}/'${GIT_SHA}'#{{GIT_SHA}}/g" turicreate/version_info.py
 }
 

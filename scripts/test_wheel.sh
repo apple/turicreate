@@ -76,7 +76,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
 
   docker_extra_args=""
 
-  if [[ $USE_MINIMAL -eq 1 ]]; then
+  if [[ "$USE_MINIMAL" -eq 1 ]]; then
     docker_extra_args="$extra_args --minimal"
   fi
 
@@ -141,11 +141,11 @@ $PYTHON -c "import sys; lines=sys.stdin.read(); \
 cd "$TEST_DIR"
 
 # run tests
-if [[ $USE_MINIMAL -eq 1 ]]; then
+if [[ "$USE_MINIMAL" -eq 1 ]]; then
   # remove all toolkits related files
   minimal_test=($(grep -L "toolkits" *.py))
   minimal_test=(${minimal_test[@]/__init__.py})
-  ${PYTHON} -m pytest -v --durations=100 \
+  ${PYTHON} -m pytest -v --durations=20 \
     --junit-xml="$WORKSPACE"/pytest-minimal.xml ${minimal_test[@]}
 
 else
