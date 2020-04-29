@@ -302,10 +302,10 @@ function package_wheel () {
 
   # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
   if [[ "${minimal}" -eq 1 ]]; then
-    "${PYTHON_EXECUTABLE}" setup.py "${dist_type}" install --minimal
+    "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
   else
     # full version
-    "${PYTHON_EXECUTABLE}" setup.py "${dist_type}"
+    "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}"
   fi
 
   cd "${WORKSPACE}"
@@ -355,7 +355,8 @@ function package_wheel () {
     # Install the wheel and do a smoke test
     unset PYTHONPATH
 
-    "$PIP_EXECUTABLE" install --upgrade --force "${WHEEL_PATH}"
+    "$PIP_EXECUTABLE" uninstall -y turicreate
+    "$PIP_EXECUTABLE" install --upgrade "${WHEEL_PATH}"
     $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
   fi
 
