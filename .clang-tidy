@@ -1,0 +1,2 @@
+# disable everything by default. see src/.clang-tidy.
+Checks: -*
