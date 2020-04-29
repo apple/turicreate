@@ -2,10 +2,11 @@
 # make_target_impl(target compile_flags sources requirements is_library SHARED)
 #
 # cmake-format: off
-# Example: make_target_impl(fileio "-fPIC"
-#                          "asyncurl.cpp;sysutils.cpp"
-#                          "logger;dl;pthread;z"
-#                           TRUE FALSE)
+# Example:
+# make_target_impl(fileio "-fPIC"
+#                   "asyncurl.cpp;sysutils.cpp"
+#                   "logger;dl;pthread;z"
+#                   TRUE FALSE)
 #
 # This generates a target library/binary with the given name. The optional
 # compile_flags are appended to the target compile flags. "-fPIC" is ALWAYS
