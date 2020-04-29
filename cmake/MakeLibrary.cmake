@@ -1,8 +1,11 @@
 # This is an internal function and should not be used Usage:
 # make_target_impl(target compile_flags sources requirements is_library SHARED)
 #
-# Example: make_target_impl(fileio "-fPIC" "asyncurl.cpp;sysutils.cpp"
-# "logger;dl;pthread;z" TRUE FALSE)
+# cmake-format: off
+# Example: make_target_impl(fileio "-fPIC"
+#                          "asyncurl.cpp;sysutils.cpp"
+#                          "logger;dl;pthread;z"
+#                           TRUE FALSE)
 #
 # This generates a target library/binary with the given name. The optional
 # compile_flags are appended to the target compile flags. "-fPIC" is ALWAYS
@@ -13,6 +16,8 @@
 # if DYNAMIC is true, a dynamic library is built.
 #
 # Boost, pthread is always added as a default dependency. when possible.
+# cmake-format: on
+
 macro(
   make_target_impl
   NAME
@@ -69,43 +74,67 @@ macro(
 
   # Ensure dependencies are tracked in order to make sure compilation order
   # matters.
-  if (REQUIREMENTS)
-      add_dependencies(${NAME} ${REQUIREMENTS})
+  if(REQUIREMENTS)
+    add_dependencies(${NAME} ${REQUIREMENTS})
   endif()
 
   # make sure dependencies are always built first
-  if (TC_EXTERNAL_DEPENDENCIES)
+  if(TC_EXTERNAL_DEPENDENCIES)
     add_dependencies(${NAME} ${TC_EXTERNAL_DEPENDENCIES})
   endif()
 
-  if (external_dependencies)
+  if(external_dependencies)
     add_dependencies(${NAME} external_dependencies)
   endif()
 
 endmacro()
 
-# This is an external function Usage: make_library(NAME target SOURCES a.cpp
-# b.cpp REQUIRES libx liby MAC_REQUIRES libz libzz LINUX_REQUIRES libk libj
-# [SHARED] [OUTPUT_NAME xxxx] [SHARED_ALL_DEFINED] [OBJECT] ) Example:
+# cmake-format: off
+# This is an external function
+# Usage:
+#    make_library(NAME target
+#                 SOURCES a.cpp b.cpp
+#                 REQUIRES libx liby
+#                 MAC_REQUIRES libz libzz
+#                 LINUX_REQUIRES libk libj
+#                 [SHARED] [OUTPUT_NAME xxxx] [SHARED_ALL_DEFINED]
+#                 [OBJECT]
+#                 )
+# Example:
 #
-# make_library(NAME fileio SOURCES asyncurl.cpp sysutils.cpp wsconn.cpp
-# s3_api.cpp hdfs.cpp REQUIRES logger dl pthread z curl xml2 openssl
-# MAC_REQUIRES iconv ) This generates a library with the provided target name.
+# make_library(NAME fileio
+#              SOURCES
+#                asyncurl.cpp
+#                sysutils.cpp
+#                wsconn.cpp
+#                s3_api.cpp
+#                hdfs.cpp
+#               REQUIRES
+#                 logger dl pthread z curl xml2 openssl
+#               MAC_REQUIRES
+#                 iconv
+#                 )
+# This generates a library with the provided target name.
 #
-# NAME and SOURCES must be specified. REQUIRES lists all dependent libraries.
-# These can be: - other libraries built by the the turicreate build system -
-# builtin libraries - system libraries MAC_REQUIRES lists all dependent
-# libraries which are included only on Mac. LINUX_REQUIRES lists all dependent
-# libraries which are included only on Linux. SHARED will build a shared library
-# instead of a static library EXTERNAL_VISIBILITY will make the symbols be
-# publicly visible. Default is hidden SHARED_ALL_DEFINED will require shared
-# libraries to have all symbols defined OBJECT will build an object library
-# instead of a static library
+# NAME and SOURCES must be specified.
+# REQUIRES lists all dependent libraries. These can be:
+#   - other libraries built by the the turicreate build system
+#   - builtin libraries
+#   - system libraries
+# MAC_REQUIRES lists all dependent libraries which are included only on Mac.
+# LINUX_REQUIRES lists all dependent libraries which are included only on Linux.
+# SHARED will build a shared library instead of a static library
+# EXTERNAL_VISIBILITY will make the symbols be publicly visible. Default is hidden
+# SHARED_ALL_DEFINED will require shared libraries to have all symbols defined
+# OBJECT will build an object library instead of a static library
 #
-# All other targets which depends on this library (using the "requires"
-# function) will automatically include all recursive dependencies.
+# All other targets which depends on this library (using the "requires" function)
+# will automatically include all recursive dependencies.
 #
-# Boost, pthread is always added as a default dependency. when possible.
+# Boost, pthread is always added as a default dependency.
+# when possible.
+# cmake-format: on
+
 macro(make_library NAME)
   set(options SHARED EXTERNAL_VISIBILITY SHARED_ALL_DEFINED DEAD_STRIP OBJECT)
   set(one_value_args COMPILE_FLAGS OUTPUT_NAME EXPORT_LINUX_MAP_FILE
