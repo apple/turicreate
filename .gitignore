@@ -61,6 +61,7 @@ pip-log.txt
 .coverage
 .tox
 pytest.xml
+pytest-minimal.xml
 
 # Mr Developer
 .mr.developer.cfg

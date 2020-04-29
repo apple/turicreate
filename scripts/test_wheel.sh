@@ -142,11 +142,9 @@ cd "$TEST_DIR"
 
 # run tests
 if [[ $USE_MINIMAL -eq 1 ]]; then
-  minimal_test=($(grep -L "toolkits" *.py | grep -v model))
-  # remove other irrelevant files
-  minimal_test=(${minimal_test/test_text_analytics.py})
-  minimal_test=(${minimal_test/__init__.py})
-
+  # remove all toolkits related files
+  minimal_test=($(grep -L "toolkits" *.py))
+  minimal_test=(${minimal_test[@]/__init__.py})
   ${PYTHON} -m pytest -v --durations=100 \
     --junit-xml="$WORKSPACE"/pytest-minimal.xml ${minimal_test[@]}
 

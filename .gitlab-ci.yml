@@ -363,7 +363,7 @@ test_python_linux_python27_minimal:
   script:
     - apk add bash
     - export TC_ENABLE_S3_TESTS=1
-    - bash -e scripts/test_wheel.sh --docker-python2.7 --minimal
+    - bash -e scripts/test_wheel.sh --docker-python2.7 --minimal-build
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -525,6 +525,24 @@ test_python_mac_python37_10_14:
     paths:
       - pytest.*
 
+test_python_mac_python37_10_14_minimal:
+  tags:
+    - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
+  stage: test
+  dependencies:
+    - build_wheel_mac_10_15_python37
+  script:
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenv"
+    - bash -e scripts/test_wheel.sh --minimal-build
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
 scenario_tests_linux_python27:
   tags:
     - docker
@@ -540,7 +558,8 @@ scenario_tests_linux_python27:
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh --docker-python2.7 ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python2.7 \
+      $(ls ../target | grep turicreate | grep -v minimal)
 
 scenario_tests_linux_python35:
   tags:
@@ -557,7 +576,8 @@ scenario_tests_linux_python35:
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh --docker-python3.5 ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python3.5 \
+      $(ls ../target | grep turicreate- | grep -v minimal)
 
 scenario_tests_linux_python36:
   tags:
@@ -574,7 +594,8 @@ scenario_tests_linux_python36:
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh --docker-python3.6 ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python3.6
+      $(ls ../target | grep turicreate- | grep -v minimal)
 
 scenario_tests_mac_python27_10_13:
   tags:
@@ -588,7 +609,7 @@ scenario_tests_mac_python27_10_13:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
-    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh $(ls ../target | grep turicreate- | grep -v minimal)
 
 scenario_tests_mac_python27_10_14:
   tags:
@@ -602,7 +623,7 @@ scenario_tests_mac_python27_10_14:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
-    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh $(ls ../target | grep turicreate- | grep -v minimal)
 
 collect_artifacts:
   tags:

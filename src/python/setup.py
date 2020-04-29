@@ -14,7 +14,15 @@ from setuptools.command.install import install
 
 PACKAGE_NAME = "turicreate"
 VERSION = "6.2"  # {{VERSION_STRING}}
-NON_MINIMAL_LIST = ["tensorflow", "resampy"]
+
+# pkgs not needed for minimal pkg
+NON_MINIMAL_LIST = [
+    "coremltools",
+    "llvmlite",
+    "tensorflow",
+    "resampy",
+    "scipy",
+]
 
 
 # Prevent distutils from thinking we are a pure python package
