@@ -121,7 +121,7 @@ else
   fi
 fi
 
-pip install $wheel_to_install
+pip install "$wheel_to_install"
 
 PYTHON="$WORKSPACE/deps/env/bin/python"
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
