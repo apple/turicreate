@@ -350,9 +350,9 @@ echo "Setting C compiler to $CCCMD."
 echo "Setting C++ compiler to $CXXCMD."
 
 if [[ $with_clangtidy == 1 ]]; then
-  clangtidy_path=`which clang-tidy || echo ''`
+  clangtidy_path=$(which clang-tidy || true)
   
-  if ! [ -f $clangtidy_path ]; then
+  if [[ ! -x "$clangtidy_path" ]]; then
     echo "Unable to find clang-tidy in path."
     exit 1
   fi
