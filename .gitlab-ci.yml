@@ -559,7 +559,7 @@ scenario_tests_linux_python27:
     - apk add bash
     - cd scenario-tests
     - ./run_scenario_tests.sh --docker-python2.7 \
-      $(ls ../target | grep turicreate | grep -v minimal)
+      "../target/$(ls ../target | grep turicreate | grep -v minimal)"
 
 scenario_tests_linux_python35:
   tags:
@@ -577,7 +577,7 @@ scenario_tests_linux_python35:
     - apk add bash
     - cd scenario-tests
     - ./run_scenario_tests.sh --docker-python3.5 \
-      $(ls ../target | grep turicreate- | grep -v minimal)
+      "../target/$(ls ../target | grep turicreate | grep -v minimal)"
 
 scenario_tests_linux_python36:
   tags:
@@ -594,8 +594,8 @@ scenario_tests_linux_python36:
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh --docker-python3.6
-      $(ls ../target | grep turicreate- | grep -v minimal)
+    - ./run_scenario_tests.sh --docker-python3.6 \
+      "../target/$(ls ../target | grep turicreate | grep -v minimal)"
 
 scenario_tests_mac_python27_10_13:
   tags:
@@ -609,7 +609,7 @@ scenario_tests_mac_python27_10_13:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
-    - ./run_scenario_tests.sh $(ls ../target | grep turicreate- | grep -v minimal)
+    - ./run_scenario_tests.sh "../target/$(ls ../target | grep turicreate- | grep -v minimal)"
 
 scenario_tests_mac_python27_10_14:
   tags:
@@ -623,7 +623,7 @@ scenario_tests_mac_python27_10_14:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
-    - ./run_scenario_tests.sh $(ls ../target | grep turicreate- | grep -v minimal)
+    - ./run_scenario_tests.sh "../target/$(ls ../target | grep turicreate- | grep -v minimal)"
 
 collect_artifacts:
   tags:
