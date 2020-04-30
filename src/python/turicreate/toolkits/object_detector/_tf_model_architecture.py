@@ -11,7 +11,7 @@ from __future__ import absolute_import as _
 import numpy as _np
 from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
+from turicreate._deps import tensorflow_v1 as _tf
 
 _tf.disable_v2_behavior()
 

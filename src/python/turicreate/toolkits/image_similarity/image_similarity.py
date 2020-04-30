@@ -537,7 +537,9 @@ class ImageSimilarityModel(_CustomModel):
         """
         import numpy as _np
         from copy import deepcopy
-        import coremltools as _cmt
+
+        # use wrapped version to get prompt info from minimal pkg
+        _cmt = _tc._deps.coremltools.get_module()
         from coremltools.models import (
             datatypes as _datatypes,
             neural_network as _neural_network,

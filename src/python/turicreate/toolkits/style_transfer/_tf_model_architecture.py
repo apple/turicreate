@@ -12,7 +12,7 @@ from turicreate.toolkits._tf_model import TensorFlowModel
 
 import numpy as _np
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
+from turicreate._deps import tensorflow_v1 as _tf
 
 _tf.disable_v2_behavior()
 

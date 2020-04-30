@@ -9,7 +9,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import os as _os
 import turicreate as _tc
-import turicreate.toolkits.libtctensorflow
+from turicreate._deps import libtctensorflow
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import numpy as _np
 import tempfile

@@ -9,6 +9,7 @@ from __future__ import absolute_import as _
 
 from ._pre_trained_models import _get_cache_dir
 import turicreate.toolkits._tf_utils as _utils
+from turicreate._deps import coremltools
 
 
 def _create_feature_extractor(model_name):
@@ -72,7 +73,9 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         # Suppresses verbosity to only errors
         _utils.suppress_tensorflow_warnings()
 
-        from tensorflow import keras
+        from turicreate._deps import tensorflow
+
+        keras = tensorflow.keras
 
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
@@ -216,7 +219,5 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         return state["out"]
 
     def get_coreml_model(self):
-        import coremltools
-
         model_path = self.ptModel.get_model_path("coreml")
         return coremltools.models.MLModel(model_path)

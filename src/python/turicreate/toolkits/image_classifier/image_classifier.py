@@ -18,6 +18,7 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
+from turicreate._deps import coremltools
 from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
@@ -855,7 +856,6 @@ class ImageClassifier(_CustomModel):
         --------
         >>> model.export_coreml('myModel.mlmodel')
         """
-        import coremltools
 
         # First define three internal helper functions
 

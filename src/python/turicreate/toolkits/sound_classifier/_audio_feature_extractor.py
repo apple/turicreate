@@ -2,7 +2,7 @@ import time as _time
 
 from coremltools.models import MLModel
 import numpy as _np
-from tensorflow import keras as _keras
+from turicreate._deps import keras as _keras
 
 # Suppresses verbosity to only errors
 import turicreate.toolkits._tf_utils as _utils
@@ -16,11 +16,11 @@ from .._pre_trained_models import VGGish
 
 
 # We need to disable this here to match behavior in the rest of TuriCreate
-from tensorflow.compat.v1 import disable_v2_behavior
+from turicreate._deps import tensorflow_v1
 
 # This toolkit is compatible with TensorFlow V2 behavior.
 # However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
-disable_v2_behavior()
+tensorflow_v1.disable_v2_behavior()
 
 
 VGGish_instance = None

@@ -281,7 +281,9 @@ def create(
     }
 
     # create tensorflow model here
-    import turicreate.toolkits.libtctensorflow
+    from turicreate._deps import libtctensorflow
+
+    libtctensorflow.get_module()
 
     if classes == None:
         classes = []

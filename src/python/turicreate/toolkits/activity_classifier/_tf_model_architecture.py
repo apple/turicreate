@@ -8,7 +8,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
+from turicreate._deps import tensorflow_v1 as _tf
 
 _tf.disable_v2_behavior()
 from .._tf_model import TensorFlowModel
@@ -75,30 +75,28 @@ class ActivityTensorFlowModel(TensorFlowModel):
             "conv_weight": _tf.Variable(
                 _utils.convert_conv1d_coreml_to_tf(net_params["conv_weight"]),
                 shape=[prediction_window, num_features, CONV_H],
-                name="conv_weight"
+                name="conv_weight",
             ),
             "dense0_weight": _tf.Variable(
                 _utils.convert_dense_coreml_to_tf(net_params["dense0_weight"]),
                 shape=[LSTM_H, DENSE_H],
-                name="dense0_weight"
+                name="dense0_weight",
             ),
             "dense1_weight": _tf.Variable(
                 _utils.convert_dense_coreml_to_tf(net_params["dense1_weight"]),
                 shape=[DENSE_H, self.num_classes],
-                name="dense1_weight"
+                name="dense1_weight",
             ),
         }
 
         # Biases
         self.biases = {
             "conv_bias": _tf.Variable(
-                net_params["conv_bias"],
-                shape=[CONV_H],
-                name="conv_bias"),
+                net_params["conv_bias"], shape=[CONV_H], name="conv_bias"
+            ),
             "dense0_bias": _tf.Variable(
-                net_params["dense0_bias"],
-                shape=[DENSE_H],
-                name="dense0_bias"),
+                net_params["dense0_bias"], shape=[DENSE_H], name="dense0_bias"
+            ),
         }
 
         # Convolution
@@ -124,9 +122,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             initializer=_tf.initializers.constant(lstm, verify_shape=True),
         )
         init_state = cells.zero_state(self.batch_size, _tf.float32)
-        rnn_outputs, _ = _tf.nn.dynamic_rnn(
-            cells, dropout, initial_state=init_state
-        )
+        rnn_outputs, _ = _tf.nn.dynamic_rnn(cells, dropout, initial_state=init_state)
 
         # Dense
         dense = _tf.reshape(rnn_outputs, (-1, LSTM_H))

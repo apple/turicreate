@@ -56,7 +56,7 @@ def suppress_tensorflow_warnings():
 
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
 
-    import tensorflow.compat.v1 as _tf
+    from turicreate._deps import tensorflow_v1 as _tf
 
     _tf.disable_v2_behavior()
     _tf.logging.set_verbosity(_tf.logging.ERROR)
@@ -64,7 +64,7 @@ def suppress_tensorflow_warnings():
 
 
 def is_gpu_available():
-    import tensorflow as tf
+    from turicreate._deps import tensorflow as tf
 
     tf_minor_version = int(tf.version.VERSION.split(".")[1])
 

@@ -25,6 +25,7 @@ import os
 from copy import copy as _copy
 import six as _six
 import warnings
+from turicreate._deps import libtctensorflow
 
 MODEL_NAME_MAP = {}
 
@@ -101,7 +102,7 @@ def load_model(location):
                     "style_transfer",
                     "drawing_classifier",
                 ]:
-                    import turicreate.toolkits.libtctensorflow
+                    libtctensorflow.get_module()
                 # this is a native model
                 return cls(saved_state["model"])
             else:
@@ -111,35 +112,36 @@ def load_model(location):
                 del model_data["model_version"]
 
                 if name == "activity_classifier":
-                    import turicreate.toolkits.libtctensorflow
+                    # force loading tensorflow symbols into process
+                    libtctensorflow.get_module()
 
                     model = _extensions.activity_classifier()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name == "object_detector":
-                    import turicreate.toolkits.libtctensorflow
+                    libtctensorflow.get_module()
 
                     model = _extensions.object_detector()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name == "style_transfer":
-                    import turicreate.toolkits.libtctensorflow
+                    libtctensorflow.get_module()
 
                     model = _extensions.style_transfer()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name == "drawing_classifier":
-                    import turicreate.toolkits.libtctensorflow
+                    libtctensorflow.get_module()
 
                     model = _extensions.drawing_classifier()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name == "one_shot_object_detector":
-                    import turicreate.toolkits.libtctensorflow
+                    libtctensorflow.get_module()
 
                     od_cls = MODEL_NAME_MAP["object_detector"]
                     if "detector_model" in model_data["detector"]:
