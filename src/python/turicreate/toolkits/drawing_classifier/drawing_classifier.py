@@ -194,7 +194,10 @@ def create(
     if max_iterations is not None and max_iterations < 1:
         raise ValueError("'max_iterations' must be >= 1")
 
-    import turicreate.toolkits.libtctensorflow
+    # force load libtctensorflow
+    from turicreate._deps import libtctensorflow
+
+    libtctensorflow.get_module()
 
     model = _tc.extensions.drawing_classifier()
     options = dict()

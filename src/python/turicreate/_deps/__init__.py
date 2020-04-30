@@ -9,6 +9,21 @@ from __future__ import absolute_import as _
 from distutils.version import StrictVersion as _StrictVersion
 import logging as _logging
 import re as _re
+from turicreate._deps.minimal_import import (
+    DeferredModuleLoader as _DeferredModuleLoader,
+    is_minimal_pkg,
+)
+
+# for minimal pkg to lazy load modules. It also provides friendly prompt
+tensorflow = _DeferredModuleLoader("tensorflow")
+libtctensorflow = _DeferredModuleLoader(
+    "turicreate.toolkits.libtctensorflow", prompt_name="tensorflow"
+)
+keras = _DeferredModuleLoader("tensorflow.keras", prompt_name="tensorflow")
+tensorflow_v1 = _DeferredModuleLoader("tensorflow.compat.v1", prompt_name="tensorflow")
+tensorflow_v2 = _DeferredModuleLoader("tensorflow.compat.v2", prompt_name="tensorflow")
+coremltools = _DeferredModuleLoader("coremltools")
+resampy = _DeferredModuleLoader("resampy")
 
 
 def __get_version(version):
@@ -25,15 +40,17 @@ try:
 
     if __get_version(pandas.__version__) < _StrictVersion(PANDAS_MIN_VERSION):
         HAS_PANDAS = False
-        _logging.warn(
-            (
-                "Pandas version %s is not supported. Minimum required version: %s. "
-                "Pandas support will be disabled."
+        if not is_minimal_pkg():
+            _logging.warn(
+                (
+                    "Pandas version %s is not supported. Minimum required version: %s. "
+                    "Pandas support will be disabled."
+                )
+                % (pandas.__version__, PANDAS_MIN_VERSION)
             )
-            % (pandas.__version__, PANDAS_MIN_VERSION)
-        )
 except:
     HAS_PANDAS = False
+    # legacy
     from . import pandas_mock as pandas
 
 
@@ -44,15 +61,17 @@ try:
 
     if __get_version(numpy.__version__) < _StrictVersion(NUMPY_MIN_VERSION):
         HAS_NUMPY = False
-        _logging.warn(
-            (
-                "Numpy version %s is not supported. Minimum required version: %s. "
-                "Numpy support will be disabled."
+        if not is_minimal_pkg():
+            _logging.warn(
+                (
+                    "Numpy version %s is not supported. Minimum required version: %s. "
+                    "Numpy support will be disabled."
+                )
+                % (numpy.__version__, NUMPY_MIN_VERSION)
             )
-            % (numpy.__version__, NUMPY_MIN_VERSION)
-        )
 except:
     HAS_NUMPY = False
+    # legacy
     from . import numpy_mock as numpy
 
 

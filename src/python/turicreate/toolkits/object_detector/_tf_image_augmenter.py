@@ -9,7 +9,7 @@ from __future__ import absolute_import as _
 
 import numpy as np
 from PIL import Image
-import tensorflow.compat.v1 as tf
+from turicreate._deps import tensorflow_v1 as _tf
 import turicreate.toolkits._tf_utils as _utils
 import turicreate as tc
 
@@ -48,7 +48,7 @@ def hue_augmenter(
     image,
     annotation,
     random_alpha_tf,
-    max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"]
+    max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"],
 ):
 
     # Apply the random rotation around the color wheel.
@@ -70,9 +70,7 @@ def color_augmenter(
 ):
 
     # Apply the random adjustment to brightness.
-    brightness_delta = interpolate(
-        random_alpha_tf[0], -max_brightness, max_brightness
-    )
+    brightness_delta = interpolate(random_alpha_tf[0], -max_brightness, max_brightness)
     image = tf.image.adjust_brightness(image, brightness_delta)
 
     # Apply the random adjustment to contrast.
@@ -160,7 +158,7 @@ def horizontal_flip_augmenter(
     image,
     annotation,
     random,
-    skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"]
+    skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"],
 ):
 
     if random.uniform(0.0, 1.0) < skip_probability:
@@ -508,14 +506,7 @@ def numpy_augmenter(img, ann, seed):
     return img, ann
 
 
-def complete_augmenter(
-    img_tf,
-    ann_tf,
-    seed_tf,
-    alpha_tf,
-    output_height,
-    output_width
-):
+def complete_augmenter(img_tf, ann_tf, seed_tf, alpha_tf, output_height, output_width):
     img_tf, ann_tf = tf.numpy_function(
         func=numpy_augmenter,
         inp=[img_tf, ann_tf, seed_tf],
@@ -556,7 +547,7 @@ class DataAugmenter(object):
                         self.random_seed_tf[i],
                         self.alpha_tf[i],
                         output_height,
-                        output_width
+                        output_width,
                     )
                     self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
 
@@ -581,7 +572,7 @@ class DataAugmenter(object):
             random = np.random.RandomState(seed=random_seed)
             feed_dict[self.alpha_tf] = random.rand(*self.alpha_tf.shape)
             feed_dict[self.random_seed_tf] = random.random_integers(
-                0, 2**32 - 1, size=self.batch_size
+                0, 2 ** 32 - 1, size=self.batch_size
             )
             aug_output = session.run(graph_op, feed_dict=feed_dict)
             processed_images = []

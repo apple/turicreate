@@ -205,7 +205,9 @@ def create(
     import turicreate as _turicreate
 
     # Imports tensorflow
-    import turicreate.toolkits.libtctensorflow
+    from turicreate._deps import libtctensorflow
+
+    libtctensorflow.get_module()
 
     model = _turicreate.extensions.style_transfer()
     pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[
