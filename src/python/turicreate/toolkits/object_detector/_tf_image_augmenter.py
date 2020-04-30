@@ -566,17 +566,14 @@ class DataAugmenter(object):
             feed_dict = dict()
 
             # Populate feed_dict with images and annotations
-            graph_op = self.resize_op_batch[0 : len(images)]
-            for i in range(0, len(images)):
+            graph_op = self.resize_op_batch[0:len(images)]
+            for i in range(len(images)):
                 feed_dict[self.img_tf[i]] = _utils.convert_shared_float_array_to_numpy(
                     images[i]
                 )
-                if self.resize_only:
-                    feed_dict[self.ann_tf[i]] = self.batch_size * [np.zeros(6)]
-                else:
-                    feed_dict[
-                        self.ann_tf[i]
-                    ] = _utils.convert_shared_float_array_to_numpy(annotations[i])
+                feed_dict[
+                    self.ann_tf[i]
+                ] = _utils.convert_shared_float_array_to_numpy(annotations[i])
 
             # Populate feed_dict with random seed and random alpha values, used
             # to sample image perturbations. We don't use TensorFlow's built-in
