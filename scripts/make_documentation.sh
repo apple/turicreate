@@ -60,7 +60,7 @@ virtualenv ./deps/env
 source deps/env/bin/activate
 
 # ignore minimal build
-pip install target/"$(ls target | grep turicreate- | gpre -v minimal)"
+pip install target/"$(ls target | grep turicreate- | grep -v minimal)"
 
 OUTPUT_DIR=${TARGET_DIR}/docs
 mkdir -p ${OUTPUT_DIR}
