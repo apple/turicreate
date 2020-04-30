@@ -21,6 +21,7 @@
 #include <chrono>
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
+#include <core/random/random.hpp>
 #include <core/storage/fileio/fs_utils.hpp>
 #include <core/storage/fileio/general_fstream.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
@@ -503,13 +504,33 @@ list_objects_response list_objects_impl(const s3url& parsed_url,
 
       } else {
         auto error = outcome.GetError();
-        // Unlike CoreErrors, S3Error Never retries. Use Http code instead.
-        // check aws-cpp-sdk-s3/source/S3Error.cpp
-        if (error.GetResponseCode() ==
-            Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
-          n_retry++;
+        /*
+         * Unlike CoreErrors, S3Error Never retries on S3 errors.
+         * Retry can be based on HTTP code or HTTP body.
+         *
+         * 1. if SDK uses HTTP code, e.g., ShouldRetry return true on 429.
+         * We don't need to retry on our own since SDK already made decision to
+         * retry based on HTTP code.
+         *
+         * 2. if SDK doesn't use HTTP code but HTTP body, we check HTTP on our
+         * own if SDK doesn't think it should retry based on messages in HTTP
+         * body. Check https://guihao-liang.github.io/2020-04-12-aws-s3-retry/
+         *
+         * */
+        if (!error.ShouldRetry()) {
+          // SDK didn't retry for us, check retry on our own decisions
+          // especially for non-standard AWS error reply
+          if (error.GetErrorType() == Aws::S3::S3Errors::UNKNOWN &&
+              error.GetResponseCode() ==
+                  Aws::Http::HttpResponseCode::TOO_MANY_REQUESTS) {
+            n_retry++;
+          } else {
+            // it's standard AWS error, let's stop retry immediately
+            // and report accordingly to user
+            n_retry = 3;
+          }
 
-          if (n_retry == 3) {
+          if (n_retry >= 3) {
             // amend the error msg on the last retry failure
             std::stringstream ss;
             reportS3ErrorDetailed(ss, temp_url, S3Operation::List, outcome)
@@ -524,6 +545,8 @@ list_objects_response list_objects_impl(const s3url& parsed_url,
           }
 
         } else {
+          // error.ShouldRetry() == true
+          // AWS SDK already retried 3 times
           std::stringstream ss;
           reportS3ErrorDetailed(ss, temp_url, S3Operation::List, outcome)
               << std::endl;
