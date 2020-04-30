@@ -93,19 +93,6 @@ constexpr float DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE = 0.001f;
 
 // before generation precision-recall curves.
 
-// Each bounding box is evaluated relative to a list of pre-defined sizes.
-const std::vector<std::pair<float, float>>& anchor_boxes() {
-  static const std::vector<std::pair<float, float>>* const default_boxes =
-      new std::vector<std::pair<float, float>>({
-          {1.f, 2.f}, {1.f, 1.f}, {2.f, 1.f},
-          {2.f, 4.f}, {2.f, 2.f}, {4.f, 2.f},
-          {4.f, 8.f}, {4.f, 4.f}, {8.f, 4.f},
-          {8.f, 16.f}, {8.f, 8.f}, {16.f, 8.f},
-          {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
-      });
-  return *default_boxes;
-};
-
 flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 
   // Scale with square root of number of labeled instances.
@@ -733,9 +720,6 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // If called during training, synchronize the model first.
   const Checkpoint& checkpoint = read_checkpoint();
 
-  size_t grid_height = read_state<size_t>("grid_height");
-  size_t grid_width = read_state<size_t>("grid_width");
-
   std::string input_str = read_state<std::string>("feature");
   std::string coordinates_str = "coordinates";
   std::string confidence_str = "confidence";
@@ -807,7 +791,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
       std::move(spec), class_labels.size(),
-      grid_height * grid_width * anchor_boxes().size(), std::move(class_labels),
+      checkpoint.GetNumberOfPredictions(), std::move(class_labels),
       confidence_threshold, iou_threshold, include_non_maximum_suppression,
       use_nms_layer);
 

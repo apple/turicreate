@@ -159,6 +159,11 @@ class Checkpoint {
   virtual neural_net::pipeline_spec ExportToCoreML(
       const std::string& input_name, const std::string& coordinates_output_name,
       const std::string& confidence_output_name) const = 0;
+
+  /**
+   * Returns the number of predictions for the loaded model.
+   */
+  virtual size_t GetNumberOfPredictions() const = 0;
 };
 
 /**
