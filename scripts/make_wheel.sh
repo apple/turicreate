@@ -260,7 +260,7 @@ mac_patch_rpath() {
 
 
 ### Package the release folder into a wheel, and strip the binaries ###
-package_wheel() {
+function package_wheel() {
   if [[ $OSTYPE == darwin* ]]; then
     mac_patch_rpath
   fi
@@ -291,82 +291,92 @@ package_wheel() {
     cd ..
   fi
 
-function package_wheel () {
-  local minimal=$1
-  local version_modifier=$2
+  # helper function defined within function package_wheel
+  function package_wheel_helper {
+    local minimal=$1
+    local version_modifier=$2
 
-  cd ${WORKSPACE}/${build_type}/src/python
-  dist_type="bdist_wheel"
+    cd ${WORKSPACE}/${build_type}/src/python
 
-  VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
+    if [[ "$minimal" -eq 1 ]] ; then
+      if [[ "$(uname -s)" == "Darwin" ]] ; then
+        sed -i "" 's/^USE_MINIAL = False$/USE_MINIAL = True/g' turicreate/_deps/minimal_import.py
+      else
+        sed -i 's/^USE_MINIAL = False$/USE_MINIAL = True/g' turicreate/_deps/minimal_import.py
+      fi
+    fi
 
-  # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
-  if [[ "${minimal}" -eq 1 ]]; then
-    "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
-  else
-    # full version
-    "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}"
-  fi
+    dist_type="bdist_wheel"
 
-  cd "${WORKSPACE}"
+    VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
 
-  ORIG_WHEEL_PATH=$(ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}-*.whl)
-  WHEEL_PATH=${ORIG_WHEEL_PATH/turicreate-${VERSION_NUMBER}/turicreate-${VERSION_NUMBER}${version_modifier}}
-  [[ ! "$ORIG_WHEEL_PATH" == "$WHEEL_PATH" ]] && mv "$ORIG_WHEEL_PATH" "$WHEEL_PATH"
+    # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
+    if [[ "${minimal}" -eq 1 ]]; then
+      "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
+    else
+      # full version
+      "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}"
+    fi
 
-  if [[ $OSTYPE == darwin* ]]; then
-    # Change the platform tag embedded in the file name
-    temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
-    temp=${temp/-cpdarwin-/-cp35m-}
+    cd "${WORKSPACE}"
 
-    platform_tag="macosx_10_12_intel.macosx_10_12_x86_64.macosx_10_13_intel.macosx_10_13_x86_64.macosx_10_14_intel.macosx_10_14_x86_64"
-    #  sdk_version=`xcrun --show-sdk-version`
-    #  if [[ $sdk_version =~ ^10\.13 ]]; then
-    #      platform_tag="macosx_10_13_intel.macosx_10_12_x86_64"
-    #  elif [[ $sdk_version =~ ^10\.12 ]]; then
-    #      platform_tag="macosx_10_12_intel.macosx_10_12_x86_64"
-    #  fi
+    ORIG_WHEEL_PATH=$(ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}-*.whl)
+    WHEEL_PATH="${ORIG_WHEEL_PATH/turicreate-${VERSION_NUMBER}/turicreate-${VERSION_NUMBER}${version_modifier}}"
+    [[ "$ORIG_WHEEL_PATH" != "${WHEEL_PATH}" ]] && mv "$ORIG_WHEEL_PATH" "$WHEEL_PATH"
 
-    NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
-    mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
-    WHEEL_PATH=${NEW_WHEEL_PATH}
-  else
-    # Don't pick up -manylinux1 wheels, since those may have been created by a later step from a previous build.
-    # Ignore those for now by selecting only -linux wheels.
-    WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}*-linux*.whl`
-  fi
+    if [[ $OSTYPE == darwin* ]]; then
+      # Change the platform tag embedded in the file name
+      temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
+      temp=${temp/-cpdarwin-/-cp35m-}
 
-  # Set Python Language Version Number
-  NEW_WHEEL_PATH=${WHEEL_PATH}
-  if [[ "$python35" == "1" ]]; then
-      NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp35-}
-  elif [[ "$python36" == "1" ]]; then
-      NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp36-}
-  else
-      NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
-  fi
-  NEW_WHEEL_PATH=${NEW_WHEEL_PATH/linux/manylinux1}
-  if [[ ! "${WHEEL_PATH}" == "${NEW_WHEEL_PATH}" ]]; then
-      mv "${WHEEL_PATH}" "${NEW_WHEEL_PATH}"
+      platform_tag="macosx_10_12_intel.macosx_10_12_x86_64.macosx_10_13_intel.macosx_10_13_x86_64.macosx_10_14_intel.macosx_10_14_x86_64"
+      #  sdk_version=`xcrun --show-sdk-version`
+      #  if [[ $sdk_version =~ ^10\.13 ]]; then
+      #      platform_tag="macosx_10_13_intel.macosx_10_12_x86_64"
+      #  elif [[ $sdk_version =~ ^10\.12 ]]; then
+      #      platform_tag="macosx_10_12_intel.macosx_10_12_x86_64"
+      #  fi
+
+      NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
+      mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
       WHEEL_PATH=${NEW_WHEEL_PATH}
-  fi
+    else
+      # Don't pick up -manylinux1 wheels, since those may have been created by a later step from a previous build.
+      # Ignore those for now by selecting only -linux wheels.
+      WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}*-linux*.whl`
+    fi
 
-  if [[ -z $SKIP_SMOKE_TEST ]]; then
-    # Install the wheel and do a smoke test
-    unset PYTHONPATH
+    # Set Python Language Version Number
+    NEW_WHEEL_PATH=${WHEEL_PATH}
+    if [[ "$python35" == "1" ]]; then
+        NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp35-}
+    elif [[ "$python36" == "1" ]]; then
+        NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp36-}
+    else
+        NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
+    fi
+    NEW_WHEEL_PATH=${NEW_WHEEL_PATH/linux/manylinux1}
+    if [[ ! "${WHEEL_PATH}" == "${NEW_WHEEL_PATH}" ]]; then
+        mv "${WHEEL_PATH}" "${NEW_WHEEL_PATH}"
+        WHEEL_PATH=${NEW_WHEEL_PATH}
+    fi
 
-    "$PIP_EXECUTABLE" uninstall -y turicreate
-    "$PIP_EXECUTABLE" install --upgrade "${WHEEL_PATH}"
-    $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
-  fi
+    if [[ -z $SKIP_SMOKE_TEST ]]; then
+      # Install the wheel and do a smoke test
+      unset PYTHONPATH
 
-  # Done copy to the target directory
-  mv "$WHEEL_PATH" "${TARGET_DIR}"
-}
+      "$PIP_EXECUTABLE" uninstall -y turicreate
+      "$PIP_EXECUTABLE" install --upgrade "${WHEEL_PATH}"
+      $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
+    fi
+
+    # Done copy to the target directory
+    mv "$WHEEL_PATH" "${TARGET_DIR}"
+  }
 
   # Run the setup
-  package_wheel 0 ""
-  package_wheel 1 +minimal
+  package_wheel_helper 0 ""
+  package_wheel_helper 1 +minimal
 
   echo -e "\n\n================= Done Packaging Wheel  ================\n\n"
 }
