@@ -19,6 +19,7 @@ NON_MINIMAL_LIST = [
     "coremltools",
     "llvmlite",
     "tensorflow",
+    "pandas",
     "resampy",
     "scipy",
 ]

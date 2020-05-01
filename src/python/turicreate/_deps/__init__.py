@@ -61,14 +61,13 @@ try:
 
     if __get_version(numpy.__version__) < _StrictVersion(NUMPY_MIN_VERSION):
         HAS_NUMPY = False
-        if not is_minimal_pkg():
-            _logging.warn(
-                (
-                    "Numpy version %s is not supported. Minimum required version: %s. "
-                    "Numpy support will be disabled."
-                )
-                % (numpy.__version__, NUMPY_MIN_VERSION)
+        _logging.warn(
+            (
+                "Numpy version %s is not supported. Minimum required version: %s. "
+                "Numpy support will be disabled."
             )
+            % (numpy.__version__, NUMPY_MIN_VERSION)
+        )
 except:
     HAS_NUMPY = False
     # legacy
