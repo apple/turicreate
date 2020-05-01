@@ -46,7 +46,7 @@ fi
 (docker pull -q ${TC_BUILD_IMAGE_CENTOS6}) || true
 (docker pull -q ${TC_BUILD_IMAGE_1204}) || true
 (docker pull -q ${TC_BUILD_IMAGE_1404}) || true
-(docker pull -q ${TC_BUILD_IMAGE_1804}) || true
+(docker pull ${TC_BUILD_IMAGE_1804}) || true
 
 (docker image ls ${TC_BUILD_IMAGE_CENTOS6} | grep turicreate/build-image) || \
 cat scripts/Dockerfile-CentOS-6 | docker build -t ${TC_BUILD_IMAGE_CENTOS6} -
