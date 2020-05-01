@@ -151,7 +151,6 @@ def resize_augmenter(image, annotation, output_shape):
         raise Exception("Non-supported resize method.")
 
     image_clipped = tf.clip_by_value(image_scaled, 0.0, 1.0)
-    annotation = tf.clip_by_value(annotation, 0.0, 1.0)
 
     # No geometry changes (because of relative co-ordinate system)
     return image_clipped, annotation
