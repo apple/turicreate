@@ -411,6 +411,10 @@ pipeline_spec DarknetYOLOCheckpoint::ExportToCoreML(
                              config_.output_width, SPATIAL_REDUCTION);
 }
 
+size_t DarknetYOLOCheckpoint::GetNumberOfPredictions() const {
+  return config_.output_width * config_.output_height * GetAnchorBoxes().size();
+}
+
 float_array_map DarknetYOLOCheckpoint::internal_config() const {
   return GetTrainingBackendConfig(config_.max_iterations, config_.num_classes);
 }
