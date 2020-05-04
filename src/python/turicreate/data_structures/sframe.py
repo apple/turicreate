@@ -25,7 +25,6 @@ from .sarray import SArray, _create_sequential_sarray
 from .. import aggregate
 from .image import Image as _Image
 from .._deps import pandas, numpy, HAS_PANDAS, HAS_NUMPY
-from .grouped_sframe import GroupedSFrame
 from ..visualization import Plot
 
 import array
@@ -6274,13 +6273,6 @@ class SFrame(object):
             return self
         else:
             return new_sf
-
-    def _group(self, key_columns):
-        """
-        Left undocumented intentionally.
-        """
-        gsf = GroupedSFrame(self, key_columns)
-        return gsf
 
     @property
     def shape(self):
