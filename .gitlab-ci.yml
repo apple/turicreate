@@ -363,7 +363,7 @@ test_python_linux_python27_minimal:
   script:
     - apk add bash
     - export TC_ENABLE_S3_TESTS=1
-    - bash -e scripts/test_wheel.sh --docker-python2.7 --minimal-build
+    - bash -e scripts/test_wheel.sh --docker-python2.7 --minimal
   artifacts:
     when: always
     expire_in: 2 weeks
