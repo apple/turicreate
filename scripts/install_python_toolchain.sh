@@ -35,7 +35,11 @@ function linux_patch_sigfpe_handler {
 }
 
 $PIP install --upgrade "pip"
-$PIP install -r scripts/requirements.txt
+if [[ "$USE_MINIMAL" -eq 1  ]]; then
+  $PIP install -r scripts/requirements-minimal.txt
+else
+  $PIP install -r scripts/requirements.txt
+fi
 
 # install pre-commit hooks for git
 with_pre_commit=${with_pre_commit:-0}

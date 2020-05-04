@@ -92,7 +92,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   exit 0
 fi
 
-test -d deps/env || ./scripts/install_python_toolchain.sh
+test -d deps/env || USE_MINIMAL="$USE_MINIMAL" ./scripts/install_python_toolchain.sh
 source deps/env/bin/activate
 pip install target/turicreate-*.whl
 
