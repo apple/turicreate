@@ -10,6 +10,10 @@ import unittest
 import turicreate as tc
 from array import array
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 def _get_data(n):
     t = [1] * (n - n // 2) + [0] * (n // 2)

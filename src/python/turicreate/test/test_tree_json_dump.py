@@ -12,7 +12,10 @@ import json
 import random
 import numpy
 
-import os as _os
+# mark entire module as minimal
+import pytest
+
+pytestmark = [pytest.mark.minimal]
 
 
 class Config:

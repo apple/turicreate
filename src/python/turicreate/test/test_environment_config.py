@@ -20,6 +20,10 @@ from os.path import join
 import os
 import shutil
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class EnvironmentConfigTester(unittest.TestCase):
     def test_config_basic_write(self):

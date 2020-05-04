@@ -21,6 +21,10 @@ from turicreate.util import _assert_sframe_equal as assert_sframe_equal
 
 import os as _os
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class GLPicklingTest(unittest.TestCase):
     def setUp(self):

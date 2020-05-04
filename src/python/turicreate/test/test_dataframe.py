@@ -13,6 +13,10 @@ from .. import SFrame
 from pandas.util.testing import assert_frame_equal
 from sys import version_info
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class DataFrameTest(unittest.TestCase):
     def test_empty(self):

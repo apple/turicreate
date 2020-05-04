@@ -18,6 +18,10 @@ import random
 
 from .._cython.cy_variant import _debug_is_flexible_type_encoded
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class VariantCheckTest(unittest.TestCase):
     def identical(self, reference, b):

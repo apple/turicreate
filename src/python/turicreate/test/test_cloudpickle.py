@@ -12,6 +12,10 @@ from pickle import PicklingError
 import pickle
 import turicreate.util._cloudpickle as cloudpickle
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class CloudPickleTest(unittest.TestCase):
     def test_pickle_unity_object_exception(self):

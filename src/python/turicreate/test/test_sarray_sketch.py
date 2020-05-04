@@ -20,6 +20,10 @@ import array
 import time
 import itertools
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class SArraySketchTest(unittest.TestCase):
     def __validate_sketch_result(self, sketch, sa, delta=1e-7):

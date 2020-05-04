@@ -12,8 +12,10 @@ import random
 import tempfile
 import os
 import shutil
+import pytest
 
 
+@pytest.mark.minimal
 class BoostedTreesRegressionCheckpointTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
