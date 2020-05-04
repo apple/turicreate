@@ -9,7 +9,7 @@ from __future__ import absolute_import as _
 
 import numpy as np
 from PIL import Image
-from turicreate._deps import tensorflow_v1 as _tf
+from turicreate._deps import tensorflow_v1 as tf
 import turicreate.toolkits._tf_utils as _utils
 import turicreate as tc
 
