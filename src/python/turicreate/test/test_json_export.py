@@ -26,6 +26,10 @@ import turicreate as tc
 
 _TEST_CASE_SIZE = 1000
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class JSONExporterTest(unittest.TestCase):
 

@@ -15,9 +15,12 @@ import tempfile
 import os
 import six
 import shutil
-import pytest
 import boto3
 import warnings
+
+import pytest
+
+pytestmark = [pytest.mark.minimal]
 
 # size from small to big: 76K, 21MB, 77MB.
 # 64MB is the cache block size. The big sframe with 77MB is used to

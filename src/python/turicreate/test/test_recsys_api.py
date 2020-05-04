@@ -8,11 +8,13 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import sys
+import pytest
 import turicreate as tc
 
 DELTA = 0.000001
 
 
+@pytest.mark.minimal
 class AdditionalDataTest(unittest.TestCase):
     def setUp(self):
         data = tc.SFrame()

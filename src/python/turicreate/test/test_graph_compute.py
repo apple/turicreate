@@ -10,6 +10,10 @@ from .. import SGraph, Edge
 import unittest
 import time
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 import sys
 
 if sys.version_info.major > 2:

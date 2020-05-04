@@ -21,19 +21,21 @@ import json  # Python built-in JSON module
 import math
 import os
 import pandas
-import pytest
 import pytz
 import six
 import string
 import sys
 import unittest
 import tempfile
+import pytest
 
 from . import util
 from .. import _json  # turicreate._json
 from ..data_structures.sarray import SArray
 from ..data_structures.sframe import SFrame
 from ..data_structures.sgraph import SGraph, Vertex, Edge
+
+pytestmark = [pytest.mark.minimal]
 
 if sys.version_info.major == 3:
     long = int

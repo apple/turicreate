@@ -19,6 +19,10 @@ from ..util import get_turicreate_object_type
 from ..config import get_runtime_config, set_runtime_config
 from . import util
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class UtilTests(unittest.TestCase):
     def test_archive_utils(self):

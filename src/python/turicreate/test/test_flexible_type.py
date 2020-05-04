@@ -27,6 +27,10 @@ import datetime
 from itertools import product
 from copy import copy
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 import sys
 
 if sys.version_info.major > 2:
