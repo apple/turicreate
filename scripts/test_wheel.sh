@@ -42,7 +42,7 @@ while [ $# -gt 0 ]
     --docker-python3.5)     USE_DOCKER=1;DOCKER_PYTHON=3.5;;
     --docker-python3.6)     USE_DOCKER=1;DOCKER_PYTHON=3.6;;
     --docker-python3.7)     USE_DOCKER=1;DOCKER_PYTHON=3.7;;
-    --minimal-build)        USE_MINIMAL=1;;
+    --minimal)              USE_MINIMAL=1;;
     --help)                 print_help ;;
     *) unknown_option "$1" ;;
   esac
@@ -105,20 +105,35 @@ test -d deps/env || USE_MINIMAL="$USE_MINIMAL" ./scripts/install_python_toolchai
 source deps/env/bin/activate
 
 bdist_wheels=($(ls target/turicreate-*.whl))
-if [[ ${#bdist_wheels[@]} -ne 2 ]]; then
-  echo "Wrong number of wheel files found. Expected 2: ${dist_wheels[@]}"
-  exit 1
-fi
+if [[ ${#bdist_wheels[@]} -ne 1 ]]; then
+  wheel_to_install=${bdist_wheels[0]}
+  if [[ "$USE_MINIMAL" -eq 1 ]]; then
+    if [[ ! "$wheel_to_install" =~ .*"+minimal".* ]]; then
+      echo "minimal pkg is not found. Only found $wheel_to_install"
+      exit 1
+    fi
+  else
+    if [[ "$wheel_to_install" =~ .*"+minimal".* ]]; then
+      echo "full pkg is not found. Only found $wheel_to_install"
+      exit 1
+    fi
+  fi
 
-wheel_to_install=${bdist_wheels[0]}
-if [[ $USE_MINIMAL -eq 1 ]]; then
-  if [[ ! "$wheel_to_install" =~ .*"+minimal".* ]]; then
-    wheel_to_install="${bdist_wheels[1]}"
+elif [[ ${#bdist_wheels[@]} -ne 2 ]]; then
+  wheel_to_install=${bdist_wheels[0]}
+  if [[ $USE_MINIMAL -eq 1 ]]; then
+    if [[ ! "$wheel_to_install" =~ .*"+minimal".* ]]; then
+      wheel_to_install="${bdist_wheels[1]}"
+    fi
+  else
+    if [[ "$wheel_to_install" =~ .*"+minimal".* ]]; then
+      wheel_to_install="${bdist_wheels[1]}"
+    fi
   fi
+
 else
-  if [[ "$wheel_to_install" =~ .*"+minimal".* ]]; then
-    wheel_to_install="${bdist_wheels[1]}"
-  fi
+  echo "wrong number of wheel: ${#bdist_wheels[@]}. At most 2 pkgs are needed."
+  exit 1
 fi
 
 pip install "$wheel_to_install"

@@ -363,7 +363,7 @@ test_python_linux_python27_minimal:
   script:
     - apk add bash
     - export TC_ENABLE_S3_TESTS=1
-    - bash -e scripts/test_wheel.sh --docker-python2.7 --minimal-build
+    - bash -e scripts/test_wheel.sh --docker-python2.7 --minimal
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -536,7 +536,7 @@ test_python_mac_python37_10_14_minimal:
     - build_wheel_mac_10_15_python37
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenv"
-    - bash -e scripts/test_wheel.sh --minimal-build
+    - bash -e scripts/test_wheel.sh --minimal
   artifacts:
     when: always
     expire_in: 2 weeks
@@ -559,7 +559,7 @@ scenario_tests_linux_python27:
     - apk add bash
     - cd scenario-tests
     - ./run_scenario_tests.sh --docker-python2.7 \
-      "../target/$(ls ../target | grep turicreate | grep -v minimal)"
+      "../target/turicreate-*+minimal*.whl"
 
 scenario_tests_linux_python35:
   tags:
@@ -577,7 +577,7 @@ scenario_tests_linux_python35:
     - apk add bash
     - cd scenario-tests
     - ./run_scenario_tests.sh --docker-python3.5 \
-      "../target/$(ls ../target | grep turicreate | grep -v minimal)"
+      "../target/turicreate-*+minimal*.whl"
 
 scenario_tests_linux_python36:
   tags:
@@ -595,7 +595,7 @@ scenario_tests_linux_python36:
     - apk add bash
     - cd scenario-tests
     - ./run_scenario_tests.sh --docker-python3.6 \
-      "../target/$(ls ../target | grep turicreate | grep -v minimal)"
+      "../target/turicreate-*+minimal*.whl"
 
 scenario_tests_mac_python27_10_13:
   tags:
