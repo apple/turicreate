@@ -105,7 +105,7 @@ test -d deps/env || USE_MINIMAL="$USE_MINIMAL" ./scripts/install_python_toolchai
 source deps/env/bin/activate
 
 bdist_wheels=($(ls target/turicreate-*.whl))
-if [[ ${#bdist_wheels[@]} -ne 1 ]]; then
+if [[ ${#bdist_wheels[@]} -eq 1 ]]; then
   wheel_to_install=${bdist_wheels[0]}
   if [[ "$USE_MINIMAL" -eq 1 ]]; then
     if [[ ! "$wheel_to_install" =~ .*"+minimal".* ]]; then
@@ -119,7 +119,7 @@ if [[ ${#bdist_wheels[@]} -ne 1 ]]; then
     fi
   fi
 
-elif [[ ${#bdist_wheels[@]} -ne 2 ]]; then
+elif [[ ${#bdist_wheels[@]} -eq 2 ]]; then
   wheel_to_install=${bdist_wheels[0]}
   if [[ $USE_MINIMAL -eq 1 ]]; then
     if [[ ! "$wheel_to_install" =~ .*"+minimal".* ]]; then
