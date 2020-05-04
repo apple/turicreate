@@ -146,6 +146,8 @@ class DarknetYOLOCheckpoint : public Checkpoint {
       const std::string& input_name, const std::string& coordinates_output_name,
       const std::string& confidence_output_name) const override;
 
+  size_t GetNumberOfPredictions() const override;
+
   /** Returns the config dictionary used to initialize darknet-yolo backends. */
   neural_net::float_array_map internal_config() const;
 

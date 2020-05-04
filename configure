@@ -29,6 +29,9 @@ function print_help {
   echo "  --with-ccache (default)           Use ccache, if available."
   echo "  --no-ccache "
   echo
+  echo "  --with-clang-tidy                 Run clang-tidy, if available."
+  echo "  --with-clang-metrics              Run clang with timing metrics. Requires Clang 9.0."
+  echo
   echo "  --with-capi (default)             Build C API."
   echo "  --with-capi-framework             Build C API as macOS framework (macOS + XCode builder only)"
   echo "  --no-capi                         Skip building the C API."
@@ -70,7 +73,7 @@ function print_help {
   echo
   echo "  --codesign                        Enable code signing for OSX projects.  If enabled, the "
   echo "                                    proper CMAKE_XCODE_ATTRIBUTE_CODE_SIGN_**** parameters "
-  echo                                      denoting the signing variables should be passed in.
+  echo "                                    denoting the signing variables should be passed in."
   echo
   echo "  --list-source-files               If given, a list of all the source files compiled using "
   echo "                                    the given options is printed as part of the configuration, "
@@ -142,6 +145,8 @@ default_yes=0
 with_python=1
 with_pre_commit=1
 with_ccache=1
+with_clangtidy=0
+with_clangmetrics=0
 
 with_capi=1
 with_capi_framework=0
@@ -188,6 +193,9 @@ while [ $# -gt 0 ]
     --no-pre-commit)        with_pre_commit=0;;
     --with-ccache)          with_ccache=1;;
     --no-ccache)            with_ccache=0;;
+
+    --with-clang-tidy)      with_clangtidy=1;;
+    --with-clang-metrics)   with_clangmetrics=1;;
 
     --with-capi)            with_capi=1;;
     --with-capi-framework)  with_capi=1; with_capi_framework=1;;
@@ -340,6 +348,23 @@ CXXCMD=`./scripts/find_compiler.sh cxx --ccache=$with_ccache --script-dir=${PWD}
 
 echo "Setting C compiler to $CCCMD."
 echo "Setting C++ compiler to $CXXCMD."
+
+if [[ $with_clangtidy == 1 ]]; then
+  clangtidy_path=$(which clang-tidy || true)
+  
+  if [[ ! -x "$clangtidy_path" ]]; then
+    echo "Unable to find clang-tidy in path."
+    exit 1
+  fi
+
+  echo "Setting clang-tidy to $clangtidy_path"
+
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DCMAKE_CXX_CLANG_TIDY=${clangtidy_path}"
+fi
+
+if [[ $with_clangmetrics == 1 ]]; then
+  CMAKE_CONFIG_FLAGS="${CMAKE_CONFIG_FLAGS} -DTC_BUILD_METRICS=ON"
+fi
 
 echo "======================= FINDING CMAKE ========================"
 

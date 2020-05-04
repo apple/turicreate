@@ -93,19 +93,6 @@ constexpr float DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE = 0.001f;
 
 // before generation precision-recall curves.
 
-// Each bounding box is evaluated relative to a list of pre-defined sizes.
-const std::vector<std::pair<float, float>>& anchor_boxes() {
-  static const std::vector<std::pair<float, float>>* const default_boxes =
-      new std::vector<std::pair<float, float>>({
-          {1.f, 2.f}, {1.f, 1.f}, {2.f, 1.f},
-          {2.f, 4.f}, {2.f, 2.f}, {4.f, 2.f},
-          {4.f, 8.f}, {4.f, 4.f}, {8.f, 4.f},
-          {8.f, 16.f}, {8.f, 8.f}, {16.f, 8.f},
-          {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
-      });
-  return *default_boxes;
-};
-
 flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 
   // Scale with square root of number of labeled instances.
@@ -733,27 +720,35 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // If called during training, synchronize the model first.
   const Checkpoint& checkpoint = read_checkpoint();
 
-  size_t grid_height = read_state<size_t>("grid_height");
-  size_t grid_width = read_state<size_t>("grid_width");
-
   std::string input_str = read_state<std::string>("feature");
   std::string coordinates_str = "coordinates";
   std::string confidence_str = "confidence";
 
   // No options provided defaults to include Non Maximum Suppression.
-  if (opts.find("include_non_maximum_suppression") == opts.end()) {
-    opts["include_non_maximum_suppression"] = 1;
+  bool include_non_maximum_suppression = true;
+  bool use_nms_layer = false;
+  float iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+  float confidence_threshold = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+  auto opts_it = opts.find("include_non_maximum_suppression");
+  if (opts_it != opts.end()) {
+    include_non_maximum_suppression = opts_it->second.to<bool>();
   }
-
-  if (opts["include_non_maximum_suppression"].to<bool>()){
+  if (include_non_maximum_suppression) {
     coordinates_str = "raw_coordinates";
     confidence_str = "raw_confidence";
-    //Set default values if thresholds not provided.
-    if (opts.find("iou_threshold") == opts.end()) {
-      opts["iou_threshold"] = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+
+    // Read user-provided options.
+    opts_it = opts.find("iou_threshold");
+    if (opts_it != opts.end()) {
+      iou_threshold = opts_it->second.to<float>();
     }
-    if (opts.find("confidence_threshold") == opts.end()) {
-      opts["confidence_threshold"] = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+    opts_it = opts.find("confidence_threshold");
+    if (opts_it != opts.end()) {
+      confidence_threshold = opts_it->second.to<float>();
+    }
+    opts_it = opts.find("use_nms_layer");
+    if (opts_it != opts.end()) {
+      use_nms_layer = opts_it->second.to<bool>();
     }
   }
 
@@ -783,7 +778,7 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
        user_defined_metadata.emplace_back(kvp.first, kvp.second);
   }
 
-  if (opts["include_non_maximum_suppression"].to<bool>()){
+  if (include_non_maximum_suppression) {
     user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
     user_defined_metadata.emplace_back("confidence_threshold", opts["confidence_threshold"]);
     user_defined_metadata.emplace_back("iou_threshold", opts["iou_threshold"]);
@@ -796,8 +791,9 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
       std::move(spec), class_labels.size(),
-      grid_height * grid_width * anchor_boxes().size(), std::move(class_labels),
-      std::move(opts));
+      checkpoint.GetNumberOfPredictions(), std::move(class_labels),
+      confidence_threshold, iou_threshold, include_non_maximum_suppression,
+      use_nms_layer);
 
   model_wrapper->add_metadata({
       {"user_defined", std::move(user_defined_metadata)},

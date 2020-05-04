@@ -1,0 +1,16 @@
+# currently everything is turned on but everything will fail. when we start to enable rules, it will be one at a time.
+#
+# Documentation: https://clang.llvm.org/extra/clang-tidy/
+# Checks: https://clang.llvm.org/extra/clang-tidy/checks/list.html
+#
+# Multiline format for rules:
+# Checks: "-*,\
+#	rule,\
+#	"
+# 
+#
+
+#Checks: *
+
+HeaderFilterRegex: 'src/*\.(h|hpp)$'
+WarningsAsErrors: '*'

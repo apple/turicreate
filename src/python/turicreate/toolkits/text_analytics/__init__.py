@@ -33,8 +33,6 @@ __all__ = [
     "parse_docword",
     "tokenize",
     "drop_words",
-    "split_by_sentence",
-    "extract_parts_of_speech",
 ]
 
 
@@ -50,8 +48,6 @@ def __dir__():
         "parse_docword",
         "tokenize",
         "drop_words",
-        "split_by_sentence",
-        "extract_parts_of_speech",
     ]
 
 
