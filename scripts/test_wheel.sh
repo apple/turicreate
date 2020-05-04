@@ -80,7 +80,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
   docker_extra_args=""
 
   if [[ "$USE_MINIMAL" -eq 1 ]]; then
-    docker_extra_args="$extra_args --minimal-build"
+    docker_extra_args="$extra_args --minimal"
   fi
 
   # Run the tests inside Docker

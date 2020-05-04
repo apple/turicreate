@@ -537,7 +537,9 @@ class ImageSimilarityModel(_CustomModel):
         """
         import numpy as _np
         from copy import deepcopy
-        import coremltools as _cmt
+        from turicreate._deps.minimal_package import minimal_package_import_check
+
+        _cmt = minimal_package_import_check("coremltools")
         from coremltools.models import (
             datatypes as _datatypes,
             neural_network as _neural_network,

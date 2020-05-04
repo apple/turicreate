@@ -21,6 +21,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import _coreml_utils
+from turicreate._deps.minimal_package import minimal_package_import_check
 
 
 class _DataIterator(object):
@@ -829,7 +830,7 @@ class SoundClassifier(_CustomModel):
         --------
         >>> model.export_coreml('./myModel.mlmodel')
         """
-        import coremltools
+        minimal_package_import_check("coremltools")
         from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
 
         prob_name = self.target + "Probability"

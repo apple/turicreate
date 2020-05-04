@@ -9,7 +9,17 @@ from __future__ import absolute_import as _
 from distutils.version import StrictVersion as _StrictVersion
 import logging as _logging
 import re as _re
-from turicreate._deps.minimal_package import is_minimal_pkg
+from turicreate import __version__
+from turicreate._deps.minimal_package import (
+    is_minimal_pkg,
+    is_py_interactive,
+)
+
+if is_py_interactive() and is_minimal_pkg():
+    print(
+        "This is turicreate minimal version. "
+        "To use ML toolkits, please run: pip install turicreate==%s" % __version__
+    )
 
 
 def __get_version(version):
@@ -36,6 +46,13 @@ try:
 except:
     HAS_PANDAS = False
     from . import pandas_mock as pandas
+
+
+if not HAS_PANDAS and is_py_interactive() and is_minimal_pkg():
+    print(
+        "'pandas' not found. SFrame won't provide pandas support. "
+        "To use pandas with SFrame, please install pandas and reload turicreate"
+    )
 
 
 HAS_NUMPY = True

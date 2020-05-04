@@ -216,7 +216,9 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         return state["out"]
 
     def get_coreml_model(self):
-        import coremltools
+        from turicreate._deps.minimal_package import minimal_package_import_check
+
+        coremltools = minimal_package_import_check("coremltools")
 
         model_path = self.ptModel.get_model_path("coreml")
         return coremltools.models.MLModel(model_path)
