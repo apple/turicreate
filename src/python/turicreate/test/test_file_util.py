@@ -8,8 +8,12 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import os
 import unittest
-import tempfile
 from ..util import _file_util as fu
+
+
+import pytest
+
+pytestmark = [pytest.mark.minimal]
 
 
 class FileUtilTests(unittest.TestCase):

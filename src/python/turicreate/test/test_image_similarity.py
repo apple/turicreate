@@ -12,7 +12,6 @@ import turicreate as tc
 from turicreate.toolkits._internal_utils import _mac_ver
 import tempfile
 from . import util as test_util
-import coremltools
 import numpy as np
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 
@@ -218,6 +217,7 @@ class ImageSimilarityTest(unittest.TestCase):
         """
         Check the export_coreml() function.
         """
+        import coremltools
 
         def get_psnr(x, y):
             # See: https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio
@@ -244,6 +244,7 @@ class ImageSimilarityTest(unittest.TestCase):
             },
             dict(coreml_model.user_defined_metadata),
         )
+
         expected_result = (
             "Image similarity (%s) created by Turi Create (version %s)"
             % (self.model.model, tc.__version__)

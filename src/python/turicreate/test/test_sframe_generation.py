@@ -13,6 +13,10 @@ from ..util import generate_random_classification_sframe
 import unittest
 import array
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class SFrameGeneration(unittest.TestCase):
     def test_data_types(self):
