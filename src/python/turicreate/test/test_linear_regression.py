@@ -14,8 +14,6 @@ import uuid
 import os
 
 import array
-from sklearn import linear_model
-import statsmodels.formula.api as sm
 import shutil
 
 import numpy as np
@@ -24,6 +22,14 @@ from turicreate.toolkits.regression.linear_regression import _DEFAULT_SOLVER_OPT
 
 if sys.version_info.major == 3:
     from functools import reduce
+
+try:
+    import statsmodels.formula.api as sm
+except ImportError as e:
+    # ignore extra dependencies
+    # https://github.com/apple/turicreate/pull/3156
+    if not tc._deps.is_minimal_pkg():
+        raise e
 
 
 class LinearRegressionTest(unittest.TestCase):
@@ -1129,6 +1135,8 @@ class L1LinearRegressionTest(unittest.TestCase):
         self.examples = X.shape[0]
 
         # Fit the model
+        from sklearn import linear_model
+
         self.l1_penalty = 10.0
         clf = linear_model.ElasticNet(
             alpha=self.l1_penalty / (2 * self.examples), l1_ratio=1
