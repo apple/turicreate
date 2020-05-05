@@ -9,9 +9,11 @@ from __future__ import absolute_import as _
 from distutils.version import StrictVersion as _StrictVersion
 import logging as _logging
 import re as _re
+from turicreate import __version__
 from turicreate._deps.minimal_import import (
     DeferredModuleLoader as _DeferredModuleLoader,
     is_minimal_pkg,
+    IS_INTERACTIVE,
 )
 
 # for minimal pkg to lazy load modules. It also provides friendly prompt
@@ -24,6 +26,12 @@ tensorflow_v1 = _DeferredModuleLoader("tensorflow.compat.v1", prompt_name="tenso
 tensorflow_v2 = _DeferredModuleLoader("tensorflow.compat.v2", prompt_name="tensorflow")
 coremltools = _DeferredModuleLoader("coremltools")
 resampy = _DeferredModuleLoader("resampy")
+
+if IS_INTERACTIVE and is_minimal_pkg():
+    print(
+        "This is turicreate minimal version. "
+        "To use ML toolkits, please run: pip install turicreate==%s" % __version__
+    )
 
 
 def __get_version(version):
@@ -40,6 +48,7 @@ try:
 
     if __get_version(pandas.__version__) < _StrictVersion(PANDAS_MIN_VERSION):
         HAS_PANDAS = False
+        # minimal pkg doesn't require pandas support by default
         if not is_minimal_pkg():
             _logging.warn(
                 (
@@ -53,6 +62,12 @@ except:
     # legacy
     from . import pandas_mock as pandas
 
+
+if not HAS_PANDAS and IS_INTERACTIVE:
+    print(
+        "'pandas' not found. SFrame won't provide pandas support. "
+        "To use pandas with SFrame, please install pandas and reload turicreate"
+    )
 
 HAS_NUMPY = True
 NUMPY_MIN_VERSION = "1.8.0"
