@@ -39,6 +39,9 @@ def run_from_python_interpreter():
     return bool(getattr(sys, "ps1", sys.flags.interactive))
 
 
+IS_INTERACTIVE = run_from_python_interpreter() or run_from_ipython()
+
+
 if six.PY2:
     # reentrant lock: https://docs.python.org/2/library/imp.html#imp.acquire_lock
     class _ImportLockContext:
