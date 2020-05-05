@@ -337,31 +337,3 @@ class DeferredModuleLoader(ModuleType, object):
 
         # be aware, singleton must be set false
         return (_init, (self._name, self._init_func, False))
-
-
-class DeferredCallableLoader(object):
-    def __init__(self, lmod, func_name):
-        if not isinstance(lmod, ModuleType):
-            raise TypeError("lmod must be a ModuleType")
-        self._lmod = lmod
-        if not isinstance(func_name, six.string_types):
-            raise TypeError("func_name must be a string")
-        self._func_name = func_name
-
-    def __call__(self, *args, **kwargs):
-        return getattr(self._lmod, self._func_name)(*args, **kwargs)
-
-    # for pickle purpose
-    # I like korean pickle too; so let's make some pickle
-    def get_callable(self, *args, **kwargs):
-        return getattr(self._lmod, self._func_name)(*args, **kwargs)
-
-    def __str__(self):
-        return "DeferredCallableLoader of function '%s'" % self._func_name
-
-    def __repr__(self):
-        return repr(getattr(self._lmod, self._func_name))
-
-    def __reduce__(self):
-        _init = lambda x: x
-        return (_init, getattr(self._lmod, self._func_name))
