@@ -29,6 +29,9 @@ print_help() {
   echo "  --docker-python3.6       Use docker to test on Python 3.6 in Ubuntu 18.04."
   echo
   echo "  --docker-python3.7       Use docker to test on Python 3.7 in Ubuntu 18.04."
+  echo
+  echo "  --minimal                test the turicreate+minimal package"
+  echo
   exit 1
 } # end of print help
 
@@ -104,7 +107,10 @@ fi
 test -d deps/env || USE_MINIMAL="$USE_MINIMAL" ./scripts/install_python_toolchain.sh
 source deps/env/bin/activate
 
+# make_wheel can build 1 or 2 wheels, namely full or minimal
+# we need to find the wheel we need to install and test
 bdist_wheels=($(ls target/turicreate-*.whl))
+
 if [[ ${#bdist_wheels[@]} -eq 1 ]]; then
   wheel_to_install=${bdist_wheels[0]}
   if [[ "$USE_MINIMAL" -eq 1 ]]; then
@@ -132,7 +138,7 @@ elif [[ ${#bdist_wheels[@]} -eq 2 ]]; then
   fi
 
 else
-  echo "wrong number of wheel: ${#bdist_wheels[@]}. At most 2 pkgs are needed."
+  echo "wrong number of wheel: ${#bdist_wheels[@]}. At most 2 wheels are needed."
   exit 1
 fi
 
@@ -158,10 +164,8 @@ cd "$TEST_DIR"
 # run tests
 if [[ "$USE_MINIMAL" -eq 1 ]]; then
   # remove all toolkits related files
-  minimal_test=($(grep -L "toolkits" *.py))
-  minimal_test=(${minimal_test[@]/__init__.py})
-  ${PYTHON} -m pytest -v --durations=20 \
-    --junit-xml="$WORKSPACE"/pytest-minimal.xml ${minimal_test[@]}
+  ${PYTHON} -m pytest -v --durations=20 -m minimal \
+    --junit-xml="$WORKSPACE"/pytest-minimal.xml
 
 else
   ${PYTHON} -m pytest --cov -v --durations=100 \

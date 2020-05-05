@@ -14,9 +14,6 @@ from setuptools.command.install import install
 
 PACKAGE_NAME = "turicreate"
 VERSION = "6.2"  # {{VERSION_STRING}}
-NON_MINIMAL_LIST = ["tensorflow", "resampy"]
-
-
 # pkgs not needed for minimal pkg
 NON_MINIMAL_LIST = [
     "coremltools",
@@ -173,12 +170,13 @@ if __name__ == "__main__":
         "pillow >= 5.2.0",
         "prettytable == 0.7.2",
         "resampy == 0.2.1",
-        "llvmlite == 0.31.0",
         "requests >= 2.9.1",
         "scipy >= 1.1.0",
         "six >= 1.10.0",
     ]
-    if sys.version_info[0] == 2 or (sys.version_info[0] == 3 and sys.version_info[1] == 5):
+    if sys.version_info[0] == 2 or (
+        sys.version_info[0] == 3 and sys.version_info[1] == 5
+    ):
         install_requires.append("llvmlite == 0.31.0")
 
     if sys.platform == "darwin":
@@ -188,8 +186,6 @@ if __name__ == "__main__":
         # See: https://github.com/apple/turicreate/issues/3003
         install_requires.append("tensorflow >= 2.0.0,<= 2.0.1 ")
 
-    # As a hack, the make_wheel script cuts out tensorflow from the above list,
-    # replacing it with an empty string that this line strips out.
     install_requires = [s for s in install_requires if s]
 
     setup(
