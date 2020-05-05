@@ -17,7 +17,6 @@ import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe, _mac_ver
-import coremltools
 
 _NUM_STYLES = 4
 

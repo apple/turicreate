@@ -19,7 +19,6 @@ import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver
 from six import StringIO
-import coremltools
 
 _CLASSES = ["person", "cat", "dog", "chair"]
 
@@ -289,19 +288,23 @@ class ObjectDetectorTest(unittest.TestCase):
         test_util.assert_longer_verbose_logs(tc.object_detector.create, args, kwargs)
 
     def test_create_with_fixed_random_seed(self):
-         random_seed = 86
-         max_iterations = 3
+        random_seed = 86
+        max_iterations = 3
 
-         model_1 = tc.object_detector.create(self.sf, max_iterations=max_iterations, random_seed=random_seed)
-         pred_1 = model_1.predict(self.sf)
-         model_2 = tc.object_detector.create(self.sf, max_iterations=max_iterations, random_seed=random_seed)
-         pred_2 = model_2.predict(self.sf)
+        model_1 = tc.object_detector.create(
+            self.sf, max_iterations=max_iterations, random_seed=random_seed
+        )
+        pred_1 = model_1.predict(self.sf)
+        model_2 = tc.object_detector.create(
+            self.sf, max_iterations=max_iterations, random_seed=random_seed
+        )
+        pred_2 = model_2.predict(self.sf)
 
-         self.assertEqual(len(pred_1), len(pred_2))
-         for i in range(len(pred_1)):
-             self.assertEqual(len(pred_1[i]),len(pred_2[i]))
-             for j in range(len(pred_1[i])):
-                 self.assertEqual(pred_1[i][j], pred_2[i][j])
+        self.assertEqual(len(pred_1), len(pred_2))
+        for i in range(len(pred_1)):
+            self.assertEqual(len(pred_1[i]), len(pred_2[i]))
+            for j in range(len(pred_1[i])):
+                self.assertEqual(pred_1[i][j], pred_2[i][j])
 
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
@@ -515,6 +518,7 @@ class ObjectDetectorTest(unittest.TestCase):
     )
     def test_export_coreml_with_non_maximum_suppression(self):
         from PIL import Image
+        import coremltools
 
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename, include_non_maximum_suppression=True)

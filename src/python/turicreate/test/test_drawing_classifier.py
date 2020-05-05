@@ -13,7 +13,6 @@ import turicreate.toolkits.libtctensorflow
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import numpy as _np
 import tempfile
-import coremltools as _coremltools
 from copy import copy as _copy
 from array import array as _array
 import sys as _sys
@@ -376,6 +375,8 @@ class DrawingClassifierTest(unittest.TestCase):
 
     @unittest.skipIf(_sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_with_predict(self):
+        import coremltools as _coremltools
+
         for test_number in range(len(self.models)):
             feature = self.feature
             model = self.models[test_number]

@@ -17,8 +17,6 @@ from os import mkdir
 import unittest
 import pytest
 
-import coremltools
-from coremltools.proto import FeatureTypes_pb2
 import numpy as np
 from scipy.io import wavfile
 import sys as _sys
@@ -295,6 +293,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
     )
     def test_export_coreml_with_prediction(self):
         import resampy
+        import coremltools
 
         with TempDirectory() as temp_dir:
             file_name = temp_dir + "/model.mlmodel"
@@ -332,6 +331,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     def test_export_core_ml_no_prediction(self):
         import platform
+        import coremltools
 
         with TempDirectory() as temp_dir:
             file_name = temp_dir + "/model.mlmodel"
@@ -556,6 +556,7 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
 
     def test_case(self):
         from turicreate.toolkits.sound_classifier import vggish_input
+        from coremltools.proto import FeatureTypes_pb2
 
         model = coremltools.proto.Model_pb2.Model()
         model.customModel.className = "TCSoundClassifierPreprocessing"
