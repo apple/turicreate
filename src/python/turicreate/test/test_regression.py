@@ -10,10 +10,6 @@ import unittest
 import turicreate as tc
 import numpy as np
 
-import pytest
-
-pytestmark = [pytest.mark.minimal]
-
 
 class RegressionCreateTest(unittest.TestCase):
     """
