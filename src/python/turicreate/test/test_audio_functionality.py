@@ -556,6 +556,7 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
 
     def test_case(self):
         from turicreate.toolkits.sound_classifier import vggish_input
+        import coremltools
         from coremltools.proto import FeatureTypes_pb2
 
         model = coremltools.proto.Model_pb2.Model()
