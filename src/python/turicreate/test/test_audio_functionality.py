@@ -18,7 +18,6 @@ import unittest
 import pytest
 
 import numpy as np
-from scipy.io import wavfile
 import sys as _sys
 
 import turicreate as tc
@@ -45,6 +44,8 @@ class ReadAudioTest(unittest.TestCase):
             self._assert_audio_sframe_correct(sf, file1, file2)
 
     def test_recursive_dir(self):
+        from scipy.io import wavfile
+
         with TempDirectory() as temp_dir:
             file1 = temp_dir + "/1.wav"
             mkdir(temp_dir + "/foo")
@@ -109,6 +110,8 @@ class ReadAudioTest(unittest.TestCase):
         self.assertTrue(all(audio2["data"] == self.noise2))
 
     def _write_audio_files_in_dir(self, dir_path):
+        from scipy.io import wavfile
+
         file1 = dir_path + "/1.wav"
         file2 = dir_path + "/2.wav"
         wavfile.write(file1, self.sample_rate1, self.noise1)
