@@ -293,7 +293,7 @@ function package_wheel() {
 
   # helper function defined within function package_wheel
   function package_wheel_helper {
-    local minimal=$1
+    local is_minimal=$1
     local version_modifier=$2
 
     cd ${WORKSPACE}/${build_type}/src/python
