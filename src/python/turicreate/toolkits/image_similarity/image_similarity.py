@@ -19,6 +19,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
+from ..image_analysis import image_analysis
 
 
 def create(
@@ -39,9 +40,9 @@ def create(
         identify reference dataset rows when the model is queried.
 
     feature : string
-        Name of the column containing the input images. 'None' (the default)
-        indicates that the SFrame has only one column of Image type and that will
-        be used for similarity.
+        Name of the column containing either the input images or extracted features.
+        'None' (the default) indicates that only feature column or the  only image 
+        column in `dataset` should be used as the feature.
 
     model: string, optional
         Uses a pretrained model to bootstrap an image similarity model
@@ -127,18 +128,52 @@ def create(
 
     # Set defaults
     if feature is None:
-        feature = _tkutl._find_only_image_column(dataset)
+        # select feature column : either extracted features columns or image column itself
+        try:
+            feature = image_analysis.find_only_image_extracted_features_column(dataset, model)
+            feature_type = "extracted_features_array"
+        except:
+            feature = None
+        if feature is None:
+            try:
+                feature = _tkutl._find_only_image_column(dataset)
+                feature_type = "image"
+            except:
+                raise _ToolkitError(
+                    'No feature column specified and no column with expected type image or array is found.'
+                    + ' "datasets" consists of columns with types: '
+                    + ", ".join([x.__name__ for x in dataset.column_types()])
+                    + "."
+                )
+    else:
+        if image_analysis.is_image_deep_feature_sarray(dataset[feature], model):
+            feature_type = "extracted_features_array"
+        elif dataset[feature].dtype is _tc.Image:
+            feature_type = "image"
+        else:
+            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or array (for extracted features)'.format(feature=feature)
+                + ' "datasets" consists of columns with types: '
+                + ", ".join([x.__name__ for x in dataset.column_types()])
+                + "."
+            )
 
+    _tkutl._handle_missing_values(dataset, feature)
     feature_extractor = _image_feature_extractor._create_feature_extractor(model)
-
-    # Extract features
-    extracted_features = _tc.SFrame(
-        {
-            "__image_features__": feature_extractor.extract_features(
-                dataset, feature, verbose=verbose, batch_size=batch_size
-            ),
-        }
-    )
+    if feature_type == "image":
+        # Extract features
+        extracted_features = _tc.SFrame(
+            {
+                "__image_features__": feature_extractor.extract_features(
+                    dataset, feature, verbose=verbose, batch_size=batch_size
+                ),
+            }
+        )
+    else:
+        extracted_features = _tc.SFrame(
+            {
+                "__image_features__": dataset[feature]
+            }
+        )
 
     # Train a similarity model using the extracted features
     if label is not None:
