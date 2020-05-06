@@ -21,6 +21,7 @@ from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
+from ..image_analysis import image_analysis
 from ._evaluation import Evaluation as _Evaluation
 
 _DEFAULT_SOLVER_OPTIONS = {
@@ -70,10 +71,10 @@ def create(
         the order in which the classes are mapped.
 
     feature : string, optional
-        indicates that the SFrame has only column of Image type and that will
-        Name of the column containing the input images. 'None' (the default)
-        indicates the only image column in `dataset` should be used as the
-        feature.
+        indicates that the SFrame has either column of Image type or array type 
+        (extracted features) and that will be the name of the column containing the input
+        images or features. 'None' (the default) indicates that only feature column or the 
+        only image column in `dataset` should be used as the feature.
 
     l2_penalty : float, optional
         Weight on l2 regularization of the model. The larger this weight, the
@@ -250,29 +251,74 @@ def create(
         raise TypeError("Unrecognized value for 'validation_set'.")
 
     if feature is None:
-        feature = _tkutl._find_only_image_column(dataset)
+        # select feature column : either extracted features columns or image column itself
+        try:
+            feature = image_analysis.find_only_image_extracted_features_column(dataset, model)
+            feature_type = "extracted_features_array"
+        except:
+            feature = None
+        if feature is None:
+            try:
+                feature = _tkutl._find_only_image_column(dataset)
+                feature_type = "image"
+            except:
+                raise _ToolkitError(
+                    'No feature column specified and no column with expected type image or array is found.'
+                    + ' "datasets" consists of columns with types: '
+                    + ", ".join([x.__name__ for x in dataset.column_types()])
+                    + "."
+                )
+    else:
+        if image_analysis.is_image_deep_feature_sarray(dataset[feature], model):
+            feature_type = "extracted_features_array"
+        elif dataset[feature].dtype is _tc.Image:
+            feature_type = "image"
+        else:
+            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or array (for extracted features)'.format(feature=feature)
+                + ' "datasets" consists of columns with types: '
+                + ", ".join([x.__name__ for x in dataset.column_types()])
+                + "."
+            )
+
     _tkutl._handle_missing_values(dataset, feature, "training_dataset")
     feature_extractor = _image_feature_extractor._create_feature_extractor(model)
-
-    # Extract features
-    extracted_features = _tc.SFrame(
-        {
-            target: dataset[target],
-            "__image_features__": feature_extractor.extract_features(
-                dataset, feature, verbose=verbose, batch_size=batch_size
-            ),
-        }
-    )
-    if isinstance(validation_set, _tc.SFrame):
-        _tkutl._handle_missing_values(dataset, feature, "validation_set")
-        extracted_features_validation = _tc.SFrame(
+    if feature_type == "image":
+        # Extract features
+        extracted_features = _tc.SFrame(
             {
-                target: validation_set[target],
+                target: dataset[target],
                 "__image_features__": feature_extractor.extract_features(
-                    validation_set, feature, verbose=verbose, batch_size=batch_size
+                    dataset, feature, verbose=verbose, batch_size=batch_size
                 ),
             }
         )
+    else:
+        extracted_features = _tc.SFrame(
+            {
+                target: dataset[target],
+                "__image_features__": dataset[feature]
+            }
+        )
+
+    # Validation set
+    if isinstance(validation_set, _tc.SFrame):
+        if feature_type == "image":
+            _tkutl._handle_missing_values(validation_set, feature, "validation_set")
+            extracted_features_validation = _tc.SFrame(
+                {
+                    target: validation_set[target],
+                    "__image_features__": feature_extractor.extract_features(
+                        validation_set, feature, verbose=verbose, batch_size=batch_size
+                    ),
+                }
+            )
+        else:
+            extracted_features_validation = _tc.SFrame(
+                {
+                    target: validation_set[target],
+                    "__image_features__": validation_set[feature]
+                }
+            )
     else:
         extracted_features_validation = validation_set
 
