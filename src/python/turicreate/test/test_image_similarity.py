@@ -12,9 +12,13 @@ import turicreate as tc
 from turicreate.toolkits._internal_utils import _mac_ver
 import tempfile
 from . import util as test_util
+
+from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING
+
 import coremltools
 import numpy as np
-from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from array import array
 
 
 def get_test_data():
@@ -63,7 +67,13 @@ def get_test_data():
         )
         images.append(tc_image)
 
-    return tc.SFrame({"awesome_image": images})
+    data_dict = {"awesome_image": images}
+    no_of_columns = len(data_dict[[*data_dict][0]])
+    possible_feature_length_list = list(set(MODEL_TO_FEATURE_SIZE_MAPPING.values()))
+    for feature_length in possible_feature_length_list:
+        data_dict[str(feature_length)] = tc.SArray(np.random.rand(no_of_columns, feature_length)*100, dtype=array)
+
+    return tc.SFrame(data_dict)
 
 
 data = get_test_data()
