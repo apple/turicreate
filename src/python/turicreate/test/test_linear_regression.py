@@ -25,6 +25,7 @@ if sys.version_info.major == 3:
 
 try:
     import statsmodels.formula.api as sm
+    from sklearn import linear_model
 except ImportError as e:
     # ignore extra dependencies
     # https://github.com/apple/turicreate/pull/3156
@@ -1135,8 +1136,6 @@ class L1LinearRegressionTest(unittest.TestCase):
         self.examples = X.shape[0]
 
         # Fit the model
-        from sklearn import linear_model
-
         self.l1_penalty = 10.0
         clf = linear_model.ElasticNet(
             alpha=self.l1_penalty / (2 * self.examples), l1_ratio=1

@@ -48,7 +48,7 @@ def hue_augmenter(
     image,
     annotation,
     random_alpha_tf,
-    max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"]
+    max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"],
 ):
 
     # Apply the random rotation around the color wheel.
@@ -70,9 +70,7 @@ def color_augmenter(
 ):
 
     # Apply the random adjustment to brightness.
-    brightness_delta = interpolate(
-        random_alpha_tf[0], -max_brightness, max_brightness
-    )
+    brightness_delta = interpolate(random_alpha_tf[0], -max_brightness, max_brightness)
     image = tf.image.adjust_brightness(image, brightness_delta)
 
     # Apply the random adjustment to contrast.
@@ -160,7 +158,7 @@ def horizontal_flip_augmenter(
     image,
     annotation,
     random,
-    skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"]
+    skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"],
 ):
 
     if random.uniform(0.0, 1.0) < skip_probability:
@@ -508,14 +506,7 @@ def numpy_augmenter(img, ann, seed):
     return img, ann
 
 
-def complete_augmenter(
-    img_tf,
-    ann_tf,
-    seed_tf,
-    alpha_tf,
-    output_height,
-    output_width
-):
+def complete_augmenter(img_tf, ann_tf, seed_tf, alpha_tf, output_height, output_width):
     img_tf, ann_tf = tf.numpy_function(
         func=numpy_augmenter,
         inp=[img_tf, ann_tf, seed_tf],
@@ -556,7 +547,7 @@ class DataAugmenter(object):
                         self.random_seed_tf[i],
                         self.alpha_tf[i],
                         output_height,
-                        output_width
+                        output_width,
                     )
                     self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
 
@@ -565,14 +556,14 @@ class DataAugmenter(object):
             feed_dict = dict()
 
             # Populate feed_dict with images and annotations
-            graph_op = self.resize_op_batch[0:len(images)]
+            graph_op = self.resize_op_batch[0 : len(images)]
             for i in range(len(images)):
                 feed_dict[self.img_tf[i]] = _utils.convert_shared_float_array_to_numpy(
                     images[i]
                 )
-                feed_dict[
-                    self.ann_tf[i]
-                ] = _utils.convert_shared_float_array_to_numpy(annotations[i])
+                feed_dict[self.ann_tf[i]] = _utils.convert_shared_float_array_to_numpy(
+                    annotations[i]
+                )
 
             # Populate feed_dict with random seed and random alpha values, used
             # to sample image perturbations. We don't use TensorFlow's built-in
@@ -580,8 +571,8 @@ class DataAugmenter(object):
             # reset the seed for each session (batch).
             random = np.random.RandomState(seed=random_seed)
             feed_dict[self.alpha_tf] = random.rand(*self.alpha_tf.shape)
-            feed_dict[self.random_seed_tf] = random.random_integers(
-                0, 2**32 - 1, size=self.batch_size
+            feed_dict[self.random_seed_tf] = random.randint(
+                0, 2 ** 32, size=self.batch_size
             )
             aug_output = session.run(graph_op, feed_dict=feed_dict)
             processed_images = []
