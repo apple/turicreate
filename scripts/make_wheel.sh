@@ -295,14 +295,15 @@ function package_wheel() {
   function package_wheel_helper {
     local is_minimal=$1
     local version_modifier=$2
+    local dist_type="bdist_wheel"
 
     cd ${WORKSPACE}/${build_type}/src/python
 
     if [[ "$minimal" -eq 1 ]] ; then
       if [[ "$(uname -s)" == "Darwin" ]] ; then
-        sed -i "" 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_import.py
+        sed -i "" 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_package.py
       else
-        sed -i 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_import.py
+        sed -i 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_package.py
       fi
     fi
 
