@@ -19,12 +19,14 @@ from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_sframe,
     _raise_error_if_not_sarray,
 )
+from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING
 
 from . import util as test_util
 
 import coremltools
 import numpy as np
 import turicreate as tc
+from array import array
 
 
 def get_test_data():
@@ -74,7 +76,13 @@ def get_test_data():
         images.append(tc_image)
 
     labels = ["white"] * 5 + ["black"] * 5
-    return tc.SFrame({"awesome_image": images, "awesome_label": labels})
+    data_dict = {"awesome_image": images, "awesome_label": labels}
+    possible_feature_length_list = list(set(MODEL_TO_FEATURE_SIZE_MAPPING.values()))
+    no_of_columns = len(data_dict[[*data_dict][0]])
+    for feature_length in possible_feature_length_list:
+        data_dict[str(feature_length)] = tc.SArray(np.random.rand(no_of_columns, feature_length)*100, dtype=array)
+
+    return tc.SFrame(data_dict)
 
 
 data = get_test_data()
@@ -133,13 +141,17 @@ class ImageClassifierTest(unittest.TestCase):
             self.assertAlmostEqual(a, b, delta=tol)
 
     def test_create_with_missing_value(self):
+        from array import array
+
+        data_dict = {
+            self.feature: tc.SArray([None], dtype=tc.Image),
+            self.target: [data[self.target][0]],
+        }
+        possible_feature_length_list = list(set(MODEL_TO_FEATURE_SIZE_MAPPING.values()))
+        for feature_length in possible_feature_length_list:
+            data_dict[str(feature_length)] = tc.SArray([None], dtype=array)
         data_with_none = data.append(
-            tc.SFrame(
-                {
-                    self.feature: tc.SArray([None], dtype=tc.Image),
-                    self.target: [data[self.target][0]],
-                }
-            )
+            tc.SFrame(data_dict)
         )
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(
