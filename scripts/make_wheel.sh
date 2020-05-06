@@ -300,7 +300,7 @@ function package_wheel () {
 
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
 
-  # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
+  # This produced a wheel starting with turicreate-${VERSION_NUMBER} under dist/
   if [[ "${minimal}" -eq 1 ]]; then
     "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
   else

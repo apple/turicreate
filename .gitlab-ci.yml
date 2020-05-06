@@ -609,7 +609,7 @@ scenario_tests_mac_python27_10_13:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
-    - ./run_scenario_tests.sh "$(ls ../target/turicreate-*.whl | grep -v minimal)"
+    - ./run_scenario_tests.sh "$(ls -1 ../target/turicreate-*.whl | grep -v minimal)"
 
 scenario_tests_mac_python27_10_14:
   tags:
@@ -623,7 +623,7 @@ scenario_tests_mac_python27_10_14:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
-    - ./run_scenario_tests.sh "$(ls ../target/turicreate-*.whl | grep -v minimal)"
+    - ./run_scenario_tests.sh "$(ls -1 ../target/turicreate-*.whl | grep -v minimal)"
 
 collect_artifacts:
   tags:

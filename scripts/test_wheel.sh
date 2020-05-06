@@ -138,7 +138,7 @@ elif [[ ${#bdist_wheels[@]} -eq 2 ]]; then
   fi
 
 else
-  echo "wrong number of wheel: ${#bdist_wheels[@]}. At most 2 wheels are needed."
+  echo "Wrong number of wheel: ${#bdist_wheels[@]}. At most 2 wheels are needed."
   exit 1
 fi
 

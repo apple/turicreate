@@ -186,8 +186,6 @@ if __name__ == "__main__":
         # See: https://github.com/apple/turicreate/issues/3003
         install_requires.append("tensorflow >= 2.0.0,<= 2.0.1 ")
 
-    install_requires = [s for s in install_requires if s]
-
     setup(
         name="turicreate",
         version=VERSION,

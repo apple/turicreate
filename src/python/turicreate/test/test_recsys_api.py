@@ -14,7 +14,6 @@ import turicreate as tc
 DELTA = 0.000001
 
 
-@pytest.mark.minimal
 class AdditionalDataTest(unittest.TestCase):
     def setUp(self):
         data = tc.SFrame()
