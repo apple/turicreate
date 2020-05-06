@@ -12,7 +12,6 @@ import random
 import tempfile
 import os
 import shutil
-import pytest
 
 
 class BoostedTreesRegressionCheckpointTest(unittest.TestCase):

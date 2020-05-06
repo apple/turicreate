@@ -292,7 +292,7 @@ package_wheel() {
   fi
 
 function package_wheel () {
-  local minimal=$1
+  local is_minimal=$1
   local version_modifier=$2
 
   cd ${WORKSPACE}/${build_type}/src/python
@@ -301,7 +301,7 @@ function package_wheel () {
   VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
 
   # This produced a wheel starting with turicreate-${VERSION_NUMBER} under dist/
-  if [[ "${minimal}" -eq 1 ]]; then
+  if [[ "${is_minimal}" -eq 1 ]]; then
     "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
   else
     # full version
