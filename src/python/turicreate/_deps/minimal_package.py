@@ -83,6 +83,10 @@ def minimal_package_import_check(name):
             return importlib.import_module(name)
     except ImportError as e:
         if USE_MINIMAL:
+            # e.g., tesorflow.compat.v1 should report tensorflow
+            if "." in name:
+                name = name.split(".")[0]
+
             # append more information
             e.msg = (
                 "{}. This is a minimal package for SFrame only, without {} pinned"
