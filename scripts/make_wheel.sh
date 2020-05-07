@@ -299,7 +299,7 @@ function package_wheel() {
 
     cd ${WORKSPACE}/${build_type}/src/python
 
-    if [[ "$minimal" -eq 1 ]] ; then
+    if [[ "$is_minimal" -eq 1 ]] ; then
       if [[ "$(uname -s)" == "Darwin" ]] ; then
         sed -i "" 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_package.py
       else
@@ -307,23 +307,15 @@ function package_wheel() {
       fi
     fi
 
-  # This produced a wheel starting with turicreate-${VERSION_NUMBER} under dist/
-  if [[ "${is_minimal}" -eq 1 ]]; then
-    "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
-  else
-    # full version
-    "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}"
-  fi
-
-    VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
-
-    # This produced an wheel starting with turicreate-${VERSION_NUMBER} under dist/
-    if [[ "${minimal}" -eq 1 ]]; then
+    # This produced a wheel starting with turicreate-${VERSION_NUMBER} under dist/
+    if [[ "${is_minimal}" -eq 1 ]]; then
       "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
     else
       # full version
       "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}"
     fi
+
+    VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
 
     cd "${WORKSPACE}"
 
