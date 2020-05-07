@@ -10,11 +10,16 @@ from __future__ import absolute_import as _
 import numpy as _np
 from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
+from turicreate._deps.minimal_package import minimal_package_import_check
 
-# This toolkit is compatible with TensorFlow V2 behavior.
-# However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
-_tf.disable_v2_behavior()
+# in conjunction with minimal package
+def _lazy_import_tensorflow():
+    _tf = minimal_package_import_check("tensorflow.compat.v1")
+
+    # This toolkit is compatible with TensorFlow V2 behavior.
+    # However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
+    _tf.disable_v2_behavior()
+    return _tf
 
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
@@ -31,6 +36,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                 net_params[key]
             )
 
+        _tf = _lazy_import_tensorflow()
         self.dc_graph = _tf.Graph()
         self.num_classes = num_classes
         self.batch_size = batch_size
@@ -39,6 +45,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
             self.init_drawing_classifier_graph(net_params)
 
     def init_drawing_classifier_graph(self, net_params):
+        _tf = _lazy_import_tensorflow()
 
         self.input = _tf.placeholder(_tf.float32, [self.batch_size, 28, 28, 1])
         self.weights = _tf.placeholder(_tf.float32, [self.batch_size, 1])
@@ -217,6 +224,8 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         """
 
         net_params = {}
+
+        _tf = _lazy_import_tensorflow()
         with self.dc_graph.as_default():
             layer_names = _tf.trainable_variables()
             layer_weights = self.sess.run(layer_names)

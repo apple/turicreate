@@ -10,10 +10,15 @@ from __future__ import absolute_import as _
 
 import numpy as _np
 from .._tf_model import TensorFlowModel
+from turicreate._deps.minimal_package import minimal_package_import_check
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
 
-_tf.disable_v2_behavior()
+
+# in conjunction with minimal package
+def _lazy_import_tensorflow():
+    _tf = minimal_package_import_check("tensorflow.compat.v1")
+    _tf.disable_v2_behavior()
+    return _tf
 
 
 class ODTensorFlowModel(TensorFlowModel):
@@ -38,6 +43,7 @@ class ODTensorFlowModel(TensorFlowModel):
                 init_weights[key]
             )
 
+        _tf = _lazy_import_tensorflow()
         self.od_graph = _tf.Graph()
         self.config = config
         self.batch_size = batch_size
@@ -69,6 +75,7 @@ class ODTensorFlowModel(TensorFlowModel):
             self.init_object_detector_graph(input_h, input_w, init_weights)
 
     def init_object_detector_graph(self, input_h, input_w, init_weights):
+        _tf = _lazy_import_tensorflow()
 
         self.is_train = _tf.placeholder(_tf.bool)  # Set flag for training or val
 
@@ -146,6 +153,8 @@ class ODTensorFlowModel(TensorFlowModel):
             Dict with C++ weights and names.
 
         """
+        _tf = _lazy_import_tensorflow()
+
         for keys in tf_net_params:
             if tf_net_params[keys].ndim == 1:
                 self.sess.run(
@@ -170,6 +179,7 @@ class ODTensorFlowModel(TensorFlowModel):
         """
         Function to check if grad value is None. If not, continue with clipping.
         """
+        _tf = _lazy_import_tensorflow()
         if grad is None:
             return grad
         return _tf.clip_by_value(grad, -clip_value, clip_value)
@@ -199,6 +209,8 @@ class ODTensorFlowModel(TensorFlowModel):
         return: TensorFlow Tensor
             Result of batch norm layer
         """
+        _tf = _lazy_import_tensorflow()
+
         dim_of_x = inputs.get_shape()[-1]
 
         shadow_mean = _tf.Variable(
@@ -274,6 +286,8 @@ class ODTensorFlowModel(TensorFlowModel):
         conv: TensorFlow Tensor
             Return result from combining conv, batch norm and leaky ReLU or conv and bias as needed
         """
+        _tf = _lazy_import_tensorflow()
+
         weight = _tf.Variable(
             _tf.random.truncated_normal(shape, stddev=0.1),
             trainable=True,
@@ -315,6 +329,7 @@ class ODTensorFlowModel(TensorFlowModel):
         pool: TensorFlow Tensor
             Return pooling layer
         """
+        _tf = _lazy_import_tensorflow()
 
         pool = _tf.nn.max_pool2d(
             inputs, ksize=pool_size, strides=strides, padding=padding, name=name
@@ -407,6 +422,8 @@ class ODTensorFlowModel(TensorFlowModel):
         loss: TensorFlow Tensor
             Loss (combination of regression and classification losses)
         """
+        _tf = _lazy_import_tensorflow()
+
         POS_IOU = 0.7
         NEG_IOU = 0.3
 
@@ -627,6 +644,8 @@ class ODTensorFlowModel(TensorFlowModel):
         tf_export_params: Dictionary
             Dictionary of weights from TensorFlow stored as {weight_name: weight_value}
         """
+        _tf = _lazy_import_tensorflow()
+
         tf_export_params = {}
 
         # collect all TF variables to include running_mean and running_variance

@@ -72,7 +72,9 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         # Suppresses verbosity to only errors
         _utils.suppress_tensorflow_warnings()
 
-        from tensorflow import keras
+        from turicreate._deps.minimal_package import minimal_package_import_check
+
+        keras = minimal_package_import_check("tensorflow.keras")
 
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()

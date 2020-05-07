@@ -8,12 +8,21 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
-
-_tf.disable_v2_behavior()
 from .._tf_model import TensorFlowModel
 
 import numpy as _np
+
+from turicreate._deps.minimal_package import minimal_package_import_check
+
+
+def _lazy_import_tensorflow():
+    _tf = minimal_package_import_check("tensorflow.compat.v1")
+
+    # This toolkit is compatible with TensorFlow V2 behavior.
+    # However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
+    _tf.disable_v2_behavior()
+    return _tf
+
 
 # Constant parameters for the neural network
 CONV_H = 64
@@ -42,6 +51,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
                 net_params[key]
             )
 
+        _tf = _lazy_import_tensorflow()
         self.ac_graph = _tf.Graph()
         self.num_classes = num_classes
         self.batch_size = batch_size
@@ -56,6 +66,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         self, net_params, num_features, prediction_window, seed
     ):
         # Vars
+        _tf = _lazy_import_tensorflow()
         self.data = _tf.placeholder(
             _tf.float32, [None, prediction_window * self.seq_len, num_features]
         )
@@ -75,30 +86,28 @@ class ActivityTensorFlowModel(TensorFlowModel):
             "conv_weight": _tf.Variable(
                 _utils.convert_conv1d_coreml_to_tf(net_params["conv_weight"]),
                 shape=[prediction_window, num_features, CONV_H],
-                name="conv_weight"
+                name="conv_weight",
             ),
             "dense0_weight": _tf.Variable(
                 _utils.convert_dense_coreml_to_tf(net_params["dense0_weight"]),
                 shape=[LSTM_H, DENSE_H],
-                name="dense0_weight"
+                name="dense0_weight",
             ),
             "dense1_weight": _tf.Variable(
                 _utils.convert_dense_coreml_to_tf(net_params["dense1_weight"]),
                 shape=[DENSE_H, self.num_classes],
-                name="dense1_weight"
+                name="dense1_weight",
             ),
         }
 
         # Biases
         self.biases = {
             "conv_bias": _tf.Variable(
-                net_params["conv_bias"],
-                shape=[CONV_H],
-                name="conv_bias"),
+                net_params["conv_bias"], shape=[CONV_H], name="conv_bias"
+            ),
             "dense0_bias": _tf.Variable(
-                net_params["dense0_bias"],
-                shape=[DENSE_H],
-                name="dense0_bias"),
+                net_params["dense0_bias"], shape=[DENSE_H], name="dense0_bias"
+            ),
         }
 
         # Convolution
@@ -124,9 +133,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             initializer=_tf.initializers.constant(lstm, verify_shape=True),
         )
         init_state = cells.zero_state(self.batch_size, _tf.float32)
-        rnn_outputs, _ = _tf.nn.dynamic_rnn(
-            cells, dropout, initial_state=init_state
-        )
+        rnn_outputs, _ = _tf.nn.dynamic_rnn(cells, dropout, initial_state=init_state)
 
         # Dense
         dense = _tf.reshape(rnn_outputs, (-1, LSTM_H))
@@ -242,6 +249,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         # Needing to manually set the LSTM bias in this way prevents this toolkit from running with
         # TensorFlow V2 behavior enabled. This is the only thing preventing this toolkit from
         # running with V2 behavior enabled.
+        _tf = _lazy_import_tensorflow()
         self.sess.run(
             _tf.assign(
                 _tf.get_default_graph().get_tensor_by_name("rnn/lstm_cell/bias:0"),
@@ -360,6 +368,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
         tf_export_params: Dictionary
             Dictionary of weights from TensorFlow stored as {weight_name: weight_value}
         """
+        _tf = _lazy_import_tensorflow()
         tf_export_params = {}
         with self.ac_graph.as_default():
             tvars = _tf.trainable_variables()
@@ -434,4 +443,5 @@ class ActivityTensorFlowModel(TensorFlowModel):
             Learning rate
 
         """
+        _tf = _lazy_import_tensorflow()
         self.optimizer = _tf.train.AdamOptimizer(learning_rate=lr)

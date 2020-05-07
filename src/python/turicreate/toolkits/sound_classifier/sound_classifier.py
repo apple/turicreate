@@ -135,7 +135,9 @@ class _Accuracy(object):
 
 class _TFAccuracy(_Accuracy):
     def __init__(self):
-        import tensorflow as tf
+        from turicreate._deps.minimal_package import minimal_package_import_check
+
+        tf = minimal_package_import_check("tensorflow")
 
         self.impl = tf.keras.metrics.Accuracy()
 
