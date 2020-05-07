@@ -153,9 +153,15 @@ class ImageClassifierTest(unittest.TestCase):
         data_with_none = data.append(
             tc.SFrame(data_dict)
         )
+        # testing with Image type as input features
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(
                 data_with_none, feature=self.feature, target=self.target
+            )
+        # testing with extracted features as input feature
+        with self.assertRaises(_ToolkitError):
+            tc.image_classifier.create(
+                data_with_none, feature=str(MODEL_TO_FEATURE_SIZE_MAPPING[self.pre_trained_model]), target=self.target
             )
 
     def test_create_with_missing_feature(self):
@@ -173,6 +179,18 @@ class ImageClassifierTest(unittest.TestCase):
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(data[:0], target=self.target)
+
+    def test_select_correct_feature_column_to_train(self):
+        # sending both, the correct extracted features colum and image column
+        extracted_feature_column_name = str(MODEL_TO_FEATURE_SIZE_MAPPING[self.pre_trained_model])
+        test_model = tc.image_classifier.create(data, target=self.target)
+        self.assertTrue(test_model.feature == extracted_feature_column_name)
+        
+        # sending the wrong exracted features column along with the image column 
+        columns_name_list = list(filter(lambda x: x != extracted_feature_column_name, data.column_names()))
+        test_data = data.select_columns(columns_name_list)
+        test_model = tc.image_classifier.create(test_data, target=self.target)
+        self.assertTrue(test_model.feature == "awesome_image")
 
     def test_predict(self):
         model = self.model
