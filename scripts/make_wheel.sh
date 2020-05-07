@@ -373,7 +373,7 @@ function package_wheel() {
       unset PYTHONPATH
 
       "$PIP_EXECUTABLE" uninstall -y turicreate
-      "$PIP_EXECUTABLE" install --upgrade "${WHEEL_PATH}"
+      "$PIP_EXECUTABLE" install "${WHEEL_PATH}"
       $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
     fi
 
