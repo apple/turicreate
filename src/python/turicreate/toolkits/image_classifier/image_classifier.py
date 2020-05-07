@@ -263,7 +263,7 @@ def create(
                 feature_type = "image"
             except:
                 raise _ToolkitError(
-                    'No feature column specified and no column with expected type image or array is found.'
+                    'No feature column specified and no column with expected type image or extracted features array is found.'
                     + ' "datasets" consists of columns with types: '
                     + ", ".join([x.__name__ for x in dataset.column_types()])
                     + "."
@@ -274,8 +274,8 @@ def create(
         elif dataset[feature].dtype is _tc.Image:
             feature_type = "image"
         else:
-            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or array (for extracted features)'.format(feature=feature)
-                + ' "datasets" consists of columns with types: '
+            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or extracted features array.'.format(feature=feature)
+                + ' "Datasets" consists of columns with types: '
                 + ", ".join([x.__name__ for x in dataset.column_types()])
                 + "."
             )
