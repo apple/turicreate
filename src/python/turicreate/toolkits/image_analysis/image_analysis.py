@@ -10,6 +10,7 @@ from __future__ import absolute_import as _
 import turicreate as _tc
 
 import turicreate.toolkits._internal_utils as _tkutl
+from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from ...data_structures.image import Image as _Image
@@ -263,7 +264,7 @@ def find_only_image_extracted_features_column(sframe, model_name):
     if is_image_deep_feature_sarray(sframe[feature_column], model_name):
         return feature_column
     else:
-        raise ToolkitError(
+        raise _ToolkitError(
             'No "{col_name}" column specified and no column with expected type "{type_name}" is found.'.format(
                 col_name=feature_column, type_name="array"
             )
