@@ -17,10 +17,10 @@ VERSION = "6.2"  # {{VERSION_STRING}}
 # pkgs not needed for minimal pkg
 NON_MINIMAL_LIST = [
     "coremltools",
-    "llvmlite",
-    "tensorflow",
+    "pandas",
     "resampy",
     "scipy",
+    "tensorflow",
 ]
 
 
