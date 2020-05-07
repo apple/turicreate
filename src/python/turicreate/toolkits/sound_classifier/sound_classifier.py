@@ -832,7 +832,7 @@ class SoundClassifier(_CustomModel):
         --------
         >>> model.export_coreml('./myModel.mlmodel')
         """
-        minimal_package_import_check("coremltools")
+        coremltools = minimal_package_import_check("coremltools")
         from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
 
         prob_name = self.target + "Probability"

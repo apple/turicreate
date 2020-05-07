@@ -153,6 +153,7 @@ def resize_augmenter(image, annotation, output_shape):
         )
 
     elif resize_method == "turicreate":
+        tf = _lazy_import_tensorflow()
         image_scaled = tf.numpy_function(
             func=resize_turicreate_image, inp=[image, output_shape], Tout=[tf.float32]
         )

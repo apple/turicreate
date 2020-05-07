@@ -319,7 +319,7 @@ function package_wheel() {
 
     cd "${WORKSPACE}"
 
-    ORIG_WHEEL_PATH=$(ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}-*.whl)
+    ORIG_WHEEL_PATH=$(ls "${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}"-*.whl)
     WHEEL_PATH="${ORIG_WHEEL_PATH/turicreate-${VERSION_NUMBER}/turicreate-${VERSION_NUMBER}${version_modifier}}"
     [[ "$ORIG_WHEEL_PATH" != "${WHEEL_PATH}" ]] && mv "$ORIG_WHEEL_PATH" "$WHEEL_PATH"
 
@@ -354,6 +354,7 @@ function package_wheel() {
     else
         NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
     fi
+
     NEW_WHEEL_PATH=${NEW_WHEEL_PATH/linux/manylinux1}
     if [[ ! "${WHEEL_PATH}" == "${NEW_WHEEL_PATH}" ]]; then
         mv "${WHEEL_PATH}" "${NEW_WHEEL_PATH}"

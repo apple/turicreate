@@ -440,14 +440,14 @@ def define_vgg_pre_processing(tf_input):
     out: tensorflow.Tensor
         The scaled output tensor of the network.
     """
+    _tf = _lazy_import_tensorflow()
+
     scaled_input = tf_input * 255.00
     red_channel, green_channel, blue_channel = _tf.split(scaled_input, 3, axis=3)
 
     red_channel_scaled = red_channel - 123.68
     green_channel_scaled = green_channel - 116.779
     blue_channel_scaled = blue_channel - 103.939
-
-    _tf = _lazy_import_tensorflow()
 
     sub_scalar = _tf.concat(
         [red_channel_scaled, green_channel_scaled, blue_channel_scaled], 3

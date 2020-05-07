@@ -856,7 +856,7 @@ class ImageClassifier(_CustomModel):
         --------
         >>> model.export_coreml('myModel.mlmodel')
         """
-        _cmt = minimal_package_import_check("coremltools")
+        coremltools = minimal_package_import_check("coremltools")
         # First define three internal helper functions
 
         # Internal helper function
