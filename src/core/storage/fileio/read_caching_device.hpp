@@ -83,7 +83,7 @@ class StopWatch {
     }
 
     if (!threads_.insert(std::this_thread::get_id()).second) {
-      logstream(LOG_ERROR) << "this thread " << std::this_thread::get_id()
+      logstream(LOG_DEBUG) << "this thread " << std::this_thread::get_id()
                            << "already starts the clock" << std::endl;
     }
   }
@@ -140,7 +140,7 @@ class StopWatch {
 
   // singleton destroyed since it's non-copy and movable,
   // any dangling pointer or reference to this stop_watah is illegal
-  ~StopWatch() { stop(true); }
+  ~StopWatch() { stop(/*no throw */ true); }
 
  private:
   uint64_t interval_;
