@@ -540,9 +540,6 @@ list_objects_response list_objects_impl(const s3url& parsed_url,
                 << "list_objects_impl failed:" << ret.error << std::endl;
           } else {
             // continue retry
-            logprogress_stream << "list_objects retry on "
-                               << parsed_url.string_from_s3url(false)
-                               << std::endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(backoff));
             backoff *= 2;
           }

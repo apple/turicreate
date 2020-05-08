@@ -62,10 +62,17 @@ class StopWatch {
   StopWatch(const StopWatch&) = delete;
   StopWatch(StopWatch&& rhs) = delete;
 
+  /*
+   * start will register the thread id so that client can use if (stop() == 0)
+   * to decide whether stop watch should be reallocated.
+   *
+   * ideally, use start once and close it once with stop.
+   * This impl allows double start.
+   * */
   void start() {
     std::lock_guard<std::mutex> lk(mx_);
 
-    if (thread_set_.size() == 0) {
+    if (threads_.size() == 0) {
       using milliseconds = std::chrono::milliseconds;
       auto lag = std::chrono::duration_cast<milliseconds>(
           std::chrono::steady_clock::now() - beg_);
@@ -75,8 +82,8 @@ class StopWatch {
       }
     }
 
-    if (!thread_set_.insert(std::this_thread::get_id()).second) {
-      logstream(LOG_DEBUG) << "this thread " << std::this_thread::get_id()
+    if (!threads_.insert(std::this_thread::get_id()).second) {
+      logstream(LOG_ERROR) << "this thread " << std::this_thread::get_id()
                            << "already starts the clock" << std::endl;
     }
   }
@@ -84,7 +91,7 @@ class StopWatch {
   bool is_time_to_record() {
     std::lock_guard<std::mutex> lock(mx_);
 
-    if (thread_set_.size() == 0) return false;
+    if (threads_.size() == 0) return false;
 
     // reach to timepoint, log it.
     auto cur = steady_clock::now();
@@ -100,27 +107,31 @@ class StopWatch {
   /*
    * @return: int. number of threads still holding
    */
-  int stop() {
+  int stop(bool no_throw = false) {
     std::lock_guard<std::mutex> lk(mx_);
-    if (thread_set_.count(std::this_thread::get_id())) {
-      thread_set_.erase(std::this_thread::get_id());
+
+    if (threads_.count(std::this_thread::get_id())) {
+      threads_.erase(std::this_thread::get_id());
       // last man standing
-      if (thread_set_.size() == 0) {
+      if (threads_.size() == 0) {
         end_ = steady_clock::now();
         return 0;
       }
       // still running
-      return thread_set_.size();
+      return threads_.size();
     }
 
-    return thread_set_.size();
+    // no-op
+    if (no_throw) return threads_.size();
+
+    std_log_and_throw(std::logic_error, "you don't own this stop watch");
   }
 
   template <class Output>
   Output duration() const {
     std::lock_guard<std::mutex> lk(mx_);
     // the clock is still on
-    if (thread_set_.count(std::this_thread::get_id())) {
+    if (!threads_.empty()) {
       return std::chrono::duration_cast<Output>(steady_clock::now() - beg_);
     }
 
@@ -129,7 +140,7 @@ class StopWatch {
 
   // singleton destroyed since it's non-copy and movable,
   // any dangling pointer or reference to this stop_watah is illegal
-  ~StopWatch() { stop(); }
+  ~StopWatch() { stop(true); }
 
  private:
   uint64_t interval_;
@@ -180,16 +191,19 @@ class read_caching_device {
       auto iter = m_filename_to_filesize_map.find(filename);
       if (iter != m_filename_to_filesize_map.end()) {
         m_file_size = iter->second;
+        m_filename_to_stop_watch[filename]->start();
       } else {
         m_contents = std::make_shared<T>(filename, write);
         m_file_size = m_contents->file_size();
         m_filename_to_filesize_map[filename] = m_file_size;
         // report downloading every 30s
-        if (m_filename_to_filesize_map.find(filename) !=
-            m_filename_to_filesize_map.end()) {
+        if (m_filename_to_stop_watch.find(filename) ==
+            m_filename_to_stop_watch.end()) {
           m_filename_to_stop_watch[filename] =
               std::unique_ptr<StopWatchSec_t>(new StopWatchSec_t(30));
         }
+        // start the clock immediately to register the thread id into it
+        m_filename_to_stop_watch[filename]->start();
       }
     } else {
       m_contents = std::make_shared<T>(filename, write);
@@ -220,7 +234,9 @@ class read_caching_device {
 
         auto iter = m_filename_to_stop_watch.find(m_filename);
         if (iter != m_filename_to_stop_watch.end()) {
-          if (!iter->stop()) {
+          // use no throw since this nanny thread may not start clock
+          if (iter->second->stop(/* no throw */ true) == 0) {
+            // nobody is holding
             m_filename_to_stop_watch.erase(iter);
           }
         }
@@ -231,9 +247,14 @@ class read_caching_device {
       m_contents.reset();
       {
         std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
-        if (m_filename_to_stop_watch.find(m_filename) !=
-            m_filename_to_stop_watch.end())
-          m_filename_to_stop_watch[m_filename]->stop();
+        m_filename_to_filesize_map.erase(m_filename);
+        auto iter = m_filename_to_stop_watch.find(m_filename);
+        if (iter != m_filename_to_stop_watch.end())
+          // use no throw since this nanny thread may not start clock
+          if (iter->second->stop(/* no throw */ true) == 0) {
+            // nobody is holding
+            m_filename_to_stop_watch.erase(iter);
+          }
       }
     }
   }
@@ -280,6 +301,8 @@ class read_caching_device {
   std::streamsize write(const char* strm_ptr, std::streamsize n) {
     {
       std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
+      if (m_filename_to_filesize_map.count(m_filename) == 0)
+        log_and_throw("write through closed files handle");
       m_filename_to_stop_watch[m_filename]->start();
     }
 
@@ -381,6 +404,8 @@ class read_caching_device {
 
     {
       std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
+      if (m_filename_to_filesize_map.count(m_filename) == 0)
+        log_and_throw("read through closed files handle");
       m_filename_to_stop_watch[m_filename]->start();
     }
 

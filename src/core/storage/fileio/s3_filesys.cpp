@@ -12,7 +12,6 @@
 
 #include <algorithm>
 #include <boost/algorithm/string.hpp>
-#include <chrono>
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <core/storage/fileio/get_s3_endpoint.hpp>
@@ -92,6 +91,7 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
   std::stringstream ss;
   // range is includsive and zero based
   ss << "bytes=" << curr_bytes_ << '-' << curr_bytes_ + nwant - 1;
+  logstream(LOG_DEBUG) << "GetObject.Range: " << ss.str() << std::endl;
 
   Aws::S3::Model::GetObjectRequest object_request;
   object_request.SetRange(ss.str().c_str());
@@ -114,7 +114,6 @@ int AWSReadStreamBase::FillBuffer(char *input_ptr, size_t nwant) {
     }
     // std::istreambuf_iterator<char>
     retrieved_file.read(input_ptr, nwant);
-
   } else {
     auto error = get_object_outcome.GetError();
     ss.str("");
