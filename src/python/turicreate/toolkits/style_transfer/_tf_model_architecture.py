@@ -12,11 +12,10 @@ from turicreate.toolkits._tf_model import TensorFlowModel
 
 import numpy as _np
 import turicreate.toolkits._tf_utils as _utils
+from turicreate._deps.minimal_package import minimal_package_import_check
 
 # in conjunction with minimal package
 def _lazy_import_tensorflow():
-    from turicreate._deps.minimal_package import minimal_package_import_check
-
     _tf = minimal_package_import_check("tensorflow.compat.v1")
 
     # This toolkit is compatible with TensorFlow V2 behavior.

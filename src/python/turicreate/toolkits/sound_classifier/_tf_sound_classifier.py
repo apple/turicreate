@@ -8,16 +8,15 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
+from turicreate._deps.minimal_package import minimal_package_import_check
 
 
 # in conjunction with minimal package
 def _lazy_import_tensorflow():
     # Suppresses verbosity to only errors
     _utils.suppress_tensorflow_warnings()
-    from turicreate._deps.minimal_package import minimal_package_import_check
 
     _tf = minimal_package_import_check("tensorflow.compat.v1")
-
     # This toolkit is compatible with TensorFlow V2 behavior.
     # However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
     _tf.disable_v2_behavior()
