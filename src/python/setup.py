@@ -14,7 +14,14 @@ from setuptools.command.install import install
 
 PACKAGE_NAME = "turicreate"
 VERSION = "6.2"  # {{VERSION_STRING}}
-NON_MINIMAL_LIST = ["tensorflow", "resampy"]
+# pkgs not needed for minimal pkg
+NON_MINIMAL_LIST = [
+    "coremltools",
+    "pandas",
+    "resampy",
+    "scipy",
+    "tensorflow",
+]
 
 
 # Prevent distutils from thinking we are a pure python package
@@ -167,7 +174,9 @@ if __name__ == "__main__":
         "scipy >= 1.1.0",
         "six >= 1.10.0",
     ]
-    if sys.version_info[0] == 2 or (sys.version_info[0] == 3 and sys.version_info[1] == 5):
+    if sys.version_info[0] == 2 or (
+        sys.version_info[0] == 3 and sys.version_info[1] == 5
+    ):
         install_requires.append("llvmlite == 0.31.0")
 
     if sys.platform == "darwin":
