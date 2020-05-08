@@ -232,14 +232,13 @@ class read_caching_device {
       // evict the file size cache
       {
         std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
-        m_filename_to_filesize_map.erase(m_filename);
-
         auto iter = m_filename_to_stop_watch.find(m_filename);
         if (iter != m_filename_to_stop_watch.end()) {
           // use no throw since this nanny thread may not start clock
           if (iter->second->stop(/* no throw */ true) == 0) {
             // nobody is holding
             m_filename_to_stop_watch.erase(iter);
+            m_filename_to_filesize_map.erase(m_filename);
           }
         }
       }
