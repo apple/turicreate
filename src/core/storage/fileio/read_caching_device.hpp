@@ -107,7 +107,7 @@ class StopWatch {
   /*
    * @return: int. number of threads still holding
    */
-  int stop(bool no_throw = false) {
+  size_t stop(bool no_throw = false) {
     std::lock_guard<std::mutex> lk(mx_);
 
     if (threads_.count(std::this_thread::get_id())) {
@@ -190,6 +190,8 @@ class read_caching_device {
       std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
       auto iter = m_filename_to_filesize_map.find(filename);
       if (iter != m_filename_to_filesize_map.end()) {
+        // this means some thread is reading this file
+        // so it's okay to reuse the meta data
         m_file_size = iter->second;
         m_filename_to_stop_watch[filename]->start();
       } else {
@@ -247,13 +249,12 @@ class read_caching_device {
       m_contents.reset();
       {
         std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
-        m_filename_to_filesize_map.erase(m_filename);
         auto iter = m_filename_to_stop_watch.find(m_filename);
         if (iter != m_filename_to_stop_watch.end())
-          // use no throw since this nanny thread may not start clock
+          // if there are no other threads reading the same file
           if (iter->second->stop(/* no throw */ true) == 0) {
-            // nobody is holding
             m_filename_to_stop_watch.erase(iter);
+            m_filename_to_filesize_map.erase(m_filename);
           }
       }
     }
@@ -301,7 +302,7 @@ class read_caching_device {
   std::streamsize write(const char* strm_ptr, std::streamsize n) {
     {
       std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
-      if (m_filename_to_filesize_map.count(m_filename) == 0)
+      if (m_filename_to_stop_watch.count(m_filename) == 0)
         log_and_throw("write through closed files handle");
       m_filename_to_stop_watch[m_filename]->start();
     }
@@ -404,7 +405,7 @@ class read_caching_device {
 
     {
       std::lock_guard<mutex> file_size_guard(m_filesize_cache_mutex);
-      if (m_filename_to_filesize_map.count(m_filename) == 0)
+      if (m_filename_to_stop_watch.count(m_filename) == 0)
         log_and_throw("read through closed files handle");
       m_filename_to_stop_watch[m_filename]->start();
     }
