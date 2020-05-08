@@ -74,13 +74,11 @@ def color_augmenter(
     image = tf.image.adjust_brightness(image, brightness_delta)
 
     # Apply the random adjustment to contrast.
-    log_sat = np.log(max_saturation)
-    saturation_delta = interpolate(random_alpha_tf[1], -log_sat, log_sat)
+    saturation_delta = interpolate(random_alpha_tf[1], 1/max_saturation, max_saturation)
     image = tf.image.adjust_saturation(image, saturation_delta)
 
     # Apply random adjustment to saturation.
-    log_con = np.log(max_contrast)
-    contrast_delta = interpolate(random_alpha_tf[2], -log_con, log_con)
+    contrast_delta = interpolate(random_alpha_tf[2], 1/max_contrast, max_contrast)
     image = tf.image.adjust_contrast(image, contrast_delta)
 
     image = tf.clip_by_value(image, 0, 1)
