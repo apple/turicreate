@@ -3098,6 +3098,28 @@ class SArray(object):
         with cython_context():
             return SArray(_proxy=self.__proxy__.item_length())
 
+    def shuffle(self):
+        """
+        Randomly shuffles the elements of the SArray.
+
+        Returns
+        -------
+        out : [SArray]
+            An SArray with all the same elements but in a random order.
+
+        Examples
+        --------
+        >>> sa = turicreate.SArray(["a", "b", "c", "d", "x", "Y", "z"])
+        >>> shuffled_sa = sa.shuffle()
+        >>> print(shuffled_sa)
+        ['z', 'd', 'Y', 'c', 'a', 'x', 'b']
+        """
+        from .sframe import SFrame
+
+        sf = SFrame({'content': self})
+        sf = sf.shuffle()
+        return sf['content']
+
     def random_split(self, fraction, seed=None):
         """
         Randomly split the rows of an SArray into two SArrays. The first SArray
