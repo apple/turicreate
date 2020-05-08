@@ -6,7 +6,6 @@
 from __future__ import print_function as _  # noqa
 from __future__ import division as _  # noqa
 from __future__ import absolute_import as _  # noqa
-import logging as _logging
 import sys
 import six
 from turicreate import __version__
@@ -60,7 +59,7 @@ else:
     from importlib._bootstrap import _ImportLockContext
 
 
-def minimal_package_import_check(name):
+def _minimal_package_import_check(name):
     """
     only support `import ...`, no `from ... import` or `import ... as`
     """
@@ -90,7 +89,7 @@ def minimal_package_import_check(name):
             # append more information
             e.msg = (
                 "{}. This is a minimal package for SFrame only, without {} pinned"
-                " as a dependency. You can try install all required packages by installing"
+                " as a dependency. You can try install all required packages by installing "
                 "full package by:\n"
                 "pip install turicreate=={}"
             ).format(e.msg, name, __version__)

@@ -12,11 +12,11 @@ from .._tf_model import TensorFlowModel
 
 import numpy as _np
 
-from turicreate._deps.minimal_package import minimal_package_import_check
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 
 def _lazy_import_tensorflow():
-    _tf = minimal_package_import_check("tensorflow.compat.v1")
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
 
     # This toolkit is compatible with TensorFlow V2 behavior.
     # However, until all toolkits are compatible, we must call `disable_v2_behavior()`.

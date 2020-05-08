@@ -21,7 +21,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import _coreml_utils
-from turicreate._deps.minimal_package import minimal_package_import_check
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 
 class _DataIterator(object):
@@ -135,9 +135,9 @@ class _Accuracy(object):
 
 class _TFAccuracy(_Accuracy):
     def __init__(self):
-        from turicreate._deps.minimal_package import minimal_package_import_check
+        from turicreate._deps.minimal_package import _minimal_package_import_check
 
-        tf = minimal_package_import_check("tensorflow")
+        tf = _minimal_package_import_check("tensorflow")
 
         self.impl = tf.keras.metrics.Accuracy()
 
@@ -832,7 +832,7 @@ class SoundClassifier(_CustomModel):
         --------
         >>> model.export_coreml('./myModel.mlmodel')
         """
-        coremltools = minimal_package_import_check("coremltools")
+        coremltools = _minimal_package_import_check("coremltools")
         from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
 
         prob_name = self.target + "Probability"

@@ -10,13 +10,13 @@ from __future__ import absolute_import as _
 
 import numpy as _np
 from .._tf_model import TensorFlowModel
-from turicreate._deps.minimal_package import minimal_package_import_check
+from turicreate._deps.minimal_package import _minimal_package_import_check
 import turicreate.toolkits._tf_utils as _utils
 
 
 # in conjunction with minimal package
 def _lazy_import_tensorflow():
-    _tf = minimal_package_import_check("tensorflow.compat.v1")
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
     _tf.disable_v2_behavior()
     return _tf
 

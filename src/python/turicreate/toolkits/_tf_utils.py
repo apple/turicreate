@@ -8,7 +8,7 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import numpy as np
-from turicreate._deps.minimal_package import minimal_package_import_check
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 
 class TensorFlowGPUPolicy(object):
@@ -57,7 +57,7 @@ def suppress_tensorflow_warnings():
 
     os.environ["TF_CPP_MIN_LOG_LEVEL"] = "1"
 
-    _tf = minimal_package_import_check("tensorflow.compat.v1")
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
 
     _tf.disable_v2_behavior()
     _tf.logging.set_verbosity(_tf.logging.ERROR)
@@ -65,7 +65,7 @@ def suppress_tensorflow_warnings():
 
 
 def is_gpu_available():
-    tf = minimal_package_import_check("tensorflow")
+    tf = _minimal_package_import_check("tensorflow")
 
     tf_minor_version = int(tf.version.VERSION.split(".")[1])
 

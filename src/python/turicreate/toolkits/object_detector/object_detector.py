@@ -24,7 +24,7 @@ from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_iterable,
 )
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate._deps.minimal_package import minimal_package_import_check
+from turicreate._deps.minimal_package import _minimal_package_import_check
 from .. import _pre_trained_models
 from .._mps_utils import (
     MpsGraphAPI as _MpsGraphAPI,
@@ -282,7 +282,7 @@ def create(
     }
 
     # create tensorflow model here
-    minimal_package_import_check("turicreate.toolkits.libtctensorflow")
+    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
     if classes == None:
         classes = []

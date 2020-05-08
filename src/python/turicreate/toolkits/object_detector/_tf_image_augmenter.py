@@ -12,13 +12,13 @@ from PIL import Image
 import turicreate.toolkits._tf_utils as _utils
 import turicreate as tc
 
-from turicreate._deps.minimal_package import minimal_package_import_check
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 # in conjunction with minimal package
 def _lazy_import_tensorflow():
-    from turicreate._deps.minimal_package import minimal_package_import_check
+    from turicreate._deps.minimal_package import _minimal_package_import_check
 
-    _tf = minimal_package_import_check("tensorflow.compat.v1")
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
     _tf.disable_v2_behavior()
     return _tf
 
