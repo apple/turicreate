@@ -367,6 +367,7 @@ test_python_linux_python27_minimal:
   variables:
     DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python27
   script:
