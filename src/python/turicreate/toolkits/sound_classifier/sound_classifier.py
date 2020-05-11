@@ -94,7 +94,6 @@ class _NumPyDataIterator(_DataIterator):
 
 
 def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
-
     return _NumPyDataIterator(data, label=label, batch_size=batch_size, shuffle=shuffle)
 
 
@@ -373,6 +372,7 @@ def create(
     )
     train_data = train_data.stack("deep features", new_column_name="deep features")
     train_data, missing_ids = train_data.dropna_split(columns=["deep features"])
+    train_data = train_data.shuffle()
 
     training_batch_size = min(len(train_data), batch_size)
 
