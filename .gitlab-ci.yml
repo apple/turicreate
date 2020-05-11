@@ -361,12 +361,13 @@ test_python_linux_python27_minimal:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python27
   script:
