@@ -13,6 +13,8 @@ import tensorflow.compat.v1 as tf
 import turicreate.toolkits._tf_utils as _utils
 import turicreate as tc
 
+# This toolkit is compatible with TensorFlow V2 behavior.
+# However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
 tf.disable_v2_behavior()
 
 _DEFAULT_AUG_PARAMS = {
