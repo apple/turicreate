@@ -260,17 +260,26 @@ def find_only_image_extracted_features_column(sframe, model_name):
     """
     from array import array
 
-    feature_column = _tkutl._find_only_column_of_type(sframe, target_type=array, type_name="array", col_name="extracted_feature")
-    if is_image_deep_feature_sarray(sframe[feature_column], model_name):
-        return feature_column
-    else:
+    try:
+        feature_columns, _ = zip(*list(filter(lambda x: x[1] == array, list(zip(sframe.column_names(), sframe.column_types())))))
+    except ValueError:
         raise _ToolkitError(
             'No "{col_name}" column specified and no column with expected type "{type_name}" is found.'.format(
-                col_name=feature_column, type_name="array"
+                col_name="extracted_features", type_name="array"
             )
             + ' "datasets" consists of columns with types: '
             + ", ".join([x.__name__ for x in sframe.column_types()])
             + "."
+        )
+
+    feature_columns = list(filter(lambda x: is_image_deep_feature_sarray(sframe[x], model_name), feature_columns))
+    if len(feature_columns) == 1:
+        return feature_columns[0]
+    elif len(feature_columns) > 1:
+        raise _ToolkitError(
+            'No "{col_name}" column specified and more than one extracted features {type_name} column in "dataset". Can not infer correct {col_name} column.'.format(
+                col_name="extracted_features", type_name="array"
+            )
         )
 
 
