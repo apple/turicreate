@@ -880,7 +880,7 @@ class ImageClassifier(_CustomModel):
 
         return _Evaluation(evaluation_result)
 
-    def _extract_features(self, dataset, verbose=False, batch_size=64): 
+    def _extract_features(self, dataset, verbose=False, batch_size=64):
         if image_analysis.is_image_deep_feature_sarray(dataset[self.feature], self.model): 
             return _tc.SFrame(
                 {
