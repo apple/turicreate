@@ -15,12 +15,6 @@ from turicreate._deps.minimal_package import (
     is_py_interactive,
 )
 
-if is_py_interactive() and is_minimal_pkg():
-    print(
-        "This is turicreate minimal version. "
-        "To use ML toolkits, please run: pip install turicreate==%s" % __version__
-    )
-
 
 def __get_version(version):
     # matching 1.6.1, and 1.6.1rc, 1.6.1.dev
