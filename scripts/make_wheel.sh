@@ -300,16 +300,23 @@ function package_wheel() {
     cd ${WORKSPACE}/${build_type}/src/python
 
     if [[ "$is_minimal" -eq 1 ]] ; then
+      local pkg_patch_ver=$(grep VERSION_STRING setup.py | cut -d " " -f3)
+      pkg_patch_ver="${pkg_patch_ver//\"}${version_modifier}"
       if [[ "$(uname -s)" == "Darwin" ]] ; then
         sed -i "" 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_package.py
+        sed -i '' "s/\".*\"  # {{VERSION_STRING}}/\"${pkg_patch_ver}\"  # {{VERSION_STRING}}/g" turicreate/version_info.py setup.py
       else
         sed -i 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_package.py
+        sed -i "s/\".*\"  # {{VERSION_STRING}}/\"${pkg_patch_ver}\"  # {{VERSION_STRING}}/g" turicreate/version_info.py setup.py
       fi
     fi
 
     # This produced a wheel starting with turicreate-${VERSION_NUMBER} under dist/
     if [[ "${is_minimal}" -eq 1 ]]; then
       "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
+      # restore the scene after packing; making it reentrant
+      cp ${WORKSPACE}/src/python/setup.py setup.py
+      cp ${WORKSPACE}/src/python/turicreate/version_info.py turicreate/version.py
     else
       # full version
       "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}"
@@ -319,9 +326,7 @@ function package_wheel() {
 
     cd "${WORKSPACE}"
 
-    ORIG_WHEEL_PATH=$(ls "${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}"-*.whl)
-    WHEEL_PATH="${ORIG_WHEEL_PATH/turicreate-${VERSION_NUMBER}/turicreate-${VERSION_NUMBER}${version_modifier}}"
-    [[ "$ORIG_WHEEL_PATH" != "${WHEEL_PATH}" ]] && mv "$ORIG_WHEEL_PATH" "$WHEEL_PATH"
+    WHEEL_PATH=$(ls "${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}"*.whl)
 
     if [[ $OSTYPE == darwin* ]]; then
       # Change the platform tag embedded in the file name
