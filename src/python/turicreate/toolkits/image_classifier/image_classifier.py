@@ -251,12 +251,12 @@ def create(
         raise TypeError("Unrecognized value for 'validation_set'.")
 
     if feature is None:
-        # select feature column : either extracted features columns or image column itself
         try:
             feature = image_analysis.find_only_image_extracted_features_column(dataset, model)
             feature_type = "extracted_features_array"
         except:
             feature = None
+
         if feature is None:
             try:
                 feature = _tkutl._find_only_image_column(dataset)
@@ -880,14 +880,27 @@ class ImageClassifier(_CustomModel):
 
         return _Evaluation(evaluation_result)
 
-    def _extract_features(self, dataset, verbose=False, batch_size=64):
-        return _tc.SFrame(
-            {
-                "__image_features__": self.feature_extractor.extract_features(
-                    dataset, self.feature, verbose=verbose, batch_size=batch_size
-                )
-            }
-        )
+    def _extract_features(self, dataset, verbose=False, batch_size=64): 
+        if image_analysis.is_image_deep_feature_sarray(dataset[self.feature], self.model): 
+            return _tc.SFrame(
+                {
+                    "__image_features__": dataset[self.feature]
+                }
+            )
+        elif dataset[self.feature].dtype is _tc.Image:
+            return _tc.SFrame(
+                {
+                    "__image_features__": self.feature_extractor.extract_features(
+                        dataset, self.feature, verbose=verbose, batch_size=batch_size
+                    )
+                }
+            )
+        else:
+            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or extracted features array.'.format(feature=feature)
+                + ' "Datasets" consists of columns with types: '
+                + ", ".join([x.__name__ for x in dataset.column_types()])
+                + "."
+            )
 
     def export_coreml(self, filename):
         """
