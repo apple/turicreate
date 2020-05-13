@@ -12,6 +12,7 @@ from PIL import Image
 import turicreate.toolkits._tf_utils as _utils
 import turicreate as tc
 
+
 from turicreate._deps.minimal_package import _minimal_package_import_check
 
 # in conjunction with minimal package
