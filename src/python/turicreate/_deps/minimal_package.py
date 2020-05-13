@@ -77,7 +77,7 @@ def _minimal_package_import_check(name):
                 raise ValueError("invalid module name")
             exec("import %s as __mpkg_ret" % name)
             # import a.b.c will register name as a.b.c
-            return __mpkg_ret  # pylint: disable=undefined-variable
+            return __mpkg_ret  # pylint: disable=undefined-variable  # noqa
         else:
             return importlib.import_module(name)
     except ImportError as e:
@@ -86,12 +86,21 @@ def _minimal_package_import_check(name):
             if "." in name:
                 name = name.split(".")[0]
 
+            # trim the local version started by '+', if there's any
+            pos = __version__.rfind("+")
+
+            if pos != -1:
+                version = __version__[:pos]
+            else:
+                version = __version__
+
             # append more information
             e.msg = (
                 "{}. This is a minimal package for SFrame only, without {} pinned"
-                " as a dependency. You can try install all required packages by installing "
-                "full package by:\n"
-                "pip install turicreate=={}"
-            ).format(e.msg, name, __version__)
+                " as a dependency. You can try install all required packages by installing"
+                " the full package. For example:\n"
+                "pip install turicreate=={}\nNote that this exmple may not use the latest"
+                " release version. Modify based on your needs."
+            ).format(e.msg, name, version)
 
         raise e
