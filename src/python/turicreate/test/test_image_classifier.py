@@ -105,7 +105,7 @@ class ImageClassifierTest(unittest.TestCase):
         self.tolerance = tol
 
         self.model = tc.image_classifier.create(
-            data, target=self.target, model=self.pre_trained_model, seed=42
+            data, target=self.target, feature=self.feature, model=self.pre_trained_model, seed=42
         )
         self.nn_model = self.model.feature_extractor
         self.lm_model = self.model.classifier
@@ -183,13 +183,13 @@ class ImageClassifierTest(unittest.TestCase):
     def test_select_correct_feature_column_to_train(self):
         # sending both, the correct extracted features colum and image column
         extracted_feature_column_name = str(MODEL_TO_FEATURE_SIZE_MAPPING[self.pre_trained_model])
-        test_model = tc.image_classifier.create(data, target=self.target)
+        test_model = tc.image_classifier.create(data, target=self.target, model=self.pre_trained_model)
         self.assertTrue(test_model.feature == extracted_feature_column_name)
         
         # sending the wrong exracted features column along with the image column 
         columns_name_list = list(filter(lambda x: x != extracted_feature_column_name, data.column_names()))
         test_data = data.select_columns(columns_name_list)
-        test_model = tc.image_classifier.create(test_data, target=self.target)
+        test_model = tc.image_classifier.create(test_data, target=self.target, model=self.pre_trained_model)
         self.assertTrue(test_model.feature == "awesome_image")
 
     def test_predict(self):
