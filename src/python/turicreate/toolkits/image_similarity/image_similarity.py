@@ -334,14 +334,27 @@ class ImageSimilarityModel(_CustomModel):
         section_titles = ["Schema", "Training summary"]
         return ([model_fields, training_fields], section_titles)
 
-    def _extract_features(self, dataset, verbose, batch_size=64):
-        return _tc.SFrame(
-            {
-                "__image_features__": self.feature_extractor.extract_features(
-                    dataset, self.feature, verbose=verbose, batch_size=batch_size
-                )
-            }
-        )
+    def _extract_features(self, dataset, verbose=False, batch_size=64):
+        if image_analysis.is_image_deep_feature_sarray(dataset[self.feature], self.model): 
+            return _tc.SFrame(
+                {
+                    "__image_features__": dataset[self.feature]
+                }
+            )
+        elif dataset[self.feature].dtype is _tc.Image:
+            return _tc.SFrame(
+                {
+                    "__image_features__": self.feature_extractor.extract_features(
+                        dataset, self.feature, verbose=verbose, batch_size=batch_size
+                    )
+                }
+            )
+        else:
+            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or extracted features array.'.format(feature=feature)
+                + ' "Datasets" consists of columns with types: '
+                + ", ".join([x.__name__ for x in dataset.column_types()])
+                + "."
+            )
 
     def query(self, dataset, label=None, k=5, radius=None, verbose=True, batch_size=64):
         """
