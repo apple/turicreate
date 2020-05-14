@@ -14,6 +14,7 @@ from turicreate import __version__
 USE_MINIMAL = False
 
 
+# used by pytest markers
 def is_minimal_pkg():
     return USE_MINIMAL
 
@@ -22,27 +23,6 @@ if six.PY2:
     import imp
 else:
     import importlib
-
-
-def run_from_ipython():
-    # Taken from https://stackoverflow.com/questions/5376837
-    try:
-        __IPYTHON__
-        return True
-    except NameError:
-        return False
-
-
-def run_from_python_interpreter():
-    return bool(getattr(sys, "ps1", sys.flags.interactive))
-
-
-IS_INTERACTIVE = run_from_python_interpreter() or run_from_ipython()
-
-
-def is_py_interactive():
-    return IS_INTERACTIVE
-
 
 if six.PY2:
     # reentrant lock: https://docs.python.org/2/library/imp.html#imp.acquire_lock
@@ -99,8 +79,7 @@ def _minimal_package_import_check(name):
                 "{}. This is a minimal package for SFrame only, without {} pinned"
                 " as a dependency. You can try install all required packages by installing"
                 " the full package. For example:\n"
-                "pip install turicreate=={}\nNote that this exmple may not use the latest"
-                " release version. Modify based on your needs."
+                "pip install --force-reinstall turicreate=={}\n"
             ).format(e.msg, name, version)
 
         raise e
