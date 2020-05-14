@@ -10,6 +10,7 @@ from distutils.version import StrictVersion as _StrictVersion
 import logging as _logging
 import re as _re
 from turicreate import __version__
+from turicreate._deps.minimal_package import is_minimal_pkg
 
 
 def __get_version(version):
