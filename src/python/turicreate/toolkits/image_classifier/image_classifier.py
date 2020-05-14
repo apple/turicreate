@@ -489,12 +489,15 @@ class ImageClassifier(_CustomModel):
         along with an unpack callback function that can be applied to
         prediction results to "undo" the canonization.
         """
+        from array import array
+
         unpack = lambda x: x
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image):
+        elif isinstance(dataset, _tc.Image) or isinstance(dataset, array):
             dataset = _tc.SFrame({self.feature: [dataset]})
             unpack = lambda x: x[0]
+
         return dataset, unpack
 
     def predict(self, dataset, output_type="class", batch_size=64):
@@ -516,8 +519,8 @@ class ImageClassifier(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame | SArray | turicreate.Image
-            The images to be classified.
+        dataset : SFrame | SArray | turicreate.Image | array
+            The images to be classified or extracted features.
             If dataset is an SFrame, it must have columns with the same names as
             the features used for model training, but does not require a target
             column. Additional columns are ignored.
@@ -555,7 +558,9 @@ class ImageClassifier(_CustomModel):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
-        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+        from array import array
+
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image, array)):
             raise TypeError(
                 "dataset must be either an SFrame, SArray or turicreate.Image"
             )
@@ -604,7 +609,9 @@ class ImageClassifier(_CustomModel):
         >>> classes = model.classify(data)
 
         """
-        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+        from array import array
+
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image, array)):
             raise TypeError(
                 "dataset must be either an SFrame, SArray or turicreate.Image"
             )
@@ -671,7 +678,9 @@ class ImageClassifier(_CustomModel):
         +----+-------+-------------------+
         [35688 rows x 3 columns]
         """
-        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+        from array import array
+
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image, array)):
             raise TypeError(
                 "dataset must be either an SFrame, SArray or turicreate.Image"
             )
@@ -881,7 +890,7 @@ class ImageClassifier(_CustomModel):
         return _Evaluation(evaluation_result)
 
     def _extract_features(self, dataset, verbose=False, batch_size=64):
-        if image_analysis.is_image_deep_feature_sarray(dataset[self.feature], self.model): 
+        if image_analysis.is_image_deep_feature_sarray(dataset[self.feature], self.model):
             return _tc.SFrame(
                 {
                     "__image_features__": dataset[self.feature]
