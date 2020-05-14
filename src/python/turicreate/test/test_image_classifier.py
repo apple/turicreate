@@ -93,12 +93,13 @@ class ImageClassifierTest(unittest.TestCase):
     def setUpClass(
         self,
         model="resnet-50",
+        feature="awesome_image",
         input_image_shape=(3, 224, 224),
         tol=0.02,
         num_examples=100,
         label_type=int,
     ):
-        self.feature = "awesome_image"
+        self.feature = feature
         self.target = "awesome_label"
         self.input_image_shape = input_image_shape
         self.pre_trained_model = model
@@ -141,27 +142,16 @@ class ImageClassifierTest(unittest.TestCase):
             self.assertAlmostEqual(a, b, delta=tol)
 
     def test_create_with_missing_value(self):
-        from array import array
-
-        data_dict = {
-            self.feature: tc.SArray([None], dtype=tc.Image),
-            self.target: [data[self.target][0]],
-        }
-        possible_feature_length_list = list(set(MODEL_TO_FEATURE_SIZE_MAPPING.values()))
-        for feature_length in possible_feature_length_list:
-            data_dict[str(feature_length)] = tc.SArray([None], dtype=array)
+        data_dict = {}
+        for col_name, col_type in zip(data.column_names(), data.column_types()):
+            data_dict[col_name] = tc.SArray([None], dtype=col_type)
         data_with_none = data.append(
             tc.SFrame(data_dict)
         )
-        # testing with Image type as input features
+
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(
                 data_with_none, feature=self.feature, target=self.target
-            )
-        # testing with extracted features as input feature
-        with self.assertRaises(_ToolkitError):
-            tc.image_classifier.create(
-                data_with_none, feature=str(MODEL_TO_FEATURE_SIZE_MAPPING[self.pre_trained_model]), target=self.target
             )
 
     def test_create_with_missing_feature(self):
@@ -364,10 +354,34 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
         super(ImageClassifierSqueezeNetTest, self).setUpClass(
+            model="resnet-50",
+            input_image_shape=(3, 227, 227),
+            tol=0.005,
+            num_examples=200,
+            feature="2048",
+        )
+
+
+class ImageClassifierSqueezeNetTest(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageClassifierSqueezeNetTest, self).setUpClass(
             model="squeezenet_v1.1",
             input_image_shape=(3, 227, 227),
             tol=0.005,
             num_examples=200,
+            feature="awesome_image",
+        )
+
+class ImageClassifierSqueezeNetTest(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageClassifierSqueezeNetTest, self).setUpClass(
+            model="squeezenet_v1.1",
+            input_image_shape=(3, 227, 227),
+            tol=0.005,
+            num_examples=200,
+            feature="1000",
         )
 
 
@@ -384,4 +398,22 @@ class VisionFeaturePrintSceneTest(ImageClassifierTest):
             tol=0.005,
             num_examples=100,
             label_type=str,
+            feature="awesome_image",
+        )
+
+
+# TODO: if on skip OS, test negative case
+@unittest.skipIf(
+    _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
+)
+class VisionFeaturePrintSceneTest(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(VisionFeaturePrintSceneTest, self).setUpClass(
+            model="VisionFeaturePrint_Scene",
+            input_image_shape=(3, 299, 299),
+            tol=0.005,
+            num_examples=100,
+            label_type=str,
+            feature="2048",
         )
