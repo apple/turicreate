@@ -14,7 +14,7 @@ import tempfile
 from . import util as test_util
 
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING
+from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING, get_deep_features
 
 import coremltools
 import numpy as np
@@ -68,12 +68,14 @@ def get_test_data():
         images.append(tc_image)
 
     data_dict = {"awesome_image": images}
-    no_of_columns = len(data_dict[[*data_dict][0]])
-    possible_feature_length_list = list(set(MODEL_TO_FEATURE_SIZE_MAPPING.values()))
-    for feature_length in possible_feature_length_list:
-        data_dict[str(feature_length)] = tc.SArray(np.random.rand(no_of_columns, feature_length)*100, dtype=array)
+    data = tc.SFrame(data_dict)
 
-    return tc.SFrame(data_dict)
+    for model_name, feature_length in MODEL_TO_FEATURE_SIZE_MAPPING.items():
+        if str(feature_length) in data_dict.keys():
+            continue
+        data[str(feature_length)] = get_deep_features(data["awesome_image"], model_name)
+
+    return data
 
 
 data = get_test_data()
@@ -81,11 +83,11 @@ data = get_test_data()
 
 class ImageSimilarityTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, input_image_shape=(3, 224, 224), model="resnet-50"):
+    def setUpClass(self, input_image_shape=(3, 224, 224), model="resnet-50", feature="awesome_image"):
         """
         The setup class method for the basic test case with all default values.
         """
-        self.feature = "awesome_image"
+        self.feature = feature
         self.label = None
         self.input_image_shape = input_image_shape
         self.pre_trained_model = model
@@ -300,7 +302,23 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(
-            model="squeezenet_v1.1", input_image_shape=(3, 227, 227)
+            model="resnet-50", input_image_shape=(3, 227, 227), feature="2048"
+        )
+
+
+class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilaritySqueezeNetTest, self).setUpClass(
+            model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="awesome_image"
+        )
+
+
+class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilaritySqueezeNetTest, self).setUpClass(
+            model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="1000"
         )
 
 
@@ -311,9 +329,19 @@ class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(
-            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299)
+            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="awesome_image"
         )
 
+
+@unittest.skipIf(
+    _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
+)
+class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(
+            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="2048"
+        )
 
 # A test to gaurantee that old code using the incorrect name still works.
 @unittest.skipIf(
@@ -323,5 +351,16 @@ class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest_bad_name, self).setUpClass(
-            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299)
+            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="awesome_image"
+        )
+
+
+@unittest.skipIf(
+    _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
+)
+class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityVisionFeaturePrintSceneTest_bad_name, self).setUpClass(
+            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="2048"
         )
