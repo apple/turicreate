@@ -243,7 +243,7 @@ def get_deep_features(images, model_name, batch_size=64, verbose=True):
 
     if batch_size < 1:
         raise ValueError("'batch_size' must be greater than or equal to 1")
-    
+
     # Extract features
     feature_extractor = _image_feature_extractor._create_feature_extractor(model_name)
     images_sf = _tc.SFrame({"image":images})
@@ -296,14 +296,3 @@ def is_image_deep_feature_sarray(feature_sarray, model_name):
     if len(feature_sarray[0]) != MODEL_TO_FEATURE_SIZE_MAPPING[model_name]:
         return False
     return True
-
-
-'''
-if __name__ == "__main__":
-    sframe_path = "/Users/neeraj/Work/cacti/experiments/test_exp/s_frame_data"
-    model_name = "resnet-50"
-    feature = "image"
-    dataset = tc.SFrame(sframe_path)
-    extracted_features = get_deep_features(dataset, feature, model_name, batch_size=64, verbose=True, dataset_name="data")
-    extracted_features.save("/Users/neeraj/Downloads/test_sframe")
-'''
