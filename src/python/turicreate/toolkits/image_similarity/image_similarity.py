@@ -429,7 +429,9 @@ class ImageSimilarityModel(_CustomModel):
         |      2      |        1        | 0.464004310325 |  2   |
         +-------------+-----------------+----------------+------+
         """
-        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+        from array import array
+
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image, array)):
             raise TypeError(
                 "dataset must be either an SFrame, SArray or turicreate.Image"
             )
@@ -438,7 +440,7 @@ class ImageSimilarityModel(_CustomModel):
 
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image):
+        elif isinstance(dataset, _tc.Image) or isinstance(dataset, array):
             dataset = _tc.SFrame({self.feature: [dataset]})
 
         extracted_features = self._extract_features(
