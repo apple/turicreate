@@ -19,7 +19,7 @@ from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_sframe,
     _raise_error_if_not_sarray,
 )
-from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING
+from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING, get_deep_features
 
 from . import util as test_util
 
@@ -77,12 +77,14 @@ def get_test_data():
 
     labels = ["white"] * 5 + ["black"] * 5
     data_dict = {"awesome_image": images, "awesome_label": labels}
-    possible_feature_length_list = list(set(MODEL_TO_FEATURE_SIZE_MAPPING.values()))
-    no_of_columns = len(data_dict[[*data_dict][0]])
-    for feature_length in possible_feature_length_list:
-        data_dict[str(feature_length)] = tc.SArray(np.random.rand(no_of_columns, feature_length)*100, dtype=array)
+    data = tc.SFrame(data_dict)
 
-    return tc.SFrame(data_dict)
+    for model_name, feature_length in MODEL_TO_FEATURE_SIZE_MAPPING.items():
+        if str(feature_length) in data_dict.keys():
+            continue
+        data[str(feature_length)] = get_deep_features(data["awesome_image"], model_name)
+
+    return data
 
 
 data = get_test_data()
@@ -175,8 +177,8 @@ class ImageClassifierTest(unittest.TestCase):
         extracted_feature_column_name = str(MODEL_TO_FEATURE_SIZE_MAPPING[self.pre_trained_model])
         test_model = tc.image_classifier.create(data, target=self.target, model=self.pre_trained_model)
         self.assertTrue(test_model.feature == extracted_feature_column_name)
-        
-        # sending the wrong exracted features column along with the image column 
+
+        # sending the wrong exracted features column along with the image column
         columns_name_list = list(filter(lambda x: x != extracted_feature_column_name, data.column_names()))
         test_data = data.select_columns(columns_name_list)
         test_model = tc.image_classifier.create(test_data, target=self.target, model=self.pre_trained_model)
