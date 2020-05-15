@@ -10,6 +10,7 @@ from __future__ import absolute_import as _
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sframe
+from turicreate._deps.minimal_package import _minimal_package_import_check
 from .. import _pre_trained_models
 from turicreate.toolkits._model import Model as _Model
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
@@ -205,7 +206,7 @@ def create(
     import turicreate as _turicreate
 
     # Imports tensorflow
-    import turicreate.toolkits.libtctensorflow
+    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
     model = _turicreate.extensions.style_transfer()
     pretrained_resnet_model = _pre_trained_models.STYLE_TRANSFER_BASE_MODELS[

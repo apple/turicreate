@@ -9,13 +9,20 @@ from __future__ import absolute_import as _
 
 import numpy as np
 from PIL import Image
-import tensorflow.compat.v1 as tf
 import turicreate.toolkits._tf_utils as _utils
 import turicreate as tc
 
-# This toolkit is compatible with TensorFlow V2 behavior.
-# However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
-tf.disable_v2_behavior()
+
+from turicreate._deps.minimal_package import _minimal_package_import_check
+
+# in conjunction with minimal package
+def _lazy_import_tensorflow():
+    from turicreate._deps.minimal_package import _minimal_package_import_check
+
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
+    _tf.disable_v2_behavior()
+    return _tf
+
 
 _DEFAULT_AUG_PARAMS = {
     "max_hue_adjust": 0.05,
@@ -39,6 +46,7 @@ _DEFAULT_AUG_PARAMS = {
 
 
 def interpolate(alpha_tf, x, y):
+    tf = _lazy_import_tensorflow()
     x = tf.constant(x, dtype=tf.float32)
     y = tf.constant(y, dtype=tf.float32)
     range = tf.math.subtract(y, x)
@@ -53,6 +61,7 @@ def hue_augmenter(
     max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"],
 ):
 
+    tf = _lazy_import_tensorflow()
     # Apply the random rotation around the color wheel.
     hue_delta = interpolate(random_alpha_tf[0], -max_hue_adjust, max_hue_adjust)
     image = tf.image.adjust_hue(image, hue_delta)
@@ -71,6 +80,7 @@ def color_augmenter(
     max_saturation=_DEFAULT_AUG_PARAMS["max_saturation"],
 ):
 
+    tf = _lazy_import_tensorflow()
     # Apply the random adjustment to brightness.
     brightness_delta = interpolate(random_alpha_tf[0], -max_brightness, max_brightness)
     image = tf.image.adjust_brightness(image, brightness_delta)
@@ -126,6 +136,7 @@ def resize_augmenter(image, annotation, output_shape):
         return image
 
     if resize_method == "tensorflow":
+        tf = _lazy_import_tensorflow()
         new_height = tf.cast(output_shape[0], dtype=tf.int32)
         new_width = tf.cast(output_shape[1], dtype=tf.int32)
 
@@ -141,6 +152,7 @@ def resize_augmenter(image, annotation, output_shape):
         )
 
     elif resize_method == "turicreate":
+        tf = _lazy_import_tensorflow()
         image_scaled = tf.numpy_function(
             func=resize_turicreate_image, inp=[image, output_shape], Tout=[tf.float32]
         )
@@ -507,6 +519,7 @@ def numpy_augmenter(img, ann, seed):
 
 
 def complete_augmenter(img_tf, ann_tf, seed_tf, alpha_tf, output_height, output_width):
+    tf = _lazy_import_tensorflow()
     img_tf, ann_tf = tf.numpy_function(
         func=numpy_augmenter,
         inp=[img_tf, ann_tf, seed_tf],
@@ -520,6 +533,7 @@ def complete_augmenter(img_tf, ann_tf, seed_tf, alpha_tf, output_height, output_
 
 class DataAugmenter(object):
     def __init__(self, output_height, output_width, batch_size, resize_only):
+        tf = _lazy_import_tensorflow()
         self.batch_size = batch_size
         self.graph = tf.Graph()
         self.resize_only = resize_only
@@ -552,6 +566,7 @@ class DataAugmenter(object):
                     self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
 
     def get_augmented_data(self, images, annotations, random_seed):
+        tf = _lazy_import_tensorflow()
         with tf.Session(graph=self.graph) as session:
             feed_dict = dict()
 
