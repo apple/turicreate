@@ -74,12 +74,18 @@ def _minimal_package_import_check(name):
             else:
                 version = __version__
 
-            # append more information
-            e.msg = (
-                "{}. This is a minimal package for SFrame only, without {} pinned"
+            # append more information from Import error
+            emsg = str(e)
+            emsg = (
+                "{}.\nThis is a minimal package for SFrame only, without {} pinned"
                 " as a dependency. You can try install all required packages by installing"
                 " the full package. For example:\n"
                 "pip install --force-reinstall turicreate=={}\n"
-            ).format(e.msg, name, version)
+            ).format(emsg, name, version)
+
+            if six.PY2:
+                e.message = emsg
+            else:
+                e.msg = emsg
 
         raise e

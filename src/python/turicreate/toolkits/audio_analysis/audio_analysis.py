@@ -16,6 +16,7 @@ from random import shuffle as _shuffle
 
 import turicreate as _tc
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 
 def load_audio(
@@ -60,7 +61,7 @@ def load_audio(
     >>> audio_path = "~/Documents/myAudioFiles/"
     >>> audio_sframe = tc.audio_analysis.load_audio(audio_path, recursive=True)
     """
-    from scipy.io import wavfile as _wavfile
+    _scipy = _minimal_package_import_check("scipy")
 
     path = _tc.util._make_internal_url(path)
 
@@ -84,7 +85,7 @@ def load_audio(
     )
     for cur_file_path in all_wav_files:
         try:
-            sample_rate, data = _wavfile.read(cur_file_path)
+            sample_rate, data = _scipy.io.wavfile.read(cur_file_path)
         except Exception as e:
             error_string = "Could not read {}: {}".format(cur_file_path, e)
             if not ignore_failure:
