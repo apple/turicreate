@@ -1,8 +1,5 @@
 import time as _time
-
-from coremltools.models import MLModel
 import numpy as _np
-from tensorflow import keras as _keras
 
 # Suppresses verbosity to only errors
 import turicreate.toolkits._tf_utils as _utils
@@ -90,11 +87,13 @@ class VGGishFeatureExtractor(object):
             self.gpu_policy.start()
 
             model_path = vggish_model_file.get_model_path(format="tensorflow")
-            self.vggish_model = _keras.models.load_model(model_path)
+            _tf = _minimal_package_import_check("tensorflow")
+            self.vggish_model = _tf.keras.models.load_model(model_path)
         else:
             # Use Core ML
             model_path = vggish_model_file.get_model_path(format="coreml")
-            self.vggish_model = MLModel(model_path)
+            coremltools = _minimal_package_import_check("coremltools")
+            self.vggish_model = coremltools.models.MLModel(model_path)
 
     def __del__(self):
         if self.mac_ver < (10, 14):
@@ -197,4 +196,5 @@ class VGGishFeatureExtractor(object):
         else:
             vggish_model_file = VGGish()
             coreml_model_path = vggish_model_file.get_model_path(format="coreml")
-            return MLModel(coreml_model_path).get_spec()
+            coremltools = _minimal_package_import_check("coremltools")
+            return coremltools.models.MLModel(coreml_model_path).get_spec()
