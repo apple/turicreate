@@ -85,7 +85,13 @@ def _minimal_package_import_check(name):
 
             if six.PY2:
                 # __str__ and __repr__ uses `args`.
-                e.args = (emsg,)
+                # only change the first element of args tuple
+                args = list(e.args)
+                if args:
+                    args[0] = emsg
+                else:
+                    args = (emsg,)
+                e.args = tuple(args)
                 e.message = emsg
             else:
                 e.msg = emsg
