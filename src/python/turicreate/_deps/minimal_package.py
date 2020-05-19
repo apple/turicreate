@@ -84,6 +84,8 @@ def _minimal_package_import_check(name):
             ).format(emsg, name, version)
 
             if six.PY2:
+                # __str__ and __repr__ uses `args`.
+                e.args = (emsg,)
                 e.message = emsg
             else:
                 e.msg = emsg
