@@ -132,9 +132,10 @@ Turi Create **does not require a GPU**, but certain models can be accelerated 9-
 | Linux                     | macOS 10.13+         | macOS 10.14+ discrete GPUs, macOS 10.15+ integrated GPUs |
 | :-------------------------|:---------------------|:---------------------------------------------------------|
 | Activity Classification   | Image Classification | Activity Classification                                  |
-| Image Classification      | Image Similarity     | Object Detection                                         |
-| Image Similarity          | Sound Classification | One Shot Object Detection                                |
-| Object Detection          |                      | Style Transfer                                           |
+| Drawing Classification    | Image Similarity     | Object Detection                                         |
+| Image Classification      | Sound Classification | One Shot Object Detection                                |
+| Image Similarity          |                      | Style Transfer                                           |
+| Object Detection          |                      |                                                          |
 | One Shot Object Detection |                      |                                                          |
 | Sound Classification      |                      |                                                          |
 | Style Transfer            |                      |                                                          |
