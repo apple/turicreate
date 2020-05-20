@@ -61,7 +61,8 @@ def load_audio(
     >>> audio_path = "~/Documents/myAudioFiles/"
     >>> audio_sframe = tc.audio_analysis.load_audio(audio_path, recursive=True)
     """
-    _scipy = _minimal_package_import_check("scipy")
+    # import scipy doesn't include scipy.io
+    _scipy_io = _minimal_package_import_check("scipy.io")
 
     path = _tc.util._make_internal_url(path)
 
@@ -85,7 +86,8 @@ def load_audio(
     )
     for cur_file_path in all_wav_files:
         try:
-            sample_rate, data = _scipy.io.wavfile.read(cur_file_path)
+            _io = _minimal_package_import_check("scipy")
+            sample_rate, data = _scipy_io.wavfile.read(cur_file_path)
         except Exception as e:
             error_string = "Could not read {}: {}".format(cur_file_path, e)
             if not ignore_failure:
