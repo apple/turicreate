@@ -25,7 +25,7 @@ You need to install Blas and Lapack. See [LINUX\_INSTALL.md](LINUX_INSTALL.md) f
 
 ___
 
-`ModuleNotFoundError: No module named 'turicreate'` with Jupyter Notebook
+`ModuleNotFoundError: No module named 'turicreate'` with Jupyter Notebook \
 This is for Ubuntu>= 17.10. If you're using another distro, your command will be slightly different according to your package manager.
 
 For python2:\
