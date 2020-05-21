@@ -38,7 +38,7 @@ source bin/activate\
 pip install --upgrade pip\
 pip install jupyter notebook\
 pip install -U turicreate\
-jupyter notebook\
+jupyter notebook
 
 For python3:
 
