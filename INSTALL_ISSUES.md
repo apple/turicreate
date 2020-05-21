@@ -40,7 +40,7 @@ pip install jupyter notebook\
 pip install -U turicreate\
 jupyter notebook\
 
-For python3:\
+For python3:
 
 sudo apt install python3-pip python-setuptools\
 sudo pip3 install virtualenv notebook jupyter\
@@ -50,6 +50,5 @@ cd venv/\
 source bin/activate\
 pip3 install jupyter notebook\
 pip3 install -U turicreate\
-jupyter notebook\
-
+jupyter notebook
 ___
