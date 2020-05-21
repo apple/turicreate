@@ -39,7 +39,7 @@ pip install --upgrade pip\
 pip install jupyter notebook\
 pip install -U turicreate\
 jupyter notebook\
-\
+
 For python3:\
 
 sudo apt install python3-pip python-setuptools\
@@ -51,5 +51,5 @@ source bin/activate\
 pip3 install jupyter notebook\
 pip3 install -U turicreate\
 jupyter notebook\
-\
+
 ___
