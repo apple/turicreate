@@ -28,27 +28,30 @@ ___
 `ModuleNotFoundError: No module named 'turicreate'` with Jupyter Notebook \
 This is for Ubuntu>= 17.10. If you're using another distro, your command will be slightly different according to your package manager.
 
-For python2: \
-sudo apt install python-pip python-setuptools \
-sudo pip install virtualenv notebook jupyter \
-cd $HOME \
-virtualenv venv \
-cd venv/ \
-source bin/activate \
-pip install --upgrade pip \
-pip install jupyter notebook \
-pip install -U turicreate \
+For python2:
+```shell
+sudo apt install python-pip python-setuptools
+sudo pip install virtualenv notebook jupyter
+cd $HOME
+virtualenv venv
+cd venv/
+source bin/activate
+pip install --upgrade pip
+pip install jupyter notebook
+pip install -U turicreate
 jupyter notebook
+```
 
 For python3:
-
-sudo apt install python3-pip python-setuptools \
-sudo pip3 install virtualenv notebook jupyter \
-cd $HOME \
-virtualenv venv \
-cd venv/ \
-source bin/activate \
-pip3 install jupyter notebook \
-pip3 install -U turicreate \
+```shell
+sudo apt install python3-pip python-setuptools
+sudo pip3 install virtualenv notebook jupyter
+cd $HOME
+virtualenv venv
+cd venv/
+source bin/activate
+pip3 install jupyter notebook
+pip3 install -U turicreate
 jupyter notebook
+```
 ___
