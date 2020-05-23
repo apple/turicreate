@@ -251,7 +251,7 @@ def get_deep_features(images, model_name, batch_size=64, verbose=True):
         batch_size=batch_size)
 
 
-def find_only_image_extracted_features_column(sframe, model_name):
+def _find_only_image_extracted_features_column(sframe, model_name):
     """
     Finds the only column in `sframe` with a type of array.array and has
     the length same as the last layer of the model in use.
@@ -272,7 +272,7 @@ def find_only_image_extracted_features_column(sframe, model_name):
             + "."
         )
 
-    feature_columns = list(filter(lambda x: is_image_deep_feature_sarray(sframe[x], model_name), feature_columns))
+    feature_columns = list(filter(lambda x: _is_image_deep_feature_sarray(sframe[x], model_name), feature_columns))
     if len(feature_columns) == 1:
         return feature_columns[0]
     elif len(feature_columns) > 1:
@@ -283,12 +283,14 @@ def find_only_image_extracted_features_column(sframe, model_name):
         )
 
 
-def is_image_deep_feature_sarray(feature_sarray, model_name):
+def _is_image_deep_feature_sarray(feature_sarray, model_name):
     """
     Finds if the given `SArray` has extracted features for a given model_name.
     """
     from array import array
 
+    if not (len(feature_sarray) > 0):
+        return False
     if feature_sarray.dtype != array:
         return False
     if type(feature_sarray[0]) != array:
