@@ -26,7 +26,6 @@ from . import util as test_util
 import coremltools
 import numpy as np
 import turicreate as tc
-from array import array
 
 
 def get_test_data():
@@ -352,7 +351,7 @@ class ImageClassifierTest(unittest.TestCase):
         evaluation.explore()
 
 
-class ImageClassifierSqueezeNetTest(ImageClassifierTest):
+class ImageClassifierResnetTestWithDeepFeatures(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
         super(ImageClassifierSqueezeNetTest, self).setUpClass(
@@ -375,7 +374,7 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
             feature="awesome_image",
         )
 
-class ImageClassifierSqueezeNetTest(ImageClassifierTest):
+class ImageClassifierSqueezeNetTestWithDeepFeatures(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
         super(ImageClassifierSqueezeNetTest, self).setUpClass(
@@ -408,7 +407,7 @@ class VisionFeaturePrintSceneTest(ImageClassifierTest):
 @unittest.skipIf(
     _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
 )
-class VisionFeaturePrintSceneTest(ImageClassifierTest):
+class VisionFeaturePrintSceneTestWithDeepFeatures(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
         super(VisionFeaturePrintSceneTest, self).setUpClass(
