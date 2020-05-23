@@ -18,7 +18,6 @@ from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_S
 
 import coremltools
 import numpy as np
-from array import array
 
 
 def get_test_data():
@@ -298,7 +297,7 @@ class ImageSimilarityTest(unittest.TestCase):
             print("Export coreml passed")
 
 
-class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
+class ImageSimilarityResnetTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(
@@ -314,7 +313,7 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
         )
 
 
-class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
+class ImageSimilaritySqueezeNetTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(
@@ -336,7 +335,7 @@ class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
 @unittest.skipIf(
     _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
 )
-class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
+class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(
@@ -358,7 +357,7 @@ class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
 @unittest.skipIf(
     _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
 )
-class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
+class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures_bad_name(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest_bad_name, self).setUpClass(
