@@ -130,7 +130,7 @@ def create(
     if feature is None:
         # select feature column : either extracted features columns or image column itself
         try:
-            feature = image_analysis.find_only_image_extracted_features_column(dataset, model)
+            feature = image_analysis._find_only_image_extracted_features_column(dataset, model)
             feature_type = "extracted_features_array"
         except:
             feature = None
