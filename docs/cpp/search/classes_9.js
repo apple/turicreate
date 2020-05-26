@@ -10,6 +10,7 @@ var searchData=
   ['increment_5foperator',['increment_operator',['../structturi_1_1flexible__type__impl_1_1increment__operator.html',1,'turi::flexible_type_impl']]],
   ['index_5ffile_5finformation',['index_file_information',['../structturi_1_1index__file__information.html',1,'turi']]],
   ['indexed_5fcolumn_5fgroupby',['indexed_column_groupby',['../classturi_1_1indexed__column__groupby.html',1,'turi']]],
+  ['inferencedataiterator',['InferenceDataIterator',['../classturi_1_1style__transfer_1_1InferenceDataIterator.html',1,'turi::style_transfer']]],
   ['inferenceoutputbatch',['InferenceOutputBatch',['../structturi_1_1object__detection_1_1InferenceOutputBatch.html',1,'turi::object_detection']]],
   ['inputbatch',['InputBatch',['../structturi_1_1object__detection_1_1InputBatch.html',1,'turi::object_detection']]],
   ['insert_5fiterator',['insert_iterator',['../structturi_1_1hopscotch__table_1_1insert__iterator.html',1,'turi::hopscotch_table']]],
@@ -27,6 +28,7 @@ var searchData=
   ['issue_5fdisect_3c_20std_3a_3atuple_3c_3e_2c_20args_2e_2e_2e_20_3e',['issue_disect&lt; std::tuple&lt;&gt;, Args... &gt;',['../structcppipc_1_1detail_1_1issue__disect_3_01std_1_1tuple_3_4_00_01Args_8_8_8_01_4.html',1,'cppipc::detail']]],
   ['iterator',['iterator',['../structturi_1_1gl__sarray__range_1_1iterator.html',1,'turi::gl_sarray_range::iterator'],['../structturi_1_1gl__sframe__range_1_1iterator.html',1,'turi::gl_sframe_range::iterator'],['../structturi_1_1sframe__rows_1_1iterator.html',1,'turi::sframe_rows::iterator'],['../structturi_1_1hopscotch__table_1_1iterator.html',1,'turi::hopscotch_table&lt; T, Hash, KeyEqual &gt;::iterator'],['../classturi_1_1neural__net_1_1Iterator.html',1,'turi::neural_net::Iterator&lt; T &gt;']]],
   ['iterator_3c_20databatch_20_3e',['Iterator&lt; DataBatch &gt;',['../classturi_1_1neural__net_1_1Iterator.html',1,'turi::neural_net']]],
+  ['iterator_3c_20std_3a_3aresult_5fof_3c_20callable_28_29_3e_3a_3atype_20_3e',['Iterator&lt; std::result_of&lt; Callable()&gt;::type &gt;',['../classturi_1_1neural__net_1_1Iterator.html',1,'turi::neural_net']]],
   ['iterator_3c_20std_3a_3aunique_5fptr_3c_20checkpoint_20_3e_20_3e',['Iterator&lt; std::unique_ptr&lt; Checkpoint &gt; &gt;',['../classturi_1_1neural__net_1_1Iterator.html',1,'turi::neural_net']]],
   ['iteratorpublisher',['IteratorPublisher',['../classturi_1_1neural__net_1_1IteratorPublisher.html',1,'turi::neural_net']]]
 ];

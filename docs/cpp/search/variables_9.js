@@ -15,6 +15,6 @@ var searchData=
   ['iter_5frow_5findex_5fend',['iter_row_index_end',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a746fd033c9f542a40c5dffd7f08bd9c9',1,'turi::v2::ml_data_iterator_base']]],
   ['iter_5frow_5findex_5fstart',['iter_row_index_start',['../classturi_1_1v2_1_1ml__data__iterator__base.html#a2c29d49193483b0e1b4da730b0f5e992',1,'turi::v2::ml_data_iterator_base']]],
   ['iteration',['iteration',['../group__LBFGS.html#gafb35c599eb5189710aefe09941f01a4c',1,'turi::optimization::solver_status']]],
-  ['iteration_5fid',['iteration_id',['../structturi_1_1object__detection_1_1DataBatch.html#a88c1c952b6d3663d68b54645988b549f',1,'turi::object_detection::DataBatch']]],
+  ['iteration_5fid',['iteration_id',['../structturi_1_1object__detection_1_1DataBatch.html#a88c1c952b6d3663d68b54645988b549f',1,'turi::object_detection::DataBatch::iteration_id()'],['../structturi_1_1style__transfer_1_1DataBatch.html#a59b721a16a010c08fa876a7c53efd8f9',1,'turi::style_transfer::DataBatch::iteration_id()']]],
   ['iters',['iters',['../structturi_1_1optimization_1_1__solver__return.html#a7018293e5df9b84f6cdb6ed5977db2c8',1,'turi::optimization::_solver_return']]]
 ];

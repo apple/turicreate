@@ -168,6 +168,7 @@ var namespaceturi =
     ] ],
     [ "neural_net", null, [
       [ "ac_parameters", "structturi_1_1neural__net_1_1ac__parameters.html", "structturi_1_1neural__net_1_1ac__parameters" ],
+      [ "CallableIterator", "classturi_1_1neural__net_1_1CallableIterator.html", "classturi_1_1neural__net_1_1CallableIterator" ],
       [ "CallableTransform", "classturi_1_1neural__net_1_1CallableTransform.html", "classturi_1_1neural__net_1_1CallableTransform" ],
       [ "Completion", "classturi_1_1neural__net_1_1Completion.html", "classturi_1_1neural__net_1_1Completion" ],
       [ "compute_context", "classturi_1_1neural__net_1_1compute__context.html", "classturi_1_1neural__net_1_1compute__context" ],
@@ -299,6 +300,20 @@ var namespaceturi =
       [ "dense_triangular_itemitem_container", "classturi_1_1sparse__sim_1_1dense__triangular__itemitem__container.html", "classturi_1_1sparse__sim_1_1dense__triangular__itemitem__container" ],
       [ "sparse_similarity_lookup_impl", "classturi_1_1sparse__sim_1_1sparse__similarity__lookup__impl.html", "classturi_1_1sparse__sim_1_1sparse__similarity__lookup__impl" ],
       [ "unused_value_type", "structturi_1_1sparse__sim_1_1unused__value__type.html", null ]
+    ] ],
+    [ "style_transfer", null, [
+      [ "Checkpoint", "classturi_1_1style__transfer_1_1Checkpoint.html", "classturi_1_1style__transfer_1_1Checkpoint" ],
+      [ "Config", "structturi_1_1style__transfer_1_1Config.html", "structturi_1_1style__transfer_1_1Config" ],
+      [ "DataBatch", "structturi_1_1style__transfer_1_1DataBatch.html", "structturi_1_1style__transfer_1_1DataBatch" ],
+      [ "DataIterator", "classturi_1_1style__transfer_1_1DataIterator.html", "classturi_1_1style__transfer_1_1DataIterator" ],
+      [ "EncodedBatch", "structturi_1_1style__transfer_1_1EncodedBatch.html", null ],
+      [ "EncodedInferenceBatch", "structturi_1_1style__transfer_1_1EncodedInferenceBatch.html", null ],
+      [ "InferenceDataIterator", "classturi_1_1style__transfer_1_1InferenceDataIterator.html", "classturi_1_1style__transfer_1_1InferenceDataIterator" ],
+      [ "ModelTrainer", "classturi_1_1style__transfer_1_1ModelTrainer.html", "classturi_1_1style__transfer_1_1ModelTrainer" ],
+      [ "ProgressUpdater", "classturi_1_1style__transfer_1_1ProgressUpdater.html", "classturi_1_1style__transfer_1_1ProgressUpdater" ],
+      [ "ResNet16Checkpoint", "classturi_1_1style__transfer_1_1ResNet16Checkpoint.html", "classturi_1_1style__transfer_1_1ResNet16Checkpoint" ],
+      [ "ResNet16ModelTrainer", "classturi_1_1style__transfer_1_1ResNet16ModelTrainer.html", "classturi_1_1style__transfer_1_1ResNet16ModelTrainer" ],
+      [ "TrainingProgress", "structturi_1_1style__transfer_1_1TrainingProgress.html", null ]
     ] ],
     [ "supervised", null, [
       [ "xgboost", null, [

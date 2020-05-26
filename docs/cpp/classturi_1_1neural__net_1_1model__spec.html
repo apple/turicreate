@@ -95,6 +95,8 @@ $(document).ready(function(){initNavTree('classturi_1_1neural__net_1_1model__spe
 Public Types</h2></td></tr>
 <tr class="memitem:a0d1aa5b0fcc3c11248e0a2e33c49ff4f"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a0d1aa5b0fcc3c11248e0a2e33c49ff4f">padding_type</a> </td></tr>
 <tr class="separator:a0d1aa5b0fcc3c11248e0a2e33c49ff4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a972ab38f4986dabfac28beaee2ae01ce"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a972ab38f4986dabfac28beaee2ae01ce">padding_policy</a> </td></tr>
+<tr class="separator:a972ab38f4986dabfac28beaee2ae01ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -124,8 +126,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:aafcbd879d251f3e3ffff3432b25b5df4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ccd214f01f5f7d61ed0a22a090b8751"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a7ccd214f01f5f7d61ed0a22a090b8751">add_convolution</a> (const std::string &amp;name, const std::string &amp;input, size_t num_output_channels, size_t num_kernel_channels, size_t kernel_height, size_t kernel_width, size_t stride_h, size_t stride_w, <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a0d1aa5b0fcc3c11248e0a2e33c49ff4f">padding_type</a> padding, weight_initializer weight_initializer_fn, weight_initializer bias_initializer_fn=nullptr)</td></tr>
 <tr class="separator:a7ccd214f01f5f7d61ed0a22a090b8751"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae27a34b655ddb62438532c050d233eb5"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#ae27a34b655ddb62438532c050d233eb5">add_padding</a> (const std::string &amp;name, const std::string &amp;input, size_t padding_top, size_t padding_bottom, size_t padding_left, size_t padding_right)</td></tr>
-<tr class="separator:ae27a34b655ddb62438532c050d233eb5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aea19bc2e165a8934924604187c3e7945"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#aea19bc2e165a8934924604187c3e7945">add_padding</a> (const std::string &amp;name, const std::string &amp;input, size_t padding_top, size_t padding_bottom, size_t padding_left, size_t padding_right, <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a972ab38f4986dabfac28beaee2ae01ce">padding_policy</a> policy=padding_policy::REFLECTIVE)</td></tr>
+<tr class="separator:aea19bc2e165a8934924604187c3e7945"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a54185bc37553c8ea489b2f062e5d58d6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a54185bc37553c8ea489b2f062e5d58d6">add_upsampling</a> (const std::string &amp;name, const std::string &amp;input, size_t scaling_x, size_t scaling_y)</td></tr>
 <tr class="separator:a54185bc37553c8ea489b2f062e5d58d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5265c68c0395de316c21f0c12ce699e3"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a5265c68c0395de316c21f0c12ce699e3">add_inner_product</a> (const std::string &amp;name, const std::string &amp;input, size_t num_output_channels, size_t num_input_channels, weight_initializer weight_initializer_fn, weight_initializer bias_initializer_fn=nullptr)</td></tr>
@@ -160,6 +162,28 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab1990723baf0aeabc62ab8eb3616bfab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea11bb9b939367688ecab3b89179b085"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#aea11bb9b939367688ecab3b89179b085">add_preprocessing</a> (const std::string &amp;feature_name, const float image_scale)</td></tr>
 <tr class="separator:aea11bb9b939367688ecab3b89179b085"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6b5815df87565bf4b3db027b31b747a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#ab6b5815df87565bf4b3db027b31b747a">add_transpose</a> (const std::string &amp;name, const std::string &amp;input, std::vector&lt; size_t &gt; axes)</td></tr>
+<tr class="separator:ab6b5815df87565bf4b3db027b31b747a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1d9da6c992e804a616ca3e7bff28b7ec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a1d9da6c992e804a616ca3e7bff28b7ec">add_split_nd</a> (const std::string &amp;name, const std::string &amp;input, size_t axis, size_t num_splits, const std::vector&lt; size_t &gt; &amp;split_sizes)</td></tr>
+<tr class="separator:a1d9da6c992e804a616ca3e7bff28b7ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a94cc9640242e3aab8545944914d6bbfe"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a94cc9640242e3aab8545944914d6bbfe">add_concat_nd</a> (const std::string &amp;name, const std::vector&lt; std::string &gt; &amp;inputs, size_t axis)</td></tr>
+<tr class="separator:a94cc9640242e3aab8545944914d6bbfe"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0c1360b84ce5e832496a5976b3671b50"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a0c1360b84ce5e832496a5976b3671b50">add_reshape_static</a> (const std::string &amp;name, const std::string &amp;input, const std::vector&lt; size_t &gt; &amp;targetShape)</td></tr>
+<tr class="separator:a0c1360b84ce5e832496a5976b3671b50"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a48083b44b03ec490fae83c2569f7d91b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a48083b44b03ec490fae83c2569f7d91b">add_reshape_dynamic</a> (const std::string &amp;name, const std::vector&lt; std::string &gt; &amp;inputs)</td></tr>
+<tr class="separator:a48083b44b03ec490fae83c2569f7d91b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7aab4a8536faa481486e78d9a2bc8908"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a7aab4a8536faa481486e78d9a2bc8908">add_expand_dims</a> (const std::string &amp;name, const std::string &amp;input, const std::vector&lt; size_t &gt; &amp;axes, const std::vector&lt; size_t &gt; &amp;inputVector, const std::vector&lt; size_t &gt; &amp;outputVector)</td></tr>
+<tr class="separator:a7aab4a8536faa481486e78d9a2bc8908"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a67fe899071de5d3f4d0a89c868e28a58"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a67fe899071de5d3f4d0a89c868e28a58">add_squeeze</a> (const std::string &amp;name, const std::string &amp;input, const std::vector&lt; size_t &gt; &amp;axes, const std::vector&lt; size_t &gt; &amp;inputVector, const std::vector&lt; size_t &gt; &amp;outputVector)</td></tr>
+<tr class="separator:a67fe899071de5d3f4d0a89c868e28a58"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63e2e02f964c41354ac0df70daaa111e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a63e2e02f964c41354ac0df70daaa111e">add_add_broadcastable</a> (const std::string &amp;name, const std::vector&lt; std::string &gt; &amp;inputs)</td></tr>
+<tr class="separator:a63e2e02f964c41354ac0df70daaa111e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa525faf4ef2058a4f4a6d4ab9bbc6248"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#aa525faf4ef2058a4f4a6d4ab9bbc6248">add_gather</a> (const std::string &amp;name, const std::vector&lt; std::string &gt; &amp;inputs)</td></tr>
+<tr class="separator:aa525faf4ef2058a4f4a6d4ab9bbc6248"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acadf5c475d1fb43f22960e471c60d8c0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#acadf5c475d1fb43f22960e471c60d8c0">add_constant_nd</a> (const std::string &amp;name, const std::vector&lt; size_t &gt; &amp;shape, const weight_initializer &amp;data)</td></tr>
+<tr class="separator:acadf5c475d1fb43f22960e471c60d8c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aab9dfdacbdf756d3a00e23e03ab397f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#aab9dfdacbdf756d3a00e23e03ab397f9">add_get_shape</a> (const std::string &amp;name, const std::string &amp;input)</td></tr>
+<tr class="separator:aab9dfdacbdf756d3a00e23e03ab397f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Representation for a neural-network model (structure and parameters), optimized for convenient export to CoreML.</p>
@@ -167,6 +191,31 @@ Public Member Functions</h2></td></tr>
 
 <p class="definition">Definition at line <a class="el" href="model__spec_8hpp_source.html#l00040">40</a> of file <a class="el" href="model__spec_8hpp_source.html">model_spec.hpp</a>.</p>
 </div><h2 class="groupheader">Member Enumeration Documentation</h2>
+<a id="a972ab38f4986dabfac28beaee2ae01ce"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a972ab38f4986dabfac28beaee2ae01ce">&#9670;&nbsp;</a></span>padding_policy</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a972ab38f4986dabfac28beaee2ae01ce">turi::neural_net::model_spec::padding_policy</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Parameter for the padding layer </p>
+
+<p class="definition">Definition at line <a class="el" href="model__spec_8hpp_source.html#l00050">50</a> of file <a class="el" href="model__spec_8hpp_source.html">model_spec.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a0d1aa5b0fcc3c11248e0a2e33c49ff4f"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0d1aa5b0fcc3c11248e0a2e33c49ff4f">&#9670;&nbsp;</a></span>padding_type</h2>
 
@@ -262,6 +311,42 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a63e2e02f964c41354ac0df70daaa111e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63e2e02f964c41354ac0df70daaa111e">&#9670;&nbsp;</a></span>add_add_broadcastable()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_add_broadcastable </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends an Add Broadcastable layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">inputs</td><td>The vector of names of the layer's inputs </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a1e1623161bae417d84204c4e9b965c3b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1e1623161bae417d84204c4e9b965c3b">&#9670;&nbsp;</a></span>add_addition()</h2>
 
@@ -442,6 +527,49 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a94cc9640242e3aab8545944914d6bbfe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a94cc9640242e3aab8545944914d6bbfe">&#9670;&nbsp;</a></span>add_concat_nd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_concat_nd </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>axis</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends an Concat layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">inputs</td><td>The vector of names of the layer's inputs </td></tr>
+    <tr><td class="paramname">axis</td><td>The axis to concat the layer on </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a4f0880d0964b3c08382d7c018c46824d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4f0880d0964b3c08382d7c018c46824d">&#9670;&nbsp;</a></span>add_constant()</h2>
 
@@ -479,6 +607,49 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
     <tr><td class="paramname">shape_c_h_w</td><td>The shape of the output </td></tr>
     <tr><td class="paramname">weight_initializer_fn</td><td>Callback used to initialize the weights </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="acadf5c475d1fb43f22960e471c60d8c0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acadf5c475d1fb43f22960e471c60d8c0">&#9670;&nbsp;</a></span>add_constant_nd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_constant_nd </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>shape</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const weight_initializer &amp;&#160;</td>
+          <td class="paramname"><em>data</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a Constant ND layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">shape</td><td>The shape of the constant layer </td></tr>
+    <tr><td class="paramname">data</td><td>The data being loaded in the constant layer </td></tr>
   </table>
   </dd>
 </dl>
@@ -616,6 +787,61 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a7aab4a8536faa481486e78d9a2bc8908"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7aab4a8536faa481486e78d9a2bc8908">&#9670;&nbsp;</a></span>add_expand_dims()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_expand_dims </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>axes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputVector</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>outputVector</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends an Expand Dims layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">input</td><td>The vector of names of the layer's input </td></tr>
+    <tr><td class="paramname">axes</td><td>The axes to expand the layer on </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a4a12f8427abded091d6b9bc25758e217"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4a12f8427abded091d6b9bc25758e217">&#9670;&nbsp;</a></span>add_flatten()</h2>
 
@@ -647,6 +873,78 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
     <tr><td class="paramname">input</td><td>The name of the layer's input </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aa525faf4ef2058a4f4a6d4ab9bbc6248"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa525faf4ef2058a4f4a6d4ab9bbc6248">&#9670;&nbsp;</a></span>add_gather()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_gather </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a Gather layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">inputs</td><td>The vector of names of the layer's inputs </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aab9dfdacbdf756d3a00e23e03ab397f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aab9dfdacbdf756d3a00e23e03ab397f9">&#9670;&nbsp;</a></span>add_get_shape()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_get_shape </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>input</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a Get Shape layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">input</td><td>The vector of names of the layer's input </td></tr>
   </table>
   </dd>
 </dl>
@@ -939,8 +1237,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="ae27a34b655ddb62438532c050d233eb5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae27a34b655ddb62438532c050d233eb5">&#9670;&nbsp;</a></span>add_padding()</h2>
+<a id="aea19bc2e165a8934924604187c3e7945"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aea19bc2e165a8934924604187c3e7945">&#9670;&nbsp;</a></span>add_padding()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -979,7 +1277,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">size_t&#160;</td>
-          <td class="paramname"><em>padding_right</em>&#160;</td>
+          <td class="paramname"><em>padding_right</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a972ab38f4986dabfac28beaee2ae01ce">padding_policy</a>&#160;</td>
+          <td class="paramname"><em>policy</em> = <code>padding_policy::REFLECTIVE</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -997,6 +1301,7 @@ Public Member Functions</h2></td></tr>
     <tr><td class="paramname">padding_bottom</td><td>The padding on the bottom </td></tr>
     <tr><td class="paramname">padding_left</td><td>The padding to the left </td></tr>
     <tr><td class="paramname">padding_right</td><td>The padding to the right </td></tr>
+    <tr><td class="paramname">policy</td><td>The padding policy of zero, reflective, or replication </td></tr>
   </table>
   </dd>
 </dl>
@@ -1225,6 +1530,85 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a48083b44b03ec490fae83c2569f7d91b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a48083b44b03ec490fae83c2569f7d91b">&#9670;&nbsp;</a></span>add_reshape_dynamic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_reshape_dynamic </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a Reshape Dynamic layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">inputs</td><td>The vector of names of the layer's inputs </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a0c1360b84ce5e832496a5976b3671b50"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0c1360b84ce5e832496a5976b3671b50">&#9670;&nbsp;</a></span>add_reshape_static()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_reshape_static </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>targetShape</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a Reshape Static layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">input</td><td>The vector of names of the layer's input </td></tr>
+    <tr><td class="paramname">targetShape</td><td>The target shape </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a6c69a0731e05e63c9a8f7545381ac730"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6c69a0731e05e63c9a8f7545381ac730">&#9670;&nbsp;</a></span>add_scale()</h2>
 
@@ -1347,6 +1731,161 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="a1d9da6c992e804a616ca3e7bff28b7ec"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d9da6c992e804a616ca3e7bff28b7ec">&#9670;&nbsp;</a></span>add_split_nd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_split_nd </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>axis</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>num_splits</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>split_sizes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends an Split layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">input</td><td>The name of the layer's input </td></tr>
+    <tr><td class="paramname">axis</td><td>The axis to split the layer on </td></tr>
+    <tr><td class="paramname">num_splits</td><td>The number of splits to perform </td></tr>
+    <tr><td class="paramname">split_sizes</td><td>The size of each split </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a67fe899071de5d3f4d0a89c868e28a58"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a67fe899071de5d3f4d0a89c868e28a58">&#9670;&nbsp;</a></span>add_squeeze()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_squeeze </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>axes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputVector</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramname"><em>outputVector</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a Squeeze layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">input</td><td>The vector of names of the layer's input </td></tr>
+    <tr><td class="paramname">axes</td><td>The axes to squeeze the layer on </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="ab6b5815df87565bf4b3db027b31b747a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6b5815df87565bf4b3db027b31b747a">&#9670;&nbsp;</a></span>add_transpose()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_transpose </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>input</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::vector&lt; size_t &gt;&#160;</td>
+          <td class="paramname"><em>axes</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends an Transpose layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">input</td><td>The name of the layer's input </td></tr>
+    <tr><td class="paramname">axes</td><td>The ordering of the axes to transpose for instance {0, 2, 1, 3} would flip the channel and height axes </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a54185bc37553c8ea489b2f062e5d58d6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a54185bc37553c8ea489b2f062e5d58d6">&#9670;&nbsp;</a></span>add_upsampling()</h2>
 
@@ -1447,7 +1986,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Exposes the underlying CoreML proto. </p>
 
-<p class="definition">Definition at line <a class="el" href="model__spec_8hpp_source.html#l00076">76</a> of file <a class="el" href="model__spec_8hpp_source.html">model_spec.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__spec_8hpp_source.html#l00085">85</a> of file <a class="el" href="model__spec_8hpp_source.html">model_spec.hpp</a>.</p>
 
 </div>
 </div>

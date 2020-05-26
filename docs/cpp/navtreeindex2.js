@@ -1,5 +1,6 @@
 var NAVTREEINDEX2 =
 {
+"classturi_1_1dataframe__row__iterator.html#adca293bca3a7b0f0a4e2bb57bf28a843":[2,20,0,13],
 "classturi_1_1dataframe__row__iterator.html#aeffb19bd70c32a946ad00428b7a8f114":[2,8,1,3,18],
 "classturi_1_1dataframe__row__iterator.html#aeffb19bd70c32a946ad00428b7a8f114":[2,20,0,18],
 "classturi_1_1dataframe__row__iterator.html#af31367d8f306a0b5acd48e67dffd2057":[2,8,1,3,1],
@@ -248,6 +249,5 @@ var NAVTREEINDEX2 =
 "classturi_1_1factorization_1_1loss__squared__error.html":[4,0,3,6,8],
 "classturi_1_1factorization_1_1ranking__sgd__solver__base.html":[4,0,3,6,9],
 "classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a4249a46ee280ecc4e1bee0d13cbfbf04":[4,0,3,6,9,8],
-"classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a45c9ec1407607ffeb52efed489593d39":[4,0,3,6,9,1],
-"classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a46d8b7fdca126ca10ac48dca72bd98dd":[4,0,3,6,9,10]
+"classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a45c9ec1407607ffeb52efed489593d39":[4,0,3,6,9,1]
 };

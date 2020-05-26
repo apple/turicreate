@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.config.set_num_gpus &mdash; Turi Create API 6.2.2 documentation</title>
+  <title>turicreate.config.set_num_gpus &mdash; Turi Create API 6.3 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 6.2.2 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.3 documentation" href="../index.html"/>
         <link rel="up" title="Configuration" href="../turicreate.utils.html"/>
         <link rel="next" title="turicreate.config.set_runtime_config" href="turicreate.config.set_runtime_config.html"/>
         <link rel="prev" title="turicreate.config.get_runtime_config" href="turicreate.config.get_runtime_config.html"/> 
@@ -132,7 +132,8 @@
 <dl class="function">
 <dt id="turicreate.config.set_num_gpus">
 <code class="descclassname">turicreate.config.</code><code class="descname">set_num_gpus</code><span class="sig-paren">(</span><em>num_gpus</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.config.set_num_gpus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set the number of GPUs to use whenever applicable.</p>
+<dd><p>Set the number of GPUs to use whenever applicable. Currently TuriCreate
+supports using all CPUs or one GPU.</p>
 <p>This can also be set by adding the following line to your
 <code class="docutils literal"><span class="pre">~/.turicreate/config</span></code> file, e.g.:</p>
 <p><code class="docutils literal"><span class="pre">`</span>
@@ -146,8 +147,7 @@ file.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
 <dt><strong>num_gpus</strong> <span class="classifier-delimiter">:</span> <span class="classifier">int</span></dt>
-<dd><p class="first last">Number of GPUs to use. To always use CPU, set to 0. To use all
-available GPUs, set to -1.</p>
+<dd><p class="first last">To always use CPUs, set to 0. To use a GPU, set to 1.</p>
 </dd>
 </dl>
 </td>
@@ -188,7 +188,7 @@ available GPUs, set to -1.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on May 08, 2020.
+      Last updated on May 21, 2020.
     </p>
   </div>
 </footer>
@@ -205,7 +205,7 @@ available GPUs, set to -1.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.2.2',
+            VERSION:'6.3',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

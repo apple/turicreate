@@ -236,6 +236,7 @@ var searchData=
   ['get_5fwriter',['get_writer',['../classturi_1_1sarray.html#ad40a7a80dd9381ba4dbf85cad01ca5a3',1,'turi::sarray']]],
   ['get_5fzmq_5fcontext',['get_zmq_context',['../classcppipc_1_1comm__server.html#a24d81054b6270d535c2505b00fe769a1',1,'cppipc::comm_server']]],
   ['getenv_5fstr',['getenv_str',['../group__process__management.html#ga8878be5d5e527b2a0b4f34126e93c0c5',1,'turi']]],
+  ['getnumberofpredictions',['GetNumberOfPredictions',['../classturi_1_1object__detection_1_1DarknetYOLOCheckpoint.html#a9ebc5a01d96a6d9effd10879381e8880',1,'turi::object_detection::DarknetYOLOCheckpoint::GetNumberOfPredictions()'],['../classturi_1_1object__detection_1_1Checkpoint.html#a3110445c6e5f1571d60878c1d018cd8a',1,'turi::object_detection::Checkpoint::GetNumberOfPredictions()']]],
   ['gl_5fcold_5fnoinline_5ferror',['GL_COLD_NOINLINE_ERROR',['../group__util.html#gae731468612d543efd1b13bca3a047139',1,'code_optimization.hpp']]],
   ['gl_5fgframe',['gl_gframe',['../classturi_1_1gl__gframe.html',1,'turi']]],
   ['gl_5fhot_5fflatten',['GL_HOT_FLATTEN',['../group__util.html#ga2c842d5324cd68fd7012566c613433b1',1,'code_optimization.hpp']]],

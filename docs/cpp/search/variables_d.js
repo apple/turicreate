@@ -22,5 +22,6 @@ var searchData=
   ['num_5fpredictions_5fper_5fchunk',['num_predictions_per_chunk',['../structturi_1_1neural__net_1_1ac__parameters.html#a4387cf60ef2477f134b6db641b14450a',1,'turi::neural_net::ac_parameters']]],
   ['num_5fsamples',['num_samples',['../structturi_1_1activity__classification_1_1data__iterator_1_1batch_1_1chunk__info.html#a06540b577359c5b9e54db05a69a801fb',1,'turi::activity_classification::data_iterator::batch::chunk_info']]],
   ['num_5fsegments',['num_segments',['../structturi_1_1query__eval_1_1materialize__options.html#a0810b62567ec0eb38e482372abdf01ef',1,'turi::query_eval::materialize_options']]],
+  ['num_5fstyles',['num_styles',['../structturi_1_1style__transfer_1_1Config.html#a3536e1415f176c9d26543a640ffe7b5f',1,'turi::style_transfer::Config']]],
   ['num_5fx_5fcolumns',['num_x_columns',['../structturi_1_1ml__data__internal_1_1row__metadata.html#ad33c2831564532ba8a9a0938d8d769d7',1,'turi::ml_data_internal::row_metadata::num_x_columns()'],['../structturi_1_1v2_1_1ml__data__internal_1_1row__metadata.html#a8c192212176f5580cb2a0e680f51cd37',1,'turi::v2::ml_data_internal::row_metadata::num_x_columns()']]]
 ];

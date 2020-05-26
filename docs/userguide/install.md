@@ -20,7 +20,7 @@ source pythonenv/bin/activate
 
 To install Turi Create in the new virtual environment, do the following:
 
-```shell`
+```shell
 pip install -U turicreate
 ```
 

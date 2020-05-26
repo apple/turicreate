@@ -54,6 +54,9 @@ var hierarchy =
     [ "turi::object_detection::Checkpoint", "classturi_1_1object__detection_1_1Checkpoint.html", [
       [ "turi::object_detection::DarknetYOLOCheckpoint", "classturi_1_1object__detection_1_1DarknetYOLOCheckpoint.html", null ]
     ] ],
+    [ "turi::style_transfer::Checkpoint", "classturi_1_1style__transfer_1_1Checkpoint.html", [
+      [ "turi::style_transfer::ResNet16Checkpoint", "classturi_1_1style__transfer_1_1ResNet16Checkpoint.html", null ]
+    ] ],
     [ "turi::activity_classification::data_iterator::batch::chunk_info", "structturi_1_1activity__classification_1_1data__iterator_1_1batch_1_1chunk__info.html", null ],
     [ "turi::flexible_type_impl::city_hash128_visitor", "structturi_1_1flexible__type__impl_1_1city__hash128__visitor.html", null ],
     [ "turi::flexible_type_impl::city_hash_visitor", "structturi_1_1flexible__type__impl_1_1city__hash__visitor.html", null ],
@@ -82,6 +85,7 @@ var hierarchy =
     [ "turi::conditional", "classturi_1_1conditional.html", null ],
     [ "turi::conditional_test< bool, Cond, Args >", "structturi_1_1conditional__test.html", null ],
     [ "turi::object_detection::Config", "structturi_1_1object__detection_1_1Config.html", null ],
+    [ "turi::style_transfer::Config", "structturi_1_1style__transfer_1_1Config.html", null ],
     [ "turi::sframe_rows::row::const_iterator", "structturi_1_1sframe__rows_1_1row_1_1const__iterator.html", null ],
     [ "turi::sframe_rows::const_iterator", "structturi_1_1sframe__rows_1_1const__iterator.html", null ],
     [ "turi::hopscotch_table< T, Hash, KeyEqual >::const_iterator", "structturi_1_1hopscotch__table_1_1const__iterator.html", null ],
@@ -107,6 +111,7 @@ var hierarchy =
       [ "turi::drawing_classifier::simple_data_iterator", "classturi_1_1drawing__classifier_1_1simple__data__iterator.html", null ]
     ] ],
     [ "turi::object_detection::DataBatch", "structturi_1_1object__detection_1_1DataBatch.html", null ],
+    [ "turi::style_transfer::DataBatch", "structturi_1_1style__transfer_1_1DataBatch.html", null ],
     [ "turi::dataframe_row_iterator", "classturi_1_1dataframe__row__iterator.html", null ],
     [ "turi::dataframe_t", "structturi_1_1dataframe__t.html", null ],
     [ "turi::flexible_type_impl::date_time_string_reader", "classturi_1_1flexible__type__impl_1_1date__time__string__reader.html", null ],
@@ -133,6 +138,9 @@ var hierarchy =
     [ "turi::v2_block_impl::encoded_block", "classturi_1_1v2__block__impl_1_1encoded__block.html", null ],
     [ "turi::v2_block_impl::encoded_block_range", "classturi_1_1v2__block__impl_1_1encoded__block__range.html", null ],
     [ "turi::object_detection::EncodedBatch", "structturi_1_1object__detection_1_1EncodedBatch.html", null ],
+    [ "turi::style_transfer::EncodedBatch", "structturi_1_1style__transfer_1_1EncodedBatch.html", [
+      [ "turi::style_transfer::EncodedInferenceBatch", "structturi_1_1style__transfer_1_1EncodedInferenceBatch.html", null ]
+    ] ],
     [ "turi::object_detection::EncodedInputBatch", "structturi_1_1object__detection_1_1EncodedInputBatch.html", null ],
     [ "turi::enum_to_type< flex_type_enum >", "structturi_1_1enum__to__type.html", null ],
     [ "turi::flexible_type_impl::equality_operator", "structturi_1_1flexible__type__impl_1_1equality__operator.html", null ],
@@ -327,7 +335,12 @@ var hierarchy =
     [ "turi::hopscotch_table< T, Hash, KeyEqual >::iterator", "structturi_1_1hopscotch__table_1_1iterator.html", null ],
     [ "turi::neural_net::Iterator< T >", "classturi_1_1neural__net_1_1Iterator.html", null ],
     [ "turi::neural_net::Iterator< DataBatch >", "classturi_1_1neural__net_1_1Iterator.html", [
-      [ "turi::object_detection::DataIterator", "classturi_1_1object__detection_1_1DataIterator.html", null ]
+      [ "turi::object_detection::DataIterator", "classturi_1_1object__detection_1_1DataIterator.html", null ],
+      [ "turi::style_transfer::DataIterator", "classturi_1_1style__transfer_1_1DataIterator.html", null ],
+      [ "turi::style_transfer::InferenceDataIterator", "classturi_1_1style__transfer_1_1InferenceDataIterator.html", null ]
+    ] ],
+    [ "turi::neural_net::Iterator< std::result_of< Callable()>::type >", "classturi_1_1neural__net_1_1Iterator.html", [
+      [ "turi::neural_net::CallableIterator< Callable >", "classturi_1_1neural__net_1_1CallableIterator.html", null ]
     ] ],
     [ "turi::neural_net::Iterator< std::unique_ptr< Checkpoint > >", "classturi_1_1neural__net_1_1Iterator.html", [
       [ "turi::object_detection::DarknetYOLOCheckpointer", "classturi_1_1object__detection_1_1DarknetYOLOCheckpointer.html", null ]
@@ -448,6 +461,9 @@ var hierarchy =
     [ "turi::object_detection::ModelTrainer", "classturi_1_1object__detection_1_1ModelTrainer.html", [
       [ "turi::object_detection::DarknetYOLOModelTrainer", "classturi_1_1object__detection_1_1DarknetYOLOModelTrainer.html", null ]
     ] ],
+    [ "turi::style_transfer::ModelTrainer", "classturi_1_1style__transfer_1_1ModelTrainer.html", [
+      [ "turi::style_transfer::ResNet16ModelTrainer", "classturi_1_1style__transfer_1_1ResNet16ModelTrainer.html", null ]
+    ] ],
     [ "turi::flexible_type_impl::multiply_equal_operator", "structturi_1_1flexible__type__impl_1_1multiply__equal__operator.html", null ],
     [ "turi::mutable_queue< T, Priority >", "classturi_1_1mutable__queue.html", null ],
     [ "turi::mutex", "classturi_1_1mutex.html", null ],
@@ -490,8 +506,8 @@ var hierarchy =
     [ "turi::parallel_sframe_iterator_initializer", "classturi_1_1parallel__sframe__iterator__initializer.html", null ],
     [ "turi::parallel_task_queue", "classturi_1_1parallel__task__queue.html", null ],
     [ "turi::object_detection::data_iterator::parameters", "structturi_1_1object__detection_1_1data__iterator_1_1parameters.html", null ],
-    [ "turi::drawing_classifier::data_iterator::parameters", "structturi_1_1drawing__classifier_1_1data__iterator_1_1parameters.html", null ],
     [ "turi::activity_classification::data_iterator::parameters", "structturi_1_1activity__classification_1_1data__iterator_1_1parameters.html", null ],
+    [ "turi::drawing_classifier::data_iterator::parameters", "structturi_1_1drawing__classifier_1_1data__iterator_1_1parameters.html", null ],
     [ "parser_impl::parser_config", "structparser__impl_1_1parser__config.html", null ],
     [ "turi::neural_net::pipeline_spec", "classturi_1_1neural__net_1_1pipeline__spec.html", null ],
     [ "boost::gil::pixel_assigns_t< PixelRef, PixelRefR >", "structboost_1_1gil_1_1pixel__assigns__t.html", null ],
@@ -559,8 +575,8 @@ var hierarchy =
     [ "turi::toolkit_function_wrapper_impl::result_of_function_wrapper< T >", "structturi_1_1toolkit__function__wrapper__impl_1_1result__of__function__wrapper.html", null ],
     [ "turi::toolkit_function_wrapper_impl::result_of_function_wrapper< void >", "structturi_1_1toolkit__function__wrapper__impl_1_1result__of__function__wrapper_3_01void_01_4.html", null ],
     [ "turi::sframe_rows::row", "structturi_1_1sframe__rows_1_1row.html", null ],
-    [ "turi::v2::ml_data_internal::row_data_block", "structturi_1_1v2_1_1ml__data__internal_1_1row__data__block.html", null ],
     [ "turi::ml_data_internal::row_data_block", "structturi_1_1ml__data__internal_1_1row__data__block.html", null ],
+    [ "turi::v2::ml_data_internal::row_data_block", "structturi_1_1v2_1_1ml__data__internal_1_1row__data__block.html", null ],
     [ "turi::v2::ml_data_internal::row_metadata", "structturi_1_1v2_1_1ml__data__internal_1_1row__metadata.html", null ],
     [ "turi::ml_data_internal::row_metadata", "structturi_1_1ml__data__internal_1_1row__metadata.html", null ],
     [ "turi::v2::row_slicer", "classturi_1_1v2_1_1row__slicer.html", null ],
@@ -643,11 +659,11 @@ var hierarchy =
     [ "turi::spinrwlock", "classturi_1_1spinrwlock.html", null ],
     [ "spmat", "classspmat.html", null ],
     [ "turi::nearest_neighbors::squared_euclidean", "structturi_1_1nearest__neighbors_1_1squared__euclidean.html", null ],
-    [ "turi::standardization_interface", "classturi_1_1standardization__interface.html", [
-      [ "turi::l2_rescaling", "classturi_1_1l2__rescaling.html", null ]
-    ] ],
     [ "turi::supervised::standardization_interface", "classturi_1_1supervised_1_1standardization__interface.html", [
       [ "turi::supervised::l2_rescaling", "classturi_1_1supervised_1_1l2__rescaling.html", null ]
+    ] ],
+    [ "turi::standardization_interface", "classturi_1_1standardization__interface.html", [
+      [ "turi::l2_rescaling", "classturi_1_1l2__rescaling.html", null ]
     ] ],
     [ "turi::statistics_tracker", "classturi_1_1statistics__tracker.html", null ],
     [ "turi::sketches::streaming_quantile_sketch< T, Comparator >", "classturi_1_1sketches_1_1streaming__quantile__sketch.html", null ],
@@ -708,10 +724,14 @@ var hierarchy =
     [ "turi::topk_indexer", "classturi_1_1topk__indexer.html", null ],
     [ "turi::trace_count", "structturi_1_1trace__count.html", null ],
     [ "turi::object_detection::TrainingOutputBatch", "structturi_1_1object__detection_1_1TrainingOutputBatch.html", null ],
+    [ "turi::style_transfer::TrainingProgress", "structturi_1_1style__transfer_1_1TrainingProgress.html", null ],
     [ "turi::object_detection::TrainingProgress", "structturi_1_1object__detection_1_1TrainingProgress.html", null ],
     [ "turi::neural_net::Transform< T, U >", "classturi_1_1neural__net_1_1Transform.html", null ],
     [ "turi::neural_net::Transform< DataBatch, InputBatch >", "classturi_1_1neural__net_1_1Transform.html", [
       [ "turi::object_detection::DataAugmenter", "classturi_1_1object__detection_1_1DataAugmenter.html", null ]
+    ] ],
+    [ "turi::neural_net::Transform< EncodedBatch, TrainingProgress >", "classturi_1_1neural__net_1_1Transform.html", [
+      [ "turi::style_transfer::ProgressUpdater", "classturi_1_1style__transfer_1_1ProgressUpdater.html", null ]
     ] ],
     [ "turi::neural_net::Transform< EncodedInputBatch, EncodedBatch >", "classturi_1_1neural__net_1_1Transform.html", [
       [ "turi::object_detection::DarknetYOLOBackendInferenceWrapper", "classturi_1_1object__detection_1_1DarknetYOLOBackendInferenceWrapper.html", null ]
