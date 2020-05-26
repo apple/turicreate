@@ -85,11 +85,8 @@ constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296;
 // TODO: When we support alternative base models, we will have to generalize.
 constexpr int SPATIAL_REDUCTION = 32;
 
-constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45f;
-
 constexpr float DEFAULT_CONFIDENCE_THRESHOLD_PREDICT = 0.25f;
 
-constexpr float DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE = 0.001f;
 
 // before generation precision-recall curves.
 
@@ -419,18 +416,20 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
     log_and_throw("Annotations column " + annotations_column_name +
                   " does not exist");
   }
+  // If called during training, synchronize the model first.
+  const Checkpoint& checkpoint = read_checkpoint();
 
   //parse input opts
   float confidence_threshold, iou_threshold;
   auto it_confidence = opts.find("confidence_threshold");
   if (it_confidence == opts.end()){
-    confidence_threshold = DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE;
+    confidence_threshold = checkpoint.GetEvaluateConfidence();
   } else {
     confidence_threshold = opts["confidence_threshold"];
   }
   auto it_iou = opts.find("iou_threshold");
   if (it_iou == opts.end()){
-    iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+    iou_threshold = checkpoint.GetNonMaximumSupressionThreshold();
   } else {
     iou_threshold = opts["iou_threshold"];
   }
@@ -529,6 +528,8 @@ variant_type object_detector::convert_map_to_types(
 
 variant_type object_detector::predict(
     variant_type data, std::map<std::string, flexible_type> opts) {
+  // If called during training, synchronize the model first.
+  const Checkpoint& checkpoint = read_checkpoint();
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
@@ -569,7 +570,7 @@ variant_type object_detector::predict(
   }
   auto it_iou = opts.find("iou_threshold");
   if (it_iou == opts.end()){
-    iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+    iou_threshold = checkpoint.GetNonMaximumSupressionThreshold();
   } else {
     iou_threshold = opts["iou_threshold"];
   }
@@ -727,8 +728,8 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
   // No options provided defaults to include Non Maximum Suppression.
   bool include_non_maximum_suppression = true;
   bool use_nms_layer = false;
-  float iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
-  float confidence_threshold = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+  float iou_threshold = checkpoint.GetNonMaximumSupressionThreshold();
+  float confidence_threshold = checkpoint.GetEvaluateConfidence();
   auto opts_it = opts.find("include_non_maximum_suppression");
   if (opts_it != opts.end()) {
     include_non_maximum_suppression = opts_it->second.to<bool>();
@@ -764,18 +765,17 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 
   // Generate "user-defined" metadata.
   flex_dict user_defined_metadata = {
-      {"model", read_state<flex_string>("model")},
+      {"model", checkpoint.GetModelType()},
       {"max_iterations", read_state<flex_int>("max_iterations")},
       {"training_iterations", read_state<flex_int>("training_iterations")},
       {"include_non_maximum_suppression", "False"},
       {"feature", read_state<flex_string>("feature")},
-      {"annotations", read_state<flex_string>("annotations")},
       {"classes", class_labels_str},
       {"type", "object_detector"},
-    };
+  };
 
-  for(const auto& kvp : additional_user_defined) {
-       user_defined_metadata.emplace_back(kvp.first, kvp.second);
+  for (const auto& kvp : additional_user_defined) {
+    user_defined_metadata.emplace_back(kvp.first, kvp.second);
   }
 
   if (include_non_maximum_suppression) {
@@ -964,6 +964,7 @@ void object_detector::init_training(gl_sframe data,
 
 std::unique_ptr<ModelTrainer> object_detector::create_trainer(
     const Config& config, const std::string& pretrained_model_path,
+    int random_seed,
     std::unique_ptr<neural_net::compute_context> context) const {
   // For now, we only support darknet-yolo. Load the pre-trained model and
   // randomly initialize the final layers.
@@ -1129,11 +1130,13 @@ void object_detector::wait_for_training_batches(size_t max_pending) {
 void object_detector::update_model_metrics(gl_sframe data,
                                            gl_sframe validation_data) {
   std::map<std::string, variant_type> metrics;
+  // If called during training, synchronize the model first.
+  const Checkpoint& checkpoint = read_checkpoint();
 
   // Compute training metrics.
-  variant_type training_metrics_raw =
-      perform_evaluation(data, "all", "dict", DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE,
-        DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD);
+  variant_type training_metrics_raw = perform_evaluation(
+      data, "all", "dict", checkpoint.GetEvaluateConfidence(),
+      checkpoint.GetNonMaximumSupressionThreshold());
   variant_map_type training_metrics =
       variant_get_value<variant_map_type>(training_metrics_raw);
   for (const auto& kv : training_metrics) {
@@ -1142,9 +1145,9 @@ void object_detector::update_model_metrics(gl_sframe data,
 
   // Compute validation metrics if necessary.
   if (!validation_data.empty()) {
-    variant_type validation_metrics_raw =
-        perform_evaluation(validation_data, "all", "dict", DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE,
-         DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD);
+    variant_type validation_metrics_raw = perform_evaluation(
+        validation_data, "all", "dict", checkpoint.GetEvaluateConfidence(),
+        checkpoint.GetNonMaximumSupressionThreshold());
     variant_map_type validation_metrics =
         variant_get_value<variant_map_type>(validation_metrics_raw);
     for (const auto& kv : validation_metrics) {
@@ -1157,4 +1160,4 @@ void object_detector::update_model_metrics(gl_sframe data,
 }
 
 }  // object_detection
-}  // turi
+}  // namespace turi

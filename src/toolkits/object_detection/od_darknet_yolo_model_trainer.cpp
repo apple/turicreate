@@ -33,6 +33,9 @@ constexpr int SPATIAL_REDUCTION = 32;
 
 constexpr float BASE_LEARNING_RATE = 0.001f;
 
+constexpr float DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE = 0.001;
+constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45;
+
 // Each bounding box is evaluated relative to a list of pre-defined sizes.
 const std::vector<std::pair<float, float>>& GetAnchorBoxes() {
   static const std::vector<std::pair<float, float>>* const default_boxes =
@@ -413,6 +416,16 @@ pipeline_spec DarknetYOLOCheckpoint::ExportToCoreML(
 
 size_t DarknetYOLOCheckpoint::GetNumberOfPredictions() const {
   return config_.output_width * config_.output_height * GetAnchorBoxes().size();
+}
+
+std::string DarknetYOLOCheckpoint::GetModelType() const { return "YOLOv2"; }
+
+float DarknetYOLOCheckpoint::GetEvaluateConfidence() const {
+  return DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE;
+}
+
+float DarknetYOLOCheckpoint::GetNonMaximumSupressionThreshold() const {
+  return DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
 }
 
 float_array_map DarknetYOLOCheckpoint::internal_config() const {

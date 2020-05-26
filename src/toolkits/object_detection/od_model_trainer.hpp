@@ -164,6 +164,21 @@ class Checkpoint {
    * Returns the number of predictions for the loaded model.
    */
   virtual size_t GetNumberOfPredictions() const = 0;
+
+  /**
+   * Returns the model type name for use in exported models.
+   */
+  virtual std::string GetModelType() const = 0;
+
+  /**
+   * Returns the confidence threshold for evaluation
+   */
+  virtual float GetEvaluateConfidence() const = 0;
+
+  /**
+   * Returns the Non Maximal Supression threshold for evaluation
+   */
+  virtual float GetNonMaximumSupressionThreshold() const = 0;
 };
 
 /**

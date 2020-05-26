@@ -148,6 +148,12 @@ class DarknetYOLOCheckpoint : public Checkpoint {
 
   size_t GetNumberOfPredictions() const override;
 
+  std::string GetModelType() const override;
+
+  float GetEvaluateConfidence() const override;
+
+  float GetNonMaximumSupressionThreshold() const override;
+
   /** Returns the config dictionary used to initialize darknet-yolo backends. */
   neural_net::float_array_map internal_config() const;
 
