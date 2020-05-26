@@ -7,6 +7,7 @@
 #include <ml/neural_net/weight_init.hpp>
 
 #include <cmath>
+#include <random>
 
 namespace turi {
 namespace neural_net {
@@ -43,6 +44,18 @@ uniform_weight_initializer::uniform_weight_initializer(
 
 void uniform_weight_initializer::operator()(float* first_weight,
                                             float* last_weight) {
+  for (float* w = first_weight; w != last_weight; ++w) {
+    *w = dist_(random_engine_);
+  }
+}
+
+normal_weight_initializer::normal_weight_initializer(
+    float mean, float std_dev, std::mt19937* random_engine)
+    : dist_(std::normal_distribution<float>(mean, std_dev)),
+      random_engine_(*random_engine) {}
+
+void normal_weight_initializer::operator()(float* first_weight,
+                                           float* last_weight) {
   for (float* w = first_weight; w != last_weight; ++w) {
     *w = dist_(random_engine_);
   }
