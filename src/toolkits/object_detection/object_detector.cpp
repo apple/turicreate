@@ -964,7 +964,6 @@ void object_detector::init_training(gl_sframe data,
 
 std::unique_ptr<ModelTrainer> object_detector::create_trainer(
     const Config& config, const std::string& pretrained_model_path,
-    int random_seed,
     std::unique_ptr<neural_net::compute_context> context) const {
   // For now, we only support darknet-yolo. Load the pre-trained model and
   // randomly initialize the final layers.
