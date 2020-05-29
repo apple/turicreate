@@ -329,6 +329,14 @@ def set_runtime_config(name, value):
     from .._connect import main as _glconnect
 
     unity = _glconnect.get_unity()
+
+    if name == "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE":
+        # Expands relative path to absolute path
+        value = _os.path.abspath(_os.path.expanduser(value))
+        # Raises exception if path for SSL cert does not exist
+        if not _os.path.exists(value):
+            raise ValueError("{} does not exist.".format(value))
+
     ret = unity.set_global(name, value)
     if ret != "":
         raise RuntimeError(ret)
