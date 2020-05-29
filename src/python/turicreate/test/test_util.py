@@ -255,7 +255,7 @@ class UtilTests(unittest.TestCase):
 
         try:
             self.assertRaises(
-                FileNotFoundError,
+                ValueError,
                 set_runtime_config,
                 "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE",
                 incorrect_path,
