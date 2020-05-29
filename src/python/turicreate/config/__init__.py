@@ -335,7 +335,7 @@ def set_runtime_config(name, value):
         value = _os.path.abspath(_os.path.expanduser(value))
         # Raises exception if path for SSL cert does not exist
         if not _os.path.exists(value):
-            raise FileNotFoundError("{} does not exist.".format(value))
+            raise ValueError("{} does not exist.".format(value))
 
     ret = unity.set_global(name, value)
     if ret != "":
