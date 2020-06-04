@@ -69,10 +69,8 @@ def get_test_data():
     data_dict = {"awesome_image": images}
     data = tc.SFrame(data_dict)
 
-    for model_name, feature_length in MODEL_TO_FEATURE_SIZE_MAPPING.items():
-        if str(feature_length) in data_dict.keys():
-            continue
-        data[str(feature_length)] = get_deep_features(data["awesome_image"], model_name)
+    for model_name in MODEL_TO_FEATURE_SIZE_MAPPING:
+        data[model_name + "_deep_features"] = get_deep_features(data["awesome_image"], model_name)
 
     return data
 
@@ -301,7 +299,7 @@ class ImageSimilarityResnetTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(
-            model="resnet-50", input_image_shape=(3, 227, 227), feature="2048"
+            model="resnet-50", input_image_shape=(3, 227, 227), feature="resnet-50_deep_features"
         )
 
 
@@ -317,7 +315,7 @@ class ImageSimilaritySqueezeNetTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(
-            model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="1000"
+            model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="squeezenet_v1.1_deep_features"
         )
 
 
@@ -339,7 +337,7 @@ class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures(ImageSimilarity
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(
-            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="2048"
+            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_deep_features"
         )
 
 # A test to gaurantee that old code using the incorrect name still works.
@@ -361,5 +359,5 @@ class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures_bad_name(ImageS
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest_bad_name, self).setUpClass(
-            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="2048"
+            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Screen_deep_features"
         )

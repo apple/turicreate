@@ -78,10 +78,8 @@ def get_test_data():
     data_dict = {"awesome_image": images, "awesome_label": labels}
     data = tc.SFrame(data_dict)
 
-    for model_name, feature_length in MODEL_TO_FEATURE_SIZE_MAPPING.items():
-        if str(feature_length) in data_dict.keys():
-            continue
-        data[str(feature_length)] = get_deep_features(data["awesome_image"], model_name)
+    for model_name in MODEL_TO_FEATURE_SIZE_MAPPING:
+        data[model_name + "_deep_features"] = get_deep_features(data["awesome_image"], model_name)
 
     return data
 
@@ -173,15 +171,10 @@ class ImageClassifierTest(unittest.TestCase):
 
     def test_select_correct_feature_column_to_train(self):
         # sending both, the correct extracted features colum and image column
-        extracted_feature_column_name = str(MODEL_TO_FEATURE_SIZE_MAPPING[self.pre_trained_model])
-        test_model = tc.image_classifier.create(data, target=self.target, model=self.pre_trained_model)
-        self.assertTrue(test_model.feature == extracted_feature_column_name)
-
-        # sending the wrong exracted features column along with the image column
-        columns_name_list = list(filter(lambda x: x != extracted_feature_column_name, data.column_names()))
-        test_data = data.select_columns(columns_name_list)
-        test_model = tc.image_classifier.create(test_data, target=self.target, model=self.pre_trained_model)
-        self.assertTrue(test_model.feature == "awesome_image")
+        if self.feature == "awesome_image":
+            test_data = data.select_columns([self.feature, self.target, self.feature+"_deep_features"])
+            test_model = tc.image_classifier.create(test_data, target=self.target, model=self.pre_trained_model)
+            self.assertTrue(test_model.feature == self.feature+"_deep_features")
 
     def test_predict(self):
         model = self.model
@@ -359,7 +352,7 @@ class ImageClassifierResnetTestWithDeepFeatures(ImageClassifierTest):
             input_image_shape=(3, 227, 227),
             tol=0.005,
             num_examples=200,
-            feature="2048",
+            feature="resnet-50_deep_features",
         )
 
 
@@ -382,7 +375,7 @@ class ImageClassifierSqueezeNetTestWithDeepFeatures(ImageClassifierTest):
             input_image_shape=(3, 227, 227),
             tol=0.005,
             num_examples=200,
-            feature="1000",
+            feature="squeezenet_v1.1_deep_features",
         )
 
 
@@ -416,5 +409,5 @@ class VisionFeaturePrintSceneTestWithDeepFeatures(ImageClassifierTest):
             tol=0.005,
             num_examples=100,
             label_type=str,
-            feature="2048",
+            feature="VisionFeaturePrint_Scene_deep_features",
         )
