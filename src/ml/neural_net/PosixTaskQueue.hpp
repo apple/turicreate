@@ -31,7 +31,7 @@ class PosixTaskQueue : public TaskQueue {
 class SerialPosixTaskQueue : public PosixTaskQueue {
  public:
   SerialPosixTaskQueue(size_t num_threads);
-  ~SerialPosixTaskQueue() override = default;
+  ~SerialPosixTaskQueue() override;
 
   // Not copyable or movable.
   SerialPosixTaskQueue(const SerialPosixTaskQueue&) = delete;
@@ -52,14 +52,14 @@ class SerialPosixTaskQueue : public PosixTaskQueue {
 /// thread_pool.
 class GlobalPosixTaskQueue : public PosixTaskQueue {
  public:
-  GlobalPosixTaskQueue() = default;
-  ~GlobalPosixTaskQueue() override = default;
+  GlobalPosixTaskQueue();
+  ~GlobalPosixTaskQueue() override;
 
   // Copyable or movable (but what's the point?)
-  GlobalPosixTaskQueue(const GlobalPosixTaskQueue&) = default;
-  GlobalPosixTaskQueue(GlobalPosixTaskQueue&&) = default;
-  GlobalPosixTaskQueue& operator=(const GlobalPosixTaskQueue&) = default;
-  GlobalPosixTaskQueue& operator=(GlobalPosixTaskQueue&&) = default;
+  GlobalPosixTaskQueue(const GlobalPosixTaskQueue&);
+  GlobalPosixTaskQueue(GlobalPosixTaskQueue&&);
+  GlobalPosixTaskQueue& operator=(const GlobalPosixTaskQueue&);
+  GlobalPosixTaskQueue& operator=(GlobalPosixTaskQueue&&);
 
   void DispatchApply(size_t n, std::function<void(size_t i)> task) override;
 

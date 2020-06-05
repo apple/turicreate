@@ -41,6 +41,8 @@ void PosixTaskQueue::DispatchSync(std::function<void()> task) {
 SerialPosixTaskQueue::SerialPosixTaskQueue(size_t num_threads)
     : threads_(num_threads) {}
 
+SerialPosixTaskQueue::~SerialPosixTaskQueue() = default;
+
 thread_pool& SerialPosixTaskQueue::GetThreadPool() { return threads_; }
 
 void SerialPosixTaskQueue::DispatchApply(size_t n,
@@ -51,6 +53,17 @@ void SerialPosixTaskQueue::DispatchApply(size_t n,
     }
   });
 }
+
+GlobalPosixTaskQueue::GlobalPosixTaskQueue() = default;
+GlobalPosixTaskQueue::~GlobalPosixTaskQueue() = default;
+
+GlobalPosixTaskQueue::GlobalPosixTaskQueue(const GlobalPosixTaskQueue&) =
+    default;
+GlobalPosixTaskQueue::GlobalPosixTaskQueue(GlobalPosixTaskQueue&&) = default;
+GlobalPosixTaskQueue& GlobalPosixTaskQueue::operator=(
+    const GlobalPosixTaskQueue&) = default;
+GlobalPosixTaskQueue& GlobalPosixTaskQueue::operator=(GlobalPosixTaskQueue&&) =
+    default;
 
 thread_pool& GlobalPosixTaskQueue::GetThreadPool() {
   return thread_pool::get_instance();
