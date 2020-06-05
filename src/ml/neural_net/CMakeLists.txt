@@ -60,13 +60,22 @@ endif()
 
 set(TF_BUILD_DIR ${CMAKE_BINARY_DIR}/src/python/turicreate/toolkits)
 
+if(APPLE)
+  set(additonal_unity_neural_net_sources GrandCentralDispatchQueue.cpp)
+else()
+  set(additonal_unity_neural_net_sources "")
+endif()
+
 make_library(unity_neural_net OBJECT
   SOURCES
+    TaskQueue.cpp
+    PosixTaskQueue.cpp
     compute_context.cpp
     float_array.cpp
     image_augmentation.cpp
     model_spec.cpp
     weight_init.cpp
+    ${additonal_unity_neural_net_sources}
   REQUIRES
     image_type
     logger
