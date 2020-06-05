@@ -45,7 +45,7 @@ thread_pool& SerialPosixTaskQueue::GetThreadPool() { return threads_; }
 
 void SerialPosixTaskQueue::DispatchApply(size_t n,
                                          std::function<void(size_t i)> task) {
-  TaskQueue::DispatchSync([n, task] {
+  DispatchSync([n, task] {
     for (size_t i = 0; i < n; ++i) {
       task(i);
     }
