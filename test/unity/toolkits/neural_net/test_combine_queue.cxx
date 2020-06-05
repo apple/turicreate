@@ -18,13 +18,14 @@ namespace neural_net {
 namespace {
 
 /// Implementation of TaskQueue that accumulates async tasks in a queue that
-/// must be manually drained (and just performs sync tasks on the calling
-/// thread)
+/// must be manually drained
 class FakeTaskQueue : public TaskQueue {
  public:
   void DispatchAsync(std::function<void()> task) override {
     async_tasks_.emplace_back(std::move(task));
   }
+
+  // Not implemented (unused by test code below)
   void DispatchSync(std::function<void()> task) override {}
   void DispatchApply(size_t n, std::function<void(size_t i)> task) override {}
 
