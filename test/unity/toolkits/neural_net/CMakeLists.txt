@@ -4,6 +4,7 @@ make_boost_test(test_combine_base.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(test_combine_futures_subscriber.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(test_combine_iterator.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(test_combine_map.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(test_combine_queue.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(test_image_augmentation.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(test_model_spec.cxx REQUIRES unity_shared_for_testing)
 
