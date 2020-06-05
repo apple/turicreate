@@ -20,5 +20,6 @@
 #include <ml/neural_net/combine_futures_subscriber.hpp>
 #include <ml/neural_net/combine_iterator.hpp>
 #include <ml/neural_net/combine_map.hpp>
+#include <ml/neural_net/combine_queue.hpp>
 
 #endif  // ML_NEURAL_NET_COMBINE_HPP_

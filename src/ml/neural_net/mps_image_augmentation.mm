@@ -6,10 +6,10 @@
 
 #include <ml/neural_net/mps_image_augmentation.hpp>
 
+#include <cassert>
 #include <random>
 
-#include <core/logging/assertions.hpp>
-#include <core/parallel/lambda_omp.hpp>
+#include <ml/neural_net/TaskQueue.hpp>
 
 #import <Accelerate/Accelerate.h>
 
@@ -36,8 +36,7 @@ CGAffineTransform transform_from_core_image(CGSize size) {
 }
 
 CIImage *convert_to_core_image(const image_type& source) {
-
-  ASSERT_TRUE(!source.is_decoded());
+  assert(!source.is_decoded());
 
   // Wrap the image with shared_ptr for memory management by NSData below.
   __block auto shared_image = std::make_shared<image_type>(source);
@@ -110,8 +109,7 @@ TCMPSLabeledImage *convert_to_core_image(const labeled_image& source) {
 void convert_from_core_image(CIImage *source, CIContext *context,
                              size_t output_width, size_t output_height,
                              float* out, size_t out_size) {
-
-  ASSERT_EQ(output_width * output_height * 3, out_size);
+  assert(output_width * output_height * 3 == out_size);
 
   // Render the image into a bitmap. CoreImage supports RGBA but not RGB...
   size_t rgba_data_size = output_height * output_width * 4;
@@ -378,7 +376,8 @@ mps_image_augmenter::result mps_image_augmenter::prepare_images(
 
   // Distribute work across threads, each writing into different regions of
   // result_array and res.annotations_batch.
-  parallel_for(0, source_batch.size(), apply_augmentations_for_image);
+  TaskQueue::GetGlobalConcurrentQueue()->DispatchApply(source_batch.size(),
+                                                       apply_augmentations_for_image);
 
   // Wrap and return the results.
   res.image_batch = shared_float_array::wrap(std::move(result_array),
