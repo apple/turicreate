@@ -357,6 +357,11 @@ class unity_sarray: public unity_sarray_base {
   flexible_type mean();
 
   /**
+   *  XXXX
+   */
+  flexible_type median(bool approx);
+
+  /**
    * Returns the standard deviation of the elements in sarray as a flex_float.
    *
    * \param ddof ...stands for "delta degrees of freedom".  Adjusts the degrees

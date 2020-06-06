@@ -38,7 +38,7 @@ class streaming_quantile_sketch;
  *
  * Usage is simple:
  * \code
- * // constrcut sketch at a particular size
+ * // construct sketch at a particular size
  * quantile_sketch<double> sketch(100000, 0.01);
  * ...
  * insert any number elements into the sketch using
@@ -89,7 +89,7 @@ class streaming_quantile_sketch;
  * -----------------
  * The basic mechanic of the sketch lies in making a hierarchy of sketches, each
  * having size m_b. The first sketch has error 0. The second sketch has error
- * 1/b, the 3rd sketch has error 2/b and so on. These sketches are treated as
+ * 1/b, the 3rd sketch has error 2/b and so on. These sketches are treated
  * like a binary sequence:
  *   - When a buffer of size b has been accumulated, it gets sorted and
  *     inserted into sketch 1

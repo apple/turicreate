@@ -18,12 +18,9 @@
 #include <core/logging/logger.hpp>
 namespace turi {
 
-// forward declarations
-class unity_sarray;
-class unity_sketch;
-
 namespace sketches {
 
+// forward declarations
 template <typename T, typename Comparator>
 class streaming_quantile_sketch;
 template <typename T, typename Comparator>

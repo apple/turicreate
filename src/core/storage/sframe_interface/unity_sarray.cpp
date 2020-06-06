@@ -1102,6 +1102,58 @@ flexible_type unity_sarray::mean() {
   }
 }
 
+flexible_type unity_sarray::median(bool approx) {
+  log_func_entry();
+
+  flex_type_enum type = dtype();
+  if(type != flex_type_enum::INTEGER && type != flex_type_enum::FLOAT) {
+    log_and_throw("Can not calculate median on non-numeric SArray.");
+  }
+  if (size() == 0) {
+    return flex_undefined();
+  }
+
+  // Use sketch to get a fast approximate answer
+  turi::unity_sketch* sketch = new turi::unity_sketch();
+  const double epsilon = 0.005; // XXX:
+  gl_sarray data = std::static_pointer_cast<unity_sarray>(shared_from_this());
+  sketch->construct_from_sarray(data);
+  double approx_median = sketch->get_quantile(0.5);
+
+  flexible_type result;
+  if (!approx) {
+    const double upper_bound = approx_median + (epsilon * size());
+    const double lower_bound = approx_median - (epsilon * size());
+
+    // Count the number below lower_bound.
+    // Store all values between lower_bound and upper_bound.
+    atomic<size_t> n_below_a = 0;
+    std::vector<flexible_type> candidates;
+    std::mutex candidate_lock;
+    auto count_median = [&](size_t, const std::shared_ptr<sframe_rows>& rows) {
+      for (const auto& row : *rows) {
+        const flexible_type x = row[0];
+        if(x < lower_bound) {
+          ++n_below_a;
+        } else if(x <= upper_bound) {
+          std::lock_guard<std::mutex> lg(candidate_lock);
+          candidates.push_back(x);
+        }
+      }
+      return false;
+    };
+    data.materialize_to_callback(count_median);
+
+    size_t median_index = (size() / 2) - n_below_a;
+    std::nth_element(candidates.begin(), candidates.begin() + median_index, candidates.end());
+    result = candidates[median_index];
+  } else {
+    result = approx_median;
+  }
+
+  return result;
+}
+
 flexible_type unity_sarray::std(size_t ddof) {
   log_func_entry();
   flexible_type variance = this->var(ddof);

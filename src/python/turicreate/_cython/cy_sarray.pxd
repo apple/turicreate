@@ -40,6 +40,7 @@ cdef extern from "<core/storage/sframe_interface/unity_sarray.hpp>" namespace "t
         flexible_type min() except +
         flexible_type sum() except +
         flexible_type mean() except +
+        flexible_type median(bint) except +
         flexible_type std(size_t) except +
         flexible_type var(size_t) except +
         size_t nnz() except +
@@ -141,6 +142,8 @@ cdef class UnitySArrayProxy:
     cpdef sum(self)
 
     cpdef mean(self)
+
+    cpdef median(self, bint approx)
 
     cpdef std(self, size_t ddof)
 

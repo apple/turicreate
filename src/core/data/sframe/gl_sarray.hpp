@@ -506,7 +506,6 @@ class gl_sarray {
   /*                              Make Friends                              */
   /*                                                                        */
   /**************************************************************************/
-
   friend gl_sarray operator+(const flexible_type& opnd, const gl_sarray& opnd2);
   friend gl_sarray operator-(const flexible_type& opnd, const gl_sarray& opnd2);
   friend gl_sarray operator*(const flexible_type& opnd, const gl_sarray& opnd2);

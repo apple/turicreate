@@ -6,4 +6,6 @@ unity_sarray_builder.cpp
 unity_sframe.cpp
 unity_sframe_builder.cpp
 unity_sgraph.cpp
+  REQUIRES
+unity_sketches
 )

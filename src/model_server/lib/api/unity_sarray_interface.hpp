@@ -43,6 +43,7 @@ GENERATE_INTERFACE_AND_PROXY(unity_sarray_base, unity_sarray_proxy,
       (flexible_type, min, )
       (flexible_type, sum, )
       (flexible_type, mean, )
+      (flexible_type, median, (bool))
       (flexible_type, std, (size_t))
       (flexible_type, var, (size_t))
       (size_t, num_missing, )

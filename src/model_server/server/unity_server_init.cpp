@@ -13,9 +13,8 @@
 #include <core/storage/sframe_interface/unity_sframe.hpp>
 #include <core/storage/sframe_interface/unity_sframe_builder.hpp>
 #include <core/storage/sframe_interface/unity_sgraph.hpp>
-#include <ml/sketches/unity_sketch.hpp>
 #include <model_server/lib/simple_model.hpp>
-#
+
 namespace turi {
 unity_server_initializer::~unity_server_initializer() {}
 
