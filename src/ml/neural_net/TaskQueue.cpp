@@ -9,7 +9,7 @@
 
 #ifdef __APPLE__
 #include <ml/neural_net/GrandCentralDispatchQueue.hpp>
-#elif
+#else
 #include <ml/neural_net/PosixTaskQueue.hpp>
 #endif
 
@@ -20,7 +20,7 @@ namespace neural_net {
 std::shared_ptr<TaskQueue> TaskQueue::GetGlobalConcurrentQueue() {
 #ifdef __APPLE__
   return GrandCentralDispatchQueue::GetGlobalConcurrentQueue();
-#elif
+#else
   return PosixTaskQueue::GetGlobalConcurrentQueue();
 #endif
 }
@@ -29,7 +29,7 @@ std::shared_ptr<TaskQueue> TaskQueue::GetGlobalConcurrentQueue() {
 std::shared_ptr<TaskQueue> TaskQueue::CreateSerialQueue(const char* label) {
 #ifdef __APPLE__
   return GrandCentralDispatchQueue::CreateSerialQueue(label);
-#elif
+#else
   return PosixTaskQueue::CreateSerialQueue(label);
 #endif
 }
