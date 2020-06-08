@@ -1117,13 +1117,14 @@ flexible_type unity_sarray::median(bool approx) {
   turi::unity_sketch* sketch = new turi::unity_sketch();
   const double epsilon = 0.005; // XXX:
   gl_sarray data = std::static_pointer_cast<unity_sarray>(shared_from_this());
+  data = data.dropna();
   sketch->construct_from_sarray(data);
   double approx_median = sketch->get_quantile(0.5);
 
   flexible_type result;
   if (!approx) {
-    const double upper_bound = approx_median + (epsilon * size());
-    const double lower_bound = approx_median - (epsilon * size());
+    const double upper_bound = approx_median + (epsilon * data.size());
+    const double lower_bound = approx_median - (epsilon * data.size());
 
     // Count the number below lower_bound.
     // Store all values between lower_bound and upper_bound.
@@ -1144,7 +1145,7 @@ flexible_type unity_sarray::median(bool approx) {
     };
     data.materialize_to_callback(count_median);
 
-    size_t median_index = (size() / 2) - n_below_a;
+    size_t median_index = (data.size() / 2) - n_below_a;
     std::nth_element(candidates.begin(), candidates.begin() + median_index, candidates.end());
     result = candidates[median_index];
   } else {

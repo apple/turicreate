@@ -1041,6 +1041,7 @@ class SArrayTest(unittest.TestCase):
 
         def check_correctness(l):
             sa = SArray(l)
+            l = list(filter(lambda x: x is not None, l))
             if(len(l) % 2 == 1):
                 self.assertAlmostEqual(sa.median(), np.median(l))
             else:
@@ -1080,11 +1081,15 @@ class SArrayTest(unittest.TestCase):
         check_correctness(a + [1])
         check_approximate_correctness(a + [1])
 
+        # Test SArray with Nones
+        a += [None] * 20
+        random.shuffle(a)
+        check_correctness(a)
+
         # Empty input
         self.assertIsNone(SArray().median())
 
         # Bad inputs
-        # XXX: Test SArray with Nones
         with self.assertRaises(TypeError):
             SArray([1]).median(approximate="this is not a bool")
         with self.assertRaises(RuntimeError):
