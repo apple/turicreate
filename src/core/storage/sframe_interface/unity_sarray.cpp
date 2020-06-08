@@ -1115,7 +1115,6 @@ flexible_type unity_sarray::median(bool approx) {
 
   // Use sketch to get a fast approximate answer
   turi::unity_sketch* sketch = new turi::unity_sketch();
-  const double epsilon = 0.005; // XXX:
   gl_sarray data = std::static_pointer_cast<unity_sarray>(shared_from_this());
   data = data.dropna();
   sketch->construct_from_sarray(data);
@@ -1123,6 +1122,7 @@ flexible_type unity_sarray::median(bool approx) {
 
   flexible_type result;
   if (!approx) {
+    const double epsilon = sketch->numeric_epsilon();
     const double upper_bound = approx_median + (epsilon * data.size());
     const double lower_bound = approx_median - (epsilon * data.size());
 

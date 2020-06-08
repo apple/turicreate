@@ -393,6 +393,10 @@ class streaming_quantile_sketch {
     m_final.m_epsilon = m_epsilon;
   }
 
+  double get_epsilon() const {
+    return m_epsilon;
+  }
+
   void save(oarchive& oarc) const {
     oarc << m_epsilon << m_elements_inserted
          << m_initial_sketch_size << m_levels << m_final;
