@@ -35,6 +35,11 @@ R Call(std::queue<std::function<R(Args...)>> *callbacks, Args &&... args) {
 
 class MockSubscription : public Subscription {
  public:
+  ~MockSubscription() override {
+    TS_ASSERT(cancel_callbacks.empty());
+    TS_ASSERT(demand_callbacks.empty());
+  }
+
   void Cancel() override { return Call(&cancel_callbacks); }
   std::queue<std::function<void()>> cancel_callbacks;
 
@@ -48,6 +53,12 @@ template <typename T>
 class MockSubscriber : public Subscriber<T> {
  public:
   using Input = T;
+
+  ~MockSubscriber() override {
+    TS_ASSERT(subscription_callbacks.empty());
+    TS_ASSERT(input_callbacks.empty());
+    TS_ASSERT(completion_callbacks.empty());
+  }
 
   void Receive(std::shared_ptr<Subscription> subscription) override {
     return Call(&subscription_callbacks, std::move(subscription));
@@ -70,6 +81,8 @@ template <typename T>
 class MockPublisher : public Publisher<T> {
  public:
   using Output = T;
+
+  ~MockPublisher() override { TS_ASSERT(subscriber_callbacks.empty()); }
 
   void Receive(std::shared_ptr<Subscriber<Output>> subscriber) override {
     return Call(&subscriber_callbacks, std::move(subscriber));
