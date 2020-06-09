@@ -252,22 +252,14 @@ def create(
 
     if feature is None:
         try:
-            feature = image_analysis.find_only_image_extracted_features_column(dataset, model)
+            feature = image_analysis._find_only_image_extracted_features_column(dataset, model)
             feature_type = "extracted_features_array"
         except:
             feature = None
 
         if feature is None:
-            try:
-                feature = _tkutl._find_only_image_column(dataset)
-                feature_type = "image"
-            except:
-                raise _ToolkitError(
-                    'No feature column specified and no column with expected type image or extracted features array is found.'
-                    + ' "datasets" consists of columns with types: '
-                    + ", ".join([x.__name__ for x in dataset.column_types()])
-                    + "."
-                )
+            feature = _tkutl._find_only_image_column(dataset)
+            feature_type = "image"
     else:
         if image_analysis.is_image_deep_feature_sarray(dataset[feature], model):
             feature_type = "extracted_features_array"
@@ -905,7 +897,7 @@ class ImageClassifier(_CustomModel):
                 }
             )
         else:
-            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or extracted features array.'.format(feature=feature)
+            raise _ToolkitError('The "{feature}" column of the SFrame neither has the dataype image or extracted features array.'.format(feature=feature)
                 + ' "Datasets" consists of columns with types: '
                 + ", ".join([x.__name__ for x in dataset.column_types()])
                 + "."
