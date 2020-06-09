@@ -7,6 +7,9 @@
 
 #include <ml/neural_net/GrandCentralDispatchQueue.hpp>
 
+#include <exception>
+#include <mutex>
+
 namespace turi {
 namespace neural_net {
 
@@ -55,9 +58,29 @@ void GrandCentralDispatchQueue::DispatchSync(std::function<void()> task) {
 
 void GrandCentralDispatchQueue::DispatchApply(
     size_t n, std::function<void(size_t i)> task) {
+  // Use a mutex-protected exception pointer to communicate exceptions to the
+  // caller, since GCD treats any uncaught C++ exception as a fatal error. Note
+  // that we cannot capture a mutable std::mutex instance in an Objective-C
+  // block, so we capture a pointer to the mutex instead.
+  std::mutex mutex;
+  std::mutex* mutex_ptr = &mutex;
+  __block std::exception_ptr error;
+
   dispatch_apply(n, impl_, ^(size_t i) {
-    task(i);
+    try {
+      task(i);
+    } catch (...) {
+      std::exception_ptr local_error = std::current_exception();
+      std::lock_guard<std::mutex> guard(*mutex_ptr);
+      if (!error) {
+        error = local_error;
+      }
+    }
   });
+
+  if (error) {
+    std::rethrow_exception(error);
+  }
 }
 
 }  // namespace neural_net

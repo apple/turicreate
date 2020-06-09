@@ -29,16 +29,16 @@ class TaskQueue {
   virtual ~TaskQueue() = default;
 
   /// Submits a function to this task queue without waiting for the function to
-  /// finish.
+  /// finish. The task must not throw an exception.
   virtual void DispatchAsync(std::function<void()> task) = 0;
 
   /// Submits a function to this task queue and waits for the function to
-  /// execute.
+  /// execute. The task must not throw an exception.
   virtual void DispatchSync(std::function<void()> task) = 0;
 
   /// Submits a function to this task queue n times, with arguments ranging from
   /// 0 to n - 1. When dispatched to a concurrent queue, the function must be
-  /// reentrant.
+  /// reentrant. Rethrows the first exception thrown by any task invocation.
   virtual void DispatchApply(size_t n, std::function<void(size_t i)> task) = 0;
 };
 
