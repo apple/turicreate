@@ -259,21 +259,34 @@ class ImageSimilarityTest(unittest.TestCase):
         )
 
         # Get model distances for comparison
-        img = data[0:1][self.feature][0]
-        img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
-        tc_ret = self.model.query(img_fixed, k=data.num_rows())
+        if self.feature == "awesome_image":
+            img = data[0:1][self.feature][0]
+            img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
+            tc_ret = self.model.query(img_fixed, k=data.num_rows())
 
-        if _mac_ver() >= (10, 13):
-            from PIL import Image as _PIL_Image
+            if _mac_ver() >= (10, 13):
+                from PIL import Image as _PIL_Image
 
-            pil_img = _PIL_Image.fromarray(img_fixed.pixel_data)
-            coreml_ret = coreml_model.predict({"awesome_image": pil_img})
+                pil_img = _PIL_Image.fromarray(img_fixed.pixel_data)
+                coreml_ret = coreml_model.predict({"awesome_image": pil_img})
 
-            # Compare distances
-            coreml_distances = np.array(coreml_ret["distance"])
-            tc_distances = tc_ret.sort("reference_label")["distance"].to_numpy()
-            psnr_value = get_psnr(coreml_distances, tc_distances)
-            self.assertTrue(psnr_value > 50)
+                # Compare distances
+                coreml_distances = np.array(coreml_ret["distance"])
+                tc_distances = tc_ret.sort("reference_label")["distance"].to_numpy()
+                psnr_value = get_psnr(coreml_distances, tc_distances)
+                self.assertTrue(psnr_value > 50)
+        else:
+            deep_features = data[0:1][self.feature][0]
+            tc_ret = self.model.query(deep_features, k=data.num_rows())
+
+            if _mac_ver() >= (10, 13):
+                coreml_ret = coreml_model.predict({self.feature: deep_features})
+
+                # Compare distances
+                coreml_distances = np.array(coreml_ret["distance"])
+                tc_distances = tc_ret.sort("reference_label")["distance"].to_numpy()
+                psnr_value = get_psnr(coreml_distances, tc_distances)
+                self.assertTrue(psnr_value > 50)
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
