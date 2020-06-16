@@ -246,22 +246,35 @@ class ImageClassifierTest(unittest.TestCase):
         self.model.export_coreml(filename)
 
         coreml_model = coremltools.models.MLModel(filename)
-        img = data[0:1][self.feature][0]
-        img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
-        from PIL import Image
+        if self.feature == "awesome_image":
+            img = data[0:1][self.feature][0]
+            img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
+            from PIL import Image
 
-        pil_img = Image.fromarray(img_fixed.pixel_data)
+            pil_img = Image.fromarray(img_fixed.pixel_data)
 
-        if _mac_ver() >= (10, 13):
-            classes = self.model.classifier.classes
-            ret = coreml_model.predict({self.feature: pil_img})
-            coreml_values = [ret[self.target + "Probability"][l] for l in classes]
+            if _mac_ver() >= (10, 13):
+                classes = self.model.classifier.classes
+                ret = coreml_model.predict({self.feature: pil_img})
+                coreml_values = [ret[self.target + "Probability"][l] for l in classes]
 
-            self.assertListAlmostEquals(
-                coreml_values,
-                list(self.model.predict(img_fixed, output_type="probability_vector")),
-                self.tolerance,
-            )
+                self.assertListAlmostEquals(
+                    coreml_values,
+                    list(self.model.predict(img_fixed, output_type="probability_vector")),
+                    self.tolerance,
+                )
+        else:
+            deep_features = data[0:1][self.feature][0]
+            if _mac_ver() >= (10, 13):
+                classes = self.model.classifier.classes
+                ret = coreml_model.predict({self.feature: deep_features})
+                coreml_values = [ret[self.target + "Probability"][l] for l in classes]
+
+                self.assertListAlmostEquals(
+                    coreml_values,
+                    list(self.model.predict(deep_features, output_type="probability_vector")),
+                    self.tolerance,
+                )                
 
     def test_classify(self):
         model = self.model
