@@ -172,9 +172,9 @@ class ImageClassifierTest(unittest.TestCase):
     def test_select_correct_feature_column_to_train(self):
         # sending both, the correct extracted features colum and image column
         if self.feature == "awesome_image":
-            test_data = data.select_columns([self.feature, self.target, self.feature+"_deep_features"])
+            test_data = data.select_columns([self.feature, self.target, self.pre_trained_model+"_deep_features"])
             test_model = tc.image_classifier.create(test_data, target=self.target, model=self.pre_trained_model)
-            self.assertTrue(test_model.feature == self.feature+"_deep_features")
+            self.assertTrue(test_model.feature == self.pre_trained_model+"_deep_features")
 
     def test_predict(self):
         model = self.model
@@ -347,11 +347,11 @@ class ImageClassifierTest(unittest.TestCase):
 class ImageClassifierResnetTestWithDeepFeatures(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
-        super(ImageClassifierSqueezeNetTest, self).setUpClass(
+        super(ImageClassifierResnetTestWithDeepFeatures, self).setUpClass(
             model="resnet-50",
-            input_image_shape=(3, 227, 227),
-            tol=0.005,
-            num_examples=200,
+            input_image_shape=(3, 224, 224),
+            tol=0.02,
+            num_examples=100,
             feature="resnet-50_deep_features",
         )
 
@@ -370,7 +370,7 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
 class ImageClassifierSqueezeNetTestWithDeepFeatures(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
-        super(ImageClassifierSqueezeNetTest, self).setUpClass(
+        super(ImageClassifierSqueezeNetTestWithDeepFeatures, self).setUpClass(
             model="squeezenet_v1.1",
             input_image_shape=(3, 227, 227),
             tol=0.005,
@@ -403,7 +403,7 @@ class VisionFeaturePrintSceneTest(ImageClassifierTest):
 class VisionFeaturePrintSceneTestWithDeepFeatures(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
-        super(VisionFeaturePrintSceneTest, self).setUpClass(
+        super(VisionFeaturePrintSceneTestWithDeepFeatures, self).setUpClass(
             model="VisionFeaturePrint_Scene",
             input_image_shape=(3, 299, 299),
             tol=0.005,

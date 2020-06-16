@@ -261,7 +261,7 @@ def create(
             feature = _tkutl._find_only_image_column(dataset)
             feature_type = "image"
     else:
-        if image_analysis.is_image_deep_feature_sarray(dataset[feature], model):
+        if image_analysis._is_image_deep_feature_sarray(dataset[feature], model):
             feature_type = "extracted_features_array"
         elif dataset[feature].dtype is _tc.Image:
             feature_type = "image"
@@ -882,7 +882,7 @@ class ImageClassifier(_CustomModel):
         return _Evaluation(evaluation_result)
 
     def _extract_features(self, dataset, verbose=False, batch_size=64):
-        if image_analysis.is_image_deep_feature_sarray(dataset[self.feature], self.model):
+        if image_analysis._is_image_deep_feature_sarray(dataset[self.feature], self.model):
             return _tc.SFrame(
                 {
                     "__image_features__": dataset[self.feature]
