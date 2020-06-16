@@ -146,7 +146,7 @@ def create(
                     + "."
                 )
     else:
-        if image_analysis.is_image_deep_feature_sarray(dataset[feature], model):
+        if image_analysis._is_image_deep_feature_sarray(dataset[feature], model):
             feature_type = "extracted_features_array"
         elif dataset[feature].dtype is _tc.Image:
             feature_type = "image"
@@ -335,7 +335,7 @@ class ImageSimilarityModel(_CustomModel):
         return ([model_fields, training_fields], section_titles)
 
     def _extract_features(self, dataset, verbose=False, batch_size=64):
-        if image_analysis.is_image_deep_feature_sarray(dataset[self.feature], self.model): 
+        if image_analysis._is_image_deep_feature_sarray(dataset[self.feature], self.model): 
             return _tc.SFrame(
                 {
                     "__image_features__": dataset[self.feature]

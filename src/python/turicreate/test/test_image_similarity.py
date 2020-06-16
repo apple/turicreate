@@ -298,8 +298,8 @@ class ImageSimilarityTest(unittest.TestCase):
 class ImageSimilarityResnetTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
-        super(ImageSimilaritySqueezeNetTest, self).setUpClass(
-            model="resnet-50", input_image_shape=(3, 227, 227), feature="resnet-50_deep_features"
+        super(ImageSimilarityResnetTestWithDeepFeatures, self).setUpClass(
+            model="resnet-50", input_image_shape=(3, 224, 224), feature="resnet-50_deep_features"
         )
 
 
@@ -314,7 +314,7 @@ class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
 class ImageSimilaritySqueezeNetTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
-        super(ImageSimilaritySqueezeNetTest, self).setUpClass(
+        super(ImageSimilaritySqueezeNetTestWithDeepFeatures, self).setUpClass(
             model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="squeezenet_v1.1_deep_features"
         )
 
@@ -336,7 +336,7 @@ class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
 class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
-        super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(
+        super(ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures, self).setUpClass(
             model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_deep_features"
         )
 
@@ -358,6 +358,6 @@ class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
 class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures_bad_name(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
-        super(ImageSimilarityVisionFeaturePrintSceneTest_bad_name, self).setUpClass(
-            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Screen_deep_features"
+        super(ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures_bad_name, self).setUpClass(
+            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_deep_features"
         )
