@@ -11,6 +11,7 @@ import turicreate as _tc
 
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+import turicreate.toolkits._internal_utils as _tkutl
 from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from ...data_structures.image import Image as _Image
@@ -260,7 +261,7 @@ def _find_only_image_extracted_features_column(sframe, model_name):
     """
     from array import array
 
-    feature_column = _find_only_column_of_type(sframe, target_type=array, type_name="array", col_name="deep_features")
+    feature_column = _tkutl._find_only_column_of_type(sframe, target_type=array, type_name="array", col_name="deep_features")
     if _is_image_deep_feature_sarray(sframe[feature_column], model_name):
         return feature_column
     else:
