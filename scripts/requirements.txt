@@ -7,7 +7,7 @@ scipy==1.2.1
 resampy==0.2.1
 scikit-learn==0.20.3
 statsmodels==0.9.0
-tensorflow==2.0.0
+tensorflow==2.0.1
 UISoup==2.5.7
 pyobjc==5.2; sys_platform == 'darwin'
 llvmlite==0.31.0
