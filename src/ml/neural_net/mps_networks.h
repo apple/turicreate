@@ -1,5 +1,4 @@
-#ifndef MPS_NETWORKS_H_
-#define MPS_NETWORKS_H_
+#pragma once
 
 #import "unordered_map"
 #import "vector"
@@ -8,7 +7,6 @@
 #import <Metal/Metal.h>
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 
-#pragma clang diagnostic ignored "-Wunguarded-availability-new"
 #import "mps_layers.h"
 #import "mps_updater.h"
 #import "mps_utils.h"
@@ -50,7 +48,7 @@ struct MPSNetwork {
       is_train_ = (kLowLevelModeTrain == network_mode_ || kLowLevelModeTest == network_mode_);
   }
 
-  void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> cmd_q,
+  void Init(id<MTLDevice> _Nonnull device, id<MTLCommandQueue> _Nonnull cmd_q,
             const float_array_map& config);
   MPSImageBatch *_Nonnull Forward(MPSImageBatch *_Nonnull src,
                                   id<MTLCommandBuffer> _Nonnull cb,
@@ -322,5 +320,3 @@ struct SingleLstmNetwork : public MPSNetwork {
 
 }  // namespace neural_net
 }  // namespace turi
-
-#endif

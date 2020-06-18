@@ -159,7 +159,7 @@ void fp_growth::train(const gl_sframe& data) {
 bool is_subset(const dense_bitset& A,
                const dense_bitset& B) {
   DASSERT_EQ(A.size(), B.size());
-  for (const auto& item: A) {
+  for (auto item: A) {
     if (!B.get(item)) {
       return false;
     }

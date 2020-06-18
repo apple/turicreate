@@ -51,7 +51,7 @@ struct ac_parameters {
  * network module instances, used to abstract across backend implementations and
  * hardware resources.
  */
-EXPORT class compute_context {
+class EXPORT compute_context {
  public:
   /** Function that yields a compute context. */
   using factory = std::function<std::unique_ptr<compute_context>()>;

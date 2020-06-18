@@ -12,6 +12,8 @@
 API_AVAILABLE(macos(10.14))
 @interface TCMPSConvolutionPadding : NSObject <MPSNNPadding>
 
+NS_ASSUME_NONNULL_BEGIN
+
 @property (nonatomic) NSUInteger paddingWidth;
 @property (nonatomic) NSUInteger paddingHeight;
 @property (nonatomic) NSUInteger strideWidth;
@@ -29,8 +31,10 @@ API_AVAILABLE(macos(10.14))
 - (MPSNNPaddingMethod)paddingMethod;
 - (void)encodeWithCoder:(NSCoder *)coder;
 - (MPSImageDescriptor *)destinationImageDescriptorForSourceImages:(NSArray<MPSImage *> *)sourceImages 
-                                                     sourceStates:(NSArray<MPSState *> *)sourceStates 
+                                                     sourceStates:(NSArray<MPSState *> * __nullable)sourceStates 
                                                         forKernel:(MPSKernel *)kernel 
                                               suggestedDescriptor:(MPSImageDescriptor *)inDescriptor;
+
+NS_ASSUME_NONNULL_END
 
 @end
