@@ -9,6 +9,7 @@ make_boost_test(test_image_augmentation.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(test_model_spec.cxx REQUIRES unity_shared_for_testing)
 
 make_boost_test(PosixTaskQueueTests.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(PortableImageTests.cxx REQUIRES unity_shared_for_testing)
 
 if(APPLE)
   make_boost_test(GrandCentralDispatchQueueTests.cxx REQUIRES unity_shared_for_testing)

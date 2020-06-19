@@ -12,8 +12,9 @@
 
 #include <boost/test/unit_test.hpp>
 #include <core/data/image/image_type.hpp>
-#include <model_server/lib/image_util.hpp>
 #include <core/util/test_macros.hpp>
+#include <ml/neural_net/PortableImage.hpp>
+#include <model_server/lib/image_util.hpp>
 
 namespace turi {
 namespace neural_net {
@@ -27,10 +28,9 @@ constexpr int kClassIdentifier = 7;
 constexpr float kObjectConfidence = 1.f;
 constexpr float kEpsilon = 0.002f;
 
-image_type create_image(
-    size_t width, size_t height,
-    std::function<rgb_pixel_type(size_t x, size_t y)> rgb_generator) {
-
+std::shared_ptr<Image> create_image(size_t width, size_t height,
+                                    std::function<rgb_pixel_type(size_t x, size_t y)> rgb_generator)
+{
   size_t size = height * width * 3;
   std::unique_ptr<uint8_t[]> buffer(new uint8_t[size]);
   for (size_t j = 0; j < height; ++j) {
@@ -43,7 +43,8 @@ image_type create_image(
   flex_image raw_image(reinterpret_cast<char*>(buffer.get()), height, width, 3,
 		       size, IMAGE_TYPE_CURRENT_VERSION,
 		       static_cast<int>(Format::RAW_ARRAY));
-  return image_util::encode_image(raw_image);
+  flex_image image = image_util::encode_image(raw_image);
+  return std::make_shared<PortableImage>(image);
 }
 
 std::vector<image_annotation> create_annotations(std::vector<image_box> boxes) {

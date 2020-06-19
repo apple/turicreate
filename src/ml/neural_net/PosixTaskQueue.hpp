@@ -30,7 +30,7 @@ class PosixTaskQueue : public TaskQueue {
 /// instance.
 class SerialPosixTaskQueue : public PosixTaskQueue {
  public:
-  SerialPosixTaskQueue(size_t num_threads);
+  explicit SerialPosixTaskQueue(size_t num_threads);
   ~SerialPosixTaskQueue() override;
 
   // Not copyable or movable.

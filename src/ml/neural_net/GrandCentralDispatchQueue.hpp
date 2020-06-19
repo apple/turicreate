@@ -21,7 +21,7 @@ class GrandCentralDispatchQueue : public TaskQueue {
   static std::shared_ptr<GrandCentralDispatchQueue> CreateSerialQueue(
       const char* label);
 
-  GrandCentralDispatchQueue(dispatch_queue_t impl);
+  explicit GrandCentralDispatchQueue(dispatch_queue_t impl);
   ~GrandCentralDispatchQueue();
 
   // Not movable or copyable.

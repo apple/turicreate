@@ -12,7 +12,6 @@
 #include <vector>
 
 #include <boost/test/unit_test.hpp>
-#include <core/data/image/image_type.hpp>
 #include <core/util/test_macros.hpp>
 
 namespace turi {
@@ -77,69 +76,6 @@ BOOST_AUTO_TEST_CASE(test_image_box_clip) {
   box = image_box(10.f, 20.f, 30.f, 40.f);
   box.clip(image_box(70.f, 70.f, 100.f, 100.f));
   TS_ASSERT_EQUALS(box.area(), 0.f);
-}
-
-image_type create_black_image(size_t width, size_t height) {
-  std::vector<char> buffer(height*width*3, 0);
-  return image_type(buffer.data(), height, width, 3, buffer.size(),
-                    IMAGE_TYPE_CURRENT_VERSION,
-                    static_cast<int>(Format::RAW_ARRAY));
-}
-
-BOOST_AUTO_TEST_CASE(test_resize_only_image_augmenter) {
-
-  // Create some arbitrary-size images.
-  std::vector<labeled_image> source_batch(4);
-  source_batch[0].image = create_black_image(100, 200);
-  source_batch[1].image = create_black_image(200, 100);
-  source_batch[2].image = create_black_image(400, 400);
-  source_batch[3].image = create_black_image(100, 500);
-
-  // Add some arbitrary annotations.
-  source_batch[0].annotations.resize(1);
-  source_batch[0].annotations[0].identifier = 1;
-  source_batch[0].annotations[0].bounding_box =
-      image_box(10.f, 10.f, 20.f, 20.f);
-  source_batch[2].annotations.resize(2);
-  source_batch[2].annotations[0].identifier = 2;
-  source_batch[2].annotations[0].bounding_box =
-      image_box(20.f, 20.f, 20.f, 20.f);
-  source_batch[2].annotations[1].identifier = 3;
-  source_batch[2].annotations[1].bounding_box =
-      image_box(30.f, 30.f, 20.f, 20.f);
-
-  // Configure an augmenter to resize to 400x300.
-  image_augmenter::options options;
-  options.batch_size = source_batch.size();
-  options.output_width = 400;
-  options.output_height = 300;
-
-  // Create the augmenter.
-  resize_only_image_augmenter augmenter(options);
-  TS_ASSERT_EQUALS(augmenter.get_options().output_width, options.output_width);
-  TS_ASSERT_EQUALS(augmenter.get_options().output_height,
-                   options.output_height);
-
-  // Invoke the augmenter.
-  image_augmenter::result result = augmenter.prepare_images(source_batch);
-
-  // Validate the shape of the float array.
-  TS_ASSERT_EQUALS(result.image_batch.dim(), 4);
-  TS_ASSERT_EQUALS(result.image_batch.shape()[0], 4);    // N
-  TS_ASSERT_EQUALS(result.image_batch.shape()[1], 300);  // H
-  TS_ASSERT_EQUALS(result.image_batch.shape()[2], 400);  // W
-  TS_ASSERT_EQUALS(result.image_batch.shape()[3], 3);    // C
-
-  // Validate that each image is still black
-  const float* data = result.image_batch.data();
-  size_t size = result.image_batch.size();
-  auto is_zero = [](float x) { return x == 0.f; };
-  TS_ASSERT(std::all_of(data, data + size, is_zero));
-
-  // Validate that the annotations were copied.
-  for (int i = 0; i < 4; ++i) {
-    TS_ASSERT_EQUALS(source_batch[i].annotations, result.annotations_batch[i]);
-  }
 }
 
 }  // namespace

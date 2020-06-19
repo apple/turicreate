@@ -8,9 +8,6 @@
 
 #include <algorithm>
 
-#include <core/logging/assertions.hpp>
-#include <model_server/lib/image_util.hpp>
-
 namespace turi {
 namespace neural_net {
 
@@ -111,54 +108,6 @@ bool operator==(const image_annotation& a, const image_annotation& b) {
     a.confidence == b.confidence;
 }
 
-image_augmenter::result resize_only_image_augmenter::prepare_images(
-    std::vector<labeled_image> source_batch) {
-
-  const size_t n = opts_.batch_size;
-  const size_t h = opts_.output_height;
-  const size_t w = opts_.output_width;
-  constexpr size_t c = 3;
-
-  result res;
-  res.annotations_batch.reserve(n);
-
-  // Discard any source data in excess of the batch size.
-  if (source_batch.size() > n) {
-    source_batch.resize(n);
-  }
-
-  // Allocate a float vector large enough to contain the entire image batch.
-  std::vector<float> result_array(n * h * w * c);
-
-  // Note: this computation could probably be parallelized, if needed.
-  auto out_it = result_array.begin();
-  for (labeled_image& source : source_batch) {
-    // Resize the input image.
-    image_type resized_image = image_util::resize_image(
-        source.image, w, h, c, /* decode */ true, /* resample_method */ 1);
-    ASSERT_EQ(resized_image.m_image_data_size, h * w * c);
-
-    // Copy the resized image into the output buffer, converting to float
-    // (normalized to 1).
-    const unsigned char* src_ptr = resized_image.get_image_data();
-    auto out_end = out_it + h * w * c;
-    while (out_it != out_end) {
-      *out_it = *src_ptr / 255.f;
-      ++src_ptr;
-      ++out_it;
-    }
-
-    // Just move the annotations from the input to the output. Since the
-    // annotations are all in normalized (relative) coordinates, no modification
-    // is required.
-    res.annotations_batch.push_back(std::move(source.annotations));
-  }
-
-  res.image_batch = shared_float_array::wrap(std::move(result_array),
-                                             { n, h, w, c});
-  return res;
-}
-
 image_augmenter::result float_array_image_augmenter::prepare_images(
     std::vector<labeled_image> source_batch) {
   const size_t n = opts_.batch_size;
@@ -179,19 +128,12 @@ image_augmenter::result float_array_image_augmenter::prepare_images(
   // Also convert annotations and predictions per batch of images
   // to vectors of shared_float_arrays.
   for (const labeled_image& source : source_batch) {
-    size_t input_height = source.image.m_height;
-    size_t input_width = source.image.m_width;
+    size_t input_height = source.image->Height();
+    size_t input_width = source.image->Width();
     std::vector<float> img(input_height * input_width * c, 0.f);
 
     // Decode each image to raw format
-    image_util::copy_image_to_memory(
-        /* image */ source.image, /* outptr */ img.data(),
-        /* outstrides */ {input_width * c, c, 1},
-        /* outshapes */ {input_height, input_width, c}, /* channel_last*/ true);
-
-    // Dividing it by 255.0 to make the image as an array of floats
-    std::transform(img.begin(), img.end(), img.begin(),
-                   [](float pixel) -> float { return pixel / 255.0f; });
+    source.image->WriteHWC(MakeSpan(img));
 
     input_to_tf_aug.images.push_back(
         shared_float_array::wrap(img, {input_height, input_width, c}));

@@ -62,6 +62,24 @@ std::map<std::string, variant_type> get_basic_state() {
           {"verbose", false}};
 }
 
+class FakeImage : public neural_net::Image {
+ public:
+  FakeImage(size_t height, size_t width)
+    : height_(height)
+    , width_(width)
+  {
+  }
+
+  size_t Height() const override { return height_; }
+  size_t Width() const override { return width_; }
+  void WriteHWC(Span<float> buffer) const override {}
+  void WriteCHW(Span<float> buffer) const override {}
+
+ private:
+  size_t height_;
+  size_t width_;
+};
+
 class mock_data_iterator: public data_iterator {
 public:
   using next_batch_call =
@@ -284,6 +302,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_iterate_training) {
         annotation.bounding_box.y = j;
 
         result[j].annotations.push_back(annotation);
+        result[j].image = std::make_shared<FakeImage>(256, 256);
         test_annotations->push_back(result[j].annotations);
       }
 
@@ -671,6 +690,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
         annotation.bounding_box.y = j;
 
         result[j].annotations.push_back(annotation);
+        result[j].image = std::make_shared<FakeImage>(256, 256);
         test_annotations->push_back(result[j].annotations);
       }
 
@@ -911,6 +931,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
         annotation.bounding_box.y = j;
 
         result[j].annotations.push_back(annotation);
+        result[j].image = std::make_shared<FakeImage>(256, 256);
         test_annotations->push_back(result[j].annotations);
       }
 
@@ -1079,6 +1100,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
       annotation.bounding_box.y = j;
 
       result[j].annotations.push_back(annotation);
+      result[j].image = std::make_shared<FakeImage>(256, 256);
       test_annotations->push_back(result[j].annotations);
     }
 

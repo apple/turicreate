@@ -61,15 +61,22 @@ endif()
 set(TF_BUILD_DIR ${CMAKE_BINARY_DIR}/src/python/turicreate/toolkits)
 
 if(APPLE)
-  set(additonal_unity_neural_net_sources GrandCentralDispatchQueue.cpp)
+  set(additonal_unity_neural_net_sources
+    CoreImageImage.mm
+    GrandCentralDispatchQueue.cpp
+    Image_Apple.mm
+  )
 else()
-  set(additonal_unity_neural_net_sources "")
+  set(additonal_unity_neural_net_sources
+    Image_Portable.cpp
+  )
 endif()
 
 make_library(unity_neural_net OBJECT
   SOURCES
-    TaskQueue.cpp
+    PortableImage.cpp
     PosixTaskQueue.cpp
+    TaskQueue.cpp
     compute_context.cpp
     float_array.cpp
     image_augmentation.cpp

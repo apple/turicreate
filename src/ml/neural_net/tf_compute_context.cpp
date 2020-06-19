@@ -10,6 +10,7 @@
 #include <random>
 #include <vector>
 
+#include <core/logging/logger.hpp>
 #include <core/util/try_finally.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
