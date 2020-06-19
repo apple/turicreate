@@ -27,13 +27,17 @@ import time
 import numpy as np
 import array
 import math
+import sqlite3
 import random
 import shutil
 import functools
 import sys
 import mock
-import sqlite3
 from .dbapi2_mock import dbapi2_mock
+
+import pytest
+
+pytestmark = [pytest.mark.minimal]
 
 
 class SFrameTest(unittest.TestCase):

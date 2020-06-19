@@ -19,6 +19,7 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 import turicreate.toolkits._feature_engineering._internal_utils as _fe_tkutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 from turicreate.toolkits._model import Model as _Model
 
@@ -185,7 +186,7 @@ def create(
     import turicreate as _turicreate
 
     # Imports tensorflow
-    import turicreate.toolkits.libtctensorflow
+    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
     model = _turicreate.extensions.activity_classifier()
     options = {}

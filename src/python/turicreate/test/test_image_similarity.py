@@ -227,6 +227,7 @@ class ImageSimilarityTest(unittest.TestCase):
         """
         Check the export_coreml() function.
         """
+        import coremltools
 
         def get_psnr(x, y):
             # See: https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio
@@ -253,6 +254,7 @@ class ImageSimilarityTest(unittest.TestCase):
             },
             dict(coreml_model.user_defined_metadata),
         )
+
         expected_result = (
             "Image similarity (%s) created by Turi Create (version %s)"
             % (self.model.model, tc.__version__)

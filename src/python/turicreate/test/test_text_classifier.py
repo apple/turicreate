@@ -9,7 +9,6 @@ from __future__ import absolute_import as _
 
 import unittest
 import tempfile
-import coremltools
 import turicreate as tc
 from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits._internal_utils import _mac_ver
@@ -99,6 +98,7 @@ class TextClassifierTest(unittest.TestCase):
         self.model.export_coreml(filename)
 
         import platform
+        import coremltools
 
         coreml_model = coremltools.models.MLModel(filename)
         self.assertDictEqual(
@@ -119,6 +119,8 @@ class TextClassifierTest(unittest.TestCase):
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
         preds = self.model.predict(self.docs, output_type="probability_vector")
+
+        import coremltools
 
         coreml_model = coremltools.models.MLModel(filename)
         coreml_preds = coreml_model.predict({"text": {"hello": 1, "friend": 1}})

@@ -14,8 +14,6 @@ import uuid
 import os
 
 import array
-from sklearn import linear_model
-import statsmodels.formula.api as sm
 import shutil
 
 import numpy as np
@@ -24,6 +22,15 @@ from turicreate.toolkits.regression.linear_regression import _DEFAULT_SOLVER_OPT
 
 if sys.version_info.major == 3:
     from functools import reduce
+
+try:
+    import statsmodels.formula.api as sm
+    from sklearn import linear_model
+except ImportError as e:
+    # ignore extra dependencies
+    # https://github.com/apple/turicreate/pull/3156
+    if not tc._deps.is_minimal_pkg():
+        raise e
 
 
 class LinearRegressionTest(unittest.TestCase):

@@ -74,6 +74,31 @@ private:
   std::mt19937& random_engine_;
 };
 
+class normal_weight_initializer {
+ public:
+  /**
+   * Creates a weight initializer that performs normal initialization
+   *
+   * \param mean The mean of the normal distribution to be sampled
+   * \param std_dev The standard deviation of the normal distribution to be
+   * sampled
+   * \param random_engine The random number generator to use, which must
+   * remain valid for the lifetime of this instance.
+   */
+  normal_weight_initializer(float mean, float std_dev,
+                            std::mt19937* random_engine);
+
+  /**
+   * Initializes each value in normally with specified mean and standard
+   * deviation.
+   */
+  void operator()(float* first_weight, float* last_weight);
+
+ private:
+  std::normal_distribution<float> dist_;
+  std::mt19937& random_engine_;
+};
+
 struct scalar_weight_initializer {
   /**
    * Creates a weight initializer that initializes all of the weights to a

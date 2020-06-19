@@ -8,20 +8,26 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate as tc
-import scipy.stats as ss
 import uuid
 import numpy as np
-import statsmodels.api as sm
-from sklearn.metrics import *
-import statsmodels.formula.api as smf
 import array
 from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits.classifier.logistic_classifier import _DEFAULT_SOLVER_OPTIONS
 import shutil
 import os
 import copy
-import pandas as pd
 
+try:
+    # bad pracice of using *
+    from sklearn.metrics import *
+    import pandas as pd
+    import statsmodels.api as sm
+    import statsmodels.formula.api as smf
+except ImportError as e:
+    # ignore extra dependencies
+    # https://github.com/apple/turicreate/pull/3156
+    if not tc._deps.is_minimal_pkg():
+        raise e
 
 #
 # Various test cases for the _LogisticRegressionClassifierModelTest
@@ -245,6 +251,8 @@ def multiclass_integer_target(cls):
     )
 
     # Function to rank all items in a list
+    import scipy.stats as ss
+
     rank = lambda x: list(len(x) - ss.rankdata(x))
     rank_sa = preds_sf.pack_columns(preds_sf.column_names())["X1"].apply(rank)
     topk_yhat_rank = tc.SFrame({"X1": rank_sa}).add_row_number()

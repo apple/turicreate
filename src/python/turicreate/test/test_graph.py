@@ -23,6 +23,10 @@ import sys
 if sys.version_info.major > 2:
     unittest.TestCase.assertItemsEqual = unittest.TestCase.assertCountEqual
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class GraphTests(unittest.TestCase):
     def setUp(self):

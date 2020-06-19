@@ -8,20 +8,27 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate
-from sklearn.metrics import (
-    fbeta_score,
-    recall_score,
-    precision_score,
-    accuracy_score,
-    f1_score,
-    roc_auc_score,
-)
 from turicreate.toolkits._main import ToolkitError
 import math
 from numpy import inf
 import numpy as np
 
 DELTA = 0.00001
+
+try:
+    from sklearn.metrics import (
+        fbeta_score,
+        recall_score,
+        precision_score,
+        accuracy_score,
+        f1_score,
+        roc_auc_score,
+    )
+except ImportError as e:
+    # ignore extra dependencies
+    # https://github.com/apple/turicreate/pull/3156
+    if not turicreate._deps.is_minimal_pkg():
+        raise e
 
 
 def _round_scores(p):

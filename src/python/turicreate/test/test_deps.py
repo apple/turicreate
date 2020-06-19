@@ -7,10 +7,12 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
+import pytest
 from turicreate._deps import __get_version as get_version
 from distutils.version import StrictVersion
 
 
+@pytest.mark.minimal
 class VersionTest(unittest.TestCase):
     def test_min_version(self):
         MIN_VERSION = StrictVersion("1.8.1")

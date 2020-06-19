@@ -15,9 +15,12 @@ import tempfile
 import os
 import six
 import shutil
-import pytest
 import boto3
 import warnings
+
+import pytest
+
+pytestmark = [pytest.mark.minimal]
 
 # size from small to big: 76K, 21MB, 77MB.
 # 64MB is the cache block size. The big sframe with 77MB is used to
@@ -115,6 +118,12 @@ class TestSFrameS3(object):
         assert len(array) == 1
         assert array[0] == 1
 
+    @pytest.mark.skip(
+        reason=(
+            "need a S3 service that allows us delete directory."
+            "See details from https://github.com/apple/turicreate/issues/3169"
+        )
+    )
     @pytest.mark.parametrize("folder", remote_sframe_folders)
     def test_s3_sframe_upload(self, folder):
         # s3 only writes when it receives all parts

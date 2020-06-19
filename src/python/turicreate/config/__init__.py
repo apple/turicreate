@@ -103,7 +103,8 @@ def get_server_log_location():
 
 def set_num_gpus(num_gpus):
     """
-    Set the number of GPUs to use whenever applicable.
+    Set the number of GPUs to use whenever applicable. Currently TuriCreate
+    supports using all CPUs or one GPU.
 
     This can also be set by adding the following line to your
     ``~/.turicreate/config`` file, e.g.:
@@ -118,8 +119,7 @@ def set_num_gpus(num_gpus):
     Parameters
     ----------
     num_gpus : int
-        Number of GPUs to use. To always use CPU, set to 0. To use all
-        available GPUs, set to -1.
+        To always use CPUs, set to 0. To use a GPU, set to 1.
 
     See also
     --------
@@ -132,8 +132,18 @@ def set_num_gpus(num_gpus):
       >> turicreate.config.set_num_gpus(1)
       >> turicreate.image_classifier.create(data, target='label')
     """
+    # Currently TuriCreate only supports using one GPU. See:
+    # https://github.com/apple/turicreate/issues/2797
+    # If `num_gpus` is a value other than 0 or 1, print a warning.
     if num_gpus < -1:
-        raise ValueError("'num_gpus' must be greater than or equal to -1")
+        raise ValueError("'num_gpus' must be either 0 or 1.")
+    elif num_gpus == -1:
+        print("TuriCreate currently only supports using one GPU. Setting 'num_gpus' to 1.")
+        num_gpus = 1
+    elif num_gpus >= 2:
+        print("TuriCreate currently only supports using one GPU. Setting 'num_gpus' to 1.")
+        num_gpus = 1
+
     set_runtime_config("TURI_NUM_GPUS", num_gpus)
 
 
@@ -319,6 +329,14 @@ def set_runtime_config(name, value):
     from .._connect import main as _glconnect
 
     unity = _glconnect.get_unity()
+
+    if name == "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE":
+        # Expands relative path to absolute path
+        value = _os.path.abspath(_os.path.expanduser(value))
+        # Raises exception if path for SSL cert does not exist
+        if not _os.path.exists(value):
+            raise ValueError("{} does not exist.".format(value))
+
     ret = unity.set_global(name, value)
     if ret != "":
         raise RuntimeError(ret)

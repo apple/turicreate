@@ -9,11 +9,20 @@ from __future__ import absolute_import as _
 
 import numpy as np
 from PIL import Image
-import tensorflow.compat.v1 as tf
 import turicreate.toolkits._tf_utils as _utils
 import turicreate as tc
 
-tf.disable_v2_behavior()
+
+from turicreate._deps.minimal_package import _minimal_package_import_check
+
+# in conjunction with minimal package
+def _lazy_import_tensorflow():
+    from turicreate._deps.minimal_package import _minimal_package_import_check
+
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
+    _tf.disable_v2_behavior()
+    return _tf
+
 
 _DEFAULT_AUG_PARAMS = {
     "max_hue_adjust": 0.05,
@@ -37,6 +46,7 @@ _DEFAULT_AUG_PARAMS = {
 
 
 def interpolate(alpha_tf, x, y):
+    tf = _lazy_import_tensorflow()
     x = tf.constant(x, dtype=tf.float32)
     y = tf.constant(y, dtype=tf.float32)
     range = tf.math.subtract(y, x)
@@ -48,9 +58,10 @@ def hue_augmenter(
     image,
     annotation,
     random_alpha_tf,
-    max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"]
+    max_hue_adjust=_DEFAULT_AUG_PARAMS["max_hue_adjust"],
 ):
 
+    tf = _lazy_import_tensorflow()
     # Apply the random rotation around the color wheel.
     hue_delta = interpolate(random_alpha_tf[0], -max_hue_adjust, max_hue_adjust)
     image = tf.image.adjust_hue(image, hue_delta)
@@ -69,20 +80,17 @@ def color_augmenter(
     max_saturation=_DEFAULT_AUG_PARAMS["max_saturation"],
 ):
 
+    tf = _lazy_import_tensorflow()
     # Apply the random adjustment to brightness.
-    brightness_delta = interpolate(
-        random_alpha_tf[0], -max_brightness, max_brightness
-    )
+    brightness_delta = interpolate(random_alpha_tf[0], -max_brightness, max_brightness)
     image = tf.image.adjust_brightness(image, brightness_delta)
 
     # Apply the random adjustment to contrast.
-    log_sat = np.log(max_saturation)
-    saturation_delta = interpolate(random_alpha_tf[1], -log_sat, log_sat)
+    saturation_delta = interpolate(random_alpha_tf[1], 1/max_saturation, max_saturation)
     image = tf.image.adjust_saturation(image, saturation_delta)
 
     # Apply random adjustment to saturation.
-    log_con = np.log(max_contrast)
-    contrast_delta = interpolate(random_alpha_tf[2], -log_con, log_con)
+    contrast_delta = interpolate(random_alpha_tf[2], 1/max_contrast, max_contrast)
     image = tf.image.adjust_contrast(image, contrast_delta)
 
     image = tf.clip_by_value(image, 0, 1)
@@ -128,6 +136,7 @@ def resize_augmenter(image, annotation, output_shape):
         return image
 
     if resize_method == "tensorflow":
+        tf = _lazy_import_tensorflow()
         new_height = tf.cast(output_shape[0], dtype=tf.int32)
         new_width = tf.cast(output_shape[1], dtype=tf.int32)
 
@@ -143,6 +152,7 @@ def resize_augmenter(image, annotation, output_shape):
         )
 
     elif resize_method == "turicreate":
+        tf = _lazy_import_tensorflow()
         image_scaled = tf.numpy_function(
             func=resize_turicreate_image, inp=[image, output_shape], Tout=[tf.float32]
         )
@@ -160,7 +170,7 @@ def horizontal_flip_augmenter(
     image,
     annotation,
     random,
-    skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"]
+    skip_probability=_DEFAULT_AUG_PARAMS["skip_probability_flip"],
 ):
 
     if random.uniform(0.0, 1.0) < skip_probability:
@@ -508,14 +518,8 @@ def numpy_augmenter(img, ann, seed):
     return img, ann
 
 
-def complete_augmenter(
-    img_tf,
-    ann_tf,
-    seed_tf,
-    alpha_tf,
-    output_height,
-    output_width
-):
+def complete_augmenter(img_tf, ann_tf, seed_tf, alpha_tf, output_height, output_width):
+    tf = _lazy_import_tensorflow()
     img_tf, ann_tf = tf.numpy_function(
         func=numpy_augmenter,
         inp=[img_tf, ann_tf, seed_tf],
@@ -529,6 +533,7 @@ def complete_augmenter(
 
 class DataAugmenter(object):
     def __init__(self, output_height, output_width, batch_size, resize_only):
+        tf = _lazy_import_tensorflow()
         self.batch_size = batch_size
         self.graph = tf.Graph()
         self.resize_only = resize_only
@@ -556,23 +561,24 @@ class DataAugmenter(object):
                         self.random_seed_tf[i],
                         self.alpha_tf[i],
                         output_height,
-                        output_width
+                        output_width,
                     )
                     self.resize_op_batch.append([aug_img_tf, aug_ann_tf])
 
     def get_augmented_data(self, images, annotations, random_seed):
+        tf = _lazy_import_tensorflow()
         with tf.Session(graph=self.graph) as session:
             feed_dict = dict()
 
             # Populate feed_dict with images and annotations
-            graph_op = self.resize_op_batch[0:len(images)]
+            graph_op = self.resize_op_batch[0 : len(images)]
             for i in range(len(images)):
                 feed_dict[self.img_tf[i]] = _utils.convert_shared_float_array_to_numpy(
                     images[i]
                 )
-                feed_dict[
-                    self.ann_tf[i]
-                ] = _utils.convert_shared_float_array_to_numpy(annotations[i])
+                feed_dict[self.ann_tf[i]] = _utils.convert_shared_float_array_to_numpy(
+                    annotations[i]
+                )
 
             # Populate feed_dict with random seed and random alpha values, used
             # to sample image perturbations. We don't use TensorFlow's built-in
@@ -580,8 +586,8 @@ class DataAugmenter(object):
             # reset the seed for each session (batch).
             random = np.random.RandomState(seed=random_seed)
             feed_dict[self.alpha_tf] = random.rand(*self.alpha_tf.shape)
-            feed_dict[self.random_seed_tf] = random.random_integers(
-                0, 2**32 - 1, size=self.batch_size
+            feed_dict[self.random_seed_tf] = random.randint(
+                0, 2 ** 32, size=self.batch_size
             )
             aug_output = session.run(graph_op, feed_dict=feed_dict)
             processed_images = []

@@ -3462,6 +3462,20 @@ class SArrayTest(unittest.TestCase):
         self.assertEqual(list(train), [0, 1, 2, 3, 5, 7, 8, 9])
         self.assertEqual(list(test), [4, 6])
 
+    def test_shuffle(self):
+        nums = list(range(10))
+        sa = SArray(nums)
+
+        shuffled_sa = sa.shuffle()
+
+        self.assertEqual(len(shuffled_sa), len(sa))
+        self.assertEqual(sa.dtype, shuffled_sa.dtype)
+        # Make sure entries match
+        for i in shuffled_sa:
+            self.assertTrue(i in nums)
+            nums.remove(i)
+        self.assertTrue(len(nums) == 0)
+
     def test_copy(self):
         from copy import copy
 

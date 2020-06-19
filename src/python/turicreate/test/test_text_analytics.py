@@ -10,6 +10,7 @@ import math
 import unittest
 import warnings
 import turicreate as tc
+import turicreate.toolkits.text_analytics as text_analytics
 from . import util
 
 
@@ -57,7 +58,7 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.sframe_comparer = util.SFrameComparer()
 
     def test_tokenize(self):
-        sa_word_results = tc.text_analytics.tokenize(self.sa_word)
+        sa_word_results = text_analytics.tokenize(self.sa_word)
 
         self.assertEqual(
             sa_word_results[0],
@@ -80,14 +81,10 @@ class FeatureEngineeringTest(unittest.TestCase):
 
     def test_count_ngrams(self):
         # Testing word n-gram functionality
-        result = tc.text_analytics.count_ngrams(self.sa_word, 3)
-        result2 = tc.text_analytics.count_ngrams(self.sa_word, 2)
-        result3 = tc.text_analytics.count_ngrams(
-            self.sa_word, 3, "word", to_lower=False
-        )
-        result4 = tc.text_analytics.count_ngrams(
-            self.sa_word, 2, "word", to_lower=False
-        )
+        result = text_analytics.count_ngrams(self.sa_word, 3)
+        result2 = text_analytics.count_ngrams(self.sa_word, 2)
+        result3 = text_analytics.count_ngrams(self.sa_word, 3, "word", to_lower=False)
+        result4 = text_analytics.count_ngrams(self.sa_word, 2, "word", to_lower=False)
         expected = [
             {
                 "fun i like": 1,
@@ -156,27 +153,27 @@ class FeatureEngineeringTest(unittest.TestCase):
         self.sframe_comparer._assert_sarray_equal(result4, expected4)
 
         # Testing character n-gram functionality
-        result5 = tc.text_analytics.count_ngrams(self.sa_char, 3, "character")
-        result6 = tc.text_analytics.count_ngrams(self.sa_char, 2, "character")
-        result7 = tc.text_analytics.count_ngrams(
+        result5 = text_analytics.count_ngrams(self.sa_char, 3, "character")
+        result6 = text_analytics.count_ngrams(self.sa_char, 2, "character")
+        result7 = text_analytics.count_ngrams(
             self.sa_char, 3, "character", to_lower=False
         )
-        result8 = tc.text_analytics.count_ngrams(
+        result8 = text_analytics.count_ngrams(
             self.sa_char, 2, "character", to_lower=False
         )
-        result9 = tc.text_analytics.count_ngrams(
+        result9 = text_analytics.count_ngrams(
             self.sa_char, 3, "character", to_lower=False, ignore_space=False
         )
-        result10 = tc.text_analytics.count_ngrams(
+        result10 = text_analytics.count_ngrams(
             self.sa_char, 2, "character", to_lower=False, ignore_space=False
         )
-        result11 = tc.text_analytics.count_ngrams(
+        result11 = text_analytics.count_ngrams(
             self.sa_char, 3, "character", to_lower=True, ignore_space=False
         )
-        result12 = tc.text_analytics.count_ngrams(
+        result12 = text_analytics.count_ngrams(
             self.sa_char, 2, "character", to_lower=True, ignore_space=False
         )
-        result13 = tc.text_analytics.count_ngrams(
+        result13 = text_analytics.count_ngrams(
             self.sa_char,
             3,
             "character",
@@ -184,7 +181,7 @@ class FeatureEngineeringTest(unittest.TestCase):
             ignore_punct=False,
             ignore_space=False,
         )
-        result14 = tc.text_analytics.count_ngrams(
+        result14 = text_analytics.count_ngrams(
             self.sa_char,
             2,
             "character",
@@ -192,7 +189,7 @@ class FeatureEngineeringTest(unittest.TestCase):
             ignore_punct=False,
             ignore_space=False,
         )
-        result15 = tc.text_analytics.count_ngrams(
+        result15 = text_analytics.count_ngrams(
             self.sa_char,
             3,
             "character",
@@ -200,7 +197,7 @@ class FeatureEngineeringTest(unittest.TestCase):
             ignore_punct=False,
             ignore_space=True,
         )
-        result16 = tc.text_analytics.count_ngrams(
+        result16 = text_analytics.count_ngrams(
             self.sa_char,
             2,
             "character",
@@ -377,33 +374,33 @@ class FeatureEngineeringTest(unittest.TestCase):
         ## Bogus input types and values
         sa = tc.SArray([1, 2, 3])
         with self.assertRaises(RuntimeError):
-            tc.text_analytics.count_ngrams(sa)
+            text_analytics.count_ngrams(sa)
 
         with self.assertRaises(TypeError):
-            tc.text_analytics.count_ngrams(self.sa_word, n=1.01)
+            text_analytics.count_ngrams(self.sa_word, n=1.01)
 
         with self.assertRaises(ValueError):
-            tc.text_analytics.count_ngrams(self.sa_word, n=0)
+            text_analytics.count_ngrams(self.sa_word, n=0)
 
         with self.assertRaises(ValueError):
-            tc.text_analytics.count_ngrams(self.sa_char, n=3, method="bla")
+            text_analytics.count_ngrams(self.sa_char, n=3, method="bla")
 
         with warnings.catch_warnings(record=True) as context:
             warnings.simplefilter("always")
-            tc.text_analytics.count_ngrams(self.sa_word, n=10, method="word")
+            text_analytics.count_ngrams(self.sa_word, n=10, method="word")
             assert len(context) == 1
 
     def test_drop_words(self):
         ## Bogus input type
         sa = tc.SArray([1, 2, 3])
         with self.assertRaises(RuntimeError):
-            tc.text_analytics.drop_words(sa)
+            text_analytics.drop_words(sa)
 
         sa = tc.SArray(["str", None])
         # no throw, just give warning and skip
         # avoid segfault
-        stop_words = tc.text_analytics.stop_words()
-        tc.text_analytics.drop_words(sa, stop_words=stop_words)
+        stop_words = text_analytics.stop_words()
+        text_analytics.drop_words(sa, stop_words=stop_words)
 
         ## Other languages
         expected = [
@@ -418,11 +415,11 @@ class FeatureEngineeringTest(unittest.TestCase):
             "Сблъсъкът между Сблъсъкът между",
         ]
 
-        result = tc.text_analytics.drop_words(self.languages_double)
+        result = text_analytics.drop_words(self.languages_double)
         self.assertEqual(result.dtype, str)
         self.sframe_comparer._assert_sarray_equal(result, expected)
 
-        result = tc.text_analytics.drop_words(self.languages_double, to_lower=False)
+        result = text_analytics.drop_words(self.languages_double, to_lower=False)
         self.assertEqual(result.dtype, str)
         self.sframe_comparer._assert_sarray_equal(result, expected2)
 
@@ -437,12 +434,12 @@ class FeatureEngineeringTest(unittest.TestCase):
         ]
         expected3 = ["url http www someurl url http www someurl", ""]
 
-        word_counts1 = tc.text_analytics.drop_words(self.punctuated_double)
-        word_counts2 = tc.text_analytics.drop_words(
+        word_counts1 = text_analytics.drop_words(self.punctuated_double)
+        word_counts2 = text_analytics.drop_words(
             self.punctuated_double, delimiters=["?", "!", ",", " "]
         )
-        word_counts3 = tc.text_analytics.drop_words(
-            self.punctuated_double, stop_words=tc.text_analytics.stop_words()
+        word_counts3 = text_analytics.drop_words(
+            self.punctuated_double, stop_words=text_analytics.stop_words()
         )
 
         self.assertEqual(word_counts1.dtype, str)
@@ -456,7 +453,7 @@ class FeatureEngineeringTest(unittest.TestCase):
         ## Bogus input type
         sa = tc.SArray([1, 2, 3])
         with self.assertRaises(RuntimeError):
-            tc.text_analytics.count_words(sa)
+            text_analytics.count_words(sa)
 
         ## Other languages
         expected = [
@@ -470,11 +467,11 @@ class FeatureEngineeringTest(unittest.TestCase):
             {"Сблъсъкът": 1, "между": 1},
         ]
 
-        result = tc.text_analytics.count_words(self.languages)
+        result = text_analytics.count_words(self.languages)
         self.assertEqual(result.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result, expected)
 
-        result = tc.text_analytics.count_words(self.languages, to_lower=False)
+        result = text_analytics.count_words(self.languages, to_lower=False)
         self.assertEqual(result.dtype, dict)
         self.sframe_comparer._assert_sarray_equal(result, expected2)
 
@@ -497,8 +494,8 @@ class FeatureEngineeringTest(unittest.TestCase):
             {"should we": 1, " yes": 1, " we should.": 1},
         ]
 
-        word_counts1 = tc.text_analytics.count_words(self.punctuated)
-        word_counts2 = tc.text_analytics.count_words(
+        word_counts1 = text_analytics.count_words(self.punctuated)
+        word_counts2 = text_analytics.count_words(
             self.punctuated, delimiters=["?", "!", ","]
         )
 
@@ -512,7 +509,7 @@ class FeatureEngineeringTest(unittest.TestCase):
         Check that the stop words can be accessed properly as part of the text
         analytics toolkit.
         """
-        words = tc.text_analytics.stop_words()
+        words = text_analytics.stop_words()
         self.assertTrue(len(words) > 400)
         self.assertTrue("a" in words)
 
@@ -521,15 +518,15 @@ class FeatureEngineeringTest(unittest.TestCase):
         Check correctness of the tf-idf mapping.
         """
         # Use the example on wikipedia
-        tfidf_docs = tc.text_analytics.tf_idf(self.docs)
+        tfidf_docs = text_analytics.tf_idf(self.docs)
 
         self.assertAlmostEqual(tfidf_docs[1]["example"], 3 * math.log(2))
         self.assertAlmostEqual(tfidf_docs[0]["is"], 1 * math.log(1))
 
-        empty_sa = tc.text_analytics.tf_idf(tc.SArray())
+        empty_sa = text_analytics.tf_idf(tc.SArray())
         self.assertEqual(len(empty_sa), 0)
 
-        empty_dict_sf = tc.text_analytics.tf_idf(tc.SArray([{}]))
+        empty_dict_sf = text_analytics.tf_idf(tc.SArray([{}]))
         assert len(empty_dict_sf) == 1
         assert len(empty_dict_sf.apply(lambda x: len(x) == 0)) == 1
 
@@ -540,7 +537,7 @@ class FeatureEngineeringTest(unittest.TestCase):
                 {"a dog cow": 0, "a dog cat ": 5, "mice dog": -1, "mice cat": 2},
             ]
         )
-        result = tc.text_analytics.count_words(sa)
+        result = text_analytics.count_words(sa)
         expected = [
             {"bob": 1.5, "mike": 1.0, "sue": 0.5, "alice": 1.5},
             {"a": 5.0, "mice": 1.0, "dog": 4.0, "cow": 0.0, "cat": 7.0},
@@ -565,7 +562,7 @@ class RandomWordSplitTest(unittest.TestCase):
         properly.
         """
 
-        train, test = tc.text_analytics.random_split(self.docs)
+        train, test = text_analytics.random_split(self.docs)
 
         assert len(train) == len(self.docs)
         assert len(test) == len(self.docs)
@@ -592,7 +589,7 @@ class RandomWordSplitTest(unittest.TestCase):
                 assert v == av + bv
 
         # Check that a low probability puts fewer items in the test set
-        train, test = tc.text_analytics.random_split(self.docs, prob=0.001)
+        train, test = text_analytics.random_split(self.docs, prob=0.001)
 
         total_in_train = train.dict_values().apply(lambda x: sum(x)).sum()
         total_in_test = test.dict_values().apply(lambda x: sum(x)).sum()
@@ -623,16 +620,16 @@ class RetrievalTest(unittest.TestCase):
 
         # Test input formats
         query = ["a", "b", "c"]
-        assert tc.text_analytics.bm25(self.data, query) is not None
+        assert text_analytics.bm25(self.data, query) is not None
 
         query = tc.SArray(["a", "b", "c"])
-        assert tc.text_analytics.bm25(self.data, query) is not None
+        assert text_analytics.bm25(self.data, query) is not None
 
         query = {"a": 5, "b": 3, "c": 1}
-        assert tc.text_analytics.bm25(self.data, query) is not None
+        assert text_analytics.bm25(self.data, query) is not None
 
         # Only documents containing query words are included in result
-        assert tc.text_analytics.bm25(self.data, query).num_rows() == 4
+        assert text_analytics.bm25(self.data, query).num_rows() == 4
 
         dataset = tc.SArray(
             [
@@ -644,5 +641,5 @@ class RetrievalTest(unittest.TestCase):
             ]
         )
 
-        res = tc.text_analytics.bm25(dataset, query)
+        res = text_analytics.bm25(dataset, query)
         assert res.num_rows() == 3

@@ -23,7 +23,6 @@ from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_S
 
 from . import util as test_util
 
-import coremltools
 import numpy as np
 import turicreate as tc
 
@@ -220,6 +219,8 @@ class ImageClassifierTest(unittest.TestCase):
             predictions = model.classify("more junk")
 
     def test_export_coreml(self):
+        import coremltools
+
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
@@ -242,6 +243,8 @@ class ImageClassifierTest(unittest.TestCase):
 
     @unittest.skipIf(sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_predict(self):
+        import coremltools
+
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 

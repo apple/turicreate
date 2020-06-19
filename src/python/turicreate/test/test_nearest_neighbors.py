@@ -12,7 +12,6 @@ import copy
 import turicreate as tc
 from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits._private_utils import _validate_lists
-import scipy.spatial.distance as spd
 from pandas.util.testing import assert_frame_equal
 from . import util
 import array
@@ -2409,6 +2408,8 @@ def random_list_of_str(number, length):
 
 
 def scipy_dist(q, r, dist):
+    import scipy.spatial.distance as spd
+
     n = len(r)
     n_query = len(q)
 
