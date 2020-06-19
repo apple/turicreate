@@ -1109,22 +1109,23 @@ flexible_type unity_sarray::median(bool approx) {
   if(type != flex_type_enum::INTEGER && type != flex_type_enum::FLOAT) {
     log_and_throw("Can not calculate median on non-numeric SArray.");
   }
-  if (size() == 0) {
-    return flex_undefined();
-  }
 
   // Use sketch to get a fast approximate answer
   turi::unity_sketch* sketch = new turi::unity_sketch();
   gl_sarray data = std::static_pointer_cast<unity_sarray>(shared_from_this());
   data = data.dropna();
+  if (data.size() == 0) {
+    return flex_undefined();
+  }
   sketch->construct_from_sarray(data);
-  double approx_median = sketch->get_quantile(0.5);
+  const float quantile = 0.5;
+  double approx_median = sketch->get_quantile(quantile);
 
   flexible_type result;
   if (!approx) {
     const double epsilon = sketch->numeric_epsilon();
-    const double upper_bound = approx_median + (epsilon * data.size());
-    const double lower_bound = approx_median - (epsilon * data.size());
+    const double upper_bound = sketch->get_quantile(quantile + epsilon);
+    const double lower_bound = sketch->get_quantile(quantile - epsilon);
 
     // Count the number below lower_bound.
     // Store all values between lower_bound and upper_bound.
