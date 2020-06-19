@@ -227,6 +227,11 @@ def get_deep_features(images, model_name, batch_size=64, verbose=True):
 
     Examples
     --------
+    # Get Deep featuers from an sarray of images
+    >>> url ='https://static.turi.com/datasets/images/nested'
+    >>> image_sframe = turicreate.image_analysis.load_images(url, "auto", with_path=False, recursive=True)
+    >>> image_sarray = image_sframe["image"]
+    >>> deep_features_sframe = turicreate.image_analysis.get_deep_features(image_sarray, model_name="resnet-50")
 
     """
 
