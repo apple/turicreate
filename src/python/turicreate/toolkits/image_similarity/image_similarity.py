@@ -22,7 +22,13 @@ from .. import _image_feature_extractor
 
 
 def create(
-    dataset, label=None, feature=None, model="resnet-50", verbose=True, batch_size=64
+    dataset,
+    label=None,
+    feature=None,
+    model="resnet-50",
+    verbose=True,
+    batch_size=64,
+    **kwargs
 ):
     """
     Create a :class:`ImageSimilarityModel` model.
@@ -63,6 +69,9 @@ def create(
     batch_size : int, optional
         If you are getting memory errors, try decreasing this value. If you
         have a powerful computer, increasing this value may improve performance.
+        
+    **kwargs : optional
+        Options for downstream methods like tc.nearest_neighbors.create().
 
     Returns
     -------
@@ -148,6 +157,7 @@ def create(
         label=label,
         features=["__image_features__"],
         verbose=verbose,
+        **kwargs
     )
 
     # set input image shape
