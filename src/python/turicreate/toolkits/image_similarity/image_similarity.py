@@ -440,7 +440,7 @@ class ImageSimilarityModel(_CustomModel):
 
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image) or isinstance(dataset, array):
+        elif isinstance(dataset, (_tc.Image, array)):
             dataset = _tc.SFrame({self.feature: [dataset]})
 
         extracted_features = self._extract_features(
