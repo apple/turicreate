@@ -161,7 +161,7 @@ float_array_map tf_model_backend::export_weights() const {
 
     // it should be trivial to call this if we use the same interpreter process
     pybind11::module np = pybind11::module::import("numpy");
-    for (auto& kv : exported_weights) {
+    for (auto kv : exported_weights) {
       // defensively call ascontiguousarray to force to reorganize
       // underlying numpy memory layout using the real strides
       exported_weights[kv.first] = np.attr("ascontiguousarray")(kv.second);
@@ -170,7 +170,7 @@ float_array_map tf_model_backend::export_weights() const {
     std::map<std::string, pybind11::buffer> buf_output =
         exported_weights.cast<std::map<std::string, pybind11::buffer>>();
 
-    for (auto& kv : buf_output) {
+    for (auto kv : buf_output) {
       pybind11::buffer_info buf = kv.second.request();
       turi::neural_net::shared_float_array value =
           turi::neural_net::shared_float_array::copy(

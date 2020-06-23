@@ -1,5 +1,5 @@
 #ifndef JSON_GNU_C_HEADER
-#define JSON_GUN_C_HEADER
+#define JSON_GNU_C_HEADER
 
 #ifdef __GNUC__
 

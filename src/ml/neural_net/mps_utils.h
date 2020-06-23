@@ -3,8 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
-#ifndef mps_utils_h
-#define mps_utils_h
+#pragma once
 
 #import <Foundation/Foundation.h>
 #import <Metal/Metal.h>
@@ -14,6 +13,8 @@
 #include <vector>
 
 #include <ml/neural_net/float_array.hpp>
+
+NS_ASSUME_NONNULL_BEGIN
 
 namespace turi {
 namespace neural_net {
@@ -78,14 +79,14 @@ shared_float_array copy_image_batch(std::vector<size_t> shape,
 API_AVAILABLE(macos(10.14))
 void fill_image_batch(const float_array& data, MPSImageBatch * _Nonnull batch);
 
-void convert_chw_to_hwc(const float_array& image, float* out_first,
-                        float* out_last);
-void convert_hwc_to_chw(const float_array& image, float* out_first,
-                        float* out_last);
+void convert_chw_to_hwc(const float_array& image, float* _Nonnull out_first,
+                        float* _Nonnull out_last);
+void convert_hwc_to_chw(const float_array& image, float* _Nonnull out_first,
+                        float* _Nonnull out_last);
 
 // This version assumes that each void* is actually a float_array*. This casting
 // from plain C should go away once we remove the original Python frontend.
-float_array_map make_array_map(char **names, void **arrays, int len);
+float_array_map make_array_map(char* _Nonnull* _Nonnull names, void* _Nonnull* _Nonnull arrays, int len);
 
 float get_array_map_scalar(const float_array_map &config,
                            const std::string &key, float default_value);
@@ -165,4 +166,4 @@ float sumSingleImage(MPSImage * _Nonnull image){
 }  // namespace neural_net
 }  // namespace turi
 
-#endif /* mps_utils_h */
+NS_ASSUME_NONNULL_END

@@ -624,7 +624,7 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
   auto get_class_name = [=](const sframe_rows::row& row) {
     const flex_list& rank_list = row[rank_column_index];
     flex_list topk_class;
-    for (const flexible_type i : rank_list) {
+    for (const flexible_type& i : rank_list) {
       topk_class.push_back(class_labels[i]);
     }
     return topk_class;
@@ -639,7 +639,7 @@ gl_sframe activity_classifier::predict_topk(gl_sframe data,
     auto get_probability = [=](const sframe_rows::row& row) {
       const flex_list& rank_list = row[rank_column_index];
       flex_list topk_prob;
-      for (const flexible_type i : rank_list) {
+      for (const flexible_type& i : rank_list) {
         topk_prob.push_back(row[prob_column_index][i]);
       }
       return topk_prob;

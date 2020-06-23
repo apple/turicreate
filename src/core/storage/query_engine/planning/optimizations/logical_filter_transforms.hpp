@@ -106,7 +106,7 @@ class opt_merge_identical_logical_filters
     // node, and only if there is one output.
 
     size_t n_logical_filter_outs = 0;
-    for(const cnode_info_ptr& nn : n->inputs[1]->outputs) {
+    for(const auto& nn : n->inputs[1]->outputs) {
       if(nn->type == planner_node_type::LOGICAL_FILTER_NODE
          && nn->inputs[1] == n->inputs[1]) {
 
@@ -123,7 +123,7 @@ class opt_merge_identical_logical_filters
 
     size_t idx = 0;
     size_t out_idx = 0;
-    for(const cnode_info_ptr& nn : n->inputs[1]->outputs) {
+    for(const auto& nn : n->inputs[1]->outputs) {
       if(nn->type == planner_node_type::LOGICAL_FILTER_NODE
          && nn->inputs[1] == n->inputs[1]) {
 
