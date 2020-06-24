@@ -892,35 +892,45 @@ std::unique_ptr<compute_context> activity_classifier::create_compute_context()
 
 std::unique_ptr<model_spec> activity_classifier::init_model(
     bool use_random_init) const {
-  std::unique_ptr<model_spec> result(new model_spec);
-
   flex_string target = read_state<flex_string>("target");
   size_t num_classes = read_state<flex_int>("num_classes");
-  size_t num_features = read_state<flex_int>("num_features");
   size_t prediction_window = read_state<flex_int>("prediction_window");
   const flex_list &features_list = read_state<flex_list>("features");
+  std::vector<std::string> features(features_list.begin(), features_list.end());
+  int seed = 0;
+  if (use_random_init) {
+    seed = read_state<int>("random_seed");
+  }
+  return init_model(target, features, prediction_window, num_classes,
+                    use_random_init, seed);
+}
+
+// static
+std::unique_ptr<model_spec> activity_classifier::init_model(
+    const std::string& target, const std::vector<std::string>& features,
+    size_t prediction_window, size_t num_classes, bool use_random_init,
+    int random_seed) {
+  std::unique_ptr<model_spec> result(new model_spec);
 
   // Only to create a random engine for weight initialization if use_random_init
   // = true
   std::mt19937 random_engine;
   if (use_random_init) {
-    std::seed_seq seed_seq{read_state<int>("random_seed")};
+    std::seed_seq seed_seq{random_seed};
     random_engine = std::mt19937(seed_seq);
   }
 
-  if (features_list.size() == 1) {
+  if (features.size() == 1) {
     // Single feature column
-    const flex_string& feature_column_name = features_list.front();
+    const std::string& feature_column_name = features.front();
     std::string single_input_feature{feature_column_name};
     result->add_reshape("reshape", single_input_feature,
-                        {{1, num_features, 1, prediction_window}});
+                        {{1, features.size(), 1, prediction_window}});
   } else {
     // Multiple feature columns. Add concatenate layer to concat all columns.
-    result->add_channel_concat(
-        "features",
-        std::vector<std::string>(features_list.begin(), features_list.end()));
+    result->add_channel_concat("features", features);
     result->add_reshape("reshape", "features",
-                        {{1, num_features, 1, prediction_window}});
+                        {{1, features.size(), 1, prediction_window}});
   }
 
   weight_initializer initializer = zero_weight_initializer();
@@ -929,14 +939,14 @@ std::unique_ptr<model_spec> activity_classifier::init_model(
 
   if (use_random_init) {
     initializer = xavier_weight_initializer(
-        num_features * prediction_window, NUM_CONV_FILTERS * prediction_window,
-        &random_engine);
+        features.size() * prediction_window,
+        NUM_CONV_FILTERS * prediction_window, &random_engine);
   }
   result->add_convolution(
       /* name                */ "conv",
       /* input               */ "reshape",
       /* num_output_channels */ NUM_CONV_FILTERS,
-      /* num_kernel_channels */ num_features,
+      /* num_kernel_channels */ features.size(),
       /* kernel_height       */ 1,
       /* kernel_width        */ prediction_window,
       /* stride_height       */ 1,

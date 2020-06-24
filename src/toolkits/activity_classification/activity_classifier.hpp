@@ -19,8 +19,13 @@ namespace turi {
 namespace activity_classification {
 
 class EXPORT activity_classifier: public ml_model_base {
-
  public:
+  // TODO: Move this model-spec generation code into a separate file, ideally
+  // in the neural_net directory.
+  static std::unique_ptr<neural_net::model_spec> init_model(
+      const std::string& target, const std::vector<std::string>& features,
+      size_t prediction_window, size_t num_classes, bool use_random_init,
+      int random_seed);
 
   static std::tuple<gl_sframe, gl_sframe> random_split_by_session(
       gl_sframe data, std::string session_id_column_name, float fraction,
