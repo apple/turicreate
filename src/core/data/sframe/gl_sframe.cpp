@@ -163,7 +163,7 @@ void gl_sframe::construct_from_csvs(std::string csv_file, csv_parsing_config_map
     str_flex_type_map undefined_type_hints{{"__all_columns__",flex_type_enum::UNDEFINED}};
     temp.construct_from_csvs(csv_file, config_copy, undefined_type_hints);
 
-    for (const auto colname : temp.column_names()) {
+    for (const auto& colname : temp.column_names()) {
       // get a range over the entire array
       auto ra = temp[colname].range_iterator();
       std::vector<flexible_type> column_values;

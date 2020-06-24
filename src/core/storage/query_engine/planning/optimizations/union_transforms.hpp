@@ -362,7 +362,7 @@ class opt_union_project_merge : public opt_union_transform {
     std::map<cnode_info_ptr, size_t> mergable_inputs;
 
     size_t current_output_index_start = 0;
-    for(const cnode_info_ptr& nn : n->inputs) {
+    for(cnode_info_ptr nn : n->inputs) {
 
       size_t current_output_index_end = current_output_index_start + nn->num_columns();
 

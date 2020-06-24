@@ -165,7 +165,7 @@ void optimization_engine::replace_node(cnode_info_ptr _old_node, pnode_ptr new_p
       if(head_nodes[i]->pnode == new_pnode) {
          ASSERT_MSG(false, "Node being replaced is downstream from replacement node.");
       }
-      for(const cnode_info_ptr& c : head_nodes[i]->outputs) {
+      for(cnode_info_ptr c : head_nodes[i]->outputs) {
         auto it = seen.lower_bound(c.get());
         if(it == seen.end() || *it != c.get()) {
           seen.insert(it, c.get());
@@ -392,7 +392,7 @@ void optimization_engine::_build_active_node_queue(const cnode_info_ptr& tip) {
 
   for(size_t p_idx = 0; p_idx < active_nodes.size(); ++p_idx) {
     const cnode_info_ptr& n = active_nodes[p_idx];
-    for(const cnode_info_ptr& nn : n->inputs) {
+    for(cnode_info_ptr nn : n->inputs) {
       auto it = seen.lower_bound(nn.get());
       if(it == seen.end() || *it != nn.get()) {
         seen.insert(it, nn.get());

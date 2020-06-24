@@ -211,7 +211,7 @@ variant_map_type _activity_classifier_prepare_data_impl(const gl_sframe &data,
             number_of_sessions++;
         }
 
-        for (const auto feature_name : features) {
+        for (const auto& feature_name : features) {
             curr_chunk_features.push_back(line[column_index_map[feature_name]]);
         }
 

@@ -1,6 +1,3 @@
-#ifndef MPS_GRAPH_LAYERS_H_
-#define MPS_GRAPH_LAYERS_H_
-
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -17,6 +14,8 @@
 #import "mps_utils.h"
 
 #pragma clang diagnostic ignored "-Wunguarded-availability-new"
+
+NS_ASSUME_NONNULL_BEGIN
 
 namespace turi {
 namespace neural_net {
@@ -223,4 +222,4 @@ private:
 }  // namespace neural_net
 }  // namespace turi
 
-#endif
+NS_ASSUME_NONNULL_END
