@@ -17,7 +17,7 @@ namespace neural_net {
 class PosixTaskQueue : public TaskQueue {
  public:
   static std::shared_ptr<PosixTaskQueue> GetGlobalConcurrentQueue();
-  static std::shared_ptr<PosixTaskQueue> CreateSerialQueue(const char* label);
+  static std::unique_ptr<PosixTaskQueue> CreateSerialQueue(const char* label);
 
   void DispatchAsync(std::function<void()> task) override;
   void DispatchSync(std::function<void()> task) override;

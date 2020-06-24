@@ -24,7 +24,7 @@ class TaskQueue {
   /// Returns a task queue that guarantees that if task A is submitted before
   /// task B, then task A will finish before task B begins. Accepts a label that
   /// may be used by the system to identify work done by this queue.
-  static std::shared_ptr<TaskQueue> CreateSerialQueue(const char* label);
+  static std::unique_ptr<TaskQueue> CreateSerialQueue(const char* label);
 
   virtual ~TaskQueue() = default;
 

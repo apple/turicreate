@@ -13,9 +13,9 @@ namespace turi {
 namespace neural_net {
 
 // static
-std::shared_ptr<Image> Image::CreateFromPath(const std::string& path)
+std::unique_ptr<Image> Image::CreateFromPath(const std::string& path)
 {
-  return std::make_shared<PortableImage>(path);
+  return std::unique_ptr<PortableImage>(new PortableImage(path));
 }
 
 Image::~Image() = default;

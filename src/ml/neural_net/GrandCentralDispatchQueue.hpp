@@ -18,8 +18,7 @@ namespace neural_net {
 class GrandCentralDispatchQueue : public TaskQueue {
  public:
   static std::shared_ptr<GrandCentralDispatchQueue> GetGlobalConcurrentQueue();
-  static std::shared_ptr<GrandCentralDispatchQueue> CreateSerialQueue(
-      const char* label);
+  static std::unique_ptr<GrandCentralDispatchQueue> CreateSerialQueue(const char* label);
 
   explicit GrandCentralDispatchQueue(dispatch_queue_t impl);
   ~GrandCentralDispatchQueue();

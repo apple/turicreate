@@ -18,7 +18,7 @@ namespace neural_net {
 /// Abstract interface for images that a training pipeline can consume.
 class Image {
  public:
-  static std::shared_ptr<Image> CreateFromPath(const std::string& path);
+  static std::unique_ptr<Image> CreateFromPath(const std::string& path);
 
   virtual ~Image();
 

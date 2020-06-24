@@ -36,12 +36,12 @@ CGAffineTransform transform_from_core_image(CGSize size) {
   return CGAffineTransformInvert(transform_to_core_image(size));
 }
 
-CIImage *convert_to_core_image(const std::shared_ptr<Image> &source)
+CIImage *convert_to_core_image(const Image &source)
 {
   // On platforms where we use the image_augmenter implementation defined in this file, we expect
   // the Image to actually be a CoreImageImage anyway. Try downcasting and getting the underlying
   // CIImage.
-  auto core_image_source = std::dynamic_pointer_cast<CoreImageImage>(source);
+  auto *core_image_source = dynamic_cast<const CoreImageImage *>(&source);
   if (core_image_source) {
     return core_image_source->AsCIImage();
   }
@@ -49,21 +49,21 @@ CIImage *convert_to_core_image(const std::shared_ptr<Image> &source)
   // Otherwise, fall back to rendering the image into a bitmap and loading that into CoreImage.
 
   // Render to a bitmap.
-  NSMutableData *rgbBitmap = [NSMutableData dataWithLength:source->Size() * sizeof(float)];
-  Span<float> image_span(reinterpret_cast<float *>(rgbBitmap.mutableBytes), source->Size());
-  source->WriteHWC(image_span);
+  NSMutableData *rgbBitmap = [NSMutableData dataWithLength:source.Size() * sizeof(float)];
+  Span<float> image_span(reinterpret_cast<float *>(rgbBitmap.mutableBytes), source.Size());
+  source.WriteHWC(image_span);
 
   // Convert from RGB to RGBA.
   auto wrapBitmap = [&source](NSMutableData *bitmap) {
     vImage_Buffer buffer;
     buffer.data = bitmap.mutableBytes;
-    buffer.width = source->Width();
-    buffer.height = source->Height();
-    buffer.rowBytes = bitmap.length / source->Height();
+    buffer.width = source.Width();
+    buffer.height = source.Height();
+    buffer.rowBytes = bitmap.length / source.Height();
     return buffer;
   };
   NSMutableData *rgbaBitmap =
-      [NSMutableData dataWithLength:source->Height() * source->Width() * 4 * sizeof(float)];
+      [NSMutableData dataWithLength:source.Height() * source.Width() * 4 * sizeof(float)];
   vImage_Buffer rgbaBuffer = wrapBitmap(rgbaBitmap);
   vImage_Buffer rgbBuffer = wrapBitmap(rgbBitmap);
   vImage_Error error =
@@ -73,8 +73,8 @@ CIImage *convert_to_core_image(const std::shared_ptr<Image> &source)
 
   // Pass the bitmap to CoreImage.
   return [CIImage imageWithBitmapData:rgbaBitmap
-                          bytesPerRow:rgbaBitmap.length / source->Height()
-                                 size:CGSizeMake(source->Width(), source->Height())
+                          bytesPerRow:rgbaBitmap.length / source.Height()
+                                 size:CGSizeMake(source.Width(), source.Height())
                                format:kCIFormatRGBAf
                            colorSpace:nil];
 }
@@ -110,7 +110,7 @@ TCMPSLabeledImage *convert_to_core_image(const labeled_image& source) {
 
   TCMPSLabeledImage *result = [TCMPSLabeledImage new];
 
-  CIImage *sourceImage = convert_to_core_image(source.image);
+  CIImage *sourceImage = convert_to_core_image(*source.image);
 
   // For intermediate values, use an image with infinite extent, for smoother
   // sampling behavior at the intended image boundaries.
