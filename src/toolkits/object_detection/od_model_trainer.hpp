@@ -128,9 +128,6 @@ struct Config {
 
   /** Determines the number of feature channels in the final feature map. */
   int num_classes = -1;
-
-  /** Controls model initialization, data sampling, data augmentation. */
-  int random_seed = 0;
 };
 
 /**
@@ -164,6 +161,26 @@ class Checkpoint {
    * Returns the number of predictions for the loaded model.
    */
   virtual size_t GetNumberOfPredictions() const = 0;
+
+  /**
+   * Returns the model type name for use in exported models.
+   */
+  virtual std::string GetModelType() const = 0;
+
+  /**
+   * Returns the confidence threshold for evaluation
+   */
+  virtual float GetEvaluateConfidence() const = 0;
+
+  /**
+   * Returns the confidence threshold for prediction
+   */
+  virtual float GetPredictConfidence() const = 0;
+
+  /**
+   * Returns the Non Maximal Suppression threshold for evaluation
+   */
+  virtual float GetNonMaximumSuppressionThreshold() const = 0;
 };
 
 /**

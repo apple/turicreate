@@ -226,7 +226,7 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
                 "include_non_maximum_suppression": "False",
                 "annotations": "annotation",
                 "max_iterations": "1",
-                "model": "darknet-yolo",
+                "model": "YOLOV2",
                 "training_iterations": "1",
                 "version": "1",
             },

@@ -477,7 +477,7 @@ class ObjectDetectorTest(unittest.TestCase):
                 "feature": self.feature,
                 "include_non_maximum_suppression": "False",
                 "max_iterations": "1",
-                "model": "darknet-yolo",
+                "model": "YOLOV2",
                 "training_iterations": "1",
                 "version": "1",
             },
