@@ -29,7 +29,7 @@ InputBatch DataAugmenter::Invoke(DataBatch data_batch) {
   // examples into the augmenter.
   batch.image_sizes.resize(data_batch.examples.size());
   auto extract_size = [](const labeled_image &example) {
-    return std::make_pair(example.image.m_height, example.image.m_width);
+    return std::make_pair(example.image->Height(), example.image->Width());
   };
   std::transform(data_batch.examples.begin(), data_batch.examples.end(),
                  batch.image_sizes.begin(), extract_size);

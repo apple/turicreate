@@ -26,7 +26,8 @@ std::shared_ptr<TaskQueue> TaskQueue::GetGlobalConcurrentQueue() {
 }
 
 // static
-std::shared_ptr<TaskQueue> TaskQueue::CreateSerialQueue(const char* label) {
+std::unique_ptr<TaskQueue> TaskQueue::CreateSerialQueue(const char* label)
+{
 #ifdef __APPLE__
   return GrandCentralDispatchQueue::CreateSerialQueue(label);
 #else

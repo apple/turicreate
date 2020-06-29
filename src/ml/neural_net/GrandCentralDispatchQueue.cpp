@@ -27,10 +27,11 @@ GrandCentralDispatchQueue::GetGlobalConcurrentQueue() {
 }
 
 // static
-std::shared_ptr<GrandCentralDispatchQueue>
-GrandCentralDispatchQueue::CreateSerialQueue(const char* label) {
+std::unique_ptr<GrandCentralDispatchQueue> GrandCentralDispatchQueue::CreateSerialQueue(
+    const char* label)
+{
   dispatch_queue_t impl = dispatch_queue_create(label, DISPATCH_QUEUE_SERIAL);
-  auto result = std::make_shared<GrandCentralDispatchQueue>(impl);
+  std::unique_ptr<GrandCentralDispatchQueue> result(new GrandCentralDispatchQueue(impl));
   dispatch_release(impl);
   return result;
 }

@@ -23,9 +23,9 @@ std::shared_ptr<PosixTaskQueue> PosixTaskQueue::GetGlobalConcurrentQueue() {
 }
 
 // static
-std::shared_ptr<PosixTaskQueue> PosixTaskQueue::CreateSerialQueue(
-    const char* label) {
-  return std::make_shared<SerialPosixTaskQueue>(/* num_threads */ 1);
+std::unique_ptr<PosixTaskQueue> PosixTaskQueue::CreateSerialQueue(const char* label)
+{
+  return std::unique_ptr<SerialPosixTaskQueue>(new SerialPosixTaskQueue(/* num_threads */ 1));
 }
 
 void PosixTaskQueue::DispatchAsync(std::function<void()> task) {

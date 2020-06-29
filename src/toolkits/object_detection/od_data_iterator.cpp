@@ -6,6 +6,7 @@
 #include <core/data/image/io.hpp>
 #include <core/logging/logger.hpp>
 #include <model_server/lib/image_util.hpp>
+#include <toolkits/util/image_utils.hpp>
 
 namespace turi {
 namespace object_detection {
@@ -40,11 +41,12 @@ gl_sarray canonicalize_annotations(gl_sarray data) {
   return data.apply(canonicalize_annotations, flex_type_enum::LIST);
 }
 
-flex_image get_image(const flexible_type& image_feature) {
+std::shared_ptr<neural_net::Image> get_image(const flexible_type& image_feature)
+{
   if (image_feature.get_type() == flex_type_enum::STRING) {
-    return read_image(image_feature, /* format_hint */ "");
+    return neural_net::Image::CreateFromPath(image_feature);
   } else {
-    return image_feature;
+    return wrap_image(image_feature.get<image_type>());
   }
 }
 
@@ -424,17 +426,17 @@ std::vector<labeled_image> simple_data_iterator::next_batch(size_t batch_size) {
     result[i].image = get_image(raw_image);
 
     if (raw_annotations != FLEX_UNDEFINED) {
-      result[i].annotations = parse_annotations(
-          raw_annotations, result[i].image.m_width, result[i].image.m_height,
-          annotation_properties_.class_to_index_map, annotation_origin_,
-          annotation_scale_, annotation_position_);
+      result[i].annotations =
+          parse_annotations(raw_annotations, result[i].image->Width(), result[i].image->Height(),
+                            annotation_properties_.class_to_index_map, annotation_origin_,
+                            annotation_scale_, annotation_position_);
     }
 
     if (raw_predictions != FLEX_UNDEFINED) {
-      result[i].predictions = parse_annotations(
-          raw_predictions, result[i].image.m_width, result[i].image.m_height,
-          annotation_properties_.class_to_index_map, annotation_origin_, annotation_scale_,
-          annotation_position_);
+      result[i].predictions =
+          parse_annotations(raw_predictions, result[i].image->Width(), result[i].image->Height(),
+                            annotation_properties_.class_to_index_map, annotation_origin_,
+                            annotation_scale_, annotation_position_);
     }
   }
   return result;
