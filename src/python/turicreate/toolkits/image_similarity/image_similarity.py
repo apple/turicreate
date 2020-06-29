@@ -71,7 +71,7 @@ def create(
         have a powerful computer, increasing this value may improve performance.
         
     **kwargs : optional
-        Options for downstream methods like tc.nearest_neighbors.create().
+        Options for downstream methods like :py:func:`tc.nearest_neighbors.create()`.
 
     Returns
     -------
