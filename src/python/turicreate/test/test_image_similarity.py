@@ -16,7 +16,6 @@ from . import util as test_util
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING, get_deep_features
 
-import coremltools
 import numpy as np
 
 
