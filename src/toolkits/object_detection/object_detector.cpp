@@ -1156,5 +1156,5 @@ void object_detector::update_model_metrics(gl_sframe data,
   add_or_update_state(metrics);
 }
 
-}  // object_detection
+}  // namespace object_detection
 }  // namespace turi
