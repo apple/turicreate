@@ -9,15 +9,18 @@
 #include <core/util/Span.hpp>
 #include <vector>
 
+#include <ml/neural_net/float16.h>
+
 namespace turi {
 namespace neural_net {
 
 #ifdef TURI_USE_FLOAT16
+
 bool is_convertible_to_fp16(Span<const float> output);
+
+std::vector<__fp16> get_half_precision_weights(Span<const float> output);
+
 #endif
 
-#ifdef TURI_USE_FLOAT16
-std::vector<__fp16> get_half_precision_weights(Span<const float> output);
-#endif
 }  // namespace neural_net
 }  // namespace turi

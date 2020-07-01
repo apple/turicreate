@@ -105,7 +105,9 @@ void update_weight_params(const std::string& name, const float_array& value, Wei
   }
 
   Span<const float> out(value.data(), value.size());
+
 #ifdef TURI_USE_FLOAT16
+
   if (use_quantization && is_convertible_to_fp16(out)) {
     std::vector<__fp16> weights_fp16 = get_half_precision_weights(out);
 
@@ -115,9 +117,12 @@ void update_weight_params(const std::string& name, const float_array& value, Wei
 
   } else {
 #endif
+
     std::copy(out.begin(), out.end(), weights->mutable_floatvalue()->begin());
+
 #ifdef TURI_USE_FLOAT16
   }
+
 #endif
 }
 

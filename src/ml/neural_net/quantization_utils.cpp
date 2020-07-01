@@ -11,26 +11,24 @@
 #include <cmath>
 #include <numeric>
 
-#include <ml/neural_net/float16.h>
-
 namespace turi {
 namespace neural_net {
 
 #ifdef TURI_USE_FLOAT16
+
 bool is_convertible_to_fp16(Span<const float> output)
 {
   return std::all_of(output.begin(), output.end(), [](int i) {
     return i > -FLOAT16_NUMERIC_LIMIT_MAX && i < FLOAT16_NUMERIC_LIMIT_MAX;
   });
 }
-#endif
 
-#ifdef TURI_USE_FLOAT16
 std::vector<__fp16> get_half_precision_weights(Span<const float> output)
 {
   std::vector<__fp16> weights_fp16 = std::vector<__fp16>(output.begin(), output.end());
   return weights_fp16;
 }
+
 #endif
 
 }  // namespace neural_net
