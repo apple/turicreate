@@ -122,6 +122,7 @@ public:
    *
    * \param weights A dictionary whose keys follow the same naming scheme used
    *                by `export_params_view`.
+   * \param use_quantization If true, weights are stored in half precision.
    * \throw If a float_array's shape does not match the corresponding
    *        NeuralNetworkLayer.
    */
