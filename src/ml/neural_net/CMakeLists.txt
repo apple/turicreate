@@ -82,6 +82,7 @@ make_library(unity_neural_net OBJECT
     image_augmentation.cpp
     model_spec.cpp
     weight_init.cpp
+    quantization_utils.cpp
     ${additonal_unity_neural_net_sources}
   REQUIRES
     image_type

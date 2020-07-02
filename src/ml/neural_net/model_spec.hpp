@@ -53,6 +53,9 @@ public:
     ZERO,
   };
 
+  /** Parameter for pooling types. */
+  enum class pooling_type { MAX, AVERAGE, L2 };
+
   /**
    * Creates an empty model_spec (with no layers).
    */
@@ -119,10 +122,11 @@ public:
    *
    * \param weights A dictionary whose keys follow the same naming scheme used
    *                by `export_params_view`.
+   * \param use_quantization If true, weights are stored in half precision.
    * \throw If a float_array's shape does not match the corresponding
    *        NeuralNetworkLayer.
    */
-  void update_params(const float_array_map& weights);
+  void update_params(const float_array_map& weights, bool use_quantization = false);
 
   /**
    * Determines whether the neural network contains a layer with the given
@@ -161,16 +165,20 @@ public:
 
   /**
    * Appends a pooling layer.
-   * By default, it's a max pooling layer. And it can only be max pooling
-   * TODO: be able to set other pooling types
+   * By default, it's a max pooling layer.
    *
+   * It can be of type:
+   *      - MAX
+   *      - AVERAGE
+   *      - L2
+   *
+   * \param pooling this sets the type of pooling this layer performs.
    * \param use_poolexcludepadding padded values are excluded from the
    * count (denominator) when computing average pooling.
    */
-  void add_pooling(const std::string& name, const std::string& input,
-                   size_t kernel_height, size_t kernel_width, size_t stride_h,
-                   size_t stride_w, padding_type padding,
-                   bool use_poolexcludepadding = false);
+  void add_pooling(const std::string& name, const std::string& input, size_t kernel_height,
+                   size_t kernel_width, size_t stride_h, size_t stride_w, padding_type padding,
+                   bool use_poolexcludepadding = false, pooling_type pooling = pooling_type::MAX);
 
   /**
    * Appends a convolution layer.

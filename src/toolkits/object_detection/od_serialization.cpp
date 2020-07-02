@@ -155,7 +155,7 @@ pipeline_spec export_darknet_yolo(
   // Initialize the result with the learned layers from the model_backend.
   std::unique_ptr<model_spec> nn_spec(new model_spec);
   init_darknet_yolo(*nn_spec, num_classes, anchor_boxes.size(), input_name);
-  nn_spec->update_params(weights);
+  nn_spec->update_params(weights, /* use_quantization */ true);
 
   // Add the layers that convert to intelligible predictions.
   add_yolo(nn_spec.get(), coordinates_name, confidence_name, "conv8_fwd",
