@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <core/util/Span.hpp>
 #include <vector>
 
+#include <core/util/Span.hpp>
 #include <ml/neural_net/float16.h>
 
 namespace turi {
