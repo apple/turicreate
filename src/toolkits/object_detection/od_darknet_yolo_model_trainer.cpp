@@ -33,6 +33,10 @@ constexpr int SPATIAL_REDUCTION = 32;
 
 constexpr float BASE_LEARNING_RATE = 0.001f;
 
+constexpr float DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE = 0.001;
+constexpr float DEFAULT_CONFIDENCE_THRESHOLD_PREDICT = 0.25;
+constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45;
+
 // Each bounding box is evaluated relative to a list of pre-defined sizes.
 const std::vector<std::pair<float, float>>& GetAnchorBoxes() {
   static const std::vector<std::pair<float, float>>* const default_boxes =
@@ -218,12 +222,11 @@ image_augmenter::options DarknetYOLOInferenceAugmentationOptions(
   return opts;
 }
 
-image_augmenter::options DarknetYOLOTrainingAugmentationOptions(
-    int batch_size, int output_height, int output_width, int random_seed) {
+image_augmenter::options DarknetYOLOTrainingAugmentationOptions(int batch_size, int output_height,
+                                                                int output_width)
+{
   image_augmenter::options opts = DarknetYOLOInferenceAugmentationOptions(
       batch_size, output_height, output_width);
-
-  opts.random_seed = random_seed;
 
   // Apply random crops.
   opts.crop_prob = 0.9f;
@@ -378,12 +381,14 @@ std::unique_ptr<Checkpoint> DarknetYOLOCheckpointer::Next() {
   return checkpoint;
 }
 
-DarknetYOLOCheckpoint::DarknetYOLOCheckpoint(
-    Config config, const std::string& pretrained_model_path)
-    : config_(std::move(config)),
-      model_spec_(InitializeDarknetYOLO(
-          pretrained_model_path, config_.num_classes, config_.random_seed)),
-      weights_(model_spec_->export_params_view()) {}
+DarknetYOLOCheckpoint::DarknetYOLOCheckpoint(Config config,
+                                             const std::string& pretrained_model_path,
+                                             int random_seed)
+  : config_(std::move(config))
+  , model_spec_(InitializeDarknetYOLO(pretrained_model_path, config_.num_classes, random_seed))
+  , weights_(model_spec_->export_params_view())
+{
+}
 
 DarknetYOLOCheckpoint::DarknetYOLOCheckpoint(Config config,
                                              float_array_map weights)
@@ -415,6 +420,23 @@ size_t DarknetYOLOCheckpoint::GetNumberOfPredictions() const {
   return config_.output_width * config_.output_height * GetAnchorBoxes().size();
 }
 
+std::string DarknetYOLOCheckpoint::GetModelType() const { return "YOLOv2"; }
+
+float DarknetYOLOCheckpoint::GetEvaluateConfidence() const
+{
+  return DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE;
+}
+
+float DarknetYOLOCheckpoint::GetPredictConfidence() const
+{
+  return DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+}
+
+float DarknetYOLOCheckpoint::GetNonMaximumSuppressionThreshold() const
+{
+  return DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+}
+
 float_array_map DarknetYOLOCheckpoint::internal_config() const {
   return GetTrainingBackendConfig(config_.max_iterations, config_.num_classes);
 }
@@ -423,33 +445,29 @@ float_array_map DarknetYOLOCheckpoint::internal_weights() const {
   return ConvertWeightsExternalToInternal(weights_);
 }
 
-DarknetYOLOModelTrainer::DarknetYOLOModelTrainer(
-    const DarknetYOLOCheckpoint& checkpoint,
-    neural_net::compute_context* context)
-    : config_(checkpoint.config()),
-      backend_(context->create_object_detector(
-          /* n       */ config_.batch_size,
-          /* c_in    */ 3,  // RGB input
-          /* h_in    */ config_.output_height * SPATIAL_REDUCTION,
-          /* w_in    */ config_.output_width * SPATIAL_REDUCTION,
-          /* c_out   */ GetNumOutputChannels(config_),
-          /* h_out   */ config_.output_height,
-          /* w_out   */ config_.output_width,
-          /* config  */ checkpoint.internal_config(),
-          /* weights */ checkpoint.internal_weights())),
-      training_augmenter_(
-          std::make_shared<DataAugmenter>(context->create_image_augmenter(
-              DarknetYOLOTrainingAugmentationOptions(
-                  checkpoint.config().batch_size,
-                  checkpoint.config().output_height,
-                  checkpoint.config().output_width,
-                  checkpoint.config().random_seed)))),
-      inference_augmenter_(
-          std::make_shared<DataAugmenter>(context->create_image_augmenter(
-              DarknetYOLOInferenceAugmentationOptions(
-                  checkpoint.config().batch_size,
-                  checkpoint.config().output_height,
-                  checkpoint.config().output_width)))) {}
+DarknetYOLOModelTrainer::DarknetYOLOModelTrainer(const DarknetYOLOCheckpoint& checkpoint,
+                                                 neural_net::compute_context* context)
+  : config_(checkpoint.config())
+  , backend_(context->create_object_detector(
+        /* n       */ config_.batch_size,
+        /* c_in    */ 3,  // RGB input
+        /* h_in    */ config_.output_height * SPATIAL_REDUCTION,
+        /* w_in    */ config_.output_width * SPATIAL_REDUCTION,
+        /* c_out   */ GetNumOutputChannels(config_),
+        /* h_out   */ config_.output_height,
+        /* w_out   */ config_.output_width,
+        /* config  */ checkpoint.internal_config(),
+        /* weights */ checkpoint.internal_weights()))
+  , training_augmenter_(std::make_shared<DataAugmenter>(
+        context->create_image_augmenter(DarknetYOLOTrainingAugmentationOptions(
+            checkpoint.config().batch_size, checkpoint.config().output_height,
+            checkpoint.config().output_width))))
+  , inference_augmenter_(std::make_shared<DataAugmenter>(
+        context->create_image_augmenter(DarknetYOLOInferenceAugmentationOptions(
+            checkpoint.config().batch_size, checkpoint.config().output_height,
+            checkpoint.config().output_width))))
+{
+}
 
 std::shared_ptr<Publisher<TrainingOutputBatch>>
 DarknetYOLOModelTrainer::AsTrainingBatchPublisher(

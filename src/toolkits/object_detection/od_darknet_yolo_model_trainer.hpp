@@ -130,8 +130,7 @@ class DarknetYOLOCheckpoint : public Checkpoint {
    * Initializes a new model, combining the pre-trained warm-start weights with
    * random initialization for the final layers.
    */
-  DarknetYOLOCheckpoint(Config config,
-                        const std::string& pretrained_model_path);
+  DarknetYOLOCheckpoint(Config config, const std::string& pretrained_model_path, int random_seed);
 
   /** Loads weights saved from a DarknetYOLOModelTrainer. */
   DarknetYOLOCheckpoint(Config config, neural_net::float_array_map weights);
@@ -147,6 +146,14 @@ class DarknetYOLOCheckpoint : public Checkpoint {
       const std::string& confidence_output_name) const override;
 
   size_t GetNumberOfPredictions() const override;
+
+  std::string GetModelType() const override;
+
+  float GetEvaluateConfidence() const override;
+
+  float GetPredictConfidence() const override;
+
+  float GetNonMaximumSuppressionThreshold() const override;
 
   /** Returns the config dictionary used to initialize darknet-yolo backends. */
   neural_net::float_array_map internal_config() const;

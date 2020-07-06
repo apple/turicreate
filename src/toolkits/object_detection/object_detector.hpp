@@ -190,7 +190,7 @@ class EXPORT object_detector: public ml_model_base {
 
   // Factories for ModelTrainer
   virtual std::unique_ptr<ModelTrainer> create_trainer(
-      const Config& config, const std::string& pretrained_model_path,
+      const Config& config, const std::string& pretrained_model_path, int random_seed,
       std::unique_ptr<neural_net::compute_context> context) const;
   virtual std::unique_ptr<ModelTrainer> create_inference_trainer(
       const Checkpoint& checkpoint,
@@ -217,6 +217,9 @@ class EXPORT object_detector: public ml_model_base {
                          const std::pair<float, float>&)>
           consumer,
       float confidence_threshold, float iou_threshold);
+
+  // When true, shows all metadata, when false shows less metadata
+  virtual bool should_export_all_metadata() const;
 
   // Utility code
 
