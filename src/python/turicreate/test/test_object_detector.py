@@ -477,11 +477,11 @@ class ObjectDetectorTest(unittest.TestCase):
                 "feature": self.feature,
                 "include_non_maximum_suppression": "False",
                 "max_iterations": "1",
-                "model": "YOLOV2",
+                "model": "YOLOv2",
                 "training_iterations": "1",
                 "version": "1",
             },
-            dict(coreml_model.user_defined_metadata),
+            dict([(str(k), v) for k, v in coreml_model.user_defined_metadata.items()]),
         )
         expected_result = "Object detector created by Turi Create (version %s)" % (
             tc.__version__
