@@ -68,11 +68,11 @@ def get_test_data():
     data_dict = {"awesome_image": images}
     data = tc.SFrame(data_dict)
 
-    for model_name in MODEL_TO_FEATURE_SIZE_MAPPING:
-        if model_name == "VisionFeaturePrint_Scene" and _mac_ver() < (10, 14):
-            # VisionFeaturePrint_Scene is not support on Linux
-            continue
-        data[model_name + "_deep_features"] = get_deep_features(data["awesome_image"], model_name)
+    # for model_name in MODEL_TO_FEATURE_SIZE_MAPPING:
+    #     if model_name == "VisionFeaturePrint_Scene" and _mac_ver() < (10, 14):
+    #         # VisionFeaturePrint_Scene is not support on Linux
+    #         continue
+    #     data[model_name + "_deep_features"] = get_deep_features(data["awesome_image"], model_name)
 
     return data
 
@@ -96,6 +96,13 @@ class ImageSimilarityTest(unittest.TestCase):
             "model": "resnet-50",
             "verbose": True,
         }
+
+        # Get deep features if needed
+        if self.feature != "awesome_image":
+            if self.pre_trained_model == "VisionFeaturePrint_Scene" and _mac_ver() < (10, 14):
+                # VisionFeaturePrint_Scene is not support on Linux
+                continue
+            data[self.feature] = get_deep_features(data["awesome_image"], self.pre_trained_model)
 
         # Model
         self.model = tc.image_similarity.create(
