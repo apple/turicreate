@@ -517,13 +517,12 @@ class ActivityClassifierTest(unittest.TestCase):
         self.check_prediction_match(self.model, coreml_model)
 
     def test_create_single_input_column(self):
-        sf_label = random.randint(0, self.num_labels - 1)
-        sf_session_id = max(self.data[self.session_id])
+        sf_session_id = [max(self.data[self.session_id]), min(self.data[self.session_id])]
         input_data = tc.SFrame(
             {
-                self.features[0]: [3.14],
-                self.target: [sf_label],
-                self.session_id: [sf_session_id],
+                self.features[0]: [3.14, -3.14],
+                self.target: ['foo', 'bar'],
+                self.session_id: sf_session_id,
             }
         )
         model = tc.activity_classifier.create(
