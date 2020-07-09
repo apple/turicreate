@@ -77,12 +77,6 @@ def get_test_data():
     data_dict = {"awesome_image": images, "awesome_label": labels}
     data = tc.SFrame(data_dict)
 
-    # for model_name in MODEL_TO_FEATURE_SIZE_MAPPING:
-    #     if model_name == "VisionFeaturePrint_Scene" and _mac_ver() < (10, 14):
-    #         # VisionFeaturePrint_Scene is not support on Linux
-    #         continue
-    #     data[model_name + "_deep_features"] = get_deep_features(data["awesome_image"], model_name)
-
     return data
 
 
