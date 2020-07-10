@@ -7,6 +7,8 @@
 
 #pragma once
 
+#include <cassert>
+
 #include <ml/neural_net/TaskQueue.hpp>
 #include <ml/neural_net/combine_base.hpp>
 
