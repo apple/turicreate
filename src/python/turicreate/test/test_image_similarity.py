@@ -92,8 +92,8 @@ class ImageSimilarityTest(unittest.TestCase):
         }
 
         # Get deep features if needed
-        if self.feature != "awesome_image":
-            data[self.feature] = get_deep_features(data["awesome_image"], self.feature.split('_deep_features')[0])
+        if self.feature.endswith("WithDeepFeature"):
+            data[self.feature] = get_deep_features(data["awesome_image"], self.feature.split('_WithDeepFeature')[0])
 
         # Model
         self.model = tc.image_similarity.create(
@@ -305,7 +305,7 @@ class ImageSimilarityResnetTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityResnetTestWithDeepFeatures, self).setUpClass(
-            model="resnet-50", input_image_shape=(3, 224, 224), feature="resnet-50_deep_features"
+            model="resnet-50", input_image_shape=(3, 224, 224), feature="resnet-50_WithDeepFeature"
         )
 
 
@@ -321,7 +321,7 @@ class ImageSimilaritySqueezeNetTestWithDeepFeatures(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTestWithDeepFeatures, self).setUpClass(
-            model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="squeezenet_v1.1_deep_features"
+            model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="squeezenet_v1.1_WithDeepFeature"
         )
 
 
@@ -343,7 +343,7 @@ class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures(ImageSimilarity
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures, self).setUpClass(
-            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_deep_features"
+            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_WithDeepFeature"
         )
 
 # A test to gaurantee that old code using the incorrect name still works.
@@ -365,5 +365,5 @@ class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures_bad_name(ImageS
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures_bad_name, self).setUpClass(
-            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_deep_features"
+            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_WithDeepFeature"
         )
