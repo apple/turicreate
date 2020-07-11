@@ -88,7 +88,7 @@ class ImageClassifierTest(unittest.TestCase):
     def setUpClass(
         self,
         model="resnet-50",
-        feature="resnet-50_WithDeepFeature", 
+        feature="awesome_image", 
         input_image_shape=(3, 224, 224),
         tol=0.02,
         num_examples=100,
@@ -172,9 +172,12 @@ class ImageClassifierTest(unittest.TestCase):
     def test_select_correct_feature_column_to_train(self):
         # sending both, the correct extracted features colum and image column
         if self.feature == "awesome_image":
-            test_data = data.select_columns([self.feature, self.target, self.pre_trained_model+"_WithDeepFeature"])
+            test_data = data.select_columns([self.feature, self.target])
+            deep_features_col_name = self.pre_trained_model+"_WithDeepFeature"
+            test_data[deep_features_col_name] = get_deep_features(data["awesome_image"], 
+                self.pre_trained_model)
             test_model = tc.image_classifier.create(test_data, target=self.target, model=self.pre_trained_model)
-            self.assertTrue(test_model.feature == self.pre_trained_model+"_WithDeepFeature")
+            self.assertTrue(test_model.feature == deep_features_col_name)
 
     def test_predict(self):
         model = self.model
@@ -360,7 +363,7 @@ class ImageClassifierResnetTestWithDeepFeatures(ImageClassifierTest):
             input_image_shape=(3, 224, 224),
             tol=0.02,
             num_examples=100,
-            feature="awesome_image",
+            feature="resnet-50_WithDeepFeature",
         )
 
 
@@ -372,7 +375,7 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
             input_image_shape=(3, 227, 227),
             tol=0.005,
             num_examples=200,
-            feature="squeezenet_v1.1_WithDeepFeature",
+            feature="awesome_image",
         )
 
 class ImageClassifierSqueezeNetTestWithDeepFeatures(ImageClassifierTest):
@@ -383,7 +386,7 @@ class ImageClassifierSqueezeNetTestWithDeepFeatures(ImageClassifierTest):
             input_image_shape=(3, 227, 227),
             tol=0.005,
             num_examples=200,
-            feature="awesome_image",
+            feature="squeezenet_v1.1_WithDeepFeature",
         )
 
 
@@ -400,7 +403,7 @@ class VisionFeaturePrintSceneTest(ImageClassifierTest):
             tol=0.005,
             num_examples=100,
             label_type=str,
-            feature="VisionFeaturePrint_Scene_WithDeepFeature",
+            feature="awesome_image",
         )
 
 
@@ -417,5 +420,5 @@ class VisionFeaturePrintSceneTestWithDeepFeatures(ImageClassifierTest):
             tol=0.005,
             num_examples=100,
             label_type=str,
-            feature="awesome_image",
+            feature="VisionFeaturePrint_Scene_WithDeepFeature",
         )
