@@ -217,6 +217,12 @@ cdef class UnitySArrayProxy:
             tmp = self.thisptr.mean()
         return pyobject_from_flexible_type(tmp)
 
+    cpdef median(self, bint approx):
+        cdef flexible_type tmp
+        with nogil:
+            tmp = self.thisptr.median(approx)
+        return pyobject_from_flexible_type(tmp)
+
     cpdef std(self, size_t ddof):
         cdef flexible_type tmp
         with nogil:

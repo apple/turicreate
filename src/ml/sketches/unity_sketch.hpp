@@ -18,12 +18,9 @@
 #include <core/logging/logger.hpp>
 namespace turi {
 
-// forward declarations
-class unity_sarray;
-class unity_sketch;
-
 namespace sketches {
 
+// forward declarations
 template <typename T, typename Comparator>
 class streaming_quantile_sketch;
 template <typename T, typename Comparator>
@@ -274,6 +271,18 @@ class unity_sketch: public unity_sketch_base {
   }
 
   /**
+   * Returns the epsilon value used by the numeric sketch. Returns NaN on an
+   * empty  array. Throws an exception if called on an sarray with non-numeric
+   * type.
+   */
+  inline double numeric_epsilon() {
+    if (!m_is_numeric) log_and_throw("Epsilon value not available for a non-numeric column");
+    commit_global_if_out_of_date();
+    std::unique_lock<turi::mutex> global_lock(lock);
+    return m_numeric_sketch.max;
+  }
+
+  /**
    * Returns the sum of the values in the sarray. Returns 0 on an empty
    * array. Throws an exception if called on an sarray with non-numeric
    * type.
@@ -330,6 +339,7 @@ class unity_sketch: public unity_sketch_base {
     double mean = 0.0;
     size_t num_items = 0;
     double m2;
+    double epsilon = -1;
 
     void reset();
 
@@ -452,6 +462,7 @@ class unity_sketch: public unity_sketch_base {
     m_numeric_sketch.sum = 0;
     m_numeric_sketch.m2 = 0;
     m_numeric_sketch.num_items = 0;
+    m_numeric_sketch.epsilon = NAN;
   }
 
   inline void increase_nested_element_count(unity_sketch& nested_sketch, size_t thr, size_t count) {

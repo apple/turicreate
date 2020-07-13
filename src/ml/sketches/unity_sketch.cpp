@@ -466,7 +466,7 @@ void unity_sketch::combine_global(std::vector<turi::mutex>& thr_locks) {
   reset_global_sketches_and_statistics();
 
   // merge all the sketches
-  for (size_t i = 0;i < m_thrlocal.size(); ++i) {
+  for (size_t i = 0; i < m_thrlocal.size(); ++i) {
     std::unique_lock<turi::mutex> thrlocal_lock(thr_locks[i]);
     m_num_elements_processed += m_thrlocal[i].num_elements_processed;
     m_discrete_sketch.combine(m_thrlocal[i].discrete_sketch);
@@ -474,8 +474,6 @@ void unity_sketch::combine_global(std::vector<turi::mutex>& thr_locks) {
     if (m_is_numeric) {
       m_numeric_sketch.combine(m_thrlocal[i].numeric_sketch);
     }
-
-
   }
 
   if (m_is_child_sketch) {
@@ -562,6 +560,9 @@ void unity_sketch::numeric_sketch_struct::combine(const numeric_sketch_struct& o
   min = std::min(other.min, min);
   max = std::max(other.max, max);
   sum += other.sum;
+
+  DASSERT_TRUE(epsilon == -1 || epsilon == other.epsilon);
+  epsilon = other.epsilon;
 
   if (num_items + other.num_items > 0) {
 

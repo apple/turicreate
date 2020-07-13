@@ -48,7 +48,6 @@
 #include <visualization/server/table.hpp>
 
 #include <model_server/lib/image_util.hpp>
-#include <ml/sketches/unity_sketch.hpp>
 #include <algorithm>
 #include <random>
 #include <string>
@@ -59,6 +58,7 @@
 #ifdef TC_HAS_PYTHON
 #include <core/system/lambda/pylambda_function.hpp>
 #endif
+
 namespace turi {
 
 using namespace turi::query_eval;
