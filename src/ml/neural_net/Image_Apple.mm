@@ -7,6 +7,7 @@
 
 #include <ml/neural_net/Image.hpp>
 
+#include <core/util/std/make_unique.hpp>
 #include <ml/neural_net/CoreImageImage.hpp>
 
 namespace turi {
@@ -15,7 +16,7 @@ namespace neural_net {
 // static
 std::unique_ptr<Image> Image::CreateFromPath(const std::string& path)
 {
-  return std::unique_ptr<CoreImageImage>(new CoreImageImage(path));
+  return std::make_unique<CoreImageImage>(path);
 }
 
 Image::~Image() = default;

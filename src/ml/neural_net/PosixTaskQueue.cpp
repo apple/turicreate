@@ -8,6 +8,7 @@
 #include <ml/neural_net/PosixTaskQueue.hpp>
 
 #include <core/parallel/lambda_omp.hpp>
+#include <core/util/std/make_unique.hpp>
 
 namespace turi {
 namespace neural_net {
@@ -25,7 +26,7 @@ std::shared_ptr<PosixTaskQueue> PosixTaskQueue::GetGlobalConcurrentQueue() {
 // static
 std::unique_ptr<PosixTaskQueue> PosixTaskQueue::CreateSerialQueue(const char* label)
 {
-  return std::unique_ptr<SerialPosixTaskQueue>(new SerialPosixTaskQueue(/* num_threads */ 1));
+  return std::make_unique<SerialPosixTaskQueue>(/* num_threads */ 1);
 }
 
 void PosixTaskQueue::DispatchAsync(std::function<void()> task) {
