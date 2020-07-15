@@ -50,7 +50,7 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     message(WARNING "VISUALIZATION_XCODE_INPUT is ${VISUALIZATION_XCODE_INPUT}")
     add_custom_command(
       OUTPUT "${VISUALIZATION_XCODE_OUTPUT}"
-      COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${CMAKE_BUILD_TYPE} SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
+      COMMAND xcodebuild -project "${CMAKE_CURRENT_SOURCE_DIR}/Turi Create Visualization.xcodeproj/" -configuration ${CMAKE_BUILD_TYPE} -destination "platform=OS X,arch=x86_64" -scheme "Turi Create Visualization" SYMROOT=${CMAKE_CURRENT_BINARY_DIR}
       COMMENT "Building visualization client via xcodebuild"
       DEPENDS ${VISUALIZATION_XCODE_INPUT}
       VERBATIM
