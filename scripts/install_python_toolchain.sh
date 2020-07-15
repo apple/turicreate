@@ -6,7 +6,8 @@ if [[ -z $VIRTUALENV ]]; then
   VIRTUALENV=virtualenv
 fi
 
-$VIRTUALENV "$(pwd)"/deps/env
+DEPS_ENV_FOLDER="$(pwd)"/deps/env
+$VIRTUALENV $DEPS_ENV_FOLDER
 source deps/env/bin/activate
 
 PYTHON="${PWD}/deps/env/bin/python"
@@ -14,6 +15,7 @@ PIP="${PYTHON} -m pip"
 
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
 PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
+PYTHON_INCLUDE_DIR=$(${PYTHON} -c 'from sysconfig import get_paths as gp; print(gp()["include"])')
 PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
 
 # TODO - not sure why 'm' is necessary here (and not in 2.7)
@@ -23,6 +25,9 @@ if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
   PYTHON_FULL_NAME=python2.7
 fi
 
+DEPS_INCLUDE_FOLDER="$DEPS_ENV_FOLDER"/include
+mkdir -p $DEPS_INCLUDE_FOLDER
+ln -sfn "$PYTHON_INCLUDE_DIR" "$DEPS_INCLUDE_FOLDER"/"$PYTHON_FULL_NAME"
 
 function linux_patch_sigfpe_handler {
   if [[ $OSTYPE == linux* ]]; then
