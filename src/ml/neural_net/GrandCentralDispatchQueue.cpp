@@ -10,6 +10,8 @@
 #include <exception>
 #include <mutex>
 
+#include <core/util/std/make_unique.hpp>
+
 namespace turi {
 namespace neural_net {
 
@@ -31,7 +33,7 @@ std::unique_ptr<GrandCentralDispatchQueue> GrandCentralDispatchQueue::CreateSeri
     const char* label)
 {
   dispatch_queue_t impl = dispatch_queue_create(label, DISPATCH_QUEUE_SERIAL);
-  std::unique_ptr<GrandCentralDispatchQueue> result(new GrandCentralDispatchQueue(impl));
+  auto result = std::make_unique<GrandCentralDispatchQueue>(impl);
   dispatch_release(impl);
   return result;
 }

@@ -13,6 +13,7 @@
 #include <memory>
 #include <queue>
 
+#include <core/util/std/make_unique.hpp>
 #include <ml/neural_net/combine_base.hpp>
 
 namespace turi {
@@ -108,7 +109,7 @@ class FuturesSubscriber : public Subscriber<T> {
     if (completed_) return Demand::None();
 
     // Wrap the value in a unique_ptr and fulfill the promise.
-    std::unique_ptr<Input> input(new Input(std::move(element)));
+    auto input = std::make_unique<Input>(std::move(element));
     promises_.front().set_value(std::move(input));
     promises_.pop();
     return Demand::None();
