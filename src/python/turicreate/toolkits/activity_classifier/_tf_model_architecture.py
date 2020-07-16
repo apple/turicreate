@@ -207,7 +207,7 @@ class ActivityTensorFlowModel(TensorFlowModel):
             prob, (prob.shape[0], prob.shape[1] * prob.shape[2])
         )
 
-        result = {"loss": loss, "output": probabilities}
+        result = {"loss": _np.array(loss), "output": _np.array(probabilities)}
         return result
 
     def predict(self, feed_dict):
