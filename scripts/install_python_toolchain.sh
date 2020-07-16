@@ -25,10 +25,12 @@ if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
   PYTHON_FULL_NAME=python2.7
 fi
 
-DEPS_INCLUDE_FOLDER="$DEPS_ENV_FOLDER"/include
-rm -rf $DEPS_INCLUDE_FOLDER
-mkdir -p $DEPS_INCLUDE_FOLDER
-ln -sfn "$PYTHON_INCLUDE_DIR" "$DEPS_INCLUDE_FOLDER"/"$PYTHON_FULL_NAME"
+if [[ ${PYTHON_MAJOR_VERSION} -ge 3  && ${PYTHON_MINOR_VERSION} -gt 5 ]]; then
+  DEPS_INCLUDE_FOLDER="$DEPS_ENV_FOLDER"/include
+  rm -rf $DEPS_INCLUDE_FOLDER
+  mkdir -p $DEPS_INCLUDE_FOLDER
+  ln -sfn "$PYTHON_INCLUDE_DIR" "$DEPS_INCLUDE_FOLDER"/"$PYTHON_FULL_NAME"
+fi
 
 function linux_patch_sigfpe_handler {
   if [[ $OSTYPE == linux* ]]; then
