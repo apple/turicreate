@@ -32,6 +32,7 @@ subdirs(
         vega_renderer
         neural_net
         benchmark
+        exceptions
 )
 
 if(${TC_BUILD_CAPI})
