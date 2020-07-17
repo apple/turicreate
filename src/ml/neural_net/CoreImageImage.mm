@@ -7,6 +7,8 @@
 
 #include <ml/neural_net/CoreImageImage.hpp>
 
+#include <core/util/Verify.hpp>
+
 #import <Accelerate/Accelerate.h>
 
 namespace turi {
@@ -29,9 +31,9 @@ CIContext *GetCIContext()
 // Render the image into a bitmap. CoreImage supports RGBA but not RGB...
 void RenderRgba(CIImage *image, Span<float> buffer)
 {
-  size_t height = static_cast<size_t>(image.extent.size.height);
-  size_t width = static_cast<size_t>(image.extent.size.width);
-  RUNTIME_ASSERT(buffer.Size() == height * width * 4, "incorrect buffer size for image");
+  const size_t height = static_cast<size_t>(image.extent.size.height);
+  const size_t width = static_cast<size_t>(image.extent.size.width);
+  VerifyIsTrue(buffer.Size() == height * width * 4, TuriErrorCode::InvalidBufferLength);
 
   CIContext *context = GetCIContext();
   [context render:image
@@ -44,7 +46,7 @@ void RenderRgba(CIImage *image, Span<float> buffer)
 
 vImage_Buffer WrapSpan(Span<float> span, size_t height, size_t width, size_t num_channels)
 {
-  RUNTIME_ASSERT(span.Size() == height * width * num_channels, "incorrect buffer size for image");
+  VerifyIsTrue(span.Size() == height * width * num_channels, TuriErrorCode::InvalidBufferLength);
 
   vImage_Buffer buffer;
   buffer.data = span.Data();
@@ -94,9 +96,9 @@ void CoreImageImage::WriteCHW(Span<float> output) const
   @autoreleasepool {
     // Verify the output buffer is big enough. (Avoid the cost of additional autorelease pools that
     // e.g. GetHeight() would incur.)
-    size_t height = static_cast<size_t>(impl_.extent.size.height);
-    size_t width = static_cast<size_t>(impl_.extent.size.width);
-    RUNTIME_ASSERT(output.Size() == 3 * height * width, "incorrect buffer size for image");
+    const size_t height = static_cast<size_t>(impl_.extent.size.height);
+    const size_t width = static_cast<size_t>(impl_.extent.size.width);
+    VerifyIsTrue(output.Size() == 3 * height * width, TuriErrorCode::InvalidBufferLength);
 
     // Render to RGBAf, the only relevant floating-point format CoreImage supports.
     size_t rgba_size = height * width * 4;
@@ -115,14 +117,15 @@ void CoreImageImage::WriteCHW(Span<float> output) const
       *it++ = WrapSpan(channel_span, height, width, 1);
     }
     *it++ = WrapSpan(MakeSpan(alpha), height, width, 1);
-    DEBUG_ASSERT(it == channel_buffers.end(), "must initialize all channel buffers");
+    VerifyDebugIsTrueWithMessage(it == channel_buffers.end(), TuriErrorCode::LogicError,
+                                 "must initialize all channel buffers");
 
     // Invoke Accelerate.
     vImage_Error error =
         vImageConvert_RGBAFFFFtoPlanarF(&rgba_buffer, &channel_buffers[0], &channel_buffers[1],
                                         &channel_buffers[2], &channel_buffers[3], kvImageDoNotTile);
-    RUNTIME_ASSERT(error == kvImageNoError,
-                   "unexpected error converting RGBA bitmap to planar RGB");
+    VerifyIsTrueWithMessage(error == kvImageNoError, TuriErrorCode::ImageConversionFailure,
+                            "unexpected error converting RGBA bitmap to planar RGB");
   }  // @autoreleasepool
 }
 
@@ -131,9 +134,9 @@ void CoreImageImage::WriteHWC(Span<float> output) const
   @autoreleasepool {
     // Verify the output buffer is big enough. (Avoid the cost of additional autorelease pools that
     // e.g. GetHeight() would incur.)
-    size_t height = static_cast<size_t>(impl_.extent.size.height);
-    size_t width = static_cast<size_t>(impl_.extent.size.width);
-    RUNTIME_ASSERT(output.Size() == 3 * height * width, "incorrect buffer size for image");
+    const size_t height = static_cast<size_t>(impl_.extent.size.height);
+    const size_t width = static_cast<size_t>(impl_.extent.size.width);
+    VerifyIsTrue(output.Size() == 3 * height * width, TuriErrorCode::InvalidBufferLength);
 
     // Render to RGBAf, the only relevant floating-point format CoreImage supports.
     size_t rgba_size = height * width * 4;
@@ -145,7 +148,8 @@ void CoreImageImage::WriteHWC(Span<float> output) const
     vImage_Buffer out_buffer = WrapSpan(output, height, width, 3);
     vImage_Error error =
         vImageConvert_RGBAFFFFtoRGBFFF(&rgba_buffer, &out_buffer, kvImageDoNotTile);
-    RUNTIME_ASSERT(error == kvImageNoError, "unexpected error converting RGBA bitmap to RGB");
+    VerifyIsTrueWithMessage(error == kvImageNoError, TuriErrorCode::ImageConversionFailure,
+                            "converting RGBA bitmap to RGB");
   }  // @autoreleasepool
 }
 
