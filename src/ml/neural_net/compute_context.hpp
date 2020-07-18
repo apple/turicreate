@@ -10,6 +10,7 @@
 #include <memory>
 
 #include <core/export.hpp>
+#include <core/system/exceptions/TuriException.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
 
@@ -123,7 +124,7 @@ class EXPORT compute_context {
                                                                 const float_array_map& config,
                                                                 const float_array_map& weights)
   {
-    RUNTIME_ASSERT(false, "not implemented");
+    throw TuriException(TuriErrorCode::NotImplemented);
   }
 
   /**
@@ -136,7 +137,7 @@ class EXPORT compute_context {
    */
   virtual std::unique_ptr<model_backend> create_activity_classifier(
       const ac_parameters& ac_params) {
-    RUNTIME_ASSERT(false, "not implemented");
+    throw TuriException(TuriErrorCode::NotImplemented);
   }
 
   /**
@@ -150,7 +151,7 @@ class EXPORT compute_context {
   virtual std::unique_ptr<model_backend> create_style_transfer(const float_array_map& config,
                                                                const float_array_map& weights)
   {
-    RUNTIME_ASSERT(false, "not implemented");
+    throw TuriException(TuriErrorCode::NotImplemented);
   }
 
   /**
@@ -165,7 +166,7 @@ class EXPORT compute_context {
   virtual std::unique_ptr<model_backend> create_drawing_classifier(
       /* TODO: const float_array_map& config if needed */
       const float_array_map& weights, size_t batch_size, size_t num_classes) {
-    RUNTIME_ASSERT(false, "not implemented");
+    throw TuriException(TuriErrorCode::NotImplemented);
   }
 
   /**
@@ -174,7 +175,7 @@ class EXPORT compute_context {
   virtual std::unique_ptr<image_augmenter> create_image_augmenter(
       const image_augmenter::options& opts)
   {
-    RUNTIME_ASSERT(false, "not implemented");
+    throw TuriException(TuriErrorCode::NotImplemented);
   }
 
   /**
@@ -184,7 +185,7 @@ class EXPORT compute_context {
       int n, int c_in, int c_out, const std::vector<size_t>& layer_sizes,
       const turi::neural_net::float_array_map& config)
   {
-    RUNTIME_ASSERT(false, "not implemented");
+    throw TuriException(TuriErrorCode::NotImplemented);
   }
 };
 

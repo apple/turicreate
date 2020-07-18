@@ -424,6 +424,7 @@ if(NOT TC_DISABLE_OBJECT_BUILDS)
       "$<TARGET_OBJECTS:cancel_serverside_ops>"
       "$<TARGET_OBJECTS:crash_handler>"
       "$<TARGET_OBJECTS:cppipc>"
+      "$<TARGET_OBJECTS:exceptions>"
       "$<TARGET_OBJECTS:flexible_type>"
       "$<TARGET_OBJECTS:globals>"
       "$<TARGET_OBJECTS:fileio>"
