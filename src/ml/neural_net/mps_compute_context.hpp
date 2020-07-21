@@ -15,6 +15,8 @@
 namespace turi {
 namespace neural_net {
 
+std::unique_ptr<compute_context> create_mps_compute_context();
+
 /**
  * A compute_context implementation backed by Apple frameworks: Metal
  * Performance Shaders for neural network computation and Core Image for data

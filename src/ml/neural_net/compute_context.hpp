@@ -65,7 +65,7 @@ class EXPORT compute_context {
   class registration {
    public:
     // Registers `factory_fn` at the given priority.
-    registration(int priority, factory factory_fn, factory tf_factory_fn_);
+    registration(int priority, factory factory_fn, factory tf_factory_fn_, factory mlc_factory_fn_);
 
     // Removes the registration. In practice, simplest just not to deallocate...
     ~registration();
@@ -77,13 +77,18 @@ class EXPORT compute_context {
 
     std::unique_ptr<compute_context> create_tensorflow_context() const {
       return tf_factory_fn_ ? tf_factory_fn_() : nullptr;
-      ;
+    }
+
+    std::unique_ptr<compute_context> create_mlc_context() const
+    {
+      return mlc_factory_fn_ ? mlc_factory_fn_() : nullptr;
     }
 
    private:
     int priority_;
     factory factory_fn_;
     factory tf_factory_fn_;
+    factory mlc_factory_fn_;
   };
 
   /**
@@ -95,6 +100,8 @@ class EXPORT compute_context {
   static std::unique_ptr<compute_context> create();
 
   static std::unique_ptr<compute_context> create_tf();
+
+  static std::unique_ptr<compute_context> create_mlc();
 
   virtual ~compute_context();
 

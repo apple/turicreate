@@ -72,6 +72,27 @@ else()
   )
 endif()
 
+# When building for macOS with version higher than 11.0, build the MLCompute-based backend.
+if(APPLE AND HAS_ML_COMPUTE AND NOT TC_BUILD_IOS)
+ make_library(tcmlc OBJECT
+  SOURCES
+    mlc_compute_context.mm
+    mlc_layer_weights.mm
+    mlc_od_backend.mm
+    mlc_utils.mm
+    TCMLComputeObjectDetectorDescriptor.m
+    TCMLComputeUtil.m
+    TCModelTrainerBackendGraphs.m
+  REQUIRES
+    unity_core
+    ${ACCELERATE}
+)
+  target_compile_options(tcmlc PRIVATE -fobjc-arc -Wno-nullability-completeness -Wno-shadow-ivar)
+  set(additional_unity_neural_net_requirements tcmlc)
+else()
+  set(additional_unity_neural_net_requirements "")
+endif()
+
 make_library(unity_neural_net OBJECT
   SOURCES
     PortableImage.cpp
