@@ -865,7 +865,7 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
 
 std::unique_ptr<compute_context> object_detector::create_compute_context() const
 {
-  return compute_context::create();
+  return compute_context::create_mlc();
 }
 
 void object_detector::init_training(gl_sframe data,
