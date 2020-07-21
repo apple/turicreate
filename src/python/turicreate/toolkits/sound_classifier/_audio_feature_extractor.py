@@ -14,11 +14,6 @@ from .._pre_trained_models import VGGish
 
 from turicreate._deps.minimal_package import _minimal_package_import_check
 
-# We need to disable this here to match behavior in the rest of TuriCreate
-# This toolkit is compatible with TensorFlow V2 behavior.
-# However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
-_minimal_package_import_check("tensorflow.compat.v1").disable_v2_behavior()
-
 
 VGGish_instance = None
 
