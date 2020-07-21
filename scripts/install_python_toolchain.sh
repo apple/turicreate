@@ -15,7 +15,7 @@ PIP="${PYTHON} -m pip"
 
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
 PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
-PYTHON_INCLUDE_DIR=$(${PYTHON} -c 'from sysconfig import get_paths as gp; print(gp()["include"])')
+PYTHON_INCLUDE_DIR=$(${PYTHON} -c 'from sysconfig import get_paths as gp; print("/".join(gp()["include"].split("/")[:-1]))')
 PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
 
 # TODO - not sure why 'm' is necessary here (and not in 2.7)
@@ -29,7 +29,7 @@ if [[ ${PYTHON_MAJOR_VERSION} -ge 3  && ${PYTHON_MINOR_VERSION} -gt 5 ]]; then
   DEPS_INCLUDE_FOLDER="$DEPS_ENV_FOLDER"/include
   rm -rf $DEPS_INCLUDE_FOLDER
   mkdir -p $DEPS_INCLUDE_FOLDER
-  ln -sfn "$PYTHON_INCLUDE_DIR" "$DEPS_INCLUDE_FOLDER"/"$PYTHON_FULL_NAME"
+  ln -sfn "$PYTHON_INCLUDE_DIR" "$DEPS_INCLUDE_FOLDER"
 fi
 
 function linux_patch_sigfpe_handler {
