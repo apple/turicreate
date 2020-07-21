@@ -111,8 +111,8 @@ if(APPLE)
     set(HAS_CORE_ML TRUE)
   endif()
   
-  # MLCompute is only present on macOS 11.0 or higher.
-  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.16)
+  # MLCompute is only present on macOS 10.16 or higher.
+  if(TC_BASE_SDK_VERSION VERSION_GREATER_EQUAL 10.16)
     add_definitions(-DHAS_ML_COMPUTE)
     set(HAS_ML_COMPUTE TRUE)
   endif()
@@ -135,9 +135,6 @@ if(APPLE)
     add_definitions(-DHAS_MACOS_10_15)
   endif()
 
-  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.16)
-    add_definitions(-DHAS_MACOS_10_16)
-  endif()
 endif() 
 
 endmacro()
