@@ -88,7 +88,7 @@ class SVMClassifierTest(unittest.TestCase):
         feature_names = self.features
         X_train = list(self.sf.apply(lambda row: [row[k] for k in features]))
         y_train = list(self.sf[self.target])
-        sm_model = svm.LinearSVC(C=1.0, loss="l1")
+        sm_model = svm.LinearSVC(C=1.0, loss="hinge")
         sm_model.fit(X_train, y_train)
 
         self.coef = list(sm_model.intercept_) + list(sm_model.coef_[0])
@@ -301,7 +301,7 @@ class SVMCreateTest(unittest.TestCase):
         feature_names = self.features
         X_train = list(self.sf.apply(lambda row: [row[k] for k in feature_names]))
         y_train = list(self.sf[self.target])
-        sm_model = svm.LinearSVC(C=1.0, loss="l1")
+        sm_model = svm.LinearSVC(C=1.0, loss="hinge")
         sm_model.fit(X_train, y_train)
         self.coef = list(sm_model.intercept_) + list(sm_model.coef_[0])
 
@@ -441,7 +441,7 @@ class ListCategoricalSVMTest(unittest.TestCase):
         feature_names = ["species_0", "species_1", "X1", "X2", "X3"]
         X_train = list(self.sf.apply(lambda row: [row[k] for k in feature_names]))
         y_train = list(self.sf[self.target])
-        sm_model = svm.LinearSVC(C=1.0, loss="l1")
+        sm_model = svm.LinearSVC(C=1.0, loss="hinge")
         sm_model.fit(X_train, y_train)
         self.coef = list(sm_model.intercept_) + list(sm_model.coef_[0])
         self.sf["species"] = self.sf["species"].apply(lambda x: [x])
@@ -521,7 +521,7 @@ class CategoricalSVMTest(unittest.TestCase):
         feature_names = ["species_0", "species_1", "X1", "X2", "X3"]
         X_train = list(self.sf.apply(lambda row: [row[k] for k in feature_names]))
         y_train = list(self.sf[self.target])
-        sm_model = svm.LinearSVC(C=1.0, loss="l1")
+        sm_model = svm.LinearSVC(C=1.0, loss="hinge")
         sm_model.fit(X_train, y_train)
         self.coef = list(sm_model.intercept_) + list(sm_model.coef_[0])
 
@@ -676,7 +676,7 @@ class VectorSVMTest(unittest.TestCase):
         feature_names = self.features
         X_train = list(self.sf["vec"])
         y_train = list(self.sf[self.target])
-        sm_model = svm.LinearSVC(C=1.0, loss="l1")
+        sm_model = svm.LinearSVC(C=1.0, loss="hinge")
         sm_model.fit(X_train, y_train)
         self.coef = list(sm_model.intercept_) + list(sm_model.coef_[0])
 
@@ -751,7 +751,7 @@ class DictSVMTest(unittest.TestCase):
             self.sf["dict"].apply(lambda x: [x[k] for k in sorted(x.keys())])
         )
         y_train = list(self.sf[self.target])
-        sm_model = svm.LinearSVC(C=1.0, loss="l1")
+        sm_model = svm.LinearSVC(C=1.0, loss="hinge")
         sm_model.fit(X_train, y_train)
         self.coef = list(sm_model.intercept_) + list(sm_model.coef_[0])
 
