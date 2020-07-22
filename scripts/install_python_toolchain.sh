@@ -30,7 +30,7 @@ if [[ ${PYTHON_MAJOR_VERSION} -ge 3  && ${PYTHON_MINOR_VERSION} -gt 5 ]]; then
   PYTHON_INCLUDE_PATH="$PYTHON_INCLUDE_DIR"/python'*'
   rm -rf $DEPS_INCLUDE_FOLDER
   mkdir -p $DEPS_INCLUDE_FOLDER
-  ln -sfn $PYTHON_INCLUDE_PATH $DEPS_INCLUDE_FOLDER
+  cp -r $PYTHON_INCLUDE_PATH $DEPS_INCLUDE_FOLDER
 fi
 
 function linux_patch_sigfpe_handler {
