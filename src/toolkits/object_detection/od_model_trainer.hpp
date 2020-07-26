@@ -130,6 +130,27 @@ struct Config {
   int num_classes = -1;
 };
 
+/** Stores additional data for specific model backend for a checkpoint. */
+struct CheckpointMetadata {
+  /** The number of predictions for the loaded model. */
+  size_t num_predictions = 0;
+
+  /** The model type name for use in exported models. */
+  std::string model_type = "";
+
+  /** The confidence threshold for evaluation */
+  float evaluate_confidence = 0.f;
+
+  /** The confidence threshold for prediction */
+  float predict_confidence = 0.f;
+
+  /** The Non Maximal Suppression threshold for evaluation */
+  float nms_threshold = 0.f;
+
+  /** When true, use NMS only on the most confident class otherwise across all classes. */
+  bool use_most_confident_class = false;
+};
+
 /**
  * A representation of all the parameters needed to reconstruct a model.
  *
@@ -153,36 +174,14 @@ class Checkpoint {
    * least two outputs, all with the given names. The outputs must be suitable
    * for passing directly into a NonMaximumSuppression model.
    */
-  virtual neural_net::pipeline_spec ExportToCoreML(
-      const std::string& input_name, const std::string& coordinates_output_name,
-      const std::string& confidence_output_name) const = 0;
+  virtual neural_net::pipeline_spec ExportToCoreML(const std::string& input_name,
+                                                   const std::string& coordinates_name,
+                                                   const std::string& confidence_name,
+                                                   bool use_nms_layer, float iou_threshold,
+                                                   float confidence_threshold) const = 0;
 
-  /**
-   * Returns the number of predictions for the loaded model.
-   */
-  virtual size_t GetNumberOfPredictions() const = 0;
-
-  /**
-   * Returns the model type name for use in exported models.
-   */
-  virtual std::string GetModelType() const = 0;
-
-  /**
-   * Returns the confidence threshold for evaluation
-   */
-  virtual float GetEvaluateConfidence() const = 0;
-
-  /**
-   * Returns the confidence threshold for prediction
-   */
-  virtual float GetPredictConfidence() const = 0;
-
-  /**
-   * Returns the Non Maximal Suppression threshold for evaluation
-   */
-  virtual float GetNonMaximumSuppressionThreshold() const = 0;
+  virtual CheckpointMetadata GetCheckpointMetadata() const = 0;
 };
-
 /**
  * Wrapper adapting object_detection::data_iterator to the Iterator interface.
  */

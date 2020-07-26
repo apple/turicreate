@@ -38,6 +38,7 @@ using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkImageScaler;
 using CoreML::Specification::NeuralNetworkLayer;
 using CoreML::Specification::NeuralNetworkPreprocessing;
+using CoreML::Specification::NonMaximumSuppressionLayerParams;
 using CoreML::Specification::PaddingLayerParams;
 using CoreML::Specification::PaddingLayerParams_PaddingConstant;
 using CoreML::Specification::Pipeline;
@@ -45,6 +46,7 @@ using CoreML::Specification::PoolingLayerParams;
 using CoreML::Specification::ReshapeDynamicLayerParams;
 using CoreML::Specification::ReshapeStaticLayerParams;
 using CoreML::Specification::SamePadding;
+using CoreML::Specification::SliceDynamicLayerParams;
 using CoreML::Specification::SplitNDLayerParams;
 using CoreML::Specification::SqueezeLayerParams;
 using CoreML::Specification::TransposeLayerParams;
@@ -105,7 +107,7 @@ void update_weight_params(const std::string& name, const float_array& value, Wei
   }
 
   Span<const float> out(value.data(), value.size());
-
+  weights->mutable_floatvalue()->begin();
 #ifdef TURI_USE_FLOAT16
 
   if (use_quantization && is_convertible_to_fp16(out)) {
@@ -1113,13 +1115,13 @@ void model_spec::add_expand_dims(const std::string& name,
   layer->set_name(name);
   layer->add_input(input);
   auto* inputTensor = layer->add_inputtensor();
-  inputTensor->set_rank(static_cast<unsigned>(inputVector.size()));
+  inputTensor->set_rank(inputVector.size());
   for (size_t i = 0; i < inputVector.size(); ++i) {
     inputTensor->add_dimvalue(inputVector[i]);
   }
   layer->add_output(name);
   auto* outputTensor = layer->add_outputtensor();
-  outputTensor->set_rank(static_cast<unsigned>(outputVector.size()));
+  outputTensor->set_rank(outputVector.size());
   for (size_t i = 0; i < outputVector.size(); ++i) {
     outputTensor->add_dimvalue(outputVector[i]);
   }
@@ -1137,13 +1139,13 @@ void model_spec::add_squeeze(const std::string& name, const std::string& input,
   layer->set_name(name);
   layer->add_input(input);
   auto* inputTensor = layer->add_inputtensor();
-  inputTensor->set_rank(static_cast<unsigned>(inputVector.size()));
+  inputTensor->set_rank(inputVector.size());
   for (size_t i = 0; i < inputVector.size(); ++i) {
     inputTensor->add_dimvalue(inputVector[i]);
   }
   layer->add_output(name);
   auto* outputTensor = layer->add_outputtensor();
-  outputTensor->set_rank(static_cast<unsigned>(outputVector.size()));
+  outputTensor->set_rank(outputVector.size());
   for (size_t i = 0; i < outputVector.size(); ++i) {
     outputTensor->add_dimvalue(outputVector[i]);
   }
@@ -1198,6 +1200,37 @@ void model_spec::add_get_shape(const std::string& name,
   layer->add_input(input);
   layer->add_output(name);
   layer->mutable_getshape();
+}
+
+void model_spec::add_nms_layer(const std::string& name, const std::vector<std::string>& inputs,
+                               const std::vector<std::string>& outputs, float iou_threshold,
+                               float confidence_threshold, size_t max_boxes,
+                               bool per_class_supression)
+{
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  for (const std::string& output : outputs) {
+    layer->add_output(output);
+  }
+  NonMaximumSuppressionLayerParams* nms_params = layer->mutable_nonmaximumsuppression();
+  nms_params->set_iouthreshold(iou_threshold);
+  nms_params->set_scorethreshold(confidence_threshold);
+  nms_params->set_maxboxes(static_cast<::_tc_google::protobuf::uint64>(max_boxes));
+  nms_params->set_perclasssuppression(per_class_supression);
+}
+
+void model_spec::add_slice_dynamic(const std::string& name, const std::vector<std::string>& inputs)
+{
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+  layer->mutable_slicedynamic();
 }
 
 pipeline_spec::pipeline_spec(std::unique_ptr<Pipeline> impl)
