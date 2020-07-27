@@ -52,13 +52,12 @@ BOOST_AUTO_TEST_CASE(test_object_detector_export_coreml_with_nms) {
 
     flex_list t_class_labels =
         flex_list(test_class_labels.begin(), test_class_labels.end());
-    std::shared_ptr<coreml::MLModelWrapper> model_wrapper =
-        export_object_detector_model(
-            neural_net::pipeline_spec(std::move(model_to_export)),
-            test_class_labels.size(), 13 * 13 * 15, std::move(t_class_labels),
-            test_confidence_threshold, test_iou_threshold,
-            /* include_non_maximum_suppression */ true,
-            /* use_nms_layer */ false);
+    std::shared_ptr<coreml::MLModelWrapper> model_wrapper = export_object_detector_model(
+        neural_net::pipeline_spec(std::move(model_to_export)), test_class_labels.size(),
+        13 * 13 * 15, std::move(t_class_labels), test_confidence_threshold, test_iou_threshold,
+        /* include_non_maximum_suppression */ true,
+        /* use_nms_layer */ false,
+        /* use_most_confident_class*/ false);
     std::shared_ptr<CoreML::Model> c_model = model_wrapper->coreml_model();
     auto p_model = c_model->getProto();
 
