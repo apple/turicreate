@@ -128,6 +128,10 @@ if(APPLE)
   if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.15)
     add_definitions(-DHAS_MACOS_10_15)
   endif()
+
+  if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.16)
+    add_definitions(-DHAS_MACOS_10_16)
+  endif()
 endif() 
 
 endmacro()

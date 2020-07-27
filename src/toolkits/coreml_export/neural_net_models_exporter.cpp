@@ -272,7 +272,10 @@ void set_threshold_array_feature(FeatureDescription* feature_desc, std::string n
   for (size_t s : shape) {
     array->add_shape(s);
   }
-  // array->set_doubledefaultvalue(value);
+
+#ifdef HAS_MACOS_10_16
+  array->set_doubledefaultvalue(value);
+#endif
 }
 
 void set_array_feature(FeatureDescription* feature_desc, std::string name,
