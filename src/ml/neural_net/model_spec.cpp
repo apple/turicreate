@@ -107,7 +107,7 @@ void update_weight_params(const std::string& name, const float_array& value, Wei
   }
 
   Span<const float> out(value.data(), value.size());
-  weights->mutable_floatvalue()->begin();
+  
 #ifdef TURI_USE_FLOAT16
 
   if (use_quantization && is_convertible_to_fp16(out)) {
