@@ -1115,13 +1115,13 @@ void model_spec::add_expand_dims(const std::string& name,
   layer->set_name(name);
   layer->add_input(input);
   auto* inputTensor = layer->add_inputtensor();
-  inputTensor->set_rank(inputVector.size());
+  inputTensor->set_rank(static_cast<unsigned>(inputVector.size()));
   for (size_t i = 0; i < inputVector.size(); ++i) {
     inputTensor->add_dimvalue(inputVector[i]);
   }
   layer->add_output(name);
   auto* outputTensor = layer->add_outputtensor();
-  outputTensor->set_rank(outputVector.size());
+  outputTensor->set_rank(static_cast<unsigned>(outputVector.size()));
   for (size_t i = 0; i < outputVector.size(); ++i) {
     outputTensor->add_dimvalue(outputVector[i]);
   }
@@ -1139,13 +1139,13 @@ void model_spec::add_squeeze(const std::string& name, const std::string& input,
   layer->set_name(name);
   layer->add_input(input);
   auto* inputTensor = layer->add_inputtensor();
-  inputTensor->set_rank(inputVector.size());
+  inputTensor->set_rank(static_cast<unsigned>(inputVector.size()));
   for (size_t i = 0; i < inputVector.size(); ++i) {
     inputTensor->add_dimvalue(inputVector[i]);
   }
   layer->add_output(name);
   auto* outputTensor = layer->add_outputtensor();
-  outputTensor->set_rank(outputVector.size());
+  outputTensor->set_rank(static_cast<unsigned>(outputVector.size()));
   for (size_t i = 0; i < outputVector.size(); ++i) {
     outputTensor->add_dimvalue(outputVector[i]);
   }
