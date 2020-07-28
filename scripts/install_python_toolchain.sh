@@ -6,7 +6,8 @@ if [[ -z $VIRTUALENV ]]; then
   VIRTUALENV=virtualenv
 fi
 
-$VIRTUALENV "$(pwd)"/deps/env
+DEPS_ENV_FOLDER="$(pwd)"/deps/env
+$VIRTUALENV $DEPS_ENV_FOLDER
 source deps/env/bin/activate
 
 PYTHON="${PWD}/deps/env/bin/python"
@@ -14,6 +15,7 @@ PIP="${PYTHON} -m pip"
 
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
 PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
+PYTHON_INCLUDE_DIR=$(${PYTHON} -c 'from sysconfig import get_paths as gp; print("/".join(gp()["include"].split("/")[:-1]))')
 PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
 
 # TODO - not sure why 'm' is necessary here (and not in 2.7)
@@ -23,6 +25,22 @@ if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
   PYTHON_FULL_NAME=python2.7
 fi
 
+# For robustness on different system, different installations,
+# actually locate Python.h before setting it as an include
+#
+# Recursively find Python.h and then parse the include directory
+PYTHON_HEADER_PATH=$(find ${PYTHON_INCLUDE_DIR} -name "python*" | head -n 1)
+PYTHON_PATH=${PYTHON_HEADER_PATH%include/*}
+PYTHON_INCLUDE_PATH="${PYTHON_PATH}include/python*"
+
+if [[ ${PYTHON_MAJOR_VERSION} -ge 3  && ${PYTHON_MINOR_VERSION} -gt 5 ]]; then
+  DEPS_INCLUDE_FOLDER="$DEPS_ENV_FOLDER"/include
+  if [[ ${DEPS_INCLUDE_FOLDER} != ${PYTHON_INCLUDE_DIR} ]]; then
+    rm -rf $DEPS_INCLUDE_FOLDER
+    mkdir -p $DEPS_INCLUDE_FOLDER
+    cp -r $PYTHON_INCLUDE_PATH $DEPS_INCLUDE_FOLDER
+  fi
+fi
 
 function linux_patch_sigfpe_handler {
   if [[ $OSTYPE == linux* ]]; then
