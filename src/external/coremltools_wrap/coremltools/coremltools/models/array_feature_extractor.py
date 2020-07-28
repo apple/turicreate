@@ -12,24 +12,24 @@ from ..proto import FeatureTypes_pb2 as _FeatureTypes_pb2
 from ._interface_management import set_transform_interface_params
 
 
-
-def create_array_feature_extractor(input_features, output_name, extract_indices, 
-                                   output_type = None): 
+def create_array_feature_extractor(
+    input_features, output_name, extract_indices, output_type=None
+):
     """
     Creates a feature extractor from an input array feature, return
 
-    input_features is a list of one (name, array) tuple. 
+    input_features is a list of one (name, array) tuple.
 
-    extract_indices is either an integer or a list.  If it's an integer, 
+    extract_indices is either an integer or a list.  If it's an integer,
     the output type is by default a double (but may also be an integer).
-    If a list, the output type is an array. 
+    If a list, the output type is an array.
     """
 
     # Make sure that our starting stuff is in the proper form.
     assert len(input_features) == 1
     assert isinstance(input_features[0][1], datatypes.Array)
 
-    # Create the model. 
+    # Create the model.
     spec = _Model_pb2.Model()
     spec.specificationVersion = SPECIFICATION_VERSION
 
@@ -56,6 +56,4 @@ def create_array_feature_extractor(input_features, output_name, extract_indices,
 
     set_transform_interface_params(spec, input_features, output_features)
 
-    return spec    
-
-
+    return spec

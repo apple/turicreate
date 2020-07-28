@@ -18,7 +18,7 @@ feature engineering model types, and predictive model types.
     sections/TextClassifier.rst
     sections/Gazetteer.rst
     sections/WordEmbedding.rst
-    
+
     sections/WordTagger.rst
     sections/VisionFeaturePrint.rst
     sections/TreeEnsembles.rst

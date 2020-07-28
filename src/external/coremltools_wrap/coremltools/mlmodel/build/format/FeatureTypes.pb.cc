@@ -45,6 +45,9 @@ class ArrayFeatureTypeDefaultTypeInternal : public ::google::protobuf::internal:
   public:
   const ::CoreML::Specification::ArrayFeatureType_EnumeratedShapes* enumeratedshapes_;
   const ::CoreML::Specification::ArrayFeatureType_ShapeRange* shaperange_;
+  ::google::protobuf::int32 intdefaultvalue_;
+  float floatdefaultvalue_;
+  double doubledefaultvalue_;
 } _ArrayFeatureType_default_instance_;
 class DictionaryFeatureTypeDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<DictionaryFeatureType> {
   public:
@@ -2816,6 +2819,9 @@ const int ArrayFeatureType::kShapeFieldNumber;
 const int ArrayFeatureType::kDataTypeFieldNumber;
 const int ArrayFeatureType::kEnumeratedShapesFieldNumber;
 const int ArrayFeatureType::kShapeRangeFieldNumber;
+const int ArrayFeatureType::kIntDefaultValueFieldNumber;
+const int ArrayFeatureType::kFloatDefaultValueFieldNumber;
+const int ArrayFeatureType::kDoubleDefaultValueFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 ArrayFeatureType::ArrayFeatureType()
@@ -2847,12 +2853,31 @@ ArrayFeatureType::ArrayFeatureType(const ArrayFeatureType& from)
       break;
     }
   }
+  clear_has_defaultOptionalValue();
+  switch (from.defaultOptionalValue_case()) {
+    case kIntDefaultValue: {
+      set_intdefaultvalue(from.intdefaultvalue());
+      break;
+    }
+    case kFloatDefaultValue: {
+      set_floatdefaultvalue(from.floatdefaultvalue());
+      break;
+    }
+    case kDoubleDefaultValue: {
+      set_doubledefaultvalue(from.doubledefaultvalue());
+      break;
+    }
+    case DEFAULTOPTIONALVALUE_NOT_SET: {
+      break;
+    }
+  }
   // @@protoc_insertion_point(copy_constructor:CoreML.Specification.ArrayFeatureType)
 }
 
 void ArrayFeatureType::SharedCtor() {
   datatype_ = 0;
   clear_has_ShapeFlexibility();
+  clear_has_defaultOptionalValue();
   _cached_size_ = 0;
 }
 
@@ -2864,6 +2889,9 @@ ArrayFeatureType::~ArrayFeatureType() {
 void ArrayFeatureType::SharedDtor() {
   if (has_ShapeFlexibility()) {
     clear_ShapeFlexibility();
+  }
+  if (has_defaultOptionalValue()) {
+    clear_defaultOptionalValue();
   }
 }
 
@@ -2903,12 +2931,35 @@ void ArrayFeatureType::clear_ShapeFlexibility() {
   _oneof_case_[0] = SHAPEFLEXIBILITY_NOT_SET;
 }
 
+void ArrayFeatureType::clear_defaultOptionalValue() {
+// @@protoc_insertion_point(one_of_clear_start:CoreML.Specification.ArrayFeatureType)
+  switch (defaultOptionalValue_case()) {
+    case kIntDefaultValue: {
+      // No need to clear
+      break;
+    }
+    case kFloatDefaultValue: {
+      // No need to clear
+      break;
+    }
+    case kDoubleDefaultValue: {
+      // No need to clear
+      break;
+    }
+    case DEFAULTOPTIONALVALUE_NOT_SET: {
+      break;
+    }
+  }
+  _oneof_case_[1] = DEFAULTOPTIONALVALUE_NOT_SET;
+}
+
 
 void ArrayFeatureType::Clear() {
 // @@protoc_insertion_point(message_clear_start:CoreML.Specification.ArrayFeatureType)
   shape_.Clear();
   datatype_ = 0;
   clear_ShapeFlexibility();
+  clear_defaultOptionalValue();
 }
 
 bool ArrayFeatureType::MergePartialFromCodedStream(
@@ -2978,6 +3029,51 @@ bool ArrayFeatureType::MergePartialFromCodedStream(
         break;
       }
 
+      // int32 intDefaultValue = 41;
+      case 41: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(328u)) {
+          clear_defaultOptionalValue();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int32, ::google::protobuf::internal::WireFormatLite::TYPE_INT32>(
+                 input, &defaultOptionalValue_.intdefaultvalue_)));
+          set_has_intdefaultvalue();
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // float floatDefaultValue = 51;
+      case 51: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(413u)) {
+          clear_defaultOptionalValue();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   float, ::google::protobuf::internal::WireFormatLite::TYPE_FLOAT>(
+                 input, &defaultOptionalValue_.floatdefaultvalue_)));
+          set_has_floatdefaultvalue();
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // double doubleDefaultValue = 61;
+      case 61: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(489u)) {
+          clear_defaultOptionalValue();
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   double, ::google::protobuf::internal::WireFormatLite::TYPE_DOUBLE>(
+                 input, &defaultOptionalValue_.doubledefaultvalue_)));
+          set_has_doubledefaultvalue();
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0 ||
@@ -3033,6 +3129,21 @@ void ArrayFeatureType::SerializeWithCachedSizes(
       31, *ShapeFlexibility_.shaperange_, output);
   }
 
+  // int32 intDefaultValue = 41;
+  if (has_intdefaultvalue()) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt32(41, this->intdefaultvalue(), output);
+  }
+
+  // float floatDefaultValue = 51;
+  if (has_floatdefaultvalue()) {
+    ::google::protobuf::internal::WireFormatLite::WriteFloat(51, this->floatdefaultvalue(), output);
+  }
+
+  // double doubleDefaultValue = 61;
+  if (has_doubledefaultvalue()) {
+    ::google::protobuf::internal::WireFormatLite::WriteDouble(61, this->doubledefaultvalue(), output);
+  }
+
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.ArrayFeatureType)
 }
 
@@ -3080,6 +3191,28 @@ size_t ArrayFeatureType::ByteSizeLong() const {
       break;
     }
   }
+  switch (defaultOptionalValue_case()) {
+    // int32 intDefaultValue = 41;
+    case kIntDefaultValue: {
+      total_size += 2 +
+        ::google::protobuf::internal::WireFormatLite::Int32Size(
+          this->intdefaultvalue());
+      break;
+    }
+    // float floatDefaultValue = 51;
+    case kFloatDefaultValue: {
+      total_size += 2 + 4;
+      break;
+    }
+    // double doubleDefaultValue = 61;
+    case kDoubleDefaultValue: {
+      total_size += 2 + 8;
+      break;
+    }
+    case DEFAULTOPTIONALVALUE_NOT_SET: {
+      break;
+    }
+  }
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
   GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
   _cached_size_ = cached_size;
@@ -3116,6 +3249,23 @@ void ArrayFeatureType::MergeFrom(const ArrayFeatureType& from) {
       break;
     }
   }
+  switch (from.defaultOptionalValue_case()) {
+    case kIntDefaultValue: {
+      set_intdefaultvalue(from.intdefaultvalue());
+      break;
+    }
+    case kFloatDefaultValue: {
+      set_floatdefaultvalue(from.floatdefaultvalue());
+      break;
+    }
+    case kDoubleDefaultValue: {
+      set_doubledefaultvalue(from.doubledefaultvalue());
+      break;
+    }
+    case DEFAULTOPTIONALVALUE_NOT_SET: {
+      break;
+    }
+  }
 }
 
 void ArrayFeatureType::CopyFrom(const ArrayFeatureType& from) {
@@ -3138,6 +3288,8 @@ void ArrayFeatureType::InternalSwap(ArrayFeatureType* other) {
   std::swap(datatype_, other->datatype_);
   std::swap(ShapeFlexibility_, other->ShapeFlexibility_);
   std::swap(_oneof_case_[0], other->_oneof_case_[0]);
+  std::swap(defaultOptionalValue_, other->defaultOptionalValue_);
+  std::swap(_oneof_case_[1], other->_oneof_case_[1]);
   std::swap(_cached_size_, other->_cached_size_);
 }
 
@@ -3288,14 +3440,110 @@ void ArrayFeatureType::set_allocated_shaperange(::CoreML::Specification::ArrayFe
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ArrayFeatureType.shapeRange)
 }
 
+// int32 intDefaultValue = 41;
+bool ArrayFeatureType::has_intdefaultvalue() const {
+  return defaultOptionalValue_case() == kIntDefaultValue;
+}
+void ArrayFeatureType::set_has_intdefaultvalue() {
+  _oneof_case_[1] = kIntDefaultValue;
+}
+void ArrayFeatureType::clear_intdefaultvalue() {
+  if (has_intdefaultvalue()) {
+    defaultOptionalValue_.intdefaultvalue_ = 0;
+    clear_has_defaultOptionalValue();
+  }
+}
+::google::protobuf::int32 ArrayFeatureType::intdefaultvalue() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.intDefaultValue)
+  if (has_intdefaultvalue()) {
+    return defaultOptionalValue_.intdefaultvalue_;
+  }
+  return 0;
+}
+void ArrayFeatureType::set_intdefaultvalue(::google::protobuf::int32 value) {
+  if (!has_intdefaultvalue()) {
+    clear_defaultOptionalValue();
+    set_has_intdefaultvalue();
+  }
+  defaultOptionalValue_.intdefaultvalue_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.ArrayFeatureType.intDefaultValue)
+}
+
+// float floatDefaultValue = 51;
+bool ArrayFeatureType::has_floatdefaultvalue() const {
+  return defaultOptionalValue_case() == kFloatDefaultValue;
+}
+void ArrayFeatureType::set_has_floatdefaultvalue() {
+  _oneof_case_[1] = kFloatDefaultValue;
+}
+void ArrayFeatureType::clear_floatdefaultvalue() {
+  if (has_floatdefaultvalue()) {
+    defaultOptionalValue_.floatdefaultvalue_ = 0;
+    clear_has_defaultOptionalValue();
+  }
+}
+float ArrayFeatureType::floatdefaultvalue() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.floatDefaultValue)
+  if (has_floatdefaultvalue()) {
+    return defaultOptionalValue_.floatdefaultvalue_;
+  }
+  return 0;
+}
+void ArrayFeatureType::set_floatdefaultvalue(float value) {
+  if (!has_floatdefaultvalue()) {
+    clear_defaultOptionalValue();
+    set_has_floatdefaultvalue();
+  }
+  defaultOptionalValue_.floatdefaultvalue_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.ArrayFeatureType.floatDefaultValue)
+}
+
+// double doubleDefaultValue = 61;
+bool ArrayFeatureType::has_doubledefaultvalue() const {
+  return defaultOptionalValue_case() == kDoubleDefaultValue;
+}
+void ArrayFeatureType::set_has_doubledefaultvalue() {
+  _oneof_case_[1] = kDoubleDefaultValue;
+}
+void ArrayFeatureType::clear_doubledefaultvalue() {
+  if (has_doubledefaultvalue()) {
+    defaultOptionalValue_.doubledefaultvalue_ = 0;
+    clear_has_defaultOptionalValue();
+  }
+}
+double ArrayFeatureType::doubledefaultvalue() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.ArrayFeatureType.doubleDefaultValue)
+  if (has_doubledefaultvalue()) {
+    return defaultOptionalValue_.doubledefaultvalue_;
+  }
+  return 0;
+}
+void ArrayFeatureType::set_doubledefaultvalue(double value) {
+  if (!has_doubledefaultvalue()) {
+    clear_defaultOptionalValue();
+    set_has_doubledefaultvalue();
+  }
+  defaultOptionalValue_.doubledefaultvalue_ = value;
+  // @@protoc_insertion_point(field_set:CoreML.Specification.ArrayFeatureType.doubleDefaultValue)
+}
+
 bool ArrayFeatureType::has_ShapeFlexibility() const {
   return ShapeFlexibility_case() != SHAPEFLEXIBILITY_NOT_SET;
 }
 void ArrayFeatureType::clear_has_ShapeFlexibility() {
   _oneof_case_[0] = SHAPEFLEXIBILITY_NOT_SET;
 }
+bool ArrayFeatureType::has_defaultOptionalValue() const {
+  return defaultOptionalValue_case() != DEFAULTOPTIONALVALUE_NOT_SET;
+}
+void ArrayFeatureType::clear_has_defaultOptionalValue() {
+  _oneof_case_[1] = DEFAULTOPTIONALVALUE_NOT_SET;
+}
 ArrayFeatureType::ShapeFlexibilityCase ArrayFeatureType::ShapeFlexibility_case() const {
   return ArrayFeatureType::ShapeFlexibilityCase(_oneof_case_[0]);
+}
+ArrayFeatureType::DefaultOptionalValueCase ArrayFeatureType::defaultOptionalValue_case() const {
+  return ArrayFeatureType::DefaultOptionalValueCase(_oneof_case_[1]);
 }
 #endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
 

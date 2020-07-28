@@ -3,15 +3,14 @@
 # Use of this source code is governed by a BSD-3-clause license that can be
 # found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
-from ... import SPECIFICATION_VERSION
-
 from ...proto import FeatureTypes_pb2
 from .. import datatypes
 
 import coremltools
 
-import numpy as np
+import numpy as _np
 import six as _six
+
 
 class KNearestNeighborsClassifierBuilder(object):
     """
@@ -41,27 +40,34 @@ class KNearestNeighborsClassifierBuilder(object):
     MLModel, save_spec
     """
 
-    _VALID_INDEX_TYPES = ['linear', 'kd_tree']
+    _VALID_INDEX_TYPES = ["linear", "kd_tree"]
 
-    _VALID_WEIGHTING_SCHEMES = ['uniform', 'inverse_distance']
+    _VALID_WEIGHTING_SCHEMES = ["uniform", "inverse_distance"]
 
-    _VALID_DISTANCE_METRICS = ['squared_euclidean']
+    _VALID_DISTANCE_METRICS = ["squared_euclidean"]
 
     # Optional parameter keys for constructor
-    _PARAMETER_KEY_NUMBER_OF_NEIGHBORS = 'number_of_neighbors'
-    _PARAMETER_KEY_WEIGHTING_SCHEME = 'weighting_scheme'
-    _PARAMETER_KEY_INDEX_TYPE = 'index_type'
-    _PARAMETER_KEY_LEAF_SIZE = 'leaf_size'
-    _PARAMETER_KEY_INPUT_TYPE = 'input_type'
+    _PARAMETER_KEY_NUMBER_OF_NEIGHBORS = "number_of_neighbors"
+    _PARAMETER_KEY_WEIGHTING_SCHEME = "weighting_scheme"
+    _PARAMETER_KEY_INDEX_TYPE = "index_type"
+    _PARAMETER_KEY_LEAF_SIZE = "leaf_size"
+    _PARAMETER_KEY_INPUT_TYPE = "input_type"
 
     # Optional parameter default values
     _PARAMETER_DEFAULT_NUMBER_OF_NEIGHBORS = 5
-    _PARAMETER_DEFAULT_WEIGHTING_SCHEME = 'uniform'
-    _PARAMETER_DEFAULT_INDEX_TYPE = 'linear'
+    _PARAMETER_DEFAULT_WEIGHTING_SCHEME = "uniform"
+    _PARAMETER_DEFAULT_INDEX_TYPE = "linear"
     _PARAMETER_DEFAULT_LEAF_SIZE = 30
-    _PARAMETER_DEFAULT_INPUT_TYPE = 'NotSpecified'
+    _PARAMETER_DEFAULT_INPUT_TYPE = "NotSpecified"
 
-    def __init__(self, input_name, output_name, number_of_dimensions, default_class_label, **kwargs):
+    def __init__(
+        self,
+        input_name,
+        output_name,
+        number_of_dimensions,
+        default_class_label,
+        **kwargs
+    ):
         """
         Create a KNearestNeighborsClassifierBuilder object.
         :param input_name: Name of the model input
@@ -76,16 +82,22 @@ class KNearestNeighborsClassifierBuilder(object):
         super(KNearestNeighborsClassifierBuilder, self).__init__()
 
         self.spec = coremltools.proto.Model_pb2.Model()
-        self.spec.specificationVersion = coremltools._MINIMUM_NEAREST_NEIGHBORS_SPEC_VERSION
+        self.spec.specificationVersion = (
+            coremltools._MINIMUM_NEAREST_NEIGHBORS_SPEC_VERSION
+        )
 
         # the model is initially empty - assume it's updatable
         self.is_updatable = True
 
         if number_of_dimensions <= 0:
-            raise ValueError('number_of_dimensions must be >= 0')
-        self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.numberOfDimensions = number_of_dimensions
+            raise ValueError("number_of_dimensions must be >= 0")
+        self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.numberOfDimensions = (
+            number_of_dimensions
+        )
 
-        input_type = kwargs.get(self._PARAMETER_KEY_INPUT_TYPE, self._PARAMETER_DEFAULT_INPUT_TYPE)
+        input_type = kwargs.get(
+            self._PARAMETER_KEY_INPUT_TYPE, self._PARAMETER_DEFAULT_INPUT_TYPE
+        )
         input_feature_type = FeatureTypes_pb2.ArrayFeatureType.FLOAT32
         if input_type == datatypes.Double:
             input_feature_type = FeatureTypes_pb2.ArrayFeatureType.DOUBLE
@@ -103,40 +115,61 @@ class KNearestNeighborsClassifierBuilder(object):
         output_label = self.spec.description.output.add()
         output_label.name = output_name
         output_label_probs = self.spec.description.output.add()
-        output_label_probs.name = output_name + 'Probs'
+        output_label_probs.name = output_name + "Probs"
         training_features = self.spec.description.trainingInput.add()
         training_features.name = output_name
 
         if self._is_valid_text_type(default_class_label):
-            output_label.type.stringType.MergeFromString(b'')
-            training_features.type.stringType.MergeFromString(b'')
-            output_label_probs.type.dictionaryType.stringKeyType.MergeFromString(b'')
-            self.spec.kNearestNeighborsClassifier.stringClassLabels.MergeFromString(b'')
-            self.spec.kNearestNeighborsClassifier.defaultStringLabel = default_class_label
+            output_label.type.stringType.MergeFromString(b"")
+            training_features.type.stringType.MergeFromString(b"")
+            output_label_probs.type.dictionaryType.stringKeyType.MergeFromString(b"")
+            self.spec.kNearestNeighborsClassifier.stringClassLabels.MergeFromString(b"")
+            self.spec.kNearestNeighborsClassifier.defaultStringLabel = (
+                default_class_label
+            )
         elif self._is_valid_number_type(default_class_label):
-            output_label.type.int64Type.MergeFromString(b'')
-            training_features.type.int64Type.MergeFromString(b'')
-            output_label_probs.type.dictionaryType.int64KeyType.MergeFromString(b'')
-            self.spec.kNearestNeighborsClassifier.int64ClassLabels.MergeFromString(b'')
-            self.spec.kNearestNeighborsClassifier.defaultInt64Label = default_class_label
+            output_label.type.int64Type.MergeFromString(b"")
+            training_features.type.int64Type.MergeFromString(b"")
+            output_label_probs.type.dictionaryType.int64KeyType.MergeFromString(b"")
+            self.spec.kNearestNeighborsClassifier.int64ClassLabels.MergeFromString(b"")
+            self.spec.kNearestNeighborsClassifier.defaultInt64Label = (
+                default_class_label
+            )
         else:
-            raise TypeError('default_class_label type ({}) is invalid. Must be either string or int64'.format(type(default_class_label)))
+            raise TypeError(
+                "default_class_label type ({}) is invalid. Must be either string or int64".format(
+                    type(default_class_label)
+                )
+            )
 
         self.spec.description.predictedFeatureName = output_label.name
         self.spec.description.predictedProbabilitiesName = output_label_probs.name
 
-        number_of_neighbors = kwargs.get(self._PARAMETER_KEY_NUMBER_OF_NEIGHBORS,
-                                         self._PARAMETER_DEFAULT_NUMBER_OF_NEIGHBORS)
-        self.set_number_of_neighbors_with_bounds(number_of_neighbors, allowed_range=(1, 1000)) # Can we think of a more sensible default value?
+        number_of_neighbors = kwargs.get(
+            self._PARAMETER_KEY_NUMBER_OF_NEIGHBORS,
+            self._PARAMETER_DEFAULT_NUMBER_OF_NEIGHBORS,
+        )
+        self.set_number_of_neighbors_with_bounds(
+            number_of_neighbors, allowed_range=(1, 1000)
+        )  # Can we think of a more sensible default value?
 
-        self.weighting_scheme = kwargs.get(self._PARAMETER_KEY_WEIGHTING_SCHEME, self._PARAMETER_DEFAULT_WEIGHTING_SCHEME)
+        self.weighting_scheme = kwargs.get(
+            self._PARAMETER_KEY_WEIGHTING_SCHEME,
+            self._PARAMETER_DEFAULT_WEIGHTING_SCHEME,
+        )
 
-        index_type = kwargs.get(self._PARAMETER_KEY_INDEX_TYPE, self._PARAMETER_DEFAULT_INDEX_TYPE)
-        leaf_size = kwargs.get(self._PARAMETER_KEY_LEAF_SIZE, self._PARAMETER_DEFAULT_LEAF_SIZE)
+        index_type = kwargs.get(
+            self._PARAMETER_KEY_INDEX_TYPE, self._PARAMETER_DEFAULT_INDEX_TYPE
+        )
+        leaf_size = kwargs.get(
+            self._PARAMETER_KEY_LEAF_SIZE, self._PARAMETER_DEFAULT_LEAF_SIZE
+        )
         self.set_index_type(index_type, leaf_size)
 
         # SED is currently the only supported distance metric
-        self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.squaredEuclideanDistance.MergeFromString(b'')
+        self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.squaredEuclideanDistance.MergeFromString(
+            b""
+        )
 
     @property
     def author(self):
@@ -224,12 +257,14 @@ class KNearestNeighborsClassifierBuilder(object):
         """
         weighting_scheme = weighting_scheme.lower()
         if weighting_scheme not in self._VALID_WEIGHTING_SCHEMES:
-            raise TypeError('Invalid weighting scheme')
+            raise TypeError("Invalid weighting scheme")
 
-        if weighting_scheme == 'inverse_distance':
-            self.spec.kNearestNeighborsClassifier.inverseDistanceWeighting.MergeFromString(b'')
+        if weighting_scheme == "inverse_distance":
+            self.spec.kNearestNeighborsClassifier.inverseDistanceWeighting.MergeFromString(
+                b""
+            )
         else:
-            self.spec.kNearestNeighborsClassifier.uniformWeighting.MergeFromString(b'')
+            self.spec.kNearestNeighborsClassifier.uniformWeighting.MergeFromString(b"")
 
         # storing this in the object is just a convenience
         self._weighting_scheme = weighting_scheme
@@ -251,14 +286,18 @@ class KNearestNeighborsClassifierBuilder(object):
         """
         index_type = index_type.lower()
         if not index_type in self._VALID_INDEX_TYPES:
-            raise TypeError('Invalid index type')
+            raise TypeError("Invalid index type")
 
-        if index_type == 'kd_tree':
+        if index_type == "kd_tree":
             if leaf_size <= 0:
-                raise TypeError('leaf_size must be > 0')
-            self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.singleKdTreeIndex.leafSize = leaf_size
+                raise TypeError("leaf_size must be > 0")
+            self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.singleKdTreeIndex.leafSize = (
+                leaf_size
+            )
         else:
-            self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.linearIndex.MergeFromString(b'')
+            self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.linearIndex.MergeFromString(
+                b""
+            )
 
         # storing this in the object is just a convenience
         self._index_type = index_type
@@ -269,7 +308,9 @@ class KNearestNeighborsClassifierBuilder(object):
         Get the leaf size for the KNearestNeighborsClassifier
         :return: the leaf size
         """
-        return self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.singleKdTreeIndex.leafSize
+        return (
+            self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.singleKdTreeIndex.leafSize
+        )
 
     @leaf_size.setter
     def leaf_size(self, leaf_size):
@@ -279,8 +320,10 @@ class KNearestNeighborsClassifierBuilder(object):
         :return:
         """
         if leaf_size <= 0:
-            raise ValueError('leaf_size must be > 0')
-        self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.singleKdTreeIndex.leafSize = leaf_size
+            raise ValueError("leaf_size must be > 0")
+        self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.singleKdTreeIndex.leafSize = (
+            leaf_size
+        )
 
     @property
     def number_of_dimensions(self):
@@ -288,7 +331,9 @@ class KNearestNeighborsClassifierBuilder(object):
         Get the number of dimensions of the input data for the KNearestNeighborsClassifier model
         :return: number of dimensions
         """
-        return self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.numberOfDimensions
+        return (
+            self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.numberOfDimensions
+        )
 
     @property
     def number_of_neighbors(self):
@@ -298,7 +343,9 @@ class KNearestNeighborsClassifierBuilder(object):
         """
         return self.spec.kNearestNeighborsClassifier.numberOfNeighbors.defaultValue
 
-    def set_number_of_neighbors_with_bounds(self, number_of_neighbors, allowed_range=None, allowed_set=None):
+    def set_number_of_neighbors_with_bounds(
+        self, number_of_neighbors, allowed_range=None, allowed_set=None
+    ):
         """
         Set the numberOfNeighbors parameter for the KNearestNeighborsClassifier model.
         :param allowed_range: tuple of (min_value, max_value) defining the range of allowed values
@@ -306,51 +353,69 @@ class KNearestNeighborsClassifierBuilder(object):
         :return: None
         """
         if number_of_neighbors <= 0:
-            raise ValueError('number_of_neighbors must be > 0')
+            raise ValueError("number_of_neighbors must be > 0")
         if allowed_range is None and allowed_set is None:
-            raise ValueError('Exactly one of allowed_range or allowed_values must be provided')
+            raise ValueError(
+                "Exactly one of allowed_range or allowed_values must be provided"
+            )
         if allowed_range is not None and allowed_set is not None:
-            raise ValueError('Exactly one of allowed_range or allowed_values must be provided')
+            raise ValueError(
+                "Exactly one of allowed_range or allowed_values must be provided"
+            )
 
         if allowed_range is not None:
             if not isinstance(allowed_range, tuple):
-                raise TypeError('allowed_range expects a tuple of (min_value, max_value)')
+                raise TypeError(
+                    "allowed_range expects a tuple of (min_value, max_value)"
+                )
             if len(allowed_range) != 2:
-                raise TypeError('allowed_range expects a tuple of (min_value, max_value)')
+                raise TypeError(
+                    "allowed_range expects a tuple of (min_value, max_value)"
+                )
 
             (min_value, max_value) = allowed_range
             if min_value <= 0:
-                raise ValueError('allowed_range minimum must be > 0')
+                raise ValueError("allowed_range minimum must be > 0")
             if max_value < min_value:
-                raise ValueError('allowed_range max_value must be >= min_value')
+                raise ValueError("allowed_range max_value must be >= min_value")
             if number_of_neighbors < min_value or number_of_neighbors > max_value:
-                raise ValueError('number_of_neighbors is not within allowed range')
+                raise ValueError("number_of_neighbors is not within allowed range")
 
-            self.spec.kNearestNeighborsClassifier.numberOfNeighbors.defaultValue = number_of_neighbors
-            self.spec.kNearestNeighborsClassifier.numberOfNeighbors.range.minValue = min_value
-            self.spec.kNearestNeighborsClassifier.numberOfNeighbors.range.maxValue = max_value
+            self.spec.kNearestNeighborsClassifier.numberOfNeighbors.defaultValue = (
+                number_of_neighbors
+            )
+            self.spec.kNearestNeighborsClassifier.numberOfNeighbors.range.minValue = (
+                min_value
+            )
+            self.spec.kNearestNeighborsClassifier.numberOfNeighbors.range.maxValue = (
+                max_value
+            )
 
         elif allowed_set is not None:
             if not isinstance(allowed_set, set):
-                raise TypeError('allowed_values expects \'set\' type')
+                raise TypeError("allowed_values expects 'set' type")
             if len(allowed_set) == 0:
-                raise TypeError('allowed_values cannot be empty')
+                raise TypeError("allowed_values cannot be empty")
 
             found_match = False
             for v in allowed_set:
                 if not self._is_valid_number_type(v):
-                    raise TypeError('allowed_values must contain only integer types')
+                    raise TypeError("allowed_values must contain only integer types")
                 if v <= 0:
-                    raise TypeError('allowed_values must only contain values > 0')
+                    raise TypeError("allowed_values must only contain values > 0")
                 if number_of_neighbors == v:
                     found_match = True
 
             if found_match:
-                self.spec.kNearestNeighborsClassifier.numberOfNeighbors.defaultValue = number_of_neighbors
+                self.spec.kNearestNeighborsClassifier.numberOfNeighbors.defaultValue = (
+                    number_of_neighbors
+                )
                 for v in allowed_set:
-                    self.spec.kNearestNeighborsClassifier.numberOfNeighbors.set.values.append(v)
+                    self.spec.kNearestNeighborsClassifier.numberOfNeighbors.set.values.append(
+                        v
+                    )
             else:
-                raise ValueError('number_of_neighbors is not a valid value')
+                raise ValueError("number_of_neighbors is not a valid value")
 
     def number_of_neighbors_allowed_range(self):
         """
@@ -358,8 +423,10 @@ class KNearestNeighborsClassifierBuilder(object):
         :return: tuple of (min_value, max_value) or None if the range hasn't been set
         """
         if self.spec.kNearestNeighborsClassifier.numberOfNeighbors.HasField("range"):
-            return (self.spec.kNearestNeighborsClassifier.numberOfNeighbors.range.minValue,
-                    self.spec.kNearestNeighborsClassifier.numberOfNeighbors.range.maxValue)
+            return (
+                self.spec.kNearestNeighborsClassifier.numberOfNeighbors.range.minValue,
+                self.spec.kNearestNeighborsClassifier.numberOfNeighbors.range.maxValue,
+            )
         return None
 
     def number_of_neighbors_allowed_set(self):
@@ -368,7 +435,9 @@ class KNearestNeighborsClassifierBuilder(object):
         :return: set of allowed values or None if the set of allowed values hasn't been populated
         """
         if self.spec.kNearestNeighborsClassifier.numberOfNeighbors.HasField("set"):
-            spec_values = self.spec.kNearestNeighborsClassifier.numberOfNeighbors.set.values
+            spec_values = (
+                self.spec.kNearestNeighborsClassifier.numberOfNeighbors.set.values
+            )
             allowed_values = set()
             for v in spec_values:
                 allowed_values.add(v)
@@ -383,32 +452,40 @@ class KNearestNeighborsClassifierBuilder(object):
         :return: None
         """
         if len(data_points) == 0:
-            raise TypeError('data_points is empty')
+            raise TypeError("data_points is empty")
 
         if len(labels) == 0:
-            raise TypeError('labels is empty')
+            raise TypeError("labels is empty")
 
         if len(data_points[0]) != self.number_of_dimensions:
-            raise TypeError('dimensionality of data_points != expected number of dimensions')
+            raise TypeError(
+                "dimensionality of data_points != expected number of dimensions"
+            )
 
         if len(data_points) != len(labels):
-            raise TypeError('len(data_points) !=  len(labels)')
+            raise TypeError("len(data_points) !=  len(labels)")
 
         # Validate the types of the labels before adding any points.
         self._validate_label_types(labels)
 
         for data_point in data_points:
-            sample = self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.floatSamples.add()
+            sample = (
+                self.spec.kNearestNeighborsClassifier.nearestNeighborsIndex.floatSamples.add()
+            )
             for feature in data_point:
                 sample.vector.append(feature)
 
         if self.spec.kNearestNeighborsClassifier.HasField("int64ClassLabels"):
             for label in labels:
-                self.spec.kNearestNeighborsClassifier.int64ClassLabels.vector.append(label)
+                self.spec.kNearestNeighborsClassifier.int64ClassLabels.vector.append(
+                    label
+                )
         else:
             # string labels
             for label in labels:
-                self.spec.kNearestNeighborsClassifier.stringClassLabels.vector.append(label)
+                self.spec.kNearestNeighborsClassifier.stringClassLabels.vector.append(
+                    label
+                )
 
     def _validate_label_types(self, labels):
         """
@@ -423,7 +500,7 @@ class KNearestNeighborsClassifierBuilder(object):
             check_is_valid = KNearestNeighborsClassifierBuilder._is_valid_text_type
         for label in labels:
             if not check_is_valid(label):
-                raise TypeError('Invalid type for label: {}'.format(type(label)))
+                raise TypeError("Invalid type for label: {}".format(type(label)))
 
     @staticmethod
     def _is_valid_text_type(obj):
@@ -441,4 +518,4 @@ class KNearestNeighborsClassifierBuilder(object):
         :param obj: the object to check
         :return: True if a valid number type, False otherwise
         """
-        return isinstance(obj, (_six.integer_types, np.integer))
+        return isinstance(obj, (_six.integer_types, _np.integer))

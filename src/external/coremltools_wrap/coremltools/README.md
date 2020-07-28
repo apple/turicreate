@@ -1,211 +1,41 @@
-Core ML Community Tools
+[![Build Status](https://img.shields.io/gitlab/pipeline/zach_nation/coremltools/master)](#)
+[![PyPI Release](https://img.shields.io/pypi/v/coremltools.svg)](#)
+[![Python Versions](https://img.shields.io/pypi/pyversions/coremltools.svg)](#)
+
+[Core ML Tools](https://coremltools.readme.io/docs)
 =======================
 
-Core ML community tools contains all supporting tools for Core ML model
-conversion and validation. This includes scikit-learn, LIBSVM, Caffe,
-Keras and XGBoost.
+Core ML is an Apple framework to integrate machine learning models into your
+app. Core ML provides a unified representation for all models. Your app uses
+Core ML APIs and user data to make predictions, and to fine-tune models, all on
+the user’s device. Core ML optimizes on-device performance by leveraging the
+CPU, GPU, and Neural Engine while minimizing its memory footprint and power
+consumption. Running a model strictly on the user’s device removes any need for
+a network connection, which helps keep the user’s data private and your app
+responsive.
 
-coremltools 3.0
----------------
-[Release notes](https://github.com/apple/coremltools/releases/)
+[Core ML tools](https://coremltools.readme.io/docs#what-is-coremltools) contains all supporting tools for [Core ML model
+conversion](https://coremltools.readme.io/docs), editing and validation. This includes deep learning frameworks like
+TensorFlow, PyTorch, Keras, Caffe as well as classical machine learning
+frameworks like LIBSVM, scikit-learn, and XGBoost.
 
+With coremltools, you can do the following:
 
-👍👎 Please take this quick poll and let us know how you liked this release, [here](https://github.com/apple/coremltools/blob/master/release-feedback.md)!
+- [Convert trained models](https://coremltools.readme.io/docs) from frameworks like TensorFlow and PyTorch to the
+  Core ML format.
+- Read, write, and optimize Core ML models.
+- Verify conversion/creation (on macOS) by making predictions using Core ML.
 
-```shell
-# Install using pip
-pip install coremltools==3.0
-```
-
-API
----
-- [Example Code Snippets](docs/APIExamples.md)
-- [coremltools Documentation](https://apple.github.io/coremltools)
-- [Core ML Specification Documentation](https://apple.github.io/coremltools/coremlspecification/)
-- [IPython Notebooks](https://github.com/apple/coremltools/tree/master/examples)
-
-Installation
-------------
-
-We recommend using virtualenv to use, install, or build coremltools. Be
-sure to install virtualenv using your system pip.
+To get the latest version of coremltools:
 
 ```shell
-pip install virtualenv
+pip install coremltools==4.0b2
 ```
 
-The method for installing *coremltools* follows the
-[standard python package installation steps](https://packaging.python.org/installing/).
-To create a Python virtual environment called `pythonenv` follow these steps:
+For the latest changes please see the [release notes](https://github.com/apple/coremltools/releases/).
 
-```shell
-# Create a folder for your virtualenv
-mkdir mlvirtualenv
-cd mlvirtualenv
+# Documentation
 
-# Create a Python virtual environment for your Core ML project
-virtualenv pythonenv
-```
-
-To activate your new virtual environment and install `coremltools` in this environment, follow these steps:
-```
-# Active your virtual environment
-source pythonenv/bin/activate
-
-
-# Install coremltools in the new virtual environment, pythonenv
-(pythonenv) pip install -U coremltools
-```
-
-The package [documentation](https://apple.github.io/coremltools) contains
-more details on how to use coremltools.
-
-Dependencies
-------------
-
-*coremltools* has the following dependencies:
-
-- numpy (1.10.0+)
-- protobuf (3.1.0+)
-
-In addition, it has the following soft dependencies that are only needed when
-you are converting models of these formats:
-
-- Keras (1.2.2, 2.0.4+) with corresponding TensorFlow version
-- XGBoost (0.7+)
-- scikit-learn (0.17+)
-- LIBSVM
-
-
-Building from source
---------------------
-To build the project, you need [CMake](https://cmake.org) to configure the project
-
-```shell
-mkdir build
-cd build
-cmake ../
-```
-
-When several python virtual environments are installed,
-it may be useful to use the following command instead,
-to point to the correct intended version of python:
-
-```shell
-cmake \
-  -DPYTHON_EXECUTABLE:FILEPATH=/Library/Frameworks/Python.framework/Versions/3.7/bin/python \
-  -DPYTHON_INCLUDE_DIR=/Library/Frameworks/Python.framework/Versions/3.7/include/python3.7m/ \
-  -DPYTHON_LIBRARY=/Library/Frameworks/Python.framework/Versions/3.7/lib/ \
-  ../
-```
-after which you can use make to build the project
-
-```shell
-make
-```
-
-Building Installable Wheel
----------------------------
-To make a wheel/egg that you can distribute, you can do the following
-
-```shell
-make dist
-```
-
-Running Unit Tests
--------------------
-In order to run unit tests, you need `pytest`, `pandas`, and `h5py`.
-
-```shell
-pip install pytest pandas h5py
-```
-
-To add a new unit test, add it to the `coremltools/test` folder. Make sure you
-name the file with a 'test' as the prefix.
-
-Additionally, running unit-tests would require more packages (like
-LIBSVM)
-
-```shell
-pip install -r test_requirements.pip
-```
-
-To install LIBSVM
-
-```shell
-git clone https://github.com/cjlin1/libsvm.git
-cd libsvm/
-make
-cd python/
-make
-```
-
-To make sure you can run LIBSVM python bindings everywhere, you need the
-following command, replacing `<LIBSVM_PATH>` with the path to the root of
-your repository.
-
-```shell
-export PYTHONPATH=${PYTHONPATH}:<LIBSVM_PATH>/python
-```
-
-To install XGBoost
-
-```shell
-git clone --recursive https://github.com/dmlc/xgboost
-cd xgboost
-git checkout v0.90
-git submodule update
-make config=make/config.mk -j8
-cd python-package; python setup.py develop
-```
-
-To install Keras (Version >= 2.0)
-
-```shell
-pip install keras tensorflow
-```
-
-If you'd like to use the old Keras version, you can:
-
-```shell
-pip install keras==1.2.2 tensorflow
-```
-
-Finally, to run the most important unit tests, you can use:
-
-```shell
-pytest -rs
-```
-some tests are marked as slow because they test a lot of combinations.
-If you want to run, all tests, you can use:
-
-```shell
-pytest
-```
-
-Building Documentation
-----------------------
-First install all external dependencies.
-
-```shell
-pip install Sphinx==1.8.5 sphinx-rtd-theme==0.4.3 numpydoc==0.9.1
-pip install -e git+git://github.com/michaeljones/sphinx-to-github.git#egg=sphinx-to-github
-```
-
-You also must have the *coremltools* package install, see the *Building* section.
-
-Then from the root of the repository:
-
-```shell
-cd docs
-make html
-open _build/html/index.html
-```
-
-External Tools
---------------
-In addition to the conversion tools in this package, TensorFlow, ONNX, and MXNet have their own conversion tools:
-
-- [TensorFlow](https://pypi.python.org/pypi/tfcoreml)
-- [MXNet](https://github.com/apache/incubator-mxnet/tree/master/tools/coreml)
-- [ONNX](https://github.com/onnx/onnx-coreml)
+* [User Guides and Examples](https://coremltools.readme.io/)
+* [Core ML Specification](https://mlmodel.readme.io/)
+* [API Reference](https://coremltools.readme.io/reference/convertersconvert)

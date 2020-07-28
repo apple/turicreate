@@ -1,12 +1,14 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wexit-time-destructors"
 #pragma clang diagnostic ignored "-Wdocumentation"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #pragma clang diagnostic pop
 
 #import <CoreML/CoreML.h>
-#import "NeuralNetwork/NeuralNetworkShapes.hpp"
+#import "NeuralNetworkBuffer.hpp"
+#import "Validation/NeuralNetwork/NeuralNetworkShapes.hpp"
 
 namespace py = pybind11;
 
@@ -41,6 +43,18 @@ namespace CoreML {
             void print() const;
         };
 
+        // TODO:
+        // Create template class and create instance with respect
+        // to datatypes
+        class NeuralNetworkBufferInformation {
+            private:
+                std::unique_ptr<NNBuffer::NeuralNetworkBuffer> nnBuffer;
 
+            public:
+                NeuralNetworkBufferInformation(const std::string& bufferFilePath, NNBuffer::bufferMode mode);
+                ~NeuralNetworkBufferInformation();
+                std::vector<float> getBuffer(const u_int64_t offset);
+                u_int64_t addBuffer(const std::vector<float>& buffer);
+        };
     }
 }

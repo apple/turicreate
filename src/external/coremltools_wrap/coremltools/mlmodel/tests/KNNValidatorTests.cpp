@@ -65,8 +65,8 @@ namespace CoreML { namespace KNNValidatorTests {
 
         for (size_t i = 0; i < pointCount; i++) {
             nnIndex->add_floatsamples();
-            float *sample = ((std::vector<float>)points[i]).data();
-            for (int j = 0; j < 4; j++) {
+            const auto& sample = points[i];
+            for (size_t j = 0; j < 4; j++) {
                 nnIndex->mutable_floatsamples((int)i)->add_vector(sample[j]);
             }
         }

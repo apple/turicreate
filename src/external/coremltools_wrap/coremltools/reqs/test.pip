@@ -1,0 +1,31 @@
+boto3==1.14.8
+configparser
+Keras==2.1.6; python_version < "3.8"
+Pillow
+h5py
+future
+numpy
+libsvm; python_version >= "3.6"
+olefile==0.44
+onnx==1.6.0; python_version <= "3.7"
+pandas
+pillow
+pytest; python_version < '3.7'
+pytest==5.3.4; python_version >= '3.7'
+pytest-cov
+pytest-sugar
+scikit-learn==0.19.2; python_version <= '3.7'
+scikit-learn; python_version > '3.7'
+scipy
+sympy
+tensorflow==1.14.0; python_version < '3.8'
+torch==1.4.0; python_version == '2.7'
+torch==1.5.0; python_version > '2.7'
+torchvision; python_version == '2.7'
+torchvision==0.6.0; python_version > '2.7'
+xgboost
+mock
+wrapt
+pyyaml
+tqdm
+pytest-timeout

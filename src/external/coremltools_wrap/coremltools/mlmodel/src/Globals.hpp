@@ -27,9 +27,9 @@ namespace CoreML {
     // - New neural network layers (resizeBilinear, cropResize)
     // - <fill in as we develop> ..
     static const int32_t MLMODEL_SPECIFICATION_VERSION_IOS12 = 3;
-    
+
     // Version 4 supports:
-    // - New NN layers, non rank 5 tensors 
+    // - New NN layers, non rank 5 tensors
     // - Updatable models
     // - Exact shape / general rank mapping for neural networks
     // - Large expansion of supported neural network layers
@@ -43,7 +43,13 @@ namespace CoreML {
     // - Linked Model
     static const int32_t MLMODEL_SPECIFICATION_VERSION_IOS13 = 4;
 
-    static const int32_t MLMODEL_SPECIFICATION_VERSION_NEWEST = MLMODEL_SPECIFICATION_VERSION_IOS13;
+    // version 5:
+    // - New NN layers part of the proto message "NeuralNetworkLayer"
+    // - Non-Zero default values for optional inputs in case of Neural Networks
+    // - Float32 input/output for NonmaximumSuppression model
+    static const int32_t MLMODEL_SPECIFICATION_VERSION_IOS14 = 5;
+
+    static const int32_t MLMODEL_SPECIFICATION_VERSION_NEWEST = MLMODEL_SPECIFICATION_VERSION_IOS14;
 
 }
 

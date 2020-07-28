@@ -7,9 +7,9 @@
 //
 
 #include "MLModelTests.hpp"
-#include "../src/Format.hpp"
-#include "../src/Model.hpp"
-#include "../src/NeuralNetwork/NeuralNetworkShapes.hpp"
+#include "Format.hpp"
+#include "Model.hpp"
+#include "Validation/NeuralNetwork/NeuralNetworkShapes.hpp"
 
 #include "framework/TestUtils.hpp"
 

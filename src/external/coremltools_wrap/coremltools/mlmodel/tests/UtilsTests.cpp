@@ -80,3 +80,61 @@ int testSpecDowngradePipeline() {
 
     return 0;
 }
+
+int testWordTaggerTransferLearningSpecIOS14() {
+    Specification::Model spec;
+
+    //initialization
+    spec.set_specificationversion(MLMODEL_SPECIFICATION_VERSION);
+    Specification::ModelDescription* interface = spec.mutable_description();
+    Specification::Metadata* metadata = interface->mutable_metadata();
+    metadata->set_shortdescription(std::string("This is a Word tagger model"));
+
+    auto *input = interface->add_input();
+    input->mutable_type()->mutable_stringtype();
+    input->set_name(std::string("text"));
+
+    auto *output1 = interface->add_output();
+    output1->mutable_type()->mutable_sequencetype()->mutable_stringtype();
+    output1->mutable_type()->mutable_sequencetype()->mutable_sizerange()->set_lowerbound(0);
+    output1->mutable_type()->mutable_sequencetype()->mutable_sizerange()->set_upperbound(10000);
+    output1->set_name(std::string("tags"));
+    auto *output2 = interface->add_output();
+    output2->mutable_type()->mutable_sequencetype()->mutable_int64type();
+    output2->mutable_type()->mutable_sequencetype()->mutable_sizerange()->set_lowerbound(0);
+    output2->mutable_type()->mutable_sequencetype()->mutable_sizerange()->set_upperbound(10000);
+    output2->set_name(std::string("locations"));
+    auto *output3 = interface->add_output();
+    output3->mutable_type()->mutable_sequencetype()->mutable_int64type();
+    output3->mutable_type()->mutable_sequencetype()->mutable_sizerange()->set_lowerbound(0);
+    output3->mutable_type()->mutable_sequencetype()->mutable_sizerange()->set_upperbound(10000);
+    output3->set_name(std::string("lengths"));
+    auto *output4 = interface->add_output();
+    output4->mutable_type()->mutable_sequencetype()->mutable_stringtype();
+    output4->mutable_type()->mutable_sequencetype()->mutable_sizerange()->set_lowerbound(0);
+    output4->mutable_type()->mutable_sequencetype()->mutable_sizerange()->set_upperbound(10000);
+    output4->set_name(std::string("tokens"));
+
+    auto *wordTagger = spec.mutable_wordtagger();
+    wordTagger->set_language(std::string("en-US"));
+    wordTagger->set_tokensoutputfeaturename(std::string("tokens"));
+    wordTagger->set_tokentagsoutputfeaturename(std::string("tags"));
+    wordTagger->set_tokenlocationsoutputfeaturename(std::string("locations"));
+    wordTagger->set_tokenlengthsoutputfeaturename(std::string("lengths"));
+    auto *tags = wordTagger->mutable_stringtags();
+    tags->add_vector("PER");
+    tags->add_vector("LOC");
+    std::string modelData = "This is a dummy model";
+    wordTagger->set_modelparameterdata(modelData);
+    wordTagger->set_revision(3); //transfer learning using revision 3
+
+    // Constructing an CoreML::Model should downgrade spec on load
+    Model model1(spec);
+    ML_ASSERT_EQ(model1.getProto().specificationversion(), MLMODEL_SPECIFICATION_VERSION_IOS14);
+
+    wordTagger->set_revision(1);
+    Model model2(spec);
+    ML_ASSERT_EQ(model2.getProto().specificationversion(), MLMODEL_SPECIFICATION_VERSION_IOS12);
+
+    return 0;
+}

@@ -2,6 +2,7 @@
 #pragma clang diagnostic ignored "-Wexit-time-destructors"
 #pragma clang diagnostic ignored "-Wdocumentation"
 #pragma clang diagnostic ignored "-Wrange-loop-analysis"
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 
 #ifdef check
 #define __old_check check

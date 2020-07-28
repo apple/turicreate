@@ -3,12 +3,15 @@
 # Use of this source code is governed by a BSD-3-clause license that can be
 # found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
+from coremltools import __version__ as ct_version
+from coremltools.models import _METADATA_VERSION, _METADATA_SOURCE
+
 """
 Defines the primary function for converting scikit-learn models.
 """
 
-def convert(sk_obj, input_features = None,
-        output_feature_names = None):
+
+def convert(sk_obj, input_features=None, output_feature_names=None):
     """
     Convert scikit-learn pipeline, classifier, or regressor to Core ML format.
 
@@ -47,12 +50,12 @@ def convert(sk_obj, input_features = None,
 
 
     input_features: str | dict | list
-    
+
         Optional name(s) that can be given to the inputs of the scikit-learn
         model. Defaults to 'input'.
-        
+
         Input features can be specified in a number of forms.
-        
+
         -   Single string: In this case, the input is assumed to be a single
             array, with the number of dimensions set using num_dimensions.
 
@@ -139,12 +142,20 @@ def convert(sk_obj, input_features = None,
     # that sklearn isn't actually imported unless this function is called
     from ...models import MLModel
 
-    # NOTE: Providing user-defined class labels will be enabled when 
+    # NOTE: Providing user-defined class labels will be enabled when
     # several issues with the ordering of the classes are worked out.  For now,
-    # to use custom class labels, directly import the internal function below. 
+    # to use custom class labels, directly import the internal function below.
     from ._converter_internal import _convert_sklearn_model
+
     spec = _convert_sklearn_model(
-            sk_obj, input_features, output_feature_names, class_labels = None)
+        sk_obj, input_features, output_feature_names, class_labels=None
+    )
 
-    return MLModel(spec)
+    model = MLModel(spec)
+    from sklearn import __version__ as sklearn_version
 
+    model.user_defined_metadata[_METADATA_VERSION] = ct_version
+    model.user_defined_metadata[_METADATA_SOURCE] = "scikit-learn=={0}".format(
+        sklearn_version
+    )
+    return model

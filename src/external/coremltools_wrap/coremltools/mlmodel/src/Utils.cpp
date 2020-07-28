@@ -123,6 +123,11 @@ void CoreML::downgradeSpecificationVersion(Specification::Model *pModel) {
         pModel->set_specificationversion(MLMODEL_SPECIFICATION_VERSION_NEWEST);
     }
 
+
+    if (pModel->specificationversion() == MLMODEL_SPECIFICATION_VERSION_IOS14 && !hasIOS14Features(*pModel)) {
+        pModel->set_specificationversion(MLMODEL_SPECIFICATION_VERSION_IOS13);
+    }
+
     if (pModel->specificationversion() == MLMODEL_SPECIFICATION_VERSION_IOS13 && !hasIOS13Features(*pModel)) {
         pModel->set_specificationversion(MLMODEL_SPECIFICATION_VERSION_IOS12);
     }
@@ -192,7 +197,7 @@ bool CoreML::hasWeightOfType(const Specification::NeuralNetworkLayer& layer,
         case Specification::NeuralNetworkLayer::LayerCase::kInnerProduct:
             return (isWeightParamOfType(layer.innerproduct().weights(),type) ||
                     isWeightParamOfType(layer.innerproduct().bias(), type));
-            
+
         case Specification::NeuralNetworkLayer::LayerCase::kBatchedMatmul:
             return (isWeightParamOfType(layer.batchedmatmul().weights(),type) ||
                     isWeightParamOfType(layer.batchedmatmul().bias(), type));
@@ -229,7 +234,7 @@ bool CoreML::hasWeightOfType(const Specification::NeuralNetworkLayer& layer,
         case Specification::NeuralNetworkLayer::LayerCase::kEmbedding:
             return (isWeightParamOfType(layer.embedding().weights(), type) ||
                     isWeightParamOfType(layer.embedding().bias(), type));
-            
+
         case Specification::NeuralNetworkLayer::LayerCase::kEmbeddingND:
             return (isWeightParamOfType(layer.embeddingnd().weights(), type) ||
                     isWeightParamOfType(layer.embeddingnd().bias(), type));
@@ -280,7 +285,7 @@ bool CoreML::hasWeightOfType(const Specification::Model& model, const WeightPara
 // if the old ones are also filled in with something plausible, then there is nothing
 // preventing us from running on older versions of Core ML.
 bool CoreML::hasFlexibleShapes(const Specification::Model& model) {
-    
+
     auto inputs = model.description().input();
     for (const auto& input: inputs) {
         if (input.type().Type_case() == Specification::FeatureType::kMultiArrayType) {
@@ -362,7 +367,7 @@ bool CoreML::hasIOS12Features(const Specification::Model& model) {
         default:
             return (hasFlexibleShapes(model) || hasCustomModel(model) || hasCategoricalSequences(model) ||
                     hasAppleTextClassifier(model) || hasAppleWordTagger(model) ||
-                    hasAppleImageFeatureExtractor(model) || hasUnsignedQuantizedWeights(model) ||
+                    hasScenePrint(model) || hasUnsignedQuantizedWeights(model) ||
                     hasNonmaxSuppression(model) || hasBayesianProbitRegressor(model) ||
                     hasIOS12NewNeuralNetworkLayers(model));
     }
@@ -381,11 +386,11 @@ bool CoreML::hasIOS13Features(const Specification::Model& model) {
     // - model is of type Gazetteer
     // - model is of type WordEmbedding
     // - (... add others here ...)
-    
+
     if (model.isupdatable()) {
         return true;
     }
-    
+
     bool result = false;
     switch (model.Type_case()) {
         case Specification::Model::kPipeline:
@@ -431,6 +436,96 @@ bool CoreML::hasIOS13Features(const Specification::Model& model) {
     return false;
 }
 
+bool CoreML::hasDefaultValueForOptionalInputs(const Specification::Model& model) {
+    // Checks if default optional value has been set or not
+    for (const auto& input: model.description().input()) {
+        if (input.type().isoptional()){
+            switch (input.type().multiarraytype().defaultOptionalValue_case()) {
+                case CoreML::Specification::ArrayFeatureType::kDoubleDefaultValue:
+                case CoreML::Specification::ArrayFeatureType::kFloatDefaultValue:
+                case CoreML::Specification::ArrayFeatureType::kIntDefaultValue:
+                        return true;
+                default:
+                    break;
+            }
+        }
+    }
+    return false;
+}
+
+bool CoreML::hasFloat32InputsOrOutputsForNonmaxSuppression(const Specification::Model& model) {
+    if (!hasNonmaxSuppression(model)) {
+        // not NMS.
+        return false;
+    }
+
+    auto inputs = model.description().input();
+    for (const auto& input: inputs) {
+        if (input.type().Type_case() == Specification::FeatureType::kMultiArrayType) {
+            if (input.type().multiarraytype().datatype() == Specification::ArrayFeatureType_ArrayDataType_FLOAT32) {
+                return true;
+            }
+        }
+    }
+
+    auto outputs = model.description().output();
+    for (const auto& output: outputs) {
+        if (output.type().Type_case() == Specification::FeatureType::kMultiArrayType) {
+            if (output.type().multiarraytype().datatype() == Specification::ArrayFeatureType_ArrayDataType_FLOAT32) {
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool CoreML::hasIOS14Features(const Specification::Model& model) {
+    // New IOS14 features:
+    // - new layers in Neural Network
+    // - Non-zero values for optional inputs
+    // - VisionFeaturePrint.Object
+    // - Float32 input/output for Non-Maximum Suppression
+    // - Apple Word Tagger using transfer learning (revision == 3)
+
+    bool result = false;
+
+    switch (model.Type_case()) {
+        case Specification::Model::kPipeline:
+            for (auto &m : model.pipeline().models()) {
+                result = result || hasIOS14Features(m);
+                if (result) {
+                    return true;
+                }
+            }
+            break;
+        case Specification::Model::kPipelineRegressor:
+            for (auto &m : model.pipelineregressor().pipeline().models()) {
+                result = result || hasIOS14Features(m);
+                if (result) {
+                    return true;
+                }
+            }
+            break;
+        case Specification::Model::kPipelineClassifier:
+            for (auto &m : model.pipelineclassifier().pipeline().models()) {
+                result = result || hasIOS14Features(m);
+                if (result) {
+                    return true;
+                }
+            }
+            break;
+        case Specification::Model::kSerializedModel:
+            return true;
+        case Specification::Model::kWordTagger:
+            return model.wordtagger().revision() == 3;
+        default:
+            return (hasIOS14NeuralNetworkFeatures(model) || hasObjectPrint(model) || hasFloat32InputsOrOutputsForNonmaxSuppression(model));
+    }
+    return false;
+}
+
+
 bool CoreML::hasCustomModel(const Specification::Model& model) {
     return (model.Type_case() == Specification::Model::kCustomModel);
 }
@@ -453,6 +548,14 @@ bool CoreML::hasAppleWordEmbedding(const Specification::Model& model) {
 
 bool CoreML::hasAppleImageFeatureExtractor(const Specification::Model& model) {
     return (model.Type_case() == Specification::Model::kVisionFeaturePrint);
+}
+
+bool CoreML::hasScenePrint(const Specification::Model& model) {
+    return (hasAppleImageFeatureExtractor(model) && model.visionfeatureprint().has_scene());
+}
+
+bool CoreML::hasObjectPrint(const Specification::Model& model) {
+    return (hasAppleImageFeatureExtractor(model) && model.visionfeatureprint().has_objects());
 }
 
 bool CoreML::hasNonmaxSuppression(const Specification::Model& model) {
@@ -503,10 +606,10 @@ bool CoreML::hasCategoricalSequences(const Specification::Model& model) {
 }
 
 bool CoreML::hasIOS12NewNeuralNetworkLayers(const Specification::Model& model) {
-    
+
     // Return True if the model has the two new NN layers added in iOS 12, which are
     // resizeBilinear and CropResize
-    
+
     auto layers = getNNSpec(model);
     if (layers) {
         for (int i=0; i< layers->size(); i++){
@@ -556,12 +659,13 @@ bool CoreML::hasModelOrSubModelProperty(const Specification::Model& model, const
 }
 
 bool CoreML::isIOS12NeuralNetworkLayer(const Specification::NeuralNetworkLayer& layer) {
-    
+
     // Return True if the NN layer is from the set exposed in iOS 12
     switch (layer.layer_case()) {
         case Specification::NeuralNetworkLayer::LayerCase::kConvolution:
             return (layer.input().size() == 1);
         case Specification::NeuralNetworkLayer::LayerCase::kInnerProduct:
+            return !layer.innerproduct().int8dynamicquantize();
         case Specification::NeuralNetworkLayer::LayerCase::kBatchnorm:
         case Specification::NeuralNetworkLayer::LayerCase::kActivation:
         case Specification::NeuralNetworkLayer::LayerCase::kPooling:
@@ -574,6 +678,12 @@ bool CoreML::isIOS12NeuralNetworkLayer(const Specification::NeuralNetworkLayer& 
         case Specification::NeuralNetworkLayer::LayerCase::kMultiply:
         case Specification::NeuralNetworkLayer::LayerCase::kUnary:
         case Specification::NeuralNetworkLayer::LayerCase::kUpsample:
+            if (layer.upsample().linearupsamplemode() != Specification::UpsampleLayerParams_LinearUpsampleMode_DEFAULT) {
+                return false;
+            }
+            if (layer.upsample().fractionalscalingfactor_size() > 0) {
+                return false;
+            }
         case Specification::NeuralNetworkLayer::LayerCase::kBias:
         case Specification::NeuralNetworkLayer::LayerCase::kL2Normalize:
         case Specification::NeuralNetworkLayer::LayerCase::kReshape:
@@ -595,6 +705,9 @@ bool CoreML::isIOS12NeuralNetworkLayer(const Specification::NeuralNetworkLayer& 
         case Specification::NeuralNetworkLayer::LayerCase::kEmbedding:
         case Specification::NeuralNetworkLayer::LayerCase::kSequenceRepeat:
         case Specification::NeuralNetworkLayer::LayerCase::kReorganizeData:
+            if (layer.reorganizedata().mode() == Specification::ReorganizeDataLayerParams::PIXEL_SHUFFLE) {
+                      return false;
+            }
         case Specification::NeuralNetworkLayer::LayerCase::kSlice:
         case Specification::NeuralNetworkLayer::LayerCase::kCustom:
         case Specification::NeuralNetworkLayer::kResizeBilinear:
@@ -607,16 +720,15 @@ bool CoreML::isIOS12NeuralNetworkLayer(const Specification::NeuralNetworkLayer& 
 
 
 bool CoreML::hasIOS13NeuralNetworkFeatures(const Specification::Model& model) {
-    
+
     /* check if any of the messages in NeuralNetwork.proto, that were added in iOS version 13, are being used.
       If they are, return True, otherwise return False.
-     
+
      In particular, check for the presence of the following messages:
      1. any new layer type, which was not in iOS 12.
      2. if the value of enums "NeuralNetworkMultiArrayShapeMapping" or "NeuralNetworkImageShapeMapping" is non 0
      */
-    
-    // - if the value of enums "NeuralNetworkMultiArrayShapeMapping" or "NeuralNetworkImageShapeMapping" is non 0
+
     switch (model.Type_case()) {
         case Specification::Model::TypeCase::kNeuralNetwork:
             if (model.neuralnetwork().arrayinputshapemapping() != Specification::NeuralNetworkMultiArrayShapeMapping::RANK5_ARRAY_MAPPING) {
@@ -642,7 +754,7 @@ bool CoreML::hasIOS13NeuralNetworkFeatures(const Specification::Model& model) {
         default:
             break;
     }
-    
+
     // check for new layers: by checking if its NOT one of the layers supported in iOS 12
     auto layers = getNNSpec(model);
     if (layers) {
@@ -653,7 +765,61 @@ bool CoreML::hasIOS13NeuralNetworkFeatures(const Specification::Model& model) {
             }
         }
     }
-    
+
     return false;
 }
 
+bool CoreML::hasIOS14NeuralNetworkFeatures(const Specification::Model& model) {
+
+    // Return True if the model has the new Neural network features added in
+    // ios 14
+
+    if (hasDefaultValueForOptionalInputs(model)) {
+        return true;
+    }
+
+
+    auto layers = getNNSpec(model);
+    if (layers) {
+        for (int i=0; i<layers->size(); i++){
+            const Specification::NeuralNetworkLayer& layer = (*layers)[i];
+            switch (layer.layer_case()) {
+                case Specification::NeuralNetworkLayer::kCumSum:
+                case Specification::NeuralNetworkLayer::kOneHot:
+                case Specification::NeuralNetworkLayer::kClampedReLU:
+                case Specification::NeuralNetworkLayer::kArgSort:
+                case Specification::NeuralNetworkLayer::kPooling3D:
+                case Specification::NeuralNetworkLayer::kGlobalPooling3D:
+                case Specification::NeuralNetworkLayer::kSliceBySize:
+                case Specification::NeuralNetworkLayer::kConvolution3D:
+                    return true;
+                case Specification::NeuralNetworkLayer::kSliceDynamic:
+                    if (layer.input().size() == 7) {
+                        return true;
+                    } else if (layer.slicedynamic().squeezemasks_size()) {
+                        return true;
+                    }
+                case Specification::NeuralNetworkLayer::kUpsample:
+                    if (layer.upsample().linearupsamplemode() != Specification::UpsampleLayerParams_LinearUpsampleMode_DEFAULT) {
+                        return true;
+                    }
+                    if (layer.upsample().fractionalscalingfactor_size() > 0) {
+                        return true;
+                    }
+                case Specification::NeuralNetworkLayer::kReorganizeData:
+                    if (layer.reorganizedata().mode() == Specification::ReorganizeDataLayerParams::PIXEL_SHUFFLE) {
+                      return true;
+                    }
+                case Specification::NeuralNetworkLayer::kInnerProduct:
+                    if (layer.innerproduct().int8dynamicquantize())
+                        return true;
+                case Specification::NeuralNetworkLayer::kBatchedMatmul:
+                    if (layer.batchedmatmul().int8dynamicquantize())
+                        return true;
+                default:
+                    continue;
+            }
+        }
+    }
+    return false;
+}

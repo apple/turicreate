@@ -30,6 +30,8 @@ class MetadataDefaultTypeInternal : public ::google::protobuf::internal::Explici
 } _Metadata_default_instance_;
 class ModelDescriptionDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<ModelDescription> {
 } _ModelDescription_default_instance_;
+class SerializedModelDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<SerializedModel> {
+} _SerializedModel_default_instance_;
 class ModelDefaultTypeInternal : public ::google::protobuf::internal::ExplicitlyConstructed<Model> {
   public:
   const ::CoreML::Specification::PipelineClassifier* pipelineclassifier_;
@@ -65,6 +67,7 @@ class ModelDefaultTypeInternal : public ::google::protobuf::internal::Explicitly
   const ::CoreML::Specification::CoreMLModels::SoundAnalysisPreprocessing* soundanalysispreprocessing_;
   const ::CoreML::Specification::CoreMLModels::Gazetteer* gazetteer_;
   const ::CoreML::Specification::CoreMLModels::WordEmbedding* wordembedding_;
+  const ::CoreML::Specification::SerializedModel* serializedmodel_;
 } _Model_default_instance_;
 
 namespace protobuf_Model_2eproto {
@@ -88,6 +91,7 @@ PROTOBUF_CONSTEXPR_VAR ::google::protobuf::internal::ParseTable const
   { NULL, NULL, 0, -1, -1, false },
   { NULL, NULL, 0, -1, -1, false },
   { NULL, NULL, 0, -1, -1, false },
+  { NULL, NULL, 0, -1, -1, false },
 };
 
 
@@ -98,6 +102,7 @@ void TableStruct::Shutdown() {
   _FeatureDescription_default_instance_.Shutdown();
   _Metadata_default_instance_.Shutdown();
   _ModelDescription_default_instance_.Shutdown();
+  _SerializedModel_default_instance_.Shutdown();
   _Model_default_instance_.Shutdown();
 }
 
@@ -140,6 +145,7 @@ void TableStruct::InitDefaultsImpl() {
   _Metadata_UserDefinedEntry_default_instance_.DefaultConstruct();
   _Metadata_default_instance_.DefaultConstruct();
   _ModelDescription_default_instance_.DefaultConstruct();
+  _SerializedModel_default_instance_.DefaultConstruct();
   _Model_default_instance_.DefaultConstruct();
   _PipelineClassifier_default_instance_.get_mutable()->pipeline_ = const_cast< ::CoreML::Specification::Pipeline*>(
       ::CoreML::Specification::Pipeline::internal_default_instance());
@@ -2706,6 +2712,344 @@ void ModelDescription::set_allocated_metadata(::CoreML::Specification::Metadata*
 // ===================================================================
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
+const int SerializedModel::kIdentifierFieldNumber;
+const int SerializedModel::kModelFieldNumber;
+#endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
+
+SerializedModel::SerializedModel()
+  : ::google::protobuf::MessageLite(), _internal_metadata_(NULL) {
+  if (GOOGLE_PREDICT_TRUE(this != internal_default_instance())) {
+    protobuf_Model_2eproto::InitDefaults();
+  }
+  SharedCtor();
+  // @@protoc_insertion_point(constructor:CoreML.Specification.SerializedModel)
+}
+SerializedModel::SerializedModel(const SerializedModel& from)
+  : ::google::protobuf::MessageLite(),
+      _internal_metadata_(NULL),
+      _cached_size_(0) {
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  identifier_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.identifier().size() > 0) {
+    identifier_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.identifier_);
+  }
+  model_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.model().size() > 0) {
+    model_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.model_);
+  }
+  // @@protoc_insertion_point(copy_constructor:CoreML.Specification.SerializedModel)
+}
+
+void SerializedModel::SharedCtor() {
+  identifier_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  model_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  _cached_size_ = 0;
+}
+
+SerializedModel::~SerializedModel() {
+  // @@protoc_insertion_point(destructor:CoreML.Specification.SerializedModel)
+  SharedDtor();
+}
+
+void SerializedModel::SharedDtor() {
+  identifier_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  model_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+void SerializedModel::SetCachedSize(int size) const {
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+}
+const SerializedModel& SerializedModel::default_instance() {
+  protobuf_Model_2eproto::InitDefaults();
+  return *internal_default_instance();
+}
+
+SerializedModel* SerializedModel::New(::google::protobuf::Arena* arena) const {
+  SerializedModel* n = new SerializedModel;
+  if (arena != NULL) {
+    arena->Own(n);
+  }
+  return n;
+}
+
+void SerializedModel::Clear() {
+// @@protoc_insertion_point(message_clear_start:CoreML.Specification.SerializedModel)
+  identifier_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  model_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+
+bool SerializedModel::MergePartialFromCodedStream(
+    ::google::protobuf::io::CodedInputStream* input) {
+#define DO_(EXPRESSION) if (!GOOGLE_PREDICT_TRUE(EXPRESSION)) goto failure
+  ::google::protobuf::uint32 tag;
+  // @@protoc_insertion_point(parse_start:CoreML.Specification.SerializedModel)
+  for (;;) {
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
+    tag = p.first;
+    if (!p.second) goto handle_unusual;
+    switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
+      // string identifier = 1;
+      case 1: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(10u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_identifier()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->identifier().data(), this->identifier().length(),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "CoreML.Specification.SerializedModel.identifier"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // bytes model = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(18u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadBytes(
+                input, this->mutable_model()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      default: {
+      handle_unusual:
+        if (tag == 0 ||
+            ::google::protobuf::internal::WireFormatLite::GetTagWireType(tag) ==
+            ::google::protobuf::internal::WireFormatLite::WIRETYPE_END_GROUP) {
+          goto success;
+        }
+        DO_(::google::protobuf::internal::WireFormatLite::SkipField(input, tag));
+        break;
+      }
+    }
+  }
+success:
+  // @@protoc_insertion_point(parse_success:CoreML.Specification.SerializedModel)
+  return true;
+failure:
+  // @@protoc_insertion_point(parse_failure:CoreML.Specification.SerializedModel)
+  return false;
+#undef DO_
+}
+
+void SerializedModel::SerializeWithCachedSizes(
+    ::google::protobuf::io::CodedOutputStream* output) const {
+  // @@protoc_insertion_point(serialize_start:CoreML.Specification.SerializedModel)
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  // string identifier = 1;
+  if (this->identifier().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->identifier().data(), this->identifier().length(),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "CoreML.Specification.SerializedModel.identifier");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      1, this->identifier(), output);
+  }
+
+  // bytes model = 2;
+  if (this->model().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteBytesMaybeAliased(
+      2, this->model(), output);
+  }
+
+  // @@protoc_insertion_point(serialize_end:CoreML.Specification.SerializedModel)
+}
+
+size_t SerializedModel::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:CoreML.Specification.SerializedModel)
+  size_t total_size = 0;
+
+  // string identifier = 1;
+  if (this->identifier().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->identifier());
+  }
+
+  // bytes model = 2;
+  if (this->model().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::BytesSize(
+        this->model());
+  }
+
+  int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
+  GOOGLE_SAFE_CONCURRENT_WRITES_BEGIN();
+  _cached_size_ = cached_size;
+  GOOGLE_SAFE_CONCURRENT_WRITES_END();
+  return total_size;
+}
+
+void SerializedModel::CheckTypeAndMergeFrom(
+    const ::google::protobuf::MessageLite& from) {
+  MergeFrom(*::google::protobuf::down_cast<const SerializedModel*>(&from));
+}
+
+void SerializedModel::MergeFrom(const SerializedModel& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:CoreML.Specification.SerializedModel)
+  GOOGLE_DCHECK_NE(&from, this);
+  _internal_metadata_.MergeFrom(from._internal_metadata_);
+  ::google::protobuf::uint32 cached_has_bits = 0;
+  (void) cached_has_bits;
+
+  if (from.identifier().size() > 0) {
+
+    identifier_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.identifier_);
+  }
+  if (from.model().size() > 0) {
+
+    model_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.model_);
+  }
+}
+
+void SerializedModel::CopyFrom(const SerializedModel& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:CoreML.Specification.SerializedModel)
+  if (&from == this) return;
+  Clear();
+  MergeFrom(from);
+}
+
+bool SerializedModel::IsInitialized() const {
+  return true;
+}
+
+void SerializedModel::Swap(SerializedModel* other) {
+  if (other == this) return;
+  InternalSwap(other);
+}
+void SerializedModel::InternalSwap(SerializedModel* other) {
+  identifier_.Swap(&other->identifier_);
+  model_.Swap(&other->model_);
+  std::swap(_cached_size_, other->_cached_size_);
+}
+
+::std::string SerializedModel::GetTypeName() const {
+  return "CoreML.Specification.SerializedModel";
+}
+
+#if PROTOBUF_INLINE_NOT_IN_HEADERS
+// SerializedModel
+
+// string identifier = 1;
+void SerializedModel::clear_identifier() {
+  identifier_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+const ::std::string& SerializedModel::identifier() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SerializedModel.identifier)
+  return identifier_.GetNoArena();
+}
+void SerializedModel::set_identifier(const ::std::string& value) {
+  
+  identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.SerializedModel.identifier)
+}
+#if LANG_CXX11
+void SerializedModel::set_identifier(::std::string&& value) {
+  
+  identifier_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.SerializedModel.identifier)
+}
+#endif
+void SerializedModel::set_identifier(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:CoreML.Specification.SerializedModel.identifier)
+}
+void SerializedModel::set_identifier(const char* value, size_t size) {
+  
+  identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.SerializedModel.identifier)
+}
+::std::string* SerializedModel::mutable_identifier() {
+  
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.SerializedModel.identifier)
+  return identifier_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+::std::string* SerializedModel::release_identifier() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.SerializedModel.identifier)
+  
+  return identifier_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+void SerializedModel::set_allocated_identifier(::std::string* identifier) {
+  if (identifier != NULL) {
+    
+  } else {
+    
+  }
+  identifier_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), identifier);
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SerializedModel.identifier)
+}
+
+// bytes model = 2;
+void SerializedModel::clear_model() {
+  model_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+const ::std::string& SerializedModel::model() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SerializedModel.model)
+  return model_.GetNoArena();
+}
+void SerializedModel::set_model(const ::std::string& value) {
+  
+  model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.SerializedModel.model)
+}
+#if LANG_CXX11
+void SerializedModel::set_model(::std::string&& value) {
+  
+  model_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.SerializedModel.model)
+}
+#endif
+void SerializedModel::set_model(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:CoreML.Specification.SerializedModel.model)
+}
+void SerializedModel::set_model(const void* value, size_t size) {
+  
+  model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.SerializedModel.model)
+}
+::std::string* SerializedModel::mutable_model() {
+  
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.SerializedModel.model)
+  return model_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+::std::string* SerializedModel::release_model() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.SerializedModel.model)
+  
+  return model_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+void SerializedModel::set_allocated_model(::std::string* model) {
+  if (model != NULL) {
+    
+  } else {
+    
+  }
+  model_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), model);
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SerializedModel.model)
+}
+
+#endif  // PROTOBUF_INLINE_NOT_IN_HEADERS
+
+// ===================================================================
+
+#if !defined(_MSC_VER) || _MSC_VER >= 1900
 const int Model::kSpecificationVersionFieldNumber;
 const int Model::kDescriptionFieldNumber;
 const int Model::kIsUpdatableFieldNumber;
@@ -2742,6 +3086,7 @@ const int Model::kVisionFeaturePrintFieldNumber;
 const int Model::kSoundAnalysisPreprocessingFieldNumber;
 const int Model::kGazetteerFieldNumber;
 const int Model::kWordEmbeddingFieldNumber;
+const int Model::kSerializedModelFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Model::Model()
@@ -2897,6 +3242,10 @@ Model::Model(const Model& from)
     }
     case kWordEmbedding: {
       mutable_wordembedding()->::CoreML::Specification::CoreMLModels::WordEmbedding::MergeFrom(from.wordembedding());
+      break;
+    }
+    case kSerializedModel: {
+      mutable_serializedmodel()->::CoreML::Specification::SerializedModel::MergeFrom(from.serializedmodel());
       break;
     }
     case TYPE_NOT_SET: {
@@ -3080,6 +3429,10 @@ void Model::clear_Type() {
       delete Type_.wordembedding_;
       break;
     }
+    case kSerializedModel: {
+      delete Type_.serializedmodel_;
+      break;
+    }
     case TYPE_NOT_SET: {
       break;
     }
@@ -3105,7 +3458,7 @@ bool Model::MergePartialFromCodedStream(
   ::google::protobuf::uint32 tag;
   // @@protoc_insertion_point(parse_start:CoreML.Specification.Model)
   for (;;) {
-    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(16383u);
+    ::std::pair< ::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(24002u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
@@ -3545,6 +3898,18 @@ bool Model::MergePartialFromCodedStream(
         break;
       }
 
+      // .CoreML.Specification.SerializedModel serializedModel = 3000;
+      case 3000: {
+        if (static_cast< ::google::protobuf::uint8>(tag) ==
+            static_cast< ::google::protobuf::uint8>(24002u)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessageNoVirtual(
+               input, mutable_serializedmodel()));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0 ||
@@ -3784,6 +4149,12 @@ void Model::SerializeWithCachedSizes(
   if (has_wordembedding()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessage(
       2005, *Type_.wordembedding_, output);
+  }
+
+  // .CoreML.Specification.SerializedModel serializedModel = 3000;
+  if (has_serializedmodel()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessage(
+      3000, *Type_.serializedmodel_, output);
   }
 
   // @@protoc_insertion_point(serialize_end:CoreML.Specification.Model)
@@ -4044,6 +4415,13 @@ size_t Model::ByteSizeLong() const {
           *Type_.wordembedding_);
       break;
     }
+    // .CoreML.Specification.SerializedModel serializedModel = 3000;
+    case kSerializedModel: {
+      total_size += 3 +
+        ::google::protobuf::internal::WireFormatLite::MessageSizeNoVirtual(
+          *Type_.serializedmodel_);
+      break;
+    }
     case TYPE_NOT_SET: {
       break;
     }
@@ -4207,6 +4585,10 @@ void Model::MergeFrom(const Model& from) {
     }
     case kWordEmbedding: {
       mutable_wordembedding()->::CoreML::Specification::CoreMLModels::WordEmbedding::MergeFrom(from.wordembedding());
+      break;
+    }
+    case kSerializedModel: {
+      mutable_serializedmodel()->::CoreML::Specification::SerializedModel::MergeFrom(from.serializedmodel());
       break;
     }
     case TYPE_NOT_SET: {
@@ -5895,6 +6277,54 @@ void Model::set_allocated_wordembedding(::CoreML::Specification::CoreMLModels::W
     Type_.wordembedding_ = wordembedding;
   }
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.wordEmbedding)
+}
+
+// .CoreML.Specification.SerializedModel serializedModel = 3000;
+bool Model::has_serializedmodel() const {
+  return Type_case() == kSerializedModel;
+}
+void Model::set_has_serializedmodel() {
+  _oneof_case_[0] = kSerializedModel;
+}
+void Model::clear_serializedmodel() {
+  if (has_serializedmodel()) {
+    delete Type_.serializedmodel_;
+    clear_has_Type();
+  }
+}
+ const ::CoreML::Specification::SerializedModel& Model::serializedmodel() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Model.serializedModel)
+  return has_serializedmodel()
+      ? *Type_.serializedmodel_
+      : ::CoreML::Specification::SerializedModel::default_instance();
+}
+::CoreML::Specification::SerializedModel* Model::mutable_serializedmodel() {
+  if (!has_serializedmodel()) {
+    clear_Type();
+    set_has_serializedmodel();
+    Type_.serializedmodel_ = new ::CoreML::Specification::SerializedModel;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.Model.serializedModel)
+  return Type_.serializedmodel_;
+}
+::CoreML::Specification::SerializedModel* Model::release_serializedmodel() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.Model.serializedModel)
+  if (has_serializedmodel()) {
+    clear_has_Type();
+    ::CoreML::Specification::SerializedModel* temp = Type_.serializedmodel_;
+    Type_.serializedmodel_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+void Model::set_allocated_serializedmodel(::CoreML::Specification::SerializedModel* serializedmodel) {
+  clear_Type();
+  if (serializedmodel) {
+    set_has_serializedmodel();
+    Type_.serializedmodel_ = serializedmodel;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.serializedModel)
 }
 
 bool Model::has_Type() const {
