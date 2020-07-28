@@ -20,7 +20,6 @@ def _lazy_import_tensorflow():
     from turicreate._deps.minimal_package import _minimal_package_import_check
 
     _tf = _minimal_package_import_check("tensorflow.compat.v1")
-    _tf.disable_v2_behavior()
     return _tf
 
 

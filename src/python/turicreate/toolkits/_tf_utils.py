@@ -59,7 +59,6 @@ def suppress_tensorflow_warnings():
 
     _tf = _minimal_package_import_check("tensorflow.compat.v1")
 
-    _tf.disable_v2_behavior()
     _tf.logging.set_verbosity(_tf.logging.ERROR)
     _tf.debugging.set_log_device_placement(False)
 

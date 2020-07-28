@@ -17,10 +17,6 @@ def _lazy_import_tensorflow():
     _utils.suppress_tensorflow_warnings()
 
     _tf = _minimal_package_import_check("tensorflow.compat.v1")
-    # This toolkit is compatible with TensorFlow V2 behavior.
-    # However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
-    _tf.disable_v2_behavior()
-
     return _tf
 
 
