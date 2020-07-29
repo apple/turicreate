@@ -15,6 +15,7 @@
 #include <google/protobuf/io/zero_copy_stream_impl.h>
 
 #include "../build/format/Model.pb.h"
+#include "../build/format/Model_enums.h"
 
 #pragma clang diagnostic pop
 

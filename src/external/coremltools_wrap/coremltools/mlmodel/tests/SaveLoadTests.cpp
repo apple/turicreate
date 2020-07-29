@@ -1,10 +1,9 @@
 #include "MLModelTests.hpp"
 
-// TODO -- Fix these headers.
-#include "../src/Model.hpp"
-#include "../src/transforms/OneHotEncoder.hpp"
-#include "../src/transforms/LinearModel.hpp"
-#include "../src/transforms/TreeEnsemble.hpp"
+#include "Model.hpp"
+#include "transforms/OneHotEncoder.hpp"
+#include "transforms/LinearModel.hpp"
+#include "transforms/TreeEnsemble.hpp"
 
 
 #include "framework/TestUtils.hpp"

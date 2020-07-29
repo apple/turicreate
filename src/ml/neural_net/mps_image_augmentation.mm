@@ -6,9 +6,9 @@
 
 #include <ml/neural_net/mps_image_augmentation.hpp>
 
-#include <cassert>
 #include <random>
 
+#include <core/util/Verify.hpp>
 #include <ml/neural_net/CoreImageImage.hpp>
 #include <ml/neural_net/TaskQueue.hpp>
 
@@ -69,7 +69,8 @@ CIImage *convert_to_core_image(const Image &source)
   vImage_Error error =
       vImageConvert_RGBFFFtoRGBAFFFF(&rgbBuffer, /* alpha buffer */ NULL, /* alpha value */ 1.0f,
                                      &rgbaBuffer, /* premultiply */ true, kvImageDoNotTile);
-  RUNTIME_ASSERT(error == kvImageNoError, "unexpected error converting RGB bitmap to RGBA");
+  VerifyIsTrueWithMessage(error == kvImageNoError, TuriErrorCode::ImageConversionFailure,
+                          "converting RGB bitmap to RGBA");
 
   // Pass the bitmap to CoreImage.
   return [CIImage imageWithBitmapData:rgbaBitmap
@@ -128,7 +129,8 @@ TCMPSLabeledImage *convert_to_core_image(const labeled_image& source) {
 void convert_from_core_image(CIImage *source, CIContext *context, size_t output_width,
                              size_t output_height, Span<float> output)
 {
-  assert(output_width * output_height * 3 == output.Size());
+  VerifyIsTrue(output_width * output_height * 3 == output.Size(),
+               TuriErrorCode::InvalidBufferLength);
 
   // Render the image into a bitmap. CoreImage supports RGBA but not RGB...
   size_t rgba_data_size = output_height * output_width * 4;
@@ -153,7 +155,8 @@ void convert_from_core_image(CIImage *source, CIContext *context, size_t output_
   vImage_Buffer out_buffer = wrap_float_data(output);
   vImage_Error err = vImageConvert_RGBAFFFFtoRGBFFF(
       &rgba_buffer, &out_buffer, kvImageDoNotTile);
-  RUNTIME_ASSERT(err == kvImageNoError, "unexpected error converting RGBA bitmap to RGB");
+  VerifyIsTrueWithMessage(err == kvImageNoError, TuriErrorCode::ImageConversionFailure,
+                          "converting RGBA bitmap to RGB");
 }
 
 API_AVAILABLE(macos(10.13))

@@ -141,19 +141,13 @@ class DarknetYOLOCheckpoint : public Checkpoint {
   std::unique_ptr<ModelTrainer> CreateModelTrainer(
       neural_net::compute_context* context) const override;
 
-  neural_net::pipeline_spec ExportToCoreML(
-      const std::string& input_name, const std::string& coordinates_output_name,
-      const std::string& confidence_output_name) const override;
+  neural_net::pipeline_spec ExportToCoreML(const std::string& input_name,
+                                           const std::string& coordinates_name,
+                                           const std::string& confidence_name, bool use_nms_layer,
+                                           float iou_threshold,
+                                           float confidence_threshold) const override;
 
-  size_t GetNumberOfPredictions() const override;
-
-  std::string GetModelType() const override;
-
-  float GetEvaluateConfidence() const override;
-
-  float GetPredictConfidence() const override;
-
-  float GetNonMaximumSuppressionThreshold() const override;
+  CheckpointMetadata GetCheckpointMetadata() const override;
 
   /** Returns the config dictionary used to initialize darknet-yolo backends. */
   neural_net::float_array_map internal_config() const;

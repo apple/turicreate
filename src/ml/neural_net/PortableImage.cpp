@@ -8,6 +8,7 @@
 #include <ml/neural_net/PortableImage.hpp>
 
 #include <core/data/image/io.hpp>
+#include <core/util/Verify.hpp>
 #include <model_server/lib/image_util.hpp>
 
 namespace turi {
@@ -37,7 +38,7 @@ size_t PortableImage::Width() const { return impl_.m_width; }
 
 void PortableImage::WriteCHW(Span<float> buffer) const
 {
-  RUNTIME_ASSERT(buffer.Size() == Size(), "incorrect buffer size for image");
+  VerifyIsTrue(buffer.Size() == Size(), TuriErrorCode::InvalidBufferLength);
 
   // Copy the image, resulting in each element having a channel value in [0.f,
   // 255.f].
@@ -53,7 +54,7 @@ void PortableImage::WriteCHW(Span<float> buffer) const
 
 void PortableImage::WriteHWC(Span<float> buffer) const
 {
-  RUNTIME_ASSERT(buffer.Size() == Size(), "incorrect buffer size for image");
+  VerifyIsTrue(buffer.Size() == Size(), TuriErrorCode::InvalidBufferLength);
 
   // Copy the image, resulting in each element having a channel value in [0.f,
   // 255.f].

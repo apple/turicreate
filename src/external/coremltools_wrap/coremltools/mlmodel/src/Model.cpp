@@ -113,7 +113,10 @@ namespace CoreML {
                 VALIDATE_MODEL_TYPE(itemSimilarityRecommender);
                 VALIDATE_MODEL_TYPE(soundAnalysisPreprocessing);
                 VALIDATE_MODEL_TYPE(linkedModel);
+            case MLModelType_serializedModel:
+                return {};
             case MLModelType_NOT_SET:
+            default:
                 return Result(ResultType::INVALID_MODEL_INTERFACE, "Model did not specify a valid model-parameter type.");
         }
     }
@@ -132,6 +135,7 @@ namespace CoreML {
         Result r = loadSpecification(*(out.m_spec), in);
         if (!r.good()) { return r; }
         // validate on load
+        
         r = out.validate();
 
         return r;
@@ -301,12 +305,12 @@ namespace CoreML {
 extern "C" {
 
 _MLModelSpecification::_MLModelSpecification()
-    : cppFormat(new CoreML::Specification::Model())
+    : cppFormat(std::make_shared<CoreML::Specification::Model>())
 {
 }
 
     _MLModelSpecification::_MLModelSpecification(const CoreML::Specification::Model& te)
-: cppFormat(new CoreML::Specification::Model(te))
+: cppFormat(std::make_shared<CoreML::Specification::Model>(te))
 {
 }
 
@@ -314,21 +318,21 @@ _MLModelSpecification::_MLModelSpecification()
   cppFormat.reset(new CoreML::Specification::Model(te.getProto()));
 }
     
-_MLModelMetadataSpecification::_MLModelMetadataSpecification() : cppMetadata(new CoreML::Specification::Metadata())
+_MLModelMetadataSpecification::_MLModelMetadataSpecification() : cppMetadata(std::make_shared<CoreML::Specification::Metadata>())
 {
 }
     
 _MLModelMetadataSpecification::_MLModelMetadataSpecification(const CoreML::Specification::Metadata& meta)
-: cppMetadata(new CoreML::Specification::Metadata(meta))
+: cppMetadata(std::make_shared<CoreML::Specification::Metadata>(meta))
 {
 }
-    
-_MLModelDescriptionSpecification::_MLModelDescriptionSpecification() : cppInterface(new CoreML::Specification::ModelDescription())
+
+_MLModelDescriptionSpecification::_MLModelDescriptionSpecification() : cppInterface(std::make_shared<CoreML::Specification::ModelDescription>())
 {
 }
 
 _MLModelDescriptionSpecification::_MLModelDescriptionSpecification(const CoreML::Specification::ModelDescription& interface)
-: cppInterface(new CoreML::Specification::ModelDescription(interface))
+: cppInterface(std::make_shared<CoreML::Specification::ModelDescription>(interface))
 {
 }
 

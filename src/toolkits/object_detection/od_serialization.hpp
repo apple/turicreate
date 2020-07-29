@@ -11,9 +11,14 @@
 #include <ml/neural_net/model_spec.hpp>
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
 
 namespace turi {
 namespace object_detection {
+
+void set_array_feature(CoreML::Specification::FeatureDescription* feature_desc, std::string name,
+                       std::string short_description, const std::vector<size_t>& shape,
+                       float value);
 
 void _save_impl(oarchive& oarc,
                 const std::map<std::string, variant_type>& state,
@@ -30,9 +35,9 @@ void init_darknet_yolo(neural_net::model_spec& nn_spec,
 neural_net::pipeline_spec export_darknet_yolo(
     const neural_net::float_array_map& weights, const std::string& input_name,
     const std::string& coordinates_name, const std::string& confidence_name,
-    const std::vector<std::pair<float, float>>& anchor_boxes,
-    size_t num_classes, size_t output_grid_height, size_t output_grid_width,
-    size_t spatial_reduction);
+    const std::vector<std::pair<float, float>>& anchor_boxes, size_t num_classes,
+    bool use_nms_layer, size_t output_grid_height, size_t output_grid_width, float iou_threshold,
+    float confidence_threshold, size_t spatial_reduction);
 
 }  // namespace object_detection
 }  // namespace turi

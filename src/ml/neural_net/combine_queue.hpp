@@ -7,8 +7,7 @@
 
 #pragma once
 
-#include <cassert>
-
+#include <core/util/Verify.hpp>
 #include <ml/neural_net/TaskQueue.hpp>
 #include <ml/neural_net/combine_base.hpp>
 
@@ -71,7 +70,7 @@ class SubscribeOnQueuePublisher : public Publisher<T> {
     // Subscriber<Output> interface, for upstream publisher
 
     void Receive(std::shared_ptr<Subscription> subscription) override {
-      assert(downstream_);  // We cannot have been canceled yet.
+      VerifyIsTrue(downstream_, TuriErrorCode::LogicError);  // We cannot have been canceled yet.
 
       // Intercept (and store) the subscription we receive from the upstream
       // publisher.

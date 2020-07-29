@@ -7,6 +7,6 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-__all__ = ["image_analysis"]
+# __all__ = ["image_analysis"]
 
-from . import image_analysis
+from .image_analysis import *

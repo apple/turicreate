@@ -1,0 +1,7 @@
+tensorflow==2.1.0; python_version < '3.8'
+tensorflow==2.2.0; python_version >= '3.8'
+
+tensorflow-addons==0.7.1; python_version == '2.7'
+tensorflow-addons==0.8.3; python_version > '2.7' and python_version < '3.8'
+tensorflow-hub==0.8.0
+transformers==2.10.0; python_version > '3.6'

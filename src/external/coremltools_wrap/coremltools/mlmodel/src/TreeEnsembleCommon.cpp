@@ -162,7 +162,7 @@ namespace CoreML { namespace TreeEnsembles {
         ////////////////////////////////////////////////////////////////////////////////
 
         // Get the full list of nodes from the spec.
-        auto nodes = tes.nodes();
+        const auto& nodes = tes.nodes();
 
         /**  Stage 1: Translation.
          *
@@ -316,7 +316,7 @@ namespace CoreML { namespace TreeEnsembles {
             }
 
             // Check to make sure that each tree has exactly one root.
-            {
+            if (root_nodes.size() != 0) {
                 // Sort by tree ID to detect non-unique elements.
                 std::sort(root_node_ids.begin(), root_node_ids.end());
 

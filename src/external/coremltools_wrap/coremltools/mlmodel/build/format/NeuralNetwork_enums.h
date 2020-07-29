@@ -242,6 +242,14 @@ enum MLNeuralNetworkLayerlayer: int {
     MLNeuralNetworkLayerlayer_whereBroadcastable = 1330,
     MLNeuralNetworkLayerlayer_layerNormalization = 1350,
     MLNeuralNetworkLayerlayer_NonMaximumSuppression = 1400,
+    MLNeuralNetworkLayerlayer_oneHot = 1450,
+    MLNeuralNetworkLayerlayer_cumSum = 1455,
+    MLNeuralNetworkLayerlayer_clampedReLU = 1460,
+    MLNeuralNetworkLayerlayer_argSort = 1461,
+    MLNeuralNetworkLayerlayer_pooling3d = 1465,
+    MLNeuralNetworkLayerlayer_globalPooling3d = 1466,
+    MLNeuralNetworkLayerlayer_sliceBySize = 1470,
+    MLNeuralNetworkLayerlayer_convolution3d = 1471,
     MLNeuralNetworkLayerlayer_NOT_SET = 0,
 };
 
@@ -548,6 +556,22 @@ static const char * MLNeuralNetworkLayerlayer_Name(MLNeuralNetworkLayerlayer x) 
             return "MLNeuralNetworkLayerlayer_layerNormalization";
         case MLNeuralNetworkLayerlayer_NonMaximumSuppression:
             return "MLNeuralNetworkLayerlayer_NonMaximumSuppression";
+        case MLNeuralNetworkLayerlayer_oneHot:
+            return "MLNeuralNetworkLayerlayer_oneHot";
+        case MLNeuralNetworkLayerlayer_cumSum:
+            return "MLNeuralNetworkLayerlayer_cumSum";
+        case MLNeuralNetworkLayerlayer_clampedReLU:
+            return "MLNeuralNetworkLayerlayer_clampedReLU";
+        case MLNeuralNetworkLayerlayer_argSort:
+            return "MLNeuralNetworkLayerlayer_argSort";
+        case MLNeuralNetworkLayerlayer_pooling3d:
+            return "MLNeuralNetworkLayerlayer_pooling3d";
+        case MLNeuralNetworkLayerlayer_globalPooling3d:
+            return "MLNeuralNetworkLayerlayer_globalPooling3d";
+        case MLNeuralNetworkLayerlayer_sliceBySize:
+            return "MLNeuralNetworkLayerlayer_sliceBySize";
+        case MLNeuralNetworkLayerlayer_convolution3d:
+            return "MLNeuralNetworkLayerlayer_convolution3d";
         case MLNeuralNetworkLayerlayer_NOT_SET:
             return "INVALID";
     }
@@ -611,6 +635,12 @@ static const char * MLConvolutionLayerParamsConvolutionPaddingType_Name(MLConvol
     return "INVALID";
 }
 
+enum MLPaddingType: int {
+    MLPaddingTypeCUSTOM = 0,
+    MLPaddingTypeVALID = 1,
+    MLPaddingTypeSAME = 2,
+};
+
 enum MLPoolingType: int {
     MLPoolingTypeMAX = 0,
     MLPoolingTypeAVERAGE = 1,
@@ -638,6 +668,22 @@ static const char * MLPoolingLayerParamsPoolingPaddingType_Name(MLPoolingLayerPa
     }
     return "INVALID";
 }
+
+enum MLPoolingType3D: int {
+    MLPoolingType3DMAX = 0,
+    MLPoolingType3DAVERAGE = 1,
+};
+
+enum MLPooling3DPaddingType: int {
+    MLPooling3DPaddingTypeCUSTOM = 0,
+    MLPooling3DPaddingTypeVALID = 1,
+    MLPooling3DPaddingTypeSAME = 2,
+};
+
+enum MLGlobalPoolingType3D: int {
+    MLGlobalPoolingType3DMAX = 0,
+    MLGlobalPoolingType3DAVERAGE = 1,
+};
 
 enum MLPaddingLayerParamsPaddingType: int {
     MLPaddingLayerParamsPaddingType_constant = 1,
@@ -677,6 +723,12 @@ enum MLInterpolationMode: int {
     MLInterpolationModeBILINEAR = 1,
 };
 
+enum MLLinearUpsampleMode: int {
+    MLLinearUpsampleModeDEFAULT = 0,
+    MLLinearUpsampleModeALIGN_CORNERS_TRUE = 1,
+    MLLinearUpsampleModeALIGN_CORNERS_FALSE = 2,
+};
+
 enum MLFlattenOrder: int {
     MLFlattenOrderCHANNEL_FIRST = 0,
     MLFlattenOrderCHANNEL_LAST = 1,
@@ -690,6 +742,7 @@ enum MLReshapeOrder: int {
 enum MLReorganizationType: int {
     MLReorganizationTypeSPACE_TO_DEPTH = 0,
     MLReorganizationTypeDEPTH_TO_SPACE = 1,
+    MLReorganizationTypePIXEL_SHUFFLE = 2,
 };
 
 enum MLSliceAxis: int {

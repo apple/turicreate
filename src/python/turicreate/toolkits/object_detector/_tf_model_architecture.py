@@ -17,7 +17,6 @@ import turicreate.toolkits._tf_utils as _utils
 # in conjunction with minimal package
 def _lazy_import_tensorflow():
     _tf = _minimal_package_import_check("tensorflow.compat.v1")
-    _tf.disable_v2_behavior()
     return _tf
 
 

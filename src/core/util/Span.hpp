@@ -11,21 +11,7 @@
 #include <type_traits>
 #include <vector>
 
-// TODO - replace string exceptions with TuriCoreException.
-#include <string>
-
-#if defined(NDEBUG)
-#define DEBUG_ASSERT(x, message)
-#else
-#define DEBUG_ASSERT(x, message) RUNTIME_ASSERT(x, message)
-#endif
-
-#define RUNTIME_ASSERT(x, message) \
-  do {                             \
-    if (!(x)) {                    \
-      throw std::string(message);  \
-    }                              \
-  } while (0)
+#include <core/util/Verify.hpp>
 
 namespace turi {
 
@@ -254,13 +240,13 @@ class Span final {
 
   reference operator[](size_t index) const
   {
-    DEBUG_ASSERT(index < Size(), "access out of bounds");
+    VerifyDebugIsTrue(index < Size(), TuriErrorCode::IndexOutOfBounds);
     return ptr_[index];
   }
 
   reference At(size_t index) const
   {
-    RUNTIME_ASSERT(index < Size(), "access out of bounds");
+    VerifyIsTrue(index < Size(), TuriErrorCode::IndexOutOfBounds);
     return ptr_[index];
   }
 
@@ -281,19 +267,20 @@ class Span final {
 
   Span<T> Slice(size_t index) const
   {
-    RUNTIME_ASSERT(index < Size(), "access out of bounds");
+    VerifyIsTrue(index < Size(), TuriErrorCode::IndexOutOfBounds);
     return Span<T>(Data() + index, Size() - index);
   }
 
   Span<T> Slice(size_t index, size_t size) const
   {
-    RUNTIME_ASSERT(size > 0 && index < Size() && index + size <= Size(), "illegal slice bounds");
+    VerifyIsTrue(size > 0 && index < Size() && index + size <= Size(),
+                 TuriErrorCode::IndexOutOfBounds);
     return Span<T>(Data() + index, size);
   }
 
   Span<T> SliceByDimension(size_t num_slices, size_t slice_index) const
   {
-    RUNTIME_ASSERT(Size() % num_slices == 0, "illegal slice bounds");
+    VerifyIsTrue(Size() % num_slices == 0, TuriErrorCode::IndexOutOfBounds);
     size_t stride = Size() / num_slices;
     return Slice(slice_index * stride, stride);
   }
@@ -305,7 +292,7 @@ class Span final {
   template <size_t NewExtent>
   Span<T, NewExtent> StaticResize() const
   {
-    RUNTIME_ASSERT(NewExtent <= Size(), "illegal bounds");
+    VerifyIsTrue(NewExtent <= Size(), TuriErrorCode::IndexOutOfBounds);
     return Span<T, NewExtent>(Data());
   }
 
@@ -327,7 +314,7 @@ class Span final {
 
   IteratorProvider<SliceIterator> IterateSlices(size_t sliceSize) const
   {
-    RUNTIME_ASSERT(Size() % sliceSize == 0, "illegal slice bounds");
+    VerifyIsTrue(Size() % sliceSize == 0, TuriErrorCode::IndexOutOfBounds);
 
     return IteratorProvider<SliceIterator>(SliceIterator(Data(), sliceSize),
                                            SliceIterator(Data() + Size(), sliceSize));
@@ -336,7 +323,7 @@ class Span final {
   template <size_t SliceSize>
   IteratorProvider<StaticSliceIterator<SliceSize>> IterateSlices() const
   {
-    RUNTIME_ASSERT(Size() % SliceSize == 0, "illegal slice bounds");
+    VerifyIsTrue(Size() % SliceSize == 0, TuriErrorCode::IndexOutOfBounds);
 
     return IteratorProvider<StaticSliceIterator<SliceSize>>(
         StaticSliceIterator<SliceSize>(Data()), StaticSliceIterator<SliceSize>(Data() + Size()));

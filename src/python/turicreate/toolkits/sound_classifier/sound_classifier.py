@@ -190,7 +190,7 @@ def _is_deep_feature_sarray(sa):
 
 
 def _is_audio_data_sarray(sa):
-    if not isinstance(sa, _tc.SArray):
+    if not isinstance(sa, _tc.SArray) or len(sa) == 0:
         return False
     if sa.dtype != dict:
         return False

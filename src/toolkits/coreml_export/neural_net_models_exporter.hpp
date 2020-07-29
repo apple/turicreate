@@ -13,9 +13,20 @@
 
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <ml/neural_net/model_spec.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
 #include <toolkits/coreml_export/mlmodel_wrapper.hpp>
 
 namespace turi {
+
+std::string iou_threshold_description(float default_value);
+std::string confidence_threshold_description(float default_value);
+
+void set_threshold_array_feature(CoreML::Specification::FeatureDescription* feature_desc,
+                                 std::string name, std::string short_description,
+                                 const std::vector<size_t>& shape, float value);
+
+void set_array_feature(CoreML::Specification::FeatureDescription* feature_desc, std::string name,
+                       std::string short_description, const std::vector<size_t>& shape);
 
 /**
  * Wraps a trained object detector model_spec as a complete MLModel.
@@ -28,10 +39,9 @@ namespace turi {
  *       is responsible for populating the inputs and outputs?
  */
 std::shared_ptr<coreml::MLModelWrapper> export_object_detector_model(
-    neural_net::pipeline_spec pipeline, size_t num_classes,
-    size_t num_predictions, flex_list class_labels, float confidence_threshold,
-    float iou_threshold, bool include_non_maximum_suppression,
-    bool use_nms_layer);
+    neural_net::pipeline_spec pipeline, size_t num_classes, size_t num_predictions,
+    flex_list class_labels, float confidence_threshold, float iou_threshold,
+    bool include_non_maximum_suppression, bool use_nms_layer, bool use_most_confident_class);
 
 /** Wraps a trained activity classifier model_spec as a complete MLModel. */
 std::shared_ptr<coreml::MLModelWrapper> export_activity_classifier_model(

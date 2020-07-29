@@ -6,9 +6,8 @@
 //  Copyright © 2019 Apple Inc. All rights reserved.
 //
 
-#include "../src/Format.hpp"
-#include "../src/Model.hpp"
-#include "../src/NeuralNetwork/NeuralNetworkShapes.hpp"
+#include "Format.hpp"
+#include "Model.hpp"
 
 #include "framework/TestUtils.hpp"
 

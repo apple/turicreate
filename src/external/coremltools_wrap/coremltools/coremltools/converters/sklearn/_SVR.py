@@ -7,27 +7,31 @@ from ...proto import Model_pb2 as _Model_pb2
 from ...models._interface_management import set_regressor_interface_params
 from ... import SPECIFICATION_VERSION
 
-from ..._deps import HAS_SKLEARN as _HAS_SKLEARN
+from ..._deps import _HAS_SKLEARN
 from ...models import MLModel as _MLModel
 
 if _HAS_SKLEARN:
     from ._sklearn_util import check_fitted
     from sklearn.svm import SVR as _SVR
     from . import _sklearn_util
+
     sklearn_class = _SVR
 
-model_type = 'regressor'
+model_type = "regressor"
 
 from ._svm_common import _set_kernel
+
 
 def _generate_base_svm_regression_spec(model):
     """
     Takes an SVM regression model  produces a starting spec using the parts.
     that are shared between all SVMs.
     """
-    if not(_HAS_SKLEARN):
-        raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-    
+    if not (_HAS_SKLEARN):
+        raise RuntimeError(
+            "scikit-learn not found. scikit-learn conversion API is disabled."
+        )
+
     spec = _Model_pb2.Model()
     spec.specificationVersion = SPECIFICATION_VERSION
     svm = spec.supportVectorRegressor
@@ -44,6 +48,7 @@ def _generate_base_svm_regression_spec(model):
         for i in cur_src_vector:
             cur_dest_vector.values.append(i)
     return spec
+
 
 def convert(model, features, target):
     """Convert a Support Vector Regressor (SVR) model to the protobuf spec.
@@ -67,8 +72,11 @@ def convert(model, features, target):
     spec = set_regressor_interface_params(spec, features, target)
     return _MLModel(spec)
 
+
 def get_input_dimension(model):
-    if not(_HAS_SKLEARN):
-        raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-    check_fitted(model, lambda m: hasattr(m, 'support_vectors_'))
+    if not (_HAS_SKLEARN):
+        raise RuntimeError(
+            "scikit-learn not found. scikit-learn conversion API is disabled."
+        )
+    check_fitted(model, lambda m: hasattr(m, "support_vectors_"))
     return len(model.support_vectors_[0])

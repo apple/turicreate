@@ -3,8 +3,10 @@
 #import "CoreMLPython.h"
 #import "CoreMLPythonUtils.h"
 #import "Globals.hpp"
-#import "NeuralNetwork/NeuralNetworkShapes.hpp"
 #import "Utils.hpp"
+#import <fstream>
+#import <vector>
+#import "NeuralNetworkBuffer.hpp"
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-prototypes"
@@ -18,10 +20,11 @@ namespace py = pybind11;
 using namespace CoreML::Python;
 
 Model::~Model() {
-    NSError *error = nil;
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if (compiledUrl != nil) {
-        [fileManager removeItemAtPath:[[compiledUrl URLByDeletingLastPathComponent] path]  error:&error];
+    @autoreleasepool {
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+        if (compiledUrl != nil) {
+            [fileManager removeItemAtURL:compiledUrl error:NULL];
+        }
     }
 }
 
@@ -128,6 +131,39 @@ void NeuralNetworkShapeInformation::print() const {
     shaper->print();
 }
 
+/*
+ * NeuralNetworkBuffer - NeuralNetworkBuffer
+ */
+NeuralNetworkBufferInformation::NeuralNetworkBufferInformation(const std::string &bufferFilePath, NNBuffer::bufferMode mode)
+    : nnBuffer(std::make_unique<NNBuffer::NeuralNetworkBuffer>(bufferFilePath, mode))
+{
+}
+
+/*
+ * NeuralNetworkBufferInformation - ~NeuralNetworkBufferInformation
+ */
+NeuralNetworkBufferInformation::~NeuralNetworkBufferInformation() = default;
+
+/*
+ * NeuralNetworkBuffer - addBuffer
+ * Writes given buffer into file
+ * Returns offset from the beginning of buffer
+ */
+inline u_int64_t NeuralNetworkBufferInformation::addBuffer(const std::vector<float> &buffer) {
+    return nnBuffer->addBuffer(buffer);
+}
+
+/*
+ * NeuralNetworkBufferInformation - getBuffer
+ * Reads buffer from given offset and of given size and writes to data
+ */
+inline std::vector<float> NeuralNetworkBufferInformation::getBuffer(const u_int64_t offset) {
+    // TODO: Explore Pybind11 Opaque to pass vector by reference
+    std::vector<float> buffer;
+    nnBuffer->getBuffer(offset, buffer);
+    return buffer;
+}
+
 PYBIND11_PLUGIN(libcoremlpython) {
     py::module m("libcoremlpython", "CoreML.Framework Python bindings");
 
@@ -142,6 +178,16 @@ PYBIND11_PLUGIN(libcoremlpython) {
         .def(py::init<const std::string&, bool>())
         .def("shape", &NeuralNetworkShapeInformation::shape)
         .def("print", &NeuralNetworkShapeInformation::print);
+
+    py::class_<NeuralNetworkBufferInformation> netBuffer(m, "_NeuralNetworkBuffer");
+    netBuffer.def(py::init<const std::string&, NNBuffer::bufferMode>())
+        .def("add_buffer", &NeuralNetworkBufferInformation::addBuffer)
+        .def("get_buffer", &NeuralNetworkBufferInformation::getBuffer);
+    py::enum_<NNBuffer::bufferMode>(netBuffer, "mode")
+        .value("write", NNBuffer::bufferMode::write)
+        .value("append", NNBuffer::bufferMode::append)
+        .value("read", NNBuffer::bufferMode::read)
+        .export_values();
 
     return m.ptr();
 }

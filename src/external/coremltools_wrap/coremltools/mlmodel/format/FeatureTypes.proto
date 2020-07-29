@@ -103,7 +103,7 @@ message ImageFeatureType {
  */
 message ArrayFeatureType {
 
-enum ArrayDataType {
+    enum ArrayDataType {
         INVALID_ARRAY_DATA_TYPE = 0;
         FLOAT32 = 65568; // 0x10000 | 32
         DOUBLE = 65600;  // 0x10000 | 64
@@ -164,6 +164,13 @@ enum ArrayDataType {
         ShapeRange shapeRange = 31;
 
     }
+
+    oneof defaultOptionalValue {
+        int32 intDefaultValue = 41;
+        float floatDefaultValue = 51;
+        double doubleDefaultValue = 61;
+    }
+
 }
 
 /**
