@@ -29,11 +29,10 @@ fi
 # actually locate Python.h before setting it as an include
 #
 # Recursively find Python.h and then parse the include directory
-PYTHON_HEADER_PATH=$(find ${PYTHON_INCLUDE_DIR} -name "python*" | head -n 1)
-PYTHON_PATH=${PYTHON_HEADER_PATH%include/*}
-PYTHON_INCLUDE_PATH="${PYTHON_PATH}include/python*"
-
 if [[ ${PYTHON_MAJOR_VERSION} -ge 3  && ${PYTHON_MINOR_VERSION} -gt 5 ]]; then
+  PYTHON_HEADER_PATH=$(find ${PYTHON_INCLUDE_DIR} -name "python*" | head -n 1)
+  PYTHON_PATH=${PYTHON_HEADER_PATH%include/*}
+  PYTHON_INCLUDE_PATH="${PYTHON_PATH}include/python*"
   DEPS_INCLUDE_FOLDER="$DEPS_ENV_FOLDER"/include
   if [[ ${DEPS_INCLUDE_FOLDER} != ${PYTHON_INCLUDE_DIR} ]]; then
     rm -rf $DEPS_INCLUDE_FOLDER
