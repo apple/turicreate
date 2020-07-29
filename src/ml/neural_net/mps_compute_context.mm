@@ -41,6 +41,13 @@ float_array_map multiply_mps_od_loss_multiplier(float_array_map config,
   return config;
 }
 
+// At static-init time, register create_mps_compute_context().
+// TODO: Codify priority levels?
+static auto* mps_registration = new compute_context::registration(
+    /* priority */ 1, &create_mps_compute_context, nullptr, &create_mps_compute_context);
+
+}  // namespace
+
 std::unique_ptr<compute_context> create_mps_compute_context() {
   @autoreleasepool {
 
@@ -77,12 +84,6 @@ std::unique_ptr<compute_context> create_mps_compute_context() {
   }  // @autoreleasepool
 }
 
-// At static-init time, register create_mps_compute_context().
-// TODO: Codify priority levels?
-static auto* mps_registration = new compute_context::registration(
-    /* priority */ 0, &create_mps_compute_context, nullptr);
-
-}  // namespace
 
 mps_compute_context::mps_compute_context(
     std::unique_ptr<mps_command_queue> command_queue)
@@ -133,6 +134,7 @@ mps_compute_context::create_image_augmenter_for_testing(
 std::unique_ptr<model_backend> mps_compute_context::create_object_detector(
     int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
     const float_array_map& config, const float_array_map& weights) {
+  std::cout << "MPS IS HAPPENING";
   mps_od_backend::parameters params;
   params.command_queue = command_queue_;
   params.n = n;

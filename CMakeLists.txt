@@ -222,6 +222,7 @@ if(APPLE)
   find_library(CORE_VIDEO CoreVideo)
   find_library(METAL NAMES Metal)
   find_library(METAL_PERFORMANCE_SHADERS NAMES MetalPerformanceShaders)
+  find_library(MLCOMPUTE NAMES MLCompute)
   set(_TC_APPLE_DEPENDENCIES
       ${ACCELERATE}
       ${CORE_GRAPHICS}
@@ -510,6 +511,11 @@ if(NOT TC_DISABLE_OBJECT_BUILDS)
         set(_TC_COMMON_REQUIREMENTS
             ${_TC_COMMON_REQUIREMENTS} ${ACCELERATE} ${CORE_IMAGE} ${METAL}
             ${METAL_PERFORMANCE_SHADERS})
+      endif()
+      if(HAS_ML_COMPUTE)
+        set(_TC_COMMON_OBJECTS ${_TC_COMMON_OBJECTS} "$<TARGET_OBJECTS:tcmlc>")
+        set(_TC_COMMON_REQUIREMENTS
+            ${_TC_COMMON_REQUIREMENTS} ${ACCELERATE} ${CORE_IMAGE} ${MLCOMPUTE})
       endif()
     endif()
   endif()
