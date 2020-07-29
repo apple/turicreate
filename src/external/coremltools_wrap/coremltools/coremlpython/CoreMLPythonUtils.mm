@@ -14,6 +14,7 @@
 
 #else
 
+#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
 #include <numpy/arrayobject.h>
 #define PyAnyInteger_Check(name) (PyLong_Check(name) || (_import_array(), PyArray_IsScalar(name, Integer)))
 
@@ -33,7 +34,10 @@ void Utils::handleError(NSError *error) {
     }
 }
 
-MLDictionaryFeatureProvider * Utils::dictToFeatures(const py::dict& dict, NSError **error) {
+MLDictionaryFeatureProvider * Utils::dictToFeatures(const py::dict& dict, NSError * __autoreleasing *error) {
+    NSError *localError;
+    MLDictionaryFeatureProvider * feautreProvider;
+
     @autoreleasepool {
         NSMutableDictionary<NSString *, NSObject *> *inputDict = [[NSMutableDictionary<NSString *, NSObject *> alloc] init];
         
@@ -44,8 +48,13 @@ MLDictionaryFeatureProvider * Utils::dictToFeatures(const py::dict& dict, NSErro
             inputDict[nsKey] = nsValue;
         }
         
-        return [[MLDictionaryFeatureProvider alloc] initWithDictionary:inputDict error:error];
+        feautreProvider = [[MLDictionaryFeatureProvider alloc] initWithDictionary:inputDict error:&localError];
     }
+
+    if (error != NULL) {
+        *error = localError;
+    }
+    return feautreProvider;
 }
 
 py::dict Utils::featuresToDict(id<MLFeatureProvider> features) {

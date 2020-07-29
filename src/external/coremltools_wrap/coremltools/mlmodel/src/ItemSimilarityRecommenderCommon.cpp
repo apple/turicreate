@@ -7,23 +7,21 @@
   //
 
 #include "ItemSimilarityRecommenderCommon.hpp"
-#include "ValidatorUtils-inl.hpp"
-#include "Validators.hpp"
+#include "Validation/ValidatorUtils-inl.hpp"
+#include "Validation/Validators.hpp"
 #include "Format.hpp"
 
 namespace CoreML { namespace Recommender {
 
   _ItemSimilarityRecommenderData::_ItemSimilarityRecommenderData(const Specification::ItemSimilarityRecommender& isr) {
 
-    // Validate that we have item_ids in the correct 0, 1, ..., n-1 sequence.
-    std::set<uint64_t> index_hits;
-
+    uint64_t max_item = 0;
     int n_similarities = isr.itemitemsimilarities_size();
 
     for(int i = 0; i < n_similarities; ++i) {
       const auto& item_sim_info = isr.itemitemsimilarities(i);
       uint64_t item_id = item_sim_info.itemid();
-      index_hits.insert(item_id);
+      max_item = std::max(max_item, item_id);
 
       auto& interaction_list_dest = item_interactions[item_id];
       int n_interactions = item_sim_info.similaritemlist_size();
@@ -35,7 +33,7 @@ namespace CoreML { namespace Recommender {
 
         interaction_list_dest.push_back({inter_id, score});
 
-        index_hits.insert(inter_id);
+        max_item = std::max(max_item, inter_id);
       }
 
       // Sort to ensure equality between equivalent models.
@@ -46,43 +44,54 @@ namespace CoreML { namespace Recommender {
       }
     }
 
-    if(index_hits.size() <= *index_hits.rbegin()) {
-
-      // Make sure that all the model actually numbers things correctly.
-      throw std::invalid_argument("Item IDs in the recommender model must be numbered 0, 1, ..., num_items - 1.");
-    }
-
-    num_items = index_hits.size();
+    num_items = 0;
 
     // Check out the item similarity
     if(isr.has_itemint64ids() && isr.itemint64ids().vector_size() != 0) {
       if(isr.has_itemstringids() && isr.itemstringids().vector_size() != 0) {
         throw std::invalid_argument("Only integer item ids or string item ids can be specified in the same model.");
       }
+      
+      num_items = uint64_t(isr.itemint64ids().vector_size());
 
-      if(size_t(isr.itemint64ids().vector_size()) != num_items) {
-        throw std::invalid_argument("Number of integer item ids specified ("
-                                    + std::to_string(isr.itemint64ids().vector_size())
-                                    + ") does not equal the number of items given ("
-                                    + std::to_string(num_items) + ")");
+      if(num_items <= max_item) {
+        throw std::invalid_argument("List of integer item ids specified must be "
+                                    "large enough to index all item ids specified.  The largest item "
+                                    "index is " + std::to_string(max_item) + ", whereas there are "
+                                    " only " + std::to_string(num_items) + " item ids given.");
       }
 
-      integer_id_values.resize((size_t)num_items);
-      for(size_t i = 0; i < num_items; ++i) {
-        integer_id_values[i] = isr.itemint64ids().vector(int(i));
+
+      const auto& itemint64idsVector = isr.itemint64ids().vector();
+      integer_id_values.reserve(static_cast<size_t>(num_items));
+      std::copy(itemint64idsVector.begin(), itemint64idsVector.end(), std::back_inserter(integer_id_values));
+
+      if(std::set<int64_t>(integer_id_values.begin(), integer_id_values.end()).size() != num_items) {
+        throw std::invalid_argument("List of integer item ids specified must be "
+                                    "unique; list contains duplicates.");
       }
+
     } else if(isr.has_itemstringids() && isr.itemstringids().vector_size() != 0) {
-        if(size_t(isr.itemstringids().vector_size()) != num_items) {
-          throw std::invalid_argument("Number of string item ids specified ("
-                                      + std::to_string(isr.itemstringids().vector_size())
-                                      + ") does not equal the number of items given ("
-                                      + std::to_string(num_items) + ")");
-        }
+      
+      num_items = size_t(isr.itemstringids().vector_size());
 
-        string_id_values.resize((size_t)num_items);
-        for(size_t i = 0; i < num_items; ++i) {
-          string_id_values[i] = isr.itemstringids().vector(int(i));
-        }
+      if(size_t(isr.itemstringids().vector_size()) < max_item) {
+        throw std::invalid_argument("List of string item ids specified must be "
+                                    "large enough to index all item ids specified.  The largest item "
+                                    "index is " + std::to_string(max_item) + ", whereas there are "
+                                    " only " + std::to_string(num_items) + " item ids given.");
+      }
+
+      const auto& itemstringidsVector = isr.itemstringids().vector();
+      string_id_values.reserve(static_cast<size_t>(num_items));
+      std::copy(itemstringidsVector.begin(), itemstringidsVector.end(), std::back_inserter(string_id_values));
+
+      if(std::set<std::string>(string_id_values.begin(), string_id_values.end()).size() != num_items) {
+        throw std::invalid_argument("List of string item ids specified must be "
+                                    "unique; list contains duplicates.");
+      }
+    } else {
+      num_items = max_item + 1;
     }
 
     // Check out the specific parameters

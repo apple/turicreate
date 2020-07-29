@@ -1,8 +1,7 @@
 #include "MLModelTests.hpp"
 
-// TODO -- Fix these headers.
-#include "../src/Model.hpp"
-#include "../src/Utils.hpp"
+#include "Model.hpp"
+#include "Utils.hpp"
 
 #include "framework/TestUtils.hpp"
 

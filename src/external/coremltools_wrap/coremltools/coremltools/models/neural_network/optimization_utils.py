@@ -9,22 +9,24 @@ Neural Network optimization utilities.
 
 import numpy as _np
 
+
 def _fuse_layer_with_scale_layer(layer_idx, scale_idx, layers):
-    layer_type = layers[layer_idx].WhichOneof('layer')
-    if layer_type == 'convolution':
+    layer_type = layers[layer_idx].WhichOneof("layer")
+    if layer_type == "convolution":
         layer = layers[layer_idx].convolution
-    elif layer_type == 'innerProduct':
+    elif layer_type == "innerProduct":
         layer = layers[layer_idx].innerProduct
     else:
-        raise Exception('Scale fusion not supper for layer '
-                        'type {} '.format(layer_type))
+        raise Exception(
+            "Scale fusion not supper for layer " "type {} ".format(layer_type)
+        )
 
     scale = layers[scale_idx].scale
 
     # Update weights
     sw = _np.array(scale.scale.floatValue)
     w = _np.array(layer.weights.floatValue)
-    w = w.reshape(layer.outputChannels, int(len(w)/layer.outputChannels))
+    w = w.reshape(layer.outputChannels, int(len(w) / layer.outputChannels))
     wp = w * sw[:, None]
     del layer.weights.floatValue[:]
     layer.weights.floatValue.extend(wp.flatten())
@@ -37,26 +39,27 @@ def _fuse_layer_with_scale_layer(layer_idx, scale_idx, layers):
             layer.hasBias = True
         else:
             lb = _np.array(layer.bias.floatValue)
-            bp = sw*lb + sb
+            bp = sw * lb + sb
             del layer.bias.floatValue[:]
             layer.bias.floatValue.extend(bp)
 
     # re-wire outputs and delete scale layer
-    print('Fused {}->{}'.format(layers[layer_idx].name, layers[scale_idx].name))
+    print("Fused {}->{}".format(layers[layer_idx].name, layers[scale_idx].name))
     del layers[layer_idx].output[:]
     layers[layer_idx].output.extend(layers[scale_idx].output)
     del layers[scale_idx]
 
 
 def _fuse_layer_with_bias_layer(layer_idx, bias_idx, layers):
-    layer_type = layers[layer_idx].WhichOneof('layer')
-    if layer_type == 'convolution':
+    layer_type = layers[layer_idx].WhichOneof("layer")
+    if layer_type == "convolution":
         layer = layers[layer_idx].convolution
-    elif layer_type == 'innerProduct':
+    elif layer_type == "innerProduct":
         layer = layers[layer_idx].innerProduct
     else:
-        raise Exception('Bias fusion not supper for layer '
-                        'type {} '.format(layer_type))
+        raise Exception(
+            "Bias fusion not supper for layer " "type {} ".format(layer_type)
+        )
 
     bias = layers[bias_idx].bias
 
@@ -71,10 +74,11 @@ def _fuse_layer_with_bias_layer(layer_idx, bias_idx, layers):
         layer.bias.floatValue.extend(bp)
 
     # re-wire outputs and delete bias layer
-    print('Fused {}->{}'.format(layers[layer_idx].name, layers[bias_idx].name))
+    print("Fused {}->{}".format(layers[layer_idx].name, layers[bias_idx].name))
     del layers[layer_idx].output[:]
     layers[layer_idx].output.extend(layers[bias_idx].output)
     del layers[bias_idx]
+
 
 def _bn_scale_fusion(bn_idx, scale_idx, layers):
     bn = layers[bn_idx].batchnorm
@@ -98,7 +102,7 @@ def _bn_scale_fusion(bn_idx, scale_idx, layers):
     bn.beta.floatValue.extend(beta)
 
     # re-wire outputs and delete scale layer
-    print('Fused {}->{}'.format(layers[bn_idx].name, layers[scale_idx].name))
+    print("Fused {}->{}".format(layers[bn_idx].name, layers[scale_idx].name))
     del layers[bn_idx].output[:]
     layers[bn_idx].output.extend(layers[scale_idx].output)
     del layers[scale_idx]
@@ -119,9 +123,9 @@ def _conv_bn_fusion(conv_idx, bn_idx, layers):
     else:
         b = _np.zeros(conv.outputChannels)
 
-    w = w.reshape(conv.outputChannels, int(len(w)/conv.outputChannels))
+    w = w.reshape(conv.outputChannels, int(len(w) / conv.outputChannels))
     wp = (gamma / _np.sqrt(variance))[:, None] * w
-    bp = (gamma*b/_np.sqrt(variance)) - (gamma*mean/_np.sqrt(variance)) + beta
+    bp = (gamma * b / _np.sqrt(variance)) - (gamma * mean / _np.sqrt(variance)) + beta
 
     del conv.weights.floatValue[:]
     if conv.hasBias:
@@ -131,7 +135,7 @@ def _conv_bn_fusion(conv_idx, bn_idx, layers):
     conv.bias.floatValue.extend(bp)
     conv.hasBias = True
 
-    print('Fused {}->{}'.format(layers[conv_idx].name, layers[bn_idx].name))
+    print("Fused {}->{}".format(layers[conv_idx].name, layers[bn_idx].name))
     # re-wire outputs and delete batchnorm layer
     del layers[conv_idx].output[:]
     layers[conv_idx].output.extend(layers[bn_idx].output)
@@ -144,27 +148,27 @@ def _get_nn_mappings(layers):
     output_map = {}
     input_map = {}
     for idx, layer in enumerate(layers):
-        layer_name = '{}'.format(idx)
-        layer_map[layer_name] = {'outputs': [], 'inputs': []}
-        layer_type = layer.WhichOneof('layer')
+        layer_name = "{}".format(idx)
+        layer_map[layer_name] = {"outputs": [], "inputs": []}
+        layer_type = layer.WhichOneof("layer")
         if layer_type not in type_map.keys():
             type_map[layer_type] = []
         type_map[layer_type].append(layer_name)
 
         # Add inputs and outputs for layer
         for o in layer.output:
-            layer_map[layer_name]['outputs'].append(o)
+            layer_map[layer_name]["outputs"].append(o)
         for i in layer.input:
-            layer_map[layer_name]['inputs'].append(i)
+            layer_map[layer_name]["inputs"].append(i)
 
     # Construct input/output graph dict
     for l in layer_map.keys():
         output_map[l] = []
         input_map[l] = []
         for cl in layer_map.keys():
-            if any(x in layer_map[l]['outputs'] for x in layer_map[cl]['inputs']):
+            if any(x in layer_map[l]["outputs"] for x in layer_map[cl]["inputs"]):
                 output_map[l].append(cl)
-            if any(x in layer_map[l]['inputs'] for x in layer_map[cl]['outputs']):
+            if any(x in layer_map[l]["inputs"] for x in layer_map[cl]["outputs"]):
                 input_map[l].append(cl)
 
     return type_map, output_map, input_map
@@ -172,25 +176,29 @@ def _get_nn_mappings(layers):
 
 def _optimize_nn(layers):
     type_map, output_map, input_map = _get_nn_mappings(layers)
-    bn_layers = conv_layers = ip_layers = bias_layers = scale_layers = []
+    bn_layers = []
+    conv_layers = []
+    ip_layers = []
+    bias_layers = []
+    scale_layers = []
 
     # Only fuse with non-instance batchnorm layers
-    if 'batchnorm' in type_map.keys():
-        for bn_layer_idx in type_map['batchnorm']:
+    if "batchnorm" in type_map.keys():
+        for bn_layer_idx in type_map["batchnorm"]:
             if not layers[int(bn_layer_idx)].batchnorm.instanceNormalization:
                 bn_layers.append(bn_layer_idx)
 
-    if 'convolution' in type_map.keys():
-        conv_layers = type_map['convolution']
+    if "convolution" in type_map.keys():
+        conv_layers = type_map["convolution"]
 
-    if 'innerProduct' in type_map.keys():
-        ip_layers = type_map['innerProduct']
+    if "innerProduct" in type_map.keys():
+        ip_layers = type_map["innerProduct"]
 
-    if 'bias' in type_map.keys():
-        bias_layers = type_map['bias']
+    if "bias" in type_map.keys():
+        bias_layers = type_map["bias"]
 
-    if 'scale' in type_map.keys():
-        scale_layers = type_map['scale']
+    if "scale" in type_map.keys():
+        scale_layers = type_map["scale"]
 
     # Convolution optimizations
     for conv_idx in conv_layers:

@@ -1,9 +1,0 @@
-numpy
-olefile==0.44
-Keras==2.1.6
-tensorflow==1.14.0
-pytest
-Pillow
-pandas
-scikit-learn==0.19.2
-h5py

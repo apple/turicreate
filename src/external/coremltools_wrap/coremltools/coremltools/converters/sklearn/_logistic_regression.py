@@ -5,18 +5,21 @@
 
 from collections import Iterable
 
-from ..._deps import HAS_SKLEARN as _HAS_SKLEARN
+from ..._deps import _HAS_SKLEARN
 from ...models import MLModel as _MLModel
+
 if _HAS_SKLEARN:
     from sklearn.linear_model import LogisticRegression
     from . import _sklearn_util
+
     sklearn_class = LogisticRegression
 
 from ... import SPECIFICATION_VERSION
 from ...models._interface_management import set_classifier_interface_params
 from ...proto import Model_pb2 as _Model_pb2
 
-model_type = 'classifier'
+model_type = "classifier"
+
 
 def convert(model, feature_names, target):
     """Convert a Logistic Regression model to the protobuf spec.
@@ -36,11 +39,13 @@ def convert(model, feature_names, target):
     model_spec: An object of type Model_pb.
         Protobuf representation of the model
     """
-    if not(_HAS_SKLEARN):
-        raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-    
+    if not (_HAS_SKLEARN):
+        raise RuntimeError(
+            "scikit-learn not found. scikit-learn conversion API is disabled."
+        )
+
     _sklearn_util.check_expected_type(model, LogisticRegression)
-    _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'coef_'))
+    _sklearn_util.check_fitted(model, lambda m: hasattr(m, "coef_"))
 
     return _MLModel(_convert(model, feature_names, target))
 
@@ -49,14 +54,18 @@ def _convert(model, feature_names, target):
     spec = _Model_pb2.Model()
     spec.specificationVersion = SPECIFICATION_VERSION
 
-    set_classifier_interface_params(spec, feature_names, model.classes_, 'glmClassifier', output_features=target)
+    set_classifier_interface_params(
+        spec, feature_names, model.classes_, "glmClassifier", output_features=target
+    )
 
     glmClassifier = spec.glmClassifier
-    
+
     if model.multi_class == "ovr":
         glmClassifier.classEncoding = glmClassifier.OneVsRest
     else:
-        print('[ERROR] Currently "One Vs Rest" is the only supported multiclass option.')
+        print(
+            '[ERROR] Currently "One Vs Rest" is the only supported multiclass option.'
+        )
         return None
 
     glmClassifier.postEvaluationTransform = glmClassifier.Logit
@@ -69,23 +78,30 @@ def _convert(model, feature_names, target):
             glmClassifier.offset.append(model.intercept_)
 
     for cur_in_row in model.coef_:
-        cur_out_row = glmClassifier.weights.add()        
+        cur_out_row = glmClassifier.weights.add()
         for val in cur_in_row:
             cur_out_row.value.append(val)
 
     return spec
 
+
 def supports_output_scores(model):
     return True
 
+
 def get_output_classes(model):
-    if not(_HAS_SKLEARN):
-        raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-    _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'coef_'))
+    if not (_HAS_SKLEARN):
+        raise RuntimeError(
+            "scikit-learn not found. scikit-learn conversion API is disabled."
+        )
+    _sklearn_util.check_fitted(model, lambda m: hasattr(m, "coef_"))
     return list(model.classes_)
 
+
 def get_input_dimension(model):
-    if not(_HAS_SKLEARN):
-        raise RuntimeError('scikit-learn not found. scikit-learn conversion API is disabled.')
-    _sklearn_util.check_fitted(model, lambda m: hasattr(m, 'coef_'))
+    if not (_HAS_SKLEARN):
+        raise RuntimeError(
+            "scikit-learn not found. scikit-learn conversion API is disabled."
+        )
+    _sklearn_util.check_fitted(model, lambda m: hasattr(m, "coef_"))
     return len(model.coef_[0])

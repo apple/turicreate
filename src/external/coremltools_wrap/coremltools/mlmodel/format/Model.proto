@@ -153,12 +153,27 @@ message ModelDescription {
     repeated FeatureDescription input = 1;
     repeated FeatureDescription output = 10;
 
+    // [Required for regressor and classifier models]: the name
+    // to give to an output feature containing the prediction.
     string predictedFeatureName = 11;
+
+    // [Optional for classifier models]: the name to give to an
+    // output feature containing a dictionary mapping class
+    // labels to their predicted probabilities. If not specified,
+    // the dictionary will not be returned by the model.
     string predictedProbabilitiesName = 12;
 
     repeated FeatureDescription trainingInput = 50;
-    
+
     Metadata metadata = 100;
+}
+
+message SerializedModel {
+    // Identifier whose content describes the model type of the serialized protocol buffer message.
+    string identifier = 1;
+
+    // Must be a valid serialized protocol buffer of the above specified type.
+    bytes model = 2;
 }
 
 /**
@@ -278,5 +293,9 @@ message Model {
         CoreMLModels.SoundAnalysisPreprocessing soundAnalysisPreprocessing = 2003;
         CoreMLModels.Gazetteer gazetteer = 2004;
         CoreMLModels.WordEmbedding wordEmbedding = 2005;
+        
+        // Reserved private messages start at 3000
+        // These messages are subject to change with no notice or support.
+        SerializedModel serializedModel = 3000;
     }
 }

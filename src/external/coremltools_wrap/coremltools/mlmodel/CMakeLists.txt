@@ -1,64 +1,60 @@
-cmake_minimum_required(VERSION 3.0.0)
-project(mlmodel)
+include("${CMAKE_SOURCE_DIR}/cmake/coreml-utils.cmake")
 
 include_directories(
   ..
   ../deps/protobuf/src
+  src
 )
 
-set(CMAKE_CXX_FLAGS " \
-    ${CMAKE_CXX_FLAGS} \
-    --std=c++14 \
-    -DGOOGLE_PROTOBUF_NO_STATIC_INITIALIZER \
-")
+add_definitions(-DGOOGLE_PROTOBUF_NO_STATIC_INITIALIZER)
+
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
   set(CMAKE_CXX_FLAGS " \
       ${CMAKE_CXX_FLAGS} \
       -Wglobal-constructors \
   ")
 endif()
-set(CMAKE_EXE_LINKER_FLAGS " \
-    ${CMAKE_EXE_LINKER_FLAGS} \
-    --std=c++14 \
-")
 
 add_library(mlmodel_test
     STATIC
 
-    tests/LinearModelTests.cpp
-    tests/TreeEnsembleTests.cpp
-    tests/OneHotEncoderTests.cpp
+    tests/BayesianProbitRegressionValidatorTests.cpp
     tests/InterfaceTests.cpp
-    tests/UtilsTests.cpp
+    tests/KNNValidatorTests.cpp
+    tests/LinearModelTests.cpp
+    tests/ModelContainerTests.cpp
+    tests/ModelCreationUtils.cpp
     tests/NNShaperTest.cpp
     tests/NNShapeTests.cpp
     tests/NNValidatorTests.cpp
-    tests/ModelContainerTests.cpp
-    tests/SaveLoadTests.cpp
-    tests/BayesianProbitRegressionValidatorTests.cpp
-    tests/NNShapeTests.cpp
-    tests/NNShaperTest.cpp
-    tests/KNNValidatorTests.cpp
-    tests/UpdatableModelValidatorTests.cpp
     tests/ParameterTests.cpp
-    tests/ModelCreationUtils.cpp
+    tests/OneHotEncoderTests.cpp
+    tests/SaveLoadTests.cpp
     tests/SoundAnalysisPreprocessingValidatorTests.cpp
+    tests/VisionFeaturePrintValidatorTests.cpp
+    tests/TreeEnsembleTests.cpp
+    tests/UpdatableModelValidatorTests.cpp
+    tests/UtilsTests.cpp
 )
 
 set_property(TARGET mlmodel_test
     PROPERTY POSITION_INDEPENDENT_CODE ON
 )
 
+target_include_directories(mlmodel_test
+    PRIVATE tests
+)
+
 target_link_libraries(mlmodel_test
-  mlmodel
+    mlmodel
 )
 
 add_executable(mlmodel_test_runner
-  test_runner.cpp
+    test_runner.cpp
 )
 
 target_link_libraries(mlmodel_test_runner
-  mlmodel_test
+    mlmodel_test
 )
 
 add_library(mlmodel
@@ -99,42 +95,13 @@ add_library(mlmodel
 
     src/Comparison.cpp
     src/DataType.cpp
-    src/Model.cpp
-    src/Result.cpp
-    src/Utils.cpp
-
-    src/ArrayFeatureExtractorValidator.cpp
-    src/BayesianProbitRegressionValidator.cpp
-    src/CategoricalMappingValidator.cpp
-    src/CustomModelValidator.cpp
-    src/DictVectorizerValidator.cpp
-    src/FeatureVectorizerValidator.cpp
-    src/GazetteerValidator.cpp
-    src/IdentityValidator.cpp
-    src/ImputerValidator.cpp
-    src/InterfaceValidators.cpp
-    src/LinearModelValidator.cpp
-    src/NeuralNetwork/NeuralNetworkValidator.cpp
-    src/NeuralNetwork/NeuralNetworkLayerValidator.cpp
-    src/NonMaximumSuppressionValidator.cpp
-    src/NormalizerValidator.cpp
-    src/OneHotEncoderValidator.cpp
-    src/PipelineValidator.cpp
-    src/ScalarValidator.cpp
-    src/SVMValidator.cpp
-    src/TreeEnsembleValidator.cpp
-    src/TextClassifierValidator.cpp
-    src/VisionFeaturePrintValidator.cpp
-    src/WordEmbeddingValidator.cpp
-    src/WordTaggerValidator.cpp
-    src/QuantizationValidationUtils.cpp
-    src/KNearestNeighborsClassifierValidator.cpp
-    src/ParameterValidator.cpp
-    src/ItemSimilarityRecommenderValidator.cpp
     src/ItemSimilarityRecommenderCommon.cpp
+    src/LayerShapeConstraints.cpp
+    src/Model.cpp
+    src/NeuralNetworkBuffer.cpp
+    src/Result.cpp
     src/TreeEnsembleCommon.cpp
-    src/SoundAnalysisPreprocessingValidator.cpp
-    src/LinkedModelValidator.cpp
+    src/Utils.cpp
 
     src/transforms/LinearModel.cpp
     src/transforms/Pipeline.cpp
@@ -145,10 +112,38 @@ add_library(mlmodel
     src/transforms/OneHotEncoder.cpp
     src/transforms/ItemSimilarityRecommender.cpp
 
-    src/LayerShapeConstraints.cpp
-    src/NeuralNetwork/NeuralNetworkShapes.cpp
-    src/NeuralNetwork/UpdatableNeuralNetworkValidator.cpp
-    src/QuantizationValidationUtils.cpp
+    src/Validation/ArrayFeatureExtractorValidator.cpp
+    src/Validation/BayesianProbitRegressionValidator.cpp
+    src/Validation/CategoricalMappingValidator.cpp
+    src/Validation/CustomModelValidator.cpp
+    src/Validation/DictVectorizerValidator.cpp
+    src/Validation/FeatureVectorizerValidator.cpp
+    src/Validation/GazetteerValidator.cpp
+    src/Validation/IdentityValidator.cpp
+    src/Validation/ImputerValidator.cpp
+    src/Validation/InterfaceValidators.cpp
+    src/Validation/ItemSimilarityRecommenderValidator.cpp
+    src/Validation/KNearestNeighborsClassifierValidator.cpp
+    src/Validation/LinearModelValidator.cpp
+    src/Validation/LinkedModelValidator.cpp
+    src/Validation/NeuralNetwork/NeuralNetworkLayerValidator.cpp
+    src/Validation/NeuralNetwork/NeuralNetworkShapes.cpp
+    src/Validation/NeuralNetwork/NeuralNetworkValidator.cpp
+    src/Validation/NeuralNetwork/UpdatableNeuralNetworkValidator.cpp
+    src/Validation/NonMaximumSuppressionValidator.cpp
+    src/Validation/NormalizerValidator.cpp
+    src/Validation/OneHotEncoderValidator.cpp
+    src/Validation/ParameterValidator.cpp
+    src/Validation/PipelineValidator.cpp
+    src/Validation/QuantizationValidationUtils.cpp
+    src/Validation/ScalarValidator.cpp
+    src/Validation/SoundAnalysisPreprocessingValidator.cpp
+    src/Validation/SVMValidator.cpp
+    src/Validation/TextClassifierValidator.cpp
+    src/Validation/TreeEnsembleValidator.cpp
+    src/Validation/VisionFeaturePrintValidator.cpp
+    src/Validation/WordEmbeddingValidator.cpp
+    src/Validation/WordTaggerValidator.cpp
 )
 
 set_property(TARGET mlmodel
@@ -208,90 +203,7 @@ option(OVERWRITE_PB_SOURCE
 # This will get filled with the dependencies for the 'protosrc' target.
 set(proto_depends)
 foreach(proto_fn IN ITEMS ${proto_files})
-    add_custom_command(
-        OUTPUT
-            ${CMAKE_CURRENT_BINARY_DIR}/format/${proto_fn}.pb.cc
-            ${CMAKE_CURRENT_BINARY_DIR}/format/${proto_fn}.pb.h
-        COMMENT "Generating proto files for ${proto_fn}..."
-        COMMAND ${CMAKE_BINARY_DIR}/deps/protobuf/cmake/protoc
-            --cpp_out=${CMAKE_CURRENT_BINARY_DIR}/format/
-            -I${CMAKE_CURRENT_SOURCE_DIR}/format
-            ${CMAKE_CURRENT_SOURCE_DIR}/format/${proto_fn}.proto
-        DEPENDS protoc
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-    add_custom_command(
-        OUTPUT
-            ${CMAKE_CURRENT_BINARY_DIR}/format/${proto_fn}_enum.h
-        COMMENT "Generating enums for ${proto_fn}..."
-        COMMAND ${CMAKE_BINARY_DIR}/deps/protobuf/cmake/protoc
-            --plugin=protoc-gen-enum=mlmodel/enumgen
-            --enum_out=${CMAKE_CURRENT_BINARY_DIR}/format/
-            -I${CMAKE_CURRENT_SOURCE_DIR}/format/
-            ${CMAKE_CURRENT_SOURCE_DIR}/format/${proto_fn}.proto
-        DEPENDS enumgen protoc
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-    add_custom_command(
-        OUTPUT
-            ${CMAKE_BINARY_DIR}/coremltools/proto/${proto_fn}_pb2.py
-        COMMENT "Generating Python for ${proto_fn}..."
-        COMMAND ${CMAKE_BINARY_DIR}/deps/protobuf/cmake/protoc
-            --python_out=${CMAKE_BINARY_DIR}/coremltools/proto
-            -I${CMAKE_CURRENT_SOURCE_DIR}/format/
-            ${CMAKE_CURRENT_SOURCE_DIR}/format/${proto_fn}.proto
-        COMMAND python
-            -m lib2to3
-            -wn
-            --no-diff
-            -f import
-            ${CMAKE_BINARY_DIR}/coremltools/${proto_fn}_pb2.py
-        DEPENDS protoc
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-    )
-    # For the CoreML framework we read the source file locations for these, and
-    # so it can be useful to update the source tree in addition.  So we repeat
-    # all of the above with different outputs.
-    if(OVERWRITE_PB_SOURCE)
-        add_custom_target(tgt_${proto_fn}_source ALL
-            COMMENT "Generating (source) proto files for ${proto_fn}..."
-            COMMAND ${CMAKE_BINARY_DIR}/deps/protobuf/cmake/protoc
-                --cpp_out=${CMAKE_CURRENT_SOURCE_DIR}/build/format/
-                -I${CMAKE_CURRENT_SOURCE_DIR}/format
-                ${CMAKE_CURRENT_SOURCE_DIR}/format/${proto_fn}.proto
-            DEPENDS protoc
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_target(tgt_${proto_fn}_enums ALL
-            COMMENT "Generating (source) enums for ${proto_fn}..."
-            COMMAND ${CMAKE_BINARY_DIR}/deps/protobuf/cmake/protoc
-                --plugin=protoc-gen-enum=mlmodel/enumgen
-                --enum_out=${CMAKE_CURRENT_SOURCE_DIR}/build/format/
-                -I${CMAKE_CURRENT_SOURCE_DIR}/format/
-                ${CMAKE_CURRENT_SOURCE_DIR}/format/${proto_fn}.proto
-            DEPENDS enumgen protoc
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        add_custom_target(tgt_${proto_fn}_python ALL
-            COMMENT "Generating (source) Python for ${proto_fn}..."
-            COMMAND ${CMAKE_BINARY_DIR}/deps/protobuf/cmake/protoc
-                --python_out=${CMAKE_SOURCE_DIR}/coremltools/proto
-                -I${CMAKE_CURRENT_SOURCE_DIR}/format/
-                ${CMAKE_CURRENT_SOURCE_DIR}/format/${proto_fn}.proto
-            COMMAND python
-                -m lib2to3
-                -wn
-                --no-diff
-                -f import
-                ${CMAKE_SOURCE_DIR}/coremltools/proto/${proto_fn}_pb2.py
-            DEPENDS protoc
-            WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-        )
-        # Record dependencies for 'protosrc' target.
-        list(APPEND proto_depends tgt_${proto_fn}_source)
-        list(APPEND proto_depends tgt_${proto_fn}_enums)
-        list(APPEND proto_depends tgt_${proto_fn}_python)
-    endif()
+    coreml_add_build_proto(${proto_fn} "")
 endforeach()
 # Add a custom 'protosrc' target that only builds the source objects from proto
 # files.

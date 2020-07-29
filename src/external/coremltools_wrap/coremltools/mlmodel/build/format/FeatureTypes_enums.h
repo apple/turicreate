@@ -52,6 +52,28 @@ static const char * MLArrayFeatureTypeShapeFlexibility_Name(MLArrayFeatureTypeSh
     return "INVALID";
 }
 
+enum MLArrayFeatureTypedefaultOptionalValue: int {
+    MLArrayFeatureTypedefaultOptionalValue_intDefaultValue = 41,
+    MLArrayFeatureTypedefaultOptionalValue_floatDefaultValue = 51,
+    MLArrayFeatureTypedefaultOptionalValue_doubleDefaultValue = 61,
+    MLArrayFeatureTypedefaultOptionalValue_NOT_SET = 0,
+};
+
+__attribute__((__unused__))
+static const char * MLArrayFeatureTypedefaultOptionalValue_Name(MLArrayFeatureTypedefaultOptionalValue x) {
+    switch (x) {
+        case MLArrayFeatureTypedefaultOptionalValue_intDefaultValue:
+            return "MLArrayFeatureTypedefaultOptionalValue_intDefaultValue";
+        case MLArrayFeatureTypedefaultOptionalValue_floatDefaultValue:
+            return "MLArrayFeatureTypedefaultOptionalValue_floatDefaultValue";
+        case MLArrayFeatureTypedefaultOptionalValue_doubleDefaultValue:
+            return "MLArrayFeatureTypedefaultOptionalValue_doubleDefaultValue";
+        case MLArrayFeatureTypedefaultOptionalValue_NOT_SET:
+            return "INVALID";
+    }
+    return "INVALID";
+}
+
 enum MLDictionaryFeatureTypeKeyType: int {
     MLDictionaryFeatureTypeKeyType_int64KeyType = 1,
     MLDictionaryFeatureTypeKeyType_stringKeyType = 2,

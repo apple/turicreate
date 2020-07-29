@@ -4,20 +4,19 @@
 # found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
 """
-Utilities to annotate Neural Network Features with flexible shape information. 
+Utilities to annotate Neural Network Features with flexible shape information.
 Only available in coremltools 2.0b1 and onwards
 """
 
 from ..utils import _get_feature, _get_nn_layers, _get_input_names
 from ... import _MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION
 from ... import _MINIMUM_NDARRAY_SPEC_VERSION
-from ..model import NeuralNetworkShaper
 
-_SEQUENCE_KEY = 'S'
-_BATCH_KEY = 'B'
-_CHANNEL_KEY = 'C'
-_HEIGHT_KEY = 'H'
-_WIDTH_KEY = 'W'
+_SEQUENCE_KEY = "S"
+_BATCH_KEY = "B"
+_CHANNEL_KEY = "C"
+_HEIGHT_KEY = "H"
+_WIDTH_KEY = "W"
 
 _CONSTRAINED_KEYS = [_CHANNEL_KEY, _HEIGHT_KEY, _WIDTH_KEY]
 
@@ -25,7 +24,7 @@ _CONSTRAINED_KEYS = [_CHANNEL_KEY, _HEIGHT_KEY, _WIDTH_KEY]
 class Shape(object):
     def __init__(self, shape_value):
         if shape_value < 1:
-            raise Exception('Invalid value. Size/Shape values must be > 0')
+            raise Exception("Invalid value. Size/Shape values must be > 0")
         self._value = shape_value
 
     @property
@@ -38,7 +37,7 @@ class Size(Shape):
         super(Size, self).__init__(size_value)
 
 
-class NeuralNetworkMultiArrayShape():
+class NeuralNetworkMultiArrayShape:
     """
     An object representing a shape for a multiArray feature in a
     neural network. Valid shapes must have have only the Channel [C]
@@ -46,9 +45,11 @@ class NeuralNetworkMultiArrayShape():
     """
 
     def __init__(self, channel=None, height=None, width=None):
-        self._shape = {_CHANNEL_KEY: Shape(int(channel)) if channel else None,
-                       _HEIGHT_KEY: Shape(int(height)) if height else None,
-                       _WIDTH_KEY: Shape(int(width)) if width else None}
+        self._shape = {
+            _CHANNEL_KEY: Shape(int(channel)) if channel else None,
+            _HEIGHT_KEY: Shape(int(height)) if height else None,
+            _WIDTH_KEY: Shape(int(width)) if width else None,
+        }
 
     def set_channel_shape(self, channel_shape):
         self._shape[_CHANNEL_KEY] = Shape(channel_shape)
@@ -63,12 +64,13 @@ class NeuralNetworkMultiArrayShape():
         num_dims = len([v for v in self._shape.values() if v])
         if num_dims != 1 and num_dims != 3:
             raise Exception(
-                'For neural networks, shape must be of length 1 or 3'
-                ', representing input shape [C] or [C,H,W], respectively')
+                "For neural networks, shape must be of length 1 or 3"
+                ", representing input shape [C] or [C,H,W], respectively"
+            )
 
         if num_dims == 1:
-            if not self._shape['C']:
-                raise Exception('Channel Shape not specified')
+            if not self._shape["C"]:
+                raise Exception("Channel Shape not specified")
 
     @property
     def multiarray_shape(self):
@@ -76,13 +78,16 @@ class NeuralNetworkMultiArrayShape():
         if num_dims == 1:
             return [self._shape[_CHANNEL_KEY].value]
         elif num_dims == 3:
-            return [self._shape[_CHANNEL_KEY].value, self._shape[_HEIGHT_KEY].value,
-                    self._shape[_WIDTH_KEY].value]
+            return [
+                self._shape[_CHANNEL_KEY].value,
+                self._shape[_HEIGHT_KEY].value,
+                self._shape[_WIDTH_KEY].value,
+            ]
         else:
-            raise Exception('Invalid multiarray shape for neural network')
+            raise Exception("Invalid multiarray shape for neural network")
 
 
-class NeuralNetworkImageSize():
+class NeuralNetworkImageSize:
     """
     An object representing a size for an image feature inside a
     neural network. Valid sizess for height and width are > 0.
@@ -116,17 +121,19 @@ class ShapeRange(object):
 
         if not unBounded and lowerBound > upperBound:
             raise Exception(
-                'lowerBound > upperBound for range ({},{})'.format(lowerBound,
-                    upperBound))
+                "lowerBound > upperBound for range ({},{})".format(
+                    lowerBound, upperBound
+                )
+            )
 
         if not unBounded and upperBound < 1:
-            raise Exception('Invalid upperBound: {} '.format(upperBound))
+            raise Exception("Invalid upperBound: {} ".format(upperBound))
 
         if lowerBound == 0:
             lowerBound = 1
 
         if lowerBound < 1:
-            raise Exception('Invalid lowerBound: {}'.format(lowerBound))
+            raise Exception("Invalid lowerBound: {}".format(lowerBound))
 
         self._lowerBound = lowerBound
         self._upperBound = upperBound
@@ -149,7 +156,7 @@ class ShapeRange(object):
         return not (self._lowerBound == self._upperBound)
 
 
-class NeuralNetworkMultiArrayShapeRange():
+class NeuralNetworkMultiArrayShapeRange:
     """
     An object representing a range of shapes for a multiArray feature in a
     neural network. Valid shape ranges must have have only the Channel [C]
@@ -162,7 +169,9 @@ class NeuralNetworkMultiArrayShapeRange():
 
         if input_ranges:
             if not isinstance(input_ranges, dict):
-                raise Exception('Attempting to initialize a shape range with something other than a dictionary of shapes.')
+                raise Exception(
+                    "Attempting to initialize a shape range with something other than a dictionary of shapes."
+                )
             self.arrayShapeRange = {}
             for key, value in input_ranges.items():
                 if key in _CONSTRAINED_KEYS:
@@ -171,9 +180,9 @@ class NeuralNetworkMultiArrayShapeRange():
 
     def _create_shape_range(self, r):
         if not isinstance(r, tuple):
-            raise Exception('Range should be a ShapeRange or a tuple object')
+            raise Exception("Range should be a ShapeRange or a tuple object")
         elif len(r) != 2:
-            raise Exception('Range tuple should be at least length 2')
+            raise Exception("Range tuple should be at least length 2")
         return ShapeRange(r[0], r[1])
 
     def add_channel_range(self, channel_range):
@@ -198,16 +207,23 @@ class NeuralNetworkMultiArrayShapeRange():
         num_dims = self.get_shape_range_dims()
         if num_dims != 1 and num_dims != 3:
             raise Exception(
-                'For neural networks, shape must be of length 1 or 3'
-                ', representing input shape [C] or [C,H,W], respectively')
+                "For neural networks, shape must be of length 1 or 3"
+                ", representing input shape [C] or [C,H,W], respectively"
+            )
 
         if num_dims == 1:
             if _CHANNEL_KEY not in self.arrayShapeRange.keys():
-                raise Exception('Channel Shape Range not specified')
+                raise Exception("Channel Shape Range not specified")
 
         if num_dims == 3:
-            if _CHANNEL_KEY not in self.arrayShapeRange.keys() or _HEIGHT_KEY not in self.arrayShapeRange.keys() or _WIDTH_KEY not in self.arrayShapeRange.keys():
-                raise Exception('Shape range constraint missing for either channel, height, or width.')
+            if (
+                _CHANNEL_KEY not in self.arrayShapeRange.keys()
+                or _HEIGHT_KEY not in self.arrayShapeRange.keys()
+                or _WIDTH_KEY not in self.arrayShapeRange.keys()
+            ):
+                raise Exception(
+                    "Shape range constraint missing for either channel, height, or width."
+                )
 
     def get_channel_range(self):
         return self.arrayShapeRange[_CHANNEL_KEY]
@@ -230,7 +246,7 @@ class NeuralNetworkMultiArrayShapeRange():
         return False
 
 
-class NeuralNetworkImageSizeRange():
+class NeuralNetworkImageSizeRange:
     """
     An object representing a range of sizes for an image feature inside a
     neural network. Valid ranges for height and width are > 0. A "-1"
@@ -241,20 +257,16 @@ class NeuralNetworkImageSizeRange():
     def __init__(self, height_range=None, width_range=None):
         if height_range and not isinstance(height_range, ShapeRange):
             if not isinstance(height_range, tuple):
-                raise Exception(
-                    'Height range should be a ShapeRange or a tuple object')
+                raise Exception("Height range should be a ShapeRange or a tuple object")
             elif len(height_range) != 2:
-                raise Exception(
-                    'Height range tuple should be at least length 2')
+                raise Exception("Height range tuple should be at least length 2")
             height_range = ShapeRange(height_range[0], height_range[1])
 
         if width_range and not isinstance(width_range, ShapeRange):
             if not isinstance(width_range, tuple):
-                raise Exception(
-                    'Width range should be a ShapeRange or a tuple object')
+                raise Exception("Width range should be a ShapeRange or a tuple object")
             elif len(width_range) != 2:
-                raise Exception(
-                    'Width range tuple should be at least length 2')
+                raise Exception("Width range tuple should be at least length 2")
             width_range = ShapeRange(width_range[0], width_range[1])
 
         self._height_range = height_range
@@ -263,22 +275,18 @@ class NeuralNetworkImageSizeRange():
     def add_width_range(self, width_range):
         if not isinstance(width_range, ShapeRange):
             if not isinstance(width_range, tuple):
-                raise Exception(
-                    'Width range should be a ShapeRange or a tuple object')
+                raise Exception("Width range should be a ShapeRange or a tuple object")
             elif len(width_range) != 2:
-                raise Exception(
-                    'Width range tuple should be at least length 2')
+                raise Exception("Width range tuple should be at least length 2")
 
         self._width_range = ShapeRange(width_range[0], width_range[1])
 
     def add_height_range(self, height_range):
         if not isinstance(height_range, ShapeRange):
             if not isinstance(height_range, tuple):
-                raise Exception(
-                    'Height range should be a ShapeRange or a tuple object')
+                raise Exception("Height range should be a ShapeRange or a tuple object")
             elif len(height_range) != 2:
-                raise Exception(
-                    'Height range tuple should be at least length 2')
+                raise Exception("Height range tuple should be at least length 2")
 
         self._height_range = ShapeRange(height_range[0], height_range[1])
 
@@ -331,17 +339,18 @@ def add_enumerated_multiarray_shapes(spec, feature_name, shapes):
     for shape in shapes:
         if not isinstance(shape, NeuralNetworkMultiArrayShape):
             raise Exception(
-                'Shape ranges should be of type NeuralNetworkMultiArrayShape')
+                "Shape ranges should be of type NeuralNetworkMultiArrayShape"
+            )
         shape._validate_multiarray_shape()
 
     feature = _get_feature(spec, feature_name)
-    if feature.type.WhichOneof('Type') != 'multiArrayType':
-        raise Exception('Trying to add enumerated shapes to '
-                        'a non-multiArray feature type')
+    if feature.type.WhichOneof("Type") != "multiArrayType":
+        raise Exception(
+            "Trying to add enumerated shapes to " "a non-multiArray feature type"
+        )
 
-    if feature.type.multiArrayType.WhichOneof(
-            'ShapeFlexibility') != 'enumeratedShapes':
-        feature.type.multiArrayType.ClearField('ShapeFlexibility')
+    if feature.type.multiArrayType.WhichOneof("ShapeFlexibility") != "enumeratedShapes":
+        feature.type.multiArrayType.ClearField("ShapeFlexibility")
 
     eshape_len = len(feature.type.multiArrayType.enumeratedShapes.shapes)
 
@@ -359,16 +368,18 @@ def add_enumerated_multiarray_shapes(spec, feature_name, shapes):
             fs.set_width_shape(fixed_shape[2])
             shapes.append(fs)
         else:
-            raise Exception('Original fixed multiArray shape for {} is invalid'
-                            .format(feature_name))
+            raise Exception(
+                "Original fixed multiArray shape for {} is invalid".format(feature_name)
+            )
 
     for shape in shapes:
         s = feature.type.multiArrayType.enumeratedShapes.shapes.add()
         s.shape.extend(shape.multiarray_shape)
 
     # Bump up specification version
-    spec.specificationVersion = max(_MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION,
-                                    spec.specificationVersion)
+    spec.specificationVersion = max(
+        _MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION, spec.specificationVersion
+    )
 
 
 def add_enumerated_image_sizes(spec, feature_name, sizes):
@@ -407,17 +418,14 @@ def add_enumerated_image_sizes(spec, feature_name, sizes):
 
     for size in sizes:
         if not isinstance(size, NeuralNetworkImageSize):
-            raise Exception(
-                'Shape ranges should be of type NeuralNetworkImageSize')
+            raise Exception("Shape ranges should be of type NeuralNetworkImageSize")
 
     feature = _get_feature(spec, feature_name)
-    if feature.type.WhichOneof('Type') != 'imageType':
-        raise Exception('Trying to add enumerated sizes to '
-                        'a non-image feature type')
+    if feature.type.WhichOneof("Type") != "imageType":
+        raise Exception("Trying to add enumerated sizes to " "a non-image feature type")
 
-    if feature.type.imageType.WhichOneof(
-            'SizeFlexibility') != 'enumeratedSizes':
-        feature.type.imageType.ClearField('SizeFlexibility')
+    if feature.type.imageType.WhichOneof("SizeFlexibility") != "enumeratedSizes":
+        feature.type.imageType.ClearField("SizeFlexibility")
 
     esizes_len = len(feature.type.imageType.enumeratedSizes.sizes)
 
@@ -434,8 +442,9 @@ def add_enumerated_image_sizes(spec, feature_name, sizes):
         s.width = size.width
 
     # Bump up specification version
-    spec.specificationVersion = max(_MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION,
-                                    spec.specificationVersion)
+    spec.specificationVersion = max(
+        _MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION, spec.specificationVersion
+    )
 
 
 def update_image_size_range(spec, feature_name, size_range):
@@ -471,24 +480,31 @@ def update_image_size_range(spec, feature_name, size_range):
         None. The spec object is updated
     """
     if not isinstance(size_range, NeuralNetworkImageSizeRange):
-        raise Exception(
-            'Shape ranges should be of type NeuralNetworkImageSizeRange')
+        raise Exception("Shape ranges should be of type NeuralNetworkImageSizeRange")
 
     feature = _get_feature(spec, feature_name)
-    if feature.type.WhichOneof('Type') != 'imageType':
-        raise Exception('Trying to add size ranges for '
-                        'a non-image feature type')
+    if feature.type.WhichOneof("Type") != "imageType":
+        raise Exception("Trying to add size ranges for " "a non-image feature type")
 
-    feature.type.imageType.ClearField('SizeFlexibility')
-    feature.type.imageType.imageSizeRange.heightRange.lowerBound = size_range.get_height_range().lowerBound
-    feature.type.imageType.imageSizeRange.heightRange.upperBound = size_range.get_height_range().upperBound
+    feature.type.imageType.ClearField("SizeFlexibility")
+    feature.type.imageType.imageSizeRange.heightRange.lowerBound = (
+        size_range.get_height_range().lowerBound
+    )
+    feature.type.imageType.imageSizeRange.heightRange.upperBound = (
+        size_range.get_height_range().upperBound
+    )
 
-    feature.type.imageType.imageSizeRange.widthRange.lowerBound = size_range.get_width_range().lowerBound
-    feature.type.imageType.imageSizeRange.widthRange.upperBound = size_range.get_width_range().upperBound
+    feature.type.imageType.imageSizeRange.widthRange.lowerBound = (
+        size_range.get_width_range().lowerBound
+    )
+    feature.type.imageType.imageSizeRange.widthRange.upperBound = (
+        size_range.get_width_range().upperBound
+    )
 
     # Bump up specification version
-    spec.specificationVersion = max(_MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION,
-                                    spec.specificationVersion)
+    spec.specificationVersion = max(
+        _MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION, spec.specificationVersion
+    )
 
 
 def update_multiarray_shape_range(spec, feature_name, shape_range):
@@ -527,17 +543,18 @@ def update_multiarray_shape_range(spec, feature_name, shape_range):
         None. The spec is updated
     """
     if not isinstance(shape_range, NeuralNetworkMultiArrayShapeRange):
-        raise Exception('Shape range should be of type MultiArrayShapeRange')
+        raise Exception("Shape range should be of type MultiArrayShapeRange")
 
     shape_range.validate_array_shape_range()
     feature = _get_feature(spec, feature_name)
 
-    if feature.type.WhichOneof('Type') != 'multiArrayType':
-        raise Exception('Trying to update shape range for '
-                        'a non-multiArray feature type')
+    if feature.type.WhichOneof("Type") != "multiArrayType":
+        raise Exception(
+            "Trying to update shape range for " "a non-multiArray feature type"
+        )
 
     # Add channel range
-    feature.type.multiArrayType.ClearField('ShapeFlexibility')
+    feature.type.multiArrayType.ClearField("ShapeFlexibility")
     s = feature.type.multiArrayType.shapeRange.sizeRanges.add()
     s.lowerBound = shape_range.get_channel_range().lowerBound
     s.upperBound = shape_range.get_channel_range().upperBound
@@ -553,9 +570,9 @@ def update_multiarray_shape_range(spec, feature_name, shape_range):
         s.upperBound = shape_range.get_width_range().upperBound
 
     # Bump up specification version
-    spec.specificationVersion = max(_MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION,
-                                    spec.specificationVersion)
-
+    spec.specificationVersion = max(
+        _MINIMUM_FLEXIBLE_SHAPES_SPEC_VERSION, spec.specificationVersion
+    )
 
 
 def set_multiarray_ndshape_range(spec, feature_name, lower_bounds, upper_bounds):
@@ -597,41 +614,52 @@ def set_multiarray_ndshape_range(spec, feature_name, lower_bounds, upper_bounds)
         None. The spec is updated
     """
     if not isinstance(lower_bounds, list):
-        raise Exception('lower_bounds must be a list')
+        raise Exception("lower_bounds must be a list")
     if not isinstance(upper_bounds, list):
-        raise Exception('upper_bounds must be a list')
+        raise Exception("upper_bounds must be a list")
 
     feature = _get_feature(spec, feature_name)
 
-    if feature.type.WhichOneof('Type') != 'multiArrayType':
-        raise Exception('Trying to update shape range for '
-                        'a non-multiArray feature type')
+    if feature.type.WhichOneof("Type") != "multiArrayType":
+        raise Exception(
+            "Trying to update shape range for " "a non-multiArray feature type"
+        )
 
     shape = feature.type.multiArrayType.shape
 
     if len(shape) != len(lower_bounds):
-        raise Exception('Length of lower_bounds is not equal to the number of dimensions in the default shape')
+        raise Exception(
+            "Length of lower_bounds is not equal to the number of dimensions in the default shape"
+        )
     if len(shape) != len(upper_bounds):
-        raise Exception('Length of upper_bounds is not equal to the number of dimensions in the default shape')
+        raise Exception(
+            "Length of upper_bounds is not equal to the number of dimensions in the default shape"
+        )
 
-    feature.type.multiArrayType.ClearField('ShapeFlexibility')
+    feature.type.multiArrayType.ClearField("ShapeFlexibility")
 
     for i in range(len(lower_bounds)):
         if shape[i] < lower_bounds[i]:
-            raise Exception('Default shape in %d-th dimension, which is %d, is smaller'
-                            ' than the lower bound of %d' %(i, int(shape[i]), lower_bounds[i]))
+            raise Exception(
+                "Default shape in %d-th dimension, which is %d, is smaller"
+                " than the lower bound of %d" % (i, int(shape[i]), lower_bounds[i])
+            )
         if upper_bounds[i] != -1:
             if shape[i] > upper_bounds[i]:
-                raise Exception('Default shape in %d-th dimension, which is %d, is greater'
-                                ' than the upper bound of %d' % (i, int(shape[i]), upper_bounds[i]))
+                raise Exception(
+                    "Default shape in %d-th dimension, which is %d, is greater"
+                    " than the upper bound of %d" % (i, int(shape[i]), upper_bounds[i])
+                )
 
         s = feature.type.multiArrayType.shapeRange.sizeRanges.add()
         s.lowerBound = lower_bounds[i]
         s.upperBound = upper_bounds[i]
 
     # Bump up specification version
-    spec.specificationVersion = max(_MINIMUM_NDARRAY_SPEC_VERSION,
-                                    spec.specificationVersion)
+    spec.specificationVersion = max(
+        _MINIMUM_NDARRAY_SPEC_VERSION, spec.specificationVersion
+    )
+
 
 def add_multiarray_ndshape_enumeration(spec, feature_name, enumerated_shapes):
     """
@@ -667,20 +695,20 @@ def add_multiarray_ndshape_enumeration(spec, feature_name, enumerated_shapes):
         None. The spec is updated
     """
     if not isinstance(enumerated_shapes, list):
-        raise Exception('enumerated_shapes must be a list')
+        raise Exception("enumerated_shapes must be a list")
     if len(enumerated_shapes) == 0:
-        raise Exception('enumerated_shapes is empty')
+        raise Exception("enumerated_shapes is empty")
 
     feature = _get_feature(spec, feature_name)
-    if feature.type.WhichOneof('Type') != 'multiArrayType':
-        raise Exception('Trying to update shape range for '
-                        'a non-multiArray feature type')
+    if feature.type.WhichOneof("Type") != "multiArrayType":
+        raise Exception(
+            "Trying to update shape range for " "a non-multiArray feature type"
+        )
 
     shape = feature.type.multiArrayType.shape
 
-    if feature.type.multiArrayType.WhichOneof(
-            'ShapeFlexibility') != 'enumeratedShapes':
-        feature.type.multiArrayType.ClearField('ShapeFlexibility')
+    if feature.type.multiArrayType.WhichOneof("ShapeFlexibility") != "enumeratedShapes":
+        feature.type.multiArrayType.ClearField("ShapeFlexibility")
 
     eshape_len = len(feature.type.multiArrayType.enumeratedShapes.shapes)
 
@@ -693,61 +721,11 @@ def add_multiarray_ndshape_enumeration(spec, feature_name, enumerated_shapes):
 
     for shape in enumerated_shapes:
         if not isinstance(shape, tuple):
-            raise Exception('An element in \'enumerated_shapes\' is not a tuple')
+            raise Exception("An element in 'enumerated_shapes' is not a tuple")
         s = feature.type.multiArrayType.enumeratedShapes.shapes.add()
         s.shape.extend(list(shape))
 
     # Bump up specification version
-    spec.specificationVersion = max(_MINIMUM_NDARRAY_SPEC_VERSION,
-                                    spec.specificationVersion)
-
-
-def get_allowed_shape_ranges(spec):
-    """
-    For a given model specification, returns a dictionary with a shape range object for each input feature name.
-    """
-
-    shaper = NeuralNetworkShaper(spec, False)
-    inputs = _get_input_names(spec)
-    output = {}
-
-    for input in inputs:
-        output[input] = shaper.shape(input)
-
-    return output
-
-
-
-def can_allow_multiple_input_shapes(spec):
-    """
-    Examines a model specification and determines if it can compute results for more than one output shape.
-
-    :param spec: MLModel
-        The protobuf specification of the model.
-
-    :return: Bool
-        Returns True if the model can allow multiple input shapes, False otherwise.
-    """
-
-    # First, check that the model actually has a neural network in it
-    try:
-        layers = _get_nn_layers(spec)
-    except:
-        raise Exception('Unable to verify that this model contains a neural network.')
-
-    try:
-        shaper = NeuralNetworkShaper(spec, False)
-    except:
-        raise Exception('Unable to compute shapes for this neural network.')
-
-    inputs = _get_input_names(spec)
-
-    for name in inputs:
-
-        shape_dict = shaper.shape(name)
-        shape = NeuralNetworkMultiArrayShapeRange(shape_dict)
-
-        if (shape.isFlexible()):
-            return True
-
-    return False
+    spec.specificationVersion = max(
+        _MINIMUM_NDARRAY_SPEC_VERSION, spec.specificationVersion
+    )

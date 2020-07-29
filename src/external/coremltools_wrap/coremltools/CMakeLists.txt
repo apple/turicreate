@@ -16,6 +16,16 @@ if("${CMAKE_SOURCE_DIR}" STREQUAL "${CMAKE_BINARY_DIR}")
   ")
 endif()
 
+set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Globally ignore "no symbols" warnings during compilation
+SET(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> Scr <TARGET> <LINK_FLAGS> <OBJECTS>")
+if(APPLE)
+    SET(CMAKE_CXX_ARCHIVE_FINISH "<CMAKE_RANLIB> -no_warning_for_no_symbols -c <TARGET>")
+endif()
+
 find_program(HAS_CCACHE ccache)
 if(HAS_CCACHE)
   set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE ccache)
@@ -40,29 +50,11 @@ include_directories(
   deps/pybind11/include
   mlmodel/src
   ${PYTHON_INCLUDE_DIRS}
-)
-
-set(CMAKE_CXX_FLAGS " \
-  ${CMAKE_CXX_FLAGS} \
-  --std=c++14 \
-")
+  )
 
 if(APPLE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fobjc-arc ")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fobjc-arc")
 endif()
-
-set(CMAKE_EXE_LINKER_FLAGS " \
-  ${CMAKE_EXE_LINKER_FLAGS} \
-  --std=c++14 \
-")
-set(CMAKE_MODULE_LINKER_FLAGS " \
-  ${CMAKE_MODULE_LINKER_FLAGS} \
-  --std=c++14 \
-")
-set(CMAKE_SHARED_LINKER_FLAGS " \
-  ${CMAKE_SHARED_LINKER_FLAGS} \
-  --std=c++14 \
-")
 
 add_library(caffeconverter
   SHARED
@@ -99,17 +91,17 @@ add_library(caffeconverter
   caffeconverter/Caffe/Reshape.cpp
   deps/caffe/src/caffe/proto/caffe.pb.cc
   deps/caffe/src/caffe/util/upgrade_proto.cpp
-)
+  )
 
 target_compile_definitions(caffeconverter
   PRIVATE
   CPU_ONLY=1
-)
+  )
 
 target_link_libraries(caffeconverter
   mlmodel
   libprotobuf
-)
+  )
 
 if (APPLE)
   # Allow Python to be found at runtime instead of compile/link time
@@ -117,29 +109,31 @@ if (APPLE)
   set_target_properties(caffeconverter PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif()
 
-file(COPY ${CMAKE_SOURCE_DIR}/README.rst DESTINATION ${CMAKE_BINARY_DIR})
+file(COPY ${CMAKE_SOURCE_DIR}/README.md DESTINATION ${CMAKE_BINARY_DIR})
 file(COPY ${CMAKE_SOURCE_DIR}/coremltools/__init__.py
-     DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
+  DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
 file(COPY ${CMAKE_SOURCE_DIR}/coremltools/__main__.py
-     DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
-set(copy_dirs _deps _scripts converters graph_visualization models proto)
+  DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
+file(COPY ${CMAKE_SOURCE_DIR}/coremltools/version.py
+  DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
+
+set(copy_dirs _deps _scripts converters models proto)
 foreach(cdir IN ITEMS ${copy_dirs})
   file(COPY ${CMAKE_SOURCE_DIR}/coremltools/${cdir}
-       DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
+    DESTINATION ${CMAKE_BINARY_DIR}/coremltools)
 endforeach()
-if(APPLE)
-  add_custom_command(
-    TARGET caffeconverter
-    POST_BUILD
-    COMMAND cp $<TARGET_FILE:caffeconverter> coremltools/libcaffeconverter.so
-  )
-else()
-  add_custom_command(
-    TARGET caffeconverter
-    POST_BUILD
-    COMMAND cp $<TARGET_FILE:caffeconverter> coremltools/libcaffeconverter.so
-  )
+
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+  set(_additional_caffeconverter_command COMMAND strip -x ${PROJECT_SOURCE_DIR}/coremltools/libcaffeconverter.so)
 endif()
+
+add_custom_command(
+  TARGET caffeconverter
+  POST_BUILD
+  COMMAND cp $<TARGET_FILE:caffeconverter> ${PROJECT_SOURCE_DIR}/coremltools/libcaffeconverter.so
+  ${_additional_caffeconverter_command}
+)
+
 
 find_library(CORE_VIDEO CoreVideo)
 find_library(CORE_ML CoreML)
@@ -175,19 +169,35 @@ if (APPLE AND CORE_VIDEO AND CORE_ML AND FOUNDATION)
     ${CORE_VIDEO}
     ${CORE_ML}
     ${FOUNDATION}
-    ${PYTHON_LIBRARIES}
   )
 
-  if (APPLE)
-    # Allow Python to be found at runtime instead of compile/link time
-    # This is apparently the default on Linux
-    set_target_properties(coremlpython PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+if(APPLE)
+  set(osx_export_file ${CMAKE_SOURCE_DIR}/coremlpython/exported_symbols_osx.ver)
+  set_property(TARGET coremlpython APPEND PROPERTY LINK_DEPENDS "${osx_export_file}")
+  set_property(TARGET coremlpython APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-exported_symbols_list,${osx_export_file} ")
+
+  # Allow Python to be found at runtime instead of compile/link time
+  # This is apparently the default on Linux
+  set_property(TARGET coremlpython APPEND_STRING PROPERTY LINK_FLAGS "-undefined dynamic_lookup")
+
+else()
+  set(linux_export_file coremlpython/exported_symbols_linux.ver)
+  set_property(TARGET coremlpython APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--version-script=${linux_export_file} ")
+endif()
+
+  set_property(TARGET coremlpython APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-dead_strip")
+
+  if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(_additional_libcoremlpython_command
+      COMMAND strip -x ${PROJECT_SOURCE_DIR}/coremltools/libcoremlpython.so
+    )
   endif()
 
   add_custom_command(
     TARGET coremlpython
     POST_BUILD
-    COMMAND cp $<TARGET_FILE:coremlpython> coremltools/libcoremlpython.so
+    COMMAND cp $<TARGET_FILE:coremlpython> ${PROJECT_SOURCE_DIR}/coremltools/libcoremlpython.so
+    ${_additional_libcoremlpython_command}
   )
 
 else()
@@ -196,7 +206,7 @@ endif()
 
 set(PYTHON_TAG "cp${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
 if(APPLE)
-  set(PLAT_NAME "macosx_10_15_intel;macosx_10_14_intel;macosx_10_13_intel;macosx_10_12_intel")
+  set(PLAT_NAME "macosx_10_16_intel;macosx_10_15_intel;macosx_10_14_intel;macosx_10_13_intel;macosx_10_12_intel")
 elseif("${CMAKE_SYSTEM_NAME}" MATCHES "Linux")
   set(PLAT_NAME "manylinux1_x86_64")
 else()
@@ -214,15 +224,28 @@ foreach(platform IN ITEMS ${PLAT_NAME})
       bdist_wheel
       --plat-name=${platform}
       --python-tag=${PYTHON_TAG}
+      --dist-dir=${PROJECT_BINARY_DIR}/dist
     DEPENDS "caffeconverter;coremlpython;${plat_targets}"
-    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}
   )
   set(plat_targets "${plat_targets};dist_${platform}")
 endforeach()
 # Add a 'dist' target that will build wheels for all possible platforms.
 add_custom_target(dist DEPENDS ${plat_targets})
 
+add_custom_target(pip_install_dev
+  COMMAND pip install -e ${PROJECT_SOURCE_DIR}
+  DEPENDS "caffeconverter;coremlpython"
+)
+
 add_custom_target(pytest
-  COMMAND pytest coremltools/test/
-  DEPENDS dist
+  COMMAND pytest -r fs ${PROJECT_SOURCE_DIR}/coremltools/test/ --timeout=600
+  DEPENDS pip_install_dev
+  USES_TERMINAL
+)
+
+add_custom_target(pytest_no_slow
+  COMMAND pytest -r fs -m '"no slow"' ${PROJECT_SOURCE_DIR}/coremltools/test/
+  DEPENDS pip_install_dev
+  USES_TERMINAL
 )

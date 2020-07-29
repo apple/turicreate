@@ -22,7 +22,7 @@ format. In particular, it can be used to:
 For more information: http://developer.apple.com/documentation/coreml
 """
 
-__version__ = '3.0'
+from .version import __version__
 
 # This is the basic Core ML specification format understood by iOS 11.0
 SPECIFICATION_VERSION = 1
@@ -45,6 +45,10 @@ _MINIMUM_NDARRAY_SPEC_VERSION = 4
 _MINIMUM_NEAREST_NEIGHBORS_SPEC_VERSION = 4
 _MINIMUM_LINKED_MODELS_SPEC_VERSION = 4
 _MINIMUM_UPDATABLE_SPEC_VERSION = 4
+_SPECIFICATION_VERSION_IOS_13 = 4
+
+# New versions for iOS 14.0
+_SPECIFICATION_VERSION_IOS_14 = 5
 
 # expose sub packages as directories
 from . import converters
@@ -53,3 +57,25 @@ from . import models
 from .models import utils
 
 from ._scripts.converter import _main
+
+# expose unified converter in coremltools package level
+from .converters import convert
+from .converters import (
+    ClassifierConfig,
+    TensorType,
+    ImageType,
+    RangeDim,
+    Shape,
+    EnumeratedShapes,
+)
+from .converters.mil._deployment_compatibility import AvailableTarget as target
+
+# Time profiling for functions in coremltools package, decorated with @profile
+import os as _os
+import sys as _sys
+from .converters._profile_utils import _profiler
+
+_ENABLE_PROFILING = _os.environ.get("ENABLE_PROFILING", False)
+
+if _ENABLE_PROFILING:
+    _sys.setprofile(_profiler)
