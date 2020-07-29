@@ -407,34 +407,27 @@ std::unique_ptr<ModelTrainer> DarknetYOLOCheckpoint::CreateModelTrainer(
   return result;
 }
 
-pipeline_spec DarknetYOLOCheckpoint::ExportToCoreML(
-    const std::string& input_name, const std::string& coordinates_output_name,
-    const std::string& confidence_output_name) const {
-  return export_darknet_yolo(weights_, input_name, coordinates_output_name,
-                             confidence_output_name, GetAnchorBoxes(),
-                             config_.num_classes, config_.output_height,
-                             config_.output_width, SPATIAL_REDUCTION);
-}
-
-size_t DarknetYOLOCheckpoint::GetNumberOfPredictions() const {
-  return config_.output_width * config_.output_height * GetAnchorBoxes().size();
-}
-
-std::string DarknetYOLOCheckpoint::GetModelType() const { return "YOLOv2"; }
-
-float DarknetYOLOCheckpoint::GetEvaluateConfidence() const
+pipeline_spec DarknetYOLOCheckpoint::ExportToCoreML(const std::string& input_name,
+                                                    const std::string& coordinates_name,
+                                                    const std::string& confidence_name,
+                                                    bool use_nms_layer, float iou_threshold,
+                                                    float confidence_threshold) const
 {
-  return DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE;
+  return export_darknet_yolo(weights_, input_name, coordinates_name, confidence_name,
+                             GetAnchorBoxes(), config_.num_classes, use_nms_layer,
+                             config_.output_height, config_.output_width, iou_threshold,
+                             confidence_threshold, SPATIAL_REDUCTION);
 }
 
-float DarknetYOLOCheckpoint::GetPredictConfidence() const
+CheckpointMetadata DarknetYOLOCheckpoint::GetCheckpointMetadata() const
 {
-  return DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
-}
-
-float DarknetYOLOCheckpoint::GetNonMaximumSuppressionThreshold() const
-{
-  return DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+  CheckpointMetadata metadata;
+  metadata.num_predictions = config_.output_width * config_.output_height * GetAnchorBoxes().size();
+  metadata.model_type = "YOLOv2";
+  metadata.evaluate_confidence = DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE;
+  metadata.predict_confidence = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+  metadata.nms_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+  return metadata;
 }
 
 float_array_map DarknetYOLOCheckpoint::internal_config() const {

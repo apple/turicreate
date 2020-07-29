@@ -530,6 +530,30 @@ public:
    */
   void add_get_shape(const std::string& name, const std::string& input);
 
+  /**
+   * Appends dynamic slicing.
+   *
+   * \param name The name of the layer and its output
+   * \param inputs The name of the layer's inputs
+   */
+  void add_slice_dynamic(const std::string& name, const std::vector<std::string>& inputs);
+
+  /**
+   * Appends a non maximum suppression  layer.
+   *
+   * \param name The name of the layer and its output
+   * \param inputs The name of the layer's inputs
+   * \param outputs The outputs of the layer
+   * \param iou_thrsshold The default value for the iou threshold
+   * \param confidence_threshold The default value for the confidence threshold
+   * \param max_boxes The maximum number of boxes you want NMS to run
+   * \param per_class_suppression When false, suppression happens for all
+   * classes.
+   */
+  void add_nms_layer(const std::string& name, const std::vector<std::string>& inputs,
+                     const std::vector<std::string>& outputs, float iou_threshold,
+                     float confidence_threshold, size_t max_boxes, bool per_class_supression);
+
  private:
   std::unique_ptr<CoreML::Specification::NeuralNetwork> impl_;
 };

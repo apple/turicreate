@@ -76,16 +76,38 @@ std::vector<neural_net::image_annotation> convert_yolo_to_annotations(
  *            YOLO model.
  * \param output_grid_width The width W of the output grid used to train the
  *            YOLO model.
- * \param prefix The prefix to apply to intermediate layers added in service of
- *            output layers named by `coordinates_name` and `confidence_name`.
  */
-void add_yolo(neural_net::model_spec* nn_spec,
-              const std::string& coordinates_name,
+void add_yolo(neural_net::model_spec* nn_spec, const std::string& coordinates_name,
               const std::string& confidence_name, const std::string& input,
-              const std::vector<std::pair<float, float>>& anchor_boxes,
-              size_t num_classes, size_t output_grid_height,
-              size_t output_grid_width,
-              std::string prefix = "__tc__internal__");
+              const std::vector<std::pair<float, float>>& anchor_boxes, size_t num_classes,
+              bool use_nms_layer, float iou_threshold, float confidence_threshold,
+              size_t output_grid_height, size_t output_grid_width);
+
+/**
+ * Appends layers to add non maximum suppression layer and
+ *
+ * \param nn_spec Model spec for the trained model
+ * \param coordinates_name The name to give to the CoreML layer which will
+ *            output the predicted bounding boxes (B*H*W, 4, 1) for each of the
+ *            B anchor boxes and each of the H*W output grid cells, in
+ *            (x,y,width,height) order, normalized to the interval [0,1].
+ * \param confidence_name The name to give to the CoreML layer which will output
+ *            the predicted class label confidences (B*H*W, C, 1) for each of
+ *            the B anchor boxes, each of the H*W output grid cells, and each of
+ *            the C class labels.
+ * \param num_bounding_boxes The number of anchor boxes.
+ * \param num_classes The number of class labels C used to train the YOLO model.
+ * \param confidence_threshold The confidence threshold to be applied in the NMS layer.
+ * \param iou_threshold The IoU threshold to be applied in the NMS layer.
+ * \param prefix Prefix string attached to layer names.
+ * \param nms_boxes The maximum number of boxes we want after NMS.
+ * \param use_most_confident_class Suppression can be done only across the most
+ *            confident class.
+ */
+void apply_nms_layer(neural_net::model_spec* nn_spec, const std::string& coordinates_name,
+                     const std::string& confidence_name, const std::string& prefix,
+                     size_t num_bounding_boxes, size_t num_classes, float confidence_threshold,
+                     float iou_threshold, size_t nms_boxes, bool use_most_confident_class);
 
 }  // object_detection
 }  // turi

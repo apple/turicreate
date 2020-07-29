@@ -18,8 +18,11 @@ using neural_net::float_array;
 using neural_net::image_annotation;
 using neural_net::image_box;
 using neural_net::model_spec;
+using neural_net::scalar_weight_initializer;
 
 namespace {
+
+constexpr size_t kMaxBoxesAfterNMS = 64;
 
 float sigmoid(float x) {
   return 1.f / (1.f + std::exp(-x));
@@ -193,19 +196,70 @@ std::vector<image_annotation> convert_yolo_to_annotations(
   return result;
 }
 
+void apply_nms_layer(model_spec* nn_spec, const std::string& coordinates_name,
+                     const std::string& confidence_name, const std::string& prefix,
+                     size_t num_bounding_boxes, size_t num_classes, float confidence_threshold,
+                     float iou_threshold, size_t nms_boxes, bool use_most_confident_class)
+{
+  nn_spec->add_nms_layer(
+      "non_maximum_supression",
+      {"raw_coordinates", "raw_confidence", "iouThreshold", "confidenceThreshold"},
+      {"nms_coordinates", "nms_confidence", "indices", "num_boxes"}, iou_threshold,
+      confidence_threshold, nms_boxes, use_most_confident_class);
+
+  nn_spec->add_squeeze("nms_coord_squeezed", "nms_coordinates", {0}, {1, num_bounding_boxes, 4},
+                       {num_bounding_boxes, 4});
+
+  nn_spec->add_squeeze("nms_class_squeezed", "nms_confidence", {0},
+                       {1, num_bounding_boxes, num_classes}, {num_bounding_boxes, num_classes});
+
+  nn_spec->add_constant_nd(
+      /* name */ "index",
+      /* shape */ {1},
+      /* data */ scalar_weight_initializer(0));
+  nn_spec->add_gather(
+      /* name */ "num_of_boxes",
+      /* inputs */ {"num_boxes", "index"});
+  nn_spec->add_constant_nd(
+      /* name */ "postfix1",
+      /* shape */ {1},
+      /* data */ scalar_weight_initializer(num_classes));
+
+  nn_spec->add_constant_nd(
+      /* name */ "postfix2",
+      /* shape */ {1},
+      /* data */ scalar_weight_initializer(4));
+  nn_spec->add_constant_nd(
+      /* name */ "beginId",
+      /* shape */ {2},
+      /* data */ scalar_weight_initializer(0));
+  nn_spec->add_concat_nd(
+      /* name */ "endIdConfidence",
+      /* inputs */ {"num_of_boxes", "postfix1"},
+      /* axis */ 0);
+  nn_spec->add_concat_nd(
+      /* name */ "endIdCoordinates",
+      /* inputs */ {"num_of_boxes", "postfix2"},
+      /* axis */ 0);
+
+  nn_spec->add_slice_dynamic(coordinates_name,
+                             {"nms_coord_squeezed", "beginId", "endIdCoordinates"});
+  nn_spec->add_slice_dynamic(confidence_name, {"nms_class_squeezed", "beginId", "endIdConfidence"});
+}
+
 void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
               const std::string& confidence_name, const std::string& input,
-              const std::vector<std::pair<float, float>>& anchor_boxes,
-              size_t num_classes, size_t output_grid_height,
-              size_t output_grid_width, std::string prefix) {
-
+              const std::vector<std::pair<float, float>>& anchor_boxes, size_t num_classes,
+              bool use_nms_layer, float iou_threshold, float confidence_threshold,
+              size_t output_grid_height, size_t output_grid_width)
+{
   // For darknet-yolo, input should be the (B*(5+C), H, W) conv8_fwd output,
   // where B is the number of anchor boxes, C is the number of classes, and H
   // is the output grid height, and W is the output grid width.
 
   // Note that the shapes below conform to the CoreML layout
   // (Seq_length, C, H, W), although sequence length is always 1 here.
-
+  const std::string prefix = "__tc_internal__";
   const size_t num_spatial = output_grid_height * output_grid_width;
   const size_t num_bounding_boxes = num_spatial * anchor_boxes.size();
 
@@ -335,8 +389,6 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
     }
     ASSERT_EQ(out, last);
   };
-  nn_spec->add_scale(coordinates_name, prefix + "boxes_out",
-                     {{ num_bounding_boxes, 4, 1 }}, boxes_out_init);
 
   // CLASS PROBABILITIES AND OBJECT CONFIDENCE
 
@@ -378,9 +430,29 @@ void add_yolo(model_spec* nn_spec, const std::string& coordinates_name,
   nn_spec->add_reshape(prefix + "confprobs_transposed", prefix + "confprobs_sp",
                        {{ 1, num_classes, num_bounding_boxes, 1 }});
 
-  // (1, B*H*W, C, 1)
-  nn_spec->add_permute(confidence_name, prefix + "confprobs_transposed",
-                       {{ 0, 2, 1, 3 }});
+  if (use_nms_layer) {
+    nn_spec->add_scale(prefix + "scaled_boxes_out", prefix + "boxes_out",
+                       {{num_bounding_boxes, 4, 1}}, boxes_out_init);
+    // (1, B*H*W, C, 1)
+    nn_spec->add_permute(prefix + "confprobs", prefix + "confprobs_transposed", {{0, 2, 1, 3}});
+
+    nn_spec->add_squeeze("raw_" + confidence_name, prefix + "confprobs", {3},
+                         {1, num_bounding_boxes, num_classes, 1},
+                         {1, num_bounding_boxes, num_classes});
+
+    nn_spec->add_squeeze("raw_" + coordinates_name, prefix + "scaled_boxes_out", {3},
+                         {1, num_bounding_boxes, 4, 1}, {1, num_bounding_boxes, 4});
+
+    apply_nms_layer(std::move(nn_spec), coordinates_name, confidence_name, prefix,
+                    num_bounding_boxes, num_classes, confidence_threshold, iou_threshold,
+                    kMaxBoxesAfterNMS, false);
+
+  } else {
+    nn_spec->add_scale(coordinates_name, prefix + "boxes_out", {{num_bounding_boxes, 4, 1}},
+                       boxes_out_init);
+    // (1, B*H*W, C, 1)
+    nn_spec->add_permute(confidence_name, prefix + "confprobs_transposed", {{0, 2, 1, 3}});
+  }
 }
 
 }  // object_detection
