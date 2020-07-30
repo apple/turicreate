@@ -12,4 +12,4 @@ from sys import version_info
 if version_info[0] == 2:   # Python 2.7
     from ._cloudpickle_py27 import dumps, CloudPickler
 else:   # Python 3.X
-    pass  # TODO!
+    from ._cloudpickle_fast import dumps, CloudPickler
