@@ -116,7 +116,8 @@ std::unique_ptr<model_backend> mlc_compute_context::create_drawing_classifier(
     const float_array_map& weights, size_t batch_size, size_t num_classes)
 {
   if (@available(macOS 10.16, *)) {
-    return std::make_unique<mlc_drawing_classifier_backend>(device_, weights, batch_size, num_classes);
+    return std::make_unique<mlc_drawing_classifier_backend>(device_, weights, batch_size,
+                                                            num_classes);
   }
   return nullptr;
 }

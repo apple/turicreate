@@ -9,8 +9,8 @@
 
 #import <MLCompute/MLCompute.h>
 
-#include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/mlc_layer_weights.hpp>
+#include <ml/neural_net/model_backend.hpp>
 
 namespace turi {
 namespace neural_net {

@@ -155,8 +155,8 @@ mlc_drawing_classifier_backend::mlc_drawing_classifier_backend(MLCDevice *device
     MLCGraph *graph = [MLCGraph tc_graphForDrawingClassifierDescriptor:descriptor
                                                              batchSize:batch_size];
     training_graph_ = [MLCTrainingGraph trainingGraphWithGraphObjects:@[ graph ]
-                                                    lossLayer:loss
-                                                    optimizer:optimizer];
+                                                            lossLayer:loss
+                                                            optimizer:optimizer];
 
     BOOL success = [training_graph_ addInputs:@{input_.label : input_}
                                    lossLabels:@{labels_.label : labels_}
