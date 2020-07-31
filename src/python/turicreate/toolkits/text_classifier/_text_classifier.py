@@ -40,6 +40,7 @@ def create(
     method="auto",
     validation_set="auto",
     max_iterations=10,
+    l2_penalty=0.2,
 ):
     """
     Create a model that trains a classifier to classify text from a
@@ -87,6 +88,14 @@ def create(
       the data can result in a more accurately trained model. Consider
       increasing this (the default value is 10) if the training accuracy is
       low and the *Grad-Norm* in the display is large.
+
+    l2_penalty : float, optional
+      Weight on l2 regularization of the model. The larger this weight, the
+      more the model coefficients shrink toward 0. This introduces bias into
+      the model but decreases variance, potentially leading to better
+      predictions. The default value is 0.2; setting this parameter to 0
+      corresponds to unregularized logistic regression. See the ridge
+      regression reference for more detail.
 
     Returns
     -------
@@ -145,7 +154,7 @@ def create(
         train,
         target=target,
         features=features,
-        l2_penalty=0.2,
+        l2_penalty=l2_penalty,
         max_iterations=max_iterations,
         validation_set=validation_set,
     )
