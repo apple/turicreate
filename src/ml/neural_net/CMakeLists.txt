@@ -78,8 +78,10 @@ if(APPLE AND HAS_ML_COMPUTE AND NOT TC_BUILD_IOS)
   SOURCES
     mlc_compute_context.mm
     mlc_layer_weights.mm
+    mlc_dc_backend.mm
     mlc_od_backend.mm
     mlc_utils.mm
+    TCMLComputeDrawingClassifierDescriptor.m
     TCMLComputeObjectDetectorDescriptor.m
     TCMLComputeUtil.m
     TCModelTrainerBackendGraphs.m

@@ -13,6 +13,8 @@
 
 #include <core/logging/logger.hpp>
 #include <core/util/std/make_unique.hpp>
+
+#include <ml/neural_net/mlc_dc_backend.hpp>
 #include <ml/neural_net/mlc_od_backend.hpp>
 #include <ml/neural_net/mps_compute_context.hpp>
 #include <ml/neural_net/mps_image_augmentation.hpp>
@@ -34,8 +36,7 @@ std::unique_ptr<compute_context> create_mlc_compute_context()
 // At static-init time, register create_mps_compute_context().
 // TODO: Codify priority levels
 static auto* mlc_registration = new compute_context::registration(
-    /* priority */ 0, nullptr, nullptr, &create_mlc_compute_context);
-
+    /* priority */ 0, nullptr, &create_mlc_compute_context, &create_mlc_compute_context);
 }
 
 mlc_compute_context::mlc_compute_context(MLCDevice* device)
@@ -99,7 +100,6 @@ std::unique_ptr<model_backend> mlc_compute_context::create_object_detector(
     const float_array_map& config, const float_array_map& weights)
 {
   if (@available(macOS 10.16, *)) {
-    std::cout << "MLC Compute context is here" << std::endl;
     return std::make_unique<mlc_object_detector_backend>(device_, n, c_in, h_in, w_in, c_out, h_out,
                                                          w_out, config, weights);
   }
@@ -109,13 +109,16 @@ std::unique_ptr<model_backend> mlc_compute_context::create_object_detector(
 std::unique_ptr<model_backend> mlc_compute_context::create_activity_classifier(
     const ac_parameters& ac_params)
 {
-  std::unique_ptr<compute_context> mps_compute_context = create_mps_compute_context();
-  return mps_compute_context->create_activity_classifier(ac_params);
+  return nullptr;
 }
 
 std::unique_ptr<model_backend> mlc_compute_context::create_drawing_classifier(
     const float_array_map& weights, size_t batch_size, size_t num_classes)
 {
+  if (@available(macOS 10.16, *)) {
+    return std::make_unique<mlc_drawing_classifier_backend>(device_, weights, batch_size,
+                                                            num_classes);
+  }
   return nullptr;
 }
 
