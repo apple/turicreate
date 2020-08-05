@@ -182,9 +182,9 @@ if __name__ == "__main__":
     if sys.platform == "darwin":
         install_requires.append("tensorflow >= 2.0.0")
     else:
-        # ST, OD, AC and DC segfault on Linux with TensorFlow 2.1
+        # ST, OD, AC and DC segfault on Linux with TensorFlow 2.1.0 and 2.1.1
         # See: https://github.com/apple/turicreate/issues/3003
-        install_requires.append("tensorflow >= 2.0.0,<= 2.0.1 ")
+        install_requires.append("tensorflow >= 2.0.0,!= 2.1.0,!= 2.1.1")
 
     setup(
         name="turicreate",
