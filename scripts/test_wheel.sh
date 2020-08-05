@@ -68,17 +68,8 @@ if [[ -n "${USE_DOCKER}" ]]; then
   # define env-files to forward env vars to inner docker session
   envlist="${WORKSPACE}/${0%.sh}-env.list"
   echo "VIRTUALENV=virtualenv --python=python${DOCKER_PYTHON}" >> "${envlist}"
-  echo "TC_ENABLE_S3_TESTS=${TC_ENABLE_S3_TESTS:-0}" >> "${envlist}"
-  if [[ "${TC_ENABLE_S3_TESTS:-0}" -gt 0 ]]; then
-    echo TC_ENABLE_S3_TESTS  >> "${envlist}"
-    echo TURI_S3_ENDPOINT >> "${envlist}"
-    echo TURI_S3_REGION >> "${envlist}"
-    echo AWS_SECRET_ACCESS_KEY >> "${envlist}"
-    echo AWS_ACCESS_KEY_ID >> "${envlist}"
-  fi
 
   docker_extra_args=""
-
   if [[ "$USE_MINIMAL" -eq 1 ]]; then
     docker_extra_args="$extra_args --minimal"
   fi
