@@ -11,7 +11,7 @@ import unittest
 from pickle import PicklingError
 import pickle
 import turicreate.util._cloudpickle as cloudpickle
-
+from sys import version_info
 import pytest
 
 pytestmark = [pytest.mark.minimal]
@@ -24,8 +24,11 @@ class CloudPickleTest(unittest.TestCase):
         g = tc.SGraph()
         sk = sa.summary()
         m = tc.pagerank.create(g)
+
+        expected_error = TypeError if (version_info[0] == 3) else PicklingError
+        
         for obj in [sa, sf, g, sk, m]:
-            self.assertRaises(PicklingError, lambda: cloudpickle.dumps(obj))
+            self.assertRaises(expected_error, lambda: cloudpickle.dumps(obj))
 
     def test_memoize_subclass(self):
         class A(object):
