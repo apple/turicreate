@@ -234,7 +234,6 @@ class ImageClassifierTest(unittest.TestCase):
                 "com.github.apple.turicreate.version": tc.__version__,
                 "com.github.apple.os.platform": platform.platform(),
                 "type": "ImageClassifier",
-                "coremltoolsVersion": coremltools.__version__,
                 "version": "1",
             },
             dict(coreml_model.user_defined_metadata),
