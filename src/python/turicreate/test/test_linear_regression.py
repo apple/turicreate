@@ -263,14 +263,14 @@ class LinearRegressionTest(unittest.TestCase):
 
 class LinearRegressionCreateTest(unittest.TestCase):
     """
-  Unit test class for testing a Linear Regression create function.
-  """
+    Unit test class for testing a Linear Regression create function.
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
         # Simulate test data
         np.random.seed(42)
@@ -283,7 +283,7 @@ class LinearRegressionCreateTest(unittest.TestCase):
         target = np.random.rand(n)
         self.sf["target"] = target
 
-        ## Compute the correct answers with statsmodels
+        # Compute the correct answers with statsmodels
         formula = "target ~ " + " + ".join(["X{}".format(i) for i in range(1, d + 1)])
         df = self.sf.to_dataframe()
 
@@ -296,7 +296,7 @@ class LinearRegressionCreateTest(unittest.TestCase):
         self.rmse = np.sqrt(sm_model.ssr / float(n))
         self.maxerr = abs(target - np.array(self.yhat)).max()
 
-        ## Create the turicreate model
+        # Create the turicreate model
         self.def_kwargs = _DEFAULT_SOLVER_OPTIONS
         self.solver = "newton"
         self.features = ", ".join(["X{}".format(i) for i in range(1, d + 1)])
@@ -304,8 +304,8 @@ class LinearRegressionCreateTest(unittest.TestCase):
 
     def _test_coefficients(self, model, test_case, test_stderr):
         """
-      Check that the coefficient values are very close to the correct values.
-      """
+        Check that the coefficient values are very close to the correct values.
+        """
         coefs = model.coefficients
         coef_list = list(coefs["value"])
         self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-01, atol=1e-01))
@@ -317,10 +317,6 @@ class LinearRegressionCreateTest(unittest.TestCase):
         else:
             self.assertTrue("stderr" in coefs.column_names())
             self.assertEqual(list(coefs["stderr"]), [None for v in coef_list])
-
-    """
-     test linear regression create.
-  """
 
     def _test_create_no_rescaling(self, sf, target, solver, kwargs):
 
@@ -345,12 +341,7 @@ class LinearRegressionCreateTest(unittest.TestCase):
         )
         self._test_coefficients(model, test_case, solver == "newton")
 
-    """
-     test linear regression create.
-  """
-
     def _test_create(self, sf, target, solver, kwargs):
-
         model = tc.linear_regression.create(
             self.sf,
             target=self.target,
@@ -375,12 +366,10 @@ class LinearRegressionCreateTest(unittest.TestCase):
         )
         self._test_coefficients(model, test_case, solver == "newton")
 
-    """
-     Test linear regression create.
-  """
-
     def test_create(self):
-
+        """
+        Test linear regression create.
+        """
         kwargs = self.def_kwargs.copy()
         kwargs["convergence_threshold"] = 1e-6
         kwargs["max_iterations"] = 100
@@ -388,10 +377,6 @@ class LinearRegressionCreateTest(unittest.TestCase):
             args = (self.sf, self.target, solver, kwargs)
             self._test_create(*args)
             self._test_create_no_rescaling(*args)
-
-    """
-     Test linear regression create.
-  """
 
     def test_lbfgs(self):
         for m in [5, 21]:
@@ -457,14 +442,13 @@ class LinearRegressionCreateTest(unittest.TestCase):
 class VectorLinearRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Linear Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
-
+        """
         np.random.seed(15)
         n, d = 100, 3
         self.sf = tc.SFrame()
@@ -668,14 +652,13 @@ class NDArrayLinearRegressionTest(unittest.TestCase):
 class DictLinearRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Linear Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
-
+        """
         np.random.seed(15)
         n, d = 100, 3
         self.d = d
@@ -715,14 +698,14 @@ class DictLinearRegressionTest(unittest.TestCase):
         }
 
     def _test_coefficients(self, model):
-        """
+      """
       Check that the coefficient values are very close to the correct values.
       """
-        coefs = model.coefficients
-        coef_list = list(coefs["value"])
-        stderr_list = list(coefs["stderr"])
-        self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-01, atol=1e-01))
-        self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-03, atol=1e-03))
+      coefs = model.coefficients
+      coef_list = list(coefs["value"])
+      stderr_list = list(coefs["stderr"])
+      self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-01, atol=1e-01))
+      self.assertTrue(np.allclose(stderr_list, self.stderr, rtol=1e-03, atol=1e-03))
 
     def _test_create(self, sf, target, features, solver, opts, rescaling):
 
@@ -747,12 +730,10 @@ class DictLinearRegressionTest(unittest.TestCase):
         )
         self._test_coefficients(model)
 
-    """
-     Test linear regression create.
-  """
-
     def test_create(self):
-
+        """
+        Test linear regression create.
+        """
         for solver in ["newton"]:
             args = (self.sf, self.target, self.features, solver, self.def_kwargs, True)
             self._test_create(*args)
@@ -760,7 +741,6 @@ class DictLinearRegressionTest(unittest.TestCase):
             self._test_create(*args)
 
     def test_features(self):
-
         d = self.d
         self.sf["dict"] = self.sf.apply(
             lambda row: {i: row["X{}".format(i + 1)] for i in range(d)}
@@ -811,15 +791,14 @@ class DictLinearRegressionTest(unittest.TestCase):
 class ListCategoricalLinearRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Linear Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
-    Set up (Run only once)
-    """
-
-        ## Create fake data with a categorical variable
+        Set up (Run only once)
+        """
+        # Create fake data with a categorical variable
         np.random.seed(15)
         n, d = 100, 3
         self.sf = tc.SFrame()
@@ -855,7 +834,7 @@ class ListCategoricalLinearRegressionTest(unittest.TestCase):
         self.yhat = list(sm_model.fittedvalues)
         self.rmse = np.sqrt(sm_model.ssr / float(n))
 
-        ## Set the turicreate model params
+        # Set the turicreate model params
         self.target = "target"
         self.features = ["species", "X1", "X2", "X3"]
         self.unpacked_features = ["species[dog]", "species[foosa]", "X1", "X2", "X3"]
@@ -869,8 +848,8 @@ class ListCategoricalLinearRegressionTest(unittest.TestCase):
 
     def _test_coefficients(self, model, test_stderr):
         """
-      Check that the coefficient values are very close to the correct values.
-      """
+        Check that the coefficient values are very close to the correct values.
+        """
         coefs = model.coefficients
         coef_list = list(coefs["value"])
         self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-01, atol=1e-01))
@@ -906,12 +885,10 @@ class ListCategoricalLinearRegressionTest(unittest.TestCase):
         )
         self._test_coefficients(model, solver == "newton")
 
-    """
-     Test linear regression create.
-  """
-
     def test_create(self):
-
+        """
+        Test linear regression create.
+        """
         for solver in ["newton", "lbfgs", "fista"]:
             args = (self.sf, self.target, self.features, solver, self.def_kwargs, True)
             self._test_create(*args)
@@ -922,15 +899,15 @@ class ListCategoricalLinearRegressionTest(unittest.TestCase):
 class CategoricalLinearRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Linear Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
-        ## Create fake data with a categorical variable
+        # Create fake data with a categorical variable
         np.random.seed(15)
         n, d = 100, 3
         self.sf = tc.SFrame()
@@ -953,7 +930,7 @@ class CategoricalLinearRegressionTest(unittest.TestCase):
         # target column
         self.sf["target"] = np.random.randint(2, size=n)
 
-        ## Get the right answer with statsmodels
+        # Get the right answer with statsmodels
         df = self.sf.to_dataframe()
         formula = "target ~ species + " + " + ".join(
             ["X{}".format(i + 1) for i in range(d)]
@@ -966,7 +943,7 @@ class CategoricalLinearRegressionTest(unittest.TestCase):
         self.yhat = list(sm_model.fittedvalues)
         self.rmse = np.sqrt(sm_model.ssr / float(n))
 
-        ## Set the turicreate model params
+        # Set the turicreate model params
         self.target = "target"
         self.features = ["species", "X1", "X2", "X3"]
         self.unpacked_features = ["species", "X1", "X2", "X3"]
@@ -979,8 +956,8 @@ class CategoricalLinearRegressionTest(unittest.TestCase):
 
     def _test_coefficients(self, model, test_stderr):
         """
-      Check that the coefficient values are very close to the correct values.
-      """
+        Check that the coefficient values are very close to the correct values.
+        """
         coefs = model.coefficients
         coef_list = list(coefs["value"])
         self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-01, atol=1e-01))
@@ -1016,12 +993,10 @@ class CategoricalLinearRegressionTest(unittest.TestCase):
         )
         self._test_coefficients(model, solver == "newton")
 
-    """
-     Test linear regression create.
-  """
-
     def test_create(self):
-
+        """
+        Test linear regression create.
+        """
         for solver in ["newton", "lbfgs", "fista"]:
             args = (self.sf, self.target, self.features, solver, self.def_kwargs, True)
             self._test_create(*args)
@@ -1074,13 +1049,13 @@ class CategoricalLinearRegressionTest(unittest.TestCase):
 class L1LinearRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Linear Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
         test_data = """y,0,1,2,3,4
       38,0,3,1,0,1.47
@@ -1193,13 +1168,13 @@ class L1LinearRegressionTest(unittest.TestCase):
 class L2LinearRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Linear Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
         test_data = """y,0,1,2,3,4
       38,0,3,1,0,1.47
@@ -1278,8 +1253,8 @@ class L2LinearRegressionTest(unittest.TestCase):
 
     def _test_coefficients(self, model):
         """
-      Check that the coefficient values are very close to the correct values.
-      """
+        Check that the coefficient values are very close to the correct values.
+        """
         coefs = model.coefficients
         coef_list = list(coefs["value"])
         self.assertTrue(np.allclose(coef_list, self.coef, rtol=1e-01, atol=1e-01))
@@ -1305,12 +1280,10 @@ class L2LinearRegressionTest(unittest.TestCase):
         )
         self._test_coefficients(model)
 
-    """
-     Test linear regression create.
-  """
-
     def test_create(self):
-
+        """
+        Test linear regression create.
+        """
         for solver in ["newton", "lbfgs", "fista"]:
             args = (self.sf, self.target, self.features, solver, self.def_kwargs)
             self._test_create(*args)
@@ -1319,13 +1292,13 @@ class L2LinearRegressionTest(unittest.TestCase):
 class ElasticNetLinearRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Linear Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
         test_data = """y,0,1,2,3,4
       38,0,3,1,0,1.47
@@ -1403,8 +1376,8 @@ class ElasticNetLinearRegressionTest(unittest.TestCase):
 
     def _test_coefficients(self, model):
         """
-      Check that the coefficient values are very close to the correct values.
-      """
+        Check that the coefficient values are very close to the correct values.
+        """
         coefs = model.coefficients
         coef_list = list(coefs["value"])
         self.assertTrue(
@@ -1433,12 +1406,10 @@ class ElasticNetLinearRegressionTest(unittest.TestCase):
         )
         self._test_coefficients(model)
 
-    """
-     Test linear regression create.
-  """
-
     def test_create(self):
-
+        """
+        Test linear regression create.
+        """
         for solver in ["fista"]:
             args = (self.sf, self.target, self.features, solver, self.def_kwargs)
             self._test_create(*args)
@@ -1447,13 +1418,13 @@ class ElasticNetLinearRegressionTest(unittest.TestCase):
 class ValidationDataLinearRegressionTest(unittest.TestCase):
     """
     Unit test class for testing create with validation data.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
         test_data = """y,0,1,2,3,4
       38,0,3,1,0,1.47
