@@ -299,6 +299,49 @@ def _get_new_image_dimensions_with_original_aspect_ratio(image, side_length_type
             return (side_length, int(side_length/aspect_ratio))
 
 
+def resize_annotations(original_image_shape, annotations, target_image_shape):
+    """
+    Resize annotations to any target image dimensions
+
+    Parameters
+    ----------
+    original_image_shape : tuple | list
+        Original image dimesions in the format of (width, height)
+    annotations : list
+        Original annotations of the data. 
+        This should be a list of dictionaries , with
+        each dictionary representing a bounding box of an object instance. Here
+        is an example of the annotations for a single image with two object
+        instances::
+
+            [{'label': 'dog',
+              'type': 'rectangle',
+              'coordinates': {'x': 223, 'y': 198,
+                              'width': 130, 'height': 230}},
+             {'label': 'cat',
+              'type': 'rectangle',
+              'coordinates': {'x': 40, 'y': 73,
+                              'width': 80, 'height': 123}}]
+
+        The value for `x` is the horizontal center of the box paired with
+        `width` and `y` is the vertical center of the box paired with `height`.
+        'None' (the default) indicates the only list column in `dataset` should
+        be used for the annotations.
+        For more information on annotations format refer to `https://apple.github.io/turicreate/docs/userguide/object_detection/` 
+    target_image_shape : tuple | list
+        Target image dimesions in the format of (width, height)
+    """
+    if type(annotations) is not list:
+        raise ValueError("annotations are expected in the form of list")
+
+    for ann_index in range(len(annotations)):
+        annotations[ann_index]["coordinates"]["height"] = annotations[ann_index]["coordinates"]["height"]*target_image_shape[1]/original_image_shape[1]
+        annotations[ann_index]["coordinates"]["width"] = annotations[ann_index]["coordinates"]["width"]*target_image_shape[0]/original_image_shape[0]
+        annotations[ann_index]["coordinates"]["x"] = annotations[ann_index]["coordinates"]["x"]*target_image_shape[0]/original_image_shape[0]
+        annotations[ann_index]["coordinates"]["y"] = annotations[ann_index]["coordinates"]["y"]*target_image_shape[1]/original_image_shape[1]
+    return annotations
+
+
 def get_deep_features(images, model_name, batch_size=64, verbose=True):
     """
     Extracts features from images from a specific model.
