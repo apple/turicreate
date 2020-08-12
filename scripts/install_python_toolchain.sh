@@ -53,24 +53,27 @@ mkdir -p deps/local/include
 
 pushd deps/local/include
 
-set +x
-echo "run 'ln -Ffs' files from ../../env/include/$PYTHON_FULL_NAME"
-for f in ../../env/include/"$PYTHON_FULL_NAME"/*; do
+if [[ -d "../../env/include/$PYTHON_FULL_NAME" ]]; then
+    SRC_INCLUDE_DIR="../../env/include/$PYTHON_FULL_NAME"
+else
+    # Newer versions of virtualenv don't include header files
+    SRC_INCLUDE_DIR=$(${PYTHON} -c 'from sysconfig import get_paths as gp; print(gp()["include"])')
+fi
+
+echo "run 'ln -Ffs' files from ${SRC_INCLUDE_DIR}"
+for f in $SRC_INCLUDE_DIR/*; do
   ln -Ffs "$f" "$(basename "$f")"
 done
-set -x
 
 popd
 
 mkdir -p deps/local/bin
 pushd deps/local/bin
 
-set +x
 echo "run 'ln -Ffs' on files from ../../env/bin/"
 for f in ../../env/bin/*; do
   ln -Ffs "$f" "$(basename "$f")"
 done
-set -x
 
 popd
 
