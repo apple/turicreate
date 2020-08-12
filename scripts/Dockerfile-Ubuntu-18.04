@@ -17,6 +17,11 @@ RUN apt-get -y upgrade
 # turicreate and upstream dependencies
 RUN apt-get -y install python3.6 python3.6-distutils python3.7 python3.7-distutils libgomp1 lsb-release npm nodejs doxygen zip
 
+# Install Python 3.8
+RUN apt-get -y install software-properties-common
+RUN add-apt-repository -y ppa:deadsnakes/ppa
+RUN apt-get -y install python3.8
+
 # Install build-essential (needed by numpy, which tries to
 # build itself from source on 3.6 and above)
 RUN apt-get -y install build-essential libpython3.6-dev libpython3.7-dev
@@ -29,3 +34,5 @@ RUN python3.6 get-pip.py
 RUN pip3.6 install virtualenv
 RUN python3.7 get-pip.py
 RUN pip3.7 install virtualenv
+RUN python3.8 get-pip.py
+RUN pip3.8 install virtualenv
