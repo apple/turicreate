@@ -163,7 +163,7 @@ if __name__ == "__main__":
         long_description = f.read().decode("utf-8")
 
     install_requires = [
-        "coremltools==3.3",
+        "coremltools==4.0b2",
         "decorator >= 4.0.9",
         "numpy",
         "pandas >= 0.23.2",
