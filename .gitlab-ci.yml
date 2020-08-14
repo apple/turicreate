@@ -385,7 +385,6 @@ test_python_linux_python27:
     - build_wheel_linux_python27
   script:
     - apk add bash
-    - export TC_ENABLE_S3_TESTS=1
     - bash -e scripts/test_wheel.sh --docker-python2.7
   artifacts:
     when: always
@@ -408,7 +407,6 @@ test_python_linux_python27_minimal:
     - build_wheel_linux_python27
   script:
     - apk add bash
-    - export TC_ENABLE_S3_TESTS=1
     - bash -e scripts/test_wheel.sh --docker-python2.7 --minimal
   artifacts:
     when: always
@@ -570,7 +568,6 @@ test_python_mac_python36_10_14:
     - build_wheel_mac_10_15_python36
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
-    - export TC_ENABLE_S3_TESTS=1
     - bash -e scripts/test_wheel.sh
   artifacts:
     when: always

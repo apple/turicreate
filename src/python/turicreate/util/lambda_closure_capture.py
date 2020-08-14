@@ -260,7 +260,7 @@ class lambda_closure_visitor(ast.NodeVisitor):
             try:
                 # Docstrings are constants in Python 3.8 and strings in all other
                 # supported Python versions.
-                if python_version.major == 3 and python_version.minor == 8:
+                if python_version.major == 3 and python_version.minor >= 8:
                     if type(next_node) is ast.Expr and type(next_node.value) is ast.Constant:
                         # this is *probably* a doc string!
                         next_node = node.body[1]
