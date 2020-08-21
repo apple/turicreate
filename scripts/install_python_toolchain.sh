@@ -35,9 +35,9 @@ function linux_patch_sigfpe_handler {
 
 $PIP install --upgrade "pip"
 if [[ "$USE_MINIMAL" -eq 1  ]]; then
-  $PIP install -r scripts/requirements-minimal.txt
+  $PIP install -r scripts/requirements-minimal.txt --prefer-binary
 else
-  $PIP install -r scripts/requirements.txt
+  $PIP install -r scripts/requirements.txt --prefer-binary
 fi
 
 # install pre-commit hooks for git

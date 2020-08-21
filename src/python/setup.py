@@ -186,6 +186,10 @@ if __name__ == "__main__":
         # See: https://github.com/apple/turicreate/issues/3003
         install_requires.append("tensorflow >= 2.0.0,!= 2.1.0,!= 2.1.1")
 
+        # numba 0.51 started using "manylinux2014" rather than "manylinux2010".
+        # This breaks a lot of Linux installs.
+        install_requires.append("numba < 0.51.0")
+
     setup(
         name="turicreate",
         version=VERSION,
