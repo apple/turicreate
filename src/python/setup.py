@@ -163,7 +163,6 @@ if __name__ == "__main__":
         long_description = f.read().decode("utf-8")
 
     install_requires = [
-        "coremltools==4.0b2",
         "decorator >= 4.0.9",
         "numpy",
         "pandas >= 0.23.2",
@@ -178,6 +177,12 @@ if __name__ == "__main__":
         sys.version_info[0] == 3 and sys.version_info[1] == 5
     ):
         install_requires.append("llvmlite == 0.31.0")
+
+    if sys.version_info[0] == 3 and sys.version_info[1] == 8:
+        # Only 4.0 betas support Python 3.8
+        install_requires.append("coremltools==4.0b2")
+    else:
+        install_requires.append("coremltools==3.3")
 
     if sys.platform == "darwin":
         install_requires.append("tensorflow >= 2.0.0")
