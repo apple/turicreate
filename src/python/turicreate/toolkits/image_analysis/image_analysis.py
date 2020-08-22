@@ -202,9 +202,15 @@ def resize_with_original_aspect_ratio(image, min_side_length=None, max_side_leng
     image : turicreate.Image | SArray
         The image or SArray of images to be resized.
     min_side_length : int
-        The width the image is resized to.
+        The size of the minimum side of the image to be resized while maintaining aspect ratio.
+        For ex: 
+            if the image shape is : 720 * 960 i.e => the aspect ratio is 3:4
+            so if you set the min_side_length to 600, then the resized image dimension would be => 600 * 800
     max_side_length : int
-        The height the image is resized to.
+        The size of the maximum side of the image to be resized while maintaining aspect ratio.
+        For ex: 
+            if the image shape is : 720 * 960 i.e => the aspect ratio is 3:4
+            so if you set the max_side_length to 600, then the resized image dimension would be => 450 * 600
     channels : int, optional
         The number of channels the image is resized to. 1 channel
         corresponds to grayscale, 3 channels corresponds to RGB, and 4
@@ -251,18 +257,28 @@ def resize_with_original_aspect_ratio(image, min_side_length=None, max_side_leng
     >>> resized_images = turicreate.image_analysis.resize(image_sarray, min_side_length=500,max_side_length=None, channels=1)
     >>> resized_images = turicreate.image_analysis.resize(image_sarray, min_side_length=None,max_side_length=500, channels=1)
     """
+
+    from ...data_structures.sarray import SArray as _SArray
+    import turicreate as _tc
+
     if min_side_length is None and max_side_length is None:
         raise ValueError("Cannot resize when neither `min_side_length` or `max_side_length` is not provided")
 
-    if min_side_length > 0 and max_side_length > 0:
+    if (min_side_length is not None and min_side_length > 0) and (max_side_length is not None and max_side_length > 0):
         raise ValueError("Cannot provide both parameters `min_side_length` and `max_side_length` as only one is required to maintain the aspect ratio")
-    
-    if min_side_length is not None and min_side_length > 0:
-        side_length_type = "min_length"
-        side_length = min_side_length
-    elif max_side_length is not None and max_side_length > 0:
-        side_length_type = "max_length"
-        side_length = max_side_length
+
+    if min_side_length is not None:
+        if min_side_length > 0:
+            side_length_type = "min_length"
+            side_length = min_side_length
+        else:
+            raise ValueError("Value of min_side_length parameter cannot be negetive")
+    elif max_side_length is not None:
+        if max_side_length > 0:
+            side_length_type = "max_length"
+            side_length = max_side_length
+        else:
+            raise ValueError("Value of max_side_length parameter cannot be negetive")
     else:
         raise ValueError("Need to provode either the `min_side_length` or `max_side_length` to resize while maintaining the aspect ratio")
     
@@ -275,7 +291,7 @@ def resize_with_original_aspect_ratio(image, min_side_length=None, max_side_leng
         )
         image_with_new_dims_sframe = _tc.SFrame({"image": image, "new_shape": new_image_shape_sarray})
         return image_with_new_dims_sframe.apply(
-            lambda x: resize(x['image'], x['new_shape'][0], x['new_shape'][0], channels=channels, decode=decode, resample=resample)
+            lambda x: resize(x['image'], x['new_shape'][0], x['new_shape'][1], channels=channels, decode=decode, resample=resample)
         )
     else:
         raise ValueError(
