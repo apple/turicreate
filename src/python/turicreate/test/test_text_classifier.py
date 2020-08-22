@@ -94,21 +94,19 @@ class TextClassifierTest(unittest.TestCase):
         self.model.evaluate(self.docs)
 
     def test_export_coreml(self):
-        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
-        self.model.export_coreml(filename)
-
         import platform
         import coremltools
 
+        filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
+        self.model.export_coreml(filename)
+
         coreml_model = coremltools.models.MLModel(filename)
-        self.assertDictEqual(
-            {
-                "com.github.apple.turicreate.version": tc.__version__,
-                "com.github.apple.os.platform": platform.platform(),
-                "type": self.model.__class__.__name__,
-            },
-            dict(coreml_model.user_defined_metadata),
-        )
+        metadata = coreml_model.user_defined_metadata
+
+        self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+        self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+        self.assertEqual(metadata["type"], self.model.__class__.__name__)
+
         expected_result = (
             "Text classifier created by Turi Create (version %s)" % tc.__version__
         )

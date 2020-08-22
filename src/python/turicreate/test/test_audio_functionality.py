@@ -342,19 +342,14 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
             core_ml_model = coremltools.models.MLModel(file_name)
 
         # Check metadata
-        metadata = core_ml_model.get_spec().description.metadata
-        self.assertTrue("sampleRate" in metadata.userDefined)
-        self.assertEqual(metadata.userDefined["sampleRate"], "16000")
-        self.assertDictEqual(
-            {
-                "com.github.apple.turicreate.version": tc.__version__,
-                "com.github.apple.os.platform": platform.platform(),
-                "type": "SoundClassifier",
-                "sampleRate": "16000",
-                "version": "1",
-            },
-            dict(core_ml_model.user_defined_metadata),
-        )
+        metadata = core_ml_model.get_spec().description.metadata.userDefined
+
+        self.assertEqual(metadata["sampleRate"], "16000")
+        self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+        self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+        self.assertEqual(metadata["type"], "SoundClassifier")
+        self.assertEqual(metadata["version"], "1")
+
         expected_result = "Sound classifier created by Turi Create (version %s)" % (
             tc.__version__
         )
