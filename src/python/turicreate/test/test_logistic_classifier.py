@@ -38,7 +38,7 @@ def binary_classification_integer_target(cls):
     target being binary.
     """
 
-    ## Simulate test data
+    # Simulate test data
     np.random.seed(8)
     n, d = 100, 10
     cls.sf = tc.SFrame()
@@ -136,7 +136,7 @@ def binary_classification_integer_target(cls):
         "roc_curve": tc.toolkits.evaluation.roc_curve(cls.sf["target"], cls.yhat_prob),
     }
 
-    ## Answers
+    # Answers
     cls.opts = cls.def_opts.copy()
     cls.opts["l2_penalty"] = 0.0
     cls.opts["solver"] = "newton"
@@ -274,7 +274,7 @@ def multiclass_integer_target(cls):
         .sort(["id", "class"])["prediction"]
     )
 
-    ## Create the model
+    # Create the model
     cls.sf["target"] = target
     cls.loss = -sm_model.llf
 
@@ -525,8 +525,7 @@ class LogisticRegressionClassifierModelTest(unittest.TestCase):
         Check the classify function against pre-computed answers. Check that
         all predictions are at most 1e-5 away from the true answers.
         """
-        model = self.model
-        ans = model.classify(self.sf)
+        ans = self.model.classify(self.sf)
         tol = 1e-3
         self.assertEqual(ans["class"].dtype, self.type)
         self.assertTrue(
@@ -792,7 +791,7 @@ class ListCategoricalLogisticRegressionTest(unittest.TestCase):
         target[1] = 1
         self.sf["target"] = target
 
-        ## Get the right answer with statsmodels
+        # Get the right answer with statsmodels
         df = self.sf.to_dataframe()
         formula = "target ~ species + " + " + ".join(
             ["X{}".format(i + 1) for i in range(d)]
@@ -802,7 +801,7 @@ class ListCategoricalLogisticRegressionTest(unittest.TestCase):
         self.coef = list(sm_model.params)
         self.yhat = np.array([1 if x >= 0.5 else 0 for x in sm_model.fittedvalues])
 
-        ## Set the turicreate model params
+        # Set the turicreate model params
         self.target = "target"
         self.features = ["species", "X1", "X2", "X3"]
         self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
@@ -869,7 +868,7 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
         Set up (run once).
         """
 
-        ## Create fake data with a categorical variable
+        # Create fake data with a categorical variable
         np.random.seed(15)
         n, d = 100, 3
         self.sf = tc.SFrame()
@@ -894,7 +893,7 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
         target[1] = 1
         self.sf["target"] = target
 
-        ## Get the right answer with statsmodels
+        # Get the right answer with statsmodels
         df = self.sf.to_dataframe()
         formula = "target ~ species + " + " + ".join(
             ["X{}".format(i + 1) for i in range(d)]
@@ -904,7 +903,7 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
         self.coef = list(sm_model.params)
         self.yhat = np.array([1 if x >= 0.5 else 0 for x in sm_model.fittedvalues])
 
-        ## Set the turicreate model params
+        # Set the turicreate model params
         self.target = "target"
         self.features = ["species", "X1", "X2", "X3"]
         self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
@@ -978,11 +977,10 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
         sf["species"] = sf["species"].apply(lambda x: "rat" if x == "foosa" else x)
         eval2 = model.evaluate(sf)
 
-    """
-       Test detection of columns that are almost the same.
-    """
-
     def test_zero_variance_detection(self):
+        """
+        Test detection of columns that are almost the same.
+        """
         sf = self.sf[:]
         sf["error-column"] = "1"
         model = tc.logistic_classifier.create(sf, self.target)
@@ -993,11 +991,10 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
         sf["error-column"] = [{1: 1} for i in sf]
         model = tc.logistic_classifier.create(sf, self.target)
 
-    """
-       Test detection of columns have nan values
-    """
-
     def test_nan_detection(self):
+        """
+        Test detection of columns have nan values
+        """
         sf = self.sf[:]
         try:
             sf["error-column"] = np.nan
@@ -1019,13 +1016,13 @@ class CategoricalLogisticRegressionTest(unittest.TestCase):
 class VectorLogisticRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Logistic Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
         np.random.seed(15)
         n, d = 100, 3
         self.sf = tc.SFrame()
@@ -1036,17 +1033,16 @@ class VectorLogisticRegressionTest(unittest.TestCase):
         target[1] = 1
         self.sf["target"] = target
 
-        ## Get the right answer with statsmodels
+        # Get the right answer with statsmodels
         df = self.sf.to_dataframe()
         formula = "target ~ " + " + ".join(["X{}".format(i + 1) for i in range(d)])
         sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
-
         self.loss = -sm_model.llf  # sum of squared residuals
         self.coef = list(sm_model.params)
         self.stderr = list(sm_model.bse)
         self.yhat = list(sm_model.fittedvalues)
 
-        ## Set the turicreate model params
+        # Set the turicreate model params
         self.target = "target"
         self.sf["vec"] = self.sf.apply(
             lambda row: [row["X{}".format(i + 1)] for i in range(d)]
@@ -1059,8 +1055,8 @@ class VectorLogisticRegressionTest(unittest.TestCase):
 
     def _test_coefficients(self, model):
         """
-      Check that the coefficient values are very close to the correct values.
-      """
+        Check that the coefficient values are very close to the correct values.
+        """
         coefs = model.coefficients
         coef_list = list(coefs["value"])
         stderr_list = list(coefs["stderr"])
@@ -1112,13 +1108,13 @@ class VectorLogisticRegressionTest(unittest.TestCase):
 class DictLogisticRegressionTest(unittest.TestCase):
     """
     Unit test class for testing a Logistic Regression create function.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
         np.random.seed(15)
         n, d = 100, 3
@@ -1134,7 +1130,7 @@ class DictLogisticRegressionTest(unittest.TestCase):
         target[1] = 1
         self.sf["target"] = target
 
-        ## Get the right answer with statsmodels
+        # Get the right answer with statsmodels
         df = self.sf.to_dataframe()
         formula = "target ~ " + " + ".join(["X{}".format(i + 1) for i in range(d)])
         sm_model = smf.glm(formula, data=df, family=sm.families.Binomial()).fit()
@@ -1144,7 +1140,7 @@ class DictLogisticRegressionTest(unittest.TestCase):
         self.stderr = list(sm_model.bse)
         self.yhat = list(sm_model.fittedvalues)
 
-        ## Set the turicreate model params
+        # Set the turicreate model params
         self.target = "target"
         self.sf["dict"] = self.sf.apply(
             lambda row: {i: row["X{}".format(i + 1)] for i in range(d)}
@@ -1456,39 +1452,39 @@ class RegularizedLogisticRegressionTest(unittest.TestCase):
             1,
         ]
 
-        ## Write data to file so it can be loaded into an SFrame
+        # Write data to file so it can be loaded into an SFrame
         f_data = "data_file_{}.csv".format(uuid.uuid4())
         self.dataset = f_data
         with open(f_data, "w") as f:
             f.write(feature_data)
 
-        ## Load the data into an SFrame
+        # Load the data into an SFrame
         self.sf = tc.SFrame.read_csv(f_data, header=False, column_type_hints=float)
         self.sf["target"] = target_data
 
-        ## Default options
+        # Default options
         self.def_kwargs = copy.deepcopy(_DEFAULT_SOLVER_OPTIONS)
         self.def_kwargs["max_iterations"] = 100
         self.def_kwargs["convergence_threshold"] = 1e-5
         self.l2_penalty = 5.0
         self.l1_penalty = 3.0
 
-        ## Constant parameters
+        # Constant parameters
         self.target = "target"
         self.features = ["X{}".format(i) for i in range(1, 4 + 1)]
         self.solver = "auto"
 
-        ## Correct answers, from glmnet in R
-        ## require(glmnet)
-        ## fit = glmnet(x, y, family='binomial', alpha=0, lambda=0.1, standardize=False)
-        ## Note: l2_penalty is 0.1 in R but 5 here because a) the penalty in
+        # Correct answers, from glmnet in R
+        # require(glmnet)
+        # fit = glmnet(x, y, family='binomial', alpha=0, lambda=0.1, standardize=False)
+        # Note: l2_penalty is 0.1 in R but 5 here because a) the penalty in
         #  glmnet is lambda/2, and b) the loss in glmnet is the log-likelihood/n + penalty.
         self.l2_coef = np.array(
             [-0.3554688, 0.06594038, -0.48338736, -0.11910414, -0.09901472]
         )
 
-        ## fit = glmnet(x, y, family='binomial', alpha=1.0, lambda=0.03, standardize=False)
-        ## Note: l1 penalty is 0.03 in R but 3 here because the loss in glmnet
+        # fit = glmnet(x, y, family='binomial', alpha=1.0, lambda=0.03, standardize=False)
+        # Note: l1 penalty is 0.03 in R but 3 here because the loss in glmnet
         #  is log-lik/n + penalty.
         self.l1_coef = np.array([-0.3728739, 0.0, -0.58645032, -0.07656562, 0.0])
 
@@ -1565,13 +1561,13 @@ class RegularizedLogisticRegressionTest(unittest.TestCase):
 class ImproperProblemsTest(unittest.TestCase):
     """
     Unit test class for problems with the setup, e.g. dataset.
-  """
+    """
 
     @classmethod
     def setUpClass(self):
         """
         Set up (Run only once)
-    """
+        """
 
         self.target = "y"
         self.sf = tc.SFrame()
@@ -1581,11 +1577,6 @@ class ImproperProblemsTest(unittest.TestCase):
         self.sf["dict"] = tc.SArray([{"1": 3, "2": 2}, {"2": 1}, {}], dict)
         self.sf["array"] = tc.SArray([[1, 2], [3, 4], [5, 6]], array.array)
         self.sf["str"] = tc.SArray(["1", "2", "3"], str)
-        print(self.sf)
-
-    """
-     Test predict missing value
-  """
 
     def test_single_label_error(self):
         sf = self.sf.__copy__()
@@ -1597,7 +1588,7 @@ class ImproperProblemsTest(unittest.TestCase):
 class ValidationSetLogisticClassifierTest(unittest.TestCase):
     @classmethod
     def setUpClass(self):
-        ## Simulate test data
+        # Simulate test data
         np.random.seed(10)
         n, d = 100, 10
         self.sf = tc.SFrame()
@@ -1607,7 +1598,7 @@ class ValidationSetLogisticClassifierTest(unittest.TestCase):
         target[0] = 0
         target[1] = 1
 
-        ## Create the model
+        # Create the model
         self.sf["target"] = target
         self.target = "target"
 
@@ -1652,8 +1643,6 @@ class ValidationSetLogisticClassifierTest(unittest.TestCase):
 
 class TestStringTarget(unittest.TestCase):
     def test_cat(self):
-        import numpy as np
-
         # Arrange
         np.random.seed(8)
         n, d = 1000, 100
