@@ -180,7 +180,7 @@ if __name__ == "__main__":
 
     if sys.version_info[0] == 3 and sys.version_info[1] == 8:
         # Only 4.0 betas support Python 3.8
-        install_requires.append("coremltools==4.0b2")
+        install_requires.append("coremltools==4.0b1")
     else:
         install_requires.append("coremltools==3.3")
 
