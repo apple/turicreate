@@ -189,7 +189,15 @@ if __name__ == "__main__":
     else:
         # ST, OD, AC and DC segfault on Linux with TensorFlow 2.1.0 and 2.1.1
         # See: https://github.com/apple/turicreate/issues/3003
-        install_requires.append("tensorflow >= 2.0.0,!= 2.1.0,!= 2.1.1")
+
+        # SC errors out on Linux with TensorFlow 2.2 and 2.3
+        # See: https://github.com/apple/turicreate/issues/3303
+
+        if sys.version_info[0] != 3 and sys.version_info[1] != 8:
+            install_requires.append("tensorflow >= 2.0.0,<2.1.0")
+        else:
+            # Only TensorFlow >= 2.2 supports Python 3.8
+            install_requires.append("tensorflow >= 2.0.0")
 
         # numba 0.51 started using "manylinux2014" rather than "manylinux2010".
         # This breaks a lot of Linux installs.

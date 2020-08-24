@@ -18,7 +18,7 @@ import unittest
 import pytest
 
 import numpy as np
-import sys as _sys
+import sys
 
 import turicreate as tc
 from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray
@@ -163,7 +163,9 @@ def _generate_binary_test_data():
 
 binary_test_data = _generate_binary_test_data()
 
-
+# Skip tests on Linux for Python 3.8
+@unittest.skipIf(sys.platform != "darwin" and sys.version_info[0] == 3 and sys.version_info[1] == 8,
+                 "https://github.com/apple/turicreate/issues/3303")
 class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
     @classmethod
     def setUpClass(self):
@@ -436,7 +438,9 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
         with self.assertRaises(ToolkitError):
             model.summary(model.summary({}))
 
-
+# Skip tests on Linux for Python 3.8
+@unittest.skipIf(sys.platform != "darwin" and sys.version_info[0] == 3 and sys.version_info[1] == 8,
+                 "https://github.com/apple/turicreate/issues/3303")
 class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -457,6 +461,9 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
         assert self.model.custom_layer_sizes == layer_sizes
 
 
+# Skip tests on Linux for Python 3.8
+@unittest.skipIf(sys.platform != "darwin" and sys.version_info[0] == 3 and sys.version_info[1] == 8,
+                 "https://github.com/apple/turicreate/issues/3303")
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
     @classmethod
     def setUpClass(self):
@@ -492,7 +499,9 @@ class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabel
     def test_validation_set(self):
         self.assertTrue(self.model.validation_accuracy is not None)
 
-
+# Skip tests on Linux for Python 3.8
+@unittest.skipIf(sys.platform != "darwin" and sys.version_info[0] == 3 and sys.version_info[1] == 8,
+                 "https://github.com/apple/turicreate/issues/3303")
 class ClassifierTestWithShortClip(unittest.TestCase):
     @classmethod
     def setUpClass(self):
